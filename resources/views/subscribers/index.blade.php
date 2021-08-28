@@ -156,7 +156,7 @@ sort
 						</select>
 					</span>
 					<div class="btn-group list_columns mr-2">
-						<button role="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown">
+						<button role="button" class="btn btn-default dropdown-toggle" data-bs-toggle="dropdown">
 							{{ trans('messages.columns') }} <span class="caret"></span>
 						</button>
 						<ul class="dropdown-menu dropdown-menu-end">
