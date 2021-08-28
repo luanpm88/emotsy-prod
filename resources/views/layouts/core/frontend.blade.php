@@ -6,6 +6,10 @@
 	@include('layouts.core._script_vars')
 
 	@yield('head')
+
+	<script>
+		var APP_THEME = '{{ Auth::user()->customer->dark_mode ? 'dark' : '' }}';
+	</script>
 </head>
 <body class="theme-{{ Auth::user()->customer->getColorScheme() }} {{ Auth::user()->customer->getMenuLayout() }}bar
 	{{ Auth::user()->customer->getMenuLayout() }}bar-{{ request()->session()->get('customer-leftbar-state') }}
