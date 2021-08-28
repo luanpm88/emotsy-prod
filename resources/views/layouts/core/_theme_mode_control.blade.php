@@ -1,7 +1,7 @@
 <div class="mb-4">
     <label class="dark-mode-select me-3 xtooltip" title="{{ trans('messages.theme_mode.dark.intro') }}">
         <input style="display:none" type="radio" name="theme_mode" value="dark" {{ $theme_mode == 'dark' ? 'checked' : '' }} class="styled mr-2" />
-        <div class="theme-mode-icon dark-mode shadow">
+        <div class="theme-mode-icon dark-mode shadow-sm">
             <svg class="SVGInline-svg SVGInline--cleaned-svg SVG-svg DarkModeIcon-svg SVG--color-svg" style="width: 12px;height: 12px;" viewBox="0 0 17 16" xmlns="http://www.w3.org/2000/svg"><path d="M7.914 0a6.874 6.874 0 0 0-1.26 3.972c0 3.875 3.213 7.017 7.178 7.017.943 0 1.843-.178 2.668-.5C15.423 13.688 12.34 16 8.704 16 4.174 16 .5 12.41.5 7.982.5 3.814 3.754.389 7.914 0z" fill-rule="evenodd"></path></svg>
         </div>
     </label>
