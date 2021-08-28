@@ -1056,8 +1056,9 @@ class Automation2Controller extends Controller
                 }
             }
             
-            $email->setTemplateContent($request->content);
-            $email->save();
+            $email->setTemplateContent($request->content, function($email) {
+                $email->updateLinks();
+            });
             
             return response()->json([
                 'status' => 'success',
