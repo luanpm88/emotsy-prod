@@ -7084,11 +7084,12 @@ hr {
 }
 .color-scheme-select:hover::after, .color-scheme-select:checked::after {
     box-shadow: 1px 1px 10px rgba(0,0,0,0.1);
+    border: solid 2px #eee;
 }
 .color-scheme-select:checked::after {
     box-shadow: 1px 1px 10px rgba(0,0,0,0.1);
     transform: scale(1.4);
-    border: solid 4px #fff;
+    border: solid 2px #eee;
 }
 .color-scheme-select:after {
     content: 'color';
@@ -7100,7 +7101,7 @@ hr {
     top: -10px;
     left: -10px;
     text-indent: -1000000px;
-    border: solid 4px #fff;
+    border: solid 4px #eee;
 }
 .color-scheme-select.scheme-blue:after {
     background: #01579B;
