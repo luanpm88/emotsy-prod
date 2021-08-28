@@ -496,3 +496,11 @@ body.mode-dark .select2-container--default .select2-search--dropdown .select2-se
     background-color: rgba(255,255,255,0.1);
     color: rgba(255,255,255,0.85);
 }
+body.mode-dark .dropzone {
+    background-color: rgba(255,255,255,0.1);
+    border-color: rgba(255,255,255,0.3)!important;
+    color: rgba(255,255,255,0.6)!important;
+}
+body.mode-dark .dropzone.dz-clickable .dz-message, body.mode-dark .dropzone.dz-clickable .dz-message * {
+    color: rgba(255,255,255,0.4)!important;
+}
