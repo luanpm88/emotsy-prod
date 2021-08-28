@@ -3814,5 +3814,5 @@
   'theme_mode' => 'Dark / Light',
   'theme_mode.light.intro' => 'Light',
   'theme_mode.dark.intro' => 'Dark',
-  'theme_mode.auto.intro' => 'Set by detecting OS (Window/macOS) appearance mode',
+  'theme_mode.auto.intro' => 'Auto detect OS (Window/macOS) appearance mode',
 ) ?>
