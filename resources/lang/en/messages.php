@@ -3815,4 +3815,9 @@
   'theme_mode.light.intro' => 'Light',
   'theme_mode.dark.intro' => 'Dark',
   'theme_mode.auto.intro' => 'Auto detect OS (Window/macOS) appearance mode',
+  'campaign.plain.click_to_custom_html' => 'Plain content is automatically extracted from HTML.
+    Click the button below to switch it off and enter your plain content manually',
+  'campaign.plain.use_custom_plain_content' => 'Use custom plain content',
+  'campaign.plain.automatically_extract' => 'Automatically extract plain content from HTML',
+  'campaign.plain.extract_from_html' => 'Extract from HTML content',
 ) ?>

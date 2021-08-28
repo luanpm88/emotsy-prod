@@ -349,6 +349,8 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::patch('templates/{uid}/update', 'TemplateController@update');
 
     // Campaign
+    Route::post('campaigns/{uid}/custom-plain/off', 'CampaignController@customPlainOff');
+    Route::post('campaigns/{uid}/custom-plain/on', 'CampaignController@customPlainOn');
     Route::post('campaigns/{uid}/remove-attachment', 'CampaignController@removeAttachment');
     Route::get('campaigns/{uid}/download-attachment', 'CampaignController@downloadAttachment');
     Route::post('campaigns/{uid}/upload-attachment', 'CampaignController@uploadAttachment');
