@@ -6021,12 +6021,11 @@ h1, h1 {
 .navbar-icon {
     display: flex;
     align-items: center;
-    margin-right: 0.8em;
-}
-.navbar-icon {
+    margin-right: 0.7em;
     width: 1.3rem;
     display: flex;
     justify-content: center;
+    opacity: 0.9;
 }
 .navbar-icon img {
     width: 1.2rem;
