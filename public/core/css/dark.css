@@ -341,7 +341,7 @@ body.mode-dark .choose-payment-method {
     border-color: rgba(255, 255, 255, 0.2);
 }
 body.mode-dark .shadow {
-    box-shadow: 0 .5rem 1.5rem rgba(0,0,0,.55)!important
+    box-shadow: 0 .5rem 1.5rem rgba(0,0,0,.35)!important
 }
 body.mode-dark .shadow-sm {
     box-shadow: 0 .2rem 0.7rem rgba(0,0,0,.25)!important
@@ -521,4 +521,7 @@ body.mode-dark .picker__footer button {
 body.mode-dark .picker__footer button:hover,
 body.mode-dark .picker__footer button:focus {
     background-color: rgba(255,255,255,0.05);
+}
+body.mode-dark .bg-secondary {
+    background-color: rgba(255,255,255,0.2)!important;
 }
