@@ -141,13 +141,18 @@ delete_outline
     @include('elements/_per_page_select', ["items" => $customers])
     
 
-    <script>        
+    <script>
+        var assignPlan;        
         $(function() {
             $('.assign_plan_button').click(function(e) {
                 e.preventDefault();
 
                 var src = $(this).attr('href');
-                assignPlanModal.load(src);
+                assignPlan = new Popup({
+                    url: src
+                });
+
+                assignPlan.load();
             });
         });
     </script>

@@ -5492,9 +5492,6 @@ margin-left: -13px;
 }
 .price-item {
 }
-.price-line:nth-child(2) {
-  background: #edf4fc;
-}
 .price-table {
 }
 .price-table td {
@@ -5673,9 +5670,6 @@ table.table-log tr th {
   padding: 20px;
   height: calc(100vh - 60px);
   overflow: auto;
-}
-.price-selectable .price-line:nth-child(2) {
-    background: #fff;
 }
 .price-selectable .price-line.current {
     background: #f8f8f8;

@@ -1,11 +1,10 @@
-<div class="iframe-modal-header">
-    <div class="title">{{ trans('messages.subscription.change_plan') }}</div>
-    <div class="close" onclick="parent.GlobalIframeModal.hide()"><i class="material-icons-round">
-close
-</i></div>
-</div>
+@extends('layouts.popup.full')
 
-<div class="iframe-modal-body">
+@section('title')
+    {{ trans('messages.billing_information') }}
+@endsection
+
+@section('content')
     <div class="row">
         <div class="col-md-12">
             <div class="sub-section">
@@ -74,50 +73,49 @@ close
         </div>
         <div class="col-md-1"></div>
     </div>
-</div>
 
-<script>
-    $(function() {
-        $('.change-plan-button').click(function(e) {
-            e.preventDefault();
+    <script>
+        $(function() {
+            $('.change-plan-button').click(function(e) {
+                e.preventDefault();
 
-            var confirm = $(this).attr('data-confirm');
-            var url = $(this).attr('href');
-            var button = $(this);
+                var confirm = $(this).attr('data-confirm');
+                var url = $(this).attr('href');
+                var button = $(this);
 
-            var dialog = new Dialog('confirm', {
-                message: confirm,
-                ok: function(dialog) {                    
-                    $.ajax({
-                        url: url,
-                        method: 'POST',
-                        data: {
-                            _token: CSRF_TOKEN,
-                            gateway: button.closest('.submit-box').find('[name=gateway]').val(),
-                        },
-                        statusCode: {
-                            // validate error
-                            400: function (res) {
-                                alert('Something went wrong!');
+                var dialog = new Dialog('confirm', {
+                    message: confirm,
+                    ok: function(dialog) {                    
+                        $.ajax({
+                            url: url,
+                            method: 'POST',
+                            data: {
+                                _token: CSRF_TOKEN,
+                                gateway: button.closest('.submit-box').find('[name=gateway]').val(),
+                            },
+                            statusCode: {
+                                // validate error
+                                400: function (res) {
+                                    alert('Something went wrong!');
+                                }
+                            },
+                            success: function (response) {
+                                // notify
+                                notify({
+        type: 'success',
+        title: '{!! trans('messages.notify.success') !!}',
+        message: response.message
+    });
+                                
+                                CustomersIndex.getList().load();
+
+                                // hide modal
+                                assignPlan.hide();
                             }
-                        },
-                        success: function (response) {
-                            // notify
-                            notify({
-    type: 'success',
-    title: '{!! trans('messages.notify.success') !!}',
-    message: response.message
-});
-
-                            // redirect
-                            tableRefreshAll()
-
-                            // hide modal
-                            assignPlanModal.hide();
-                        }
-                    });
-                },
+                        });
+                    },
+                });
             });
         });
-    });
-</script>
+    </script>
+@endsection
