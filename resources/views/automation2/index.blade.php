@@ -7,8 +7,6 @@
     <script type="text/javascript" src="{{ URL::asset('core/datetime/moment.min.js') }}"></script>
     <script type="text/javascript" src="{{ URL::asset('core/datetime/pickadate/picker.js') }}"></script>
     <script type="text/javascript" src="{{ URL::asset('core/datetime/pickadate/picker.date.js') }}"></script>
-
-    <link rel="stylesheet" type="text/css" href="{{ URL::asset('core/css/automation.css') }}">
 @endsection
 
 @section('page_header')

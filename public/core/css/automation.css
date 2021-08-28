@@ -72,19 +72,6 @@
 .navbar-brand.left-logo img {
     height: 17px;
 }
-.navbar h1 {
-    color: #ccc;
-    font-size: 20px;
-    margin: 0;
-    font-weight: normal;
-}
-.navbar {
-    color: #777;
-}
-.navbar a:hover {
-    text-decoration: none;
-    color: #fff;
-}
 .automation-top-menu {
     display: flex;
     align-items: center;
