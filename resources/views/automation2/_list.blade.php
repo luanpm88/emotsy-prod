@@ -124,7 +124,7 @@ delete_outline
 @elseif (!empty(request()->keyword))
     <div class="empty-list">
         <span class="material-icons-outlined">
-forward_to_inbox
+            schedule
 </span>
         <span class="line-1">
             {{ trans('messages.no_search_result') }}

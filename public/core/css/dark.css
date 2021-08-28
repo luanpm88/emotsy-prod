@@ -461,3 +461,6 @@ body.mode-dark .key-value-list li {
 body.mode-dark .has-error .help-block {
     color: #ff9daf;
 }
+body.mode-dark hr {
+    background-color: rgba(255,255,255,0.15);
+}
