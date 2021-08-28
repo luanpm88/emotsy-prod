@@ -76,54 +76,52 @@
 
     <div class="mt-4 pt-3">
         <h5 class="font-weight-semibold">Monthly performance</h5>
-        <canvas id="myChart" width="400" height="200"></canvas>
+        <canvas id="myChart" width="620" height="500"></canvas>
+        <script type="text/javascript" src="{{ URL::asset('core/echarts/dark.js') }}"></script> 
         <script>
-            $(document).ready(function(){
-                var ctx = document.getElementById('myChart').getContext('2d');
-                var myChart = new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-                        datasets: [{
-                            label: '# Opens',
-                            data: [4, 7, 3, 5, 2, 3],
-                            backgroundColor: [
-                                'rgba(255, 99, 132, 1)'
-                            ],
-                            borderColor: [
-                                'rgba(255, 99, 132, 1)'
-                            ]
-                        },
-                        {
-                            label: '# Clicks',
-                            data: [5, 6, 6, 4, 2, 1],
-                            backgroundColor: [
-                                'rgba(54, 162, 235, 1)'
-                            ],
-                            borderColor: [
-                                'rgba(54, 162, 235, 1)'
-                            ]
-                        },
-                        {
-                            label: '# Emails sent',
-                            data: [1, 3, 4, 2, 5, 2],
-                            backgroundColor: [
-                                'rgba(255, 206, 86, 1)'
-                            ],
-                            borderColor: [
-                                'rgba(255, 206, 86, 1)'
-                            ]
-                        }]
-                    },
-                    options: {
-                        scales: {
-                            y: {
-                                beginAtZero: false
-                            }
-                        }
-                    }
-                });
+            $(function() {
+                myChart.showChart();
             });
+            var myChart = {
+                url: '',
+                getChart: function() {
+                    return $('#myChart');
+                },
+        
+                showChart: function() {
+                    $.ajax({
+                        method: "GET",
+                        url: this.url,
+                    })
+                    .done(function( response ) {
+                        myChart.renderChart({});
+                    });
+                },
+        
+                renderChart: function(data) {
+                    // based on prepared DOM, initialize echarts instance
+                    var chart = echarts.init(myChart.getChart()[0]);
+
+                    var option = {
+                        xAxis: {
+                            type: 'category',
+                            boundaryGap: false,
+                            data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+                        },
+                        yAxis: {
+                            type: 'value'
+                        },
+                        series: [{
+                            data: [820, 932, 901, 934, 1290, 1330, 1320],
+                            type: 'line',
+                            areaStyle: {}
+                        }]
+                    };
+        
+                    // use configuration item and data specified to show chart
+                    chart.setOption(option);
+                }
+            }    
         </script>
     </div>
 @endsection

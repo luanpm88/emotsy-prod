@@ -15,6 +15,8 @@
     <link rel="stylesheet" type="text/css" href="{{ URL::asset('core/css/automation.css') }}">
     <script type="text/javascript" src="{{ URL::asset('core/js/automation.js') }}"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"></link>
+
+    <script type="text/javascript" src="{{ URL::asset('core/echarts/echarts.min.js') }}"></script>
 @endsection
 
 @section('menu_title')
