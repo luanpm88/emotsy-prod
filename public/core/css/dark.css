@@ -24,8 +24,38 @@ body.mode-dark {
 body.mode-dark .navbar-main  {
     background-color: rgba(13, 24, 29, 0.85);
 }
-body.mode-dark .top-user-menus li, body.mode-dark .dropdown-menu, body.mode-dark .select2-dropdown, body.mode-dark .modal-content  {
-    background-color: rgba(20, 36, 46, 1)
+body.mode-dark .top-user-menus li,
+body.mode-dark .dropdown-menu,
+body.mode-dark .select2-dropdown,
+body.mode-dark .modal-content,
+body.mode-dark .autofill-dropbox-container  {
+    background-color: rgba(20, 32, 40, 1);
+}
+body.mode-dark .autofill-dropbox-container  {
+    border-color: rgba(255,255,255,0.2);
+}
+body.mode-dark .autofill-dropbox {
+    background-color: transparent;
+}
+body.mode-dark .autofill-dropbox-container h5.header {
+    background-color: rgba(255,255,255,0.1);
+    color: rgba(255, 255, 255, 0.6);
+}
+body.mode-dark .autofill-dropbox li a.autofill-item-a {
+    color: rgba(255, 255, 255, 0.7);
+}
+body.mode-dark .autofill-dropbox li.current a.autofill-item-a,
+body.mode-dark .autofill-dropbox li a.autofill-item-a,
+body.mode-dark .autofill-dropbox li a.autofill-item-empty {
+    background: transparent;
+}
+body.mode-dark .autofill-dropbox li a.autofill-item-a:hover {
+    background-color: rgba(255,255,255,0.05);
+    color: rgba(255, 255, 255, 0.85);
+}
+body.mode-dark .autofill-dropbox li a.active, body.mode-dark .autofill-dropbox li.current a.autofill-item-a {
+    background-color: rgba(255,255,255,0.05);
+    color: rgba(255, 255, 255, 0.85);
 }
 body.mode-dark .progress{
     background-color: rgba(255,255,255,0.2);

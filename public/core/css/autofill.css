@@ -55,7 +55,7 @@
   }
 }
 .autofill-dropbox-container {
-    padding: 3px 0 0 0;
+    padding: 0px 0 0 0;
     border: solid 2px #ccc;
     border-top: none;
     box-shadow: 1px 1px 1px rgba(0,0,0,0.1);
