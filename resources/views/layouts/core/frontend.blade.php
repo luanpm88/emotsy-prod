@@ -79,14 +79,14 @@
 	@include('layouts.core._flash')
 
 	<script>
+		var wizardUserPopup;
+
 		$(function() {
 			// auto detect dark mode
 
 
 			// Customer color scheme | menu layout wizard
 			@if (false)
-				var wizardUserPopup;
-
 				$(function() {
 					wizardUserPopup = new Popup({
 						url: '{{ action('AccountController@wizardColorScheme') }}',
