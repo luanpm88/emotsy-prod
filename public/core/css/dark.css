@@ -211,12 +211,12 @@ body.mode-dark .modal-header {
     border-color: rgba(255,255,255,0.2);
 }
 body.mode-dark .view-toogle {
-    background-color: rgba(255,255,255,0.2)!important;
+    background-color: rgba(255,255,255,0.05)!important;
     color: rgba(255,255,255,0.85)!important;
     border-color: rgba(255,255,255,0.2)!important;
 }
 body.mode-dark .view-list .view-toogle.list, body.mode-dark .view-grid .view-toogle.grid {
-    background-color: rgba(255,255,255,0.4)!important;
+    background-color: rgba(255,255,255,0.2)!important;
 }
 body.mode-dark .navbar-main .navbar-nav .nav-link, body.mode-dark .navbar-main .navbar-nav .nav-link:hover {
     color: rgba(255,255,255,0.7);
@@ -503,4 +503,22 @@ body.mode-dark .dropzone {
 }
 body.mode-dark .dropzone.dz-clickable .dz-message, body.mode-dark .dropzone.dz-clickable .dz-message * {
     color: rgba(255,255,255,0.4)!important;
+}
+body.mode-dark .AnyTime-win, body.mode-dark .picker__holder {
+    background-color: rgba(255,255,255,0.05);
+    border-color: rgba(255,255,255,0.3);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    color: rgba(255,255,255,0.85)!important;
+}
+body.mode-dark .picker__footer button {
+    background-color: transparent;
+    border-color: rgba(255,255,255,0.3);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    color: rgba(255,255,255,0.85)!important;
+}
+body.mode-dark .picker__footer button:hover,
+body.mode-dark .picker__footer button:focus {
+    background-color: rgba(255,255,255,0.05);
 }
