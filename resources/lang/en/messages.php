@@ -3812,4 +3812,7 @@
     Manage your audience in one centralized place',
   'base_template_gallery' => 'Base Template Gallery',
   'theme_mode' => 'Dark / Light',
+  'theme_mode.light.intro' => 'Light',
+  'theme_mode.dark.intro' => 'Dark',
+  'theme_mode.auto.intro' => 'Set by detecting OS (Window/macOS) appearance mode',
 ) ?>

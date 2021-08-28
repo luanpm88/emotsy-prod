@@ -69,7 +69,7 @@ arrow_forward
             
                     renderChart: function(data) {
                         // based on prepared DOM, initialize echarts instance
-                        var growthChart2 = echarts.init(ClickPieChart.getChart()[0], APP_THEME);
+                        var growthChart2 = echarts.init(ClickPieChart.getChart()[0], ECHARTS_THEME);
 
                         var colors = [
                             '#5cb2b2',

@@ -65,7 +65,7 @@ class Customer extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'timezone', 'language_id', 'color_scheme', 'text_direction', 'menu_layout', 'dark_mode'
+        'name', 'timezone', 'language_id', 'color_scheme', 'text_direction', 'menu_layout', 'theme_mode'
     ];
 
     /**

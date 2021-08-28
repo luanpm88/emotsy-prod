@@ -676,3 +676,39 @@ function openBuilderClassic(url) {
     });
     $('body').addClass('overflow-hidden');
 }
+
+function isDarkMode() {
+    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+}
+
+function autoDetechDarkMode(url) {
+    if (isDarkMode()) {
+        $('body').addClass('mode-dark');
+    }
+
+    $.ajax({
+        url: url,
+        method: 'GET',
+        data: {
+            theme_mode: isDarkMode() ? 'dark' : '',
+        },
+    });
+
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+        const newColorScheme = e.matches ? "dark" : "light";
+
+        if(newColorScheme == 'dark') {
+            $('body').addClass('mode-dark');
+        } else {
+            $('body').removeClass('mode-dark');
+        }
+
+        $.ajax({
+            url: url,
+            method: 'GET',
+            data: {
+                theme_mode: newColorScheme,
+            },
+        });
+    });
+}

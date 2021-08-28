@@ -8,12 +8,28 @@
 	@yield('head')
 
 	<script>
-		var APP_THEME = '{{ Auth::user()->admin->dark_mode ? 'dark' : '' }}';
+		@if (Auth::user()->admin->theme_mode == 'auto')
+			var ECHARTS_THEME = isDarkMode() ? 'dark' : null
+
+			// auto detect dark-mode
+			$(function() {
+				autoDetechDarkMode('{{ action('Admin\AccountController@saveAutoThemeMode') }}');
+			});
+		@else
+			var ECHARTS_THEME = '{{ Auth::user()->admin->theme_mode == 'dark' ? 'dark' : null }}';
+		@endif
 	</script>
 </head>
 <body class="theme-{{ Auth::user()->admin->getColorScheme() }} {{ Auth::user()->admin->getMenuLayout() }}bar
 	{{ Auth::user()->admin->getMenuLayout() }}bar-{{ request()->session()->get('admin-leftbar-state') }}	
-	{{ Auth::user()->admin->dark_mode ? 'dark' : '' }}
+	
+	@if (Auth::user()->admin->theme_mode == 'auto')
+		@if (request()->session()->get('admin-auto-theme-mode'))
+			mode-{{ request()->session()->get('admin-auto-theme-mode') }}
+		@endif
+	@else
+		mode-{{ Auth::user()->admin->theme_mode }}
+	@endif
 ">
 	@include('layouts.core._menu_backend')
 

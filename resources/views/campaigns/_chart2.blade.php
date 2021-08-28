@@ -6,7 +6,7 @@
             <script type="text/javascript" src="{{ URL::asset('core/echarts/dark.js') }}"></script> 
             <script type="text/javascript">
                 // based on prepared DOM, initialize echarts instance
-                var myChart = echarts.init(document.getElementById('main'), APP_THEME);
+                var myChart = echarts.init(document.getElementById('main'), ECHARTS_THEME);
 
                 // specify chart configuration item and data
                 option = {

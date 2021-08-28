@@ -33,7 +33,7 @@
         
                 renderChart: function(data) {
                         // based on prepared DOM, initialize echarts instance
-                        var growthChart1 = echarts.init(ListsGrowthChart1.getChart()[0], APP_THEME);
+                        var growthChart1 = echarts.init(ListsGrowthChart1.getChart()[0], ECHARTS_THEME);
         
                         var option = {
                             title: {
@@ -103,7 +103,7 @@
             
                     renderChart: function(data) {
                             // based on prepared DOM, initialize echarts instance
-                            var growthChart2 = echarts.init(ListsGrowthChart2.getChart()[0], APP_THEME);
+                            var growthChart2 = echarts.init(ListsGrowthChart2.getChart()[0], ECHARTS_THEME);
 
                             var colors = [
                                 '#5cb2b2',

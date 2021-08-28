@@ -206,6 +206,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
     Route::get('customers/admin-area', 'CustomerController@adminArea');
 
     // Customer profile/information
+    Route::get('account/save-auto-theme-mode', 'AccountController@saveAutoThemeMode');
     Route::get('account/activity', 'AccountController@activity');
     Route::match(['get', 'post'], 'account/wizard/menu-layout', 'AccountController@wizardMenuLayout');
     Route::match(['get', 'post'], 'account/wizard/color-scheme', 'AccountController@wizardColorScheme');
@@ -808,6 +809,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
 
 
     // Account
+    Route::get('admin/account/save-auto-theme-mode', 'AccountController@saveAutoThemeMode');
     Route::get('admin/account/leftbar/state', 'AccountController@leftbarState');
     Route::get('admin/account/api/renew', 'AccountController@renewToken');
     Route::get('admin/account/api', 'AccountController@api');
