@@ -212,23 +212,6 @@ delete_outline
                     return (className.match (/(^|\s)theme-\S+/g) || []).join(' ');
                 });
                 $('body').addClass('theme-' + value);
-
-                // change light icon
-                if (value == 'white') {
-                    $('.navbar-icon img').each(function() {
-                        $(this).attr('src', $(this).attr('src').replace('images/icons/SVG/', 'images/icons/dark/SVG/'));
-                        if($('.default-logo').length) {
-                            $('.default-logo').attr('src', $('.default-logo').attr('src').replace('logo-light.svg','logo-dark.svg'));
-                        }
-                    });
-                } else {
-                    $('.navbar-icon img').each(function() {
-                        $(this).attr('src', $(this).attr('src').replace('images/icons/dark/SVG/', 'images/icons/SVG/'));
-                        if($('.default-logo').length) {
-                            $('.default-logo').attr('src', $('.default-logo').attr('src').replace('logo-dark.svg', 'logo-light.svg'));
-                        }
-                    });
-                }
             });
             $('[name=menu_layout]').on('change', function(e) {
                 var type = $('[name=menu_layout]:checked').val();

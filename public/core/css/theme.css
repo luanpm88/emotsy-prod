@@ -365,6 +365,9 @@ body.mode-dark.theme-pink a:not(.btn, .dropdown-item):hover {
     color: #ffbaff;
 }
 
+.theme-white:not(.mode-dark) .default-app-logo svg {
+    color: #333;
+}
 .theme-white .navbar-main {
     background-color: rgba(240, 240, 240, 0.6)!important;
 }
@@ -391,17 +394,29 @@ body.mode-dark.theme-pink a:not(.btn, .dropdown-item):hover {
 .theme-white.leftbar .navbar-right {
     border-top: solid 1px rgba(0,0,0,0.1);
 }
+.theme-white:not(.mode-dark) .navbar-icon svg, .theme-white:not(.mode-dark) .navbar-icon svg * {
+    fill: currentColor!important;
+}
 body.mode-dark.theme-white {
     background-color: rgb(40, 40, 40);
 }
 body.mode-dark.theme-white .navbar-main {
-    background-color: rgba(255, 255, 255, 0.9)!important;
+    background-color: rgba(75, 75, 75, 0.8)!important;
+}
+.theme-white .navbar-main .navbar-nav .lvl-1 {
+    color: inherit!important;
+}
+.theme-white .navbar-main .navbar-nav li:hover .lvl-1 {
+    color: inherit!important;
 }
 body.mode-dark.theme-white .modal-content, body.mode-dark.theme-white .dropdown-menu li {
     background-color: rgb(40, 40, 40);
 }
 body.mode-dark.theme-white .select2-dropdown {
     background-color: rgba(25, 25, 25, 0.9)!important;
+}
+body.mode-dark.theme-white.leftbar .leftbar-hide-menu {
+    color: inherit;
 }
 
 

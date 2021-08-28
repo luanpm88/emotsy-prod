@@ -7298,9 +7298,9 @@ hr {
     filter: grayscale(0);
     transform: scale(1.3);
 }
-.dropdown-menu .navbar-icon svg {
-    width: 21px;
-    height: 21px;
+.navbar-icon svg {
+    width: 19px;
+    height: 19px;
 }
 .dropdown-menu .navbar-icon svg, .dropdown-menu .navbar-icon svg * {
     fill: currentColor!important;
@@ -7313,4 +7313,11 @@ hr {
 }
 .api-detail {
     background: #f6f6f6;
+}
+.default-app-logo svg {
+    height: 16px;
+    color: rgba(255,255,255,0.85);
+}
+.default-app-logo svg, .default-app-logo svg * {
+    fill: currentColor!important;
 }
