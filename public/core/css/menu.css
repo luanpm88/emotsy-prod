@@ -181,9 +181,9 @@
         transform: rotate(180deg);
         right: 14px;
     }
-    .leftbar-closed .lvl-1 .navbar-icon img {
+    .leftbar-closed .lvl-1 .navbar-icon svg {
         opacity: 0.9;
-        transform: scale(1);
+        transform: scale(1.1);
     }
     .leftbar-closed .navbar-main .navbar-nav .lvl-1 {
         padding: 15px 18px!important;
