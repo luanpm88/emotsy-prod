@@ -18,11 +18,11 @@ body.mode-dark::-webkit-scrollbar-thumb, body.mode-dark *::-webkit-scrollbar-thu
 }
 
 body.mode-dark {
-    background-color: rgba(20, 36, 46, 1);
+    background-color: rgba(20, 32, 40, 1);
     color: rgba(255,255,255,0.85);
 }
 body.mode-dark .navbar-main  {
-    background-color: rgba(12, 26, 33, 0.85);
+    background-color: rgba(13, 24, 29, 0.85);
 }
 body.mode-dark .top-user-menus li, body.mode-dark .dropdown-menu, body.mode-dark .select2-dropdown, body.mode-dark .modal-content  {
     background-color: rgba(20, 36, 46, 1)
