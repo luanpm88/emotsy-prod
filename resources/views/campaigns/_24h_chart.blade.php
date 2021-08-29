@@ -11,7 +11,6 @@
     </div>
 </div>
 
-<script type="text/javascript" src="{{ URL::asset('core/echarts/dark.js') }}"></script> 
 <script>
     var Campaigns24hChart = {
         url: '{{ action('CampaignController@chart24h', $campaign->uid) }}',

@@ -1,4 +1,3 @@
-<script type="text/javascript" src="{{ URL::asset('core/echarts/dark.js') }}"></script> 
 <div class="row">
     <div class="col-md-6">
         <!-- Basic column chart -->
@@ -158,6 +157,7 @@
                                         label: {
                                             // position: 'inner',
                                             fontSize: 12,
+                                            color: ECHARTS_THEME == 'dark' ? '#fff' : null,
                                             formatter: '{b}\n{d}% ({c})',
                                         },
                                     }

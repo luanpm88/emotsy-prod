@@ -29,7 +29,6 @@ auto_awesome
     </div>
 </div>
 
-<script type="text/javascript" src="{{ URL::asset('core/echarts/dark.js') }}"></script> 
 <script>
     $(function() {
         PlansPieChart.showChart();
@@ -107,6 +106,7 @@ auto_awesome
                         label: {
                             // position: 'inner',
                             fontSize: 12,
+                            color: ECHARTS_THEME == 'dark' ? '#fff' : null,
                             formatter: '{b}\n{d}% ({c})',
                         },
                     }

@@ -4,6 +4,7 @@
 
 @section('head')
     <script type="text/javascript" src="{{ URL::asset('core/echarts/echarts.min.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('core/echarts/dark.js') }}"></script> 
 @endsection
 
 @section('content')

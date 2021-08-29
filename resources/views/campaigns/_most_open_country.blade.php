@@ -49,7 +49,6 @@ arrow_forward
                 </div>
             </div>
             
-            <script type="text/javascript" src="{{ URL::asset('core/echarts/dark.js') }}"></script> 
             <script>
                 $(function() {
                     OpenPieChart.showChart();
@@ -127,6 +126,7 @@ arrow_forward
                                     label: {
                                         // position: 'inner',
                                         fontSize: 12,
+                                        color: ECHARTS_THEME == 'dark' ? '#fff' : null,
                                         formatter: '{b}\n{d}% ({c})',
                                     },
                                 }

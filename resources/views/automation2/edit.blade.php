@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"></link>
 
     <script type="text/javascript" src="{{ URL::asset('core/echarts/echarts.min.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('core/echarts/dark.js') }}"></script> 
 @endsection
 
 @section('menu_title')

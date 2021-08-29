@@ -101,7 +101,7 @@ arrow_forward
     </div>
 </div>
 
-<script type="text/javascript" src="{{ URL::asset('core/echarts/dark.js') }}"></script> 
+
 <script>
     var CampaignsChart = {
         chart: $('#campaignChart'),

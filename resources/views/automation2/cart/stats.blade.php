@@ -77,7 +77,6 @@
     <div class="mt-4 pt-3">
         <h5 class="font-weight-semibold">Monthly performance</h5>
         <canvas id="myChart" width="620" height="500"></canvas>
-        <script type="text/javascript" src="{{ URL::asset('core/echarts/dark.js') }}"></script> 
         <script>
             $(function() {
                 myChart.showChart();
