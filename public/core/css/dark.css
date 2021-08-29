@@ -567,7 +567,7 @@ body.mode-dark .AnyTime-win {
     -webkit-backdrop-filter: blur(18px);
 }
 body.mode-dark .picker__holder {
-    background: rgba(255,255,255,0.1);
+    background: rgba(85,85,85,0.1);
     border-color: rgba(255,255,255,0.1);
     backdrop-filter: blur(18px);
     -webkit-backdrop-filter: blur(18px);
