@@ -493,3 +493,14 @@ body.mode-dark .select2-container--default .select2-search--dropdown .select2-se
     background-color: rgba(255,255,255,0.1);
     color: rgba(255,255,255,0.85);
 }
+body.mode-dark .form-control, body.mode-dark .select2 {
+    border-color: rgba(255,255,255,0.2);
+}
+body.mode-dark input[type="file"]::file-selector-button {
+    background-color: rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.85);
+}
+body.mode-dark .control-file:hover input[type="file"]::file-selector-button {
+    background-color: rgba(255,255,255,0.2);
+    color: rgba(255,255,255,0.85);
+}
