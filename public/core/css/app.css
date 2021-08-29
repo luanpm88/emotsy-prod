@@ -3939,7 +3939,7 @@ form.loading input {
     position: sticky;
     top: 53px;
     z-index: 2;
-    background: rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.7);
     backdrop-filter: blur(18px);
     -webkit-backdrop-filter: blur(18px);
     box-shadow: 0 5px 11px -11px rgba(0,0,0,0.3);

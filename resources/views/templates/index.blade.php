@@ -57,25 +57,27 @@
             <div class="">                
                 <div class="filter-box">
                     <input type="hidden" name="view" value="{{ request()->view }}" />
-                    <div class="checkbox inline check_all_list">
-                        <label>
-                            <input type="checkbox" name="page_checked" class="styled check_all">
-                        </label>
-                    </div>
-                    <div class="dropdown list_actions" style="display: none">
-                        <button role="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown">
-                            {{ trans('messages.actions') }} <span class="number"></span><span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu">
-                            <li>
-                                <a class="dropdown-item" link-confirm="{{ trans('messages.delete_templates_confirm') }}" href="{{ action('TemplateController@delete') }}">
-                                    <span class="material-icons-outlined">
-delete_outline
-</span> {{ trans('messages.delete') }}
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
+                    @if (request()->view == 'list')
+                        <div class="checkbox inline check_all_list">
+                            <label>
+                                <input type="checkbox" name="page_checked" class="styled check_all">
+                            </label>
+                        </div>
+                        <div class="dropdown list_actions" style="display: none">
+                            <button role="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown">
+                                {{ trans('messages.actions') }} <span class="number"></span><span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a class="dropdown-item" link-confirm="{{ trans('messages.delete_templates_confirm') }}" href="{{ action('TemplateController@delete') }}">
+                                        <span class="material-icons-outlined">
+    delete_outline
+    </span> {{ trans('messages.delete') }}
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    @endif
                     <span class="filter-group">
                         <select class="select" name="sort_order">
                             <option value="created_at">{{ trans('messages.created_at') }}</option>
