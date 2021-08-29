@@ -1083,8 +1083,6 @@ class SendingServer extends Model implements HasQuotaInterface
             'allow_unverified_from_email' => 'no',
             'allow_verify_domain_remotely' => 'no',
             'allow_verify_email_remotely' => 'no',
-            'allow_verify_domain_remotely' => 'no',
-            'allow_verify_email_remotely' => 'no',
         ];
     }
 

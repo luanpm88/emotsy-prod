@@ -408,16 +408,6 @@ class SendingServerAmazon extends SendingServer implements DomainVerificationInt
         return true;
     }
 
-    /**
-     * Allow user to verify his/her own emails against AWS.
-     *
-     * @return bool
-     */
-    public function allowVerifyingOwnEmailsRemotely()
-    {
-        return true;
-    }
-
     public function createCustomVerificationEmailTemplateFor($identity)
     {
         if (empty($this->default_from_email)) {

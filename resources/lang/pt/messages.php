@@ -3814,4 +3814,20 @@
     Connect to your e-commerce platform or store to synchronize products and contacts <br>
     Manage your audience in one centralized place',
   'base_template_gallery' => 'Base Template Gallery',
+  'color_scheme.blue' => 'Blue',
+  'color_scheme.green' => 'Green',
+  'color_scheme.pink' => 'Pink',
+  'color_scheme.brown' => 'Brown',
+  'color_scheme.grey' => 'Grey',
+  'color_scheme.white' => 'White',
+  'color_scheme.default' => 'System default',
+  'theme_mode' => 'Dark / Light',
+  'theme_mode.light.intro' => 'Light',
+  'theme_mode.dark.intro' => 'Dark',
+  'theme_mode.auto.intro' => 'Auto detect OS (Window/macOS) appearance mode',
+  'campaign.plain.click_to_custom_html' => 'Plain content is automatically extracted from HTML.
+    Click the button below to switch it off and enter your plain content manually',
+  'campaign.plain.use_custom_plain_content' => 'Use custom plain content',
+  'campaign.plain.automatically_extract' => 'Automatically extract plain content from HTML',
+  'campaign.plain.extract_from_html' => 'Extract from HTML content',
 ) ?>
