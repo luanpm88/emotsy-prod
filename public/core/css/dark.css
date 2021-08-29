@@ -160,6 +160,14 @@ body.mode-dark .btn-light {
 body.mode-dark .btn-light:hover {
     background-color: rgba(255,255,255,0.05);
 }
+body.mode-dark .btn-default {
+    background-color: rgba(255, 255, 255, 0.2)!important;
+    border-color: rgba(255, 255, 255, 0.1)!important;
+    color: rgba(255,255,255,0.85)!important;
+}
+body.mode-dark .btn-default:hover {
+    background-color: rgba(255,255,255,0.3)!important;
+}
 body.mode-dark .page-item .page-link {
     color: rgba(255,255,255,0.85);
     background-color: rgba(255,255,255,0.05);
@@ -507,4 +515,35 @@ body.mode-dark input[type="file"]::file-selector-button {
 body.mode-dark .control-file:hover input[type="file"]::file-selector-button {
     background-color: rgba(255,255,255,0.2);
     color: rgba(255,255,255,0.85);
+}
+body.mode-dark .tox-tinymce {
+    border: solid 1px rgba(255,255,255,0.2)!important;
+    background: rgba(255,255,255,0.1)!important;
+}
+body.mode-dark .tox .tox-toolbar, body.mode-dark .tox .tox-toolbar__overflow, body.mode-dark .tox .tox-toolbar__primary {
+    background: transparent!important;
+}
+body.mode-dark .tox .tox-toolbar-overlord {
+    background: transparent!important;
+}
+body.mode-dark .tox .tox-tbtn svg {
+    fill: rgba(255,255,255,0.85)!important;
+}
+body.mode-dark .tox .tox-tbtn:hover:not(.tox-tbtn--disabled) {
+    background: rgba(255,255,255,0.1)!important;
+}
+body.mode-dark .tox .tox-tbtn:hover {
+    background: rgba(255,255,255,0.1)!important;
+}
+body.mode-dark .tox .tox-split-button:hover {
+    border-color: rgba(255,255,255,0.2)!important;
+}
+body.mode-dark .tox .tox-split-button:hover {
+    box-shadow: none;
+}
+body.mode-dark .tox .tox-tbtn--enabled, body.mode-dark .tox .tox-tbtn--enabled:hover {
+    background: rgba(255,255,255,0.2)!important;
+}
+body.mode-dark .tox .tox-toolbar, body.mode-dark .tox .tox-toolbar__overflow, body.mode-dark .tox .tox-toolbar__primary {
+    border-color: rgba(255,255,255,0.2)!important;
 }
