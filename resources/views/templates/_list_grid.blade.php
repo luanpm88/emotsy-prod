@@ -65,7 +65,7 @@
                                     Auth::user()->customer->can('update', $template))
                                     <div class="btn-group">
                                         <button role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown">
-                                            {{ trans('messages.actions') }} <span class="caret ml-0"></span></button>
+                                            {{ trans('messages.actions') }} </button>
                                         <ul class="dropdown-menu dropdown-menu-end">
                                             @if (Auth::user()->customer->can('update', $template))
                                                 <li>

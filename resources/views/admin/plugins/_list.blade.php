@@ -60,7 +60,7 @@
 
                     <div class="btn-group">
 						<button role="button" class="btn btn-light icon-only dropdown-toggle" data-bs-toggle="dropdown">
-                            <span class="caret ml-0"></span>
+                            
                         </button>
 						<ul class="dropdown-menu dropdown-menu-end">
 							<li>

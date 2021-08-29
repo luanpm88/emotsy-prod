@@ -143,7 +143,7 @@ remove_circle_outline
 					)
 						<div class="btn-group">
 							
-							<button role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><span class="caret ml-0"></span></button>
+							<button role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"></button>
 							<ul class="dropdown-menu dropdown-menu-end">
 								@if (\Auth::user()->admin->can('approvePending', $subscription))
 									<li>

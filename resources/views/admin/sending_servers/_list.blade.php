@@ -106,7 +106,7 @@ edit
                     @endif
                     @if (Auth::user()->admin->can('delete', $item) || Auth::user()->admin->can('disable', $item) || Auth::user()->admin->can('enable', $item))
                         <div class="btn-group">
-                            <button role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"><span class="caret ml-0"></span></button>
+                            <button role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"></button>
                             <ul class="dropdown-menu dropdown-menu-end">
                                 @if (Auth::user()->admin->can('enable', $item))
                                     <li>

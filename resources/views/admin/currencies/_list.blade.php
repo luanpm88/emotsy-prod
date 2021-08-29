@@ -52,7 +52,7 @@ edit
 					@endcan
 					@if (Auth::user()->can('delete', $item) || Auth::user()->can('enable', $item) || Auth::user()->can('disable', $item) || Auth::user()->can('delete', $item))
 						<div class="btn-group">
-							<button role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"><span class="caret ml-0"></span></button>
+							<button role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"></button>
 							<ul class="dropdown-menu dropdown-menu-end">
 								@can('enable', $item)
 									<li>

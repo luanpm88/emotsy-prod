@@ -49,7 +49,7 @@ edit
                     @endif
                     @if (Auth::user()->admin->can('delete', $server) || Auth::user()->admin->can('disable', $server) || Auth::user()->admin->can('enable', $server))
                         <div class="btn-group">
-                            <button role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"><span class="caret ml-0"></span></button>
+                            <button role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"></button>
                             <ul class="dropdown-menu dropdown-menu-end">
                                 @if (Auth::user()->admin->can('enable', $server))
                                     <li>

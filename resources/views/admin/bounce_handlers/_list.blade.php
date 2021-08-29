@@ -46,7 +46,7 @@ edit
                     @endcan
                     @can('delete', $item)
                         <div class="btn-group">                                        
-                            <button role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"><span class="caret ml-0"></span></button>
+                            <button role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"></button>
                             <ul class="dropdown-menu dropdown-menu-end">                                                    
                                 <li>                                                        
                                     <a class="dropdown-item list-action-single" link-confirm="{{ trans('messages.delete_bounce_handlers_confirm') }}" href="{{ action('Admin\BounceHandlerController@delete', ["uids" => $item->uid]) }}">

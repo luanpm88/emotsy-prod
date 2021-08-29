@@ -34,7 +34,7 @@
 							link
 							</span>{{ trans('messages.view') }}</a>
 					<div class="btn-group">
-						<button role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"><span class="caret ml-0"></span></button>
+						<button role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"></button>
 						<ul class="dropdown-menu dropdown-menu-end">
 							<li>
 								<a

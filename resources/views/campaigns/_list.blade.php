@@ -102,7 +102,7 @@
 						@endif
 						@if (\Gate::allows('delete', $campaign) || \Gate::allows('pause', $campaign) || \Gate::allows('restart', $campaign))
 							<div class="btn-group ms-1" role="group">
-								<button id="btnGroupDrop1" role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"><span class="caret ml-0"></span></button>
+								<button id="btnGroupDrop1" role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"></button>
 								<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="btnGroupDrop1">
 									@if (\Gate::allows('resend', $campaign))
 										<li>
