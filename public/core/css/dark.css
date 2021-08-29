@@ -144,8 +144,10 @@ body.mode-dark .switchery[type="checkbox"]:hover:before, body.mode-dark .styled[
     border-color: rgba(255,255,255,0.3);
 }
 body.mode-dark .switchery[type="checkbox"]:checked:before, body.mode-dark .styled[type="checkbox"]:checked:before, body.mode-dark .styled[type="radio"]:checked:before {
-    background: #009688;
-    border-color: #009688;
+    background: rgba(255,255,255,0.2);
+    border-color: rgba(255,255,255,0.1);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
 }
 body.mode-dark .styled[type="radio"]:checked:before {
     background-color: #fff;
@@ -378,8 +380,10 @@ body.mode-dark .alert-info {
 }
 body.mode-dark .alert-success {
     color: rgba(255, 255, 255, 0.85);
-    background-color: rgba(0, 94, 31, 0.35);
+    background-color: rgba(36, 88, 54, 0.55);
     border-color: rgba(0, 94, 31, 0.35);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
 }
 
 body.mode-dark .dropdown-menu > .active > a,
