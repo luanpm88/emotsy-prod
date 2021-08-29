@@ -63,7 +63,8 @@ body.mode-dark.theme-blue,
 body.mode-dark.theme-blue .modal-content,
 body.mode-dark.theme-blue .dropdown-menu li,
 body.mode-dark.theme-blue .select2-dropdown,
-body.mode-dark.theme-blue .autofill-dropbox-container {
+body.mode-dark.theme-blue .autofill-dropbox-container,
+body.mode-dark.theme-blue .top-sticky-content {
     background-color: rgba(14, 33, 46, 1);
 }
 body.mode-dark.theme-blue .navbar-main {
@@ -141,7 +142,8 @@ body.mode-dark.theme-green,
 body.mode-dark.theme-green .modal-content,
 body.mode-dark.theme-green .dropdown-menu li,
 body.mode-dark.theme-green .select2-dropdown,
-body.mode-dark.theme-green .autofill-dropbox-container {
+body.mode-dark.theme-green .autofill-dropbox-container,
+body.mode-dark.theme-green .top-sticky-content {
     background-color: rgb(15, 37, 34);
 }
 body.mode-dark.theme-green .navbar-main {
@@ -219,7 +221,8 @@ body.mode-dark.theme-brown,
 body.mode-dark.theme-brown .modal-content,
 body.mode-dark.theme-brown .dropdown-menu li,
 body.mode-dark.theme-brown .select2-dropdown,
-body.mode-dark.theme-brown .autofill-dropbox-container {
+body.mode-dark.theme-brown .autofill-dropbox-container,
+body.mode-dark.theme-brown .top-sticky-content {
     background-color: rgb(37, 29, 15);
 }
 body.mode-dark.theme-brown .navbar-main {
@@ -297,7 +300,8 @@ body.mode-dark.theme-pink,
 body.mode-dark.theme-pink .modal-content,
 body.mode-dark.theme-pink .dropdown-menu li,
 body.mode-dark.theme-pink .select2-dropdown,
-body.mode-dark.theme-pink .autofill-dropbox-container {
+body.mode-dark.theme-pink .autofill-dropbox-container,
+body.mode-dark.theme-pink .top-sticky-content {
     background-color: rgb(41, 18, 27);
 }
 body.mode-dark.theme-pink .navbar-main {
@@ -375,7 +379,8 @@ body.mode-dark.theme-grey,
 body.mode-dark.theme-grey .modal-content,
 body.mode-dark.theme-grey .dropdown-menu li,
 body.mode-dark.theme-grey .select2-dropdown,
-body.mode-dark.theme-grey .autofill-dropbox-container {
+body.mode-dark.theme-grey .autofill-dropbox-container,
+body.mode-dark.theme-grey .top-sticky-content {
     background-color: rgb(27, 27, 27);
 }
 body.mode-dark.theme-grey .navbar-main {
@@ -432,7 +437,8 @@ body.mode-dark.theme-white .navbar-main {
 body.mode-dark.theme-white .modal-content,
 body.mode-dark.theme-white .dropdown-menu li,
 body.mode-dark.theme-white .select2-dropdown,
-body.mode-dark.theme-white .autofill-dropbox-container {
+body.mode-dark.theme-white .autofill-dropbox-container,
+body.mode-dark.theme-white .top-sticky-content {
     background-color: rgb(40, 40, 40);
 }
 body.mode-dark.theme-white.leftbar .leftbar-hide-menu {

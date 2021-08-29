@@ -210,7 +210,7 @@ body.mode-dark .popup-animated-background, body.mode-dark .styled.popup-animated
     opacity: 0.2;
 }
 body.mode-dark .top-sticky-content {
-    background-color: transparent;
+    background-color: rgba(20, 32, 40, 1);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
     border-color: rgba(255,255,255,0.1);
