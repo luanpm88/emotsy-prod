@@ -211,12 +211,12 @@ body.mode-dark .modal-header {
     border-color: rgba(255,255,255,0.2);
 }
 body.mode-dark .view-toogle {
-    background-color: rgba(255,255,255,0.05)!important;
+    background-color: rgba(255,255,255,0.2)!important;
     color: rgba(255,255,255,0.85)!important;
     border-color: rgba(255,255,255,0.2)!important;
 }
 body.mode-dark .view-list .view-toogle.list, body.mode-dark .view-grid .view-toogle.grid {
-    background-color: rgba(255,255,255,0.2)!important;
+    background-color: rgba(255,255,255,0.4)!important;
 }
 body.mode-dark .navbar-main .navbar-nav .nav-link, body.mode-dark .navbar-main .navbar-nav .nav-link:hover {
     color: rgba(255,255,255,0.7);
@@ -340,12 +340,6 @@ body.mode-dark .choose-payment p {
 body.mode-dark .choose-payment-method {
     border-color: rgba(255, 255, 255, 0.2);
 }
-body.mode-dark .shadow {
-    box-shadow: 0 .5rem 1.5rem rgba(0,0,0,.35)!important
-}
-body.mode-dark .shadow-sm {
-    box-shadow: 0 .2rem 0.7rem rgba(0,0,0,.25)!important
-}
 body.mode-dark .btn-close {
     background: none;
 }
@@ -359,7 +353,7 @@ body.mode-dark .btn-close:after {
 }
 
 body.mode-dark .dropdown-menu {
-    color: rgba(255, 255, 255, 0.85);
+    color: #333;
 }
 
 body.mode-dark .alert-warning {
@@ -411,7 +405,10 @@ body.mode-dark .top-user-menus .backdrop-backend {
 }
 
 body.mode-dark .bg-white {
-    background: rgba(255,255,255,0.05)!important;
+    background: rgba(255,255,255,0.02)!important;
+}
+body.mode-dark .bg-secondary {
+    background: rgba(255,255,255,0.1)!important;
 }
 body.mode-dark .select2-container--disabled .select2-selection--single {
     background-color: transparent !important;
@@ -495,52 +492,4 @@ body.mode-dark .select2-container--default .select2-search--dropdown .select2-se
     border-color: rgba(255,255,255,0.3);
     background-color: rgba(255,255,255,0.1);
     color: rgba(255,255,255,0.85);
-}
-body.mode-dark .dropzone {
-    background-color: rgba(255,255,255,0.05);
-    border-color: rgba(255,255,255,0.3)!important;
-    color: rgba(255,255,255,0.6)!important;
-}
-body.mode-dark .dropzone.dz-clickable .dz-message, body.mode-dark .dropzone.dz-clickable .dz-message * {
-    color: rgba(255,255,255,0.4)!important;
-}
-body.mode-dark .AnyTime-win, body.mode-dark .picker__holder {
-    background-color: rgba(255,255,255,0.05);
-    border-color: rgba(255,255,255,0.3);
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
-    color: rgba(255,255,255,0.85)!important;
-}
-body.mode-dark .picker__footer button {
-    background-color: transparent;
-    border-color: rgba(255,255,255,0.3);
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
-    color: rgba(255,255,255,0.85)!important;
-}
-body.mode-dark .picker__footer button:hover,
-body.mode-dark .picker__footer button:focus {
-    background-color: rgba(255,255,255,0.05);
-}
-body.mode-dark .bg-secondary {
-    background-color: rgba(255,255,255,0.2)!important;
-}
-body.mode-dark .list_columns ul li {
-    border-color: rgba(255,255,255,0.2);
-}
-body.mode-dark .dropdown-menu .head {
-    background-color: rgba(255,255,255,0.1)!important;
-    border-color: rgba(255,255,255,0.1)!important;
-}
-body.mode-dark .table-box-head tr th {
-    background-color: rgba(255,255,255,0.05);
-}
-body.mode-dark .btn-default {
-    background: rgba(255,255,255,0.2)!important;
-    color: rgba(255,255,255,0.75)!important;
-    border-color: rgba(255,255,255,0.3) !important;
-}
-body.mode-dark .btn-default:hover {
-    background: rgba(255,255,255,0.3)!important;
-    color: rgba(255,255,255,0.85)!important;
 }
