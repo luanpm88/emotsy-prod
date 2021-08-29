@@ -547,3 +547,12 @@ body.mode-dark .tox .tox-tbtn--enabled, body.mode-dark .tox .tox-tbtn--enabled:h
 body.mode-dark .tox .tox-toolbar, body.mode-dark .tox .tox-toolbar__overflow, body.mode-dark .tox .tox-toolbar__primary {
     border-color: rgba(255,255,255,0.2)!important;
 }
+
+body.mode-dark .btn-secondary {
+    background-color: rgba(255,255,255,0.6);
+    border-color: rgba(255,255,255,0.0);
+    color: rgba(0,0,0,0.7);
+}
+body.mode-dark .btn-secondary:hover {
+    background-color: rgba(255,255,255,0.7);
+}
