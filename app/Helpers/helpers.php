@@ -695,8 +695,11 @@ function inlineHtml($html, array $cssFiles)
     $htmldoc = new \Acelle\Library\InlineStyleWrapper($html);
 
     foreach ($cssFiles as $file) {
-        $styles = file_get_contents($file);
-        $htmldoc->applyStylesheet($styles);
+        // For safety, in case template is uploaded by user
+        if (file_exists($file)) {
+            $styles = file_get_contents($file);
+            $htmldoc->applyStylesheet($styles);
+        }
     }
 
     return $htmldoc->getHTML();
