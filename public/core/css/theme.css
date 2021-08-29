@@ -304,10 +304,10 @@ body.mode-dark.theme-pink .navbar-main {
     background-color: rgba(28, 11, 19, 0.9)!important;
 }
 body.mode-dark.theme-pink a:not(.btn, .dropdown-item) {
-    color: #dd5fc8;
+    color: #d660a6;
 }
 body.mode-dark.theme-pink a:not(.btn, .dropdown-item):hover {
-    color: #ffbaff;
+    color: #e47ebb;
 }
 
 .theme-grey .navbar-main {

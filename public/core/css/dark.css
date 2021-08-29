@@ -556,3 +556,6 @@ body.mode-dark .btn-secondary {
 body.mode-dark .btn-secondary:hover {
     background-color: rgba(255,255,255,0.7);
 }
+body.mode-dark .btn-primary {
+    filter: grayscale(0.3);
+}
