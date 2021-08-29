@@ -26,7 +26,7 @@
                     data-url="{{ action('AccountController@logsListing') }}"
                     per-page="{{ Acelle\Model\Log::$itemsPerPage }}"                
                 >                
-                    <div class="row top-list-controls py-2">
+                    <div class="row top-list-controls top-sticky-content">
                         <div class="col-md-10">
                             @if ($logs->count() >= 0)                    
                                 <div class="filter-box">

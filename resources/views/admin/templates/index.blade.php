@@ -23,7 +23,7 @@
         data-url="{{ action('Admin\TemplateController@listing') }}"
         per-page="{{ Acelle\Model\Template::$itemsPerPage }}"                    
     >                
-        <div class="d-flex top-list-controls py-2">
+        <div class="d-flex top-list-controls py-2 top-sticky-content">
             <div class="">                
                 <div class="filter-box">
                     <input type="hidden" name="view" value="{{ request()->view }}" />

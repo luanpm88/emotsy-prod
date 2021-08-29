@@ -1,5 +1,5 @@
 @if ($plugins->count() > 0)
-    <table class="table table-box pml-table border-top mt-2"
+    <table class="table table-box pml-table mt-2"
         current-page="{{ empty(request()->page) ? 1 : empty(request()->page) }}"
     >
         @foreach ($plugins as $key => $plugin)

@@ -30,7 +30,7 @@
         data-url="{{ action('Admin\PlanController@listing') }}"
         per-page="{{ Acelle\Model\Plan::$itemsPerPage }}"
     >
-        <div class="row top-list-controls py-2">
+        <div class="row top-list-controls top-sticky-content">
             <div class="col-md-10">
                 @if ($plans->count() >= 0)
                     <div class="filter-box">

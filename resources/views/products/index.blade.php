@@ -20,7 +20,7 @@
         data-url="{{ action('ProductController@listing', ['view' => request()->view]) }}"
         per-page="{{ Acelle\Model\Product::$itemsPerPage }}"
     >
-        <div class="row top-list-controls py-2">
+        <div class="row top-list-controls top-sticky-content">
             <div class="col-md-8">
                 <div class="filter-box">
                     <input type="hidden" name="view" value="{{ request()->view }}" />

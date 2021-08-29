@@ -22,7 +22,7 @@
         data-url="{{ action('CampaignController@listing') }}"
         per-page="{{ Acelle\Model\MailList::$itemsPerPage }}"
     >
-        <div class="row top-list-controls top-sticky-content py-2">
+        <div class="row top-list-controls top-sticky-content">
             <div class="col-md-9">
                 @if ($campaigns->count() >= 0)
                     <div class="filter-box">

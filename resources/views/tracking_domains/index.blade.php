@@ -28,7 +28,7 @@
         data-url="{{ action('TrackingDomainController@listing') }}"
         per-page="{{ Acelle\Model\TrackingDomain::$itemsPerPage }}"
     >
-        <div class="row top-list-controls py-2">
+        <div class="row top-list-controls top-sticky-content">
             <div class="col-md-9">
                 @if ($trackingDomains->count() >= 0)
                     <div class="filter-box">

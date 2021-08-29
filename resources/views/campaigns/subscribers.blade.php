@@ -53,7 +53,7 @@
         data-url="{{ action('CampaignController@subscribersListing', $campaign->uid) }}"
         per-page="{{ Acelle\Model\Subscriber::$itemsPerPage }}"
     >
-    <div class="row top-list-controls py-2">
+    <div class="row top-list-controls top-sticky-content">
         <div class="col-md-12">
             @if ($subscribers->count() >= 0)
                 

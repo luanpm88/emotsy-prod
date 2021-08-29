@@ -35,7 +35,7 @@
         data-url="{{ action('Automation2Controller@listing') }}"
         per-page="{{ \Acelle\Model\Automation2::ITEMS_PER_PAGE }}"					
     >				
-        <div class="row top-list-controls py-2">
+        <div class="row top-list-controls top-sticky-content">
             <div class="col-md-10">
                 <div class="filter-box">
                     <div class="checkbox inline check_all_list">

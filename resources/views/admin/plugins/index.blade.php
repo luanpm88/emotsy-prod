@@ -25,7 +25,7 @@
 		data-url="{{ action('Admin\PluginController@listing') }}"
 		per-page="{{ Acelle\Model\Plugin::$itemsPerPage }}"
 	>
-		<div class="row top-list-controls py-2">
+		<div class="row top-list-controls top-sticky-content">
 			<div class="col-md-10">
 				@if ($plugins->count() >= 0)
 					<div class="filter-box">

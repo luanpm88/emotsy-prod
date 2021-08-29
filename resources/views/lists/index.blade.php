@@ -19,7 +19,7 @@
 
 @section('content')
     <div class="listing-form" id="ListsIndexContainer">
-        <div class="row top-list-controls py-2">
+        <div class="row top-list-controls top-sticky-content">
             <div class="col-md-10">
                 @if (Auth::user()->customer->listsCount() >= 0)
                     <div class="filter-box">

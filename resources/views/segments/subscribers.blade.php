@@ -23,7 +23,7 @@ people
 					data-url="{{ action('SegmentController@listing_subscribers', ['list_uid' => $list->uid, 'uid' => $segment->uid]) }}"
 					per-page="{{ Acelle\Model\Subscriber::$itemsPerPage }}"
 				>
-					<div class="row top-list-controls py-2">
+					<div class="row top-list-controls top-sticky-content">
 						<div class="col-md-10">
 							@if ($subscribers->count() >= 0)
 								<div class="filter-box">

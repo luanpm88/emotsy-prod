@@ -23,7 +23,7 @@
 					data-url="{{ action('Admin\TrackingLogController@listing') }}"
 					per-page="{{ Acelle\Model\TrackingLog::$itemsPerPage }}"					
 				>				
-					<div class="row top-list-controls py-2">
+					<div class="row top-list-controls top-sticky-content">
 						<div class="col-md-9">
 							@if ($items->count() >= 0)					
 								<div class="filter-box">

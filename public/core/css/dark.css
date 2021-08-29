@@ -197,7 +197,7 @@ body.mode-dark .table > tfoot > tr > th,
 body.mode-dark .table > thead > tr > td,
 body.mode-dark .table > tbody > tr > td,
 body.mode-dark .table > tfoot > tr > td {
-    border-color: rgba(255,255,255,0.1);
+    border-color: rgba(255,255,255,0.05);
 }
 body.mode-dark .checkbox-description {
     color: rgba(255,255,255,0.7);
@@ -213,6 +213,8 @@ body.mode-dark .top-sticky-content {
     background-color: transparent;
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
+    border-color: rgba(255,255,255,0.1);
+    box-shadow: 0 15px 11px -11px rgba(0,0,0,0.2);
 }
 body.mode-dark .btn-close:hover {
     color: rgba(255,255,255,0.7);

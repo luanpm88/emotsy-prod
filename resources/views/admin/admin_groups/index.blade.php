@@ -24,7 +24,7 @@
         data-url="{{ action('Admin\AdminGroupController@listing') }}"
         per-page="{{ Acelle\Model\AdminGroup::$itemsPerPage }}"
     >
-        <div class="row top-list-controls py-2">
+        <div class="row top-list-controls top-sticky-content">
             <div class="col-md-10">
                 @if ($groups->count() >= 0)
                     <div class="filter-box">

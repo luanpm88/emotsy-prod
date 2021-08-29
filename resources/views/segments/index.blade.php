@@ -19,7 +19,7 @@ splitscreen
 		data-url="{{ action('SegmentController@listing', $list->uid) }}"
 		per-page="{{ Acelle\Model\Segment::$itemsPerPage }}"
 	>
-		<div class="row top-list-controls py-2">
+		<div class="row top-list-controls top-sticky-content">
 			<div class="col-md-10">
 				@if ($list->segmentsCount() >= 0)
 					<div class="filter-box">

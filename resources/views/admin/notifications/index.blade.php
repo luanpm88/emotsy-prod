@@ -22,7 +22,7 @@
 		data-url="{{ action('Admin\NotificationController@listing') }}"
 		per-page="20"				
 	>				
-		<div class="row top-list-controls py-2">
+		<div class="row top-list-controls top-sticky-content">
 			<div class="col-md-10">			
 				<div class="filter-box">
 					<div class="checkbox inline check_all_list">

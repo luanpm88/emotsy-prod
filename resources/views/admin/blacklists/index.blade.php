@@ -22,7 +22,7 @@
         per-page="{{ Acelle\Model\Blacklist::$itemsPerPage }}"
     >
 
-        <div class="row top-list-controls py-2">
+        <div class="row top-list-controls top-sticky-content">
             <div class="col-md-9">
                 @if ($blacklists->count() >= 0)
                     <div class="filter-box">

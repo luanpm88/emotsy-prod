@@ -28,7 +28,7 @@
         per-page="15"
     >
         <input type="hidden" name="customer_uid" value="{{ $customer->uid }}" />
-        <div class="row top-list-controls py-2">
+        <div class="row top-list-controls top-sticky-content">
             <div class="col-md-11">
                 <div class="filter-box">
                     <span class="filter-group">

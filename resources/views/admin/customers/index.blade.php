@@ -23,7 +23,7 @@
 		data-url="{{ action('Admin\CustomerController@listing') }}"
 		per-page="{{ Acelle\Model\Customer::$itemsPerPage }}"					
 	>				
-		<div class="row top-list-controls py-2">
+		<div class="row top-list-controls top-sticky-content">
 			<div class="col-md-10">
 				@if ($customers->count() >= 0)					
 					<div class="filter-box">

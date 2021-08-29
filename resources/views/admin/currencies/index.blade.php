@@ -24,7 +24,7 @@
 					data-url="{{ action('Admin\CurrencyController@listing') }}"
 					per-page="{{ Acelle\Model\Admin::$itemsPerPage }}"
 				>
-					<div class="row top-list-controls py-2">
+					<div class="row top-list-controls top-sticky-content">
 						<div class="col-md-10">
 							@if ($currencies->count() >= 0)
 								<div class="filter-box">
