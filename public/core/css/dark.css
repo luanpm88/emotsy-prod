@@ -559,3 +559,23 @@ body.mode-dark .btn-secondary:hover {
 body.mode-dark .btn-primary {
     filter: grayscale(0.3);
 }
+
+body.mode-dark .AnyTime-win {
+    background: rgba(85, 58, 58, 0.1);
+    border-color: rgba(255,255,255,0.1);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+}
+body.mode-dark .picker__holder {
+    background: rgba(255,255,255,0.1);
+    border-color: rgba(255,255,255,0.1);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+}
+body.mode-dark .picker__footer button {
+    background: transparent;
+    color: rgba(255,255,255,0.7);
+}
+body.mode-dark .picker__footer button:hover, .picker__footer button:focus {
+    background: rgba(255,255,255,0.1);
+}
