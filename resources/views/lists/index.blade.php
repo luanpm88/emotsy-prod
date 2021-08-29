@@ -19,8 +19,8 @@
 
 @section('content')
     <div class="listing-form" id="ListsIndexContainer">
-        <div class="row top-list-controls top-sticky-content">
-            <div class="col-md-10">
+        <div class="d-flex top-list-controls top-sticky-content">
+            <div class="me-auto">
                 @if (Auth::user()->customer->listsCount() >= 0)
                     <div class="filter-box">
                         <div class="checkbox inline check_all_list">
@@ -72,7 +72,7 @@ search
                     </div>
                 @endif
             </div>
-            <div class="col-md-2 text-end">
+            <div class="text-end">
                 <a href="{{ action("MailListController@create") }}" role="button" class="btn btn-secondary">
                     <span class="material-icons-round">
                         add

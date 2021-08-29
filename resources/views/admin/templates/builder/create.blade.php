@@ -67,8 +67,8 @@
 								]) }}"
 								per-page="25"					
 							>				
-								<div class="row top-list-controls top-sticky-content">
-									<div class="col-md-9">
+								<div class="d-flex top-list-controls top-sticky-content">
+									<div class="me-auto">
 										<div class="filter-box">
 											<span class="filter-group">
 												<span class="title text-semibold text-muted">{{ trans('messages.sort_by') }}</span>

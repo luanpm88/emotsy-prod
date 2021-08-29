@@ -18,8 +18,8 @@
         data-url="{{ action('CampaignController@bounceLogListing', $campaign->uid) }}"
         per-page="{{ Acelle\Model\BounceLog::$itemsPerPage }}"
     >
-        <div class="row top-list-controls top-sticky-content">
-            <div class="col-md-10">
+        <div class="d-flex top-list-controls top-sticky-content">
+            <div class="me-auto">
                 @if ($items->count() >= 0)
                     <div class="filter-box">
                         <span class="filter-group">
@@ -43,7 +43,7 @@ search
                     </div>
                 @endif
             </div>
-            <div class="col-md-2 text-end">
+            <div class="text-end">
                 <a href="javascript:goToDownLoad('bounce_logs')" role="button" class="btn btn-secondary">
                     <i class="icon icon-download mr-5"></i> {{ trans('messages.bounce_log.download') }}
                 </a>

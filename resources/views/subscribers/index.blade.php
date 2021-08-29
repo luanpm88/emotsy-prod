@@ -30,8 +30,8 @@ add
 		data-url="{{ action('SubscriberController@listing', $list->uid) }}"
 		per-page="{{ Acelle\Model\Subscriber::$itemsPerPage }}"
 	>
-		<div class="row top-list-controls top-sticky-content">
-			<div class="col-md-12">
+		<div class="d-flex top-list-controls top-sticky-content">
+			<div class="me-auto">
 				<div class="filter-box">
 					<span class="me-2 d-flex">
 						<div class="mr-2">

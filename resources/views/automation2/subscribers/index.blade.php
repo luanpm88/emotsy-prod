@@ -67,8 +67,8 @@
 			data-url="{{ action('Automation2Controller@subscribersList', $automation->uid) }}"
 			per-page="{{ Acelle\Model\Subscriber::$itemsPerPage }}"
 		>
-			<div class="row top-list-controls top-sticky-content">
-				<div class="col-md-10">
+			<div class="d-flex top-list-controls top-sticky-content">
+				<div class="me-auto">
 					<div class="filter-box">
 						<span class="me-2">
 							<div class="mr-2">

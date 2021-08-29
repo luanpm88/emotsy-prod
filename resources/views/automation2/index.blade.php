@@ -35,8 +35,8 @@
         data-url="{{ action('Automation2Controller@listing') }}"
         per-page="{{ \Acelle\Model\Automation2::ITEMS_PER_PAGE }}"					
     >				
-        <div class="row top-list-controls top-sticky-content">
-            <div class="col-md-10">
+        <div class="d-flex top-list-controls top-sticky-content">
+            <div class="me-auto">
                 <div class="filter-box">
                     <div class="checkbox inline check_all_list">
                         <label>
@@ -93,7 +93,7 @@ search
                     </span>
                 </div>
             </div>
-            <div class="col-md-2 text-end">
+            <div class="text-end">
                 <a href="{{ action("Automation2Controller@wizard") }}" role="button" class="btn btn-secondary create-automation2">
                     <span class="material-icons-round">
 add

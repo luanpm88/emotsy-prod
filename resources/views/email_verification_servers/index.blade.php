@@ -25,8 +25,8 @@
 		data-url="{{ action('EmailVerificationServerController@listing') }}"
 		per-page="{{ Acelle\Model\EmailVerificationServer::$itemsPerPage }}"
 	>
-		<div class="row top-list-controls top-sticky-content">
-			<div class="col-md-10">
+		<div class="d-flex top-list-controls top-sticky-content">
+			<div class="me-auto">
 				@if ($servers->count() >= 0)
 					<div class="filter-box">
 						<div class="dropdown list_actions" style="display: none">
@@ -83,7 +83,7 @@ search
 				@endif
 			</div>
 			@if (Auth::user()->customer->can('create', new Acelle\Model\EmailVerificationServer()))
-				<div class="col-md-2 text-end">
+				<div class="text-end">
 					<a href="{{ action("EmailVerificationServerController@create") }}" role="button" class="btn btn-secondary">
 						<span class="material-icons-round">
 add

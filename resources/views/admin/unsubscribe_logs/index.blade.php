@@ -23,8 +23,8 @@
 					data-url="{{ action('Admin\UnsubscribeLogController@listing') }}"
 					per-page="{{ Acelle\Model\UnsubscribeLog::$itemsPerPage }}"					
 				>				
-					<div class="row top-list-controls top-sticky-content">
-						<div class="col-md-9">
+					<div class="d-flex top-list-controls top-sticky-content">
+						<div class="me-auto">
 							@if ($items->count() >= 0)					
 								<div class="filter-box">
 									<span class="filter-group">

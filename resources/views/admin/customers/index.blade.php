@@ -23,8 +23,8 @@
 		data-url="{{ action('Admin\CustomerController@listing') }}"
 		per-page="{{ Acelle\Model\Customer::$itemsPerPage }}"					
 	>				
-		<div class="row top-list-controls top-sticky-content">
-			<div class="col-md-10">
+		<div class="d-flex top-list-controls top-sticky-content">
+			<div class="me-auto">
 				@if ($customers->count() >= 0)					
 					<div class="filter-box">
 						<span class="filter-group">
@@ -50,7 +50,7 @@ search
 				@endif
 			</div>
 			@can('create', new Acelle\Model\Customer())
-				<div class="col-md-2 text-end">
+				<div class="text-end">
 					<a href="{{ action("Admin\CustomerController@create") }}" role="button" class="btn btn-secondary">
 						<span class="material-icons-round">
 add
