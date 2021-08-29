@@ -142,7 +142,7 @@ class HtmlHandlersTest extends TestCase
         $pipeline->add(new ParseRss);
         $pipeline->add(new TransformTag($campaign, $subscriber, 'MSGID', $server = null));
         $pipeline->add(new TransformUrl($template, 'MSGID', $trackingDomain = null));
-        $pipeline->add(new MakeInlineCss( [storage_path('tests/sample.css')] ));
+        $pipeline->add(new MakeInlineCss([storage_path('tests/sample.css')]));
         $pipeline->add(new InjectTrackingPixel('MSGID'));
 
         $html = $pipeline->build()->process("<title class='blue'>\nThisis the template title</title><a class=' big blue' href='https://mailchimp.com'></a><div>Campaign: '{CAMPAIGN_NAME}' Subscriber: '{SUBSCRIBER_UID}'</div>");
@@ -187,7 +187,7 @@ class HtmlHandlersTest extends TestCase
         $pipeline->add(new TransformTag($campaign, $subscriber, 'MSGID', $server = null));
 
         $pipeline->add(new TransformUrl($template, 'MSGID', $domain));
-        $pipeline->add(new MakeInlineCss( [storage_path('tests/sample.css')] ));
+        $pipeline->add(new MakeInlineCss([storage_path('tests/sample.css')]));
         $pipeline->add(new InjectTrackingPixel('MSGID'));
 
         $html = $pipeline->build()->process("<title class='blue'>\nThisis the template title</title><a class=' big blue' href='https://mailchimp.com'></a><div>Campaign: '{CAMPAIGN_NAME}' Subscriber: '{SUBSCRIBER_UID}'</div>");
@@ -203,10 +203,10 @@ class HtmlHandlersTest extends TestCase
         $this->assertEquals($url, "{$domain->scheme}://{$domain->name}/{$encoded}");
 
         // When decoded, it is a click trackable link
-        $this->assertEquals( StringHelper::base64UrlDecode($encoded), url('p/aHR0cHM6Ly9tYWlsY2hpbXAuY29t/click/TVNHSUQ') );
+        $this->assertEquals(StringHelper::base64UrlDecode($encoded), url('p/aHR0cHM6Ly9tYWlsY2hpbXAuY29t/click/TVNHSUQ'));
 
         // and resolving it to the original Mailchimp link
-        $this->assertEquals( StringHelper::base64UrlDecode('aHR0cHM6Ly9tYWlsY2hpbXAuY29t'), 'https://mailchimp.com' );
+        $this->assertEquals(StringHelper::base64UrlDecode('aHR0cHM6Ly9tYWlsY2hpbXAuY29t'), 'https://mailchimp.com');
 
         // Other assertinos
         $this->assertTrue(strpos($html, '<!DOCTYPE html>') === 0);
@@ -254,7 +254,7 @@ class HtmlHandlersTest extends TestCase
         $pipeline->add(new TransformTag($campaign, $subscriber, 'MSGID', $server = null));
         $pipeline->add(new InjectTrackingPixel('MSGID'));
         $pipeline->add(new TransformUrl($template, 'MSGID', $domain)); // click url, tracking domain applied
-        $pipeline->add(new MakeInlineCss( [storage_path('tests/sample.css')] ));
+        $pipeline->add(new MakeInlineCss([storage_path('tests/sample.css')]));
 
 
         $html = $pipeline->build()->process("<title class='blue'>\nThisis the template title</title><a class=' big blue' href='https://mailchimp.com'></a><div>Campaign: '{CAMPAIGN_NAME}' Subscriber: '{SUBSCRIBER_UID}'</div><a name='unsubscribe' href='{UNSUBSCRIBE_URL}'>Unsubscribe</a>|{UPDATE_PROFILE_URL}|{WEB_VIEW_URL}");
@@ -270,10 +270,10 @@ class HtmlHandlersTest extends TestCase
         $this->assertEquals($url, "{$domain->scheme}://{$domain->name}/{$encoded}");
 
         // When decoded, it is a click trackable link
-        $this->assertEquals( StringHelper::base64UrlDecode($encoded), url('p/aHR0cHM6Ly9tYWlsY2hpbXAuY29t/click/TVNHSUQ') );
+        $this->assertEquals(StringHelper::base64UrlDecode($encoded), url('p/aHR0cHM6Ly9tYWlsY2hpbXAuY29t/click/TVNHSUQ'));
 
         // and resolving it to the original Mailchimp link
-        $this->assertEquals( StringHelper::base64UrlDecode('aHR0cHM6Ly9tYWlsY2hpbXAuY29t'), 'https://mailchimp.com' );
+        $this->assertEquals(StringHelper::base64UrlDecode('aHR0cHM6Ly9tYWlsY2hpbXAuY29t'), 'https://mailchimp.com');
 
         // Other assertinos
         $this->assertTrue(strpos($html, '<!DOCTYPE html>') === 0);
@@ -320,7 +320,7 @@ class HtmlHandlersTest extends TestCase
         $pipeline->add(new TransformTag($campaign, $subscriber, 'MSGID', $server = null));
         $pipeline->add(new InjectTrackingPixel('MSGID'));
         $pipeline->add(new TransformUrl($template, 'MSGID', null)); // click url, tracking domain applied
-        $pipeline->add(new MakeInlineCss( [storage_path('tests/sample.css')] ));
+        $pipeline->add(new MakeInlineCss([storage_path('tests/sample.css')]));
 
 
         $html = $pipeline->build()->process("<title class='blue'>\nThisis the template title</title><a class=' big blue' href='https://mailchimp.com'></a><div>Campaign: '{CAMPAIGN_NAME}' Subscriber: '{SUBSCRIBER_UID}'</div><a name='unsubscribe' href='{UNSUBSCRIBE_URL}'>Unsubscribe</a>|{UPDATE_PROFILE_URL}|{WEB_VIEW_URL}");

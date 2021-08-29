@@ -59,7 +59,7 @@ class RunHandler extends Command
      */
     public function handle()
     {
-        $timeoutCallback = function() {
+        $timeoutCallback = function () {
             // just do nothing, wait for the current process to finish
             // passing a closure to avoid an exception
         };

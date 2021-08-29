@@ -12,16 +12,16 @@ use Exception;
 
 class TemplateUrlTest extends TestCase
 {
-	const RELATIVE = 'images/sample.png';
-	const ABSOLUTE = '/fake/sample.png';
-	const PUBLIC = 'http://cdn.example.com/sample.png';
-	const CDN = 'http://cdn.example.com/sample.png';
-	const EMPTY = '';
-	const SHARP = '#';
+    const RELATIVE = 'images/sample.png';
+    const ABSOLUTE = '/fake/sample.png';
+    const PUBLIC = 'http://cdn.example.com/sample.png';
+    const CDN = 'http://cdn.example.com/sample.png';
+    const EMPTY = '';
+    const SHARP = '#';
 
-	const HOST = 'http://localhost/';
-	const TRACKING_DOMAIN = 'track.example.com';
-	const TRACKING_HOST = 'http://track.example.com/';
+    const HOST = 'http://localhost/';
+    const TRACKING_DOMAIN = 'track.example.com';
+    const TRACKING_HOST = 'http://track.example.com/';
 
     public function initTemplate()
     {
@@ -39,22 +39,22 @@ class TemplateUrlTest extends TestCase
             </body>
             </html>
         ", [
-        	'%relative' => self::RELATIVE,
-        	'%absolute' => self::ABSOLUTE,
-        	'%public' => self::PUBLIC,
-        	'%cdn' => self::CDN,
-        	'%empty' => self::EMPTY,
-        	'%sharp' => self::SHARP,
+            '%relative' => self::RELATIVE,
+            '%absolute' => self::ABSOLUTE,
+            '%public' => self::PUBLIC,
+            '%cdn' => self::CDN,
+            '%empty' => self::EMPTY,
+            '%sharp' => self::SHARP,
         ]);
         return $template;
     }
 
     public function initTrackingDomain()
     {
-    	$domain = new TrackingDomain();
-    	$domain->name = self::TRACKING_DOMAIN;
-    	$domain->scheme = 'http';
-    	return $domain;
+        $domain = new TrackingDomain();
+        $domain->name = self::TRACKING_DOMAIN;
+        $domain->scheme = 'http';
+        return $domain;
     }
 
     public function getDOMDocument($html)
@@ -72,11 +72,11 @@ class TemplateUrlTest extends TestCase
         $xpath = new DomXpath($document);
         $elements = $xpath->query("//*[@{$attribute}='$value']");
         if (empty($elements)) {
-        	throw new Exception("Cannot find element with '$attribute'='$value'");
+            throw new Exception("Cannot find element with '$attribute'='$value'");
         }
 
         if (sizeof($elements) > 1) {
-        	throw new Exception("There are more than one elements with '$attribute'='$value'");
+            throw new Exception("There are more than one elements with '$attribute'='$value'");
         }
 
         return $elements[0];
@@ -89,14 +89,14 @@ class TemplateUrlTest extends TestCase
             'link' => 'href',
             'a' => 'href',
         ];
-    	$out = [];
-    	$names = [ 'relative', 'absolute', 'public', 'cdn', 'empty', 'sharp' ];
-    	foreach ($names as $name) {
+        $out = [];
+        $names = [ 'relative', 'absolute', 'public', 'cdn', 'empty', 'sharp' ];
+        foreach ($names as $name) {
             $element = $this->getElementByAttribute($html, 'name', $name);
-    		$out[$name] = $element->getAttribute($map[$element->nodeName]);
-    	}
+            $out[$name] = $element->getAttribute($map[$element->nodeName]);
+        }
 
-    	return $out;
+        return $out;
     }
 
     public function test_transform_assets_urls_without_parameters()
@@ -110,12 +110,11 @@ class TemplateUrlTest extends TestCase
         $this->assertMatchesRegularExpression('/^\/assets\/.*sample.png$/', $out['relative']);
 
         // Unchanged
-        $this->assertEquals( $out['absolute'], self::ABSOLUTE ); // unchanged
-        $this->assertEquals( $out['public'], self::PUBLIC ); // unchanged
-        $this->assertEquals( $out['cdn'], self::CDN ); // unchanged
-        $this->assertEquals( $out['empty'], self::EMPTY ); // unchanged
-        $this->assertEquals( $out['sharp'], self::SHARP ); // unchanged
-
+        $this->assertEquals($out['absolute'], self::ABSOLUTE); // unchanged
+        $this->assertEquals($out['public'], self::PUBLIC); // unchanged
+        $this->assertEquals($out['cdn'], self::CDN); // unchanged
+        $this->assertEquals($out['empty'], self::EMPTY); // unchanged
+        $this->assertEquals($out['sharp'], self::SHARP); // unchanged
     }
 
     public function test_transform_assets_urls_with_host()
@@ -126,15 +125,15 @@ class TemplateUrlTest extends TestCase
         $out = $this->getElementAttributes($html);
 
         // Transformed
-        $this->assertMatchesRegularExpression( '/^http.*\/assets\/.*sample.png$/', $out['relative']);
-        $this->assertTrue( strpos($out['relative'], self::HOST) === 0 ); // contains "http:://localhost..."
+        $this->assertMatchesRegularExpression('/^http.*\/assets\/.*sample.png$/', $out['relative']);
+        $this->assertTrue(strpos($out['relative'], self::HOST) === 0); // contains "http:://localhost..."
 
         // Unchanged
-        $this->assertEquals( $out['absolute'], join_url(self::HOST, self::ABSOLUTE) );
-        $this->assertEquals( $out['public'], self::PUBLIC ); // unchanged
-        $this->assertEquals( $out['cdn'], self::CDN ); // unchanged
-        $this->assertEquals( $out['empty'], self::EMPTY ); // unchanged
-        $this->assertEquals( $out['sharp'], self::SHARP ); // unchanged
+        $this->assertEquals($out['absolute'], join_url(self::HOST, self::ABSOLUTE));
+        $this->assertEquals($out['public'], self::PUBLIC); // unchanged
+        $this->assertEquals($out['cdn'], self::CDN); // unchanged
+        $this->assertEquals($out['empty'], self::EMPTY); // unchanged
+        $this->assertEquals($out['sharp'], self::SHARP); // unchanged
     }
 
     public function test_transform_assets_urls_with_host_and_transform_closure()
@@ -142,7 +141,7 @@ class TemplateUrlTest extends TestCase
         // IMPORTANT: only affect <A> tag
         $template = $this->initTemplate();
         $msgId = 'TEST';
-        $transform = function($url, $element) use ($msgId) {
+        $transform = function ($url, $element) use ($msgId) {
             if ($element->nodeName == 'a') {
                 return StringHelper::makeTrackableLink($url, $msgId);
             } else {
@@ -156,12 +155,12 @@ class TemplateUrlTest extends TestCase
 
         // Transformed
         // $this->assertMatchesRegularExpression( '/^http.*\/assets\/.*sample.png$/', $out['relative']);
-        $this->assertTrue( strpos($out['relative'], self::HOST) === 0 ); // contains "http:://localhost..."
+        $this->assertTrue(strpos($out['relative'], self::HOST) === 0); // contains "http:://localhost..."
 
         // Unchanged
-        $this->assertEquals( $out['public'], self::PUBLIC ); // unchanged
-        $this->assertEquals( $out['empty'], self::EMPTY ); // unchanged
-        $this->assertEquals( $out['sharp'], self::SHARP ); // unchanged
+        $this->assertEquals($out['public'], self::PUBLIC); // unchanged
+        $this->assertEquals($out['empty'], self::EMPTY); // unchanged
+        $this->assertEquals($out['sharp'], self::SHARP); // unchanged
     }
 
     public function test_transform_assets_urls_with_host_and_tracking_domain()
@@ -173,11 +172,11 @@ class TemplateUrlTest extends TestCase
         $out = $this->getElementAttributes($html);
 
         // Transformed
-        $this->assertMatchesRegularExpression( '/^http.*'.$domain->name.'\/[^\/]+$/', $out['relative']);
-        $this->assertTrue( strpos($out['relative'], $domain->getUrl() ) === 0 );
-        $this->assertEquals( $out['absolute'], join_url($domain->getUrl(), StringHelper::base64UrlEncode(join_url(self::HOST, self::ABSOLUTE))) );
-        $this->assertEquals( $out['public'], join_url($domain->getUrl(), StringHelper::base64UrlEncode(self::PUBLIC)) );
-        $this->assertEquals( $out['cdn'], join_url($domain->getUrl(), StringHelper::base64UrlEncode(self::CDN)) );
+        $this->assertMatchesRegularExpression('/^http.*'.$domain->name.'\/[^\/]+$/', $out['relative']);
+        $this->assertTrue(strpos($out['relative'], $domain->getUrl()) === 0);
+        $this->assertEquals($out['absolute'], join_url($domain->getUrl(), StringHelper::base64UrlEncode(join_url(self::HOST, self::ABSOLUTE))));
+        $this->assertEquals($out['public'], join_url($domain->getUrl(), StringHelper::base64UrlEncode(self::PUBLIC)));
+        $this->assertEquals($out['cdn'], join_url($domain->getUrl(), StringHelper::base64UrlEncode(self::CDN)));
 
         // Unchanged
         // $this->assertEquals( $out['absolute'], join_url(self::HOST, self::ABSOLUTE) );
@@ -185,7 +184,7 @@ class TemplateUrlTest extends TestCase
         // $this->assertEquals( $out['cdn'], self::CDN ); // unchanged
 
         // Unchange
-        $this->assertEquals( $out['empty'], self::EMPTY ); // unchanged
-        $this->assertEquals( $out['sharp'], self::SHARP ); // unchanged
+        $this->assertEquals($out['empty'], self::EMPTY); // unchanged
+        $this->assertEquals($out['sharp'], self::SHARP); // unchanged
     }
 }
