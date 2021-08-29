@@ -8,6 +8,7 @@ $(document).ready(function() {
         skin: "oxide",
         branding: false,
         elementpath: false,
+        statusbar: false,
         valid_elements : '*[*],meta[*]',
         valid_children: '+h1[div],+h2[div],+h3[div],+h4[div],+h5[div],+h6[div],+a[div]',
         extended_valid_elements : "meta[*]",
@@ -37,6 +38,7 @@ $(document).ready(function() {
         skin: "oxide",
         branding: false,
         elementpath: false,
+        statusbar: false,
         valid_elements : '*[*],meta[*]',
         valid_children: '+h1[div],+h2[div],+h3[div],+h4[div],+h5[div],+h6[div],+a[div]',
         extended_valid_elements : "meta[*]",
@@ -65,6 +67,7 @@ $(document).ready(function() {
         skin: "oxide-dark",
         branding: false,
         elementpath: false,
+        statusbar: false,
         plugins: [
           'fullpage table advlist autolink lists link image charmap print preview anchor directionality',
           'searchreplace visualblocks code fullscreen',
@@ -89,6 +92,7 @@ $(document).ready(function() {
         skin: "oxide",
         branding: false,
         elementpath: false,
+        statusbar: false,
         plugins: [
           'table advlist autolink lists link image charmap print preview anchor directionality',
           'searchreplace visualblocks code fullscreen',

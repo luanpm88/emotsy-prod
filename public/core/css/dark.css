@@ -383,7 +383,7 @@ body.mode-dark .box-list .box-item {
 }
 body.mode-dark .alert-info {
     color: rgba(255, 255, 255, 0.85);
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(255, 255, 255, 0.05);
     border-color: rgba(255, 255, 255, 0.1);
 }
 body.mode-dark .alert-success {
@@ -517,8 +517,12 @@ body.mode-dark .control-file:hover input[type="file"]::file-selector-button {
     color: rgba(255,255,255,0.85);
 }
 body.mode-dark .tox-tinymce {
-    border: solid 1px rgba(255,255,255,0.2)!important;
-    background: rgba(255,255,255,0.1)!important;
+    border: solid 1px rgba(255,255,255,0.1)!important;
+    background: rgba(255,255,255,0.0)!important;
+}
+body.mode-dark .tox .tox-menubar {
+    border: solid 1px rgba(255,255,255,0.0)!important;
+    background: rgba(255,255,255,0.0)!important;
 }
 body.mode-dark .tox .tox-toolbar, body.mode-dark .tox .tox-toolbar__overflow, body.mode-dark .tox .tox-toolbar__primary {
     background: transparent!important;
@@ -586,4 +590,18 @@ body.mode-dark .field-list .child td {
     background: rgba(255,255,255,0.05);
     border-color: rgba(255,255,255,0.1);
     color: rgba(255,255,255,0.85);
+}
+body.mode-dark .dropdown-menu .head {
+    background: rgba(255,255,255,0.05);
+    border-color: rgba(255,255,255,0.1) !important;
+    color: rgba(255,255,255,0.85);
+}
+body.mode-dark .tox .tox-tbtn--bespoke .tox-tbtn__select-label {
+    color: rgba(255,255,255,0.85);
+}
+body.mode-dark .tox .tox-mbtn {
+    color: rgba(255,255,255,0.85);
+}
+body.mode-dark .tox .tox-toolbar, body.mode-dark .tox .tox-toolbar__overflow, body.mode-dark .tox .tox-toolbar__primary {
+    border-bottom: solid 1px rgba(255,255,255,0.1);
 }
