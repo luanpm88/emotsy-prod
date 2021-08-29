@@ -445,7 +445,7 @@ body.mode-dark .select2-container--default .select2-results__option--highlighted
     color: rgba(255, 255, 255, 0.85)!important;
 }
 body.mode-dark .announce_box {
-    background: rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.05);
 }
 body.mode-dark .radio_box rtitle {
     color: rgba(255,255,255,0.85);
@@ -604,4 +604,11 @@ body.mode-dark .tox .tox-mbtn {
 }
 body.mode-dark .tox .tox-toolbar, body.mode-dark .tox .tox-toolbar__overflow, body.mode-dark .tox .tox-toolbar__primary {
     border-bottom: solid 1px rgba(255,255,255,0.1);
+}
+body.mode-dark .form-control[disabled], body.mode-dark fieldset[disabled] .form-control {
+    background: rgba(255,255,255,0.2);
+    color: transparent;
+}
+body.mode-dark .stats-boxes .stats-box {
+    border-color: rgba(255,255,255,0.1);
 }

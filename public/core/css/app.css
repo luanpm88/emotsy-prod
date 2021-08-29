@@ -7317,3 +7317,6 @@ hr {
 .default-app-logo svg, .default-app-logo svg * {
     fill: currentColor!important;
 }
+.admin-notification-media {
+    margin-left: 8px;
+}
