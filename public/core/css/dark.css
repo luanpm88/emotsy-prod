@@ -579,3 +579,11 @@ body.mode-dark .picker__footer button {
 body.mode-dark .picker__footer button:hover, .picker__footer button:focus {
     background: rgba(255,255,255,0.1);
 }
+body.mode-dark .table-box-head tr th {
+    background: rgba(255,255,255,0.05);
+}
+body.mode-dark .field-list .child td {
+    background: rgba(255,255,255,0.05);
+    border-color: rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.85);
+}
