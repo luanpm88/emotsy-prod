@@ -57,7 +57,7 @@
             <div class="">                
                 <div class="filter-box">
                     <input type="hidden" name="view" value="{{ request()->view }}" />
-                    @if (request()->view == 'list')
+                    @if (!request()->view || request()->view == 'list')
                         <div class="checkbox inline check_all_list">
                             <label>
                                 <input type="checkbox" name="page_checked" class="styled check_all">

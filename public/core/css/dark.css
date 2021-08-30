@@ -614,3 +614,9 @@ body.mode-dark .form-control[disabled], body.mode-dark fieldset[disabled] .form-
 body.mode-dark .stats-boxes .stats-box {
     border-color: rgba(255,255,255,0.1);
 }
+body.mode-dark .bg-light {
+    background-color: rgba(255,255,255,0.6)!important;
+}
+body.mode-dark .table-head tbody tr th {
+    background-color: rgba(255,255,255,0.05);
+}
