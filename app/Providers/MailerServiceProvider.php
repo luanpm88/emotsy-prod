@@ -29,7 +29,7 @@ class MailerServiceProvider extends ServiceProvider implements DeferrableProvide
     public function register()
     {
         $this->app->bind('xmailer', function ($app) {
-            $mailer = Setting::get('mailer.mailer') ?: config('mail.mailer');
+            $mailer = Setting::get('mailer.mailer') ?: Setting::get('mailer.driver');
 
             switch ($mailer) {
                 case SendingServer::TYPE_SMTP:
