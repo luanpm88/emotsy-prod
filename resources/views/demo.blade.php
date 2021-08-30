@@ -6,13 +6,13 @@
 
                 <style>
                     .demo_pic {
-                        opacity: 0.85;
+                        opacity: 0.8;
                         transition: all 0.2s ease-in-out;
                         display: inline-block;
                     }
                     .demo_pic:hover, .demo_pic:focus {
                         opacity: 1;
-                        transform: scale(1.05);
+                        transform: scale(1.1);
                     }
                     .bg-slate-800 {
                         background-color: #2f2f2f;
