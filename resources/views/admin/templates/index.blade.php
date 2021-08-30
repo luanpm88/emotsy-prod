@@ -19,7 +19,7 @@
 @endsection
 
 @section('content')
-    <div id="TemplatesIndexContainer" class="listing-form  view-{{ request()->view ? request()->view : 'list' }}"
+    <div id="TemplatesIndexContainer" class="listing-form  view-{{ request()->view ? request()->view : 'grid' }}"
         data-url="{{ action('Admin\TemplateController@listing') }}"
         per-page="{{ Acelle\Model\Template::$itemsPerPage }}"                    
     >                
@@ -27,7 +27,7 @@
             <div class="">                
                 <div class="filter-box">
                     <input type="hidden" name="view" value="{{ request()->view }}" />
-                    @if (!request()->view || request()->view == 'list')
+                    @if (request()->view && request()->view == 'list')
                         <div class="checkbox inline check_all_list">
                             <label>
                                 <input type="checkbox" name="page_checked" class="styled check_all">
