@@ -50,7 +50,7 @@
             <div class="d-flex align-items-center mt-4 template-create-sticky">
 				<h3 class="text-semibold mr-auto mb-0 mt-0">{{ trans('messages.template.select_your_template') }}</h3>
 				<div class="text-left">
-					<button class="btn btn-secondary me-2 start-design"><i class="icon-check"></i> {{ trans('messages.template.create_and_design') }}</button>
+					<button class="btn btn-secondary start-design"><i class="icon-check"></i> {{ trans('messages.template.create_and_design') }}</button>
 				</div>
 			</div>
 
@@ -67,7 +67,7 @@
 								]) }}"
 								per-page="25"					
 							>				
-								<div class="d-flex top-list-controls top-sticky-content">
+								<div class="d-flex top-list-controls top-sticky-contentx">
 									<div class="me-auto">
 										<div class="filter-box">
 											<span class="filter-group">

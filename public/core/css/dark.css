@@ -632,3 +632,11 @@ body.mode-dark .btn.change-list-button {
 body.mode-dark .text-trans {
     color: rgba(0,0,0,0);
 }
+body.mode-dark .template-create-sticky {
+    background-color: rgba(20, 32, 40, 1);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-color: rgba(255,255,255,0.1);
+    box-shadow: 0 15px 11px -11px rgba(0,0,0,0.1);
+    padding: 17px 0;
+}

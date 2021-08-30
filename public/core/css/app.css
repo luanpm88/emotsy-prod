@@ -6815,13 +6815,11 @@ h3, h4 [class^="material-icons"] {
     line-height: 26px;
 }
 .select-template-layout {
-    width: 166px;
     display: inline-block;
-    margin-right: 25px;
-    margin-bottom: 25px;
     text-align: center;
     border-radius: 5px;
     padding: 4px 4px 7px 4px;
+    color: #333;
 }
 .select-template-layout label, .template-list-item label {
     white-space: nowrap;
