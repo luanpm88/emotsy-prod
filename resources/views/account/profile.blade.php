@@ -223,6 +223,7 @@ delete_outline
 
             $('body').removeClass('topbar');
             $('body').removeClass('leftbar');
+            $('body').removeClass('leftbar-closed');
 
             $('body').addClass(type + 'bar');
         });        
