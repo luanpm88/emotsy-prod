@@ -121,7 +121,7 @@
         top: 12px!important;
     }
     .leftbar .menu-user-avatar {
-        /* transform: none!important; */
+        transform: none;
         height: 24px;
         width: 24px;
         display: inline-block;
@@ -138,7 +138,10 @@
         top: auto;
     }
     
+    .leftbar-closed .menu-user-avatar {
+        transform: scale(1.4)!important;
 
+    }
     .leftbar-closed .page-container {
         position: relative;
         width: 100%!important;
