@@ -86,7 +86,7 @@
 
 
 			// Customer color scheme | menu layout wizard
-			@if (true)
+			@if (false)
 				$(function() {
 					wizardUserPopup = new Popup({
 						url: '{{ action('AccountController@wizardColorScheme') }}',
