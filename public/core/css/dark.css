@@ -623,3 +623,6 @@ body.mode-dark .table-head tbody tr th {
 body.mode-dark .btn.change-list-button {
     color: rgba(255,255,255,0.85)!important;
 }
+body.mode-dark .text-trans {
+    color: rgba(0,0,0,0);
+}
