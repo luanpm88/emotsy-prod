@@ -268,7 +268,7 @@ class Template extends Model
         // First: convert $this' asset base URL to relative URL (for assets)
         // Then: transform relative URLS for $copy
         $copy->content = $this->getContentWithUntransformedAssetsUrls();
-        $copy->transformAssetsUrls();
+        $copy->transformAssetsUrls(); // important
 
         // copy theme
         $copy->theme = $this->theme;
