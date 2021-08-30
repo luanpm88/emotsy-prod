@@ -430,7 +430,7 @@ class InstallController extends Controller
                         ('license_type', '".$site_info['license_type']."', '".$date."', '".$date."');");
 
         // mail setting
-        \Acelle\Model\Setting::set('mailer.driver', $site_info['mail_mailer']);
+        \Acelle\Model\Setting::set('mailer.mailer', $site_info['mail_mailer']);
         \Acelle\Model\Setting::set('mailer.host', $site_info['smtp_hostname']);
         \Acelle\Model\Setting::set('mailer.port', $site_info['smtp_port']);
         \Acelle\Model\Setting::set('mailer.encryption', $site_info['smtp_encryption']);
@@ -481,14 +481,6 @@ class InstallController extends Controller
     {
         if ($this->step($request) < 5) {
             return redirect()->action('InstallController@database');
-        }
-
-        // Re-generate remote job url
-        if ($request->re_generate_remote_job_url) {
-            $remote_job_token = str_random(60);
-            \Acelle\Model\Setting::set('remote_job_token', $remote_job_token);
-            echo action('Controller@remoteJob', ['remote_job_token' => $remote_job_token]);
-            return;
         }
 
         $respone = \Acelle\Library\Tool::cronjobUpdateController($request, $this);

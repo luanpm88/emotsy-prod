@@ -4,7 +4,6 @@ namespace Acelle\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use Acelle\Http\Controllers\Controller;
-use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
 use Acelle\Model\Template;
 use Acelle\Library\Rss;
 use Acelle\Model\Setting;
@@ -38,13 +37,16 @@ class TemplateController extends Controller
             return $this->notAuthorized();
         }
 
+        // view
+        $view = $request->view ? $request->view : 'grid';
+
         $templates = Template::shared()
             ->categoryUid($request->category_uid)
             ->search($request->keyword)
             ->orderBy($request->sort_order, $request->sort_direction)
-            ->paginate($request->per_page);
+            ->paginate($request->per_page ? $request->per_page : ($view == 'grid' ? 8 : 15));
 
-        return view('admin.templates._list', [
+        return view('admin.templates._list_' . $view, [
             'templates' => $templates,
         ]);
     }

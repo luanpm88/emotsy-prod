@@ -17,18 +17,8 @@
     <link rel="stylesheet" type="text/css" href="{{ URL::asset('core/select2/css/select2.min.css') }}">
     <script type="text/javascript" src="{{ URL::asset('core/select2/js/select2.min.js') }}"></script>
 
-    @php
-        $template = $campaign->template;
-    @endphp
-    @if (file_exists($template->getStoragePath('theme.js')))
-        <script type="text/javascript">
-            {!! Acelle\Library\StringHelper::transformUrlsFromAnyText(
-                file_get_contents($template->getStoragePath('theme.js')),
-                function($url) use ($template) {
-                    return \Acelle\Helpers\generatePublicPath($template->getStoragePath($url));
-                }
-            ) !!}
-        </script>
+    @if ($campaign->template->theme)
+        @include('builder.themes.' . $campaign->template->theme)
     @endif
 
     <style>

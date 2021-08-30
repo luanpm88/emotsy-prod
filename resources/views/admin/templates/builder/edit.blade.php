@@ -10,18 +10,9 @@
     <link href="{{ URL::asset('builder/builder.css') }}" rel="stylesheet" type="text/css">
     <script type="text/javascript" src="{{ URL::asset('builder/builder.js') }}"></script>
 
-    @include('builder.themes.yoga')
-
-    {{-- @if (file_exists($template->getStoragePath('theme.js')))
-        <script type="text/javascript">
-            {!! Acelle\Library\StringHelper::transformUrlsFromAnyText(
-                file_get_contents($template->getStoragePath('theme.js')),
-                function($url) use ($template) {
-                    return \Acelle\Helpers\generatePublicPath($template->getStoragePath($url));
-                }
-            ) !!}
-        </script>
-    @endif --}}
+    @if ($template->theme)
+        @include('builder.themes.' . $template->theme)
+    @endif
 
     <style>
         .logo-img {
@@ -29,6 +20,8 @@
             margin-right: 15px;
         }
     </style>
+
+    @include('helpers._builder_product_widgets')
     
     <script>
         var CSRF_TOKEN = "{{ csrf_token() }}";
@@ -168,6 +161,32 @@
                             thisEditor.addContentWidget(widget, 0, 'Template Content');
                         });
                     }
+
+                    // // product widgets
+                    // this.addContentWidget(new ProductListWidget(), 0, 'ProductCommerce');
+                    // this.addContentWidget(new ProductWidget(), 0, 'ProductCommerce');
+                    // add custom css
+                    this.addCustomCss('{{ url('/core/css/builder_product.css') }}');
+                    // click preview button
+                    $("#builder_iframe").contents().find("body").on('click', '.product-preview-but', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        var element = thisEditor.elementFactory($(this).parent());
+                        element.preview();
+                        {{-- thisEditor.select(element); --}}
+                        thisEditor.handleSelect();
+                        return false;
+                    })
+
+                    $("#builder_iframe").contents().find("body").on('click', '.product-unpreview-but', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        var element = thisEditor.elementFactory($(this).parent());
+                        element.unpreview();
+                        {{-- thisEditor.select(element); --}}
+                        thisEditor.handleSelect();
+                        return false;
+                    })
                 }
             });
           

@@ -51,7 +51,7 @@ auto_awesome
 
         renderChart: function(data) {
             // based on prepared DOM, initialize echarts instance
-            var growthChart2 = echarts.init(PlansPieChart.getChart()[0]);
+            var growthChart2 = echarts.init(PlansPieChart.getChart()[0], ECHARTS_THEME);
 
             var colors = [
                 '#5cb2b2',
@@ -106,6 +106,7 @@ auto_awesome
                         label: {
                             // position: 'inner',
                             fontSize: 12,
+                            color: ECHARTS_THEME == 'dark' ? '#fff' : null,
                             formatter: '{b}\n{d}% ({c})',
                         },
                     }

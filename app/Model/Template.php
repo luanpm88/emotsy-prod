@@ -36,6 +36,8 @@ use Acelle\Library\StringHelper;
 use DOMDocument;
 use File;
 use Exception;
+use Closure;
+use function Acelle\Helpers\getAppHost;
 
 class Template extends Model
 {
@@ -50,7 +52,7 @@ class Template extends Model
      * @var array
      */
     protected $fillable = [
-        'uid', 'name', 'content', 'builder', 'is_default'
+        'uid', 'name', 'content', 'builder', 'is_default', 'theme'
     ];
 
     /**
@@ -267,6 +269,9 @@ class Template extends Model
         // Then: transform relative URLS for $copy
         $copy->content = $this->getContentWithUntransformedAssetsUrls();
         $copy->transformAssetsUrls();
+
+        // copy theme
+        $copy->theme = $this->theme;
 
         // Copy flags
         $copy->builder = $this->builder;
@@ -506,7 +511,7 @@ class Template extends Model
         }
 
         if ($this->getThumbName()) {
-            return \Acelle\Helpers\generatePublicPath($this->getStoragePath($this->getThumbName()));
+            return \Acelle\Helpers\generatePublicPath($this->getStoragePath($this->getThumbName())) . '?' . filemtime($this->getStoragePath($this->getThumbName()));
         } else {
             return url('images/placeholder.jpg');
         }
@@ -658,14 +663,100 @@ class Template extends Model
 
     public function transformAssetsUrls()
     {
-        $this->content = $this->getContentWithTransformedAssetsUrls();
+        $this->content = $this->getContentWithTransformedAssetsUrls($this->content);
     }
 
     /**
      * Transform template's relative URLs to application's absolute URL, without hostname.
      * Execute this every time the template is SAVED
      */
-    public function getContentWithTransformedAssetsUrls($host = null)
+    public function getContentWithTransformedAssetsUrls($html, $withHost = false, Closure $urlTransform = null, TrackingDomain $domain = null)
+    {
+        if (!is_null($domain) && $withHost == false) {
+            throw new Exception('Passing third parameter while the first parameter is false');
+        }
+
+        if (!is_null($urlTransform) && $withHost == false) {
+            throw new Exception('Passing second parameter while the first parameter is false');
+        }
+
+        if (is_null($this->uid)) {
+            throw new Exception('Template does not have a UID, cannot transform content');
+        }
+
+        // Replace #1
+        $content = StringHelper::transformUrls($html, function ($url, $element) use ($withHost, $domain, $urlTransform) {
+            if ($url == '#') {
+                return $url;
+            }
+
+            if (parse_url($url, PHP_URL_HOST) === false) {
+                // false ==> if url is invalid
+                // null ==> if url does not have host information
+                return $url;
+            }
+
+            if (StringHelper::isTag($url)) {
+                return $url;
+            }
+
+            if (!is_null(parse_url($url, PHP_URL_HOST))) {
+                // url is with a host like "http://" or "//"
+                if (!is_null($urlTransform)) {
+                    $url = $urlTransform($url, $element);
+                }
+
+                if ($domain) {
+                    $url = $domain->buildTrackingUrl($url);
+                }
+
+                return $url;
+            }
+
+            if (strpos($url, '/') === 0) {
+                // absolute url with leading slash (/) like "/hello/world"
+
+                $urlWithHost = join_url(getAppHost(), $url);
+                if (!is_null($urlTransform)) {
+                    $urlWithHost = $urlTransform($urlWithHost, $element);
+                }
+
+                if ($domain) {
+                    return $domain->buildTrackingUrl($urlWithHost, $element);
+                } elseif ($withHost) {
+                    return $urlWithHost;
+                } else {
+                    return $url;
+                }
+            } elseif (strpos($url, 'data:') === 0) {
+                // base64 image. Like: "data:image/png;base64,iVBOR"
+                return $url;
+            } else {
+                // URL is a relative path like "images/banner.jpg"
+                // Transform relative URLs to PUBLIC ABSOLUTE URLs with leading slash /
+                $url = \Acelle\Helpers\generatePublicPath(
+                    $this->getStoragePath($url),
+                    $absolute = ($withHost) ? true : false
+                );
+
+                if (!is_null($urlTransform)) {
+                    $url = $urlTransform($url, $element);
+                }
+
+                if ($domain) {
+                    return $domain->buildTrackingUrl($url);
+                } else {
+                    return $url;
+                }
+            }
+        });
+
+        // By the way, fix <html>
+        //$content = tinyDocTypeTransform($content);
+        return $content;
+    }
+
+    public function getContentWithTrackingHost(TrackingDomain $domain)
     {
         if (is_null($this->uid)) {
             throw new Exception('Template does not have a UID, cannot transform content');
@@ -680,24 +771,18 @@ class Template extends Model
 
             if (!is_null(parse_url($url, PHP_URL_HOST))) {
                 // url is with a host like "http://" or "//"
-                return $url;
+                return $domain->buildTrackingUrl($url);
             }
 
             if (strpos($url, '/') === 0) {
                 // absolute url with leading slash (/) like "/hello/world"
-                return ($host) ? join_url($host, $url) : $url;
+                return $domain->buildTrackingUrl($url);
             } elseif (strpos($url, 'data:') === 0) {
                 // base64 image. Like: "data:image/png;base64,iVBOR"
                 return $url;
             } else {
-                // URL is a relative path like "images/banner.jpg"
-                // Transform relative URLs to PUBLIC ABSOLUTE URLs, but without hostname
-                $url = \Acelle\Helpers\generatePublicPath(
-                    $this->getStoragePath($url),
-                    $absolute = false
-                );
-
-                return ($host) ? join_url($host, $url) : $url;
+                return $url;
+                //throw new Exception("Relative URL found: {$url}. Use getContentWithTransformedAssetsUrls() method first to convert relative URLs into absolute ones");
             }
         });
 
@@ -951,6 +1036,8 @@ class Template extends Model
     public function uploadThumbnail($file)
     {
         $file->move($this->getStoragePath(), 'thumbnail.png');
+        // resize
+        resize_crop_image(596, 769, $this->getStoragePath('thumbnail.png'), $this->getStoragePath('thumbnail.png'));
     }
 
     /**
@@ -962,6 +1049,8 @@ class Template extends Model
     {
         $contents = file_get_contents($url);
         file_put_contents($this->getStoragePath('thumbnail.png'), $contents);
+        // resize
+        resize_crop_image(596, 769, $this->getStoragePath('thumbnail.png'), $this->getStoragePath('thumbnail.png'));
     }
 
     /**
@@ -1103,11 +1192,7 @@ class Template extends Model
                 'dir' => database_path('templates/featured/001-yoga/52264e8382883'),
                 'category' => $categoryFeatured,
                 'builder' => true,
-            ], [
-                'name' => 'Form Builder!',
-                'dir' => database_path('templates/basic/014-form/6037a23568208'),
-                'category' => $categoryTheme,
-                'builder' => true,
+                'theme' => 'yoga',
             ], [
                 'name' => 'The hunt is on!',
                 'dir' => database_path('templates/featured/002-sport/00464e8382883'),
@@ -1118,9 +1203,15 @@ class Template extends Model
                 'dir' => database_path('templates/featured/003-give-away/01464e8382883'),
                 'category' => $categoryFeatured,
                 'builder' => true,
+                'theme' => 'kids',
             ], [
                 'name' => 'Gift Card!',
                 'dir' => database_path('templates/featured/004-yellow/5d7b527be2bd2'),
+                'category' => $categoryFeatured,
+                'builder' => true,
+            ], [
+                'name' => 'Color Print - Your Print Companion',
+                'dir' => database_path('templates/featured/005-blue/5d7b526bbfd4c'),
                 'category' => $categoryFeatured,
                 'builder' => true,
             ], [

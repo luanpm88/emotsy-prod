@@ -48,6 +48,7 @@ arrow_forward
                     </div>
                 </div>
             </div>
+            
             <script>
                 $(function() {
                     OpenPieChart.showChart();
@@ -70,7 +71,7 @@ arrow_forward
             
                     renderChart: function(data) {
                         // based on prepared DOM, initialize echarts instance
-                        var growthChart2 = echarts.init(OpenPieChart.getChart()[0]);
+                        var growthChart2 = echarts.init(OpenPieChart.getChart()[0], ECHARTS_THEME);
 
                         var colors = [
                             '#5cb2b2',
@@ -125,6 +126,7 @@ arrow_forward
                                     label: {
                                         // position: 'inner',
                                         fontSize: 12,
+                                        color: ECHARTS_THEME == 'dark' ? '#fff' : null,
                                         formatter: '{b}\n{d}% ({c})',
                                     },
                                 }

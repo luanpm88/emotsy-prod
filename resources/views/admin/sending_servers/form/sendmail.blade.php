@@ -210,7 +210,7 @@
             <div class="col-md-6">
                 <br>
                 <a href="{{ action('Admin\SendingServerController@addDomain', $server->uid) }}"
-                  class="btn btn-secondary me-2 modal_link" data-size="md">
+                  class="btn btn-secondary me-2 add-domain-button" data-size="md">
                     {{ trans('messages.sending_serbers.add_email_domain') }}
                 </a>
                     
@@ -259,6 +259,8 @@
 </form>
 
 <script>
+    var addDomain;
+
     $(function() {
         $('[name="options[allow_verify_email_against_acelle]"]').change(function() {
             var value = $(this).is(':checked');
@@ -269,6 +271,18 @@
             }
         });
         $('[name="options[allow_verify_email_against_acelle]"]').change();
+
+        // add domain
+        $('.add-domain-button').on('click', function(e) {
+            e.preventDefault();
+
+            var url = $(this).attr('href');
+            addDomain = new Popup({
+                url: url
+            });
+
+            addDomain.load();
+        });
     });
 </script>
 

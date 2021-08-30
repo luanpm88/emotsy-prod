@@ -20,8 +20,8 @@
         data-url="{{ action('ProductController@listing', ['view' => request()->view]) }}"
         per-page="{{ Acelle\Model\Product::$itemsPerPage }}"
     >
-        <div class="row top-list-controls py-2">
-            <div class="col-md-8">
+        <div class="d-flex top-list-controls top-sticky-content">
+            <div class="me-auto">
                 <div class="filter-box">
                     <input type="hidden" name="view" value="{{ request()->view }}" />
                     <span class="filter-group">
@@ -54,7 +54,7 @@ search
                     </span>
                 </div>
             </div>
-            <div class="col-md-4 text-end d-flex align-items-center">
+            <div class="text-end d-flex align-items-center">
                 <div class="view-toggle d-flex ml-auto">
                     <div class="btn-group" role="group" aria-label="Basic example">
                         <a href="{{ action('ProductController@index') }}" class="btn btn-default view-toogle grid m-icon">

@@ -87,26 +87,26 @@ delete_outline
                     </div>
 
                     <div class="row">
+                        <div class="col-md-12">
+                            <label class="mb-3">{{ trans('messages.theme_mode') }}</label>
+                            @include('layouts.core._theme_mode_control', [
+                                'theme_mode' => $admin->theme_mode,
+                            ])
+                        </div>
+                    </div>
+
+                    <div class="row">
                         <div class="col-md-12 color-box">
                             <label class="mb-2">{{ trans('messages.color_scheme') }}</label>
                             <div class="text-left mb-4 profile-scheme-select mt-2">
-                                <input type="radio" name="color_scheme" value="default" {{ !Auth::user()->admin->getColorScheme() || Auth::user()->admin->getColorScheme() == 'default' ? 'checked' : '' }} class="color-scheme-select scheme-default" />
-                                <input type="radio" name="color_scheme" value="blue" {{ Auth::user()->admin->getColorScheme() == 'blue' ? 'checked' : '' }} class="color-scheme-select scheme-blue" />
-                                <input type="radio" name="color_scheme" value="green" {{ Auth::user()->admin->getColorScheme() == 'green' ? 'checked' : '' }} class="color-scheme-select scheme-green" />
-                                <input type="radio" name="color_scheme" value="brown" {{ Auth::user()->admin->getColorScheme() == 'brown' ? 'checked' : '' }} class="color-scheme-select scheme-brown" />
-                                <input type="radio" name="color_scheme" value="pink" {{ Auth::user()->admin->getColorScheme() == 'pink' ? 'checked' : '' }} class="color-scheme-select scheme-pink" />
-                                <input type="radio" name="color_scheme" value="grey" {{ Auth::user()->admin->getColorScheme() == 'grey' ? 'checked' : '' }} class="color-scheme-select scheme-grey" />
-                                <input type="radio" name="color_scheme" value="white" {{ Auth::user()->admin->getColorScheme() == 'white' ? 'checked' : '' }} class="color-scheme-select scheme-white" />
+                                <input type="radio" name="color_scheme" title="{{ trans('messages.color_scheme.default') }}" value="default" {{ !Auth::user()->admin->getColorScheme() || Auth::user()->admin->getColorScheme() == 'default' ? 'checked' : '' }} class="xtooltip color-scheme-select scheme-default" />
+                                <input type="radio" name="color_scheme" title="{{ trans('messages.color_scheme.blue') }}" value="blue" {{ Auth::user()->admin->getColorScheme() == 'blue' ? 'checked' : '' }} class="xtooltip color-scheme-select scheme-blue" />
+                                <input type="radio" name="color_scheme" title="{{ trans('messages.color_scheme.green') }}" value="green" {{ Auth::user()->admin->getColorScheme() == 'green' ? 'checked' : '' }} class="xtooltip color-scheme-select scheme-green" />
+                                <input type="radio" name="color_scheme" title="{{ trans('messages.color_scheme.brown') }}" value="brown" {{ Auth::user()->admin->getColorScheme() == 'brown' ? 'checked' : '' }} class="xtooltip color-scheme-select scheme-brown" />
+                                <input type="radio" name="color_scheme" title="{{ trans('messages.color_scheme.pink') }}" value="pink" {{ Auth::user()->admin->getColorScheme() == 'pink' ? 'checked' : '' }} class="xtooltip color-scheme-select scheme-pink" />
+                                <input type="radio" name="color_scheme" title="{{ trans('messages.color_scheme.grey') }}" value="grey" {{ Auth::user()->admin->getColorScheme() == 'grey' ? 'checked' : '' }} class="xtooltip color-scheme-select scheme-grey" />
+                                <input type="radio" name="color_scheme" title="{{ trans('messages.color_scheme.white') }}" value="white" {{ Auth::user()->admin->getColorScheme() == 'white' ? 'checked' : '' }} class="xtooltip color-scheme-select scheme-white" />
                             </div>
-                            {{-- @include('helpers.form_control', [
-                                'type' => 'select',
-                                'class' => '',
-                                'name' => 'color_scheme',
-                                'value' => $admin->color_scheme,
-                                'help_class' => 'admin',
-                                'options' => Acelle\Model\Admin::colors("color_scheme"),
-                                'rules' => '',
-                            ]) --}}
                         </div>
                     </div>
                     <div class="row">
@@ -203,6 +203,23 @@ delete_outline
                 var imput = $(this).parents(".profile-image").find("input[name='_remove_image']");
                 img.attr("src", img.attr("empty-src"));
                 imput.val("true");
+            });
+
+            // change color effects
+            $('.color-scheme-select').on('click', function(e) {
+                var value = $(this).val();
+                $("body").removeClass (function (index, className) {
+                    return (className.match (/(^|\s)theme-\S+/g) || []).join(' ');
+                });
+                $('body').addClass('theme-' + value);
+            });
+            $('[name=menu_layout]').on('change', function(e) {
+                var type = $('[name=menu_layout]:checked').val();
+
+                $('body').removeClass('topbar');
+                $('body').removeClass('leftbar');
+
+                $('body').addClass(type + 'bar');
             });
         });
     </script>

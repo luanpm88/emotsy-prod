@@ -112,9 +112,7 @@ Route::group(['middleware' => ['not_installed', 'not_logged_in']], function () {
     Route::get('/demo', 'Controller@demo');
     Route::get('/demo/go/{view}', 'Controller@demoGo');
     Route::get('/autologin/{api_token}', 'Controller@autoLogin');
-    Route::get('/reload/cache', 'Controller@reloadCache');
     Route::get('/migrate/run', 'Admin\Upgrade@migrate');
-    Route::post('/remote-job/{remote_job_token}', 'Controller@remoteJob');
 
     //Subscriber avatar
     Route::get('assets/images/avatar/subscriber-{uid?}.jpg', 'SubscriberController@avatar');
@@ -137,7 +135,7 @@ Route::group(['middleware' => ['not_installed']], function () {
     });
 
     Route::get('p/{message_id}/open', 'CampaignController@open')->name('openTrackingUrl');
-    Route::get('p/{message_id}/click/{url}', 'CampaignController@click')->name('clickTrackingUrl');
+    Route::get('p/{url}/click/{message_id?}', 'CampaignController@click')->name('clickTrackingUrl');
     Route::get('c/{subscriber}/unsubscribe/{message_id?}', 'CampaignController@unsubscribe')->name('unsubscribeUrl');
     Route::get('campaigns/{message_id}/web-view', 'CampaignController@webView')->name('webViewerUrl');
     Route::post('lists/{uid}/embedded-form-subscribe', 'MailListController@embeddedFormSubscribe');
@@ -208,10 +206,11 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
     Route::get('customers/admin-area', 'CustomerController@adminArea');
 
     // Customer profile/information
+    Route::get('account/save-auto-theme-mode', 'AccountController@saveAutoThemeMode');
     Route::get('account/activity', 'AccountController@activity');
     Route::match(['get', 'post'], 'account/wizard/menu-layout', 'AccountController@wizardMenuLayout');
     Route::match(['get', 'post'], 'account/wizard/color-scheme', 'AccountController@wizardColorScheme');
-    Route::post('account/leftbar/state', 'AccountController@leftbarState');
+    Route::get('account/leftbar/state', 'AccountController@leftbarState');
     Route::post('account/payment/remove', 'AccountController@removePaymentMethod');
     Route::match(['get', 'post'], 'account/payment/edit', 'AccountController@editPaymentMethod');
     Route::get('account/profile', 'AccountController@profile');
@@ -315,6 +314,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('lists/{list_uid}/segments/sample_condition', 'SegmentController@sample_condition');
 
     // Page
+    Route::post('lists/{list_uid}/pages/{alias}/restore-default', 'PageController@restoreDefault');
     Route::get('lists/{list_uid}/pages/{alias}/update', 'PageController@update');
     Route::post('lists/{list_uid}/pages/{alias}/update', 'PageController@update');
     Route::post('lists/{list_uid}/pages/{alias}/preview', 'PageController@preview');
@@ -349,6 +349,8 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::patch('templates/{uid}/update', 'TemplateController@update');
 
     // Campaign
+    Route::post('campaigns/{uid}/custom-plain/off', 'CampaignController@customPlainOff');
+    Route::post('campaigns/{uid}/custom-plain/on', 'CampaignController@customPlainOn');
     Route::post('campaigns/{uid}/remove-attachment', 'CampaignController@removeAttachment');
     Route::get('campaigns/{uid}/download-attachment', 'CampaignController@downloadAttachment');
     Route::post('campaigns/{uid}/upload-attachment', 'CampaignController@uploadAttachment');
@@ -813,7 +815,8 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
 
 
     // Account
-    Route::post('admin/account/leftbar/state', 'AccountController@leftbarState');
+    Route::get('admin/account/save-auto-theme-mode', 'AccountController@saveAutoThemeMode');
+    Route::get('admin/account/leftbar/state', 'AccountController@leftbarState');
     Route::get('admin/account/api/renew', 'AccountController@renewToken');
     Route::get('admin/account/api', 'AccountController@api');
     Route::get('admin/account/profile', 'AccountController@profile');

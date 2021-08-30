@@ -777,6 +777,10 @@ class Subscription extends Model implements HasQuotaInterface
 
     public function isExpiring()
     {
+        if (!$this->current_period_ends_at) {
+            return false;
+        }
+
         // check if recurring accur
         if (\Carbon\Carbon::now()->greaterThanOrEqualTo($this->current_period_ends_at->subDays(Setting::get('end_period_last_days')))) {
             return true;

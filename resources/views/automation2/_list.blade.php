@@ -1,5 +1,5 @@
 @if ($automations->count() > 0)
-    <table class="table table-box pml-table border-top mt-2"
+    <table class="table table-box pml-table mt-2"
         current-page="{{ empty(request()->page) ? 1 : empty(request()->page) }}"
     >
         @foreach ($automations as $key => $automation)
@@ -69,7 +69,7 @@
                     @endif
                     @if (\Gate::allows('delete', $automation) || Auth::user()->can('disable', $automation) || Auth::user()->can('enable', $automation))
                         <div class="btn-group">
-                            <button role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"><span class="caret ml-0"></span></button>
+                            <button role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"></button>
                             <ul class="dropdown-menu dropdown-menu-end">
                                 @can('enable', $automation)
                                     <li>
@@ -124,7 +124,7 @@ delete_outline
 @elseif (!empty(request()->keyword))
     <div class="empty-list">
         <span class="material-icons-outlined">
-forward_to_inbox
+            schedule
 </span>
         <span class="line-1">
             {{ trans('messages.no_search_result') }}

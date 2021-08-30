@@ -2,9 +2,10 @@
     <div class="row">
         <div class="col-md-6">
             <div id="main" style="width:550px; height:500px;margin-bottom:-50px"></div>
+
             <script type="text/javascript">
                 // based on prepared DOM, initialize echarts instance
-                var myChart = echarts.init(document.getElementById('main'));
+                var myChart = echarts.init(document.getElementById('main'), ECHARTS_THEME);
 
                 // specify chart configuration item and data
                 option = {

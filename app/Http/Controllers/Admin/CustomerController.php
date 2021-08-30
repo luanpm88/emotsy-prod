@@ -312,6 +312,10 @@ class CustomerController extends Controller
      */
     public function delete(Request $request)
     {
+        if (isSiteDemo()) {
+            return response()->json(["message" => trans('messages.operation_not_allowed_in_demo')], 404);
+        }
+
         $customers = \Acelle\Model\Customer::whereIn(
             'uid',
             is_array($request->uids) ? $request->uids : explode(',', $request->uids)

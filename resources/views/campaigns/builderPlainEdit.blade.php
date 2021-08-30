@@ -35,9 +35,11 @@
             <span>{{ trans('messages.campaign.html_editor') }}</span>
         </a>
     </li>
-    <li class="d-flex align-items-center px-3">
-        <button class="btn btn-primary" onclick="$('#classic-builder-form').submit()">{{ trans('messages.save') }}</button>
-    </li>
+    @if ($campaign->plain != null)
+        <li class="d-flex align-items-center px-3">
+            <button class="btn btn-primary" onclick="$('#classic-builder-form').submit()">{{ trans('messages.save') }}</button>
+        </li>
+    @endif
     <li>
         <a href="javascript:;"
             onclick="parent.$('body').removeClass('overflow-hidden');parent.$('.full-iframe-popup').fadeOut()"
@@ -53,16 +55,51 @@
 
         <div class="row mr-0 ml-0 form-groups-bottom-0">
             <div class="col-md-9 pl-0 pb-0 pr-0 form-group-mb-0">
-                @include('helpers.form_control', ['type' => 'textarea',
+                @include('helpers.form_control', [
+                    'type' => 'textarea',
                     'class' => 'campaign-plain-text',
                     'name' => 'plain',
                     'label' => '',
                     'value' => $campaign->plain,
                     'rules' => [],
-                    'help_class' => 'campaign'
+                    'help_class' => 'campaign',
+                    'disabled' => $campaign->plain == null,
                 ])          
             </div>
             <div class="col-md-3 pr-0 pb-0 sidebar pr-4 pt-4 pl-4" style="overflow:auto;background:#f5f5f5">
+                <div>
+                    @if ($campaign->plain == null)
+                        <p>
+                            {{ trans('messages.campaign.plain.click_to_custom_html') }}
+                        </p>
+                        <div class="mb-4">
+                            <a href="{{ action('CampaignController@customPlainOn', [
+                                'uid' => $campaign->uid,
+                            ]) }}" link-method="POST" class="btn btn-primary">
+                                <span class="material-icons-outlined me-1">
+                                    dashboard_customize
+                                    </span>
+                                    {{ trans('messages.campaign.plain.use_custom_plain_content') }}
+                            </a>
+                        </div>
+                        <hr>
+                    @else
+                        <p>
+                            {{ trans('messages.campaign.plain.automatically_extract') }}
+                        </p>
+                        <div class="mb-4">
+                            <a href="{{ action('CampaignController@customPlainOff', [
+                                'uid' => $campaign->uid,
+                            ]) }}" link-method="POST" class="btn btn-primary">
+                                <span class="material-icons-outlined me-1">
+                                    post_add
+                                    </span>
+                                    {{ trans('messages.campaign.plain.extract_from_html') }}
+                            </a>
+                        </div>
+                        <hr>
+                    @endif
+                </div>
                 @include('elements._tags', ['tags' => Acelle\Model\Template::tags($campaign->defaultMailList)])
             </div>            
         </div>   

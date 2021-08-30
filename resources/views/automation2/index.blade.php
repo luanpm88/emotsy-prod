@@ -7,8 +7,6 @@
     <script type="text/javascript" src="{{ URL::asset('core/datetime/moment.min.js') }}"></script>
     <script type="text/javascript" src="{{ URL::asset('core/datetime/pickadate/picker.js') }}"></script>
     <script type="text/javascript" src="{{ URL::asset('core/datetime/pickadate/picker.date.js') }}"></script>
-
-    <link rel="stylesheet" type="text/css" href="{{ URL::asset('core/css/automation.css') }}">
 @endsection
 
 @section('page_header')
@@ -37,8 +35,8 @@
         data-url="{{ action('Automation2Controller@listing') }}"
         per-page="{{ \Acelle\Model\Automation2::ITEMS_PER_PAGE }}"					
     >				
-        <div class="row top-list-controls py-2">
-            <div class="col-md-10">
+        <div class="d-flex top-list-controls top-sticky-content">
+            <div class="me-auto">
                 <div class="filter-box">
                     <div class="checkbox inline check_all_list">
                         <label>
@@ -95,7 +93,7 @@ search
                     </span>
                 </div>
             </div>
-            <div class="col-md-2 text-end">
+            <div class="text-end">
                 <a href="{{ action("Automation2Controller@wizard") }}" role="button" class="btn btn-secondary create-automation2">
                     <span class="material-icons-round">
 add

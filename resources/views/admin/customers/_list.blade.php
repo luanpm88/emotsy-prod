@@ -1,5 +1,5 @@
 @if ($customers->count() > 0)
-    <table class="table table-box pml-table border-top mt-2"
+    <table class="table table-box pml-table mt-2"
         current-page="{{ empty(request()->page) ? 1 : empty(request()->page) }}"
     >
         @foreach ($customers as $key => $item)
@@ -80,7 +80,7 @@ edit
                         Auth::user()->can('assignPlan', $item)
                     )
                         <div class="btn-group">
-                            <button role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"><span class="caret ml-0"></span></button>
+                            <button role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"></button>
                             <ul class="dropdown-menu dropdown-menu-end">
                                 @can('assignPlan', $item)
                                     <li>
@@ -141,13 +141,18 @@ delete_outline
     @include('elements/_per_page_select', ["items" => $customers])
     
 
-    <script>        
+    <script>
+        var assignPlan;        
         $(function() {
             $('.assign_plan_button').click(function(e) {
                 e.preventDefault();
 
                 var src = $(this).attr('href');
-                assignPlanModal.load(src);
+                assignPlan = new Popup({
+                    url: src
+                });
+
+                assignPlan.load();
             });
         });
     </script>

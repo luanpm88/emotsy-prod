@@ -12,38 +12,42 @@
             <span class="text-semibold"><span class="material-icons-round">
                 format_list_bulleted
                 </span> {{ trans('messages.templates') }}</span>
-        </h1>                
+        </h1>
+        <p style="margin-bottom:0">{!! trans('messages.admin.template.list.intro') !!}</p>
     </div>
 
 @endsection
 
 @section('content')
-    <div id="TemplatesIndexContainer" class="listing-form"
+    <div id="TemplatesIndexContainer" class="listing-form  view-{{ request()->view ? request()->view : 'grid' }}"
         data-url="{{ action('Admin\TemplateController@listing') }}"
         per-page="{{ Acelle\Model\Template::$itemsPerPage }}"                    
     >                
-        <div class="row top-list-controls py-2">
-            <div class="col-md-9">                
+        <div class="d-flex top-list-controls top-sticky-content">
+            <div class="">                
                 <div class="filter-box">
-                    <div class="checkbox inline check_all_list">
-                        <label>
-                            <input type="checkbox" name="page_checked" class="styled check_all">
-                        </label>
-                    </div>
-                    <div class="dropdown list_actions" style="display: none">
-                        <button role="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown">
-                            {{ trans('messages.actions') }} <span class="number"></span><span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu">
-                            <li>
-                                <a class="dropdown-item" link-confirm="{{ trans('messages.delete_templates_confirm') }}" href="{{ action('Admin\TemplateController@delete') }}">
-                                    <span class="material-icons-outlined">
-delete_outline
-</span> {{ trans('messages.delete') }}
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
+                    <input type="hidden" name="view" value="{{ request()->view }}" />
+                    @if (request()->view && request()->view == 'list')
+                        <div class="checkbox inline check_all_list">
+                            <label>
+                                <input type="checkbox" name="page_checked" class="styled check_all">
+                            </label>
+                        </div>
+                        <div class="dropdown list_actions" style="display: none">
+                            <button role="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown">
+                                {{ trans('messages.actions') }} <span class="number"></span><span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a class="dropdown-item" link-confirm="{{ trans('messages.delete_templates_confirm') }}" href="{{ action('Admin\TemplateController@delete') }}">
+                                        <span class="material-icons-outlined">
+    delete_outline
+    </span> {{ trans('messages.delete') }}
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    @endif
                     <span class="filter-group">
                         {{-- <span class="title text-semibold text-muted">{{ trans('messages.sort_by') }}</span> --}}
                         <select class="select" name="sort_order">
@@ -78,17 +82,40 @@ search
                     </span>
                 </div>
             </div>
-            <div class="col-md-3 text-end d-flex align-items-center">
-                <a href="{{ action('Admin\TemplateController@uploadTemplate') }}" class="btn btn-secondary mr-2 ml-auto">
-                    <span class="material-icons-outlined">
-file_upload
-</span> {{ trans('messages.upload') }}
-                </a>
-                <a href="{{ action('Admin\TemplateController@builderCreate') }}" class="btn btn-secondary">
-                    <span class="material-icons-round">
-add
-</span> {{ trans('messages.create') }}
-                </a>
+            <div class="ms-auto text-end d-flex align-items-center">
+                <div class="text-end d-flex align-items-center ms-auto">
+                    <div class="view-toggle d-flex ml-auto">
+                        <div class="btn-group" role="group" aria-label="Basic example">
+                            <a href="{{ action('Admin\TemplateController@index') }}"
+                                class="btn btn-default view-toogle grid m-icon"
+                            >
+                                <span class="material-icons-outlined">
+                                    grid_view
+                                </span>
+                            </a>
+                            <a href="{{ action('Admin\TemplateController@index', ['view' => 'list']) }}"
+                                class="btn btn-default view-toogle list m-icon mr-3"
+                            >
+                                <span class="material-icons-outlined">
+                                    reorder
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+    
+                    <div>
+                        <a href="{{ action('Admin\TemplateController@uploadTemplate') }}" class="btn btn-secondary ml-auto">
+                            <span class="material-icons-outlined">
+        file_upload
+        </span> {{ trans('messages.upload') }}
+                        </a>
+                        <a href="{{ action('Admin\TemplateController@builderCreate') }}" class="btn btn-secondary">
+                            <span class="material-icons-round">
+        add
+        </span> {{ trans('messages.create') }}
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
         

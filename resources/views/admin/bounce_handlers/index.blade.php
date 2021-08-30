@@ -27,8 +27,8 @@
         data-url="{{ action('Admin\BounceHandlerController@listing') }}"
         per-page="{{ Acelle\Model\BounceHandler::$itemsPerPage }}"                    
     >                
-        <div class="row top-list-controls py-2">
-            <div class="col-md-9">
+        <div class="d-flex top-list-controls top-sticky-content">
+            <div class="me-auto">
                 @if ($items->count() >= 0)                    
                     <div class="filter-box">
                         <div class="checkbox inline check_all_list">
@@ -71,7 +71,7 @@ search
                 @endif
             </div>
             @can('create', new Acelle\Model\BounceHandler())
-                <div class="col-md-3 text-end">
+                <div class="text-end">
                     <a href="{{ action('Admin\BounceHandlerController@create') }}" role="button" class="btn btn-secondary">
                         <span class="material-icons-round">
 add

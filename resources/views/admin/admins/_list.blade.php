@@ -1,5 +1,5 @@
 @if ($admins->count() > 0)
-    <table class="table table-box pml-table border-top mt-2"
+    <table class="table table-box pml-table mt-2"
         current-page="{{ empty(request()->page) ? 1 : empty(request()->page) }}"
     >
         @foreach ($admins as $key => $item)
@@ -58,7 +58,7 @@ edit
                     @endcan
                     @if (Auth::user()->can('delete', $item) || Auth::user()->can('enable', $item) || Auth::user()->can('disable', $item) || Auth::user()->can('delete', $item))
                         <div class="btn-group">
-                            <button role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"><span class="caret ml-0"></span></button>
+                            <button role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"></button>
                             <ul class="dropdown-menu dropdown-menu-end">
                                 @can('enable', $item)
                                     <li>

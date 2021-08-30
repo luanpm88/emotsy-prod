@@ -23,7 +23,6 @@
 				'label' => '',
 				'value' => $domain->name,
 				'help_class' => 'tracking_domain',
-				'rules' => $domain->rules()
 			])
 		</div>
 	</div>
@@ -36,7 +35,6 @@
 				'value' => 1,
 				'help_class' => 'tracking_domain',
 				'options' => [0, 1],
-				'rules' => $domain->rules(),
 				'readonly' => true,
 				'disabled' => true,
 			])

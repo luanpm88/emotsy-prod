@@ -20,8 +20,8 @@
         data-url="{{ action('SourceController@listing') }}"
         per-page="{{ Acelle\Model\Source::$itemsPerPage }}"
     >
-        <div class="row top-list-controls py-2">
-            <div class="col-md-9">
+        <div class="d-flex top-list-controls top-sticky-content">
+            <div class="me-auto">
                 <div class="filter-box">
                     <span class="filter-group">
                         <span class="title text-semibold text-muted">{{ trans('messages.sort_by') }}</span>
@@ -43,7 +43,7 @@ search
                     </span>
                 </div>
             </div>
-            <div class="col-md-3 text-end">
+            <div class="text-end">
                 <a href="{{ action("SourceController@create") }}" role="button" class="btn btn-secondary m-icon">
                     <span class="material-icons-outlined">add</span> {{ trans('messages.source.add_new') }}
                 </a>

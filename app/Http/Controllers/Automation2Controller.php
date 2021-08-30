@@ -1056,8 +1056,9 @@ class Automation2Controller extends Controller
                 }
             }
             
-            $email->setTemplateContent($request->content);
-            $email->save();
+            $email->setTemplateContent($request->content, function ($email) {
+                $email->updateLinks();
+            });
             
             return response()->json([
                 'status' => 'success',
@@ -1331,6 +1332,10 @@ class Automation2Controller extends Controller
      */
     public function delete(Request $request)
     {
+        if (isSiteDemo()) {
+            return response()->json(["message" => trans('messages.operation_not_allowed_in_demo')], 404);
+        }
+
         if (isSiteDemo()) {
             return response()->json([
                 'status' => 'notice',

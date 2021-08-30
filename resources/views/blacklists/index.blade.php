@@ -22,8 +22,8 @@
         per-page="{{ Acelle\Model\Blacklist::$itemsPerPage }}"
     >
 
-        <div class="row top-list-controls py-2">
-            <div class="col-md-9">
+        <div class="d-flex top-list-controls top-sticky-content">
+            <div class="me-auto">
                 @if ($blacklists->count() >= 0)
                     <div class="filter-box">
                         <span class="me-2">@include('helpers.select_tool')</span>
@@ -59,7 +59,7 @@ search
                     </div>
                 @endif
             </div>
-            <div class="col-md-3">
+            <div class="">
                 @if (Auth::user()->customer->can('import', new Acelle\Model\Blacklist()))
                     <div class="text-end">
                         <a href="{{ action('BlacklistController@import') }}" role="button" class="btn btn-secondary">

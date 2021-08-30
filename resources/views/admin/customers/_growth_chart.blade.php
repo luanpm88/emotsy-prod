@@ -36,7 +36,7 @@
 
         renderChart: function(data) {
                 // based on prepared DOM, initialize echarts instance
-                var growthChart1 = echarts.init(CustomersGrowthChart.getChart()[0]);
+                var growthChart1 = echarts.init(CustomersGrowthChart.getChart()[0], ECHARTS_THEME);
 
                 var option = {
                     grid: {

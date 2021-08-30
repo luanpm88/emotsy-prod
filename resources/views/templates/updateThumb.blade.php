@@ -27,7 +27,10 @@
                     'required' => true,
                     'type' => 'file',
                     'label' => trans('messages.upload_file'),
-                    'name' => 'file'
+                    'name' => 'file',
+                    'attributes' => [
+                        'accept' => 'image/png, image/gif, image/jpeg',
+                    ],
                 ])
 				
                 <div class="mt-20">

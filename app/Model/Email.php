@@ -15,11 +15,20 @@ use Acelle\Library\Log as MailLog;
 use Acelle\Model\Setting;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
-use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
 use Acelle\Jobs\DeliverEmail;
 use Acelle\Library\Traits\HasTemplate;
 use Acelle\Library\Traits\HasUid;
 use Exception;
+use League\Pipeline\PipelineBuilder;
+use Acelle\Library\HtmlHandler\ParseRss;
+use Acelle\Library\HtmlHandler\ReplaceBareLineFeed;
+use Acelle\Library\HtmlHandler\AppendHtml;
+use Acelle\Library\HtmlHandler\TransformTag;
+use Acelle\Library\HtmlHandler\InjectTrackingPixel;
+use Acelle\Library\HtmlHandler\MakeInlineCss;
+use Acelle\Library\HtmlHandler\TransformUrl;
+use Acelle\Library\HtmlHandler\AddDoctype;
+use Acelle\Library\HtmlHandler\RemoveTitleTag;
 
 class Email extends Model
 {
@@ -88,6 +97,14 @@ class Email extends Model
     public function trackingDomain()
     {
         return $this->belongsTo('Acelle\Model\TrackingDomain', 'tracking_domain_id');
+    }
+
+    /**
+     * Get campaign's default mail list.
+     */
+    public function defaultMailList()
+    {
+        return $this->automation->mailList();
     }
 
     /**
@@ -312,34 +329,29 @@ class Email extends Model
     public function getCustomHeaders($subscriber, $server)
     {
         $msgId = StringHelper::generateMessageId(StringHelper::getDomainFromEmail($this->from));
-
-        return array(
-            'X-Acelle-email-Id' => $this->uid,
-            'X-Acelle-Subscriber-Id' => $subscriber->uid,
-            'X-Acelle-Customer-Id' => $this->automation->customer->uid,
-            'X-Acelle-Message-Id' => $msgId,
-            'X-Acelle-Sending-Server-Id' => $server->uid,
-            'List-Unsubscribe' => '<'.$this->generateUnsubscribeUrl($msgId, $subscriber).'>',
-            'Precedence' => 'bulk',
-        );
-    }
-
-    public function generateUnsubscribeUrl($msgId, $subscriber)
-    {
-        // in case of a fake object, for sending test email
-        if (is_a($subscriber, 'stdClass')) {
-            $path = route('unsubscribeUrl', [ 'subscriber' => 'unknown', 'message_id' => StringHelper::base64UrlEncode($msgId)], false);
-
-            return $path;
+        if ($this->isStdClassSubscriber($subscriber)) {
+            $unsubscribeUrl = null;
+        } else {
+            $unsubscribeUrl = $subscriber->generateUnsubscribeUrl($msgId);
+            if ($this->trackingDomain) {
+                $unsubscribeUrl = $this->trackingDomain->buildTrackingUrl($unsubscribeUrl);
+            }
         }
 
-        // OPTION 1: immediately opt out
-        $path = $subscriber->generateUnsubscribeUrl($msgId, $absoluteUrl = false);
+        $headers = array(
+            'X-Acelle-Campaign-Id' => $this->uid,
+            'X-Acelle-Subscriber-Id' => $subscriber->uid,
+            'X-Acelle-Customer-Id' => $this->customer->uid,
+            'X-Acelle-Message-Id' => $msgId,
+            'X-Acelle-Sending-Server-Id' => $server->uid,
+            'Precedence' => 'bulk',
+        );
 
-        // OPTION 2: unsubscribe form, @IMPORTANT: it does not produce tracking log!!
-        //$path = route('unsubscribeForm', ['list_uid' => $subscriber->mailList->uid, 'code' => $subscriber->getSecurityToken('unsubscribe'), 'uid' => $subscriber->uid], false);
+        if ($unsubscribeUrl) {
+            $headers['List-Unsubscribe'] = "<{$unsubscribeUrl}>";
+        }
 
-        return $this->buildPublicUrl($path);
+        return $headers;
     }
 
     /**
@@ -373,88 +385,10 @@ class Email extends Model
      */
     public function getSubject($subscriber, $msgId)
     {
-        return $this->tagMessage($this->subject, $subscriber, $msgId, null);
-    }
-
-    public function buildPublicUrl($path)
-    {
-        return join_url($this->getTrackingHost(), $path);
-    }
-
-    public function tagMessage($message, $subscriber, $msgId, $server = null)
-    {
-        if (!is_null($server) && $server->isElasticEmailServer()) {
-            $message = $server->addUnsubscribeUrl($message);
-        }
-
-        $tags = array(
-            'CAMPAIGN_NAME' => $this->name,
-            'CAMPAIGN_UID' => $this->uid,
-            'CAMPAIGN_SUBJECT' => $this->subject,
-            'CAMPAIGN_FROM_EMAIL' => $this->from,
-            'CAMPAIGN_FROM_NAME' => $this->from_name,
-            'CAMPAIGN_REPLY_TO' => $this->reply_to,
-            'SUBSCRIBER_UID' => $subscriber->uid,
-            'CURRENT_YEAR' => date('Y'),
-            'CURRENT_MONTH' => date('m'),
-            'CURRENT_DAY' => date('d'),
-            'CONTACT_NAME' => $this->automation->mailList->contact->company,
-            'CONTACT_COUNTRY' => $this->automation->mailList->contact->country->name,
-            'CONTACT_STATE' => $this->automation->mailList->contact->state,
-            'CONTACT_CITY' => $this->automation->mailList->contact->city,
-            'CONTACT_ADDRESS_1' => $this->automation->mailList->contact->address_1,
-            'CONTACT_ADDRESS_2' => $this->automation->mailList->contact->address_2,
-            'CONTACT_PHONE' => $this->automation->mailList->contact->phone,
-            'CONTACT_URL' => $this->automation->mailList->contact->url,
-            'CONTACT_EMAIL' => $this->automation->mailList->contact->email,
-            'LIST_NAME' => $this->automation->mailList->name,
-            'LIST_SUBJECT' => $this->automation->mailList->default_subject,
-            'LIST_FROM_NAME' => $this->automation->mailList->from_name,
-            'LIST_FROM_EMAIL' => $this->automation->mailList->from_email,
-        );
-
-        # Subscriber specific
-        if (!$this->isStdClassSubscriber($subscriber)) {
-            $tags['UPDATE_PROFILE_URL'] = $this->generateUpdateProfileUrl($subscriber);
-            $tags['UNSUBSCRIBE_URL'] = $this->generateUnsubscribeUrl($msgId, $subscriber);
-            $tags['WEB_VIEW_URL'] = $this->generateWebViewerUrl($msgId);
-
-            # Subscriber custom fields
-            foreach ($this->automation->mailList->fields as $field) {
-                $tags['SUBSCRIBER_'.$field->tag] = $subscriber->getValueByField($field);
-                $tags[$field->tag] = $subscriber->getValueByField($field);
-            }
-
-            // Special / shortcut fields
-            $tags['NAME'] = $subscriber->getFullName();
-            $tags['FULL_NAME'] = $subscriber->getFullName();
-        } else {
-            $sampleLink = route('campaign_message', [ 'message' => StringHelper::base64UrlEncode('This is a test link of a test campaign') ]);
-            $tags['UNSUBSCRIBE_URL'] = $sampleLink;
-            $tags['UPDATE_PROFILE_URL'] = $sampleLink;
-            $tags['WEB_VIEW_URL'] = $sampleLink;
-
-            # Subscriber custom fields, including email
-            $sample = '%PERSONALIZED-DATA%';
-            foreach ($this->automation->mailList->fields as $field) {
-                $tags['SUBSCRIBER_'.$field->tag] = $sample;
-                $tags[$field->tag] = $sample;
-            }
-
-            // Special / shortcut fields
-            $tags['NAME'] = $sample;
-            $tags['FULL_NAME'] = $sample;
-
-            // Only email is "reserved", overwrite previous $sample
-            $tags['SUBSCRIBER_EMAIL'] = $subscriber->email;
-        }
-
-        // Actually transform the message
-        foreach ($tags as $tag => $value) {
-            $message = str_replace('{'.$tag.'}', $value, $message);
-        }
-
-        return $message;
+        $pipeline = new PipelineBuilder();
+        $pipeline->add(new ReplaceBareLineFeed);
+        $pipeline->add(new TransformTag($this, $subscriber, $msgId));
+        return $pipeline->build()->process($this->subject);
     }
 
     /**
@@ -468,20 +402,6 @@ class Email extends Model
         return get_class($object) == 'stdClass';
     }
 
-    public function generateUpdateProfileUrl($subscriber)
-    {
-        $path = route('updateProfileUrl', ['list_uid' => $subscriber->mailList->uid, 'uid' => $subscriber->uid, 'code' => $subscriber->getSecurityToken('update-profile')], false);
-
-        return $this->buildPublicUrl($path);
-    }
-
-    public function generateWebViewerUrl($msgId)
-    {
-        $path = route('webViewerUrl', ['message_id' => StringHelper::base64UrlEncode($msgId)], false);
-
-        return $this->buildPublicUrl($path);
-    }
-
     /**
      * Build Email HTML content.
      *
@@ -489,76 +409,26 @@ class Email extends Model
      */
     public function getHtmlContent($subscriber = null, $msgId = null, $server = null)
     {
-        // @note: IMPORTANT: the order must be as follows
-        // * addTrackingURL
-        // * appendOpenTrackingUrl
-        // * tagMessage
-        if (is_null($this->parsedContent)) {
-            // STEP 01. Get RAW content
-            $body = $this->getTemplateContent();
-
-            // STEP 02. Append footer
-            if ($this->footerEnabled()) {
-                $body = $this->appendFooter($body, $this->getHtmlFooter());
-            }
-            
-            // STEP 03. Parse RSS
-            if (Setting::isYes('rss.enabled')) {
-                $body = Rss::parse($body);
-            }
-
-            // STEP 04. Replace Bare linefeed
-            // Replace bare line feed char which is not accepted by Outlook, Yahoo, AOL...
-            $body = StringHelper::replaceBareLineFeed($body);
-
-            // "Cache" it, do not repeat this task for every subscriber in the loop
-            $this->parsedContent = $body;
-        } else {
-            // Retrieve content from cache
-            $body = $this->parsedContent;
+        if (!$this->template) {
+            throw new Exception('No template available');
         }
 
-        // STEP 04.1. Check woocommerce items
-        if ($this->automation->getTrigger()->getOption('type') == 'woo-abandoned-cart') {
-            $body = $this->wooTransform($body);
-        }
+        $pipeline = new PipelineBuilder();
+        $pipeline->add(new AddDoctype);
+        $pipeline->add(new RemoveTitleTag);
+        $pipeline->add(new ReplaceBareLineFeed);
+        $pipeline->add(new AppendHtml($this->getHtmlFooter()));
+        $pipeline->add(new ParseRss);
+        $pipeline->add(new TransformTag($this, $subscriber, $msgId, $server));
+        $pipeline->add(new InjectTrackingPixel($msgId));
+        $pipeline->add(new TransformUrl($this->template, $msgId, $this->trackingDomain));
+        $pipeline->add(new MakeInlineCss($this->template->findCssFiles()));
 
-        // STEP 05. Transform URLs
-        $body = $this->template->getContentWithTransformedAssetsUrls($this->getTrackingHostWithoutSubdirectory());
+        $html = $pipeline->build()->process($this->getTemplateContent());
 
-        if (is_null($msgId)) {
-            $msgId = 'SAMPLE'; // for preview mode
-        }
+        // $html = $this->wooTransform($html);
 
-        // STEP 06. Add Click Tracking
-        //
-        // @note: addTrackingUrl() must go before appendOpenTrackingUrl()
-        // Enable click tracking
-        if ($this->track_click) {
-            $body = $this->addTrackingUrl($body, $msgId);
-        }
-
-        // STEP 07. Add Open Tracking
-        if ($this->track_open) {
-            $body = $this->appendOpenTrackingUrl($body, $msgId);
-        }
-
-        // STEP 08. Transform Tags
-        if (!is_null($subscriber)) {
-            // Transform tags
-            $body = $this->tagMessage($body, $subscriber, $msgId, $server);
-        }
-
-        // STEP 09. Make CSS inline
-        //
-        // Transform CSS/HTML content to inline CSS
-        // Be carefule, it will make
-        //       <a href="{BUNSUBSCRIBE_URL}"
-        // become
-        //       <a href="%7BUNSUBSCRIBE_URL%7D"
-        $body = inlineHtml($body, $this->template->findCssFiles());
-
-        return $body;
+        return $html;
     }
 
     public function wooTransform($body)
@@ -657,76 +527,6 @@ class Email extends Model
     }
 
     /**
-     * Replace link in text by click tracking url.
-     *
-     * @return text
-     * @note addTrackingUrl() must go before appendOpenTrackingUrl()
-     */
-    public function addTrackingUrl($email_html_content, $msgId)
-    {
-        if (preg_match_all('/<a[^>]*href=["\'](?<url>http[^"\']*)["\']/i', $email_html_content, $matches)) {
-            foreach ($matches[0] as $key => $href) {
-                $url = $matches['url'][$key];
-
-                $newUrl = route('clickTrackingUrl', ['message_id' => StringHelper::base64UrlEncode($msgId), 'url' => StringHelper::base64UrlEncode($url)], false);
-                $newUrl = $this->buildTrackingUrl($newUrl);
-                $newHref = str_replace($url, $newUrl, $href);
-
-                // if the link contains UNSUBSCRIBE URL tag
-                if (strpos($href, '{UNSUBSCRIBE_URL}') !== false) {
-                    // just do nothing
-                } elseif (preg_match('/{[A-Z0-9_]+}/', $href)) {
-                    // just skip if the url contains a tag. For example: {UPDATE_PROFILE_URL}
-                    // @todo: do we track these clicks?
-                } else {
-                    $email_html_content = str_replace($href, $newHref, $email_html_content);
-                }
-            }
-        }
-
-        return $email_html_content;
-    }
-
-    /**
-     * Append Open Tracking URL
-     * Append open-tracking URL to every email message.
-     */
-    public function appendOpenTrackingUrl($body, $msgId)
-    {
-        $path = route('openTrackingUrl', ['message_id' => StringHelper::base64UrlEncode($msgId)], false);
-        $url = $this->buildTrackingUrl($path);
-
-        return $this->appendToBody($body, '<img alt="" src="'.$url.'" width="0" height="0" alt="" style="visibility:hidden" />');
-    }
-
-    public function buildTrackingUrl($path)
-    {
-        $host = $this->getTrackingHost();
-
-        return join_url($host, $path);
-    }
-
-    public function getTrackingHost()
-    {
-        if ($this->trackingDomain()->exists()) {
-            return $this->trackingDomain->getUrl();
-        } else {
-            // Host WITH subdirectory
-            return config('app.url');
-        }
-    }
-
-    public function getTrackingHostWithoutSubdirectory()
-    {
-        if ($this->trackingDomain()->exists()) {
-            return $this->trackingDomain->getUrl();
-        } else {
-            // Host without subdirectory
-            return \Acelle\Helpers\getAppHost();
-        }
-    }
-
-    /**
      * Check if email footer enabled.
      *
      * @return string
@@ -744,16 +544,6 @@ class Email extends Model
     public function getHtmlFooter()
     {
         return $this->automation->customer->getCurrentSubscription()->plan->getOption('html_footer');
-    }
-
-    /**
-     * Append footer.
-     *
-     * @return string.
-     */
-    public function appendFooter($body, $footer)
-    {
-        return $this->appendToBody($body, $footer);
     }
 
     /**
@@ -781,7 +571,7 @@ class Email extends Model
      */
     public function sign($message)
     {
-        $sendingDomain = $this->findSendingDomain($this->from_email);
+        $sendingDomain = $this->findSendingDomain($this->from);
 
         if (empty($sendingDomain)) {
             return $message;
@@ -826,16 +616,6 @@ class Email extends Model
             }
         } else {
             $this->tracking_domain_id = null;
-        }
-    }
-
-    public function appendToBody($html, $content)
-    {
-        $regexp = '/<\/body\s*>/i';
-        if (preg_match($regexp, $html) == true) {
-            return preg_replace($regexp, $content.'</body>', $html);
-        } else {
-            return $html.$content;
         }
     }
 

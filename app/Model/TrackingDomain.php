@@ -29,6 +29,10 @@ use Mika56\SPFCheck\DNSRecordGetterDirect;
 use Mika56\SPFCheck\DNSRecordGetter;
 use GuzzleHttp\Client;
 use Acelle\Library\Traits\HasUid;
+use Validator;
+use Exception;
+use Acelle\Library\StringHelper;
+use function Acelle\Helpers\getAppHost;
 
 class TrackingDomain extends Model
 {
@@ -81,16 +85,53 @@ class TrackingDomain extends Model
         'name', 'scheme'
     ];
 
-    /**
-     * Get validation rules.
-     *
-     * @return object
-     */
-    public function rules()
+    public static function createFromRequest($request)
     {
-        return [
-            'name' => 'required|regex:/^([a-z0-9A-Z]+(-[a-z0-9A-Z]+)*\.)+[a-zA-Z]{2,}$/',
+        $rules = [
+            'name' => [
+                'required',
+                'url',
+                'max:255',
+                function ($attribute, $value, $fail) {
+                    $path = parse_url($value, PHP_URL_PATH);
+                    if (!is_null($path)) {
+                        $fail(trans('messages.tracking_domain.validation.error.path'));
+                    }
+
+                    $host = parse_url($value, PHP_URL_HOST);
+                    $matched = preg_match('/^(?!\-)(?:(?:[a-zA-Z\d][a-zA-Z\d\-]{0,61})?[a-zA-Z\d]\.){1,126}(?!\d+)[a-zA-Z\d]{1,63}$/', $host);
+
+                    if (!$matched) {
+                        $fail(trans('messages.tracking_domain.validation.error.name'));
+                    }
+                },
+            ],
         ];
+        // save posted data
+        $scheme = $request->input('scheme');
+        $name = trim(trim($request->input('name')), '/');
+        $attributes = [
+            'scheme' => $scheme,
+            'name' => "{$scheme}://{$name}",
+        ];
+
+        $validator = Validator::make($attributes, $rules);
+        if ($validator->fails()) {
+            return [null, $validator];
+        }
+
+        // Restore name to domain name and host
+        $attributes['name'] = $name;
+
+        // Get current user
+        $domain = new self();
+        // Save current user info
+        $domain->fill($attributes);
+        $domain->customer_id = $request->user()->customer->id;
+        $domain->status = self::STATUS_UNVERIFIED;
+        $domain->save();
+
+        return [$domain, $validator];
     }
 
     /**
@@ -179,7 +220,25 @@ class TrackingDomain extends Model
         $this->status = self::STATUS_VERIFIED;
     }
 
-    public function verify($debug = false)
+    public function verify()
+    {
+        try {
+            $url = $this->getUrl();
+            $verifyUrl = "$url/ok";
+            $result = file_get_contents($verifyUrl);
+            if ($result == 'ok') {
+                $this->setVerified();
+                $this->save();
+                return true;
+            } else {
+                return false;
+            }
+        } catch (\Exception $ex) {
+            return false;
+        }
+    }
+
+    public function verifyOld($debug = false)
     {
         try {
             $client = new Client(['verify' => false]);
@@ -208,5 +267,20 @@ class TrackingDomain extends Model
             // loggging here
             return false;
         }
+    }
+
+    public function buildTrackingUrl(string $url)
+    {
+        if (!parse_url($url, PHP_URL_HOST)) {
+            throw new Exception('Cannot build tracking URL with "'.$url.'", a valid URL is required (with leading http:// or https:// or //');
+        }
+
+        // Already a tracking domain
+        if (strpos($url, $this->getUrl()) === 0) {
+            return $url;
+        }
+
+        $encodedUrl = StringHelper::base64UrlEncode($url);
+        return join_url($this->getUrl(), $encodedUrl);
     }
 }

@@ -25,8 +25,8 @@
         data-url="{{ action('Admin\SubAccountController@listing') }}"
         per-page="{{ Acelle\Model\SubAccount::$itemsPerPage }}"
     >
-        <div class="row top-list-controls py-2">
-            <div class="col-md-10">
+        <div class="d-flex top-list-controls top-sticky-content">
+            <div class="me-auto">
                 @if ($accounts->count() >= 0)
                     <div class="filter-box">
                         <span class="filter-group">

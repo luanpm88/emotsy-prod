@@ -23,8 +23,8 @@
         data-url="{{ action('Admin\LanguageController@listing') }}"
         per-page="{{ Acelle\Model\SendingDomain::$itemsPerPage }}"
     >
-        <div class="row top-list-controls py-2">
-            <div class="col-md-9">
+        <div class="d-flex top-list-controls top-sticky-content">
+            <div class="me-auto">
                 <div class="filter-box">
                     <span class="filter-group">
                         <span class="title text-semibold text-muted">{{ trans('messages.sort_by') }}</span>
@@ -51,7 +51,7 @@ search
                 </div>
             </div>
             @can("create", new Acelle\Model\Language())
-                <div class="col-md-3 text-end">
+                <div class="text-end">
                     <a href="{{ action('Admin\LanguageController@create') }}" role="button" class="btn btn-secondary">
                         <span class="material-icons-round">
 add

@@ -24,8 +24,8 @@
 					data-url="{{ action('Admin\AdminController@listing') }}"
 					per-page="{{ Acelle\Model\Admin::$itemsPerPage }}"
 				>
-					<div class="row top-list-controls py-2">
-						<div class="col-md-10">
+					<div class="d-flex top-list-controls top-sticky-content">
+						<div class="me-auto">
 							@if ($admins->count() >= 0)
 								<div class="filter-box">
 									<span class="filter-group">
@@ -61,7 +61,7 @@ search
 							@endif
 						</div>
 						@can('create', new Acelle\Model\Admin())
-							<div class="col-md-2 text-end">
+							<div class="text-end">
 								<a href="{{ action("Admin\AdminController@create") }}" role="button" class="btn btn-secondary">
 									<span class="material-icons-round">
 add

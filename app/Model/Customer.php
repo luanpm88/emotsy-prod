@@ -65,7 +65,7 @@ class Customer extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'timezone', 'language_id', 'color_scheme', 'text_direction', 'menu_layout'
+        'name', 'timezone', 'language_id', 'color_scheme', 'text_direction', 'menu_layout', 'theme_mode'
     ];
 
     /**
@@ -1950,5 +1950,18 @@ class Customer extends Model
     public function getMenuLayout()
     {
         return ($this->menu_layout == 'left' ? 'left' : 'top');
+    }
+
+    public function allowSenderVerification()
+    {
+        $plan = $this->activeSubscription()->plan;
+        if ($plan->useSystemSendingServer()) {
+            $server = $plan->primarySendingServer();
+            if ($server && $server->allowVerifyingOwnEmailsRemotely()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

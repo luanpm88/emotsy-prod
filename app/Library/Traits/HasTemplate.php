@@ -89,7 +89,7 @@ trait HasTemplate
     /**
      * Set template content.
      */
-    public function setTemplateContent($content)
+    public function setTemplateContent($content, $callback = null)
     {
         if (!$this->template) {
             throw new Exception('Cannot set content: campaign/email does not have template!');
@@ -98,6 +98,9 @@ trait HasTemplate
         $template = $this->template;
         $template->content = $content;
         $template->save();
+        if (!is_null($callback)) {
+            $callback($this);
+        }
     }
 
     /**

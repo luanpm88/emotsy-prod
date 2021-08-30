@@ -326,8 +326,7 @@ class MailListController extends Controller
     public function delete(Request $request)
     {
         if (isSiteDemo()) {
-            echo trans('messages.operation_not_allowed_in_demo');
-            return;
+            return response()->json(["message" => trans('messages.operation_not_allowed_in_demo')], 404);
         }
 
         $lists = \Acelle\Model\MailList::whereIn(

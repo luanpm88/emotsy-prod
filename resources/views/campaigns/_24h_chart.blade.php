@@ -30,7 +30,7 @@
 
         renderChart: function(data) {
                 // based on prepared DOM, initialize echarts instance
-                var my2Chart = echarts.init(Campaigns24hChart.getChart()[0]);
+                var my2Chart = echarts.init(Campaigns24hChart.getChart()[0], ECHARTS_THEME);
 
                 var option = {
                     tooltip: {

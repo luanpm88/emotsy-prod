@@ -24,8 +24,8 @@
         data-url="{{ action('Admin\SubscriptionController@listing') }}"
         per-page="15"
     >
-        <div class="row top-list-controls py-2">
-            <div class="col-md-10">
+        <div class="d-flex top-list-controls top-sticky-content">
+            <div class="me-auto">
                 @if ($subscriptions->count() >= 0)
                     <div class="filter-box">
                         <span class="filter-group">
@@ -63,7 +63,7 @@ sort
                 @endif
             </div>
             @if (\Auth::user()->admin->can('create', new Acelle\Model\Subscription()))
-                <div class="col-md-2 text-end">
+                <div class="text-end">
                     <a href="{{ action("Admin\SubscriptionController@create") }}" role="button"
                         class="btn btn-secondary modal-action new-subscription"
                     >

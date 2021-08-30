@@ -19,8 +19,8 @@ splitscreen
 		data-url="{{ action('SegmentController@listing', $list->uid) }}"
 		per-page="{{ Acelle\Model\Segment::$itemsPerPage }}"
 	>
-		<div class="row top-list-controls py-2">
-			<div class="col-md-10">
+		<div class="d-flex top-list-controls top-sticky-content">
+			<div class="me-auto">
 				@if ($list->segmentsCount() >= 0)
 					<div class="filter-box">
 						<div class="checkbox inline check_all_list">
@@ -65,7 +65,7 @@ search
 					</div>
 				@endif
 			</div>
-			<div class="col-md-2 text-end">
+			<div class="text-end">
 				<a href="{{ action("SegmentController@create", $list->uid) }}" role="button" class="btn btn-secondary">
 					<span class="material-icons-round">
 add

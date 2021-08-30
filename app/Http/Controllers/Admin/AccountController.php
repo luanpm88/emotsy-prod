@@ -159,4 +159,9 @@ class AccountController extends Controller
     {
         $request->session()->put('admin-leftbar-state', $request->state);
     }
+
+    public function saveAutoThemeMode(Request $request)
+    {
+        $request->session()->put('admin-auto-theme-mode', $request->theme_mode);
+    }
 }

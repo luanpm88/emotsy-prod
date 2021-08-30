@@ -126,6 +126,10 @@ class SubscriptionController extends Controller
      */
     public function cancel(Request $request)
     {
+        if (isSiteDemo()) {
+            return response()->json(["message" => trans('messages.operation_not_allowed_in_demo')], 404);
+        }
+
         $subscription = Subscription::findByUid($request->id);
 
         if ($request->user()->admin->can('cancel', $subscription)) {
@@ -162,6 +166,10 @@ class SubscriptionController extends Controller
      */
     public function cancelNow(Request $request)
     {
+        if (isSiteDemo()) {
+            return response()->json(["message" => trans('messages.operation_not_allowed_in_demo')], 404);
+        }
+
         $subscription = Subscription::findByUid($request->id);
 
         if ($request->user()->admin->can('cancelNow', $subscription)) {

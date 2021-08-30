@@ -30,8 +30,8 @@ add
 		data-url="{{ action('SubscriberController@listing', $list->uid) }}"
 		per-page="{{ Acelle\Model\Subscriber::$itemsPerPage }}"
 	>
-		<div class="row top-list-controls py-2">
-			<div class="col-md-12">
+		<div class="d-flex top-list-controls top-sticky-content">
+			<div class="me-auto">
 				<div class="filter-box">
 					<span class="me-2 d-flex">
 						<div class="mr-2">
@@ -156,7 +156,7 @@ sort
 						</select>
 					</span>
 					<div class="btn-group list_columns mr-2">
-						<button role="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown">
+						<button role="button" class="btn btn-default dropdown-toggle" data-bs-toggle="dropdown">
 							{{ trans('messages.columns') }} <span class="caret"></span>
 						</button>
 						<ul class="dropdown-menu dropdown-menu-end">

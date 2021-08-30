@@ -90,20 +90,20 @@
                         </div>
                     </div>
                     <div class="d-flex">
-                        <div class="mr-20">
-                            <h5 class="no-margin text-primary stat-num mb-1">
+                        <div class="me-3">
+                            <h5 class="no-margin text-primary stat-num mb-1 me-3">
                                 {{ number_with_delimiter($source->getList()->readCache('SubscriberCount', 0)) }}
                             </h5>
                             <span class="text-muted2">{{ trans("messages." . Acelle\Library\Tool::getPluralPrase('subscriber', $source->getList()->readCache('SubscriberCount', 0))) }}</span>
                         </div>
-                        <div class="mr-20">
-                            <h5 class="no-margin text-primary stat-num mb-1">
+                        <div class="me-3">
+                            <h5 class="no-margin text-primary stat-num mb-1 me-3">
                                 {{ $source->getList()->readCache('UniqOpenRate', 0) }}%
                             </h5>
                             <span class="text-muted2">{{ trans('messages.open_rate') }}</span>
                         </div>
                         <div>
-                            <h5 class="no-margin text-primary stat-num mb-1">
+                            <h5 class="no-margin text-primary stat-num mb-1 me-3">
                                 {{ $source->getList()->readCache('ClickedRate', 0) }}%
                             </h5>
                             <span class="text-muted2">{{ trans('messages.click_rate') }}</span>

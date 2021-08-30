@@ -30,8 +30,8 @@
         data-url="{{ action('Admin\PlanController@listing') }}"
         per-page="{{ Acelle\Model\Plan::$itemsPerPage }}"
     >
-        <div class="row top-list-controls py-2">
-            <div class="col-md-10">
+        <div class="d-flex top-list-controls top-sticky-content">
+            <div class="me-auto">
                 @if ($plans->count() >= 0)
                     <div class="filter-box">
                         <span class="filter-group">
@@ -57,7 +57,7 @@ search
                 @endif
             </div>
             @can('create', new Acelle\Model\Plan())
-                <div class="col-md-2 text-end">
+                <div class="text-end">
                     <a href="{{ action("Admin\PlanController@wizard") }}" role="button" class="btn btn-secondary modal-action">
                         <span class="material-icons-round">
 add

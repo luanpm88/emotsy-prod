@@ -290,6 +290,7 @@ class AccountController extends Controller
         // Save color scheme
         if ($request->isMethod('post')) {
             $customer->color_scheme = $request->color_scheme;
+            $customer->theme_mode = $request->theme_mode;
             $customer->save();
 
             return view('account.wizardMenuLayout');
@@ -315,5 +316,10 @@ class AccountController extends Controller
     public function activity(Request $request)
     {
         return view('account.activity');
+    }
+
+    public function saveAutoThemeMode(Request $request)
+    {
+        $request->session()->put('customer-auto-theme-mode', $request->theme_mode);
     }
 }

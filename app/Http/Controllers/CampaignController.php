@@ -3,7 +3,6 @@
 namespace Acelle\Http\Controllers;
 
 use Illuminate\Http\Request;
-use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
 use Acelle\Library\Log as MailLog;
 use Illuminate\Support\Facades\Log as LaravelLog;
 use Gate;
@@ -669,6 +668,10 @@ class CampaignController extends Controller
      */
     public function delete(Request $request)
     {
+        if (isSiteDemo()) {
+            return response()->json(["message" => trans('messages.operation_not_allowed_in_demo')], 404);
+        }
+
         $customer = $request->user()->customer;
 
         if (isSiteDemo()) {
@@ -2027,6 +2030,12 @@ class CampaignController extends Controller
     public function updateStats(Request $request, $uid)
     {
         $campaign = Campaign::findByUid($uid);
+
+        // authorize
+        if (!$request->user()->customer->can('update', $campaign)) {
+            return $this->notAuthorized();
+        }
+
         $campaign->updateCache();
         echo $campaign->status;
     }
@@ -2035,5 +2044,39 @@ class CampaignController extends Controller
     {
         $message = StringHelper::base64UrlDecode($request->message);
         return response($message, 200)->header('Content-Type', 'text/plain');
+    }
+
+    public function customPlainOn(Request $request)
+    {
+        $campaign = Campaign::findByUid($request->uid);
+
+        // authorize
+        if (!$request->user()->customer->can('update', $campaign)) {
+            return $this->notAuthorized();
+        }
+
+        $campaign->plain = 'something';
+        $campaign->save();
+
+        return redirect()->action('CampaignController@builderPlainEdit', [
+            'uid' => $campaign->uid,
+        ]);
+    }
+
+    public function customPlainOff(Request $request)
+    {
+        $campaign = Campaign::findByUid($request->uid);
+
+        // authorize
+        if (!$request->user()->customer->can('update', $campaign)) {
+            return $this->notAuthorized();
+        }
+
+        $campaign->plain = null;
+        $campaign->save();
+
+        return redirect()->action('CampaignController@builderPlainEdit', [
+            'uid' => $campaign->uid,
+        ]);
     }
 }

@@ -49,7 +49,7 @@
                         </span>
                         
                     </span>
-                    <div class="desc-menu-log small" style="width:280px;overflow:auto">{{ $notification->message }}</div>
+                    <p class="desc-menu-log small mb-0" style="width:280px;overflow:auto">{{ $notification->message }}</p>
                 </div>
             </div>
         </li>

@@ -1,5 +1,5 @@
 @if ($sources->count() > 0)
-	<table class="table table-box pml-table border-top mt-2"
+	<table class="table table-box pml-table mt-2"
 		current-page="{{ empty(request()->page) ? 1 : empty(request()->page) }}"
 	>
 		@foreach ($sources as $key => $source)
@@ -40,7 +40,7 @@
 							sync
 							</span> {{ trans('messages.source.sync') }}</a>
 					<div class="btn-group">
-						<button role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"><span class="caret ml-0"></span></button>
+						<button role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"></button>
 						<ul class="dropdown-menu dropdown-menu-end">
 							<li>
 								<a

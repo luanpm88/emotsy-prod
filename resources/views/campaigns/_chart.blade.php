@@ -101,6 +101,7 @@ arrow_forward
     </div>
 </div>
 
+
 <script>
     var CampaignsChart = {
         chart: $('#campaignChart'),
@@ -122,7 +123,7 @@ arrow_forward
 
         renderChart: function(data) {
                 // based on prepared DOM, initialize echarts instance
-                var myChart = echarts.init(CampaignsChart.chart[0]);
+                var myChart = echarts.init(CampaignsChart.chart[0], ECHARTS_THEME);
                 var colors = [
                     '#555555',
                     '#626eb2',

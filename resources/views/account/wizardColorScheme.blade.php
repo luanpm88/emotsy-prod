@@ -17,28 +17,44 @@
         <p class="text-center">
             {{ trans('messages.account.color_scheme.into') }}
         </p>
+
+        <div class="row">
+            <div class="col-md-12" style="text-align: center">
+                <label class="mb-3  small text-muted">{{ trans('messages.theme_mode') }}:</label>
+                <div class="mb-4">
+                    @include('layouts.core._theme_mode_control', [
+                        'theme_mode' => Auth::user()->customer->theme_mode,
+                    ])
+                </div>
+            </div>
+        </div>
+
         <div class="text-center">
-            <input type="radio" name="color_scheme" value="default" {{ !Auth::user()->customer->getColorScheme() || Auth::user()->customer->getColorScheme() == 'default' ? 'checked' : '' }} class="color-scheme-select scheme-default" />
-            <input type="radio" name="color_scheme" value="blue" {{ Auth::user()->customer->getColorScheme() == 'blue' ? 'checked' : '' }} class="color-scheme-select scheme-blue" />
-            <input type="radio" name="color_scheme" value="green" {{ Auth::user()->customer->getColorScheme() == 'green' ? 'checked' : '' }} class="color-scheme-select scheme-green" />
-            <input type="radio" name="color_scheme" value="brown" {{ Auth::user()->customer->getColorScheme() == 'brown' ? 'checked' : '' }} class="color-scheme-select scheme-brown" />
-            <input type="radio" name="color_scheme" value="pink" {{ Auth::user()->customer->getColorScheme() == 'pink' ? 'checked' : '' }} class="color-scheme-select scheme-pink" />
-            <input type="radio" name="color_scheme" value="grey" {{ Auth::user()->customer->getColorScheme() == 'grey' ? 'checked' : '' }} class="color-scheme-select scheme-grey" />
-            {{-- <input type="radio" name="color_scheme" value="white" {{ Auth::user()->customer->getColorScheme() == 'white' ? 'checked' : '' }} class="color-scheme-select scheme-white" /> --}}
+            <label class="mb-1 d-block small text-muted">{{ trans('messages.color_scheme') }}:</label>
+
+            <input type="radio" name="color_scheme" title="{{ trans('messages.color_scheme.default') }}" value="default" {{ !Auth::user()->customer->getColorScheme() || Auth::user()->customer->getColorScheme() == 'default' ? 'checked' : '' }} class="xtooltip color-scheme-select scheme-default" />
+            <input type="radio" name="color_scheme" title="{{ trans('messages.color_scheme.blue') }}" value="blue" {{ Auth::user()->customer->getColorScheme() == 'blue' ? 'checked' : '' }} class="xtooltip color-scheme-select scheme-blue" />
+            <input type="radio" name="color_scheme" title="{{ trans('messages.color_scheme.green') }}" value="green" {{ Auth::user()->customer->getColorScheme() == 'green' ? 'checked' : '' }} class="xtooltip color-scheme-select scheme-green" />
+            <input type="radio" name="color_scheme" title="{{ trans('messages.color_scheme.brown') }}" value="brown" {{ Auth::user()->customer->getColorScheme() == 'brown' ? 'checked' : '' }} class="xtooltip color-scheme-select scheme-brown" />
+            <input type="radio" name="color_scheme" title="{{ trans('messages.color_scheme.pink') }}" value="pink" {{ Auth::user()->customer->getColorScheme() == 'pink' ? 'checked' : '' }} class="xtooltip color-scheme-select scheme-pink" />
+            <input type="radio" name="color_scheme" title="{{ trans('messages.color_scheme.grey') }}" value="grey" {{ Auth::user()->customer->getColorScheme() == 'grey' ? 'checked' : '' }} class="xtooltip color-scheme-select scheme-grey" />
+            <input type="radio" name="color_scheme" title="{{ trans('messages.color_scheme.white') }}" value="white" {{ Auth::user()->customer->getColorScheme() == 'white' ? 'checked' : '' }} class="xtooltip color-scheme-select scheme-white" />
         </div>
         <div class="mt-5 text-center">
-            <button class="btn btn-secondary px-4">{{ trans('messages.next') }}</button>
+            <button class="btn btn-primary px-4">{{ trans('messages.next') }}</button>
         </div>
     </form>
 
     <script>
         $(function() {
             $('.color-scheme-select').on('click', function(e) {
+                var value = $(this).val();
                 $("body").removeClass (function (index, className) {
                     return (className.match (/(^|\s)theme-\S+/g) || []).join(' ');
                 });
-                $('body').addClass('theme-' + $(this).val());
+                $('body').addClass('theme-' + value);
             });
+            
             $('#wizardColorScheme').on('submit', function(e) {
                 e.preventDefault();
 
@@ -48,7 +64,7 @@
                     data: $(this).serialize()
                 })
                 .done(function( response ) {
-                    layoutSetupPopup.loadHtml(response);
+                    wizardUserPopup.loadHtml(response);
                 });
             });
         });

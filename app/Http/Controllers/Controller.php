@@ -199,33 +199,6 @@ class Controller extends BaseController
     }
 
     /**
-     * Reload application settings
-     *
-     * @todo only authenticated user can execute this
-     */
-    public function reloadCache()
-    {
-        $next = action('HomeController@index');
-        \Artisan::call('config:cache');
-        sleep(5);
-        return redirect()->away($next);
-    }
-
-    /**
-     * Run remote cronjob
-     *
-     * @return boolean
-     */
-    public function remoteJob($remote_job_token)
-    {
-        if (\Acelle\Model\Setting::get('remote_job_token') === $remote_job_token) {
-            // @todo remote cronjob code here...
-        } else {
-            echo trans('messages.invalid_token');
-        }
-    }
-    
-    /**
      * When user is diabled.
      *
      * @return \Illuminate\Http\Response

@@ -36,8 +36,8 @@
         data-url="{{ action('SendingDomainController@listing') }}"
         per-page="{{ Acelle\Model\SendingDomain::$itemsPerPage }}"
     >
-        <div class="row top-list-controls py-2">
-            <div class="col-md-9">
+        <div class="d-flex top-list-controls top-sticky-content">
+            <div class="me-auto">
                 @if ($items->count() >= 0)
                     <div class="filter-box">
                         <div class="checkbox inline check_all_list">
@@ -79,7 +79,7 @@ search
                 @endif
             </div>
             @if (Auth::user()->customer->can('create', new Acelle\Model\SendingDomain()))
-                <div class="col-md-3 text-end">
+                <div class="text-end">
                     <a href="{{ action('SendingDomainController@create') }}" role="button" class="btn btn-secondary">
                         <span class="material-icons-round">
 add

@@ -22,8 +22,8 @@
         data-url="{{ action('CampaignController@listing') }}"
         per-page="{{ Acelle\Model\MailList::$itemsPerPage }}"
     >
-        <div class="row top-list-controls top-sticky-content py-2">
-            <div class="col-md-9">
+        <div class="d-flex top-list-controls top-sticky-content">
+            <div class="me-auto">
                 @if ($campaigns->count() >= 0)
                     <div class="filter-box">
                         <div class="checkbox inline check_all_list">
@@ -83,7 +83,7 @@ search
                     </div>
                 @endif
             </div>
-            <div class="col-md-3 text-end">
+            <div class="text-end">
                 <a href="{{ action('CampaignController@selectType') }}" role="button" class="btn btn-secondary">
                     <span class="material-icons-round">
 add

@@ -489,4 +489,22 @@ class PageController extends Controller
             'subscriber' => $subscriber,
         ]);
     }
+
+    public function restoreDefault(Request $request)
+    {
+        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+
+        // authorize
+        if (\Gate::denies('update', $list)) {
+            return $this->notAuthorized();
+        }
+
+        $layout = \Acelle\Model\Layout::where('alias', $request->alias)->first();
+        $page = \Acelle\Model\Page::findPage($list, $layout);
+
+        $page->delete();
+
+        $request->session()->flash('alert-success', trans('messages.page.reset.success'));
+        return redirect()->action('PageController@update', array('list_uid' => $list->uid, 'alias' => $layout->alias));
+    }
 }

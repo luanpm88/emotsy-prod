@@ -3,7 +3,6 @@
 namespace Acelle\Http\Controllers;
 
 use Illuminate\Http\Request;
-use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
 use Acelle\Model\Template;
 use Acelle\Library\Rss;
 use Acelle\Model\Setting;
@@ -35,20 +34,20 @@ class TemplateController extends Controller
             $templates = $request->user()->customer->templates();
         } elseif ($request->from == 'gallery') {
             $templates = Template::shared();
-        } else {
-            $templates = Template::shared()
-                ->orWhere('customer_id', '=', $request->user()->customer->id);
         }
+
+        // view
+        $view = $request->view ? $request->view : 'list';
 
         // sort, pagination
         $templates = $templates->search($request->keyword)
             ->categoryUid($request->category_uid)
             ->notAssociated()
             ->orderBy($request->sort_order, $request->sort_direction)
-            ->paginate($request->per_page);
-            
+            ->paginate($request->per_page ? $request->per_page : ($view == 'grid' ? 8 : 15));
+        
 
-        return view('templates._list', [
+        return view('templates._list_' . $view, [
             'templates' => $templates,
         ]);
     }

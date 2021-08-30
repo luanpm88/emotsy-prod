@@ -23,8 +23,8 @@ people
 					data-url="{{ action('SegmentController@listing_subscribers', ['list_uid' => $list->uid, 'uid' => $segment->uid]) }}"
 					per-page="{{ Acelle\Model\Subscriber::$itemsPerPage }}"
 				>
-					<div class="row top-list-controls py-2">
-						<div class="col-md-10">
+					<div class="d-flex top-list-controls top-sticky-content">
+						<div class="me-auto">
 							@if ($subscribers->count() >= 0)
 								<div class="filter-box">
 									<div class="btn-group list_actions me-2" style="display:none">
@@ -135,7 +135,7 @@ search
 								</div>
 							@endif
 						</div>
-						<div class="col-md-2 text-end">
+						<div class="text-end">
 							<a href="{{ action("SubscriberController@create", $list->uid) }}" role="button" class="btn btn-secondary">
 								<span class="material-icons-round">
 add

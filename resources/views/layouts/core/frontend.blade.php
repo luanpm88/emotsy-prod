@@ -6,9 +6,30 @@
 	@include('layouts.core._script_vars')
 
 	@yield('head')
+
+	<script>
+		@if (Auth::user()->customer->theme_mode == 'auto')
+			var ECHARTS_THEME = isDarkMode() ? 'dark' : null
+
+			// auto detect dark-mode
+			$(function() {
+				autoDetechDarkMode('{{ action('AccountController@saveAutoThemeMode') }}');
+			});
+		@else
+			var ECHARTS_THEME = '{{ Auth::user()->customer->theme_mode == 'dark' ? 'dark' : null }}';
+		@endif
+	</script>
 </head>
 <body class="theme-{{ Auth::user()->customer->getColorScheme() }} {{ Auth::user()->customer->getMenuLayout() }}bar
 	{{ Auth::user()->customer->getMenuLayout() }}bar-{{ request()->session()->get('customer-leftbar-state') }}
+
+	@if (Auth::user()->customer->theme_mode == 'auto')
+		@if (request()->session()->get('customer-auto-theme-mode'))
+			mode-{{ request()->session()->get('customer-auto-theme-mode') }}
+		@endif
+	@else
+		mode-{{ Auth::user()->customer->theme_mode }}
+	@endif
 ">
 	@include('layouts.core._menu_frontend')
 
@@ -58,35 +79,39 @@
 	@include('layouts.core._flash')
 
 	<script>
-		// Customer color scheme | menu layout wizard
-		@if (false)
-			var wizardUserPopup;
+		var wizardUserPopup;
 
-			$(function() {
-				wizardUserPopup = new Popup({
-					url: '{{ action('AccountController@wizardColorScheme') }}',
+		$(function() {
+			// auto detect dark mode
+
+
+			// Customer color scheme | menu layout wizard
+			@if (false)
+				$(function() {
+					wizardUserPopup = new Popup({
+						url: '{{ action('AccountController@wizardColorScheme') }}',
+					});
+					wizardUserPopup.load();
 				});
-				wizardUserPopup.load();
-			});
-		@endif
-	</script>
-
-	<script>
-		@if (null !== Session::get('orig_admin_id') && Auth::user()->admin)
-			notify({
-				type: 'warning',
-				message: `{!! trans('messages.current_login_as', ["name" => Auth::user()->displayName()]) !!}<br>{!! trans('messages.click_to_return_to_origin_user', ["link" => action("Admin\AdminController@loginBack")]) !!}`,
-				timeout: false,
-			});
-		@endif
-	
-		@if (null !== Session::get('orig_admin_id') && Auth::user()->admin)
-			notify({
-				type: 'warning',
-				message: `{!! trans('messages.site_is_offline') !!}`,
-				timeout: false,
-			});
-		@endif
+			@endif
+			
+			@if (null !== Session::get('orig_admin_id') && Auth::user()->admin)
+				notify({
+					type: 'warning',
+					message: `{!! trans('messages.current_login_as', ["name" => Auth::user()->displayName()]) !!}<br>{!! trans('messages.click_to_return_to_origin_user', ["link" => action("Admin\AdminController@loginBack")]) !!}`,
+					timeout: false,
+				});
+			@endif
+		
+			@if (null !== Session::get('orig_admin_id') && Auth::user()->admin)
+				notify({
+					type: 'warning',
+					message: `{!! trans('messages.site_is_offline') !!}`,
+					timeout: false,
+				});
+			@endif
+		})
+			
 	</script>
 
 	{!! \Acelle\Model\Setting::get('custom_script') !!}
