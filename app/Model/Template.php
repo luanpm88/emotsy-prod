@@ -751,43 +751,6 @@ class Template extends Model
             }
         });
 
-        // By the way, fix <html>
-        //$content = tinyDocTypeTransform($content);
-        return $content;
-    }
-
-    public function getContentWithTrackingHost(TrackingDomain $domain)
-    {
-        if (is_null($this->uid)) {
-            throw new Exception('Template does not have a UID, cannot transform content');
-        }
-
-        // Replace #1
-        $content = StringHelper::transformUrls($this->content, function ($url) use ($host) {
-            if (parse_url($url, PHP_URL_HOST) === false) {
-                // if url is invalid
-                return $url;
-            }
-
-            if (!is_null(parse_url($url, PHP_URL_HOST))) {
-                // url is with a host like "http://" or "//"
-                return $domain->buildTrackingUrl($url);
-            }
-
-            if (strpos($url, '/') === 0) {
-                // absolute url with leading slash (/) like "/hello/world"
-                return $domain->buildTrackingUrl($url);
-            } elseif (strpos($url, 'data:') === 0) {
-                // base64 image. Like: "data:image/png;base64,iVBOR"
-                return $url;
-            } else {
-                return $url;
-                //throw new Exception("Relative URL found: {$url}. Use getContentWithTransformedAssetsUrls() method first to convert relative URLs into absolute ones");
-            }
-        });
-
-        // By the way, fix <html>
-        $content = tinyDocTypeTransform($content);
         return $content;
     }
 
@@ -1287,7 +1250,7 @@ class Template extends Model
 
     public function updateContent($content)
     {
-        $this->content = tinyDocTypeTransform($content);
+        $this->content = $content;
         $this->save();
     }
 }

@@ -14,6 +14,5 @@ class AddDoctype implements StageInterface
 
         // Call StringHelper::updateHtml in order to have DOCTYPE available
         return StringHelper::updateHtml($html, $closure);
-        //return tinyDocTypeTransform($html);
     }
 }

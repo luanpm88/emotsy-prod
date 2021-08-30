@@ -556,17 +556,6 @@ function checkEmail($email)
     return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
 }
 
-function tinyDocTypeTransform($content)
-{
-    if (stripos(strtolower($content), '<!doctype') === false) {
-        $doctype = '<!DoCtYPe html>';
-    } else {
-        $doctype = '';
-    }
-
-    return $doctype . $content;
-}
-
 function demo_auth()
 {
     $auth = \Acelle\Model\User::getAuthenticateFromFile();
