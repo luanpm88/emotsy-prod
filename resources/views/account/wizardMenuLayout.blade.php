@@ -15,20 +15,9 @@
 
         <div class="text-center my-4">
             <div>
-                <label class="layout-select me-4 position-relative">
-                    <input style="position: absolute;
-                    z-index: 1;
-                    top: 70px;
-                    left: 155px;" type="radio" name="menu_layout" value="top" {{ request()->user()->customer->menu_layout == 'top' || request()->user()->customer->menu_layout == 'none' ? 'checked' : '' }} class="styled mr-2" />
-                    <img src="{{ url('images/layout-menu-top.svg') }}" width="180px" />
-                </label>
-                <label class="layout-select position-relative">
-                    <input style="position: absolute;
-                    z-index: 1;
-                    top: 70px;
-                    left: 155px;" type="radio" name="menu_layout" value="left" {{ request()->user()->customer->menu_layout == 'left' ? 'checked' : '' }} class="styled mr-2"  />
-                    <img src="{{ url('images/layout-menu-left.svg') }}" width="180px" />
-                </label>
+                @include('layouts.core._menu_layout_switch', [
+                    'menu_layout' => request()->user()->customer->menu_layout,
+                ])
             </div>
         </div>
 

@@ -10,8 +10,8 @@
 .page-container {
     transition: all 0.2s ease-in-out;
 }
-.topbar .menu-user-avatar {
-    transform: scale(1.5);
+.menu-user-avatar {
+    transform: scale(1.4);
 }
 .leftbar .default-app-logo {
     margin-top: -20px;
@@ -121,7 +121,7 @@
         top: 12px!important;
     }
     .leftbar .menu-user-avatar {
-        transform: none!important;
+        /* transform: none!important; */
         height: 24px;
         width: 24px;
         display: inline-block;
@@ -174,8 +174,6 @@
     }
     .leftbar-closed .navbar-brand {
         display: none!important;
-    }
-    .leftbar-closed .navbar-main {
     }
     .leftbar-closed .leftbar-hide-menu {
         transform: rotate(180deg);
@@ -333,6 +331,9 @@
     .leftbar .default-app-logo {
         margin-left: 10px;
         margin-top: -2px;
+    }
+    .leftbar .menu-user-avatar {
+        transform: scale(1.4);
     }
 }
 
