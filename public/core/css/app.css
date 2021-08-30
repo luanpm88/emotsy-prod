@@ -3945,6 +3945,7 @@ form.loading input {
     box-shadow: 0 5px 11px -11px rgba(0,0,0,0.3);
     padding: 0.8rem 0;
     border-bottom: solid 1px #eee;
+    align-items: center;
 }
 .leftbar .top-sticky-content {
     top: 0;
