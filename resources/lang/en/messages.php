@@ -3820,4 +3820,5 @@
   'campaign.plain.use_custom_plain_content' => 'Use custom plain content',
   'campaign.plain.automatically_extract' => 'Automatically extract plain content from HTML',
   'campaign.plain.extract_from_html' => 'Extract from HTML content',
+  'search.no_result' => 'There are no search results',
 ) ?>

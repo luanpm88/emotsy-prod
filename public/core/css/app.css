@@ -7324,3 +7324,117 @@ hr {
 .admin-notification-media {
     margin-left: 8px;
 }
+.headbar {
+    width: 100%;
+    margin-bottom: -50px;
+    position: relative;
+}
+.app_search_input {
+    width: 40px;
+    padding: 0;
+    border-radius: 50px;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.04);
+    border-color: #bbb;
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+    height: 40px;
+    color: transparent;
+    text-indent: -9000px;
+}
+.app_search_input + [class^="material-icons"] {
+    color: #aaa;
+    font-size: 22px;
+    display: inline-block;
+    line-height: 10px;
+    margin-left: -35px;
+    background: #fff;
+    margin-top: 2px;
+    height: 30px;
+    padding: 10px 4px;
+    width: 30px;
+    border-radius: 100%;
+    margin-right: 5px;
+}
+.search-control {
+    cursor: pointer;
+}
+.search-control:hover .app_search_input {
+    border-color: #aaa;
+}
+.search-control:hover [class^="material-icons"],
+.app_search_input:focus + [class^="material-icons"] {
+    color: #333;
+}
+.headbar-search-button {
+    font-size: 22px;
+    color: #555!important;
+}
+.search-open .app_search_input {
+    width: 300px;
+    padding: 7px 35px 7px 20px;
+    cursor: initial;
+    text-indent: 0px;
+}
+.search-results {
+    border-radius: 5px;
+    position: absolute;
+    z-index: 20000000000000000000;
+    right: 0;
+    margin-top: 10px;
+    background: #fff;
+    height: 0;
+    transition: all 0.2s ease-in-out;
+    overflow: hidden;
+    transform: scaley(0);
+    transform-origin: top left;
+    min-width: 400px;
+    min-height: 40px;
+    display: block;
+}
+.search-result {
+    padding: 10px 25px;
+    color: #333;
+}
+.search-result.selected {
+    background: #f2f2f2;
+}
+.search-head {
+    font-size: 90%;
+    color: #888;
+    background: #f6f6f6;
+    padding: 5px 15px;
+}
+.search-open .search-results {
+    display: block;
+    height: auto;
+    transform: scaleX(1);
+    max-height: calc(100vh - 100px);
+    overflow: auto;
+}
+body.search-open {
+    overflow: hidden!important;
+}
+.search-box-loading {
+    text-align: center;
+    min-height: 50px;
+}
+.search-box-loading::after {
+    content: 'brightness_4';
+    color: transparent!important;
+    font-family: 'Material Icons Outlined';
+    font-size: 20px;
+    opacity: 1;
+    left: calc(50% - 25px);
+    top: 10px;
+    -webkit-animation: spin 1s linear infinite;
+    -moz-animation: spin 1s linear infinite;
+    animation: spin 1s linear infinite;
+    color: rgb(8, 43, 66);
+    background-image: url(../../images/icons/spinner2.svg);
+    background-repeat: no-repeat;
+    background-position: center center;
+    position: absolute;
+}
+.search-section {
+    position: relative;
+}

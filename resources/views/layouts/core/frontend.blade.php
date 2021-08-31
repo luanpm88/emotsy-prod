@@ -36,6 +36,7 @@
 	@include('layouts.core._middle_bar')
 
 	<main class="container page-container px-3">
+		@include('layouts.core._headbar_frontend')
 		
 		@yield('page_header')
 
