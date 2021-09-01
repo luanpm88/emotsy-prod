@@ -653,9 +653,12 @@ body.mode-dark .search-results {
 body.mode-dark a.search-result {
     color: rgba(255,255,255,0.85);
 }
-body.mode-dark a.search-head {
+body.mode-dark .search-head {
     color: rgba(255,255,255,0.6);
     background: rgba(0,0,0,0.3);
+}
+body.mode-dark a.search-head:hover {
+    background: rgba(0,0,0,0.1);
 }
 body.mode-dark a.search-result:hover {
     color: rgba(255,255,255,0.85);

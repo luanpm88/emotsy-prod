@@ -3824,4 +3824,6 @@
   'search.general' => 'General',
   'search.type_to_search.wording' => 'Enter any keyword to start search',
   'search.empty_result' => 'There are no search results',
+  'search.view_all' => 'View all',
+  'search.go_to_lists' => 'Lists management',
 ) ?>

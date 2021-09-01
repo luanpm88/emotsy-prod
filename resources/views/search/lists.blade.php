@@ -1,10 +1,19 @@
 @if ($lists->total())
-    <a href="javascript:;" class="search-head border-bottom d-block">
-        <label class="fw-600">
-            <span class="material-icons-outlined me-1">
-                fact_check
-                </span> {{ trans('messages.lists') }}
-        </label>
+    <a href="{{ action('MailListController@index', [
+        'keyword' => request()->keyword
+    ]) }}" class="search-head border-bottom d-block">
+        <div class="d-flex">
+            <div class="me-auto">
+                <label class="fw-600">
+                    <span class="material-icons-outlined me-1">
+                        fact_check 
+                        </span> {{ trans('messages.lists') }}
+                </label>
+            </div>
+            <div>
+                {{ $lists->count() }} / {{ $lists->total() }} · {{ trans('messages.search.view_all') }}
+            </div>
+        </div>
     </a>
     @foreach($lists as $list)
         <a href="{{ action('MailListController@overview', ['uid' => $list->uid]) }}" class="search-result border-bottom d-block">

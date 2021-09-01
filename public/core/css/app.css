@@ -7428,10 +7428,11 @@ body.search-open .search-close-button {
 }
 .search-head {
     font-size: 90%;
-    color: #888;
     background: #f6f6f6;
     padding: 5px 15px;
-    pointer-events: none;
+}
+a.search-head:hover {
+    background: #f0f0f0;
 }
 .search-open .search-results {
     display: block;

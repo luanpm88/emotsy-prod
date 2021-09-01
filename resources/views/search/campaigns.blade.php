@@ -1,10 +1,19 @@
 @if ($campaigns->total())
-    <a href="javascript:;" class="search-head border-bottom d-block">
-        <label class="fw-600">
-            <span class="material-icons-outlined me-1">
-                dynamic_feed
-                </span> {{ trans('messages.campaigns') }}
-        </label>
+    <a href="{{ action('CampaignController@index', [
+        'keyword' => request()->keyword
+    ]) }}" class="search-head border-bottom d-block">
+        <div class="d-flex">
+            <div class="me-auto">
+                <label class="fw-600">
+                    <span class="material-icons-outlined me-1">
+                        dynamic_feed 
+                        </span> {{ trans('messages.campaigns') }}
+                </label>
+            </div>
+            <div>
+                {{ $campaigns->count() }} / {{ $campaigns->total() }} · {{ trans('messages.search.view_all') }}
+            </div>
+        </div>
     </a>
     @foreach($campaigns as $campaign)
         <a href="{{ action('CampaignController@show', $campaign->uid) }}" class="search-result border-bottom d-block">

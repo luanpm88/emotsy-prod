@@ -1,10 +1,17 @@
 @if ($subscribers->total())
-    <a href="javascript:;" class="search-head border-bottom d-block">
-        <label class="fw-600">
-            <span class="material-icons-outlined me-1">
-                people
-                </span> {{ trans('messages.subscribers') }}
-        </label>
+    <a href="{{ action('MailListController@index') }}" class="search-head border-bottom d-block">
+        <div class="d-flex">
+            <div class="me-auto">
+                <label class="fw-600">
+                    <span class="material-icons-outlined me-1">
+                        people 
+                        </span> {{ trans('messages.subscribers') }}
+                </label>
+            </div>
+            <div>
+                {{ $subscribers->count() }} / {{ format_number($subscribers->total()) }} · {{ trans('messages.search.go_to_lists') }}
+            </div>
+        </div>
     </a>
     @foreach($subscribers as $subscriber)
         <a href="{{ action('SubscriberController@edit', ['list_uid' => $subscriber->mailList->uid ,'uid' => $subscriber->uid]) }}" class="search-result border-bottom d-block">

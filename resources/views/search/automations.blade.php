@@ -1,10 +1,19 @@
 @if ($automations->total())
-    <a href="javascript:;" class="search-head border-bottom d-block">
-        <label class="fw-600">
-            <span class="material-icons-outlined me-1">
-                account_tree
-                </span> {{ trans('messages.automations') }}
-        </label>
+    <a href="{{ action('Automation2Controller@index', [
+        'keyword' => request()->keyword
+    ]) }}" class="search-head border-bottom d-block">
+        <div class="d-flex">
+            <div class="me-auto">
+                <label class="fw-600">
+                    <span class="material-icons-outlined me-1">
+                        account_tree 
+                        </span> {{ trans('messages.automations') }}
+                </label>
+            </div>
+            <div>
+                {{ $automations->count() }} / {{ format_number($automations->total()) }} · {{ trans('messages.search.view_all') }}
+            </div>
+        </div>
     </a>
     @foreach($automations as $automation)
         <a href="{{ action('Automation2Controller@edit', $automation->uid) }}" class="search-result border-bottom d-block">

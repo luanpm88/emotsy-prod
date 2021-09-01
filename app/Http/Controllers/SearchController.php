@@ -224,12 +224,13 @@ class SearchController extends Controller
     public function campaigns(Request $request)
     {
         $customer = $request->user()->customer;
+        $count = 5;
 
         $campaigns = $customer->campaigns()
             ->search($request->keyword)
             ->filter($request)
             ->orderBy('campaigns.name', 'asc')
-            ->paginate(5);
+            ->paginate($count);
         
         return view('search.campaigns', [
             'keyword' => $request->keyword,
@@ -240,11 +241,12 @@ class SearchController extends Controller
     public function lists(Request $request)
     {
         $customer = $request->user()->customer;
+        $count = 5;
 
         $lists = $customer->mailLists()
             ->search($request->keyword)
             ->orderBy('mail_lists.name', 'asc')
-            ->paginate(5);
+            ->paginate($count);
         
         return view('search.lists', [
             'keyword' => $request->keyword,
@@ -255,11 +257,12 @@ class SearchController extends Controller
     public function automations(Request $request)
     {
         $customer = $request->user()->customer;
+        $count = 5;
 
         $automations = $customer->automation2s()
             ->search($request->keyword)
             ->orderBy('automation2s.name', 'asc')
-            ->paginate(5);
+            ->paginate($count);
         
         return view('search.automations', [
             'keyword' => $request->keyword,
@@ -270,11 +273,12 @@ class SearchController extends Controller
     public function templates(Request $request)
     {
         $customer = $request->user()->customer;
+        $count = 5;
 
         $templates = $customer->templates()
             ->search($request->keyword)
             ->orderBy('templates.name', 'asc')
-            ->paginate(5);
+            ->paginate($count);
         
         return view('search.templates', [
             'keyword' => $request->keyword,
@@ -285,10 +289,11 @@ class SearchController extends Controller
     public function subscribers(Request $request)
     {
         $customer = $request->user()->customer;
+        $count = 5;
 
         $subscribers = $customer->subscribers()
             ->search($request->keyword)
-            ->paginate(5);
+            ->paginate($count);
         
         return view('search.subscribers', [
             'keyword' => $request->keyword,

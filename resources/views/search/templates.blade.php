@@ -1,10 +1,19 @@
 @if ($templates->total())
-    <a href="javascript:;" class="search-head border-bottom d-block">
-        <label class="fw-600">
-            <span class="material-icons-outlined me-1">
-                web
-                </span> {{ trans('messages.templates') }}
-        </label>
+    <a href="{{ action('TemplateController@index', [
+        'keyword' => request()->keyword
+    ]) }}" class="search-head border-bottom d-block">
+        <div class="d-flex">
+            <div class="me-auto">
+                <label class="fw-600">
+                    <span class="material-icons-outlined me-1">
+                        web 
+                        </span> {{ trans('messages.templates') }}
+                </label>
+            </div>
+            <div>
+                {{ $templates->count() }} / {{ $templates->total() }} · {{ trans('messages.search.view_all') }}
+            </div>
+        </div>
     </a>
     @foreach($templates as $template)
         <a href="{{ action('TemplateController@index') }}" class="search-result border-bottom d-block">
