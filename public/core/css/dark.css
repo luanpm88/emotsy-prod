@@ -687,3 +687,14 @@ body.mode-dark .source_type {
 body.mode-dark .source_type:hover {
     background: rgba(255,255,255,0.2);
 }
+body.mode-dark .select2-selection--single:not([class*=bg-]),
+body.mode-dark .select2-selection--multiple:not([class*=bg-]):not([class*=border-]) {
+    background: rgba(255,255,255,0.0);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+body.mode-dark .select2-container--default .select2-selection--multiple .select2-selection__choice {
+    background: rgba(255,255,255,0.1);
+}
+body.mode-dark  .select2-container--default .select2-search--inline .select2-search__field {
+    color: rgba(255,255,255,0.85);
+}

@@ -11,7 +11,7 @@
 @section('content')
     @include("lists._menu")
 
-    <div class="row">
+    <div class="row mt-4">
         <div class="col-sm-12 col-md-6 col-lg-6">
             <div class="sub-section">
                 <form enctype="multipart/form-data"  action="{{ action('SubscriberController@update', ['list_uid' => $list->uid, "uid" => $subscriber->uid]) }}" method="POST" class="form-validate-jqueryz">
