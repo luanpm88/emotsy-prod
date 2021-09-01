@@ -192,14 +192,14 @@
 
         scrollUp: function() {
             TopSearchBar.getResultsBox().animate({
-                scrollTop: TopSearchBar.getResultsBox().scrollTop() + TopSearchBar.getSelected().height()*3
-            }, 200);
+                scrollTop: TopSearchBar.getResultsBox().scrollTop() + TopSearchBar.getSelected().height()*4
+            }, 100);
         },
 
         scrollDown: function() {
             TopSearchBar.getResultsBox().animate({
-                scrollTop: TopSearchBar.getResultsBox().scrollTop() - TopSearchBar.getSelected().height()*3
-            }, 200);
+                scrollTop: TopSearchBar.getResultsBox().scrollTop() - TopSearchBar.getSelected().height()*4
+            }, 100);
         },
 
         findNext: function() {

@@ -8,7 +8,7 @@
     </a>
     @foreach($results as $result)
         <a href="{{ $result['item']['url'] }}" class="search-result border-bottom d-block">
-            <label class="">
+            <label class="fw-600">
                 @foreach($result['item']['names'] as $name)
                     <span class="search-name">{{ $name }}</span>
                 @endforeach
