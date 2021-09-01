@@ -1,5 +1,5 @@
 @if (count($results))
-    <a href="" class="search-head border-bottom d-block">
+    <a href="javascript:;" class="search-head border-bottom d-block">
         <label class="fw-600">
             <span class="material-icons-outlined me-1">
                 manage_search 

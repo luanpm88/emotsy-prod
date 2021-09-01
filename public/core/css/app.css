@@ -7417,7 +7417,6 @@ body.search-open .search-close-button {
 .search-result {
     padding: 10px 25px;
     color: #333;
-    font-weight: 600;
     font-size: 95%;
 }
 .search-result:hover {
@@ -7438,7 +7437,7 @@ body.search-open .search-close-button {
     display: block;
     height: auto;
     transform: scaleX(1);
-    max-height: calc(100vh - 100px);
+    max-height: calc(100vh - 150px);
     overflow: auto;
 }
 body.search-open {

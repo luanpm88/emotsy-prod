@@ -48,7 +48,13 @@ class CampaignController extends Controller
      */
     public function listing(Request $request)
     {
-        $campaigns = Campaign::search($request)->paginate($request->per_page);
+        $customer = $request->user()->customer;
+
+        $campaigns = $customer->campaigns()
+            ->search($request->keyword)
+            ->filter($request)
+            ->orderBy($request->sort_order, $request->sort_direction)
+            ->paginate($request->per_page);
 
         return view('campaigns._list', [
             'campaigns' => $campaigns,

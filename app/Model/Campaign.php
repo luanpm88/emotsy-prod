@@ -833,27 +833,17 @@ class Campaign extends Model
      *
      * @return collect
      */
-    public static function filter($request)
+    public static function scopeFilter($query, $request)
     {
-        $customer = $request->user()->customer;
-        $query = self::where('customer_id', '=', $customer->id);
-
         // Get campaign from ... (all|normal|automated)
         if ($request->source == 'template') {
             $query = $query->where('html', '!=', null);
-        }
-
-        // Keyword
-        if (!empty(trim($request->keyword))) {
-            $query = $query->where('name', 'like', '%'.$request->keyword.'%');
         }
 
         // Status
         if (!empty(trim($request->statuses))) {
             $query = $query->whereIn('status', explode(',', $request->statuses));
         }
-
-        return $query;
     }
 
     /**
@@ -861,13 +851,12 @@ class Campaign extends Model
      *
      * @return collect
      */
-    public static function search($request)
+    public static function scopeSearch($query, $keyword)
     {
-        $query = self::filter($request);
-
-        $query = $query->orderBy($request->sort_order, $request->sort_direction);
-
-        return $query;
+        // Keyword
+        if (!empty(trim($keyword))) {
+            $query = $query->where('name', 'like', '%'.$keyword.'%');
+        }
     }
 
     /**

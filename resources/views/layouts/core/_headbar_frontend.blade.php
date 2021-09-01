@@ -254,7 +254,12 @@
 
             TopSearchBar.getGeneralSection().load({
                 callback: function() {
-                    _this.checkEmptyResult();
+                    TopSearchBar.getCampaignsSection().load({
+                        callback: function() {
+                            _this.checkEmptyResult();
+                        }
+                    });
+                    
                 }
             });
         },
@@ -283,7 +288,7 @@
                     }
                 });
             }
-            return campaignsSection;
+            return this.campaignsSection;
         },
     };
 

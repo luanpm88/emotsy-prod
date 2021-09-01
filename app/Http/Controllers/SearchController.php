@@ -49,6 +49,7 @@ class SearchController extends Controller
                     trans('messages.invoices'),
                     trans('messages.transactions'),
                     trans('messages.subscription.logs'),
+                    trans('messages.payment_method'),
                 ],
             ],
             [
@@ -94,6 +95,14 @@ class SearchController extends Controller
                 'keywords' => [],
             ],
             [
+                'names' => [trans('messages.templates'), trans('messages.gallery')],
+                'url' => action('TemplateController@index', [
+                    'view' => 'grid',
+                    'from' => 'gallery',
+                ]),
+                'keywords' => [],
+            ],
+            [
                 'names' => [trans('messages.products')],
                 'url' => action('ProductController@index'),
                 'keywords' => [],
@@ -136,6 +145,7 @@ class SearchController extends Controller
                     foreach ($keywords as $keyword) {
                         $exist = false;
 
+                        // search by names
                         foreach ($item['names'] as $name) {
                             $name = trim(strtolower($name));
                             if (strpos($name, $keyword) !== false) {
@@ -144,6 +154,7 @@ class SearchController extends Controller
                             }
                         }
 
+                        // search by keywords
                         if (isset($item['keywords'])) {
                             foreach ($item['keywords'] as $k) {
                                 $k = trim(strtolower($k));
@@ -187,10 +198,17 @@ class SearchController extends Controller
     
     public function campaigns(Request $request)
     {
-        sleep(1);
+        $customer = $request->user()->customer;
+
+        $campaigns = $customer->campaigns()
+            ->search($request->keyword)
+            ->filter($request)
+            ->orderBy('campaigns.name', 'asc')
+            ->paginate($request->per_page);
         
         return view('search.campaigns', [
             'keyword' => $request->keyword,
+            'campaigns' => $campaigns,
         ]);
     }
 }
