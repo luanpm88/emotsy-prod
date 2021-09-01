@@ -229,7 +229,6 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     // Search
     Route::get('/search/campaigns', 'SearchController@campaigns');
     Route::get('/search/general', 'SearchController@general');
-    Route::get('/search', 'SearchController@index');
 
     Route::get('/', 'HomeController@index');
     Route::get('frontend/docs/api/v1', 'Controller@docsApiV1');    

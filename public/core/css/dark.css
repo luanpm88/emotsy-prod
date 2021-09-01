@@ -640,3 +640,47 @@ body.mode-dark .template-create-sticky {
     box-shadow: 0 15px 11px -11px rgba(0,0,0,0.1);
     padding: 17px 0;
 }
+body.mode-dark .app_search_input + [class^="material-icons"] {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: rgba(255,255,255,0.7);
+}
+body.mode-dark .search-results {
+    background: rgba(0,0,0,0.3);
+    border-color: rgba(255,255,255,0.1);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+}
+body.mode-dark a.search-result {
+    color: rgba(255,255,255,0.85);
+}
+body.mode-dark a.search-head {
+    color: rgba(255,255,255,0.6);
+    background: rgba(0,0,0,0.3);
+}
+body.mode-dark a.search-result:hover {
+    color: rgba(255,255,255,0.85);
+    background: rgba(255,255,255,0.05);
+}
+body.mode-dark a.search-result.selected {
+    color: rgba(255,255,255,0.85);
+    background: rgba(255,255,255,0.05);
+}
+body.mode-dark.search-open .app_search_input + [class^="material-icons"] {
+    background: transparent;
+}
+body.mode-dark.search-open .app_search_input:hover {
+    border-color: rgba(255, 255, 255, 0.2)!important;
+}
+body.mode-dark .search-close-button {
+    color: rgba(255,255,255,0.4)!important;
+}
+body.mode-dark .search-close-button:hover {
+    color: rgba(255,255,255,0.85)!important;
+}
+body.mode-dark .source_type {
+    background: rgba(255,255,255,0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+body.mode-dark .source_type:hover {
+    background: rgba(255,255,255,0.2);
+}

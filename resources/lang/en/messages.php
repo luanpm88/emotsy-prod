@@ -3821,4 +3821,7 @@
   'campaign.plain.automatically_extract' => 'Automatically extract plain content from HTML',
   'campaign.plain.extract_from_html' => 'Extract from HTML content',
   'search.no_result' => 'There are no search results',
+  'search.general' => 'General',
+  'search.type_to_search.wording' => 'Enter any keyword to start search',
+  'search.empty_result' => 'There are no search results',
 ) ?>

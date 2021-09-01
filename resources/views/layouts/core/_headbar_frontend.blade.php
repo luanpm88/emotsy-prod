@@ -1,6 +1,9 @@
 <div class="headbar">
     <div class="d-flex">
-        <div class="app_search_box py-2 ms-auto">
+        <div class="app_search_box py-2 ms-auto d-flex align-items-center mt-2">
+            <a href="javascript:;" class="search-close-button me-2">
+                <span class="material-icons-round fs-4">close</span>
+            </a>
             <div class="search-control d-flex justify-content-center">
                 <input class="app_search_input form-control" type="text" placeholder="Type to search" />
                 <span class="material-icons-round">
@@ -8,7 +11,6 @@
                 </span>
             </div>
             <div class="search-results shadow border">
-                <div class="list-loading"></div>
             </div>
         </div>
     </div>
@@ -17,22 +19,47 @@
 <script>
     class SearchSection {
         constructor(options) {
+            this.id = '_' + Math.random().toString(36).substr(2, 9);
+
             for (const [key, value] of Object.entries(options)) {
                 this[key] = value;
             }
         }
 
+        getContainer() {
+            // check exist
+            if (!$('#' + this.id).length) {
+                TopSearchBar.getResultsBox().append(`<div id="`+this.id+`"></div>`);
+            }
+
+            return $('#' + this.id);
+        }
+
         load(options) {
             var _this = this;
 
-            // loading spinner
-            _this.hook.html(`<div class="search-box-loading"></div>`);
+            if (typeof(options) !== 'undefined') {
+                for (const [key, value] of Object.entries(options)) {
+                    this[key] = value;
+                }
+            }
 
-            $.ajax({
+            // loading spinner
+            if (typeof(_this.before) != 'undefined') {
+                _this.before();
+            }
+
+            if(this.xhr != null && this.xhr.readyState != 4){
+                this.xhr.abort();
+            }
+            this.xhr = $.ajax({
                 url: _this.url,
-                type: 'GET'
+                type: 'GET',
+                data: {
+                    keyword: TopSearchBar.getKeyword()
+                }
             }).done(function(response) {
-                _this.hook.replaceWith(response);
+                _this.getContainer().html(response);
 
                 if (typeof(_this.callback) != 'undefined') {
                     _this.callback();
@@ -42,8 +69,6 @@
     }
 
     var TopSearchBar = {
-        url: '{{ action('SearchController@index') }}',
-
         getSearchBox: function() {
             return $('.app_search_box');
         },
@@ -51,17 +76,13 @@
         getSearchInput: function() {
             return $('.app_search_input');
         },
-        
+
         getSearchControl: function() {
             return $('.search-control');
         },
 
         getResultsBox: function() {
             return $('.search-results');
-        },
-
-        getResultsList: function() {
-            return $('.search-results-list');
         },
 
         getResults: function() {
@@ -75,6 +96,7 @@
         openSearch: function() {
             $('body').addClass('search-open');
             TopSearchBar.getSearchInput().focus();
+            TopSearchBar.getSearchInput()[0].setSelectionRange(0, TopSearchBar.getSearchInput()[0].value.length)
         },
 
         closeSearch: function() {
@@ -85,6 +107,12 @@
             return $('body').hasClass('search-open');
         },
 
+        getKeyword: function() {
+            return TopSearchBar.getSearchInput().val().trim();
+        },
+
+
+
         unselect: function() {
             if (TopSearchBar.getSelected().length) {
                 TopSearchBar.getSelected().removeClass('selected');
@@ -92,9 +120,15 @@
         },
 
         go: function() {
-            if (TopSearchBar.getSelected().length) {
-                window.location = TopSearchBar.getSelected().attr('href');
+            if (!TopSearchBar.getResults().length) {
+                return;
             }
+
+            if (!TopSearchBar.getSelected().length) {
+                TopSearchBar.select(TopSearchBar.getResults().first());
+            }
+
+            window.location = TopSearchBar.getSelected().attr('href');
         },
 
         select: function(result) {
@@ -120,7 +154,7 @@
         },
 
         moveUp: function() {
-            if (!TopSearchBar.getResultsList().length) {
+            if (!TopSearchBar.getResults().length) {
                 return;
             }
 
@@ -148,8 +182,12 @@
             }, 200);
         },
 
+        findNext: function() {
+            return TopSearchBar.getSelected().nextAll('.search-result').first();
+        },
+
         moveDown: function() {
-            if (!TopSearchBar.getResultsList().length) {
+            if (!TopSearchBar.getResults().length) {
                 return;
             }
 
@@ -158,28 +196,95 @@
                 return;
             }
 
-            if (!TopSearchBar.getSelected().nextAll('.search-result').length) {
+            if (!TopSearchBar.findNext().length) {
                 return;
             }
 
-            TopSearchBar.select(TopSearchBar.getSelected().nextAll('.search-result').first());
+            TopSearchBar.select(TopSearchBar.findNext());
+        },
+
+        showNoKeyword: function() {
+            TopSearchBar.getResultsBox().html(`
+                <div class="no-keyword-alert">
+                    <div class="py-4 text-center">
+                        <div>
+                            <span class="material-icons-outlined fs-1 mb-2 text-muted2 me-2">
+                                category
+                            </span>
+                        </div>
+                        <span class="line-1 text-muted2 px-4">
+                            {!! trans('messages.search.type_to_search.wording') !!}
+                        </span>
+                    </div>
+                </div>
+            `);
+        },
+
+        hideNoKeyword: function() {
+            TopSearchBar.getResultsBox().find('.no-keyword-alert').remove();
+        },
+
+        checkEmptyResult: function() {
+            if (!this.getResults().length) {
+                TopSearchBar.getResultsBox().html(`
+                    <div class="empty-result-alert">
+                        <div class="py-3 text-center">
+                            <span class="line-1 text-muted2 px-4">
+                                <span class="material-icons-outlined mb-2 me-2">
+                                    feedback
+                                </span> {!! trans('messages.search.empty_result') !!}
+                            </span>
+                        </div>
+                    </div>
+                `);
+            } else {
+                TopSearchBar.getResultsBox().find('.empty-result-alert').remove();
+            }
         },
 
         search: function() {
-            // copy
-            if(TopSearchBar.xhr != null && TopSearchBar.xhr.readyState != 4){
-                TopSearchBar.xhr.abort();
+            var _this = this;
+
+            if (!TopSearchBar.getKeyword()) {
+                TopSearchBar.showNoKeyword();
+                return;
+            } else {
+                TopSearchBar.hideNoKeyword();
             }
-            TopSearchBar.xhr = $.ajax({
-                url: TopSearchBar.url,
-                type: 'GET',
-                data: {
-                    keyword: TopSearchBar.getSearchInput().val()
+
+            TopSearchBar.getGeneralSection().load({
+                callback: function() {
+                    _this.checkEmptyResult();
                 }
-            }).done(function(response) {
-                TopSearchBar.getResultsBox().html(response);
             });
-        }
+        },
+
+        generalSection: null,
+
+        getGeneralSection: function() {
+            if (this.generalSection == null) {
+                this.generalSection = new SearchSection({
+                    url: '{{ action('SearchController@general') }}',
+                });
+            }
+
+            return this.generalSection;
+        },
+
+        campaignsSection: null,
+
+        getCampaignsSection: function() {
+            if (this.campaignsSection == null) {
+                this.campaignsSection = new SearchSection({
+                    url: '{{ action('SearchController@campaigns') }}',
+                    before: function() {
+                    },
+                    callback: function() {
+                    }
+                });
+            }
+            return campaignsSection;
+        },
     };
 
     $(function() {
@@ -193,6 +298,10 @@
                 return;
             }
             TopSearchBar.search();
+        });
+
+        $('.search-close-button').on('click', function() {
+            TopSearchBar.closeSearch();
         });
 
         // clid ouside hide search box

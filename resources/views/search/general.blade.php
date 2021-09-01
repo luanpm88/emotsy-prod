@@ -1,25 +1,21 @@
-<a href="" class="search-head border-bottom d-block">
-    <label class="fw-600">
-        <span class="material-icons-outlined me-1">
-            add 
-            </span> Content creatation
-    </label>
-</a>
-<a href="" class="search-result border-bottom d-block">
-    <label class="fw-600">
-        Campaigns · create
-    </label>
-    <p class="desc text-muted mt-1 mb-0">Quick way to design email and send it to your subscribers.</p>
-</a>
-<a href="" class="search-result border-bottom d-block">
-    <label class="fw-600">
-        Lists · create
-    </label>
-    <p class="desc text-muted mt-1 mb-0">Quick way to design email and send it to your subscribers.</p>
-</a>
-<a href="" class="search-result border-bottom d-block">
-    <label class="fw-600">
-        Subscribers · create
-    </label>
-    <p class="desc text-muted mt-1 mb-0">Quick way to design email and send it to your subscribers.</p>
-</a>
+@if (count($results))
+    <a href="" class="search-head border-bottom d-block">
+        <label class="fw-600">
+            <span class="material-icons-outlined me-1">
+                manage_search 
+                </span> {{ trans('messages.search.general') }}
+        </label>
+    </a>
+    @foreach($results as $result)
+        <a href="{{ $result['item']['url'] }}" class="search-result border-bottom d-block">
+            <label class="">
+                @foreach($result['item']['names'] as $name)
+                    <span class="search-name">{{ $name }}</span>
+                @endforeach
+            </label>
+            @if (isset($result['item']['desc']))
+                <p class="desc text-muted mt-1 mb-0">{{ $result['item']['desc'] }}</p>
+            @endif
+        </a>
+    @endforeach
+@endif
