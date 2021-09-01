@@ -124,6 +124,31 @@ class SearchController extends Controller
                     trans('messages.log'),
                 ],
             ],
+            [
+                'names' => [trans('messages.sending_domains')],
+                'url' => action('SendingDomainController@index'),
+                'keywords' => [],
+            ],
+            [
+                'names' => [trans('messages.sending_domains'), trans('messages.add')],
+                'url' => action('SendingDomainController@create'),
+                'keywords' => [],
+            ],
+            [
+                'names' => [trans('messages.tracking_domains')],
+                'url' => action('TrackingDomainController@index'),
+                'keywords' => [],
+            ],
+            [
+                'names' => [trans('messages.tracking_domains'), trans('messages.add')],
+                'url' => action('TrackingDomainController@create'),
+                'keywords' => [],
+            ],
+            [
+                'names' => [trans('messages.blacklist')],
+                'url' => action('BlacklistController@index'),
+                'keywords' => [],
+            ],
         ];
 
         // search
