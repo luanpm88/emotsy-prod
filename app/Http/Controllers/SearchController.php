@@ -204,11 +204,70 @@ class SearchController extends Controller
             ->search($request->keyword)
             ->filter($request)
             ->orderBy('campaigns.name', 'asc')
-            ->paginate($request->per_page);
+            ->paginate(5);
         
         return view('search.campaigns', [
             'keyword' => $request->keyword,
             'campaigns' => $campaigns,
+        ]);
+    }
+
+    public function lists(Request $request)
+    {
+        $customer = $request->user()->customer;
+
+        $lists = $customer->mailLists()
+            ->search($request->keyword)
+            ->orderBy('mail_lists.name', 'asc')
+            ->paginate(5);
+        
+        return view('search.lists', [
+            'keyword' => $request->keyword,
+            'lists' => $lists,
+        ]);
+    }
+
+    public function automations(Request $request)
+    {
+        $customer = $request->user()->customer;
+
+        $automations = $customer->automation2s()
+            ->search($request->keyword)
+            ->orderBy('automation2s.name', 'asc')
+            ->paginate(5);
+        
+        return view('search.automations', [
+            'keyword' => $request->keyword,
+            'automations' => $automations,
+        ]);
+    }
+
+    public function templates(Request $request)
+    {
+        $customer = $request->user()->customer;
+
+        $templates = $customer->templates()
+            ->search($request->keyword)
+            ->orderBy('templates.name', 'asc')
+            ->paginate(5);
+        
+        return view('search.templates', [
+            'keyword' => $request->keyword,
+            'templates' => $templates,
+        ]);
+    }
+
+    public function subscribers(Request $request)
+    {
+        $customer = $request->user()->customer;
+
+        $subscribers = $customer->subscribers()
+            ->search($request->keyword)
+            ->paginate(5);
+        
+        return view('search.subscribers', [
+            'keyword' => $request->keyword,
+            'subscribers' => $subscribers,
         ]);
     }
 }

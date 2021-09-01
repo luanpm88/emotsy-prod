@@ -3,7 +3,7 @@
         <label class="fw-600">
             <span class="material-icons-outlined me-1">
                 dynamic_feed
-                </span> Campaigns
+                </span> {{ trans('messages.campaigns') }}
         </label>
     </a>
     @foreach($campaigns as $campaign)
@@ -14,12 +14,21 @@
                         {{ $campaign->name }}
                     </label>
                     <p class="desc text-muted mt-1 mb-0">
-                        <span class="fw-600">10</span>/<span class="fw-600">513</span> sent  ·  
-                        <span class="fw-600"> 66.09% </span> open rate    ·  
-                        <span class="fw-600">70.39%</span>click rate</p>
+                        @if ($campaign->status != 'new')
+                        
+                            <span class="fw-600">{{ $campaign->isSending() ? number_with_delimiter($campaign->deliveredCount()) : number_with_delimiter($campaign->readCache('DeliveredCount', 0)) }}</span>
+                            /
+                            <span class="fw-600">{{ number_with_delimiter($campaign->readCache('SubscriberCount', 0))  }}</span>
+                            ·  
+                            <span class="fw-600"> {{ number_to_percentage($campaign->readCache('UniqOpenRate')) }} </span> {{ trans('messages.open_rate') }}
+                            ·  
+                            <span class="fw-600">{{ number_to_percentage($campaign->readCache('ClickedRate')) }}</span> {{ trans('messages.click_rate') }}
+                        @else
+                            {{ number_with_delimiter($campaign->readCache('SubscriberCount')) }} {{ trans('messages.recipients') }}
+                        @endif
+                    </p>
                 </div>
             </div>
-                
         </a>
     @endforeach
 @endif

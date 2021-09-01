@@ -29,7 +29,7 @@
         getContainer() {
             // check exist
             if (!$('#' + this.id).length) {
-                TopSearchBar.getResultsBox().append(`<div id="`+this.id+`"></div>`);
+                TopSearchBar.getResultsBox().append(`<div class="search-section" id="`+this.id+`"></div>`);
             }
 
             return $('#' + this.id);
@@ -132,6 +132,10 @@
         },
 
         select: function(result) {
+            if (result == null) {
+                return;
+            }
+
             TopSearchBar.unselect();
             result.addClass('selected');
 
@@ -153,6 +157,22 @@
             }
         },
 
+        findPrev: function() {
+            // current section
+            if (TopSearchBar.getSelected().prevAll('.search-result').length) {
+                return TopSearchBar.getSelected().prevAll('.search-result').first();
+            }
+
+            // next section
+            if (TopSearchBar.getSelected().closest('.search-section').prevAll('.search-section').length) {
+                if (TopSearchBar.getSelected().closest('.search-section').prevAll('.search-section').find('.search-result').length) {
+                    return TopSearchBar.getSelected().closest('.search-section').prevAll('.search-section').find('.search-result').last();
+                }
+            }
+
+            return null;
+        },
+
         moveUp: function() {
             if (!TopSearchBar.getResults().length) {
                 return;
@@ -163,11 +183,11 @@
                 return;
             }
 
-            if (!TopSearchBar.getSelected().prevAll('.search-result').length) {
+            if (!TopSearchBar.findPrev() == null) {
                 return;
             }
 
-            TopSearchBar.select(TopSearchBar.getSelected().prevAll('.search-result').first());
+            TopSearchBar.select(TopSearchBar.findPrev());
         },
 
         scrollUp: function() {
@@ -183,7 +203,19 @@
         },
 
         findNext: function() {
-            return TopSearchBar.getSelected().nextAll('.search-result').first();
+            // current section
+            if (TopSearchBar.getSelected().nextAll('.search-result').length) {
+                return TopSearchBar.getSelected().nextAll('.search-result').first();
+            }
+
+            // next section
+            if (TopSearchBar.getSelected().closest('.search-section').nextAll('.search-section').length) {
+                if (TopSearchBar.getSelected().closest('.search-section').nextAll('.search-section').find('.search-result').length) {
+                    return TopSearchBar.getSelected().closest('.search-section').nextAll('.search-section').find('.search-result').first();
+                }
+            }
+
+            return null;
         },
 
         moveDown: function() {
@@ -196,7 +228,7 @@
                 return;
             }
 
-            if (!TopSearchBar.findNext().length) {
+            if (!TopSearchBar.findNext() == null) {
                 return;
             }
 
@@ -252,14 +284,35 @@
                 TopSearchBar.hideNoKeyword();
             }
 
+            // 1. search general
             TopSearchBar.getGeneralSection().load({
                 callback: function() {
+                    // 2. search campaigns
                     TopSearchBar.getCampaignsSection().load({
                         callback: function() {
-                            _this.checkEmptyResult();
+                            // 3. search lists
+                            TopSearchBar.getListsSection().load({
+                                callback: function() {
+                                    // 4. search susbcribers
+                                    TopSearchBar.getSubscribersSection().load({
+                                        callback: function() {
+                                            // 5. search automations
+                                            TopSearchBar.getAutomationsSection().load({
+                                                callback: function() {
+                                                    // 6. search templates
+                                                    TopSearchBar.getTemplatesSection().load({
+                                                        callback: function() {
+                                                            _this.checkEmptyResult();
+                                                        }
+                                                    });
+                                                }
+                                            });
+                                        }
+                                    });
+                                }
+                            });
                         }
                     });
-                    
                 }
             });
         },
@@ -282,13 +335,53 @@
             if (this.campaignsSection == null) {
                 this.campaignsSection = new SearchSection({
                     url: '{{ action('SearchController@campaigns') }}',
-                    before: function() {
-                    },
-                    callback: function() {
-                    }
                 });
             }
             return this.campaignsSection;
+        },
+
+        listsSection: null,
+
+        getListsSection: function() {
+            if (this.listsSection == null) {
+                this.listsSection = new SearchSection({
+                    url: '{{ action('SearchController@lists') }}',
+                });
+            }
+            return this.listsSection;
+        },
+
+        automationsSection: null,
+
+        getAutomationsSection: function() {
+            if (this.automationsSection == null) {
+                this.automationsSection = new SearchSection({
+                    url: '{{ action('SearchController@automations') }}',
+                });
+            }
+            return this.automationsSection;
+        },
+
+        templatesSection: null,
+
+        getTemplatesSection: function() {
+            if (this.templatesSection == null) {
+                this.templatesSection = new SearchSection({
+                    url: '{{ action('SearchController@templates') }}',
+                });
+            }
+            return this.templatesSection;
+        },
+
+        subscribersSection: null,
+
+        getSubscribersSection: function() {
+            if (this.subscribersSection == null) {
+                this.subscribersSection = new SearchSection({
+                    url: '{{ action('SearchController@subscribers') }}',
+                });
+            }
+            return this.subscribersSection;
         },
     };
 

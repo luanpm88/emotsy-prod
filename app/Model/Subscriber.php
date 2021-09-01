@@ -1063,28 +1063,7 @@ class Subscriber extends Model
      */
     public function scopeFilter($query, $request)
     {
-        /* does not support searching on subscriber fields, for the sake of performance
-        $query = $query->leftJoin('subscriber_fields', 'subscribers.id', '=', 'subscriber_fields.subscriber_id')
-            ->leftJoin('mail_lists', 'subscribers.mail_list_id', '=', 'mail_lists.id');
-        */
-        $query = $query->leftJoin('mail_lists', 'subscribers.mail_list_id', '=', 'mail_lists.id');
-
-        // Email verification join
-        $query = $query->leftJoin('email_verifications', 'email_verifications.subscriber_id', '=', 'subscribers.id');
-
         if (isset($request)) {
-            // Keyword
-            if (!empty(trim($request->keyword))) {
-                foreach (explode(' ', trim($request->keyword)) as $keyword) {
-                    $query = $query->where(function ($q) use ($keyword) {
-                        $q->orwhere('subscribers.email', 'like', '%'.$keyword.'%');
-                        /* does not support searching on subscriber fields, for the sake of performance
-                        ->orWhere('subscriber_fields.value', 'like', '%'.$keyword.'%');
-                        */
-                    });
-                }
-            }
-
             // filters
             $filters = $request->filters;
             if (!empty($filters)) {
@@ -1157,22 +1136,29 @@ class Subscriber extends Model
      *
      * @return collect
      */
-    public function scopeSearch($query, $request, $customer = null)
+    public function scopeSearch($query, $keyword)
     {
         $query = self::select('subscribers.*', 'email_verifications.result as verify_result');
 
-        // Filter by customer
-        if (!isset($customer)) {
-            $customer = $request->user()->customer;
-        }
-        $query = $query->where('mail_lists.customer_id', '=', $customer->id);
+        /* does not support searching on subscriber fields, for the sake of performance
+        $query = $query->leftJoin('subscriber_fields', 'subscribers.id', '=', 'subscriber_fields.subscriber_id')
+            ->leftJoin('mail_lists', 'subscribers.mail_list_id', '=', 'mail_lists.id');
+        */
+        $query = $query->leftJoin('mail_lists', 'subscribers.mail_list_id', '=', 'mail_lists.id');
 
-        // Filter
-        $query = $query->filter($request);
+        // Email verification join
+        $query = $query->leftJoin('email_verifications', 'email_verifications.subscriber_id', '=', 'subscribers.id');
 
-        // Order
-        if (isset($request->sort_order)) {
-            $query = $query->orderBy($request->sort_order, $request->sort_direction);
+        // Keyword
+        if (!empty(trim($keyword))) {
+            foreach (explode(' ', trim($keyword)) as $keyword) {
+                $query = $query->where(function ($q) use ($keyword) {
+                    $q->orwhere('subscribers.email', 'like', '%'.$keyword.'%');
+                    /* does not support searching on subscriber fields, for the sake of performance
+                    ->orWhere('subscriber_fields.value', 'like', '%'.$keyword.'%');
+                    */
+                });
+            }
         }
 
         return $query;

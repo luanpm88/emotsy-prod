@@ -32,7 +32,13 @@ class MailListController extends Controller
      */
     public function listing(Request $request)
     {
-        $lists = \Acelle\Model\MailList::search($request)->paginate($request->per_page);
+        $customer = $request->user()->customer;
+
+        $lists = $customer->mailLists()
+            ->search($request->keyword)
+            ->orderBy($request->sort_order, $request->sort_direction)
+            ->paginate($request->per_page);
+
         $settings = [
             'list.clone_for_others' => Setting::isYes('list.clone_for_others')
         ];

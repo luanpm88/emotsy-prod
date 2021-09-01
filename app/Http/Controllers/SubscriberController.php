@@ -17,7 +17,11 @@ class SubscriberController extends Controller
      */
     public function search($list, $request)
     {
-        $subscribers = \Acelle\Model\Subscriber::search($request)
+        $customer = $request->user()->customer;
+        $subscribers = $customer->subscribers()
+            ->search($request->keyword)
+            ->filter($request)
+            ->orderBy($request->sort_order, $request->sort_direction)
             ->where('mail_list_id', '=', $list->id);
 
         return $subscribers;

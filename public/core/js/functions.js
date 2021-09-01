@@ -547,7 +547,7 @@ function makeList(options) {
     };
 
     // all filter in box change
-    options.container.find('.filter-box select:not(.select_tool)').on('change', function() {
+    options.container.find('.filter-box select:not(.select_tool), .filter-box input[type=checkbox]:not(.check_all)').on('change', function() {
         resetPage();
         _list.load();
     });

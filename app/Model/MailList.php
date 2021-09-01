@@ -260,37 +260,13 @@ class MailList extends Model
     {
         return $this->getImportTempDir($filename);
     }
-
-    /**
-     * Filter items.
-     *
-     * @return collect
-     */
-    public static function filter($request)
+    
+    public static function scopeSearch($query, $keyword)
     {
-        $customer = $request->user()->customer;
-        $query = self::where('customer_id', '=', $customer->id);
-
         // Keyword
-        if (!empty(trim($request->keyword))) {
-            $query = $query->where('name', 'like', '%'.$request->keyword.'%');
+        if (!empty(trim($keyword))) {
+            $query = $query->where('name', 'like', '%'.$keyword.'%');
         }
-
-        return $query;
-    }
-
-    /**
-     * Search items.
-     *
-     * @return collect
-     */
-    public static function search($request)
-    {
-        $query = self::filter($request);
-
-        $query = $query->orderBy($request->sort_order, $request->sort_direction);
-
-        return $query;
     }
 
     /**

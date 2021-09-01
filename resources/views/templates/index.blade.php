@@ -17,7 +17,7 @@
                         </span> <span class="text-semibold">{{ trans('messages.templates') }}</span>
                 </h1> 
             </div>
-            <div class="ms-auto">                
+            <div class="ms-auto pt-5">                
                 <a href="{{ action('TemplateController@index', [
                     'from' => 'mine',
                     'view' => 'list',
