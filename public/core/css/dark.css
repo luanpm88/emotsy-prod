@@ -668,6 +668,9 @@ body.mode-dark a.search-result.selected {
 body.mode-dark.search-open .app_search_input + [class^="material-icons"] {
     background: transparent;
 }
+body.mode-dark:not(.search-open) .app_search_input + [class^="material-icons"]:hover {
+    background: rgba(255,255,255,0.2);
+}
 body.mode-dark.search-open .app_search_input:hover {
     border-color: rgba(255, 255, 255, 0.2)!important;
 }
