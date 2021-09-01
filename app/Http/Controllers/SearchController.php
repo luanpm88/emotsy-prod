@@ -40,7 +40,7 @@ class SearchController extends Controller
                 ],
             ],
             [
-                'names' => [trans('messages.account'), trans('messages.subscriptions')],
+                'names' => [trans('messages.account'), trans('messages.subscription')],
                 'url' => action('SubscriptionController@index'),
                 'keywords' => [
                     trans('messages.subscription.resume'),
