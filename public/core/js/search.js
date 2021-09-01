@@ -226,7 +226,7 @@ var TopSearchBar = {
                         </span>
                     </div>
                     <span class="line-1 text-muted2 px-4">
-                        {!! trans('messages.search.type_to_search.wording') !!}
+                        ` + TopSearchBar.lang.no_keyword + `
                     </span>
                 </div>
             </div>
@@ -245,7 +245,7 @@ var TopSearchBar = {
                         <span class="line-1 text-muted2 px-4">
                             <span class="material-icons-outlined mb-2 me-2">
                                 feedback
-                            </span> {!! trans('messages.search.empty_result') !!}
+                            </span> ` + TopSearchBar.lang.empty_result + `
                         </span>
                     </div>
                 </div>
@@ -288,6 +288,7 @@ var TopSearchBar = {
     init: function(options) {
         // search sections
         TopSearchBar.sections = options.sections;
+        TopSearchBar.lang = options.lang;
 
         TopSearchBar.getSearchControl().on('click', function() {
             TopSearchBar.openSearch();
