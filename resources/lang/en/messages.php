@@ -3822,7 +3822,7 @@
   'campaign.plain.extract_from_html' => 'Extract from HTML content',
   'search.no_result' => 'There are no search results',
   'search.general' => 'General',
-  'search.type_to_search.wording' => 'Enter any keyword to start search',
+  'search.type_to_search.wording' => 'Type something you want to search for',
   'search.empty_result' => 'There are no search results',
   'search.view_all' => 'View all',
   'search.go_to_lists' => 'Lists management',

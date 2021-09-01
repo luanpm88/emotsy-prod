@@ -220,14 +220,12 @@ var TopSearchBar = {
         TopSearchBar.getResultsBox().html(`
             <div class="no-keyword-alert">
                 <div class="py-4 text-center">
-                    <div>
-                        <span class="material-icons-outlined fs-1 mb-2 text-muted2 me-2">
-                            category
-                        </span>
+                    <div class="mb-2">
+                        <svg style="width:60px" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 424.2 380.5"><defs><clipPath id="clip-path"><circle cx="150" cy="149" r="144" style="fill:none"/></clipPath></defs><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><path d="M422,127.9v42.4c0,7.6-8.4,13.8-18.7,13.8H294V114H403.3C413.6,114,422,120.2,422,127.9Z" style="fill:#fff;opacity:0.13"/><path d="M294,184.1H402.7c10.3,0,18.6-6.2,18.6-13.8V127.8c0-7.6-8.3-13.8-18.6-13.8H294" style="fill:none;stroke:#999;stroke-linecap:round;stroke-linejoin:round;stroke-width:5.769283168228909px"/><g style="clip-path:url(#clip-path)"><rect x="73.7" y="102.1" width="296.3" height="93.89" rx="18.6" style="fill:#fff;opacity:0.13"/><path d="M186.2,102.1H350.8a18.5,18.5,0,0,1,18.5,18.6v56.8A18.5,18.5,0,0,1,350.8,196H186.2" style="fill:none;stroke:#999;stroke-linecap:round;stroke-linejoin:round;stroke-width:6.659193055820083px"/><path d="M160.2,196H91.5A18.5,18.5,0,0,1,73,177.5V120.7a18.5,18.5,0,0,1,18.5-18.6h68.7" style="fill:none;stroke:#999;stroke-linecap:round;stroke-linejoin:round;stroke-width:6.659193055820083px"/><path d="M154.6,219.3h.1a17.9,17.9,0,0,0,17.9-17.8V96.4a17.9,17.9,0,0,0-17.9-17.9h-.1" style="fill:none;stroke:#999;stroke-linecap:round;stroke-linejoin:round;stroke-width:5.983098520979932px"/><path d="M190.5,78.5h-.1a17.9,17.9,0,0,0-17.8,17.9V201.5a17.8,17.8,0,0,0,17.8,17.8h.1" style="fill:none;stroke:#999;stroke-linecap:round;stroke-linejoin:round;stroke-width:5.983098520979932px"/><path d="M138.3,167l-.6-4.9h-.2a14.6,14.6,0,0,1-11.9,5.8c-7.8,0-11.8-5.6-11.8-11.2,0-9.3,8.3-14.4,23.3-14.3v-.8c0-3.2-.9-9-8.8-9a19,19,0,0,0-10.1,2.9l-1.6-4.6a24,24,0,0,1,12.7-3.5c11.9,0,14.7,8.1,14.7,15.8v14.5a52.6,52.6,0,0,0,.7,9.3Zm-1.1-19.8c-7.6-.1-16.3,1.2-16.3,8.7,0,4.6,3,6.8,6.6,6.8a9.6,9.6,0,0,0,9.3-6.5,5.9,5.9,0,0,0,.4-2.3Z" style="fill:gray"/></g><g style="opacity:0.13"><circle cx="150" cy="149" r="149" style="fill:#0071bc"/></g><path d="M149.5,10A139.6,139.6,0,0,1,289,149.5,139.6,139.6,0,0,1,149.5,289,139.6,139.6,0,0,1,10,149.5,139.6,139.6,0,0,1,149.5,10m0-10A149.5,149.5,0,1,0,299,149.5,149.5,149.5,0,0,0,149.5,0Z" style="fill:#0071bc"/><line x1="245" y1="264" x2="356.5" y2="375.5" style="fill:none;stroke:#0071bc;stroke-linecap:round;stroke-linejoin:round;stroke-width:10px"/><path d="M28,150v-1A122.2,122.2,0,0,1,102,36.8" style="fill:none;stroke:#0071bc;stroke-linecap:round;stroke-linejoin:round;stroke-width:10px"/></g></g></svg>
                     </div>
-                    <span class="line-1 text-muted2 px-4">
+                    <p class="line-1 px-4 mb-0" style="font-size: 92%">
                         ` + TopSearchBar.lang.no_keyword + `
-                    </span>
+                    </p>
                 </div>
             </div>
         `);
@@ -254,11 +252,18 @@ var TopSearchBar = {
             TopSearchBar.getResultsBox().find('.empty-result-alert').remove();
         }
     },
+    
+    abortAll: function() {
+        this.sections.forEach(function(section) {
+            if(section.xhr != null && section.xhr.readyState != 4){
+                section.xhr.abort();
+            }
+        });
+    },
 
     search: function() {
-        var _this = this;
-
         if (!TopSearchBar.getKeyword()) {
+            TopSearchBar.abortAll();
             TopSearchBar.showNoKeyword();
             return;
         } else {
