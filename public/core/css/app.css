@@ -7473,6 +7473,9 @@ body.search-open {
 .search-section {
     position: relative;
 }
+.search-section a * {
+    cursor: pointer;
+}
 .search-name+.search-name::before {
     font-family: "Material Icons Round";
     content: "chevron_right";

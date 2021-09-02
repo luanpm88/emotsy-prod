@@ -19,8 +19,8 @@ auto_awesome
                 @foreach ($campaign->topCountries(7)->get() as $location)
                     <div class="stat-row">
                         <p class="">
-                            <img class="flag-icon" src="{{ url("/images/flags/" . (empty($location->country_code) ? "unknown" : $location->country_code) . ".png") }}" />
-                            {{ (empty($location->country_name) ? trans("messages.unknown") : $location->country_name) }}
+                            <img class="flag-icon" src="{{ url($location->getFlagPath()) }}" />
+                            {{ $location->getCountryName() }}
                         </p>
                         <span class="pull-right num">
                             {{ $location->aggregate }}
