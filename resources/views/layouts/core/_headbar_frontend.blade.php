@@ -28,8 +28,8 @@
                 })
             ],
             lang: {
-                no_keyword: '{!! trans('messages.search.type_to_search.wording') !!}',
-                empty_result: '{!! trans('messages.search.empty_result') !!}',
+                no_keyword: `{!! trans('messages.search.type_to_search.wording') !!}`,
+                empty_result: `{!! trans('messages.search.empty_result') !!}`,
             }
         });
     });
