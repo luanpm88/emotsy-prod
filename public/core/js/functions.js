@@ -138,6 +138,7 @@ function initSelect2Ajax(select) {
     select.select2({
         placeholder: placeholder,
         allowClear: true,
+        dropdownParent: select.parent(),
         ajax: {
             url: url,
             dataType: 'json',
