@@ -20,7 +20,9 @@ class SendingServerController extends Controller
         }
 
         $request->merge(array("customer_id" => $request->user()->customer->id));
-        $items = \Acelle\Model\SendingServer::search($request);
+
+        $items = \Acelle\Model\SendingServer::search($request->keyword)
+            ->filter($request);
 
         return view('sending_servers.index', [
             'items' => $items,
@@ -39,7 +41,11 @@ class SendingServerController extends Controller
         }
 
         $request->merge(array("customer_id" => $request->user()->customer->id));
-        $items = \Acelle\Model\SendingServer::search($request)->paginate($request->per_page);
+        
+        $items = \Acelle\Model\SendingServer::search($request->keyword)
+            ->filter($request)
+            ->orderBy($request->sort_order, $request->sort_direction ? $request->sort_direction : 'asc')
+            ->paginate($request->per_page);
 
         return view('sending_servers._list', [
             'items' => $items,

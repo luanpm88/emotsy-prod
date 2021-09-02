@@ -620,6 +620,13 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::get('admin', 'HomeController@index');
     Route::get('admin/docs/api/v1', 'ApiController@doc');
 
+    // Search
+    Route::get('admin/search/sending-servers', 'SearchController@sending_servers');
+    Route::get('admin/search/plans', 'SearchController@plans');
+    Route::get('admin/search/templates', 'SearchController@templates');
+    Route::get('admin/search/customers', 'SearchController@customers');
+    Route::get('admin/search/general', 'SearchController@general');
+
     // Notification
     Route::get('admin/notifications/popup', 'NotificationController@popup');
     Route::post('admin/notifications/delete', 'NotificationController@delete');

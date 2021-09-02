@@ -5247,6 +5247,12 @@ stat .stat-head {
     padding: 0;
     width: 36px;
 }
+.search-results .mc_list .mc-server-avatar, .search-results .mc-server-avatar, .search-results .server-avatar {
+    margin: 8px 18px 8px 0px !important;
+    width: 26px;
+    height: 26px;
+    background-size: 26px 26px!important;
+}
 .mc-server-avatar, .mc_list .mc-server-avatar {
   margin: 8px 25px 8px 8px !important;
 }

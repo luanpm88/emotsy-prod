@@ -247,18 +247,9 @@ class Plan extends Model
      *
      * @return collect
      */
-    public static function filter($request)
+    public static function scopeFilter($query, $request)
     {
-        $query = self::select('plans.*');
-
-        // Keyword
-        if (!empty(trim($request->keyword))) {
-            foreach (explode(' ', trim($request->keyword)) as $keyword) {
-                $query = $query->where(function ($q) use ($keyword) {
-                    $q->orwhere('plans.name', 'like', '%'.$keyword.'%');
-                });
-            }
-        }
+        $query = $query->select('plans.*');
 
         // filters
         $filters = $request->all();
@@ -266,8 +257,6 @@ class Plan extends Model
         if (!empty($request->admin_id)) {
             $query = $query->where('plans.admin_id', '=', $request->admin_id);
         }
-
-        return $query;
     }
 
     /**
@@ -275,15 +264,16 @@ class Plan extends Model
      *
      * @return collect
      */
-    public static function search($request)
+    public static function scopeSearch($query, $keyword)
     {
-        $query = self::filter($request);
-
-        if (!empty($request->sort_order)) {
-            $query = $query->orderBy($request->sort_order, $request->sort_direction);
+        // Keyword
+        if (!empty(trim($keyword))) {
+            foreach (explode(' ', trim($keyword)) as $keyword) {
+                $query = $query->where(function ($q) use ($keyword) {
+                    $q->orwhere('plans.name', 'like', '%'.$keyword.'%');
+                });
+            }
         }
-
-        return $query;
     }
 
     /**

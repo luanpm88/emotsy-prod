@@ -8,11 +8,10 @@
 @endsection
 
 @section('content')
-    
-    @include('admin.notifications._top', ['notifications' => $notifications])
-
     <h1 class="mb-2 mt-4">{{ trans('messages.backend_dashboard_hello', ['name' => Auth::user()->displayName()]) }}</h1>
     <p>{{ trans('messages.backend_dashboard_welcome') }}</p>
+
+    @include('admin.notifications._top', ['notifications' => $notifications])
 
     <div class="row mt-5">
         <div class="col-md-6">

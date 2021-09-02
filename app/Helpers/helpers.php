@@ -773,3 +773,72 @@ function resize_crop_image($max_width, $max_height, $source_file, $dst_dir, $qua
         imagedestroy($src_img);
     }
 }
+
+function filterSearchArray($items)
+{
+    // search
+    $results = [];
+    foreach ($items as $item) {
+        $row = [
+            'rate' => 0,
+            'item' => $item,
+        ];
+
+        if (isset($request->keyword)) {
+            $keyword = trim(strtolower($request->keyword));
+
+            // Keywords
+            if (!empty($keyword)) {
+                $keywords = preg_split('/\s+/', $keyword);
+                $allExist = true;
+
+                foreach ($keywords as $keyword) {
+                    $exist = false;
+
+                    // search by names
+                    foreach ($item['names'] as $name) {
+                        $name = trim(strtolower($name));
+                        if (strpos($name, $keyword) !== false) {
+                            $row['rate'] += 1;
+                            $exist = true;
+                        }
+                    }
+
+                    // search by keywords
+                    if (isset($item['keywords'])) {
+                        foreach ($item['keywords'] as $k) {
+                            $k = trim(strtolower($k));
+                            if (strpos($k, $keyword) !== false) {
+                                $row['rate'] += 1;
+                                $exist = true;
+                            }
+                        }
+                    }
+
+                    if (!$exist) {
+                        $allExist = false;
+                    }
+                }
+
+                if (!$allExist) {
+                    $row['rate'] = 0;
+                }
+            }
+        }
+
+        if ($row['rate'] > 0) {
+            $results[] = $row;
+        }
+    }
+
+    // sort
+    usort($results, function($a, $b) {
+        if ($a['rate'] != $b['rate']) {
+            return $a['rate'] < $b['rate'];
+        } else {
+            return strcmp(implode(' ', $a['item']['names']), implode(' ', $b['item']['names']));
+        }
+    });
+
+    return $results;
+}

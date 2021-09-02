@@ -30,7 +30,8 @@ class PlanController extends Controller
             $request->merge(array("admin_id" => $request->user()->admin->id));
         }
 
-        $plans = Plan::search($request);
+        $plans = \Acelle\Model\Plan::search($request->keyword)
+            ->filter($request);
 
         return view('admin.plans.index', [
             'plans' => $plans,
@@ -44,7 +45,10 @@ class PlanController extends Controller
      */
     public function listing(Request $request)
     {
-        $plans = Plan::search($request)->paginate($request->per_page);
+        $plans = \Acelle\Model\Plan::search($request->keyword)
+            ->filter($request)
+            ->orderBy($request->sort_order, $request->sort_direction ? $request->sort_direction : 'asc')
+            ->paginate($request->per_page);
 
         return view('admin.plans._list', [
             'plans' => $plans,

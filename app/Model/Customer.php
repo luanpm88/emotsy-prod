@@ -296,22 +296,8 @@ class Customer extends Model
      *
      * @return collect
      */
-    public static function filter($request)
+    public static function scopeFilter($query, $request)
     {
-        $query = self::select('customers.*')
-            ->leftJoin('users', 'users.customer_id', '=', 'customers.id');
-
-        // Keyword
-        if (!empty(trim($request->keyword))) {
-            foreach (explode(' ', trim($request->keyword)) as $keyword) {
-                $query = $query->where(function ($q) use ($keyword) {
-                    $q->orwhere('users.first_name', 'like', '%'.$keyword.'%')
-                        ->orWhere('users.last_name', 'like', '%'.$keyword.'%')
-                        ->orWhere('users.email', 'like', '%'.$keyword.'%');
-                });
-            }
-        }
-
         // filters
         $filters = $request->all();
         if (!empty($filters)) {
@@ -321,8 +307,6 @@ class Customer extends Model
         if (!empty($request->admin_id)) {
             $query = $query->where('customers.admin_id', '=', $request->admin_id);
         }
-
-        return $query;
     }
 
     /**
@@ -330,15 +314,21 @@ class Customer extends Model
      *
      * @return collect
      */
-    public static function search($request)
+    public static function scopeSearch($query, $keyword)
     {
-        $query = self::filter($request);
-
-        if (!empty($request->sort_order)) {
-            $query = $query->orderBy($request->sort_order, $request->sort_direction);
+        $query = $query->select('customers.*')
+            ->leftJoin('users', 'users.customer_id', '=', 'customers.id');
+            
+        // Keyword
+        if (!empty(trim($keyword))) {
+            foreach (explode(' ', trim($keyword)) as $keyword) {
+                $query = $query->where(function ($q) use ($keyword) {
+                    $q->orwhere('users.first_name', 'like', '%'.$keyword.'%')
+                        ->orWhere('users.last_name', 'like', '%'.$keyword.'%')
+                        ->orWhere('users.email', 'like', '%'.$keyword.'%');
+                });
+            }
         }
-
-        return $query;
     }
 
     /**

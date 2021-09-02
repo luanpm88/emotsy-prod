@@ -147,7 +147,7 @@ class Template extends Model
      *
      * @return collect
      */
-    public function scopeShared($query)
+    public static function scopeShared($query)
     {
         $query = $query->whereNull('customer_id');
     }

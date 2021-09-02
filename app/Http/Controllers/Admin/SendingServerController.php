@@ -28,7 +28,8 @@ class SendingServerController extends Controller
         // exlude customer seding servers
         $request->merge(array("no_customer" => true));
 
-        $items = SendingServer::search($request);
+        $items = \Acelle\Model\SendingServer::search($request->keyword)
+            ->filter($request);
 
         return view('admin.sending_servers.index', [
             'items' => $items,
@@ -54,7 +55,10 @@ class SendingServerController extends Controller
         // exlude customer seding servers
         $request->merge(array("no_customer" => true));
 
-        $items = SendingServer::search($request)->paginate($request->per_page);
+        $items = \Acelle\Model\SendingServer::search($request->keyword)
+            ->filter($request)
+            ->orderBy($request->sort_order, $request->sort_direction ? $request->sort_direction : 'asc')
+            ->paginate($request->per_page);
 
         return view('admin.sending_servers._list', [
             'items' => $items,

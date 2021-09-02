@@ -235,21 +235,9 @@ class SendingServer extends Model implements HasQuotaInterface
      *
      * @return collect
      */
-    public static function filter($request)
+    public static function scopeFilter($query, $request)
     {
-        $user = $request->user();
-        $query = self::select('sending_servers.*');
-
-        // Keyword
-        if (!empty(trim($request->keyword))) {
-            foreach (explode(' ', trim($request->keyword)) as $keyword) {
-                $query = $query->where(function ($q) use ($keyword) {
-                    $q->orwhere('sending_servers.name', 'like', '%'.$keyword.'%')
-                        ->orWhere('sending_servers.type', 'like', '%'.$keyword.'%')
-                        ->orWhere('sending_servers.host', 'like', '%'.$keyword.'%');
-                });
-            }
-        }
+        $query = $query->select('sending_servers.*');
 
         // filters
         $filters = $request->all();
@@ -272,8 +260,6 @@ class SendingServer extends Model implements HasQuotaInterface
         if (!empty($request->no_customer)) {
             $query = $query->whereNull('customer_id');
         }
-
-        return $query;
     }
 
     /**
@@ -281,15 +267,18 @@ class SendingServer extends Model implements HasQuotaInterface
      *
      * @return collect
      */
-    public static function search($request)
+    public static function scopeSearch($query, $keyword)
     {
-        $query = self::filter($request);
-
-        if (!empty($request->sort_order)) {
-            $query = $query->orderBy($request->sort_order, $request->sort_direction);
+        // Keyword
+        if (!empty(trim($keyword))) {
+            foreach (explode(' ', trim($keyword)) as $keyword) {
+                $query = $query->where(function ($q) use ($keyword) {
+                    $q->orwhere('sending_servers.name', 'like', '%'.$keyword.'%')
+                        ->orWhere('sending_servers.type', 'like', '%'.$keyword.'%')
+                        ->orWhere('sending_servers.host', 'like', '%'.$keyword.'%');
+                });
+            }
         }
-
-        return $query;
     }
 
     /**

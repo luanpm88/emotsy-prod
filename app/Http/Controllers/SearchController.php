@@ -30,6 +30,7 @@ class SearchController extends Controller
                     trans('messages.email'),
                     trans('messages.password'),
                     trans('messages.change_password'),
+                    trans('messages.color_scheme'),
                 ],
             ],
             [
@@ -54,7 +55,7 @@ class SearchController extends Controller
             ],
             [
                 'names' => [trans('messages.dashboard')],
-                'url' => action('MailListController@index'),
+                'url' => action('HomeController@index'),
                 'keywords' => [
                     trans('messages.home'),
                 ],
@@ -109,17 +110,17 @@ class SearchController extends Controller
                 'keywords' => [],
             ],
             [
-                'names' => [trans('messages.products')],
+                'names' => [trans('messages.content'), trans('messages.products')],
                 'url' => action('ProductController@index'),
                 'keywords' => [],
             ],
             [
-                'names' => [trans('messages.stores_connections')],
+                'names' => [trans('messages.content'), trans('messages.stores_connections')],
                 'url' => action('SourceController@index'),
                 'keywords' => [],
             ],
             [
-                'names' => [trans('messages.stores_connections'), trans('messages.source.add_new')],
+                'names' => [trans('messages.content'), trans('messages.stores_connections'), trans('messages.source.add_new')],
                 'url' => action('SourceController@create'),
                 'keywords' => [
                     trans('messages.new'),
@@ -134,12 +135,12 @@ class SearchController extends Controller
                 ],
             ],
             [
-                'names' => [trans('messages.sending_domains')],
+                'names' => [trans('messages.sending'), trans('messages.sending_domains')],
                 'url' => action('SendingDomainController@index'),
                 'keywords' => [],
             ],
             [
-                'names' => [trans('messages.sending_domains'), trans('messages.add')],
+                'names' => [trans('messages.sending'), trans('messages.sending_domains'), trans('messages.add')],
                 'url' => action('SendingDomainController@create'),
                 'keywords' => [
                     trans('messages.new'),
@@ -147,12 +148,12 @@ class SearchController extends Controller
                 ],
             ],
             [
-                'names' => [trans('messages.tracking_domains')],
+                'names' => [trans('messages.sending'), trans('messages.tracking_domains')],
                 'url' => action('TrackingDomainController@index'),
                 'keywords' => [],
             ],
             [
-                'names' => [trans('messages.tracking_domains'), trans('messages.add')],
+                'names' => [trans('messages.sending'), trans('messages.tracking_domains'), trans('messages.add')],
                 'url' => action('TrackingDomainController@create'),
                 'keywords' => [
                     trans('messages.new'),
@@ -160,7 +161,7 @@ class SearchController extends Controller
                 ],
             ],
             [
-                'names' => [trans('messages.blacklist')],
+                'names' => [trans('messages.sending'), trans('messages.blacklist')],
                 'url' => action('BlacklistController@index'),
                 'keywords' => [],
             ],

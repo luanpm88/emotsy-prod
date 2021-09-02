@@ -36,6 +36,8 @@
 	@include('layouts.core._middle_bar')
 
 	<main class="container page-container px-3">
+		@include('layouts.core._headbar_backend')
+		
 		@yield('page_header')
 
 		<!-- display flash message -->
