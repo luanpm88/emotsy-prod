@@ -749,6 +749,10 @@ class Campaign extends Model
      */
     public function updateLinks()
     {
+        if ($this->type == self::TYPE_PLAIN_TEXT) {
+            return;
+        }
+
         $this->campaignLinks()->delete();
 
         foreach ($this->getUrls() as $url) {
