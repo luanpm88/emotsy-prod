@@ -86,12 +86,16 @@ search
 
     <script>
         var ListsIndex = {
+            list: null,
             getList: function() {
-                return makeList({
-                    url: '{{ action('MailListController@listing') }}',
-                    container: $('#ListsIndexContainer'),
-                    content: $('#ListsIndexContent')
-                });
+                if (this.list == null) {
+                    this.list = makeList({
+                        url: '{{ action('MailListController@listing') }}',
+                        container: $('#ListsIndexContainer'),
+                        content: $('#ListsIndexContent')
+                    });
+                }
+                return this.list;
             }
         };
 

@@ -162,12 +162,16 @@ search
     
     <script>
         var TemplatesIndex = {
+            list: null,
             getList: function() {
-                return makeList({
-                    url: '{{ action('TemplateController@listing') }}',
-                    container: $('#TemplatesIndexContainer'),
-                    content: $('#TemplatesIndexContent')
-                });
+                if (this.list == null) {
+                    this.list = makeList({
+                        url: '{{ action('TemplateController@listing') }}',
+                        container: $('#TemplatesIndexContainer'),
+                        content: $('#TemplatesIndexContent')
+                    });
+                }
+                return this.list;
             }
         };
 
