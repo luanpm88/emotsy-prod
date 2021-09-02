@@ -16,7 +16,9 @@
         </div>
     </a>
     @foreach($templates as $template)
-        <a href="{{ action('TemplateController@index') }}" class="search-result border-bottom d-block">
+        <a href="{{ action('TemplateController@index', [
+            'keyword' => $template->name,
+        ]) }}" class="search-result border-bottom d-block">
             <div class="d-flex">
                 <div>
                     <img width="40px" height="50px" class="shadow-sm me-3 rounded" src="{{ $template->getThumbUrl() }}?v={{ rand(0,10) }}" />
