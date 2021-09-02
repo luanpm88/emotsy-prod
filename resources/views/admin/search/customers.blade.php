@@ -1,5 +1,7 @@
 @if ($customers->total())
-    <a href="{{ action('MailListController@index') }}" class="search-head border-bottom d-block">
+    <a href="{{ action('Admin\CustomerController@index', [
+        'keyword' => request()->keyword
+    ]) }}" class="search-head border-bottom d-block">
         <div class="d-flex">
             <div class="me-auto">
                 <label class="fw-600">
@@ -9,7 +11,8 @@
                 </label>
             </div>
             <div>
-                {{ $customers->count() }} / {{ format_number($customers->total()) }} · {{ trans('messages.search.view_all') }}
+                {{ $customers->count() }} / {{ format_number($customers->total()) }} · 
+                {{ trans('messages.search.view_all') }}
             </div>
         </div>
     </a>

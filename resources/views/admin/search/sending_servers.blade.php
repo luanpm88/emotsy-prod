@@ -1,5 +1,5 @@
 @if ($sending_servers->total())
-    <a href="{{ action('MailListController@index', [
+    <a href="{{ action('Admin\SendingServerController@index', [
         'keyword' => request()->keyword
     ]) }}" class="search-head border-bottom d-block">
         <div class="d-flex">

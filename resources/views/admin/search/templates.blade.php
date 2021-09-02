@@ -1,5 +1,5 @@
 @if ($templates->total())
-    <a href="{{ action('TemplateController@index', [
+    <a href="{{ action('Admin\TemplateController@index', [
         'keyword' => request()->keyword
     ]) }}" class="search-head border-bottom d-block">
         <div class="d-flex">
