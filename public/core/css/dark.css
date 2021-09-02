@@ -645,7 +645,7 @@ body.mode-dark .app_search_input + [class^="material-icons"] {
     color: rgba(255,255,255,0.7);
 }
 body.mode-dark .search-results {
-    background: rgba(0,0,0,0.3);
+    background: rgba(20, 32, 40, 1);
     border-color: rgba(255,255,255,0.1);
     backdrop-filter: blur(18px);
     -webkit-backdrop-filter: blur(18px);
