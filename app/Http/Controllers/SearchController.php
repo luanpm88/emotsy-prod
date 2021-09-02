@@ -72,7 +72,10 @@ class SearchController extends Controller
             [
                 'names' => [trans('messages.campaigns'), trans('messages.create')],
                 'url' => action('CampaignController@selectType'),
-                'keywords' => [],
+                'keywords' => [
+                    trans('messages.new'),
+                    trans('messages.add'),
+                ],
             ],
             [
                 'names' => [trans('messages.automations')],
@@ -87,7 +90,10 @@ class SearchController extends Controller
             [
                 'names' => [trans('messages.templates'), trans('messages.create')],
                 'url' => action('TemplateController@builderCreate'),
-                'keywords' => [],
+                'keywords' => [
+                    trans('messages.new'),
+                    trans('messages.add'),
+                ],
             ],
             [
                 'names' => [trans('messages.templates'), trans('messages.upload')],
@@ -115,7 +121,10 @@ class SearchController extends Controller
             [
                 'names' => [trans('messages.stores_connections'), trans('messages.source.add_new')],
                 'url' => action('SourceController@create'),
-                'keywords' => [],
+                'keywords' => [
+                    trans('messages.new'),
+                    trans('messages.add'),
+                ],
             ],
             [
                 'names' => [trans('messages.account'), trans('messages.activities')],
@@ -132,7 +141,10 @@ class SearchController extends Controller
             [
                 'names' => [trans('messages.sending_domains'), trans('messages.add')],
                 'url' => action('SendingDomainController@create'),
-                'keywords' => [],
+                'keywords' => [
+                    trans('messages.new'),
+                    trans('messages.add'),
+                ],
             ],
             [
                 'names' => [trans('messages.tracking_domains')],
@@ -142,7 +154,10 @@ class SearchController extends Controller
             [
                 'names' => [trans('messages.tracking_domains'), trans('messages.add')],
                 'url' => action('TrackingDomainController@create'),
-                'keywords' => [],
+                'keywords' => [
+                    trans('messages.new'),
+                    trans('messages.add'),
+                ],
             ],
             [
                 'names' => [trans('messages.blacklist')],
