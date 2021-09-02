@@ -62,6 +62,7 @@ mark_email_read
 								</li>
 								<li>
 									<a class="dropdown-item"
+										link-method="POST"
 										link-confirm="{{ trans('messages.unsubscribe_subscribers_confirm') }}"
 										href="{{ action('SubscriberController@unsubscribe', $list->uid) }}">
 										<span class="material-icons-round">
