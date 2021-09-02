@@ -10,7 +10,6 @@ class SearchController extends Controller
 {
     public function general(Request $request)
     {
-        sleep(1);
         $items = [
             [
                 'names' => [trans('messages.api')],
@@ -239,7 +238,6 @@ class SearchController extends Controller
     
     public function campaigns(Request $request)
     {
-        sleep(1);
         $customer = $request->user()->customer;
         $count = 5;
 
