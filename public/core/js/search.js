@@ -374,7 +374,7 @@ var TopSearchBar = {
 
         // keyboard shorcut
         $(document).on('keyup', function(e) {
-            if (e.ctrlKey && e.key === 's') {
+            if (e.ctrlKey && e.key === 'd') {
                 TopSearchBar.openSearch();
                 TopSearchBar.search();
             }
