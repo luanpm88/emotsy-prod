@@ -40,6 +40,11 @@ class SearchController extends Controller
                 'keywords' => [],
             ],
             [
+                'names' => [trans('messages.settings'), trans('messages.upgrade_manager')],
+                'url' => action('Admin\SettingController@upgrade'),
+                'keywords' => [],
+            ],
+            [
                 'names' => [trans('messages.settings'), trans('messages.background_job')],
                 'url' => action('Admin\SettingController@cronjob'),
                 'keywords' => [
