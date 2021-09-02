@@ -7482,6 +7482,9 @@ body.search-open {
 .app_search_box .search-control {
     position: relative;
 }
+body:not(.search-open) .app_search_box .search-control::after {
+    display: none;
+}
 .app_search_box.searching .search-control::after {
     content: 'brightness_4';
     color: transparent!important;
