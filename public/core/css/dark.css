@@ -651,7 +651,7 @@ body.mode-dark .search-results {
     -webkit-backdrop-filter: blur(18px);
 }
 body.mode-dark a.search-result {
-    color: rgba(255,255,255,0.85);
+    color: rgba(255,255,255,0.85)!important;
 }
 body.mode-dark .search-head {
     color: rgba(255,255,255,0.6);
