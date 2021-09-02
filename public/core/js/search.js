@@ -371,5 +371,20 @@ var TopSearchBar = {
             }
             e.preventDefault(); // prevent the default action (scroll / move caret)
         });
+
+        // keyboard shorcut
+        $(document).on('keyup', function(e) {
+            console.log(e.key);
+            if (e.ctrlKey && e.key === 'f') {
+                TopSearchBar.openSearch();
+                TopSearchBar.search();
+            }
+        });
+
+        $(document).on('keyup', function(e) {
+            if (e.key === 'Escape') {
+                TopSearchBar.closeSearch();
+            }
+        });
     }
 };
