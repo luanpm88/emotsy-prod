@@ -28,7 +28,7 @@ class SearchController extends Controller
             ],
             [
                 'names' => [trans('messages.settings'), trans('messages.system_email')],
-                'url' => action('Admin\SettingController@sending'),
+                'url' => action('Admin\SettingController@mailer'),
                 'keywords' => [
                     trans('messages.smtp'),
                     trans('messages.sendmail'),
