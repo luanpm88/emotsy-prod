@@ -301,7 +301,7 @@ class SearchController extends Controller
             ],
         ];
 
-        $results = filterSearchArray($items);
+        $results = filterSearchArray($items, $request->keyword);
 
         return view('admin.search.general', [
             'keyword' => $request->keyword,

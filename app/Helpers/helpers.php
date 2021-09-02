@@ -774,7 +774,7 @@ function resize_crop_image($max_width, $max_height, $source_file, $dst_dir, $qua
     }
 }
 
-function filterSearchArray($items)
+function filterSearchArray($items, $keyword)
 {
     // search
     $results = [];
@@ -784,8 +784,8 @@ function filterSearchArray($items)
             'item' => $item,
         ];
 
-        if (isset($request->keyword)) {
-            $keyword = trim(strtolower($request->keyword));
+        if (isset($keyword)) {
+            $keyword = trim(strtolower($keyword));
 
             // Keywords
             if (!empty($keyword)) {
