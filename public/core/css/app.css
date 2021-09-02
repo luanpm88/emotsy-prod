@@ -7379,7 +7379,6 @@ hr {
 }
 .search-open .app_search_input + [class^="material-icons"] {
     background: transparent;
-    pointer-events: none;
 }
 .search-control {
     cursor: pointer;
@@ -7391,7 +7390,7 @@ hr {
 .search-results {
     border-radius: 5px;
     position: absolute;
-    z-index: 20000000000000000000;
+    z-index: 10000000;
     right: 0;
     top: 65px;
     background: #fff;
@@ -7479,4 +7478,28 @@ body.search-open {
 .label-sm {
     font-size: 9px;
     padding: 2px 10px;
+}
+.app_search_box .search-control {
+    position: relative;
+}
+.app_search_box.searching .search-control::after {
+    content: 'brightness_4';
+    color: transparent!important;
+    font-family: 'Material Icons Outlined';
+    position: absolute;
+    font-size: 20px;
+    opacity: 1;
+    right: 40px;
+    top: 4px;
+    -webkit-animation: spin 1s linear infinite;
+    -moz-animation: spin 1s linear infinite;
+    animation: spin 1s linear infinite;
+    color: rgb(8, 43, 66);
+    background-image: url(../../images/icons/spinner2.svg);
+    background-repeat: no-repeat;
+    background-position: center center;
+    z-index: 100000001;
+}
+.app_search_box.searching .search-results {
+    min-height: 50px;
 }

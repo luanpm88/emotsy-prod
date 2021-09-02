@@ -232,25 +232,27 @@ var TopSearchBar = {
     },
 
     hideNoKeyword: function() {
-        TopSearchBar.getResultsBox().find('.no-keyword-alert').remove();
+        if (this.getResults().length) {
+            TopSearchBar.getResultsBox().find('.no-keyword-alert').remove();
+        }
     },
 
-    checkEmptyResult: function() {
-        if (!this.getResults().length) {
-            TopSearchBar.getResultsBox().html(`
-                <div class="empty-result-alert">
-                    <div class="py-3 text-center">
-                        <span class="line-1 text-muted2 px-4">
-                            <span class="material-icons-outlined mb-2 me-2">
-                                feedback
-                            </span> ` + TopSearchBar.lang.empty_result + `
-                        </span>
-                    </div>
+    hideEmptyResult: function() {
+        TopSearchBar.getResultsBox().find('.empty-result-alert').remove();
+    },
+
+    showEmptyResult: function() {
+        TopSearchBar.getResultsBox().html(`
+            <div class="empty-result-alert">
+                <div class="py-3 text-center">
+                    <span class="line-1 text-muted2 px-4">
+                        <span class="material-icons-outlined mb-2 me-2">
+                            feedback
+                        </span> ` + TopSearchBar.lang.empty_result + `
+                    </span>
                 </div>
-            `);
-        } else {
-            TopSearchBar.getResultsBox().find('.empty-result-alert').remove();
-        }
+            </div>
+        `);
     },
     
     abortAll: function() {
@@ -261,24 +263,56 @@ var TopSearchBar = {
         });
     },
 
-    search: function() {
-        if (!TopSearchBar.getKeyword()) {
-            TopSearchBar.abortAll();
-            TopSearchBar.showNoKeyword();
-            return;
-        } else {
-            TopSearchBar.hideNoKeyword();
+    beforeSearch: function() {
+        this.getSearchBox().addClass('searching');
+
+        // no keyword
+        if (!this.getKeyword() && !this.getResults().length) {
+            this.showNoKeyword();
         }
-        
-        TopSearchBar.current = 0;
-        if (typeof(TopSearchBar.sections[TopSearchBar.current]) != 'undefined') {
-            TopSearchBar.runSection(TopSearchBar.sections[TopSearchBar.current]);
+    },
+
+    afterSearch: function() {
+        this.getSearchBox().removeClass('searching');
+
+        // no keyword
+        if (!this.getKeyword()) {
+            this.showNoKeyword();
+        } else {
+            this.hideNoKeyword();
+
+            // result check
+            if (!this.getResults().length) {
+                this.showEmptyResult();
+            } else {
+                this.hideEmptyResult();
+            }
+        }
+    },
+
+    search: function() {
+        this.abortAll();
+
+        // start search
+        this.beforeSearch();
+
+        // no keyword
+        if (!this.getKeyword()) {
+            this.afterSearch();
+            return;
+        }
+
+        // do sections search
+        this.current = 0;
+        if (typeof(this.sections[TopSearchBar.current]) != 'undefined') {
+            this.runSection(this.sections[TopSearchBar.current]);
         }
     },
 
     runSection: function(section) {
+        // after search
         if (typeof(section) == 'undefined') {
-            TopSearchBar.checkEmptyResult();
+            this.afterSearch();
             return;
         }
 
@@ -286,6 +320,11 @@ var TopSearchBar = {
             callback: function() {
                 TopSearchBar.current += 1;
                 TopSearchBar.runSection(TopSearchBar.sections[TopSearchBar.current]);
+
+                if (TopSearchBar.getKeyword() && TopSearchBar.getResults().length) {
+                    TopSearchBar.hideNoKeyword();
+                    TopSearchBar.hideEmptyResult();
+                }
             }
         });
     },
@@ -305,7 +344,7 @@ var TopSearchBar = {
                     </a>
                     <div class="search-control d-flex justify-content-center">
                         <input class="app_search_input form-control" type="text" placeholder="Type to search" />
-                        <span class="material-icons-round">
+                        <span class="material-icons-round search-icon">
                             search
                         </span>
                     </div>
@@ -315,7 +354,7 @@ var TopSearchBar = {
             </div>
         `);
 
-        TopSearchBar.getSearchControl().on('click', function() {
+        $('.search-icon').on('click', function() {
             TopSearchBar.openSearch();
             TopSearchBar.search();
         });
