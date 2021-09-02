@@ -22,7 +22,6 @@
 </head>
 <body class="theme-{{ Auth::user()->customer->getColorScheme() }} {{ Auth::user()->customer->getMenuLayout() }}bar
 	{{ Auth::user()->customer->getMenuLayout() }}bar-{{ request()->session()->get('customer-leftbar-state') }}
-
 	@if (Auth::user()->customer->theme_mode == 'auto')
 		@if (request()->session()->get('customer-auto-theme-mode'))
 			mode-{{ request()->session()->get('customer-auto-theme-mode') }}

@@ -1,7 +1,7 @@
 
 <div class="headbar d-flex">
     <div class="me-auto"></div>
-    <div class="top-search-container xtooltip" title="{{ trans('messages.click_open_app_search') }}"></div>
+    <div class="top-search-container"></div>
 </div>
 
 <script>
@@ -24,19 +24,11 @@
                 new SearchSection({
                     url: '{{ action('Admin\SearchController@sending_servers') }}',
                 }),
-                // new SearchSection({
-                //     url: '{{ action('SearchController@subscribers') }}',
-                // }),
-                // new SearchSection({
-                //     url: '{{ action('SearchController@automations') }}',
-                // }),
-                // new SearchSection({
-                //     url: '{{ action('SearchController@templates') }}',
-                // })
             ],
             lang: {
                 no_keyword: `{!! trans('messages.search.type_to_search.wording') !!}`,
                 empty_result: `{!! trans('messages.search.empty_result') !!}`,
+                tooltip: `{!! trans('messages.click_open_app_search') !!}`,
             }
         });
     });

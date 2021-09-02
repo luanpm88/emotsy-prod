@@ -7405,9 +7405,15 @@ hr {
     overflow: hidden;
     transform: scaley(0);
     transform-origin: top left;
-    min-width: 400px;
+    min-width: 500px;
     min-height: 40px;
     display: block;
+    max-width: 100%;
+}
+@media (max-width: 800px) {
+    .search-results {
+        min-width: 330px;
+    }
 }
 .search-close-button {
     color: #aaa!important;
@@ -7514,4 +7520,42 @@ body:not(.search-open) .app_search_box .search-control::after {
 }
 .app_search_box.searching .search-results {
     min-height: 50px;
+}
+
+.fullscreen-search-box.search-open .top-search-container {
+    z-index: 10000;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    position: fixed;
+    left: 0;
+    top: 0;
+    transition: all 0.2s ease-in-out;
+}
+.fullscreen-search-box.search-open .top-search-container::before {
+    content: 'a';
+    color: transparent;
+    width: 100%;
+    height: 100vh;
+    position: fixed;
+    background: rgba(0, 0, 0, 0.3);
+    left: 0;
+    top: 0;
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+}
+.fullscreen-search-box.search-open .search-results {
+    right: auto;
+    width: 600px;
+    position: relative;
+    top: 1rem;
+}
+.fullscreen-search-box.search-open .control-line {
+    justify-content: center;
+}
+.fullscreen-search-box.search-open .app_search_input {
+    height: 45px;
+}
+.fullscreen-search-box.search-open .app_search_input + [class^="material-icons"] {
+    margin-top: 3px;
 }
