@@ -7412,7 +7412,10 @@ hr {
 }
 @media (max-width: 800px) {
     .search-results {
-        min-width: 330px;
+        width: 90vw!important;
+    }
+    .fullscreen-search-box.search-open .search-results {
+        width: 90vw!important;
     }
 }
 .search-close-button {
@@ -7550,7 +7553,7 @@ body:not(.search-open) .app_search_box .search-control::after {
 }
 .fullscreen-search-box.search-open .search-results {
     right: auto;
-    width: 600px;
+    width: 650px;
     position: relative;
     top: 1rem;
 }
