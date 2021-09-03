@@ -7334,6 +7334,7 @@ hr {
     width: 100%;
     margin-bottom: -60px;
     position: relative;
+    height: 60px;
 }
 .app_search_input {
     width: 40px;
