@@ -754,7 +754,7 @@ class SubscriberController extends Controller
         if (!empty($subscriber->imagePath())) {
             $img = \Image::make($subscriber->imagePath());
         } else {
-            $img = \Image::make(public_path('images/placeholder.jpg'));
+            $img = \Image::make(public_path('images/subscriber-icon.jpg'));
         }
 
         return $img->response();
