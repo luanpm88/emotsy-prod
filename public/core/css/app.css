@@ -7372,8 +7372,8 @@ hr {
     color: #333;
 }
 .search-open .app_search_input {
-    width: 300px;
-    padding: 7px 35px 7px 20px;
+    width: 330px;
+    padding: 7px 65px 7px 20px;
     cursor: initial;
     text-indent: 0px;
     border-color: #aaa;
@@ -7572,4 +7572,7 @@ body:not(.search-open) .app_search_box .search-control::after {
 }
 .fullscreen-search-box .no-keyword-alert svg {
     width: 85px!important;
+}
+.fullscreen-search-box.search-open .app_search_box.searching .search-control::after {
+    top: 7px;
 }
