@@ -1287,7 +1287,8 @@ class MailList extends Model
                 $progressCallback($processed, $total, $failed, $message = $e->getMessage());
             }
 
-            throw $e;
+            // Is is weird that, in certain case, the $e->getMessage() string is too long, making the job "hang";
+            throw new Exception(substr($e->getMessage(), 0, 512));
         } finally {
             //if ($overQuotaAttempt) {
             //    $syssss_job->updateStatus(['error_message' => trans('messages.import.notice.over_quota')]);
