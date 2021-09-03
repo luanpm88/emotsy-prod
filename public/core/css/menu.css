@@ -24,6 +24,12 @@
 .topbar.search-open .search-results {
     max-height: calc(100vh - 150px);
 }
+.fullscreen-search-box.topbar.search-open .app_search_box {
+    padding-top: 60px!important;
+}
+.fullscreen-search-box.topbar.search-open .search-results {
+    max-height: calc(100vh - 160px);
+}
 @media (min-width: 1200px) {
     .leftbar .leftbar-hide-menu {
         display: block;
@@ -346,6 +352,12 @@
     }
     .leftbar.search-open .search-results {
         max-height: calc(100vh - 150px);
+    }
+    .fullscreen-search-box.leftbar.search-open .app_search_box {
+        padding-top: 60px!important;
+    }
+    .fullscreen-search-box.leftbar.search-open .search-results {
+        max-height: calc(100vh - 160px);
     }
 }
 

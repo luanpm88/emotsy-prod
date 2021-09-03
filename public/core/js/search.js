@@ -76,11 +76,12 @@ var TopSearchBar = {
 
     openSearch: function() {
         $('body').addClass('search-open');
-        TopSearchBar.getSearchInput().focus();
+        TopSearchBar.getSearchInput().trigger('focus');
         TopSearchBar.getSearchInput()[0].setSelectionRange(0, TopSearchBar.getSearchInput()[0].value.length)
     },
 
     closeSearch: function() {
+        TopSearchBar.getSearchInput().trigger('blur');
         $('body').removeClass('search-open');
     },
 
@@ -375,15 +376,15 @@ var TopSearchBar = {
         });
 
         // clid ouside hide search box
-        $(document).on('mouseup', function(e) 
+        $(document).on('mousedown', function(e) 
         {
             var container = TopSearchBar.getSearchBox();
             var other = $('.top-search-container');
 
             // if the target of the click isn't the container nor a descendant of the container
             if (
-                (!container.is(e.target) && container.has(e.target).length === 0) &&
-                (!other.is(e.target) && other.has(e.target).length === 0)
+                (!container.is(e.target) && container.has(e.target).length === 0)
+                // && (!other.is(e.target) && other.has(e.target).length === 0)
             )
             {
                 TopSearchBar.closeSearch();
