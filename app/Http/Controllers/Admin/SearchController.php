@@ -85,7 +85,7 @@ class SearchController extends Controller
                 'keywords' => [
                     trans('messages.subscription.resume'),
                     trans('messages.subscription.cancel_now'),
-                    trans('messages.subscription.change_plan'), 
+                    trans('messages.subscription.change_plan'),
                     trans('messages.invoices'),
                     trans('messages.transactions'),
                     trans('messages.payment_method'),

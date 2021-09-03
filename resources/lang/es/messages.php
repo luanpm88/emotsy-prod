@@ -3837,4 +3837,5 @@
   'search.empty_result' => 'There are no search results',
   'search.view_all' => 'View all',
   'search.go_to_lists' => 'Lists management',
+  'click_open_app_search' => 'Open app search (Ctrl + D)',
 ) ?>

@@ -832,7 +832,7 @@ function filterSearchArray($items, $keyword)
     }
 
     // sort
-    usort($results, function($a, $b) {
+    usort($results, function ($a, $b) {
         if ($a['rate'] != $b['rate']) {
             return $a['rate'] < $b['rate'];
         } else {
