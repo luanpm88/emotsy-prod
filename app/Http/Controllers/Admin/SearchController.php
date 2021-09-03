@@ -301,7 +301,7 @@ class SearchController extends Controller
             ],
             [
                 'names' => [trans('messages.notifications')],
-                'url' => action('Admin\BlacklistController@index'),
+                'url' => action('Admin\NotificationController@index'),
                 'keywords' => [],
             ],
         ];
