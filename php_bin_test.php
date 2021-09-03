@@ -47,10 +47,13 @@ if (!extension_loaded('imap')) {
     echo "ERROR: PHP IMAP Extension is required.<br />";
     $valid = false;
 }
+
+/*** not required for PHP CLI
 if (!(extension_loaded('gd') && function_exists('gd_info'))) {
     echo "ERROR: PHP GD Library is required.<br />";
     $valid = false;
 }
+***/
 
 /*** not required for PHP CLI
 if (!extension_loaded('fileinfo')) {
