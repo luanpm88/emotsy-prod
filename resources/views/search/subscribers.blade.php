@@ -17,7 +17,7 @@
         <a href="{{ action('SubscriberController@edit', ['list_uid' => $subscriber->mailList->uid ,'uid' => $subscriber->uid]) }}" class="search-result border-bottom d-block">
             <div class="d-flex align-items-center">
                 <div>
-                    <img width="40px" height="40px" class="shadow-sm me-3 rounded-circle" src="{{ (isSiteDemo() ? 'https://i.pravatar.cc/300?v=' . $key : action('SubscriberController@avatar',  $subscriber->uid)) }}" />
+                    <img width="40px" height="40px" class="shadow-sm me-3 rounded-circle" src="{{ (isSiteDemo() ? 'https://i.pravatar.cc/300?v=' . $subscriber->uid : action('SubscriberController@avatar',  $subscriber->uid)) }}" />
                 </div>
                 <div>
                     <div class="d-flex">

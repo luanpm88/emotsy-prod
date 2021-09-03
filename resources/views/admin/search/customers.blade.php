@@ -21,7 +21,7 @@
             <div class="d-flex align-items-center">
                 <div>
                     <img width="40px" height="40px" class="shadow-sm me-3 rounded-circle"
-                        src="{{ $customer->user->getProfileImageUrl() }}" />
+                        src="{{ isSiteDemo() ? 'https://i.pravatar.cc/300?v=' . $customer->uid : $customer->user->getProfileImageUrl() }}" />
                 </div>
                 <div>
                     <div class="d-flex">
