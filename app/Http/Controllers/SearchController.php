@@ -232,6 +232,7 @@ class SearchController extends Controller
 
         $templates = $customer->templates()
             ->search($request->keyword)
+            ->notAssociated()
             ->orderBy('templates.name', 'asc')
             ->paginate($count);
         
