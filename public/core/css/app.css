@@ -7331,10 +7331,11 @@ hr {
     margin-left: 8px;
 }
 .headbar {
-    width: 100%;
+    width: 0;
     margin-bottom: -60px;
     position: relative;
     height: 60px;
+    float: right;
 }
 .app_search_input {
     width: 40px;
