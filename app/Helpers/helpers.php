@@ -676,7 +676,7 @@ function cursorIterate($query, $orderBy, $size, $callback)
  *
  * @todo not very OOP here, consider moving this to a Helper instead
 */
-function inlineHtml($html, array $cssFiles)
+function makeInlineCss($html, array $cssFiles)
 {
     // disable warning when parsing html content
     libxml_use_internal_errors(true);
