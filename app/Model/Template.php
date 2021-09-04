@@ -1177,6 +1177,11 @@ class Template extends Model
                 'dir' => database_path('templates/featured/005-blue/5d7b526bbfd4c'),
                 'category' => $categoryFeatured,
                 'builder' => true,
+            ], [
+                'name' => 'News Digest',
+                'dir' => database_path('templates/featured/000-04-rss-feed/6037a2356820zs'),
+                'category' => $categoryFeatured,
+                'builder' => true,
             ],
         ];
 
