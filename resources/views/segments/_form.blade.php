@@ -62,7 +62,9 @@ delete_outline
 
 								<br />
 								<a sample-url="{{ action('SegmentController@sample_condition', $list->uid) }}" href="#add_condition" class="btn btn-info bg-teal-800 add-segment-condition">
-									{{ trans('messages.add_condition') }}
+									<span class="material-icons-outlined">
+										add
+										</span> {{ trans('messages.add_condition') }}
 								</a>
 
 							</div>
