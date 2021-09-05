@@ -43,7 +43,7 @@
 					</td>
 				@endforeach
 
-				@if (in_array("created_at", request()->columns))
+				@if (in_array("created_at", is_array(request()->columns) ? request()->columns : []))
 					<td>
 						<span class="no-margin stat-num">{{ Tool::formatDateTime($item->created_at) }}</span>
 						<br>
@@ -51,7 +51,7 @@
 					</td>
 				@endif
 
-				@if (in_array("updated_at", request()->columns))
+				@if (in_array("updated_at", is_array(request()->columns) ? request()->columns : []))
 					<td>
 						<span class="no-margin stat-num">{{ Tool::formatDateTime($item->updated_at) }}</span>
 						<br>

@@ -369,11 +369,9 @@ body.mode-dark .btn-close:after {
     transform: translateY(-10px) translateX(-5px);
     display: inline-block;
 }
-
 body.mode-dark .dropdown-menu {
-    color: #333;
+    color: rgba(255, 255, 255, 0.85);
 }
-
 body.mode-dark .alert-warning {
     background-color: rgba(112, 66, 0, 0.35);
     color: rgba(255, 255, 255, 0.85);
@@ -698,6 +696,9 @@ body.mode-dark .select2-selection--multiple:not([class*=bg-]):not([class*=border
 body.mode-dark .select2-container--default .select2-selection--multiple .select2-selection__choice {
     background: rgba(255,255,255,0.1);
 }
-body.mode-dark  .select2-container--default .select2-search--inline .select2-search__field {
+body.mode-dark .select2-container--default .select2-search--inline .select2-search__field {
     color: rgba(255,255,255,0.85);
+}
+body.mode-dark .list_columns ul li {
+    border-color: rgba(255, 255, 255, 0.1);
 }
