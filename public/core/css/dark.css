@@ -702,3 +702,7 @@ body.mode-dark .select2-container--default .select2-search--inline .select2-sear
 body.mode-dark .list_columns ul li {
     border-color: rgba(255, 255, 255, 0.1);
 }
+body.mode-dark .alert {
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+}
