@@ -7,8 +7,8 @@
                     error_outline
                 </span>
                 <div>
-                    <h4 class="text-danger">{{ $list->name }}</h4>
-                    <p>
+                    <h5 class="mb-1" class="text-danger">{{ $list->name }}</h5>
+                    <p class="text-muted">
                         @if ($list->readCache('SubscriberCount', 0))
                             <span class="text-bold text-danger">{{ $list->readCache('SubscriberCount', 0) }}</span> {{ trans('messages.subscribers') }}<pp>,</pp>
                         @endif
