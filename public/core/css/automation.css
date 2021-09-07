@@ -534,8 +534,10 @@ label.switchery-double.checkbox-switchery {
 .mc-table .mc-row .media i, .mc-table .mc-row .media span {
     font-size: 20px;
     border-radius: 100%;
-    padding: 4px 10px;
-    width: 30px;
+    background: #777;
+    color: #fff;
+    padding: 6px 10px;
+    width: 40px;
     display: block;
     height: 40px;
     opacity: 0.9;
