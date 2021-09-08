@@ -673,11 +673,11 @@ class Template extends Model
     public function getContentWithTransformedAssetsUrls($html, $withHost = false, Closure $urlTransform = null, TrackingDomain $domain = null)
     {
         if (!is_null($domain) && $withHost == false) {
-            throw new Exception('Passing third parameter while the first parameter is false');
+            throw new Exception('Passing $domain parameter while the $withHost parameter is false');
         }
 
         if (!is_null($urlTransform) && $withHost == false) {
-            throw new Exception('Passing second parameter while the first parameter is false');
+            throw new Exception('Passing $urlTransform parameter while the $withHost parameter is false');
         }
 
         if (is_null($this->uid)) {
