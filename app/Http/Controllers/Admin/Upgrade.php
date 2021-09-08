@@ -25,8 +25,8 @@ class Upgrade extends Controller
         Setting::writeDefaultSettings();
         Language::dump();
         Template::resetDefaultTemplates();
-        Job::truncate();
-        FailedJob::truncate();
+        Job::query()->delete();
+        FailedJob::query()->delete();
 
         // Upgrade post-processing
         if ($request->session()->has('upgraded')) {
