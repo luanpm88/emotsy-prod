@@ -1304,6 +1304,26 @@ class Template extends Model
         // LIST all form templates here
         $templates = [
             [
+                'name' => 'Right banner',
+                'dir' => database_path('templates/forms/009-layout-right/6002a2135b900'),
+                'category' => $categoryWoo,
+            ], [
+                'name' => 'Left banner',
+                'dir' => database_path('templates/forms/011-layout-left/6002a2135b901'),
+                'category' => $categoryWoo,
+            ], [
+                'name' => 'Top banner',
+                'dir' => database_path('templates/forms/010-layout-top/6002a2135b902'),
+                'category' => $categoryWoo,
+            ], [
+                'name' => 'Bottom banner',
+                'dir' => database_path('templates/forms/012-layout-bottom/6002a2135b903'),
+                'category' => $categoryWoo,
+            ], [
+                'name' => 'Bottom banner',
+                'dir' => database_path('templates/forms/013-layout-clean/6002a2135b904'),
+                'category' => $categoryWoo,
+            ], [
                 'name' => '1 Column',
                 'dir' => database_path('templates/forms/001-column/6001a0a8583a7'),
                 'category' => $categoryWoo,

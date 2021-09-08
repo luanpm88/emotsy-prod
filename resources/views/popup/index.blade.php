@@ -10,39 +10,14 @@
         <link href="{{ URL::asset('builder/builder.css') }}" rel="stylesheet" type="text/css">
         <script type="text/javascript" src="{{ URL::asset('builder/builder.js') }}"></script>
 
+        <script type="text/javascript" src="{{ URL::asset('core/js/group-manager.js') }}"></script>
+
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet"> 
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"> 
 
 
         <link type="text/css" rel="stylesheet" href="{{ URL::asset('core/css/form-builder.css') }}" />
-
-        <style>
-            .logo-img {
-                width: 120px!important;
-                margin-right: 15px;
-            }
-            #formCanvas {
-                width: 70%;
-            }
-            #formWidgetPanel {
-                width: 30%;
-            }
-            #builder_iframe {
-                padding: 0;
-            }
-            .content-left {
-                height: calc(100% - 55px);
-            }
-            .content-right .tab-pane .container {
-                height: calc(100vh - 125px);
-            }
-            .acelle-top-menu {
-                position: fixed;
-                z-index: 1;
-            }
-        </style>
-        
         <script>
             var CSRF_TOKEN = "{{ csrf_token() }}";
             var editor;
@@ -117,6 +92,16 @@
 
                         // js auto height iframe
                         editor.adjustIframeSize();
+
+                        // hide styles
+                        $("#builder_iframe").contents().click(function(e) {
+                            manager.groups.forEach(function(group) {
+                                group.hide();
+                            });
+                        });
+
+                        //
+                        editor.addCustomCss('{{ URL::asset('core/css/form-builder-frame.css') }}');
                     }
                 });
             
@@ -139,26 +124,81 @@
             </nav>
         </div>
         <div class="d-flex">
-            <div id="formCanvas"></div>
+            <div>
+                <div class="browser-backdrop">
+                    <div class="browser-head d-flex align-items-center shadown">
+                        <div>
+                            <div class="control-dots d-flex align-items-center">
+                                <div class="control-dot"></div>
+                                <div class="control-dot orange"></div>
+                                <div class="control-dot green"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="formCanvas"></div>
+            </div>
             <div id="formWidgetPanel"></div>
         </div>
 
-        <div class="styles-settings">
-            <button class="styles-toggle btn btn-secondary px-2 py-1 shadow mb-2">
-                <span class="material-icons-round" style="line-height:30px">
-                    tune
-                </span>
-            </button>
-            <div class="styles-container shadow rounded-lg overflow-hidden p-4" style="display:none">
-                @foreach ($templates as $template)
-                    <a href="{{ action('PopupController@content', [
-                        'template_uid' => $template->uid,
-                    ]) }}" class="style-item d-block rounded-3 overflow-hidden mb-4 shadow-sm">
-                        <img src="{{ $template->getThumbUrl() }}?v={{ rand(0,10) }}" />
+        <div class="styles-settings shadow-sm">
+            <div class="styles-sections">
+                <div class="styles-section form-layouts">
+                    <a href="javascript:;" class="styles-toggle px-2 py-1">
+                        <span class="material-icons-outlined" style="line-height:30px">
+                            dashboard
+                        </span>
                     </a>
-                @endforeach
+                    <div class="styles-container shadow rounded-lg overflow-hidden p-4">
+                        <div class="d-flex align-items-center styles-container-heading shadow">
+                            <a role="button" href="javascript:;" class="styles-back px-2 py-1">
+                                <span class="material-icons-outlined" style="line-height:30px">
+                                    keyboard_backspace
+                                </span>
+                            </a>
+                            <h6 class="d-inline ml-2 m-0">Layouts</h6>
+                        </div>  
+                        <hr>
+                        <div class="">
+                            @foreach ($templates->take(5) as $template)
+                                <a href="{{ action('PopupController@content', [
+                                    'template_uid' => $template->uid,
+                                ]) }}" class="style-item d-block rounded-3 overflow-hidden mb-4 shadow-sm">
+                                    <img src="{{ $template->getThumbUrl() }}?v={{ rand(0,10) }}" />
+                                </a>
+                            @endforeach
+                        </div>
+                    </div>  
+                </div>
+                <div class="styles-section form-theme">
+                    <a href="javascript:;" class="styles-toggle px-2 py-1">
+                        <span class="material-icons-outlined" style="line-height:30px">
+                            web
+                        </span>
+                    </a>
+                    <div class="styles-container shadow rounded-lg overflow-hidden p-4">    
+                        <div class="d-flex align-items-center styles-container-heading shadow-sm">
+                            <a role="button" href="javascript:;" class="styles-back px-2 py-1">
+                                <span class="material-icons-outlined" style="line-height:30px">
+                                    keyboard_backspace
+                                </span>
+                            </a>
+                            <h6 class="d-inline ml-2 m-0">Themes</h6>
+                        </div>                    
+                            
+                        <hr>
+                        <div class="">
+                            @foreach ($templates->skip(5) as $template)
+                                <a href="{{ action('PopupController@content', [
+                                    'template_uid' => $template->uid,
+                                ]) }}" class="style-item d-block rounded-3 overflow-hidden mb-4 shadow-sm">
+                                    <img src="{{ $template->getThumbUrl() }}?v={{ rand(0,10) }}" />
+                                </a>
+                            @endforeach
+                        </div>
+                    </div>  
+                </div>
             </div>
-                
         </div>
 
         <style>
@@ -193,22 +233,6 @@
             var formBuilder = {
                 currentFormHtml: null,
 
-                showStyles: function() {
-                    $('.styles-container').slideDown();
-                },
-
-                hideStyles: function() {
-                    $('.styles-container').slideUp();
-                },
-
-                toogleStyles: function() {
-                    if ($('.styles-container').is(':visible')) {
-                        formBuilder.hideStyles();
-                    } else {
-                        formBuilder.showStyles();
-                    }
-                },
-
                 loadUrl: function(url) {
                     // save current form container
                     editor.cleanUpContent();
@@ -217,29 +241,72 @@
                     editor.loadUrl(url, function() {
                         // load saved form container to new template
                         editor.getIframeContent().find('#formContainer').append(formBuilder.currentFormHtml);
-                        editor.adjustIframeSize();
+                        setTimeout(function() {
+                            editor.adjustIframeSize();
+                        }, 100);
                     });
-
-                    formBuilder.hideStyles();
                 }
             }
-            $(function() {
-                $('.lds-dual-ring').remove();
 
-                $('.styles-toggle').on('click', function() {
-                    formBuilder.toogleStyles();
+            var manager;
+            $(function() {
+
+                manager = new GroupManager();
+
+                $('.styles-settings .styles-section').each(function() {
+                    manager.add({
+                        box: $(this),
+                        button: $(this).find('.styles-toggle'),
+                        container: $(this).find('.styles-container'),
+                        back: $(this).find('.styles-back')
+                    });
                 });
 
-                $(document).on('mouseup', function(e) 
-                {
-                    var container = $(".styles-container");
+                manager.bind(function(group, others) {
+                    // show
+                    group.show = function() {
+                        // hide others
+                        others.forEach(function(other) {
+                            other.hide();
+                        });
 
+                        group.container.addClass('show');
+                        $('.styles-settings').addClass('open');
+
+                        group.container.scrollTop(0);
+                    };
+
+                    // hide
+                    group.hide = function() {
+                        group.container.removeClass('show');
+                        $('.styles-settings').removeClass('open');
+                    }
+
+                    group.button.on('click', function() {
+                        // toggle container
+                        group.show();                       
+                    });
+
+                    group.back.on('click', function() {
+                        // toggle container
+                        group.hide();                       
+                    });
+                });
+
+                // click outside
+                $(document).on('mouseup', function(e) {
+                    var container = $('.styles-container');
                     // if the target of the click isn't the container nor a descendant of the container
                     if (!container.is(e.target) && container.has(e.target).length === 0) 
                     {
-                        formBuilder.hideStyles();
+                        manager.groups.forEach(function(group) {
+                            group.hide();
+                        });
                     }
                 });
+
+                // remove loadding effect
+                $('.lds-dual-ring').remove();
 
                 $('.style-item').on('click', function(e) {
                     e.preventDefault();

@@ -11,7 +11,7 @@ class PopupController extends Controller
     public function index(Request $request)
     {
         // form fields for Editor
-        $formFields = \Acelle\Model\MailList::findByUid('5966ef47e6598')->getFields->map(function ($field) {
+        $formFields = \Acelle\Model\MailList::findByUid('611f20f5d4eff')->getFields->map(function ($field) {
             return [
                 'type' => $field->type,
                 'label' => $field->label,
