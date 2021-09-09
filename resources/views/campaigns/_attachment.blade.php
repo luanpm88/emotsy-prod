@@ -14,10 +14,10 @@
         @endphp
         <li class="d-flex align-items-canter py-2 border-top">
           <div class="d-flex align-items-center mr-auto">
-            <span class="material-icons-outlined fs-4 text-muted me-3">
+            <span class="material-icons-outlined fs-4 text-muted me-3 d-block">
               attach_email
             </span>
-            <span><name>{{ $filename }}</name><size>{{ trans('messages.campaign.attachment.file_size_is', ['size' => $fileszie]) }}</size></span> 
+            <span><name class="d-block">{{ $filename }}</name><size class="text-muted">{{ trans('messages.campaign.attachment.file_size_is', ['size' => $fileszie]) }}</size></span> 
           </div>
           <div class="text-nowrap">
             <a title="" class="tip-right" href="{{ action('CampaignController@downloadAttachment', [
