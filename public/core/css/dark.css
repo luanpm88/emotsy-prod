@@ -706,3 +706,11 @@ body.mode-dark .alert {
     backdrop-filter: blur(18px);
     -webkit-backdrop-filter: blur(18px);
 }
+body.mode-dark .dropzone {
+    background: rgba(255,255,255,0.05);
+    border-color: rgba(255, 255, 255, 0.1)!important;
+    color: rgba(255,255,255,0.65);
+}
+body.mode-dark .dropzone.dz-clickable .dz-message, body.mode-dark .dropzone.dz-clickable .dz-message * {
+    color: rgba(255,255,255,0.65);
+}
