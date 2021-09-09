@@ -611,9 +611,9 @@ body.mode-dark .tox .tox-mbtn {
 body.mode-dark .tox .tox-toolbar, body.mode-dark .tox .tox-toolbar__overflow, body.mode-dark .tox .tox-toolbar__primary {
     border-bottom: solid 1px rgba(255,255,255,0.1);
 }
-body.mode-dark .form-control[disabled], body.mode-dark fieldset[disabled] .form-control {
+body.mode-dark .form-control[disabled], body.mode-dark fieldset[disabled] .form-control, body.mode-dark .form-control[readonly] {
     background: rgba(255,255,255,0.2);
-    color: transparent;
+    color: rgba(255,255,255,0.5);
 }
 body.mode-dark .stats-boxes .stats-box {
     border-color: rgba(255,255,255,0.1);
@@ -628,7 +628,7 @@ body.mode-dark .btn.change-list-button {
     color: rgba(255,255,255,0.85)!important;
 }
 body.mode-dark .text-trans {
-    color: rgba(0,0,0,0);
+    color: rgba(0,0,0,0)!important;
 }
 body.mode-dark .template-create-sticky {
     background-color: rgba(20, 32, 40, 1);
