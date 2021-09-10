@@ -1944,7 +1944,13 @@ class Customer extends Model
 
     public function allowSenderVerification()
     {
-        $plan = $this->activeSubscription()->plan;
+        $subscription = $this->activeSubscription();
+
+        if (is_null($subscription)) {
+            return false;
+        }
+
+        $plan = $subscription->plan;
         if ($plan->useSystemSendingServer()) {
             $server = $plan->primarySendingServer();
             if ($server && $server->allowVerifyingOwnEmailsRemotely()) {
