@@ -17,6 +17,9 @@
     <link rel="stylesheet" type="text/css" href="{{ URL::asset('core/select2/css/select2.min.css') }}">
     <script type="text/javascript" src="{{ URL::asset('core/select2/js/select2.min.js') }}"></script>
 
+    <link href="{{ URL::asset('core/css/UrlAutoFill.css') }}" rel="stylesheet" type="text/css">
+    <script src="{{ URL::asset('core/js/UrlAutoFill.js') }}"></script>
+
     @if ($campaign->template->theme)
         @include('builder.themes.' . $campaign->template->theme)
     @endif
@@ -201,6 +204,9 @@
             //
             $(document).on('click', '.filemanager-ok', function(e) {alert('Please click on the thumbnail to select the corresponding image');})
             $(document).on('click', '.filemanager-cancel', function(e) {$('.PopUpCloseButton').click();})
+
+            //
+            var urlFill = new UrlAutoFill({!! json_encode($campaign->template->urlTagsDropdown()) !!});
         });
     </script>
   </head>

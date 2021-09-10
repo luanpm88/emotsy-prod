@@ -7,7 +7,7 @@ class UrlAutoFill {
         _this.values = [];                
 
         if (!_this.keyup) {
-            _this.keyup = $(document).on('focus', '[type=url]', function(event) {
+            _this.keyup = $(document).on('focus', '.tox-form__group:first-child input', function(event) {
                 if (!$('.urlautofill-input').length) {
                     var input = $('<input type="text" class="urlautofill-input">');
                     $(this).after(input);
@@ -18,7 +18,7 @@ class UrlAutoFill {
                 }
             });
 
-            $(document).on('input', '[type=url]', function(event) {
+            $(document).on('input', '.tox-form__group:first-child input', function(event) {
                 console.log('input');
             });
 
@@ -27,7 +27,7 @@ class UrlAutoFill {
                     _this.updateValues();
                     _this.showDropdown();
                 }
-                $('[type=url]').val(_this.input.val());
+                $('.tox-form__group:first-child input').val(_this.input.val());
             })
 
             $(document).on('keydown', '.urlautofill-input', function(event) {
@@ -57,7 +57,7 @@ class UrlAutoFill {
                 _this.updateValues();
                 setTimeout(function() {
                     _this.showDropdown();
-                    _this.input.val($('[type=url]').val());
+                    _this.input.val($('.tox-form__group:first-child input').val());
 
                     _this.input.css('opacity', '1');
                 }, 100);
@@ -66,19 +66,19 @@ class UrlAutoFill {
             $(document).on('focusout', '.urlautofill-input', function(event) {
                 setTimeout(function() {
                     _this.hideDropdown();
-                    _this.input.val($('[type=url]').val());
+                    _this.input.val($('.tox-form__group:first-child input').val());
                 }, 100);
 
                 _this.input.css('opacity', '0');
             });
             
             $(document).on('mousedown', '.tox-browse-url', function(event) {
-                $('[type=url]').focus();
+                $('.tox-form__group:first-child input').focus();
             });
 
-            $(document).on('change', '[type=url]', function(event) {
+            $(document).on('change', '.tox-form__group:first-child input', function(event) {
                 setTimeout(function() {
-                    _this.input.val($('[type=url]').val());
+                    _this.input.val($('.tox-form__group:first-child input').val());
                 }, 100);
             });
         }                    
@@ -177,6 +177,6 @@ class UrlAutoFill {
             _this.input.closest('.tox-form__group').next().find('input').val(item.attr('data'));
         }
 
-        $('[type=url]').val(_this.input.val());
+        $('.tox-form__group:first-child input').val(_this.input.val());
     }
 }        

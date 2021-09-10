@@ -10,6 +10,9 @@
     <link href="{{ URL::asset('builder/builder.css') }}" rel="stylesheet" type="text/css">
     <script type="text/javascript" src="{{ URL::asset('builder/builder.js') }}"></script>
 
+    <link href="{{ URL::asset('core/css/UrlAutoFill.css') }}" rel="stylesheet" type="text/css">
+    <script src="{{ URL::asset('core/js/UrlAutoFill.js') }}"></script>
+
     @if ($template->theme)
         @include('builder.themes.' . $template->theme)
     @endif
@@ -25,11 +28,10 @@
     
     <script>
         var CSRF_TOKEN = "{{ csrf_token() }}";
-        var editor;
-        
+        var editor;        
         var templates = {!! json_encode($templates) !!};
         
-        $( document ).ready(function() {
+        $(function() {
             editor = new Editor({
                 strict: true,
                 showHelp: false,
@@ -86,6 +88,7 @@
                       inline_boundaries: false,
                       relative_urls: false,
                       convert_urls: false,
+                      typeahead_urls: false,
                       remove_script_host : false,
                       valid_elements : '*[*],meta[*]',
                       valid_children: '+h1[div],+h2[div],+h3[div],+h4[div],+h5[div],+h6[div],+a[div]',
@@ -195,6 +198,9 @@
             //
             $(document).on('click', '.filemanager-ok', function(e) {alert('Please click on the thumbnail to select the corresponding image');})
             $(document).on('click', '.filemanager-cancel', function(e) {$('.PopUpCloseButton').click();})
+
+            //
+            var urlFill = new UrlAutoFill({!! json_encode($template->urlTagsDropdown()) !!});
         });
     </script>
   </head>
