@@ -1279,9 +1279,9 @@ class Subscriber extends Model
         MailListSubscription::dispatch($this);
     }
 
-    public function scopeUnsubscribed()
+    public function scopeUnsubscribed($query)
     {
-        return self::where('status', '=', self::STATUS_UNSUBSCRIBED);
+        return $query->where('status', '=', self::STATUS_UNSUBSCRIBED);
     }
 
     public function generateUnsubscribeUrl($messageId = null, $absoluteUrl = true)
