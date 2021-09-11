@@ -589,31 +589,18 @@ class MailList extends Model
     }
 
     /**
-     * Count open rate.
-     *
-     * @return number
-     */
-    public function openRate()
-    {
-        if ($this->trackingCount() == 0) {
-            return 0;
-        }
-
-        return round(($this->openCount() / $this->trackingCount()) * 100, 2);
-    }
-
-    /**
      * Count open uniq rate.
      *
      * @return number
      */
     public function openUniqRate()
     {
-        if ($this->trackingCount() == 0) {
-            return 0;
+        $subscribersCount = $this->subscribers()->count();
+        if ($subscribersCount == 0) {
+            return 0.0;
         }
 
-        return round(($this->openUniqCount() / $this->trackingCount()) * 100, 2);
+        return round(($this->openUniqCount() / $subscribersCount), 2);
     }
 
     /**
@@ -628,7 +615,7 @@ class MailList extends Model
             return 0;
         }
 
-        return round(($this->clickedEmailsCount() / $open_count) * 100, 2);
+        return round(($this->clickedEmailsCount() / $open_count), 2);
     }
 
     /**
