@@ -102,6 +102,9 @@ function initJs(container)
         
         input.focus();
     });
+
+    // styled checkbox
+    container.find('.styled, .switchery, [name=color_scheme]').after('<span class="check-symbol"></span>');
 }
 
 function openMiddleBar() {

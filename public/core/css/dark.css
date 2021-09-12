@@ -135,21 +135,21 @@ body.mode-dark .form-control, body.mode-dark .select2 {
 body.mode-dark .form-control:hover, body.mode-dark .select2:hover {
     border-color: rgba(255,255,255,0.4);
 }
-body.mode-dark .switchery[type="checkbox"]:before, body.mode-dark .styled[type="checkbox"]:before, body.mode-dark .styled[type="radio"]:before {
+body.mode-dark .switchery[type="checkbox"] ~ .check-symbol:before, body.mode-dark .styled[type="checkbox"] ~ .check-symbol:before, body.mode-dark .styled[type="radio"] ~ .check-symbol:before {
     background-color: rgba(0,0,0,0.4);
     border-color: rgba(255,255,255,0.3);
 }
-body.mode-dark .switchery[type="checkbox"]:hover:before, body.mode-dark .styled[type="checkbox"]:hover:before, body.mode-dark .styled[type="radio"]:hover:before {
+body.mode-dark .switchery[type="checkbox"] ~ .check-symbol:hover:before, body.mode-dark .styled[type="checkbox"] ~ .check-symbol:hover:before, body.mode-dark .styled[type="radio"] ~ .check-symbol:hover:before {
     background-color: #002838;
     border-color: rgba(255,255,255,0.3);
 }
-body.mode-dark .switchery[type="checkbox"]:checked:before, body.mode-dark .styled[type="checkbox"]:checked:before, body.mode-dark .styled[type="radio"]:checked:before {
+body.mode-dark .switchery[type="checkbox"]:checked ~ .check-symbol:before, body.mode-dark .styled[type="checkbox"]:checked ~ .check-symbol:before, body.mode-dark .styled[type="radio"]:checked ~ .check-symbol:before {
     background: rgba(255,255,255,0.2);
     border-color: rgba(255,255,255,0.1);
     backdrop-filter: blur(18px);
     -webkit-backdrop-filter: blur(18px);
 }
-body.mode-dark .styled[type="radio"]:checked:before {
+body.mode-dark .styled[type="radio"]:checked ~ .check-symbol:before {
     background-color: rgba(255,255,255,0.1);
     border-color: rgba(255,255,255,0.5);
 }
