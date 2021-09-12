@@ -21,7 +21,7 @@
         </label>
         @if (isset($label))
             
-                {{ $label }}
+                <span class="ms-2">{{ $label }}</span>
 
         @endif
     </span>
