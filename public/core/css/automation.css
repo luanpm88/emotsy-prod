@@ -1330,7 +1330,6 @@ a:hover label {
 }
 .automation_status {
   margin: 0!important;
-  display: block!important;
 }
 .switch-automation .select2-container .select2-selection--single .select2-selection__rendered {
   color: transparent;

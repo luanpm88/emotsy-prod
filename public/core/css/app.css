@@ -595,7 +595,6 @@ h2 [class^="icon-"] {
 }
 .checkbox-right-switch label {
     padding-left: 0;
-    width: calc(100% - 110px);
     font-size: 17px;
 }
 .checkbox-right-switch .checkbox-description {
@@ -6105,7 +6104,7 @@ h1, h1 {
     align-items: center;
     cursor: pointer;
     /* transform: scale(1.9) translateY(-90px); */
-    transform: translateY(-20000px);
+    display: none;
 }
 .switchery[type="checkbox"]:disabled, .styled[type="checkbox"]:disabled, .styled[type="radio"]:disabled {
     opacity: 0.6;
@@ -6129,8 +6128,6 @@ h1, h1 {
     cursor: pointer;
     text-indent: -90000px;
     top: 2px;
-    left: -19px;
-    margin-right: -10px;
     /* transform: scale(1.9) translateY(90px); */
     /* transform: translateY(19997px); */
 }
@@ -6167,7 +6164,7 @@ h1, h1 {
     background-color: #009688;
     position: absolute;
     border-radius: 100%;
-    left: -16px;
+    left: 3px;
     top: 2px;
     /* transform: translateY(19997px); */
 }
@@ -6190,7 +6187,7 @@ h1, h1 {
     border-radius: 20px;
     /* transform: translateY(19994px); */
     transition: all .2s ease-in-out;
-    top: -6px;
+    top: 0;
     left: 1px;
 }
 .styled3[type="checkbox"] ~ .check-symbol:after {
@@ -6205,7 +6202,7 @@ h1, h1 {
     border-radius: 20px;
     /* transform: translateY(19994px); */
     position: absolute;
-    top: -16px;
+    top: -10px;
     left: 0;
     box-shadow: 0 0 4px rgba(0,0,0,0.1);
     color: transparent;
