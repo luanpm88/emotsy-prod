@@ -10,6 +10,7 @@ use Throwable;
 use Acelle\Library\Notification\BackendError as BackendErrorNotification;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App;
+use Illuminate\Queue\MaxAttemptsExceededException;
 
 class Handler extends ExceptionHandler
 {
@@ -23,6 +24,11 @@ class Handler extends ExceptionHandler
         // an "ModelNotFoundException" exception
         // Suppress it here to avoid a log recorded to admin notification area
         ModelNotFoundException::class,
+
+        // For this type of issue, it is normally because the related process is terminated by the OS
+        // and the error is already logged to the related campaign, verification process, etc.
+        // We do not need to record it here
+        MaxAttemptsExceededException::class,
     ];
 
     /**

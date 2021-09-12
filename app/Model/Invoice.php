@@ -93,6 +93,11 @@ class Invoice extends Model
         return $this->hasMany('Acelle\Model\Transaction');
     }
 
+    public function billingCountry()
+    {
+        return $this->belongsTo('Acelle\Model\Country', 'billing_country_id');
+    }
+
     /**
      * Get pending transaction.
      */
@@ -585,5 +590,10 @@ class Invoice extends Model
         $this->save();
 
         return $validator;
+    }
+
+    public function getBillingName()
+    {
+        return $this->billing_first_name . ' ' . $this->billing_last_name;
     }
 }
