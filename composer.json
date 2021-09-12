@@ -13,7 +13,7 @@
         "coinpaymentsnet/coinpayments-php": "^1.0",
         "doctrine/dbal": "^2.10",
         "facade/ignition": "^2.11",
-        "facebook/php-ads-sdk": "^10.0",
+        "facebook/php-ads-sdk": "^11.0",
         "filp/whoops": "^2.14",
         "galbar/jsonpath": "^1.2",
         "guzzlehttp/guzzle": "^7.0.1",
