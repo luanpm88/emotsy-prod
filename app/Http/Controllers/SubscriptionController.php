@@ -32,6 +32,7 @@ class SubscriptionController extends Controller
         //    2 Sinh ra RENEW invoice
         //    3 Xử lý thanh toán
         $subscription->check();
+        $subscription->processRenewInvoice();
 
         // 2. IF PLAN NOT ACTIVE
         if (!$subscription->plan->isActive()) {

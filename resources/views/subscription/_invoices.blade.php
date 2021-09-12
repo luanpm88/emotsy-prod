@@ -82,7 +82,7 @@
                                 </td> 
                                 <td>
                                     <span class="no-margin kq_search">
-                                        <span {!! $transaction->error ? 'title="'.$transaction->error.'"' : '' !!} class="xtooltip label label-{{ $transaction->status }}" style="white-space: nowrap;">
+                                        <span {!! $transaction->error ? 'title="'.strip_tags($transaction->error).'"' : '' !!} class="xtooltip label label-{{ $transaction->status }}" style="white-space: nowrap;">
                                             {{ trans('messages.transaction.' . $transaction->status) }}
                                         </span>
                                     </span>
