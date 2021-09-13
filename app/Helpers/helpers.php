@@ -834,7 +834,7 @@ function filterSearchArray($items, $keyword)
     // sort
     usort($results, function ($a, $b) {
         if ($a['rate'] != $b['rate']) {
-            return $a['rate'] < $b['rate'];
+            return $a['rate'] <=> $b['rate'];
         } else {
             return strcmp(implode(' ', $a['item']['names']), implode(' ', $b['item']['names']));
         }
