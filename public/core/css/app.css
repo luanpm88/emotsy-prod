@@ -6156,6 +6156,7 @@ h1, h1 {
     content: "";
     background-color: #fff;
     border: 1px solid #aaa;
+    top: 4px;
 }
 .styled[type="radio"]:checked ~ .check-symbol:after {
     content: "";
@@ -6166,7 +6167,7 @@ h1, h1 {
     position: absolute;
     border-radius: 100%;
     left: 3px;
-    top: 2px;
+    top: 4px;
     /* transform: translateY(19997px); */
 }
 .styled.check_all ~ .check-symbol {
