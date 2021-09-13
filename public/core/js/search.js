@@ -399,6 +399,7 @@ var TopSearchBar = {
             switch(e.which) {
                 case 13: // enter
                     TopSearchBar.go();
+                    e.preventDefault();
                 break;
 
                 case 37: // left
@@ -406,6 +407,7 @@ var TopSearchBar = {
 
                 case 38: // up
                     TopSearchBar.moveUp();
+                    e.preventDefault();
                 break;
 
                 case 39: // right
@@ -413,11 +415,12 @@ var TopSearchBar = {
 
                 case 40: // down
                     TopSearchBar.moveDown();
+                    e.preventDefault();
                 break;
 
                 default: return; // exit this handler for other keys
             }
-            e.preventDefault(); // prevent the default action (scroll / move caret)
+            
         });
 
         // keyboard shorcut
