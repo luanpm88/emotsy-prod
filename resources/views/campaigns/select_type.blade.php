@@ -35,7 +35,7 @@ schedule
                             </span>
                         </a>
                         <div>
-                            <h4><a href="{{ action("CampaignController@create", ["type" => $key]) }}">{{ trans('messages.' . $key) }}</a></h4>
+                            <h4 class="mb-1"><a href="{{ action("CampaignController@create", ["type" => $key]) }}">{{ trans('messages.' . $key) }}</a></h4>
                             <p>
                                 {{ trans('messages.campaign_intro_' . $key) }}
                             </p>

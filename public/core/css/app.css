@@ -2672,6 +2672,7 @@ canvas[data-zr-dom-id='_zrender_hover_'] {
 }
 .select-template-layout {
     position: relative;
+    width: 100%;
 }
 .select-template-layout.selected .panel-template-style {
   border-color: #166dba;
@@ -7585,4 +7586,9 @@ body:not(.search-open) .app_search_box .search-control::after {
 }
 .fullscreen-search-box.search-open .app_search_box.searching .search-control::after {
     top: 7px;
+}
+@media (max-width: 992px) {
+    .modal-lg, .modal-xl {
+        max-width: 80%;
+    }
 }

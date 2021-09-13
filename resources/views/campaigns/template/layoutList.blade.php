@@ -1,21 +1,23 @@
 @if ($templates->count() > 0)
-    <div id="layout" class="tab-pane active template-boxes layout mt-4">
+    <div id="layout" class="row template-boxes">
         @foreach ($templates as $key => $template)
-            <a 
-                href="{{ action('CampaignController@templateLayout', ['uid' => $campaign->uid, 'template' => $template->uid]) }}"
-                class="select-template-layout choose-theme"
-            >
-                <div class="">
-                    <div class="panel-template-style">
-                        <div>
-                            <div class="panel-template-placeholder">
-                                <img src="{{ $template->getThumbUrl() }}?v={{ rand(0,10) }}" />
+            <div class="col-xl-2 col-md-3 col-sm-4 col-xm-6 mb-3">
+                <a 
+                    href="{{ action('CampaignController@templateLayout', ['uid' => $campaign->uid, 'template' => $template->uid]) }}"
+                    class="choose-theme select-template-layout"
+                >
+                    <div class="">
+                        <div class="">
+                            <div>
+                                <div class="">
+                                    <img class="border rounded-3" width="100%" src="{{ $template->getThumbUrl() }}?v={{ rand(0,10) }}" />
+                                </div>
+                                <label class="mt-1 text-center">{{ $template->name }}</label>
                             </div>
-                            <label class="mt-1 text-center">{{ $template->name }}</label>
                         </div>
                     </div>
-                </div>
-            </a>
+                </a>
+            </div>
         @endforeach
     </div>
         

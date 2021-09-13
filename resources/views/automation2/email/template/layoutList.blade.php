@@ -1,14 +1,16 @@
 @if ($templates->count() >0)
-    <div class="template-list-items mt-3 clearfix">
+    <div class="row template-boxes mt-4">
         @foreach ($templates as $key => $template)
-            <a href="javascript:;" class="select-template-layout template-list-item template-choose" data-template="{{ $template->uid }}">
-                <div class="panel-template-style">
-                    <div class="panel-template-placeholder">
-                        <img href="javascript:;" src="{{ $template->getThumbUrl() }}?v={{ rand(0,10) }}" />
+            <div class="col-xl-2 col-md-3 col-sm-4 col-xm-6 mb-3">
+                <a href="javascript:;" class="select-template-layout template-choose" data-template="{{ $template->uid }}">
+                    <div class="">
+                        <div class="">
+                            <img class="border rounded-3" width="100%" href="javascript:;" src="{{ $template->getThumbUrl() }}?v={{ rand(0,10) }}" />
+                        </div>
+                        <label class="mb-20 text-center d-block mt-1">{{ $template->name }}</label>
                     </div>
-                    <label class="mb-20 text-center d-block mt-1">{{ $template->name }}</label>
-                </div>
-            </a>
+                </a>
+            </div>
         @endforeach
     </div>
         
