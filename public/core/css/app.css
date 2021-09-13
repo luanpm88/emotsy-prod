@@ -7586,6 +7586,3 @@ body:not(.search-open) .app_search_box .search-control::after {
 .fullscreen-search-box.search-open .app_search_box.searching .search-control::after {
     top: 7px;
 }
-#anotify {
-    pointer-events: none;
-}
