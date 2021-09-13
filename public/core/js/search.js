@@ -365,7 +365,7 @@ var TopSearchBar = {
         });
 
         TopSearchBar.getSearchInput().on('keyup', function(e) {
-            if (e.which == 40 || e.which == 38 || e.which == 13) {
+            if (e.which == 40 || e.which == 38 || e.which == 13 || e.which == 37 || e.which == 39) {
                 return;
             }
             TopSearchBar.search();
