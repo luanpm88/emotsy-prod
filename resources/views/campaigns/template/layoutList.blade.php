@@ -1,5 +1,5 @@
 @if ($templates->count() > 0)
-    <div id="layout" class="row template-boxes">
+    <div id="layout" class="row template-boxes mt-3">
         @foreach ($templates as $key => $template)
             <div class="col-xl-2 col-md-3 col-sm-4 col-xm-6 mb-3">
                 <a 
