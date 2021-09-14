@@ -6097,6 +6097,8 @@ h1, h1 {
 .check-symbol {
     position: relative;
     cursor: pointer;
+}
+.styled3[type="checkbox"] ~ .check-symbol.check-symbol {
     display: flex;
     align-items: center;
 }
