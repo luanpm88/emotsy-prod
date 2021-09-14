@@ -62,7 +62,7 @@
 
 						<div id="gallery-{{ $category->id }}" class="pb-4">
 							<div class="listing-form"
-								data-url="{{ action('TemplateController@builderTemplates', [
+								data-url="{{ action('Admin\TemplateController@builderTemplates', [
 									'category_uid' => $category->uid,
 								]) }}"
 								per-page="25"					
@@ -103,7 +103,7 @@
 					<script>
 						$(function() {
 							var list = makeList({
-								url: '{{ action('TemplateController@builderTemplates', [
+								url: '{{ action('Admin\TemplateController@builderTemplates', [
 									'category_uid' => $category->uid,
 								]) }}',
 								container: $('#gallery-{{ $category->id }}'),

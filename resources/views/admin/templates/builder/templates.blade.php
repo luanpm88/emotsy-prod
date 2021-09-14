@@ -1,5 +1,5 @@
 @if ($templates->count() > 0)
-    <div id="layout" class="tab-pane fade in active template-boxes mt-20" style="
+    <div id="layout" class="row template-boxes mt-4" style="
         margin-left: -20px;
         margin-right: -20px;
     ">
@@ -19,9 +19,9 @@
         @endforeach
     </div>
         
-    <hr>
-        
-    @include('elements/_per_page_select', ["items" => $templates])
+    <div style="clear:both" class="mt-4">
+        @include('elements/_per_page_select', ["items" => $templates])
+    </div>
     
 @elseif (!empty(request()->keyword))
     <div class="empty-list">
