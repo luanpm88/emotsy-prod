@@ -49,7 +49,7 @@
                 <div class="col-sm-6">
                     <label class="checkbox-inline d-flex align-items-center m-0">
                         <input type="checkbox" class="styled me-2" checked="checked" name="remember">
-                        <span>{{ trans("messages.stay_logged_in") }}</span>
+                        <span class="ms-2">{{ trans("messages.stay_logged_in") }}</span>
                     </label>
                 </div>
 
