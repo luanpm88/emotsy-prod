@@ -112,14 +112,22 @@ class UserController extends Controller
             // Okay, create it
             $user = $customer->createAccountAndUser($request);
 
-            // Send registration confirmation email
-            try {
-                $user->sendActivationMail($user->displayName());
-            } catch (\Exception $e) {
-                return view('somethingWentWrong', ['message' => trans('messages.something_went_wrong_with_email_service') . ": " . $e->getMessage()]);
-            }
+            // user email verification
+            if (true) {
+                // Send registration confirmation email
+                try {
+                    $user->sendActivationMail($user->displayName());
+                } catch (\Exception $e) {
+                    return view('somethingWentWrong', ['message' => trans('messages.something_went_wrong_with_email_service') . ": " . $e->getMessage()]);
+                }
 
-            return view('users.register_confirmation_notice');
+                return view('users.register_confirmation_notice');
+
+            // no email verification
+            } else {
+                $user->setActivated();
+                return redirect()->route('login');
+            }
         }
 
         return view('users.register', [
