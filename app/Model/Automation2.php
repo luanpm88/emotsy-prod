@@ -757,7 +757,7 @@ class Automation2 extends Model
             $stream = new RotatingFileHandler(getenv('LOGFILE'), 0, Logger::DEBUG);
         } else {
             $logfile = storage_path('logs/' . php_sapi_name() . '/automation-'.$this->uid.'.log');
-            $stream = new RotatingFileHandler($logfile, 0, Logger::DEBUG);
+            $stream = new RotatingFileHandler($logfile, 0, Logger::WARNING);
         }
 
         $stream->setFormatter($formatter);
