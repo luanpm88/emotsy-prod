@@ -94,7 +94,7 @@ class SendingDomainPolicy
                     $server = $subscription->plan->primarySendingServer();
                     $can = $server->allowVerifyingOwnDomains() || $server->allowVerifyingOwnDomainsRemotely();
                 }
-                
+
                 $can = $can && $user->customer->id == $item->customer_id;
                 break;
         }

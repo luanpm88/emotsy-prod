@@ -133,7 +133,7 @@ class WooCommerce extends Source
                 if (isset($product["image"])) {
                     $p->uploadImage($product["image"]);
                 }
-                
+
                 $p->save();
 
                 $imported++;

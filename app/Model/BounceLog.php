@@ -26,8 +26,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class BounceLog extends Model
 {
-    const HARD = 'hard';
-    const SOFT = 'soft';
+    public const HARD = 'hard';
+    public const SOFT = 'soft';
 
     /**
      * Associations.

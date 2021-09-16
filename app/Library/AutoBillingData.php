@@ -1,4 +1,5 @@
 <?php
+
 namespace Acelle\Library;
 
 use Exception;
@@ -37,7 +38,7 @@ class AutoBillingData
     public static function fromJson($json)
     {
         $data = json_decode($json, true);
-        
+
         if (!isset($data['type'])) {
             throw new Exception('Missing type from auto billing data json');
         }

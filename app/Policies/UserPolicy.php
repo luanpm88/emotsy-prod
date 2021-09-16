@@ -8,14 +8,14 @@ use Acelle\Model\User;
 class UserPolicy
 {
     use HandlesAuthorization;
-    
+
     public function read(User $user)
     {
         $can = $user->admin->getPermission('user_read') != 'no';
 
         return $can;
     }
-    
+
     public function read_all(User $user)
     {
         $can = $user->admin->getPermission('user_read') == 'all';
@@ -53,22 +53,22 @@ class UserPolicy
 
         return $can;
     }
-    
+
     public function customer_access(User $user)
     {
         return is_object($user->customer);
     }
-    
+
     public function admin_access(User $user)
     {
         return is_object($user->admin);
     }
-    
+
     public function reseller_access(User $user)
     {
         return is_object($user->reseller);
     }
-    
+
     public function change_group(User $user)
     {
         $ability = $user->admin->getPermission('user_update');

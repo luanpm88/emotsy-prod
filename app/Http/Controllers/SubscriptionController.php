@@ -38,7 +38,7 @@ class SubscriptionController extends Controller
         if (!$subscription->plan->isActive()) {
             return response()->view('errors.general', [ 'message' => __('messages.subscription.error.plan-not-active', [ 'name' => $subscription->plan->name]) ]);
         }
-        
+
         // 3. SUBSCRIPTION IS NEW
         if ($subscription->isNew()) {
             $invoice = $subscription->getItsOnlyUnpaidInitInvoice();
@@ -66,7 +66,7 @@ class SubscriptionController extends Controller
             'subscription' => $subscription,
         ]);
     }
-    
+
     public function init(Request $request)
     {
         // Get current customer
@@ -157,7 +157,7 @@ class SubscriptionController extends Controller
                 'method' => $request->payment_method,
             ]);
         }
-        
+
         $invoice->confirmWithoutPayment();
 
         $request->session()->flash('alert-success', trans('messages.invoice.confirmed'));
@@ -178,7 +178,7 @@ class SubscriptionController extends Controller
         $request->session()->flash('alert-success', trans('messages.invoice.cancelled'));
         return redirect()->action('SubscriptionController@index');
     }
-    
+
     public function checkout(Request $request)
     {
         $customer = $request->user()->customer;
@@ -202,7 +202,7 @@ class SubscriptionController extends Controller
         // Save posted data
         if ($request->isMethod('post')) {
             $validator = $invoice->updateBillingInformation($request->all());
-            
+
             // redirect if fails
             if ($validator->fails()) {
                 return response()->view('subscription.billingInformation', [
@@ -223,7 +223,7 @@ class SubscriptionController extends Controller
             'invoice' => $invoice,
         ]);
     }
-    
+
     /**
      * Change plan.
      *
@@ -237,7 +237,7 @@ class SubscriptionController extends Controller
         $subscription = $customer->subscription;
         $gateway = $customer->getPreferredPaymentGateway();
         $plans = Plan::getAvailablePlans();
-        
+
         // Authorization
         if (!$request->user()->customer->can('changePlan', $subscription)) {
             return $this->notAuthorized();
@@ -260,14 +260,14 @@ class SubscriptionController extends Controller
                 'invoice_uid' => $changePlanInvoice->uid,
             ]);
         }
-        
+
         return view('subscription.change_plan', [
             'subscription' => $subscription,
             'gateway' => $gateway,
             'plans' => $plans,
         ]);
     }
-    
+
     /**
      * Cancel subscription at the end of current period.
      *
@@ -292,7 +292,7 @@ class SubscriptionController extends Controller
         $request->session()->flash('alert-success', trans('messages.subscription.cancelled'));
         return redirect()->action('SubscriptionController@index');
     }
-    
+
 
     /**
      * Cancel subscription at the end of current period.
@@ -314,7 +314,7 @@ class SubscriptionController extends Controller
         $request->session()->flash('alert-success', trans('messages.subscription.resumed'));
         return redirect()->action('SubscriptionController@index');
     }
-    
+
     /**
      * Cancel now subscription at the end of current period.
      *
@@ -330,7 +330,7 @@ class SubscriptionController extends Controller
 
         $customer = $request->user()->customer;
         $subscription = $customer->subscription;
-        
+
         if ($request->user()->customer->can('cancelNow', $subscription)) {
             $subscription->cancelNow();
         }
@@ -378,7 +378,7 @@ class SubscriptionController extends Controller
         // choose a plan
         elseif ($subscription) {
             $invoice = $subscription->getUnpaidInvoice();
-            
+
             return view('subscription.orderBox', [
                 'subscription' => $subscription,
                 'bill' => $invoice->getBillingInfo(),

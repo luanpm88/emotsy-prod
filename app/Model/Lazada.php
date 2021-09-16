@@ -59,7 +59,7 @@ class Lazada extends Source
                 'progress' => 0,
             ]
         ]);
-        
+
         $perPage = 12;
         $pages = ceil($total/$perPage);
         $imported = 0;

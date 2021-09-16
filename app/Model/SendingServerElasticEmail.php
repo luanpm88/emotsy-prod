@@ -28,9 +28,9 @@ use CurlFile;
 
 class SendingServerElasticEmail extends SendingServer
 {
-    const WEBHOOK = 'elasticemail';
-    const WEBHOOK_NAME = 'acellemail';
-    const API_ENDPOINT = 'https://api.elasticemail.com/v2';
+    public const WEBHOOK = 'elasticemail';
+    public const WEBHOOK_NAME = 'acellemail';
+    public const API_ENDPOINT = 'https://api.elasticemail.com/v2';
 
     protected $table = 'sending_servers';
     public static $client = null;
@@ -240,7 +240,7 @@ class SendingServerElasticEmail extends SendingServer
         // @todo: what if there are more than 2 parts?
         $html = null;
         $plain = null;
-        
+
         foreach ($message->getChildren() as $part) {
             $contentType = $part->getContentType();
 
@@ -295,7 +295,7 @@ class SendingServerElasticEmail extends SendingServer
         // @todo: what if there are more than 2 parts?
         $html = null;
         $plain = null;
-        
+
         foreach ($message->getChildren() as $part) {
             $contentType = $part->getContentType();
 
@@ -335,7 +335,7 @@ class SendingServerElasticEmail extends SendingServer
         }
 
         $ch = curl_init();
-            
+
         curl_setopt_array($ch, array(
             CURLOPT_URL => 'https://api.elasticemail.com/v2/email/send',
             CURLOPT_POST => true,
@@ -344,16 +344,16 @@ class SendingServerElasticEmail extends SendingServer
             CURLOPT_HEADER => false,
             CURLOPT_SSL_VERIFYPEER => false
         ));
-        
+
         $result = curl_exec($ch);
         curl_close($ch);
 
         if ($result === false || empty($result)) {
             throw new \Exception("Cannot send using Elastic API, curl_exec returns false or empty");
         }
-        
+
         $jsonResponse = json_decode($result);
-        
+
         if ($jsonResponse->success == false) {
             throw new \Exception("ElasticEmail error: ".$result);
         }

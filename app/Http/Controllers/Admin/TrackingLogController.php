@@ -7,7 +7,6 @@ use Acelle\Http\Controllers\Controller;
 
 class TrackingLogController extends Controller
 {
-
     /**
      * Display a listing of the resource.
      *

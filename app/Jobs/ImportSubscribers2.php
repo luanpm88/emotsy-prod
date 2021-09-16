@@ -11,7 +11,8 @@ use Acelle\Library\Traits\Trackable;
 
 class ImportSubscribers2 extends Base
 {
-    use Batchable, Trackable;
+    use Batchable;
+    use Trackable;
 
     public $timeout = 7200;
 

@@ -9,7 +9,6 @@ use Acelle\Http\Controllers\Controller;
 
 class CurrencyController extends Controller
 {
-
     /**
      * Display a listing of the resource.
      *

@@ -201,11 +201,11 @@ class MailListController extends Controller
             $exist = \Acelle\Model\Field::where('mail_list_id', '=', $list->id)
                 ->where('tag', '=', $request->tag)
                 ->count();
-            
+
             if ($exist) {
                 return \Response::json(array('status' => 0, 'message' => 'Field tag exists'), 403);
             }
-            
+
             // Save field
             $field = new \Acelle\Model\Field();
             $field->mail_list_id = $list->id;

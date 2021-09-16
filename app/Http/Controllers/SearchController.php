@@ -175,7 +175,7 @@ class SearchController extends Controller
             'results' => $results,
         ]);
     }
-    
+
     public function campaigns(Request $request)
     {
         $customer = $request->user()->customer;
@@ -186,7 +186,7 @@ class SearchController extends Controller
             ->filter($request)
             ->orderBy('campaigns.name', 'asc')
             ->paginate($count);
-        
+
         return view('search.campaigns', [
             'keyword' => $request->keyword,
             'campaigns' => $campaigns,
@@ -202,7 +202,7 @@ class SearchController extends Controller
             ->search($request->keyword)
             ->orderBy('mail_lists.name', 'asc')
             ->paginate($count);
-        
+
         return view('search.lists', [
             'keyword' => $request->keyword,
             'lists' => $lists,
@@ -218,7 +218,7 @@ class SearchController extends Controller
             ->search($request->keyword)
             ->orderBy('automation2s.name', 'asc')
             ->paginate($count);
-        
+
         return view('search.automations', [
             'keyword' => $request->keyword,
             'automations' => $automations,
@@ -235,7 +235,7 @@ class SearchController extends Controller
             ->notAssociated()
             ->orderBy('templates.name', 'asc')
             ->paginate($count);
-        
+
         return view('search.templates', [
             'keyword' => $request->keyword,
             'templates' => $templates,
@@ -250,7 +250,7 @@ class SearchController extends Controller
         $subscribers = $customer->subscribers()
             ->search($request->keyword)
             ->paginate($count);
-        
+
         return view('search.subscribers', [
             'keyword' => $request->keyword,
             'subscribers' => $subscribers,

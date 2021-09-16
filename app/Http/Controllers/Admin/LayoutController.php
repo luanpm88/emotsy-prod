@@ -7,7 +7,6 @@ use Acelle\Http\Controllers\Controller;
 
 class LayoutController extends Controller
 {
-
     /**
      * Display a listing of the resource.
      *
@@ -116,7 +115,7 @@ class LayoutController extends Controller
         // Generate info
         $user = $request->user();
         $layout = \Acelle\Model\Layout::findByUid($id);
-        
+
         // Prenvent save from demo mod
         if ($this->isDemoMode()) {
             return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
@@ -138,7 +137,7 @@ class LayoutController extends Controller
 
             // make validator
             $validator = \Validator::make($request->all(), $rules);
-            
+
             // redirect if fails
             if ($validator->fails()) {
                 return response()->json([

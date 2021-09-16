@@ -20,11 +20,11 @@ use Exception;
 class Plugin extends Model
 {
     use HasUid;
-    
-    const STATUS_ACTIVE = 'active';
-    const STATUS_INACTIVE = 'inactive';
 
-    const STORAGE_PATH = 'app/plugins'; // do not use this constant, use getStoragePath instead
+    public const STATUS_ACTIVE = 'active';
+    public const STATUS_INACTIVE = 'inactive';
+
+    public const STORAGE_PATH = 'app/plugins'; // do not use this constant, use getStoragePath instead
 
     protected $fillable = ['name', 'title', 'description', 'version'];
     protected $requiredKeys = [
@@ -160,7 +160,7 @@ class Plugin extends Model
         if (!is_file($configFile = $tmp_path.'/composer.json')) {
             throw new \Exception('Invalid plugin package. No meta data found');
         }
-        
+
         try {
             $config = json_decode(file_get_contents($configFile), true);
         } catch (\Exception $ex) {
@@ -195,7 +195,7 @@ class Plugin extends Model
         if ($request->overwrite) {
             $config['overwrite'] = true;
         }
-        
+
         // throw exception if any required key is missing
         self::validateMetaData($config);
 
@@ -250,7 +250,7 @@ class Plugin extends Model
         if (!is_file($configFile = $tmp_path.'/composer.json')) {
             throw new \Exception('Invalid plugin package. No meta data found');
         }
-        
+
         try {
             $config = json_decode(file_get_contents($configFile), true);
         } catch (\Exception $ex) {
@@ -285,7 +285,7 @@ class Plugin extends Model
         if ($request->overwrite) {
             $config['overwrite'] = true;
         }
-        
+
         // throw exception if any required key is missing
         self::validateMetaData($config);
 
@@ -464,7 +464,7 @@ class Plugin extends Model
         if ($absolute) {
             $base = storage_path($base);
         }
-        
+
         $path = join_paths($base, $subpath);
         return $path;
     }

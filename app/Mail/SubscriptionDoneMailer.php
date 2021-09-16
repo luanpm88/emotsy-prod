@@ -9,7 +9,8 @@ use Illuminate\Queue\SerializesModels;
 
 class SubscriptionDoneMailer extends Mailable
 {
-    use Queueable, SerializesModels;
+    use Queueable;
+    use SerializesModels;
 
     /**
      * The subscription instance.

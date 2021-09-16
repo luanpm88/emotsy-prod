@@ -71,7 +71,7 @@ class UserController extends Controller
 
         return view('users.registration_confirmation_sent');
     }
-    
+
     /**
      * User registration.
      */

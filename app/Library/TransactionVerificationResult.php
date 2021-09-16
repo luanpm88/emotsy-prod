@@ -4,12 +4,12 @@ namespace Acelle\Library;
 
 class TransactionVerificationResult
 {
-    const RESULT_DONE = 'done';
-    const RESULT_FAILED = 'failed';
-    const RESULT_STILL_PENDING = 'still-pending';
+    public const RESULT_DONE = 'done';
+    public const RESULT_FAILED = 'failed';
+    public const RESULT_STILL_PENDING = 'still-pending';
 
     // For Stripe / PayPal / Braintree only when the service will start and finish the transaction immediately
-    const RESULT_VERIFICATION_NOT_NEEDED = 'not-needed';
+    public const RESULT_VERIFICATION_NOT_NEEDED = 'not-needed';
 
     public $result;
     public $error;

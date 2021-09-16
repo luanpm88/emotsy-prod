@@ -31,9 +31,9 @@ class Notification extends Model
 
     protected $table = 'notifications';
 
-    const LEVEL_INFO = 'info';
-    const LEVEL_WARNING = 'warning';
-    const LEVEL_ERROR = 'error';
+    public const LEVEL_INFO = 'info';
+    public const LEVEL_WARNING = 'warning';
+    public const LEVEL_ERROR = 'error';
 
     protected $fillable = [
         'type',

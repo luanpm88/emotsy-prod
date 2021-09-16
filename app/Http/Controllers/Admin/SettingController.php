@@ -520,7 +520,7 @@ class SettingController extends Controller
             // RUN UPGRADE
             Log::info('Actually run.....');
             $manager->run();
-            
+
             Log::info('System successfully upgraded to the new version');
             Log::info('Redirecting to work with new request');
             $request->session()->put('upgraded', true);

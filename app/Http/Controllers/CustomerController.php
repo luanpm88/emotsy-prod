@@ -23,12 +23,12 @@ class CustomerController extends Controller
 
         $id = \Session::pull('orig_customer_id');
         $orig_user = \Acelle\Model\User::findByUid($id);
-        
+
         \Auth::login($orig_user);
-        
+
         return redirect()->action('Admin\CustomerController@index');
     }
-    
+
     /**
      * Admin area.
      *
@@ -40,11 +40,11 @@ class CustomerController extends Controller
     {
         $id = \Session::get('orig_customer_id');
         $orig_user = \Acelle\Model\User::findByUid($id);
-        
+
         // Get current subscription
         $customer = $request->user()->customer;
         $subscription = $customer->subscription;
-        
+
         $next_billing_date = null;
         if (is_object($subscription)) {
             $next_billing_date = $subscription->ends_at;
@@ -52,7 +52,7 @@ class CustomerController extends Controller
                 $next_billing_date = $subscription->current_period_ends_at;
             }
         }
-        
+
         return view('customers.admin_area', [
             'customer' => $customer,
             'subscription' => $subscription,

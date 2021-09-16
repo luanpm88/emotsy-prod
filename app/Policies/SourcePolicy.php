@@ -9,7 +9,7 @@ use Illuminate\Auth\Access\HandlesAuthorization;
 class SourcePolicy
 {
     use HandlesAuthorization;
-    
+
     /**
      * Determine whether the user can view any sources.
      *

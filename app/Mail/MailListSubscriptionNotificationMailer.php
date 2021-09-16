@@ -9,7 +9,8 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 
 class MailListSubscriptionNotificationMailer extends Mailable
 {
-    use Queueable, SerializesModels;
+    use Queueable;
+    use SerializesModels;
 
     protected $subscriber;
 

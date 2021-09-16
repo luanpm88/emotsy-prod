@@ -146,7 +146,7 @@ class Evaluate extends Action
         } else {
             $linkUid = $this->getOption('email_link');
             $link = EmailLink::findByUid($linkUid);
-            
+
             if ($this->evaluationResult == 'true') {
                 return sprintf('Clicked: "%s"', $link->link);
             } else {

@@ -49,14 +49,16 @@ use Acelle\Library\Traits\HasUid;
 
 class MailList extends Model
 {
-    use QueryHelper, TrackJobs, HasUid;
+    use QueryHelper;
+    use TrackJobs;
+    use HasUid;
 
-    const SOURCE_EMBEDDED_FORM = 'embedded-form';
-    const SOURCE_WEB = 'web';
-    const SOURCE_API = 'api';
+    public const SOURCE_EMBEDDED_FORM = 'embedded-form';
+    public const SOURCE_WEB = 'web';
+    public const SOURCE_API = 'api';
 
-    const IMPORT_TEMP_DIR = 'app/tmp/import/';
-    const EXPORT_TEMP_DIR = 'app/tmp/export/';
+    public const IMPORT_TEMP_DIR = 'app/tmp/import/';
+    public const EXPORT_TEMP_DIR = 'app/tmp/export/';
 
 
     /**
@@ -260,7 +262,7 @@ class MailList extends Model
     {
         return $this->getImportTempDir($filename);
     }
-    
+
     public static function scopeSearch($query, $keyword)
     {
         // Keyword
@@ -768,7 +770,7 @@ class MailList extends Model
 
                 // Only take pairs that match the listFields' keys
                 $attributes = array_intersect_key($attributes, $listFields);
-                
+
                 // merge the valid attributes to the base list of all keys
                 // results in something like [ 'EMAIL' => 'example@example.io', 'OTHER' => null ]
                 $attributes = array_merge($listFields, $attributes);
@@ -1246,7 +1248,7 @@ class MailList extends Model
                 if (!is_null($progressCallback)) {
                     $progressCallback($processed, $total, $failed, $message = 'Inserting contacts to database...');
                 }
-                
+
                 // Actually write to the database
                 DB::commit();
 
@@ -1815,9 +1817,9 @@ class MailList extends Model
                 }),
             ];
         }
-        
+
         $validator = \Validator::make($request->all(), $rules, $messages);
-        
+
         if ($validator->fails()) {
             return [$validator, null];
         }
@@ -1859,7 +1861,7 @@ class MailList extends Model
             // Only trigger MailListSubscription event if subscribe is immediately subscribed
             MailListSubscription::dispatch($subscriber);
         }
-        
+
         MailLog::info("Subscriber {$subscriber->email} is added to list {$this->name} via {$source}");
 
         if ($this->subscribe_confirmation && !$subscriber->isSubscribed() && $source != Subscriber::SUBSCRIPTION_TYPE_ADDED) {
@@ -1877,7 +1879,7 @@ class MailList extends Model
         $query = $this->subscriberFields()
                       ->where('fields.type', $type)
                       ->select('subscriber_fields.id', 'subscriber_fields.value');
-        
+
         if (!is_null($subscriber_id)) {
             $query = $query->where('subscriber_id', $subscriber_id);
         }

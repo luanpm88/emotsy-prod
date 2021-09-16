@@ -7,9 +7,9 @@ use Exception;
 
 class Operate extends Action
 {
-    const OPERATION_TAG = 'tag';
-    const OPERATION_COPY = 'copy';
-    const OPERATION_MOVE = 'move';
+    public const OPERATION_TAG = 'tag';
+    public const OPERATION_COPY = 'copy';
+    public const OPERATION_MOVE = 'move';
 
     /*****
 

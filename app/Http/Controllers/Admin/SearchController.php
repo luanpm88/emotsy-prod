@@ -320,7 +320,7 @@ class SearchController extends Controller
 
         $customers = \Acelle\Model\customer::search($request->keyword)
             ->paginate($count);
-        
+
         return view('admin.search.customers', [
             'keyword' => $request->keyword,
             'customers' => $customers,
@@ -335,7 +335,7 @@ class SearchController extends Controller
             ->search($request->keyword)
             ->orderBy('templates.name', 'asc')
             ->paginate($count);
-        
+
         return view('admin.search.templates', [
             'keyword' => $request->keyword,
             'templates' => $templates,
@@ -348,7 +348,7 @@ class SearchController extends Controller
 
         $plans = \Acelle\Model\Plan::search($request->keyword)
             ->paginate($count);
-        
+
         return view('admin.search.plans', [
             'keyword' => $request->keyword,
             'plans' => $plans,
@@ -361,7 +361,7 @@ class SearchController extends Controller
 
         $sending_servers = \Acelle\Model\SendingServer::search($request->keyword)
             ->paginate($count);
-        
+
         return view('admin.search.sending_servers', [
             'keyword' => $request->keyword,
             'sending_servers' => $sending_servers,

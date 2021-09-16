@@ -25,7 +25,6 @@ use DB;
 
 class CampaignController extends Controller
 {
-
     /**
      * Display a listing of the resource.
      *
@@ -1025,7 +1024,7 @@ class CampaignController extends Controller
             'message_id' => $message_id,
             'user_agent' => $_SERVER['HTTP_USER_AGENT'],
         ];
-        
+
         // GeoIP information
         $location = IpLocation::add($_SERVER['REMOTE_ADDR']);
         if (!is_null($location)) {
@@ -1900,7 +1899,7 @@ class CampaignController extends Controller
 
             // make validator
             $validator = \Validator::make($request->all(), $rules);
-            
+
             // redirect if fails
             if ($validator->fails()) {
                 // faled
@@ -1914,7 +1913,7 @@ class CampaignController extends Controller
                     return response()->json(['message' => trans('messages.template.validation.unsubscribe_url_required')], 400);
                 }
             }
-            
+
             // Save template
             $campaign->setTemplateContent($request->html);
             $campaign->preheader = $request->preheader;
@@ -1934,7 +1933,7 @@ class CampaignController extends Controller
             'campaign' => $campaign,
         ]);
     }
-    
+
     /**
      * Edit plain text.
      *
@@ -1957,7 +1956,7 @@ class CampaignController extends Controller
 
             // make validator
             $validator = \Validator::make($request->all(), $rules);
-            
+
             // redirect if fails
             if ($validator->fails()) {
                 // faled

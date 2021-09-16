@@ -16,7 +16,12 @@ use Acelle\Library\Traits\Trackable;
 
 class LoadCampaign implements ShouldQueue
 {
-    use Trackable, Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Trackable;
+    use Batchable;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     public $timeout = 7200;
     public $failOnTimeout = true;

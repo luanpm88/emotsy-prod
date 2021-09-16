@@ -32,7 +32,7 @@ class AdminLoggedInListener
     {
         // Check CronJob
         CronJob::check();
-        
+
         // Check System URL
         SystemUrl::check();
 

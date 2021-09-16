@@ -129,7 +129,7 @@ class CustomerController extends Controller
             $rules = $user->apiUpdateRules($request);
 
             $validator = \Validator::make($request->all(), $rules);
-            
+
             if ($validator->fails()) {
                 return response()->json($validator->messages(), 403);
             }
@@ -369,7 +369,7 @@ class CustomerController extends Controller
             if (!$user->can('loginAs', $customer)) {
                 return \Response::json(array('status' => 0, 'message' => 'Unauthorized'), 401);
             }
-            
+
             $user = $customer->user;
         }
 

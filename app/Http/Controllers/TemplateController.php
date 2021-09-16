@@ -12,7 +12,6 @@ use Acelle\Library\Tool;
 
 class TemplateController extends Controller
 {
-
     /**
      * Display a listing of the resource.
      *
@@ -45,7 +44,7 @@ class TemplateController extends Controller
             ->notAssociated()
             ->orderBy($request->sort_order, $request->sort_direction)
             ->paginate($request->per_page ? $request->per_page : ($view == 'grid' ? 8 : 15));
-        
+
 
         return view('templates._list_' . $view, [
             'templates' => $templates,
@@ -135,13 +134,13 @@ class TemplateController extends Controller
 
         // make validator
         $validator = \Validator::make($request->all(), $rules);
-        
+
         // redirect if fails
         if ($validator->fails()) {
             // faled
             return response()->json($validator->errors(), 400);
         }
-        
+
         $template->updateContent($request->content);
 
         // success
@@ -260,7 +259,7 @@ class TemplateController extends Controller
             'template' => $template,
         ]);
     }
-    
+
     /**
      * Show the form for editing the specified resource.
      *
@@ -278,7 +277,7 @@ class TemplateController extends Controller
         if (!$request->user()->customer->can('update', $template)) {
             return $this->notAuthorized();
         }
-        
+
         // validate and save posted data
         if ($request->isMethod('post')) {
             $rules = array(
@@ -286,9 +285,9 @@ class TemplateController extends Controller
             );
 
             $this->validate($request, $rules);
-            
+
             $template->updateContent($request->content);
-            
+
             return response()->json([
                 'status' => 'success',
             ]);
@@ -299,7 +298,7 @@ class TemplateController extends Controller
             'templates' => $request->user()->customer->getBuilderTemplates(),
         ]);
     }
-    
+
     /**
      * Change template from exist template.
      *
@@ -318,10 +317,10 @@ class TemplateController extends Controller
         if (!$request->user()->customer->can('update', $template)) {
             return $this->notAuthorized();
         }
-        
+
         $template->changeTemplate($changeTemplate);
     }
-    
+
     /**
      * Show the form for editing the specified resource.
      *
@@ -334,7 +333,7 @@ class TemplateController extends Controller
         // Generate info
         $user = $request->user();
         $template = Template::findByUid($uid);
-        
+
         // authorize
         if (!$request->user()->customer->can('update', $template)) {
             return $this->notAuthorized();
@@ -344,7 +343,7 @@ class TemplateController extends Controller
             'content' => $template->content,
         ]);
     }
-    
+
     /**
      * Upload asset to builder.
      *
@@ -355,7 +354,7 @@ class TemplateController extends Controller
     public function uploadTemplateAssets(Request $request, $uid)
     {
         $template = Template::findByUid($uid);
-        
+
         // authorize
         if (!$request->user()->customer->can('update', $template)) {
             return $this->notAuthorized();
@@ -373,7 +372,7 @@ class TemplateController extends Controller
             'url' => $assetUrl
         ]);
     }
-    
+
     /**
      * Create template / temlate selection.
      *
@@ -392,21 +391,21 @@ class TemplateController extends Controller
         if ($request->isMethod('post')) {
             // Get selected template
             $selectedTemplate = Template::findByUid($request->template);
-            
+
             // Copy
             $template = $request->user()->customer->copyTemplateAs($selectedTemplate, $request->name);
-            
+
             return redirect()->action('TemplateController@builderEdit', $template->uid);
         } else {
             $template = new Template();
             $template->name = trans('messages.untitled_template');
-        
+
             return view('templates.builder.create', [
                 'template' => $template,
             ]);
         }
     }
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -416,12 +415,12 @@ class TemplateController extends Controller
     {
         // category
         $category = \Acelle\Model\TemplateCategory::findByUid($request->category_uid);
-        
+
         // sort, pagination
         $templates = $category->templates()->shared()->search($request->keyword)
             ->orderBy($request->sort_order, $request->sort_direction)
             ->paginate($request->per_page);
-        
+
         // authorize
         if (!$request->user()->customer->can('create', Template::class)) {
             return $this->notAuthorized();
@@ -431,7 +430,7 @@ class TemplateController extends Controller
             'templates' => $templates,
         ]);
     }
-    
+
     /**
      * Update template thumb.
      *
@@ -440,7 +439,7 @@ class TemplateController extends Controller
     public function updateThumb(Request $request, $uid)
     {
         $template = Template::findByUid($uid);
-        
+
         // authorize
         if (!$request->user()->customer->can('update', $template)) {
             return $this->notAuthorized();
@@ -459,7 +458,7 @@ class TemplateController extends Controller
                     'errors' => $validator->errors(),
                 ], 400);
             }
-            
+
             // update thumb
             $template->uploadThumbnail($request->file);
 
@@ -482,7 +481,7 @@ class TemplateController extends Controller
     public function updateThumbUrl(Request $request, $uid)
     {
         $template = Template::findByUid($uid);
-        
+
         // authorize
         if (!$request->user()->customer->can('update', $template)) {
             return $this->notAuthorized();
@@ -501,7 +500,7 @@ class TemplateController extends Controller
                     'errors' => $validator->errors(),
                 ], 400);
             }
-            
+
             // update thumb
             $template->uploadThumbnailUrl($request->url);
 
@@ -524,7 +523,7 @@ class TemplateController extends Controller
     public function categories(Request $request, $uid)
     {
         $template = Template::findByUid($uid);
-        
+
         // authorize
         if (!$request->user()->customer->can('update', $template)) {
             return $this->notAuthorized();
@@ -549,16 +548,16 @@ class TemplateController extends Controller
     public function export(Request $request)
     {
         $template = Template::findByUid($request->uid);
-        
+
         $zipPath = $template->createTmpZip();
-       
+
         return response()->download($zipPath)->deleteFileAfterSend(true);
     }
 
     public function changeName(Request $request)
     {
         $template = Template::findByUid($request->uid);
-        
+
         // authorize
         if (!$request->user()->customer->can('update', $template)) {
             return $this->notAuthorized();

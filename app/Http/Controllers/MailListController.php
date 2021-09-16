@@ -564,7 +564,7 @@ class MailListController extends Controller
     public function copy(Request $request)
     {
         $list = \Acelle\Model\MailList::findByUid($request->copy_list_uid);
-        
+
         // authorize
         if (\Gate::denies('update', $list)) {
             return $this->notAuthorized();
@@ -575,7 +575,7 @@ class MailListController extends Controller
             $validator = \Validator::make($request->all(), [
                 'name' => 'required',
             ]);
-            
+
             // redirect if fails
             if ($validator->fails()) {
                 return response()->view('lists.copy', [
@@ -649,7 +649,7 @@ class MailListController extends Controller
     public function embeddedFormCaptcha(Request $request)
     {
         $list = \Acelle\Model\MailList::findByUid($request->uid);
-        
+
         // Check if list does exist
         if (!is_object($list)) {
             return view('somethingWentWrong', ['message' => trans('messages.embedded_form.list_not_exsit')]);
@@ -690,7 +690,7 @@ class MailListController extends Controller
             \App::setLocale($list->customer->language->code);
             \Carbon\Carbon::setLocale($list->customer->language->code);
         }
-        
+
         // Check if list does exist
         if (!is_object($list)) {
             return view('somethingWentWrong', ['message' => trans('messages.embedded_form.list_not_exsit')]);
@@ -712,7 +712,7 @@ class MailListController extends Controller
         } catch (\Exception $ex) {
             return view('somethingWentWrong', ['message' => $ex->getMessage()]);
         }
-        
+
 
         if ($validator->fails()) {
             $url = $request->session()->pull('form_url');
@@ -845,7 +845,7 @@ class MailListController extends Controller
         if (is_null($job)) {
             throw new Exception(sprintf('Verification job #%s does not exist', $request->job_uid));
         }
-        
+
         $progress = $list->getProgress($job);
 
         // Get progress updated by the import process and status of the final job monitor
@@ -871,7 +871,7 @@ class MailListController extends Controller
 
         return response()->json($result);
     }
-    
+
     /**
      * Clone list for other users
      *
@@ -880,18 +880,18 @@ class MailListController extends Controller
     {
         $list = \Acelle\Model\MailList::findByUid($request->uid);
         $customers = Customer::where('id', '!=', $list->customer_id);
-        
+
         $options = [];
         foreach ($customers->get() as $customer) {
             $options[] = ['text' => $customer->user->displayName(), 'value' => $customer->uid];
         }
-        
+
         return view('lists.cloneForCustomersChoose', [
             'list' => $list,
             'options' => $options,
         ]);
     }
-    
+
     /**
      * Clone list for other users
      *
@@ -900,9 +900,9 @@ class MailListController extends Controller
     {
         $list = \Acelle\Model\MailList::findByUid($request->uid);
         $customers = Customer::WhereIn('uid', $request->customers);
-        
+
         $list->cloneForCustomers($customers->get());
-        
+
         return response()->json([
             'status' => 'success',
             'message' => trans('messages.list.clone_for.success'),

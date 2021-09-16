@@ -31,7 +31,7 @@ class UpgradeManager
     protected $source;
     protected $target;
 
-    const META_FILE = 'meta.json';
+    public const META_FILE = 'meta.json';
 
     /**
      * Constructor, specify the source, target and load the meta information.

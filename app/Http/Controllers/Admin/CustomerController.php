@@ -9,7 +9,6 @@ use Acelle\Cashier\Cashier;
 
 class CustomerController extends Controller
 {
-
     /**
      * Display a listing of the resource.
      *

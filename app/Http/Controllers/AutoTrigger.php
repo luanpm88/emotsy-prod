@@ -22,7 +22,7 @@ class AutoTrigger extends Controller
         $info = [];
         $info[] = sprintf('This is an auto trigger for automation {{ %s }}', $trigger->automation2->name);
         $info[] = sprintf('Subscriber {{ %s }}', $trigger->subscriber->email);
-        
+
         $actions = [];
         $trigger->getActions(function ($a) use (&$actions, $trigger) {
             $description = "+ [". (($a->getLastExecuted()) ? "Executed" : "Waiting") . "] " .  $a->getId() . ": " . $a->getTitle();

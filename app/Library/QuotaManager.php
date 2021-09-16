@@ -15,8 +15,8 @@ use Acelle\Library\Exception\NoCreditsLeft;
 
 class QuotaManager
 {
-    const QUOTA_ZERO = 0;
-    const QUOTA_UNLIMITED = -1;
+    public const QUOTA_ZERO = 0;
+    public const QUOTA_UNLIMITED = -1;
 
     protected $subject;
     protected $name;

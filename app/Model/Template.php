@@ -43,8 +43,8 @@ class Template extends Model
 {
     use HasUid;
 
-    const BUILDER_ENABLED = true;
-    const BUILDER_DISABLED = false;
+    public const BUILDER_ENABLED = true;
+    public const BUILDER_DISABLED = false;
 
     /**
      * The attributes that are mass assignable.
@@ -417,7 +417,7 @@ class Template extends Model
         return $template;
     }
 
-    public function toZip() : string
+    public function toZip(): string
     {
         // Get real path for our folder
         $rootPath = $this->getStoragePath();
@@ -898,7 +898,7 @@ class Template extends Model
         // Move uploaded file
         $file->move($this->getStoragePath(), $name);
         $assetUrl = \Acelle\Helpers\generatePublicPath($this->getStoragePath($name));
-        
+
         return $assetUrl;
     }
 
@@ -914,7 +914,7 @@ class Template extends Model
         $result = [];
 
         if (true) {
-            
+
             // Unsubscribe link
             $result[] = [
                 'type' => 'label',
@@ -922,7 +922,7 @@ class Template extends Model
                 'tag' => '{UNSUBSCRIBE_LINK}',
                 'required' => true,
             ];
-            
+
             // web view link
             $result[] = [
                 'type' => 'label',
@@ -980,7 +980,7 @@ class Template extends Model
 
         // delete current template folder
         $this->clearStorage();
-        
+
         // Copy uploaded folder
         if (file_exists($this->getStoragePath())) {
             if (!file_exists($this->getStoragePath())) {

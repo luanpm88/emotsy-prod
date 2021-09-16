@@ -9,7 +9,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 class CampaignUpdated extends Event
 {
     use SerializesModels;
-    
+
     public $campaign;
     public $delayed;
 

@@ -94,7 +94,7 @@ class SendingServerController extends Controller
         $server->quota_base = '1';
         $server->quota_unit = 'hour';
         $server->fill($request->old());
-        
+
         $server->name = trans('messages.' . $request->type);
 
         // authorize
@@ -184,20 +184,20 @@ class SendingServerController extends Controller
         $server->fill($request->old());
 
         $notices = [];
-        
+
         try {
             $server->test();
             $server->syncIdentities();
             $server->setDefaultFromEmailAddress();
         } catch (\Exception $ex) {
             $server->disable();
-            
+
             $notices[] = [
                 'title' => trans('messages.sending_server.connect_failed'),
                 'message' => $ex->getMessage()
             ];
         }
-        
+
         $identities = [];
         $allIdentities = [];
 
@@ -210,7 +210,7 @@ class SendingServerController extends Controller
                 'message' => $ex->getMessage(),
             ];
         }
-        
+
         // options
         if (isset($request->old()['options'])) {
             $server->options = json_encode($request->old()['options']);
@@ -251,10 +251,10 @@ class SendingServerController extends Controller
         if ($request->isMethod('patch')) {
             // Save current user info
             $server->fill($request->all());
-            
+
             // validation
             $validator = $server->validConnection($request);
-            
+
             if ($validator->fails()) {
                 if ($server->isExtended()) {
                     return redirect($server->getEditUrl())->withErrors($validator)
@@ -429,7 +429,7 @@ class SendingServerController extends Controller
             'server' => $server,
         ]);
     }
-    
+
     /**
      * Test Sending server.
      *
@@ -447,18 +447,18 @@ class SendingServerController extends Controller
         if (!$request->user()->admin->can('update', $server)) {
             return $this->notAuthorized();
         }
-        
+
         try {
             $server->test();
-            
+
             return trans('messages.sending_server.test_success');
         } catch (\Exception $e) {
             $server->disable();
-            
+
             return $e->getMessage();
         }
     }
-    
+
     /**
      * Select2 customer.
      *
@@ -470,7 +470,7 @@ class SendingServerController extends Controller
     {
         echo SendingServer::adminSelect2($request);
     }
-    
+
     /**
      * Sending Limit Form.
      *
@@ -485,9 +485,9 @@ class SendingServerController extends Controller
         } else {
             $server = SendingServer::findByUid($request->uid);
         }
-        
+
         $server->fill($request->all());
-        
+
         // Default quota
         if ($server->quota_value == -1) {
             $server->quota_value = '1000';
@@ -495,11 +495,11 @@ class SendingServerController extends Controller
             $server->quota_unit = 'hour';
             $server->setOption('sending_limit', '1000_per_hour');
         }
-        
+
         // save posted data
         if ($request->isMethod('post')) {
             $selectOptions = $server->getSendingLimitSelectOptions();
-            
+
             return view('admin.sending_servers.form._sending_limit', [
                 'quotaValue' => $request->quota_value,
                 'quotaBase' => $request->quota_base,
@@ -507,12 +507,12 @@ class SendingServerController extends Controller
                 'server' => $server,
             ]);
         }
-        
+
         return view('admin.sending_servers.form.sending_limit', [
             'server' => $server,
         ]);
     }
-    
+
     /**
      * Save sending server config settings.
      *
@@ -530,16 +530,16 @@ class SendingServerController extends Controller
         if (!$request->user()->admin->can('update', $server)) {
             return $this->notAuthorized();
         }
-        
+
         // Save current user info
         $server->fill($request->all());
-        
+
         // default sever quota
         if ($request->options) {
             $server->setOptions($request->options); // options = json_encode($request->options);
             $server->updateIdentitiesList($request->options);
         }
-        
+
         // Sening limit
         if ($request->options['sending_limit'] != 'custom' && $request->options['sending_limit'] != 'current') {
             $limits = SendingServer::sendingLimitValues()[$request->options['sending_limit']];
@@ -550,7 +550,7 @@ class SendingServerController extends Controller
 
         // save posted data
         $this->validate($request, $server->getConfigRules());
-        
+
         // bounce / feedback hanlder nullable
         if (empty($request->bounce_handler_id)) {
             $server->bounce_handler_id = null;
@@ -569,7 +569,7 @@ class SendingServerController extends Controller
             }
         }
     }
-    
+
     /**
      * Sending Limit Form.
      *
@@ -584,7 +584,7 @@ class SendingServerController extends Controller
         } else {
             $server = new SendingServer();
         }
-        
+
         foreach (SendingServer::awsRegionSelectOptions() as $option) {
             if (isset($option['host']) && $option['value'] == $request->aws_region) {
                 $server->host = $option['host'];
@@ -594,7 +594,7 @@ class SendingServerController extends Controller
             'server' => $server,
         ]);
     }
-    
+
     /**
      * Add domain to sending server.
      *
@@ -606,22 +606,22 @@ class SendingServerController extends Controller
     public function addDomain(Request $request, $uid)
     {
         $server = SendingServer::findByUid($request->uid);
-        
+
         // save posted data
         if ($request->isMethod('post')) {
             $valid = true;
-            
+
             if (checkEmail($request->domain)) {
                 // validation
                 $validator = \Validator::make($request->all(), [
                     'domain' => 'required|email',
                 ]);
-                
+
                 if (in_array(strtolower($request->domain), $server->getVerifiedIdentities())) {
                     $validator->errors()->add('domain', trans('messages.sending_identity.exist_error'));
                     $valid = false;
                 }
-                
+
                 if (!$valid || $validator->fails()) {
                     return redirect()->action('Admin\SendingServerController@addDomain', $server->uid)
                                 ->withErrors($validator)
@@ -632,12 +632,12 @@ class SendingServerController extends Controller
                 $validator = \Validator::make($request->all(), [
                     'domain' => 'required|regex:/^(?:[-A-Za-z0-9]+\.)+[A-Za-z]{2,6}$/i',
                 ]);
-                
+
                 if (in_array(strtolower($request->domain), $server->getVerifiedIdentities())) {
                     $validator->errors()->add('domain', trans('messages.sending_identity.exist_error'));
                     $valid = false;
                 }
-                
+
                 if (!$valid || $validator->fails()) {
                     return redirect()->action('Admin\SendingServerController@addDomain', $server->uid)
                                 ->withErrors($validator)
@@ -646,16 +646,16 @@ class SendingServerController extends Controller
             }
 
             $server->addIdentity(strtolower($request->domain));
-            
+
             $request->session()->flash('alert-success', trans('messages.sending_server.updated'));
             return;
         }
-        
+
         return view('admin.sending_servers.add_domain', [
             'server' => $server,
         ]);
     }
-    
+
     /**
      * Remove domain from sending server.
      *
@@ -676,7 +676,7 @@ class SendingServerController extends Controller
             return redirect()->action('Admin\SendingServerController@edit', [$server->uid, $server->type]);
         }
     }
-    
+
     /**
      * Dropbox list.
      *
@@ -687,7 +687,7 @@ class SendingServerController extends Controller
     public function fromDropbox(Request $request)
     {
         $server = SendingServer::findByUid($request->uid);
-        
+
         $droplist = $server->verifiedIdentitiesDroplist(strtolower(trim($request->keyword)));
         return response()->json($droplist);
     }

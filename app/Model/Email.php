@@ -32,7 +32,8 @@ use Acelle\Library\HtmlHandler\RemoveTitleTag;
 
 class Email extends Model
 {
-    use HasTemplate, HasUid;
+    use HasTemplate;
+    use HasUid;
 
     /**
      * The attributes that are mass assignable.
@@ -142,7 +143,7 @@ class Email extends Model
             $this->getAttachmentPath(),
             $att->name
         );
-        
+
         $att->file = $this->getAttachmentPath($att->name);
         $att->save();
 
@@ -386,7 +387,7 @@ class Email extends Model
     public function getSubject($subscriber, $msgId)
     {
         $pipeline = new PipelineBuilder();
-        $pipeline->add(new ReplaceBareLineFeed);
+        $pipeline->add(new ReplaceBareLineFeed());
         $pipeline->add(new TransformTag($this, $subscriber, $msgId));
         return $pipeline->build()->process($this->subject);
     }
@@ -414,11 +415,11 @@ class Email extends Model
         }
 
         $pipeline = new PipelineBuilder();
-        $pipeline->add(new AddDoctype);
-        $pipeline->add(new RemoveTitleTag);
-        $pipeline->add(new ReplaceBareLineFeed);
+        $pipeline->add(new AddDoctype());
+        $pipeline->add(new RemoveTitleTag());
+        $pipeline->add(new ReplaceBareLineFeed());
         $pipeline->add(new AppendHtml($this->getHtmlFooter()));
-        $pipeline->add(new ParseRss);
+        $pipeline->add(new ParseRss());
         $pipeline->add(new TransformTag($this, $subscriber, $msgId, $server));
         $pipeline->add(new InjectTrackingPixel($msgId));
         $pipeline->add(new TransformUrl($this->template, $msgId, $this->trackingDomain));

@@ -38,26 +38,27 @@ use Exception;
 
 class SendingServer extends Model implements HasQuotaInterface
 {
-    use HasUid, HasQuota;
+    use HasUid;
+    use HasQuota;
 
-    const DELIVERY_STATUS_SENT = 'sent';
-    const DELIVERY_STATUS_FAILED = 'failed';
-    const STATUS_ACTIVE = 'active';
-    const STATUS_INACTIVE = 'inactive';
+    public const DELIVERY_STATUS_SENT = 'sent';
+    public const DELIVERY_STATUS_FAILED = 'failed';
+    public const STATUS_ACTIVE = 'active';
+    public const STATUS_INACTIVE = 'inactive';
 
     // TYPE
-    const TYPE_AMAZON_API = 'amazon-api';
-    const TYPE_AMAZON_SMTP = 'amazon-smtp';
-    const TYPE_SENDGRID_API = 'sendgrid-api';
-    const TYPE_SENDGRID_SMTP = 'sendgrid-smtp';
-    const TYPE_MAILGUN_API = 'mailgun-api';
-    const TYPE_MAILGUN_SMTP = 'mailgun-smtp';
-    const TYPE_ELASTICEMAIL_API = 'elasticemail-api';
-    const TYPE_ELASTICEMAIL_SMTP = 'elasticemail-smtp';
-    const TYPE_SPARKPOST_API = 'sparkpost-api';
-    const TYPE_SPARKPOST_SMTP = 'sparkpost-smtp';
-    const TYPE_SENDMAIL = 'sendmail';
-    const TYPE_SMTP = 'smtp';
+    public const TYPE_AMAZON_API = 'amazon-api';
+    public const TYPE_AMAZON_SMTP = 'amazon-smtp';
+    public const TYPE_SENDGRID_API = 'sendgrid-api';
+    public const TYPE_SENDGRID_SMTP = 'sendgrid-smtp';
+    public const TYPE_MAILGUN_API = 'mailgun-api';
+    public const TYPE_MAILGUN_SMTP = 'mailgun-smtp';
+    public const TYPE_ELASTICEMAIL_API = 'elasticemail-api';
+    public const TYPE_ELASTICEMAIL_SMTP = 'elasticemail-smtp';
+    public const TYPE_SPARKPOST_API = 'sparkpost-api';
+    public const TYPE_SPARKPOST_SMTP = 'sparkpost-smtp';
+    public const TYPE_SENDMAIL = 'sendmail';
+    public const TYPE_SMTP = 'smtp';
 
     protected $quotaTracker;
     protected $subAccount;
@@ -175,7 +176,7 @@ class SendingServer extends Model implements HasQuotaInterface
         }
 
         $instance->fill($server->getAttributes());
-        
+
         return $instance;
     }
 
@@ -1105,7 +1106,7 @@ class SendingServer extends Model implements HasQuotaInterface
                 $value = trans('messages.sending_server.default_email_verification.content');
                 ;
             }
-            
+
             // default verification email
             if ($name == 'custom_verification_email_subject') {
                 $value = trans('messages.sending_server.default_email_verification.subject');
@@ -1437,7 +1438,7 @@ class SendingServer extends Model implements HasQuotaInterface
         return array_keys($filtered);
     }
 
-    public function getIdentityStore() : IdentityStore
+    public function getIdentityStore(): IdentityStore
     {
         $options = $this->getOptions();
         $identityStore = new IdentityStore(array_key_exists('identities', $options) ? $options['identities'] : []);
@@ -1480,7 +1481,7 @@ class SendingServer extends Model implements HasQuotaInterface
 
         $identityStore = $this->getIdentityStore();
         $names = array_keys($identityStore->get(['VerificationStatus' => 'Success']));
-        
+
         $emails = array_values(array_filter($names, function ($name) {
             return checkEmail($name);
         }));
@@ -1583,7 +1584,7 @@ class SendingServer extends Model implements HasQuotaInterface
     }
 
     /*** IMPLEMENTATION OF HasQuotaInterface ***/
-    public function getQuotaSettings($name) : ?array
+    public function getQuotaSettings($name): ?array
     {
         $quota = [];
 

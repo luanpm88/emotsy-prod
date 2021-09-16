@@ -84,7 +84,7 @@ class SubscriberController extends Controller
         try {
             $user = \Auth::guard('api')->user();
             $list = MailList::findByUid($request->list_uid);
-    
+
             // authorize
             if (!is_object($list)) {
                 return \Response::json(array('message' => trans('List not found')), 400);
@@ -203,7 +203,7 @@ class SubscriberController extends Controller
             'message_id' => null,
             'user_agent' => $_SERVER['HTTP_USER_AGENT'],
         ];
-        
+
         // GeoIP information
         $location = IpLocation::add($_SERVER['REMOTE_ADDR']);
         if (!is_null($location)) {
@@ -255,7 +255,7 @@ class SubscriberController extends Controller
             'message_id' => null,
             'user_agent' => $_SERVER['HTTP_USER_AGENT'],
         ];
-        
+
         // GeoIP information
         $location = IpLocation::add($_SERVER['REMOTE_ADDR']);
         if (!is_null($location)) {

@@ -64,30 +64,32 @@ use Acelle\Library\HtmlHandler\RemoveTitleTag;
 
 class Campaign extends Model
 {
-    use HasTemplate, TrackJobs, HasUid;
+    use HasTemplate;
+    use TrackJobs;
+    use HasUid;
 
     protected $logger;
 
     // Campaign status
-    const STATUS_NEW = 'new';
-    const STATUS_QUEUING = 'queuing'; // equiv. to 'queue'
-    const STATUS_QUEUED = 'queued'; // equiv. to 'queue'
-    const STATUS_SENDING = 'sending';
-    const STATUS_ERROR = 'error';
-    const STATUS_DONE = 'done';
-    const STATUS_PAUSED = 'paused';
+    public const STATUS_NEW = 'new';
+    public const STATUS_QUEUING = 'queuing'; // equiv. to 'queue'
+    public const STATUS_QUEUED = 'queued'; // equiv. to 'queue'
+    public const STATUS_SENDING = 'sending';
+    public const STATUS_ERROR = 'error';
+    public const STATUS_DONE = 'done';
+    public const STATUS_PAUSED = 'paused';
 
     // Campaign types
-    const TYPE_REGULAR = 'regular';
-    const TYPE_PLAIN_TEXT = 'plain-text';
+    public const TYPE_REGULAR = 'regular';
+    public const TYPE_PLAIN_TEXT = 'plain-text';
 
     // 4 types of delivery status for a given contact
-    const DELIVERY_STATUS_FAILED = 'failed';
-    const DELIVERY_STATUS_SENT = 'sent';
-    const DELIVERY_STATUS_NEW = 'new';
-    const DELIVERY_STATUS_SKIPPED = 'skipped';
-    const DELIVERY_STATUS_BOUNCED = 'bounced';
-    const DELIVERY_STATUS_FEEDBACK = 'feedback';
+    public const DELIVERY_STATUS_FAILED = 'failed';
+    public const DELIVERY_STATUS_SENT = 'sent';
+    public const DELIVERY_STATUS_NEW = 'new';
+    public const DELIVERY_STATUS_SKIPPED = 'skipped';
+    public const DELIVERY_STATUS_BOUNCED = 'bounced';
+    public const DELIVERY_STATUS_FEEDBACK = 'feedback';
 
     /**
      * The attributes that should be mutated to dates.
@@ -539,11 +541,11 @@ class Campaign extends Model
         }
 
         $pipeline = new PipelineBuilder();
-        $pipeline->add(new AddDoctype);
-        $pipeline->add(new RemoveTitleTag);
-        $pipeline->add(new ReplaceBareLineFeed);
+        $pipeline->add(new AddDoctype());
+        $pipeline->add(new RemoveTitleTag());
+        $pipeline->add(new ReplaceBareLineFeed());
         $pipeline->add(new AppendHtml($this->getHtmlFooter()));
-        $pipeline->add(new ParseRss);
+        $pipeline->add(new ParseRss());
         $pipeline->add(new TransformTag($this, $subscriber, $msgId, $server));
         $pipeline->add(new InjectTrackingPixel($msgId));
         $pipeline->add(new TransformUrl($this->template, $msgId, $this->trackingDomain));
@@ -565,7 +567,7 @@ class Campaign extends Model
     {
         $plain = $this->plain.$this->getPlainTextFooter();
         $pipeline = new PipelineBuilder();
-        $pipeline->add(new ReplaceBareLineFeed);
+        $pipeline->add(new ReplaceBareLineFeed());
         $pipeline->add(new TransformTag($this, $subscriber, $msgId, $server));
         $plain = $pipeline->build()->process($plain);
 
@@ -580,7 +582,7 @@ class Campaign extends Model
     public function getSubject($subscriber, $msgId)
     {
         $pipeline = new PipelineBuilder();
-        $pipeline->add(new ReplaceBareLineFeed);
+        $pipeline->add(new ReplaceBareLineFeed());
         $pipeline->add(new TransformTag($this, $subscriber, $msgId));
         return $pipeline->build()->process($this->subject);
     }
@@ -1603,11 +1605,11 @@ class Campaign extends Model
             'track_click',
             'use_default_sending_server_from_email',
         ];
-        
+
         foreach ($attributes as $attribute) {
             $copy[$attribute] = $this[$attribute];
         }
-        
+
         // Save to DB
         $copy->save();
 
@@ -2292,7 +2294,7 @@ class Campaign extends Model
         $filePath = storage_path(join_paths('app', $tmpTableName.'.csv'));
 
         DB::statement('DROP TABLE IF EXISTS '.table($tmpTableName));
-        
+
         if ($logtype == 'open_logs') {
             DB::statement('CREATE TEMPORARY TABLE '.table($tmpTableName).' AS SELECT
                 c.name as campaign_name,
@@ -3284,7 +3286,7 @@ class Campaign extends Model
         $validator = \Validator::make(['email' => $email], [
             'email' => 'required|email',
         ]);
-        
+
         // redirect if fails
         if ($validator->fails()) {
             return $validator;

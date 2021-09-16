@@ -8,7 +8,7 @@ use Acelle\Library\Traits\HasUid;
 class EmailLink extends Model
 {
     use HasUid;
-    
+
     /**
      * The attributes that are mass assignable.
      *

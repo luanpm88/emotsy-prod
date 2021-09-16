@@ -29,7 +29,7 @@ use Acelle\Library\Facades\Billing;
 
 class Setting extends Model
 {
-    const UPLOAD_PATH = 'app/setting/';
+    public const UPLOAD_PATH = 'app/setting/';
 
     /**
      * Get all items.

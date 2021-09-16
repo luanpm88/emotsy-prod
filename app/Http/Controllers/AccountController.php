@@ -8,7 +8,6 @@ use Acelle\Library\Facades\Billing;
 
 class AccountController extends Controller
 {
-
     /**
      * Update user profile.
      *
@@ -43,7 +42,7 @@ class AccountController extends Controller
             if (!empty($request->password)) {
                 $user->password = bcrypt($request->password);
             }
-            
+
             $user->save();
 
             // Save current user info
@@ -198,7 +197,7 @@ class AccountController extends Controller
             'user' => $request->user(),
         ]);
     }
-    
+
     /**
      * Edit billing address.
      */
@@ -220,7 +219,7 @@ class AccountController extends Controller
         // Save posted data
         if ($request->isMethod('post')) {
             list($validator, $billingAddress) = $billingAddress->updateAll($request);
-            
+
             // redirect if fails
             if ($validator->fails()) {
                 return response()->view('account.editBillingAddress', [
@@ -245,10 +244,10 @@ class AccountController extends Controller
     public function removePaymentMethod(Request $request)
     {
         $customer = $request->user()->customer;
-        
+
         $customer->removePaymentMethod();
     }
-    
+
     /**
      * Edit payment method
      */
@@ -265,7 +264,7 @@ class AccountController extends Controller
             $request->user()->customer->updatePaymentMethod([
                 'method' => $request->payment_method,
             ]);
-            
+
             if ($gateway->supportsAutoBilling()) {
                 return redirect()->away($gateway->getAutoBillingDataUpdateUrl($request->return_url));
             }

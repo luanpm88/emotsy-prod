@@ -34,15 +34,15 @@ use Acelle\Library\QuotaManager;
 class Plan extends Model
 {
     use HasUid;
-    
-    // Plan status
-    const STATUS_INACTIVE = 'inactive';
-    const STATUS_ACTIVE = 'active';
 
     // Plan status
-    const SENDING_SERVER_OPTION_SYSTEM = 'system';
-    const SENDING_SERVER_OPTION_OWN = 'own';
-    const SENDING_SERVER_OPTION_SUBACCOUNT = 'subaccount';
+    public const STATUS_INACTIVE = 'inactive';
+    public const STATUS_ACTIVE = 'active';
+
+    // Plan status
+    public const SENDING_SERVER_OPTION_SYSTEM = 'system';
+    public const SENDING_SERVER_OPTION_OWN = 'own';
+    public const SENDING_SERVER_OPTION_SUBACCOUNT = 'subaccount';
 
     /**
      * The attributes that are mass assignable.
@@ -741,7 +741,7 @@ class Plan extends Model
 
         return json_encode($data);
     }
-    
+
     public function displayFrequencyTime()
     {
         // unlimited
@@ -1315,7 +1315,7 @@ class Plan extends Model
         return $this->price + $this->getTax();
     }
 
-    public function getQuotaSettings($name) : ?array
+    public function getQuotaSettings($name): ?array
     {
         $quota = [];
         $options = $this->getOptions();
@@ -1356,7 +1356,7 @@ class Plan extends Model
 
         // make validator
         $validator = \Validator::make($params, $rules);
-        
+
         // redirect if fails
         if ($validator->fails()) {
             return $validator;

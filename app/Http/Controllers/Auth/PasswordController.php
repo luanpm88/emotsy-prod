@@ -19,7 +19,7 @@ class PasswordController extends Controller
     */
 
     use ResetsPasswords;
-    
+
     protected $redirectTo = '/';
 
     /**
@@ -28,7 +28,7 @@ class PasswordController extends Controller
     public function __construct()
     {
         parent::__construct();
-        
+
         $this->middleware('guest');
     }
 

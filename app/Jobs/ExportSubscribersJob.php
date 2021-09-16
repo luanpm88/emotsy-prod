@@ -33,7 +33,7 @@ class ExportSubscribersJob extends Base
             ]);
         });
     }
-    
+
     /**
      * Execute the job.
      *

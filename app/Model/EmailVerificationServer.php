@@ -14,14 +14,15 @@ use Acelle\Library\QuotaManager;
 
 class EmailVerificationServer extends Model implements HasQuotaInterface
 {
-    use HasUid, HasQuota;
-    
+    use HasUid;
+    use HasQuota;
+
     // set the table name
     protected $table = 'email_verification_servers';
 
-    const STATUS_ACTIVE = 'active';
-    const STATUS_INACTIVE = 'inactive';
-    const WAIT = 30;
+    public const STATUS_ACTIVE = 'active';
+    public const STATUS_INACTIVE = 'inactive';
+    public const WAIT = 30;
 
     protected $fillable = ['type', 'name'];
 
@@ -407,7 +408,7 @@ class EmailVerificationServer extends Model implements HasQuotaInterface
     }
 
     /***   IMPLEMENTATION OF HasQuotaInterface ***/
-    public function getQuotaSettings($name) : ?array
+    public function getQuotaSettings($name): ?array
     {
         // always 'verify'
         $quota = [];

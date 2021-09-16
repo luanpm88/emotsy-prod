@@ -8,8 +8,8 @@ use Carbon\Carbon;
 class LicenseHelper
 {
     // license type
-    const TYPE_REGULAR = 'regular';
-    const TYPE_EXTENDED = 'extended';
+    public const TYPE_REGULAR = 'regular';
+    public const TYPE_EXTENDED = 'extended';
 
     /**
      * Get license type: normal / extended.

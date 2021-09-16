@@ -85,7 +85,7 @@ class EmailController extends Controller
         $email = Email::findByUid($uid);
         $subscriber = Subscriber::findByUid($subscriber_uid);
         $logs = $email->trackingLogs()->where('subscriber_id', $subscriber->id)->get();
-        
+
         if ($logs->count() == 0) {
             list($message, $msgId) = $email->prepare($subscriber);
             return response($message->toString(), 200)

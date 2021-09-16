@@ -12,7 +12,7 @@ class IdentityStore
         'UserName' => null,
     ];
 
-    const VERIFICATION_STATUS_SUCCESS = 'Success';
+    public const VERIFICATION_STATUS_SUCCESS = 'Success';
 
     /* *
      * Identity data coming in form of php array
@@ -93,7 +93,7 @@ class IdentityStore
             }
         }
 
-        
+
         if ($replace) {
             // replace this object data
             $this->identities = $newIdentities;
@@ -101,7 +101,7 @@ class IdentityStore
             // merge this object data
             $this->identities = array_merge($this->identities, $newIdentities);
         }
-        
+
         return $this;
     }
 

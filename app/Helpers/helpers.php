@@ -613,7 +613,7 @@ function strip_tags_only($text, $allowedTags = [])
             $allowedTags
         ];
     }
-    
+
     array_map(
         function ($allowedTag) use (&$text) {
             $regEx = '#<' . $allowedTag . '.*?>(.*?)</' . $allowedTag . '>#is';
@@ -621,7 +621,7 @@ function strip_tags_only($text, $allowedTags = [])
         },
         $allowedTags
     );
-    
+
     return $text;
 }
 
@@ -712,7 +712,7 @@ function putPermanentEnv($arr = [])
             $config = $config . "\n" . $key . '=' . $value;
         }
     }
-    
+
     file_put_contents($path, $config);
 }
 
@@ -723,33 +723,33 @@ function resize_crop_image($max_width, $max_height, $source_file, $dst_dir, $qua
     $width = $imgsize[0];
     $height = $imgsize[1];
     $mime = $imgsize['mime'];
- 
+
     switch ($mime) {
         case 'image/gif':
             $image_create = "imagecreatefromgif";
             $image = "imagegif";
             break;
- 
+
         case 'image/png':
             $image_create = "imagecreatefrompng";
             $image = "imagepng";
             $quality = 7;
             break;
- 
+
         case 'image/jpeg':
             $image_create = "imagecreatefromjpeg";
             $image = "imagejpeg";
             $quality = 80;
             break;
- 
+
         default:
             return false;
             break;
     }
-     
+
     $dst_img = imagecreatetruecolor($max_width, $max_height);
     $src_img = $image_create($source_file);
-     
+
     $width_new = $height * $max_width / $max_height;
     $height_new = $width * $max_height / $max_width;
     //if the new width is greater than the actual width of the image, then the height is too large and the rest cut off, or vice versa
@@ -763,9 +763,9 @@ function resize_crop_image($max_width, $max_height, $source_file, $dst_dir, $qua
         $w_point = (($width - $width_new) / 2);
         imagecopyresampled($dst_img, $src_img, 0, 0, $w_point, 0, $max_width, $max_height, $width_new, $height);
     }
-     
+
     $image($dst_img, $dst_dir, $quality);
- 
+
     if ($dst_img) {
         imagedestroy($dst_img);
     }

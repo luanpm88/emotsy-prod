@@ -53,7 +53,7 @@ class Handler extends ExceptionHandler
     public function report(Throwable $exception)
     {
         if (in_array(get_class($exception), $this->dontReport)) {
- 
+
             // Do nothing
         } elseif (App::runningInConsole() && isInitiated()) {
             try {

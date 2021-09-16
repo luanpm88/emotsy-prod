@@ -10,7 +10,6 @@ use Acelle\Model\Setting;
 
 class TrackingDomainController extends Controller
 {
-
     /**
      * Display a listing of the resource.
      *

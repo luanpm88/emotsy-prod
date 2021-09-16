@@ -17,7 +17,7 @@ class TemplateCategory extends Model
     protected $fillable = [
         'name'
     ];
-    
+
     /**
      * The template that belong to the categories.
      */

@@ -85,7 +85,7 @@ class NotificationController extends Controller
         $notification->delete();
         return response(null, 200);
     }
-    
+
     /**
      * Remove the specified resource from storage.
      *

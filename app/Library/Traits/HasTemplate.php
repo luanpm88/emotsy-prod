@@ -7,7 +7,6 @@ use Exception;
 
 trait HasTemplate
 {
-
     /**
      * Campaign has one template.
      */

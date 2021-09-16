@@ -45,19 +45,20 @@ use Acelle\Library\QuotaManager;
 
 class Customer extends Model
 {
-    use TrackJobs, HasUid;
+    use TrackJobs;
+    use HasUid;
 
     protected $quotaTracker;
 
     // Plan status
-    const STATUS_INACTIVE = 'inactive';
-    const STATUS_ACTIVE = 'active';
+    public const STATUS_INACTIVE = 'inactive';
+    public const STATUS_ACTIVE = 'active';
 
-    const BASE_DIR = 'app/customers'; // storage/customers/000000
-    const ATTACHMENTS_DIR = 'home/attachments';  // storage/customers/000000/home/files
-    const TEMPLATES_DIR = 'home/templates';  // storage/customers/000000/home/files
-    const PRODUCT_DIR = 'home/products';
-    const LOGS_DIR = 'home/logs/';
+    public const BASE_DIR = 'app/customers'; // storage/customers/000000
+    public const ATTACHMENTS_DIR = 'home/attachments';  // storage/customers/000000/home/files
+    public const TEMPLATES_DIR = 'home/templates';  // storage/customers/000000/home/files
+    public const PRODUCT_DIR = 'home/products';
+    public const LOGS_DIR = 'home/logs/';
 
     /**
      * The attributes that are mass assignable.
@@ -318,7 +319,7 @@ class Customer extends Model
     {
         $query = $query->select('customers.*')
             ->leftJoin('users', 'users.customer_id', '=', 'customers.id');
-            
+
         // Keyword
         if (!empty(trim($keyword))) {
             foreach (explode(' ', trim($keyword)) as $keyword) {
@@ -1478,7 +1479,7 @@ class Customer extends Model
         return $droplist;
     }
 
-    
+
     public function getCurrentSubscription()
     {
         return $this->subscription;
@@ -1719,7 +1720,7 @@ class Customer extends Model
         // if (!isset($paymentMethod)) {
         //     $paymentMethod = [];
         // }
-        
+
         // $data = (object) array_merge((array) $paymentMethod, $data);
         $this['payment_method'] = json_encode($data);
 
@@ -1738,13 +1739,13 @@ class Customer extends Model
         if (!isset($paymentMethod)) {
             $paymentMethod = [];
         }
-        
+
         $data = (object) array_merge((array) $paymentMethod, $data);
         $this['payment_method'] = json_encode($data);
 
         $this->save();
     }
-    
+
     /**
      * Remove payment method.
      *
@@ -1755,7 +1756,7 @@ class Customer extends Model
         $this->payment_method = null;
         $this->save();
     }
-    
+
     /**
      * Get default billing address.
      *
@@ -1817,7 +1818,7 @@ class Customer extends Model
                 ]
             ]
         ]);
-        
+
         $auto->save();
 
         return $auto;

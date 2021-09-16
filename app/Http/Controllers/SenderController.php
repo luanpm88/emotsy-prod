@@ -9,7 +9,6 @@ use Acelle\Model\SendingDomain;
 
 class SenderController extends Controller
 {
-
     /**
      * Search items.
      */

@@ -19,7 +19,7 @@ interface DomainVerificationInterface
 
         ]
     */
-    public function verifyDomain($domain) : array;
+    public function verifyDomain($domain): array;
 
-    public function checkDomainVerificationStatus($domain) : array;
+    public function checkDomainVerificationStatus($domain): array;
 }

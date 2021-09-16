@@ -39,16 +39,16 @@ class Subscriber extends Model
 {
     use HasUid;
 
-    const STATUS_SUBSCRIBED = 'subscribed';
-    const STATUS_UNSUBSCRIBED = 'unsubscribed';
-    const STATUS_BLACKLISTED = 'blacklisted';
-    const STATUS_SPAM_REPORTED = 'spam-reported';
-    const STATUS_UNCONFIRMED = 'unconfirmed';
+    public const STATUS_SUBSCRIBED = 'subscribed';
+    public const STATUS_UNSUBSCRIBED = 'unsubscribed';
+    public const STATUS_BLACKLISTED = 'blacklisted';
+    public const STATUS_SPAM_REPORTED = 'spam-reported';
+    public const STATUS_UNCONFIRMED = 'unconfirmed';
 
-    const SUBSCRIPTION_TYPE_ADDED = 'added';
-    const SUBSCRIPTION_TYPE_DOUBLE_OPTIN = 'double';
-    const SUBSCRIPTION_TYPE_SINGLE_OPTIN = 'single';
-    const SUBSCRIPTION_TYPE_IMPORTED = 'imported';
+    public const SUBSCRIPTION_TYPE_ADDED = 'added';
+    public const SUBSCRIPTION_TYPE_DOUBLE_OPTIN = 'double';
+    public const SUBSCRIPTION_TYPE_SINGLE_OPTIN = 'single';
+    public const SUBSCRIPTION_TYPE_IMPORTED = 'imported';
 
     protected $dates = ['unsubscribed_at'];
 
@@ -978,7 +978,7 @@ class Subscriber extends Model
     /**
      * Get tags.
      */
-    public function getTags() : array
+    public function getTags(): array
     {
         // Notice: json_decode() returns null if input is null or empty
         return json_decode($this->tags, true) ?: [];
@@ -1258,7 +1258,7 @@ class Subscriber extends Model
         if ($validator->fails()) {
             return $validator;
         }
-        
+
         // do assign
         if ($request->assign_type == 'single') {
             // do assign a value: $request->single_value
