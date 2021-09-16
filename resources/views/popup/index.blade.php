@@ -44,12 +44,8 @@
                         
                     },
 
-                    renderCanvas: function() {
-                        return $('#formCanvas');
-                    },
-                    renderWidgetPanel: function() {
-                        return $('#formWidgetPanel');
-                    },
+                    canvas: '#formCanvas',
+                    sidePanel: '#formWidgetPanel',
 
                     tags: [],
 
@@ -126,17 +122,22 @@
         <div class="d-flex">
             <div>
                 <div class="browser-backdrop">
-                    <div class="browser-head d-flex align-items-center shadown">
-                        <div>
-                            <div class="control-dots d-flex align-items-center">
-                                <div class="control-dot"></div>
-                                <div class="control-dot orange"></div>
-                                <div class="control-dot green"></div>
+                    <div class="browser-frame">
+                        <div class="browser-head d-flex align-items-center shadow">
+                            <div>
+                                <div class="control-dots d-flex align-items-center">
+                                    <div class="control-dot"></div>
+                                    <div class="control-dot orange"></div>
+                                    <div class="control-dot green"></div>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-center px-5" style="width: 100%">
+                                <input class="form-control browser-address fs-3 px-4 rounded-pill" value="https://your-site.com" style="" />
                             </div>
                         </div>
+                        <div id="formCanvas"></div>
                     </div>
                 </div>
-                <div id="formCanvas"></div>
             </div>
             <div id="formWidgetPanel"></div>
         </div>

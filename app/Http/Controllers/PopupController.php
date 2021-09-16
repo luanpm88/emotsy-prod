@@ -40,8 +40,25 @@ class PopupController extends Controller
         $user = $request->user();
         $template = Template::findByUid($request->template_uid);
 
-        return view('popup.content', [
+        $content = view('popup.content', [
+            'template' => $template,
             'content' => $template->content,
         ]);
+
+        return response($content)->header('Access-Control-Allow-Origin', '*');
+    }
+
+    public function popup(Request $request)
+    {
+        $category = TemplateCategory::where('name', 'Form')->first();
+        $template = $category->templates()->first();
+
+        $content = view('popup.popup', [
+            'template' => $template,
+        ]);
+
+        return response($content)
+            ->header('Access-Control-Allow-Origin', '*')
+            ->header('Content-Type', 'application/javascript');
     }
 }
