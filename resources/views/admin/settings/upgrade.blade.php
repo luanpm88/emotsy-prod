@@ -42,7 +42,7 @@
                             <pre>{!! implode("\n", $failed) !!}</pre>
                         </p>
                         <p>
-                            <a link-confirm="{{ trans('messages.upgrade.upgrade_confirm') }}" href="{{ action('Admin\SettingController@doUpgrade') }}" role="button" class="btn bg-primary btn-icon" link-method="POST">
+                            <a href="{{ action('Admin\SettingController@doUpgrade') }}" role="button" class="btn bg-primary btn-icon upgrade-now">
                                 {{ trans('messages.upgrade.button.retry') }}
                             </a>
                             <a link-confirm="{{ trans('messages.upgrade.upgrade_cancel') }}" href="{{ action('Admin\SettingController@cancelUpgrade') }}" role="button" class="btn btn-secondary btn-icon" link-method="POST">
@@ -53,7 +53,7 @@
                         <h3>{{ trans('messages.upgrade.title.upgrade_confirm') }}</h3>
                         <p>{!! trans('messages.upgrade.wording.upgrade', [ 'current' => "<code>{$manager->getCurrentVersion()}</code>", 'new' => "<code>{$manager->getNewVersion()}</code>" ]) !!}</p>
                         <p>
-                            <a link-confirm="{{ trans('messages.upgrade.upgrade_confirm') }}" href="{{ action('Admin\SettingController@doUpgrade') }}" role="button" class="btn bg-primary btn-icon" link-method="POST">
+                            <a href="{{ action('Admin\SettingController@doUpgrade') }}" role="button" class="btn bg-primary btn-icon upgrade-now">
                                 {{ trans('messages.upgrade.button.upgrade_now') }}
                             </a>
                             <a link-confirm="{{ trans('messages.upgrade.upgrade_cancel') }}" href="{{ action('Admin\SettingController@cancelUpgrade') }}" role="button" class="btn btn-secondary btn-icon" link-method="POST">
@@ -88,4 +88,27 @@
             </div>
         </div>
     </div>
+
+    <script>
+        $(function() {
+            $('.upgrade-now').on('click', function(e) {
+                e.preventDefault();
+                    
+                var url = $(this).attr('href');
+                var confirm = '{{ trans('messages.upgrade.upgrade_confirm') }}';
+                var method = 'POST';
+                var type = 'link';
+
+                new Link({
+                    type: 'link',
+                    url: url,
+                    confirm: confirm,
+                    method: method,
+                    before: function() {
+                        addMaskLoading('{{ trans('messages.upgrade.checking_dependencies') }}');
+                    }
+                });
+            });
+        });
+    </script>
 @endsection
