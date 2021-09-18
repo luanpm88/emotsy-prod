@@ -299,6 +299,7 @@ class Campaign extends Model
      */
     public function prepareEmail($subscriber, $server = null)
     {
+        // move it out of this method which is called by child processes
         $this->updateLinks();
 
         // build the message
