@@ -25,6 +25,7 @@ namespace Acelle\Library;
 use ZipArchive;
 use Illuminate\Support\Facades\Log as LaravelLog; // something wrong, cannot use the default name Log
 use Illuminate\Support\Facades\File;
+use File;
 
 class UpgradeManager
 {
@@ -179,6 +180,11 @@ class UpgradeManager
             foreach ($updates as $file) {
                 $source = join_paths($this->source, $file);
                 $target = join_paths($this->target, $file);
+
+                // File is deleted in build.sh script
+                if (!File::exists($source)) {
+                    continue;
+                }
 
                 if ($test) {
                     if ($this->isLanguageFile($source)) {
