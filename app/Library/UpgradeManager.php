@@ -25,7 +25,6 @@ namespace Acelle\Library;
 use ZipArchive;
 use Illuminate\Support\Facades\Log as LaravelLog; // something wrong, cannot use the default name Log
 use Illuminate\Support\Facades\File;
-use File;
 
 class UpgradeManager
 {
