@@ -23,7 +23,10 @@
 </div>
 
 <div class="row">
-	<div class="col-md-12 ajax-detail-box" data-url="{{ action('Admin\EmailVerificationServerController@options') }}" data-form=".email-verification-server-form">
+	<div class="col-md-12 ajax-detail-box"
+		data-url="{{ action('Admin\EmailVerificationServerController@options') }}"
+		data-form=".email-verification-server-form"
+	>
 		@include('admin.email_verification_servers._options', [
 			'options' => $options
 		])

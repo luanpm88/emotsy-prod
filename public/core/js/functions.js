@@ -105,6 +105,9 @@ function initJs(container)
 
     // styled checkbox
     container.find('.styled, .switchery, [name=color_scheme]').after('<span class="check-symbol"></span>');
+
+    // showAjaxDetailBox
+    showAjaxDetailBox(container.find('.ajax-detail-box'));
 }
 
 function openMiddleBar() {
@@ -713,6 +716,45 @@ function autoDetechDarkMode(url) {
             data: {
                 theme_mode: newColorScheme,
             },
+        });
+    });
+}
+
+function showAjaxDetailBox(items) {
+    items.each(function() {
+        var container = $(this);
+        var form_class = container.attr('data-form');
+        var form = $(form_class);
+        var url = container.attr('data-url');
+        var method = form.attr('method');
+        var hook_class = container.attr('hook');
+        var loading_message = container.attr('loading-message');
+
+        if (typeof(hook_class) === 'undefined') {
+            hook_class = 'hook';
+        }
+
+        if(typeof(method) === 'undefined') {
+            method = 'POST';
+        }
+
+        $(document).on('change', form_class + ' .' + hook_class, function() {
+            data = form.serialize();
+
+            if (typeof(loading_message) !== 'undefined') {
+                container.html(loading_message);
+            }
+
+            $.ajax({
+                method: 'GET',
+                url: url,
+                data: data
+            })
+            .done(function(msg) {
+                container.html(msg);
+                
+                initJs(container);
+            });
         });
     });
 }
