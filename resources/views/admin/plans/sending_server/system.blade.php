@@ -56,7 +56,7 @@ corporate_fare
                 <p>{{ trans('messages.plan.sending_servers.list_intro') }}</p>
             </div>
             <div class="col-md-4 text-end">
-                <a href="{{ action('Admin\PlanController@addSendingServer', [ 'id' => $plan->uid ]) }}" class="btn btn-primary mr-5 bg-grey add-server-button">
+                <a href="{{ action('Admin\PlanController@addSendingServer', [ 'id' => $plan->uid ]) }}" class="btn btn-primary me-1 bg-grey add-server-button">
                     {{ trans('messages.plan.sending_servers.add') }}
                 </a>
             </div>

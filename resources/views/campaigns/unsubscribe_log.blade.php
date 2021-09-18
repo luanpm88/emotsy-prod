@@ -45,7 +45,7 @@ search
             </div>
             <div class="text-end">
                 <a href="javascript:goToDownLoad('unsubscribe_logs')" role="button" class="btn btn-secondary">
-                    <i class="icon icon-download mr-5"></i> {{ trans('messages.unsubscribe_log.download') }}
+                    <i class="icon icon-download me-1"></i> {{ trans('messages.unsubscribe_log.download') }}
                 </a>
             </div>
         </div>

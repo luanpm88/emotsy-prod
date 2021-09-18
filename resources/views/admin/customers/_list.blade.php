@@ -31,7 +31,7 @@ assignment_turned_in
                 <td class="stat-fix-size">
                     @if ($item->activeSubscription())
                         <div class="d-flex">
-                            <div class="single-stat-box pull-left me-5">
+                            <div class="single-stat-box pull-left me-1">
                                 <span class="no-margin text-primary stat-num">{{ $item->activeSubscription()->getCreditsUsedPercentageDuringPlanCycle('send') }}</span>
                                 <div class="progress progress-xxs">
                                     <div class="progress-bar progress-bar-info" style="width: {{ $item->activeSubscription()->getCreditsUsedPercentageDuringPlanCycle('send')*100 }}%">
