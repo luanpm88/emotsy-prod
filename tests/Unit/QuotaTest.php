@@ -309,7 +309,7 @@ class QuotaTest extends TestCase
             [
                 'name' => "Plan's sending limit",
                 'limit' => 10,
-                'period_base' => 'day',
+                'period_unit' => 'day',
                 'period_value' => 1,
             ]
 
@@ -367,7 +367,7 @@ class QuotaTest extends TestCase
             [
                 'name' => "Plan's sending limit",
                 'limit' => 999999,
-                'period_base' => 'month',
+                'period_unit' => 'month',
                 'period_value' => 1,
             ]
 
@@ -553,7 +553,7 @@ class QuotaTest extends TestCase
         $campaign->customer->activeSubscription()->plan->shouldReceive('getQuotaSettings')->andReturn([[
             'name' => "Plan's sending limit",
             'limit' => 1,
-            'period_base' => 'month',
+            'period_unit' => 'month',
             'period_value' => 1,
         ]]);
 
@@ -648,7 +648,7 @@ class QuotaTest extends TestCase
         $subscription->plan->shouldReceive('getQuotaSettings')->andReturn([[
             'name' => "Plan's sending limit",
             'limit' => 2,
-            'period_base' => 'hour',
+            'period_unit' => 'hour',
             'period_value' => 1,
         ]]);
 

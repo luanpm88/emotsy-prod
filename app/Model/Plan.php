@@ -1325,7 +1325,7 @@ class Plan extends Model
         if ($sendingCredits != QuotaManager::QUOTA_UNLIMITED) {
             $quota[] = [
                 'name' => "Plan's sending limit",
-                'period_base' => $this->frequency_unit,
+                'period_unit' => $this->frequency_unit,
                 'period_value' => $this->frequency_amount,
                 'limit' => $sendingCredits
             ];
@@ -1338,7 +1338,7 @@ class Plan extends Model
 
             $quota[] = [
                 'name' => "Sending limit of {$limit} per {$timeValue} {$timeUnit}",
-                'period_base' => $timeUnit,
+                'period_unit' => $timeUnit,
                 'period_value' => $timeValue,
                 'limit' => $limit,
             ];
