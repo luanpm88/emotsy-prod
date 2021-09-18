@@ -27,6 +27,8 @@ body.acelle-popup-open .acelle-popup {
     transition: all 0.2s ease-in-out;
     opacity: 0;
     text-indent: -9999999px;
+    filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
 }
 body.acelle-popup-open .acelle-popup::before {
     opacity: 1;

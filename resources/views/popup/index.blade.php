@@ -119,7 +119,7 @@
                     </span></a>
             </nav>
         </div>
-        <div class="d-flex">
+        <div class="">
             <div>
                 <div class="browser-backdrop">
                     <div class="browser-frame">

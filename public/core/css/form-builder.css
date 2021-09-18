@@ -29,6 +29,9 @@
 }
 #formWidgetPanel {
     width: 30%;
+    float: right;
+    width: 376px;
+    padding-top: 55px;
 }
 #builder_iframe {
     padding: 0;
@@ -37,7 +40,7 @@
     height: 100%;
 }
 .content-right .tab-pane .container {
-    height: calc(100vh - 125px);
+    height: calc(100vh - 103px);
 }
 .acelle-top-menu {
     position: fixed;
