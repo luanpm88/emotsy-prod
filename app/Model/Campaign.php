@@ -299,9 +299,6 @@ class Campaign extends Model
      */
     public function prepareEmail($subscriber, $server = null)
     {
-        // move it out of this method which is called by child processes
-        $this->updateLinks();
-
         // build the message
         $customHeaders = $this->getCustomHeaders($subscriber, $this);
         $msgId = $customHeaders['X-Acelle-Message-Id'];
@@ -1643,6 +1640,9 @@ class Campaign extends Model
      */
     public function sendTestEmail($email)
     {
+        // @todo Find a better place for the following method, afterSave for example
+        $this->updateLinks();
+
         try {
             MailLog::info('Sending test email for campaign `'.$this->name.'`');
             MailLog::info('Sending test email to `'.$email.'`');

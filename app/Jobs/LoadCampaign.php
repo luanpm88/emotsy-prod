@@ -51,8 +51,14 @@ class LoadCampaign implements ShouldQueue
             return;
         }
 
+        // Last chance for campaign to setup
+        // @todo Find a better place for the following method, afterSave for example
+        $this->campaign->updateLinks();
+
+        // Update status
         $this->campaign->setSending();
 
+        // Iterate through contacts and launch sending process
         $this->campaign->prepare(function ($campaign, $subscriber, $server) {
             $this->batch()->add(new SendMessage($campaign, $subscriber, $server));
         });
