@@ -1398,9 +1398,11 @@ class Customer extends Model
         $list = [];
 
         // own emails
-        $senders = $this->senders()->verified()->get();
-        foreach ($senders as $sender) {
-            $list[] = $sender->name.' <'.$sender->email.'>';
+        if ($this->allowSenderVerification()) {
+            $senders = $this->senders()->verified()->get();
+            foreach ($senders as $sender) {
+                $list[] = $sender->name.' <'.$sender->email.'>';
+            }
         }
 
         // own domain
