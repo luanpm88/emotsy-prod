@@ -393,7 +393,7 @@ class EmailVerificationServer extends Model implements HasQuotaInterface
         }
     }
 
-    public function setQuotaSettings(string $name, int $value, string $periodUnit, int $periodBase)
+    public function setQuotaSettings(string $name, int $value, string $periodUnit, int $periodValue)
     {
         // $name is always 'verify'
         if ($name != 'verify') {
@@ -401,7 +401,7 @@ class EmailVerificationServer extends Model implements HasQuotaInterface
         }
 
         $options = $this->getOptions();
-        $options['limit_base'] = $periodBase;
+        $options['limit_base'] = $periodValue;
         $options['limit_unit'] = $periodUnit;
         $options['limit_value'] = $value;
         $this->options = json_encode($options);
