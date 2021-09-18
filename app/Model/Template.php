@@ -1187,6 +1187,10 @@ class Template extends Model
 
         // Delete existing template and create again with new updates
         foreach ($templates as $meta) {
+            if (!File::exists($meta['dir'])) {
+                continue;
+            }
+
             // UID is the folder name, "5d7b527be2bd2" for example
             $uid = basename($meta['dir']);
 
