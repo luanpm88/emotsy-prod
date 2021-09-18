@@ -64,7 +64,7 @@ class QuotaTest extends TestCase
         $server = $this->initServer();
         $server->setCredits('send', $credits = 100);
         $use  = rand(3, 10);
-        $server->setQuotaSettings($limit = 10000000, $unit = 1, $base = 'minute');
+        $server->setQuotaSettings($limit = 10000000, $unit = 'minute', 1);
 
         for ($i = 1; $i <= $use; $i++) {
             QuotaManager::with($server, 'send')->count();
@@ -81,7 +81,7 @@ class QuotaTest extends TestCase
         $limitPerMinute = 4;
         $use = 10;
 
-        $server->setQuotaSettings($limitPerMinute, $unit = 1, $base = 'minute');
+        $server->setQuotaSettings($limitPerMinute, $unit = 'minute', 1);
 
         $this->expectException(Exception::class);
 
@@ -100,7 +100,7 @@ class QuotaTest extends TestCase
         $server->setCredits('send', $credits = 100);
         $limitPerMinute = 4;
         $use = 10;
-        $server->setQuotaSettings($limitPerMinute, $unit = 1, $base = 'minute');
+        $server->setQuotaSettings($limitPerMinute, $unit = 'minute', 1 );
 
         //$this->expectException(Exception::class);
 
@@ -127,7 +127,7 @@ class QuotaTest extends TestCase
         $server = $this->initServer();
         $server->setCredits('send', $credits = 1);
         $use = 10;
-        $server->setQuotaSettings(9999, $unit = 1, $base = 'minute');
+        $server->setQuotaSettings(9999, $unit = 'minute', $base = 1);
 
 
         $quota = QuotaManager::with($server, 'send');
@@ -151,7 +151,7 @@ class QuotaTest extends TestCase
         $server->setCredits('send', $credits = 5);
         $use = 1000;
 
-        $server->setQuotaSettings($limitsPerMinute = 10000, $unit = 1, $base = 'minute');
+        $server->setQuotaSettings($limitsPerMinute = 10000, $unit = 'minute', 1);
         $this->expectException(NoCreditsLeft::class);
 
         try {
@@ -170,7 +170,7 @@ class QuotaTest extends TestCase
         $limitPerMinute = 4;
         $use = 4;
 
-        $server->setQuotaSettings($limitPerMinute, $unit = 1, $base = 'minute');
+        $server->setQuotaSettings($limitPerMinute, $unit = 'minute', 1);
 
         try {
             for ($i = 1; $i <= $use; $i++) {
@@ -187,7 +187,7 @@ class QuotaTest extends TestCase
         $server->setCredits('send', $credits = 5);
         $use = 5;
 
-        $server->setQuotaSettings($limitsPerMinute = 10000, $unit = 1, $base = 'minute');
+        $server->setQuotaSettings($limitsPerMinute = 10000, $unit = 'minute', 1);
 
         try {
             for ($i = 1; $i <= $use; $i++) {
@@ -202,7 +202,7 @@ class QuotaTest extends TestCase
     {
         $server = $this->initServer();
         $server->setCredits('send', $credits = 0);
-        $server->setQuotaSettings($limitsPerMinute = 10000, $unit = 1, $base = 'minute');
+        $server->setQuotaSettings($limitsPerMinute = 10000, $unit = 'minute', 1);
         $this->expectException(NoCreditsLeft::class);
         QuotaManager::with($server, 'send')->count();
     }
@@ -210,7 +210,7 @@ class QuotaTest extends TestCase
     public function test_exception_thrown_when_credits_file_is_missing_and_call_get_remaining_credits()
     {
         $server = $this->initServer();
-        $server->setQuotaSettings($limitsPerMinute = 10000, $unit = 1, $base = 'minute');
+        $server->setQuotaSettings($limitsPerMinute = 10000, $unit = 'minute', 1);
         $server->cleanupCreditsStorageFiles('send');
         $this->expectException(Exception::class);
         $server->getRemainingCredits('send');
@@ -219,7 +219,7 @@ class QuotaTest extends TestCase
     public function test_exception_thrown_when_credits_file_is_missing_and_call_update_remaining_credits()
     {
         $server = $this->initServer();
-        $server->setQuotaSettings($limitsPerMinute = 10000, $unit = 1, $base = 'minute');
+        $server->setQuotaSettings($limitsPerMinute = 10000, $unit = 'minute', 1);
         $server->cleanupCreditsStorageFiles('send');
         $this->expectException(Exception::class);
         $server->updateRemainingCredits('send');
@@ -229,7 +229,7 @@ class QuotaTest extends TestCase
     {
         $server = $this->initServer();
         $server->setCredits('send', $credits = 100);
-        $server->setQuotaSettings($limitsPerMinute = 10000, $unit = 1, $base = 'minute');
+        $server->setQuotaSettings($limitsPerMinute = 10000, $unit = 'minute', 1);
 
         QuotaManager::with($server, 'send')->count();
 
@@ -255,7 +255,7 @@ class QuotaTest extends TestCase
     {
         $server = $this->initServer();
         $server->setCredits('send', QuotaManager::QUOTA_ZERO);
-        $server->setQuotaSettings($limitsPerMinute = 10000, $unit = 1, $base = 'minute');
+        $server->setQuotaSettings($limitsPerMinute = 10000, $unit = 'minute', 1);
         QuotaManager::with($server, 'send')->enforce();
 
         $this->assertEquals($server->getRemainingCredits('send'), QuotaManager::QUOTA_ZERO);
@@ -266,7 +266,7 @@ class QuotaTest extends TestCase
         $server = $this->initServer();
         $credits = rand(10, 100);
         $server->setCredits('send', $credits);
-        $server->setQuotaSettings($limitsPerMinute = 10000, $unit = 1, $base = 'minute');
+        $server->setQuotaSettings($limitsPerMinute = 10000, $unit = 'minute', 1);
         QuotaManager::with($server, 'send')->enforce();
 
         $this->assertEquals($server->getRemainingCredits('send'), $credits);
@@ -279,7 +279,7 @@ class QuotaTest extends TestCase
         // Clean up the credits storage file
         $server->cleanupCreditsStorageFiles('send');
 
-        $server->setQuotaSettings($limitsPerMinute = 10000, $unit = 1, $base = 'minute');
+        $server->setQuotaSettings($limitsPerMinute = 10000, $unit = 'minute', 1);
 
         // enforce() ==> does not check credits
         QuotaManager::with($server, 'send')->enforce();
@@ -295,7 +295,7 @@ class QuotaTest extends TestCase
     {
         $server = $this->initServer();
         $server->setCredits('send', $credits = 10000);
-        $server->setQuotaSettings($limitsPerMinute = 0, $unit = 1, $base = 'minute');
+        $server->setQuotaSettings($limitsPerMinute = 0, $unit = 'minute', 1);
         $this->expectException(QuotaExceeded::class);
         QuotaManager::with($server, 'send')->count();
     }
@@ -422,10 +422,11 @@ class QuotaTest extends TestCase
     public function test_email_verification_server_just_works_with_credits_limit()
     {
         $server = $this->initEmailVerificationServer();
-        $server->setQuotaSettings('verify', 999, 1, 'minute');
+        $server->setQuotaSettings('verify', 999, 'minute', 1);
         $server->setCredits('verify', 10);
         $tests = 11;
         $this->expectException(Exception::class);
+
         try {
             for ($i = 1; $i <= $tests; $i++) {
                 QuotaManager::with($server, 'verify')->count();
@@ -481,7 +482,7 @@ class QuotaTest extends TestCase
         list($campaign, $subscriber, $server) = $this->prepareSendMessageTest();
 
         // Server Quota
-        $server->setQuotaSettings(0, $unit = 1, $base = 'minute');
+        $server->setQuotaSettings(0, $unit = 'minute', 1);
 
         // Subscription Quota
         $campaign->customer->activeSubscription()->plan->shouldReceive('getQuotaSettings')->andReturn([]);
@@ -500,7 +501,7 @@ class QuotaTest extends TestCase
         list($campaign, $subscriber, $server) = $this->prepareSendMessageTest();
 
         // Server Quota
-        $server->setQuotaSettings(1, $unit = 1, $base = 'minute');
+        $server->setQuotaSettings(1, $unit = 'minute', 1);
 
         // Subscription Quota
         $campaign->customer->activeSubscription()->plan->shouldReceive('getQuotaSettings')->andReturn([]);
@@ -519,7 +520,7 @@ class QuotaTest extends TestCase
         list($campaign, $subscriber, $server) = $this->prepareSendMessageTest();
 
         // Server Quota
-        $server->setQuotaSettings(1, $unit = 1, $base = 'minute');
+        $server->setQuotaSettings(1, $unit = 'minute', 1);
 
         // Subscription Quota
         $campaign->customer->activeSubscription()->plan->shouldReceive('getQuotaSettings')->andReturn([]);
@@ -546,7 +547,7 @@ class QuotaTest extends TestCase
         list($campaign, $subscriber, $server) = $this->prepareSendMessageTest();
 
         // Server Quota
-        $server->setQuotaSettings(9999, $unit = 1, $base = 'minute');
+        $server->setQuotaSettings(9999, $unit = 'minute', 1);
 
         // Subscription Quota
         $campaign->customer->activeSubscription()->plan->shouldReceive('getQuotaSettings')->andReturn([[
@@ -605,7 +606,7 @@ class QuotaTest extends TestCase
     {
         // Test setup
         list($subscriber, $server) = $this->prepareVerifySubscriberTest();
-        $server->setQuotaSettings('verify', 2, $unit = 1, $base = 'minute');
+        $server->setQuotaSettings('verify', 2, $unit = 'minute', 1);
         $subscription = $subscriber->mailList->customer->activeSubscription();
         $subscription->plan->shouldReceive('getQuotaSettings')->andReturn([]);
 
@@ -642,7 +643,7 @@ class QuotaTest extends TestCase
     {
         // Test setup
         list($subscriber, $server) = $this->prepareVerifySubscriberTest();
-        $server->setQuotaSettings('verify', 9999, $unit = 1, $base = 'minute');
+        $server->setQuotaSettings('verify', 9999, $unit = 'minute', 1);
         $subscription = $subscriber->mailList->customer->activeSubscription();
         $subscription->plan->shouldReceive('getQuotaSettings')->andReturn([[
             'name' => "Plan's sending limit",

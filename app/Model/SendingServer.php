@@ -1576,7 +1576,7 @@ class SendingServer extends Model implements HasQuotaInterface
         return false;
     }
 
-    public function setQuotaSettings($value, $periodUnit, $periodBase)
+    public function setQuotaSettings(int $value, string $periodUnit, int $periodBase)
     {
         $this->quota_base = $periodBase;
         $this->quota_unit = $periodUnit;
@@ -1591,8 +1591,8 @@ class SendingServer extends Model implements HasQuotaInterface
         if ($this->quota_value != QuotaManager::QUOTA_UNLIMITED) {
             $quota[] = [
                 'name' => "Server's sending limit of {$this->quota_value} per {$this->quota_unit} {$this->quota_base}",
-                'period_base' => $this->quota_base,
-                'period_value' => $this->quota_unit,
+                'period_base' => $this->quota_unit,
+                'period_value' => $this->quota_base,
                 'limit' => $this->quota_value,
             ];
         }
