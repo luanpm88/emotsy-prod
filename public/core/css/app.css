@@ -709,6 +709,9 @@ h2 [class^="icon-"] {
     display: inline;
     max-width: 180px;
 }
+.field-list .input-icon-right {
+    max-width: 180px;
+}
 .field-list .form-group {
     margin: 0;
     display: inline;
