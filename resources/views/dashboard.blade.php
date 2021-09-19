@@ -86,6 +86,8 @@
 
     @include('_dashboard_list_growth')    
 
+
+    @if (isSiteDemo())
     <h3 class="mt-5 mb-3"><span class="material-icons-outlined me-2">
         star_half
         </span> {{ trans('messages.top_5') }}
@@ -267,6 +269,7 @@
             </ul>
         </div>
     </div>
+    @endif
 
     <h3 class="mt-5 mb-3"><span class="material-icons-outlined me-2">
         group_work
