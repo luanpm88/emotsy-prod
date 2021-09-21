@@ -7,6 +7,15 @@
 
 	@yield('head')
 
+	@if (getThemeMode(Auth::user()->admin->theme_mode, request()->session()->get('admin-auto-theme-mode')) == 'dark')
+		<meta name="theme-color" content="{{ getThemeColor(
+			Auth::user()->admin->getColorScheme(),
+			request()->session()->get('admin-auto-theme-mode')
+		) }}">
+	@elseif (Auth::user()->admin->getMenuLayout() == 'left')
+		<meta name="theme-color" content="#eff3f5">
+	@endif
+
 	<script>
 		@if (Auth::user()->admin->theme_mode == 'auto')
 			var ECHARTS_THEME = isDarkMode() ? 'dark' : null
@@ -23,13 +32,7 @@
 <body class="theme-{{ Auth::user()->admin->getColorScheme() }} {{ Auth::user()->admin->getMenuLayout() }}bar
 	{{ Auth::user()->admin->getMenuLayout() }}bar-{{ request()->session()->get('admin-leftbar-state') }}	
 	
-	@if (Auth::user()->admin->theme_mode == 'auto')
-		@if (request()->session()->get('admin-auto-theme-mode'))
-			mode-{{ request()->session()->get('admin-auto-theme-mode') }}
-		@endif
-	@else
-		mode-{{ Auth::user()->admin->theme_mode }}
-	@endif
+	mode-{{ getThemeMode(Auth::user()->admin->theme_mode, request()->session()->get('admin-auto-theme-mode')) }}
 ">
 	@include('layouts.core._menu_backend')
 
