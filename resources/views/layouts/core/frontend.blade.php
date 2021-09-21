@@ -8,9 +8,12 @@
 	@yield('head')
 
 	@if (getThemeMode(Auth::user()->customer->theme_mode) == 'dark')
-		<meta name="theme-color" content="#222222">
-	@else
-		<meta name="theme-color" content="#eeeeee">
+		<meta name="theme-color" content="{{ getThemeColor(
+			Auth::user()->customer->getColorScheme(),
+			request()->session()->get('customer-auto-theme-mode')
+		) }}">
+	@elseif (Auth::user()->customer->getMenuLayout() == 'left')
+		<meta name="theme-color" content="#eff3f5">
 	@endif
 
 	<script>

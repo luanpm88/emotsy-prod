@@ -846,13 +846,13 @@ function filterSearchArray($items, $keyword)
 function getThemeColor($theme = false)
 {
     $colors = [
-        'default' => '#2b3b46',
-        'blue' => 'rgba(0, 48, 71, 0.9)',
-        'green' => 'rgba(0, 57, 31, 0.85)',
-        'brown' => 'rgba(59, 38, 13, 0.8)',
-        'pink' => 'rgba(88, 11, 64, 0.8)',
-        'grey' => 'rgba(40,40,40,0.8)',
-        'white' => '',
+        'default' => 'rgba(13, 24, 29, 0.85)',
+        'blue' => 'rgba(9, 22, 28, 0.9)',
+        'green' => 'rgba(11, 29, 29, 0.9)',
+        'brown' => 'rgba(27, 21, 10, 0.9)',
+        'pink' => 'rgba(28, 11, 19, 0.9)',
+        'grey' => '#111111',
+        'white' => '#444',
     ];
 
     if (!$theme || !isset($colors[$theme])) {
@@ -862,13 +862,13 @@ function getThemeColor($theme = false)
     return $colors[$theme];
 }
 
-function getThemeMode($mode)
+function getThemeMode($mode, $auto='light')
 {
     $themeMode = $mode;
 
     if ($mode == 'auto') {
-        if (request()->session()->get('customer-auto-theme-mode')) {
-            $themeMode = request()->session()->get('customer-auto-theme-mode');
+        if ($auto) {
+            $themeMode = $auto;
         }
     }
 
