@@ -7,7 +7,7 @@
 
 	@yield('head')
 
-	@if (getThemeMode(Auth::user()->admin->theme_mode) == 'dark')
+	@if (getThemeMode(Auth::user()->admin->theme_mode, request()->session()->get('admin-auto-theme-mode')) == 'dark')
 		<meta name="theme-color" content="{{ getThemeColor(
 			Auth::user()->admin->getColorScheme(),
 			request()->session()->get('admin-auto-theme-mode')
@@ -32,7 +32,7 @@
 <body class="theme-{{ Auth::user()->admin->getColorScheme() }} {{ Auth::user()->admin->getMenuLayout() }}bar
 	{{ Auth::user()->admin->getMenuLayout() }}bar-{{ request()->session()->get('admin-leftbar-state') }}	
 	
-	mode-{{ getThemeMode(Auth::user()->admin->theme_mode) }}
+	mode-{{ getThemeMode(Auth::user()->admin->theme_mode, request()->session()->get('admin-auto-theme-mode')) }}
 ">
 	@include('layouts.core._menu_backend')
 

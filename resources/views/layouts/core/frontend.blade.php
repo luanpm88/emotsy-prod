@@ -7,11 +7,9 @@
 
 	@yield('head')
 
-	@if (getThemeMode(Auth::user()->customer->theme_mode) == 'dark')
+	@if (getThemeMode(Auth::user()->customer->theme_mode, request()->session()->get('customer-auto-theme-mode')) == 'dark')
 		<meta name="theme-color" content="{{ getThemeColor(
-			Auth::user()->customer->getColorScheme(),
-			request()->session()->get('customer-auto-theme-mode')
-		) }}">
+			Auth::user()->customer->getColorScheme()) }}">
 	@elseif (Auth::user()->customer->getMenuLayout() == 'left')
 		<meta name="theme-color" content="#eff3f5">
 	@endif
@@ -32,7 +30,7 @@
 <body class="theme-{{ Auth::user()->customer->getColorScheme() }} {{ Auth::user()->customer->getMenuLayout() }}bar
 	{{ Auth::user()->customer->getMenuLayout() }}bar-{{ request()->session()->get('customer-leftbar-state') }}
 	fullscreen-search-box
-	mode-{{ getThemeMode(Auth::user()->customer->theme_mode)  }}
+	mode-{{ getThemeMode(Auth::user()->customer->theme_mode, request()->session()->get('customer-auto-theme-mode'))  }}
 ">
 	@include('layouts.core._menu_frontend')
 
