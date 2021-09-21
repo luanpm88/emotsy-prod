@@ -159,55 +159,48 @@ class Subscription extends Model implements HasQuotaInterface
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function createInitInvoice()
+    public function createInitInvoice($trial=false)
     {
         //
         if ($this->getUnpaidInvoice()) {
             throw new \Exception(trans('messages.error.has_waiting_invoices'));
         }
 
-        // create invoice
-        $invoice = new Invoice();
-        $invoice->status = Invoice::STATUS_NEW;
-        $invoice->type = Invoice::TYPE_NEW_SUBSCRIPTION;
-        $invoice->title = trans('messages.invoice.init_subscription');
-        $invoice->description = trans('messages.invoice.init_subscription.desc', [
-            'plan' => $this->plan->name,
-            'date' => \Acelle\Library\Tool::formatDate($this->getPeriodEndsAt(Carbon::now())),
-        ]);
-        $invoice->customer_id = $this->customer->id;
-        $invoice->currency_id = $this->plan->currency_id;
-
-        // default billing info
-        $billingAddress = $this->customer->getDefaultBillingAddress();
-        if ($billingAddress) {
-            $invoice->billing_first_name = $billingAddress->first_name;
-            $invoice->billing_last_name = $billingAddress->last_name;
-            $invoice->billing_address = $billingAddress->address;
-            $invoice->billing_email = $billingAddress->email;
-            $invoice->billing_phone = $billingAddress->phone;
-            $invoice->billing_country_id = $billingAddress->country_id;
+        if ($trial) {
+            $title = $title = trans('messages.invoice.init_subscription.trial.desc', [
+                'plan' => $this->plan->name,
+                'time' => $this->plan->getTrialPeriodTimePhrase(),
+            ]);
+        } else {
+            $title = trans('messages.invoice.init_subscription.desc', [
+                'plan' => $this->plan->name,
+                'date' => \Acelle\Library\Tool::formatDate($this->getPeriodEndsAt(Carbon::now())),
+            ]);
         }
 
-        // save
-        $invoice->save();
-
-        // data
-        $invoice->updateMetadata([
-            'subscription_uid' => $this->uid,
+        // create init invoice
+        return Invoice::createInvoice([
+            'status' => Invoice::TYPE_NEW_SUBSCRIPTION,
+            'title' => trans('messages.invoice.init_subscription'),
+            'description' => $title,
+            'customer_id' => $this->customer->id,
+            'currency_id' => $this->plan->currency_id,
+            'billingAddress' => $this->customer->getDefaultBillingAddress(),
+            'metadata' => [
+                'subscription_uid' => $this->uid,
+                'trial' => $trial,
+            ],
+            'items' => [
+                [
+                    'id' => $this->id,
+                    'type' => get_class($this),
+                    'amount' => $trial ? 0 : $this->plan->price,
+                    'vat' => $this->plan->vat,
+                    'title' => $this->plan->name,
+                    'description' => view('plans._bill_desc', ['plan' => $this->plan]),
+                ],
+            ]
         ]);
-
-        // add item
-        $invoiceItem = $invoice->invoiceItems()->create([
-            'item_id' => $this->id,
-            'item_type' => get_class($this),
-            'amount' => $this->plan->price,
-            'vat' => $this->plan->vat,
-            'title' => $this->plan->name,
-            'description' => view('plans._bill_desc', ['plan' => $this->plan]),
-        ]);
-
-        return $invoice;
     }
 
     /**
@@ -362,28 +355,7 @@ class Subscription extends Model implements HasQuotaInterface
      */
     public function getPeriodEndsAt($startDate)
     {
-        // dose not support recurring, update ends at column
-        $interval = $this->plan->frequency_unit;
-        $intervalCount = $this->plan->frequency_amount;
-
-        switch ($interval) {
-            case 'month':
-                $endsAt = $startDate->addMonthsNoOverflow($intervalCount);
-                break;
-            case 'day':
-                $endsAt = $startDate->addDay($intervalCount);
-                // no break
-            case 'week':
-                $endsAt = $startDate->addWeek($intervalCount);
-                break;
-            case 'year':
-                $endsAt = $startDate->addYearsNoOverflow($intervalCount);
-                break;
-            default:
-                $endsAt = null;
-        }
-
-        return $endsAt;
+        return $this->plan->getPeriodEndsAt($startDate);
     }
 
     // 1 End luôn subscription nếu đã hết hạn
@@ -581,13 +553,13 @@ class Subscription extends Model implements HasQuotaInterface
      *
      * @return bool
      */
-    public function activate()
+    public function activate($trial=false)
     {
         if (!$this->isNew()) {
             throw new \Exception("Only new subscription can be activated, double check your code to make sure you call activate() on a new subscription");
         }
 
-        $this->current_period_ends_at = $this->getPeriodEndsAt(Carbon::now());
+        $this->current_period_ends_at = $trial ? $this->plan->getTrialPeriodEndsAt(Carbon::now()) : $this->getPeriodEndsAt(Carbon::now());
         $this->ends_at = null;
         $this->status = self::STATUS_ACTIVE;
         $this->started_at = Carbon::now();

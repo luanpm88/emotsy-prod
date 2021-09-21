@@ -3827,5 +3827,10 @@
   'click_open_app_search' => 'Open app search (Ctrl + D)',
   'upgrade.checking_dependencies' => 'Checking for upgrade dependencies...',
   'plan.trial_setting' => 'Trial period (amout / time unit)',
-  'plan.has_trial_period' => 'Use trial period',
+  'plan.has_trial_period' => 'Enable trial period',
+  'plan.try_free' => 'Try :time for free',
+  'day.choice' => 'day|days',
+  'plan.buy' => 'Buy',
+  'invoice.init_subscription.trial.desc' => '<span class="fw-600">:time</span>
+    free trial of <span class="fw-600">:plan</span>',
 ) ?>

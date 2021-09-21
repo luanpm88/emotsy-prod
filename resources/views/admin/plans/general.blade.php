@@ -166,7 +166,7 @@
                             'label' => trans('messages.plan.has_trial_period'),
                             'attributes' => [
                                 'class' => 'numeric',
-                                'checked' => $plan->trial_amount > 0 ? 'checked' : false
+                                'checked' => $plan->hasTrial() ? 'checked' : false
                             ],
                         ])
                     </div>

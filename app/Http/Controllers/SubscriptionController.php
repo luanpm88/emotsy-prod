@@ -93,7 +93,7 @@ class SubscriptionController extends Controller
 
         // create new subscription
         $subscription = $customer->subscription;
-        $subscription = $customer->assignPlan($plan);
+        $subscription = $customer->assignPlan($plan, $request->trial);
 
         // create init invoice
         if (!$subscription->invoices()->new()->count()) {

@@ -50,7 +50,7 @@
                     </div>
                 @else
                     <div class="new-price-box" style="margin-right: -30px">
-                        <div class="">
+                        <div class="d-flex">
 
                             @foreach ($plans as $key => $plan)
                                 <div
@@ -79,7 +79,7 @@
                                         <p class="mt-4">{{ $plan->description }}</p>
                                     </div>
 
-                                    <span class="time-box d-block text-center small py-2 fw-600">
+                                    <span class="time-box d-block text-center small py-2 fw-600 mb-5">
                                         <div class="mb-1">
                                             <span>{{ $plan->displayTotalQuota() }} {{ trans('messages.sending_total_quota_label') }}</span>
                                         </div>
@@ -88,12 +88,36 @@
                                         </div>
                                     </span>
 
-                                    <a
-                                        link-method="POST"
-                                        href="{{ action('SubscriptionController@init', ['plan_uid' => $plan->uid]) }}"
-                                        class="btn btn-primary rounded-3 d-block mt-4 shadow-sm">
-                                            {{ trans('messages.plan.select') }}
-                                    </a>
+                                    <div>
+                                        <div style="vertical-align:bottom">
+                                            @if ($plan->hasTrial())
+                                                <a
+                                                    link-method="POST"
+                                                    href="{{ action('SubscriptionController@init', [
+                                                        'plan_uid' => $plan->uid,
+                                                        'trial' => true,
+                                                    ]) }}"
+                                                    class="btn fw-600 btn-primary rounded-3 d-block shadow-sm">
+                                                        {{ trans('messages.plan.try_free', [
+                                                            'time' => $plan->getTrialPeriodTimePhrase(),
+                                                        ]) }}
+                                                </a>
+                                            @endif
+
+                                            <a
+                                                link-method="POST"
+                                                href="{{ action('SubscriptionController@init', [
+                                                    'plan_uid' => $plan->uid,
+                                                ]) }}"
+                                                class="btn fw-600 btn-warning rounded-3 d-block mt-2 shadow-sm">
+                                                    @if ($plan->isFree())
+                                                        {{ trans('messages.plan.select') }}
+                                                    @else
+                                                        {{ trans('messages.plan.buy') }}
+                                                    @endif
+                                            </a>
+                                        </div>
+                                    </div>
                                 </div>
                             @endforeach
 

@@ -331,7 +331,7 @@ class Invoice extends Model
 
         switch ($this->type) {
             case self::TYPE_NEW_SUBSCRIPTION:
-                $subscription->activate();
+                $subscription->activate($data['trial']);
                 break;
             case self::TYPE_RENEW_SUBSCRIPTION:
                 $subscription->renew();
@@ -595,5 +595,50 @@ class Invoice extends Model
     public function getBillingName()
     {
         return $this->billing_first_name . ' ' . $this->billing_last_name;
+    }
+
+    public static function createInvoice($options)
+    {
+        // create invoice
+        $invoice = new self();
+        $invoice->status = self::STATUS_NEW;
+        $invoice->type = $options['status'];
+
+
+        $invoice->title = $options['title'];
+        $invoice->description = $options['description'];
+        $invoice->customer_id = $options['customer_id'];
+        $invoice->currency_id = $options['currency_id'];
+
+        // default billing info
+        // $billingAddress = $this->customer->getDefaultBillingAddress();
+        if ($options['billingAddress']) {
+            $invoice->billing_first_name = $options['billingAddress']->first_name;
+            $invoice->billing_last_name = $options['billingAddress']->last_name;
+            $invoice->billing_address = $options['billingAddress']->address;
+            $invoice->billing_email = $options['billingAddress']->email;
+            $invoice->billing_phone = $options['billingAddress']->phone;
+            $invoice->billing_country_id = $options['billingAddress']->country_id;
+        }
+
+        // save
+        $invoice->save();
+
+        // data
+        $invoice->updateMetadata($options['metadata']);
+
+        // add item
+        foreach($options['items'] as $item) {
+            $invoiceItem = $invoice->invoiceItems()->create([
+                'item_id' => $item['id'],
+                'item_type' => $item['type'],
+                'amount' => $item['amount'],
+                'vat' => $item['vat'],
+                'title' => $item['title'],
+                'description' => $item['description'],
+            ]);
+        }
+
+        return $invoice;
     }
 }
