@@ -372,7 +372,7 @@ class Subscription extends Model implements HasQuotaInterface
                 break;
             case 'day':
                 $endsAt = $startDate->addDay($intervalCount);
-                // no break
+                break;
             case 'week':
                 $endsAt = $startDate->addWeek($intervalCount);
                 break;
