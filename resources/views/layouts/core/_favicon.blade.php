@@ -14,4 +14,3 @@
 <link rel="manifest" href="{{ URL::asset('favicon/manifest.json') }}">
 <meta name="msapplication-TileColor" content="#ffffff">
 <meta name="msapplication-TileImage" content="{{ URL::asset('favicon/ms-icon-144x144.png') }}">
-<meta name="theme-color" content="#ffffff">
