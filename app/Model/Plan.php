@@ -57,9 +57,11 @@ class Plan extends Model
         'price',
         'vat',
         'currency_id',
-        'tax_billing_required',
         'paddle_plan_id',
         'admin_id',
+        'trial_amount',
+        'trial_unit',
+        'vat'
     ];
 
     /**
@@ -138,6 +140,8 @@ class Plan extends Model
             'frequency_amount' => 'required|min:1',
             'frequency_unit' => 'required',
             'price' => 'required|min:0',
+            'trial_amount' => 'required|min:0',
+            'trial_unit' => 'required',
         );
 
         return $rules;
@@ -1288,9 +1292,16 @@ class Plan extends Model
 
     public static function newDefaultPlan()
     {
-        $plan = new self();
+        $plan = new self([
+            'price' => 0,
+            'frequency_amount' => 1,
+            'frequency_unit' => 'month',
+            'trial_amount' => '0',
+            'trial_unit' => 'day',
+            'vat' => 0
+        ]);
+
         $plan->status = self::STATUS_INACTIVE;
-        $plan->vat = 0;
 
         return $plan;
     }

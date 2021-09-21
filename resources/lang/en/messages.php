@@ -1919,8 +1919,6 @@
   'template.copied' => 'Template was successfully copied',
   'notification.note' => 'Note: ',
   'notification.sending_servers' => 'sending servers added by admin shall be used by users who are not permitted to add their own ones. You can select the sending servers to assign to a particular plan',
-  'plan.tax_billing_required' => 'Billing information required?',
-  'plan.tax_billing_required.help' => 'Ask for tax billing information when subscribing to the plan',
   'the_email_no_longer_exists' => 'The email no longer exists',
   'campaign.resend' => 'Resend',
   'campaign.resend_confirm' => 'You are going to send the campaign again to subscribers who did not receive the email yet.',
@@ -3828,4 +3826,6 @@
   'search.go_to_lists' => 'Lists management',
   'click_open_app_search' => 'Open app search (Ctrl + D)',
   'upgrade.checking_dependencies' => 'Checking for upgrade dependencies...',
+  'plan.trial_setting' => 'Trial period (amout / time unit)',
+  'plan.has_trial_period' => 'Use trial period',
 ) ?>
