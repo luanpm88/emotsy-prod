@@ -864,3 +864,35 @@ function getPeriodEndsAt($startDate, $amount, $unit)
 
     return $endsAt;
 }
+
+function getThemeColor($theme = false)
+{
+    $colors = [
+        'default' => 'rgba(13, 24, 29, 0.85)',
+        'blue' => 'rgba(9, 22, 28, 0.9)',
+        'green' => 'rgba(11, 29, 29, 0.9)',
+        'brown' => 'rgba(27, 21, 10, 0.9)',
+        'pink' => 'rgba(28, 11, 19, 0.9)',
+        'grey' => '#111111',
+        'white' => '#444',
+    ];
+
+    if (!$theme || !isset($colors[$theme])) {
+        return $colors['default'];
+    }
+
+    return $colors[$theme];
+}
+
+function getThemeMode($mode, $auto='light')
+{
+    $themeMode = $mode;
+
+    if ($mode == 'auto') {
+        if ($auto) {
+            $themeMode = $auto;
+        }
+    }
+
+    return $themeMode;
+}
