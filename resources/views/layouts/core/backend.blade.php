@@ -10,7 +10,7 @@
 	@if (getThemeMode(Auth::user()->admin->theme_mode) == 'dark')
 		<meta name="theme-color" content="{{ getThemeColor(
 			Auth::user()->admin->getColorScheme(),
-			request()->session()->get('customer-auto-theme-mode')
+			request()->session()->get('admin-auto-theme-mode')
 		) }}">
 	@elseif (Auth::user()->admin->getMenuLayout() == 'left')
 		<meta name="theme-color" content="#eff3f5">
