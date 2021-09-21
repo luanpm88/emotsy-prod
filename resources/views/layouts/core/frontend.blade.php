@@ -7,6 +7,12 @@
 
 	@yield('head')
 
+	@if (getThemeMode(Auth::user()->customer->theme_mode) == 'dark')
+		<meta name="theme-color" content="#222222">
+	@else
+		<meta name="theme-color" content="#eeeeee">
+	@endif
+
 	<script>
 		@if (Auth::user()->customer->theme_mode == 'auto')
 			var ECHARTS_THEME = isDarkMode() ? 'dark' : null
@@ -23,13 +29,7 @@
 <body class="theme-{{ Auth::user()->customer->getColorScheme() }} {{ Auth::user()->customer->getMenuLayout() }}bar
 	{{ Auth::user()->customer->getMenuLayout() }}bar-{{ request()->session()->get('customer-leftbar-state') }}
 	fullscreen-search-box
-	@if (Auth::user()->customer->theme_mode == 'auto')
-		@if (request()->session()->get('customer-auto-theme-mode'))
-			mode-{{ request()->session()->get('customer-auto-theme-mode') }}
-		@endif
-	@else
-		mode-{{ Auth::user()->customer->theme_mode }}
-	@endif
+	mode-{{ getThemeMode(Auth::user()->customer->theme_mode)  }}
 ">
 	@include('layouts.core._menu_frontend')
 

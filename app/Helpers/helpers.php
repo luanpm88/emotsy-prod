@@ -842,3 +842,35 @@ function filterSearchArray($items, $keyword)
 
     return $results;
 }
+
+function getThemeColor($theme = false)
+{
+    $colors = [
+        'default' => '#2b3b46',
+        'blue' => 'rgba(0, 48, 71, 0.9)',
+        'green' => 'rgba(0, 57, 31, 0.85)',
+        'brown' => 'rgba(59, 38, 13, 0.8)',
+        'pink' => 'rgba(88, 11, 64, 0.8)',
+        'grey' => 'rgba(40,40,40,0.8)',
+        'white' => '',
+    ];
+
+    if (!$theme || !isset($colors[$theme])) {
+        return $colors['default'];
+    }
+
+    return $colors[$theme];
+}
+
+function getThemeMode($mode)
+{
+    $themeMode = $mode;
+
+    if ($mode == 'auto') {
+        if (request()->session()->get('customer-auto-theme-mode')) {
+            $themeMode = request()->session()->get('customer-auto-theme-mode');
+        }
+    }
+
+    return $themeMode;
+}
