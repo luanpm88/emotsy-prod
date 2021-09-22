@@ -3834,8 +3834,8 @@
   'invoice.init_subscription.trial.desc' => '<span class="fw-600">:time</span>
     free trial of <span class="fw-600">:plan</span>.
     Your subscription will be due on <strong>:date</strong>',
-  'subscription.trial_announcement' => 'You are currently on trial of :plan.
-    your trial period will expire in <span class="fw-600">:days</span> days.<br>
+  'subscription.trial_announcement' => 'You are currently on trial of <span class="fw-600">:plan</span>.
+    your trial period will expire in <span class="fw-bold">:days</span> days.
     Click Buy now to purchase the plan.',
   'subscription.buy_now' => 'Buy now',
 ) ?>
