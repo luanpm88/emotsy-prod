@@ -356,7 +356,6 @@ class Subscription extends Model implements HasQuotaInterface
      */
     public function getPeriodEndsAt($startDate)
     {
-        return $this->plan->getPeriodEndsAt($startDate);
         return getPeriodEndsAt($startDate, $this->plan->frequency_amount, $this->plan->frequency_unit);
     }
 
