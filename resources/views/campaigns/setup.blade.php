@@ -1,6 +1,10 @@
 @extends('layouts.core.frontend')
 
 @section('title', trans('messages.campaigns') . " - " . trans('messages.setup'))
+
+@section('head')
+    <script type="text/javascript" src="{{ URL::asset('core/js/group-manager.js') }}"></script>
+@endsection
 	
 @section('page_header')
 	
@@ -165,24 +169,65 @@ arrow_forward
 	<form>
 	
 	<script>
-		function checkUnverified() {
-			if(!$('.autofill-error:visible').length) {
-				$('.unverified_next_but').removeClass('pointer-events-none');
-                $('.unverified_next_but').removeClass('disabled');
-			} else {
-				$('.unverified_next_but').addClass('pointer-events-none');
-                $('.unverified_next_but').addClass('disabled');
+		var CampaignsSetupNextButton = {
+			manager: null,
+
+			getManager: function() {
+				if (this.manager == null) {
+					this.manager = new GroupManager();
+					this.manager.add({
+						isError: function() {
+							return $('.autofill-error:visible').length;
+						},
+						nextButton: $('.unverified_next_but'),
+						inputs: $('[name=reply_to], [name=from_email]')
+					});
+
+					this.manager.bind(function(group) {
+						group.check = function() {
+							if (!group.isError()) {
+								group.nextButton.removeClass('pointer-events-none');
+								group.nextButton.removeClass('disabled');
+							} else {
+								group.nextButton.addClass('pointer-events-none');
+								group.nextButton.addClass('disabled');
+							}
+						}
+
+						group.check();
+
+						group.inputs.on('change keyup', function() {
+							group.check();
+						});
+					});
+				}
+
+				return this.manager;
+			},
+
+			check: function() {
+				this.getManager().groups.forEach(function(group) {
+					group.check();
+				});
 			}
 		}
 
-		setInterval(function() { checkUnverified() }, 1000);
+		$(function() {
+			CampaignsSetupNextButton.check();
 
-		$(document).ready(function() {
+
+
+
+
+			// @Legacy
 			// auto fill
 			var box = $('#sender_from_input').autofill({
 				messages: {
 					header_found: '{{ trans('messages.sending_identity') }}',
 					header_not_found: '{{ trans('messages.sending_identity.not_found.header') }}'
+				},
+				callback: function() {
+					CampaignsSetupNextButton.check();
 				}
 			});
 			box.loadDropbox(function() {
@@ -195,6 +240,9 @@ arrow_forward
 				messages: {
 					header_found: '{{ trans('messages.sending_identity') }}',
 					header_not_found: '{{ trans('messages.sending_identity.reply.not_found.header') }}'
+				},
+				callback: function() {
+					CampaignsSetupNextButton.check();
 				}
 			});
 			box2.loadDropbox(function() {
