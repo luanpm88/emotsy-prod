@@ -20,7 +20,7 @@
 @section('content')
 	<p>{{ trans('messages.email_verification_server.wording') }}</p>
 
-	<form class="listing-form"
+	<div id="EVSsIndexContainer" class="listing-form"
 		sort-url="{{ action('EmailVerificationServerController@sort') }}"
 		data-url="{{ action('EmailVerificationServerController@listing') }}"
 		per-page="{{ Acelle\Model\EmailVerificationServer::$itemsPerPage }}"
@@ -29,27 +29,28 @@
 			<div class="me-auto">
 				@if ($servers->count() >= 0)
 					<div class="filter-box">
-						<div class="dropdown list_actions" style="display: none">
-							<button role="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown">
-								{{ trans('messages.actions') }} <span class="number"></span><span class="caret"></span>
-							</button>
-							<ul class="dropdown-menu">
-								<li><a link-confirm="{{ trans('messages.enable_email_verification_servers_confirm') }}" href="{{ action('EmailVerificationServerController@enable') }}"><span class="material-icons-outlined">
-play_arrow
-</span> {{ trans('messages.enable') }}</a></li>
-								<li><a link-confirm="{{ trans('messages.disable_email_verification_servers_confirm') }}" href="{{ action('EmailVerificationServerController@disable') }}"><span class="material-icons-outlined">
-hide_source
-</span> {{ trans('messages.disable') }}</a></li>
-								<li><a link-confirm="{{ trans('messages.delete_email_verification_servers_confirm') }}" href="{{ action('EmailVerificationServerController@delete') }}"><span class="material-icons-outlined">
-delete_outline
-</span> {{ trans('messages.delete') }}</a></li>
-							</ul>
-						</div>
 						<div class="checkbox inline check_all_list">
 							<label>
 								<input type="checkbox" name="page_checked" class="styled check_all">
 							</label>
 						</div>
+						<div class="dropdown list_actions" style="display: none">
+							<button role="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown">
+								{{ trans('messages.actions') }} <span class="number"></span><span class="caret"></span>
+							</button>
+							<ul class="dropdown-menu">
+								<li><a class="dropdown-item" link-confirm="{{ trans('messages.enable_email_verification_servers_confirm') }}" href="{{ action('EmailVerificationServerController@enable') }}"><span class="material-icons-outlined">
+play_arrow
+</span> {{ trans('messages.enable') }}</a></li>
+								<li><a class="dropdown-item" link-confirm="{{ trans('messages.disable_email_verification_servers_confirm') }}" href="{{ action('EmailVerificationServerController@disable') }}"><span class="material-icons-outlined">
+hide_source
+</span> {{ trans('messages.disable') }}</a></li>
+								<li><a class="dropdown-item" link-confirm="{{ trans('messages.delete_email_verification_servers_confirm') }}" href="{{ action('EmailVerificationServerController@delete') }}"><span class="material-icons-outlined">
+delete_outline
+</span> {{ trans('messages.delete') }}</a></li>
+							</ul>
+						</div>
+						
 						<span class="filter-group">
 							<span class="title text-semibold text-muted">{{ trans('messages.sort_by') }}</span>
 							<select class="select" name="sort_order">
@@ -74,7 +75,7 @@ sort
 							</select>
 						</span>
 						<span class="text-nowrap">
-							<input type="text" name="keyword" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
+							<input type="text" name="keyword" class="form-control search" value="{{ request()->keyword }}" placeholder="{{ trans('messages.type_to_search') }}" />
 							<span class="material-icons-round">
 search
 </span>
@@ -93,7 +94,27 @@ add
 			@endif
 		</div>
 
-		<div class="pml-table-container">
+		<div id="EVSsIndexContent" class="pml-table-container">
 		</div>
-	</form>
+	</div>
+
+	<script>
+        var EVSsIndex = {
+            list: null,
+            getList: function() {
+                if (this.list == null) {
+                    this.list = makeList({
+                        url: '{{ action('EmailVerificationServerController@listing') }}',
+                        container: $('#EVSsIndexContainer'),
+                        content: $('#EVSsIndexContent')
+                    });
+                }
+                return this.list;
+            }
+        };
+
+        $(document).ready(function() {
+            EVSsIndex.getList().load();
+        });
+    </script>
 @endsection

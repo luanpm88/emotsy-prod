@@ -9,7 +9,7 @@ use Acelle\Library\Traits\HasUid;
 class Source extends Model
 {
     use HasUid;
-    
+
     public static $itemsPerPage = 25;
     public $service;
 
@@ -113,7 +113,7 @@ class Source extends Model
     {
         return $this->products()->count();
     }
-    
+
     /**
      * Get display name.
      *
@@ -156,7 +156,7 @@ class Source extends Model
         $contact->address_1 = 'empty';
         $contact->country_id = $this->customer->country_id;
         $contact->save();
-        
+
         // list
         $list = new \Acelle\Model\MailList();
         $list->customer_id = $this->customer_id;

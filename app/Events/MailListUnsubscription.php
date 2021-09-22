@@ -14,7 +14,9 @@ use Acelle\Model\Subscriber;
 
 class MailListUnsubscription
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+    use Dispatchable;
+    use InteractsWithSockets;
+    use SerializesModels;
 
     public $subscriber;
 

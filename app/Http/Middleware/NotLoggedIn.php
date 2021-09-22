@@ -24,7 +24,7 @@ class NotLoggedIn
         } else {
             $language_code = 'en';
         }
-        
+
         // Language
         try {
             if ($language_code) {

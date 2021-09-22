@@ -43,8 +43,8 @@ class Template extends Model
 {
     use HasUid;
 
-    const BUILDER_ENABLED = true;
-    const BUILDER_DISABLED = false;
+    public const BUILDER_ENABLED = true;
+    public const BUILDER_DISABLED = false;
 
     /**
      * The attributes that are mass assignable.
@@ -147,7 +147,7 @@ class Template extends Model
      *
      * @return collect
      */
-    public function scopeShared($query)
+    public static function scopeShared($query)
     {
         $query = $query->whereNull('customer_id');
     }
@@ -268,7 +268,7 @@ class Template extends Model
         // First: convert $this' asset base URL to relative URL (for assets)
         // Then: transform relative URLS for $copy
         $copy->content = $this->getContentWithUntransformedAssetsUrls();
-        $copy->transformAssetsUrls();
+        $copy->transformAssetsUrls(); // important
 
         // copy theme
         $copy->theme = $this->theme;
@@ -417,7 +417,7 @@ class Template extends Model
         return $template;
     }
 
-    public function toZip() : string
+    public function toZip(): string
     {
         // Get real path for our folder
         $rootPath = $this->getStoragePath();
@@ -673,11 +673,11 @@ class Template extends Model
     public function getContentWithTransformedAssetsUrls($html, $withHost = false, Closure $urlTransform = null, TrackingDomain $domain = null)
     {
         if (!is_null($domain) && $withHost == false) {
-            throw new Exception('Passing third parameter while the first parameter is false');
+            throw new Exception('Passing $domain parameter while the $withHost parameter is false');
         }
 
         if (!is_null($urlTransform) && $withHost == false) {
-            throw new Exception('Passing second parameter while the first parameter is false');
+            throw new Exception('Passing $urlTransform parameter while the $withHost parameter is false');
         }
 
         if (is_null($this->uid)) {
@@ -751,43 +751,6 @@ class Template extends Model
             }
         });
 
-        // By the way, fix <html>
-        //$content = tinyDocTypeTransform($content);
-        return $content;
-    }
-
-    public function getContentWithTrackingHost(TrackingDomain $domain)
-    {
-        if (is_null($this->uid)) {
-            throw new Exception('Template does not have a UID, cannot transform content');
-        }
-
-        // Replace #1
-        $content = StringHelper::transformUrls($this->content, function ($url) use ($host) {
-            if (parse_url($url, PHP_URL_HOST) === false) {
-                // if url is invalid
-                return $url;
-            }
-
-            if (!is_null(parse_url($url, PHP_URL_HOST))) {
-                // url is with a host like "http://" or "//"
-                return $domain->buildTrackingUrl($url);
-            }
-
-            if (strpos($url, '/') === 0) {
-                // absolute url with leading slash (/) like "/hello/world"
-                return $domain->buildTrackingUrl($url);
-            } elseif (strpos($url, 'data:') === 0) {
-                // base64 image. Like: "data:image/png;base64,iVBOR"
-                return $url;
-            } else {
-                return $url;
-                //throw new Exception("Relative URL found: {$url}. Use getContentWithTransformedAssetsUrls() method first to convert relative URLs into absolute ones");
-            }
-        });
-
-        // By the way, fix <html>
-        $content = tinyDocTypeTransform($content);
         return $content;
     }
 
@@ -935,7 +898,7 @@ class Template extends Model
         // Move uploaded file
         $file->move($this->getStoragePath(), $name);
         $assetUrl = \Acelle\Helpers\generatePublicPath($this->getStoragePath($name));
-        
+
         return $assetUrl;
     }
 
@@ -951,7 +914,7 @@ class Template extends Model
         $result = [];
 
         if (true) {
-            
+
             // Unsubscribe link
             $result[] = [
                 'type' => 'label',
@@ -959,7 +922,7 @@ class Template extends Model
                 'tag' => '{UNSUBSCRIBE_LINK}',
                 'required' => true,
             ];
-            
+
             // web view link
             $result[] = [
                 'type' => 'label',
@@ -1017,7 +980,7 @@ class Template extends Model
 
         // delete current template folder
         $this->clearStorage();
-        
+
         // Copy uploaded folder
         if (file_exists($this->getStoragePath())) {
             if (!file_exists($this->getStoragePath())) {
@@ -1219,11 +1182,19 @@ class Template extends Model
                 'dir' => database_path('templates/featured/005-blue/5d7b526bbfd4c'),
                 'category' => $categoryFeatured,
                 'builder' => true,            
+                'name' => 'News Digest',
+                'dir' => database_path('templates/featured/000-04-rss-feed/6037a2356820zs'),
+                'category' => $categoryFeatured,
+                'builder' => true,
             ],
         ];
 
         // Delete existing template and create again with new updates
         foreach ($templates as $meta) {
+            if (!File::exists($meta['dir'])) {
+                continue;
+            }
+
             // UID is the folder name, "5d7b527be2bd2" for example
             $uid = basename($meta['dir']);
 
@@ -1292,7 +1263,7 @@ class Template extends Model
 
     public function updateContent($content)
     {
-        $this->content = tinyDocTypeTransform($content);
+        $this->content = $content;
         $this->save();
     }
 
@@ -1375,5 +1346,14 @@ class Template extends Model
             // Set category
             $template->categories()->attach($meta['category']->id);
         }
+    }
+    
+    public function urlTagsDropdown()
+    {
+        return [
+            ['value' => '{UNSUBSCRIBE_URL}', 'text' => trans('messages.editor.unsubscribe_text')],
+            ['value' => '{UPDATE_PROFILE_URL}', 'text' => trans('messages.editor.update_profile_text')],
+            ['value' => '{WEB_VIEW_URL}', 'text' => trans('messages.editor.click_view_web_version')],
+        ];
     }
 }

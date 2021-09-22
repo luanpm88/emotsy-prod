@@ -8,7 +8,7 @@ use Acelle\Library\Traits\HasUid;
 class Timeline extends Model
 {
     use HasUid;
-    
+
     protected $fillable = ['automation2_id', 'subscriber_id', 'auto_trigger_id', 'activity', 'activity_type'];
 
     /**

@@ -14,8 +14,10 @@ use Acelle\Model\Subscriber;
 
 class MailListSubscription
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
-    
+    use Dispatchable;
+    use InteractsWithSockets;
+    use SerializesModels;
+
     public $subscriber;
 
     /**

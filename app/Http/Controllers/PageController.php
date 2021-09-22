@@ -197,7 +197,7 @@ class PageController extends Controller
         $layout = \Acelle\Model\Layout::where('alias', 'sign_up_thankyou_page')->first();
         $page = \Acelle\Model\Page::findPage($list, $layout);
         $subscriber = \Acelle\Model\Subscriber::findByUid($request->subscriber_uid);
-        
+
         // Language
         if (is_object($list->customer) && is_object($list->customer->language)) {
             \App::setLocale($list->customer->language->code);

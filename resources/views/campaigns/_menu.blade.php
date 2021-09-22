@@ -88,7 +88,7 @@ people_outline
 					</li>
 				</ul>
 			</li>
-			<li rel0="CampaignController/templateReview">
+			<li class="nav-item" rel0="CampaignController/templateReview">
 				<a href="{{ action('CampaignController@templateReview', $campaign->uid) }}" class="nav-link">
 					<span class="material-icons-outlined">
 auto_awesome_mosaic

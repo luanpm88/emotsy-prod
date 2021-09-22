@@ -39,11 +39,11 @@ class ProductController extends Controller
         if ($request->source_uid) {
             $products = $products->filter('source_id', Source::findByUid($request->source_uid)->id);
         }
-        
+
         // order + pagination
         $products = $products->orderBy($request->sort_order, $request->sort_direction)
             ->paginate($request->per_page);
-        
+
         // view
         $view = $request->view ? $request->view : 'grid';
 

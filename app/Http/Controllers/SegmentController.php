@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 
 class SegmentController extends Controller
 {
-
     /**
      * Display a listing of the resource.
      *

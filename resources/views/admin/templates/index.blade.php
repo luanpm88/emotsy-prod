@@ -75,7 +75,7 @@ sort
                         </select>                                        
                     </span>
                     <span class="text-nowrap">
-                        <input type="text" name="keyword" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
+                        <input type="text" name="keyword" class="form-control search" value="{{ request()->keyword }}" placeholder="{{ trans('messages.type_to_search') }}" />
                         <span class="material-icons-round">
 search
 </span>
@@ -128,12 +128,16 @@ search
     
     <script>
         var TemplatesIndex = {
+            list: null,
             getList: function() {
-                return makeList({
-                    url: '{{ action('Admin\TemplateController@listing') }}',
-                    container: $('#TemplatesIndexContainer'),
-                    content: $('#TemplatesIndexContent')
-                });
+                if (this.list == null) {
+                    this.list = makeList({
+                        url: '{{ action('Admin\TemplateController@listing') }}',
+                        container: $('#TemplatesIndexContainer'),
+                        content: $('#TemplatesIndexContent')
+                    });
+                }
+                return this.list;
             }
         };
 

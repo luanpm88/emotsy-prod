@@ -16,7 +16,12 @@ use Acelle\Library\Traits\Trackable;
 
 class LoadCampaign implements ShouldQueue
 {
-    use Trackable, Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Trackable;
+    use Batchable;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     public $timeout = 7200;
     public $failOnTimeout = true;
@@ -46,8 +51,14 @@ class LoadCampaign implements ShouldQueue
             return;
         }
 
+        // Last chance for campaign to setup
+        // @todo Find a better place for the following method, afterSave for example
+        $this->campaign->updateLinks();
+
+        // Update status
         $this->campaign->setSending();
 
+        // Iterate through contacts and launch sending process
         $this->campaign->prepare(function ($campaign, $subscriber, $server) {
             $this->batch()->add(new SendMessage($campaign, $subscriber, $server));
         });

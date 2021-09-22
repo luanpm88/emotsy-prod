@@ -7,7 +7,6 @@ use Acelle\Http\Controllers\Controller;
 
 class EmailVerificationServerController extends Controller
 {
-
     /**
      * Display a listing of the resource.
      *
@@ -187,7 +186,7 @@ class EmailVerificationServerController extends Controller
         // save posted data
         if ($request->isMethod('patch')) {
             $server->fill($request->all());
-            
+
             $this->validate($request, $server->rules());
 
             // Save current user info

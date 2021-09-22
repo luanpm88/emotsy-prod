@@ -28,7 +28,7 @@ use File;
 
 class Blacklist extends Model
 {
-    const IMPORT_TEMP_DIR = 'app/tmp';
+    public const IMPORT_TEMP_DIR = 'app/tmp';
 
     /**
      * The attributes that are mass assignable.

@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Acelle\Model\Language;
 use Acelle\Model\Template;
 use Acelle\Model\Setting;
+use Acelle\Model\Job;
+use Acelle\Model\FailedJob;
 use Artisan;
 use Illuminate\Support\Facades\Session;
 
@@ -23,6 +25,8 @@ class Upgrade extends Controller
         Setting::writeDefaultSettings();
         Language::dump();
         Template::resetDefaultTemplates();
+        Job::query()->delete();
+        FailedJob::query()->delete();
 
         // Upgrade post-processing
         if ($request->session()->has('upgraded')) {

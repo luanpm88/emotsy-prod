@@ -67,7 +67,7 @@
 								]) }}"
 								per-page="25"					
 							>				
-								<div class="d-flex top-list-controls top-sticky-content">
+								<div class="d-flex top-list-controls top-sticky-contentx">
 									<div class="col-md-9">
 										<div class="filter-box">
 											<span class="filter-group">
@@ -84,7 +84,7 @@ sort
 												</button>
 											</span>
 											<span class="text-nowrap">
-												<input type="text" name="keyword" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
+												<input type="text" name="keyword" class="form-control search" value="{{ request()->keyword }}" placeholder="{{ trans('messages.type_to_search') }}" />
 												<span class="material-icons-round">
 search
 </span>

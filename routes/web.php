@@ -229,6 +229,14 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
 });
 
 Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscription']], function () {
+    // Search
+    Route::get('/search/subscribers', 'SearchController@subscribers');
+    Route::get('/search/templates', 'SearchController@templates');
+    Route::get('/search/automations', 'SearchController@automations');
+    Route::get('/search/lists', 'SearchController@lists');
+    Route::get('/search/campaigns', 'SearchController@campaigns');
+    Route::get('/search/general', 'SearchController@general');
+
     Route::get('/', 'HomeController@index');
     Route::get('frontend/docs/api/v1', 'Controller@docsApiV1');    
     
@@ -617,6 +625,13 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
 Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 'backend']], function () {
     Route::get('admin', 'HomeController@index');
     Route::get('admin/docs/api/v1', 'ApiController@doc');
+
+    // Search
+    Route::get('admin/search/sending-servers', 'SearchController@sending_servers');
+    Route::get('admin/search/plans', 'SearchController@plans');
+    Route::get('admin/search/templates', 'SearchController@templates');
+    Route::get('admin/search/customers', 'SearchController@customers');
+    Route::get('admin/search/general', 'SearchController@general');
 
     // Notification
     Route::get('admin/notifications/popup', 'NotificationController@popup');

@@ -32,11 +32,11 @@ use App;
 class Sender extends Model
 {
     use HasUid;
-    
+
     // Statuses
-    const STATUS_NEW = 'new'; // deprecated
-    const STATUS_PENDING = 'pending';
-    const STATUS_VERIFIED = 'verified';
+    public const STATUS_NEW = 'new'; // deprecated
+    public const STATUS_PENDING = 'pending';
+    public const STATUS_VERIFIED = 'verified';
 
     /**
      * Items per page.
@@ -306,7 +306,7 @@ class Sender extends Model
         if (is_null($sender)) {
             throw new \Exception("Identity not found", 1);
         }
-        
+
         return $sender->setVerified();
     }
 }

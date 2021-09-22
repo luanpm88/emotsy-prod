@@ -38,7 +38,7 @@ class HtmlHandlersTest extends TestCase
 
         $out = $pipeline->build()->process($html);
 
-        $this->assertTrue(strlen($out) > strlen($html));
+        $this->assertTrue(strlen($out) > 5*strlen($html));
     }
 
     public function test_replace_bare_line_feed()
@@ -326,11 +326,11 @@ class HtmlHandlersTest extends TestCase
         $html = $pipeline->build()->process("<title class='blue'>\nThisis the template title</title><a class=' big blue' href='https://mailchimp.com'></a><div>Campaign: '{CAMPAIGN_NAME}' Subscriber: '{SUBSCRIBER_UID}'</div><a name='unsubscribe' href='{UNSUBSCRIBE_URL}'>Unsubscribe</a>|{UPDATE_PROFILE_URL}|{WEB_VIEW_URL}");
 
         // Other assertinos
+        $this->assertTrue(strpos($html, "'000000'") !== false);
         $this->assertTrue(strpos($html, '<!DOCTYPE html>') === 0);
         $this->assertTrue(strpos($html, '<title>') === false);
         $this->assertTrue(strpos($html, "\n") === false);
         $this->assertTrue(strpos($html, '<div>Hello world éèéêôâ</div>') !== false);
-        $this->assertTrue(strpos($html, "'000000'") !== false);
 
         // Special tags
         $this->assertTrue(strpos($html, 'c/000000/unsubscribe/TVNHSUQ') !== false);

@@ -25,7 +25,6 @@ use Exception;
 
 class DeliveryController extends Controller
 {
-
     /**
      * Campaign notification.
      *
@@ -218,7 +217,7 @@ class DeliveryController extends Controller
                 $bounceLog->message_id = $trackingLog->message_id;
                 $bounceLog->save();
                 MailLog::info('Bounce recorded for message '.$bounceLog->runtime_message_id);
-    
+
                 if ($bounce['bounceType'] === 'Permanent') {
                     MailLog::info('Adding email to blacklist');
                     $bounceLog->findSubscriberByRuntimeMessageId()->sendToBlacklist($bounceLog->raw);
@@ -246,7 +245,7 @@ class DeliveryController extends Controller
             } catch (\Exception $ex) {
                 $feedbackLog->feedback_type = 'unknown';
             }
-            
+
             $feedbackLog->raw_feedback_content = $message['Message'];
             $feedbackLog->save();
             MailLog::info('Feedback recorded for message '.$feedbackLog->runtime_message_id);
@@ -258,7 +257,7 @@ class DeliveryController extends Controller
             }
         }
     }
-    
+
     /**
      * Receive bounce/feedback report via API.
      *
@@ -270,38 +269,38 @@ class DeliveryController extends Controller
     {
         // Retrieve input
         $params = $request->all();
-                
+
         // Validation rules
         $rules = [
             'event' => 'required|in:bounce,feedback',
             'message_id' => 'required',
         ];
-        
+
         // Custom error messages
         $msg = [
             'event.in' => 'Invalid event. Possible values are: bounce, feedback',
             'bounce_type.in' => 'Invalid bounce type. Possible values are: hard, soft',
             'feedback_type.in' => 'Invalid feedback type. Possible values are: spam, abuse',
         ];
-        
+
         // Execute validation
         $validation = Validator::make($params, $rules, $msg);
-        
+
         // Rules for bounce
         $validation->sometimes('bounce_type', 'required|in:hard,soft', function ($input) {
             return $input->event == 'bounce';
         });
-        
+
         // Rules for feedback
         $validation->sometimes('feedback_type', 'required|in:spam,abuse', function ($input) {
             return $input->event == 'feedback';
         });
-        
+
         // Return 400 if validation fails
         if ($validation->fails()) {
             return response()->json(['error' => $validation->errors()->toArray()], 400);
         }
-        
+
         // Proceed with blacklisting
         if ($params['event'] == 'feedback') {
             $feedbackLog = new FeedbackLog();
@@ -312,7 +311,7 @@ class DeliveryController extends Controller
             $feedbackLog->raw_feedback_content = (array_key_exists('response', $params)) ? $params['response'] : '';
             $feedbackLog->save();
             MailLog::info('Feedback recorded (from API) for message '.$feedbackLog->runtime_message_id);
-            
+
             $subscriber = $feedbackLog->findSubscriberByRuntimeMessageId();
             if (!is_null($subscriber)) {
                 MailLog::info('Adding email to abuse list');
@@ -337,7 +336,7 @@ class DeliveryController extends Controller
                 MailLog::warning('Subscriber not found');
             }
         }
-        
+
         return response()->json(['status' => 'ok'], 200);
     }
 }

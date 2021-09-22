@@ -204,7 +204,7 @@ class AutomationElement
                 "content-type" => "application/json"
             ],
         ]);
-        
+
         return json_decode($response->getBody(), true);
     }
 }

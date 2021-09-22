@@ -9,7 +9,6 @@ use Acelle\Cashier\Cashier;
 
 class CustomerController extends Controller
 {
-
     /**
      * Display a listing of the resource.
      *
@@ -27,7 +26,8 @@ class CustomerController extends Controller
             $request->merge(array("admin_id" => $request->user()->admin->id));
         }
 
-        $customers = \Acelle\Model\Customer::search($request);
+        $customers = \Acelle\Model\Customer::search($request)
+            ->filter($request);
 
         return view('admin.customers.index', [
             'customers' => $customers,
@@ -51,7 +51,10 @@ class CustomerController extends Controller
             $request->merge(array("admin_id" => $request->user()->admin->id));
         }
 
-        $customers = \Acelle\Model\Customer::search($request)->paginate($request->per_page);
+        $customers = \Acelle\Model\Customer::search($request->keyword)
+            ->filter($request)
+            ->orderBy($request->sort_order, $request->sort_direction ? $request->sort_direction : 'asc')
+            ->paginate($request->per_page);
 
         return view('admin.customers._list', [
             'customers' => $customers,

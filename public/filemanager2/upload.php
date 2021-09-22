@@ -125,6 +125,10 @@
     if ($config['lower_case']) {
         $_FILES['files']['name'][0] = fix_strtolower($_FILES['files']['name'][0]);
     }
+
+    // Acelle sanitize
+    $_FILES['files']['name'][0] = preg_replace('/[^a-zA-Z0-9\.\-]+/', '_', trim($_FILES['files']['name'][0]));
+
     if (!checkresultingsize($_FILES['files']['size'][0])) {
         if (!isset($upload_handler->response['files'][0])) {
             // Avoid " Warning: Creating default object from empty value ... "

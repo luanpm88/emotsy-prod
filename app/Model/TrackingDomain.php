@@ -37,9 +37,9 @@ use function Acelle\Helpers\getAppHost;
 class TrackingDomain extends Model
 {
     use HasUid;
-    
-    const STATUS_VERIFIED = 'verified';
-    const STATUS_UNVERIFIED = 'unverified';
+
+    public const STATUS_VERIFIED = 'verified';
+    public const STATUS_UNVERIFIED = 'unverified';
 
     /**
      * Associations.
@@ -243,7 +243,7 @@ class TrackingDomain extends Model
         try {
             $client = new Client(['verify' => false]);
             $response = $client->request('GET', $this->getVerificationUrl());
-            
+
             if ((string)$response->getBody() == get_app_identity()) {
                 $this->setVerified();
                 $this->save();

@@ -9,21 +9,21 @@ use Acelle\Model\CustomerGroup;
 class CustomerGroupPolicy
 {
     use HandlesAuthorization;
-    
+
     public function read(User $user, CustomerGroup $item)
     {
         $can = $user->admin->getPermission('customer_group_read') != 'no';
 
         return $can;
     }
-    
+
     public function read_all(User $user, CustomerGroup $item)
     {
         $can = $user->admin->getPermission('customer_group_read') == 'all';
 
         return $can;
     }
-    
+
     public function create(User $user, CustomerGroup $item)
     {
         $can = $user->admin->getPermission('customer_group_create') == 'yes';

@@ -11,7 +11,7 @@
                 name="{{ $name }}" value="{{ $options[1] }}"
                 class="styled me-2 {{ $classes }}  {{ isset($class) ? $class : "" }}"
                 type="checkbox" class="styled">
-            <span style="padding-top: 3px">{!! $label !!}</span>
+            <span style="padding-top: 3px" class="ms-2">{!! $label !!}</span>
         </span>
     </label>
 </div>

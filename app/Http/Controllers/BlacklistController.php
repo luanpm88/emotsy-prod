@@ -11,7 +11,6 @@ use Acelle\Jobs\ImportBlacklistJob;
 
 class BlacklistController extends Controller
 {
-
     /**
      * Search items.
      */
@@ -206,7 +205,7 @@ class BlacklistController extends Controller
         if (is_null($job)) {
             throw new Exception(sprintf('Blacklist import job #%s does not exist', $request->job_uid));
         }
-        
+
         $progress = $job->getJsonData();
         $progress['status'] = $job->status;
         $progress['error'] = $job->error;

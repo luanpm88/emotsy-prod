@@ -40,6 +40,13 @@
                                 'date' => \Acelle\Library\Tool::formatDateTime($subscription->getDueDate()),
                             ])
                         ])
+
+                        @if ($subscription->getItsOnlyUnpaidRenewInvoice()->lastTransactionIsFailed())
+                            @include('elements._notification', [
+                                'level' => 'danger',
+                                'message' => $subscription->getItsOnlyUnpaidRenewInvoice()->lastTransaction()->error
+                            ])
+                        @endif
                     @endif
                 @endif
 

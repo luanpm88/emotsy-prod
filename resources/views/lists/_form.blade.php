@@ -136,7 +136,7 @@
             </div>
         </div>
         @if(!\Auth::user()->customer->activeSendingServers()->count())
-            <div class="alert alert-danger">
+            <div class="alert alert-danger mt-3">
                 {!! trans('messages.list.there_no_subaccount_sending_server') !!}
             </div>
         @else

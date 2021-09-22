@@ -45,19 +45,20 @@ use Acelle\Library\QuotaManager;
 
 class Customer extends Model
 {
-    use TrackJobs, HasUid;
+    use TrackJobs;
+    use HasUid;
 
     protected $quotaTracker;
 
     // Plan status
-    const STATUS_INACTIVE = 'inactive';
-    const STATUS_ACTIVE = 'active';
+    public const STATUS_INACTIVE = 'inactive';
+    public const STATUS_ACTIVE = 'active';
 
-    const BASE_DIR = 'app/customers'; // storage/customers/000000
-    const ATTACHMENTS_DIR = 'home/attachments';  // storage/customers/000000/home/files
-    const TEMPLATES_DIR = 'home/templates';  // storage/customers/000000/home/files
-    const PRODUCT_DIR = 'home/products';
-    const LOGS_DIR = 'home/logs/';
+    public const BASE_DIR = 'app/customers'; // storage/customers/000000
+    public const ATTACHMENTS_DIR = 'home/attachments';  // storage/customers/000000/home/files
+    public const TEMPLATES_DIR = 'home/templates';  // storage/customers/000000/home/files
+    public const PRODUCT_DIR = 'home/products';
+    public const LOGS_DIR = 'home/logs/';
 
     /**
      * The attributes that are mass assignable.
@@ -296,22 +297,8 @@ class Customer extends Model
      *
      * @return collect
      */
-    public static function filter($request)
+    public static function scopeFilter($query, $request)
     {
-        $query = self::select('customers.*')
-            ->leftJoin('users', 'users.customer_id', '=', 'customers.id');
-
-        // Keyword
-        if (!empty(trim($request->keyword))) {
-            foreach (explode(' ', trim($request->keyword)) as $keyword) {
-                $query = $query->where(function ($q) use ($keyword) {
-                    $q->orwhere('users.first_name', 'like', '%'.$keyword.'%')
-                        ->orWhere('users.last_name', 'like', '%'.$keyword.'%')
-                        ->orWhere('users.email', 'like', '%'.$keyword.'%');
-                });
-            }
-        }
-
         // filters
         $filters = $request->all();
         if (!empty($filters)) {
@@ -321,8 +308,6 @@ class Customer extends Model
         if (!empty($request->admin_id)) {
             $query = $query->where('customers.admin_id', '=', $request->admin_id);
         }
-
-        return $query;
     }
 
     /**
@@ -330,15 +315,21 @@ class Customer extends Model
      *
      * @return collect
      */
-    public static function search($request)
+    public static function scopeSearch($query, $keyword)
     {
-        $query = self::filter($request);
+        $query = $query->select('customers.*')
+            ->leftJoin('users', 'users.customer_id', '=', 'customers.id');
 
-        if (!empty($request->sort_order)) {
-            $query = $query->orderBy($request->sort_order, $request->sort_direction);
+        // Keyword
+        if (!empty(trim($keyword))) {
+            foreach (explode(' ', trim($keyword)) as $keyword) {
+                $query = $query->where(function ($q) use ($keyword) {
+                    $q->orwhere('users.first_name', 'like', '%'.$keyword.'%')
+                        ->orWhere('users.last_name', 'like', '%'.$keyword.'%')
+                        ->orWhere('users.email', 'like', '%'.$keyword.'%');
+                });
+            }
         }
-
-        return $query;
     }
 
     /**
@@ -1407,9 +1398,11 @@ class Customer extends Model
         $list = [];
 
         // own emails
-        $senders = $this->senders()->verified()->get();
-        foreach ($senders as $sender) {
-            $list[] = $sender->name.' <'.$sender->email.'>';
+        if ($this->allowSenderVerification()) {
+            $senders = $this->senders()->verified()->get();
+            foreach ($senders as $sender) {
+                $list[] = $sender->name.' <'.$sender->email.'>';
+            }
         }
 
         // own domain
@@ -1488,7 +1481,7 @@ class Customer extends Model
         return $droplist;
     }
 
-    
+
     public function getCurrentSubscription()
     {
         return $this->subscription;
@@ -1729,7 +1722,7 @@ class Customer extends Model
         // if (!isset($paymentMethod)) {
         //     $paymentMethod = [];
         // }
-        
+
         // $data = (object) array_merge((array) $paymentMethod, $data);
         $this['payment_method'] = json_encode($data);
 
@@ -1748,13 +1741,13 @@ class Customer extends Model
         if (!isset($paymentMethod)) {
             $paymentMethod = [];
         }
-        
+
         $data = (object) array_merge((array) $paymentMethod, $data);
         $this['payment_method'] = json_encode($data);
 
         $this->save();
     }
-    
+
     /**
      * Remove payment method.
      *
@@ -1765,7 +1758,7 @@ class Customer extends Model
         $this->payment_method = null;
         $this->save();
     }
-    
+
     /**
      * Get default billing address.
      *
@@ -1827,7 +1820,7 @@ class Customer extends Model
                 ]
             ]
         ]);
-        
+
         $auto->save();
 
         return $auto;
@@ -1954,7 +1947,13 @@ class Customer extends Model
 
     public function allowSenderVerification()
     {
-        $plan = $this->activeSubscription()->plan;
+        $subscription = $this->activeSubscription();
+
+        if (is_null($subscription)) {
+            return false;
+        }
+
+        $plan = $subscription->plan;
         if ($plan->useSystemSendingServer()) {
             $server = $plan->primarySendingServer();
             if ($server && $server->allowVerifyingOwnEmailsRemotely()) {

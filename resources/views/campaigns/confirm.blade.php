@@ -174,12 +174,12 @@ forward_to_inbox
                         <div class="text-end">
                             <span
                                 onclick="popupwindow('{{ action('CampaignController@preview', $campaign->uid) }}', '{{ $campaign->name }}', 800, 800)"
-                                href="#preview" class="btn btn-secondary mr-5" data-uid="{{ $campaign->uid }}">
+                                href="#preview" class="btn btn-secondary me-1" data-uid="{{ $campaign->uid }}">
                                 {{ trans('messages.preview') }} <span class="material-icons-outlined">
 visibility
 </span>
                             </span>
-                            <button class="btn btn-secondary mr-5 send-a-test-email-link" data-uid="{{ $campaign->uid }}">{{ trans('messages.send_a_test_email') }} <i class="icon-envelop3 ml-5"></i> </button>
+                            <button class="btn btn-secondary me-1 send-a-test-email-link" data-uid="{{ $campaign->uid }}">{{ trans('messages.send_a_test_email') }} <i class="icon-envelop3 ml-5"></i> </button>
                             @if (!is_null($score))
                                 <span onclick="$('#spam_score_confirm_model').modal('show')" class="btn btn-primary">{{ trans('messages.send') }} <i class="icon-paperplane ml-5"></i> </span>
                                 <button style="display: none" class="btn btn-primary send-campaign-button">{{ trans('messages.send') }} <i class="icon-paperplane ml-5"></i> </button>

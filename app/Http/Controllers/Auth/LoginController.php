@@ -37,7 +37,7 @@ class LoginController extends Controller
     {
         $this->middleware('guest', ['except' => 'logout']);
     }
-    
+
     /**
      * Validate the user login request.
      *
@@ -68,7 +68,7 @@ class LoginController extends Controller
             auth()->logout();
             return view('notActivated', ['uid' => $uid]);
         }
-        
+
         return redirect()->intended('/');
     }
 }

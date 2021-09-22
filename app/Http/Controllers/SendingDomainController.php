@@ -12,7 +12,6 @@ use Gate;
 
 class SendingDomainController extends Controller
 {
-
     /**
      * Display a listing of the resource.
      *
@@ -62,7 +61,7 @@ class SendingDomainController extends Controller
                 $domains->bySendingServer($server);
             }
         }
-        
+
         $items = $domains->search($request->keyword)->orderBy($request->sort_order, $request->sort_direction)->paginate(25);
 
         return view('sending_domains._list', [

@@ -17,7 +17,11 @@ use Exception;
 
 class SendMessage implements ShouldQueue
 {
-    use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Batchable;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     public $timeout = 120;
     public $maxExceptions = 1; // This is required if retryUntil is used, otherwise, the default value is 255

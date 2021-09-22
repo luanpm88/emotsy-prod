@@ -12,7 +12,7 @@
     <h5 class="m-0 mr-auto">{{ $automation->name }}</h5>
     <div class="d-flex align-items-center campaign-status-section">
         <span class="mr-auto small pe-2">{{ trans('messages.automation.status.' . $automation->status) }}</span>
-        <div>
+        <label>
             @include('helpers.form_control', [
                 'type' => 'checkbox',
                 'name' => 'automation_status',
@@ -23,7 +23,7 @@
                 'help_class' => '',
                 'rules' => []
             ])
-        </div>
+        </label>
     </div>
 </div>
 <div class="d-flex align-items-center mb-4">

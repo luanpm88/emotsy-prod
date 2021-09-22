@@ -20,12 +20,12 @@ class SendingServerController extends Controller
     public function index()
     {
         $user = \Auth::guard('api')->user();
-        
+
         // authorize
         if (!$user->admin->can('readAll', new \Acelle\Model\SendingServer())) {
             return \Response::json(array('message' => 'Unauthorized'), 401);
         }
-        
+
         $servers = \Acelle\Model\SendingServer::getAll()
             ->select('uid', 'name', 'created_at', 'updated_at')
             ->get();

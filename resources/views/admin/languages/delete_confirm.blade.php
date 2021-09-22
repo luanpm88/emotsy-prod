@@ -3,8 +3,8 @@
     @foreach ($languages->get() as $language)
         <li>
             <i class="icon-notification2 text-warning"></i>
-            <h4 class="text-warning">{{ $language->name }}</h4>
-            <p>
+            <h5 class="text-warning mb-1">{{ $language->name }}</h5>
+            <p class="text-muted">
                 @if ($language->customers()->count())
                     <span class="text-bold text-danger">
                         {{ $language->customers()->count() }}

@@ -36,8 +36,8 @@ class SendingDomain extends Model
 {
     use HasUid;
 
-    const STATUS_ACTIVE = 'active';
-    const STATUS_INACTIVE = 'inactive';
+    public const STATUS_ACTIVE = 'active';
+    public const STATUS_INACTIVE = 'inactive';
 
     // The following global app settings are used by domain
     // + spf_host
@@ -321,7 +321,7 @@ class SendingDomain extends Model
             // Verify Host, DKIM and SPF
             $server = $this->sendingServer->mapType();
             list($identity, $dkim, $spf, $finalStatus) = $server->checkDomainVerificationStatus($this);
-            
+
             $tokens['results']['identity'] = $identity;
             $tokens['results']['dkim'] = $dkim;
             $tokens['results']['spf'] = $spf;

@@ -83,6 +83,13 @@ rm -fr apigen.phar
 rm -fr vendor/paypal/paypal-checkout-sdk/composer.phar
 rm -fr vendor/lawepham/geoip/composer.phar
 
+# Remove 3rd assets
+rm -fr database/templates/featured/001-yoga/52264e8382883
+rm -fr database/templates/featured/002-sport/00464e8382883
+rm -fr database/templates/featured/003-give-away/01464e8382883
+rm -fr database/templates/featured/004-yellow/5d7b527be2bd2
+rm -fr database/templates/featured/005-blue/5d7b526bbfd4c
+
 # Reduce file size
 rm -fr vendor/paypal/rest-api-sdk-php/sample
 rm -fr vendor/paypal/rest-api-sdk-php/tests

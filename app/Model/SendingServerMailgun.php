@@ -28,7 +28,7 @@ use Mailgun\Mailgun;
 
 class SendingServerMailgun extends SendingServer
 {
-    const WEBHOOK = 'mailgun';
+    public const WEBHOOK = 'mailgun';
 
     protected $table = 'sending_servers';
     public static $client = null;
@@ -171,7 +171,7 @@ class SendingServerMailgun extends SendingServer
     public static function handleNofification()
     {
         MailLog::configure(storage_path().'/logs/handler-mailgun.log');
-        
+
         $inputJSON = file_get_contents('php://input');
         $input = json_decode($inputJSON, true);
 

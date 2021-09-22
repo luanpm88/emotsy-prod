@@ -10,6 +10,9 @@
     <link href="{{ URL::asset('builder/builder.css') }}" rel="stylesheet" type="text/css">
     <script type="text/javascript" src="{{ URL::asset('builder/builder.js') }}"></script>
 
+    <link href="{{ URL::asset('core/css/UrlAutoFill.css') }}" rel="stylesheet" type="text/css">
+    <script src="{{ URL::asset('core/js/UrlAutoFill.js') }}"></script>
+
     @if ($template->theme)
         @include('builder.themes.' . $template->theme)
     @endif
@@ -195,6 +198,9 @@
             //
             $(document).on('click', '.filemanager-ok', function(e) {alert('Please click on the thumbnail to select the corresponding image');})
             $(document).on('click', '.filemanager-cancel', function(e) {$('.PopUpCloseButton').click();})
+
+            //
+            var urlFill = new UrlAutoFill({!! json_encode($template->urlTagsDropdown()) !!});
         });
     </script>
   </head>

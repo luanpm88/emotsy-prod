@@ -28,7 +28,7 @@ use Acelle\Library\Traits\HasUid;
 class FeedbackLoopHandler extends DeliveryHandler
 {
     use HasUid;
-    
+
     /**
      * Process feedback message, extract the feedback information (comply to RFC).
      *

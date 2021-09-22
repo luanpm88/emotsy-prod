@@ -556,17 +556,6 @@ function checkEmail($email)
     return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
 }
 
-function tinyDocTypeTransform($content)
-{
-    if (stripos(strtolower($content), '<!doctype') === false) {
-        $doctype = '<!DoCtYPe html>';
-    } else {
-        $doctype = '';
-    }
-
-    return $doctype . $content;
-}
-
 function demo_auth()
 {
     $auth = \Acelle\Model\User::getAuthenticateFromFile();
@@ -624,7 +613,7 @@ function strip_tags_only($text, $allowedTags = [])
             $allowedTags
         ];
     }
-    
+
     array_map(
         function ($allowedTag) use (&$text) {
             $regEx = '#<' . $allowedTag . '.*?>(.*?)</' . $allowedTag . '>#is';
@@ -632,7 +621,7 @@ function strip_tags_only($text, $allowedTags = [])
         },
         $allowedTags
     );
-    
+
     return $text;
 }
 
@@ -687,7 +676,7 @@ function cursorIterate($query, $orderBy, $size, $callback)
  *
  * @todo not very OOP here, consider moving this to a Helper instead
 */
-function inlineHtml($html, array $cssFiles)
+function makeInlineCss($html, array $cssFiles)
 {
     // disable warning when parsing html content
     libxml_use_internal_errors(true);
@@ -723,7 +712,7 @@ function putPermanentEnv($arr = [])
             $config = $config . "\n" . $key . '=' . $value;
         }
     }
-    
+
     file_put_contents($path, $config);
 }
 
@@ -734,33 +723,33 @@ function resize_crop_image($max_width, $max_height, $source_file, $dst_dir, $qua
     $width = $imgsize[0];
     $height = $imgsize[1];
     $mime = $imgsize['mime'];
- 
+
     switch ($mime) {
         case 'image/gif':
             $image_create = "imagecreatefromgif";
             $image = "imagegif";
             break;
- 
+
         case 'image/png':
             $image_create = "imagecreatefrompng";
             $image = "imagepng";
             $quality = 7;
             break;
- 
+
         case 'image/jpeg':
             $image_create = "imagecreatefromjpeg";
             $image = "imagejpeg";
             $quality = 80;
             break;
- 
+
         default:
             return false;
             break;
     }
-     
+
     $dst_img = imagecreatetruecolor($max_width, $max_height);
     $src_img = $image_create($source_file);
-     
+
     $width_new = $height * $max_width / $max_height;
     $height_new = $width * $max_height / $max_width;
     //if the new width is greater than the actual width of the image, then the height is too large and the rest cut off, or vice versa
@@ -774,13 +763,114 @@ function resize_crop_image($max_width, $max_height, $source_file, $dst_dir, $qua
         $w_point = (($width - $width_new) / 2);
         imagecopyresampled($dst_img, $src_img, 0, 0, $w_point, 0, $max_width, $max_height, $width_new, $height);
     }
-     
+
     $image($dst_img, $dst_dir, $quality);
- 
+
     if ($dst_img) {
         imagedestroy($dst_img);
     }
     if ($src_img) {
         imagedestroy($src_img);
     }
+}
+
+function filterSearchArray($items, $keyword)
+{
+    // search
+    $results = [];
+    foreach ($items as $item) {
+        $row = [
+            'rate' => 0,
+            'item' => $item,
+        ];
+
+        if (isset($keyword)) {
+            $keyword = trim(strtolower($keyword));
+
+            // Keywords
+            if (!empty($keyword)) {
+                $keywords = preg_split('/\s+/', $keyword);
+                $allExist = true;
+
+                foreach ($keywords as $keyword) {
+                    $exist = false;
+
+                    // search by names
+                    foreach ($item['names'] as $name) {
+                        $name = trim(strtolower($name));
+                        if (strpos($name, $keyword) !== false) {
+                            $row['rate'] += 1;
+                            $exist = true;
+                        }
+                    }
+
+                    // search by keywords
+                    if (isset($item['keywords'])) {
+                        foreach ($item['keywords'] as $k) {
+                            $k = trim(strtolower($k));
+                            if (strpos($k, $keyword) !== false) {
+                                $row['rate'] += 1;
+                                $exist = true;
+                            }
+                        }
+                    }
+
+                    if (!$exist) {
+                        $allExist = false;
+                    }
+                }
+
+                if (!$allExist) {
+                    $row['rate'] = 0;
+                }
+            }
+        }
+
+        if ($row['rate'] > 0) {
+            $results[] = $row;
+        }
+    }
+
+    // sort
+    usort($results, function ($a, $b) {
+        if ($a['rate'] != $b['rate']) {
+            return $a['rate'] <=> $b['rate'];
+        } else {
+            return strcmp(implode(' ', $a['item']['names']), implode(' ', $b['item']['names']));
+        }
+    });
+
+    return $results;
+}
+
+function getThemeColor($theme = false)
+{
+    $colors = [
+        'default' => 'rgba(13, 24, 29, 0.85)',
+        'blue' => 'rgba(9, 22, 28, 0.9)',
+        'green' => 'rgba(11, 29, 29, 0.9)',
+        'brown' => 'rgba(27, 21, 10, 0.9)',
+        'pink' => 'rgba(28, 11, 19, 0.9)',
+        'grey' => '#111111',
+        'white' => '#444',
+    ];
+
+    if (!$theme || !isset($colors[$theme])) {
+        return $colors['default'];
+    }
+
+    return $colors[$theme];
+}
+
+function getThemeMode($mode, $auto='light')
+{
+    $themeMode = $mode;
+
+    if ($mode == 'auto') {
+        if ($auto) {
+            $themeMode = $auto;
+        }
+    }
+
+    return $themeMode;
 }

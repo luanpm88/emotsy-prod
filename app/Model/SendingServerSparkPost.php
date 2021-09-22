@@ -36,8 +36,8 @@ use Http\Adapter\Guzzle7\Client as GuzzleAdapter;
 
 class SendingServerSparkPost extends SendingServer
 {
-    const WEBHOOK = 'sparkpost';
-    const HOSTS = [
+    public const WEBHOOK = 'sparkpost';
+    public const HOSTS = [
         ['text' => 'SparkPost Global', 'value' => 'api.sparkpost.com'],
         ['text' => 'SparkPost EU', 'value' => 'api.eu.sparkpost.com'],
     ];

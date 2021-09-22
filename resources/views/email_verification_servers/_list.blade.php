@@ -53,7 +53,7 @@ edit
                             <ul class="dropdown-menu dropdown-menu-end">
                                 @if (Auth::user()->customer->can('enable', $server))
                                     <li>
-                                        <a link-confirm="{{ trans('messages.enable_email_verification_servers_confirm') }}" href="{{ action('EmailVerificationServerController@enable', ["uids" => $server->uid]) }}">
+                                        <a class="dropdown-item list-action-single" link-confirm="{{ trans('messages.enable_email_verification_servers_confirm') }}" href="{{ action('EmailVerificationServerController@enable', ["uids" => $server->uid]) }}">
                                             <span class="material-icons-outlined">
 play_arrow
 </span> {{ trans('messages.enable') }}
@@ -62,7 +62,8 @@ play_arrow
                                 @endif
                                 @if (Auth::user()->customer->can('disable', $server))
                                     <li>
-                                        <a link-confirm="{{ trans('messages.disable_email_verification_servers_confirm') }}" href="{{ action('EmailVerificationServerController@disable', ["uids" => $server->uid]) }}">
+                                        <a class="dropdown-item list-action-single" link-confirm="{{ trans('messages.disable_email_verification_servers_confirm') }}"
+                                            href="{{ action('EmailVerificationServerController@disable', ["uids" => $server->uid]) }}">
                                             <span class="material-icons-outlined">
 hide_source
 </span> {{ trans('messages.disable') }}
@@ -71,7 +72,7 @@ hide_source
                                 @endif
                                 @if (Auth::user()->customer->can('delete', $server))
                                     <li>
-                                        <a link-confirm="{{ trans('messages.delete_email_verification_servers_confirm') }}" href="{{ action('EmailVerificationServerController@delete', ["uids" => $server->uid]) }}">
+                                        <a class="dropdown-item list-action-single" link-confirm="{{ trans('messages.delete_email_verification_servers_confirm') }}" href="{{ action('EmailVerificationServerController@delete', ["uids" => $server->uid]) }}">
                                             <span class="material-icons-outlined">
 delete_outline
 </span> {{ trans('messages.delete') }}

@@ -48,26 +48,26 @@ use Acelle\Library\Traits\HasUid;
 class Automation2 extends Model
 {
     use HasUid;
-    
-    // Automation status
-    const STATUS_ACTIVE = 'active';
-    const STATUS_INACTIVE = 'inactive';
 
-    const TRIGGER_TYPE_WELCOME_NEW_SUBSCRIBER = 'welcome-new-subscriber';
-    const TRIGGER_TYPE_SAY_GOODBYE_TO_SUBSCRIBER = 'say-goodbye-subscriber';
-    const TRIGGER_TYPE_SAY_HAPPY_BIRTHDAY = 'say-happy-birthday';
-    const TRIGGER_SUBSCRIPTION_ANNIVERSARY_DATE = 'subscriber-added-date'; // in progress
-    const TRIGGER_PARTICULAR_DATE = 'specific-date'; // in progress
-    const TRIGGER_API = 'api-3-0';
-    const TRIGGER_WEEKLY_RECURRING = 'weekly-recurring';
-    const TRIGGER_MONTHLY_RECURRING = 'monthly-recurring';
+    // Automation status
+    public const STATUS_ACTIVE = 'active';
+    public const STATUS_INACTIVE = 'inactive';
+
+    public const TRIGGER_TYPE_WELCOME_NEW_SUBSCRIBER = 'welcome-new-subscriber';
+    public const TRIGGER_TYPE_SAY_GOODBYE_TO_SUBSCRIBER = 'say-goodbye-subscriber';
+    public const TRIGGER_TYPE_SAY_HAPPY_BIRTHDAY = 'say-happy-birthday';
+    public const TRIGGER_SUBSCRIPTION_ANNIVERSARY_DATE = 'subscriber-added-date'; // in progress
+    public const TRIGGER_PARTICULAR_DATE = 'specific-date'; // in progress
+    public const TRIGGER_API = 'api-3-0';
+    public const TRIGGER_WEEKLY_RECURRING = 'weekly-recurring';
+    public const TRIGGER_MONTHLY_RECURRING = 'monthly-recurring';
 
     /**
      * Items per page.
      *
      * @var array
      */
-    const ITEMS_PER_PAGE = 25;
+    public const ITEMS_PER_PAGE = 25;
 
     /**
      * The attributes that are mass assignable.
@@ -678,7 +678,7 @@ class Automation2 extends Model
     public function checkForExistingTriggersUpdate()
     {
         $this->logger()->info(sprintf('UPDATE > Start checking for trigger update'));
-        
+
         /* FORCE RECHECK
         foreach ($this->autoTriggers as $trigger) {
             $trigger->check();
@@ -715,7 +715,7 @@ class Automation2 extends Model
     public function checkForSpecificDatetime()
     {
         $this->logger()->info(sprintf('NEW > Check for Specific Date/Time'));
-        
+
         // this is a one-time triggered automation event
         // just abort if it is already triggered
         //if ($this->autoTriggers()->exists()) {
@@ -730,7 +730,7 @@ class Automation2 extends Model
         // Condition same date but after the specified time
         $format = 'Y-m-d';
         $checked = $now->gte($eventDate) && $now->format($format) == $eventDate->format($format);
-        
+
         if (!$checked) {
             $this->logger()->info(sprintf("It is now ({$now->toString('Y-m-d H:M:S')}) NOT the right date/time ({$eventDate->toString('Y-m-d H:M:S')}) for triggering "));
             return;
@@ -757,7 +757,7 @@ class Automation2 extends Model
             $stream = new RotatingFileHandler(getenv('LOGFILE'), 0, Logger::DEBUG);
         } else {
             $logfile = storage_path('logs/' . php_sapi_name() . '/automation-'.$this->uid.'.log');
-            $stream = new RotatingFileHandler($logfile, 0, Logger::DEBUG);
+            $stream = new RotatingFileHandler($logfile, 0, Logger::WARNING);
         }
 
         $stream->setFormatter($formatter);
@@ -888,7 +888,7 @@ class Automation2 extends Model
     }
 
     // for debugging only
-    public function getTriggerAction() : Trigger
+    public function getTriggerAction(): Trigger
     {
         $trigger = null;
         $this->getActions(function ($e) use (&$trigger) {
@@ -927,7 +927,7 @@ class Automation2 extends Model
     }
 
     // IMPORTANT: object returned by this function is not associated with a particular AutoTrigger
-    public function getAction($attributes) : Action
+    public function getAction($attributes): Action
     {
         switch ($attributes['type']) {
             case 'ElementTrigger':

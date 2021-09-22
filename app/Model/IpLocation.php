@@ -104,4 +104,20 @@ class IpLocation extends Model
 
         return empty($name) ? trans('messages.unknown') : $name;
     }
+
+    public function getFlagPath()
+    {
+        $path = "/images/flags/" . $this->country_code . ".png";
+
+        if (!file_exists(public_path($path))) {
+            $path = "/images/flags/unknown.png";
+        }
+
+        return $path;
+    }
+
+    public function getCountryName()
+    {
+        return (empty($this->country_name) ? trans("messages.unknown") : $this->country_name);
+    }
 }

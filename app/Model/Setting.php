@@ -29,11 +29,7 @@ use Acelle\Library\Facades\Billing;
 
 class Setting extends Model
 {
-    const UPLOAD_PATH = 'app/setting/';
-
-    // Payment status
-    const PAYMENT_STATUS_ACTIVE = 'active';
-    const PAYMENT_STATUS_INACTIVE = 'inactive';
+    public const UPLOAD_PATH = 'app/setting/';
 
     /**
      * Get all items.
@@ -722,33 +718,6 @@ class Setting extends Model
                 $setting->value = $value;
                 $setting->save();
             }
-        }
-    }
-
-    /**
-     * Get payment status select options.
-     *
-     * @var array
-     */
-    public static function paymentStatusSelectOptions()
-    {
-        return [self::PAYMENT_STATUS_INACTIVE, self::PAYMENT_STATUS_ACTIVE];
-    }
-
-    /**
-     * Update payment gateway.
-     *
-     * @var void
-     */
-    public static function updatePaymentGateway($name, $params)
-    {
-        $setting = 'payment.'.$name;
-        self::set($setting, 'connected');
-
-        foreach ($params as $key => $value) {
-            $setting = 'payment.'.$name.'.'.$key;
-
-            self::set($setting, $value);
         }
     }
 }

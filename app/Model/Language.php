@@ -33,8 +33,8 @@ class Language extends Model
 {
     use HasUid;
 
-    const STATUS_ACTIVE = 'active';
-    const STATUS_INACTIVE = 'inactive';
+    public const STATUS_ACTIVE = 'active';
+    public const STATUS_INACTIVE = 'inactive';
 
     /**
      * Get users.
@@ -409,7 +409,7 @@ class Language extends Model
 
         return [$language, true];
     }
-    
+
     public function updateFromRequest($request)
     {
         // make validator
@@ -517,12 +517,12 @@ class Language extends Model
                 $validator->errors()->add('content', 'Upload file is not zip file');
                 return;
             }
-            
+
             // move file to temp place
             $tmp_path = storage_path('tmp');
             $file_name = 'language-package';
             $request->file('file')->move($tmp_path, $file_name);
-            
+
             // after moving, request['file'] will no longer be there
             $rules = [];
             $tmp_zip = storage_path("tmp/{$file_name}");

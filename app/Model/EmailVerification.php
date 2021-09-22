@@ -6,11 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class EmailVerification extends Model
 {
-    const RESULT_DELIVERABLE = 'deliverable';
-    const RESULT_UNDELIVERABLE = 'undeliverable';
-    const RESULT_UNKNOWN = 'unknown';
-    const RESULT_RISKY = 'risky';
-    const RESULT_UNVERIFIED = 'unverified';
+    public const RESULT_DELIVERABLE = 'deliverable';
+    public const RESULT_UNDELIVERABLE = 'undeliverable';
+    public const RESULT_UNKNOWN = 'unknown';
+    public const RESULT_RISKY = 'risky';
+    public const RESULT_UNVERIFIED = 'unverified';
 
     /**
      * Check if the email address is deliverable.

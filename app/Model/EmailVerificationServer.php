@@ -14,14 +14,15 @@ use Acelle\Library\QuotaManager;
 
 class EmailVerificationServer extends Model implements HasQuotaInterface
 {
-    use HasUid, HasQuota;
-    
+    use HasUid;
+    use HasQuota;
+
     // set the table name
     protected $table = 'email_verification_servers';
 
-    const STATUS_ACTIVE = 'active';
-    const STATUS_INACTIVE = 'inactive';
-    const WAIT = 30;
+    public const STATUS_ACTIVE = 'active';
+    public const STATUS_INACTIVE = 'inactive';
+    public const WAIT = 30;
 
     protected $fillable = ['type', 'name'];
 
@@ -392,7 +393,7 @@ class EmailVerificationServer extends Model implements HasQuotaInterface
         }
     }
 
-    public function setQuotaSettings($name, $value, $periodUnit, $periodBase)
+    public function setQuotaSettings(string $name, int $value, string $periodUnit, int $periodValue)
     {
         // $name is always 'verify'
         if ($name != 'verify') {
@@ -400,14 +401,14 @@ class EmailVerificationServer extends Model implements HasQuotaInterface
         }
 
         $options = $this->getOptions();
-        $options['limit_base'] = $periodUnit;
-        $options['limit_unit'] = $periodBase;
+        $options['limit_base'] = $periodValue;
+        $options['limit_unit'] = $periodUnit;
         $options['limit_value'] = $value;
         $this->options = json_encode($options);
     }
 
     /***   IMPLEMENTATION OF HasQuotaInterface ***/
-    public function getQuotaSettings($name) : ?array
+    public function getQuotaSettings($name): ?array
     {
         // always 'verify'
         $quota = [];
@@ -416,7 +417,7 @@ class EmailVerificationServer extends Model implements HasQuotaInterface
         if ($options['limit_value'] != QuotaManager::QUOTA_UNLIMITED) {
             $quota[] = [
                 'name' => "Verification credits limit of {$options['limit_value']} per {$options['limit_unit']} {$options['limit_base']}",
-                'period_base' => $options['limit_unit'],
+                'period_unit' => $options['limit_unit'],
                 'period_value' => $options['limit_base'],
                 'limit' => $options['limit_value'],
             ];
@@ -427,7 +428,7 @@ class EmailVerificationServer extends Model implements HasQuotaInterface
         if (false && $credits != QuotaManager::QUOTA_UNLIMITED) {
             $quota[] = [
                 'name' => "Plan's verification limit",
-                'period_base' => '?',
+                'period_unit' => '?',
                 'period_value' => '?',
                 'limit' => $redits
             ];

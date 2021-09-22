@@ -33,7 +33,7 @@ use Acelle\Library\Traits\HasUid;
 class AutoTrigger extends Model
 {
     use HasUid;
-    
+
     protected $fillable = [
         //
     ];
@@ -106,7 +106,7 @@ class AutoTrigger extends Model
     public function check()
     {
         $this->logger()->info(sprintf('Trigger [#%s - %s]: Automation [%s] starts checking', $this->id, $this->subscriber->email, $this->automation2->name));
-        
+
         // STEP #1: Get latest action
         $latest = $this->findLastActionToExecute();
 
@@ -180,7 +180,7 @@ class AutoTrigger extends Model
     {
         // Starting point
         $action = $this->getTrigger();
-        
+
         do {
             if (is_null($action->getLastExecuted())) {
                 break;

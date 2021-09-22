@@ -39,6 +39,7 @@
                 url: url,
                 method: 'POST',
                 data: data,
+                globalError: false,
                 statusCode: {
                     // validate error
                     400: function (res) {

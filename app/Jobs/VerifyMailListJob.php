@@ -9,7 +9,8 @@ use Illuminate\Bus\Batchable;
 
 class VerifyMailListJob extends Base
 {
-    use Batchable, Trackable;
+    use Batchable;
+    use Trackable;
 
     public $timeout = 14400;
 

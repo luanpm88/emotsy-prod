@@ -50,7 +50,7 @@
             <div class="d-flex align-items-center mt-4 template-create-sticky">
 				<h3 class="text-semibold mr-auto mb-0 mt-0">{{ trans('messages.template.select_your_template') }}</h3>
 				<div class="text-left">
-					<button class="btn btn-secondary me-2 start-design"><i class="icon-check"></i> {{ trans('messages.template.create_and_design') }}</button>
+					<button class="btn btn-secondary start-design"><i class="icon-check"></i> {{ trans('messages.template.create_and_design') }}</button>
 				</div>
 			</div>
 
@@ -62,12 +62,12 @@
 
 						<div id="gallery-{{ $category->id }}" class="pb-4">
 							<div class="listing-form"
-								data-url="{{ action('TemplateController@builderTemplates', [
+								data-url="{{ action('Admin\TemplateController@builderTemplates', [
 									'category_uid' => $category->uid,
 								]) }}"
 								per-page="25"					
 							>				
-								<div class="d-flex top-list-controls top-sticky-content">
+								<div class="d-flex top-list-controls top-sticky-contentx">
 									<div class="me-auto">
 										<div class="filter-box">
 											<span class="filter-group">
@@ -84,7 +84,7 @@
 												</button>
 											</span>
 											<span class="text-nowrap">
-												<input type="text" name="keyword" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
+												<input type="text" name="keyword" class="form-control search" value="{{ request()->keyword }}" placeholder="{{ trans('messages.type_to_search') }}" />
 												<span class="material-icons-round">
 	search
 	</span>
@@ -103,7 +103,7 @@
 					<script>
 						$(function() {
 							var list = makeList({
-								url: '{{ action('TemplateController@builderTemplates', [
+								url: '{{ action('Admin\TemplateController@builderTemplates', [
 									'category_uid' => $category->uid,
 								]) }}',
 								container: $('#gallery-{{ $category->id }}'),

@@ -17,7 +17,7 @@ class Subscription
     public function handle($request, Closure $next)
     {
         $subscription = $request->user()->customer->subscription;
-        
+
         // Check if customer dose not have subscription
         if (!is_object($subscription) || !$subscription->isActive() || !$subscription->plan->isActive()) {
             return redirect()->action('SubscriptionController@index');
@@ -31,7 +31,7 @@ class Subscription
                 return response()->view('errors.general', [ 'message' => __('messages.plan.sending_server.no_sending_server_error', ['plan' => $subscription->plan->name]) ]);
             }
         }
-            
+
 
         return $next($request);
     }

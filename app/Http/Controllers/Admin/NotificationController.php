@@ -13,7 +13,6 @@ use Acelle\Model\Notification;
 
 class NotificationController extends Controller
 {
-
     /**
      * Notification index.
      */

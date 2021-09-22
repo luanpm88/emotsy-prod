@@ -1,9 +1,13 @@
-4.0.24 / 2021-06-22
+4.0.24 / 2021-09-19
 ==================
 
- * Added: better compliance with Laravel 8, ready to upgrade
- * Added: upgrade to Laravel 7, the required PHP version is now 7.2.5 or higher
+ * Added: upgrade to Laravel 8
  * Added: upgrade to Carbon 2
+ * Added: more base templates available
+ * Added: improved loading performance statistics dashboard
+ * Added: better verification and sending speed throttling
+ * Added: new layout and color themes options
+ * Added: better compliance with Laravel 8, ready to upgrade
  * Added: refined automation UI
  * Added: updated GeoIP dataset
  * Added: multiple payment options supported
@@ -18,6 +22,9 @@
  * Added: more plan setup options
  * Added: easier form generation options
  * Added: more unsubscription options
+ * Changed: PHP versions older than 7.3 is no longer supported
+ * Changed: default editor (classic) for uploaded templates
+ * Changed: allow admins to modify base templates
 
 4.0.23 / 2021-03-17
 ==================

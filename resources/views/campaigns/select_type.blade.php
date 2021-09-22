@@ -18,15 +18,15 @@ schedule
 
 @section('content')
 <div class="row">
-    <div class="col-md-10">
+    <div class="col-md-8">
         <ul class="modern-listing big-icon no-top-border-list mt-0">
             @foreach (Acelle\Model\Campaign::types() as $key => $type)
 
                 <li>
                     <a href="{{ action("CampaignController@create", ["type" => $key]) }}" class="btn btn-secondary">{{ trans('messages.choose') }}</a>
-                    <div class="d-flex align-items-center">
+                    <div class="d-flex pe-4">
                         <a href="{{ action("CampaignController@create", ["type" => $key]) }}">
-                            <span class="">
+                            <span class="pt-1 d-block">
                                 @if ($key == 'regular')
                                     <img width="40px" class="icon-img d-inline-block me-4" src="{{ url('images/icons/regular.svg') }}" />
                                 @elseif ($key == 'plain-text')
@@ -35,7 +35,7 @@ schedule
                             </span>
                         </a>
                         <div>
-                            <h4><a href="{{ action("CampaignController@create", ["type" => $key]) }}">{{ trans('messages.' . $key) }}</a></h4>
+                            <h4 class="mb-1"><a href="{{ action("CampaignController@create", ["type" => $key]) }}">{{ trans('messages.' . $key) }}</a></h4>
                             <p>
                                 {{ trans('messages.campaign_intro_' . $key) }}
                             </p>

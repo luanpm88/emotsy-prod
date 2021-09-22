@@ -34,15 +34,15 @@ use Acelle\Library\QuotaManager;
 class Plan extends Model
 {
     use HasUid;
-    
-    // Plan status
-    const STATUS_INACTIVE = 'inactive';
-    const STATUS_ACTIVE = 'active';
 
     // Plan status
-    const SENDING_SERVER_OPTION_SYSTEM = 'system';
-    const SENDING_SERVER_OPTION_OWN = 'own';
-    const SENDING_SERVER_OPTION_SUBACCOUNT = 'subaccount';
+    public const STATUS_INACTIVE = 'inactive';
+    public const STATUS_ACTIVE = 'active';
+
+    // Plan status
+    public const SENDING_SERVER_OPTION_SYSTEM = 'system';
+    public const SENDING_SERVER_OPTION_OWN = 'own';
+    public const SENDING_SERVER_OPTION_SUBACCOUNT = 'subaccount';
 
     /**
      * The attributes that are mass assignable.
@@ -247,18 +247,9 @@ class Plan extends Model
      *
      * @return collect
      */
-    public static function filter($request)
+    public static function scopeFilter($query, $request)
     {
-        $query = self::select('plans.*');
-
-        // Keyword
-        if (!empty(trim($request->keyword))) {
-            foreach (explode(' ', trim($request->keyword)) as $keyword) {
-                $query = $query->where(function ($q) use ($keyword) {
-                    $q->orwhere('plans.name', 'like', '%'.$keyword.'%');
-                });
-            }
-        }
+        $query = $query->select('plans.*');
 
         // filters
         $filters = $request->all();
@@ -266,8 +257,6 @@ class Plan extends Model
         if (!empty($request->admin_id)) {
             $query = $query->where('plans.admin_id', '=', $request->admin_id);
         }
-
-        return $query;
     }
 
     /**
@@ -275,15 +264,16 @@ class Plan extends Model
      *
      * @return collect
      */
-    public static function search($request)
+    public static function scopeSearch($query, $keyword)
     {
-        $query = self::filter($request);
-
-        if (!empty($request->sort_order)) {
-            $query = $query->orderBy($request->sort_order, $request->sort_direction);
+        // Keyword
+        if (!empty(trim($keyword))) {
+            foreach (explode(' ', trim($keyword)) as $keyword) {
+                $query = $query->where(function ($q) use ($keyword) {
+                    $q->orwhere('plans.name', 'like', '%'.$keyword.'%');
+                });
+            }
         }
-
-        return $query;
     }
 
     /**
@@ -751,7 +741,7 @@ class Plan extends Model
 
         return json_encode($data);
     }
-    
+
     public function displayFrequencyTime()
     {
         // unlimited
@@ -1325,7 +1315,7 @@ class Plan extends Model
         return $this->price + $this->getTax();
     }
 
-    public function getQuotaSettings($name) : ?array
+    public function getQuotaSettings($name): ?array
     {
         $quota = [];
         $options = $this->getOptions();
@@ -1335,7 +1325,7 @@ class Plan extends Model
         if ($sendingCredits != QuotaManager::QUOTA_UNLIMITED) {
             $quota[] = [
                 'name' => "Plan's sending limit",
-                'period_base' => $this->frequency_unit,
+                'period_unit' => $this->frequency_unit,
                 'period_value' => $this->frequency_amount,
                 'limit' => $sendingCredits
             ];
@@ -1348,7 +1338,7 @@ class Plan extends Model
 
             $quota[] = [
                 'name' => "Sending limit of {$limit} per {$timeValue} {$timeUnit}",
-                'period_base' => $timeUnit,
+                'period_unit' => $timeUnit,
                 'period_value' => $timeValue,
                 'limit' => $limit,
             ];
@@ -1366,7 +1356,7 @@ class Plan extends Model
 
         // make validator
         $validator = \Validator::make($params, $rules);
-        
+
         // redirect if fails
         if ($validator->fails()) {
             return $validator;

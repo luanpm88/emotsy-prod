@@ -1,4 +1,5 @@
 <?php
+
 namespace Acelle\Library\Lazada;
 
 use Acelle\Http\Controllers\Controller;
@@ -73,7 +74,7 @@ class LazadaConnection
     public function makeRequest($url, $params, $method='GET')
     {
         $this->service = new LazopClient("https://api.lazada.vn/rest", $this->appKey, $this->appSecret);
-        
+
         $request = new LazopRequest($url, $method);
 
         foreach ($params as $key => $value) {
@@ -91,7 +92,7 @@ class LazadaConnection
     {
         return $this->makeRequest('/products/get', $options);
     }
-    
+
     public function getBrands()
     {
         return $this->makeRequest('/category/brands/query', [

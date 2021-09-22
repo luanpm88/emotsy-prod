@@ -33,9 +33,9 @@ use Acelle\Library\Facades\Hook;
 
 class SendingServerAmazon extends SendingServer implements DomainVerificationInterface
 {
-    const SNS_TOPIC = 'ACELLEHANDLER';
-    const SNS_TYPE = 'amazon'; // @TODO
-    const SPF_DNS_RECORD = 'v=spf1 include:amazonses.com ~all';
+    public const SNS_TOPIC = 'ACELLEHANDLER';
+    public const SNS_TYPE = 'amazon'; // @TODO
+    public const SPF_DNS_RECORD = 'v=spf1 include:amazonses.com ~all';
 
     public $notificationTypes = array('Bounce', 'Complaint');
     public static $snsClient = null;
@@ -84,7 +84,7 @@ class SendingServerAmazon extends SendingServer implements DomainVerificationInt
         return self::$sesClient;
     }
 
-    public function verifyDomain($domain) : array
+    public function verifyDomain($domain): array
     {
         $identity = $this->verifyDomainIdentity($domain);
         $dkim = $this->verifyDomainDkim($domain);
@@ -277,7 +277,7 @@ class SendingServerAmazon extends SendingServer implements DomainVerificationInt
         $this->save();
     }
 
-    public function checkDomainVerificationStatus($domain) : array
+    public function checkDomainVerificationStatus($domain): array
     {
         // Identity
         $status = $identitiesWithAttributes = $this->sesClient()->getIdentityVerificationAttributes([

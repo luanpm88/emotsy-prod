@@ -73,16 +73,9 @@ delete_outline
                     <div class="row mb-4">
                         <div class="col-md-12">
                             <label class="mb-2">{{ trans('messages.account.menu_layout') }}</label>
-                            <div>
-                                <label class="layout-select me-3">
-                                    <input type="radio" name="menu_layout" value="top" {{ $admin->menu_layout == 'top' || $admin->menu_layout == 'none' ? 'checked' : '' }} class="styled mr-2" />
-                                    <img src="{{ url('images/layout-menu-top.svg') }}" width="150px" />
-                                </label>
-                                <label class="layout-select">
-                                    <input type="radio" name="menu_layout" value="left" {{ $admin->menu_layout == 'left' ? 'checked' : '' }} class="styled mr-2"  />
-                                    <img src="{{ url('images/layout-menu-left.svg') }}" width="150px" />
-                                </label>
-                            </div>
+                            @include('layouts.core._menu_layout_switch', [
+                                'menu_layout' => $admin->menu_layout,
+                            ])
                         </div>
                     </div>
 
@@ -92,20 +85,16 @@ delete_outline
                             @include('layouts.core._theme_mode_control', [
                                 'theme_mode' => $admin->theme_mode,
                             ])
-                        </div>
+                        </div>  
                     </div>
 
                     <div class="row">
                         <div class="col-md-12 color-box">
-                            <label class="mb-2">{{ trans('messages.color_scheme') }}</label>
+                            <label class="mb-3">{{ trans('messages.color_scheme') }}</label>
                             <div class="text-left mb-4 profile-scheme-select mt-2">
-                                <input type="radio" name="color_scheme" title="{{ trans('messages.color_scheme.default') }}" value="default" {{ !Auth::user()->admin->getColorScheme() || Auth::user()->admin->getColorScheme() == 'default' ? 'checked' : '' }} class="xtooltip color-scheme-select scheme-default" />
-                                <input type="radio" name="color_scheme" title="{{ trans('messages.color_scheme.blue') }}" value="blue" {{ Auth::user()->admin->getColorScheme() == 'blue' ? 'checked' : '' }} class="xtooltip color-scheme-select scheme-blue" />
-                                <input type="radio" name="color_scheme" title="{{ trans('messages.color_scheme.green') }}" value="green" {{ Auth::user()->admin->getColorScheme() == 'green' ? 'checked' : '' }} class="xtooltip color-scheme-select scheme-green" />
-                                <input type="radio" name="color_scheme" title="{{ trans('messages.color_scheme.brown') }}" value="brown" {{ Auth::user()->admin->getColorScheme() == 'brown' ? 'checked' : '' }} class="xtooltip color-scheme-select scheme-brown" />
-                                <input type="radio" name="color_scheme" title="{{ trans('messages.color_scheme.pink') }}" value="pink" {{ Auth::user()->admin->getColorScheme() == 'pink' ? 'checked' : '' }} class="xtooltip color-scheme-select scheme-pink" />
-                                <input type="radio" name="color_scheme" title="{{ trans('messages.color_scheme.grey') }}" value="grey" {{ Auth::user()->admin->getColorScheme() == 'grey' ? 'checked' : '' }} class="xtooltip color-scheme-select scheme-grey" />
-                                <input type="radio" name="color_scheme" title="{{ trans('messages.color_scheme.white') }}" value="white" {{ Auth::user()->admin->getColorScheme() == 'white' ? 'checked' : '' }} class="xtooltip color-scheme-select scheme-white" />
+                                @include('layouts.core._theme_color_control', [
+                                    'theme_color' => Auth::user()->admin->getColorScheme(),
+                                ])  
                             </div>
                         </div>
                     </div>
@@ -212,14 +201,6 @@ delete_outline
                     return (className.match (/(^|\s)theme-\S+/g) || []).join(' ');
                 });
                 $('body').addClass('theme-' + value);
-            });
-            $('[name=menu_layout]').on('change', function(e) {
-                var type = $('[name=menu_layout]:checked').val();
-
-                $('body').removeClass('topbar');
-                $('body').removeClass('leftbar');
-
-                $('body').addClass(type + 'bar');
             });
         });
     </script>

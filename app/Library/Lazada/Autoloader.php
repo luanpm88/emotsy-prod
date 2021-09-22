@@ -2,7 +2,6 @@
 
 class Autoloader
 {
-  
   /**
      * Autoloade Class in SDK.
      * PS: only load SDK class
@@ -15,7 +14,7 @@ class Autoloader
         if (false !== strpos($name, '\\')) {
             $name = strstr($class, '\\', true);
         }
-        
+
         $filename = LAZOP_AUTOLOADER_PATH."/lazop/".$name.".php";
         if (is_file($filename)) {
             include $filename;

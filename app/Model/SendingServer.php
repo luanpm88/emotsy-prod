@@ -38,26 +38,27 @@ use Exception;
 
 class SendingServer extends Model implements HasQuotaInterface
 {
-    use HasUid, HasQuota;
+    use HasUid;
+    use HasQuota;
 
-    const DELIVERY_STATUS_SENT = 'sent';
-    const DELIVERY_STATUS_FAILED = 'failed';
-    const STATUS_ACTIVE = 'active';
-    const STATUS_INACTIVE = 'inactive';
+    public const DELIVERY_STATUS_SENT = 'sent';
+    public const DELIVERY_STATUS_FAILED = 'failed';
+    public const STATUS_ACTIVE = 'active';
+    public const STATUS_INACTIVE = 'inactive';
 
     // TYPE
-    const TYPE_AMAZON_API = 'amazon-api';
-    const TYPE_AMAZON_SMTP = 'amazon-smtp';
-    const TYPE_SENDGRID_API = 'sendgrid-api';
-    const TYPE_SENDGRID_SMTP = 'sendgrid-smtp';
-    const TYPE_MAILGUN_API = 'mailgun-api';
-    const TYPE_MAILGUN_SMTP = 'mailgun-smtp';
-    const TYPE_ELASTICEMAIL_API = 'elasticemail-api';
-    const TYPE_ELASTICEMAIL_SMTP = 'elasticemail-smtp';
-    const TYPE_SPARKPOST_API = 'sparkpost-api';
-    const TYPE_SPARKPOST_SMTP = 'sparkpost-smtp';
-    const TYPE_SENDMAIL = 'sendmail';
-    const TYPE_SMTP = 'smtp';
+    public const TYPE_AMAZON_API = 'amazon-api';
+    public const TYPE_AMAZON_SMTP = 'amazon-smtp';
+    public const TYPE_SENDGRID_API = 'sendgrid-api';
+    public const TYPE_SENDGRID_SMTP = 'sendgrid-smtp';
+    public const TYPE_MAILGUN_API = 'mailgun-api';
+    public const TYPE_MAILGUN_SMTP = 'mailgun-smtp';
+    public const TYPE_ELASTICEMAIL_API = 'elasticemail-api';
+    public const TYPE_ELASTICEMAIL_SMTP = 'elasticemail-smtp';
+    public const TYPE_SPARKPOST_API = 'sparkpost-api';
+    public const TYPE_SPARKPOST_SMTP = 'sparkpost-smtp';
+    public const TYPE_SENDMAIL = 'sendmail';
+    public const TYPE_SMTP = 'smtp';
 
     protected $quotaTracker;
     protected $subAccount;
@@ -175,7 +176,7 @@ class SendingServer extends Model implements HasQuotaInterface
         }
 
         $instance->fill($server->getAttributes());
-        
+
         return $instance;
     }
 
@@ -235,21 +236,9 @@ class SendingServer extends Model implements HasQuotaInterface
      *
      * @return collect
      */
-    public static function filter($request)
+    public static function scopeFilter($query, $request)
     {
-        $user = $request->user();
-        $query = self::select('sending_servers.*');
-
-        // Keyword
-        if (!empty(trim($request->keyword))) {
-            foreach (explode(' ', trim($request->keyword)) as $keyword) {
-                $query = $query->where(function ($q) use ($keyword) {
-                    $q->orwhere('sending_servers.name', 'like', '%'.$keyword.'%')
-                        ->orWhere('sending_servers.type', 'like', '%'.$keyword.'%')
-                        ->orWhere('sending_servers.host', 'like', '%'.$keyword.'%');
-                });
-            }
-        }
+        $query = $query->select('sending_servers.*');
 
         // filters
         $filters = $request->all();
@@ -272,8 +261,6 @@ class SendingServer extends Model implements HasQuotaInterface
         if (!empty($request->no_customer)) {
             $query = $query->whereNull('customer_id');
         }
-
-        return $query;
     }
 
     /**
@@ -281,15 +268,18 @@ class SendingServer extends Model implements HasQuotaInterface
      *
      * @return collect
      */
-    public static function search($request)
+    public static function scopeSearch($query, $keyword)
     {
-        $query = self::filter($request);
-
-        if (!empty($request->sort_order)) {
-            $query = $query->orderBy($request->sort_order, $request->sort_direction);
+        // Keyword
+        if (!empty(trim($keyword))) {
+            foreach (explode(' ', trim($keyword)) as $keyword) {
+                $query = $query->where(function ($q) use ($keyword) {
+                    $q->orwhere('sending_servers.name', 'like', '%'.$keyword.'%')
+                        ->orWhere('sending_servers.type', 'like', '%'.$keyword.'%')
+                        ->orWhere('sending_servers.host', 'like', '%'.$keyword.'%');
+                });
+            }
         }
-
-        return $query;
     }
 
     /**
@@ -1116,7 +1106,7 @@ class SendingServer extends Model implements HasQuotaInterface
                 $value = trans('messages.sending_server.default_email_verification.content');
                 ;
             }
-            
+
             // default verification email
             if ($name == 'custom_verification_email_subject') {
                 $value = trans('messages.sending_server.default_email_verification.subject');
@@ -1448,7 +1438,7 @@ class SendingServer extends Model implements HasQuotaInterface
         return array_keys($filtered);
     }
 
-    public function getIdentityStore() : IdentityStore
+    public function getIdentityStore(): IdentityStore
     {
         $options = $this->getOptions();
         $identityStore = new IdentityStore(array_key_exists('identities', $options) ? $options['identities'] : []);
@@ -1491,7 +1481,7 @@ class SendingServer extends Model implements HasQuotaInterface
 
         $identityStore = $this->getIdentityStore();
         $names = array_keys($identityStore->get(['VerificationStatus' => 'Success']));
-        
+
         $emails = array_values(array_filter($names, function ($name) {
             return checkEmail($name);
         }));
@@ -1586,7 +1576,7 @@ class SendingServer extends Model implements HasQuotaInterface
         return false;
     }
 
-    public function setQuotaSettings($value, $periodUnit, $periodBase)
+    public function setQuotaSettings(int $value, string $periodUnit, int $periodBase)
     {
         $this->quota_base = $periodBase;
         $this->quota_unit = $periodUnit;
@@ -1594,15 +1584,15 @@ class SendingServer extends Model implements HasQuotaInterface
     }
 
     /*** IMPLEMENTATION OF HasQuotaInterface ***/
-    public function getQuotaSettings($name) : ?array
+    public function getQuotaSettings($name): ?array
     {
         $quota = [];
 
         if ($this->quota_value != QuotaManager::QUOTA_UNLIMITED) {
             $quota[] = [
                 'name' => "Server's sending limit of {$this->quota_value} per {$this->quota_unit} {$this->quota_base}",
-                'period_base' => $this->quota_base,
-                'period_value' => $this->quota_unit,
+                'period_unit' => $this->quota_unit,
+                'period_value' => $this->quota_base,
                 'limit' => $this->quota_value,
             ];
         }

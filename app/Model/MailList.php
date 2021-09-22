@@ -49,14 +49,16 @@ use Acelle\Library\Traits\HasUid;
 
 class MailList extends Model
 {
-    use QueryHelper, TrackJobs, HasUid;
+    use QueryHelper;
+    use TrackJobs;
+    use HasUid;
 
-    const SOURCE_EMBEDDED_FORM = 'embedded-form';
-    const SOURCE_WEB = 'web';
-    const SOURCE_API = 'api';
+    public const SOURCE_EMBEDDED_FORM = 'embedded-form';
+    public const SOURCE_WEB = 'web';
+    public const SOURCE_API = 'api';
 
-    const IMPORT_TEMP_DIR = 'app/tmp/import/';
-    const EXPORT_TEMP_DIR = 'app/tmp/export/';
+    public const IMPORT_TEMP_DIR = 'app/tmp/import/';
+    public const EXPORT_TEMP_DIR = 'app/tmp/export/';
 
 
     /**
@@ -261,36 +263,12 @@ class MailList extends Model
         return $this->getImportTempDir($filename);
     }
 
-    /**
-     * Filter items.
-     *
-     * @return collect
-     */
-    public static function filter($request)
+    public static function scopeSearch($query, $keyword)
     {
-        $customer = $request->user()->customer;
-        $query = self::where('customer_id', '=', $customer->id);
-
         // Keyword
-        if (!empty(trim($request->keyword))) {
-            $query = $query->where('name', 'like', '%'.$request->keyword.'%');
+        if (!empty(trim($keyword))) {
+            $query = $query->where('name', 'like', '%'.$keyword.'%');
         }
-
-        return $query;
-    }
-
-    /**
-     * Search items.
-     *
-     * @return collect
-     */
-    public static function search($request)
-    {
-        $query = self::filter($request);
-
-        $query = $query->orderBy($request->sort_order, $request->sort_direction);
-
-        return $query;
     }
 
     /**
@@ -613,31 +591,18 @@ class MailList extends Model
     }
 
     /**
-     * Count open rate.
-     *
-     * @return number
-     */
-    public function openRate()
-    {
-        if ($this->trackingCount() == 0) {
-            return 0;
-        }
-
-        return round(($this->openCount() / $this->trackingCount()) * 100, 2);
-    }
-
-    /**
      * Count open uniq rate.
      *
      * @return number
      */
     public function openUniqRate()
     {
-        if ($this->trackingCount() == 0) {
-            return 0;
+        $subscribersCount = $this->subscribers()->count();
+        if ($subscribersCount == 0) {
+            return 0.0;
         }
 
-        return round(($this->openUniqCount() / $this->trackingCount()) * 100, 2);
+        return round(($this->openUniqCount() / $subscribersCount), 2);
     }
 
     /**
@@ -652,7 +617,7 @@ class MailList extends Model
             return 0;
         }
 
-        return round(($this->clickedEmailsCount() / $open_count) * 100, 2);
+        return round(($this->clickedEmailsCount() / $open_count), 2);
     }
 
     /**
@@ -805,7 +770,7 @@ class MailList extends Model
 
                 // Only take pairs that match the listFields' keys
                 $attributes = array_intersect_key($attributes, $listFields);
-                
+
                 // merge the valid attributes to the base list of all keys
                 // results in something like [ 'EMAIL' => 'example@example.io', 'OTHER' => null ]
                 $attributes = array_merge($listFields, $attributes);
@@ -1283,7 +1248,7 @@ class MailList extends Model
                 if (!is_null($progressCallback)) {
                     $progressCallback($processed, $total, $failed, $message = 'Inserting contacts to database...');
                 }
-                
+
                 // Actually write to the database
                 DB::commit();
 
@@ -1311,7 +1276,8 @@ class MailList extends Model
                 $progressCallback($processed, $total, $failed, $message = $e->getMessage());
             }
 
-            throw $e;
+            // Is is weird that, in certain case, the $e->getMessage() string is too long, making the job "hang";
+            throw new Exception(substr($e->getMessage(), 0, 512));
         } finally {
             //if ($overQuotaAttempt) {
             //    $syssss_job->updateStatus(['error_message' => trans('messages.import.notice.over_quota')]);
@@ -1851,9 +1817,9 @@ class MailList extends Model
                 }),
             ];
         }
-        
+
         $validator = \Validator::make($request->all(), $rules, $messages);
-        
+
         if ($validator->fails()) {
             return [$validator, null];
         }
@@ -1895,7 +1861,7 @@ class MailList extends Model
             // Only trigger MailListSubscription event if subscribe is immediately subscribed
             MailListSubscription::dispatch($subscriber);
         }
-        
+
         MailLog::info("Subscriber {$subscriber->email} is added to list {$this->name} via {$source}");
 
         if ($this->subscribe_confirmation && !$subscriber->isSubscribed() && $source != Subscriber::SUBSCRIPTION_TYPE_ADDED) {
@@ -1913,7 +1879,7 @@ class MailList extends Model
         $query = $this->subscriberFields()
                       ->where('fields.type', $type)
                       ->select('subscriber_fields.id', 'subscriber_fields.value');
-        
+
         if (!is_null($subscriber_id)) {
             $query = $query->where('subscriber_id', $subscriber_id);
         }

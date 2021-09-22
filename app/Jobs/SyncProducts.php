@@ -13,7 +13,10 @@ use Acelle\Model\Customer;
 
 class SyncProducts implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     protected $source;
 

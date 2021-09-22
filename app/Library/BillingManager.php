@@ -1,4 +1,5 @@
 <?php
+
 namespace Acelle\Library;
 
 use Exception;
@@ -9,7 +10,7 @@ class BillingManager
 {
     protected $gateways = [];
 
-    public function isGatewayTypeRegistered(string $type) : bool
+    public function isGatewayTypeRegistered(string $type): bool
     {
         $registered = false;
         foreach ($this->gateways as $gw) {
@@ -30,7 +31,7 @@ class BillingManager
         $this->gateways[] = $gateway;
     }
 
-    public function getGateways() : array
+    public function getGateways(): array
     {
         return $this->gateways;
     }
@@ -85,7 +86,7 @@ class BillingManager
         $gateways = array_unique(array_merge($gateways, [$gatewayType]));
         Setting::set('gateways', json_encode($gateways));
     }
-    
+
     /**
      * Disable payment gateway.
      *
@@ -97,8 +98,8 @@ class BillingManager
         $gateways = array_diff($gateways, [$gatewayType]);
         Setting::set('gateways', json_encode($gateways));
     }
-    
-    public function isGatewayEnabled($gateway) : bool
+
+    public function isGatewayEnabled($gateway): bool
     {
         foreach ($this->getEnabledPaymentGateways() as $gw) {
             if ($gw->getType() == $gateway->getType()) {

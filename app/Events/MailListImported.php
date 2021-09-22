@@ -14,7 +14,9 @@ use Acelle\Model\MailList;
 
 class MailListImported
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+    use Dispatchable;
+    use InteractsWithSockets;
+    use SerializesModels;
 
     public $list;
 

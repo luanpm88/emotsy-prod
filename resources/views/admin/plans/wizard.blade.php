@@ -1,6 +1,6 @@
 @extends('layouts.popup.small')
 
-@section('title')
+@section('bar-title')
 {{ trans('messages.plan.new_plan') }}
 @endsection
 
@@ -65,8 +65,11 @@
                     ])
                  </div>
             </div>
-            <button type="submit" class="btn btn-secondary me-2">{{ trans('messages.plan.wizard.next') }}</button>
-            <a href="javascript:;" class="btn btn-link me-2" data-dismiss="modal">{{ trans('messages.plan.wizard.cancel') }}</a>
+            <div class="mt-4 text-center">
+                <button type="submit" class="btn btn-secondary me-2">{{ trans('messages.plan.wizard.next') }}</button>
+                <a href="javascript:;" class="btn btn-link me-2" data-dismiss="modal">{{ trans('messages.plan.wizard.cancel') }}</a>
+            </div>
+            
         </form>
     </div>
 

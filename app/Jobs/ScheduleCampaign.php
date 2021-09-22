@@ -14,7 +14,11 @@ use Acelle\Library\Traits\Trackable;
 
 class ScheduleCampaign implements ShouldQueue
 {
-    use Trackable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Trackable;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     protected $campaign;
 

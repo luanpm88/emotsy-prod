@@ -2,9 +2,6 @@
 
 namespace Acelle\Model;
 
-use Carbon\Carbon;
-use LogicException;
-use DateTimeInterface;
 use Illuminate\Database\Eloquent\Model;
 use Exception;
 use Acelle\Model\Invoice;
@@ -12,14 +9,16 @@ use Acelle\Library\Traits\HasUid;
 use Acelle\Library\Traits\HasQuota;
 use Acelle\Library\Contracts\HasQuota as HasQuotaInterface;
 use Acelle\Library\QuotaManager;
+use Carbon\Carbon;
 
 class Subscription extends Model implements HasQuotaInterface
 {
-    use HasUid, HasQuota;
-    
-    const STATUS_NEW = 'new';
-    const STATUS_ACTIVE = 'active';
-    const STATUS_ENDED = 'ended';
+    use HasUid;
+    use HasQuota;
+
+    public const STATUS_NEW = 'new';
+    public const STATUS_ACTIVE = 'active';
+    public const STATUS_ENDED = 'ended';
 
     /**
      * The attributes that are not mass assignable.
@@ -44,13 +43,6 @@ class Subscription extends Model implements HasQuotaInterface
      * @var bool
      */
     protected $prorate = true;
-
-    /**
-     * The date on which the billing cycle should be anchored.
-     *
-     * @var string|null
-     */
-    protected $billingCycleAnchor = null;
 
     /**
      * Associations.
@@ -85,7 +77,7 @@ class Subscription extends Model implements HasQuotaInterface
         $type = self::class;
         return Invoice::whereIn('id', function ($query) use ($id, $type) {
             $query->select('invoice_id')
-            ->from(with(new InvoiceItem)->getTable())
+            ->from(with(new InvoiceItem())->getTable())
             ->where('item_type', $type)
             ->where('item_id', $id);
         });
@@ -127,7 +119,7 @@ class Subscription extends Model implements HasQuotaInterface
         $query = $this->invoices()
             ->newSubscription()
             ->unpaid();
-        
+
         // more than on invoice
         if ($query->count() != 1) {
             throw new \Exception('New Subscription must have only one unpaid TYPE_NEW_SUBSCRIPTION invoice!');
@@ -181,7 +173,7 @@ class Subscription extends Model implements HasQuotaInterface
         $invoice->title = trans('messages.invoice.init_subscription');
         $invoice->description = trans('messages.invoice.init_subscription.desc', [
             'plan' => $this->plan->name,
-            'date' => \Acelle\Library\Tool::formatDate($this->getPeriodEndsAt(\Carbon\Carbon::now())),
+            'date' => \Acelle\Library\Tool::formatDate($this->getPeriodEndsAt(Carbon::now())),
         ]);
         $invoice->customer_id = $this->customer->id;
         $invoice->currency_id = $this->plan->currency_id;
@@ -241,7 +233,7 @@ class Subscription extends Model implements HasQuotaInterface
         ]);
         $invoice->customer_id = $this->customer->id;
         $invoice->currency_id = $this->plan->currency_id;
-        
+
         // default billing info
         $billingAddress = $this->customer->getDefaultBillingAddress();
         if ($billingAddress) {
@@ -297,7 +289,7 @@ class Subscription extends Model implements HasQuotaInterface
         $invoice->description = trans('messages.change_plan.desc', [
             'plan' => $this->plan->name,
             'newPlan' => $newPlan->name,
-            'date' => \Acelle\Library\Tool::formatDate(\Carbon\Carbon::parse($metadata['endsAt'])),
+            'date' => \Acelle\Library\Tool::formatDate(Carbon::parse($metadata['endsAt'])),
         ]);
         $invoice->customer_id = $this->customer->id;
         $invoice->currency_id = $this->plan->currency_id;
@@ -344,7 +336,7 @@ class Subscription extends Model implements HasQuotaInterface
     {
         // then set the sub end
         $this->status = self::STATUS_ENDED;
-        $this->ends_at = \Carbon\Carbon::now();
+        $this->ends_at = Carbon::now();
         $this->save();
     }
 
@@ -380,7 +372,7 @@ class Subscription extends Model implements HasQuotaInterface
                 break;
             case 'day':
                 $endsAt = $startDate->addDay($intervalCount);
-                // no break
+                break;
             case 'week':
                 $endsAt = $startDate->addWeek($intervalCount);
                 break;
@@ -467,11 +459,11 @@ class Subscription extends Model implements HasQuotaInterface
      */
     public function reachDueDate()
     {
-        return \Carbon\Carbon::now()->greaterThanOrEqualTo(
+        return Carbon::now()->greaterThanOrEqualTo(
             $this->getDueDate()
         );
     }
-    
+
     /**
      * Change plan.
      */
@@ -485,7 +477,7 @@ class Subscription extends Model implements HasQuotaInterface
 
         // new end period
         $this->current_period_ends_at = $metadata['endsAt'];
-        
+
         // update ends at if it exist
         if ($this->ends_at != null) {
             $this->ends_at = $this->current_period_ends_at;
@@ -508,7 +500,7 @@ class Subscription extends Model implements HasQuotaInterface
      */
     public static function checkAll()
     {
-        $subscriptions = self::whereNull('ends_at')->orWhere('ends_at', '>=', \Carbon\Carbon::now())->get();
+        $subscriptions = self::whereNull('ends_at')->orWhere('ends_at', '>=', Carbon::now())->get();
         foreach ($subscriptions as $subscription) {
             $subscription->check();
         }
@@ -598,7 +590,7 @@ class Subscription extends Model implements HasQuotaInterface
         $this->current_period_ends_at = $this->getPeriodEndsAt(Carbon::now());
         $this->ends_at = null;
         $this->status = self::STATUS_ACTIVE;
-        $this->started_at = \Carbon\Carbon::now();
+        $this->started_at = Carbon::now();
         $this->save();
 
         // add log
@@ -659,7 +651,7 @@ class Subscription extends Model implements HasQuotaInterface
      */
     public function isExpired()
     {
-        return isset($this->ends_at) && \Carbon\Carbon::now()->endOfDay() > $this->ends_at;
+        return isset($this->ends_at) && Carbon::now()->endOfDay() > $this->ends_at;
     }
 
     /**
@@ -722,7 +714,7 @@ class Subscription extends Model implements HasQuotaInterface
         if (!$this->cancelled()) {
             throw new Exception('Subscription is not cancelled. No need to resume again.');
         }
-        
+
         $this->ends_at = null;
         $this->save();
     }
@@ -760,7 +752,7 @@ class Subscription extends Model implements HasQuotaInterface
     {
         // set new current period
         $this->current_period_ends_at = $this->getPeriodEndsAt($this->current_period_ends_at);
-        
+
         // ends at
         if ($this->ends_at != null) {
             $this->ends_at = $this->current_period_ends_at;
@@ -782,7 +774,7 @@ class Subscription extends Model implements HasQuotaInterface
         }
 
         // check if recurring accur
-        if (\Carbon\Carbon::now()->greaterThanOrEqualTo($this->current_period_ends_at->subDays(Setting::get('end_period_last_days')))) {
+        if (Carbon::now()->greaterThanOrEqualTo($this->current_period_ends_at->subDays(Setting::get('end_period_last_days')))) {
             return true;
         }
 
@@ -814,26 +806,26 @@ class Subscription extends Model implements HasQuotaInterface
         ) {
             throw new \Exception(trans('messages.can_not_change_to_diff_currency_period_plan'));
         }
-        
+
         // new ends at
         $newEndsAt = $this->current_period_ends_at;
 
         // amout per day of current plan
         $currentAmount = $this->plan->price;
         $periodDays = $this->current_period_ends_at->diffInDays($this->periodStartAt()->startOfDay());
-        $remainDays = $this->current_period_ends_at->diffInDays(\Carbon\Carbon::now()->startOfDay());
+        $remainDays = $this->current_period_ends_at->diffInDays(Carbon::now()->startOfDay());
         $currentPerDayAmount = ($currentAmount/$periodDays);
         $newAmount = ($plan->price/$periodDays)*$remainDays;
         $remainAmount = $currentPerDayAmount*$remainDays;
 
         $amount = $newAmount - $remainAmount;
-        
+
         // if amount < 0
         if ($amount < 0) {
             $days = (int) ceil(-($amount/$currentPerDayAmount));
             $amount = 0;
             $newEndsAt->addDays($days);
-            
+
             // if free plan
             if ($plan->price == 0) {
                 $newEndsAt = $this->current_period_ends_at;
@@ -885,7 +877,7 @@ class Subscription extends Model implements HasQuotaInterface
     }
 
     /***   IMPLEMENTATION OF HasQuotaInterface ***/
-    public function getQuotaSettings($name) : ?array
+    public function getQuotaSettings($name): ?array
     {
         return $this->plan->getQuotaSettings($name);
     }

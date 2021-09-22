@@ -1,5 +1,5 @@
 <?php
- 
+
 namespace Acelle\Library\Traits;
 
 trait HasUid
@@ -25,7 +25,7 @@ trait HasUid
         $this->uid = uniqid();
     }
 
-    public function getUid() : ?string
+    public function getUid(): ?string
     {
         return $this->uid;
     }

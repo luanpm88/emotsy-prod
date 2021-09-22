@@ -15,7 +15,6 @@ use Acelle\Model\Customer;
 
 class SubscriptionController extends Controller
 {
-
     /**
      * Display a listing of the resource.
      *
@@ -229,13 +228,13 @@ class SubscriptionController extends Controller
                     'errors' => $validator->errors(),
                 ], 400);
             }
-            
+
             // try reject
             try {
                 $subscription->getUnpaidInvoice()->reject($request->reason);
             } catch (\Exception $ex) {
                 $validator->errors()->add('reason', $ex->getMessage());
-                
+
                 return response()->view('admin.subscriptions.rejectPending', [
                     'subscription' => $subscription,
                     'gateway' => $gateway,

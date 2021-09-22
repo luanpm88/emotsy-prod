@@ -7,7 +7,6 @@ use Acelle\Model\Subscription;
 
 class HomeController extends Controller
 {
-
     /**
      * Show the application dashboard.
      *

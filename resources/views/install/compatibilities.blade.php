@@ -17,7 +17,7 @@
 task_alt
 </span>
 							@else
-								<span class="material-icons-outlined">
+								<span class="material-icons-outlined fs-3 text-danger me-3">
 error_outline
 </span>
 							@endif
@@ -49,7 +49,7 @@ error_outline
 task_alt
 </span>
 							@else
-								<span class="material-icons-outlined">
+								<span class="material-icons-outlined fs-3 text-danger me-3">
 error_outline
 </span>
 							@endif

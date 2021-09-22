@@ -1,6 +1,6 @@
 @extends('layouts.popup.medium')
 
-@section('title')
+@section('bar-title')
 {{ trans('messages.plan.new_plan') }}
 @endsection
 
@@ -10,7 +10,7 @@
         
         <div class="row">
             <div class="col-md-12">                    
-                <h2>{{ trans('messages.plan.sending_server') }}</h2>
+                <h2 class="mt-0 mb-3">{{ trans('messages.plan.sending_server') }}</h2>
                     
                 <p>{{ trans('messages.plan.sending_server.intro') }}</p>
                 
@@ -144,7 +144,7 @@
             </div>
         </div>
 
-        <div class="mt-4">
+        <div class="mt-4 text-center">
             <button onClick="$('#wizard').submit();" class="btn btn-secondary me-2">{{ trans('messages.plan.wizard.finish') }}</button>
             <a href="javascript:;" onclick="PlansIndex.getWizardPopup().hide()" class="btn btn-link me-2" data-dismiss="modal">{{ trans('messages.plan.wizard.cancel') }}</a>
         </div>

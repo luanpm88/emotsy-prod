@@ -21,7 +21,7 @@ maps_home_work
 assignment_turned_in
 </span> {{ trans('messages.subscriptions') }}</a>
         </li>
-        @can('viewSubAccount', $customer))
+        @can('viewSubAccount', $customer)
             <li class="nav-item 
             {{ request()->route()->getActionName() == 'Acelle\Http\Controllers\Admin\CustomerController@subAccount' ? 'active' : '' }}
             text-semibold"><a class="nav-link" href="{{ action('Admin\CustomerController@subAccount', $customer->uid) }}">

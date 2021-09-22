@@ -39,16 +39,16 @@ class Subscriber extends Model
 {
     use HasUid;
 
-    const STATUS_SUBSCRIBED = 'subscribed';
-    const STATUS_UNSUBSCRIBED = 'unsubscribed';
-    const STATUS_BLACKLISTED = 'blacklisted';
-    const STATUS_SPAM_REPORTED = 'spam-reported';
-    const STATUS_UNCONFIRMED = 'unconfirmed';
+    public const STATUS_SUBSCRIBED = 'subscribed';
+    public const STATUS_UNSUBSCRIBED = 'unsubscribed';
+    public const STATUS_BLACKLISTED = 'blacklisted';
+    public const STATUS_SPAM_REPORTED = 'spam-reported';
+    public const STATUS_UNCONFIRMED = 'unconfirmed';
 
-    const SUBSCRIPTION_TYPE_ADDED = 'added';
-    const SUBSCRIPTION_TYPE_DOUBLE_OPTIN = 'double';
-    const SUBSCRIPTION_TYPE_SINGLE_OPTIN = 'single';
-    const SUBSCRIPTION_TYPE_IMPORTED = 'imported';
+    public const SUBSCRIPTION_TYPE_ADDED = 'added';
+    public const SUBSCRIPTION_TYPE_DOUBLE_OPTIN = 'double';
+    public const SUBSCRIPTION_TYPE_SINGLE_OPTIN = 'single';
+    public const SUBSCRIPTION_TYPE_IMPORTED = 'imported';
 
     protected $dates = ['unsubscribed_at'];
 
@@ -978,7 +978,7 @@ class Subscriber extends Model
     /**
      * Get tags.
      */
-    public function getTags() : array
+    public function getTags(): array
     {
         // Notice: json_decode() returns null if input is null or empty
         return json_decode($this->tags, true) ?: [];
@@ -1063,28 +1063,7 @@ class Subscriber extends Model
      */
     public function scopeFilter($query, $request)
     {
-        /* does not support searching on subscriber fields, for the sake of performance
-        $query = $query->leftJoin('subscriber_fields', 'subscribers.id', '=', 'subscriber_fields.subscriber_id')
-            ->leftJoin('mail_lists', 'subscribers.mail_list_id', '=', 'mail_lists.id');
-        */
-        $query = $query->leftJoin('mail_lists', 'subscribers.mail_list_id', '=', 'mail_lists.id');
-
-        // Email verification join
-        $query = $query->leftJoin('email_verifications', 'email_verifications.subscriber_id', '=', 'subscribers.id');
-
         if (isset($request)) {
-            // Keyword
-            if (!empty(trim($request->keyword))) {
-                foreach (explode(' ', trim($request->keyword)) as $keyword) {
-                    $query = $query->where(function ($q) use ($keyword) {
-                        $q->orwhere('subscribers.email', 'like', '%'.$keyword.'%');
-                        /* does not support searching on subscriber fields, for the sake of performance
-                        ->orWhere('subscriber_fields.value', 'like', '%'.$keyword.'%');
-                        */
-                    });
-                }
-            }
-
             // filters
             $filters = $request->filters;
             if (!empty($filters)) {
@@ -1157,22 +1136,29 @@ class Subscriber extends Model
      *
      * @return collect
      */
-    public function scopeSearch($query, $request, $customer = null)
+    public function scopeSearch($query, $keyword)
     {
         $query = self::select('subscribers.*', 'email_verifications.result as verify_result');
 
-        // Filter by customer
-        if (!isset($customer)) {
-            $customer = $request->user()->customer;
-        }
-        $query = $query->where('mail_lists.customer_id', '=', $customer->id);
+        /* does not support searching on subscriber fields, for the sake of performance
+        $query = $query->leftJoin('subscriber_fields', 'subscribers.id', '=', 'subscriber_fields.subscriber_id')
+            ->leftJoin('mail_lists', 'subscribers.mail_list_id', '=', 'mail_lists.id');
+        */
+        $query = $query->leftJoin('mail_lists', 'subscribers.mail_list_id', '=', 'mail_lists.id');
 
-        // Filter
-        $query = $query->filter($request);
+        // Email verification join
+        $query = $query->leftJoin('email_verifications', 'email_verifications.subscriber_id', '=', 'subscribers.id');
 
-        // Order
-        if (isset($request->sort_order)) {
-            $query = $query->orderBy($request->sort_order, $request->sort_direction);
+        // Keyword
+        if (!empty(trim($keyword))) {
+            foreach (explode(' ', trim($keyword)) as $keyword) {
+                $query = $query->where(function ($q) use ($keyword) {
+                    $q->orwhere('subscribers.email', 'like', '%'.$keyword.'%');
+                    /* does not support searching on subscriber fields, for the sake of performance
+                    ->orWhere('subscriber_fields.value', 'like', '%'.$keyword.'%');
+                    */
+                });
+            }
         }
 
         return $query;
@@ -1272,7 +1258,7 @@ class Subscriber extends Model
         if ($validator->fails()) {
             return $validator;
         }
-        
+
         // do assign
         if ($request->assign_type == 'single') {
             // do assign a value: $request->single_value
@@ -1293,9 +1279,9 @@ class Subscriber extends Model
         MailListSubscription::dispatch($this);
     }
 
-    public function scopeUnsubscribed()
+    public function scopeUnsubscribed($query)
     {
-        return self::where('status', '=', self::STATUS_UNSUBSCRIBED);
+        return $query->where('status', '=', self::STATUS_UNSUBSCRIBED);
     }
 
     public function generateUnsubscribeUrl($messageId = null, $absoluteUrl = true)

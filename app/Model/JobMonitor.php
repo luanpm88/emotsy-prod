@@ -12,12 +12,13 @@ use Exception;
 
 class JobMonitor extends Model
 {
-    use HasFactory, HasUid;
+    use HasFactory;
+    use HasUid;
 
-    const STATUS_QUEUED = 'queued';
-    const STATUS_RUNNING = 'running';
-    const STATUS_DONE = 'done';
-    const STATUS_FAILED = 'failed';
+    public const STATUS_QUEUED = 'queued';
+    public const STATUS_RUNNING = 'running';
+    public const STATUS_DONE = 'done';
+    public const STATUS_FAILED = 'failed';
 
     public static function makeInstance($subject, $jobType)
     {

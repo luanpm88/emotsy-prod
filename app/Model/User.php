@@ -37,7 +37,8 @@ use Acelle\Library\Traits\HasUid;
 
 class User extends Authenticatable
 {
-    use Notifiable, HasUid;
+    use Notifiable;
+    use HasUid;
 
     /*******
      * Important: Storage location: User vs Customer
@@ -52,11 +53,11 @@ class User extends Authenticatable
      * + Attachments (account-wide, not individual user)
      *
      */
-    const BASE_DIR = 'app/users';
-    const ASSETS_DIR = 'home/files';
-    const ASSETS_THUMB_DIR = 'home/thumbs';
-    const PROFILE_IMAGE_PATH = 'home/avatar';
-    const PROFILE_THUMB_PATH = 'home/avatar-thumb';
+    public const BASE_DIR = 'app/users';
+    public const ASSETS_DIR = 'home/files';
+    public const ASSETS_THUMB_DIR = 'home/thumbs';
+    public const PROFILE_IMAGE_PATH = 'home/avatar';
+    public const PROFILE_THUMB_PATH = 'home/avatar-thumb';
 
     /**
      * The attributes that are mass assignable.

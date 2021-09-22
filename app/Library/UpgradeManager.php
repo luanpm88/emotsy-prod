@@ -31,7 +31,7 @@ class UpgradeManager
     protected $source;
     protected $target;
 
-    const META_FILE = 'meta.json';
+    public const META_FILE = 'meta.json';
 
     /**
      * Constructor, specify the source, target and load the meta information.
@@ -179,6 +179,11 @@ class UpgradeManager
             foreach ($updates as $file) {
                 $source = join_paths($this->source, $file);
                 $target = join_paths($this->target, $file);
+
+                // File is deleted in build.sh script
+                if (!File::exists($source)) {
+                    continue;
+                }
 
                 if ($test) {
                     if ($this->isLanguageFile($source)) {

@@ -40,7 +40,7 @@ class GeoIpController extends Controller
                     'errors' => $validator->errors(),
                 ], 400);
             }
-                
+
             return response()->json([
                 'status' => 'success',
                 'message' => 'GeoIp setting was updated!',

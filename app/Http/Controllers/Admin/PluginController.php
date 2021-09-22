@@ -9,7 +9,6 @@ use Exception;
 
 class PluginController extends Controller
 {
-
     /**
      * Display a listing of the resource.
      *

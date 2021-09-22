@@ -9,35 +9,35 @@ use Acelle\Library\Traits\HasUid;
 class SubscriptionLog extends Model
 {
     use HasUid;
-    
-    const TYPE_SUBSCRIBE = 'subscribe';
-    const TYPE_SUBSCRIBED = 'subscribed';
-    const TYPE_PAID = 'paid';
-    const TYPE_CLAIMED = 'claimed';
-    const TYPE_UNCLAIMED = 'unclaimed';
-    const TYPE_STARTED = 'started';
-    const TYPE_EXPIRED = 'expired';
-    const TYPE_RENEWED = 'renewed';
-    const TYPE_RENEW = 'renew';
-    const TYPE_RENEW_FAILED = 'renew_failed';
-    const TYPE_PLAN_CHANGE = 'plan_change';
-    const TYPE_PLAN_CHANGE_CANCELED = 'plan_change_canceled';
-    const TYPE_PLAN_CHANGED = 'plan_changed';
-    const TYPE_PLAN_CHANGE_FAILED = 'plan_change_failed';
-    const TYPE_CANCELLED = 'cancelled';
-    const TYPE_CANCELLED_NOW = 'cancelled_now';
-    const TYPE_ADMIN_APPROVED = 'admin_approved';
-    const TYPE_ADMIN_REJECTED = 'admin_rejected';
-    const TYPE_ADMIN_RENEW_APPROVED = 'admin_renew_approved';
-    const TYPE_ADMIN_PLAN_CHANGE_APPROVED = 'admin_plan_change_approved';
-    const TYPE_ADMIN_RENEW_REJECTED = 'admin_renew_rejected';
-    const TYPE_ADMIN_PLAN_CHANGE_REJECTED = 'admin_plan_change_rejected';
-    const TYPE_ADMIN_CANCELLED = 'admin_cancelled';
-    const TYPE_ADMIN_CANCELLED_NOW = 'admin_cancelled_now';
-    const TYPE_ADMIN_RESUMED = 'admin_resumed';
-    const TYPE_ADMIN_PLAN_ASSIGNED = 'admin_plan_assigned';
-    const TYPE_RESUMED = 'resumed';
-    const TYPE_ERROR = 'error';
+
+    public const TYPE_SUBSCRIBE = 'subscribe';
+    public const TYPE_SUBSCRIBED = 'subscribed';
+    public const TYPE_PAID = 'paid';
+    public const TYPE_CLAIMED = 'claimed';
+    public const TYPE_UNCLAIMED = 'unclaimed';
+    public const TYPE_STARTED = 'started';
+    public const TYPE_EXPIRED = 'expired';
+    public const TYPE_RENEWED = 'renewed';
+    public const TYPE_RENEW = 'renew';
+    public const TYPE_RENEW_FAILED = 'renew_failed';
+    public const TYPE_PLAN_CHANGE = 'plan_change';
+    public const TYPE_PLAN_CHANGE_CANCELED = 'plan_change_canceled';
+    public const TYPE_PLAN_CHANGED = 'plan_changed';
+    public const TYPE_PLAN_CHANGE_FAILED = 'plan_change_failed';
+    public const TYPE_CANCELLED = 'cancelled';
+    public const TYPE_CANCELLED_NOW = 'cancelled_now';
+    public const TYPE_ADMIN_APPROVED = 'admin_approved';
+    public const TYPE_ADMIN_REJECTED = 'admin_rejected';
+    public const TYPE_ADMIN_RENEW_APPROVED = 'admin_renew_approved';
+    public const TYPE_ADMIN_PLAN_CHANGE_APPROVED = 'admin_plan_change_approved';
+    public const TYPE_ADMIN_RENEW_REJECTED = 'admin_renew_rejected';
+    public const TYPE_ADMIN_PLAN_CHANGE_REJECTED = 'admin_plan_change_rejected';
+    public const TYPE_ADMIN_CANCELLED = 'admin_cancelled';
+    public const TYPE_ADMIN_CANCELLED_NOW = 'admin_cancelled_now';
+    public const TYPE_ADMIN_RESUMED = 'admin_resumed';
+    public const TYPE_ADMIN_PLAN_ASSIGNED = 'admin_plan_assigned';
+    public const TYPE_RESUMED = 'resumed';
+    public const TYPE_ERROR = 'error';
 
 
     /**

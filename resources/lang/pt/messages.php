@@ -3830,4 +3830,12 @@
   'campaign.plain.use_custom_plain_content' => 'Use custom plain content',
   'campaign.plain.automatically_extract' => 'Automatically extract plain content from HTML',
   'campaign.plain.extract_from_html' => 'Extract from HTML content',
+  'search.no_result' => 'There are no search results',
+  'search.general' => 'General',
+  'search.type_to_search.wording' => 'Enter any keyword to start search',
+  'search.empty_result' => 'There are no search results',
+  'search.view_all' => 'View all',
+  'search.go_to_lists' => 'Lists management',
+  'click_open_app_search' => 'Open app search (Ctrl + D)',
+  'upgrade.checking_dependencies' => 'Checking for upgrade dependencies...',
 ) ?>

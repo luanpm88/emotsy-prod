@@ -9,11 +9,11 @@ use Acelle\Library\Traits\HasUid;
 class Transaction extends Model
 {
     use HasUid;
-    
+
     // wait status
-    const STATUS_PENDING = 'pending';
-    const STATUS_FAILED = 'failed';
-    const STATUS_SUCCESS = 'success';
+    public const STATUS_PENDING = 'pending';
+    public const STATUS_FAILED = 'failed';
+    public const STATUS_SUCCESS = 'success';
 
     /**
      * The attributes that are mass assignable.

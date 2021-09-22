@@ -10,7 +10,10 @@ use Illuminate\Queue\InteractsWithQueue;
 
 class Base implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     // To immediately fail, prevent it from being tried again,
     // resulting in confusing exception like "Job X has been tried too many times or timeout"

@@ -30,9 +30,10 @@ use Acelle\Library\Traits\HasUid;
 
 class Admin extends Model
 {
-    use TrackJobs, HasUid;
+    use TrackJobs;
+    use HasUid;
 
-    const STATUS_ACTIVE = 'active';
+    public const STATUS_ACTIVE = 'active';
 
     /**
      * The attributes that are mass assignable.
@@ -410,7 +411,7 @@ class Admin extends Model
         $user = $this->user;
 
         $this->delete();
-        
+
         if (!$user->customer()->exists()) {
             $user->deleteAndCleanup();
         }

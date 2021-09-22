@@ -28,7 +28,7 @@ use Acelle\Library\Traits\HasUid;
 class Segment extends Model
 {
     use HasUid;
-    
+
     /**
      * The attributes that are mass assignable.
      *

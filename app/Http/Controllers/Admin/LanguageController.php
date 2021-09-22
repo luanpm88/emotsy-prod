@@ -54,7 +54,7 @@ class LanguageController extends Controller
     public function create(Request $request)
     {
         $language = Language::newDefaultLanguage();
-        
+
         // authorize
         if (\Gate::denies('create', $language)) {
             return $this->notAuthorized();
@@ -190,7 +190,7 @@ class LanguageController extends Controller
             'language' => $language,
         ]);
     }
-    
+
     /**
      * Translate.
      *
@@ -210,12 +210,12 @@ class LanguageController extends Controller
         if ($this->isDemoMode()) {
             return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
         }
-        
+
         // authorize
         if (\Gate::denies('translate', $language)) {
             return $this->notAuthorized();
         }
-        
+
         // save posted data
         if ($request->isMethod('post')) {
             list($currentFile, $validator) = $language->translateFile($request->file_id, $request->content);
@@ -226,20 +226,20 @@ class LanguageController extends Controller
                     'message' => $validator->errors()->first(),
                 ], 400);
             }
-            
+
             return response()->json([
                 'status' => 'success',
                 'message' => trans('messages.language.updated'),
             ]);
         }
-        
+
         return view('admin.languages.translate', [
             'language' => $language,
             'currentFile' => $currentFile,
             'content' => Language::fileToYaml($currentFile['path']),
         ]);
     }
-    
+
     /**
      * Disable language.
      *
@@ -264,7 +264,7 @@ class LanguageController extends Controller
         // Redirect to my lists page
         echo trans('messages.languages.disabled');
     }
-    
+
     /**
      * Disable language.
      *
@@ -289,7 +289,7 @@ class LanguageController extends Controller
         // Redirect to my lists page
         echo trans('messages.languages.enabled');
     }
-    
+
     /**
      * Download language package.
      *
@@ -301,12 +301,12 @@ class LanguageController extends Controller
     {
         $language = Language::findByUid($id);
         $tmpzip = storage_path("tmp/language-" . $language->code . ".zip");
-        
+
         Tool::zip($language->languageDir(), $tmpzip);
-       
+
         return response()->download($tmpzip)->deleteFileAfterSend(true);
     }
-    
+
     /**
      * Upload language package.
      *
@@ -317,7 +317,7 @@ class LanguageController extends Controller
     public function upload(Request $request, $id)
     {
         $language = Language::findByUid($id);
-        
+
         // validate and save posted data
         if ($request->isMethod('post')) {
             $validator = $language->upload($request);
@@ -328,16 +328,16 @@ class LanguageController extends Controller
                     'errors' => $validator->errors(),
                 ], 400);
             }
-                       
+
             $request->session()->flash('alert-success', trans('messages.language.uploaded'));
             return redirect()->action('Admin\LanguageController@index');
         }
-        
+
         return view('admin.languages.upload', [
             'language' => $language,
         ]);
     }
-    
+
     /**
      * Delete confirm message.
      *

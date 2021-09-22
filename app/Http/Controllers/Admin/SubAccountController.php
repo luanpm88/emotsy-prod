@@ -7,7 +7,6 @@ use Acelle\Http\Controllers\Controller;
 
 class SubAccountController extends Controller
 {
-
     /**
      * Searching.
      */

@@ -10,8 +10,8 @@
 .page-container {
     transition: all 0.2s ease-in-out;
 }
-.topbar .menu-user-avatar {
-    transform: scale(1.5);
+.menu-user-avatar {
+    transform: scale(1.4);
 }
 .leftbar .default-app-logo {
     margin-top: -20px;
@@ -20,6 +20,15 @@
 .topbar .default-app-logo {
     margin-left: 10px;
     margin-top: -2px;
+}
+.topbar.search-open .search-results {
+    max-height: calc(100vh - 150px);
+}
+.fullscreen-search-box.topbar.search-open .app_search_box {
+    padding-top: 60px!important;
+}
+.fullscreen-search-box.topbar.search-open .search-results {
+    max-height: calc(100vh - 160px);
 }
 @media (min-width: 1200px) {
     .leftbar .leftbar-hide-menu {
@@ -121,7 +130,7 @@
         top: 12px!important;
     }
     .leftbar .menu-user-avatar {
-        transform: none!important;
+        transform: none;
         height: 24px;
         width: 24px;
         display: inline-block;
@@ -138,7 +147,10 @@
         top: auto;
     }
     
+    .leftbar-closed .menu-user-avatar {
+        transform: scale(1.4)!important;
 
+    }
     .leftbar-closed .page-container {
         position: relative;
         width: 100%!important;
@@ -174,8 +186,6 @@
     }
     .leftbar-closed .navbar-brand {
         display: none!important;
-    }
-    .leftbar-closed .navbar-main {
     }
     .leftbar-closed .leftbar-hide-menu {
         transform: rotate(180deg);
@@ -263,6 +273,9 @@
         border-radius: 30px 0px 0 30px;
         margin-right: -4px;
     }
+    .leftbar.search-open .search-results {
+        max-height: calc(100vh - 100px);
+    }
 }
 
 @media (max-width: 1199px) {
@@ -333,6 +346,18 @@
     .leftbar .default-app-logo {
         margin-left: 10px;
         margin-top: -2px;
+    }
+    .leftbar .menu-user-avatar {
+        transform: scale(1.4);
+    }
+    .leftbar.search-open .search-results {
+        max-height: calc(100vh - 150px);
+    }
+    .fullscreen-search-box.leftbar.search-open .app_search_box {
+        padding-top: 60px!important;
+    }
+    .fullscreen-search-box.leftbar.search-open .search-results {
+        max-height: calc(100vh - 160px);
     }
 }
 

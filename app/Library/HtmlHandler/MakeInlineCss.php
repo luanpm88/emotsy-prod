@@ -16,6 +16,6 @@ class MakeInlineCss implements StageInterface
 
     public function __invoke($html)
     {
-        return inlineHtml($html, $this->cssFiles);
+        return makeInlineCss($html, $this->cssFiles);
     }
 }

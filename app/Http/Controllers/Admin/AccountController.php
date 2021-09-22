@@ -7,7 +7,6 @@ use Acelle\Http\Controllers\Controller;
 
 class AccountController extends Controller
 {
-
     /**
      * Update user profile.
      *

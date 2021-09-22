@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 
 class FieldController extends Controller
 {
-
     /**
      * Display a listing of the resource.
      *

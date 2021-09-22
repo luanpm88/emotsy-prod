@@ -9,7 +9,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 class AdminLoggedIn extends Event
 {
     use SerializesModels;
-    
+
     protected $admin;
 
     /**

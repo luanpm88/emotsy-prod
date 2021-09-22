@@ -41,7 +41,7 @@ class BillingAddress extends Model
     public function updateAll($request)
     {
         $this->fill($request->all());
-        
+
         // make validator
         $validator = \Validator::make($request->all(), [
             'first_name' => 'required',
@@ -57,7 +57,7 @@ class BillingAddress extends Model
         }
 
         $this->customer_id = $request->user()->customer->id;
-        
+
         $this->save();
 
         return [$validator, $this];

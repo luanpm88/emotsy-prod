@@ -7,7 +7,6 @@ use Acelle\Http\Controllers\Controller;
 
 class AdminController extends Controller
 {
-
     /**
      * Display a listing of the resource.
      *
@@ -234,7 +233,7 @@ class AdminController extends Controller
             $this->validate($request, $rules);
 
             // Update user account for admin
-            
+
             $user->save();
 
             // Save current user info

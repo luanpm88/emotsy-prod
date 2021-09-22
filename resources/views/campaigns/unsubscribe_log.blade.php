@@ -35,7 +35,7 @@ sort
                             </button>
                         </span>
                         <span class="text-nowrap">
-                            <input type="text" name="keyword" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
+                            <input type="text" name="keyword" class="form-control search" value="{{ request()->keyword }}" placeholder="{{ trans('messages.type_to_search') }}" />
                             <span class="material-icons-round">
 search
 </span>
@@ -45,7 +45,7 @@ search
             </div>
             <div class="text-end">
                 <a href="javascript:goToDownLoad('unsubscribe_logs')" role="button" class="btn btn-secondary">
-                    <i class="icon icon-download mr-5"></i> {{ trans('messages.unsubscribe_log.download') }}
+                    <i class="icon icon-download me-1"></i> {{ trans('messages.unsubscribe_log.download') }}
                 </a>
             </div>
         </div>

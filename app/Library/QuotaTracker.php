@@ -66,12 +66,12 @@ class QuotaTracker
         // [
         //     [
         //         'name' => 'Emails per minute',
-        //         'period_base' => 'minute'
+        //         'period_unit' => 'minute'
         //         'period_value' => '1'
         //         'limit' => 10,
         //     ], [
         //         'name' => 'Emails per 12 hours',
-        //         'period_base' => 'hour',
+        //         'period_unit' => 'hour',
         //         'period_value' => '12',
         //         'limit' => 2000
         //     ], [
@@ -81,7 +81,7 @@ class QuotaTracker
         //
 
         foreach ($limits as $limit) {
-            $period = sprintf("%s %s", $limit['period_value'], $limit['period_base']);
+            $period = sprintf("%s %s", $limit['period_value'], $limit['period_unit']);
             $fromDatetime = $now->copy()->subtract($period);
 
             $creditsUsed = $this->getCreditsUsed($fromDatetime, $now, $fopen);

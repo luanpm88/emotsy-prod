@@ -12,7 +12,6 @@ use Acelle\Model\SendingServer;
 
 class PlanController extends Controller
 {
-
     /**
      * Display a listing of the resource.
      *
@@ -30,7 +29,8 @@ class PlanController extends Controller
             $request->merge(array("admin_id" => $request->user()->admin->id));
         }
 
-        $plans = Plan::search($request);
+        $plans = \Acelle\Model\Plan::search($request->keyword)
+            ->filter($request);
 
         return view('admin.plans.index', [
             'plans' => $plans,
@@ -44,7 +44,10 @@ class PlanController extends Controller
      */
     public function listing(Request $request)
     {
-        $plans = Plan::search($request)->paginate($request->per_page);
+        $plans = \Acelle\Model\Plan::search($request->keyword)
+            ->filter($request)
+            ->orderBy($request->sort_order, $request->sort_direction ? $request->sort_direction : 'asc')
+            ->paginate($request->per_page);
 
         return view('admin.plans._list', [
             'plans' => $plans,
@@ -384,7 +387,7 @@ class PlanController extends Controller
             $validator = \Validator::make($request->all(), [
                 'name' => 'required',
             ]);
-            
+
             // redirect if fails
             if ($validator->fails()) {
                 return response()->view('admin.plans.copy', [
@@ -417,7 +420,7 @@ class PlanController extends Controller
         if (\Gate::denies('update', $plan)) {
             return $this->notAuthorized();
         }
-        
+
         if ($plan->getOption('sending_server_option') == Plan::SENDING_SERVER_OPTION_SYSTEM) {
             return redirect()->action('Admin\PlanController@sendingServers', $plan->uid);
         } elseif ($plan->getOption('sending_server_option') == Plan::SENDING_SERVER_OPTION_OWN) {
@@ -426,7 +429,7 @@ class PlanController extends Controller
             return redirect()->action('Admin\PlanController@sendingServerSubaccount', $plan->uid);
         }
     }
-    
+
     /**
      * Plan sending server subaccount setting.
      *
@@ -442,12 +445,12 @@ class PlanController extends Controller
         if (\Gate::denies('update', $plan)) {
             return $this->notAuthorized();
         }
-        
+
         // save posted data
         if ($request->isMethod('post')) {
             $plan->fillAll($request);
             $plan->save();
-            
+
             $request->session()->flash('alert-success', trans('messages.plan.sending_server.saved'));
             return redirect()->action('Admin\PlanController@sendingServerSubaccount', $plan->uid);
         }
@@ -456,7 +459,7 @@ class PlanController extends Controller
             'plan' => $plan,
         ]);
     }
-    
+
     /**
      * Plan sending server own setting.
      *
@@ -472,12 +475,12 @@ class PlanController extends Controller
         if (\Gate::denies('update', $plan)) {
             return $this->notAuthorized();
         }
-        
+
         // save posted data
         if ($request->isMethod('post')) {
             $plan->fillAll($request);
             $plan->save();
-            
+
             $request->session()->flash('alert-success', trans('messages.plan.sending_server.saved'));
             return redirect()->action('Admin\PlanController@sendingServerOwn', $plan->uid);
         }
@@ -552,13 +555,13 @@ class PlanController extends Controller
         if ($request->isMethod('post')) {
             $sendingServer = SendingServer::findByUid($request->sending_server_uid);
             $existIds = $plan->plansSendingServers()->pluck('sending_server_id')->toArray();
-            
+
             // check if sending server is already added
             if (in_array($sendingServer->id, $existIds)) {
                 $request->session()->flash('alert-error', trans('messages.plan.sending_server.already_added'));
                 return redirect()->action('Admin\PlanController@sendingServers', $plan->uid);
             }
-            
+
             $plan->addSendingServerByUid($sendingServer->uid);
 
             // check plan status
@@ -795,7 +798,7 @@ class PlanController extends Controller
 
         if ($request->isMethod('post')) {
             $validator = $plan->updateTos($request->all());
-            
+
             // redirect if fails
             if ($validator->fails()) {
                 return response()->view('admin.plans.tos', [
@@ -862,7 +865,7 @@ class PlanController extends Controller
             $validator = \Validator::make($request->all(), [
                 'plan.general.frequency_amount' => 'required',
             ]);
-            
+
             // redirect if fails
             if ($validator->fails()) {
                 return response()->view('admin.plans.billing_cycle', [
@@ -872,7 +875,7 @@ class PlanController extends Controller
             }
 
             $plan->fillAll($request);
-            
+
             return view('admin.plans._billing_cycle', [
                 'plan' => $plan,
             ]);
@@ -961,7 +964,7 @@ class PlanController extends Controller
             'plan' => $plan,
         ]);
     }
-    
+
     /**
      * Plan sending server change option.
      *
@@ -977,7 +980,7 @@ class PlanController extends Controller
         if (\Gate::denies('update', $plan)) {
             return $this->notAuthorized();
         }
-        
+
         // save posted data
         if ($request->isMethod('post')) {
             $plan->fillAll($request);
@@ -985,10 +988,10 @@ class PlanController extends Controller
 
             // check plan status
             $plan->checkStatus();
-            
+
             return redirect()->action('Admin\PlanController@sendingServer', $plan->uid);
         }
-        
+
         return view('admin.plans.sending_server_option', [
             'plan' => $plan,
         ]);

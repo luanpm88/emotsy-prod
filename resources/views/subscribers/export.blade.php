@@ -25,7 +25,7 @@ people
                     <p>{!! trans('messages.click_to_start_export', ['total' => $list->readCache('SubscriberCount', 0)]) !!}</p>
                     <div class="form-group control-radio">
                         <div class="radio_box mb-4" data-popup='tooltip' title="">
-                            <label class="main-control d-flex align-items-center">
+                            <label class="main-control">
                                 <input type="radio"
                                     {{ request()->segment_uid ? '' : 'checked' }}
                                     name="which"
@@ -33,7 +33,7 @@ people
                             </label>
                         </div>
                         <div class="radio_box {{ $list->segments()->count() ? '' : 'disabled' }}" data-popup='tooltip' title="">
-                            <label class="main-control d-flex align-items-center">
+                            <label class="main-control">
                                 <input type="radio"
                                     {{ request()->segment_uid ? 'checked' : '' }}
                                     

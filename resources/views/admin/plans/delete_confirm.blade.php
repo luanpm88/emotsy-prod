@@ -6,8 +6,8 @@
 error_outline
             </i>
             <div>
-                <h4 class="text-danger mb-1">{{ $plan->name }}</h4>
-                <p>
+                <h5 class="text-danger mb-1">{{ $plan->name }}</h5>
+                <p class="text-muted">
                     @if ($plan->subscriptionsCount())
                         <span class="text-bold text-danger">{{ $plan->subscriptionsCount() }}</span> {{ trans('messages.subscription') }}<pp>,</pp>
                     @endif

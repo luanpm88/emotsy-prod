@@ -9,7 +9,7 @@ use Acelle\Model\Automation2;
 class Automation2Policy
 {
     use HandlesAuthorization;
-    
+
     public function create(User $user, Automation2 $automation)
     {
         $customer = $user->customer;
@@ -17,7 +17,7 @@ class Automation2Policy
 
         return $max > $customer->automationsCount() || $max == -1;
     }
-    
+
     public function view(User $user, Automation2 $automation)
     {
         return $automation->customer_id == $user->customer->id;
@@ -27,8 +27,8 @@ class Automation2Policy
     {
         return $automation->customer_id == $user->customer->id;
     }
-    
-    
+
+
     public function enable(User $user, Automation2 $automation)
     {
         return $automation->customer_id == $user->customer->id &&
@@ -36,7 +36,7 @@ class Automation2Policy
                 Automation2::STATUS_INACTIVE
             ]);
     }
-    
+
     public function disable(User $user, Automation2 $automation)
     {
         return $automation->customer_id == $user->customer->id &&
@@ -44,7 +44,7 @@ class Automation2Policy
                 Automation2::STATUS_ACTIVE
             ]);
     }
-    
+
     public function delete(User $user, Automation2 $automation)
     {
         return $automation->customer_id == $user->customer->id &&

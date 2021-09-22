@@ -8,7 +8,6 @@ use Acelle\Model\Setting;
 
 class SettingController extends Controller
 {
-
     /**
      * Render uploaded file.
      *

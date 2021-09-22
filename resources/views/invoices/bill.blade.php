@@ -46,7 +46,13 @@
                         <div class="loader"></div>
                     </a>
                 </div>
-            @elseif (isset($payButton) && !\Auth::user()->customer->preferredPaymentGatewayCanAutoCharge())
+            @elseif (
+                isset($payButton) &&
+                (
+                    $bill['type'] == Acelle\Model\Invoice::TYPE_CHANGE_PLAN || 
+                    !\Auth::user()->customer->preferredPaymentGatewayCanAutoCharge()
+                )
+            )
                 <hr>
                 <div class="text-left">
                     <a href="{{ action('SubscriptionController@payment', [

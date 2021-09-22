@@ -28,7 +28,7 @@ class Automation2Controller extends Controller
     {
         return view('automation2.index');
     }
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -65,7 +65,7 @@ class Automation2Controller extends Controller
             'types' => $types,
         ]);
     }
-    
+
     public function wizardTriggerOption(Request $request)
     {
         // saving
@@ -93,7 +93,7 @@ class Automation2Controller extends Controller
                 'trigger_type' => $request->trigger_type,
             ]);
         }
-        
+
         return view('automation2.wizardTriggerOption', [
             'trigger_type' => $request->trigger_type,
         ]);
@@ -116,16 +116,16 @@ class Automation2Controller extends Controller
     {
         $customer = $request->user()->customer;
         $automation = $customer->automation2s()->make()->newDefault();
-        
+
         // authorize
         if (\Gate::denies('create', $automation)) {
             return $this->noMoreItem();
         }
-        
+
         // saving
         if ($request->isMethod('post')) {
             $validator = $automation->createFromArray($request->all());
-            
+
             // redirect if fails
             if ($validator->fails()) {
                 return response()->view('automation2.wizard', [
@@ -133,19 +133,19 @@ class Automation2Controller extends Controller
                     'errors' => $validator->errors(),
                 ], 400);
             }
-            
+
             return response()->json([
                 'status' => 'success',
                 'message' => trans('messages.automation.created.redirecting'),
                 'url' => action('Automation2Controller@edit', ['uid' => $automation->uid])
             ], 201);
         }
-        
+
         return view('automation2.wizard', [
             'automation' => $automation,
         ]);
     }
-    
+
     /**
      * Update automation.
      *
@@ -154,21 +154,21 @@ class Automation2Controller extends Controller
     public function update(Request $request, $uid)
     {
         $customer = $request->user()->customer;
-        
+
         // find automation
         $automation = Automation2::findByUid($uid);
-        
+
         // authorize
         if (\Gate::denies('update', $automation)) {
             return $this->notAuthorized();
         }
-        
+
         // fill before save
         $automation->fillRequest($request);
-            
+
         // make validator
         $validator = Validator::make($request->all(), $automation->rules());
-            
+
         // redirect if fails
         if ($validator->fails()) {
             return response()->view('automation2.settings', [
@@ -176,19 +176,19 @@ class Automation2Controller extends Controller
                 'errors' => $validator->errors(),
             ], 400);
         }
-            
+
         // pass validation and save
         $automation->updateMailList(MailList::findByUid($request->mail_list_uid));
-        
+
         // save
         $automation->save();
-            
+
         return response()->json([
             'status' => 'success',
             'message' => trans('messages.automation.updated'),
         ], 201);
     }
-    
+
     /**
      * Update automation.
      *
@@ -210,7 +210,7 @@ class Automation2Controller extends Controller
             $automation->saveData($request->data);
         }
     }
-    
+
     /**
      * Creating a new resource.
      *
@@ -221,17 +221,17 @@ class Automation2Controller extends Controller
         // init automation
         $automation = Automation2::findByUid($uid);
         $automation->updateCacheInBackground();
-        
+
         // authorize
         if (\Gate::denies('update', $automation)) {
             return $this->notAuthorized();
         }
-        
+
         return view('automation2.edit', [
             'automation' => $automation,
         ]);
     }
-    
+
     /**
      * Automation settings in sidebar.
      *
@@ -241,17 +241,17 @@ class Automation2Controller extends Controller
     {
         // init automation
         $automation = Automation2::findByUid($uid);
-        
+
         // authorize
         if (\Gate::denies('update', $automation)) {
             return $this->notAuthorized();
         }
-        
+
         return view('automation2.settings', [
             'automation' => $automation,
         ]);
     }
-    
+
     /**
      * Select trigger type popup.
      *
@@ -266,16 +266,16 @@ class Automation2Controller extends Controller
         if (\Gate::denies('update', $automation)) {
             return $this->notAuthorized();
         }
-        
+
         $types = Automation2::getTriggerTypes();
-        
+
         return view('automation2.triggerSelectPupop', [
             'types' => $types,
             'automation' => $automation,
             'trigger' => $automation->getTrigger(),
         ]);
     }
-    
+
     /**
      * Select trigger type confirm.
      *
@@ -286,12 +286,12 @@ class Automation2Controller extends Controller
         // init automation
         $automation = Automation2::findByUid($uid);
         $rules = $this->triggerRules()[$request->key];
-        
+
         // authorize
         if (\Gate::denies('update', $automation)) {
             return $this->notAuthorized();
         }
-        
+
         return view('automation2.triggerSelectConfirm', [
             'key' => $request->key,
             'automation' => $automation,
@@ -353,10 +353,10 @@ class Automation2Controller extends Controller
         $validator = Validator::make($request->all(), $rules);
 
         $valid = $valid && !$validator->fails();
-        
+
         return [$validator,  $valid];
     }
-    
+
     /**
      * Select trigger type.
      *
@@ -366,14 +366,14 @@ class Automation2Controller extends Controller
     {
         // init automation
         $automation = Automation2::findByUid($uid);
-        
+
         // authorize
         if (\Gate::denies('update', $automation)) {
             return $this->notAuthorized();
         }
 
         list($validator, $result) = $this->vaidateTrigger($request, $request->options['key']);
-            
+
         // redirect if fails
         if (!$result) {
             return response()->view('automation2.triggerSelectConfirm', [
@@ -384,7 +384,7 @@ class Automation2Controller extends Controller
                 'errors' => $validator->errors(),
             ], 400);
         }
-        
+
         return response()->json([
             'status' => 'success',
             'message' => trans('messages.automation.trigger.added'),
@@ -395,7 +395,7 @@ class Automation2Controller extends Controller
             'rules' => $this->triggerRules()[$request->options['key']],
         ]);
     }
-    
+
     /**
      * Select action type popup.
      *
@@ -405,12 +405,12 @@ class Automation2Controller extends Controller
     {
         // init automation
         $automation = Automation2::findByUid($uid);
-        
+
         // authorize
         if (\Gate::denies('update', $automation)) {
             return $this->notAuthorized();
         }
-        
+
         $types = [
             'send-an-email',
             'wait',
@@ -424,7 +424,7 @@ class Automation2Controller extends Controller
             'hasChildren' => $request->hasChildren,
         ]);
     }
-    
+
     /**
      * Select action type confirm.
      *
@@ -434,12 +434,12 @@ class Automation2Controller extends Controller
     {
         // init automation
         $automation = Automation2::findByUid($uid);
-        
+
         // authorize
         if (\Gate::denies('update', $automation)) {
             return $this->notAuthorized();
         }
-        
+
         return view('automation2.actionSelectConfirm', [
             'key' => $request->key,
             'automation' => $automation,
@@ -456,18 +456,18 @@ class Automation2Controller extends Controller
     {
         // init automation
         $automation = Automation2::findByUid($uid);
-        
+
         // authorize
         if (\Gate::denies('update', $automation)) {
             return $this->notAuthorized();
         }
-        
+
         return view('automation2.condition.setting', [
             'automation' => $automation,
             'element' => $automation->getElement($request->element_id),
         ]);
     }
-    
+
     /**
      * Select trigger type.
      *
@@ -477,12 +477,12 @@ class Automation2Controller extends Controller
     {
         // init automation
         $automation = Automation2::findByUid($uid);
-        
+
         // authorize
         if (\Gate::denies('update', $automation)) {
             return $this->notAuthorized();
         }
-        
+
         if ($request->key == 'wait') {
             $delayOptions = \Acelle\Model\Automation2::getDelayOptions();
             $parts = explode(' ', $request->time);
@@ -565,7 +565,7 @@ class Automation2Controller extends Controller
             ]);
         }
     }
-    
+
     /**
      * Edit trigger.
      *
@@ -576,15 +576,15 @@ class Automation2Controller extends Controller
         // init automation
         $automation = Automation2::findByUid($uid);
         $rules = $this->triggerRules()[$request->key];
-        
+
         // authorize
         if (\Gate::denies('update', $automation)) {
             return $this->notAuthorized();
         }
-        
+
         if ($request->isMethod('post')) {
             list($validator, $result) = $this->vaidateTrigger($request, $request->options['key']);
-            
+
             // redirect if fails
             if (!$result) {
                 return response()->view('automation2.triggerEdit', [
@@ -605,7 +605,7 @@ class Automation2Controller extends Controller
                 'options' => $request->options,
             ]);
         }
-        
+
         return view('automation2.triggerEdit', [
             'key' => $request->key,
             'automation' => $automation,
@@ -613,7 +613,7 @@ class Automation2Controller extends Controller
             'rules' => $rules,
         ]);
     }
-    
+
     /**
      * Edit action.
      *
@@ -623,12 +623,12 @@ class Automation2Controller extends Controller
     {
         // init automation
         $automation = Automation2::findByUid($uid);
-        
+
         // authorize
         if (\Gate::denies('update', $automation)) {
             return $this->notAuthorized();
         }
-        
+
         // saving
         if ($request->isMethod('post')) {
             if ($request->key == 'wait') {
@@ -713,14 +713,14 @@ class Automation2Controller extends Controller
                 ]);
             }
         }
-        
+
         return view('automation2.actionEdit', [
             'key' => $request->key,
             'automation' => $automation,
             'element' => $automation->getElement($request->id),
         ]);
     }
-    
+
     /**
      * Email setup.
      *
@@ -730,7 +730,7 @@ class Automation2Controller extends Controller
     {
         // init automation
         $automation = Automation2::findByUid($uid);
-        
+
         if ($request->email_uid) {
             $email = Email::findByUid($request->email_uid);
         } else {
@@ -741,12 +741,12 @@ class Automation2Controller extends Controller
                 'action_id' => $request->action_id,
             ]);
         }
-        
+
         // authorize
         if (\Gate::denies('update', $automation)) {
             return $this->notAuthorized();
         }
-        
+
         // saving
         if ($request->isMethod('post')) {
             // fill before save
@@ -763,10 +763,10 @@ class Automation2Controller extends Controller
             } else {
                 $this->tracking_domain_id = null;
             }
-            
+
             // make validator
             $validator = Validator::make($request->all(), $email->rules($request));
-            
+
             // redirect if fails
             if ($validator->fails()) {
                 return response()->view('automation2.email.setup', [
@@ -775,12 +775,12 @@ class Automation2Controller extends Controller
                     'errors' => $validator->errors(),
                 ], 400);
             }
-            
+
             // pass validation and save
             $email->automation2_id = $automation->id;
             $email->customer_id = $automation->customer_id;
             $email->save();
-            
+
             return response()->json([
                 'status' => 'success',
                 'title' => trans('messages.automation.send_a_email', ['title' => $email->subject]),
@@ -794,7 +794,7 @@ class Automation2Controller extends Controller
                 ],
             ], 201);
         }
-        
+
         return view('automation2.email.setup', [
             'automation' => $automation,
             'email' => $email,
@@ -811,7 +811,7 @@ class Automation2Controller extends Controller
         // init automation
         $automation = Automation2::findByUid($uid);
         $email = Email::findByUid($email_uid);
-        
+
         // authorize
         if (\Gate::denies('update', $automation)) {
             return $this->notAuthorized();
@@ -825,7 +825,7 @@ class Automation2Controller extends Controller
             'message' => trans('messages.automation.email.deteled'),
         ], 201);
     }
-    
+
     /**
      * Email template.
      *
@@ -836,25 +836,25 @@ class Automation2Controller extends Controller
         // init automation
         $automation = Automation2::findByUid($uid);
         $email = Email::findByUid($email_uid);
-        
+
         // authorize
         if (\Gate::denies('update', $automation)) {
             return $this->notAuthorized();
         }
-        
+
         if (!$email->hasTemplate()) {
             return redirect()->action('Automation2Controller@templateCreate', [
                 'uid' => $automation->uid,
                 'email_uid' => $email->uid,
             ]);
         }
-        
+
         return view('automation2.email.template', [
             'automation' => $automation,
             'email' => $email,
         ]);
     }
-    
+
     /**
      * Email show.
      *
@@ -865,18 +865,18 @@ class Automation2Controller extends Controller
         // init automation
         $automation = Automation2::findByUid($uid);
         $email = Email::findByUid($request->email_uid);
-        
+
         // authorize
         if (\Gate::denies('update', $automation)) {
             return $this->notAuthorized();
         }
-        
+
         return view('automation2.email.index', [
             'automation' => $automation,
             'email' => $email,
         ]);
     }
-    
+
     /**
      * Email confirm.
      *
@@ -887,22 +887,22 @@ class Automation2Controller extends Controller
         // init automation
         $automation = Automation2::findByUid($uid);
         $email = Email::findByUid($request->email_uid);
-        
+
         // authorize
         if (\Gate::denies('update', $automation)) {
             return $this->notAuthorized();
         }
-        
+
         // saving
         if ($request->isMethod('post')) {
         }
-        
+
         return view('automation2.email.confirm', [
             'automation' => $automation,
             'email' => $email,
         ]);
     }
-    
+
     /**
      * Create template.
      *
@@ -1046,7 +1046,7 @@ class Automation2Controller extends Controller
             $rules = array(
                 'content' => 'required',
             );
-            
+
             $this->validate($request, $rules);
 
             $plan = $request->user()->customer->activeSubscription()->plan;
@@ -1055,11 +1055,11 @@ class Automation2Controller extends Controller
                     return response()->json(['message' => trans('messages.template.validation.unsubscribe_url_required')], 400);
                 }
             }
-            
+
             $email->setTemplateContent($request->content, function ($email) {
                 $email->updateLinks();
             });
-            
+
             return response()->json([
                 'status' => 'success',
             ]);
@@ -1106,7 +1106,7 @@ class Automation2Controller extends Controller
     {
         $automation = Automation2::findByUid($uid);
         $email = Email::findByUid($request->email_uid);
-        
+
         // authorize
         if (\Gate::denies('update', $automation)) {
             return $this->notAuthorized();
@@ -1130,7 +1130,7 @@ class Automation2Controller extends Controller
             'email' => $email,
         ]);
     }
-    
+
     /**
      * Remove exist template.
      *
@@ -1142,7 +1142,7 @@ class Automation2Controller extends Controller
     {
         $automation = Automation2::findByUid($uid);
         $email = Email::findByUid($request->email_uid);
-        
+
         // authorize
         if (\Gate::denies('update', $automation)) {
             return $this->notAuthorized();
@@ -1167,7 +1167,7 @@ class Automation2Controller extends Controller
     {
         $automation = Automation2::findByUid($uid);
         $email = Email::findByUid($request->email_uid);
-        
+
         // authorize
         if (\Gate::denies('update', $automation)) {
             return $this->notAuthorized();
@@ -1190,7 +1190,7 @@ class Automation2Controller extends Controller
     {
         $automation = Automation2::findByUid($uid);
         $email = Email::findByUid($request->email_uid);
-        
+
         // authorize
         if (\Gate::denies('update', $automation)) {
             return $this->notAuthorized();
@@ -1198,7 +1198,7 @@ class Automation2Controller extends Controller
 
         echo $email->getHtmlContent();
     }
-    
+
     /**
      * Attachment upload.
      *
@@ -1210,17 +1210,17 @@ class Automation2Controller extends Controller
     {
         $automation = Automation2::findByUid($uid);
         $email = Email::findByUid($request->email_uid);
-        
+
         // authorize
         if (\Gate::denies('update', $automation)) {
             return $this->notAuthorized();
         }
-        
+
         foreach ($request->file as $file) {
             $email->uploadAttachment($file);
         }
     }
-    
+
     /**
      * Attachment remove.
      *
@@ -1232,20 +1232,20 @@ class Automation2Controller extends Controller
     {
         $automation = Automation2::findByUid($uid);
         $attachment = Attachment::findByUid($request->attachment_uid);
-        
+
         // authorize
         if (\Gate::denies('update', $automation)) {
             return $this->notAuthorized();
         }
-        
+
         $attachment->remove();
-        
+
         return response()->json([
             'status' => 'success',
             'message' => trans('messages.automation.email.attachment.removed'),
         ], 201);
     }
-    
+
     /**
      * Attachment download.
      *
@@ -1258,15 +1258,15 @@ class Automation2Controller extends Controller
         $automation = Automation2::findByUid($uid);
         $email = Email::findByUid($request->email_uid);
         $attachment = Attachment::findByUid($request->attachment_uid);
-        
+
         // authorize
         if (\Gate::denies('read', $automation)) {
             return $this->notAuthorized();
         }
-        
+
         return response()->download(storage_path('app/' . $attachment->file), $attachment->name);
     }
-    
+
     /**
      * Enable automation.
      *
@@ -1288,13 +1288,13 @@ class Automation2Controller extends Controller
                 $automation->enable();
             }
         }
-        
+
         return response()->json([
             'status' => 'success',
             'message' => trans_choice('messages.automation.enabled', $automations->count()),
         ]);
     }
-    
+
     /**
      * Disable event.
      *
@@ -1316,13 +1316,13 @@ class Automation2Controller extends Controller
                 $automation->disable();
             }
         }
-        
+
         return response()->json([
             'status' => 'success',
             'message' => trans_choice('messages.automation.disabled', $automations->count()),
         ]);
     }
-    
+
     /**
      * Remove the specified resource from storage.
      *
@@ -1342,7 +1342,7 @@ class Automation2Controller extends Controller
                 'message' => trans('messages.operation_not_allowed_in_demo'),
             ], 403);
         }
-        
+
         $automations = Automation2::whereIn(
             'uid',
             is_array($request->uids) ? $request->uids : explode(',', $request->uids)
@@ -1360,7 +1360,7 @@ class Automation2Controller extends Controller
             'message' => trans_choice('messages.automation.deleted', $automations->count()),
         ]);
     }
-    
+
     /**
      * Automation insight page.
      *
@@ -1371,7 +1371,7 @@ class Automation2Controller extends Controller
     public function insight(Request $request, $uid)
     {
         $automation = Automation2::findByUid($uid);
-        
+
         // authorize
         if (\Gate::denies('view', $automation)) {
             return $this->notAuthorized();
@@ -1383,7 +1383,7 @@ class Automation2Controller extends Controller
             'insight' => $automation->getInsight(),
         ]);
     }
-    
+
     /**
      * Automation contacts list.
      *
@@ -1394,7 +1394,7 @@ class Automation2Controller extends Controller
     public function contacts(Request $request, $uid)
     {
         $automation = Automation2::findByUid($uid);
-        
+
         // authorize
         if (\Gate::denies('view', $automation)) {
             return $this->notAuthorized();
@@ -1410,7 +1410,7 @@ class Automation2Controller extends Controller
             'subscribers' => $subscribers,
         ]);
     }
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -1419,7 +1419,7 @@ class Automation2Controller extends Controller
     public function contactsList(Request $request, $uid)
     {
         $automation = Automation2::findByUid($uid);
-        
+
         // authorize
         if (\Gate::denies('view', $automation)) {
             return $this->notAuthorized();
@@ -1435,13 +1435,13 @@ class Automation2Controller extends Controller
                                   ->addSelect('auto_triggers.updated_at')
                                   ->orderBy($sortBy, $sortOrder);
         $contacts = $subscribers->paginate($request->per_page);
-        
+
         return view('automation2.contacts.list', [
             'automation' => $automation,
             'contacts' => $contacts,
         ]);
     }
-    
+
     /**
      * Automation timeline.
      *
@@ -1452,7 +1452,7 @@ class Automation2Controller extends Controller
     public function timeline(Request $request, $uid)
     {
         $automation = Automation2::findByUid($uid);
-        
+
         // authorize
         if (\Gate::denies('view', $automation)) {
             return $this->notAuthorized();
@@ -1471,20 +1471,20 @@ class Automation2Controller extends Controller
     public function timelineList(Request $request, $uid)
     {
         $automation = Automation2::findByUid($uid);
-        
+
         // authorize
         if (\Gate::denies('view', $automation)) {
             return $this->notAuthorized();
         }
-        
+
         $timelines = $automation->timelines()->paginate($request->per_page);
-        
+
         return view('automation2.timeline.list', [
             'automation' => $automation,
             'timelines' => $timelines,
         ]);
     }
-    
+
     /**
      * Automation contact profile.
      *
@@ -1496,7 +1496,7 @@ class Automation2Controller extends Controller
     {
         $automation = Automation2::findByUid($uid);
         $contact = Subscriber::findByUid($contact_uid);
-        
+
         // authorize
         if (\Gate::denies('view', $automation)) {
             return $this->notAuthorized();
@@ -1519,7 +1519,7 @@ class Automation2Controller extends Controller
     {
         $automation = Automation2::findByUid($uid);
         $contact = Subscriber::findByUid($contact_uid);
-        
+
         // authorize
         if (\Gate::denies('update', $automation)) {
             return $this->notAuthorized();
@@ -1542,7 +1542,7 @@ class Automation2Controller extends Controller
     {
         $automation = Automation2::findByUid($uid);
         $contact = Subscriber::findByUid($contact_uid);
-        
+
         // authorize
         if (\Gate::denies('update', $automation)) {
             return $this->notAuthorized();
@@ -1577,7 +1577,7 @@ class Automation2Controller extends Controller
     {
         $automation = Automation2::findByUid($uid);
         $subscribers = $automation->subscribers();
-        
+
         // authorize
         if (\Gate::denies('update', $automation)) {
             return $this->notAuthorized();
@@ -1629,7 +1629,7 @@ class Automation2Controller extends Controller
     {
         $automation = Automation2::findByUid($uid);
         $contact = Subscriber::findByUid($contact_uid);
-        
+
         // authorize
         if (\Gate::denies('update', $automation)) {
             return $this->notAuthorized();
@@ -1644,7 +1644,7 @@ class Automation2Controller extends Controller
             ]),
         ], 201);
     }
-    
+
     /**
      * Automation export contacts.
      *
@@ -1655,7 +1655,7 @@ class Automation2Controller extends Controller
     public function exportContacts(Request $request, $uid)
     {
         $automation = Automation2::findByUid($uid);
-        
+
         // authorize
         if (\Gate::denies('update', $automation)) {
             return $this->notAuthorized();
@@ -1682,7 +1682,7 @@ class Automation2Controller extends Controller
     public function copyToNewList(Request $request, $uid)
     {
         $automation = Automation2::findByUid($uid);
-        
+
         // authorize
         if (\Gate::denies('update', $automation)) {
             return $this->notAuthorized();
@@ -1744,7 +1744,7 @@ class Automation2Controller extends Controller
         // init automation
         $automation = Automation2::findByUid($uid);
         $email = Email::findByUid($email_uid);
-        
+
         // authorize
         if (\Gate::denies('update', $automation)) {
             return $this->notAuthorized();
@@ -1755,7 +1755,7 @@ class Automation2Controller extends Controller
             $rules = array(
                 'content' => 'required',
             );
-            
+
             $this->validate($request, $rules);
 
             $plan = $request->user()->customer->activeSubscription()->plan;
@@ -1791,7 +1791,7 @@ class Automation2Controller extends Controller
         // init automation
         $automation = Automation2::findByUid($uid);
         $email = Email::findByUid($email_uid);
-        
+
         // authorize
         if (\Gate::denies('update', $automation)) {
             return $this->notAuthorized();
@@ -1802,10 +1802,10 @@ class Automation2Controller extends Controller
             $rules = array(
                 'plain' => 'required',
             );
-            
+
             // make validator
             $validator = Validator::make($request->all(), $rules);
-            
+
             // redirect if fails
             if ($validator->fails()) {
                 return response()->view('automation2.email.template.editPlain', [
@@ -1814,7 +1814,7 @@ class Automation2Controller extends Controller
                     'errors' => $validator->errors(),
                 ], 400);
             }
-            
+
             $email->plain = $request->plain;
             $email->save();
 
@@ -1858,7 +1858,7 @@ class Automation2Controller extends Controller
             }
         }
         $list = MailList::findByUid($request->list_uid);
-        
+
         return view('automation2.segmentSelect', [
             'automation' => $automation,
             'list' => $list,
@@ -1987,7 +1987,7 @@ class Automation2Controller extends Controller
             'subscriber' => $subscriber,
         ]);
     }
-    
+
     /**
      * Get last saved time.
      *
@@ -2013,7 +2013,7 @@ class Automation2Controller extends Controller
 
         switch ($type) {
             case Automation2::TRIGGER_TYPE_WELCOME_NEW_SUBSCRIBER:
-                
+
                 $subscribers = $automation->getSubscribersWithTriggerInfo();
 
                 if ($request->input('orderBy')) {
@@ -2095,7 +2095,7 @@ class Automation2Controller extends Controller
 
         // Manually trigger, force!
         $automation->logger()->info(sprintf('Manually trigger contact %s', $subscriber->email));
-        
+
         // Force trigger a contact
         // Even inactive contacts - in case of Say-Goodbye-Trigger for example
         $trigger = $automation->initTrigger($subscriber, $force = true);
@@ -2222,7 +2222,7 @@ class Automation2Controller extends Controller
             'trigger' => $automation->getTrigger(),
         ]);
     }
-    
+
     /**
      * Change cart automation2 list for auto adding byuer.
      *

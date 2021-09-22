@@ -17,7 +17,11 @@ class SubscriberController extends Controller
      */
     public function search($list, $request)
     {
-        $subscribers = \Acelle\Model\Subscriber::search($request)
+        $customer = $request->user()->customer;
+        $subscribers = $customer->subscribers()
+            ->search($request->keyword)
+            ->filter($request)
+            ->orderBy($request->sort_order, $request->sort_direction)
             ->where('mail_list_id', '=', $list->id);
 
         return $subscribers;
@@ -750,7 +754,7 @@ class SubscriberController extends Controller
         if (!empty($subscriber->imagePath())) {
             $img = \Image::make($subscriber->imagePath());
         } else {
-            $img = \Image::make(public_path('images/placeholder.jpg'));
+            $img = \Image::make(public_path('images/subscriber-icon.jpg'));
         }
 
         return $img->response();
@@ -794,7 +798,7 @@ class SubscriberController extends Controller
     {
         $list = MailList::findByUid($list_uid);
         $subscriber = Subscriber::findByUid($uid);
-        
+
         // authorize
         if (\Gate::denies('update', $subscriber)) {
             return $this->notAuthorized();
@@ -829,7 +833,7 @@ class SubscriberController extends Controller
     {
         $list = MailList::findByUid($list_uid);
         $subscriber = Subscriber::findByUid($uid);
-        
+
         // authorize
         if (\Gate::denies('delete', $subscriber)) {
             return $this->notAuthorized();
@@ -861,7 +865,7 @@ class SubscriberController extends Controller
         if ($request->isMethod('post')) {
             // make validator
             $validator = \Validator::make($request->all(), ['emails' => 'required']);
-            
+
             // redirect if fails
             if ($validator->fails()) {
                 return response()->view('subscribers.bulkDelete', [
@@ -903,7 +907,7 @@ class SubscriberController extends Controller
         if ($request->isMethod('post')) {
             // make validator
             $validator = \Validator::make($request->all(), ['emails' => 'required']);
-            
+
             // redirect if fails
             if ($validator->fails()) {
                 return response()->view('subscribers.bulkDelete', [
@@ -948,7 +952,7 @@ class SubscriberController extends Controller
         // validate and save posted data
         if ($request->isMethod('post')) {
             $validator = \Acelle\Model\Subscriber::assginValues($subscribers, $request);
-            
+
             // redirect if fails
             if ($validator->fails()) {
                 return response()->view('subscribers.assignValues', [
@@ -957,7 +961,7 @@ class SubscriberController extends Controller
                     'errors' => $validator->errors(),
                 ], 400);
             }
-            
+
             return response()->json([
                 'status' => 'success',
                 'message' => trans('messages.subscribers.values_assigned'),

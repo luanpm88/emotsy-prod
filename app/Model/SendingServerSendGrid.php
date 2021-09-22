@@ -32,7 +32,7 @@ use Acelle\Library\SendingServer\DomainVerificationInterface;
 
 class SendingServerSendGrid extends SendingServer implements DomainVerificationInterface
 {
-    const WEBHOOK = 'sendgrid';
+    public const WEBHOOK = 'sendgrid';
 
     protected $table = 'sending_servers';
     public static $client = null;
@@ -223,7 +223,7 @@ class SendingServerSendGrid extends SendingServer implements DomainVerificationI
         if (array_key_exists('errors', $json)) {
             throw new \Exception('Failed to connect to SendGrid: '.$response->body());
         }
-        
+
         $identities = [];
         foreach ($json as $domain) {
             $name = $domain['domain'];
@@ -264,7 +264,7 @@ class SendingServerSendGrid extends SendingServer implements DomainVerificationI
         return true;
     }
 
-    public function verifyDomain($domain) : array
+    public function verifyDomain($domain): array
     {
         $body = json_decode('{
           "automatic_security": false,
@@ -276,11 +276,11 @@ class SendingServerSendGrid extends SendingServer implements DomainVerificationI
 
         $response = $this->client()->client->whitelabel()->domains()->post($body);
         $result = json_decode($response->body(), true);
-        
+
         if (array_key_exists('errors', $result)) {
             // in case of {"errors":[{"message":"An authenticated domain already exists for this URL. Please use a unique subdomain."}]}
             // => get the domain information
-            
+
             $result = $this->getDomainVerificationInfo($domain);
             // if domain not found, then it is another error at first
             if (empty($result)) {
@@ -315,7 +315,7 @@ class SendingServerSendGrid extends SendingServer implements DomainVerificationI
         ];
     }
 
-    public function checkDomainVerificationStatus($domain) : array
+    public function checkDomainVerificationStatus($domain): array
     {
         $this->validateDomain($domain->name);
         $info = $this->getDomainVerificationInfo($domain->name);
@@ -342,7 +342,7 @@ class SendingServerSendGrid extends SendingServer implements DomainVerificationI
     {
         $response = $this->client()->client->whitelabel()->domains()->get();
         $domains = json_decode($response->body(), true);
-        
+
         $domains = array_values(array_filter($domains, function ($r) use ($domain) {
             return $domain == $r['domain'] && $this->getDefaultSubdomainName($domain) == $r['subdomain'];
         }));
@@ -382,7 +382,7 @@ class SendingServerSendGrid extends SendingServer implements DomainVerificationI
      */
     public function allowVerifyingOwnEmails()
     {
-        return true;
+        return false;
     }
 
     /**

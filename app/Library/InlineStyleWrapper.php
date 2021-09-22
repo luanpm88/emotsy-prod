@@ -1,4 +1,5 @@
 <?php
+
 namespace Acelle\Library;
 
 use Symfony\Component\CssSelector\Exception\ParseException;

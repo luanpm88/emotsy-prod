@@ -74,13 +74,13 @@ class GeoIpCheck extends Command
         }
 
         Setting::set('geoip.enabled', 'installing');
-            
+
         Notification::warning([
             'title' => 'GeoIP setup',
             'message' => 'GeoIP database is being installed in the background. Process '.getmypid().' started at '.date("M-d-Y H:i:s")]);
 
         LaravelLog::info('Setting up GeoIP database');
-        
+
         try {
             $geoip->setup();
             Setting::setYes('geoip.enabled');

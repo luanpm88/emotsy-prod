@@ -10,7 +10,7 @@ use Acelle\Library\Traits\HasUid;
 class Product extends Model
 {
     use HasUid;
-    
+
     public static $itemsPerPage = 16;
 
     /**

@@ -78,7 +78,7 @@
                                 {{ $lastUpdate }}
                             </span>
                         </label>
-                        <desc>Last activity •
+                        <desc>{{ trans('messages.automation.last_activity') }} •
                             <a target="_blank" target="_blank" style="color:blue;text-decoration: underline;"
                                 href="{{ action('AutoTrigger@check', [ 'id' => $trigger->id ]) }}"
                                 class="trigger-check"

@@ -336,7 +336,7 @@ label.switchery-double.checkbox-switchery {
 }
 .switch3 {
   width: 50px;
-  text-align: right:
+  text-align: right;
 }
 .checkbox3 {
   display: flex;
@@ -531,7 +531,7 @@ label.switchery-double.checkbox-switchery {
 .mc-table .mc-row .media {
   padding-right: 20px;
 }
-.mc-table .mc-row .media i {
+.mc-table .mc-row .media i, .mc-table .mc-row .media span {
     font-size: 20px;
     border-radius: 100%;
     background: #777;
@@ -1330,7 +1330,6 @@ a:hover label {
 }
 .automation_status {
   margin: 0!important;
-  display: block!important;
 }
 .switch-automation .select2-container .select2-selection--single .select2-selection__rendered {
   color: transparent;

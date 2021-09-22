@@ -13,13 +13,13 @@ class Invoice extends Model
     use HasUid;
 
     // statuses
-    const STATUS_NEW = 'new';               // unpaid
-    const STATUS_PAID = 'paid';
+    public const STATUS_NEW = 'new';               // unpaid
+    public const STATUS_PAID = 'paid';
 
     // type
-    const TYPE_RENEW_SUBSCRIPTION = 'renew_subscription';
-    const TYPE_NEW_SUBSCRIPTION = 'new_subscription';
-    const TYPE_CHANGE_PLAN = 'change_plan';
+    public const TYPE_RENEW_SUBSCRIPTION = 'renew_subscription';
+    public const TYPE_NEW_SUBSCRIPTION = 'new_subscription';
+    public const TYPE_CHANGE_PLAN = 'change_plan';
 
     protected $fillable = [
         'billing_first_name',
@@ -91,6 +91,11 @@ class Invoice extends Model
     public function transactions()
     {
         return $this->hasMany('Acelle\Model\Transaction');
+    }
+
+    public function billingCountry()
+    {
+        return $this->belongsTo('Acelle\Model\Country', 'billing_country_id');
     }
 
     /**
@@ -279,7 +284,7 @@ class Invoice extends Model
         // fulfill invoice
         $this->payFailed($error);
     }
-    
+
     /**
      * Pay invoice.
      *
@@ -295,11 +300,11 @@ class Invoice extends Model
         if ($this->getPendingTransaction()) {
             $this->getPendingTransaction()->setSuccess();
         }
-        
+
         // invoice after pay actions
         $this->process();
     }
-    
+
     /**
      * Pay invoice failed.
      *
@@ -398,7 +403,7 @@ class Invoice extends Model
             default:
                 $chargeInfo = '';
         }
-        
+
         return  [
             'title' => $this->title,
             'description' => $this->description,
@@ -585,5 +590,10 @@ class Invoice extends Model
         $this->save();
 
         return $validator;
+    }
+
+    public function getBillingName()
+    {
+        return $this->billing_first_name . ' ' . $this->billing_last_name;
     }
 }

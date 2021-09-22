@@ -1,4 +1,5 @@
 <?php
+
 namespace Acelle\Library\Lazada\Lazop;
 
 class LazopClient
@@ -86,7 +87,7 @@ class LazopClient
         if ($this->connectTimeout) {
             curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $this->connectTimeout);
         }
-        
+
         curl_setopt($ch, CURLOPT_USERAGENT, $this->sdkVersion);
 
         //https ignore ssl check ?
@@ -96,7 +97,7 @@ class LazopClient
         }
 
         $output = curl_exec($ch);
-        
+
         $errno = curl_errno($ch);
 
         if ($errno) {
@@ -182,7 +183,7 @@ class LazopClient
 
         $response = curl_exec($ch);
         unset($data);
-        
+
         $errno = curl_errno($ch);
         if ($errno) {
             curl_close($ch);
@@ -208,7 +209,7 @@ class LazopClient
         }
 
         $apiParams = $request->udfParams;
-        
+
         $requestUrl = $this->gatewayUrl;
 
         if ($this->endWith($requestUrl, "/")) {
@@ -231,7 +232,7 @@ class LazopClient
         }
 
         $requestUrl = substr($requestUrl, 0, -1);
-        
+
         $resp = '';
 
         try {
@@ -261,7 +262,7 @@ class LazopClient
     protected function logApiError($requestUrl, $errorCode, $responseTxt)
     {
         $localIp = isset($_SERVER["SERVER_ADDR"]) ? $_SERVER["SERVER_ADDR"] : "CLI";
-        $logger = new LazopLogger;
+        $logger = new LazopLogger();
         $logger->conf["log_file"] = rtrim(LAZOP_SDK_WORK_DIR, '\\/') . '/' . "logs/lazopsdk.log." . date("Y-m-d");
         $logger->conf["separator"] = "^_^";
         $logData = array(
