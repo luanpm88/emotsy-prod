@@ -75,7 +75,7 @@
                                 <a
                                     link-method="POST"
                                     href="{{ action('SubscriptionController@buyNow') }}"
-                                    class="btn btn-secondary"
+                                    class="btn btn-primary"
                                     data-size="sm"
                                 >
                                     {{ trans('messages.subscription.buy_now') }}

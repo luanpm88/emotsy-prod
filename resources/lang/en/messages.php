@@ -3835,7 +3835,7 @@
     free trial of <span class="fw-600">:plan</span>.
     Your subscription will be due on <strong>:date</strong>',
   'subscription.trial_announcement' => 'You are currently on trial of <span class="fw-600">:plan</span>.
-    your trial period will expire in <span class="fw-bold">:days</span> days.
+    your trial period will expire in <span class="fw-bold">:days</span> day(s).
     Click Buy now to purchase the plan.',
   'subscription.buy_now' => 'Buy now',
 ) ?>
