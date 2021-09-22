@@ -1389,14 +1389,4 @@ class Plan extends Model
     {
         return $this->trial_amount . ' ' . trans_choice('messages.' . $this->trial_unit . '.choice', $this->trial_amount);
     }
-
-    public function getPeriodEndsAt($startDate)
-    {
-        return getPeriodEndsAt($startDate, $this->frequency_amount, $this->frequency_unit);
-    }
-
-    public function getTrialPeriodEndsAt($startDate)
-    {
-        return getPeriodEndsAt($startDate, $this->trial_amount, $this->trial_unit);
-    }
 }

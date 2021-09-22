@@ -60,6 +60,27 @@
                         ])
                     ])
                 @endif
+
+                @if ($subscription->isTrial() && !$subscription->getUnpaidInvoice())
+                    <div class="alert alert-info">
+                        <div class="d-flex">
+                            <p class="mb-0 me-auto">{!! trans('messages.subscription.trial_announcement', [
+                                'plan' => $plan->name,
+                                'days' => $subscription->trial_ends_at->diffInDays( \Carbon\Carbon::now() ),
+                            ]) !!}</p>
+                            <div class="ms-auto">
+                                <a
+                                    link-method="POST"
+                                    href="{{ action('SubscriptionController@buyNow') }}"
+                                    class="btn btn-secondary"
+                                    data-size="sm"
+                                >
+                                    {{ trans('messages.subscription.buy_now') }}
+                                </a>
+                            </div>
+                        </div>
+                    </div>         
+                @endif
             </div>
 
             <h2 class="text-semibold">{{ trans('messages.subscription') }}</h2>
@@ -67,25 +88,14 @@
             <div class="sub-section">
                 @if ($subscription->isActive())
                     @if (!$subscription->cancelled())
-                        {{-- @if (\Auth::user()->customer->supportsAutoBilling())
-                            <p>
-                                {!! trans('messages.subscription.current_subscription.recurring.wording', [
-                                    'plan' => $plan->name,
-                                    'money' => Acelle\Library\Tool::format_price($plan->price, $plan->currency->format),
-                                    'remain' => $subscription->current_period_ends_at->diffForHumans(),
-                                    'next_on' => \Acelle\Library\Tool::formatDate($subscription->current_period_ends_at)
-                                ]) !!}
-                            </p>
-                        @else --}}
-                            <p>
-                                {!! trans('messages.subscription.current_subscription.wording', [
-                                    'plan' => $plan->name,
-                                    'money' => Acelle\Library\Tool::format_price($plan->price, $plan->currency->format),
-                                    'remain' => $subscription->current_period_ends_at->diffForHumans(),
-                                    'next_on' => \Acelle\Library\Tool::formatDate($subscription->current_period_ends_at)
-                                ]) !!}
-                            </p>
-                        {{-- @endif --}}
+                        <p>
+                            {!! trans('messages.subscription.current_subscription.wording', [
+                                'plan' => $plan->name,
+                                'money' => Acelle\Library\Tool::format_price($plan->price, $plan->currency->format),
+                                'remain' => $subscription->current_period_ends_at->diffForHumans(),
+                                'next_on' => \Acelle\Library\Tool::formatDate($subscription->current_period_ends_at)
+                            ]) !!}
+                        </p>
                     @else
                         <p>
                             {!! trans('messages.subscription.current_subscription.cancel_at_end_of_period.wording', [

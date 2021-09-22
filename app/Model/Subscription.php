@@ -170,6 +170,7 @@ class Subscription extends Model implements HasQuotaInterface
             $title = $title = trans('messages.invoice.init_subscription.trial.desc', [
                 'plan' => $this->plan->name,
                 'time' => $this->plan->getTrialPeriodTimePhrase(),
+                'date' => \Acelle\Library\Tool::formatDate($this->getTrialPeriodEndsAt(Carbon::now())),
             ]);
         } else {
             $title = trans('messages.invoice.init_subscription.desc', [
@@ -356,6 +357,18 @@ class Subscription extends Model implements HasQuotaInterface
     public function getPeriodEndsAt($startDate)
     {
         return $this->plan->getPeriodEndsAt($startDate);
+        return getPeriodEndsAt($startDate, $this->plan->frequency_amount, $this->plan->frequency_unit);
+    }
+
+    /**
+     * Get trial period by start date.
+     *
+     * @param  date  $date
+     * @return date
+     */
+    public function getTrialPeriodEndsAt($startDate)
+    {
+        return getPeriodEndsAt($startDate, $this->plan->trial_amount, $this->plan->trial_unit);
     }
 
     // 1 End luôn subscription nếu đã hết hạn
@@ -559,7 +572,12 @@ class Subscription extends Model implements HasQuotaInterface
             throw new \Exception("Only new subscription can be activated, double check your code to make sure you call activate() on a new subscription");
         }
 
-        $this->current_period_ends_at = $trial ? $this->plan->getTrialPeriodEndsAt(Carbon::now()) : $this->getPeriodEndsAt(Carbon::now());
+        if ($trial) {
+            $this->current_period_ends_at = $this->getTrialPeriodEndsAt(Carbon::now());
+            $this->trial_ends_at = $this->getTrialPeriodEndsAt(Carbon::now());
+        } else {
+            $this->current_period_ends_at = $this->getPeriodEndsAt(Carbon::now());
+        }
         $this->ends_at = null;
         $this->status = self::STATUS_ACTIVE;
         $this->started_at = Carbon::now();
@@ -852,5 +870,10 @@ class Subscription extends Model implements HasQuotaInterface
     public function getQuotaSettings($name): ?array
     {
         return $this->plan->getQuotaSettings($name);
+    }
+
+    public function isTrial()
+    {
+        return isset($this->trial_ends_at) && $this->trial_ends_at->endOfDay() > Carbon::now() && $this->trial_ends_at == $this->current_period_ends_at;
     }
 }

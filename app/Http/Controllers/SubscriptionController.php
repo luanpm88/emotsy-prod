@@ -11,6 +11,7 @@ use Acelle\Cashier\Cashier;
 use Acelle\Cashier\Services\StripeGatewayService;
 use Carbon\Carbon;
 use Acelle\Model\SubscriptionLog;
+use Acelle\Library\Facades\Billing;
 
 class SubscriptionController extends Controller
 {
@@ -375,7 +376,7 @@ class SubscriptionController extends Controller
             ]);
         }
 
-        // choose a plan
+        // already has subscription
         elseif ($subscription) {
             $invoice = $subscription->getUnpaidInvoice();
 
@@ -383,6 +384,7 @@ class SubscriptionController extends Controller
                 'subscription' => $subscription,
                 'bill' => $invoice->getBillingInfo(),
                 'invoice' => $invoice,
+                'gateway' => $request->payment_method ? Billing::getGateway($request->payment_method) : null,
             ]);
         }
 
@@ -390,5 +392,22 @@ class SubscriptionController extends Controller
             'subscription' => $subscription,
             'bill' => null,
         ]);
+    }
+
+    public function buyNow(Request $request)
+    {
+        if (isSiteDemo()) {
+            return response()->json(["message" => trans('messages.operation_not_allowed_in_demo')], 404);
+        }
+
+        $customer = $request->user()->customer;
+        $subscription = $customer->subscription;
+
+        if ($request->user()->customer->can('buyNow', $subscription)) {
+            $subscription->createRenewInvoice();
+        }
+
+        // Redirect to billing & payment
+        return redirect()->action('SubscriptionController@billingInformation');
     }
 }

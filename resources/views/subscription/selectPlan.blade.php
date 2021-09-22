@@ -97,7 +97,7 @@
                                                         'plan_uid' => $plan->uid,
                                                         'trial' => true,
                                                     ]) }}"
-                                                    class="btn fw-600 btn-primary rounded-3 d-block shadow-sm">
+                                                    class="btn fw-600 btn-default rounded-3 d-block shadow-sm">
                                                         {{ trans('messages.plan.try_free', [
                                                             'time' => $plan->getTrialPeriodTimePhrase(),
                                                         ]) }}
@@ -109,7 +109,7 @@
                                                 href="{{ action('SubscriptionController@init', [
                                                     'plan_uid' => $plan->uid,
                                                 ]) }}"
-                                                class="btn fw-600 btn-warning rounded-3 d-block mt-2 shadow-sm">
+                                                class="btn fw-600 btn-primary rounded-3 d-block mt-3 py-2 shadow-sm">
                                                     @if ($plan->isFree())
                                                         {{ trans('messages.plan.select') }}
                                                     @else

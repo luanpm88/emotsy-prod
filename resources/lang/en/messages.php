@@ -3832,5 +3832,10 @@
   'day.choice' => 'day|days',
   'plan.buy' => 'Buy',
   'invoice.init_subscription.trial.desc' => '<span class="fw-600">:time</span>
-    free trial of <span class="fw-600">:plan</span>',
+    free trial of <span class="fw-600">:plan</span>.
+    Your subscription will be due on <strong>:date</strong>',
+  'subscription.trial_announcement' => 'You are currently on trial of :plan.
+    your trial period will expire in <span class="fw-600">:days</span> days.<br>
+    Click Buy now to purchase the plan.',
+  'subscription.buy_now' => 'Buy now',
 ) ?>
