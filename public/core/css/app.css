@@ -7595,9 +7595,6 @@ body:not(.search-open) .app_search_box .search-control::after {
         max-width: 80%;
     }
 }
-.main-menu {
-    align-items: center;
-}
 .navbar-main .navbar-nav .lvl-1 {
     padding: 0.8rem 0.8rem !important;
     margin-right: 0.2rem;
