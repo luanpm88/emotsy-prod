@@ -28,7 +28,7 @@ class HtmlHandlersTest extends TestCase
     public function test_parse_rss()
     {
         $pipeline = new PipelineBuilder();
-        $pipeline->add(new ParseRss);
+        $pipeline->add(new ParseRss());
         $html = "{% set rss = rss('http://rss.cnn.com/rss/edition.rss', 5) %}
             {% for post in rss.item %}
                 <h3>{{ post.title }}</h3>
@@ -44,7 +44,7 @@ class HtmlHandlersTest extends TestCase
     public function test_replace_bare_line_feed()
     {
         $pipeline = new PipelineBuilder();
-        $pipeline->add(new ReplaceBareLineFeed);
+        $pipeline->add(new ReplaceBareLineFeed());
         $html = "Hello\nWorld\nFrom\r\nLaravel\n";
         $out = $pipeline->build()->process($html);
 
@@ -135,11 +135,11 @@ class HtmlHandlersTest extends TestCase
         $subscriber->uid = '000000';
 
         $pipeline = new PipelineBuilder();
-        $pipeline->add(new AddDoctype);
-        $pipeline->add(new RemoveTitleTag);
-        $pipeline->add(new ReplaceBareLineFeed);
+        $pipeline->add(new AddDoctype());
+        $pipeline->add(new RemoveTitleTag());
+        $pipeline->add(new ReplaceBareLineFeed());
         $pipeline->add(new AppendHtml('<div>Hello world éèéêôâ</div>'));
-        $pipeline->add(new ParseRss);
+        $pipeline->add(new ParseRss());
         $pipeline->add(new TransformTag($campaign, $subscriber, 'MSGID', $server = null));
         $pipeline->add(new TransformUrl($template, 'MSGID', $trackingDomain = null));
         $pipeline->add(new MakeInlineCss([storage_path('tests/sample.css')]));
@@ -179,11 +179,11 @@ class HtmlHandlersTest extends TestCase
         $subscriber->uid = '000000';
 
         $pipeline = new PipelineBuilder();
-        $pipeline->add(new AddDoctype);
-        $pipeline->add(new RemoveTitleTag);
-        $pipeline->add(new ReplaceBareLineFeed);
+        $pipeline->add(new AddDoctype());
+        $pipeline->add(new RemoveTitleTag());
+        $pipeline->add(new ReplaceBareLineFeed());
         $pipeline->add(new AppendHtml('<div>Hello world éèéêôâ</div>'));
-        $pipeline->add(new ParseRss);
+        $pipeline->add(new ParseRss());
         $pipeline->add(new TransformTag($campaign, $subscriber, 'MSGID', $server = null));
 
         $pipeline->add(new TransformUrl($template, 'MSGID', $domain));
@@ -224,7 +224,7 @@ class HtmlHandlersTest extends TestCase
         $domain->scheme = 'https';
 
         // Mail list
-        $list = new MailList;
+        $list = new MailList();
         $list->generateUid();
 
         // Template
@@ -246,11 +246,11 @@ class HtmlHandlersTest extends TestCase
         $subscriber->uid = '000000';
 
         $pipeline = new PipelineBuilder();
-        $pipeline->add(new AddDoctype);
-        $pipeline->add(new RemoveTitleTag);
-        $pipeline->add(new ReplaceBareLineFeed);
+        $pipeline->add(new AddDoctype());
+        $pipeline->add(new RemoveTitleTag());
+        $pipeline->add(new ReplaceBareLineFeed());
         $pipeline->add(new AppendHtml('<div>Hello world éèéêôâ</div>'));
-        $pipeline->add(new ParseRss);
+        $pipeline->add(new ParseRss());
         $pipeline->add(new TransformTag($campaign, $subscriber, 'MSGID', $server = null));
         $pipeline->add(new InjectTrackingPixel('MSGID'));
         $pipeline->add(new TransformUrl($template, 'MSGID', $domain)); // click url, tracking domain applied
@@ -291,7 +291,7 @@ class HtmlHandlersTest extends TestCase
     public function test_test_campaign_with_special_tags_without_tracking_domain()
     {
         // Mail list
-        $list = new MailList;
+        $list = new MailList();
         $list->generateUid();
 
         // Template
@@ -312,11 +312,11 @@ class HtmlHandlersTest extends TestCase
         $subscriber->uid = '000000';
 
         $pipeline = new PipelineBuilder();
-        $pipeline->add(new AddDoctype);
-        $pipeline->add(new RemoveTitleTag);
-        $pipeline->add(new ReplaceBareLineFeed);
+        $pipeline->add(new AddDoctype());
+        $pipeline->add(new RemoveTitleTag());
+        $pipeline->add(new ReplaceBareLineFeed());
         $pipeline->add(new AppendHtml('<div>Hello world éèéêôâ</div>'));
-        $pipeline->add(new ParseRss);
+        $pipeline->add(new ParseRss());
         $pipeline->add(new TransformTag($campaign, $subscriber, 'MSGID', $server = null));
         $pipeline->add(new InjectTrackingPixel('MSGID'));
         $pipeline->add(new TransformUrl($template, 'MSGID', null)); // click url, tracking domain applied

@@ -2,12 +2,12 @@
 
 class Autoloader
 {
-  /**
-     * Autoloade Class in SDK.
-     * PS: only load SDK class
-     * @param string $class class name
-     * @return void
-     */
+    /**
+       * Autoloade Class in SDK.
+       * PS: only load SDK class
+       * @param string $class class name
+       * @return void
+       */
     public static function autoload($class)
     {
         $name = $class;

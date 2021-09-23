@@ -12,16 +12,16 @@ use Exception;
 
 class TemplateUrlTest extends TestCase
 {
-    const RELATIVE = 'images/sample.png';
-    const ABSOLUTE = '/fake/sample.png';
-    const PUBLIC = 'http://cdn.example.com/sample.png';
-    const CDN = 'http://cdn.example.com/sample.png';
-    const EMPTY = '';
-    const SHARP = '#';
+    public const RELATIVE = 'images/sample.png';
+    public const ABSOLUTE = '/fake/sample.png';
+    public const PUBLIC = 'http://cdn.example.com/sample.png';
+    public const CDN = 'http://cdn.example.com/sample.png';
+    public const EMPTY = '';
+    public const SHARP = '#';
 
-    const HOST = 'http://localhost/';
-    const TRACKING_DOMAIN = 'track.example.com';
-    const TRACKING_HOST = 'http://track.example.com/';
+    public const HOST = 'http://localhost/';
+    public const TRACKING_DOMAIN = 'track.example.com';
+    public const TRACKING_HOST = 'http://track.example.com/';
 
     public function initTemplate()
     {
