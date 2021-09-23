@@ -1,6 +1,6 @@
 @extends('layouts.popup.small')
 
-@section('title')
+@section('bar-title')
     {{ $template->name }}
 @endsection
 
@@ -28,7 +28,7 @@
                 ])
             @endforeach
         </div>
-        
+
         <hr>
 
         <div class="mt-4">
