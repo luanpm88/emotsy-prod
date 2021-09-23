@@ -7606,3 +7606,6 @@ body:not(.search-open) .app_search_box .search-control::after {
 .navbar-nav > li > .dropdown-menu {
     margin-top: 0.2rem;
 }
+.categories-checkboxes .form-group {
+    margin-bottom: 8px;
+}
