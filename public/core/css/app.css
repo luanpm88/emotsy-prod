@@ -2546,6 +2546,7 @@ canvas[data-zr-dom-id='_zrender_hover_'] {
     border: dashed 1px #ddd;
     padding: 15px;
     background: #f5f5f5;
+    border-radius: 5px;
 }
 .square-tag {
   border-radius: 2px;
