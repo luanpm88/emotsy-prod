@@ -172,7 +172,7 @@ class Invoice extends Model
             $total += $item->total();
         }
 
-        return $total;
+        return $total + $this->fee;
     }
 
     /**
@@ -331,7 +331,7 @@ class Invoice extends Model
 
         switch ($this->type) {
             case self::TYPE_NEW_SUBSCRIPTION:
-                $subscription->activate($data['trial']);
+                $subscription->activate();
                 break;
             case self::TYPE_RENEW_SUBSCRIPTION:
                 $subscription->renew();
@@ -422,6 +422,7 @@ class Invoice extends Model
             'invoice_uid' => $this->uid,
             'type' => $this->type,
             'plan' => $plan,
+            'fee' => $this->fee ? format_price($this->fee, $this->currency->format) : null,
         ];
     }
 
@@ -640,5 +641,11 @@ class Invoice extends Model
         }
 
         return $invoice;
+    }
+
+    public function updatePaymentServiceFee($gateway)
+    {
+        $this->fee = $gateway->getMinimumChargeAmount($this->currency->code);
+        $this->save();
     }
 }

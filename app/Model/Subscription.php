@@ -33,7 +33,7 @@ class Subscription extends Model implements HasQuotaInterface
      * @var array
      */
     protected $dates = [
-        'trial_ends_at', 'ends_at', 'current_period_ends_at',
+        'ends_at', 'current_period_ends_at',
         'created_at', 'updated_at', 'started_at', 'last_period_ends_at'
     ];
 
@@ -159,43 +159,32 @@ class Subscription extends Model implements HasQuotaInterface
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function createInitInvoice($trial=false)
+    public function createInitInvoice()
     {
         //
         if ($this->getUnpaidInvoice()) {
             throw new \Exception(trans('messages.error.has_waiting_invoices'));
         }
 
-        if ($trial) {
-            $title = $title = trans('messages.invoice.init_subscription.trial.desc', [
-                'plan' => $this->plan->name,
-                'time' => $this->plan->getTrialPeriodTimePhrase(),
-                'date' => \Acelle\Library\Tool::formatDate($this->getTrialPeriodEndsAt(Carbon::now())),
-            ]);
-        } else {
-            $title = trans('messages.invoice.init_subscription.desc', [
-                'plan' => $this->plan->name,
-                'date' => \Acelle\Library\Tool::formatDate($this->getPeriodEndsAt(Carbon::now())),
-            ]);
-        }
-
         // create init invoice
         return Invoice::createInvoice([
             'status' => Invoice::TYPE_NEW_SUBSCRIPTION,
             'title' => trans('messages.invoice.init_subscription'),
-            'description' => $title,
+            'description' => trans('messages.invoice.init_subscription.desc', [
+                'plan' => $this->plan->name,
+                'date' => \Acelle\Library\Tool::formatDate($this->getPeriodEndsAt(Carbon::now())),
+            ]),
             'customer_id' => $this->customer->id,
             'currency_id' => $this->plan->currency_id,
             'billingAddress' => $this->customer->getDefaultBillingAddress(),
             'metadata' => [
                 'subscription_uid' => $this->uid,
-                'trial' => $trial,
             ],
             'items' => [
                 [
                     'id' => $this->id,
                     'type' => get_class($this),
-                    'amount' => $trial ? 0 : $this->plan->price,
+                    'amount' => $this->plan->hasTrial() ? 0 : $this->plan->price,
                     'vat' => $this->plan->vat,
                     'title' => $this->plan->name,
                     'description' => view('plans._bill_desc', ['plan' => $this->plan]),
@@ -565,15 +554,14 @@ class Subscription extends Model implements HasQuotaInterface
      *
      * @return bool
      */
-    public function activate($trial=false)
+    public function activate()
     {
         if (!$this->isNew()) {
             throw new \Exception("Only new subscription can be activated, double check your code to make sure you call activate() on a new subscription");
         }
 
-        if ($trial) {
+        if ($this->plan->hasTrial()) {
             $this->current_period_ends_at = $this->getTrialPeriodEndsAt(Carbon::now());
-            $this->trial_ends_at = $this->getTrialPeriodEndsAt(Carbon::now());
         } else {
             $this->current_period_ends_at = $this->getPeriodEndsAt(Carbon::now());
         }
@@ -869,10 +857,5 @@ class Subscription extends Model implements HasQuotaInterface
     public function getQuotaSettings($name): ?array
     {
         return $this->plan->getQuotaSettings($name);
-    }
-
-    public function isTrial()
-    {
-        return isset($this->trial_ends_at) && $this->trial_ends_at->endOfDay() > Carbon::now() && $this->trial_ends_at == $this->current_period_ends_at;
     }
 }

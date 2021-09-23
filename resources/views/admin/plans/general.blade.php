@@ -174,7 +174,7 @@
 
                     <div class="trial_settings">
                         <label class="mb-2">{{ trans('messages.plan.trial_setting') }}</label>
-                        <div class="d-flex mb-4">
+                        <div class="d-flex">
                             <div class="me-3">
                                 @include('helpers.form_control.number', [
                                     'name' => 'plan[general][trial_amount]',
@@ -199,10 +199,12 @@
                  </div>
             </div>
         </div>
-        <button class="btn btn-secondary me-2">{{ trans('messages.save') }}</button>
-        <a href="{{ action('Admin\PlanController@index') }}" role="button" class="btn btn-link">
-            {{ trans('messages.cancel') }}
-        </a>
+        <div class="mt-4">
+            <button class="btn btn-secondary me-2">{{ trans('messages.save') }}</button>
+            <a href="{{ action('Admin\PlanController@index') }}" role="button" class="btn btn-link">
+                {{ trans('messages.cancel') }}
+            </a>
+        </div>
     </form>
 
     <script>

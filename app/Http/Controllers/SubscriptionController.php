@@ -33,7 +33,7 @@ class SubscriptionController extends Controller
         //    2 Sinh ra RENEW invoice
         //    3 Xử lý thanh toán
         $subscription->check();
-        $subscription->processRenewInvoice();
+        // $subscription->processRenewInvoice();
 
         // 2. IF PLAN NOT ACTIVE
         if (!$subscription->plan->isActive()) {
@@ -94,7 +94,7 @@ class SubscriptionController extends Controller
 
         // create new subscription
         $subscription = $customer->subscription;
-        $subscription = $customer->assignPlan($plan, $request->trial);
+        $subscription = $customer->assignPlan($plan);
 
         // create init invoice
         if (!$subscription->invoices()->new()->count()) {
@@ -380,11 +380,18 @@ class SubscriptionController extends Controller
         elseif ($subscription) {
             $invoice = $subscription->getUnpaidInvoice();
 
+            // gateway fee
+            if ($request->payment_method) {
+                $gateway = Billing::getGateway($request->payment_method);
+
+                $invoice->updatePaymentServiceFee($gateway);
+            }
+                
+
             return view('subscription.orderBox', [
                 'subscription' => $subscription,
                 'bill' => $invoice->getBillingInfo(),
                 'invoice' => $invoice,
-                'gateway' => $request->payment_method ? Billing::getGateway($request->payment_method) : null,
             ]);
         }
 
@@ -392,22 +399,5 @@ class SubscriptionController extends Controller
             'subscription' => $subscription,
             'bill' => null,
         ]);
-    }
-
-    public function buyNow(Request $request)
-    {
-        if (isSiteDemo()) {
-            return response()->json(["message" => trans('messages.operation_not_allowed_in_demo')], 404);
-        }
-
-        $customer = $request->user()->customer;
-        $subscription = $customer->subscription;
-
-        if ($request->user()->customer->can('buyNow', $subscription)) {
-            $subscription->createRenewInvoice();
-        }
-
-        // Redirect to billing & payment
-        return redirect()->action('SubscriptionController@billingInformation');
     }
 }

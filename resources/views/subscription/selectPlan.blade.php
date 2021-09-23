@@ -18,7 +18,7 @@
 @section('content')    
     <div class="container mt-4 mb-5">
         <div class="row">
-            <div class="col-md-8">
+            <div class="col-md-10">
                 <h2 class="mb-4">{{ trans('messages.subscription.choose_a_plan') }}</h2>
                 @if ($subscription)
                     @include('elements._notification', [
@@ -90,32 +90,31 @@
 
                                     <div>
                                         <div style="vertical-align:bottom">
-                                            @if ($plan->hasTrial())
-                                                <a
-                                                    link-method="POST"
-                                                    href="{{ action('SubscriptionController@init', [
-                                                        'plan_uid' => $plan->uid,
-                                                        'trial' => true,
-                                                    ]) }}"
-                                                    class="btn fw-600 btn-default rounded-3 d-block shadow-sm">
-                                                        {{ trans('messages.plan.try_free', [
-                                                            'time' => $plan->getTrialPeriodTimePhrase(),
-                                                        ]) }}
-                                                </a>
-                                            @endif
-
                                             <a
                                                 link-method="POST"
                                                 href="{{ action('SubscriptionController@init', [
                                                     'plan_uid' => $plan->uid,
                                                 ]) }}"
-                                                class="btn fw-600 btn-primary rounded-3 d-block mt-3 py-2 shadow-sm">
+                                                class="btn fw-600 btn-primary rounded-3 d-block py-2 shadow-sm">
                                                     @if ($plan->isFree())
                                                         {{ trans('messages.plan.select') }}
                                                     @else
                                                         {{ trans('messages.plan.buy') }}
                                                     @endif
                                             </a>
+                                            @if ($plan->hasTrial())
+                                                <p
+                                                    link-method="POST"
+                                                    href="{{ action('SubscriptionController@init', [
+                                                        'plan_uid' => $plan->uid,
+                                                        'trial' => true,
+                                                    ]) }}"
+                                                    class="mt-3 fw-600 mb-0 text-center">
+                                                        {{ trans('messages.plan.has_free', [
+                                                            'time' => $plan->getTrialPeriodTimePhrase(),
+                                                        ]) }}
+                                                </p>
+                                            @endif
                                         </div>
                                     </div>
                                 </div>

@@ -1500,7 +1500,7 @@ class Customer extends Model
     /**
      * Assign plan to customer.
      */
-    public function assignPlan($plan, $trial=false)
+    public function assignPlan($plan)
     {
         $subscription = $this->subscription;
         // create tmp subscription
@@ -1530,7 +1530,7 @@ class Customer extends Model
         $subscription->save();
 
         // create init invoice
-        $subscription->createInitInvoice($trial);
+        $subscription->createInitInvoice();
 
         return $subscription;
     }

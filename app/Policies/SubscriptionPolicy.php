@@ -154,18 +154,4 @@ class SubscriptionPolicy
 
         return $can;
     }
-
-    public function buyNow(User $user, Subscription $subscription, $role)
-    {
-        $can = $subscription->isTrial();
-
-        switch ($role) {
-            case 'admin':
-                break;
-            case 'customer':
-                break;
-        }
-
-        return $can;
-    }
 }

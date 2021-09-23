@@ -26,6 +26,15 @@
                 @endforeach
             </div>
             <hr>
+            @if (isset($bill['fee']))
+                <div class="bill_item d-flex">
+                    <div class="mr-auto">
+                        <p class="mb-0 font-weight-semibold">{{ trans('messages.bill.fee') }}</p>
+                    </div>
+                    <p class="mb-0 font-weight-semibold fs-6">{{ $bill['fee'] }}</p>
+                </div>
+                <hr>
+            @endif
             <div>
                 <div class="total d-flex ">
                     <div class="mr-auto">
