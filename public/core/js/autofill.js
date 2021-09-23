@@ -163,6 +163,11 @@ $.fn.autofill = function(options) {
             box.container.find('.header').removeClass('text-warning');
             box.container.find('.header').html(box.messages.header_found);
         }
+
+        // callback
+        if (typeof(box.options.callback) != 'undefined') {
+            box.options.callback();
+        }
     };
 
     box.renderDropboxList = function(data) {
