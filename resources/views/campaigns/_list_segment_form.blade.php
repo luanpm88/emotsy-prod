@@ -27,6 +27,7 @@
         >
             @include('helpers.form_control', [
                 'name' => 'lists_segments[' . $index . '][mail_list_uid]',
+                'class' => 'list-select',
                 'include_blank' => trans('messages.choose'),
                 'type' => 'select',
                 'label' => trans('messages.which_list_send'),

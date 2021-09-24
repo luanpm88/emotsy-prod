@@ -2,9 +2,8 @@
 
 @section('title', trans('messages.campaigns') . " - " . trans('messages.recipients'))
 
-@section('page_script')
-    <script type="text/javascript" src="{{ URL::asset('assets/js/plugins/forms/styling/uniform.min.js') }}"></script>
-    <script type="text/javascript" src="{{ URL::asset('js/validate.js') }}"></script>
+@section('head')
+    <script type="text/javascript" src="{{ URL::asset('core/js/group-manager.js') }}"></script>
 @endsection
 
 @section('page_header')
@@ -64,45 +63,79 @@ arrow_forward
     <form>
 
     <script>
-        // addable multiple form
-        $(document).on("click", ".addable-multiple-form .add-form", function(e) {
-            var form = $(this).parents('.addable-multiple-form');
-            var container = form.find('.addable-multiple-container');
-            var status = $(this).attr('automation-status');
+        var CampaignsReciepientsSegment = {
+			manager: null,
 
-            if(status == 'active') {
-                //show disable automation confirm
-                $('#disable_automation_confirm').modal('show');
-                return;
-            }
+            rowToGroup: function(row) {
+                return {
+                    listSelect: row.find('.list-select'),
+                    url: row.find('.list-select').closest('.list_select_box').attr("segments-url"),
+                    segmentSelect: row.find('.segments-select-box'),
+                    getVal: function() {
+                        return row.find('.list-select').val();
+                    },
+                    index: row.closest('.condition-line').attr('rel')
+                }
+            },
 
-            // ajax update custom sort
-            $.ajax({
-                method: "GET",
-                url: $(this).attr('sample-url'),
-            })
-            .done(function( msg ) {
-                var num = "0";
+            addRow: function(row) {
+                group = this.rowToGroup(row);
+                this.getManager().add(group);
 
-                if(container.find('.condition-line').length) {
-                    num = parseInt(container.find('.condition-line').last().attr("rel"))+1;
+                this.groupAction(group);
+            },
+
+            groupAction: function(group) {
+                group.check = function() {
+                    if(group.getVal() !== '') {
+                        $.ajax({
+                            method: "GET",
+                            url: group.url,
+                            data: {
+                                list_uid: group.getVal(),
+                                index: group.index
+                            }
+                        })
+                        .done(function( res ) {
+                            group.segmentSelect.html(res);
+
+                            initJs(group.segmentSelect);
+                        });
+                    } else {
+                        group.segmentSelect.html('');
+                    }
                 }
 
-                msg = msg.replace(/__index__/g, num);
+                group.listSelect.on('change', function() {
+                    group.check();
+                });
+            },
 
-                container.append(msg);
+			getManager: function() {
+				if (this.manager == null) {
+					this.manager = new GroupManager();
 
-                var new_line = container.find('.condition-line').last();
+					$('.condition-line').each(function() {
+						var row = $(this);
 
-                if(new_line.find('.event-campaigns-container').length) {
-                    loadAutomationEmail(new_line.find('.event-campaigns-container'));
-                }
+						CampaignsReciepientsSegment.addRow(row);
+					});
+				}
 
-                initJs(new_line);
-            });
-        });
+				return this.manager;
+			},
+
+			check: function() {
+				this.getManager().groups.forEach(function(group) {
+					group.check();
+				});
+			}
+		}
 
         $(function() {
+            CampaignsReciepientsSegment.getManager();
+
+
             $('.recipients-form').submit(function(e) {
                 if (!$('[radio-group=campaign_list_info_defaulf]:checked').length) {
                     new Dialog('alert', {
@@ -111,6 +144,57 @@ arrow_forward
 
                     e.preventDefault();
                     return false;
+                }
+            });
+
+            // addable multiple form
+            $(document).on("click", ".addable-multiple-form .add-form", function(e) {
+                var form = $(this).parents('.addable-multiple-form');
+                var container = form.find('.addable-multiple-container');
+                var status = $(this).attr('automation-status');
+
+                if(status == 'active') {
+                    //show disable automation confirm
+                    $('#disable_automation_confirm').modal('show');
+                    return;
+                }
+
+                // ajax update custom sort
+                $.ajax({
+                    method: "GET",
+                    url: $(this).attr('sample-url'),
+                })
+                .done(function( msg ) {
+                    var num = "0";
+
+                    if(container.find('.condition-line').length) {
+                        num = parseInt(container.find('.condition-line').last().attr("rel"))+1;
+                    }
+
+                    msg = msg.replace(/__index__/g, num);
+
+                    container.append(msg);
+
+                    var new_line = container.find('.condition-line').last();
+
+                    if(new_line.find('.event-campaigns-container').length) {
+                        loadAutomationEmail(new_line.find('.event-campaigns-container'));
+                    }
+
+                    initJs(new_line);
+
+                    CampaignsReciepientsSegment.addRow(new_line);
+                });
+            });
+
+            // radio group check
+            $(document).on('change', '[radio-group]', function() {
+                var checked = $(this).is(':checked');
+                var group = $(this).attr('radio-group');
+
+                if(checked) {
+                    $('[radio-group="' + group + '"]').prop('checked', false);
+                    $(this).prop('checked', true);
                 }
             });
         });
