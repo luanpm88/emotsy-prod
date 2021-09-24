@@ -38,7 +38,8 @@ class HtmlHandlersTest extends TestCase
 
         $out = $pipeline->build()->process($html);
 
-        $this->assertTrue(strlen($out) > 5*strlen($html));
+        $this->assertTrue(strpos($out, '{% for post in rss.item %}') === false);
+        $this->assertTrue(strpos($out, '<h3>{{ post.title }}</h3>') === false);
     }
 
     public function test_replace_bare_line_feed()
@@ -152,6 +153,45 @@ class HtmlHandlersTest extends TestCase
         $this->assertTrue(strpos($html, "\n") === false);
         $this->assertTrue(strpos($html, '<div>Hello world éèéêôâ</div>') !== false);
         $this->assertTrue(strpos($html, "'%UID%'") !== false); // isStdClassSubscriber is always TRUE in test
+    }
+
+    public function test_test_campaign_html_with_types_of_urls()
+    {
+        // Template
+        $template = Mockery::mock(new Template(['name' => 'Template']));
+        $template->generateUid();
+        $msgId = 'TEST';
+
+        // List
+        $list = Mockery::mock(new MailList());
+
+        // Campaign
+        $campaign = Mockery::mock(new Campaign(['name' => 'Campaign']));
+        $campaign->defaultMailList = $list;
+        $campaign->shouldReceive('isStdClassSubscriber')->andReturn(true);
+
+        // Subscriber
+        $subscriber = Mockery::mock(new Subscriber());
+        $subscriber->uid = '000000';
+
+        $pipeline = new PipelineBuilder();
+        $pipeline->add(new AddDoctype());
+        $pipeline->add(new RemoveTitleTag());
+        $pipeline->add(new ReplaceBareLineFeed());
+        $pipeline->add(new AppendHtml('<div>test</div>'));
+        $pipeline->add(new ParseRss());
+        $pipeline->add(new TransformTag($campaign, $subscriber, 'MSGID', $server = null));
+        $pipeline->add(new TransformUrl($template, 'MSGID', $trackingDomain = null));
+        $pipeline->add(new MakeInlineCss([storage_path('tests/sample.css')]));
+        $pipeline->add(new InjectTrackingPixel('MSGID'));
+
+        $html = $pipeline->build()->process("<a href='image/hehe'>Relative</a><img src='//cdn.fake.com/image/hehe'><a href='/absolute/url'>Absolute</a><a href='//absolute/url'>Two slashes</a><a href='mailto:hello@example.com'>hello@example.com</a><a href='#sectionN'>Scroll to Section N</a>");
+
+        $this->assertTrue(strpos($html, '<!DOCTYPE html>') === 0);
+
+        // mailto:hello@example.com should not be modified
+        $this->assertTrue(strpos($html, '<a href="mailto:hello@example.com">hello@example.com</a>') !== false);
+        $this->assertTrue(strpos($html, '<a href="#sectionN">Scroll to Section N</a>') !== false);
     }
 
     public function test_test_campaign_html_content_with_tracking_domain()
