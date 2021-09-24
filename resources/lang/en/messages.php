@@ -2444,7 +2444,7 @@
   'subscription.claim_payment.confirm' => 'You\'re about to claim that you have already paid the plan.',
   'invoice.status.future_payment.pending' => 'Next invoice is pending',
   'invoice.status.future_payment.claimed' => 'Next invoice was claimed',
-  'customer_has_no_plan' => 'Customer doesn\'t have any payment method',
+  'customer_has_no_plan' => 'Customer doesn\'t have any subscription',
   'subscription.checkout.processing_payment' => 'Processing your payment... please wait!',
   'subscription.payment.next' => 'Next',
   'subscription.card_list' => 'Your card information',
