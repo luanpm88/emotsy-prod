@@ -112,6 +112,11 @@ class OpenLog extends Model
 
     public static function createFromRequest($request)
     {
+        $ipAddress = $request->ip();
+        if (!StringHelper::fromHumanIpAddress($ipAddress)) {
+            return;
+        }
+
         $messageId = StringHelper::base64UrlDecode($request->message_id);
 
         if (!TrackingLog::where('message_id', $messageId)->exists()) {
@@ -123,7 +128,7 @@ class OpenLog extends Model
         $log->user_agent = $_SERVER['HTTP_USER_AGENT'];
 
         try {
-            $location = IpLocation::add($request->ip());
+            $location = IpLocation::add($ipAddress);
             $log->ip_address = $location->ip_address;
         } catch (Exception $ex) {
             // Then no GeoIP information
