@@ -167,8 +167,8 @@
                     }
 
                     // Rss widget
-                    this.addCustomCss('{{ url('/core/css/builder_rss.css') }}');
-                    this.addWidget(new RssWidget(), 'content', 3);
+                    // this.addCustomCss('{{ url('/core/css/builder_rss.css') }}');
+                    // this.addWidget(new RssWidget(), 'content', 3);
 
                     // add custom css
                     this.addCustomCss('{{ url('/core/css/builder_product.css') }}');
