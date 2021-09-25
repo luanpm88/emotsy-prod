@@ -3832,6 +3832,6 @@
   'rss.url' => 'URL',
   'rss.preview' => 'Preview',
   'rss.close' => 'Close',
-  'rss.posts' => 'Posts',
+  'rss.posts' => 'Number of posts to display',
   'rss.url_required' => 'RSS url is required',
 ) ?>
