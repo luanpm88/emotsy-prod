@@ -299,6 +299,8 @@
                         saveData(function() {
                             // hide popup
                             popup.hide();
+
+                            doSelect(newE);
                             
                             notify({
                                 type: 'success',

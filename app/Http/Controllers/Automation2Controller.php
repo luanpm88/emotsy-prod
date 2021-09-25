@@ -513,6 +513,7 @@ class Automation2Controller extends Controller
                         'key' => $request->key,
                         'type' => $request->type,
                         'email' => empty($request->email) ? null : $request->email,
+                        'wait' => $request->wait,
                     ],
                 ]);
             } elseif ($request->type == 'click') {
@@ -524,6 +525,7 @@ class Automation2Controller extends Controller
                         'key' => $request->key,
                         'type' => $request->type,
                         'email_link' => empty($request->email_link) ? null : $request->email_link,
+                        'wait' => $request->wait,
                     ],
                 ]);
             } elseif ($request->type == 'cart_buy_anything') {
@@ -661,6 +663,7 @@ class Automation2Controller extends Controller
                             'key' => $request->key,
                             'type' => $request->type,
                             'email' => empty($request->email) ? null : $request->email,
+                            'wait' => $request->wait,
                         ],
                     ]);
                 } elseif ($request->type == 'click') {
@@ -672,6 +675,7 @@ class Automation2Controller extends Controller
                             'key' => $request->key,
                             'type' => $request->type,
                             'email_link' => empty($request->email_link) ? null : $request->email_link,
+                            'wait' => $request->wait,
                         ],
                     ]);
                 } elseif ($request->type == 'cart_buy_anything') {
@@ -682,6 +686,7 @@ class Automation2Controller extends Controller
                         'options' => [
                             'key' => $request->key,
                             'type' => $request->type,
+                            'wait' => $request->wait,
                         ],
                     ]);
                 } elseif ($request->type == 'cart_buy_item') {

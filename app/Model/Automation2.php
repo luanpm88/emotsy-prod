@@ -1545,4 +1545,18 @@ class Automation2 extends Model
 
         throw new Exception("Invalid trigger type: ".$type);
     }
+
+    public function getConditionWaitOptions()
+    {
+        $result = [];
+
+        for($i=1; $i < 100; $i++) {
+            $result[] = [
+                'text' => trans_choice('messages.condition.wait_day', $i),
+                'value' => $i
+            ];
+        }
+
+        return $result;
+    }
 }
