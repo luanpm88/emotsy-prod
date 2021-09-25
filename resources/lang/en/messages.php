@@ -3828,4 +3828,10 @@
   'search.go_to_lists' => 'Lists management',
   'click_open_app_search' => 'Open app search (Ctrl + D)',
   'upgrade.checking_dependencies' => 'Checking for upgrade dependencies...',
+  'widget.rss' => 'RSS',
+  'rss.url' => 'URL',
+  'rss.preview' => 'Preview',
+  'rss.close' => 'Close',
+  'rss.posts' => 'Posts',
+  'rss.url_required' => 'RSS url is required',
 ) ?>

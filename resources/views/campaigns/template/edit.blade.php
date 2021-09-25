@@ -32,6 +32,7 @@
     </style>
 
     @include('helpers._builder_product_widgets')
+    @include('helpers._builder_rss_widgets')
 
     <script>
         var CSRF_TOKEN = "{{ csrf_token() }}";
@@ -85,6 +86,10 @@
                     // product widgets
                     this.addContentWidget(new ProductListWidget(), 0, 'ProductCommerce');
                     this.addContentWidget(new ProductWidget(), 0, 'ProductCommerce');
+
+                    // Rss widget
+                    this.addCustomCss('{{ url('/core/css/builder_rss.css') }}');
+                    this.addWidget(new RssWidget(), 'content', 3);
 
                     // add custom css
                     this.addCustomCss('{{ url('/core/css/builder_product.css') }}');
