@@ -3836,10 +3836,12 @@
   'rss.url_required' => 'RSS url is required',
   'condition.which_email_read' => 'Which email subscriber reads',
   'condition.wait_day' => ':count day|:count days',
-  'condition.wait_intro' => '
+  'condition.wait.title' => '
     <p class="mb-2 fw-600">
       Speicify the time to wait for the condition being met.
     </p>
+  ',
+  'condition.wait.intro' => '
     <p class="mb-2">
       For example: if the specified email is not opened or
       clicked at the first check, and with a waiting time of

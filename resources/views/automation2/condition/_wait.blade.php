@@ -1,8 +1,13 @@
 <div class="condition_wait_container">
     <div class="mt-4">
-        {!! trans('messages.condition.wait_intro', [
-            'days' => $element->getOption('wait') ? trans_choice('messages.condition.wait_day', $element->getOption('wait')) : trans_choice('messages.condition.wait_day', 1)
-        ]) !!}
+        <div class="">
+            {!! trans('messages.condition.wait.title') !!}
+        </div>
+        <div class="text-muted fst-italic">
+            {!! trans('messages.condition.wait.intro', [
+                'days' => $element->getOption('wait') ? trans_choice('messages.condition.wait_day', $element->getOption('wait')) : trans_choice('messages.condition.wait_day', 1)
+            ]) !!}
+        </div>
     </div>
 
     <div class="mb-4" style="width:100%">
