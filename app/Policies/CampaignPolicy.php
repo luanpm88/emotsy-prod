@@ -34,7 +34,7 @@ class CampaignPolicy
     {
         $customer = $user->customer;
         return $item->customer_id == $customer->id
-            && (in_array($item->status, ['new', 'ready', 'error']));
+            && (in_array($item->status, ['new', 'ready', 'error', 'paused']));
     }
 
     public function delete(User $user, Campaign $item)
