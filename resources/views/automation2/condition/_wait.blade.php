@@ -1,7 +1,7 @@
 <div class="condition_wait_container">
     <div class="mt-4">
         {!! trans('messages.condition.wait_intro', [
-            'days' => $element->getOption('wait') ? trans_choice('messages.condition.wait_day', $element->getOption('wait')) : trans_choice('messages.condition.wait_day', 2)
+            'days' => $element->getOption('wait') ? trans_choice('messages.condition.wait_day', $element->getOption('wait')) : trans_choice('messages.condition.wait_day', 1)
         ]) !!}
     </div>
 
@@ -11,7 +11,7 @@
             'class' => 'required',
             'label' => '',
             'name' => 'wait',
-            'value' => $element->getOption('wait') ? $element->getOption('wait') : 2,
+            'value' => $element->getOption('wait') ? $element->getOption('wait') : 1,
             'required' => true,
             'options' => $automation->getConditionWaitOptions(),
         ])
