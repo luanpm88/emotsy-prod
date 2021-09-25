@@ -3839,4 +3839,33 @@
   'search.go_to_lists' => 'Lists management',
   'click_open_app_search' => 'Open app search (Ctrl + D)',
   'upgrade.checking_dependencies' => 'Checking for upgrade dependencies...',
+  'widget.rss' => 'RSS',
+  'rss.url' => 'URL',
+  'rss.preview' => 'Preview',
+  'rss.close' => 'Close',
+  'rss.posts' => 'Posts',
+  'rss.url_required' => 'RSS url is required',
+  'condition.which_email_read' => 'Which email subscriber reads',
+  'condition.wait_day' => ':count day|:count days',
+  'condition.wait.title' => '
+    <p class="mb-2 fw-600">
+      Speicify the time to wait for the condition being met.
+    </p>
+  ',
+  'condition.wait.intro' => '
+    <p class="mb-2">
+      For example: if the specified email is not opened or
+      clicked at the first check, and with a waiting time of
+      [<span class="fw-600 wait_day">:days</span>], Acelle will try to check again and
+      again during the next [<span class="fw-600 wait_day">:days</span>] before proceed
+      with NO branch.
+    </p>
+
+    <p class="mb-3">
+      In other words: wait for a maximum of [<span class="fw-600 wait_day">:days</span>]
+      until the recipients open or click. Only proceed with the NO branch
+      if the specified email is not opened or clicked after
+      [<span class="fw-600 wait_day">:days</span>].
+    </p>
+  ',
 ) ?>

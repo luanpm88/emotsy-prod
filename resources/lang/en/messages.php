@@ -3838,23 +3838,22 @@
   'condition.wait_day' => ':count day|:count days',
   'condition.wait.title' => '
     <p class="mb-2 fw-600">
-      Speicify the time to wait for the condition being met.
+      Speicify the time to wait for the condition to be met.
     </p>
   ',
   'condition.wait.intro' => '
     <p class="mb-2">
       For example: if the specified email is not opened or
-      clicked at the first check, and with a waiting time of
+      clicked at the first check, and with a wait time of
       [<span class="fw-600 wait_day">:days</span>], Acelle will try to check again and
-      again during the next [<span class="fw-600 wait_day">:days</span>] before proceed
-      with NO branch.
+      again during the next [<span class="fw-600 wait_day">:days</span>] before proceeding
+      with the NO branch.
     </p>
 
     <p class="mb-3">
       In other words: wait for a maximum of [<span class="fw-600 wait_day">:days</span>]
-      until the recipients open or click. Only proceed with the NO branch
-      if the specified email is not opened or clicked after
-      [<span class="fw-600 wait_day">:days</span>].
+      until the condition is met. Only proceed with the NO branch
+      after the wait time.
     </p>
-  '
+  ',
 ) ?>

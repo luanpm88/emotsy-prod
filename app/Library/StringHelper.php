@@ -511,7 +511,7 @@ class StringHelper
     public static function fromHumanIpAddress($ipAddress)
     {
         $googleIpRanges = config('google');
-        foreach($googleIpRanges as $cidr) {
+        foreach ($googleIpRanges as $cidr) {
             if (\Symfony\Component\HttpFoundation\IpUtils::checkIp($ipAddress, $cidr)) {
                 return false;
             }
