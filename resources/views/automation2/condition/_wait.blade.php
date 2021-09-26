@@ -58,7 +58,6 @@
             var _this = this;
 
             _this.selectBox().on('change', function() {
-                console.log('dddd');
                 _this.select();
             });
 
