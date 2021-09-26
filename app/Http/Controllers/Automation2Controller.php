@@ -2437,4 +2437,26 @@ class Automation2Controller extends Controller
             'email' => $email,
         ]);
     }
+
+    public function conditionWaitCustom(Request $request)
+    {
+        if ($request->isMethod('post')) {
+            // make validator
+            $validator = \Validator::make($request->all(), [
+                'wait_amount' => 'required',
+                'wait_unit' => 'required',
+            ]);
+
+            // redirect if fails
+            if ($validator->fails()) {
+                return response()->view('automation2.condition.conditionWaitCustom', [
+                    'errors' => $validator->errors(),
+                ], 400);
+            }
+
+            return view('automation2.condition._wait_select');
+        }
+
+        return view('automation2.condition.conditionWaitCustom');
+    }
 }
