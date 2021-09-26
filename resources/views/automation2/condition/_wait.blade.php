@@ -12,14 +12,17 @@
                 'class' => 'required',
                 'label' => '',
                 'name' => 'wait',
-                'value' => $element->getOption('wait') ? $element->getOption('wait') : trans_choice('messages.count_day', 1),
+                'value' => $element->getOption('wait') ? $element->getOption('wait') : '1 day',
                 'required' => true,
                 'options' => \Acelle\Model\Automation2::getConditionWaitOptions($element->getOption('wait')),
             ])
         </div>
         <div class="text-muted fst-italic">
+            @php
+                $vals = explode(' ', ($element->getOption('wait') ? $element->getOption('wait') : '1 day'));
+            @endphp
             {!! trans('messages.condition.wait.intro', [
-                'days' => $element->getOption('wait') ? trans_choice('messages.condition.wait_day', $element->getOption('wait')) : trans_choice('messages.count_day', 1)
+                'days' => trans_choice('messages.count_' . $vals[1], $vals[0]),
             ]) !!}
         </div>
     </div>
@@ -38,19 +41,19 @@
         select: function() {
             var _this = this;
 
-            var val = _this.selectBox().val();
-            var text = _this.selectBox().find('option:selected').html();
+            var val = _this.selectBox().val();            
 
             if (val == 'custom') {
                 _this.showCustomPopup();
                 return;
             }
-
-            _this.labels.html(text);
+            
             Automation2ConditionWait.updateCurrentVal();
         },
 
         updateCurrentVal: function() {
+            var text = this.selectBox().find('option:selected').html();
+            this.labels.html(text);
             this.currentVal = this.selectBox().val();
         },
 
