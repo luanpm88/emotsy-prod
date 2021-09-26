@@ -47,6 +47,11 @@
             }
 
             _this.labels.html(text);
+            Automation2ConditionWait.updateCurrentVal();
+        },
+
+        updateCurrentVal: function() {
+            this.currentVal = this.selectBox().val();
         },
 
         init: function() {
@@ -56,13 +61,20 @@
                 console.log('dddd');
                 _this.select();
             });
+
+            Automation2ConditionWait.updateCurrentVal();
         },
 
         showCustomPopup: function() {
             var _this = this;
             
             _this.customPopup = new Popup({
-                url: _this.customUrl
+                url: _this.customUrl,
+                onclose: function() {
+                    if(_this.selectBox().val() == 'custom') {
+                        _this.selectBox().val(_this.currentVal).change();
+                    }
+                }
             });
 
             _this.customPopup.load();

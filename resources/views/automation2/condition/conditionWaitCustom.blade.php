@@ -64,6 +64,8 @@
                         Automation2ConditionWait.selectContainer.html(response);
                         Automation2ConditionWait.customPopup.hide();
                         initJs(Automation2ConditionWait.selectContainer);
+
+                        Automation2ConditionWait.updateCurrentVal();
                     }
                 });
             });
