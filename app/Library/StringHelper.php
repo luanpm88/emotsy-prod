@@ -507,4 +507,16 @@ class StringHelper
     {
         return preg_match('/{[a-zA-Z0-9_]+}/', $string);
     }
+
+    public static function fromHumanIpAddress($ipAddress)
+    {
+        $googleIpRanges = config('google');
+        foreach ($googleIpRanges as $cidr) {
+            if (\Symfony\Component\HttpFoundation\IpUtils::checkIp($ipAddress, $cidr)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }

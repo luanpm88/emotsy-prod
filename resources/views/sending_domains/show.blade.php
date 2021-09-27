@@ -36,7 +36,7 @@ public
         </div>
 
         <div class="col-sm-12 col-md-12 mt-20">
-            <div class="scrollbar-boxx dim-box">
+            <div class="scrollbar-boxx dim-box shadow-sm">
                 <div class="listing-form"
 					data-url="{{ action('SendingDomainController@records', $server->uid) }}"
 					per-page="1">

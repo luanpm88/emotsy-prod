@@ -12,6 +12,8 @@
             ['text' => trans('messages.automation.condition.cart_buy_item'), 'value' => 'cart_buy_item'],
         ]);
     }
+
+    $id = uniqid();
 @endphp
 
 <h4 class="mb-3">
@@ -21,7 +23,7 @@
     {{ trans('messages.automation.action.condition.intro') }}
 </p>
 
-<div class="condition-type">
+<div class="condition-type container-{{ $id }}">
     <div class="mb-20">
         @include('helpers.form_control', [
             'type' => 'select',
@@ -56,7 +58,7 @@
         showSetting($(this).closest('.condition-type'));
     });
     
-    $('.condition-type').each(function() {
+    $('.container-{{ $id }}').each(function() {
         showSetting($(this));
     });
 </script>

@@ -1,6 +1,6 @@
 @extends('layouts.popup.small')
 
-@section('title')
+@section('bar-title')
     {{ $template->name }}
 @endsection
 
@@ -15,17 +15,19 @@
 
         {{ csrf_field() }}
 
-        @foreach(Acelle\Model\TemplateCategory::all() as $category)
-            @include('helpers.form_control', [
-                'type' => 'checkbox2',
-                'name' => 'categories['.$category->uid.']',
-                'value' => ($template->hasCategory($category) ? 'true' : 'false'),
-                'label' => $category->name,
-                'options' => ['false', 'true'],
-                'help_class' => 'template',
-                'rules' => [],
-            ])
-        @endforeach
+        <div class="categories-checkboxes">
+            @foreach(Acelle\Model\TemplateCategory::all() as $category)
+                @include('helpers.form_control', [
+                    'type' => 'checkbox2',
+                    'name' => 'categories['.$category->uid.']',
+                    'value' => ($template->hasCategory($category) ? 'true' : 'false'),
+                    'label' => $category->name,
+                    'options' => ['false', 'true'],
+                    'help_class' => 'template',
+                    'rules' => [],
+                ])
+            @endforeach
+        </div>
 
         <hr>
 

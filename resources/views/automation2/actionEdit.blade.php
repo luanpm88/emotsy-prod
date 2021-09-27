@@ -10,7 +10,7 @@
     @endif
     
     <div class="trigger-action mt-2">    
-        <button class="btn btn-secondary action-save-change mr-1"
+        <button class="btn btn-secondary action-save-change mr-1 mt-2"
             data-url="{{ action('Automation2Controller@triggerSelect', ['uid' => $automation->uid, 'key' => $key]) }}"
         >
                 {{ trans('messages.automation.action.save_change') }}

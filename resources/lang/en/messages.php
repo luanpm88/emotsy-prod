@@ -2444,7 +2444,7 @@
   'subscription.claim_payment.confirm' => 'You\'re about to claim that you have already paid the plan.',
   'invoice.status.future_payment.pending' => 'Next invoice is pending',
   'invoice.status.future_payment.claimed' => 'Next invoice was claimed',
-  'customer_has_no_plan' => 'Customer doesn\'t have any payment method',
+  'customer_has_no_plan' => 'Customer doesn\'t have any subscription',
   'subscription.checkout.processing_payment' => 'Processing your payment... please wait!',
   'subscription.payment.next' => 'Next',
   'subscription.card_list' => 'Your card information',
@@ -2588,18 +2588,18 @@
   'automation.add_an_action' => 'Add an Action',
   'automation.action.intro' => 'Streamline your communication and personalize each customer\'s experience. Use automation
         to create an email or series of emails that send when triggered by specific date, event or contact\'s activities.',
-  'automation.action.send-an-email' => 'Send an Email',
+  'automation.action.send-an-email' => 'Send an email',
   'automation.action.wait' => 'Wait',
-  'automation.action.condition' => 'Condition',
-  'automation.action.send-an-email.desc' => 'Design or send automated or regular emails to your contacts.',
-  'automation.action.wait.desc' => 'Design or send automated or regular emails to your contacts.',
-  'automation.action.condition.desc' => 'Design or send automated or regular emails to your contacts.',
+  'automation.action.condition' => 'Evaluate a condition',
+  'automation.action.send-an-email.desc' => 'Send an automated email',
+  'automation.action.wait.desc' => 'Add a wait time before proceeding with a next action. For example: send a series of email, but only one per day',
+  'automation.action.condition.desc' => 'Take actions when a condition is met. For example: a previous email is opened or clicked',
   'automation.action.send-an-email.icon' => 'forward_to_inbox',
   'automation.action.wait.icon' => 'alarm',
   'automation.action.condition.icon' => 'code',
   'automation.action.wait.intro' => 'Set up your automation workflow to wait for a while when contacts reach this point of the automationw workflow. You can set up how long to have it wait before proceeding with next actions',
   'automation.action.send-an-email.intro' => 'Send an email to your contacts who reach this point of the automation workflow. Set up a perfonalized email and have it ready to shoot',
-  'automation.action.condition.intro' => 'Choose one of the conditions below for your workflow. We will evaluate the condition
+  'automation.action.condition.intro' => 'Set a waiting time until a previous email is opened or clicked. We will evaluate the condition
         and branch off your workflow accordingly.',
   'automation.action.set_up_your_condition' => 'Set up your condition',
   'automation.overview.contacts' => 'Contacts',
@@ -3828,4 +3828,40 @@
   'search.go_to_lists' => 'Lists management',
   'click_open_app_search' => 'Open app search (Ctrl + D)',
   'upgrade.checking_dependencies' => 'Checking for upgrade dependencies...',
+  'widget.rss' => 'RSS',
+  'rss.url' => 'URL',
+  'rss.preview' => 'Preview',
+  'rss.close' => 'Close',
+  'rss.posts' => 'Posts',
+  'rss.url_required' => 'RSS url is required',
+  'condition.which_email_read' => 'Which email subscriber reads',
+  'count_day' => ':count day|:count days',
+  'count_days' => ':count day|:count days',
+  'count_hour' => ':count hour|:count hours',
+  'count_hours' => ':count hour|:count hours',
+  'wait.custom' => 'custom',
+  'condition.wait.title' => '
+    <p class="mb-2 fw-600">
+      Speicify the time to wait for the condition to be met.
+    </p>
+  ',
+  'condition.wait.intro' => '
+    <p class="mb-2">
+      <span class="fw-600">For example</span>: if the specified email is not opened or
+      clicked at the first check, and with a waiting time of
+      <span class="fw-600 wait_day">:days</span>, Acelle will try to check again and
+      again during the next <span class="fw-600 wait_day">:days</span> before proceed
+      with NO branch.
+    </p>
+
+    <p class="mb-3">
+      In other words: wait for a maximum of <span class="fw-600 wait_day">:days</span>
+      until the recipients open or click. Only proceed with the NO branch
+      if the specified email is not opened or clicked after
+      <span class="fw-600 wait_day">:days</span>.
+    </p>
+  ',
+  'condition.custom_wait' => 'Custom wait',
+  'condition.wait_amount' => 'Amount',
+  'condition.wait_unit' => 'Time unit',
 ) ?>

@@ -57,7 +57,6 @@ class Plan extends Model
         'price',
         'vat',
         'currency_id',
-        'tax_billing_required',
         'paddle_plan_id',
         'admin_id',
     ];

@@ -714,3 +714,10 @@ body.mode-dark .dropzone {
 body.mode-dark .dropzone.dz-clickable .dz-message, body.mode-dark .dropzone.dz-clickable .dz-message * {
     color: rgba(255,255,255,0.65);
 }
+body.mode-dark .dim-box {
+    background: rgba(255,255,255,0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+body.mode-dark .dim-box .table>thead {
+    background: transparent;
+}

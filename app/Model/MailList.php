@@ -1833,7 +1833,7 @@ class MailList extends Model
             throw new \Exception(trans('messages.subscriber.blacklisted'));
         }
 
-        if ($source == Subscriber::SUBSCRIPTION_TYPE_ADDED) {
+        if ($source == Subscriber::SUBSCRIPTION_TYPE_ADDED || $source == self::SOURCE_API) {
             $subscriber->status = 'subscribed';
         } elseif ($this->subscribe_confirmation) {
             if ($subscriber->isSubscribed()) {

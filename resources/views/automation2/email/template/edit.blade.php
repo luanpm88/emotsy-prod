@@ -25,6 +25,7 @@
     @endif
 
     @include('helpers._builder_product_widgets')
+    @include('helpers._builder_rss_widgets')
 
     <style>
         .logo-img {
@@ -166,6 +167,10 @@
                     @if ($automation->getTrigger()->getOption('type') == 'woo-abandoned-cart')
                         this.addContentWidget(new AbandonedCartWidget(), 0, 'ProductCommerce');
                     @endif
+
+                    // Rss widget
+                    // this.addCustomCss('{{ url('/core/css/builder_rss.css') }}');
+                    // this.addWidget(new RssWidget(), 'content', 3);
 
                     // add custom css
                     this.addCustomCss('{{ url('/core/css/builder_product.css') }}');

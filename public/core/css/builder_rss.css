@@ -1,0 +1,14 @@
+.rss-placeholder {
+    width: 100%
+}
+.rss-placeholder .btn {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+}
+.rss-placeholder {
+    position: relative;
+}
+[builder-element="RssElement"].builder-class-element-selected .btn {
+    display: block!important;
+}

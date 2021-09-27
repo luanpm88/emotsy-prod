@@ -23,6 +23,9 @@
 	<!-- display flash message -->
 	@include('layouts.core._flash')
 
+	<!-- Admin area -->
+	@include('layouts.core._admin_area')
+
 	{!! \Acelle\Model\Setting::get('custom_script') !!}
 </body>
 </html>

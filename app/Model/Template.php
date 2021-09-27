@@ -686,7 +686,11 @@ class Template extends Model
 
         // Replace #1
         $content = StringHelper::transformUrls($html, function ($url, $element) use ($withHost, $domain, $urlTransform) {
-            if ($url == '#') {
+            if (strpos($url, '#') === 0) {
+                return $url;
+            }
+
+            if (strpos($url, 'mailto:') === 0) {
                 return $url;
             }
 
