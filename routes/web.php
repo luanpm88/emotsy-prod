@@ -193,6 +193,10 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
     Route::get('audience/overview', 'AudienceController@overview');
 
     // Form
+    Route::get('forms/templates', 'FormController@templates');
+    Route::match(['get', 'post'], 'forms/create', 'FormController@create');
+    Route::post('forms/delete', 'FormController@delete');
+    Route::get('forms/list', 'FormController@list');
     Route::get('forms', 'FormController@index');
 
     // Connections

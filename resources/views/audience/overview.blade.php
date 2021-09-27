@@ -45,7 +45,7 @@
             </div>
         </div>
         <div class="col-md-3">
-            <a href="" class="bg-secondary p-3 shadow rounded-3 text-white d-block">
+            <a href="{{ action('BlacklistController@index') }}" class="bg-secondary p-3 shadow rounded-3 text-white d-block">
                 <div class="text-center">
                     <h2 class="text-semibold mb-1 mt-0">303</h2>
                     <div class="text-muted2 text-white">
@@ -162,7 +162,7 @@
                         </p>
                     </div>
                     <div class="ms-auto">
-                        <a href="" class="btn btn-secondary py-2 px-4">
+                        <a href="{{ action('FormController@index') }}" class="btn btn-secondary py-2 px-4">
                             {{ trans('messages.form.create') }}
                         </a>
                     </div>

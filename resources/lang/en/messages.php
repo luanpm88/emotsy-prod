@@ -3890,4 +3890,9 @@
   'select_list_default_intro' => 'Select a mail list from select box below to continue',
   'choose_list' => 'select a mail list',
   'select_list.ok' => 'Go',
+  'enter_template_name' => 'Enter your template\'s name here',
+  'form.untitled' => 'Untitled form',
+  'form.enter_name' => 'Enter form\'s name here',
+  'form.template' => 'Default',
+  'form.created' => '<span class="fw-600">:name</span> form was successfully created',
 ) ?>

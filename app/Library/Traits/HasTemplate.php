@@ -33,8 +33,12 @@ trait HasTemplate
         $this->template_id = $campaignTemplate->id;
         $this->save();
         $this->refresh();
-        $this->updatePlainFromHtml();
-        $this->updateLinks();
+        if (\Schema::hasColumn($this->getTable(), 'plain')){ 
+            $this->updatePlainFromHtml();
+        }
+        if (method_exists($this, 'updateLinks')) {
+            $this->updateLinks();
+        }
     }
 
     /**
