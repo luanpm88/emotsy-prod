@@ -188,6 +188,15 @@ Route::group(['middleware' => ['not_installed', 'auth']], function () {
 });
 
 Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function () {
+    // Audience
+    Route::get('audience/overview', 'AudienceController@overview');
+
+    // Form
+    Route::get('forms', 'FormController@index');
+
+    // Connections
+    Route::get('websites', 'WebsiteController@index');
+
     // New subscription
     Route::get('account/subscription/select-plan', 'SubscriptionController@selectPlan');
     Route::get('account/subscription/order-box', 'SubscriptionController@orderBox');

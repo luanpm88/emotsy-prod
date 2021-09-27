@@ -3864,4 +3864,10 @@
   'condition.custom_wait' => 'Custom wait',
   'condition.wait_amount' => 'Amount',
   'condition.wait_unit' => 'Time unit',
+  'audience.overview' => 'Overview',
+  'audience' => 'Audience',
+  'forms' => 'Forms',
+  'intergration' => 'Intergration',
+  'website.add_site' => 'Add your website',
+  'connections.manage' => 'Manage connections',
 ) ?>
