@@ -3870,4 +3870,24 @@
   'intergration' => 'Intergration',
   'website.add_site' => 'Add your website',
   'connections.manage' => 'Manage connections',
+  'audience.manage' => 'Manage your audience',
+  'audience.intro' => 'Your audience is where you\'ll store and manage your contacts.<br>
+    Once you add your contacts. You\'ll be able send your first campaign.
+    We\'ll work you through the process.',
+  'audience.audience_growth.title' => 'Your audience growth',
+  'audience.audience_growth.desc' => 'How your audience growth over time',
+  'audience.quick_action' => 'Quick action',
+  'audience.quick_action.desc' => 'We\'ll show you how to grow your audience and add contacts quickly',
+  'form.create' => 'Create form',
+  'create_a_signup_form' => 'Create a signup form',
+  'create_a_signup_form.desc' => 'Capture contacts and collect the data you need<br>
+    to frow your audience',
+  'audience.import_contacts.title' => 'Import contacts',
+  'audience.import_contacts.desc' => 'Import your existing contacts from a CSV or Excel file<br>
+    to quickly grow your ideas base',
+  'audience.import_contacts' => 'Import contacts',
+  'select_list' => 'Select a mail list',
+  'select_list_default_intro' => 'Select a mail list from select box below to continue',
+  'choose_list' => 'select a mail list',
+  'select_list.ok' => 'Go',
 ) ?>

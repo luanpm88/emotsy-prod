@@ -721,3 +721,6 @@ body.mode-dark .dim-box {
 body.mode-dark .dim-box .table>thead {
     background: transparent;
 }
+body.mode-dark a.bg-secondary:hover {
+    background: rgba(255,255,255,0.2)!important;
+}

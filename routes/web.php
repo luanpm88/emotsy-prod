@@ -189,6 +189,7 @@ Route::group(['middleware' => ['not_installed', 'auth']], function () {
 
 Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function () {
     // Audience
+    Route::get('audience/growth-chart', 'AudienceController@growthChart');
     Route::get('audience/overview', 'AudienceController@overview');
 
     // Form
@@ -253,6 +254,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('account/api', 'AccountController@api');
 
     // Mail list
+    Route::match(['get', 'post'], 'lists/select', 'MailListController@selectList');
     Route::get('lists/{uid}/clone-to-customers/choose', 'MailListController@cloneForCustomersChoose');
     Route::post('lists/{uid}/clone-to-customers', 'MailListController@cloneForCustomers');
 

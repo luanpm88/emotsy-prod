@@ -908,4 +908,28 @@ class MailListController extends Controller
             'message' => trans('messages.list.clone_for.success'),
         ]);
     }
+
+    public function selectList(Request $request)
+    {
+        if ($request->isMethod('post')) {
+            // make validator
+            $validator = \Validator::make($request->all(), [
+                'list_uid' => 'required',
+            ]);
+
+            // redirect if fails
+            if ($validator->fails()) {
+                return response()->view('lists.selectList', [
+                    'errors' => $validator->errors(),
+                ], 400);
+            }
+
+            $url = str_replace('list_uid', $request->list_uid, $request->redirect);
+            return response()->json([
+                'url' => $url,
+            ]);
+        }
+
+        return view('lists.selectList');
+    }
 }

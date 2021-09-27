@@ -7606,3 +7606,9 @@ body:not(.search-open) .app_search_box .search-control::after {
 .categories-checkboxes .form-group {
     margin-bottom: 8px;
 }
+a.bg-secondary {
+    transition: all 0.2s ease-in-out;
+}
+a.bg-secondary:hover {
+    background-color: #575c61!important;
+}

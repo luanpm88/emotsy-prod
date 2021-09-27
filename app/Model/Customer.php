@@ -337,7 +337,7 @@ class Customer extends Model
      *
      * @return number
      */
-    public static function subscribersCountByTime($begin, $end, $customer_id = null, $list_id = null)
+    public static function subscribersCountByTime($begin, $end, $customer_id = null, $list_id = null, $status=null)
     {
         $query = \Acelle\Model\Subscriber::leftJoin('mail_lists', 'mail_lists.id', '=', 'subscribers.mail_list_id')
                                 ->leftJoin('customers', 'customers.id', '=', 'mail_lists.customer_id');
@@ -347,6 +347,9 @@ class Customer extends Model
         }
         if (isset($customer_id)) {
             $query = $query->where('customers.id', '=', $customer_id);
+        }
+        if (isset($status)) {
+            $query = $query->where('subscribers.status', '=', $status);
         }
 
         $query = $query->where('subscribers.created_at', '>=', $begin)
