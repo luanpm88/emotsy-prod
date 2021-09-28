@@ -49,7 +49,7 @@
                                     @include('helpers.form_control', [
                                         'type' => 'text',
                                         'name' => 'billing_first_name',
-                                        'value' => $invoice->hasBillingInformation() ? $invoice->billing_first_name : (request()->billing_first_name ? request()->billing_first_name : ($billingAddress ? $billingAddress->first_name : '')),
+                                        'value' => request()->billing_first_name ? request()->billing_first_name : ($invoice->hasBillingInformation() ? $invoice->billing_first_name : ($billingAddress ? $billingAddress->first_name : '')),
                                         'label' => trans('messages.first_name'),
                                         'rules' => ['billing_first_name' => 'required'],
                                     ])
@@ -58,7 +58,7 @@
                                     @include('helpers.form_control', [
                                         'type' => 'text',
                                         'name' => 'billing_last_name',
-                                        'value' => $invoice->hasBillingInformation() ? $invoice->billing_last_name : (request()->billing_last_name ? request()->billing_last_name : ($billingAddress ? $billingAddress->last_name : '')),
+                                        'value' => request()->billing_last_name ? request()->billing_last_name : ($invoice->hasBillingInformation() ? $invoice->billing_last_name : ($billingAddress ? $billingAddress->last_name : '')),
                                         'label' => trans('messages.last_name'),
                                         'rules' => ['billing_last_name' => 'required'],
                                     ])
@@ -70,7 +70,7 @@
                                     @include('helpers.form_control', [
                                         'type' => 'text',
                                         'name' => 'billing_email',
-                                        'value' => $invoice->hasBillingInformation() ? $invoice->billing_email : (request()->billing_email ? request()->billing_email : ($billingAddress ? $billingAddress->email : '')),
+                                        'value' => request()->billing_email ? request()->billing_email : ($invoice->hasBillingInformation() ? $invoice->billing_email : ($billingAddress ? $billingAddress->email : '')),
                                         'label' => trans('messages.email_address'),
                                         'rules' => ['billing_email' => 'required'],
                                     ])
@@ -79,7 +79,7 @@
                                     @include('helpers.form_control', [
                                         'type' => 'text',
                                         'name' => 'billing_phone',
-                                        'value' => $invoice->hasBillingInformation() ? $invoice->billing_phone : (request()->billing_phone ? request()->billing_phone : ($billingAddress ? $billingAddress->phone : '')),
+                                        'value' => request()->billing_phone ? request()->billing_phone : ($invoice->hasBillingInformation() ? $invoice->billing_phone : ($billingAddress ? $billingAddress->phone : '')),
                                         'label' => trans('messages.phone'),
                                         'rules' => ['billing_phone' => 'required'],
                                     ])
@@ -90,7 +90,7 @@
                                     @include('helpers.form_control', [
                                         'type' => 'text',
                                         'name' => 'billing_address',
-                                        'value' => $invoice->hasBillingInformation() ? $invoice->billing_address : (request()->billing_address ? request()->billing_address : ($billingAddress ? $billingAddress->address : '')),
+                                        'value' => request()->billing_address ? request()->billing_address : ($invoice->hasBillingInformation() ? $invoice->billing_address : ($billingAddress ? $billingAddress->address : '')),
                                         'label' => trans('messages.address'),
                                         'rules' => ['billing_address' => 'required'],
                                     ])
@@ -99,7 +99,7 @@
                                     @include('helpers.form_control', [
                                         'type' => 'select',
                                         'name' => 'billing_country_id',
-                                        'value' => $invoice->hasBillingInformation() ? $invoice->billing_country_id : (request()->billing_country_id ? request()->billing_country_id : ($billingAddress ? $billingAddress->country_id : '')),
+                                        'value' => request()->billing_country_id ? request()->billing_country_id : ($invoice->hasBillingInformation() ? $invoice->billing_country_id : ($billingAddress ? $billingAddress->country_id : '')),
                                         'label' => trans('messages.country'),
                                         'options' => Acelle\Model\Country::getSelectOptions(),
                                         'include_blank' => trans('messages.select_country'),
