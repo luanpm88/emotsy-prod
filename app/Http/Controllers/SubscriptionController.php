@@ -198,6 +198,7 @@ class SubscriptionController extends Controller
         $customer = $request->user()->customer;
         $subscription = $customer->subscription;
         $invoice = $subscription->getUnpaidInvoice();
+        $billingAddress = $customer->getDefaultBillingAddress();
 
         // Save posted data
         if ($request->isMethod('post')) {
@@ -208,6 +209,7 @@ class SubscriptionController extends Controller
             if ($validator->fails()) {
                 return response()->view('subscription.billingInformation', [
                     'invoice' => $invoice,
+                    'billingAddress' => $billingAddress,
                     'errors' => $validator->errors(),
                 ], 400);
             }
@@ -222,6 +224,7 @@ class SubscriptionController extends Controller
 
         return view('subscription.billingInformation', [
             'invoice' => $invoice,
+            'billingAddress' => $billingAddress,
         ]);
     }
 

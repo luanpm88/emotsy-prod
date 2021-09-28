@@ -574,20 +574,20 @@ class Invoice extends Model
 
     public function updateBillingInformation($billing)
     {
-        $this->fill($billing);
-
         $validator = \Validator::make($billing, [
             'billing_first_name' => 'required',
             'billing_last_name' => 'required',
             'billing_address' => 'required',
             'billing_country_id' => 'required',
             'billing_email' => 'required|email',
+            'billing_phone' => 'required',
         ]);
 
         if ($validator->fails()) {
             return $validator;
         }
 
+        $this->fill($billing);
         $this->save();
 
         return $validator;
@@ -596,5 +596,20 @@ class Invoice extends Model
     public function getBillingName()
     {
         return $this->billing_first_name . ' ' . $this->billing_last_name;
+    }
+
+    public function hasBillingInformation()
+    {
+        if (empty($this->billing_first_name) ||
+            empty($this->billing_last_name) ||
+            empty($this->billing_phone) ||
+            empty($this->billing_address) ||
+            empty($this->billing_country_id) ||
+            empty($this->billing_email)
+        ) {
+            return false;
+        }
+
+        return true;
     }
 }

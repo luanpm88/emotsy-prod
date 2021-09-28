@@ -3262,7 +3262,7 @@
   'plugin.updated' => 'Plugin was successfully updated',
   'plugin.deleted' => 'Plugin was successfully deleted',
   'plugin_empty_line_1' => 'You have no plugin',
-  'plugin.wording' => 'Empower your application with tons of awesome plugins developed by Acelle Mail Team.
+  'plugin.wording' => 'Empower your application with tons of awesome plugins developed by the community.
       Integration made easier than ever!',
   'plugins.deleted' => 'One or more plugins were successfully deleted',
   'plugins.disabled' => 'One or more plugins were successfully disabled',
@@ -3757,7 +3757,7 @@
   'invoice.price' => 'Price',
   'invoice.cancel' => 'Cancel',
   'copy_plan' => 'Copy plan',
-  'subscription.secure_checkout' => 'ACELLE SECURE CHECKOUT',
+  'subscription.secure_checkout' => 'SECURE CHECKOUT',
   'subscription.choose_plan.title' => 'Choose a plan',
   'subscription.choose_plan.subtitle' => 'You need to subscribe to a plan in order to
     experience the application.',
@@ -3835,6 +3835,8 @@
   'rss.posts' => 'Posts',
   'rss.url_required' => 'RSS url is required',
   'condition.which_email_read' => 'Which email subscriber reads',
+  'count_minute' => ':count minute|:count minutes',
+  'count_minutes' => ':count minute|:count minutes',
   'count_day' => ':count day|:count days',
   'count_days' => ':count day|:count days',
   'count_hour' => ':count hour|:count hours',
@@ -3932,4 +3934,5 @@
   'website.site_is_connected_success' => 'The [:title] site was connected successfully',
   'website.site_is_disconnected_success' => 'The [:title] site was disconnected successfully',
   'website.code_copied' => 'Site connection code was copied',
+  'upgrade.uploading' => 'Uploading...',
 ) ?>

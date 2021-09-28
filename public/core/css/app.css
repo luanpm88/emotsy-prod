@@ -7622,3 +7622,19 @@ a.bg-secondary:hover {
 .form-thumb:active {
     transform: scale(0.95);
 }
+@media (max-width: 1200px) {
+    .navbar-main {
+        max-height: 100vh;
+        overflow: auto;
+    }
+    .top-user-menus {
+        width: 100%;
+    }
+    .top-user-menus li {
+        max-width: none;
+    }
+    .top-user-menus .backdrop {
+        display: none!important;
+    }
+    
+}
