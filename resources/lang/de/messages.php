@@ -3803,7 +3803,6 @@
   'rss.posts' => 'Posts',
   'rss.url_required' => 'RSS url is required',
   'condition.which_email_read' => 'Which email subscriber reads',
-  'condition.wait_day' => ':count day|:count days',
   'condition.wait.title' => '
     <p class="mb-2 fw-600">
       Speicify the time to wait for the condition being met.
@@ -3825,4 +3824,12 @@
       [<span class="fw-600 wait_day">:days</span>].
     </p>
   ',
+  'count_day' => ':count day|:count days',
+  'count_days' => ':count day|:count days',
+  'count_hour' => ':count hour|:count hours',
+  'count_hours' => ':count hour|:count hours',
+  'wait.custom' => 'custom',
+  'condition.custom_wait' => 'Custom wait',
+  'condition.wait_amount' => 'Amount',
+  'condition.wait_unit' => 'Time unit',
 ) ?>
