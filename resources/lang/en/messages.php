@@ -3931,4 +3931,5 @@
   'website.site_is_connected' => 'The [:title] site is connected',
   'website.site_is_connected_success' => 'The [:title] site was connected successfully',
   'website.site_is_disconnected_success' => 'The [:title] site was disconnected successfully',
+  'website.code_copied' => 'Site connection code was copied',
 ) ?>

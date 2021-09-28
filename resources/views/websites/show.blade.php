@@ -77,6 +77,10 @@
         $(function() {
             $('.copy-connect-js').on('click', function() {
                 copyToClipboard($('.connect-code').text());
+
+                notify({
+                    message: '{{ trans('messages.website.code_copied') }}',
+                });
             });
         });
     </script>
