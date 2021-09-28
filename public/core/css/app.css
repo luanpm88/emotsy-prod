@@ -7615,11 +7615,7 @@ body:not(.search-open) .app_search_box .search-control::after {
         max-width: none;
     }
     .top-user-menus .backdrop {
-        position: inherit;
-    }
-    .top-user-menus .backdrop {
-        width: 100%;
-        background-size: auto 76%;
+        display: none!important;
     }
     
 }
