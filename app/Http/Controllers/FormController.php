@@ -148,4 +148,11 @@ class FormController extends Controller
             ->header('Access-Control-Allow-Origin', '*')
             ->header('Content-Type', 'application/javascript');
     }
+
+    public function settings(Request $request)
+    {
+        $form = Form::findByUid($request->uid);
+
+        $form->saveSettingsFromArray($request->all());
+    }
 }

@@ -75,4 +75,41 @@ class Form extends Model
             $query = $query->where('name', 'like', '%'.trim($keyword).'%');
         }
     }
+
+    public function updateMetadata($data)
+    {
+        $metadata = (object) array_merge((array) $this->getMetadata(), $data);
+        $this['metadata'] = json_encode($metadata);
+
+        $this->save();
+    }
+
+    public function getMetadata($name=null)
+    {
+        if (!$this['metadata']) {
+            return json_decode('{}', true);
+        }
+
+        $data = json_decode($this['metadata'], true);
+
+        if ($name != null) {
+            if (isset($data[$name])) {
+                return $data[$name];
+            } else {
+                return null;
+            }
+        } else {
+            return $data;
+        }
+    }
+
+    public function saveSettingsFromArray($params)
+    {
+        $this->updateMetadata([
+            'overlay_opacity' => $params['overlay_opacity'],
+            'display' => $params['display'],
+            'wait_time' => $params['wait_time'],
+            'element_id' => $params['element_id'],
+        ]);
+    }
 }

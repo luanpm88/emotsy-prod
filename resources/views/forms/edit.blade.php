@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
     <head>
-        <title>Form Builder</title>
+        <title>{{ trans('messages.form.builder') }} - {{ $form->name }}</title>
         <meta charset="utf-8">  
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         
@@ -16,8 +16,15 @@
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet"> 
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"> 
 
+        <link rel="stylesheet" href="{{ URL::asset('core/slider/bootstrap-slider.min.css') }}" />
+        <script type="text/javascript" src="{{ URL::asset('core/slider/bootstrap-slider.min.js') }}"></script>
 
         <link type="text/css" rel="stylesheet" href="{{ URL::asset('core/css/form-builder.css') }}" />
+
+        <script type="text/javascript" src="{{ URL::asset('core/validate/jquery.validate.min.js') }}"></script>
+        <script type="text/javascript" src="{{ URL::asset('core/js/validate.js') }}"></script>
+
+
         <script>
             var CSRF_TOKEN = "{{ csrf_token() }}";
             var editor;
@@ -112,7 +119,7 @@
                     <span class="material-icons-outlined mr-2">
                         dashboard
                     </span>
-                    Popup-Form Builder
+                    {{ trans('messages.form.builder') }}
                 </span>
                 <a class="navbar-brand d-flex align-items-center mr-0" href="{{ action('FormController@index') }}"><span class="material-icons-outlined">
                     close
@@ -157,7 +164,7 @@
                                     keyboard_backspace
                                 </span>
                             </a>
-                            <h6 class="d-inline ml-2 m-0">Layouts</h6>
+                            <h6 class="d-inline ml-2 m-0">{{ trans('messages.form.layouts') }}</h6>
                         </div>  
                         <hr>
                         <div class="">
@@ -184,7 +191,7 @@
                                     keyboard_backspace
                                 </span>
                             </a>
-                            <h6 class="d-inline ml-2 m-0">Themes</h6>
+                            <h6 class="d-inline ml-2 m-0">{{ trans('messages.form.themes') }}</h6>
                         </div>                    
                             
                         <hr>
@@ -196,6 +203,76 @@
                                     <img src="{{ $template->getThumbUrl() }}?v={{ rand(0,10) }}" />
                                 </a>
                             @endforeach
+                        </div>
+                    </div>  
+                </div>
+                <div class="styles-section form-theme">
+                    <a href="javascript:;" class="styles-toggle px-2 py-1">
+                        <span class="material-icons-round" style="line-height:30px">
+                            tune
+                        </span>
+                    </a>
+                    <div class="styles-container shadow rounded-lg overflow-hidden p-4" style="overflow-x:hidden!important; height:auto">    
+                        <div class="d-flex align-items-center styles-container-heading shadow-sm">
+                            <a role="button" href="javascript:;" class="styles-back px-2 py-1">
+                                <span class="material-icons-outlined" style="line-height:30px">
+                                    keyboard_backspace
+                                </span>
+                            </a>
+                            <h6 class="d-inline ml-2 m-0">{{ trans('messages.form.display_settings') }}</h6>
+                        </div>                    
+                            
+                        <hr>
+                        <div class="" style="width:201px">
+                            <form id="FormDisplaySetting" action="{{ action('FormController@settings', [
+                                'uid' => $form->uid
+                            ]) }}" method="POST">
+                                {{ csrf_field() }}
+
+                                <div class="mb-2">
+                                    <label class="mb-2 fs-7">{{ trans('messages.form.overlay_opacity') }}</label>
+                                    <input id="opacityOverlay" name="overlay_opacity"
+                                        type="text"
+                                        data-slider-min="0"
+                                        data-slider-max="100"
+                                        data-slider-step="1"
+                                        data-slider-value="{{ $form->getMetadata('element_id') ? $form->getMetadata('overlay_opacity') : '5'}}"
+                                    />
+                                    <script>
+                                        $(function() {
+                                            // With JQuery
+                                            $('#opacityOverlay').slider();
+                                        });
+                                    </script>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="mb-2 fs-7">{{ trans('messages.form.display') }}</label>
+                                    <select class="form-control" name="display">
+                                        <option value="immediately" {{ $form->getMetadata('display') == 'immediately' ? 'selected' : ''}}>{{ trans('messages.form.display.immediately') }}</option>
+                                        <option value="wait" {{ $form->getMetadata('display') == 'wait' ? 'selected' : ''}}>{{ trans('messages.form.display.wait') }}</option>
+                                        <option value="click" {{ $form->getMetadata('display') == 'click' ? 'selected'  : ''}}>{{ trans('messages.form.display.click') }}</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="display-select-wait mb-3">
+                                    <div class="">
+                                        <label class="mb-2 fs-7">{{ trans('messages.form.display.wait_time') }}</label>
+                                        <input type="number" min="1" class="form-control text-right" required name="wait_time"
+                                            value="{{ $form->getMetadata('wait_time') ? $form->getMetadata('wait_time') : '5'}}" />
+                                    </div>
+                                </div>
+
+                                <div class="display-select-element mb-3">
+                                    <label class="mb-2 fs-7">{{ trans('messages.form.display.element_id') }}</label>
+                                    <input type="text" value="{{ $form->getMetadata('element_id') ? $form->getMetadata('element_id') : ''}}"
+                                        class="form-control" name="element_id" required="required" placeholder="Ex: BuyButton" />
+                                </div>
+
+                                <div class="mt-4">
+                                    <button type="button" class="btn btn-primary display-settings-save">{{ trans('messages.save') }}</button>
+                                </div>
+                            </form>
                         </div>
                     </div>  
                 </div>
@@ -231,80 +308,156 @@
         
 
         <script>
-            var formBuilder = {
+            var FormBuilder = {
                 currentFormHtml: null,
+                styleManager: null,
+                displayOption: null,
+
+                // STYLE MANAGER
+                getStyleManager: function() {
+                    var _this = this;
+
+                    if (_this.styleManager == null) {
+                        _this.styleManager = new GroupManager();
+
+                        $('.styles-settings .styles-section').each(function() {
+                            _this.styleManager.add({
+                                box: $(this),
+                                button: $(this).find('.styles-toggle'),
+                                container: $(this).find('.styles-container'),
+                                back: $(this).find('.styles-back')
+                            });
+                        });
+
+                        _this.styleManager.bind(function(group, others) {
+                            // show
+                            group.show = function() {
+                                // hide others
+                                others.forEach(function(other) {
+                                    other.hide();
+                                });
+
+                                group.container.addClass('show');
+                                $('.styles-settings').addClass('open');
+
+                                group.container.scrollTop(0);
+                            };
+
+                            // hide
+                            group.hide = function() {
+                                group.container.removeClass('show');
+                                $('.styles-settings').removeClass('open');
+                            }
+
+                            group.button.on('click', function() {
+                                // toggle container
+                                group.show();                       
+                            });
+
+                            group.back.on('click', function() {
+                                // toggle container
+                                group.hide();                       
+                            });
+                        });
+
+                        // click outside
+                        $(document).on('mouseup', function(e) {
+                            var container = $('.styles-container');
+                            // if the target of the click isn't the container nor a descendant of the container
+                            if (!container.is(e.target) && container.has(e.target).length === 0) 
+                            {
+                                _this.styleManager.groups.forEach(function(group) {
+                                    group.hide();
+                                });
+                            }
+                        });
+                    }
+                    return this.styleManager;
+                },
+
+                // STYLE MANAGER
+                getDisplayManager: function() {
+                    var _this = this;
+
+                    if (_this.displayManager == null) {
+                        _this.displayManager = new GroupManager();
+
+                        _this.displayManager.add({
+                            box: $('.display-select-element'),
+                            value: 'click',
+                            selectedValue: function() {
+                                return $('[name="display"]').val();
+                            }
+                        });
+
+                        _this.displayManager.add({
+                            box: $('.display-select-wait'),
+                            value: 'wait',
+                            selectedValue: function() {
+                                return $('[name="display"]').val();
+                            }
+                        });
+
+                        _this.displayManager.bind(function(group) {
+                            group.check = function() {
+                                if (group.selectedValue() == group.value) {
+                                    group.box.show();
+                                } else {
+                                    group.box.hide();
+                                }
+                            }
+
+                            $('[name="display"]').on('change', function() {
+                                group.check();
+                            });
+
+                            group.check();
+                        });                        
+                    }
+                    return this.styleManager;
+                },
+
+                saveDisplaySetting: function() {
+                    var form = $('#FormDisplaySetting');
+                    var url = form.attr('action');
+                    var data = form.serialize();
+
+                    if (form.valid()) {
+                        // copy
+                        $.ajax({
+                            url: url,
+                            type: 'POST',
+                            data: data
+                        }).done(function(response) {
+                            div = $('<div class="alert alert-success mt-3 saved-alert">Form display settings was saved.</div>');
+                            form.append(div);
+
+                            setTimeout(function() {
+                                div.remove();
+                            }, 2000);
+                        });
+                    }
+                },
 
                 loadUrl: function(url) {
                     // save current form container
                     editor.cleanUpContent();
-                    formBuilder.currentFormHtml = editor.getIframeContent().find('#formContainer').html();
+                    FormBuilder.currentFormHtml = editor.getIframeContent().find('#formContainer').html();
 
                     editor.loadUrl(url, function() {
                         // load saved form container to new template
-                        editor.getIframeContent().find('#formContainer').append(formBuilder.currentFormHtml);
+                        editor.getIframeContent().find('#formContainer').append(FormBuilder.currentFormHtml);
                         setTimeout(function() {
                             editor.adjustIframeSize();
                         }, 100);
                     });
                 }
             }
-
-            var manager;
+            
             $(function() {
-
-                manager = new GroupManager();
-
-                $('.styles-settings .styles-section').each(function() {
-                    manager.add({
-                        box: $(this),
-                        button: $(this).find('.styles-toggle'),
-                        container: $(this).find('.styles-container'),
-                        back: $(this).find('.styles-back')
-                    });
-                });
-
-                manager.bind(function(group, others) {
-                    // show
-                    group.show = function() {
-                        // hide others
-                        others.forEach(function(other) {
-                            other.hide();
-                        });
-
-                        group.container.addClass('show');
-                        $('.styles-settings').addClass('open');
-
-                        group.container.scrollTop(0);
-                    };
-
-                    // hide
-                    group.hide = function() {
-                        group.container.removeClass('show');
-                        $('.styles-settings').removeClass('open');
-                    }
-
-                    group.button.on('click', function() {
-                        // toggle container
-                        group.show();                       
-                    });
-
-                    group.back.on('click', function() {
-                        // toggle container
-                        group.hide();                       
-                    });
-                });
-
-                // click outside
-                $(document).on('mouseup', function(e) {
-                    var container = $('.styles-container');
-                    // if the target of the click isn't the container nor a descendant of the container
-                    if (!container.is(e.target) && container.has(e.target).length === 0) 
-                    {
-                        manager.groups.forEach(function(group) {
-                            group.hide();
-                        });
-                    }
-                });
+                FormBuilder.getStyleManager();
+                FormBuilder.getDisplayManager();
+                
 
                 // remove loadding effect
                 $('.lds-dual-ring').remove();
@@ -313,7 +466,12 @@
                     e.preventDefault();
                     var url = $(this).attr('href');
 
-                    formBuilder.loadUrl(url);
+                    FormBuilder.loadUrl(url);
+                });
+
+                // display setting save
+                $('.display-settings-save').on('click', function() {
+                    FormBuilder.saveDisplaySetting();
                 });
             })
         </script>
