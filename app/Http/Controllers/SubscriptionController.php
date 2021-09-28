@@ -202,6 +202,7 @@ class SubscriptionController extends Controller
         // Save posted data
         if ($request->isMethod('post')) {
             $validator = $invoice->updateBillingInformation($request->all());
+            ddd;
 
             // redirect if fails
             if ($validator->fails()) {

@@ -764,7 +764,7 @@ input.error {
     border-color: #f7c9c6;
     color: #231c15;
 }
-.label-success, .bg-settled, .bg-sent, .bg-recurring, .bg-deliverable, .bg-current_active, .bg-current, .bg-cron-running, .bg-running, .bg-starting, .bg-pending-sending, .bg-active, .bg-confirmed, .bg-paid, .bg-sending, .bg-subscribed {
+.bg-connected, .label-success, .bg-settled, .bg-sent, .bg-recurring, .bg-deliverable, .bg-current_active, .bg-current, .bg-cron-running, .bg-running, .bg-starting, .bg-pending-sending, .bg-active, .bg-confirmed, .bg-paid, .bg-sending, .bg-subscribed {
     background-color: #b5dd95;
     border-color: #a2c492;
     color: #172315;

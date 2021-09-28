@@ -581,6 +581,7 @@ class Invoice extends Model
             'billing_last_name' => 'required',
             'billing_address' => 'required',
             'billing_country_id' => 'required',
+            'billing_email' => 'required|email',
         ]);
 
         if ($validator->fails()) {

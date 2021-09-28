@@ -133,6 +133,9 @@ Route::group(['middleware' => ['not_installed', 'not_logged_in']], function () {
     // Form
     Route::get('forms/{uid}/popup.js', 'FormController@popup');
     Route::get('forms/{uid}/content', 'FormController@content');
+
+    // Website
+    Route::get('websites/{uid}/connect.js', 'WebsiteController@connectJs');
 });
 
 // Without authentication
@@ -204,7 +207,14 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
     Route::get('forms/list', 'FormController@list');
     Route::get('forms', 'FormController@index');
 
-    // Connections
+    // Website
+    Route::get('websites/{uid}/check', 'WebsiteController@check');
+    Route::post('websites/{uid}/connect', 'WebsiteController@connect');
+    Route::post('websites/{uid}/disconnect', 'WebsiteController@disconnect');
+    Route::get('websites/{uid}/show', 'WebsiteController@show');
+    Route::match(['get', 'post'], 'websites/create', 'WebsiteController@create');
+    Route::post('websites/delete', 'WebsiteController@delete');
+    Route::get('websites/list', 'WebsiteController@list');
     Route::get('websites', 'WebsiteController@index');
 
     // New subscription
