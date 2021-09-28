@@ -26,6 +26,7 @@
                         'value' => 'day',
                         'label' => trans('messages.condition.wait_unit'),
                         'options' => [
+                            ['text' => trans('messages.hour'), 'value' => 'minute'],
                             ['text' => trans('messages.hour'), 'value' => 'hour'],
                             ['text' => trans('messages.day'), 'value' => 'day'],
                         ],
