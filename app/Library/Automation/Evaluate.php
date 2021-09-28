@@ -4,6 +4,7 @@ namespace Acelle\Library\Automation;
 
 use Acelle\Model\Email;
 use Acelle\Model\EmailLink;
+use Illuminate\Support\Carbon;
 
 class Evaluate extends Action
 {
@@ -59,8 +60,29 @@ class Evaluate extends Action
             $this->evaluationResult = $this->evaluateCondition();
         }
 
-        // always return true, indicating DONE
-        return true;
+        // In condition is met, proceed immediately
+        if ($this->evaluationResult) {
+            return true;
+        }
+
+        // In case condition is not met,
+        // double check for wait time before proceeding
+        $now = Carbon::now();
+        $waitDuration = $this->getOption('wait');  // 1 hour, 1 day, 2 days
+        $parentExecutionTime = Carbon::createFromTimestamp($this->getParent()->getLastExecuted());
+        $due = $parentExecutionTime->modify($waitDuration);
+
+        $check = $now->gte($due);
+
+        if ($check) {
+            sleep(1); // to avoid same day with previous action when modifying (n days)
+            $this->logger->info(sprintf('---> It is already %s minutes (or %s hours) due! proceed next with NO branch', $now->diffInMinutes($due), $now->diffInHours($due)));
+
+            return true;
+        } else {
+            $this->logger->info(sprintf('Wait for another %s minutes (or %s hours) for condition to be met', $now->diffInMinutes($due), $now->diffInHours($due)));
+            return false;
+        }
     }
 
     public function evaluateCondition()

@@ -445,6 +445,7 @@ class Automation2 extends Model
     // Automation::check() ==> AutoTrigger::check() ==> Action::execute()
     public function check()
     {
+        // Only via the check() method, errors are logged to automation.error
         try {
             $this->checkForNewTriggers();
             $this->checkForExistingTriggersUpdate();
