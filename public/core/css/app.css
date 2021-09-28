@@ -7611,6 +7611,9 @@ body:not(.search-open) .app_search_box .search-control::after {
         max-height: 100vh;
         overflow: auto;
     }
+    .top-user-menus {
+        width: 100%;
+    }
     .top-user-menus li {
         max-width: none;
     }
