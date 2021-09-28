@@ -356,7 +356,6 @@ class Language extends Model
     public function createOrUpdateTranslationFiles()
     {
         foreach (Hook::execute('add_translation_file') as $source) {
-
             if (array_key_exists('master_translation_file', $source)) {
                 $originFile = $source['master_translation_file'];
             } else {

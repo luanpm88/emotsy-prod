@@ -1557,13 +1557,15 @@ class Automation2 extends Model
         ];
 
         if ($custom) {
-            if(!in_array($custom, array_map(function($item) { return $item['value']; }, $result))) {
+            if (!in_array($custom, array_map(function ($item) {
+                return $item['value'];
+            }, $result))) {
                 $vals = explode(' ', $custom);
                 $result[] = [
                     'text' => trans_choice('messages.count_' . $vals[1], $vals[0]),
                     'value' => $custom,
                 ];
-            }           
+            }
         }
 
         $result[] = ['text' => trans('messages.wait.custom'), 'value' => 'custom'];
