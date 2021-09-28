@@ -3835,6 +3835,8 @@
   'rss.posts' => 'Posts',
   'rss.url_required' => 'RSS url is required',
   'condition.which_email_read' => 'Which email subscriber reads',
+  'count_minute' => ':count minute|:count minutes',
+  'count_minutes' => ':count minute|:count minutes',
   'count_day' => ':count day|:count days',
   'count_days' => ':count day|:count days',
   'count_hour' => ':count hour|:count hours',
