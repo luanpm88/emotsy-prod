@@ -77,11 +77,11 @@
                             <li><code>post_max_size</code> <strong>{{ ini_get('post_max_size') }}</strong></li>
                             <li><code>upload_max_filesize</code> <strong>{{ ini_get('upload_max_filesize') }}</strong></li>
                         </ul>
-                        <form action="{{ action('Admin\SettingController@uploadApplicationPatch') }}" class="form-validate-jquery" method="POST"  enctype="multipart/form-data">
+                        <form id="upgradeUploadForm" action="{{ action('Admin\SettingController@uploadApplicationPatch') }}"  class="form-validate-jquery" method="POST"  enctype="multipart/form-data">
                             {{ csrf_field() }}
 
                             @include('helpers.form_control', ['required' => true, 'type' => 'file', 'label' => '', 'name' => 'file', 'value' => 'Upload'])
-                            <button class="btn btn-secondary">{{ trans('messages.upload') }}</button>
+                            <button class="btn btn-secondary upload-button">{{ trans('messages.upload') }}</button>
                         </form>
                     @endif
                 </div>
@@ -91,6 +91,12 @@
 
     <script>
         $(function() {
+            $('#upgradeUploadForm').on('submit', function() {
+                if ($(this).valid()) {
+                    addMaskLoading('{{ trans('messages.upgrade.uploading') }}');
+                }
+            });
+
             $('.upgrade-now').on('click', function(e) {
                 e.preventDefault();
                     
