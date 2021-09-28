@@ -356,9 +356,14 @@ class Language extends Model
     public function createOrUpdateTranslationFiles()
     {
         foreach (Hook::execute('add_translation_file') as $source) {
-            // For example:
-            //     + resources / lang / default / message.php
-            $originFile = join_paths($source['translation_folder'], $source['default'], $source['file_name']);
+
+            if (array_key_exists('master_translation_file', $source)) {
+                $originFile = $source['master_translation_file'];
+            } else {
+                // If a 'master_translation_file' is not specified, then take the one associate with 'default' language as master
+                // For example: resources/lang/default/message.php
+                $originFile = join_paths($source['translation_folder'], $source['default'], $source['file_name']);
+            }
 
             // Other files
             //     + resources / lang / ja / messages.php
