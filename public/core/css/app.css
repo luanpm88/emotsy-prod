@@ -7612,3 +7612,13 @@ a.bg-secondary {
 a.bg-secondary:hover {
     background-color: #575c61!important;
 }
+.form-thumb {
+    transition: all 0.2s ease-in-out;
+}
+.form-thumb:hover {
+    display: inline-block;
+    transform: scale(1.02);
+}
+.form-thumb:active {
+    transform: scale(0.95);
+}

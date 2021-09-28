@@ -42,13 +42,110 @@ class FormController extends Controller
 
     public function templates(Request $request)
     {
-        $templates = Template::shared()
+        $templates = Template::popup()->shared()
             ->search($request->keyword)
             ->orderBy($request->sort_order, $request->sort_direction)
-            ->paginate($request->per_page);
+            ->paginate(8);
 
         return view('forms.templates', [
             'templates' => $templates,
         ]);
+    }
+
+    public function list(Request $request)
+    {
+        // sort, pagination
+        $forms = Form::search($request->keyword)
+            ->filter($request->all())
+            ->orderBy($request->sort_order, $request->sort_direction)
+            ->paginate($request->per_page);
+
+
+        return view('forms.list', [
+            'forms' => $forms,
+        ]);
+    }
+
+    public function delete(Request $request)
+    {
+        if (isSiteDemo()) {
+            return response()->json([
+                'status' => 'notice',
+                'message' => trans('messages.operation_not_allowed_in_demo'),
+            ], 403);
+        }
+
+        $forms = Form::whereIn(
+            'uid',
+            is_array($request->uids) ? $request->uids : explode(',', $request->uids)
+        );
+
+        $total = $forms->count();
+        $deleted = 0;
+        foreach ($forms->get() as $form) {
+            // authorize
+            if ($request->user()->customer->can('delete', $form)) {
+                $form->delete();
+                $deleted += 1;
+            }
+        }
+
+        return response()->json([
+            'message' => trans('messages.forms.deleted', [ 'deleted' => $deleted, 'total' => $total]),
+        ]);
+    }
+
+    public function edit(Request $request)
+    {
+        $form = Form::findByUid($request->uid);
+
+        // form fields for Editor
+        $formFields = $form->mailList->getFields->map(function ($field) {
+            return [
+                'type' => $field->type,
+                'label' => $field->label,
+                'name' => $field->tag,
+                'visible' => $field->visible,
+                'required' => $field->required,
+                'default' => $field->default_value,
+                'options' => $field->fieldOptions->map(function ($option) {
+                    return ['value' => $option->value, 'text' => $option->label];
+                })->toArray(),
+            ];
+        })->toArray();
+
+        $templates = Template::popup()->get();
+
+        return view('forms.edit', [
+            'form' => $form,
+            'formFields' => $formFields,
+            'templates' => $templates,
+        ]);
+    }
+
+    public function content(Request $request)
+    {
+        // Generate info
+        $form = Form::findByUid($request->uid);
+
+        $content = view('popup.content', [
+            'template' => $form->template,
+            'content' => $form->template->content,
+        ]);
+
+        return response($content)->header('Access-Control-Allow-Origin', '*');
+    }
+
+    public function popup(Request $request)
+    {
+        $form = Form::findByUid($request->uid);
+
+        $content = view('forms.popup', [
+            'form' => $form,
+        ]);
+
+        return response($content)
+            ->header('Access-Control-Allow-Origin', '*')
+            ->header('Content-Type', 'application/javascript');
     }
 }

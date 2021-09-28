@@ -55,6 +55,9 @@
     .leftbar-closed .navbar-main {
         min-height: 565px;
     }
+    .leftbar-closed .navbar-main.frontend {
+        min-height: 590px;
+    }
     .leftbar .navbar-main .navbar-nav {
         display: block;
     }

@@ -3895,4 +3895,13 @@
   'form.enter_name' => 'Enter form\'s name here',
   'form.template' => 'Default',
   'form.created' => '<span class="fw-600">:name</span> form was successfully created',
+  'forms.delete.confirm' => 'You\'re about to delete :number form(s).',
+  'form.builder' => 'Form builder',
+  'form.publish' => 'Publish',
+  'form.status.draft' => 'draft',
+  'form.status.active' => 'active',
+  'form.empty_list' => 'There are no forms yet',
+  'form.all_lists' => 'All mail lists',
+  'form.from_list' => 'from',
+  'forms.deleted' => ':deleted/:total form(s) were successfully deleted',
 ) ?>

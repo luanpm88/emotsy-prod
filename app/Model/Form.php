@@ -15,14 +15,24 @@ class Form extends Model
     use HasTemplate;
     use HasUid;
 
+    const STATUS_DRAFT = 'draft';
     const STATUS_ACTIVE = 'active';
-    const STATUS_INACTIVE = 'inactive';
+
+    public function mailList()
+    {
+        return $this->belongsTo('Acelle\Model\MailList');
+    }
+
+    public function template()
+    {
+        return $this->belongsTo('Acelle\Model\Template');
+    }
 
     public static function newDefault($customer)
     {
         $form = new self();
         $form->name = trans('messages.form.untitled');
-        $form->status = self::STATUS_ACTIVE;
+        $form->status = self::STATUS_DRAFT;
         $form->customer_id = $customer->id;
 
         return $form;
@@ -40,6 +50,7 @@ class Form extends Model
             return $validator;
         }
 
+        $this->mail_list_id = \Acelle\Model\MailList::findByUid($params['mail_list_uid'])->id;
         $this->save();
 
         // set template
@@ -47,5 +58,21 @@ class Form extends Model
         $this->setTemplate($selectedTemplate);
 
         return $validator;
+    }
+    
+    public function scopeFilter($query, $params)
+    {
+        // Keyword
+        if (!empty($params['mail_list_uid'])) {
+            $query = $query->where('mail_list_id', '=', \Acelle\Model\MailList::findByUid($params['mail_list_uid'])->id);
+        }
+    }
+
+    public function scopeSearch($query, $keyword)
+    {
+        // Keyword
+        if (!empty($keyword)) {
+            $query = $query->where('name', 'like', '%'.trim($keyword).'%');
+        }
     }
 }

@@ -1,0 +1,120 @@
+@if ($forms->count() > 0)
+	<table class="table table-box pml-table mt-2">
+		@foreach ($forms as $key => $form)
+            <tr>
+                <td width="1%">
+                    <div class="text-nowrap">
+                        <div class="checkbox inline">
+                            <label>
+                                <input type="checkbox" class="node styled"
+                                    name="uids[]"
+                                    value="{{ $form->uid }}"
+                                />
+                            </label>
+                        </div>
+                    </div>
+                </td>
+                <td width="1%">
+                    <a href="{{ action('FormController@edit', [
+                        'uid' => $form->uid,
+                    ]) }}" class="">
+                        <img class="form-thumb rounded shadow-sm border ms-1" width="100"
+                            src="{{ $form->template->getThumbUrl() }}?v={{ rand(0,10) }}" />
+                    </a>
+                </td>
+                <td>
+                    <a class="kq_search fs-6 d-block mb-1 fw-600" href="{{ action('FormController@edit', [
+                        'uid' => $form->uid,
+                    ]) }}">
+                        {{ $form->name }}
+                    </a>
+                    <span class="text-muted2">
+                        {{ trans('messages.list') }}:
+                        {{ $form->mailList->name }}
+                    </span>
+                </td>
+
+                <td>
+                    <span class="text-muted2 list-status pull-left">
+                        <span class="label label-flat bg-{{ $form->status }}">{{ trans('messages.form.status.' . $form->status) }}</span>
+                    </span>
+                </td>
+
+                <td class="text-end">
+                    @if (Auth::user()->customer->can('update', $form))
+                        <a href="{{ action('FormController@edit', $form->uid) }}"
+                                role="button" class="btn btn-primary">
+                            <span class="material-icons-outlined me-1">handyman</span> {{ trans('messages.form.builder') }}
+                        </a>
+                        <a href="{{ action('FormController@edit', $form->uid) }}"
+                            role="button" class="btn btn-secondary">
+                            {{ trans('messages.form.publish') }}
+                        </a>
+                    @endif
+                    
+                    <a href="{{ action('FormController@content', $form->uid) }}"
+                        role="button" class="btn btn-secondary form-popup-preview">
+                        <span class="material-icons-outlined">
+                            zoom_in
+                            </span>
+                    </a>
+
+                    @if (
+                        Auth::user()->customer->can('update', $form)
+                    )
+                        <div class="btn-group">
+                            <button role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"></button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                @if (Auth::user()->customer->can('delete', $form))
+                                    <li><a
+                                        class="dropdown-item list-action-single"
+                                        link-method="POST"
+                                        link-confirm="{{ trans('messages.forms.delete.confirm') }}"
+                                        href="{{ action('FormController@delete', ["uids" => $form->uid]) }}">
+                                        <span class="material-icons-outlined me-2">
+delete_outline
+</span> {{ trans("messages.delete") }}</a></li>
+                                @endif
+                            </ul>
+                        </div>
+                    @endif
+                </td>
+            </tr>
+        @endforeach
+	</table>
+	@include('elements/_per_page_select', ["items" => $forms])
+
+    <script>
+        $(function() {
+            $('.form-popup-preview').on('click', function(e) {
+                e.preventDefault();
+
+                var url = $(this).attr('href');
+
+                popup = new AFormPopup({
+                    url: url
+                });
+
+                popup.load();
+            });
+        });
+    </script>
+@elseif (!empty(request()->keyword) || !empty(request()->mail_list_uid))
+	<div class="empty-list">
+		<span class="material-icons-outlined">
+			auto_awesome
+			</span>
+		<span class="line-1">
+			{{ trans('messages.no_search_result') }}
+		</span>
+	</div>
+@else
+	<div class="empty-list">
+		<span class="material-icons-outlined">
+			auto_awesome
+			</span>
+		<span class="line-1">
+			{{ trans('messages.form.empty_list') }}
+		</span>
+	</div>
+@endif

@@ -46,13 +46,16 @@ class Template extends Model
     public const BUILDER_ENABLED = true;
     public const BUILDER_DISABLED = false;
 
+    public const TYPE_EMAIL = 'email';
+    public const TYPE_POPUP = 'popup';
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'uid', 'name', 'content', 'builder', 'is_default', 'theme'
+        'uid', 'name', 'content', 'builder', 'is_default', 'theme', 'type'
     ];
 
     /**
@@ -150,6 +153,16 @@ class Template extends Model
     public static function scopeShared($query)
     {
         $query = $query->whereNull('customer_id');
+    }
+
+    public static function scopeEmail($query)
+    {
+        $query = $query->where('type', '=', self::TYPE_EMAIL);
+    }
+
+    public static function scopePopup($query)
+    {
+        $query = $query->where('type', '=', self::TYPE_POPUP);
     }
 
     /**
@@ -272,6 +285,9 @@ class Template extends Model
 
         // copy theme
         $copy->theme = $this->theme;
+
+        // copy type
+        $copy->type = $this->type;
 
         // Copy flags
         $copy->builder = $this->builder;
@@ -1209,6 +1225,7 @@ class Template extends Model
             $meta['uid'] = $uid;
             $meta['is_default'] = true; // default templates that are originally created
             $meta['builder'] = true;
+            $meta['type'] = Template::TYPE_EMAIL;
             $template = Template::createFromDirectory($meta, $meta['dir']);
 
             // Set category
@@ -1271,7 +1288,7 @@ class Template extends Model
         $this->save();
     }
 
-    public static function resetFormTemplates()
+    public static function resetPopupTemplates()
     {
         TemplateCategory::where('name', '=', 'Form')->delete();
         $categoryWoo = TemplateCategory::create(['name' => 'Form']);
@@ -1345,6 +1362,7 @@ class Template extends Model
             $meta['uid'] = $uid;
             $meta['is_default'] = true; // default templates that are originally created
             $meta['builder'] = true;
+            $meta['type'] = Template::TYPE_POPUP;
             $template = Template::createFromDirectory($meta, $meta['dir']);
 
             // Set category

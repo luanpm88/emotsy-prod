@@ -161,6 +161,21 @@ class SearchController extends Controller
                 ],
             ],
             [
+                'names' => [trans('messages.forms')],
+                'url' => action('FormController@create'),
+                'keywords' => [
+                    
+                ],
+            ],
+            [
+                'names' => [trans('messages.forms'), trans('messages.create')],
+                'url' => action('FormController@create'),
+                'keywords' => [
+                    trans('messages.new'),
+                    trans('messages.add'),
+                ],
+            ],
+            [
                 'names' => [trans('messages.sending'), trans('messages.blacklist')],
                 'url' => action('BlacklistController@index'),
                 'keywords' => [],

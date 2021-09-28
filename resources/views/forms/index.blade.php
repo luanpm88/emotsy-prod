@@ -61,6 +61,18 @@ sort
 </span>
                         </button>
                     </span>
+                    <span class="filter-group d-flex align-items-center form-group-mb-0">
+                        <span class="title text-semibold text-muted">{{ trans('messages.form.from_list') }}</span>
+                        @include('helpers.form_control', [
+                            'type' => 'select',
+                            'name' => 'mail_list_uid',
+                            'include_blank' => '-- ' . trans('messages.form.all_lists') . '--',
+                            'label' => '',
+                            'value' => '',
+                            'options' => Auth::user()->customer->readCache('MailListSelectOptions', []),
+                            'rules' => [],
+                        ])
+                    </span>
                     <span class="text-nowrap">
                         <input type="text" name="keyword" class="form-control search" value="{{ request()->keyword }}" value="{{ request()->keyword }}" placeholder="{{ trans('messages.type_to_search') }}" />
                         <span class="material-icons-round">
@@ -86,5 +98,26 @@ add
     </div>
 
     <script>
+        @include('forms.popupJs')
+    </script>
+
+    <script>
+        var FormsIndex = {
+            list: null,
+            getList: function() {
+                if (this.list == null) {
+                    this.list = makeList({
+                        url: '{{ action('FormController@list') }}',
+                        container: $('#FormsIndexContainer'),
+                        content: $('#FormsIndexContent')
+                    });
+                }
+                return this.list;
+            }
+        };
+
+        $(document).ready(function() {
+            FormsIndex.getList().load();
+        });
     </script>
 @endsection
