@@ -7606,3 +7606,20 @@ body:not(.search-open) .app_search_box .search-control::after {
 .categories-checkboxes .form-group {
     margin-bottom: 8px;
 }
+@media (max-width: 1200px) {
+    .navbar-main {
+        max-height: 100vh;
+        overflow: auto;
+    }
+    .top-user-menus li {
+        max-width: none;
+    }
+    .top-user-menus .backdrop {
+        position: inherit;
+    }
+    .top-user-menus .backdrop {
+        width: 100%;
+        background-size: auto 76%;
+    }
+    
+}
