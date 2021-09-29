@@ -201,6 +201,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
 
     // Form
     Route::post('forms/{uid}/settings', 'FormController@settings');
+    Route::get('forms/{uid}/builder', 'FormController@builder');
     Route::get('forms/{uid}/edit', 'FormController@edit');
     Route::get('forms/templates', 'FormController@templates');
     Route::match(['get', 'post'], 'forms/create', 'FormController@create');

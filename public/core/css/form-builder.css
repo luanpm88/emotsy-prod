@@ -25,13 +25,13 @@
 #formCanvas {
     width: 100%;
     padding-top: 80px;
-    height: calc(100vh - 110px);
+    height: calc(100vh - 60px);
 }
 #formWidgetPanel {
     width: 30%;
     float: right;
     width: 376px;
-    padding-top: 55px;
+    padding-top: 0;
 }
 #builder_iframe {
     padding: 0;
@@ -40,7 +40,7 @@
     height: 100%;
 }
 .content-right .tab-pane .container {
-    height: calc(100vh - 103px);
+    height: calc(100vh - 48px);
 }
 .acelle-top-menu {
     position: fixed;
@@ -138,7 +138,7 @@
     width: calc(100% - 376px);
     height: 100vh;
     background: #222;
-    padding-top: 86px;
+    padding-top: 35px;
     padding-left: 30px;
     padding-right: 30px;
     padding-bottom: 30px;
@@ -205,7 +205,7 @@
 .browser-frame {
     background: #444;
     width: 100%;
-    height: calc(100vh - 110px);
+    height: calc(100vh - 60px);
     position: relative;
     border-radius: 7px;
     overflow: hidden;
@@ -244,20 +244,24 @@
 .slider.slider-horizontal {
     width: 100%;
 }
-.styles-container select.form-control {
-    width: 100%;
-    font-size: 100%;
-    padding: 5px 15px;
-    height: auto!important;
-    border-radius: 3px;
-}
-.styles-container label.error {
-    font-size: 12px;
-    color: #ed695e;
-}
 .fs-7 {
     font-size: 13px!important;
 }
 .styles-container .alert-success {
     position: inherit;
+}
+.d-flex.align-items-center [class^="material-icons"] {
+    transform: translateY(0%) scale(1.2);
+}
+[class^="material-icons"] {
+    transform: translateY(0%) scale(1.2);
+}
+.styles-section .styles-toggle [class^="material-icons"] {
+    font-size: 20px;
+}
+.builder-exit-button {
+    color: #666;
+}
+.builder-exit-button:hover {
+    color: #333;
 }

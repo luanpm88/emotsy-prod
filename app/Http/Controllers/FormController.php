@@ -99,6 +99,18 @@ class FormController extends Controller
     {
         $form = Form::findByUid($request->uid);
 
+        $templates = Template::popup()->get();
+
+        return view('forms.edit', [
+            'form' => $form,
+            'templates' => $templates,
+        ]);
+    }
+
+    public function builder(Request $request)
+    {
+        $form = Form::findByUid($request->uid);
+
         // form fields for Editor
         $formFields = $form->mailList->getFields->map(function ($field) {
             return [
@@ -116,7 +128,7 @@ class FormController extends Controller
 
         $templates = Template::popup()->get();
 
-        return view('forms.edit', [
+        return view('forms.builder', [
             'form' => $form,
             'formFields' => $formFields,
             'templates' => $templates,
