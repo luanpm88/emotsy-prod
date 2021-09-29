@@ -99,7 +99,7 @@ class FormController extends Controller
     {
         $form = Form::findByUid($request->uid);
 
-        $templates = Template::popup()->get();
+        $templates = Template::popup()->shared()->get();
 
         return view('forms.edit', [
             'form' => $form,
@@ -126,12 +126,9 @@ class FormController extends Controller
             ];
         })->toArray();
 
-        $templates = Template::popup()->get();
-
         return view('forms.builder', [
             'form' => $form,
             'formFields' => $formFields,
-            'templates' => $templates,
         ]);
     }
 

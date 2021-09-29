@@ -19,6 +19,8 @@
 
         <link type="text/css" rel="stylesheet" href="{{ URL::asset('core/css/form-builder.css') }}" />
 
+        @include('helpers._builder_form')
+
         <script>
             var CSRF_TOKEN = "{{ csrf_token() }}";
             var editor;
@@ -37,18 +39,18 @@
                     url: '{{ action('FormController@content', [
                         'uid' => $form->uid,
                     ]) }}',
-                    saveUrl: '',
+                    saveUrl: '{{ action('TemplateController@builderEdit', $form->template->uid) }}',
                     saveMethod: 'POST',
-                    uploadAssetUrl: '',
+                    uploadAssetUrl: '{{ action('TemplateController@uploadTemplateAssets', $form->template->uid) }}',
                     uploadAssetMethod: 'POST',
                     backCallback: function() {
                         
                     },
 
+                    tags: {!! json_encode(Acelle\Model\Template::builderTags((isset($form->malList) ? $form->malList : null))) !!},
+
                     canvas: '#formCanvas',
                     sidePanel: '#formWidgetPanel',
-
-                    tags: [],
 
                     filemanager: '{{ URL::asset('filemanager2/dialog.php') }}',
                     logo: '{{ \Acelle\Model\Setting::get('site_logo_small') ? action('SettingController@file', \Acelle\Model\Setting::get('site_logo_small')) : URL::asset('images/logo_light_blue.svg') }}',
