@@ -4,7 +4,20 @@ namespace Acelle\Library\Traits;
 
 use Acelle\Model\Template;
 use Exception;
+use Acelle\Library\ExtendedSwiftMessage;
+use Acelle\Model\Setting;
 use Acelle\Library\StringHelper;
+use League\Pipeline\PipelineBuilder;
+use Acelle\Library\HtmlHandler\ParseRss;
+use Acelle\Library\HtmlHandler\ReplaceBareLineFeed;
+use Acelle\Library\HtmlHandler\AppendHtml;
+use Acelle\Library\HtmlHandler\TransformTag;
+use Acelle\Library\HtmlHandler\InjectTrackingPixel;
+use Acelle\Library\HtmlHandler\MakeInlineCss;
+use Acelle\Library\HtmlHandler\TransformUrl;
+use Acelle\Library\HtmlHandler\AddDoctype;
+use Acelle\Library\HtmlHandler\RemoveTitleTag;
+use File;
 
 trait HasTemplate
 {
@@ -243,5 +256,134 @@ trait HasTemplate
         }
 
         return array($message, $msgId);
+    }
+
+    /**
+     * Get tagged Subject.
+     *
+     * @return string
+     */
+    public function getSubject($subscriber, $msgId)
+    {
+        $pipeline = new PipelineBuilder();
+        $pipeline->add(new ReplaceBareLineFeed());
+        $pipeline->add(new TransformTag($this, $subscriber, $msgId));
+        return $pipeline->build()->process($this->subject);
+    }
+
+    /**
+     * Check if email footer enabled.
+     *
+     * @return string
+     */
+    public function footerEnabled()
+    {
+        return ($this->customer->getCurrentSubscription()->plan->getOption('email_footer_enabled') == 'yes') ? true : false;
+    }
+
+    /**
+     * Get HTML footer.
+     *
+     * @return string
+     */
+    public function getHtmlFooter()
+    {
+        return $this->customer->getCurrentSubscription()->plan->getOption('html_footer');
+    }
+
+    /**
+     * Find sending domain from email.
+     *
+     * @return mixed
+     */
+    public function findSendingDomain($email)
+    {
+        $domainName = substr(strrchr($email, '@'), 1);
+
+        if ($domainName == false) {
+            return;
+        }
+
+        $domain = $this->customer->sendingDomains()->where('name', $domainName)->first();
+
+        return $domain;
+    }
+
+    /**
+     * Sign the message with DKIM.
+     *
+     * @return mixed
+     */
+    public function sign($message)
+    {
+        $sendingDomain = $this->findSendingDomain($this->from_email);
+
+        if (is_null($sendingDomain)) {
+            return $message;
+        }
+
+        $privateKey = $sendingDomain->dkim_private;
+        $domainName = $sendingDomain->name;
+        $selector = $sendingDomain->getDkimSelectorParts()[0];
+        $signer = new \Swift_Signers_DKIMSigner($privateKey, $domainName, $selector);
+        $signer->ignoreHeader('Return-Path');
+        $message->attachSigner($signer);
+
+        return $message;
+    }
+
+    /**
+     * Build Email HTML content.
+     *
+     * @return string
+     */
+    public function getHtmlContent($subscriber = null, $msgId = null, $server = null)
+    {
+        if (!$this->template) {
+            throw new Exception('No template available');
+        }
+
+        $pipeline = new PipelineBuilder();
+        $pipeline->add(new AddDoctype());
+        $pipeline->add(new RemoveTitleTag());
+        $pipeline->add(new ReplaceBareLineFeed());
+        $pipeline->add(new AppendHtml($this->getHtmlFooter()));
+        $pipeline->add(new ParseRss());
+        $pipeline->add(new TransformTag($this, $subscriber, $msgId, $server));
+        $pipeline->add(new InjectTrackingPixel($msgId));
+        $pipeline->add(new TransformUrl($this->template, $msgId, $this->trackingDomain));
+        $pipeline->add(new MakeInlineCss($this->template->findCssFiles()));
+
+        $html = $pipeline->build()->process($this->getTemplateContent());
+
+        // $html = $this->wooTransform($html);
+
+        return $html;
+    }
+
+    /**
+     * Build Email HTML content.
+     *
+     * @return string
+     */
+    public function getPlainContent($subscriber, $msgId, $server = null)
+    {
+        $plain = $this->plain.$this->getPlainTextFooter();
+        $pipeline = new PipelineBuilder();
+        $pipeline->add(new ReplaceBareLineFeed());
+        $pipeline->add(new TransformTag($this, $subscriber, $msgId, $server));
+        $plain = $pipeline->build()->process($plain);
+
+        return $plain;
+    }
+
+    /**
+     * Get PLAIN TEXT footer.
+     *
+     * @return string
+     */
+    public function getPlainTextFooter()
+    {
+        return $this->customer->getCurrentSubscription()->plan->getOption('plain_text_footer');
     }
 }
