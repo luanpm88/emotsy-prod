@@ -159,4 +159,89 @@ trait HasTemplate
     {
         return get_class($object) == 'stdClass';
     }
+
+    /**
+     * Prepare the email content using Swift Mailer.
+     *
+     * @input object subscriber
+     * @input object sending server
+     *
+     * @return MIME text message
+     */
+    public function prepareEmail($subscriber, $server = null)
+    {
+        // build the message
+        $customHeaders = $this->getCustomHeaders($subscriber, $this);
+        $msgId = $customHeaders['X-Acelle-Message-Id'];
+
+        $message = new ExtendedSwiftMessage();
+        $message->setId($msgId);
+
+        if (is_null($this->type) || $this->type == self::TYPE_REGULAR) {
+            $message->setContentType('text/html; charset=utf-8');
+        } else {
+            $message->setContentType('text/plain; charset=utf-8');
+        }
+
+        foreach ($customHeaders as $key => $value) {
+            $message->getHeaders()->addTextHeader($key, $value);
+        }
+
+        // @TODO for AWS, setting returnPath requires verified domain or email address
+        if (!is_null($server) && $server->allowCustomReturnPath()) {
+            $returnPath = $server->getVerp($subscriber->email);
+            if ($returnPath) {
+                $message->setReturnPath($returnPath);
+            }
+        }
+        $message->setSubject($this->getSubject($subscriber, $msgId));
+        $message->setFrom(array($this->from_email => $this->from_name));
+        $message->setTo($subscriber->email);
+
+        if (!empty(Setting::get('campaign.bcc'))) {
+            $addresses = array_filter(preg_split('/\s*,\s*/', Setting::get('campaign.bcc')));
+            $message->setBcc($addresses);
+        }
+
+        if (!empty(Setting::get('campaign.cc'))) {
+            $addresses = array_filter(preg_split('/\s*,\s*/', Setting::get('campaign.cc')));
+            $message->setCc($addresses);
+        }
+
+        $message->setReplyTo($this->reply_to);
+        $message->setEncoder(new \Swift_Mime_ContentEncoder_PlainContentEncoder('8bit'));
+        $message->addPart($this->getPlainContent($subscriber, $msgId, $server), 'text/plain');
+        if (is_null($this->type) || $this->type == self::TYPE_REGULAR) {
+            $message->addPart($this->getHtmlContent($subscriber, $msgId, $server), 'text/html');
+        }
+
+        if ($this->sign_dkim) {
+            $message = $this->sign($message);
+        }
+
+        if ($this->attachments) {
+            // Email model
+            foreach ($this->attachments as $file) {
+                $attachment = \Swift_Attachment::fromPath($file->file);
+                $message->attach($attachment);
+                // This is used by certain delivery services like ElasticEmail
+                $message->extAttachments[] = [ 'path' => $file->file, 'type' => $attachment->getContentType()];
+            }
+        } else {
+            // Campaign model
+            //@todo attach function used for any attachment of Campaign
+            $path_campaign = $this->getAttachmentPath();
+            if (is_dir($path_campaign)) {
+                $files = File::allFiles($path_campaign);
+                foreach ($files as $file) {
+                    $attachment = \Swift_Attachment::fromPath((string) $file);
+                    $message->attach($attachment);
+                    // This is used by certain delivery services like ElasticEmail
+                    $message->extAttachments[] = [ 'path' => (string) $file, 'type' => $attachment->getContentType()];
+                }
+            }
+        }
+
+        return array($message, $msgId);
+    }
 }

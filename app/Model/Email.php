@@ -35,6 +35,10 @@ class Email extends Model
     use HasTemplate;
     use HasUid;
 
+    // Campaign types
+    public const TYPE_REGULAR = 'regular';
+    public const TYPE_PLAIN_TEXT = 'plain-text';
+
     /**
      * The attributes that are mass assignable.
      *
@@ -218,7 +222,7 @@ class Email extends Model
         // Build a valid message with a fake contact
         // build a temporary subscriber oject used to pass through the sending methods
         $subscriber = $this->createStdClassSubscriber(['email' => $emailAddress]);
-        list($message, $msgId) = $this->prepare($subscriber);
+        list($message, $msgId) = $this->prepareEmail($subscriber, $server);
         $server->send($message);
     }
 
@@ -228,7 +232,7 @@ class Email extends Model
     {
         $server = $subscriber->mailList->pickSendingServer();
         MailLog::info("Sending to subscriber `{$subscriber->email}`");
-        list($message, $msgId) = $this->prepare($subscriber);
+        list($message, $msgId) = $this->prepareEmail($subscriber, $server);
 
         if (config('app.demo') == true) {
             $sent = array(
@@ -265,59 +269,6 @@ class Email extends Model
         $stdObj = json_decode(json_encode(array_merge($jsonObj, $subscriber)));
 
         return $stdObj;
-    }
-
-    /**
-     * Prepare the email content using Swift Mailer.
-     *
-     * @input object subscriber
-     * @input object sending server
-     *
-     * @return MIME text message
-     */
-    public function prepare($subscriber)
-    {
-        // build the message
-        $customHeaders = $this->getCustomHeaders($subscriber, $this);
-        $msgId = $customHeaders['X-Acelle-Message-Id'];
-
-        $message = new ExtendedSwiftMessage();
-        $message->setId($msgId);
-
-        // fixed: HTML type only
-        $message->setContentType('text/html; charset=utf-8');
-
-        foreach ($customHeaders as $key => $value) {
-            $message->getHeaders()->addTextHeader($key, $value);
-        }
-
-        // @TODO for AWS, setting returnPath requires verified domain or email address
-        $server = $this->automation->mailList->pickSendingServer();
-        if ($server->allowCustomReturnPath()) {
-            $returnPath = $server->getVerp($subscriber->email);
-            if ($returnPath) {
-                $message->setReturnPath($returnPath);
-            }
-        }
-        $message->setSubject($this->getSubject($subscriber, $msgId));
-        $message->setFrom(array($this->from_email => $this->from_name));
-        $message->setTo($subscriber->email);
-        $message->setReplyTo($this->reply_to);
-        $message->setEncoder(new \Swift_Mime_ContentEncoder_PlainContentEncoder('8bit'));
-        $message->addPart($this->getHtmlContent($subscriber, $msgId, $server), 'text/html');
-
-        if ($this->sign_dkim) {
-            $message = $this->sign($message);
-        }
-
-        foreach ($this->attachments as $file) {
-            $attachment = \Swift_Attachment::fromPath($file->file);
-            $message->attach($attachment);
-            // This is used by certain delivery services like ElasticEmail
-            $message->extAttachments[] = [ 'path' => $file->file, 'type' => $attachment->getContentType()];
-        }
-
-        return array($message, $msgId);
     }
 
     /**
