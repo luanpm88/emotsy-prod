@@ -111,14 +111,17 @@
                         tune
                     </span>
                 </a>
-                <div class="styles-container shadow rounded overflow-hidden p-4" style="overflow-x:hidden!important; height:auto">    
+                <div class="styles-container shadow rounded overflow-hidden p-4" style="
+                    overflow-x:hidden!important; height:auto;
+                    max-height: calc(100vh - 100px);
+                ">    
                     <div class="d-flex align-items-center styles-container-heading shadow-sm">
                         <a role="button" href="javascript:;" class="styles-back px-2 py-1">
                             <span class="material-icons-outlined" style="line-height:30px">
                                 keyboard_backspace
                             </span>
                         </a>
-                        <h6 class="d-inline ml-2 m-0">{{ trans('messages.form.display_settings') }}</h6>
+                        <h6 class="d-inline ml-2 m-0">{{ trans('messages.form.form_settings') }}</h6>
                     </div>                    
                         
                     <hr>
@@ -127,6 +130,27 @@
                             'uid' => $form->uid
                         ]) }}" method="POST">
                             {{ csrf_field() }}
+
+                            <div class="mb-3">
+                                @include('helpers.form_control', [
+                                    'type' => 'text',
+                                    'name' => 'name',
+                                    'label' => trans('messages.name'),
+                                    'value' => $form->name,
+                                    'required' => true,
+                                ])
+                            </div>
+
+                            <div class="mb-3">
+                                @include('helpers.form_control', [
+                                    'type' => 'select',
+                                    'name' => 'mail_list_uid',
+                                    'label' => trans('messages.list'),
+                                    'value' => $form->mailList->uid,
+                                    'options' => Auth::user()->customer->readCache('MailListSelectOptions', []),
+                                    'rules' => [],
+                                ])
+                            </div>
 
                             <div class="mb-2">
                                 <label class="mb-2 fs-7">{{ trans('messages.form.overlay_opacity') }}</label>
@@ -208,7 +232,6 @@
 
 	<script>
         var FormsEdit = {
-            currentFormHtml: null,
             styleManager: null,
             displayOption: null,
 
@@ -317,7 +340,7 @@
                         data: data
                     }).done(function(response) {
                         notify({
-                            message: 'Form display settings was saved.'
+                            message: response.message
                         });
                     });
                 }
@@ -336,14 +359,9 @@
 
                 // save current form container
                 _this.getEditor().cleanUpContent();
-                _this.currentFormHtml = _this.getEditor().getIframeContent().find('#formContainer').html();
 
                 _this.getEditor().loadUrl(url, function() {
-                    // load saved form container to new template
-                    _this.getEditor().getIframeContent().find('#formContainer').append(_this.currentFormHtml);
-                    setTimeout(function() {
-                        _this.getEditor().adjustIframeSize();
-                    }, 100);
+                    _this.getEditor().adjustIframeSize();
                 });
             },
 

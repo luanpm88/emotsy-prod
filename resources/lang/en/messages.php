@@ -3900,8 +3900,9 @@
   'forms.delete.confirm' => 'You\'re about to delete :number form(s).',
   'form.builder' => 'Form builder',
   'form.publish' => 'Publish',
+  'form.unpublish' => 'Unpublish',
   'form.status.draft' => 'draft',
-  'form.status.active' => 'active',
+  'form.status.published' => 'published',
   'form.empty_list' => 'There are no forms yet',
   'form.all_lists' => 'All mail lists',
   'form.from_list' => 'from',
@@ -3937,7 +3938,7 @@
   'upgrade.uploading' => 'Uploading...',
   'form.layouts' => 'Layouts',
   'form.themes' => 'Themes',
-  'form.display_settings' => 'Display settings',
+  'form.form_settings' => 'Form settings',
   'form.overlay_opacity' => 'Overlay opacity',
   'form.display' => 'Display',
   'form.display.click' => 'Click on element...',
@@ -3959,4 +3960,12 @@
   'form.preview' => 'Preview',
   'form.open_site' => 'Open site',
   'form.builder.save' => 'Save',
+  'form.settins_saved' => 'Form settings were saved',
+  'website.new_added_intro' => '
+      <h4 class="fw-600 fs-3 text-center">Success!</h4>
+      <p class="text-center mb-0">Your website is now connected. You can now add<br>
+      subscription popup forms and enable other features for<br>
+      your site.</p>',
+  'form.published' => '<span class="fw-600">:name</span> form was successfully published',
+  'form.unpublished' => '<span class="fw-600">:name</span> form was successfully unpublished',
 ) ?>

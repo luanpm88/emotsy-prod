@@ -82,6 +82,13 @@
                     message: '{{ trans('messages.website.code_copied') }}',
                 });
             });
+
+            @if (request()->new_site)
+                new Dialog('alert', {
+                    title: '',
+                    message: `{!! trans('messages.website.new_added_intro') !!}`
+                })
+            @endif
         });
     </script>
         

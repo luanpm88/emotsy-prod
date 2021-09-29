@@ -46,14 +46,24 @@
                                 role="button" class="btn btn-primary">
                             <span class="material-icons-outlined me-1">handyman</span> {{ trans('messages.form.builder') }}
                         </a>
-                        <a href="{{ action('FormController@edit', $form->uid) }}"
-                            role="button" class="btn btn-secondary">
+                    @endif
+
+                    @if (Auth::user()->customer->can('publish', $form))
+                        <a link-method="POST" href="{{ action('FormController@publish', $form->uid) }}"
+                            role="button" class="btn btn-secondary list-action-single">
                             {{ trans('messages.form.publish') }}
+                        </a>
+                    @endif
+
+                    @if (Auth::user()->customer->can('unpublish', $form))
+                        <a link-method="POST" href="{{ action('FormController@unpublish', $form->uid) }}"
+                            role="button" class="btn btn-default list-action-single">
+                            {{ trans('messages.form.unpublish') }}
                         </a>
                     @endif
                     
                     <a href="{{ action('FormController@content', $form->uid) }}"
-                        role="button" class="btn btn-secondary form-popup-preview">
+                        role="button" class="btn btn-default form-popup-preview">
                         <span class="material-icons-outlined">
                             zoom_in
                             </span>

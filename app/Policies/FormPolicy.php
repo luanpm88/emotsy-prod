@@ -24,4 +24,14 @@ class FormPolicy
     {
         return $user->customer->id == $form->customer_id;
     }
+
+    public function publish(User $user, Form $form)
+    {
+        return $user->customer->id == $form->customer_id && $form->status == Form::STATUS_DRAFT;
+    }
+
+    public function unpublish(User $user, Form $form)
+    {
+        return $user->customer->id == $form->customer_id && $form->status == Form::STATUS_PUBLISHED;
+    }
 }

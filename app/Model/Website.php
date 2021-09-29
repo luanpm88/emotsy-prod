@@ -110,4 +110,9 @@ class Website extends Model
         $this->status = self::STATUS_INACTIVE;
         $this->save();
     }
+
+    public function isActive()
+    {
+        return $this->status == self::STATUS_CONNECTED;
+    }
 }

@@ -36,7 +36,7 @@
                     
                     root: '{{ URL::asset('builder') }}/',                
                     lang: {!! json_encode(language()->getBuilderLang()) !!},
-                    url: '{{ action('FormController@content', [
+                    url: '{{ action('FormController@editContent', [
                         'uid' => $form->uid,
                     ]) }}',
                     saveUrl: '{{ action('TemplateController@builderEdit', $form->template->uid) }}',
@@ -47,7 +47,7 @@
                         
                     },
 
-                    tags: {!! json_encode(Acelle\Model\Template::builderTags((isset($form->malList) ? $form->malList : null))) !!},
+                    tags: {!! json_encode($form->getBuilderTags()) !!},
 
                     canvas: '#formCanvas',
                     sidePanel: '#formWidgetPanel',
@@ -72,21 +72,7 @@
                     ],
                     loaded: function() {
                         if (!editor.getIframeContent().find('#formContainer').children().length) {
-                            // add default widget
-                            formFields.forEach(function(field) {
-                                if (field.visible == 1) {
-                                    // create widget from field info
-                                    var className = field.type.charAt(0).toUpperCase() + field.type.slice(1) + 'FieldWidget';
-                                    var widget = eval('new ' + className + '(field)');
-                                    // insert widget content to editor
-                                    editor.getIframeContent().find('#formContainer').append(widget.getContentHtml());   
-                                }                   
-                            });
-
-                            // Add submit button
-                            var widget = new SubmitButtonWidget();
-                            // insert widget content to editor
-                            editor.getIframeContent().find('#formContainer').append(widget.getContentHtml());
+                            FormsBuilder.loadWidgets();
                         }
 
                         // js auto height iframe
@@ -207,6 +193,26 @@
                             callback();
                         }
                     });
+                },
+
+                loadWidgets: function() {
+                    // add default widget
+                    formFields.forEach(function(field) {
+                        if (field.visible == 1 && field.required) {
+                            // create widget from field info
+                            var className = field.type.charAt(0).toUpperCase() + field.type.slice(1) + 'FieldWidget';
+                            var widget = eval('new ' + className + '(field)');
+                            // insert widget content to editor
+                            editor.getIframeContent().find('#formContainer').append(widget.getContentHtml());   
+                        }                   
+                    });
+
+                    // Add submit button
+                    var widget = new SubmitButtonWidget();
+                    // insert widget content to editor
+                    editor.getIframeContent().find('#formContainer').append(widget.getContentHtml());
+
+                    editor.adjustIframeSize();
                 }
             };
 

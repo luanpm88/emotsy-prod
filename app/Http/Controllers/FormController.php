@@ -107,6 +107,19 @@ class FormController extends Controller
         ]);
     }
 
+    public function editContent(Request $request)
+    {
+        // Generate info
+        $form = Form::findByUid($request->uid);
+
+        $content = view('popup.content', [
+            'template' => $form->template,
+            'content' => $form->template->content,
+        ]);
+
+        return response($content)->header('Access-Control-Allow-Origin', '*');
+    }
+
     public function builder(Request $request)
     {
         $form = Form::findByUid($request->uid);
@@ -139,7 +152,7 @@ class FormController extends Controller
 
         $content = view('popup.content', [
             'template' => $form->template,
-            'content' => $form->template->content,
+            'content' => $form->renderedContent(),
         ]);
 
         return response($content)->header('Access-Control-Allow-Origin', '*');
@@ -162,7 +175,17 @@ class FormController extends Controller
     {
         $form = Form::findByUid($request->uid);
 
-        $form->saveSettingsFromArray($request->all());
+        try {
+            $form->saveSettingsFromArray($request->all());
+
+            return response()->json([
+                'message' => trans('messages.form.settins_saved'),
+            ]);
+        } catch(\Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage(),
+            ], 400);
+        }
     }
 
     public function connect(Request $request)
@@ -212,6 +235,32 @@ class FormController extends Controller
 
         return view('forms.connect', [
             'form' => $form,
+        ]);
+    }
+
+    public function publish(Request $request)
+    {
+        $form = Form::findByUid($request->uid);
+
+        $form->publish();
+
+        return response()->json([
+            'message' => trans('messages.form.published', [
+                'name' => $form->name,
+            ]),
+        ]);
+    }
+
+    public function unpublish(Request $request)
+    {
+        $form = Form::findByUid($request->uid);
+
+        $form->unpublish();
+
+        return response()->json([
+            'message' => trans('messages.form.unpublished', [
+                'name' => $form->name,
+            ]),
         ]);
     }
 }

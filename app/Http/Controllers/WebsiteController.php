@@ -37,10 +37,10 @@ class WebsiteController extends Controller
             }
 
             
-            return redirect()->action('WebsiteController@index')
-                ->with('alert-success', trans('messages.website.created', [
-                    'name' => $website->name,
-                ]));
+            return redirect()->action('WebsiteController@show', [
+                'uid' => $website->uid,
+                'new_site' => true,
+            ]);
         }
 
         return view('websites.create', [
@@ -106,6 +106,10 @@ class WebsiteController extends Controller
         $content = view('websites.connectJs', [
             'website' => $website,
         ]);
+
+        if (!$website->isActive()) {
+            $content = '';
+        }
 
         return response($content)
             ->header('Access-Control-Allow-Origin', '*')
