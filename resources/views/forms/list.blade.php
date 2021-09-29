@@ -28,10 +28,24 @@
                     ]) }}">
                         {{ $form->name }}
                     </a>
-                    <span class="text-muted2">
-                        {{ trans('messages.list') }}:
+                    <span title="{{ $form->mailList->name }}" class="xtooltip text-muted2 text-truncate d-block"
+                        style="max-width: 220px">
                         {{ $form->mailList->name }}
                     </span>
+                </td>
+
+                <td class="pe-5">
+                    @if ($form->getWebsite())
+                        <a title="{{ $form->mailList->name }}" href="{{ action('WebsiteController@index', [
+                            'uid' => $form->getWebsite()->uid
+                        ]) }}" class="no-margin stat-num d-block text-truncate xtooltip" style="max-width: 220px">
+                            <span>{{ $form->getWebsite()->title }}</span>
+                        </a>
+                    @else
+                        <div><span>--</span></div>
+                    @endif
+                        
+                    <span class="text-muted2">{{ trans('messages.form.site') }}</span>
                 </td>
 
                 <td>
@@ -40,7 +54,7 @@
                     </span>
                 </td>
 
-                <td class="text-end">
+                <td class="text-end text-nowrap">
                     @if (Auth::user()->customer->can('update', $form))
                         <a href="{{ action('FormController@edit', $form->uid) }}"
                                 role="button" class="btn btn-primary">

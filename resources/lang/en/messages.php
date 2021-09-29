@@ -3898,7 +3898,7 @@
   'form.template' => 'Default',
   'form.created' => '<span class="fw-600">:name</span> form was successfully created',
   'forms.delete.confirm' => 'You\'re about to delete :number form(s).',
-  'form.builder' => 'Form builder',
+  'form.builder' => 'Builder',
   'form.publish' => 'Publish',
   'form.unpublish' => 'Unpublish',
   'form.status.draft' => 'draft',
@@ -3969,4 +3969,5 @@
   'form.published' => '<span class="fw-600">:name</span> form was successfully published',
   'form.unpublished' => '<span class="fw-600">:name</span> form was successfully unpublished',
   'website.connected_form' => 'Forms',
+  'form.site' => 'Connected site',
 ) ?>
