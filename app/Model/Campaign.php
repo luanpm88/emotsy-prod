@@ -2713,7 +2713,7 @@ class Campaign extends Model
     /**
      * Start the campaign. called by daemon job
      */
-    public function prepare($callback)
+    public function prepare($callback, $loadLimit = null)
     {
         // Available sending servers
         $sendingServersPool = $this->defaultMailList->getSendingServers();
@@ -2735,7 +2735,14 @@ class Campaign extends Model
         self::resetMaxExecutionTime();
 
         // Query subscribers
-        $query = $this->subscribersToSend();
+        // IMPORTANT: this method is called by LoadCampaign job which create a SendMessage job for each subscribers
+        // then add to the batch
+        // However, iterating through a big list may cause memory leak
+        // So, LoadCampaign only a fixed number of $loadLimit subscribers each time, then just finish the queue
+        // (it will automatically load the other $loadLimit after that)
+        if (!is_null($loadLimit)) {
+            $query = $this->subscribersToSend()->limit($loadLimit);
+        }
 
         // Iterate through batches of subscribers, 100 each
         cursorIterate(
@@ -2964,7 +2971,11 @@ class Campaign extends Model
                 if (!$this->refresh()->isPaused()) {
                     $this->setDone();
                 } else {
-                    // previously paused, no need to update its status
+                    if ($this->subscribersToSend()->count() > 0) {
+                        // Launch over and over again until there is no subscribers left to send
+                        // Because each LoadCampaign jobs only load a fixed number of subscribers
+                        $this->launch();
+                    }
                 }
             },
             function (Batch $batch, Throwable $e) {
