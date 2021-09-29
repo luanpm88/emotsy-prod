@@ -50,7 +50,7 @@
                 {{ trans('messages.automation.email.from') }}
             </label>
             <div class="value">
-                {{ $email->from }}
+                {{ $email->from_email }}
             </div>
         </div>
         <div class="list-action">

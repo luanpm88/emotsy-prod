@@ -41,7 +41,7 @@ class Email extends Model
      * @var array
      */
     protected $fillable = [
-        'subject', 'from', 'from_name', 'reply_to', 'sign_dkim', 'track_open', 'track_click', 'action_id',
+        'subject', 'from_email', 'from_name', 'reply_to', 'sign_dkim', 'track_open', 'track_click', 'action_id',
     ];
 
     // Cached HTML content
@@ -117,7 +117,7 @@ class Email extends Model
     {
         $rules = [
             'subject' => 'required',
-            'from' => 'required|email',
+            'from_email' => 'required|email',
             'from_name' => 'required',
         ];
 
@@ -302,7 +302,7 @@ class Email extends Model
             }
         }
         $message->setSubject($this->getSubject($subscriber, $msgId));
-        $message->setFrom(array($this->from => $this->from_name));
+        $message->setFrom(array($this->from_email => $this->from_name));
         $message->setTo($subscriber->email);
         $message->setReplyTo($this->reply_to);
         $message->setEncoder(new \Swift_Mime_ContentEncoder_PlainContentEncoder('8bit'));
@@ -329,7 +329,7 @@ class Email extends Model
      */
     public function getCustomHeaders($subscriber, $server)
     {
-        $msgId = StringHelper::generateMessageId(StringHelper::getDomainFromEmail($this->from));
+        $msgId = StringHelper::generateMessageId(StringHelper::getDomainFromEmail($this->from_email));
         if ($this->isStdClassSubscriber($subscriber)) {
             $unsubscribeUrl = null;
         } else {
@@ -572,7 +572,7 @@ class Email extends Model
      */
     public function sign($message)
     {
-        $sendingDomain = $this->findSendingDomain($this->from);
+        $sendingDomain = $this->findSendingDomain($this->from_email);
 
         if (empty($sendingDomain)) {
             return $message;
@@ -622,7 +622,7 @@ class Email extends Model
 
     public function isSetup()
     {
-        return $this->subject && $this->reply_to && $this->from && $this->template;
+        return $this->subject && $this->reply_to && $this->from_email && $this->template;
     }
 
     public function deleteAndCleanup()

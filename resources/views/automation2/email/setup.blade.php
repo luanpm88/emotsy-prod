@@ -38,7 +38,7 @@
                     'id' => 'sender_from_input',
                     'name' => 'from',
                     'label' => trans('messages.from_email'),
-                    'value' => $email->from,
+                    'value' => $email->from_email,
                     'rules' => $email->rules(),
                     'help_class' => 'email',
                     'url' => action('SenderController@dropbox'),
