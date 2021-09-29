@@ -119,8 +119,60 @@
                                     <div class="control-dot green"></div>
                                 </div>
                             </div>
-                            <div class="d-flex justify-content-center px-5" style="width: 100%">
-                                <input class="form-control browser-address fs-3 px-4 rounded-pill" value="https://your-site.com" style="" />
+                            <div class="d-flex align-items-center justify-content-center px-5" style="width: 100%">
+                                <div class="browser-address rounded d-flex align-items-center shadow-sm" value="" style="">
+                                    <div class="d-flex align-items-center" style="width: 100%">
+                                        @if($form->getMetadata('website_uid'))
+                                            <div class="mr-4" style="width:1%">
+                                                <span class="material-icons-round text-success" style="font-size: 20px;transform: translateY(3px)">
+                                                    link_on
+                                                </span>
+                                            </div>
+                                            <div class="address-container">
+                                                <a class="link-dark"
+                                                    target="_blank"  title="{{ $form->getWebsite()->title }}" href="{{ $form->getWebsite()->url }}">
+                                                    {{ $form->getWebsite()->url }}
+                                                </a>
+                                            </div>
+                                            <div class="ml-auto">
+                                                <a href="javascript:;" class="connect-to-site link-dark">
+                                                    <span class="material-icons-round mr-1" style="font-size:11px">
+                                                        edit
+                                                        </span>{{ trans('messages.form.connect_edit') }}
+                                                </a><span class="mx-1"> | </span>
+                                                <a target="_blank" href="{{ $form->getWebsite()->url }}" class="link-dark">
+                                                    <span class="material-icons-round mr-0" style="font-size:11px">
+                                                        launch
+                                                        </span>
+                                                    {{ trans('messages.form.open_site') }}
+                                                    
+                                                </a>
+                                            </div>
+                                        @else
+                                            <div class="mr-4" style="width:1%">
+                                                <span class="material-icons-round text-warning" style="font-size: 20px;transform: translateY(3px)">
+                                                    link_off
+                                                </span>
+                                            </div>
+                                            <div>
+                                                {{ trans('messages.form.builder.connect_to_your_site') }}
+                                            </div>
+                                            <div class="ml-auto">
+                                                <a href="javascript:;" class="connect-to-site">{{ trans('messages.form.connect_site') }}</a>
+                                            </div>
+                                        @endif
+
+                                        <script>
+                                            $(function() {
+                                                $('.connect-to-site').on('click', function(e) {
+                                                    e.preventDefault();
+                                
+                                                    FormsBuilder.getFormsEdit().getConnectPopup().load();
+                                                });
+                                            });
+                                        </script>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div id="formCanvas"></div>
@@ -134,6 +186,19 @@
             var FormsBuilder = {
                 getFormsEdit: function() {
                     return parent.FormsEdit;
+                },
+
+                updateAddressBar: function() {
+                    $.ajax({
+                        url: "",
+                        method: 'GET'
+                    })
+                    .done(function(res) {
+                        var html = $('<div>').html(res).find('.browser-address').html();
+                        $('.browser-address').html(html);
+
+                        initJs($('.browser-address'));
+                    })
                 }
             };
 

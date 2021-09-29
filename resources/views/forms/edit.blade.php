@@ -45,7 +45,7 @@
     <div class="styles-settings shadow-sm">
         <div class="styles-sections">
             <div class="styles-section form-layouts">
-                <a href="javascript:;" class="styles-toggle px-2 py-1">
+                <a href="javascript:;" class="styles-menu-button styles-toggle px-2 py-1">
                     <span class="material-icons-outlined" style="line-height:30px">
                         dashboard
                     </span>
@@ -72,7 +72,7 @@
                 </div>  
             </div>
             <div class="styles-section form-theme">
-                <a href="javascript:;" class="styles-toggle px-2 py-1">
+                <a href="javascript:;" class="styles-menu-button styles-toggle px-2 py-1">
                     <span class="material-icons-outlined" style="line-height:30px">
                         web
                     </span>
@@ -100,7 +100,7 @@
                 </div>  
             </div>
             <div class="styles-section form-theme">
-                <a href="javascript:;" class="styles-toggle px-2 py-1">
+                <a href="javascript:;" class="styles-menu-button styles-toggle px-2 py-1">
                     <span class="material-icons-round" style="line-height:30px">
                         tune
                     </span>
@@ -186,8 +186,20 @@
                     </div>
                 </div>  
             </div>
+            <div class="styles-section form-theme">
+                <a href="javascript:;" class="styles-menu-button preview-popup px-2 py-1">
+                    <span class="material-icons-outlined xtooltip" title="{{ trans('messages.preview') }}" style="line-height:30px">
+                        visibility
+                    </span>
+                </a> 
+            </div>
         </div>
     </div>
+
+    <script>
+        @include('forms.popupJs')
+    </script>
+
 	<script>
         var FormsEdit = {
             currentFormHtml: null,
@@ -309,6 +321,10 @@
                 return document.getElementById('FormsEditIframe').contentWindow.editor;
             },
 
+            getFormsBuilder: function() {
+                return document.getElementById('FormsEditIframe').contentWindow.FormsBuilder;
+            },
+
             loadUrl: function(url) {
                 var _this = this;
 
@@ -323,6 +339,28 @@
                         _this.getEditor().adjustIframeSize();
                     }, 100);
                 });
+            },
+
+            connectPopup: null,
+            getConnectPopup: function() {
+                if (this.connectPopup == null) {
+                    this.connectPopup = new Popup({
+                        url: '{{ action('FormController@connect', [
+                            'uid' => $form->uid,
+                        ]) }}'
+                    });
+                }
+                return this.connectPopup;
+            },
+
+            preview: function() {
+                popup = new AFormPopup({
+                    url: '{{ action('FormController@content', [
+                        'uid' => $form->uid,
+                    ]) }}'
+                });
+
+                popup.load();
             }
         }
         
@@ -344,6 +382,12 @@
             // display setting save
             $('.display-settings-save').on('click', function() {
                 FormsEdit.saveDisplaySetting();
+            });
+
+
+            // preview
+            $('.preview-popup').on('click', function() {
+                FormsEdit.preview();
             });
         })
     </script>

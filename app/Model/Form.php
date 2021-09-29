@@ -112,4 +112,23 @@ class Form extends Model
             'element_id' => $params['element_id'],
         ]);
     }
+
+    public function connect($site)
+    {
+        $this->updateMetadata([
+            'website_uid' => $site->uid,
+        ]);
+    }
+
+    public function getWebsite()
+    {
+        return $this->getMetadata('website_uid') ? \Acelle\Model\Website::findByUid($this->getMetadata('website_uid')) : null;
+    }
+    
+    public function disconnect()
+    {
+        $this->updateMetadata([
+            'website_uid' => null,
+        ]);
+    }
 }

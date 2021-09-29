@@ -167,4 +167,54 @@ class FormController extends Controller
 
         $form->saveSettingsFromArray($request->all());
     }
+
+    public function connect(Request $request)
+    {
+        $form = Form::findByUid($request->uid);
+
+        if ($request->isMethod('post')) {
+            // make validator
+            $validator = \Validator::make($request->all(), [
+                'website_uid' => 'required',
+            ]);
+
+            // redirect if fails
+            if ($validator->fails()) {
+                return response()->view('forms.connect', [
+                    'form' => $form,
+                    'errors' => $validator->errors(),
+                ], 400);
+            }
+
+            $site = \Acelle\Model\Website::findByUid($request->website_uid);
+            $form->connect($site);
+
+            return response()->json([
+                'message' => trans('messages.form.connected', [
+                    'site' => $site->title,
+                ]),
+            ]);
+        }
+
+        return view('forms.connect', [
+            'form' => $form,
+        ]);
+    }
+
+    public function disconnect(Request $request)
+    {
+        $form = Form::findByUid($request->uid);
+
+        if ($request->isMethod('post')) {
+            $form->disconnect();
+
+            return response()->json([
+                'message' => trans('messages.form.disconnected'),
+            ]);
+        }
+
+        return view('forms.connect', [
+            'form' => $form,
+        ]);
+    }
 }

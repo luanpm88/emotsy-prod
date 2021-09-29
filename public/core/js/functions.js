@@ -10,6 +10,9 @@ function initJs(container)
         dropdownAutoWidth: true,
         minimumResultsForSearch: 30,
         dropdownAutoWidth : true,
+        escapeMarkup: function(markup) {
+            return markup;
+        }
     });
 
     // pick a date

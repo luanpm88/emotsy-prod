@@ -200,6 +200,8 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
     Route::get('audience/overview', 'AudienceController@overview');
 
     // Form
+    Route::post('forms/{uid}/disconnect', 'FormController@disconnect');
+    Route::match(['get', 'post'], 'forms/{uid}/connect', 'FormController@connect');
     Route::post('forms/{uid}/settings', 'FormController@settings');
     Route::get('forms/{uid}/builder', 'FormController@builder');
     Route::get('forms/{uid}/edit', 'FormController@edit');

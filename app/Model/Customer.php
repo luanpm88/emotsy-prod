@@ -203,6 +203,11 @@ class Customer extends Model
         return $this->hasMany('Acelle\Model\Form');
     }
 
+    public function websites()
+    {
+        return $this->hasMany('Acelle\Model\Website');
+    }
+
     /**
      * Get user sources.
      */
@@ -1970,5 +1975,16 @@ class Customer extends Model
         }
 
         return false;
+    }
+
+    public function getWebsiteSelectOptions()
+    {
+        $query = $this->websites();
+
+        $result = $query->orderBy('title')->get()->map(function ($item) {
+            return ['value' => $item->uid, 'text' => '<span class="fw-600">' . $item->title . '</span><br><span class="text-muted">' . $item->url . '</span>'];
+        });
+
+        return $result;
     }
 }
