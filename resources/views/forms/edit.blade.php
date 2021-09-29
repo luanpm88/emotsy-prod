@@ -77,7 +77,7 @@
                     </div>
                 </div>  
             </div>
-            <div class="styles-section form-theme">
+            <div class="styles-section form-theme" style="display:none">
                 <a href="javascript:;" class="styles-menu-button styles-toggle px-2 py-1">
                     <span class="material-icons-outlined" style="line-height:30px">
                         web
@@ -421,6 +421,13 @@
                 addButtonMask(button);
                 FormsEdit.getFormsBuilder().save(function() {
                     removeButtonMask(button);
+                });
+            });
+
+            // hide style
+            $('.navbar').on('click', function() {
+                FormsEdit.getStyleManager().groups.forEach(function(group) {
+                    group.hide();
                 });
             });
         })

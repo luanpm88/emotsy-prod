@@ -138,6 +138,12 @@
             this.getForm().prepend('{{ csrf_field() }}');
         },
 
+        showSuccessMessage: function() {
+            $('form-section').hide();
+            $('message-section').show();
+            this.autoHeight();
+        },
+
         save: function() {
             var _this = this;
 
@@ -155,7 +161,7 @@
                 globalError: false
             })
             .done(function(res) {
-                alert(res.message);
+                _this.showSuccessMessage();
                 removeMaskLoading();
             })
             .fail(function(res) {

@@ -3970,4 +3970,6 @@
   'form.unpublished' => '<span class="fw-600">:name</span> form was successfully unpublished',
   'website.connected_form' => 'Forms',
   'form.site' => 'Connected site',
+  'form.builer.form_tab' => 'Form',
+  'form.builer.success_message_tab' => 'Success Message',
 ) ?>

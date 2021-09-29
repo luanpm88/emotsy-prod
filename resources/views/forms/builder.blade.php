@@ -19,6 +19,8 @@
 
         <link type="text/css" rel="stylesheet" href="{{ URL::asset('core/css/form-builder.css') }}" />
 
+        <script type="text/javascript" src="{{ URL::asset('core/js/group-manager.js') }}"></script>
+
         @include('helpers._builder_form')
 
         <script>
@@ -163,6 +165,20 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="page-tabs">
+                            <div class="page-tabs-outer d-flex rounded shadow">
+                                <div class="">
+                                    <a href="javascript:;" class="page-tab active" data-section="form">
+                                        {{ trans('messages.form.builer.form_tab') }}
+                                    </a>
+                                </div>
+                                <div class="">
+                                    <a href="javascript:;" class="page-tab" data-section="message">
+                                        {{ trans('messages.form.builer.success_message_tab') }}
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
                         <div id="formCanvas"></div>
                     </div>
                 </div>
@@ -213,6 +229,45 @@
                     editor.getIframeContent().find('#formContainer').append(widget.getContentHtml());
 
                     editor.adjustIframeSize();
+                },
+
+                pageTabManager: null,
+                getPageTabManager: function() {
+                    var _this = this;
+
+                    if (_this.pageTabManager == null) {
+                        _this.pageTabManager = new GroupManager();
+
+                        $('.page-tab').each(function() {
+                            var t = $(this);
+                            _this.pageTabManager.add({
+                                tab: t,
+                                value: t.attr('data-section'),
+                                section: function() {
+                                    return editor.getIframeContent().find(t.attr('data-section') + '-section');
+                                }
+                            });
+                        });
+
+                        _this.pageTabManager.bind(function(group, others) {
+                            group.check = function() {
+                                group.section().show();
+                                group.tab.addClass('active');
+
+                                others.forEach(function(other) {
+                                    other.section().hide();
+                                    other.tab.removeClass('active');
+                                });
+
+                                editor.unselect();
+                            }
+
+                            group.tab.on('click', function() {
+                                group.check();
+                            });
+                        });
+                            
+                    }
                 }
             };
 
@@ -223,6 +278,9 @@
                         group.hide();
                     });
                 });
+
+                // 
+                FormsBuilder.getPageTabManager();
             });
         </script>
   </body>

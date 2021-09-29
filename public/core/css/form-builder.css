@@ -129,7 +129,7 @@
     -webkit-backdrop-filter: blur(8px);
 }
 .content-left.content-form-mode {
-    padding: 30px 0 0 0;
+    padding: 70px 0 0 0;
     background: transparent;
     width: 100%;
     border: none;
@@ -286,4 +286,31 @@ a.link-dark:hover {
     overflow: hidden;
     max-width: 520px;
     text-overflow: ellipsis;
+}
+.page-tabs {
+    position: absolute;
+    z-index: 10;
+    top: 110px;
+    margin: auto;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+.page-tabs-outer {
+    background: rgba(255,255,255,0.95);
+    overflow: hidden;
+}
+.page-tab {
+    display: inline-block;
+    padding: 7px 17px;    
+    font-size: 15px;
+    color: #777;
+}
+.page-tab:hover {
+    color: #333;
+}
+.page-tab.active {
+    color: #333;
+    font-weight: 600;
+    background: #fff;
 }
