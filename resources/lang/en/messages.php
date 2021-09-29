@@ -3958,4 +3958,5 @@
   'form.disconnected' => 'Site was disconnected successfully',
   'form.preview' => 'Preview',
   'form.open_site' => 'Open site',
+  'form.builder.save' => 'Save',
 ) ?>

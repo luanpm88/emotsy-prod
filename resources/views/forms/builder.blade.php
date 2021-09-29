@@ -198,9 +198,15 @@
                     .done(function(res) {
                         var html = $('<div>').html(res).find('.browser-address').html();
                         $('.browser-address').html(html);
-
-                        initJs($('.browser-address'));
                     })
+                },
+
+                save: function(callback) {
+                    editor.save(function() {
+                        if (typeof(callback) !== 'undefined') {
+                            callback();
+                        }
+                    });
                 }
             };
 

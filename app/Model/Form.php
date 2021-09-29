@@ -131,4 +131,9 @@ class Form extends Model
             'website_uid' => null,
         ]);
     }
+
+    public static function scopeByWebsite($query, $website)
+    {
+        $query = $query->where('metadata', 'like', '%'.$website->uid.'%');
+    }
 }

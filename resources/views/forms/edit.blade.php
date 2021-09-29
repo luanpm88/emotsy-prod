@@ -27,7 +27,13 @@
                 </span>
                 {{ trans('messages.form.builder') }}
             </span>
-            <div class="ms-auto">
+            <div class="ms-auto me-4">
+                <button class="me-2 builder-save-button btn btn-secondary" href="{{ action('FormController@index') }}">
+                    {{ trans('messages.form.builder.save') }}
+                </button>
+            </div>
+            <div>
+                
                 <a class="fs-4 builder-exit-button" href="{{ action('FormController@index') }}"><span class="material-icons-round">
                     close
                     </span></a>
@@ -388,6 +394,16 @@
             // preview
             $('.preview-popup').on('click', function() {
                 FormsEdit.preview();
+            });
+
+            // save
+            $('.builder-save-button').on('click', function() {
+                var button = $(this);
+
+                addButtonMask(button);
+                FormsEdit.getFormsBuilder().save(function() {
+                    removeButtonMask(button);
+                });
             });
         })
     </script>
