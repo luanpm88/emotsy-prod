@@ -277,8 +277,6 @@ class Email extends Model
      */
     public function prepare($subscriber)
     {
-        $this->updateLinks();
-
         // build the message
         $customHeaders = $this->getCustomHeaders($subscriber, $this);
         $msgId = $customHeaders['X-Acelle-Message-Id'];
@@ -323,39 +321,6 @@ class Email extends Model
     }
 
     /**
-     * Build Email Custom Headers.
-     *
-     * @return Hash list of custom headers
-     */
-    public function getCustomHeaders($subscriber, $server)
-    {
-        $msgId = StringHelper::generateMessageId(StringHelper::getDomainFromEmail($this->from_email));
-        if ($this->isStdClassSubscriber($subscriber)) {
-            $unsubscribeUrl = null;
-        } else {
-            $unsubscribeUrl = $subscriber->generateUnsubscribeUrl($msgId);
-            if ($this->trackingDomain) {
-                $unsubscribeUrl = $this->trackingDomain->buildTrackingUrl($unsubscribeUrl);
-            }
-        }
-
-        $headers = array(
-            'X-Acelle-Campaign-Id' => $this->uid,
-            'X-Acelle-Subscriber-Id' => $subscriber->uid,
-            'X-Acelle-Customer-Id' => $this->customer->uid,
-            'X-Acelle-Message-Id' => $msgId,
-            'X-Acelle-Sending-Server-Id' => $server->uid,
-            'Precedence' => 'bulk',
-        );
-
-        if ($unsubscribeUrl) {
-            $headers['List-Unsubscribe'] = "<{$unsubscribeUrl}>";
-        }
-
-        return $headers;
-    }
-
-    /**
      * Log delivery message, used for later tracking.
      */
     public function trackMessage($response, $subscriber, $server, $msgId, $triggerId = null)
@@ -390,17 +355,6 @@ class Email extends Model
         $pipeline->add(new ReplaceBareLineFeed());
         $pipeline->add(new TransformTag($this, $subscriber, $msgId));
         return $pipeline->build()->process($this->subject);
-    }
-
-    /**
-     * Check if the given variable is a subscriber object (for actually sending a email)
-     * Or a stdClass subscriber (for sending test email).
-     *
-     * @param object $object
-     */
-    public function isStdClassSubscriber($object)
-    {
-        return get_class($object) == 'stdClass';
     }
 
     /**

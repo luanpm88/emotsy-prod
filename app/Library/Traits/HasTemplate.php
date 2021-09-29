@@ -4,6 +4,7 @@ namespace Acelle\Library\Traits;
 
 use Acelle\Model\Template;
 use Exception;
+use Acelle\Library\StringHelper;
 
 trait HasTemplate
 {
@@ -112,5 +113,50 @@ trait HasTemplate
         }
 
         return $this->template->content;
+    }
+
+    /**
+     * Build Email Custom Headers.
+     *
+     * @return Hash list of custom headers
+     */
+    public function getCustomHeaders($subscriber, $server)
+    {
+        $msgId = StringHelper::generateMessageId(StringHelper::getDomainFromEmail($this->from_email));
+
+        if ($this->isStdClassSubscriber($subscriber)) {
+            $unsubscribeUrl = null;
+        } else {
+            $unsubscribeUrl = $subscriber->generateUnsubscribeUrl($msgId);
+            if ($this->trackingDomain) {
+                $unsubscribeUrl = $this->trackingDomain->buildTrackingUrl($unsubscribeUrl);
+            }
+        }
+
+        $headers = array(
+            'X-Acelle-Campaign-Id' => $this->uid,
+            'X-Acelle-Subscriber-Id' => $subscriber->uid,
+            'X-Acelle-Customer-Id' => $this->customer->uid,
+            'X-Acelle-Message-Id' => $msgId,
+            'X-Acelle-Sending-Server-Id' => $server->uid,
+            'Precedence' => 'bulk',
+        );
+
+        if ($unsubscribeUrl) {
+            $headers['List-Unsubscribe'] = "<{$unsubscribeUrl}>";
+        }
+
+        return $headers;
+    }
+
+    /**
+     * Check if the given variable is a subscriber object (for actually sending a email)
+     * Or a stdClass subscriber (for sending test email).
+     *
+     * @param object $object
+     */
+    public function isStdClassSubscriber($object)
+    {
+        return get_class($object) == 'stdClass';
     }
 }
