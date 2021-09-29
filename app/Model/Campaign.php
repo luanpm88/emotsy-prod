@@ -2741,7 +2741,16 @@ class Campaign extends Model
         // So, LoadCampaign only a fixed number of $loadLimit subscribers each time, then just finish the queue
         // (it will automatically load the other $loadLimit after that)
         if (!is_null($loadLimit)) {
-            $query = $this->subscribersToSend()->limit($loadLimit);
+            $subscribers = $this->subscribersToSend()->limit($loadLimit)->get();
+            foreach ($subscribers as $subscriber) {
+                $serverId = RouletteWheel::take($sendingServersPool);
+                $server = SendingServer::find($serverId)->mapType();
+
+                $callback($this, $subscriber, $server);
+            }
+
+            // Important
+            return;
         }
 
         // Iterate through batches of subscribers, 100 each
