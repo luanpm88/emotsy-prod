@@ -49,8 +49,8 @@ fact_check
 			>
 					<th width="1%"></th>
 					<th>{{ trans('messages.field_label_and_type') }}</th>
-					<th>{{ trans('messages.required?') }}</th>
-					<th>{{ trans('messages.visible?') }}</th>
+					<th width="100px">{{ trans('messages.required?') }}</th>
+					<th width="100px">{{ trans('messages.visible?') }}</th>
 					<th>{{ trans('messages.tag') }}</th>
 					<th>{{ trans('messages.default_value') }}</th>
 					<th></th>

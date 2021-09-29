@@ -227,7 +227,7 @@
     </div>
 
     <script>
-        @include('forms.popupJs')
+        @include('forms.frontend.popupJs')
     </script>
 
 	<script>
@@ -379,7 +379,7 @@
 
             preview: function() {
                 popup = new AFormPopup({
-                    url: '{{ action('FormController@content', [
+                    url: '{{ action('FormController@frontendContent', [
                         'uid' => $form->uid,
                     ]) }}'
                 });

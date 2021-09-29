@@ -76,7 +76,7 @@
                         </a>
                     @endif
                     
-                    <a href="{{ action('FormController@content', $form->uid) }}"
+                    <a href="{{ action('FormController@frontendContent', $form->uid) }}"
                         role="button" class="btn btn-default form-popup-preview">
                         <span class="material-icons-outlined">
                             zoom_in

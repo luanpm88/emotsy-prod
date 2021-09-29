@@ -129,17 +129,19 @@ Route::group(['middleware' => ['not_installed', 'not_logged_in']], function () {
 
     Route::get('popup/{id}/popup.js', 'PopupController@popup');
     Route::get('popup/content', 'PopupController@content');
-
-    // Form
-    Route::get('forms/{uid}/popup.js', 'FormController@popup');
-    Route::get('forms/{uid}/content', 'FormController@content');
-
-    // Website
-    Route::get('websites/{uid}/connect.js', 'WebsiteController@connectJs');
 });
 
 // Without authentication
 Route::group(['middleware' => ['not_installed']], function () {
+    // Form
+    Route::post('frontend/forms/{uid}/save', 'FormController@frontendSave');
+    Route::get('frontend/forms/{uid}/popup.js', 'FormController@frontendPopup');
+    Route::get('frontend/forms/{uid}/content', 'FormController@frontendContent');
+
+    // Website
+    Route::get('websites/{uid}/connect.js', 'WebsiteController@connectJs');
+
+    // Blank
     Route::match(['get', 'post'], 'blank', function () {
         return;
     });

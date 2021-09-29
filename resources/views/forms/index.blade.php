@@ -98,7 +98,7 @@ add
     </div>
 
     <script>
-        @include('forms.popupJs')
+        @include('forms.frontend.popupJs')
     </script>
 
     <script>

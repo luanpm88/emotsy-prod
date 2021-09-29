@@ -5,6 +5,7 @@ namespace Acelle\Http\Controllers;
 use Illuminate\Http\Request;
 use Acelle\Model\Form;
 use Acelle\Model\Template;
+use Acelle\Model\MailList;
 
 class FormController extends Controller
 {
@@ -127,7 +128,7 @@ class FormController extends Controller
         // form fields for Editor
         $formFields = $form->mailList->getFields->map(function ($field) {
             return [
-                'type' => $field->type,
+                'type' => $field->tag == 'EMAIL' ? 'email' : $field->type,
                 'label' => $field->label,
                 'name' => $field->tag,
                 'visible' => $field->visible,
@@ -145,24 +146,24 @@ class FormController extends Controller
         ]);
     }
 
-    public function content(Request $request)
+    public function frontendContent(Request $request)
     {
         // Generate info
         $form = Form::findByUid($request->uid);
 
-        $content = view('popup.content', [
-            'template' => $form->template,
+        $content = view('forms.frontend.content', [
+            'form' => $form,
             'content' => $form->renderedContent(),
         ]);
 
         return response($content)->header('Access-Control-Allow-Origin', '*');
     }
 
-    public function popup(Request $request)
+    public function frontendPopup(Request $request)
     {
         $form = Form::findByUid($request->uid);
 
-        $content = view('forms.popup', [
+        $content = view('forms.frontend.popup', [
             'form' => $form,
         ]);
 
@@ -261,6 +262,55 @@ class FormController extends Controller
             'message' => trans('messages.form.unpublished', [
                 'name' => $form->name,
             ]),
+        ]);
+    }
+
+    public function frontendLanguage($form)
+    {
+        // Language
+        if (is_object($form->customer) && is_object($form->customer->language)) {
+            \App::setLocale($form->customer->language->code);
+            \Carbon\Carbon::setLocale($form->customer->language->code);
+        }
+    }
+
+    public function frontendSave(Request $request)
+    {
+        $form = Form::findByUid($request->uid);
+        $list = $form->mailList;
+
+        // Language for frontend
+        $this->frontendLanguage($form);
+
+        // // captcha
+        // if (\Acelle\Model\Setting::get('embedded_form_recaptcha') == 'yes') {
+        //     if ($request->hasCaptcha) {
+        //         $success = \Acelle\Library\Tool::checkReCaptcha($request);
+        //     } else {
+        //         return view('lists.embedded_form_captcha', [
+        //             'list' => $list,
+        //         ]);
+        //     }
+        // } else {
+        //     $success = true;
+        // }
+
+        try {
+            // Create subscriber
+            list($validator, $subscriber) = $list->subscribe($request, MailList::SOURCE_EMBEDDED_FORM);
+        } catch (\Exception $ex) {
+            return response()->json([
+                'message' => $ex->getMessage()
+            ], 400);
+        }
+
+        // if fails
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+
+        return response()->json([
+            'message' => 'OK',
         ]);
     }
 }
