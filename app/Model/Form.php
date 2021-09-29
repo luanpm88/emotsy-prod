@@ -216,4 +216,9 @@ class Form extends Model
         $this->status = self::STATUS_DRAFT;
         $this->save();
     }
+
+    public static function scopePublished($query)
+    {
+        $query = $query->where('status', '=', self::STATUS_PUBLISHED);
+    }
 }

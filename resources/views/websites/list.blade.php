@@ -26,6 +26,13 @@
                     </span>
                 </td>
 
+                <td class="pe-5">
+                    <a href="{{ action('FormController@index') }}" class="no-margin stat-num d-block">
+                        <span>{{ $website->connectedForms()->count() }}</span>
+                    </a>
+                    <span class="text-muted2">{{ trans('messages.website.connected_form') }}</span>
+                </td>
+
                 <td>
                     <span class="text-muted2 list-status pull-left">
                         <span class="label label-flat bg-{{ $website->status }}">{{ trans('messages.website.status.' . $website->status) }}</span>
@@ -59,21 +66,20 @@
                         </a>
                     @endif
 
-                    @if (Auth::user()->customer->can('update', $website))
-                        <a href="{{ action('WebsiteController@check', $website->uid) }}"
-                            role="button" class="btn btn-secondary check-site-connect">
-                            <span class="material-icons-round me-1">
-                                task_alt
-                                </span> {{ trans('messages.website.check_connection') }}
-                        </a>
-                    @endif
-
                     @if (
                         Auth::user()->customer->can('update', $website)
                     )
                         <div class="btn-group">
                             <button role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"></button>
                             <ul class="dropdown-menu dropdown-menu-end">
+                                @if (Auth::user()->customer->can('delete', $website))
+                                    <li><a href="{{ action('WebsiteController@check', $website->uid) }}"
+                                        role="button" class="dropdown-item check-site-connect">
+                                        <span class="material-icons-round me-1">
+                                            task_alt
+                                            </span> {{ trans('messages.website.check_connection') }}
+                                    </a></li>
+                                @endif
                                 @if (Auth::user()->customer->can('delete', $website))
                                     <li><a
                                         class="dropdown-item list-action-single"

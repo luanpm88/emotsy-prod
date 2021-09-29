@@ -10,14 +10,6 @@ class WebsiteController extends Controller
 {
     public function index(Request $request)
     {
-        $url = 'http://acellehome.com:8080';
-        $doc = new \DOMDocument();
-        $doc->strictErrorChecking = FALSE;
-        $doc->loadHTML(mb_convert_encoding(file_get_contents($url), 'HTML-ENTITIES', 'UTF-8'), LIBXML_NOWARNING | LIBXML_NOERROR);
-        $xml = simplexml_import_dom($doc);
-        $arr = $xml->xpath('//link[@rel="icon"]');
-        echo '------------------------'.$arr[0]['href'];
-
         return view('websites.index');
     }
 

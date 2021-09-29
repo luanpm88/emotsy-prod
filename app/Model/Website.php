@@ -115,4 +115,9 @@ class Website extends Model
     {
         return $this->status == self::STATUS_CONNECTED;
     }
+
+    public function connectedForms()
+    {
+        return \Acelle\Model\Form::byWebsite($this);
+    }
 }
