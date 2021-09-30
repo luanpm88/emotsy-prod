@@ -36,7 +36,13 @@ class AFormPopup {
         this.loadCss();
 
         window.addEventListener("message", function(event) {
-            _this.adjustIframeSize(event.data);
+            if (typeof(event.data.frameSize) != 'undefined') {
+                _this.adjustIframeSize(event.data.frameSize);
+            }
+
+            if (typeof(event.data.alert) != 'undefined') {
+                alert(event.data.alert.message);
+            }
         });
 
         document.getElementById('Popup'+_this.id+'Close').addEventListener("click", function() {

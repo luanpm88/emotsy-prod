@@ -66,8 +66,10 @@
             var content_height = this.getForm().height();
             var content_width = this.getForm().width();
             parent.postMessage({
-                height: content_height,
-                width: content_width,
+                frameSize: {
+                    height: content_height,
+                    width: content_width,
+                }
             }, '*');
         },
 
@@ -127,10 +129,12 @@
         showErrorBox: function(errors) {
             var box = $('<div class="alert alert-error"></div>');
             box.append('<a>ssdfsfda</a>');
-
-            // this.getForm().prepend(box);
-
-            alert(Object.values(errors)[0]);
+            
+            parent.postMessage({
+                alert: {
+                    message: Object.values(errors)[0],
+                }
+            }, '*');
         },
 
         getForm: function() {
