@@ -24,8 +24,9 @@
 }
 #formCanvas {
     width: 100%;
-    padding-top: 80px;
-    height: calc(100vh - 60px);
+    margin-top: 80px;
+    height: calc(100vh - 140px);
+    background: #403b3b;
 }
 #formWidgetPanel {
     width: 30%;
@@ -143,6 +144,7 @@
     padding-left: 30px;
     padding-right: 30px;
     padding-bottom: 30px;
+    box-shadow: inset 0 0 24px rgb(0 0 0 / 7%);
 }
 .browser-head {
     background: #dbd9d2;
@@ -204,7 +206,6 @@
     position: relative;
 }
 .browser-frame {
-    background: #403b3b;
     width: 100%;
     height: calc(100vh - 60px);
     position: relative;
@@ -316,4 +317,11 @@ a.link-dark:hover {
 }
 .form-control {
     border-width: 1px;
+}
+.content-left::-webkit-scrollbar-track {
+    border-radius: 0;
+}
+.content-left::-webkit-scrollbar-thumb {
+    background-color: transparent;
+    border: transparent;
 }
