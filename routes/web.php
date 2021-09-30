@@ -269,6 +269,8 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
 
 Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscription']], function () {
     // Search
+    Route::get('/search/websites', 'SearchController@websites');
+    Route::get('/search/forms', 'SearchController@forms');
     Route::get('/search/subscribers', 'SearchController@subscribers');
     Route::get('/search/templates', 'SearchController@templates');
     Route::get('/search/automations', 'SearchController@automations');
