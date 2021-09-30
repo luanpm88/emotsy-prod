@@ -97,6 +97,14 @@
                                 $('.change:visible').click();
                             }, 1100);
                         });
+
+                        // overwrite notify method
+                        editor.notificationArea = function(content) {
+                            parent.notify({
+                                type: 'success',
+                                message: content
+                            });
+                        }
                     }
                 });
             
