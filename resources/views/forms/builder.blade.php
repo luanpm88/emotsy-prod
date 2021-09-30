@@ -75,6 +75,9 @@
                     loaded: function() {
                         if (!editor.getIframeContent().find('#formContainer').children().length) {
                             FormsBuilder.loadWidgets();
+
+                            // first save
+                            editor.save();
                         }
 
                         // js auto height iframe
@@ -88,7 +91,6 @@
                         //
                         editor.addCustomCss('{{ URL::asset('core/css/form-builder-frame.css') }}');
 
-                        //
                         // change banner
                         $("#builder_iframe").contents().find("body").on('click', '.banner-container:not(.bg-changed)', function(e) {
                             setTimeout(function() {

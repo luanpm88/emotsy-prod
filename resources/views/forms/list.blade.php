@@ -15,9 +15,9 @@
                     </div>
                 </td>
                 <td width="1%">
-                    <a href="{{ action('FormController@build', [
-                        'uid' => $form->uid,
-                    ]) }}" class="">
+                    <a href="{{ action('FormController@frontendContent', $form->uid) }}"
+                        data-overlay="{{ $form->getMetadata('overlay_opacity') ? ($form->getMetadata('overlay_opacity')/100) : '0.2' }}"
+                        class="form-popup-preview">
                         <img class="form-thumb rounded shadow-sm border ms-1" width="100"
                             src="{{ $form->template->getThumbUrl() }}?v={{ rand(0,10) }}" />
                     </a>
