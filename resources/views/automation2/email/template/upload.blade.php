@@ -39,9 +39,7 @@
     </div>
         
     <script>
-        var builderSelectPopup = new Popup(null, undefined, {onclose: function() {
-                
-        }});
+        var builderSelectPopup = new Popup();
         
         $('.template-upload-form').submit(function(e) {
             e.preventDefault();

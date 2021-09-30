@@ -42,7 +42,7 @@
             templatePopup.load(url);
         });
 
-        var builderSelectPopup = new Popup(null, undefined, {onclose: function() {
+        var builderSelectPopup = new Popup({onclose: function() {
             window.location = '{{ action('CampaignController@template', $campaign->uid) }}';
         }});
 

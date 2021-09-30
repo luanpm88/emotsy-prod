@@ -52,13 +52,13 @@
                 'email_uid' => $email->uid,
             ]) }}');
 
-            builderSelectPopup = new Popup(null, undefined, {onclose: function() {
-            
-            }});
-            builderSelectPopup.load('{{ action('Automation2Controller@templateBuilderSelect', [
-                'uid' => $automation->uid,
-                'email_uid' => $email->uid,
-            ]) }}');
+            builderSelectPopup = new Popup({
+                url: '{{ action('Automation2Controller@templateBuilderSelect', [
+                    'uid' => $automation->uid,
+                    'email_uid' => $email->uid,
+                ]) }}'
+            });
+            builderSelectPopup.load();
 
             // notify
             notify({
