@@ -105,6 +105,11 @@
                                 message: content
                             });
                         }
+
+                        // scrolling
+                        $('.content-left').on('scroll', function() {
+                            FormsBuilder.togglePageTabs();
+                        });
                     }
                 });
             
@@ -319,6 +324,14 @@
 
                     $('#builder_iframe').css('height', 'auto');
                     editor.adjustIframeSize();
+                },
+
+                togglePageTabs: function() {
+                    if ($('.content-left').scrollTop() > 50) {
+                        $('.page-tabs').addClass('disappeared');
+                    } else {
+                        $('.page-tabs').removeClass('disappeared');
+                    }
                 }
             };
 
