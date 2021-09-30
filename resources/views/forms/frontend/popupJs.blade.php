@@ -7,6 +7,8 @@ class AFormPopup {
 
         _this.remove();
 
+        
+
         var div = document.createElement("div");
         div.innerHTML = `
             <div id="Popup`+_this.id+`" class="acelle-popup-container">
@@ -24,6 +26,10 @@ class AFormPopup {
 
         this.node = div;
         this.iframe = document.getElementById('Popup'+_this.id+'Frame');
+
+
+
+
 
         this.loadCss();
 

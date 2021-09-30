@@ -96,19 +96,19 @@ class FormController extends Controller
         ]);
     }
 
-    public function edit(Request $request)
+    public function build(Request $request)
     {
         $form = Form::findByUid($request->uid);
 
         $templates = Template::popup()->shared()->get();
 
-        return view('forms.edit', [
+        return view('forms.build', [
             'form' => $form,
             'templates' => $templates,
         ]);
     }
 
-    public function editContent(Request $request)
+    public function builderContent(Request $request)
     {
         // Generate info
         $form = Form::findByUid($request->uid);

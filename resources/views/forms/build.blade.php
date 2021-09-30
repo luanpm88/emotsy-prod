@@ -4,7 +4,7 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>@yield('title')</title>
+	<title>{{ trans('messages.form.builder') }} - {{ $form->name }} - {{ \Acelle\Model\Setting::get("site_name") }}</title>
 	
 	@include('layouts.core._head')
 	@include('layouts.core._script_vars')
@@ -25,11 +25,49 @@
                 <span class="material-icons-outlined mr-2">
                     dashboard
                 </span>
-                {{ trans('messages.form.builder') }}
+                <div class="d-flex align-items-center">
+                    <div>
+                        {{ trans('messages.form.builder') }} -
+                        {{ $form->name }}
+                    </div>
+                    <div class="ms-3">
+                        <span class="label label-flat bg-{{ $form->status }}">{{ trans('messages.form.status.' . $form->status) }}</span>
+                    </div>
+                </div>
+                    
             </span>
-            <div class="ms-auto me-4">
+            <div class="ms-auto">
+                @if (Auth::user()->customer->can('publish', $form))
+                    <a href="{{ action('FormController@publish', $form->uid) }}" class="me-2 builder-publish-button btn btn-default" href="{{ action('FormController@index') }}">
+                        <div class="d-flex align-items-center">
+                            <span class="material-icons-outlined me-1">
+                                task_alt
+                                </span>
+                                <span>{{ trans('messages.form.publish') }}</span>
+                        </div>
+                            
+                    </a>                    
+                @endif
+                @if (Auth::user()->customer->can('unpublish', $form))
+                    <a href="{{ action('FormController@unpublish', $form->uid) }}" class="me-2 builder-unpublish-button btn btn-default" href="{{ action('FormController@index') }}">
+                        <div class="d-flex align-items-center">
+                            <span class="material-icons-outlined me-1">
+                                block
+                                </span>
+                                <span>{{ trans('messages.form.unpublish') }}</span>
+                        </div>
+                            
+                    </a>
+                @endif
+            </div>
+            <div class="me-4">
                 <button class="me-2 builder-save-button btn btn-secondary" href="{{ action('FormController@index') }}">
-                    {{ trans('messages.form.builder.save') }}
+                    <div class="d-flex align-items-center">
+                        <span class="material-icons-outlined me-1">
+                            save
+                            </span>
+                            <span>{{ trans('messages.form.builder.save') }}</span>
+                    </div>
                 </button>
             </div>
             <div>
@@ -38,7 +76,32 @@
                     close
                     </span></a>
             </div>
-                
+            <script>
+                $(function() {
+                    $('.builder-publish-button, .builder-unpublish-button').on('click', function(e) {
+                        e.preventDefault();
+                        var but = $(this);
+
+                        addButtonMask(but);
+                        // save
+                        FormsEdit.getFormsBuilder().save(function() {
+                            
+                            // do publish/unpublish
+                            FormsEdit.topAction(but.attr('href'));
+                        })                        
+                    });
+                    
+                    // save
+                    $('.builder-save-button').on('click', function() {
+                        var button = $(this);
+
+                        addButtonMask(button);
+                        FormsEdit.getFormsBuilder().save(function() {
+                            removeButtonMask(button);
+                        });
+                    });
+                });
+            </script>
         </nav>
     </div>
     <div class="">
@@ -209,6 +272,16 @@
                                 ])
                             </div>
 
+                            <div class="mb-3">
+                                @include('helpers.form_control', [
+                                    'type' => 'checkbox2',
+                                    'name' => 'use_captcha',
+                                    'label' => trans('messages.form.use_captcha'),
+                                    'value' => $form->getMetadata('use_captcha'),
+                                    'options' => ['no', 'yes'],
+                                ])
+                            </div>
+
                             <div class="mt-4">
                                 <button type="button" class="btn btn-primary display-settings-save">{{ trans('messages.save') }}</button>
                             </div>
@@ -236,7 +309,7 @@
             displayOption: null,
 
             // STYLE MANAGER
-            getStyleManager: function() {
+            getSettingsManager: function() {
                 var _this = this;
 
                 if (_this.styleManager == null) {
@@ -327,10 +400,13 @@
                 return this.styleManager;
             },
 
-            saveDisplaySetting: function() {
+            saveSettings: function() {
+                var _this = this;
                 var form = $('#FormDisplaySetting');
                 var url = form.attr('action');
                 var data = form.serialize();
+
+                addMaskLoading();
 
                 if (form.valid()) {
                     // copy
@@ -342,6 +418,10 @@
                         notify({
                             message: response.message
                         });
+
+                        removeMaskLoading();
+
+                        _this.hideSidebar();
                     });
                 }
             },
@@ -385,11 +465,58 @@
                 });
 
                 popup.load();
+            },
+
+            refreshNavbar: function(callback) {
+                $.ajax({
+                    url: "",
+                    method: 'GET'
+                })
+                .done(function(res) {
+                    var html = $('<div>').html(res).find('.navbar').html();
+                    $('.navbar').html(html);
+
+                    if (typeof(callback) != 'undefined') {
+                        callback();
+                    }
+                })
+            },
+
+            topAction: function(url) {
+                addMaskLoading();
+
+                // publish
+                new Link({
+                    url: url,
+                    method: 'POST',
+                    data: {
+                        _token: CSRF_TOKEN,
+                    },
+                    before: function() {
+                        
+                    },
+                    done: function(response) {
+                        notify({
+                            type: 'success',
+                            message: response.message,
+                        });
+
+                        FormsEdit.refreshNavbar(function() {
+                            removeMaskLoading();
+                        });
+                    }
+                });
+            },
+
+            hideSidebar: function() {
+                this.getSettingsManager().groups.forEach(function(group) {
+                    group.hide();
+                });
             }
         }
         
         $(function() {
-            FormsEdit.getStyleManager();
+            FormsEdit.getSettingsManager();
             FormsEdit.getDisplayManager();
             
 
@@ -405,7 +532,7 @@
 
             // display setting save
             $('.display-settings-save').on('click', function() {
-                FormsEdit.saveDisplaySetting();
+                FormsEdit.saveSettings();
             });
 
 
@@ -414,21 +541,9 @@
                 FormsEdit.preview();
             });
 
-            // save
-            $('.builder-save-button').on('click', function() {
-                var button = $(this);
-
-                addButtonMask(button);
-                FormsEdit.getFormsBuilder().save(function() {
-                    removeButtonMask(button);
-                });
-            });
-
             // hide style
             $('.navbar').on('click', function() {
-                FormsEdit.getStyleManager().groups.forEach(function(group) {
-                    group.hide();
-                });
+                FormsEdit.hideSidebar();
             });
         })
     </script>

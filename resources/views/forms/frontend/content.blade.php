@@ -74,6 +74,7 @@
         formUrl: '{{ action('FormController@frontendSave', [
             'uid' => $form->uid,
         ]) }}',
+        useCaptcha: '{{ $form->getMetadata('use_captcha') }}',
 
         init: function() {
             var _this = this;

@@ -204,12 +204,12 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
     // Form
     Route::post('forms/{uid}/publish', 'FormController@publish');
     Route::post('forms/{uid}/unpublish', 'FormController@unpublish');
-    Route::get('forms/{uid}/edit/content', 'FormController@editContent');
+    Route::get('forms/{uid}/edit/content', 'FormController@builderContent');
     Route::post('forms/{uid}/disconnect', 'FormController@disconnect');
     Route::match(['get', 'post'], 'forms/{uid}/connect', 'FormController@connect');
     Route::post('forms/{uid}/settings', 'FormController@settings');
     Route::get('forms/{uid}/builder', 'FormController@builder');
-    Route::get('forms/{uid}/edit', 'FormController@edit');
+    Route::get('forms/{uid}/build', 'FormController@build');
     Route::get('forms/templates', 'FormController@templates');
     Route::match(['get', 'post'], 'forms/create', 'FormController@create');
     Route::post('forms/delete', 'FormController@delete');

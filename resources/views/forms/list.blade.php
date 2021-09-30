@@ -15,7 +15,7 @@
                     </div>
                 </td>
                 <td width="1%">
-                    <a href="{{ action('FormController@edit', [
+                    <a href="{{ action('FormController@builder', [
                         'uid' => $form->uid,
                     ]) }}" class="">
                         <img class="form-thumb rounded shadow-sm border ms-1" width="100"
@@ -23,7 +23,7 @@
                     </a>
                 </td>
                 <td>
-                    <a class="kq_search fs-6 d-block mb-1 fw-600" href="{{ action('FormController@edit', [
+                    <a class="kq_search fs-6 d-block mb-1 fw-600" href="{{ action('FormController@builder', [
                         'uid' => $form->uid,
                     ]) }}">
                         {{ $form->name }}
@@ -56,7 +56,7 @@
 
                 <td class="text-end text-nowrap">
                     @if (Auth::user()->customer->can('update', $form))
-                        <a href="{{ action('FormController@edit', $form->uid) }}"
+                        <a href="{{ action('FormController@builder', $form->uid) }}"
                                 role="button" class="btn btn-primary">
                             <span class="material-icons-outlined me-1">handyman</span> {{ trans('messages.form.builder') }}
                         </a>

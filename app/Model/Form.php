@@ -120,6 +120,7 @@ class Form extends Model
             'display' => $params['display'],
             'wait_time' => $params['wait_time'],
             'element_id' => $params['element_id'],
+            'use_captcha' => $params['use_captcha'],
         ]);
 
         

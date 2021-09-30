@@ -38,7 +38,7 @@
                     
                     root: '{{ URL::asset('builder') }}/',                
                     lang: {!! json_encode(language()->getBuilderLang()) !!},
-                    url: '{{ action('FormController@editContent', [
+                    url: '{{ action('FormController@builderContent', [
                         'uid' => $form->uid,
                     ]) }}',
                     saveUrl: '{{ action('TemplateController@builderEdit', $form->template->uid) }}',
@@ -82,9 +82,7 @@
 
                         // hide styles
                         $("#builder_iframe").contents().click(function(e) {
-                            FormsBuilder.getFormsEdit().getStyleManager().groups.forEach(function(group) {
-                                group.hide();
-                            });
+                            FormsBuilder.getFormsEdit().hideSidebar();
                         });
 
                         //

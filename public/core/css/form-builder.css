@@ -314,3 +314,6 @@ a.link-dark:hover {
     font-weight: 600;
     background: #fff;
 }
+.form-control {
+    border-width: 1px;
+}
