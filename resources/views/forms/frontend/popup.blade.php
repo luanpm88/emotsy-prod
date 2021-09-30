@@ -4,9 +4,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
             'uid' => $form->uid,
         ]) }}'
     });
-    @if ($form->getMetadata('display') == 'immediately')
-        popup.load();
-    @elseif ($form->getMetadata('display') == 'click')
+    @if ($form->getMetadata('display') == 'click')
         document.getElementById('{{ $form->getMetadata('element_id') }}').addEventListener("click", function(event) {
             popup.load();
         });
@@ -14,5 +12,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
         setTimeout(function() {
             popup.load();
         }, {{ $form->getMetadata('wait_time')*1000 }});
+    @else
+        popup.load();
     @endif
 });
