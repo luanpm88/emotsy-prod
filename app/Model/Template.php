@@ -1316,37 +1316,37 @@ class Template extends Model
                 'dir' => database_path('templates/forms/013-layout-clean/6002a2135b904'),
                 'category' => $categoryWoo,
             ], [
-                'name' => '1 Column',
-                'dir' => database_path('templates/forms/001-column/6001a0a8583a7'),
+                'name' => 'Dark Simple',
+                'dir' => database_path('templates/forms/001-dark/60cca2135b900'),
+                'category' => $categoryWoo,
+            // ], [
+            //     'name' => 'Pricing Table',
+            //     'dir' => database_path('templates/forms/002-2-columns/6002a2135b974'),
+            //     'category' => $categoryWoo,
+            ], [
+                'name' => 'Sign Up Illustration',
+                'dir' => database_path('templates/forms/003-illustration/6003a2250a3a3'),
                 'category' => $categoryWoo,
             ], [
-                'name' => 'Pricing Table',
-                'dir' => database_path('templates/forms/002-2-columns/6002a2135b974'),
+                'name' => 'Profile Center',
+                'dir' => database_path('templates/forms/004-center/6004a28418c95'),
                 'category' => $categoryWoo,
-            ], [
-                'name' => 'Lists & Tables',
-                'dir' => database_path('templates/forms/003-dark-image-left/6003a2250a3a3'),
-                'category' => $categoryWoo,
-            ], [
-                'name' => 'One column layout',
-                'dir' => database_path('templates/forms/004-regform/6004a28418c95'),
-                'category' => $categoryWoo,
-            ], [
-                'name' => '1-2 column layout',
-                'dir' => database_path('templates/forms/005-full-background/6005a24ebdbd6'),
-                'category' => $categoryWoo,
-            ], [
-                'name' => '1-2-1 column layout',
-                'dir' => database_path('templates/forms/006-grap-money/6006a2401b055'),
-                'category' => $categoryWoo,
-            ], [
-                'name' => '1-3 column layout',
-                'dir' => database_path('templates/forms/007-checkout/6007a275bf375'),
-                'category' => $categoryWoo,
-            ], [
-                'name' => '1-3-1 column layout',
-                'dir' => database_path('templates/forms/008-blue-visa/6008a25ddce80'),
-                'category' => $categoryWoo,
+            // ], [
+            //     'name' => '1-2 column layout',
+            //     'dir' => database_path('templates/forms/005-full-background/6005a24ebdbd6'),
+            //     'category' => $categoryWoo,
+            // ], [
+            //     'name' => '1-2-1 column layout',
+            //     'dir' => database_path('templates/forms/006-grap-money/6006a2401b055'),
+            //     'category' => $categoryWoo,
+            // ], [
+            //     'name' => '1-3 column layout',
+            //     'dir' => database_path('templates/forms/007-checkout/6007a275bf375'),
+            //     'category' => $categoryWoo,
+            // ], [
+            //     'name' => '1-3-1 column layout',
+            //     'dir' => database_path('templates/forms/008-blue-visa/6008a25ddce80'),
+            //     'category' => $categoryWoo,
             ],
         ];
 

@@ -59,6 +59,14 @@
                             
                     </a>
                 @endif
+                <a href="javascript:;" class="me-2 builder-view-button btn btn-default">
+                    <div class="d-flex align-items-center">
+                        <span class="material-icons-outlined me-1">
+                            launch
+                            </span>
+                            <span>{{ trans('messages.form.view') }}</span>
+                    </div>
+                </a> 
             </div>
             <div class="me-4">
                 <button class="me-2 builder-save-button btn btn-secondary" href="{{ action('FormController@index') }}">
@@ -89,6 +97,11 @@
                             // do publish/unpublish
                             FormsEdit.topAction(but.attr('href'));
                         })                        
+                    });
+
+                    // view
+                    $('.builder-view-button').on('click', function() {
+                        FormsEdit.openPopup();
                     });
                     
                     // save
@@ -140,7 +153,7 @@
                     </div>
                 </div>  
             </div>
-            <div class="styles-section form-theme" style="display:none">
+            <div class="styles-section form-theme">
                 <a href="javascript:;" class="styles-menu-button styles-toggle px-2 py-1">
                     <span class="material-icons-outlined" style="line-height:30px">
                         web
@@ -272,7 +285,7 @@
                                 ])
                             </div>
 
-                            <div class="mb-3">
+                            {{-- <div class="mb-3">
                                 @include('helpers.form_control', [
                                     'type' => 'checkbox2',
                                     'name' => 'use_captcha',
@@ -280,7 +293,7 @@
                                     'value' => $form->getMetadata('use_captcha'),
                                     'options' => ['no', 'yes'],
                                 ])
-                            </div>
+                            </div> --}}
 
                             <div class="mt-4">
                                 <button type="button" class="btn btn-primary display-settings-save">{{ trans('messages.save') }}</button>
@@ -457,7 +470,7 @@
                 return this.connectPopup;
             },
 
-            preview: function() {
+            openPopup: function() {
                 popup = new AFormPopup({
                     url: '{{ action('FormController@frontendContent', [
                         'uid' => $form->uid,
@@ -465,6 +478,32 @@
                 });
 
                 popup.load();
+            },
+
+            preview: function() {
+                var _this = this;
+
+                $.ajax({
+                    url: "{{ action('FormController@preview', [
+                            'uid' => $form->uid,
+                    ]) }}",
+                    method: 'POST',
+                    data: {
+                        _token: CSRF_TOKEN,
+                        content: _this.getFormsBuilder().getEditor().getContent()
+                    }
+                })
+                .done(function(res) {
+                    popup = new AFormPopup({
+                        url: '{{ action('FormController@frontendContent', [
+                            'uid' => $form->uid,
+                            'preview' => true,
+                        ]) }}'
+                    });
+
+                    popup.load();
+                });
+                
             },
 
             refreshNavbar: function(callback) {

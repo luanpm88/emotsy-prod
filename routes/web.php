@@ -202,6 +202,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
     Route::get('audience/overview', 'AudienceController@overview');
 
     // Form
+    Route::post('forms/{uid}/preview', 'FormController@preview');
     Route::post('forms/{uid}/publish', 'FormController@publish');
     Route::post('forms/{uid}/unpublish', 'FormController@unpublish');
     Route::get('forms/{uid}/edit/content', 'FormController@builderContent');

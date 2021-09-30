@@ -183,9 +183,11 @@ class Form extends Model
         return $result;
     }
 
-    public function renderedContent()
+    public function renderedContent($content=null)
     {
-        $content = $this->template->content;
+        if (!$content) {
+            $content = $this->template->content;
+        }
         
         // BAISC INFO
         $content = str_replace('{LIST_NAME}', $this->mailList->name, $content);

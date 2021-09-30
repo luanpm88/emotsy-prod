@@ -3973,4 +3973,5 @@
   'form.builer.form_tab' => 'Form',
   'form.builer.success_message_tab' => 'Success Message',
   'form.use_captcha' => 'Use Google reCaptcha',
+  'form.view' => 'View',
 ) ?>

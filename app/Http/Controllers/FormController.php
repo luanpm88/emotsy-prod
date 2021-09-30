@@ -151,12 +151,26 @@ class FormController extends Controller
         // Generate info
         $form = Form::findByUid($request->uid);
 
+        if ($request->preview) {
+            $html = $request->session()->get('form-preview-content-' . $form->uid);
+            $content = $form->renderedContent($html);
+        } else {
+            $content = $form->renderedContent();
+        }
+
         $content = view('forms.frontend.content', [
             'form' => $form,
-            'content' => $form->renderedContent(),
+            'content' => $content,
         ]);
 
         return response($content)->header('Access-Control-Allow-Origin', '*');
+    }
+
+    public function preview(Request $request)
+    {
+        $form = Form::findByUid($request->uid);
+
+        $request->session()->put('form-preview-content-' . $form->uid, $request->content);
     }
 
     public function frontendPopup(Request $request)

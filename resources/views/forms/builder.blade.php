@@ -266,6 +266,10 @@
                         });
                             
                     }
+                },
+
+                getEditor: function() {
+                    return editor;
                 }
             };
 
