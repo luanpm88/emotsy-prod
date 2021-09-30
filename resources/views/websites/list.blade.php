@@ -48,7 +48,9 @@
                     </a>
 
                     @if (Auth::user()->customer->can('disconnect', $website))
-                        <a href="{{ action('WebsiteController@disconnect', $website->uid) }}"
+                        <a href="{{ action('WebsiteController@disconnect', [
+                            'uids' => [$website->uid],
+                        ]) }}"
                             link-method="POST"
                             role="button" class="btn btn-secondary list-action-single">
                             <span class="material-icons-outlined me-1">

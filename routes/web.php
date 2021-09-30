@@ -203,8 +203,8 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
 
     // Form
     Route::post('forms/{uid}/preview', 'FormController@preview');
-    Route::post('forms/{uid}/publish', 'FormController@publish');
-    Route::post('forms/{uid}/unpublish', 'FormController@unpublish');
+    Route::post('forms/publish', 'FormController@publish');
+    Route::post('forms/unpublish', 'FormController@unpublish');
     Route::get('forms/{uid}/edit/content', 'FormController@builderContent');
     Route::post('forms/{uid}/disconnect', 'FormController@disconnect');
     Route::match(['get', 'post'], 'forms/{uid}/connect', 'FormController@connect');
@@ -220,7 +220,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
     // Website
     Route::get('websites/{uid}/check', 'WebsiteController@check');
     Route::post('websites/{uid}/connect', 'WebsiteController@connect');
-    Route::post('websites/{uid}/disconnect', 'WebsiteController@disconnect');
+    Route::post('websites/disconnect', 'WebsiteController@disconnect');
     Route::get('websites/{uid}/show', 'WebsiteController@show');
     Route::match(['get', 'post'], 'websites/create', 'WebsiteController@create');
     Route::post('websites/delete', 'WebsiteController@delete');

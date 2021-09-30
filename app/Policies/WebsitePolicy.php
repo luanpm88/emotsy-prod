@@ -15,6 +15,11 @@ class WebsitePolicy
         return true;
     }
 
+    public function read(User $user, Website $website)
+    {
+        return $user->customer->id == $website->customer_id;
+    }
+
     public function update(User $user, Website $website)
     {
         return $user->customer->id == $website->customer_id;

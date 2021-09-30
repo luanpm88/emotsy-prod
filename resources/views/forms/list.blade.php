@@ -63,16 +63,24 @@
                     @endif
 
                     @if (Auth::user()->customer->can('publish', $form))
-                        <a link-method="POST" href="{{ action('FormController@publish', $form->uid) }}"
+                        <a link-method="POST" href="{{ action('FormController@publish', [
+                            'uids' => [$form->uid],
+                        ]) }}"
                             role="button" class="btn btn-secondary list-action-single">
-                            {{ trans('messages.form.publish') }}
+                            <span class="material-icons-outlined me-1">
+                                task_alt
+                                </span> {{ trans('messages.form.publish') }}
                         </a>
                     @endif
 
                     @if (Auth::user()->customer->can('unpublish', $form))
-                        <a link-method="POST" href="{{ action('FormController@unpublish', $form->uid) }}"
+                        <a link-method="POST" href="{{ action('FormController@unpublish', [
+                            'uids' => [$form->uid],
+                        ]) }}"
                             role="button" class="btn btn-default list-action-single">
-                            {{ trans('messages.form.unpublish') }}
+                            <span class="material-icons-outlined me-1">
+                                do_disturb_on
+                                </span> {{ trans('messages.form.unpublish') }}
                         </a>
                     @endif
                     
@@ -90,7 +98,7 @@
                         <div class="btn-group">
                             <button role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"></button>
                             <ul class="dropdown-menu dropdown-menu-end">
-                                @if ($form->isPublished())
+                                @if ($form->isPublished() && $form->getWebsite())
                                     <li><a target="_blank" href="{{ $form->getWebsite()->url }}"
                                             class="dropdown-item"
                                         >

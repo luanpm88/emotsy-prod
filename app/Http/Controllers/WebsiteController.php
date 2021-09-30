@@ -43,7 +43,7 @@ class WebsiteController extends Controller
     public function list(Request $request)
     {
         // sort, pagination
-        $websites = Website::search($request->keyword)
+        $websites = $request->user()->customer->websites()->search($request->keyword)
             ->orderBy($request->sort_order, $request->sort_direction)
             ->paginate($request->per_page);
 
@@ -86,6 +86,11 @@ class WebsiteController extends Controller
     {
         $website = Website::findByUid($request->uid);
 
+        // authorize
+        if (\Gate::denies('read', $website)) {
+            return $this->notAuthorized();
+        }
+
         return view('websites.show', [
             'website' => $website,
         ]);
@@ -111,6 +116,11 @@ class WebsiteController extends Controller
     public function check(Request $request)
     {
         $website = Website::findByUid($request->uid);
+
+        // authorize
+        if (\Gate::denies('read', $website)) {
+            return $this->notAuthorized();
+        }
 
         try {
             $website->check();
@@ -153,25 +163,23 @@ class WebsiteController extends Controller
 
     public function disconnect(Request $request)
     {
-        $website = Website::findByUid($request->uid);
+        $websites = Website::whereIn(
+            'uid',
+            is_array($request->uids) ? $request->uids : explode(',', $request->uids)
+        );
 
-        // authorize
-        if (\Gate::denies('disconnect', $website)) {
-            return $this->notAuthorized();
+        $total = $websites->count();
+        $done = 0;
+        foreach ($websites->get() as $website) {
+            // authorize
+            if ($request->user()->customer->can('disconnect', $website)) {
+                $website->disconnect();
+                $done += 1;
+            }
         }
 
-        try {
-            $website->disconnect();
-
-            return response()->json([
-                'message' => trans('messages.website.site_is_disconnected_success', [
-                    'title' => $website->title,
-                ]),
-            ]);
-        } catch(\Exception $e) {
-            return response()->json([
-                'error' => $e->getMessage(),
-            ], 400);
-        }
+        return response()->json([
+            'message' => trans('messages.websites.disconnected', [ 'done' => $done, 'total' => $total]),
+        ]);
     }
 }

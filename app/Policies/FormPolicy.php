@@ -15,6 +15,11 @@ class FormPolicy
         return true;
     }
 
+    public function read(User $user, Form $form)
+    {
+        return $user->customer->id == $form->customer_id;
+    }
+
     public function update(User $user, Form $form)
     {
         return $user->customer->id == $form->customer_id;

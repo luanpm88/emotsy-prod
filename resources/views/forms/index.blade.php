@@ -41,6 +41,22 @@
                             <li>
                                 <a class="action dropdown-item"
                                 link-method="POST"
+                                link-confirm="{{ trans('messages.forms.publish.confirm') }}"
+                                href="{{ action('FormController@publish') }}">
+                                    <span class="material-icons-outlined me-2">task_alt</span>
+                                    {{ trans('messages.form.publish') }}</a>
+                            </li>
+                            <li>
+                                <a class="action dropdown-item"
+                                link-method="POST"
+                                link-confirm="{{ trans('messages.forms.unpublish.confirm') }}"
+                                href="{{ action('FormController@unpublish') }}">
+                                    <span class="material-icons-outlined me-2">do_disturb_on</span>
+                                    {{ trans('messages.form.unpublish') }}</a>
+                            </li>
+                            <li>
+                                <a class="action dropdown-item"
+                                link-method="POST"
                                 link-confirm="{{ trans('messages.forms.delete.confirm') }}"
                                 href="{{ action('FormController@delete') }}">
                                     <span class="material-icons-outlined me-2">delete_outline</span>

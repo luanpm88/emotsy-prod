@@ -49,7 +49,9 @@
             <span class="pe-2 text-muted2"> | </span>
             <div class="me-4">
                 @if (Auth::user()->customer->can('publish', $form))
-                    <a href="{{ action('FormController@publish', $form->uid) }}" class="me-1 builder-publish-button btn btn-default" href="{{ action('FormController@index') }}">
+                    <a href="{{ action('FormController@publish', [
+                        'uids' => [$form->uid],
+                    ]) }}" class="me-1 builder-publish-button btn btn-default" href="{{ action('FormController@index') }}">
                         <div class="d-flex align-items-center">
                             <span class="material-icons-outlined me-2">
                                 task_alt
@@ -60,10 +62,12 @@
                     </a>                    
                 @endif
                 @if (Auth::user()->customer->can('unpublish', $form))
-                    <a href="{{ action('FormController@unpublish', $form->uid) }}" class="me-1 builder-unpublish-button btn btn-default" href="{{ action('FormController@index') }}">
+                    <a href="{{ action('FormController@unpublish', [
+                        'uids' => [$form->uid],
+                    ]) }}" class="me-1 builder-unpublish-button btn btn-default" href="{{ action('FormController@index') }}">
                         <div class="d-flex align-items-center">
                             <span class="material-icons-outlined me-2">
-                                block
+                                do_disturb_on
                                 </span>
                                 <span>{{ trans('messages.form.unpublish') }}</span>
                         </div>

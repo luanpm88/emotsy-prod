@@ -57,11 +57,10 @@ class FormController extends Controller
     public function list(Request $request)
     {
         // sort, pagination
-        $forms = Form::search($request->keyword)
+        $forms = $request->user()->customer->forms()->search($request->keyword)
             ->filter($request->all())
             ->orderBy($request->sort_order, $request->sort_direction)
             ->paginate($request->per_page);
-
 
         return view('forms.list', [
             'forms' => $forms,
@@ -101,6 +100,11 @@ class FormController extends Controller
     {
         $form = Form::findByUid($request->uid);
 
+        // authorize
+        if (\Gate::denies('update', $form)) {
+            return $this->notAuthorized();
+        }
+
         $templates = Template::popup()->shared()->get();
 
         return view('forms.build', [
@@ -114,6 +118,11 @@ class FormController extends Controller
         // Generate info
         $form = Form::findByUid($request->uid);
 
+        // authorize
+        if (\Gate::denies('update', $form)) {
+            return $this->notAuthorized();
+        }
+
         $content = view('popup.content', [
             'template' => $form->template,
             'content' => $form->template->content,
@@ -125,6 +134,11 @@ class FormController extends Controller
     public function builder(Request $request)
     {
         $form = Form::findByUid($request->uid);
+
+        // authorize
+        if (\Gate::denies('update', $form)) {
+            return $this->notAuthorized();
+        }
 
         // form fields for Editor
         $formFields = $form->mailList->getFields->map(function ($field) {
@@ -152,6 +166,9 @@ class FormController extends Controller
         // Generate info
         $form = Form::findByUid($request->uid);
 
+        // Language for frontend
+        $this->frontendLanguage($form);
+
         if ($request->preview) {
             $html = $request->session()->get('form-preview-content-' . $form->uid);
             $content = $form->renderedContent($html);
@@ -171,12 +188,20 @@ class FormController extends Controller
     {
         $form = Form::findByUid($request->uid);
 
+        // authorize
+        if (\Gate::denies('read', $form)) {
+            return $this->notAuthorized();
+        }
+
         $request->session()->put('form-preview-content-' . $form->uid, $request->content);
     }
 
     public function frontendPopup(Request $request)
     {
         $form = Form::findByUid($request->uid);
+
+        // Language for frontend
+        $this->frontendLanguage($form);
 
         $content = view('forms.frontend.popup', [
             'form' => $form,
@@ -241,6 +266,11 @@ class FormController extends Controller
     {
         $form = Form::findByUid($request->uid);
 
+        // authorize
+        if (\Gate::denies('update', $form)) {
+            return $this->notAuthorized();
+        }
+
         if ($request->isMethod('post')) {
             $form->disconnect();
 
@@ -256,27 +286,47 @@ class FormController extends Controller
 
     public function publish(Request $request)
     {
-        $form = Form::findByUid($request->uid);
+        $forms = Form::whereIn(
+            'uid',
+            is_array($request->uids) ? $request->uids : explode(',', $request->uids)
+        );
 
-        $form->publish();
+        $total = $forms->count();
+        $done = 0;
+        foreach ($forms->get() as $form) {
+            // authorize
+            if ($request->user()->customer->can('publish', $form)) {
+                $form->publish();
+                $done += 1;
+            }
+        }
 
         return response()->json([
-            'message' => trans('messages.form.published', [
-                'name' => $form->name,
-            ]),
+            'status' => 'success',
+            'message' => trans('messages.forms.published', [ 'done' => $done, 'total' => $total]),
         ]);
     }
 
     public function unpublish(Request $request)
     {
-        $form = Form::findByUid($request->uid);
+        $forms = Form::whereIn(
+            'uid',
+            is_array($request->uids) ? $request->uids : explode(',', $request->uids)
+        );
 
-        $form->unpublish();
+        $total = $forms->count();
+        $done = 0;
+        foreach ($forms->get() as $form) {
+            // authorize
+            if ($request->user()->customer->can('unpublish', $form)) {
+                $form->unpublish();
+                $done += 1;
+            }
+        }
 
         return response()->json([
-            'message' => trans('messages.form.unpublished', [
-                'name' => $form->name,
-            ]),
+            'status' => 'success',
+            'message' => trans('messages.forms.unpublished', [ 'done' => $done, 'total' => $total]),
         ]);
     }
 
@@ -296,19 +346,6 @@ class FormController extends Controller
 
         // Language for frontend
         $this->frontendLanguage($form);
-
-        // // captcha
-        // if (\Acelle\Model\Setting::get('embedded_form_recaptcha') == 'yes') {
-        //     if ($request->hasCaptcha) {
-        //         $success = \Acelle\Library\Tool::checkReCaptcha($request);
-        //     } else {
-        //         return view('lists.embedded_form_captcha', [
-        //             'list' => $list,
-        //         ]);
-        //     }
-        // } else {
-        //     $success = true;
-        // }
 
         try {
             // Create subscriber

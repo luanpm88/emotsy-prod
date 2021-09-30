@@ -41,6 +41,14 @@
                             <li>
                                 <a class="action dropdown-item"
                                 link-method="POST"
+                                link-confirm="{{ trans('messages.websites.disconnect.confirm') }}"
+                                href="{{ action('WebsiteController@disconnect') }}">
+                                    <span class="material-icons-outlined me-2"> pause_circle </span>
+                                    {{ trans('messages.website.disconnect') }}</a>
+                            </li>
+                            <li>
+                                <a class="action dropdown-item"
+                                link-method="POST"
                                 link-confirm="{{ trans('messages.websites.delete.confirm') }}"
                                 href="{{ action('WebsiteController@delete') }}">
                                     <span class="material-icons-outlined me-2">delete_outline</span>
