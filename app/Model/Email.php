@@ -13,7 +13,7 @@ use Acelle\Library\Log as MailLog;
 use Acelle\Model\Setting;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
-use Acelle\Jobs\DeliverEmail;
+use Acelle\Jobs\SendMessage;
 use Acelle\Library\Traits\HasTemplate;
 use Acelle\Library\Traits\HasUid;
 use Exception;
@@ -187,10 +187,13 @@ class Email extends Model
 
     public function queueDeliverTo($subscriber, $triggerId = null)
     {
-        dispatch(new DeliverEmail(
+        $server = $subscriber->mailList->pickSendingServer();
+
+        dispatch(new SendMessage(
             $this,
             $subscriber,
-            $triggerId,
+            $server,
+            $triggerId
         ));
     }
 
@@ -214,51 +217,6 @@ class Email extends Model
         $server->send($message);
     }
 
-    // @note: complicated dependencies
-    // It is just fine, we can think Email as an object depends on User/Customer
-    public function deliverTo($subscriber, $triggerId = null)
-    {
-        $server = $subscriber->mailList->pickSendingServer();
-        MailLog::info("Sending to subscriber `{$subscriber->email}`");
-        list($message, $msgId) = $this->prepareEmail($subscriber, $server);
-
-        if (config('app.demo') == true) {
-            $sent = array(
-                'runtime_message_id' => $msgId,
-                'status' => SendingServer::DELIVERY_STATUS_SENT
-            );
-            // additional log
-            MailLog::info("[DEMO] Sent to subscriber `{$subscriber->email}`");
-        } else {
-            $sent = $server->send($message);
-            // additional log
-            MailLog::info("Sent to subscriber `{$subscriber->email}`");
-        }
-
-        $this->trackMessage($sent, $subscriber, $server, $msgId, $triggerId);
-    }
-
-    /**
-     * Create a stdClass subscriber (for sending a campaign test email)
-     * The campaign sending functions take a subscriber object as input
-     * However, a test email address is not yet a subscriber object, so we have to build a fake stdClass object
-     * which can be used as a real subscriber.
-     *
-     * @param array $subscriber
-     */
-    public function createStdClassSubscriber($subscriber)
-    {
-        // default attributes that are required
-        $jsonObj = [
-            'uid' => uniqid(),
-        ];
-
-        // append the customer specified attributes and build a stdClass object
-        $stdObj = json_decode(json_encode(array_merge($jsonObj, $subscriber)));
-
-        return $stdObj;
-    }
-
     /**
      * Log delivery message, used for later tracking.
      */
@@ -267,13 +225,13 @@ class Email extends Model
 
         // @todo: customerneedcheck
         $params = array_merge(array(
-                // 'email_id' => $this->id,
-                'message_id' => $msgId,
-                'subscriber_id' => $subscriber->id,
-                'sending_server_id' => $server->id,
-                'customer_id' => $this->automation->customer->id,
-                'auto_trigger_id' => $triggerId,
-            ), $response);
+            'email_id' => $this->id,
+            'message_id' => $msgId,
+            'subscriber_id' => $subscriber->id,
+            'sending_server_id' => $server->id,
+            'customer_id' => $this->automation->customer->id,
+            'auto_trigger_id' => $triggerId,
+        ), $response);
 
         if (!isset($params['runtime_message_id'])) {
             $params['runtime_message_id'] = $msgId;

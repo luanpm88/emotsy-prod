@@ -31,17 +31,19 @@ class SendMessage implements ShouldQueue
     protected $subscriber;
     protected $server;
     protected $campaign;
+    protected $triggerId;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($campaign, Subscriber $subscriber, $server)
+    public function __construct($campaign, Subscriber $subscriber, $server, $triggerId = null)
     {
         $this->campaign = $campaign;
         $this->subscriber = $subscriber;
         $this->server = $server;
+        $this->triggerId = $triggerId;
     }
 
     /**
@@ -90,7 +92,7 @@ class SendMessage implements ShouldQueue
             $sent = $this->server->send($message);
 
             // Log successful shot
-            $this->campaign->trackMessage($sent, $this->subscriber, $this->server, $msgId);
+            $this->campaign->trackMessage($sent, $this->subscriber, $this->server, $msgId, $this->triggerId);
             $logger->info(sprintf('Sent to %s [Server "%s"]', $email, $this->server->name));
         } catch (QuotaExceeded $ex) {
             if (!is_null($exceptionCallback)) {

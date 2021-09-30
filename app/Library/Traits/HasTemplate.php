@@ -386,4 +386,25 @@ trait HasTemplate
     {
         return $this->customer->getCurrentSubscription()->plan->getOption('plain_text_footer');
     }
+
+    /**
+     * Create a stdClass subscriber (for sending a campaign test email)
+     * The campaign sending functions take a subscriber object as input
+     * However, a test email address is not yet a subscriber object, so we have to build a fake stdClass object
+     * which can be used as a real subscriber.
+     *
+     * @param array $subscriber
+     */
+    public function createStdClassSubscriber($subscriber)
+    {
+        // default attributes that are required
+        $jsonObj = [
+            'uid' => uniqid(),
+        ];
+
+        // append the customer specified attributes and build a stdClass object
+        $stdObj = json_decode(json_encode(array_merge($jsonObj, $subscriber)));
+
+        return $stdObj;
+    }
 }

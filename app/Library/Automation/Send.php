@@ -3,7 +3,6 @@
 namespace Acelle\Library\Automation;
 
 use Acelle\Model\Email;
-use Acelle\Jobs\DeliverEmail;
 use Exception;
 
 class Send extends Action
