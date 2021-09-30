@@ -117,6 +117,9 @@
                             removeButtonMask(button);
                         });
                     });
+
+                    // update overlay
+                    FormsEdit.settings = {!! json_encode($form->getMetadata()) !!};
                 });
             </script>
         </nav>
@@ -324,6 +327,7 @@
         var FormsEdit = {
             styleManager: null,
             displayOption: null,
+            settings: null,
 
             // STYLE MANAGER
             getSettingsManager: function() {
@@ -439,6 +443,8 @@
                         removeMaskLoading();
 
                         _this.hideSidebar();
+
+                        _this.refreshAll();
                     });
                 }
             },
@@ -481,7 +487,8 @@
                 popup = new AFormPopup({
                     url: '{{ action('FormController@frontendContent', [
                         'uid' => $form->uid,
-                    ]) }}'
+                    ]) }}',
+                    overlayOpacity: this.settings.overlay_opacity/100
                 });
 
                 popup.load();
@@ -505,7 +512,8 @@
                         url: '{{ action('FormController@frontendContent', [
                             'uid' => $form->uid,
                             'preview' => true,
-                        ]) }}'
+                        ]) }}',
+                        overlayOpacity: _this.settings.overlay_opacity/100
                     });
 
                     popup.load();

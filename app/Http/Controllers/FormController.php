@@ -30,10 +30,11 @@ class FormController extends Controller
             }
 
             
-            return redirect()->action('FormController@index')
-                ->with('alert-success', trans('messages.form.created', [
-                    'name' => $form->name,
-                ]));
+            return redirect()->action('FormController@build', [
+                'uid' => $form->uid,
+            ])->with('alert-success', trans('messages.form.created', [
+                'name' => $form->name,
+            ]));
         }
 
         return view('forms.create', [

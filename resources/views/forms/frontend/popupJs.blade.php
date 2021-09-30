@@ -11,7 +11,9 @@ class AFormPopup {
 
         var div = document.createElement("div");
         div.innerHTML = `
+            <div class="acelle-popup-cover"></div>
             <div id="Popup`+_this.id+`" class="acelle-popup-container">
+                
                 <div class="acelle-popup-container-scroll">
                     <iframe id="Popup`+_this.id+`Frame" src="`+_this.options.url+`"></iframe>   
                     
@@ -40,6 +42,18 @@ class AFormPopup {
         document.getElementById('Popup'+_this.id+'Close').addEventListener("click", function() {
             _this.hide();
         });
+
+        // set opacity
+        _this.setOverlayOpacity();
+    }
+
+    setOverlayOpacity() {
+        if (this.options.overlayOpacity) {
+            var es = document.getElementsByClassName('acelle-popup');
+            if(es.length > 0){
+                es[0].style.background = 'rgba(0,0,0,'+this.options.overlayOpacity+')';
+            }
+        }
     }
 
     remove() {

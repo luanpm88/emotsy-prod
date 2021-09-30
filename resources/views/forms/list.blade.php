@@ -77,6 +77,7 @@
                     @endif
                     
                     <a href="{{ action('FormController@frontendContent', $form->uid) }}"
+                        data-overlay="{{ $form->getMetadata('overlay_opacity') ? ($form->getMetadata('overlay_opacity')/100) : '0.2' }}"
                         role="button" class="btn btn-default form-popup-preview">
                         <span class="material-icons-outlined">
                             zoom_in
@@ -114,9 +115,11 @@ delete_outline
                 e.preventDefault();
 
                 var url = $(this).attr('href');
+                var overlay = $(this).attr('data-overlay');
 
                 popup = new AFormPopup({
-                    url: url
+                    url: url,
+                    overlayOpacity: overlay
                 });
 
                 popup.load();

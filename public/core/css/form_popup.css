@@ -3,6 +3,9 @@ body.acelle-popup-open {
 }
 .acelle-popup {
     display: none;
+    backdrop-filter: blur(1px);
+    -webkit-backdrop-filter: blur(5px);
+    background-color: rgba(0,0,0,0.4);
 }
 body.acelle-popup-open .acelle-popup {
     display: flex;
@@ -15,23 +18,17 @@ body.acelle-popup-open .acelle-popup {
     height: 100%;
     z-index: 100000000000000;
 }
-.acelle-popup::before {
+.acelle-popup .acelle-popup-cover {
     content: 'backdrop';
     position: absolute;
     width: 100%;
     height: 100vh;
-    background-color: rgba(0,0,0,0.2);
     display: block;
     top: 0;
     left: 0;
     transition: all 0.2s ease-in-out;
     opacity: 0;
     text-indent: -9999999px;
-    filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-}
-body.acelle-popup-open .acelle-popup::before {
-    opacity: 1;
 }
 .acelle-popup-container {
     position: relative;
