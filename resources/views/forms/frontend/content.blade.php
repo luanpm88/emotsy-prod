@@ -64,7 +64,11 @@
 
         autoHeight: function() {
             var content_height = this.getForm().height();
-            parent.postMessage(content_height, '*');
+            var content_width = this.getForm().width();
+            parent.postMessage({
+                height: content_height,
+                width: content_width,
+            }, '*');
         },
 
         // ---- jQuery loaded ------

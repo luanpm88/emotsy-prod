@@ -44,13 +44,20 @@ class AFormPopup {
 
     remove() {
         var oldEs = document.getElementsByClassName('acelle-popup');
-        while(oldEs.length > 0){
+        if(oldEs.length > 0){
             oldEs[0].parentNode.removeChild(oldEs[0]);
         }
     }
 
-    adjustIframeSize(height) {
-        this.iframe.style.height = height + 'px';
+    adjustIframeSize(size) {
+        this.iframe.style.height = size.height + 'px';
+        this.iframe.style.width = size.width + 'px';
+
+        var oldEs = document.getElementsByClassName('acelle-popup-container');
+        if(oldEs.length > 0){
+            oldEs[0].style.width = size.width + 'px';
+        }
+        
     }
 
     loadCss() {
