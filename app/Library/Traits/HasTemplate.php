@@ -18,10 +18,10 @@ trait HasTemplate
     /**
      * Get template.
      */
-    public function setTemplate($template)
+    public function setTemplate($template, $name=null)
     {
         $campaignTemplate = $template->copy([
-            'name' => trans('messages.campaign.template_name', ['name' => $this->name]),
+            'name' => $name ? $name : trans('messages.campaign.template_name', ['name' => $this->name]),
             'customer_id' => $this->customer_id,
         ]);
 

@@ -3667,6 +3667,7 @@
   'template.all_categories' => 'All categories',
   'campaign.template_name' => '[Campaign: ":name"]',
   'email.template_name' => '[Email: ":name"]',
+  'form.template_name' => '[Form: ":name"]',
   'template.category.no_category' => 'No category set',
   'template.category.notice' => 'Choose one or more category for your template to make it available to users',
   'template.set_template_category' => 'Set template category',

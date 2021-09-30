@@ -345,11 +345,11 @@ class CampaignController extends Controller
 
         // from
         if ($request->from == 'mine') {
-            $templates = $request->user()->customer->templates();
+            $templates = $request->user()->customer->templates()->email();
         } elseif ($request->from == 'gallery') {
-            $templates = Template::shared();
+            $templates = Template::shared()->email();
         } else {
-            $templates = Template::shared()
+            $templates = Template::shared()->email()
                 ->orWhere('customer_id', '=', $request->user()->customer->id);
         }
 

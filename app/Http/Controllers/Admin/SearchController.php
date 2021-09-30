@@ -331,7 +331,7 @@ class SearchController extends Controller
     {
         $count = 5;
 
-        $templates = \Acelle\Model\Template::shared()
+        $templates = \Acelle\Model\Template::shared()->email()
             ->search($request->keyword)
             ->orderBy('templates.name', 'asc')
             ->paginate($count);

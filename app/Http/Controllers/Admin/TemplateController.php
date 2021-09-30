@@ -40,6 +40,7 @@ class TemplateController extends Controller
         $view = $request->view ? $request->view : 'grid';
 
         $templates = Template::shared()
+            ->email()
             ->categoryUid($request->category_uid)
             ->search($request->keyword)
             ->orderBy($request->sort_order, $request->sort_direction)

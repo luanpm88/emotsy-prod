@@ -30,9 +30,9 @@ class TemplateController extends Controller
     public function listing(Request $request)
     {
         if ($request->from == 'mine') {
-            $templates = $request->user()->customer->templates();
+            $templates = $request->user()->customer->templates()->email();
         } elseif ($request->from == 'gallery') {
-            $templates = Template::shared();
+            $templates = Template::shared()->email();
         }
 
         // view
@@ -40,6 +40,7 @@ class TemplateController extends Controller
 
         // sort, pagination
         $templates = $templates->search($request->keyword)
+            ->email()
             ->categoryUid($request->category_uid)
             ->notAssociated()
             ->orderBy($request->sort_order, $request->sort_direction)
@@ -417,7 +418,7 @@ class TemplateController extends Controller
         $category = \Acelle\Model\TemplateCategory::findByUid($request->category_uid);
 
         // sort, pagination
-        $templates = $category->templates()->shared()->search($request->keyword)
+        $templates = $category->templates()->shared()->email()->search($request->keyword)
             ->orderBy($request->sort_order, $request->sort_direction)
             ->paginate($request->per_page);
 
