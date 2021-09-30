@@ -23,7 +23,7 @@
 @endsection
 
 @section('content')
-    <form id="FormCreate" action="{{ action('FormController@create') }}" method="POST">
+    <form id="FormCreate" action="{{ action('FormController@create') }}" method="POST" class="form-validate-jquery">
         {{ csrf_field() }}
         <div class="row">
             <div class="col-md-6">
