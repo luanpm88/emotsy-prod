@@ -128,11 +128,13 @@
                                                         edit
                                                         </span>{{ trans('messages.form.connect_edit') }}
                                                 </a><span class="mx-1"> | </span>
-                                                <a target="_blank" href="{{ $form->getWebsite()->url }}" class="link-dark">
+                                                <a target="_blank" href="{{ $form->getWebsite()->url }}"
+                                                    class="link-dark  {{ !$form->isPublished() ? 'open-not-published-site-confirm' : '' }}"
+                                                >
                                                     <span class="material-icons-round mr-0" style="font-size:11px">
                                                         launch
                                                         </span>
-                                                    {{ trans('messages.form.open_site') }}
+                                                {{ trans('messages.form.view_on_site') }}
                                                     
                                                 </a>
                                             </div>
@@ -156,6 +158,13 @@
                                                     e.preventDefault();
                                 
                                                     FormsBuilder.getFormsEdit().getConnectPopup().load();
+                                                });
+
+                                                // open site that is not published confirm
+                                                $('.open-not-published-site-confirm').on('click', function(e) {
+                                                    e.preventDefault();
+
+                                                    FormsBuilder.getFormsEdit().canNotViewUnpublishedForm();
                                                 });
                                             });
                                         </script>
@@ -190,7 +199,7 @@
                     return parent.FormsEdit;
                 },
 
-                updateAddressBar: function() {
+                refreshAddressBar: function(callback) {
                     $.ajax({
                         url: "",
                         method: 'GET'
@@ -198,10 +207,15 @@
                     .done(function(res) {
                         var html = $('<div>').html(res).find('.browser-address').html();
                         $('.browser-address').html(html);
+
+                        if (typeof(callback) != 'undefined') {
+                            callback();
+                        }
                     })
                 },
 
                 save: function(callback) {
+                    this.openFormTab();
                     editor.save(function() {
                         if (typeof(callback) !== 'undefined') {
                             callback();
@@ -257,7 +271,7 @@
                                     other.tab.removeClass('active');
                                 });
 
-                                editor.unselect();
+                                _this.resetIframeHeight();
                             }
 
                             group.tab.on('click', function() {
@@ -266,19 +280,34 @@
                         });
                             
                     }
+
+                    return _this.pageTabManager;
                 },
 
                 getEditor: function() {
                     return editor;
+                },
+
+                openFormTab: function() {
+                    this.getPageTabManager().groups.forEach(function(group) {
+                        if (group.value == "form") {
+                            group.check();
+                        }
+                    }); 
+                },
+
+                resetIframeHeight: function() {
+                    editor.unselect();
+
+                    $('#builder_iframe').css('height', 'auto');
+                    editor.adjustIframeSize();
                 }
             };
 
             $(function() {
                 // hide menu
                 $(document).on('click', function() {
-                    FormsBuilder.getFormsEdit().getStyleManager().groups.forEach(function(group) {
-                        group.hide();
-                    });
+                    FormsBuilder.getFormsEdit().hideSidebar();
                 });
 
                 // 

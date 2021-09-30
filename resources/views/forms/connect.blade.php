@@ -63,7 +63,7 @@
 
                     FormsEdit.getConnectPopup().hide();
 
-                    FormsEdit.getFormsBuilder().updateAddressBar();
+                    FormsEdit.getFormsBuilder().refreshAddressBar();
                 });
             },
 
@@ -89,7 +89,7 @@
 
                     FormsEdit.getConnectPopup().hide();
 
-                    FormsEdit.getFormsBuilder().updateAddressBar();
+                    FormsEdit.getFormsBuilder().refreshAddressBar();
                 })
                 .fail(function(res) {
                     switch (res.status) {

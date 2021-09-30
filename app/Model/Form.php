@@ -120,7 +120,6 @@ class Form extends Model
             'display' => $params['display'],
             'wait_time' => $params['wait_time'],
             'element_id' => $params['element_id'],
-            'use_captcha' => $params['use_captcha'],
         ]);
 
         
@@ -223,5 +222,10 @@ class Form extends Model
     public static function scopePublished($query)
     {
         $query = $query->where('status', '=', self::STATUS_PUBLISHED);
+    }
+
+    public function isPublished()
+    {
+        return $this->status == self::STATUS_PUBLISHED;
     }
 }

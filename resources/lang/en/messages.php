@@ -3973,5 +3973,9 @@
   'form.builer.form_tab' => 'Form',
   'form.builer.success_message_tab' => 'Success Message',
   'form.use_captcha' => 'Use Google reCaptcha',
-  'form.view' => 'View',
+  'form.open_popup' => 'Open popup',
+  'form.view_in_site_but_is_not_published' => 'The form is not published.
+    Publish the form first so you can view it on the site.
+  ',
+  'form.view_on_site' => 'View on site',
 ) ?>

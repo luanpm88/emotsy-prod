@@ -37,10 +37,21 @@
                     
             </span>
             <div class="ms-auto">
+                <button class="me-2 builder-save-button btn btn-secondary" href="{{ action('FormController@index') }}">
+                    <div class="d-flex align-items-center">
+                        <span class="material-icons-outlined me-2">
+                            task_alt
+                            </span>
+                            <span>{{ trans('messages.form.builder.save') }}</span>
+                    </div>
+                </button>
+            </div>
+            <span class="pe-2 text-muted2"> | </span>
+            <div class="me-4">
                 @if (Auth::user()->customer->can('publish', $form))
-                    <a href="{{ action('FormController@publish', $form->uid) }}" class="me-2 builder-publish-button btn btn-default" href="{{ action('FormController@index') }}">
+                    <a href="{{ action('FormController@publish', $form->uid) }}" class="me-1 builder-publish-button btn btn-default" href="{{ action('FormController@index') }}">
                         <div class="d-flex align-items-center">
-                            <span class="material-icons-outlined me-1">
+                            <span class="material-icons-outlined me-2">
                                 task_alt
                                 </span>
                                 <span>{{ trans('messages.form.publish') }}</span>
@@ -49,9 +60,9 @@
                     </a>                    
                 @endif
                 @if (Auth::user()->customer->can('unpublish', $form))
-                    <a href="{{ action('FormController@unpublish', $form->uid) }}" class="me-2 builder-unpublish-button btn btn-default" href="{{ action('FormController@index') }}">
+                    <a href="{{ action('FormController@unpublish', $form->uid) }}" class="me-1 builder-unpublish-button btn btn-default" href="{{ action('FormController@index') }}">
                         <div class="d-flex align-items-center">
-                            <span class="material-icons-outlined me-1">
+                            <span class="material-icons-outlined me-2">
                                 block
                                 </span>
                                 <span>{{ trans('messages.form.unpublish') }}</span>
@@ -61,23 +72,16 @@
                 @endif
                 <a href="javascript:;" class="me-2 builder-view-button btn btn-default">
                     <div class="d-flex align-items-center">
-                        <span class="material-icons-outlined me-1">
-                            launch
+                        <span class="material-icons-outlined me-2">
+                            featured_video
                             </span>
-                            <span>{{ trans('messages.form.view') }}</span>
+                            <span>{{ trans('messages.form.open_popup') }}</span>
                     </div>
                 </a> 
             </div>
-            <div class="me-4">
-                <button class="me-2 builder-save-button btn btn-secondary" href="{{ action('FormController@index') }}">
-                    <div class="d-flex align-items-center">
-                        <span class="material-icons-outlined me-1">
-                            save
-                            </span>
-                            <span>{{ trans('messages.form.builder.save') }}</span>
-                    </div>
-                </button>
-            </div>
+            
+            
+            
             <div>
                 
                 <a class="fs-4 builder-exit-button" href="{{ action('FormController@index') }}"><span class="material-icons-round">
@@ -447,13 +451,16 @@
                 return document.getElementById('FormsEditIframe').contentWindow.FormsBuilder;
             },
 
-            loadUrl: function(url) {
+            loadUrl: function(url, callback) {
                 var _this = this;
 
                 // save current form container
                 _this.getEditor().cleanUpContent();
 
                 _this.getEditor().loadUrl(url, function() {
+                    if (typeof(callback) != 'undefined') {
+                        callback();
+                    }
                     _this.getEditor().adjustIframeSize();
                 });
             },
@@ -521,6 +528,14 @@
                 })
             },
 
+            refreshAll: function(callback) {
+                var _this = this;
+
+                _this.refreshNavbar(function() {
+                    _this.getFormsBuilder().refreshAddressBar(callback);
+                });
+            },
+
             topAction: function(url) {
                 addMaskLoading();
 
@@ -540,7 +555,7 @@
                             message: response.message,
                         });
 
-                        FormsEdit.refreshNavbar(function() {
+                        FormsEdit.refreshAll(function() {
                             removeMaskLoading();
                         });
                     }
@@ -551,6 +566,20 @@
                 this.getSettingsManager().groups.forEach(function(group) {
                     group.hide();
                 });
+            },
+
+            canNotViewUnpublishedForm: function() {
+                new Dialog('alert', {
+                    message: `{{ trans('messages.form.view_in_site_but_is_not_published') }}`
+                });
+            },
+
+            changeTemplate: function(url) {
+                var _this = this;
+                _this.loadUrl(url, function() {
+                    _this.getFormsBuilder().openFormTab();
+                });
+                _this.hideSidebar();
             }
         }
         
@@ -566,7 +595,7 @@
                 e.preventDefault();
                 var url = $(this).attr('href');
 
-                FormsEdit.loadUrl(url);
+                FormsEdit.changeTemplate(url);
             });
 
             // display setting save
