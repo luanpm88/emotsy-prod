@@ -90,6 +90,17 @@
                         <div class="btn-group">
                             <button role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"></button>
                             <ul class="dropdown-menu dropdown-menu-end">
+                                @if ($form->isPublished())
+                                    <li><a target="_blank" href="{{ $form->getWebsite()->url }}"
+                                            class="dropdown-item"
+                                        >
+                                        <span class="material-icons-round me-2" style="font-size:11px">
+                                            launch
+                                            </span>
+                                    {{ trans('messages.form.view_on_site') }}
+                                        
+                                    </a></li>
+                                @endif
                                 @if (Auth::user()->customer->can('delete', $form))
                                     <li><a
                                         class="dropdown-item list-action-single"
