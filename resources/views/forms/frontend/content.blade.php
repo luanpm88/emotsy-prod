@@ -20,6 +20,11 @@
             '{{ URL::asset('core/js/functions.js') }}',
         ], function() {
             FormPopupContent.init();
+
+            // after loaded popup
+            parent.postMessage({
+                loaded: true
+            }, '*');
         });
     });
 
@@ -129,7 +134,7 @@
         showErrorBox: function(errors) {
             var box = $('<div class="alert alert-error"></div>');
             box.append('<a>ssdfsfda</a>');
-            
+
             parent.postMessage({
                 alert: {
                     message: Object.values(errors)[0],

@@ -12,6 +12,9 @@ class AFormPopup {
         var div = document.createElement("div");
         div.innerHTML = `
             <div class="acelle-popup-cover"></div>
+            <div class="acelle-popup-loader">
+                <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+            </div>
             <div id="Popup`+_this.id+`" class="acelle-popup-container">
                 
                 <div class="acelle-popup-container-scroll">
@@ -42,6 +45,13 @@ class AFormPopup {
 
             if (typeof(event.data.alert) != 'undefined') {
                 alert(event.data.alert.message);
+            }
+
+            if (typeof(event.data.loaded) != 'undefined') {
+                var es = document.getElementsByClassName('acelle-popup');
+                if(es.length > 0){
+                    es[0].classList.add("acelle-popup-loaded");
+                }
             }
         });
 
