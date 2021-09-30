@@ -26,7 +26,9 @@ class SendMessage implements ShouldQueue
     public $timeout = 120;
     public $maxExceptions = 1; // This is required if retryUntil is used, otherwise, the default value is 255
     public $failOnTimeout = true;
-    public $tries = 1;
+
+    // $tries is no longer needed (or effective) due to the retryUntil() method
+    // public $tries = 1;
 
     protected $subscriber;
     protected $server;
@@ -63,7 +65,8 @@ class SendMessage implements ShouldQueue
      */
     public function handle()
     {
-        if ($this->batch()->cancelled()) {
+        // Remember that this job may not belong to a batch
+        if ($this->batch() && $this->batch()->cancelled()) {
             return;
         }
 
@@ -85,8 +88,10 @@ class SendMessage implements ShouldQueue
 
         try {
             // Count related quota trackers
-            QuotaManager::with($subscription, 'send')->enforce();
-            QuotaManager::with($this->server, 'send')->enforce();
+            // Important: sacrisfy server credits, put quota check for server before that of subscription
+            // Otherwise, it may cost 1 subscription's credit (shown to user) every time the job is release back to queue
+            QuotaManager::with($this->server, 'send')->enforce();  // First
+            QuotaManager::with($subscription, 'send')->enforce();  // Later
 
             // Actually send (or throw an exception)
             $sent = $this->server->send($message);

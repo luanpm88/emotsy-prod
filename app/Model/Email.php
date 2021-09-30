@@ -286,4 +286,9 @@ class Email extends Model
 
         $this->delete();
     }
+
+    public function logger()
+    {
+        return $this->automation->logger();
+    }
 }
