@@ -87,6 +87,14 @@
 
                         //
                         editor.addCustomCss('{{ URL::asset('core/css/form-builder-frame.css') }}');
+
+                        //
+                        // change banner
+                        $("#builder_iframe").contents().find("body").on('click', '.banner-container:not(.bg-changed)', function(e) {
+                            setTimeout(function() {
+                                $('.change:visible').click();
+                            }, 1100);
+                        });
                     }
                 });
             

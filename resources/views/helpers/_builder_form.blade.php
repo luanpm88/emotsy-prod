@@ -26,6 +26,7 @@
                     },
                     setUrl: function(url) {
                         element.obj.css('background-image', 'url("'+url+'")');
+                        element.obj.addClass('bg-changed');
                         currentEditor.select(element);
                         currentEditor.handleSelect();
                     },
