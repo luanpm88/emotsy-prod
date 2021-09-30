@@ -125,7 +125,7 @@ class OpenLog extends Model
 
         $log = new self();
         $log->message_id = $messageId;
-        $log->user_agent = $_SERVER['HTTP_USER_AGENT'];
+        $log->user_agent = array_key_exists('HTTP_USER_AGENT', $_SERVER) ? $_SERVER['HTTP_USER_AGENT'] : null;
 
         try {
             $location = IpLocation::add($ipAddress);
