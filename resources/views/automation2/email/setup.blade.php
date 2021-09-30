@@ -36,7 +36,7 @@
                 @include('helpers.form_control', [
                     'type' => 'autofill',
                     'id' => 'sender_from_input',
-                    'name' => 'from',
+                    'name' => 'from_email',
                     'label' => trans('messages.from_email'),
                     'value' => $email->from_email,
                     'rules' => $email->rules(),
@@ -215,10 +215,10 @@
             });
         });
 
-        $('[name="from"]').change(function() {
+        $('[name="from_email"]').change(function() {
             $('[name="reply_to"]').val($(this).val()).change();
         });
-        $('[name="from"]').blur(function() {
+        $('[name="from_email"]').blur(function() {
             $('[name="reply_to"]').val($(this).val()).change();
         });
 
