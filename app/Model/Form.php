@@ -55,9 +55,13 @@ class Form extends Model
 
         // set template
         $selectedTemplate = Template::findByUid($params['template_uid']);
-        $this->setTemplate($selectedTemplate, trans('messages.form.template_name', ['name' => $this->name]));
+        $this->changeTemplate($selectedTemplate);
 
         return $validator;
+    }
+
+    public function changeTemplate($selectedTemplate) {
+        $this->setTemplate($selectedTemplate, trans('messages.form.template_name', ['name' => $this->name]));
     }
     
     public function scopeFilter($query, $params)

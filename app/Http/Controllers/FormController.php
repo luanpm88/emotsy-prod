@@ -123,7 +123,7 @@ class FormController extends Controller
             return $this->notAuthorized();
         }
 
-        $content = view('popup.content', [
+        $content = view('forms.content', [
             'template' => $form->template,
             'content' => $form->template->content,
         ]);
@@ -363,6 +363,27 @@ class FormController extends Controller
 
         return response()->json([
             'message' => 'OK',
+        ]);
+    }
+
+    public function changeTemplate(Request $request)
+    {
+        $form = Form::findByUid($request->uid);
+        $template = Template::findByUid($request->template_uid);
+
+        $form->changeTemplate($template);
+
+        return response()->json([
+            'url' => action('FormController@builderContent', [
+                'uid' => $form->uid,
+            ]),
+            'saveUrl' => action('TemplateController@builderEdit', [
+                'uid' => $form->template->uid,
+            ]),
+            'uploadAssetUrl' => action('TemplateController@uploadTemplateAssets', [
+                'uid' => $form->template->uid,
+            ])
+
         ]);
     }
 }

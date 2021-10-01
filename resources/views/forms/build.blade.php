@@ -155,7 +155,8 @@
                     <hr>
                     <div class="">
                         @foreach ($templates->take(5) as $template)
-                            <a href="{{ action('PopupController@content', [
+                            <a href="{{ action('FormController@changeTemplate', [
+                                'uid' => $form->uid,
                                 'template_uid' => $template->uid,
                             ]) }}" class="style-item d-block rounded-3 overflow-hidden mb-4 shadow-sm">
                                 <img src="{{ $template->getThumbUrl() }}?v={{ rand(0,10) }}" />
@@ -183,7 +184,8 @@
                     <hr>
                     <div class="">
                         @foreach ($templates->skip(5) as $template)
-                            <a href="{{ action('PopupController@content', [
+                            <a href="{{ action('FormController@changeTemplate', [
+                                'uid' => $form->uid,
                                 'template_uid' => $template->uid,
                             ]) }}" class="style-item d-block rounded-3 overflow-hidden mb-4 shadow-sm">
                                 <img src="{{ $template->getThumbUrl() }}?v={{ rand(0,10) }}" />
@@ -461,13 +463,17 @@
                 return document.getElementById('FormsEditIframe').contentWindow.FormsBuilder;
             },
 
-            loadUrl: function(url, callback) {
+            loadUrls: function(urls, callback) {
                 var _this = this;
+
+                _this.getEditor().saveUrl = urls.saveUrl;
+                _this.getEditor().uploadAssetUrl = urls.uploadAssetUrl;
+                _this.getEditor().url = urls.url;
 
                 // save current form container
                 _this.getEditor().cleanUpContent();
 
-                _this.getEditor().loadUrl(url, function() {
+                _this.getEditor().loadUrl(_this.getEditor().url, function() {
                     if (typeof(callback) != 'undefined') {
                         callback();
                     }
@@ -588,10 +594,20 @@
 
             changeTemplate: function(url) {
                 var _this = this;
-                _this.loadUrl(url, function() {
-                    _this.getFormsBuilder().openFormTab();
+
+                // copy
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: {
+                        _token: CSRF_TOKEN
+                    }
+                }).done(function(response) {
+                    _this.loadUrls(response, function() {
+                        _this.getFormsBuilder().openFormTab();
+                    });
+                    _this.hideSidebar();
                 });
-                _this.hideSidebar();
             }
         }
         

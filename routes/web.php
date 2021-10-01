@@ -126,9 +126,6 @@ Route::group(['middleware' => ['not_installed', 'not_logged_in']], function () {
     // Customer registration
     Route::post('users/register', 'UserController@register');
     Route::get('users/register', 'UserController@register');
-
-    Route::get('popup/{id}/popup.js', 'PopupController@popup');
-    Route::get('popup/content', 'PopupController@content');
 });
 
 // Without authentication
@@ -202,6 +199,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
     Route::get('audience/overview', 'AudienceController@overview');
 
     // Form
+    Route::post('forms/{uid}/change-template', 'FormController@changeTemplate');
     Route::post('forms/{uid}/preview', 'FormController@preview');
     Route::post('forms/publish', 'FormController@publish');
     Route::post('forms/unpublish', 'FormController@unpublish');
@@ -657,9 +655,6 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('sources/connect', 'SourceController@connect');
     Route::get('sources/listing', 'SourceController@listing');
     Route::resource('sources', 'SourceController');
-
-    // Popup    
-    Route::get('popup', 'PopupController@index');
 });
 
 // ADMIN AREA
