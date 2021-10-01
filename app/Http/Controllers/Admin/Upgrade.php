@@ -27,6 +27,7 @@ class Upgrade extends Controller
         Template::resetDefaultTemplates();
         Job::query()->delete();
         FailedJob::query()->delete();
+        Artisan::call('queue:restart');
 
         // Upgrade post-processing
         if ($request->session()->has('upgraded')) {
