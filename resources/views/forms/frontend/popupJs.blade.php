@@ -4,7 +4,10 @@ class AFormPopup {
 
         _this.id = '_' + Math.random().toString(36).substr(2, 9);
         _this.options = options;
+    }
 
+    init() {
+        var _this = this;
         _this.remove();
 
         
@@ -105,6 +108,7 @@ class AFormPopup {
     }
     
     load() {
+        this.init();
         document.body.classList.add("acelle-popup-open");
     }
 

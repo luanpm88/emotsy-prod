@@ -3954,7 +3954,7 @@
   'form.builder.connect_to_your_site' => 'Connect your website to publish your pop-up on your site',
   'form.connect_site' => 'Connect Site',
   'form.connect.title' => 'Connect your site to publish your pop-up form',
-  'form.connect.select_site' => 'Select your site below to connect and<br>the popup can be show in this site.',
+  'form.connect.select_site' => 'Select your site below to connect and the popup can be show in this site.',
   'form.choose_site' => 'No site selected',
   'form.connect' => 'Connect',
   'sites_management' => 'Sites management',

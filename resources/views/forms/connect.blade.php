@@ -8,7 +8,7 @@
     <form id="FormConnectSite" action="" method="POST">
         {{ csrf_field() }}
 
-        <p class="mb-2">
+        <p class="mb-3">
             {{ trans('messages.form.connect.select_site') }}
         </p>
 
