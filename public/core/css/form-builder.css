@@ -176,20 +176,20 @@
 .content-left.content-form-mode iframe#builder_iframe {
     border-radius: 0px;
 }
-.content-left .content-background::before {
+.content-left .content-background .popup-close-button {
     content: "close";
-    font-family: 'Material Icons Outlined' !important;
+    font-family: 'Material Icons Round' !important;
     z-index: 10;
     position: absolute;
     top: 0;
     right: 0;
     height: 40px;
-    font-size: 20px;
+    font-size: 24px;
     width: 40px;
     padding: 0;
     display: flex;
     border-radius: 100%;
-    color: #333;
+    color: #555;
     text-indent: 0;
     background: #fff;
     border: solid 1px #aaa;

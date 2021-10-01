@@ -110,6 +110,9 @@
                         $('.content-left').on('scroll', function() {
                             FormsBuilder.togglePageTabs();
                         });
+
+                        // add close button
+                        $('.content-background').prepend(`<span class="material-icons-outlined popup-close-button">close</span>`);
                     }
                 });
             
