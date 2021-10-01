@@ -104,7 +104,7 @@ class SendMessage implements ShouldQueue
                 $exceptionCallback($ex);
             }
             // Releease the job, have it tried again later on, after 1 minutes
-            $logger->warning(sprintf("Sending to [%s] -> put on hold (for 60 seconds): %s", $email, $ex->getMessage()));
+            $logger->warning(sprintf("Delay [%s] for 60 seconds: %s", $email, $ex->getMessage()));
 
             // Release the job, have it try again after 60 seconds and (hopefully) the quota limits will be lifted then as time goes by
             $this->release(60);
@@ -112,7 +112,7 @@ class SendMessage implements ShouldQueue
             if (!is_null($exceptionCallback)) {
                 $exceptionCallback($ex);
             }
-            $message = sprintf("Error sending to email address [%s]. Error: %s", $email, $ex->getMessage());
+            $message = sprintf("Error sending to [%s]. Error: %s", $email, $ex->getMessage());
             $logger->error($message);
             throw new Exception($message);
         }
