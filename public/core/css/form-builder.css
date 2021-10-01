@@ -331,3 +331,6 @@ a.link-dark:hover {
     background-color: transparent;
     border: transparent;
 }
+.undo-redo {
+    left: 45px;
+}

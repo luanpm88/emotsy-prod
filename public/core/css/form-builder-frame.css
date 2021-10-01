@@ -1,6 +1,6 @@
 html {
-    background: #403b3b;
-    box-shadow: none;
+    background: #403b3b!important;
+    box-shadow: none!important;
 }
 .banner-container {
     position: relative;
