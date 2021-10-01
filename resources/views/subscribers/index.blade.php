@@ -161,12 +161,12 @@ sort
 							{{ trans('messages.columns') }} <span class="caret"></span>
 						</button>
 						<ul class="dropdown-menu dropdown-menu-end">
-							@foreach ($list->getFields as $field)
+							@foreach ($list->getFields as $key => $field)
 								@if ($field->tag != "EMAIL")
 									<li>
 										<div class="checkbox">
 											<label>
-												<input {{ (true ? "checked='checked'" : "") }} type="checkbox" id="{{ $field->tag }}" name="columns[]" value="{{ $field->uid }}" class="styled">
+												<input {{ ($field->required || $key <= 2 ? "checked='checked'" : "") }} type="checkbox" id="{{ $field->tag }}" name="columns[]" value="{{ $field->uid }}" class="styled">
 												{{ $field->label }}
 											</label>
 										</div>
