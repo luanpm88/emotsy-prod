@@ -27,7 +27,7 @@
                         <style type="text/css">
                         <![CDATA[
                         .fil1 {fill:none}
-                        .fil0 {fill:black;fill-rule:nonzero}
+                        .fil0 {fill:rgb(110, 110, 110);fill-rule:nonzero}
                         ]]>
                         </style>
                         </defs>
@@ -61,7 +61,7 @@
         {{ trans('messages.website.copy_code.intro') }}
     </p>
     <div class="d-flex align-items-center">
-        <div class="px-4 py-2 border rounded-3 shadow-sm" style="background:#f3f3f3">
+        <div class="px-4 py-2 border rounded-3 shadow-sm bg-light">
             <pre class="m-0"><code class="connect-code">&lt;script id="AcelleConnectScript" type="text/javascript" src="{{ action('WebsiteController@connectJs', [
                 'uid' => $website->uid,
             ]) }}"&gt;&lt;/script&gt;</code></pre>

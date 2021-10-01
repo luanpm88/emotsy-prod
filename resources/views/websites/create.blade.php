@@ -27,7 +27,7 @@
                         <style type="text/css">
                         <![CDATA[
                         .fil1 {fill:none}
-                        .fil0 {fill:black;fill-rule:nonzero}
+                        .fil0 {fill:rgb(110, 110, 110);fill-rule:nonzero}
                         ]]>
                         </style>
                         </defs>
