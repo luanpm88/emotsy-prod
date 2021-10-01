@@ -354,8 +354,12 @@ class SendingServerElasticEmail extends SendingServer
 
         $jsonResponse = json_decode($result);
 
-        if ($jsonResponse->success == false) {
-            throw new \Exception("ElasticEmail error: ".$result);
+        try {
+            if ($jsonResponse->success == false) {
+                throw new \Exception("ElasticEmail error: ".$result);
+            }
+        } catch (\Throwable $t) {
+            throw new \Exception("Abnormal response from ElasticEmail: ".$result);
         }
 
         // Use transactionid returned from ElasticEmail as runtime_message_id
