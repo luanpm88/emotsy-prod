@@ -120,23 +120,7 @@ var TopSearchBar = {
 
         TopSearchBar.unselect();
         result.addClass('selected');
-
-        // scroll up
-        var resultBottomOffset = TopSearchBar.getSelected().offset().top + TopSearchBar.getSelected().height();
-        var searchBoxBottomOffset = TopSearchBar.getResultsBox().offset().top + TopSearchBar.getResultsBox().height();
-        if (resultBottomOffset - searchBoxBottomOffset > -20) {
-            TopSearchBar.scrollUp();
-            return;
-        }
-
-        // scroll down
-        var resultTopOffset = TopSearchBar.getSelected().offset().top;
-        var searchBoxTopOffset = TopSearchBar.getResultsBox().offset().top;
-        console.log(resultTopOffset);
-        console.log(searchBoxTopOffset);
-        if (resultTopOffset - searchBoxTopOffset < 20) {
-            TopSearchBar.scrollDown();
-        }
+        result.focus();
     },
 
     findPrev: function() {
