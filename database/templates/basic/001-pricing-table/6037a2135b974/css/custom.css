@@ -19,4 +19,6 @@ footer {
         max-width: 760px;
     }
 }
-
+.container {
+    max-width: 760px;
+}

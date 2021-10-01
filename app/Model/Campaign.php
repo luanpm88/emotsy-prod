@@ -32,10 +32,8 @@ use Monolog\Handler\RotatingFileHandler;
 use Monolog\Formatter\LineFormatter;
 use Carbon\Carbon;
 use League\Csv\Writer;
-use Acelle\Library\ExtendedSwiftMessage;
 use Acelle\Library\StringHelper;
 use Acelle\Library\Tool;
-use Acelle\Library\Rss;
 use Acelle\Model\Setting;
 use Validator;
 use File;
@@ -51,16 +49,6 @@ use Acelle\Library\RouletteWheel;
 use Acelle\Library\Traits\TrackJobs;
 use Throwable;
 use Acelle\Library\Traits\HasUid;
-use League\Pipeline\PipelineBuilder;
-use Acelle\Library\HtmlHandler\ParseRss;
-use Acelle\Library\HtmlHandler\ReplaceBareLineFeed;
-use Acelle\Library\HtmlHandler\AppendHtml;
-use Acelle\Library\HtmlHandler\TransformTag;
-use Acelle\Library\HtmlHandler\InjectTrackingPixel;
-use Acelle\Library\HtmlHandler\MakeInlineCss;
-use Acelle\Library\HtmlHandler\TransformUrl;
-use Acelle\Library\HtmlHandler\AddDoctype;
-use Acelle\Library\HtmlHandler\RemoveTitleTag;
 
 class Campaign extends Model
 {
@@ -290,86 +278,6 @@ class Campaign extends Model
     }
 
     /**
-     * Prepare the email content using Swift Mailer.
-     *
-     * @input object subscriber
-     * @input object sending server
-     *
-     * @return MIME text message
-     */
-    public function prepareEmail($subscriber, $server = null)
-    {
-        // build the message
-        $customHeaders = $this->getCustomHeaders($subscriber, $this);
-        $msgId = $customHeaders['X-Acelle-Message-Id'];
-
-        $message = new ExtendedSwiftMessage();
-        $message->setId($msgId);
-
-        if ($this->type == self::TYPE_REGULAR) {
-            $message->setContentType('text/html; charset=utf-8');
-        } else {
-            $message->setContentType('text/plain; charset=utf-8');
-        }
-
-        foreach ($customHeaders as $key => $value) {
-            $message->getHeaders()->addTextHeader($key, $value);
-        }
-
-        // @TODO for AWS, setting returnPath requires verified domain or email address
-        if (!is_null($server) && $server->allowCustomReturnPath()) {
-            $returnPath = $server->getVerp($subscriber->email);
-            if ($returnPath) {
-                $message->setReturnPath($returnPath);
-            }
-        }
-        $message->setSubject($this->getSubject($subscriber, $msgId));
-
-        if ($this->useSendingServerFromEmailAddress()) {
-            $message->setFrom($server->default_from_email);
-        } else {
-            $message->setFrom(array($this->from_email => $this->from_name));
-        }
-
-        $message->setTo($subscriber->email);
-
-        if (!empty(Setting::get('campaign.bcc'))) {
-            $addresses = array_filter(preg_split('/\s*,\s*/', Setting::get('campaign.bcc')));
-            $message->setBcc($addresses);
-        }
-
-        if (!empty(Setting::get('campaign.cc'))) {
-            $addresses = array_filter(preg_split('/\s*,\s*/', Setting::get('campaign.cc')));
-            $message->setCc($addresses);
-        }
-
-        $message->setReplyTo($this->reply_to);
-        $message->setEncoder(new \Swift_Mime_ContentEncoder_PlainContentEncoder('8bit'));
-        $message->addPart($this->getPlainContent($subscriber, $msgId, $server), 'text/plain');
-        if ($this->type == self::TYPE_REGULAR) {
-            $message->addPart($this->getHtmlContent($subscriber, $msgId, $server), 'text/html');
-        }
-
-        if ($this->sign_dkim) {
-            $message = $this->sign($message);
-        }
-
-        //@todo attach function used for any attachment of Campaign
-        $path_campaign = $this->getAttachmentPath();
-        if (is_dir($path_campaign)) {
-            $files = File::allFiles($path_campaign);
-            foreach ($files as $file) {
-                $attachment = \Swift_Attachment::fromPath((string) $file);
-                $message->attach($attachment);
-                // This is used by certain delivery services like ElasticEmail
-                $message->extAttachments[] = [ 'path' => (string) $file, 'type' => $attachment->getContentType()];
-            }
-        }
-
-        return array($message, $msgId);
-    }
-
-    /**
      * Check if the campaign setting is "use sending server's FROM email address".
      *
      * @return mixed
@@ -491,169 +399,6 @@ class Campaign extends Model
 
         // create tracking log for message
         TrackingLog::create($params);
-    }
-
-    /**
-     * Build Email Custom Headers.
-     *
-     * @return Hash list of custom headers
-     */
-    public function getCustomHeaders($subscriber, $server)
-    {
-        $msgId = StringHelper::generateMessageId(StringHelper::getDomainFromEmail($this->from_email));
-
-        if ($this->isStdClassSubscriber($subscriber)) {
-            $unsubscribeUrl = null;
-        } else {
-            $unsubscribeUrl = $subscriber->generateUnsubscribeUrl($msgId);
-            if ($this->trackingDomain) {
-                $unsubscribeUrl = $this->trackingDomain->buildTrackingUrl($unsubscribeUrl);
-            }
-        }
-
-        $headers = array(
-            'X-Acelle-Campaign-Id' => $this->uid,
-            'X-Acelle-Subscriber-Id' => $subscriber->uid,
-            'X-Acelle-Customer-Id' => $this->customer->uid,
-            'X-Acelle-Message-Id' => $msgId,
-            'X-Acelle-Sending-Server-Id' => $server->uid,
-            'Precedence' => 'bulk',
-        );
-
-        if ($unsubscribeUrl) {
-            $headers['List-Unsubscribe'] = "<{$unsubscribeUrl}>";
-        }
-
-        return $headers;
-    }
-
-    /**
-     * Build Email HTML content.
-     *
-     * @return string
-     */
-    public function getHtmlContent($subscriber = null, $msgId = null, $server = null)
-    {
-        if (!$this->template) {
-            throw new Exception('No template available');
-        }
-
-        $pipeline = new PipelineBuilder();
-        $pipeline->add(new AddDoctype());
-        $pipeline->add(new RemoveTitleTag());
-        $pipeline->add(new ReplaceBareLineFeed());
-        $pipeline->add(new AppendHtml($this->getHtmlFooter()));
-        $pipeline->add(new ParseRss());
-        $pipeline->add(new TransformTag($this, $subscriber, $msgId, $server));
-        $pipeline->add(new InjectTrackingPixel($msgId));
-        $pipeline->add(new TransformUrl($this->template, $msgId, $this->trackingDomain));
-        $pipeline->add(new MakeInlineCss($this->template->findCssFiles()));
-
-        $html = $pipeline->build()->process($this->getTemplateContent());
-
-        // $html = $this->wooTransform($html);
-
-        return $html;
-    }
-
-    /**
-     * Build Email HTML content.
-     *
-     * @return string
-     */
-    public function getPlainContent($subscriber, $msgId, $server = null)
-    {
-        $plain = $this->plain.$this->getPlainTextFooter();
-        $pipeline = new PipelineBuilder();
-        $pipeline->add(new ReplaceBareLineFeed());
-        $pipeline->add(new TransformTag($this, $subscriber, $msgId, $server));
-        $plain = $pipeline->build()->process($plain);
-
-        return $plain;
-    }
-
-    /**
-     * Get tagged Subject.
-     *
-     * @return string
-     */
-    public function getSubject($subscriber, $msgId)
-    {
-        $pipeline = new PipelineBuilder();
-        $pipeline->add(new ReplaceBareLineFeed());
-        $pipeline->add(new TransformTag($this, $subscriber, $msgId));
-        return $pipeline->build()->process($this->subject);
-    }
-
-    /**
-     * Check if email footer enabled.
-     *
-     * @return string
-     */
-    public function footerEnabled()
-    {
-        return ($this->customer->getCurrentSubscription()->plan->getOption('email_footer_enabled') == 'yes') ? true : false;
-    }
-
-    /**
-     * Get HTML footer.
-     *
-     * @return string
-     */
-    public function getHtmlFooter()
-    {
-        return $this->customer->getCurrentSubscription()->plan->getOption('html_footer');
-    }
-
-    /**
-     * Get PLAIN TEXT footer.
-     *
-     * @return string
-     */
-    public function getPlainTextFooter()
-    {
-        return $this->customer->getCurrentSubscription()->plan->getOption('plain_text_footer');
-    }
-
-    /**
-     * Find sending domain from email.
-     *
-     * @return mixed
-     */
-    public function findSendingDomain($email)
-    {
-        $domainName = substr(strrchr($email, '@'), 1);
-
-        if ($domainName == false) {
-            return;
-        }
-
-        $domain = $this->customer->sendingDomains()->where('name', $domainName)->first();
-
-        return $domain;
-    }
-
-    /**
-     * Sign the message with DKIM.
-     *
-     * @return mixed
-     */
-    public function sign($message)
-    {
-        $sendingDomain = $this->findSendingDomain($this->from_email);
-
-        if (is_null($sendingDomain)) {
-            return $message;
-        }
-
-        $privateKey = $sendingDomain->dkim_private;
-        $domainName = $sendingDomain->name;
-        $selector = $sendingDomain->getDkimSelectorParts()[0];
-        $signer = new \Swift_Signers_DKIMSigner($privateKey, $domainName, $selector);
-        $signer->ignoreHeader('Return-Path');
-        $message->attachSigner($signer);
-
-        return $message;
     }
 
     /**
@@ -1746,38 +1491,6 @@ class Campaign extends Model
                          ->whereNull('click_logs.id');
         MailLog::warning('Resend to those who did not click: '.$recipients->count());
         $recipients->delete();
-    }
-
-    /**
-     * Create a stdClass subscriber (for sending a campaign test email)
-     * The campaign sending functions take a subscriber object as input
-     * However, a test email address is not yet a subscriber object, so we have to build a fake stdClass object
-     * which can be used as a real subscriber.
-     *
-     * @param array $subscriber
-     */
-    public function createStdClassSubscriber($subscriber)
-    {
-        // default attributes that are required
-        $jsonObj = [
-            'uid' => uniqid(),
-        ];
-
-        // append the customer specified attributes and build a stdClass object
-        $stdObj = json_decode(json_encode(array_merge($jsonObj, $subscriber)));
-
-        return $stdObj;
-    }
-
-    /**
-     * Check if the given variable is a subscriber object (for actually sending a campaign)
-     * Or a stdClass subscriber (for sending test email).
-     *
-     * @param object $object
-     */
-    public function isStdClassSubscriber($object)
-    {
-        return get_class($object) == 'stdClass';
     }
 
     /**
@@ -2979,7 +2692,7 @@ class Campaign extends Model
     /**
      * Start the campaign. called by daemon job
      */
-    public function prepare($callback)
+    public function prepare($callback, $loadLimit = null)
     {
         // Available sending servers
         $sendingServersPool = $this->defaultMailList->getSendingServers();
@@ -3001,7 +2714,23 @@ class Campaign extends Model
         self::resetMaxExecutionTime();
 
         // Query subscribers
-        $query = $this->subscribersToSend();
+        // IMPORTANT: this method is called by LoadCampaign job which create a SendMessage job for each subscribers
+        // then add to the batch
+        // However, iterating through a big list may cause memory leak
+        // So, LoadCampaign only a fixed number of $loadLimit subscribers each time, then just finish the queue
+        // (it will automatically load the other $loadLimit after that)
+        if (!is_null($loadLimit)) {
+            $subscribers = $this->subscribersToSend()->limit($loadLimit)->get();
+            foreach ($subscribers as $subscriber) {
+                $serverId = RouletteWheel::take($sendingServersPool);
+                $server = SendingServer::find($serverId)->mapType();
+
+                $callback($this, $subscriber, $server);
+            }
+
+            // Important
+            return;
+        }
 
         // Iterate through batches of subscribers, 100 each
         cursorIterate(
@@ -3228,9 +2957,15 @@ class Campaign extends Model
                 // So, if the campaign is paused by user, do not update its status to done once its batch finishes, keep it as paused
                 // IMPORTANT: refresh() is required!
                 if (!$this->refresh()->isPaused()) {
-                    $this->setDone();
+                    if ($this->subscribersToSend()->count() > 0) {
+                        // Launch over and over again until there is no subscribers left to send
+                        // Because each LoadCampaign jobs only load a fixed number of subscribers
+                        $this->launch();
+                    } else {
+                        $this->setDone();
+                    }
                 } else {
-                    // previously paused, no need to update its status
+                    // do nothing, as campaign is already PAUSED by user (not by an exception)
                 }
             },
             function (Batch $batch, Throwable $e) {
