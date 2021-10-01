@@ -181,11 +181,11 @@
     font-family: 'Material Icons Round' !important;
     z-index: 10;
     position: absolute;
-    top: 0;
-    right: 0;
-    height: 40px;
+    top: 2px;
+    right: 2px;
+    height: 35px;
     font-size: 24px;
-    width: 40px;
+    width: 35px;
     padding: 0;
     display: flex;
     border-radius: 100%;
