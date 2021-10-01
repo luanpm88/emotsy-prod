@@ -83,14 +83,7 @@ class AFormPopup {
     }
 
     adjustIframeSize(size) {
-        this.iframe.style.height = size.height + 'px';
-        this.iframe.style.width = size.width + 'px';
-
-        var oldEs = document.getElementsByClassName('acelle-popup-container');
-        if(oldEs.length > 0){
-            oldEs[0].style.width = size.width + 'px';
-        }
-        
+        this.iframe.style.height = size.height + 'px';        
     }
 
     loadCss() {

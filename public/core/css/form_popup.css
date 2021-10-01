@@ -52,12 +52,18 @@ body.acelle-popup-open .acelle-popup {
 }
 .acelle-popup-container {
     position: relative;
-    width: 800px;
+    min-width: 700px;
     min-height: 300px;
     max-height: 80vh;
     overflow: none;
     box-shadow: 0 0 15px rgba(0,0,0,0.2);
     background-color: #fff;
+}
+@media (max-width: 800px) {
+  .acelle-popup-container {
+    min-width: auto;
+    width: 82%!important;
+  }
 }
 .acelle-popup-container-scroll {
     position: relative;
