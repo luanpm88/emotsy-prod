@@ -31,7 +31,7 @@
 #formWidgetPanel {
     width: 30%;
     float: right;
-    width: 376px;
+    width: 381px;
     padding-top: 0;
     border-left: solid 1px #ddd;
 }
@@ -137,7 +137,7 @@
 }
 .browser-backdrop {
     position: absolute;
-    width: calc(100% - 376px);
+    width: calc(100% - 381px);
     height: 100vh;
     background: #f6f6f6;
     padding-top: 35px;
