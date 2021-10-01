@@ -166,7 +166,7 @@ sort
 									<li>
 										<div class="checkbox">
 											<label>
-												<input {{ ($field->required || $key <= 2 ? "checked='checked'" : "") }} type="checkbox" id="{{ $field->tag }}" name="columns[]" value="{{ $field->uid }}" class="styled">
+												<input {{ ($field->required || $key <= 3 ? "checked='checked'" : "") }} type="checkbox" id="{{ $field->tag }}" name="columns[]" value="{{ $field->uid }}" class="styled">
 												{{ $field->label }}
 											</label>
 										</div>
