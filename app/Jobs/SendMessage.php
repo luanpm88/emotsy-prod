@@ -81,7 +81,7 @@ class SendMessage implements ShouldQueue
         $subscription = $this->campaign->customer->activeSubscription();
 
         // Prepare the email message to send
-        list($message, $msgId) = $this->campaign->prepareEmail($this->subscriber, $this->server);
+        list($message, $msgId) = $this->campaign->prepareEmail($this->subscriber, $this->server, $fromCache = true);
 
         // Actually send!
         $logger->info(sprintf('Sending to %s [Server "%s"]', $email, $this->server->name));
