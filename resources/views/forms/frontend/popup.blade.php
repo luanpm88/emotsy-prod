@@ -1,10 +1,11 @@
 document.addEventListener("DOMContentLoaded", function(event) {
-    popup = new AFormPopup({
+    var popup = new AFormPopup({
         url: '{{ action('FormController@frontendContent', [
             'uid' => $form->uid,
         ]) }}',
         overlayOpacity: '{{ $form->getMetadata('overlay_opacity') ? ($form->getMetadata('overlay_opacity')/100) : '0.2' }}'
     });
+    
     @if ($form->getMetadata('display') == 'click')
         document.getElementById('{{ $form->getMetadata('element_id') }}').addEventListener("click", function(event) {
             popup.load();
