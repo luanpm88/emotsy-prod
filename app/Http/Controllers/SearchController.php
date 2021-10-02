@@ -246,6 +246,7 @@ class SearchController extends Controller
         $count = 5;
 
         $templates = $customer->templates()
+            ->email()
             ->search($request->keyword)
             ->notAssociated()
             ->orderBy('templates.name', 'asc')
