@@ -411,7 +411,7 @@ trait HasTemplate
 
             $lock->getExclusiveLock(function ($f) use ($cacheId, $html, $expiresInSeconds) {
                 Cache::put($cacheId, $html, $expiresInSeconds);
-            }, $timeoutSeconds = 3, $timeoutCallback = function() {
+            }, $timeoutSeconds = 3, $timeoutCallback = function () {
                 // echo "Quit me mememem";
                 // just quit, do not throw exception
             });
