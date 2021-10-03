@@ -975,8 +975,8 @@ class MailList extends Model
         $max = $this->customer->getOption('subscriber_max');
         $maxPerList = $this->customer->getOption('subscriber_per_list_max');
 
-        $remainingForList = $maxPerList - $this->reload()->subscribers->count();
-        $remaining = $max - $this->reload()->customer->subscribersCount(); // no cache
+        $remainingForList = $maxPerList - $this->refresh()->subscribers->count();
+        $remaining = $max - $this->refresh()->customer->subscribersCount(); // no cache
 
         if ($maxPerList == -1) {
             return ($max == -1) ? -1 : $remaining;
@@ -1279,10 +1279,6 @@ class MailList extends Model
             // Is is weird that, in certain case, the $e->getMessage() string is too long, making the job "hang";
             throw new Exception(substr($e->getMessage(), 0, 512));
         } finally {
-            //if ($overQuotaAttempt) {
-            //    $syssss_job->updateStatus(['error_message' => trans('messages.import.notice.over_quota')]);
-            // }
-
             // @IMPORTANT: if process fails here, something weird occurs
             $this->reformatDateFields();
             $this->updateCachedInfo();
@@ -1376,18 +1372,6 @@ class MailList extends Model
 
         // Update user's cached information
         $this->customer->updateCache();
-    }
-
-    /**
-     * Reload mail list information.
-     *
-     * @return object mail list model
-     *
-     * @todo why reload() is needed?
-     */
-    public function reload()
-    {
-        return self::find($this->id);
     }
 
     public function mailListsSendingServers()

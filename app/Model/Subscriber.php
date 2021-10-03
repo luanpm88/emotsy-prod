@@ -23,7 +23,6 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
-use Acelle\Library\Log as MailLog;
 use Acelle\Model\MailList;
 use Acelle\Model\Setting;
 use Acelle\Events\MailListSubscription;
@@ -74,15 +73,6 @@ class Subscriber extends Model
     ];
 
     /**
-     * The rules for validation.
-     *
-     * @var array
-     */
-    public static $fields_rules = array(
-
-    );
-
-    /**
      * Associations.
      *
      * @var object | collect
@@ -90,11 +80,6 @@ class Subscriber extends Model
     public function mailList()
     {
         return $this->belongsTo('Acelle\Model\MailList');
-    }
-
-    public function campaign()
-    {
-        return $this->belongsTo('Acelle\Model\Campaign');
     }
 
     public function subscriberFields()
@@ -814,17 +799,6 @@ class Subscriber extends Model
         $query = $query->orderBy('click_logs.created_at', 'desc')->first();
 
         return $query;
-    }
-
-    /**
-     * Update subscriber status.
-     *
-     * @param MailList $list
-     */
-    public function updateStatus($status)
-    {
-        $this->status = $status;
-        $this->save();
     }
 
     /**
