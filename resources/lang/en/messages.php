@@ -1794,7 +1794,7 @@
   'verification_process_running' => 'Verification process is running. <strong>:verified</strong>/<strong>:total</strong> emails verified',
   'verification_process_not_running' => 'There is currently no verification process is running. Your list has <strong>:verified</strong> over a total of <strong>:total</strong> email addresses that are verified. Run the verification process again to cover the remaining ones in your list. Or reset your list\'s verification results to have email addresses verified again.',
   'list.verify.intro' => 'Typically, email lists degrade at a rate of 22.5% each year. This means that a huge amount of your mailing list subscribers’ emails won’t be valid after a year, resulting in increased bounce rate, ruined domain reputation... Perform email validation before running a campaign helps protect your business reputation.',
-  'list.verify.complete' => 'Verification complete',
+  'list.verify.complete' => 'Verification complete! Do not worry if you find any email address that is still not verified, it is very likely a problem of the verification service at the time. You can verify your list again at a later time',
   'list.verify.progress' => 'Please wait for verification to complete, it may take several minutes. You can navigate away or even close the browser and get back later on to check the progress.',
   'list.verify.cancel_confirm' => 'Are you sure you want to stop the verification process?',
   'list_verification' => 'List verification',

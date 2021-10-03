@@ -182,7 +182,7 @@ restart_alt
                             AcelleList.showFinishButtonBar();
                             AcelleList.hideCancelButton();
                             $("#notice").show();
-                            $("#notice").html('{!! trans('messages.list.verify.complete') !!}');
+                            $("#notice").html('{{ trans('messages.list.verify.complete') }}');
                             $('#bottomNotice').show();
                             $("#bottomNotice").html(result.message);
 

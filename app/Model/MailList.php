@@ -1948,6 +1948,11 @@ class MailList extends Model
             $progress = $job->getJsonData();
             $progress['status'] = $job->status;
             $progress['error'] = $job->error;
+            // The following attributes are already availble
+            // $progress['percentage']
+            // $progress['total']
+            // $progress['processed']
+            // $progress['failed']
         }
 
         return $progress;
