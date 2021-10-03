@@ -122,6 +122,26 @@ class Subscriber extends Model
         return $query->whereNotNull('subscribers.verification_status');
     }
 
+    public function scopeDeliverable($query)
+    {
+        return $query->where('subscribers.verification_status', self::VERIFICATION_STATUS_DELIVERABLE);
+    }
+
+    public function scopeUndeliverable($query)
+    {
+        return $query->where('subscribers.verification_status', self::VERIFICATION_STATUS_UNDELIVERABLE);
+    }
+
+    public function scopeUnknown($query)
+    {
+        return $query->where('subscribers.verification_status', self::VERIFICATION_STATUS_UNKNOWN);
+    }
+
+    public function scopeRisky($query)
+    {
+        return $query->where('subscribers.verification_status', self::VERIFICATION_STATUS_RISKY);
+    }
+
     /**
      * Bootstrap any application services.
      */
