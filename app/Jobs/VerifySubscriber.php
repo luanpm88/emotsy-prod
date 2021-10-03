@@ -17,7 +17,6 @@ class VerifySubscriber extends Base
     public $timeout = 120;
     public $maxExceptions = 1; // This is required if retryUntil is used, otherwise, the default value is 255
     public $failOnTimeout = true;
-    public $tries = 1;
 
     protected $server;
     protected $subscriber;
@@ -75,6 +74,7 @@ class VerifySubscriber extends Base
         } catch(VerificationTakesLongerThanNormal $ex) {
             // Just ignore and return
             // Warn user that there are certain subscribers that are skipped
+            return;
         } catch (QuotaExceeded $ex) {
             if (!is_null($exceptionCallback)) {
                 $exceptionCallback($ex);

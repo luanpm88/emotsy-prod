@@ -82,7 +82,7 @@ restart_alt
             <!-- if -->
             <h2 class="text-semibold" style="margin-top:40px;margin-bottom:10px">{{ trans('messages.verification_status') }}</h2>
             <p>{!! trans('messages.verification_process_not_running', [
-                'verified' => $list->countVerifiedSubscribers(),
+                'verified' => $list->subscribers()->verified()->count(),
                 'total' => \Acelle\Library\Tool::format_number($list->readCache('SubscriberCount')),
             ]) !!}</p>
             <p>

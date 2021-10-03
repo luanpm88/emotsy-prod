@@ -34,6 +34,7 @@ use Exception;
 use File;
 use Acelle\Library\Traits\HasUid;
 use Closure;
+use Carbon\Carbon;
 
 class Subscriber extends Model
 {
@@ -49,6 +50,12 @@ class Subscriber extends Model
     public const SUBSCRIPTION_TYPE_DOUBLE_OPTIN = 'double';
     public const SUBSCRIPTION_TYPE_SINGLE_OPTIN = 'single';
     public const SUBSCRIPTION_TYPE_IMPORTED = 'imported';
+
+    public const VERIFICATION_STATUS_DELIVERABLE = 'deliverable';
+    public const VERIFICATION_STATUS_UNDELIVERABLE = 'undeliverable';
+    public const VERIFICATION_STATUS_UNKNOWN = 'unknown';
+    public const VERIFICATION_STATUS_RISKY = 'risky';
+    public const VERIFICATION_STATUS_UNVERIFIED = 'unverified';
 
     protected $dates = ['unsubscribed_at'];
 
@@ -85,16 +92,6 @@ class Subscriber extends Model
         return $this->belongsTo('Acelle\Model\MailList');
     }
 
-    public function emailVerifications()
-    {
-        return $this->hasMany('Acelle\Model\EmailVerification');
-    }
-
-    public function emailVerification()
-    {
-        return $this->hasOne('Acelle\Model\EmailVerification');
-    }
-
     public function campaign()
     {
         return $this->belongsTo('Acelle\Model\Campaign');
@@ -117,9 +114,12 @@ class Subscriber extends Model
 
     public function scopeUnverified($query)
     {
-        return $query->whereNotIn('id', function ($q) {
-            $q->select('subscriber_id')->from('email_verifications');
-        });
+        return $query->whereNull('subscribers.verification_status');
+    }
+
+    public function scopeVerified($query)
+    {
+        return $query->whereNotNull('subscribers.verification_status');
     }
 
     /**
@@ -278,9 +278,6 @@ class Subscriber extends Model
         */
         $query = $query->leftJoin('mail_lists', 'subscribers.mail_list_id', '=', 'mail_lists.id');
 
-        // Email verification join
-        $query = $query->leftJoin('email_verifications', 'email_verifications.subscriber_id', '=', 'subscribers.id');
-
         if (isset($request)) {
             // Keyword
             if (!empty(trim($request->keyword))) {
@@ -302,9 +299,9 @@ class Subscriber extends Model
                 }
                 if (!empty($filters['verification_result'])) {
                     if ($filters['verification_result'] == 'unverified') {
-                        $query = $query->whereNull('email_verifications.result');
+                        $query = $query->whereNull('subscribers.verification_status');
                     } else {
-                        $query = $query->where('email_verifications.result', '=', $filters['verification_result']);
+                        $query = $query->where('subscribers.verification_status', '=', $filters['verification_result']);
                     }
                 }
             }
@@ -315,9 +312,9 @@ class Subscriber extends Model
             }
             if (!empty($request->verification_result)) {
                 if ($request->verification_result == 'unverified') {
-                    $query = $query->whereNull('email_verifications.result');
+                    $query = $query->whereNull('subscribers.verification_status');
                 } else {
-                    $query = $query->where('email_verifications.result', '=', $request->verification_result);
+                    $query = $query->where('subscribers.verification_status', '=', $request->verification_result);
                 }
             }
 
@@ -372,7 +369,7 @@ class Subscriber extends Model
      */
     public static function search($request, $customer = null)
     {
-        $query = self::select('subscribers.*', 'email_verifications.result as verify_result');
+        $query = self::select('subscribers.*');
 
         // Filter by customer
         if (!isset($customer)) {
@@ -828,48 +825,13 @@ class Subscriber extends Model
      */
     public function verify($verifier)
     {
-        list($result, $details) = $verifier->verify($this->email);
-        $log = $this->emailVerifications()->firstOrNew();
-        $log->result = $result;
-        $log->details = $details;
-        $log->email_verification_server_id = $verifier->id;
-        $log->save();
-
-        return $log;
-    }
-
-    /**
-     * Get email verification of a subcriber.
-     *
-     * @return EmailVerification
-     */
-    public function getEmailVerification()
-    {
-        return $this->emailVerifications()->orderBy('created_at', 'desc')->first();
-    }
-
-    /**
-     * Get email verification of a subcriber.
-     *
-     * @return EmailVerification
-     */
-    public function getVerificationResult()
-    {
-        if (!$this->isVerifed()) {
-            return '';
-        }
-
-        return $this->getEmailVerification()->result;
-    }
-
-    /**
-     * Check if subscriber is verified.
-     *
-     * @return bool
-     */
-    public function isVerifed()
-    {
-        return is_object($this->getEmailVerification());
+        list($status, $response) = $verifier->verify($this->email);
+        $this->verification_status = $status;
+        $this->last_verification_at = Carbon::now();
+        $this->last_verification_by = $verifier->name;
+        $this->last_verification_result = (string)$response->getBody();
+        $this->save();
+        return $this;
     }
 
     /**
@@ -877,7 +839,11 @@ class Subscriber extends Model
      */
     public function resetVerification()
     {
-        return $this->emailVerifications()->delete();
+        $this->verification_status = null;
+        $this->last_verification_at = null;
+        $this->last_verification_by = null;
+        $this->last_verification_result = null;
+        $this->save();
     }
 
     /**
@@ -1072,9 +1038,9 @@ class Subscriber extends Model
                 }
                 if (!empty($filters['verification_result'])) {
                     if ($filters['verification_result'] == 'unverified') {
-                        $query = $query->whereNull('email_verifications.result');
+                        $query = $query->whereNull('subscribers.verification_status');
                     } else {
-                        $query = $query->where('email_verifications.result', '=', $filters['verification_result']);
+                        $query = $query->where('subscribers.verification_status', '=', $filters['verification_result']);
                     }
                 }
             }
@@ -1084,7 +1050,7 @@ class Subscriber extends Model
                 $query = $query->where('subscribers.status', '=', $request->status);
             }
             if (!empty($request->verification_result)) {
-                $query = $query->where('email_verifications.result', '=', $request->verification_result);
+                $query = $query->where('subscribers.verification_status', '=', $request->verification_result);
             }
 
             // Open
@@ -1138,16 +1104,13 @@ class Subscriber extends Model
      */
     public function scopeSearch($query, $keyword)
     {
-        $query = self::select('subscribers.*', 'email_verifications.result as verify_result');
+        $query = self::select('subscribers.*');
 
         /* does not support searching on subscriber fields, for the sake of performance
         $query = $query->leftJoin('subscriber_fields', 'subscribers.id', '=', 'subscriber_fields.subscriber_id')
             ->leftJoin('mail_lists', 'subscribers.mail_list_id', '=', 'mail_lists.id');
         */
         $query = $query->leftJoin('mail_lists', 'subscribers.mail_list_id', '=', 'mail_lists.id');
-
-        // Email verification join
-        $query = $query->leftJoin('email_verifications', 'email_verifications.subscriber_id', '=', 'subscribers.id');
 
         // Keyword
         if (!empty(trim($keyword))) {
@@ -1325,5 +1288,61 @@ class Subscriber extends Model
     public function getEmail()
     {
         return $this->email;
+    }
+
+    /**
+     * Check if the email address is deliverable.
+     *
+     * @return bool
+     */
+    public function isDeliverable()
+    {
+        return $this->verification_result == self::VERIFICATION_STATUS_DELIVERABLE;
+    }
+
+    /**
+     * Check if the email address is undeliverable.
+     *
+     * @return bool
+     */
+    public function isUndeliverable()
+    {
+        return $this->verification_result == self::VERIFICATION_STATUS_UNDELIVERABLE;
+    }
+
+    /**
+     * Check if the email address is risky.
+     *
+     * @return bool
+     */
+    public function isRisky()
+    {
+        return $this->verification_result == self::VERIFICATION_STATUS_RISKY;
+    }
+
+    /**
+     * Check if the email address is unknown.
+     *
+     * @return bool
+     */
+    public function isUnknown()
+    {
+        return $this->verification_result == self::VERIFICATION_STATUS_UNKNOWN;
+    }
+
+    /**
+     * Email verification result types select options.
+     *
+     * @return array
+     */
+    public static function getVerificationStates()
+    {
+        return [
+            ['value' => self::VERIFICATION_STATUS_DELIVERABLE, 'text' => trans('messages.email_verification_result_deliverable')],
+            ['value' => self::VERIFICATION_STATUS_UNDELIVERABLE, 'text' => trans('messages.email_verification_result_undeliverable')],
+            ['value' => self::VERIFICATION_STATUS_UNKNOWN, 'text' => trans('messages.email_verification_result_unknown')],
+            ['value' => self::VERIFICATION_STATUS_RISKY, 'text' => trans('messages.email_verification_result_risky')],
+            ['value' => self::VERIFICATION_STATUS_UNVERIFIED, 'text' => trans('messages.email_verification_result_unverified')],
+        ];
     }
 }
