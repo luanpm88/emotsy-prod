@@ -6,6 +6,7 @@ use Illuminate\Bus\Batchable;
 use Acelle\Library\QuotaManager;
 use Acelle\Library\Exception\NoCreditsLeft;
 use Acelle\Library\Exception\QuotaExceeded;
+use Acelle\Library\Exception\VerificationTakesLongerThanNormal;
 use Exception;
 use Closure;
 
@@ -71,6 +72,9 @@ class VerifySubscriber extends Base
 
             // Actually verify
             $this->subscriber->verify($this->server);
+        } catch(VerificationTakesLongerThanNormal $ex) {
+            // Just ignore and return
+            // Warn user that there are certain subscribers that are skipped
         } catch (QuotaExceeded $ex) {
             if (!is_null($exceptionCallback)) {
                 $exceptionCallback($ex);

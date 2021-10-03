@@ -29,7 +29,7 @@
 							</a>
 							<br />
 							<span class="label label-flat bg-{{ $item->status }}">{{ trans('messages.' . $item->status) }}</span>
-							<span class="label label-flat bg-{{ $item->verify_result }}">{{ trans('messages.email_verification_result_' . $item->verify_result) }}</span>
+							<span class="label label-flat bg-{{ $item->verification_status }}">{{ trans('messages.email_verification_result_' . $item->verification_status) }}</span>
 						</div>
 					</div>
 				</td>

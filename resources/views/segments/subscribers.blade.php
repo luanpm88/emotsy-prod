@@ -84,7 +84,7 @@ sort
                                     <span class="filter-group ml-10">
 										<select class="select" name="verification_result">
 											<option value="">{{ trans('messages.all_verification') }}</option>
-											@foreach (Acelle\Model\EmailVerification::resultSelectOptions() as $option)
+											@foreach (Acelle\Model\Subscriber::getVerificationStates() as $option)
 												<option value="{{ $option['value'] }}">
 													{{ $option['text'] }}
 												</option>

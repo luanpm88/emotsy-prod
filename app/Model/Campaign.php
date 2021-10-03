@@ -568,7 +568,7 @@ class Campaign extends Model
 
         // Step 5
         // @todo: consider removing this check!
-        if (is_object($this->subscribers([], ['email_verifications'])->limit(1)->first())) {
+        if (is_object($this->subscribers([])->limit(1)->first())) {
             $step = 5;
         } else {
             return $step;
@@ -680,7 +680,7 @@ class Campaign extends Model
      */
     public function notDeliveredCount()
     {
-        $subscribersCountUniq = $this->subscribers([], ['email_verifications'])->count();
+        $subscribersCountUniq = $this->subscribers([])->count();
         return $subscribersCountUniq - $this->deliveredCount();
     }
 
@@ -1801,10 +1801,8 @@ class Campaign extends Model
         if ($cache) {
             return $this->readCache('SubscriberCount', 0);
         }
-        // email_verifications join is required in case of segment condition (for example: 'deliverable' or 'risky')
-        // return distinctCount($this->subscribers([], []), 'subscribers.email');
-        // return distinctCount($this->subscribers([], ['email_verifications']), 'subscribers.email');
-        return $this->subscribers([], ['email_verifications'])->count();
+
+        return $this->subscribers([])->count();
     }
 
     /**
@@ -1814,8 +1812,8 @@ class Campaign extends Model
      */
     public function activeSubscribersCount()
     {
-        // return distinctCount($this->subscribers([], ['email_verifications'])->where('subscribers.status', Subscriber::STATUS_SUBSCRIBED), 'subscribers.email');
-        return $this->subscribers([], ['email_verifications'])->where('subscribers.status', Subscriber::STATUS_SUBSCRIBED)->count();
+        // return distinctCount($this->subscribers([])->where('subscribers.status', Subscriber::STATUS_SUBSCRIBED), 'subscribers.email');
+        return $this->subscribers([])->where('subscribers.status', Subscriber::STATUS_SUBSCRIBED)->count();
     }
 
     /**
@@ -2651,7 +2649,7 @@ class Campaign extends Model
                     ELSE
                         CASE `%subscribers`.`status`
                         WHEN '%subscribed' THEN
-                            CASE COALESCE(`%email_verifications`.`result`, '-1')
+                            CASE COALESCE(`%subscribers`.`verification_status`, '-1')
                             WHEN '-1'           THEN '%new'
                             WHEN '%deliverable' THEN '%new'
                             ELSE                     '%skipped'
@@ -2671,10 +2669,9 @@ class Campaign extends Model
             '%bounced' => self::DELIVERY_STATUS_BOUNCED,
             '%feedback' => self::DELIVERY_STATUS_FEEDBACK,
             '%subscribed' => Subscriber::STATUS_SUBSCRIBED,
-            '%deliverable' => EmailVerification::RESULT_DELIVERABLE,
+            '%deliverable' => Subscriber::VERIFICATION_STATUS_DELIVERABLE,
             '%tracking_logs' => table('tracking_logs'),
             '%subscribers' => table('subscribers'),
-            '%email_verifications' => table('email_verifications'),
             '%bounce_logs' => table('bounce_logs'),
             '%feedback_logs' => table('feedback_logs')
         ])));
@@ -2751,7 +2748,7 @@ class Campaign extends Model
     public function subscribersToSend()
     {
         // Retrieve subscribers to send!
-        $query = $this->subscribers([], ['email_verifications'])
+        $query = $this->subscribers([])
                 ->whereRaw(sprintf(table('subscribers').'.email NOT IN (SELECT email FROM %s t JOIN %s s ON t.subscriber_id = s.id WHERE t.campaign_id = %s)', table('tracking_logs'), table('subscribers'), $this->id))
                 ->subscribed();
 
@@ -2763,7 +2760,7 @@ class Campaign extends Model
      *
      * @return collect
      */
-    public function subscribers($params = [], $extra = ['email_verifications'])
+    public function subscribers($params = [])
     {
         if ($this->listsSegments->isEmpty()) {
             // this is a trick for returning an empty builder
@@ -2771,12 +2768,7 @@ class Campaign extends Model
         }
 
         $query = Subscriber::select('subscribers.*');
-        // Tell MySQL to use the right index
-        // $query->from(\DB::raw(\DB::getTablePrefix() . 'subscribers FORCE INDEX (subscribers_mail_list_id_email_index)'));
-        // Email verification join
-        if (in_array('email_verifications', $extra)) {
-            $query = $query->leftJoin('email_verifications', 'email_verifications.subscriber_id', '=', 'subscribers.id');
-        }
+
         // Get subscriber from mailist and segment
         $conditions = [];
         foreach ($this->listsSegments as $lists_segment) {

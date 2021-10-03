@@ -1434,7 +1434,7 @@ class MailList extends Model
                 return $list->subscribersCount(false);
             },
             'VerifiedSubscriberCount' => function (&$list) {
-                return $list->countVerifiedSubscribers();
+                return $list->subscribers()->verified()->count();
             },
             'ClickedRate' => function (&$list) {
                 return $list->clickRate();
@@ -1673,19 +1673,7 @@ class MailList extends Model
      */
     public function resetVerification()
     {
-        EmailVerification::join('subscribers', 'subscribers.id', '=', 'email_verifications.subscriber_id')
-                         ->where('mail_list_id', $this->id)
-                         ->delete();
-    }
-
-    /**
-     * Count verified subscribers.
-     */
-    public function countVerifiedSubscribers()
-    {
-        return $this->subscribers()->whereIn('id', function ($q) {
-            $q->select('subscriber_id')->from('email_verifications');
-        })->count();
+        DB::statement(sprintf('UPDATE %s s SET verification_status = NULL, last_verification_by = NULL, last_verification_at = NULL, last_verification_result = NULL WHERE s.mail_list_id = %s', table('subscribers'), $this->id));
     }
 
     /**
@@ -1697,7 +1685,7 @@ class MailList extends Model
         if ($count == 0) {
             return 0.0;
         } else {
-            return (float) $this->countVerifiedSubscribers() / $count;
+            return (float) $this->subscribers()->verified()->count() / $count;
         }
     }
 
