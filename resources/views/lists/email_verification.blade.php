@@ -2,6 +2,11 @@
 
 @section('title', $list->name)
 
+@section('head')
+    <script type="text/javascript" src="{{ URL::asset('core/echarts/echarts.min.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('core/echarts/dark.js') }}"></script> 
+@endsection
+
 @section('page_header')
 
     @include("lists._header")
@@ -60,7 +65,7 @@ restart_alt
     </div>
 
     <div class="row" id="verifyForm">
-        <div class="col-md-8">
+        <div class="col-md-6">
             <form action="#" method="POST" class="form-validate-jquery">
                 {{ csrf_field() }}
                 <p>{{ trans('messages.list.verify.intro') }}</p>
@@ -92,6 +97,123 @@ restart_alt
                 </a>
             </p>
 
+        </div>
+
+        <div class="col-md-6">
+
+            <div class="row">
+                <div class="col-md-12">
+                    @if (true)
+                        <!-- Basic column chart -->
+                        <div class="" style="margin-top:-50px">
+                            <div class="">
+                                <div class="chart-container px-5">
+                                    <div class="chart has-fixed-height-250"
+                                        id="emailVerificationChart"
+                                        style="width: 100%;height:450px;"
+                                        data-url="{{ action('Admin\PlanController@pieChart') }}"
+                                    ></div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /basic column chart -->
+                    @endif
+                </div>
+            </div>
+            
+            <script>
+                $(function() {
+                    EmailVerificationChart.showChart();
+                });
+                var EmailVerificationChart = {
+                    url: '{{ action('MailListController@emailVerificationChart', [
+                        'uid' => $list->uid,
+                    ]) }}',
+                    getChart: function() {
+                        return $('#emailVerificationChart');
+                    },
+            
+                    showChart: function() {
+                        $.ajax({
+                            method: "GET",
+                            url: this.url,
+                        })
+                        .done(function( response ) {
+                            EmailVerificationChart.renderChart( response.data );
+                        });
+                    },
+            
+                    renderChart: function(data) {
+                        // based on prepared DOM, initialize echarts instance
+                        var chart = echarts.init(EmailVerificationChart.getChart()[0], ECHARTS_THEME);
+            
+                        var colors = [
+                            '#5cb2b2',
+                            '#b25977',
+                            '#aab25a',
+                            '#5b7bb2',
+                            '#555555',
+                            '#626eb2',
+                            '#81ac8d',
+                            '#7d5fb2',
+                            '#b26e59'
+                        ];
+            
+                        var cData = data.map(function(item, index) {
+                            return {
+                                name: item.name,
+                                value: item.value,
+                                itemStyle: {
+                                    color: colors[index],
+                                    borderWidth: 1,  borderType: 'solid', borderColor: '#fff'
+                                }
+                            };
+                        });
+            
+                        var option = {
+                            title: {
+                                text: '{{ trans('messages.email_verification.statistics') }}',
+                                // subtext: '{{ trans('messages.statistics_chart') }}',
+                                left: 'center'
+                            },
+                            tooltip: {
+                                trigger: 'item',
+                                formatter: '{b}: {c} ({d}%)'
+                            },
+                            legend: {
+                                left: 'center',
+                                bottom: 0,
+                            },
+                            series: [
+                                {
+                                    selectedMode: 'single',
+                                    type: 'pie',
+                                    radius: '60%',
+                                    center: ['50%', '47%'],
+                                    data: cData,
+                                    emphasis: {
+                                        itemStyle: {
+                                            shadowBlur: 10,
+                                            shadowOffsetX: 0,
+                                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                        }
+                                    },
+                                    label: {
+                                        // position: 'inner',
+                                        fontSize: 12,
+                                        color: ECHARTS_THEME == 'dark' ? '#fff' : null,
+                                        formatter: '{b}\n{d}% ({c})',
+                                    },
+                                }
+                            ]
+                        };
+            
+                        // use configuration item and data specified to show chart
+                        chart.setOption(option);
+                    }
+                }    
+            </script>
+            
         </div>
     </div>
 
