@@ -287,11 +287,11 @@ class Segment extends Model
                 switch ($condition->operator) {
                     case 'verification_equal':
                         // add condition
-                        $conditions[] = '('.\DB::getTablePrefix()."email_verifications.result = '".$condition->value."')";
+                        $conditions[] = '('.\DB::getTablePrefix()."subscribers.verification_status = '".$condition->value."')";
                         break;
                     case 'verification_not_equal':
                         // add condition
-                        $conditions[] = '('.\DB::getTablePrefix().'email_verifications.result IS NULL OR '.\DB::getTablePrefix()."email_verifications.result != '".$condition->value."')";
+                        $conditions[] = '('.\DB::getTablePrefix().'subscribers.verification_status IS NULL OR '.\DB::getTablePrefix()."subscribers.verification_status != '".$condition->value."')";
                         break;
                     case 'tag_contains':
                         // add condition
@@ -343,7 +343,7 @@ class Segment extends Model
      */
     public function subscribers($request = null)
     {
-        $query = \Acelle\Model\Subscriber::select('subscribers.*', 'email_verifications.result AS verify_result');
+        $query = \Acelle\Model\Subscriber::select('subscribers.*');
         $query = Subscriber::filter($query, $request);
 
         $conditions = $this->getSubscribersConditions();

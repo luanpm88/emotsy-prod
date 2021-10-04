@@ -728,7 +728,7 @@ class SubscriberController extends Controller
 
         try {
             MailLog::info(sprintf("Cleaning up verification data for %s (%s)", $subscriber->email, $subscriber->id));
-            $subscriber->emailVerification->delete();
+            $subscriber->resetVerification();
             // success message
             $request->session()->flash('alert-success', trans('messages.verification.reset'));
 

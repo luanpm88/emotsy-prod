@@ -17,7 +17,9 @@ use Acelle\Library\HtmlHandler\MakeInlineCss;
 use Acelle\Library\HtmlHandler\TransformUrl;
 use Acelle\Library\HtmlHandler\AddDoctype;
 use Acelle\Library\HtmlHandler\RemoveTitleTag;
+use Acelle\Library\Lockable;
 use File;
+use Cache;
 
 trait HasTemplate
 {
@@ -185,7 +187,7 @@ trait HasTemplate
      *
      * @return MIME text message
      */
-    public function prepareEmail($subscriber, $server = null)
+    public function prepareEmail($subscriber, $server = null, $fromCache = false, $expiresInSeconds = 600)
     {
         // build the message
         $customHeaders = $this->getCustomHeaders($subscriber, $this);
@@ -229,7 +231,7 @@ trait HasTemplate
         $message->setEncoder(new \Swift_Mime_ContentEncoder_PlainContentEncoder('8bit'));
         $message->addPart($this->getPlainContent($subscriber, $msgId, $server), 'text/plain');
         if (is_null($this->type) || $this->type == self::TYPE_REGULAR) {
-            $message->addPart($this->getHtmlContent($subscriber, $msgId, $server), 'text/html');
+            $message->addPart($this->getHtmlContent($subscriber, $msgId, $server, $fromCache, $expiresInSeconds), 'text/html');
         }
 
         if ($this->sign_dkim) {
@@ -279,9 +281,15 @@ trait HasTemplate
      * Check if email footer enabled.
      *
      * @return string
+     * @deprecated this is a very poorly designed function with dependencies session!
+     * @todo so, we are adding if/else to facilitate testing only
      */
     public function footerEnabled()
     {
+        if (is_null($this->customer)) {
+            return;
+        }
+
         return ($this->customer->getCurrentSubscription()->plan->getOption('email_footer_enabled') == 'yes') ? true : false;
     }
 
@@ -289,9 +297,15 @@ trait HasTemplate
      * Get HTML footer.
      *
      * @return string
+     * @deprecated this is a very poorly designed function with dependencies session!
+     * @todo so, we are adding if/else to facilitate testing only
      */
     public function getHtmlFooter()
     {
+        if (is_null($this->customer)) {
+            return;
+        }
+
         return $this->customer->getCurrentSubscription()->plan->getOption('html_footer');
     }
 
@@ -336,33 +350,79 @@ trait HasTemplate
         return $message;
     }
 
+    public function getCachedHtmlId()
+    {
+        return "{$this->uid}-html";
+    }
+
+    public function clearCache()
+    {
+        Cache::forget($this->getCachedHtmlId());
+    }
+
     /**
      * Build Email HTML content.
      *
      * @return string
      */
-    public function getHtmlContent($subscriber = null, $msgId = null, $server = null)
+    public function getHtmlContent($subscriber = null, $msgId = null, $server = null, $fromCache = false, $expiresInSeconds = 600)
+    {
+        $baseHtml = $this->getBaseHtmlContent($fromCache, $expiresInSeconds);
+
+        // Bind subscriber/message/server information to email content
+        $pipeline = new PipelineBuilder();
+        $pipeline->add(new TransformTag($this, $subscriber, $msgId, $server));
+        $pipeline->add(new InjectTrackingPixel($msgId));
+        $pipeline->add(new TransformUrl($this->template, $msgId, $this->trackingDomain));
+
+        // Actually push HTML to pipeline for processing
+        $html = $pipeline->build()->process($baseHtml);
+
+        // Return subscriber's bound html
+        return $html;
+    }
+
+    // Return the HTML content which has been processed through base handlers (pipeline)
+    // Which is not associated with any subscriber/message/server
+    public function getBaseHtmlContent($fromCache = false, $expiresInSeconds = 600)
     {
         if (!$this->template) {
             throw new Exception('No template available');
         }
 
-        $pipeline = new PipelineBuilder();
-        $pipeline->add(new AddDoctype());
-        $pipeline->add(new RemoveTitleTag());
-        $pipeline->add(new ReplaceBareLineFeed());
-        $pipeline->add(new AppendHtml($this->getHtmlFooter()));
-        $pipeline->add(new ParseRss());
-        $pipeline->add(new TransformTag($this, $subscriber, $msgId, $server));
-        $pipeline->add(new InjectTrackingPixel($msgId));
-        $pipeline->add(new TransformUrl($this->template, $msgId, $this->trackingDomain));
-        $pipeline->add(new MakeInlineCss($this->template->findCssFiles()));
+        $cacheId = $this->getCachedHtmlId();
+        $updateCacheFlag = $fromCache && !Cache::has($cacheId);
+        $html = null;
 
-        $html = $pipeline->build()->process($this->getTemplateContent());
+        if (!$fromCache || $updateCacheFlag) {
+            $pipeline = new PipelineBuilder();
+            $pipeline->add(new AddDoctype());
+            $pipeline->add(new RemoveTitleTag());
+            $pipeline->add(new ReplaceBareLineFeed());
+            $pipeline->add(new AppendHtml($this->getHtmlFooter()));
+            $pipeline->add(new ParseRss());
+            $pipeline->add(new MakeInlineCss($this->template->findCssFiles()));
+            // $pipeline->add(new TransformTag($this, $subscriber, $msgId, $server));
+            // $pipeline->add(new InjectTrackingPixel($msgId));
+            // $pipeline->add(new TransformUrl($this->template, $msgId, $this->trackingDomain));
+            // $html = $this->wooTransform($html);
+            $html = $pipeline->build()->process($this->getTemplateContent());
+        }
 
-        // $html = $this->wooTransform($html);
+        if ($updateCacheFlag) {
+            $lockfile = storage_path('locks/campaign-cache-'.$this->uid);
+            $lock = new Lockable($lockfile);
 
-        return $html;
+            $lock->getExclusiveLock(function ($f) use ($cacheId, $html, $expiresInSeconds) {
+                Cache::put($cacheId, $html, $expiresInSeconds);
+            }, $timeoutSeconds = 3, $timeoutCallback = function () {
+                // echo "Quit me mememem";
+                // just quit, do not throw exception
+            });
+        }
+
+        // It is important to return $html in priority here, as cache update may not work!
+        return $html ?: Cache::get($cacheId);
     }
 
     /**
@@ -385,9 +445,15 @@ trait HasTemplate
      * Get PLAIN TEXT footer.
      *
      * @return string
+     * @deprecated this is a very poorly designed function with dependencies session!
+     * @todo so, we are adding if/else to facilitate testing only
      */
     public function getPlainTextFooter()
     {
+        if (is_null($this->customer)) {
+            return;
+        }
+
         return $this->customer->getCurrentSubscription()->plan->getOption('plain_text_footer');
     }
 

@@ -978,8 +978,8 @@ class MailList extends Model
         $max = $this->customer->getOption('subscriber_max');
         $maxPerList = $this->customer->getOption('subscriber_per_list_max');
 
-        $remainingForList = $maxPerList - $this->reload()->subscribers->count();
-        $remaining = $max - $this->reload()->customer->subscribersCount(); // no cache
+        $remainingForList = $maxPerList - $this->refresh()->subscribers->count();
+        $remaining = $max - $this->refresh()->customer->subscribersCount(); // no cache
 
         if ($maxPerList == -1) {
             return ($max == -1) ? -1 : $remaining;
@@ -1282,10 +1282,6 @@ class MailList extends Model
             // Is is weird that, in certain case, the $e->getMessage() string is too long, making the job "hang";
             throw new Exception(substr($e->getMessage(), 0, 512));
         } finally {
-            //if ($overQuotaAttempt) {
-            //    $syssss_job->updateStatus(['error_message' => trans('messages.import.notice.over_quota')]);
-            // }
-
             // @IMPORTANT: if process fails here, something weird occurs
             $this->reformatDateFields();
             $this->updateCachedInfo();
@@ -1381,18 +1377,6 @@ class MailList extends Model
         $this->customer->updateCache();
     }
 
-    /**
-     * Reload mail list information.
-     *
-     * @return object mail list model
-     *
-     * @todo why reload() is needed?
-     */
-    public function reload()
-    {
-        return self::find($this->id);
-    }
-
     public function mailListsSendingServers()
     {
         return $this->hasMany('Acelle\Model\MailListsSendingServer');
@@ -1437,7 +1421,7 @@ class MailList extends Model
                 return $list->subscribersCount(false);
             },
             'VerifiedSubscriberCount' => function (&$list) {
-                return $list->countVerifiedSubscribers();
+                return $list->subscribers()->verified()->count();
             },
             'ClickedRate' => function (&$list) {
                 return $list->clickRate();
@@ -1676,19 +1660,7 @@ class MailList extends Model
      */
     public function resetVerification()
     {
-        EmailVerification::join('subscribers', 'subscribers.id', '=', 'email_verifications.subscriber_id')
-                         ->where('mail_list_id', $this->id)
-                         ->delete();
-    }
-
-    /**
-     * Count verified subscribers.
-     */
-    public function countVerifiedSubscribers()
-    {
-        return $this->subscribers()->whereIn('id', function ($q) {
-            $q->select('subscriber_id')->from('email_verifications');
-        })->count();
+        DB::statement(sprintf('UPDATE %s s SET verification_status = NULL, last_verification_by = NULL, last_verification_at = NULL, last_verification_result = NULL WHERE s.mail_list_id = %s', table('subscribers'), $this->id));
     }
 
     /**
@@ -1700,7 +1672,7 @@ class MailList extends Model
         if ($count == 0) {
             return 0.0;
         } else {
-            return (float) $this->countVerifiedSubscribers() / $count;
+            return (float) $this->subscribers()->verified()->count() / $count;
         }
     }
 
@@ -1963,6 +1935,11 @@ class MailList extends Model
             $progress = $job->getJsonData();
             $progress['status'] = $job->status;
             $progress['error'] = $job->error;
+            // The following attributes are already availble
+            // $progress['percentage']
+            // $progress['total']
+            // $progress['processed']
+            // $progress['failed']
         }
 
         return $progress;

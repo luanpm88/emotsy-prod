@@ -11,6 +11,10 @@ use Acelle\Library\Traits\HasQuota;
 use Acelle\Library\Contracts\HasQuota as HasQuotaInterface;
 use Exception;
 use Acelle\Library\QuotaManager;
+use Monolog\Logger;
+use Monolog\Handler\RotatingFileHandler;
+use Monolog\Formatter\LineFormatter;
+use Acelle\Library\Everification\Emailable;
 
 class EmailVerificationServer extends Model implements HasQuotaInterface
 {
@@ -19,6 +23,9 @@ class EmailVerificationServer extends Model implements HasQuotaInterface
 
     // set the table name
     protected $table = 'email_verification_servers';
+
+    // Logger
+    protected $logger;
 
     public const STATUS_ACTIVE = 'active';
     public const STATUS_INACTIVE = 'inactive';
@@ -41,6 +48,17 @@ class EmailVerificationServer extends Model implements HasQuotaInterface
         return $this->belongsTo('Acelle\Model\Admin');
     }
 
+    public function initEverificationService()
+    {
+        switch ($this->type) {
+            case 'emailable.com':
+                $service = new Emailable($this->getOptions(), $this->logger());
+                return $service;
+            default:
+                return null;
+        }
+    }
+
     /**
      * Verify email address.
      *
@@ -48,10 +66,16 @@ class EmailVerificationServer extends Model implements HasQuotaInterface
      */
     public function verify($email)
     {
-        // enforce the verification speed limit
+        // Retrieve the email verification service
+        $service = $this->initEverificationService();
+
+        if ($service) {
+            return $service->verify($email);
+        }
+
+        // @deprecated enforce the verification speed limit
         $options = $this->getOptions();
         $limit = "[{$options['limit_value']} / {$options['limit_base']} {$options['limit_unit']}]";
-        MailLog::warning(sprintf('Verification server `%s` (%s) is exceeding speed limit of %s, waiting...', $this->name, $this->id, $limit));
 
         // retrieve the service settings
         $config = $this->getConfig();
@@ -111,7 +135,7 @@ class EmailVerificationServer extends Model implements HasQuotaInterface
             }
             $mapped = $config['result_map'][$raw];
 
-            return [$mapped, $raw];
+            return [$mapped, $response];
         }
         // end workaround for https://emaillistvalidation.com/
 
@@ -140,7 +164,7 @@ class EmailVerificationServer extends Model implements HasQuotaInterface
         }
         $mapped = $config['result_map'][$result];
 
-        return [$mapped, $raw];
+        return [$mapped, $response];
     }
 
     /**
@@ -435,5 +459,23 @@ class EmailVerificationServer extends Model implements HasQuotaInterface
         }
 
         return $quota;
+    }
+
+    public function logger()
+    {
+        if (is_null($this->logger)) {
+            $formatter = new LineFormatter("[%datetime%] %channel%.%level_name%: %message%\n");
+            $logfile = storage_path('logs/' . php_sapi_name() . "/everification-{$this->uid}-{$this->type}.log");
+            $stream = new RotatingFileHandler($logfile, 0, env('LOG_LEVEL'));
+            $stream->setFormatter($formatter);
+            $pid = getmypid();
+            $logger = new Logger($pid);
+            $logger->pushHandler($stream);
+
+            // Set
+            $this->logger = $logger;
+        }
+
+        return $this->logger;
     }
 }

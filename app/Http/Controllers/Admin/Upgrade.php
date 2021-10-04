@@ -11,6 +11,7 @@ use Acelle\Model\Job;
 use Acelle\Model\FailedJob;
 use Artisan;
 use Illuminate\Support\Facades\Session;
+use Cache;
 
 class Upgrade extends Controller
 {
@@ -23,10 +24,12 @@ class Upgrade extends Controller
     public function finalize(Request $request)
     {
         Setting::writeDefaultSettings();
+        Cache::flush();
         Language::dump();
         Template::resetDefaultTemplates();
         Job::query()->delete();
         FailedJob::query()->delete();
+        Artisan::call('queue:restart');
 
         // Upgrade post-processing
         if ($request->session()->has('upgraded')) {

@@ -284,6 +284,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
 
     // Mail list
     Route::match(['get', 'post'], 'lists/select', 'MailListController@selectList');
+    Route::get('lists/{uid}/email-verification/chart', 'MailListController@emailVerificationChart');
     Route::get('lists/{uid}/clone-to-customers/choose', 'MailListController@cloneForCustomersChoose');
     Route::post('lists/{uid}/clone-to-customers', 'MailListController@cloneForCustomers');
 

@@ -51,6 +51,9 @@ class LoadCampaign implements ShouldQueue
             return;
         }
 
+        // Clear any HTML cache
+        $this->campaign->clearCache();
+
         // Last chance for campaign to setup
         // @todo Find a better place for the following method, afterSave for example
         $this->campaign->updateLinks();

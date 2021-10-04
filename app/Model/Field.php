@@ -39,15 +39,6 @@ class Field extends Model
     ];
 
     /**
-     * The rules for validation.
-     *
-     * @var array
-     */
-    public static $fields_rules = array(
-
-    );
-
-    /**
      * Associations.
      *
      * @var object | collect

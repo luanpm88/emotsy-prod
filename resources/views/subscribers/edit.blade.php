@@ -84,7 +84,7 @@ close
             <div class="sub-section">
                 <h3 class="text-semibold">{{ trans('messages.verification.title.email_verification') }}</h3>
 
-                @if (is_null($subscriber->emailVerification))
+                @if (is_null($subscriber->verification_status))
                     <p>{!! trans('messages.verification.wording.verify', [ 'email' => sprintf("<strong>%s</strong>", $subscriber->email) ]) !!}</p>
                     <form enctype="multipart/form-data" action="{{ action('SubscriberController@startVerification', ['uid' => $subscriber->uid]) }}" method="POST" class="form-validate-jquery">
                         {{ csrf_field() }}
@@ -104,8 +104,8 @@ close
                             <button class="btn btn-secondary me-2"> {{ trans('messages.verification.button.verify') }}</button>
                         </div>
                     </form>
-                @elseif ($subscriber->emailVerification->isDeliverable())
-                    <p>{!! trans('messages.verification.wording.deliverable', [ 'email' => sprintf("<strong>%s</strong>", $subscriber->email), 'at' => sprintf("<strong>%s</strong>", $subscriber->emailVerification->created_at) ]) !!}</p>
+                @elseif ($subscriber->isDeliverable())
+                    <p>{!! trans('messages.verification.wording.deliverable', [ 'email' => sprintf("<strong>%s</strong>", $subscriber->email), 'at' => sprintf("<strong>%s</strong>", $subscriber->last_verification_at) ]) !!}</p>
                     <form enctype="multipart/form-data" action="{{ action('SubscriberController@resetVerification', ['uid' => $subscriber->uid]) }}" method="POST" class="form-validate-jquery">
                         {{ csrf_field() }}
                         <input type="hidden" name="list_uid" value="{{ $list->uid }}" />
@@ -114,7 +114,7 @@ close
                             <button class="btn btn-secondary me-2">{{ trans('messages.verification.button.reset') }}</button>
                         </div>
                     </form>
-                @elseif ($subscriber->emailVerification->isUndeliverable())
+                @elseif ($subscriber->isUndeliverable())
                     <p>{!! trans('messages.verification.wording.undeliverable', [ 'email' => sprintf("<strong>%s</strong>", $subscriber->email)]) !!}</p>
                     <form enctype="multipart/form-data" action="{{ action('SubscriberController@resetVerification', ['uid' => $subscriber->uid]) }}" method="POST" class="form-validate-jquery">
                         {{ csrf_field() }}
@@ -125,7 +125,7 @@ close
                         </div>
                     </form>
                 @else
-                    <p>{!! trans('messages.verification.wording.risky_or_unknown', [ 'email' => sprintf("<strong>%s</strong>", $subscriber->email), 'at' => sprintf("<strong>%s</strong>", $subscriber->emailVerification->created_at), 'result' => sprintf("<strong>%s</strong>", $subscriber->emailVerification->result)]) !!}</p>
+                    <p>{!! trans('messages.verification.wording.risky_or_unknown', [ 'email' => sprintf("<strong>%s</strong>", $subscriber->email), 'at' => sprintf("<strong>%s</strong>", $subscriber->last_verification_at), 'result' => sprintf("<strong>%s</strong>", $subscriber->verification_status)]) !!}</p>
                     <form enctype="multipart/form-data" action="{{ action('SubscriberController@resetVerification', ['uid' => $subscriber->uid]) }}" method="POST" class="form-validate-jquery">
                         {{ csrf_field() }}
                         <input type="hidden" name="list_uid" value="{{ $list->uid }}" />

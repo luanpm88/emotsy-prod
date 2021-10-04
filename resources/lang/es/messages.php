@@ -3875,4 +3875,7 @@
   'condition.custom_wait' => 'Custom wait',
   'condition.wait_amount' => 'Amount',
   'condition.wait_unit' => 'Time unit',
+  'count_minute' => ':count minute|:count minutes',
+  'count_minutes' => ':count minute|:count minutes',
+  'upgrade.uploading' => 'Uploading...',
 ) ?>
