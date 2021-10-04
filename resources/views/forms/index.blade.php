@@ -89,6 +89,18 @@ sort
                             'rules' => [],
                         ])
                     </span>
+                    <span class="filter-group d-flex align-items-center form-group-mb-0">
+                        <span class="title text-semibold text-muted">{{ trans('messages.form.from_site') }}</span>
+                        @include('helpers.form_control', [
+                            'type' => 'select',
+                            'name' => 'website_uid',
+                            'include_blank' => '-- ' . trans('messages.form.all_sites') . '--',
+                            'label' => '',
+                            'value' => '',
+                            'options' => Auth::user()->customer->getWebsiteSelectOptions(false),
+                            'rules' => [],
+                        ])
+                    </span>
                     <span class="text-nowrap">
                         <input type="text" name="keyword" class="form-control search" value="{{ request()->keyword }}" value="{{ request()->keyword }}" placeholder="{{ trans('messages.type_to_search') }}" />
                         <span class="material-icons-round">

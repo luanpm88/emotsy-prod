@@ -66,9 +66,14 @@ class Form extends Model
     
     public function scopeFilter($query, $params)
     {
-        // Keyword
+        // list
         if (!empty($params['mail_list_uid'])) {
             $query = $query->where('mail_list_id', '=', \Acelle\Model\MailList::findByUid($params['mail_list_uid'])->id);
+        }
+
+        // list
+        if (!empty($params['website_uid'])) {
+            $query = $query->byWebsite(\Acelle\Model\Website::findByUid($params['website_uid']));
         }
     }
 

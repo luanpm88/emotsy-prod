@@ -9,7 +9,6 @@ function initJs(container)
     container.find('.select').select2({
         dropdownAutoWidth: true,
         minimumResultsForSearch: 30,
-        dropdownAutoWidth : true,
         escapeMarkup: function(markup) {
             return markup;
         }

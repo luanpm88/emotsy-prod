@@ -3960,7 +3960,7 @@
   'sites_management' => 'Sites management',
   'form.connected' => 'Connected to <span class="fw-600">:site</span> successfully',
   'form.connect_edit' => 'Edit',
-  'form.remove_site' => 'Remove site',
+  'form.remove_site' => 'Disconnect',
   'form.disconnected' => 'Site was disconnected successfully',
   'form.preview' => 'Preview',
   'form.open_site' => 'Open site',
@@ -3983,4 +3983,6 @@
     Publish the form first so you can view it on the site.
   ',
   'form.view_on_site' => 'View on site',
+  'form.from_site' => 'site',
+  'form.all_sites' => 'All sites',
 ) ?>

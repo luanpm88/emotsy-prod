@@ -1977,12 +1977,16 @@ class Customer extends Model
         return false;
     }
 
-    public function getWebsiteSelectOptions()
+    public function getWebsiteSelectOptions($long=true)
     {
         $query = $this->websites();
 
-        $result = $query->orderBy('title')->get()->map(function ($item) {
-            return ['value' => $item->uid, 'text' => '<span class="fw-600">' . $item->title . '</span><br><span class="text-muted">' . $item->url . '</span>'];
+        $result = $query->orderBy('title')->get()->map(function ($item) use($long) {
+            if ($long) {
+                return ['value' => $item->uid, 'text' => '<span class="fw-600">' . $item->title . '</span><br><span class="text-muted">' . $item->url . '</span>'];
+            } else {
+                return ['value' => $item->uid, 'text' => $item->title];
+            }
         });
 
         return $result;
