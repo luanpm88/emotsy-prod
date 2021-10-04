@@ -103,7 +103,7 @@ restart_alt
 
             <div class="row">
                 <div class="col-md-12">
-                    @if ($list->subscribersCount(true))
+                    @if (true)
                         <!-- Basic column chart -->
                         <div class="" style="margin-top:-50px">
                             <div class="">
