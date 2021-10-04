@@ -473,7 +473,8 @@ class UpgradeManager
         if (File::exists($dst)) {
             // Delete the file or link or directory
             if (is_link($dst) || is_file($dst)) {
-                File::delete($dst);
+                // To preserve $dst's permission
+                // File::delete($dst);
             } else {
                 File::deleteDirectory($dst);
             }
