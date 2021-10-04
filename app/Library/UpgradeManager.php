@@ -470,11 +470,7 @@ class UpgradeManager
      */
     public function copy($src, $dst)
     {
-        $originPermission = null;
-
         if (File::exists($dst)) {
-            $originPermission = File::chmod($dst);
-
             // Delete the file or link or directory
             if (is_link($dst) || is_file($dst)) {
                 File::delete($dst);
@@ -494,10 +490,6 @@ class UpgradeManager
             File::copy($src, $dst);
         } else {
             File::copyDirectory($src, $dst);
-        }
-
-        if (!is_null($originPermission)) {
-            File::chmod($dst, $originPermission);
         }
     }
 
