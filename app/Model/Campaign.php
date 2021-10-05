@@ -854,22 +854,6 @@ class Campaign extends Model
     }
 
     /**
-     * Count unique open rate.
-     *
-     * @return number
-     */
-    public function openUniqRate()
-    {
-        $deliveredCount = $this->deliveredCount();
-
-        if ($deliveredCount == 0) {
-            return 0;
-        }
-
-        return $this->openUniqCount() / $deliveredCount;
-    }
-
-    /**
      * Count bounce back.
      *
      * @return number
@@ -886,13 +870,13 @@ class Campaign extends Model
      */
     public function feedbackRate()
     {
-        $delivered_count = $this->deliveredCount();
+        $deliveredCount = $this->deliveredCount();
 
-        if ($delivered_count == 0) {
+        if ($deliveredCount == 0) {
             return 0;
         }
 
-        return $this->feedbackCount() / $delivered_count;
+        return $this->feedbackCount() / $deliveredCount;
     }
 
     /**
@@ -912,13 +896,13 @@ class Campaign extends Model
      */
     public function bounceRate()
     {
-        $delivered_count = $this->deliveredCount();
+        $deliveredCount = $this->deliveredCount();
 
-        if ($delivered_count == 0) {
+        if ($deliveredCount == 0) {
             return 0;
         }
 
-        return $this->bounceCount() / $delivered_count;
+        return $this->bounceCount() / $deliveredCount;
     }
 
     /**
@@ -1654,7 +1638,7 @@ class Campaign extends Model
                 return $campaign->clickRate();
             },
             'UniqOpenRate' => function (&$campaign) {
-                return $campaign->openUniqRate();
+                return $campaign->openRate();
             },
             'UniqOpenCount' => function (&$campaign) {
                 return $campaign->openUniqCount();
