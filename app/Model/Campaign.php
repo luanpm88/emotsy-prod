@@ -906,58 +906,6 @@ class Campaign extends Model
     }
 
     /**
-     * Count hard bounce.
-     *
-     * @return number
-     */
-    public function hardBounceCount()
-    {
-        return $this->campaign_bounce_logs()->where('bounce_type', '=', 'hard')->distinct('subscriber_id')->count('subscriber_id');
-    }
-
-    /**
-     * Count hard bounce rate.
-     *
-     * @return number
-     */
-    public function hardBounceRate()
-    {
-        $delivered_processed_count = $this->deliveryProcessedCount();
-
-        if ($delivered_processed_count == 0) {
-            return 0;
-        }
-
-        return $this->hardBounceCount() / $delivered_processed_count;
-    }
-
-    /**
-     * Count soft bounce.
-     *
-     * @return number
-     */
-    public function softBounceCount()
-    {
-        return $this->campaign_bounce_logs()->where('bounce_type', '=', 'soft')->distinct('subscriber_id')->count('subscriber_id');
-    }
-
-    /**
-     * Count soft bounce rate.
-     *
-     * @return number
-     */
-    public function softBounceRate()
-    {
-        $tracking_count = $this->trackingLogs()->count();
-
-        if ($tracking_count == 0) {
-            return 0;
-        }
-
-        return $this->softBounceCount() / $tracking_count;
-    }
-
-    /**
      * Count unsubscibe.
      *
      * @return number
@@ -974,13 +922,13 @@ class Campaign extends Model
      */
     public function unsubscribeRate()
     {
-        $delivered_count = $this->deliveredCount();
+        $deliveredCount = $this->deliveredCount();
 
-        if ($delivered_count == 0) {
+        if ($deliveredCount == 0) {
             return 0;
         }
 
-        return $this->unsubscribeCount() / $delivered_count;
+        return $this->unsubscribeCount() / $deliveredCount;
     }
 
     /**
