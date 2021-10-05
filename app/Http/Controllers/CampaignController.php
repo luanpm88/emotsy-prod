@@ -841,7 +841,7 @@ class CampaignController extends Controller
             ],
             [
                 'name' => trans('messages.Click'),
-                'value' => $campaign->clickedEmailsCount(),
+                'value' => $campaign->uniqueClickCount(),
             ],
             [
                 'name' => trans('messages.Bounce'),

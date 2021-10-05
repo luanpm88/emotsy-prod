@@ -29,6 +29,8 @@ use Exception;
 
 class OpenLog extends Model
 {
+    protected $fillable = ['message_id'];
+
     /**
      * Associations.
      *

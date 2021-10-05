@@ -756,7 +756,7 @@ class Campaign extends Model
      *
      * @return number
      */
-    public function clickedEmailsCount()
+    public function uniqueClickCount()
     {
         $query = $this->clickLogs();
 
@@ -776,7 +776,7 @@ class Campaign extends Model
             return 0;
         }
 
-        return $this->clickedEmailsCount() / $deliveryCount;
+        return $this->uniqueClickCount() / $deliveryCount;
     }
 
     /**
