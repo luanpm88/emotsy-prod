@@ -881,7 +881,7 @@ class CampaignController extends Controller
         ];
 
         // create data
-        $total = $campaign->openCount();
+        $total = $campaign->uniqueOpenCount();
         $count = 0;
         foreach ($campaign->topCountries()->get() as $location) {
             $country_name = (!empty($location->country_name) ? $location->country_name : trans('messages.unknown'));

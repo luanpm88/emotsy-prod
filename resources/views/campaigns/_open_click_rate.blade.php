@@ -28,7 +28,7 @@
             <div class="stat-row">
                 <p class="text-muted">{{ trans('messages.total_opens') }}</p>
                 <span class="pull-right num">
-                    {{ number_with_delimiter($campaign->openCount()) }}
+                    {{ number_with_delimiter($campaign->uniqueOpenCount()) }}
                 </span>
             </div>
             <div class="stat-row">
@@ -72,7 +72,7 @@ arrow_forward
             <div class="stat-row">
                 <p class="text-muted">{{ trans('messages.total_opens') }}</p>
                 <span class="pull-right num">
-                    {{ number_with_delimiter($campaign->openCount()) }}
+                    {{ number_with_delimiter($campaign->uniqueOpenCount()) }}
                 </span>
             </div>
             <div class="stat-row">
