@@ -25,8 +25,8 @@ class CreateFormsTable extends Migration
             $table->timestamps();
 
 
-            $table->foreign('template_id', table('cls_template_id_fk'))->references('id')->on('templates')->onDelete('set null');
-            $table->foreign('mail_list_id', table('cls_mail_list_id_fk'))->references('id')->on('mail_lists')->onDelete('cascade');
+            $table->foreign('template_id')->references('id')->on('templates')->onDelete('set null');
+            $table->foreign('mail_list_id')->references('id')->on('mail_lists')->onDelete('cascade');
             $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
             
         });
