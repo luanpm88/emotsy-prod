@@ -647,20 +647,10 @@ class Campaign extends Model
      *
      * @return number
      */
-    public function trackingCount()
-    {
-        return $this->trackingLogs()->count();
-    }
-
-    /**
-     * Count delivery processed.
-     *
-     * @return number
-     */
     public function deliveredCount()
     {
         // including bounced, feedbcak...
-        return $this->trackingLogs()->where('status', '!=', TrackingLog::STATUS_FAILED)->count();
+        return $this->trackingLogs()->sent()->count();
     }
 
     /**
@@ -670,7 +660,7 @@ class Campaign extends Model
      */
     public function failedCount()
     {
-        return $this->trackingLogs()->where('status', '=', TrackingLog::STATUS_FAILED)->count();
+        return $this->trackingLogs()->failed()->count();
     }
 
     /**
@@ -762,37 +752,11 @@ class Campaign extends Model
     }
 
     /**
-     * Click rate.
-     *
-     * @return number
-     */
-    public function clickedLinkCount()
-    {
-        return $this->clickLogs()->distinct('url')->count('url');
-    }
-
-    /**
-     * Click rate.
-     *
-     * @return number
-     */
-    public function clickRate()
-    {
-        $url_count = $this->urlCount();
-
-        if ($url_count == 0) {
-            return 0;
-        }
-
-        return round(($this->clickedLinkCount() / $url_count), 2);
-    }
-
-    /**
      * Count unique clicked opened emails.
      *
      * @return number
      */
-    public function clickedEmailsCount()
+    public function uniqueClickCount()
     {
         $query = $this->clickLogs();
 
@@ -800,51 +764,19 @@ class Campaign extends Model
     }
 
     /**
-     * Click a link rate.
-     *
-     * @return number
-     */
-    public function clickALinkRate()
-    {
-        $open_count = $this->openCount();
-
-        if ($open_count == 0) {
-            return 0;
-        }
-
-        return $this->clickCount() / $open_count;
-    }
-
-    /**
      * Clicked emails count.
      *
      * @return number
      */
-    public function clickedEmailsRate()
+    public function clickRate()
     {
-        $open_count = $this->openUniqCount();
+        $deliveryCount = $this->deliveredCount();
 
-        if ($open_count == 0) {
+        if ($deliveryCount == 0) {
             return 0;
         }
 
-        return $this->clickedEmailsCount() / $open_count;
-    }
-
-    /**
-     * Count click.
-     *
-     * @return number
-     */
-    public function clickPerUniqOpen()
-    {
-        $open_count = $this->openCount();
-
-        if ($open_count == 0) {
-            return 0;
-        }
-
-        return $this->clickCount() / $open_count;
+        return $this->uniqueClickCount() / $deliveryCount;
     }
 
     /**
@@ -862,9 +794,9 @@ class Campaign extends Model
      *
      * @return number
      */
-    public function openCount()
+    public function uniqueOpenCount()
     {
-        return $this->openLogs()->count();
+        return $this->openLogs()->distinct('tracking_logs.subscriber_id')->count();
     }
 
     /**
@@ -872,9 +804,9 @@ class Campaign extends Model
      *
      * @return number
      */
-    public function notOpenCount($cache = false)
+    public function notOpenCount()
     {
-        return $this->subscribersCount($cache) - $this->openUniqCount();
+        return $this->deliveredCount() - $this->uniqueOpenCount();
     }
 
     /**
@@ -902,13 +834,13 @@ class Campaign extends Model
      */
     public function openRate()
     {
-        $delivered_count = $this->deliveredCount();
+        $deliveredCount = $this->deliveredCount();
 
-        if ($delivered_count == 0) {
+        if ($deliveredCount == 0) {
             return 0;
         }
 
-        return $this->openCount() / $delivered_count;
+        return $this->uniqueOpenCount() / $deliveredCount;
     }
 
     /**
@@ -916,31 +848,9 @@ class Campaign extends Model
      *
      * @return number
      */
-    public function notOpenRate($cache = false)
+    public function notOpenRate()
     {
-        $total = $this->subscribersCount($cache);
-
-        if ($total == 0) {
-            return 0;
-        }
-
-        return $this->notOpenCount($cache) / $total;
-    }
-
-    /**
-     * Count unique open rate.
-     *
-     * @return number
-     */
-    public function openUniqRate()
-    {
-        $delivered_count = $this->deliveredCount();
-
-        if ($delivered_count == 0) {
-            return 0;
-        }
-
-        return $this->openUniqCount() / $delivered_count;
+        return 1.0 - $this->openRate();
     }
 
     /**
@@ -960,13 +870,13 @@ class Campaign extends Model
      */
     public function feedbackRate()
     {
-        $delivered_count = $this->deliveredCount();
+        $deliveredCount = $this->deliveredCount();
 
-        if ($delivered_count == 0) {
+        if ($deliveredCount == 0) {
             return 0;
         }
 
-        return $this->feedbackCount() / $delivered_count;
+        return $this->feedbackCount() / $deliveredCount;
     }
 
     /**
@@ -986,65 +896,13 @@ class Campaign extends Model
      */
     public function bounceRate()
     {
-        $delivered_count = $this->deliveredCount();
+        $deliveredCount = $this->deliveredCount();
 
-        if ($delivered_count == 0) {
+        if ($deliveredCount == 0) {
             return 0;
         }
 
-        return $this->bounceCount() / $delivered_count;
-    }
-
-    /**
-     * Count hard bounce.
-     *
-     * @return number
-     */
-    public function hardBounceCount()
-    {
-        return $this->campaign_bounce_logs()->where('bounce_type', '=', 'hard')->distinct('subscriber_id')->count('subscriber_id');
-    }
-
-    /**
-     * Count hard bounce rate.
-     *
-     * @return number
-     */
-    public function hardBounceRate()
-    {
-        $delivered_processed_count = $this->deliveryProcessedCount();
-
-        if ($delivered_processed_count == 0) {
-            return 0;
-        }
-
-        return $this->hardBounceCount() / $delivered_processed_count;
-    }
-
-    /**
-     * Count soft bounce.
-     *
-     * @return number
-     */
-    public function softBounceCount()
-    {
-        return $this->campaign_bounce_logs()->where('bounce_type', '=', 'soft')->distinct('subscriber_id')->count('subscriber_id');
-    }
-
-    /**
-     * Count soft bounce rate.
-     *
-     * @return number
-     */
-    public function softBounceRate()
-    {
-        $tracking_count = $this->trackingCount();
-
-        if ($tracking_count == 0) {
-            return 0;
-        }
-
-        return $this->softBounceCount() / $tracking_count;
+        return $this->bounceCount() / $deliveredCount;
     }
 
     /**
@@ -1064,13 +922,13 @@ class Campaign extends Model
      */
     public function unsubscribeRate()
     {
-        $delivered_count = $this->deliveredCount();
+        $deliveredCount = $this->deliveredCount();
 
-        if ($delivered_count == 0) {
+        if ($deliveredCount == 0) {
             return 0;
         }
 
-        return $this->unsubscribeCount() / $delivered_count;
+        return $this->unsubscribeCount() / $deliveredCount;
     }
 
     /**
@@ -1468,7 +1326,7 @@ class Campaign extends Model
     public function cleanupFailedLog()
     {
         // clean up failed log so that they will be included in resend
-        $recipients = $this->trackingLogs()->where('status', SendingServer::DELIVERY_STATUS_FAILED);
+        $recipients = $this->trackingLogs()->failed();
         MailLog::warning('Resend to those who failed to deliver: '.$recipients->count());
         $recipients->delete();
     }
@@ -1725,19 +1583,19 @@ class Campaign extends Model
                 return $campaign->notDeliveredCount();
             },
             'ClickedRate' => function (&$campaign) {
-                return $campaign->clickedEmailsRate();
+                return $campaign->clickRate();
             },
             'UniqOpenRate' => function (&$campaign) {
-                return $campaign->openUniqRate();
+                return $campaign->openRate();
             },
             'UniqOpenCount' => function (&$campaign) {
                 return $campaign->openUniqCount();
             },
             'NotOpenRate' => function (&$campaign) {
-                return $campaign->notOpenRate(true);
+                return $campaign->notOpenRate();
             },
             'NotOpenCount' => function (&$campaign) {
-                return $campaign->notOpenCount(true);
+                return $campaign->notOpenCount();
             },
         ];
 
@@ -2302,225 +2160,6 @@ class Campaign extends Model
         } else {
             return [$result];
         }
-    }
-
-    public function makeSampleData($params = [])
-    {
-        $this->cleanSampleData();
-
-        $default = [
-            'unconfirmed' => 0.08,
-            'delivery_failed' => 0.1, // against all deivered emails
-            'open' => 0.45, // against delivery_success
-            'click' => 0.85, // against open
-            'unsubscribe' => 0.2, // against open
-            'bounce' => 0.05,
-            'feedback' => 0.05
-        ];
-
-        $params = array_merge($default, $params);
-
-        // Tracking log
-        $this->getPendingSubscribers(null, function ($subscribers, $page, $total) use (&$i, $params) {
-            if ($total == 0) {
-                throw new \Exception('No subscribers for campaign, are you sure mail list is set?');
-            }
-            MailLog::info("Fetching page $page (count: {$subscribers->count()})");
-
-            $i = 0;
-            foreach ($subscribers as $subscriber) {
-                $i += 1;
-                // Pick up an available sending server
-                // Throw exception in case no server available
-                $server = $this->pickSendingServer($this);
-                $msgId = StringHelper::generateMessageId(StringHelper::getDomainFromEmail($this->from_email));
-
-                $sent = [
-                    'status' => 'sent',
-                    'runtime_message_id' => $msgId
-                ];
-
-                $this->trackMessage($sent, $subscriber, $server, $msgId);
-
-                // additional log
-                MailLog::info("Sending to subscriber `{$subscriber->email}` ({$i}/{$total})");
-            }
-        });
-
-        echo "All tracking log count: ". $this->trackingLogs()->count()."\n";
-        // Failed tracking log
-        $failureCount = round($params['delivery_failed'] * $this->trackingLogs()->count());
-        $allLogs = $this->trackingLogs()->get()->map(function ($e) {
-            return $e->id;
-        })->toArray();
-        $failedLogs = array_values(array_intersect_key($allLogs, array_flip($this->arrayRandFixed($allLogs, $failureCount))));
-        echo "Failed log count: ".$this->trackingLogs()->whereIn('id', $failedLogs)->count()."\n";
-        $this->trackingLogs()->whereIn('id', $failedLogs)->update([
-            'status' => 'failed',
-            'error' => 'RFC8343: mailbox does not exist',
-        ]);
-
-        // Open log
-        $sentCount = $this->trackingLogs()->where('status', 'sent')->count();
-        $openCount = round($params['open'] * $sentCount);
-        $sentLogs = $this->trackingLogs()->where('status', 'sent')
-                         ->select('tracking_logs.id')
-                         ->get()->map(function ($e) {
-                             return $e->id;
-                         })->toArray();
-        $openLogs = array_values(array_intersect_key($sentLogs, array_flip($this->arrayRandFixed($sentLogs, $openCount))));
-        echo "Open log count: ".$openCount."\n";
-        foreach ($this->trackingLogs()->whereIn('id', $openLogs)->get() as $r) {
-            $log = new \Acelle\Model\OpenLog();
-            $log->message_id = $r->message_id;
-            $location = \Acelle\Model\IpLocation::add(StringHelper::getRandomUSIpAddresses());
-            $log->ip_address = $location->ip_address;
-            $log->user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36';
-            $log->save();
-        }
-
-        // Open log
-        $clickCount = round($params['click'] * $openCount);
-
-        $openLogs = $this->trackingLogs()
-                         ->join('open_logs', 'tracking_logs.message_id', '=', 'open_logs.message_id')
-                         ->select('tracking_logs.id')
-                         ->get()->map(function ($e) {
-                             return $e->id;
-                         })->toArray();
-        $clickLogs = array_values(array_intersect_key($openLogs, array_flip($this->arrayRandFixed($openLogs, $clickCount))));
-        echo "Click log count: ".$this->trackingLogs()->whereIn('id', $clickLogs)->count()."\n";
-        foreach ($this->trackingLogs()->whereIn('id', $clickLogs)->get() as $r) {
-            $log = new \Acelle\Model\ClickLog();
-            $log->message_id = $r->message_id;
-            $location = \Acelle\Model\IpLocation::add(StringHelper::getRandomUSIpAddresses());
-            $log->ip_address = $location->ip_address;
-            $log->user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36';
-            $log->url = 'https://app.clickfunnels.com/signupflow';
-            $result = $log->save();
-        }
-
-        // Unsubscribe log
-        $unsubscribeCount = round($params['unsubscribe'] * $openCount);
-        $unsubscribeLogs = array_values(array_intersect_key($openLogs, array_flip($this->arrayRandFixed($openLogs, $unsubscribeCount))));
-        echo "Unsubscribe log count: ".$unsubscribeCount."\n";
-        foreach ($this->trackingLogs()->whereIn('id', $unsubscribeLogs)->get() as $r) {
-            // Unsubscribe log
-            $log = new \Acelle\Model\UnsubscribeLog();
-            $log->message_id = $r->message_id;
-            $location = \Acelle\Model\IpLocation::add(StringHelper::getRandomUSIpAddresses());
-            $log->ip_address = $location->ip_address;
-            $log->user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36';
-            $log->save();
-        }
-
-
-        // Bounce log
-        $bounceCount = round($params['bounce'] * $sentCount);
-        $bounceLogs = array_values(array_intersect_key($sentLogs, array_flip($this->arrayRandFixed($sentLogs, $bounceCount))));
-        echo "Bounce log count: ".$bounceCount."\n";
-        foreach ($this->trackingLogs()->whereIn('id', $bounceLogs)->get() as $r) {
-            // Unsubscribe log
-            $bounceLog = new BounceLog();
-            $bounceLog->runtime_message_id = $r->message_id;
-            $bounceLog->message_id = $r->message_id;
-            // SendGrid only notifies in case of HARD bounce
-            $bounceLog->bounce_type = BounceLog::HARD;
-            $bounceLog->raw = 'RFC308433: mailbox is no longer valid or blocked';
-            $bounceLog->save();
-
-            // add subscriber's email to blacklist
-            $subscriber = $bounceLog->findSubscriberByRuntimeMessageId();
-            $subscriber->sendToBlacklist($bounceLog->raw);
-        }
-
-        // Bounce log
-        $feedbackCount = round($params['feedback'] * $sentCount);
-        $feedbackLogs = array_values(array_intersect_key($sentLogs, array_flip($this->arrayRandFixed($sentLogs, $feedbackCount))));
-        echo "Feedback log count: ".$feedbackCount."\n";
-        foreach ($this->trackingLogs()->whereIn('id', $feedbackLogs)->get() as $r) {
-            // Unsubscribe log
-            $feedback = new FeedbackLog();
-            $feedback->runtime_message_id = $r->message_id;
-            $feedback->message_id = $r->message_id;
-            $feedback->feedback_type = 'spam';
-            $feedback->raw_feedback_content = 'RFC308433: mailbox is no longer valid or blocked';
-            $feedback->save();
-
-            // add subscriber's email to blacklist
-            $subscriber = $feedback->findSubscriberByRuntimeMessageId();
-            $subscriber->markAsSpamReported($feedback->raw);
-        }
-
-        // Adjust date/time
-        $sample = [
-            'subscriber_first_created' => '6 months ago',
-            'subscriber_last_created' => '2 day ago',
-            'first_open' => '24 hours ago',
-            'last_open' => '2 minutes ago',
-        ];
-
-        foreach ($sample as $key => $value) {
-            $sample[$key] = new Carbon($value);
-        }
-
-        DB::update(sprintf(
-            'UPDATE %s SET created_at = TIMESTAMPADD(SECOND, FLOOR(RAND() * TIMESTAMPDIFF(SECOND, \'%s\', \'%s\')), \'%s\')',
-            table('subscribers'),
-            $sample['subscriber_first_created'],
-            $sample['subscriber_last_created'],
-            $sample['subscriber_first_created']
-        ));
-
-        DB::update(sprintf(
-            'UPDATE %s SET created_at = TIMESTAMPADD(SECOND, FLOOR(RAND() * TIMESTAMPDIFF(SECOND, \'%s\', \'%s\')), \'%s\')',
-            table('open_logs'),
-            $sample['first_open'],
-            $sample['last_open'],
-            $sample['first_open']
-        ));
-
-        DB::update(sprintf(
-            'UPDATE %s SET created_at = TIMESTAMPADD(SECOND, FLOOR(RAND() * TIMESTAMPDIFF(SECOND, \'%s\', \'%s\')), \'%s\')',
-            table('click_logs'),
-            $sample['first_open'],
-            $sample['last_open'],
-            $sample['first_open']
-        ));
-
-        DB::update(sprintf(
-            'UPDATE %s SET created_at = TIMESTAMPADD(SECOND, FLOOR(RAND() * TIMESTAMPDIFF(SECOND, \'%s\', \'%s\')), \'%s\')',
-            table('bounce_logs'),
-            $sample['first_open'],
-            $sample['last_open'],
-            $sample['first_open']
-        ));
-
-        DB::update(sprintf(
-            'UPDATE %s SET created_at = TIMESTAMPADD(SECOND, FLOOR(RAND() * TIMESTAMPDIFF(SECOND, \'%s\', \'%s\')), \'%s\')',
-            table('feedback_logs'),
-            $sample['first_open'],
-            $sample['last_open'],
-            $sample['first_open']
-        ));
-
-        DB::update(sprintf(
-            'UPDATE %s SET created_at = TIMESTAMPADD(SECOND, FLOOR(RAND() * TIMESTAMPDIFF(SECOND, \'%s\', \'%s\')), \'%s\')',
-            table('unsubscribe_logs'),
-            $sample['first_open'],
-            $sample['last_open'],
-            $sample['first_open']
-        ));
-
-        // Finalize
-        $this->updateCache();
-    }
-
-    public function cleanSampleData()
-    {
-        $this->defaultMailList->subscribers()->update(['status' => 'subscribed']);
-        Blacklist::query()->delete();
-        $this->trackingLogs()->delete();
     }
 
     public function wooTransform($body)

@@ -22,7 +22,7 @@
             <span class="fw-600">
                 {{ trans('messages.open_uniq_per_total', [
                     'count' => $campaign->readCache('UniqOpenCount'),
-                    'total' => $campaign->openCount(),
+                    'total' => $campaign->uniqueOpenCount(),
                     'delivered' => $campaign->deliveredCount(),
                 ]) }}
             </span><span class="px-2"> · </span>
@@ -50,7 +50,7 @@ arrow_forward
             {{ trans('messages.clicked_emails_rate') }}
             <span class="fw-600">
                 {{ trans('messages.count_clicked_opened', [
-                    'count' => $campaign->clickedEmailsCount(),
+                    'count' => $campaign->uniqueClickCount(),
                     'total' => $campaign->openUniqCount()
                 ]) }}
             </span><span class="px-2"> · </span>

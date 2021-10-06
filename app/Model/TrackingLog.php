@@ -28,6 +28,7 @@ class TrackingLog extends Model
 {
     public const STATUS_SENT = 'sent';
     public const STATUS_FAILED = 'failed';
+
     public const STATUS_BOUNCED = 'bounced';
     public const STATUS_FEEDBACK_ABUSE = 'feedback-abuse';
     public const STATUS_FEEDBACK_SPAM = 'feedback-spam';
@@ -110,6 +111,16 @@ class TrackingLog extends Model
         }
 
         return $query;
+    }
+
+    public function scopeSent($query)
+    {
+        return $query->where('status', self::STATUS_SENT);
+    }
+
+    public function scopeFailed($query)
+    {
+        return $query->where('status', self::STATUS_FAILED);
     }
 
     /**
