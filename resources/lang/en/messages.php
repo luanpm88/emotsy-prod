@@ -3922,6 +3922,7 @@
   'website.from_list' => 'from',
   'websites.deleted' => ':deleted/:total website(s) were successfully deleted',
   'websites.disconnected' => ':done/:total website(s) were successfully disconnected',
+  'website.disconnected' => 'The website was successfully disconnected',
   'website.enter_url' => 'Enter your site URL',
   'website.get_custom_website_code' => 'Get custom website code',
   'website.connect_to_your_website' => 'Connect your website',
@@ -3986,4 +3987,5 @@
   'form.from_site' => 'site',
   'form.all_sites' => 'All sites',
   'email_verification.statistics' => 'Statistics',
+  'website.get_code' => 'Get code',
 ) ?>

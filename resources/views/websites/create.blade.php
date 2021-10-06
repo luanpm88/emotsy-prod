@@ -73,7 +73,7 @@
 
                 <div class="mt-4">
                     <button type="submit" class="btn btn-secondary">
-                        {{ trans('messages.save') }}
+                        {{ trans('messages.website.get_code') }}
                     </button>
                     <a href="{{ action('WebsiteController@index') }}" class="btn btn-link ms-2">
                         {{ trans('messages.cancel') }}
