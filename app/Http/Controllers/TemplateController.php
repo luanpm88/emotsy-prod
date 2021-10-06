@@ -42,7 +42,7 @@ class TemplateController extends Controller
         $templates = $templates->search($request->keyword)
             ->email()
             ->categoryUid($request->category_uid)
-            ->notAssociated()
+            ->notPreserved()
             ->orderBy($request->sort_order, $request->sort_direction)
             ->paginate($request->per_page ? $request->per_page : ($view == 'grid' ? 8 : 15));
 

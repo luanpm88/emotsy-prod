@@ -353,7 +353,7 @@ class CampaignController extends Controller
                 ->orWhere('customer_id', '=', $request->user()->customer->id);
         }
 
-        $templates = $templates->notAssociated()->search($request->keyword);
+        $templates = $templates->notPreserved()->search($request->keyword);
 
         // category id
         if ($request->category_uid) {

@@ -164,7 +164,7 @@ class SearchController extends Controller
                 'names' => [trans('messages.forms')],
                 'url' => action('FormController@create'),
                 'keywords' => [
-                    
+
                 ],
             ],
             [
@@ -248,7 +248,7 @@ class SearchController extends Controller
         $templates = $customer->templates()
             ->email()
             ->search($request->keyword)
-            ->notAssociated()
+            ->notPreserved()
             ->orderBy('templates.name', 'asc')
             ->paginate($count);
 

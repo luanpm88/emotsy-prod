@@ -105,7 +105,7 @@ class Template extends Model
     }
 
     // Templates that are not associated to any email or campaign
-    public function scopeNotAssociated($query)
+    public function scopeNotPreserved($query)
     {
         $query->whereNotIn('id', function ($q) {
             $q->select('template_id')->from('emails')->whereNotNull('template_id');
@@ -113,6 +113,10 @@ class Template extends Model
 
         $query->whereNotIn('id', function ($q) {
             $q->select('template_id')->from('campaigns')->whereNotNull('template_id');
+        });
+
+        $query->whereNotIn('id', function ($q) {
+            $q->select('template_id')->from('forms')->whereNotNull('template_id');
         });
     }
 
@@ -1201,7 +1205,7 @@ class Template extends Model
                 'name' => 'Color Print - Your Print Companion',
                 'dir' => database_path('templates/featured/005-blue/5d7b526bbfd4c'),
                 'category' => $categoryFeatured,
-                'builder' => true,            
+                'builder' => true,
                 'name' => 'News Digest',
                 'dir' => database_path('templates/featured/000-04-rss-feed/6037a2356820zs'),
                 'category' => $categoryFeatured,
@@ -1369,7 +1373,7 @@ class Template extends Model
             $template->categories()->attach($meta['category']->id);
         }
     }
-    
+
     public function urlTagsDropdown()
     {
         return [
