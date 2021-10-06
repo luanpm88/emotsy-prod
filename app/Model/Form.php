@@ -164,16 +164,6 @@ class Form extends Model
 
         $tags = [
             ['name' => 'LIST_NAME', 'required' => false],
-            ['name' => 'CONTACT_NAME', 'required' => false],
-            ['name' => 'CONTACT_COUNTRY', 'required' => false],
-            ['name' => 'CONTACT_STATE', 'required' => false],
-            ['name' => 'CONTACT_CITY', 'required' => false],
-            ['name' => 'CONTACT_ADDRESS_1', 'required' => false],
-            ['name' => 'CONTACT_ADDRESS_2', 'required' => false],
-            ['name' => 'CONTACT_PHONE', 'required' => false],
-            ['name' => 'CONTACT_URL', 'required' => false],
-            ['name' => 'CONTACT_EMAIL', 'required' => false],
-            ['name' => 'CONTACT_ZIP', 'required' => false],
             ['name' => 'CURRENT_YEAR', 'required' => false],
             ['name' => 'CURRENT_MONTH', 'required' => false],
             ['name' => 'CURRENT_DAY', 'required' => false],
@@ -199,16 +189,6 @@ class Form extends Model
         
         // BAISC INFO
         $content = str_replace('{LIST_NAME}', $this->mailList->name, $content);
-        $content = str_replace('{CONTACT_NAME}', $this->mailList->contact->company, $content);
-        $content = str_replace('{CONTACT_STATE}', $this->mailList->contact->state, $content);
-        $content = str_replace('{CONTACT_ADDRESS_1}', $this->mailList->contact->address_1, $content);
-        $content = str_replace('{CONTACT_ADDRESS_2}', $this->mailList->contact->address_2, $content);
-        $content = str_replace('{CONTACT_CITY}', $this->mailList->contact->city, $content);
-        $content = str_replace('{CONTACT_ZIP}', $this->mailList->contact->zip, $content);
-        $content = str_replace('{CONTACT_COUNTRY}', $this->mailList->contact->country->name, $content);
-        $content = str_replace('{CONTACT_PHONE}', $this->mailList->contact->phone, $content);
-        $content = str_replace('{CONTACT_EMAIL}', $this->mailList->contact->email, $content);
-        $content = str_replace('{CONTACT_URL}', $this->mailList->contact->url, $content);
         $content = str_replace('{CURRENT_YEAR}', date('Y'), $content);
         $content = str_replace('{CURRENT_MONTH}', date('m'), $content);
         $content = str_replace('{CURRENT_DAY}', date('d'), $content);
