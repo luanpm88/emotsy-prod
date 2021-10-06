@@ -27,7 +27,6 @@ class WebsiteController extends Controller
                     'errors' => $validator->errors(),
                 ], 400);
             }
-
             
             return redirect()->action('WebsiteController@show', [
                 'uid' => $website->uid,

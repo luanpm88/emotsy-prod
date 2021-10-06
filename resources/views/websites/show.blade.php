@@ -46,9 +46,15 @@
                 <div>
                     <h3 class="mb-1">{{ $website->title }}</h3>
                     <p class="text-muted mb-0">{{ $website->url }}</p>
+                    <div class="text-muted2 list-status pull-left mt-2">
+                        <span class="label label-flat bg-{{ $website->status }}">{{ trans('messages.website.status.' . $website->status) }}</span>
+                    </div>
+                    <div class="mt-4">
+                        
+                    </div>
                 </div>
                 <div class="ms-auto">
-                    <a href="{{ action('WebsiteController@index') }}" class="btn btn-default ms-2 fw-600 px-4 py-2">
+                    <a href="{{ action('WebsiteController@index') }}" class="btn btn-default ms-1 fw-600 px-4">
                         {{ trans('messages.manage_your_sites') }}
                     </a>
                 </div>
@@ -60,20 +66,108 @@
     <p class="mb-2">
         {{ trans('messages.website.copy_code.intro') }}
     </p>
-    <div class="d-flex align-items-center">
-        <div class="px-4 py-2 border rounded-3 shadow-sm bg-light">
+    <div class="d-flex align-items-top">
+        <div class="px-4 py-2 border rounded-3 shadow-sm bg-light me-3" style="max-width:600px">
             <pre class="m-0"><code class="connect-code">&lt;script id="AcelleConnectScript" type="text/javascript" src="{{ action('WebsiteController@connectJs', [
                 'uid' => $website->uid,
             ]) }}"&gt;&lt;/script&gt;</code></pre>
         </div>
+        <div class="">
+            <a href="javascript:;" class="btn btn-secondary copy-connect-js">
+                {{ trans('messages.website.copy_code') }}
+            </a>
+        </div>
     </div>
-    <div class="mt-2 mb-2">
-        <a href="javascript:;" class="btn btn-secondary copy-connect-js">
-            {{ trans('messages.website.copy_code') }}
-        </a>
+
+    <div class="mt-4">
+        @if (Auth::user()->customer->can('disconnect', $website))
+            <a href="{{ action('WebsiteController@disconnect', [
+                'uids' => [$website->uid],
+            ]) }}"
+                role="button" class="btn btn-secondary disconnect-site">
+                <span class="material-icons-outlined me-1">
+                    pause_circle
+                    </span> {{ trans('messages.website.disconnect') }}
+            </a>
+        @endif
+        @if (Auth::user()->customer->can('connect', $website))
+            <a href="{{ action('WebsiteController@connect', $website->uid) }}"
+                role="button" class="btn btn-primary connect-site">
+                <span class="material-icons-outlined me-1">
+                    pause_circle
+                    </span> {{ trans('messages.website.check_connection') }}
+            </a>
+        @endif
     </div>
     
     <script>
+        var WebsitesShow = {
+            connect: function(url) {
+                addMaskLoading();
+                $.ajax({
+                    url : url,
+                    type: "POST",
+                    data: {
+                        _token: CSRF_TOKEN,
+                    },
+                    globalError: false
+                }).fail(function(res) {
+                    switch (res.status) {
+                        case 400:
+                            new Dialog('alert', {
+                                title: '{{ trans('messages.notify.error') }}',
+                                message: JSON.parse(res.responseText).error
+                            });
+                            break;
+                                alert(res.responseText);
+                        default:
+                    }
+                    removeMaskLoading();
+                }).done(function(res) {
+                    new Dialog('alert', {
+                        title: '',
+                        message: `{!! trans('messages.website.new_added_intro') !!}`,
+                        ok: function() {
+                            location.reload();
+                        }
+                    })
+
+                    removeMaskLoading();
+                });
+            },
+
+            disconnect: function(url) {
+                addMaskLoading();
+                $.ajax({
+                    url : url,
+                    type: "POST",
+                    data: {
+                        _token: CSRF_TOKEN,
+                    }
+                }).fail(function(res) {
+                    switch (res.status) {
+                        case 400:
+                            new Dialog('alert', {
+                                title: '{{ trans('messages.notify.error') }}',
+                                message: JSON.parse(jqXHR.responseText).error
+                            });
+                            break;
+                        default:
+                    }
+                    removeMaskLoading();
+                }).done(function(res) {
+                    new Dialog('alert', {
+                        title: '',
+                        message: `{!! trans('messages.website.disconnected') !!}`,
+                        ok: function() {
+                            location.reload();
+                        }
+                    })
+
+                    removeMaskLoading();
+                });
+            }
+        }
         $(function() {
             $('.copy-connect-js').on('click', function() {
                 copyToClipboard($('.connect-code').text());
@@ -83,12 +177,19 @@
                 });
             });
 
-            @if (request()->new_site)
-                new Dialog('alert', {
-                    title: '',
-                    message: `{!! trans('messages.website.new_added_intro') !!}`
-                })
-            @endif
+            $('.connect-site').on('click', function(e) {
+                e.preventDefault();
+                var url = $(this).attr('href');
+
+                WebsitesShow.connect(url);
+            });
+
+            $('.disconnect-site').on('click', function(e) {
+                e.preventDefault();
+                var url = $(this).attr('href');
+
+                WebsitesShow.disconnect(url);
+            });
         });
     </script>
         
