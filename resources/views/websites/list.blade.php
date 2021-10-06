@@ -64,7 +64,7 @@
                             role="button" class="btn btn-secondary connect-site">
                             <span class="material-icons-outlined me-1">
                                 pause_circle
-                                </span> {{ trans('messages.website.connect') }}
+                                </span> {{ trans('messages.website.check_connection') }}
                         </a>
                     @endif
 
@@ -74,14 +74,6 @@
                         <div class="btn-group">
                             <button role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"></button>
                             <ul class="dropdown-menu dropdown-menu-end">
-                                @if (Auth::user()->customer->can('delete', $website))
-                                    <li><a href="{{ action('WebsiteController@check', $website->uid) }}"
-                                        role="button" class="dropdown-item check-site-connect">
-                                        <span class="material-icons-round me-1">
-                                            task_alt
-                                            </span> {{ trans('messages.website.check_connection') }}
-                                    </a></li>
-                                @endif
                                 @if (Auth::user()->customer->can('delete', $website))
                                     <li><a
                                         class="dropdown-item list-action-single"
