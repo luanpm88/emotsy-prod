@@ -20,7 +20,7 @@
 @section('content')
     <div class="row">
         <div class="col-md-8">
-            <div class="d-flex align-items-top mb-5">
+            <div class="d-flex align-items-center mb-5">
                 <div class="me-4">
                     <svg width="100px" height="100px" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" width="6.72in" height="6.72in" style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd" viewBox="0 0 6720 6720">
                         <defs>
@@ -50,31 +50,13 @@
                         <span class="label label-flat bg-{{ $website->status }}">{{ trans('messages.website.status.' . $website->status) }}</span>
                     </div>
                     <div class="mt-4">
-                        @if (Auth::user()->customer->can('disconnect', $website))
-                            <a href="{{ action('WebsiteController@disconnect', [
-                                'uids' => [$website->uid],
-                            ]) }}"
-                                role="button" class="btn btn-secondary disconnect-site">
-                                <span class="material-icons-outlined me-1">
-                                    pause_circle
-                                    </span> {{ trans('messages.website.disconnect') }}
-                            </a>
-                        @endif
-                        @if (Auth::user()->customer->can('connect', $website))
-                            <a href="{{ action('WebsiteController@connect', $website->uid) }}"
-                                role="button" class="btn btn-primary connect-site">
-                                <span class="material-icons-outlined me-1">
-                                    pause_circle
-                                    </span> {{ trans('messages.website.check_connection') }}
-                            </a>
-                        @endif
-                        <a href="{{ action('WebsiteController@index') }}" class="btn btn-default ms-1 fw-600 px-4">
-                            {{ trans('messages.manage_your_sites') }}
-                        </a>
+                        
                     </div>
                 </div>
                 <div class="ms-auto">
-                    
+                    <a href="{{ action('WebsiteController@index') }}" class="btn btn-default ms-1 fw-600 px-4">
+                        {{ trans('messages.manage_your_sites') }}
+                    </a>
                 </div>
             </div>
         </div>
@@ -95,6 +77,27 @@
                 {{ trans('messages.website.copy_code') }}
             </a>
         </div>
+    </div>
+
+    <div class="mt-4">
+        @if (Auth::user()->customer->can('disconnect', $website))
+            <a href="{{ action('WebsiteController@disconnect', [
+                'uids' => [$website->uid],
+            ]) }}"
+                role="button" class="btn btn-secondary disconnect-site">
+                <span class="material-icons-outlined me-1">
+                    pause_circle
+                    </span> {{ trans('messages.website.disconnect') }}
+            </a>
+        @endif
+        @if (Auth::user()->customer->can('connect', $website))
+            <a href="{{ action('WebsiteController@connect', $website->uid) }}"
+                role="button" class="btn btn-primary connect-site">
+                <span class="material-icons-outlined me-1">
+                    pause_circle
+                    </span> {{ trans('messages.website.check_connection') }}
+            </a>
+        @endif
     </div>
     
     <script>
