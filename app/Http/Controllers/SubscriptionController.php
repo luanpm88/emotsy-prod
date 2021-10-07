@@ -119,7 +119,7 @@ class SubscriptionController extends Controller
 
         // get invoice
         $invoice = $customer->invoices()->where('uid', '=', $request->invoice_uid)->first();
-
+        
         if (!$invoice || !$invoice->isNew()) {
             return redirect()->action('SubscriptionController@index');
         }
@@ -129,7 +129,14 @@ class SubscriptionController extends Controller
                 return view('subscription.pending', [
                     'invoice' => $invoice,
                 ]);
+
+            // go to billing info + payment
             } else {
+                // no billing information
+                if (!$invoice->hasBillingInformation()) {
+                    return redirect()->action('SubscriptionController@billingInformation');
+                }
+
                 if ($invoice->isFree()) {
                     return view('subscription.payment', [
                         'invoice' => $invoice,
@@ -212,6 +219,9 @@ class SubscriptionController extends Controller
                     'errors' => $validator->errors(),
                 ], 400);
             }
+
+            // update current billing information
+            $customer->updateBillingInformationFromInvoice($invoice);
 
             $request->session()->flash('alert-success', trans('messages.billing_address.updated'));
 
