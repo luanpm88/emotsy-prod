@@ -59,24 +59,7 @@ class ProductController extends Controller
      */
     public function json(Request $request)
     {
-        // listing product for
-        if ($request->action == 'list') {
-            return response()->json(
-                Product::search($request)->paginate($request->per_page)
-                    ->map(function ($product, $key) {
-                        return [
-                            'id' => $product->uid,
-                            'name' => $product->title,
-                            'price' => format_price($product->price),
-                            'image' => $product->getImageUrl(),
-                            'description' => substr(strip_tags($product->description), 0, 100),
-                            'link' => action('ProductController@index'),
-                        ];
-                    })->toArray()
-            );
-        }
-
-        // return a product info
+        // single product info
         if ($request->product_id) {
             $product = Product::findByUid($request->product_id);
 
@@ -90,7 +73,8 @@ class ProductController extends Controller
             ]);
         }
 
-        $results = Product::search($request)->paginate($request->per_page)
+        // product list
+        $results = Product::search($request->keyword)->paginate($request->per_page)
         ->map(function ($item, $key) {
             return ['text' => $item->title, 'id' => $item->uid];
         })->toArray();
