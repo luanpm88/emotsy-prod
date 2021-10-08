@@ -1989,5 +1989,7 @@ class Customer extends Model
     {
         $customer = new self();
         $customer->menu_layout = \Acelle\Model\Setting::get('layout.menu_bar');
+
+        return $customer;
     }
 }
