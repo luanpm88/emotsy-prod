@@ -113,22 +113,42 @@
             currentEditor.select(_this);
         }
 
-        getControls() {
+        addEvents() {
             var element = this;
+            var id = element.obj.attr('id');
 
-            // preview
-            element.obj.find('.preview-but').on('click', function() {
-                element.setOptions({
-                    preview: 'yes'
-                });
-            });
+            if (typeof(window.productListWidgetEvents) == 'undefined') {
+                window.productListWidgetEvents = [];
+            }
 
-            // unpreview
-            element.obj.find('.unpreview-but').on('click', function() {
-                element.setOptions({
-                    preview: 'no'
+            if (typeof(window.productListWidgetEvents[id]) == 'undefined') {
+                window.productListWidgetEvents[id] = true;
+
+                // preview
+                element.obj.find('.preview-but').on('click', function() {
+                    element.setOptions({
+                        preview: 'yes'
+                    });
+
+                    console.log('preview');
                 });
-            });
+
+                // unpreview
+                element.obj.find('.unpreview-but').on('click', function() {
+                    element.setOptions({
+                        preview: 'no'
+                    });
+
+                    console.log('unpreview');
+                });
+            }
+        }
+
+        getControls() {
+            var element = this;   
+            
+            // events
+            this.addEvents();
 
             return [
                 new ProductListControl('{{ trans('messages.woo_items.number_of_items') }}', element.getOptions(), {
