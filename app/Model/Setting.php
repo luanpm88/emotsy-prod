@@ -553,6 +553,12 @@ class Setting extends Model
                 'type' => 'text',
                 'not_required' => true,
             ],
+            'layout.menu_bar' => [
+                'cat' => 'others',
+                'value' => 'left',
+                'type' => 'text',
+                'not_required' => true,
+            ],
         ];
     }
 
