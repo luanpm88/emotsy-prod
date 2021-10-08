@@ -54,21 +54,7 @@ class ProductController extends Controller
 
     public function widgetProductList(Request $request)
     {
-        // return response()->json(
-        //     Product::search($request->keyword)
-        //         ->paginate($request->per_page)
-        //         ->map(function ($product, $key) {
-        //             return [
-        //                 'id' => $product->uid,
-        //                 'name' => $product->title,
-        //                 'price' => format_price($product->price),
-        //                 'image' => $product->getImageUrl(),
-        //                 'description' => substr(strip_tags($product->description), 0, 100),
-        //                 'link' => action('ProductController@index'),
-        //             ];
-        //         })->toArray()
-        // );
-
+        sleep(3);
         return Product::generateWidgetProductListHtmlContent($request->all());
     }
 
