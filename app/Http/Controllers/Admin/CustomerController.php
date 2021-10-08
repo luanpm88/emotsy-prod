@@ -68,7 +68,7 @@ class CustomerController extends Controller
      */
     public function create(Request $request)
     {
-        $customer = new \Acelle\Model\Customer();
+        $customer = \Acelle\Model\Customer::newCustomer();
         $customer->status = 'active';
         $customer->uid = '0';
 
@@ -101,7 +101,7 @@ class CustomerController extends Controller
     {
         // Get current user
         $current_user = $request->user();
-        $customer = new \Acelle\Model\Customer();
+        $customer = \Acelle\Model\Customer::newCustomer();
         $contact = new \Acelle\Model\Contact();
 
         // authorize
