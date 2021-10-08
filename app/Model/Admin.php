@@ -361,7 +361,7 @@ class Admin extends Model
      */
     public function createCustomerAccount()
     {
-        $customer = \Acelle\Model\Customer::newInstance();
+        $customer = \Acelle\Model\Customer::newCustomer();
         $customer->admin_id = $this->id;
         $customer->language_id = $this->language_id;
         // [moved] $customer->first_name = $this->first_name;
