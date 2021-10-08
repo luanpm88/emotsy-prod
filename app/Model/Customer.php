@@ -1984,4 +1984,10 @@ class Customer extends Model
 
         $billingAddress->save();
     }
+
+    public static function newInstance()
+    {
+        $customer = new self();
+        $customer->menu_layout = \Acelle\Model\Setting::get('layout.menu_bar');
+    }
 }

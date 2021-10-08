@@ -87,7 +87,7 @@ class UserController extends Controller
         }
 
         // Initiate customer object for filling the form
-        $customer = new Customer();
+        $customer = Customer::newInstance();
         $user = new User();
         if (!empty($request->old())) {
             $customer->fill($request->old());
