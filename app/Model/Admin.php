@@ -572,4 +572,12 @@ class Admin extends Model
     {
         return ($this->menu_layout == 'left' ? 'left' : 'top');
     }
+
+    public static function newAdmin()
+    {
+        $admin = new self();
+        $admin->menu_layout = \Acelle\Model\Setting::get('layout.menu_bar');
+
+        return $admin;
+    }
 }

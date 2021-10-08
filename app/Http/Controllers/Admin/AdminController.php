@@ -62,7 +62,7 @@ class AdminController extends Controller
      */
     public function create(Request $request)
     {
-        $admin = new \Acelle\Model\Admin();
+        $admin = \Acelle\Model\Admin::newAdmin();
         $admin->status = 'active';
         $admin->uid = '0';
         // User info
@@ -95,7 +95,7 @@ class AdminController extends Controller
     {
         // Get current user
         $current_user = $request->user();
-        $admin = new \Acelle\Model\Admin();
+        $admin = \Acelle\Model\Admin::newAdmin();
         $contact = new \Acelle\Model\Contact();
 
         // authorize
