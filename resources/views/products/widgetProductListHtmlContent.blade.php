@@ -2,7 +2,7 @@
     <div class="col-{{ 12/$options['cols'] }}">
         <div class="">
             <div class="img-col mb-3">
-                <div class="d-flex align-items-center justify-content-center" style="height: 200px;">
+                <div class="d-flex align-items-center justify-content-center" style="">
                     <a style="width:100%" href="#" class="mr-4">
                         <img width="100%" src="{{ $product->getImageUrl() }}" style="max-width:100%;" />
                     </a>
