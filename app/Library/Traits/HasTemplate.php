@@ -50,7 +50,7 @@ trait HasTemplate
         $this->template_id = $campaignTemplate->id;
         $this->save();
         $this->refresh();
-        if (\Schema::hasColumn($this->getTable(), 'plain')){ 
+        if (\Schema::hasColumn($this->getTable(), 'plain')){
             $this->updatePlainFromHtml();
         }
         if (method_exists($this, 'updateLinks')) {
@@ -375,7 +375,6 @@ trait HasTemplate
         $pipeline->add(new TransformTag($this, $subscriber, $msgId, $server));
         $pipeline->add(new InjectTrackingPixel($msgId));
         $pipeline->add(new TransformUrl($this->template, $msgId, $this->trackingDomain));
-        $pipeline->add(new TransformWidgets($this->template));
 
         // Actually push HTML to pipeline for processing
         $html = $pipeline->build()->process($baseHtml);
@@ -404,6 +403,7 @@ trait HasTemplate
             $pipeline->add(new AppendHtml($this->getHtmlFooter()));
             $pipeline->add(new ParseRss());
             $pipeline->add(new MakeInlineCss($this->template->findCssFiles()));
+            $pipeline->add(new TransformWidgets($this->template));
             // $pipeline->add(new TransformTag($this, $subscriber, $msgId, $server));
             // $pipeline->add(new InjectTrackingPixel($msgId));
             // $pipeline->add(new TransformUrl($this->template, $msgId, $this->trackingDomain));
