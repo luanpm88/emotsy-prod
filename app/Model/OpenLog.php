@@ -140,7 +140,11 @@ class OpenLog extends Model
         $log->save();
 
         if ($log->trackingLog && !is_null($log->trackingLog->campaign)) {
-            event(new CampaignUpdated($log->trackingLog->campaign));
+
+            if (!$log->trackingLog->campaign->isSending()) {
+                //echo 3;die;
+                event(new CampaignUpdated($log->trackingLog->campaign));
+            }
         }
     }
 
