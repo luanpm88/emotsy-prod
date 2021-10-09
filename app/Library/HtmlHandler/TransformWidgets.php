@@ -26,7 +26,7 @@ class TransformWidgets implements StageInterface
         $html = $this->transformProductWidget($html);
 
         // transform rss widget
-        // $html = $this->transformRssWidget($html);
+        $html = $this->transformRssWidget($html);
 
         return $html;
     }
