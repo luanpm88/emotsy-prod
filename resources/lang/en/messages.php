@@ -3868,4 +3868,5 @@
   'condition.wait_unit' => 'Time unit',
   'upgrade.uploading' => 'Uploading...',
   'email_verification.statistics' => 'Statistics',
+  'template.no_product_selected' => 'No product selected',
 ) ?>

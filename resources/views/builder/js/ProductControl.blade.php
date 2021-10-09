@@ -9,10 +9,10 @@
                         <div class="widget-section d-flex align-items-center pr-3">
                             <div class="label mr-auto">{{ trans('messages.woo_item.product') }}</div>
                             <div class="d-flex align-items-center">
-                                <a href="javascript:;" class="btn btn-default btn-widget-preview mr-1">
+                                <a href="javascript:;" class="btn btn-default but-toggle btn-widget-preview mr-1">
                                     <span class="material-icons-outlined">visibility</span>
                                 </a>
-                                <a href="javascript:;" class="btn btn-default btn-widget-unpreview mr-1">
+                                <a href="javascript:;" class="btn btn-default but-toggle btn-widget-unpreview mr-1">
                                     <span class="material-icons-outlined">visibility_off</span>
                                 </a>
                                 <select class="product_id form-control">
@@ -52,13 +52,10 @@
                 $(thisControl.selector).find('.product_id').val(thisControl.value.id);
             }
 
-            // 
-            thisControl.tooglePreview(thisControl.value.preview);
-
             // select2 control
             $(thisControl.selector).find('.product_id').select2({
                 placeholder: 'Select product',
-                allowClear: true,
+                allowClear: false,
                 width: 'resolve',
                 ajax: {
                     url: url,
@@ -97,58 +94,15 @@
                 display = thisControl.value.display;
             }
             $(thisControl.selector).find('.display-option').val(display);
-        }
 
-        tooglePreview(value) {
-            var thisControl = this;
-
-            if (!$(thisControl.selector).find('.product_id').val()) {
-                $(thisControl.selector).find('.btn-widget-preview').hide();
-                $(thisControl.selector).find('.btn-widget-unpreview').hide();                    
-                return;
-            }
-
-            if (value && value == 'yes') {
+            // preview
+            $(thisControl.selector).find('.but-toggle').hide();
+            if (thisControl.value.id != '' && thisControl.value.preview == 'yes') {
                 $(thisControl.selector).find('.btn-widget-unpreview').show();
-                $(thisControl.selector).find('.btn-widget-preview').hide();
-            } else {
+            }
+            if (thisControl.value.id != '' && thisControl.value.preview == 'no') {
                 $(thisControl.selector).find('.btn-widget-preview').show();
-                $(thisControl.selector).find('.btn-widget-unpreview').hide();
             }
-        }
-
-        update() {
-            var thisControl = this;
-
-            if ($(thisControl.selector).find('.product_id').val()) {
-                var url = '{{ action('ProductController@widgetProduct') }}';
-                $.ajax({
-                    method: "GET",
-                    url: url,
-                    data: {
-                        product_id: $(thisControl.selector).find('.product_id').val()
-                    }
-                })
-                .done(function( data ) {
-                    thisControl.callback.updateId(data.id);                        
-                    thisControl.callback.updateName(data.name);
-                    {{-- thisControl.callback.updateImage(data.image);
-                    thisControl.callback.updateDescription(data.description);
-                    thisControl.callback.updateLink(data.link);
-                    thisControl.callback.updatePrice(data.price); --}}
-
-                    thisControl.callback.preview(function() {
-                        thisControl.tooglePreview('yes');
-                    });  
-                });                    
-            } else {
-                thisControl.callback.updateId('');                    
-                thisControl.callback.updateName('');
-
-                thisControl.callback.unpreview();
-            }
-
-            thisControl.tooglePreview(thisControl.value.preview);
         }
 
         afterRender() {
@@ -156,26 +110,32 @@
 
             // copy url
             $(thisControl.selector).find('.product_id').on('change', function(e) {
-                thisControl.update();
+                console.log($(this).find('option:selected'));
+                thisControl.callback.setOptions({
+                    id: $(this).val(),
+                    name: $(this).find('option:selected').html()
+                });
             });
             
             // preview
             $(thisControl.selector).find('.btn-widget-preview').on('click', function(e) {
-                thisControl.callback.preview(function() {
-                    thisControl.tooglePreview('yes');
-                });                        
+                thisControl.callback.setOptions({
+                    preview: 'yes',
+                });                      
             });
 
             // unpreview
             $(thisControl.selector).find('.btn-widget-unpreview').on('click', function(e) {
-                thisControl.callback.unpreview(function() {
-                    thisControl.tooglePreview('no');
+                thisControl.callback.setOptions({
+                    preview: 'no',
                 });
             });
             
             // display
             $(thisControl.selector).find('.display-option').on('change', function(e) {
-                thisControl.callback.display($(this).val());
+                thisControl.callback.setOptions({
+                    display: $(this).val(),
+                });
             });
 
             // get values

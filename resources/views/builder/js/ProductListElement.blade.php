@@ -36,7 +36,8 @@
 
         addLoadingEffect() {
             var _this = this;
-            var url = '{{ action('ProductController@widgetProductList') }}';
+
+            this.removeLoadingEffect();
 
             _this.obj.addClass('ace-loading');
             _this.obj.append(`<div class="ace-loader"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="margin: auto; background-image: none; display: block; shape-rendering: auto;" width="200px" height="200px" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid">
@@ -75,8 +76,6 @@
                 _this.getContainer().find('products').html(data);
 
                 currentEditor.select(_this);
-
-                _this.obj.removeClass('ace-loading');
 
                 _this.removeLoadingEffect();
             });         
@@ -173,6 +172,13 @@
                     });
 
                     console.log('unpreview');
+                });
+
+                // before save
+                currentEditor.addBeforeSaveEvent(function() {
+                    element.setOptions({
+                        preview: 'no'
+                    });
                 });
             }
         }
