@@ -179,9 +179,6 @@ Route::group(['middleware' => ['not_installed']], function () {
 
     // Campaign test links
     Route::get('campaigns/test/{message}', 'CampaignController@notification')->name('campaign_message');
-
-    // RSS
-    Route::get('templates/rss/parse', 'TemplateController@parseRss');
 });
 
 Route::group(['middleware' => ['not_installed', 'auth']], function () {
@@ -402,6 +399,9 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::resource('templates', 'TemplateController');
     Route::get('templates/{uid}/edit', 'TemplateController@edit');
     Route::patch('templates/{uid}/update', 'TemplateController@update');
+
+    // RSS
+    Route::get('templates/rss/parse', 'TemplateController@parseRss');
 
     // Campaign
     Route::post('campaigns/{uid}/custom-plain/off', 'CampaignController@customPlainOff');
