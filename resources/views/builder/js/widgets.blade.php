@@ -7,3 +7,6 @@
 @include('builder.js.ProductListElement')
 @include('builder.js.ProductListWidget')
 @include('builder.js.ProductWidget')
+@include('builder.js.RssElement')
+@include('builder.js.RssWidget')
+@include('builder.js.RssControl')

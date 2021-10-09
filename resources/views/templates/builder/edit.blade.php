@@ -55,7 +55,6 @@
     </style>
 
     @include('builder.js.widgets')
-    @include('helpers._builder_rss_widgets')
     
     <script>
         var CSRF_TOKEN = "{{ csrf_token() }}";
@@ -193,7 +192,6 @@
                     this.addContentWidget(new ProductWidget(), 0, 'ProductCommerce');
 
                     // Rss widget
-                    this.addCustomCss('{{ url('/core/css/builder_rss.css') }}');
                     this.addWidget(new RssWidget(), 'content', 3);
 
                     // add custom css

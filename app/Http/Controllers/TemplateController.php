@@ -590,21 +590,8 @@ class TemplateController extends Controller
     {
         // Parameters
         $url = 'http://rss.cnn.com/rss/edition.rss';
-        $count = 10;
+        $count = $request->count;
 
-        // Parse RSS content
-        $rssArray = xml_to_array(simplexml_load_string(file_get_contents($url), 'SimpleXMLElement', LIBXML_NOCDATA));
-
-        // Take 10 records only
-        $records = array_slice($rssArray['rss']['channel']['item'], 0, $count);
-        $title = $rssArray['rss']['channel']['title'];
-        $pubDate = $rssArray['rss']['channel']['pubDate'];
-
-        // Return HTML
-        return view('helpers.rss.template', [
-            'title' => $title,
-            'pubDate' => $pubDate,
-            'records' => $records,
-        ]);
+        return parseRss($url, $count);
     }
 }

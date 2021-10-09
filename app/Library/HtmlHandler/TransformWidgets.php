@@ -25,6 +25,9 @@ class TransformWidgets implements StageInterface
         // transform product widget
         $html = $this->transformProductWidget($html);
 
+        // transform rss widget
+        // $html = $this->transformRssWidget($html);
+
         return $html;
     }
 
@@ -72,6 +75,26 @@ class TransformWidgets implements StageInterface
                     $_this->update_html($dom, $node, $html);
                 } else {
                     $_this->update_html($dom, $node, '<div class="alert alert-warning text-center">'.trans('messages.template.no_product_selected').'</div>');
+                }
+            }
+        });
+    }
+
+    public function transformRssWidget($html)
+    {
+        $_this = $this;
+        return StringHelper::updateHtml($html, function($dom) use ($_this) {
+            $finder = new \DOMXPath($dom);
+            $classname="rss-widget";
+            $nodes = $finder->query("//*[contains(concat(' ', normalize-space(@class), ' '), ' $classname ')]");
+
+            foreach ($nodes as $node) 
+            {
+                if ($node->getAttribute('data-url') && $node->getAttribute('data-count')) {
+                    $html = parseRss($node->getAttribute('data-url'), $node->getAttribute('data-count'));
+                    $_this->update_html($dom, $node, $html);
+                } else {
+                    $_this->update_html($dom, $node, '<div class="alert alert-warning text-center">'.trans('messages.rss.no_options').'</div>');
                 }
             }
         });

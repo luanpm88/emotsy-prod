@@ -1,4 +1,5 @@
 <?php
+use function Acelle\Helpers\xml_to_array;
 
 /**
  * Globally available helper methods.
@@ -873,4 +874,22 @@ function getThemeMode($mode, $auto='light')
     }
 
     return $themeMode;
+}
+
+function parseRss($url, $count)
+{
+    // Parse RSS content
+    $rssArray = xml_to_array(simplexml_load_string(file_get_contents($url), 'SimpleXMLElement', LIBXML_NOCDATA));
+
+    // Take 10 records only
+    $records = array_slice($rssArray['rss']['channel']['item'], 0, $count);
+    $title = $rssArray['rss']['channel']['title'];
+    $pubDate = $rssArray['rss']['channel']['pubDate'];
+
+    // Return HTML
+    return view('helpers.rss.template', [
+        'title' => $title,
+        'pubDate' => $pubDate,
+        'records' => $records,
+    ]);
 }
