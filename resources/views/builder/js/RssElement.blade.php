@@ -127,7 +127,7 @@
             // 
             _this.addLoadingEffect();
             $.ajax({
-                url: options.url,
+                url: '{!! action('TemplateController@parseRss') !!}',
                 method: 'GET',
                 data: options,
                 statusCode: {
