@@ -1360,11 +1360,6 @@ class MailList extends Model
         // Update list's cached information
         $this->updateCache();
 
-        // Trigger the CampaignUpdate event to update the campaign cache information
-        foreach ($this->campaigns as $campaign) {
-            $campaign->updateCache();
-        }
-
         // Update segments cached information
         foreach ($this->segments as $segment) {
             $segment->updateCache();
