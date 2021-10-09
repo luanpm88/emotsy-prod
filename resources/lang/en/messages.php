@@ -3869,4 +3869,5 @@
   'upgrade.uploading' => 'Uploading...',
   'email_verification.statistics' => 'Statistics',
   'template.no_product_selected' => 'No product selected',
+  'source.importing_product' => 'Importing products... please wait!',
 ) ?>

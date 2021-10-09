@@ -35,7 +35,7 @@
 				<td class="text-end">
 					<a href="{{ action('SourceController@sync', $source->uid) }}"
 						link-method="POST"
-						role="button" class="btn btn-secondary m-icon">
+						role="button" class="btn btn-secondary m-icon sync-button">
 						<span class="material-icons-outlined">
 							sync
 							</span> {{ trans('messages.source.sync') }}</a>
@@ -60,6 +60,14 @@ delete_outline
 		@endforeach
 	</table>
 	@include('elements/_per_page_select', ["items" => $sources])
+
+	<script>
+		$(function() {
+			$('.sync-button').on('click', function() {
+				addMaskLoading('{{ trans('messages.source.importing_product') }}');
+			});
+		});
+	</script>
 		
 @elseif (!empty(request()->keyword))
 	<div class="empty-list">
