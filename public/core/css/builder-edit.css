@@ -30,28 +30,28 @@
     border-color: #555;
     color: #fff;
 }
-.product-list-widget {
+.product-list-widget, .product-widget {
     position: relative;
 }
-.product-list-widget.builder-class-element-selected .ace-controls {
+.builder-class-element-selected .ace-controls {
     display: block!important;
 }
-.product-list-widget.builder-class-element-selected[data-preview=yes] .preview-but {
+.builder-class-element-selected[data-preview=yes] .preview-but {
     display: none!important;
 }
-.product-list-widget.builder-class-element-selected[data-preview=yes] .unpreview-but {
+.builder-class-element-selected[data-preview=yes] .unpreview-but {
     display: block!important;
 }
-.product-list-widget.builder-class-element-selected[data-preview=no] .preview-but {
+.builder-class-element-selected[data-preview=no] .preview-but {
     display: block!important;
 }
-.product-list-widget.builder-class-element-selected[data-preview=no] .unpreview-but {
+.builder-class-element-selected[data-preview=no] .unpreview-but {
     display: none!important;
 }
-.product-list-widget.ace-loading {
+.ace-loading {
     position: relative;
 }
-.product-list-widget.ace-loading::after {
+.ace-loading::after {
     content: 'aaaa';
     position: absolute;
     top: 0;
@@ -62,12 +62,48 @@
     z-index: 1;
     color: transparent;
 }
-.product-list-widget.ace-loading .ace-loader {
+.ace-loading .ace-loader {
     position: absolute;
     top: calc(50% - 120px);
     left: calc(50% - 50px);
     z-index: 2;
 }
-.product-list-widget.ace-loading .ace-loader svg {
+.ace-loading .ace-loader svg {
     width: 100px;
+}
+.product-widget[data-id=""] .preview-but {
+    display: none!important;
+}
+.product-placeholder {
+    display: block!important;
+    top: 0;
+    left: 0;
+    background: #fbfcfc;
+    padding: 30px;
+    z-index: 2;
+    border: dashed 2px #ddd;
+    border-radius: 2px;
+    margin: 0;
+    opacity: 1;
+    width: 100%;
+    height: 190px;
+}
+.product-placeholder img {
+    width: 100px;
+    display: block;
+    margin: auto;
+    opacity: 0.7;
+    margin-bottom: 20px;
+}
+.product-placeholder .btn {
+    background-color: #fff;
+    border-color: #949494;
+    border-width: 1px;
+    color: #444;
+}
+.product-placeholder .btnx {
+    background-color: transparent;
+    border-color: #949494;
+    border-width: 0px;
+    color: #999!important;
 }
