@@ -400,6 +400,9 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('templates/{uid}/edit', 'TemplateController@edit');
     Route::patch('templates/{uid}/update', 'TemplateController@update');
 
+    // RSS
+    Route::get('templates/rss/parse', 'TemplateController@parseRss');
+
     // Campaign
     Route::post('campaigns/{uid}/custom-plain/off', 'CampaignController@customPlainOff');
     Route::post('campaigns/{uid}/custom-plain/on', 'CampaignController@customPlainOn');

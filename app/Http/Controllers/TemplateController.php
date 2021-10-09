@@ -4,11 +4,11 @@ namespace Acelle\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Acelle\Model\Template;
-use Acelle\Library\Rss;
 use Acelle\Model\Setting;
 use App;
 use File;
 use Acelle\Library\Tool;
+use function Acelle\Helpers\xml_to_array;
 
 class TemplateController extends Controller
 {
@@ -583,6 +583,28 @@ class TemplateController extends Controller
 
         return view('templates.changeName', [
             'template' => $template,
+        ]);
+    }
+
+    public function parseRss(Request $request)
+    {
+        // Parameters
+        $url = 'http://rss.cnn.com/rss/edition.rss';
+        $count = 10;
+
+        // Parse RSS content
+        $rssArray = xml_to_array(simplexml_load_string(file_get_contents($url), 'SimpleXMLElement', LIBXML_NOCDATA));
+
+        // Take 10 records only
+        $records = array_slice($rssArray['rss']['channel']['item'], 0, $count);
+        $title = $rssArray['rss']['channel']['title'];
+        $pubDate = $rssArray['rss']['channel']['pubDate'];
+
+        // Return HTML
+        return view('helpers.rss.template', [
+            'title' => $title,
+            'pubDate' => $pubDate,
+            'records' => $records,
         ]);
     }
 }
