@@ -3989,4 +3989,5 @@
   'email_verification.statistics' => 'Statistics',
   'website.get_code' => 'Get code',
   'template.no_product_selected' => 'No product selected',
+  'source.importing_product' => 'Importing products... please wait!',
 ) ?>
