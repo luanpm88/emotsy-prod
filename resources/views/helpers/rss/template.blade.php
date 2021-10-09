@@ -34,7 +34,7 @@
                     <p class="pr-3">
                         {{ array_key_exists('description', $r) ? $r['description'] : null }}
                         
-                        <a href="">Read More »</a>
+                        <a href="{{ $r['link'] }}">Read More »</a>
                     
                     </p>
                 </div>
