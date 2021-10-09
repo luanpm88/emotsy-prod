@@ -884,7 +884,7 @@ function parseRss($url, $count)
     // Take 10 records only
     $records = array_slice($rssArray['rss']['channel']['item'], 0, $count);
     $title = $rssArray['rss']['channel']['title'];
-    $pubDate = $rssArray['rss']['channel']['pubDate'];
+    $pubDate = isset($rssArray['rss']['channel']['pubDate']) ? $rssArray['rss']['channel']['pubDate'] : null;
 
     // Return HTML
     return view('helpers.rss.template', [

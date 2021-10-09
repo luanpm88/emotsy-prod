@@ -2,7 +2,9 @@
     <div class="container py-3">
         <div class="text-center pt-4">
             <h1 class="fw-normal fs-4 mt-2">{{ $title }}</h1>
-            <p>Published date: {{ $pubDate }}</p>
+            @if ($pubDate)
+                <p>Published date: {{ $pubDate }}</p>
+            @endif
         </div>
     </div>
 </div>
