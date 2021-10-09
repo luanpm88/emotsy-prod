@@ -5,10 +5,12 @@ namespace Acelle\Jobs;
 use Acelle\Library\Log as MailLog;
 use Acelle\Model\MailList;
 use Acelle\Model\Blacklist;
+use Illuminate\Contracts\Queue\ShouldBeUnique;
 
-class UpdateMailListJob extends Base
+class UpdateMailListJob extends Base implements ShouldBeUnique
 {
-    protected $list;
+    public $list;
+    public $uniqueFor = 3600;
 
     /**
      * Create a new job instance.
@@ -30,5 +32,15 @@ class UpdateMailListJob extends Base
         $this->list->updateCachedInfo();
         // blacklist new emails (if any)
         Blacklist::doBlacklist($this->list->customer);
+    }
+
+    /**
+     * The unique ID of the job.
+     *
+     * @return string
+     */
+    public function uniqueId()
+    {
+        return $this->list->id;
     }
 }
