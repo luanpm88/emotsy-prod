@@ -3832,6 +3832,7 @@
   'widget.rss' => 'RSS',
   'rss.url' => 'URL',
   'rss.preview' => 'Preview',
+  'rss.unpreview' => 'Close preview',
   'rss.close' => 'Close',
   'rss.posts' => 'Number of posts to display',
   'rss.url_required' => 'RSS url is required',
