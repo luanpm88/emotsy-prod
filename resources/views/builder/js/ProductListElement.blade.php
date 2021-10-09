@@ -75,9 +75,9 @@
             .done(function( data ) {
                 _this.getContainer().find('products').html(data);
 
-                currentEditor.select(_this);
-
                 _this.removeLoadingEffect();
+
+                currentEditor.select(_this);
             });         
         }
 
