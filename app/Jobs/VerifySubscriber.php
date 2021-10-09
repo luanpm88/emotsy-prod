@@ -71,7 +71,7 @@ class VerifySubscriber extends Base
 
             // Actually verify
             $this->subscriber->verify($this->server);
-        } catch(VerificationTakesLongerThanNormal $ex) {
+        } catch (VerificationTakesLongerThanNormal $ex) {
             // Just ignore and return
             // Warn user that there are certain subscribers that are skipped
             return;

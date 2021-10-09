@@ -644,7 +644,9 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('sample', 'SamplesController@index');
 
     // Products
-    Route::get('/products/json', 'ProductController@json');
+    Route::get('/products/widget/products/options', 'ProductController@widgetProductOptions');
+    Route::get('/products/widget/products/list', 'ProductController@widgetProductList');
+    Route::get('/products/widget/product', 'ProductController@widgetProduct');
     Route::get('products/listing', 'ProductController@listing');
     Route::resource('products', 'ProductController');
 

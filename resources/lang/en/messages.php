@@ -3833,7 +3833,7 @@
   'rss.url' => 'URL',
   'rss.preview' => 'Preview',
   'rss.close' => 'Close',
-  'rss.posts' => 'Posts',
+  'rss.posts' => 'Number of posts to display',
   'rss.url_required' => 'RSS url is required',
   'condition.which_email_read' => 'Which email subscriber reads',
   'count_minute' => ':count minute|:count minutes',

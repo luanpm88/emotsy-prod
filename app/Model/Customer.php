@@ -1991,4 +1991,33 @@ class Customer extends Model
 
         return $result;
     }
+
+    public function updateBillingInformationFromInvoice($invoice)
+    {
+        $billingAddress = $this->getDefaultBillingAddress();
+
+        // has no address yet
+        if (!$billingAddress) {
+            $billingAddress = $this->newBillingAddress();
+        }
+
+        $billingAddress->fill([
+            'first_name' => $invoice->billing_first_name,
+            'last_name' => $invoice->billing_last_name,
+            'address' => $invoice->billing_address,
+            'email' => $invoice->billing_email,
+            'phone' => $invoice->billing_phone,
+            'country_id' => $invoice->billing_country_id,
+        ]);
+
+        $billingAddress->save();
+    }
+
+    public static function newCustomer()
+    {
+        $customer = new self();
+        $customer->menu_layout = \Acelle\Model\Setting::get('layout.menu_bar');
+
+        return $customer;
+    }
 }

@@ -38,6 +38,8 @@ use File;
 use Exception;
 use Closure;
 use function Acelle\Helpers\getAppHost;
+use League\Pipeline\PipelineBuilder;
+use Acelle\Library\HtmlHandler\TransformWidgets;
 
 class Template extends Model
 {
@@ -1381,5 +1383,18 @@ class Template extends Model
             ['value' => '{UPDATE_PROFILE_URL}', 'text' => trans('messages.editor.update_profile_text')],
             ['value' => '{WEB_VIEW_URL}', 'text' => trans('messages.editor.click_view_web_version')],
         ];
+    }
+
+    public function getPreviewContent()
+    {
+        // Bind subscriber/message/server information to email content
+        $pipeline = new PipelineBuilder();
+        $pipeline->add(new TransformWidgets($this));
+
+        // Actually push HTML to pipeline for processing
+        $html = $pipeline->build()->process($this->content);
+
+        // Return subscriber's bound html
+        return $html;
     }
 }

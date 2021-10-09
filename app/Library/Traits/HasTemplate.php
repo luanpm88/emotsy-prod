@@ -15,6 +15,7 @@ use Acelle\Library\HtmlHandler\TransformTag;
 use Acelle\Library\HtmlHandler\InjectTrackingPixel;
 use Acelle\Library\HtmlHandler\MakeInlineCss;
 use Acelle\Library\HtmlHandler\TransformUrl;
+use Acelle\Library\HtmlHandler\TransformWidgets;
 use Acelle\Library\HtmlHandler\AddDoctype;
 use Acelle\Library\HtmlHandler\RemoveTitleTag;
 use Acelle\Library\Lockable;
@@ -374,6 +375,7 @@ trait HasTemplate
         $pipeline->add(new TransformTag($this, $subscriber, $msgId, $server));
         $pipeline->add(new InjectTrackingPixel($msgId));
         $pipeline->add(new TransformUrl($this->template, $msgId, $this->trackingDomain));
+        $pipeline->add(new TransformWidgets($this->template));
 
         // Actually push HTML to pipeline for processing
         $html = $pipeline->build()->process($baseHtml);

@@ -361,7 +361,7 @@ class Admin extends Model
      */
     public function createCustomerAccount()
     {
-        $customer = new \Acelle\Model\Customer();
+        $customer = \Acelle\Model\Customer::newCustomer();
         $customer->admin_id = $this->id;
         $customer->language_id = $this->language_id;
         // [moved] $customer->first_name = $this->first_name;
@@ -571,5 +571,13 @@ class Admin extends Model
     public function getMenuLayout()
     {
         return ($this->menu_layout == 'left' ? 'left' : 'top');
+    }
+
+    public static function newAdmin()
+    {
+        $admin = new self();
+        $admin->menu_layout = \Acelle\Model\Setting::get('layout.menu_bar');
+
+        return $admin;
     }
 }

@@ -69,4 +69,16 @@ class Product extends Model
             return \URL::asset('images/no-product-image.png');
         }
     }
+
+    public static function generateWidgetProductListHtmlContent($params)
+    {
+        $products = Product::limit($params['count'])
+            ->orderBy(explode('-', $params['sort'])[0], explode('-', $params['sort'])[1])
+            ->get();
+
+        return view('products.widgetProductListHtmlContent', [
+            'products' => $products,
+            'options' => $params,
+        ]);
+    }
 }

@@ -1,0 +1,73 @@
+.rss-placeholder {
+    width: 100%
+}
+.rss-placeholder .btn {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+}
+.rss-placeholder {
+    position: relative;
+}
+[builder-element="RssElement"].builder-class-element-selected .btn {
+    display: block!important;
+}
+.ace-button {
+    position: absolute;
+    display: inline-block;
+    border: solid 1px #aaa;
+    border-radius: 3px;
+    padding: 2px 10px;
+    box-shadow: 1px 1px 5px rgba(0,0,0,0.1);
+    z-index: 1;
+    right: 0;
+    cursor: pointer;
+    transition: all 0.1s ease-in-out;
+    font-size: 80%;
+}
+.ace-button:hover {
+    background: #555;
+    border-color: #555;
+    color: #fff;
+}
+.product-list-widget {
+    position: relative;
+}
+.product-list-widget.builder-class-element-selected .ace-controls {
+    display: block!important;
+}
+.product-list-widget.builder-class-element-selected[data-preview=yes] .preview-but {
+    display: none!important;
+}
+.product-list-widget.builder-class-element-selected[data-preview=yes] .unpreview-but {
+    display: block!important;
+}
+.product-list-widget.builder-class-element-selected[data-preview=no] .preview-but {
+    display: block!important;
+}
+.product-list-widget.builder-class-element-selected[data-preview=no] .unpreview-but {
+    display: none!important;
+}
+.product-list-widget.ace-loading {
+    position: relative;
+}
+.product-list-widget.ace-loading::after {
+    content: 'aaaa';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #fff5ee;
+    z-index: 1;
+    color: transparent;
+}
+.product-list-widget.ace-loading .ace-loader {
+    position: absolute;
+    top: calc(50% - 120px);
+    left: calc(50% - 50px);
+    z-index: 2;
+}
+.product-list-widget.ace-loading .ace-loader svg {
+    width: 100px;
+}

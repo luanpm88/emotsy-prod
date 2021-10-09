@@ -24,13 +24,39 @@
         @include('builder.themes.' . $email->template->theme)
     @endif
 
-    @include('helpers._builder_product_widgets')
+    @include('builder.js.widgets')
     @include('helpers._builder_rss_widgets')
 
     <style>
         .logo-img {
             width: 120px!important;
             margin-right: 15px;
+        }
+        .product-list-widget {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 40px;
+        }
+        .product-list-widget.single img {
+            padding: 3px;
+            width: 58px;
+            height: 81px;
+        }
+        .product-list-widget img {
+            padding: 3px;
+            width: 65px;
+            height: 81px;
+        }
+        .woo-panel__body {
+            background-color: #fff8fe!important;
+        }
+        .btn-widget-preview, .btn-widget-unpreview {
+            padding: 3px 10px;
+            height: 28px;
+        }
+        .btn-widget-preview span, .btn-widget-unpreview span {
+            font-size: 20px;
         }
     </style>
 
@@ -169,11 +195,11 @@
                     @endif
 
                     // Rss widget
-                    // this.addCustomCss('{{ url('/core/css/builder_rss.css') }}');
-                    // this.addWidget(new RssWidget(), 'content', 3);
+                    this.addCustomCss('{{ url('/core/css/builder_rss.css') }}');
+                    this.addWidget(new RssWidget(), 'content', 3);
 
                     // add custom css
-                    this.addCustomCss('{{ url('/core/css/builder_product.css') }}');
+                    this.addCustomCss('{{ url('/core/css/builder-edit.css') }}');
 
                     // click preview button
                     $("#builder_iframe").contents().find("body").on('click', '.product-preview-but', function(e) {

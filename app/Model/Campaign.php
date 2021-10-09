@@ -2601,7 +2601,7 @@ class Campaign extends Model
             },
             function (Batch $batch, Throwable $e) {
                 // CATCH callback
-                $errorMsg = "Error sending messages. ".$e->getMessage()."\n".$e->getTraceAsString();
+                $errorMsg = "Campaign stopped. ".$e->getMessage()."\n".$e->getTraceAsString();
                 $this->setError($errorMsg);
             },
             function () {
