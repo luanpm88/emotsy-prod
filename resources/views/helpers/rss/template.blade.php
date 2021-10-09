@@ -35,7 +35,7 @@
             <div class="d-flex">
                 <div>
                     <p class="">
-                        {{ array_key_exists('description', $r) ? $r['description'] : null }}
+                        {!! array_key_exists('description', $r) ? $r['description'] : null !!}
                         
                         <a href="{{ $r['link'] }}">Read More »</a>
                     
