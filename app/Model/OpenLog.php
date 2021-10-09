@@ -139,10 +139,9 @@ class OpenLog extends Model
 
         $log->save();
 
+        // Do not trigger cache update if campaign is running
         if ($log->trackingLog && !is_null($log->trackingLog->campaign)) {
-
             if (!$log->trackingLog->campaign->isSending()) {
-                //echo 3;die;
                 event(new CampaignUpdated($log->trackingLog->campaign));
             }
         }
