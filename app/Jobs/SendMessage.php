@@ -23,7 +23,7 @@ class SendMessage implements ShouldQueue
     use Queueable;
     use SerializesModels;
 
-    public $timeout = 120;
+    public $timeout = 600;
     public $maxExceptions = 1; // This is required if retryUntil is used, otherwise, the default value is 255
     public $failOnTimeout = true;
 
