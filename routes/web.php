@@ -241,6 +241,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('account/api', 'AccountController@api');
 
     // Mail list
+    Route::get('lists/{uid}/email-verification/chart', 'MailListController@emailVerificationChart');
     Route::get('lists/{uid}/clone-to-customers/choose', 'MailListController@cloneForCustomersChoose');
     Route::post('lists/{uid}/clone-to-customers', 'MailListController@cloneForCustomers');
 
@@ -506,6 +507,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::post('notifications/{id}/hide', 'NotificationController@hide');
 
     // Automation2
+    Route::match(['get', 'post'], 'automation2/condition/wait/custom', 'Automation2Controller@conditionWaitCustom');
     Route::match(['get', 'post'], 'automation2/{email_uid}/send-test-email', 'Automation2Controller@sendTestEmail');
     Route::get('automation2/{uid}/cart/items', 'Automation2Controller@cartItems');
     Route::get('automation2/{uid}/cart/list', 'Automation2Controller@cartList');
@@ -595,13 +597,13 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('trigger/{id}/check', 'AutoTrigger@check');
     Route::get('automation2/{automation}/run', 'Automation2Controller@run');
 
-    Route::get('email/preview/{uid}/{subscriber_uid}', 'EmailController@preview');
-
     // Sample UI/UX
     Route::get('sample', 'SamplesController@index');
 
     // Products
-    Route::get('/products/json', 'ProductController@json');
+    Route::get('/products/widget/products/options', 'ProductController@widgetProductOptions');
+    Route::get('/products/widget/products/list', 'ProductController@widgetProductList');
+    Route::get('/products/widget/product', 'ProductController@widgetProduct');
     Route::get('products/listing', 'ProductController@listing');
     Route::resource('products', 'ProductController');
 

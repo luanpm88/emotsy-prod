@@ -75,7 +75,7 @@
                 'name' => 'conditions['.$index.'][value]',
                 'label' => '',
                 'value' => (isset($value) ? $value : ''),
-                'options' => Acelle\Model\EmailVerification::resultSelectOptions()
+                'options' => Acelle\Model\Subscriber::getVerificationStates()
             ])
         </div>
     </div>

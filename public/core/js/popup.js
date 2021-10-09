@@ -36,6 +36,11 @@ class Popup {
 
         this.popup[0].addEventListener('hidden.bs.modal', function (event) {
             _this.hide();
+
+            // onclose
+            if (_this.options.onclose != null) {
+                _this.options.onclose();
+            }
         })
 
         this.initMask();

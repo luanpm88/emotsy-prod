@@ -51,6 +51,9 @@ class LoadCampaign implements ShouldQueue
             return;
         }
 
+        // Clear any HTML cache
+        $this->campaign->clearCache();
+
         // Last chance for campaign to setup
         // @todo Find a better place for the following method, afterSave for example
         $this->campaign->updateLinks();
@@ -58,9 +61,14 @@ class LoadCampaign implements ShouldQueue
         // Update status
         $this->campaign->setSending();
 
+        // Iterating through a big list ans create job objects may cause memory leak
+        // So, LoadCampaign only loads a certain numbers subscribers each time, then just finish job to release the queue listener (remember to configure the queue correctly to release after a short time)
+        // When a campaign is done, it will automaticall launch a new LoadCampaign job if there are more subscribers to send
+        $loadLimit = 1000;
+
         // Iterate through contacts and launch sending process
         $this->campaign->prepare(function ($campaign, $subscriber, $server) {
             $this->batch()->add(new SendMessage($campaign, $subscriber, $server));
-        });
+        }, $loadLimit);
     }
 }

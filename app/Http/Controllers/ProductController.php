@@ -52,48 +52,18 @@ class ProductController extends Controller
         ]);
     }
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function json(Request $request)
+    public function widgetProductList(Request $request)
     {
-        // listing product for
-        if ($request->action == 'list') {
-            return response()->json(
-                Product::search($request)->paginate($request->per_page)
-                    ->map(function ($product, $key) {
-                        return [
-                            'id' => $product->uid,
-                            'name' => $product->title,
-                            'price' => format_price($product->price),
-                            'image' => $product->getImageUrl(),
-                            'description' => substr(strip_tags($product->description), 0, 100),
-                            'link' => action('ProductController@index'),
-                        ];
-                    })->toArray()
-            );
-        }
+        sleep(3);
+        return Product::generateWidgetProductListHtmlContent($request->all());
+    }
 
-        // return a product info
-        if ($request->product_id) {
-            $product = Product::findByUid($request->product_id);
-
-            return response()->json([
-                'id' => $product->uid,
-                'name' => $product->title,
-                'price' => format_price($product->price),
-                'image' => $product->getImageUrl(),
-                'description' => substr(strip_tags($product->description), 0, 100),
-                'link' => action('ProductController@index'),
-            ]);
-        }
-
-        $results = Product::search($request)->paginate($request->per_page)
-        ->map(function ($item, $key) {
-            return ['text' => $item->title, 'id' => $item->uid];
-        })->toArray();
+    public function widgetProductOptions(Request $request)
+    {
+        $results = Product::search($request->keyword)->paginate($request->per_page)
+            ->map(function ($item, $key) {
+                return ['text' => $item->title, 'id' => $item->uid];
+            })->toArray();
 
         $json = '{
             "items": ' .json_encode($results). ',
@@ -101,5 +71,19 @@ class ProductController extends Controller
         }';
 
         return $json;
+    }
+
+    public function widgetProduct(Request $request)
+    {
+        $product = Product::findByUid($request->product_id);
+
+        return response()->json([
+            'id' => $product->uid,
+            'name' => $product->title,
+            'price' => format_price($product->price),
+            'image' => $product->getImageUrl(),
+            'description' => substr(strip_tags($product->description), 0, 100),
+            'link' => action('ProductController@index'),
+        ]);
     }
 }

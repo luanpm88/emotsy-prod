@@ -368,6 +368,7 @@ class InstallController extends Controller
                 `timezone`,
                 `status`,
                 `color_scheme`,
+                `menu_layout`,
                 `created_at`,
                 `updated_at`) VALUES
             (
@@ -381,6 +382,7 @@ class InstallController extends Controller
                 '".$site_info['timezone']."',
                 'active',
                 NULL,
+                '".\Acelle\Model\Setting::get('layout.menu_bar')."',
                 '".$date."',
                 '".$date."'
             );"

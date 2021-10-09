@@ -10,3 +10,5 @@
     'required' => true,
     'rules' => [],
 ])
+
+@include('automation2.condition._wait')

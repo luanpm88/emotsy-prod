@@ -52,7 +52,7 @@ class ClickLog extends Model
         $log = new self();
         $log->message_id = $messageId;
         $log->url = $url;
-        $log->user_agent = $_SERVER['HTTP_USER_AGENT'];
+        $log->user_agent = array_key_exists('HTTP_USER_AGENT', $_SERVER) ? $_SERVER['HTTP_USER_AGENT'] : null;
 
         try {
             $location = IpLocation::add($request->ip());
@@ -64,11 +64,24 @@ class ClickLog extends Model
         // Save anyway
         $log->save();
 
+        // Just in case an open cannot be recorded (it is very likely the case, due to Gmail proxy/cache)
+        // Make it make sense! there is at least one OPEN
+        $openLog = $log->createRelatedOpenLogIfNotExist();
+
         if ($log->trackingLog) {
             event(new MailListUpdated($log->trackingLog->subscriber->mailList));
         }
 
         return $url;
+    }
+
+    public function createRelatedOpenLogIfNotExist()
+    {
+        $openLog = OpenLog::firstOrNew(['message_id' => $this->message_id]);
+
+        if (is_null($openLog->id)) {
+            $openLog->save();
+        }
     }
 
     private static function validateUrl($url)

@@ -113,4 +113,4 @@ for dir in meta[:dirs]
 end
 
 ## zip file
-`cd #{File.join(output, subdir)}; zip -r ../#{subdir}.bin .; cd ..; rm -fr #{subdir}`
+`cd #{File.join(output, subdir)}; chmod 755 -R . ; zip -r ../#{subdir}.bin .; cd ..; rm -fr #{subdir}`

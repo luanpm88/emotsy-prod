@@ -3,7 +3,7 @@
     </span> {{ trans('messages.top_country_by_opens') }}</h3>
 <div class="row">
     <div class="col-md-6">
-        @if (!$campaign->openCount())                        
+        @if (!$campaign->uniqueOpenCount())
             <div class="empty-chart-pie">
                 <div class="empty-list">
                     <span class="material-icons-outlined">
@@ -36,7 +36,7 @@ arrow_forward
         @endif
     </div>
     <div class="col-md-6">
-        @if ($campaign->openCount())
+        @if ($campaign->uniqueOpenCount())
             <div class="border p-3 shadow-sm rounded">
                 <div class="">
                     <div class="chart-container has-scroll">

@@ -34,7 +34,7 @@ class CustomerController extends Controller
     {
         // Get current user
         $current_user = \Auth::guard('api')->user();
-        $customer = new \Acelle\Model\Customer();
+        $customer = \Acelle\Model\Customer::newCustomer();
         $user = new \Acelle\Model\User();
 
         // authorize

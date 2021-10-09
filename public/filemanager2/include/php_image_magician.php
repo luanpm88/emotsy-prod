@@ -1,4 +1,5 @@
 <?php
+
 # ========================================================================#
 #
 #  This work is licensed under the Creative Commons Attribution 3.0 Unported
@@ -224,7 +225,6 @@ class imageLib
 
         // *** Open up the file
         $this->image = $this->openImage($fileName);
-
 
         // *** Assign here so we don't modify the original
         $this->imageResized = $this->image;
@@ -796,8 +796,8 @@ class imageLib
             if ($this->aggresiveSharpening) { # A more aggressive sharpening solution
 
                 $sharpenMatrix = array( array( -1, -1, -1 ),
-                                        array( -1, 16, -1 ),
-                                        array( -1, -1, -1 ) );
+                    array( -1, 16, -1 ),
+                    array( -1, -1, -1 ) );
                 $divisor = 8;
                 $offset = 0;
 
@@ -2099,17 +2099,17 @@ class imageLib
         $len = strlen($val);
         if ($len < 0x8000) {
             return chr(0x1c) . chr($rec) . chr($dat) .
-            chr($len >> 8) .
-            chr($len & 0xff) .
-            $val;
+                chr($len >> 8) .
+                chr($len & 0xff) .
+                $val;
         } else {
             return chr(0x1c) . chr($rec) . chr($dat) .
-            chr(0x80) . chr(0x04) .
-            chr(($len >> 24) & 0xff) .
-            chr(($len >> 16) & 0xff) .
-            chr(($len >> 8) & 0xff) .
-            chr(($len) & 0xff) .
-            $val;
+                chr(0x80) . chr(0x04) .
+                chr(($len >> 24) & 0xff) .
+                chr(($len >> 16) & 0xff) .
+                chr(($len >> 8) & 0xff) .
+                chr(($len) & 0xff) .
+                $val;
         }
     }
 
@@ -2455,6 +2455,9 @@ class imageLib
             case 'jpeg':
                 $img = @imagecreatefromjpeg($file);
                 break;
+            case 'webp':
+                $img = @imagecreatefromwebp($file);
+                break;
             case 'gif':
                 $img = @imagecreatefromgif($file);
                 break;
@@ -2462,6 +2465,7 @@ class imageLib
                 $img = @imagecreatefrompng($file);
                 break;
             case 'bmp':
+            case 'x-ms-bmp':
                 $img = @$this->imagecreatefrombmp($file);
                 break;
             case 'psd':
@@ -2507,6 +2511,7 @@ class imageLib
         # Reference:
         # Notes:    * gif doesn't have a quality parameter
         #       * jpg has a quality setting 0-100 (100 being the best)
+        #       * webp has a quality setting 0-100 (100 being the best)
         #       * png has a quality setting 0-9 (0 being the best)
         #
         #             * bmp files have no native support for bmp files. We use a
@@ -2514,7 +2519,7 @@ class imageLib
     {
 
         // *** Perform a check or two.
-        if (! is_resource($this->imageResized)) {
+        if (! is_resource($this->imageResized) && ! $this->imageResized instanceof \GdImage) {
             if ($this->debug) {
                 throw new Exception('saveImage: This is not a resource.');
             } else {
@@ -2545,6 +2550,14 @@ class imageLib
                     imagejpeg($this->imageResized, $savePath, $imageQuality);
                 } else {
                     $error = 'jpg';
+                }
+                break;
+
+            case '.webp':
+                if (imagetypes() & IMG_WEBP) {
+                    imagewebp($this->imageResized, $savePath, $imageQuality);
+                } else {
+                    $error = 'webp';
                 }
                 break;
 
@@ -2605,7 +2618,7 @@ class imageLib
         # Notes:
         #
     {
-        if (! is_resource($this->imageResized)) {
+        if (! is_resource($this->imageResized) && ! $this->imageResized instanceof \GdImage) {
             if ($this->debug) {
                 throw new Exception('saveImage: This is not a resource.');
             } else {
@@ -2618,6 +2631,10 @@ class imageLib
             case 'jpeg':
                 header('Content-type: image/jpeg');
                 imagejpeg($this->imageResized, '', $imageQuality);
+                break;
+            case 'webp':
+                header('Content-type: image/webp');
+                imagewebp($this->imageResized, '', $imageQuality);
                 break;
             case 'gif':
                 header('Content-type: image/gif');
@@ -3122,7 +3139,7 @@ class imageLib
         # Notes:
         #
     {
-        if (! is_resource($img)) {
+        if (! is_resource($img) && ! $img instanceof \GdImage) {
             return false;
         }
 
@@ -3182,8 +3199,8 @@ class imageLib
 
         //2 : Chargement des ent�tes BMP
         $BMP = unpack('Vheader_size/Vwidth/Vheight/vplanes/vbits_per_pixel' .
-            '/Vcompression/Vsize_bitmap/Vhoriz_resolution' .
-            '/Vvert_resolution/Vcolors_used/Vcolors_important', fread($f1, 40));
+                      '/Vcompression/Vsize_bitmap/Vhoriz_resolution' .
+                      '/Vvert_resolution/Vcolors_used/Vcolors_important', fread($f1, 40));
         $BMP['colors'] = pow(2, $BMP['bits_per_pixel']);
 
         if ($BMP['size_bitmap'] == 0) {
@@ -3324,7 +3341,7 @@ class imageLib
 
     public function __destruct()
     {
-        if (is_resource($this->imageResized)) {
+        if (is_resource($this->imageResized) || $this->imageResized instanceof \GdImage) {
             imagedestroy($this->imageResized);
         }
     }

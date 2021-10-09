@@ -314,16 +314,14 @@ class SendingServerAmazon extends SendingServer implements DomainVerificationInt
     public function sendVerificationEmail($identity)
     {
         // send custom template to Amazon
-        $this->createCustomVerificationEmailTemplateFor($identity);
+        $templateName = $this->createCustomVerificationEmailTemplateFor($identity);
 
         $this->sesClient()->SendCustomVerificationEmail([
             'EmailAddress' => $identity->email,
-            'TemplateName' => $this->getCustomVerificationEmailTemplateNameFor($identity),
+            'TemplateName' => $templateName,
+            'SuccessRedirectionURL' => $identity->generateVerificationResultUrl(),
+            'FailureRedirectionURL' => $identity->generateVerificationResultUrl(),
         ]);
-
-        // Amazon limit for custom verification email template is 50
-        // So we have to clean it up after using
-        $this->deleteCustomVerificationEmailTemplateFor($identity);
     }
 
     /**
@@ -414,25 +412,19 @@ class SendingServerAmazon extends SendingServer implements DomainVerificationInt
             throw new \Exception("Sending server `{$this->name}` does not have a 'Default FROM Email Address'. Please go to admin area, then sending server setting dashboard and update this value for the sending server");
         }
 
-        // create a seperate template for each $identity
-        // for safety, remove it immediately after using
-        // It is because Amazon may restrict the number of templates available
-        if ($this->checkVerificationEmailTemplateFor($identity)) {
-            $this->deleteCustomVerificationEmailTemplateFor($identity); // reset, in case user updates the template
-        }
+        // Take an available name slot
+        $name = $this->generateCustomVerificationEmailTemplateName();
 
         // Get the template
         $template = Layout::where('alias', 'sender_verification_email_for_amazon_ses')->first();
-        $name = $this->getCustomVerificationEmailTemplateNameFor($identity);
-        $redirectUrl = $identity->generateVerificationResultUrl();
 
         // Replace tags
         $html = $template->content;
         $html = str_replace('{USER_NAME}', $identity->name, $html);
         $html = str_replace('{USER_EMAIL}', $identity->email, $html);
+        $redirectUrl = $identity->generateVerificationResultUrl();
 
         // Push to Amazon
-        MailLog::info('Creating custom verification template ' . $this->getCustomVerificationEmailTemplateNameFor($identity));
         $result = $this->sesClient()->CreateCustomVerificationEmailTemplate([
             'TemplateName' => $name,
             'TemplateSubject' => $template->subject,
@@ -441,36 +433,77 @@ class SendingServerAmazon extends SendingServer implements DomainVerificationInt
             'FailureRedirectionURL' => $redirectUrl,
             'SuccessRedirectionURL' => $redirectUrl,
         ]);
+
+        return $name;
     }
 
-    public function checkVerificationEmailTemplateFor($identity)
+    public function deleteCustomVerificationEmailTemplateIfExists($name)
     {
-        // Check if template already exists for $identity
-        $name = $this->getCustomVerificationEmailTemplateNameFor($identity);
-        $result = $this->sesClient()->ListCustomVerificationEmailTemplates([
-            'MaxResults' => 50,
-        ]);
+        try {
+            // Check if template already exists for $identity
+            $this->sesClient()->DeleteCustomVerificationEmailTemplate([
+                'TemplateName' => $name,
+            ]);
+        } catch (Exception $ex) {
+            // Just fine
+        }
 
-        $name = $this->getCustomVerificationEmailTemplateNameFor($identity);
-        $names = array_map(function ($r) {
-            return $r['TemplateName'];
-        }, $result->toArray()['CustomVerificationEmailTemplates']);
-        return in_array($name, $names);
     }
 
-    public function deleteCustomVerificationEmailTemplateFor($identity)
+    private function generateCustomVerificationEmailTemplateName()
     {
-        $name = $this->getCustomVerificationEmailTemplateNameFor($identity);
-        MailLog::info('Cleaning up old AWS custom verification template ' . $this->getCustomVerificationEmailTemplateNameFor($identity));
-        $result = $this->sesClient()->DeleteCustomVerificationEmailTemplate([
-            'TemplateName' => $name,
-        ]);
-        return $result;
+        $pattern = "acelle-";
+        $from = 1;
+        $max = 50;
+
+        // There are 50 slots for a limit of 50 templates
+        $r = $this->sesClient()->ListCustomVerificationEmailTemplates(['MaxResults' => $max]);
+
+        // Something like ['acelle-1', 'acelle-2', 'acelle-5', ..., 'acelle-50'];
+        $names = array_map(function($record) { return $record['TemplateName'];  }, $r->toArray()['CustomVerificationEmailTemplates']);
+
+        // Something like [1, 2, 5, ..., 50];
+        $numbers = array_map(function($name) { return (int)explode('-', $name)[1]; }, $names);
+
+        // Take $selected slot and make $next slot available
+        list($selected, $next) = $this->pickAvailableSlot($from, $max, $numbers);
+
+        // Take selected template (delete if exists)
+        $selectedTemplate = $pattern.$selected;
+        $this->deleteCustomVerificationEmailTemplateIfExists($selectedTemplate);
+
+        // Delete next slot if exists
+        if (!is_null($next)) {
+            $nextTemplate = $pattern.$next;
+            $this->deleteCustomVerificationEmailTemplateIfExists($nextTemplate);
+        }
+
+        return $selectedTemplate;
     }
 
-    private function getCustomVerificationEmailTemplateNameFor($identity)
+    public function pickAvailableSlot($from, $max, $list)
     {
-        return "verification-email-{$identity->uid}";
+        // Check for any available slot, from 1..50
+        $selected = null;
+        for ($i = $from; $i <= $max; $i += 1) {
+            if (!in_array($i, $list)) {
+                // Slot available, take it
+                $selected = $i;
+                break;
+            }
+        }
+
+        // In case all slots are already filled
+        // Then get back to the first slot
+        $selected = $selected ?: $from;
+
+        if ($selected < $max) {
+            $next = $selected + 1;
+        } else {
+            $next = null;
+        }
+
+        return [$selected, $next];
     }
 
     public function getSpfHost()

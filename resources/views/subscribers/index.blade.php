@@ -149,7 +149,7 @@ sort
 					<span class="filter-group ml-10">
 						<select class="select" name="verification_result">
 							<option value="">{{ trans('messages.all_verification') }}</option>
-							@foreach (Acelle\Model\EmailVerification::resultSelectOptions() as $option)
+							@foreach (Acelle\Model\Subscriber::getVerificationStates() as $option)
 								<option value="{{ $option['value'] }}">
 									{{ $option['text'] }}
 								</option>
@@ -161,12 +161,12 @@ sort
 							{{ trans('messages.columns') }} <span class="caret"></span>
 						</button>
 						<ul class="dropdown-menu dropdown-menu-end">
-							@foreach ($list->getFields as $field)
+							@foreach ($list->getFields as $key => $field)
 								@if ($field->tag != "EMAIL")
 									<li>
 										<div class="checkbox">
 											<label>
-												<input {{ (true ? "checked='checked'" : "") }} type="checkbox" id="{{ $field->tag }}" name="columns[]" value="{{ $field->uid }}" class="styled">
+												<input {{ ($field->required || $key <= 3 ? "checked='checked'" : "") }} type="checkbox" id="{{ $field->tag }}" name="columns[]" value="{{ $field->uid }}" class="styled">
 												{{ $field->label }}
 											</label>
 										</div>

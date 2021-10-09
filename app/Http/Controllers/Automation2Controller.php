@@ -513,6 +513,7 @@ class Automation2Controller extends Controller
                         'key' => $request->key,
                         'type' => $request->type,
                         'email' => empty($request->email) ? null : $request->email,
+                        'wait' => $request->wait,
                     ],
                 ]);
             } elseif ($request->type == 'click') {
@@ -524,6 +525,7 @@ class Automation2Controller extends Controller
                         'key' => $request->key,
                         'type' => $request->type,
                         'email_link' => empty($request->email_link) ? null : $request->email_link,
+                        'wait' => $request->wait,
                     ],
                 ]);
             } elseif ($request->type == 'cart_buy_anything') {
@@ -661,6 +663,7 @@ class Automation2Controller extends Controller
                             'key' => $request->key,
                             'type' => $request->type,
                             'email' => empty($request->email) ? null : $request->email,
+                            'wait' => $request->wait,
                         ],
                     ]);
                 } elseif ($request->type == 'click') {
@@ -672,6 +675,7 @@ class Automation2Controller extends Controller
                             'key' => $request->key,
                             'type' => $request->type,
                             'email_link' => empty($request->email_link) ? null : $request->email_link,
+                            'wait' => $request->wait,
                         ],
                     ]);
                 } elseif ($request->type == 'cart_buy_anything') {
@@ -682,6 +686,7 @@ class Automation2Controller extends Controller
                         'options' => [
                             'key' => $request->key,
                             'type' => $request->type,
+                            'wait' => $request->wait,
                         ],
                     ]);
                 } elseif ($request->type == 'cart_buy_item') {
@@ -1765,7 +1770,9 @@ class Automation2Controller extends Controller
                 }
             }
 
-            $email->setTemplateContent($request->content);
+            $email->setTemplateContent($request->content, function ($email) {
+                $email->updateLinks();
+            });
 
             return response()->json([
                 'status' => 'success',
@@ -2431,5 +2438,27 @@ class Automation2Controller extends Controller
         return view('automation2.sendTestEmail', [
             'email' => $email,
         ]);
+    }
+
+    public function conditionWaitCustom(Request $request)
+    {
+        if ($request->isMethod('post')) {
+            // make validator
+            $validator = \Validator::make($request->all(), [
+                'wait_amount' => 'required',
+                'wait_unit' => 'required',
+            ]);
+
+            // redirect if fails
+            if ($validator->fails()) {
+                return response()->view('automation2.condition.conditionWaitCustom', [
+                    'errors' => $validator->errors(),
+                ], 400);
+            }
+
+            return view('automation2.condition._wait_select');
+        }
+
+        return view('automation2.condition.conditionWaitCustom');
     }
 }

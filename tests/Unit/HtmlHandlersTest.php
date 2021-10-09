@@ -377,4 +377,41 @@ class HtmlHandlersTest extends TestCase
         $this->assertTrue(strpos($html, 'update-profile') !== false);
         $this->assertTrue(strpos($html, 'campaigns/TVNHSUQ/web-view') !== false);
     }
+
+    public function test_caching_just_works()
+    {
+        // Template
+        $template = Mockery::mock(new Template(['name' => 'Template', 'content' => 'Original']));
+        $template->generateUid();
+
+        // List
+        $list = Mockery::mock(new MailList());
+        $list->generateUid();
+
+        // Campaign
+        $campaign = Mockery::mock(new Campaign(['name' => 'Campaign']));
+        $campaign->defaultMailList = $list;
+        $campaign->template = $template;
+
+        // Flush any cache
+        $campaign->clearCache();
+
+        // Get
+        $html = $campaign->getHtmlContent();
+        $cachedHtml = $campaign->getHtmlContent($subscriber = null, $messageId = null, $server = null, $fromCache = true, $seconds = 1);
+
+        $this->assertEquals($html, '<!DOCTYPE html><html><body><p>Original</p></body></html>');
+        $this->assertEquals($html, $cachedHtml);
+
+        $campaign->template->content = 'Updated';
+        $html = $campaign->getHtmlContent();
+        $cachedHtml = $campaign->getHtmlContent($subscriber = null, $messageId = null, $server = null, $fromCache = true, $seconds = 1);
+        $this->assertEquals($html, '<!DOCTYPE html><html><body><p>Updated</p></body></html>');
+        $this->assertEquals($cachedHtml, '<!DOCTYPE html><html><body><p>Original</p></body></html>');
+
+        // wait 2 seconds for cache to expire
+        sleep(2);
+        $cachedHtml = $campaign->getHtmlContent($subscriber = null, $messageId = null, $server = null, $fromCache = true);
+        $this->assertEquals($cachedHtml, $html);
+    }
 }
