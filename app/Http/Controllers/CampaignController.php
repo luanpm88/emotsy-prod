@@ -19,7 +19,6 @@ use Acelle\Model\IpLocation;
 use Acelle\Model\ClickLog;
 use Acelle\Model\OpenLog;
 use Acelle\Model\TemplateCategory;
-use Acelle\Library\Rss;
 use Acelle\Model\JobMonitor;
 use DB;
 

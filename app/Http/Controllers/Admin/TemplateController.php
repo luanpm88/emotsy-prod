@@ -5,7 +5,6 @@ namespace Acelle\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use Acelle\Http\Controllers\Controller;
 use Acelle\Model\Template;
-use Acelle\Library\Rss;
 use Acelle\Model\Setting;
 use App;
 
