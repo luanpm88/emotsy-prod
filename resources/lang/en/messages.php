@@ -3988,4 +3988,5 @@
   'form.all_sites' => 'All sites',
   'email_verification.statistics' => 'Statistics',
   'website.get_code' => 'Get code',
+  'template.no_product_selected' => 'No product selected',
 ) ?>

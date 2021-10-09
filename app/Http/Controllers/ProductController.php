@@ -54,7 +54,6 @@ class ProductController extends Controller
 
     public function widgetProductList(Request $request)
     {
-        sleep(3);
         return Product::generateWidgetProductListHtmlContent($request->all());
     }
 
@@ -75,15 +74,6 @@ class ProductController extends Controller
 
     public function widgetProduct(Request $request)
     {
-        $product = Product::findByUid($request->product_id);
-
-        return response()->json([
-            'id' => $product->uid,
-            'name' => $product->title,
-            'price' => format_price($product->price),
-            'image' => $product->getImageUrl(),
-            'description' => substr(strip_tags($product->description), 0, 100),
-            'link' => action('ProductController@index'),
-        ]);
+        return Product::generateWidgetProductHtmlContent($request->all());
     }
 }

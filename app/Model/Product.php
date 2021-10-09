@@ -81,4 +81,33 @@ class Product extends Model
             'options' => $params,
         ]);
     }
+
+    public static function generateWidgetProductHtmlContent($params)
+    {
+        $product = self::findByUid($params['id']);
+
+        // replace tags
+        $html = $params['content'];
+        $html = str_replace('*|PRODUCT_NAME|*', $product->title, $html);
+        $html = str_replace('*|PRODUCT_DESCRIPTION|*', substr(strip_tags($product->description), 0, 200), $html);
+        $html = str_replace('*|PRODUCT_PRICE|*', format_price($product->price), $html);
+        $html = str_replace('*|PRODUCT_QUANTITY|*', $product->title, $html);
+        $html = str_replace('*|PRODUCT_URL|*', action('ProductController@index'), $html);
+        $html = str_replace('*%7CPRODUCT_URL%7C*', action('ProductController@index'), $html);
+
+        // try to replace product image
+        $dom = new \DOMDocument();
+        $dom->loadHTML(mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8'), LIBXML_NOWARNING | LIBXML_NOERROR | LIBXML_HTML_NODEFDTD);
+        
+        $imgs = $dom->getElementsByTagName("img");
+        foreach ($imgs as $img) 
+        {
+            $att = $img->getAttribute('builder-element');
+            if ($att == 'ProductImgElement') {
+                $img->setAttribute('src', $product->getImageUrl());
+            }
+        }
+        
+        return $dom->saveHTML();
+    }
 }

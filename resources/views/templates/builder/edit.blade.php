@@ -10,6 +10,10 @@
     <link href="{{ URL::asset('builder/builder.css') }}" rel="stylesheet" type="text/css">
     <script type="text/javascript" src="{{ URL::asset('builder/builder.js') }}"></script>
 
+    <!-- Select2 -->
+    <link rel="stylesheet" type="text/css" href="{{ URL::asset('core/select2/css/select2.min.css') }}">
+    <script type="text/javascript" src="{{ URL::asset('core/select2/js/select2.min.js') }}"></script>
+
     <link href="{{ URL::asset('core/css/UrlAutoFill.css') }}" rel="stylesheet" type="text/css">
     <script src="{{ URL::asset('core/js/UrlAutoFill.js') }}"></script>
 
@@ -184,14 +188,6 @@
                 loaded: function() {
                     var thisEditor = this;
 
-                    if (typeof(WidgetManager) !== 'undefined') {
-                        var widgets = WidgetManager.init();
-
-                        widgets.forEach(function(widget) {
-                            thisEditor.addContentWidget(widget, 0, 'Template Content');
-                        });
-                    }
-
                     // product widgets
                     this.addContentWidget(new ProductListWidget(), 0, 'ProductCommerce');
                     this.addContentWidget(new ProductWidget(), 0, 'ProductCommerce');
@@ -202,6 +198,15 @@
 
                     // add custom css
                     this.addCustomCss('{{ url('/core/css/builder-edit.css') }}');
+
+                    // load widgets from theme.js
+                    if (typeof(WidgetManager) !== 'undefined') {
+                        var widgets = WidgetManager.init();
+
+                        widgets.forEach(function(widget) {
+                            thisEditor.addContentWidget(widget, 0, 'Template Content');
+                        });
+                    }
                 }
             });
           
