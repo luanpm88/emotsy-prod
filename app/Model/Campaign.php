@@ -49,6 +49,7 @@ use Acelle\Library\RouletteWheel;
 use Acelle\Library\Traits\TrackJobs;
 use Throwable;
 use Acelle\Library\Traits\HasUid;
+use Acelle\Events\CampaignUpdated;
 
 class Campaign extends Model
 {
@@ -1530,6 +1531,9 @@ class Campaign extends Model
     {
         $this->cancelAndDeleteJobs();
         $this->setPaused();
+
+        // Update status
+        event(new CampaignUpdated($this));
     }
 
     private function setPaused()
