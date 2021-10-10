@@ -42,7 +42,7 @@
             });
 
             // preview
-            element.obj.find('.ace-unpreview').on('click', function() {
+            element.obj.find('.ace-unpreview').on('mouseup', function() {
                 element.setOptions({
                     preview: 'no'
                 });
@@ -109,10 +109,8 @@
                 </div>
             `);
 
-            setTimeout(function() {
-                currentEditor.select(_this);
-                currentEditor.handleSelect();
-            }, 100);
+            currentEditor.select(_this);
+            currentEditor.handleSelect();
         }
 
         loadRss() {
@@ -174,6 +172,8 @@
 
         getControls() {
             var element = this;
+
+            window.testE = this;
 
             var id = element.obj.attr('id');
             if (typeof(window.rssEvents1) == 'undefined') {
