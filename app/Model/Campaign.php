@@ -2580,11 +2580,12 @@ class Campaign extends Model
         $this->dispatchWithBatchMonitor(
             $campaignLoader,
             function ($batch) {
-                // THEN callbak
+                // THEN callback
                 //
                 // Important:
                 // Notice that if user manually cancels a batch, it still reaches trigger "then" callback
                 // Only when an exception is thrown, no "then" trigger
+                // Update: cancel a batch does not trigger "THEN" callback
                 // So, if the campaign is paused by user, do not update its status to done once its batch finishes, keep it as paused
                 // IMPORTANT: refresh() is required!
                 if (!$this->refresh()->isPaused()) {

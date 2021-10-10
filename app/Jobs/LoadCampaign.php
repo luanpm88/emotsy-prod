@@ -65,6 +65,7 @@ class LoadCampaign implements ShouldQueue
         // So, LoadCampaign only loads a certain numbers subscribers each time, then just finish job to release the queue listener (remember to configure the queue correctly to release after a short time)
         // When a campaign is done, it will automaticall launch a new LoadCampaign job if there are more subscribers to send
         $loadLimit = 100 + rand(1,9);
+        $this->campaign->logger()->info(sprintf('Loading %s contacts to shoot', $loadLimit));
 
         // Iterate through contacts and launch sending process
         $this->campaign->prepare(function ($campaign, $subscriber, $server) {
