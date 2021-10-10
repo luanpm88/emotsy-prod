@@ -2583,10 +2583,10 @@ class Campaign extends Model
                 // THEN callback
                 //
                 // Important:
-                // Notice that if user manually cancels a batch, it still reaches trigger "then" callback
+                // Notice that if user manually cancels a batch, it still reaches trigger "then" callback!!!!
                 // Only when an exception is thrown, no "then" trigger
-                // Update: cancel a batch does not trigger "THEN" callback
-                // So, if the campaign is paused by user, do not update its status to done once its batch finishes, keep it as paused
+                // @Update: the above statement is longer true! Cancelling a batch DOES NOT trigger "THEN" callback
+                //
                 // IMPORTANT: refresh() is required!
                 if (!$this->refresh()->isPaused()) {
                     $count = $this->subscribersToSend()->count();
