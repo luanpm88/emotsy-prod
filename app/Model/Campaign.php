@@ -2588,15 +2588,19 @@ class Campaign extends Model
                 // So, if the campaign is paused by user, do not update its status to done once its batch finishes, keep it as paused
                 // IMPORTANT: refresh() is required!
                 if (!$this->refresh()->isPaused()) {
-                    if ($this->subscribersToSend()->count() > 0) {
+                    $count = $this->subscribersToSend()->count();
+                    if ($count > 0) {
                         // Launch over and over again until there is no subscribers left to send
                         // Because each LoadCampaign jobs only load a fixed number of subscribers
+                        $this->logger()->warning('Launch another batch of '.$count);
                         $this->launch();
                     } else {
+                        $this->logger()->warning('No contact left, campaign finishes successfully!');
                         $this->setDone();
                     }
                 } else {
                     // do nothing, as campaign is already PAUSED by user (not by an exception)
+                    $this->logger()->warning('Campaign is paused by user');
                 }
             },
             function (Batch $batch, Throwable $e) {
@@ -2606,6 +2610,7 @@ class Campaign extends Model
             },
             function () {
                 // FINALLY callback
+                $this->logger()->info('Finally!');
                 $this->updateCache();
             }
         );
