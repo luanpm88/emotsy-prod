@@ -31,13 +31,12 @@ class TransformWidgets implements StageInterface
     public function transformProductListWidget($html)
     {
         $_this = $this;
-        return StringHelper::updateHtml($html, function($dom) use ($_this) {
+        return StringHelper::updateHtml($html, function ($dom) use ($_this) {
             $finder = new \DOMXPath($dom);
             $classname="product-list-widget";
             $nodes = $finder->query("//*[contains(concat(' ', normalize-space(@class), ' '), ' $classname ')]");
 
-            foreach ($nodes as $node) 
-            {
+            foreach ($nodes as $node) {
                 $pList = $node->getElementsByTagName('products')[0];
                 $pHtml =  Product::generateWidgetProductListHtmlContent([
                     'count' => $node->getAttribute('data-count'),
@@ -54,13 +53,12 @@ class TransformWidgets implements StageInterface
     public function transformProductWidget($html)
     {
         $_this = $this;
-        return StringHelper::updateHtml($html, function($dom) use ($_this) {
+        return StringHelper::updateHtml($html, function ($dom) use ($_this) {
             $finder = new \DOMXPath($dom);
             $classname="product-widget";
             $nodes = $finder->query("//*[contains(concat(' ', normalize-space(@class), ' '), ' $classname ')]");
 
-            foreach ($nodes as $node) 
-            {
+            foreach ($nodes as $node) {
                 $html = $_this->get_inner_html($node);
 
                 if ($node->getAttribute('data-id')) {
@@ -77,19 +75,21 @@ class TransformWidgets implements StageInterface
         });
     }
 
-    function get_inner_html( $node ) {
+    public function get_inner_html($node)
+    {
         $innerHTML= '';
         $children = $node->childNodes;
         foreach ($children as $child) {
-            $innerHTML .= $child->ownerDocument->saveXML( $child );
+            $innerHTML .= $child->ownerDocument->saveXML($child);
         }
-    
-        return $innerHTML;
-    } 
 
-    function update_html($dom, $node, $html) {
+        return $innerHTML;
+    }
+
+    public function update_html($dom, $node, $html)
+    {
         // remove all child
-        while ($node->hasChildNodes()){
+        while ($node->hasChildNodes()) {
             $node->removeChild($node->childNodes->item(0));
         }
 
