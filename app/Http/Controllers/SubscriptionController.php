@@ -119,7 +119,7 @@ class SubscriptionController extends Controller
 
         // get invoice
         $invoice = $customer->invoices()->where('uid', '=', $request->invoice_uid)->first();
-        
+
         if (!$invoice || !$invoice->isNew()) {
             return redirect()->action('SubscriptionController@index');
         }

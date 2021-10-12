@@ -98,16 +98,15 @@ class Product extends Model
         // try to replace product image
         $dom = new \DOMDocument();
         $dom->loadHTML(mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8'), LIBXML_NOWARNING | LIBXML_NOERROR | LIBXML_HTML_NODEFDTD);
-        
+
         $imgs = $dom->getElementsByTagName("img");
-        foreach ($imgs as $img) 
-        {
+        foreach ($imgs as $img) {
             $att = $img->getAttribute('builder-element');
             if ($att == 'ProductImgElement') {
                 $img->setAttribute('src', $product->getImageUrl());
             }
         }
-        
+
         return $dom->saveHTML();
     }
 }

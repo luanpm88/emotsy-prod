@@ -2,11 +2,12 @@
 
 namespace Acelle\Jobs;
 
-use Acelle\Library\Log as MailLog;
+use Illuminate\Contracts\Queue\ShouldBeUnique;
 
-class UpdateCampaignJob extends Base
+class UpdateCampaignJob extends Base implements ShouldBeUnique
 {
     protected $campaign;
+    public $uniqueFor = 3600;
 
     public function __construct($campaign)
     {
@@ -21,5 +22,10 @@ class UpdateCampaignJob extends Base
     public function handle()
     {
         $this->campaign->updateCache();
+    }
+
+    public function uniqueId()
+    {
+        return $this->campaign->id;
     }
 }

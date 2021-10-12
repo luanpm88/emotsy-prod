@@ -49,6 +49,7 @@ use Acelle\Library\RouletteWheel;
 use Acelle\Library\Traits\TrackJobs;
 use Throwable;
 use Acelle\Library\Traits\HasUid;
+use Acelle\Events\CampaignUpdated;
 
 class Campaign extends Model
 {
@@ -1530,6 +1531,9 @@ class Campaign extends Model
     {
         $this->cancelAndDeleteJobs();
         $this->setPaused();
+
+        // Update status
+        event(new CampaignUpdated($this));
     }
 
     private function setPaused()
@@ -2580,32 +2584,39 @@ class Campaign extends Model
         $this->dispatchWithBatchMonitor(
             $campaignLoader,
             function ($batch) {
-                // THEN callbak
+                // THEN callback
                 //
                 // Important:
-                // Notice that if user manually cancels a batch, it still reaches trigger "then" callback
+                // Notice that if user manually cancels a batch, it still reaches trigger "then" callback!!!!
                 // Only when an exception is thrown, no "then" trigger
-                // So, if the campaign is paused by user, do not update its status to done once its batch finishes, keep it as paused
+                // @Update: the above statement is longer true! Cancelling a batch DOES NOT trigger "THEN" callback
+                //
                 // IMPORTANT: refresh() is required!
                 if (!$this->refresh()->isPaused()) {
-                    if ($this->subscribersToSend()->count() > 0) {
+                    $count = $this->subscribersToSend()->count();
+                    if ($count > 0) {
                         // Launch over and over again until there is no subscribers left to send
                         // Because each LoadCampaign jobs only load a fixed number of subscribers
+                        $this->logger()->warning('Launch another batch of '.$count);
                         $this->launch();
                     } else {
+                        $this->logger()->warning('No contact left, campaign finishes successfully!');
                         $this->setDone();
                     }
                 } else {
                     // do nothing, as campaign is already PAUSED by user (not by an exception)
+                    $this->logger()->warning('Campaign is paused by user');
                 }
             },
             function (Batch $batch, Throwable $e) {
                 // CATCH callback
                 $errorMsg = "Campaign stopped. ".$e->getMessage()."\n".$e->getTraceAsString();
+                $this->logger()->info($errorMsg);
                 $this->setError($errorMsg);
             },
             function () {
                 // FINALLY callback
+                $this->logger()->info('Finally!');
                 $this->updateCache();
             }
         );

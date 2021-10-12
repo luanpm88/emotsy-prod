@@ -1590,7 +1590,7 @@ class SendingServer extends Model implements HasQuotaInterface
 
         if ($this->quota_value != QuotaManager::QUOTA_UNLIMITED) {
             $quota[] = [
-                'name' => "Server's sending limit of {$this->quota_value} per {$this->quota_unit} {$this->quota_base}",
+                'name' => "Server's sending limit of {$this->quota_value} per {$this->quota_base} {$this->quota_unit}",
                 'period_unit' => $this->quota_unit,
                 'period_value' => $this->quota_base,
                 'limit' => $this->quota_value,

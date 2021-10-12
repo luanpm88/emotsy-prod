@@ -23,7 +23,7 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
-use Acelle\Events\MailListUpdated;
+use Acelle\Events\CampaignUpdated;
 use Acelle\Library\StringHelper;
 use Exception;
 
@@ -139,8 +139,11 @@ class OpenLog extends Model
 
         $log->save();
 
-        if ($log->trackingLog) {
-            event(new MailListUpdated($log->trackingLog->subscriber->mailList));
+        // Do not trigger cache update if campaign is running
+        if ($log->trackingLog && !is_null($log->trackingLog->campaign)) {
+            if (!$log->trackingLog->campaign->isSending()) {
+                event(new CampaignUpdated($log->trackingLog->campaign));
+            }
         }
     }
 

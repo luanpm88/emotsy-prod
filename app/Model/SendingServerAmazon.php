@@ -447,7 +447,6 @@ class SendingServerAmazon extends SendingServer implements DomainVerificationInt
         } catch (Exception $ex) {
             // Just fine
         }
-
     }
 
     private function generateCustomVerificationEmailTemplateName()
@@ -460,10 +459,14 @@ class SendingServerAmazon extends SendingServer implements DomainVerificationInt
         $r = $this->sesClient()->ListCustomVerificationEmailTemplates(['MaxResults' => $max]);
 
         // Something like ['acelle-1', 'acelle-2', 'acelle-5', ..., 'acelle-50'];
-        $names = array_map(function($record) { return $record['TemplateName'];  }, $r->toArray()['CustomVerificationEmailTemplates']);
+        $names = array_map(function ($record) {
+            return $record['TemplateName'];
+        }, $r->toArray()['CustomVerificationEmailTemplates']);
 
         // Something like [1, 2, 5, ..., 50];
-        $numbers = array_map(function($name) { return (int)explode('-', $name)[1]; }, $names);
+        $numbers = array_map(function ($name) {
+            return (int)explode('-', $name)[1];
+        }, $names);
 
         // Take $selected slot and make $next slot available
         list($selected, $next) = $this->pickAvailableSlot($from, $max, $numbers);

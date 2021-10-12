@@ -1454,7 +1454,7 @@ ul.no-top-border-list li:first-child {
     margin-top: 0;
 }
 .badge-big {
-    font-size: 18px;
+    font-size: 16px;
     border-radius: 20px;
     padding: 5px 10px;
     font-weight: normal;
@@ -1465,8 +1465,8 @@ ul.no-top-border-list li:first-child {
     padding: 1px 10px;
 }
 .badge-row {
-    margin-bottom: 10px;
-    margin-top: 20px;
+    margin-bottom: 6px;
+    margin-top: 10px;
 }
 .flag-icon {
     display: inline-block;
