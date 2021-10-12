@@ -100,6 +100,7 @@
                     preview: 'yes',
                 });
                 currentEditor.unmask();
+                thisControl.showLoadUrl();
             });
         }
 
