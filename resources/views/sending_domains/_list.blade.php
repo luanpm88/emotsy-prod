@@ -3,6 +3,9 @@
         current-page="{{ empty(request()->page) ? 1 : empty(request()->page) }}"
     >
         @foreach ($items as $key => $item)
+            @php
+                $allowedByServer = $item->isAllowedBy($server);
+            @endphp
             <tr>
                 <td width="1%">
                     <div class="text-nowrap">
@@ -18,7 +21,11 @@
                 </td>
                 <td>
                     <h5 class="mb-1 text-bold">
-                        <a class="kq_search" href="{{ action('SendingDomainController@show', $item->uid) }}">{{ $item->name }}</a>
+                        @if ($allowedByServer)
+                            <a class="kq_search" href="{{ action('SendingDomainController@show', $item->uid) }}">{{ $item->name }}</a>
+                        @else
+                            <span>{{ $item->name }}</span>
+                        @endif
                     </h5>
                     <span class="text-muted">{{ trans('messages.created_at') }}: {{ Tool::formatDateTime($item->created_at) }}</span>
                 </td>
@@ -70,10 +77,15 @@
                     @endif
                 </td>
                 <td class="text-center pt-4">
-                    <span class="text-muted2 list-status pull-left">
-                        <span class="label label-flat bg-{{ $item->status }}">{{ trans('messages.sending_domain_status_' . $item->status) }}</span>
-                    </span>
-
+                    @if ($allowedByServer)
+                        <span class="text-muted2 list-status pull-left">
+                            <span class="label label-flat bg-{{ $item->status }}">{{ trans('messages.sending_domain_status_' . $item->status) }}</span>
+                        </span>
+                    @else
+                        <span class="xtooltip text-muted2 list-status pull-left" style="cursor:pointer" title="{{ trans('messages.sending_domain.status.outdated') }}">
+                            <span class="label label-flat bg-error">{{ trans('messages.sending_domain_status_inactive') }}</span>
+                        </span>
+                    @endif
                 </td>
                 <td class="text-end">
                     
