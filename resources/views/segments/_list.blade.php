@@ -17,10 +17,10 @@
                     </div>
                 </td>
                 <td>
-                    <h5 class="m-0 text-bold">
-                        <a class="kq_search"
-                           href="{{ action('SegmentController@subscribers', ['list_uid' => $list->uid, 'uid' => $item->uid]) }}">{{ $item->name }}</a>
-                    </h5>
+                    <a class="kq_search text-bold d-block"
+                        href="{{ action('SegmentController@subscribers', ['list_uid' => $list->uid, 'uid' => $item->uid]) }}">
+                        {{ $item->name }}
+                    </a>
                     <span class="text-muted">{{ trans('messages.created_at') }}
                         : {{ Tool::formatDateTime($item->created_at) }}</span>
                 </td>

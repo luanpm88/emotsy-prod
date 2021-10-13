@@ -364,6 +364,7 @@ class Segment extends Model
 
         // WHERE...
         $query = $query->where('subscribers.mail_list_id', $this->mail_list_id);
+        // var_dump($conditions['conditions']);die();
         if (!empty($conditions['conditions'])) {
             $query = $query->whereRaw('('.$conditions['conditions'].')');
         }
@@ -372,6 +373,8 @@ class Segment extends Model
         if (isset($request)) {
             $query = $query->orderBy($request->sort_order, $request->sort_direction);
         }
+
+        // var_dump($query->toSql());die();
 
         return $query;
     }
