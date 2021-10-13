@@ -508,6 +508,15 @@ class SendingDomain extends Model
         return [ $validator, $this ];
     }
 
+    public function isAllowedBy($server)
+    {
+        if (!$server->allowOtherSendingDomains() && $this->sending_server_id != $server->id) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     public function isIdentityVerified()
     {
         return $this->getVerificationTokens()['results']['identity'] == true;

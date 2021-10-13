@@ -518,6 +518,7 @@
   'delete_feedback_loop_handlers_confirm' => 'You\'re about to delete :number feedback loop handler(s) from the list.',
   'feedback_loop_handler_empty_line_1' => 'You have no feedback loop handler',
   'create_sending_domain' => 'New sending domain',
+  'sending_domain.status.outdated' => 'This sending domain was previously verified with another sending service. It might not be valid with the current sending server. Delete and create the domain again to verify it',
   'sending_domain.created' => 'Sending domain was successfully created',
   'sending_domain.updated' => 'Sending domain was successfully updated',
   'sending_domains.deleted' => 'One or more sending domains were successfully deleted',
