@@ -588,10 +588,6 @@ class TemplateController extends Controller
 
     public function parseRss(Request $request)
     {
-        // Parameters
-        $url = $request->url; // 'http://rss.cnn.com/rss/edition.rss';
-        $count = $request->count;
-        
-        return parseRss($url, $count);
+        return parseRss($request->config);
     }
 }

@@ -29,16 +29,23 @@
                                     {{ trans('messages.widget.rss.change_url') }}
                                 </button>
                             </div>
-                            <div class="display-count">
-                                <div class="widget-row px-3 py-2 d-flex align-items-center">
-                                    <div class="label mr-auto">{{ trans('messages.rss.posts') }}</div>
-                                    <div class="place-value">
-                                        <select class="form-control rss-count">
-                                            @for ($i = 1; $i < 50; $i++)
-                                                <option value="{{ $i }}">{{ $i }}</option>
-                                            @endfor        
-                                        </select>
+                            <div class="more-options-block">
+                                <div class="display-count">
+                                    <div class="widget-row px-3 py-2 d-flex align-items-center">
+                                        <div class="label mr-auto">{{ trans('messages.rss.posts') }}</div>
+                                        <div class="place-value">
+                                            <select class="form-control rss-count">
+                                                @for ($i = 1; $i < 50; $i++)
+                                                    <option value="{{ $i }}">{{ $i }}</option>
+                                                @endfor        
+                                            </select>
+                                        </div>
                                     </div>
+                                </div>
+                                <div class="px-3 mt-4">
+                                    <h4>{{ trans('messages.rss.display_options') }}</h4>
+                                </div>
+                                <div class="templates-block">
                                 </div>
                             </div>
                         </div>
@@ -72,7 +79,7 @@
             $(thisControl.selector).find('.rss-url').prop('readonly', false);
             $(thisControl.selector).find('.click-load').show();
             $(thisControl.selector).find('.click-change').hide();
-            $(thisControl.selector).find('.display-count').hide();
+            $(thisControl.selector).find('.more-options-block').hide();
         }
 
         loadUrl() {
@@ -89,14 +96,18 @@
                 url: '{!! action('TemplateController@parseRss') !!}',
                 method: 'GET',
                 data: {
-                    url: thisControl.getUrl()
+                    config: $.extend({}, thisControl.value.config, {
+                        url: thisControl.getUrl()
+                    })
                 }
             }).fail(function(e) {
                 alert(e.responseText);
                 currentEditor.unmask();
             }).done(function() {
                 thisControl.callback.setOptions({
-                    url: thisControl.getUrl(),
+                    config: $.extend({}, thisControl.value.config, {
+                        url: thisControl.getUrl()
+                    }),
                     preview: 'yes',
                 });
                 currentEditor.unmask();
@@ -116,7 +127,7 @@
             $(thisControl.selector).find('.rss-url').prop('readonly', true);
             $(thisControl.selector).find('.click-load').hide();
             $(thisControl.selector).find('.click-change').show();
-            $(thisControl.selector).find('.display-count').show();
+            $(thisControl.selector).find('.more-options-block').show();
         }
 
         getUrl() {
@@ -125,25 +136,99 @@
             return $(thisControl.selector).find('.rss-url').val();
         }
 
+        isSelected(className) {
+            return this.value.getSelectedItem() && this.value.getSelectedItem().getClassName() == className;
+        }
+
+        showDisplayOptions() {
+            var _this = this;
+            var templates = this.value.config.templates;
+            
+            $(_this.selector).find('.templates-block').html('');
+            for (const [key, t] of Object.entries(templates)) {
+                var form = '';
+                var showed =  _this.isSelected(key) && t.show == true;
+
+                if (showed && t.template !== false) {
+                    form = `
+                        <div class="border-top px-3 py-2">
+                            <textarea class="rss-template-edit form-control template-content" data-class="`+key+`">`+t.template+`</textarea>
+                            <div class="mt-2 text-right">
+                                <button class="btn btn-primary mr-1 rss-template-save" data-class="`+key+`">{{ trans('messages.rss.template.save') }}</button>
+                                <button class="btn btn-secondary rss-template-cancel" data-class="`+key+`">{{ trans('messages.rss.template.cancel') }}</button>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                $(_this.selector).find('.templates-block').append(`
+                    <div class="rss-config-line `+(showed ? 'item-selected' : '')+`">
+                        <div class="d-flex align-items-center px-3 py-2 border-top">
+                            <label class="d-flex align-items-center" style="font-size:14px;font-weight:normal;color:#333;">
+                                <input type="hidden" name="`+key+`" value="false" />
+                                <input `+(t.show == true ? 'checked' : '')+` type="checkbox" class="styled item-show-check" name="`+key+`" value="true" />
+                                <span class="check-symbol"></span>
+                                <span class="ml-2">{!! trans('messages.rss.show_msg') !!} <span class="fw-600">`+t.title+`</span></span>
+                            </label> 
+                            <div class="ml-auto" `+(!t.show || showed || t.template === false ? 'style="display:none"' : '')+`>
+                                <a href="javascript:;" class="setting-button" data-class="`+key+`">
+                                    <span class="material-icons-outlined">settings</span>
+                                </a>
+                            </div>              
+                        </div>
+                        `+form+`           
+                    </div>
+                `);
+
+                // events
+                $(_this.selector).find('.templates-block [name="'+key+'"]').on('change', function() {
+                    var checked = $(this).is(':checked');
+                    _this.callback.saveItemShow(key, checked)
+
+                    if (_this.isSelected(key) && !checked) {
+                        _this.callback.unselectItem();
+                    }
+                });
+                
+                $(_this.selector).find('.setting-button[data-class="'+key+'"]').on('click', function() {
+                    _this.callback.selectItemByClass(key);
+                });
+
+                $(_this.selector).find('.rss-template-save[data-class="'+key+'"]').on('click', function() {
+                    var content = $(_this.selector).find('.template-content[data-class="'+key+'"]').val();
+                    _this.callback.saveItemTemplate(key, content);
+                });
+
+                $(_this.selector).find('.rss-template-cancel[data-class="'+key+'"]').on('click', function() {
+                    _this.callback.unselectItem();
+                });
+            };
+        }
+
         afterRender() {
             var thisControl = this;
 
             // show blocks
-            if (thisControl.value.url == '') {
+            if (thisControl.value.config.url == '') {
                 thisControl.showStart();
             } else {
                 thisControl.showLoadUrl();
             }
 
+            // render options
+            thisControl.showDisplayOptions();
+
 
             // set value
-            $(thisControl.selector).find('.rss-url').val(thisControl.value.url);
-            $(thisControl.selector).find('.rss-count').val(thisControl.value.count);
+            $(thisControl.selector).find('.rss-url').val(thisControl.value.config.url);
+            $(thisControl.selector).find('.rss-count').val(thisControl.value.config.size);
 
             // set count
             $(thisControl.selector).find('.rss-count').on('change', function(e) {
                 thisControl.callback.setOptions({
-                    count: $(this).val()
+                    config: {
+                        size: $(this).val()
+                    }                    
                 });
             });
             

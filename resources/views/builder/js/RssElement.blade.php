@@ -7,10 +7,14 @@
         }
 
         getOptions() {
+            var _this = this;
+
             return {
                 preview: this.obj.attr('data-preview'),
-                count: this.obj.attr('data-count'),
-                url: this.obj.attr('data-url')
+                config: JSON.parse(this.obj.attr('data-config')),
+                getSelectedItem: function() {
+                    return _this.selectedItem;
+                }                
             };
         }
 
@@ -20,19 +24,18 @@
             if (typeof(options.preview) != 'undefined') {
                 this.obj.attr('data-preview', options.preview);
             }
-            if (typeof(options.count) != 'undefined') {
-                this.obj.attr('data-count', options.count);
-            }
-            if (typeof(options.url) != 'undefined') {
-                this.obj.attr('data-url', options.url);
+            if (typeof(options.config) != 'undefined') {
+                this.obj.attr('data-config', JSON.stringify($.extend({}, _this.getOptions().config, options.config)));
             }
 
             _this.render();
+
+            currentEditor.handleSelect();
         }
 
         addEvents() {
             var element = this;
-            var id = element.obj.attr('id');
+            window.cElement = this;
 
             // preview
             element.obj.find('.ace-preview').on('click', function() {
@@ -48,6 +51,65 @@
                 });
             });
 
+            // hover rss items
+            element.obj.find('[rss-item]').mouseenter( function() {
+                var rssItem = element.rssItemFactory($(this));
+                rssItem.highlight();
+            } ).mouseleave( function() {
+                var rssItem = element.rssItemFactory($(this));
+                rssItem.removeHighlight();
+            } );
+
+            // click outside item
+            element.obj.find('[rss-item]').on('click', function(e) {
+                var rssItem = element.rssItemFactory($(this));
+                element.selectItem(rssItem);
+            } )
+
+            // click no item
+            element.obj.on('click', function(e) {
+                if(!$(e.target).closest('[rss-item]').length) {
+                    element.unselectItem();
+                }
+            } )
+
+            // set before save event
+            element.setBeforeSaveEvent();
+        }
+
+        selectItem(rssItem) {
+            console.log('unselect');
+            this.unselectItem();
+
+            //
+            console.log('select');
+            this.selectedItem = rssItem;            
+            this.selectedItem.select();
+
+            // reload controls
+            currentEditor.handleSelect();
+        }
+
+        unselectItem() {
+            if (typeof(this.selectedItem) == 'undefined' || this.selectedItem == null) {
+                return;
+            }
+
+            this.selectedItem.unselect();
+            this.selectedItem = null;
+
+            currentEditor.handleSelect();
+        }
+
+        rssItemFactory(item) {
+            return new RssItem(this, item);
+        }
+
+        setBeforeSaveEvent() {
+            var element = this;
+            var id = element.obj.attr('id');
+
+            // editor before save events.
             if (typeof(window.rssEvents) == 'undefined') {
                 window.rssEvents = [];
             }
@@ -117,7 +179,7 @@
             var _this = this;
             var options = _this.getOptions();
 
-            if (options.url == '') {
+            if (options.config.url == '') {
                 alert('{{ trans('messages.rss.url_required') }}');
                 return;
             }
@@ -170,6 +232,19 @@
             _this.obj.find('.ace-loader').remove();
         }
 
+        updateTemplate(key, options) {
+            var _this = this;
+
+            var templates = _this.getOptions().config.templates;
+            templates[key] = $.extend({}, templates[key], options);
+
+            _this.setOptions({
+                config: {
+                    templates: templates
+                }
+            });
+        }
+
         getControls() {
             var element = this;
 
@@ -190,6 +265,25 @@
                 new RssControl(getI18n('font_family'), element.getOptions(), {
                     setOptions: function(options) {
                         element.setOptions(options);
+                    },
+                    saveItemShow: function(key, show) {
+                        element.updateTemplate(key, {
+                            show: show
+                        });
+                    },
+                    selectItemByClass: function(name) {
+                        if (element.obj.find('[rss-item="'+name+'"]').length) {
+                            var item = element.rssItemFactory(element.obj.find('[rss-item="'+name+'"]'));
+                            element.selectItem(item);
+                        }
+                    },
+                    unselectItem: function() {
+                        element.unselectItem();
+                    },
+                    saveItemTemplate: function(key, content) {
+                        element.updateTemplate(key, {
+                            template: content
+                        });
                     }
                 }),
                 new FontFamilyControl(getI18n('font_family'), element.obj.css('font-family'), function(font_family) {

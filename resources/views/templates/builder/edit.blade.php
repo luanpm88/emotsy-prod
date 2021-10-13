@@ -17,6 +17,75 @@
     <link href="{{ URL::asset('core/css/UrlAutoFill.css') }}" rel="stylesheet" type="text/css">
     <script src="{{ URL::asset('core/js/UrlAutoFill.js') }}"></script>
 
+    <script>
+        (function($){
+            $.fn.serializeObject = function(){
+
+                var self = this,
+                    json = {},
+                    push_counters = {},
+                    patterns = {
+                        "validate": /^[a-zA-Z][a-zA-Z0-9_]*(?:\[(?:\d*|[a-zA-Z0-9_]+)\])*$/,
+                        "key":      /[a-zA-Z0-9_]+|(?=\[\])/g,
+                        "push":     /^$/,
+                        "fixed":    /^\d+$/,
+                        "named":    /^[a-zA-Z0-9_]+$/
+                    };
+
+
+                this.build = function(base, key, value){
+                    base[key] = value;
+                    return base;
+                };
+
+                this.push_counter = function(key){
+                    if(push_counters[key] === undefined){
+                        push_counters[key] = 0;
+                    }
+                    return push_counters[key]++;
+                };
+
+                $.each($(this).serializeArray(), function(){
+
+                    // Skip invalid keys
+                    if(!patterns.validate.test(this.name)){
+                        return;
+                    }
+
+                    var k,
+                        keys = this.name.match(patterns.key),
+                        merge = this.value,
+                        reverse_key = this.name;
+
+                    while((k = keys.pop()) !== undefined){
+
+                        // Adjust reverse_key
+                        reverse_key = reverse_key.replace(new RegExp("\\[" + k + "\\]$"), '');
+
+                        // Push
+                        if(k.match(patterns.push)){
+                            merge = self.build([], self.push_counter(reverse_key), merge);
+                        }
+
+                        // Fixed
+                        else if(k.match(patterns.fixed)){
+                            merge = self.build([], k, merge);
+                        }
+
+                        // Named
+                        else if(k.match(patterns.named)){
+                            merge = self.build({}, k, merge);
+                        }
+                    }
+
+                    json = $.extend(true, json, merge);
+                });
+
+                return json;
+            };
+        })(jQuery);
+    </script>
+
     @if ($template->theme)
         @include('builder.themes.' . $template->theme)
     @endif
@@ -51,6 +120,70 @@
         }
         .btn-widget-preview span, .btn-widget-unpreview span {
             font-size: 20px;
+        }
+        .rss-config-line a {
+            color: #666;
+        }
+        .rss-config-line a:hover {
+            color: #333;
+        }
+        .fw-600 {
+            font-weight: 600;
+        }
+        .rss-config-line.item-selected {
+            background: #fff;
+            box-shadow: 1px 1px 20px rgb(0 0 0 / 10%);
+        }
+        .switchery[type="checkbox"], .styled[type="checkbox"], .styled[type="radio"] {
+            width: 19px;
+            height: 19px;
+            display: inline-block;
+            align-items: center;
+            cursor: pointer;
+            /* transform: scale(1.9) translateY(-90px); */
+            display: none;
+        }
+        .switchery[type="checkbox"]:disabled, .styled[type="checkbox"]:disabled, .styled[type="radio"]:disabled {
+            opacity: 0.6;
+            filter: grayscale(100%);
+            pointer-events: none;
+        }
+        .switchery[type="checkbox"] ~ .check-symbol:before, .styled[type="checkbox"] ~ .check-symbol:before, .styled[type="radio"] ~ .check-symbol:before {
+            position: relative;
+            display: inline-block;
+            width: 19px;
+            height: 19px;
+            background-color: #eee;
+            border: 1px solid #aaa;
+            content: "done";
+            border-radius: 3px;
+            background: #FFF;
+            font-family: 'Material Icons Outlined';
+            font-size: 15px;
+            line-height: 17px;
+            text-align: center;
+            cursor: pointer;
+            text-indent: -90000px;
+            top: 0;
+            /* transform: scale(1.9) translateY(90px); */
+            /* transform: translateY(19997px); */
+        }
+        .switchery[type="checkbox"] ~ .check-symbol:hover:before, .styled[type="checkbox"] ~ .check-symbol:hover:before, .styled[type="radio"] ~ .check-symbol:hover:before {
+            background-color: #eff3f5;
+        }
+        .switchery[type="checkbox"]:checked ~ .check-symbol:before, .styled[type="checkbox"]:checked ~ .check-symbol:before, .styled[type="radio"]:checked ~ .check-symbol:before {
+            content: "done";
+            background: #009688;
+            border-color: #009688;
+            color: #fff;
+            text-indent: 0;
+        }
+        .switchery[type="checkbox"].half_checked ~ .check-symbol:before, .styled[type="checkbox"].half_checked ~ .check-symbol:before {
+            content: "remove";
+            background: #009688;
+            border-color: #009688;
+            color: #fff;
+            text-indent: 0;
         }
     </style>
 

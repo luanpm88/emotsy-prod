@@ -88,8 +88,8 @@ class TransformWidgets implements StageInterface
 
             foreach ($nodes as $node) 
             {
-                if ($node->getAttribute('data-url') && $node->getAttribute('data-count')) {
-                    $html = parseRss($node->getAttribute('data-url'), $node->getAttribute('data-count'));
+                if ($node->getAttribute('data-config')) {
+                    $html = parseRss(json_decode($node->getAttribute('data-config'), true));
                     $_this->update_html($dom, $node, $html);
                 } else {
                     $_this->update_html($dom, $node, '<div class="alert alert-warning text-center">'.trans('messages.rss.no_options').'</div>');

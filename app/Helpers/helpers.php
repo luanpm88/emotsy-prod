@@ -876,20 +876,64 @@ function getThemeMode($mode, $auto='light')
     return $themeMode;
 }
 
-function parseRss($url, $count)
+function parseRss($config)
 {
+    $rss = [];
+
     // Parse RSS content
-    $rssArray = xml_to_array(simplexml_load_string(file_get_contents($url), 'SimpleXMLElement', LIBXML_NOCDATA));
+    $rssArray = xml_to_array(simplexml_load_string(file_get_contents($config['url']), 'SimpleXMLElement', LIBXML_NOCDATA));
 
     // Take 10 records only
-    $records = array_slice($rssArray['rss']['channel']['item'], 0, $count);
-    $title = $rssArray['rss']['channel']['title'];
-    $pubDate = isset($rssArray['rss']['channel']['pubDate']) ? $rssArray['rss']['channel']['pubDate'] : null;
+    $records = array_slice($rssArray['rss']['channel']['item'], 0, $config['size']);
+
+    // feed data
+    $feedData = [];
+    $feedData['feed_title'] = $rssArray['rss']['channel']['title'];
+    $feedData['feed_description'] = isset($rssArray['rss']['channel']['description']) ? $rssArray['rss']['channel']['description'] : '';
+    $feedData['feed_link'] = isset($rssArray['rss']['channel']['link']) ? $rssArray['rss']['channel']['link'] : '';
+    $feedData['feed_pubdate'] = isset($rssArray['rss']['channel']['pubDate']) ? $rssArray['rss']['channel']['pubDate'] : '';
+    $feedData['feed_build_date'] = isset($rssArray['rss']['channel']['lastBuildDate']) ? $rssArray['rss']['channel']['lastBuildDate'] : '';
+
+    // feed parse template
+    $rss['FeedTitle'] = parseRssTemplate($config['templates']['FeedTitle']['template'], $feedData);
+    $rss['FeedSubtitle'] = parseRssTemplate($config['templates']['FeedSubtitle']['template'], $feedData);
+    $rss['FeedTagdLine'] = parseRssTemplate($config['templates']['FeedTagdLine']['template'], $feedData);
+
+    // records
+    $rss['items'] = [];
+    foreach($records as $record) {
+        // item data
+        $itemData['item_title'] = isset($record['title']) ? $record['title'] : '';
+        $itemData['item_pubdate'] = isset($record['pubDate']) ? $record['pubDate'] : '';
+        $itemData['item_description'] = isset($record['description']) ? $record['description'] : '';
+        $itemData['item_url'] = isset($record['link']) ? $record['link'] : '';
+        $itemData['item_image_url'] = isset($record['image_url']) ? $record['image_url'] : '';
+
+        // item parse template
+        $item = [];
+        $item['ItemTitle'] = parseRssTemplate($config['templates']['ItemTitle']['template'], $itemData);
+        $item['ItemDescription'] = parseRssTemplate($config['templates']['ItemDescription']['template'], $itemData);
+        $item['ItemMeta'] = parseRssTemplate($config['templates']['ItemMeta']['template'], $itemData);
+        $item['ItemImage'] = parseRssTemplate($config['templates']['ItemImage']['template'], $itemData);
+        $item['ItemStats'] = parseRssTemplate($config['templates']['ItemStats']['template'], $itemData);
+
+        // add item to rss items
+        $rss['items'][] = $item;
+    }
+
 
     // Return HTML
     return view('helpers.rss.template', [
-        'title' => $title,
-        'pubDate' => $pubDate,
-        'records' => $records,
+        'rss' => $rss,
+        'templates' => $config['templates'],
     ]);
+}
+
+function parseRssTemplate($template, $feedData)
+{
+    foreach($feedData as $key => $value) {
+        $template = str_replace('@' . $key, $value, $template);
+    }
+
+    return $template;
 }

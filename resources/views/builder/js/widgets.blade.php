@@ -10,3 +10,4 @@
 @include('builder.js.RssElement')
 @include('builder.js.RssWidget')
 @include('builder.js.RssControl')
+@include('builder.js.RssItem')

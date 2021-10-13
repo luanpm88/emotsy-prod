@@ -1396,4 +1396,54 @@ class Template extends Model
         // Return subscriber's bound html
         return $html;
     }
+
+    public static function defaultRssConfig()
+    {
+        return [
+            'url' => '',
+            'size' => 10,
+            'templates' => [
+                'FeedTitle' => [
+                    'title' => trans('messages.rss.feed_title'),
+                    'show' => true,
+                    'template' => '@feed_title',
+                ],
+                'FeedSubtitle' => [
+                    'title' => trans('messages.rss.feed_subtitle'),
+                    'show' => true,
+                    'template' => 'Updated at: @feed_build_date',
+                ],
+                'FeedTagdLine' => [
+                    'title' => trans('messages.rss.feed_tagline'),
+                    'show' => true,
+                    'template' => trans('messages.rss.top_stories_for_you'),
+                ],
+                'ItemTitle' => [
+                    'title' => trans('messages.rss.item_title'),
+                    'show' => true,
+                    'template' => 'Title: @item_title',
+                ],
+                'ItemDescription' => [
+                    'title' => trans('messages.rss.item_description'),
+                    'show' => true,
+                    'template' => '@item_description <a href=\"@item_url\">Read more</a>',
+                ],
+                'ItemMeta' => [
+                    'title' => trans('messages.rss.meta_line'),
+                    'show' => true,
+                    'template' => '[IMAGE] something here - @item_pubdate',
+                ],
+                'ItemStats' => [
+                    'title' => trans('messages.rss.stats_line'),
+                    'show' => true,
+                    'template' => '[icon] 400k updates, [icon] comments',
+                ],
+                'ItemImage' => [
+                    'title' => trans('messages.rss.image'),
+                    'show' => true,
+                    'template' => false,
+                ],
+            ],
+        ];
+    }
 }

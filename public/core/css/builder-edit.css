@@ -105,3 +105,16 @@
     border-width: 0px;
     color: #999!important;
 }
+.rss-highlight {
+    outline: dashed 1px rgb(0 0 0 / 10%);
+    background: rgb(0 0 0 / 5%);
+    border-radius: 3px;
+}
+.rss-selected {
+    outline: dashed 1px rgb(189 185 0 / 50%);
+    background: rgb(255 226 0 / 20%);
+    border-radius: 3px;
+}
+[rss-item] {
+    cursor: pointer;
+}

@@ -22,7 +22,13 @@
 
             // default content html
             this.setContentHtml(`
-                <div id="`+this.id+`" class="rss-widget" builder-element="RssElement" builder-draggable data-preview="no" data-url="" data-count="10"></div>
+                <div id="`+this.id+`"
+                    class="rss-widget"
+                    builder-element="RssElement"
+                    builder-draggable
+                    data-preview="no"
+                    data-config='{{ json_encode(\Acelle\Model\Template::defaultRssConfig()) }}'
+                ></div>
             `);
 
             // default dragging html
