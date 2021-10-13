@@ -3869,4 +3869,8 @@
   'count_minute' => ':count minute|:count minutes',
   'count_minutes' => ':count minute|:count minutes',
   'upgrade.uploading' => 'Uploading...',
+  'sending_domain.status.outdated' => 'This sending domain was previously verified with another sending service. It might not be valid with the current sending server. Delete and create the domain again to verify it',
+  'email_verification.statistics' => 'Statistics',
+  'template.no_product_selected' => 'No product selected',
+  'source.importing_product' => 'Importing products... please wait!',
 ) ?>
