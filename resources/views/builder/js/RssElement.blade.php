@@ -11,7 +11,7 @@
 
             return {
                 preview: this.obj.attr('data-preview'),
-                config: JSON.parse(atob(this.obj.attr('data-config'))),
+                config: JSON.parse(Base64.decode(this.obj.attr('data-config'))),
                 getSelectedItem: function() {
                     return _this.selectedItem;
                 }                
@@ -25,7 +25,7 @@
                 this.obj.attr('data-preview', options.preview);
             }
             if (typeof(options.config) != 'undefined') {
-                this.obj.attr('data-config', btoa(JSON.stringify($.extend({}, _this.getOptions().config, options.config))));
+                this.obj.attr('data-config', Base64.encode(JSON.stringify($.extend({}, _this.getOptions().config, options.config))));
             }
 
             _this.render();

@@ -21,7 +21,7 @@
             `);
 
             // default content html
-            var config = btoa(JSON.stringify({!! json_encode(\Acelle\Model\Template::defaultRssConfig()) !!}));
+            var config = Base64.encode(JSON.stringify({!! json_encode(\Acelle\Model\Template::defaultRssConfig()) !!}));
             this.setContentHtml(`
                 <div id="`+this.id+`"
                     class="rss-widget"
