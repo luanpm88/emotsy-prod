@@ -152,7 +152,7 @@
                 if (showed && t.template !== false) {
                     form = `
                         <div class="border-top px-3 py-2">
-                            <textarea class="rss-template-edit form-control template-content" data-class="`+key+`">`+t.template+`</textarea>
+                            <textarea class="rss-template-edit rss-editor-`+key+` form-control template-content" data-class="`+key+`">`+t.template+`</textarea>
                             <div class="mt-2 text-right">
                                 <button class="btn btn-primary mr-1 rss-template-save" data-class="`+key+`">{{ trans('messages.rss.template.save') }}</button>
                                 <button class="btn btn-secondary rss-template-cancel" data-class="`+key+`">{{ trans('messages.rss.template.cancel') }}</button>
@@ -202,6 +202,69 @@
                 $(_this.selector).find('.rss-template-cancel[data-class="'+key+'"]').on('click', function() {
                     _this.callback.unselectItem();
                 });
+
+                var tinyconfig = {
+                    selector: '.rss-editor-' + key,
+                    valid_elements: '*[*]',
+                    valid_children: '+h1[div],+h2[div],+h3[div],+h4[div],+h5[div],+h6[div],+a[div],*[*]',
+                    branding: false,
+                    menubar: false,
+                    skin: "oxide",
+                    height: '200px',
+                    force_br_newlines : false,
+                    relative_urls: false,
+                    convert_urls: false,
+                    remove_script_host : false,
+                    force_p_newlines : false,
+                    forced_root_block : '',
+                    inline_boundaries: false,
+                    allow_html_in_named_anchor: true,
+                    plugins: 'link lists autolink',
+                    //toolbar: 'undo redo | bold italic underline | fontselect fontsizeselect | forecolor backcolor | alignleft aligncenter alignright alignfull | numlist bullist outdent indent',
+                    toolbar: 'undo redo bold italic underline strikethrough alignleft aligncenter alignright alignjustify outdent indent  numlist bullist checklist fontselect fontsizeselect forecolor backcolor casechange permanentpen formatpainter removeformat pagebreak charmap emoticons fullscreen  preview save print insertfile image media pageembed template link anchor codesample a11ycheck ltr rtl showcomments addcomment customTag custom1 custom2',
+                    setup: function (editor) {
+                    
+                        /* Menu button that has a simple "insert date" menu item, and a submenu containing other formats. */
+                        /* Clicking the first menu item or one of the submenu items inserts the date in the selected format. */
+                        editor.ui.registry.addMenuButton('customTag', {
+                        text: getI18n('editor.insert_tag'),
+                        fetch: function (callback) {
+                            var items = [];
+                            var tags = {!! json_encode(rssTags()) !!};
+
+                            if (key.includes('Item')) {
+                                tags = tags.item;
+                            } else {
+                                tags = tags.feed;
+                            }
+
+                            tags.forEach(function(tag) {
+                                items.push({
+                                    type: 'menuitem',
+                                    text: tag,
+                                    onAction: function (_) {
+                                        if (tag.text) {
+                                            editor.insertContent(tag);
+                                        } else {
+                                            editor.insertContent(tag);
+                                        }                                            
+                                    }
+                                });
+                            });
+                            
+                            callback(items);
+                        }
+                        });
+
+                        editor.on("change keyup", function(e){
+                            editor.save(); // updates this instance's textarea
+                            $(editor.getElement()).trigger('change'); // for garlic to detect change
+                            // thisControl.callback(editor.getContent());
+                            // currentEditor.selected.select();
+                        });
+                    }
+                };
+                tinymce.init(tinyconfig);
             };
         }
 

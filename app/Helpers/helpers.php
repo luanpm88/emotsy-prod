@@ -937,3 +937,22 @@ function parseRssTemplate($template, $feedData)
 
     return $template;
 }
+
+function rssTags()
+{
+    return [
+        'feed' => [
+            '@feed_title',
+            '@feed_description',
+            '@feed_link',
+            '@feed_pubdate',
+            '@feed_build_date',
+        ],
+        'item' => [
+            '@item_title',
+            '@item_pubdate',
+            '@item_description',
+            '@item_image_url',
+        ],
+    ];
+}
