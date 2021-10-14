@@ -1440,7 +1440,7 @@ class Template extends Model
                 ],
                 'ItemImage' => [
                     'title' => trans('messages.rss.image'),
-                    'show' => true,
+                    'show' => false,
                     'template' => false,
                 ],
             ],

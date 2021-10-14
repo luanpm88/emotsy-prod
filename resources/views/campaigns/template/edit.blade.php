@@ -7,58 +7,25 @@
     
     @include('layouts.core._favicon')
     
+    <!-- BuilderJS CORE -->
     <link href="{{ URL::asset('builder/builder.css') }}" rel="stylesheet" type="text/css">
     <script type="text/javascript" src="{{ URL::asset('builder/builder.js') }}"></script>
 
-    <!-- jQuery -->
-    <script type="text/javascript" src="{{ URL::asset('core/js/jquery-3.6.0.min.js') }}"></script>
+    <!-- BuilderJS CUSTOM -->
+    <link href="{{ URL::asset('core/css/builder-custom.css') }}" rel="stylesheet" type="text/css">
+    @include('builder.js.widgets')
 
     <!-- Select2 -->
     <link rel="stylesheet" type="text/css" href="{{ URL::asset('core/select2/css/select2.min.css') }}">
     <script type="text/javascript" src="{{ URL::asset('core/select2/js/select2.min.js') }}"></script>
 
+    <!-- Autofill -->
     <link href="{{ URL::asset('core/css/UrlAutoFill.css') }}" rel="stylesheet" type="text/css">
     <script src="{{ URL::asset('core/js/UrlAutoFill.js') }}"></script>
 
     @if ($campaign->template->theme)
         @include('builder.themes.' . $campaign->template->theme)
     @endif
-
-    <style>
-        .logo-img {
-            width: 120px!important;
-            margin-right: 15px;
-        }
-        .product-list-widget {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 40px;
-        }
-        .product-list-widget.single img {
-            padding: 3px;
-            width: 58px;
-            height: 81px;
-        }
-        .product-list-widget img {
-            padding: 3px;
-            width: 65px;
-            height: 81px;
-        }
-        .woo-panel__body {
-            background-color: #fff8fe!important;
-        }
-        .btn-widget-preview, .btn-widget-unpreview {
-            padding: 3px 10px;
-            height: 28px;
-        }
-        .btn-widget-preview span, .btn-widget-unpreview span {
-            font-size: 20px;
-        }
-    </style>
-
-    @include('builder.js.widgets')
-    @include('helpers._builder_rss_widgets')
 
     <script>
         var CSRF_TOKEN = "{{ csrf_token() }}";
