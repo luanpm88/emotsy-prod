@@ -1437,7 +1437,7 @@ class Template extends Model
                     'title' => trans('messages.rss.stats_line'),
                     'show' => true,
                     'template' => '<img src="'.url('images/icon-up.svg').'" width="16px" style="margin-right:5px" /> 400k updates, &nbsp; &nbsp; 
-                        <img src="'.url('images/icon-comment.svg').'" width="16px" style="margin-right:5px" />  comments',
+                        <img src="'.url('images/icon-comment.svg').'" width="16px" style="margin-right:5px" /> 1.2k comments',
                 ],
                 'ItemImage' => [
                     'title' => trans('messages.rss.image'),

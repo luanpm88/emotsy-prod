@@ -245,6 +245,15 @@
             });
         }
 
+        selectItemByClass(name) {
+            var element = this;
+
+            if (element.obj.find('[rss-item="'+name+'"]').length) {
+                var item = element.rssItemFactory(element.obj.find('[rss-item="'+name+'"]'));
+                element.selectItem(item);
+            }
+        }
+
         getControls() {
             var element = this;
 
@@ -272,10 +281,7 @@
                         });
                     },
                     selectItemByClass: function(name) {
-                        if (element.obj.find('[rss-item="'+name+'"]').length) {
-                            var item = element.rssItemFactory(element.obj.find('[rss-item="'+name+'"]'));
-                            element.selectItem(item);
-                        }
+                        element.selectItemByClass(name);
                     },
                     unselectItem: function() {
                         element.unselectItem();
@@ -284,6 +290,8 @@
                         element.updateTemplate(key, {
                             template: content
                         });
+
+                        element.unselectItem();
                     }
                 }),
                 new FontFamilyControl(getI18n('font_family'), element.obj.css('font-family'), function(font_family) {
