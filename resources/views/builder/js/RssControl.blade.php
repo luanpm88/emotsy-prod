@@ -118,8 +118,6 @@
         showLoadUrl() {
             var thisControl = this;
 
-            console.log('show load');
-
             $(thisControl.selector).find('.start-block').hide();
             $(thisControl.selector).find('.setting-block').show();
 

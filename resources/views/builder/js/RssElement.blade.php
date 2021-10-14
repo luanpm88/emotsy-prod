@@ -38,6 +38,7 @@
             window.cElement = this;
 
             // preview
+            element.obj.find('.ace-preview').unbind('click');
             element.obj.find('.ace-preview').on('click', function() {
                 element.setOptions({
                     preview: 'yes'
@@ -45,6 +46,7 @@
             });
 
             // preview
+            element.obj.find('.ace-unpreview').unbind('click');
             element.obj.find('.ace-unpreview').on('mouseup', function() {
                 element.setOptions({
                     preview: 'no'
@@ -52,6 +54,8 @@
             });
 
             // hover rss items
+            element.obj.find('[rss-item]').unbind('mouseenter');
+            element.obj.find('[rss-item]').unbind('mouseleave');
             element.obj.find('[rss-item]').mouseenter( function() {
                 var rssItem = element.rssItemFactory($(this));
                 rssItem.highlight();
@@ -61,6 +65,7 @@
             } );
 
             // click outside item
+            element.obj.find('[rss-item]').unbind('click');
             element.obj.find('[rss-item]').on('click', function(e) {
                 var rssItem = element.rssItemFactory($(this));
                 element.selectItem(rssItem);
@@ -107,23 +112,6 @@
 
         setBeforeSaveEvent() {
             var element = this;
-            var id = element.obj.attr('id');
-
-            // editor before save events.
-            if (typeof(window.rssEvents) == 'undefined') {
-                window.rssEvents = [];
-            }
-
-            if (typeof(window.rssEvents[id]) == 'undefined') {
-                window.rssEvents[id] = true;
-
-                // before save
-                currentEditor.addBeforeSaveEvent(function() {
-                    element.setOptions({
-                        preview: 'no'
-                    });
-                });
-            }
         }
 
         render(callback) {
@@ -263,16 +251,18 @@
 
             window.testE = this;
 
-            var id = element.obj.attr('id');
-            if (typeof(window.rssEvents1) == 'undefined') {
-                window.rssEvents1 = [];
-            }
+            element.addEvents();
 
-            if (typeof(window.rssEvents1[id]) == 'undefined') {
-                window.rssEvents1[id] = true;
+            // var id = element.obj.attr('id');
+            // if (typeof(window.rssEvents1) == 'undefined') {
+            //     window.rssEvents1 = [];
+            // }
 
-                element.render();
-            }
+            // if (typeof(window.rssEvents1[id]) == 'undefined') {
+            //     window.rssEvents1[id] = true;
+
+            //     element.render();
+            // }
 
             return [
                 new RssControl(getI18n('font_family'), element.getOptions(), {
