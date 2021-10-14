@@ -220,9 +220,14 @@
                     forced_root_block : '',
                     inline_boundaries: false,
                     allow_html_in_named_anchor: true,
-                    plugins: 'link lists autolink',
+                    plugins: 'link lists autolink image',
+
+                    external_filemanager_path:'{{ url('/') }}'.replace('/index.php','')+"/filemanager2/",
+                    filemanager_title:"Responsive Filemanager" ,
+                    external_plugins: { "filemanager" : '{{ url('/') }}'.replace('/index.php','')+"/filemanager2/plugin.min.js"},
+
                     //toolbar: 'undo redo | bold italic underline | fontselect fontsizeselect | forecolor backcolor | alignleft aligncenter alignright alignfull | numlist bullist outdent indent',
-                    toolbar: 'undo redo bold italic underline strikethrough fontselect fontsizeselect forecolor backcolor casechange customTag custom1 custom2',
+                    toolbar: 'link image undo redo bold italic underline strikethrough fontselect fontsizeselect forecolor backcolor casechange customTag custom1 custom2',
                     setup: function (editor) {
                     
                         /* Menu button that has a simple "insert date" menu item, and a submenu containing other formats. */

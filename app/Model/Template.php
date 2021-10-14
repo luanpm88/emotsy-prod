@@ -1431,12 +1431,13 @@ class Template extends Model
                 'ItemMeta' => [
                     'title' => trans('messages.rss.meta_line'),
                     'show' => true,
-                    'template' => '[IMAGE] something here - @item_pubdate',
+                    'template' => '<img src="'.url('images/avatar1.svg').'" width="30px" style="margin-right:5px" /> something here - @item_pubdate',
                 ],
                 'ItemStats' => [
                     'title' => trans('messages.rss.stats_line'),
                     'show' => true,
-                    'template' => '[icon] 400k updates, [icon] comments',
+                    'template' => '<img src="'.url('images/icon-up.svg').'" width="16px" style="margin-right:5px" /> 400k updates, &nbsp; &nbsp; 
+                        <img src="'.url('images/icon-comment.svg').'" width="16px" style="margin-right:5px" />  comments',
                 ],
                 'ItemImage' => [
                     'title' => trans('messages.rss.image'),
