@@ -1426,7 +1426,7 @@ class Template extends Model
                 'ItemDescription' => [
                     'title' => trans('messages.rss.item_description'),
                     'show' => true,
-                    'template' => '@item_description <a href=\"@item_url\">Read more</a>',
+                    'template' => '@item_description <a href="@item_url">Read more</a>',
                 ],
                 'ItemMeta' => [
                     'title' => trans('messages.rss.meta_line'),

@@ -21,13 +21,14 @@
             `);
 
             // default content html
+            var config = btoa(JSON.stringify({!! json_encode(\Acelle\Model\Template::defaultRssConfig()) !!}));
             this.setContentHtml(`
                 <div id="`+this.id+`"
                     class="rss-widget"
                     builder-element="RssElement"
                     builder-draggable
                     data-preview="no"
-                    data-config='{{ json_encode(\Acelle\Model\Template::defaultRssConfig()) }}'
+                    data-config='`+config+`'
                 ></div>
             `);
 
