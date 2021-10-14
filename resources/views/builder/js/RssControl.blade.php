@@ -211,6 +211,7 @@
                     menubar: false,
                     skin: "oxide",
                     height: '200px',
+                    elementpath: false,
                     force_br_newlines : false,
                     relative_urls: false,
                     convert_urls: false,
@@ -221,7 +222,7 @@
                     allow_html_in_named_anchor: true,
                     plugins: 'link lists autolink',
                     //toolbar: 'undo redo | bold italic underline | fontselect fontsizeselect | forecolor backcolor | alignleft aligncenter alignright alignfull | numlist bullist outdent indent',
-                    toolbar: 'undo redo bold italic underline strikethrough alignleft aligncenter alignright alignjustify outdent indent  numlist bullist checklist fontselect fontsizeselect forecolor backcolor casechange permanentpen formatpainter removeformat pagebreak charmap emoticons fullscreen  preview save print insertfile image media pageembed template link anchor codesample a11ycheck ltr rtl showcomments addcomment customTag custom1 custom2',
+                    toolbar: 'undo redo bold italic underline strikethrough fontselect fontsizeselect forecolor backcolor casechange customTag custom1 custom2',
                     setup: function (editor) {
                     
                         /* Menu button that has a simple "insert date" menu item, and a submenu containing other formats. */
