@@ -1388,7 +1388,7 @@ class Template extends Model
     {
         // Bind subscriber/message/server information to email content
         $pipeline = new PipelineBuilder();
-        $pipeline->add(new TransformWidgets($this));
+        $pipeline->add(new TransformWidgets());
 
         // Actually push HTML to pipeline for processing
         $html = $pipeline->build()->process($this->content);

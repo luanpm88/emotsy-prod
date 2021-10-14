@@ -4,19 +4,11 @@ namespace Acelle\Library\HtmlHandler;
 
 use League\Pipeline\StageInterface;
 use Acelle\Library\StringHelper;
-use Acelle\Model\Template;
 use Acelle\Model\Product;
 use Exception;
 
 class TransformWidgets implements StageInterface
 {
-    public $template;
-
-    public function __construct(Template $template)
-    {
-        $this->template = $template;
-    }
-
     public function __invoke($html)
     {
         // transform product list widget
@@ -88,11 +80,21 @@ class TransformWidgets implements StageInterface
 
             foreach ($nodes as $node) 
             {
-                if ($node->getAttribute('data-config')) {
-                    $html = parseRss(json_decode(base64_decode($node->getAttribute('data-config')), true));
+                try {
+                    if (!$node->getAttribute('data-config')) {
+                        throw new \Exception(trans('messages.rss.no_options'));
+                    }
+
+                    $config = json_decode(base64_decode($node->getAttribute('data-config')), true);
+
+                    if (!isset($config['url']) || !$config['url']) {
+                        throw new \Exception(trans('messages.rss.url_required'));
+                    }
+
+                    $html = parseRss($config);
                     $_this->update_html($dom, $node, $html);
-                } else {
-                    $_this->update_html($dom, $node, '<div class="alert alert-warning text-center">'.trans('messages.rss.no_options').'</div>');
+                } catch (\Exception $e) {
+                    $_this->update_html($dom, $node, '<div class="alert alert-warning text-center">'.$e->getMessage().'</div>');
                 }
             }
         });

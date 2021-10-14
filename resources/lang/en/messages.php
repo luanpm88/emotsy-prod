@@ -4010,4 +4010,5 @@
   'rss.image' => 'Image',
   'rss.top_stories_for_you' => 'TOP STORIES FOR YOU',
   'rss.feed_tagline' => 'Tagline',
+  'rss.no_options' => 'RSS config not found',
 ) ?>
