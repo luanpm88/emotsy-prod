@@ -18,7 +18,7 @@
             };
         }
 
-        setOptions(options) {
+        setOptions(options, callback) {
             var _this = this;
 
             if (typeof(options.preview) != 'undefined') {
@@ -28,7 +28,7 @@
                 this.obj.attr('data-config', Base64.encode(JSON.stringify($.extend({}, _this.getOptions().config, options.config))));
             }
 
-            _this.render();
+            _this.render(callback);
 
             currentEditor.handleSelect();
         }
@@ -126,13 +126,13 @@
             }
         }
 
-        render() {
+        render(callback) {
             var _this = this;
 
             if (_this.getOptions().preview == 'no') {
                 _this.loadPlaceholder();
             } else if (_this.getOptions().preview == 'yes') {
-                _this.loadRss();
+                _this.loadRss(callback);
             }
         }
 
@@ -175,7 +175,7 @@
             currentEditor.handleSelect();
         }
 
-        loadRss() {
+        loadRss(callback) {
             var _this = this;
             var options = _this.getOptions();
 
@@ -201,6 +201,10 @@
                     _this.removeLoadingEffect();
 
                     currentEditor.select(_this);
+
+                    if (typeof(callback) != 'undefined') {
+                        callback();
+                    }
                 }
             });
         }
@@ -232,7 +236,7 @@
             _this.obj.find('.ace-loader').remove();
         }
 
-        updateTemplate(key, options) {
+        updateTemplate(key, options, callback) {
             var _this = this;
 
             var templates = _this.getOptions().config.templates;
@@ -242,7 +246,7 @@
                 config: {
                     templates: templates
                 }
-            });
+            }, callback);
         }
 
         selectItemByClass(name) {
@@ -289,9 +293,9 @@
                     saveItemTemplate: function(key, content) {
                         element.updateTemplate(key, {
                             template: content
+                        }, function() {
+                            element.selectItemByClass(key);
                         });
-
-                        element.unselectItem();
                     }
                 }),
                 new FontFamilyControl(getI18n('font_family'), element.obj.css('font-family'), function(font_family) {
