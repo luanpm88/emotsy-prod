@@ -190,10 +190,10 @@ class SegmentController extends Controller
         $segment = \Acelle\Model\Segment::findByUid($request->uid);
 
         $subscribers = $segment->subscribers($request);
-        // $total = distinctCount($subscribers, 'subscribers.id');
         $total = $subscribers->count();
 
-        $subscribers = \optimized_paginate($subscribers, $request->per_page, null, null, null, $total);
+        $subscribers = $subscribers->orderBy($request->sort_order, $request->sort_direction)
+            ->paginate($request->per_page);
 
         $fields = $list->getFields->whereIn('uid', explode(',', $request->columns));
         return view('subscribers._list', [

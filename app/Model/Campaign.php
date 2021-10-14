@@ -2597,6 +2597,7 @@ class Campaign extends Model
                     if ($count > 0) {
                         // Launch over and over again until there is no subscribers left to send
                         // Because each LoadCampaign jobs only load a fixed number of subscribers
+                        $this->updateCache();
                         $this->logger()->warning('Launch another batch of '.$count);
                         $this->launch();
                     } else {
