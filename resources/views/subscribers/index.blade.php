@@ -210,12 +210,17 @@ search
 
 	<script>
         var SubscribersIndex = {
+			list: null,
             getList: function() {
-                return makeList({
-                    url: '{{ action('SubscriberController@listing', $list->uid) }}',
-                    container: $('.subscribers-list'),
-                    content: $('#SubscribersIndexContent')
-                });
+				if (this.list == null) {
+					this.list = makeList({
+						url: '{{ action('SubscriberController@listing', $list->uid) }}',
+						container: $('.subscribers-list'),
+						content: $('#SubscribersIndexContent')
+					});
+				}
+
+				return this.list;
             }
         };
 
