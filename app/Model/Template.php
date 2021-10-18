@@ -1423,16 +1423,16 @@ class Template extends Model
                     'show' => true,
                     'template' => 'Title: @item_title',
                 ],
-                'ItemDescription' => [
-                    'title' => trans('messages.rss.item_description'),
-                    'show' => true,
-                    'template' => '@item_description <a href="@item_url">Read more</a>',
-                ],
                 'ItemMeta' => [
                     'title' => trans('messages.rss.meta_line'),
                     'show' => true,
                     'template' => '<img src="'.url('images/avatar1.svg').'" width="30px" style="margin-right:5px" /> something here - @item_pubdate',
                 ],
+                'ItemDescription' => [
+                    'title' => trans('messages.rss.item_description'),
+                    'show' => true,
+                    'template' => '@item_description <a href="@item_url">Read more</a>',
+                ],                
                 'ItemStats' => [
                     'title' => trans('messages.rss.stats_line'),
                     'show' => true,
