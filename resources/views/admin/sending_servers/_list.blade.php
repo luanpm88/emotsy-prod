@@ -38,11 +38,11 @@
                 <td>
                     @if ($server->isExtended())
                         <h5 class="m-0 text-bold">
-                            <a class="kq_search" href="{{ $server->getEditUrl() }}">{{ $item->name }}</a>
+                            <a class="kq_search d-block" href="{{ $server->getEditUrl() }}">{{ $item->name }}</a>
                         </h5>
                     @else
                         <h5 class="m-0 text-bold">
-                            <a class="kq_search" href="{{ action('Admin\SendingServerController@edit', ["id" => $item->uid, "type" => $item->type]) }}">{{ $item->name }}</a>
+                            <a class="kq_search d-block" href="{{ action('Admin\SendingServerController@edit', ["id" => $item->uid, "type" => $item->type]) }}">{{ $item->name }}</a>
                         </h5>
                     @endif
                     <span class="text-muted">{{ trans('messages.created_at') }}: {{ Tool::formatDateTime($item->created_at) }}</span>

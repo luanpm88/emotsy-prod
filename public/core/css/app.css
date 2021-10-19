@@ -7625,3 +7625,6 @@ body:not(.search-open) .app_search_box .search-control::after {
 body.mode-dark .dropdown-item:focus {
     background-color: rgba(255,255,255,0.1)!important;
 }
+.list-title {
+    font-size: 1rem;
+}

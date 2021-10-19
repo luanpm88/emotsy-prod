@@ -17,11 +17,9 @@
                     </div>
                 </td>
                 <td>
-                    <h5 class="m-0 text-bold">
-                        <a class="kq_search" href="{{ action('Automation2Controller@edit', $automation->uid) }}">
-                            {{ $automation->name }}
-                        </a>
-                    </h5>
+                    <a class="kq_search fw-600 d-block list-title" href="{{ action('Automation2Controller@edit', $automation->uid) }}">
+                        {{ $automation->name }}
+                    </a>
                     <div class="" data-popup="tooltip">
                         {{ $automation->getBriefIntro() }}
                     </div>

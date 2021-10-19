@@ -17,9 +17,11 @@
 					</div>
 				</td>
 				<td width="35%">
-					<h5 class="mt-0 mb-1 fw-600">
-						<a class="kq_search" href="{{ action('MailListController@overview', ['uid' => $list->uid]) }}">{{ $list->name }}</a>
-					</h5>
+					<a class="kq_search fw-600 d-block list-title" href="{{ action('MailListController@overview', [
+						'uid' => $list->uid
+					]) }}">
+						{{ $list->name }}
+					</a>
 					<span class="text-muted">{{ trans('messages.created_at') }}: {{ Tool::formatDateTime($list->created_at) }}</span>
 					@if (empty($list->getSendingServers()))
 						<div class="text-danger"><span class="material-icons-outlined">

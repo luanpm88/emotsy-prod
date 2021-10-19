@@ -30,7 +30,7 @@
                 </td>
                 <td>
                     <h5 class="m-0 text-bold">
-                        <span class="kq_search" href="{{ action('Admin\PlanController@general', $plan->uid) }}">
+                        <span class="kq_search d-block" href="{{ action('Admin\PlanController@general', $plan->uid) }}">
                             {{ $plan->name }}
                         </span>
                     </h5>

@@ -21,11 +21,9 @@
                     </a>
                 </td>
                 <td>
-                    <h5 class="m-0 text-bold">
-                        <a class="kq_search" href="#preview" onclick="popupwindow('{{ action('TemplateController@preview', $template->uid) }}', '{{ $template->name }}', 800, 800)">
-                            {{ $template->name }}
-                        </a>
-                    </h5>
+                    <a class="kq_search fw-600 d-block list-title" href="#preview" onclick="popupwindow('{{ action('TemplateController@preview', $template->uid) }}', '{{ $template->name }}', 800, 800)">
+                        {{ $template->name }}
+                    </a>
                     <div class="text-muted">
                         {!! is_object($template->admin) ? '<i class="icon-user-tie" data="admin"></i>' . $template->admin->user->displayName() : '' !!}
                         {!! is_object($template->customer) ? '<i class="icon-user" data="customer"></i>' . $template->customer->user->displayName() : '' !!}
