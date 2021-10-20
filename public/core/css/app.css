@@ -7628,3 +7628,12 @@ body.mode-dark .dropdown-item:focus {
 .list-title {
     font-size: 1rem;
 }
+.dropdown-item label {
+    cursor: pointer;
+}
+.list-columns-checkbox label {
+    padding: 0.5rem 0.7rem;
+}
+.list-columns-checkbox .dropdown-item {
+    padding: 0;
+}
