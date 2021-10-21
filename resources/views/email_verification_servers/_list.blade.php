@@ -18,7 +18,7 @@
                 </td>
                 <td>
                     <h5 class="m-0 text-bold">
-                        <a class="kq_search" href="{{ action('EmailVerificationServerController@edit', ["email_verification_server" => $server->uid]) }}">{{ $server->name }}</a>
+                        <a class="kq_search d-block" href="{{ action('EmailVerificationServerController@edit', ["email_verification_server" => $server->uid]) }}">{{ $server->name }}</a>
                     </h5>
                     <span class="text-muted">{{ trans('messages.created_at') }}: {{ Tool::formatDateTime($server->created_at) }}</span>
                 </td>

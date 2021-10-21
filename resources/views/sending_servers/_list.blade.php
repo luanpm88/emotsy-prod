@@ -16,7 +16,7 @@
                         </div>
                     </div>
                 </td>
-                <td>
+                <td width="1%">
                     <span class="server-avatar shadow-sm rounded server-avatar-{{ $item->type }} mr-0">
                         <span class="material-icons-outlined">
 
@@ -24,9 +24,10 @@
                     </span>
                 </td>
                 <td>
-                    <h5 class="m-0 text-bold">
-                        <a class="kq_search" href="{{ action('SendingServerController@edit', ["id" => $item->uid, "type" => $item->type]) }}">{{ $item->name }}</a>
-                    </h5>
+                    <a class="kq_search fw-600 d-block list-title" href="{{ action('SendingServerController@edit', [
+                        "id" => $item->uid, "type" => $item->type
+                    ]) }}">{{ $item->name }}
+                    </a>
                     <span class="text-muted">{{ trans('messages.created_at') }}: {{ Tool::formatDateTime($item->created_at) }}</span>
                 </td>
                 <td>

@@ -24,7 +24,7 @@ remove_circle_outline
 				</td>
 				<td>
 					<h5 class="m-0 text-bold">
-						<span class="kq_search" href="#">
+						<span class="kq_search d-block" href="#">
 							{{ $subscription->plan->name }}
 						</span>
 					</h5>

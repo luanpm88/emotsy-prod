@@ -18,7 +18,7 @@
 				</td>
 				<td>
 					<h5 class="m-0 text-bold">
-						<a class="kq_search" href="{{ action('Admin\CurrencyController@edit', $item->uid) }}">{{ $item->name }}</a>
+						<a class="kq_search d-block" href="{{ action('Admin\CurrencyController@edit', $item->uid) }}">{{ $item->name }}</a>
 					</h5>
 					<span class="text-muted">
 						{{ trans('messages.updated_at') }}

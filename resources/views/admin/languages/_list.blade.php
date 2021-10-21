@@ -7,7 +7,7 @@
 				<td>
 					<h5 class="m-0 text-bold">
 						@can("delete", $language)
-							<a class="kq_search" href="{{ action('Admin\LanguageController@edit', $language->uid) }}">{{ $language->name }}</a>
+							<a class="kq_search d-block" href="{{ action('Admin\LanguageController@edit', $language->uid) }}">{{ $language->name }}</a>
 						@else
 							{{ $language->name }}
 						@endcan

@@ -17,11 +17,9 @@
 					</div>
 				</td>
 				<td>
-					<h5 class="text-bold mb-1">
-						<a class="kq_search" href="{{ action('CampaignController@show', $campaign->uid) }}">
-							{{ $campaign->name }}
-						</a>
-					</h5>
+					<a class="kq_search fw-600 d-block list-title" href="{{ action('CampaignController@show', $campaign->uid) }}">
+						{{ $campaign->name }}
+					</a>
 					<span class="text-muted">{{ trans('messages.' . $campaign->type) }}</span>
 
 					@if ($campaign->readCache('SubscriberCount'))

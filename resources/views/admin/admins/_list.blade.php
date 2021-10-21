@@ -9,7 +9,7 @@
                 </td>
                 <td>
                     <h5 class="m-0 text-bold">
-                        <a class="kq_search" href="{{ action('Admin\AdminController@edit', $item->uid) }}">{{ $item->user->displayName() }}</a>
+                        <a class="kq_search d-block" href="{{ action('Admin\AdminController@edit', $item->uid) }}">{{ $item->user->displayName() }}</a>
                     </h5>
                     <span class="text-muted kq_search">{{ $item->user->email }}</span>
                 </td>
