@@ -9,6 +9,9 @@ use Acelle\Library\Contracts\HasQuota as HasQuotaInterface;
 use Closure;
 use Carbon\Carbon;
 use SimpleXMLElement;
+use Mika56\SPFCheck\SPFCheck;
+use Mika56\SPFCheck\DNSRecordGetterDirect;
+use Mika56\SPFCheck\DNSRecordGetter;
 
 function generatePublicPath($absPath, $withHost = false)
 {
@@ -187,4 +190,20 @@ function xml_to_array(SimpleXMLElement $xml)
     return [
         $xml->getName() => $parser($xml)
     ];
+}
+
+function spfcheck($ipOrHostname, $domain)
+{
+    $checker = new SPFCheck(new DNSRecordGetterDirect('8.8.8.8'));
+
+    // $checker = new SPFCheck(new DNSRecordGetter());
+    $result = $checker->isIPAllowed($ipOrHostname, $domain);
+
+    if (SPFCheck::RESULT_PASS != $result) {
+        // try again with another method
+        $checker = new SPFCheck(new DNSRecordGetter());
+        $result = $checker->isIPAllowed($ipOrHostname, $domain);
+    }
+
+    return $result;
 }
