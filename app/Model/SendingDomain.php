@@ -24,13 +24,12 @@ namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use Acelle\Library\MtaSync;
-use Mika56\SPFCheck\SPFCheck;
-use Mika56\SPFCheck\DNSRecordGetterDirect;
-use Mika56\SPFCheck\DNSRecordGetter;
 use Acelle\Library\Traits\HasUid;
 use Validator;
 use DB;
 use Exception;
+use function Acelle\Helpers\spfcheck;
+use Mika56\SPFCheck\SPFCheck;
 
 class SendingDomain extends Model
 {
@@ -392,16 +391,7 @@ class SendingDomain extends Model
      */
     public function verifySpf(string $ipOrHostname)
     {
-        $checker = new SPFCheck(new DNSRecordGetterDirect('8.8.8.8'));
-        // $checker = new SPFCheck(new DNSRecordGetter());
-        $result = $checker->isIPAllowed($ipOrHostname, $this->name);
-
-        if (SPFCheck::RESULT_PASS != $result) {
-            // try again with another method
-            $checker = new SPFCheck(new DNSRecordGetter());
-            $result = $checker->isIPAllowed($ipOrHostname, $this->name);
-        }
-
+        $result = spfcheck($ipOrHostname, $this->name);
         return $result == SPFCheck::RESULT_PASS;
     }
 
