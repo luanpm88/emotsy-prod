@@ -56,7 +56,7 @@ forward_to_inbox
         
         <hr>
         <div class="text-end">
-            <button class="btn btn-secondary">
+            <button class="btn btn-secondary me-1">
                 <span class="material-icons-outlined me-1">
                     alarm
                     </span>
