@@ -147,21 +147,39 @@ forward_to_inbox
                     <a href="{{ action('CampaignController@setup', $campaign->uid) }}" class="btn btn-secondary">{{ trans('messages.edit') }}</a>
                 </li>
 
-                <li class="d-flex align-items-center">
-                    <span class="fs-4 me-4">
-                        <i class="material-icons-outlined text-success">
-                            task_alt
-                        </i>
-                    </span>
-                    <div class="me-auto">
-                        <h4>{{ trans('messages.run_at') }}</h4>
-                        <p>
-                            {{ isset($campaign->run_at) ? Acelle\Library\Tool::formatDateTime($campaign->run_at) : "" }}
-                        </p>
-                    </div>
+                @if (!$campaign->run_at)
+                    <li class="d-flex align-items-center">
+                        <span class="fs-4 me-4">
+                            <i class="material-icons-outlined text-success">
+                                task_alt
+                            </i>
+                        </span>
+                        <div class="me-auto">
+                            <h4>{{ trans('messages.campaign.run_immediately') }}</h4>
+                            <p>
+                                {{ trans('messages.campaign.click_send_to_proceed') }}
+                            </p>
+                        </div>
 
-                    <a href="{{ action('CampaignController@setup', $campaign->uid) }}" class="btn btn-secondary">{{ trans('messages.edit') }}</a>
-                </li>
+                        <a href="{{ action('CampaignController@setup', $campaign->uid) }}" class="btn btn-secondary">{{ trans('messages.edit') }}</a>
+                    </li>
+                @else
+                    <li class="d-flex align-items-center">
+                        <span class="fs-4 me-4">
+                            <i class="material-icons-outlined text-muted2">
+                                alarm
+                            </i>
+                        </span>
+                        <div class="me-auto">
+                            <h4>{{ trans('messages.campaign.scheduled_at') }} ({{ $campaign->run_at->diffForHumans() }})</h4>
+                            <p>
+                                {{ isset($campaign->run_at) ? Acelle\Library\Tool::formatDateTime($campaign->run_at) : "" }}
+                            </p>
+                        </div>
+
+                        <a href="{{ action('CampaignController@setup', $campaign->uid) }}" class="btn btn-secondary">{{ trans('messages.edit') }}</a>
+                    </li>
+                @endif
             </ul>
 
             @if ($campaign->step() >= 5)

@@ -586,14 +586,14 @@ class CampaignController extends Controller
 
         // validate and save posted data
         if ($request->isMethod('post')) {
-            // Check validation
-            // $this->validate($request, $rules);
+            if ($request->send_now == 'yes') {
+                $campaign->run_at = null;
+            } else {
+                $time = \Acelle\Library\Tool::systemTimeFromString($request->delivery_date.' '.$request->delivery_time);
+                $campaign->run_at = $time;
+            }
 
-            //// Save campaign
-            $time = \Acelle\Library\Tool::systemTimeFromString($request->delivery_date.' '.$request->delivery_time);
-            $campaign->run_at = $time;
             $campaign->save();
-
             return redirect()->action('CampaignController@confirm', ['uid' => $campaign->uid]);
         }
 

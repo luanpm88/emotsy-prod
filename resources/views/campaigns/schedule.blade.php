@@ -28,9 +28,10 @@ forward_to_inbox
 @endsection
 
 @section('content')
-    <form action="{{ action('CampaignController@schedule', $campaign->uid) }}" method="POST" class="form-validate-jqueryz">
+    <form id="CampaignScheduleForm" action="{{ action('CampaignController@schedule', $campaign->uid) }}" method="POST" class="form-validate-jqueryz">
         {{ csrf_field() }}
         
+        <input type="hidden" name="send_now" value="no" />
         <div class="row">
             <div class="col-md-3 list_select_box" target-box="segments-select-box" segments-url="{{ action('SegmentController@selectBox') }}">
                 @include('helpers.form_control', ['type' => 'date',
@@ -55,18 +56,41 @@ forward_to_inbox
         
         <hr>
         <div class="text-end">
-            <button class="btn btn-secondary">{{ trans('messages.save_and_next') }} <span class="material-icons-outlined">
-arrow_forward
-</span> </button>
+            <button class="btn btn-secondary">
+                <span class="material-icons-outlined me-1">
+                    alarm
+                    </span>
+                    {{ trans('messages.campaign.schedule') }} 
+            </button>
+            <button type="button" class="btn btn-primary send-now">
+                <span class="material-icons-outlined me-1">
+                    done_all
+                </span>
+                {{ trans('messages.campaign.send_now') }}
+            </button>
         </div>
-        
     <form>
-        
+
     <script>
-        $(document).ready(function() {
-            // Pick a date
-            $('.pickadate_from_now').pickadate({
-                format: 'yyyy-mm-dd'
+        var CampaignSchedule = {
+            getForm: function() {
+                return $('#CampaignScheduleForm');
+            },
+
+            schedule: function() {
+                this.getForm().find('[name=send_now]').val('no');
+                this.getForm().submit();
+            },
+
+            sendNow: function() {
+                this.getForm().find('[name=send_now]').val('yes');
+                this.getForm().submit();
+            }
+        }
+        
+        $(function() {
+            $('.send-now').on('click', function() {
+                CampaignSchedule.sendNow();
             });
         });
     </script>

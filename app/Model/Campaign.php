@@ -561,7 +561,7 @@ class Campaign extends Model
         }
 
         // Step 4
-        if (isset($this->run_at) && $this->run_at != '0000-00-00 00:00:00') {
+        if ((isset($this->run_at) && $this->run_at != '0000-00-00 00:00:00') || $this->run_at == null) {
             $step = 4;
         } else {
             return $step;
