@@ -18,7 +18,6 @@ use Acelle\Model\SendingServerSparkPost;
 use Acelle\Model\SendingServerPostal;
 use Acelle\Model\FeedbackLog;
 use Acelle\Model\Blacklist;
-use Acelle\Library\Notification\BackendError as BackendErrorNotification;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Validator;
 use Exception;
@@ -167,7 +166,6 @@ class DeliveryController extends Controller
         } catch (\Exception $e) {
             // Pretend we're not here if the message is invalid
             MailLog::warning($e->getMessage());
-            BackendErrorNotification::warning('Cannot handle AWS bounce/feedback. '.$e->getMessage(), false);
             return;
         }
 
