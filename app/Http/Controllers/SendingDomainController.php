@@ -67,7 +67,7 @@ class SendingDomainController extends Controller
 
         return view('sending_domains._list', [
             'items' => $items,
-            'server' => $server,
+            'server' => isset($server) ? $server : null,
         ]);
     }
 

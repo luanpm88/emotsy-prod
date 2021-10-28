@@ -4,7 +4,12 @@
     >
         @foreach ($items as $key => $item)
             @php
-                $allowedByServer = $item->isAllowedBy($server);
+                if (is_null($server)) {
+                    $allowedByServer = true;
+                } else {
+                    $allowedByServer = $item->isAllowedBy($server);
+                }
+
             @endphp
             <tr>
                 <td width="1%">

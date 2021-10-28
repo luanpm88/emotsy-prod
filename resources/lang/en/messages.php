@@ -4011,4 +4011,9 @@
   'rss.top_stories_for_you' => 'TOP STORIES FOR YOU',
   'rss.feed_tagline' => 'Tagline',
   'rss.no_options' => 'RSS config not found',
+  'campaign.send_now' => 'Send now',
+  'campaign.schedule' => 'Schedule',
+  'campaign.run_immediately' => 'Run immediately',
+  'campaign.click_send_to_proceed' => 'Click send button to proceed',
+  'campaign.scheduled_at' => 'Scheduled at',
 ) ?>
