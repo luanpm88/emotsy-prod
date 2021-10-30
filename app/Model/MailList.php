@@ -365,7 +365,7 @@ class MailList extends Model
         $rules = [];
         foreach ($this->getFields as $field) {
             if ($field->tag == 'EMAIL') {
-                $rules[$field->tag] = 'required|email';
+                $rules[$field->tag] = 'required|email:rfc,filter';
             } elseif ($field->required) {
                 $rules[$field->tag] = 'required';
             }
