@@ -12,6 +12,9 @@ use Acelle\Model\FailedJob;
 use Artisan;
 use Illuminate\Support\Facades\Session;
 use Cache;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+use Exception;
 
 class Upgrade extends Controller
 {
@@ -61,6 +64,32 @@ class Upgrade extends Controller
             echo "Finalization in progress...<meta http-equiv=\"refresh\" content=\"5;URL='".$nextPage."'\" />";
         } else {
             echo "Migration done! Redirecting...<meta http-equiv=\"refresh\" content=\"5;URL='".url('/')."'\" />";
+        }
+    }
+
+    public function dropIndex()
+    {
+        try {
+            Schema::table('jobs', function (Blueprint $table) {
+                $table->dropIndex(['queue']); // Drops index 'geo_state_index'
+            });
+
+            return response('Dropped');
+        } catch (Exception $ex) {
+            return response('Dropped! '.$ex->getMessage());
+        }
+    }
+
+    public function createIndex()
+    {
+        try {
+            Schema::table('jobs', function (Blueprint $table) {
+                $table->index(['queue']);
+            });
+
+            return response('Done!');
+        } catch (Exception $ex) {
+            return response('Done! '.$ex->getMessage());
         }
     }
 }

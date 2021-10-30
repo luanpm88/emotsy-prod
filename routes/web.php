@@ -988,4 +988,8 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
 
     // Update
     Route::get('admin/upgrade/finalize', 'Upgrade@finalize');
+
+    // Modify jobs indexes
+    Route::get('jobs/drop-index', 'Upgrade@dropIndex');
+    Route::get('jobs/create-index', 'Upgrade@createIndex');
 });
