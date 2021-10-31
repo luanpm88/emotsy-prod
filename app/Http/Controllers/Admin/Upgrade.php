@@ -33,6 +33,7 @@ class Upgrade extends Controller
         Job::query()->delete();
         FailedJob::query()->delete();
         Artisan::call('queue:restart');
+        Artisan::call('queue:prune-batches --hours=24 --unfinished=-1'); // clean up any pending job batches
 
         // Upgrade post-processing
         if ($request->session()->has('upgraded')) {
