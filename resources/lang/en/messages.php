@@ -3854,7 +3854,7 @@
     <p class="mb-2">
       <span class="fw-600">For example</span>: if the specified email is not opened or
       clicked at the first check, and with a waiting time of
-      <span class="fw-600 wait_day">:days</span>, Acelle will try to check again and
+      <span class="fw-600 wait_day">:days</span>, the application will try to check again and
       again during the next <span class="fw-600 wait_day">:days</span> before proceed
       with NO branch.
     </p>

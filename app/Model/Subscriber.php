@@ -59,7 +59,7 @@ class Subscriber extends Model
     protected $dates = ['unsubscribed_at'];
 
     public static $rules = [
-        'email' => ['required', 'email'],
+        'email' => ['required', 'email:rfc,filter'],
     ];
 
     /**
