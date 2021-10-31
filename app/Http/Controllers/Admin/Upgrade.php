@@ -9,6 +9,7 @@ use Acelle\Model\Template;
 use Acelle\Model\Setting;
 use Acelle\Model\Job;
 use Acelle\Model\FailedJob;
+use Acelle\Model\JobMonitor;
 use Artisan;
 use Illuminate\Support\Facades\Session;
 use Cache;
@@ -30,13 +31,14 @@ class Upgrade extends Controller
         Artisan::call('cache:clear');
         Artisan::call('view:clear');
         Setting::writeDefaultSettings();
+        JobMonitor::query()->delete()
         Job::query()->delete();
         FailedJob::query()->delete();
         Cache::flush();
         Language::dump();
         Template::resetDefaultTemplates();
-        Artisan::call('queue:restart');
         Artisan::call('queue:prune-batches --hours=24 --unfinished=-1'); // clean up any pending job batches
+        Artisan::call('queue:restart');
 
         // Upgrade post-processing
         if ($request->session()->has('upgraded')) {
