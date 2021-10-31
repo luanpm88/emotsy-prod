@@ -31,7 +31,7 @@ class Upgrade extends Controller
         Artisan::call('cache:clear');
         Artisan::call('view:clear');
         Setting::writeDefaultSettings();
-        JobMonitor::query()->delete()
+        JobMonitor::query()->delete();
         Job::query()->delete();
         FailedJob::query()->delete();
         Cache::flush();
