@@ -26,12 +26,15 @@ class Upgrade extends Controller
      */
     public function finalize(Request $request)
     {
+        Artisan::call('route:clear');
+        Artisan::call('cache:clear');
+        Artisan::call('view:clear');
         Setting::writeDefaultSettings();
+        Job::query()->delete();
+        FailedJob::query()->delete();
         Cache::flush();
         Language::dump();
         Template::resetDefaultTemplates();
-        Job::query()->delete();
-        FailedJob::query()->delete();
         Artisan::call('queue:restart');
         Artisan::call('queue:prune-batches --hours=24 --unfinished=-1'); // clean up any pending job batches
 
