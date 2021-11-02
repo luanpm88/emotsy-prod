@@ -362,6 +362,7 @@ class SendingServer extends Model implements HasQuotaInterface
                     'domain' => 'required',
                     'api_key' => 'required',
                     'host' => 'required',
+                    'aws_region' => 'required',
                     'smtp_username' => 'required',
                     'smtp_password' => 'required',
                     'smtp_port' => 'required',
