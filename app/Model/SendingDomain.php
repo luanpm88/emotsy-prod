@@ -28,8 +28,8 @@ use Acelle\Library\Traits\HasUid;
 use Validator;
 use DB;
 use Exception;
-use function Acelle\Helpers\spfcheck;
 use Mika56\SPFCheck\SPFCheck;
+use function Acelle\Helpers\spfcheck;
 
 class SendingDomain extends Model
 {
