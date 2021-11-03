@@ -3881,4 +3881,9 @@
   'email_verification.statistics' => 'Statistics',
   'template.no_product_selected' => 'No product selected',
   'source.importing_product' => 'Importing products... please wait!',
+  'campaign.send_now' => 'Send now',
+  'campaign.schedule' => 'Schedule',
+  'campaign.run_immediately' => 'Run immediately',
+  'campaign.click_send_to_proceed' => 'Click send button to proceed',
+  'campaign.scheduled_at' => 'Scheduled at',
 ) ?>

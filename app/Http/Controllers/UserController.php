@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Acelle\Library\Log as MailLog;
 use Acelle\Model\Customer;
 use Acelle\Model\User;
+use Acelle\Library\Facades\Hook;
 
 class UserController extends Controller
 {
@@ -41,6 +42,9 @@ class UserController extends Controller
             return view('notAuthorized');
         } else {
             $userActivation->user->setActivated();
+
+            // Execute registered hooks
+            Hook::execute('customer_added', [$userActivation->user->customer]);
 
             $request->session()->put('user-activated', trans('messages.user.activated'));
 

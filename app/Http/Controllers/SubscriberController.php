@@ -21,7 +21,7 @@ class SubscriberController extends Controller
         $subscribers = $customer->subscribers()
             ->search($request->keyword)
             ->filter($request)
-            ->orderBy($request->sort_order, $request->sort_direction)
+            ->orderBy($request->sort_order ? $request->sort_order : 'created_at', $request->sort_direction ? $request->sort_direction : 'asc')
             ->where('mail_list_id', '=', $list->id);
 
         return $subscribers;

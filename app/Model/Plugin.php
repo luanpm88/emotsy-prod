@@ -5,7 +5,6 @@ namespace Acelle\Model;
 use Illuminate\Database\Eloquent\Model;
 use GuzzleHttp\Client;
 use JsonPath\JsonObject;
-use Acelle\Library\Log as MailLog;
 use Validator;
 use ZipArchive;
 use Illuminate\Validation\ValidationException;

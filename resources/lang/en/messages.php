@@ -4016,4 +4016,5 @@
   'campaign.run_immediately' => 'Run immediately',
   'campaign.click_send_to_proceed' => 'Click send button to proceed',
   'campaign.scheduled_at' => 'Scheduled at',
+  'maillgun.api_region' => 'API region',
 ) ?>
