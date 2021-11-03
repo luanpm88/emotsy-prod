@@ -542,10 +542,16 @@ class Subscriber extends Model
                     }
 
                     ++$success;
-                    $error_detail = trans('messages.email_imported', ['time' => \Carbon\Carbon::now()->timezone($user->customer->timezone)->format(trans('messages.datetime_format_2')), 'email' => $email]);
+                    $error_detail = trans('messages.email_imported', [
+                        'time' => \Carbon\Carbon::now()->timezone($user->customer->timezone)->format(getDateTimeFormatCode('datetime_format_2')),
+                        'email' => $email,
+                    ]);
                 } else {
                     ++$error;
-                    $error_detail = trans('messages.email_existed_invalid', ['time' => \Carbon\Carbon::now()->timezone($user->customer->timezone)->format(trans('messages.datetime_format_2')), 'email' => $email]);
+                    $error_detail = trans('messages.email_existed_invalid', [
+                        'time' => \Carbon\Carbon::now()->timezone($user->customer->timezone)->format(getDateTimeFormatCode('datetime_format_2')),
+                        'email' => $email,
+                    ]);
                 }
                 if ($key % $lines_per_second == 0) {
                     $content_cache = trans('messages.import_export_statistics_line', [

@@ -1,10 +1,4 @@
 <?php return array (
-  'datetime_format' => 'M dS, Y H:i',
-  'datetime_format_2' => 'M dS, Y H:i:s',
-  'time_format' => 'H:i',
-  'date_format' => 'M d, Y',
-  'j_date_format' => 'yyyy-mm-dd',
-  'datetime_string_formated' => ':date, :time',
   'email' => 'Email',
   'password' => 'Password',
   'stay_logged_in' => 'Stay logged in',
@@ -1368,7 +1362,6 @@
   'back_to_list' => 'Back to list',
   'make_request_to_run_automation' => 'Make the following request to trigger your automation:<br /> <code>:command</code>',
   'automation.updated' => 'Automation was successfully updated',
-  'any_datetime_format' => '%Z-%m-%d, %H:%i',
   'choose_email_type' => 'Choose email type',
   'email.updated' => 'Email was successfully updated',
   'from_other_campaigns' => 'Other campaigns',
