@@ -114,7 +114,7 @@
             if (!this.obj.find('.container').length) {
                 var div = $(`
                     <div>
-                        <div class="container py-3">
+                        <div style="padding-top:16px;padding-bottom:16px" class="container">
                             <div class="ace-controls" style="position:relative;display:none">
                                 <span class="ace-button preview-but">Preview</span>
                                 <span class="ace-button unpreview-but">Close preview</span>
