@@ -76,19 +76,39 @@
             </div>
         </div>
 
-      <footer builder-element="BlockElement" builder-draggable>
-            <div class="container py-3">
-                <div class="text-muted pt-5">
-                    <div class="row">
-                        <div builder-element="TextElement" builder-inline-edit class="col-md-8 pb-4">
-                        <p class="mb-1">Copyright &copy; 2021. All rights reserved. You can <a href="{UPDATE_PROFILE_URL}">update your preferences</a> or <a href="{UNSUBSCRIBE_URL}">unsubscribe from this list</a>.</p>
-                        </div>
-                        <div class="col-md-4">
-                        <p builder-element builder-inline-edit class="float-right">
-                            <a href="#">Back to top</a>
-                        </p>
-                        </div>        
+      <div builder-element="BlockElement" builder-draggable>
+            <div class="container d-flex" style="justify-content: center;padding-top:40px;padding-bottom:20px">
+                <a builder-element="IconLinkElement" href="" class="mr-3 me-3">
+                <img src="image/facebook.png"
+                    style="width:40px;height:40px;display:block;border-radius: 100%;background-color: #fff;" />
+                </a>
+                <a builder-element="IconLinkElement" builder-element href="" class="mr-3 me-3">
+                <img src="image/twitter.png"
+                    style="width:40px;height:40px;display:block;border-radius: 100%;background-color: #fff;" />
+                </a>
+                <a builder-element="IconLinkElement" builder-element href="" class="mr-3 me-3">
+                <img src="image/instagram.png"
+                    style="width:40px;height:40px;display:block;border-radius: 100%;background-color: #fff;" />
+                </a>
+                <a builder-element="IconLinkElement" builder-element href="" class="mr-3 me-3">
+                    <img src="image/google-plus.png"
+                        style="width:40px;height:40px;display:block;border-radius: 100%;background-color: #fff;" />
+                </a>
+            </div>
+        </div>
+
+        <footer builder-element="BlockElement" builder-draggable>
+            <div class="container" style="padding-top:10px;padding-bottom:10px">
+                <div class="text-muted">
+
+                    <div builder-element="TextElement">
+                        <p class="m-0" style="text-align: center;padding-bottom:5px;">Copyright &copy; 2021. All rights reserved.</p>
+                        <p class="m-0" style="text-align: center;padding-bottom:5px;">You can <a builder-element href="{UPDATE_PROFILE_URL}">update your preferences</a> or <a builder-element href="{UNSUBSCRIBE_URL}">unsubscribe from this list</a>.</p>
                     </div>
+                    
+                    <p builder-element builder-inline-edit style="text-align: center;padding-top: 15px;font-size: 13px;">
+                        <a builder-element href="#" style="color:#555;">Back to top</a>
+                    </p>
                 </div>
             </div>
         </footer>
