@@ -22,7 +22,7 @@
 
             // default content html
             this.setContentHtml(`
-                <div id="`+this.id+`" builder-element="ProductListElement" builder-draggable class="product-list-widget"
+                <div id="`+this.id+`" builder-element="ProductListElement" class="product-list-widget"
                     data-preview="no"
                     data-count="3"
                     data-cols="3"
