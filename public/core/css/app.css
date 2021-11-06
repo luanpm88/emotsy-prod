@@ -4171,7 +4171,7 @@ label:hover .checkmark, .checkmark-container:hover .checkmark {
 .payment-box i.bg-offline::after {
     background-size: 46px!important;
     margin-right: 0!important;
-    background-position: -2px 4px!important;
+    background-position: -2px 2px!important;
 }
 .btn-large {
     font-size: 20px;

@@ -146,7 +146,7 @@ class Tool
      */
     public static function formatDateTime($datetime)
     {
-        $result = self::dateTime($datetime)->format(trans('messages.datetime_format'));
+        $result = self::dateTime($datetime)->format(getDateTimeFormatCode('datetime_format'));
 
         return $result;
     }
@@ -745,7 +745,7 @@ class Tool
      */
     public static function formatDate($datetime)
     {
-        $result = !isset($datetime) ? '' : self::dateTime($datetime)->format(trans('messages.date_format'));
+        $result = !isset($datetime) ? '' : self::dateTime($datetime)->format(getDateTimeFormatCode('date_format'));
 
         return $result;
     }
