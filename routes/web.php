@@ -446,7 +446,18 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('users/login-back', 'UserController@loginBack');
 
     // Sending servers
+    Route::get('sending_servers/{uid}/senders/dropbox', 'SendingServerController@fromDropbox');
+    Route::post('sending_servers/{uid}/remove-domain/{domain}', 'SendingServerController@removeDomain');
+    Route::post('sending_servers/{uid}/add-domain', 'SendingServerController@addDomain');
+    Route::get('sending_servers/{uid}/add-domain', 'SendingServerController@addDomain');
+    Route::get('sending_servers/aws-region-host', 'SendingServerController@awsRegionHost');
+
     Route::post('sending_servers/{uid}/test-connection', 'SendingServerController@testConnection');
+
+    Route::post('sending_servers/{uid}/config', 'SendingServerController@config');
+    Route::post('sending_servers/sending-limit', 'SendingServerController@sendingLimit');
+    Route::get('sending_servers/sending-limit', 'SendingServerController@sendingLimit');
+
     Route::post('sending_servers/{uid}/test', 'SendingServerController@test');
     Route::get('sending_servers/{uid}/test', 'SendingServerController@test');
     Route::get('sending_servers/select', 'SendingServerController@select');

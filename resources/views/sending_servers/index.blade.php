@@ -18,7 +18,11 @@
 @endsection
 
 @section('content')
+    <div class="alert alert-info">
+        <span class="text-semibold">{{ trans('messages.notification.note') }} </span> {{ trans('messages.notification.sending_servers') }}
+    </div>
     <p>{{ trans('messages.sending_server.wording') }}</p>
+
 
     <div class="listing-form"
         sort-url="{{ action('SendingServerController@sort') }}"
@@ -93,7 +97,8 @@ add
             @endif
         </div>
 
-        <div class="pml-table-container"></div>
+        <div class="pml-table-container">
+        </div>
     </div>
 
     <script>

@@ -4,6 +4,8 @@ namespace Acelle\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Acelle\Http\Controllers\Controller;
+use Acelle\Model\SendingServer;
+use Acelle\Library\Facades\Hook;
 
 class SendingServerController extends Controller
 {
@@ -14,13 +16,11 @@ class SendingServerController extends Controller
      */
     public function index(Request $request)
     {
-        if (!$request->user()->customer->can('read', new \Acelle\Model\SendingServer())) {
+        if (!$request->user()->customer->can('read', new SendingServer())) {
             return $this->notAuthorized();
         }
 
-        $request->merge(array("customer_id" => $request->user()->customer->id));
-
-        $items = \Acelle\Model\SendingServer::search($request->keyword)
+        $items = $request->user()->customer->sendingServers()->search($request->keyword)
             ->filter($request);
 
         return view('sending_servers.index', [
@@ -35,13 +35,11 @@ class SendingServerController extends Controller
      */
     public function listing(Request $request)
     {
-        if (!$request->user()->customer->can('read', new \Acelle\Model\SendingServer())) {
+        if (!$request->user()->customer->can('read', new SendingServer())) {
             return $this->notAuthorized();
         }
 
-        $request->merge(array("customer_id" => $request->user()->customer->id));
-
-        $items = \Acelle\Model\SendingServer::search($request->keyword)
+        $items = $request->user()->customer->sendingServers()->search($request->keyword)
             ->filter($request)
             ->orderBy($request->sort_order, $request->sort_direction ? $request->sort_direction : 'asc')
             ->paginate($request->per_page);
@@ -58,7 +56,9 @@ class SendingServerController extends Controller
      */
     public function select(Request $request)
     {
-        return view('sending_servers.select');
+        // Sending servers added by Plugins
+        $more = Hook::execute('register_sending_server');
+        return view('sending_servers.select', ['more' => $more]);
     }
 
     /**
@@ -68,14 +68,23 @@ class SendingServerController extends Controller
      */
     public function create(Request $request)
     {
-        $server = new \Acelle\Model\SendingServer();
+        $server = new SendingServer();
+        $server->type = $request->type;
+        $server = $server->mapType();
+
         $server->status = 'active';
         $server->uid = '0';
         $server->quota_value = '1000';
         $server->quota_base = '1';
         $server->quota_unit = 'hour';
-        $server->type = $request->type;
         $server->fill($request->old());
+
+        $server->name = trans('messages.' . $request->type);
+
+        // authorize
+        if (!$request->user()->customer->can('create', SendingServer::class)) {
+            return $this->notAuthorized();
+        }
 
         return view('sending_servers.create', [
             'server' => $server,
@@ -91,35 +100,35 @@ class SendingServerController extends Controller
      */
     public function store(Request $request)
     {
-        // Get current user
-        $current_user = $request->user();
-        $server = new \Acelle\Model\SendingServer();
-        $server->type = $request->type;
+        // authorize
+        if (!$request->user()->customer->can('create', SendingServer::class)) {
+            return $this->notAuthorized();
+        }
 
-        // save posted data
-        if ($request->isMethod('post')) {
-            $this->validate($request, \Acelle\Model\SendingServer::frontendRules($request->type));
+        // New sending server
+        list($validator, $server) = SendingServer::createFromArray(array_merge($request->all(), [
+            'customer_id' => $request->user()->customer->id,
+        ]));
 
-            // Save current user info
-            $server->fill($request->all());
-            $server->customer_id = $request->user()->customer->id;
-            $server->status = 'active';
-
-            // bounce / feedback hanlder nullable
-            if (empty($request->bounce_handler_id)) {
-                $server->bounce_handler_id = null;
+        // Failed
+        if ($validator->fails()) {
+            if ($server->isExtended()) {
+                // Redirect to plugin's create page
+                return redirect()->back()->withErrors($validator)->withInput();
+            } else {
+                return redirect()->action('SendingServerController@create', $server->type)
+                        ->withErrors($validator)->withInput();
             }
-            if (empty($request->feedback_loop_handler_id)) {
-                $server->feedback_loop_handler_id = null;
-            }
+        }
 
-            if ($server->save()) {
-                // Log
-                $server->log('created', $request->user()->customer);
+        // Success
+        $request->session()->flash('alert-success', trans('messages.sending_server.created'));
 
-                $request->session()->flash('alert-success', trans('messages.sending_server.created'));
-                return redirect()->action('SendingServerController@index');
-            }
+        // Redirect to Edit page
+        if ($server->isExtended()) {
+            return redirect($server->getEditUrl());
+        } else {
+            return redirect()->action('SendingServerController@edit', [$server->uid, $server->type]);
         }
     }
 
@@ -143,8 +152,8 @@ class SendingServerController extends Controller
      */
     public function edit(Request $request, $id)
     {
-        $server = \Acelle\Model\SendingServer::findByUid($id);
-
+        $server = SendingServer::findByUid($id);
+        $server = SendingServer::mapServerType($server);
         // authorize
         if (!$request->user()->customer->can('update', $server)) {
             return $this->notAuthorized();
@@ -160,8 +169,47 @@ class SendingServerController extends Controller
 
         $server->fill($request->old());
 
+        $notices = [];
+
+        try {
+            $server->test();
+            $server->syncIdentities();
+            $server->setDefaultFromEmailAddress();
+        } catch (\Exception $ex) {
+            $server->disable();
+
+            $notices[] = [
+                'title' => trans('messages.sending_server.connect_failed'),
+                'message' => $ex->getMessage()
+            ];
+        }
+
+        $identities = [];
+        $allIdentities = [];
+
+        try {
+            $identities = $server->getVerifiedIdentities();
+            $allIdentities = array_key_exists('identities', $server->getOptions()) ? $server->getOptions()['identities'] : [];
+        } catch (\Exception $ex) {
+            $notices[] = [
+                'title' => trans('messages.sending_server.identities_list_failed'),
+                'message' => $ex->getMessage(),
+            ];
+        }
+
+        // options
+        if (isset($request->old()['options'])) {
+            $server->options = json_encode($request->old()['options']);
+        }
+
+        $bigNotices = Hook::execute('generate_big_notice_for_sending_server', [$server]);
+
         return view('sending_servers.edit', [
             'server' => $server,
+            'bigNotices' => $bigNotices,
+            'notices' => $notices,
+            'identities' => $identities,
+            'allIdentities' => $allIdentities,
         ]);
     }
 
@@ -177,7 +225,8 @@ class SendingServerController extends Controller
     {
         // Get current user
         $current_user = $request->user();
-        $server = \Acelle\Model\SendingServer::findByUid($id);
+        $server = SendingServer::findByUid($id);
+        $server = SendingServer::mapServerType($server);
 
         // authorize
         if (!$request->user()->customer->can('update', $server)) {
@@ -189,23 +238,36 @@ class SendingServerController extends Controller
             // Save current user info
             $server->fill($request->all());
 
+            // validation
+            $validator = $server->validConnection($request->all());
+
+            if ($validator->fails()) {
+                if ($server->isExtended()) {
+                    return redirect($server->getEditUrl())->withErrors($validator)
+                            ->withInput();
+                } else {
+                    return redirect()->action('SendingServerController@edit', [$server->uid, $server->type])
+                            ->withErrors($validator)
+                            ->withInput();
+                }
+            }
+
             // bounce / feedback hanlder nullable
             if (empty($request->bounce_handler_id)) {
                 $server->bounce_handler_id = null;
             }
-
             if (empty($request->feedback_loop_handler_id)) {
                 $server->feedback_loop_handler_id = null;
             }
 
-            $this->validate($request, $server->getFrontendRules());
-
             if ($server->save()) {
-                // Log
-                $server->log('updated', $request->user()->customer);
-
                 $request->session()->flash('alert-success', trans('messages.sending_server.updated'));
-                return redirect()->action('SendingServerController@index');
+
+                if ($server->isExtended()) {
+                    return redirect($server->getEditUrl());
+                } else {
+                    return redirect()->action('SendingServerController@edit', [$server->uid, $server->type]);
+                }
             }
         }
     }
@@ -219,19 +281,7 @@ class SendingServerController extends Controller
      */
     public function sort(Request $request)
     {
-        $sort = json_decode($request->sort);
-        foreach ($sort as $row) {
-            $item = \Acelle\Model\SendingServer::findByUid($row[0]);
-
-            // authorize
-            if (!$request->user()->customer->can('update', $item)) {
-                return $this->notAuthorized();
-            }
-
-            $item->save();
-        }
-
-        echo trans('messages.sending_server._deleted_');
+        echo trans('messages._deleted_');
     }
 
     /**
@@ -243,7 +293,7 @@ class SendingServerController extends Controller
      */
     public function delete(Request $request)
     {
-        $items = \Acelle\Model\SendingServer::whereIn(
+        $items = SendingServer::whereIn(
             'uid',
             is_array($request->uids) ? $request->uids : explode(',', $request->uids)
         );
@@ -251,10 +301,7 @@ class SendingServerController extends Controller
         foreach ($items->get() as $item) {
             // authorize
             if ($request->user()->customer->can('delete', $item)) {
-                // Log
-                $item->log('deleted', $request->user()->customer);
-                $item->plansSendingServers()->delete(); // workaround in case of MyISAM, no cascade
-                $item->delete();
+                $item->doDelete();
             }
         }
 
@@ -271,7 +318,7 @@ class SendingServerController extends Controller
      */
     public function disable(Request $request)
     {
-        $items = \Acelle\Model\SendingServer::whereIn(
+        $items = SendingServer::whereIn(
             'uid',
             is_array($request->uids) ? $request->uids : explode(',', $request->uids)
         );
@@ -296,7 +343,7 @@ class SendingServerController extends Controller
      */
     public function enable(Request $request)
     {
-        $items = \Acelle\Model\SendingServer::whereIn(
+        $items = SendingServer::whereIn(
             'uid',
             is_array($request->uids) ? $request->uids : explode(',', $request->uids)
         );
@@ -327,9 +374,9 @@ class SendingServerController extends Controller
 
         // Fill new server info
         if ($uid) {
-            $server = \Acelle\Model\SendingServer::findByUid($uid);
+            $server = SendingServer::findByUid($uid);
         } else {
-            $server = new \Acelle\Model\SendingServer();
+            $server = new SendingServer();
             $server->uid = 0;
         }
 
@@ -343,8 +390,7 @@ class SendingServerController extends Controller
         if ($request->isMethod('post')) {
             // @todo testing method and return result here. Ex: echo json_encode($server->test())
             try {
-                $server = $server->mapType();
-                $server->sendTestEmail([
+                $server->mapType()->sendTestEmail([
                     'from_email' => $request->from_email,
                     'to_email' => $request->to_email,
                     'subject' => $request->subject,
@@ -354,17 +400,269 @@ class SendingServerController extends Controller
                 return response()->json([
                     'status' => 'error', // or success
                     'message' => $ex->getMessage()
-                ], 400);
+                ], 401);
+                return;
             }
 
             return response()->json([
                 'status' => 'success', // or success
-                'message' => trans('messages.sending_server.test_success')
+                'message' => trans('messages.sending_server.test_email_sent')
             ]);
+            return;
         }
 
         return view('sending_servers.test', [
             'server' => $server,
         ]);
+    }
+
+    /**
+     * Test Sending server.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int                      $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function testConnection(Request $request, $uid)
+    {
+        $server = SendingServer::findByUid($uid);
+        $server = SendingServer::mapServerType($server);
+
+        // authorize
+        if (!$request->user()->customer->can('update', $server)) {
+            return $this->notAuthorized();
+        }
+
+        try {
+            $server->test();
+
+            return trans('messages.sending_server.test_success');
+        } catch (\Exception $e) {
+            $server->disable();
+
+            return $e->getMessage();
+        }
+    }
+
+    /**
+     * Sending Limit Form.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function sendingLimit(Request $request)
+    {
+        if (!$request->uid) {
+            $server = new SendingServer();
+        } else {
+            $server = SendingServer::findByUid($request->uid);
+        }
+
+        $server->fill($request->all());
+
+        // Default quota
+        if ($server->quota_value == -1) {
+            $server->quota_value = '1000';
+            $server->quota_base = '1';
+            $server->quota_unit = 'hour';
+            $server->setOption('sending_limit', '1000_per_hour');
+        }
+
+        // save posted data
+        if ($request->isMethod('post')) {
+            $selectOptions = $server->getSendingLimitSelectOptions();
+
+            return view('sending_servers.form._sending_limit', [
+                'quotaValue' => $request->quota_value,
+                'quotaBase' => $request->quota_base,
+                'quotaUnit' => $request->quota_unit,
+                'server' => $server,
+            ]);
+        }
+
+        return view('sending_servers.form.sending_limit', [
+            'server' => $server,
+        ]);
+    }
+
+    /**
+     * Save sending server config settings.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int                      $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function config(Request $request, $uid)
+    {
+        // find server
+        $server = SendingServer::findByUid($uid)->mapType();
+
+        // authorize
+        if (!$request->user()->customer->can('update', $server)) {
+            return $this->notAuthorized();
+        }
+
+        // Save current user info
+        $server->fill($request->all());
+
+        // default sever quota
+        if ($request->options) {
+            $server->setOptions($request->options); // options = json_encode($request->options);
+            $server->updateIdentitiesList($request->options);
+        }
+
+        // Sening limit
+        if ($request->options['sending_limit'] != 'custom' && $request->options['sending_limit'] != 'current') {
+            $limits = SendingServer::sendingLimitValues()[$request->options['sending_limit']];
+            $server->quota_value = $limits['quota_value'];
+            $server->quota_unit = $limits['quota_unit'];
+            $server->quota_base = $limits['quota_base'];
+        }
+
+        // save posted data
+        $this->validate($request, $server->getConfigRules());
+
+        // bounce / feedback hanlder nullable
+        if (empty($request->bounce_handler_id)) {
+            $server->bounce_handler_id = null;
+        }
+        if (empty($request->feedback_loop_handler_id)) {
+            $server->feedback_loop_handler_id = null;
+        }
+
+        if ($server->save()) {
+            $request->session()->flash('alert-success', trans('messages.sending_server.updated'));
+
+            if ($server->isExtended()) {
+                return redirect($server->getEditUrl());
+            } else {
+                return redirect()->action('SendingServerController@edit', [$server->uid, $server->type]);
+            }
+        }
+    }
+
+    /**
+     * Sending Limit Form.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function awsRegionHost(Request $request)
+    {
+        if ($request->uid) {
+            $server = SendingServer::findByUid($request->uid);
+        } else {
+            $server = new SendingServer();
+        }
+
+        foreach (SendingServer::awsRegionSelectOptions() as $option) {
+            if (isset($option['host']) && $option['value'] == $request->aws_region) {
+                $server->host = $option['host'];
+            }
+        }
+        return view('sending_servers.form._aws_region_host', [
+            'server' => $server,
+        ]);
+    }
+
+    /**
+     * Add domain to sending server.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int                      $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function addDomain(Request $request, $uid)
+    {
+        $server = SendingServer::findByUid($request->uid);
+
+        // save posted data
+        if ($request->isMethod('post')) {
+            $valid = true;
+
+            if (checkEmail($request->domain)) {
+                // validation
+                $validator = \Validator::make($request->all(), [
+                    'domain' => 'required|email',
+                ]);
+
+                if (in_array(strtolower($request->domain), $server->getVerifiedIdentities())) {
+                    $validator->errors()->add('domain', trans('messages.sending_identity.exist_error'));
+                    $valid = false;
+                }
+
+                if (!$valid || $validator->fails()) {
+                    return redirect()->action('SendingServerController@addDomain', $server->uid)
+                                ->withErrors($validator)
+                                ->withInput();
+                }
+            } else {
+                // validation
+                $validator = \Validator::make($request->all(), [
+                    'domain' => 'required|regex:/^(?:[-A-Za-z0-9]+\.)+[A-Za-z]{2,6}$/i',
+                ]);
+
+                if (in_array(strtolower($request->domain), $server->getVerifiedIdentities())) {
+                    $validator->errors()->add('domain', trans('messages.sending_identity.exist_error'));
+                    $valid = false;
+                }
+
+                if (!$valid || $validator->fails()) {
+                    return redirect()->action('SendingServerController@addDomain', $server->uid)
+                                ->withErrors($validator)
+                                ->withInput();
+                }
+            }
+
+            $server->addIdentity(strtolower($request->domain));
+
+            $request->session()->flash('alert-success', trans('messages.sending_server.updated'));
+            return;
+        }
+
+        return view('sending_servers.add_domain', [
+            'server' => $server,
+        ]);
+    }
+
+    /**
+     * Remove domain from sending server.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int                      $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function removeDomain(Request $request, $uid, $identity)
+    {
+        $server = SendingServer::findByUid($request->uid)->mapType();
+        $server->removeIdentity(base64_decode($identity));
+
+        $request->session()->flash('alert-success', trans('messages.sending_server.domain.removed'));
+        if ($server->isExtended()) {
+            return redirect($server->getEditUrl());
+        } else {
+            return redirect()->action('SendingServerController@edit', [$server->uid, $server->type]);
+        }
+    }
+
+    /**
+     * Dropbox list.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function fromDropbox(Request $request)
+    {
+        $server = SendingServer::findByUid($request->uid);
+
+        $droplist = $server->verifiedIdentitiesDroplist(strtolower(trim($request->keyword)));
+        return response()->json($droplist);
     }
 }
