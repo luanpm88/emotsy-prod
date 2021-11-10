@@ -16,25 +16,47 @@
                         </div>
                     </div>
                 </td>
-                <td width="1%">
-                    <span class="server-avatar shadow-sm rounded server-avatar-{{ $item->type }} mr-0">
-                        <span class="material-icons-outlined">
+                <td>
+                    @php
+                        $server = $item->mapType();
+                    @endphp
+
+                    @if ($server->isExtended())
+                        <span class="mc-server-avatar shadow-sm rounded server-avatar" style="background: url({{ $server->getIconUrl() }}) top left/36px 36px no-repeat transparent;">
+                            <span class="material-icons-outlined">
 
 </span>
-                    </span>
+                        </span>
+                    @else
+                        <span class="server-avatar shadow-sm rounded server-avatar-{{ $item->type }} mr-0">
+                            <span class="material-icons-outlined">
+
+</span>
+                        </span>
+                    @endif
                 </td>
                 <td>
-                    <a class="kq_search fw-600 d-block list-title" href="{{ action('SendingServerController@edit', [
-                        "id" => $item->uid, "type" => $item->type
-                    ]) }}">{{ $item->name }}
-                    </a>
+                    @if ($server->isExtended())
+                        <h5 class="m-0 text-bold">
+                            <a class="kq_search d-block" href="{{ $server->getEditUrl() }}">{{ $item->name }}</a>
+                        </h5>
+                    @else
+                        <h5 class="m-0 text-bold">
+                            <a class="kq_search d-block" href="{{ action('SendingServerController@edit', ["id" => $item->uid, "type" => $item->type]) }}">{{ $item->name }}</a>
+                        </h5>
+                    @endif
                     <span class="text-muted">{{ trans('messages.created_at') }}: {{ Tool::formatDateTime($item->created_at) }}</span>
                 </td>
                 <td>
                     <div class="single-stat-box pull-left ml-20">
-                        <span class="no-margin stat-num kq_search">{{ trans('messages.' . $item->type) }}</span>
+                        @if ($server->isExtended())
+                            <span class="no-margin stat-num kq_search">{{ $server->getTypeName() }}</span>
+                        @else
+                            <span class="no-margin stat-num kq_search">{{ trans('messages.' . $item->type) }}</span>
+                        @endif
                         <br />
                         <span class="text-muted">{{ trans('messages.type') }}</span>
+                        
                     </div>
                 </td>
                 <td>
@@ -72,11 +94,15 @@
                 </td>
                 <td class="text-end text-nowrap">
                     @if (Auth::user()->customer->can('update', $item))
-                        <a href="{{ action('SendingServerController@edit', ["id" => $item->uid, "type" => $item->type]) }}"
-                            data-popup="tooltip" title="{{ trans('messages.edit') }}"
-                            role="button" class="btn btn-secondary btn-icon"><span class="material-icons-outlined">
+                        @if ($server->isExtended())
+                            <a href="{{ $server->getEditUrl() }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" role="button" class="btn btn-secondary btn-icon"><span class="material-icons-outlined">
 edit
 </span> {{ trans('messages.edit') }}</a>
+                        @else
+                            <a href="{{ action('SendingServerController@edit', ["id" => $item->uid, "type" => $item->type]) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" role="button" class="btn btn-secondary btn-icon"><span class="material-icons-outlined">
+edit
+</span> {{ trans('messages.edit') }}</a>
+                        @endif
                     @endif
                     @if (Auth::user()->customer->can('delete', $item) || Auth::user()->customer->can('disable', $item) || Auth::user()->customer->can('enable', $item))
                         <div class="btn-group">
@@ -84,9 +110,7 @@ edit
                             <ul class="dropdown-menu dropdown-menu-end">
                                 @if (Auth::user()->customer->can('enable', $item))
                                     <li>
-                                        <a class="dropdown-item list-action-single"
-                                            link-confirm="{{ trans('messages.enable_sending_servers_confirm') }}"
-                                            href="{{ action('SendingServerController@enable', ["uids" => $item->uid]) }}">
+                                        <a class="dropdown-item list-action-single" link-confirm="{{ trans('messages.enable_sending_servers_confirm') }}" href="{{ action('SendingServerController@enable', ["uids" => $item->uid]) }}">
                                             <span class="material-icons-outlined">
 play_arrow
 </span> {{ trans('messages.enable') }}
