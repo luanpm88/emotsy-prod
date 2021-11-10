@@ -253,17 +253,6 @@
 
             element.addEvents();
 
-            // var id = element.obj.attr('id');
-            // if (typeof(window.rssEvents1) == 'undefined') {
-            //     window.rssEvents1 = [];
-            // }
-
-            // if (typeof(window.rssEvents1[id]) == 'undefined') {
-            //     window.rssEvents1[id] = true;
-
-            //     element.render();
-            // }
-
             return [
                 new RssControl(getI18n('font_family'), element.getOptions(), {
                     setOptions: function(options) {

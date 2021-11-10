@@ -22,6 +22,9 @@ footer {
 .container {
     max-width: 760px;
 }
+[builder-element=CellElement] .container {
+    padding: 0;
+}
 .container {
     padding-left: 0;
     padding-right: 0;
