@@ -1971,10 +1971,12 @@ class Customer extends Model
             $server = $plan->primarySendingServer();
             if ($server && $server->allowVerifyingOwnEmailsRemotely()) {
                 return true;
+            } else {
+                return false;
             }
+        } else {
+            return true;
         }
-
-        return false;
     }
 
     public function getWebsiteSelectOptions($long=true)
