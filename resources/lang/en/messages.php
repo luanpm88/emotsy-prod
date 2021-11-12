@@ -3919,7 +3919,7 @@
   'websites.disconnected' => ':done/:total website(s) were successfully disconnected',
   'website.disconnected' => 'The website was successfully disconnected',
   'website.enter_url' => 'Enter your site URL',
-  'website.get_custom_website_code' => 'Get custom website code',
+  'website.get_custom_website_code' => 'Integration code',
   'website.connect_to_your_website' => 'Connect your website',
   'website.connect_to_your_website.desc' => 'Connect to your own home or landing page<br>
     to enable subscription popup forms',
@@ -3930,7 +3930,7 @@
   'website.connect' => 'Connect',
   'website.check_connection' => 'Check connection',
   'website.copy_code' => 'Copy code',
-  'website.copy_code.intro' => 'Copy the code above and paste it in your site',
+  'website.copy_code.intro' => 'The code below is used to inject form popup to your website. Copy the code and paste into the website\'s HTML source.',
   'website.can_not_find_connect_script' => 'The connect script could not be found!',
   'website.site_is_connected' => 'The [:title] site is connected',
   'website.site_is_connected_success' => 'The [:title] site was connected successfully',
