@@ -1,11 +1,5 @@
 @extends('layouts.popup.small')
 
-@section('bar-title')
-    {{ trans('messages.account.welcome_user', [
-        'name' => Auth::user()->displayName(),
-    ]) }}
-@endsection
-
 @section('content')
     <form id="addTaxForm" class="" action="{{ action('Admin\TaxController@addTax', [
         'country_id' => $country->id,
@@ -13,10 +7,12 @@
         method="POST">
         {{ csrf_field() }}
         
-        <h4 class="mt-0">{{ $country->name }}</h4>
+        <p class="mt-0 mb-0">{!! trans('messages.tax.select_tax_in', [
+            'country' => $country->name
+        ]) !!}</p>
 
         <div>
-            <div class="mt-4 d-flex align-items-center">
+            <div class="mt-2 d-flex align-items-center">
                 <div class="form-group-mb-0 me-1">
                     @include('helpers.form_control', [
                         'type' => 'number',
@@ -30,7 +26,7 @@
             </div>
         </div>
 
-        <div class="mt-4">
+        <div class="mt-3">
             <button class="btn btn-secondary px-4">{{ trans('messages.save') }}</button>
         </div>
     </form>
