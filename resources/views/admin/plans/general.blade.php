@@ -124,16 +124,6 @@
                         'help_class' => 'plan',
                         'rules' => $plan->generalRules()
                     ])
-
-                    @include('helpers.form_control', [
-                        'class' => 'numeric',
-                        'type' => 'text',
-                        'name' => 'plan[general][vat]',
-                        'label' => trans('messages.plan.vat'),
-                        'value' => $plan->vat,
-                        'help_class' => 'plan',
-                        'rules' => $plan->generalRules()
-                    ])
                     
                     @include('helpers.form_control', [
                         'type' => 'select_ajax',

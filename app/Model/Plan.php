@@ -55,7 +55,6 @@ class Plan extends Model
         'frequency_amount',
         'frequency_unit',
         'price',
-        'vat',
         'currency_id',
         'paddle_plan_id',
         'admin_id',
@@ -1289,7 +1288,6 @@ class Plan extends Model
     {
         $plan = new self();
         $plan->status = self::STATUS_INACTIVE;
-        $plan->vat = 0;
 
         return $plan;
     }
@@ -1304,14 +1302,9 @@ class Plan extends Model
         $query = $query->where('plans.visible', '=', true);
     }
 
-    public function getTax()
-    {
-        return ($this->price * ($this->vat/100));
-    }
-
     public function total()
     {
-        return $this->price + $this->getTax();
+        return $this->price;
     }
 
     public function getQuotaSettings($name): ?array

@@ -755,14 +755,22 @@ class Setting extends Model
         self::set('tax', json_encode($settings));
     }
 
-    public static function getTaxByCountry($country)
+    public static function getTaxByCountry($country=null)
     {
+        if (self::getTaxSettings()['enabled'] !== 'yes') {
+            return 0;
+        }
+
+        if ($country == null) {
+            return self::getTaxSettings()['default_rate'];
+        }   
+
         $countries = self::getTaxSettings()['countries'];
 
         if (isset($countries[$country->code])) {
             return $countries[$country->code];
         } else {
-            return 10;
+            return self::getTaxSettings()['default_rate'];
         }
     }
 

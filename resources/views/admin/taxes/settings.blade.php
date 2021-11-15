@@ -31,9 +31,11 @@
                     <div class="d-flex">
                         <div class="me-3">
                             <label class="m-0">
+                                <input type="hidden" name="tax[enabled]"
+                                    value="no" class="styled" />
                                 <input type="checkbox" name="tax[enabled]"
-                                    {{ Acelle\Model\Setting::getTaxSettings()['enabled'] }}
-                                    value="" class="styled" />
+                                    {{ Acelle\Model\Setting::getTaxSettings()['enabled'] == 'yes' ? 'checked' : '' }}
+                                    value="yes" class="styled" />
                             </label>
                         </div>
                         <div>
