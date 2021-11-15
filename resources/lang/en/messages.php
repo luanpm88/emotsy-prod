@@ -3885,4 +3885,5 @@
   'tax.country_required' => 'Select country to add tax',
   'tax.no_country_added' => 'There are no country taxes added',
   'tax.select_tax_in' => 'Select tax rate in <span class="fw-600">:country</span>',
+  'tax.remove_confirm' => 'You`re about to remove a country tax rate',
 ) ?>

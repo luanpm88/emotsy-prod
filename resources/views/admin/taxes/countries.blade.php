@@ -26,7 +26,8 @@
                         |
                         <a href="{{ action('Admin\TaxController@removeCountry', [
                             'code' => $code
-                        ]) }}" class="remove-country-tax">
+                        ]) }}"
+                            class="remove-country-tax">
                             {{ trans('messages.remove') }}
                         </a>
                     </td>
@@ -36,6 +37,36 @@
     </table>
 
     <script>
+        var TaxesCountries = {
+            removeTax: function(url) {
+                new Dialog('confirm', {
+                    message: '{{ trans('messages.tax.remove_confirm') }}',
+                    ok: function() {
+                        //
+                        addMaskLoading();
+
+                        $.ajax({
+                            method: "POST",
+                            url: url,
+                            data: {
+                                _token: CSRF_TOKEN,
+                            }
+                        })
+                        .done(function( res ) {
+                            removeMaskLoading();
+
+                            notify({
+                                type: res.status,
+                                message: res.message
+                            });
+
+                            TaxesSettings.getCountryTaxesBox().load();
+                        });
+                    }
+                });
+            }
+        }
+
         $(function() {
             $('.edit-country-tax').on('click', function(e) {
                 e.preventDefault();
@@ -47,25 +78,7 @@
                 e.preventDefault();
                 var url = $(this).attr('href');
 
-                addMaskLoading();
-
-                $.ajax({
-                    method: "POST",
-                    url: url,
-                    data: {
-                        _token: CSRF_TOKEN,
-                    }
-                })
-                .done(function( res ) {
-                    removeMaskLoading();
-
-                    notify({
-                        type: res.status,
-                        message: res.message
-                    });
-
-                    TaxesSettings.getCountryTaxesBox().load();
-                });
+                TaxesCountries.removeTax(url);
             });
         })
     </script>
