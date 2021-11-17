@@ -1173,6 +1173,11 @@ class MailList extends Model
                         $record['tags'] = json_encode(array_filter(preg_split('/\s*,\s*/', $record['tags'])));
                     }
 
+                    // In certain cases, a UTF-8 BOM is added to email
+                    // For example: "﻿madxperts@gmail.com" (open with Sublime to see the char)
+                    // So we need to remove it, at least for email field
+                    $record['email'] = StringHelper::removeUTF8BOM($record['email']);
+
                     return $record;
                 })->toArray();
 

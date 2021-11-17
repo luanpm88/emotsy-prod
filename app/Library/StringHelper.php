@@ -208,6 +208,14 @@ class StringHelper
         return true;
     }
 
+    // Remove from string
+    public static function removeUTF8BOM($text)
+    {
+        $bom = pack('H*','EFBBBF');
+        $text = preg_replace("/^$bom/", '', $text);
+        return $text;
+    }
+
     public static function appendHtml($content, $html)
     {
         return StringHelper::updateHtml($content, function ($document) use ($html) {
