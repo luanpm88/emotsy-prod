@@ -282,6 +282,19 @@ class Language extends Model
 
     public function getAllLanguageFiles()
     {
+        // This function return all translation files for the current language
+        // with additional information
+        // For example:
+        //     [
+        //           [
+        //               'file_name' => 'messages.php'
+        //               'path' => '/acellemail/resources/lang/{en}/messages.php'
+        //               'type' => default | plugin
+        //               ''
+        //           ]
+        //
+        //     ]
+
         $paths = [];
 
         $files = Hook::execute('add_translation_file');
@@ -293,10 +306,8 @@ class Language extends Model
             }
 
             if (!file_exists($path)) {
-                \Acelle\Library\Tool::xcopy(
-                    join_paths($file['translation_folder'], $file['default']),
-                    join_paths($file['translation_folder'], $this->code),
-                );
+                // Trick, should be removed soon
+                $this->createTranslationFile($file);
             }
 
             $paths[$file['id']] = [
@@ -353,36 +364,40 @@ class Language extends Model
         }
     }
 
+    public function createTranslationFile($source)
+    {
+        if (array_key_exists('master_translation_file', $source)) {
+            $originFile = $source['master_translation_file'];
+        } else {
+            // If a 'master_translation_file' is not specified, then take the one associate with 'default' language as master
+            // For example: resources/lang/default/message.php
+            $originFile = join_paths($source['translation_folder'], $source['default'], $source['file_name']);
+        }
+
+        // Other files
+        //     + resources / lang / ja / messages.php
+        $langFile = join_paths($source['translation_folder'], $this->code, $source['file_name']);
+
+        if (!file_exists($originFile)) {
+            throw new Exception('Original translation file does not exist. Make sure it is registered correctly. Or, if it is a local development environment, just make a "default" folder by copying "resources/lang/en" ==> "resources/lang/default": '.$originFile);
+        }
+
+        // If the originFile is also the current language's file
+        // Notice that realpath() is used to remove ../../ in file path, before comparing
+        if (!file_exists($langFile)) {
+            // Create language's file by copying from the original file
+            \Acelle\Helpers\pcopy($originFile, $langFile);
+        }
+
+        return [$originFile, $langFile];
+    }
+
     public function createOrUpdateTranslationFiles()
     {
         foreach (Hook::execute('add_translation_file') as $source) {
-            if (array_key_exists('master_translation_file', $source)) {
-                $originFile = $source['master_translation_file'];
-            } else {
-                // If a 'master_translation_file' is not specified, then take the one associate with 'default' language as master
-                // For example: resources/lang/default/message.php
-                $originFile = join_paths($source['translation_folder'], $source['default'], $source['file_name']);
-            }
+            list($originFile, $langFile) = $this->createTranslationFile($source);
 
-            // Other files
-            //     + resources / lang / ja / messages.php
-            $langFile = join_paths($source['translation_folder'], $this->code, $source['file_name']);
-
-            if (!file_exists($originFile)) {
-                throw new Exception('Original translation file does not exist: '.$originFile);
-            }
-
-            // If the originFile is also the current language's file
-            // Notice that realpath() is used to remove ../../ in file path, before comparing
-            if (realpath($originFile) == realpath($langFile)) {
-                continue;
-            }
-
-            // Create language's file by copying from the original file
-            if (!file_exists($langFile)) {
-                \Acelle\Helpers\pcopy($originFile, $langFile);
-            } else {
-                // Update current language's file if it already exists, respect the existing translation
+            if (realpath($originFile) != realpath($langFile)) {
                 \Acelle\Helpers\updateTranslationFile($langFile, $originFile, $overwrite = false);
             }
         }
