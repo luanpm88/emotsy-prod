@@ -208,11 +208,18 @@ class StringHelper
         return true;
     }
 
-    // Remove from string
+    // Remove from string, use for email addresses
     public static function removeUTF8BOM($text)
     {
         $bom = pack('H*','EFBBBF');
+
+        // Standard method
         $text = preg_replace("/^$bom/", '', $text);
+
+        // More destructive method, as the first method may miss the following ones with more than one BOM:
+        // ﻿﻿madrevgra@aol.com
+        // ﻿﻿madrasathleticclub@yahoo.com
+        $text = str_replace("\xEF\xBB\xBF",'',$text);
         return $text;
     }
 
