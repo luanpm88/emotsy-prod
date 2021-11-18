@@ -191,7 +191,6 @@ class Subscription extends Model implements HasQuotaInterface
             'item_id' => $this->id,
             'item_type' => get_class($this),
             'amount' => $this->plan->price,
-            'vat' => $this->plan->vat,
             'title' => $this->plan->name,
             'description' => view('plans._bill_desc', ['plan' => $this->plan]),
         ]);
@@ -247,7 +246,6 @@ class Subscription extends Model implements HasQuotaInterface
             'item_id' => $this->id,
             'item_type' => get_class($this),
             'amount' => $this->plan->price,
-            'vat' => $this->plan->vat,
             'title' => $this->plan->name,
             'description' => view('plans._bill_desc', ['plan' => $this->plan]),
         ]);
@@ -309,7 +307,6 @@ class Subscription extends Model implements HasQuotaInterface
             'item_type' => get_class($this),
             'amount' => $metadata['amount'],
             'title' => $newPlan->name,
-            'vat' => $newPlan->vat,
             'description' => view('plans._bill_desc', ['plan' => $newPlan]),
         ]);
 

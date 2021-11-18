@@ -309,4 +309,9 @@ class Country extends Model
             $c->save();
         }
     }
+
+    public static function findByCode($code)
+    {
+        return self::where('code', '=', $code)->first();
+    }
 }

@@ -33,7 +33,14 @@ class InvoiceItem extends Model
      */
     public function getTax()
     {
-        return ($this->subTotal() * ($this->vat/100));
+        if ($this->invoice->billing_country_id) {
+            $country = \Acelle\Model\Country::find($this->invoice->billing_country_id);
+            $tax = \Acelle\Model\Setting::getTaxByCountry($country);
+        } else {
+            $tax = \Acelle\Model\Setting::getTaxByCountry(null);
+        }
+
+        return ($this->subTotal() * ($tax/100));
     }
 
     public function subTotal()

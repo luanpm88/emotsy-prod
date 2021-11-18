@@ -726,4 +726,63 @@ class Setting extends Model
             }
         }
     }
+
+    public static function getTaxSettings()
+    {
+        if (self::get('tax') == null) {
+            return [
+                'enabled' => 'no',
+                'default_rate' => 10,
+                'countries' => [],
+            ];
+        }
+
+        return json_decode(self::get('tax'), true);
+    }
+
+    public static function setTaxSettings($params)
+    {
+        $settings = self::getTaxSettings();
+        $countries = $settings['countries'];
+
+        if (isset($params['countries'])) {
+            $countries = array_merge($countries, $params['countries']);
+        }
+
+        $settings = array_merge($settings, $params);
+        $settings['countries'] = $countries;
+        
+        self::set('tax', json_encode($settings));
+    }
+
+    public static function getTaxByCountry($country=null)
+    {
+        if (self::getTaxSettings()['enabled'] !== 'yes') {
+            return 0;
+        }
+
+        if ($country == null) {
+            return self::getTaxSettings()['default_rate'];
+        }   
+
+        $countries = self::getTaxSettings()['countries'];
+
+        if (isset($countries[$country->code])) {
+            return $countries[$country->code];
+        } else {
+            return self::getTaxSettings()['default_rate'];
+        }
+    }
+
+    public static function removeTaxCountryByCode($code)
+    {
+        $settings = self::getTaxSettings();
+        $countries = $settings['countries'];
+
+        unset($countries[$code]);
+
+        $settings['countries'] = $countries;
+
+        self::set('tax', json_encode($settings));
+    }
 }

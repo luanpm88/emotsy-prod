@@ -1003,4 +1003,10 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     // Modify jobs indexes
     Route::get('jobs/drop-index', 'Upgrade@dropIndex');
     Route::get('jobs/create-index', 'Upgrade@createIndex');
+
+    // 
+    Route::post('tax/remove/{code}', 'TaxController@removeCountry');
+    Route::match(['get','post'], 'tax/add', 'TaxController@addTax');
+    Route::get('tax/countries', 'TaxController@countries');
+    Route::match(['get','post'], 'tax/settings', 'TaxController@settings');
 });
