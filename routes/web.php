@@ -626,6 +626,10 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('sources/connect', 'SourceController@connect');
     Route::get('sources/listing', 'SourceController@listing');
     Route::resource('sources', 'SourceController');
+
+    // Site
+    Route::get('site/listing', 'Site\TemplateController@listing');
+    Route::get('site/templates', 'Site\TemplateController@index');
 });
 
 // ADMIN AREA
