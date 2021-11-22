@@ -764,7 +764,7 @@ input.error {
     border-color: #f7c9c6;
     color: #231c15;
 }
-.label-success, .bg-settled, .bg-sent, .bg-recurring, .bg-deliverable, .bg-current_active, .bg-current, .bg-cron-running, .bg-running, .bg-starting, .bg-pending-sending, .bg-active, .bg-confirmed, .bg-paid, .bg-sending, .bg-subscribed {
+.bg-activated, .label-success, .bg-settled, .bg-sent, .bg-recurring, .bg-deliverable, .bg-current_active, .bg-current, .bg-cron-running, .bg-running, .bg-starting, .bg-pending-sending, .bg-active, .bg-confirmed, .bg-paid, .bg-sending, .bg-subscribed {
     background-color: #b5dd95;
     border-color: #a2c492;
     color: #172315;
@@ -7636,4 +7636,25 @@ body.mode-dark .dropdown-item:focus {
 }
 .list-columns-checkbox .dropdown-item {
     padding: 0;
+}
+.open-site-top-menu {
+    border-radius: 100%;
+    background: #f5f5f5;
+    margin-top: 15px;
+    height: 40px;
+    width: 40px;
+    display: flex;
+    margin-right: 0;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 23px;
+    color: #333;
+}
+.open-site-top-menu:hover {
+    color: #000;
+    background-color: #eee;
+}
+.open-site-top-menu span {
+    transform: translateY(1px);
 }

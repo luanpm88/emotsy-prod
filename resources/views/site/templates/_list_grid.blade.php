@@ -7,18 +7,16 @@
                         <img class="card-img-top" src="{{ $template['screenshot'][0] }}" style="height: 100%; width: auto; display: block;">
                         <div class="preview_control">
                             <div style="width: calc(80% - 20px);">
-                                <div class="mb-2">
-                                    <a class="btn btn-light d-block" href="#preview">
-                                        <span class="material-icons-outlined">
-                                        zoom_in
-                                        </span> {{ trans("messages.preview") }}</a>
-                                </div>
                                 <div>
                                     <div>
                                         <div>
-                                            <a href="#" role="button" class="btn btn-primary btn-icon template-compose d-block mb-2">
-                                                {{ trans('messages.template.pro_builder') }}
-                                            </a>
+                                            @if (!$template['active'])
+                                                <a link-method="POST" href="{{ action('Site\TemplateController@activate', $template['id']) }}"
+                                                    role="button" class="btn btn-primary list-action-single d-block"
+                                                >
+                                                    {{ trans('messages.site.template.activate') }}
+                                                </a>
+                                            @endif
                                         </div>
                                     </div>
                                 </div>
@@ -26,7 +24,14 @@
                         </div>
                     </span>
                     <div class="card-body p-3">
-                        <h6 title="{{ $template['name'] }}" class="fw-600 mt-1 mb-1 text-ellipsis">{{ $template['name'] }}</h6>
+                        <h6 title="{{ $template['name'] }}" class="fw-600 mt-1 mb-1 text-ellipsis">
+                            {{ $template['name'] }}
+                            @if ($template['active'])
+                                <div style="line-height:25px">
+                                    <span class="label label-flat bg-activated">{{ trans('messages.activated') }}</span>
+                                </div>
+                            @endif
+                        </h6>
                         <p class="small text-muted">{{ $template['description'] }}</p>
                         
                         <div class="">

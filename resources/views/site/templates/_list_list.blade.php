@@ -21,7 +21,7 @@
                             src="{{ $template['screenshot'][0] }}?v={{ rand(0,10) }}" />
                     </a>
                 </td>
-                <td>
+                <td width="70%">
                     <a class="kq_search fw-600 d-block list-title" href="#preview">
                         {{ $template['name'] }}
                     </a>
@@ -29,7 +29,15 @@
                 </td>
 
                 <td class="text-end">
-                    
+                    @if (!$template['active'])
+                        <a link-method="POST" href="{{ action('Site\TemplateController@activate', $template['id']) }}"
+                            role="button" class="btn btn-secondary list-action-single"
+                        >
+                            {{ trans('messages.site.template.activate') }}
+                        </a>
+                    @else
+                        <span class="label label-flat bg-activated">{{ trans('messages.activated') }}</span>
+                    @endif
                 </td>
             </tr>
         @endforeach

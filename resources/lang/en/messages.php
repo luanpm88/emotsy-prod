@@ -3887,4 +3887,9 @@
   'tax.select_tax_in' => 'Select tax rate in <span class="fw-600">:country</span>',
   'tax.remove_confirm' => 'You`re about to remove a country tax rate',
   'website' => 'Website',
+  'open_front_page' => 'Open front page',
+  'site.template.activate' => 'Activate',
+  'open_website' => 'Open website in new tab',
+  'activated' => 'Activated',
+  'site.template_changed' => 'Site template was changed successfully',
 ) ?>

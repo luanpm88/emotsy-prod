@@ -20,8 +20,7 @@ class TemplateController extends Controller
      */
     public function listing(Request $request)
     {
-        require_once config('wordpress.1.path') . '/wp-load.php';
-        require_once ABSPATH . 'wp-admin/includes/admin.php';
+        $wordpress = new \Acelle\Library\WordpressManager();
         
         // view
         $view = $request->view ? $request->view : 'list';
@@ -32,6 +31,18 @@ class TemplateController extends Controller
 
         return view('site.templates._list_' . $view, [
             'templates' => $templates,
+        ]);
+    }
+
+    public function activate(Request $request, $id)
+    {
+        $wordpress = new \Acelle\Library\WordpressManager();
+
+        $wordpress->activateTheme($id);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => trans('messages.site.template_changed'),
         ]);
     }
 }
