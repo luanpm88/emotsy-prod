@@ -3892,4 +3892,5 @@
   'open_website' => 'Open website in new tab',
   'activated' => 'Activated',
   'site.template_changed' => 'Site template was changed successfully',
+  'product.categories' => 'Categories',
 ) ?>

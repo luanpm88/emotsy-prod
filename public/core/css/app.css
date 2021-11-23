@@ -7658,3 +7658,14 @@ body.mode-dark .dropdown-item:focus {
 .open-site-top-menu span {
     transform: translateY(1px);
 }
+.woo-image {
+    padding: 10px;
+    height: auto;
+    background-color: transparent;
+}
+.woo-image img {
+    max-width: 100%;
+    max-height: 100%;
+    height: auto;
+    width: auto;
+}

@@ -1,6 +1,9 @@
 <?php
 
 namespace Acelle\Library;
+use Illuminate\Support\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
+use \Illuminate\Pagination\Paginator;
 
 class WordpressManager {
     public function __construct()
@@ -9,14 +12,19 @@ class WordpressManager {
         require_once ABSPATH . 'wp-admin/includes/admin.php';
     }
 
+    public function getTemplates()
+    {
+        return wp_prepare_themes_for_js();
+    }
+
     public function activateTheme($id)
     {
-		$theme = wp_get_theme( $id );
+        $theme = wp_get_theme( $id );
 
-		if ( ! $theme->exists() || ! $theme->is_allowed() ) {
-			throw new \Exception('The requested theme does not exist.');
-		}
+        if ( ! $theme->exists() || ! $theme->is_allowed() ) {
+          throw new \Exception('The requested theme does not exist.');
+        }
 
-		switch_theme( $theme->get_stylesheet() );
+        switch_theme( $theme->get_stylesheet() );
     }
 }

@@ -628,6 +628,11 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::resource('sources', 'SourceController');
 
     // Site
+    // Site
+    Route::post('site/profucts/{id}/activate', 'Site\TemplateController@activate');
+    Route::get('site/products/listing', 'Site\ProductController@listing');
+    Route::get('site/products', 'Site\ProductController@index');
+
     Route::post('site/templates/{id}/activate', 'Site\TemplateController@activate');
     Route::get('site/templates/listing', 'Site\TemplateController@listing');
     Route::get('site/templates', 'Site\TemplateController@index');

@@ -25,9 +25,8 @@ class TemplateController extends Controller
         // view
         $view = $request->view ? $request->view : 'list';
 
-        // sort, pagination
-        $templates = wp_prepare_themes_for_js();
-
+        // wordpress themes
+        $templates = $wordpress->getTemplates();
 
         return view('site.templates._list_' . $view, [
             'templates' => $templates,

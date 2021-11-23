@@ -49,6 +49,14 @@ class Frontend
             \Carbon\Carbon::setLocale($user->customer->language->code);
         }
 
+        // Wordpress db by user
+        if (isset($user) && isset($user->customer)) {
+            config([
+                'database.connections.wordpress.database' => config('wordpress.1.db_name'),
+                'database.connections.wordpress.prefix' => config('wordpress.1.db_prefix'),
+            ]);
+        }
+
         return $next($request);
     }
 }
