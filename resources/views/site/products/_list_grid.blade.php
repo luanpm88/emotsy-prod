@@ -25,7 +25,9 @@
 								</a>
 								<span class="text-muted ml-auto text-primary m-icon d-flex align-items-center">
 									{{-- <img width="20px" class="mr-2 list-source-img" src="{{ url('images/woo_list.png') }}" /> --}}
-									<span>Product</span>
+									<span class="material-icons-round">
+										qr_code
+										</span>
 								</span>
 							</div>
 						</div>
