@@ -22,6 +22,7 @@ class ProductController extends Controller
 
         // wordpress themes
         $products = \Acelle\Model\WpPost::products()
+            ->search($request->keyword)
             ->paginate($request->per_page ? $request->per_page : 2);
 
         return view('site.products._list_' . $view, [
