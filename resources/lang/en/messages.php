@@ -3893,4 +3893,13 @@
   'activated' => 'Activated',
   'site.template_changed' => 'Site template was changed successfully',
   'product.categories' => 'Categories',
+  'product.create' => 'Create',
+  'product.add' => 'Add new product',
+  'product.title' => 'Title',
+  'product.categories' => 'Categories',
+  'product.select_categories' => 'Select product categories',
+  'product.sku' => 'SKU',
+  'product.advanced' => 'Advanced Form',
+  'product.delete.confirm' => 'You\'re about to delete the product <span class="fw-600">:name</span>',
+  'product.deleted' => 'The product was deleted successfully',
 ) ?>

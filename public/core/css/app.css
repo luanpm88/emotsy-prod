@@ -7669,3 +7669,6 @@ body.mode-dark .dropdown-item:focus {
     height: auto;
     width: auto;
 }
+textarea.form-control {
+    height: auto;
+}

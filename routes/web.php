@@ -627,12 +627,15 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('sources/listing', 'SourceController@listing');
     Route::resource('sources', 'SourceController');
 
-    // Site
-    // Site
+    // Site - Product
+    Route::post('site/profucts/{id}/delete', 'Site\ProductController@delete');
+    Route::match(['get', 'post'], 'site/products/{id}/edit', 'Site\ProductController@edit');
+    Route::match(['get', 'post'], 'site/products/add', 'Site\ProductController@add');
     Route::post('site/profucts/{id}/activate', 'Site\TemplateController@activate');
     Route::get('site/products/listing', 'Site\ProductController@listing');
     Route::get('site/products', 'Site\ProductController@index');
 
+    // Site - Template
     Route::post('site/templates/{id}/activate', 'Site\TemplateController@activate');
     Route::get('site/templates/listing', 'Site\TemplateController@listing');
     Route::get('site/templates', 'Site\TemplateController@index');

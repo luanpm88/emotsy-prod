@@ -1,0 +1,43 @@
+@extends('layouts.core.frontend')
+
+@section('title', trans('messages.create_admin'))
+
+@section('head')
+	<script type="text/javascript" src="{{ URL::asset('core/tinymce/tinymce.min.js') }}"></script>        
+    <script type="text/javascript" src="{{ URL::asset('core/js/editor.js') }}"></script>
+
+    <script src="{{ URL::asset('core/js/UrlAutoFill.js') }}"></script>
+@endsection
+	
+@section('page_header')
+	
+    <div class="page-title">
+        <ul class="breadcrumb breadcrumb-caret position-right">
+            <li class="breadcrumb-item"><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ action("Site\ProductController@index") }}">{{ trans('messages.products') }}</a></li>
+        </ul>
+    </div>
+
+@endsection
+
+@section('content')
+    <script>
+        window.addEventListener("message", (event) => {
+            var height = event.data.height;
+
+            console.log(height);
+
+            var frame = window.document.getElementById('wpFrame');
+            frame.style.height = height + 'px';
+        }, false);
+    </script>
+
+    <iframe scrolling="no" id="wpFrame" src="http://wp.vbrand.com/wp-admin/post-new.php?post_type=product" style="border:none;width:100%;overflow:hidden"></iframe>
+
+    {{-- <form enctype="multipart/form-data" action="{{ action('Site\ProductController@add') }}" method="POST">
+        {{ csrf_field() }}
+        
+        @include('site.products._form')
+    <form>
+    --}}
+@endsection

@@ -30,21 +30,21 @@
 					<span class="text-muted d-block mt-2">{{ trans('messages.product.categories') }}</span>
 				</td>
 				<td class="text-end">
-					<a href=""
-						link-method="POST"
-						role="button" class="btn btn-secondary m-icon pl-3">
+					<a href="{{ action('Site\ProductController@edit', $wooProduct->id) }}" class="btn btn-secondary m-icon pl-3">
 						<span class="material-icons-outlined me-2">
-							link
-							</span>{{ trans('messages.view') }}</a>
+							edit
+							</span>{{ trans('messages.edit') }}</a>
 					<div class="btn-group">
 						<button role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"></button>
 						<ul class="dropdown-menu dropdown-menu-end">
 							<li>
 								<a
 									class="dropdown-item list-action-single"
-									link-confirm="{{ trans('messages.product.delete.confirm') }}"
+									link-confirm="{{ trans('messages.product.delete.confirm', [
+										'name' => $wooProduct->name,
+									]) }}"
 									link-method="POST"
-									href="">
+									href="{{ action('Site\ProductController@delete', $wooProduct->id) }}">
 									<span class="material-icons-outlined">
 delete_outline
 </span> {{ trans('messages.delete') }}

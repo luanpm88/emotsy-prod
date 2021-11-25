@@ -1994,4 +1994,12 @@ class Customer extends Model
 
         return $customer;
     }
+
+    public function newProduct()
+    {
+        $product = new \Acelle\Model\Product();
+        $product->customer_id = $this->id;
+
+        return $product;
+    }
 }

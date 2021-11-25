@@ -23,10 +23,47 @@ class ProductController extends Controller
         // wordpress themes
         $products = \Acelle\Model\WpPost::products()
             ->search($request->keyword)
-            ->paginate($request->per_page ? $request->per_page : 2);
+            ->paginate($request->per_page ? $request->per_page : 8);
 
         return view('site.products._list_' . $view, [
             'products' => $products,
+        ]);
+    }
+
+    public function add(Request $request)
+    {
+        $wordpress = new \Acelle\Library\WordpressManager();
+
+        $product = $request->user()->customer->newProduct();
+
+
+
+        return view('site.products.add', [
+            'product' => $product,
+            'categories' => $wordpress->getProductCategories(),
+        ]);
+    }
+
+    public function edit(Request $request, $id)
+    {
+        $wordpress = new \Acelle\Library\WordpressManager();
+
+        $wooProduct = wc_get_product($id);
+
+        return view('site.products.edit', [
+            'wooProduct' => $wooProduct,
+        ]);
+    }
+    
+    public function delete(Request $request, $id)
+    {
+        $wordpress = new \Acelle\Library\WordpressManager();
+
+        wp_delete_post($id);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => trans('messages.product.deleted'),
         ]);
     }
 }

@@ -27,4 +27,32 @@ class WordpressManager {
 
         switch_theme( $theme->get_stylesheet() );
     }
+
+    public function getProductCategories()
+    {
+        $taxonomy     = 'product_cat';
+        $orderby      = 'name';  
+        $hierarchical = 1;
+        $empty        = 0;
+        
+
+        $args = array(
+            'taxonomy'     => $taxonomy,
+            'orderby'      => $orderby,
+            'hierarchical' => $hierarchical,
+            'hide_empty'   => $empty,
+        );
+
+        $all_categories = get_categories( $args );
+        
+        $data = [];
+        foreach ($all_categories as $cat) {
+            $data[] = [
+                'value' => $cat->term_id,
+                'text' => $cat->name,
+            ];   
+        }
+
+        return $data;
+    }
 }

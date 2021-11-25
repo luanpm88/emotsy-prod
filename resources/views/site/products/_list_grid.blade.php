@@ -16,11 +16,16 @@
 						overflow: hidden;" class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
 						<div class="">
 							<div class="d-flex align-items-center">
-								<button role="button" class="btn btn-secondary">{{ trans('messages.view') }}</button>
+								<a href="{{ action('Site\ProductController@edit', $wooProduct->id) }}" role="button" class="btn btn-secondary">
+									{{ trans('messages.edit') }}
+								</a>
 								<a
-									link-confirm="{{ trans('messages.source.delete.confirm') }}"
-									link-method="POST" href=""
-									class="btn btn-link list-action-single">
+									class="btn btn-link list-action-single"
+									link-confirm="{{ trans('messages.product.delete.confirm', [
+										'name' => $wooProduct->name,
+									]) }}"
+									link-method="POST"
+									href="{{ action('Site\ProductController@delete', $wooProduct->id) }}">
 									{{ trans('messages.delete') }}
 								</a>
 								<span class="text-muted ml-auto text-primary m-icon d-flex align-items-center">
