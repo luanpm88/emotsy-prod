@@ -33,11 +33,4 @@
     </script>
 
     <iframe scrolling="no" id="wpFrame" src="http://wp.vbrand.com/wp-admin/post-new.php?post_type=product" style="border:none;width:100%;overflow:hidden"></iframe>
-
-    {{-- <form enctype="multipart/form-data" action="{{ action('Site\ProductController@add') }}" method="POST">
-        {{ csrf_field() }}
-        
-        @include('site.products._form')
-    <form>
-    --}}
 @endsection

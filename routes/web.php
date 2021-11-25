@@ -627,6 +627,9 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('sources/listing', 'SourceController@listing');
     Route::resource('sources', 'SourceController');
 
+    // Site - Menu
+    Route::get('site/menus', 'Site\MenuController@index');
+
     // Site - Product
     Route::post('site/profucts/{id}/delete', 'Site\ProductController@delete');
     Route::match(['get', 'post'], 'site/products/{id}/edit', 'Site\ProductController@edit');

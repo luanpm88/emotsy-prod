@@ -36,7 +36,7 @@ class ProductController extends Controller
 
         $product = $request->user()->customer->newProduct();
 
-
+        wp_login('lusn', '123456');
 
         return view('site.products.add', [
             'product' => $product,
