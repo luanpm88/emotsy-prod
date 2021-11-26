@@ -938,7 +938,7 @@ function parseRssTemplate($template, $feedData)
     }
 
     if (isset($feedData['item_enclosure_url']) && $feedData['item_enclosure_url'] != '') {
-        if (strpos($feedData['item_enclosure_type'], 'audio') !== false) {
+        if (false && strpos($feedData['item_enclosure_type'], 'audio') !== false) {
         } else {
             $html = '<img class="my-2" src="' . $feedData['item_enclosure_url'] . '" height="100px" />';
         }
