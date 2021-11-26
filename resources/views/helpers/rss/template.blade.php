@@ -49,9 +49,9 @@
                         </div>
                     @endif
                 </div>
-                @if ($templates['ItemImage']['show'] == 'true')
-                    <div rss-item="ItemImage" class="ml-auto ms-auto pl-4 ps-4">
-                        <img class="my-2" src="{{ url('images/newsThumb.svg') }}" height="100px" />
+                @if ($templates['ItemEnclosure']['show'] == 'true')
+                    <div rss-item="ItemEnclosure" class="ml-auto ms-auto pl-4 ps-4">
+                        {!! $item['ItemEnclosure'] !!}
                     </div>
                 @endif                
             </div>

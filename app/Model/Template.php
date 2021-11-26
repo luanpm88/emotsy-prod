@@ -1439,10 +1439,10 @@ class Template extends Model
                     'template' => '<img src="'.url('images/icon-up.svg').'" width="16px" style="margin-right:5px" /> 400k updates, &nbsp; &nbsp; 
                         <img src="'.url('images/icon-comment.svg').'" width="16px" style="margin-right:5px" /> 1.2k comments',
                 ],
-                'ItemImage' => [
+                'ItemEnclosure' => [
                     'title' => trans('messages.rss.image'),
                     'show' => false,
-                    'template' => false,
+                    'template' => '@item_enclosure',
                 ],
             ],
         ];
