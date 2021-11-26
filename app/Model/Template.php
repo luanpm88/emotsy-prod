@@ -1440,7 +1440,7 @@ class Template extends Model
                         <img src="'.url('images/icon-comment.svg').'" width="16px" style="margin-right:5px" /> 1.2k comments',
                 ],
                 'ItemEnclosure' => [
-                    'title' => trans('messages.rss.image'),
+                    'title' => trans('messages.rss.enclosure'),
                     'show' => false,
                     'template' => '@item_enclosure',
                 ],

@@ -4000,7 +4000,7 @@
   'rss.template.cancel' => 'Cancel',
   'rss.meta_line' => 'Meta line',
   'rss.stats_line' => 'Statistics',
-  'rss.image' => 'Image',
+  'rss.enclosure' => 'Enclosure (Image|Audio|Video)',
   'rss.top_stories_for_you' => 'TOP STORIES FOR YOU',
   'rss.feed_tagline' => 'Tagline',
   'rss.no_options' => 'RSS config not found',

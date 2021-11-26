@@ -902,6 +902,7 @@ function parseRss($config)
 
     // records
     $rss['items'] = [];
+    $count = 0;
     foreach ($rssFeed->channel->item as $item) {
         // item data
         $itemData['item_title'] = $item->title;
@@ -921,6 +922,11 @@ function parseRss($config)
 
         // add item to rss items
         $rss['items'][] = $item;
+
+        $count += 1;
+        if ($config['size'] == $count) {
+            break;
+        }
     }
 
 
@@ -938,7 +944,16 @@ function parseRssTemplate($template, $feedData)
     }
 
     if (isset($feedData['item_enclosure_url']) && $feedData['item_enclosure_url'] != '') {
-        if (false && strpos($feedData['item_enclosure_type'], 'audio') !== false) {
+        if (strpos($feedData['item_enclosure_type'], 'video') !== false) {
+            $html = '<video controls width="320">
+                        <source src="https://file-examples-com.github.io/uploads/2017/04/file_example_MP4_480_1_5MG.mp4" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                </video>';
+        } else if (strpos($feedData['item_enclosure_type'], 'video') !== false) {
+            $html = '<audio controls>
+                        <source src="' . $feedData['item_enclosure_url'] . '" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                </audio>';
         } else {
             $html = '<img class="my-2" src="' . $feedData['item_enclosure_url'] . '" height="100px" />';
         }
