@@ -882,17 +882,18 @@ function parseRss($config)
 
     // Parse RSS content
     $rssArray = xml_to_array(simplexml_load_string(file_get_contents($config['url']), 'SimpleXMLElement', LIBXML_NOCDATA));
+    $rssFeed = simplexml_load_string(file_get_contents($config['url']), 'SimpleXMLElement', LIBXML_NOCDATA);
 
     // Take 10 records only
     $records = array_slice($rssArray['rss']['channel']['item'], 0, $config['size']);
-
+    
     // feed data
     $feedData = [];
-    $feedData['feed_title'] = $rssArray['rss']['channel']['title'];
-    $feedData['feed_description'] = isset($rssArray['rss']['channel']['description']) ? $rssArray['rss']['channel']['description'] : '';
-    $feedData['feed_link'] = isset($rssArray['rss']['channel']['link']) ? $rssArray['rss']['channel']['link'] : '';
-    $feedData['feed_pubdate'] = isset($rssArray['rss']['channel']['pubDate']) ? $rssArray['rss']['channel']['pubDate'] : '';
-    $feedData['feed_build_date'] = isset($rssArray['rss']['channel']['lastBuildDate']) ? $rssArray['rss']['channel']['lastBuildDate'] : '';
+    $feedData['feed_title'] = (string) $rssFeed->channel->title;
+    $feedData['feed_description'] = $rssFeed->channel->description->__toString();
+    $feedData['feed_link'] = $rssFeed->channel->link->__toString();
+    $feedData['feed_pubdate'] = $rssFeed->channel->pubDate->__toString();
+    $feedData['feed_build_date'] = $rssFeed->channel->lastBuildDate->__toString();
 
     // feed parse template
     $rss['FeedTitle'] = parseRssTemplate($config['templates']['FeedTitle']['template'], $feedData);
@@ -901,24 +902,31 @@ function parseRss($config)
 
     // records
     $rss['items'] = [];
-    foreach($records as $record) {
+    $count = 0;
+    foreach ($rssFeed->channel->item as $item) {
         // item data
-        $itemData['item_title'] = isset($record['title']) ? $record['title'] : '';
-        $itemData['item_pubdate'] = isset($record['pubDate']) ? $record['pubDate'] : '';
-        $itemData['item_description'] = isset($record['description']) ? $record['description'] : '';
-        $itemData['item_url'] = isset($record['link']) ? $record['link'] : '';
-        $itemData['item_image_url'] = isset($record['image_url']) ? $record['image_url'] : '';
+        $itemData['item_title'] = $item->title;
+        $itemData['item_pubdate'] = $item->pubDate;
+        $itemData['item_description'] = $item->description;
+        $itemData['item_url'] = $item->link;
+        $itemData['item_enclosure_url'] = $item->enclosure['url'];
+        $itemData['item_enclosure_type'] = $item->enclosure['type'];
 
         // item parse template
         $item = [];
         $item['ItemTitle'] = parseRssTemplate($config['templates']['ItemTitle']['template'], $itemData);
         $item['ItemDescription'] = parseRssTemplate($config['templates']['ItemDescription']['template'], $itemData);
         $item['ItemMeta'] = parseRssTemplate($config['templates']['ItemMeta']['template'], $itemData);
-        $item['ItemImage'] = parseRssTemplate($config['templates']['ItemImage']['template'], $itemData);
+        $item['ItemEnclosure'] = parseRssTemplate($config['templates']['ItemEnclosure']['template'], $itemData);
         $item['ItemStats'] = parseRssTemplate($config['templates']['ItemStats']['template'], $itemData);
 
         // add item to rss items
         $rss['items'][] = $item;
+
+        $count += 1;
+        if ($config['size'] == $count) {
+            break;
+        }
     }
 
 
@@ -933,6 +941,23 @@ function parseRssTemplate($template, $feedData)
 {
     foreach($feedData as $key => $value) {
         $template = str_replace('@' . $key, $value, $template);
+    }
+
+    if (isset($feedData['item_enclosure_url']) && $feedData['item_enclosure_url'] != '') {
+        if (strpos($feedData['item_enclosure_type'], 'video') !== false) {
+            $html = '<video controls width="320">
+                        <source src="https://file-examples-com.github.io/uploads/2017/04/file_example_MP4_480_1_5MG.mp4" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                </video>';
+        } else if (strpos($feedData['item_enclosure_type'], 'video') !== false) {
+            $html = '<audio controls>
+                        <source src="' . $feedData['item_enclosure_url'] . '" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                </audio>';
+        } else {
+            $html = '<img class="my-2" src="' . $feedData['item_enclosure_url'] . '" height="100px" />';
+        }
+        $template = str_replace('@item_enclosure', $html, $template);
     }
 
     return $template;
