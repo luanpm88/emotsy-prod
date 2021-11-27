@@ -10,7 +10,9 @@
 			<li class="breadcrumb-item"><a href="{{ action("Admin\AdminGroupController@index") }}">{{ trans('messages.admin_groups') }}</a></li>
 		</ul>
 		<h1>
-			<span class="text-semibold"><i class="icon-plus-circle2"></i> {{ trans('messages.create_admin_group') }}</span>
+			<span class="text-semibold"><span class="material-icons-round">
+add
+</span> {{ trans('messages.create_admin_group') }}</span>
 		</h1>
 	</div>
 

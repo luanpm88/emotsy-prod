@@ -34,6 +34,13 @@ class Upgrade extends Controller
         JobMonitor::query()->delete();
         Job::query()->delete();
         FailedJob::query()->delete();
+        try {
+            Schema::table('jobs', function (Blueprint $table) {
+                $table->dropIndex(['queue']);
+            });
+        } catch (Exception $ex) {
+            // Index already dropped
+        }
         Cache::flush();
         Language::dump();
         Template::resetDefaultTemplates();
@@ -77,7 +84,7 @@ class Upgrade extends Controller
     {
         try {
             Schema::table('jobs', function (Blueprint $table) {
-                $table->dropIndex(['queue']); // Drops index 'geo_state_index'
+                $table->dropIndex(['queue']);
             });
 
             return response('Dropped');

@@ -9,7 +9,9 @@
 			<li class="breadcrumb-item"><a href="{{ action("MailListController@index") }}">{{ trans('messages.lists') }}</a></li>
 		</ul>
 		<h1>
-			<span class="text-semibold"><i class="icon-plus-circle2"></i> {{ trans('messages.create_list') }}</span>
+			<span class="text-semibold"><span class="material-icons-round">
+add
+</span> {{ trans('messages.create_list') }}</span>
 		</h1>
 	</div>
 @endsection
