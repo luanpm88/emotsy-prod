@@ -7,6 +7,8 @@
     <script type="text/javascript" src="{{ URL::asset('core/js/editor.js') }}"></script>
 
     <script src="{{ URL::asset('core/js/UrlAutoFill.js') }}"></script>
+
+    <link rel="stylesheet" type="text/css" href="{{ URL::asset('core/css/vbrand.css') }}">
 @endsection
 	
 @section('page_header')
@@ -21,21 +23,5 @@
 @endsection
 
 @section('content')
-    <iframe scrolling="no" id="wpFrame" src="http://wp.vbrand.com/wp-admin/nav-menus.php?action=edit&menu=0" style="border:none;width:100%;overflow:hidden"></iframe>
-
-    <script>
-        window.addEventListener("message", (event) => {
-            var height = event.data.height;
-
-            console.log(height);
-
-            var frame = window.document.getElementById('wpFrame');
-            frame.style.height = height + 'px';
-
-            // dark mode check
-            document.getElementById('wpFrame').contentWindow.postMessage({
-                dark_mode: $('body').hasClass('mode-dark')
-            }, "*");
-        }, false);
-    </script>
+    <iframe id="wpFrame" src="http://wp.vbrand.com/wp-admin/nav-menus.php?action=edit&menu=0"></iframe>
 @endsection

@@ -7,6 +7,8 @@
     <script type="text/javascript" src="{{ URL::asset('core/js/editor.js') }}"></script>
 
     <script src="{{ URL::asset('core/js/UrlAutoFill.js') }}"></script>
+
+    <link rel="stylesheet" type="text/css" href="{{ URL::asset('core/css/vbrand.css') }}">
 @endsection
 	
 @section('page_header')
@@ -21,14 +23,5 @@
 @endsection
 
 @section('content')
-    <script>
-        window.addEventListener("message", (event) => {
-            var height = event.data.height;
-
-            var frame = window.document.getElementById('wpFrame');
-            frame.style.height = height + 'px';
-        }, false);
-    </script>
-
-    <iframe scrolling="no" id="wpFrame" src="http://wp.vbrand.com/wp-admin/post.php?post={{ $wooProduct->id }}&action=edit" style="border:none;width:100%;overflow:hidden"></iframe>
+    <iframe id="wpFrame" src="http://wp.vbrand.com/wp-admin/post.php?post={{ $wooProduct->id }}&action=edit"></iframe>
 @endsection

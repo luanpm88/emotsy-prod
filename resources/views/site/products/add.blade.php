@@ -7,30 +7,19 @@
     <script type="text/javascript" src="{{ URL::asset('core/js/editor.js') }}"></script>
 
     <script src="{{ URL::asset('core/js/UrlAutoFill.js') }}"></script>
+
+    <link rel="stylesheet" type="text/css" href="{{ URL::asset('core/css/vbrand.css') }}">
 @endsection
 	
-@section('page_header')
-	
+@section('page_header')	
     <div class="page-title">
         <ul class="breadcrumb breadcrumb-caret position-right">
             <li class="breadcrumb-item"><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
             <li class="breadcrumb-item"><a href="{{ action("Site\ProductController@index") }}">{{ trans('messages.products') }}</a></li>
         </ul>
     </div>
-
 @endsection
 
 @section('content')
-    <script>
-        window.addEventListener("message", (event) => {
-            var height = event.data.height;
-
-            console.log(height);
-
-            var frame = window.document.getElementById('wpFrame');
-            frame.style.height = height + 'px';
-        }, false);
-    </script>
-
-    <iframe scrolling="no" id="wpFrame" src="http://wp.vbrand.com/wp-admin/post-new.php?post_type=product" style="border:none;width:100%;overflow:hidden"></iframe>
+    <iframe id="wpFrame" src="http://wp.vbrand.com/wp-admin/post-new.php?post_type=product"></iframe>
 @endsection
