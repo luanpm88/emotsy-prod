@@ -63,8 +63,10 @@
 
 
 		<!-- Footer -->
-		<div class="footer text-white text-center py-3" style="width: 100%">
-			{!! trans('messages.copy_right_light') !!}
+		<div class="small">
+			<div class="footer text-white text-center py-3" style="width: 100%">
+				{!! trans('messages.copy_right_light') !!}
+			</div>
 		</div>
 		<!-- /footer -->
 
