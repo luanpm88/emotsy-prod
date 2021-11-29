@@ -14,7 +14,7 @@
 	@include('layouts.core._script_vars')
 </head>
 
-<body class="bg-slate-800">
+<body class="bg-slate-800" style="overflow-x:hidden">
 
 	<!-- Page container -->
 	<div class="page-container login-container">
@@ -31,12 +31,12 @@
 					<div class="col-sm-10 col-md-10">
 					
 						<div class="text-center login-header">
-							<a class="main-logo-big mb-2 d-block" href="{{ action('HomeController@index') }}">
-								<img width="400px" src="{{ URL::asset('images/logo_big.svg') }}" alt="">
+							<a class="main-logo-big d-block" href="{{ action('HomeController@index') }}">
+								<img width="400px" src="{{ URL::asset('images/logo-automail-light.svg') }}" alt="">
 							</a>
-                            
-                            <h3 class="text-center text-muted2" style="color: #ccc">{{ trans('messages.installation') }}</h3>
 						</div>
+
+						<h3 class="text-left text-muted2 mb-4" style="color: #fff;font-size:30px">{{ trans('messages.installation') }}</h3>
                         
                         @include('install._steps')
                         
@@ -60,13 +60,6 @@
 
 		</div>
 		<!-- /page content -->
-
-
-		<!-- Footer -->
-		<div class="footer text-white">
-			{!! trans('messages.copy_right_light') !!}			
-		</div>
-		<!-- /footer -->
 
 	</div>
 	<!-- /page container -->

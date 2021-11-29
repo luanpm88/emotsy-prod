@@ -4,7 +4,7 @@
             @if (\Acelle\Model\Setting::get('site_logo_small'))
                 <img class="logo" src="{{ action('SettingController@file', \Acelle\Model\Setting::get('site_logo_small')) }}" alt="">
             @else
-                <img style="height: 18px" class="logo" src="{{ URL::asset('images/logo_light_blue.svg') }}" alt="">
+                <img style="height: 25px" class="logo" src="{{ URL::asset('images/logo-automail-light.svg') }}" alt="">
             @endif
         </a>
         <button class="navbar-toggler" role="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample04" aria-controls="navbarsExample04" aria-expanded="false" aria-label="Toggle navigation">
