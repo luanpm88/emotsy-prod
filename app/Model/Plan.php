@@ -73,7 +73,6 @@ class Plan extends Model
             'frequency_amount' => 'required|min:1',
             'frequency_unit' => 'required',
             'price' => 'required|min:0',
-            'vat' => 'required|min:0',
         );
 
         $options = self::defaultOptions();
@@ -104,7 +103,6 @@ class Plan extends Model
                 'plan.general.frequency_amount' => 'sometimes|required|min:1',
                 'plan.general.frequency_unit' => 'sometimes|required',
                 'plan.general.price' => 'required|min:0',
-                'plan.general.vat' => 'required|min:0',
             ],
             'options' => [],
         ];
