@@ -32,7 +32,12 @@
 	fullscreen-search-box
 	mode-{{ getThemeMode(Auth::user()->customer->theme_mode, request()->session()->get('customer-auto-theme-mode'))  }}
 ">
-	@include('layouts.core._menu_frontend')
+
+	@if (config('app.saas'))
+		@include('layouts.core._menu_frontend')
+	@else
+		@include('layouts.core._menu_single')
+	@endif
 
 	@include('layouts.core._middle_bar')
 

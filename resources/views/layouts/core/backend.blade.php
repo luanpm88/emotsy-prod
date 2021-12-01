@@ -34,7 +34,12 @@
 	
 	mode-{{ getThemeMode(Auth::user()->admin->theme_mode, request()->session()->get('admin-auto-theme-mode')) }}
 ">
-	@include('layouts.core._menu_backend')
+	
+	@if (config('app.saas'))
+		@include('layouts.core._menu_backend')
+	@else
+		@include('layouts.core._menu_single')
+	@endif
 
 	@include('layouts.core._middle_bar')
 
