@@ -1072,7 +1072,11 @@ class Plan extends Model
     public function primarySendingServer()
     {
         if (!config('app.saas')) {
-            return \Acelle\Model\SendingServer::active()->first()->mapType();
+            if (\Acelle\Model\SendingServer::active()->count()) {
+                return \Acelle\Model\SendingServer::active()->first()->mapType();
+            } else {
+                return null;
+            }
         }
 
         if (!$this->useSystemSendingServer()) {

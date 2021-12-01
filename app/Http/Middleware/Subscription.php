@@ -16,6 +16,10 @@ class Subscription
      */
     public function handle($request, Closure $next)
     {
+        if (!config('app.saas')) {
+            return $next($request);
+        }
+
         $subscription = $request->user()->customer->subscription;
 
         // Check if customer dose not have subscription
@@ -28,7 +32,11 @@ class Subscription
         if ($subscription->plan->useSystemSendingServer()) {
             $server = $subscription->plan->primarySendingServer();
             if (is_null($server)) {
-                return response()->view('errors.general', [ 'message' => __('messages.plan.sending_server.no_sending_server_error', ['plan' => $subscription->plan->name]) ]);
+                if (config('app.saas')) {
+                    return response()->view('errors.general', [ 'message' => __('messages.plan.sending_server.no_sending_server_error', ['plan' => $subscription->plan->name]) ]);
+                } else {
+                    return response()->view('errors.general', [ 'message' => __('messages.standard.no_sending_server_error') ]);
+                }
             }
         }
 

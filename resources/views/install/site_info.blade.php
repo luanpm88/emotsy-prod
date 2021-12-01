@@ -7,7 +7,9 @@
 <form action="{{ action('InstallController@siteInfo') }}" method="POST" class="form-validate-jqueryz">
 	{!! csrf_field() !!}
 	
-	<h3 class="text-primary"><i class="icon-office"></i> {{ trans('messages.general') }}</h3>
+	<h3 class="text-primary"><span class="material-icons-outlined">
+		maps_home_work
+		</span> {{ trans('messages.general') }}</h3>
     <div class="row">
         <div class="col-md-6">
             @include('helpers.form_control', [
@@ -48,6 +50,35 @@
                 'help_class' => 'install',
                 'rules' => ["site_description" => "required"]
             ])
+        </div>
+    </div>
+	<hr />
+	<h3 class="text-primary mb-1"><i class="icon-office"></i> {{ trans('messages.installation_type') }}</h3>
+	<p class="text-warning mb-3"><span class="material-icons-outlined">
+		error_outline
+		</span> {{ trans('messages.can_not_change_after_installed') }}</p>
+	<div class="row">
+		<div class="col-md-6">
+            @include('helpers.form_control', [
+				'type' => 'radio3',
+				'name' => 'install_mode',
+				'label' => trans('messages.saas_mode'),
+				'value' => 'saas',
+				'checked' => (!isset($site_info["install_mode"]) || $site_info["install_mode"] == 'saas'),
+				'help_class' => 'admin',
+				'rules' => $rules
+			])
+        </div>
+        <div class="col-md-6">
+			@include('helpers.form_control', [
+				'type' => 'radio3',
+				'name' => 'install_mode',
+				'label' => trans('messages.standard_mode'),
+				'checked' => (isset($site_info["install_mode"]) && $site_info["install_mode"] == 'standard'),
+				'value' => 'standard',
+				'help_class' => 'admin',
+				'rules' => $rules
+			])
         </div>
     </div>
 	<hr />

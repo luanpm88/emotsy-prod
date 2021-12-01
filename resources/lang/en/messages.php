@@ -2101,6 +2101,7 @@
     Add and verify a <a href=":domain_link" target="blank">[domain]</a> or
     <a href=":sender_link" target="blank">[email address]</a> to send email on behalf of.',
   'plan.sending_server.no_sending_server_error' => 'The plan you currently subscribe to (:plan) does not have any sending server. Log in as admin, then go to Plan setting page, make sure you add a sending server to this plan',
+  'standard.no_sending_server_error' => 'You currently does not have any sending server. Go to Sending > Sending servers page, make sure you add a sending server.',
   'plan.sending_servers.intro' => 'This feature allows you to add a sending server which will actually send out your campaign emails.
       You can configure a standard SMTP connection or connect to a 3rd services like Amazon SES,
       SendGrid, Mailgun, ElasticEmail, Sparkpost... You can also take advantage of the the hosting server\'s
@@ -3889,4 +3890,14 @@
   'default_page_form_layout' => 'Default Emails & Pages',
   'create_user' => 'Create user',
   'admin.loginas_area' => 'Back to <strong>:name</strong>',
+  'saas_mode' => 'SAAS mode',
+  'admin.install_mode.saas.help' => 'SAAS mode allows you to set up your app as a web
+    platform where users can register and subscribe. You can charge
+    your users for using the email service.',
+  'installation_type' => 'Installation type',
+  'standard_mode' => 'Standard mode',
+  'admin.install_mode.standard.help' => 'This is ideal for using app as a standard email marketing
+    plugin for yourself, your team or company. All email marketing
+    features are available.',
+  'can_not_change_after_installed' => 'This can not be changed after installed',
 ) ?>

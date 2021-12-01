@@ -14,6 +14,7 @@ class UpdateNoSaasDb extends Migration
     public function up()
     {
         if (config('app.saas')) {
+            sss;
             return;
         }
 
