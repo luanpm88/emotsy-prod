@@ -5425,22 +5425,23 @@ margin-left: -13px;
     font-size: 32px;
 }
 .user-switch-area {
-  vertical-align: sub;
-  transform: rotate(-90deg);
-  white-space: nowrap;
-  position: fixed;
-  top: 45%;
-  right: -35px;
-  border: none;
-  border-radius: 0 0 3px 3px;
-  height: auto;
-  width: auto;
-  padding: 5px 12px;
-  opacity: 0.85;
-  font-size: 13px;
-  background: #ddd;
-  color: #333;
-  font-weight: 600;
+    vertical-align: sub;
+    transform: rotate(-90deg);
+    transform-origin: bottom right;
+    white-space: nowrap;
+    position: fixed;
+    top: 35%;
+    right: 0;
+    border: none;
+    border-radius: 0 0 3px 3px;
+    height: auto;
+    width: auto;
+    padding: 5px 12px;
+    opacity: 0.85;
+    font-size: 13px;
+    background: #ddd;
+    color: #333;
+    font-weight: 600;
 }
 .user-switch-area i {
     font-size: 24px;

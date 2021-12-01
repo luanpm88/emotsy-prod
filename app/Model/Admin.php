@@ -370,6 +370,22 @@ class Admin extends Model
         $customer->status = $this->status;
         $customer->save();
 
+        // add cutomer to user
+        $user = $this->user;
+        $user->customer_id = $customer->id;
+        $user->save();
+
+        // assign unlimited plan id saas == false
+        if (!config('app.saas')) {
+            // Default subscription
+            $subscription = new \Acelle\Model\Subscription();
+            $subscription->status = \Acelle\Model\Subscription::STATUS_ACTIVE;
+            $subscription->current_period_ends_at = \Carbon\Carbon::now()->addYears(1000);
+            $subscription->plan_id = \Acelle\Model\Plan::UNLIMITED_PLAN_ID;
+            $subscription->customer_id = $customer->id;
+            $subscription->save();
+        }
+
         return $customer;
     }
 

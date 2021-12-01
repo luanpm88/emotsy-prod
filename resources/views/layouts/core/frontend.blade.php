@@ -59,6 +59,11 @@
 	<!-- Admin area -->
 	@include('layouts.core._admin_area')
 
+	@if (!config('config.saas'))
+		<!-- Admin area -->
+		@include('layouts.core._loginas_area')
+	@endif
+
 	<!-- Notification -->
 	@include('layouts.core._notify')
 	@include('layouts.core._notify_frontend')

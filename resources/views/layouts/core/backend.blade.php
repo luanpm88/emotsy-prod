@@ -61,6 +61,9 @@
 	<!-- Notification -->
 	@include('layouts.core._notify')
 
+	<!-- Admin area -->
+	@include('layouts.core._loginas_area')
+
 	<!-- display flash message -->
 	@include('layouts.core._flash')
 
