@@ -3887,6 +3887,6 @@
   'tax.select_tax_in' => 'Select tax rate in <span class="fw-600">:country</span>',
   'tax.remove_confirm' => 'You`re about to remove a country tax rate',
   'default_page_form_layout' => 'Default Emails & Pages',
-  'add_user' => 'Add user',
+  'create_user' => 'Create user',
   'admin.loginas_area' => 'Back to <strong>:name</strong>',
 ) ?>

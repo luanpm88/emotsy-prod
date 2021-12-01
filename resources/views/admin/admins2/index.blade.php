@@ -65,7 +65,7 @@ search
 								<a href="{{ action("Admin\Admin2Controller@create") }}" role="button" class="btn btn-secondary">
 									<span class="material-icons-round">
 add
-</span> {{ trans('messages.add_user') }}
+</span> {{ trans('messages.create_user') }}
 								</a>
 							</div>
 						@endcan
