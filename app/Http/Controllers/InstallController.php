@@ -722,7 +722,7 @@ class InstallController extends Controller
 
         putPermanentEnv([
             'APP_URL' => url('/'),
-            'APP_SAAS' => (isset($smtp['install_mode']) && $smtp['install_mode'] == 'standard' ? 'false' : 'true'),
+            'APP_SAAS' => ((isset($smtp['install_mode']) && $smtp['install_mode'] == 'standard') ? 'false' : 'true'),
             'DB_HOST' => (isset($database['hostname']) ? $database['hostname'] : ''),
             'DB_DATABASE' => (isset($database['database_name']) ? $database['database_name'] : ''),
             'DB_USERNAME' => (isset($database['username']) ? $database['username'] : ''),
