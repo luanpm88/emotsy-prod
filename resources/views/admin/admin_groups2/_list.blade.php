@@ -14,7 +14,7 @@
                     <div class="single-stat-box pull-left">
                         <span class="no-margin stat-num">{{ $item->admins()->count() }}</span>
                         <br />
-                        <span class="text-muted">{{ trans("messages.admins") }}</span>
+                        <span class="text-muted">{{ trans("messages.users") }}</span>
                     </div>
                 </td>
                 <td class="text-end">
