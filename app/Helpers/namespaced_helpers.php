@@ -207,3 +207,42 @@ function spfcheck($ipOrHostname, $domain)
 
     return $result;
 }
+
+function forceAddCustomerToUnlimitedPlan($customer)
+{
+    // Default subscription
+    $subscription = new \Acelle\Model\Subscription();
+    $subscription->status = \Acelle\Model\Subscription::STATUS_ACTIVE;
+    $subscription->current_period_ends_at = \Carbon\Carbon::now()->addYears(1000);
+    $subscription->plan_id = \Acelle\Model\Plan::UNLIMITED_PLAN_ID;
+    $subscription->customer_id = $customer->id;
+    $subscription->save();
+}
+
+function saasToSingleMode()
+{
+    // set env mode
+    putPermanentEnv([
+        'APP_SAAS' => 'false',
+    ]);
+
+    // remove all plans
+    foreach(\Acelle\Model\Plan::all() as $plan) {
+        $plan->delete();
+    }
+
+    // check if has unlimited plan
+    if (!\Acelle\Model\Plan::getUnlimitedPlan()) {
+        \Acelle\Model\Plan::createUnlimitedPlan();
+    }
+
+    // remove all subscriptions
+    foreach(\Acelle\Model\Subscription::all() as $subscription) {
+        $subscription->delete();
+    }
+
+    // add all customer to unlimited plan
+    foreach(\Acelle\Model\Customer::all() as $customer) {
+        \Acelle\Helpers\forceAddCustomerToUnlimitedPlan($customer);
+    }
+}

@@ -1370,7 +1370,12 @@ class Plan extends Model
         return $validator;
     }
 
-    public static function singleCreateUnlimitedPlan()
+    public static function getUnlimitedPlan()
+    {
+        return self::find(self::UNLIMITED_PLAN_ID);
+    }
+
+    public static function createUnlimitedPlan()
     {
         $plan = new self();
         $plan->currency_id = \Acelle\Model\Currency::first()->id;
