@@ -3691,8 +3691,7 @@
   'plan.cant_show' => 'This plan can not be showed. Check the error message.',
   'invoice.pay_now' => 'Pay Now',
   'have_new_renew_invoice.auto' => 'Your subscription will be automatically renewed on :date',
-  'can_not_change_to_diff_currency_period_plan' => 'Can not change to plan that is not
-    the same billing cycle|currency as current plan',
+  'can_not_change_to_diff_currency_period_plan' => 'Cannot change to a plan that is not of the same billing cycle|currency as current plan',
   'label.done' => 'Done',
   'label.cancel' => 'Cancel',
   'copy_campaign' => 'Copy <span class="fw-600">:name</span> campaign',
