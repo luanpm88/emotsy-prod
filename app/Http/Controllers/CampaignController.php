@@ -100,11 +100,7 @@ class CampaignController extends Controller
 
         // Trigger the CampaignUpdate event to update the campaign cache information
         // The second parameter of the constructor function is false, meanining immediate update
-        try {
-            event(new \Acelle\Events\CampaignUpdated($campaign));
-        } catch (\Exception $ex) {
-            // in case TrackingLog record does not exist yet (open before logged!)
-        }
+        event(new \Acelle\Events\CampaignUpdated($campaign));
 
         // authorize
         if (\Gate::denies('read', $campaign)) {
@@ -714,11 +710,7 @@ class CampaignController extends Controller
 
         // Trigger the CampaignUpdate event to update the campaign cache information
         // The second parameter of the constructor function is false, meanining immediate update
-        try {
-            event(new \Acelle\Events\CampaignUpdated($campaign));
-        } catch (\Exception $ex) {
-            // in case TrackingLog record does not exist yet (open before logged!)
-        }
+        event(new \Acelle\Events\CampaignUpdated($campaign));
 
         // authorize
         if (\Gate::denies('read', $campaign)) {
