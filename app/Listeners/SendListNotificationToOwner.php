@@ -7,7 +7,6 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Mail;
 use Acelle\Events\MailListSubscription;
 use Acelle\Events\MailListUnsubscription;
-use Acelle\Mail\MailListSubscriptionNotificationMailer;
 use Acelle\Model\Setting;
 
 class SendListNotificationToOwner
@@ -31,15 +30,12 @@ class SendListNotificationToOwner
     public function handleMailListSubscription(MailListSubscription $event)
     {
         $subscriber = $event->subscriber;
-        $user = $subscriber->mailList->customer->user;
+        $list = $subscriber->mailList;
+        $user = $list->customer->user;
 
         if (Setting::isYes('send_notification_email_for_list_subscription')) {
             // Send notification
-            Mail::to(
-                json_decode(json_encode(['email' => $user->email, 'name' => $user->displayName()]))
-            )->send(
-                new MailListSubscriptionNotificationMailer($subscriber)
-            );
+            $list->sendSubscriptionNotificationEmailToListOwner($subscriber);
         }
     }
 
