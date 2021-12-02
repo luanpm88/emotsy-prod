@@ -98,14 +98,14 @@ class CampaignController extends Controller
     {
         $campaign = Campaign::findByUid($id);
 
-        // Trigger the CampaignUpdate event to update the campaign cache information
-        // The second parameter of the constructor function is false, meanining immediate update
-        event(new \Acelle\Events\CampaignUpdated($campaign));
-
         // authorize
         if (\Gate::denies('read', $campaign)) {
             return $this->notAuthorized();
         }
+
+        // Trigger the CampaignUpdate event to update the campaign cache information
+        // The second parameter of the constructor function is false, meanining immediate update
+        event(new \Acelle\Events\CampaignUpdated($campaign));
 
         if ($campaign->status == 'new') {
             return redirect()->action('CampaignController@edit', ['uid' => $campaign->uid]);
