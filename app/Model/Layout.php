@@ -24,6 +24,8 @@ namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use Acelle\Library\Traits\HasUid;
+use Acelle\Library\ExtendedSwiftMessage;
+use Closure;
 
 class Layout extends Model
 {
@@ -139,6 +141,24 @@ class Layout extends Model
         ]);
 
         return $tags;
+    }
+
+    public function getMessage(Closure $transform = null) : ExtendedSwiftMessage
+    {
+        // Create a message
+        $message = new ExtendedSwiftMessage();
+        $message->setContentType('text/html; charset=utf-8');
+        $message->setEncoder(new \Swift_Mime_ContentEncoder_PlainContentEncoder('8bit'));
+
+        if (!is_null($transform)) {
+            $htmlContent = $transform($this->content);
+        } else {
+            $htmlContent = $this->content;
+        }
+
+        $message->addPart($htmlContent, 'text/html');
+
+        return $message;
     }
 
     /**
