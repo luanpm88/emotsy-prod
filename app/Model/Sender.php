@@ -251,6 +251,11 @@ class Sender extends Model
     public function sendVerificationEmail()
     {
         $template = Layout::where('alias', 'sender_verification_email')->first();
+
+        if (is_null($template)) {
+            throw new \Exception("Layout/template 'sender_verification_email' is missing!");
+        }
+
         $htmlContent = $template->content;
 
         $htmlContent = str_replace('{USER_NAME}', $this->name, $htmlContent);
