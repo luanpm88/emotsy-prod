@@ -37,10 +37,10 @@ class TransformTag implements StageInterface
             'CURRENT_YEAR' => date('Y'),
             'CURRENT_MONTH' => date('m'),
             'CURRENT_DAY' => date('d'),
-            'LIST_NAME' => $this->campaign->defaultMailList->name,
-            'LIST_SUBJECT' => $this->campaign->defaultMailList->default_subject,
-            'LIST_FROM_NAME' => $this->campaign->defaultMailList->from_name,
-            'LIST_FROM_EMAIL' => $this->campaign->defaultMailList->from_email,
+            'LIST_NAME' => $this->subscriber->mailList->name,
+            'LIST_SUBJECT' => $this->subscriber->mailList->default_subject,
+            'LIST_FROM_NAME' => $this->subscriber->mailList->from_name,
+            'LIST_FROM_EMAIL' => $this->subscriber->mailList->from_email,
         );
 
         # Subscriber specific
@@ -58,7 +58,7 @@ class TransformTag implements StageInterface
 
             # Subscriber custom fields, including email
             $sample = '%PERSONALIZED-DATA%';
-            foreach ($this->campaign->defaultMailList->fields as $field) {
+            foreach ($this->subscriber->mailList->fields as $field) {
                 $tags['SUBSCRIBER_'.$field->tag] = $sample;
                 $tags[$field->tag] = $sample;
             }
@@ -87,7 +87,7 @@ class TransformTag implements StageInterface
             $tags['SUBSCRIBER_UID'] = $this->subscriber->uid;
 
             # Subscriber custom fields
-            foreach ($this->campaign->defaultMailList->fields as $field) {
+            foreach ($this->subscriber->mailList->fields as $field) {
                 $tags['SUBSCRIBER_'.$field->tag] = $this->subscriber->getValueByField($field);
                 $tags[$field->tag] = $this->subscriber->getValueByField($field);
             }
