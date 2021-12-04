@@ -4002,7 +4002,7 @@
   'form.all_sites' => 'All sites',
   'website.get_code' => 'Get code',
   'widget.rss.desc' => 'Load news update from remote source and populate its content to your rmail',
-  'widget.rss.click_start' => 'Click to enter an URL',
+  'widget.rss.click_start' => 'Click to enter a URL',
   'widget.rss.change_url' => 'Change',
   'widget.rss.load_url' => 'Load',
   'rss.item_title.show_msg' => 'Show item <span class="fw-600">title</span>',
