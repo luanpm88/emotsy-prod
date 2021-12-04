@@ -285,7 +285,7 @@
   'import_another' => 'Import another',
   'import_completed' => 'Import process finished successfully!<br>Import another file or go to your subscribers list to review the result',
   'export_completed' => 'Export process finished successfully. Click the download button to get the output file',
-  'please_wait_import' => 'Import is running in the backgroud, please wait... <br>You can navigate away for even close this page and get back later to check the progress',
+  'please_wait_import' => 'Import is running in the backgroud, please wait... <br>You can navigate away or even close this page and get back later to check the progress',
   'please_wait_export' => 'Please wait for export to complete, it may take a few minutes. You can navigate away or even close the browser and get back later on to download the exported file.',
   'error' => 'Error',
   'click_to_start_export' => 'Select what do you want to export then click the <strong>Export</strong> button below to start export.',
