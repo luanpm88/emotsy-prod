@@ -251,3 +251,21 @@ function saasToSingleMode()
 
     echo "\n...\ndone!";
 }
+
+function isValidPublicHostnameOrIpAddress($host)
+{
+    if ($host == '127.0.0.1' || $host == 'localhost') {
+        return false;
+    }
+
+    $isValidIpAddress = filter_var($host, FILTER_VALIDATE_IP);
+    $getHostByName = gethostbyname($host);
+
+    if ($isValidIpAddress) {
+        return true;
+    } else if (filter_var($getHostByName, FILTER_VALIDATE_IP)) {
+        return true;
+    } else {
+        return false;
+    }
+}

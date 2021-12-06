@@ -30,6 +30,8 @@ use Acelle\Library\SendingServer\DomainVerificationInterface;
 use Acelle\Model\SendingDomain;
 use Aws\Route53\Route53Client;
 use Acelle\Library\Facades\Hook;
+use function Acelle\Helpers\isValidPublicHostnameOrIpAddress;
+use Exception;
 
 class SendingServerAmazon extends SendingServer implements DomainVerificationInterface
 {
@@ -149,6 +151,12 @@ class SendingServerAmazon extends SendingServer implements DomainVerificationInt
     {
         if (self::$isSnsSetup) {
             return true;
+        }
+
+        $handlingHost = parse_url(Setting::get('url_delivery_handler'), PHP_URL_HOST);
+
+        if (!isValidPublicHostnameOrIpAddress($handlingHost)) {
+            throw new Exception(sprintf('You are sending through AWS. However, the current hostname (%s) does not seem to be a valid public URL. As a result, bounce or feedback handling will not work', $handlingHost));
         }
 
         MailLog::info('Set up Amazon SNS for email delivery tracking');
