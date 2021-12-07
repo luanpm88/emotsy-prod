@@ -880,6 +880,28 @@ class MailList extends Model
         $this->sendMail($subscriber, $send_page, $send_page->getTransformedSubject($subscriber));
     }
 
+    public function sendSubscriptionNotificationEmailToListOwner($subscriber)
+    {
+        $template = Layout::where('alias', 'subscribe_notification_for_list_owner')->first();
+
+        $message = $template->getMessage(function($html) use ($subscriber) {
+            $html = str_replace('{LIST_NAME}', $this->name, $html);
+            $html = str_replace('{EMAIL}', $subscriber->email, $html);
+            $html = str_replace('{FULL_NAME}', $subscriber->getFullName(), $html);
+
+            return $html;
+        });
+
+        $message->setSubject($template->subject);
+        $message->setTo([ $this->customer->user->email => $this->customer->user->displayName()]);
+        $mailer = App::make('xmailer');
+        $result = $mailer->sendWithDefaultFromAddress($message);
+
+        if (array_key_exists('error', $result)) {
+            throw new \Exception("Error sending unsubscribe notification: ".$result['error']);
+        }
+    }
+
     /**
      * Send unsubscription goodbye email to list owner.
      */
@@ -1172,6 +1194,11 @@ class MailList extends Model
                     if (array_key_exists('tags', $record) && !empty($record['tags'])) {
                         $record['tags'] = json_encode(array_filter(preg_split('/\s*,\s*/', $record['tags'])));
                     }
+
+                    // In certain cases, a UTF-8 BOM is added to email
+                    // For example: "﻿madxperts@gmail.com" (open with Sublime to see the char)
+                    // So we need to remove it, at least for email field
+                    $record['email'] = StringHelper::removeUTF8BOM($record['email']);
 
                     return $record;
                 })->toArray();
