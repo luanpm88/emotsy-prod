@@ -23,5 +23,5 @@
 @endsection
 
 @section('content')
-    <iframe id="wpFrame" src="http://wp.vbrand.com/wp-admin/post.php?post={{ $wooProduct->id }}&action=edit"></iframe>
+    <iframe id="wpFrame" src="{{ config('wordpress.1.url') }}/wp-admin/post.php?post={{ $wooProduct->id }}&action=edit"></iframe>
 @endsection

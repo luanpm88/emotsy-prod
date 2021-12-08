@@ -23,5 +23,5 @@
 @endsection
 
 @section('content')
-    <iframe id="wpFrame" src="http://wp.vbrand.com/wp-admin/nav-menus.php?action=edit&menu=0"></iframe>
+    <iframe id="wpFrame" src="{{ config('wordpress.1.url') }}/wp-admin/nav-menus.php?action=edit&menu=0"></iframe>
 @endsection
