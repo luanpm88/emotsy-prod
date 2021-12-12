@@ -22,7 +22,6 @@
 
 namespace Acelle\Model;
 
-use Acelle\Library\Log as MailLog;
 use Acelle\Library\Traits\HasUid;
 
 class BounceHandler extends DeliveryHandler
@@ -56,14 +55,17 @@ class BounceHandler extends DeliveryHandler
             $msgId = $this->getMessageId($body);
             if (empty($msgId)) {
                 imap_setflag_full($mbox, $msgNo, '\\Seen \\Flagged');
-                throw new \Exception('cannot find Message-ID, skipped');
+                $this->logger()->info('Skipped: cannot find Message-ID in email body');
+                return;
+            } else {
+                $this->logger()->info('Parsed OK, Message-ID found in email body, proceeding with '.$msgId);
             }
 
-            MailLog::info('Processing bounce notification for message '.$msgId);
-
             $trackingLog = TrackingLog::where('message_id', $msgId)->first();
+
             if (empty($trackingLog)) {
-                throw new \Exception('cannot find message with such Message-Id');
+                $this->logger()->info('Skipped: cannot find message with such Message-Id: '.$msgId);
+                return;
             }
 
             // record a bounce log, one message may have more than one
@@ -77,12 +79,12 @@ class BounceHandler extends DeliveryHandler
             // just delete the bounce notification email
             imap_delete($mbox, $msgNo);
 
-            MailLog::info('Bounce recorded for message '.$msgId);
-
-            MailLog::info('Adding email to blacklist');
+            $this->logger()->info('Done: bounce recorded for message '.$msgId);
+            $this->logger()->info('Adding email to blacklist...');
             $trackingLog->subscriber->sendToBlacklist($bounceLog->raw);
+            $this->logger()->info('Added');
         } catch (\Exception $ex) {
-            MailLog::warning($ex->getMessage());
+            $this->logger()->info('Failed. '.$ex->getMessage());
         }
     }
 
