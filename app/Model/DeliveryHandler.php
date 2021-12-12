@@ -42,7 +42,7 @@ class DeliveryHandler extends Model
 
         $formatter = new LineFormatter("[%datetime%] %channel%.%level_name%: %message%\n");
 
-        $logfile = storage_path('logs/' . php_sapi_name() . '/handler-'.$this->uid.'.log');
+        $logfile = $this->getLogFile();
         $stream = new RotatingFileHandler($logfile, 0, env('LOG_LEVEL'));
 
         $stream->setFormatter($formatter);
@@ -54,6 +54,11 @@ class DeliveryHandler extends Model
         $this->logger = $logger;
 
         return $this->logger;
+    }
+
+    public function getLogFile()
+    {
+        return storage_path('logs/' . php_sapi_name() . '/handler-'.$this->uid.'.log');
     }
 
     /**

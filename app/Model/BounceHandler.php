@@ -76,7 +76,6 @@ class BounceHandler extends DeliveryHandler
             $bounceLog->raw = imap_fetchheader($mbox, $msgNo).PHP_EOL.$body;
             $bounceLog->save();
 
-            return;
             // just delete the bounce notification email
             imap_delete($mbox, $msgNo);
 
