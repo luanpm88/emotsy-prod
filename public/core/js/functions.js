@@ -474,6 +474,15 @@ function makeList(options) {
                         });
     
                         _list.load();
+                    },
+                    fail: function(response) {
+                        new Dialog('alert', {
+                            type: 'error',
+                            title: LANG_ERROR,
+                            message: JSON.parse(response.responseText).message
+                        });
+    
+                        _list.load();
                     }
                 });
             });
@@ -635,6 +644,15 @@ function makeList(options) {
                 notify({
                     type: response.status,
                     message: response.message,
+                });
+
+                _list.load();
+            },
+            fail: function(response) {
+                new Dialog('alert', {
+                    type: 'error',
+                    title: LANG_ERROR,
+                    message: JSON.parse(response.responseText).message
                 });
 
                 _list.load();
