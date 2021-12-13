@@ -2347,6 +2347,7 @@ class Campaign extends Model
                 $fromEmailAddress = $this->from_email;
             }
 
+            $this->logger()->info('Setting up before send for server '.$server->uid);
             $server->setupBeforeSend($fromEmailAddress);
         }
 
