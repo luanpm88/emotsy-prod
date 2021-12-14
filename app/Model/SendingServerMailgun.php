@@ -31,8 +31,8 @@ class SendingServerMailgun extends SendingServer
     public const WEBHOOK = 'mailgun';
 
     protected $table = 'sending_servers';
-    public static $client = null;
-    public static $isWebhookSetup = false;
+    public $client = null;
+    public $isWebhookSetup = false;
 
     // Inherit class to implementation of this method
     public function send($message, $params = array())
@@ -47,11 +47,11 @@ class SendingServerMailgun extends SendingServer
      */
     public function client()
     {
-        if (!self::$client) {
-            self::$client = Mailgun::create($this->api_key, $this->host);
+        if (!$this->client) {
+            $this->client = Mailgun::create($this->api_key, $this->host);
         }
 
-        return self::$client;
+        return $this->client;
     }
 
     /**
@@ -61,7 +61,7 @@ class SendingServerMailgun extends SendingServer
      */
     public function setupWebhooks()
     {
-        if (self::$isWebhookSetup) {
+        if ($this->isWebhookSetup) {
             return true;
         }
 
@@ -89,7 +89,7 @@ class SendingServerMailgun extends SendingServer
 
         MailLog::info('3 webhooks created');
 
-        self::$isWebhookSetup = true;
+        $this->isWebhookSetup = true;
     }
 
     /**
