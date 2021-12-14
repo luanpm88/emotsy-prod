@@ -43,8 +43,8 @@ class SendingServerSparkPost extends SendingServer
     ];
 
     protected $table = 'sending_servers';
-    public static $client = null;
-    public static $isWebhookSetup = false;
+    public $client = null;
+    public $isWebhookSetup = false;
 
     // Inherit class to implementation of this method
     public function send($message, $params = array())
@@ -59,14 +59,14 @@ class SendingServerSparkPost extends SendingServer
      */
     public function client()
     {
-        if (!self::$client) {
+        if (!$this->client) {
             $httpClient = new GuzzleAdapter(new Client(['verify' => false]));
             $sparky = new SparkPost($httpClient, ['key' => $this->api_key, 'host' => $this->host]);
             $sparky->setOptions(['async' => false]);
-            self::$client = $sparky;
+            $this->client = $sparky;
         }
 
-        return self::$client;
+        return $this->client;
     }
 
     /**
@@ -76,7 +76,7 @@ class SendingServerSparkPost extends SendingServer
      */
     public function setupWebhook()
     {
-        if (self::$isWebhookSetup) {
+        if ($this->isWebhookSetup) {
             return true;
         }
 
@@ -99,7 +99,7 @@ class SendingServerSparkPost extends SendingServer
             ]);
 
             if ($response->getStatusCode() == 200) {
-                self::$isWebhookSetup = true;
+                $this->isWebhookSetup = true;
                 MailLog::info('SparkPost webhook set!');
             } else {
                 // throw the exception with body string
@@ -107,7 +107,7 @@ class SendingServerSparkPost extends SendingServer
             }
         } catch (\Exception $e) {
             // just ignore the error
-            self::$isWebhookSetup = true;
+            $this->isWebhookSetup = true;
             MailLog::warning('Cannot setup Spark Post webhook. Error: '.$e->getMessage());
         }
     }

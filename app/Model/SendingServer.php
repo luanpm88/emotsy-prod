@@ -866,6 +866,8 @@ class SendingServer extends Model implements HasQuotaInterface
         // $message->setEncoder(\Swift_Encoding::get8bitEncoding());
         $message->setEncoder(new \Swift_Mime_ContentEncoder_PlainContentEncoder('8bit'));
         $message->addPart($params['plain'], 'text/plain');
+
+        $this->setupBeforeSend($params['from_email']);
         $this->send($message);
 
         return true;
