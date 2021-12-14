@@ -233,6 +233,14 @@ visibility
                 @else
                     <br />
                     <div class="text-end">
+                        <button
+                            type="button"
+                            href="#preview" class="btn btn-default me-1 preview-as-button"
+                        >
+                            {{ trans('messages.campaign.preview_as') }} <span class="material-icons-outlined ms-1">
+                                contact_mail
+</span>
+                        </button>
                         <span
                             onclick="popupwindow('{{ action('CampaignController@preview', $campaign->uid) }}', '{{ $campaign->name }}', 800, 800)"
                             href="#preview" class="btn btn-secondary me-1" data-uid="{{ $campaign->uid }}">
@@ -279,5 +287,32 @@ visibility
                 this.popup.load();
             }
         }
+
+        var CampaignsConfirmPreviewAs = {
+            popup:  null,
+            url: '{{ action('CampaignController@previewAs', [
+                'uid' => $campaign->uid,
+            ]) }}',
+
+            getPopup: function() {
+                if (this.popup == null) {
+                    this.popup = new Popup({
+                        url: this.url,
+                    });
+                }
+
+                return this.popup;
+            },
+
+            showPopup: function() {
+                this.getPopup().load();
+            }
+        }
+
+        $(function() {
+            $('.preview-as-button').on('click', function() {
+                CampaignsConfirmPreviewAs.showPopup();
+            });
+        });
     </script>
 @endsection

@@ -358,6 +358,9 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::patch('templates/{uid}/update', 'TemplateController@update');
 
     // Campaign
+    Route::get('campaigns/{uid}/preview-as/list', 'CampaignController@previewAsList');
+    Route::get('campaigns/{uid}/preview-as', 'CampaignController@previewAs');
+
     Route::post('campaigns/{uid}/custom-plain/off', 'CampaignController@customPlainOff');
     Route::post('campaigns/{uid}/custom-plain/on', 'CampaignController@customPlainOn');
     Route::post('campaigns/{uid}/remove-attachment', 'CampaignController@removeAttachment');
