@@ -3994,4 +3994,11 @@
   'tax.select_tax_in' => 'Select tax rate in <span class="fw-600">:country</span>',
   'tax.remove_confirm' => 'You`re about to remove a country tax rate',
   'rss.enclosure' => 'Enclosure (Image|Audio|Video)',
+  'campaign.preview_as' => 'Preview as',
+  'campaign.preview_as.enter_search' => 'Enter contact email to search',
+  'campaign.preview_as.web_view_url' => 'Web view URL',
+  'preview_as.url.copied' => 'URL was copied to clipboard',
+  'due_date' => 'Due date',
+  'invoice.items' => 'Item(s)',
+  'bill.total' => 'Total',
 ) ?>
