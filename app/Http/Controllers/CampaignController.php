@@ -1496,7 +1496,7 @@ class CampaignController extends Controller
         }
 
         // Paging
-        $subscribers = $subscribers->paginate($request->per_page);
+        $subscribers = $subscribers->search($request->keyword)->paginate($request->per_page);
 
         // Field information
         $fields = $campaign->defaultMailList->getFields->whereIn('uid', explode(',', $request->columns));
@@ -2073,6 +2073,36 @@ class CampaignController extends Controller
 
         return redirect()->action('CampaignController@builderPlainEdit', [
             'uid' => $campaign->uid,
+        ]);
+    }
+
+    public function previewAs(Request $request)
+    {
+        $campaign = Campaign::findByUid($request->uid);
+
+        return view('campaigns.previewAs', [
+            'campaign' => $campaign,
+        ]);
+    }
+
+    /**
+     * Subscribers listing.
+     */
+    public function previewAsList(Request $request)
+    {
+        $campaign = Campaign::findByUid($request->uid);
+
+        // authorize
+        if (\Gate::denies('read', $campaign)) {
+            return;
+        }
+
+        // Subscribers
+        $subscribers = $campaign->subscribers()
+            ->search($request->keyword)->paginate($request->per_page);
+
+        return view('campaigns.previewAsList', [
+            'subscribers' => $subscribers,
         ]);
     }
 }

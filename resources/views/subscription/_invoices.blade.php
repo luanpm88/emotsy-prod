@@ -137,9 +137,11 @@
                                     </span>
                                 </td>
                                 <td>
-                                    <button class="btn btn-secondary btn-disabled" disabled>
-                                        {{ trans('messages.edit') }}
-                                    </button>
+                                    <a class="btn btn-secondary text-nowrap" target="_blank" href="{{ action('InvoiceController@download', [
+                                        'uid' => $invoice->uid,
+                                    ]) }}">
+                                        <i class="material-icons-outlined me-1">download</i>{{ trans('messages.download') }}
+                                    </a>
                                 </td>
                             </tr>
                         @empty

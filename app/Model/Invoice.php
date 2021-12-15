@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Acelle\Model\Subscription;
 use Acelle\Model\Transaction;
 use Acelle\Library\Traits\HasUid;
+use Dompdf\Dompdf;
 
 class Invoice extends Model
 {
@@ -420,8 +421,22 @@ class Invoice extends Model
             'total' => format_price($this->total(), $this->currency->format),
             'pending' => $this->getPendingTransaction(),
             'invoice_uid' => $this->uid,
+            'due_date' => $this->created_at,
             'type' => $this->type,
             'plan' => $plan,
+            'billing_first_name' => $this->billing_first_name,
+            'billing_last_name' => $this->billing_last_name,
+            'billing_address' => $this->billing_address,
+            'billing_country' => \Acelle\Model\Country::find($this->billing_country_id)->name,
+            'billing_email' => $this->billing_email,
+            'billing_phone' => $this->billing_phone,
+
+            // 'billing_first_name' => 'required',
+            // 'billing_last_name' => 'required',
+            // 'billing_address' => 'required',
+            // 'billing_country_id' => 'required',
+            // 'billing_email' => 'required|email',
+            // 'billing_phone' => 'required',
         ];
     }
 
@@ -611,5 +626,23 @@ class Invoice extends Model
         }
 
         return true;
+    }
+
+    public function exportToPdf()
+    {
+        // instantiate and use the dompdf class
+        $dompdf = new Dompdf(array('enable_remote' => true));
+        $content = view('invoices.pdf', [
+            'bill' => $this->getBillingInfo(),
+        ]);
+        $dompdf->loadHtml($content);
+
+        // (Optional) Setup the paper size and orientation
+        $dompdf->setPaper('A4', 'landscape');
+
+        // Render the HTML as PDF
+        $dompdf->render();
+
+        return $dompdf->output();
     }
 }

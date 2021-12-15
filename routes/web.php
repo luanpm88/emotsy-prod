@@ -404,6 +404,9 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('templates/rss/parse', 'TemplateController@parseRss');
 
     // Campaign
+    Route::get('campaigns/{uid}/preview-as/list', 'CampaignController@previewAsList');
+    Route::get('campaigns/{uid}/preview-as', 'CampaignController@previewAs');
+
     Route::post('campaigns/{uid}/custom-plain/off', 'CampaignController@customPlainOff');
     Route::post('campaigns/{uid}/custom-plain/on', 'CampaignController@customPlainOn');
     Route::post('campaigns/{uid}/remove-attachment', 'CampaignController@removeAttachment');
@@ -672,6 +675,9 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('sources/connect', 'SourceController@connect');
     Route::get('sources/listing', 'SourceController@listing');
     Route::resource('sources', 'SourceController');
+
+    // Invoice
+    Route::get('invoices/{uid}/download', 'InvoiceController@download');
 });
 
 // ADMIN AREA
@@ -1010,4 +1016,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::match(['get','post'], 'tax/add', 'TaxController@addTax');
     Route::get('tax/countries', 'TaxController@countries');
     Route::match(['get','post'], 'tax/settings', 'TaxController@settings');
+
+    // Invoice
+    Route::get('admin/invoices/{uid}/download', 'InvoiceController@download');
 });
