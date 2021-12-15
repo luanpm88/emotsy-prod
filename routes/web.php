@@ -629,6 +629,9 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('sources/connect', 'SourceController@connect');
     Route::get('sources/listing', 'SourceController@listing');
     Route::resource('sources', 'SourceController');
+
+    // Invoice
+    Route::get('invoices/{uid}/download', 'InvoiceController@download');
 });
 
 // ADMIN AREA

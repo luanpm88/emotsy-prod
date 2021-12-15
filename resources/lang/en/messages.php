@@ -3890,4 +3890,7 @@
   'campaign.preview_as.enter_search' => 'Enter contact email to search',
   'campaign.preview_as.web_view_url' => 'Web view URL',
   'preview_as.url.copied' => 'URL was copied to clipboard',
+  'due_date' => 'Due date',
+  'invoice.items' => 'Item(s)',
+  'bill.total' => 'Total',
 ) ?>
