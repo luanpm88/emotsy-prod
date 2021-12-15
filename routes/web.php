@@ -970,4 +970,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::match(['get','post'], 'tax/add', 'TaxController@addTax');
     Route::get('tax/countries', 'TaxController@countries');
     Route::match(['get','post'], 'tax/settings', 'TaxController@settings');
+
+    // Invoice
+    Route::get('admin/invoices/{uid}/download', 'InvoiceController@download');
 });
