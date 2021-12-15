@@ -98,18 +98,14 @@ class CampaignController extends Controller
     {
         $campaign = Campaign::findByUid($id);
 
-        // Trigger the CampaignUpdate event to update the campaign cache information
-        // The second parameter of the constructor function is false, meanining immediate update
-        try {
-            event(new \Acelle\Events\CampaignUpdated($campaign));
-        } catch (\Exception $ex) {
-            // in case TrackingLog record does not exist yet (open before logged!)
-        }
-
         // authorize
         if (\Gate::denies('read', $campaign)) {
             return $this->notAuthorized();
         }
+
+        // Trigger the CampaignUpdate event to update the campaign cache information
+        // The second parameter of the constructor function is false, meanining immediate update
+        event(new \Acelle\Events\CampaignUpdated($campaign));
 
         if ($campaign->status == 'new') {
             return redirect()->action('CampaignController@edit', ['uid' => $campaign->uid]);
@@ -714,11 +710,7 @@ class CampaignController extends Controller
 
         // Trigger the CampaignUpdate event to update the campaign cache information
         // The second parameter of the constructor function is false, meanining immediate update
-        try {
-            event(new \Acelle\Events\CampaignUpdated($campaign));
-        } catch (\Exception $ex) {
-            // in case TrackingLog record does not exist yet (open before logged!)
-        }
+        event(new \Acelle\Events\CampaignUpdated($campaign));
 
         // authorize
         if (\Gate::denies('read', $campaign)) {
@@ -1504,7 +1496,7 @@ class CampaignController extends Controller
         }
 
         // Paging
-        $subscribers = $subscribers->paginate($request->per_page);
+        $subscribers = $subscribers->search($request->keyword)->paginate($request->per_page);
 
         // Field information
         $fields = $campaign->defaultMailList->getFields->whereIn('uid', explode(',', $request->columns));
@@ -2081,6 +2073,36 @@ class CampaignController extends Controller
 
         return redirect()->action('CampaignController@builderPlainEdit', [
             'uid' => $campaign->uid,
+        ]);
+    }
+
+    public function previewAs(Request $request)
+    {
+        $campaign = Campaign::findByUid($request->uid);
+
+        return view('campaigns.previewAs', [
+            'campaign' => $campaign,
+        ]);
+    }
+
+    /**
+     * Subscribers listing.
+     */
+    public function previewAsList(Request $request)
+    {
+        $campaign = Campaign::findByUid($request->uid);
+
+        // authorize
+        if (\Gate::denies('read', $campaign)) {
+            return;
+        }
+
+        // Subscribers
+        $subscribers = $campaign->subscribers()
+            ->search($request->keyword)->paginate($request->per_page);
+
+        return view('campaigns.previewAsList', [
+            'subscribers' => $subscribers,
         ]);
     }
 }

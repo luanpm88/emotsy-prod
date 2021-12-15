@@ -7,7 +7,6 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Mail;
 use Acelle\Events\MailListSubscription;
 use Acelle\Events\MailListUnsubscription;
-use Acelle\Mail\MailListSubscriptionNotificationMailer;
 use Acelle\Model\Setting;
 
 class SendListNotificationToSubscriber

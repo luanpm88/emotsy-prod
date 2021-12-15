@@ -220,9 +220,14 @@ function htmlDecode(input){
     return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
 }
 
-function copyToClipboard(text) {
+function copyToClipboard(text, container) {
     var $temp = $("<input>");
-    $("body").append($temp);
+    if (typeof(container) !== 'undefined') {
+        container.append($temp);
+    } else {
+        $("body").append($temp);
+    }
+    
     $temp.val(text).select();
     document.execCommand("copy");
     $temp.remove();
@@ -471,6 +476,15 @@ function makeList(options) {
                         });
     
                         _list.load();
+                    },
+                    fail: function(response) {
+                        new Dialog('alert', {
+                            type: 'error',
+                            title: LANG_ERROR,
+                            message: JSON.parse(response.responseText).message
+                        });
+    
+                        _list.load();
                     }
                 });
             });
@@ -632,6 +646,15 @@ function makeList(options) {
                 notify({
                     type: response.status,
                     message: response.message,
+                });
+
+                _list.load();
+            },
+            fail: function(response) {
+                new Dialog('alert', {
+                    type: 'error',
+                    title: LANG_ERROR,
+                    message: JSON.parse(response.responseText).message
                 });
 
                 _list.load();

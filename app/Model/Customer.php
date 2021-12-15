@@ -275,6 +275,17 @@ class Customer extends Model
         return (is_object($this->subscription) && $this->subscription->isActive()) ? $this->subscription : null;
     }
 
+    public function useOwnSendingServer()
+    {
+        $subscription = $this->activeSubscription();
+
+        if (is_null($subscription)) {
+            return false;
+        }
+
+        return $subscription->plan->useOwnSendingServer();
+    }
+
     /**
      * Get all items.
      *
