@@ -3973,7 +3973,6 @@
   'rss.template.cancel' => 'Cancel',
   'rss.meta_line' => 'Meta line',
   'rss.stats_line' => 'Statistics',
-  'rss.image' => 'Image',
   'rss.top_stories_for_you' => 'TOP STORIES FOR YOU',
   'rss.feed_tagline' => 'Tagline',
   'rss.no_options' => 'RSS config not found',
@@ -3994,4 +3993,5 @@
   'tax.no_country_added' => 'There are no country taxes added',
   'tax.select_tax_in' => 'Select tax rate in <span class="fw-600">:country</span>',
   'tax.remove_confirm' => 'You`re about to remove a country tax rate',
+  'rss.enclosure' => 'Enclosure (Image|Audio|Video)',
 ) ?>
