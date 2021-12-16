@@ -33,9 +33,9 @@ class SendingServerElasticEmail extends SendingServer
     public const API_ENDPOINT = 'https://api.elasticemail.com/v2';
 
     protected $table = 'sending_servers';
-    public static $client = null;
-    public static $isWebhookSetup = false;
-    public static $isCustomHeadersEnabled = false;
+    public $client = null;
+    public $isWebhookSetup = false;
+    public $isCustomHeadersEnabled = false;
 
     /**
      * Get authenticated to Mailgun and return the session object.
@@ -44,11 +44,11 @@ class SendingServerElasticEmail extends SendingServer
      */
     public function client()
     {
-        if (!self::$client) {
-            self::$client = new \ElasticEmail\ElasticEmail($this->api_key);
+        if (!$this->client) {
+            $this->client = new \ElasticEmail\ElasticEmail($this->api_key);
         }
 
-        return self::$client;
+        return $this->client;
     }
 
     /**
@@ -132,7 +132,7 @@ class SendingServerElasticEmail extends SendingServer
      */
     public function enableCustomHeaders()
     {
-        if (self::$isCustomHeadersEnabled) {
+        if ($this->isCustomHeadersEnabled) {
             return true;
         }
 
@@ -143,7 +143,7 @@ class SendingServerElasticEmail extends SendingServer
 
         if ($responseJson->success == true) {
             MailLog::info('Custom headers enabled');
-            self::$isCustomHeadersEnabled = true;
+            $this->isCustomHeadersEnabled = true;
         } else {
             throw new \Exception('Cannot enable customer headers: '.$response);
         }
@@ -156,7 +156,7 @@ class SendingServerElasticEmail extends SendingServer
      */
     public function setupWebhooks()
     {
-        if (self::$isWebhookSetup) {
+        if ($this->isWebhookSetup) {
             return true;
         }
 
@@ -171,7 +171,7 @@ class SendingServerElasticEmail extends SendingServer
 
         if ($response['success'] == true) {
             MailLog::info('webhook set!');
-            self::$isWebhookSetup = true;
+            $this->isWebhookSetup = true;
         } else {
             $msg = 'ElasticEmail Erorr. Cannot setup webhook for "'.$subscribeUrl.'". Make sure your Elastic API key has full access. Also, please note that the webhook feature is reserved for Elastic Unlimited PRO & API PRO plans only. Response from server: '.json_encode($response);
             MailLog::error($msg);
