@@ -1839,6 +1839,7 @@
   'verification_result' => 'Verification result',
   'verification.done' => 'Verification process finished',
   'upgrade.title.upgrade' => 'Upgrade Manager',
+  'upgrade.notice' => 'Upgrade may not work correctly if the upgrade package file size exceeds the upload limit set by your hosting\'s PHP settings:',
   'upgrade.error.something_wrong' => 'Something went wrong while upgrading your application',
   'upgrade.title.in_progress' => 'Upgrade in progress',
   'upgrade.error.cannot_write' => 'Some files cannot be updated. Please check and make sure the following files are <strong>writable</strong> by the web application, then click the <strong>Retry</strong> button',

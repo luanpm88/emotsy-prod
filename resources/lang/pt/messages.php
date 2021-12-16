@@ -3903,4 +3903,8 @@
   'due_date' => 'Due date',
   'invoice.items' => 'Item(s)',
   'bill.total' => 'Total',
+  'list.no_date_or_datetime_field' => 'The selected list does not have any custom field of DATE or DATETIME type.
+    Go to your mail list\'s fields setting page and add a custom field of Date of Birth',
+  'automation.trigger.no_date_of_birth_field' => 'There is no birthday field selected!',
+  'upgrade.notice' => 'Upgrade may not work correctly if the upgrade package file size exceeds the upload limit set by your hosting\'s PHP settings:',
 ) ?>
