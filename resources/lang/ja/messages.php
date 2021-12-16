@@ -10,8 +10,8 @@
   'stay_logged_in' => 'ログイン状態を保存する',
   'forgot_password' => 'パスワードをお忘れですか？',
   'login' => 'ログイン',
-  'copy_right_light' => '© 2021. <span class="text-white">Acelleマーケティングアプリケーション</span> by <a href="https://acellemail.com" class="text-white" target="_blank">acellemail.com</a>',
-  'copy_right' => '© 2021. Acelleマーケティングアプリケーション by <a title="Acelleホームページに移動します。" class="xtooltip" href="https://acellemail.com" class="" target="_blank">acellemail.com</a>',
+  'copy_right_light' => '© 2021. <span class="text-white">Automailマーケティングアプリケーション</span> by <a href="https://automail.jp" class="text-white" target="_blank">automail.jp</a>',
+  'copy_right' => '© 2021. Automailマーケティングアプリケーション by <a title="Automailホームページに移動します。" class="xtooltip" href="https://automail.jp" class="" target="_blank">automail.jp</a>',
   'send_password_reset_link' => 'パスワードリセットの送信',
   'password_reset' => 'パスワードのリセット',
   'password_reset.help' => 'パスワードをリセットする方法についての説明をメールでお送りします。',
@@ -1501,8 +1501,8 @@
   'check_your_subscriptions' => 'サブスクリプションを確認してください',
   'to' => 'To',
   'days_remain' => '残り日数|残り日数',
-  'need_a_account_create_an_one' => 'Need an Acelle Mail account? <a href=":link" class="text-info">Create an account</a>',
-  'signin_if_has_account' => 'Already have an Acelle Mail account? <a href=":link" class="text-info">Log in here</a>',
+  'need_a_account_create_an_one' => 'Need an Automail account? <a href=":link" class="text-info">Create an account</a>',
+  'signin_if_has_account' => 'Already have an Automail account? <a href=":link" class="text-info">Log in here</a>',
   'get_started' => '始めましょう！',
   'your_subscriptions' => 'サブスクリプション',
   'these_are_your_current_plans' => 'これらはあなたの現在の計画です',
@@ -1631,7 +1631,7 @@
   ',
   'license_label_extended' => '拡張',
   'license_label_normal' => '正常',
-  'your_current_license' => 'Thank you for purchasing Acelle Mail! Below is your license key, also known as Purchase Code. Your license type is',
+  'your_current_license' => 'Thank you for purchasing Automail! Below is your license key, also known as Purchase Code. Your license type is',
   'verify_license' => '確認',
   'license_tab' => 'ライセンス',
   'submit' => '参加する',
@@ -3178,7 +3178,7 @@
   'plugin.updated' => 'プラグインは正常に更新されました',
   'plugin.deleted' => 'プラグインは正常に削除されました',
   'plugin_empty_line_1' => 'プラグインがありません',
-  'plugin.wording' => 'Acelle MailTeamによって開発された多数の素晴らしいプラグインでアプリケーションを強化します。統合がこれまでになく簡単になりました！',
+  'plugin.wording' => 'Automail Teamによって開発された多数の素晴らしいプラグインでアプリケーションを強化します。統合がこれまでになく簡単になりました！',
   'plugins.deleted' => '1つ以上のプラグインが正常に削除されました',
   'plugins.disabled' => '1つ以上のプラグインが正常に無効化されました',
   'plugins.enabled' => '1つ以上のプラグインが正常に有効化されました',
@@ -3237,12 +3237,12 @@
   'tracking_domain.test' => 'Test',
   'tracking_domain.test.wording' => 'We are taking you to the
       <a href="http://:domain" target="_blank">http://:domain</a> page.
-      If you see it load the login page of Acelle,
+      If you see it load the login page of Automail,
       then your DNS configuration is good and your tracking domain is ready to go.
       Otherwise, please double check to make sure that your hosting server is
       configured correctly so that traffic to 
-      <a href="http://:domain" target="_blank">http://:domain</a> are also redirected to Acelle source.
-      In other words, make it an alias URL or your Acelle webapp.',
+      <a href="http://:domain" target="_blank">http://:domain</a> are also redirected to Automail source.
+      In other words, make it an alias URL or your Automail webapp.',
   'tracking_domain.test.proceed' => 'Proceed',
   'customer.bounce_feedback_rate' => 'Bounce/Feedback rate:',
   'customer.bounce_feedback_rate_desc' => 'Bounce / feedback rate refers to the percentage of email addresses in your subscriber list that didn\'t receive your message because it was returned by a recipient mail server or is reported as spam/abuse by the recipient.',
@@ -3263,7 +3263,7 @@
   'automation.trigger.woo-abandoned-cart.intro' => 'カートに商品を追加し、チェックアウトの一部を完了した後、購入せずにサイトを離れた人にフォローアップメールを送信します',
   'automation.trigger.woo-abandoned-cart.download_plugin' => 'If you are not sure
       what your WordPress endpoint is, please install
-      <a target="_blank" href=":link">WordPress Plugin for Acelle</a> plugin',
+      <a target="_blank" href=":link">WordPress Plugin for Automail</a> plugin',
   'automation.trigger.tree.woo-abandoned-cart' => '放棄されたカートのリマインダー',
   'automation.condition.open' => '契約者がEメールを読む',
   'automation.condition.click' => '契約者がリンクをクリックする',
@@ -3355,9 +3355,9 @@
   'source.sync' => 'Sync',
   'source.delete.confirm' => 'このソースを削除しようとしています',
   'source.delete.can_not' => '1つ以上のソースは許可されていません。',
-  'source.woo.desc' => 'Enter your WordPress Acelle enpoint here to connect to exist WooCommerce stores.
+  'source.woo.desc' => 'Enter your WordPress Automail enpoint here to connect to exist WooCommerce stores.
       If you are not sure what your WordPress endpoint is, please install
-      <a target="_blank" href=":link">WordPress Plugin for Acelle</a> plugin',
+      <a target="_blank" href=":link">WordPress Plugin for Automail</a> plugin',
   'source.woo.connect' => 'WooCommerceに接続する',
   'source.connect_url.help' => 'あなたのWordPressエンポイントURL',
   'can_not_connect_acelle_sync' => 'Can not connect to Wordpress site. Error: :error',
@@ -3390,7 +3390,7 @@
   'cart.list' => 'メールリスト',
   'cart.list.wording' => '購入者の連絡先を自動的に追加するためのリストを選択します',
   'cart.store' => 'メールリスト',
-  'cart.store.wording' => 'AcelleMailに接続するためのWooCommerceストアソースを選択してください',
+  'cart.store.wording' => 'Automailに接続するためのWooCommerceストアソースを選択してください',
   'automation.back_to_overview' => 'キャンペーンの概要に戻る',
   'subscriber.assign_values' => '値の割り当て',
   'subscriber.a_fixed_value_for_contacts' => 'すべての連絡先の固定値',
@@ -3423,7 +3423,7 @@
   'bill.remove_payment.confirm' => '現在のお支払い方法を削除しようとしています。これは元に戻すことができます',
   'same_as_contact' => '連絡先と同じ',
   'payment.choose_payment' => 'ご希望のお支払い方法を選択してください',
-  'payment.choose_payment.desc' => 'Acelle supports the following payment methods
+  'payment.choose_payment.desc' => 'Automail supports the following payment methods
       <br>Choose offline payment if you do not have a credit card or PayPal balance  ',
   'bill.user_id' => 'ID',
   'bill.last4' => '最後の4つの番号',
@@ -3511,8 +3511,8 @@
   'transaction.method.paypal' => 'Paypal',
   'save_payment_method_proceed' => 'Save Payment Method & Proceed',
   'save_payment_method' => 'お支払い方法を保存する',
-  'payment.cannot_charge' => 'Acelle cannot charge the invoice #:id. Error from :service: :error',
-  'payment.cannot_auto_charge' => 'Acelle cannot automatically charge the
+  'payment.cannot_charge' => 'Automail cannot charge the invoice #:id. Error from :service: :error',
+  'payment.cannot_auto_charge' => 'Automail cannot automatically charge the
       invoice #:id. Error from :service: :error',
   'contacts' => 'contacts',
   'payment.you_currenly_payment' => 'Your current payment method is: <strong>:method</strong>',
@@ -3572,7 +3572,7 @@
   'source.disconnect' => 'Disconnect',
   'source.switch_store' => 'スイッチストア',
   'source.have_products' => 'You have <strong>:count</strong> product(s)',
-  'source.your_store_synchronized' => 'your store\'s products are being synchronized to Acelle',
+  'source.your_store_synchronized' => 'your store\'s products are being synchronized to Automail',
   'source.products.manage' => 'Manage',
   'source.launch' => 'Launch',
   'source.list.synchronized_to_this' => '連絡先は自動的にリストに同期されます',
@@ -3664,7 +3664,7 @@
   'label.done' => 'Done',
   'label.cancel' => 'Cancel',
   'geoip.title' => 'GeoIP管理',
-  'geoip.description' => 'Acelleは、ユーザーを解決するためにGeoIPデータセットを使用します\' 位置',
+  'geoip.description' => 'Automailは、ユーザーを解決するためにGeoIPデータセットを使用します\' 位置',
   'invoice.payment_is_being_verified' => '支払いは確認中です',
   'campaign.template.old_ver_error' => 'Campaigns created by previous (older) versions cannot be loaded in the current version
     of the application. Don\'t worry, it will work correctly for new campaigns you create',
@@ -3688,8 +3688,8 @@
   'paypal.user.description' => 'PayPalアカウントを使用してサブスクリプションとサービスの料金を支払います。',
   'razorpay.user.description' => 'Pay for your subscription & services using your debit
         or credit cards. Auto billing is not supported',
-  'store.connected_with_acelle' => 'あなたの店はAcelleとつながっています',
-  'store.connected_with_acelle.desc' => 'While connected, Acelle can synchronize products
+  'store.connected_with_acelle' => 'あなたの店はAutomailとつながっています',
+  'store.connected_with_acelle.desc' => 'While connected, Automail can synchronize products
     and contacts from your store to a specified mail list',
   'source.refresh' => 'Refresh',
   'subscription.thanks.click_to_start' => 'Thank you for subscribing to our SAAS. Click the button
@@ -3706,7 +3706,7 @@
   'ends_at' => 'で終了',
   'countries' => 'Countries',
   'cron_string.copied' => 'Cron string was copied to clipboard',
-  'language.translate.intro' => '<p>Acelle Mail lets you customize the user interface (UI) text in all areas of the web
+  'language.translate.intro' => '<p>Automail lets you customize the user interface (UI) text in all areas of the web
     application like titles, labels, tooltips, links, buttons... You can translate it from the original
     English language to Spanish and/or change these phrases the way you want.</p><p>
       Phrases are organized in different files which you can choose in the list below
@@ -3732,7 +3732,7 @@
   'template.change_name.intro' => '以下に新しいテンプレート名を入力してください',
   'template.name.changed' => 'テンプレート名が変更されました',
   'verification_credits_limit' => '検証クレジットの制限',
-  'subscription.secure_checkout' => 'ACELLE SECURE CHECKOUT',
+  'subscription.secure_checkout' => 'SECURE CHECKOUT',
   'subscription.choose_plan.title' => 'プランを選択してください',
   'subscription.choose_plan.subtitle' => 'You need to subscribe to a plan in order to
     experience the application.',
@@ -3838,7 +3838,7 @@
     <p class="mb-2">
       For example: if the specified email is not opened or
       clicked at the first check, and with a waiting time of
-      [<span class="fw-600 wait_day">:days</span>], Acelle will try to check again and
+      [<span class="fw-600 wait_day">:days</span>], Automail will try to check again and
       again during the next [<span class="fw-600 wait_day">:days</span>] before proceed
       with NO branch.
     </p>
