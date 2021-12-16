@@ -281,6 +281,11 @@ class MailList extends Model
         return $this->fields();
     }
 
+    public function getDateOrDateTimeFields()
+    {
+        return $this->getFields()->whereIn('type', ['datetime', 'date']);
+    }
+
     /**
      * Create default fields for list.
      */
