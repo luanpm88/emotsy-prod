@@ -22,7 +22,7 @@
   'digits' => 'The :attribute must be :digits digits.',
   'digits_between' => 'The :attribute must be between :min and :max digits.',
   'distinct' => 'The :attribute field has a duplicate value.',
-  'email' => 'The field must be a valid email address.',
+  'email' => 'このフィールドには、有効な電子メールアドレスを入力する必要があります。',
   'exists' => 'The selected :attribute is invalid.',
   'filled' => 'The :attribute field is required.',
   'image' => 'The :attribute must be an image.',
@@ -70,65 +70,65 @@
   'unique' => 'The :attribute field has already been taken.',
   'url' => 'The :attribute format is invalid.',
   'substring' => 'The :tag tag was not found in :attribute.',
-  'license' => 'The license is not valid.',
+  'license' => 'ライセンスが無効です。',
   'license_error' => ':error',
   'custom' => 
   array (
     'miss_main_field_tag' => 
     array (
-      'required' => 'Missing EMAIL field tag',
+      'required' => 'EMAILフィールドタグがありません',
     ),
     'conflict_field_tags' => 
     array (
-      'required' => 'The field tags cannot be the same',
+      'required' => 'フィールドタグを同じにすることはできません',
     ),
     'segment_conditions_empty' => 
     array (
-      'required' => 'Conditions list cannot be empty',
+      'required' => '条件リストを空にすることはできません',
     ),
     'mysql_connection' => 
     array (
-      'required' => 'Can\'t connect to MySQL server',
+      'required' => 'MySQLサーバーに接続できません',
     ),
     'database_not_empty' => 
     array (
-      'required' => 'The database is not empty',
+      'required' => 'データベースは空ではありません',
     ),
     'promo_code_not_valid' => 
     array (
-      'required' => 'The promo code is not valid',
+      'required' => 'プロモーションコードが無効です',
     ),
     'smtp_valid' => 
     array (
-      'required' => 'Can\'t connect to SMTP server',
+      'required' => 'SMTPサーバーに接続できません',
     ),
     'yaml_parse_error' => 
     array (
-      'required' => 'Can\'t parse yaml. Please check the syntax',
+      'required' => 'yamlを解析できません。 構文を確認してください',
     ),
     'file_not_found' => 
     array (
-      'required' => 'File not found.',
+      'required' => 'ファイルが見つかりません。',
     ),
     'not_zip_archive' => 
     array (
-      'required' => 'The file is not a zip package.',
+      'required' => 'このファイルはzipパッケージではありません。',
     ),
     'zip_archive_unvalid' => 
     array (
-      'required' => 'Cannot read the package.',
+      'required' => 'パッケージを読み取ることができません。',
     ),
     'custom_criteria_empty' => 
     array (
-      'required' => 'Custom criteria cannot be empty',
+      'required' => 'カスタム基準を空にすることはできません',
     ),
     'php_bin_path_invalid' => 
     array (
-      'required' => 'Invalid PHP executable. Please check again.',
+      'required' => '無効なPHP実行可能ファイル。 再度確認してください。',
     ),
     'can_not_empty_database' => 
     array (
-      'required' => 'Cannot DROP certain tables, please cleanup your database manually and try again.',
+      'required' => '特定のテーブルを削除できません。データベースを手動でクリーンアップして、再試行してください。',
     ),
     'recaptcha_invalid' => 
     array (
@@ -136,21 +136,21 @@
     ),
     'payment_method_not_valid' => 
     array (
-      'required' => 'Something went wrong with payment method setting. Please check again.',
+      'required' => 'お支払い方法の設定に問題がありました。 再度確認してください。',
     ),
     'email_already_subscribed' => 
     array (
-      'required' => 'The email has already been subscribed.',
+      'required' => 'このメールはすでに登録されています。',
     ),
     'mail_list_uid' => 
     array (
-      'required' => 'The Mail List is required.',
+      'required' => 'メールリストが必要です。',
     ),
     'contact' => 
     array (
       'zip' => 
       array (
-        'required' => 'The Zip / Postal code is required.',
+        'required' => '郵便番号（Zip / Postal code）は必須項目です。',
       ),
     ),
   ),
