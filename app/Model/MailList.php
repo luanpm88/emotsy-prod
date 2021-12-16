@@ -639,7 +639,10 @@ class MailList extends Model
      */
     public function otherLists()
     {
-        return $this->customer->lists()->where('id', '!=', $this->id)->get();
+        return $this->customer
+            ->mailLists()
+            ->orderBy('mail_lists.name', 'asc')
+            ->where('id', '!=', $this->id)->get();
     }
 
     /**

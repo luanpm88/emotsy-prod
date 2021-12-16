@@ -20,8 +20,8 @@
     @endif
 >
 
-@if ($errors->has($var_name))
+@if ($errors->has($name))
     <p class="mb-0 text-danger small mt-1">
-        {{ $errors->first($var_name) }}
+        {{ $errors->first($name) }}
     </p>
 @endif

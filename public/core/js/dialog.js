@@ -101,7 +101,7 @@ class Dialog {
                                 <div class="modal-content">
                                 <div class="modal-header">
                                     <h5 class="modal-title text-center" style="width:100%">
-                                        <i class="material-icons-outlined alert-icon mr-2">notifications</i>
+                                        <i `+(this.title ? '' : 'style="display:none"')+` class="material-icons-outlined alert-icon mr-2">notifications</i>
                                         `+this.title+`
                                     </h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>

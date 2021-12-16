@@ -130,6 +130,15 @@ Route::group(['middleware' => ['not_installed', 'not_logged_in']], function () {
 
 // Without authentication
 Route::group(['middleware' => ['not_installed']], function () {
+    // Form
+    Route::post('frontend/forms/{uid}/save', 'FormController@frontendSave');
+    Route::get('frontend/forms/{uid}/popup.js', 'FormController@frontendPopup');
+    Route::get('frontend/forms/{uid}/content', 'FormController@frontendContent');
+
+    // Website
+    Route::get('websites/{uid}/connect.js', 'WebsiteController@connectJs');
+
+    // Blank
     Route::match(['get', 'post'], 'blank', function () {
         return;
     });
@@ -185,6 +194,37 @@ Route::group(['middleware' => ['not_installed', 'auth']], function () {
 });
 
 Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function () {
+    // Audience
+    Route::get('audience/growth-chart', 'AudienceController@growthChart');
+    Route::get('audience/overview', 'AudienceController@overview');
+
+    // Form
+    Route::post('forms/{uid}/change-template', 'FormController@changeTemplate');
+    Route::post('forms/{uid}/preview', 'FormController@preview');
+    Route::post('forms/publish', 'FormController@publish');
+    Route::post('forms/unpublish', 'FormController@unpublish');
+    Route::get('forms/{uid}/edit/content', 'FormController@builderContent');
+    Route::post('forms/{uid}/disconnect', 'FormController@disconnect');
+    Route::match(['get', 'post'], 'forms/{uid}/connect', 'FormController@connect');
+    Route::post('forms/{uid}/settings', 'FormController@settings');
+    Route::get('forms/{uid}/builder', 'FormController@builder');
+    Route::get('forms/{uid}/build', 'FormController@build');
+    Route::get('forms/templates', 'FormController@templates');
+    Route::match(['get', 'post'], 'forms/create', 'FormController@create');
+    Route::post('forms/delete', 'FormController@delete');
+    Route::get('forms/list', 'FormController@list');
+    Route::get('forms', 'FormController@index');
+
+    // Website
+    Route::get('websites/{uid}/check', 'WebsiteController@check');
+    Route::post('websites/{uid}/connect', 'WebsiteController@connect');
+    Route::post('websites/disconnect', 'WebsiteController@disconnect');
+    Route::get('websites/{uid}/show', 'WebsiteController@show');
+    Route::match(['get', 'post'], 'websites/create', 'WebsiteController@create');
+    Route::post('websites/delete', 'WebsiteController@delete');
+    Route::get('websites/list', 'WebsiteController@list');
+    Route::get('websites', 'WebsiteController@index');
+
     // New subscription
     Route::get('account/subscription/select-plan', 'SubscriptionController@selectPlan');
     Route::get('account/subscription/order-box', 'SubscriptionController@orderBox');
@@ -227,6 +267,8 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
 
 Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscription']], function () {
     // Search
+    Route::get('/search/websites', 'SearchController@websites');
+    Route::get('/search/forms', 'SearchController@forms');
     Route::get('/search/subscribers', 'SearchController@subscribers');
     Route::get('/search/templates', 'SearchController@templates');
     Route::get('/search/automations', 'SearchController@automations');
@@ -241,6 +283,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('account/api', 'AccountController@api');
 
     // Mail list
+    Route::match(['get', 'post'], 'lists/select', 'MailListController@selectList');
     Route::get('lists/{uid}/email-verification/chart', 'MailListController@emailVerificationChart');
     Route::get('lists/{uid}/clone-to-customers/choose', 'MailListController@cloneForCustomersChoose');
     Route::post('lists/{uid}/clone-to-customers', 'MailListController@cloneForCustomers');
@@ -356,6 +399,9 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::resource('templates', 'TemplateController');
     Route::get('templates/{uid}/edit', 'TemplateController@edit');
     Route::patch('templates/{uid}/update', 'TemplateController@update');
+
+    // RSS
+    Route::get('templates/rss/parse', 'TemplateController@parseRss');
 
     // Campaign
     Route::get('campaigns/{uid}/preview-as/list', 'CampaignController@previewAsList');

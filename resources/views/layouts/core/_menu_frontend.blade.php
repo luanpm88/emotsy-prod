@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-xl navbar-dark fixed-top navbar-main py-0">
+<nav class="navbar navbar-expand-xl navbar-dark fixed-top navbar-main frontend py-0">
     <div class="container-fluid ms-0">
         <a class="navbar-brand d-flex align-items-center me-2" href="{{ action('HomeController@index') }}">
             @if (\Acelle\Model\Setting::get('site_logo_small'))
@@ -43,13 +43,69 @@
                         <span>{{ trans('messages.automations') }}</span>
                     </a>
                 </li>
-                <li class="nav-item" rel0="MailListController">
-                    <a href="{{ action('MailListController@index') }}" title="{{ trans('messages.lists') }}" class="leftbar-tooltip nav-link d-flex align-items-center py-3 lvl-1">
+                <li class="nav-item dropdown" rel0="MailListController">
+                    <a href=""
+                        title="{{ trans('messages.lists') }}"
+                        class="leftbar-tooltip nav-link d-flex align-items-center py-3 lvl-1 dropdown-toggle"
+                        data-bs-toggle="dropdown"
+                    >
                         <i class="navbar-icon">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 86.3 87.8"><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><g id="Layer_2-2" data-name="Layer 2"><g id="Layer_1-2-2" data-name="Layer 1-2"><g id="Layer_2-2-2" data-name="Layer 2-2"><g id="Layer_1-2-2-2" data-name="Layer 1-2-2"><g id="Layer_2-2-2-2" data-name="Layer 2-2-2"><g id="Layer_1-2-2-2-2" data-name="Layer 1-2-2-2"><path d="M62.5,49.5A13.1,13.1,0,1,1,75.6,36.4,13.1,13.1,0,0,1,62.5,49.5Zm0-18.8a5.8,5.8,0,1,0,5.8,5.7A5.8,5.8,0,0,0,62.5,30.7Z" style="fill:#f2f2f2"/><path d="M42.6,87.5h-.1a3.5,3.5,0,0,1-3.4-3.6c.4-10.4,4.5-20,10.8-25.6a18.4,18.4,0,0,1,14.2-4.9C76.6,54.5,85.5,66.8,86,83.9a3.3,3.3,0,0,1-3.3,3.6A3.5,3.5,0,0,1,79,84.2c-.4-13.3-6.8-23.1-15.6-23.9a12.1,12.1,0,0,0-8.9,3.3c-4.9,4.3-8,12-8.4,20.6A3.4,3.4,0,0,1,42.6,87.5Z" style="fill:#f2f2f2"/><path d="M82.5,87.5H42.6A3.5,3.5,0,0,1,39.1,84a3.5,3.5,0,0,1,3.5-3.5H82.5A3.5,3.5,0,0,1,86,84,3.4,3.4,0,0,1,82.5,87.5Z" style="fill:#f2f2f2"/><path d="M28.9,87.8H15.6C7,87.8,0,81.9,0,74.6V13.1C0,5.9,7,0,15.6,0h55c8.7,0,15.7,5.9,15.7,13.1V24.6a3.8,3.8,0,1,1-7.5,0V13.1c0-3-3.7-5.6-8.2-5.6h-55c-4.3,0-8.1,2.6-8.1,5.6V74.6c0,3.1,3.8,5.7,8.1,5.7H28.9a3.8,3.8,0,1,1,0,7.5Z" style="fill:#f2f2f2"/><path d="M44.2,30.5H23.4A3.5,3.5,0,0,1,19.9,27a3.5,3.5,0,0,1,3.5-3.5H44.2A3.5,3.5,0,0,1,47.7,27,3.4,3.4,0,0,1,44.2,30.5Z" style="fill:#f2f2f2"/><path d="M28.9,47.8H23.4a3.5,3.5,0,0,1-3.5-3.5,3.5,3.5,0,0,1,3.5-3.5h5.5a3.5,3.5,0,0,1,3.5,3.5A3.4,3.4,0,0,1,28.9,47.8Z" style="fill:#ff0"/><path d="M27.7,65.1H23.4a3.5,3.5,0,0,1-3.5-3.5,3.5,3.5,0,0,1,3.5-3.5h4.3a3.5,3.5,0,0,1,3.5,3.5A3.4,3.4,0,0,1,27.7,65.1Z" style="fill:#f2f2f2"/><polygon points="43.7 55.8 40.3 54.5 37.2 56.6 37.4 52.9 34.4 50.7 38 49.7 39.2 46.2 41.2 49.3 44.9 49.3 42.6 52.3 43.7 55.8" style="fill:lime"/><path d="M37.2,57.1H37a.5.5,0,0,1-.3-.5l.2-3.4-2.8-2.1c-.1-.1-.2-.3-.1-.4s.1-.4.3-.4l3.4-1,1.1-3.2c0-.2.2-.3.4-.4a.5.5,0,0,1,.5.3l1.8,2.8h3.4a.9.9,0,0,1,.5.3c.1.2.1.4-.1.5l-2.1,2.8,1,3.3a.4.4,0,0,1-.1.5c-.2.1-.4.2-.5.1l-3.2-1.2-2.9,2Zm-1.6-6.2,2.1,1.6a.4.4,0,0,1,.2.5v2.7l2.3-1.6a.3.3,0,0,1,.4,0L43,55l-.8-2.5a.5.5,0,0,1,0-.5l1.7-2.2H41.2a.4.4,0,0,1-.4-.2l-1.4-2.2-.9,2.5a.3.3,0,0,1-.3.3Z" style="fill:lime"/></g></g></g></g></g></g></g></g></svg>
                         </i>
-                        <span>{{ trans('messages.lists') }}</span>
+                        <span>{{ trans('messages.audience') }}</span>
                     </a>
+                    <ul class="dropdown-menu" aria-labelledby="audience-menu">
+                        <li class="nav-item" rel0="AudienceController">
+                            <a class="dropdown-item d-flex align-items-center" href="{{ action('AudienceController@overview') }}">
+                                <i class="navbar-icon" style="">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 94.5 84.1"><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><path d="M32.8,55.8a3.5,3.5,0,0,1-2.3-.9l-8.6-7.6L3.5,47A3.5,3.5,0,0,1,0,43.5,3.5,3.5,0,0,1,3.5,40h0l19.8.3a3.1,3.1,0,0,1,2.2.9L32.2,47,45.5,28a3.5,3.5,0,0,1,2.9-1.5H60.8L88.6,1a3.6,3.6,0,0,1,5,.2,3.6,3.6,0,0,1-.2,5L64.5,32.6a3.6,3.6,0,0,1-2.3.9h-12L35.7,54.3a3.5,3.5,0,0,1-2.4,1.4Z" style="fill:#333"/><path d="M11.7,63.6V77.1H7.5V63.6h4.2m4.4-7H3A2.6,2.6,0,0,0,.5,59.2V81.6A2.5,2.5,0,0,0,3,84.1H16.1a2.6,2.6,0,0,0,2.6-2.5V59.2a2.6,2.6,0,0,0-2.6-2.6Z" style="fill:#333"/><path d="M36.7,72.1v5H32.5v-5h4.2m4.9-7h-14a2.1,2.1,0,0,0-2.1,2.1V82a2.1,2.1,0,0,0,2.1,2.1h14A2.1,2.1,0,0,0,43.7,82V67.2a2.1,2.1,0,0,0-2.1-2.1Z" style="fill:#333"/><path d="M61.6,49.1v28H57.5v-28h4.1m3.9-7H53.6a3.1,3.1,0,0,0-3.1,3.1V81a3.1,3.1,0,0,0,3.1,3.1H65.5A3.1,3.1,0,0,0,68.6,81V45.2a3.1,3.1,0,0,0-3.1-3.1Z" style="fill:#333"/><path d="M86.6,40.5V77.1H82.5V40.5h4.1m3.6-7H78.9a3.4,3.4,0,0,0-3.4,3.4V80.7a3.4,3.4,0,0,0,3.4,3.4H90.2a3.4,3.4,0,0,0,3.4-3.4V36.9a3.4,3.4,0,0,0-3.4-3.4Z" style="fill:#333"/><path d="M91,19.6a3.5,3.5,0,0,1-3.5-3.5v-9H77.8a3.5,3.5,0,0,1-3.4-3.5A3.5,3.5,0,0,1,77.9,0H91a3.5,3.5,0,0,1,3.5,3.5V16.1A3.5,3.5,0,0,1,91,19.6Z" style="fill:#333"/></g></g></svg>
+                                </i>
+                                <span>{{ trans('messages.audience.overview') }}</span>
+                            </a>
+                        </li>
+                        <li class="nav-item" rel0="MailListController"
+                        rel0="MailListController"
+                        rel1="PageController"
+                        rel2="FieldController"
+                        >
+                            <a class="dropdown-item d-flex align-items-center" href="{{ action('MailListController@index') }}">
+                                <i class="navbar-icon" style="">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 90.6 86.3"><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><path d="M76.3,86.3H21.4a3.5,3.5,0,0,1-3.5-3.5,3.4,3.4,0,0,1,3.5-3.5H76.3c4.1,0,7.3-2.9,7.3-6.5V24.7C83.6,15,74.9,7,64.1,7H12.3A3.5,3.5,0,0,1,8.8,3.5,3.5,3.5,0,0,1,12.3,0H64.1C78.7,0,90.6,11.1,90.6,24.7V72.8C90.6,80.2,84.2,86.3,76.3,86.3Z" style="fill:#333"/><path d="M12.3,7a5.3,5.3,0,0,1,5.3,5.3v9.4H7V12.3A5.3,5.3,0,0,1,12.3,7m0-7h0A12.3,12.3,0,0,0,0,12.3v11a5.4,5.4,0,0,0,5.4,5.4H24.6V12.3A12.3,12.3,0,0,0,12.3,0Z" style="fill:#333"/><path d="M40,86.3H21.1a3.5,3.5,0,0,1-3.5-3.5V24.6a3.5,3.5,0,0,1,3.5-3.5,3.5,3.5,0,0,1,3.5,3.5V79.3H40a3.5,3.5,0,0,1,3.5,3.5A3.5,3.5,0,0,1,40,86.3Z" style="fill:#333"/><path d="M39.5,31.7a7.3,7.3,0,0,1-7.2-7.3,7.2,7.2,0,0,1,7.2-7.2,7.3,7.3,0,0,1,7.3,7.2A7.3,7.3,0,0,1,39.5,31.7Zm0-7.5-.2.2a.3.3,0,0,0,.5,0C39.8,24.3,39.7,24.2,39.5,24.2Z" style="fill:#333"/><path d="M70.3,27.9H54.9a3.5,3.5,0,0,1-3.5-3.5,3.5,3.5,0,0,1,3.5-3.5H70.3a3.5,3.5,0,0,1,3.5,3.5A3.5,3.5,0,0,1,70.3,27.9Z" style="fill:#333"/><path d="M39.5,50.2a7.2,7.2,0,0,1,0-14.4,7.2,7.2,0,1,1,0,14.4Zm0-7.4a.2.2,0,0,0-.2.2.3.3,0,0,0,.5,0C39.8,42.9,39.7,42.8,39.5,42.8Z" style="fill:#333"/><path d="M57.3,68.6a7.3,7.3,0,0,1,0-14.5,7.3,7.3,0,1,1,0,14.5Zm0-7.5c-.1,0-.2.1-.2.3s.5.2.5,0A.3.3,0,0,0,57.3,61.1Z" style="fill:#333"/><path d="M70.3,46.5H54.9a3.5,3.5,0,0,1,0-7H70.3a3.5,3.5,0,0,1,0,7Z" style="fill:#333"/><path d="M71.4,80.8a5.3,5.3,0,0,1-.5,2H43.7a5.1,5.1,0,0,1-.4-2c0-4.6,6.3-8.2,14-8.2S71.4,76.2,71.4,80.8Z" style="fill:#333"/><path d="M70.9,86.3H43.7a3.5,3.5,0,0,1-3.2-2.2,7.8,7.8,0,0,1-.7-3.3c0-6.6,7.7-11.8,17.5-11.8s17.6,5.2,17.6,11.8a9.8,9.8,0,0,1-.7,3.3A3.6,3.6,0,0,1,70.9,86.3Zm-23.4-7H67.1c-1.4-1.6-5-3.3-9.8-3.3S49,77.7,47.5,79.3Z" style="fill:#333"/><path d="M6.2,84.9a3.5,3.5,0,0,1-3.5-3.5V46.5A3.5,3.5,0,0,1,6.2,43a3.5,3.5,0,0,1,3.5,3.5V81.4A3.5,3.5,0,0,1,6.2,84.9Z" style="fill:#555"/><path d="M11.8,86.3H6.2a3.5,3.5,0,0,1-3.5-3.5,3.5,3.5,0,0,1,3.5-3.5h5.6a3.5,3.5,0,0,1,3.5,3.5A3.5,3.5,0,0,1,11.8,86.3Z" style="fill:#555"/></g></g></svg>
+                                </i>
+                                <span>{{ trans('messages.lists') }}</span>
+                            </a>
+                        </li>
+                        @if (Acelle\Model\MailList::count())
+                            <li class="nav-item" rel0="SubscriberController">
+                                <a class="dropdown-item d-flex align-items-center" href="{{ action('SubscriberController@index', [
+                                    'list_uid' => Acelle\Model\MailList::first() ? Acelle\Model\MailList::first()->uid : null,
+                                ]) }}">
+                                    <i class="navbar-icon" style="">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 94.8 87.5"><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><path d="M3.5,87.5H3.4A3.5,3.5,0,0,1,0,83.9a39.5,39.5,0,0,1,78.9,0,3.4,3.4,0,0,1-3.4,3.6h-.1a3.5,3.5,0,0,1-3.5-3.4A32.5,32.5,0,0,0,7,84.1,3.5,3.5,0,0,1,3.5,87.5Z" style="fill:#333"/><path d="M16.5,87.5H3.5a3.5,3.5,0,0,1,0-7h13a3.5,3.5,0,0,1,0,7Z" style="fill:#333"/><path d="M75.4,87.5H32.5a3.5,3.5,0,0,1,0-7H75.4a3.5,3.5,0,0,1,0,7Z" style="fill:#333"/><path d="M40.1,41.2A20.6,20.6,0,1,1,60.7,20.6,20.6,20.6,0,0,1,40.1,41.2ZM40.1,7A13.6,13.6,0,1,0,53.7,20.6,13.6,13.6,0,0,0,40.1,7Z" style="fill:#333"/><path d="M91.3,86.9a3.5,3.5,0,0,1-3.5-3.4C87.6,70,81.8,57.7,73,52.2a3.5,3.5,0,1,1,3.7-5.9c11,6.8,17.9,21,18.1,37.1a3.5,3.5,0,0,1-3.5,3.5Z" style="fill:#333"/><path d="M67.5,34.5a4.1,4.1,0,0,1-1.8-.5,3.5,3.5,0,0,1-1.2-4.8,19.8,19.8,0,0,0,2.6-11.9A18.8,18.8,0,0,0,63.6,8a3.5,3.5,0,1,1,5.8-4,27.2,27.2,0,0,1,4.7,12.6,27.5,27.5,0,0,1-3.6,16.2A3.4,3.4,0,0,1,67.5,34.5Z" style="fill:#333"/></g></g></svg>
+                                    </i>
+                                    <span>{{ trans('messages.contacts') }}</span>
+                                </a>
+                            </li>
+                            <li class="nav-item" rel0="SegmentController">
+                                <a class="dropdown-item d-flex align-items-center" href="{{ action('SegmentController@index', [
+                                    'list_uid' => Acelle\Model\MailList::first() ? Acelle\Model\MailList::first()->uid : null,
+                                ]) }}">
+                                    <i class="navbar-icon" style="">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 97 87.5"><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><path d="M34.6,33H7.1A7.1,7.1,0,0,1,0,25.9V7.1A7.1,7.1,0,0,1,7.1,0H34.6a7.1,7.1,0,0,1,7.1,7.1V25.9A7.1,7.1,0,0,1,34.6,33ZM7.1,7H7V25.9c0,.1,0,.1.1.1H34.6c.1,0,.1,0,.1-.1V7.1H7.1Z" style="fill:#333"/><path d="M33.9,87.5H8.4A8.1,8.1,0,0,1,.3,79.4V46.1A8.1,8.1,0,0,1,8.4,38H33.9A8.1,8.1,0,0,1,42,46.1V79.4A8.1,8.1,0,0,1,33.9,87.5ZM8.4,45a1.1,1.1,0,0,0-1.1,1.1V79.4a1.1,1.1,0,0,0,1.1,1.1H33.9A1.1,1.1,0,0,0,35,79.4V46.1A1.1,1.1,0,0,0,33.9,45Z" style="fill:#333"/><path d="M86.5,87.5h-29A10.5,10.5,0,0,1,47,77V11A10.5,10.5,0,0,1,57.5.5h29A10.5,10.5,0,0,1,97,11V77A10.5,10.5,0,0,1,86.5,87.5Zm-29-80A3.5,3.5,0,0,0,54,11V77a3.5,3.5,0,0,0,3.5,3.5h29A3.5,3.5,0,0,0,90,77V11a3.5,3.5,0,0,0-3.5-3.5Z" style="fill:#333"/><rect x="13.4" y="50.8" width="15.2" height="24.5" rx="4.1" style="fill:#333"/><path d="M93.5,56h-13A3.5,3.5,0,0,1,77,52.5v-17A3.5,3.5,0,0,1,80.5,32h13A3.5,3.5,0,0,1,97,35.5v17A3.5,3.5,0,0,1,93.5,56ZM84,49h6V39H84Z" style="fill:#333"/></g></g></svg>
+                                    </i>
+                                    <span>{{ trans('messages.segments') }}</span>
+                                </a>
+                            </li>
+                        @endif
+                        <li class="nav-item" rel0="FormController">
+                            <a class="dropdown-item d-flex align-items-center" href="{{ action('FormController@index') }}">
+                                <i class="navbar-icon" style="">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 90 84.5"><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><path d="M3.5,77.3A3.6,3.6,0,0,1,0,74.1V11.5A11.7,11.7,0,0,1,12,0H78A11.7,11.7,0,0,1,90,11.5v7.8a3.5,3.5,0,0,1-7,0V11.5A4.7,4.7,0,0,0,78,7H12a4.7,4.7,0,0,0-5,4.5v62a3.4,3.4,0,0,1-3.2,3.8Z" style="fill:#333"/><path d="M72.9,51.6h-56a3.5,3.5,0,0,1-3.5-3.5V30a3.5,3.5,0,0,1,3.5-3.5h56A3.5,3.5,0,0,1,76.4,30V48.1A3.5,3.5,0,0,1,72.9,51.6Zm-52.5-7h49V33.5h-49Z" style="fill:#333"/><path d="M29.7,84.5a12.9,12.9,0,0,1,0-25.8,12.9,12.9,0,0,1,0,25.8Zm0-18.8a5.8,5.8,0,0,0-5.6,5.9,5.6,5.6,0,1,0,11.2,0A5.8,5.8,0,0,0,29.7,65.7Z" style="fill:#333"/><path d="M72.6,83.5H55.1A3.5,3.5,0,0,1,51.6,80V62.2a3.5,3.5,0,0,1,3.5-3.5H72.6a3.5,3.5,0,0,1,3.5,3.5V80A3.5,3.5,0,0,1,72.6,83.5Zm-14-7H69.1V65.7H58.6Z" style="fill:#333"/><path d="M45,21.5H16.4a3.5,3.5,0,1,1,0-7H45a3.5,3.5,0,0,1,0,7Z" style="fill:#333"/></g></g></svg>
+                                </i>
+                                <span>{{ trans('messages.forms') }}</span>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
                 <li class="nav-item" rel0="TemplateController">
                     <a href="{{ action('TemplateController@index') }}" title="{{ trans('messages.templates') }}" class="leftbar-tooltip nav-link d-flex align-items-center py-3 lvl-1">
@@ -155,6 +211,35 @@
                         </ul>
                     </li>
                 @endif
+                <li class="nav-item dropdown">
+                    <a href=""
+                        class="leftbar-tooltip nav-link d-flex align-items-center py-3 lvl-1 dropdown-toggle"
+                        data-bs-toggle="dropdown"
+                    >
+                        <i class="navbar-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 87.5 87.5"><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><path d="M44.5,87.5H13.4A13.4,13.4,0,0,1,0,74.1V13.4A13.4,13.4,0,0,1,13.4,0H24.5A3.5,3.5,0,0,1,28,3.5,3.5,3.5,0,0,1,24.5,7H13.4A6.4,6.4,0,0,0,7,13.4V74.1a6.4,6.4,0,0,0,6.4,6.4H44.5a3.5,3.5,0,0,1,0,7Z" style="fill:#f2f2f2"/><path d="M84,87.5H66.5a3.5,3.5,0,0,1,0-7h14V13.4A6.4,6.4,0,0,0,74.1,7H42a3.5,3.5,0,0,1-3.5-3.5A3.5,3.5,0,0,1,42,0H74.1A13.4,13.4,0,0,1,87.5,13.4V84A3.5,3.5,0,0,1,84,87.5Z" style="fill:#f2f2f2"/><path d="M66.5,87.5A3.5,3.5,0,0,1,63,84V49H22.8a3.6,3.6,0,0,1-3.6-3.5v-21A3.6,3.6,0,0,1,22.8,21H38.5V3.5a3.5,3.5,0,0,1,7,0v21A3.5,3.5,0,0,1,42,28H26.2V42H66.5A3.5,3.5,0,0,1,70,45.5V84A3.5,3.5,0,0,1,66.5,87.5Z" style="fill:#f2f2f2"/><path d="M36.5,76A10.5,10.5,0,1,1,47,65.5,10.5,10.5,0,0,1,36.5,76Zm0-14A3.5,3.5,0,1,0,40,65.5,3.5,3.5,0,0,0,36.5,62Z" style="fill:#ffd500"/></g></g></svg>
+                        </i>
+                        <span>{{ trans('messages.intergration') }}</span>
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="audience-menu">
+                        <li class="nav-item" rel0="AudienceController">
+                            <a class="dropdown-item d-flex align-items-center" href="{{ action('WebsiteController@create') }}">
+                                <i class="navbar-icon" style="">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 97.7 97"><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><path d="M48.5,97A48.5,48.5,0,1,1,97,48.5a47.8,47.8,0,0,1-.9,9.2A3.4,3.4,0,0,1,92,60.4a3.5,3.5,0,0,1-2.7-4.1,40.4,40.4,0,0,0,.7-7.8A41.5,41.5,0,1,0,48.5,90a39.3,39.3,0,0,0,6.9-.6,3.5,3.5,0,0,1,4,2.9,3.4,3.4,0,0,1-2.8,4A43.6,43.6,0,0,1,48.5,97Z" style="fill:#333"/><path d="M89,52.5H7a3.5,3.5,0,0,1,0-7H89a3.5,3.5,0,0,1,0,7Z" style="fill:#333"/><path d="M25,52.5a3.5,3.5,0,0,1-3.5-3.4,51.1,51.1,0,0,1,23.6-45,3.4,3.4,0,0,1,4.8,1,3.4,3.4,0,0,1-1,4.8,44.2,44.2,0,0,0-20.4,39,3.5,3.5,0,0,1-3.4,3.6Z" style="fill:#333"/><path d="M72.6,51.5h-.1a3.6,3.6,0,0,1-3.4-3.6c.2-4.2-.1-9.9-3.7-18A45,45,0,0,0,48.7,10.4a3.4,3.4,0,0,1-1-4.8,3.4,3.4,0,0,1,4.8-1.1A52,52,0,0,1,71.8,27.1c4.2,9.5,4.5,16.5,4.3,21A3.5,3.5,0,0,1,72.6,51.5Z" style="fill:#333"/><path d="M79.2,95.7a3.5,3.5,0,0,1-3.5-3.5v-30a3.5,3.5,0,0,1,3.5-3.5,3.5,3.5,0,0,1,3.5,3.5v30A3.4,3.4,0,0,1,79.2,95.7Z" style="fill:#333"/><path d="M94.2,80.7h-30a3.5,3.5,0,0,1-3.5-3.5,3.5,3.5,0,0,1,3.5-3.5h30a3.5,3.5,0,0,1,3.5,3.5A3.4,3.4,0,0,1,94.2,80.7Z" style="fill:#333"/><path d="M49,52.5A3.5,3.5,0,0,1,45.5,49V7a3.5,3.5,0,0,1,7,0V49A3.5,3.5,0,0,1,49,52.5Z" style="fill:#333"/></g></g></svg>
+                                </i>
+                                <span>{{ trans('messages.website.add_site') }}</span>
+                            </a>
+                        </li>
+                        <li class="nav-item" rel0="WebsiteController">
+                            <a class="dropdown-item d-flex align-items-center" href="{{ action('WebsiteController@index') }}">
+                                <i class="navbar-icon" style="">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 94.8 89.5"><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><path d="M69.2,89.5H15.1A15.1,15.1,0,0,1,0,74.5V20.3a15.1,15.1,0,0,1,15.1-15H41.6a3.5,3.5,0,0,1,0,7H15.1a8,8,0,0,0-8.1,8V74.5a8,8,0,0,0,8.1,8H69.2a8,8,0,0,0,8-8V47.9a3.5,3.5,0,1,1,7,0V74.5A15,15,0,0,1,69.2,89.5Z" style="fill:#333"/><path d="M67,43A21.5,21.5,0,1,1,88.4,21.5,21.5,21.5,0,0,1,67,43ZM67,7A14.5,14.5,0,1,0,81.4,21.5,14.5,14.5,0,0,0,67,7Z" style="fill:#333"/><path d="M29.4,46.1A12.5,12.5,0,1,1,41.9,33.6,12.5,12.5,0,0,1,29.4,46.1Zm0-17.9a5.5,5.5,0,1,0,5.5,5.4A5.5,5.5,0,0,0,29.4,28.2Z" style="fill:#333"/><path d="M45.3,78.9A12.5,12.5,0,1,1,57.8,66.4,12.5,12.5,0,0,1,45.3,78.9Zm0-18a5.5,5.5,0,0,0-5.5,5.5,5.5,5.5,0,0,0,11,0A5.5,5.5,0,0,0,45.3,60.9Z" style="fill:#333"/><path d="M40.5,33.4a3.5,3.5,0,0,1-.7-6.9l9.5-2.1a3.6,3.6,0,0,1,4.2,2.7,3.4,3.4,0,0,1-2.7,4.1l-9.5,2.2Z" style="fill:#333"/><path d="M52.2,60.9a2.7,2.7,0,0,1-1.3-.2,3.5,3.5,0,0,1-2-4.5l7.4-19.1a3.5,3.5,0,0,1,4.5-2,3.6,3.6,0,0,1,2,4.6l-7.4,19A3.3,3.3,0,0,1,52.2,60.9Z" style="fill:#333"/><path d="M66.9,31.6A10.6,10.6,0,1,1,77.5,21,10.6,10.6,0,0,1,66.9,31.6Zm0-13.2A2.6,2.6,0,0,0,64.3,21a2.6,2.6,0,1,0,5.2,0A2.6,2.6,0,0,0,66.9,18.4Z" style="fill:#333"/><path d="M91.3,78.9a3.5,3.5,0,0,1-3.5-3.5V60.6a3.5,3.5,0,0,1,7,0V75.4A3.5,3.5,0,0,1,91.3,78.9Z" style="fill:#333"/></g></g></svg>
+                                </i>
+                                <span>{{ trans('messages.connections.manage') }}</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
             </ul>
             <div class="navbar-right">
                 <ul class="navbar-nav me-auto mb-md-0">

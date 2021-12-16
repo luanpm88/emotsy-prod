@@ -44,6 +44,7 @@ class Upgrade extends Controller
         Cache::flush();
         Language::dump();
         Template::resetDefaultTemplates();
+        Template::resetPopupTemplates();
         Artisan::call('queue:prune-batches --hours=24 --unfinished=-1'); // clean up any pending job batches
         Artisan::call('queue:restart');
 

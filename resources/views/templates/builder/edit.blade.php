@@ -7,55 +7,94 @@
     
     @include('layouts.core._favicon')
     
+    <!-- BuilderJS CORE -->
     <link href="{{ URL::asset('builder/builder.css') }}" rel="stylesheet" type="text/css">
     <script type="text/javascript" src="{{ URL::asset('builder/builder.js') }}"></script>
+
+    <!-- BuilderJS CUSTOM -->
+    <link href="{{ URL::asset('core/css/builder-custom.css') }}" rel="stylesheet" type="text/css">
+    @include('builder.js.widgets')
 
     <!-- Select2 -->
     <link rel="stylesheet" type="text/css" href="{{ URL::asset('core/select2/css/select2.min.css') }}">
     <script type="text/javascript" src="{{ URL::asset('core/select2/js/select2.min.js') }}"></script>
 
+    <!-- Autofill -->
     <link href="{{ URL::asset('core/css/UrlAutoFill.css') }}" rel="stylesheet" type="text/css">
     <script src="{{ URL::asset('core/js/UrlAutoFill.js') }}"></script>
+
+    <script>
+        (function($){
+            $.fn.serializeObject = function(){
+
+                var self = this,
+                    json = {},
+                    push_counters = {},
+                    patterns = {
+                        "validate": /^[a-zA-Z][a-zA-Z0-9_]*(?:\[(?:\d*|[a-zA-Z0-9_]+)\])*$/,
+                        "key":      /[a-zA-Z0-9_]+|(?=\[\])/g,
+                        "push":     /^$/,
+                        "fixed":    /^\d+$/,
+                        "named":    /^[a-zA-Z0-9_]+$/
+                    };
+
+
+                this.build = function(base, key, value){
+                    base[key] = value;
+                    return base;
+                };
+
+                this.push_counter = function(key){
+                    if(push_counters[key] === undefined){
+                        push_counters[key] = 0;
+                    }
+                    return push_counters[key]++;
+                };
+
+                $.each($(this).serializeArray(), function(){
+
+                    // Skip invalid keys
+                    if(!patterns.validate.test(this.name)){
+                        return;
+                    }
+
+                    var k,
+                        keys = this.name.match(patterns.key),
+                        merge = this.value,
+                        reverse_key = this.name;
+
+                    while((k = keys.pop()) !== undefined){
+
+                        // Adjust reverse_key
+                        reverse_key = reverse_key.replace(new RegExp("\\[" + k + "\\]$"), '');
+
+                        // Push
+                        if(k.match(patterns.push)){
+                            merge = self.build([], self.push_counter(reverse_key), merge);
+                        }
+
+                        // Fixed
+                        else if(k.match(patterns.fixed)){
+                            merge = self.build([], k, merge);
+                        }
+
+                        // Named
+                        else if(k.match(patterns.named)){
+                            merge = self.build({}, k, merge);
+                        }
+                    }
+
+                    json = $.extend(true, json, merge);
+                });
+
+                return json;
+            };
+        })(jQuery);
+    </script>
 
     @if ($template->theme)
         @include('builder.themes.' . $template->theme)
     @endif
-
-    <style>
-        .logo-img {
-            width: 120px!important;
-            margin-right: 15px;
-        }
-        .product-list-widget {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 40px;
-        }
-        .product-list-widget.single img {
-            padding: 3px;
-            width: 58px;
-            height: 81px;
-        }
-        .product-list-widget img {
-            padding: 3px;
-            width: 65px;
-            height: 81px;
-        }
-        .woo-panel__body {
-            background-color: #fff8fe!important;
-        }
-        .btn-widget-preview, .btn-widget-unpreview {
-            padding: 3px 10px;
-            height: 28px;
-        }
-        .btn-widget-preview span, .btn-widget-unpreview span {
-            font-size: 20px;
-        }
-    </style>
-
-    @include('builder.js.widgets')
-    @include('helpers._builder_rss_widgets')
     
     <script>
         var CSRF_TOKEN = "{{ csrf_token() }}";
@@ -193,8 +232,7 @@
                     this.addContentWidget(new ProductWidget(), 0, 'ProductCommerce');
 
                     // Rss widget
-                    // this.addCustomCss('{{ url('/core/css/builder_rss.css') }}');
-                    // this.addWidget(new RssWidget(), 'content', 3);
+                    this.addWidget(new RssWidget(), 'content', 3);
 
                     // add custom css
                     this.addCustomCss('{{ url('/core/css/builder-edit.css') }}');
