@@ -492,7 +492,9 @@ trait HasTemplate
     {
         if (!is_null($msgId)) {
             $url = route('openTrackingUrl', ['message_id' => StringHelper::base64UrlEncode($msgId)], true);
-            $url = $this->campaign->trackingDomain->buildTrackingUrl($url);
+            if ($this->trackingDomain) {
+                $url = $this->trackingDomain->buildTrackingUrl($url);
+            }
         } else {
             $url = $this->makeSampleLink();
         }
