@@ -1104,7 +1104,7 @@ class Subscriber extends Model
      */
     public function scopeSearch($query, $keyword)
     {
-        $query = self::select('subscribers.*');
+        $query->select('subscribers.*');
 
         /* does not support searching on subscriber fields, for the sake of performance
         $query = $query->leftJoin('subscriber_fields', 'subscribers.id', '=', 'subscriber_fields.subscriber_id')

@@ -380,7 +380,7 @@ trait HasTemplate
         // Bind subscriber/message/server information to email content
         $pipeline = new PipelineBuilder();
         $pipeline->add(new TransformTag($this, $subscriber, $msgId, $server));
-        $pipeline->add(new InjectTrackingPixel($msgId));
+        $pipeline->add(new InjectTrackingPixel($this, $msgId));
         $pipeline->add(new TransformUrl($this->template, $msgId, $this->trackingDomain));
         $pipeline->add(new TransformWidgets($this->template));
 
@@ -412,7 +412,7 @@ trait HasTemplate
             $pipeline->add(new ParseRss());
             $pipeline->add(new MakeInlineCss($this->template->findCssFiles()));
             // $pipeline->add(new TransformTag($this, $subscriber, $msgId, $server));
-            // $pipeline->add(new InjectTrackingPixel($msgId));
+            // $pipeline->add(new InjectTrackingPixel($this, $msgId));
             // $pipeline->add(new TransformUrl($this->template, $msgId, $this->trackingDomain));
             // $html = $this->wooTransform($html);
             $html = $pipeline->build()->process($this->getTemplateContent());
@@ -486,5 +486,27 @@ trait HasTemplate
         $stdObj = json_decode(json_encode(array_merge($jsonObj, $subscriber)));
 
         return $stdObj;
+    }
+
+    public function makeTrackingPixel($msgId)
+    {
+        if (is_null($msgId)) {
+            $url = route('openTrackingUrl', ['message_id' => StringHelper::base64UrlEncode($msgId)], true);
+            $url = $this->campaign->trackingDomain->buildTrackingUrl($url);
+        } else {
+            $url = $this->makeSampleLink();
+        }
+
+        return '<img alt="This is a tracking pixel" src="'.$url.'" width="0" height="0" alt="" style="visibility:hidden" />';
+    }
+
+    public function makeSampleLink()
+    {
+        $sampleLink = route('campaign_message', [ 'message' => StringHelper::base64UrlEncode(trans('messages.email.test_link_note')) ]);
+        if ($this->trackingDomain) {
+            $sampleLink = $this->trackingDomain->buildTrackingUrl($sampleLink);
+        }
+
+        return $sampleLink;
     }
 }

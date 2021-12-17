@@ -7,20 +7,18 @@ use Acelle\Library\StringHelper;
 
 class InjectTrackingPixel implements StageInterface
 {
+    public $campaign;
     public $msgId;
 
-    public function __construct($msgId)
+    public function __construct($campaign, $msgId)
     {
+        $this->campaign = $campaign;
         $this->msgId = trim($msgId);
     }
 
     public function __invoke($html)
     {
-        if (empty($this->msgId)) {
-            return $html;
-        }
-
-        $pixel = StringHelper::makeTrackingPixel($this->msgId);
+        $pixel = $this->campaign->makeTrackingPixel($this->msgId);
         return StringHelper::appendHtml($html, $pixel);
     }
 }

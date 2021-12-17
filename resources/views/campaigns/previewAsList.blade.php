@@ -1,6 +1,11 @@
 @if ($subscribers->count() > 0)
     <div class="mb-4 copy-web-url-container">
         @foreach ($subscribers as $key => $subscriber)
+            <?php
+
+                $webViewerPreviewUrl = $campaign->generateWebViewerPreviewUrl($subscriber);
+
+            ?>
             <div class=" d-flex py-4 border-bottom">
                 <div class="me-4">
                     <img width="80px" height="80px"
@@ -20,12 +25,12 @@
                     <div>
                         <div class="mb-1">{{ trans('messages.campaign.preview_as.web_view_url') }}:</div>
                         <p class="mb-0">
-                            <a target="_blank" href="https://acellemail.com/features.php">
-                                https://acellemail.com/features.php
+                            <a target="_blank" href="{!! $webViewerPreviewUrl !!}">
+                                {!! $webViewerPreviewUrl !!}
                                 <i class="material-icons-outlined">open_in_new</i>
                             </a>
                             <a href="javascript:;" class="btn btn-default btn-sm ms-3 copy-web-view-url"
-                                data-url="https://acellemail.com/features.php"
+                                data-url="{!! $webViewerPreviewUrl !!}"
                             >
                                 <i class="material-icons-outlined me-1">copy</i>{{ trans('messages.copy') }}
                             </a>
