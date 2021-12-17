@@ -490,7 +490,7 @@ trait HasTemplate
 
     public function makeTrackingPixel($msgId)
     {
-        if (is_null($msgId)) {
+        if (!is_null($msgId)) {
             $url = route('openTrackingUrl', ['message_id' => StringHelper::base64UrlEncode($msgId)], true);
             $url = $this->campaign->trackingDomain->buildTrackingUrl($url);
         } else {
