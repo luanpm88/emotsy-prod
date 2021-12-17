@@ -13,7 +13,7 @@ class InjectTrackingPixel implements StageInterface
     public function __construct($campaign, $msgId)
     {
         $this->campaign = $campaign;
-        $this->msgId = trim($msgId);
+        $this->msgId = $msgId;
     }
 
     public function __invoke($html)
