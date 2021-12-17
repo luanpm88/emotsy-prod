@@ -21,6 +21,7 @@ use Acelle\Library\HtmlHandler\RemoveTitleTag;
 use Acelle\Library\Lockable;
 use File;
 use Cache;
+use Soundasleep\Html2Text;
 
 trait HasTemplate
 {
@@ -164,6 +165,9 @@ trait HasTemplate
 
         if ($unsubscribeUrl) {
             $headers['List-Unsubscribe'] = "<{$unsubscribeUrl}>";
+        } else {
+            $sampleUnsubscribeUrl = route('campaign_message', ['message' => StringHelper::base64UrlEncode(trans('messages.email.test_link_note')) ]);
+            $headers['List-Unsubscribe'] = "<{$sampleUnsubscribeUrl}>";
         }
 
         return $headers;
@@ -230,10 +234,17 @@ trait HasTemplate
 
         $message->setReplyTo($this->reply_to);
         $message->setEncoder(new \Swift_Mime_ContentEncoder_PlainContentEncoder('8bit'));
-        $message->addPart($this->getPlainContent($subscriber, $msgId, $server), 'text/plain');
         if (is_null($this->type) || $this->type == self::TYPE_REGULAR) {
-            $message->addPart($this->getHtmlContent($subscriber, $msgId, $server, $fromCache, $expiresInSeconds), 'text/html');
+            $html = $this->getHtmlContent($subscriber, $msgId, $server, $fromCache, $expiresInSeconds);
+            $message->addPart($html, 'text/html');
+
+            $plain = Html2Text::convert($html);
+        } else {
+            // Get plain content is for PLAIN campaign only
+            $plain = $this->getPlainContent($subscriber, $msgId, $server);
         }
+
+        $message->addPart($plain, 'text/plain');
 
         if ($this->sign_dkim) {
             $message = $this->sign($message);
@@ -429,6 +440,7 @@ trait HasTemplate
 
     /**
      * Build Email HTML content.
+     * Notice: this method is used for PLAIN CAMPAIGN only. To extract plain content from HTML, use Html2Text instead
      *
      * @return string
      */
