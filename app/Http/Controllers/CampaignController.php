@@ -21,6 +21,7 @@ use Acelle\Model\OpenLog;
 use Acelle\Model\TemplateCategory;
 use Acelle\Model\JobMonitor;
 use DB;
+use Exception;
 
 class CampaignController extends Controller
 {
@@ -1749,6 +1750,25 @@ class CampaignController extends Controller
         }
     }
 
+    /**
+     * Email web view for previewing before sending
+     */
+    public function webViewPreview(Request $request)
+    {
+        $subscriber = Subscriber::findByUid($request->subscriber_uid);
+        $campaign = Campaign::findByUid($request->campaign_uid);
+
+        if (is_null($subscriber) || is_null($campaign)) {
+            throw new \Exception('Invalid subscriber or campaign UID');
+        }
+
+        return view('campaigns.web_view', [
+            'campaign' => $campaign,
+            'subscriber' => $subscriber,
+            'message_id' => null,
+        ]);
+    }
+
     /*
      * Select campaign type page.
      *
@@ -2103,6 +2123,7 @@ class CampaignController extends Controller
 
         return view('campaigns.previewAsList', [
             'subscribers' => $subscribers,
+            'campaign' => $campaign,
         ]);
     }
 }
