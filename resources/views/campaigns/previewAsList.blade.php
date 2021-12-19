@@ -1,6 +1,11 @@
 @if ($subscribers->count() > 0)
     <div class="mb-4 copy-web-url-container">
         @foreach ($subscribers as $key => $subscriber)
+            <?php
+
+                $webViewerPreviewUrl = $campaign->generateWebViewerPreviewUrl($subscriber);
+
+            ?>
             <div class=" d-flex py-4 border-bottom">
                 <div class="me-4">
                     <img width="80px" height="80px"
@@ -19,17 +24,19 @@
                     </div>
                     <div>
                         <div class="mb-1">{{ trans('messages.campaign.preview_as.web_view_url') }}:</div>
-                        <p class="mb-0">
-                            <a target="_blank" href="https://acellemail.com/features.php">
-                                https://acellemail.com/features.php
-                                <i class="material-icons-outlined">open_in_new</i>
+                        <div class="mb-0 d-flex align-items-center">
+                            <input style="border-width:1px;" type="text" readonly class="form-control web-url-input readonly small" value="{!! $webViewerPreviewUrl !!}" />
+                            <a style="height:34px" href="javascript:;" target="_blank" class="btn btn-secondary btn-sm ms-2 text-nowrap d-flex align-items-center"
+                                data-url="{!! $webViewerPreviewUrl !!}"
+                            >
+                                <i class="material-icons-outlined me-1">open_in_new</i>{{ trans('messages.open') }}
                             </a>
-                            <a href="javascript:;" class="btn btn-default btn-sm ms-3 copy-web-view-url"
-                                data-url="https://acellemail.com/features.php"
+                            <a style="height:34px" href="javascript:;" class="btn btn-light btn-sm ms-1 copy-web-view-url text-nowrap py-1 d-flex align-items-center"
+                                data-url="{!! $webViewerPreviewUrl !!}"
                             >
                                 <i class="material-icons-outlined me-1">copy</i>{{ trans('messages.copy') }}
                             </a>
-                        </p>
+                        </div>
                     </div>
                 </div>
             </div>

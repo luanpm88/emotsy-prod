@@ -147,6 +147,7 @@ Route::group(['middleware' => ['not_installed']], function () {
     Route::get('p/{url}/click/{message_id?}', 'CampaignController@click')->name('clickTrackingUrl');
     Route::get('c/{subscriber}/unsubscribe/{message_id?}', 'CampaignController@unsubscribe')->name('unsubscribeUrl');
     Route::get('campaigns/{message_id}/web-view', 'CampaignController@webView')->name('webViewerUrl');
+    Route::get('campaigns/{campaign_uid}/webview/{subscriber_uid}/preview', 'CampaignController@webViewPreview')->name('webViewerPreviewUrl');
     Route::post('lists/{uid}/embedded-form-subscribe', 'MailListController@embeddedFormSubscribe');
     Route::post('lists/{uid}/embedded-form-subscribe-captcha', 'MailListController@embeddedFormSubscribe');
     Route::get('lists/{uid}/check-email', 'MailListController@checkEmail');
