@@ -488,12 +488,6 @@ class StringHelper
         return $newUrl;
     }
 
-    public static function makeTrackingPixel($msgId)
-    {
-        $url = route('openTrackingUrl', ['message_id' => StringHelper::base64UrlEncode($msgId)], true);
-        return '<img src="'.$url.'" width="0" height="0" alt="" style="visibility:hidden" />';
-    }
-
     public static function generateUniqueName($directory, $name)
     {
         $count = 1;
