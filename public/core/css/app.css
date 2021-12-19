@@ -7654,3 +7654,8 @@ body.mode-dark .dropdown-item:focus {
 .list-columns-checkbox .dropdown-item {
     padding: 0;
 }
+@media (min-width: 992px) {
+    .web-url-input {
+        flex: 0 0 100%;
+    }
+}
