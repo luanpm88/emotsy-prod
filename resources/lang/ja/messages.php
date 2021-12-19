@@ -3091,15 +3091,9 @@
   'tracking_domain.verified' => '検証済み',
   'tracking_domain.unverified' => '未確認',
   'tracking_domain.create' => 'トラッキングドメインを作成する',
-  'tracking_domain.show.dns_setup.title' => 'DNSセットアップ',
-  'tracking_domain.show.dns_setup.note1' => '追跡ドメインは、電子メールの開封とリンクのクリックを追跡する際にアプリケーションによって使用されます。 設定が完了すると、メール内のすべてのリンクが変換され、追跡ドメインによってラップされます。 これにより、電子メールのレピュテーションが向上し、スパムとして扱われる可能性が低くなるため、送信パフォーマンスが向上します。',
-  'tracking_domain.show.dns_setup.note2' => '次のCNAMEレコードをドメインDNSに追加して、ドメインを確認し、アプリケーションでオープン/クリックトラッキングを有効にする必要があります。',
-  'tracking_domain.show.dns_setup.note3' => 'DNSの更新が伝播するまでに5分から数時間かかる場合があることに注意してください',
   'tracking_domain.hostname' => 'ホスト名',
   'tracking_domain.record_type' => 'レコードタイプ',
   'tracking_domain.value' => 'Value',
-  'tracking_domain.show.pending_title' => '検証待ち',
-  'tracking_domain.show.pending_note' => '以下のガイドラインに従って、ドメインDNSレコードを更新してください。 すべての設定が完了したと確信したら、更新ボタンをクリックして確認します',
   'tracking_domain.show.dns_setup' => 'DNSセットアップ',
   'tracking_domain.refresh' => '今すぐ更新',
   'tracking_domain.show.verified_title' => '追跡ドメインが確認されました',
@@ -3232,14 +3226,6 @@
   'ok_enable' => 'OK, Enable',
   'curl_example' => 'CURLの例',
   'tracking_domain.test' => 'Test',
-  'tracking_domain.test.wording' => 'We are taking you to the
-      <a href="http://:domain" target="_blank">http://:domain</a> page.
-      If you see it load the login page of Acelle,
-      then your DNS configuration is good and your tracking domain is ready to go.
-      Otherwise, please double check to make sure that your hosting server is
-      configured correctly so that traffic to 
-      <a href="http://:domain" target="_blank">http://:domain</a> are also redirected to Acelle source.
-      In other words, make it an alias URL or your Acelle webapp.',
   'tracking_domain.test.proceed' => 'Proceed',
   'customer.bounce_feedback_rate' => 'Bounce/Feedback rate:',
   'customer.bounce_feedback_rate_desc' => 'Bounce / feedback rate refers to the percentage of email addresses in your subscriber list that didn\'t receive your message because it was returned by a recipient mail server or is reported as spam/abuse by the recipient.',

@@ -3055,15 +3055,9 @@
   'tracking_domain.verified' => 'verifiziert',
   'tracking_domain.unverified' => 'nicht verifiziert',
   'tracking_domain.create' => 'Tracking-Domain erstellen',
-  'tracking_domain.show.dns_setup.title' => 'DNS Setup',
-  'tracking_domain.show.dns_setup.note1' => 'Tracking-Domains werden von der Anwendung zum Verfolgen von geöffneten E-Mails und zum Klicken auf Links verwendet. Nach dem Einrichten werden alle Links in Ihren E-Mails transformiert und von einer Tracking-Domain umschlossen. Dies verbessert die Reputation Ihrer E-Mails und verringert die Wahrscheinlichkeit, dass sie als Spam behandelt werden. Dadurch wird Ihre Sendeleistung verbessert.',
-  'tracking_domain.show.dns_setup.note2' => 'Sie müssen den folgenden CNAME-Eintrag zu Ihrem Domain-DNS hinzufügen, um Ihre Domain zu überprüfen und die Open / Click-Verfolgung über die Anwendung zu aktivieren.',
-  'tracking_domain.show.dns_setup.note3' => 'Beachten Sie, dass die Weitergabe des DNS-Updates zwischen 5 Minuten und einigen Stunden dauern kann',
   'tracking_domain.hostname' => 'Host Name',
   'tracking_domain.record_type' => 'Aufnahmetyp',
   'tracking_domain.value' => 'Wert',
-  'tracking_domain.show.pending_title' => 'Ausstehende Bestätigung',
-  'tracking_domain.show.pending_note' => 'Bitte aktualisieren Sie Ihre Domain-DNS-Einträge entsprechend der unten stehenden Richtlinie. Wenn Sie glauben, dass Sie alle eingerichtet sind, klicken Sie zur Überprüfung auf die Schaltfläche Aktualisieren',
   'tracking_domain.show.dns_setup' => 'DNS Setup',
   'tracking_domain.refresh' => 'Jetzt aktualisieren',
   'tracking_domain.show.verified_title' => 'Tracking-Domain überprüft',
@@ -3238,14 +3232,6 @@
   'ok_enable' => 'OK, Aktivieren',
   'curl_example' => 'CURL Beispiel',
   'tracking_domain.test' => 'Test',
-  'tracking_domain.test.wording' => 'Wir bringen Sie zur
-       <a href="http://:domain" target="_blank">http://:domain</a> Seite.
-      Wenn Sie es sehen, laden Sie die Anmeldeseite von Acelle Mail,
-      dann ist Ihre DNS-Konfiguration gut und Ihre Tracking-Domain ist einsatzbereit.
-     Andernfalls überprüfen Sie bitte noch einmal, ob Ihr Hosting-Server richtig konfiguriert ist, damit der Verkehr 									  
-											  
-      <a href="http://:domain" target="_blank">http://:domain</a> auch zur Acelle-Quelle umgeleitet.
-       Mit anderen Worten, machen Sie es zu einer Alias-URL oder Ihrer Acelle Mail-Webanwendung.',
   'tracking_domain.test.proceed' => 'Vorgehen',
   'automation.delay.custom' => 'Benutzerdefiniert',
   'automation.contacts_in_action' => 'Kontakte in Aktion',
