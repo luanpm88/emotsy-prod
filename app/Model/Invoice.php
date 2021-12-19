@@ -427,16 +427,9 @@ class Invoice extends Model
             'billing_first_name' => $this->billing_first_name,
             'billing_last_name' => $this->billing_last_name,
             'billing_address' => $this->billing_address,
-            'billing_country' => \Acelle\Model\Country::find($this->billing_country_id)->name,
+            'billing_country' => $this->billing_country_id ? \Acelle\Model\Country::find($this->billing_country_id)->name : '',
             'billing_email' => $this->billing_email,
             'billing_phone' => $this->billing_phone,
-
-            // 'billing_first_name' => 'required',
-            // 'billing_last_name' => 'required',
-            // 'billing_address' => 'required',
-            // 'billing_country_id' => 'required',
-            // 'billing_email' => 'required|email',
-            // 'billing_phone' => 'required',
         ];
     }
 
