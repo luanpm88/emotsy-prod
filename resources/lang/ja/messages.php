@@ -1,10 +1,4 @@
 <?php return array (
-  'datetime_format' => 'M dS, Y H:i',
-  'datetime_format_2' => 'M dS, Y H:i:s',
-  'time_format' => 'H:i',
-  'date_format' => 'M d, Y',
-  'j_date_format' => 'yyyy-mm-dd',
-  'datetime_string_formated' => ':date, :time',
   'email' => 'メールアドレス',
   'password' => 'パスワード',
   'stay_logged_in' => 'ログイン状態を保存する',
@@ -1348,7 +1342,6 @@
   'back_to_list' => 'リストに戻る',
   'make_request_to_run_automation' => '自動化をトリガーするには、次のリクエストを行います。<br/> <code>:command </code>',
   'automation.updated' => '自動化は正常に更新されました',
-  'any_datetime_format' => '%Z-%m-%d, %H:%i',
   'choose_email_type' => 'メールタイプを選択',
   'email.updated' => 'メールは正常に更新されました',
   'from_other_campaigns' => 'その他のキャンペーン',

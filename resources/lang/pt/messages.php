@@ -4034,4 +4034,3 @@
   'automation.trigger.no_date_of_birth_field' => 'There is no birthday field selected!',
   'upgrade.notice' => 'Upgrade may not work correctly if the upgrade package file size exceeds the upload limit set by your hosting\'s PHP settings:',
 ) ?>
-
