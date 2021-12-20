@@ -26,7 +26,7 @@
                         <div class="mb-1">{{ trans('messages.campaign.preview_as.web_view_url') }}:</div>
                         <div class="mb-0 d-flex align-items-center">
                             <input style="border-width:1px;" type="text" readonly class="form-control web-url-input readonly small" value="{!! $webViewerPreviewUrl !!}" />
-                            <a style="height:34px" href="javascript:;" target="_blank" class="btn btn-secondary btn-sm ms-2 text-nowrap d-flex align-items-center"
+                            <a style="height:34px" href="{!! $webViewerPreviewUrl !!}" target="_blank" class="btn btn-secondary btn-sm ms-2 text-nowrap d-flex align-items-center"
                                 data-url="{!! $webViewerPreviewUrl !!}"
                             >
                                 <i class="material-icons-outlined me-1">open_in_new</i>{{ trans('messages.open') }}
