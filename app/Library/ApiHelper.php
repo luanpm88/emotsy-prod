@@ -611,7 +611,7 @@ class ApiHelper
                 [
                     'method' => 'POST',
                     'uri' => '/api/v1/notification',
-                    'description' => 'Send a delivery or abuse report to Acelle Mail which could be a success / bounce / feedback or abuse report',
+                    'description' => 'Send a delivery or abuse report to the application. It could be a success / bounce / feedback or abuse report',
                     'parameters' => [
                         ['name' => '$message_id', 'description' => 'Message\'s id'],
                         ['name' => '$type', 'description' => 'One of 4 types: sent | bounced | reported | failed'],
@@ -661,7 +661,7 @@ class ApiHelper
                 [
                     'method' => 'POST',
                     'uri' => '/api/v1/notification',
-                    'description' => 'Send a delivery or abuse report to Acelle Mail which could be a success / bounce / feedback or abuse report',
+                    'description' => 'Send a delivery or abuse report to the application. It could be a success / bounce / feedback or abuse report',
                     'parameters' => [
                         ['name' => '$message_id', 'description' => 'Message\'s id'],
                         ['name' => '$type', 'description' => 'One of 4 types: sent | bounced | reported | failed'],

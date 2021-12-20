@@ -2,7 +2,6 @@
 
 namespace Acelle\Jobs;
 
-use Acelle\Library\Log as MailLog;
 use Acelle\Model\MailList;
 use Acelle\Model\Blacklist;
 use Illuminate\Contracts\Queue\ShouldBeUnique;

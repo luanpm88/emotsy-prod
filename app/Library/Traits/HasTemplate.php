@@ -21,6 +21,7 @@ use Acelle\Library\HtmlHandler\RemoveTitleTag;
 use Acelle\Library\Lockable;
 use File;
 use Cache;
+use Soundasleep\Html2Text;
 
 trait HasTemplate
 {
@@ -160,6 +161,9 @@ trait HasTemplate
 
         if ($unsubscribeUrl) {
             $headers['List-Unsubscribe'] = "<{$unsubscribeUrl}>";
+        } else {
+            $sampleUnsubscribeUrl = route('campaign_message', ['message' => StringHelper::base64UrlEncode(trans('messages.email.test_link_note')) ]);
+            $headers['List-Unsubscribe'] = "<{$sampleUnsubscribeUrl}>";
         }
 
         return $headers;
@@ -226,10 +230,17 @@ trait HasTemplate
 
         $message->setReplyTo($this->reply_to);
         $message->setEncoder(new \Swift_Mime_ContentEncoder_PlainContentEncoder('8bit'));
-        $message->addPart($this->getPlainContent($subscriber, $msgId, $server), 'text/plain');
         if (is_null($this->type) || $this->type == self::TYPE_REGULAR) {
-            $message->addPart($this->getHtmlContent($subscriber, $msgId, $server, $fromCache, $expiresInSeconds), 'text/html');
+            $html = $this->getHtmlContent($subscriber, $msgId, $server, $fromCache, $expiresInSeconds);
+            $message->addPart($html, 'text/html');
+
+            $plain = Html2Text::convert($html);
+        } else {
+            // Get plain content is for PLAIN campaign only
+            $plain = $this->getPlainContent($subscriber, $msgId, $server);
         }
+
+        $message->addPart($plain, 'text/plain');
 
         if ($this->sign_dkim) {
             $message = $this->sign($message);
@@ -369,7 +380,7 @@ trait HasTemplate
         // Bind subscriber/message/server information to email content
         $pipeline = new PipelineBuilder();
         $pipeline->add(new TransformTag($this, $subscriber, $msgId, $server));
-        $pipeline->add(new InjectTrackingPixel($msgId));
+        $pipeline->add(new InjectTrackingPixel($this, $msgId));
         $pipeline->add(new TransformUrl($this->template, $msgId, $this->trackingDomain));
         $pipeline->add(new TransformWidgets($this->template));
 
@@ -401,7 +412,7 @@ trait HasTemplate
             $pipeline->add(new ParseRss());
             $pipeline->add(new MakeInlineCss($this->template->findCssFiles()));
             // $pipeline->add(new TransformTag($this, $subscriber, $msgId, $server));
-            // $pipeline->add(new InjectTrackingPixel($msgId));
+            // $pipeline->add(new InjectTrackingPixel($this, $msgId));
             // $pipeline->add(new TransformUrl($this->template, $msgId, $this->trackingDomain));
             // $html = $this->wooTransform($html);
             $html = $pipeline->build()->process($this->getTemplateContent());
@@ -425,6 +436,7 @@ trait HasTemplate
 
     /**
      * Build Email HTML content.
+     * Notice: this method is used for PLAIN CAMPAIGN only. To extract plain content from HTML, use Html2Text instead
      *
      * @return string
      */
@@ -474,5 +486,29 @@ trait HasTemplate
         $stdObj = json_decode(json_encode(array_merge($jsonObj, $subscriber)));
 
         return $stdObj;
+    }
+
+    public function makeTrackingPixel($msgId)
+    {
+        if (!is_null($msgId)) {
+            $url = route('openTrackingUrl', ['message_id' => StringHelper::base64UrlEncode($msgId)], true);
+            if ($this->trackingDomain) {
+                $url = $this->trackingDomain->buildTrackingUrl($url);
+            }
+        } else {
+            $url = $this->makeSampleLink();
+        }
+
+        return '<img alt="This is a tracking pixel" src="'.$url.'" width="0" height="0" alt="" style="visibility:hidden" />';
+    }
+
+    public function makeSampleLink()
+    {
+        $sampleLink = route('campaign_message', [ 'message' => StringHelper::base64UrlEncode(trans('messages.email.test_link_note')) ]);
+        if ($this->trackingDomain) {
+            $sampleLink = $this->trackingDomain->buildTrackingUrl($sampleLink);
+        }
+
+        return $sampleLink;
     }
 }

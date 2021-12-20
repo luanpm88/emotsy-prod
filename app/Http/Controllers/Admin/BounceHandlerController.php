@@ -4,6 +4,7 @@ namespace Acelle\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use Acelle\Http\Controllers\Controller;
+use function Acelle\Helpers\generatePublicPath;
 
 class BounceHandlerController extends Controller
 {
@@ -258,5 +259,13 @@ class BounceHandlerController extends Controller
                 'message' => $e->getMessage()
             ]);
         }
+    }
+
+    public function run(Request $request, $uid)
+    {
+        $handler = \Acelle\Model\BounceHandler::findByUid($uid);
+        $todayLogFile = storage_path('logs/' . php_sapi_name() . '/handler-'.$handler->uid.'-'.date('Y-m-d').'.log');
+        echo url(generatePublicPath($todayLogFile));
+        $handler->start();
     }
 }

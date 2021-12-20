@@ -12,6 +12,7 @@
         "braintree/braintree_php": "^3.22",
         "coinpaymentsnet/coinpayments-php": "^1.0",
         "doctrine/dbal": "^2.10",
+        "dompdf/dompdf": "^1.1",
         "facade/ignition": "^2.11",
         "facebook/php-ads-sdk": "^11.0",
         "filp/whoops": "^2.14",
