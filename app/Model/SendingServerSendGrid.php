@@ -35,8 +35,8 @@ class SendingServerSendGrid extends SendingServer implements DomainVerificationI
     public const WEBHOOK = 'sendgrid';
 
     protected $table = 'sending_servers';
-    public static $client = null;
-    public static $isWebhookSetup = false;
+    public $client = null;
+    public $isWebhookSetup = false;
 
     /**
      * Get authenticated to Mailgun and return the session object.
@@ -45,17 +45,17 @@ class SendingServerSendGrid extends SendingServer implements DomainVerificationI
      */
     public function client()
     {
-        if (!self::$client) {
+        if (!$this->client) {
             if (is_null($this->subAccount)) {
                 MailLog::info('Using master account');
-                self::$client = new \SendGrid($this->api_key);
+                $this->client = new \SendGrid($this->api_key);
             } else {
                 MailLog::info("Using subaccount {$this->subAccount->getSubAccountUsername()}");
-                self::$client = new \SendGrid($this->subAccount->api_key);
+                $this->client = new \SendGrid($this->subAccount->api_key);
             }
         }
 
-        return self::$client;
+        return $this->client;
     }
 
     /**
@@ -65,7 +65,7 @@ class SendingServerSendGrid extends SendingServer implements DomainVerificationI
      */
     public function setupWebhooks()
     {
-        if (self::$isWebhookSetup) {
+        if ($this->isWebhookSetup) {
             return true;
         }
 
@@ -96,7 +96,7 @@ class SendingServerSendGrid extends SendingServer implements DomainVerificationI
             throw new \Exception(sprintf('Cannot setup SendGrid webhook. Status code: %s. Body: %s', $response->statusCode(), $response->body()));
         }
 
-        self::$isWebhookSetup = true;
+        $this->isWebhookSetup = true;
     }
 
     /**

@@ -138,6 +138,7 @@ Route::group(['middleware' => ['not_installed']], function () {
     Route::get('p/{url}/click/{message_id?}', 'CampaignController@click')->name('clickTrackingUrl');
     Route::get('c/{subscriber}/unsubscribe/{message_id?}', 'CampaignController@unsubscribe')->name('unsubscribeUrl');
     Route::get('campaigns/{message_id}/web-view', 'CampaignController@webView')->name('webViewerUrl');
+    Route::get('campaigns/{campaign_uid}/webview/{subscriber_uid}/preview', 'CampaignController@webViewPreview')->name('webViewerPreviewUrl');
     Route::post('lists/{uid}/embedded-form-subscribe', 'MailListController@embeddedFormSubscribe');
     Route::post('lists/{uid}/embedded-form-subscribe-captcha', 'MailListController@embeddedFormSubscribe');
     Route::get('lists/{uid}/check-email', 'MailListController@checkEmail');
@@ -358,6 +359,9 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::patch('templates/{uid}/update', 'TemplateController@update');
 
     // Campaign
+    Route::get('campaigns/{uid}/preview-as/list', 'CampaignController@previewAsList');
+    Route::get('campaigns/{uid}/preview-as', 'CampaignController@previewAs');
+
     Route::post('campaigns/{uid}/custom-plain/off', 'CampaignController@customPlainOff');
     Route::post('campaigns/{uid}/custom-plain/on', 'CampaignController@customPlainOn');
     Route::post('campaigns/{uid}/remove-attachment', 'CampaignController@removeAttachment');
@@ -642,6 +646,8 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::post('site/templates/{id}/activate', 'Site\TemplateController@activate');
     Route::get('site/templates/listing', 'Site\TemplateController@listing');
     Route::get('site/templates', 'Site\TemplateController@index');
+    // Invoice
+    Route::get('invoices/{uid}/download', 'InvoiceController@download');
 });
 
 // ADMIN AREA
@@ -735,6 +741,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::get('admin/bounce_handlers/listing/{page?}', 'BounceHandlerController@listing');
     Route::get('admin/bounce_handlers/sort', 'BounceHandlerController@sort');
     Route::get('admin/bounce_handlers/delete', 'BounceHandlerController@delete');
+    Route::get('admin/bounce_handlers/{uid}/run', 'BounceHandlerController@run');
     Route::resource('admin/bounce_handlers', 'BounceHandlerController');
 
     // Feedback Loop handlers
@@ -979,4 +986,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::match(['get','post'], 'tax/add', 'TaxController@addTax');
     Route::get('tax/countries', 'TaxController@countries');
     Route::match(['get','post'], 'tax/settings', 'TaxController@settings');
+
+    // Invoice
+    Route::get('admin/invoices/{uid}/download', 'InvoiceController@download');
 });

@@ -67,6 +67,9 @@
                     
                     // reload sidebar
                     sidebar.load();
+
+                    // re validate tree
+                    tree.validate();
                 });
             }
         });

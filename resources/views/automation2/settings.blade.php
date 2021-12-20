@@ -108,6 +108,9 @@ delete
                 sidebar.load();
                 
                 notify(response.status, '{{ trans('messages.notify.success') }}', response.message);
+
+                // need to reload to update tree data
+                location.reload();
              }
         });
     });

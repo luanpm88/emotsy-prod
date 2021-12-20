@@ -4363,7 +4363,7 @@ pagination {
 .navbar-main .nav-item > .nav-link.active {
     background: rgba(0,0,0,0.1);
 }
-.pickatime + .time-input-icon, .date-input-icon {
+.pickatime + .time-input-icon, .date-input-icon, .ico-right {
     position: absolute;
     top: 3px;
     right: 13px;
@@ -7672,4 +7672,9 @@ body.mode-dark .dropdown-item:focus {
 }
 textarea.form-control {
     height: auto;
+}
+@media (min-width: 992px) {
+    .web-url-input {
+        flex: 0 0 100%;
+    }
 }

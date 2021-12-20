@@ -39,14 +39,11 @@ class TransformTag implements StageInterface
             'CURRENT_DAY' => date('d'),
         );
 
+        // Use in case $subscriber or $msgId is null
+        $sampleLink = $this->campaign->makeSampleLink();
+
         # Subscriber specific
-        if (is_null($this->subscriber) || empty($this->msgId) || $this->campaign->isStdClassSubscriber($this->subscriber)) {
-            $sampleLink = route('campaign_message', [ 'message' => StringHelper::base64UrlEncode(trans('messages.email.test_link_note')) ]);
-
-            if ($this->campaign->trackingDomain) {
-                $sampleLink = $this->campaign->trackingDomain->buildTrackingUrl($sampleLink);
-            }
-
+        if (is_null($this->subscriber) || $this->campaign->isStdClassSubscriber($this->subscriber)) {
             $tags['UNSUBSCRIBE_URL'] = $sampleLink;
             $tags['UPDATE_PROFILE_URL'] = $sampleLink;
             $tags['WEB_VIEW_URL'] = $sampleLink;
@@ -57,12 +54,23 @@ class TransformTag implements StageInterface
             $tags['LIST_FROM_NAME'] = '%LIST-FROM-NAME%';
             $tags['LIST_FROM_EMAIL'] = '%LIST-FROM-EMAIL%';
 
-            # Subscriber custom fields, including email
+            // Subscriber custom fields, including email
             $sample = '%PERSONALIZED-DATA%';
-            foreach($this->campaign->mailLists as $list) {
-                foreach ($list->fields as $field) {
+
+            // all lists assocated with this campaign/email
+            // Notice that the Email model doesn ot have mailLists association, only defaultMailList
+
+            if (!$this->campaign->mailLists) {
+                foreach ($this->campaign->defaultMailList->fields as $field) {
                     $tags['SUBSCRIBER_'.$field->tag] = $sample;
                     $tags[$field->tag] = $sample;
+                }
+            } else {
+                foreach($this->campaign->mailLists as $list) {
+                    foreach ($list->fields as $field) {
+                        $tags['SUBSCRIBER_'.$field->tag] = $sample;
+                        $tags[$field->tag] = $sample;
+                    }
                 }
             }
 
@@ -79,8 +87,14 @@ class TransformTag implements StageInterface
             $tags['LIST_FROM_EMAIL'] = $this->subscriber->mailList->from_email;
 
             $updateProfileUrl = $this->subscriber->generateUpdateProfileUrl();
-            $unsubscribeUrl = $this->subscriber->generateUnsubscribeUrl($this->msgId);
-            $webViewUrl = StringHelper::generateWebViewerUrl($this->msgId);
+
+            if (is_null($this->msgId)) {
+                $unsubscribeUrl = $sampleLink;
+                $webViewUrl = $sampleLink;
+            } else {
+                $unsubscribeUrl = $this->subscriber->generateUnsubscribeUrl($this->msgId);
+                $webViewUrl = StringHelper::generateWebViewerUrl($this->msgId);
+            }
 
             if ($this->campaign->trackingDomain) {
                 $updateProfileUrl = $this->campaign->trackingDomain->buildTrackingUrl($updateProfileUrl);
@@ -91,7 +105,6 @@ class TransformTag implements StageInterface
             $tags['UPDATE_PROFILE_URL'] = $updateProfileUrl;
             $tags['UNSUBSCRIBE_URL'] = $unsubscribeUrl;
             $tags['WEB_VIEW_URL'] = $webViewUrl;
-
             $tags['SUBSCRIBER_UID'] = $this->subscriber->uid;
 
             # Subscriber custom fields

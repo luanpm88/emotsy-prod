@@ -38,7 +38,7 @@ link
 
     <p style="margin-bottom: 30px" class="d-flex align-items-center">
 		<code style="font-size: 18px" class="api-enpoint">{{ url('api/v1') }}</code>
-		<button class="btn btn-secondary api-copy-button ml-4"><i class="material-icons-outlined me-2">copy</i>Copy</button>
+		<button class="btn btn-secondary api-copy-button ml-4"><i class="material-icons-outlined me-2">copy</i>{{ trans('messages.copy') }}</button>
 	</p>
 
     <h4 class="text-semibold mt-20">{{ trans('messages.your_api_token') }}</h4>
