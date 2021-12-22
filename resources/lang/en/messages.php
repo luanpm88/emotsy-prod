@@ -3896,8 +3896,6 @@
   'product.categories' => 'Categories',
   'product.create' => 'Create',
   'product.add' => 'Add new product',
-  'product.title' => 'Title',
-  'product.categories' => 'Categories',
   'product.select_categories' => 'Select product categories',
   'product.sku' => 'SKU',
   'product.advanced' => 'Advanced Form',
