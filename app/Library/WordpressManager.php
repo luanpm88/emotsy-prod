@@ -1,11 +1,13 @@
 <?php
 
 namespace Acelle\Library;
+
 use Illuminate\Support\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
-use \Illuminate\Pagination\Paginator;
+use Illuminate\Pagination\Paginator;
 
-class WordpressManager {
+class WordpressManager
+{
     public function __construct()
     {
         require_once config('wordpress.1.path') . '/wp-load.php';
@@ -19,22 +21,22 @@ class WordpressManager {
 
     public function activateTheme($id)
     {
-        $theme = wp_get_theme( $id );
+        $theme = wp_get_theme($id);
 
-        if ( ! $theme->exists() || ! $theme->is_allowed() ) {
-          throw new \Exception('The requested theme does not exist.');
+        if (! $theme->exists() || ! $theme->is_allowed()) {
+            throw new \Exception('The requested theme does not exist.');
         }
 
-        switch_theme( $theme->get_stylesheet() );
+        switch_theme($theme->get_stylesheet());
     }
 
     public function getProductCategories()
     {
         $taxonomy     = 'product_cat';
-        $orderby      = 'name';  
+        $orderby      = 'name';
         $hierarchical = 1;
         $empty        = 0;
-        
+
 
         $args = array(
             'taxonomy'     => $taxonomy,
@@ -43,14 +45,14 @@ class WordpressManager {
             'hide_empty'   => $empty,
         );
 
-        $all_categories = get_categories( $args );
-        
+        $all_categories = get_categories($args);
+
         $data = [];
         foreach ($all_categories as $cat) {
             $data[] = [
                 'value' => $cat->term_id,
                 'text' => $cat->name,
-            ];   
+            ];
         }
 
         return $data;

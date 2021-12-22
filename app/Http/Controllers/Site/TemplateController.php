@@ -21,7 +21,7 @@ class TemplateController extends Controller
     public function listing(Request $request)
     {
         $wordpress = new \Acelle\Library\WordpressManager();
-        
+
         // view
         $view = $request->view ? $request->view : 'list';
 

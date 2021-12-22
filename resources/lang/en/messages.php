@@ -1,4 +1,6 @@
-<?php return array (
+<?php
+
+return array(
   'email' => 'Email',
   'password' => 'Password',
   'stay_logged_in' => 'Stay logged in',
@@ -3912,4 +3914,4 @@
   'list.no_date_or_datetime_field' => 'The selected list does not have any custom field of DATE or DATETIME type.
     Go to your mail list\'s fields setting page and add a custom field of Date of Birth',
   'automation.trigger.no_date_of_birth_field' => 'There is no birthday field selected!',
-) ?>
+);

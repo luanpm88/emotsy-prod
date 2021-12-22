@@ -1,4 +1,6 @@
-<?php return array (
+<?php
+
+return array(
   'block_container' => 'Block',
   'export_template_confirm' => 'エクスポートする前に現在のデザインを保存しますか？',
   'image_link' => '画像リンク',
@@ -517,4 +519,4 @@
   'text_style' => 'Text style',
   'text_size' => 'Text size',
   'font_family' => 'Font familyああああ',
-) ?>
+);

@@ -66,7 +66,7 @@ class TransformTag implements StageInterface
                     $tags[$field->tag] = $sample;
                 }
             } else {
-                foreach($this->campaign->mailLists as $list) {
+                foreach ($this->campaign->mailLists as $list) {
                     foreach ($list->fields as $field) {
                         $tags['SUBSCRIBER_'.$field->tag] = $sample;
                         $tags[$field->tag] = $sample;

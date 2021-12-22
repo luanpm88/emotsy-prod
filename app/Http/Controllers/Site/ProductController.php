@@ -12,7 +12,7 @@ class ProductController extends Controller
     {
         return view('site.products.index');
     }
-    
+
     public function listing(Request $request)
     {
         $wordpress = new \Acelle\Library\WordpressManager();
@@ -54,7 +54,7 @@ class ProductController extends Controller
             'wooProduct' => $wooProduct,
         ]);
     }
-    
+
     public function delete(Request $request, $id)
     {
         $wordpress = new \Acelle\Library\WordpressManager();
