@@ -234,7 +234,12 @@ trait HasTemplate
             $html = $this->getHtmlContent($subscriber, $msgId, $server, $fromCache, $expiresInSeconds);
             $message->addPart($html, 'text/html');
 
-            $plain = Html2Text::convert($html);
+            $options = array(
+              'ignore_errors' => true,
+              // other options go here
+            );
+
+            $plain = Html2Text::convert($html, $options);
         } else {
             // Get plain content is for PLAIN campaign only
             $plain = $this->getPlainContent($subscriber, $msgId, $server);
