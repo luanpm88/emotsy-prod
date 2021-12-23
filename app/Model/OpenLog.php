@@ -114,11 +114,12 @@ class OpenLog extends Model
 
     public static function createFromRequest($request)
     {
+        $ipAddress = $request->ip();
+
         /****
          * Also record Google proxy opens
          *
          *
-        $ipAddress = $request->ip();
         if (!StringHelper::fromHumanIpAddress($ipAddress)) {
             return;
         }

@@ -1,4 +1,6 @@
-<?php return array (
+<?php
+
+return array(
   'email' => 'Email',
   'password' => 'Password',
   'stay_logged_in' => 'Stay logged in',
@@ -4012,6 +4014,21 @@
   'tax.no_country_added' => 'There are no country taxes added',
   'tax.select_tax_in' => 'Select tax rate in <span class="fw-600">:country</span>',
   'tax.remove_confirm' => 'You`re about to remove a country tax rate',
+  'website' => 'Website',
+  'open_front_page' => 'Open front page',
+  'site.template.activate' => 'Activate',
+  'open_website' => 'Open website in new tab',
+  'activated' => 'Activated',
+  'site.template_changed' => 'Site template was changed successfully',
+  'product.categories' => 'Categories',
+  'product.create' => 'Create',
+  'product.add' => 'Add new product',
+  'product.select_categories' => 'Select product categories',
+  'product.sku' => 'SKU',
+  'product.advanced' => 'Advanced Form',
+  'product.delete.confirm' => 'You\'re about to delete the product <span class="fw-600">:name</span>',
+  'product.deleted' => 'The product was deleted successfully',
+  'site.menus' => 'Menus',
   'campaign.preview_as' => 'Preview as',
   'campaign.preview_as.enter_search' => 'Enter contact email to search',
   'campaign.preview_as.web_view_url' => 'Web view URL',
@@ -4022,4 +4039,4 @@
   'list.no_date_or_datetime_field' => 'The selected list does not have any custom field of DATE or DATETIME type.
     Go to your mail list\'s fields setting page and add a custom field of Date of Birth',
   'automation.trigger.no_date_of_birth_field' => 'There is no birthday field selected!',
-) ?>
+);

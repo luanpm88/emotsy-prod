@@ -143,7 +143,7 @@ class Layout extends Model
         return $tags;
     }
 
-    public function getMessage(Closure $transform = null) : ExtendedSwiftMessage
+    public function getMessage(Closure $transform = null): ExtendedSwiftMessage
     {
         // Create a message
         $message = new ExtendedSwiftMessage();
