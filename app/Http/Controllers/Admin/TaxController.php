@@ -25,12 +25,12 @@ class TaxController extends Controller
     }
 
     public function countries(Request $request)
-    {        
+    {
         return view('admin.taxes.countries');
     }
 
     public function addTax(Request $request)
-    {       
+    {
         $country = \Acelle\Model\Country::find($request->country_id);
 
         if ($request->isMethod('post')) {

@@ -6,10 +6,10 @@ return [
         'db_name' => 'wpbrand',
         'db_prefix' => '',
 
+        // 'db_port' => '3306', // same as acelle config
+        // 'db_host' => 'localhost', // same as acelle config
         // 'db_user' => '', // same as acelle config
         // 'db_password' => '', // same as acelle config
-        // 'db_host' => '', // same as acelle config
-        // 'db_port' => '', // same as acelle config
     ]
 ];
 

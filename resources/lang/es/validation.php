@@ -1,4 +1,6 @@
-<?php return array (
+<?php
+
+return array(
   'accepted' => ':attribute debe ser aceptado.',
   'active_url' => ':attribute no es una URL valida.',
   'after' => ':attribute debe ser una fecha posterior a :date.',
@@ -7,8 +9,8 @@
   'alpha_num' => ':attribute solo puede contener letras y números.',
   'array' => ':attribute debe ser un arreglo',
   'before' => ':attribute debe ser una fecha antes del :date.',
-  'between' => 
-  array (
+  'between' =>
+  array(
     'numeric' => ':attribute debe estar entre :min y :max.',
     'file' => ':attribute debe estar entre :min y :max kilobytes.',
     'string' => ':attribute debe contener entre :min y :max caracteres.',
@@ -31,16 +33,16 @@
   'integer' => ':attribute debe ser un entero.',
   'ip' => ':attribute debe ser una dirección de IP valida.',
   'json' => ':attribute debe ser un string JSON valido.',
-  'max' => 
-  array (
+  'max' =>
+  array(
     'numeric' => ':attribute no puede ser mayor que :max.',
     'file' => ':attribute no puede ser mayor que :max kilobytes.',
     'string' => ':attribute no puede ser mayor que :max caracteres.',
     'array' => ':attribute no puede contener mas de :max items.',
   ),
   'mimes' => ':attribute debe ser un archivo de tipo: :values.',
-  'min' => 
-  array (
+  'min' =>
+  array(
     'numeric' => ':attribute debe ser al menos :min.',
     'file' => ':attribute al menos debe contener :min kilobytes.',
     'string' => ':attribute debe contener al menos :min caracteres.',
@@ -58,8 +60,8 @@
   'required_without' => ':attribute requerido :values no presente.',
   'required_without_all' => ':attribute requerido cuando :values esta  presente.',
   'same' => ':attribute y :other deben coincidir con.',
-  'size' => 
-  array (
+  'size' =>
+  array(
     'numeric' => ':attribute debe tener :size.',
     'file' => ':attribute debe tener :size kilobytes.',
     'string' => ':attribute debe tener :size caracteres.',
@@ -71,75 +73,75 @@
   'url' => ':attribute formato invalido.',
   'substring' => ' :tag la etiqueta no funciona en :attribute.',
   'license' => 'Licencia invalida.',
-  'custom' => 
-  array (
-    'miss_main_field_tag' => 
-    array (
+  'custom' =>
+  array(
+    'miss_main_field_tag' =>
+    array(
       'required' => 'Falta la etiqueta de campo EMAIL',
     ),
-    'conflict_field_tags' => 
-    array (
+    'conflict_field_tags' =>
+    array(
       'required' => 'Las etiquetas del campo no pueden ser las mismas',
     ),
-    'segment_conditions_empty' => 
-    array (
+    'segment_conditions_empty' =>
+    array(
       'required' => 'La lista de condiciones no puede estar vacía',
     ),
-    'mysql_connection' => 
-    array (
+    'mysql_connection' =>
+    array(
       'required' => 'No se puede conectar al servidor MySQL',
     ),
-    'database_not_empty' => 
-    array (
+    'database_not_empty' =>
+    array(
       'required' => 'La base de datos no está vacía',
     ),
-    'promo_code_not_valid' => 
-    array (
+    'promo_code_not_valid' =>
+    array(
       'required' => 'El código de descuento no es válido',
     ),
-    'smtp_valid' => 
-    array (
+    'smtp_valid' =>
+    array(
       'required' => 'No se puede conectar al servidor SMTP',
     ),
-    'yaml_parse_error' => 
-    array (
+    'yaml_parse_error' =>
+    array(
       'required' => 'No se puede analizar yaml. Compruebe la sintaxis',
     ),
-    'file_not_found' => 
-    array (
+    'file_not_found' =>
+    array(
       'required' => 'Archivo no encontrado.',
     ),
-    'not_zip_archive' => 
-    array (
+    'not_zip_archive' =>
+    array(
       'required' => 'El archivo no es un paquete zip.',
     ),
-    'zip_archive_unvalid' => 
-    array (
+    'zip_archive_unvalid' =>
+    array(
       'required' => 'No se puede leer el paquete.',
     ),
-    'custom_criteria_empty' => 
-    array (
+    'custom_criteria_empty' =>
+    array(
       'required' => 'Los criterios personalizados no pueden estar vacíos',
     ),
-    'php_bin_path_invalid' => 
-    array (
+    'php_bin_path_invalid' =>
+    array(
       'required' => 'Ejecutable PHP no válido. Por favor revise de nuevo.',
     ),
-    'can_not_empty_database' => 
-    array (
+    'can_not_empty_database' =>
+    array(
       'required' => 'No puede eliminar determinadas tablas, por favor, limpie su base de datos y vuelva a intentarlo.',
     ),
-    'recaptcha_invalid' => 
-    array (
+    'recaptcha_invalid' =>
+    array(
       'required' => 'Comprobación reCAPTCHA no válida.',
     ),
-    'payment_method_not_valid' => 
-    array (
+    'payment_method_not_valid' =>
+    array(
       'required' => 'Algo salió mal con la configuración del método de pago. Por favor revise de nuevo.',
     ),
   ),
-  'attributes' => 
-  array (
+  'attributes' =>
+  array(
   ),
   'license_error' => ':error',
-) ?>
+);
