@@ -21,9 +21,9 @@ class CreateSendersTable extends Migration
             $table->string('name');
             $table->string('email');
             $table->string('status');
-            
+
             $table->timestamps();
-            
+
             $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
         });
     }

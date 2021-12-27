@@ -17,21 +17,21 @@ class UpdateNullable extends Migration
             $table->text('tax_number')->nullable()->change();
             $table->text('billing_address')->nullable()->change();
         });
-        
+
         Schema::table('mail_lists', function (Blueprint $table) {
             $table->string('status')->nullable()->change();
         });
-        
+
         Schema::table('fields', function (Blueprint $table) {
             $table->integer('custom_order')->nullable()->change();
         });
-        
+
         Schema::table('subscribers', function (Blueprint $table) {
             $table->string('status')->nullable()->change();
             $table->text('from')->nullable()->change();
             $table->text('ip')->nullable()->change();
         });
-        
+
         Schema::table('campaigns', function (Blueprint $table) {
             $table->text('subject')->nullable()->change();
             $table->longText('html')->nullable()->change();
@@ -48,7 +48,7 @@ class UpdateNullable extends Migration
             $table->string('template_source')->nullable()->change();
             $table->text('image')->nullable()->change();
         });
-        
+
         Schema::table('templates', function (Blueprint $table) {
             $table->longText('content')->nullable()->change();
             $table->text('image')->nullable()->change();
@@ -56,24 +56,24 @@ class UpdateNullable extends Migration
             $table->integer('shared')->nullable()->change();
             $table->string('source')->nullable()->change();
         });
-        
+
         Schema::table('admin_groups', function (Blueprint $table) {
             $table->text('options')->nullable()->change();
             $table->text('permissions')->nullable()->change();
             $table->integer('custom_order')->nullable()->change();
         });
-        
+
         Schema::table('languages', function (Blueprint $table) {
             $table->string('status')->nullable()->change();
             $table->string('region_code')->nullable()->change();
             $table->string('code')->nullable()->change();
         });
-        
+
         Schema::table('click_logs', function (Blueprint $table) {
             $table->string('ip_address')->nullable()->change();
             $table->text('user_agent')->nullable()->change();
         });
-        
+
         Schema::table('open_logs', function (Blueprint $table) {
             $table->string('ip_address')->nullable()->change();
             $table->text('user_agent')->nullable()->change();

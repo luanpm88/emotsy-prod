@@ -32,7 +32,7 @@ Route::group(['middleware' => ['installed']], function () {
  * The following routes
  * + customer_files
  * + customer_thumbs
- * 
+ *
  * are used to retrieved files through filemanager
  *
  */
@@ -278,8 +278,8 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('/search/general', 'SearchController@general');
 
     Route::get('/', 'HomeController@index');
-    Route::get('frontend/docs/api/v1', 'Controller@docsApiV1');    
-    
+    Route::get('frontend/docs/api/v1', 'Controller@docsApiV1');
+
     Route::get('account/api/renew', 'AccountController@renewToken');
     Route::get('account/api', 'AccountController@api');
 
@@ -339,13 +339,13 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('lists/{list_uid}/subscribers/delete', 'SubscriberController@delete');
     Route::post('lists/{list_uid}/subscribers/subscribe', 'SubscriberController@subscribe');
     Route::post('lists/{list_uid}/subscribers/unsubscribe', 'SubscriberController@unsubscribe');
-    
+
     Route::get('lists/{list_uid}/subscribers/import', 'SubscriberController@import');
     Route::post('lists/{list_uid}/subscribers/import/dispatch', 'SubscriberController@dispatchImportJob');
     Route::get('lists/{list_uid}/import/{job_uid}/progress', 'SubscriberController@importProgress');
     Route::get('lists/import/{job_uid}/log/download', 'SubscriberController@downloadImportLog');
     Route::post('lists/import/{job_uid}/cancel', 'SubscriberController@cancelImport');
-    
+
     Route::get('lists/{list_uid}/subscribers/export', 'SubscriberController@export');
     Route::post('lists/{list_uid}/subscribers/export/dispatch', 'SubscriberController@dispatchExportJob');
     Route::get('lists/export/{job_uid}/progress', 'SubscriberController@exportProgress');
@@ -611,15 +611,15 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::post('automation2/{uid}/contacts/list', 'Automation2Controller@contactsList');
     Route::get('automation2/{uid}/contacts/list', 'Automation2Controller@contactsList');
     Route::get('automation2/{uid}/contacts', 'Automation2Controller@contacts');
-    
+
     Route::get('automation2/{uid}/insight', 'Automation2Controller@insight');
     Route::post('automation2/{uid}/data/save', 'Automation2Controller@saveData');
     Route::post('automation2/{uid}/update', 'Automation2Controller@update');
     Route::get('automation2/{uid}/settings', 'Automation2Controller@settings');
-    
+
     Route::post('automation2/{uid}/template/{email_uid}/attachment/{attachment_uid}/remove', 'Automation2Controller@emailAttachmentRemove');
     Route::get('automation2/{uid}/template/{email_uid}/attachment/{attachment_uid}', 'Automation2Controller@emailAttachmentDownload');
-    
+
     Route::post('automation2/{uid}/template/{email_uid}/attachment', 'Automation2Controller@emailAttachmentUpload');
     Route::post('automation2/{uid}/template/{email_uid}/remove-template', 'Automation2Controller@templateRemove');
     Route::get('automation2/{uid}/template/{email_uid}/content', 'Automation2Controller@templateContent');
@@ -628,7 +628,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::match(['get', 'post'], 'automation2/{uid}/template/{email_uid}/layout', 'Automation2Controller@templateLayout');
     Route::get('automation2/{uid}/template/{email_uid}/layout/list', 'Automation2Controller@templateLayoutList');
     Route::get('automation2/{uid}/template/{email_uid}/create', 'Automation2Controller@templateCreate');
-    
+
     Route::post('automation2/{uid}/email/{email_uid}/delete', 'Automation2Controller@emailDelete');
     Route::match(['get', 'post'], 'automation2/{uid}/email/setup', 'Automation2Controller@emailSetup');
     Route::match(['get', 'post'], 'automation2/{uid}/email/{email_uid}/confirm', 'Automation2Controller@emailConfirm');
@@ -677,6 +677,21 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('sources/listing', 'SourceController@listing');
     Route::resource('sources', 'SourceController');
 
+    // Site - Menu
+    Route::get('site/menus', 'Site\MenuController@index');
+
+    // Site - Product
+    Route::post('site/profucts/{id}/delete', 'Site\ProductController@delete');
+    Route::match(['get', 'post'], 'site/products/{id}/edit', 'Site\ProductController@edit');
+    Route::match(['get', 'post'], 'site/products/add', 'Site\ProductController@add');
+    Route::post('site/profucts/{id}/activate', 'Site\TemplateController@activate');
+    Route::get('site/products/listing', 'Site\ProductController@listing');
+    Route::get('site/products', 'Site\ProductController@index');
+
+    // Site - Template
+    Route::post('site/templates/{id}/activate', 'Site\TemplateController@activate');
+    Route::get('site/templates/listing', 'Site\TemplateController@listing');
+    Route::get('site/templates', 'Site\TemplateController@index');
     // Invoice
     Route::get('invoices/{uid}/download', 'InvoiceController@download');
 });
@@ -853,7 +868,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::get('admin/blacklists/import/{job_uid}/progress', 'BlacklistController@importProgress');
     Route::post('admin/blacklists/import/{job_uid}/cancel', 'BlacklistController@cancelImport');
     Route::post('admin/blacklists/import/start', 'BlacklistController@startImport');
-    
+
     Route::get('admin/blacklist', 'BlacklistController@index');
     Route::get('admin/blacklist/listing', 'BlacklistController@listing');
     Route::get('admin/blacklist/delete', 'BlacklistController@delete');
@@ -1012,7 +1027,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::get('jobs/drop-index', 'Upgrade@dropIndex');
     Route::get('jobs/create-index', 'Upgrade@createIndex');
 
-    // 
+    //
     Route::post('tax/remove/{code}', 'TaxController@removeCountry');
     Route::match(['get','post'], 'tax/add', 'TaxController@addTax');
     Route::get('tax/countries', 'TaxController@countries');

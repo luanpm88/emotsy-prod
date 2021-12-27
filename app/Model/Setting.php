@@ -751,7 +751,7 @@ class Setting extends Model
 
         $settings = array_merge($settings, $params);
         $settings['countries'] = $countries;
-        
+
         self::set('tax', json_encode($settings));
     }
 
@@ -763,7 +763,7 @@ class Setting extends Model
 
         if ($country == null) {
             return self::getTaxSettings()['default_rate'];
-        }   
+        }
 
         $countries = self::getTaxSettings()['countries'];
 

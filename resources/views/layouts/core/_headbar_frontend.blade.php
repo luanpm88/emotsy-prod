@@ -1,6 +1,13 @@
 
 <div class="headbar d-flex">
     <div class="me-auto"></div>
+    @if(config('app.brand'))
+        <div class="me-2">
+            <a class="open-site-top-menu xtooltip" title="{{ trans('messages.open_website') }}" target="_blank" href="{{ config('wordpress.1.url') }}">
+                <span class="material-icons-outlined">public</span>
+            </a>
+        </div>
+    @endif
     <div class="top-search-container"></div>
 </div>
 
