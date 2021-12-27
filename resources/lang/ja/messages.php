@@ -1,6 +1,4 @@
-<?php
-
-return array(
+<?php return array (
   'email' => 'メールアドレス',
   'password' => 'パスワード',
   'stay_logged_in' => 'ログイン状態を保存する',
@@ -4038,4 +4036,4 @@ return array(
   'product.delete.confirm' => 'You\'re about to delete the product <span class="fw-600">:name</span>',
   'product.deleted' => 'The product was deleted successfully',
   'site.menus' => 'Menus',
-);
+) ?>

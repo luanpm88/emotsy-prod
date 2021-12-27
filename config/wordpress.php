@@ -12,4 +12,3 @@ return [
         // 'db_password' => '', // same as acelle config
     ]
 ];
-

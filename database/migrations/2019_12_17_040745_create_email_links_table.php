@@ -18,9 +18,9 @@ class CreateEmailLinksTable extends Migration
             $table->uuid('uid');
             $table->integer('email_id')->unsigned();
             $table->string('link');
-            
+
             $table->timestamps();
-            
+
             $table->foreign('email_id')->references('id')->on('emails')->onDelete('cascade');
         });
     }

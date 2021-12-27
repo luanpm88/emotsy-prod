@@ -20,9 +20,9 @@ class CreateCurrenciesTable extends Migration
             $table->string('code');
             $table->string('format');
             $table->string('status');
-            
+
             $table->timestamps();
-            
+
             // foreign
             $table->foreign('admin_id')->references('id')->on('admins')->onDelete('cascade');
         });

@@ -22,9 +22,9 @@ class CreateNotificationsTable extends Migration
                 $table->text('level');
                 $table->integer('admin_id')->unsigned()->nullable();
                 $table->integer('customer_id')->unsigned()->nullable();
-                
+
                 $table->timestamps();
-                
+
                 $table->foreign('admin_id')->references('id')->on('admins')->onDelete('cascade');
                 $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
             });

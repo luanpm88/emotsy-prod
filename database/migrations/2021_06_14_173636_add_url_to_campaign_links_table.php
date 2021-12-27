@@ -27,7 +27,7 @@ class AddUrlToCampaignLinksTable extends Migration
 
         try {
             Schema::table('campaign_links', function (Blueprint $table) {
-                $table->dropColumn(['link_id']); 
+                $table->dropColumn(['link_id']);
             });
         } catch (\Exception $ex) {
             // ignore

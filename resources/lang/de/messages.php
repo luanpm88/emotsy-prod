@@ -1,6 +1,4 @@
-<?php
-
-return array(
+<?php return array (
   'email' => 'E-Mail',
   'password' => 'Passwort',
   'stay_logged_in' => 'Eingeloggt bleiben',
@@ -4008,4 +4006,4 @@ return array(
   'product.delete.confirm' => 'You\'re about to delete the product <span class="fw-600">:name</span>',
   'product.deleted' => 'The product was deleted successfully',
   'site.menus' => 'Menus',
-);
+) ?>

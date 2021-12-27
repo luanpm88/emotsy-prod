@@ -16,7 +16,7 @@ class ChangeDarkModeType extends Migration
         Schema::table('admins', function (Blueprint $table) {
             $table->dropColumn('dark_mode');
         });
-        
+
         Schema::table('admins', function (Blueprint $table) {
             $table->string('theme_mode')->default('light');
         });

@@ -20,7 +20,7 @@ class CreateAttachmentsTable extends Migration
             $table->string('name');
             $table->string('file');
             $table->string('size');
-            
+
             $table->timestamps();
         });
     }

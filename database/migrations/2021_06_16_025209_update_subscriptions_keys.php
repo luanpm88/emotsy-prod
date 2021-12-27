@@ -61,7 +61,7 @@ class UpdateSubscriptionsKeys extends Migration
             INNER JOIN %s p ON t.plan_id = p.uid 
             INNER JOIN %s c ON t.user_id = c.uid 
             SET s.plan_id = p.id, s.customer_id = c.id;
-        ', table('subscriptions'), table('plans'), table('customers') ));
+        ', table('subscriptions'), table('plans'), table('customers')));
 
         Schema::table('subscriptions', function (Blueprint $table) {
             $table->integer('customer_id')->unsigned()->change();
