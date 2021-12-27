@@ -15,7 +15,7 @@ class AddTimezoneToSuscriptions extends Migration
     {
         DB::statement('ALTER TABLE ' . \DB::getTablePrefix() . 'subscriptions CHANGE `ends_at` `ends_at` datetime');
         DB::statement('ALTER TABLE ' . \DB::getTablePrefix() . 'subscriptions CHANGE `current_period_ends_at` `current_period_ends_at` datetime');
-        
+
         Schema::table('subscriptions', function (Blueprint $table) {
             $table->string('timezone');
         });

@@ -47,7 +47,7 @@ class UpdateSendingDomains extends Migration
             ]
         ];
 
-        foreach(SendingDomain::active()->get() as $domain) {
+        foreach (SendingDomain::active()->get() as $domain) {
             $domain->updateVerificationTokens($fake);
         }
     }

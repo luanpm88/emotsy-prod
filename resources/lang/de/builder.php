@@ -1,6 +1,4 @@
-<?php
-
-return array(
+<?php return array (
   'block_container' => 'Block',
   'export_template_confirm' => 'Do you want to save the current design before exporting?',
   'image_link' => 'Image Link',
@@ -519,4 +517,4 @@ return array(
   'text_style' => 'Text style',
   'text_size' => 'Text size',
   'font_family' => 'Font family',
-);
+) ?>

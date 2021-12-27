@@ -21,7 +21,7 @@ class CreateCustomerGroupsTable extends Migration
 
             // foreign
             $table->foreign('admin_id')->references('id')->on('admins')->onDelete('cascade');
-            
+
             $table->timestamps();
         });
     }
