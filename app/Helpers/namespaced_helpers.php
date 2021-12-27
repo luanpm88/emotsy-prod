@@ -219,7 +219,7 @@ function isValidPublicHostnameOrIpAddress($host)
 
     if ($isValidIpAddress) {
         return true;
-    } else if (filter_var($getHostByName, FILTER_VALIDATE_IP)) {
+    } elseif (filter_var($getHostByName, FILTER_VALIDATE_IP)) {
         return true;
     } else {
         return false;

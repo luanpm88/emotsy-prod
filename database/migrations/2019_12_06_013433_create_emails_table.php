@@ -22,9 +22,9 @@ class CreateEmailsTable extends Migration
             $table->string('from_name');
             $table->string('reply_to');
             $table->text('content');
-            
+
             $table->timestamps();
-            
+
             $table->foreign('automation2_id')->references('id')->on('automation2s')->onDelete('cascade');
         });
     }

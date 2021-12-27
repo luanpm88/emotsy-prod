@@ -22,7 +22,7 @@ class AddIsDefaultColumnToTemplates extends Migration
             Schema::table('templates', function (Blueprint $table) {
                 $table->dropForeign('templates_admin_id_foreign');
             });
-        } catch(\Exception $ex) {
+        } catch (\Exception $ex) {
             // Just ignore
         }
 
@@ -31,7 +31,7 @@ class AddIsDefaultColumnToTemplates extends Migration
             Schema::table('templates', function (Blueprint $table) {
                 $table->dropForeign(['admin_id']);
             });
-        } catch(\Exception $ex) {
+        } catch (\Exception $ex) {
             // Just ignore
         }
 
