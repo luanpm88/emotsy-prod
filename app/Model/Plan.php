@@ -884,7 +884,7 @@ class Plan extends Model
 
         // workaround
         if (empty($this->description)) {
-            $this->description = '[ plan description goes here ]';
+            $this->description = '[ プランの説明はこちら ]';
         }
 
         $this->options = json_encode($saveOptions);
@@ -1073,7 +1073,7 @@ class Plan extends Model
         }
 
         $pss = $this->plansSendingServers()->where('is_primary', '=', true)->first();
-        // @todo: raise 1 cái exception nếu $pss null, ko return null sẽ gây lỗi tiềm ẩn
+        // @todo: raise 1 cﾃ｡i exception n蘯ｿu $pss null, ko return null s蘯ｽ gﾃ｢y l盻擁 ti盻［ 蘯ｩn
         return is_object($pss) ? $pss->sendingServer->mapType() : null;
     }
 

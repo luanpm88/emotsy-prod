@@ -19,7 +19,7 @@
                 <div class="text-center">
                     <h2 class="text-semibold mb-1 mt-0">6,032</h2>
                     <div class="text-muted2 text-white">
-                        Total contacts<br>subscribed to <span class="fw-600">11</span> mail lists
+                        ユーザー登録総合計数<br>購読した<span class="fw-600">11</span> メール数
                     </div>
                 </div>
             </div>
@@ -29,7 +29,7 @@
                 <div class="text-center">
                     <h2 class="text-semibold mb-1 mt-0">92%</h2>
                     <div class="text-muted2 text-white">
-                        Active contacts, who reacts to your emails (open, click)
+                        メールに反応するアクティブな連絡先（開く、クリック）
                     </div>
                 </div>
             </div>
@@ -39,7 +39,7 @@
                 <div class="text-center">
                     <h2 class="text-semibold mb-1 mt-0">0</h2>
                     <div class="text-muted2 text-white">
-                        You do not have any subscription form yet!
+                        まだ購読フォームはありません
                     </div>
                 </div>
             </div>
@@ -49,8 +49,7 @@
                 <div class="text-center">
                     <h2 class="text-semibold mb-1 mt-0">303</h2>
                     <div class="text-muted2 text-white">
-                        Contacts are blacklished<br>
-                        click here to view
+                        登録されたブラッリスト。表示する場合はこちらをクリック
                     </div>
                 </div>
             </a>
