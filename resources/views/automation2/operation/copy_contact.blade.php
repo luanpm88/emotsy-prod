@@ -27,7 +27,7 @@
             'label' => trans('messages.operation.target_list'),
             'name' => 'options[target_list_uid]',
             'value' => isset($element) ? $element->getOption('target_list_uid') : [],
-            'options' => \Acelle\Model\MailList::getAll()->get()->map(function($list) {
+            'options' => $automation->mailList->otherLists()->map(function($list) {
                 return ['text' => $list->name, 'value' => $list->uid];
             }),
             'rules' => ['options.target_list_uid' => 'required'],
