@@ -270,7 +270,7 @@ class User extends Authenticatable
      */
     public function displayName()
     {
-        return htmlspecialchars(trim($this->last_name.' '.$this->first_name));
+        return htmlspecialchars(trim($this->first_name.' '.$this->last_name));
     }
 
     /**
