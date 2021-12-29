@@ -2161,14 +2161,14 @@
   'sending_servers.mailgun_api_key.intro' => 'You are connected to Mailgun using the API key below',
   'sending_servers.mailgun_smtp.intro' => 'You are connected to Mailgun using the SMTP below',
   'sending_servers.sending_limit.mailgun.intro' => 'Specify speed limit to control how fast your application can send through this connection in
-    terms of email throughput. You can find the details of SendGrid limits <a href="">here</a>',
+    terms of email throughput.',
   'sending_servers.configuration_settings.mailgun.intro' => 'Set up a connection to your Mailgun account to send emails.',
   'sending_servers.sending_identity.sendgrid.intro' => 'The following domains were verified against your Sendgrid account.
       User can only send from the domains below and is not allowed to send on their own identity',
   'sending_servers.sendgrid_api_key.intro' => 'You are connected to Sendgrid using the API key below',
   'sending_servers.sendgrid_smtp.intro' => 'You are connected to Sendgrid using the SMTP below',
   'sending_servers.sending_limit.sendgrid.intro' => 'Specify speed limit to control how fast your application can send through this connection in
-    terms of email throughput. You can find the details of Sendgrid limits <a href="">here</a>',
+    terms of email throughput.',
   'sending_servers.configuration_settings.sendgrid.intro' => 'Provide more configuration settings for your sending server',
   'sending_serbers.sendgrid.allow_verify.intro' => 'You can also allow your users to verify an identity on their own.
             That is, user can request to verify their own email address or domain against your
@@ -2187,7 +2187,7 @@
   'sending_servers.elasticemail_api_key.intro' => 'You are connected to Elastic Email using the API key below',
   'sending_servers.elasticemail_smtp.intro' => 'You are connected to Elastic Email using the SMTP below',
   'sending_servers.sending_limit.elasticemail.intro' => 'Specify speed limit to control how fast your application can send through this connection in
-    terms of email throughput. You can find the details of SendGrid limits <a href="">here</a>',
+    terms of email throughput.',
   'sending_servers.configuration_settings.elasticemail.intro' => 'Set up a connection to your Elastic Email account to send emails.',
   'sending_serbers.go_to_elasticemail_dashboard' => 'Go to Elastic Email dashboard',
   'sending_servers.sending_identity.sparkpost.intro' => 'The following domains were verified against your Sparkpost account.
