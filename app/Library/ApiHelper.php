@@ -624,28 +624,33 @@ class ApiHelper
                         'curl -X POST -H "accept:application/json" -G \
 ' .action("Api\NotificationController@index").' \
 -d api_token=' .\Auth::user()->api_token.'  \
+-d message_id=201637442604422402.6199642caf7f3@example.com  \
 -d type=sent',
                         'curl -X POST -H "accept:application/json" -G \
 ' .action("Api\NotificationController@index").' \
 -d api_token=' .\Auth::user()->api_token.'  \
+-d message_id=201637442604422402.6199642caf7f3@example.com  \
 -d type=bounced \
 -d bounce_type=hard \
 -d description=Email+address+does+not+exist',
                         'curl -X POST -H "accept:application/json" -G \
 ' .action("Api\NotificationController@index").' \
 -d api_token=' .\Auth::user()->api_token.'  \
+-d message_id=201637442604422402.6199642caf7f3@example.com  \
 -d type=abuse \
 -d report_type=hard \
 -d description=Email+address+does+not+exist',
                         'curl -X POST -H "accept:application/json" -G \
 ' .action("Api\NotificationController@index").' \
 -d api_token=' .\Auth::user()->api_token.'  \
+-d message_id=201637442604422402.6199642caf7f3@example.com  \
 -d type=spam \
 -d report_type=hard \
 -d description=Email+address+does+not+exist',
                         'curl -X POST -H "accept:application/json" -G \
 ' .action("Api\NotificationController@index").' \
 -d api_token=' .\Auth::user()->api_token.'  \
+-d message_id=201637442604422402.6199642caf7f3@example.com  \
 -d type=failed \
 -d description=Email+address+does+not+exist',
                     ],
@@ -674,28 +679,33 @@ class ApiHelper
                         'curl -X POST -H "accept:application/json" -G \
 ' .action("Api\NotificationController@index").' \
 -d api_token=' .\Auth::user()->api_token.'  \
+-d message_id=201637442604422402.6199642caf7f3@example.com  \
 -d type=sent',
                         'curl -X POST -H "accept:application/json" -G \
 ' .action("Api\NotificationController@index").' \
 -d api_token=' .\Auth::user()->api_token.'  \
+-d message_id=201637442604422402.6199642caf7f3@example.com  \
 -d type=bounced \
 -d bounce_type=hard \
 -d description=Email+address+does+not+exist',
                         'curl -X POST -H "accept:application/json" -G \
 ' .action("Api\NotificationController@index").' \
 -d api_token=' .\Auth::user()->api_token.'  \
+-d message_id=201637442604422402.6199642caf7f3@example.com  \
 -d type=abuse \
 -d report_type=hard \
 -d description=Email+address+does+not+exist',
                         'curl -X POST -H "accept:application/json" -G \
 ' .action("Api\NotificationController@index").' \
 -d api_token=' .\Auth::user()->api_token.'  \
+-d message_id=201637442604422402.6199642caf7f3@example.com  \
 -d type=spam \
 -d report_type=hard \
 -d description=Email+address+does+not+exist',
                         'curl -X POST -H "accept:application/json" -G \
 ' .action("Api\NotificationController@index").' \
 -d api_token=' .\Auth::user()->api_token.'  \
+-d message_id=201637442604422402.6199642caf7f3@example.com  \
 -d type=failed \
 -d description=Email+address+does+not+exist',
                     ],
