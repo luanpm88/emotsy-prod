@@ -23,7 +23,6 @@
             
             @include('helpers.form_control', [
                 'name' => 'mail_list_uid',
-                'include_blank' => trans('messages.automation.choose_list'),
                 'type' => 'select',
                 'label' => trans('messages.automation.change_mail_list'),
                 'value' => (is_object($automation->mailList) ? $automation->mailList->uid : ''),
