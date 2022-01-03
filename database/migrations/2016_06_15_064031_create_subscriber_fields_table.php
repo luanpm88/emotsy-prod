@@ -14,7 +14,7 @@ class CreateSubscriberFieldsTable extends Migration
             $table->increments('id');
             $table->integer('subscriber_id')->unsigned();
             $table->integer('field_id')->unsigned();
-            $table->text('value');
+            $table->text('value')->nullable();
 
             $table->timestamps();
 
