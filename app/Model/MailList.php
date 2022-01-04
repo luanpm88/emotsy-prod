@@ -1671,6 +1671,12 @@ class MailList extends Model
         //    $result[] = [$subscription->subAccount->sending_server_id, '100'];
         }
 
+        if (!config('app.saas')) {
+            $result = \Acelle\Model\SendingServer::active()->get()->map(function ($server) {
+                return [$server->id, 100];
+            });
+        }
+
         $assoc = [];
         foreach ($result as $server) {
             list($key, $fitness) = $server;
