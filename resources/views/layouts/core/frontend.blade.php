@@ -34,7 +34,7 @@
 ">
 	@if(config('app.brand'))
 		@include('layouts.core._menu_frontend_brand')
-	@if (!config('app.saas'))
+	@elseif (!config('app.saas'))
 		@include('layouts.core._menu_single')
 	@else
 		@include('layouts.core._menu_frontend')
