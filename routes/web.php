@@ -860,6 +860,22 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::get('admin/admins/login-back', 'AdminController@loginBack');
     Route::resource('admin/admins', 'AdminController');
 
+    // Admin Group 2
+    Route::get('admin/admin_groups2/listing/{page?}', 'AdminGroup2Controller@listing');
+    Route::get('admin/admin_groups2/sort', 'AdminGroup2Controller@sort');
+    Route::get('admin/admin_groups2/delete', 'AdminGroup2Controller@delete');
+    Route::resource('admin/admin_groups2', 'AdminGroup2Controller');
+
+    // Admin2
+    Route::get('admin/admins2/login-as/{uid}', 'Admin2Controller@loginAs');
+    Route::get('admin/admins2/listing/{page?}', 'Admin2Controller@listing');
+    Route::get('admin/admins2/sort', 'Admin2Controller@sort');
+    Route::get('admin/admins2/delete', 'Admin2Controller@delete');
+    Route::get('admin/admins2/disable', 'Admin2Controller@disable');
+    Route::get('admin/admins2/enable', 'Admin2Controller@enable');
+    Route::get('admin/admins2/login-back', 'Admin2Controller@loginBack');
+    Route::resource('admin2/admins', 'Admin2Controller');
+
 
     // Account
     Route::get('admin/account/save-auto-theme-mode', 'AccountController@saveAutoThemeMode');

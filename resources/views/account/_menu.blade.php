@@ -16,29 +16,31 @@ maps_home_work
 </span> {{ trans('messages.contact_information') }}
                     </a>
                 </li>
-                <li rel0="AccountController/billing" class="nav-item">
-                    <a href="{{ action("AccountController@billing") }}" class="nav-link">
-                        <span class="material-icons-outlined">
-credit_card
-</span> {{ trans('messages.billing') }}
-                    </a>
-                </li>
-                <li class="nav-item"
-                    rel0="AccountController/subscription"
-                    rel1="PaymentController"
-                    rel2="AccountController/subscriptionNew"
-                    rel3="SubscriptionController"
-                    class="position-relative"
-                >
-                    <a href="{{ action("SubscriptionController@index") }}" class="nav-link position-relative {{ isset($tab) && $tab == 'subscription' ? 'active' : '' }}">
-                        <span class="material-icons-outlined">
-assignment
-</span> {{ trans('messages.subscription') }}
-                        @if (Auth::user()->customer->hasSubscriptionNotice())
-                            <i class="material-icons-round tabs-warning-icon text-danger">info</i>
-                        @endif
-                    </a>
-                </li>
+                @if (config('app.saas'))
+                    <li rel0="AccountController/billing" class="nav-item">
+                        <a href="{{ action("AccountController@billing") }}" class="nav-link">
+                            <span class="material-icons-outlined">
+    credit_card
+    </span> {{ trans('messages.billing') }}
+                        </a>
+                    </li>
+                    <li class="nav-item"
+                        rel0="AccountController/subscription"
+                        rel1="PaymentController"
+                        rel2="AccountController/subscriptionNew"
+                        rel3="SubscriptionController"
+                        class="position-relative"
+                    >
+                        <a href="{{ action("SubscriptionController@index") }}" class="nav-link position-relative {{ isset($tab) && $tab == 'subscription' ? 'active' : '' }}">
+                            <span class="material-icons-outlined">
+    assignment
+    </span> {{ trans('messages.subscription') }}
+                            @if (Auth::user()->customer->hasSubscriptionNotice())
+                                <i class="material-icons-round tabs-warning-icon text-danger">info</i>
+                            @endif
+                        </a>
+                    </li>
+                @endif
                 <li class="nav-item"
                     rel0="AccountController/logs">
                     <a href="{{ action("AccountController@logs") }}" class="nav-link">

@@ -52,6 +52,12 @@
     .leftbar-closed .navbar-main {
         min-height: 565px;
     }
+    .leftbar .navbar-single {
+        min-height: 542px;
+    } 
+    .leftbar-closed .navbar-single {
+        min-height: 610px;
+    }
     .leftbar .navbar-main .navbar-nav {
         display: block;
     }

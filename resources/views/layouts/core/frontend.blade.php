@@ -34,9 +34,13 @@
 ">
 	@if(config('app.brand'))
 		@include('layouts.core._menu_frontend_brand')
+	@if (!config('app.saas'))
+		@include('layouts.core._menu_single')
 	@else
 		@include('layouts.core._menu_frontend')
 	@endif
+
+	
 
 	@include('layouts.core._middle_bar')
 
@@ -57,6 +61,11 @@
 
 	<!-- Admin area -->
 	@include('layouts.core._admin_area')
+
+	@if (!config('config.saas'))
+		<!-- Admin area -->
+		@include('layouts.core._loginas_area')
+	@endif
 
 	<!-- Notification -->
 	@include('layouts.core._notify')
