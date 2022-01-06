@@ -7,7 +7,9 @@
 <form action="{{ action('InstallController@siteInfo') }}" method="POST" class="form-validate-jqueryz">
 	{!! csrf_field() !!}
 	
-	<h3 class="text-primary"><i class="icon-office"></i> {{ trans('messages.general') }}</h3>
+	<h3 class="text-primary"><span class="material-icons-outlined">
+		maps_home_work
+		</span> {{ trans('messages.general') }}</h3>
     <div class="row">
         <div class="col-md-6">
             @include('helpers.form_control', [
