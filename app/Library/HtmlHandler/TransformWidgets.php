@@ -118,6 +118,10 @@ class TransformWidgets implements StageInterface
             $node->removeChild($node->childNodes->item(0));
         }
 
+        if (empty(trim($html))) {
+            return;
+        }
+
         // try to append html
         $tmpDoc = new \DOMDocument();
         $tmpDoc->loadHTML(mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8'), LIBXML_NOWARNING | LIBXML_NOERROR | LIBXML_HTML_NODEFDTD);
