@@ -257,14 +257,26 @@
                             var className = field.type.charAt(0).toUpperCase() + field.type.slice(1) + 'FieldWidget';
                             var widget = eval('new ' + className + '(field)');
                             // insert widget content to editor
-                            editor.getIframeContent().find('#formContainer').append(widget.getContentHtml());   
+                            editor.getIframeContent().find('#formContainer').append(`
+                                <div builder-element="BlockElement">
+                                    <div style="padding-top:16px;padding-bottom:16px" class="container">
+                                        `+widget.getContentHtml()+`
+                                    </div>
+                                </div>
+                            `); 
                         }                   
                     });
 
                     // Add submit button
                     var widget = new SubmitButtonWidget();
                     // insert widget content to editor
-                    editor.getIframeContent().find('#formContainer').append(widget.getContentHtml());
+                    editor.getIframeContent().find('#formContainer').append(`
+                        <div builder-element="BlockElement">
+                            <div style="padding-top:16px;padding-bottom:16px" class="container">
+                                `+widget.getContentHtml()+`
+                            </div>
+                        </div>
+                    `);
 
                     editor.adjustIframeSize();
                 },
