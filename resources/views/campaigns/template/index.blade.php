@@ -6,8 +6,9 @@
     <script type="text/javascript" src="{{ URL::asset('core/tinymce/tinymce.min.js') }}"></script>
     <script type="text/javascript" src="{{ URL::asset('core/js/editor.js') }}"></script>
 
-    <!-- Dropzone -->
+    <!-- Dropzone -->    
 	<script type="text/javascript" src="{{ URL::asset('core/dropzone/dropzone.js') }}"></script>
+    @include('helpers._dropzone_lang')
 	<link href="{{ URL::asset('core/dropzone/dropzone.css') }}" rel="stylesheet" type="text/css">
 @endsection
 
