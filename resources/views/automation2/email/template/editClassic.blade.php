@@ -31,7 +31,7 @@
             'uid' => $automation->uid,
             'email_uid' => $email->uid,
         ]) }}"
-            class="nav-link d-flex align-items-center py-3 lvl-1 close-button">
+            class="nav-link d-flex align-items-center py-3 lvl-1">
             <span>{{ trans('messages.campaign.plain_text_editor') }}</span>
         </a>
     </li>

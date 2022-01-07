@@ -54,6 +54,15 @@ class AdminPolicy
         return $can && $item->customers()->count() == 0 && $item->id !== $user->admin->id;
     }
 
+    public function forceDelete(User $user, Admin $item)
+    {
+        $ability = $user->admin->getPermission('admin_delete');
+        $can = $ability == 'all'
+                || ($ability == 'own' && $user->id == $item->creator_id);
+
+        return $can && $item->id !== $user->admin->id;
+    }
+
     public function loginAs(User $user, Admin $item)
     {
         $ability = $user->admin->getPermission('admin_login_as');

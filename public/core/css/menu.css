@@ -58,6 +58,12 @@
     .leftbar-closed .navbar-main.frontend {
         min-height: 590px;
     }
+    .leftbar .navbar-single {
+        min-height: 542px;
+    } 
+    .leftbar-closed .navbar-single {
+        min-height: 610px;
+    }
     .leftbar .navbar-main .navbar-nav {
         display: block;
     }

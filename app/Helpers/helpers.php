@@ -701,10 +701,9 @@ function putPermanentEnv($arr = [])
     $config = file_get_contents($path);
 
     foreach ($arr as $key => $value) {
-        $escaped = preg_quote('='.env($key), '/');
         $config = preg_replace(
-            "/^{$key}{$escaped}/m",
-            "{$key}={$value}",
+            "/^{$key}\=.*/m",
+            "{$key}='{$value}'",
             $config
         );
 

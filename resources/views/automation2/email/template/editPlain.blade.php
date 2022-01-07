@@ -12,7 +12,7 @@
 @section('menu_title')
     <li class="d-flex align-items-center">
         <div class="d-inline-block d-flex mr-auto align-items-center ml-1 lvl-1">
-            <h4 class="my-0 me-2 menu-title">{{ $template->name }}</h4>
+            <h4 class="my-0 me-2 menu-title">{{ $automation->name }}</h4>
             <i class="material-icons-outlined">alarm</i>
         </div>
     </li>
@@ -31,7 +31,7 @@
             'uid' => $automation->uid,
             'email_uid' => $email->uid,
         ]) }}"
-            class="nav-link d-flex align-items-center py-3 lvl-1 close-button">
+            class="nav-link d-flex align-items-center py-3 lvl-1">
             <span>{{ trans('messages.campaign.html_editor') }}</span>
         </a>
     </li>
