@@ -14,7 +14,7 @@ class AddDefaultCurrency extends Migration
     public function up()
     {
         $currency = Acelle\Model\Currency::firstOrNew([
-            'code' => 'USDx',
+            'code' => 'USD',
         ], [
             'name' => 'US Dollar',
             'format' => '${PRICE}',
