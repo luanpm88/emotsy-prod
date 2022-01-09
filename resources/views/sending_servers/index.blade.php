@@ -18,9 +18,6 @@
 @endsection
 
 @section('content')
-    <div class="alert alert-info">
-        <span class="text-semibold">{{ trans('messages.notification.note') }} </span> {{ trans('messages.notification.sending_servers') }}
-    </div>
     <p>{{ trans('messages.sending_server.wording') }}</p>
 
 
