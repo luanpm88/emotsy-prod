@@ -18,7 +18,7 @@ class CreateLogsTable extends Migration
             $table->text('data');
 
             $table->timestamps();
-            
+
             // foreign
             $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
         });

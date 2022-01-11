@@ -22,7 +22,7 @@ class AddVerificationFieldsToSendingDomainsTable extends Migration
         } catch (\Exception $ex) {
             //
         }
-        
+
         try {
             $domains = \Acelle\Model\SendingDomain::whereNull('verification_token')->get();
             foreach ($domains as $domain) {

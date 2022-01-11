@@ -10,6 +10,7 @@
 
     <!-- Dropzone -->
 	<script type="text/javascript" src="{{ URL::asset('core/dropzone/dropzone.js') }}"></script>
+    @include('helpers._dropzone_lang')
 	<link href="{{ URL::asset('core/dropzone/dropzone.css') }}" rel="stylesheet" type="text/css">
 
     <link rel="stylesheet" type="text/css" href="{{ URL::asset('core/css/automation.css') }}">
@@ -592,10 +593,27 @@
                 },
 
                 validate: function(e) {
-                    if (e.getType() == 'ElementTrigger') {
+                    if (e.getType() == 'ElementTrigger') {                        
                         if (e.getOptions()['init'] == null || !(e.getOptions()['init'] == "true" || e.getOptions()['init'] == true)) {
                             e.showNotice('{{ trans('messages.automation.trigger.is_not_setup') }}');
                             e.setTitle('{{ trans('messages.automation.trigger.is_not_setup.title') }}');
+                        } else if (e.getOptions()["key"] == 'say-happy-birthday') {
+                            if (!e.getOptions()["field"] || e.getOptions()["field"] == 'date_of_birth') {
+                                e.showNotice('{{ trans('messages.automation.trigger.no_date_of_birth_field') }}');
+                            } else {
+                                // check if current field belongs to automation mail list
+                                var cField = e.getOptions()["field"];
+                                var fields = {!! json_encode($automation->mailList->getDateOrDateTimeFields()->get()->map(function($field) {
+                                    return $field->uid;
+                                })->toArray()) !!};
+
+                                if (!fields.includes(cField)) {
+                                    e.setOptions($.extend(e.getOptions(), {field: 'date_of_birth'}));
+                                    e.showNotice('{{ trans('messages.automation.trigger.no_date_of_birth_field') }}');
+                                } else {
+                                    e.hideNotice();
+                                }
+                            }
                         } else {
                             e.hideNotice();
                             // e.setTitle('Correct title goes here');

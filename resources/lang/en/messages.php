@@ -5,7 +5,7 @@
   'forgot_password' => 'Forgot Password?',
   'login' => 'Log In',
   'copy_right_light' => '© 2021. <span class="text-white">Acelle Email Marketing Application</span> by <a href="http://acellemail.com" class="text-white" target="_blank">acellemail.com</a>',
-  'copy_right' => '© 2021. Acelle Email Marketing Application by <a title="Go to AcelleMail home page." class="xtooltip" href="http://acellemail.com" class="" target="_blank">acellemail.com</a>',
+  'copy_right' => '© 2021. Acelle Email Marketing Application by <a title="Go to Acelle Mail home page." class="xtooltip" href="http://acellemail.com" class="" target="_blank">acellemail.com</a>',
   'send_password_reset_link' => 'Send Password Reset Link',
   'password_reset' => 'Password Reset',
   'password_reset.help' => 'We\'ll email you instructions on how to reset your password.',
@@ -1637,7 +1637,7 @@
   'license.license_types' => 'License types',
   'license.no_license' => 'You do not enter a valid license yet. Please purchase a license and enter it in the form below to continue using the product',
   'license_guide' => '
-      <p>When you purchase Acelle Mail from Envato website, you are actually purchasing a license to use the product.<br>There are 2 types of license that are issued</p>
+      <p>When you purchase the application license from Envato website, you are actually purchasing a license to use the product.<br>There are 2 types of license that are issued</p>
       <h4>Regular License</h4>
       <p>
         All features are available, for a single end product which end users are NOT charged for
@@ -1649,7 +1649,7 @@
   ',
   'license_label_extended' => 'Extended',
   'license_label_normal' => 'Normal',
-  'your_current_license' => 'Thank you for purchasing Acelle Mail! Below is your license key, also known as Purchase Code. Your license type is',
+  'your_current_license' => 'Thank you for purchasing! Below is your license key, also known as Purchase Code. Your license type is',
   'verify_license' => 'Verify',
   'license_tab' => 'License',
   'submit' => 'Submit',
@@ -1839,6 +1839,7 @@
   'verification_result' => 'Verification result',
   'verification.done' => 'Verification process finished',
   'upgrade.title.upgrade' => 'Upgrade Manager',
+  'upgrade.notice' => 'Upgrade may not work correctly if the upgrade package file size exceeds the upload limit set by your hosting\'s PHP settings:',
   'upgrade.error.something_wrong' => 'Something went wrong while upgrading your application',
   'upgrade.title.in_progress' => 'Upgrade in progress',
   'upgrade.error.cannot_write' => 'Some files cannot be updated. Please check and make sure the following files are <strong>writable</strong> by the web application, then click the <strong>Retry</strong> button',
@@ -2101,6 +2102,7 @@
     Add and verify a <a href=":domain_link" target="blank">[domain]</a> or
     <a href=":sender_link" target="blank">[email address]</a> to send email on behalf of.',
   'plan.sending_server.no_sending_server_error' => 'The plan you currently subscribe to (:plan) does not have any sending server. Log in as admin, then go to Plan setting page, make sure you add a sending server to this plan',
+  'standard.no_sending_server_error' => 'You currently does not have any sending server. Go to Sending > Sending servers page, make sure you add a sending server.',
   'plan.sending_servers.intro' => 'This feature allows you to add a sending server which will actually send out your campaign emails.
       You can configure a standard SMTP connection or connect to a 3rd services like Amazon SES,
       SendGrid, Mailgun, ElasticEmail, Sparkpost... You can also take advantage of the the hosting server\'s
@@ -2160,14 +2162,14 @@
   'sending_servers.mailgun_api_key.intro' => 'You are connected to Mailgun using the API key below',
   'sending_servers.mailgun_smtp.intro' => 'You are connected to Mailgun using the SMTP below',
   'sending_servers.sending_limit.mailgun.intro' => 'Specify speed limit to control how fast your application can send through this connection in
-    terms of email throughput. You can find the details of SendGrid limits <a href="">here</a>',
+    terms of email throughput.',
   'sending_servers.configuration_settings.mailgun.intro' => 'Set up a connection to your Mailgun account to send emails.',
   'sending_servers.sending_identity.sendgrid.intro' => 'The following domains were verified against your Sendgrid account.
       User can only send from the domains below and is not allowed to send on their own identity',
   'sending_servers.sendgrid_api_key.intro' => 'You are connected to Sendgrid using the API key below',
   'sending_servers.sendgrid_smtp.intro' => 'You are connected to Sendgrid using the SMTP below',
   'sending_servers.sending_limit.sendgrid.intro' => 'Specify speed limit to control how fast your application can send through this connection in
-    terms of email throughput. You can find the details of Sendgrid limits <a href="">here</a>',
+    terms of email throughput.',
   'sending_servers.configuration_settings.sendgrid.intro' => 'Provide more configuration settings for your sending server',
   'sending_serbers.sendgrid.allow_verify.intro' => 'You can also allow your users to verify an identity on their own.
             That is, user can request to verify their own email address or domain against your
@@ -2186,7 +2188,7 @@
   'sending_servers.elasticemail_api_key.intro' => 'You are connected to Elastic Email using the API key below',
   'sending_servers.elasticemail_smtp.intro' => 'You are connected to Elastic Email using the SMTP below',
   'sending_servers.sending_limit.elasticemail.intro' => 'Specify speed limit to control how fast your application can send through this connection in
-    terms of email throughput. You can find the details of SendGrid limits <a href="">here</a>',
+    terms of email throughput.',
   'sending_servers.configuration_settings.elasticemail.intro' => 'Set up a connection to your Elastic Email account to send emails.',
   'sending_serbers.go_to_elasticemail_dashboard' => 'Go to Elastic Email dashboard',
   'sending_servers.sending_identity.sparkpost.intro' => 'The following domains were verified against your Sparkpost account.
@@ -3147,15 +3149,9 @@
   'tracking_domain.validation.error.name' => 'Invalid domain name',
   'tracking_domain.verify.success' => 'Tracking domain is successfully verified!',
   'tracking_domain.verify.failed' => 'Cannot verify tracking domain, make sure you have set up the tracking script correctly!',
-  'tracking_domain.show.dns_setup.title' => 'DNS Setup',
-  'tracking_domain.show.dns_setup.note1' => 'Tracking domains are used by the application in tracking email opens and link clicks. Once set up, all links in your emails are transformed and wrapped by a tracking domain. It helps improve your email reputation and make it less likely to be treated as spam hence improve your sending performance.',
-  'tracking_domain.show.dns_setup.note2' => 'You need to add the following CNAME record to your domain DNS to verify your domain as well as to enable open/click tracking through the application.',
-  'tracking_domain.show.dns_setup.note3' => 'Notice that DNS update may take from 5 minutes to a few hours to propagate',
   'tracking_domain.hostname' => 'Host name',
   'tracking_domain.record_type' => 'Record type',
   'tracking_domain.value' => 'Value',
-  'tracking_domain.show.pending_title' => 'Pending verification',
-  'tracking_domain.show.pending_note' => 'Please update your domain DNS records accordingly to the guideline below. Once you believe you\'re all set up, click the refresh button to check',
   'tracking_domain.show.dns_setup' => 'DNS Setup',
   'tracking_domain.refresh' => 'Refresh now',
   'tracking_domain.show.verified_title' => 'Tracking domain verified',
@@ -3223,7 +3219,7 @@
   'automation.trigger.woo-abandoned-cart.intro' => 'Send follow-up email to someone who has added items to their cart and gotten through a portion of the checkout and then left the site without purchasing',
   'automation.trigger.woo-abandoned-cart.download_plugin' => 'If you are not sure
       what your WordPress endpoint is, please install
-      <a target="_blank" href=":link">WordPress Plugin for Acelle</a> plugin',
+      <a target="_blank" href=":link">WordPress Plugin</a>',
   'automation.trigger.tree.woo-abandoned-cart' => 'Abandoned Cart Reminder',
   'automation.condition.open' => 'Subscriber read an Email',
   'automation.condition.click' => 'Subscriber clicks on a Link',
@@ -3373,14 +3369,6 @@
   'ok_enable' => 'OK, Enable',
   'curl_example' => 'CURL example',
   'tracking_domain.test' => 'Test',
-  'tracking_domain.test.wording' => 'We are taking you to the
-      <a href="http://:domain" target="_blank">http://:domain</a> page.
-      If you see it load the login page of Acelle,
-      then your DNS configuration is good and your tracking domain is ready to go.
-      Otherwise, please double check to make sure that your hosting server is
-      configured correctly so that traffic to 
-      <a href="http://:domain" target="_blank">http://:domain</a> are also redirected to Acelle source.
-      In other words, make it an alias URL or your Acelle webapp.',
   'tracking_domain.test.proceed' => 'Proceed',
   'automation.wait' => 'Wait',
   'automation.wait.wording' => 'Setting up custom wait time',
@@ -3469,7 +3457,7 @@
   'bill.remove_payment.confirm' => 'You are about to remove current payment method, this can be undone',
   'same_as_contact' => 'Same as contact information',
   'payment.choose_payment' => 'Choose your preferred payment methods',
-  'payment.choose_payment.desc' => 'Acelle supports the following payment methods
+  'payment.choose_payment.desc' => 'We supports the following payment methods
       <br>Choose offline payment if you do not have a credit card or PayPal balance  ',
   'bill.user_id' => 'ID',
   'bill.last4' => 'Last 4 number',
@@ -3556,8 +3544,8 @@
   'transaction.method.paypal' => 'Paypal',
   'save_payment_method_proceed' => 'Save Payment Method & Proceed',
   'save_payment_method' => 'Save Payment Method',
-  'payment.cannot_charge' => 'Acelle cannot charge the invoice #:id. Error from :service: :error',
-  'payment.cannot_auto_charge' => 'Acelle cannot automatically charge the
+  'payment.cannot_charge' => 'We cannot charge the invoice #:id. Error from :service: :error',
+  'payment.cannot_auto_charge' => 'We cannot automatically charge the
       invoice #:id. Error from :service: :error',
   'contacts' => 'contacts',
   'payment.you_currenly_payment' => 'Your current payment method is: <strong>:method</strong>',
@@ -3617,7 +3605,7 @@
   'source.disconnect' => 'Disconnect',
   'source.switch_store' => 'Switch store',
   'source.have_products' => 'You have <strong>:count</strong> product(s)',
-  'source.your_store_synchronized' => 'your store\'s products are being synchronized to Acelle',
+  'source.your_store_synchronized' => 'your store\'s products are being synchronized to the application',
   'source.products.manage' => 'Manage',
   'source.launch' => 'Launch',
   'source.list.synchronized_to_this' => 'Contacts are automatically synchronized to your list',
@@ -3698,7 +3686,7 @@
   'delete_campaign_confirm' => 'You\'re about to delete <span class="fw-600">:name</span> campaign.
     This can not be undone.',
   'geoip.title' => 'GeoIP Management',
-  'geoip.description' => 'Acelle uses a GeoIP dataset in order to resolve users\' location.',
+  'geoip.description' => 'The application uses a GeoIP dataset in order to resolve users\' location.',
   'invoice.payment_is_being_verified' => 'Payment is being verified',
   'campaign.template.old_ver_error' => 'Campaigns created by previous (older) versions cannot be loaded in the current version
     of the application. Don\'t worry, it will work correctly for new campaigns you create',
@@ -3727,15 +3715,15 @@
   'paypal.user.description' => 'Pay for your subscription & services using your PayPal account.',
   'razorpay.user.description' => 'Pay for your subscription & services using your debit
         or credit cards. Auto billing is not supported',
-  'store.connected_with_acelle' => 'Your store is connected with Acelle',
-  'store.connected_with_acelle.desc' => 'While connected, Acelle can synchronize products
+  'store.connected_with_acelle' => 'Your store is connected',
+  'store.connected_with_acelle.desc' => 'While connected, we can synchronize products
     and contacts from your store to a specified mail list',
   'source.refresh' => 'Refresh',
   'subscription.thanks.click_to_start' => 'Thank you for subscribing to our SAAS. Click the button
     below to get started',
   'subscription.get_started' => 'Get Started',
   'cron_string.copied' => 'Cron string was copied to clipboard',
-  'language.translate.intro' => '<p>Acelle Mail lets you customize the user interface (UI) text in all areas of the web
+  'language.translate.intro' => '<p>The application lets you customize the user interface (UI) text in all areas of the web
     application like titles, labels, tooltips, links, buttons... You can translate it from the original
     English language to Spanish and/or change these phrases the way you want.</p><p>
       Phrases are organized in different files which you can choose in the list below
@@ -3796,7 +3784,7 @@
   'plan.disable_terms_of_service' => 'Disable terms of service',
   'plan.tos.updated' => 'Terms of service was updated',
   'tos.i_agree' => 'I Agree',
-  'email.test_link_note' => 'This is a test link from a test or preview email. Don\'t worry, it will be transformed to a real link in a real campaign',
+  'email.test_link_note' => 'This is a test link from a test or preview email only',
   'configuration.settings' => 'View hidden configuration settings',
   'page.restore.confirm' => 'You\'re about to restore this page to default template. This can not be undone.',
   'page.reset_default' => 'Reset Default',
@@ -4025,4 +4013,52 @@
   'tax.no_country_added' => 'There are no country taxes added',
   'tax.select_tax_in' => 'Select tax rate in <span class="fw-600">:country</span>',
   'tax.remove_confirm' => 'You`re about to remove a country tax rate',
+  'website' => 'Website',
+  'open_front_page' => 'Open front page',
+  'site.template.activate' => 'Activate',
+  'open_website' => 'Open website in new tab',
+  'activated' => 'Activated',
+  'site.template_changed' => 'Site template was changed successfully',
+  'product.categories' => 'Categories',
+  'product.create' => 'Create',
+  'product.add' => 'Add new product',
+  'product.select_categories' => 'Select product categories',
+  'product.sku' => 'SKU',
+  'product.advanced' => 'Advanced Form',
+  'product.delete.confirm' => 'You\'re about to delete the product <span class="fw-600">:name</span>',
+  'product.deleted' => 'The product was deleted successfully',
+  'site.menus' => 'Menus',
+  'campaign.preview_as' => 'Preview as',
+  'campaign.preview_as.enter_search' => 'Enter contact email to search',
+  'campaign.preview_as.web_view_url' => 'Web view URL',
+  'preview_as.url.copied' => 'URL was copied to clipboard',
+  'due_date' => 'Due date',
+  'invoice.items' => 'Item(s)',
+  'bill.total' => 'Total',
+  'list.no_date_or_datetime_field' => 'The selected list does not have any custom field of DATE or DATETIME type.
+    Go to your mail list\'s fields setting page and add a custom field of Date of Birth',
+  'automation.trigger.no_date_of_birth_field' => 'There is no birthday field selected!',
+  'default_page_form_layout' => 'Default Emails & Pages',
+  'create_user' => 'Create user',
+  'admin.loginas_area' => 'Back to <strong>:name</strong>',
+  'saas_mode' => 'SAAS mode',
+  'admin.install_mode.saas.help' => 'SAAS mode allows you to set up your app as a web
+    platform where users can register and subscribe. You can charge
+    your users for using the email service.',
+  'installation_type' => 'Installation type',
+  'standard_mode' => 'Standard mode',
+  'admin.install_mode.standard.help' => 'This is ideal for using app as a standard email marketing
+    plugin for yourself, your team or company. All email marketing
+    features are available.',
+  'can_not_change_after_installed' => 'This can not be changed after installed',
+  'dropzone.dictDefaultMessage' => 'Drop files here to upload',
+  'dropzone.dictFallbackMessage' => 'Your browser does not support drag & drop file uploads.',
+  'dropzone.dictFallbackText' => 'Please use the fallback form below to upload your files like in the olden days.',
+  'dropzone.dictFileTooBig' => 'File is too big ({{filesize}}MiB). Max filesize: {{maxFilesize}}MiB.',
+  'dropzone.dictInvalidFileType' => 'You can\'t upload files of this type.',
+  'dropzone.dictResponseError' => 'Server responded with {{statusCode}} code.',
+  'dropzone.dictCancelUpload' => 'Cancel upload',
+  'dropzone.dictCancelUploadConfirmation' => 'Are you sure you want to cancel this upload?',
+  'dropzone.dictRemoveFile' => 'Remove file',
+  'dropzone.dictMaxFilesExceeded' => 'You can not upload any more files.',
 ) ?>

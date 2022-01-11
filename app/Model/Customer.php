@@ -285,6 +285,17 @@ class Customer extends Model
         return (is_object($this->subscription) && $this->subscription->isActive()) ? $this->subscription : null;
     }
 
+    public function useOwnSendingServer()
+    {
+        $subscription = $this->activeSubscription();
+
+        if (is_null($subscription)) {
+            return false;
+        }
+
+        return $subscription->plan->useOwnSendingServer();
+    }
+
     /**
      * Get all items.
      *
@@ -2021,5 +2032,13 @@ class Customer extends Model
         $customer->menu_layout = \Acelle\Model\Setting::get('layout.menu_bar');
 
         return $customer;
+    }
+
+    public function newProduct()
+    {
+        $product = new \Acelle\Model\Product();
+        $product->customer_id = $this->id;
+
+        return $product;
     }
 }

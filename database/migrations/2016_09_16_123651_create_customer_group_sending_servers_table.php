@@ -17,7 +17,7 @@ class CreateCustomerGroupSendingServersTable extends Migration
             $table->integer('sending_server_id');
             $table->string('customer_group_id');
             $table->integer('fitness');
-            
+
             $table->timestamps();
         });
     }

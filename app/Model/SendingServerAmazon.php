@@ -30,8 +30,8 @@ use Acelle\Library\SendingServer\DomainVerificationInterface;
 use Acelle\Model\SendingDomain;
 use Aws\Route53\Route53Client;
 use Acelle\Library\Facades\Hook;
-use function Acelle\Helpers\isValidPublicHostnameOrIpAddress;
 use Exception;
+use function Acelle\Helpers\isValidPublicHostnameOrIpAddress;
 
 class SendingServerAmazon extends SendingServer implements DomainVerificationInterface
 {
@@ -40,9 +40,9 @@ class SendingServerAmazon extends SendingServer implements DomainVerificationInt
     public const SPF_DNS_RECORD = 'v=spf1 include:amazonses.com ~all';
 
     public $notificationTypes = array('Bounce', 'Complaint');
-    public static $snsClient = null;
-    public static $sesClient = null;
-    public static $isSnsSetup = false;
+    public $snsClient = null;
+    public $sesClient = null;
+    public $isSnsSetup = false;
 
     /**
      * Initiate a AWS SNS session and return the session object (snsClient).
@@ -51,8 +51,8 @@ class SendingServerAmazon extends SendingServer implements DomainVerificationInt
      */
     public function snsClient()
     {
-        if (!self::$snsClient) {
-            self::$snsClient = \Aws\Sns\SnsClient::factory(array(
+        if (!$this->snsClient) {
+            $this->snsClient = \Aws\Sns\SnsClient::factory(array(
                 'credentials' => array(
                     'key' => trim($this->aws_access_key_id),
                     'secret' => trim($this->aws_secret_access_key),
@@ -62,7 +62,7 @@ class SendingServerAmazon extends SendingServer implements DomainVerificationInt
             ));
         }
 
-        return self::$snsClient;
+        return $this->snsClient;
     }
 
     /**
@@ -72,8 +72,8 @@ class SendingServerAmazon extends SendingServer implements DomainVerificationInt
      */
     public function sesClient()
     {
-        if (!self::$sesClient) {
-            self::$sesClient = \Aws\Ses\SesClient::factory(array(
+        if (!$this->sesClient) {
+            $this->sesClient = \Aws\Ses\SesClient::factory(array(
                 'credentials' => array(
                     'key' => trim($this->aws_access_key_id),
                     'secret' => trim($this->aws_secret_access_key),
@@ -83,7 +83,7 @@ class SendingServerAmazon extends SendingServer implements DomainVerificationInt
             ));
         }
 
-        return self::$sesClient;
+        return $this->sesClient;
     }
 
     public function verifyDomain($domain): array
@@ -149,7 +149,7 @@ class SendingServerAmazon extends SendingServer implements DomainVerificationInt
      */
     public function setupSns($fromEmailAddress)
     {
-        if (self::$isSnsSetup) {
+        if ($this->isSnsSetup) {
             return true;
         }
 
@@ -203,7 +203,7 @@ class SendingServerAmazon extends SendingServer implements DomainVerificationInt
             ));
         }
 
-        self::$isSnsSetup = true;
+        $this->isSnsSetup = true;
     }
 
     /**
@@ -213,7 +213,7 @@ class SendingServerAmazon extends SendingServer implements DomainVerificationInt
      */
     public function setupSnsThreadSafe($fromEmailAddress)
     {
-        if (self::$isSnsSetup) {
+        if ($this->isSnsSetup) {
             return true;
         }
 

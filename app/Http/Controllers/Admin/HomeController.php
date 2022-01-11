@@ -28,6 +28,10 @@ class HomeController extends Controller
      */
     public function index()
     {
+        if (!config('app.saas')) {
+            return redirect()->action('HomeController@index');
+        }
+
         $notifications = Notification::top();
         return view('admin.dashboard', [
             'notifications' => $notifications,

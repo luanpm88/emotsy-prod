@@ -223,9 +223,14 @@ function htmlDecode(input){
     return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
 }
 
-function copyToClipboard(text) {
+function copyToClipboard(text, container) {
     var $temp = $("<input>");
-    $("body").append($temp);
+    if (typeof(container) !== 'undefined') {
+        container.append($temp);
+    } else {
+        $("body").append($temp);
+    }
+    
     $temp.val(text).select();
     document.execCommand("copy");
     $temp.remove();

@@ -281,6 +281,11 @@ class MailList extends Model
         return $this->fields();
     }
 
+    public function getDateOrDateTimeFields()
+    {
+        return $this->getFields()->whereIn('type', ['datetime', 'date']);
+    }
+
     /**
      * Create default fields for list.
      */
@@ -887,7 +892,7 @@ class MailList extends Model
     {
         $template = Layout::where('alias', 'subscribe_notification_for_list_owner')->first();
 
-        $message = $template->getMessage(function($html) use ($subscriber) {
+        $message = $template->getMessage(function ($html) use ($subscriber) {
             $html = str_replace('{LIST_NAME}', $this->name, $html);
             $html = str_replace('{EMAIL}', $subscriber->email, $html);
             $html = str_replace('{FULL_NAME}', $subscriber->getFullName(), $html);
@@ -1664,6 +1669,12 @@ class MailList extends Model
             }
             //} elseif ($subscription->useSubAccount()) {
         //    $result[] = [$subscription->subAccount->sending_server_id, '100'];
+        }
+
+        if (!config('app.saas')) {
+            $result = \Acelle\Model\SendingServer::active()->get()->map(function ($server) {
+                return [$server->id, 100];
+            });
         }
 
         $assoc = [];

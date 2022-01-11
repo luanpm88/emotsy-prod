@@ -136,6 +136,28 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | BRAND mode
+    |--------------------------------------------------------------------------
+    |
+    | If the application is in DEMO mode
+    |
+    */
+
+    'brand' => env('APP_BRAND', false),
+
+    /*
+    |--------------------------------------------------------------------------
+    | SAAS mode
+    |--------------------------------------------------------------------------
+    |
+    | If the application is in DEMO mode
+    |
+    */
+
+    'saas' => env('APP_SAAS', true),
+
+    /*
+    |--------------------------------------------------------------------------
     | Autoloaded Service Providers
     |--------------------------------------------------------------------------
     |
@@ -185,7 +207,7 @@ return [
         Acelle\Providers\EventServiceProvider::class,
         Acelle\Providers\RouteServiceProvider::class,
         Acelle\Providers\JobServiceProvider::class,
-        
+
         /*
          * Acelle Extended Provider
          */

@@ -21,6 +21,7 @@ use Acelle\Model\OpenLog;
 use Acelle\Model\TemplateCategory;
 use Acelle\Model\JobMonitor;
 use DB;
+use Exception;
 
 class CampaignController extends Controller
 {
@@ -1496,7 +1497,7 @@ class CampaignController extends Controller
         }
 
         // Paging
-        $subscribers = $subscribers->paginate($request->per_page);
+        $subscribers = $subscribers->search($request->keyword)->paginate($request->per_page);
 
         // Field information
         $fields = $campaign->defaultMailList->getFields->whereIn('uid', explode(',', $request->columns));
@@ -1747,6 +1748,25 @@ class CampaignController extends Controller
 
             return view('somethingWentWrong', ['message' => trans('messages.the_email_no_longer_exists')]);
         }
+    }
+
+    /**
+     * Email web view for previewing before sending
+     */
+    public function webViewPreview(Request $request)
+    {
+        $subscriber = Subscriber::findByUid($request->subscriber_uid);
+        $campaign = Campaign::findByUid($request->campaign_uid);
+
+        if (is_null($subscriber) || is_null($campaign)) {
+            throw new \Exception('Invalid subscriber or campaign UID');
+        }
+
+        return view('campaigns.web_view', [
+            'campaign' => $campaign,
+            'subscriber' => $subscriber,
+            'message_id' => null,
+        ]);
     }
 
     /*
@@ -2073,6 +2093,37 @@ class CampaignController extends Controller
 
         return redirect()->action('CampaignController@builderPlainEdit', [
             'uid' => $campaign->uid,
+        ]);
+    }
+
+    public function previewAs(Request $request)
+    {
+        $campaign = Campaign::findByUid($request->uid);
+
+        return view('campaigns.previewAs', [
+            'campaign' => $campaign,
+        ]);
+    }
+
+    /**
+     * Subscribers listing.
+     */
+    public function previewAsList(Request $request)
+    {
+        $campaign = Campaign::findByUid($request->uid);
+
+        // authorize
+        if (\Gate::denies('read', $campaign)) {
+            return;
+        }
+
+        // Subscribers
+        $subscribers = $campaign->subscribers()
+            ->search($request->keyword)->paginate($request->per_page);
+
+        return view('campaigns.previewAsList', [
+            'subscribers' => $subscribers,
+            'campaign' => $campaign,
         ]);
     }
 }

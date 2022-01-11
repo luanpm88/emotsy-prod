@@ -2329,6 +2329,14 @@ class Campaign extends Model
         return $query;
     }
 
+    public function generateWebViewerPreviewUrl($subscriber)
+    {
+        return route('webViewerPreviewUrl', [
+            'campaign_uid' => $this->uid,
+            'subscriber_uid' => $subscriber->uid,
+        ]);
+    }
+
     /**
      * Start the campaign. called by daemon job
      */
@@ -2347,6 +2355,7 @@ class Campaign extends Model
                 $fromEmailAddress = $this->from_email;
             }
 
+            $this->logger()->info('Setting up before send for server '.$server->uid);
             $server->setupBeforeSend($fromEmailAddress);
         }
 

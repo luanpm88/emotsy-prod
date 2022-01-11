@@ -84,14 +84,18 @@
     
 @elseif (!empty(request()->keyword) || !empty(request()->filters["type"]))
     <div class="empty-list">
-        <i class="icon-power-cord"></i>
+        <span class="material-icons-outlined">
+            extension
+            </span>
         <span class="line-1">
             {{ trans('messages.no_search_result') }}
         </span>
     </div>
 @else
     <div class="empty-list">
-        <i class="icon-power-cord"></i>
+        <span class="material-icons-outlined">
+            extension
+            </span>
         <span class="line-1">
             {{ trans('messages.plugin_empty_line_1') }}
         </span>

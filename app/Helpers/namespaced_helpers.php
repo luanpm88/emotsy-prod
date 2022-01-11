@@ -208,6 +208,50 @@ function spfcheck($ipOrHostname, $domain)
     return $result;
 }
 
+function forceAddCustomerToUnlimitedPlan($customer)
+{
+    // Default subscription
+    $subscription = new \Acelle\Model\Subscription();
+    $subscription->status = \Acelle\Model\Subscription::STATUS_ACTIVE;
+    $subscription->current_period_ends_at = \Carbon\Carbon::now()->addYears(1000);
+    $subscription->plan_id = \Acelle\Model\Plan::UNLIMITED_PLAN_ID;
+    $subscription->customer_id = $customer->id;
+    $subscription->save();
+}
+
+function saasToSingleMode()
+{
+    // set env mode
+    echo "1. Set APP_SAAS=false in .env file...";
+    putPermanentEnv([
+        'APP_SAAS' => 'false',
+    ]);
+
+    // remove all subscriptions
+    echo "\n2. Remove all subscriptions...";
+    foreach(\Acelle\Model\Subscription::all() as $subscription) {
+        $subscription->delete();
+    }
+
+    // remove all plans
+    echo "\n3. Remove all plans...";
+    foreach(\Acelle\Model\Plan::all() as $plan) {
+        $plan->delete();
+    }
+
+    // check if has unlimited plan
+    echo "\n4. Create unlimited plan...";
+    \Acelle\Model\Plan::createUnlimitedPlan();
+
+    // add all customer to unlimited plan
+    echo "\n5. Add all customers to unlimited plan...";
+    foreach(\Acelle\Model\Customer::all() as $customer) {
+        \Acelle\Helpers\forceAddCustomerToUnlimitedPlan($customer);
+    }
+
+    echo "\n...\ndone!";
+}
+
 function isValidPublicHostnameOrIpAddress($host)
 {
     if ($host == '127.0.0.1' || $host == 'localhost') {
@@ -219,7 +263,7 @@ function isValidPublicHostnameOrIpAddress($host)
 
     if ($isValidIpAddress) {
         return true;
-    } else if (filter_var($getHostByName, FILTER_VALIDATE_IP)) {
+    } elseif (filter_var($getHostByName, FILTER_VALIDATE_IP)) {
         return true;
     } else {
         return false;
