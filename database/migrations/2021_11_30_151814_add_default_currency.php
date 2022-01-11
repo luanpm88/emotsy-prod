@@ -13,15 +13,17 @@ class AddDefaultCurrency extends Migration
      */
     public function up()
     {
-        $currency = Acelle\Model\Currency::firstOrNew([
-            'code' => 'USDx',
-        ], [
-            'name' => 'US Dollar',
-            'format' => '${PRICE}',
-        ]);
+        if (!Acelle\Model\Currency::count()) {
+            $currency = Acelle\Model\Currency::firstOrNew([
+                'code' => 'USD',
+            ], [
+                'name' => 'US Dollar',
+                'format' => '${PRICE}',
+            ]);
 
-        $currency->status = 'active';
-        $currency->save();
+            $currency->status = 'active';
+            $currency->save();
+        }
     }
 
     /**
