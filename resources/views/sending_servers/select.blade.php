@@ -41,7 +41,7 @@ add
                     </li>                    
                 @endforeach
 
-                @foreach (Acelle\Model\SendingServer::types() as $key => $type)
+                @foreach (Auth::user()->customer->getSendingServertypes() as $key => $type)
 
                     <li>
                         <a href="{{ action('SendingServerController@create', ["type" => $key]) }}" class="btn btn-secondary">{{ trans('messages.choose') }}</a>

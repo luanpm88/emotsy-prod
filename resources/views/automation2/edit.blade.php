@@ -10,6 +10,7 @@
 
     <!-- Dropzone -->
 	<script type="text/javascript" src="{{ URL::asset('core/dropzone/dropzone.js') }}"></script>
+    @include('helpers._dropzone_lang')
 	<link href="{{ URL::asset('core/dropzone/dropzone.css') }}" rel="stylesheet" type="text/css">
 
     <link rel="stylesheet" type="text/css" href="{{ URL::asset('core/css/automation.css') }}">
