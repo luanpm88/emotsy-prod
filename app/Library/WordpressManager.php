@@ -5,18 +5,56 @@ namespace Acelle\Library;
 use Illuminate\Support\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Http;
 
 class WordpressManager
 {
+    public $enpoint;
+
+    public function request($options)
+    {
+        $uri = $this->endpoint . '/' . $options['path'];
+
+        if (!isset($options['type']) || $options['type'] == 'get') {
+            $response = Http::get($uri, (isset($options['data']) ? $options['data'] : []));
+        }
+
+        return $response;
+    }
+
     public function __construct()
     {
-        require_once config('wordpress.1.path') . '/wp-load.php';
-        require_once ABSPATH . 'wp-admin/includes/admin.php';
+        $this->endpoint = config('wordpress.url') . '/wp-json/vbrand/v1';
+
+        // // ** MySQL settings - You can get this info from your web host ** //
+        // /** The name of the database for WordPress */
+        // define( 'DB_NAME', config('database.connections.wordpress.database') );
+
+        // /** MySQL database username */
+        // define( 'DB_USER', config('database.connections.wordpress.username') );
+
+        // /** MySQL database password */
+        // define( 'DB_PASSWORD', config('database.connections.wordpress.password') );
+
+        // /** MySQL hostname */
+        // define( 'DB_HOST', config('database.connections.wordpress.host') . ':' . config('database.connections.wordpress.port') );
+
+        // require_once base_path() . '/../vbrand-wp/wp-load.php';
+        // require_once base_path() . '/../vbrand-wp/wp-admin/includes/admin.php';
+
+        // Load from customer wp source code
+        require_once config('wordpress.path') . '/wp-load.php';
+        require_once config('wordpress.path') . '/wp-admin/includes/admin.php';
     }
 
     public function getTemplates()
     {
-        return wp_prepare_themes_for_js();
+        return json_decode($this->request([
+            'path' => 'themes',
+            'data' => [
+                'token' => \Auth::user()->api_token,
+            ],
+        ])->body(), true);
     }
 
     public function activateTheme($id)

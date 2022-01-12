@@ -105,6 +105,7 @@ Route::group(['middleware' => ['not_installed', 'not_logged_in']], function () {
 
     Route::get('/login/token/{token}', 'Controller@tokenLogin');
 
+    Route::get('/validate-token/{api_token}', 'Controller@validateToken');
     Route::get('user/activate/{token}', 'UserController@activate');
     Route::get('/disabled', 'Controller@userDisabled');
     Route::get('/offline', 'Controller@offline');

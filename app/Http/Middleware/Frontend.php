@@ -50,33 +50,35 @@ class Frontend
         }
 
         // Wordpress db by user
-        if (isset($user) && isset($user->customer)) {
+        if (isset($user) && isset($user->customer)) {     
             config([
-                'database.connections.wordpress.database' => config('wordpress.1.db_name'),
-                'database.connections.wordpress.prefix' => config('wordpress.1.db_prefix'),
+                'database.connections.wordpress.database' => config('wordpress.'.$user->customer->id.'.db_name'),
+                'database.connections.wordpress.prefix' => config('wordpress.'.$user->customer->id.'.db_prefix'),
+                'wordpress.url' => config('wordpress.'.$user->customer->id.'.url'),
+                'wordpress.path' => config('wordpress.'.$user->customer->id.'.path'),
             ]);
 
-            if (config('wordpress.1.db_host', false)) {
+            if (config('wordpress.'.$user->customer->id.'.db_host', false)) {
                 config([
-                    'database.connections.wordpress.host' => config('wordpress.1.db_host'),
+                    'database.connections.wordpress.host' => config('wordpress.'.$user->customer->id.'.db_host'),
                 ]);
             }
 
-            if (config('wordpress.1.db_port', false)) {
+            if (config('wordpress.'.$user->customer->id.'.db_port', false)) {
                 config([
-                    'database.connections.wordpress.port' => config('wordpress.1.db_port'),
+                    'database.connections.wordpress.port' => config('wordpress.'.$user->customer->id.'.db_port'),
                 ]);
             }
 
-            if (config('wordpress.1.db_user', false)) {
+            if (config('wordpress.'.$user->customer->id.'.db_user', false)) {
                 config([
-                    'database.connections.wordpress.username' => config('wordpress.1.db_user'),
+                    'database.connections.wordpress.username' => config('wordpress.'.$user->customer->id.'.db_user'),
                 ]);
             }
 
-            if (config('wordpress.1.db_password', false)) {
+            if (config('wordpress.'.$user->customer->id.'.db_password', false)) {
                 config([
-                    'database.connections.wordpress.password' => config('wordpress.1.db_password'),
+                    'database.connections.wordpress.password' => config('wordpress.'.$user->customer->id.'.db_password'),
                 ]);
             }
         }
