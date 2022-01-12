@@ -423,7 +423,7 @@
   'user_groups.deleted' => 'One or more user groups were successfully deleted',
   'users.deleted' => 'One or more users were successfully deleted',
   'regular' => 'Regular',
-  'create_user' => 'New user',
+  'create_user' => 'Create user',
   'group' => 'Group',
   'user.updated' => 'User was successfully updated',
   'user.created' => 'User was successfully created',
@@ -3914,7 +3914,6 @@
     Go to your mail list\'s fields setting page and add a custom field of Date of Birth',
   'automation.trigger.no_date_of_birth_field' => 'There is no birthday field selected!',
   'default_page_form_layout' => 'Default Emails & Pages',
-  'create_user' => 'Create user',
   'admin.loginas_area' => 'Back to <strong>:name</strong>',
   'saas_mode' => 'SAAS mode',
   'admin.install_mode.saas.help' => 'SAAS mode allows you to set up your app as a web
