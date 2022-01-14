@@ -45,7 +45,9 @@ class TransformWidgets implements StageInterface
                     'preview' => $node->getAttribute('data-preview'),
                 ]);
 
-                $_this->update_html($dom, $pList, $pHtml);
+                if ($pList != null) {
+                    $_this->update_html($dom, $pList, $pHtml);
+                }
             }
         });
     }
