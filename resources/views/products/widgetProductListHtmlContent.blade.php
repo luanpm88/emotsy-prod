@@ -1,3 +1,6 @@
+@if (!count($products))
+    <p class="text-warning py-3" style="text-align:center;width:100%">No products found!</p>
+@endif
 @foreach($products as $product)
     <div class="col-{{ 12/$options['cols'] }}">
         <div class="">
