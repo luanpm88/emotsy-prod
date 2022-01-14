@@ -21,5 +21,5 @@
 @endsection
 
 @section('content')
-    <iframe id="wpFrame" src="{{ config('wordpress.1.url') }}/wp-admin/post-new.php?post_type=product"></iframe>
+    <iframe id="wpFrame" src="{{ config('wordpress.url') }}/wp-admin/post-new.php?post_type=product"></iframe>
 @endsection
