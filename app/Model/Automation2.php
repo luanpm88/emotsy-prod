@@ -316,24 +316,24 @@ class Automation2 extends Model
     public static function getDelayOptions($moreOptions=[])
     {
         return array_merge($moreOptions, [
-            ['text' => trans_choice('messages.automation.delay.minute', 1), 'value' => '1 minute'],
-            ['text' => trans_choice('messages.automation.delay.minute', 30), 'value' => '30 minutes'],
-            ['text' => trans_choice('messages.automation.delay.hour', 1), 'value' => '1 hours'],
-            ['text' => trans_choice('messages.automation.delay.hour', 2), 'value' => '2 hours'],
-            ['text' => trans_choice('messages.automation.delay.hour', 4), 'value' => '4 hours'],
-            ['text' => trans_choice('messages.automation.delay.hour', 8), 'value' => '8 hours'],
-            ['text' => trans_choice('messages.automation.delay.hour', 12), 'value' => '12 hours'],
+            ['text' => trans_choice('messages.automation.delay.minute', 1, [], 'en'), 'value' => '1 minute'],
+            ['text' => trans_choice('messages.automation.delay.minute', 30, [], 'en'), 'value' => '30 minutes'],
+            ['text' => trans_choice('messages.automation.delay.hour', 1, [], 'en'), 'value' => '1 hours'],
+            ['text' => trans_choice('messages.automation.delay.hour', 2, [], 'en'), 'value' => '2 hours'],
+            ['text' => trans_choice('messages.automation.delay.hour', 4, [], 'en'), 'value' => '4 hours'],
+            ['text' => trans_choice('messages.automation.delay.hour', 8, [], 'en'), 'value' => '8 hours'],
+            ['text' => trans_choice('messages.automation.delay.hour', 12, [], 'en'), 'value' => '12 hours'],
 
-            ['text' => trans_choice('messages.automation.delay.day', 1), 'value' => '1 day'],
-            ['text' => trans_choice('messages.automation.delay.day', 2), 'value' => '2 days'],
-            ['text' => trans_choice('messages.automation.delay.day', 3), 'value' => '3 days'],
-            ['text' => trans_choice('messages.automation.delay.day', 4), 'value' => '4 days'],
-            ['text' => trans_choice('messages.automation.delay.day', 5), 'value' => '5 days'],
-            ['text' => trans_choice('messages.automation.delay.day', 6), 'value' => '6 days'],
-            ['text' => trans_choice('messages.automation.delay.week', 1), 'value' => '1 week'],
-            ['text' => trans_choice('messages.automation.delay.week', 2), 'value' => '2 weeks'],
-            ['text' => trans_choice('messages.automation.delay.month', 1), 'value' => '1 month'],
-            ['text' => trans_choice('messages.automation.delay.month', 2), 'value' => '2 months'],
+            ['text' => trans_choice('messages.automation.delay.day', 1, [], 'en'), 'value' => '1 day'],
+            ['text' => trans_choice('messages.automation.delay.day', 2, [], 'en'), 'value' => '2 days'],
+            ['text' => trans_choice('messages.automation.delay.day', 3, [], 'en'), 'value' => '3 days'],
+            ['text' => trans_choice('messages.automation.delay.day', 4, [], 'en'), 'value' => '4 days'],
+            ['text' => trans_choice('messages.automation.delay.day', 5, [], 'en'), 'value' => '5 days'],
+            ['text' => trans_choice('messages.automation.delay.day', 6, [], 'en'), 'value' => '6 days'],
+            ['text' => trans_choice('messages.automation.delay.week', 1, [], 'en'), 'value' => '1 week'],
+            ['text' => trans_choice('messages.automation.delay.week', 2, [], 'en'), 'value' => '2 weeks'],
+            ['text' => trans_choice('messages.automation.delay.month', 1, [], 'en'), 'value' => '1 month'],
+            ['text' => trans_choice('messages.automation.delay.month', 2, [], 'en'), 'value' => '2 months'],
 
             ['text' => trans('messages.automation.delay.custom'), 'value' => 'custom'],
         ]);
@@ -345,17 +345,17 @@ class Automation2 extends Model
     public static function getDelayBeforeOptions()
     {
         return [
-            ['text' => trans_choice('messages.automation.delay.0_day', 0), 'value' => '0 day'],
-            ['text' => trans_choice('messages.automation.delay.day', 1), 'value' => '1 day'],
-            ['text' => trans_choice('messages.automation.delay.day', 2), 'value' => '2 days'],
-            ['text' => trans_choice('messages.automation.delay.day', 3), 'value' => '3 days'],
-            ['text' => trans_choice('messages.automation.delay.day', 4), 'value' => '4 days'],
-            ['text' => trans_choice('messages.automation.delay.day', 5), 'value' => '5 days'],
-            ['text' => trans_choice('messages.automation.delay.day', 6), 'value' => '6 days'],
-            ['text' => trans_choice('messages.automation.delay.week', 1), 'value' => '1 week'],
-            ['text' => trans_choice('messages.automation.delay.week', 2), 'value' => '2 weeks'],
-            ['text' => trans_choice('messages.automation.delay.month', 1), 'value' => '1 month'],
-            ['text' => trans_choice('messages.automation.delay.month', 2), 'value' => '2 months'],
+            ['text' => trans_choice('messages.automation.delay.0_day', 0, [], 'en'), 'value' => '0 day'],
+            ['text' => trans_choice('messages.automation.delay.day', 1, [], 'en'), 'value' => '1 day'],
+            ['text' => trans_choice('messages.automation.delay.day', 2, [], 'en'), 'value' => '2 days'],
+            ['text' => trans_choice('messages.automation.delay.day', 3, [], 'en'), 'value' => '3 days'],
+            ['text' => trans_choice('messages.automation.delay.day', 4, [], 'en'), 'value' => '4 days'],
+            ['text' => trans_choice('messages.automation.delay.day', 5, [], 'en'), 'value' => '5 days'],
+            ['text' => trans_choice('messages.automation.delay.day', 6, [], 'en'), 'value' => '6 days'],
+            ['text' => trans_choice('messages.automation.delay.week', 1, [], 'en'), 'value' => '1 week'],
+            ['text' => trans_choice('messages.automation.delay.week', 2, [], 'en'), 'value' => '2 weeks'],
+            ['text' => trans_choice('messages.automation.delay.month', 1, [], 'en'), 'value' => '1 month'],
+            ['text' => trans_choice('messages.automation.delay.month', 2, [], 'en'), 'value' => '2 months'],
         ];
     }
 
