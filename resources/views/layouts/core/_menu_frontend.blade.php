@@ -59,7 +59,7 @@
                         <span>{{ trans('messages.templates') }}</span>
                     </a>
                 </li>
-                @if (!config('app.brand') || config('custom.woo'))
+                @if (config('app.brand') || config('custom.woo'))
                     <li class="nav-item dropdown">
                         <a href="" title="{{ trans('messages.content') }}"
                             class="leftbar-tooltip nav-link d-flex align-items-center py-3 lvl-1 dropdown-toggle"
