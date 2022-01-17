@@ -868,6 +868,10 @@ class Template extends Model
 
     public function uploadAssetFromUrl($url)
     {
+        // Simply return the image URL
+        return $url;
+
+        /* Another way is to fetch and save the image to the local directory
         // upload file by upload image
         $filename = uniqid();
 
@@ -889,6 +893,7 @@ class Template extends Model
         $assetUrl = \Acelle\Helpers\generatePublicPath($filepath);
 
         return $assetUrl;
+        */
     }
 
     /**
