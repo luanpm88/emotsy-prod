@@ -232,7 +232,6 @@ trait HasTemplate
         $message->setEncoder(new \Swift_Mime_ContentEncoder_PlainContentEncoder('8bit'));
         if (is_null($this->type) || $this->type == self::TYPE_REGULAR) {
             $html = $this->getHtmlContent($subscriber, $msgId, $server, $fromCache, $expiresInSeconds);
-            $message->addPart($html, 'text/html');
 
             $options = array(
               'ignore_errors' => true,
@@ -240,12 +239,15 @@ trait HasTemplate
             );
 
             $plain = Html2Text::convert($html, $options);
+
+            // IMPORTANT: add plain part first, then html part
+            $message->addPart($plain, 'text/plain');
+            $message->addPart($html, 'text/html');
         } else {
             // Get plain content is for PLAIN campaign only
             $plain = $this->getPlainContent($subscriber, $msgId, $server);
+            $message->addPart($plain, 'text/plain');
         }
-
-        $message->addPart($plain, 'text/plain');
 
         if ($this->sign_dkim) {
             $message = $this->sign($message);
