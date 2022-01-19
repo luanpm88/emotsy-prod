@@ -45,7 +45,7 @@
         "rmccue/requests": "^1.8",
         "sendgrid/sendgrid": "^5.0",
         "sendgrid/smtpapi": "^0.5.0",
-        "soundasleep/html2text": "^1.1",
+        "soundasleep/html2text": "dev-master",
         "sparkpost/sparkpost": "^2.1",
         "swiftmailer/swiftmailer": "~6.0",
         "symfony/yaml": "^4.4",

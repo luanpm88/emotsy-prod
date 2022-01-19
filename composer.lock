@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "105c9c51af0caeebab63fb2895aa4c8d",
+    "content-hash": "443f97b71c572da341b302e6558bdccc",
     "packages": [
         {
             "name": "acelle/cashier",
@@ -5416,27 +5416,28 @@
         },
         {
             "name": "soundasleep/html2text",
-            "version": "1.1.0",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/soundasleep/html2text.git",
-                "reference": "3243a7107878a61685d2eccf99918d6479e039fc"
+                "reference": "9a70a3ca6bea500faa80b44ac81c19e796b6e6da"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/soundasleep/html2text/zipball/3243a7107878a61685d2eccf99918d6479e039fc",
-                "reference": "3243a7107878a61685d2eccf99918d6479e039fc",
+                "url": "https://api.github.com/repos/soundasleep/html2text/zipball/9a70a3ca6bea500faa80b44ac81c19e796b6e6da",
+                "reference": "9a70a3ca6bea500faa80b44ac81c19e796b6e6da",
                 "shasum": ""
             },
             "require": {
                 "ext-dom": "*",
                 "ext-libxml": "*",
-                "php": ">=7.0"
+                "php": "^7.0|^8.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "~7.0",
-                "soundasleep/component-tests": "~0.2"
+                "phpunit/phpunit": "^7.0|^8.0|^9.0",
+                "soundasleep/component-tests": "^0.2"
             },
+            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -5467,7 +5468,7 @@
                 "issues": "https://github.com/soundasleep/html2text/issues",
                 "source": "https://github.com/soundasleep/html2text/tree/master"
             },
-            "time": "2019-02-15T01:44:54+00:00"
+            "time": "2022-01-16T00:26:07+00:00"
         },
         {
             "name": "sparkpost/sparkpost",
@@ -10398,7 +10399,8 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "acelle/cashier": 20,
-        "louis/sendgrid": 20
+        "louis/sendgrid": 20,
+        "soundasleep/html2text": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
@@ -10406,5 +10408,5 @@
         "php": "^7.3|^8.0"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.1.0"
+    "plugin-api-version": "2.2.0"
 }
