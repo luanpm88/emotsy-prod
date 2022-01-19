@@ -136,10 +136,10 @@ class DeliveryHandler extends Model
             // search and get unseen emails, function will return email ids
             $emails = imap_search($inbox, 'UNSEEN');
 
-            $this->logger()->info(sprintf('%s unread emails found', sizeof($emails)));
-
             $count = 1;
             if (!empty($emails)) {
+                $this->logger()->info(sprintf('%s unread emails found', sizeof($emails)));
+
                 foreach ($emails as $message) {
                     $this->logger()->info(sprintf('Processing message %s/%s', $count, sizeof($emails)));
                     $this->processMessage($inbox, $message);

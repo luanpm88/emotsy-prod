@@ -105,6 +105,7 @@ Route::group(['middleware' => ['not_installed', 'not_logged_in']], function () {
 
     Route::get('/login/token/{token}', 'Controller@tokenLogin');
 
+    Route::get('/validate-token/{api_token}', 'Controller@validateToken');
     Route::get('user/activate/{token}', 'UserController@activate');
     Route::get('/disabled', 'Controller@userDisabled');
     Route::get('/offline', 'Controller@offline');
@@ -180,6 +181,10 @@ Route::group(['middleware' => ['not_installed']], function () {
 
     // Campaign test links
     Route::get('campaigns/test/{message}', 'CampaignController@notification')->name('campaign_message');
+
+    // products
+    Route::get('/products/widget/products/list', 'ProductController@widgetProductList');
+    Route::post('/products/widget/product', 'ProductController@widgetProduct');
 });
 
 Route::group(['middleware' => ['not_installed', 'auth']], function () {
@@ -662,9 +667,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('sample', 'SamplesController@index');
 
     // Products
-    Route::get('/products/widget/products/options', 'ProductController@widgetProductOptions');
-    Route::get('/products/widget/products/list', 'ProductController@widgetProductList');
-    Route::post('/products/widget/product', 'ProductController@widgetProduct');
+    Route::get('/products/widget/products/options', 'ProductController@widgetProductOptions');    
     Route::get('products/listing', 'ProductController@listing');
     Route::resource('products', 'ProductController');
 

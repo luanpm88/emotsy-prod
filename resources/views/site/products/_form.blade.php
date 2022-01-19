@@ -63,7 +63,7 @@
     <button class="btn btn-secondary me-1"><span class="material-icons-round">
         done
         </span> {{ trans('messages.save') }}</button>
-    <a target="_blank" href="{{ config('wordpress.1.url') . '/wp-admin/post-new.php?post_type=product' }}" role="button" class="btn btn-light">
+    <a target="_blank" href="{{ config('wordpress.url') . '/wp-admin/post-new.php?post_type=product' }}" role="button" class="btn btn-light">
         <i class="icon-cross2"></i> {{ trans('messages.product.advanced') }}
     </a>
     <a href="{{ action('Site\ProductController@index') }}" role="button" class="btn btn-light">
