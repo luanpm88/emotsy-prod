@@ -423,7 +423,7 @@
   'user_groups.deleted' => 'One or more user groups were successfully deleted',
   'users.deleted' => 'One or more users were successfully deleted',
   'regular' => 'Regular',
-  'create_user' => 'New user',
+  'create_user' => 'Create user',
   'group' => 'Group',
   'user.updated' => 'User was successfully updated',
   'user.created' => 'User was successfully created',
@@ -2102,6 +2102,7 @@
     Add and verify a <a href=":domain_link" target="blank">[domain]</a> or
     <a href=":sender_link" target="blank">[email address]</a> to send email on behalf of.',
   'plan.sending_server.no_sending_server_error' => 'The plan you currently subscribe to (:plan) does not have any sending server. Log in as admin, then go to Plan setting page, make sure you add a sending server to this plan',
+  'standard.no_sending_server_error' => 'You currently does not have any sending server. Go to Sending > Sending servers page, make sure you add a sending server.',
   'plan.sending_servers.intro' => 'This feature allows you to add a sending server which will actually send out your campaign emails.
       You can configure a standard SMTP connection or connect to a 3rd services like Amazon SES,
       SendGrid, Mailgun, ElasticEmail, Sparkpost... You can also take advantage of the the hosting server\'s
@@ -2840,11 +2841,11 @@
   'automation.email.summary.setting' => 'Settings',
   'automation.delay.0_day' => '0 day (on the same day)',
   'automation.delay.immediately' => 'Immediately',
-  'automation.delay.day' => '1 day|:count days',
-  'automation.delay.minute' => '1 minute|:count minutes',
-  'automation.delay.hour' => '1 hour|:count hours',
-  'automation.delay.week' => '1 week|:count weeks',
-  'automation.delay.month' => '1 month|:count months',
+  'automation.delay.day' => '{1} :count day|[2,*] :count days',
+  'automation.delay.minute' => '{1} :count minute|[2,*] :count minutes',
+  'automation.delay.hour' => '{1} :count hour|[2,*] :count hours',
+  'automation.delay.week' => '{1} :count week|[2,*] :count weeks',
+  'automation.delay.month' => '{1} :count month|[2,*] :count months',
   'automation.delay.custom' => 'Custom',
   'automation.wait.delay.2 weeks' => 'Wait for 2 weeks',
   'automation.wait.delay.0' => 'Immediately',
@@ -4037,4 +4038,26 @@
   'list.no_date_or_datetime_field' => 'The selected list does not have any custom field of DATE or DATETIME type.
     Go to your mail list\'s fields setting page and add a custom field of Date of Birth',
   'automation.trigger.no_date_of_birth_field' => 'There is no birthday field selected!',
+  'default_page_form_layout' => 'Default Emails & Pages',
+  'admin.loginas_area' => 'Back to <strong>:name</strong>',
+  'saas_mode' => 'SAAS mode',
+  'admin.install_mode.saas.help' => 'SAAS mode allows you to set up your app as a web
+    platform where users can register and subscribe. You can charge
+    your users for using the email service.',
+  'installation_type' => 'Installation type',
+  'standard_mode' => 'Standard mode',
+  'admin.install_mode.standard.help' => 'This is ideal for using app as a standard email marketing
+    plugin for yourself, your team or company. All email marketing
+    features are available.',
+  'can_not_change_after_installed' => 'This can not be changed after installed',
+  'dropzone.dictDefaultMessage' => 'Drop files here to upload',
+  'dropzone.dictFallbackMessage' => 'Your browser does not support drag & drop file uploads.',
+  'dropzone.dictFallbackText' => 'Please use the fallback form below to upload your files like in the olden days.',
+  'dropzone.dictFileTooBig' => 'File is too big ({{filesize}}MiB). Max filesize: {{maxFilesize}}MiB.',
+  'dropzone.dictInvalidFileType' => 'You can\'t upload files of this type.',
+  'dropzone.dictResponseError' => 'Server responded with {{statusCode}} code.',
+  'dropzone.dictCancelUpload' => 'Cancel upload',
+  'dropzone.dictCancelUploadConfirmation' => 'Are you sure you want to cancel this upload?',
+  'dropzone.dictRemoveFile' => 'Remove file',
+  'dropzone.dictMaxFilesExceeded' => 'You can not upload any more files.',
 ) ?>

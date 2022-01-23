@@ -40,7 +40,9 @@ class TransformWidgets implements StageInterface
                     'preview' => $node->getAttribute('data-preview'),
                 ]);
 
-                $_this->update_html($dom, $pList, $pHtml);
+                if ($pList != null) {
+                    $_this->update_html($dom, $pList, $pHtml);
+                }
             }
         });
     }
@@ -116,6 +118,10 @@ class TransformWidgets implements StageInterface
         // remove all child
         while ($node->hasChildNodes()) {
             $node->removeChild($node->childNodes->item(0));
+        }
+
+        if (empty(trim($html))) {
+            return;
         }
 
         // try to append html

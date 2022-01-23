@@ -72,9 +72,15 @@ class Product extends Model
 
     public static function generateWidgetProductListHtmlContent($params)
     {
-        $products = Product::limit($params['count'])
-            ->orderBy(explode('-', $params['sort'])[0], explode('-', $params['sort'])[1])
-            ->get();
+        $products = Product::limit($params['count']);
+        $sort = explode('-', $params['sort']);
+
+        if (!isset($sort[1]) || !isset($params['count']) || !isset($params['cols'])) {
+            return "";
+        }
+
+        $products = $products->orderBy(explode('-', $params['sort'])[0], explode('-', $params['sort'])[1]);
+        $products = $products->get();
 
         return view('products.widgetProductListHtmlContent', [
             'products' => $products,

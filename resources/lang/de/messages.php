@@ -4006,4 +4006,17 @@
   'product.delete.confirm' => 'You\'re about to delete the product <span class="fw-600">:name</span>',
   'product.deleted' => 'The product was deleted successfully',
   'site.menus' => 'Menus',
+  'standard.no_sending_server_error' => 'You currently does not have any sending server. Go to Sending > Sending servers page, make sure you add a sending server.',
+  'default_page_form_layout' => 'Default Emails & Pages',
+  'admin.loginas_area' => 'Back to <strong>:name</strong>',
+  'saas_mode' => 'SAAS mode',
+  'admin.install_mode.saas.help' => 'SAAS mode allows you to set up your app as a web
+    platform where users can register and subscribe. You can charge
+    your users for using the email service.',
+  'installation_type' => 'Installation type',
+  'standard_mode' => 'Standard mode',
+  'admin.install_mode.standard.help' => 'This is ideal for using app as a standard email marketing
+    plugin for yourself, your team or company. All email marketing
+    features are available.',
+  'can_not_change_after_installed' => 'This can not be changed after installed',
 ) ?>

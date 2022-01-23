@@ -105,6 +105,7 @@ Route::group(['middleware' => ['not_installed', 'not_logged_in']], function () {
 
     Route::get('/login/token/{token}', 'Controller@tokenLogin');
 
+    Route::get('/validate-token/{api_token}', 'Controller@validateToken');
     Route::get('user/activate/{token}', 'UserController@activate');
     Route::get('/disabled', 'Controller@userDisabled');
     Route::get('/offline', 'Controller@offline');
@@ -180,6 +181,10 @@ Route::group(['middleware' => ['not_installed']], function () {
 
     // Campaign test links
     Route::get('campaigns/test/{message}', 'CampaignController@notification')->name('campaign_message');
+
+    // products
+    Route::get('/products/widget/products/list', 'ProductController@widgetProductList');
+    Route::post('/products/widget/product', 'ProductController@widgetProduct');
 });
 
 Route::group(['middleware' => ['not_installed', 'auth']], function () {
@@ -662,9 +667,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('sample', 'SamplesController@index');
 
     // Products
-    Route::get('/products/widget/products/options', 'ProductController@widgetProductOptions');
-    Route::get('/products/widget/products/list', 'ProductController@widgetProductList');
-    Route::post('/products/widget/product', 'ProductController@widgetProduct');
+    Route::get('/products/widget/products/options', 'ProductController@widgetProductOptions');    
     Route::get('products/listing', 'ProductController@listing');
     Route::resource('products', 'ProductController');
 
@@ -905,6 +908,22 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::get('admin/admins/enable', 'AdminController@enable');
     Route::get('admin/admins/login-back', 'AdminController@loginBack');
     Route::resource('admin/admins', 'AdminController');
+
+    // Admin Group 2
+    Route::get('admin/admin_groups2/listing/{page?}', 'AdminGroup2Controller@listing');
+    Route::get('admin/admin_groups2/sort', 'AdminGroup2Controller@sort');
+    Route::get('admin/admin_groups2/delete', 'AdminGroup2Controller@delete');
+    Route::resource('admin/admin_groups2', 'AdminGroup2Controller');
+
+    // Admin2
+    Route::get('admin/admins2/login-as/{uid}', 'Admin2Controller@loginAs');
+    Route::get('admin/admins2/listing/{page?}', 'Admin2Controller@listing');
+    Route::get('admin/admins2/sort', 'Admin2Controller@sort');
+    Route::get('admin/admins2/delete', 'Admin2Controller@delete');
+    Route::get('admin/admins2/disable', 'Admin2Controller@disable');
+    Route::get('admin/admins2/enable', 'Admin2Controller@enable');
+    Route::get('admin/admins2/login-back', 'Admin2Controller@loginBack');
+    Route::resource('admin2/admins', 'Admin2Controller');
 
 
     // Account
