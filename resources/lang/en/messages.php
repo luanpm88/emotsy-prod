@@ -15,7 +15,7 @@
   'reset_password_email_subject' => 'Your Password Reset Link',
   'reset_password' => 'Reset Password',
   'confirm_password' => 'Confirm password',
-  'campaigns' => 'Campaigns',
+  'campaigns' => 'Campaigns Hello',
   'templates' => 'Templates',
   'lists' => 'Lists',
   'reports' => 'Reports',
@@ -3090,6 +3090,7 @@
   'campaign.resend.option.not_open' => 'Did not open the email',
   'campaign.resend.option.not_click' => 'Did not click on any link in the email',
   'campaign.resend.cancel' => 'Cancel',
+  'subscribe_notification_for_list_owner' => 'Subscription notification email (for mail list owner)',
   'unsubscribe_notification_for_list_owner' => 'Unsubscription notification email (for mail list owner)',
   'campaign.preheader.intro' => '<strong>Preheader</strong> is the short summary text that follows the subject line
     when viewing an email from the inbox',
