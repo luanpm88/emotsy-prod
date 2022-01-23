@@ -4061,4 +4061,15 @@
     plugin for yourself, your team or company. All email marketing
     features are available.',
   'can_not_change_after_installed' => 'This can not be changed after installed',
+  'subscribe_notification_for_list_owner' => 'Subscription notification email (for mail list owner)',
+  'dropzone.dictDefaultMessage' => 'Drop files here to upload',
+  'dropzone.dictFallbackMessage' => 'Your browser does not support drag & drop file uploads.',
+  'dropzone.dictFallbackText' => 'Please use the fallback form below to upload your files like in the olden days.',
+  'dropzone.dictFileTooBig' => 'File is too big ({{filesize}}MiB). Max filesize: {{maxFilesize}}MiB.',
+  'dropzone.dictInvalidFileType' => 'You can\'t upload files of this type.',
+  'dropzone.dictResponseError' => 'Server responded with {{statusCode}} code.',
+  'dropzone.dictCancelUpload' => 'Cancel upload',
+  'dropzone.dictCancelUploadConfirmation' => 'Are you sure you want to cancel this upload?',
+  'dropzone.dictRemoveFile' => 'Remove file',
+  'dropzone.dictMaxFilesExceeded' => 'You can not upload any more files.',
 ) ?>
