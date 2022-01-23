@@ -3933,4 +3933,5 @@
   'dropzone.dictCancelUploadConfirmation' => 'Are you sure you want to cancel this upload?',
   'dropzone.dictRemoveFile' => 'Remove file',
   'dropzone.dictMaxFilesExceeded' => 'You can not upload any more files.',
+  'subscribe_notification_for_list_owner' => 'Subscription notification email (for mail list owner)',
 ) ?>
