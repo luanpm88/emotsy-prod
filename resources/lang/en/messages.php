@@ -15,7 +15,7 @@
   'reset_password_email_subject' => 'Your Password Reset Link',
   'reset_password' => 'Reset Password',
   'confirm_password' => 'Confirm password',
-  'campaigns' => 'Campaigns Hello',
+  'campaigns' => 'Campaigns',
   'templates' => 'Templates',
   'lists' => 'Lists',
   'reports' => 'Reports',
