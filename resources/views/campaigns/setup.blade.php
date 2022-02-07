@@ -3,7 +3,14 @@
 @section('title', trans('messages.campaigns') . " - " . trans('messages.setup'))
 
 @section('head')
-    <script type="text/javascript" src="{{ URL::asset('core/js/group-manager.js') }}"></script>
+	<script type="text/javascript" src="{{ URL::asset('core/js/group-manager.js') }}"></script>
+
+    <link href="{{ URL::asset('core/emoji-picker/css/emoji.css') }}" rel="stylesheet">
+    <script type="text/javascript" src="{{ URL::asset('core/emoji-picker/js/config.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('core/emoji-picker/js/util.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('core/emoji-picker/js/jquery.emojiarea.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('core/emoji-picker/js/emoji-picker.js') }}"></script>
+    
 @endsection
 	
 @section('page_header')
@@ -37,14 +44,19 @@ forward_to_inbox
 					'rules' => $rules,
 					'help_class' => 'campaign'
 				])
-												
-				@include('helpers.form_control', ['type' => 'text',
-					'name' => 'subject',
-					'label' => trans('messages.email_subject'),
-					'value' => $campaign->subject,
-					'rules' => $rules,
-					'help_class' => 'campaign'
-				])
+				
+				<div class="has-emoji">
+					@include('helpers.form_control', ['type' => 'text',
+						'name' => 'subject',
+						'label' => trans('messages.email_subject'),
+						'value' => $campaign->subject,
+						'rules' => $rules,
+						'help_class' => 'campaign',
+						'attributes' => [
+							'data-emojiable' => 'true',
+						]
+					])
+				</div>
 												
 				@include('helpers.form_control', ['type' => 'text',
 					'name' => 'from_name',
@@ -292,6 +304,19 @@ arrow_forward
 				});
 				
 				control.change();
+			});
+
+			$(function() {
+				// Initializes and creates emoji set from sprite sheet
+				window.emojiPicker = new EmojiPicker({
+				emojiable_selector: '[data-emojiable=true]',
+				assetsPath: 'http://onesignal.github.io/emoji-picker/lib/img/',
+				popupButtonClasses: 'fa fa-smile-o'
+				});
+				// Finds all elements with `emojiable_selector` and converts them to rich emoji input fields
+				// You may want to delay this step if you have dynamically created input fields that appear later in the loading process
+				// It can be called as many times as necessary; previously converted input fields will not be converted again
+				window.emojiPicker.discover();
 			});
 		})
 	</script>
