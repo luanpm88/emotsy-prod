@@ -14,16 +14,21 @@
         <input type="hidden" name="action_id" value="{{ $email->action_id }}" />
     
         <div class="row">
-            <div class="col-md-6">                                            
-                @include('helpers.form_control', ['type' => 'text',
-                    'name' => 'subject',
-                    'label' => trans('messages.email_subject'),
-                    'value' => $email->subject,
-                    'rules' => $email->rules(),
-                    'help_class' => 'email',
-                    'placeholder' => trans('messages.automation.email.subject.placeholder'), 
-                ])
-                                                
+            <div class="col-md-6">          
+                <div class="has-emoji">                                  
+                    @include('helpers.form_control', ['type' => 'text',
+                        'name' => 'subject',
+                        'label' => trans('messages.email_subject'),
+                        'value' => $email->subject,
+                        'rules' => $email->rules(),
+                        'help_class' => 'email',
+                        'placeholder' => trans('messages.automation.email.subject.placeholder'), 
+                        'attributes' => [
+                            'data-emojiable' => 'true',
+                        ]
+                    ])
+                </div>
+
                 @include('helpers.form_control', ['type' => 'text',
                     'name' => 'from_name',
                     'label' => trans('messages.from_name'),
@@ -233,5 +238,19 @@
             }
         });
         $('[name=custom_tracking_domain]').change();
+
+
+        $(function() {
+            // Initializes and creates emoji set from sprite sheet
+            window.emojiPicker = new EmojiPicker({
+            emojiable_selector: '[data-emojiable=true]',
+            assetsPath: 'http://onesignal.github.io/emoji-picker/lib/img/',
+            popupButtonClasses: 'fa fa-smile-o'
+            });
+            // Finds all elements with `emojiable_selector` and converts them to rich emoji input fields
+            // You may want to delay this step if you have dynamically created input fields that appear later in the loading process
+            // It can be called as many times as necessary; previously converted input fields will not be converted again
+            window.emojiPicker.discover();
+        });
     </script>
 @endsection

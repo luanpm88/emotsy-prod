@@ -4049,4 +4049,28 @@
   'product.delete.confirm' => 'You\'re about to delete the product <span class="fw-600">:name</span>',
   'product.deleted' => 'The product was deleted successfully',
   'site.menus' => 'Menus',
+  'standard.no_sending_server_error' => 'You currently does not have any sending server. Go to Sending > Sending servers page, make sure you add a sending server.',
+  'default_page_form_layout' => 'Default Emails & Pages',
+  'admin.loginas_area' => 'Back to <strong>:name</strong>',
+  'saas_mode' => 'SAAS mode',
+  'admin.install_mode.saas.help' => 'SAAS mode allows you to set up your app as a web
+    platform where users can register and subscribe. You can charge
+    your users for using the email service.',
+  'installation_type' => 'Installation type',
+  'standard_mode' => 'Standard mode',
+  'admin.install_mode.standard.help' => 'This is ideal for using app as a standard email marketing
+    plugin for yourself, your team or company. All email marketing
+    features are available.',
+  'can_not_change_after_installed' => 'This can not be changed after installed',
+  'subscribe_notification_for_list_owner' => 'Subscription notification email (for mail list owner)',
+  'dropzone.dictDefaultMessage' => 'Drop files here to upload',
+  'dropzone.dictFallbackMessage' => 'Your browser does not support drag & drop file uploads.',
+  'dropzone.dictFallbackText' => 'Please use the fallback form below to upload your files like in the olden days.',
+  'dropzone.dictFileTooBig' => 'File is too big ({{filesize}}MiB). Max filesize: {{maxFilesize}}MiB.',
+  'dropzone.dictInvalidFileType' => 'You can\'t upload files of this type.',
+  'dropzone.dictResponseError' => 'Server responded with {{statusCode}} code.',
+  'dropzone.dictCancelUpload' => 'Cancel upload',
+  'dropzone.dictCancelUploadConfirmation' => 'Are you sure you want to cancel this upload?',
+  'dropzone.dictRemoveFile' => 'Remove file',
+  'dropzone.dictMaxFilesExceeded' => 'You can not upload any more files.',
 ) ?>

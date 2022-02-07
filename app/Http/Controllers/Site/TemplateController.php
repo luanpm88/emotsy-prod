@@ -5,6 +5,8 @@ namespace Acelle\Http\Controllers\Site;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log as LaravelLog;
 use Acelle\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Http;
+use Acelle\Library\WordpressManager;
 
 class TemplateController extends Controller
 {
@@ -20,13 +22,13 @@ class TemplateController extends Controller
      */
     public function listing(Request $request)
     {
-        $wordpress = new \Acelle\Library\WordpressManager();
+        $wp = new WordpressManager();
 
         // view
         $view = $request->view ? $request->view : 'list';
 
         // wordpress themes
-        $templates = $wordpress->getTemplates();
+        $templates = $wp->getTemplates();
 
         return view('site.templates._list_' . $view, [
             'templates' => $templates,

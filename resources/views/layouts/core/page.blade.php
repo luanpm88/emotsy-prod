@@ -8,6 +8,8 @@
 	
 	@include('layouts.core._head')
 	@include('layouts.core._script_vars')
+
+	@yield('head')
 </head>
 
 <body class="list-page bg-slate-800 color-scheme-{{ isset($list) && is_object($list) ? $list->customer->getColorScheme() : '' }}">

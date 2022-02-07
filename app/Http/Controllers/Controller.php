@@ -121,6 +121,23 @@ class Controller extends BaseController
 
         return redirect()->action('HomeController@index');
     }
+    
+    public function validateToken($api_token)
+    {
+        $valid = is_object(\Acelle\Model\User::where('api_token', $api_token)->first());
+
+        if ($valid) {
+            return response()
+                ->json([
+                    'status' => 'success',
+                ], 200);
+        } else {
+            return response()
+                ->json([
+                    'status' => 'failed',
+                ], 401);
+        }
+    }
 
     /**
      * Login from outsite.

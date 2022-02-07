@@ -108,12 +108,12 @@ class Customer extends Model
 
     public function lists()
     {
-        return $this->hasMany('Acelle\Model\MailList')->orderBy('created_at', 'desc');
+        return $this->hasMany('Acelle\Model\MailList');
     }
 
     public function templates()
     {
-        return $this->hasMany('Acelle\Model\Template')->orderBy('created_at', 'desc');
+        return $this->hasMany('Acelle\Model\Template');
     }
 
     public function language()
@@ -123,7 +123,7 @@ class Customer extends Model
 
     public function campaigns()
     {
-        return $this->hasMany('Acelle\Model\Campaign')->orderBy('created_at', 'desc');
+        return $this->hasMany('Acelle\Model\Campaign');
     }
 
     public function sentCampaigns()

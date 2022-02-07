@@ -229,13 +229,13 @@ function saasToSingleMode()
 
     // remove all subscriptions
     echo "\n2. Remove all subscriptions...";
-    foreach(\Acelle\Model\Subscription::all() as $subscription) {
+    foreach (\Acelle\Model\Subscription::all() as $subscription) {
         $subscription->delete();
     }
 
     // remove all plans
     echo "\n3. Remove all plans...";
-    foreach(\Acelle\Model\Plan::all() as $plan) {
+    foreach (\Acelle\Model\Plan::all() as $plan) {
         $plan->delete();
     }
 
@@ -245,7 +245,7 @@ function saasToSingleMode()
 
     // add all customer to unlimited plan
     echo "\n5. Add all customers to unlimited plan...";
-    foreach(\Acelle\Model\Customer::all() as $customer) {
+    foreach (\Acelle\Model\Customer::all() as $customer) {
         \Acelle\Helpers\forceAddCustomerToUnlimitedPlan($customer);
     }
 
