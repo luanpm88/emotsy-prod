@@ -130,13 +130,13 @@ done
                                 <div class="text-center">
                                     <img height="100" src="{{ url('images/open-to-customization-and-evolve.png') }}" />
                                 </div>
-                                <h2>Written in PHP, on top of LARAVEL 5</h2>
+                                <h2>Written in PHP, on top of LARAVEL 8</h2>
                                 <h4>Open to full customization and rebranding</h4>
                                 <p>Laravel is an free and open-source PHP framework, designed for the development of robust web applications succeeding the MVC pattern. With PHP/Laravel, code maintenance is easier than ever as your business is growing</p>
                                 <ul>
                                     <li class="d-flex align-items-center"><span class="material-icons-round mr-2 text-info">
 done
-</span> <span>Coded in PHP 5.6, 7.0 on top of Laravel 5</span></li>
+</span> <span>Coded in PHP 7.0 on top of Laravel 8</span></li>
                                     <li class="d-flex align-items-center"><span class="material-icons-round mr-2 text-info">
 done
 </span> <span>Backed by MySQL 5.x</li>

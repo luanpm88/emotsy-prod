@@ -2,7 +2,6 @@
 
 return [
     '1' => [
-        'path' => '/Users/luan/wpbrand',
         'url' => 'http://wp.vbrand.com',
         'db_name' => 'wpbrand',
         'db_prefix' => '',
@@ -13,7 +12,6 @@ return [
         // 'db_password' => '', // same as acelle config
     ],
     '2' => [
-        'path' => '/Users/luan/wpbrand',
         'url' => 'http://wpbrand.com',
         'db_name' => 'wpbrand',
         'db_prefix' => '',
