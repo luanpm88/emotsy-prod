@@ -55,7 +55,6 @@ class Frontend
                 'database.connections.wordpress.database' => config('wordpress.'.$user->customer->id.'.db_name'),
                 'database.connections.wordpress.prefix' => config('wordpress.'.$user->customer->id.'.db_prefix'),
                 'wordpress.url' => config('wordpress.'.$user->customer->id.'.url'),
-                'wordpress.path' => config('wordpress.'.$user->customer->id.'.path'),
             ]);
 
             if (config('wordpress.'.$user->customer->id.'.db_host', false)) {
