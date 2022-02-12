@@ -649,8 +649,15 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::post('site/templates/{id}/activate', 'Site\TemplateController@activate');
     Route::get('site/templates/listing', 'Site\TemplateController@listing');
     Route::get('site/templates', 'Site\TemplateController@index');
+
+    // Site - Shop setting
+    Route::get('site/settings/shop', 'Site\SettingController@shop');
+    Route::get('site/settings/slider', 'Site\SettingController@sliderRevolution');
+    
     // Invoice
     Route::get('invoices/{uid}/download', 'InvoiceController@download');
+
+    
 });
 
 // ADMIN AREA
