@@ -50,7 +50,7 @@ class Frontend
         }
 
         // Wordpress db by user
-        if (isset($user) && isset($user->customer)) {     
+        if (isset($user) && isset($user->customer)) {
             config([
                 'database.connections.wordpress.database' => config('wordpress.'.$user->customer->id.'.db_name'),
                 'database.connections.wordpress.prefix' => config('wordpress.'.$user->customer->id.'.db_prefix'),

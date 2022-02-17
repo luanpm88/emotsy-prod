@@ -1035,7 +1035,7 @@ $files = $sorted;
                 <a class="folder-link" href="dialog.php?<?php echo $get_params.rawurlencode($src)."&".($callback?'callback='.$callback."&":'').uniqid() ?>">
                     <div class="img-precontainer">
                             <div class="img-container directory"><span></span>
-                            <img class="directory-img" data-src="img/<?php echo $config['icon_theme']; ?>/folder<?php if ($file=="..") {
+                            <img class="directory-img" src="img/<?php echo $config['icon_theme']; ?>/folder<?php if ($file=="..") {
                 echo "_back";
             } ?>.png" />
                             </div>
@@ -1043,7 +1043,7 @@ $files = $sorted;
                     <div class="img-precontainer-mini directory">
                             <div class="img-container-mini">
                             <span></span>
-                            <img class="directory-img" data-src="img/<?php echo $config['icon_theme']; ?>/folder<?php if ($file=="..") {
+                            <img class="directory-img" src="img/<?php echo $config['icon_theme']; ?>/folder<?php if ($file=="..") {
                 echo "_back";
             } ?>.png" />
                             </div>
@@ -1245,7 +1245,7 @@ $files = $sorted;
                     <?php if ($is_icon_thumb) { ?><div class="filetype"><?php echo $file_array['extension'] ?></div><?php } ?>
                     
                     <div class="img-container">
-                        <img class="<?php echo $show_original ? "original" : "" ?><?php echo $is_icon_thumb ? " icon" : "" ?>" data-src="<?php echo $src_thumb; ?>">
+                        <img class="<?php echo $show_original ? "original" : "" ?><?php echo $is_icon_thumb ? " icon" : "" ?>" src="<?php echo $src_thumb; ?>">
                     </div>
                 </div>
                 <div class="img-precontainer-mini <?php if ($is_img) {
@@ -1260,7 +1260,7 @@ $files = $sorted;
                     } ?>"><?php echo $file_array['extension'] ?></div>
                     <div class="img-container-mini">
                     <?php if ($mini_src!="") { ?>
-                    <img class="<?php echo $show_original_mini ? "original" : "" ?><?php echo $is_icon_thumb_mini ? " icon" : "" ?>" data-src="<?php echo $mini_src;?>">
+                    <img class="<?php echo $show_original_mini ? "original" : "" ?><?php echo $is_icon_thumb_mini ? " icon" : "" ?>" src="<?php echo $mini_src;?>">
                     <?php } ?>
                     </div>
                 </div>

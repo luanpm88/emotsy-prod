@@ -472,7 +472,7 @@ class SendingServerAmazon extends SendingServer implements DomainVerificationInt
         }, $r->toArray()['CustomVerificationEmailTemplates']);
 
         // Delete template if it is not "acelle-"
-        foreach($names as $key => $name) {
+        foreach ($names as $key => $name) {
             if (strpos($name, $pattern) !== 0) {
                 unset($names[$key]);
                 $this->deleteCustomVerificationEmailTemplateIfExists($name);

@@ -121,7 +121,7 @@ class Controller extends BaseController
 
         return redirect()->action('HomeController@index');
     }
-    
+
     public function validateToken($api_token)
     {
         $valid = is_object(\Acelle\Model\User::where('api_token', $api_token)->first());
