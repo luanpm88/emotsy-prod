@@ -7693,3 +7693,6 @@ textarea.form-control {
 .has-emoji .form-group label ~ .emoji-picker-icon::before {
     display: none;
 }
+.tox-form__group input:read-only {
+    background-color: #efefef!important;
+  }
