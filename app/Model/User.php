@@ -183,9 +183,9 @@ class User extends Authenticatable
         );
 
         if (isset($this->id)) {
-            $rules['password'] = 'nullable|confirmed|min:5';
+            $rules['password'] = 'nullable|confirmed|min:5|max:255';
         } else {
-            $rules['password'] = 'required|confirmed|min:5';
+            $rules['password'] = 'required|confirmed|min:5|max:255';
         }
 
         return $rules;
@@ -207,9 +207,9 @@ class User extends Authenticatable
         );
 
         if (isset($this->id)) {
-            $rules['password'] = 'min:5';
+            $rules['password'] = 'min:5|max:255';
         } else {
-            $rules['password'] = 'required|min:5';
+            $rules['password'] = 'required|max:255';
         }
 
         return $rules;
@@ -257,7 +257,7 @@ class User extends Authenticatable
             $arr['language_id'] = 'required';
         }
         if (isset($request->password)) {
-            $arr['password'] = 'min:5';
+            $arr['password'] = 'min:5|max:255';
         }
 
         return $arr;
