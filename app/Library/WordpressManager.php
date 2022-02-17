@@ -29,16 +29,16 @@ class WordpressManager
 
             // ** MySQL settings - You can get this info from your web host ** //
             /** The name of the database for WordPress */
-            define( 'DB_NAME', config('database.connections.wordpress.database') );
+            define('DB_NAME', config('database.connections.wordpress.database'));
 
             /** MySQL database username */
-            define( 'DB_USER', config('database.connections.wordpress.username') );
+            define('DB_USER', config('database.connections.wordpress.username'));
 
             /** MySQL database password */
-            define( 'DB_PASSWORD', config('database.connections.wordpress.password') );
+            define('DB_PASSWORD', config('database.connections.wordpress.password'));
 
             /** MySQL hostname */
-            define( 'DB_HOST', config('database.connections.wordpress.host') . ':' . config('database.connections.wordpress.port') );
+            define('DB_HOST', config('database.connections.wordpress.host') . ':' . config('database.connections.wordpress.port'));
 
             require_once base_path() . '/../wpbase/wp-load.php';
             require_once base_path() . '/../wpbase/wp-admin/includes/admin.php';

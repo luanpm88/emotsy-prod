@@ -3947,4 +3947,6 @@
   'dropzone.dictCancelUploadConfirmation' => 'Are you sure you want to cancel this upload?',
   'dropzone.dictRemoveFile' => 'Remove file',
   'dropzone.dictMaxFilesExceeded' => 'You can not upload any more files.',
+  'brand.shop_info' => 'Shop Info',
+  'brand.slider' => 'Slider',
 ) ?>
