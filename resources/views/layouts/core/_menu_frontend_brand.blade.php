@@ -51,7 +51,51 @@
                         <span>{{ trans('messages.templates') }}</span>
                     </a>
                 </li> --}}
-
+                <li class="nav-item dropdown">
+                    <a href="" title="{{ trans('messages.content') }}"
+                        class="leftbar-tooltip nav-link d-flex align-items-center py-3 lvl-1 dropdown-toggle"
+                        id="content-menu" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="navbar-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 94.4 85.6"><defs><style>.cls-1{fill:#93c2a0;}.cls-2{fill:#f2f2f2;}</style></defs><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><g id="Layer_2-2" data-name="Layer 2"><g id="Layer_1-2-2" data-name="Layer 1-2"><path class="cls-1" d="M37,58.5H55.1a4.23,4.23,0,0,1,4.2,4.2V78a4.23,4.23,0,0,1-4.2,4.2H37A4.23,4.23,0,0,1,32.8,78V62.7A4.23,4.23,0,0,1,37,58.5Z"/><path class="cls-2" d="M94.4,32.8a17.74,17.74,0,0,0-.9-5.6h0c0-.3,0-.3-.3-.6l-8-19.8A10.37,10.37,0,0,0,75.2,0h-56c-4.7,0-8.3,2.4-9.7,6.5L.9,26.8v.6A19.64,19.64,0,0,0,0,33.3,18,18,0,0,0,5.9,46.9V76.7a9,9,0,0,0,8.9,8.9h64a9,9,0,0,0,8.9-8.9V48.1c4-4.4,6.7-9.7,6.7-15.3ZM78.8,77.9h-64A1.83,1.83,0,0,1,13,76.3V50.5a21.63,21.63,0,0,0,6.2.9,17.57,17.57,0,0,0,14.2-6.8,18.35,18.35,0,0,0,14.2,6.5,17.57,17.57,0,0,0,14.2-6.8,19.6,19.6,0,0,0,14.5,6.8,18.35,18.35,0,0,0,4.7-.6V75.9a2.82,2.82,0,0,1-2.2,2Zm2.6-34.8a10.91,10.91,0,0,1-5.6,1.2,11.62,11.62,0,0,1-10-5.6c-.3-.3-.3-.9-.9-1.5a4.41,4.41,0,0,0-3.2-1.5,3.56,3.56,0,0,0-3.2,1.5,3.77,3.77,0,0,0-.9,1.5,11.84,11.84,0,0,1-16.2,3.9,12.11,12.11,0,0,1-3.9-3.9c-.3-.3-.3-.9-.9-1.2-1.5-1.8-5.3-1.8-6.5,0a2.9,2.9,0,0,0-.9,1.5,11.4,11.4,0,0,1-10,5.6,10.91,10.91,0,0,1-5.6-1.2h0A12,12,0,0,1,7.4,32.8,12.09,12.09,0,0,1,8,29v-.3L16.5,8.6c.3-.6.6-2.1,3.2-2.1H75.8a3.3,3.3,0,0,1,3.5,2.1l8,19.8v.3a25,25,0,0,1,.6,3.8,12.56,12.56,0,0,1-6.5,10.6Z"/><path class="cls-2" d="M67.1,27.3H26.7a4,4,0,0,1,0-8H67.1a4,4,0,0,1,0,8Z"/></g></g></g></g></svg>
+                        </i>
+                        <span>{{ trans('messages.brand.store') }}</span>
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="content-menu">
+                        <li class="nav-item" rel0="SettingController/shop">
+                            <a class="dropdown-item d-flex align-items-center" href="{{ action('Site\SettingController@shop') }}">
+                                {{-- <i class="navbar-icon" style="">
+                                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1" x="0px" y="0px" viewBox="0 0 94.4 85.6" style="enable-background:new 0 0 94.4 85.6;" xml:space="preserve"><style type="text/css">.st0{fill:#93C2A0;}.st1{fill:#414042;}.st2{fill:#877083;}</style><g id="Layer_2_1_"><g id="Layer_1-2"><path class="st0" d="M37,58.5h18.1c2.3,0,4.2,1.9,4.2,4.2V78c0,2.3-1.9,4.2-4.2,4.2H37c-2.3,0-4.2-1.9-4.2-4.2V62.7 C32.8,60.4,34.7,58.5,37,58.5z"/><path class="st1" d="M94.4,32.8c0-1.9-0.3-3.8-0.9-5.6l0,0c0-0.3,0-0.3-0.3-0.6l-8-19.8c-1.5-4.2-5.6-6.9-10-6.8H19.2 c-4.7,0-8.3,2.4-9.7,6.5L0.9,26.8v0.6C0.3,29.3,0,31.3,0,33.3c-0.1,5.2,2.1,10.1,5.9,13.6v29.8c0,4.9,4,8.8,8.9,8.9h64 c4.9,0,8.8-4,8.9-8.9V48.1C91.7,43.7,94.4,38.4,94.4,32.8L94.4,32.8z M78.8,77.9h-64c-0.9,0-1.7-0.7-1.8-1.6c0-0.1,0-0.1,0-0.2 V50.5c2,0.6,4.1,0.9,6.2,0.9c5.5,0.1,10.8-2.4,14.2-6.8c3.5,4.2,8.7,6.5,14.2,6.5c5.5,0.1,10.8-2.4,14.2-6.8 c3.6,4.2,8.9,6.7,14.5,6.8c1.6,0,3.2-0.2,4.7-0.6v25.4C80.7,76.9,79.9,77.7,78.8,77.9L78.8,77.9z M81.4,43.1 c-1.7,0.9-3.7,1.3-5.6,1.2c-4.1,0-7.9-2.1-10-5.6c-0.3-0.3-0.3-0.9-0.9-1.5c-0.8-0.9-2-1.5-3.2-1.5c-1.3-0.1-2.5,0.5-3.2,1.5 c-0.4,0.4-0.7,0.9-0.9,1.5c-3.4,5.5-10.7,7.3-16.2,3.9c-1.6-1-2.9-2.3-3.9-3.9c-0.3-0.3-0.3-0.9-0.9-1.2c-1.5-1.8-5.3-1.8-6.5,0 c-0.4,0.4-0.8,0.9-0.9,1.5c-2.1,3.5-5.9,5.7-10,5.6c-1.9,0.1-3.9-0.3-5.6-1.2l0,0c-3.9-2.1-6.2-6.2-6.2-10.6 c0-1.3,0.2-2.6,0.6-3.8v-0.3l8.5-20.1c0.3-0.6,0.6-2.1,3.2-2.1h56.1c1.5-0.2,3,0.7,3.5,2.1l8,19.8v0.3c0.3,1.3,0.5,2.5,0.6,3.8 C87.8,36.9,85.3,40.9,81.4,43.1L81.4,43.1z"/><path class="st2" d="M67.1,27.3H26.7c-2.2,0-4-1.8-4-4s1.8-4,4-4h40.4c2.2,0,4,1.8,4,4S69.3,27.3,67.1,27.3z"/></g></g></svg>
+                                </i> --}}
+                                <span>{{ trans('messages.brand.shop_info') }}</span>
+                            </a>
+                        </li>
+                        <li class="nav-item" rel0="SettingController/products">
+                            <a class="dropdown-item d-flex align-items-center" href="{{ action('Site\SettingController@products') }}">
+                                <span>{{ trans('messages.brand.product_settings') }}</span>
+                            </a>
+                        </li>
+                        <li class="nav-item" rel0="SettingController/shipping">
+                            <a class="dropdown-item d-flex align-items-center" href="{{ action('Site\SettingController@shipping') }}">
+                                <span>{{ trans('messages.brand.shipping') }}</span>
+                            </a>
+                        </li>
+                        <li class="nav-item" rel0="SettingController/payments">
+                            <a class="dropdown-item d-flex align-items-center" href="{{ action('Site\SettingController@payments') }}">
+                                <span>{{ trans('messages.brand.payments') }}</span>
+                            </a>
+                        </li>
+                        <li class="nav-item" rel0="SettingController/account">
+                            <a class="dropdown-item d-flex align-items-center" href="{{ action('Site\SettingController@account') }}">
+                                <span>{{ trans('messages.brand.account_privacy') }}</span>
+                            </a>
+                        </li>
+                        <li class="nav-item" rel0="SettingController/emails">
+                            <a class="dropdown-item d-flex align-items-center" href="{{ action('Site\SettingController@emails') }}">
+                                <span>{{ trans('messages.brand.emails') }}</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
                 <li class="nav-item dropdown">
                     <a href="" title="{{ trans('messages.content') }}"
                         class="leftbar-tooltip nav-link d-flex align-items-center py-3 lvl-1 dropdown-toggle"
@@ -67,7 +111,7 @@
                                 {{-- <i class="navbar-icon" style="">
                                     <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1" x="0px" y="0px" viewBox="0 0 94.4 85.6" style="enable-background:new 0 0 94.4 85.6;" xml:space="preserve"><style type="text/css">.st0{fill:#93C2A0;}.st1{fill:#414042;}.st2{fill:#877083;}</style><g id="Layer_2_1_"><g id="Layer_1-2"><path class="st0" d="M37,58.5h18.1c2.3,0,4.2,1.9,4.2,4.2V78c0,2.3-1.9,4.2-4.2,4.2H37c-2.3,0-4.2-1.9-4.2-4.2V62.7 C32.8,60.4,34.7,58.5,37,58.5z"/><path class="st1" d="M94.4,32.8c0-1.9-0.3-3.8-0.9-5.6l0,0c0-0.3,0-0.3-0.3-0.6l-8-19.8c-1.5-4.2-5.6-6.9-10-6.8H19.2 c-4.7,0-8.3,2.4-9.7,6.5L0.9,26.8v0.6C0.3,29.3,0,31.3,0,33.3c-0.1,5.2,2.1,10.1,5.9,13.6v29.8c0,4.9,4,8.8,8.9,8.9h64 c4.9,0,8.8-4,8.9-8.9V48.1C91.7,43.7,94.4,38.4,94.4,32.8L94.4,32.8z M78.8,77.9h-64c-0.9,0-1.7-0.7-1.8-1.6c0-0.1,0-0.1,0-0.2 V50.5c2,0.6,4.1,0.9,6.2,0.9c5.5,0.1,10.8-2.4,14.2-6.8c3.5,4.2,8.7,6.5,14.2,6.5c5.5,0.1,10.8-2.4,14.2-6.8 c3.6,4.2,8.9,6.7,14.5,6.8c1.6,0,3.2-0.2,4.7-0.6v25.4C80.7,76.9,79.9,77.7,78.8,77.9L78.8,77.9z M81.4,43.1 c-1.7,0.9-3.7,1.3-5.6,1.2c-4.1,0-7.9-2.1-10-5.6c-0.3-0.3-0.3-0.9-0.9-1.5c-0.8-0.9-2-1.5-3.2-1.5c-1.3-0.1-2.5,0.5-3.2,1.5 c-0.4,0.4-0.7,0.9-0.9,1.5c-3.4,5.5-10.7,7.3-16.2,3.9c-1.6-1-2.9-2.3-3.9-3.9c-0.3-0.3-0.3-0.9-0.9-1.2c-1.5-1.8-5.3-1.8-6.5,0 c-0.4,0.4-0.8,0.9-0.9,1.5c-2.1,3.5-5.9,5.7-10,5.6c-1.9,0.1-3.9-0.3-5.6-1.2l0,0c-3.9-2.1-6.2-6.2-6.2-10.6 c0-1.3,0.2-2.6,0.6-3.8v-0.3l8.5-20.1c0.3-0.6,0.6-2.1,3.2-2.1h56.1c1.5-0.2,3,0.7,3.5,2.1l8,19.8v0.3c0.3,1.3,0.5,2.5,0.6,3.8 C87.8,36.9,85.3,40.9,81.4,43.1L81.4,43.1z"/><path class="st2" d="M67.1,27.3H26.7c-2.2,0-4-1.8-4-4s1.8-4,4-4h40.4c2.2,0,4,1.8,4,4S69.3,27.3,67.1,27.3z"/></g></g></svg>
                                 </i> --}}
-                                <span>{{ trans('messages.brand.shop_info') }}</span>
+                                <span>{{ trans('messages.brand.site_information') }}</span>
                             </a>
                         </li>
                         @php
@@ -79,7 +123,7 @@
                                     {{-- <i class="navbar-icon" style="">
                                         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1" x="0px" y="0px" viewBox="0 0 94.4 85.6" style="enable-background:new 0 0 94.4 85.6;" xml:space="preserve"><style type="text/css">.st0{fill:#93C2A0;}.st1{fill:#414042;}.st2{fill:#877083;}</style><g id="Layer_2_1_"><g id="Layer_1-2"><path class="st0" d="M37,58.5h18.1c2.3,0,4.2,1.9,4.2,4.2V78c0,2.3-1.9,4.2-4.2,4.2H37c-2.3,0-4.2-1.9-4.2-4.2V62.7 C32.8,60.4,34.7,58.5,37,58.5z"/><path class="st1" d="M94.4,32.8c0-1.9-0.3-3.8-0.9-5.6l0,0c0-0.3,0-0.3-0.3-0.6l-8-19.8c-1.5-4.2-5.6-6.9-10-6.8H19.2 c-4.7,0-8.3,2.4-9.7,6.5L0.9,26.8v0.6C0.3,29.3,0,31.3,0,33.3c-0.1,5.2,2.1,10.1,5.9,13.6v29.8c0,4.9,4,8.8,8.9,8.9h64 c4.9,0,8.8-4,8.9-8.9V48.1C91.7,43.7,94.4,38.4,94.4,32.8L94.4,32.8z M78.8,77.9h-64c-0.9,0-1.7-0.7-1.8-1.6c0-0.1,0-0.1,0-0.2 V50.5c2,0.6,4.1,0.9,6.2,0.9c5.5,0.1,10.8-2.4,14.2-6.8c3.5,4.2,8.7,6.5,14.2,6.5c5.5,0.1,10.8-2.4,14.2-6.8 c3.6,4.2,8.9,6.7,14.5,6.8c1.6,0,3.2-0.2,4.7-0.6v25.4C80.7,76.9,79.9,77.7,78.8,77.9L78.8,77.9z M81.4,43.1 c-1.7,0.9-3.7,1.3-5.6,1.2c-4.1,0-7.9-2.1-10-5.6c-0.3-0.3-0.3-0.9-0.9-1.5c-0.8-0.9-2-1.5-3.2-1.5c-1.3-0.1-2.5,0.5-3.2,1.5 c-0.4,0.4-0.7,0.9-0.9,1.5c-3.4,5.5-10.7,7.3-16.2,3.9c-1.6-1-2.9-2.3-3.9-3.9c-0.3-0.3-0.3-0.9-0.9-1.2c-1.5-1.8-5.3-1.8-6.5,0 c-0.4,0.4-0.8,0.9-0.9,1.5c-2.1,3.5-5.9,5.7-10,5.6c-1.9,0.1-3.9-0.3-5.6-1.2l0,0c-3.9-2.1-6.2-6.2-6.2-10.6 c0-1.3,0.2-2.6,0.6-3.8v-0.3l8.5-20.1c0.3-0.6,0.6-2.1,3.2-2.1h56.1c1.5-0.2,3,0.7,3.5,2.1l8,19.8v0.3c0.3,1.3,0.5,2.5,0.6,3.8 C87.8,36.9,85.3,40.9,81.4,43.1L81.4,43.1z"/><path class="st2" d="M67.1,27.3H26.7c-2.2,0-4-1.8-4-4s1.8-4,4-4h40.4c2.2,0,4,1.8,4,4S69.3,27.3,67.1,27.3z"/></g></g></svg>
                                     </i> --}}
-                                    <span>{{ trans('messages.brand.slider') }}</span>
+                                    <span>{{ trans('messages.brand.sliders') }}</span>
                                 </a>
                             </li>
                         @endif

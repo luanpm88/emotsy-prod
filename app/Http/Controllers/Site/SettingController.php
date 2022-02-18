@@ -19,4 +19,29 @@ class SettingController extends Controller
     {
         return view('site.settings.sliderRevolution');
     }
+
+    public function products(Request $request)
+    {
+        return view('site.settings.products');
+    }
+
+    public function shipping(Request $request)
+    {
+        return view('site.settings.shipping');
+    }
+
+    public function payments(Request $request)
+    {
+        return view('site.settings.payments');
+    }
+
+    public function account(Request $request)
+    {
+        return view('site.settings.account');
+    }
+
+    public function emails(Request $request)
+    {
+        return view('site.settings.emails');
+    }
 }
