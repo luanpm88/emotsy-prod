@@ -198,11 +198,17 @@ restart_alt
             },
 
             export: function() {
+                var which = $('[name="which"]:checked').val();
+                var data = {
+                    _token: $('form#formExport').find('input[name="_token"]').val()
+                };
+
+                if (which == 'segment') {
+                    data.segment_uid = $('[name=segment_uid]').val();
+                }
+
                 AcelleExport.showProgressBar();
                 AcelleExport.updateProgressBar(0, "{{ trans('messages.starting') }}");
-
-                var token = $('form#formExport').find('input[name="_token"]').val();
-                var data = $('form#formExport').serialize();
 
                 //$(".processing label").html("{{ trans('messages.starting') }}");
                 //$(".before").addClass('hide');

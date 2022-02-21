@@ -717,15 +717,15 @@ class MailList extends Model
         return $this->getExportTempDir($name);
     }
 
-    public function dispatchExportJob()
+    public function dispatchExportJob($segment = null)
     {
-        return $this->dispatchWithMonitor(new ExportSubscribersJob($this));
+        return $this->dispatchWithMonitor(new ExportSubscribersJob($this, $segment));
     }
 
     /**
      * Export subscribers.
      */
-    public function export($progressCallback = null)
+    public function export($progressCallback = null, $segment = null)
     {
         $processed = 0;
         $total = 0;
@@ -747,7 +747,7 @@ class MailList extends Model
         $writer = Writer::createFromPath($file, 'w+');
 
         // Query subscribers
-        $query = $this->subscribers();
+        $query = (is_null($segment)) ? $this->subscribers() : $segment->subscribers();
         $total = $query->count();
 
         // Get an associative array of [ 'tag' => null ]
