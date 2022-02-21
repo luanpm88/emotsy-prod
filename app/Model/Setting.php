@@ -425,7 +425,7 @@ class Setting extends Model
             ],
             'geoip.sqlite.dbname' => [
                 'cat' => 'others',
-                'value' => 'storage/app/ip2locationdb11.db',
+                'value' => 'storage/app/GeoLite2-City.mmdb',
                 'type' => 'text',
                 'not_required' => true,
             ],
