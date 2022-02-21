@@ -3,6 +3,7 @@
 namespace Acelle\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Acelle\Model\Segment;
 
 class SegmentController extends Controller
 {
@@ -189,7 +190,12 @@ class SegmentController extends Controller
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
         $segment = \Acelle\Model\Segment::findByUid($request->uid);
 
-        $subscribers = $segment->subscribers($request);
+        $subscribers = $segment->subscribers();
+
+        if ($request->sort_order) {
+            $subscribers->orderBy($request->sort_order, $request->sort_direction);
+        }
+
         $total = $subscribers->count();
 
         $subscribers = $subscribers->orderBy($request->sort_order, $request->sort_direction)

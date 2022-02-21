@@ -44,7 +44,7 @@ people
                                 @include('helpers.form_control', [
                                     'value' => '',
                                     'type' => 'select',
-                                    'name' => 'segment_uid[]',
+                                    'name' => 'segment_uid',
                                     'label' => '',
                                     'value' => request()->segment_uid,
                                     'options' => $list->getSegmentSelectOptions(),
@@ -198,10 +198,17 @@ restart_alt
             },
 
             export: function() {
+                var which = $('[name="which"]:checked').val();
+                var data = {
+                    _token: $('form#formExport').find('input[name="_token"]').val()
+                };
+
+                if (which == 'segment') {
+                    data.segment_uid = $('[name=segment_uid]').val();
+                }
+
                 AcelleExport.showProgressBar();
                 AcelleExport.updateProgressBar(0, "{{ trans('messages.starting') }}");
-
-                var token = $('form#formExport').find('input[name="_token"]').val();
 
                 //$(".processing label").html("{{ trans('messages.starting') }}");
                 //$(".before").addClass('hide');
@@ -209,9 +216,7 @@ restart_alt
                 $.ajax({
                     url: '{{ action('SubscriberController@dispatchExportJob', [ 'list_uid' => $list->uid]) }}',
                     type: 'POST',
-                    data: {
-                        '_token': token
-                    },
+                    data: data,
                     success: function (data) {
                         AcelleExport.setCurrentJob(data);
                         AcelleExport.checkProgress();

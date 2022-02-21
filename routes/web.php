@@ -699,6 +699,12 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     // Site - Shop setting
     Route::get('site/settings/shop', 'Site\SettingController@shop');
     Route::get('site/settings/slider', 'Site\SettingController@sliderRevolution');
+    Route::get('site/settings/products', 'Site\SettingController@products');
+    Route::get('site/settings/shipping', 'Site\SettingController@shipping');
+    Route::get('site/settings/payments', 'Site\SettingController@payments');
+    Route::get('site/settings/account-privacy', 'Site\SettingController@payments');
+    Route::get('site/settings/emails', 'Site\SettingController@emails');
+    Route::get('site/settings/account', 'Site\SettingController@account');
     
     // Invoice
     Route::get('invoices/{uid}/download', 'InvoiceController@download');

@@ -4,10 +4,25 @@ class UrlAutoFill {
         var _this = this;
         _this.keyup = null;
         _this.data = data;
-        _this.values = [];                
+        _this.values = [];   
+        _this.isLink = function() {
+            var link = $('.tox-form .tox-selectfield').length;
+
+            if (link) {
+                $('.tox-form__group:first-child input').eq(0).prop('readonly', false);
+            } else {
+                $('.tox-form__group:first-child input').eq(0).prop('readonly', true);
+            }
+
+            return link;
+        }
 
         if (!_this.keyup) {
             _this.keyup = $(document).on('focus', '.tox-form__group:first-child input', function(event) {
+                if (!_this.isLink()) {
+                    return;
+                }
+
                 if (!$('.urlautofill-input').length) {
                     var input = $('<input type="text" class="urlautofill-input">');
                     $(this).after(input);
@@ -19,10 +34,16 @@ class UrlAutoFill {
             });
 
             $(document).on('input', '.tox-form__group:first-child input', function(event) {
+                if (!_this.isLink()) {
+                    return;
+                }
                 console.log('input');
             });
 
             $(document).on('keyup change', '.urlautofill-input', function(event) {
+                if (!_this.isLink()) {
+                    return;
+                }
                 if(event.keyCode !== 13 && event.keyCode !== 38 && event.keyCode !== 40 ) {
                     _this.updateValues();
                     _this.showDropdown();
@@ -31,6 +52,9 @@ class UrlAutoFill {
             })
 
             $(document).on('keydown', '.urlautofill-input', function(event) {
+                if (!_this.isLink()) {
+                    return;
+                }
                 if(event.keyCode == 38) {
                     _this.moveUp();
                 }
@@ -49,10 +73,16 @@ class UrlAutoFill {
             }
 
             $(document).on('mousedown', '.urlfill-dropdown li', function() {
+                if (!_this.isLink()) {
+                    return;
+                }
                 _this.select($(this));
             })
 
             $(document).on('focus click', '.urlautofill-input', function(event) {
+                if (!_this.isLink()) {
+                    return;
+                }
                 _this.input = $(this);
                 _this.updateValues();
                 setTimeout(function() {
@@ -64,6 +94,9 @@ class UrlAutoFill {
             });
 
             $(document).on('focusout', '.urlautofill-input', function(event) {
+                if (!_this.isLink()) {
+                    return;
+                }
                 setTimeout(function() {
                     _this.hideDropdown();
                     _this.input.val($('.tox-form__group:first-child input').eq(0).val());
@@ -73,16 +106,25 @@ class UrlAutoFill {
             });
             
             $(document).on('mousedown', '.tox-browse-url', function(event) {
+                if (!_this.isLink()) {
+                    return;
+                }
                 $('.tox-form__group:first-child input').eq(0).focus();
             });
 
             $(document).on('change', '.tox-form__group:first-child input', function(event) {
+                if (!_this.isLink()) {
+                    return;
+                }
                 setTimeout(function() {
                     _this.input.val($('.tox-form__group:first-child input').eq(0).val());
                 }, 1000);
             });
 
             setInterval(function() {
+                if (!_this.isLink()) {
+                    return;
+                }
                 if (_this.input) {
                     _this.input.val($('.tox-form__group:first-child input').eq(0).val());
                 }
@@ -176,12 +218,10 @@ class UrlAutoFill {
         var _this = this;
         var value = item.html();
 
-        console.log(_this.input.length);
-
         _this.input.val(value);
         _this.input.focusout();
 
-        if (_this.input.closest('.tox-form__group').next().find('input').val() == '' && !_this.input.closest('[role="tabpanel"]').length) {
+        if (_this.input.closest('.tox-form__group').next().find('input').val() == '' && _this.isLink()) {
             _this.input.closest('.tox-form__group').next().find('input').val(item.attr('data'));
         }
 
