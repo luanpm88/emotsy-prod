@@ -20,6 +20,12 @@
         </ul>
     </div>
 
+    <h1>
+        <span><span class="material-icons-round">
+            format_list_bulleted
+            </span> {{ trans('messages.brand.sliders') }}</span>
+    </h1>	
+
 @endsection
 
 @section('content')
