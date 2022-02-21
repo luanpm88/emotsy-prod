@@ -48,6 +48,11 @@ class Upgrade extends Controller
         Artisan::call('queue:prune-batches --hours=24 --unfinished=-1'); // clean up any pending job batches
         Artisan::call('queue:restart');
 
+        // Reset GEODB
+        Setting::set('geoip.sqlite.source_url', 'https://acellemail.s3.amazonaws.com/GeoLite2-City.mmdb');
+        Setting::set('geoip.sqlite.source_hash', '');
+        Setting::set('geoip.enabled', 'no');
+
         // Upgrade post-processing
         if ($request->session()->has('upgraded')) {
             $request->session()->forget('upgraded');
