@@ -44,4 +44,9 @@ class SettingController extends Controller
     {
         return view('site.settings.emails');
     }
+
+    public function site(Request $request)
+    {
+        return view('site.settings.site');
+    }
 }
