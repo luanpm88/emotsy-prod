@@ -3946,4 +3946,5 @@
   'brand.emails' => 'Emails',
   'brand.shipping' => 'Shipping',
   'vat.percent' => 'VAT :percent%',
+  'brand.orders' => 'Orders',
 ) ?>
