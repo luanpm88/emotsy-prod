@@ -13,7 +13,7 @@
 		<!-- Invoice styling -->
 		<style>
 			* {
-				font-family: DejaVu Sans, sans-serif;
+				font-family: DejaVu Sans, sans-serif !important;
 			}
 			body {
 				text-align: center;
@@ -147,7 +147,7 @@
 								</td>
 
 								<td style="padding-left:0;padding-right:0;">
-									@if ($invoice->customer->contact)
+									@if (Acelle\Model\Setting::get('company_name'))
 										@if(Acelle\Model\Setting::get('company_name')) 
 											<div style="font-weight:bold">{{ Acelle\Model\Setting::get('company_name') }}</div>
 										@endif
