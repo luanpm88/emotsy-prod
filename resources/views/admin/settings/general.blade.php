@@ -2,6 +2,11 @@
 
 @section('title', trans('messages.settings'))
 
+@section('head')
+	<script type="text/javascript" src="{{ URL::asset('core/tinymce/tinymce.min.js') }}"></script>        
+    <script type="text/javascript" src="{{ URL::asset('core/js/editor.js') }}"></script>
+@endsection
+
 @section('page_header')
 
     <div class="page-title">

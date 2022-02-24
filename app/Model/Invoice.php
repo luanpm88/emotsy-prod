@@ -165,6 +165,17 @@ class Invoice extends Model
         return $total;
     }
 
+    public function subTotal()
+    {
+        $total = 0;
+
+        foreach ($this->invoiceItems as $item) {
+            $total += $item->subTotal();
+        }
+
+        return $total;
+    }
+
     public function total()
     {
         $total = 0;
@@ -416,10 +427,13 @@ class Invoice extends Model
                     'tax' => format_price($item->getTax(), $item->invoice->currency->format),
                     'tax_p' => format_number($item->getTaxPercent()),
                     'discount' => format_price($item->discount, $item->invoice->currency->format),
+                    'sub_total' => format_price($item->subTotal(), $item->invoice->currency->format),
                 ];
             }),
             'charge_info' => $chargeInfo,
             'total' => format_price($this->total(), $this->currency->format),
+            'sub_total' => format_price($this->subTotal(), $this->currency->format),
+            'tax' => format_price($this->getTax(), $this->currency->format),
             'pending' => $this->getPendingTransaction(),
             'invoice_uid' => $this->uid,
             'due_date' => $this->created_at,
@@ -626,13 +640,14 @@ class Invoice extends Model
     {
         // instantiate and use the dompdf class
         $dompdf = new Dompdf(array('enable_remote' => true));
-        $content = view('invoices.pdf', [
+        $content = mb_convert_encoding(view('invoices.pdf', [
             'bill' => $this->getBillingInfo(),
-        ]);
+            'invoice' => $this,
+        ]), 'HTML-ENTITIES', 'UTF-8');
         $dompdf->loadHtml($content);
 
         // (Optional) Setup the paper size and orientation
-        $dompdf->setPaper('A4', 'landscape');
+        $dompdf->setPaper('A4');
 
         // Render the HTML as PDF
         $dompdf->render();

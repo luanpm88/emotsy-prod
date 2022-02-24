@@ -2,6 +2,7 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8" />
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 
 		<title>A simple, clean, and responsive HTML invoice template</title>
@@ -11,8 +12,10 @@
 
 		<!-- Invoice styling -->
 		<style>
+			* {
+				font-family: DejaVu Sans, sans-serif;
+			}
 			body {
-				font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
 				text-align: center;
 				color: #777;
 			}
@@ -40,10 +43,10 @@
 				max-width: 800px;
 				margin: auto;
 				padding: 30px;
-				/* border: 1px solid #eee;
+				/* border: 1px solid #ddd;
 				box-shadow: 0 0 10px rgba(0, 0, 0, 0.15); */
-				font-size: 16px;
-				line-height: 24px;
+				font-size: 14px;
+				line-height: 20px;
 				font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
 				color: #555;
 			}
@@ -79,25 +82,26 @@
 			}
 
 			.invoice-box table tr.heading td {
-				background: #eee;
+				background: #555;
 				border-bottom: 1px solid #ddd;
 				font-weight: bold;
+				color: #fff;
 			}
 
 			.invoice-box table tr.details td {
 				padding-bottom: 20px;
 			}
 
-			.invoice-box table tr.item td {
-				border-bottom: 1px solid #eee;
+			.invoice-box table tr.item > td {
+				border-bottom: 1px solid #ddd;
 			}
 
-			.invoice-box table tr.item.last td {
+			.invoice-box table tr.item.last > td {
 				border-bottom: none;
 			}
 
-			.invoice-box table tr.total td:nth-child(2) {
-				border-top: 2px solid #eee;
+			.invoice-box table tr.total > td:nth-child(2) {
+				border-top: 2px solid #ddd;
 				font-weight: bold;
 			}
 
@@ -126,13 +130,13 @@
 	</head>
 
 	<body>
-		<div class="invoice-box">
+		<div class="invoice-box" style="position: relative;">
 			<table>
 				<tr class="top">
-					<td colspan="2">
+					<td colspan="2" style="padding-left:0;padding-right:0;">
 						<table>
 							<tr>
-								<td class="title">
+								<td class="title" style="padding-left:0;padding-right:0;">
 									@if (\Acelle\Model\Setting::get('site_logo_small'))
                                         <img width="200px" class="logo" src="{{ action('SettingController@file', \Acelle\Model\Setting::get('site_logo_small')) }}" alt="">
                                     @else
@@ -142,10 +146,15 @@
                                     @endif      
 								</td>
 
-								<td>
-									{{ trans('messages.invoice') }} #: {{ $bill['invoice_uid'] }}<br />
-									{{ trans('messages.created_at') }}: {{ Acelle\Library\Tool::formatDateTime(Carbon\Carbon::now()) }}<br />
-									{{ trans('messages.due_date') }}: {{ Acelle\Library\Tool::formatDateTime($bill['due_date']) }}
+								<td style="padding-left:0;padding-right:0;">
+									@if ($invoice->customer->contact)
+										@if(Acelle\Model\Setting::get('company_name')) 
+											<div style="font-weight:bold">{{ Acelle\Model\Setting::get('company_name') }}</div>
+										@endif
+										@if(Acelle\Model\Setting::get('company_address')) 
+											<div style="">{!! Acelle\Model\Setting::get('company_address') !!}</div>
+										@endif
+									@endif
 								</td>
 							</tr>
 						</table>
@@ -153,22 +162,27 @@
 				</tr>
 
 				<tr class="information">
-					<td colspan="2">
+					<td colspan="2" style="padding-left:0;padding-right:0;">
+						<h2>{{ trans('messages.invoice.header') }}</h2>
+					</td>
+				</tr>
+
+				<tr class="information">
+					<td colspan="2" style="padding-left:0;padding-right:0;">
 						<table>
 							<tr>
-								<td>
-									@if($bill['billing_address']) 
-                                        <div>{{ $bill['billing_address'] }}</div>
-                                    @endif
-									@if($bill['billing_country']) 
-                                        <div>{{ $bill['billing_country'] }}</div>
-                                    @endif
-								</td>
-
-								<td>
+								<td style="padding-left:0;padding-right:0;">
 									@if($bill['billing_first_name']) 
-                                        <div>{{ $bill['billing_first_name'] }} {{ $bill['billing_last_name'] }}</div>
+                                        <div style="font-weight:bold">{{ $bill['billing_first_name'] }} {{ $bill['billing_last_name'] }}</div>
                                     @endif
+									@if($bill['billing_address']) 
+                                        <div>{{ $bill['billing_address'] }}
+											@if($bill['billing_country']) 
+												<span>{{ $bill['billing_country'] }}</span>
+											@endif
+										</div>
+                                    @endif
+									
 									@if($bill['billing_email']) 
                                         <div>{{ $bill['billing_email'] }}</div>
                                     @endif
@@ -176,10 +190,29 @@
                                         <div>{{ $bill['billing_phone'] }}</div>
                                     @endif
 								</td>
+
+								<td style="padding-right:0">
+									<table>
+										<tr>
+											<td style="padding:0;text-align:right;padding-right:10px;">{{ trans('messages.invoice') }} #:</td>
+											<td style="padding:0">{{ $bill['invoice_uid'] }}</td>
+										</tr>
+										<tr>
+											<td style="padding:0;text-align:right;padding-right:10px;">{{ trans('messages.created_at') }}:</td>
+											<td style="padding:0;width:180px">{{ Acelle\Library\Tool::formatDateTime(Carbon\Carbon::now()) }}</td>
+										</tr>
+										<tr>
+											<td style="padding:0;text-align:right;padding-right:10px;">{{ trans('messages.due_date') }}:</td>
+											<td style="padding:0"> {{ Acelle\Library\Tool::formatDateTime($bill['due_date']) }}</td>
+										</tr>
+									</table>
+								</td>
 							</tr>
 						</table>
 					</td>
 				</tr>
+
+				
 
 				{{-- <tr class="heading">
 					<td>{{ trans('messages.payment_method') }}</td>
@@ -211,25 +244,33 @@
                                 {{ $item['price'] }}
                             </td>
                         </tr>
-                        <tr class="item">
-                            <td>
-                                <p class="mb-0">{{ trans('messages.bill.tax') }}</p>
-                            </td>
-
-                            <td>
-                                {{ $item['tax'] }}
-                            </td>
-                        </tr>
                     @endforeach
      
 				
-
 				<tr class="total">
 					<td></td>
 
-					<td>{{ trans('messages.bill.total') }}: {{ $bill['total'] }}</td>
+					<td style="padding-right:0">
+						<table>
+							<tr>
+								<td style="text-align: right;border-bottom: solid 1px #ddd;">{{ trans('messages.bill.subtotal') }}:</td>
+								<td style="border-bottom: solid 1px #ddd;font-weight: normal;">{{ $bill['sub_total'] }}</td>
+							</tr>
+							<tr>
+								<td style="text-align: right;border-bottom: solid 1px #ddd;">{{ trans('messages.bill.tax') }}:</td>
+								<td style="border-bottom: solid 1px #ddd;font-weight: normal;">{{ $bill['sub_total'] }}</td>
+							</tr>
+							<tr>
+								<td style="text-align: right;border-bottom: solid 1px #ddd;">{{ trans('messages.bill.total') }}:</td>
+								<td style="border-bottom: solid 1px #ddd;">{{ $bill['total'] }}</td>
+							</tr>
+						</table>
+					</td>
 				</tr>
 			</table>
+			<div style="position:fixed;bottom: 0px;margin: auto;width:90%;border-top: solid 1px #ddd;padding-top:5px">
+				{{ trans('messages.invoice.footer') }}
+			</div>
 		</div>
 	</body>
 </html>
