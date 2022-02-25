@@ -73,9 +73,10 @@
 		
 		
 		@if ($list->getEmbeddedFormOption('javascript') == 'yes')
+			<script type="text/javascript" src="{{ URL::asset('core/js/functions.js') }}"></script>
 			@include('layouts.core._script_vars')
 			<script>
-				$.noConflict();
+				// $.noConflict();
 				jQuery( document ).ready(function( $ ) {				
 					@if (!isset($preview))
 						@if ($list->getEmbeddedFormOption('javascript') == 'yes')			
@@ -90,14 +91,8 @@
 							});
 						@endif
 					@endif
-			
-					$('.pickadate').pickadate({format: LANG_J_DATE_FORMAT, selectYears: 100});
 
-					if ($(".pickadatetime").length) {
-						$(".pickadatetime").AnyTime_picker({
-							format: LANG_ANY_DATETIME_FORMAT
-						});
-					}
+					initJs($('.subscribe-embedded-form'));
 				});
 			</script>
 		@endif

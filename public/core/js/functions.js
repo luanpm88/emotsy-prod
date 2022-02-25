@@ -1,15 +1,19 @@
 function initJs(container)
 {
     // tooltip
-    container.find('.xtooltip:not([title=""]), [data-popup=tooltip]:not([title=""]), .leftbar-navbar .leftbar-tooltip:not([title=""])').tooltipster({
-        theme: 'tooltipster-light'
-    });
+    if (container.find('.xtooltip:not([title=""]), [data-popup=tooltip]:not([title=""]), .leftbar-navbar .leftbar-tooltip:not([title=""])').tooltipster) {
+        container.find('.xtooltip:not([title=""]), [data-popup=tooltip]:not([title=""]), .leftbar-navbar .leftbar-tooltip:not([title=""])').tooltipster({
+            theme: 'tooltipster-light'
+        });
+    }
 
     // select2
-    container.find('.select').select2({
-        dropdownAutoWidth: true,
-        minimumResultsForSearch: 30
-    });
+    if (container.find('.select').select2) {
+        container.find('.select').select2({
+            dropdownAutoWidth: true,
+            minimumResultsForSearch: 30
+        });
+    }
 
     // pick a date
     if (container.find(".pickadate-control").length) {
@@ -32,7 +36,9 @@ function initJs(container)
     }
 
     // numeric
-    container.find(".numeric").numeric();
+    if (container.find(".numeric").numeric) {
+        container.find(".numeric").numeric();
+    }
 
     // pick a time
     if (container.find(".pickatime, .time-selector").length) {
@@ -47,23 +53,27 @@ function initJs(container)
     }
 
     // custom validation
-    customValidate(container.find(".form-validate-jquery"));
+    if (typeof(customValidate) != 'undefined') {
+        customValidate(container.find(".form-validate-jquery"));
+    }
 
     // link method
     applyLinkListener(container.find('a[link-method], a[link-confirm]'));
 
     // Select2 tags
-    container.find('.select-tag').select2({
-        minimumResultsForSearch: 20,
-        templateResult: formatSelect2TextOption,
-        templateSelection: formatSelect2TextSelected,
-        placeholder: function(){
-            $(this).attr('data-placeholder');
-        },
-        dropdownAutoWidth : true,
-        width: 'auto',
-        tags: true,
-    });
+    if (container.find('.select-tag').select2) {
+        container.find('.select-tag').select2({
+            minimumResultsForSearch: 20,
+            templateResult: formatSelect2TextOption,
+            templateSelection: formatSelect2TextSelected,
+            placeholder: function(){
+                $(this).attr('data-placeholder');
+            },
+            dropdownAutoWidth : true,
+            width: 'auto',
+            tags: true,
+        });
+    }
 
     // Select2 ajax
     container.find(".select2-ajax").each(function() {
