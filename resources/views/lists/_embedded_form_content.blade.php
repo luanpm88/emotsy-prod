@@ -1,6 +1,6 @@
 @if ($list->getEmbeddedFormOption('stylesheet') == 'yes')
 	<link href="{{ URL::asset('core/css/embedded.css') }}" rel="stylesheet" type="text/css">
-	<link href="{{ URL::asset('core/css/google-font-icon.css') }}" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
 @endif
 
 @if (!empty($list->getEmbeddedFormOption('custom_css')))
