@@ -705,17 +705,17 @@ h2 [class^="icon-"] {
     overflow: hidden;
 }
 .field-list input {
-    width: auto;
+    width: 100%;
     margin: 0;
-    display: inline;
-    max-width: 180px;
+    display: inline-block;
 }
 .field-list .input-icon-right {
     max-width: 180px;
 }
 .field-list .form-group {
     margin: 0;
-    display: inline;
+    display: inline-block;
+    max-width: 180px;
 }
 label.error {
     color: #F44336;
@@ -764,7 +764,7 @@ input.error {
     border-color: #f7c9c6;
     color: #231c15;
 }
-.bg-activated, .label-success, .bg-settled, .bg-sent, .bg-recurring, .bg-deliverable, .bg-current_active, .bg-current, .bg-cron-running, .bg-running, .bg-starting, .bg-pending-sending, .bg-active, .bg-confirmed, .bg-paid, .bg-sending, .bg-subscribed {
+.bg-connected, .bg-published, .bg-activated, .label-success, .bg-settled, .bg-sent, .bg-recurring, .bg-deliverable, .bg-current_active, .bg-current, .bg-cron-running, .bg-running, .bg-starting, .bg-pending-sending, .bg-active, .bg-confirmed, .bg-paid, .bg-sending, .bg-subscribed {
     background-color: #b5dd95;
     border-color: #a2c492;
     color: #172315;
@@ -6520,7 +6520,7 @@ h5 {
     }
 }
 .modal-body {
-    padding: 2rem 5rem;
+    padding: 2rem 3rem;
 }
 .select2-container--default .select2-selection--single .select2-selection__clear {
     right: 23px;
@@ -7606,6 +7606,22 @@ body:not(.search-open) .app_search_box .search-control::after {
 }
 .categories-checkboxes .form-group {
     margin-bottom: 8px;
+}
+a.bg-secondary {
+    transition: all 0.2s ease-in-out;
+}
+a.bg-secondary:hover {
+    background-color: #575c61!important;
+}
+.form-thumb {
+    transition: all 0.2s ease-in-out;
+}
+.form-thumb:hover {
+    display: inline-block;
+    transform: scale(1.02);
+}
+.form-thumb:active {
+    transform: scale(0.95);
 }
 @media (max-width: 1200px) {
     .navbar-main {

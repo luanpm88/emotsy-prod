@@ -36,10 +36,10 @@ trait HasTemplate
     /**
      * Get template.
      */
-    public function setTemplate($template)
+    public function setTemplate($template, $name=null)
     {
         $campaignTemplate = $template->copy([
-            'name' => trans('messages.campaign.template_name', ['name' => $this->name]),
+            'name' => $name ? $name : trans('messages.campaign.template_name', ['name' => $this->name]),
             'customer_id' => $this->customer_id,
         ]);
 
@@ -51,8 +51,12 @@ trait HasTemplate
         $this->template_id = $campaignTemplate->id;
         $this->save();
         $this->refresh();
-        $this->updatePlainFromHtml();
-        $this->updateLinks();
+        if (\Schema::hasColumn($this->getTable(), 'plain')){
+            $this->updatePlainFromHtml();
+        }
+        if (method_exists($this, 'updateLinks')) {
+            $this->updateLinks();
+        }
     }
 
     /**
@@ -389,7 +393,6 @@ trait HasTemplate
         $pipeline->add(new TransformTag($this, $subscriber, $msgId, $server));
         $pipeline->add(new InjectTrackingPixel($this, $msgId));
         $pipeline->add(new TransformUrl($this->template, $msgId, $this->trackingDomain));
-        $pipeline->add(new TransformWidgets($this->template));
 
         // Actually push HTML to pipeline for processing
         $html = $pipeline->build()->process($baseHtml);
@@ -418,6 +421,7 @@ trait HasTemplate
             $pipeline->add(new AppendHtml($this->getHtmlFooter()));
             $pipeline->add(new ParseRss());
             $pipeline->add(new MakeInlineCss($this->template->findCssFiles()));
+            $pipeline->add(new TransformWidgets());
             // $pipeline->add(new TransformTag($this, $subscriber, $msgId, $server));
             // $pipeline->add(new InjectTrackingPixel($this, $msgId));
             // $pipeline->add(new TransformUrl($this->template, $msgId, $this->trackingDomain));

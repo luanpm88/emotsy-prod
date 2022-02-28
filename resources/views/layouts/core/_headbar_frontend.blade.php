@@ -33,6 +33,12 @@
                 }),
                 new SearchSection({
                     url: '{{ action('SearchController@templates') }}',
+                }),
+                new SearchSection({
+                    url: '{{ action('SearchController@forms') }}',
+                }),
+                new SearchSection({
+                    url: '{{ action('SearchController@websites') }}',
                 })
             ],
             lang: {

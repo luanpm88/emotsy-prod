@@ -8,7 +8,10 @@ function initJs(container)
     // select2
     container.find('.select').select2({
         dropdownAutoWidth: true,
-        minimumResultsForSearch: 30
+        minimumResultsForSearch: 30,
+        escapeMarkup: function(markup) {
+            return markup;
+        }
     });
 
     // pick a date

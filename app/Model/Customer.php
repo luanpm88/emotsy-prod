@@ -198,6 +198,16 @@ class Customer extends Model
         return $this->hasMany('Acelle\Model\Invoice');
     }
 
+    public function forms()
+    {
+        return $this->hasMany('Acelle\Model\Form');
+    }
+
+    public function websites()
+    {
+        return $this->hasMany('Acelle\Model\Website');
+    }
+
     /**
      * Get user sources.
      */
@@ -348,7 +358,7 @@ class Customer extends Model
      *
      * @return number
      */
-    public static function subscribersCountByTime($begin, $end, $customer_id = null, $list_id = null)
+    public static function subscribersCountByTime($begin, $end, $customer_id = null, $list_id = null, $status=null)
     {
         $query = \Acelle\Model\Subscriber::leftJoin('mail_lists', 'mail_lists.id', '=', 'subscribers.mail_list_id')
                                 ->leftJoin('customers', 'customers.id', '=', 'mail_lists.customer_id');
@@ -358,6 +368,9 @@ class Customer extends Model
         }
         if (isset($customer_id)) {
             $query = $query->where('customers.id', '=', $customer_id);
+        }
+        if (isset($status)) {
+            $query = $query->where('subscribers.status', '=', $status);
         }
 
         $query = $query->where('subscribers.created_at', '>=', $begin)
@@ -1975,6 +1988,21 @@ class Customer extends Model
         } else {
             return true;
         }
+    }
+
+    public function getWebsiteSelectOptions($long=true)
+    {
+        $query = $this->websites();
+
+        $result = $query->orderBy('title')->get()->map(function ($item) use($long) {
+            if ($long) {
+                return ['value' => $item->uid, 'text' => '<span class="fw-600">' . $item->title . '</span><br><span class="text-muted">' . $item->url . '</span>'];
+            } else {
+                return ['value' => $item->uid, 'text' => $item->title];
+            }
+        });
+
+        return $result;
     }
 
     public function updateBillingInformationFromInvoice($invoice)

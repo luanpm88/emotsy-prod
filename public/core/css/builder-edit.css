@@ -1,13 +1,11 @@
-.rss-placeholder {
-    width: 100%
-}
-.rss-placeholder .btn {
-    position: absolute;
-    bottom: 10px;
-    right: 10px;
-}
-.rss-placeholder {
+.rss-placeholder, .rss-container {
+    width: 100%;
     position: relative;
+}
+.ace-rss-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
 }
 [builder-element="RssElement"].builder-class-element-selected .btn {
     display: block!important;
@@ -106,4 +104,17 @@
     border-color: #949494;
     border-width: 0px;
     color: #999!important;
+}
+.rss-highlight {
+    outline: dashed 1px rgb(0 0 0 / 10%);
+    background: rgb(0 0 0 / 5%);
+    border-radius: 3px;
+}
+.rss-selected {
+    outline: dashed 1px rgb(189 185 0 / 50%);
+    background: rgb(255 226 0 / 20%);
+    border-radius: 3px;
+}
+[rss-item] {
+    cursor: pointer;
 }

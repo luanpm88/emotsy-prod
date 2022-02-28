@@ -161,6 +161,21 @@ class SearchController extends Controller
                 ],
             ],
             [
+                'names' => [trans('messages.forms')],
+                'url' => action('FormController@create'),
+                'keywords' => [
+
+                ],
+            ],
+            [
+                'names' => [trans('messages.forms'), trans('messages.create')],
+                'url' => action('FormController@create'),
+                'keywords' => [
+                    trans('messages.new'),
+                    trans('messages.add'),
+                ],
+            ],
+            [
                 'names' => [trans('messages.sending'), trans('messages.blacklist')],
                 'url' => action('BlacklistController@index'),
                 'keywords' => [],
@@ -231,8 +246,9 @@ class SearchController extends Controller
         $count = 5;
 
         $templates = $customer->templates()
+            ->email()
             ->search($request->keyword)
-            ->notAssociated()
+            ->notPreserved()
             ->orderBy('templates.name', 'asc')
             ->paginate($count);
 
@@ -254,6 +270,36 @@ class SearchController extends Controller
         return view('search.subscribers', [
             'keyword' => $request->keyword,
             'subscribers' => $subscribers,
+        ]);
+    }
+
+    public function forms(Request $request)
+    {
+        $customer = $request->user()->customer;
+        $count = 5;
+
+        $forms = $customer->forms()
+            ->search($request->keyword)
+            ->paginate($count);
+
+        return view('search.forms', [
+            'keyword' => $request->keyword,
+            'forms' => $forms,
+        ]);
+    }
+
+    public function websites(Request $request)
+    {
+        $customer = $request->user()->customer;
+        $count = 5;
+
+        $websites = $customer->websites()
+            ->search($request->keyword)
+            ->paginate($count);
+
+        return view('search.websites', [
+            'keyword' => $request->keyword,
+            'websites' => $websites,
         ]);
     }
 }

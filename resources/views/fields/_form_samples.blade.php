@@ -22,12 +22,17 @@
 				@include('helpers.form_control', ['type' => 'checkbox', 'name' => 'fields[__index__][visible]', 'label' => '', 'value' => true, 'options' => [false,true], 'help_class' => 'field'])
 			</td>
 			<td class="text-nowrap">
-				@include('helpers.form_control', [
-					'type' => 'text',
-					'name' => 'fields[__index__][tag]',
-					'label' => '', 'value' => '',
-					'help_class' => 'field',
-					'prefix' => "{SUBSCRIBER_", 'subfix' => "}"])
+				<div class="d-flex align-items-center">
+					<span>{SUBSCRIBER_</span>
+						@include('helpers.form_control', [
+							'type' => 'text',
+							'name' => 'fields[__index__][tag]',
+							'label' => '', 'value' => '',
+							'help_class' => 'field',
+						])
+					<span>}</span>
+				</div>
+				
 			</td>
 			<td class="text-nowrap">
 				@include('helpers.form_control', ['type' => Acelle\Model\Field::getControlNameByType($type),'name' => 'fields[__index__][default_value]', 'label' => '', 'value' => '', 'help_class' => 'field'])
@@ -42,7 +47,7 @@ delete_outline
 		@if (in_array($type, ["dropdown","multiselect","checkbox","radio"]))
 			<tr class="child" parent="__index__">
 				<td></td>
-				<td colspan="3" class="sub_field_options">
+				<td colspan="3" class="sub_field_options" width="50%">
 					<div class="row">
 						<div class="col-md-12">
 							<div class="row label-value-groups">

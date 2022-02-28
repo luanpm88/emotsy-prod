@@ -39,6 +39,7 @@ class ResetTemplates extends Command
     public function handle()
     {
         Template::resetDefaultTemplates();
+        Template::resetPopupTemplates();
         return 0;
     }
 }
