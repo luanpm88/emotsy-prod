@@ -706,6 +706,8 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('site/settings/emails', 'Site\SettingController@emails');
     Route::get('site/settings/account', 'Site\SettingController@account');
     Route::get('site/settings/site', 'Site\SettingController@site');
+    Route::get('site/orders', 'Site\OrderController@index');
+    Route::get('site/customers', 'Site\CustomerController@index');
     
     // Invoice
     Route::get('invoices/{uid}/download', 'InvoiceController@download');
