@@ -1,3 +1,5 @@
+<script src="{{ URL::asset('core/js/Base64.js') }}"></script>
+
 @include('builder.js.AbandonedCartElement')
 @include('builder.js.AbandonedCartWidget')
 @include('builder.js.ProductControl')
@@ -7,3 +9,7 @@
 @include('builder.js.ProductListElement')
 @include('builder.js.ProductListWidget')
 @include('builder.js.ProductWidget')
+@include('builder.js.RssElement')
+@include('builder.js.RssWidget')
+@include('builder.js.RssControl')
+@include('builder.js.RssItem')

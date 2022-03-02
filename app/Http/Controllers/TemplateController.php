@@ -4,11 +4,11 @@ namespace Acelle\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Acelle\Model\Template;
-use Acelle\Library\Rss;
 use Acelle\Model\Setting;
 use App;
 use File;
 use Acelle\Library\Tool;
+use function Acelle\Helpers\xml_to_array;
 
 class TemplateController extends Controller
 {
@@ -30,9 +30,9 @@ class TemplateController extends Controller
     public function listing(Request $request)
     {
         if ($request->from == 'mine') {
-            $templates = $request->user()->customer->templates();
+            $templates = $request->user()->customer->templates()->email();
         } elseif ($request->from == 'gallery') {
-            $templates = Template::shared();
+            $templates = Template::shared()->email();
         }
 
         // view
@@ -40,8 +40,9 @@ class TemplateController extends Controller
 
         // sort, pagination
         $templates = $templates->search($request->keyword)
+            ->email()
             ->categoryUid($request->category_uid)
-            ->notAssociated()
+            ->notPreserved()
             ->orderBy($request->sort_order, $request->sort_direction)
             ->paginate($request->per_page ? $request->per_page : ($view == 'grid' ? 8 : 15));
 
@@ -417,7 +418,7 @@ class TemplateController extends Controller
         $category = \Acelle\Model\TemplateCategory::findByUid($request->category_uid);
 
         // sort, pagination
-        $templates = $category->templates()->shared()->search($request->keyword)
+        $templates = $category->templates()->shared()->email()->search($request->keyword)
             ->orderBy($request->sort_order, $request->sort_direction)
             ->paginate($request->per_page);
 
@@ -583,5 +584,10 @@ class TemplateController extends Controller
         return view('templates.changeName', [
             'template' => $template,
         ]);
+    }
+
+    public function parseRss(Request $request)
+    {
+        return parseRss($request->config);
     }
 }

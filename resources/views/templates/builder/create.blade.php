@@ -36,9 +36,9 @@
                         'class' => '',
                         'name' => 'name',
                         'value' => $template->name,
-                        'label' => 'Enter your template\'s name here',
+                        'label' => trans('messages.enter_template_name'),
                         'help_class' => 'template',
-                        'rules' => ['name' => 'required']
+                        'rules' => ['name' => 'required'],
                     ])
                 </div>
             </form>
