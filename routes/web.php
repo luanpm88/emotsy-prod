@@ -697,6 +697,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('site/templates', 'Site\TemplateController@index');
 
     // Site - Shop setting
+    Route::get('site/settings/home-page', 'Site\SettingController@homePage');
     Route::get('site/settings/shop', 'Site\SettingController@shop');
     Route::get('site/settings/slider', 'Site\SettingController@sliderRevolution');
     Route::get('site/settings/products', 'Site\SettingController@products');
