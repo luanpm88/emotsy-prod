@@ -2108,7 +2108,11 @@ class Campaign extends Model
      */
     public function getAttachmentPath($path = null)
     {
-        return $this->customer->getAttachmentsPath($path);
+        $fullPath = $this->uid;
+        if ($path == null) {
+            $fullPath = join_paths($fullPath, $path);
+        }
+        return $this->customer->getAttachmentsPath($fullPath);
     }
 
     /**
