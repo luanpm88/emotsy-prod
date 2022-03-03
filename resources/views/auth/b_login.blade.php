@@ -68,6 +68,17 @@
         ><span class="me-2">{{ trans("messages.login") }}</span> <span class="material-icons-round">
             login
             </span></button>
+            
+            @if (\Acelle\Model\Setting::get('oauth.google_enabled') == 'yes')
+                <br>
+                <hr class="mt-4">
+                <div class="text-center mt-4">
+                    <a href="{{ action('UserController@googleRedirect') }}" class="btn btn-light d-flex align-items-center rounded-3 py-2" style="width:100%">
+                        <img width="30px" src="{{ url('images/google-login.svg') }}" />
+                        <span class="ms-3 display-6 text-center" style="font-size:16px;width:80%">Continue with Google</span>
+                    </a>
+                </div>
+            @endif
     </div>
 
     @if (\Acelle\Model\Setting::get('enable_user_registration') == 'yes')
@@ -77,6 +88,8 @@
             ]) !!}
         </div>
     @endif
+
+    
 </form>
 <!-- /advanced login -->
 

@@ -4078,4 +4078,20 @@
   'company_name' => 'Company',
   'company_address' => 'Company Address',
   'brand.home_page' => 'Home page',
+  'google.auth.email_exist' => 'User with email :email already exists!',
+  'setting.oauth' => 'Google OAuth',
+  'oauth.google_client_id' => 'Google Client ID',
+  'oauth.google_client_secret' => 'Google Client Secret',
+  'oauth.origin_uri' => 'Origin URI',
+  'oauth.redirect_uri' => 'Redirect URI',
+  'google_oauth_20' => 'Google OAuth 2.0',
+  'google_oauth.guide' => 'Visit the <a href="https://console.developers.google.com/" class="external">
+    Google API Console</a> to obtain OAuth 2.0 credentials such as a client
+    ID and client secret that are known to both Google and your application. The set of values
+    varies based on what type of application you are building. For example, a JavaScript
+    application does not require a secret, but a web server application does.',
+  'google_oauth.uri_guide' => 'Copy these URIs below and paste them into the corresponding OAuth setting fields.',
+  'oauth.origin_uri.copied' => 'Origin URI was copied to clipboard',
+  'oauth.redirect_uri.copied' => 'Redirect URI was copied to clipboard',
+  'oauth.google.enable.desc' => 'Enable Google OAuth 2.0 for customer login.',
 ) ?>

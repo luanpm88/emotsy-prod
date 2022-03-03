@@ -28,6 +28,10 @@ Route::group(['middleware' => ['installed']], function () {
     Route::get('install/finish', 'InstallController@finish');
 });
 
+// Google OAuth 2.0
+Route::get('/auth/google/redirect', 'UserController@googleRedirect');
+Route::get('/auth/google/callback', 'UserController@googleCallback');
+
 /*
  * The following routes
  * + customer_files
@@ -841,6 +845,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::resource('admin/languages', 'LanguageController');
 
     // Settings
+    Route::match(['get', 'post'], 'admin/settings/google-oauth', 'SettingController@googleOAuth');
     Route::post('admin/settings/payment', 'SettingController@payment');
     Route::post('admin/settings/advanced/{name}/update', 'SettingController@advancedUpdate');
     Route::get('admin/settings/advanced', 'SettingController@advanced');

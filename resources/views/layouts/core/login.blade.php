@@ -35,6 +35,9 @@
                                 </a>
                             </div>
 
+                            <!-- display flash message -->
+		                    @include('layouts.core._errors')
+                            
                             @yield('content')
 
                         </div>
