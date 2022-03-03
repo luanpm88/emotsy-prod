@@ -4077,4 +4077,5 @@
   'invoice.header' => 'INVOICE',
   'company_name' => 'Company',
   'company_address' => 'Company Address',
+  'brand.home_page' => 'Home page',
 ) ?>

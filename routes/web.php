@@ -697,6 +697,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('site/templates', 'Site\TemplateController@index');
 
     // Site - Shop setting
+    Route::get('site/settings/home-page', 'Site\SettingController@homePage');
     Route::get('site/settings/shop', 'Site\SettingController@shop');
     Route::get('site/settings/slider', 'Site\SettingController@sliderRevolution');
     Route::get('site/settings/products', 'Site\SettingController@products');
@@ -708,6 +709,15 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('site/settings/site', 'Site\SettingController@site');
     Route::get('site/orders', 'Site\OrderController@index');
     Route::get('site/customers', 'Site\CustomerController@index');
+
+    // Source
+    Route::get('site/sources/{uid}/detail', 'Site\SourceController@show');
+    Route::match(['get', 'post'], 'site/sources/woo-connect', 'Site\SourceController@wooConnect');
+    Route::post('site/sources/{uid}/sync', 'Site\SourceController@sync');
+    Route::post('site/sources/delete', 'Site\SourceController@delete');
+    Route::get('site/sources/connect', 'Site\SourceController@connect');
+    Route::get('site/sources/listing', 'Site\SourceController@listing');
+    Route::resource('site/sources', 'Site\SourceController');
     
     // Invoice
     Route::get('invoices/{uid}/download', 'InvoiceController@download');
