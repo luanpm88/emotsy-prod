@@ -7718,3 +7718,8 @@ textarea.form-control {
 .mc_section .form-group .help.alert-info::before {
     display: none;
 }
+.socialite_buttons {
+    margin-top: 20px;
+    padding-top: 10px;
+    border-top: solid 1px #ddd;
+}

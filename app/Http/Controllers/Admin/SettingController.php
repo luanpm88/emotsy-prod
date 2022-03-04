@@ -737,45 +737,4 @@ class SettingController extends Controller
 
         return redirect()->action('Admin\PaymentController@index');
     }
-    
-    /**
-     * Google OAuth 2.0.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function googleOAuth(Request $request)
-    {
-        if ($request->user()->admin->getPermission('setting_general') != 'yes') {
-            return $this->notAuthorized();
-        }
-
-        if ($request->isMethod('post')) {
-            if ($request->google_enabled == 'yes') {
-                // make validator
-                $validator = \Validator::make($request->all(), [
-                    'google_client_id' => 'required',
-                    'google_client_secret' => 'required',
-                ]);
-
-                // redirect if fails
-                if ($validator->fails()) {
-                    return response()->view('admin.settings.googleOAuth', [
-                        'errors' => $validator->errors(),
-                    ], 400);
-                }
-
-                // update settings table
-                Setting::set('oauth.google_client_id', $request->google_client_id);
-                Setting::set('oauth.google_client_secret', $request->google_client_secret);
-            }
-
-            // update settings table
-            Setting::set('oauth.google_enabled', $request->google_enabled);
-
-            return redirect()->action('Admin\SettingController@googleOAuth')
-                ->with('alert-success', trans('messages.setting.updated'));
-        }
-
-        return view('admin.settings.googleOAuth');
-    }
 }

@@ -11,7 +11,7 @@
         <h1>
             <span class="text-gear"><span class="material-icons-outlined">
                 admin_panel_settings
-</span> {{ trans('messages.setting.oauth') }}</span>
+</span> {{ trans('messages.setting.google_oauth') }}</span>
         </h1>				
     </div>
 
@@ -19,11 +19,10 @@
 
 @section('content')
     
-    <form action="{{ action('Admin\SettingController@googleOAuth') }}" method="POST" class="oauth-form">
+    <form action="{{ action('Admin\AuthController@googleOAuth') }}" method="POST" class="oauth-form">
         {{ csrf_field() }}
         
         <div class="tabbable">
-            @include("admin.settings._tabs")
             <div class="row">
                 <div class="col-md-6">
                     <div>

@@ -4078,8 +4078,8 @@
   'company_name' => 'Company',
   'company_address' => 'Company Address',
   'brand.home_page' => 'Home page',
-  'google.auth.email_exist' => 'User with email :email already exists!',
-  'setting.oauth' => 'Google OAuth',
+  'oauth.email_exist' => 'User with email :email exists!',
+  'setting.google_oauth' => 'Google OAuth',
   'oauth.google_client_id' => 'Google Client ID',
   'oauth.google_client_secret' => 'Google Client Secret',
   'oauth.origin_uri' => 'Origin URI',
@@ -4087,9 +4087,7 @@
   'google_oauth_20' => 'Google OAuth 2.0',
   'google_oauth.guide' => 'Visit the <a href="https://console.developers.google.com/" class="external">
     Google API Console</a> to obtain OAuth 2.0 credentials such as a client
-    ID and client secret that are known to both Google and your application. The set of values
-    varies based on what type of application you are building. For example, a JavaScript
-    application does not require a secret, but a web server application does.',
+    ID and client secret and set the values below:',
   'google_oauth.uri_guide' => 'Copy these URIs below and paste them into the corresponding OAuth setting fields.',
   'oauth.origin_uri.copied' => 'Origin URI was copied to clipboard',
   'oauth.redirect_uri.copied' => 'Redirect URI was copied to clipboard',
@@ -4099,5 +4097,20 @@
     order to track it. Upon clicking a link, user will be redirected to the application (where opens and
     clicks are recorded) before eventually reaching the original link. While the system has the hosting’s
     domain that it can use to rewrite links, it offer the ability to "white label" the tracking domain with users\' own domains.',
-
+  'oauth' => 'OAuth',
+  'google_oauth.intro' => 'Use Google\'s OAuth 2.0 authentication system for customer to login and register.',
+  'oauth.status.disabled' => 'disabled',
+  'oauth.status.active' => 'active',
+  'oauth.wording' => 'In addition to typical, form based authentication, the system also
+    provides a simple, convenient way to authenticate with OAuth providers. It currently supports authentication
+    with Facebook, Twitter, LinkedIn, Google.',
+  'facebook_oauth.intro' => 'Use Facebook\'s OAuth 2.0 authentication system for customer to login and register.',
+  'oauth.facebook.enable.desc' => 'Enable Facebook OAuth 2.0 for customer login.',
+  'facebook_oauth.guide' => 'Visit the <a href="https://console.developers.google.com/" class="external">
+    Facebook API Console</a> to obtain OAuth 2.0 credentials such as a client
+    ID and client secret and set the values below:',
+  'facebook_oauth.uri_guide' => 'Copy these URIs below and paste them into the corresponding OAuth setting fields.',
+  'oauth.facebook_client_id' => 'Facebook Client ID',
+  'oauth.facebook_client_secret' => 'Facebook Client Secret',
+  'setting.facebook_oauth' => 'Facebook OAuth',
 ) ?>

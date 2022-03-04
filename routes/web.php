@@ -32,6 +32,10 @@ Route::group(['middleware' => ['installed']], function () {
 Route::get('/auth/google/redirect', 'AuthController@googleRedirect');
 Route::get('/auth/google/callback', 'AuthController@googleCallback');
 
+// Facebook OAuth 2.0
+Route::get('/auth/facebook/redirect', 'AuthController@facebookRedirect');
+Route::get('/auth/facebook/callback', 'AuthController@facebookCallback');
+
 /*
  * The following routes
  * + customer_files
@@ -844,8 +848,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::post('admin/languages/{id}/upload', 'LanguageController@upload');
     Route::resource('admin/languages', 'LanguageController');
 
-    // Settings
-    Route::match(['get', 'post'], 'admin/settings/google-oauth', 'SettingController@googleOAuth');
+    // Settings    
     Route::post('admin/settings/payment', 'SettingController@payment');
     Route::post('admin/settings/advanced/{name}/update', 'SettingController@advancedUpdate');
     Route::get('admin/settings/advanced', 'SettingController@advanced');
@@ -1085,4 +1088,9 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
 
     // Invoice
     Route::get('admin/invoices/{uid}/download', 'InvoiceController@download');
+
+    // OAuth
+    Route::match(['get', 'post'], 'admin/auth/facebook-oauth', 'AuthController@facebookOAuth');
+    Route::match(['get', 'post'], 'admin/auth/google-oauth', 'AuthController@googleOAuth');
+    Route::match(['get', 'post'], 'admin/auth', 'AuthController@index');
 });

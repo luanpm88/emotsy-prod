@@ -55,7 +55,7 @@ class AuthController extends Controller
         } else {
             // check if email exists
             if (User::where('email', $googleUser->email)->first()) {
-                return redirect('/login')->with('alert-error', trans('messages.google.auth.email_exist', [
+                return redirect('/login')->with('alert-error', trans('messages.oauth.email_exist', [
                     'email' => $googleUser->email,
                 ]));
             }
@@ -69,6 +69,71 @@ class AuthController extends Controller
             ]);
 
             $user = User::where('google_id', $googleUser->id)->first();
+        }
+    
+        // login
+        \Auth::login($user);
+        return redirect()->action('HomeController@index');
+    }
+
+    /**
+     * Facebook OAuth 2.0.
+     */
+    public function getFacebookOAuthProvider()
+    {
+        $config = [
+            'client_id' => \Acelle\Model\Setting::get('oauth.facebook_client_id'),
+            'client_secret' => \Acelle\Model\Setting::get('oauth.facebook_client_secret'),
+            'redirect' => action('AuthController@facebookCallback'),
+        ];
+
+        $provider = Socialite::buildProvider(
+            \Laravel\Socialite\Two\FacebookProvider::class, 
+            $config
+        );
+        
+        return $provider;
+    }
+    
+    /**
+     * Facebook OAuth 2.0.
+     */
+    public function facebookRedirect(Request $request)
+    {
+        return $this->getFacebookOAuthProvider()->redirect();
+    }
+
+    /**
+     * Facebook OAuth 2.0.
+     */
+    public function facebookCallback(Request $request)
+    {
+        $facebookUser = $this->getFacebookOAuthProvider()->user();
+ 
+        $user = User::where('facebook_id', $facebookUser->id)->first();
+    
+        if ($user) {
+            $user->update([
+                'facebook_token' => $facebookUser->token,
+                'facebook_refresh_token' => $facebookUser->refreshToken,
+            ]);
+        } else {
+            // check if email exists
+            if (User::where('email', $facebookUser->email)->first()) {
+                return redirect('/login')->with('alert-error', trans('messages.oauth.email_exist', [
+                    'email' => $facebookUser->email,
+                ]));
+            }
+
+            \Acelle\Model\User::createCustomer([
+                'name' => $facebookUser->name,
+                'email' => $facebookUser->email,
+                'facebook_id' => $facebookUser->id,
+                'facebook_token' => $facebookUser->token,
+                'facebook_refresh_token' => $facebookUser->refreshToken,
+            ]);
+
+            $user = User::where('facebook_id', $facebookUser->id)->first();
         }
     
         // login

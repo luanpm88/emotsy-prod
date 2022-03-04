@@ -607,6 +607,18 @@ class User extends Authenticatable
             $user->google_refresh_token = $params['google_refresh_token'];
         }
 
+        if (isset($params['facebook_id'])) {
+            $user->facebook_id = $params['facebook_id'];
+        }
+
+        if (isset($params['facebook_token'])) {
+            $user->facebook_token = $params['facebook_token'];
+        }
+
+        if (isset($params['facebook_refresh_token'])) {
+            $user->facebook_refresh_token = $params['facebook_refresh_token'];
+        }
+
         $user->password = bcrypt(str_random(8));
         $user->activated = true;
         $user->status = 'active';
