@@ -66,7 +66,7 @@ email
 
                         <h5 class="text-semibold">{{ trans('messages.oauth.redirect_uri') }}</h5>
                         <p style="margin-bottom: 30px" class="d-flex align-items-center">
-                                <code style="font-size: 18px" class="redirect_uri">{{ action('UserController@googleCallback') }}</code>
+                                <code style="font-size: 18px" class="redirect_uri">{{ action('AuthController@googleCallback') }}</code>
                                 <button class="btn btn-light redirect_uri-copy-button ml-4"><i class="material-icons-outlined me-2">copy</i>{{ trans('messages.copy') }}</button>
                         </p>
                     </div>

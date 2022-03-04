@@ -29,8 +29,8 @@ Route::group(['middleware' => ['installed']], function () {
 });
 
 // Google OAuth 2.0
-Route::get('/auth/google/redirect', 'UserController@googleRedirect');
-Route::get('/auth/google/callback', 'UserController@googleCallback');
+Route::get('/auth/google/redirect', 'AuthController@googleRedirect');
+Route::get('/auth/google/callback', 'AuthController@googleCallback');
 
 /*
  * The following routes

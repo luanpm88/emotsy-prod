@@ -7711,4 +7711,10 @@ textarea.form-control {
 }
 .tox-form__group input:read-only {
     background-color: #efefef!important;
-  }
+}
+.mc_section .form-group .help.alert-info {
+    padding-left: 28px;
+}
+.mc_section .form-group .help.alert-info::before {
+    display: none;
+}

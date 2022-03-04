@@ -156,6 +156,18 @@
                         'help_class' => 'plan',
                         'rules' => $plan->generalRules()
                     ])
+
+                    @include('helpers.form_control', [
+                        'class' => '',
+                        'type' => 'checkbox2',
+                        'name' => 'plan[general][own_tracking_domain_required]',
+                        'label' => trans('messages.plan.own_tracking_domain_required'),
+                        'help' => trans('messages.plan.own_tracking_domain_required.help'),
+                        'value' => $plan->own_tracking_domain_required,
+                        'options' => ['0','1'],
+                        'help_class' => 'plan',
+                        'rules' => $plan->generalRules()
+                    ])
                  </div>
             </div>
         </div>

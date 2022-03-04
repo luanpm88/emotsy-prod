@@ -4094,4 +4094,10 @@
   'oauth.origin_uri.copied' => 'Origin URI was copied to clipboard',
   'oauth.redirect_uri.copied' => 'Redirect URI was copied to clipboard',
   'oauth.google.enable.desc' => 'Enable Google OAuth 2.0 for customer login.',
+  'plan.own_tracking_domain_required' => 'Users must use their own tracking domains',
+  'plan.own_tracking_domain_required.help' => 'The system rewrites every link added to marketing emails in
+    order to track it. Upon clicking a link, user will be redirected to the application (where opens and
+    clicks are recorded) before eventually reaching the original link. While the system has the hosting’s
+    domain that it can use to rewrite links, it offer the ability to "white label" the tracking domain with users\' own domains.',
+
 ) ?>
