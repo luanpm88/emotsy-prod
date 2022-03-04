@@ -4085,7 +4085,7 @@
   'oauth.origin_uri' => 'Origin URI',
   'oauth.redirect_uri' => 'Redirect URI',
   'google_oauth_20' => 'Google OAuth 2.0',
-  'google_oauth.guide' => 'Visit the <a href="https://console.developers.google.com/" class="external">
+  'google_oauth.guide' => 'Visit the <a target="_blank" href="https://console.developers.google.com/" class="external">
     Google API Console</a> to obtain OAuth 2.0 credentials such as a client
     ID and client secret and set the values below:',
   'google_oauth.uri_guide' => 'Copy these URIs below and paste them into the corresponding OAuth setting fields.',
@@ -4106,8 +4106,8 @@
     with Facebook, Twitter, LinkedIn, Google.',
   'facebook_oauth.intro' => 'Use Facebook\'s OAuth 2.0 authentication system for customer to login and register.',
   'oauth.facebook.enable.desc' => 'Enable Facebook OAuth 2.0 for customer login.',
-  'facebook_oauth.guide' => 'Visit the <a href="https://console.developers.google.com/" class="external">
-    Facebook API Console</a> to obtain OAuth 2.0 credentials such as a client
+  'facebook_oauth.guide' => 'Visit your <a target="_blank" href="https://developers.facebook.com/apps" class="external">
+    Facebook Apps Console</a> to obtain credentials from an app such as a client
     ID and client secret and set the values below:',
   'facebook_oauth.uri_guide' => 'Copy these URIs below and paste them into the corresponding OAuth setting fields.',
   'oauth.facebook_client_id' => 'Facebook Client ID',
