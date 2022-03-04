@@ -10,7 +10,7 @@
         </ul>
         <h1>
             <span class="text-gear"><span class="material-icons-outlined">
-email
+                admin_panel_settings
 </span> {{ trans('messages.setting.oauth') }}</span>
         </h1>				
     </div>
