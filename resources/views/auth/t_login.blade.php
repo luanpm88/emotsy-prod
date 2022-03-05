@@ -280,17 +280,17 @@ done
                                 <a href="{{ action('AuthController@googleRedirect') }}"
                                     class="socialite-link"
                                     style="width:100%;text-decoration:none;text-decoration:none;height:auto;">
-                                    <img width="20px" src="{{ url('images/google-login.svg') }}" />
+                                    <img width="25px" src="{{ url('images/google-login.svg') }}" />
                                     <span class="ms-3 display-6 text-center" style="font-size:16px;width:80%">Continue with Google</span>
                                 </a>
                             {{-- </div> --}}
                         @endif
-                                |
+                                <span class="mx-2">|</span>
                         @if (\Acelle\Model\Setting::get('oauth.facebook_enabled') == 'yes')
                             {{-- <div class="text-center mt-2"> --}}
                                 <a href="{{ action('AuthController@facebookRedirect') }}"
                                     class="socialite-link" style="width:100%;text-decoration:none;height:auto;">
-                                    <img width="20px" src="{{ url('images/icons/facebook-logo.svg') }}" class="mr-1" />
+                                    <img width="25px" src="{{ url('images/icons/facebook-logo.svg') }}" class="mr-1" />
                                     <span class="text-center" style="font-size:16px;width:80%">Continue with Facebook</span>
                                 </a>
                             {{-- </div> --}}
