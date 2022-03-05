@@ -25,6 +25,7 @@
 
         <div class="mt-2">
             <button type="submit" class="btn btn-secondary edit-webhook-save">{{ trans('messages.save') }}</button>
+            <button type="button" class="btn btn-light close ms-1">{{ trans('messages.close') }}</button>
         </div>
     </form>
 

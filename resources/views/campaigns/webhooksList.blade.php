@@ -12,22 +12,26 @@
                 <td width="5%">{{ trans('messages.webhook.type.' . $webhook->type . '.short') }}</td>
                 <td>
                     <p class="mb-0">{{ trans('messages.webhook.type.' . $webhook->type . '.desc') }}</p>
-                    <p class="mb-0">
+                    <p class="mb-0 text-muted2">
                         <span class="material-icons-outlined text-muted2 me-1 xtooltip" title="{{ trans('messages.webhook.endpoint') }}">gps_fixed</span> {{ $webhook->endpoint }}
                     </p>
                     @if ($webhook->type == 'click')
-                        <p class="mb-0">
+                        <p class="mb-0 text-muted2">
                             <span class="material-icons-outlined text-muted2 me-1 xtooltip" title="{{ trans('messages.link') }}">link</span>
                             <a target="_blank" href="{{ $webhook->campaignLink->url }}">{{ $webhook->campaignLink->url }}</a>
                         </p>
                     @endif
                 </td>
                 <td class="text-nowrap text-end">
-                    <a href="" class="btn btn-light">
+                    <a href="{{ action('CampaignController@webhooksSampleRequest', [
+                        'webhook_uid' => $webhook->uid,
+                    ]) }}" class="btn btn-light sample-request-webhook">
                         <i class="material-icons-outlined me-1">ios_share</i>
                         {{ trans('messages.webhook.sample_request') }}
                     </a>
-                    <a href="" class="btn btn-light">
+                    <a href="{{ action('CampaignController@webhooksTest', [
+                        'webhook_uid' => $webhook->uid,
+                    ]) }}" class="btn btn-light test-webhook">
                         <i class="material-icons-outlined">bug_report</i>
                         {{ trans('messages.webhook.test') }}
                     </a>
@@ -71,6 +75,24 @@
             return this.editPopup;
         },
 
+        sampleRequestPopup: null,
+        getSampleRequestPopup: function(url) {
+            if (this.sampleRequestPopup == null) {
+                this.sampleRequestPopup = new Popup();
+            }
+
+            return this.sampleRequestPopup;
+        },
+
+        testPopup: null,
+        getTestPopup: function(url) {
+            if (this.testPopup == null) {
+                this.testPopup = new Popup();
+            }
+
+            return this.testPopup;
+        },
+
         delete: function(url) {
             new Dialog('confirm', {
                 message: '{{ trans('messages.webhook.delete.confirm') }}',
@@ -109,6 +131,20 @@
             var url = $(this).attr('href');
 
             CampaignsWebhooksList.delete(url);
+        });
+
+        $('.sample-request-webhook').on('click', function(e) {
+            e.preventDefault();
+            var url = $(this).attr('href');
+
+            CampaignsWebhooksList.getSampleRequestPopup().load(url);
+        });
+
+        $('.test-webhook').on('click', function(e) {
+            e.preventDefault();
+            var url = $(this).attr('href');
+
+            CampaignsWebhooksList.getTestPopup().load(url);
         });
     });
 </script>

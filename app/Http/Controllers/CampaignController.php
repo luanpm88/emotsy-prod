@@ -2247,4 +2247,59 @@ class CampaignController extends Controller
             'message' => trans('messages.webhook.deleted'),
         ]);
     }
+
+    public function webhooksSampleRequest(Request $request)
+    {
+        $webhook = \Acelle\Model\CampaignWebhook::findByUid($request->webhook_uid);
+
+        // authorize
+        if (\Gate::denies('read', $webhook->campaign)) {
+            return $this->notAuthorized();
+        }
+
+        return view('campaigns.webhooksSampleRequest', [
+            'webhook' => $webhook,
+        ]);
+    }
+
+    public function webhooksTest(Request $request)
+    {
+        $webhook = \Acelle\Model\CampaignWebhook::findByUid($request->webhook_uid);
+        $result = null;
+
+        // authorize
+        if (\Gate::denies('read', $webhook->campaign)) {
+            return $this->notAuthorized();
+        }
+
+        if ($request->isMethod('post')) {
+            $client = new \GuzzleHttp\Client();
+
+            try {
+                $response = $client->request('GET', $webhook->endpoint, [
+                    'headers' => [
+                        "content-type" => "application/json"
+                    ],
+                    'body' => '{hello: "world"}',
+                    'http_errors' => false,
+                ]);
+
+                $result = [
+                    'status' => 'sent',
+                    'code' => $response->getStatusCode(),
+                    'message' => $response->getReasonPhrase(),
+                ];
+            } catch (\Exception $e) {
+                $result = [
+                    'status' => 'error',
+                    'message' => $e->getMessage(),
+                ];
+            }
+        }
+
+        return view('campaigns.webhooksTest', [
+            'webhook' => $webhook,
+            'result' => $result,
+        ]);
+    }
 }

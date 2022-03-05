@@ -4146,4 +4146,5 @@
   'link' => 'Link',
   'webhooks.edit' => 'Edit webhook',
   'webhook.delete.confirm' => 'You`re about to delete the webhook!',
+  'webhook.test.desc' => 'A test notification request was sent to the endpoint below',
 ) ?>
