@@ -7,6 +7,7 @@
     <div class="page-title">				
         <ul class="breadcrumb breadcrumb-caret position-right">
             <li class="breadcrumb-item"><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ action('Admin\AuthController@index') }}">{{ trans('messages.oauth') }}</a></li>
         </ul>
         <h1>
             <span class="text-gear"><span class="material-icons-outlined">
@@ -75,7 +76,8 @@
         </div>
 
         <div class="text-left">
-            <button class="btn btn-secondary mr-2"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
+            <button class="btn btn-secondary mr-1"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
+            <a href="{{ action('Admin\AuthController@index') }}" class="btn btn-light">{{ trans('messages.cancel') }}</a>
         </div>
     </form>
         

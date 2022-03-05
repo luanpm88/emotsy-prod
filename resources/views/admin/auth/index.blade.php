@@ -55,7 +55,7 @@
 				</tr>
 				<tr>
 					<td class="pe-2" width="1%">
-						<img width="52px" class="" src="{{ url('images/icons/facebook-logo.svg') }}" />
+						<img width="50px" class="" src="{{ url('images/icons/facebook-logo.svg') }}" />
 					</td>
 					<td>
 						<div class="d-flex align-items-center mb-1">
