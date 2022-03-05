@@ -44,7 +44,8 @@ class AuthController extends Controller
     public function googleCallback(Request $request)
     {
         if (isSiteDemo()) {
-            return redirect('/login')->with('alert-error', trans('messages.operation_not_allowed_in_demo'));
+            // return redirect('/login')->with('alert-error', trans('messages.operation_not_allowed_in_demo'));
+            return view('demoLogin');
         }
 
         $googleUser = $this->getGoogleOAuthProvider()->user();
