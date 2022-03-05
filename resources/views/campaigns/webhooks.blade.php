@@ -1,4 +1,4 @@
-@extends('layouts.popup.medium')
+@extends('layouts.popup.large')
 
 @section('title')
     {{ trans('messages.webhooks') }}
@@ -15,16 +15,8 @@
         </div>
     </div>
 
-    <div>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>{{ trans('messages.webhook.type') }}</th>
-                    <th>{{ trans('messages.webhook.description') }}</th>
-                    <th></th>
-                </tr>
-            </thead>
-        </table>
+    <div class="webhooks_list">
+        
     </div>
 
     <script>
@@ -40,10 +32,21 @@
 				}
 
 				return this.addPopup;
-			}
+			},
+
+            loadList: function() {
+                var box = new Box($('.webhooks_list'), '{{ action('CampaignController@webhooksList', [
+                    'uid' => $campaign->uid,
+                ]) }}');
+                box.load();
+            }
         };
 
         $(function() {
+            //
+            CampaignsWebhooks.loadList();
+
+            // click add webhook button
             $('.add_webhooks_but').on('click', function(e) {
 				e.preventDefault();
 

@@ -418,10 +418,13 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('templates/rss/parse', 'TemplateController@parseRss');
 
     // Campaign
+    Route::post('campaigns/webhooks/{webhook_uid}/delete', 'CampaignController@webhooksDelete');
+    Route::match(['get', 'post'], 'campaigns/webhooks/{webhook_uid}/edit', 'CampaignController@webhooksEdit');
+    Route::get('campaigns/{uid}/webhooks/list', 'CampaignController@webhooksList');
     Route::get('campaigns/{uid}/webhooks/link-select', 'CampaignController@webhooksLinkSelect');
     Route::match(['get', 'post'], 'campaigns/{uid}/webhooks/add', 'CampaignController@webhooksAdd');
     Route::get('campaigns/{uid}/webhooks', 'CampaignController@webhooks');
-
+    
     Route::get('campaigns/{uid}/preview-as/list', 'CampaignController@previewAsList');
     Route::get('campaigns/{uid}/preview-as', 'CampaignController@previewAs');
 

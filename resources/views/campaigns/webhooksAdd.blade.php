@@ -16,7 +16,7 @@
                 @include('helpers.form_control', [
                     'type' => 'select',
                     'name' => 'type',
-                    'value' => '',
+                    'value' => $webhook->type,
                     'label' => trans('messages.webhook.select_type'),
                     'options' => [
                         ['text' => trans('messages.webhook.type.open'), 'value' => 'open'],
@@ -31,7 +31,7 @@
                 @include('helpers.form_control', [
                     'type' => 'text',
                     'name' => 'endpoint',
-                    'value' => '',
+                    'value' => $webhook->endpoint,
                     'label' => trans('messages.webhook.endpoint.desc'),
                     'rules' => ['endpoint' => 'required'],
                 ])
@@ -52,6 +52,7 @@
             showLinkSelect: function() {
                 var box = new Box($('.link_select'), '{{ action('CampaignController@webhooksLinkSelect', [
                     'uid' => $campaign->uid,
+                    'campaign_link_id' => $webhook->campaign_link_id,
                 ]) }}');
                 box.load();
             },
@@ -86,6 +87,7 @@
                     });
 
                     CampaignsWebhooks.getAddPopup().hide();
+                    CampaignsWebhooks.loadList();
                 }).fail(function(jqXHR, textStatus, errorThrown){
                     CampaignsWebhooks.getAddPopup().loadHtml(jqXHR.responseText);
                 }).always(function() {

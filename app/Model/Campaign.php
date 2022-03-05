@@ -112,6 +112,14 @@ class Campaign extends Model
     }
 
     /**
+     * Campaign has many campaign webhooks.
+     */
+    public function campaignWebhooks()
+    {
+        return $this->hasMany('Acelle\Model\CampaignWebhook');
+    }
+
+    /**
      * Get campaign's associated tracking domain.
      */
     public function trackingDomain()
@@ -2699,5 +2707,13 @@ class Campaign extends Model
         });
 
         return $validator;
+    }
+
+    public function newWebhook()
+    {
+        $webhook = new \Acelle\Model\CampaignWebhook();
+        $webhook->campaign_id = $this->id;
+
+        return $webhook;
     }
 }

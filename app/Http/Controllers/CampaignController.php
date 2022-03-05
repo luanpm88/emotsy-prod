@@ -2133,7 +2133,7 @@ class CampaignController extends Controller
 
         // authorize
         if (\Gate::denies('read', $campaign)) {
-            return;
+            return $this->notAuthorized();
         }
 
         return view('campaigns.webhooks', [
@@ -2141,25 +2141,38 @@ class CampaignController extends Controller
         ]);
     }
 
-    public function webhooksAdd(Request $request)
+    public function webhooksList(Request $request)
     {
         $campaign = Campaign::findByUid($request->uid);
 
         // authorize
         if (\Gate::denies('read', $campaign)) {
-            return;
+            return $this->notAuthorized();
+        }
+
+        return view('campaigns.webhooksList', [
+            'campaign' => $campaign,
+        ]);
+    }
+
+    public function webhooksAdd(Request $request)
+    {
+        $campaign = Campaign::findByUid($request->uid);
+        $webhook = $campaign->newWebhook();
+
+        // authorize
+        if (\Gate::denies('update', $campaign)) {
+            return $this->notAuthorized();
         }
 
         if ($request->isMethod('post')) {
-            // make validator
-            $validator = \Validator::make($request->all(), [
-                'endpoint' => 'required|active_url',
-            ]);
+            list($webhook, $validator) = $webhook->createFromArray($request->all());
 
             // redirect if fails
             if ($validator->fails()) {
                 return response()->view('campaigns.webhooksAdd', [
                     'campaign' => $campaign,
+                    'webhook' => $webhook,
                     'errors' => $validator->errors(),
                 ], 400);
             }
@@ -2171,6 +2184,7 @@ class CampaignController extends Controller
 
         return view('campaigns.webhooksAdd', [
             'campaign' => $campaign,
+            'webhook' => $webhook,
         ]);
     }
     
@@ -2180,11 +2194,57 @@ class CampaignController extends Controller
 
         // authorize
         if (\Gate::denies('read', $campaign)) {
-            return;
+            return $this->notAuthorized();
         }
 
         return view('campaigns.webhooksLinkSelect', [
             'campaign' => $campaign,
+        ]);
+    }
+
+    public function webhooksEdit(Request $request)
+    {
+        $webhook = \Acelle\Model\CampaignWebhook::findByUid($request->webhook_uid);
+
+        // authorize
+        if (\Gate::denies('update', $webhook->campaign)) {
+            return $this->notAuthorized();
+        }
+
+        if ($request->isMethod('post')) {
+            list($webhook, $validator) = $webhook->updateFromArray($request->all());
+
+            // redirect if fails
+            if ($validator->fails()) {
+                return response()->view('campaigns.webhooksEdit', [
+                    'webhook' => $webhook,
+                    'errors' => $validator->errors(),
+                ], 400);
+            }
+
+            return response()->json([
+                'message' => trans('messages.webhook.updated'),
+            ]);
+        }
+
+        return view('campaigns.webhooksEdit', [
+            'webhook' => $webhook,
+        ]);
+    }
+
+    public function webhooksDelete(Request $request)
+    {
+        $webhook = \Acelle\Model\CampaignWebhook::findByUid($request->webhook_uid);
+
+        // authorize
+        if (\Gate::denies('update', $webhook->campaign)) {
+            return $this->notAuthorized();
+        }
+
+        $webhook->delete();
+
+        return response()->json([
+            'message' => trans('messages.webhook.deleted'),
         ]);
     }
 }
