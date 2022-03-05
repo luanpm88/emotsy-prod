@@ -150,7 +150,7 @@ done
                                 <ul>
                                     <li class="d-flex align-items-center"><span class="material-icons-round mr-2 text-info">
 done
-</span> <span>Coded in PHP 7.0 on top of Laravel 8</span></li>
+</span> <span>Coded in PHP 7x and 8x on top of Laravel 8</span></li>
                                     <li class="d-flex align-items-center"><span class="material-icons-round mr-2 text-info">
 done
 </span> <span>Backed by MySQL 5.x</li>
