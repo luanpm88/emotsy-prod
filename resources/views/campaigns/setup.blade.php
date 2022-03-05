@@ -168,6 +168,18 @@ forward_to_inbox
 							{!! trans('messages.campaign.plain_text.open_click_tracking_wanring') !!}
 						</div>
 					@endif
+
+					<div>
+						<h3>{{ trans('messages.webhooks') }}</h3>
+						<div class="d-flex">
+							<p>{{ trans('messages.webhooks.wording') }}</p>
+							<div class="ms-4">
+								<a href="javascript:;" class="btn btn-secondary manage_webhooks_but">
+									{{ trans('messages.webhooks.manage') }}
+								</a>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -181,6 +193,21 @@ arrow_forward
 	<form>
 	
 	<script>
+		var CampaignsSetup = {
+			webhooksPopup: null,
+			getWebhooksPopup: function() {
+				if (this.webhooksPopup == null) {
+					this.webhooksPopup = new Popup({
+						url: '{{ action('CampaignController@webhooks', [
+							'uid' => $campaign->uid,
+						]) }}'
+					});
+				}
+
+				return this.webhooksPopup;
+			}
+		}
+
 		var CampaignsSetupNextButton = {
 			manager: null,
 
@@ -225,11 +252,15 @@ arrow_forward
 		}
 
 		$(function() {
+			// check next button
 			CampaignsSetupNextButton.check();
 
+			// manage webhooks button click
+			$('.manage_webhooks_but').on('click', function(e) {
+				e.preventDefault();
 
-
-
+				CampaignsSetup.getWebhooksPopup().load();
+			});
 
 			// @Legacy
 			// auto fill

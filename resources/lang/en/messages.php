@@ -4113,4 +4113,22 @@
   'oauth.facebook_client_id' => 'Facebook Client ID',
   'oauth.facebook_client_secret' => 'Facebook Client Secret',
   'setting.facebook_oauth' => 'Facebook OAuth',
+  'webhooks' => 'Webhooks',
+  'webhooks.wording' => 'Webhook is a mechanism that allows the
+    system to notify about events or activities related to
+    your marketing campaign (email opens, clicks, unsubscribe…)',
+  'webhooks.manage' => 'Manage',
+  'webhooks.add' => 'Add',
+  'webhooks.add_webhook' => 'Add Webhook',
+  'webhook.type' => 'Type',
+  'webhook.description' => 'Description',
+  'webhook.select_type' => 'Select webhook type',
+  'webhook.type.open' => 'Email opened',
+  'webhook.type.click' => 'Link clicked',
+  'webhook.type.unsubscribe' => 'Unsubscribe',
+  'webhook.endpoint.desc' => 'Enter your endpoint URL to which the system will
+    send a notification when the selected event happens',
+  'webhook.select_campaign_link' => 'Select link',
+  'campaigns.link_empty' => 'The campaign dose not have links!',
+  'webhook.added' => 'Webhook was successfully added.',
 ) ?>

@@ -2126,4 +2126,65 @@ class CampaignController extends Controller
             'campaign' => $campaign,
         ]);
     }
+
+    public function webhooks(Request $request)
+    {
+        $campaign = Campaign::findByUid($request->uid);
+
+        // authorize
+        if (\Gate::denies('read', $campaign)) {
+            return;
+        }
+
+        return view('campaigns.webhooks', [
+            'campaign' => $campaign,
+        ]);
+    }
+
+    public function webhooksAdd(Request $request)
+    {
+        $campaign = Campaign::findByUid($request->uid);
+
+        // authorize
+        if (\Gate::denies('read', $campaign)) {
+            return;
+        }
+
+        if ($request->isMethod('post')) {
+            // make validator
+            $validator = \Validator::make($request->all(), [
+                'endpoint' => 'required|active_url',
+            ]);
+
+            // redirect if fails
+            if ($validator->fails()) {
+                return response()->view('campaigns.webhooksAdd', [
+                    'campaign' => $campaign,
+                    'errors' => $validator->errors(),
+                ], 400);
+            }
+
+            return response()->json([
+                'message' => trans('messages.webhook.added'),
+            ]);
+        }
+
+        return view('campaigns.webhooksAdd', [
+            'campaign' => $campaign,
+        ]);
+    }
+    
+    public function webhooksLinkSelect(Request $request)
+    {
+        $campaign = Campaign::findByUid($request->uid);
+
+        // authorize
+        if (\Gate::denies('read', $campaign)) {
+            return;
+        }
+
+        return view('campaigns.webhooksLinkSelect', [
+            'campaign' => $campaign,
+        ]);
+    }
 }
