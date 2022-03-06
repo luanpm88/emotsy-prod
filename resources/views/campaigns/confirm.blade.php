@@ -163,7 +163,7 @@ forward_to_inbox
                         </p>
                     </div>
 
-                    <a href="javascript:;" class="btn btn-secondary manage_webhooks_but">{{ trans('messages.edit') }}</a>
+                    <a href="javascript:;" class="btn btn-secondary manage_webhooks_but">{{ trans('messages.webhooks.manage') }}</a>
 
                     <script>
                         $(function() {
