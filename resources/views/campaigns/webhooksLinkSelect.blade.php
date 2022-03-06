@@ -2,7 +2,7 @@
     @include('helpers.form_control', [
         'type' => 'select',
         'name' => 'campaign_link_id',
-        'value' => $request->campaign_link_id,
+        'value' => request()->campaign_link_id,
         'label' => trans('messages.webhook.select_campaign_link'),
         'options' => $campaign->getLinks()->map(function($link) {
             return ['text' => $link->url, 'value' => $link->id];
