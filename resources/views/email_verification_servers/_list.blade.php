@@ -41,7 +41,7 @@
                         <span class="label label-flat bg-{{ $server->status }}">{{ trans('messages.email_verification_server_status_' . $server->status) }}</span>
                     </span>
                 </td>
-                <td class="text-end text-nowrap">
+                <td class="text-end text-nowrap pe-0">
                     @if (Auth::user()->customer->can('update', $server))
                         <a href="{{ action('EmailVerificationServerController@edit', ["email_verification_server" => $server->uid]) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" role="button" class="btn btn-secondary btn-icon"><span class="material-icons-outlined">
 edit

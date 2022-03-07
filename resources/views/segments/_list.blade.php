@@ -37,7 +37,7 @@
                     <br style="clear:both"/>
                 </td>
 
-                <td class="text-end text-nowrap">
+                <td class="text-end text-nowrap pe-0">
                     @if (\Gate::allows('update', $item))
                         <a href="{{ action('SegmentController@edit', ['list_uid' => $list->uid, "uid" => $item->uid]) }}"
                            role="button" class="btn btn-secondary btn-icon">

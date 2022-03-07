@@ -54,7 +54,7 @@
                     </span>
                 </td>
 
-                <td class="text-end text-nowrap">
+                <td class="text-end text-nowrap pe-0">
                     @if (Auth::user()->customer->can('update', $form))
                         <a href="{{ action('FormController@build', $form->uid) }}"
                                 role="button" class="btn btn-primary">
