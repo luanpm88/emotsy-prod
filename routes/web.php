@@ -680,6 +680,15 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('trigger/{id}/check', 'AutoTrigger@check');
     Route::get('automation2/{automation}/run', 'Automation2Controller@run');
 
+    Route::match(['get', 'post'], 'automation2/emails/webhooks/{webhook_uid}/test', 'Automation2Controller@webhooksTest');
+    Route::get('automation2/emails/webhooks/{webhook_uid}/sample/request', 'Automation2Controller@webhooksSampleRequest');
+    Route::post('automation2/emails/webhooks/{webhook_uid}/delete', 'Automation2Controller@webhooksDelete');
+    Route::match(['get', 'post'], 'automation2/emails/webhooks/{webhook_uid}/edit', 'Automation2Controller@webhooksEdit');
+    Route::get('automation2/emails/{email_uid}/webhooks/list', 'Automation2Controller@webhooksList');
+    Route::get('automation2/emails/{email_uid}/webhooks/link-select', 'Automation2Controller@webhooksLinkSelect');
+    Route::match(['get', 'post'], 'automation2/emails/{email_uid}/webhooks/add', 'Automation2Controller@webhooksAdd');
+    Route::get('automation2/emails/{email_uid}/webhooks', 'Automation2Controller@webhooks');
+
     // Sample UI/UX
     Route::get('sample', 'SamplesController@index');
 

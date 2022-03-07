@@ -34,7 +34,9 @@ class CampaignWebhook extends Model
 
         if ($params['type'] == 'click') {
             // fill campaign link id
-            $this->campaign_link_id = $params['campaign_link_id'];
+            if (isset($params['campaign_link_id'])) {
+                $this->campaign_link_id = $params['campaign_link_id'];
+            }
 
             // rule update
             $rules['campaign_link_id'] = 'required';
