@@ -97,6 +97,20 @@
         form.loading input {
             background: rgba(255,255,255,0.7)
         }
+        .socialite-link {
+            color: #eee;
+        }
+        .socialite-link span {
+            font-size: 13px!important;
+            text-decoration: underline;
+            opacity: 0.75;
+        }
+        .socialite-link:hover {
+            opacity: 1;
+        }
+        .socialite-link:hover span {
+            opacity: 1;
+        }
     </style>
 
     <div class="login-container dark full-height flex" style="height:100%">
@@ -136,7 +150,7 @@ done
                                 <ul>
                                     <li class="d-flex align-items-center"><span class="material-icons-round mr-2 text-info">
 done
-</span> <span>Coded in PHP 7.0 on top of Laravel 8</span></li>
+</span> <span>Coded in PHP 7x and 8x on top of Laravel 8</span></li>
                                     <li class="d-flex align-items-center"><span class="material-icons-round mr-2 text-info">
 done
 </span> <span>Backed by MySQL 5.x</li>
@@ -191,6 +205,26 @@ done
                     @endif
                 </h1>
 
+                <!-- display flash message -->
+                @foreach (['danger', 'warning', 'info', 'error'] as $msg)
+                    @php
+                        $class = $msg;
+                        if ($msg == 'error') {
+                            $class = 'danger';
+                        }
+                    @endphp
+                    @if(Session::has('alert-' . $msg))
+                        <!-- Form Error List -->
+                        <div class="alert alert-{{ $class }} alert-noborder alert-dismissible">
+                            <strong>{{ trans('messages.' . $msg) }}</strong>
+
+                            <br>
+
+                            <p class="mb-0">{!! preg_replace('/[\r\n]+/', ' ', Session::get('alert-' . $msg)) !!}</p>
+                        </div>
+                    @endif    
+                @endforeach
+
                 @include('helpers.form_control', [
                     'type' => 'email',
                     'class' => '',
@@ -234,6 +268,35 @@ done
                         </div>
                     </div>
                 </div>
+
+                @if (
+                    \Acelle\Model\Setting::get('oauth.google_enabled') == 'yes' ||
+                    \Acelle\Model\Setting::get('oauth.facebook_enabled') == 'yes'
+                )
+                    <hr>
+                    <div class="socialite_buttons text-center">
+                        @if (\Acelle\Model\Setting::get('oauth.google_enabled') == 'yes')
+                            {{-- <div class="text-center mt-4"> --}}
+                                <a href="{{ action('AuthController@googleRedirect') }}"
+                                    class="socialite-link"
+                                    style="width:100%;text-decoration:none;text-decoration:none;height:auto;">
+                                    <img width="25px" src="{{ url('images/google-login.svg') }}" />
+                                    <span class="ms-3 display-6 text-center" style="font-size:16px;width:80%">Continue with Google</span>
+                                </a>
+                            {{-- </div> --}}
+                        @endif
+                                <span class="mx-2">|</span>
+                        @if (\Acelle\Model\Setting::get('oauth.facebook_enabled') == 'yes')
+                            {{-- <div class="text-center mt-2"> --}}
+                                <a href="{{ action('AuthController@facebookRedirect') }}"
+                                    class="socialite-link" style="width:100%;text-decoration:none;height:auto;">
+                                    <img width="25px" src="{{ url('images/icons/facebook-logo.svg') }}" class="mr-1" />
+                                    <span class="text-center" style="font-size:16px;width:80%">Continue with Facebook</span>
+                                </a>
+                            {{-- </div> --}}
+                        @endif
+                    </div>
+                @endif
             </form>
         </div>
     </div>

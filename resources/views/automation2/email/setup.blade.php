@@ -101,14 +101,14 @@
                         'help_class' => 'email',
                         'rules' => $email->rules(),
                     ])
-
                     @include('helpers.form_control', [
                         'type' => 'checkbox3',
                         'name' => 'custom_tracking_domain',
                         'label' => trans('messages.custom_tracking_domain'),
-                        'value' => $email->tracking_domain_id || request()->custom_tracking_domain,
+                        'value' => Auth::user()->customer->isCustomTrackingDomainRequired() ? true : ($email->tracking_domain_id || request()->custom_tracking_domain),
                         'options' => [false,true],
                         'help_class' => 'email',
+                        'readonly' => Auth::user()->customer->isCustomTrackingDomainRequired(),
                         'rules' => $email->rules()
                     ])
 

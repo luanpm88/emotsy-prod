@@ -34,6 +34,7 @@ use URL;
 use File;
 use Acelle\Library\Tool;
 use Acelle\Library\Traits\HasUid;
+use Acelle\Library\Facades\Hook;
 
 class User extends Authenticatable
 {
@@ -580,5 +581,61 @@ class User extends Authenticatable
         }
 
         $this->delete();
+    }
+
+    public static function createCustomer($params) {
+        // Create new user/customer
+        $user = new self();
+
+        if (isset($params['name'])) {
+            $user->first_name = $params['name'];
+        }
+
+        if (isset($params['email'])) {
+            $user->email = $params['email'];
+        }
+
+        if (isset($params['google_id'])) {
+            $user->google_id = $params['google_id'];
+        }
+
+        if (isset($params['google_token'])) {
+            $user->google_token = $params['google_token'];
+        }
+
+        if (isset($params['google_refresh_token'])) {
+            $user->google_refresh_token = $params['google_refresh_token'];
+        }
+
+        if (isset($params['facebook_id'])) {
+            $user->facebook_id = $params['facebook_id'];
+        }
+
+        if (isset($params['facebook_token'])) {
+            $user->facebook_token = $params['facebook_token'];
+        }
+
+        if (isset($params['facebook_refresh_token'])) {
+            $user->facebook_refresh_token = $params['facebook_refresh_token'];
+        }
+
+        $user->password = bcrypt(str_random(8));
+        $user->activated = true;
+        $user->status = 'active';
+        $user->save();
+
+        // Save current user info
+        $customer = \Acelle\Model\Customer::newCustomer();
+        $customer->language_id = language()->id;
+        $customer->status = 'active';
+        $customer->timezone = date_default_timezone_get();
+        $customer->save();
+
+        // assign customer
+        $user->customer_id = $customer->id;
+        $user->save();
+
+        //
+        Hook::execute('customer_added', [$customer]);
     }
 }

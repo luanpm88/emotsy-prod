@@ -36,6 +36,13 @@ alarm
 	@endif
 	@if (Auth::user()->admin->getPermission("setting_general") == 'yes')
 		<li class="nav-item text-semibold">
+			<a class="nav-link {{ $action == "googleOAuth" ? "active" : "" }}" href="{{ action('Admin\AuthController@googleOAuth') }}">
+			<span class="material-icons-outlined">
+				admin_panel_settings
+</span> {{ trans('messages.setting.oauth') }}</a></li>
+	@endif
+	@if (Auth::user()->admin->getPermission("setting_general") == 'yes')
+		<li class="nav-item text-semibold">
 			<a class="nav-link {{ $action == "license" ? "active" : "" }}" href="{{ action('Admin\SettingController@license') }}">
 			<span class="material-icons-outlined">
 vpn_key

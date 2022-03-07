@@ -2041,4 +2041,15 @@ class Customer extends Model
 
         return $product;
     }
+
+    public function isCustomTrackingDomainRequired()
+    {
+        $plan = $this->subscription->plan;
+
+        if (!$plan) {
+            return false;
+        }
+
+        return $plan->isCustomTrackingDomainRequired();
+    }
 }

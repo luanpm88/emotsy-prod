@@ -61,6 +61,8 @@ class Plan extends Model
         'currency_id',
         'paddle_plan_id',
         'admin_id',
+        'tax_billing_required',
+        'own_tracking_domain_required',
     ];
 
     /**
@@ -1437,5 +1439,10 @@ class Plan extends Model
         ]);
         $plan->status = 'active';
         $plan->save();
+    }
+
+    public function isCustomTrackingDomainRequired()
+    {
+        return $this->own_tracking_domain_required;
     }
 }
