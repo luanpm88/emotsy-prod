@@ -59,7 +59,7 @@
                         @endif
                     </span>
                 </td>
-                <td class="text-end text-nowrap">
+                <td class="text-end text-nowrap pe-0">
                     @if (\Gate::allows('update', $automation))
                         <a data-popup="tooltip" href="{{ action('Automation2Controller@edit', $automation->uid) }}" role="button" class="btn btn-secondary btn-icon">
                             <i class="material-icons-outlined">multiline_chart</i> {{ trans('messages.automation.design') }}

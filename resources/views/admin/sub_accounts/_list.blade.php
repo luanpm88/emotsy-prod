@@ -42,7 +42,7 @@
                         <span class="text-muted">{{ trans('messages.created_at') }}</span>
                     </div>
                 </td>
-                <td class="text-end text-nowrap">
+                <td class="text-end text-nowrap pe-0">
                     @if (Auth::user()->admin->can('delete', $account))
                         <a href="{{ action('Admin\SubAccountController@delete', $account->uid) }}"
                             data-popup="tooltip" title="{{ trans('messages.subaccount.delete.tooltip') }}"

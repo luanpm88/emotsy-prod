@@ -92,7 +92,7 @@
                         <span class="label label-flat bg-{{ $item->status }}">{{ trans('messages.sending_server_status_' . $item->status) }}</span>
                     </span>
                 </td>
-                <td class="text-end text-nowrap">
+                <td class="text-end text-nowrap pe-0">
                     @if (Auth::user()->customer->can('update', $item))
                         @if ($server->isExtended())
                             <a href="{{ $server->getEditUrl() }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" role="button" class="btn btn-secondary btn-icon"><span class="material-icons-outlined">

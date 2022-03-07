@@ -44,7 +44,7 @@
 						<span class="label label-flat bg-{{ $item->status }}">{{ $item->status }}</span>
 					</span>
 				</td>
-				<td class="text-end text-nowrap" width="5%">
+				<td class="text-end text-nowrap pe-0" width="5%">
 					@can('update', $item)
 						<a href="{{ action('Admin\CurrencyController@edit', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" role="button" class="btn btn-secondary btn-icon"><span class="material-icons-outlined">
 edit
