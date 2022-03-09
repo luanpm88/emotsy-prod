@@ -124,6 +124,23 @@
                             'rules' => $email->rules()
                         ])
                     </div>
+
+                    @if ($email->template)
+						<div class="webhooks-management">
+							<div class="d-flex align-items-center mb-2">
+                                <h3 class="mb-0 me-2"> {{ trans('messages.webhooks') }}</h3>
+                                <span class="badge badge-info">{{ number_with_delimiter($email->emailWebhooks()->count()) }}</span>
+                            </div>
+							<div class="d-flex">
+								<p>{{ trans('messages.webhooks.wording') }}</p>
+								<div class="ms-4">
+									<a href="javascript:;" class="btn btn-secondary manage_webhooks_but">
+										{{ trans('messages.webhooks.manage') }}
+									</a>
+								</div>
+							</div>
+						</div>
+					@endif
                 </div>
             </div>
         </div>
@@ -138,6 +155,53 @@
     </form>
     
     <script>
+        @if ($email->template)
+            var EmailSetup = {
+                webhooksPopup: null,
+                getWebhooksPopup: function() {
+                    if (this.webhooksPopup == null) {
+                        this.webhooksPopup = new Popup({
+                            url: '{{ action('Automation2Controller@webhooks', [
+                                'email_uid' => $email->uid,
+                            ]) }}',
+                            onclose: function() {
+                                EmailSetup.refresh();
+                            }   
+                        });
+                    }
+
+                    return this.webhooksPopup;
+                },
+
+                refresh: function() {
+                    $.ajax({
+                        url: "{{ action('Automation2Controller@emailSetup', [
+                            'uid' => $automation->uid,
+                            'email_uid' => $email->uid,
+                        ]) }}",
+                        method: 'GET',
+                        data: {
+                            _token: CSRF_TOKEN
+                        },
+                        success: function (response) {
+                            var html = $('<div>').html(response).find('.webhooks-management').html();
+
+                            $('.webhooks-management').html(html);
+                        }
+                    });
+                }
+            }
+
+            $(function() {
+                // manage webhooks button click
+                $('.manage_webhooks_but').on('click', function(e) {
+                    e.preventDefault();
+
+                    EmailSetup.getWebhooksPopup().load();
+                });
+            });
+        @endif
+
         function checkUnverified() {
 			if(!$('.autofill-error:visible').length) {
 				$('.unverified_next_but').removeClass('pointer-events-none');
