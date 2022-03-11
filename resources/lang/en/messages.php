@@ -4113,4 +4113,7 @@
   'oauth.facebook_client_id' => 'Facebook Client ID',
   'oauth.facebook_client_secret' => 'Facebook Client Secret',
   'setting.facebook_oauth' => 'Facebook OAuth',
+  'brand.product' => 'Product',
+  'brand.products' => 'Products',
+  'brand.categories' => 'Categories',
 ) ?>
