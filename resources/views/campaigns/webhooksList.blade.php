@@ -13,15 +13,15 @@
                     <td width="5%">{{ trans('messages.webhook.type.' . $webhook->type . '.short') }}</td>
                     <td>
                         <p class="mb-0">{{ trans('messages.webhook.type.' . $webhook->type . '.desc') }}</p>
-                        <p class="mb-0 text-muted2">
-                            <span class="material-icons-outlined text-muted2 me-1 xtooltip" title="{{ trans('messages.webhook.endpoint') }}">gps_fixed</span> {{ $webhook->endpoint }}
-                        </p>
                         @if ($webhook->type == 'click')
                             <p class="mb-0 text-muted2">
-                                <span class="material-icons-outlined text-muted2 me-1 xtooltip" title="{{ trans('messages.link') }}">link</span>
+                                <span class="material-icons-outlined text-muted2 me-1 xtooltip" title="{{ trans('messages.link') }}">ads_click</span>
                                 <a target="_blank" href="{{ $webhook->campaignLink->url }}">{{ $webhook->campaignLink->url }}</a>
                             </p>
                         @endif
+                        <p class="mb-0 text-muted2">
+                            <span class="material-icons-outlined text-muted2 me-1 xtooltip" title="{{ trans('messages.webhook.endpoint') }}">gps_fixed</span> {{ $webhook->endpoint }}
+                        </p>
                     </td>
                     <td class="text-nowrap text-end">
                         <a href="{{ action('CampaignController@webhooksSampleRequest', [

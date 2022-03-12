@@ -4153,4 +4153,5 @@
   'brand.product' => 'Product',
   'brand.products' => 'Products',
   'brand.categories' => 'Categories',
+  'webhook.select_email_link' => 'Select link',
 ) ?>
