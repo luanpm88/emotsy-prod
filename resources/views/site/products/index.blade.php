@@ -16,7 +16,7 @@
     <div class="page-title">
         <ul class="breadcrumb breadcrumb-caret position-right">
             <li class="breadcrumb-item"><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
-            <li class="breadcrumb-item">{{ trans('messages.products') }}</li>
+            <li class="breadcrumb-item"><a href="{{ action('Site\ProductController@index') }}">{{ trans('messages.products') }}</a></li>
         </ul>
     </div>
 
