@@ -4150,4 +4150,7 @@
   'webhooks.summary_desc' => 'Send notifications to your 3rd application',
   'webhooks.empty' => 'There are no webhooks!',
   'emails.link_empty' => 'The email dose not have links!',
+  'brand.product' => 'Product',
+  'brand.products' => 'Products',
+  'brand.categories' => 'Categories',
 ) ?>

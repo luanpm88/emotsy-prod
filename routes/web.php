@@ -709,6 +709,9 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     // Site - Menu
     Route::get('site/menus', 'Site\MenuController@index');
 
+    // Category - Menu
+    Route::get('site/categories', 'Site\CategoryController@index');
+
     // Site - Product
     Route::post('site/profucts/{id}/delete', 'Site\ProductController@delete');
     Route::match(['get', 'post'], 'site/products/{id}/edit', 'Site\ProductController@edit');
