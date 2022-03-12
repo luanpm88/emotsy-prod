@@ -121,14 +121,14 @@ class UrlAutoFill {
                 }, 1000);
             });
 
-            setInterval(function() {
+            $(document).on('mouseover', '.tox-form__group:first-child input', function(event) {
                 if (!_this.isLink()) {
                     return;
                 }
-                if (_this.input) {
+                if ($('.tox-form__group:first-child input').eq(0).val() != _this.input.val()) {
                     _this.input.val($('.tox-form__group:first-child input').eq(0).val());
                 }
-            }, 500);
+            });
         }                    
     }
 
