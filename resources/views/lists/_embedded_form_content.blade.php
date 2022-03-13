@@ -76,7 +76,6 @@
 			<script type="text/javascript" src="{{ URL::asset('core/js/functions.js') }}"></script>
 			@include('layouts.core._script_vars')
 			<script>
-				// $.noConflict();
 				jQuery( document ).ready(function( $ ) {				
 					@if (!isset($preview))
 						@if ($list->getEmbeddedFormOption('javascript') == 'yes')			
