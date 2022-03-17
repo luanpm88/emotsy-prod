@@ -25,3 +25,13 @@ footer {
 [builder-element=CellElement] .container {
     padding: 0;
 }
+@media (min-width: 769px) {
+    [data-hide-on="desktop"] {
+      display: none!important;
+    }
+}
+@media (max-width: 768px) {
+    [data-hide-on="mobile"] {
+      display: none!important;
+    }
+}
