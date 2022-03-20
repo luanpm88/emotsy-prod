@@ -64,9 +64,18 @@ class Website extends Model
 
     public static function getTitleFromUrl($url)
     {
+        $arrContextOptions = array(
+            "ssl"=>array(
+                "verify_peer"=>false,
+                "verify_peer_name"=>false,
+            ),
+        );
+
+        $content = file_get_contents($url, false, stream_context_create($arrContextOptions));
+
         $document = new \DOMDocument();
         $document->encoding = 'utf-8';
-        $document->loadHTML(mb_convert_encoding(file_get_contents($url), 'HTML-ENTITIES', 'UTF-8'), LIBXML_NOWARNING | LIBXML_NOERROR);
+        $document->loadHTML(mb_convert_encoding($content, 'HTML-ENTITIES', 'UTF-8'), LIBXML_NOWARNING | LIBXML_NOERROR);
         
         $tags = $document->getElementsByTagName('title');
 
