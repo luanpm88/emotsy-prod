@@ -5,11 +5,6 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 
-		<title>A simple, clean, and responsive HTML invoice template</title>
-
-		<!-- Favicon -->
-		<link rel="icon" href="./images/favicon.png" type="image/x-icon" />
-
 		<!-- Invoice styling -->
 		<style>
 			* {
@@ -149,6 +144,8 @@
 								<td style="padding-left:0;padding-right:0;">
 									<div style="font-weight:bold">{COMPANY_NAME}</div>
 									<div style="">{COMPANY_ADDRESS}</div>
+									<div style="">{COMPANY_EMAIL}</div>
+									<div style="">{COMPANY_PHONE}</div>
 								</td>
 							</tr>
 						</table>

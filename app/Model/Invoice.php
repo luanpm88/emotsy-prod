@@ -657,6 +657,8 @@ class Invoice extends Model
         $values = [
             ['tag' => '{COMPANY_NAME}', 'value' => \Acelle\Model\Setting::get('company_name')],
             ['tag' => '{COMPANY_ADDRESS}', 'value' => \Acelle\Model\Setting::get('company_address')],
+            ['tag' => '{COMPANY_EMAIL}', 'value' => \Acelle\Model\Setting::get('company_email')],
+            ['tag' => '{COMPANY_PHONE}', 'value' => \Acelle\Model\Setting::get('company_phone')],
             ['tag' => '{FIRST_NAME}', 'value' => $bill['billing_first_name']],
             ['tag' => '{LAST_NAME}', 'value' => $bill['billing_last_name']],
             ['tag' => '{ADDRESS}', 'value' => $bill['billing_address']],
@@ -731,6 +733,8 @@ class Invoice extends Model
         $tags = [
             ['name' => '{COMPANY_NAME}', 'required' => false],
             ['name' => '{COMPANY_ADDRESS}', 'required' => false],
+            ['name' => '{COMPANY_EMAIL}', 'required' => false],
+            ['name' => '{COMPANY_PHONE}', 'required' => false],
             ['name' => '{FIRST_NAME}', 'required' => false],
             ['name' => '{LAST_NAME}', 'required' => false],
             ['name' => '{ADDRESS}', 'required' => false],

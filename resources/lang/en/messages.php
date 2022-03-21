@@ -4119,4 +4119,6 @@
   'invoice_template' => 'Invoice template',
   'invoice_current' => 'Invoice number start with #',
   'invoice_format' => 'Invoice number format',
+  'company_email' => 'Company email',
+  'company_phone' => 'Company phone',
 ) ?>

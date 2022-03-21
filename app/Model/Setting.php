@@ -567,8 +567,17 @@ class Setting extends Model
             'company_address' => [
                 'cat' => 'general',
                 'value' => '',
-                'type' => 'textarea',
-                'class' => 'setting-editor',
+                'type' => 'text',
+            ],
+            'company_email' => [
+                'cat' => 'general',
+                'value' => '',
+                'type' => 'text',
+            ],
+            'company_phone' => [
+                'cat' => 'general',
+                'value' => '',
+                'type' => 'text',
             ],
             'invoice_current' => [
                 'cat' => 'general',
