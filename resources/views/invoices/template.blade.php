@@ -142,10 +142,8 @@
 								</td>
 
 								<td style="padding-left:0;padding-right:0;">
-									<div style="font-weight:bold">{COMPANY_NAME}</div>
-									<div style="">{COMPANY_ADDRESS}</div>
-									<div style="">{COMPANY_EMAIL}</div>
-									<div style="">{COMPANY_PHONE}</div>
+									<p style="font-weight:bold">{{ \Acelle\Model\Setting::get('site_name') }}</p>
+									<p>{{ \Acelle\Model\Setting::get('site_description') }}</p>
 								</td>
 							</tr>
 						</table>
@@ -163,10 +161,10 @@
 						<table>
 							<tr>
 								<td style="padding-left:0;padding-right:0;">
-									<div style="font-weight:bold">{FIRST_NAME} {LAST_NAME}</div>
-									<div>{ADDRESS} {COUNTRY}</div>
-									<div>{EMAIL}</div>
-									<div>{PHONE}</div>
+									<p style="font-weight:bold">{FIRST_NAME} {LAST_NAME}</p>
+									<p>{ADDRESS} {COUNTRY}</p>
+									<p>{EMAIL}</p>
+									<p>{PHONE}</p>
 								</td>
 
 								<td style="padding-right:0">

@@ -559,26 +559,6 @@ class Setting extends Model
                 'type' => 'text',
                 'not_required' => true,
             ],
-            'company_name' => [
-                'cat' => 'general',
-                'value' => '',
-                'type' => 'text',
-            ],
-            'company_address' => [
-                'cat' => 'general',
-                'value' => '',
-                'type' => 'text',
-            ],
-            'company_email' => [
-                'cat' => 'general',
-                'value' => '',
-                'type' => 'text',
-            ],
-            'company_phone' => [
-                'cat' => 'general',
-                'value' => '',
-                'type' => 'text',
-            ],
             'invoice_current' => [
                 'cat' => 'general',
                 'value' => '1',
