@@ -636,14 +636,52 @@ class Invoice extends Model
         return true;
     }
 
+    public static function getTemplateContent()
+    {
+        if (\Acelle\Model\Setting::get('invoice.custom_template')) {
+            return \Acelle\Model\Setting::get('invoice.custom_template');
+        } else {
+            return view('invoices.template');
+        }
+        
+    }
+
+    public function getInvoiceHtml()
+    {
+        $content = self::getTemplateContent();
+        $bill = $this->getBillingInfo();
+
+        // transalte tags
+        $values = [
+            ['tag' => '{COMPANY_NAME}', 'value' => \Acelle\Model\Setting::get('company_name')],
+            ['tag' => '{COMPANY_ADDRESS}', 'value' => \Acelle\Model\Setting::get('company_address')],
+            ['tag' => '{FIRST_NAME}', 'value' => $bill['billing_first_name']],
+            ['tag' => '{LAST_NAME}', 'value' => $bill['billing_last_name']],
+            ['tag' => '{ADDRESS}', 'value' => $bill['billing_address']],
+            ['tag' => '{COUNTRY}', 'value' => $bill['billing_country']],
+            ['tag' => '{EMAIL}', 'value' => $bill['billing_email']],
+            ['tag' => '{PHONE}', 'value' => $bill['billing_phone']],
+            ['tag' => '{INVOICE_NUMBER}', 'value' => $bill['invoice_uid']],
+            ['tag' => '{CURRENT_DATETIME}', 'value' => \Acelle\Library\Tool::formatDateTime(\Carbon\Carbon::now())],
+            ['tag' => '{INVOICE_DUE_DATE}', 'value' => \Acelle\Library\Tool::formatDateTime($bill['due_date'])],
+            ['tag' => '{ITEMS}', 'value' => view('invoices._template_items', [
+                'bill' => $bill,
+                'invoice' => $this,
+            ])],
+        ];
+
+        foreach($values as $value) {
+            $content = str_replace($value['tag'], $value['value'], $content);
+        }
+
+        return $content;
+    }
+
     public function exportToPdf()
     {
         // instantiate and use the dompdf class
         $dompdf = new Dompdf(array('enable_remote' => true));
-        $content = mb_convert_encoding(view('invoices.pdf', [
-            'bill' => $this->getBillingInfo(),
-            'invoice' => $this,
-        ]), 'HTML-ENTITIES', 'UTF-8');
+        $content = mb_convert_encoding($this->getInvoiceHtml(), 'HTML-ENTITIES', 'UTF-8');
         $dompdf->loadHtml($content);
 
         // (Optional) Setup the paper size and orientation
@@ -653,5 +691,26 @@ class Invoice extends Model
         $dompdf->render();
 
         return $dompdf->output();
+    }
+
+    public static function getTags()
+    {
+        $tags = [
+            ['name' => '{COMPANY_NAME}', 'required' => false],
+            ['name' => '{COMPANY_ADDRESS}', 'required' => false],
+            ['name' => '{FIRST_NAME}', 'required' => false],
+            ['name' => '{LAST_NAME}', 'required' => false],
+            ['name' => '{ADDRESS}', 'required' => false],
+            ['name' => '{COUNTRY}', 'required' => false],
+            ['name' => '{EMAIL}', 'required' => false],
+            ['name' => '{PHONE}', 'required' => false],
+            ['name' => '{INVOICE_NUMBER}', 'required' => false],
+            ['name' => '{CURRENT_DATETIME}', 'required' => false],
+            ['name' => '{INVOICE_DUE_DATE}', 'required' => false],
+            ['name' => '{ITEMS}', 'required' => false],
+            ['name' => '{CUSTOMER_ADDRESS}', 'required' => false],
+        ];
+
+        return $tags;
     }
 }

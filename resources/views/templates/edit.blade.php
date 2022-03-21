@@ -19,10 +19,10 @@
 @endsection
 
 @section('menu_right')
-    <li class="nav-item">
+    <li class="nav-item d-flex align-items-center">
         <a  href="javascript:;"
             onclick="parent.$('body').removeClass('overflow-hidden');parent.$('.full-iframe-popup').fadeOut()"
-            class="nav-link d-flex align-items-center py-3 lvl-1">
+            class="nav-link py-3 lvl-1 d-flex align-items-center">
             <i class="material-icons-outlined me-2">arrow_back</i>
             <span>{{ trans('messages.go_back') }}</span>
         </a>

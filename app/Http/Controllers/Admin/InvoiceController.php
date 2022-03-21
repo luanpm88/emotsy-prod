@@ -18,4 +18,13 @@ class InvoiceController extends Controller
             'Content-Disposition' => 'attachment; filename="invoice-'.$invoice->uid.'.pdf"',
         ]);
     }
+
+    public function template(Request $request)
+    {
+        if ($request->isMethod('post')) {
+            \Acelle\Model\Setting::set('invoice.custom_template', $request->content);
+        }
+        
+        return view('admin.invoices.template');
+    }
 }

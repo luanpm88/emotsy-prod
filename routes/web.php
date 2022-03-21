@@ -1090,6 +1090,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::match(['get','post'], 'tax/settings', 'TaxController@settings');
 
     // Invoice
+    Route::match(['get','post'], 'admin/invoices/template', 'InvoiceController@template');
     Route::get('admin/invoices/{uid}/download', 'InvoiceController@download');
 
     // OAuth
