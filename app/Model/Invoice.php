@@ -8,6 +8,8 @@ use Acelle\Model\Subscription;
 use Acelle\Model\Transaction;
 use Acelle\Library\Traits\HasUid;
 use Dompdf\Dompdf;
+use Acelle\Library\StringHelper;
+use function Acelle\Helpers\getAppHost;
 
 class Invoice extends Model
 {
@@ -673,6 +675,37 @@ class Invoice extends Model
         foreach($values as $value) {
             $content = str_replace($value['tag'], $value['value'], $content);
         }
+
+        $content = StringHelper::transformUrls($content, function ($url, $element) {
+            if (strpos($url, '#') === 0) {
+                return $url;
+            }
+
+            if (strpos($url, 'mailto:') === 0) {
+                return $url;
+            }
+
+            if (parse_url($url, PHP_URL_HOST) === false) {
+                // false ==> if url is invalid
+                // null ==> if url does not have host information
+                return $url;
+            }
+
+            if (StringHelper::isTag($url)) {
+                return $url;
+            }
+
+            if (strpos($url, '/') === 0) {
+                // absolute url with leading slash (/) like "/hello/world"
+
+                return join_url(getAppHost(), $url);
+            } elseif (strpos($url, 'data:') === 0) {
+                // base64 image. Like: "data:image/png;base64,iVBOR"
+                return $url;
+            } else {
+                return $url;
+            }
+        });
 
         return $content;
     }
