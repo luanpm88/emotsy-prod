@@ -3842,7 +3842,7 @@
   'form.create' => 'Create form',
   'create_a_signup_form' => 'Create a signup form',
   'create_a_signup_form.desc' => 'Capture contacts and collect the data you need<br>
-    to frow your audience',
+    to grow your audience',
   'audience.import_contacts.title' => 'Import contacts',
   'audience.import_contacts.desc' => 'Import your existing contacts from a CSV or Excel file<br>
     to quickly grow your ideas base',
