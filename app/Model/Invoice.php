@@ -661,7 +661,7 @@ class Invoice extends Model
             ['tag' => '{COUNTRY}', 'value' => $bill['billing_country']],
             ['tag' => '{EMAIL}', 'value' => $bill['billing_email']],
             ['tag' => '{PHONE}', 'value' => $bill['billing_phone']],
-            ['tag' => '{INVOICE_NUMBER}', 'value' => $bill['invoice_uid']],
+            ['tag' => '{INVOICE_NUMBER}', 'value' => sprintf(\Acelle\Model\Setting::get('invoice_format'), ($this->id + intval(\Acelle\Model\Setting::get('invoice_current'))))],
             ['tag' => '{CURRENT_DATETIME}', 'value' => \Acelle\Library\Tool::formatDateTime(\Carbon\Carbon::now())],
             ['tag' => '{INVOICE_DUE_DATE}', 'value' => \Acelle\Library\Tool::formatDateTime($bill['due_date'])],
             ['tag' => '{ITEMS}', 'value' => view('invoices._template_items', [
