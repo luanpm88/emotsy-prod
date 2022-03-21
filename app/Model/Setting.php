@@ -562,7 +562,7 @@ class Setting extends Model
             'invoice_current' => [
                 'cat' => 'general',
                 'value' => '1',
-                'type' => 'text',
+                'type' => 'number',
             ],
             'invoice_format' => [
                 'cat' => 'general',

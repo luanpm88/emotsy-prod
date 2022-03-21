@@ -665,7 +665,7 @@ class Invoice extends Model
             ['tag' => '{COUNTRY}', 'value' => $bill['billing_country']],
             ['tag' => '{EMAIL}', 'value' => $bill['billing_email']],
             ['tag' => '{PHONE}', 'value' => $bill['billing_phone']],
-            ['tag' => '{INVOICE_NUMBER}', 'value' => sprintf(\Acelle\Model\Setting::get('invoice_format'), ($this->id + intval(\Acelle\Model\Setting::get('invoice_current'))))],
+            ['tag' => '{INVOICE_NUMBER}', 'value' => $this->number],
             ['tag' => '{CURRENT_DATETIME}', 'value' => \Acelle\Library\Tool::formatDateTime(\Carbon\Carbon::now())],
             ['tag' => '{INVOICE_DUE_DATE}', 'value' => \Acelle\Library\Tool::formatDateTime($bill['due_date'])],
             ['tag' => '{ITEMS}', 'value' => view('invoices._template_items', [
@@ -749,5 +749,20 @@ class Invoice extends Model
         ];
 
         return $tags;
+    }
+
+    public function createInvoiceNumber()
+    {
+        if (\Acelle\Model\Setting::get('invoice_current')) {
+            $currentNumber = intval(\Acelle\Model\Setting::get('invoice_current'));
+        } else {
+            $currentNumber = 1;
+        }
+
+        $this->number = sprintf(\Acelle\Model\Setting::get('invoice_format'), $currentNumber);
+        $this->save();
+
+        // update current number
+        \Acelle\Model\Setting::set('invoice_current', ($currentNumber + 1));
     }
 }

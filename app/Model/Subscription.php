@@ -181,6 +181,9 @@ class Subscription extends Model implements HasQuotaInterface
         // save
         $invoice->save();
 
+        // add invoice number
+        $invoice->createInvoiceNumber();
+
         // data
         $invoice->updateMetadata([
             'subscription_uid' => $this->uid,
@@ -235,6 +238,9 @@ class Subscription extends Model implements HasQuotaInterface
 
         // save
         $invoice->save();
+
+        // add invoice number
+        $invoice->createInvoiceNumber();
 
         // data
         $invoice->updateMetadata([
@@ -294,6 +300,9 @@ class Subscription extends Model implements HasQuotaInterface
 
         // save
         $invoice->save();
+
+        // add invoice number
+        $invoice->createInvoiceNumber();
 
         // save data
         $invoice->updateMetadata([
