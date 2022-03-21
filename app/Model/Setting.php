@@ -570,6 +570,18 @@ class Setting extends Model
                 'type' => 'textarea',
                 'class' => 'setting-editor',
             ],
+            'invoice.current' => [
+                'cat' => 'general',
+                'value' => '1',
+                'type' => 'textarea',
+                'class' => 'setting-editor',
+            ],
+            'invoice.format' => [
+                'cat' => 'general',
+                'value' => '%08d',  // a number of 8 digit, for example: sprintf('%08d', 15) -> 00000015
+                'type' => 'textarea',
+                'class' => 'setting-editor',
+            ],
         ];
     }
 
