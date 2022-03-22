@@ -4123,7 +4123,7 @@
   'company_phone' => 'Company phone',
   'list.mail_list_count.desc' => 'Total contacts<br>subscribed to
     <span class="fw-600">:count</span> mail lists',
-  'list.active_contact.desc' => 'Active contacts, who reacts to your emails (open, click)',
+  'list.active_contact.desc' => 'Active contacts, ready to receive marketing emails',
   'forms_not_yet' => 'You do not have any subscription form yet!',
   'list.form.desc' => 'Forms for collect the contact data you need
     to grow your audience',
