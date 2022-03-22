@@ -32,7 +32,7 @@
                 </tr>
                 <tr>
                     <td style="text-align: right;border-bottom: solid 1px #ddd;">{{ trans('messages.bill.tax') }}:</td>
-                    <td style="border-bottom: solid 1px #ddd;font-weight: normal;">{{ $bill['sub_total'] }}</td>
+                    <td style="border-bottom: solid 1px #ddd;font-weight: normal;">{{ $bill['tax'] }}</td>
                 </tr>
                 <tr>
                     <td style="text-align: right;border-bottom: solid 1px #ddd;">{{ trans('messages.bill.total') }}:</td>
