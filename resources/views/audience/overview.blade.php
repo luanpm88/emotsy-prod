@@ -17,9 +17,11 @@
         <div class="col-md-3">
             <div class="bg-secondary p-3 shadow rounded-3 text-white">
                 <div class="text-center">
-                    <h2 class="text-semibold mb-1 mt-0">6,032</h2>
+                    <h2 class="text-semibold mb-1 mt-0">{{ number_with_delimiter(Auth::user()->customer->subscribers()->count()) }}</h2>
                     <div class="text-muted2 text-white">
-                        Total contacts<br>subscribed to <span class="fw-600">11</span> mail lists
+                        {!! trans('messages.list.mail_list_count.desc', [
+                            'count' => number_with_delimiter(Auth::user()->customer->subscribers()->subscribed()->count())
+                        ]) !!}                        
                     </div>
                 </div>
             </div>
@@ -27,9 +29,9 @@
         <div class="col-md-3">
             <div class="bg-secondary p-3 shadow rounded-3 text-white">
                 <div class="text-center">
-                    <h2 class="text-semibold mb-1 mt-0">92%</h2>
+                    <h2 class="text-semibold mb-1 mt-0">{{ number_to_percentage(Auth::user()->customer->subscribers()->subscribed()->count() / Auth::user()->customer->subscribers()->count()) }}</h2>
                     <div class="text-muted2 text-white">
-                        Active contacts, who reacts to your emails (open, click)
+                        {{ trans('messages.list.active_contact.desc') }}
                     </div>
                 </div>
             </div>
@@ -37,9 +39,13 @@
         <div class="col-md-3">
             <div class="bg-secondary p-3 shadow rounded-3 text-white">
                 <div class="text-center">
-                    <h2 class="text-semibold mb-1 mt-0">0</h2>
+                    <h2 class="text-semibold mb-1 mt-0">{{ number_with_delimiter(Auth::user()->customer->forms()->count()) }}</h2>
                     <div class="text-muted2 text-white">
-                        You do not have any subscription form yet!
+                        @if (Auth::user()->customer->forms()->count())
+                            <p class="mb-0">{{ trans('messages.list.form.desc') }}</p>
+                        @else
+                            <p class="mb-0">{{ trans('messages.forms_not_yet') }}</p>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -47,10 +53,12 @@
         <div class="col-md-3">
             <a href="{{ action('BlacklistController@index') }}" class="bg-secondary p-3 shadow rounded-3 text-white d-block">
                 <div class="text-center">
-                    <h2 class="text-semibold mb-1 mt-0">303</h2>
+                    <h2 class="text-semibold mb-1 mt-0">
+                        {{ number_with_delimiter(Auth::user()->customer->subscribers()
+                            ->join('blacklists', 'subscribers.email', '=', 'blacklists.email')->count()) }}
+                    </h2>
                     <div class="text-muted2 text-white">
-                        Contacts are blacklished<br>
-                        click here to view
+                        <p class="mb-0">{!! trans('messages.list.blacklist.desc') !!}</p>                        
                     </div>
                 </div>
             </a>
