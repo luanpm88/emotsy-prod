@@ -17,10 +17,10 @@
         <div class="col-md-3">
             <div class="bg-secondary p-3 shadow rounded-3 text-white">
                 <div class="text-center">
-                    <h2 class="text-semibold mb-1 mt-0">{{ number_with_delimiter(Auth::user()->customer->subscribers()->count()) }}</h2>
+                    <h2 class="text-semibold mb-1 mt-0">{{ number_with_delimiter($subscriberCount) }}</h2>
                     <div class="text-muted2 text-white">
                         {!! trans('messages.list.mail_list_count.desc', [
-                            'count' => number_with_delimiter(Auth::user()->customer->subscribers()->subscribed()->count())
+                            'count' => number_with_delimiter($subscribedCount)
                         ]) !!}                        
                     </div>
                 </div>
@@ -29,7 +29,7 @@
         <div class="col-md-3">
             <div class="bg-secondary p-3 shadow rounded-3 text-white">
                 <div class="text-center">
-                    <h2 class="text-semibold mb-1 mt-0">{{ number_to_percentage(Auth::user()->customer->subscribers()->subscribed()->count() / Auth::user()->customer->subscribers()->count()) }}</h2>
+                    <h2 class="text-semibold mb-1 mt-0">{{ number_to_percentage($activeContactPercent) }}</h2>
                     <div class="text-muted2 text-white">
                         {{ trans('messages.list.active_contact.desc') }}
                     </div>
@@ -39,7 +39,7 @@
         <div class="col-md-3">
             <div class="bg-secondary p-3 shadow rounded-3 text-white">
                 <div class="text-center">
-                    <h2 class="text-semibold mb-1 mt-0">{{ number_with_delimiter(Auth::user()->customer->forms()->count()) }}</h2>
+                    <h2 class="text-semibold mb-1 mt-0">{{ number_with_delimiter($formCount) }}</h2>
                     <div class="text-muted2 text-white">
                         @if (Auth::user()->customer->forms()->count())
                             <p class="mb-0">{{ trans('messages.list.form.desc') }}</p>
@@ -54,8 +54,7 @@
             <a href="{{ action('BlacklistController@index') }}" class="bg-secondary p-3 shadow rounded-3 text-white d-block">
                 <div class="text-center">
                     <h2 class="text-semibold mb-1 mt-0">
-                        {{ number_with_delimiter(Auth::user()->customer->subscribers()
-                            ->join('blacklists', 'subscribers.email', '=', 'blacklists.email')->count()) }}
+                        {{ number_with_delimiter($blacklistedCount) }}
                     </h2>
                     <div class="text-muted2 text-white">
                         <p class="mb-0">{!! trans('messages.list.blacklist.desc') !!}</p>                        
