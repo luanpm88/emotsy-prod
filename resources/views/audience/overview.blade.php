@@ -187,7 +187,7 @@
                         </p>
                     </div>
                     <div class="ms-auto">
-                        <a href="#" class="btn btn-primary py-2 px-4 import-select-list">
+                        <a href="javascript:;" class="btn btn-primary py-2 px-4 import-select-list">
                             {{ trans('messages.audience.import_contacts.title') }}
                         </a>
                     </div>
