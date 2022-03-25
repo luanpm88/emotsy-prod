@@ -35,4 +35,16 @@ footer {
       display: none!important;
     }
 }
+@media (max-width: 768px) {
+    [builder-element=CellContainerElement] {
+        display: block!important;
+    }
+    [builder-element="CellElement"] {
+        width: 100%!important;
+        max-width: none!important;        
+    }
+    [builder-element="CellElement"]  [builder-element="BlockElement"] {
+        padding: 0px!important;
+    }
+}
 
