@@ -1,4 +1,4 @@
-@if (isset($label))
+@if (isset($label) && $label != '')
     <label class="form-label">
         {{ $label }}
     </label>
