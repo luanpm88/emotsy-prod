@@ -96,9 +96,18 @@ class Website extends Model
 
     public function check()
     {
+        $arrContextOptions = array(
+            "ssl"=>array(
+                "verify_peer"=>false,
+                "verify_peer_name"=>false,
+            ),
+        );
+
+        $content = file_get_contents($this->url, false, stream_context_create($arrContextOptions));
+
         $document = new \DOMDocument();
         $document->encoding = 'utf-8';
-        $document->loadHTML(mb_convert_encoding(file_get_contents($this->url), 'HTML-ENTITIES', 'UTF-8'), LIBXML_NOWARNING | LIBXML_NOERROR);
+        $document->loadHTML(mb_convert_encoding($content, 'HTML-ENTITIES', 'UTF-8'), LIBXML_NOWARNING | LIBXML_NOERROR);
         
         $tag = $document->getElementById('AcelleConnectScript');
 
