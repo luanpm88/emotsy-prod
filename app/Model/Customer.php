@@ -1990,9 +1990,9 @@ class Customer extends Model
         }
     }
 
-    public function getWebsiteSelectOptions($long=true)
+    public function getConnectedWebsiteSelectOptions($long=true)
     {
-        $query = $this->websites();
+        $query = $this->websites()->connected();
 
         $result = $query->orderBy('title')->get()->map(function ($item) use($long) {
             if ($long) {

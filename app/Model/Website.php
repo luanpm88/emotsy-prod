@@ -129,4 +129,9 @@ class Website extends Model
     {
         return \Acelle\Model\Form::byWebsite($this);
     }
+
+    public static function scopeConnected($query)
+    {
+        $query = $query->where('status', '=', self::STATUS_CONNECTED);
+    }
 }
