@@ -27,7 +27,7 @@ class WebsiteController extends Controller
                     'errors' => $validator->errors(),
                 ], 400);
             }
-            
+
             return redirect()->action('WebsiteController@show', [
                 'uid' => $website->uid,
                 'new_site' => true,
@@ -129,7 +129,7 @@ class WebsiteController extends Controller
                     'title' => $website->title,
                 ]),
             ]);
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             return response()->json([
                 'error' => $e->getMessage(),
             ], 400);
@@ -153,7 +153,7 @@ class WebsiteController extends Controller
                     'title' => $website->title,
                 ]),
             ]);
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             return response()->json([
                 'error' => $e->getMessage(),
             ], 400);

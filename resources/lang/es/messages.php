@@ -4131,4 +4131,21 @@
   'invoice_template' => 'Invoice template',
   'invoice_current' => 'Invoice number start with #',
   'invoice_format' => 'Invoice number format',
+  'form.display.desc' => 'Configure how the form shows up to the hosting web page.',
+  'form.display.element_id.desc' => 'Load the form when a specified element is clicked',
+  'form.display.immediately.desc' => 'Load the form immediately when the webpage is loaded',
+  'form.display.wait_time.desc' => 'Load the form after a period of time',
+  'form.display.first_visit' => 'On page first visit',
+  'form.display.first_visit.desc' => 'Load the form immediately when the webpage
+    is loaded but for the first page visit only',
+  'company_email' => 'Company email',
+  'company_phone' => 'Company phone',
+  'list.mail_list_count.desc' => 'Total contacts<br>subscribed to
+    <span class="fw-600">:count</span> mail lists',
+  'list.active_contact.desc' => 'Active contacts, ready to receive marketing emails',
+  'forms_not_yet' => 'You do not have any subscription form yet!',
+  'list.form.desc' => 'Forms for collect the contact data you need
+    to grow your audience',
+  'list.blacklist.desc' => 'Contacts are blacklished<br/>
+    click here to view',
 ) ?>

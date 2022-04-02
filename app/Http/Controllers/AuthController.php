@@ -23,13 +23,13 @@ class AuthController extends Controller
         ];
 
         $provider = Socialite::buildProvider(
-            \Laravel\Socialite\Two\GoogleProvider::class, 
+            \Laravel\Socialite\Two\GoogleProvider::class,
             $config
         );
-        
+
         return $provider;
     }
-    
+
     /**
      * Google OAuth 2.0.
      */
@@ -49,9 +49,9 @@ class AuthController extends Controller
         }
 
         $googleUser = $this->getGoogleOAuthProvider()->user();
- 
+
         $user = User::where('google_id', $googleUser->id)->first();
-    
+
         if ($user) {
             $user->update([
                 'google_token' => $googleUser->token,
@@ -75,7 +75,7 @@ class AuthController extends Controller
 
             $user = User::where('google_id', $googleUser->id)->first();
         }
-    
+
         // login
         \Auth::login($user);
         return redirect()->action('HomeController@index');
@@ -93,13 +93,13 @@ class AuthController extends Controller
         ];
 
         $provider = Socialite::buildProvider(
-            \Laravel\Socialite\Two\FacebookProvider::class, 
+            \Laravel\Socialite\Two\FacebookProvider::class,
             $config
         );
-        
+
         return $provider;
     }
-    
+
     /**
      * Facebook OAuth 2.0.
      */
@@ -117,11 +117,11 @@ class AuthController extends Controller
             // return redirect('/login')->with('alert-error', trans('messages.operation_not_allowed_in_demo'));
             return view('demoLogin');
         }
-        
+
         $facebookUser = $this->getFacebookOAuthProvider()->user();
- 
+
         $user = User::where('facebook_id', $facebookUser->id)->first();
-    
+
         if ($user) {
             $user->update([
                 'facebook_token' => $facebookUser->token,
@@ -145,7 +145,7 @@ class AuthController extends Controller
 
             $user = User::where('facebook_id', $facebookUser->id)->first();
         }
-    
+
         // login
         \Auth::login($user);
         return redirect()->action('HomeController@index');

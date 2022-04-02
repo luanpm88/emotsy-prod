@@ -645,7 +645,6 @@ class Invoice extends Model
         } else {
             return view('invoices.template');
         }
-        
     }
 
     public function getInvoiceHtml()
@@ -674,7 +673,7 @@ class Invoice extends Model
             ])],
         ];
 
-        foreach($values as $value) {
+        foreach ($values as $value) {
             $content = str_replace($value['tag'], $value['value'], $content);
         }
 

@@ -583,7 +583,8 @@ class User extends Authenticatable
         $this->delete();
     }
 
-    public static function createCustomer($params) {
+    public static function createCustomer($params)
+    {
         // Create new user/customer
         $user = new self();
 
