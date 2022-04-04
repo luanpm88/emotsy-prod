@@ -3837,7 +3837,6 @@
   'select_list' => 'Select a mail list',
   'select_list_default_intro' => 'Select a mail list from select box below to continue',
   'choose_list' => 'select a mail list',
->>>>>>> origin/develop
   'select_list.ok' => 'Go',
   'enter_template_name' => 'ここにテンプレートの名前を入力します',
   'form.untitled' => '無題のフォーム',
@@ -4013,9 +4012,6 @@
   'dropzone.dictRemoveFile' => 'Remove file',
   'dropzone.dictMaxFilesExceeded' => 'You can not upload any more files.',
   'subscribe_notification_for_list_owner' => 'Subscription notification email (for mail list owner)',
-<<<<<<< HEAD
-) ?>
-=======
   'brand.shop_info' => 'Shop Info',
   'bill.subtotal' => 'Sub.Total',
   'brand.sliders' => 'Sliders',
