@@ -753,16 +753,16 @@ class Invoice extends Model
 
     public function createInvoiceNumber()
     {
-        if (\Acelle\Model\Setting::get('invoice_current')) {
-            $currentNumber = intval(\Acelle\Model\Setting::get('invoice_current'));
+        if (\Acelle\Model\Setting::get('invoice.current')) {
+            $currentNumber = intval(\Acelle\Model\Setting::get('invoice.current'));
         } else {
             $currentNumber = 1;
         }
 
-        $this->number = sprintf(\Acelle\Model\Setting::get('invoice_format'), $currentNumber);
+        $this->number = sprintf(\Acelle\Model\Setting::get('invoice.format'), $currentNumber);
         $this->save();
 
         // update current number
-        \Acelle\Model\Setting::set('invoice_current', ($currentNumber + 1));
+        \Acelle\Model\Setting::set('invoice.current', ($currentNumber + 1));
     }
 }

@@ -559,12 +559,12 @@ class Setting extends Model
                 'type' => 'text',
                 'not_required' => true,
             ],
-            'invoice_current' => [
+            'invoice.current' => [
                 'cat' => 'general',
                 'value' => '1',
                 'type' => 'number',
             ],
-            'invoice_format' => [
+            'invoice.format' => [
                 'cat' => 'general',
                 'value' => '%08d',  // a number of 8 digit, for example: sprintf('%08d', 15) -> 00000015
                 'type' => 'text',
