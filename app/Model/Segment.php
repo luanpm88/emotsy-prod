@@ -341,14 +341,15 @@ class Segment extends Model
      *
      * @return collect
      */
-    public function subscribers($request = null)
+    public function subscribers()
     {
-        $query = \Acelle\Model\Subscriber::select('subscribers.*');
-        $query = Subscriber::filter($query, $request);
+        $query = $this->mailList->subscribers();
+        $query->select('subscribers.*');
 
+        // Get segment filter criteria
         $conditions = $this->getSubscribersConditions();
 
-        // JOINS...
+        // Apply the filter
         if (!empty($conditions['joins'])) {
             foreach ($conditions['joins'] as $joining) {
                 $query = $query->leftJoin($joining['table'], function ($join) use ($joining) {
@@ -362,16 +363,9 @@ class Segment extends Model
             }
         }
 
-        // WHERE...
-        $query = $query->where('subscribers.mail_list_id', $this->mail_list_id);
         // var_dump($conditions['conditions']);die();
         if (!empty($conditions['conditions'])) {
             $query = $query->whereRaw('('.$conditions['conditions'].')');
-        }
-
-        // filters
-        if (isset($request)) {
-            $query = $query->orderBy($request->sort_order, $request->sort_direction);
         }
 
         // var_dump($query->toSql());die();

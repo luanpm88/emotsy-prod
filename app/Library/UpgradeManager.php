@@ -140,7 +140,13 @@ class UpgradeManager
     {
         $path = join_paths($this->source, self::META_FILE);
         if (!file_exists($path)) {
-            throw new \Exception('Unknown package format');
+            // Clean up invalid package (without meta file)
+            // Then raise an exception
+            // So that user will only see this message once
+            $this->cleanup();
+
+            // Ooops!
+            throw new \Exception('Unknown package format (deleted)');
         }
 
         return json_decode(file_get_contents($path), true);

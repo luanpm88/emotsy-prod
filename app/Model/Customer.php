@@ -108,12 +108,12 @@ class Customer extends Model
 
     public function lists()
     {
-        return $this->hasMany('Acelle\Model\MailList')->orderBy('created_at', 'desc');
+        return $this->hasMany('Acelle\Model\MailList');
     }
 
     public function templates()
     {
-        return $this->hasMany('Acelle\Model\Template')->orderBy('created_at', 'desc');
+        return $this->hasMany('Acelle\Model\Template');
     }
 
     public function language()
@@ -123,7 +123,7 @@ class Customer extends Model
 
     public function campaigns()
     {
-        return $this->hasMany('Acelle\Model\Campaign')->orderBy('created_at', 'desc');
+        return $this->hasMany('Acelle\Model\Campaign');
     }
 
     public function sentCampaigns()
@@ -1980,7 +1980,7 @@ class Customer extends Model
         $plan = $subscription->plan;
         if ($plan->useSystemSendingServer()) {
             $server = $plan->primarySendingServer();
-            if ($server && $server->allowVerifyingOwnEmailsRemotely()) {
+            if ($server && ($server->allowVerifyingOwnEmailsRemotely() || $server->allowVerifyingOwnDomains())) {
                 return true;
             } else {
                 return false;
@@ -1990,11 +1990,11 @@ class Customer extends Model
         }
     }
 
-    public function getWebsiteSelectOptions($long=true)
+    public function getConnectedWebsiteSelectOptions($long=true)
     {
-        $query = $this->websites();
+        $query = $this->websites()->connected();
 
-        $result = $query->orderBy('title')->get()->map(function ($item) use($long) {
+        $result = $query->orderBy('title')->get()->map(function ($item) use ($long) {
             if ($long) {
                 return ['value' => $item->uid, 'text' => '<span class="fw-600">' . $item->title . '</span><br><span class="text-muted">' . $item->url . '</span>'];
             } else {
@@ -2040,5 +2040,16 @@ class Customer extends Model
         $product->customer_id = $this->id;
 
         return $product;
+    }
+
+    public function isCustomTrackingDomainRequired()
+    {
+        $plan = $this->subscription->plan;
+
+        if (!$plan) {
+            return false;
+        }
+
+        return $plan->isCustomTrackingDomainRequired();
     }
 }

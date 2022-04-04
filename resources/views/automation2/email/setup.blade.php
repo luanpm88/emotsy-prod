@@ -14,16 +14,21 @@
         <input type="hidden" name="action_id" value="{{ $email->action_id }}" />
     
         <div class="row">
-            <div class="col-md-6">                                            
-                @include('helpers.form_control', ['type' => 'text',
-                    'name' => 'subject',
-                    'label' => trans('messages.email_subject'),
-                    'value' => $email->subject,
-                    'rules' => $email->rules(),
-                    'help_class' => 'email',
-                    'placeholder' => trans('messages.automation.email.subject.placeholder'), 
-                ])
-                                                
+            <div class="col-md-6">          
+                <div class="has-emoji">                                  
+                    @include('helpers.form_control', ['type' => 'text',
+                        'name' => 'subject',
+                        'label' => trans('messages.email_subject'),
+                        'value' => $email->subject,
+                        'rules' => $email->rules(),
+                        'help_class' => 'email',
+                        'placeholder' => trans('messages.automation.email.subject.placeholder'), 
+                        'attributes' => [
+                            'data-emojiable' => 'true',
+                        ]
+                    ])
+                </div>
+
                 @include('helpers.form_control', ['type' => 'text',
                     'name' => 'from_name',
                     'label' => trans('messages.from_name'),
@@ -96,14 +101,14 @@
                         'help_class' => 'email',
                         'rules' => $email->rules(),
                     ])
-
                     @include('helpers.form_control', [
                         'type' => 'checkbox3',
                         'name' => 'custom_tracking_domain',
                         'label' => trans('messages.custom_tracking_domain'),
-                        'value' => $email->tracking_domain_id || request()->custom_tracking_domain,
+                        'value' => Auth::user()->customer->isCustomTrackingDomainRequired() ? true : ($email->tracking_domain_id || request()->custom_tracking_domain),
                         'options' => [false,true],
                         'help_class' => 'email',
+                        'readonly' => Auth::user()->customer->isCustomTrackingDomainRequired(),
                         'rules' => $email->rules()
                     ])
 
@@ -233,5 +238,19 @@
             }
         });
         $('[name=custom_tracking_domain]').change();
+
+
+        $(function() {
+            // Initializes and creates emoji set from sprite sheet
+            window.emojiPicker = new EmojiPicker({
+            emojiable_selector: '[data-emojiable=true]',
+            assetsPath: 'http://onesignal.github.io/emoji-picker/lib/img/',
+            popupButtonClasses: 'fa fa-smile-o'
+            });
+            // Finds all elements with `emojiable_selector` and converts them to rich emoji input fields
+            // You may want to delay this step if you have dynamically created input fields that appear later in the loading process
+            // It can be called as many times as necessary; previously converted input fields will not be converted again
+            window.emojiPicker.discover();
+        });
     </script>
 @endsection

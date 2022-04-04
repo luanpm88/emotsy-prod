@@ -24,27 +24,29 @@ class WordpressManager
 
     public function __construct()
     {
-        $this->endpoint = config('wordpress.url') . '/wp-json/vbrand/v1';
+        if (!defined('DB_NAME')) {
+            $this->endpoint = config('wordpress.url') . '/wp-json/vbrand/v1';
 
-        // // ** MySQL settings - You can get this info from your web host ** //
-        // /** The name of the database for WordPress */
-        // define( 'DB_NAME', config('database.connections.wordpress.database') );
+            // ** MySQL settings - You can get this info from your web host ** //
+            /** The name of the database for WordPress */
+            define('DB_NAME', config('database.connections.wordpress.database'));
 
-        // /** MySQL database username */
-        // define( 'DB_USER', config('database.connections.wordpress.username') );
+            /** MySQL database username */
+            define('DB_USER', config('database.connections.wordpress.username'));
 
-        // /** MySQL database password */
-        // define( 'DB_PASSWORD', config('database.connections.wordpress.password') );
+            /** MySQL database password */
+            define('DB_PASSWORD', config('database.connections.wordpress.password'));
 
-        // /** MySQL hostname */
-        // define( 'DB_HOST', config('database.connections.wordpress.host') . ':' . config('database.connections.wordpress.port') );
+            /** MySQL hostname */
+            define('DB_HOST', config('database.connections.wordpress.host') . ':' . config('database.connections.wordpress.port'));
 
-        // require_once base_path() . '/../vbrand-wp/wp-load.php';
-        // require_once base_path() . '/../vbrand-wp/wp-admin/includes/admin.php';
+            require_once base_path() . '/../wpbase/wp-load.php';
+            require_once base_path() . '/../wpbase/wp-admin/includes/admin.php';
 
-        // Load from customer wp source code
-        require_once config('wordpress.path') . '/wp-load.php';
-        require_once config('wordpress.path') . '/wp-admin/includes/admin.php';
+            // // Load from customer wp source code
+            // require_once config('wordpress.path') . '/wp-load.php';
+            // require_once config('wordpress.path') . '/wp-admin/includes/admin.php';
+        }
     }
 
     public function getTemplates()

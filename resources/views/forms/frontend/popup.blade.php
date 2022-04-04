@@ -14,6 +14,9 @@ document.addEventListener("DOMContentLoaded", function(event) {
         setTimeout(function() {
             popup.load();
         }, {{ $form->getMetadata('wait_time')*1000 }});
+
+    @elseif ($form->getMetadata('display') == 'first_visit')
+        popup.loadOneTime();
     @else
         popup.load();
     @endif

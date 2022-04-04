@@ -1,6 +1,6 @@
 @if ($list->getEmbeddedFormOption('stylesheet') == 'yes')
 	<link href="{{ URL::asset('core/css/embedded.css') }}" rel="stylesheet" type="text/css">
-	<link href="{{ URL::asset('core/css/google-font-icon.css') }}" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
 @endif
 
 @if (!empty($list->getEmbeddedFormOption('custom_css')))
@@ -73,9 +73,9 @@
 		
 		
 		@if ($list->getEmbeddedFormOption('javascript') == 'yes')
+			<script type="text/javascript" src="{{ URL::asset('core/js/functions.js') }}"></script>
 			@include('layouts.core._script_vars')
 			<script>
-				$.noConflict();
 				jQuery( document ).ready(function( $ ) {				
 					@if (!isset($preview))
 						@if ($list->getEmbeddedFormOption('javascript') == 'yes')			
@@ -90,14 +90,8 @@
 							});
 						@endif
 					@endif
-			
-					$('.pickadate').pickadate({format: LANG_J_DATE_FORMAT, selectYears: 100});
 
-					if ($(".pickadatetime").length) {
-						$(".pickadatetime").AnyTime_picker({
-							format: LANG_ANY_DATETIME_FORMAT
-						});
-					}
+					initJs($('.subscribe-embedded-form'));
 				});
 			</script>
 		@endif

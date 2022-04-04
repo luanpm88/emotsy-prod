@@ -1301,34 +1301,27 @@ class Template extends Model
     public static function resetPopupTemplates()
     {
         TemplateCategory::where('name', '=', 'Form')->delete();
-        $categoryWoo = TemplateCategory::create(['name' => 'Form']);
 
         // LIST all form templates here
         $templates = [
             [
                 'name' => 'Right banner',
                 'dir' => database_path('templates/forms/009-layout-right/6002a2135b900'),
-                'category' => $categoryWoo,
             ], [
                 'name' => 'Left banner',
                 'dir' => database_path('templates/forms/011-layout-left/6002a2135b901'),
-                'category' => $categoryWoo,
             ], [
                 'name' => 'Top banner',
                 'dir' => database_path('templates/forms/010-layout-top/6002a2135b902'),
-                'category' => $categoryWoo,
             ], [
                 'name' => 'Bottom banner',
                 'dir' => database_path('templates/forms/012-layout-bottom/6002a2135b903'),
-                'category' => $categoryWoo,
             ], [
                 'name' => 'Bottom banner',
                 'dir' => database_path('templates/forms/013-layout-clean/6002a2135b904'),
-                'category' => $categoryWoo,
             ], [
                 'name' => 'Dark Simple',
                 'dir' => database_path('templates/forms/001-dark/60cca2135b900'),
-                'category' => $categoryWoo,
             // ], [
             //     'name' => 'Pricing Table',
             //     'dir' => database_path('templates/forms/002-2-columns/6002a2135b974'),
@@ -1336,11 +1329,9 @@ class Template extends Model
             ], [
                 'name' => 'Sign Up Illustration',
                 'dir' => database_path('templates/forms/003-illustration/6003a2250a3a3'),
-                'category' => $categoryWoo,
             ], [
                 'name' => 'Profile Center',
                 'dir' => database_path('templates/forms/004-center/6004a28418c95'),
-                'category' => $categoryWoo,
             // ], [
             //     'name' => '1-2 column layout',
             //     'dir' => database_path('templates/forms/005-full-background/6005a24ebdbd6'),
@@ -1374,9 +1365,6 @@ class Template extends Model
             $meta['builder'] = true;
             $meta['type'] = Template::TYPE_POPUP;
             $template = Template::createFromDirectory($meta, $meta['dir']);
-
-            // Set category
-            $template->categories()->attach($meta['category']->id);
         }
     }
 
@@ -1437,7 +1425,7 @@ class Template extends Model
                     'title' => trans('messages.rss.item_description'),
                     'show' => true,
                     'template' => '@item_description <a href="@item_url">Read more</a>',
-                ],                
+                ],
                 'ItemStats' => [
                     'title' => trans('messages.rss.stats_line'),
                     'show' => true,

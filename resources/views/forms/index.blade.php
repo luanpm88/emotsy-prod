@@ -97,7 +97,7 @@ sort
                             'include_blank' => '-- ' . trans('messages.form.all_sites') . '--',
                             'label' => '',
                             'value' => '',
-                            'options' => Auth::user()->customer->getWebsiteSelectOptions(false),
+                            'options' => Auth::user()->customer->getConnectedWebsiteSelectOptions(false),
                             'rules' => [],
                         ])
                     </span>

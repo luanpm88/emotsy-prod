@@ -8,6 +8,8 @@ use Acelle\Model\Subscription;
 use Acelle\Model\Transaction;
 use Acelle\Library\Traits\HasUid;
 use Dompdf\Dompdf;
+use Acelle\Library\StringHelper;
+use function Acelle\Helpers\getAppHost;
 
 class Invoice extends Model
 {
@@ -160,6 +162,17 @@ class Invoice extends Model
 
         foreach ($this->invoiceItems as $item) {
             $total += $item->getTax();
+        }
+
+        return $total;
+    }
+
+    public function subTotal()
+    {
+        $total = 0;
+
+        foreach ($this->invoiceItems as $item) {
+            $total += $item->subTotal();
         }
 
         return $total;
@@ -414,11 +427,15 @@ class Invoice extends Model
                     'description' => $item->description,
                     'price' => format_price($item->amount, $item->invoice->currency->format),
                     'tax' => format_price($item->getTax(), $item->invoice->currency->format),
+                    'tax_p' => format_number($item->getTaxPercent()),
                     'discount' => format_price($item->discount, $item->invoice->currency->format),
+                    'sub_total' => format_price($item->subTotal(), $item->invoice->currency->format),
                 ];
             }),
             'charge_info' => $chargeInfo,
             'total' => format_price($this->total(), $this->currency->format),
+            'sub_total' => format_price($this->subTotal(), $this->currency->format),
+            'tax' => format_price($this->getTax(), $this->currency->format),
             'pending' => $this->getPendingTransaction(),
             'invoice_uid' => $this->uid,
             'due_date' => $this->created_at,
@@ -621,21 +638,130 @@ class Invoice extends Model
         return true;
     }
 
+    public static function getTemplateContent()
+    {
+        if (\Acelle\Model\Setting::get('invoice.custom_template')) {
+            return \Acelle\Model\Setting::get('invoice.custom_template');
+        } else {
+            return view('invoices.template');
+        }
+    }
+
+    public function getInvoiceHtml()
+    {
+        $content = self::getTemplateContent();
+        $bill = $this->getBillingInfo();
+
+        // transalte tags
+        $values = [
+            ['tag' => '{COMPANY_NAME}', 'value' => \Acelle\Model\Setting::get('company_name')],
+            ['tag' => '{COMPANY_ADDRESS}', 'value' => \Acelle\Model\Setting::get('company_address')],
+            ['tag' => '{COMPANY_EMAIL}', 'value' => \Acelle\Model\Setting::get('company_email')],
+            ['tag' => '{COMPANY_PHONE}', 'value' => \Acelle\Model\Setting::get('company_phone')],
+            ['tag' => '{FIRST_NAME}', 'value' => $bill['billing_first_name']],
+            ['tag' => '{LAST_NAME}', 'value' => $bill['billing_last_name']],
+            ['tag' => '{ADDRESS}', 'value' => $bill['billing_address']],
+            ['tag' => '{COUNTRY}', 'value' => $bill['billing_country']],
+            ['tag' => '{EMAIL}', 'value' => $bill['billing_email']],
+            ['tag' => '{PHONE}', 'value' => $bill['billing_phone']],
+            ['tag' => '{INVOICE_NUMBER}', 'value' => $this->number],
+            ['tag' => '{CURRENT_DATETIME}', 'value' => \Acelle\Library\Tool::formatDateTime(\Carbon\Carbon::now())],
+            ['tag' => '{INVOICE_DUE_DATE}', 'value' => \Acelle\Library\Tool::formatDateTime($bill['due_date'])],
+            ['tag' => '{ITEMS}', 'value' => view('invoices._template_items', [
+                'bill' => $bill,
+                'invoice' => $this,
+            ])],
+        ];
+
+        foreach ($values as $value) {
+            $content = str_replace($value['tag'], $value['value'], $content);
+        }
+
+        $content = StringHelper::transformUrls($content, function ($url, $element) {
+            if (strpos($url, '#') === 0) {
+                return $url;
+            }
+
+            if (strpos($url, 'mailto:') === 0) {
+                return $url;
+            }
+
+            if (parse_url($url, PHP_URL_HOST) === false) {
+                // false ==> if url is invalid
+                // null ==> if url does not have host information
+                return $url;
+            }
+
+            if (StringHelper::isTag($url)) {
+                return $url;
+            }
+
+            if (strpos($url, '/') === 0) {
+                // absolute url with leading slash (/) like "/hello/world"
+
+                return join_url(getAppHost(), $url);
+            } elseif (strpos($url, 'data:') === 0) {
+                // base64 image. Like: "data:image/png;base64,iVBOR"
+                return $url;
+            } else {
+                return $url;
+            }
+        });
+
+        return $content;
+    }
+
     public function exportToPdf()
     {
         // instantiate and use the dompdf class
         $dompdf = new Dompdf(array('enable_remote' => true));
-        $content = view('invoices.pdf', [
-            'bill' => $this->getBillingInfo(),
-        ]);
+        $content = mb_convert_encoding($this->getInvoiceHtml(), 'HTML-ENTITIES', 'UTF-8');
         $dompdf->loadHtml($content);
 
         // (Optional) Setup the paper size and orientation
-        $dompdf->setPaper('A4', 'landscape');
+        $dompdf->setPaper('A4');
 
         // Render the HTML as PDF
         $dompdf->render();
 
         return $dompdf->output();
+    }
+
+    public static function getTags()
+    {
+        $tags = [
+            ['name' => '{COMPANY_NAME}', 'required' => false],
+            ['name' => '{COMPANY_ADDRESS}', 'required' => false],
+            ['name' => '{COMPANY_EMAIL}', 'required' => false],
+            ['name' => '{COMPANY_PHONE}', 'required' => false],
+            ['name' => '{FIRST_NAME}', 'required' => false],
+            ['name' => '{LAST_NAME}', 'required' => false],
+            ['name' => '{ADDRESS}', 'required' => false],
+            ['name' => '{COUNTRY}', 'required' => false],
+            ['name' => '{EMAIL}', 'required' => false],
+            ['name' => '{PHONE}', 'required' => false],
+            ['name' => '{INVOICE_NUMBER}', 'required' => false],
+            ['name' => '{CURRENT_DATETIME}', 'required' => false],
+            ['name' => '{INVOICE_DUE_DATE}', 'required' => false],
+            ['name' => '{ITEMS}', 'required' => false],
+            ['name' => '{CUSTOMER_ADDRESS}', 'required' => false],
+        ];
+
+        return $tags;
+    }
+
+    public function createInvoiceNumber()
+    {
+        if (\Acelle\Model\Setting::get('invoice_current')) {
+            $currentNumber = intval(\Acelle\Model\Setting::get('invoice_current'));
+        } else {
+            $currentNumber = 1;
+        }
+
+        $this->number = sprintf(\Acelle\Model\Setting::get('invoice_format'), $currentNumber);
+        $this->save();
+
+        // update current number
+        \Acelle\Model\Setting::set('invoice_current', ($currentNumber + 1));
     }
 }

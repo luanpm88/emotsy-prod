@@ -3884,7 +3884,7 @@
   'form.create' => 'Create form',
   'create_a_signup_form' => 'Create a signup form',
   'create_a_signup_form.desc' => 'Capture contacts and collect the data you need<br>
-    to frow your audience',
+    to grow your audience',
   'audience.import_contacts.title' => 'Import contacts',
   'audience.import_contacts.desc' => 'Import your existing contacts from a CSV or Excel file<br>
     to quickly grow your ideas base',
@@ -4072,4 +4072,79 @@
   'dropzone.dictCancelUploadConfirmation' => 'Are you sure you want to cancel this upload?',
   'dropzone.dictRemoveFile' => 'Remove file',
   'dropzone.dictMaxFilesExceeded' => 'You can not upload any more files.',
+  'brand.shop_info' => 'Shop Info',
+  'bill.subtotal' => 'Sub.Total',
+  'brand.sliders' => 'Sliders',
+  'brand.store' => 'Store',
+  'brand.site_information' => 'Site information',
+  'brand.product_settings' => 'Product settings',
+  'brand.account_privacy' => 'Account & Privacy',
+  'brand.payments' => 'Payments',
+  'brand.emails' => 'Emails',
+  'brand.shipping' => 'Shipping',
+  'vat.percent' => 'VAT :percent%',
+  'brand.orders' => 'Orders',
+  'invoice.footer' => 'Thanks for your purchase.',
+  'invoice.header' => 'INVOICE',
+  'company_name' => 'Company',
+  'company_address' => 'Company Address',
+  'brand.home_page' => 'Home page',
+  'oauth.email_exist' => 'User with email :email exists!',
+  'setting.google_oauth' => 'Google OAuth',
+  'oauth.google_client_id' => 'Google Client ID',
+  'oauth.google_client_secret' => 'Google Client Secret',
+  'oauth.origin_uri' => 'Origin URI',
+  'oauth.redirect_uri' => 'Redirect URI',
+  'google_oauth_20' => 'Google OAuth 2.0',
+  'google_oauth.guide' => 'Visit the <a target="_blank" href="https://console.developers.google.com/" class="external">
+    Google API Console</a> to obtain OAuth 2.0 credentials such as a client
+    ID and client secret and set the values below:',
+  'google_oauth.uri_guide' => 'Copy these URIs below and paste them into the corresponding OAuth setting fields.',
+  'oauth.origin_uri.copied' => 'Origin URI was copied to clipboard',
+  'oauth.redirect_uri.copied' => 'Redirect URI was copied to clipboard',
+  'oauth.google.enable.desc' => 'Enable Google OAuth 2.0 for customer login.',
+  'plan.own_tracking_domain_required' => 'Users must use their own tracking domains',
+  'plan.own_tracking_domain_required.help' => 'The system rewrites every link added to marketing emails in
+    order to track it. Upon clicking a link, user will be redirected to the application (where opens and
+    clicks are recorded) before eventually reaching the original link. While the system has the hosting’s
+    domain that it can use to rewrite links, it offer the ability to "white label" the tracking domain with users\' own domains.',
+  'oauth' => 'OAuth',
+  'google_oauth.intro' => 'Use Google\'s OAuth 2.0 authentication system for customer to login and register.',
+  'oauth.status.disabled' => 'disabled',
+  'oauth.status.active' => 'active',
+  'oauth.wording' => 'In addition to typical, form based authentication, the system also
+    provides a simple, convenient way to authenticate with OAuth providers. It currently supports authentication
+    with Facebook, Twitter, LinkedIn, Google.',
+  'facebook_oauth.intro' => 'Use Facebook\'s OAuth 2.0 authentication system for customer to login and register.',
+  'oauth.facebook.enable.desc' => 'Enable Facebook OAuth 2.0 for customer login.',
+  'facebook_oauth.guide' => 'Visit your <a target="_blank" href="https://developers.facebook.com/apps" class="external">
+    Facebook Apps Console</a> to obtain credentials from an app such as a client
+    ID and client secret and set the values below:',
+  'facebook_oauth.uri_guide' => 'Copy these URIs below and paste them into the corresponding OAuth setting fields.',
+  'oauth.facebook_client_id' => 'Facebook Client ID',
+  'oauth.facebook_client_secret' => 'Facebook Client Secret',
+  'setting.facebook_oauth' => 'Facebook OAuth',
+  'brand.product' => 'Product',
+  'brand.products' => 'Products',
+  'brand.categories' => 'Categories',
+  'invoice_template' => 'Invoice template',
+  'invoice_current' => 'Invoice number start with #',
+  'invoice_format' => 'Invoice number format',
+  'form.display.desc' => 'Configure how the form shows up to the hosting web page.',
+  'form.display.element_id.desc' => 'Load the form when a specified element is clicked',
+  'form.display.immediately.desc' => 'Load the form immediately when the webpage is loaded',
+  'form.display.wait_time.desc' => 'Load the form after a period of time',
+  'form.display.first_visit' => 'On page first visit',
+  'form.display.first_visit.desc' => 'Load the form immediately when the webpage
+    is loaded but for the first page visit only',
+  'company_email' => 'Company email',
+  'company_phone' => 'Company phone',
+  'list.mail_list_count.desc' => 'Total contacts<br>subscribed to
+    <span class="fw-600">:count</span> mail lists',
+  'list.active_contact.desc' => 'Active contacts, ready to receive marketing emails',
+  'forms_not_yet' => 'You do not have any subscription form yet!',
+  'list.form.desc' => 'Forms for collect the contact data you need
+    to grow your audience',
+  'list.blacklist.desc' => 'Contacts are blacklished<br/>
+    click here to view',
 ) ?>

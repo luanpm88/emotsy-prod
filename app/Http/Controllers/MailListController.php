@@ -932,7 +932,7 @@ class MailListController extends Controller
 
         return view('lists.selectList');
     }
-    
+
     public function emailVerificationChart(Request $request)
     {
         $list = \Acelle\Model\MailList::findByUid($request->uid);

@@ -12,14 +12,16 @@ class ExportSubscribersJob extends Base
     public $timeout = 3600;
 
     protected $mailList;
+    protected $segment;
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($mailList)
+    public function __construct($mailList, $segment = null)
     {
         $this->mailList = $mailList;
+        $this->segment = $segment;
 
         // Set the initial value for progress check
         $this->afterDispatched(function ($thisJob, $monitor) {
@@ -44,6 +46,10 @@ class ExportSubscribersJob extends Base
         $this->mailList->export(function ($processed, $total, $failed, $message) {
             $percentage = ($total && $processed) ? (int)($processed*100/$total) : 0;
 
+            if ($total === 0) {
+                $percentage = 100;
+            }
+
             $this->monitor->updateJsonData([
                 'percentage' => $percentage,
                 'total' => $total,
@@ -51,6 +57,6 @@ class ExportSubscribersJob extends Base
                 'failed' => $failed,
                 'message' => $message,
             ]);
-        });
+        }, $this->segment);
     }
 }

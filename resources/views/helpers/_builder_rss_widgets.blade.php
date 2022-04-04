@@ -23,7 +23,7 @@
             // default content html
             this.setContentHtml(`
                 <div builder-element="RssElement" data-url="" data-count="10">
-                    <div style="padding-top:16px;padding-bottom:16px" class="container">
+                    <div class="container">
                         <div class="rss-placeholder">
                             <img src="{{ url('images/rss-placeholder.svg') }}" width="100%" />
                             <button class="btn btn-secondary toggle shadown-sm" style="display:none">{{ trans('messages.rss.preview') }}</button>

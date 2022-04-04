@@ -75,13 +75,12 @@ class TransformWidgets implements StageInterface
     public function transformRssWidget($html)
     {
         $_this = $this;
-        return StringHelper::updateHtml($html, function($dom) use ($_this) {
+        return StringHelper::updateHtml($html, function ($dom) use ($_this) {
             $finder = new \DOMXPath($dom);
             $classname="rss-widget";
             $nodes = $finder->query("//*[contains(concat(' ', normalize-space(@class), ' '), ' $classname ')]");
 
-            foreach ($nodes as $node) 
-            {
+            foreach ($nodes as $node) {
                 try {
                     if (!$node->getAttribute('data-config')) {
                         throw new \Exception(trans('messages.rss.no_options'));

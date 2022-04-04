@@ -11,8 +11,8 @@ class Website extends Model
     use HasFactory;
     use HasUid;
 
-    const STATUS_INACTIVE = 'inactive';
-    const STATUS_CONNECTED = 'connected';
+    public const STATUS_INACTIVE = 'inactive';
+    public const STATUS_CONNECTED = 'connected';
 
     protected $fillable = [
         'url',
@@ -64,16 +64,25 @@ class Website extends Model
 
     public static function getTitleFromUrl($url)
     {
+        $arrContextOptions = array(
+            "ssl"=>array(
+                "verify_peer"=>false,
+                "verify_peer_name"=>false,
+            ),
+        );
+
+        $content = file_get_contents($url, false, stream_context_create($arrContextOptions));
+
         $document = new \DOMDocument();
         $document->encoding = 'utf-8';
-        $document->loadHTML(mb_convert_encoding(file_get_contents($url), 'HTML-ENTITIES', 'UTF-8'), LIBXML_NOWARNING | LIBXML_NOERROR);
-        
+        $document->loadHTML(mb_convert_encoding($content, 'HTML-ENTITIES', 'UTF-8'), LIBXML_NOWARNING | LIBXML_NOERROR);
+
         $tags = $document->getElementsByTagName('title');
 
         if (count($tags) == 0) {
             throw new \Exception(trans('messages.website.title.not_found'));
         }
-        
+
         return $tags[0]->textContent;
     }
 
@@ -87,10 +96,19 @@ class Website extends Model
 
     public function check()
     {
+        $arrContextOptions = array(
+            "ssl"=>array(
+                "verify_peer"=>false,
+                "verify_peer_name"=>false,
+            ),
+        );
+
+        $content = file_get_contents($this->url, false, stream_context_create($arrContextOptions));
+
         $document = new \DOMDocument();
         $document->encoding = 'utf-8';
-        $document->loadHTML(mb_convert_encoding(file_get_contents($this->url), 'HTML-ENTITIES', 'UTF-8'), LIBXML_NOWARNING | LIBXML_NOERROR);
-        
+        $document->loadHTML(mb_convert_encoding($content, 'HTML-ENTITIES', 'UTF-8'), LIBXML_NOWARNING | LIBXML_NOERROR);
+
         $tag = $document->getElementById('AcelleConnectScript');
 
         if (!$tag) {
@@ -119,5 +137,10 @@ class Website extends Model
     public function connectedForms()
     {
         return \Acelle\Model\Form::byWebsite($this);
+    }
+
+    public static function scopeConnected($query)
+    {
+        $query = $query->where('status', '=', self::STATUS_CONNECTED);
     }
 }

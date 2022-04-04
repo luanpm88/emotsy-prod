@@ -59,7 +59,7 @@
 					</td>
 				@endif
 
-				<td class="text-end text-nowrap">
+				<td class="text-end text-nowrap pe-0">
 					@if (\Gate::allows('update', $subscriber))
 						<a href="{{ action('Automation2Controller@subscribersShow', [
 							'uid' => $automation->uid,

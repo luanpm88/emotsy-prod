@@ -220,7 +220,7 @@
                         ]) }}" method="POST">
                             {{ csrf_field() }}
 
-                            <div class="mb-3">
+                            <div class="mb-4">
                                 @include('helpers.form_control', [
                                     'type' => 'text',
                                     'name' => 'name',
@@ -230,7 +230,7 @@
                                 ])
                             </div>
 
-                            <div class="mb-3">
+                            <div class="mb-4">
                                 @include('helpers.form_control', [
                                     'type' => 'select',
                                     'name' => 'mail_list_uid',
@@ -241,8 +241,8 @@
                                 ])
                             </div>
 
-                            <div class="mb-2">
-                                <label class="mb-2 fs-7">{{ trans('messages.form.overlay_opacity') }}</label>
+                            <div class="mb-4">
+                                <label class="mb-2">{{ trans('messages.form.overlay_opacity') }}</label>
                                 <input id="opacityOverlay" name="overlay_opacity"
                                     type="text"
                                     data-slider-min="0"
@@ -258,25 +258,41 @@
                                 </script>
                             </div>
 
-                            <div class="mb-3">
+                            <div class="mb-3 form-group-mb-0">
+                                <label class="mb-2">{{ trans('messages.form.display') }}</label>
+                                <p class="small text-muted">{{ trans('messages.form.display.desc') }}</p>
                                 @include('helpers.form_control', [
                                     'type' => 'select',
                                     'name' => 'display',
-                                    'label' => trans('messages.form.display'),
+                                    'label' => '',
                                     'value' => $form->getMetadata('display'),
                                     'options' => [
                                         ["value" => "immediately", "text" => trans('messages.form.display.immediately')],
+                                        ["value" => "first_visit", "text" => trans('messages.form.display.first_visit')],
                                         ["value" => "wait", "text" => trans('messages.form.display.wait')],
                                         ["value" => "click", "text" => trans('messages.form.display.click')],
                                     ],
                                 ])
                             </div>
                             
+                            <div class="display-select-page-load mb-3">
+                                <div class="">
+                                    <p class="small text-muted mb-1">{{ trans('messages.form.display.immediately.desc') }}</p>
+                                </div>
+                            </div>
+
+                            <div class="display-select-first_visit mb-3">
+                                <div class="">
+                                    <p class="small text-muted mb-1">{{ trans('messages.form.display.first_visit.desc') }}</p>
+                                </div>
+                            </div>
+                            
                             <div class="display-select-wait mb-3">
                                 <div class="">
+                                    <p class="small text-muted mb-1">{{ trans('messages.form.display.wait_time.desc') }}</p>
+                                    <label class="mb-2">{{ trans('messages.form.display.wait_time') }}</label>                                    
                                     @include('helpers.form_control.number', [
                                         'name' => 'wait_time',
-                                        'label' => trans('messages.form.display.wait_time'),
                                         'value' => $form->getMetadata('wait_time') ? $form->getMetadata('wait_time') : '5',
                                         'attributes' => [
                                             'class' => 'numeric',
@@ -288,9 +304,10 @@
                             </div>
 
                             <div class="display-select-element mb-3">
+                                <p class="small text-muted mb-1">{{ trans('messages.form.display.element_id.desc') }}</p>
+                                <label class="mb-2">{{ trans('messages.form.display.element_id') }}</label>                                
                                 @include('helpers.form_control.text', [
                                     'name' => 'element_id',
-                                    'label' => trans('messages.form.display.element_id'),
                                     'value' => $form->getMetadata('element_id') ? $form->getMetadata('element_id') : '',
                                     'attributes' => [
                                         'required' => 'required',
@@ -391,6 +408,22 @@
 
                 if (_this.displayManager == null) {
                     _this.displayManager = new GroupManager();
+
+                    _this.displayManager.add({
+                        box: $('.display-select-page-load'),
+                        value: 'immediately',
+                        selectedValue: function() {
+                            return $('[name="display"]').val();
+                        }
+                    });
+                    
+                    _this.displayManager.add({
+                        box: $('.display-select-first_visit'),
+                        value: 'first_visit',
+                        selectedValue: function() {
+                            return $('[name="display"]').val();
+                        }
+                    });
 
                     _this.displayManager.add({
                         box: $('.display-select-element'),

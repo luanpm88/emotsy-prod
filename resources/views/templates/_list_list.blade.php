@@ -57,7 +57,7 @@
                     </div>
                 </td>
 
-                <td class="text-end">
+                <td class="text-end pe-0">
                     @if (Auth::user()->customer->can('update', $template))
                         @if (in_array(Acelle\Model\Setting::get('builder'), ['both','pro']) && $template->builder)
                             <a href="{{ action('TemplateController@builderEdit', $template->uid) }}" role="button" class="btn btn-primary btn-icon template-compose">

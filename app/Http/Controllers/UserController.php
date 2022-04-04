@@ -7,6 +7,7 @@ use Acelle\Library\Log as MailLog;
 use Acelle\Model\Customer;
 use Acelle\Model\User;
 use Acelle\Library\Facades\Hook;
+use Laravel\Socialite\Facades\Socialite;
 
 class UserController extends Controller
 {

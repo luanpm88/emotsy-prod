@@ -64,7 +64,7 @@
                         <span class="label label-flat bg-{{ $plan->status }}">{{ trans('messages.plan_status_' . $plan->status) }}</span>
                     </span>
                 </td>
-                <td class="text-end text-nowrap" width="5%">
+                <td class="text-end text-nowrap pe-0" width="5%">
                     @can('update', $plan)
                         <a href="{{ action('Admin\PlanController@general', $plan->uid) }}" role="button" class="btn btn-secondary btn-icon"> <span class="material-icons-outlined">
 edit

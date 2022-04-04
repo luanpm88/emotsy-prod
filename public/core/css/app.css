@@ -7694,3 +7694,32 @@ textarea.form-control {
         flex: 0 0 100%;
     }
 }
+.has-emoji .form-group label ~ .emoji-picker-icon {
+    top: 31px;
+}
+.has-emoji .form-group label ~ .emoji-picker-icon::after {
+    content: 'emoji_emotions';
+    font-family: 'Material icons outlined';
+    right: 0;
+    position: absolute;
+    z-index: 1;
+    font-style: normal;
+    font-size: 22px;
+}
+.has-emoji .form-group label ~ .emoji-picker-icon::before {
+    display: none;
+}
+.tox-form__group input:read-only {
+    background-color: #efefef!important;
+}
+.mc_section .form-group .help.alert-info {
+    padding-left: 28px;
+}
+.mc_section .form-group .help.alert-info::before {
+    display: none;
+}
+.socialite_buttons {
+    margin-top: 20px;
+    padding-top: 10px;
+    border-top: solid 1px #ddd;
+}

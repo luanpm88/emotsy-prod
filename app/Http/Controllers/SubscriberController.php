@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Acelle\Library\Log as MailLog;
 use Acelle\Model\EmailVerificationServer;
 use Acelle\Model\MailList;
+use Acelle\Model\Segment;
 use Acelle\Model\Subscriber;
 use Acelle\Model\JobMonitor;
 use Acelle\Library\Facades\Hook;
@@ -548,8 +549,12 @@ class SubscriberController extends Controller
         // Get the list
         $list = MailList::findByUid($request->list_uid);
 
+        // Get segment if any
+        $segmentUid = $request->input('segment_uid');
+        $segment = (is_null($segmentUid)) ? null : Segment::findByUid($segmentUid);
+
         // Dispatch import job
-        $currentJob = $list->dispatchExportJob();
+        $currentJob = $list->dispatchExportJob($segment);
 
         // Return the job information
         return response()->json([

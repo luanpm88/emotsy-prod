@@ -1,4 +1,5 @@
 <?php
+
 use function Acelle\Helpers\xml_to_array;
 
 /**
@@ -885,7 +886,7 @@ function parseRss($config)
 
     // Take 10 records only
     $records = array_slice($rssArray['rss']['channel']['item'], 0, $config['size']);
-    
+
     // feed data
     $feedData = [];
     $feedData['feed_title'] = (string) $rssFeed->channel->title;
@@ -938,7 +939,7 @@ function parseRss($config)
 
 function parseRssTemplate($template, $feedData)
 {
-    foreach($feedData as $key => $value) {
+    foreach ($feedData as $key => $value) {
         $template = str_replace('@' . $key, $value, $template);
     }
 
@@ -948,7 +949,7 @@ function parseRssTemplate($template, $feedData)
                         <source src="https://file-examples-com.github.io/uploads/2017/04/file_example_MP4_480_1_5MG.mp4" type="audio/mpeg">
                         Your browser does not support the audio element.
                 </video>';
-        } else if (strpos($feedData['item_enclosure_type'], 'video') !== false) {
+        } elseif (strpos($feedData['item_enclosure_type'], 'video') !== false) {
             $html = '<audio controls>
                         <source src="' . $feedData['item_enclosure_url'] . '" type="audio/mpeg">
                         Your browser does not support the audio element.

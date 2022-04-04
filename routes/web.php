@@ -28,6 +28,14 @@ Route::group(['middleware' => ['installed']], function () {
     Route::get('install/finish', 'InstallController@finish');
 });
 
+// Google OAuth 2.0
+Route::get('/auth/google/redirect', 'AuthController@googleRedirect');
+Route::get('/auth/google/callback', 'AuthController@googleCallback');
+
+// Facebook OAuth 2.0
+Route::get('/auth/facebook/redirect', 'AuthController@facebookRedirect');
+Route::get('/auth/facebook/callback', 'AuthController@facebookCallback');
+
 /*
  * The following routes
  * + customer_files
@@ -667,7 +675,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('sample', 'SamplesController@index');
 
     // Products
-    Route::get('/products/widget/products/options', 'ProductController@widgetProductOptions');    
+    Route::get('/products/widget/products/options', 'ProductController@widgetProductOptions');
     Route::get('products/listing', 'ProductController@listing');
     Route::resource('products', 'ProductController');
 
@@ -683,6 +691,9 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     // Site - Menu
     Route::get('site/menus', 'Site\MenuController@index');
 
+    // Category - Menu
+    Route::get('site/categories', 'Site\CategoryController@index');
+
     // Site - Product
     Route::post('site/profucts/{id}/delete', 'Site\ProductController@delete');
     Route::match(['get', 'post'], 'site/products/{id}/edit', 'Site\ProductController@edit');
@@ -695,6 +706,30 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::post('site/templates/{id}/activate', 'Site\TemplateController@activate');
     Route::get('site/templates/listing', 'Site\TemplateController@listing');
     Route::get('site/templates', 'Site\TemplateController@index');
+
+    // Site - Shop setting
+    Route::get('site/settings/home-page', 'Site\SettingController@homePage');
+    Route::get('site/settings/shop', 'Site\SettingController@shop');
+    Route::get('site/settings/slider', 'Site\SettingController@sliderRevolution');
+    Route::get('site/settings/products', 'Site\SettingController@products');
+    Route::get('site/settings/shipping', 'Site\SettingController@shipping');
+    Route::get('site/settings/payments', 'Site\SettingController@payments');
+    Route::get('site/settings/account-privacy', 'Site\SettingController@payments');
+    Route::get('site/settings/emails', 'Site\SettingController@emails');
+    Route::get('site/settings/account', 'Site\SettingController@account');
+    Route::get('site/settings/site', 'Site\SettingController@site');
+    Route::get('site/orders', 'Site\OrderController@index');
+    Route::get('site/customers', 'Site\CustomerController@index');
+
+    // Source
+    Route::get('site/sources/{uid}/detail', 'Site\SourceController@show');
+    Route::match(['get', 'post'], 'site/sources/woo-connect', 'Site\SourceController@wooConnect');
+    Route::post('site/sources/{uid}/sync', 'Site\SourceController@sync');
+    Route::post('site/sources/delete', 'Site\SourceController@delete');
+    Route::get('site/sources/connect', 'Site\SourceController@connect');
+    Route::get('site/sources/listing', 'Site\SourceController@listing');
+    Route::resource('site/sources', 'Site\SourceController');
+
     // Invoice
     Route::get('invoices/{uid}/download', 'InvoiceController@download');
 });
@@ -1053,5 +1088,11 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::match(['get','post'], 'tax/settings', 'TaxController@settings');
 
     // Invoice
+    Route::match(['get','post'], 'admin/invoices/template', 'InvoiceController@template');
     Route::get('admin/invoices/{uid}/download', 'InvoiceController@download');
+
+    // OAuth
+    Route::match(['get', 'post'], 'admin/auth/facebook-oauth', 'AuthController@facebookOAuth');
+    Route::match(['get', 'post'], 'admin/auth/google-oauth', 'AuthController@googleOAuth');
+    Route::match(['get', 'post'], 'admin/auth', 'AuthController@index');
 });

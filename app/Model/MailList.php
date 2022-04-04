@@ -720,15 +720,15 @@ class MailList extends Model
         return $this->getExportTempDir($name);
     }
 
-    public function dispatchExportJob()
+    public function dispatchExportJob($segment = null)
     {
-        return $this->dispatchWithMonitor(new ExportSubscribersJob($this));
+        return $this->dispatchWithMonitor(new ExportSubscribersJob($this, $segment));
     }
 
     /**
      * Export subscribers.
      */
-    public function export($progressCallback = null)
+    public function export($progressCallback = null, $segment = null)
     {
         $processed = 0;
         $total = 0;
@@ -750,7 +750,7 @@ class MailList extends Model
         $writer = Writer::createFromPath($file, 'w+');
 
         // Query subscribers
-        $query = $this->subscribers();
+        $query = (is_null($segment)) ? $this->subscribers() : $segment->subscribers();
         $total = $query->count();
 
         // Get an associative array of [ 'tag' => null ]
@@ -1182,7 +1182,7 @@ class MailList extends Model
                 $tmpTable = table('__tmp_subscribers');
                 // @todo: hard-coded charset and COLLATE
                 $tmpFields = implode(',', array_map(function ($field) {
-                    return "`{$field}` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci";
+                    return "`{$field}` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci";
                 }, $availableFields));
 
                 // Drop table, create table and create index

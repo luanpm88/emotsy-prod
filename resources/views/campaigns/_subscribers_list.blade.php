@@ -78,7 +78,7 @@
                     @endif
                 </td>
 
-                <td class="text-end text-nowrap">
+                <td class="text-end text-nowrap pe-0">
                     @if (\Gate::allows('update', $subscriber))
                     <a href="{{ action('SubscriberController@edit', ['list_uid' => $list->uid, "uid" => $subscriber->uid]) }}" role="button" class="btn btn-secondary btn-icon">
                         <span class="material-icons-outlined">

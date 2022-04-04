@@ -15,7 +15,7 @@
   'reset_password_email_subject' => 'Your Password Reset Link',
   'reset_password' => 'Reset Password',
   'confirm_password' => 'Confirm password',
-  'campaigns' => 'Campaigns Hello',
+  'campaigns' => 'Campaigns',
   'templates' => 'Templates',
   'lists' => 'Lists',
   'reports' => 'Reports',
@@ -3867,7 +3867,7 @@
   'form.create' => 'Create form',
   'create_a_signup_form' => 'Create a signup form',
   'create_a_signup_form.desc' => 'Capture contacts and collect the data you need<br>
-    to frow your audience',
+    to grow your audience',
   'audience.import_contacts.title' => 'Import contacts',
   'audience.import_contacts.desc' => 'Import your existing contacts from a CSV or Excel file<br>
     to quickly grow your ideas base',
@@ -3929,14 +3929,16 @@
   'form.themes' => 'Themes',
   'form.form_settings' => 'Form settings',
   'form.overlay_opacity' => 'Overlay opacity',
+  'form.display.desc' => 'Configure how the form shows up to the hosting web page.',
   'form.display' => 'Display',
-  'form.display.click' => 'Click on element...',
-  'form.display.immediately' => 'Immediately',
-  'form.display.wait' => 'After amount of time...',
+  'form.display.click' => 'On click',
+  'form.display.immediately' => 'On page load',
+  'form.display.wait' => 'After page load',
   'form.display.element_id' => 'Enter ID of clickable element',
+  'form.display.element_id.desc' => 'Load the form when a specified element is clicked',
   'form.display.wait_time' => 'Wait time (in seconds)',
   'form.builder.connect_to_your_site' => 'Connect your website to publish your pop-up on your site',
-  'form.connect_site' => 'Connect Site',
+  'form.connect_site' => 'Integrate to your website',
   'form.connect.title' => 'Connect your site to publish your pop-up form',
   'form.connect.select_site' => 'Select your site below to connect and the popup can be show in this site.',
   'form.choose_site' => 'No site selected',
@@ -3950,6 +3952,11 @@
   'form.open_site' => 'Open site',
   'form.builder.save' => 'Save',
   'form.settins_saved' => 'Form settings were saved',
+  'form.display.immediately.desc' => 'Load the form immediately when the webpage is loaded',
+  'form.display.wait_time.desc' => 'Load the form after a period of time',
+  'form.display.first_visit' => 'On page first visit',
+  'form.display.first_visit.desc' => 'Load the form immediately when the webpage
+    is loaded but for the first page visit only',
   'website.new_added_intro' => '
       <h4 class="fw-600 fs-3 text-center">Success!</h4>
       <p class="text-center mb-0">Your website is now connected. You can now add<br>
@@ -4036,6 +4043,7 @@
   'due_date' => 'Due date',
   'invoice.items' => 'Item(s)',
   'bill.total' => 'Total',
+  'bill.subtotal' => 'Sub.Total',
   'list.no_date_or_datetime_field' => 'The selected list does not have any custom field of DATE or DATETIME type.
     Go to your mail list\'s fields setting page and add a custom field of Date of Birth',
   'automation.trigger.no_date_of_birth_field' => 'There is no birthday field selected!',
@@ -4061,4 +4069,71 @@
   'dropzone.dictCancelUploadConfirmation' => 'Are you sure you want to cancel this upload?',
   'dropzone.dictRemoveFile' => 'Remove file',
   'dropzone.dictMaxFilesExceeded' => 'You can not upload any more files.',
+  'brand.shop_info' => 'Shop Information',
+  'brand.sliders' => 'Sliders',
+  'brand.store' => 'Store',
+  'brand.site_information' => 'Site information',
+  'brand.product_settings' => 'Product settings',
+  'brand.account_privacy' => 'Account & Privacy',
+  'brand.payments' => 'Payments',
+  'brand.emails' => 'Emails',
+  'brand.shipping' => 'Shipping',
+  'vat.percent' => 'VAT :percent%',
+  'brand.orders' => 'Orders',
+  'invoice.footer' => 'Thanks for your purchase.',
+  'invoice.header' => 'INVOICE',
+  'company_name' => 'Company',
+  'company_address' => 'Company Address',
+  'brand.home_page' => 'Home page',
+  'oauth.email_exist' => 'User with email :email exists!',
+  'setting.google_oauth' => 'Google OAuth',
+  'oauth.google_client_id' => 'Google Client ID',
+  'oauth.google_client_secret' => 'Google Client Secret',
+  'oauth.origin_uri' => 'Origin URI',
+  'oauth.redirect_uri' => 'Redirect URI',
+  'google_oauth_20' => 'Google OAuth 2.0',
+  'google_oauth.guide' => 'Visit the <a target="_blank" href="https://console.developers.google.com/" class="external">
+    Google API Console</a> to obtain OAuth 2.0 credentials such as a client
+    ID and client secret and set the values below:',
+  'google_oauth.uri_guide' => 'Copy these URIs below and paste them into the corresponding OAuth setting fields.',
+  'oauth.origin_uri.copied' => 'Origin URI was copied to clipboard',
+  'oauth.redirect_uri.copied' => 'Redirect URI was copied to clipboard',
+  'oauth.google.enable.desc' => 'Enable Google OAuth 2.0 for customer login.',
+  'plan.own_tracking_domain_required' => 'Users must use their own tracking domains',
+  'plan.own_tracking_domain_required.help' => 'The system rewrites every link added to marketing emails in
+    order to track it. Upon clicking a link, user will be redirected to the application (where opens and
+    clicks are recorded) before eventually reaching the original link. While the system has the hosting’s
+    domain that it can use to rewrite links, it offer the ability to "white label" the tracking domain with users\' own domains.',
+  'oauth' => 'OAuth',
+  'google_oauth.intro' => 'Use Google\'s OAuth 2.0 authentication system for customer to login and register.',
+  'oauth.status.disabled' => 'disabled',
+  'oauth.status.active' => 'active',
+  'oauth.wording' => 'In addition to typical, form based authentication, the system also
+    provides a simple, convenient way to authenticate with OAuth providers. It currently supports authentication
+    with Facebook, Twitter, LinkedIn, Google.',
+  'facebook_oauth.intro' => 'Use Facebook\'s OAuth 2.0 authentication system for customer to login and register.',
+  'oauth.facebook.enable.desc' => 'Enable Facebook OAuth 2.0 for customer login.',
+  'facebook_oauth.guide' => 'Visit your <a target="_blank" href="https://developers.facebook.com/apps" class="external">
+    Facebook Apps Console</a> to obtain credentials from an app such as a client
+    ID and client secret and set the values below:',
+  'facebook_oauth.uri_guide' => 'Copy these URIs below and paste them into the corresponding OAuth setting fields.',
+  'oauth.facebook_client_id' => 'Facebook Client ID',
+  'oauth.facebook_client_secret' => 'Facebook Client Secret',
+  'setting.facebook_oauth' => 'Facebook OAuth',
+  'brand.product' => 'Product',
+  'brand.products' => 'Products',
+  'brand.categories' => 'Categories',
+  'invoice_template' => 'Invoice template',
+  'invoice_current' => 'Current invoice number (it will be increased by 1 when a new invoice added)',
+  'invoice_format' => 'Invoice number format',
+  'company_email' => 'Company email',
+  'company_phone' => 'Company phone',
+  'list.mail_list_count.desc' => 'Total contacts<br>subscribed to
+    <span class="fw-600">:count</span> mail lists',
+  'list.active_contact.desc' => 'Active contacts, ready to receive marketing emails',
+  'forms_not_yet' => 'You do not have any subscription form yet!',
+  'list.form.desc' => 'Forms for collect the contact data you need
+    to grow your audience',
+  'list.blacklist.desc' => 'Contacts are blacklished<br/>
+    click here to view',
 ) ?>

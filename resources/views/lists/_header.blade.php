@@ -23,7 +23,7 @@
 							</a>
 						</li>
 					@empty
-						<li><a href="#">({{ trans('messages.empty') }})</a></li>
+						<li style="pointer-events:none;"><a href="#" class="dropdown-item">({{ trans('messages.empty') }})</a></li>
 					@endforelse
 				</ul>
 			</div>

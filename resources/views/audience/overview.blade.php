@@ -17,9 +17,11 @@
         <div class="col-md-3">
             <div class="bg-secondary p-3 shadow rounded-3 text-white">
                 <div class="text-center">
-                    <h2 class="text-semibold mb-1 mt-0">6,032</h2>
+                    <h2 class="text-semibold mb-1 mt-0">{{ number_with_delimiter($subscriberCount) }}</h2>
                     <div class="text-muted2 text-white">
-                        ユーザー登録総合計数<br>購読した<span class="fw-600">11</span> メール数
+                        {!! trans('messages.list.mail_list_count.desc', [
+                            'count' => number_with_delimiter($subscribedCount)
+                        ]) !!}                        
                     </div>
                 </div>
             </div>
@@ -27,9 +29,10 @@
         <div class="col-md-3">
             <div class="bg-secondary p-3 shadow rounded-3 text-white">
                 <div class="text-center">
-                    <h2 class="text-semibold mb-1 mt-0">92%</h2>
+                    <h2 class="text-semibold mb-1 mt-0">{{ number_to_percentage($activeContactPercent) }}</h2>
                     <div class="text-muted2 text-white">
                         メールに反応するアクティブな連絡先（開く、クリック）
+                        {{ trans('messages.list.active_contact.desc') }}
                     </div>
                 </div>
             </div>
@@ -37,9 +40,13 @@
         <div class="col-md-3">
             <div class="bg-secondary p-3 shadow rounded-3 text-white">
                 <div class="text-center">
-                    <h2 class="text-semibold mb-1 mt-0">0</h2>
+                    <h2 class="text-semibold mb-1 mt-0">{{ number_with_delimiter($formCount) }}</h2>
                     <div class="text-muted2 text-white">
-                        まだ購読フォームはありません
+                        @if (Auth::user()->customer->forms()->count())
+                            <p class="mb-0">{{ trans('messages.list.form.desc') }}</p>
+                        @else
+                            <p class="mb-0">{{ trans('messages.forms_not_yet') }}</p>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -47,9 +54,11 @@
         <div class="col-md-3">
             <a href="{{ action('BlacklistController@index') }}" class="bg-secondary p-3 shadow rounded-3 text-white d-block">
                 <div class="text-center">
-                    <h2 class="text-semibold mb-1 mt-0">303</h2>
+                    <h2 class="text-semibold mb-1 mt-0">
+                        {{ number_with_delimiter($blacklistedCount) }}
+                    </h2>
                     <div class="text-muted2 text-white">
-                        登録されたブラッリスト。表示する場合はこちらをクリック
+                        <p class="mb-0">{!! trans('messages.list.blacklist.desc') !!}</p>                        
                     </div>
                 </div>
             </a>
@@ -179,7 +188,7 @@
                         </p>
                     </div>
                     <div class="ms-auto">
-                        <a href="#" class="btn btn-primary py-2 px-4 import-select-list">
+                        <a href="javascript:;" class="btn btn-primary py-2 px-4 import-select-list">
                             {{ trans('messages.audience.import_contacts.title') }}
                         </a>
                     </div>

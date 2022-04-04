@@ -62,6 +62,7 @@ class Subscriber extends Model
         'email' => ['required', 'email:rfc,filter'],
     ];
 
+
     /**
      * The attributes that are mass assignable.
      *
@@ -508,7 +509,7 @@ class Subscriber extends Model
         }
 
         // Actually copy
-        $copy = $this->replicate();
+        $copy = self::find($this->id)->replicate();
         $copy->uid = uniqid();
         $copy->mail_list_id = $list->id;
         $copy->save();

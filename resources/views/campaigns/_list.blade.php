@@ -83,7 +83,7 @@
 					</span>
 					<pre style="display:none">{{ $campaign->last_error }}</pre>
 				</td>
-				<td class="text-end text-nowrap">
+				<td class="text-end text-nowrap pe-0">
 					<div class="d-flex align-items-center text-nowrap justify-content-end">
 						@if (\Gate::allows('update', $campaign))
 							<a href="{{ action('CampaignController@edit', $campaign->uid) }}" role="button"

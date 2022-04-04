@@ -30,7 +30,7 @@
                         </span>
                     @endif
                 </td>
-                <td class="text-end text-nowrap">
+                <td class="text-end text-nowrap pe-0">
                     @if (isset($settingUrls[$plugin->name]))
                         <a
                             href="{{ $settingUrls[$plugin->name] }}"
