@@ -11,8 +11,8 @@ class Website extends Model
     use HasFactory;
     use HasUid;
 
-    const STATUS_INACTIVE = 'inactive';
-    const STATUS_CONNECTED = 'connected';
+    public const STATUS_INACTIVE = 'inactive';
+    public const STATUS_CONNECTED = 'connected';
 
     protected $fillable = [
         'url',
@@ -76,13 +76,13 @@ class Website extends Model
         $document = new \DOMDocument();
         $document->encoding = 'utf-8';
         $document->loadHTML(mb_convert_encoding($content, 'HTML-ENTITIES', 'UTF-8'), LIBXML_NOWARNING | LIBXML_NOERROR);
-        
+
         $tags = $document->getElementsByTagName('title');
 
         if (count($tags) == 0) {
             throw new \Exception(trans('messages.website.title.not_found'));
         }
-        
+
         return $tags[0]->textContent;
     }
 
@@ -108,7 +108,7 @@ class Website extends Model
         $document = new \DOMDocument();
         $document->encoding = 'utf-8';
         $document->loadHTML(mb_convert_encoding($content, 'HTML-ENTITIES', 'UTF-8'), LIBXML_NOWARNING | LIBXML_NOERROR);
-        
+
         $tag = $document->getElementById('AcelleConnectScript');
 
         if (!$tag) {

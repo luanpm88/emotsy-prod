@@ -16,12 +16,12 @@
                     </div>
                 </td>
                 <td width="1%">
-                    <a href="#preview"  onclick="popupwindow('{{ action('TemplateController@preview', $template->uid) }}', '{{ $template->name }}', 800, 800)">
+                    <a href="#preview"  onclick="popupwindow('{{ action('TemplateController@preview', $template->uid) }}', `{{ $template->name }}`, 800, 800)">
                         <img class="template-thumb rounded shadow-sm" width="100" height="128" src="{{ $template->getThumbUrl() }}?v={{ rand(0,10) }}" />
                     </a>
                 </td>
                 <td>
-                    <a class="kq_search fw-600 d-block list-title" href="#preview" onclick="popupwindow('{{ action('TemplateController@preview', $template->uid) }}', '{{ $template->name }}', 800, 800)">
+                    <a class="kq_search fw-600 d-block list-title" href="#preview" onclick="popupwindow('{{ action('TemplateController@preview', $template->uid) }}', `{{ $template->name }}`, 800, 800)">
                         {{ $template->name }}
                     </a>
                     <div class="text-muted">
@@ -89,7 +89,7 @@
                                     </li>
                                 @endif
                                 @if (Auth::user()->customer->can('preview', $template))
-                                    <li><a class="dropdown-item" href="#preview" onclick="popupwindow('{{ action('TemplateController@preview', $template->uid) }}', '{{ $template->name }}', 800, 800)"><span class="material-icons-outlined">
+                                    <li><a class="dropdown-item" href="#preview" onclick="popupwindow('{{ action('TemplateController@preview', $template->uid) }}', `{{ $template->name }}`, 800, 800)"><span class="material-icons-outlined">
 zoom_in
 </span> {{ trans("messages.preview") }}</a></li>
                                 @endif

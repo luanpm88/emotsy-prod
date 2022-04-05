@@ -1327,6 +1327,7 @@ class SendingServer extends Model implements HasQuotaInterface
      */
     public function allowUnverifiedFromEmailAddress()
     {
+        return true;
         $options = json_decode($this->options, true);
 
         if (is_null($options)) {

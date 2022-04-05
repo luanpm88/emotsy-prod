@@ -49,7 +49,7 @@ class SettingController extends Controller
     {
         return view('site.settings.site');
     }
-    
+
     public function homePage(Request $request)
     {
         return view('site.settings.homePage');

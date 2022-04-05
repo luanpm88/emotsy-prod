@@ -1994,7 +1994,7 @@ class Customer extends Model
     {
         $query = $this->websites()->connected();
 
-        $result = $query->orderBy('title')->get()->map(function ($item) use($long) {
+        $result = $query->orderBy('title')->get()->map(function ($item) use ($long) {
             if ($long) {
                 return ['value' => $item->uid, 'text' => '<span class="fw-600">' . $item->title . '</span><br><span class="text-muted">' . $item->url . '</span>'];
             } else {

@@ -24,7 +24,7 @@ class InvoiceController extends Controller
         if ($request->isMethod('post')) {
             \Acelle\Model\Setting::set('invoice.custom_template', $request->content);
         }
-        
+
         return view('admin.invoices.template');
     }
 }

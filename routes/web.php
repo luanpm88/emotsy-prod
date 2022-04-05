@@ -675,7 +675,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('sample', 'SamplesController@index');
 
     // Products
-    Route::get('/products/widget/products/options', 'ProductController@widgetProductOptions');    
+    Route::get('/products/widget/products/options', 'ProductController@widgetProductOptions');
     Route::get('products/listing', 'ProductController@listing');
     Route::resource('products', 'ProductController');
 
@@ -729,11 +729,9 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('site/sources/connect', 'Site\SourceController@connect');
     Route::get('site/sources/listing', 'Site\SourceController@listing');
     Route::resource('site/sources', 'Site\SourceController');
-    
+
     // Invoice
     Route::get('invoices/{uid}/download', 'InvoiceController@download');
-
-    
 });
 
 // ADMIN AREA
@@ -851,7 +849,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::post('admin/languages/{id}/upload', 'LanguageController@upload');
     Route::resource('admin/languages', 'LanguageController');
 
-    // Settings    
+    // Settings
     Route::post('admin/settings/payment', 'SettingController@payment');
     Route::post('admin/settings/advanced/{name}/update', 'SettingController@advancedUpdate');
     Route::get('admin/settings/advanced', 'SettingController@advanced');

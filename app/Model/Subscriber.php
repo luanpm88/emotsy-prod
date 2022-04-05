@@ -61,7 +61,7 @@ class Subscriber extends Model
     public static $rules = [
         'email' => ['required', 'email:rfc,filter'],
     ];
-    
+
 
     /**
      * The attributes that are mass assignable.
