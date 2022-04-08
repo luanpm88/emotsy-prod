@@ -4124,8 +4124,8 @@
   'brand.products' => 'Products',
   'brand.categories' => 'Categories',
   'invoice_template' => 'Invoice template',
-  'invoice_current' => 'Current invoice number (it will be increased by 1 when a new invoice added)',
-  'invoice_format' => 'Invoice number format',
+  'invoice.current' => 'Current invoice number (it will be increased by 1 when a new invoice added)',
+  'invoice.format' => 'Invoice number format',
   'company_email' => 'Company email',
   'company_phone' => 'Company phone',
   'list.mail_list_count.desc' => 'Total contacts<br>subscribed to

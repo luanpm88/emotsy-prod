@@ -25,7 +25,11 @@
                                                 <a href="javascript:;"
                                                 data-url="{{ action('Admin\SettingController@advancedUpdate', ['name' => $name]) }}"
                                                 class="inline-value inline-editable editable editable-click">
-                                                    {!! $setting['value'] ? $setting['value'] : '<span class="text-danger">NULL</span>' !!}
+                                                    @if ($setting['value'])
+                                                        <div style="max-height: 100px;overflow:hidden">{{ $setting['value'] }}</div>
+                                                    @else
+                                                        <span class="text-danger">NULL</span>
+                                                    @endif
                                                 </a>
                                                 <div class="inline-form" style="display:none">
                                                     <div class="d-flex align-items-center">

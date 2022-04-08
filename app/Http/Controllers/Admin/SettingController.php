@@ -76,6 +76,13 @@ class SettingController extends Controller
 
             // Save settings
             foreach ($request->all() as $name => $value) {
+                if (in_array($name, [
+                    'invoice_current',
+                    'invoice_format',
+                ])) {
+                    $name = str_replace('_', '.', $name);
+                }
+
                 if ($name != '_token' && isset($settings[$name])) {
                     // Upload and save image
                     if ($name == 'site_logo_small' || $name == 'site_logo_big' || $name == 'site_favicon') {
