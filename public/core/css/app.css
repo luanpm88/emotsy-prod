@@ -7734,7 +7734,7 @@ textarea.form-control {
     border-radius: 100%;
     margin-right: 5px;
     background: #f5f5f5;
-    transition: all 0.1s ease-in-out;
+    transition: all 0.2s ease-in-out;
     display: flex;
     align-items: center;
     justify-content: center;

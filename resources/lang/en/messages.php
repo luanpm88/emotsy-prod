@@ -4136,4 +4136,5 @@
     to grow your audience',
   'list.blacklist.desc' => 'Contacts are blacklished<br/>
     click here to view',
+  'quick_theme_mode.click_change' => 'Click to toggle Light/Dark/Auto theme mode',
 ) ?>
