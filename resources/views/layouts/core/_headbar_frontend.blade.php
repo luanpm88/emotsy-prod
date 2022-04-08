@@ -30,12 +30,12 @@
                 var mode = $(this).attr('data-mode');
                 var but = $(this);
 
-                if (mode == 'dark') {
-                    mode = 'light';
-                } else if (mode == 'light') {
+                if (mode == 'light') {
+                    mode = 'dark';
+                } else if (mode == 'dark') {
                     mode = 'auto';
                 } else if (mode == 'auto') {
-                    mode = 'dark';
+                    mode = 'light';
                 }
 
                 changeThemeMod(mode);
