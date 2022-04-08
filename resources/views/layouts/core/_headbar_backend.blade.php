@@ -3,7 +3,7 @@
     <div class="me-auto"></div>
     <div class="top-search-container"></div>
     <div class="top-controls-container ps-2">
-        <a href="" class="but-change-theme-mode" data-mode="{{ Auth::user()->customer->theme_mode ? Auth::user()->customer->theme_mode : 'light' }}">
+        <a href="" class="but-change-theme-mode" data-mode="{{ Auth::user()->admin->theme_mode ? Auth::user()->admin->theme_mode : 'light' }}">
             <span class="icon-mode dark">
                 <svg class="SVGInline-svg SVGInline--cleaned-svg SVG-svg DarkModeIcon-svg SVG--color-svg" style="width: 12px;height: 12px;" viewBox="0 0 17 16" xmlns="http://www.w3.org/2000/svg"><path d="M7.914 0a6.874 6.874 0 0 0-1.26 3.972c0 3.875 3.213 7.017 7.178 7.017.943 0 1.843-.178 2.668-.5C15.423 13.688 12.34 16 8.704 16 4.174 16 .5 12.41.5 7.982.5 3.814 3.754.389 7.914 0z" fill-rule="evenodd"></path></svg>
             </span>
@@ -36,7 +36,7 @@
 
                 // save
                 $.ajax({
-                    url: '{{ action('AccountController@changeThemeMode') }}',
+                    url: '{{ action('Admin\AccountController@changeThemeMode') }}',
                     method: 'POST',
                     data: {
                         _token: CSRF_TOKEN,
