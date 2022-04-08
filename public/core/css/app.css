@@ -7723,3 +7723,45 @@ textarea.form-control {
     padding-top: 10px;
     border-top: solid 1px #ddd;
 }
+.but-change-theme-mode {
+    background: #eee;
+    color: #333;
+    line-height: 10px;
+    margin-top: 0;
+    height: 35px;
+    padding: 13px 7px;
+    width: 35px;
+    border-radius: 100%;
+    margin-right: 5px;
+    background: #f5f5f5;
+    transition: all 0.1s ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: scale(1.2);
+}
+.but-change-theme-mode svg {
+    width: 15px!important;
+    height: 15px!important;
+}
+.but-change-theme-mode[data-mode=dark] svg {
+    fill: #7dabf8!important;
+}
+.but-change-theme-mode[data-mode=light] svg {
+    fill: #efc078!important;
+}
+.top-controls-container {
+    padding-top: 17px;
+}
+.but-change-theme-mode .icon-mode {
+    display: none;
+}
+.but-change-theme-mode[data-mode=dark] .icon-mode.dark {
+    display: block;
+}
+.but-change-theme-mode[data-mode=light] .icon-mode.light {
+    display: block;
+}
+.but-change-theme-mode[data-mode=auto] .icon-mode.auto {
+    display: block;
+}
