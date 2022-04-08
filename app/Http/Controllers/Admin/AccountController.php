@@ -166,7 +166,7 @@ class AccountController extends Controller
 
     public function changeThemeMode(Request $request)
     {
-        $customer = $request->user()->admin;
+        $admin = $request->user()->admin;
 
         // Save color scheme
         if ($request->isMethod('post')) {
