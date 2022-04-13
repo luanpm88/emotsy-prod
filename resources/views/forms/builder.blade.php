@@ -258,8 +258,8 @@
                             var widget = eval('new ' + className + '(field)');
                             // insert widget content to editor
                             editor.getIframeContent().find('#formContainer').append(`
-                                <div builder-element="BlockElement">
-                                    <div style="padding-top:16px;padding-bottom:16px" class="container">
+                                <div builder-element="BlockElement" style="padding-top:15px;padding-bottom:15px">
+                                    <div class="container">
                                         `+widget.getContentHtml()+`
                                     </div>
                                 </div>
@@ -271,8 +271,8 @@
                     var widget = new SubmitButtonWidget();
                     // insert widget content to editor
                     editor.getIframeContent().find('#formContainer').append(`
-                        <div builder-element="BlockElement">
-                            <div style="padding-top:16px;padding-bottom:16px" class="container">
+                        <div builder-element="BlockElement" style="padding-top:15px;padding-bottom:15px">
+                            <div class="container">
                                 `+widget.getContentHtml()+`
                             </div>
                         </div>

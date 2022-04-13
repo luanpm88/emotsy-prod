@@ -15,8 +15,8 @@ class Form extends Model
     use HasTemplate;
     use HasUid;
 
-    const STATUS_DRAFT = 'draft';
-    const STATUS_PUBLISHED = 'published';
+    public const STATUS_DRAFT = 'draft';
+    public const STATUS_PUBLISHED = 'published';
 
     public function mailList()
     {
@@ -60,10 +60,11 @@ class Form extends Model
         return $validator;
     }
 
-    public function changeTemplate($selectedTemplate) {
+    public function changeTemplate($selectedTemplate)
+    {
         $this->setTemplate($selectedTemplate, trans('messages.form.template_name', ['name' => $this->name]));
     }
-    
+
     public function scopeFilter($query, $params)
     {
         // list
@@ -130,8 +131,6 @@ class Form extends Model
             'wait_time' => $params['wait_time'],
             'element_id' => $params['element_id'],
         ]);
-
-        
     }
 
     public function connect($site)
@@ -145,7 +144,7 @@ class Form extends Model
     {
         return $this->getMetadata('website_uid') ? \Acelle\Model\Website::findByUid($this->getMetadata('website_uid')) : null;
     }
-    
+
     public function disconnect()
     {
         $this->updateMetadata([
@@ -186,7 +185,7 @@ class Form extends Model
         if (!$content) {
             $content = $this->template->content;
         }
-        
+
         // BAISC INFO
         $content = str_replace('{LIST_NAME}', $this->mailList->name, $content);
         $content = str_replace('{CURRENT_YEAR}', date('Y'), $content);

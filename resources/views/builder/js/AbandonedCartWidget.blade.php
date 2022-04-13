@@ -23,7 +23,7 @@
             // default content html
             this.setContentHtml(`
                 <div data-items-number="4" builder-element="AbandonedCartElement" data-max-items="4" data-display="4" data-sort-by="created_at-desc" class="product-list-widget">
-                    <div style="padding-top:16px;padding-bottom:16px" class="container">
+                    <div class="container">
                         <span class="woo-button product-preview-but" style="display:none">Preview</span>
                         <span class="woo-button product-unpreview-but" style="display:none">Close preview</span>
                         <div class="row py-3 products">

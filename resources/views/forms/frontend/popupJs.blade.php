@@ -6,11 +6,32 @@ class AFormPopup {
         _this.options = options;
     }
 
+    setCookie(cname, cvalue, exdays) {
+        const d = new Date();
+        d.setTime(d.getTime() + (exdays*24*60*60*1000));
+        let expires = "expires="+ d.toUTCString();
+        document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+    }
+
+    getCookie(cname) {
+        let name = cname + "=";
+        let decodedCookie = decodeURIComponent(document.cookie);
+        let ca = decodedCookie.split(';');
+        for(let i = 0; i < ca.length; i++) {
+          let c = ca[i];
+          while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+          }
+          if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+          }
+        }
+        return "";
+    }
+
     init() {
         var _this = this;
         _this.remove();
-
-        
 
         var div = document.createElement("div");
         div.innerHTML = `
@@ -35,11 +56,7 @@ class AFormPopup {
         this.node = div;
         this.iframe = document.getElementById('Popup'+_this.id+'Frame');
 
-
-
-
-
-        this.loadCss();
+        this.loadCss('{{ url('core/css/form_popup.css') }}');
 
         window.addEventListener("message", function(event) {
             if (typeof(event.data.frameSize) != 'undefined') {
@@ -86,26 +103,44 @@ class AFormPopup {
         this.iframe.style.height = size.height + 'px';        
     }
 
-    loadCss() {
+    loadCss(url) {
         if (window.form_popup_css == null) {
             var head  = document.getElementsByTagName('head')[0];
             var link  = document.createElement('link');
             link.rel  = 'stylesheet';
             link.type = 'text/css';
-            link.href = '{{ url('core/css/form_popup.css') }}';
+            link.href = url;
             link.media = 'all';
             head.appendChild(link);
 
             window.form_popup_css = link;
         }
     }
-    
-    load() {
-        this.init();
+
+    show() {
         document.body.classList.add("acelle-popup-open");
     }
 
     hide() {
         document.body.classList.remove("acelle-popup-open");
+    }
+
+    loadOneTime() {
+        if (this.getCookie('popupLoaded') === "") {
+            this.init();
+            this.show();
+
+            this.setCookie('popupLoaded', true);
+        }        
+    }
+    
+    load(options) {
+        // update options            
+        if (typeof(options) !== 'undefined') {
+            this.options = $.extend({}, this.options, options);
+        }
+
+        this.init();
+        this.show();
     }
 };

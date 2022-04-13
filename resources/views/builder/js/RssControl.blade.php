@@ -6,7 +6,7 @@
             var html = `
                 <div id="RssControl">
                     <div class="control-[ID]">
-                        <div class="px-3">
+                        <div class="px-3 mt-3">
                             <h4>{{ trans('messages.widget.rss') }}</h4>
                             <p>{{ trans('messages.widget.rss.desc') }}</p>
                         </div>

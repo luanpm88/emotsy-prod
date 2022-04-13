@@ -559,16 +559,15 @@ class Setting extends Model
                 'type' => 'text',
                 'not_required' => true,
             ],
-            'company_name' => [
+            'invoice.current' => [
                 'cat' => 'general',
-                'value' => '',
-                'type' => 'text',
+                'value' => '1',
+                'type' => 'number',
             ],
-            'company_address' => [
+            'invoice.format' => [
                 'cat' => 'general',
-                'value' => '',
-                'type' => 'textarea',
-                'class' => 'setting-editor',
+                'value' => '%08d',  // a number of 8 digit, for example: sprintf('%08d', 15) -> 00000015
+                'type' => 'text',
             ],
         ];
     }

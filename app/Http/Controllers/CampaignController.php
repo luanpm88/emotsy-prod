@@ -981,7 +981,12 @@ class CampaignController extends Controller
      */
     public function open(Request $request)
     {
-        OpenLog::createFromRequest($request);
+        try {
+            OpenLog::createFromRequest($request);
+        } catch (\Exception $ex) {
+            // do nothing
+        }
+
         return response()->file(public_path('images/transparent.gif'));
     }
 

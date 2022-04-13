@@ -114,7 +114,7 @@ $(document).ready(function() {
     
     tinymce.init({
         selector: '.setting-editor',
-        height: 300,
+        height: 100,
         convert_urls: false,
         remove_script_host: false,
         forced_root_block: "",

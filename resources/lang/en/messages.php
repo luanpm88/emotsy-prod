@@ -3867,7 +3867,7 @@
   'form.create' => 'Create form',
   'create_a_signup_form' => 'Create a signup form',
   'create_a_signup_form.desc' => 'Capture contacts and collect the data you need<br>
-    to frow your audience',
+    to grow your audience',
   'audience.import_contacts.title' => 'Import contacts',
   'audience.import_contacts.desc' => 'Import your existing contacts from a CSV or Excel file<br>
     to quickly grow your ideas base',
@@ -3929,14 +3929,16 @@
   'form.themes' => 'Themes',
   'form.form_settings' => 'Form settings',
   'form.overlay_opacity' => 'Overlay opacity',
+  'form.display.desc' => 'Configure how the form shows up to the hosting web page.',
   'form.display' => 'Display',
-  'form.display.click' => 'Click on element...',
-  'form.display.immediately' => 'Immediately',
-  'form.display.wait' => 'After amount of time...',
+  'form.display.click' => 'On click',
+  'form.display.immediately' => 'On page load',
+  'form.display.wait' => 'After page load',
   'form.display.element_id' => 'Enter ID of clickable element',
+  'form.display.element_id.desc' => 'Load the form when a specified element is clicked',
   'form.display.wait_time' => 'Wait time (in seconds)',
   'form.builder.connect_to_your_site' => 'Connect your website to publish your pop-up on your site',
-  'form.connect_site' => 'Connect Site',
+  'form.connect_site' => 'Integrate to your website',
   'form.connect.title' => 'Connect your site to publish your pop-up form',
   'form.connect.select_site' => 'Select your site below to connect and the popup can be show in this site.',
   'form.choose_site' => 'No site selected',
@@ -3950,6 +3952,11 @@
   'form.open_site' => 'Open site',
   'form.builder.save' => 'Save',
   'form.settins_saved' => 'Form settings were saved',
+  'form.display.immediately.desc' => 'Load the form immediately when the webpage is loaded',
+  'form.display.wait_time.desc' => 'Load the form after a period of time',
+  'form.display.first_visit' => 'On page first visit',
+  'form.display.first_visit.desc' => 'Load the form immediately when the webpage
+    is loaded but for the first page visit only',
   'website.new_added_intro' => '
       <h4 class="fw-600 fs-3 text-center">Success!</h4>
       <p class="text-center mb-0">Your website is now connected. You can now add<br>
@@ -4154,4 +4161,18 @@
   'brand.products' => 'Products',
   'brand.categories' => 'Categories',
   'webhook.select_email_link' => 'Select link',
+  'invoice_template' => 'Invoice template',
+  'invoice.current' => 'Current invoice number (it will be increased by 1 when a new invoice added)',
+  'invoice.format' => 'Invoice number format',
+  'company_email' => 'Company email',
+  'company_phone' => 'Company phone',
+  'list.mail_list_count.desc' => 'Total contacts<br>subscribed to
+    <span class="fw-600">:count</span> mail lists',
+  'list.active_contact.desc' => 'Active contacts, ready to receive marketing emails',
+  'forms_not_yet' => 'You do not have any subscription form yet!',
+  'list.form.desc' => 'Forms for collect the contact data you need
+    to grow your audience',
+  'list.blacklist.desc' => 'Contacts are blacklished<br/>
+    click here to view',
+  'quick_theme_mode.click_change' => 'Click to toggle Light/Dark/Auto theme mode',
 ) ?>

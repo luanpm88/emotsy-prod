@@ -8,7 +8,19 @@ class AudienceController extends Controller
 {
     public function overview(Request $request)
     {
-        return view('audience.overview');
+        // stats
+        $subscriberCount = $request->user()->customer->subscribers()->count();
+        $subscribedCount = $request->user()->customer->subscribers()->subscribed()->count();
+        $activeContactPercent = $subscriberCount > 0 ? ($subscribedCount / $subscriberCount) : 0;
+
+        return view('audience.overview', [
+            'subscriberCount' => $subscriberCount,
+            'subscribedCount' => $subscribedCount,
+            'activeContactPercent' => $activeContactPercent,
+            'formCount' => $request->user()->customer->forms()->count(),
+            'blacklistedCount' => $request->user()->customer->subscribers()
+                ->join('blacklists', 'subscribers.email', '=', 'blacklists.email')->count(),
+        ]);
     }
 
     public function growthChart(Request $request)

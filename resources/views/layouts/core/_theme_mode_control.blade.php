@@ -23,19 +23,9 @@
     <script>
         $(function() {
             $('[name=theme_mode]').on('change', function() {
-                body = $(this).closest('body');
                 value = $(this).val();
 
-                $("body").removeClass (function (index, className) {
-                    return (className.match (/(^|\s)mode-\S+/g) || []).join(' ');
-                });
-
-                $("body").addClass('mode-' + value);
-
-                // auto mode
-                if (value == 'auto') {
-                    autoDetechDarkMode();
-                }
+                changeThemeMod(value);
             });
         });
     </script>

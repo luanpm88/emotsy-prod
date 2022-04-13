@@ -260,6 +260,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
     Route::get('customers/admin-area', 'CustomerController@adminArea');
 
     // Customer profile/information
+    Route::post('account/change-theme-mode', 'AccountController@changeThemeMode');
     Route::get('account/save-auto-theme-mode', 'AccountController@saveAutoThemeMode');
     Route::get('account/activity', 'AccountController@activity');
     Route::match(['get', 'post'], 'account/wizard/menu-layout', 'AccountController@wizardMenuLayout');
@@ -693,7 +694,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('sample', 'SamplesController@index');
 
     // Products
-    Route::get('/products/widget/products/options', 'ProductController@widgetProductOptions');    
+    Route::get('/products/widget/products/options', 'ProductController@widgetProductOptions');
     Route::get('products/listing', 'ProductController@listing');
     Route::resource('products', 'ProductController');
 
@@ -747,11 +748,9 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('site/sources/connect', 'Site\SourceController@connect');
     Route::get('site/sources/listing', 'Site\SourceController@listing');
     Route::resource('site/sources', 'Site\SourceController');
-    
+
     // Invoice
     Route::get('invoices/{uid}/download', 'InvoiceController@download');
-
-    
 });
 
 // ADMIN AREA
@@ -869,7 +868,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::post('admin/languages/{id}/upload', 'LanguageController@upload');
     Route::resource('admin/languages', 'LanguageController');
 
-    // Settings    
+    // Settings
     Route::post('admin/settings/payment', 'SettingController@payment');
     Route::post('admin/settings/advanced/{name}/update', 'SettingController@advancedUpdate');
     Route::get('admin/settings/advanced', 'SettingController@advanced');
@@ -982,6 +981,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
 
 
     // Account
+    Route::post('admin/account/change-theme-mode', 'AccountController@changeThemeMode');
     Route::get('admin/account/save-auto-theme-mode', 'AccountController@saveAutoThemeMode');
     Route::get('admin/account/leftbar/state', 'AccountController@leftbarState');
     Route::get('admin/account/api/renew', 'AccountController@renewToken');
@@ -1108,6 +1108,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::match(['get','post'], 'tax/settings', 'TaxController@settings');
 
     // Invoice
+    Route::match(['get','post'], 'admin/invoices/template', 'InvoiceController@template');
     Route::get('admin/invoices/{uid}/download', 'InvoiceController@download');
 
     // OAuth

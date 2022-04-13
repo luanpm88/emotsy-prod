@@ -316,4 +316,15 @@ class AccountController extends Controller
     {
         $request->session()->put('customer-auto-theme-mode', $request->theme_mode);
     }
+
+    public function changeThemeMode(Request $request)
+    {
+        $customer = $request->user()->customer;
+
+        // Save color scheme
+        if ($request->isMethod('post')) {
+            $customer->theme_mode = $request->theme_mode;
+            $customer->save();
+        }
+    }
 }

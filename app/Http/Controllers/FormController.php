@@ -29,7 +29,7 @@ class FormController extends Controller
                 ], 400);
             }
 
-            
+
             return redirect()->action('FormController@build', [
                 'uid' => $form->uid,
             ])->with('alert-success', trans('messages.form.created', [
@@ -222,7 +222,7 @@ class FormController extends Controller
             return response()->json([
                 'message' => trans('messages.form.settins_saved'),
             ]);
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             return response()->json([
                 'error' => $e->getMessage(),
             ], 400);
