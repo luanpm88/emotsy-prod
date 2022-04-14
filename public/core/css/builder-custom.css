@@ -1,5 +1,5 @@
 .logo-img {
-    width: 120px!important;
+    max-width: 130px;
     margin-right: 15px;
 }
 .product-list-widget {
