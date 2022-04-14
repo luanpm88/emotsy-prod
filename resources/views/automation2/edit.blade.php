@@ -528,6 +528,15 @@
             }
         }
 
+        function getEmailSetupUrl(email_uid) {
+            var url = `{{ action('Automation2Controller@emailSetup', [
+                'uid' => $automation->uid,
+                'email_uid' => '___email_uid___',
+            ]) }}`;
+             
+            return url.replace('___email_uid___', email_uid);
+        }
+
         var MyAutomation = {
             // Set the AddElement function
             // It depends on the currently selected element
@@ -659,7 +668,7 @@
             @if (request()->auto_popup)
                 doSelect(tree.child);
                 setTimeout(function() {
-                    popup.load('/automation2/{{ $automation->uid }}/email/setup?email_uid=' + tree.child.getOptions().email_uid,
+                    popup.load(getEmailSetupUrl(tree.child.getOptions().email_uid),
                     function() {
                         $('.email_title').html('{{ trans('messages.source.abandoned_cart_email') }}');
                     });
@@ -676,7 +685,7 @@
 
                     doSelect(tree.child);
                     setTimeout(function() {
-                        popup.load('/automation2/{{ $automation->uid }}/email/setup?email_uid=' + tree.child.getOptions().email_uid,
+                        popup.load(getEmailSetupUrl(tree.child.getOptions().email_uid),
                         function() {
                             $('.email_title').html('{{ trans('messages.source.abandoned_cart_email') }}');
                         });
