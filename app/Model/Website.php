@@ -109,7 +109,7 @@ class Website extends Model
         $document->encoding = 'utf-8';
         $document->loadHTML(mb_convert_encoding($content, 'HTML-ENTITIES', 'UTF-8'), LIBXML_NOWARNING | LIBXML_NOERROR);
 
-        $tag = $document->getElementById('AcelleConnectScript');
+        $tag = $document->getElementById('ACXConnectScript');
 
         if (!$tag) {
             throw new \Exception(trans('messages.website.can_not_find_connect_script'));
