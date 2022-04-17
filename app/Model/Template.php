@@ -1440,4 +1440,10 @@ class Template extends Model
             ],
         ];
     }
+
+    public function setType($type)
+    {
+        $this->type = $type;
+        $this->save();
+    }
 }
