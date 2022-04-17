@@ -169,9 +169,6 @@ class TemplateController extends Controller
         if ($request->isMethod('post')) {
             $template = Template::uploadTemplate($request);
 
-            // set type as email
-            $template->setType(Template::TYPE_EMAIL);
-
             $request->session()->flash('alert-success', trans('messages.template.uploaded'));
             return redirect()->action('TemplateController@index');
         } else {
