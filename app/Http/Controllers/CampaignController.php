@@ -982,7 +982,13 @@ class CampaignController extends Controller
     public function open(Request $request)
     {
         try {
-            OpenLog::createFromRequest($request);
+            // Record open log
+            $openLog = OpenLog::createFromRequest($request);
+
+            // Execute open callbacks registered for the campaign
+            if ($openLog->trackingLog && $openLog->trackingLog->campaign) {
+                $openLog->trackingLog->campaign->queueCallbacks($openLog);
+            }
         } catch (\Exception $ex) {
             // do nothing
         }

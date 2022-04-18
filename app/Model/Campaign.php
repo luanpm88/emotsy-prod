@@ -50,6 +50,7 @@ use Acelle\Library\Traits\TrackJobs;
 use Throwable;
 use Acelle\Library\Traits\HasUid;
 use Acelle\Events\CampaignUpdated;
+use Acelle\Jobs\ExecuteCampaignCallback;
 
 class Campaign extends Model
 {
@@ -2715,5 +2716,22 @@ class Campaign extends Model
         $webhook->campaign_id = $this->id;
 
         return $webhook;
+    }
+
+    public function queueCallbacks($log)
+    {
+        if ($log->isOpen()) {
+            $callbacks = $this->campaignWebhooks->open;
+        } elseif ($log->isClick()) {
+            $callbacks = $this->campaignWebhooks->click;
+        } elseif ($log->isUnsubscribe()) {
+            $callbacks = $this->campaignWebhooks->unsubscribe;
+        } else {
+            throw new Exception('Inalid callback (webhook) type: '.$log->type);
+        }
+
+        foreach($callbacks as $callback) {
+            ExecuteCampaignCallback::dispatch($callback, $log);
+        }
     }
 }

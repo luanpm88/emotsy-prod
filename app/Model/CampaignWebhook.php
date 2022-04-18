@@ -83,18 +83,49 @@ class CampaignWebhook extends Model
         return [$this, $validator];
     }
 
-    public function execute($openLog)
+    public function execute($log) # OpenLog | ClickLog | UnsubscribeLog
     {
-        $attributes = $openLog->getAttributes();
-        $attributes['campaign'] = $openLog->trackingLog->campaign->getAttributes();
-        $response = Http::post('http://example.com/users', [
-            'name' => 'Steve',
-            'role' => 'Network Administrator',
-        ]);
+        $attributes = $this->makePostData4Callback($log);
+        $response = Http::post('http://example.com/users', $attributes);
     }
 
-    public function getPostData4Callback()
+    public function makePostData4Callback($log, $test = false) # OpenLog | ClickLog | UnsubscribeLog
     {
+        $attributes = $log->getAttributes();
+        $attributes['campaign'] = $this->campaign->getAttributes();
+        $attributes['subscriber'] = $log->trackingLog->subscriber->getAttributes();
+        $attributes['mail_list'] = $log->trackingLog->mailList;
 
+        return $attributes;
+    }
+
+    public function scopeOpen($query)
+    {
+        return $query->where('type', self::TYPE_OPEN);
+    }
+
+    public function scopeClick($query)
+    {
+        return $query->where('type', self::TYPE_CLICK);
+    }
+
+    public function scopeUnsubscribe($query)
+    {
+        return $query->where('type', self::TYPE_UNSUBSCRIBE);
+    }
+
+    public function isOpen()
+    {
+        return $this->type == self::TYPE_OPEN;
+    }
+
+    public function isClick()
+    {
+        return $this->type == self::TYPE_CLICK;
+    }
+
+    public function isUnsubscribe()
+    {
+        return $this->type == self::TYPE_UNSUBSCRIBE;
     }
 }

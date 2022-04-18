@@ -14,15 +14,17 @@ class ExecuteCampaignCallback implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected $webhook;
+    protected $log; # OpenLog | ClickLog | UnsubscribeLog
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($webhook)
+    public function __construct($webhook, $log)
     {
         $this->webhook = $webhook;
+        $this->log = $log;
     }
 
     /**
@@ -32,6 +34,6 @@ class ExecuteCampaignCallback implements ShouldQueue
      */
     public function handle()
     {
-        $webhook->execute();
+        $this->webhook->execute($this->log);
     }
 }
