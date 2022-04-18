@@ -987,7 +987,7 @@ class CampaignController extends Controller
 
             // Execute open callbacks registered for the campaign
             if ($openLog->trackingLog && $openLog->trackingLog->campaign) {
-                $openLog->trackingLog->campaign->queueCallbacks($openLog);
+                $openLog->trackingLog->campaign->queueOpenCallbacks($openLog);
             }
         } catch (\Exception $ex) {
             // do nothing

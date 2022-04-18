@@ -2718,18 +2718,25 @@ class Campaign extends Model
         return $webhook;
     }
 
-    public function queueCallbacks($log)
+    public function queueOpenCallbacks($log)
     {
-        if ($log->isOpen()) {
-            $callbacks = $this->campaignWebhooks->open;
-        } elseif ($log->isClick()) {
-            $callbacks = $this->campaignWebhooks->click;
-        } elseif ($log->isUnsubscribe()) {
-            $callbacks = $this->campaignWebhooks->unsubscribe;
-        } else {
-            throw new Exception('Inalid callback (webhook) type: '.$log->type);
+        $callbacks = $this->campaignWebhooks()->open()->get();
+        foreach($callbacks as $callback) {
+            ExecuteCampaignCallback::dispatch($callback, $log);
         }
+    }
 
+    public function queueClickCallbacks($log)
+    {
+        $callbacks = $this->campaignWebhooks()->click()->get();
+        foreach($callbacks as $callback) {
+            ExecuteCampaignCallback::dispatch($callback, $log);
+        }
+    }
+
+    public function queueUnsubscribeCallbacks($log)
+    {
+        $callbacks = $this->campaignWebhooks()->unsubscribe()->get();
         foreach($callbacks as $callback) {
             ExecuteCampaignCallback::dispatch($callback, $log);
         }
