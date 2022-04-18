@@ -2728,7 +2728,11 @@ class Campaign extends Model
 
     public function queueClickCallbacks($log)
     {
-        $callbacks = $this->campaignWebhooks()->click()->get();
+        $callbacks = $this->campaignWebhooks()
+                          ->click()
+                          // ->join('campaign_links', 'campaign_webhooks.campaign_link_id', 'campaign_links.id')
+                          // ->where('url', $log->url)
+                          ->get();
         foreach($callbacks as $callback) {
             ExecuteCampaignCallback::dispatch($callback, $log);
         }

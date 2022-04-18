@@ -1001,7 +1001,12 @@ class CampaignController extends Controller
      */
     public function click(Request $request)
     {
-        $url = ClickLog::createFromRequest($request);
+        list($url, $log) = ClickLog::createFromRequest($request);
+
+        if ($log && $log->trackingLog && $log->trackingLog->campaign) {
+            $log->trackingLog->campaign->queueClickCallbacks($log);
+        }
+
         return redirect()->away($url);
     }
 

@@ -40,13 +40,13 @@ class ClickLog extends Model
             // just ignore and let users go
             // the 'url' validation of Laravel does not work with UTF8
             // For example: https://algeriestore.com/content/Algérie-Store-Catalogue-FR.pdf
-            return $url;
+            return [$url, null];
         }
 
         $messageId = StringHelper::base64UrlDecode($request->message_id);
 
         if (!TrackingLog::where('message_id', $messageId)->exists()) {
-            return $url;
+            return [$url, null];
         }
 
         $log = new self();
@@ -66,6 +66,7 @@ class ClickLog extends Model
 
         // Just in case an open cannot be recorded (it is very likely the case, due to Gmail proxy/cache)
         // Make it make sense! there is at least one OPEN
+        // @todo what about open callbacks?
         $openLog = $log->createRelatedOpenLogIfNotExist();
 
         // Do not trigger cache update if campaign is running
@@ -75,7 +76,7 @@ class ClickLog extends Model
             }
         }
 
-        return $url;
+        return [$url, $log];
     }
 
     public function createRelatedOpenLogIfNotExist()
