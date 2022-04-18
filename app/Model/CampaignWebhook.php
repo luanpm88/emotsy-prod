@@ -37,7 +37,7 @@ class CampaignWebhook extends Model
         $this->type = $params['type'];
         $this->endpoint = $params['endpoint'];
 
-        if ($params['type'] == 'click') {
+        if ($params['type'] == self::TYPE_CLICK) {
             // fill campaign link id
             if (isset($params['campaign_link_id'])) {
                 $this->campaign_link_id = $params['campaign_link_id'];
