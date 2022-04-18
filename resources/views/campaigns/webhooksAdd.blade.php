@@ -19,9 +19,9 @@
                     'value' => $webhook->type,
                     'label' => trans('messages.webhook.select_type'),
                     'options' => [
-                        ['text' => trans('messages.webhook.type.open'), 'value' => 'open'],
-                        ['text' => trans('messages.webhook.type.click'), 'value' => 'click'],
-                        ['text' => trans('messages.webhook.type.unsubscribe'), 'value' => 'unsubscribe'],
+                        ['text' => trans('messages.webhook.type.open'), 'value' => Acelle\Model\CampaignWebhook::TYPE_OPEN],
+                        ['text' => trans('messages.webhook.type.click'), 'value' => Acelle\Model\CampaignWebhook::TYPE_CLICK],
+                        ['text' => trans('messages.webhook.type.unsubscribe'), 'value' => Acelle\Model\CampaignWebhook::TYPE_UNSUBSCRIBE],
                     ],
                     'rules' => ['type' => 'required'],
                 ])
@@ -63,7 +63,7 @@
             },
 
             toggleLinkSelect: function() {
-                if (this.getType() == 'click') {
+                if (this.getType() == '{{ Acelle\Model\CampaignWebhook::TYPE_CLICK }}') {
                     this.showLinkSelect();
                 } else {
                     this.hideLinkSelect();

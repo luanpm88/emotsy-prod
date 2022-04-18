@@ -11,6 +11,10 @@ class EmailWebhook extends Model
     use HasFactory;
     use HasUid;
 
+    public const TYPE_OPEN = 'open';
+    public const TYPE_CLICK = 'click';
+    public const TYPE_UNSUBSCRIBE = 'unsubscribe';
+
     public function emailLink()
     {
         return $this->belongsTo('Acelle\Model\EmailLink');
@@ -32,7 +36,7 @@ class EmailWebhook extends Model
         $this->type = $params['type'];
         $this->endpoint = $params['endpoint'];
 
-        if ($params['type'] == 'click') {
+        if ($params['type'] == self::TYPE_CLICK) {
             // fill email link id
             if (isset($params['email_link_id'])) {
                 $this->email_link_id = $params['email_link_id'];
