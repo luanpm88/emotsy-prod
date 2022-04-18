@@ -5,11 +5,16 @@ namespace Acelle\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Acelle\Library\Traits\HasUid;
+use Illuminate\Support\Facades\Http;
 
 class CampaignWebhook extends Model
 {
     use HasFactory;
     use HasUid;
+
+    public const TYPE_OPEN = 'open';
+    public const TYPE_CLICK = 'click';
+    public const TYPE_UNSUBSCRIBE = 'unsubscribe';
 
     public function campaignLink()
     {
@@ -76,5 +81,20 @@ class CampaignWebhook extends Model
         $this->save();
 
         return [$this, $validator];
+    }
+
+    public function execute($openLog)
+    {
+        $attributes = $openLog->getAttributes();
+        $attributes['campaign'] = $openLog->trackingLog->campaign->getAttributes();
+        $response = Http::post('http://example.com/users', [
+            'name' => 'Steve',
+            'role' => 'Network Administrator',
+        ]);
+    }
+
+    public function getPostData4Callback()
+    {
+
     }
 }
