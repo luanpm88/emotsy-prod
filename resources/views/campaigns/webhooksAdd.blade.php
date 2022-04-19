@@ -21,7 +21,7 @@
                     'options' => [
                         ['text' => trans('messages.webhook.type.open'), 'value' => Acelle\Model\CampaignWebhook::TYPE_OPEN],
                         ['text' => trans('messages.webhook.type.click'), 'value' => Acelle\Model\CampaignWebhook::TYPE_CLICK],
-                        ['text' => trans('messages.webhook.type.unsubscribe'), 'value' => Acelle\Model\CampaignWebhook::TYPE_UNSUBSCRIBE],
+                        // ['text' => trans('messages.webhook.type.unsubscribe'), 'value' => Acelle\Model\CampaignWebhook::TYPE_UNSUBSCRIBE],
                     ],
                     'rules' => ['type' => 'required'],
                 ])
