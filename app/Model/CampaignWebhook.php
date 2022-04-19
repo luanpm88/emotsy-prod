@@ -81,4 +81,14 @@ class CampaignWebhook extends Model
 
         return [$this, $validator];
     }
+
+    public static function scopeOpen($query)
+    {
+        $query = $query->where('type', '=', self::TYPE_OPEN);
+    }
+
+    public static function scopeClick($query)
+    {
+        $query = $query->where('type', '=', self::TYPE_CLICK);
+    }
 }

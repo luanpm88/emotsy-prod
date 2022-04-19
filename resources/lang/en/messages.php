@@ -4176,4 +4176,6 @@
   'list.blacklist.desc' => 'Contacts are blacklished<br/>
     click here to view',
   'quick_theme_mode.click_change' => 'Click to toggle Light/Dark/Auto theme mode',
+  'webhook.execute_open_callback' => 'Execute open callback',
+  'webhook.execute_click_callback' => 'Execute click callback',
 ) ?>

@@ -2716,4 +2716,9 @@ class Campaign extends Model
 
         return $webhook;
     }
+
+    public function openWebhooks()
+    {
+        return $this->campaignWebhooks()->open();
+    }
 }
