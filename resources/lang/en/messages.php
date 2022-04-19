@@ -3981,7 +3981,7 @@
   'website.get_code' => 'Get code',
   'template.no_product_selected' => 'No product selected',
   'source.importing_product' => 'Importing products... please wait!',
-  'widget.rss.desc' => 'Load news update from remote source and populate its content to your rmail',
+  'widget.rss.desc' => 'Load news update from remote source and populate its content to your email',
   'widget.rss.click_start' => 'Click to enter a URL',
   'widget.rss.change_url' => 'Change',
   'widget.rss.load_url' => 'Load',
