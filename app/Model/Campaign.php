@@ -2745,4 +2745,9 @@ class Campaign extends Model
             ExecuteCampaignCallback::dispatch($callback, $log);
         }
     }
+
+    public function openWebhooks()
+    {
+        return $this->campaignWebhooks()->open();
+    }
 }
