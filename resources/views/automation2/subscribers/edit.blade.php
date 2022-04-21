@@ -670,37 +670,6 @@
                     }
                 }
             });
-
-            @if (request()->auto_popup)
-                doSelect(tree.child);
-                setTimeout(function() {
-                    popup.load('https://product.com/automation2/{{ $automation->uid }}/email/setup?email_uid=' + tree.child.getOptions().email_uid,
-                    function() {
-                        $('.email_title').html('{{ trans('messages.source.abandoned_cart_email') }}');
-                    });
-                }, 100);
-
-                popup.onHide = function() {
-                    if (parent && parent.$('.trans_frame')) {
-                        parent.$('.trans_frame').fadeOut();
-                    }
-                    parent.hidden = true;
-
-                    // parent
-                    parent.$('html').css('overflow', 'auto');
-
-                    doSelect(tree.child);
-                    setTimeout(function() {
-                        popup.load('https://product.com/automation2/{{ $automation->uid }}/email/setup?email_uid=' + tree.child.getOptions().email_uid,
-                        function() {
-                            $('.email_title').html('{{ trans('messages.source.abandoned_cart_email') }}');
-                        });
-                    }, 100);
-
-                    parent.jReload();
-                };
-            @endif
-
         })();
     </script>
 @endsection

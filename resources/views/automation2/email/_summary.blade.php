@@ -124,6 +124,44 @@
             </a>
         </div>
     </li>
+    <li class="d-flex align-items-center confirm-webhooks-summary">
+        <div class="list-media mr-4">
+            <i class="material-icons-outlined text-muted">cable</i>
+        </div>
+        <div class="values mr-auto">
+            <label>
+                {{ number_with_delimiter($email->emailWebhooks()->count()) }} {{ trans('messages.webhooks') }}
+            </label>
+            <div class="value">
+                @if($email->emailWebhooks()->count())
+                    {{ trans('messages.automation.email.content.last_edit', [
+                        'time' => $email->emailWebhooks()->orderBy('updated_at', 'desc')->first()->updated_at->diffForHumans(),
+                    ]) }}
+                @else
+                    <span class="small">
+                        {{-- <i class="material-icons-outlined">error_outline</i> --}}
+                        {{ trans('messages.webhooks.empty') }}
+                    </span>
+                @endif
+            </div>
+        </div>
+        <div class="list-action">
+            <a href="javascript:;" class="btn btn-secondary btn-sm manage_webhooks_but">
+                {{ trans('messages.webhooks.manage') }}
+            </a>
+        </div>
+
+        <script>
+            $(function() {
+                // manage webhooks button click
+                $('.manage_webhooks_but').on('click', function(e) {
+                    e.preventDefault();
+
+                    EmailConfirm.getWebhooksPopup().load();
+                });
+            });
+        </script>
+    </li>
     <li class="d-flex align-items-center">
         <div class="list-media mr-4">
             <i class="material-icons-outlined text-muted">track_changes</i>
@@ -151,3 +189,42 @@
         </div>
     </li>
 </ul> 
+
+<script>
+    var EmailConfirm = {
+        webhooksPopup: null,
+        getWebhooksPopup: function() {
+            if (this.webhooksPopup == null) {
+                this.webhooksPopup = new Popup({
+                    url: '{{ action('Automation2Controller@webhooks', [
+                        'email_uid' => $email->uid,
+                    ]) }}',
+                    onclose: function() {
+                        EmailConfirm.refresh();
+                    }
+                });
+            }
+
+            return this.webhooksPopup;
+        },
+
+        refresh: function() {
+            // var box = confirm-webhooks-summary
+            $.ajax({
+                url: "{{ action('Automation2Controller@emailConfirm', [
+                    'uid' => $automation->uid,
+                    'email_uid' => $email->uid,
+                ]) }}",
+                method: 'GET',
+                data: {
+                    _token: CSRF_TOKEN
+                },
+                success: function (response) {
+                    var html = $('<div>').html(response).find('.confirm-webhooks-summary').html();
+
+                    $('.confirm-webhooks-summary').html(html);
+                }
+            });
+        }
+    }
+</script>

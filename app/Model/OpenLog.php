@@ -152,6 +152,8 @@ class OpenLog extends Model
                 event(new CampaignUpdated($log->trackingLog->campaign));
             }
         }
+
+        return $log;
     }
 
     /**

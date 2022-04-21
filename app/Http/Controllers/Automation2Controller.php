@@ -745,6 +745,9 @@ class Automation2Controller extends Controller
                 'track_click' => true,
                 'action_id' => $request->action_id,
             ]);
+            $email->automation2_id = $automation->id;
+            $email->customer_id = $automation->customer_id;
+            // $email->save();
         }
 
         // authorize
@@ -782,8 +785,6 @@ class Automation2Controller extends Controller
             }
 
             // pass validation and save
-            $email->automation2_id = $automation->id;
-            $email->customer_id = $automation->customer_id;
             $email->save();
 
             return response()->json([
@@ -1079,7 +1080,7 @@ class Automation2Controller extends Controller
     }
 
     /**
-     * Campaign html content.
+     * Email html content.
      *
      * @param \Illuminate\Http\Request $request
      *
@@ -1121,7 +1122,7 @@ class Automation2Controller extends Controller
         if ($request->isMethod('post')) {
             $email->uploadTemplate($request);
 
-            // return redirect()->action('CampaignController@template', $campaign->uid);
+            // return 
             return response()->json([
                 'status' => 'success',
                 'message' => trans('messages.automation.email.template.uploaded')
@@ -2456,5 +2457,181 @@ class Automation2Controller extends Controller
         }
 
         return view('automation2.condition.conditionWaitCustom');
+    }
+
+    public function webhooks(Request $request)
+    {
+        $email = Email::findByUid($request->email_uid);
+        
+        // authorize
+        if (\Gate::denies('view', $email->automation)) {
+            return $this->notAuthorized();
+        }
+
+        return view('automation2.email.webhooks', [
+            'email' => $email,
+        ]);
+    }
+
+    public function webhooksList(Request $request)
+    {
+        $email = Email::findByUid($request->email_uid);
+
+        // authorize
+        if (\Gate::denies('view', $email->automation)) {
+            return $this->notAuthorized();
+        }
+
+        return view('automation2.email.webhooksList', [
+            'email' => $email,
+        ]);
+    }
+
+    public function webhooksAdd(Request $request)
+    {
+        $email = Email::findByUid($request->email_uid);
+        $webhook = $email->newWebhook();
+
+        // authorize
+        if (\Gate::denies('update', $email->automation)) {
+            return $this->notAuthorized();
+        }
+
+        if ($request->isMethod('post')) {
+            list($webhook, $validator) = $webhook->createFromArray($request->all());
+
+            // redirect if fails
+            if ($validator->fails()) {
+                return response()->view('automation2.email.webhooksAdd', [
+                    'email' => $email,
+                    'webhook' => $webhook,
+                    'errors' => $validator->errors(),
+                ], 400);
+            }
+
+            return response()->json([
+                'message' => trans('messages.webhook.added'),
+            ]);
+        }
+
+        return view('automation2.email.webhooksAdd', [
+            'email' => $email,
+            'webhook' => $webhook,
+        ]);
+    }
+    
+    public function webhooksLinkSelect(Request $request)
+    {
+        $email = Email::findByUid($request->email_uid);
+
+        // authorize
+        if (\Gate::denies('view', $email->automation)) {
+            return $this->notAuthorized();
+        }
+
+        return view('automation2.email.webhooksLinkSelect', [
+            'email' => $email,
+        ]);
+    }
+
+    public function webhooksEdit(Request $request)
+    {
+        $webhook = \Acelle\Model\EmailWebhook::findByUid($request->webhook_uid);
+
+        // authorize
+        if (\Gate::denies('update', $webhook->email->automation)) {
+            return $this->notAuthorized();
+        }
+
+        if ($request->isMethod('post')) {
+            list($webhook, $validator) = $webhook->updateFromArray($request->all());
+
+            // redirect if fails
+            if ($validator->fails()) {
+                return response()->view('automation2.email.webhooksEdit', [
+                    'webhook' => $webhook,
+                    'errors' => $validator->errors(),
+                ], 400);
+            }
+
+            return response()->json([
+                'message' => trans('messages.webhook.updated'),
+            ]);
+        }
+
+        return view('automation2.email.webhooksEdit', [
+            'webhook' => $webhook,
+        ]);
+    }
+
+    public function webhooksDelete(Request $request)
+    {
+        $webhook = \Acelle\Model\EmailWebhook::findByUid($request->webhook_uid);
+
+        // authorize
+        if (\Gate::denies('update', $webhook->email->automation)) {
+            return $this->notAuthorized();
+        }
+
+        $webhook->delete();
+
+        return response()->json([
+            'message' => trans('messages.webhook.deleted'),
+        ]);
+    }
+
+    public function webhooksSampleRequest(Request $request)
+    {
+        $webhook = \Acelle\Model\EmailWebhook::findByUid($request->webhook_uid);
+
+        // authorize
+        if (\Gate::denies('view', $webhook->email->automation)) {
+            return $this->notAuthorized();
+        }
+
+        return view('automation2.email.webhooksSampleRequest', [
+            'webhook' => $webhook,
+        ]);
+    }
+
+    public function webhooksTest(Request $request)
+    {
+        $webhook = \Acelle\Model\EmailWebhook::findByUid($request->webhook_uid);
+        $result = null;
+
+        // authorize
+        if (\Gate::denies('view', $webhook->email->automation)) {
+            return $this->notAuthorized();
+        }
+
+        if ($request->isMethod('post')) {
+            $client = new \GuzzleHttp\Client();
+
+            try {
+                $response = $client->request('GET', $webhook->endpoint, [
+                    'headers' => [
+                        "content-type" => "application/json"
+                    ],
+                    'body' => '{hello: "world"}',
+                    'http_errors' => false,
+                ]);
+
+                $result = [
+                    'status' => 'sent',
+                    'code' => $response->getStatusCode(),
+                    'message' => $response->getReasonPhrase(),
+                ];
+            } catch (\Exception $e) {
+                $result = [
+                    'status' => 'error',
+                    'message' => $e->getMessage(),
+                ];
+            }
+        }
+
+        return view('automation2.email.webhooksTest', [
+            'webhook' => $webhook,
+            'result' => $result,
+        ]);
     }
 }

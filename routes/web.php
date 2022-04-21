@@ -260,6 +260,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
     Route::get('customers/admin-area', 'CustomerController@adminArea');
 
     // Customer profile/information
+    Route::post('account/change-theme-mode', 'AccountController@changeThemeMode');
     Route::get('account/save-auto-theme-mode', 'AccountController@saveAutoThemeMode');
     Route::get('account/activity', 'AccountController@activity');
     Route::match(['get', 'post'], 'account/wizard/menu-layout', 'AccountController@wizardMenuLayout');
@@ -418,6 +419,15 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('templates/rss/parse', 'TemplateController@parseRss');
 
     // Campaign
+    Route::match(['get', 'post'], 'campaigns/webhooks/{webhook_uid}/test', 'CampaignController@webhooksTest');
+    Route::get('campaigns/webhooks/{webhook_uid}/sample/request', 'CampaignController@webhooksSampleRequest');
+    Route::post('campaigns/webhooks/{webhook_uid}/delete', 'CampaignController@webhooksDelete');
+    Route::match(['get', 'post'], 'campaigns/webhooks/{webhook_uid}/edit', 'CampaignController@webhooksEdit');
+    Route::get('campaigns/{uid}/webhooks/list', 'CampaignController@webhooksList');
+    Route::get('campaigns/{uid}/webhooks/link-select', 'CampaignController@webhooksLinkSelect');
+    Route::match(['get', 'post'], 'campaigns/{uid}/webhooks/add', 'CampaignController@webhooksAdd');
+    Route::get('campaigns/{uid}/webhooks', 'CampaignController@webhooks');
+
     Route::get('campaigns/{uid}/preview-as/list', 'CampaignController@previewAsList');
     Route::get('campaigns/{uid}/preview-as', 'CampaignController@previewAs');
 
@@ -581,95 +591,104 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::post('notifications/{id}/hide', 'NotificationController@hide');
 
     // Automation2
-    Route::match(['get', 'post'], 'automation2/condition/wait/custom', 'Automation2Controller@conditionWaitCustom');
-    Route::match(['get', 'post'], 'automation2/{email_uid}/send-test-email', 'Automation2Controller@sendTestEmail');
-    Route::get('automation2/{uid}/cart/items', 'Automation2Controller@cartItems');
-    Route::get('automation2/{uid}/cart/list', 'Automation2Controller@cartList');
-    Route::get('automation2/{uid}/cart/stats', 'Automation2Controller@cartStats');
-    Route::match(['get', 'post'], 'automation2/{uid}/car/change-store', 'Automation2Controller@cartChangeStore');
-    Route::match(['get', 'post'], 'automation2/{uid}/car/wait', 'Automation2Controller@cartWait');
-    Route::match(['get', 'post'], 'automation2/{uid}/car/change-list', 'Automation2Controller@cartChangeList');
-    Route::get('automation2/{uid}/condition/setting', 'Automation2Controller@conditionSetting');
-    Route::get('automation2/{uid}/operation/show', 'Automation2Controller@operationShow');
-    Route::match(['get', 'post'], 'automation2/{uid}/operation/edit', 'Automation2Controller@operationEdit');
-    Route::match(['get', 'post'], 'automation2/{uid}/operation/create', 'Automation2Controller@operationCreate');
-    Route::get('automation2/{uid}/operation/select', 'Automation2Controller@operationSelect');
-    Route::post('automation2/{uid}/wait-time', 'Automation2Controller@waitTime');
-    Route::get('automation2/{uid}/wait-time', 'Automation2Controller@waitTime');
-    Route::get('automation2/{uid}/last-saved', 'Automation2Controller@lastSaved');
-    Route::post('automation2/{uid}/subscribers/{subscriber_uid}/restart', 'Automation2Controller@subscribersRestart');
-    Route::post('automation2/{uid}/subscribers/{subscriber_uid}/remove', 'Automation2Controller@subscribersRemove');
-    Route::get('automation2/{uid}/subscribers/{subscriber_uid}/show', 'Automation2Controller@subscribersShow');
-    Route::get('automation2/{uid}/subscribers/list', 'Automation2Controller@subscribersList');
-    Route::get('automation2/{uid}/subscribers/list', 'Automation2Controller@subscribersList');
-    Route::get('automation2/{uid}/subscribers', 'Automation2Controller@subscribers');
-    Route::get('automation2/{uid}/template/{email_uid}/preview/content', 'Automation2Controller@templatePreviewContent');
-    Route::get('automation2/{uid}/template/{email_uid}/preview', 'Automation2Controller@templatePreview');
-    Route::match(['get', 'post'], 'automation2/{uid}/template/{email_uid}/plain-edit', 'Automation2Controller@templateEditPlain');
-    Route::get('automation2/{uid}/template/{email_uid}/builder-select', 'Automation2Controller@templateBuilderSelect');
-    Route::get('automation2/segment-select', 'Automation2Controller@segmentSelect');
+    Route::match(['get', 'post'], 'automation/condition/wait/custom', 'Automation2Controller@conditionWaitCustom');
+    Route::match(['get', 'post'], 'automation/{email_uid}/send-test-email', 'Automation2Controller@sendTestEmail');
+    Route::get('automation/{uid}/cart/items', 'Automation2Controller@cartItems');
+    Route::get('automation/{uid}/cart/list', 'Automation2Controller@cartList');
+    Route::get('automation/{uid}/cart/stats', 'Automation2Controller@cartStats');
+    Route::match(['get', 'post'], 'automation/{uid}/car/change-store', 'Automation2Controller@cartChangeStore');
+    Route::match(['get', 'post'], 'automation/{uid}/car/wait', 'Automation2Controller@cartWait');
+    Route::match(['get', 'post'], 'automation/{uid}/car/change-list', 'Automation2Controller@cartChangeList');
+    Route::get('automation/{uid}/condition/setting', 'Automation2Controller@conditionSetting');
+    Route::get('automation/{uid}/operation/show', 'Automation2Controller@operationShow');
+    Route::match(['get', 'post'], 'automation/{uid}/operation/edit', 'Automation2Controller@operationEdit');
+    Route::match(['get', 'post'], 'automation/{uid}/operation/create', 'Automation2Controller@operationCreate');
+    Route::get('automation/{uid}/operation/select', 'Automation2Controller@operationSelect');
+    Route::post('automation/{uid}/wait-time', 'Automation2Controller@waitTime');
+    Route::get('automation/{uid}/wait-time', 'Automation2Controller@waitTime');
+    Route::get('automation/{uid}/last-saved', 'Automation2Controller@lastSaved');
+    Route::post('automation/{uid}/subscribers/{subscriber_uid}/restart', 'Automation2Controller@subscribersRestart');
+    Route::post('automation/{uid}/subscribers/{subscriber_uid}/remove', 'Automation2Controller@subscribersRemove');
+    Route::get('automation/{uid}/subscribers/{subscriber_uid}/show', 'Automation2Controller@subscribersShow');
+    Route::get('automation/{uid}/subscribers/list', 'Automation2Controller@subscribersList');
+    Route::get('automation/{uid}/subscribers/list', 'Automation2Controller@subscribersList');
+    Route::get('automation/{uid}/subscribers', 'Automation2Controller@subscribers');
+    Route::get('automation/{uid}/template/{email_uid}/preview/content', 'Automation2Controller@templatePreviewContent');
+    Route::get('automation/{uid}/template/{email_uid}/preview', 'Automation2Controller@templatePreview');
+    Route::match(['get', 'post'], 'automation/{uid}/template/{email_uid}/plain-edit', 'Automation2Controller@templateEditPlain');
+    Route::get('automation/{uid}/template/{email_uid}/builder-select', 'Automation2Controller@templateBuilderSelect');
+    Route::get('automation/segment-select', 'Automation2Controller@segmentSelect');
 
-    Route::match(['get', 'post'], 'automation2/{uid}/template/{email_uid}/edit-classic', 'Automation2Controller@templateEditClassic');
-    Route::match(['get', 'post'], 'automation2/{uid}/contacts/copy-to-new-list', 'Automation2Controller@copyToNewList');
-    Route::post('automation2/{uid}/contacts/export', 'Automation2Controller@exportContacts');
+    Route::match(['get', 'post'], 'automation/{uid}/template/{email_uid}/edit-classic', 'Automation2Controller@templateEditClassic');
+    Route::match(['get', 'post'], 'automation/{uid}/contacts/copy-to-new-list', 'Automation2Controller@copyToNewList');
+    Route::post('automation/{uid}/contacts/export', 'Automation2Controller@exportContacts');
 
-    Route::get('automation2/{uid}/contacts/{contact_uid}/retry', 'Automation2Controller@contactRetry');
-    Route::post('automation2/{uid}/contacts/{contact_uid}/tag/remove', 'Automation2Controller@removeTag');
-    Route::match(['get', 'post'], 'automation2/{uid}/contacts/tag', 'Automation2Controller@tagContacts');
-    Route::match(['get', 'post'], 'automation2/{uid}/contact/{contact_uid}/tag', 'Automation2Controller@tagContact');
-    Route::post('automation2/{uid}/contact/{contact_uid}/remove', 'Automation2Controller@removeContact');
-    Route::get('automation2/{uid}/contact/{contact_uid}/profile', 'Automation2Controller@profile');
-    Route::get('automation2/{uid}/timeline/list', 'Automation2Controller@timelineList');
-    Route::get('automation2/{uid}/timeline', 'Automation2Controller@timeline');
-    Route::post('automation2/{uid}/contacts/list', 'Automation2Controller@contactsList');
-    Route::get('automation2/{uid}/contacts/list', 'Automation2Controller@contactsList');
-    Route::get('automation2/{uid}/contacts', 'Automation2Controller@contacts');
+    Route::get('automation/{uid}/contacts/{contact_uid}/retry', 'Automation2Controller@contactRetry');
+    Route::post('automation/{uid}/contacts/{contact_uid}/tag/remove', 'Automation2Controller@removeTag');
+    Route::match(['get', 'post'], 'automation/{uid}/contacts/tag', 'Automation2Controller@tagContacts');
+    Route::match(['get', 'post'], 'automation/{uid}/contact/{contact_uid}/tag', 'Automation2Controller@tagContact');
+    Route::post('automation/{uid}/contact/{contact_uid}/remove', 'Automation2Controller@removeContact');
+    Route::get('automation/{uid}/contact/{contact_uid}/profile', 'Automation2Controller@profile');
+    Route::get('automation/{uid}/timeline/list', 'Automation2Controller@timelineList');
+    Route::get('automation/{uid}/timeline', 'Automation2Controller@timeline');
+    Route::post('automation/{uid}/contacts/list', 'Automation2Controller@contactsList');
+    Route::get('automation/{uid}/contacts/list', 'Automation2Controller@contactsList');
+    Route::get('automation/{uid}/contacts', 'Automation2Controller@contacts');
 
-    Route::get('automation2/{uid}/insight', 'Automation2Controller@insight');
-    Route::post('automation2/{uid}/data/save', 'Automation2Controller@saveData');
-    Route::post('automation2/{uid}/update', 'Automation2Controller@update');
-    Route::get('automation2/{uid}/settings', 'Automation2Controller@settings');
+    Route::get('automation/{uid}/insight', 'Automation2Controller@insight');
+    Route::post('automation/{uid}/data/save', 'Automation2Controller@saveData');
+    Route::post('automation/{uid}/update', 'Automation2Controller@update');
+    Route::get('automation/{uid}/settings', 'Automation2Controller@settings');
 
-    Route::post('automation2/{uid}/template/{email_uid}/attachment/{attachment_uid}/remove', 'Automation2Controller@emailAttachmentRemove');
-    Route::get('automation2/{uid}/template/{email_uid}/attachment/{attachment_uid}', 'Automation2Controller@emailAttachmentDownload');
+    Route::post('automation/{uid}/template/{email_uid}/attachment/{attachment_uid}/remove', 'Automation2Controller@emailAttachmentRemove');
+    Route::get('automation/{uid}/template/{email_uid}/attachment/{attachment_uid}', 'Automation2Controller@emailAttachmentDownload');
 
-    Route::post('automation2/{uid}/template/{email_uid}/attachment', 'Automation2Controller@emailAttachmentUpload');
-    Route::post('automation2/{uid}/template/{email_uid}/remove-template', 'Automation2Controller@templateRemove');
-    Route::get('automation2/{uid}/template/{email_uid}/content', 'Automation2Controller@templateContent');
-    Route::match(['get', 'post'], 'automation2/{uid}/template/{email_uid}/edit', 'Automation2Controller@templateEdit');
-    Route::match(['get', 'post'], 'automation2/{uid}/template/{email_uid}/upload', 'Automation2Controller@templateUpload');
-    Route::match(['get', 'post'], 'automation2/{uid}/template/{email_uid}/layout', 'Automation2Controller@templateLayout');
-    Route::get('automation2/{uid}/template/{email_uid}/layout/list', 'Automation2Controller@templateLayoutList');
-    Route::get('automation2/{uid}/template/{email_uid}/create', 'Automation2Controller@templateCreate');
+    Route::post('automation/{uid}/template/{email_uid}/attachment', 'Automation2Controller@emailAttachmentUpload');
+    Route::post('automation/{uid}/template/{email_uid}/remove-template', 'Automation2Controller@templateRemove');
+    Route::get('automation/{uid}/template/{email_uid}/content', 'Automation2Controller@templateContent');
+    Route::match(['get', 'post'], 'automation/{uid}/template/{email_uid}/edit', 'Automation2Controller@templateEdit');
+    Route::match(['get', 'post'], 'automation/{uid}/template/{email_uid}/upload', 'Automation2Controller@templateUpload');
+    Route::match(['get', 'post'], 'automation/{uid}/template/{email_uid}/layout', 'Automation2Controller@templateLayout');
+    Route::get('automation/{uid}/template/{email_uid}/layout/list', 'Automation2Controller@templateLayoutList');
+    Route::get('automation/{uid}/template/{email_uid}/create', 'Automation2Controller@templateCreate');
 
-    Route::post('automation2/{uid}/email/{email_uid}/delete', 'Automation2Controller@emailDelete');
-    Route::match(['get', 'post'], 'automation2/{uid}/email/setup', 'Automation2Controller@emailSetup');
-    Route::match(['get', 'post'], 'automation2/{uid}/email/{email_uid}/confirm', 'Automation2Controller@emailConfirm');
-    Route::match(['get', 'post'], 'automation2/{uid}/email/{email_uid?}', 'Automation2Controller@email');
-    Route::match(['get', 'post'], 'automation2/{uid}/email/{email_uid}/template', 'Automation2Controller@emailTemplate');
-    Route::match(['get', 'post'], 'automation2/{uid}/action/edit', 'Automation2Controller@actionEdit');
-    Route::match(['get', 'post'], 'automation2/{uid}/trigger/edit', 'Automation2Controller@triggerEdit');
-    Route::post('automation2/{uid}/action/select', 'Automation2Controller@actionSelect');
-    Route::get('automation2/{uid}/action/select/confirm', 'Automation2Controller@actionSelectConfirm');
-    Route::get('automation2/{uid}/action/select', 'Automation2Controller@actionSelectPupop');
-    Route::post('automation2/{uid}/trigger/select', 'Automation2Controller@triggerSelect');
-    Route::get('automation2/{uid}/trigger/select', 'Automation2Controller@triggerSelectPupop');
-    Route::get('automation2/{uid}/trigger/select/confirm', 'Automation2Controller@triggerSelectConfirm');
-    Route::match(['get'], 'automation2/{uid}/edit', 'Automation2Controller@edit');
-    Route::match(['get', 'post'], 'automation2/wizard', 'Automation2Controller@wizard');
-    Route::get('automation2/wizard/trigger', 'Automation2Controller@wizardTrigger');
-    Route::match(['get', 'post'], 'automation2/wizard/trigger/option', 'Automation2Controller@wizardTriggerOption');
-    Route::get('automation2/wizard/trigger/option/field-select', 'Automation2Controller@wizardListFieldSelect');
-    Route::patch('automation2/disable', 'Automation2Controller@disable');
-    Route::patch('automation2/enable', 'Automation2Controller@enable');
-    Route::delete('automation2/delete', 'Automation2Controller@delete');
-    Route::get('automation2/listing', 'Automation2Controller@listing');
-    Route::get('automation2', 'Automation2Controller@index');
-    Route::get('automation2/{uid}/debug', 'Automation2Controller@debug');
-    Route::get('automation2/{automation}/{subscriber}/trigger', 'Automation2Controller@triggerNow');
+    Route::post('automation/{uid}/email/{email_uid}/delete', 'Automation2Controller@emailDelete');
+    Route::match(['get', 'post'], 'automation/{uid}/email/setup', 'Automation2Controller@emailSetup');
+    Route::match(['get', 'post'], 'automation/{uid}/email/{email_uid}/confirm', 'Automation2Controller@emailConfirm');
+    Route::match(['get', 'post'], 'automation/{uid}/email/{email_uid?}', 'Automation2Controller@email');
+    Route::match(['get', 'post'], 'automation/{uid}/email/{email_uid}/template', 'Automation2Controller@emailTemplate');
+    Route::match(['get', 'post'], 'automation/{uid}/action/edit', 'Automation2Controller@actionEdit');
+    Route::match(['get', 'post'], 'automation/{uid}/trigger/edit', 'Automation2Controller@triggerEdit');
+    Route::post('automation/{uid}/action/select', 'Automation2Controller@actionSelect');
+    Route::get('automation/{uid}/action/select/confirm', 'Automation2Controller@actionSelectConfirm');
+    Route::get('automation/{uid}/action/select', 'Automation2Controller@actionSelectPupop');
+    Route::post('automation/{uid}/trigger/select', 'Automation2Controller@triggerSelect');
+    Route::get('automation/{uid}/trigger/select', 'Automation2Controller@triggerSelectPupop');
+    Route::get('automation/{uid}/trigger/select/confirm', 'Automation2Controller@triggerSelectConfirm');
+    Route::match(['get'], 'automation/{uid}/edit', 'Automation2Controller@edit');
+    Route::match(['get', 'post'], 'automation/wizard', 'Automation2Controller@wizard');
+    Route::get('automation/wizard/trigger', 'Automation2Controller@wizardTrigger');
+    Route::match(['get', 'post'], 'automation/wizard/trigger/option', 'Automation2Controller@wizardTriggerOption');
+    Route::get('automation/wizard/trigger/option/field-select', 'Automation2Controller@wizardListFieldSelect');
+    Route::patch('automation/disable', 'Automation2Controller@disable');
+    Route::patch('automation/enable', 'Automation2Controller@enable');
+    Route::delete('automation/delete', 'Automation2Controller@delete');
+    Route::get('automation/listing', 'Automation2Controller@listing');
+    Route::get('automation', 'Automation2Controller@index');
+    Route::get('automation/{uid}/debug', 'Automation2Controller@debug');
+    Route::get('automation/{automation}/{subscriber}/trigger', 'Automation2Controller@triggerNow');
     Route::get('trigger/{id}', 'AutoTrigger@show');
     Route::get('trigger/{id}/check', 'AutoTrigger@check');
-    Route::get('automation2/{automation}/run', 'Automation2Controller@run');
+    Route::get('automation/{automation}/run', 'Automation2Controller@run');
+
+    Route::match(['get', 'post'], 'automation/emails/webhooks/{webhook_uid}/test', 'Automation2Controller@webhooksTest');
+    Route::get('automation/emails/webhooks/{webhook_uid}/sample/request', 'Automation2Controller@webhooksSampleRequest');
+    Route::post('automation/emails/webhooks/{webhook_uid}/delete', 'Automation2Controller@webhooksDelete');
+    Route::match(['get', 'post'], 'automation/emails/webhooks/{webhook_uid}/edit', 'Automation2Controller@webhooksEdit');
+    Route::get('automation/emails/{email_uid}/webhooks/list', 'Automation2Controller@webhooksList');
+    Route::get('automation/emails/{email_uid}/webhooks/link-select', 'Automation2Controller@webhooksLinkSelect');
+    Route::match(['get', 'post'], 'automation/emails/{email_uid}/webhooks/add', 'Automation2Controller@webhooksAdd');
+    Route::get('automation/emails/{email_uid}/webhooks', 'Automation2Controller@webhooks');
 
     // Sample UI/UX
     Route::get('sample', 'SamplesController@index');
@@ -962,6 +981,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
 
 
     // Account
+    Route::post('admin/account/change-theme-mode', 'AccountController@changeThemeMode');
     Route::get('admin/account/save-auto-theme-mode', 'AccountController@saveAutoThemeMode');
     Route::get('admin/account/leftbar/state', 'AccountController@leftbarState');
     Route::get('admin/account/api/renew', 'AccountController@renewToken');

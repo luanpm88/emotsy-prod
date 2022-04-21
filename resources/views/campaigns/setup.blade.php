@@ -168,6 +168,23 @@ forward_to_inbox
 							{!! trans('messages.campaign.plain_text.open_click_tracking_wanring') !!}
 						</div>
 					@endif
+					
+					@if ($campaign->template)
+						<div class="webhooks-management">
+							<div class="d-flex align-items-center mb-2">
+                                <h3 class="mb-0 me-2"> {{ trans('messages.webhooks') }}</h3>
+                                <span class="badge badge-info">{{ number_with_delimiter($campaign->campaignWebhooks()->count()) }}</span>
+                            </div>
+							<div class="d-flex">
+								<p>{{ trans('messages.webhooks.wording') }}</p>
+								<div class="ms-4">
+									<a href="javascript:;" class="btn btn-secondary manage_webhooks_but">
+										{{ trans('messages.webhooks.manage') }}
+									</a>
+								</div>
+							</div>
+						</div>
+					@endif
 				</div>
 			</div>
 		</div>
@@ -181,6 +198,39 @@ arrow_forward
 	<form>
 	
 	<script>
+		var CampaignsSetup = {
+			webhooksPopup: null,
+			getWebhooksPopup: function() {
+				if (this.webhooksPopup == null) {
+					this.webhooksPopup = new Popup({
+						url: '{{ action('CampaignController@webhooks', [
+							'uid' => $campaign->uid,
+						]) }}',
+						onclose: function() {
+							CampaignsSetup.refresh();
+						}
+					});
+				}
+
+				return this.webhooksPopup;
+			},
+
+			refresh: function() {
+                $.ajax({
+                    url: "",
+                    method: 'GET',
+                    data: {
+                        _token: CSRF_TOKEN
+                    },
+                    success: function (response) {
+                        var html = $('<div>').html(response).find('.webhooks-management').html();
+
+                        $('.webhooks-management').html(html);
+                    }
+                });
+            }
+		}
+
 		var CampaignsSetupNextButton = {
 			manager: null,
 
@@ -225,11 +275,15 @@ arrow_forward
 		}
 
 		$(function() {
+			// check next button
 			CampaignsSetupNextButton.check();
 
+			// manage webhooks button click
+			$('.manage_webhooks_but').on('click', function(e) {
+				e.preventDefault();
 
-
-
+				CampaignsSetup.getWebhooksPopup().load();
+			});
 
 			// @Legacy
 			// auto fill

@@ -751,3 +751,10 @@ body.mode-dark .new-price-item .time-box {
 body.mode-dark .new-price-item .price .p-amount {
     color: rgba(255,255,255,0.9);
 }
+body.mode-dark .but-change-theme-mode {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: rgba(255,255,255,0.7);
+}
+body.mode-dark .but-change-theme-mode:hover {
+    background: rgba(255,255,255,0.2);
+}

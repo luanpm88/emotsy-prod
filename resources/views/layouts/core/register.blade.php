@@ -38,8 +38,10 @@
 
 
 		<!-- Footer -->
-		<div class="footer text-muted">
-			{!! trans('messages.copy_right') !!}
+		<div class="d-flex justify-content-center pt-5">
+			<div class="footer text-muted text-center py-3">
+				{!! trans('messages.copy_right') !!}
+			</div>
 		</div>
 		<!-- /footer -->
 

@@ -9,6 +9,10 @@
         </div>
     @endif
     <div class="top-search-container"></div>
+    @include('layouts.core._quick_change_theme_mode', [
+        'mode' => Auth::user()->customer->theme_mode ? Auth::user()->customer->theme_mode : 'light',
+        'url' => action('AccountController@changeThemeMode'),
+    ])
 </div>
 
 <script>

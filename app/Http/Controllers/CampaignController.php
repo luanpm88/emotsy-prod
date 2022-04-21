@@ -981,7 +981,18 @@ class CampaignController extends Controller
      */
     public function open(Request $request)
     {
-        OpenLog::createFromRequest($request);
+        try {
+            // Record open log
+            $openLog = OpenLog::createFromRequest($request);
+
+            // Execute open callbacks registered for the campaign
+            if ($openLog->trackingLog && $openLog->trackingLog->campaign) {
+                $openLog->trackingLog->campaign->queueOpenCallbacks($openLog);
+            }
+        } catch (\Exception $ex) {
+            // do nothing
+        }
+
         return response()->file(public_path('images/transparent.gif'));
     }
 
@@ -990,7 +1001,12 @@ class CampaignController extends Controller
      */
     public function click(Request $request)
     {
-        $url = ClickLog::createFromRequest($request);
+        list($url, $log) = ClickLog::createFromRequest($request);
+
+        if ($log && $log->trackingLog && $log->trackingLog->campaign) {
+            $log->trackingLog->campaign->queueClickCallbacks($log);
+        }
+
         return redirect()->away($url);
     }
 
@@ -2124,6 +2140,182 @@ class CampaignController extends Controller
         return view('campaigns.previewAsList', [
             'subscribers' => $subscribers,
             'campaign' => $campaign,
+        ]);
+    }
+
+    public function webhooks(Request $request)
+    {
+        $campaign = Campaign::findByUid($request->uid);
+
+        // authorize
+        if (\Gate::denies('read', $campaign)) {
+            return $this->notAuthorized();
+        }
+
+        return view('campaigns.webhooks', [
+            'campaign' => $campaign,
+        ]);
+    }
+
+    public function webhooksList(Request $request)
+    {
+        $campaign = Campaign::findByUid($request->uid);
+
+        // authorize
+        if (\Gate::denies('read', $campaign)) {
+            return $this->notAuthorized();
+        }
+
+        return view('campaigns.webhooksList', [
+            'campaign' => $campaign,
+        ]);
+    }
+
+    public function webhooksAdd(Request $request)
+    {
+        $campaign = Campaign::findByUid($request->uid);
+        $webhook = $campaign->newWebhook();
+
+        // authorize
+        if (\Gate::denies('update', $campaign)) {
+            return $this->notAuthorized();
+        }
+
+        if ($request->isMethod('post')) {
+            list($webhook, $validator) = $webhook->createFromArray($request->all());
+
+            // redirect if fails
+            if ($validator->fails()) {
+                return response()->view('campaigns.webhooksAdd', [
+                    'campaign' => $campaign,
+                    'webhook' => $webhook,
+                    'errors' => $validator->errors(),
+                ], 400);
+            }
+
+            return response()->json([
+                'message' => trans('messages.webhook.added'),
+            ]);
+        }
+
+        return view('campaigns.webhooksAdd', [
+            'campaign' => $campaign,
+            'webhook' => $webhook,
+        ]);
+    }
+    
+    public function webhooksLinkSelect(Request $request)
+    {
+        $campaign = Campaign::findByUid($request->uid);
+
+        // authorize
+        if (\Gate::denies('read', $campaign)) {
+            return $this->notAuthorized();
+        }
+
+        return view('campaigns.webhooksLinkSelect', [
+            'campaign' => $campaign,
+        ]);
+    }
+
+    public function webhooksEdit(Request $request)
+    {
+        $webhook = \Acelle\Model\CampaignWebhook::findByUid($request->webhook_uid);
+
+        // authorize
+        if (\Gate::denies('update', $webhook->campaign)) {
+            return $this->notAuthorized();
+        }
+
+        if ($request->isMethod('post')) {
+            list($webhook, $validator) = $webhook->updateFromArray($request->all());
+
+            // redirect if fails
+            if ($validator->fails()) {
+                return response()->view('campaigns.webhooksEdit', [
+                    'webhook' => $webhook,
+                    'errors' => $validator->errors(),
+                ], 400);
+            }
+
+            return response()->json([
+                'message' => trans('messages.webhook.updated'),
+            ]);
+        }
+
+        return view('campaigns.webhooksEdit', [
+            'webhook' => $webhook,
+        ]);
+    }
+
+    public function webhooksDelete(Request $request)
+    {
+        $webhook = \Acelle\Model\CampaignWebhook::findByUid($request->webhook_uid);
+
+        // authorize
+        if (\Gate::denies('update', $webhook->campaign)) {
+            return $this->notAuthorized();
+        }
+
+        $webhook->delete();
+
+        return response()->json([
+            'message' => trans('messages.webhook.deleted'),
+        ]);
+    }
+
+    public function webhooksSampleRequest(Request $request)
+    {
+        $webhook = \Acelle\Model\CampaignWebhook::findByUid($request->webhook_uid);
+
+        // authorize
+        if (\Gate::denies('read', $webhook->campaign)) {
+            return $this->notAuthorized();
+        }
+
+        return view('campaigns.webhooksSampleRequest', [
+            'webhook' => $webhook,
+        ]);
+    }
+
+    public function webhooksTest(Request $request)
+    {
+        $webhook = \Acelle\Model\CampaignWebhook::findByUid($request->webhook_uid);
+        $result = null;
+
+        // authorize
+        if (\Gate::denies('read', $webhook->campaign)) {
+            return $this->notAuthorized();
+        }
+
+        if ($request->isMethod('post')) {
+            $client = new \GuzzleHttp\Client();
+
+            try {
+                $response = $client->request('GET', $webhook->endpoint, [
+                    'headers' => [
+                        "content-type" => "application/json"
+                    ],
+                    'body' => '{hello: "world"}',
+                    'http_errors' => false,
+                ]);
+
+                $result = [
+                    'status' => 'sent',
+                    'code' => $response->getStatusCode(),
+                    'message' => $response->getReasonPhrase(),
+                ];
+            } catch (\Exception $e) {
+                $result = [
+                    'status' => 'error',
+                    'message' => $e->getMessage(),
+                ];
+            }
+        }
+
+        return view('campaigns.webhooksTest', [
+            'webhook' => $webhook,
+            'result' => $result,
         ]);
     }
 }

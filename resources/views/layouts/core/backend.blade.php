@@ -3,6 +3,8 @@
 <head>
 	@include('layouts.core._head')
 
+	@include('layouts.core._favicon')
+
 	@include('layouts.core._script_vars')
 
 	@yield('head')
