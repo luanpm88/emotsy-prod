@@ -1637,7 +1637,7 @@
   'license.license_types' => 'License types',
   'license.no_license' => 'You do not enter a valid license yet. Please purchase a license and enter it in the form below to continue using the product',
   'license_guide' => '
-      <p>When you purchase Automail from Envato website, you are actually purchasing a license to use the product.<br>There are 2 types of license that are issued</p>
+      <p>Once you purchase Automail, you actually get a license to use the product.<br>There are 2 types of license that are issued</p>
       <h4>Regular License</h4>
       <p>
         All features are available, for a single end product which end users are NOT charged for
