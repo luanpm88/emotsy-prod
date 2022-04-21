@@ -31,6 +31,8 @@ file_upload
             <form enctype="multipart/form-data" action="{{ action('TemplateController@uploadTemplate') }}" method="POST" class="ajax_upload_form form-validate-jquery">
                 {{ csrf_field() }}
 
+                <input type="hidden" name="type" value="{{ Acelle\Model\Template::TYPE_EMAIL }}" />
+
                 @include('helpers.form_control', ['required' => true, 'type' => 'text', 'label' => trans('messages.template_name'), 'name' => 'name', 'value' => old('name'), 'rules' => ['name' => 'required']])
 
                 @include('helpers.form_control', ['required' => true, 'type' => 'file', 'label' => trans('messages.upload_file'), 'name' => 'file'])

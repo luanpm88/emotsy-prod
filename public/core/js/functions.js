@@ -794,3 +794,16 @@ function showAjaxDetailBox(items) {
         });
     });
 }
+
+function changeThemeMod(mode) {
+    $("body").removeClass (function (index, className) {
+        return (className.match (/(^|\s)mode-\S+/g) || []).join(' ');
+    });
+
+    $("body").addClass('mode-' + mode);
+
+    // auto mode
+    if (mode == 'auto') {
+        autoDetechDarkMode();
+    }
+}

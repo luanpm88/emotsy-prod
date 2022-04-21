@@ -68,7 +68,7 @@
     </p>
     <div class="d-flex align-items-top">
         <div class="px-4 py-2 border rounded-3 shadow-sm bg-light me-3" style="max-width:600px">
-            <pre class="m-0"><code class="connect-code">&lt;script id="AcelleConnectScript" type="text/javascript" src="{{ action('WebsiteController@connectJs', [
+            <pre class="m-0"><code class="connect-code">&lt;script id="ACXConnectScript" type="text/javascript" src="{{ action('WebsiteController@connectJs', [
                 'uid' => $website->uid,
             ]) }}"&gt;&lt;/script&gt;</code></pre>
         </div>

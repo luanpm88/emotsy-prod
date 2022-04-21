@@ -8,7 +8,7 @@
     >
         <div class="d-flex top-list-controls top-sticky-content mt-0">
             <div class="me-auto" style="display: flex;justify-content: center;width: 100%;">        
-                <div class="filter-box my-3">
+                <div class="filter-box mb-3 mt-2">
                     <span class="text-nowrap">
                         <input type="text" name="keyword" class="form-control search" value="{{ request()->keyword }}" placeholder="{{ trans('messages.type_to_search') }}" />
                         <span class="material-icons-round">

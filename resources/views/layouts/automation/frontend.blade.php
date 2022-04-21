@@ -3,7 +3,7 @@
 <head>
 	<title>@yield('title') - {{ \Acelle\Model\Setting::get("site_name") }}</title>
 
-	@include('layouts.core._favicon')
+	@include('layouts.core._favicon')  
 
 	@include('layouts._head')
 

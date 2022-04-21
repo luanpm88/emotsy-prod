@@ -44,7 +44,7 @@
                                         return $cat->name;
                                     })->join(', ') }}
                                 @else
-                                    <span style="color:#ea8c8c;text-decoration: underline;text-decoration-style: dashed;text-underline-offset:4px" class="xtooltip" title="{{ trans('messages.template.category.notice') }}">{{ trans('messages.template.category.no_category') }}</span>
+                                    <span style="color:#ea8c8c;text-decoration: underline;text-decoration-style: dashed;text-underline-offset:4px" class="xtooltip" title="{{ trans('messages.template.category.notice') }}">{{ trans('messages.template.category.no_category_set') }}</span>
                                 @endif
                             </a>
 

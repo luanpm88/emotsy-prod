@@ -11,7 +11,7 @@ class AudienceController extends Controller
         // stats
         $subscriberCount = $request->user()->customer->subscribers()->count();
         $subscribedCount = $request->user()->customer->subscribers()->subscribed()->count();
-        $activeContactPercent = ($subscribedCount / $subscriberCount);
+        $activeContactPercent = $subscriberCount > 0 ? ($subscribedCount / $subscriberCount) : 0;
 
         return view('audience.overview', [
             'subscriberCount' => $subscriberCount,

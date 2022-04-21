@@ -130,7 +130,7 @@ class WooCommerce extends Source
                 $p->save();
 
                 // upload image
-                if (isset($product["image"])) {
+                if ($product["image"]) {
                     $p->uploadImage($product["image"]);
                 }
 
