@@ -1852,7 +1852,7 @@
   'upgrade.wording.upgrade' => 'Your are running on version :current, a newer version is available: :new<br>Do you want to proceed with the upgrade?',
   'upgrade.title.current' => 'Your current version',
   'upgrade.title.upgrade_confirm' => 'Upgrade confirmation',
-  'upgrade.wording.upload' => 'Your are currently running on version :current. To upgrade your application, please download the latest build from <code><a target="_blank" href="https://codecanyon.net/item/acelle-email-marketing-web-application/17796082">codecanyon.net</a></code>, then you can find the upgrade package located at <code>[automail source]/upgrade/patch-4.x.x.bin</code>, upload it using the form below',
+  'upgrade.wording.upload' => 'Your are currently running on version :current. To upgrade your application, please download the latest build from <code><a target="_blank" href="https://automail.jp">automail.jp</a></code>, then you can find the upgrade package located at <code>[automail source]/upgrade/patch-4.x.x.bin</code>, upload it using the form below',
   'upgrade.alert.upgrade_success' => 'Congratulations! The system has successfully upgraded itself to a new version',
   'upgrade.alert.cancel_success' => 'Upgrade has been canceled',
   'upgrade.alert.upload_success' => 'A new version of the system was successfully uploaded. You can now review the changes and proceed with the upgrade',

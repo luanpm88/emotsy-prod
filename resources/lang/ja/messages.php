@@ -1822,7 +1822,7 @@
   'upgrade.wording.upgrade' => 'Your are running on version :current, a newer version is available: :new<br>Do you want to proceed with the upgrade?',
   'upgrade.title.current' => '現在のバージョン',
   'upgrade.title.upgrade_confirm' => 'アップグレードの確認',
-  'upgrade.wording.upload' => '現在、バージョン:currentで実行しています。 アプリケーションをアップグレードするには、<code><a target="_blank" href="https://codecanyon.net/item/acelle-email-marketing-web-application/17796082"> codecanyon.netから最新のビルドをダウンロードしてください。 </a> </code>の場合、アップグレードパッケージは<code> [automail source] /upgrade/patch-4.xxbin </code>にあり、以下のフォームを使用してアップロードします。',
+  'upgrade.wording.upload' => '現在、バージョン:currentで実行しています。 アプリケーションをアップグレードするには、<code><a target="_blank" href="https://automail.jp"> automail.jpから最新のビルドをダウンロードしてください。 </a> </code>の場合、アップグレードパッケージは<code> [automail source] /upgrade/patch-4.xxbin </code>にあり、以下のフォームを使用してアップロードします。',
   'upgrade.alert.upgrade_success' => 'おめでとう！ システムは正常に新しいバージョンにアップグレードされました',
   'upgrade.alert.cancel_success' => 'アップグレードはキャンセルされました',
   'upgrade.alert.upload_success' => 'システムの新しいバージョンが正常にアップロードされました。 これで、変更を確認してアップグレードを続行できます',
