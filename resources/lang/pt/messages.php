@@ -4186,4 +4186,7 @@
   'invoice.current' => 'Current invoice number (it will be increased by 1 when a new invoice added)',
   'invoice.format' => 'Invoice number format',
   'quick_theme_mode.click_change' => 'Click to toggle Light/Dark/Auto theme mode',
+  'template.category.no_category_set' => 'No category set',
+  'webhook.execute_open_callback' => 'Execute open callback',
+  'webhook.execute_click_callback' => 'Execute click callback',
 ) ?>
