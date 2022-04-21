@@ -63,6 +63,8 @@ class AccountController extends Controller
             if ($admin->save()) {
                 $request->session()->flash('alert-success', trans('messages.profile.updated'));
             }
+
+            return redirect()->action('Admin\AccountController@profile');
         }
 
         if (!empty($request->old())) {
