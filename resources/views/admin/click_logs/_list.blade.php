@@ -9,7 +9,6 @@
 			<th>{{ trans('messages.campaign') }}</th>
 			<th>{{ trans('messages.sending_server') }}</th>
 			<th>{{ trans('messages.created_at') }}</th>
-			<th></th>
 		</tr>
 		@foreach ($items as $key => $item)
 			<tr>
@@ -41,13 +40,6 @@
 					<span class="no-margin kq_search">{{ Tool::formatDateTime($item->created_at) }}</span>
 					<span class="text-muted second-line-mobile">{{ trans('messages.created_at') }}</span>
 				</td>
-				@if ($item->trackingLog->campaign->campaignWebhooks()->click()->count())
-                    <td class="text-end">
-                        <a href="javascript:;" class="btn btn-light">
-                            {{ trans('messages.webhook.execute_click_callback') }}
-                        </a>                   
-                    </td>
-                @endif
 			</tr>
 		@endforeach
 	</table>
