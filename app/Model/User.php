@@ -539,6 +539,7 @@ class User extends Authenticatable
      */
     public function uploadProfileImage(UploadedFile $file)
     {
+        uuplof;
         // Full path: /storage/app/users/000000/home/avatar
         $path = $this->getProfileImagePath();
 
@@ -553,6 +554,7 @@ class User extends Authenticatable
 
         // create thumbnails and replace the original image with the the small-sized thumbnail
         $img = \Image::make($path);
+        ss;
         $img->fit(120, 120)->save($path);
 
         return $path;

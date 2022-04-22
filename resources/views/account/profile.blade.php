@@ -43,9 +43,9 @@
                             <input type="hidden" name="_remove_image" value='' />
                         </div>
                         <div class="media-body text-center">
-                            <h5 class="media-heading text-semibold">{{ trans('messages.upload_your_photo') }}</h5>
-                            {{ trans('messages.photo_at_least', ["size" => "300px x 300px"]) }}
-                            <br /><br />
+                            <h5 class="media-heading text-semibold mt-2">{{ trans('messages.upload_your_photo') }}</h5>
+                            <p class="mb-0">{{ trans('messages.photo_at_least', ["size" => "300px x 300px"]) }}</p>
+                            <p>{!! trans('messages.image.upload_help', [ 'max' => \Acelle\Library\Tool::maxFileUploadInBytes()]) !!}</p>
                             <a href="#upload" onclick="$('input[name=image]').trigger('click')" class="btn btn-primary me-1"><span class="material-icons-outlined">
 file_download
 </span> {{ trans('messages.upload') }}</a>
