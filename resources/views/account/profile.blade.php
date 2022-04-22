@@ -36,10 +36,10 @@
                     <h3 class="text-semibold text-primary mb-4">{{ trans('messages.profile_photo') }}</h3>
                     <div class="media profile-image">
                         <div class="media-left">
-                            <a href="#" class="upload-media-container">
+                            <a href="#" class="upload-media-container" onclick="$('input[name=image]').trigger('click')">
                                 <img preview-for="image" empty-src="{{ URL::asset('images/placeholder.jpg') }}" src="{{ $user->getProfileImageUrl() }}" class="img-circle" alt="">
                             </a>
-                            <input type="file" name="image" class="file-styled previewable hide">
+                            <input type="file" name="image" class="file-styled previewable hide" accept="image/*">
                             <input type="hidden" name="_remove_image" value='' />
                         </div>
                         <div class="media-body text-center">
