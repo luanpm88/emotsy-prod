@@ -1258,7 +1258,7 @@ class CampaignController extends Controller
 
         $items = \Acelle\Model\OpenLog::search($request, $campaign)->paginate($request->per_page);
 
-        return view('admin.open_logs._list', [
+        return view('campaigns.open_log_list', [
             'items' => $items,
             'campaign' => $campaign,
         ]);
@@ -1298,7 +1298,7 @@ class CampaignController extends Controller
 
         $items = \Acelle\Model\ClickLog::search($request, $campaign)->paginate($request->per_page);
 
-        return view('admin.click_logs._list', [
+        return view('campaigns.click_log_list', [
             'items' => $items,
             'campaign' => $campaign,
         ]);
@@ -2316,6 +2316,85 @@ class CampaignController extends Controller
         return view('campaigns.webhooksTest', [
             'webhook' => $webhook,
             'result' => $result,
+        ]);
+    }
+
+    public function webhooksTestMessage(Request $request, $webhook_uid, $message_id)
+    {
+        $webhook = \Acelle\Model\CampaignWebhook::findByUid($request->webhook_uid);
+        $result = null;
+
+        // authorize
+        if (\Gate::denies('read', $webhook->campaign)) {
+            return $this->notAuthorized();
+        }
+
+        $client = new \GuzzleHttp\Client();
+
+        try {
+            $response = $client->request('GET', $webhook->endpoint, [
+                'headers' => [
+                    "content-type" => "application/json"
+                ],
+                'body' => '{hello: "world"}',
+                'http_errors' => false,
+            ]);
+
+            $result = [
+                'status' => 'sent',
+                'code' => $response->getStatusCode(),
+                'message' => $response->getReasonPhrase(),
+                'message_id' => $message_id,
+                'endpoint' => $webhook->endpoint,
+                'responseBody' => $response->getBody(),
+            ];
+        } catch (\Exception $e) {
+            $result = [
+                'status' => 'error',
+                'message' => $e->getMessage(),
+                'message_id' => $message_id,
+                'endpoint' => $webhook->endpoint,
+                'responseBody' => $response->getBody(),
+            ];
+        }
+
+        return view('campaigns.webhooksTestMessage', [
+            'webhook' => $webhook,
+            'result' => $result,
+        ]);
+    }
+
+    /**
+     * Click logs execute.
+     */
+    public function clickLogExecute(Request $request)
+    {
+        $campaign = Campaign::findByUid($request->uid);
+
+        // authorize
+        if (\Gate::denies('read', $campaign)) {
+            return $this->notAuthorized();
+        }
+
+        return view('campaigns.clickLogExecute', [
+            'campaign' => $campaign,
+        ]);
+    }
+
+    /**
+     * Open logs execute.
+     */
+    public function openLogExecute(Request $request)
+    {
+        $campaign = Campaign::findByUid($request->uid);
+
+        // authorize
+        if (\Gate::denies('read', $campaign)) {
+            return $this->notAuthorized();
+        }
+
+        return view('campaigns.openLogExecute', [
+            'campaign' => $campaign,
         ]);
     }
 }
