@@ -21,8 +21,6 @@
                                 <img width="30px" class="icon-img d-inline-block" src="{{ url('images/icons/condition.svg') }}" />
                             @elseif ($type == 'operation')
                                 <img width="30px" class="icon-img d-inline-block" src="{{ url('images/icons/operation.svg') }}" />
-                            @else
-                                <i class="material-icons-outlined">{{ trans('messages.automation.action.' . $type . '.icon') }}</i>
                             @endif
                         </div>
                         <div class="line-body">
