@@ -2490,9 +2490,6 @@
   'automation.action.send-an-email.desc' => 'Diseñe o envíe correos electrónicos automáticos o regulares a sus contactos.',
   'automation.action.wait.desc' => 'Diseñe o envíe correos electrónicos automáticos o regulares a sus contactos',
   'automation.action.condition.desc' => 'Diseñe o envíe correos electrónicos automáticos o regulares a sus contactos..',
-  'automation.action.send-an-email.icon' => 'envelope',
-  'automation.action.wait.icon' => 'alarm',
-  'automation.action.condition.icon' => 'code',
   'automation.action.wait.intro' => 'Configure su flujo de trabajo de automatización, espere un momento antes de continuar con la próxima acción.
       Cuánto tiempo se debe esperar. Elige a continuación.',
   'automation.action.send-an-email.intro' => 'Elija una de las siguientes condiciones para su flujo de trabajo. La plataforma evaluará la condición
@@ -2706,12 +2703,6 @@
   'automation.profile_timeline_head' => 'Cronograma',
   'automation.timline.intro' => 'Hay <span class="font-weight-semibold">:count</span> actividades registradas para su campaña.',
   'automation.all_activities' => 'Todas las actividades',
-  'automation.trigger.icon.welcome-new-subscriber' => 'accessibility_new',
-  'automation.trigger.icon.say-happy-birthday' => 'cake',
-  'automation.trigger.icon.subscriber-added-date' => 'playlist_add',
-  'automation.trigger.icon.specific-date' => 'calendar_today',
-  'automation.trigger.icon.say-goodbye-subscriber' => 'launch',
-  'automation.trigger.icon.api-3-0' => 'code',
   'automation.profile.remove_contact' => 'Eliminar contacto',
   'automation.profile.remove_contact.confirm' => 'Seguro de eliminar el contacto <span class="font-weight-semibold">:name</span> ',
   'automation.contact.deleted' => 'Contacto eliminado de la automatizacion.',
@@ -3121,8 +3112,6 @@
       monthly basis, on a particular day of the month',
   'automation.intro.monthly-recurring' => 'Schedule your campaign to automatically send on a
       monthly basis, on a particular day of the month',
-  'automation.trigger.icon.weekly-recurring' => 'update',
-  'automation.trigger.icon.monthly-recurring' => 'date_range',
   'days_of_week' => 'Days of week',
   'days_of_month' => 'Days of month',
   'day_of_week.0' => 'Sun',
@@ -3216,7 +3205,6 @@
   'authentication' => 'Authentication',
   'customer.bounce_feedback_rate' => 'Bounce/Feedback rate:',
   'customer.bounce_feedback_rate_desc' => 'Bounce / feedback rate refers to the percentage of email addresses in your subscriber list that didn\'t receive your message because it was returned by a recipient mail server or is reported as spam/abuse by the recipient.',
-  'automation.trigger.icon.woo-abandoned-cart' => '',
   'automation.trigger.woo-abandoned-cart' => 'Abandoned Cart Reminder',
   'automation.trigger.woo-abandoned-cart.desc' => 'Send your buyer a reminder if they left
       something in cart',
@@ -3517,7 +3505,6 @@
   'automation.back_to_overview' => 'Back to campaign overview',
   'automation.action.operation' => 'Operation',
   'automation.action.operation.desc' => 'Perform an operation like: update/copy/move/tag contacts',
-  'automation.action.operation.icon' => 'lnr lnr-sync',
   'automation.choose_an_operation' => 'Choose an operation',
   'automation.choose_an_operation.desc' => 'Perform an operation ont the contact
       who reachs this point of the automation',
@@ -4190,4 +4177,6 @@
   'template.category.no_category_set' => 'No category set',
   'webhook.execute_open_callback' => 'Execute open callback',
   'webhook.execute_click_callback' => 'Execute click callback',
+  'image.upload_help' => 'Acceptable file type is JPG/GIF/SVG<br/>
+    Server max file upload size is <strong class="text-bold">:max</strong>',
 ) ?>

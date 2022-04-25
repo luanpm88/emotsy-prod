@@ -2721,7 +2721,7 @@ class Campaign extends Model
     public function queueOpenCallbacks($log)
     {
         $callbacks = $this->campaignWebhooks()->open()->get();
-        foreach($callbacks as $callback) {
+        foreach ($callbacks as $callback) {
             ExecuteCampaignCallback::dispatch($callback, $log);
         }
     }
@@ -2733,7 +2733,7 @@ class Campaign extends Model
                           // ->join('campaign_links', 'campaign_webhooks.campaign_link_id', 'campaign_links.id')
                           // ->where('url', $log->url)
                           ->get();
-        foreach($callbacks as $callback) {
+        foreach ($callbacks as $callback) {
             ExecuteCampaignCallback::dispatch($callback, $log);
         }
     }
@@ -2741,7 +2741,7 @@ class Campaign extends Model
     public function queueUnsubscribeCallbacks($log)
     {
         $callbacks = $this->campaignWebhooks()->unsubscribe()->get();
-        foreach($callbacks as $callback) {
+        foreach ($callbacks as $callback) {
             ExecuteCampaignCallback::dispatch($callback, $log);
         }
     }
