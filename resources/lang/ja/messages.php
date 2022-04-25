@@ -2541,9 +2541,6 @@
   'automation.action.send-an-email.desc' => '自動化された電子メールまたは定期的な電子メールを設計するか、連絡先に送信します。',
   'automation.action.wait.desc' => '自動化された電子メールまたは定期的な電子メールを設計するか、連絡先に送信します。',
   'automation.action.condition.desc' => '自動化された電子メールまたは定期的な電子メールを設計するか、連絡先に送信します。',
-  'automation.action.send-an-email.icon' => '封筒',
-  'automation.action.wait.icon' => '警報',
-  'automation.action.condition.icon' => 'コード',
   'automation.action.wait.intro' => '自動化ワークフローを設定して、次のアクションに進む前にしばらく待ちます。
          どのくらい待ちますか、以下から選択してください。',
   'automation.action.send-an-email.intro' => 'ワークフローについて、以下の条件のいずれかを選択してください。 状態を評価します
@@ -2758,12 +2755,6 @@
   'automation.profile_timeline_head' => 'タイムライン',
   'automation.timline.intro' => 'There are <span class="font-weight-semibold">:count</span> activities recorded for your campaign.',
   'automation.all_activities' => 'すべての活動',
-  'automation.trigger.icon.welcome-new-subscriber' => 'accessibility_new',
-  'automation.trigger.icon.say-happy-birthday' => 'cake',
-  'automation.trigger.icon.subscriber-added-date' => 'playlist_add',
-  'automation.trigger.icon.specific-date' => 'calendar_today',
-  'automation.trigger.icon.say-goodbye-subscriber' => 'launch',
-  'automation.trigger.icon.api-3-0' => 'code',
   'automation.profile.remove_contact' => '連絡先を削除します',
   'automation.profile.remove_contact.confirm' => 'You are about to remove <span class="font-weight-semibold">:name</span> contact',
   'automation.contact.deleted' => '自動化の連絡先は正常に削除されました。',
@@ -3125,8 +3116,6 @@
        月次ベース、月の特定の日に',
   'automation.intro.monthly-recurring' => 'キャンペーンをスケジュールして、
        月次ベース、月の特定の日に',
-  'automation.trigger.icon.weekly-recurring' => 'update',
-  'automation.trigger.icon.monthly-recurring' => 'date_range',
   'days_of_week' => '曜日',
   'days_of_month' => '月の日',
   'day_of_week.0' => '日曜日',
@@ -3240,7 +3229,6 @@
   'subscription.status.change_plan_claimed' => '要求された変更計画',
   'automation.delay.custom' => 'Custom',
   'recurring_charge_before_days' => '前の自動定期料金',
-  'automation.trigger.icon.woo-abandoned-cart' => '',
   'automation.trigger.woo-abandoned-cart' => '放棄されたカートのリマインダー',
   'automation.trigger.woo-abandoned-cart.desc' => 'カートに商品を追加し、購入せずにサイトを離れた人にフォローアップメールを送信する',
   'automation.trigger.woo-abandoned-cart.intro' => 'カートに商品を追加し、チェックアウトの一部を完了した後、購入せずにサイトを離れた人にフォローアップメールを送信します',
@@ -3502,7 +3490,6 @@
   'or_click_choose_another_method' => 'または、ここをクリックして別の支払い方法を選択してください',
   'automation.action.operation' => 'Operation',
   'automation.action.operation.desc' => 'Perform an operation like: update/copy/move/tag contacts',
-  'automation.action.operation.icon' => 'lnr lnr-sync',
   'automation.choose_an_operation' => '操作を選択してください',
   'automation.choose_an_operation.desc' => 'Perform an operation ont the contact
       who reachs this point of the automation',
@@ -4177,4 +4164,6 @@
   'template.category.no_category_set' => 'No category set',
   'webhook.execute_open_callback' => 'Execute open callback',
   'webhook.execute_click_callback' => 'Execute click callback',
+  'image.upload_help' => 'Acceptable file type is JPG/GIF/SVG<br/>
+    Server max file upload size is <strong class="text-bold">:max</strong>',
 ) ?>
