@@ -387,7 +387,8 @@ class SendingServerElasticEmail extends SendingServer
             $name = preg_split('/\s+/', $domain['domain'])[0];
 
             // Notice that verify:true means NOT verified while verify:false => already verified!!!! STUPID!
-            $identities[$name] = ['VerificationStatus' => !$domain['verify']];
+            // Use DKIM instead
+            $identities[$name] = ['VerificationStatus' => ($domain['dkim'] == true)];
         }
 
         $identityStore = $this->getIdentityStore();

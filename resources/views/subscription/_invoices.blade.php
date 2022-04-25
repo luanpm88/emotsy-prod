@@ -137,11 +137,13 @@
                                     </span>
                                 </td>
                                 <td>
-                                    <a class="btn btn-secondary text-nowrap" target="_blank" href="{{ action('InvoiceController@download', [
-                                        'uid' => $invoice->uid,
-                                    ]) }}">
-                                        <i class="material-icons-outlined me-1">download</i>{{ trans('messages.download') }}
-                                    </a>
+                                    @if ($invoice->isPaid())
+                                        <a class="btn btn-secondary text-nowrap" target="_blank" href="{{ action('InvoiceController@download', [
+                                            'uid' => $invoice->uid,
+                                        ]) }}">
+                                            <i class="material-icons-outlined me-1">download</i>{{ trans('messages.download') }}
+                                        </a>
+                                    @endif
                                 </td>
                             </tr>
                         @empty
