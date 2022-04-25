@@ -123,16 +123,16 @@
         },
         {
             "name": "aws/aws-php-sns-message-validator",
-            "version": "1.6.0",
+            "version": "1.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-php-sns-message-validator.git",
-                "reference": "ba6810807ac8936317021ccc14cdb1297d525ae1"
+                "reference": "e494478af24470d8051bc7244833f1056378d0b7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-php-sns-message-validator/zipball/ba6810807ac8936317021ccc14cdb1297d525ae1",
-                "reference": "ba6810807ac8936317021ccc14cdb1297d525ae1",
+                "url": "https://api.github.com/repos/aws/aws-php-sns-message-validator/zipball/e494478af24470d8051bc7244833f1056378d0b7",
+                "reference": "e494478af24470d8051bc7244833f1056378d0b7",
                 "shasum": ""
             },
             "require": {
@@ -175,22 +175,22 @@
             "support": {
                 "forum": "https://forums.aws.amazon.com/forum.jspa?forumID=80",
                 "issues": "https://github.com/aws/aws-sns-message-validator/issues",
-                "source": "https://github.com/aws/aws-php-sns-message-validator/tree/master"
+                "source": "https://github.com/aws/aws-php-sns-message-validator/tree/1.7.0"
             },
-            "time": "2019-11-08T16:44:11+00:00"
+            "time": "2022-04-22T18:26:26+00:00"
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.220.2",
+            "version": "3.220.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "6687dd0f1f4d121b2de36a202099e702240235c3"
+                "reference": "fbb2d7349916c15758ee02dfd001a714883a9adf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/6687dd0f1f4d121b2de36a202099e702240235c3",
-                "reference": "6687dd0f1f4d121b2de36a202099e702240235c3",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/fbb2d7349916c15758ee02dfd001a714883a9adf",
+                "reference": "fbb2d7349916c15758ee02dfd001a714883a9adf",
                 "shasum": ""
             },
             "require": {
@@ -266,9 +266,9 @@
             "support": {
                 "forum": "https://forums.aws.amazon.com/forum.jspa?forumID=80",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
-                "source": "https://github.com/aws/aws-sdk-php/tree/3.220.2"
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.220.3"
             },
-            "time": "2022-04-21T18:18:21+00:00"
+            "time": "2022-04-22T18:18:31+00:00"
         },
         {
             "name": "braintree/braintree_php",
