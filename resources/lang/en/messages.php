@@ -2590,9 +2590,6 @@
   'automation.action.send-an-email.desc' => 'Send an automated email',
   'automation.action.wait.desc' => 'Add a wait time before proceeding with a next action. For example: send a series of email, but only one per day',
   'automation.action.condition.desc' => 'Take actions when a condition is met. For example: a previous email is opened or clicked',
-  'automation.action.send-an-email.icon' => 'forward_to_inbox',
-  'automation.action.wait.icon' => 'alarm',
-  'automation.action.condition.icon' => 'code',
   'automation.action.wait.intro' => 'Set up your automation workflow to wait for a while when contacts reach this point of the automationw workflow. You can set up how long to have it wait before proceeding with next actions',
   'automation.action.send-an-email.intro' => 'Send an email to your contacts who reach this point of the automation workflow. Set up a perfonalized email and have it ready to shoot',
   'automation.action.condition.intro' => 'Set a waiting time until a previous email is opened or clicked. We will evaluate the condition
@@ -3544,7 +3541,6 @@
   'or_click_choose_another_method' => 'Or click here to choose another payment method',
   'automation.action.operation' => 'Operation',
   'automation.action.operation.desc' => 'Perform an operation like: update/copy/move/tag contacts',
-  'automation.action.operation.icon' => 'alt_route',
   'automation.choose_an_operation' => 'Choose an operation',
   'automation.choose_an_operation.desc' => 'Perform an operation ont the contact
       who reachs this point of the automation',
