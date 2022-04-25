@@ -4166,5 +4166,5 @@
   'webhook.execute_open_callback' => 'Execute open callback',
   'webhook.execute_click_callback' => 'Execute click callback',
   'image.upload_help' => 'Acceptable file type is JPG/GIF/SVG<br/>
-    Server max file upload size is <strong class="text-bold">:max</strong>',
+    The current max upload file size is <strong class="text-bold">:max</strong>',
 ) ?>
