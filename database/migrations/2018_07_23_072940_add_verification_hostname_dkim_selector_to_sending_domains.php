@@ -13,7 +13,7 @@ class AddVerificationHostnameDkimSelectorToSendingDomains extends Migration
     public function up()
     {
         Schema::table('sending_domains', function (Blueprint $table) {
-            $table->string('verification_hostname')->default('acellemail');
+            $table->string('verification_hostname')->default('emarketing');
             $table->string('dkim_selector')->default('mailer');
         });
     }
