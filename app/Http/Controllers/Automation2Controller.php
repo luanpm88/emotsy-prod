@@ -1122,7 +1122,7 @@ class Automation2Controller extends Controller
         if ($request->isMethod('post')) {
             $email->uploadTemplate($request);
 
-            // return 
+            // return
             return response()->json([
                 'status' => 'success',
                 'message' => trans('messages.automation.email.template.uploaded')
@@ -2462,7 +2462,7 @@ class Automation2Controller extends Controller
     public function webhooks(Request $request)
     {
         $email = Email::findByUid($request->email_uid);
-        
+
         // authorize
         if (\Gate::denies('view', $email->automation)) {
             return $this->notAuthorized();
@@ -2519,7 +2519,7 @@ class Automation2Controller extends Controller
             'webhook' => $webhook,
         ]);
     }
-    
+
     public function webhooksLinkSelect(Request $request)
     {
         $email = Email::findByUid($request->email_uid);

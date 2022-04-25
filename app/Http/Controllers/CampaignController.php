@@ -2203,7 +2203,7 @@ class CampaignController extends Controller
             'webhook' => $webhook,
         ]);
     }
-    
+
     public function webhooksLinkSelect(Request $request)
     {
         $campaign = Campaign::findByUid($request->uid);
