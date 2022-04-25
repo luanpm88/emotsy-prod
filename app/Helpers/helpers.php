@@ -994,3 +994,40 @@ function getDateTimeFormatCode($type)
 
     return $format[$type];
 }
+
+function triggerIcon($type)
+{
+    switch($type) {
+        case 'welcome-new-subscriber':
+            $icon = 'accessibility_new';
+            break;
+        case 'say-happy-birthday':
+            $icon = 'cake';
+            break;
+        case 'subscriber-added-date':
+            $icon = 'playlist_add';
+            break;
+        case 'specific-date':
+            $icon = 'calendar_today';
+            break;
+        case 'say-goodbye-subscriber':
+            $icon = 'launch';
+            break;
+        case 'api-3-0':
+            $icon = 'code';
+            break;
+        case 'weekly-recurring':
+            $icon = 'code';
+            break;
+        case 'monthly-recurring':
+            $icon = 'date_range';
+            break;
+        case 'woo-abandoned-cart':
+            $icon = '';
+            break;
+        default:
+            $icon = 'restart_alt';
+    }
+
+    return $icon;
+}
