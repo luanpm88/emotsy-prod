@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">    
 
-    @include('layouts.core._favicon')
+    @include('layouts.core._favicon')  
 
     <!-- BuilderJS CORE -->
     <link href="{{ URL::asset('builder/builder.css') }}" rel="stylesheet" type="text/css">

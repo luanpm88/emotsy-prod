@@ -50,6 +50,7 @@ use Acelle\Library\Traits\TrackJobs;
 use Throwable;
 use Acelle\Library\Traits\HasUid;
 use Acelle\Events\CampaignUpdated;
+use Acelle\Jobs\ExecuteCampaignCallback;
 
 class Campaign extends Model
 {
@@ -109,6 +110,14 @@ class Campaign extends Model
     public function campaignLinks()
     {
         return $this->hasMany('Acelle\Model\CampaignLink');
+    }
+
+    /**
+     * Campaign has many campaign webhooks.
+     */
+    public function campaignWebhooks()
+    {
+        return $this->hasMany('Acelle\Model\CampaignWebhook');
     }
 
     /**
@@ -2699,5 +2708,46 @@ class Campaign extends Model
         });
 
         return $validator;
+    }
+
+    public function newWebhook()
+    {
+        $webhook = new \Acelle\Model\CampaignWebhook();
+        $webhook->campaign_id = $this->id;
+
+        return $webhook;
+    }
+
+    public function queueOpenCallbacks($log)
+    {
+        $callbacks = $this->campaignWebhooks()->open()->get();
+        foreach ($callbacks as $callback) {
+            ExecuteCampaignCallback::dispatch($callback, $log);
+        }
+    }
+
+    public function queueClickCallbacks($log)
+    {
+        $callbacks = $this->campaignWebhooks()
+                          ->click()
+                          // ->join('campaign_links', 'campaign_webhooks.campaign_link_id', 'campaign_links.id')
+                          // ->where('url', $log->url)
+                          ->get();
+        foreach ($callbacks as $callback) {
+            ExecuteCampaignCallback::dispatch($callback, $log);
+        }
+    }
+
+    public function queueUnsubscribeCallbacks($log)
+    {
+        $callbacks = $this->campaignWebhooks()->unsubscribe()->get();
+        foreach ($callbacks as $callback) {
+            ExecuteCampaignCallback::dispatch($callback, $log);
+        }
+    }
+
+    public function openWebhooks()
+    {
+        return $this->campaignWebhooks()->open();
     }
 }

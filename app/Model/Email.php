@@ -23,7 +23,7 @@ class Email extends Model
     use HasTemplate;
     use HasUid;
 
-    // Campaign types
+    // Email types
     public const TYPE_REGULAR = 'regular';
     public const TYPE_PLAIN_TEXT = 'plain-text';
 
@@ -84,6 +84,11 @@ class Email extends Model
         return $this->hasMany('Acelle\Model\DeliveryAttempt');
     }
 
+    public function emailWebhooks()
+    {
+        return $this->hasMany('Acelle\Model\EmailWebhook');
+    }
+
     /**
      * Get email's associated tracking domain.
      */
@@ -93,7 +98,7 @@ class Email extends Model
     }
 
     /**
-     * Get campaign's default mail list.
+     * Get email's default mail list.
      */
     public function defaultMailList()
     {
@@ -290,5 +295,13 @@ class Email extends Model
     public function logger()
     {
         return $this->automation->logger();
+    }
+
+    public function newWebhook()
+    {
+        $webhook = new \Acelle\Model\EmailWebhook();
+        $webhook->email_id = $this->id;
+
+        return $webhook;
     }
 }
