@@ -3544,9 +3544,6 @@
   'automation.choose_an_operation' => 'Choose an operation',
   'automation.choose_an_operation.desc' => 'Perform an operation ont the contact
       who reachs this point of the automation',
-  'automation.operation.icon.update_contact' => 'people',
-  'automation.operation.icon.tag_contact' => 'check',
-  'automation.operation.icon.copy_contact' => 'copy',
   'automation.operation.update_contact' => 'Update contact\'s attributes',
   'automation.operation.update_contact.desc' => 'Update contact\'s attributes like: first name, last name,... or any
       custom field your contact has',
