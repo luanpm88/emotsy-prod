@@ -1,4 +1,6 @@
 <?php return array (
+  'widget.abandoned_cart' => 'Cart',
+  'widget.rss' => 'RSS',
   'widget.product' => 'Product',
   'widget.product_list' => 'Product List',
   'cell_options' => 'Columns layout',
