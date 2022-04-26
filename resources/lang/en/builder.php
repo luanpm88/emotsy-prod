@@ -1,4 +1,6 @@
 <?php return array (
+  'widget.product' => 'Product',
+  'widget.product_list' => 'Product List',
   'cell_options' => 'Columns layout',
   'container_options' => 'Container Options',
   'drag_items_here' => 'Drag items here',
