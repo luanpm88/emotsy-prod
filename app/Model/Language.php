@@ -379,7 +379,7 @@ class Language extends Model
         $langFile = join_paths($source['translation_folder'], $this->code, $source['file_name']);
 
         if (!file_exists($originFile)) {
-            throw new Exception('Original translation file does not exist. Make sure it is registered correctly. Or, if it is a local development environment, just make a "default" folder by copying "resources/lang/en" ==> "resources/lang/default": '.$originFile);
+            throw new Exception('Original translation file does not exist: '.$originFile.'. Make sure it is registered correctly. Or, if it is a local development environment, just make a "default" folder by copying "resources/lang/en" ==> "resources/lang/default": '.$originFile);
         }
 
         // If the originFile is also the current language's file
