@@ -1,4 +1,7 @@
 <?php return array (
+  'widget.click_thumb_to_insert' => 'Please click on the thumbnail to select the corresponding image',
+  'widget.template_content' => 'Template Content',
+  'widget.e_commerce' => 'E-Commerce',
   'widget.abandoned_cart' => 'Cart',
   'widget.rss' => 'RSS',
   'widget.product' => 'Product',
