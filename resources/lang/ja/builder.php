@@ -578,4 +578,5 @@
   'background_image.position' => 'Position',
   'background_image.size' => 'Size',
   'background_image.repeat' => 'Repeat',
+  'wpanel.widgets.boxed_text.title' => 'Boxed Text',
 ) ?>
