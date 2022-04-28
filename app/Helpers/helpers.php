@@ -244,6 +244,8 @@ function language_code()
 
     if (isset($_COOKIE['last_language_code'])) {
         $language_code = $_COOKIE['last_language_code'];
+    } elseif (app()->getLocale()) {
+        $language_code = app()->getLocale();
     } elseif (is_object($default_language)) {
         $language_code = $default_language->code;
     } else {
@@ -997,7 +999,7 @@ function getDateTimeFormatCode($type)
 
 function triggerIcon($type)
 {
-    switch($type) {
+    switch ($type) {
         case 'welcome-new-subscriber':
             $icon = 'accessibility_new';
             break;

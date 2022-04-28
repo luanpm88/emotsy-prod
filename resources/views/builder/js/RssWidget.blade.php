@@ -9,13 +9,13 @@
             // default button html
             this.setButtonHtml(`
                 <div class="_1content widget-text">
-                    <div class="panel__body woo-panel__body" title="{{ trans('messages.automation.woo_item') }}">
+                    <div class="panel__body woo-panel__body" title="{{ trans('builder.widget.rss') }}">
                         <div class="image-drag">
                             <div ng-bind-html="::getModuleIcon(module)" class="ng-binding product-list-widget">
                                 <img builder-element style="width:50px;opacity:0.5" src="{{ url('images/rss_widget.svg') }}" width="100%" />
                             </div>
                         </div>
-                        <div class="body__title">{{ trans('messages.widget.rss') }}</div>
+                        <div class="body__title">{{ trans('builder.widget.rss') }}</div>
                     </div>
                 </div>
             `);

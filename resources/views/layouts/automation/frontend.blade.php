@@ -21,11 +21,6 @@
 			LANG_CODE = '{{ Auth::user()->customer->getLanguageCodeFull() }}';
 		</script>
 	@endif
-
-	<script>
-		$.cookie('last_language_code', '{{ Auth::user()->customer->getLanguageCode() }}');
-	</script>
-
 </head>
 
 <body class="navbar-top color-scheme-{{ Auth::user()->customer->getColorScheme() }}">

@@ -128,10 +128,6 @@
 	@endif
 
 	<script>
-		$.cookie('last_language_code', '{{ Auth::user()->customer->getLanguageCode() }}');
-	</script>
-
-	<script>
 		$( document ).ajaxError(function( event, request, settings ) {
 			if(typeof(settings.globalError) != 'undefined' || settings.globalError == false) {
 				return;
