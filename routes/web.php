@@ -880,6 +880,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::post('admin/settings/upgrade/upload', 'SettingController@uploadApplicationPatch');
     Route::get('admin/settings/upgrade', 'SettingController@upgrade');
     Route::get('u', 'SettingController@upgrade'); // shortcut to upgrade page
+    Route::match(['get','post'], 'q', 'SettingController@upgradeFromUrl');  // shortcut to quick upgrade page
     Route::post('admin/settings/license', 'SettingController@license');
     Route::get('admin/settings/license', 'SettingController@license');
     Route::match(['get','post'], 'admin/settings/mailer/test', 'SettingController@mailerTest');
