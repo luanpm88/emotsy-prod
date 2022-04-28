@@ -34,8 +34,8 @@
   'youtube.change_video' => 'Change Video',
   'youtube.please_enter_url' => 'Please enter the YouTube url',
   'youtube.save' => 'Save',
-  'youtube.enter_youtube_url' => 'Enter your YouTube URL here. \
-      You can get the URL by copying from browser address bar or finding it in YouTube share dialog \
+  'youtube.enter_youtube_url' => 'Enter your YouTube URL here. \\
+      You can get the URL by copying from browser address bar or finding it in YouTube share dialog \\
       when playing the video on YouTube',
   'youtube' => 'Youtube',
   'youtube_video.add_button' => 'Click here to add YouTube video',
@@ -53,11 +53,10 @@
   'section.general' => 'General',
   'section.form_elements' => 'Form Elements',
   'background' => 'Background',
-  'block_options' => 'Block Options',
+  'block_options' => 'BLOCK OPTIONS',
   'general' => 'General',
   'action_group' => 'Action',
   'field_validation' => 'Field validation',
-  'background' => 'Background',
   'background_image' => 'Background image',
   'background_image.image' => 'Image',
   'background_image.color' => 'Background color',
@@ -522,7 +521,6 @@
   'link_color' => 'Link color',
   'line_height' => 'Line height',
   'action' => 'ACTION',
-  'block_options' => 'BLOCK OPTIONS',
   'text_color' => 'Text color',
   'image' => 'Image ',
   'align' => 'Alignment ',
@@ -554,7 +552,6 @@
   'jumbotron' => 'Jumbotron',
   'meterial' => 'Meterial',
   'navbar' => 'Navbar',
-  'pricing_table' => 'Pricing Table',
   'services_list' => 'Services List',
   'image_grid' => 'Image Grid',
   'user_profile' => 'User Profile',
