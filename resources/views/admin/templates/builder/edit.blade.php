@@ -159,8 +159,8 @@
                     var thisEditor = this;
 
                     // product widgets
-                    this.addContentWidget(new ProductListWidget(), 0, 'ProductCommerce');
-                    this.addContentWidget(new ProductWidget(), 0, 'ProductCommerce');
+                    this.addContentWidget(new ProductListWidget(), 0, '{{ trans('builder.widget.e_commerce') }}');
+                    this.addContentWidget(new ProductWidget(), 0, '{{ trans('builder.widget.e_commerce') }}');
 
                     // Rss widget
                     this.addWidget(new RssWidget(), 'content', 3);
@@ -173,7 +173,7 @@
                         var widgets = WidgetManager.init();
 
                         widgets.forEach(function(widget) {
-                            thisEditor.addContentWidget(widget, 0, 'Template Content');
+                            thisEditor.addContentWidget(widget, 0, '{{ trans('builder.widget.template_content') }}');
                         });
                     }
                 }
@@ -182,7 +182,7 @@
             editor.init();
 
             //
-            $(document).on('click', '.filemanager-ok', function(e) {alert('Please click on the thumbnail to select the corresponding image');})
+            $(document).on('click', '.filemanager-ok', function(e) {alert('{{ trans('builder.widget.click_thumb_to_insert') }}');})
             $(document).on('click', '.filemanager-cancel', function(e) {$('.PopUpCloseButton').click();})
 
             //

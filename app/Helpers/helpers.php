@@ -241,7 +241,7 @@ function language_code()
 {
     // Get default language code from setting
     $default_language = \Acelle\Model\Language::find(\Acelle\Model\Setting::get('default_language'));
-    
+
     if (isset($_COOKIE['last_language_code'])) {
         $language_code = $_COOKIE['last_language_code'];
     } elseif (app()->getLocale()) {
@@ -999,7 +999,7 @@ function getDateTimeFormatCode($type)
 
 function triggerIcon($type)
 {
-    switch($type) {
+    switch ($type) {
         case 'welcome-new-subscriber':
             $icon = 'accessibility_new';
             break;
