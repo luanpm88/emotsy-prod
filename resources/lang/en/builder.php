@@ -1,4 +1,5 @@
 <?php return array (
+  'wpanel.widgets.boxed_text.title' => 'Boxed Text',
   'widget.click_thumb_to_insert' => 'Please click on the thumbnail to select the corresponding image',
   'widget.template_content' => 'Template Content',
   'widget.e_commerce' => 'E-Commerce',

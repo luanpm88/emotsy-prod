@@ -1,5 +1,5 @@
 <?php return array (
-  'block_container' => 'Block',
+  'block_container' => 'ブロック',
   'export_template_confirm' => 'エクスポートする前に現在のデザインを保存しますか？',
   'image_link' => '画像リンク',
   'image_url' => '画像のURL',
@@ -578,4 +578,5 @@
   'background_image.position' => 'ポジション',
   'background_image.size' => 'サイズ',
   'background_image.repeat' => '繰り返す',
+  'wpanel.widgets.boxed_text.title' => 'テキストボックス',
 ) ?>
