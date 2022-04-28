@@ -3466,9 +3466,6 @@
   'automation.action.operation.desc' => 'Führen Sie einen Vorgang aus wie: Kontakte aktualisieren/kopieren/verschieben/markieren',
   'automation.choose_an_operation' => 'Wählen Sie eine Operation',
   'automation.choose_an_operation.desc' => 'Führen Sie eine Operation an dem Kontakt durch, der diesen Punkt der Automatisierung erreicht hat',
-  'automation.operation.icon.update_contact' => 'Menschen',
-  'automation.operation.icon.tag_contact' => 'prüfen',
-  'automation.operation.icon.copy_contact' => 'Kopieren',
   'automation.operation.update_contact' => 'Attribute des Kontakts aktualisieren',
   'automation.operation.update_contact.desc' => 'Aktualisieren Sie die Attribute des Kontakts wie: Vorname, Nachname, ... oder alle
        benutzerdefinierte Felder, die Ihr Kontakt hat',
