@@ -579,4 +579,8 @@
   'background_image.size' => 'Size',
   'background_image.repeat' => 'Repeat',
   'wpanel.widgets.boxed_text.title' => 'Boxed Text',
+  'starting' => 'Starting...',
+  'loading_template' => 'Loading template...',
+  'finalizing' => 'Finalizing...',
+  'scripts_loaded' => 'Scripts were loaded...',
 ) ?>
