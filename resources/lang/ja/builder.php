@@ -579,4 +579,8 @@
   'background_image.size' => 'サイズ',
   'background_image.repeat' => '繰り返す',
   'wpanel.widgets.boxed_text.title' => 'テキストボックス',
+  'starting' => '起動...',
+  'loading_template' => 'テンプレートを読み込んでいます...',
+  'finalizing' => 'ファイナライズ...',
+  'scripts_loaded' => 'スクリプトの読み込み...',
 ) ?>

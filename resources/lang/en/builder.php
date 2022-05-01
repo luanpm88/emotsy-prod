@@ -1,4 +1,8 @@
 <?php return array (
+  'starting' => 'Starting...',
+  'loading_template' => 'Loading template...',
+  'finalizing' => 'Finalizing...',
+  'scripts_loaded' => 'Scripts were loaded...',
   'wpanel.widgets.boxed_text.title' => 'Boxed Text',
   'widget.click_thumb_to_insert' => 'Please click on the thumbnail to select the corresponding image',
   'widget.template_content' => 'Template Content',
