@@ -63,34 +63,35 @@
                                 <button type="button" class="btn btn-primary set-default-rate px-3">{{ trans('messages.tax.set') }}</button>
                             </div>
                         </div>
-                        <hr>
 
-                        <p class="mt-4">
-                            {{ trans('messages.tax.country_taxes.intro') }}
-                        </p>
+                        @if (!config('custom.japan'))
+                            <hr>
+                            <p class="mt-4">
+                                {{ trans('messages.tax.country_taxes.intro') }}
+                            </p>
+                            <div class="mt-4 d-flex align-items-center">
+                                <div class="me-5 fw-600">
+                                    <span>{{ trans('messages.tax.by_country') }}</span>
+                                </div>
+                                <div class="form-group-mb-0 me-3" style="width:200px">
+                                    @include('helpers.form_control', [
+                                        'type' => 'select',
+                                        'name' => 'country_id',
+                                        'label' => '',
+                                        'value' => '',
+                                        'options' => Acelle\Model\Country::getSelectOptions(),
+                                        'include_blank' => config('custom.japan') ? false : trans('messages.choose'),
+                                    ])
+                                </div>
+                                <div>
+                                    <button type="button" class="btn btn-secondary add-country-tax px-3">{{ trans('messages.tax.country.add') }}</button>
+                                </div>
+                            </div>
 
-                        <div class="mt-4 d-flex align-items-center">
-                            <div class="me-5 fw-600">
-                                <span>{{ trans('messages.tax.by_country') }}</span>
+                            <div class="country-taxes">
+                                
                             </div>
-                            <div class="form-group-mb-0 me-3" style="width:200px">
-                                @include('helpers.form_control', [
-                                    'type' => 'select',
-                                    'name' => 'country_id',
-                                    'label' => '',
-                                    'value' => '',
-                                    'options' => Acelle\Model\Country::getSelectOptions(),
-                                    'include_blank' => config('custom.japan') ? false : trans('messages.choose'),
-                                ])
-                            </div>
-                            <div>
-                                <button type="button" class="btn btn-secondary add-country-tax px-3">{{ trans('messages.tax.country.add') }}</button>
-                            </div>
-                        </div>
-
-                        <div class="country-taxes">
-                            
-                        </div>
+                        @endif
                     </div>
                 </div>
             </div>
