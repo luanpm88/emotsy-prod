@@ -80,7 +80,7 @@
                                     'label' => '',
                                     'value' => '',
                                     'options' => Acelle\Model\Country::getSelectOptions(),
-                                    'include_blank' => trans('messages.choose'),
+                                    'include_blank' => config('custom.japan') ? false : trans('messages.choose'),
                                 ])
                             </div>
                             <div>
