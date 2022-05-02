@@ -106,6 +106,16 @@
     <form>
 
     <script>
+        $(function() {
+            // Click to insert tag
+            $(document).on("click", ".insert_tag_button", function() {
+                var tag = $(this).attr("data-tag-name");
+                insertAtCursor($('textarea[name="plain"]')[0], tag);
+            });
+        });
+    </script>
+
+    <script>
     $('#classic-builder-form').submit(function(e) {
             e.preventDefault();
 
