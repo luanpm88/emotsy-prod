@@ -90,6 +90,7 @@ class SendMessage implements ShouldQueue
             // Count related quota trackers
             // Important: sacrisfy server credits, put quota check for server before that of subscription
             // Otherwise, it may cost 1 subscription's credit (shown to user) every time the job is release back to queue
+            // enforce() means: do not care about "credits", check "limits" only
             QuotaManager::with($this->server, 'send')->enforce();  // First
             QuotaManager::with($subscription, 'send')->enforce();  // Later
 
