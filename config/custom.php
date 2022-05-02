@@ -15,4 +15,6 @@ return [
     'php' => '7.3.0',
 
     'woo' => false,
+
+    'japan' => false,
 ];
