@@ -16,5 +16,5 @@ return [
 
     'woo' => false,
 
-    'japan' => false,
+    'japan' => true,
 ];
