@@ -31,7 +31,7 @@
 .product-list-widget, .product-widget {
     position: relative;
 }
-.builder-class-element-selected .ace-controls {
+[builder-element=ProductListElement].builder-class-element-selected .ace-controls {
     display: block!important;
 }
 .builder-class-element-selected[data-preview=yes] .preview-but {
