@@ -3855,7 +3855,7 @@
   'audience.overview' => 'Overview',
   'audience' => 'Audience',
   'forms' => 'Forms',
-  'intergration' => 'Intergration',
+  'intergration' => 'Integration',
   'website.add_site' => 'Add your website',
   'connections.manage' => 'Manage connections',
   'audience.manage' => 'Manage your audience',
