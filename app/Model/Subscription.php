@@ -876,4 +876,9 @@ class Subscription extends Model implements HasQuotaInterface
     {
         return $this->plan->getQuotaSettings($name);
     }
+
+    public function getSendingCreditsRemaining()
+    {
+        return 998000;
+    }
 }

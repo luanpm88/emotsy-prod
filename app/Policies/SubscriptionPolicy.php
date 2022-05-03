@@ -154,4 +154,19 @@ class SubscriptionPolicy
 
         return $can;
     }
+    
+    public function replenishSendingCredits(User $user, Subscription $subscription, $role)
+    {
+        $can = $subscription->isActive();
+
+        switch ($role) {
+            case 'admin':
+                break;
+            case 'customer':
+                $can = false;
+                break;
+        }
+
+        return $can;
+    }
 }

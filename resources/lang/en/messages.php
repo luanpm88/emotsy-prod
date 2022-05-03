@@ -4164,4 +4164,7 @@
   'webhook.execute_click_callback' => 'Execute click callback',
   'image.upload_help' => 'Acceptable file type is JPG/GIF/SVG<br/>
     The current max upload file size is <strong class="text-bold">:max</strong>',
+  'subscription.send_credits_remaining' => 'Send credits remaining',
+  'subscription.replenish_sending_credits' => 'Replenish sending credits',
+  'subscription.replenish_sending_credits.success' => 'Subscription is successfully updated',
 ) ?>
