@@ -144,18 +144,6 @@ class Tool
      *
      * @var string
      */
-    public static function formatDateTime($datetime)
-    {
-        $result = self::dateTime($datetime)->format(getDateTimeFormatCode('datetime_format'));
-
-        return $result;
-    }
-
-    /**
-     * Format display datetime.
-     *
-     * @var string
-     */
     public static function dateTime($datetime)
     {
         $timezone = self::currentTimezone();
@@ -736,18 +724,6 @@ class Tool
         } else {
             return $number;
         }
-    }
-
-    /**
-     * Format display date.
-     *
-     * @var string
-     */
-    public static function formatDate($datetime)
-    {
-        $result = !isset($datetime) ? '' : self::dateTime($datetime)->format(getDateTimeFormatCode('date_format'));
-
-        return $result;
     }
 
     /**
