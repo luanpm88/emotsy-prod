@@ -988,19 +988,6 @@ function rssTags()
         ],
     ];
 }
-function getDateTimeFormatCode($type)
-{
-    $format = [
-        'datetime_format' => 'M dS, Y H:i',
-        'datetime_format_2' => 'M dS, Y H:i:s',
-        'time_format' => 'H:i',
-        'date_format' => 'M d, Y',
-        'j_date_format' => 'yyyy-mm-dd',
-        'any_datetime_format' => '%Z-%m-%d, %H:%i',
-    ];
-
-    return $format[$type];
-}
 
 function triggerIcon($type)
 {
