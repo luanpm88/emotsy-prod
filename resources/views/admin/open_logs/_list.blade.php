@@ -33,7 +33,7 @@
                     <span class="text-muted second-line-mobile">{{ trans('messages.area') }}</span>
                 </td>
                 <td>
-                    <span class="no-margin kq_search">{{ Tool::formatDateTime($item->created_at) }}</span>
+                    <span class="no-margin kq_search">{{ Auth::user()->admin->formatDateTime($item->created_at, 'date_full') }}</span>
                     <span class="text-muted second-line-mobile">{{ trans('messages.created_at') }}</span>
                 </td>
             </tr>

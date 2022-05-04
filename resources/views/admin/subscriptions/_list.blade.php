@@ -35,7 +35,7 @@ remove_circle_outline
 				</td>
 				<td width="15%">
                     <h5 class="no-margin stat-num">
-                        <span class="kq_search">{{ Acelle\Library\Tool::dateTime($subscription->created_at)->format('M d, Y') }}</span>
+                        <span class="kq_search">{{ Auth::user()->admin->formatDateTime($subscription->created_at, 'date_full')}}</span>
                     </h5>
                     <span class="text-muted2">{{ trans('messages.subscribed_on') }}</span>
                 </td>				
