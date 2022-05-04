@@ -1,12 +1,18 @@
 <div class="mb-20">
     <input type="hidden" name="options[type]" value="datetime" />
 
+    @php
+        $customer = Auth::user()->customer;
+        $date = $customer->getCurrentTime()->format('Y-m-d');
+        $time = $customer->getCurrentTime()->format('h:i A');
+    @endphp
+
     @include('helpers.form_control', [
         'type' => 'date2',
         'class' => '',
         'label' => trans('messages.automation.date'),
         'name' => 'options[date]',
-        'value' => toDateString(\Carbon\Carbon::now()),
+        'value' => $date,
         'help_class' => 'trigger',
     ])
     
@@ -14,7 +20,7 @@
         'type' => 'time2',
         'name' => 'options[at]',
         'label' => trans('messages.automation.at'),
-        'value' => toTimeString(\Carbon\Carbon::now()),
+        'value' => $time,
         'help_class' => 'trigger'
     ])
 

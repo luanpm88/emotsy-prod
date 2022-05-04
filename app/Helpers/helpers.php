@@ -148,6 +148,28 @@ function array_unique_by($array, $callback)
     return array_values($result);
 }
 
+function get_datetime_format($name, $locale)
+{
+    $defaultConfig = config('localization')['*'];
+
+    if (array_key_exists($locale, config('localization'))) {
+        $config = config('localization')[$locale];
+    }
+
+    if (isset($config) && array_key_exists($name, $config) && array_key_exists($name, $defaultConfig)) {
+        return $config[$name];
+    } elseif (array_key_exists($name, $defaultConfig)) {
+        return $defaultConfig[$name];
+    } else {
+        throw new \Exception('AC: Invalid datetime format type: '.$name.' => make sure the type is available in BOTH local and default (*) settings');
+    }
+}
+
+function format_datetime(\Carbon\Carbon $datetime, $name, $locale)
+{
+    return $datetime->format(get_datetime_format($name, $locale));
+}
+
 /**
  * Get UTC offset of a particular time zone.
  *
@@ -528,26 +550,6 @@ function formatSizeUnits($bytes)
 function rand_item($arr)
 {
     return $arr[array_rand($arr)];
-}
-
-/**
- * Return date string.
- *
- * @return object
- */
-function toDateString($datetime)
-{
-    return \Acelle\Library\Tool::dateTime($datetime)->format('Y-m-d');
-}
-
-/**
- * Return time string.
- *
- * @return object
- */
-function toTimeString($datetime)
-{
-    return \Acelle\Library\Tool::dateTime($datetime)->format('h:i A');
 }
 
 /**

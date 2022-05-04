@@ -1630,8 +1630,7 @@ class Customer extends Model
     // Get the current time in Customer timezone
     public function getCurrentTime()
     {
-        $dt = $this->parseDateTime(null);
-        return $dt;
+        return Carbon::now($this->timezone);
     }
 
     public function parseDateTime($datetime, $fallback = false)
@@ -1649,6 +1648,19 @@ class Customer extends Model
             }
         }
         return $dt;
+    }
+
+    public function formatCurrentDateTime($name)
+    {
+        return $this->formatDateTime($this->getCurrentTime(), $name);
+    }
+
+    public function formatDateTime(Carbon $datetime, string $name)
+    {
+        // $name is a format name like: date_full | date_short
+        // See config('localization')['*'] for the full list of available format names
+
+        return format_datetime($datetime, $name, $this->getLanguageCode());
     }
 
     /**
