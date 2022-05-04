@@ -6,8 +6,8 @@
             <i class="icon-quill4 text-danger"></i>
             <h4 class="text-danger">{{ $subscription->customer->user->displayName() }}</h4>
             <p>{{ $subscription->plan_name }} - {{ trans('messages.subscription.from_to_date', [
-                'start' => Tool::formatDate($subscription->start_at),
-                'end' => Tool::formatDate($subscription->end_at),
+                'start' => Auth::user()->admin->formatDateTime($subscription->start_at, 'date_full'),
+                'end' => Auth::user()->admin->formatDateTime($subscription->end_at, 'date_full'),
             ]) }}</p>
         </li>
     @endforeach

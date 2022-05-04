@@ -128,6 +128,20 @@ return [
                 'risky' => 'risky',
                 'unknown' => 'unknown'
             ]
-        ],
+        ],[
+            'id' => 'bounceless.io',
+            'name' => 'Bounceless.io',
+            'uri' => 'https://apps.bounceless.io/api/verifyEmail?secret={API_KEY}&email={EMAIL}',
+            'request_type' => 'GET',
+            'fields' => [ 'api_key' ],
+            'response_type' => 'plain',
+            'result_map' => [
+                'ok' => 'deliverable',
+                'unknown' => 'unknown',
+                'incorrect' => 'undeliverable',
+                'fail' => 'undeliverable',
+                'email_disabled' => 'undeliverable',
+            ]
+        ]
     ]
 ];

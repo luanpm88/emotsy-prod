@@ -2,7 +2,7 @@
     @if (isset($endsAt))
         <div>
             <span>{{ trans('messages.ends_on') }}</span>:
-            <strong>{{ \Acelle\Library\Tool::formatDate($endsAt) }}</strong>
+            <strong>{{ Auth::user()->customer->formatDateTime($endsAt, 'date_full') }}</strong>
         </div>
         <hr class="my-2">
     @endif

@@ -66,17 +66,17 @@ assignment_turned_in
                             <div class="col-sm-4 col-md-4 text-left">
                                 @if ($subscription->isEnded())
                                     <h5 class="no-margin stat-num">
-                                        <span class="kq_search">{{ Acelle\Library\Tool::formatDate($subscription->ends_at) }}</span>
+                                        <span class="kq_search">{{ Auth::user()->admin->formatDateTime($subscription->ends_at, 'date_full') }}</span>
                                     </h5>
                                     <span class="text-muted2">{{ trans('messages.subscription.ended_on') }}</span>
                                 @elseif ($subscription->isActive())
                                     <h5 class="no-margin stat-num">
-                                        <span class="kq_search">{{ Acelle\Library\Tool::formatDate($subscription->ends_at) }}</span>
+                                        <span class="kq_search">{{ Auth::user()->admin->formatDateTime($subscription->ends_at, 'date_full') }}</span>
                                     </h5>
                                     <span class="text-muted2">{{ trans('messages.subscription.ends_on') }}</span>
                                 @else
                                     <h5 class="no-margin stat-num">
-                                        <span class="kq_search">{{ Acelle\Library\Tool::formatDate($subscription->updated_at) }}</span>
+                                        <span class="kq_search">{{ Auth::user()->admin->formatDateTime($subscription->updated_at, 'date_full') }}</span>
                                     </h5>
                                     <span class="text-muted2">{{ trans('messages.subscription.updated_at') }}</span>
                                 @endif
@@ -127,7 +127,7 @@ people_outline
                             </div>
                             <div class="col-sm-4 col-md-4 text-end">
                                 <h6 class="no-margin text-semibold small">
-                                    {{ Tool::formatDateTime($customer->created_at) }}
+                                    {{ Auth::user()->admin->formatDateTime($customer->created_at, 'date_full') }}
                                 </h6>
                                 <span class="">{{ trans('messages.created_at') }}</span>
                             </div>

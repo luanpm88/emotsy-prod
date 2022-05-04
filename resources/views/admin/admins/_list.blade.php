@@ -36,7 +36,7 @@
                 </td>
                 <td>
                     <h5 class="no-margin text-bold kq_search">
-                        {{ Tool::formatDateTime($item->created_at) }}
+                        {{ Auth::user()->admin->formatDateTime($item->created_at, 'date_full') }}
                     </h5>
                     <span class="text-muted">{{ trans('messages.created_at') }}</span>
                 </td>

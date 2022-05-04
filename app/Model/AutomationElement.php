@@ -22,6 +22,8 @@
 
 namespace Acelle\Model;
 
+use Carbon\Carbon;
+
 class AutomationElement
 {
     protected $data;
@@ -62,6 +64,17 @@ class AutomationElement
         }
 
         return;
+    }
+
+    public function getOptionAsDateTime($key)
+    {
+        $datetime = $this->getOption($key);
+
+        if ($datetime) {
+            return Carbon::parse($datetime);
+        } else {
+            return null;
+        }
     }
 
     /**

@@ -42,7 +42,7 @@ forward_to_inbox
                         <div class="main">
                             <label>{{ trans('messages.campaign.html_email') }}</label>
                             <p>{{ trans('messages.campaign.html_email.last_edit', [
-                                'date' => Acelle\Library\Tool::formatDateTime($campaign->updated_at),
+                                'date' => Auth::user()->customer->formatDateTime($campaign->updated_at, 'date_full'),
                             ]) }}</p>
 
                             <p class="mt-20">

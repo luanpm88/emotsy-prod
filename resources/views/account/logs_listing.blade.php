@@ -16,7 +16,7 @@
                 <td class="text-end">
                     <div class="pull-right">
                         <div class="text-semibold">{{ $item->created_at->diffForHumans() }}</div>
-                        <span class="text-muted2">{{ Acelle\Library\Tool::formatDateTime($item->created_at) }}</span>
+                        <span class="text-muted2">{{ Auth::user()->customer->formatDateTime($item->created_at, 'date_full') }}</span>
                     </div>
                 </td>
             </tr>

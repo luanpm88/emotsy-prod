@@ -25,7 +25,7 @@
                     </p>
                     <div class="text-muted">
                         {{ trans('messages.source.connected_on', [
-                            'date' => \Acelle\Library\Tool::formatDate($source->created_at),
+                            'date' => Auth::user()->customer->formatDateTime($source->created_at, 'date_full'),
                         ]) }}
                         |
                         <a href="">{{ trans('messages.source.visit_store') }}</a>
