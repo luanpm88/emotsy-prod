@@ -55,21 +55,21 @@
                 <span class="label bg-light">{{ trans('messages.updated_at') }} <span class="material-icons-outlined">
                     event
                     </span></span></span>
-            {{ Tool::formatDateTime($campaign->updated_at) }}
+            {{ Auth::user()->customer->formatDateTime($campaign->updated_at, 'date_full') }}
         </div>
         <div class="mb-2">
             <span class="text-bold d-inline-block text-end pe-3" style="width:120px">
                 <span class="label bg-light">{{ trans('messages.run_at') }} <span class="material-icons-outlined">
                     event
                     </span></span></span>
-            {{ isset($campaign->run_at) ? Tool::formatDateTime($campaign->run_at) : "" }}
+            {{ isset($campaign->run_at) ? Auth::user()->customer->formatDateTime($campaign->run_at, 'date_full') : "" }}
         </div>
         <div class="mb-2">
             <span class="text-bold d-inline-block text-end pe-3" style="width:120px">
                 <span class="label bg-light">{{ trans('messages.delivery_at') }} <span class="material-icons-outlined">
                     event
                     </span></span></span>
-            {{ isset($campaign->delivery_at) ? Tool::formatDateTime(\Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $campaign->delivery_at)) : "" }}
+            {{ isset($campaign->delivery_at) ? Auth::user()->customer->formatDateTime($campaign->delivery_at, 'date_full') : "" }}
         </div>
     </div>
 </div>

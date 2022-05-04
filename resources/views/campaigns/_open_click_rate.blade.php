@@ -40,7 +40,7 @@
             <div class="stat-row">
                 <p class="text-muted">{{ trans('messages.last_opened') }}</p>
                 <span class="pull-right num">
-                    {{ is_object($campaign->lastOpen()) ? Acelle\Library\Tool::formatDateTime($campaign->lastOpen()->created_at) : "" }}
+                    {{ is_object($campaign->lastOpen()) ? Auth::user()->customer->formatDateTime($campaign->lastOpen()->created_at, 'date_full') : "" }}
                 </span>
             </div>
         </div>
@@ -84,7 +84,7 @@ arrow_forward
             <div class="stat-row">
                 <p class="text-muted">{{ trans('messages.last_clicked') }}</p>
                 <span class="pull-right num">
-                    {{ is_object($campaign->lastClick()) ? Acelle\Library\Tool::formatDateTime($campaign->lastClick()->created_at) : "" }}
+                    {{ is_object($campaign->lastClick()) ? Auth::user()->customer->formatDateTime($campaign->lastClick()->created_at, 'date_full') : "" }}
                 </span>
             </div>
         </div>

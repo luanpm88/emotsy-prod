@@ -118,7 +118,7 @@ close
                                     {{ $timeline->activity }}
                                 </action>
                                 <desc class="d-block small text-muted">
-                                    <i class="lnr lnr-clock mr-1"></i> {{ Acelle\Library\Tool::formatDateTime($timeline->created_at) }}
+                                    <i class="lnr lnr-clock mr-1"></i> {{ Auth::user()->customer->formatDateTime($timeline->created_at, 'date_full') }}
                                 </desc>
                             </div>
                         </div>

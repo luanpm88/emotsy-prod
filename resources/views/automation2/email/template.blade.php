@@ -15,7 +15,7 @@
                         <div class="main">
                             <label class="font-weight-bold">{{ trans('messages.campaign.html_email') }}</label>
                             <p>{{ trans('messages.campaign.html_email.last_edit', [
-                                'date' => Acelle\Library\Tool::formatDateTime($email->updated_at),
+                                'date' => Auth::user()->customer->formatDateTime($email->updated_at, 'date_full'),
                             ]) }}</p>
                             
                             @if (in_array(Acelle\Model\Setting::get('builder'), ['both','pro']) && $email->template->builder)

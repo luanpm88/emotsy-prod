@@ -37,7 +37,7 @@
                         @include('elements._notification', [
                             'level' => 'warning',
                             'message' => trans('messages.have_new_renew_invoice.auto', [
-                                'date' => \Acelle\Library\Tool::formatDateTime($subscription->getDueDate()),
+                                'date' => Auth::user()->customer->formatDateTime($subscription->getDueDate(), 'date_full'),
                             ])
                         ])
 
