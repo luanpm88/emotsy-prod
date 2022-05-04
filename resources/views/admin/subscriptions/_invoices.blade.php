@@ -113,7 +113,7 @@
                             <tr>
                                 <td>
                                     <span class="no-margin kq_search">
-                                        {{ Acelle\Library\Tool::formatDate($invoice->created_at) }}
+                                        {{ Auth::user()->admin->formatDateTime($invoice->created_at, 'date_full') }}
                                     </span>
                                 </td>
                                 <td>

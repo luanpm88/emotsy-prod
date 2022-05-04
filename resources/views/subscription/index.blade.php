@@ -73,7 +73,7 @@
                                     'plan' => $plan->name,
                                     'money' => Acelle\Library\Tool::format_price($plan->price, $plan->currency->format),
                                     'remain' => $subscription->current_period_ends_at->diffForHumans(),
-                                    'next_on' => \Acelle\Library\Tool::formatDate($subscription->current_period_ends_at)
+                                    'next_on' => Auth::user()->customer->formatDateTime($subscription->current_period_ends_at, 'date_full')
                                 ]) !!}
                             </p>
                         @else --}}
@@ -82,7 +82,7 @@
                                     'plan' => $plan->name,
                                     'money' => Acelle\Library\Tool::format_price($plan->price, $plan->currency->format),
                                     'remain' => $subscription->current_period_ends_at->diffForHumans(),
-                                    'next_on' => \Acelle\Library\Tool::formatDate($subscription->current_period_ends_at)
+                                    'next_on' => Auth::user()->customer->formatDateTime($subscription->current_period_ends_at, 'date_full')
                                 ]) !!}
                             </p>
                         {{-- @endif --}}
@@ -92,7 +92,7 @@
                                 'plan' => $plan->name,
                                 'money' => Acelle\Library\Tool::format_price($plan->price, $plan->currency->format),
                                 'remain' => $subscription->current_period_ends_at->diffForHumans(),
-                                'end_at' => \Acelle\Library\Tool::formatDate($subscription->current_period_ends_at)
+                                'end_at' => Auth::user()->customer->formatDateTime($subscription->current_period_ends_at, 'date_full')
                             ]) !!}
                         </p>
                     @endif                        

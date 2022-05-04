@@ -24,7 +24,7 @@
                     @include('elements._notification', [
                         'level' => 'warning',
                         'message' => trans('messages.subscription.ended_intro', [
-                            'ended_at' => Acelle\Library\Tool::formatDate($subscription->ends_at),
+                            'ended_at' => Auth::user()->customer->formatDateTime($subscription->ends_at, 'date_full'),
                             'plan' => $subscription->plan->name,
                         ])
                     ])
