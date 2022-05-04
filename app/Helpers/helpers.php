@@ -165,8 +165,11 @@ function get_datetime_format($name, $locale)
     }
 }
 
-function format_datetime(\Carbon\Carbon $datetime, $name, $locale)
+function format_datetime(?\Carbon\Carbon $datetime, $name, $locale)
 {
+    if (is_null($datetime)) {
+        return;
+    }
     return $datetime->format(get_datetime_format($name, $locale));
 }
 
