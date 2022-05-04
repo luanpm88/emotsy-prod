@@ -29,7 +29,7 @@
                             <tr>
                                 <td>
                                     <span class="no-margin kq_search">
-                                        {{ Acelle\Library\Tool::formatDateTime($log->created_at) }}
+                                        {{ Auth::user()->admin->formatDateTime($log->created_at, 'date_full') }}
                                     </span>
                                 </td>
                                 <td>
@@ -60,7 +60,7 @@
                             <tr>
                                 <td>
                                     <span class="no-margin kq_search">
-                                        {{ Acelle\Library\Tool::formatDateTime($transaction->created_at) }}
+                                        {{ Auth::user()->admin->formatDateTime($transaction->created_at, 'date_full') }}
                                     </span>
                                 </td> 
                                 <td>
