@@ -20,7 +20,7 @@
                     <h5 class="m-0 text-bold">
                         <a class="kq_search d-block" href="{{ action('TrackingDomainController@show', $trackingDomain->uid) }}">{{ $trackingDomain->name }}</a>
                     </h5>
-                    <span class="text-muted">{{ trans('messages.created_at') }}: {{ Tool::formatDateTime($trackingDomain->created_at) }}</span>
+                    <span class="text-muted">{{ trans('messages.created_at') }}: {{ Auth::user()->customer->formatDateTime($trackingDomain->created_at, 'date_full') }}</span>
                 </td>
                 <td>
                     <div class="single-stat-box pull-left">

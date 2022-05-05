@@ -15,7 +15,7 @@
 					</a>
 					<span class="text-muted d-block mt-1">
 						{{ trans('messages.created_at') }}:
-						{{ Tool::formatDateTime($source->created_at) }}
+						{{ Auth::user()->customer->formatDateTime($source->created_at, 'date_full') }}
 					</span>
 				</td>				
 				<td>
@@ -26,7 +26,7 @@
 				</td>
 				<td>
 					<h5 class="no-margin stat-num">
-						{{ Tool::formatDateTime($source->updated_at) }}
+						{{ Auth::user()->customer->formatDateTime($source->updated_at, 'date_full') }}
 					</h5>
 					<span class="text-muted d-block mt-2">{{ trans('messages.source.last_sync_at') }}</span>
 				</td>

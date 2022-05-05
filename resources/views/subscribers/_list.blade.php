@@ -45,7 +45,7 @@
 
 				@if (in_array("created_at", is_array(request()->columns) ? request()->columns : []))
 					<td>
-						<span class="no-margin stat-num">{{ Tool::formatDateTime($item->created_at) }}</span>
+						<span class="no-margin stat-num">{{ Auth::user()->customer->formatDateTime($item->created_at, 'date_full') }}</span>
 						<br>
 						<span class="text-muted2">{{ trans('messages.created_at') }}</span>
 					</td>
@@ -53,7 +53,7 @@
 
 				@if (in_array("updated_at", is_array(request()->columns) ? request()->columns : []))
 					<td>
-						<span class="no-margin stat-num">{{ Tool::formatDateTime($item->updated_at) }}</span>
+						<span class="no-margin stat-num">{{ Auth::user()->customer->formatDateTime($item->updated_at, 'date_full') }}</span>
 						<br>
 						<span class="text-muted2">{{ trans('messages.updated_at') }}</span>
 					</td>

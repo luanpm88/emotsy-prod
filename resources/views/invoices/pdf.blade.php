@@ -199,11 +199,11 @@
 										</tr>
 										<tr>
 											<td style="padding:0;text-align:right;padding-right:10px;">{{ trans('messages.created_at') }}:</td>
-											<td style="padding:0;width:180px">{{ Acelle\Library\Tool::formatDateTime(Carbon\Carbon::now()) }}</td>
+											<td style="padding:0;width:180px">{{ Auth::user()->customer->formatCurrentDateTime('date_full') }}</td>
 										</tr>
 										<tr>
 											<td style="padding:0;text-align:right;padding-right:10px;">{{ trans('messages.due_date') }}:</td>
-											<td style="padding:0"> {{ Acelle\Library\Tool::formatDateTime($bill['due_date']) }}</td>
+											<td style="padding:0"> {{ $bill['due_date'] }}</td>
 										</tr>
 									</table>
 								</td>

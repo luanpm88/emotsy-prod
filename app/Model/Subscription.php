@@ -173,7 +173,7 @@ class Subscription extends Model implements HasQuotaInterface
         $invoice->title = trans('messages.invoice.init_subscription');
         $invoice->description = trans('messages.invoice.init_subscription.desc', [
             'plan' => $this->plan->name,
-            'date' => \Acelle\Library\Tool::formatDate($this->getPeriodEndsAt(Carbon::now())),
+            'date' => $this->customer->formatDateTime($this->getPeriodEndsAt(Carbon::now()), 'date_full'),
         ]);
         $invoice->customer_id = $this->customer->id;
         $invoice->currency_id = $this->plan->currency_id;
@@ -220,7 +220,7 @@ class Subscription extends Model implements HasQuotaInterface
         $invoice->title = trans('messages.invoice.renew_subscription');
         $invoice->description = trans('messages.renew_subscription.desc', [
             'plan' => $this->plan->name,
-            'date' => \Acelle\Library\Tool::formatDate($this->nextPeriod()),
+            'date' => $this->customer->formatDateTime($this->nextPeriod(), 'date_full'),
         ]);
         $invoice->customer_id = $this->customer->id;
         $invoice->currency_id = $this->plan->currency_id;
@@ -282,7 +282,7 @@ class Subscription extends Model implements HasQuotaInterface
         $invoice->description = trans('messages.change_plan.desc', [
             'plan' => $this->plan->name,
             'newPlan' => $newPlan->name,
-            'date' => \Acelle\Library\Tool::formatDate(Carbon::parse($metadata['endsAt'])),
+            'date' => $this->customer->formatDateTime(Carbon::parse($metadata['endsAt']), 'date_full'),
         ]);
         $invoice->customer_id = $this->customer->id;
         $invoice->currency_id = $this->plan->currency_id;

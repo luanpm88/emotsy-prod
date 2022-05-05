@@ -36,12 +36,21 @@
             }
         });
     </script>
+
+    @php
+        $customer = Auth::user()->customer;
+
+        $time = $trigger->getOption('at');
+        if (!$time) {
+            $time = $customer->getCurrentTime()->format('h:i A');
+        }
+    @endphp
     
     @include('helpers.form_control', [
         'type' => 'time2',
         'name' => 'options[at]',
         'label' => trans('messages.automation.at'),
-        'value' => ($trigger->getOption('at') ? $trigger->getOption('at') : toTimeString(\Carbon\Carbon::now())),
+        'value' => $time,
         'rules' => $rules,
         'help_class' => 'trigger'
     ])

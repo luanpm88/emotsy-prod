@@ -45,7 +45,7 @@
                             <a class="kq_search d-block" href="{{ action('SendingServerController@edit', ["id" => $item->uid, "type" => $item->type]) }}">{{ $item->name }}</a>
                         </h5>
                     @endif
-                    <span class="text-muted">{{ trans('messages.created_at') }}: {{ Tool::formatDateTime($item->created_at) }}</span>
+                    <span class="text-muted">{{ trans('messages.created_at') }}: {{ Auth::user()->customer->formatDateTime($item->created_at, 'date_full') }}</span>
                 </td>
                 <td>
                     <div class="single-stat-box pull-left ml-20">

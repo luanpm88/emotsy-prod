@@ -43,7 +43,7 @@
 
                 @if (in_array("created_at", explode(",", request()->columns)))
                     <td>
-                        <span class="no-margin stat-num">{{ Tool::formatDateTime($subscriber->created_at) }}</span>
+                        <span class="no-margin stat-num">{{ Auth::user()->customer->formatDateTime($subscriber->created_at, 'date_full') }}</span>
                         <br>
                         <span class="text-muted2">{{ trans('messages.created_at') }}</span>
                     </td>
@@ -51,14 +51,14 @@
 
                 @if (in_array("updated_at", explode(",", request()->columns)))
                     <td>
-                        <span class="no-margin stat-num">{{ Tool::formatDateTime($subscriber->updated_at) }}</span>
+                        <span class="no-margin stat-num">{{ Auth::user()->customer->formatDateTime($subscriber->updated_at, 'date_full') }}</span>
                         <br>
                         <span class="text-muted2">{{ trans('messages.updated_at') }}</span>
                     </td>
                 @endif
 
                 <td>
-                    <span class="no-margin stat-num">{{ null !== $subscriber->lastOpenLog($campaign) ? Tool::formatDateTime($subscriber->lastOpenLog($campaign)->created_at) : "--" }}</span>
+                    <span class="no-margin stat-num">{{ null !== $subscriber->lastOpenLog($campaign) ? Auth::user()->customer->formatDateTime($subscriber->lastOpenLog($campaign)->created_at, 'date_full') : "--" }}</span>
                     <br>
                     <span class="text-muted2">{{ trans('messages.last_open') }}</span>
                     @if (null !== $subscriber->lastOpenLog($campaign))
@@ -68,7 +68,7 @@
                 </td>
 
                 <td>
-                    <span class="no-margin stat-num">{{ null !== $subscriber->lastClickLog($campaign) ? Tool::formatDateTime($subscriber->lastClickLog($campaign)->created_at) : "--" }}</span>
+                    <span class="no-margin stat-num">{{ null !== $subscriber->lastClickLog($campaign) ? Auth::user()->customer->formatDateTime($subscriber->lastClickLog($campaign)->created_at, 'date_full') : "--" }}</span>
                     <br>
                     <span class="text-muted2">{{ trans('messages.last_click') }}</span>
                     @if (null !== $subscriber->lastClickLog($campaign))

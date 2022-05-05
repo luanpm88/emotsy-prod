@@ -10,11 +10,8 @@
                             {{ $trigger->getOption('key') == $type ? 'current' : '' }}
                         "
                         data-key="{{ $type }}"						
-                    >							
-                        <h6 class="d-flex align-items-center text-center justify-content-center">
-                            <i class="material-icons-outlined me-2">{{ triggerIcon($type) }}</i>
-                            {{ trans('messages.automation.trigger.' . $type) }}</h6>
-                        <p>{{ trans('messages.automation.trigger.' . $type . '.desc') }}</p>
+                    >							...
+                        @include('automation2.trigger.icons.' . $type)
                     </a>
                 @endforeach                
         </div>

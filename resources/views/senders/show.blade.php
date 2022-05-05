@@ -72,7 +72,7 @@
                         <strong>{{ trans('messages.created_at') }}</strong>
                     </div>
                     <div class="size2of3">
-                        <span>{{ Tool::formatDateTime($sender->created_at) }}</span>
+                        <span>{{ Auth::user()->customer->formatDateTime($sender->created_at, 'date_full') }}</span>
                     </div>
                 </li>
             </ul>

@@ -145,7 +145,7 @@
                             </div>
                             <div class="col-sm-2 col-md-2 text-left">
                                 <h5 class="m-0 text-bold">
-                                    {{ (null !== $item->lastOpen()) ? Acelle\Library\Tool::formatDateTime($item->lastOpen()->created_at) : "" }}
+                                    {{ (null !== $item->lastOpen()) ? Auth::user()->customer->formatDateTime($item->lastOpen()->created_at, 'date_full') : "" }}
                                 </h5>
                                 <span class="text-muted">{{ trans('messages.last_open') }}</span>
                             </div>

@@ -34,9 +34,9 @@
 						<span class="text-muted2 d-block">{{ trans('messages.run_at') }}: <span class="material-icons-outlined">
 							alarm
 							</span>
-							 {{ isset($campaign->run_at) ? Tool::formatDateTime($campaign->run_at) : "" }}</span>
+							 {{ isset($campaign->run_at) ? Auth::user()->customer->formatDateTime($campaign->run_at, 'date_full') : "" }}</span>
 					@else
-						<span class="text-muted2 d-block">{{ trans('messages.updated_at') }}: {{ Tool::formatDateTime($campaign->created_at) }}</span>
+						<span class="text-muted2 d-block">{{ trans('messages.updated_at') }}: {{ Auth::user()->customer->formatDateTime($campaign->created_at, 'date_full') }}</span>
 					@endif
 				</td>
 				@if ($campaign->status != 'new')

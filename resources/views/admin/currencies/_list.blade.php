@@ -22,7 +22,7 @@
 					</h5>
 					<span class="text-muted">
 						{{ trans('messages.updated_at') }}
-						{{ Acelle\Library\Tool::formatDateTime($item->updated_at) }}
+						{{ Auth::user()->admin->formatDateTime($item->updated_at, 'date_full') }}
 					</span>
 				</td>
 				<td class="stat-fix-size-sm">

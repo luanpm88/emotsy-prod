@@ -27,6 +27,7 @@ use Acelle\Model\Subscription;
 use Acelle\Library\Traits\TrackJobs;
 use Acelle\Jobs\ImportBlacklistJob;
 use Acelle\Library\Traits\HasUid;
+use Carbon\Carbon;
 
 class Admin extends Model
 {
@@ -589,5 +590,19 @@ class Admin extends Model
         $admin->menu_layout = \Acelle\Model\Setting::get('layout.menu_bar');
 
         return $admin;
+    }
+
+    // Get the current time in Customer timezone
+    public function getCurrentTime()
+    {
+        return Carbon::now($this->timezone);
+    }
+
+    public function formatDateTime(?Carbon $datetime, string $name)
+    {
+        // $name is a format name like: date_full | date_short
+        // See config('localization')['*'] for the full list of available format names
+
+        return format_datetime($datetime, $name, $this->getLanguageCode());
     }
 }

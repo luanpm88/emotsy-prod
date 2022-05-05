@@ -33,6 +33,8 @@ class EmailVerificationServer extends Model implements HasQuotaInterface
 
     protected $fillable = ['type', 'name'];
 
+    private const OTHERWISE = '*';
+
     /**
      * Associations.
      *
@@ -124,21 +126,24 @@ class EmailVerificationServer extends Model implements HasQuotaInterface
         // fetch the result
         $raw = (string)$response->getBody();
 
-        // workaround for https://emaillistvalidation.com/
         if ($raw == 'error_credit') {
             throw new Exception('No verification credits available for service '.$this->type);
         }
 
+        // PLAIN RESPONSE
         if (array_key_exists('response_type', $config) && $config['response_type'] == 'plain') {
-            if (!array_key_exists($raw, $config['result_map'])) {
-                throw new Exception('Error verifying email address with service `'.$this->type."`. Response from service: ".$raw);
+            if (!array_key_exists($raw, $config['result_map']) && array_key_exists(self::OTHERWISE, $config['result_map'])) {
+                $mapped = $config['result_map'][self::OTHERWISE];
+            } elseif (!array_key_exists($raw, $config['result_map'])) {
+                throw new \Exception('Unexpected result from verification service: '.$raw);
+            } else {
+                $mapped = $config['result_map'][$raw];
             }
-            $mapped = $config['result_map'][$raw];
 
             return [$mapped, $response];
         }
-        // end workaround for https://emaillistvalidation.com/
 
+        // JSON RESPONSE
         $jsonObject = new JsonObject($raw);
 
         try {
