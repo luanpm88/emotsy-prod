@@ -25,11 +25,16 @@ namespace Acelle\Library;
 use ZipArchive;
 use Illuminate\Support\Facades\Log as LaravelLog; // something wrong, cannot use the default name Log
 use Illuminate\Support\Facades\File;
+use function Acelle\Helpers\updateTranslationFile;
+use Acelle\Library\Facades\Hook;
+use Acelle\Model\Language;
 
 class UpgradeManager
 {
     protected $source;
     protected $target;
+
+    protected $allTranslationFiles;
 
     public const META_FILE = 'meta.json';
 
@@ -40,6 +45,23 @@ class UpgradeManager
     {
         $this->source = storage_path('tmp/patch');
         $this->target = base_path();
+        $this->allTranslationFiles = $this->findTranslationFiles();
+
+        // deletect all language files
+
+    }
+
+    private function findTranslationFiles()
+    {
+        $allTranslationFiles = [];
+        foreach(Language::all() as $lang) {
+          foreach (Hook::execute('add_translation_file') as $source) {
+            $path = join_paths($source['translation_folder'], $lang->code, $source['file_name']);
+            $allTranslationFiles = $path;
+          }
+        }
+
+        return $allTranslationFiles;
     }
 
     /**
@@ -181,6 +203,21 @@ class UpgradeManager
             $dirs = $meta['dirs'];
             $langFiles = [];
 
+            // new or updated entire directories
+            foreach ($dirs as $dir) {
+                $source = join_paths($this->source, $dir);
+                $target = join_paths($this->target, $dir);
+                if ($test) {
+                    if (!$this->isWritable($target)) {
+                        $errors[] = $target;
+                    }
+                } else {
+                    LaravelLog::info("Replacing {$target}");
+                    $this->rm($target);
+                    $this->copy($source, $target);
+                }
+            }
+
             // new or updated files
             foreach ($updates as $file) {
                 $source = join_paths($this->source, $file);
@@ -192,37 +229,17 @@ class UpgradeManager
                 }
 
                 if ($test) {
-                    if ($this->isLanguageFile($source)) {
-                        $languages = \Acelle\Model\Language::all();
-                        foreach ($languages as $lang) {
-                            $target = join_paths($lang->languageDir(), pathinfo($file)['basename']);
-                            if (!$this->isWritable($target)) {
-                                $errors[] = $target;
-                            }
-                        }
-                    } else {
-                        if (!$this->isWritable($target)) {
-                            $errors[] = $target;
-                        }
+                    if (!$this->isWritable($target)) {
+                        $errors[] = $target;
                     }
                 } else {
-                    // LaravelLog::info("Replacing {$target}");
-
-                    if ($this->isEnFile($source)) {
-                        $langFiles[] = $source;
-                    } elseif ($this->isLanguageFile($source)) {
-                        $this->mergeLanguageFile($source, $target);
+                    if ($this->isTranslationFile($source)) {
+                        // Make sure the 'resources/lang/default/' folder is already updated
+                        $this->mergeTranslationFileWithoutOverwritting($target, $source);
                     } else {
                         $this->copy($source, $target);
                     }
                 }
-            }
-
-            // process language files after all the other files have been processed
-            // in case a new language is added
-            foreach ($langFiles as $source) {
-                LaravelLog::info("Upgrade language file {$source}");
-                $this->upgradeLanguageFiles($source);
             }
 
             // deleted files
@@ -243,21 +260,6 @@ class UpgradeManager
             foreach ($packages as $dir) {
                 $source = join_paths($this->source, 'vendor', $dir);
                 $target = join_paths($this->target, 'vendor', $dir);
-                if ($test) {
-                    if (!$this->isWritable($target)) {
-                        $errors[] = $target;
-                    }
-                } else {
-                    LaravelLog::info("Replacing {$target}");
-                    $this->rm($target);
-                    $this->copy($source, $target);
-                }
-            }
-
-            // new or updated entire directories
-            foreach ($dirs as $dir) {
-                $source = join_paths($this->source, $dir);
-                $target = join_paths($this->target, $dir);
                 if ($test) {
                     if (!$this->isWritable($target)) {
                         $errors[] = $target;
@@ -322,14 +324,6 @@ class UpgradeManager
                 $this->rm($path);
             }
         }
-    }
-
-    /**
-     * Actually run the upgrade process.
-     */
-    public function upgradeTranslationFiles()
-    {
-        $dir = base_path('resources/lang/');
     }
 
     /**
@@ -503,62 +497,16 @@ class UpgradeManager
     /**
      * Check if the provided file is a language file.
      */
-    public function isLanguageFile($path)
+    public function isTranslationFile($path) // absolute path
     {
-        return preg_match('/resources\/lang\/[a-z0-9]{2}\/[a-z0-9]+\.php$/', $path);
-    }
-
-    /**
-     * Check if the provided file is a language file and is EN.
-     */
-    public function isEnFile($path)
-    {
-        return preg_match('/resources\/lang\/en\/[a-z0-9]+\.php$/', $path);
+        return in_array($path, $this->allLanguageFiles);
     }
 
     /**
      * Upgrade all existing language packages using the provided file
-     * For example:
-     *    $manager = new \Acelle\Library\UpgradeManager();
-     *    $manager->upgradeLanguageFiles(resource_path("lang/en/messages.php"));.
      */
-    public function upgradeLanguageFiles($sourcePath)
+    public function mergeTranslationFileWithoutOverwritting($target, $source)
     {
-        $source = include $sourcePath;
-
-        $languages = \Acelle\Model\Language::all();
-        foreach ($languages as $lang) {
-            // if for any reason the language directory does not exist, just ignore it
-            if (!file_exists($lang->languageDir())) {
-                LaravelLog::warning(sprintf('Language directory %s does not exist', $lang->languageDir()));
-                continue;
-            }
-
-            $targetPath = join_paths($lang->languageDir(), pathinfo($sourcePath)['basename']);
-
-            if (!file_exists($targetPath)) {
-                $this->copy($sourcePath, $targetPath);
-            }
-
-            $target = include $targetPath;
-            $merged = array_diff_key($target + $source, array_diff_key($target, $source));
-            $lang->updateFromYaml(pathinfo($sourcePath)['filename'], \Yaml::dump($merged));
-        }
-    }
-
-    /**
-     * Merge the language file to retain user's change
-     * Example:
-     *    $manager = new \Acelle\Library\UpgradeManager()
-     *    $manager->mergeLanguageFile('/home/user/mailixa/resources/lang/en/messages.php', '/tmp/messages.php').
-     */
-    public function mergeLanguageFile($sourcePath, $targetPath)
-    {
-        // if the language files does not exist yet, just create it
-        if (!file_exists($targetPath)) {
-            $this->copy($sourcePath, $targetPath);
-        } else {
-            \Acelle\Helpers\updateTranslationFile($targetPath, $sourcePath, $overwrite = false);
-        }
+        updateTranslationFile($target, $source, $overwrite = false, $sort = true);
     }
 }
