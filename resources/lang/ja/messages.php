@@ -3461,7 +3461,7 @@
   'subscription.select_a_plan' => 'プランを選択',
   'subscription.select_payment' => '支払いを選択',
   'subscription.set_active.success' => 'サブスクリプションは正常に有効化されました。',
-  'subscription.start_from' => 'から始まる',
+  'subscription.start_from' => '購読開始月',
   'subscription.status.active' => '有効',
   'subscription.status.active_pending' => '更新保留中',
   'subscription.status.cancelled' => 'キャンセル',
