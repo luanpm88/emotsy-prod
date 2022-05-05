@@ -57,7 +57,7 @@ class UpgradeManager
         foreach(Language::all() as $lang) {
           foreach (Hook::execute('add_translation_file') as $source) {
             $path = join_paths($source['translation_folder'], $lang->code, $source['file_name']);
-            $allTranslationFiles = $path;
+            $allTranslationFiles[] = $path;
           }
         }
 
@@ -127,10 +127,10 @@ class UpgradeManager
         // Check WRITE permission
         if (!$this->isWritable($this->source)) {
             throw new \Exception("Cannot write to folder {$this->source}");
-        } else {
-            // Clean up the target folder
-            $this->rm($this->source);
         }
+
+        // Clean up the target folder
+        $this->rm($this->source);
     }
 
     /**
@@ -168,7 +168,7 @@ class UpgradeManager
             $this->cleanup();
 
             // Ooops!
-            throw new \Exception('Unknown package format (deleted)');
+            throw new \Exception('NOMETA: Unknown package format (deleted)');
         }
 
         return json_decode(file_get_contents($path), true);
@@ -212,7 +212,7 @@ class UpgradeManager
                         $errors[] = $target;
                     }
                 } else {
-                    LaravelLog::info("Replacing {$target}");
+                    LaravelLog::info("REPLACE DIRECTORY {$dir}");
                     $this->rm($target);
                     $this->copy($source, $target);
                 }
@@ -233,10 +233,12 @@ class UpgradeManager
                         $errors[] = $target;
                     }
                 } else {
-                    if ($this->isTranslationFile($source)) {
+                    if ($this->isTranslationFile($target)) {
                         // Make sure the 'resources/lang/default/' folder is already updated
+                        LaravelLog::info('UPDATE translation file: '.$file);
                         $this->mergeTranslationFileWithoutOverwritting($target, $source);
                     } else {
+                        LaravelLog::info('REPLACE file: '.$file);
                         $this->copy($source, $target);
                     }
                 }
@@ -251,7 +253,7 @@ class UpgradeManager
                         $errors[] = $target;
                     }
                 } else {
-                    LaravelLog::info("Deleting {$target}");
+                    LaravelLog::info("DELETE file {$file}");
                     @unlink($target);
                 }
             }
@@ -265,7 +267,7 @@ class UpgradeManager
                         $errors[] = $target;
                     }
                 } else {
-                    LaravelLog::info("Replacing {$target}");
+                    LaravelLog::info("REPLACE package {$dir}");
                     $this->rm($target);
                     $this->copy($source, $target);
                 }
@@ -277,7 +279,7 @@ class UpgradeManager
             }
 
             // reload the config & run migration
-            LaravelLog::info('Updating .env file');
+            LaravelLog::info('UPDATE .env file');
             $this->mergeEnv(base_path('.env'), base_path('.env.example'));
 
             // cleanup
@@ -310,7 +312,7 @@ class UpgradeManager
         }
 
         // GO AFTER ARTISAN CALL
-        LaravelLog::info('Delete cached config files');
+        LaravelLog::info('DELETE cached config files');
         $files = [
             'bootstrap/cache/packages.php',
             'bootstrap/cache/config.php',
@@ -499,7 +501,7 @@ class UpgradeManager
      */
     public function isTranslationFile($path) // absolute path
     {
-        return in_array($path, $this->allLanguageFiles);
+        return in_array($path, $this->allTranslationFiles);
     }
 
     /**
