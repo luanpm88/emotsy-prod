@@ -60,7 +60,7 @@ class AppServiceProvider extends ServiceProvider
                 "file_title" => "Messages",
                 "translation_folder" => base_path('resources/lang'),
                 "file_name" => "messages.php",
-                "default" => "default", // 'default' locale, like resources/lang/{default}/...
+                "master_translation_file" => resource_path('lang/default/messages.php'),
             ];
         });
 
@@ -71,7 +71,7 @@ class AppServiceProvider extends ServiceProvider
                 "file_title" => "Auth",
                 "translation_folder" => base_path('resources/lang'),
                 "file_name" => "auth.php",
-                "default" => "default",
+                "master_translation_file" => resource_path('lang/default/auth.php'),
             ];
         });
 
@@ -82,7 +82,7 @@ class AppServiceProvider extends ServiceProvider
                 "file_title" => "Pagination",
                 "translation_folder" => base_path('resources/lang'),
                 "file_name" => "pagination.php",
-                "default" => "default",
+                "master_translation_file" => resource_path('lang/default/pagination.php'),
             ];
         });
 
@@ -93,7 +93,7 @@ class AppServiceProvider extends ServiceProvider
                 "file_title" => "Passwords",
                 "translation_folder" => base_path('resources/lang'),
                 "file_name" => "passwords.php",
-                "default" => "default",
+                "master_translation_file" => resource_path('lang/default/passwords.php'),
             ];
         });
 
@@ -104,7 +104,7 @@ class AppServiceProvider extends ServiceProvider
                 "file_title" => "Builder",
                 "translation_folder" => base_path('resources/lang'),
                 "file_name" => "builder.php",
-                "default" => "default",
+                "master_translation_file" => resource_path('lang/default/builder.php'),
             ];
         });
 
@@ -115,7 +115,7 @@ class AppServiceProvider extends ServiceProvider
                 "file_title" => "Validation",
                 "translation_folder" => base_path('resources/lang'),
                 "file_name" => "validation.php",
-                "default" => "default",
+                "master_translation_file" => resource_path('lang/default/validation.php'),
             ];
         });
     }

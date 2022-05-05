@@ -366,13 +366,11 @@ class Language extends Model
 
     public function createTranslationFile($source)
     {
-        if (array_key_exists('master_translation_file', $source)) {
-            $originFile = $source['master_translation_file'];
-        } else {
-            // If a 'master_translation_file' is not specified, then take the one associate with 'default' language as master
-            // For example: resources/lang/default/message.php
-            $originFile = join_paths($source['translation_folder'], $source['default'], $source['file_name']);
+        if (!array_key_exists('master_translation_file', $source)) {
+            throw new Exception('[master_translation_file] is not available for '.$source['file_name']);
         }
+
+        $originFile = $source['master_translation_file'];
 
         // Other files
         //     + resources / lang / ja / messages.php

@@ -86,7 +86,7 @@ class Campaign extends Model
      *
      * @var array
      */
-    protected $dates = ['created_at', 'updated_at', 'run_at'];
+    protected $dates = ['created_at', 'updated_at', 'run_at', 'delivery_at'];
 
     /**
      * Get campaign's default mail list.
