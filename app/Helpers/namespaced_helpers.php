@@ -92,7 +92,7 @@ function getAppHost()
     return $appHost;
 }
 
-function updateTranslationFile($targetFile, $sourceFile, $overwriteTargetPhrases = false)
+function updateTranslationFile($targetFile, $sourceFile, $overwriteTargetPhrases = false, $sort = false)
 {
     $source = include $sourceFile;
     $target = include $targetFile;
@@ -110,6 +110,10 @@ function updateTranslationFile($targetFile, $sourceFile, $overwriteTargetPhrases
 
     // Delete those keys in the final result
     $merged = array_diff_key($merged, $diff);
+
+    if ($sort) {
+        ksort($merged);
+    }
 
     $out = '<?php return '.var_export(\Yaml::parse(\Yaml::dump($merged)), true).' ?>';
     \File::put($targetFile, $out);
