@@ -60,8 +60,7 @@ class AppServiceProvider extends ServiceProvider
                 "file_title" => "Messages",
                 "translation_folder" => base_path('resources/lang'),
                 "file_name" => "messages.php",
-                "default" => "default",
-                "type" => 'default',
+                "default" => "default", // 'default' locale, like resources/lang/{default}/...
             ];
         });
 
@@ -73,7 +72,6 @@ class AppServiceProvider extends ServiceProvider
                 "translation_folder" => base_path('resources/lang'),
                 "file_name" => "auth.php",
                 "default" => "default",
-                "type" => 'default',
             ];
         });
 
@@ -85,7 +83,6 @@ class AppServiceProvider extends ServiceProvider
                 "translation_folder" => base_path('resources/lang'),
                 "file_name" => "pagination.php",
                 "default" => "default",
-                "type" => 'default',
             ];
         });
 
@@ -97,7 +94,6 @@ class AppServiceProvider extends ServiceProvider
                 "translation_folder" => base_path('resources/lang'),
                 "file_name" => "passwords.php",
                 "default" => "default",
-                "type" => 'default',
             ];
         });
 
@@ -109,7 +105,6 @@ class AppServiceProvider extends ServiceProvider
                 "translation_folder" => base_path('resources/lang'),
                 "file_name" => "builder.php",
                 "default" => "default",
-                "type" => 'default',
             ];
         });
 
@@ -121,7 +116,6 @@ class AppServiceProvider extends ServiceProvider
                 "translation_folder" => base_path('resources/lang'),
                 "file_name" => "validation.php",
                 "default" => "default",
-                "type" => 'default',
             ];
         });
     }
