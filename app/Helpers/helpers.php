@@ -319,30 +319,6 @@ function number_with_delimiter($number, $precision = 0, $seperator = ',')
 }
 
 /**
- * Function to convert IP address to IP number (IPv6).
- *
- * @return string
- */
-function Dot2LongIPv6($IPaddr)
-{
-    $int = inet_pton($IPaddr);
-    $bits = 15;
-    $ipv6long = 0;
-    while ($bits >= 0) {
-        $bin = sprintf('%08b', (ord($int[$bits])));
-        if ($ipv6long) {
-            $ipv6long = $bin.$ipv6long;
-        } else {
-            $ipv6long = $bin;
-        }
-        --$bits;
-    }
-    $ipv6long = gmp_strval(gmp_init($ipv6long, 2), 10);
-
-    return $ipv6long;
-}
-
-/**
  * Overwrite the Laravel's Builder#paginate, accept a $total parameter specifying the total number of records.
  *
  * @param int      $perPage
