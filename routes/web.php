@@ -680,8 +680,6 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('automation', 'Automation2Controller@index');
     Route::get('automation/{uid}/debug', 'Automation2Controller@debug');
     Route::get('automation/{automation}/{subscriber}/trigger', 'Automation2Controller@triggerNow');
-    Route::get('trigger/{id}', 'AutoTrigger@show');
-    Route::get('trigger/{id}/check', 'AutoTrigger@check');
     Route::get('automation/{automation}/run', 'Automation2Controller@run');
 
     Route::match(['get', 'post'], 'automation/emails/webhooks/{webhook_uid}/test', 'Automation2Controller@webhooksTest');
