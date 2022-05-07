@@ -1187,7 +1187,7 @@ class MailList extends Model
 
                 // Drop table, create table and create index
                 DB::statement("DROP TABLE IF EXISTS {$tmpTable};");
-                DB::statement("CREATE TABLE {$tmpTable}({$tmpFields})");
+                DB::statement("CREATE TABLE {$tmpTable}({$tmpFields}) ENGINE=InnoDB;");
                 DB::statement("CREATE INDEX _index_email_{$tmpTable} ON {$tmpTable}(`email`);");
 
                 // Insert subscriber fields from the batch to the temporary table
