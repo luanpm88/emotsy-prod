@@ -749,7 +749,8 @@ class Plan extends Model
         if ($this->isTimeUnlimited()) {
             return trans('messages.plan_time_unlimited');
         }
-        return trans_choice('messages.interval.' . $this->frequency_unit, $this->frequency_amount);
+
+        return $this->frequency_amount.' ' . trans('messages.' . \Acelle\Library\Tool::getPluralPrase($this->frequency_unit, $this->frequency_amount));
     }
 
     /**
