@@ -3823,8 +3823,7 @@
   'upgrade.upgrade_confirm' => 'システムはそれ自体をアップグレードしようとしています。 確認ボタンをクリックして続行してください',
   'upgrade.uploading' => 'Uploading...',
   'upgrade.wording.upgrade' => 'Your are running on version :current, a newer version is available: :new<br>Do you want to proceed with the upgrade?',
-  'upgrade.wording.upload' => '現在、バージョン:currentで実行しています。 アプリケーションをアップグレードするには、<code><a target="_blank" href="https://automail.jp"> automail.jpから最新のビルドをダウンロードしてください。 </a> </code>の場合、アップグレードパッケージは<code> [automail source] /upgrade/patch-4.xxb
-in </code>にあり、以下のフォームを使用してアップロードします。',
+  'upgrade.wording.upload' => '現在、バージョン:currentで実行しています。 アプリケーションをアップグレードするには、<code><a target="_blank" href="https://automail.jp"> automail.jpから最新のビルドをダウンロードしてください。 </a> </code>の場合、アップグレードパッケージは<code> [automail source] /upgrade/patch-4***.bin in </code>にあり、以下のフォームを使用してアップロードします。',
   'upgrade_manager' => 'アップグレードマネージャー',
   'upload' => 'アップロード',
   'upload_by' => 'アップロード者',

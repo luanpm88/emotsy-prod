@@ -823,7 +823,7 @@ class Customer extends Model
 
         // retrieve cached data
         $cache = json_decode($this->cache, true);
-        if (is_null($cache)) {
+        if (empty($cache)) {
             $cache = [];
         }
 
