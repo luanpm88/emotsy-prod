@@ -79,11 +79,6 @@ class Email extends Model
         return $this->hasMany('Acelle\Model\TrackingLog');
     }
 
-    public function deliveryAttempts()
-    {
-        return $this->hasMany('Acelle\Model\DeliveryAttempt');
-    }
-
     public function emailWebhooks()
     {
         return $this->hasMany('Acelle\Model\EmailWebhook');

@@ -25,9 +25,9 @@ namespace Acelle\Library;
 use ZipArchive;
 use Illuminate\Support\Facades\Log as LaravelLog; // something wrong, cannot use the default name Log
 use Illuminate\Support\Facades\File;
-use function Acelle\Helpers\updateTranslationFile;
 use Acelle\Library\Facades\Hook;
 use Acelle\Model\Language;
+use function Acelle\Helpers\updateTranslationFile;
 
 class UpgradeManager
 {
@@ -48,17 +48,16 @@ class UpgradeManager
         $this->allTranslationFiles = $this->findTranslationFiles();
 
         // deletect all language files
-
     }
 
     private function findTranslationFiles()
     {
         $allTranslationFiles = [];
-        foreach(Language::all() as $lang) {
-          foreach (Hook::execute('add_translation_file') as $source) {
-            $path = join_paths($source['translation_folder'], $lang->code, $source['file_name']);
-            $allTranslationFiles[] = $path;
-          }
+        foreach (Language::all() as $lang) {
+            foreach (Hook::execute('add_translation_file') as $source) {
+                $path = join_paths($source['translation_folder'], $lang->code, $source['file_name']);
+                $allTranslationFiles[] = $path;
+            }
         }
 
         return $allTranslationFiles;
