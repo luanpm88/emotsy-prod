@@ -8,7 +8,7 @@ use Acelle\Library\HtmlHandler\TransformWidgets;
 
 class BuilderWidget extends TestCase
 {
-    function test_rss_widget()
+    public function test_rss_widget()
     {
         $config = \Acelle\Model\Template::defaultRssConfig();
         $config['url'] = 'https://www.techradar.com/rss/news/software';
@@ -28,7 +28,7 @@ class BuilderWidget extends TestCase
 
         $pipeline = new PipelineBuilder();
         $pipeline->add(new TransformWidgets());
-        
+
         $html = $pipeline->build()->process($html);
 
         $this->assertTrue(strpos($html, 'rss-item="ItemTitle"') !== false);

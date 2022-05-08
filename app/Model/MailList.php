@@ -892,7 +892,7 @@ class MailList extends Model
     {
         $template = Layout::where('alias', 'subscribe_notification_for_list_owner')->first();
 
-        $message = $template->getMessage(function($html) use ($subscriber) {
+        $message = $template->getMessage(function ($html) use ($subscriber) {
             $html = str_replace('{LIST_NAME}', $this->name, $html);
             $html = str_replace('{EMAIL}', $subscriber->email, $html);
             $html = str_replace('{FULL_NAME}', $subscriber->getFullName(), $html);
