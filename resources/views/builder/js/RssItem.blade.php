@@ -24,6 +24,7 @@
 
         select() {
             this.getElements().addClass('rss-selected');
+            this.obj.find('textarea').focus();
         }
 
         unselect() {
