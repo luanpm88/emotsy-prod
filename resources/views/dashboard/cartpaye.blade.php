@@ -58,46 +58,46 @@
     <div class="mt-5">
         <div class="">
             <div class="function-boxes">
-                <button class="function-box btn btn-success me-4 mb-4 rounded-3">
+                <a href="{{ action('Site\ProductController@index') }}" class="function-box btn btn-success me-4 mb-4 rounded-3">
                     <div class="d-flex align-items-center justify-content-center" style="height:100%">
                         <span class="function-icon material-icons-outlined">
                             inventory_2
                         </span>
                         <h4 class="text-center m-0">Products</h4>
                     </div>                        
-                </button>
-                <button class="function-box btn btn-warning me-4 mb-4 rounded-3">
+                </a>
+                <a href="{{ action('Site\CategoryController@index') }}" class="function-box btn btn-warning me-4 mb-4 rounded-3">
                     <div class="d-flex align-items-center justify-content-center" style="height:100%">
                         <span class="function-icon material-icons-outlined">
                             category
                         </span>
                         <h4 class="text-center m-0">Product<br>Categories</h4>
                     </div>                        
-                </button>
-                <button class="function-box btn btn-danger me-4 mb-4 rounded-3">
+                </a>
+                <a href="{{ action('Site\OrderController@index') }}" class="function-box btn btn-danger me-4 mb-4 rounded-3">
                     <div class="d-flex align-items-center justify-content-center" style="height:100%">
                         <span class="function-icon material-icons-outlined">
                             grading
                         </span>
                         <h4 class="text-center m-0">Orders</h4>
                     </div>                        
-                </button>
-                <button class="function-box btn btn-info bg-brown me-4 mb-4 rounded-3">
+                </a>
+                <a href="{{ action('Site\CustomerController@index') }}" class="function-box btn btn-info bg-brown me-4 mb-4 rounded-3">
                     <div class="d-flex align-items-center justify-content-center" style="height:100%">
                         <span class="function-icon material-icons-outlined">
                             people
                         </span>
                         <h4 class="text-center m-0">Customers</h4>
                     </div>                        
-                </button>
-                <button class="function-box btn btn-info bg-payment me-4 mb-4 rounded-3">
+                </a>
+                <a href="{{ action('Site\SettingController@payments') }}" class="function-box btn btn-info bg-payment me-4 mb-4 rounded-3">
                     <div class="d-flex align-items-center justify-content-center" style="height:100%">
                         <span class="function-icon material-icons-outlined">
                             payments
                         </span>
                         <h4 class="text-center m-0">Payment Settings</h4>
                     </div>                        
-                </button>
+                </a>
             </div>
         </div>
             
