@@ -16,10 +16,7 @@
 						overflow: hidden;" class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
 						<div class="">
 							<div class="d-flex align-items-center">
-								<a target="_blank" href="{{ get_permalink( $wooProduct->id ) }}" class="btn btn-light m-icon px-2 me-1 text-center">
-									<span class="material-icons-outlined">
-										visibility
-										</span></a>
+								
 
 								@php
 									$current_product_id = $wooProduct->id;
@@ -30,9 +27,14 @@
 			
 									
 								@endphp
-								<a target="_blank" href="{{ $checkout_url }}" class="btn btn-light m-icon px-2 me-1 text-center">
+								<a target="_blank" href="{{ $checkout_url }}" class="btn btn-light m-icon px-2 me-1 text-center copy-product-checkout-url xtooltip" title="Copy checkout URL">
 									<span class="material-icons-outlined">
-										shopping_basket
+										monetization_on
+										</span></a>
+
+								<a target="_blank" href="{{ get_permalink( $wooProduct->id ) }}" class="btn btn-light m-icon px-2 me-1 text-center copy-product-page-url xtooltip" title="Copy Product Page URL">
+									<span class="material-icons-outlined">
+										inventory_2
 										</span></a>
 								<a href="{{ action('Site\ProductController@edit', $wooProduct->id) }}" role="button" class="btn btn-secondary px-2">
 									<span class="material-icons-outlined">
@@ -64,6 +66,34 @@
 	</div>
 	
 	@include('elements/_per_page_select', ["items" => $products])
+
+	<script>
+		$(function() {
+			$('.copy-product-page-url').on('click', function(e) {
+				e.preventDefault();
+
+				var url = $(this).attr("href");
+
+				copyToClipboard(url);
+
+				new Dialog('alert', {
+					message: 'Copied to clipboard!<br><br> You can add this URL to your own home or landing page, allowing your visitors to quickly BUY this product',
+				});
+			});
+
+			$('.copy-product-checkout-url').on('click', function(e) {
+				e.preventDefault();
+
+				var url = $(this).attr("href");
+
+				copyToClipboard(url);
+
+				new Dialog('alert', {
+					message: 'Copied to clipboard!<br><br> This is a simple PRODUCT PAGE. You can customize the PRODUCT PAGE template later on',
+				});
+			});
+		});
+	</script>
 		
 @elseif (!empty(request()->keyword))
 	<div class="empty-list">
