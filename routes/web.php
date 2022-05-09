@@ -721,6 +721,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::post('site/profucts/{id}/activate', 'Site\TemplateController@activate');
     Route::get('site/products/listing', 'Site\ProductController@listing');
     Route::get('site/products', 'Site\ProductController@index');
+    Route::get('site/products-2', 'Site\ProductController@index2');
 
     // Site - Template
     Route::post('site/templates/{id}/activate', 'Site\TemplateController@activate');

@@ -30,6 +30,10 @@
 					<span class="text-muted d-block mt-2">{{ trans('messages.product.categories') }}</span>
 				</td>
 				<td class="text-end">
+					<a target="_blank" href="{{ get_permalink( $wooProduct->id ) }}" class="btn btn-light m-icon pl-3">
+						<span class="material-icons-outlined me-2">
+							visibility
+							</span>{{ trans('messages.view') }}</a>
 					<a href="{{ action('Site\ProductController@edit', $wooProduct->id) }}" class="btn btn-secondary m-icon pl-3">
 						<span class="material-icons-outlined me-2">
 							edit

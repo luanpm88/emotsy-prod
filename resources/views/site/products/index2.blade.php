@@ -56,12 +56,12 @@ search
             <div class="text-end d-flex align-items-center">
                 <div class="view-toggle d-flex ml-auto">
                     <div class="btn-group" role="group" aria-label="Basic example">
-                        <a href="{{ action('Site\ProductController@index') }}" class="btn btn-default view-toogle grid m-icon">
+                        <a href="{{ action('Site\ProductController@index2') }}" class="btn btn-default view-toogle grid m-icon">
                             <span class="material-icons-outlined">
                                 grid_view
                             </span>
                         </a>
-                        <a href="{{ action('Site\ProductController@index', ['view' => 'list']) }}" class="btn btn-default view-toogle list m-icon mr-3">
+                        <a href="{{ action('Site\ProductController@index2', ['view' => 'list']) }}" class="btn btn-default view-toogle list m-icon mr-3">
                             <span class="material-icons-outlined">
                                 reorder
                             </span>

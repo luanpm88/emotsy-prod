@@ -16,9 +16,14 @@
 						overflow: hidden;" class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
 						<div class="">
 							<div class="d-flex align-items-center">
+								<a target="_blank" href="{{ get_permalink( $wooProduct->id ) }}" class="btn btn-light m-icon px-2 me-1 text-center">
+									<span class="material-icons-outlined">
+										visibility
+										</span></a>
 								<a href="{{ action('Site\ProductController@edit', $wooProduct->id) }}" role="button" class="btn btn-secondary">
 									{{ trans('messages.edit') }}
 								</a>
+								
 								<a
 									class="btn btn-link list-action-single"
 									link-confirm="{{ trans('messages.product.delete.confirm', [
