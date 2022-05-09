@@ -34,6 +34,20 @@
 						<span class="material-icons-outlined me-2">
 							visibility
 							</span>{{ trans('messages.view') }}</a>
+
+					@php
+						$current_product_id = $wooProduct->id;
+    
+						$product = wc_get_product( $current_product_id );
+						
+						$checkout_url = wc_get_checkout_url().'?add-to-cart='.$current_product_id;
+
+						
+					@endphp
+					<a target="_blank" href="{{ $checkout_url }}" class="btn btn-light m-icon pl-3">
+						<span class="material-icons-outlined me-2">
+							shopping_basket
+							</span>Buy now</a>
 					<a href="{{ action('Site\ProductController@edit', $wooProduct->id) }}" class="btn btn-secondary m-icon pl-3">
 						<span class="material-icons-outlined me-2">
 							edit

@@ -20,8 +20,24 @@
 									<span class="material-icons-outlined">
 										visibility
 										</span></a>
-								<a href="{{ action('Site\ProductController@edit', $wooProduct->id) }}" role="button" class="btn btn-secondary">
-									{{ trans('messages.edit') }}
+
+								@php
+									$current_product_id = $wooProduct->id;
+				
+									$product = wc_get_product( $current_product_id );
+									
+									$checkout_url = wc_get_checkout_url().'?add-to-cart='.$current_product_id;
+			
+									
+								@endphp
+								<a target="_blank" href="{{ $checkout_url }}" class="btn btn-light m-icon px-2 me-1 text-center">
+									<span class="material-icons-outlined">
+										shopping_basket
+										</span></a>
+								<a href="{{ action('Site\ProductController@edit', $wooProduct->id) }}" role="button" class="btn btn-secondary px-2">
+									<span class="material-icons-outlined">
+										edit
+										</span>
 								</a>
 								
 								<a
