@@ -58,7 +58,7 @@
     <div class="mt-5">
         <div class="">
             <div class="function-boxes">
-                <a href="{{ action('Site\ProductController@index') }}" class="function-box btn btn-success me-4 mb-4 rounded-3">
+                <a href="{{ action('Site\ProductController@index2') }}" class="function-box btn btn-success me-4 mb-4 rounded-3">
                     <div class="d-flex align-items-center justify-content-center" style="height:100%">
                         <span class="function-icon material-icons-outlined">
                             inventory_2
