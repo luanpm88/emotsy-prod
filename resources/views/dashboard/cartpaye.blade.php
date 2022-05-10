@@ -53,7 +53,7 @@
         }
     </style>
     <h2 class="mt-4 pt-2">{!! trans('messages.frontend_dashboard_hello', ['name' => Auth::user()->displayName()]) !!}</h2>
-    <p>{!! trans('messages.frontend_dashboard_welcome') !!}</p>
+    <p>Welcome back to your account dashboard.<br>Manage your Products. Generate checkout URL and get Paid!</p>
 
     <div class="mt-5">
         <div class="">
