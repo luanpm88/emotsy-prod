@@ -780,6 +780,11 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::get('admin/users/delete', 'UserController@delete');
     Route::resource('admin/users', 'UserController');
 
+    // Form Template
+    Route::get('admin/templates/forms/{uid}/preview', 'FormTemplateController@preview');
+    Route::get('admin/templates/forms/list', 'FormTemplateController@listing');
+    Route::get('admin/templates/forms', 'FormTemplateController@index');
+
     // Template
     Route::post('admin/templates/{uid}/export', 'TemplateController@export');
     Route::match(['get','post'], 'admin/templates/{uid}/change-name', 'TemplateController@changeName');

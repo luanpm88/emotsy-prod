@@ -26,6 +26,8 @@
     @if ($template->theme)
         @include('builder.themes.' . $template->theme)
     @endif
+
+    @include('helpers._builder_form')
     
     <script>
         var CSRF_TOKEN = "{{ csrf_token() }}";

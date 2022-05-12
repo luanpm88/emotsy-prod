@@ -4164,4 +4164,7 @@
   'your_current_license' => 'Thank you for purchasing! Below is your license key, also known as Purchase Code. Your license type is',
   'your_subscriptions' => 'Your subscriptions',
   'zip_postal_code' => 'Zip / Postal code',
+  'form_templates' => 'Form templates',
+  'form_templates.intro' => 'Below are BASE form templates available for all users registered in the applicaiton<br>
+    When it comes to add a form popup, users can create a new form popup from a base one',
 ) ?>

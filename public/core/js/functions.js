@@ -345,7 +345,14 @@ function updatePickadateDateMask(control) {
 function popupwindow(url, title, w, h) {
     var left = (screen.width/2)-(w/2);
     var top = 0;
-    return window.open(url, title, 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width='+w+', height='+screen.height+', top='+top+', left='+left);
+    var height = screen.height;
+
+    if (typeof(h) !== 'undefined') {
+        height = h;
+        top = (screen.height/2)-(height/2);
+    }
+
+    return window.open(url, title, 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width='+w+', height='+height+', top='+top+', left='+left);
 }
 
 function removeMaskLoading() {
