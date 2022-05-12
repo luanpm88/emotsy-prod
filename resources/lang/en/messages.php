@@ -4167,4 +4167,7 @@
   'form_templates' => 'Form templates',
   'form_templates.intro' => 'Below are BASE form templates available for all users registered in the applicaiton<br>
     When it comes to add a form popup, users can create a new form popup from a base one',
+  'license.remove' => 'Remove',
+  'license.remove.confirm' => 'You`re about to remove current lincense! This can not be undone.',
+  'license.removed' => 'The license was sucessfully removed!',
 ) ?>
