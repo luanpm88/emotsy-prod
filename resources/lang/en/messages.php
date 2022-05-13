@@ -1755,7 +1755,9 @@
   'form_page.use_built_in_page' => 'Built-in page',
   'form_page.use_built_in_page.intro' => 'Use the application\'s web page',
   'form_page.use_outside_url' => 'Custom URL',
-  'form_page.use_outside_url.intro' => 'Redirect to the URL below',
+  'form_page.use_outside_url.intro' => 'Specify a custom URL to redirect your new contact to.
+    You can use {EMAIL}, {FIRST_NAME}, {LAST_NAME},<br> {ID} tags in the URL and they will
+    be transformed to the contact\'s actual information.Redirect to the URL below',
   'form_title' => 'Form title',
   'forms' => 'Forms',
   'forms.delete.confirm' => 'You\'re about to delete :number form(s).',
