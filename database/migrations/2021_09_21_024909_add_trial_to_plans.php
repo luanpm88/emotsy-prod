@@ -14,8 +14,8 @@ class AddTrialToPlans extends Migration
     public function up()
     {
         Schema::table('plans', function (Blueprint $table) {
-            $table->integer('trial_amount');
-            $table->string('trial_unit');
+            $table->integer('trial_amount')->nullable();
+            $table->string('trial_unit')->nullable();
         });
     }
 

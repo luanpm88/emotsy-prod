@@ -96,7 +96,7 @@
                                                     'plan_uid' => $plan->uid,
                                                 ]) }}"
                                                 class="btn fw-600 btn-primary rounded-3 d-block py-2 shadow-sm">
-                                                    @if ($plan->isFree())
+                                                    @if ($plan->isFree() || $plan->hasTrial())
                                                         {{ trans('messages.plan.select') }}
                                                     @else
                                                         {{ trans('messages.plan.buy') }}
