@@ -1738,6 +1738,9 @@
   'form_page.use_built_in_page.intro' => 'Verwenden Sie Ihre E-Mail-App-Mail-Seite',
   'form_page.use_outside_url' => 'eigene URL',
   'form_page.use_outside_url.intro' => 'Weiterleiten an die unten stehende URL',
+  'form_templates' => 'Form templates',
+  'form_templates.intro' => 'Below are BASE form templates available for all users registered in the applicaiton<br>
+    When it comes to add a form popup, users can create a new form popup from a base one',
   'form_title' => 'Formular Titel',
   'forms' => 'Forms',
   'forms.delete.confirm' => 'You\'re about to delete :number form(s).',
@@ -1979,6 +1982,9 @@
   'license' => 'Lizenz  (Bestellcode)',
   'license.license_types' => 'Lizenz Typen',
   'license.no_license' => 'Sie haben keine gültige Lizenz eingegeben. Bitte erwerben Sie eine Lizenz und geben Sie sie in das untenstehende Formular ein, um das Produkt weiter zu verwenden',
+  'license.remove' => 'Remove',
+  'license.remove.confirm' => 'You`re about to remove current lincense! This can not be undone.',
+  'license.removed' => 'The license was sucessfully removed!',
   'license.updated' => 'App-Lizenz wurde erfolgreich aktualisiert',
   'license.your_license' => 'Ihre aktuelle Lizenz',
   'license_guide' => '

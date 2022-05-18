@@ -22,6 +22,7 @@
                 {{ csrf_field() }}
 
                 <input type="hidden" name="name" value="{{ $campaign->name }}" />
+                <input type="hidden" name="type" value="{{ Acelle\Model\Template::TYPE_EMAIL }}" />
 
                 @include('helpers.form_control', ['required' => true, 'type' => 'file', 'label' => trans('messages.upload_file'), 'name' => 'file'])
 				

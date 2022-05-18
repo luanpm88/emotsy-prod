@@ -721,6 +721,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::post('site/profucts/{id}/activate', 'Site\TemplateController@activate');
     Route::get('site/products/listing', 'Site\ProductController@listing');
     Route::get('site/products', 'Site\ProductController@index');
+    Route::get('site/products-2', 'Site\ProductController@index2');
 
     // Site - Template
     Route::post('site/templates/{id}/activate', 'Site\TemplateController@activate');
@@ -778,6 +779,11 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::get('admin/users/sort', 'UserController@sort');
     Route::get('admin/users/delete', 'UserController@delete');
     Route::resource('admin/users', 'UserController');
+
+    // Form Template
+    Route::get('admin/templates/forms/{uid}/preview', 'FormTemplateController@preview');
+    Route::get('admin/templates/forms/list', 'FormTemplateController@listing');
+    Route::get('admin/templates/forms', 'FormTemplateController@index');
 
     // Template
     Route::post('admin/templates/{uid}/export', 'TemplateController@export');
@@ -870,6 +876,8 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::resource('admin/languages', 'LanguageController');
 
     // Settings
+    Route::post('admin/settings/license/remove', 'SettingController@licenseRemove');
+
     Route::post('admin/settings/payment', 'SettingController@payment');
     Route::post('admin/settings/advanced/{name}/update', 'SettingController@advancedUpdate');
     Route::get('admin/settings/advanced', 'SettingController@advanced');

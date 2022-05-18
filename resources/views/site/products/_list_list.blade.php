@@ -12,7 +12,7 @@
 						{!! $wooProduct->get_image() !!}
 					</div>
 				</td>
-				<td width="50%">
+				<td width="30%">
 					<h5 class="no-margin text-normal">
 						<span class="kq_search  fw-600" href="javascript:;">
 							{{ $wooProduct->name }}
@@ -30,6 +30,24 @@
 					<span class="text-muted d-block mt-2">{{ trans('messages.product.categories') }}</span>
 				</td>
 				<td class="text-end">
+					<a target="_blank" href="{{ get_permalink( $wooProduct->id ) }}" class="btn btn-light m-icon pl-3 copy-product-page-url">
+						<span class="material-icons-outlined me-2">
+							inventory_2
+							</span>Copy Product Page URL</a>
+
+					@php
+						$current_product_id = $wooProduct->id;
+    
+						$product = wc_get_product( $current_product_id );
+						
+						$checkout_url = wc_get_checkout_url().'?add-to-cart='.$current_product_id;
+
+						
+					@endphp
+					<a target="_blank" href="{{ $checkout_url }}" class="btn btn-light m-icon pl-3 copy-product-checkout-url">
+						<span class="material-icons-outlined me-2">
+							monetization_on
+							</span>Copy checkout URL</a>
 					<a href="{{ action('Site\ProductController@edit', $wooProduct->id) }}" class="btn btn-secondary m-icon pl-3">
 						<span class="material-icons-outlined me-2">
 							edit
@@ -57,6 +75,34 @@ delete_outline
 		@endforeach
 	</table>
 	@include('elements/_per_page_select', ["items" => $products])
+
+	<script>
+		$(function() {
+			$('.copy-product-page-url').on('click', function(e) {
+				e.preventDefault();
+
+				var url = $(this).attr("href");
+
+				copyToClipboard(url);
+
+				new Dialog('alert', {
+					message: 'Copied to clipboard!<br><br> You can add this URL to your own home or landing page, allowing your visitors to quickly BUY this product',
+				});
+			});
+
+			$('.copy-product-checkout-url').on('click', function(e) {
+				e.preventDefault();
+
+				var url = $(this).attr("href");
+
+				copyToClipboard(url);
+
+				new Dialog('alert', {
+					message: 'Copied to clipboard!<br><br> This is a simple PRODUCT PAGE. You can customize the PRODUCT PAGE template later on',
+				});
+			});
+		});
+	</script>
 
 @elseif (!empty(request()->keyword))
 	<div class="empty-list">

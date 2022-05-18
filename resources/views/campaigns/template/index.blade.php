@@ -67,7 +67,7 @@ forward_to_inbox
                     <div class="template-thumb-container ml-4">
                         <img class="automation-template-thumb" src="{{ $campaign->getThumbUrl() }}?v={{ Carbon\Carbon::now() }}" />
                         <a
-                            onclick="popupwindow('{{ action('CampaignController@preview', $campaign->uid) }}', `{{ $campaign->name }}`, 800, 800)"
+                            onclick="popupwindow('{{ action('CampaignController@preview', $campaign->uid) }}', `{{ $campaign->name }}`, 800)"
                             href="javascript:;"
                             class="btn btn-primary" style="display:none"
                         >

@@ -27,6 +27,7 @@
             <div class="">                
                 <div class="filter-box">
                     <input type="hidden" name="view" value="{{ request()->view }}" />
+                    <input type="hidden" name="type" value="{{ isset($type) ? $type : '' }}" />
                     @if (request()->view && request()->view == 'list')
                         <div class="checkbox inline check_all_list">
                             <label>

@@ -1762,6 +1762,9 @@
   'form_page.use_built_in_page.intro' => 'Use your Acelle Mail page',
   'form_page.use_outside_url' => 'Custom URL',
   'form_page.use_outside_url.intro' => 'Redirect to the URL below',
+  'form_templates' => 'Form templates',
+  'form_templates.intro' => 'Below are BASE form templates available for all users registered in the applicaiton<br>
+    When it comes to add a form popup, users can create a new form popup from a base one',
   'form_title' => 'Título do formulário',
   'forms' => 'Forms',
   'forms.delete.confirm' => 'You\'re about to delete :number form(s).',
@@ -2003,6 +2006,9 @@
   'license' => 'Licença (Código de compra)',
   'license.license_types' => 'Tipo de licença',
   'license.no_license' => 'Licença inválida. Compre uma licença e insira-a no formulário abaixo para continuar a utilizar o serviço',
+  'license.remove' => 'Remove',
+  'license.remove.confirm' => 'You`re about to remove current lincense! This can not be undone.',
+  'license.removed' => 'The license was sucessfully removed!',
   'license.updated' => 'Licença de aplicação foi atualizada com sucesso',
   'license.your_license' => 'A sua licença atual',
   'license_guide' => '

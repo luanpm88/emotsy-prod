@@ -1755,7 +1755,12 @@
   'form_page.use_built_in_page' => 'Built-in page',
   'form_page.use_built_in_page.intro' => 'Use the application\'s web page',
   'form_page.use_outside_url' => 'Custom URL',
-  'form_page.use_outside_url.intro' => 'Redirect to the URL below',
+  'form_page.use_outside_url.intro' => 'Specify a custom URL to redirect your new contact to.
+    You can use {EMAIL}, {FIRST_NAME}, {LAST_NAME},<br> {ID} tags in the URL and they will
+    be transformed to the contact\'s actual information.Redirect to the URL below',
+  'form_templates' => 'Form templates',
+  'form_templates.intro' => 'Below are BASE form templates available for all users registered in the applicaiton<br>
+    When it comes to add a form popup, users can create a new form popup from a base one',
   'form_title' => 'Form title',
   'forms' => 'Forms',
   'forms.delete.confirm' => 'You\'re about to delete :number form(s).',
@@ -1993,6 +1998,9 @@
   'license' => 'License (Purchased code)',
   'license.license_types' => 'License types',
   'license.no_license' => 'You do not enter a valid license yet. Please purchase a license and enter it in the form below to continue using the product',
+  'license.remove' => 'Remove',
+  'license.remove.confirm' => 'You`re about to remove current lincense! This can not be undone.',
+  'license.removed' => 'The license was sucessfully removed!',
   'license.updated' => 'App license was successfully updated',
   'license.your_license' => 'Your current license',
   'license_guide' => '

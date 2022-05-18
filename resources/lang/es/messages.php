@@ -1763,6 +1763,9 @@
   'form_page.use_built_in_page.intro' => 'Usa tu página de Globaldima Marketing',
   'form_page.use_outside_url' => 'URL personalizada',
   'form_page.use_outside_url.intro' => 'Redireccionar a la URL a continuación',
+  'form_templates' => 'Form templates',
+  'form_templates.intro' => 'Below are BASE form templates available for all users registered in the applicaiton<br>
+    When it comes to add a form popup, users can create a new form popup from a base one',
   'form_title' => 'Título del formulario',
   'forms' => 'Forms',
   'forms.delete.confirm' => 'You\'re about to delete :number form(s).',
@@ -2004,6 +2007,9 @@
   'license' => 'Licencia (Código de compra)',
   'license.license_types' => 'Tipos de licencia',
   'license.no_license' => 'Aún no ingresa una licencia válida. Compre una licencia e ingrésela en el formulario a continuación para continuar usando el producto',
+  'license.remove' => 'Remove',
+  'license.remove.confirm' => 'You`re about to remove current lincense! This can not be undone.',
+  'license.removed' => 'The license was sucessfully removed!',
   'license.updated' => 'La licencia de la aplicación se actualizó correctamente',
   'license.your_license' => 'Su licencia actual',
   'license_guide' => '

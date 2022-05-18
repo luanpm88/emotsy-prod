@@ -6,6 +6,10 @@
             return getI18n('block');
         }
 
+        unselectCallback() {
+            this.obj.find('*').removeClass('rss-selected');
+        }
+
         getOptions() {
             var _this = this;
 
@@ -67,8 +71,24 @@
             // click outside item
             element.obj.find('[rss-item]').unbind('click');
             element.obj.find('[rss-item]').on('click', function(e) {
-                var rssItem = element.rssItemFactory($(this));
-                element.selectItem(rssItem);
+                var item = $(this);
+
+                
+                if(typeof(currentEditor.selected.rssItemFactory) !== 'undefined') {
+                    var rssItem = element.rssItemFactory(item);
+                    element.selectItem(rssItem);
+                // rss element not selected then select
+                } else {
+                    var t = $(this).closest('[builder-element="RssElement"]');
+                    var e = currentEditor.elementFactory(t);
+                    currentEditor.select(e);
+                    currentEditor.handleSelect(function() {
+                        setTimeout(function() {
+                            var rssItem = e.rssItemFactory(item);
+                            e.selectItem(rssItem);
+                        },200);
+                    });
+                }
             } )
 
             // click no item
