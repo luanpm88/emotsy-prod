@@ -639,12 +639,11 @@ class Setting extends Model
         if (empty($license)) {
             self::set('license', '');
             self::set('license_type', '');
-
-            return;
+        } else {
+            $license_type = \Acelle\Helpers\LicenseHelper::getLicenseType($license);
+            self::set('license', $license);
+            self::set('license_type', $license_type);
         }
-        $license_type = \Acelle\Helpers\LicenseHelper::getLicenseType($license);
-        self::set('license', $license);
-        self::set('license_type', $license_type);
     }
 
     /**

@@ -807,8 +807,7 @@ class SettingController extends Controller
     public function licenseRemove()
     {
         try {
-            // remove license...
-            throw new \Exception('Can not remove license!');
+            Setting::updateLicense(null);
 
             return redirect()->action('Admin\SettingController@license')
                 ->with('alert-success', trans('messages.license.removed'));
