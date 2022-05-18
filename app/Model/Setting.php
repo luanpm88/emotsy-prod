@@ -425,19 +425,19 @@ class Setting extends Model
             ],
             'geoip.sqlite.dbname' => [
                 'cat' => 'others',
-                'value' => 'storage/app/ip2locationdb11.db',
+                'value' => 'storage/app/GeoLite2-City.mmdb',
                 'type' => 'text',
                 'not_required' => true,
             ],
             'geoip.sqlite.source_url' => [
                 'cat' => 'others',
-                'value' => 'https://acellemail.s3.amazonaws.com/ip2locationdb11.db',
+                'value' => 'https://acellemail.s3.amazonaws.com/GeoLite2-City.mmdb',
                 'type' => 'text',
                 'not_required' => true,
             ],
             'geoip.sqlite.source_hash' => [
                 'cat' => 'others',
-                'value' => 'b09b6107c83be6e036a14a54a46ac97a',
+                'value' => 'b95ecaff82017c4f52577196c41db946',
                 'type' => 'text',
                 'not_required' => true,
             ],
@@ -553,6 +553,22 @@ class Setting extends Model
                 'type' => 'text',
                 'not_required' => true,
             ],
+            'layout.menu_bar' => [
+                'cat' => 'others',
+                'value' => 'left',
+                'type' => 'text',
+                'not_required' => true,
+            ],
+            'invoice.current' => [
+                'cat' => 'general',
+                'value' => '1',
+                'type' => 'number',
+            ],
+            'invoice.format' => [
+                'cat' => 'general',
+                'value' => '%08d',  // a number of 8 digit, for example: sprintf('%08d', 15) -> 00000015
+                'type' => 'text',
+            ],
         ];
     }
 
@@ -623,12 +639,11 @@ class Setting extends Model
         if (empty($license)) {
             self::set('license', '');
             self::set('license_type', '');
-
-            return;
+        } else {
+            $license_type = \Acelle\Helpers\LicenseHelper::getLicenseType($license);
+            self::set('license', $license);
+            self::set('license_type', $license_type);
         }
-        $license_type = \Acelle\Helpers\LicenseHelper::getLicenseType($license);
-        self::set('license', $license);
-        self::set('license_type', $license_type);
     }
 
     /**
@@ -719,5 +734,64 @@ class Setting extends Model
                 $setting->save();
             }
         }
+    }
+
+    public static function getTaxSettings()
+    {
+        if (self::get('tax') == null) {
+            return [
+                'enabled' => 'no',
+                'default_rate' => 10,
+                'countries' => [],
+            ];
+        }
+
+        return json_decode(self::get('tax'), true);
+    }
+
+    public static function setTaxSettings($params)
+    {
+        $settings = self::getTaxSettings();
+        $countries = $settings['countries'];
+
+        if (isset($params['countries'])) {
+            $countries = array_merge($countries, $params['countries']);
+        }
+
+        $settings = array_merge($settings, $params);
+        $settings['countries'] = $countries;
+
+        self::set('tax', json_encode($settings));
+    }
+
+    public static function getTaxByCountry($country=null)
+    {
+        if (self::getTaxSettings()['enabled'] !== 'yes') {
+            return 0;
+        }
+
+        if ($country == null) {
+            return self::getTaxSettings()['default_rate'];
+        }
+
+        $countries = self::getTaxSettings()['countries'];
+
+        if (isset($countries[$country->code])) {
+            return $countries[$country->code];
+        } else {
+            return self::getTaxSettings()['default_rate'];
+        }
+    }
+
+    public static function removeTaxCountryByCode($code)
+    {
+        $settings = self::getTaxSettings();
+        $countries = $settings['countries'];
+
+        unset($countries[$code]);
+
+        $settings['countries'] = $countries;
+
+        self::set('tax', json_encode($settings));
     }
 }

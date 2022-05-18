@@ -23,7 +23,7 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
-use Acelle\Events\MailListUpdated;
+use Acelle\Events\CampaignUpdated;
 use Acelle\Library\StringHelper;
 use Exception;
 use Illuminate\Support\Facades\Validator;
@@ -40,19 +40,19 @@ class ClickLog extends Model
             // just ignore and let users go
             // the 'url' validation of Laravel does not work with UTF8
             // For example: https://algeriestore.com/content/Algérie-Store-Catalogue-FR.pdf
-            return $url;
+            return [$url, null];
         }
 
         $messageId = StringHelper::base64UrlDecode($request->message_id);
 
         if (!TrackingLog::where('message_id', $messageId)->exists()) {
-            return $url;
+            return [$url, null];
         }
 
         $log = new self();
         $log->message_id = $messageId;
         $log->url = $url;
-        $log->user_agent = $_SERVER['HTTP_USER_AGENT'];
+        $log->user_agent = array_key_exists('HTTP_USER_AGENT', $_SERVER) ? $_SERVER['HTTP_USER_AGENT'] : null;
 
         try {
             $location = IpLocation::add($request->ip());
@@ -64,11 +64,28 @@ class ClickLog extends Model
         // Save anyway
         $log->save();
 
-        if ($log->trackingLog) {
-            event(new MailListUpdated($log->trackingLog->subscriber->mailList));
+        // Just in case an open cannot be recorded (it is very likely the case, due to Gmail proxy/cache)
+        // Make it make sense! there is at least one OPEN
+        // @todo what about open callbacks?
+        $openLog = $log->createRelatedOpenLogIfNotExist();
+
+        // Do not trigger cache update if campaign is running
+        if ($log->trackingLog && !is_null($log->trackingLog->campaign)) {
+            if (!$log->trackingLog->campaign->isSending()) {
+                event(new CampaignUpdated($log->trackingLog->campaign));
+            }
         }
 
-        return $url;
+        return [$url, $log];
+    }
+
+    public function createRelatedOpenLogIfNotExist()
+    {
+        $openLog = OpenLog::firstOrNew(['message_id' => $this->message_id]);
+
+        if (is_null($openLog->id)) {
+            $openLog->save();
+        }
     }
 
     private static function validateUrl($url)

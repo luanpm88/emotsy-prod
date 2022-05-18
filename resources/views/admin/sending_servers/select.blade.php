@@ -24,38 +24,54 @@ add
             <ul class="modern-listing big-icon no-top-border-list mt-0">
                 @foreach($more as $server)
                     <li>
-                        <a href="{{ $server['create_url'] }}" class="btn btn-secondary">{{ trans('messages.choose') }}</a>
-                        <a href="{{ $server['create_url'] }}">
-                            <span class="mc-server-avatar shadow-sm rounded server-avatar" style="background: url({{ $server['icon_url']  }}) top left/36px 36px no-repeat transparent;">
-                                <span class="material-icons-outlined">
+                        <div class="d-flex align-items-center">
+                            <div class="me-3">
+                                <a href="{{ $server['create_url'] }}">
+                                    <span class="mc-server-avatar shadow-sm rounded server-avatar" style="background: url({{ $server['icon_url']  }}) top left/36px 36px no-repeat transparent;">
+                                        <span class="material-icons-outlined">
 
-</span>
-                            </span>
-                        </a>
-                        <h4><a href="{{ $server['create_url'] }}">{{  $server['name']  }}</a> <span class="label label-flat bg-verified">
-                            {{ trans('messages.plugin') }}
-                        </span> </h4>
-                        <p>
-                            {{  $server['description']  }}
-                        </p>
+        </span>
+                                    </span>
+                                </a>
+                            </div>
+                            <div class="me-auto">
+                                <h4><a href="{{ $server['create_url'] }}">{{  $server['name']  }}</a> <span class="label label-flat bg-verified">
+                                    {{ trans('messages.plugin') }}
+                                </span> </h4>
+                                <p>
+                                    {{  $server['description']  }}
+                                </p>
+                            </div>
+                            <div>
+                                <a href="{{ $server['create_url'] }}" class="btn btn-secondary">{{ trans('messages.choose') }}</a>
+                            </div>
+                        </div>
                     </li>                    
                 @endforeach
 
                 @foreach (Acelle\Model\SendingServer::types() as $key => $type)
 
                     <li>
-                        <a href="{{ action('Admin\SendingServerController@create', ["type" => $key]) }}" class="btn btn-secondary">{{ trans('messages.choose') }}</a>
-                        <a href="{{ action('Admin\SendingServerController@create', ["type" => $key]) }}">
-                            <span class="mc-server-avatar shadow-sm rounded server-avatar server-avatar-{{ $key }}">
-                                <span class="material-icons-outlined">
+                        <div class="d-flex align-items-center">
+                            <div class="me-3">
+                                <a href="{{ action('Admin\SendingServerController@create', ["type" => $key]) }}">
+                                    <span class="mc-server-avatar shadow-sm rounded server-avatar server-avatar-{{ $key }}">
+                                        <span class="material-icons-outlined">
 
-</span>
-                            </span>
-                        </a>
-                        <h4><a href="{{ action('Admin\SendingServerController@create', ["type" => $key]) }}">{{ trans('messages.' . $key) }}</a></h4>
-                        <p>
-                            {{ trans('messages.sending_server_intro_' . $key) }}
-                        </p>
+        </span>
+                                    </span>
+                                </a>
+                            </div>
+                            <div class="me-auto">
+                                <h4><a href="{{ action('Admin\SendingServerController@create', ["type" => $key]) }}">{{ trans('messages.' . $key) }}</a></h4>
+                                <p>
+                                    {{ trans('messages.sending_server_intro_' . $key) }}
+                                </p>
+                            </div>
+                            <div>
+                                <a href="{{ action('Admin\SendingServerController@create', ["type" => $key]) }}" class="btn btn-secondary">{{ trans('messages.choose') }}</a>
+                            </div>
+                        </div>
                     </li>
                 @endforeach
             </ul>

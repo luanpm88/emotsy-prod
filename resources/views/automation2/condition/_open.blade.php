@@ -1,7 +1,7 @@
 @include('helpers.form_control', [
     'type' => 'select',
     'class' => 'required',
-    'label' => 'Which email subscriber reads',
+    'label' => trans('messages.condition.which_email_read'),
     'name' => 'email',
     'value' => $element->getOption('email'),
     'help_class' => 'trigger',
@@ -10,3 +10,5 @@
     'options' => $automation->getEmailOptions(),
     'rules' => [],
 ])
+
+@include('automation2.condition._wait')

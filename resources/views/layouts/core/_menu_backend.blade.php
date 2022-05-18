@@ -96,6 +96,20 @@
 									</a>
 								</li>
 							@endif
+							<li class="nav-item" rel0="TaxController">
+								<a href="{{ action('Admin\TaxController@settings') }}" class="dropdown-item d-flex align-items-center">
+									<i class="navbar-icon" style="width: 20px;">
+										<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 575 446"><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><path d="M485.3,446H98a15,15,0,0,1,0-30H485.3A59.8,59.8,0,0,0,545,356.3V191a15,15,0,0,1,30,0V356.3A89.8,89.8,0,0,1,485.3,446Z" style="fill:gray"/><path d="M425.5,369H89.5A89.5,89.5,0,0,1,0,279.5V89.5A89.5,89.5,0,0,1,89.5,0h336A89.5,89.5,0,0,1,515,89.5v190A89.5,89.5,0,0,1,425.5,369ZM89.5,30A59.6,59.6,0,0,0,30,89.5v190A59.6,59.6,0,0,0,89.5,339h336A59.6,59.6,0,0,0,485,279.5V89.5A59.6,59.6,0,0,0,425.5,30Z" style="fill:gray"/><path d="M310.8,299.1a95.4,95.4,0,1,1,28-4.3A93.8,93.8,0,0,1,310.8,299.1Zm0-160a65.1,65.1,0,1,0,30.2,7.5A64.7,64.7,0,0,0,310.8,139.1Z" style="fill:gray"/><path d="M164.9,120H94a15,15,0,0,1,0-30h70.9a15,15,0,0,1,0,30Z" style="fill:gray"/><path d="M144.9,219H94a15,15,0,0,1,0-30h50.9a15,15,0,0,1,0,30Z" style="fill:gray"/></g></g></svg>
+									</i>{{ trans('messages.tax_settings') }}
+								</a>
+							</li>
+							<li class="nav-item" rel0="InvoiceController\template">
+								<a href="{{ action('Admin\InvoiceController@template') }}" class="dropdown-item d-flex align-items-center">
+									<i class="navbar-icon" style="width: 20px;">
+										<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1" x="0px" y="0px" viewBox="0 0 91.8 86.2" style="enable-background:new 0 0 91.8 86.2;" xml:space="preserve"><style type="text/css">.st0{fill:#333333;}</style><g id="Layer_2_1_"><g id="Layer_1-2"><path class="st0" d="M72.7,86.2h-61C5.2,86.2,0,81,0,74.5v-61C0,7,5.2,1.8,11.7,1.8h40.6c1.9,0,3.5,1.6,3.5,3.5s-1.6,3.5-3.5,3.5 H11.7C9.1,8.8,7,10.9,7,13.5v61c0,2.6,2.1,4.7,4.7,4.7h61c2.6,0,4.7-2.1,4.7-4.7V35.2c0-1.9,1.6-3.5,3.5-3.5s3.5,1.6,3.5,3.5v39.3 C84.4,81,79.2,86.2,72.7,86.2z"/><path class="st0" d="M17.2,23.4c-2.7,0-4.9-2.2-4.9-4.9s2.2-4.9,4.9-4.9c2.7,0,4.9,2.2,4.9,4.9S19.9,23.4,17.2,23.4z M17.2,16.4 c-1.2,0-2.1,0.9-2.1,2.1s0.9,2.1,2.1,2.1c1.2,0,2.1-0.9,2.1-2.1S18.4,16.4,17.2,16.4z"/><path class="st0" d="M32,23.4c-2.7,0-4.9-2.2-4.9-4.9s2.2-4.9,4.9-4.9s4.9,2.2,4.9,4.9S34.7,23.4,32,23.4z M32,16.4 c-1.2,0-2.1,0.9-2.1,2.1s0.9,2.1,2.1,2.1s2.1-0.9,2.1-2.1S33.2,16.4,32,16.4z"/><path class="st0" d="M44,50.5C44,50.5,44,50.5,44,50.5c-2.1,0-3.3-0.9-4-1.6l0,0c-0.7-0.7-1.5-2-1.5-4.2 c0.2-6.7,9.9-20.1,18.9-28.4C66.2,8.2,79.8-0.3,86.5,0c2.1,0.1,3.3,1,4,1.8c3.2,3.6-0.3,9.6-3.6,14.5c-3.4,4.9-8.1,10.5-12.7,15 C66.3,39.1,51.3,50.5,44,50.5z M84.1,7.4C79.6,8.8,70.3,14,62.2,21.5c-4.4,4.1-8.8,9.2-12.1,14.2c-2.2,3.4-3.4,5.8-4,7.3 c4.6-1.8,14.5-8.1,23.2-16.7C76.5,19.2,82.2,11.3,84.1,7.4z"/><path class="st0" d="M31.4,69.1c-7,0-13.4-3.7-15.3-6.3c-1.1-1.6-0.9-3-0.7-3.7c1-2.9,4.1-2.7,5.7-2.5c0.7,0.1,2,0.2,2.8,0l0-0.3 l0-0.3c0.1-4.3,2.1-11.6,7.2-14.1c5.4-2.8,13.1,0,16.4,6c3.1,5.6,0.8,11.2-0.3,13.3l-0.1,0.2C43.1,68.4,34.8,69.1,31.4,69.1z M28.8,61.9c0.8,0.1,1.7,0.2,2.6,0.2c2.2,0,7.4-0.4,9.6-4.1c0.6-1.2,1.8-4.1,0.4-6.7c-1.8-3.2-5.5-4-7.1-3.2l0,0 c-1.6,0.8-3.2,4.6-3.4,7.8c0.1,1.5-0.1,2.9-0.8,4.3l-0.3,0.5C29.5,61.2,29.2,61.5,28.8,61.9z"/><rect x="53.5" y="28.6" transform="matrix(0.6539 -0.7565 0.7565 0.6539 -4.8071 54.3908)" class="st0" width="7" height="7.8"/></g></g></svg>
+									</i>{{ trans('messages.invoice_template') }}
+								</a>
+							</li>
 						</ul>
 					</li>
 				@endif
@@ -242,6 +256,13 @@
 								</a>
 							</li>
 						@endif
+						<li class="nav-item" rel0="AuthController">
+							<a href="{{ action('Admin\AuthController@index') }}" class="dropdown-item d-flex align-items-center">
+							<i class="navbar-icon">
+								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 75.76 75.66"><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><path d="M37.88,75.66C17,75.66,0,59.89,0,40.49V17.82L36.94,0,75.76,17.77V40.49C75.76,59.89,58.77,75.66,37.88,75.66ZM7,22.21V40.49C7,56,20.85,68.66,37.88,68.66S68.76,56,68.76,40.49V22.26L37,7.73Z" style="fill:#333"/><path d="M22.81,55.91V51.38L40.12,37.62a21.54,21.54,0,0,0,3.24-3,7.55,7.55,0,0,0,1.4-2.43,7.47,7.47,0,0,0,.34-2.11,4.44,4.44,0,0,0-2.05-3.88,10.9,10.9,0,0,0-6-1.38,16.73,16.73,0,0,0-5.76.94,11.68,11.68,0,0,0-4.45,2.86L21.12,25A16.79,16.79,0,0,1,28,20.5a27.88,27.88,0,0,1,9.68-1.59,24.23,24.23,0,0,1,8.25,1.28,12.08,12.08,0,0,1,5.42,3.62,8.61,8.61,0,0,1,1.9,5.58,11.5,11.5,0,0,1-.56,3.51,11.77,11.77,0,0,1-2.12,3.68A30.31,30.31,0,0,1,46,40.9L31.15,52.73l-1.68-2.55H54.94v5.73Z" style="fill:#333"/></g></g></svg>
+						</i>{{ trans('messages.oauth') }}
+							</a>
+						</li>
 						@if (Auth::user()->admin->getPermission("template_read") != 'no')
 							<li class="nav-item" rel0="TemplateController">
 								<a href="{{ action('Admin\TemplateController@index') }}" class="dropdown-item d-flex align-items-center">
@@ -251,6 +272,14 @@
 								</a>
 							</li>
 						@endif
+						<li class="nav-item" rel0="FormTemplateController">
+                            <a class="dropdown-item d-flex align-items-center" href="{{ action('Admin\FormTemplateController@index') }}">
+                                <i class="navbar-icon" style="">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 90 84.5"><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><path d="M3.5,77.3A3.6,3.6,0,0,1,0,74.1V11.5A11.7,11.7,0,0,1,12,0H78A11.7,11.7,0,0,1,90,11.5v7.8a3.5,3.5,0,0,1-7,0V11.5A4.7,4.7,0,0,0,78,7H12a4.7,4.7,0,0,0-5,4.5v62a3.4,3.4,0,0,1-3.2,3.8Z" style="fill:#333"/><path d="M72.9,51.6h-56a3.5,3.5,0,0,1-3.5-3.5V30a3.5,3.5,0,0,1,3.5-3.5h56A3.5,3.5,0,0,1,76.4,30V48.1A3.5,3.5,0,0,1,72.9,51.6Zm-52.5-7h49V33.5h-49Z" style="fill:#333"/><path d="M29.7,84.5a12.9,12.9,0,0,1,0-25.8,12.9,12.9,0,0,1,0,25.8Zm0-18.8a5.8,5.8,0,0,0-5.6,5.9,5.6,5.6,0,1,0,11.2,0A5.8,5.8,0,0,0,29.7,65.7Z" style="fill:#333"/><path d="M72.6,83.5H55.1A3.5,3.5,0,0,1,51.6,80V62.2a3.5,3.5,0,0,1,3.5-3.5H72.6a3.5,3.5,0,0,1,3.5,3.5V80A3.5,3.5,0,0,1,72.6,83.5Zm-14-7H69.1V65.7H58.6Z" style="fill:#333"/><path d="M45,21.5H16.4a3.5,3.5,0,1,1,0-7H45a3.5,3.5,0,0,1,0,7Z" style="fill:#333"/></g></g></svg>
+                                </i>
+                                <span>{{ trans('messages.form_templates') }}</span>
+                            </a>
+                        </li>
 						@if (Auth::user()->admin->getPermission("layout_read") != 'no')
 							<li class="nav-item" rel0="LayoutController">
 								<a href="{{ action('Admin\LayoutController@index') }}" class="dropdown-item d-flex align-items-center">

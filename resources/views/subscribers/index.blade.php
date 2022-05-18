@@ -149,45 +149,45 @@ sort
 					<span class="filter-group ml-10">
 						<select class="select" name="verification_result">
 							<option value="">{{ trans('messages.all_verification') }}</option>
-							@foreach (Acelle\Model\EmailVerification::resultSelectOptions() as $option)
+							@foreach (Acelle\Model\Subscriber::getVerificationStates() as $option)
 								<option value="{{ $option['value'] }}">
 									{{ $option['text'] }}
 								</option>
 							@endforeach
 						</select>
 					</span>
-					<div class="btn-group list_columns mr-2">
+					<div class="btn-group mr-2">
 						<button role="button" class="btn btn-default dropdown-toggle" data-bs-toggle="dropdown">
 							{{ trans('messages.columns') }} <span class="caret"></span>
 						</button>
-						<ul class="dropdown-menu dropdown-menu-end">
-							@foreach ($list->getFields as $field)
+						<ul class="dropdown-menu list-columns-checkbox dropdown-menu-end">
+							@foreach ($list->getFields as $key => $field)
 								@if ($field->tag != "EMAIL")
 									<li>
-										<div class="checkbox">
-											<label>
-												<input {{ (true ? "checked='checked'" : "") }} type="checkbox" id="{{ $field->tag }}" name="columns[]" value="{{ $field->uid }}" class="styled">
-												{{ $field->label }}
+										<a href="javascript:;" class="dropdown-item">
+											<label class="d-flex align-items-center">
+												<input {{ ($field->required || $key <= 3 ? "checked='checked'" : "") }} type="checkbox" id="{{ $field->tag }}" name="columns[]" value="{{ $field->uid }}" class="styled">
+												<span class="ms-2">{{ $field->label }}</span>
 											</label>
-										</div>
+										</a>
 									</li>
 								@endif
 							@endforeach
 							<li>
-								<div class="checkbox">
-									<label>
+								<a class="dropdown-item checkbox">
+									<label class="d-flex align-items-center">
 										<input checked="checked" type="checkbox" id="created_at" name="columns[]" value="created_at" class="styled">
-										{{ trans('messages.created_at') }}
+										<span class="ms-2">{{ trans('messages.created_at') }}</span>
 									</label>
-								</div>
+								</a>
 							</li>
 							<li>
-								<div class="checkbox">
-									<label>
+								<a class="dropdown-item checkbox">
+									<label class="d-flex align-items-center">
 										<input checked="checked" type="checkbox" id="updated_at" name="columns[]" value="updated_at" class="styled">
-										{{ trans('messages.updated_at') }}
+										<span class="ms-2">{{ trans('messages.updated_at') }}</span>
 									</label>
-								</div>
+								</a>
 							</li>
 						</ul>
 					</div>
@@ -210,12 +210,17 @@ search
 
 	<script>
         var SubscribersIndex = {
+			list: null,
             getList: function() {
-                return makeList({
-                    url: '{{ action('SubscriberController@listing', $list->uid) }}',
-                    container: $('.subscribers-list'),
-                    content: $('#SubscribersIndexContent')
-                });
+				if (this.list == null) {
+					this.list = makeList({
+						url: '{{ action('SubscriberController@listing', $list->uid) }}',
+						container: $('.subscribers-list'),
+						content: $('#SubscribersIndexContent')
+					});
+				}
+
+				return this.list;
             }
         };
 

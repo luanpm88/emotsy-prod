@@ -122,7 +122,9 @@ class SendingServerController extends Controller
         }
 
         // New sending server
-        list($validator, $server) = SendingServer::createFromRequest($request);
+        list($validator, $server) = SendingServer::createFromArray(array_merge($request->all(), [
+            'admin_id' => $request->user()->admin->id,
+        ]));
 
         // Failed
         if ($validator->fails()) {
@@ -253,7 +255,7 @@ class SendingServerController extends Controller
             $server->fill($request->all());
 
             // validation
-            $validator = $server->validConnection($request);
+            $validator = $server->validConnection($request->all());
 
             if ($validator->fails()) {
                 if ($server->isExtended()) {

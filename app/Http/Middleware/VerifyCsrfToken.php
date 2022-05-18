@@ -17,5 +17,6 @@ class VerifyCsrfToken extends Middleware
         'api/*',
         '*/embedded-form-*',
         'payments/stripe/credit-card*',
+        'frontend/*',
     ];
 }

@@ -6,8 +6,9 @@
     <script type="text/javascript" src="{{ URL::asset('core/tinymce/tinymce.min.js') }}"></script>
     <script type="text/javascript" src="{{ URL::asset('core/js/editor.js') }}"></script>
 
-    <!-- Dropzone -->
+    <!-- Dropzone -->    
 	<script type="text/javascript" src="{{ URL::asset('core/dropzone/dropzone.js') }}"></script>
+    @include('helpers._dropzone_lang')
 	<link href="{{ URL::asset('core/dropzone/dropzone.css') }}" rel="stylesheet" type="text/css">
 @endsection
 
@@ -41,7 +42,7 @@ forward_to_inbox
                         <div class="main">
                             <label>{{ trans('messages.campaign.html_email') }}</label>
                             <p>{{ trans('messages.campaign.html_email.last_edit', [
-                                'date' => Acelle\Library\Tool::formatDateTime($campaign->updated_at),
+                                'date' => Auth::user()->customer->formatDateTime($campaign->updated_at, 'date_full'),
                             ]) }}</p>
 
                             <p class="mt-20">
@@ -66,7 +67,7 @@ forward_to_inbox
                     <div class="template-thumb-container ml-4">
                         <img class="automation-template-thumb" src="{{ $campaign->getThumbUrl() }}?v={{ Carbon\Carbon::now() }}" />
                         <a
-                            onclick="popupwindow('{{ action('CampaignController@preview', $campaign->uid) }}', '{{ $campaign->name }}', 800, 800)"
+                            onclick="popupwindow('{{ action('CampaignController@preview', $campaign->uid) }}', `{{ $campaign->name }}`, 800)"
                             href="javascript:;"
                             class="btn btn-primary" style="display:none"
                         >

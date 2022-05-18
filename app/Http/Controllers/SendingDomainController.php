@@ -58,7 +58,8 @@ class SendingDomainController extends Controller
         if ($plan->useSystemSendingServer()) {
             $server = $plan->primarySendingServer();
             if (!$server->allowOtherSendingDomains()) {
-                $domains->bySendingServer($server);
+                // Do not filter, just flag as incompatible
+                // $domains->bySendingServer($server);
             }
         }
 
@@ -66,6 +67,7 @@ class SendingDomainController extends Controller
 
         return view('sending_domains._list', [
             'items' => $items,
+            'server' => isset($server) ? $server : null,
         ]);
     }
 

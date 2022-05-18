@@ -119,22 +119,16 @@ class SenderController extends Controller
 
         $this->validate($request, $sender->rules());
 
-        try {
-            $sender->save();
+        $sender->save();
 
-            if ($plan->useSystemSendingServer()) {
-                $server = $plan->primarySendingServer();
-            } else {
-                $server = null;
-            }
-
-            $sender->verifyWith($server);
-            return redirect()->action('SenderController@show', $sender->uid);
-        } catch (\Exception $ex) {
-            $sender->delete();
-            $request->session()->flash('alert-error', $ex->getMessage());
-            return redirect()->action('SenderController@index');
+        if ($plan->useSystemSendingServer()) {
+            $server = $plan->primarySendingServer();
+        } else {
+            $server = null;
         }
+
+        $sender->verifyWith($server);
+        return redirect()->action('SenderController@show', $sender->uid);
     }
 
     /**

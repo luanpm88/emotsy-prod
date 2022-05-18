@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Acelle\Library\Log as MailLog;
 use Acelle\Model\EmailVerificationServer;
 use Acelle\Model\MailList;
+use Acelle\Model\Segment;
 use Acelle\Model\Subscriber;
 use Acelle\Model\JobMonitor;
 use Acelle\Library\Facades\Hook;
@@ -21,7 +22,7 @@ class SubscriberController extends Controller
         $subscribers = $customer->subscribers()
             ->search($request->keyword)
             ->filter($request)
-            ->orderBy($request->sort_order, $request->sort_direction)
+            ->orderBy($request->sort_order ? $request->sort_order : 'created_at', $request->sort_direction ? $request->sort_direction : 'asc')
             ->where('mail_list_id', '=', $list->id);
 
         return $subscribers;
@@ -548,8 +549,12 @@ class SubscriberController extends Controller
         // Get the list
         $list = MailList::findByUid($request->list_uid);
 
+        // Get segment if any
+        $segmentUid = $request->input('segment_uid');
+        $segment = (is_null($segmentUid)) ? null : Segment::findByUid($segmentUid);
+
         // Dispatch import job
-        $currentJob = $list->dispatchExportJob();
+        $currentJob = $list->dispatchExportJob($segment);
 
         // Return the job information
         return response()->json([
@@ -728,7 +733,7 @@ class SubscriberController extends Controller
 
         try {
             MailLog::info(sprintf("Cleaning up verification data for %s (%s)", $subscriber->email, $subscriber->id));
-            $subscriber->emailVerification->delete();
+            $subscriber->resetVerification();
             // success message
             $request->session()->flash('alert-success', trans('messages.verification.reset'));
 

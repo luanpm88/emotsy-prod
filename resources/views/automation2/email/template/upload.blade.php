@@ -22,6 +22,7 @@
             ]) }}" method="POST" class="template-upload-form">
                 {{ csrf_field() }}
 
+                <input type="hidden" name="type" value="{{ Acelle\Model\Template::TYPE_EMAIL }}" />
                 <input type="hidden" name="name" value="{{ trans('messages.untitled') }}" />
 
                 <div class="input-group mb-4 mt-4">
@@ -39,9 +40,7 @@
     </div>
         
     <script>
-        var builderSelectPopup = new Popup(null, undefined, {onclose: function() {
-                
-        }});
+        var builderSelectPopup = new Popup();
         
         $('.template-upload-form').submit(function(e) {
             e.preventDefault();

@@ -5,7 +5,6 @@ namespace Acelle\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use Acelle\Http\Controllers\Controller;
 use Acelle\Model\Template;
-use Acelle\Library\Rss;
 use Acelle\Model\Setting;
 use App;
 
@@ -40,6 +39,7 @@ class TemplateController extends Controller
         $view = $request->view ? $request->view : 'grid';
 
         $templates = Template::shared()
+            ->email()
             ->categoryUid($request->category_uid)
             ->search($request->keyword)
             ->orderBy($request->sort_order, $request->sort_direction)

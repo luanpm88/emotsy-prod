@@ -3,7 +3,14 @@
 @section('title', trans('messages.campaigns') . " - " . trans('messages.setup'))
 
 @section('head')
-    <script type="text/javascript" src="{{ URL::asset('core/js/group-manager.js') }}"></script>
+	<script type="text/javascript" src="{{ URL::asset('core/js/group-manager.js') }}"></script>
+
+    <link href="{{ URL::asset('core/emoji-picker/css/emoji.css') }}" rel="stylesheet">
+    <script type="text/javascript" src="{{ URL::asset('core/emoji-picker/js/config.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('core/emoji-picker/js/util.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('core/emoji-picker/js/jquery.emojiarea.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('core/emoji-picker/js/emoji-picker.js') }}"></script>
+    
 @endsection
 	
 @section('page_header')
@@ -37,14 +44,19 @@ forward_to_inbox
 					'rules' => $rules,
 					'help_class' => 'campaign'
 				])
-												
-				@include('helpers.form_control', ['type' => 'text',
-					'name' => 'subject',
-					'label' => trans('messages.email_subject'),
-					'value' => $campaign->subject,
-					'rules' => $rules,
-					'help_class' => 'campaign'
-				])
+				
+				<div class="has-emoji">
+					@include('helpers.form_control', ['type' => 'text',
+						'name' => 'subject',
+						'label' => trans('messages.email_subject'),
+						'value' => $campaign->subject,
+						'rules' => $rules,
+						'help_class' => 'campaign',
+						'attributes' => [
+							'data-emojiable' => 'true',
+						]
+					])
+				</div>
 												
 				@include('helpers.form_control', ['type' => 'text',
 					'name' => 'from_name',
@@ -132,7 +144,7 @@ forward_to_inbox
 						'type' => 'checkbox',
 						'name' => 'custom_tracking_domain',
 						'label' => trans('messages.custom_tracking_domain'),
-						'value' => $campaign->tracking_domain_id,
+						'value' => Auth::user()->customer->isCustomTrackingDomainRequired() ? true : $campaign->tracking_domain_id,
 						'options' => [false,true],
 						'help_class' => 'campaign',
 						'rules' => $rules
@@ -156,6 +168,23 @@ forward_to_inbox
 							{!! trans('messages.campaign.plain_text.open_click_tracking_wanring') !!}
 						</div>
 					@endif
+					
+					@if ($campaign->template)
+						<div class="webhooks-management">
+							<div class="d-flex align-items-center mb-2">
+                                <h3 class="mb-0 me-2"> {{ trans('messages.webhooks') }}</h3>
+                                <span class="badge badge-info">{{ number_with_delimiter($campaign->campaignWebhooks()->count()) }}</span>
+                            </div>
+							<div class="d-flex">
+								<p>{{ trans('messages.webhooks.wording') }}</p>
+								<div class="ms-4">
+									<a href="javascript:;" class="btn btn-secondary manage_webhooks_but">
+										{{ trans('messages.webhooks.manage') }}
+									</a>
+								</div>
+							</div>
+						</div>
+					@endif
 				</div>
 			</div>
 		</div>
@@ -169,6 +198,39 @@ arrow_forward
 	<form>
 	
 	<script>
+		var CampaignsSetup = {
+			webhooksPopup: null,
+			getWebhooksPopup: function() {
+				if (this.webhooksPopup == null) {
+					this.webhooksPopup = new Popup({
+						url: '{{ action('CampaignController@webhooks', [
+							'uid' => $campaign->uid,
+						]) }}',
+						onclose: function() {
+							CampaignsSetup.refresh();
+						}
+					});
+				}
+
+				return this.webhooksPopup;
+			},
+
+			refresh: function() {
+                $.ajax({
+                    url: "",
+                    method: 'GET',
+                    data: {
+                        _token: CSRF_TOKEN
+                    },
+                    success: function (response) {
+                        var html = $('<div>').html(response).find('.webhooks-management').html();
+
+                        $('.webhooks-management').html(html);
+                    }
+                });
+            }
+		}
+
 		var CampaignsSetupNextButton = {
 			manager: null,
 
@@ -213,11 +275,15 @@ arrow_forward
 		}
 
 		$(function() {
+			// check next button
 			CampaignsSetupNextButton.check();
 
+			// manage webhooks button click
+			$('.manage_webhooks_but').on('click', function(e) {
+				e.preventDefault();
 
-
-
+				CampaignsSetup.getWebhooksPopup().load();
+			});
 
 			// @Legacy
 			// auto fill
@@ -292,6 +358,19 @@ arrow_forward
 				});
 				
 				control.change();
+			});
+
+			$(function() {
+				// Initializes and creates emoji set from sprite sheet
+				window.emojiPicker = new EmojiPicker({
+				emojiable_selector: '[data-emojiable=true]',
+				assetsPath: 'http://onesignal.github.io/emoji-picker/lib/img/',
+				popupButtonClasses: 'fa fa-smile-o'
+				});
+				// Finds all elements with `emojiable_selector` and converts them to rich emoji input fields
+				// You may want to delay this step if you have dynamically created input fields that appear later in the loading process
+				// It can be called as many times as necessary; previously converted input fields will not be converted again
+				window.emojiPicker.discover();
 			});
 		})
 	</script>

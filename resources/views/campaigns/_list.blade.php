@@ -17,11 +17,9 @@
 					</div>
 				</td>
 				<td>
-					<h5 class="text-bold mb-1">
-						<a class="kq_search" href="{{ action('CampaignController@show', $campaign->uid) }}">
-							{{ $campaign->name }}
-						</a>
-					</h5>
+					<a class="kq_search fw-600 d-block list-title" href="{{ action('CampaignController@show', $campaign->uid) }}">
+						{{ $campaign->name }}
+					</a>
 					<span class="text-muted">{{ trans('messages.' . $campaign->type) }}</span>
 
 					@if ($campaign->readCache('SubscriberCount'))
@@ -36,9 +34,9 @@
 						<span class="text-muted2 d-block">{{ trans('messages.run_at') }}: <span class="material-icons-outlined">
 							alarm
 							</span>
-							 {{ isset($campaign->run_at) ? Tool::formatDateTime($campaign->run_at) : "" }}</span>
+							 {{ isset($campaign->run_at) ? Auth::user()->customer->formatDateTime($campaign->run_at, 'date_full') : "" }}</span>
 					@else
-						<span class="text-muted2 d-block">{{ trans('messages.updated_at') }}: {{ Tool::formatDateTime($campaign->created_at) }}</span>
+						<span class="text-muted2 d-block">{{ trans('messages.updated_at') }}: {{ Auth::user()->customer->formatDateTime($campaign->created_at, 'date_full') }}</span>
 					@endif
 				</td>
 				@if ($campaign->status != 'new')
@@ -85,7 +83,7 @@
 					</span>
 					<pre style="display:none">{{ $campaign->last_error }}</pre>
 				</td>
-				<td class="text-end text-nowrap">
+				<td class="text-end text-nowrap pe-0">
 					<div class="d-flex align-items-center text-nowrap justify-content-end">
 						@if (\Gate::allows('update', $campaign))
 							<a href="{{ action('CampaignController@edit', $campaign->uid) }}" role="button"

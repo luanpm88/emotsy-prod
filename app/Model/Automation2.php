@@ -445,6 +445,7 @@ class Automation2 extends Model
     // Automation::check() ==> AutoTrigger::check() ==> Action::execute()
     public function check()
     {
+        // Only via the check() method, errors are logged to automation.error
         try {
             $this->checkForNewTriggers();
             $this->checkForExistingTriggersUpdate();
@@ -1544,5 +1545,31 @@ class Automation2 extends Model
         }
 
         throw new Exception("Invalid trigger type: ".$type);
+    }
+
+    public static function getConditionWaitOptions($custom=null)
+    {
+        $result = [
+            ['text' => trans_choice('messages.count_hour', 12), 'value' => '12 hours'],
+            ['text' => trans_choice('messages.count_day', 1), 'value' => '1 day'],
+            ['text' => trans_choice('messages.count_day', 2), 'value' => '2 days'],
+            ['text' => trans_choice('messages.count_day', 3), 'value' => '3 days'],
+        ];
+
+        if ($custom) {
+            if (!in_array($custom, array_map(function ($item) {
+                return $item['value'];
+            }, $result))) {
+                $vals = explode(' ', $custom);
+                $result[] = [
+                    'text' => trans_choice('messages.count_' . $vals[1], $vals[0]),
+                    'value' => $custom,
+                ];
+            }
+        }
+
+        $result[] = ['text' => trans('messages.wait.custom'), 'value' => 'custom'];
+
+        return $result;
     }
 }

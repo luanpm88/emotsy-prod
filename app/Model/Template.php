@@ -28,7 +28,6 @@ use ZipArchive;
 use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
 use Acelle\Library\Traits\HasUid;
-use Acelle\Library\Rss;
 use Illuminate\Validation\ValidationException;
 use KubAT\PhpSimple\HtmlDomParser;
 use Acelle\Library\Tool;
@@ -37,6 +36,8 @@ use DOMDocument;
 use File;
 use Exception;
 use Closure;
+use League\Pipeline\PipelineBuilder;
+use Acelle\Library\HtmlHandler\TransformWidgets;
 use function Acelle\Helpers\getAppHost;
 
 class Template extends Model
@@ -46,13 +47,16 @@ class Template extends Model
     public const BUILDER_ENABLED = true;
     public const BUILDER_DISABLED = false;
 
+    public const TYPE_EMAIL = 'email';
+    public const TYPE_POPUP = 'popup';
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'uid', 'name', 'content', 'builder', 'is_default', 'theme'
+        'uid', 'name', 'content', 'builder', 'is_default', 'theme', 'type'
     ];
 
     /**
@@ -102,7 +106,7 @@ class Template extends Model
     }
 
     // Templates that are not associated to any email or campaign
-    public function scopeNotAssociated($query)
+    public function scopeNotPreserved($query)
     {
         $query->whereNotIn('id', function ($q) {
             $q->select('template_id')->from('emails')->whereNotNull('template_id');
@@ -110,6 +114,10 @@ class Template extends Model
 
         $query->whereNotIn('id', function ($q) {
             $q->select('template_id')->from('campaigns')->whereNotNull('template_id');
+        });
+
+        $query->whereNotIn('id', function ($q) {
+            $q->select('template_id')->from('forms')->whereNotNull('template_id');
         });
     }
 
@@ -150,6 +158,16 @@ class Template extends Model
     public static function scopeShared($query)
     {
         $query = $query->whereNull('customer_id');
+    }
+
+    public static function scopeEmail($query)
+    {
+        $query = $query->where('type', '=', self::TYPE_EMAIL);
+    }
+
+    public static function scopePopup($query)
+    {
+        $query = $query->where('type', '=', self::TYPE_POPUP);
     }
 
     /**
@@ -272,6 +290,9 @@ class Template extends Model
 
         // copy theme
         $copy->theme = $this->theme;
+
+        // copy type
+        $copy->type = $this->type;
 
         // Copy flags
         $copy->builder = $this->builder;
@@ -686,7 +707,11 @@ class Template extends Model
 
         // Replace #1
         $content = StringHelper::transformUrls($html, function ($url, $element) use ($withHost, $domain, $urlTransform) {
-            if ($url == '#') {
+            if (strpos($url, '#') === 0) {
+                return $url;
+            }
+
+            if (strpos($url, 'mailto:') === 0) {
                 return $url;
             }
 
@@ -863,6 +888,10 @@ class Template extends Model
 
     public function uploadAssetFromUrl($url)
     {
+        // Simply return the image URL
+        return $url;
+
+        /* Another way is to fetch and save the image to the local directory
         // upload file by upload image
         $filename = uniqid();
 
@@ -884,6 +913,7 @@ class Template extends Model
         $assetUrl = \Acelle\Helpers\generatePublicPath($filepath);
 
         return $assetUrl;
+        */
     }
 
     /**
@@ -954,7 +984,7 @@ class Template extends Model
         $result = [];
 
         // Gallery
-        $templates = self::shared()
+        $templates = self::shared()->email()
             ->get();
 
         foreach ($templates as $template) {
@@ -1178,6 +1208,10 @@ class Template extends Model
                 'category' => $categoryFeatured,
                 'builder' => true,
             ], [
+                'name' => 'Color Print - Your Print Companion',
+                'dir' => database_path('templates/featured/005-blue/5d7b526bbfd4c'),
+                'category' => $categoryFeatured,
+                'builder' => true,
                 'name' => 'News Digest',
                 'dir' => database_path('templates/featured/000-04-rss-feed/6037a2356820zs'),
                 'category' => $categoryFeatured,
@@ -1201,6 +1235,7 @@ class Template extends Model
             $meta['uid'] = $uid;
             $meta['is_default'] = true; // default templates that are originally created
             $meta['builder'] = true;
+            $meta['type'] = Template::TYPE_EMAIL;
             $template = Template::createFromDirectory($meta, $meta['dir']);
 
             // Set category
@@ -1263,12 +1298,146 @@ class Template extends Model
         $this->save();
     }
 
+    public static function resetPopupTemplates()
+    {
+        TemplateCategory::where('name', '=', 'Form')->delete();
+
+        // LIST all form templates here
+        $templates = [
+            [
+                'name' => 'Right banner',
+                'dir' => database_path('templates/forms/009-layout-right/6002a2135b900'),
+            ], [
+                'name' => 'Left banner',
+                'dir' => database_path('templates/forms/011-layout-left/6002a2135b901'),
+            ], [
+                'name' => 'Top banner',
+                'dir' => database_path('templates/forms/010-layout-top/6002a2135b902'),
+            ], [
+                'name' => 'Bottom banner',
+                'dir' => database_path('templates/forms/012-layout-bottom/6002a2135b903'),
+            ], [
+                'name' => 'Bottom banner',
+                'dir' => database_path('templates/forms/013-layout-clean/6002a2135b904'),
+            ], [
+                'name' => 'Dark Simple',
+                'dir' => database_path('templates/forms/001-dark/60cca2135b900'),
+            // ], [
+            //     'name' => 'Pricing Table',
+            //     'dir' => database_path('templates/forms/002-2-columns/6002a2135b974'),
+            //     'category' => $categoryWoo,
+            ], [
+                'name' => 'Sign Up Illustration',
+                'dir' => database_path('templates/forms/003-illustration/6003a2250a3a3'),
+            ], [
+                'name' => 'Profile Center',
+                'dir' => database_path('templates/forms/004-center/6004a28418c95'),
+            // ], [
+            //     'name' => '1-2 column layout',
+            //     'dir' => database_path('templates/forms/005-full-background/6005a24ebdbd6'),
+            //     'category' => $categoryWoo,
+            // ], [
+            //     'name' => '1-2-1 column layout',
+            //     'dir' => database_path('templates/forms/006-grap-money/6006a2401b055'),
+            //     'category' => $categoryWoo,
+            // ], [
+            //     'name' => '1-3 column layout',
+            //     'dir' => database_path('templates/forms/007-checkout/6007a275bf375'),
+            //     'category' => $categoryWoo,
+            // ], [
+            //     'name' => '1-3-1 column layout',
+            //     'dir' => database_path('templates/forms/008-blue-visa/6008a25ddce80'),
+            //     'category' => $categoryWoo,
+            ],
+        ];
+
+        // Delete existing template and create again with new updates
+        foreach ($templates as $meta) {
+            // UID is the folder name, "5d7b527be2bd2" for example
+            $uid = basename($meta['dir']);
+
+            // DELETE existing template, in case this migration is executed many times
+            Template::where('uid', $uid)->delete();
+
+            // Build $template attributes and create
+            $meta['uid'] = $uid;
+            $meta['is_default'] = true; // default templates that are originally created
+            $meta['builder'] = true;
+            $meta['type'] = Template::TYPE_POPUP;
+            $template = Template::createFromDirectory($meta, $meta['dir']);
+        }
+    }
+
     public function urlTagsDropdown()
     {
         return [
             ['value' => '{UNSUBSCRIBE_URL}', 'text' => trans('messages.editor.unsubscribe_text')],
             ['value' => '{UPDATE_PROFILE_URL}', 'text' => trans('messages.editor.update_profile_text')],
             ['value' => '{WEB_VIEW_URL}', 'text' => trans('messages.editor.click_view_web_version')],
+        ];
+    }
+
+    public function getPreviewContent()
+    {
+        // Bind subscriber/message/server information to email content
+        $pipeline = new PipelineBuilder();
+        $pipeline->add(new TransformWidgets());
+
+        // Actually push HTML to pipeline for processing
+        $html = $pipeline->build()->process($this->content);
+
+        // Return subscriber's bound html
+        return $html;
+    }
+
+    public static function defaultRssConfig()
+    {
+        return [
+            'url' => '',
+            'size' => 10,
+            'templates' => [
+                'FeedTitle' => [
+                    'title' => trans('messages.rss.feed_title'),
+                    'show' => true,
+                    'template' => '@feed_title',
+                ],
+                'FeedSubtitle' => [
+                    'title' => trans('messages.rss.feed_subtitle'),
+                    'show' => true,
+                    'template' => 'Updated at: @feed_build_date',
+                ],
+                'FeedTagdLine' => [
+                    'title' => trans('messages.rss.feed_tagline'),
+                    'show' => true,
+                    'template' => trans('messages.rss.top_stories_for_you'),
+                ],
+                'ItemTitle' => [
+                    'title' => trans('messages.rss.item_title'),
+                    'show' => true,
+                    'template' => 'Title: @item_title',
+                ],
+                'ItemMeta' => [
+                    'title' => trans('messages.rss.meta_line'),
+                    'show' => true,
+                    'template' => '<img src="'.url('images/avatar1.svg').'" width="30px" style="margin-right:5px" /> something here - @item_pubdate',
+                ],
+                'ItemDescription' => [
+                    'title' => trans('messages.rss.item_description'),
+                    'show' => true,
+                    'template' => '@item_description <a href="@item_url">Read more</a>',
+                ],
+                'ItemStats' => [
+                    'title' => trans('messages.rss.stats_line'),
+                    'show' => true,
+                    'template' => '<img src="'.url('images/icon-up.svg').'" width="16px" style="margin-right:5px" /> 400k updates, &nbsp; &nbsp; 
+                        <img src="'.url('images/icon-comment.svg').'" width="16px" style="margin-right:5px" /> 1.2k comments',
+                ],
+                'ItemEnclosure' => [
+                    'title' => trans('messages.rss.enclosure'),
+                    'show' => false,
+                    'template' => '@item_enclosure',
+                ],
+            ],
         ];
     }
 }

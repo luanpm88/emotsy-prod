@@ -287,11 +287,11 @@ class Segment extends Model
                 switch ($condition->operator) {
                     case 'verification_equal':
                         // add condition
-                        $conditions[] = '('.\DB::getTablePrefix()."email_verifications.result = '".$condition->value."')";
+                        $conditions[] = '('.\DB::getTablePrefix()."subscribers.verification_status = '".$condition->value."')";
                         break;
                     case 'verification_not_equal':
                         // add condition
-                        $conditions[] = '('.\DB::getTablePrefix().'email_verifications.result IS NULL OR '.\DB::getTablePrefix()."email_verifications.result != '".$condition->value."')";
+                        $conditions[] = '('.\DB::getTablePrefix().'subscribers.verification_status IS NULL OR '.\DB::getTablePrefix()."subscribers.verification_status != '".$condition->value."')";
                         break;
                     case 'tag_contains':
                         // add condition
@@ -341,14 +341,15 @@ class Segment extends Model
      *
      * @return collect
      */
-    public function subscribers($request = null)
+    public function subscribers()
     {
-        $query = \Acelle\Model\Subscriber::select('subscribers.*', 'email_verifications.result AS verify_result');
-        $query = Subscriber::filter($query, $request);
+        $query = $this->mailList->subscribers();
+        $query->select('subscribers.*');
 
+        // Get segment filter criteria
         $conditions = $this->getSubscribersConditions();
 
-        // JOINS...
+        // Apply the filter
         if (!empty($conditions['joins'])) {
             foreach ($conditions['joins'] as $joining) {
                 $query = $query->leftJoin($joining['table'], function ($join) use ($joining) {
@@ -362,16 +363,12 @@ class Segment extends Model
             }
         }
 
-        // WHERE...
-        $query = $query->where('subscribers.mail_list_id', $this->mail_list_id);
+        // var_dump($conditions['conditions']);die();
         if (!empty($conditions['conditions'])) {
             $query = $query->whereRaw('('.$conditions['conditions'].')');
         }
 
-        // filters
-        if (isset($request)) {
-            $query = $query->orderBy($request->sort_order, $request->sort_direction);
-        }
+        // var_dump($query->toSql());die();
 
         return $query;
     }

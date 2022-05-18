@@ -17,12 +17,12 @@
                     </div>
                 </td>
                 <td>
-                    <h5 class="m-0 text-bold">
-                        <a class="kq_search"
-                           href="{{ action('SegmentController@subscribers', ['list_uid' => $list->uid, 'uid' => $item->uid]) }}">{{ $item->name }}</a>
-                    </h5>
+                    <a class="kq_search text-bold d-block"
+                        href="{{ action('SegmentController@subscribers', ['list_uid' => $list->uid, 'uid' => $item->uid]) }}">
+                        {{ $item->name }}
+                    </a>
                     <span class="text-muted">{{ trans('messages.created_at') }}
-                        : {{ Tool::formatDateTime($item->created_at) }}</span>
+                        : {{ Auth::user()->customer->formatDateTime($item->created_at, 'date_full') }}</span>
                 </td>
                 <td>
                     <div class="single-stat-box pull-left">
@@ -37,7 +37,7 @@
                     <br style="clear:both"/>
                 </td>
 
-                <td class="text-end text-nowrap">
+                <td class="text-end text-nowrap pe-0">
                     @if (\Gate::allows('update', $item))
                         <a href="{{ action('SegmentController@edit', ['list_uid' => $list->uid, "uid" => $item->uid]) }}"
                            role="button" class="btn btn-secondary btn-icon">

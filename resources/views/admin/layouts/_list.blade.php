@@ -9,7 +9,7 @@
                 </td>
                 <td>
                     <h5 class="m-0 text-bold">
-                        <a href="{{ action('Admin\LayoutController@edit', $item->uid) }}">
+                        <a class=" d-block" href="{{ action('Admin\LayoutController@edit', $item->uid) }}">
                             {{ trans('messages.' . $item->alias) }}
                         </a>
                     </h5>

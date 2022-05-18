@@ -29,7 +29,7 @@
 							</a>
 							<br />
 							<span class="label label-flat bg-{{ $item->status }}">{{ trans('messages.' . $item->status) }}</span>
-							<span class="label label-flat bg-{{ $item->verify_result }}">{{ trans('messages.email_verification_result_' . $item->verify_result) }}</span>
+							<span class="label label-flat bg-{{ $item->verification_status }}">{{ trans('messages.email_verification_result_' . $item->verification_status) }}</span>
 						</div>
 					</div>
 				</td>
@@ -45,7 +45,7 @@
 
 				@if (in_array("created_at", is_array(request()->columns) ? request()->columns : []))
 					<td>
-						<span class="no-margin stat-num">{{ Tool::formatDateTime($item->created_at) }}</span>
+						<span class="no-margin stat-num">{{ Auth::user()->customer->formatDateTime($item->created_at, 'date_full') }}</span>
 						<br>
 						<span class="text-muted2">{{ trans('messages.created_at') }}</span>
 					</td>
@@ -53,13 +53,13 @@
 
 				@if (in_array("updated_at", is_array(request()->columns) ? request()->columns : []))
 					<td>
-						<span class="no-margin stat-num">{{ Tool::formatDateTime($item->updated_at) }}</span>
+						<span class="no-margin stat-num">{{ Auth::user()->customer->formatDateTime($item->updated_at, 'date_full') }}</span>
 						<br>
 						<span class="text-muted2">{{ trans('messages.updated_at') }}</span>
 					</td>
 				@endif
 
-				<td class="text-end text-nowrap">
+				<td class="text-end text-nowrap pe-0">
 					@if (\Gate::allows('update', $item))
 						<a href="{{ action('SubscriberController@edit', ['list_uid' => $list->uid, "uid" => $item->uid]) }}" role="button" class="btn btn-secondary btn-icon">
 							<span class="material-icons-outlined">

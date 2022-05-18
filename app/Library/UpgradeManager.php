@@ -25,11 +25,16 @@ namespace Acelle\Library;
 use ZipArchive;
 use Illuminate\Support\Facades\Log as LaravelLog; // something wrong, cannot use the default name Log
 use Illuminate\Support\Facades\File;
+use Acelle\Library\Facades\Hook;
+use Acelle\Model\Language;
+use function Acelle\Helpers\updateTranslationFile;
 
 class UpgradeManager
 {
     protected $source;
     protected $target;
+
+    protected $allTranslationFiles;
 
     public const META_FILE = 'meta.json';
 
@@ -40,6 +45,22 @@ class UpgradeManager
     {
         $this->source = storage_path('tmp/patch');
         $this->target = base_path();
+        $this->allTranslationFiles = $this->findTranslationFiles();
+
+        // deletect all language files
+    }
+
+    private function findTranslationFiles()
+    {
+        $allTranslationFiles = [];
+        foreach (Language::all() as $lang) {
+            foreach (Hook::execute('add_translation_file') as $source) {
+                $path = join_paths($source['translation_folder'], $lang->code, $source['file_name']);
+                $allTranslationFiles[] = $path;
+            }
+        }
+
+        return $allTranslationFiles;
     }
 
     /**
@@ -105,10 +126,10 @@ class UpgradeManager
         // Check WRITE permission
         if (!$this->isWritable($this->source)) {
             throw new \Exception("Cannot write to folder {$this->source}");
-        } else {
-            // Clean up the target folder
-            $this->rm($this->source);
         }
+
+        // Clean up the target folder
+        $this->rm($this->source);
     }
 
     /**
@@ -140,7 +161,13 @@ class UpgradeManager
     {
         $path = join_paths($this->source, self::META_FILE);
         if (!file_exists($path)) {
-            throw new \Exception('Unknown package format');
+            // Clean up invalid package (without meta file)
+            // Then raise an exception
+            // So that user will only see this message once
+            $this->cleanup();
+
+            // Ooops!
+            throw new \Exception('NOMETA: Unknown package format (deleted)');
         }
 
         return json_decode(file_get_contents($path), true);
@@ -175,6 +202,21 @@ class UpgradeManager
             $dirs = $meta['dirs'];
             $langFiles = [];
 
+            // new or updated entire directories
+            foreach ($dirs as $dir) {
+                $source = join_paths($this->source, $dir);
+                $target = join_paths($this->target, $dir);
+                if ($test) {
+                    if (!$this->isWritable($target)) {
+                        $errors[] = $target;
+                    }
+                } else {
+                    LaravelLog::info("REPLACE DIRECTORY {$dir}");
+                    $this->rm($target);
+                    $this->copy($source, $target);
+                }
+            }
+
             // new or updated files
             foreach ($updates as $file) {
                 $source = join_paths($this->source, $file);
@@ -186,37 +228,19 @@ class UpgradeManager
                 }
 
                 if ($test) {
-                    if ($this->isLanguageFile($source)) {
-                        $languages = \Acelle\Model\Language::all();
-                        foreach ($languages as $lang) {
-                            $target = join_paths($lang->languageDir(), pathinfo($file)['basename']);
-                            if (!$this->isWritable($target)) {
-                                $errors[] = $target;
-                            }
-                        }
-                    } else {
-                        if (!$this->isWritable($target)) {
-                            $errors[] = $target;
-                        }
+                    if (!$this->isWritable($target)) {
+                        $errors[] = $target;
                     }
                 } else {
-                    // LaravelLog::info("Replacing {$target}");
-
-                    if ($this->isEnFile($source)) {
-                        $langFiles[] = $source;
-                    } elseif ($this->isLanguageFile($source)) {
-                        $this->mergeLanguageFile($source, $target);
+                    if ($this->isTranslationFile($target)) {
+                        // Make sure the 'resources/lang/default/' folder is already updated
+                        LaravelLog::info('UPDATE translation file: '.$file);
+                        $this->mergeTranslationFileWithoutOverwritting($target, $source);
                     } else {
+                        LaravelLog::info('REPLACE file: '.$file);
                         $this->copy($source, $target);
                     }
                 }
-            }
-
-            // process language files after all the other files have been processed
-            // in case a new language is added
-            foreach ($langFiles as $source) {
-                LaravelLog::info("Upgrade language file {$source}");
-                $this->upgradeLanguageFiles($source);
             }
 
             // deleted files
@@ -228,7 +252,7 @@ class UpgradeManager
                         $errors[] = $target;
                     }
                 } else {
-                    LaravelLog::info("Deleting {$target}");
+                    LaravelLog::info("DELETE file {$file}");
                     @unlink($target);
                 }
             }
@@ -242,22 +266,7 @@ class UpgradeManager
                         $errors[] = $target;
                     }
                 } else {
-                    LaravelLog::info("Replacing {$target}");
-                    $this->rm($target);
-                    $this->copy($source, $target);
-                }
-            }
-
-            // new or updated entire directories
-            foreach ($dirs as $dir) {
-                $source = join_paths($this->source, $dir);
-                $target = join_paths($this->target, $dir);
-                if ($test) {
-                    if (!$this->isWritable($target)) {
-                        $errors[] = $target;
-                    }
-                } else {
-                    LaravelLog::info("Replacing {$target}");
+                    LaravelLog::info("REPLACE package {$dir}");
                     $this->rm($target);
                     $this->copy($source, $target);
                 }
@@ -269,7 +278,7 @@ class UpgradeManager
             }
 
             // reload the config & run migration
-            LaravelLog::info('Updating .env file');
+            LaravelLog::info('UPDATE .env file');
             $this->mergeEnv(base_path('.env'), base_path('.env.example'));
 
             // cleanup
@@ -302,7 +311,7 @@ class UpgradeManager
         }
 
         // GO AFTER ARTISAN CALL
-        LaravelLog::info('Delete cached config files');
+        LaravelLog::info('DELETE cached config files');
         $files = [
             'bootstrap/cache/packages.php',
             'bootstrap/cache/config.php',
@@ -316,14 +325,6 @@ class UpgradeManager
                 $this->rm($path);
             }
         }
-    }
-
-    /**
-     * Actually run the upgrade process.
-     */
-    public function upgradeTranslationFiles()
-    {
-        $dir = base_path('resources/lang/');
     }
 
     /**
@@ -473,7 +474,8 @@ class UpgradeManager
         if (File::exists($dst)) {
             // Delete the file or link or directory
             if (is_link($dst) || is_file($dst)) {
-                File::delete($dst);
+                // To preserve $dst's permission
+                // File::delete($dst);
             } else {
                 File::deleteDirectory($dst);
             }
@@ -496,62 +498,16 @@ class UpgradeManager
     /**
      * Check if the provided file is a language file.
      */
-    public function isLanguageFile($path)
+    public function isTranslationFile($path) // absolute path
     {
-        return preg_match('/resources\/lang\/[a-z0-9]{2}\/[a-z0-9]+\.php$/', $path);
-    }
-
-    /**
-     * Check if the provided file is a language file and is EN.
-     */
-    public function isEnFile($path)
-    {
-        return preg_match('/resources\/lang\/en\/[a-z0-9]+\.php$/', $path);
+        return in_array($path, $this->allTranslationFiles);
     }
 
     /**
      * Upgrade all existing language packages using the provided file
-     * For example:
-     *    $manager = new \Acelle\Library\UpgradeManager();
-     *    $manager->upgradeLanguageFiles(resource_path("lang/en/messages.php"));.
      */
-    public function upgradeLanguageFiles($sourcePath)
+    public function mergeTranslationFileWithoutOverwritting($target, $source)
     {
-        $source = include $sourcePath;
-
-        $languages = \Acelle\Model\Language::all();
-        foreach ($languages as $lang) {
-            // if for any reason the language directory does not exist, just ignore it
-            if (!file_exists($lang->languageDir())) {
-                LaravelLog::warning(sprintf('Language directory %s does not exist', $lang->languageDir()));
-                continue;
-            }
-
-            $targetPath = join_paths($lang->languageDir(), pathinfo($sourcePath)['basename']);
-
-            if (!file_exists($targetPath)) {
-                $this->copy($sourcePath, $targetPath);
-            }
-
-            $target = include $targetPath;
-            $merged = array_diff_key($target + $source, array_diff_key($target, $source));
-            $lang->updateFromYaml(pathinfo($sourcePath)['filename'], \Yaml::dump($merged));
-        }
-    }
-
-    /**
-     * Merge the language file to retain user's change
-     * Example:
-     *    $manager = new \Acelle\Library\UpgradeManager()
-     *    $manager->mergeLanguageFile('/home/user/mailixa/resources/lang/en/messages.php', '/tmp/messages.php').
-     */
-    public function mergeLanguageFile($sourcePath, $targetPath)
-    {
-        // if the language files does not exist yet, just create it
-        if (!file_exists($targetPath)) {
-            $this->copy($sourcePath, $targetPath);
-        } else {
-            \Acelle\Helpers\updateTranslationFile($targetPath, $sourcePath, $overwrite = false);
-        }
+        updateTranslationFile($target, $source, $overwrite = false, $sort = true);
     }
 }

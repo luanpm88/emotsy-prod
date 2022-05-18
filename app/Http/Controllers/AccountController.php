@@ -29,11 +29,6 @@ class AccountController extends Controller
 
         // Save posted data
         if ($request->isMethod('post')) {
-            // Prenvent save from demo mod
-            if ($this->isDemoMode()) {
-                return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
-            }
-
             $this->validate($request, $user->rules());
 
             // Update user account for customer
@@ -64,6 +59,8 @@ class AccountController extends Controller
             if ($customer->save()) {
                 $request->session()->flash('alert-success', trans('messages.profile.updated'));
             }
+
+            return redirect()->action('AccountController@profile');
         }
 
         if (!empty($request->old())) {
@@ -320,5 +317,16 @@ class AccountController extends Controller
     public function saveAutoThemeMode(Request $request)
     {
         $request->session()->put('customer-auto-theme-mode', $request->theme_mode);
+    }
+
+    public function changeThemeMode(Request $request)
+    {
+        $customer = $request->user()->customer;
+
+        // Save color scheme
+        if ($request->isMethod('post')) {
+            $customer->theme_mode = $request->theme_mode;
+            $customer->save();
+        }
     }
 }

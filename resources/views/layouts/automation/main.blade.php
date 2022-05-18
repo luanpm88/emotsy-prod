@@ -82,6 +82,7 @@
 	
 	<!-- Dropzone -->
 	<script type="text/javascript" src="{{ URL::asset('core/dropzone/dropzone.js') }}"></script>
+	@include('helpers._dropzone_lang')
 	<link href="{{ URL::asset('core/dropzone/dropzone.css') }}" rel="stylesheet" type="text/css">
 	
 	<!-- Ajax box -->
@@ -125,10 +126,6 @@
 			LANG_CODE = '{{ Auth::user()->customer->getLanguageCodeFull() }}';
 		</script>
 	@endif
-
-	<script>
-		$.cookie('last_language_code', '{{ Auth::user()->customer->getLanguageCode() }}');
-	</script>
 
 	<script>
 		$( document ).ajaxError(function( event, request, settings ) {

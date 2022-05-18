@@ -19,9 +19,9 @@
 @endsection
 
 @section('menu_right')
-    <li class="nav-item">
+    <li class="nav-item d-flex align-items-center">
         <a  href="{{ action('Admin\LayoutController@index') }}"
-            class="nav-link d-flex align-items-center py-3 lvl-1">
+            class="nav-link py-3 lvl-1 d-flex align-items-center">
             <i class="material-icons-outlined me-2">arrow_back</i>
             <span>{{ trans('messages.go_back') }}</span>
         </a>
@@ -104,7 +104,7 @@
                     'outdent indent |  numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen  preview save print | insertfile image media template link anchor codesample | ltr rtl'
                 ],
                 toolbar_location: 'top',
-                menubar: false,
+                menubar: true,
                 statusbar: false,
                 toolbar_sticky: true,
                 valid_elements : '*[*],meta[*]',

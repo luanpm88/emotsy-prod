@@ -18,7 +18,7 @@ class ChangeJobsDatatableForLaravel53 extends Migration
             $table->dropColumn('reserved');
             $table->index(['queue', 'reserved_at']);
         });
-    
+
         Schema::table('failed_jobs', function (Blueprint $table) {
             $table->longText('exception')->after('payload');
         });
@@ -36,7 +36,7 @@ class ChangeJobsDatatableForLaravel53 extends Migration
             $table->index(['queue', 'reserved', 'reserved_at']);
             $table->dropIndex(['queue_reserved_at']);
         });
-    
+
         Schema::table('failed_jobs', function (Blueprint $table) {
             $table->dropColumn('exception');
         });

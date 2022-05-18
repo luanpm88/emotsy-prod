@@ -20,7 +20,7 @@
 
             // default content html
             this.setContentHtml(`
-                <div builder-element="BlockElement" builder-draggable="" style="background-color:#f6f6f4;">
+                <div builder-element="BlockElement" style="background-color:#f6f6f4;">
                     <div class="block-grid container" style="Margin: 0 auto; overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; background-color: transparent;">
                         <div style="border-collapse: collapse;display: table;width: 100%;background-color:transparent;">
                             <!--[if (mso)|(IE)]>
@@ -77,7 +77,7 @@
                         </div>
                     </div>
                 </div>
-                <div builder-element="BlockElement" builder-draggable="" style="background-color:transparent;">
+                <div builder-element="BlockElement" style="background-color:transparent;">
                     <div class="block-grid container" style="Margin: 0 auto; overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; background-color: transparent;">
                         <div style="border-collapse: collapse;display: table;width: 100%;background-color:transparent;">
                             <!--[if (mso)|(IE)]>
@@ -131,7 +131,7 @@
                         </div>
                     </div>
                 </div>
-                <div builder-element="BlockElement" builder-draggable="" style="background-color:transparent;">
+                <div builder-element="BlockElement" style="background-color:transparent;">
                     <div class="block-grid two-up container" style="Margin: 0 auto; overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; background-color: transparent;">
                         <div style="border-collapse: collapse;display: table;width: 100%;background-color:transparent;">
                             <!--[if (mso)|(IE)]>
@@ -298,7 +298,7 @@
 
             // default content html
             this.setContentHtml(`
-                <div builder-element="BlockElement" builder-draggable="" style="background-color:#28404F;">
+                <div builder-element="BlockElement" style="background-color:#28404F;">
                     <div class="block-grid container" style="Margin: 0 auto; overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; background-color: transparent;">
                         <div style="border-collapse: collapse;display: table;width: 100%;background-color:transparent;">
                             <!--[if (mso)|(IE)]>
@@ -449,7 +449,7 @@
 
             // default content html
             this.setContentHtml(`
-                <div builder-element="BlockElement" builder-draggable="" style="background-color:#f6f6f4;">
+                <div builder-element="BlockElement" style="background-color:#f6f6f4;">
                     <div class="block-grid container" style="Margin: 0 auto; overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; background-color: transparent;">
                         <div style="border-collapse: collapse;display: table;width: 100%;background-color:transparent;">
                             <!--[if (mso)|(IE)]>
@@ -516,7 +516,7 @@
                         </div>
                     </div>
                 </div>
-                <div builder-element="BlockElement" builder-draggable="" style="background-color:#f6f6f4;">
+                <div builder-element="BlockElement" style="background-color:#f6f6f4;">
                     <div class="block-grid two-up container" style="Margin: 0 auto; overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; background-color: transparent;">
                         <div style="border-collapse: collapse;display: table;width: 100%;background-color:transparent;">
                             <!--[if (mso)|(IE)]>
@@ -614,7 +614,7 @@
                         </div>
                     </div>
                 </div>
-                <div builder-element="BlockElement" builder-draggable="" style="background-color:#f6f6f4;">
+                <div builder-element="BlockElement" style="background-color:#f6f6f4;">
                     <div class="block-grid container" style="Margin: 0 auto; overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; background-color: transparent;">
                         <div style="border-collapse: collapse;display: table;width: 100%;background-color:transparent;">
                             <!--[if (mso)|(IE)]>
@@ -705,7 +705,7 @@
 
             // default content html
             this.setContentHtml(`
-                <div builder-element="BlockElement" builder-draggable="" style="background-color:#f6f6f4;">
+                <div builder-element="BlockElement" style="background-color:#f6f6f4;">
                     <div class="block-grid two-up container" style="Margin: 0 auto; overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; background-color: #FFFFFF;">
                         <div style="border-collapse: collapse;display: table;width: 100%;background-color:#FFFFFF;">
                             <!--[if (mso)|(IE)]>
@@ -917,7 +917,7 @@
 
             // default content html
             this.setContentHtml(`
-                <div builder-element="BlockElement" builder-draggable="" style="background-color:#f6f6f4;">
+                <div builder-element="BlockElement" style="background-color:#f6f6f4;">
                     <div class="block-grid container" style="Margin: 0 auto; overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; background-color: transparent;">
                         <div style="border-collapse: collapse;display: table;width: 100%;background-color:transparent;">
                             <!--[if (mso)|(IE)]>
@@ -971,7 +971,7 @@
                         </div>
                     </div>
                 </div>
-                <div builder-element="BlockElement" builder-draggable="" style="background-color:transparent;">
+                <div builder-element="BlockElement" style="background-color:transparent;">
                     <div class="block-grid container" style="Margin: 0 auto; overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; background-color: transparent;">
                         <div style="border-collapse: collapse;display: table;width: 100%;background-color:transparent;">
                             <!--[if (mso)|(IE)]>

@@ -38,7 +38,7 @@
                             <div class="d-flex align-items-center">
                                 <div class="me-4" style="width:400px">
                                     @include('helpers.form_control.control', [
-                                        'type' => 'text',
+                                        'type' => 'number',
                                         'name' => 'plan[options][email_max]',
                                         'value' => $options['email_max'],
                                         'label' => trans('messages.max_emails'),
@@ -67,7 +67,7 @@
                             <div class="d-flex align-items-center">
                                 <div class="me-4" style="width:400px">
                                     @include('helpers.form_control.control', [
-                                        'type' => 'text',
+                                        'type' => 'number',
                                         'name' => 'plan[options][list_max]',
                                         'value' => $options['list_max'],
                                         'label' => trans('messages.max_lists'),
@@ -96,7 +96,7 @@
                             <div class="d-flex align-items-center">
                                 <div class="me-4" style="width:400px">
                                     @include('helpers.form_control.control', [
-                                        'type' => 'text',
+                                        'type' => 'number',
                                         'name' => 'plan[options][subscriber_max]',
                                         'value' => $options['subscriber_max'],
                                         'label' => trans('messages.max_subscribers'),
@@ -125,7 +125,7 @@
                             <div class="d-flex align-items-center">
                                 <div class="me-4" style="width:400px">
                                     @include('helpers.form_control.control', [
-                                        'type' => 'text',
+                                        'type' => 'number',
                                         'name' => 'plan[options][subscriber_per_list_max]',
                                         'value' => $options['subscriber_per_list_max'],
                                         'label' => trans('messages.max_subscribers_per_list'),
@@ -154,7 +154,7 @@
                             <div class="d-flex align-items-center">
                                 <div class="me-4" style="width:400px">
                                     @include('helpers.form_control.control', [
-                                        'type' => 'text',
+                                        'type' => 'number',
                                         'name' => 'plan[options][segment_per_list_max]',
                                         'value' => $options['segment_per_list_max'],
                                         'label' => trans('messages.segment_per_list_max'),
@@ -183,7 +183,7 @@
                             <div class="d-flex align-items-center">
                                 <div class="me-4" style="width:400px">
                                     @include('helpers.form_control.control', [
-                                        'type' => 'text',
+                                        'type' => 'number',
                                         'name' => 'plan[options][campaign_max]',
                                         'value' => $options['campaign_max'],
                                         'label' => trans('messages.max_campaigns'),
@@ -212,7 +212,7 @@
                             <div class="d-flex align-items-center">
                                 <div class="me-4" style="width:400px">
                                     @include('helpers.form_control.control', [
-                                        'type' => 'text',
+                                        'type' => 'number',
                                         'name' => 'plan[options][automation_max]',
                                         'value' => $options['automation_max'],
                                         'label' => trans('messages.max_automations'),
@@ -241,7 +241,7 @@
                             <div class="d-flex align-items-center">
                                 <div class="me-4" style="width:400px">
                                     @include('helpers.form_control.control', [
-                                        'type' => 'text',
+                                        'type' => 'number',
                                         'name' => 'plan[options][max_size_upload_total]',
                                         'value' => $options['max_size_upload_total'],
                                         'label' => trans('messages.max_size_upload_total'),
@@ -270,7 +270,7 @@
                             <div class="d-flex align-items-center">
                                 <div class="me-4" style="width:400px">
                                     @include('helpers.form_control.control', [
-                                        'type' => 'text',
+                                        'type' => 'number',
                                         'name' => 'plan[options][max_file_size_upload]',
                                         'value' => $options['max_file_size_upload'],
                                         'label' => trans('messages.max_file_size_upload'),
@@ -367,10 +367,10 @@
 
             $('.unlimited_controls .unlimited_control').each(function() {
                 manager.add({
-                    textBox: $(this).find('input[type=text]'),
+                    textBox: $(this).find('input[type=text],input[type=number]'),
                     unlimitedCheck: $(this).find('input[type=checkbox]'),
-                    defaultValue: $(this).find('input[type=text]').attr('default-value'),
-                    currentValue: $(this).find('input[type=text]').val()
+                    defaultValue: $(this).find('input[type=text],input[type=number]').attr('default-value'),
+                    currentValue: $(this).find('input[type=text],input[type=number]').val()
                 });
             });
 

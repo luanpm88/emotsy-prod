@@ -1,3 +1,4 @@
+<!--
 <div class="subsection mt-5 pt-5">
     <div class="row">
         <div class="col-md-6">
@@ -59,7 +60,7 @@
                 <span class="text-semibold">
                     {{ trans('messages.campaign.started_ago', [
                         'time' => $campaign->run_at ? $campaign->run_at->diffForHumans() : '',
-                    ]) }} <strong> · </strong> {{ \Acelle\Library\Tool::formatDate($campaign->run_at) }}
+                    ]) }} <strong> · </strong> {{ Auth::user()->customer->formatDateTime($campaign->run_at, 'date_full') }}
                 </span>
             </p>
             <h2 class="mt-4 mb-2">100% delivered to active contacts</h2>
@@ -69,3 +70,4 @@
         </div>
     </div>
 </div>
+-->

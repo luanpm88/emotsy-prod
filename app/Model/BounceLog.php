@@ -23,6 +23,8 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Exception;
+use Validator;
 
 class BounceLog extends Model
 {
@@ -37,6 +39,51 @@ class BounceLog extends Model
     public function trackingLog()
     {
         return $this->belongsTo('Acelle\Model\TrackingLog', 'message_id', 'message_id');
+    }
+
+    public static function createFromRequest($params)
+    {
+        $rules = [
+            'message_id' => 'required',
+            'type' => 'required|in:sent,bounced,reported,failed'
+        ];
+
+        $messages = [
+            'type.in' => 'Allowed values for type is sent | bounced | reported | failed'
+        ];
+
+        $validator = Validator::make($params, $rules, $messages);
+
+        // redirect if fails
+        if ($validator->fails()) {
+            return [null, $validator];
+        }
+
+        $trackingLog = TrackingLog::where('message_id', $params['message_id'])->first();
+
+        if (empty($trackingLog)) {
+            // throw new Exception("No message found with Message-ID: ".$params['message_id']);
+            $rules = [
+                'message_id' => [
+                    function ($attribute, $value, $fail) use ($params) {
+                        $fail("No message found with Message-ID: ".$params['message_id']);
+                    }
+                ]
+            ];
+
+            // Make it (surely) fail
+            $validator = Validator::make($params, $rules);
+            return [null, $validator];
+        }
+
+        $bounceLog = new static();
+        $bounceLog->message_id = $params['message_id'];
+        $bounceLog->runtime_message_id = $trackingLog->runtime_message_id;
+        $bounceLog->bounce_type = array_key_exists('bounce_type', $params) ? $params['bounce_type'] : static::HARD; // @TODO fill in the NULL value here
+        $bounceLog->raw = array_key_exists('description', $params) ? $params['description'] : null;
+        $bounceLog->save();
+
+        return [$bounceLog, $validator];
     }
 
     /**

@@ -130,7 +130,14 @@ class SubscriptionController extends Controller
                 return view('subscription.pending', [
                     'invoice' => $invoice,
                 ]);
+
+            // go to billing info + payment
             } else {
+                // no billing information
+                if (!$invoice->hasBillingInformation()) {
+                    return redirect()->action('SubscriptionController@billingInformation');
+                }
+
                 if ($invoice->isFree()) {
                     return view('subscription.payment', [
                         'invoice' => $invoice,
@@ -199,6 +206,7 @@ class SubscriptionController extends Controller
         $customer = $request->user()->customer;
         $subscription = $customer->subscription;
         $invoice = $subscription->getUnpaidInvoice();
+        $billingAddress = $customer->getDefaultBillingAddress();
 
         // Save posted data
         if ($request->isMethod('post')) {
@@ -208,9 +216,13 @@ class SubscriptionController extends Controller
             if ($validator->fails()) {
                 return response()->view('subscription.billingInformation', [
                     'invoice' => $invoice,
+                    'billingAddress' => $billingAddress,
                     'errors' => $validator->errors(),
                 ], 400);
             }
+
+            // update current billing information
+            $customer->updateBillingInformationFromInvoice($invoice);
 
             $request->session()->flash('alert-success', trans('messages.billing_address.updated'));
 
@@ -222,6 +234,7 @@ class SubscriptionController extends Controller
 
         return view('subscription.billingInformation', [
             'invoice' => $invoice,
+            'billingAddress' => $billingAddress,
         ]);
     }
 

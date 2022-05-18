@@ -208,6 +208,21 @@ class StringHelper
         return true;
     }
 
+    // Remove from string, use for email addresses
+    public static function removeUTF8BOM($text)
+    {
+        $bom = pack('H*', 'EFBBBF');
+
+        // Standard method
+        $text = preg_replace("/^$bom/", '', $text);
+
+        // More destructive method, as the first method may miss the following ones with more than one BOM:
+        // ﻿﻿madrevgra@aol.com
+        // ﻿﻿madrasathleticclub@yahoo.com
+        $text = str_replace("\xEF\xBB\xBF", '', $text);
+        return $text;
+    }
+
     public static function appendHtml($content, $html)
     {
         return StringHelper::updateHtml($content, function ($document) use ($html) {
@@ -473,12 +488,6 @@ class StringHelper
         return $newUrl;
     }
 
-    public static function makeTrackingPixel($msgId)
-    {
-        $url = route('openTrackingUrl', ['message_id' => StringHelper::base64UrlEncode($msgId)], true);
-        return '<img src="'.$url.'" width="0" height="0" alt="" style="visibility:hidden" />';
-    }
-
     public static function generateUniqueName($directory, $name)
     {
         $count = 1;
@@ -506,5 +515,17 @@ class StringHelper
     public static function isTag($string)
     {
         return preg_match('/{[a-zA-Z0-9_]+}/', $string);
+    }
+
+    public static function fromHumanIpAddress($ipAddress)
+    {
+        $googleIpRanges = config('google');
+        foreach ($googleIpRanges as $cidr) {
+            if (\Symfony\Component\HttpFoundation\IpUtils::checkIp($ipAddress, $cidr)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

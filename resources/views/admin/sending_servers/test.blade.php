@@ -82,6 +82,7 @@
 
             run: function() {
                 SendTestEmail.getPopup().mask();
+                addMaskLoading();
 
                 // copy
                 $.ajax({
@@ -96,6 +97,7 @@
                     });
 
                     SendTestEmail.getPopup().unmask();
+                    removeMaskLoading();
                 }).fail(function(jqXHR, textStatus, errorThrown){
                     // for debugging
                     new Dialog('alert', {
@@ -104,8 +106,10 @@
                     });
                     
                     SendTestEmail.getPopup().unmask();
+                    removeMaskLoading();
                 }).always(function() {
                     SendTestEmail.getPopup().unmask();
+                    removeMaskLoading();
                 });
             }
         }

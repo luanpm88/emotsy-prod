@@ -13,6 +13,7 @@ use Acelle\Model\Template;
 use Illuminate\Support\Facades\Session;
 use Acelle\Helpers\LicenseHelper;
 use App;
+use Acelle\Library\Downloader;
 
 class SettingController extends Controller
 {
@@ -76,6 +77,13 @@ class SettingController extends Controller
 
             // Save settings
             foreach ($request->all() as $name => $value) {
+                if (in_array($name, [
+                    'invoice_current',
+                    'invoice_format',
+                ])) {
+                    $name = str_replace('_', '.', $name);
+                }
+
                 if ($name != '_token' && isset($settings[$name])) {
                     // Upload and save image
                     if ($name == 'site_logo_small' || $name == 'site_logo_big' || $name == 'site_favicon') {
@@ -736,5 +744,76 @@ class SettingController extends Controller
         $request->session()->flash('alert-success', trans('messages.setting.updated'));
 
         return redirect()->action('Admin\PaymentController@index');
+    }
+
+    /**
+     * Upgrade from URL.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function upgradeFromUrl(Request $request)
+    {
+        if ($request->isMethod('post')) {
+            $downloader = new Downloader($request->input('url'));
+            $tmpPath = storage_path('tmp/upgrade.bin.zip');
+            $downloader->downloadTo($tmpPath);
+
+            $manager = new UpgradeManager();
+            $manager->load($tmpPath);
+            $failed = $manager->test();
+
+            if (!empty($failed)) {
+                Log::warning('Cannot upgrade, certain files are not writable');
+                return view('admin.settings.upgrade', [
+                    'any' => 'any',
+                    'manager' => $manager,
+                    'failed' => $failed,
+                ]);
+            }
+
+            // RUN UPGRADE
+            Log::info('Actually run from URL.....');
+            $manager->run();
+
+            Log::info('System successfully upgraded to the new version');
+            Log::info('Redirecting to work with new request');
+            $request->session()->put('upgraded', true);
+
+            // REFRESH by redirecting to an entirely new page
+            // Then make a new request from browser to load new config
+            // A normal redirect() will retain the current setting
+
+            // Do not use action('...'), the route may not exist yet
+            //     $pageUrl = action('Admin\Upgrade@migrate');
+            // Use route()
+            $pageUrl = url('/migrate/run');
+            echo '<html>
+                <head>
+                    <meta http-equiv="refresh" content="3;'.$pageUrl.'" />
+                <title>Application Upgrade...</title>
+                </head>
+                <body>
+                    Upgrade is in progress, please wait...
+                </body>
+                </html>';
+
+            return;
+        }
+
+        // GET ONLY
+        return view('admin.settings.upgradeFromUrl');
+    }
+
+    public function licenseRemove()
+    {
+        try {
+            Setting::updateLicense(null);
+
+            return redirect()->action('Admin\SettingController@license')
+                ->with('alert-success', trans('messages.license.removed'));
+        } catch (\Exception $ex) {
+            return redirect()->action('Admin\SettingController@license')
+                ->with('alert-error', $ex->getMessage());
+        }
     }
 }

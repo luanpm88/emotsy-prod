@@ -27,15 +27,15 @@ return [
             'result_xpath' => '$.result',
             'result_map' => [ 'deliverable' => 'deliverable', 'undeliverable' => 'undeliverable', 'risky' => 'risky', 'unknown' => 'unknown' ]
         ],
-        /*[
-            'id' => 'verify-email.org',
-            'name' => 'VerifyEmail (deprecated)',
-            'uri' => 'http://api.verify-email.org/api.php?usr={USERNAME}&pwd={PASSWORD}&check={EMAIL}',
+        [
+            'id' => 'zerobounce.net',
+            'name' => 'Zero Bounce',
+            'uri' => 'https://api.zerobounce.net/v1/validate?apikey={API_KEY}&email={EMAIL}',
             'request_type' => 'GET',
-            'fields' => [ 'username', 'password' ],
-            'result_xpath' => '$.authentication_status',
-            'result_map' => [ '1' => 'deliverable', '0' => 'undeliverable' ]
-        ], */
+            'fields' => [ 'api_key' ],
+            'result_xpath' => '$.status',
+            'result_map' => [ 'Valid' => 'deliverable', 'Invalid' => 'undeliverable', 'Unknown' => 'unknown', 'Abuse' => 'undeliverable', 'spamtrap' => 'undeliverable', 'Spamtrap' => 'undeliverable', 'catch-all' => 'deliverable', 'Catch-all' => 'deliverable', 'Catch-All' => 'deliverable', 'do_not_mail' => 'undeliverable', 'Do_not_mail' => 'undeliverable', 'Do_Not_Mail' => 'undeliverable']
+        ],
         [
             'id' => 'verify-email.org',
             'name' => 'VerifyEmail ORG',
@@ -128,6 +128,20 @@ return [
                 'risky' => 'risky',
                 'unknown' => 'unknown'
             ]
-        ],
+        ],[
+            'id' => 'bounceless.io',
+            'name' => 'Bounceless.io',
+            'uri' => 'https://apps.bounceless.io/api/verifyEmail?secret={API_KEY}&email={EMAIL}',
+            'request_type' => 'GET',
+            'fields' => [ 'api_key' ],
+            'response_type' => 'plain',
+            'result_map' => [
+                'ok' => 'deliverable',
+                'unknown' => 'unknown',
+                'incorrect' => 'undeliverable',
+                'fail' => 'undeliverable',
+                'email_disabled' => 'undeliverable',
+            ]
+        ]
     ]
 ];

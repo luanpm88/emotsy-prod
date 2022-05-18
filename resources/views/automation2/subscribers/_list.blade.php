@@ -29,7 +29,7 @@
 							</a>
 							<br />
 							<span class="label label-flat bg-{{ $subscriber->status }}">{{ trans('messages.' . $subscriber->status) }}</span>
-							<span class="label label-flat bg-{{ $subscriber->verify_result }}">{{ trans('messages.email_verification_result_' . $subscriber->verify_result) }}</span>
+							<span class="label label-flat bg-{{ $subscriber->verification_status }}">{{ trans('messages.email_verification_result_' . $subscriber->verification_status) }}</span>
 						</div>
 					</div>
 				</td>
@@ -45,7 +45,7 @@
 
 				@if (in_array("created_at", explode(",", request()->columns)))
 					<td>
-						<span class="no-margin stat-num">{{ Tool::formatDateTime($subscriber->created_at) }}</span>
+						<span class="no-margin stat-num">{{ Auth::user()->customer->formatDateTime($subscriber->created_at, 'date_full') }}</span>
 						<br>
 						<span class="text-muted2">{{ trans('messages.created_at') }}</span>
 					</td>
@@ -53,13 +53,13 @@
 
 				@if (in_array("updated_at", explode(",", request()->columns)))
 					<td>
-						<span class="no-margin stat-num">{{ Tool::formatDateTime($subscriber->updated_at) }}</span>
+						<span class="no-margin stat-num">{{ Auth::user()->customer->formatDateTime($subscriber->updated_at, 'date_full') }}</span>
 						<br>
 						<span class="text-muted2">{{ trans('messages.updated_at') }}</span>
 					</td>
 				@endif
 
-				<td class="text-end text-nowrap">
+				<td class="text-end text-nowrap pe-0">
 					@if (\Gate::allows('update', $subscriber))
 						<a href="{{ action('Automation2Controller@subscribersShow', [
 							'uid' => $automation->uid,

@@ -28,7 +28,7 @@ class HtmlHandlersTest extends TestCase
     public function test_parse_rss()
     {
         $pipeline = new PipelineBuilder();
-        $pipeline->add(new ParseRss);
+        $pipeline->add(new ParseRss());
         $html = "{% set rss = rss('http://rss.cnn.com/rss/edition.rss', 5) %}
             {% for post in rss.item %}
                 <h3>{{ post.title }}</h3>
@@ -38,13 +38,14 @@ class HtmlHandlersTest extends TestCase
 
         $out = $pipeline->build()->process($html);
 
-        $this->assertTrue(strlen($out) > 5*strlen($html));
+        $this->assertTrue(strpos($out, '{% for post in rss.item %}') === false);
+        $this->assertTrue(strpos($out, '<h3>{{ post.title }}</h3>') === false);
     }
 
     public function test_replace_bare_line_feed()
     {
         $pipeline = new PipelineBuilder();
-        $pipeline->add(new ReplaceBareLineFeed);
+        $pipeline->add(new ReplaceBareLineFeed());
         $html = "Hello\nWorld\nFrom\r\nLaravel\n";
         $out = $pipeline->build()->process($html);
 
@@ -135,11 +136,11 @@ class HtmlHandlersTest extends TestCase
         $subscriber->uid = '000000';
 
         $pipeline = new PipelineBuilder();
-        $pipeline->add(new AddDoctype);
-        $pipeline->add(new RemoveTitleTag);
-        $pipeline->add(new ReplaceBareLineFeed);
+        $pipeline->add(new AddDoctype());
+        $pipeline->add(new RemoveTitleTag());
+        $pipeline->add(new ReplaceBareLineFeed());
         $pipeline->add(new AppendHtml('<div>Hello world éèéêôâ</div>'));
-        $pipeline->add(new ParseRss);
+        $pipeline->add(new ParseRss());
         $pipeline->add(new TransformTag($campaign, $subscriber, 'MSGID', $server = null));
         $pipeline->add(new TransformUrl($template, 'MSGID', $trackingDomain = null));
         $pipeline->add(new MakeInlineCss([storage_path('tests/sample.css')]));
@@ -152,6 +153,45 @@ class HtmlHandlersTest extends TestCase
         $this->assertTrue(strpos($html, "\n") === false);
         $this->assertTrue(strpos($html, '<div>Hello world éèéêôâ</div>') !== false);
         $this->assertTrue(strpos($html, "'%UID%'") !== false); // isStdClassSubscriber is always TRUE in test
+    }
+
+    public function test_test_campaign_html_with_types_of_urls()
+    {
+        // Template
+        $template = Mockery::mock(new Template(['name' => 'Template']));
+        $template->generateUid();
+        $msgId = 'TEST';
+
+        // List
+        $list = Mockery::mock(new MailList());
+
+        // Campaign
+        $campaign = Mockery::mock(new Campaign(['name' => 'Campaign']));
+        $campaign->defaultMailList = $list;
+        $campaign->shouldReceive('isStdClassSubscriber')->andReturn(true);
+
+        // Subscriber
+        $subscriber = Mockery::mock(new Subscriber());
+        $subscriber->uid = '000000';
+
+        $pipeline = new PipelineBuilder();
+        $pipeline->add(new AddDoctype());
+        $pipeline->add(new RemoveTitleTag());
+        $pipeline->add(new ReplaceBareLineFeed());
+        $pipeline->add(new AppendHtml('<div>test</div>'));
+        $pipeline->add(new ParseRss());
+        $pipeline->add(new TransformTag($campaign, $subscriber, 'MSGID', $server = null));
+        $pipeline->add(new TransformUrl($template, 'MSGID', $trackingDomain = null));
+        $pipeline->add(new MakeInlineCss([storage_path('tests/sample.css')]));
+        $pipeline->add(new InjectTrackingPixel('MSGID'));
+
+        $html = $pipeline->build()->process("<a href='image/hehe'>Relative</a><img src='//cdn.fake.com/image/hehe'><a href='/absolute/url'>Absolute</a><a href='//absolute/url'>Two slashes</a><a href='mailto:hello@example.com'>hello@example.com</a><a href='#sectionN'>Scroll to Section N</a>");
+
+        $this->assertTrue(strpos($html, '<!DOCTYPE html>') === 0);
+
+        // mailto:hello@example.com should not be modified
+        $this->assertTrue(strpos($html, '<a href="mailto:hello@example.com">hello@example.com</a>') !== false);
+        $this->assertTrue(strpos($html, '<a href="#sectionN">Scroll to Section N</a>') !== false);
     }
 
     public function test_test_campaign_html_content_with_tracking_domain()
@@ -179,11 +219,11 @@ class HtmlHandlersTest extends TestCase
         $subscriber->uid = '000000';
 
         $pipeline = new PipelineBuilder();
-        $pipeline->add(new AddDoctype);
-        $pipeline->add(new RemoveTitleTag);
-        $pipeline->add(new ReplaceBareLineFeed);
+        $pipeline->add(new AddDoctype());
+        $pipeline->add(new RemoveTitleTag());
+        $pipeline->add(new ReplaceBareLineFeed());
         $pipeline->add(new AppendHtml('<div>Hello world éèéêôâ</div>'));
-        $pipeline->add(new ParseRss);
+        $pipeline->add(new ParseRss());
         $pipeline->add(new TransformTag($campaign, $subscriber, 'MSGID', $server = null));
 
         $pipeline->add(new TransformUrl($template, 'MSGID', $domain));
@@ -224,7 +264,7 @@ class HtmlHandlersTest extends TestCase
         $domain->scheme = 'https';
 
         // Mail list
-        $list = new MailList;
+        $list = new MailList();
         $list->generateUid();
 
         // Template
@@ -246,11 +286,11 @@ class HtmlHandlersTest extends TestCase
         $subscriber->uid = '000000';
 
         $pipeline = new PipelineBuilder();
-        $pipeline->add(new AddDoctype);
-        $pipeline->add(new RemoveTitleTag);
-        $pipeline->add(new ReplaceBareLineFeed);
+        $pipeline->add(new AddDoctype());
+        $pipeline->add(new RemoveTitleTag());
+        $pipeline->add(new ReplaceBareLineFeed());
         $pipeline->add(new AppendHtml('<div>Hello world éèéêôâ</div>'));
-        $pipeline->add(new ParseRss);
+        $pipeline->add(new ParseRss());
         $pipeline->add(new TransformTag($campaign, $subscriber, 'MSGID', $server = null));
         $pipeline->add(new InjectTrackingPixel('MSGID'));
         $pipeline->add(new TransformUrl($template, 'MSGID', $domain)); // click url, tracking domain applied
@@ -291,7 +331,7 @@ class HtmlHandlersTest extends TestCase
     public function test_test_campaign_with_special_tags_without_tracking_domain()
     {
         // Mail list
-        $list = new MailList;
+        $list = new MailList();
         $list->generateUid();
 
         // Template
@@ -312,11 +352,11 @@ class HtmlHandlersTest extends TestCase
         $subscriber->uid = '000000';
 
         $pipeline = new PipelineBuilder();
-        $pipeline->add(new AddDoctype);
-        $pipeline->add(new RemoveTitleTag);
-        $pipeline->add(new ReplaceBareLineFeed);
+        $pipeline->add(new AddDoctype());
+        $pipeline->add(new RemoveTitleTag());
+        $pipeline->add(new ReplaceBareLineFeed());
         $pipeline->add(new AppendHtml('<div>Hello world éèéêôâ</div>'));
-        $pipeline->add(new ParseRss);
+        $pipeline->add(new ParseRss());
         $pipeline->add(new TransformTag($campaign, $subscriber, 'MSGID', $server = null));
         $pipeline->add(new InjectTrackingPixel('MSGID'));
         $pipeline->add(new TransformUrl($template, 'MSGID', null)); // click url, tracking domain applied
@@ -336,5 +376,42 @@ class HtmlHandlersTest extends TestCase
         $this->assertTrue(strpos($html, 'c/000000/unsubscribe/TVNHSUQ') !== false);
         $this->assertTrue(strpos($html, 'update-profile') !== false);
         $this->assertTrue(strpos($html, 'campaigns/TVNHSUQ/web-view') !== false);
+    }
+
+    public function test_caching_just_works()
+    {
+        // Template
+        $template = Mockery::mock(new Template(['name' => 'Template', 'content' => 'Original']));
+        $template->generateUid();
+
+        // List
+        $list = Mockery::mock(new MailList());
+        $list->generateUid();
+
+        // Campaign
+        $campaign = Mockery::mock(new Campaign(['name' => 'Campaign']));
+        $campaign->defaultMailList = $list;
+        $campaign->template = $template;
+
+        // Flush any cache
+        $campaign->clearCache();
+
+        // Get
+        $html = $campaign->getHtmlContent();
+        $cachedHtml = $campaign->getHtmlContent($subscriber = null, $messageId = null, $server = null, $fromCache = true, $seconds = 1);
+
+        $this->assertEquals($html, '<!DOCTYPE html><html><body><p>Original</p></body></html>');
+        $this->assertEquals($html, $cachedHtml);
+
+        $campaign->template->content = 'Updated';
+        $html = $campaign->getHtmlContent();
+        $cachedHtml = $campaign->getHtmlContent($subscriber = null, $messageId = null, $server = null, $fromCache = true, $seconds = 1);
+        $this->assertEquals($html, '<!DOCTYPE html><html><body><p>Updated</p></body></html>');
+        $this->assertEquals($cachedHtml, '<!DOCTYPE html><html><body><p>Original</p></body></html>');
+
+        // wait 2 seconds for cache to expire
+        sleep(2);
+        $cachedHtml = $campaign->getHtmlContent($subscriber = null, $messageId = null, $server = null, $fromCache = true);
+        $this->assertEquals($cachedHtml, $html);
     }
 }

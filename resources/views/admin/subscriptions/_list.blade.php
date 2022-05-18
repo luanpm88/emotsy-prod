@@ -24,7 +24,7 @@ remove_circle_outline
 				</td>
 				<td>
 					<h5 class="m-0 text-bold">
-						<span class="kq_search" href="#">
+						<span class="kq_search d-block" href="#">
 							{{ $subscription->plan->name }}
 						</span>
 					</h5>
@@ -35,14 +35,14 @@ remove_circle_outline
 				</td>
 				<td width="15%">
                     <h5 class="no-margin stat-num">
-                        <span class="kq_search">{{ Acelle\Library\Tool::dateTime($subscription->created_at)->format('M d, Y') }}</span>
+                        <span class="kq_search">{{ Auth::user()->admin->formatDateTime($subscription->created_at, 'date_full')}}</span>
                     </h5>
                     <span class="text-muted2">{{ trans('messages.subscribed_on') }}</span>
                 </td>				
 				<td width="15%">
 					@if ($subscription->isEnded())
 						<h5 class="no-margin stat-num">
-								<span class="kq_search">{{ Acelle\Library\Tool::formatDate($subscription->ends_at) }}</span>
+								<span class="kq_search">{{ Auth::user()->admin->formatDateTime($subscription->ends_at, 'date_full') }}</span>
 							</h5>
 						<span class="text-muted2">{{ trans('messages.subscription.subscription_ended_at') }}</span>
 					@elseif ($subscription->cancelled())

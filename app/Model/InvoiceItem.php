@@ -27,13 +27,32 @@ class InvoiceItem extends Model
     }
 
     /**
+     * Tax percent.
+     *
+     * @return void
+     */
+    public function getTaxPercent()
+    {
+        if ($this->invoice->billing_country_id) {
+            $country = \Acelle\Model\Country::find($this->invoice->billing_country_id);
+            $tax = \Acelle\Model\Setting::getTaxByCountry($country);
+        } else {
+            $tax = \Acelle\Model\Setting::getTaxByCountry(null);
+        }
+
+        return $tax;
+    }
+
+    /**
      * Tax amount.
      *
      * @return void
      */
     public function getTax()
     {
-        return ($this->subTotal() * ($this->vat/100));
+        $tax = $this->getTaxPercent();
+
+        return ($this->subTotal() * ($tax/100));
     }
 
     public function subTotal()

@@ -23,12 +23,14 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
-use Acelle\Events\MailListUpdated;
+use Acelle\Events\CampaignUpdated;
 use Acelle\Library\StringHelper;
 use Exception;
 
 class OpenLog extends Model
 {
+    protected $fillable = ['message_id'];
+
     /**
      * Associations.
      *
@@ -112,6 +114,18 @@ class OpenLog extends Model
 
     public static function createFromRequest($request)
     {
+        $ipAddress = $request->ip();
+
+        /****
+         * Also record Google proxy opens
+         *
+         *
+        if (!StringHelper::fromHumanIpAddress($ipAddress)) {
+            return;
+        }
+         *
+         */
+
         $messageId = StringHelper::base64UrlDecode($request->message_id);
 
         if (!TrackingLog::where('message_id', $messageId)->exists()) {
@@ -120,10 +134,10 @@ class OpenLog extends Model
 
         $log = new self();
         $log->message_id = $messageId;
-        $log->user_agent = $_SERVER['HTTP_USER_AGENT'];
+        $log->user_agent = array_key_exists('HTTP_USER_AGENT', $_SERVER) ? $_SERVER['HTTP_USER_AGENT'] : null;
 
         try {
-            $location = IpLocation::add($request->ip());
+            $location = IpLocation::add($ipAddress);
             $log->ip_address = $location->ip_address;
         } catch (Exception $ex) {
             // Then no GeoIP information
@@ -132,9 +146,14 @@ class OpenLog extends Model
 
         $log->save();
 
-        if ($log->trackingLog) {
-            event(new MailListUpdated($log->trackingLog->subscriber->mailList));
+        // Do not trigger cache update if campaign is running
+        if ($log->trackingLog && !is_null($log->trackingLog->campaign)) {
+            if (!$log->trackingLog->campaign->isSending()) {
+                event(new CampaignUpdated($log->trackingLog->campaign));
+            }
         }
+
+        return $log;
     }
 
     /**

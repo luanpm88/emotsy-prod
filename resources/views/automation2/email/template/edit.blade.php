@@ -5,33 +5,27 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">    
 
-    @include('layouts.core._favicon')
+    @include('layouts.core._favicon')  
 
+    <!-- BuilderJS CORE -->
     <link href="{{ URL::asset('builder/builder.css') }}" rel="stylesheet" type="text/css">
     <script type="text/javascript" src="{{ URL::asset('builder/builder.js') }}"></script>
 
-    <!-- jQuery -->
-    <script type="text/javascript" src="{{ URL::asset('core/js/jquery-3.6.0.min.js') }}"></script>
+    <!-- BuilderJS CUSTOM -->
+    <link href="{{ URL::asset('core/css/builder-custom.css') }}" rel="stylesheet" type="text/css">
+    @include('builder.js.widgets')
 
     <!-- Select2 -->
     <link rel="stylesheet" type="text/css" href="{{ URL::asset('core/select2/css/select2.min.css') }}">
     <script type="text/javascript" src="{{ URL::asset('core/select2/js/select2.min.js') }}"></script>
 
+    <!-- Autofill -->
     <link href="{{ URL::asset('core/css/UrlAutoFill.css') }}" rel="stylesheet" type="text/css">
     <script src="{{ URL::asset('core/js/UrlAutoFill.js') }}"></script>
 
     @if ($email->template->theme)
         @include('builder.themes.' . $email->template->theme)
     @endif
-
-    @include('helpers._builder_product_widgets')
-
-    <style>
-        .logo-img {
-            width: 120px!important;
-            margin-right: 15px;
-        }
-    </style>
 
     <script>
         var CSRF_TOKEN = "{{ csrf_token() }}";
@@ -160,43 +154,25 @@
                     var thisEditor = this;
 
                     // product widgets
-                    this.addContentWidget(new ProductListWidget(), 0, 'ProductCommerce');
-                    this.addContentWidget(new ProductWidget(), 0, 'ProductCommerce');
+                    this.addContentWidget(new ProductListWidget(), 0, '{{ trans('builder.widget.e_commerce') }}');
+                    this.addContentWidget(new ProductWidget(), 0, '{{ trans('builder.widget.e_commerce') }}');
 
-                    @if ($automation->getTrigger()->getOption('type') == 'woo-abandoned-cart')
-                        this.addContentWidget(new AbandonedCartWidget(), 0, 'ProductCommerce');
-                    @endif
+                    // @if ($automation->getTrigger()->getOption('type') == 'woo-abandoned-cart')
+                    //     this.addContentWidget(new AbandonedCartWidget(), 0, '{{ trans('builder.widget.e_commerce') }}');
+                    // @endif
+
+                    // Rss widget
+                    this.addWidget(new RssWidget(), 'content', 3);
 
                     // add custom css
-                    this.addCustomCss('{{ url('/core/css/builder_product.css') }}');
-
-                    // click preview button
-                    $("#builder_iframe").contents().find("body").on('click', '.product-preview-but', function(e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        var element = thisEditor.elementFactory($(this).parent());
-                        element.preview();
-                        {{-- thisEditor.select(element); --}}
-                        thisEditor.handleSelect();
-                        return false;
-                    })
-
-                    $("#builder_iframe").contents().find("body").on('click', '.product-unpreview-but', function(e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        var element = thisEditor.elementFactory($(this).parent());
-                        element.unpreview();
-                        {{-- thisEditor.select(element); --}}
-                        thisEditor.handleSelect();
-                        return false;
-                    })
+                    this.addCustomCss('{{ url('/core/css/builder-edit.css') }}');
 
                     // load widgets from theme.js
                     if (typeof(WidgetManager) !== 'undefined') {
                         var widgets = WidgetManager.init();
 
                         widgets.forEach(function(widget) {
-                            thisEditor.addContentWidget(widget, 0, 'Template Content');
+                            thisEditor.addContentWidget(widget, 0, '{{ trans('builder.widget.template_content') }}');
                         });
                     }
                 },
@@ -234,7 +210,7 @@
             editor.init();
 
             //
-            $(document).on('click', '.filemanager-ok', function(e) {alert('Please click on the thumbnail to select the corresponding image');})
+            $(document).on('click', '.filemanager-ok', function(e) {alert('{{ trans('builder.widget.click_thumb_to_insert') }}');})
             $(document).on('click', '.filemanager-cancel', function(e) {$('.PopUpCloseButton').click();})
 
             //

@@ -212,7 +212,7 @@ dns
                                     </td>
                                     <td>
                                         <span>
-                                            {{ Acelle\Library\Tool::formatDate($plan->primarySendingServer()->updated_at) }}
+                                            {{ Auth::user()->admin->formatDateTime($plan->primarySendingServer()->updated_at, 'date_full') }}
                                         </span>
                                     </td>
                                     <td>

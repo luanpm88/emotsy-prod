@@ -6,7 +6,7 @@
 people
 </span> {{ trans('messages.subscribers_most_open') }}</h4>                        
         </div>
-        @if ($campaign->openCount())
+        @if ($campaign->uniqueOpenCount())
             <div class="stat-table">
                 @foreach ($campaign->getTopOpenSubscribers()->get() as $subscriber)
                     <div class="stat-row">
@@ -43,7 +43,7 @@ auto_awesome
             <h4 class="text-semibold"><i class="icon-location4"></i> {{ trans('messages.top_location_by_opens') }}</h4>
         </div>
             
-        @if ($campaign->openCount())
+        @if ($campaign->uniqueOpenCount())
             <div class="stat-table">
                 @foreach ($campaign->topLocations()->get() as $location)
                     <div class="stat-row">

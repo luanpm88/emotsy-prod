@@ -39,7 +39,7 @@
                     $billingAddress = $customer->getDefaultBillingAddress();
                 @endphp
                 <div>
-                    <h4 class="mb-1 mt-0">{{ $billingAddress->first_name }} {{ $billingAddress->first_name }}</h4>
+                    <h4 class="mb-1 mt-0">{{ $billingAddress->first_name }} {{ $billingAddress->last_name }}</h4>
                     <div class="">{{ $billingAddress->email }}</div>
                     <div class="">{{ $billingAddress->phone }}</div>
 

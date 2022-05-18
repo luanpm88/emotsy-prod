@@ -6,9 +6,9 @@
             <tr>
                 <td>
                     <h5 class="m-0 text-bold">
-                        <a class="kq_search" href="{{ action('Admin\AdminGroupController@edit', $item->id) }}">{{ $item->name }}</a>
+                        <a class="kq_search d-block" href="{{ action('Admin\AdminGroupController@edit', $item->id) }}">{{ $item->name }}</a>
                     </h5>
-                    <span class="text-muted">{{ trans('messages.created_at') }}: {{ Tool::formatDateTime($item->created_at) }}</span>
+                    <span class="text-muted">{{ trans('messages.created_at') }}: {{ Auth::user()->admin->formatDateTime($item->created_at, 'date_full') }}</span>
                 </td>
                 <td>
                     <div class="single-stat-box pull-left">

@@ -25,7 +25,7 @@
                     </p>
                     <div class="text-muted">
                         {{ trans('messages.source.connected_on', [
-                            'date' => \Acelle\Library\Tool::formatDate($source->created_at),
+                            'date' => Auth::user()->customer->formatDateTime($source->created_at, 'date_full'),
                         ]) }}
                         |
                         <a href="">{{ trans('messages.source.visit_store') }}</a>
@@ -61,9 +61,11 @@
             </div>
 
             <div class="source-stats">
-                <div class="source-desc-line py-4 my-4 d-flex">
-                    <div class="desc-icon mr-4 pr-2 d-flex pt-3">
-                        <span class="icon-users"></span>
+                <div class="source-desc-line pt-4 mb-4 d-flex">
+                    <div class="mr-4">
+                        <span class="material-icons-outlined" style="font-size:24px">
+                            inventory_2
+                            </span>
                     </div>
                     <div class="desc">
                         <h5 class="mt-0 mb-1 text-primary">{!! trans('messages.source.have_products', [
@@ -77,10 +79,12 @@
                         ]) }}" class="btn btn-primary">{{ trans('messages.source.products.manage') }}</a>
                     </div>
                 </div>
-                <div class="source-desc-line py-4 my-4 d-flex" style="justify-content: space-between">
+                <div class="source-desc-line pt-4 my-4 d-flex" style="justify-content: space-between">
                     <div class="d-flex">
-                        <div class="desc-icon mr-4 pr-2 d-flex pt-3">
-                            <span class="icon-profile"></span>
+                        <div class="mr-4">
+                            <span class="material-icons-outlined" style="font-size:24px">
+                                fact_check
+                                </span>
                         </div>
                         <div class="desc">
                             <h5 class="mt-0 mb-1 text-primary">
@@ -114,9 +118,11 @@
                     </div>
                 </div>
                 @if ($automation->getAbandonedCartEmail()->isSetup())
-                    <div class="source-desc-line py-4 my-4 d-flex">
-                        <div class="desc-icon mr-4 pr-2 d-flex pt-3">
-                            <span class="icon-alarm"></span>
+                    <div class="source-desc-line pt-4 my-4 d-flex">
+                        <div class="mr-4">
+                            <span class="material-icons-outlined" style="font-size:24px">
+                                mark_email_unread
+                                </span>
                         </div>
                         <div class="desc">
                             <h5 class="mt-0 mb-1 text-primary">{{ trans('messages.source.abandoned_cart_email') }}
@@ -143,9 +149,11 @@
                         </div>
                     </div>
                 @else
-                    <div class="source-desc-line py-4 my-4 d-flex">
-                        <div class="desc-icon mr-4 pr-2 d-flex pt-3">
-                            <span class="icon-alarm"></span>
+                    <div class="source-desc-line pt-4 my-4 d-flex">
+                        <div class="mr-4">
+                            <span class="material-icons-outlined" style="font-size:24px">
+                                mark_email_unread
+                                </span>
                         </div>
                         <div class="desc">
                             <h5 class="mt-0 mb-1 text-primary">{{ trans('messages.source.abandoned_cart_email') }}</h5>

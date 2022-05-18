@@ -200,6 +200,12 @@ class SearchController extends Controller
                 ],
             ],
             [
+                'names' => [trans('messages.plan'), trans('messages.tax_settings')],
+                'url' => action('Admin\TaxController@settings'),
+                'keywords' => [
+                ],
+            ],
+            [
                 'names' => [trans('messages.sending'), trans('messages.sub_accounts')],
                 'url' => action('Admin\SubAccountController@index'),
                 'keywords' => [],
@@ -332,6 +338,7 @@ class SearchController extends Controller
         $count = 5;
 
         $templates = \Acelle\Model\Template::shared()
+            ->email()
             ->search($request->keyword)
             ->orderBy('templates.name', 'asc')
             ->paginate($count);

@@ -19,19 +19,19 @@
 @endsection
 
 @section('menu_right')
-    <li class="nav-item">
+    <li class="nav-item d-flex align-items-center">
         <a  href="javascript:;"
-            class="nav-link d-flex align-items-center py-3 lvl-1 close-button">
+            class="nav-link py-3 lvl-1 close-button">
             <i class="material-icons-outlined me-2">arrow_back</i>
             <span>{{ trans('messages.go_back') }}</span>
         </a>
     </li>
-    <li class="nav-item">
+    <li class="nav-item d-flex align-items-center">
         <a href="{{ action('Automation2Controller@templateEditPlain', [
             'uid' => $automation->uid,
             'email_uid' => $email->uid,
         ]) }}"
-            class="nav-link d-flex align-items-center py-3 lvl-1 close-button">
+            class="nav-link py-3 lvl-1">
             <span>{{ trans('messages.campaign.plain_text_editor') }}</span>
         </a>
     </li>
@@ -156,7 +156,7 @@
                     'outdent indent |  numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen  preview save print | insertfile image media template link anchor codesample | ltr rtl'
                 ],
                 toolbar_location: 'top',
-                menubar: false,
+                menubar: true,
                 statusbar: false,
                 toolbar_sticky: true,
                 valid_elements : '*[*],meta[*]',

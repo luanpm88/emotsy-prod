@@ -7,6 +7,8 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="php-version" content="{{ phpversion() }}" />
 
+	@include('layouts.core._favicon_default')
+
 	<title>@yield('title')</title>
 
 	@include('layouts.core._includes')		
@@ -63,8 +65,10 @@
 
 
 		<!-- Footer -->
-		<div class="footer text-white">
-			{!! trans('messages.copy_right_light') !!}			
+		<div class="small">
+			<div class="footer text-white text-center py-3" style="width: 100%">
+				{!! trans('messages.copy_right_light') !!}
+			</div>
 		</div>
 		<!-- /footer -->
 

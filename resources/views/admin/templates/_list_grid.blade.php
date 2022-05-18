@@ -8,7 +8,7 @@
                         <div class="preview_control">
                             <div style="width: calc(80% - 20px);">
                                 <div class="mb-2">
-                                    <a class="btn btn-light d-block" href="#preview" onclick="popupwindow('{{ action('Admin\TemplateController@preview', $template->uid) }}', '{{ $template->name }}', 800, 800)"><span class="material-icons-outlined">
+                                    <a class="btn btn-light d-block" href="#preview" onclick="popupwindow('{{ action('Admin\TemplateController@preview', $template->uid) }}', `{{ $template->name }}`, 800)"><span class="material-icons-outlined">
                                         zoom_in
                                         </span> {{ trans("messages.preview") }}</a>
                                 </div>
@@ -48,7 +48,7 @@
                                             return $cat->name;
                                         })->join(', ') }}
                                     @else
-                                        <span style="color:#ea8c8c;text-decoration: underline;text-decoration-style: dashed;text-underline-offset:4px" class="xtooltip" title="{{ trans('messages.template.category.notice') }}">{{ trans('messages.template.category.no_category') }}</span>
+                                        <span style="color:#ea8c8c;text-decoration: underline;text-decoration-style: dashed;text-underline-offset:4px" class="xtooltip" title="{{ trans('messages.template.category.notice') }}">{{ trans('messages.template.category.no_category_set') }}</span>
                                     @endif    
                                 </a>
                             @else
@@ -79,7 +79,7 @@
                                                 </li>
                                             @endif
                                             @if (Auth::user()->admin->can('preview', $template))
-                                                <li><a class="dropdown-item" href="#preview" onclick="popupwindow('{{ action('Admin\TemplateController@preview', $template->uid) }}', '{{ $template->name }}', 800, 800)"><span class="material-icons-outlined">
+                                                <li><a class="dropdown-item" href="#preview" onclick="popupwindow('{{ action('Admin\TemplateController@preview', $template->uid) }}', `{{ $template->name }}`, 800)"><span class="material-icons-outlined">
             zoom_in
             </span> {{ trans("messages.preview") }}</a></li>
                                             @endif

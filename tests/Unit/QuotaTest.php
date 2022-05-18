@@ -100,7 +100,7 @@ class QuotaTest extends TestCase
         $server->setCredits('send', $credits = 100);
         $limitPerMinute = 4;
         $use = 10;
-        $server->setQuotaSettings($limitPerMinute, $unit = 'minute', 1 );
+        $server->setQuotaSettings($limitPerMinute, $unit = 'minute', 1);
 
         //$this->expectException(Exception::class);
 

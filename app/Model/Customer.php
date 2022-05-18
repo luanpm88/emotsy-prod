@@ -108,12 +108,12 @@ class Customer extends Model
 
     public function lists()
     {
-        return $this->hasMany('Acelle\Model\MailList')->orderBy('created_at', 'desc');
+        return $this->hasMany('Acelle\Model\MailList');
     }
 
     public function templates()
     {
-        return $this->hasMany('Acelle\Model\Template')->orderBy('created_at', 'desc');
+        return $this->hasMany('Acelle\Model\Template');
     }
 
     public function language()
@@ -123,7 +123,7 @@ class Customer extends Model
 
     public function campaigns()
     {
-        return $this->hasMany('Acelle\Model\Campaign')->orderBy('created_at', 'desc');
+        return $this->hasMany('Acelle\Model\Campaign');
     }
 
     public function sentCampaigns()
@@ -196,6 +196,16 @@ class Customer extends Model
     public function invoices()
     {
         return $this->hasMany('Acelle\Model\Invoice');
+    }
+
+    public function forms()
+    {
+        return $this->hasMany('Acelle\Model\Form');
+    }
+
+    public function websites()
+    {
+        return $this->hasMany('Acelle\Model\Website');
     }
 
     /**
@@ -275,6 +285,17 @@ class Customer extends Model
         return (is_object($this->subscription) && $this->subscription->isActive()) ? $this->subscription : null;
     }
 
+    public function useOwnSendingServer()
+    {
+        $subscription = $this->activeSubscription();
+
+        if (is_null($subscription)) {
+            return false;
+        }
+
+        return $subscription->plan->useOwnSendingServer();
+    }
+
     /**
      * Get all items.
      *
@@ -337,7 +358,7 @@ class Customer extends Model
      *
      * @return number
      */
-    public static function subscribersCountByTime($begin, $end, $customer_id = null, $list_id = null)
+    public static function subscribersCountByTime($begin, $end, $customer_id = null, $list_id = null, $status=null)
     {
         $query = \Acelle\Model\Subscriber::leftJoin('mail_lists', 'mail_lists.id', '=', 'subscribers.mail_list_id')
                                 ->leftJoin('customers', 'customers.id', '=', 'mail_lists.customer_id');
@@ -347,6 +368,9 @@ class Customer extends Model
         }
         if (isset($customer_id)) {
             $query = $query->where('customers.id', '=', $customer_id);
+        }
+        if (isset($status)) {
+            $query = $query->where('subscribers.status', '=', $status);
         }
 
         $query = $query->where('subscribers.created_at', '>=', $begin)
@@ -799,7 +823,7 @@ class Customer extends Model
 
         // retrieve cached data
         $cache = json_decode($this->cache, true);
-        if (is_null($cache)) {
+        if (empty($cache)) {
             $cache = [];
         }
 
@@ -1606,8 +1630,7 @@ class Customer extends Model
     // Get the current time in Customer timezone
     public function getCurrentTime()
     {
-        $dt = $this->parseDateTime(null);
-        return $dt;
+        return Carbon::now($this->timezone);
     }
 
     public function parseDateTime($datetime, $fallback = false)
@@ -1625,6 +1648,19 @@ class Customer extends Model
             }
         }
         return $dt;
+    }
+
+    public function formatCurrentDateTime($name)
+    {
+        return $this->formatDateTime($this->getCurrentTime(), $name);
+    }
+
+    public function formatDateTime(Carbon $datetime, string $name)
+    {
+        // $name is a format name like: date_full | date_short
+        // See config('localization')['*'] for the full list of available format names
+
+        return format_datetime($datetime, $name, $this->getLanguageCode());
     }
 
     /**
@@ -1956,11 +1992,76 @@ class Customer extends Model
         $plan = $subscription->plan;
         if ($plan->useSystemSendingServer()) {
             $server = $plan->primarySendingServer();
-            if ($server && $server->allowVerifyingOwnEmailsRemotely()) {
+            if ($server && ($server->allowVerifyingOwnEmailsRemotely() || $server->allowVerifyingOwnDomains())) {
                 return true;
+            } else {
+                return false;
             }
+        } else {
+            return true;
+        }
+    }
+
+    public function getConnectedWebsiteSelectOptions($long=true)
+    {
+        $query = $this->websites()->connected();
+
+        $result = $query->orderBy('title')->get()->map(function ($item) use ($long) {
+            if ($long) {
+                return ['value' => $item->uid, 'text' => '<span class="fw-600">' . $item->title . '</span><br><span class="text-muted">' . $item->url . '</span>'];
+            } else {
+                return ['value' => $item->uid, 'text' => $item->title];
+            }
+        });
+
+        return $result;
+    }
+
+    public function updateBillingInformationFromInvoice($invoice)
+    {
+        $billingAddress = $this->getDefaultBillingAddress();
+
+        // has no address yet
+        if (!$billingAddress) {
+            $billingAddress = $this->newBillingAddress();
         }
 
-        return false;
+        $billingAddress->fill([
+            'first_name' => $invoice->billing_first_name,
+            'last_name' => $invoice->billing_last_name,
+            'address' => $invoice->billing_address,
+            'email' => $invoice->billing_email,
+            'phone' => $invoice->billing_phone,
+            'country_id' => $invoice->billing_country_id,
+        ]);
+
+        $billingAddress->save();
+    }
+
+    public static function newCustomer()
+    {
+        $customer = new self();
+        $customer->menu_layout = \Acelle\Model\Setting::get('layout.menu_bar');
+
+        return $customer;
+    }
+
+    public function newProduct()
+    {
+        $product = new \Acelle\Model\Product();
+        $product->customer_id = $this->id;
+
+        return $product;
+    }
+
+    public function isCustomTrackingDomainRequired()
+    {
+        $plan = $this->subscription->plan;
+
+        if (!$plan) {
+            return false;
+        }
+
+        return $plan->isCustomTrackingDomainRequired();
     }
 }

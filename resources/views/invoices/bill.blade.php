@@ -19,7 +19,9 @@
                     </div>
                     <div class="bill_item d-flex">
                         <div class="mr-auto">
-                            <p class="mb-0 font-weight-semibold">{{ trans('messages.bill.tax') }}</p>
+                            <p class="mb-0 font-weight-semibold">{{ trans('messages.bill.tax') }} ({{ trans('messages.vat.percent', [
+                                'percent' => $item['tax_p'],
+                            ]) }})</p>
                         </div>
                         <p class="mb-0 font-weight-semibold fs-6">{{ $item['tax'] }}</p>
                     </div>

@@ -9,8 +9,13 @@ use Acelle\Model\Template;
 use Acelle\Model\Setting;
 use Acelle\Model\Job;
 use Acelle\Model\FailedJob;
+use Acelle\Model\JobMonitor;
 use Artisan;
 use Illuminate\Support\Facades\Session;
+use Cache;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+use Exception;
 
 class Upgrade extends Controller
 {
@@ -22,11 +27,32 @@ class Upgrade extends Controller
      */
     public function finalize(Request $request)
     {
+        Artisan::call('route:clear');
+        Artisan::call('cache:clear');
+        Artisan::call('view:clear');
         Setting::writeDefaultSettings();
-        Language::dump();
-        Template::resetDefaultTemplates();
+        JobMonitor::query()->delete();
         Job::query()->delete();
         FailedJob::query()->delete();
+        try {
+            Schema::table('jobs', function (Blueprint $table) {
+                $table->dropIndex(['queue']);
+            });
+        } catch (Exception $ex) {
+            // Index already dropped
+        }
+        Cache::flush();
+        Language::dump();
+        Template::resetDefaultTemplates();
+        Template::resetPopupTemplates();
+        Artisan::call('queue:prune-batches --hours=24 --unfinished=-1'); // clean up any pending job batches
+        Artisan::call('queue:restart');
+
+        // Reset GEODB
+        Setting::set('geoip.sqlite.dbname', 'storage/app/GeoLite2-City.mmdb');
+        Setting::set('geoip.sqlite.source_url', 'https://acellemail.s3.amazonaws.com/GeoLite2-City.mmdb');
+        Setting::set('geoip.sqlite.source_hash', 'b95ecaff82017c4f52577196c41db946');
+        Setting::set('geoip.enabled', 'no');
 
         // Upgrade post-processing
         if ($request->session()->has('upgraded')) {
@@ -58,6 +84,32 @@ class Upgrade extends Controller
             echo "Finalization in progress...<meta http-equiv=\"refresh\" content=\"5;URL='".$nextPage."'\" />";
         } else {
             echo "Migration done! Redirecting...<meta http-equiv=\"refresh\" content=\"5;URL='".url('/')."'\" />";
+        }
+    }
+
+    public function dropIndex()
+    {
+        try {
+            Schema::table('jobs', function (Blueprint $table) {
+                $table->dropIndex(['queue']);
+            });
+
+            return response('Dropped');
+        } catch (Exception $ex) {
+            return response('Dropped! '.$ex->getMessage());
+        }
+    }
+
+    public function createIndex()
+    {
+        try {
+            Schema::table('jobs', function (Blueprint $table) {
+                $table->index(['queue']);
+            });
+
+            return response('Done!');
+        } catch (Exception $ex) {
+            return response('Done! '.$ex->getMessage());
         }
     }
 }

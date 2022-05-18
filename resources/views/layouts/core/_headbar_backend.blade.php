@@ -2,6 +2,12 @@
 <div class="headbar d-flex">
     <div class="me-auto"></div>
     <div class="top-search-container"></div>
+
+    @include('layouts.core._quick_change_theme_mode', [
+        'mode' => Auth::user()->admin->theme_mode ? Auth::user()->admin->theme_mode : 'light',
+        'url' => action('Admin\AccountController@changeThemeMode'),
+    ])
+    
 </div>
 
 <script>

@@ -10,7 +10,7 @@
 ])
 
 <p>{!! trans('messages.verification_process_running', [
-    'verified' => $list->countVerifiedSubscribers(),
+    'verified' => $list->subscribers()->verified()->count(),
     'total' => \Acelle\Library\Tool::format_number($list->readCache('SubscriberCount')),
 ]) !!}</p>
 

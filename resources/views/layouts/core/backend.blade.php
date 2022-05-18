@@ -3,6 +3,8 @@
 <head>
 	@include('layouts.core._head')
 
+	@include('layouts.core._favicon')
+
 	@include('layouts.core._script_vars')
 
 	@yield('head')
@@ -34,7 +36,12 @@
 	
 	mode-{{ getThemeMode(Auth::user()->admin->theme_mode, request()->session()->get('admin-auto-theme-mode')) }}
 ">
-	@include('layouts.core._menu_backend')
+	
+	@if (config('app.saas'))
+		@include('layouts.core._menu_backend')
+	@else
+		@include('layouts.core._menu_single')
+	@endif
 
 	@include('layouts.core._middle_bar')
 
@@ -55,6 +62,9 @@
 
 	<!-- Notification -->
 	@include('layouts.core._notify')
+
+	<!-- Admin area -->
+	@include('layouts.core._loginas_area')
 
 	<!-- display flash message -->
 	@include('layouts.core._flash')

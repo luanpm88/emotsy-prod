@@ -16,50 +16,37 @@
                     </div>
                 </td>
                 <td width="1%">
-                    <a href="#preview"  onclick="popupwindow('{{ action('TemplateController@preview', $template->uid) }}', '{{ $template->name }}', 800, 800)">
+                    <a href="#preview"  onclick="popupwindow('{{ action('TemplateController@preview', $template->uid) }}', `{{ $template->name }}`, 800)">
                         <img class="template-thumb rounded shadow-sm" width="100" height="128" src="{{ $template->getThumbUrl() }}?v={{ rand(0,10) }}" />
                     </a>
                 </td>
                 <td>
-                    <h5 class="m-0 text-bold">
-                        <a class="kq_search" href="#preview" onclick="popupwindow('{{ action('TemplateController@preview', $template->uid) }}', '{{ $template->name }}', 800, 800)">
-                            {{ $template->name }}
-                        </a>
-                    </h5>
+                    <a class="kq_search fw-600 d-block list-title" href="#preview" onclick="popupwindow('{{ action('TemplateController@preview', $template->uid) }}', `{{ $template->name }}`, 800)">
+                        {{ $template->name }}
+                    </a>
                     <div class="text-muted">
                         {!! is_object($template->admin) ? '<i class="icon-user-tie" data="admin"></i>' . $template->admin->user->displayName() : '' !!}
                         {!! is_object($template->customer) ? '<i class="icon-user" data="customer"></i>' . $template->customer->user->displayName() : '' !!}
                     </div>
-                    <span class="text-muted">{{ trans('messages.updated_at') }}: {{ Tool::formatDateTime($template->created_at) }}</span>
+                    <span class="text-muted">{{ trans('messages.updated_at') }}: {{ Auth::user()->customer->formatDateTime($template->created_at, 'date_full') }}</span>
                 </td>
 
                 <td>
                     <div class="single-stat-box pull-left">
-                        @if (Auth::user()->customer->can('update', $template))
-                            <a href="{{ action('TemplateController@categories', [
-                                'uid' => $template->uid,
-                            ]) }}" class="no-margin stat-num template-categories">
-                            
-                                @if ($template->categories()->count())
-                                    {{ $template->categories->map(function ($cat) {
-                                        return $cat->name;
-                                    })->join(', ') }}
-                                @else
-                                    <span style="color:#ea8c8c;text-decoration: underline;text-decoration-style: dashed;text-underline-offset:4px" class="xtooltip" title="{{ trans('messages.template.category.notice') }}">{{ trans('messages.template.category.no_category') }}</span>
-                                @endif
-                                
-                            </a>
-                        @else
-                            <span class="no-margin stat-num template-categories">{{ $template->categories()->count() ? $template->categories->map(function ($cat) {
+                        @if ($template->categories()->count())
+                            <span class="template-categories">{{ $template->categories->map(function ($cat) {
                                 return $cat->name;
-                            })->join(', ') : 'N/A' }}</span>
+                            })->join(', ') }}</span>
+                            <br>
+                            <span class="text-muted text-nowrap">{{ trans('messages.template.category') }}</span>
+                        @else
+                            <span class="text-muted2">{{ trans('messages.template.category.no_category') }}</span>
                         @endif
-                        <br>
-                        <span class="text-muted text-nowrap">{{ trans('messages.template.category') }}</span>
+                        
                     </div>
                 </td>
 
-                <td class="text-end">
+                <td class="text-end pe-0">
                     @if (Auth::user()->customer->can('update', $template))
                         @if (in_array(Acelle\Model\Setting::get('builder'), ['both','pro']) && $template->builder)
                             <a href="{{ action('TemplateController@builderEdit', $template->uid) }}" role="button" class="btn btn-primary btn-icon template-compose">
@@ -91,7 +78,7 @@
                                     </li>
                                 @endif
                                 @if (Auth::user()->customer->can('preview', $template))
-                                    <li><a class="dropdown-item" href="#preview" onclick="popupwindow('{{ action('TemplateController@preview', $template->uid) }}', '{{ $template->name }}', 800, 800)"><span class="material-icons-outlined">
+                                    <li><a class="dropdown-item" href="#preview" onclick="popupwindow('{{ action('TemplateController@preview', $template->uid) }}', `{{ $template->name }}`, 800)"><span class="material-icons-outlined">
 zoom_in
 </span> {{ trans("messages.preview") }}</a></li>
                                 @endif

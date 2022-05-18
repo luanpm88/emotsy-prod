@@ -29,7 +29,7 @@
                             <tr>
                                 <td>
                                     <span class="no-margin kq_search">
-                                        {{ Acelle\Library\Tool::formatDateTime($log->created_at) }}
+                                        {{ Auth::user()->customer->formatDateTime($log->created_at, 'date_full') }}
                                     </span>
                                 </td>
                                 <td>
@@ -60,7 +60,7 @@
                             <tr>
                                 <td>
                                     <span class="no-margin kq_search">
-                                        {{ Acelle\Library\Tool::formatDateTime($transaction->created_at) }}
+                                        {{ Auth::user()->customer->formatDateTime($transaction->created_at, 'date_full') }}
                                     </span>
                                 </td> 
                                 <td>
@@ -113,7 +113,7 @@
                             <tr>
                                 <td>
                                     <span class="no-margin kq_search">
-                                        {{ Acelle\Library\Tool::formatDate($invoice->created_at) }}
+                                        {{ Auth::user()->customer->formatDateTime($invoice->created_at, 'date_full') }}
                                     </span>
                                 </td>
                                 <td>
@@ -137,9 +137,13 @@
                                     </span>
                                 </td>
                                 <td>
-                                    <button class="btn btn-secondary btn-disabled" disabled>
-                                        {{ trans('messages.edit') }}
-                                    </button>
+                                    @if ($invoice->isPaid())
+                                        <a class="btn btn-secondary text-nowrap" target="_blank" href="{{ action('InvoiceController@download', [
+                                            'uid' => $invoice->uid,
+                                        ]) }}">
+                                            <i class="material-icons-outlined me-1">download</i>{{ trans('messages.download') }}
+                                        </a>
+                                    @endif
                                 </td>
                             </tr>
                         @empty

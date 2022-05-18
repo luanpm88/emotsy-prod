@@ -28,11 +28,19 @@ Route::group(['middleware' => ['installed']], function () {
     Route::get('install/finish', 'InstallController@finish');
 });
 
+// Google OAuth 2.0
+Route::get('/auth/google/redirect', 'AuthController@googleRedirect');
+Route::get('/auth/google/callback', 'AuthController@googleCallback');
+
+// Facebook OAuth 2.0
+Route::get('/auth/facebook/redirect', 'AuthController@facebookRedirect');
+Route::get('/auth/facebook/callback', 'AuthController@facebookCallback');
+
 /*
  * The following routes
  * + customer_files
  * + customer_thumbs
- * 
+ *
  * are used to retrieved files through filemanager
  *
  */
@@ -105,6 +113,7 @@ Route::group(['middleware' => ['not_installed', 'not_logged_in']], function () {
 
     Route::get('/login/token/{token}', 'Controller@tokenLogin');
 
+    Route::get('/validate-token/{api_token}', 'Controller@validateToken');
     Route::get('user/activate/{token}', 'UserController@activate');
     Route::get('/disabled', 'Controller@userDisabled');
     Route::get('/offline', 'Controller@offline');
@@ -130,6 +139,15 @@ Route::group(['middleware' => ['not_installed', 'not_logged_in']], function () {
 
 // Without authentication
 Route::group(['middleware' => ['not_installed']], function () {
+    // Form
+    Route::post('frontend/forms/{uid}/save', 'FormController@frontendSave');
+    Route::get('frontend/forms/{uid}/popup.js', 'FormController@frontendPopup');
+    Route::get('frontend/forms/{uid}/content', 'FormController@frontendContent');
+
+    // Website
+    Route::get('websites/{uid}/connect.js', 'WebsiteController@connectJs');
+
+    // Blank
     Route::match(['get', 'post'], 'blank', function () {
         return;
     });
@@ -138,6 +156,7 @@ Route::group(['middleware' => ['not_installed']], function () {
     Route::get('p/{url}/click/{message_id?}', 'CampaignController@click')->name('clickTrackingUrl');
     Route::get('c/{subscriber}/unsubscribe/{message_id?}', 'CampaignController@unsubscribe')->name('unsubscribeUrl');
     Route::get('campaigns/{message_id}/web-view', 'CampaignController@webView')->name('webViewerUrl');
+    Route::get('campaigns/{campaign_uid}/webview/{subscriber_uid}/preview', 'CampaignController@webViewPreview')->name('webViewerPreviewUrl');
     Route::post('lists/{uid}/embedded-form-subscribe', 'MailListController@embeddedFormSubscribe');
     Route::post('lists/{uid}/embedded-form-subscribe-captcha', 'MailListController@embeddedFormSubscribe');
     Route::get('lists/{uid}/check-email', 'MailListController@checkEmail');
@@ -170,6 +189,10 @@ Route::group(['middleware' => ['not_installed']], function () {
 
     // Campaign test links
     Route::get('campaigns/test/{message}', 'CampaignController@notification')->name('campaign_message');
+
+    // products
+    Route::get('/products/widget/products/list', 'ProductController@widgetProductList');
+    Route::post('/products/widget/product', 'ProductController@widgetProduct');
 });
 
 Route::group(['middleware' => ['not_installed', 'auth']], function () {
@@ -185,6 +208,37 @@ Route::group(['middleware' => ['not_installed', 'auth']], function () {
 });
 
 Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function () {
+    // Audience
+    Route::get('audience/growth-chart', 'AudienceController@growthChart');
+    Route::get('audience/overview', 'AudienceController@overview');
+
+    // Form
+    Route::post('forms/{uid}/change-template', 'FormController@changeTemplate');
+    Route::post('forms/{uid}/preview', 'FormController@preview');
+    Route::post('forms/publish', 'FormController@publish');
+    Route::post('forms/unpublish', 'FormController@unpublish');
+    Route::get('forms/{uid}/edit/content', 'FormController@builderContent');
+    Route::post('forms/{uid}/disconnect', 'FormController@disconnect');
+    Route::match(['get', 'post'], 'forms/{uid}/connect', 'FormController@connect');
+    Route::post('forms/{uid}/settings', 'FormController@settings');
+    Route::get('forms/{uid}/builder', 'FormController@builder');
+    Route::get('forms/{uid}/build', 'FormController@build');
+    Route::get('forms/templates', 'FormController@templates');
+    Route::match(['get', 'post'], 'forms/create', 'FormController@create');
+    Route::post('forms/delete', 'FormController@delete');
+    Route::get('forms/list', 'FormController@list');
+    Route::get('forms', 'FormController@index');
+
+    // Website
+    Route::get('websites/{uid}/check', 'WebsiteController@check');
+    Route::post('websites/{uid}/connect', 'WebsiteController@connect');
+    Route::post('websites/disconnect', 'WebsiteController@disconnect');
+    Route::get('websites/{uid}/show', 'WebsiteController@show');
+    Route::match(['get', 'post'], 'websites/create', 'WebsiteController@create');
+    Route::post('websites/delete', 'WebsiteController@delete');
+    Route::get('websites/list', 'WebsiteController@list');
+    Route::get('websites', 'WebsiteController@index');
+
     // New subscription
     Route::get('account/subscription/select-plan', 'SubscriptionController@selectPlan');
     Route::get('account/subscription/order-box', 'SubscriptionController@orderBox');
@@ -206,6 +260,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
     Route::get('customers/admin-area', 'CustomerController@adminArea');
 
     // Customer profile/information
+    Route::post('account/change-theme-mode', 'AccountController@changeThemeMode');
     Route::get('account/save-auto-theme-mode', 'AccountController@saveAutoThemeMode');
     Route::get('account/activity', 'AccountController@activity');
     Route::match(['get', 'post'], 'account/wizard/menu-layout', 'AccountController@wizardMenuLayout');
@@ -227,6 +282,8 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
 
 Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscription']], function () {
     // Search
+    Route::get('/search/websites', 'SearchController@websites');
+    Route::get('/search/forms', 'SearchController@forms');
     Route::get('/search/subscribers', 'SearchController@subscribers');
     Route::get('/search/templates', 'SearchController@templates');
     Route::get('/search/automations', 'SearchController@automations');
@@ -235,12 +292,14 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('/search/general', 'SearchController@general');
 
     Route::get('/', 'HomeController@index');
-    Route::get('frontend/docs/api/v1', 'Controller@docsApiV1');    
-    
+    Route::get('frontend/docs/api/v1', 'Controller@docsApiV1');
+
     Route::get('account/api/renew', 'AccountController@renewToken');
     Route::get('account/api', 'AccountController@api');
 
     // Mail list
+    Route::match(['get', 'post'], 'lists/select', 'MailListController@selectList');
+    Route::get('lists/{uid}/email-verification/chart', 'MailListController@emailVerificationChart');
     Route::get('lists/{uid}/clone-to-customers/choose', 'MailListController@cloneForCustomersChoose');
     Route::post('lists/{uid}/clone-to-customers', 'MailListController@cloneForCustomers');
 
@@ -294,13 +353,13 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('lists/{list_uid}/subscribers/delete', 'SubscriberController@delete');
     Route::post('lists/{list_uid}/subscribers/subscribe', 'SubscriberController@subscribe');
     Route::post('lists/{list_uid}/subscribers/unsubscribe', 'SubscriberController@unsubscribe');
-    
+
     Route::get('lists/{list_uid}/subscribers/import', 'SubscriberController@import');
     Route::post('lists/{list_uid}/subscribers/import/dispatch', 'SubscriberController@dispatchImportJob');
     Route::get('lists/{list_uid}/import/{job_uid}/progress', 'SubscriberController@importProgress');
     Route::get('lists/import/{job_uid}/log/download', 'SubscriberController@downloadImportLog');
     Route::post('lists/import/{job_uid}/cancel', 'SubscriberController@cancelImport');
-    
+
     Route::get('lists/{list_uid}/subscribers/export', 'SubscriberController@export');
     Route::post('lists/{list_uid}/subscribers/export/dispatch', 'SubscriberController@dispatchExportJob');
     Route::get('lists/export/{job_uid}/progress', 'SubscriberController@exportProgress');
@@ -356,7 +415,25 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('templates/{uid}/edit', 'TemplateController@edit');
     Route::patch('templates/{uid}/update', 'TemplateController@update');
 
+    // RSS
+    Route::get('templates/rss/parse', 'TemplateController@parseRss');
+
     // Campaign
+    Route::post('campaigns/webhooks/{webhook_uid}/test/{message_id}', 'CampaignController@webhooksTestMessage');
+    Route::get('campaigns/{uid}/click-log/{message_id}/execute', 'CampaignController@clickLogExecute');
+    Route::get('campaigns/{uid}/open-log/{message_id}/execute', 'CampaignController@openLogExecute');
+    Route::match(['get', 'post'], 'campaigns/webhooks/{webhook_uid}/test', 'CampaignController@webhooksTest');
+    Route::get('campaigns/webhooks/{webhook_uid}/sample/request', 'CampaignController@webhooksSampleRequest');
+    Route::post('campaigns/webhooks/{webhook_uid}/delete', 'CampaignController@webhooksDelete');
+    Route::match(['get', 'post'], 'campaigns/webhooks/{webhook_uid}/edit', 'CampaignController@webhooksEdit');
+    Route::get('campaigns/{uid}/webhooks/list', 'CampaignController@webhooksList');
+    Route::get('campaigns/{uid}/webhooks/link-select', 'CampaignController@webhooksLinkSelect');
+    Route::match(['get', 'post'], 'campaigns/{uid}/webhooks/add', 'CampaignController@webhooksAdd');
+    Route::get('campaigns/{uid}/webhooks', 'CampaignController@webhooks');
+
+    Route::get('campaigns/{uid}/preview-as/list', 'CampaignController@previewAsList');
+    Route::get('campaigns/{uid}/preview-as', 'CampaignController@previewAs');
+
     Route::post('campaigns/{uid}/custom-plain/off', 'CampaignController@customPlainOff');
     Route::post('campaigns/{uid}/custom-plain/on', 'CampaignController@customPlainOn');
     Route::post('campaigns/{uid}/remove-attachment', 'CampaignController@removeAttachment');
@@ -445,7 +522,18 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('users/login-back', 'UserController@loginBack');
 
     // Sending servers
+    Route::get('sending_servers/{uid}/senders/dropbox', 'SendingServerController@fromDropbox');
+    Route::post('sending_servers/{uid}/remove-domain/{domain}', 'SendingServerController@removeDomain');
+    Route::post('sending_servers/{uid}/add-domain', 'SendingServerController@addDomain');
+    Route::get('sending_servers/{uid}/add-domain', 'SendingServerController@addDomain');
+    Route::get('sending_servers/aws-region-host', 'SendingServerController@awsRegionHost');
+
     Route::post('sending_servers/{uid}/test-connection', 'SendingServerController@testConnection');
+
+    Route::post('sending_servers/{uid}/config', 'SendingServerController@config');
+    Route::post('sending_servers/sending-limit', 'SendingServerController@sendingLimit');
+    Route::get('sending_servers/sending-limit', 'SendingServerController@sendingLimit');
+
     Route::post('sending_servers/{uid}/test', 'SendingServerController@test');
     Route::get('sending_servers/{uid}/test', 'SendingServerController@test');
     Route::get('sending_servers/select', 'SendingServerController@select');
@@ -506,102 +594,108 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::post('notifications/{id}/hide', 'NotificationController@hide');
 
     // Automation2
-    Route::match(['get', 'post'], 'automation2/{email_uid}/send-test-email', 'Automation2Controller@sendTestEmail');
-    Route::get('automation2/{uid}/cart/items', 'Automation2Controller@cartItems');
-    Route::get('automation2/{uid}/cart/list', 'Automation2Controller@cartList');
-    Route::get('automation2/{uid}/cart/stats', 'Automation2Controller@cartStats');
-    Route::match(['get', 'post'], 'automation2/{uid}/car/change-store', 'Automation2Controller@cartChangeStore');
-    Route::match(['get', 'post'], 'automation2/{uid}/car/wait', 'Automation2Controller@cartWait');
-    Route::match(['get', 'post'], 'automation2/{uid}/car/change-list', 'Automation2Controller@cartChangeList');
-    Route::get('automation2/{uid}/condition/setting', 'Automation2Controller@conditionSetting');
-    Route::get('automation2/{uid}/operation/show', 'Automation2Controller@operationShow');
-    Route::match(['get', 'post'], 'automation2/{uid}/operation/edit', 'Automation2Controller@operationEdit');
-    Route::match(['get', 'post'], 'automation2/{uid}/operation/create', 'Automation2Controller@operationCreate');
-    Route::get('automation2/{uid}/operation/select', 'Automation2Controller@operationSelect');
-    Route::post('automation2/{uid}/wait-time', 'Automation2Controller@waitTime');
-    Route::get('automation2/{uid}/wait-time', 'Automation2Controller@waitTime');
-    Route::get('automation2/{uid}/last-saved', 'Automation2Controller@lastSaved');
-    Route::post('automation2/{uid}/subscribers/{subscriber_uid}/restart', 'Automation2Controller@subscribersRestart');
-    Route::post('automation2/{uid}/subscribers/{subscriber_uid}/remove', 'Automation2Controller@subscribersRemove');
-    Route::get('automation2/{uid}/subscribers/{subscriber_uid}/show', 'Automation2Controller@subscribersShow');
-    Route::get('automation2/{uid}/subscribers/list', 'Automation2Controller@subscribersList');
-    Route::get('automation2/{uid}/subscribers/list', 'Automation2Controller@subscribersList');
-    Route::get('automation2/{uid}/subscribers', 'Automation2Controller@subscribers');
-    Route::get('automation2/{uid}/template/{email_uid}/preview/content', 'Automation2Controller@templatePreviewContent');
-    Route::get('automation2/{uid}/template/{email_uid}/preview', 'Automation2Controller@templatePreview');
-    Route::match(['get', 'post'], 'automation2/{uid}/template/{email_uid}/plain-edit', 'Automation2Controller@templateEditPlain');
-    Route::get('automation2/{uid}/template/{email_uid}/builder-select', 'Automation2Controller@templateBuilderSelect');
-    Route::get('automation2/segment-select', 'Automation2Controller@segmentSelect');
+    Route::match(['get', 'post'], 'automation/condition/wait/custom', 'Automation2Controller@conditionWaitCustom');
+    Route::match(['get', 'post'], 'automation/{email_uid}/send-test-email', 'Automation2Controller@sendTestEmail');
+    Route::get('automation/{uid}/cart/items', 'Automation2Controller@cartItems');
+    Route::get('automation/{uid}/cart/list', 'Automation2Controller@cartList');
+    Route::get('automation/{uid}/cart/stats', 'Automation2Controller@cartStats');
+    Route::match(['get', 'post'], 'automation/{uid}/car/change-store', 'Automation2Controller@cartChangeStore');
+    Route::match(['get', 'post'], 'automation/{uid}/car/wait', 'Automation2Controller@cartWait');
+    Route::match(['get', 'post'], 'automation/{uid}/car/change-list', 'Automation2Controller@cartChangeList');
+    Route::get('automation/{uid}/condition/setting', 'Automation2Controller@conditionSetting');
+    Route::get('automation/{uid}/operation/show', 'Automation2Controller@operationShow');
+    Route::match(['get', 'post'], 'automation/{uid}/operation/edit', 'Automation2Controller@operationEdit');
+    Route::match(['get', 'post'], 'automation/{uid}/operation/create', 'Automation2Controller@operationCreate');
+    Route::get('automation/{uid}/operation/select', 'Automation2Controller@operationSelect');
+    Route::post('automation/{uid}/wait-time', 'Automation2Controller@waitTime');
+    Route::get('automation/{uid}/wait-time', 'Automation2Controller@waitTime');
+    Route::get('automation/{uid}/last-saved', 'Automation2Controller@lastSaved');
+    Route::post('automation/{uid}/subscribers/{subscriber_uid}/restart', 'Automation2Controller@subscribersRestart');
+    Route::post('automation/{uid}/subscribers/{subscriber_uid}/remove', 'Automation2Controller@subscribersRemove');
+    Route::get('automation/{uid}/subscribers/{subscriber_uid}/show', 'Automation2Controller@subscribersShow');
+    Route::get('automation/{uid}/subscribers/list', 'Automation2Controller@subscribersList');
+    Route::get('automation/{uid}/subscribers/list', 'Automation2Controller@subscribersList');
+    Route::get('automation/{uid}/subscribers', 'Automation2Controller@subscribers');
+    Route::get('automation/{uid}/template/{email_uid}/preview/content', 'Automation2Controller@templatePreviewContent');
+    Route::get('automation/{uid}/template/{email_uid}/preview', 'Automation2Controller@templatePreview');
+    Route::match(['get', 'post'], 'automation/{uid}/template/{email_uid}/plain-edit', 'Automation2Controller@templateEditPlain');
+    Route::get('automation/{uid}/template/{email_uid}/builder-select', 'Automation2Controller@templateBuilderSelect');
+    Route::get('automation/segment-select', 'Automation2Controller@segmentSelect');
 
-    Route::match(['get', 'post'], 'automation2/{uid}/template/{email_uid}/edit-classic', 'Automation2Controller@templateEditClassic');
-    Route::match(['get', 'post'], 'automation2/{uid}/contacts/copy-to-new-list', 'Automation2Controller@copyToNewList');
-    Route::post('automation2/{uid}/contacts/export', 'Automation2Controller@exportContacts');
+    Route::match(['get', 'post'], 'automation/{uid}/template/{email_uid}/edit-classic', 'Automation2Controller@templateEditClassic');
+    Route::match(['get', 'post'], 'automation/{uid}/contacts/copy-to-new-list', 'Automation2Controller@copyToNewList');
+    Route::post('automation/{uid}/contacts/export', 'Automation2Controller@exportContacts');
 
-    Route::get('automation2/{uid}/contacts/{contact_uid}/retry', 'Automation2Controller@contactRetry');
-    Route::post('automation2/{uid}/contacts/{contact_uid}/tag/remove', 'Automation2Controller@removeTag');
-    Route::match(['get', 'post'], 'automation2/{uid}/contacts/tag', 'Automation2Controller@tagContacts');
-    Route::match(['get', 'post'], 'automation2/{uid}/contact/{contact_uid}/tag', 'Automation2Controller@tagContact');
-    Route::post('automation2/{uid}/contact/{contact_uid}/remove', 'Automation2Controller@removeContact');
-    Route::get('automation2/{uid}/contact/{contact_uid}/profile', 'Automation2Controller@profile');
-    Route::get('automation2/{uid}/timeline/list', 'Automation2Controller@timelineList');
-    Route::get('automation2/{uid}/timeline', 'Automation2Controller@timeline');
-    Route::post('automation2/{uid}/contacts/list', 'Automation2Controller@contactsList');
-    Route::get('automation2/{uid}/contacts/list', 'Automation2Controller@contactsList');
-    Route::get('automation2/{uid}/contacts', 'Automation2Controller@contacts');
-    
-    Route::get('automation2/{uid}/insight', 'Automation2Controller@insight');
-    Route::post('automation2/{uid}/data/save', 'Automation2Controller@saveData');
-    Route::post('automation2/{uid}/update', 'Automation2Controller@update');
-    Route::get('automation2/{uid}/settings', 'Automation2Controller@settings');
-    
-    Route::post('automation2/{uid}/template/{email_uid}/attachment/{attachment_uid}/remove', 'Automation2Controller@emailAttachmentRemove');
-    Route::get('automation2/{uid}/template/{email_uid}/attachment/{attachment_uid}', 'Automation2Controller@emailAttachmentDownload');
-    
-    Route::post('automation2/{uid}/template/{email_uid}/attachment', 'Automation2Controller@emailAttachmentUpload');
-    Route::post('automation2/{uid}/template/{email_uid}/remove-template', 'Automation2Controller@templateRemove');
-    Route::get('automation2/{uid}/template/{email_uid}/content', 'Automation2Controller@templateContent');
-    Route::match(['get', 'post'], 'automation2/{uid}/template/{email_uid}/edit', 'Automation2Controller@templateEdit');
-    Route::match(['get', 'post'], 'automation2/{uid}/template/{email_uid}/upload', 'Automation2Controller@templateUpload');
-    Route::match(['get', 'post'], 'automation2/{uid}/template/{email_uid}/layout', 'Automation2Controller@templateLayout');
-    Route::get('automation2/{uid}/template/{email_uid}/layout/list', 'Automation2Controller@templateLayoutList');
-    Route::get('automation2/{uid}/template/{email_uid}/create', 'Automation2Controller@templateCreate');
-    
-    Route::post('automation2/{uid}/email/{email_uid}/delete', 'Automation2Controller@emailDelete');
-    Route::match(['get', 'post'], 'automation2/{uid}/email/setup', 'Automation2Controller@emailSetup');
-    Route::match(['get', 'post'], 'automation2/{uid}/email/{email_uid}/confirm', 'Automation2Controller@emailConfirm');
-    Route::match(['get', 'post'], 'automation2/{uid}/email/{email_uid?}', 'Automation2Controller@email');
-    Route::match(['get', 'post'], 'automation2/{uid}/email/{email_uid}/template', 'Automation2Controller@emailTemplate');
-    Route::match(['get', 'post'], 'automation2/{uid}/action/edit', 'Automation2Controller@actionEdit');
-    Route::match(['get', 'post'], 'automation2/{uid}/trigger/edit', 'Automation2Controller@triggerEdit');
-    Route::post('automation2/{uid}/action/select', 'Automation2Controller@actionSelect');
-    Route::get('automation2/{uid}/action/select/confirm', 'Automation2Controller@actionSelectConfirm');
-    Route::get('automation2/{uid}/action/select', 'Automation2Controller@actionSelectPupop');
-    Route::post('automation2/{uid}/trigger/select', 'Automation2Controller@triggerSelect');
-    Route::get('automation2/{uid}/trigger/select', 'Automation2Controller@triggerSelectPupop');
-    Route::get('automation2/{uid}/trigger/select/confirm', 'Automation2Controller@triggerSelectConfirm');
-    Route::match(['get'], 'automation2/{uid}/edit', 'Automation2Controller@edit');
-    Route::match(['get', 'post'], 'automation2/wizard', 'Automation2Controller@wizard');
-    Route::get('automation2/wizard/trigger', 'Automation2Controller@wizardTrigger');
-    Route::match(['get', 'post'], 'automation2/wizard/trigger/option', 'Automation2Controller@wizardTriggerOption');
-    Route::get('automation2/wizard/trigger/option/field-select', 'Automation2Controller@wizardListFieldSelect');
-    Route::patch('automation2/disable', 'Automation2Controller@disable');
-    Route::patch('automation2/enable', 'Automation2Controller@enable');
-    Route::delete('automation2/delete', 'Automation2Controller@delete');
-    Route::get('automation2/listing', 'Automation2Controller@listing');
-    Route::get('automation2', 'Automation2Controller@index');
-    Route::get('automation2/{uid}/debug', 'Automation2Controller@debug');
-    Route::get('automation2/{automation}/{subscriber}/trigger', 'Automation2Controller@triggerNow');
-    Route::get('trigger/{id}', 'AutoTrigger@show');
-    Route::get('trigger/{id}/check', 'AutoTrigger@check');
-    Route::get('automation2/{automation}/run', 'Automation2Controller@run');
+    Route::get('automation/{uid}/contacts/{contact_uid}/retry', 'Automation2Controller@contactRetry');
+    Route::post('automation/{uid}/contacts/{contact_uid}/tag/remove', 'Automation2Controller@removeTag');
+    Route::match(['get', 'post'], 'automation/{uid}/contacts/tag', 'Automation2Controller@tagContacts');
+    Route::match(['get', 'post'], 'automation/{uid}/contact/{contact_uid}/tag', 'Automation2Controller@tagContact');
+    Route::post('automation/{uid}/contact/{contact_uid}/remove', 'Automation2Controller@removeContact');
+    Route::get('automation/{uid}/contact/{contact_uid}/profile', 'Automation2Controller@profile');
+    Route::get('automation/{uid}/timeline/list', 'Automation2Controller@timelineList');
+    Route::get('automation/{uid}/timeline', 'Automation2Controller@timeline');
+    Route::post('automation/{uid}/contacts/list', 'Automation2Controller@contactsList');
+    Route::get('automation/{uid}/contacts/list', 'Automation2Controller@contactsList');
+    Route::get('automation/{uid}/contacts', 'Automation2Controller@contacts');
 
-    Route::get('email/preview/{uid}/{subscriber_uid}', 'EmailController@preview');
+    Route::get('automation/{uid}/insight', 'Automation2Controller@insight');
+    Route::post('automation/{uid}/data/save', 'Automation2Controller@saveData');
+    Route::post('automation/{uid}/update', 'Automation2Controller@update');
+    Route::get('automation/{uid}/settings', 'Automation2Controller@settings');
+
+    Route::post('automation/{uid}/template/{email_uid}/attachment/{attachment_uid}/remove', 'Automation2Controller@emailAttachmentRemove');
+    Route::get('automation/{uid}/template/{email_uid}/attachment/{attachment_uid}', 'Automation2Controller@emailAttachmentDownload');
+
+    Route::post('automation/{uid}/template/{email_uid}/attachment', 'Automation2Controller@emailAttachmentUpload');
+    Route::post('automation/{uid}/template/{email_uid}/remove-template', 'Automation2Controller@templateRemove');
+    Route::get('automation/{uid}/template/{email_uid}/content', 'Automation2Controller@templateContent');
+    Route::match(['get', 'post'], 'automation/{uid}/template/{email_uid}/edit', 'Automation2Controller@templateEdit');
+    Route::match(['get', 'post'], 'automation/{uid}/template/{email_uid}/upload', 'Automation2Controller@templateUpload');
+    Route::match(['get', 'post'], 'automation/{uid}/template/{email_uid}/layout', 'Automation2Controller@templateLayout');
+    Route::get('automation/{uid}/template/{email_uid}/layout/list', 'Automation2Controller@templateLayoutList');
+    Route::get('automation/{uid}/template/{email_uid}/create', 'Automation2Controller@templateCreate');
+
+    Route::post('automation/{uid}/email/{email_uid}/delete', 'Automation2Controller@emailDelete');
+    Route::match(['get', 'post'], 'automation/{uid}/email/setup', 'Automation2Controller@emailSetup');
+    Route::match(['get', 'post'], 'automation/{uid}/email/{email_uid}/confirm', 'Automation2Controller@emailConfirm');
+    Route::match(['get', 'post'], 'automation/{uid}/email/{email_uid?}', 'Automation2Controller@email');
+    Route::match(['get', 'post'], 'automation/{uid}/email/{email_uid}/template', 'Automation2Controller@emailTemplate');
+    Route::match(['get', 'post'], 'automation/{uid}/action/edit', 'Automation2Controller@actionEdit');
+    Route::match(['get', 'post'], 'automation/{uid}/trigger/edit', 'Automation2Controller@triggerEdit');
+    Route::post('automation/{uid}/action/select', 'Automation2Controller@actionSelect');
+    Route::get('automation/{uid}/action/select/confirm', 'Automation2Controller@actionSelectConfirm');
+    Route::get('automation/{uid}/action/select', 'Automation2Controller@actionSelectPupop');
+    Route::post('automation/{uid}/trigger/select', 'Automation2Controller@triggerSelect');
+    Route::get('automation/{uid}/trigger/select', 'Automation2Controller@triggerSelectPupop');
+    Route::get('automation/{uid}/trigger/select/confirm', 'Automation2Controller@triggerSelectConfirm');
+    Route::match(['get'], 'automation/{uid}/edit', 'Automation2Controller@edit');
+    Route::match(['get', 'post'], 'automation/wizard', 'Automation2Controller@wizard');
+    Route::get('automation/wizard/trigger', 'Automation2Controller@wizardTrigger');
+    Route::match(['get', 'post'], 'automation/wizard/trigger/option', 'Automation2Controller@wizardTriggerOption');
+    Route::get('automation/wizard/trigger/option/field-select', 'Automation2Controller@wizardListFieldSelect');
+    Route::patch('automation/disable', 'Automation2Controller@disable');
+    Route::patch('automation/enable', 'Automation2Controller@enable');
+    Route::delete('automation/delete', 'Automation2Controller@delete');
+    Route::get('automation/listing', 'Automation2Controller@listing');
+    Route::get('automation', 'Automation2Controller@index');
+    Route::get('automation/{uid}/debug', 'Automation2Controller@debug');
+    Route::get('automation/{automation}/{subscriber}/trigger', 'Automation2Controller@triggerNow');
+    Route::get('automation/{automation}/run', 'Automation2Controller@run');
+
+    Route::match(['get', 'post'], 'automation/emails/webhooks/{webhook_uid}/test', 'Automation2Controller@webhooksTest');
+    Route::get('automation/emails/webhooks/{webhook_uid}/sample/request', 'Automation2Controller@webhooksSampleRequest');
+    Route::post('automation/emails/webhooks/{webhook_uid}/delete', 'Automation2Controller@webhooksDelete');
+    Route::match(['get', 'post'], 'automation/emails/webhooks/{webhook_uid}/edit', 'Automation2Controller@webhooksEdit');
+    Route::get('automation/emails/{email_uid}/webhooks/list', 'Automation2Controller@webhooksList');
+    Route::get('automation/emails/{email_uid}/webhooks/link-select', 'Automation2Controller@webhooksLinkSelect');
+    Route::match(['get', 'post'], 'automation/emails/{email_uid}/webhooks/add', 'Automation2Controller@webhooksAdd');
+    Route::get('automation/emails/{email_uid}/webhooks', 'Automation2Controller@webhooks');
 
     // Sample UI/UX
     Route::get('sample', 'SamplesController@index');
 
     // Products
-    Route::get('/products/json', 'ProductController@json');
+    Route::get('/products/widget/products/options', 'ProductController@widgetProductOptions');
     Route::get('products/listing', 'ProductController@listing');
     Route::resource('products', 'ProductController');
 
@@ -613,6 +707,52 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('sources/connect', 'SourceController@connect');
     Route::get('sources/listing', 'SourceController@listing');
     Route::resource('sources', 'SourceController');
+
+    // Site - Menu
+    Route::get('site/menus', 'Site\MenuController@index');
+
+    // Category - Menu
+    Route::get('site/categories', 'Site\CategoryController@index');
+
+    // Site - Product
+    Route::post('site/profucts/{id}/delete', 'Site\ProductController@delete');
+    Route::match(['get', 'post'], 'site/products/{id}/edit', 'Site\ProductController@edit');
+    Route::match(['get', 'post'], 'site/products/add', 'Site\ProductController@add');
+    Route::post('site/profucts/{id}/activate', 'Site\TemplateController@activate');
+    Route::get('site/products/listing', 'Site\ProductController@listing');
+    Route::get('site/products', 'Site\ProductController@index');
+    Route::get('site/products-2', 'Site\ProductController@index2');
+
+    // Site - Template
+    Route::post('site/templates/{id}/activate', 'Site\TemplateController@activate');
+    Route::get('site/templates/listing', 'Site\TemplateController@listing');
+    Route::get('site/templates', 'Site\TemplateController@index');
+
+    // Site - Shop setting
+    Route::get('site/settings/home-page', 'Site\SettingController@homePage');
+    Route::get('site/settings/shop', 'Site\SettingController@shop');
+    Route::get('site/settings/slider', 'Site\SettingController@sliderRevolution');
+    Route::get('site/settings/products', 'Site\SettingController@products');
+    Route::get('site/settings/shipping', 'Site\SettingController@shipping');
+    Route::get('site/settings/payments', 'Site\SettingController@payments');
+    Route::get('site/settings/account-privacy', 'Site\SettingController@payments');
+    Route::get('site/settings/emails', 'Site\SettingController@emails');
+    Route::get('site/settings/account', 'Site\SettingController@account');
+    Route::get('site/settings/site', 'Site\SettingController@site');
+    Route::get('site/orders', 'Site\OrderController@index');
+    Route::get('site/customers', 'Site\CustomerController@index');
+
+    // Source
+    Route::get('site/sources/{uid}/detail', 'Site\SourceController@show');
+    Route::match(['get', 'post'], 'site/sources/woo-connect', 'Site\SourceController@wooConnect');
+    Route::post('site/sources/{uid}/sync', 'Site\SourceController@sync');
+    Route::post('site/sources/delete', 'Site\SourceController@delete');
+    Route::get('site/sources/connect', 'Site\SourceController@connect');
+    Route::get('site/sources/listing', 'Site\SourceController@listing');
+    Route::resource('site/sources', 'Site\SourceController');
+
+    // Invoice
+    Route::get('invoices/{uid}/download', 'InvoiceController@download');
 });
 
 // ADMIN AREA
@@ -639,6 +779,11 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::get('admin/users/sort', 'UserController@sort');
     Route::get('admin/users/delete', 'UserController@delete');
     Route::resource('admin/users', 'UserController');
+
+    // Form Template
+    Route::get('admin/templates/forms/{uid}/preview', 'FormTemplateController@preview');
+    Route::get('admin/templates/forms/list', 'FormTemplateController@listing');
+    Route::get('admin/templates/forms', 'FormTemplateController@index');
 
     // Template
     Route::post('admin/templates/{uid}/export', 'TemplateController@export');
@@ -706,6 +851,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::get('admin/bounce_handlers/listing/{page?}', 'BounceHandlerController@listing');
     Route::get('admin/bounce_handlers/sort', 'BounceHandlerController@sort');
     Route::get('admin/bounce_handlers/delete', 'BounceHandlerController@delete');
+    Route::get('admin/bounce_handlers/{uid}/run', 'BounceHandlerController@run');
     Route::resource('admin/bounce_handlers', 'BounceHandlerController');
 
     // Feedback Loop handlers
@@ -730,6 +876,8 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::resource('admin/languages', 'LanguageController');
 
     // Settings
+    Route::post('admin/settings/license/remove', 'SettingController@licenseRemove');
+
     Route::post('admin/settings/payment', 'SettingController@payment');
     Route::post('admin/settings/advanced/{name}/update', 'SettingController@advancedUpdate');
     Route::get('admin/settings/advanced', 'SettingController@advanced');
@@ -738,6 +886,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::post('admin/settings/upgrade/upload', 'SettingController@uploadApplicationPatch');
     Route::get('admin/settings/upgrade', 'SettingController@upgrade');
     Route::get('u', 'SettingController@upgrade'); // shortcut to upgrade page
+    Route::match(['get','post'], 'q', 'SettingController@upgradeFromUrl');  // shortcut to quick upgrade page
     Route::post('admin/settings/license', 'SettingController@license');
     Route::get('admin/settings/license', 'SettingController@license');
     Route::match(['get','post'], 'admin/settings/mailer/test', 'SettingController@mailerTest');
@@ -786,7 +935,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::get('admin/blacklists/import/{job_uid}/progress', 'BlacklistController@importProgress');
     Route::post('admin/blacklists/import/{job_uid}/cancel', 'BlacklistController@cancelImport');
     Route::post('admin/blacklists/import/start', 'BlacklistController@startImport');
-    
+
     Route::get('admin/blacklist', 'BlacklistController@index');
     Route::get('admin/blacklist/listing', 'BlacklistController@listing');
     Route::get('admin/blacklist/delete', 'BlacklistController@delete');
@@ -824,8 +973,25 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::get('admin/admins/login-back', 'AdminController@loginBack');
     Route::resource('admin/admins', 'AdminController');
 
+    // Admin Group 2
+    Route::get('admin/admin_groups2/listing/{page?}', 'AdminGroup2Controller@listing');
+    Route::get('admin/admin_groups2/sort', 'AdminGroup2Controller@sort');
+    Route::get('admin/admin_groups2/delete', 'AdminGroup2Controller@delete');
+    Route::resource('admin/admin_groups2', 'AdminGroup2Controller');
+
+    // Admin2
+    Route::get('admin/admins2/login-as/{uid}', 'Admin2Controller@loginAs');
+    Route::get('admin/admins2/listing/{page?}', 'Admin2Controller@listing');
+    Route::get('admin/admins2/sort', 'Admin2Controller@sort');
+    Route::get('admin/admins2/delete', 'Admin2Controller@delete');
+    Route::get('admin/admins2/disable', 'Admin2Controller@disable');
+    Route::get('admin/admins2/enable', 'Admin2Controller@enable');
+    Route::get('admin/admins2/login-back', 'Admin2Controller@loginBack');
+    Route::resource('admin2/admins', 'Admin2Controller');
+
 
     // Account
+    Route::post('admin/account/change-theme-mode', 'AccountController@changeThemeMode');
     Route::get('admin/account/save-auto-theme-mode', 'AccountController@saveAutoThemeMode');
     Route::get('admin/account/leftbar/state', 'AccountController@leftbarState');
     Route::get('admin/account/api/renew', 'AccountController@renewToken');
@@ -940,4 +1106,23 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
 
     // Update
     Route::get('admin/upgrade/finalize', 'Upgrade@finalize');
+
+    // Modify jobs indexes
+    Route::get('jobs/drop-index', 'Upgrade@dropIndex');
+    Route::get('jobs/create-index', 'Upgrade@createIndex');
+
+    //
+    Route::post('tax/remove/{code}', 'TaxController@removeCountry');
+    Route::match(['get','post'], 'tax/add', 'TaxController@addTax');
+    Route::get('tax/countries', 'TaxController@countries');
+    Route::match(['get','post'], 'tax/settings', 'TaxController@settings');
+
+    // Invoice
+    Route::match(['get','post'], 'admin/invoices/template', 'InvoiceController@template');
+    Route::get('admin/invoices/{uid}/download', 'InvoiceController@download');
+
+    // OAuth
+    Route::match(['get', 'post'], 'admin/auth/facebook-oauth', 'AuthController@facebookOAuth');
+    Route::match(['get', 'post'], 'admin/auth/google-oauth', 'AuthController@googleOAuth');
+    Route::match(['get', 'post'], 'admin/auth', 'AuthController@index');
 });

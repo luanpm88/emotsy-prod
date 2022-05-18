@@ -256,11 +256,6 @@ class SendingServer extends Model implements HasQuotaInterface
         if (!empty($request->admin_id)) {
             $query = $query->where('sending_servers.admin_id', '=', $request->admin_id);
         }
-
-        // remove customer sending servers
-        if (!empty($request->no_customer)) {
-            $query = $query->whereNull('customer_id');
-        }
     }
 
     /**
@@ -362,6 +357,7 @@ class SendingServer extends Model implements HasQuotaInterface
                     'domain' => 'required',
                     'api_key' => 'required',
                     'host' => 'required',
+                    'aws_region' => 'required',
                     'smtp_username' => 'required',
                     'smtp_password' => 'required',
                     'smtp_port' => 'required',
@@ -674,9 +670,9 @@ class SendingServer extends Model implements HasQuotaInterface
      *
      * @return object
      */
-    public function validConnection($request)
+    public function validConnection($params)
     {
-        $validator = \Validator::make($request->all(), $this->getRules(), $this->getCustomValidationError());
+        $validator = \Validator::make($params, $this->getRules(), $this->getCustomValidationError());
 
         // test amazon api connection
         $validator->after(function ($validator) {
@@ -870,6 +866,8 @@ class SendingServer extends Model implements HasQuotaInterface
         // $message->setEncoder(\Swift_Encoding::get8bitEncoding());
         $message->setEncoder(new \Swift_Mime_ContentEncoder_PlainContentEncoder('8bit'));
         $message->addPart($params['plain'], 'text/plain');
+
+        $this->setupBeforeSend($params['from_email']);
         $this->send($message);
 
         return true;
@@ -1329,6 +1327,7 @@ class SendingServer extends Model implements HasQuotaInterface
      */
     public function allowUnverifiedFromEmailAddress()
     {
+        return true;
         $options = json_decode($this->options, true);
 
         if (is_null($options)) {
@@ -1523,20 +1522,26 @@ class SendingServer extends Model implements HasQuotaInterface
         return null;
     }
 
-    public static function createFromRequest($request)
+    public static function createFromArray($params)
     {
         $server = new self();
-        $server->fill($request->all());
+        $server->fill($params);
         $server = $server->mapType();
 
         // validation
-        $validator = $server->validConnection($request); //\Validator::make($request->all(), $server->getRules());
+        $validator = $server->validConnection($params);
 
         if ($validator->fails()) {
             return [$validator, $server]; // IMPORTANT, $server instance (not saved) is required by parent controller
         }
 
-        $server->admin_id = $request->user()->admin->id;
+        if (isset($params['admin_id'])) {
+            $server->admin_id = $params['admin_id'];
+        }
+        if (isset($params['customer_id'])) {
+            $server->customer_id = $params['customer_id'];
+        }
+
         $server->status = self::STATUS_ACTIVE;
 
         // default name
@@ -1554,10 +1559,10 @@ class SendingServer extends Model implements HasQuotaInterface
         }
 
         // bounce / feedback hanlder nullable
-        if (empty($request->bounce_handler_id)) {
+        if (!isset($params['bounce_handler_id'])) {
             $server->bounce_handler_id = null;
         }
-        if (empty($request->feedback_loop_handler_id)) {
+        if (!isset($params['feedback_loop_handler_id'])) {
             $server->feedback_loop_handler_id = null;
         }
 
@@ -1590,7 +1595,7 @@ class SendingServer extends Model implements HasQuotaInterface
 
         if ($this->quota_value != QuotaManager::QUOTA_UNLIMITED) {
             $quota[] = [
-                'name' => "Server's sending limit of {$this->quota_value} per {$this->quota_unit} {$this->quota_base}",
+                'name' => "Server's sending limit of {$this->quota_value} per {$this->quota_base} {$this->quota_unit}",
                 'period_unit' => $this->quota_unit,
                 'period_value' => $this->quota_base,
                 'limit' => $this->quota_value,

@@ -281,6 +281,11 @@ class MailList extends Model
         return $this->fields();
     }
 
+    public function getDateOrDateTimeFields()
+    {
+        return $this->getFields()->whereIn('type', ['datetime', 'date']);
+    }
+
     /**
      * Create default fields for list.
      */
@@ -365,7 +370,7 @@ class MailList extends Model
         $rules = [];
         foreach ($this->getFields as $field) {
             if ($field->tag == 'EMAIL') {
-                $rules[$field->tag] = 'required|email';
+                $rules[$field->tag] = 'required|email:rfc,filter';
             } elseif ($field->required) {
                 $rules[$field->tag] = 'required';
             }
@@ -639,7 +644,10 @@ class MailList extends Model
      */
     public function otherLists()
     {
-        return $this->customer->lists()->where('id', '!=', $this->id)->get();
+        return $this->customer
+            ->mailLists()
+            ->orderBy('mail_lists.name', 'asc')
+            ->where('id', '!=', $this->id)->get();
     }
 
     /**
@@ -712,15 +720,15 @@ class MailList extends Model
         return $this->getExportTempDir($name);
     }
 
-    public function dispatchExportJob()
+    public function dispatchExportJob($segment = null)
     {
-        return $this->dispatchWithMonitor(new ExportSubscribersJob($this));
+        return $this->dispatchWithMonitor(new ExportSubscribersJob($this, $segment));
     }
 
     /**
      * Export subscribers.
      */
-    public function export($progressCallback = null)
+    public function export($progressCallback = null, $segment = null)
     {
         $processed = 0;
         $total = 0;
@@ -742,7 +750,7 @@ class MailList extends Model
         $writer = Writer::createFromPath($file, 'w+');
 
         // Query subscribers
-        $query = $this->subscribers();
+        $query = (is_null($segment)) ? $this->subscribers() : $segment->subscribers();
         $total = $query->count();
 
         // Get an associative array of [ 'tag' => null ]
@@ -880,6 +888,28 @@ class MailList extends Model
         $this->sendMail($subscriber, $send_page, $send_page->getTransformedSubject($subscriber));
     }
 
+    public function sendSubscriptionNotificationEmailToListOwner($subscriber)
+    {
+        $template = Layout::where('alias', 'subscribe_notification_for_list_owner')->first();
+
+        $message = $template->getMessage(function ($html) use ($subscriber) {
+            $html = str_replace('{LIST_NAME}', $this->name, $html);
+            $html = str_replace('{EMAIL}', $subscriber->email, $html);
+            $html = str_replace('{FULL_NAME}', $subscriber->getFullName(), $html);
+
+            return $html;
+        });
+
+        $message->setSubject($template->subject);
+        $message->setTo([ $this->customer->user->email => $this->customer->user->displayName()]);
+        $mailer = App::make('xmailer');
+        $result = $mailer->sendWithDefaultFromAddress($message);
+
+        if (array_key_exists('error', $result)) {
+            throw new \Exception("Error sending unsubscribe notification: ".$result['error']);
+        }
+    }
+
     /**
      * Send unsubscription goodbye email to list owner.
      */
@@ -975,8 +1005,8 @@ class MailList extends Model
         $max = $this->customer->getOption('subscriber_max');
         $maxPerList = $this->customer->getOption('subscriber_per_list_max');
 
-        $remainingForList = $maxPerList - $this->reload()->subscribers->count();
-        $remaining = $max - $this->reload()->customer->subscribersCount(); // no cache
+        $remainingForList = $maxPerList - $this->refresh()->subscribers->count();
+        $remaining = $max - $this->refresh()->customer->subscribersCount(); // no cache
 
         if ($maxPerList == -1) {
             return ($max == -1) ? -1 : $remaining;
@@ -1152,12 +1182,12 @@ class MailList extends Model
                 $tmpTable = table('__tmp_subscribers');
                 // @todo: hard-coded charset and COLLATE
                 $tmpFields = implode(',', array_map(function ($field) {
-                    return "`{$field}` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci";
+                    return "`{$field}` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci";
                 }, $availableFields));
 
                 // Drop table, create table and create index
                 DB::statement("DROP TABLE IF EXISTS {$tmpTable};");
-                DB::statement("CREATE TABLE {$tmpTable}({$tmpFields})");
+                DB::statement("CREATE TABLE {$tmpTable}({$tmpFields}) ENGINE=InnoDB;");
                 DB::statement("CREATE INDEX _index_email_{$tmpTable} ON {$tmpTable}(`email`);");
 
                 // Insert subscriber fields from the batch to the temporary table
@@ -1172,6 +1202,11 @@ class MailList extends Model
                     if (array_key_exists('tags', $record) && !empty($record['tags'])) {
                         $record['tags'] = json_encode(array_filter(preg_split('/\s*,\s*/', $record['tags'])));
                     }
+
+                    // In certain cases, a UTF-8 BOM is added to email
+                    // For example: "﻿madxperts@gmail.com" (open with Sublime to see the char)
+                    // So we need to remove it, at least for email field
+                    $record['email'] = StringHelper::removeUTF8BOM($record['email']);
 
                     return $record;
                 })->toArray();
@@ -1279,10 +1314,6 @@ class MailList extends Model
             // Is is weird that, in certain case, the $e->getMessage() string is too long, making the job "hang";
             throw new Exception(substr($e->getMessage(), 0, 512));
         } finally {
-            //if ($overQuotaAttempt) {
-            //    $syssss_job->updateStatus(['error_message' => trans('messages.import.notice.over_quota')]);
-            // }
-
             // @IMPORTANT: if process fails here, something weird occurs
             $this->reformatDateFields();
             $this->updateCachedInfo();
@@ -1364,11 +1395,6 @@ class MailList extends Model
         // Update list's cached information
         $this->updateCache();
 
-        // Trigger the CampaignUpdate event to update the campaign cache information
-        foreach ($this->campaigns as $campaign) {
-            $campaign->updateCache();
-        }
-
         // Update segments cached information
         foreach ($this->segments as $segment) {
             $segment->updateCache();
@@ -1376,18 +1402,6 @@ class MailList extends Model
 
         // Update user's cached information
         $this->customer->updateCache();
-    }
-
-    /**
-     * Reload mail list information.
-     *
-     * @return object mail list model
-     *
-     * @todo why reload() is needed?
-     */
-    public function reload()
-    {
-        return self::find($this->id);
     }
 
     public function mailListsSendingServers()
@@ -1434,7 +1448,7 @@ class MailList extends Model
                 return $list->subscribersCount(false);
             },
             'VerifiedSubscriberCount' => function (&$list) {
-                return $list->countVerifiedSubscribers();
+                return $list->subscribers()->verified()->count();
             },
             'ClickedRate' => function (&$list) {
                 return $list->clickRate();
@@ -1657,6 +1671,12 @@ class MailList extends Model
         //    $result[] = [$subscription->subAccount->sending_server_id, '100'];
         }
 
+        if (!config('app.saas')) {
+            $result = \Acelle\Model\SendingServer::active()->get()->map(function ($server) {
+                return [$server->id, 100];
+            });
+        }
+
         $assoc = [];
         foreach ($result as $server) {
             list($key, $fitness) = $server;
@@ -1673,19 +1693,7 @@ class MailList extends Model
      */
     public function resetVerification()
     {
-        EmailVerification::join('subscribers', 'subscribers.id', '=', 'email_verifications.subscriber_id')
-                         ->where('mail_list_id', $this->id)
-                         ->delete();
-    }
-
-    /**
-     * Count verified subscribers.
-     */
-    public function countVerifiedSubscribers()
-    {
-        return $this->subscribers()->whereIn('id', function ($q) {
-            $q->select('subscriber_id')->from('email_verifications');
-        })->count();
+        DB::statement(sprintf('UPDATE %s s SET verification_status = NULL, last_verification_by = NULL, last_verification_at = NULL, last_verification_result = NULL WHERE s.mail_list_id = %s', table('subscribers'), $this->id));
     }
 
     /**
@@ -1697,7 +1705,7 @@ class MailList extends Model
         if ($count == 0) {
             return 0.0;
         } else {
-            return (float) $this->countVerifiedSubscribers() / $count;
+            return (float) $this->subscribers()->verified()->count() / $count;
         }
     }
 
@@ -1833,7 +1841,7 @@ class MailList extends Model
             throw new \Exception(trans('messages.subscriber.blacklisted'));
         }
 
-        if ($source == Subscriber::SUBSCRIPTION_TYPE_ADDED) {
+        if ($source == Subscriber::SUBSCRIPTION_TYPE_ADDED || $source == self::SOURCE_API) {
             $subscriber->status = 'subscribed';
         } elseif ($this->subscribe_confirmation) {
             if ($subscriber->isSubscribed()) {
@@ -1960,6 +1968,11 @@ class MailList extends Model
             $progress = $job->getJsonData();
             $progress['status'] = $job->status;
             $progress['error'] = $job->error;
+            // The following attributes are already availble
+            // $progress['percentage']
+            // $progress['total']
+            // $progress['processed']
+            // $progress['failed']
         }
 
         return $progress;

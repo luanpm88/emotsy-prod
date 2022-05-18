@@ -7,24 +7,94 @@
     
     @include('layouts.core._favicon')
     
+    <!-- BuilderJS CORE -->
     <link href="{{ URL::asset('builder/builder.css') }}" rel="stylesheet" type="text/css">
     <script type="text/javascript" src="{{ URL::asset('builder/builder.js') }}"></script>
 
+    <!-- BuilderJS CUSTOM -->
+    <link href="{{ URL::asset('core/css/builder-custom.css') }}" rel="stylesheet" type="text/css">
+    @include('builder.js.widgets')
+
+    <!-- Select2 -->
+    <link rel="stylesheet" type="text/css" href="{{ URL::asset('core/select2/css/select2.min.css') }}">
+    <script type="text/javascript" src="{{ URL::asset('core/select2/js/select2.min.js') }}"></script>
+
+    <!-- Autofill -->
     <link href="{{ URL::asset('core/css/UrlAutoFill.css') }}" rel="stylesheet" type="text/css">
     <script src="{{ URL::asset('core/js/UrlAutoFill.js') }}"></script>
+
+    <script>
+        (function($){
+            $.fn.serializeObject = function(){
+
+                var self = this,
+                    json = {},
+                    push_counters = {},
+                    patterns = {
+                        "validate": /^[a-zA-Z][a-zA-Z0-9_]*(?:\[(?:\d*|[a-zA-Z0-9_]+)\])*$/,
+                        "key":      /[a-zA-Z0-9_]+|(?=\[\])/g,
+                        "push":     /^$/,
+                        "fixed":    /^\d+$/,
+                        "named":    /^[a-zA-Z0-9_]+$/
+                    };
+
+
+                this.build = function(base, key, value){
+                    base[key] = value;
+                    return base;
+                };
+
+                this.push_counter = function(key){
+                    if(push_counters[key] === undefined){
+                        push_counters[key] = 0;
+                    }
+                    return push_counters[key]++;
+                };
+
+                $.each($(this).serializeArray(), function(){
+
+                    // Skip invalid keys
+                    if(!patterns.validate.test(this.name)){
+                        return;
+                    }
+
+                    var k,
+                        keys = this.name.match(patterns.key),
+                        merge = this.value,
+                        reverse_key = this.name;
+
+                    while((k = keys.pop()) !== undefined){
+
+                        // Adjust reverse_key
+                        reverse_key = reverse_key.replace(new RegExp("\\[" + k + "\\]$"), '');
+
+                        // Push
+                        if(k.match(patterns.push)){
+                            merge = self.build([], self.push_counter(reverse_key), merge);
+                        }
+
+                        // Fixed
+                        else if(k.match(patterns.fixed)){
+                            merge = self.build([], k, merge);
+                        }
+
+                        // Named
+                        else if(k.match(patterns.named)){
+                            merge = self.build({}, k, merge);
+                        }
+                    }
+
+                    json = $.extend(true, json, merge);
+                });
+
+                return json;
+            };
+        })(jQuery);
+    </script>
 
     @if ($template->theme)
         @include('builder.themes.' . $template->theme)
     @endif
-
-    <style>
-        .logo-img {
-            width: 120px!important;
-            margin-right: 15px;
-        }
-    </style>
-
-    @include('helpers._builder_product_widgets')
     
     <script>
         var CSRF_TOKEN = "{{ csrf_token() }}";
@@ -157,46 +227,31 @@
                 loaded: function() {
                     var thisEditor = this;
 
+                    // product widgets
+                    this.addContentWidget(new ProductListWidget(), 0, '{{ trans('builder.widget.e_commerce') }}');
+                    this.addContentWidget(new ProductWidget(), 0, '{{ trans('builder.widget.e_commerce') }}');
+
+                    // Rss widget
+                    this.addWidget(new RssWidget(), 'content', 3);
+
+                    // add custom css
+                    this.addCustomCss('{{ url('/core/css/builder-edit.css') }}');
+
+                    // load widgets from theme.js
                     if (typeof(WidgetManager) !== 'undefined') {
                         var widgets = WidgetManager.init();
 
                         widgets.forEach(function(widget) {
-                            thisEditor.addContentWidget(widget, 0, 'Template Content');
+                            thisEditor.addContentWidget(widget, 0, '{{ trans('builder.widget.template_content') }}');
                         });
                     }
-
-                    // // product widgets
-                    // this.addContentWidget(new ProductListWidget(), 0, 'ProductCommerce');
-                    // this.addContentWidget(new ProductWidget(), 0, 'ProductCommerce');
-                    // add custom css
-                    this.addCustomCss('{{ url('/core/css/builder_product.css') }}');
-                    // click preview button
-                    $("#builder_iframe").contents().find("body").on('click', '.product-preview-but', function(e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        var element = thisEditor.elementFactory($(this).parent());
-                        element.preview();
-                        {{-- thisEditor.select(element); --}}
-                        thisEditor.handleSelect();
-                        return false;
-                    })
-
-                    $("#builder_iframe").contents().find("body").on('click', '.product-unpreview-but', function(e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        var element = thisEditor.elementFactory($(this).parent());
-                        element.unpreview();
-                        {{-- thisEditor.select(element); --}}
-                        thisEditor.handleSelect();
-                        return false;
-                    })
                 }
             });
           
             editor.init();
 
             //
-            $(document).on('click', '.filemanager-ok', function(e) {alert('Please click on the thumbnail to select the corresponding image');})
+            $(document).on('click', '.filemanager-ok', function(e) {alert('{{ trans('builder.widget.click_thumb_to_insert') }}');})
             $(document).on('click', '.filemanager-cancel', function(e) {$('.PopUpCloseButton').click();})
 
             //

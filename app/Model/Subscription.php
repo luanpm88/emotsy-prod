@@ -212,7 +212,7 @@ class Subscription extends Model implements HasQuotaInterface
         $invoice->title = trans('messages.invoice.renew_subscription');
         $invoice->description = trans('messages.renew_subscription.desc', [
             'plan' => $this->plan->name,
-            'date' => \Acelle\Library\Tool::formatDate($this->nextPeriod()),
+            'date' => $this->customer->formatDateTime($this->nextPeriod(), 'date_full'),
         ]);
         $invoice->customer_id = $this->customer->id;
         $invoice->currency_id = $this->plan->currency_id;
@@ -231,6 +231,9 @@ class Subscription extends Model implements HasQuotaInterface
         // save
         $invoice->save();
 
+        // add invoice number
+        $invoice->createInvoiceNumber();
+
         // data
         $invoice->updateMetadata([
             'subscription_uid' => $this->uid,
@@ -241,7 +244,6 @@ class Subscription extends Model implements HasQuotaInterface
             'item_id' => $this->id,
             'item_type' => get_class($this),
             'amount' => $this->plan->price,
-            'vat' => $this->plan->vat,
             'title' => $this->plan->name,
             'description' => view('plans._bill_desc', ['plan' => $this->plan]),
         ]);
@@ -272,7 +274,7 @@ class Subscription extends Model implements HasQuotaInterface
         $invoice->description = trans('messages.change_plan.desc', [
             'plan' => $this->plan->name,
             'newPlan' => $newPlan->name,
-            'date' => \Acelle\Library\Tool::formatDate(Carbon::parse($metadata['endsAt'])),
+            'date' => $this->customer->formatDateTime(Carbon::parse($metadata['endsAt']), 'date_full'),
         ]);
         $invoice->customer_id = $this->customer->id;
         $invoice->currency_id = $this->plan->currency_id;
@@ -291,6 +293,9 @@ class Subscription extends Model implements HasQuotaInterface
         // save
         $invoice->save();
 
+        // add invoice number
+        $invoice->createInvoiceNumber();
+
         // save data
         $invoice->updateMetadata([
             'subscription_uid' => $this->uid,
@@ -303,7 +308,6 @@ class Subscription extends Model implements HasQuotaInterface
             'item_type' => get_class($this),
             'amount' => $metadata['amount'],
             'title' => $newPlan->name,
-            'vat' => $newPlan->vat,
             'description' => view('plans._bill_desc', ['plan' => $newPlan]),
         ]);
 

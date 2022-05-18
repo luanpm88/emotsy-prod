@@ -23,7 +23,6 @@
             
             @include('helpers.form_control', [
                 'name' => 'mail_list_uid',
-                'include_blank' => trans('messages.automation.choose_list'),
                 'type' => 'select',
                 'label' => trans('messages.automation.change_mail_list'),
                 'value' => (is_object($automation->mailList) ? $automation->mailList->uid : ''),
@@ -108,6 +107,9 @@ delete
                 sidebar.load();
                 
                 notify(response.status, '{{ trans('messages.notify.success') }}', response.message);
+
+                // need to reload to update tree data
+                location.reload();
              }
         });
     });

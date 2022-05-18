@@ -27,6 +27,7 @@ use Acelle\Model\Subscription;
 use Acelle\Library\Traits\TrackJobs;
 use Acelle\Jobs\ImportBlacklistJob;
 use Acelle\Library\Traits\HasUid;
+use Carbon\Carbon;
 
 class Admin extends Model
 {
@@ -361,7 +362,7 @@ class Admin extends Model
      */
     public function createCustomerAccount()
     {
-        $customer = new \Acelle\Model\Customer();
+        $customer = \Acelle\Model\Customer::newCustomer();
         $customer->admin_id = $this->id;
         $customer->language_id = $this->language_id;
         // [moved] $customer->first_name = $this->first_name;
@@ -369,6 +370,16 @@ class Admin extends Model
         $customer->timezone = $this->timezone;
         $customer->status = $this->status;
         $customer->save();
+
+        // add cutomer to user
+        $user = $this->user;
+        $user->customer_id = $customer->id;
+        $user->save();
+
+        // assign unlimited plan id saas == false
+        if (!config('app.saas')) {
+            \Acelle\Helpers\saasToSingleMode();
+        }
 
         return $customer;
     }
@@ -571,5 +582,27 @@ class Admin extends Model
     public function getMenuLayout()
     {
         return ($this->menu_layout == 'left' ? 'left' : 'top');
+    }
+
+    public static function newAdmin()
+    {
+        $admin = new self();
+        $admin->menu_layout = \Acelle\Model\Setting::get('layout.menu_bar');
+
+        return $admin;
+    }
+
+    // Get the current time in Customer timezone
+    public function getCurrentTime()
+    {
+        return Carbon::now($this->timezone);
+    }
+
+    public function formatDateTime(?Carbon $datetime, string $name)
+    {
+        // $name is a format name like: date_full | date_short
+        // See config('localization')['*'] for the full list of available format names
+
+        return format_datetime($datetime, $name, $this->getLanguageCode());
     }
 }

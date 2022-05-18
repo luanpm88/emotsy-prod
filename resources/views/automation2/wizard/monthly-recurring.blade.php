@@ -32,12 +32,18 @@
             }
         });
     </script>
+
+    @php
+        $customer = Auth::user()->customer;
+
+        $time = $customer->getCurrentTime()->format('h:i A');
+    @endphp
     
     @include('helpers.form_control', [
         'type' => 'time2',
         'name' => 'options[at]',
         'label' => trans('messages.automation.at'),
-        'value' => toTimeString(\Carbon\Carbon::now()),
+        'value' => $time,
         'help_class' => 'trigger'
     ])
 

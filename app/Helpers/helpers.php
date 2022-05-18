@@ -1,5 +1,7 @@
 <?php
 
+use function Acelle\Helpers\xml_to_array;
+
 /**
  * Globally available helper methods.
  *
@@ -146,6 +148,31 @@ function array_unique_by($array, $callback)
     return array_values($result);
 }
 
+function get_datetime_format($name, $locale)
+{
+    $defaultConfig = config('localization')['*'];
+
+    if (array_key_exists($locale, config('localization'))) {
+        $config = config('localization')[$locale];
+    }
+
+    if (isset($config) && array_key_exists($name, $config) && array_key_exists($name, $defaultConfig)) {
+        return $config[$name];
+    } elseif (array_key_exists($name, $defaultConfig)) {
+        return $defaultConfig[$name];
+    } else {
+        throw new \Exception('AC: Invalid datetime format type: '.$name.' => make sure the type is available in BOTH local and default (*) settings');
+    }
+}
+
+function format_datetime(?\Carbon\Carbon $datetime, $name, $locale)
+{
+    if (is_null($datetime)) {
+        return;
+    }
+    return $datetime->format(get_datetime_format($name, $locale));
+}
+
 /**
  * Get UTC offset of a particular time zone.
  *
@@ -242,6 +269,8 @@ function language_code()
 
     if (isset($_COOKIE['last_language_code'])) {
         $language_code = $_COOKIE['last_language_code'];
+    } elseif (app()->getLocale()) {
+        $language_code = app()->getLocale();
     } elseif (is_object($default_language)) {
         $language_code = $default_language->code;
     } else {
@@ -287,30 +316,6 @@ function number_with_delimiter($number, $precision = 0, $seperator = ',')
     }
 
     return number_format($number, $precision, '.', $seperator);
-}
-
-/**
- * Function to convert IP address to IP number (IPv6).
- *
- * @return string
- */
-function Dot2LongIPv6($IPaddr)
-{
-    $int = inet_pton($IPaddr);
-    $bits = 15;
-    $ipv6long = 0;
-    while ($bits >= 0) {
-        $bin = sprintf('%08b', (ord($int[$bits])));
-        if ($ipv6long) {
-            $ipv6long = $bin.$ipv6long;
-        } else {
-            $ipv6long = $bin;
-        }
-        --$bits;
-    }
-    $ipv6long = gmp_strval(gmp_init($ipv6long, 2), 10);
-
-    return $ipv6long;
 }
 
 /**
@@ -527,26 +532,6 @@ function rand_item($arr)
 }
 
 /**
- * Return date string.
- *
- * @return object
- */
-function toDateString($datetime)
-{
-    return \Acelle\Library\Tool::dateTime($datetime)->format('Y-m-d');
-}
-
-/**
- * Return time string.
- *
- * @return object
- */
-function toTimeString($datetime)
-{
-    return \Acelle\Library\Tool::dateTime($datetime)->format('h:i A');
-}
-
-/**
  * Check if string is email.
  *
  * @return object
@@ -700,10 +685,9 @@ function putPermanentEnv($arr = [])
     $config = file_get_contents($path);
 
     foreach ($arr as $key => $value) {
-        $escaped = preg_quote('='.env($key), '/');
         $config = preg_replace(
-            "/^{$key}{$escaped}/m",
-            "{$key}={$value}",
+            "/^{$key}\=.*/m",
+            "{$key}='{$value}'",
             $config
         );
 
@@ -895,4 +879,110 @@ function getThemeMode($mode, $auto='light')
     }
 
     return $themeMode;
+}
+
+function parseRss($config)
+{
+    $rss = [];
+
+    // Parse RSS content
+    $rssArray = xml_to_array(simplexml_load_string(file_get_contents($config['url']), 'SimpleXMLElement', LIBXML_NOCDATA));
+    $rssFeed = simplexml_load_string(file_get_contents($config['url']), 'SimpleXMLElement', LIBXML_NOCDATA);
+
+    // Take 10 records only
+    $records = array_slice($rssArray['rss']['channel']['item'], 0, $config['size']);
+
+    // feed data
+    $feedData = [];
+    $feedData['feed_title'] = (string) $rssFeed->channel->title;
+    $feedData['feed_description'] = $rssFeed->channel->description->__toString();
+    $feedData['feed_link'] = $rssFeed->channel->link->__toString();
+    $feedData['feed_pubdate'] = $rssFeed->channel->pubDate->__toString();
+    $feedData['feed_build_date'] = $rssFeed->channel->lastBuildDate->__toString();
+
+    // feed parse template
+    $rss['FeedTitle'] = parseRssTemplate($config['templates']['FeedTitle']['template'], $feedData);
+    $rss['FeedSubtitle'] = parseRssTemplate($config['templates']['FeedSubtitle']['template'], $feedData);
+    $rss['FeedTagdLine'] = parseRssTemplate($config['templates']['FeedTagdLine']['template'], $feedData);
+
+    // records
+    $rss['items'] = [];
+    $count = 0;
+    foreach ($rssFeed->channel->item as $item) {
+        // item data
+        $itemData['item_title'] = $item->title;
+        $itemData['item_pubdate'] = $item->pubDate;
+        $itemData['item_description'] = $item->description;
+        $itemData['item_url'] = $item->link;
+        $itemData['item_enclosure_url'] = $item->enclosure['url'];
+        $itemData['item_enclosure_type'] = $item->enclosure['type'];
+
+        // item parse template
+        $item = [];
+        $item['ItemTitle'] = parseRssTemplate($config['templates']['ItemTitle']['template'], $itemData);
+        $item['ItemDescription'] = parseRssTemplate($config['templates']['ItemDescription']['template'], $itemData);
+        $item['ItemMeta'] = parseRssTemplate($config['templates']['ItemMeta']['template'], $itemData);
+        $item['ItemEnclosure'] = parseRssTemplate($config['templates']['ItemEnclosure']['template'], $itemData);
+        $item['ItemStats'] = parseRssTemplate($config['templates']['ItemStats']['template'], $itemData);
+
+        // add item to rss items
+        $rss['items'][] = $item;
+
+        $count += 1;
+        if ($config['size'] == $count) {
+            break;
+        }
+    }
+
+
+    // Return HTML
+    return view('helpers.rss.template', [
+        'rss' => $rss,
+        'templates' => $config['templates'],
+    ]);
+}
+
+function parseRssTemplate($template, $feedData)
+{
+    foreach ($feedData as $key => $value) {
+        $template = str_replace('@' . $key, $value, $template);
+    }
+
+    if (isset($feedData['item_enclosure_url']) && $feedData['item_enclosure_url'] != '') {
+        if (strpos($feedData['item_enclosure_type'], 'video') !== false) {
+            $html = '<video controls width="320">
+                        <source src="https://file-examples-com.github.io/uploads/2017/04/file_example_MP4_480_1_5MG.mp4" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                </video>';
+        } elseif (strpos($feedData['item_enclosure_type'], 'video') !== false) {
+            $html = '<audio controls>
+                        <source src="' . $feedData['item_enclosure_url'] . '" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                </audio>';
+        } else {
+            $html = '<img class="my-2" src="' . $feedData['item_enclosure_url'] . '" height="100px" />';
+        }
+        $template = str_replace('@item_enclosure', $html, $template);
+    }
+
+    return $template;
+}
+
+function rssTags()
+{
+    return [
+        'feed' => [
+            '@feed_title',
+            '@feed_description',
+            '@feed_link',
+            '@feed_pubdate',
+            '@feed_build_date',
+        ],
+        'item' => [
+            '@item_title',
+            '@item_pubdate',
+            '@item_description',
+            '@item_image_url',
+        ],
+    ];
 }

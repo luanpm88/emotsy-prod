@@ -513,6 +513,7 @@ class Automation2Controller extends Controller
                         'key' => $request->key,
                         'type' => $request->type,
                         'email' => empty($request->email) ? null : $request->email,
+                        'wait' => $request->wait,
                     ],
                 ]);
             } elseif ($request->type == 'click') {
@@ -524,6 +525,7 @@ class Automation2Controller extends Controller
                         'key' => $request->key,
                         'type' => $request->type,
                         'email_link' => empty($request->email_link) ? null : $request->email_link,
+                        'wait' => $request->wait,
                     ],
                 ]);
             } elseif ($request->type == 'cart_buy_anything') {
@@ -661,6 +663,7 @@ class Automation2Controller extends Controller
                             'key' => $request->key,
                             'type' => $request->type,
                             'email' => empty($request->email) ? null : $request->email,
+                            'wait' => $request->wait,
                         ],
                     ]);
                 } elseif ($request->type == 'click') {
@@ -672,6 +675,7 @@ class Automation2Controller extends Controller
                             'key' => $request->key,
                             'type' => $request->type,
                             'email_link' => empty($request->email_link) ? null : $request->email_link,
+                            'wait' => $request->wait,
                         ],
                     ]);
                 } elseif ($request->type == 'cart_buy_anything') {
@@ -682,6 +686,7 @@ class Automation2Controller extends Controller
                         'options' => [
                             'key' => $request->key,
                             'type' => $request->type,
+                            'wait' => $request->wait,
                         ],
                     ]);
                 } elseif ($request->type == 'cart_buy_item') {
@@ -740,6 +745,9 @@ class Automation2Controller extends Controller
                 'track_click' => true,
                 'action_id' => $request->action_id,
             ]);
+            $email->automation2_id = $automation->id;
+            $email->customer_id = $automation->customer_id;
+            // $email->save();
         }
 
         // authorize
@@ -777,8 +785,6 @@ class Automation2Controller extends Controller
             }
 
             // pass validation and save
-            $email->automation2_id = $automation->id;
-            $email->customer_id = $automation->customer_id;
             $email->save();
 
             return response()->json([
@@ -976,15 +982,15 @@ class Automation2Controller extends Controller
 
         // from
         if ($request->from == 'mine') {
-            $templates = $request->user()->customer->templates();
+            $templates = $request->user()->customer->templates()->email();
         } elseif ($request->from == 'gallery') {
-            $templates = Template::shared();
+            $templates = Template::shared()->email();
         } else {
-            $templates = Template::shared()
+            $templates = Template::shared()->email()
                 ->orWhere('customer_id', '=', $request->user()->customer->id);
         }
 
-        $templates = $templates->notAssociated()->search($request->keyword);
+        $templates = $templates->notPreserved()->search($request->keyword);
 
         // category id
         if ($request->category_uid) {
@@ -1074,7 +1080,7 @@ class Automation2Controller extends Controller
     }
 
     /**
-     * Campaign html content.
+     * Email html content.
      *
      * @param \Illuminate\Http\Request $request
      *
@@ -1116,7 +1122,7 @@ class Automation2Controller extends Controller
         if ($request->isMethod('post')) {
             $email->uploadTemplate($request);
 
-            // return redirect()->action('CampaignController@template', $campaign->uid);
+            // return
             return response()->json([
                 'status' => 'success',
                 'message' => trans('messages.automation.email.template.uploaded')
@@ -1332,10 +1338,6 @@ class Automation2Controller extends Controller
      */
     public function delete(Request $request)
     {
-        if (isSiteDemo()) {
-            return response()->json(["message" => trans('messages.operation_not_allowed_in_demo')], 404);
-        }
-
         if (isSiteDemo()) {
             return response()->json([
                 'status' => 'notice',
@@ -1765,7 +1767,9 @@ class Automation2Controller extends Controller
                 }
             }
 
-            $email->setTemplateContent($request->content);
+            $email->setTemplateContent($request->content, function ($email) {
+                $email->updateLinks();
+            });
 
             return response()->json([
                 'status' => 'success',
@@ -2430,6 +2434,204 @@ class Automation2Controller extends Controller
 
         return view('automation2.sendTestEmail', [
             'email' => $email,
+        ]);
+    }
+
+    public function conditionWaitCustom(Request $request)
+    {
+        if ($request->isMethod('post')) {
+            // make validator
+            $validator = \Validator::make($request->all(), [
+                'wait_amount' => 'required',
+                'wait_unit' => 'required',
+            ]);
+
+            // redirect if fails
+            if ($validator->fails()) {
+                return response()->view('automation2.condition.conditionWaitCustom', [
+                    'errors' => $validator->errors(),
+                ], 400);
+            }
+
+            return view('automation2.condition._wait_select');
+        }
+
+        return view('automation2.condition.conditionWaitCustom');
+    }
+
+    public function webhooks(Request $request)
+    {
+        $email = Email::findByUid($request->email_uid);
+
+        // authorize
+        if (\Gate::denies('view', $email->automation)) {
+            return $this->notAuthorized();
+        }
+
+        return view('automation2.email.webhooks', [
+            'email' => $email,
+        ]);
+    }
+
+    public function webhooksList(Request $request)
+    {
+        $email = Email::findByUid($request->email_uid);
+
+        // authorize
+        if (\Gate::denies('view', $email->automation)) {
+            return $this->notAuthorized();
+        }
+
+        return view('automation2.email.webhooksList', [
+            'email' => $email,
+        ]);
+    }
+
+    public function webhooksAdd(Request $request)
+    {
+        $email = Email::findByUid($request->email_uid);
+        $webhook = $email->newWebhook();
+
+        // authorize
+        if (\Gate::denies('update', $email->automation)) {
+            return $this->notAuthorized();
+        }
+
+        if ($request->isMethod('post')) {
+            list($webhook, $validator) = $webhook->createFromArray($request->all());
+
+            // redirect if fails
+            if ($validator->fails()) {
+                return response()->view('automation2.email.webhooksAdd', [
+                    'email' => $email,
+                    'webhook' => $webhook,
+                    'errors' => $validator->errors(),
+                ], 400);
+            }
+
+            return response()->json([
+                'message' => trans('messages.webhook.added'),
+            ]);
+        }
+
+        return view('automation2.email.webhooksAdd', [
+            'email' => $email,
+            'webhook' => $webhook,
+        ]);
+    }
+
+    public function webhooksLinkSelect(Request $request)
+    {
+        $email = Email::findByUid($request->email_uid);
+
+        // authorize
+        if (\Gate::denies('view', $email->automation)) {
+            return $this->notAuthorized();
+        }
+
+        return view('automation2.email.webhooksLinkSelect', [
+            'email' => $email,
+        ]);
+    }
+
+    public function webhooksEdit(Request $request)
+    {
+        $webhook = \Acelle\Model\EmailWebhook::findByUid($request->webhook_uid);
+
+        // authorize
+        if (\Gate::denies('update', $webhook->email->automation)) {
+            return $this->notAuthorized();
+        }
+
+        if ($request->isMethod('post')) {
+            list($webhook, $validator) = $webhook->updateFromArray($request->all());
+
+            // redirect if fails
+            if ($validator->fails()) {
+                return response()->view('automation2.email.webhooksEdit', [
+                    'webhook' => $webhook,
+                    'errors' => $validator->errors(),
+                ], 400);
+            }
+
+            return response()->json([
+                'message' => trans('messages.webhook.updated'),
+            ]);
+        }
+
+        return view('automation2.email.webhooksEdit', [
+            'webhook' => $webhook,
+        ]);
+    }
+
+    public function webhooksDelete(Request $request)
+    {
+        $webhook = \Acelle\Model\EmailWebhook::findByUid($request->webhook_uid);
+
+        // authorize
+        if (\Gate::denies('update', $webhook->email->automation)) {
+            return $this->notAuthorized();
+        }
+
+        $webhook->delete();
+
+        return response()->json([
+            'message' => trans('messages.webhook.deleted'),
+        ]);
+    }
+
+    public function webhooksSampleRequest(Request $request)
+    {
+        $webhook = \Acelle\Model\EmailWebhook::findByUid($request->webhook_uid);
+
+        // authorize
+        if (\Gate::denies('view', $webhook->email->automation)) {
+            return $this->notAuthorized();
+        }
+
+        return view('automation2.email.webhooksSampleRequest', [
+            'webhook' => $webhook,
+        ]);
+    }
+
+    public function webhooksTest(Request $request)
+    {
+        $webhook = \Acelle\Model\EmailWebhook::findByUid($request->webhook_uid);
+        $result = null;
+
+        // authorize
+        if (\Gate::denies('view', $webhook->email->automation)) {
+            return $this->notAuthorized();
+        }
+
+        if ($request->isMethod('post')) {
+            $client = new \GuzzleHttp\Client();
+
+            try {
+                $response = $client->request('GET', $webhook->endpoint, [
+                    'headers' => [
+                        "content-type" => "application/json"
+                    ],
+                    'body' => '{hello: "world"}',
+                    'http_errors' => false,
+                ]);
+
+                $result = [
+                    'status' => 'sent',
+                    'code' => $response->getStatusCode(),
+                    'message' => $response->getReasonPhrase(),
+                ];
+            } catch (\Exception $e) {
+                $result = [
+                    'status' => 'error',
+                    'message' => $e->getMessage(),
+                ];
+            }
+        }
+
+        return view('automation2.email.webhooksTest', [
+            'webhook' => $webhook,
+            'result' => $result,
         ]);
     }
 }

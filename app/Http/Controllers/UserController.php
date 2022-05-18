@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Acelle\Library\Log as MailLog;
 use Acelle\Model\Customer;
 use Acelle\Model\User;
+use Acelle\Library\Facades\Hook;
+use Laravel\Socialite\Facades\Socialite;
 
 class UserController extends Controller
 {
@@ -41,6 +43,9 @@ class UserController extends Controller
             return view('notAuthorized');
         } else {
             $userActivation->user->setActivated();
+
+            // Execute registered hooks
+            Hook::execute('customer_added', [$userActivation->user->customer]);
 
             $request->session()->put('user-activated', trans('messages.user.activated'));
 
@@ -87,7 +92,7 @@ class UserController extends Controller
         }
 
         // Initiate customer object for filling the form
-        $customer = new Customer();
+        $customer = Customer::newCustomer();
         $user = new User();
         if (!empty($request->old())) {
             $customer->fill($request->old());

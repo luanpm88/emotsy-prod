@@ -6,7 +6,6 @@ use Acelle\Events\CampaignUpdated;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Acelle\Jobs\UpdateCampaignJob;
-use Acelle\Jobs\UpdateMailListJob;
 
 class CampaignUpdatedListener
 {

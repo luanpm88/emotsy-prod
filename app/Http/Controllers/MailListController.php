@@ -908,4 +908,70 @@ class MailListController extends Controller
             'message' => trans('messages.list.clone_for.success'),
         ]);
     }
+
+    public function selectList(Request $request)
+    {
+        if ($request->isMethod('post')) {
+            // make validator
+            $validator = \Validator::make($request->all(), [
+                'list_uid' => 'required',
+            ]);
+
+            // redirect if fails
+            if ($validator->fails()) {
+                return response()->view('lists.selectList', [
+                    'errors' => $validator->errors(),
+                ], 400);
+            }
+
+            $url = str_replace('list_uid', $request->list_uid, $request->redirect);
+            return response()->json([
+                'url' => $url,
+            ]);
+        }
+
+        return view('lists.selectList');
+    }
+
+    public function emailVerificationChart(Request $request)
+    {
+        $list = \Acelle\Model\MailList::findByUid($request->uid);
+
+        // authorize
+        if (\Gate::denies('read', $list)) {
+            return $this->notAuthorized();
+        }
+
+        $result = [
+            'data' => [
+                [
+                    'name' => trans('messages.email_verification_result_deliverable'),
+                    'value' => $list->subscribers()->deliverable()->count(),
+                ],
+                [
+                    'name' => trans('messages.email_verification_result_undeliverable'),
+                    'value' => $list->subscribers()->undeliverable()->count(),
+                ],
+                [
+                    'name' => trans('messages.email_verification_result_risky'),
+                    'value' =>  $list->subscribers()->risky()->count(),
+                ],
+                [
+                    'name' => trans('messages.email_verification_result_unverified'),
+                    'value' => $list->subscribers()->unverified()->count(),
+                ],
+                [
+                    'name' => trans('messages.email_verification_result_unknown'),
+                    'value' => $list->subscribers()->unknown()->count(),
+                ],
+            ],
+        ];
+
+        // usort($result['data'], function ($a, $b) {
+        //     return strcmp($a['value'], $b['value']);
+        // });
+        // $result['data'] = array_reverse($result['data']);
+
+        return response()->json($result);
+    }
 }

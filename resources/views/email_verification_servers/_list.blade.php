@@ -18,9 +18,9 @@
                 </td>
                 <td>
                     <h5 class="m-0 text-bold">
-                        <a class="kq_search" href="{{ action('EmailVerificationServerController@edit', ["email_verification_server" => $server->uid]) }}">{{ $server->name }}</a>
+                        <a class="kq_search d-block" href="{{ action('EmailVerificationServerController@edit', ["email_verification_server" => $server->uid]) }}">{{ $server->name }}</a>
                     </h5>
-                    <span class="text-muted">{{ trans('messages.created_at') }}: {{ Tool::formatDateTime($server->created_at) }}</span>
+                    <span class="text-muted">{{ trans('messages.created_at') }}: {{ Auth::user()->customer->formatDateTime($server->created_at, 'date_full') }}</span>
                 </td>
                 <td>
                     <div class="single-stat-box pull-left ml-20">
@@ -41,7 +41,7 @@
                         <span class="label label-flat bg-{{ $server->status }}">{{ trans('messages.email_verification_server_status_' . $server->status) }}</span>
                     </span>
                 </td>
-                <td class="text-end text-nowrap">
+                <td class="text-end text-nowrap pe-0">
                     @if (Auth::user()->customer->can('update', $server))
                         <a href="{{ action('EmailVerificationServerController@edit', ["email_verification_server" => $server->uid]) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" role="button" class="btn btn-secondary btn-icon"><span class="material-icons-outlined">
 edit

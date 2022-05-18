@@ -8,7 +8,7 @@
                         <div class="preview_control">
                             <div style="width: calc(80% - 20px);">
                                 <div class="mb-2">
-                                    <a class="btn btn-light d-block" href="#preview" onclick="popupwindow('{{ action('TemplateController@preview', $template->uid) }}', '{{ $template->name }}', 800, 800)"><span class="material-icons-outlined">
+                                    <a class="btn btn-light d-block" href="#preview" onclick="popupwindow('{{ action('TemplateController@preview', $template->uid) }}', `{{ $template->name }}`, 800)"><span class="material-icons-outlined">
                                         zoom_in
                                         </span> {{ trans("messages.preview") }}</a>
                                 </div>
@@ -39,22 +39,12 @@
                         <h6 title="{{ $template->name }}" class="fw-600 mt-1 mb-1 text-ellipsis">{{ $template->name }}</h6>
                         <p style="display: block;
                         overflow: hidden;" class="card-text">
-                            @if (Auth::user()->customer->can('update', $template))
-                                <a href="{{ action('TemplateController@categories', [
-                                    'uid' => $template->uid,
-                                ]) }}" class="template-categories text-secondary">
-                                    @if ($template->categories()->count())
-                                        {{ $template->categories->map(function ($cat) {
-                                            return $cat->name;
-                                        })->join(', ') }}
-                                    @else
-                                        <span style="color:#ea8c8c;text-decoration: underline;text-decoration-style: dashed;text-underline-offset:4px" class="xtooltip" title="{{ trans('messages.template.category.notice') }}">{{ trans('messages.template.category.no_category') }}</span>
-                                    @endif 
-                                </a>
-                            @else
-                                <span class="template-categories">{{ $template->categories()->count() ? $template->categories->map(function ($cat) {
+                            @if ($template->categories()->count())
+                                <span class="template-categories">{{ $template->categories->map(function ($cat) {
                                     return $cat->name;
-                                })->join(', ') : 'N/A' }}</span>
+                                })->join(', ') }}</span>
+                            @else
+                                <span style="" class="xtooltip" title="{{ trans('messages.template.category.notice') }}">{{ trans('messages.template.category.no_category') }}</span>
                             @endif
                         </p>
                         <div class="">
@@ -79,7 +69,7 @@
                                                 </li>
                                             @endif
                                             @if (Auth::user()->customer->can('preview', $template))
-                                                <li><a class="dropdown-item" href="#preview" onclick="popupwindow('{{ action('TemplateController@preview', $template->uid) }}', '{{ $template->name }}', 800, 800)"><span class="material-icons-outlined">
+                                                <li><a class="dropdown-item" href="#preview" onclick="popupwindow('{{ action('TemplateController@preview', $template->uid) }}', `{{ $template->name }}`, 800)"><span class="material-icons-outlined">
             zoom_in
             </span> {{ trans("messages.preview") }}</a></li>
                                             @endif

@@ -18,7 +18,22 @@
                             ]) }}"					
                         >							
                             <h6 class="d-flex align-items-center text-center justify-content-center">
-                                <i class="material-icons-outlined me-2">{{ trans('messages.automation.operation.icon.' . $type) }}</i>
+                                @php
+                                    switch($type) {
+                                        case "update_contact":
+                                            $icon = "people";
+                                            break;
+                                        case "tag_contact":
+                                            $icon = "check";
+                                            break;
+                                        case "copy_contact":
+                                            $icon = "copy";
+                                            break;
+                                        default:
+                                            $icon = "check";
+                                    }
+                                @endphp
+                                <i class="material-icons-outlined me-2">{{ $icon }}</i>
                                 {{ trans('messages.automation.operation.' . $type) }}</h6>
                             <p>{{ trans('messages.automation.operation.' . $type . '.desc') }}</p>
                         </a>

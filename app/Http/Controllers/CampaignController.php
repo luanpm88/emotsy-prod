@@ -19,9 +19,9 @@ use Acelle\Model\IpLocation;
 use Acelle\Model\ClickLog;
 use Acelle\Model\OpenLog;
 use Acelle\Model\TemplateCategory;
-use Acelle\Library\Rss;
 use Acelle\Model\JobMonitor;
 use DB;
+use Exception;
 
 class CampaignController extends Controller
 {
@@ -99,18 +99,14 @@ class CampaignController extends Controller
     {
         $campaign = Campaign::findByUid($id);
 
-        // Trigger the CampaignUpdate event to update the campaign cache information
-        // The second parameter of the constructor function is false, meanining immediate update
-        try {
-            event(new \Acelle\Events\CampaignUpdated($campaign));
-        } catch (\Exception $ex) {
-            // in case TrackingLog record does not exist yet (open before logged!)
-        }
-
         // authorize
         if (\Gate::denies('read', $campaign)) {
             return $this->notAuthorized();
         }
+
+        // Trigger the CampaignUpdate event to update the campaign cache information
+        // The second parameter of the constructor function is false, meanining immediate update
+        event(new \Acelle\Events\CampaignUpdated($campaign));
 
         if ($campaign->status == 'new') {
             return redirect()->action('CampaignController@edit', ['uid' => $campaign->uid]);
@@ -345,15 +341,15 @@ class CampaignController extends Controller
 
         // from
         if ($request->from == 'mine') {
-            $templates = $request->user()->customer->templates();
+            $templates = $request->user()->customer->templates()->email();
         } elseif ($request->from == 'gallery') {
-            $templates = Template::shared();
+            $templates = Template::shared()->email();
         } else {
-            $templates = Template::shared()
+            $templates = Template::shared()->email()
                 ->orWhere('customer_id', '=', $request->user()->customer->id);
         }
 
-        $templates = $templates->notAssociated()->search($request->keyword);
+        $templates = $templates->notPreserved()->search($request->keyword);
 
         // category id
         if ($request->category_uid) {
@@ -587,14 +583,14 @@ class CampaignController extends Controller
 
         // validate and save posted data
         if ($request->isMethod('post')) {
-            // Check validation
-            // $this->validate($request, $rules);
+            if ($request->send_now == 'yes') {
+                $campaign->run_at = null;
+            } else {
+                $time = \Acelle\Library\Tool::systemTimeFromString($request->delivery_date.' '.$request->delivery_time);
+                $campaign->run_at = $time;
+            }
 
-            //// Save campaign
-            $time = \Acelle\Library\Tool::systemTimeFromString($request->delivery_date.' '.$request->delivery_time);
-            $campaign->run_at = $time;
             $campaign->save();
-
             return redirect()->action('CampaignController@confirm', ['uid' => $campaign->uid]);
         }
 
@@ -715,11 +711,7 @@ class CampaignController extends Controller
 
         // Trigger the CampaignUpdate event to update the campaign cache information
         // The second parameter of the constructor function is false, meanining immediate update
-        try {
-            event(new \Acelle\Events\CampaignUpdated($campaign));
-        } catch (\Exception $ex) {
-            // in case TrackingLog record does not exist yet (open before logged!)
-        }
+        event(new \Acelle\Events\CampaignUpdated($campaign));
 
         // authorize
         if (\Gate::denies('read', $campaign)) {
@@ -841,7 +833,7 @@ class CampaignController extends Controller
             ],
             [
                 'name' => trans('messages.Click'),
-                'value' => $campaign->clickedEmailsCount(),
+                'value' => $campaign->uniqueClickCount(),
             ],
             [
                 'name' => trans('messages.Bounce'),
@@ -881,7 +873,7 @@ class CampaignController extends Controller
         ];
 
         // create data
-        $total = $campaign->openCount();
+        $total = $campaign->uniqueOpenCount();
         $count = 0;
         foreach ($campaign->topCountries()->get() as $location) {
             $country_name = (!empty($location->country_name) ? $location->country_name : trans('messages.unknown'));
@@ -989,7 +981,18 @@ class CampaignController extends Controller
      */
     public function open(Request $request)
     {
-        OpenLog::createFromRequest($request);
+        try {
+            // Record open log
+            $openLog = OpenLog::createFromRequest($request);
+
+            // Execute open callbacks registered for the campaign
+            if ($openLog->trackingLog && $openLog->trackingLog->campaign) {
+                $openLog->trackingLog->campaign->queueOpenCallbacks($openLog);
+            }
+        } catch (\Exception $ex) {
+            // do nothing
+        }
+
         return response()->file(public_path('images/transparent.gif'));
     }
 
@@ -998,7 +1001,12 @@ class CampaignController extends Controller
      */
     public function click(Request $request)
     {
-        $url = ClickLog::createFromRequest($request);
+        list($url, $log) = ClickLog::createFromRequest($request);
+
+        if ($log && $log->trackingLog && $log->trackingLog->campaign) {
+            $log->trackingLog->campaign->queueClickCallbacks($log);
+        }
+
         return redirect()->away($url);
     }
 
@@ -1250,7 +1258,7 @@ class CampaignController extends Controller
 
         $items = \Acelle\Model\OpenLog::search($request, $campaign)->paginate($request->per_page);
 
-        return view('admin.open_logs._list', [
+        return view('campaigns.open_log_list', [
             'items' => $items,
             'campaign' => $campaign,
         ]);
@@ -1290,7 +1298,7 @@ class CampaignController extends Controller
 
         $items = \Acelle\Model\ClickLog::search($request, $campaign)->paginate($request->per_page);
 
-        return view('admin.click_logs._list', [
+        return view('campaigns.click_log_list', [
             'items' => $items,
             'campaign' => $campaign,
         ]);
@@ -1505,7 +1513,7 @@ class CampaignController extends Controller
         }
 
         // Paging
-        $subscribers = $subscribers->paginate($request->per_page);
+        $subscribers = $subscribers->search($request->keyword)->paginate($request->per_page);
 
         // Field information
         $fields = $campaign->defaultMailList->getFields->whereIn('uid', explode(',', $request->columns));
@@ -1756,6 +1764,25 @@ class CampaignController extends Controller
 
             return view('somethingWentWrong', ['message' => trans('messages.the_email_no_longer_exists')]);
         }
+    }
+
+    /**
+     * Email web view for previewing before sending
+     */
+    public function webViewPreview(Request $request)
+    {
+        $subscriber = Subscriber::findByUid($request->subscriber_uid);
+        $campaign = Campaign::findByUid($request->campaign_uid);
+
+        if (is_null($subscriber) || is_null($campaign)) {
+            throw new \Exception('Invalid subscriber or campaign UID');
+        }
+
+        return view('campaigns.web_view', [
+            'campaign' => $campaign,
+            'subscriber' => $subscriber,
+            'message_id' => null,
+        ]);
     }
 
     /*
@@ -2082,6 +2109,292 @@ class CampaignController extends Controller
 
         return redirect()->action('CampaignController@builderPlainEdit', [
             'uid' => $campaign->uid,
+        ]);
+    }
+
+    public function previewAs(Request $request)
+    {
+        $campaign = Campaign::findByUid($request->uid);
+
+        return view('campaigns.previewAs', [
+            'campaign' => $campaign,
+        ]);
+    }
+
+    /**
+     * Subscribers listing.
+     */
+    public function previewAsList(Request $request)
+    {
+        $campaign = Campaign::findByUid($request->uid);
+
+        // authorize
+        if (\Gate::denies('read', $campaign)) {
+            return;
+        }
+
+        // Subscribers
+        $subscribers = $campaign->subscribers()
+            ->search($request->keyword)->paginate($request->per_page);
+
+        return view('campaigns.previewAsList', [
+            'subscribers' => $subscribers,
+            'campaign' => $campaign,
+        ]);
+    }
+
+    public function webhooks(Request $request)
+    {
+        $campaign = Campaign::findByUid($request->uid);
+
+        // authorize
+        if (\Gate::denies('read', $campaign)) {
+            return $this->notAuthorized();
+        }
+
+        return view('campaigns.webhooks', [
+            'campaign' => $campaign,
+        ]);
+    }
+
+    public function webhooksList(Request $request)
+    {
+        $campaign = Campaign::findByUid($request->uid);
+
+        // authorize
+        if (\Gate::denies('read', $campaign)) {
+            return $this->notAuthorized();
+        }
+
+        return view('campaigns.webhooksList', [
+            'campaign' => $campaign,
+        ]);
+    }
+
+    public function webhooksAdd(Request $request)
+    {
+        $campaign = Campaign::findByUid($request->uid);
+        $webhook = $campaign->newWebhook();
+
+        // authorize
+        if (\Gate::denies('update', $campaign)) {
+            return $this->notAuthorized();
+        }
+
+        if ($request->isMethod('post')) {
+            list($webhook, $validator) = $webhook->createFromArray($request->all());
+
+            // redirect if fails
+            if ($validator->fails()) {
+                return response()->view('campaigns.webhooksAdd', [
+                    'campaign' => $campaign,
+                    'webhook' => $webhook,
+                    'errors' => $validator->errors(),
+                ], 400);
+            }
+
+            return response()->json([
+                'message' => trans('messages.webhook.added'),
+            ]);
+        }
+
+        return view('campaigns.webhooksAdd', [
+            'campaign' => $campaign,
+            'webhook' => $webhook,
+        ]);
+    }
+
+    public function webhooksLinkSelect(Request $request)
+    {
+        $campaign = Campaign::findByUid($request->uid);
+
+        // authorize
+        if (\Gate::denies('read', $campaign)) {
+            return $this->notAuthorized();
+        }
+
+        return view('campaigns.webhooksLinkSelect', [
+            'campaign' => $campaign,
+        ]);
+    }
+
+    public function webhooksEdit(Request $request)
+    {
+        $webhook = \Acelle\Model\CampaignWebhook::findByUid($request->webhook_uid);
+
+        // authorize
+        if (\Gate::denies('update', $webhook->campaign)) {
+            return $this->notAuthorized();
+        }
+
+        if ($request->isMethod('post')) {
+            list($webhook, $validator) = $webhook->updateFromArray($request->all());
+
+            // redirect if fails
+            if ($validator->fails()) {
+                return response()->view('campaigns.webhooksEdit', [
+                    'webhook' => $webhook,
+                    'errors' => $validator->errors(),
+                ], 400);
+            }
+
+            return response()->json([
+                'message' => trans('messages.webhook.updated'),
+            ]);
+        }
+
+        return view('campaigns.webhooksEdit', [
+            'webhook' => $webhook,
+        ]);
+    }
+
+    public function webhooksDelete(Request $request)
+    {
+        $webhook = \Acelle\Model\CampaignWebhook::findByUid($request->webhook_uid);
+
+        // authorize
+        if (\Gate::denies('update', $webhook->campaign)) {
+            return $this->notAuthorized();
+        }
+
+        $webhook->delete();
+
+        return response()->json([
+            'message' => trans('messages.webhook.deleted'),
+        ]);
+    }
+
+    public function webhooksSampleRequest(Request $request)
+    {
+        $webhook = \Acelle\Model\CampaignWebhook::findByUid($request->webhook_uid);
+
+        // authorize
+        if (\Gate::denies('read', $webhook->campaign)) {
+            return $this->notAuthorized();
+        }
+
+        return view('campaigns.webhooksSampleRequest', [
+            'webhook' => $webhook,
+        ]);
+    }
+
+    public function webhooksTest(Request $request)
+    {
+        $webhook = \Acelle\Model\CampaignWebhook::findByUid($request->webhook_uid);
+        $result = null;
+
+        // authorize
+        if (\Gate::denies('read', $webhook->campaign)) {
+            return $this->notAuthorized();
+        }
+
+        if ($request->isMethod('post')) {
+            $client = new \GuzzleHttp\Client();
+
+            try {
+                $response = $client->request('GET', $webhook->endpoint, [
+                    'headers' => [
+                        "content-type" => "application/json"
+                    ],
+                    'body' => '{hello: "world"}',
+                    'http_errors' => false,
+                ]);
+
+                $result = [
+                    'status' => 'sent',
+                    'code' => $response->getStatusCode(),
+                    'message' => $response->getReasonPhrase(),
+                ];
+            } catch (\Exception $e) {
+                $result = [
+                    'status' => 'error',
+                    'message' => $e->getMessage(),
+                ];
+            }
+        }
+
+        return view('campaigns.webhooksTest', [
+            'webhook' => $webhook,
+            'result' => $result,
+        ]);
+    }
+
+    public function webhooksTestMessage(Request $request, $webhook_uid, $message_id)
+    {
+        $webhook = \Acelle\Model\CampaignWebhook::findByUid($request->webhook_uid);
+        $result = null;
+
+        // authorize
+        if (\Gate::denies('read', $webhook->campaign)) {
+            return $this->notAuthorized();
+        }
+
+        $client = new \GuzzleHttp\Client();
+
+        try {
+            $response = $client->request('GET', $webhook->endpoint, [
+                'headers' => [
+                    "content-type" => "application/json"
+                ],
+                'body' => '{hello: "world"}',
+                'http_errors' => false,
+            ]);
+
+            $result = [
+                'status' => 'sent',
+                'code' => $response->getStatusCode(),
+                'message' => $response->getReasonPhrase(),
+                'message_id' => $message_id,
+                'endpoint' => $webhook->endpoint,
+                'responseBody' => $response->getBody(),
+            ];
+        } catch (\Exception $e) {
+            $result = [
+                'status' => 'error',
+                'message' => $e->getMessage(),
+                'message_id' => $message_id,
+                'endpoint' => $webhook->endpoint,
+                'responseBody' => $response->getBody(),
+            ];
+        }
+
+        return view('campaigns.webhooksTestMessage', [
+            'webhook' => $webhook,
+            'result' => $result,
+        ]);
+    }
+
+    /**
+     * Click logs execute.
+     */
+    public function clickLogExecute(Request $request)
+    {
+        $campaign = Campaign::findByUid($request->uid);
+
+        // authorize
+        if (\Gate::denies('read', $campaign)) {
+            return $this->notAuthorized();
+        }
+
+        return view('campaigns.clickLogExecute', [
+            'campaign' => $campaign,
+        ]);
+    }
+
+    /**
+     * Open logs execute.
+     */
+    public function openLogExecute(Request $request)
+    {
+        $campaign = Campaign::findByUid($request->uid);
+
+        // authorize
+        if (\Gate::denies('read', $campaign)) {
+            return $this->notAuthorized();
+        }
+
+        return view('campaigns.openLogExecute', [
+            'campaign' => $campaign,
         ]);
     }
 }

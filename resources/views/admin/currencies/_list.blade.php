@@ -18,11 +18,11 @@
 				</td>
 				<td>
 					<h5 class="m-0 text-bold">
-						<a class="kq_search" href="{{ action('Admin\CurrencyController@edit', $item->uid) }}">{{ $item->name }}</a>
+						<a class="kq_search d-block" href="{{ action('Admin\CurrencyController@edit', $item->uid) }}">{{ $item->name }}</a>
 					</h5>
 					<span class="text-muted">
 						{{ trans('messages.updated_at') }}
-						{{ Acelle\Library\Tool::formatDateTime($item->updated_at) }}
+						{{ Auth::user()->admin->formatDateTime($item->updated_at, 'date_full') }}
 					</span>
 				</td>
 				<td class="stat-fix-size-sm">
@@ -44,7 +44,7 @@
 						<span class="label label-flat bg-{{ $item->status }}">{{ $item->status }}</span>
 					</span>
 				</td>
-				<td class="text-end text-nowrap" width="5%">
+				<td class="text-end text-nowrap pe-0" width="5%">
 					@can('update', $item)
 						<a href="{{ action('Admin\CurrencyController@edit', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" role="button" class="btn btn-secondary btn-icon"><span class="material-icons-outlined">
 edit

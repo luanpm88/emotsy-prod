@@ -1,5 +1,5 @@
 <div class="card mt-2 subscription-step">
-    @if ($invoice ?? false)
+    @if (($invoice ?? false) && $invoice->hasBillingInformation())
         <a href="{{ action('SubscriptionController@payment', [
             'invoice_uid' => $invoice->uid,
         ]) }}"
@@ -22,7 +22,7 @@
     @else
         <div class="card-header py-3 select-plan-tab">
             <div class="d-flex align-items-center">
-                <div class="me-3"><label class="subscription-step-number bg-secondary">2</label></div>
+                <div class="me-3"><label class="subscription-step-number bg-secondary">3</label></div>
                 <div>
                     <h5 class="fw-600 mb-0 fs-6 text-start">
                         {{ trans('messages.subscription.payment_method.title') }}

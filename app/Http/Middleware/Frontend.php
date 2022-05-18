@@ -49,6 +49,39 @@ class Frontend
             \Carbon\Carbon::setLocale($user->customer->language->code);
         }
 
+        // Wordpress db by user
+        if (isset($user) && isset($user->customer)) {
+            config([
+                'database.connections.wordpress.database' => config('wordpress.'.$user->customer->id.'.db_name'),
+                'database.connections.wordpress.prefix' => config('wordpress.'.$user->customer->id.'.db_prefix'),
+                'wordpress.url' => config('wordpress.'.$user->customer->id.'.url'),
+            ]);
+
+            if (config('wordpress.'.$user->customer->id.'.db_host', false)) {
+                config([
+                    'database.connections.wordpress.host' => config('wordpress.'.$user->customer->id.'.db_host'),
+                ]);
+            }
+
+            if (config('wordpress.'.$user->customer->id.'.db_port', false)) {
+                config([
+                    'database.connections.wordpress.port' => config('wordpress.'.$user->customer->id.'.db_port'),
+                ]);
+            }
+
+            if (config('wordpress.'.$user->customer->id.'.db_user', false)) {
+                config([
+                    'database.connections.wordpress.username' => config('wordpress.'.$user->customer->id.'.db_user'),
+                ]);
+            }
+
+            if (config('wordpress.'.$user->customer->id.'.db_password', false)) {
+                config([
+                    'database.connections.wordpress.password' => config('wordpress.'.$user->customer->id.'.db_password'),
+                ]);
+            }
+        }
+
         return $next($request);
     }
 }

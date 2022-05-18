@@ -25,6 +25,18 @@
                 ])
 
                 @include('helpers.form_control', [
+                    'type' => 'select',
+                    'class' => '',
+                    'name' => 'aws_region',
+                    'value' => $server->aws_region,
+                    'label' => trans('messages.maillgun.api_region'),
+                    'help_class' => 'sending_server',
+                    'options' => Acelle\Model\SendingServer::mailgunRegionSelectOptions(),
+                    'rules' => $server->getRules(),
+                    'disabled' => ($server->id && $errors->isEmpty()),
+                ])
+
+                @include('helpers.form_control', [
                     'type' => 'text',
                     'class' => '',
                     'name' => 'domain',

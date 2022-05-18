@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Acelle\Http\Controllers\Controller;
 use Acelle\Model\Plan;
 use Acelle\Cashier\Cashier;
+use Acelle\Library\Facades\Hook;
 
 class CustomerController extends Controller
 {
@@ -68,7 +69,7 @@ class CustomerController extends Controller
      */
     public function create(Request $request)
     {
-        $customer = new \Acelle\Model\Customer();
+        $customer = \Acelle\Model\Customer::newCustomer();
         $customer->status = 'active';
         $customer->uid = '0';
 
@@ -101,7 +102,7 @@ class CustomerController extends Controller
     {
         // Get current user
         $current_user = $request->user();
-        $customer = new \Acelle\Model\Customer();
+        $customer = \Acelle\Model\Customer::newCustomer();
         $contact = new \Acelle\Model\Contact();
 
         // authorize
@@ -143,6 +144,9 @@ class CustomerController extends Controller
                 if ($request->_remove_image == 'true') {
                     $user->removeProfileImage();
                 }
+
+                // Execute registered hooks
+                Hook::execute('customer_added', [$customer]);
 
                 $request->session()->flash('alert-success', trans('messages.customer.created'));
 

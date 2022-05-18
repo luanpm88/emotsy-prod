@@ -38,14 +38,14 @@
                 <td>
                     @if ($server->isExtended())
                         <h5 class="m-0 text-bold">
-                            <a class="kq_search" href="{{ $server->getEditUrl() }}">{{ $item->name }}</a>
+                            <a class="kq_search d-block" href="{{ $server->getEditUrl() }}">{{ $item->name }}</a>
                         </h5>
                     @else
                         <h5 class="m-0 text-bold">
-                            <a class="kq_search" href="{{ action('Admin\SendingServerController@edit', ["id" => $item->uid, "type" => $item->type]) }}">{{ $item->name }}</a>
+                            <a class="kq_search d-block" href="{{ action('Admin\SendingServerController@edit', ["id" => $item->uid, "type" => $item->type]) }}">{{ $item->name }}</a>
                         </h5>
                     @endif
-                    <span class="text-muted">{{ trans('messages.created_at') }}: {{ Tool::formatDateTime($item->created_at) }}</span>
+                    <span class="text-muted">{{ trans('messages.created_at') }}: {{ Auth::user()->admin->formatDateTime($item->created_at, 'date_full') }}</span>
                 </td>
                 <td>
                     <div class="single-stat-box pull-left ml-20">
@@ -92,7 +92,7 @@
                         <span class="label label-flat bg-{{ $item->status }}">{{ trans('messages.sending_server_status_' . $item->status) }}</span>
                     </span>
                 </td>
-                <td class="text-end text-nowrap">
+                <td class="text-end text-nowrap pe-0">
                     @if (Auth::user()->admin->can('update', $item))
                         @if ($server->isExtended())
                             <a href="{{ $server->getEditUrl() }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" role="button" class="btn btn-secondary btn-icon"><span class="material-icons-outlined">

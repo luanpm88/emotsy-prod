@@ -68,6 +68,32 @@
         ><span class="me-2">{{ trans("messages.login") }}</span> <span class="material-icons-round">
             login
             </span></button>
+            
+
+            @if (
+                \Acelle\Model\Setting::get('oauth.google_enabled') == 'yes' ||
+                \Acelle\Model\Setting::get('oauth.facebook_enabled') == 'yes'
+            )
+                <div class="socialite_buttons">
+                    @if (\Acelle\Model\Setting::get('oauth.google_enabled') == 'yes')
+                        <div class="text-center mt-2">
+                            <a href="{{ action('AuthController@googleRedirect') }}" class="btn btn-light d-flex align-items-center rounded-3 py-2" style="width:100%">
+                                <img width="25px" src="{{ url('images/google-login.svg') }}" />
+                                <span class="ms-3 display-6 text-center" style="font-size:15px;width:80%">Continue with Google</span>
+                            </a>
+                        </div>
+                    @endif
+
+                    @if (\Acelle\Model\Setting::get('oauth.facebook_enabled') == 'yes')
+                        <div class="text-center mt-2">
+                            <a href="{{ action('AuthController@facebookRedirect') }}" class="btn btn-light d-flex align-items-center rounded-3 py-2" style="width:100%">
+                                <img width="25px" src="{{ url('images/icons/facebook-logo.svg') }}" />
+                                <span class="ms-3 display-6 text-center" style="font-size:15px;width:80%">Continue with Facebook</span>
+                            </a>
+                        </div>
+                    @endif
+                </div>
+            @endif
     </div>
 
     @if (\Acelle\Model\Setting::get('enable_user_registration') == 'yes')
@@ -77,6 +103,8 @@
             ]) !!}
         </div>
     @endif
+
+    
 </form>
 <!-- /advanced login -->
 

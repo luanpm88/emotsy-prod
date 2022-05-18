@@ -20,6 +20,7 @@
 @section('content')
     <p>{{ trans('messages.sending_server.wording') }}</p>
 
+
     <div class="listing-form"
         sort-url="{{ action('SendingServerController@sort') }}"
         data-url="{{ action('SendingServerController@listing') }}"
@@ -93,7 +94,8 @@ add
             @endif
         </div>
 
-        <div class="pml-table-container"></div>
+        <div class="pml-table-container">
+        </div>
     </div>
 
     <script>

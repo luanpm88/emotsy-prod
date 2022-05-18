@@ -1,15 +1,22 @@
 function initJs(container)
 {
     // tooltip
-    container.find('.xtooltip:not([title=""]), [data-popup=tooltip]:not([title=""]), .leftbar-navbar .leftbar-tooltip:not([title=""])').tooltipster({
-        theme: 'tooltipster-light'
-    });
+    if (container.find('.xtooltip:not([title=""]), [data-popup=tooltip]:not([title=""]), .leftbar-navbar .leftbar-tooltip:not([title=""])').tooltipster) {
+        container.find('.xtooltip:not([title=""]), [data-popup=tooltip]:not([title=""]), .leftbar-navbar .leftbar-tooltip:not([title=""])').tooltipster({
+            theme: 'tooltipster-light'
+        });
+    }
 
     // select2
-    container.find('.select').select2({
-        dropdownAutoWidth: true,
-        minimumResultsForSearch: 30
-    });
+    if (container.find('.select').select2) {
+        container.find('.select').select2({
+            dropdownAutoWidth: true,
+            minimumResultsForSearch: 30,
+            escapeMarkup: function(markup) {
+                return markup;
+            }
+        });
+    }
 
     // pick a date
     if (container.find(".pickadate-control").length) {
@@ -32,7 +39,9 @@ function initJs(container)
     }
 
     // numeric
-    container.find(".numeric").numeric();
+    if (container.find(".numeric").numeric) {
+        container.find(".numeric").numeric();
+    }
 
     // pick a time
     if (container.find(".pickatime, .time-selector").length) {
@@ -47,23 +56,27 @@ function initJs(container)
     }
 
     // custom validation
-    customValidate(container.find(".form-validate-jquery"));
+    if (typeof(customValidate) != 'undefined') {
+        customValidate(container.find(".form-validate-jquery"));
+    }
 
     // link method
     applyLinkListener(container.find('a[link-method], a[link-confirm]'));
 
     // Select2 tags
-    container.find('.select-tag').select2({
-        minimumResultsForSearch: 20,
-        templateResult: formatSelect2TextOption,
-        templateSelection: formatSelect2TextSelected,
-        placeholder: function(){
-            $(this).attr('data-placeholder');
-        },
-        dropdownAutoWidth : true,
-        width: 'auto',
-        tags: true,
-    });
+    if (container.find('.select-tag').select2) {
+        container.find('.select-tag').select2({
+            minimumResultsForSearch: 20,
+            templateResult: formatSelect2TextOption,
+            templateSelection: formatSelect2TextSelected,
+            placeholder: function(){
+                $(this).attr('data-placeholder');
+            },
+            dropdownAutoWidth : true,
+            width: 'auto',
+            tags: true,
+        });
+    }
 
     // Select2 ajax
     container.find(".select2-ajax").each(function() {
@@ -220,9 +233,14 @@ function htmlDecode(input){
     return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
 }
 
-function copyToClipboard(text) {
+function copyToClipboard(text, container) {
     var $temp = $("<input>");
-    $("body").append($temp);
+    if (typeof(container) !== 'undefined') {
+        container.append($temp);
+    } else {
+        $("body").append($temp);
+    }
+    
     $temp.val(text).select();
     document.execCommand("copy");
     $temp.remove();
@@ -327,7 +345,14 @@ function updatePickadateDateMask(control) {
 function popupwindow(url, title, w, h) {
     var left = (screen.width/2)-(w/2);
     var top = 0;
-    return window.open(url, title, 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width='+w+', height='+screen.height+', top='+top+', left='+left);
+    var height = screen.height;
+
+    if (typeof(h) !== 'undefined') {
+        height = h;
+        top = (screen.height/2)-(height/2);
+    }
+
+    return window.open(url, title, 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width='+w+', height='+height+', top='+top+', left='+left);
 }
 
 function removeMaskLoading() {
@@ -468,6 +493,15 @@ function makeList(options) {
                         notify({
                             type: response.status,
                             message: response.message,
+                        });
+    
+                        _list.load();
+                    },
+                    fail: function(response) {
+                        new Dialog('alert', {
+                            type: 'error',
+                            title: LANG_ERROR,
+                            message: JSON.parse(response.responseText).message
                         });
     
                         _list.load();
@@ -635,6 +669,15 @@ function makeList(options) {
                 });
 
                 _list.load();
+            },
+            fail: function(response) {
+                new Dialog('alert', {
+                    type: 'error',
+                    title: LANG_ERROR,
+                    message: JSON.parse(response.responseText).message
+                });
+
+                _list.load();
             }
         });
     });
@@ -652,7 +695,7 @@ function openBuilder(url) {
     $('body').append(div);
 
     // open builder effects
-    addMaskLoading("{{ trans('messages.automation.template.opening_builder') }}");
+    addMaskLoading();
     $('.builder').on("load", function() {
         removeMaskLoading();
 
@@ -673,7 +716,7 @@ function openBuilderClassic(url) {
     $('body').append(div);
 
     // open builder effects
-    addMaskLoading("{{ trans('messages.automation.template.opening_builder') }}");
+    addMaskLoading();
     $('.builder').on("load", function() {
         removeMaskLoading();
 
@@ -757,4 +800,36 @@ function showAjaxDetailBox(items) {
             });
         });
     });
+}
+
+function changeThemeMod(mode) {
+    $("body").removeClass (function (index, className) {
+        return (className.match (/(^|\s)mode-\S+/g) || []).join(' ');
+    });
+
+    $("body").addClass('mode-' + mode);
+
+    // auto mode
+    if (mode == 'auto') {
+        autoDetechDarkMode();
+    }
+}
+
+function insertAtCursor(myField, myValue) {
+    //IE support
+    if (document.selection) {
+        myField.focus();
+        sel = document.selection.createRange();
+        sel.text = myValue;
+    }
+    //MOZILLA and others
+    else if (myField.selectionStart || myField.selectionStart == '0') {
+        var startPos = myField.selectionStart;
+        var endPos = myField.selectionEnd;
+        myField.value = myField.value.substring(0, startPos)
+            + myValue
+            + myField.value.substring(endPos, myField.value.length);
+    } else {
+        myField.value += myValue;
+    }
 }

@@ -144,18 +144,6 @@ class Tool
      *
      * @var string
      */
-    public static function formatDateTime($datetime)
-    {
-        $result = self::dateTime($datetime)->format(trans('messages.datetime_format'));
-
-        return $result;
-    }
-
-    /**
-     * Format display datetime.
-     *
-     * @var string
-     */
     public static function dateTime($datetime)
     {
         $timezone = self::currentTimezone();
@@ -389,44 +377,6 @@ class Tool
         }
 
         return $arr;
-    }
-
-    /**
-     * Get day string from timestamp.
-     *
-     * @param timestamp
-     *
-     * @return string
-     */
-    public static function dayStringFromTimestamp($timestamp)
-    {
-        if (isset($timestamp) && $timestamp != '0000-00-00 00:00:00') {
-            // @todo: hard day format code: 'Y-m-d'
-            $result = \Acelle\Library\Tool::dateTime($timestamp)->format('Y-m-d');
-        } else {
-            $result = \Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->format('Y-m-d');
-        }
-
-        return $result;
-    }
-
-    /**
-     * Get time string from timestamp.
-     *
-     * @param timestamp
-     *
-     * @return string
-     */
-    public static function timeStringFromTimestamp($timestamp)
-    {
-        if (isset($timestamp) && $timestamp != '0000-00-00 00:00:00') {
-            // @todo: hard day format code: 'H:i'
-            $result = \Acelle\Library\Tool::dateTime($timestamp)->format('H:i');
-        } else {
-            $result = \Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->format('H:i');
-        }
-
-        return $result;
     }
 
     /**
@@ -736,18 +686,6 @@ class Tool
         } else {
             return $number;
         }
-    }
-
-    /**
-     * Format display date.
-     *
-     * @var string
-     */
-    public static function formatDate($datetime)
-    {
-        $result = !isset($datetime) ? '' : self::dateTime($datetime)->format(trans('messages.date_format'));
-
-        return $result;
     }
 
     /**

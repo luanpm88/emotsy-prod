@@ -19,19 +19,19 @@
 @endsection
 
 @section('menu_right')
-    <li class="nav-item">
+    <li class="nav-item d-flex align-items-center">
         <a  href="javascript:;"
             onclick="parent.$('body').removeClass('overflow-hidden');parent.$('.full-iframe-popup').fadeOut()"
-            class="nav-link d-flex align-items-center py-3 lvl-1">
+            class="nav-link py-3 lvl-1 d-flex align-items-center">
             <i class="material-icons-outlined me-2">arrow_back</i>
             <span>{{ trans('messages.go_back') }}</span>
         </a>
     </li>
-    <li class="nav-item">
+    <li class="nav-item d-flex align-items-center">
         <a href="{{ action('CampaignController@builderClassic', [
             'uid' => $campaign->uid
         ]) }}"
-            class="nav-link d-flex align-items-center py-3 lvl-1">
+            class="nav-link py-3 lvl-1">
             <span>{{ trans('messages.campaign.html_editor') }}</span>
         </a>
     </li>
@@ -104,6 +104,16 @@
             </div>            
         </div>   
     <form>
+
+    <script>
+        $(function() {
+            // Click to insert tag
+            $(document).on("click", ".insert_tag_button", function() {
+                var tag = $(this).attr("data-tag-name");
+                insertAtCursor($('textarea[name="plain"]')[0], tag);
+            });
+        });
+    </script>
 
     <script>
     $('#classic-builder-form').submit(function(e) {

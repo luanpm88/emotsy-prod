@@ -39,6 +39,9 @@ $(function(){
 
     // leftbar scroll behaviour
     $('.leftbar .navbar-main').on( 'DOMMouseScroll mousewheel', function ( event ) {
+        if ($(window).width() < 1200) {
+            return;
+        }
         if ($(this).parent('.dropdown-menu').length) {
             console.log('dddd');
             return;

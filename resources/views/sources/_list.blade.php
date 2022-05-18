@@ -10,14 +10,12 @@
 					</div>
 				</td>
 				<td>
-					<a href="{{ action('SourceController@show', $source->uid) }}">
-						<h5 class="no-margin text-normal m-0"><span class="kq_search" href="javascript:;">
-							{{ $source->getName() }}
-						</span></h5>
+					<a class="kq_search fw-600 d-block list-title" href="{{ action('SourceController@show', $source->uid) }}">
+						{{ $source->getName() }}
 					</a>
-					<span class="text-muted d-block mt-2">
+					<span class="text-muted d-block mt-1">
 						{{ trans('messages.created_at') }}:
-						{{ Tool::formatDateTime($source->created_at) }}
+						{{ Auth::user()->customer->formatDateTime($source->created_at, 'date_full') }}
 					</span>
 				</td>				
 				<td>
@@ -28,14 +26,14 @@
 				</td>
 				<td>
 					<h5 class="no-margin stat-num">
-						{{ Tool::formatDateTime($source->updated_at) }}
+						{{ Auth::user()->customer->formatDateTime($source->updated_at, 'date_full') }}
 					</h5>
 					<span class="text-muted d-block mt-2">{{ trans('messages.source.last_sync_at') }}</span>
 				</td>
 				<td class="text-end">
 					<a href="{{ action('SourceController@sync', $source->uid) }}"
 						link-method="POST"
-						role="button" class="btn btn-secondary m-icon">
+						role="button" class="btn btn-secondary m-icon sync-button">
 						<span class="material-icons-outlined">
 							sync
 							</span> {{ trans('messages.source.sync') }}</a>
@@ -60,6 +58,14 @@ delete_outline
 		@endforeach
 	</table>
 	@include('elements/_per_page_select', ["items" => $sources])
+
+	<script>
+		$(function() {
+			$('.sync-button').on('click', function() {
+				addMaskLoading('{{ trans('messages.source.importing_product') }}');
+			});
+		});
+	</script>
 		
 @elseif (!empty(request()->keyword))
 	<div class="empty-list">

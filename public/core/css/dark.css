@@ -642,6 +642,14 @@ body.mode-dark .app_search_input + [class^="material-icons"] {
     background-color: rgba(255, 255, 255, 0.05);
     color: rgba(255,255,255,0.7);
 }
+body.mode-dark a.open-site-top-menu {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: rgba(255,255,255,0.7);
+}
+body.mode-dark a.open-site-top-menu:hover {
+    background: rgba(255,255,255,0.2);
+    color: rgba(255,255,255,0.9);
+}
 body.mode-dark .search-results {
     background: rgba(20, 32, 40, 1);
     border-color: rgba(255,255,255,0.1);
@@ -720,4 +728,33 @@ body.mode-dark .dim-box {
 }
 body.mode-dark .dim-box .table>thead {
     background: transparent;
+}
+body.mode-dark a.bg-secondary:hover {
+    background: rgba(255,255,255,0.2)!important;
+}
+body.mode-dark .bg-light {
+    background-color: rgba(255,255,255,0.05)!important;
+    border-color: rgba(255, 255, 255, 0.05);
+}
+body.mode-dark .label.bg-light {
+    color: rgba(255,255,255,0.6)!important;
+}
+body.mode-dark .new-price-item.showed {
+    background: rgba(255,255,255,0.1);
+    border: solid 1px rgba(255,255,255,0.1);
+    filter: grayscale(0.0);
+    color: rgba(255,255,255,0.85);
+}
+body.mode-dark .new-price-item .time-box {
+    background-color: rgba(255,255,255,0.1);
+}
+body.mode-dark .new-price-item .price .p-amount {
+    color: rgba(255,255,255,0.9);
+}
+body.mode-dark .but-change-theme-mode {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: rgba(255,255,255,0.7);
+}
+body.mode-dark .but-change-theme-mode:hover {
+    background: rgba(255,255,255,0.2);
 }

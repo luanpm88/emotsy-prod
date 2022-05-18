@@ -60,11 +60,11 @@ $(document).ready(function() {
 
     tinymce.init({
         selector: '.clean-editor',
-        height: 500,
+        height: 400,
         convert_urls: false,
         remove_script_host: false,
         forced_root_block: "",
-        skin: "oxide-dark",
+        skin: "oxide",
         branding: false,
         elementpath: false,
         statusbar: false,
@@ -114,7 +114,7 @@ $(document).ready(function() {
     
     tinymce.init({
         selector: '.setting-editor',
-        height: 300,
+        height: 400,
         convert_urls: false,
         remove_script_host: false,
         forced_root_block: "",

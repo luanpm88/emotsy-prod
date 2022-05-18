@@ -8,7 +8,6 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Acelle\Model\Automation2;
-use Acelle\Library\Log as MailLog;
 
 class UpdateAutomation extends Base
 {

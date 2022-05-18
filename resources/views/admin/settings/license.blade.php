@@ -40,9 +40,16 @@ vpn_key
 							<div class="sub-section">
 								<h3>{{ trans('messages.license.your_license') }}</h3>
 								<p>{{ trans('messages.your_current_license') }} <strong>{{ trans('messages.license_label_' . \Acelle\Model\Setting::get('license_type')) }}</strong></p>
-								<h4>
-									{{ $current_license }}
-								</h4>
+								<div class="d-flex align-items-center">
+									<h4 class="mb-0">
+										{{ $current_license }}
+									</h4>
+									<a href="{{ action('Admin\SettingController@licenseRemove') }}" class="btn btn-default ms-4" link-confirm="{{ trans('messages.license.remove.confirm') }}" link-method="POST">
+										<i class="material-icons-outlined">delete</i>
+										{{ trans('messages.license.remove') }}
+									</a>
+								</div>
+									
 							</div>
                         @else
 							<div class="sub-section">

@@ -147,21 +147,69 @@ forward_to_inbox
                     <a href="{{ action('CampaignController@setup', $campaign->uid) }}" class="btn btn-secondary">{{ trans('messages.edit') }}</a>
                 </li>
 
-                <li class="d-flex align-items-center">
+                <li class="d-flex align-items-center confirm-webhooks-summary">
                     <span class="fs-4 me-4">
                         <i class="material-icons-outlined text-success">
                             task_alt
                         </i>
                     </span>
                     <div class="me-auto">
-                        <h4>{{ trans('messages.run_at') }}</h4>
-                        <p>
-                            {{ isset($campaign->run_at) ? Acelle\Library\Tool::formatDateTime($campaign->run_at) : "" }}
+                        <h4>{{ number_with_delimiter($campaign->campaignWebhooks()->count()) }} {{ trans('messages.webhooks') }}</h4>
+                        
+                        <p class="">{{ trans('messages.webhooks.summary_desc') }}</p>
+                        <p class="mb-0">{!! implode(' ', array_unique($campaign->campaignWebhooks()->select('type')->get()->map(function($h) {
+                                return '<span class="text-muted2 small badge badge-success mt-2">' . trans('messages.webhook.type.' . $h->type . '.short') . '</span>';
+                            })->toArray())) !!}
                         </p>
                     </div>
 
-                    <a href="{{ action('CampaignController@setup', $campaign->uid) }}" class="btn btn-secondary">{{ trans('messages.edit') }}</a>
+                    <a href="javascript:;" class="btn btn-secondary manage_webhooks_but">{{ trans('messages.webhooks.manage') }}</a>
+
+                    <script>
+                        $(function() {
+                            // manage webhooks button click
+                            $('.manage_webhooks_but').on('click', function(e) {
+                                e.preventDefault();
+
+                                CampaignsConfirm.getWebhooksPopup().load();
+                            });
+                        });
+                    </script>
                 </li>
+
+                @if (!$campaign->run_at)
+                    <li class="d-flex align-items-center">
+                        <span class="fs-4 me-4">
+                            <i class="material-icons-outlined text-success">
+                                task_alt
+                            </i>
+                        </span>
+                        <div class="me-auto">
+                            <h4>{{ trans('messages.campaign.run_immediately') }}</h4>
+                            <p>
+                                {{ trans('messages.campaign.click_send_to_proceed') }}
+                            </p>
+                        </div>
+
+                        <a href="{{ action('CampaignController@setup', $campaign->uid) }}" class="btn btn-secondary">{{ trans('messages.edit') }}</a>
+                    </li>
+                @else
+                    <li class="d-flex align-items-center">
+                        <span class="fs-4 me-4">
+                            <i class="material-icons-outlined text-muted2">
+                                alarm
+                            </i>
+                        </span>
+                        <div class="me-auto">
+                            <h4>{{ trans('messages.campaign.scheduled_at') }} ({{ $campaign->run_at->diffForHumans() }})</h4>
+                            <p>
+                                {{ isset($campaign->run_at) ? Auth::user()->customer->formatDateTime($campaign->run_at, 'date_full') : "" }}
+                            </p>
+                        </div>
+
+                        <a href="{{ action('CampaignController@setup', $campaign->uid) }}" class="btn btn-secondary">{{ trans('messages.edit') }}</a>
+                    </li>
+                @endif
             </ul>
 
             @if ($campaign->step() >= 5)
@@ -173,7 +221,7 @@ forward_to_inbox
                         <br />
                         <div class="text-end">
                             <span
-                                onclick="popupwindow('{{ action('CampaignController@preview', $campaign->uid) }}', '{{ $campaign->name }}', 800, 800)"
+                                onclick="popupwindow('{{ action('CampaignController@preview', $campaign->uid) }}', `{{ $campaign->name }}`, 800)"
                                 href="#preview" class="btn btn-secondary me-1" data-uid="{{ $campaign->uid }}">
                                 {{ trans('messages.preview') }} <span class="material-icons-outlined">
 visibility
@@ -215,8 +263,16 @@ visibility
                 @else
                     <br />
                     <div class="text-end">
+                        <button
+                            type="button"
+                            href="#preview" class="btn btn-default me-1 preview-as-button"
+                        >
+                            {{ trans('messages.campaign.preview_as') }} <span class="material-icons-outlined ms-1">
+                                contact_mail
+</span>
+                        </button>
                         <span
-                            onclick="popupwindow('{{ action('CampaignController@preview', $campaign->uid) }}', '{{ $campaign->name }}', 800, 800)"
+                            onclick="popupwindow('{{ action('CampaignController@preview', $campaign->uid) }}', `{{ $campaign->name }}`, 800)"
                             href="#preview" class="btn btn-secondary me-1" data-uid="{{ $campaign->uid }}">
                             {{ trans('messages.preview') }} <span class="material-icons-outlined">
 visibility
@@ -234,6 +290,40 @@ visibility
     </div>
 
     <script>
+        var CampaignsConfirm = {
+			webhooksPopup: null,
+			getWebhooksPopup: function() {
+				if (this.webhooksPopup == null) {
+					this.webhooksPopup = new Popup({
+						url: '{{ action('CampaignController@webhooks', [
+							'uid' => $campaign->uid,
+						]) }}',
+                        onclose: function() {
+                            CampaignsConfirm.refresh();
+                        }
+					});
+				}
+
+				return this.webhooksPopup;
+			},
+
+            refresh: function() {
+                // var box = confirm-webhooks-summary
+                $.ajax({
+                    url: "",
+                    method: 'GET',
+                    data: {
+                        _token: CSRF_TOKEN
+                    },
+                    success: function (response) {
+                        var html = $('<div>').html(response).find('.confirm-webhooks-summary').html();
+
+                        $('.confirm-webhooks-summary').html(html);
+                    }
+                });
+            }
+		}
+
         $(document).ready(function() {
             // send a test email
             $('.send-a-test-email-link').on('click', function(e) {
@@ -261,5 +351,32 @@ visibility
                 this.popup.load();
             }
         }
+
+        var CampaignsConfirmPreviewAs = {
+            popup:  null,
+            url: '{{ action('CampaignController@previewAs', [
+                'uid' => $campaign->uid,
+            ]) }}',
+
+            getPopup: function() {
+                if (this.popup == null) {
+                    this.popup = new Popup({
+                        url: this.url,
+                    });
+                }
+
+                return this.popup;
+            },
+
+            showPopup: function() {
+                this.getPopup().load();
+            }
+        }
+
+        $(function() {
+            $('.preview-as-button').on('click', function() {
+                CampaignsConfirmPreviewAs.showPopup();
+            });
+        });
     </script>
 @endsection

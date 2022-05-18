@@ -44,6 +44,9 @@ class Plan extends Model
     public const SENDING_SERVER_OPTION_OWN = 'own';
     public const SENDING_SERVER_OPTION_SUBACCOUNT = 'subaccount';
 
+    //
+    public const UNLIMITED_PLAN_ID = '9999';
+
     /**
      * The attributes that are mass assignable.
      *
@@ -55,13 +58,14 @@ class Plan extends Model
         'frequency_amount',
         'frequency_unit',
         'price',
-        'vat',
         'currency_id',
         'paddle_plan_id',
         'admin_id',
         'trial_amount',
         'trial_unit',
-        'vat'
+        'vat',
+        'tax_billing_required',
+        'own_tracking_domain_required',
     ];
 
     /**
@@ -77,7 +81,6 @@ class Plan extends Model
             'frequency_amount' => 'required|min:1',
             'frequency_unit' => 'required',
             'price' => 'required|min:0',
-            'vat' => 'required|min:0',
         );
 
         $options = self::defaultOptions();
@@ -108,7 +111,6 @@ class Plan extends Model
                 'plan.general.frequency_amount' => 'sometimes|required|min:1',
                 'plan.general.frequency_unit' => 'sometimes|required',
                 'plan.general.price' => 'required|min:0',
-                'plan.general.vat' => 'required|min:0',
             ],
             'options' => [],
         ];
@@ -753,7 +755,7 @@ class Plan extends Model
             return trans('messages.plan_time_unlimited');
         }
 
-        return $this->frequency_amount.' '.\Acelle\Library\Tool::getPluralPrase($this->frequency_unit, $this->frequency_amount);
+        return $this->frequency_amount.' ' . trans('messages.' . \Acelle\Library\Tool::getPluralPrase($this->frequency_unit, $this->frequency_amount));
     }
 
     /**
@@ -1076,6 +1078,14 @@ class Plan extends Model
      **/
     public function primarySendingServer()
     {
+        if (!config('app.saas')) {
+            if (\Acelle\Model\SendingServer::active()->count()) {
+                return \Acelle\Model\SendingServer::active()->first()->mapType();
+            } else {
+                return null;
+            }
+        }
+
         if (!$this->useSystemSendingServer()) {
             throw new \Exception('ACELLE ERROR: 120000700392');
         }
@@ -1316,14 +1326,9 @@ class Plan extends Model
         $query = $query->where('plans.visible', '=', true);
     }
 
-    public function getTax()
-    {
-        return ($this->price * ($this->vat/100));
-    }
-
     public function total()
     {
-        return $this->price + $this->getTax();
+        return $this->price;
     }
 
     public function getQuotaSettings($name): ?array
@@ -1388,5 +1393,79 @@ class Plan extends Model
     public function getTrialPeriodTimePhrase()
     {
         return $this->trial_amount . ' ' . trans_choice('messages.' . $this->trial_unit . '.choice', $this->trial_amount);
+    }
+    
+    public static function getUnlimitedPlan()
+    {
+        return self::find(self::UNLIMITED_PLAN_ID);
+    }
+
+    public static function createUnlimitedPlan()
+    {
+        $plan = new self();
+        $plan->currency_id = \Acelle\Model\Currency::first()->id;
+        $plan->id = self::UNLIMITED_PLAN_ID;
+        $plan->name = 'Unlimited';
+        $plan->price = 0;
+        $plan->frequency_amount = 1000;
+        $plan->frequency_unit = 'year';
+        $plan->options = json_encode([
+            "email_max" => "-1",
+            "list_max" => "-1",
+            "subscriber_max" => "-1",
+            "subscriber_per_list_max" => "-1",
+            "segment_per_list_max" => "-1",
+            "campaign_max" => "-1",
+            "automation_max" => "-1",
+            "billing_cycle" => "other",
+            "sending_limit" => "1000_per_hour",
+            "sending_quota" => 1000,
+            "sending_quota_time" => 1,
+            "sending_quota_time_unit" => "hour",
+            "max_process" => "1",
+            "all_sending_servers" => "yes",
+            "max_size_upload_total" => "5000000000",
+            "max_file_size_upload" => "50000000",
+            "unsubscribe_url_required" => "yes",
+            "access_when_offline" => "no",
+            "create_sending_domains" => "yes",
+            "sending_servers_max" => "-1",
+            "sending_domains_max" => "-1",
+            "all_email_verification_servers" => "yes",
+            "create_email_verification_servers" => "no",
+            "email_verification_servers_max" => "-1",
+            "list_import" => "yes",
+            "list_export" => "yes",
+            "all_sending_server_types" => "yes",
+            "sending_server_types" => [
+                "amazon-smtp" => "yes",
+                "amazon-api" => "yes",
+                "sendgrid-smtp" => "yes",
+                "sendgrid-api" => "yes",
+                "mailgun-api" => "yes",
+                "mailgun-smtp" => "yes",
+                "elasticemail-api" => "yes",
+                "elasticemail-smtp" => "yes",
+                "sparkpost-api" => "yes",
+                "sparkpost-smtp" => "yes",
+                "smtp" => "yes",
+                "sendmail" => "yes",
+            ],
+            "sending_server_option" => "system",
+            "sending_server_subaccount_uid" => null,
+            "api_access" => "yes",
+            "email_footer_enabled" => "no",
+            "email_footer_trial_period_only" => "no",
+            "html_footer" => "",
+            "plain_text_footer" => "",
+            "payment_gateway" => "",
+        ]);
+        $plan->status = 'active';
+        $plan->save();
+    }
+
+    public function isCustomTrackingDomainRequired()
+    {
+        return $this->own_tracking_domain_required;
     }
 }

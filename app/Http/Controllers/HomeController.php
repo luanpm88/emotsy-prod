@@ -22,10 +22,14 @@ class HomeController extends Controller
         $sendingCreditsLimit = $customer->activeSubscription()->getCreditsLimit('send');
         $sendingCreditsUsedPercentage = $customer->activeSubscription()->getCreditsUsedPercentageDuringPlanCycle('send');
 
-        return view('dashboard', [
-            'sendingCreditsUsed' => $sendingCreditsUsed,
-            'sendingCreditsUsedPercentage' => $sendingCreditsUsedPercentage,
-            'sendingCreditsLimit' => $sendingCreditsLimit,
-        ]);
+        if (config('app.cartpaye')) {
+            return view('dashboard.cartpaye');
+        } else {
+            return view('dashboard', [
+                'sendingCreditsUsed' => $sendingCreditsUsed,
+                'sendingCreditsUsedPercentage' => $sendingCreditsUsedPercentage,
+                'sendingCreditsLimit' => $sendingCreditsLimit,
+            ]);
+        }
     }
 }

@@ -10,6 +10,7 @@
 
     <!-- Dropzone -->
 	<script type="text/javascript" src="{{ URL::asset('core/dropzone/dropzone.js') }}"></script>
+    @include('helpers._dropzone_lang')
 	<link href="{{ URL::asset('core/dropzone/dropzone.css') }}" rel="stylesheet" type="text/css">
 
     <link rel="stylesheet" type="text/css" href="{{ URL::asset('core/css/automation.css') }}">
@@ -18,6 +19,14 @@
 
     <script type="text/javascript" src="{{ URL::asset('core/echarts/echarts.min.js') }}"></script>
     <script type="text/javascript" src="{{ URL::asset('core/echarts/dark.js') }}"></script> 
+
+    <script type="text/javascript" src="{{ URL::asset('core/js/group-manager.js') }}"></script>
+
+    <link href="{{ URL::asset('core/emoji-picker/css/emoji.css') }}" rel="stylesheet">
+    <script type="text/javascript" src="{{ URL::asset('core/emoji-picker/js/config.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('core/emoji-picker/js/util.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('core/emoji-picker/js/jquery.emojiarea.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('core/emoji-picker/js/emoji-picker.js') }}"></script>
 @endsection
 
 @section('menu_title')
@@ -299,6 +308,8 @@
                         saveData(function() {
                             // hide popup
                             popup.hide();
+
+                            doSelect(newE);
                             
                             notify({
                                 type: 'success',
@@ -517,6 +528,15 @@
             }
         }
 
+        function getEmailSetupUrl(email_uid) {
+            var url = `{{ action('Automation2Controller@emailSetup', [
+                'uid' => $automation->uid,
+                'email_uid' => '___email_uid___',
+            ]) }}`;
+             
+            return url.replace('___email_uid___', email_uid);
+        }
+
         var MyAutomation = {
             // Set the AddElement function
             // It depends on the currently selected element
@@ -590,10 +610,27 @@
                 },
 
                 validate: function(e) {
-                    if (e.getType() == 'ElementTrigger') {
+                    if (e.getType() == 'ElementTrigger') {                        
                         if (e.getOptions()['init'] == null || !(e.getOptions()['init'] == "true" || e.getOptions()['init'] == true)) {
                             e.showNotice('{{ trans('messages.automation.trigger.is_not_setup') }}');
                             e.setTitle('{{ trans('messages.automation.trigger.is_not_setup.title') }}');
+                        } else if (e.getOptions()["key"] == 'say-happy-birthday') {
+                            if (!e.getOptions()["field"] || e.getOptions()["field"] == 'date_of_birth') {
+                                e.showNotice('{{ trans('messages.automation.trigger.no_date_of_birth_field') }}');
+                            } else {
+                                // check if current field belongs to automation mail list
+                                var cField = e.getOptions()["field"];
+                                var fields = {!! json_encode($automation->mailList->getDateOrDateTimeFields()->get()->map(function($field) {
+                                    return $field->uid;
+                                })->toArray()) !!};
+
+                                if (!fields.includes(cField)) {
+                                    e.setOptions($.extend(e.getOptions(), {field: 'date_of_birth'}));
+                                    e.showNotice('{{ trans('messages.automation.trigger.no_date_of_birth_field') }}');
+                                } else {
+                                    e.hideNotice();
+                                }
+                            }
                         } else {
                             e.hideNotice();
                             // e.setTitle('Correct title goes here');
@@ -631,7 +668,7 @@
             @if (request()->auto_popup)
                 doSelect(tree.child);
                 setTimeout(function() {
-                    popup.load('/automation2/{{ $automation->uid }}/email/setup?email_uid=' + tree.child.getOptions().email_uid,
+                    popup.load(getEmailSetupUrl(tree.child.getOptions().email_uid),
                     function() {
                         $('.email_title').html('{{ trans('messages.source.abandoned_cart_email') }}');
                     });
@@ -648,7 +685,7 @@
 
                     doSelect(tree.child);
                     setTimeout(function() {
-                        popup.load('/automation2/{{ $automation->uid }}/email/setup?email_uid=' + tree.child.getOptions().email_uid,
+                        popup.load(getEmailSetupUrl(tree.child.getOptions().email_uid),
                         function() {
                             $('.email_title').html('{{ trans('messages.source.abandoned_cart_email') }}');
                         });

@@ -8,6 +8,10 @@ use File;
 use Acelle\Library\Contracts\HasQuota as HasQuotaInterface;
 use Closure;
 use Carbon\Carbon;
+use SimpleXMLElement;
+use Mika56\SPFCheck\SPFCheck;
+use Mika56\SPFCheck\DNSRecordGetterDirect;
+use Mika56\SPFCheck\DNSRecordGetter;
 
 function generatePublicPath($absPath, $withHost = false)
 {
@@ -88,7 +92,7 @@ function getAppHost()
     return $appHost;
 }
 
-function updateTranslationFile($targetFile, $sourceFile, $overwriteTargetPhrases = false)
+function updateTranslationFile($targetFile, $sourceFile, $overwriteTargetPhrases = false, $sort = false)
 {
     $source = include $sourceFile;
     $target = include $targetFile;
@@ -106,6 +110,10 @@ function updateTranslationFile($targetFile, $sourceFile, $overwriteTargetPhrases
 
     // Delete those keys in the final result
     $merged = array_diff_key($merged, $diff);
+
+    if ($sort) {
+        ksort($merged);
+    }
 
     $out = '<?php return '.var_export(\Yaml::parse(\Yaml::dump($merged)), true).' ?>';
     \File::put($targetFile, $out);
@@ -151,4 +159,117 @@ function ptouch($filepath)
     }
 
     touch($filepath);
+}
+
+function xml_to_array(SimpleXMLElement $xml)
+{
+    $parser = function (SimpleXMLElement $xml, array $collection = []) use (&$parser) {
+        $nodes = $xml->children();
+        $attributes = $xml->attributes();
+
+        if (0 !== count($attributes)) {
+            foreach ($attributes as $attrName => $attrValue) {
+                $collection['attributes'][$attrName] = html_entity_decode(strval($attrValue));
+            }
+        }
+
+        if (0 === $nodes->count()) {
+            // $collection['value'] = strval($xml);
+            // return $collection;
+            return html_entity_decode(strval($xml));
+        }
+
+        foreach ($nodes as $nodeName => $nodeValue) {
+            if (count($nodeValue->xpath('../' . $nodeName)) < 2) {
+                $collection[$nodeName] = $parser($nodeValue);
+                continue;
+            }
+
+            $collection[$nodeName][] = $parser($nodeValue);
+        }
+
+        return $collection;
+    };
+
+    return [
+        $xml->getName() => $parser($xml)
+    ];
+}
+
+function spfcheck($ipOrHostname, $domain)
+{
+    $checker = new SPFCheck(new DNSRecordGetterDirect('8.8.8.8'));
+
+    // $checker = new SPFCheck(new DNSRecordGetter());
+    $result = $checker->isIPAllowed($ipOrHostname, $domain);
+
+    if (SPFCheck::RESULT_PASS != $result) {
+        // try again with another method
+        $checker = new SPFCheck(new DNSRecordGetter());
+        $result = $checker->isIPAllowed($ipOrHostname, $domain);
+    }
+
+    return $result;
+}
+
+function forceAddCustomerToUnlimitedPlan($customer)
+{
+    // Default subscription
+    $subscription = new \Acelle\Model\Subscription();
+    $subscription->status = \Acelle\Model\Subscription::STATUS_ACTIVE;
+    $subscription->current_period_ends_at = \Carbon\Carbon::now()->addYears(1000);
+    $subscription->plan_id = \Acelle\Model\Plan::UNLIMITED_PLAN_ID;
+    $subscription->customer_id = $customer->id;
+    $subscription->save();
+}
+
+function saasToSingleMode()
+{
+    // set env mode
+    echo "1. Set APP_SAAS=false in .env file...";
+    putPermanentEnv([
+        'APP_SAAS' => 'false',
+    ]);
+
+    // remove all subscriptions
+    echo "\n2. Remove all subscriptions...";
+    foreach (\Acelle\Model\Subscription::all() as $subscription) {
+        $subscription->delete();
+    }
+
+    // remove all plans
+    echo "\n3. Remove all plans...";
+    foreach (\Acelle\Model\Plan::all() as $plan) {
+        $plan->delete();
+    }
+
+    // check if has unlimited plan
+    echo "\n4. Create unlimited plan...";
+    \Acelle\Model\Plan::createUnlimitedPlan();
+
+    // add all customer to unlimited plan
+    echo "\n5. Add all customers to unlimited plan...";
+    foreach (\Acelle\Model\Customer::all() as $customer) {
+        \Acelle\Helpers\forceAddCustomerToUnlimitedPlan($customer);
+    }
+
+    echo "\n...\ndone!";
+}
+
+function isValidPublicHostnameOrIpAddress($host)
+{
+    if ($host == '127.0.0.1' || $host == 'localhost') {
+        return false;
+    }
+
+    $isValidIpAddress = filter_var($host, FILTER_VALIDATE_IP);
+    $getHostByName = gethostbyname($host);
+
+    if ($isValidIpAddress) {
+        return true;
+    } elseif (filter_var($getHostByName, FILTER_VALIDATE_IP)) {
+        return true;
+    } else {
+        return false;
+    }
 }

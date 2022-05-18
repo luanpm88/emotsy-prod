@@ -15,7 +15,7 @@
                         <div class="main">
                             <label class="font-weight-bold">{{ trans('messages.campaign.html_email') }}</label>
                             <p>{{ trans('messages.campaign.html_email.last_edit', [
-                                'date' => Acelle\Library\Tool::formatDateTime($email->updated_at),
+                                'date' => Auth::user()->customer->formatDateTime($email->updated_at, 'date_full'),
                             ]) }}</p>
                             
                             @if (in_array(Acelle\Model\Setting::get('builder'), ['both','pro']) && $email->template->builder)
@@ -53,7 +53,7 @@
                         onclick="popupwindow('{{ action('Automation2Controller@templatePreview', [
                             'uid' => $automation->uid,
                             'email_uid' => $email->uid,
-                        ]) }}', '{{ $automation->name }}', 800, 800)"
+                        ]) }}', `{{ $automation->name }}`, 800)"
                         href="javascript:;"
                         class="btn btn-primary" style="display:none"
                     >

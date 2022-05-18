@@ -1,7 +1,18 @@
 
 <div class="headbar d-flex">
     <div class="me-auto"></div>
+    @if(config('app.brand'))
+        <div class="me-2">
+            <a class="open-site-top-menu xtooltip" title="{{ trans('messages.open_website') }}" target="_blank" href="{{ config('wordpress.url') }}">
+                <span class="material-icons-outlined">public</span>
+            </a>
+        </div>
+    @endif
     <div class="top-search-container"></div>
+    @include('layouts.core._quick_change_theme_mode', [
+        'mode' => Auth::user()->customer->theme_mode ? Auth::user()->customer->theme_mode : 'light',
+        'url' => action('AccountController@changeThemeMode'),
+    ])
 </div>
 
 <script>
@@ -26,6 +37,12 @@
                 }),
                 new SearchSection({
                     url: '{{ action('SearchController@templates') }}',
+                }),
+                new SearchSection({
+                    url: '{{ action('SearchController@forms') }}',
+                }),
+                new SearchSection({
+                    url: '{{ action('SearchController@websites') }}',
                 })
             ],
             lang: {

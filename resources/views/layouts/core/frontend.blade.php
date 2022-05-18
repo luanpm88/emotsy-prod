@@ -32,7 +32,17 @@
 	fullscreen-search-box
 	mode-{{ getThemeMode(Auth::user()->customer->theme_mode, request()->session()->get('customer-auto-theme-mode'))  }}
 ">
-	@include('layouts.core._menu_frontend')
+	@if(config('app.cartpaye'))
+		@include('layouts.core._menu_frontend_cartpaye')
+	@elseif(config('app.brand'))
+		@include('layouts.core._menu_frontend_brand')
+	@elseif (!config('app.saas'))
+		@include('layouts.core._menu_single')
+	@else
+		@include('layouts.core._menu_frontend')
+	@endif
+
+	
 
 	@include('layouts.core._middle_bar')
 
@@ -52,25 +62,11 @@
 	</main>
 
 	<!-- Admin area -->
-	@if (null !== Session::get('orig_customer_id') && Auth::user()->customer)
-		<a href="{{ action('CustomerController@adminArea') }}" class="user-switch-area mc-modal-control">
-			{{ trans('messages.customer.admin_area') }}
-		</a>
-		<script>
-			var AdminAreaPopup;
+	@include('layouts.core._admin_area')
 
-			$(function() {
-				$('.user-switch-area').on('click', function(e) {
-					e.preventDefault();
-					AdminAreaPopup = new Popup({
-						url: '{{ action('CustomerController@adminArea') }}',
-					});
-
-					AdminAreaPopup.load();
-				});
-			});
-				
-		</script>
+	@if (!config('config.saas'))
+		<!-- Admin area -->
+		@include('layouts.core._loginas_area')
 	@endif
 
 	<!-- Notification -->
