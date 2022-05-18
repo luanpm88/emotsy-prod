@@ -695,7 +695,7 @@ function openBuilder(url) {
     $('body').append(div);
 
     // open builder effects
-    addMaskLoading("{{ trans('messages.automation.template.opening_builder') }}");
+    addMaskLoading();
     $('.builder').on("load", function() {
         removeMaskLoading();
 
@@ -716,7 +716,7 @@ function openBuilderClassic(url) {
     $('body').append(div);
 
     // open builder effects
-    addMaskLoading("{{ trans('messages.automation.template.opening_builder') }}");
+    addMaskLoading();
     $('.builder').on("load", function() {
         removeMaskLoading();
 
