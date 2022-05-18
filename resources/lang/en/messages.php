@@ -2617,8 +2617,6 @@
   'plan.speed_limit' => 'Speed limit',
   'plan.speed_limit.intro' => 'Limit sending speed to protect your sending reputation',
   'plan.starting_at' => 'Starting At',
-  'plan.tax_billing_required' => 'Billing information required?',
-  'plan.tax_billing_required.help' => 'Ask for tax billing information when subscribing to the plan',
   'plan.tos' => 'Term of Service',
   'plan.tos.intro' => 'Terms of service are the legal agreements between a service provider and a
     person who wants to use that service. The person must agree to abide by the terms of service in

@@ -663,7 +663,6 @@ class Invoice extends Model
                 'item_id' => $item['id'],
                 'item_type' => $item['type'],
                 'amount' => $item['amount'],
-                'vat' => $item['vat'],
                 'title' => $item['title'],
                 'description' => $item['description'],
             ]);

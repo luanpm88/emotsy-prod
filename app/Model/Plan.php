@@ -64,7 +64,6 @@ class Plan extends Model
         'trial_amount',
         'trial_unit',
         'vat',
-        'tax_billing_required',
         'own_tracking_domain_required',
     ];
 
@@ -1394,7 +1393,7 @@ class Plan extends Model
     {
         return $this->trial_amount . ' ' . trans_choice('messages.' . $this->trial_unit . '.choice', $this->trial_amount);
     }
-    
+
     public static function getUnlimitedPlan()
     {
         return self::find(self::UNLIMITED_PLAN_ID);

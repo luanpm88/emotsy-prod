@@ -20,7 +20,7 @@
         <div class="row">
             <div class="col-md-10">
                 <h2 class="mb-4">{{ trans('messages.subscription.choose_a_plan') }}</h2>
-                @if ($subscription)
+                @if ($subscription && $subscription->isEnded())
                     @include('elements._notification', [
                         'level' => 'warning',
                         'message' => trans('messages.subscription.ended_intro', [

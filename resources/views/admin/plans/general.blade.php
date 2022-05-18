@@ -186,18 +186,6 @@
                             </div>
                         </div>
                     </div>
-                    
-                    @include('helpers.form_control', [
-                        'class' => '',
-                        'type' => 'checkbox2',
-                        'name' => 'plan[general][tax_billing_required]',
-                        'label' => trans('messages.plan.tax_billing_required'),
-                        'help' => trans('messages.plan.tax_billing_required.help'),
-                        'value' => $plan->tax_billing_required,
-                        'options' => ['0','1'],
-                        'help_class' => 'plan',
-                        'rules' => $plan->generalRules()
-                    ])
 
                     @include('helpers.form_control', [
                         'class' => '',

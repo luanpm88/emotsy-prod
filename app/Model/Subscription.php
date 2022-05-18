@@ -166,13 +166,19 @@ class Subscription extends Model implements HasQuotaInterface
             throw new \Exception(trans('messages.error.has_waiting_invoices'));
         }
 
+        if ($this->plan->hasTrial()) {
+            $endDate = $this->customer->formatDateTime($this->getTrialPeriodEndsAt(Carbon::now()), "date_full");
+        } else {
+            $endDate = $this->customer->formatDateTime($this->getPeriodEndsAt(Carbon::now()), "date_full");
+        }
+
         // create init invoice
         return Invoice::createInvoice([
             'status' => Invoice::TYPE_NEW_SUBSCRIPTION,
             'title' => trans('messages.invoice.init_subscription'),
             'description' => trans('messages.invoice.init_subscription.desc', [
                 'plan' => $this->plan->name,
-                'date' => \Acelle\Library\Tool::formatDate($this->getPeriodEndsAt(Carbon::now())),
+                'date' => $endDate,
             ]),
             'customer_id' => $this->customer->id,
             'currency_id' => $this->plan->currency_id,
@@ -185,7 +191,6 @@ class Subscription extends Model implements HasQuotaInterface
                     'id' => $this->id,
                     'type' => get_class($this),
                     'amount' => $this->plan->hasTrial() ? 0 : $this->plan->price,
-                    'vat' => $this->plan->vat,
                     'title' => $this->plan->name,
                     'description' => view('plans._bill_desc', ['plan' => $this->plan]),
                 ],
