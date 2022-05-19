@@ -2623,8 +2623,6 @@
   'plan.speed_limit' => 'Speed limit',
   'plan.speed_limit.intro' => 'Limit sending speed to protect your sending reputation',
   'plan.starting_at' => 'Starting At',
-  'plan.tax_billing_required' => 'Billing information required?',
-  'plan.tax_billing_required.help' => 'Ask for tax billing information when subscribing to the plan',
   'plan.tos' => 'Term of Service',
   'plan.tos.intro' => 'Terms of service are the legal agreements between a service provider and a
     person who wants to use that service. The person must agree to abide by the terms of service in
@@ -4172,4 +4170,23 @@
   'your_current_license' => 'Thank you for purchasing! Below is your license key, also known as Purchase Code. Your license type is',
   'your_subscriptions' => 'Your subscriptions',
   'zip_postal_code' => 'Zip / Postal code',
+  'form_templates' => 'Form templates',
+  'form_templates.intro' => 'Below are BASE form templates available for all users registered in the applicaiton<br>
+    When it comes to add a form popup, users can create a new form popup from a base one',
+  'license.remove' => 'Remove',
+  'license.remove.confirm' => 'You`re about to remove current lincense! This can not be undone.',
+  'license.removed' => 'The license was sucessfully removed!',
+  'plan.trial_setting' => 'Trial period (amout / time unit)',
+  'plan.has_trial_period' => 'Enable trial period',
+  'plan.has_free' => ':time for free',
+  'day.choice' => 'day|days',
+  'plan.buy' => 'Buy',
+  'invoice.init_subscription.trial.desc' => '<span class="fw-600">:time</span>
+    free trial of <span class="fw-600">:plan</span>.
+    Your subscription will be due on <strong>:date</strong>',
+  'subscription.trial_announcement' => 'You are currently on trial of <span class="fw-600">:plan</span>.
+    your trial period will expire in <span class="fw-bold">:days</span> day(s).
+    Click Buy now to purchase the plan.',
+  'subscription.buy_now' => 'Buy now',
+  'bill.fee' => 'Payment service fee',
 ) ?>

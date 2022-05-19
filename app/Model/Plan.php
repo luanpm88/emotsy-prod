@@ -61,7 +61,9 @@ class Plan extends Model
         'currency_id',
         'paddle_plan_id',
         'admin_id',
-        'tax_billing_required',
+        'trial_amount',
+        'trial_unit',
+        'vat',
         'own_tracking_domain_required',
     ];
 
@@ -139,6 +141,8 @@ class Plan extends Model
             'frequency_amount' => 'required|min:1',
             'frequency_unit' => 'required',
             'price' => 'required|min:0',
+            'trial_amount' => 'required|min:0',
+            'trial_unit' => 'required',
         );
 
         return $rules;
@@ -1297,7 +1301,15 @@ class Plan extends Model
 
     public static function newDefaultPlan()
     {
-        $plan = new self();
+        $plan = new self([
+            'price' => 0,
+            'frequency_amount' => 1,
+            'frequency_unit' => 'month',
+            'trial_amount' => '0',
+            'trial_unit' => 'day',
+            'vat' => 0
+        ]);
+
         $plan->status = self::STATUS_INACTIVE;
 
         return $plan;
@@ -1370,6 +1382,16 @@ class Plan extends Model
         \Acelle\Model\Setting::set('terms_of_service.content', $params['terms_of_service']['content']);
 
         return $validator;
+    }
+
+    public function hasTrial()
+    {
+        return $this->trial_amount > 0;
+    }
+
+    public function getTrialPeriodTimePhrase()
+    {
+        return $this->trial_amount . ' ' . trans_choice('messages.' . $this->trial_unit . '.choice', $this->trial_amount);
     }
 
     public static function getUnlimitedPlan()

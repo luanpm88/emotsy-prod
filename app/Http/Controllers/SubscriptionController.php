@@ -11,6 +11,7 @@ use Acelle\Cashier\Cashier;
 use Acelle\Cashier\Services\StripeGatewayService;
 use Carbon\Carbon;
 use Acelle\Model\SubscriptionLog;
+use Acelle\Library\Facades\Billing;
 
 class SubscriptionController extends Controller
 {
@@ -32,7 +33,7 @@ class SubscriptionController extends Controller
         //    2 Sinh ra RENEW invoice
         //    3 Xử lý thanh toán
         $subscription->check();
-        $subscription->processRenewInvoice();
+        // $subscription->processRenewInvoice();
 
         // 2. IF PLAN NOT ACTIVE
         if (!$subscription->plan->isActive()) {
@@ -388,9 +389,17 @@ class SubscriptionController extends Controller
             ]);
         }
 
-        // choose a plan
+        // already has subscription
         elseif ($subscription) {
             $invoice = $subscription->getUnpaidInvoice();
+
+            // gateway fee
+            if ($request->payment_method) {
+                $gateway = Billing::getGateway($request->payment_method);
+
+                $invoice->updatePaymentServiceFee($gateway);
+            }
+                
 
             return view('subscription.orderBox', [
                 'subscription' => $subscription,
