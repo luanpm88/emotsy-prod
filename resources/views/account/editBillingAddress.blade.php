@@ -141,7 +141,11 @@
                     removeMaskLoading();
 
                     // notify
-                    notify(response.status, '{{ trans('messages.notify.success') }}', response.message); 
+                    notify({
+                        type: response.status,
+                        title: '{{ trans('messages.notify.success') }}',
+                        message: response.message
+                    }); 
 
                     billingPopup.hide();
 

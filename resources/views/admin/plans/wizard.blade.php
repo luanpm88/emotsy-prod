@@ -53,6 +53,43 @@
                         'url' => action('Admin\CurrencyController@select2'),
                         'placeholder' => trans('messages.select_currency')
                     ])
+
+                    <div class="mb-2">
+                        @include('helpers.form_control.checkbox', [
+                            'name' => 'has_trial',
+                            'value' => 'yes',
+                            'label' => trans('messages.plan.has_trial_period'),
+                            'attributes' => [
+                                'class' => 'numeric'
+                            ],
+                        ])
+                    </div>
+                        
+
+                    <div class="trial_settings">
+                        <label class="mb-2">{{ trans('messages.plan.trial_setting') }}</label>
+                        <div class="d-flex mb-4">
+                            <div class="me-3">
+                                @include('helpers.form_control.number', [
+                                    'name' => 'plan[general][trial_amount]',
+                                    'value' => $plan->trial_amount,
+                                    'attributes' => [
+                                        'class' => 'numeric',
+                                        'min' => '0',
+                                    ],
+                                ])
+                            </div>
+                            <div class="" style="width:100px">
+                                @include('helpers.form_control', [
+                                    'type' => 'select',
+                                    'name' => 'plan[general][trial_unit]',
+                                    'value' => $plan->trial_unit,
+                                    'options' => $plan->timeUnitOptions(),
+                                    'help_class' => 'plan',
+                                ])
+                            </div>
+                        </div>
+                    </div>
                  </div>
             </div>
             <div class="mt-4 text-center">
@@ -66,6 +103,53 @@
     
 <script>
     $(function() {
+        var manager = new GroupManager();
+        manager.add({
+            checkbox: $('[name="has_trial"]'),
+            isChecked: function() {
+                return $('[name="has_trial"]').is(':checked');
+            },
+            box: $('.trial_settings'),
+            textbox: $('[name="plan[general][trial_amount]"]'),
+            currentValue: $('[name="plan[general][trial_amount]"]').val()
+        });
+
+        manager.bind(function(group) {
+            var check = function() {
+                if (group.isChecked()) {
+                    group.box.show();
+
+                    group.textbox.prop('min', '1');
+                    if (group.currentValue > 0) {
+                        group.textbox.val(group.currentValue);
+                    } else {
+                        group.textbox.val(1);
+                    }
+                } else {
+                    group.box.hide();
+                    group.currentValue = group.textbox.val();
+
+                    group.textbox.prop('min', '0');
+                    group.textbox.val(0);
+                }
+            };
+
+            group.checkbox.on('change', function() {
+                check();
+            });
+
+            check();
+        });
+
+        PlansCustomBillingCycle.getSelector().on('change', function() {
+            var value = $(this).val();
+
+            if (value == 'custom') {
+                PlansCustomBillingCycle.getPopup().load();
+            }
+        });
+
+
         $('#createPlanWizard').submit(function() {
             var form = $(this);
             

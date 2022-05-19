@@ -18,9 +18,9 @@
 @section('content')    
     <div class="container mt-4 mb-5">
         <div class="row">
-            <div class="col-md-8">
+            <div class="col-md-10">
                 <h2 class="mb-4">{{ trans('messages.subscription.choose_a_plan') }}</h2>
-                @if ($subscription)
+                @if ($subscription && $subscription->isEnded())
                     @include('elements._notification', [
                         'level' => 'warning',
                         'message' => trans('messages.subscription.ended_intro', [
@@ -50,7 +50,7 @@
                     </div>
                 @else
                     <div class="new-price-box" style="margin-right: -30px">
-                        <div class="">
+                        <div class="d-flex">
 
                             @foreach ($plans as $key => $plan)
                                 <div
@@ -79,7 +79,7 @@
                                         <p class="mt-4">{{ $plan->description }}</p>
                                     </div>
 
-                                    <span class="time-box d-block text-center small py-2 fw-600">
+                                    <span class="time-box d-block text-center small py-2 fw-600 mb-5">
                                         <div class="mb-1">
                                             <span>{{ $plan->displayTotalQuota() }} {{ trans('messages.sending_total_quota_label') }}</span>
                                         </div>
@@ -88,12 +88,35 @@
                                         </div>
                                     </span>
 
-                                    <a
-                                        link-method="POST"
-                                        href="{{ action('SubscriptionController@init', ['plan_uid' => $plan->uid]) }}"
-                                        class="btn btn-primary rounded-3 d-block mt-4 shadow-sm">
-                                            {{ trans('messages.plan.select') }}
-                                    </a>
+                                    <div>
+                                        <div style="vertical-align:bottom">
+                                            <a
+                                                link-method="POST"
+                                                href="{{ action('SubscriptionController@init', [
+                                                    'plan_uid' => $plan->uid,
+                                                ]) }}"
+                                                class="btn fw-600 btn-primary rounded-3 d-block py-2 shadow-sm">
+                                                    @if ($plan->isFree() || $plan->hasTrial())
+                                                        {{ trans('messages.plan.select') }}
+                                                    @else
+                                                        {{ trans('messages.plan.buy') }}
+                                                    @endif
+                                            </a>
+                                            @if ($plan->hasTrial())
+                                                <p
+                                                    link-method="POST"
+                                                    href="{{ action('SubscriptionController@init', [
+                                                        'plan_uid' => $plan->uid,
+                                                        'trial' => true,
+                                                    ]) }}"
+                                                    class="mt-3 fw-600 mb-0 text-center">
+                                                        {{ trans('messages.plan.has_free', [
+                                                            'time' => $plan->getTrialPeriodTimePhrase(),
+                                                        ]) }}
+                                                </p>
+                                            @endif
+                                        </div>
+                                    </div>
                                 </div>
                             @endforeach
 

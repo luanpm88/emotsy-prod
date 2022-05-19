@@ -33,7 +33,7 @@ class Subscription extends Model implements HasQuotaInterface
      * @var array
      */
     protected $dates = [
-        'trial_ends_at', 'ends_at', 'current_period_ends_at',
+        'ends_at', 'current_period_ends_at',
         'created_at', 'updated_at', 'started_at', 'last_period_ends_at'
     ];
 
@@ -166,39 +166,36 @@ class Subscription extends Model implements HasQuotaInterface
             throw new \Exception(trans('messages.error.has_waiting_invoices'));
         }
 
-        // create invoice
-        $invoice = new Invoice();
-        $invoice->status = Invoice::STATUS_NEW;
-        $invoice->type = Invoice::TYPE_NEW_SUBSCRIPTION;
-        $invoice->title = trans('messages.invoice.init_subscription');
-        $invoice->description = trans('messages.invoice.init_subscription.desc', [
-            'plan' => $this->plan->name,
-            'date' => $this->customer->formatDateTime($this->getPeriodEndsAt(Carbon::now()), 'date_full'),
+        if ($this->plan->hasTrial()) {
+            $endDate = $this->customer->formatDateTime($this->getTrialPeriodEndsAt(Carbon::now()), "date_full");
+        } else {
+            $endDate = $this->customer->formatDateTime($this->getPeriodEndsAt(Carbon::now()), "date_full");
+        }
+
+        // create init invoice
+        return Invoice::createInvoice([
+            'status' => Invoice::TYPE_NEW_SUBSCRIPTION,
+            'title' => trans('messages.invoice.init_subscription'),
+            'description' => trans('messages.invoice.init_subscription.desc', [
+                'plan' => $this->plan->name,
+                'date' => $endDate,
+            ]),
+            'customer_id' => $this->customer->id,
+            'currency_id' => $this->plan->currency_id,
+            'billingAddress' => $this->customer->getDefaultBillingAddress(),
+            'metadata' => [
+                'subscription_uid' => $this->uid,
+            ],
+            'items' => [
+                [
+                    'id' => $this->id,
+                    'type' => get_class($this),
+                    'amount' => $this->plan->hasTrial() ? 0 : $this->plan->price,
+                    'title' => $this->plan->name,
+                    'description' => view('plans._bill_desc', ['plan' => $this->plan]),
+                ],
+            ]
         ]);
-        $invoice->customer_id = $this->customer->id;
-        $invoice->currency_id = $this->plan->currency_id;
-
-        // save
-        $invoice->save();
-
-        // add invoice number
-        $invoice->createInvoiceNumber();
-
-        // data
-        $invoice->updateMetadata([
-            'subscription_uid' => $this->uid,
-        ]);
-
-        // add item
-        $invoiceItem = $invoice->invoiceItems()->create([
-            'item_id' => $this->id,
-            'item_type' => get_class($this),
-            'amount' => $this->plan->price,
-            'title' => $this->plan->name,
-            'description' => view('plans._bill_desc', ['plan' => $this->plan]),
-        ]);
-
-        return $invoice;
     }
 
     /**
@@ -357,28 +354,18 @@ class Subscription extends Model implements HasQuotaInterface
      */
     public function getPeriodEndsAt($startDate)
     {
-        // dose not support recurring, update ends at column
-        $interval = $this->plan->frequency_unit;
-        $intervalCount = $this->plan->frequency_amount;
+        return getPeriodEndsAt($startDate, $this->plan->frequency_amount, $this->plan->frequency_unit);
+    }
 
-        switch ($interval) {
-            case 'month':
-                $endsAt = $startDate->addMonthsNoOverflow($intervalCount);
-                break;
-            case 'day':
-                $endsAt = $startDate->addDay($intervalCount);
-                break;
-            case 'week':
-                $endsAt = $startDate->addWeek($intervalCount);
-                break;
-            case 'year':
-                $endsAt = $startDate->addYearsNoOverflow($intervalCount);
-                break;
-            default:
-                $endsAt = null;
-        }
-
-        return $endsAt;
+    /**
+     * Get trial period by start date.
+     *
+     * @param  date  $date
+     * @return date
+     */
+    public function getTrialPeriodEndsAt($startDate)
+    {
+        return getPeriodEndsAt($startDate, $this->plan->trial_amount, $this->plan->trial_unit);
     }
 
     // 1 End luôn subscription nếu đã hết hạn
@@ -582,7 +569,11 @@ class Subscription extends Model implements HasQuotaInterface
             throw new \Exception("Only new subscription can be activated, double check your code to make sure you call activate() on a new subscription");
         }
 
-        $this->current_period_ends_at = $this->getPeriodEndsAt(Carbon::now());
+        if ($this->plan->hasTrial()) {
+            $this->current_period_ends_at = $this->getTrialPeriodEndsAt(Carbon::now());
+        } else {
+            $this->current_period_ends_at = $this->getPeriodEndsAt(Carbon::now());
+        }
         $this->ends_at = null;
         $this->status = self::STATUS_ACTIVE;
         $this->started_at = Carbon::now();

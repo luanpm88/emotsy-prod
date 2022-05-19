@@ -17,8 +17,8 @@
 					</div>
 				</td>
 				<td>
-					<div class="d-flex">
-						<div class="subscriber-avatar">
+					<div class="d-flex align-items-center">
+						<div class="subscriber-avatar mt-1">
 							<a href="{{ action('SubscriberController@edit', ['list_uid' => $list->uid ,'uid' => $subscriber->uid]) }}">
 								<img src="{{ (isSiteDemo() ? 'https://i.pravatar.cc/300?v=' . $key : action('SubscriberController@avatar',  $subscriber->uid)) }}" />
 							</a>
