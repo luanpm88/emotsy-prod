@@ -881,6 +881,7 @@
   'bill.current_period_ends_on' => 'Current period ends on :date',
   'bill.ends_at' => 'Ends at :date',
   'bill.estimated_total' => 'Estimated Total',
+  'bill.fee' => 'Payment service fee',
   'bill.last4' => 'Last 4 number',
   'bill.next_period_ends_on' => 'Next period ends on :date',
   'bill.remove_payment.confirm' => 'You are about to remove current payment method, this can be undone',
@@ -1389,6 +1390,7 @@
   'datetime' => 'Data hora',
   'datetime_field' => 'Data hora',
   'day' => 'dia',
+  'day.choice' => 'day|days',
   'day_of_week.0' => 'Sun',
   'day_of_week.1' => 'Mon',
   'day_of_week.2' => 'Tue',
@@ -1892,6 +1894,9 @@
   'invoice.init_subscription' => 'New Subscription',
   'invoice.init_subscription.desc' => 'You’re subscring to plan <strong>:plan</strong>, and
       your subscription will be due on <strong>:date</strong>',
+  'invoice.init_subscription.trial.desc' => '<span class="fw-600">:time</span>
+    free trial of <span class="fw-600">:plan</span>.
+    Your subscription will be due on <strong>:date</strong>',
   'invoice.items' => 'Item(s)',
   'invoice.pay_now' => 'Pay Now',
   'invoice.payment_is_being_verified' => 'Payment is being verified',
@@ -2481,6 +2486,7 @@
   'plan.billing_cycle.phrase' => ':frequency_amount :frequency_unit(s)',
   'plan.billing_cycle.yearly' => 'Yearly',
   'plan.billing_history' => 'Billing history',
+  'plan.buy' => 'Buy',
   'plan.cant_show' => 'Your plan is inactive, please fix your plan issues first before set it to visible',
   'plan.color' => 'Color',
   'plan.copied' => 'Plan was successfully copied',
@@ -2514,6 +2520,8 @@
   'plan.general.details' => 'Plan Details',
   'plan.general.details.intro' => 'A plan, or service plan, is the group of services and limits that you have agreed to provide to your customer. A plan allows you to centrally plan and standardize your service offerings. Set up your plan details below:',
   'plan.general.overview' => 'Overview',
+  'plan.has_free' => ':time for free',
+  'plan.has_trial_period' => 'Enable trial period',
   'plan.hidden' => 'The plan was hidden successfully',
   'plan.hide' => 'Hide this plan',
   'plan.hide.denied' => 'You can not hide this plan',
@@ -2629,13 +2637,12 @@
   'plan.speed_limit' => 'Speed limit',
   'plan.speed_limit.intro' => 'Limit sending speed to protect your sending reputation',
   'plan.starting_at' => 'Starting At',
-  'plan.tax_billing_required' => 'Billing information required?',
-  'plan.tax_billing_required.help' => 'Ask for tax billing information when subscribing to the plan',
   'plan.tos' => 'Term of Service',
   'plan.tos.intro' => 'Terms of service are the legal agreements between a service provider and a
     person who wants to use that service. The person must agree to abide by the terms of service in
     order to use the offered service.',
   'plan.tos.updated' => 'Terms of service was updated',
+  'plan.trial_setting' => 'Trial period (amout / time unit)',
   'plan.updated' => 'Plano foi atualizado com sucesso',
   'plan.vat' => 'VAT',
   'plan.visible_on.confirm' => 'The selected plan was successfully enabled. Do you want to also
@@ -3409,6 +3416,7 @@
   'subscription.approve_pending.success' => 'The pending invoice was approved successfully.',
   'subscription.billing_information.subtitle' => 'Enter your billing information here and click next',
   'subscription.billing_information.title' => 'Billing information',
+  'subscription.buy_now' => 'Buy now',
   'subscription.cancel' => 'Cancel',
   'subscription.cancel.confirm' => 'You\'re about to cancel :number subscription. You\'re still subscribed until the end of period',
   'subscription.cancel_now' => 'Cancel now',
@@ -3566,6 +3574,9 @@
     So you should pay top-up for the next period.
     Click the button bellow to process.',
   'subscription.transactions' => 'Transactions',
+  'subscription.trial_announcement' => 'You are currently on trial of <span class="fw-600">:plan</span>.
+    your trial period will expire in <span class="fw-bold">:days</span> day(s).
+    Click Buy now to purchase the plan.',
   'subscription.updated' => 'Subscrição foi atualizada com sucesso',
   'subscription.updated_at' => 'Updated at',
   'subscription.wording' => 'Este recurso permite que monitorize os detalhes da subscrição dos seus clientes. Poderá aprovar o pagamento, ativar ou desativar uma subscrição. Também pode criar novos packs para clientes existentes',
