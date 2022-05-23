@@ -90,6 +90,10 @@ class SubscriberController extends Controller
                 return \Response::json(array('message' => trans('List not found')), 400);
             }
 
+            if (!$user->can('update', [ $list, $more = 1 ])) {
+                return response()->json(['message' => 'Unauthorized!'], 401);
+            }
+
             if (!$user->can('addMoreSubscribers', [ $list, $more = 1 ])) {
                 return response()->json(['message' => 'List quota exceeded'], 403);
             }
