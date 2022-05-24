@@ -37,7 +37,7 @@ class SubscriberController extends Controller
         }
         // authorize
         if (!$user->can('read', $list)) {
-            return \Response::json(array('message' => 'Unauthorized'), 401);
+            return \Response::json(array('message' => 'You\'re not authorized to access this resources'), 401);
         }
         if (isset($request->per_page)) {
             $per_page = $request->per_page;
