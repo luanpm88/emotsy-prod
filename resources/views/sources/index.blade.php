@@ -8,7 +8,7 @@
 			<li class="breadcrumb-item"><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
 		</ul>
 		<h1>
-			<span class="text-semibold"><span class="material-icons-round">
+			<span class="text-semibold"><span class="material-symbols-outlined">
                 format_list_bulleted
                 </span> {{ trans('messages.stores_connections') }}</span>
 		</h1>

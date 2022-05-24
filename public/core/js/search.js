@@ -330,7 +330,7 @@ var TopSearchBar = {
                         </a>
                         <div class="search-control d-flex justify-content-center">
                             <input class="app_search_input form-control" type="text" placeholder="Type to search" />
-                            <span class="material-icons-round search-icon xtooltip"  title="`+TopSearchBar.lang.tooltip+`">
+                            <span class="material-symbols-outlined search-icon xtooltip"  title="`+TopSearchBar.lang.tooltip+`">
                                 search
                             </span>
                         </div>

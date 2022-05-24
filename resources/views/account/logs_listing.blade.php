@@ -26,7 +26,7 @@
                                 
 @elseif (!empty(request()->keyword) || !empty(request()->filters["type"]))
     <div class="empty-list">
-        <span class="material-icons-outlined">
+        <span class="material-symbols-outlined">
 history_toggle_off
 </span>
         <span class="line-1">
@@ -35,7 +35,7 @@ history_toggle_off
     </div>
 @else                    
     <div class="empty-list">
-        <span class="material-icons-outlined">
+        <span class="material-symbols-outlined">
 history_toggle_off
 </span>
         <span class="line-1">

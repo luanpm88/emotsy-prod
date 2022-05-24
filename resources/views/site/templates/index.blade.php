@@ -12,7 +12,7 @@
         <div class="d-flex align-items-center">
             <div>
                 <h1 class="d-flex align-items-center">
-                    <span class="material-icons-round me-3">
+                    <span class="material-symbols-outlined me-3">
                         format_list_bulleted
                         </span> <span class="text-semibold">{{ trans('messages.templates') }}</span>
                 </h1> 

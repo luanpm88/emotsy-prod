@@ -12,7 +12,7 @@
     <p>{!! trans('messages.frontend_dashboard_welcome') !!}</p>
 
     <h3 class="mt-5 mb-3">
-        <span class="material-icons-outlined me-2">
+        <span class="material-symbols-outlined me-2">
             donut_large
         </span>
         {{ trans("messages.used_quota") }}
@@ -88,7 +88,7 @@
 
 
     @if (isSiteDemo())
-    <h3 class="mt-5 mb-3"><span class="material-icons-outlined me-2">
+    <h3 class="mt-5 mb-3"><span class="material-symbols-outlined me-2">
         star_half
         </span> {{ trans('messages.top_5') }}
     </h3>
@@ -155,7 +155,7 @@
                 @empty
                     <li class="empty-li pt-0">
                         <div class="empty-list mt-0">
-                            <span class="material-icons-outlined">
+                            <span class="material-symbols-outlined">
                                 auto_awesome
                             </span>
                             <span class="line-1">
@@ -209,7 +209,7 @@
                 @empty
                     <li class="empty-li pt-0">
                         <div class="empty-list mt-0">
-                            <span class="material-icons-outlined">
+                            <span class="material-symbols-outlined">
                                 auto_awesome
                             </span>
                             <span class="line-1">
@@ -257,7 +257,7 @@
                 @empty
                     <li class="empty-li pt-0">
                         <div class="empty-list mt-0">
-                            <span class="material-icons-outlined">
+                            <span class="material-symbols-outlined">
                                 auto_awesome
                             </span>
                             <span class="line-1">
@@ -271,13 +271,13 @@
     </div>
     @endif
 
-    <h3 class="mt-5 mb-3"><span class="material-icons-outlined me-2">
+    <h3 class="mt-5 mb-3"><span class="material-symbols-outlined me-2">
         group_work
     </span> {{ trans('messages.activity_log') }}</h3>
 
     @if (Auth::user()->customer->logs()->count() == 0)
         <div class="empty-list">
-            <span class="material-icons-outlined">
+            <span class="material-symbols-outlined">
                 auto_awesome
             </span>
             <span class="line-1">
@@ -301,7 +301,7 @@
                                     <div class="d-flex align-items-center pt-1">
                                         <label class="panel-title text-semibold my-0 fw-600">{{ $log->customer->user->displayName() }}</label>
                                         <div class="d-flex align-items-center ms-auto text-muted">
-                                            <span style="font-size: 18px" class="material-icons-outlined ms-auto me-2">
+                                            <span style="font-size: 18px" class="material-symbols-outlined ms-auto me-2">
                                                 history
                                             </span>
                                             <div class="">
