@@ -758,3 +758,6 @@ body.mode-dark .but-change-theme-mode {
 body.mode-dark .but-change-theme-mode:hover {
     background: rgba(255,255,255,0.2);
 }
+body.mode-dark .top-controls-container a {
+    color: rgba(255,255,255,0.7);
+}
