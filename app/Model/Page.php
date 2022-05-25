@@ -90,7 +90,9 @@ class Page extends Model
         $this->content = str_replace('{CONTACT_ADDRESS_2}', $this->mailList->contact->address_2, $this->content);
         $this->content = str_replace('{CONTACT_CITY}', $this->mailList->contact->city, $this->content);
         $this->content = str_replace('{CONTACT_ZIP}', $this->mailList->contact->zip, $this->content);
-        $this->content = str_replace('{CONTACT_COUNTRY}', $this->mailList->contact->country->name, $this->content);
+        if ($this->mailList->contact->country) {
+            $this->content = str_replace('{CONTACT_COUNTRY}', $this->mailList->contact->country->name, $this->content);
+        }
         $this->content = str_replace('{CONTACT_PHONE}', $this->mailList->contact->phone, $this->content);
         $this->content = str_replace('{CONTACT_EMAIL}', $this->mailList->contact->email, $this->content);
         $this->content = str_replace('{CONTACT_URL}', $this->mailList->contact->url, $this->content);
@@ -152,7 +154,9 @@ east
         $subject = str_replace('{CONTACT_ADDRESS_2}', $this->mailList->contact->address_2, $subject);
         $subject = str_replace('{CONTACT_CITY}', $this->mailList->contact->city, $subject);
         $subject = str_replace('{CONTACT_ZIP}', $this->mailList->contact->zip, $subject);
-        $subject = str_replace('{CONTACT_COUNTRY}', $this->mailList->contact->country->name, $subject);
+        if ($this->mailList->contact->country) {
+            $this->content = str_replace('{CONTACT_COUNTRY}', $this->mailList->contact->country->name, $this->content);
+        }
         $subject = str_replace('{CONTACT_PHONE}', $this->mailList->contact->phone, $subject);
         $subject = str_replace('{CONTACT_EMAIL}', $this->mailList->contact->email, $subject);
         $subject = str_replace('{CONTACT_URL}', $this->mailList->contact->url, $subject);
@@ -240,15 +244,24 @@ east
     public function getOutsideUrlWithUid($subscriber)
     {
         $url = $this->outside_url;
+
         // LIST FIELDS
         foreach ($this->mailList->fields as $field) {
             $url = str_replace('{SUBSCRIBER_'.$field->tag.'}', urlencode($subscriber->getValueByField($field)), $url);
         }
 
         if (parse_url($this->outside_url, PHP_URL_QUERY)) {
-            return $url.'&subscriber_id='.$subscriber->uid;
+            $url = $url.'&subscriber_id='.$subscriber->uid;
         } else {
-            return $url.'?subscriber_id='.$subscriber->uid;
+            $url = $url.'?subscriber_id='.$subscriber->uid;
         }
+
+        // replacing tags
+        $url = str_replace('{EMAIL}', $subscriber->getValueByTag('EMAIL'), $url);
+        $url = str_replace('{FIRST_NAME}', urlencode($subscriber->getValueByTag('FIRST_NAME')), $url);
+        $url = str_replace('{LAST_NAME}', urlencode($subscriber->getValueByTag('LAST_NAME')), $url);
+        $url = str_replace('{ID}', $subscriber->uid, $url);
+
+        return $url;
     }
 }

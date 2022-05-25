@@ -48,9 +48,14 @@
                         <span>{{ trans('messages.brand.product') }}</span>
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="content-menu">
-                        <li class="nav-item" rel0="ProductController">
+                        <li class="nav-item" rel0="ProductController/index">
                             <a class="dropdown-item d-flex align-items-center" href="{{ action('Site\ProductController@index') }}">
                                 <span>{{ trans('messages.brand.products') }}</span>
+                            </a>
+                        </li>
+                        <li class="nav-item" rel0="ProductController/index2">
+                            <a class="dropdown-item d-flex align-items-center" href="{{ action('Site\ProductController@index2') }}">
+                                <span>{{ trans('messages.brand.products') }} (layout 2)</span>
                             </a>
                         </li>
                         <li class="nav-item" rel0="CategoryController">

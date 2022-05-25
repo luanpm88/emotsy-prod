@@ -186,7 +186,7 @@ class Invoice extends Model
             $total += $item->total();
         }
 
-        return $total;
+        return $total + $this->fee;
     }
 
     /**
@@ -441,6 +441,7 @@ class Invoice extends Model
             'due_date' => $this->created_at,
             'type' => $this->type,
             'plan' => $plan,
+            'fee' => $this->fee ? format_price($this->fee, $this->currency->format) : null,
             'billing_first_name' => $this->billing_first_name,
             'billing_last_name' => $this->billing_last_name,
             'billing_address' => $this->billing_address,
@@ -621,6 +622,59 @@ class Invoice extends Model
     public function getBillingName()
     {
         return $this->billing_first_name . ' ' . $this->billing_last_name;
+    }
+
+    public static function createInvoice($options)
+    {
+        // create invoice
+        $invoice = new self();
+        $invoice->status = self::STATUS_NEW;
+        $invoice->type = $options['status'];
+
+
+        $invoice->title = $options['title'];
+        $invoice->description = $options['description'];
+        $invoice->customer_id = $options['customer_id'];
+        $invoice->currency_id = $options['currency_id'];
+
+        // default billing info
+        // $billingAddress = $this->customer->getDefaultBillingAddress();
+        if ($options['billingAddress']) {
+            $invoice->billing_first_name = $options['billingAddress']->first_name;
+            $invoice->billing_last_name = $options['billingAddress']->last_name;
+            $invoice->billing_address = $options['billingAddress']->address;
+            $invoice->billing_email = $options['billingAddress']->email;
+            $invoice->billing_phone = $options['billingAddress']->phone;
+            $invoice->billing_country_id = $options['billingAddress']->country_id;
+        }
+
+        // save
+        $invoice->save();
+
+        // add invoice number
+        $invoice->createInvoiceNumber();
+
+        // data
+        $invoice->updateMetadata($options['metadata']);
+
+        // add item
+        foreach ($options['items'] as $item) {
+            $invoiceItem = $invoice->invoiceItems()->create([
+                'item_id' => $item['id'],
+                'item_type' => $item['type'],
+                'amount' => $item['amount'],
+                'title' => $item['title'],
+                'description' => $item['description'],
+            ]);
+        }
+
+        return $invoice;
+    }
+
+    public function updatePaymentServiceFee($gateway)
+    {
+        $this->fee = $gateway->getMinimumChargeAmount($this->currency->code);
+        $this->save();
     }
 
     public function hasBillingInformation()

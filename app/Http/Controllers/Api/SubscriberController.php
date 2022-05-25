@@ -37,7 +37,7 @@ class SubscriberController extends Controller
         }
         // authorize
         if (!$user->can('read', $list)) {
-            return \Response::json(array('message' => 'Unauthorized'), 401);
+            return \Response::json(array('message' => 'You\'re not authorized to access this resources'), 401);
         }
         if (isset($request->per_page)) {
             $per_page = $request->per_page;
@@ -88,6 +88,10 @@ class SubscriberController extends Controller
             // authorize
             if (!is_object($list)) {
                 return \Response::json(array('message' => trans('List not found')), 400);
+            }
+
+            if (!$user->can('update', [ $list, $more = 1 ])) {
+                return response()->json(['message' => 'Unauthorized!'], 401);
             }
 
             if (!$user->can('addMoreSubscribers', [ $list, $more = 1 ])) {

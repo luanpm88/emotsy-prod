@@ -221,7 +221,7 @@ forward_to_inbox
                         <br />
                         <div class="text-end">
                             <span
-                                onclick="popupwindow('{{ action('CampaignController@preview', $campaign->uid) }}', `{{ $campaign->name }}`, 800, 800)"
+                                onclick="popupwindow('{{ action('CampaignController@preview', $campaign->uid) }}', `{{ $campaign->name }}`, 800)"
                                 href="#preview" class="btn btn-secondary me-1" data-uid="{{ $campaign->uid }}">
                                 {{ trans('messages.preview') }} <span class="material-icons-outlined">
 visibility
@@ -272,7 +272,7 @@ visibility
 </span>
                         </button>
                         <span
-                            onclick="popupwindow('{{ action('CampaignController@preview', $campaign->uid) }}', `{{ $campaign->name }}`, 800, 800)"
+                            onclick="popupwindow('{{ action('CampaignController@preview', $campaign->uid) }}', `{{ $campaign->name }}`, 800)"
                             href="#preview" class="btn btn-secondary me-1" data-uid="{{ $campaign->uid }}">
                             {{ trans('messages.preview') }} <span class="material-icons-outlined">
 visibility

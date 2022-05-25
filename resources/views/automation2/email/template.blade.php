@@ -53,7 +53,7 @@
                         onclick="popupwindow('{{ action('Automation2Controller@templatePreview', [
                             'uid' => $automation->uid,
                             'email_uid' => $email->uid,
-                        ]) }}', `{{ $automation->name }}`, 800, 800)"
+                        ]) }}', `{{ $automation->name }}`, 800)"
                         href="javascript:;"
                         class="btn btn-primary" style="display:none"
                     >

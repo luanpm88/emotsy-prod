@@ -803,4 +803,17 @@ class SettingController extends Controller
         // GET ONLY
         return view('admin.settings.upgradeFromUrl');
     }
+
+    public function licenseRemove()
+    {
+        try {
+            Setting::updateLicense(null);
+
+            return redirect()->action('Admin\SettingController@license')
+                ->with('alert-success', trans('messages.license.removed'));
+        } catch (\Exception $ex) {
+            return redirect()->action('Admin\SettingController@license')
+                ->with('alert-error', $ex->getMessage());
+        }
+    }
 }

@@ -2,6 +2,10 @@
 
 @section('title', $plan->name)
 
+@section('head')
+    <script type="text/javascript" src="{{ URL::asset('core/js/group-manager.js') }}"></script>
+@endsection
+
 @section('page_header')
 
     <div class="page-title">
@@ -22,7 +26,7 @@
 
     <form enctype="multipart/form-data" action="{{ action('Admin\PlanController@save', $plan->uid) }}" method="POST" class="form-validate-jqueryx">
         {{ csrf_field() }}                
-        <div class="mc_section">
+        <div class="">
             <div class="row">
                 <div class="col-md-7">
                     <h2>{{ trans('messages.plan.general.overview') }}</h2>
@@ -144,18 +148,44 @@
                             'plan' => $plan,
                         ])
                     </div>
-                    
-                    @include('helpers.form_control', [
-                        'class' => '',
-                        'type' => 'checkbox2',
-                        'name' => 'plan[general][tax_billing_required]',
-                        'label' => trans('messages.plan.tax_billing_required'),
-                        'help' => trans('messages.plan.tax_billing_required.help'),
-                        'value' => $plan->tax_billing_required,
-                        'options' => ['0','1'],
-                        'help_class' => 'plan',
-                        'rules' => $plan->generalRules()
-                    ])
+
+                    <div class="mb-2">
+                        @include('helpers.form_control.checkbox', [
+                            'name' => 'has_trial',
+                            'value' => 'yes',
+                            'label' => trans('messages.plan.has_trial_period'),
+                            'attributes' => [
+                                'class' => 'numeric',
+                                'checked' => $plan->hasTrial() ? 'checked' : false
+                            ],
+                        ])
+                    </div>
+                        
+
+                    <div class="trial_settings">
+                        <label class="mb-2">{{ trans('messages.plan.trial_setting') }}</label>
+                        <div class="d-flex">
+                            <div class="me-3">
+                                @include('helpers.form_control.number', [
+                                    'name' => 'plan[general][trial_amount]',
+                                    'value' => $plan->trial_amount,
+                                    'attributes' => [
+                                        'class' => 'numeric',
+                                        'min' => '0',
+                                    ],
+                                ])
+                            </div>
+                            <div class="">
+                                @include('helpers.form_control', [
+                                    'type' => 'select',
+                                    'name' => 'plan[general][trial_unit]',
+                                    'value' => $plan->trial_unit,
+                                    'options' => $plan->timeUnitOptions(),
+                                    'help_class' => 'plan',
+                                ])
+                            </div>
+                        </div>
+                    </div>
 
                     @include('helpers.form_control', [
                         'class' => '',
@@ -171,14 +201,54 @@
                  </div>
             </div>
         </div>
-        <button class="btn btn-secondary me-2">{{ trans('messages.save') }}</button>
-        <a href="{{ action('Admin\PlanController@index') }}" role="button" class="btn btn-link">
-            {{ trans('messages.cancel') }}
-        </a>
+        <div class="mt-4">
+            <button class="btn btn-secondary me-2">{{ trans('messages.save') }}</button>
+            <a href="{{ action('Admin\PlanController@index') }}" role="button" class="btn btn-link">
+                {{ trans('messages.cancel') }}
+            </a>
+        </div>
     </form>
 
     <script>
         $(function() {    
+            var manager = new GroupManager();
+            manager.add({
+                checkbox: $('[name="has_trial"]'),
+                isChecked: function() {
+                    return $('[name="has_trial"]').is(':checked');
+                },
+                box: $('.trial_settings'),
+                textbox: $('[name="plan[general][trial_amount]"]'),
+                currentValue: $('[name="plan[general][trial_amount]"]').val()
+            });
+
+            manager.bind(function(group) {
+                var check = function() {
+                    if (group.isChecked()) {
+                        group.box.show();
+
+                        group.textbox.prop('min', '1');
+                        if (group.currentValue > 0) {
+                            group.textbox.val(group.currentValue);
+                        } else {
+                            group.textbox.val(1);
+                        }
+                    } else {
+                        group.box.hide();
+                        group.currentValue = group.textbox.val();
+
+                        group.textbox.prop('min', '0');
+                        group.textbox.val(0);
+                    }
+                };
+
+                group.checkbox.on('change', function() {
+                    check();
+                });
+
+                check();
+            });
+
             PlansCustomBillingCycle.getSelector().on('change', function() {
                 var value = $(this).val();
     

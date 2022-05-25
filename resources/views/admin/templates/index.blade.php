@@ -9,7 +9,7 @@
             <li class="breadcrumb-item"><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
         </ul>
         <h1>
-            <span class="text-semibold"><span class="material-icons-round">
+            <span class="text-semibold"><span class="material-symbols-rounded">
                 format_list_bulleted
                 </span> {{ trans('messages.templates') }}</span>
         </h1>
@@ -27,6 +27,7 @@
             <div class="">                
                 <div class="filter-box">
                     <input type="hidden" name="view" value="{{ request()->view }}" />
+                    <input type="hidden" name="type" value="{{ isset($type) ? $type : '' }}" />
                     @if (request()->view && request()->view == 'list')
                         <div class="checkbox inline check_all_list">
                             <label>

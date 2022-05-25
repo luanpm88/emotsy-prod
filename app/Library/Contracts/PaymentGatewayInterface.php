@@ -23,4 +23,5 @@ interface PaymentGatewayInterface
 
     //
     public function allowManualReviewingOfTransaction(): bool;
+    public function getMinimumChargeAmount($currency);
 }

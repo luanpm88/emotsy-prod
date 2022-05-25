@@ -827,6 +827,28 @@ function filterSearchArray($items, $keyword)
     return $results;
 }
 
+function getPeriodEndsAt($startDate, $amount, $unit)
+{
+    switch ($unit) {
+        case 'month':
+            $endsAt = $startDate->addMonthsNoOverflow($amount);
+            break;
+        case 'day':
+            $endsAt = $startDate->addDay($amount);
+            break;
+        case 'week':
+            $endsAt = $startDate->addWeek($amount);
+            break;
+        case 'year':
+            $endsAt = $startDate->addYearsNoOverflow($amount);
+            break;
+        default:
+            throw new \Exception('Invalid time period unit: ' . $unit);
+    }
+
+    return $endsAt;
+}
+
 function getThemeColor($theme = false)
 {
     $colors = [

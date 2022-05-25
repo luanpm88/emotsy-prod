@@ -1034,7 +1034,7 @@ class CampaignController extends Controller
         ];
 
         // GeoIP information
-        $location = IpLocation::add($_SERVER['REMOTE_ADDR']);
+        $location = IpLocation::add($request->ip());
         if (!is_null($location)) {
             $trackingInfo['ip_address'] = $location->ip_address;
         }

@@ -881,6 +881,7 @@
   'bill.current_period_ends_on' => 'Current period ends on :date',
   'bill.ends_at' => 'Ends at :date',
   'bill.estimated_total' => 'Estimated Total',
+  'bill.fee' => 'Payment service fee',
   'bill.last4' => 'Last 4 number',
   'bill.next_period_ends_on' => 'Next period ends on :date',
   'bill.remove_payment.confirm' => 'You are about to remove current payment method, this can be undone',
@@ -1390,6 +1391,7 @@
   'datetime' => 'Fecha y hora',
   'datetime_field' => 'Fecha y Hora',
   'day' => 'Día',
+  'day.choice' => 'day|days',
   'day_of_week.0' => 'Sun',
   'day_of_week.1' => 'Mon',
   'day_of_week.2' => 'Tue',
@@ -1763,6 +1765,9 @@
   'form_page.use_built_in_page.intro' => 'Usa tu página de Globaldima Marketing',
   'form_page.use_outside_url' => 'URL personalizada',
   'form_page.use_outside_url.intro' => 'Redireccionar a la URL a continuación',
+  'form_templates' => 'Form templates',
+  'form_templates.intro' => 'Below are BASE form templates available for all users registered in the applicaiton<br>
+    When it comes to add a form popup, users can create a new form popup from a base one',
   'form_title' => 'Título del formulario',
   'forms' => 'Forms',
   'forms.delete.confirm' => 'You\'re about to delete :number form(s).',
@@ -1890,6 +1895,9 @@
   'invoice.init_subscription' => 'New Subscription',
   'invoice.init_subscription.desc' => 'You’re subscring to plan <strong>:plan</strong>, and
       your subscription will be due on <strong>:date</strong>',
+  'invoice.init_subscription.trial.desc' => '<span class="fw-600">:time</span>
+    free trial of <span class="fw-600">:plan</span>.
+    Your subscription will be due on <strong>:date</strong>',
   'invoice.items' => 'Item(s)',
   'invoice.pay_now' => 'Pay Now',
   'invoice.payment_is_being_verified' => 'Payment is being verified',
@@ -2004,6 +2012,9 @@
   'license' => 'Licencia (Código de compra)',
   'license.license_types' => 'Tipos de licencia',
   'license.no_license' => 'Aún no ingresa una licencia válida. Compre una licencia e ingrésela en el formulario a continuación para continuar usando el producto',
+  'license.remove' => 'Remove',
+  'license.remove.confirm' => 'You`re about to remove current lincense! This can not be undone.',
+  'license.removed' => 'The license was sucessfully removed!',
   'license.updated' => 'La licencia de la aplicación se actualizó correctamente',
   'license.your_license' => 'Su licencia actual',
   'license_guide' => '
@@ -2476,6 +2487,7 @@
   'plan.billing_cycle.phrase' => ':frequency_amount :frequency_unit(s)',
   'plan.billing_cycle.yearly' => 'Anual',
   'plan.billing_history' => 'Historial de facturación',
+  'plan.buy' => 'Buy',
   'plan.cant_show' => 'Tu plan está inactivo, por favor arregla los problemas de tu plan antes de ponerlo a la vista.',
   'plan.color' => 'Color',
   'plan.copied' => 'El plan se copió correctamente',
@@ -2509,6 +2521,8 @@
   'plan.general.details' => 'Detalles del plan',
   'plan.general.details.intro' => 'Un plan, o plan de servicio, es el grupo de servicios y límites que ha acordado proporcionar a su cliente. Un plan le permite planificar y estandarizar de manera centralizada sus ofertas de servicios. Configure los detalles de su plan a continuación:',
   'plan.general.overview' => 'Visión general',
+  'plan.has_free' => ':time for free',
+  'plan.has_trial_period' => 'Enable trial period',
   'plan.hidden' => 'Plan ocultado satisfactoriamente',
   'plan.hide' => 'Ocultar este plan',
   'plan.hide.denied' => 'No puedes ocultar este plan',
@@ -2624,13 +2638,12 @@
   'plan.speed_limit' => 'Limite de velocidad',
   'plan.speed_limit.intro' => 'Limite la velocidad de envío para proteger su reputación de envío',
   'plan.starting_at' => 'A partir de',
-  'plan.tax_billing_required' => 'Se requiere información de facturación?',
-  'plan.tax_billing_required.help' => 'Solicite información de facturación de impuestos al suscribirse al plan',
   'plan.tos' => 'Term of Service',
   'plan.tos.intro' => 'Terms of service are the legal agreements between a service provider and a
     person who wants to use that service. The person must agree to abide by the terms of service in
     order to use the offered service.',
   'plan.tos.updated' => 'Terms of service was updated',
+  'plan.trial_setting' => 'Trial period (amout / time unit)',
   'plan.updated' => 'Plan actualizado',
   'plan.vat' => 'VAT',
   'plan.visible_on.confirm' => 'El plan seleccionado fue habilitado con éxito. ¿Quieres también
@@ -3404,6 +3417,7 @@
   'subscription.approve_pending.success' => 'La factura pendiente ha sido aprovada satisfactoriamente.',
   'subscription.billing_information.subtitle' => 'Enter your billing information here and click next',
   'subscription.billing_information.title' => 'Billing information',
+  'subscription.buy_now' => 'Buy now',
   'subscription.cancel' => 'Cancelar',
   'subscription.cancel.confirm' => 'A punto de cancelar :number suscripción. Igualmente continuaras suscripto hasta el final de periodo abonado',
   'subscription.cancel_now' => 'Cancelar ahora',
@@ -3561,6 +3575,9 @@
       Por lo tanto, debe pagar una recarga para el próximo período.
       Haga clic en el botón de abajo para procesar.',
   'subscription.transactions' => 'Transacciones',
+  'subscription.trial_announcement' => 'You are currently on trial of <span class="fw-600">:plan</span>.
+    your trial period will expire in <span class="fw-bold">:days</span> day(s).
+    Click Buy now to purchase the plan.',
   'subscription.updated' => 'Suscripcion Actualizada',
   'subscription.updated_at' => 'Actualizado el',
   'subscription.wording' => 'Esta característica le permite controlar los detalles de la suscripción de sus clientes. Puede aprobar el pago, habilitar o deshabilitar una suscripción. También puede crear nuevas suscripciones para sus clientes existentes',

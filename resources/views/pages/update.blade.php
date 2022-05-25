@@ -36,7 +36,7 @@
 										name="use_outside_url"
 										value="1" class="styled" /><rtitle> {{ trans('messages.form_page.use_outside_url') }}</rtitle>
 									<div class="desc text-normal mb-10">
-										{{ trans('messages.form_page.use_outside_url.intro') }}
+										{!! trans('messages.form_page.use_outside_url.intro') !!}
 									</div>
 								</label>
 								<div class="radio_more_box">

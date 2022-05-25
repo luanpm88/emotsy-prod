@@ -8,7 +8,7 @@
                         <div class="preview_control">
                             <div style="width: calc(80% - 20px);">
                                 <div class="mb-2">
-                                    <a class="btn btn-light d-block" href="#preview" onclick="popupwindow('{{ action('Admin\TemplateController@preview', $template->uid) }}', `{{ $template->name }}`, 800, 800)"><span class="material-icons-outlined">
+                                    <a class="btn btn-light d-block" href="#preview" onclick="popupwindow('{{ action('Admin\TemplateController@preview', $template->uid) }}', `{{ $template->name }}`, 800)"><span class="material-icons-outlined">
                                         zoom_in
                                         </span> {{ trans("messages.preview") }}</a>
                                 </div>
@@ -79,7 +79,7 @@
                                                 </li>
                                             @endif
                                             @if (Auth::user()->admin->can('preview', $template))
-                                                <li><a class="dropdown-item" href="#preview" onclick="popupwindow('{{ action('Admin\TemplateController@preview', $template->uid) }}', `{{ $template->name }}`, 800, 800)"><span class="material-icons-outlined">
+                                                <li><a class="dropdown-item" href="#preview" onclick="popupwindow('{{ action('Admin\TemplateController@preview', $template->uid) }}', `{{ $template->name }}`, 800)"><span class="material-icons-outlined">
             zoom_in
             </span> {{ trans("messages.preview") }}</a></li>
                                             @endif

@@ -679,6 +679,8 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('automation/listing', 'Automation2Controller@listing');
     Route::get('automation', 'Automation2Controller@index');
     Route::get('automation/{uid}/debug', 'Automation2Controller@debug');
+    Route::get('trigger/{id}', 'AutoTrigger@show');
+    Route::get('trigger/{id}/check', 'AutoTrigger@check');
     Route::get('automation/{automation}/{subscriber}/trigger', 'Automation2Controller@triggerNow');
     Route::get('automation/{automation}/run', 'Automation2Controller@run');
 
@@ -721,6 +723,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::post('site/profucts/{id}/activate', 'Site\TemplateController@activate');
     Route::get('site/products/listing', 'Site\ProductController@listing');
     Route::get('site/products', 'Site\ProductController@index');
+    Route::get('site/products-2', 'Site\ProductController@index2');
 
     // Site - Template
     Route::post('site/templates/{id}/activate', 'Site\TemplateController@activate');
@@ -778,6 +781,11 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::get('admin/users/sort', 'UserController@sort');
     Route::get('admin/users/delete', 'UserController@delete');
     Route::resource('admin/users', 'UserController');
+
+    // Form Template
+    Route::get('admin/templates/forms/{uid}/preview', 'FormTemplateController@preview');
+    Route::get('admin/templates/forms/list', 'FormTemplateController@listing');
+    Route::get('admin/templates/forms', 'FormTemplateController@index');
 
     // Template
     Route::post('admin/templates/{uid}/export', 'TemplateController@export');
@@ -870,6 +878,8 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::resource('admin/languages', 'LanguageController');
 
     // Settings
+    Route::post('admin/settings/license/remove', 'SettingController@licenseRemove');
+
     Route::post('admin/settings/payment', 'SettingController@payment');
     Route::post('admin/settings/advanced/{name}/update', 'SettingController@advancedUpdate');
     Route::get('admin/settings/advanced', 'SettingController@advanced');

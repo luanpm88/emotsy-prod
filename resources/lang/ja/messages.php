@@ -859,6 +859,7 @@
   'bill.current_period_ends_on' => '現在の期間は:date に終了します',
   'bill.ends_at' => 'Ends at :date',
   'bill.estimated_total' => '推定合計',
+  'bill.fee' => 'Payment service fee',
   'bill.last4' => '最後の4つの番号',
   'bill.next_period_ends_on' => '次の期間は:dateに終了します',
   'bill.remove_payment.confirm' => '現在のお支払い方法を削除しようとしています。これは元に戻すことができます',
@@ -1359,6 +1360,7 @@
   'datetime' => '日付時刻',
   'datetime_field' => '日付時刻',
   'day' => '日',
+  'day.choice' => 'day|days',
   'day_of_week.0' => '日曜日',
   'day_of_week.1' => '月曜日',
   'day_of_week.2' => '火曜日',
@@ -1729,6 +1731,9 @@
   'form_page.use_built_in_page.intro' => 'アプリケーションのWebページを使用する',
   'form_page.use_outside_url' => 'カスタムURL',
   'form_page.use_outside_url.intro' => '以下のURLにリダイレクトします',
+  'form_templates' => 'Form templates',
+  'form_templates.intro' => 'Below are BASE form templates available for all users registered in the applicaiton<br>
+    When it comes to add a form popup, users can create a new form popup from a base one',
   'form_title' => 'フォームのタイトル',
   'forms' => 'Forms',
   'forms.delete.confirm' => ':numberフォームを削除しようとしています。',
@@ -1854,6 +1859,9 @@
   'invoice.header' => '請求書',
   'invoice.init_subscription' => '新しいサブスクリプション',
   'invoice.init_subscription.desc' => 'プラン<strong>:plan</strong>にサブスクライブしており、サブスクリプションの期限は<strong>:date</strong>になります。',
+  'invoice.init_subscription.trial.desc' => '<span class="fw-600">:time</span>
+    free trial of <span class="fw-600">:plan</span>.
+    Your subscription will be due on <strong>:date</strong>',
   'invoice.items' => 'アイテム',
   'invoice.pay_now' => '今すぐ支払う',
   'invoice.payment_is_being_verified' => '支払いは確認中です',
@@ -1965,6 +1973,9 @@
   'license' => 'ライセンス（購入したコード）',
   'license.license_types' => 'ライセンスの種類',
   'license.no_license' => 'まだ有効なライセンスを入力していません。 ライセンスを購入し、以下のフォームに入力して、製品を引き続き使用してください',
+  'license.remove' => 'Remove',
+  'license.remove.confirm' => 'You`re about to remove current lincense! This can not be undone.',
+  'license.removed' => 'The license was sucessfully removed!',
   'license.updated' => 'アプリのライセンスが正常に更新されました',
   'license.your_license' => '現在のライセンス',
   'license_guide' => '
@@ -2434,6 +2445,7 @@
   'plan.billing_cycle.phrase' => ':frequency_amount :frequency_unit(s)',
   'plan.billing_cycle.yearly' => '毎年',
   'plan.billing_history' => '請求履歴',
+  'plan.buy' => 'Buy',
   'plan.cant_show' => 'プランは無効です。表示に設定する前に、まずプランの問題を修正してください',
   'plan.color' => '色',
   'plan.copied' => 'プランは正常にコピーされました',
@@ -2467,6 +2479,8 @@
   'plan.general.details' => 'プランの詳細',
   'plan.general.details.intro' => 'プランまたはサービスプランは、顧客に提供することに同意したサービスと制限のグループです。 計画を使用すると、提供するサービスを一元的に計画および標準化できます。 以下にプランの詳細を設定します。',
   'plan.general.overview' => '概要',
+  'plan.has_free' => ':time for free',
+  'plan.has_trial_period' => 'Enable trial period',
   'plan.hidden' => 'プランは首尾よく隠されました',
   'plan.hide' => 'このプランを隠す',
   'plan.hide.denied' => 'このプランを隠すことはできません',
@@ -2581,11 +2595,10 @@
   'plan.speed_limit' => '制限速度',
   'plan.speed_limit.intro' => '送信レピュテーションを保護するために送信速度を制限する',
   'plan.starting_at' => 'で開始',
-  'plan.tax_billing_required' => '請求情報が必要ですか？',
-  'plan.tax_billing_required.help' => 'プランを購読するときに税金の請求情報を確認する',
   'plan.tos' => '利用規約',
   'plan.tos.intro' => '利用規約は、サービスプロバイダーとそのサービスを利用したい人との間の法的な合意です。 提供されたサービスを利用するには、利用規約に従うことに同意する必要があります。',
   'plan.tos.updated' => '利用規約が更新されました',
+  'plan.trial_setting' => 'Trial period (amout / time unit)',
   'plan.updated' => '計画は正常に更新されました',
   'plan.vat' => 'VAT',
   'plan.visible_on.confirm' => '選択したプランが正常に有効化されました。 あなたもしたいですか
@@ -3334,6 +3347,7 @@
   'subscription.approve_pending.success' => '保留中の請求書は正常に承認されました',
   'subscription.billing_information.subtitle' => 'ここに請求情報を入力し、[次へ]をクリックします',
   'subscription.billing_information.title' => '請求先情報',
+  'subscription.buy_now' => 'Buy now',
   'subscription.cancel' => 'キャンセル',
   'subscription.cancel.confirm' => ' :number サブスクリプションをキャンセルしようとしています。 あなたはまだ期間の終わりまで購読しています',
   'subscription.cancel_now' => '今すぐキャンセル',
@@ -3483,6 +3497,9 @@
      したがって、次の期間に追加料金を支払う必要があります。
      下のボタンをクリックして処理します。',
   'subscription.transactions' => 'トランザクション',
+  'subscription.trial_announcement' => 'You are currently on trial of <span class="fw-600">:plan</span>.
+    your trial period will expire in <span class="fw-bold">:days</span> day(s).
+    Click Buy now to purchase the plan.',
   'subscription.updated' => 'サブスクリプションは正常に更新されました',
   'subscription.updated_at' => 'で更新',
   'subscription.wording' => 'この機能を使用すると、顧客のサブスクリプションの詳細を監視できます。 支払いを承認したり、サブスクリプションを有効または無効にしたりできます。 既存の顧客向けに新しいサブスクリプションを作成することもできます',
