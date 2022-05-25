@@ -98,7 +98,7 @@ body.mode-dark .empty-list {
     border-color: rgba(255,255,255,0.2);
     background: rgba(255,255,255,0.05);
 }
-body.mode-dark .empty-list [class^="material-icons"] {
+body.mode-dark .empty-list [class^="material-"] {
     color: rgba(255,255,255,0.7);
 }
 body.mode-dark .card {
@@ -638,7 +638,7 @@ body.mode-dark .template-create-sticky {
     box-shadow: 0 15px 11px -11px rgba(0,0,0,0.1);
     padding: 17px 0;
 }
-body.mode-dark .app_search_input + [class^="material-icons"] {
+body.mode-dark .app_search_input + [class^="material-"] {
     background-color: rgba(255, 255, 255, 0.05);
     color: rgba(255,255,255,0.7);
 }
@@ -674,10 +674,10 @@ body.mode-dark a.search-result.selected {
     color: rgba(255,255,255,0.85);
     background: rgba(255,255,255,0.05);
 }
-body.mode-dark.search-open .app_search_input + [class^="material-icons"] {
+body.mode-dark.search-open .app_search_input + [class^="material-"] {
     background: transparent;
 }
-body.mode-dark:not(.search-open) .app_search_input + [class^="material-icons"]:hover {
+body.mode-dark:not(.search-open) .app_search_input + [class^="material-"]:hover {
     background: rgba(255,255,255,0.2);
 }
 body.mode-dark.search-open .app_search_input:hover {
@@ -757,4 +757,7 @@ body.mode-dark .but-change-theme-mode {
 }
 body.mode-dark .but-change-theme-mode:hover {
     background: rgba(255,255,255,0.2);
+}
+body.mode-dark .top-controls-container a {
+    color: rgba(255,255,255,0.7);
 }

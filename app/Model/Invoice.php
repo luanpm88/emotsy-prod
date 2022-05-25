@@ -658,7 +658,7 @@ class Invoice extends Model
         $invoice->updateMetadata($options['metadata']);
 
         // add item
-        foreach($options['items'] as $item) {
+        foreach ($options['items'] as $item) {
             $invoiceItem = $invoice->invoiceItems()->create([
                 'item_id' => $item['id'],
                 'item_type' => $item['type'],

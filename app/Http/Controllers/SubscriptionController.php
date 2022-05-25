@@ -399,7 +399,7 @@ class SubscriptionController extends Controller
 
                 $invoice->updatePaymentServiceFee($gateway);
             }
-                
+
 
             return view('subscription.orderBox', [
                 'subscription' => $subscription,

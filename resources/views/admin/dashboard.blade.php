@@ -143,7 +143,7 @@ people_outline
     </div>
 
     <h4 class="text-semibold mt-5">
-        <span class="material-icons-outlined me-2">
+        <span class="material-symbols-rounded me-2">
 restore
 </span>
         {{ trans('messages.activities') }}
@@ -151,7 +151,7 @@ restore
     <p style="margin-bottom: 30px" class="link-inline">{!! trans('messages.admin.dashboard.recent_activity.wording', [ 'here' => action('Admin\CustomerController@index') ]) !!}</p>
     @if (\Auth::user()->admin->getLogs()->count() == 0)
         <div class="empty-list">
-            <span class="material-icons-outlined me-2">
+            <span class="material-symbols-rounded me-2">
 history_toggle_off
 </span>
             <span class="line-1">

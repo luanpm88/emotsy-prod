@@ -22,6 +22,6 @@ interface PaymentGatewayInterface
     public function verify(Transaction $transaction): TransactionVerificationResult;
 
     //
-    public function allowManualReviewingOfTransaction(): bool;    
+    public function allowManualReviewingOfTransaction(): bool;
     public function getMinimumChargeAmount($currency);
 }

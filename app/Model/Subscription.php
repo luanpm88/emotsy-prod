@@ -856,7 +856,14 @@ class Subscription extends Model implements HasQuotaInterface
     public function getCreditsUsedPercentageDuringPlanCycle($name)
     {
         $creditsUsed = $this->getCreditsUsedDuringPlanCycle($name);
-        $creditsLimit = $this->plan->getOption('email_max');
+        $creditsLimit = 0; // $this->plan->getOption('email_max');
+
+        // if = -1 (default:unlimited) return 0
+        // if = 0 return 0
+        if (!$creditsLimit || $creditsLimit == -1) {
+            return 0;
+        }
+
         $percentage = ($creditsLimit == QuotaManager::QUOTA_UNLIMITED) ? 0 : $creditsUsed / $creditsLimit;
 
         return $percentage;
