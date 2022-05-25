@@ -14,7 +14,7 @@
                         $waitTime = $trigger->getOption('wait') ? $trigger->getOption('wait') : '24_hour'
                     @endphp
                     <div class="check-icon mr-4 pt-1">
-                        <span class="material-icons-outlined text-success">
+                        <span class="material-symbols-rounded text-success">
                             check_circle
                         </span>
                     </div>
@@ -38,7 +38,7 @@
                             $list = Acelle\Model\MailList::findByUid($trigger->getOption('list_uid'));
                         @endphp
                         <div class="check-icon mr-4 pt-1">
-                            <span class="material-icons-outlined text-success">
+                            <span class="material-symbols-rounded text-success">
                                 check_circle
                             </span>
                         </div>
@@ -55,7 +55,7 @@
                         </div>
                     @else
                         <div class="check-icon mr-4 pt-1">
-                            <span class="material-icons-outlined text-success">
+                            <span class="material-symbols-rounded text-success">
                                 check_circle
                             </span>
                         </div>
@@ -72,7 +72,7 @@
                 </div>
                 <div class="d-flex my-2 py-1">
                     <div class="check-icon mr-4 pt-1">
-                        <span class="material-icons-outlined text-success">
+                        <span class="material-symbols-rounded text-success">
                             check_circle
                         </span>
                     </div>
@@ -123,7 +123,7 @@
                 <div class="d-flex align-items-center store-states justify-content-space-between mt-4">
                     <div class="d-flex align-items-center">
                         <span class="store-icon">
-                            {{-- <span class="material-icons-outlined">
+                            {{-- <span class="material-symbols-rounded">
                                 loyalty
                             </span> --}}
                         </span>
@@ -134,7 +134,7 @@
                     </div>
                     <div class="d-flex align-items-center store-states">
                         <span class="store-icon">
-                            {{-- <span class="material-icons-outlined">
+                            {{-- <span class="material-symbols-rounded">
                                 assignment
                             </span> --}}
                         </span>
@@ -145,7 +145,7 @@
                     </div>
                     <div class="d-flex align-items-center store-states">
                         <span class="store-icon">
-                            {{-- <span class="material-icons-outlined">
+                            {{-- <span class="material-symbols-rounded">
                                 insights
                             </span> --}}
                         </span>

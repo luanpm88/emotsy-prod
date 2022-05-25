@@ -69,7 +69,7 @@
                                     link-confirm="{{ trans('messages.delete_plugins_confirm') }}"
                                     href="{{ action('Admin\PluginController@delete', ["uids" => $plugin->uid]) }}"
                                     role="button">
-                                    <i class="material-icons-outlined">delete</i> {{ trans('messages.uninstall') }}
+                                    <i class="material-symbols-rounded">delete</i> {{ trans('messages.uninstall') }}
                                 </a>
 							</li>
 						</ul>
@@ -84,7 +84,7 @@
     
 @elseif (!empty(request()->keyword) || !empty(request()->filters["type"]))
     <div class="empty-list">
-        <span class="material-icons-outlined">
+        <span class="material-symbols-rounded">
             extension
             </span>
         <span class="line-1">
@@ -93,7 +93,7 @@
     </div>
 @else
     <div class="empty-list">
-        <span class="material-icons-outlined">
+        <span class="material-symbols-rounded">
             extension
             </span>
         <span class="line-1">

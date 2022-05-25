@@ -33,7 +33,7 @@
                                         class="dropdown-item list-action-single"
                                         link-confirm="{{ trans('messages.delete_admin_groups_confirm') }}"
                                         href="{{ action('Admin\AdminGroup2Controller@delete', ['ids' => $item->id]) }}">
-                                        <span class="material-icons-outlined">
+                                        <span class="material-symbols-rounded">
 delete_outline
 </span> {{ trans('messages.delete') }}
                                     </a>
@@ -49,7 +49,7 @@ delete_outline
     
 @elseif (!empty(request()->keyword))
     <div class="empty-list">
-        <span class="material-icons-outlined">
+        <span class="material-symbols-rounded">
 people
 </span>
         <span class="line-1">
@@ -58,7 +58,7 @@ people
     </div>
 @else
     <div class="empty-list">
-        <span class="material-icons-outlined">
+        <span class="material-symbols-rounded">
 people
 </span>
         <span class="line-1">

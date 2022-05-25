@@ -4,7 +4,7 @@
             @if (Auth::user()->customer->subscription->plan->useOwnSendingServer())
                 <li class="nav-item" rel0="SenderController">
                     <a href="{{ action('SenderController@index') }}" class="nav-link">
-                    <span class="material-icons-round">
+                    <span class="material-symbols-rounded">
 mail_outline
 </span> {{ trans('messages.email_addresses') }}
                     </a>
@@ -13,7 +13,7 @@ mail_outline
                 Auth::user()->customer->subscription->plan->primarySendingServer()->allowVerifyingOwnEmailsRemotely() )
                 <li class="nav-item" rel0="SenderController">
                     <a href="{{ action('SenderController@index') }}" class="nav-link">
-                    <span class="material-icons-round">
+                    <span class="material-symbols-rounded">
 mail_outline
 </span> {{ trans('messages.email_addresses') }}
                     </a>
@@ -23,7 +23,7 @@ mail_outline
             @if (Auth::user()->customer->subscription->plan->useOwnSendingServer())
                 <li class="nav-item" rel0="SendingDomainController">
                     <a href="{{ action('SendingDomainController@index') }}" class="nav-link">
-                        <span class="material-icons-round">
+                        <span class="material-symbols-rounded">
 alternate_email
 </span> {{ trans('messages.domains') }}
                     </a>
@@ -33,7 +33,7 @@ alternate_email
                 Auth::user()->customer->subscription->plan->primarySendingServer()->allowVerifyingOwnDomainsRemotely() )
                 <li class="nav-item" rel0="SendingDomainController">
                     <a href="{{ action('SendingDomainController@index') }}" class="nav-link">
-                    <span class="material-icons-round">
+                    <span class="material-symbols-rounded">
 alternate_email
 </span> {{ trans('messages.domains') }}
                     </a>

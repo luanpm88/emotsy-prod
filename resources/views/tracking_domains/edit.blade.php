@@ -18,7 +18,7 @@
 
 @section('content')
     <h2>
-        <span class="text-semibold"><span class="material-icons-outlined">
+        <span class="text-semibold"><span class="material-symbols-rounded">
 edit
 </span> {{ $domain->name }}</span>
     </h2>

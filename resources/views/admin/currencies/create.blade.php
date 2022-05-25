@@ -10,7 +10,7 @@
 					<li class="breadcrumb-item"><a href="{{ action("Admin\CurrencyController@index") }}">{{ trans('messages.currencies') }}</a></li>
 				</ul>
 				<h1>
-					<span class="text-semibold"><span class="material-icons-round">
+					<span class="text-semibold"><span class="material-symbols-rounded">
 add
 </span> {{ trans('messages.create_admin') }}</span>
 				</h1>

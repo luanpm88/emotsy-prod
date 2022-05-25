@@ -6,7 +6,7 @@
     <li class="d-flex align-items-center">
         <div class="d-inline-block d-flex mr-auto align-items-center ml-1">
             <h4 class="my-0 me-2 automation-title">{{ $automation->name }}</h4>
-            <i class="material-icons-outlined">alarm</i>
+            <i class="material-symbols-rounded">alarm</i>
         </div>
     </li>
 @endsection
@@ -16,7 +16,7 @@
         <div class="d-flex align-items-center me-4 automation-top-actions">
             <span class="me-4"><i class="last_save_time" data-url="{{ action('Automation2Controller@lastSaved', $automation->uid) }}">{{ trans('messages.automation.designer.last_saved', ['time' => $automation->updated_at->diffForHumans()]) }}</i></span>
             <a href="{{ action('Automation2Controller@index') }}" class="action me-4">
-                <i class="material-icons-outlined me-2">arrow_back</i>
+                <i class="material-symbols-rounded me-2">arrow_back</i>
                 {{ trans('messages.automation.go_back') }}
             </a>
 
@@ -29,7 +29,7 @@
                 </select>
 
                 <a href="javascript:'" class="action">
-                    <i class="material-icons-outlined me-2">
+                    <i class="material-symbols-rounded me-2">
             horizontal_split
             </i>
                     {{ trans('messages.automation.switch_automation') }}
@@ -98,18 +98,18 @@
 
                 <div class="history">
                     <a class="history-action history-undo" href="javascript:;">
-                        <i class="material-icons-outlined">undo</i>
+                        <i class="material-symbols-rounded">undo</i>
                     </a>
                     <a class="history-action history-redo disabled" href="javascript:;">
-                        <i class="material-icons-outlined">redo</i>
+                        <i class="material-symbols-rounded">redo</i>
                     </a>
                     <a class="history-action history-list" href="javascript:;">
-                        <i class="material-icons-outlined">history</i>
+                        <i class="material-symbols-rounded">history</i>
                     </a>
                     <ul class="history-list-items">
                         <li>
                             <a href="" class="d-flex align-items-center current">
-                                <i class="material-icons-outlined me-2">refresh</i>
+                                <i class="material-symbols-rounded me-2">refresh</i>
                                 <span class="content mr-auto">Reset current flow</span>
                                 {{-- <time class="mini text-muted">1 minute</time> --}}
                             </a>
@@ -117,28 +117,28 @@
                         <li class="divider"></li>
                         <li>
                             <a href="" class="d-flex align-items-center">
-                                <i class="material-icons-outlined me-2">alarm</i>
+                                <i class="material-symbols-rounded me-2">alarm</i>
                                 <span class="content mr-auto">Wait activity added</span>
                                 {{-- <time class="mini text-muted">3 hours</time> --}}
                             </a>
                         </li>
                         <li>
                             <a href="" class="d-flex align-items-center">
-                                <i class="material-icons-outlined me-2">email</i>
+                                <i class="material-symbols-rounded me-2">email</i>
                                 <span class="content mr-auto">Send email activity added</span>
                                 {{-- <time class="mini text-muted">4 days</time> --}}
                             </a>
                         </li>
                         <li>
                             <a href="" class="d-flex align-items-center">
-                                <i class="material-icons-outlined me-2">call_split</i>
+                                <i class="material-symbols-rounded me-2">call_split</i>
                                 <span class="content mr-auto">Condition activity added</span>
                                 {{-- <time class="mini text-muted">20 Aug</time> --}}
                             </a>
                         </li>
                         <li>
                             <a href="" class="d-flex align-items-center">
-                                <i class="material-icons-outlined me-2">play_circle_outline</i>
+                                <i class="material-symbols-rounded me-2">play_circle_outline</i>
                                 <span class="content mr-auto">Trigger criteria setup</span>
                                 {{-- <time class="mini text-muted">11 Aug</time> --}}
                             </a>

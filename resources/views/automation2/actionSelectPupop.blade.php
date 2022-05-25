@@ -28,7 +28,7 @@
                             <p>{{ trans('messages.automation.action.' . $type . '.desc') }}</p>
                             @if ($type == 'condition' && $hasChildren == "true")
                                 <p class="text-warning small mt-1">
-                                    <i class="material-icons-outlined">warning</i> {{ trans('messages.automation.action.can_not_add_condition') }}
+                                    <i class="material-symbols-rounded">warning</i> {{ trans('messages.automation.action.can_not_add_condition') }}
                                 </p>
                             @endif
                         </div>

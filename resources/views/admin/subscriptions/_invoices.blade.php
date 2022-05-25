@@ -141,7 +141,7 @@
                                         <a class="btn btn-secondary text-nowrap" target="_blank" href="{{ action('Admin\InvoiceController@download', [
                                             'uid' => $invoice->uid,
                                         ]) }}">
-                                            <i class="material-icons-outlined me-1">download</i>{{ trans('messages.download') }}
+                                            <i class="material-symbols-rounded me-1">download</i>{{ trans('messages.download') }}
                                         </a>
                                     @endif
                                 </td>

@@ -42,7 +42,7 @@
                 <td class="text-end">
                     <a href="{{ action('WebsiteController@show', $website->uid) }}"
                         role="button" class="btn btn-primary form-popup-preview">
-                        <span class="material-icons-outlined me-1">
+                        <span class="material-symbols-rounded me-1">
                             code
                             </span> {{ trans('messages.website.view_code') }}
                     </a>
@@ -53,7 +53,7 @@
                         ]) }}"
                             link-method="POST"
                             role="button" class="btn btn-secondary list-action-single">
-                            <span class="material-icons-outlined me-1">
+                            <span class="material-symbols-rounded me-1">
                                 pause_circle
                                 </span> {{ trans('messages.website.disconnect') }}
                         </a>
@@ -62,7 +62,7 @@
                     @if (Auth::user()->customer->can('connect', $website))
                         <a href="{{ action('WebsiteController@connect', $website->uid) }}"
                             role="button" class="btn btn-secondary connect-site">
-                            <span class="material-icons-outlined me-1">
+                            <span class="material-symbols-rounded me-1">
                                 pause_circle
                                 </span> {{ trans('messages.website.check_connection') }}
                         </a>
@@ -80,7 +80,7 @@
                                         link-method="POST"
                                         link-confirm="{{ trans('messages.websites.delete.confirm') }}"
                                         href="{{ action('WebsiteController@delete', ["uids" => $website->uid]) }}">
-                                        <span class="material-icons-outlined me-2">
+                                        <span class="material-symbols-rounded me-2">
 delete_outline
 </span> {{ trans("messages.delete") }}</a></li>
                                 @endif
@@ -163,7 +163,7 @@ delete_outline
     </script>
 @elseif (!empty(request()->keyword))
 	<div class="empty-list">
-		<span class="material-icons-outlined">
+		<span class="material-symbols-rounded">
 			auto_awesome
 			</span>
 		<span class="line-1">
@@ -172,7 +172,7 @@ delete_outline
 	</div>
 @else
 	<div class="empty-list">
-		<span class="material-icons-outlined">
+		<span class="material-symbols-rounded">
 			auto_awesome
 			</span>
 		<span class="line-1">

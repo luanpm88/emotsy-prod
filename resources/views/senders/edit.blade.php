@@ -20,7 +20,7 @@
 @section('content')
     @include('senders._menu')
     <h2>
-        <span class="text-semibold"><span class="material-icons-round">
+        <span class="text-semibold"><span class="material-symbols-rounded">
                             person_outline
                             </span> {{ $sender->name }}</span>
     </h2>

@@ -19,7 +19,7 @@
 
 	@include("lists._menu")
 
-	<h2 class="text-primary my-4"><span class="material-icons-outlined">
+	<h2 class="text-primary my-4"><span class="material-symbols-rounded">
 fact_check
 </span> {{ trans('messages.manage_list_fields') }}</h2>
 
@@ -95,12 +95,12 @@ fact_check
 							@if ($item->tag != 'EMAIL')
 								@if (is_object(Acelle\Model\Field::findByUid($item->uid)))
 									<a no-ajax="true" href="{{ action('FieldController@delete', ['list_uid' => $list->uid, 'uid' => $item->uid]) }}" link-confirm="{!! trans('messages.delete_field_alert') !!}" class="btn bg-danger-400 remove-field-button">
-										<span class="material-icons-outlined">
+										<span class="material-symbols-rounded">
 delete_outline
 </span>
 									</a>
 								@else
-									<a href="#delete" class="btn bg-danger-400 remove-not-saved-field"><span class="material-icons-outlined">
+									<a href="#delete" class="btn bg-danger-400 remove-not-saved-field"><span class="material-symbols-rounded">
 delete_outline
 </span></a>
 								@endif
@@ -150,7 +150,7 @@ delete_outline
 			<span sample-url="{{ action("FieldController@sample", ['list_uid' => $list->uid, "type" => "checkbox"]) }}" class="btn btn-default btn-xs add-custom-field-button me-2" type_name="checkbox"><i class="icon-checkbox-partial2"></i> {{ trans('messages.checkbox_field') }}</span>
 			<span sample-url="{{ action("FieldController@sample", ['list_uid' => $list->uid, "type" => "radio"]) }}" class="btn btn-default btn-xs add-custom-field-button me-2" type_name="radio"><i class="icon-circles"></i> {{ trans('messages.radio_field') }}</span>
 			<span sample-url="{{ action("FieldController@sample", ['list_uid' => $list->uid, "type" => "date"]) }}" class="btn btn-default btn-xs add-custom-field-button me-2" type_name="date"><i class="icon-calendar52"></i> {{ trans('messages.date_field') }}</span>
-			<span sample-url="{{ action("FieldController@sample", ['list_uid' => $list->uid, "type" => "datetime"]) }}" class="btn btn-default btn-xs add-custom-field-button me-2" type_name="datetime"><span class="material-icons-outlined">
+			<span sample-url="{{ action("FieldController@sample", ['list_uid' => $list->uid, "type" => "datetime"]) }}" class="btn btn-default btn-xs add-custom-field-button me-2" type_name="datetime"><span class="material-symbols-rounded">
 alarm
 </span> {{ trans('messages.datetime_field') }}</span>
 			<span sample-url="{{ action("FieldController@sample", ['list_uid' => $list->uid, "type" => "textarea"]) }}" class="btn btn-default btn-xs add-custom-field-button" type_name="textarea"><i class="icon-menu6"></i> {{ trans('messages.textarea_field') }}</span>

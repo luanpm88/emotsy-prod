@@ -47,7 +47,7 @@
                             </div>
                             <div class="text-center mt-4">
                                 <a href="{{ url('/login') }}" class="btn btn-lg btn-primary display-5 px-5 py-3" style="font-weight:600">
-                                    <i class="material-icons-outlined me-2">west</i>
+                                    <i class="material-symbols-rounded me-2">west</i>
                                     Back to login page
                                 </a>
 

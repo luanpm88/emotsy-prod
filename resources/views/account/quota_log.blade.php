@@ -1,7 +1,7 @@
 @extends('layouts.popup.small')
 
 @section('title')
-    <i class="material-icons-outlined alert-icon mr-2">addchart</i>
+    <i class="material-symbols-rounded alert-icon mr-2">addchart</i>
     {{ trans("messages.used_quota") }}
 @endsection
 

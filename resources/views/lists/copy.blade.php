@@ -1,7 +1,7 @@
 @extends('layouts.popup.small')
 
 @section('title')
-<span class="material-icons-outlined me-1 text-muted2">copy</span> {!! trans('messages.copy_list', [
+<span class="material-symbols-rounded me-1 text-muted2">copy</span> {!! trans('messages.copy_list', [
         'name' => $list->name
     ]) !!}
 @endsection

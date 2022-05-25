@@ -31,7 +31,7 @@
                         </select>
                         <input type="hidden" name="sort_direction" value="desc" />
 <button type="button" class="btn btn-xs sort-direction" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
-                            <span class="material-icons-outlined desc">
+                            <span class="material-symbols-rounded desc">
 sort
 </span>
                         </button>
@@ -47,7 +47,7 @@ sort
                     </span>
                     <span class="text-nowrap">
                         <input type="text" name="keyword" class="form-control search" value="{{ request()->keyword }}" placeholder="{{ trans('messages.type_to_search') }}" />
-                        <span class="material-icons-round">
+                        <span class="material-symbols-rounded">
 search
 </span>
                     </span>
@@ -57,22 +57,22 @@ search
                 <div class="view-toggle d-flex ml-auto">
                     <div class="btn-group" role="group" aria-label="Basic example">
                         <a href="{{ action('Site\ProductController@index2') }}" class="btn btn-default view-toogle grid m-icon">
-                            <span class="material-icons-outlined">
+                            <span class="material-symbols-rounded">
                                 grid_view
                             </span>
                         </a>
                         <a href="{{ action('Site\ProductController@index2', ['view' => 'list']) }}" class="btn btn-default view-toogle list m-icon mr-3">
-                            <span class="material-icons-outlined">
+                            <span class="material-symbols-rounded">
                                 reorder
                             </span>
                         </a>
                     </div>
                 </div>                
                 <a href="{{ action("SourceController@index") }}" role="button" class="btn btn-light m-icon me-1">
-                    <span class="material-icons-outlined">store</span> {{ trans('messages.stores_connections') }}
+                    <span class="material-symbols-rounded">store</span> {{ trans('messages.stores_connections') }}
                 </a>
                 <a href="{{ action("Site\ProductController@add") }}" role="button" class="btn btn-secondary m-icon">
-                    <span class="material-icons-outlined">add</span> {{ trans('messages.product.create') }}
+                    <span class="material-symbols-rounded">add</span> {{ trans('messages.product.create') }}
                 </a>
             </div>
         </div>

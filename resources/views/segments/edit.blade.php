@@ -12,7 +12,7 @@
 	
 	@include("lists._menu")
 	
-	<h2 class="text-semibold text-primary my-4"><span class="material-icons-outlined">
+	<h2 class="text-semibold text-primary my-4"><span class="material-symbols-rounded">
 edit
 </span> {{ trans('messages.edit_segment') }}</h2>
 	

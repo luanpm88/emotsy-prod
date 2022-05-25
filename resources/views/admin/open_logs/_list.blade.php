@@ -43,7 +43,7 @@
     
 @elseif (!empty(request()->keyword) || !empty(request()->filters["campaign_uid"]))
     <div class="empty-list">
-        <span class="material-icons-outlined">
+        <span class="material-symbols-rounded">
 auto_awesome
 </span>
         <span class="line-1">
@@ -52,7 +52,7 @@ auto_awesome
     </div>
 @else
     <div class="empty-list">
-        <span class="material-icons-outlined">
+        <span class="material-symbols-rounded">
 auto_awesome
 </span>
         <span class="line-1">

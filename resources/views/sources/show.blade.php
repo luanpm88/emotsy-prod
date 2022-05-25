@@ -63,7 +63,7 @@
             <div class="source-stats">
                 <div class="source-desc-line pt-4 mb-4 d-flex">
                     <div class="mr-4">
-                        <span class="material-icons-outlined" style="font-size:24px">
+                        <span class="material-symbols-rounded" style="font-size:24px">
                             inventory_2
                             </span>
                     </div>
@@ -82,7 +82,7 @@
                 <div class="source-desc-line pt-4 my-4 d-flex" style="justify-content: space-between">
                     <div class="d-flex">
                         <div class="mr-4">
-                            <span class="material-icons-outlined" style="font-size:24px">
+                            <span class="material-symbols-rounded" style="font-size:24px">
                                 fact_check
                                 </span>
                         </div>
@@ -120,7 +120,7 @@
                 @if ($automation->getAbandonedCartEmail()->isSetup())
                     <div class="source-desc-line pt-4 my-4 d-flex">
                         <div class="mr-4">
-                            <span class="material-icons-outlined" style="font-size:24px">
+                            <span class="material-symbols-rounded" style="font-size:24px">
                                 mark_email_unread
                                 </span>
                         </div>
@@ -151,7 +151,7 @@
                 @else
                     <div class="source-desc-line pt-4 my-4 d-flex">
                         <div class="mr-4">
-                            <span class="material-icons-outlined" style="font-size:24px">
+                            <span class="material-symbols-rounded" style="font-size:24px">
                                 mark_email_unread
                                 </span>
                         </div>

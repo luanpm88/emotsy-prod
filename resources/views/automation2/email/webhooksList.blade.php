@@ -15,25 +15,25 @@
                         <p class="mb-0">{{ trans('messages.webhook.type.' . $webhook->type . '.desc') }}</p>
                         @if ($webhook->type == 'click')
                             <p class="mb-0 text-muted2">
-                                <span class="material-icons-outlined text-muted2 me-1 xtooltip" title="{{ trans('messages.link') }}">ads_click</span>
+                                <span class="material-symbols-rounded text-muted2 me-1 xtooltip" title="{{ trans('messages.link') }}">ads_click</span>
                                 <a target="_blank" href="{{ $webhook->emailLink->link }}">{{ $webhook->emailLink->link }}</a>
                             </p>
                         @endif
                         <p class="mb-0 text-muted2">
-                            <span class="material-icons-outlined text-muted2 me-1 xtooltip" title="{{ trans('messages.webhook.endpoint') }}">gps_fixed</span> {{ $webhook->endpoint }}
+                            <span class="material-symbols-rounded text-muted2 me-1 xtooltip" title="{{ trans('messages.webhook.endpoint') }}">gps_fixed</span> {{ $webhook->endpoint }}
                         </p>
                     </td>
                     <td class="text-nowrap text-end">
                         <a href="{{ action('Automation2Controller@webhooksSampleRequest', [
                             'webhook_uid' => $webhook->uid,
                         ]) }}" class="btn btn-light sample-request-webhook">
-                            <i class="material-icons-outlined me-1">ios_share</i>
+                            <i class="material-symbols-rounded me-1">ios_share</i>
                             {{ trans('messages.webhook.sample_request') }}
                         </a>
                         <a href="{{ action('Automation2Controller@webhooksTest', [
                             'webhook_uid' => $webhook->uid,
                         ]) }}" class="btn btn-light test-webhook">
-                            <i class="material-icons-outlined">bug_report</i>
+                            <i class="material-symbols-rounded">bug_report</i>
                             {{ trans('messages.webhook.test') }}
                         </a>
                         <div class="btn-group">
@@ -44,7 +44,7 @@
                                         href="{{ action('Automation2Controller@webhooksEdit', [
                                             'webhook_uid' => $webhook->uid,
                                         ]) }}">
-                                        <i class="material-icons-outlined">edit</i>
+                                        <i class="material-symbols-rounded">edit</i>
                                         {{ trans('messages.edit') }}
                                     </a>
                                 </li>
@@ -53,7 +53,7 @@
                                         href="{{ action('Automation2Controller@webhooksDelete', [
                                             'webhook_uid' => $webhook->uid,
                                         ]) }}">
-                                        <i class="material-icons-outlined">delete</i>
+                                        <i class="material-symbols-rounded">delete</i>
                                         {{ trans('messages.delete') }}
                                     </a>
                                 </li>
@@ -66,7 +66,7 @@
     </table>
 @else
 <div class="empty-list">
-    <span class="material-icons-outlined">
+    <span class="material-symbols-rounded">
         cable
 </span>
     <span class="line-1">

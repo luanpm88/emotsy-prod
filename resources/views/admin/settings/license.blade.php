@@ -9,7 +9,7 @@
             <li class="breadcrumb-item"><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
         </ul>
         <h1>
-            <span class="text-gear"><span class="material-icons-outlined">
+            <span class="text-gear"><span class="material-symbols-rounded">
 vpn_key
 </span> {{ trans('messages.license') }}</span>
         </h1>
@@ -45,7 +45,7 @@ vpn_key
 										{{ $current_license }}
 									</h4>
 									<a href="{{ action('Admin\SettingController@licenseRemove') }}" class="btn btn-default ms-4" link-confirm="{{ trans('messages.license.remove.confirm') }}" link-method="POST">
-										<i class="material-icons-outlined">delete</i>
+										<i class="material-symbols-rounded">delete</i>
 										{{ trans('messages.license.remove') }}
 									</a>
 								</div>

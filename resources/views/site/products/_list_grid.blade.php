@@ -28,16 +28,16 @@
 									
 								@endphp
 								<a target="_blank" href="{{ $checkout_url }}" class="btn btn-light m-icon px-2 me-1 text-center copy-product-checkout-url xtooltip" title="Copy checkout URL">
-									<span class="material-icons-outlined">
+									<span class="material-symbols-rounded">
 										monetization_on
 										</span></a>
 
 								<a target="_blank" href="{{ get_permalink( $wooProduct->id ) }}" class="btn btn-light m-icon px-2 me-1 text-center copy-product-page-url xtooltip" title="Copy Product Page URL">
-									<span class="material-icons-outlined">
+									<span class="material-symbols-rounded">
 										inventory_2
 										</span></a>
 								<a href="{{ action('Site\ProductController@edit', $wooProduct->id) }}" role="button" class="btn btn-secondary px-2">
-									<span class="material-icons-outlined">
+									<span class="material-symbols-rounded">
 										edit
 										</span>
 								</a>
@@ -53,7 +53,7 @@
 								</a>
 								<span class="text-muted ml-auto text-primary m-icon d-flex align-items-center">
 									{{-- <img width="20px" class="mr-2 list-source-img" src="{{ url('images/woo_list.png') }}" /> --}}
-									<span class="material-icons-round">
+									<span class="material-symbols-rounded">
 										qr_code
 										</span>
 								</span>
@@ -97,7 +97,7 @@
 		
 @elseif (!empty(request()->keyword))
 	<div class="empty-list">
-		<span class="material-icons-outlined">
+		<span class="material-symbols-rounded">
 			category
 			</span>
 		<span class="line-1">
@@ -106,7 +106,7 @@
 	</div>
 @else
 	<div class="empty-list">
-		<span class="material-icons-outlined">
+		<span class="material-symbols-rounded">
 			category
 			</span>
 		<span class="line-1 text-muted">

@@ -12,10 +12,10 @@
 
 	@include("lists._menu")
 
-	<h2 class="text-bold text-primary mb-10"><span class="material-icons-outlined">
+	<h2 class="text-bold text-primary mb-10"><span class="material-symbols-rounded">
 splitscreen
 </span> {{ $segment->name }}</h2>
-	<h3><span class="material-icons-outlined">
+	<h3><span class="material-symbols-rounded">
 people
 </span> {{ trans('messages.subscribers') }}</h3>
 
@@ -34,21 +34,21 @@ people
 							<ul class="dropdown-menu dropdown-menu-end">
 								<li>
 									<a  link-method="POST" link-confirm="{{ trans('messages.subscribe_subscribers_confirm') }}" href="{{ action('SubscriberController@subscribe', $list->uid) }}">
-										<span class="material-icons-outlined">
+										<span class="material-symbols-rounded">
 mark_email_read
 </span> {{ trans('messages.subscribe') }}
 									</a>
 								</li>
 								<li>
 									<a link-confirm="{{ trans('messages.unsubscribe_subscribers_confirm') }}" href="{{ action('SubscriberController@unsubscribe', $list->uid) }}">
-										<span class="material-icons-round">
+										<span class="material-symbols-rounded">
 logout
 </span> {{ trans('messages.unsubscribe') }}
 									</a>
 								</li>
 								<li>
 									<a link-confirm="{{ trans('messages.delete_subscribers_confirm') }}" href="{{ action('SubscriberController@delete', $list->uid) }}">
-										<span class="material-icons-outlined">
+										<span class="material-symbols-rounded">
 delete_outline
 </span> {{ trans('messages.delete') }}
 									</a>
@@ -69,7 +69,7 @@ delete_outline
 							</select>
 							<input type="hidden" name="sort_direction" value="desc" />
 <button type="button" class="btn btn-xs sort-direction" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
-								<span class="material-icons-outlined desc">
+								<span class="material-symbols-rounded desc">
 sort
 </span>
 							</button>
@@ -128,7 +128,7 @@ sort
 						</div>
 						<span class="text-nowrap">
 							<input type="text" name="keyword" class="form-control search" value="{{ request()->keyword }}" placeholder="{{ trans('messages.type_to_search') }}" />
-							<span class="material-icons-round">
+							<span class="material-symbols-rounded">
 search
 </span>
 						</span>
@@ -137,7 +137,7 @@ search
 			</div>
 			<div class="text-end">
 				<a href="{{ action("SubscriberController@create", $list->uid) }}" role="button" class="btn btn-secondary">
-					<span class="material-icons-round">
+					<span class="material-symbols-rounded">
 add
 </span> {{ trans('messages.create_subscriber') }}
 				</a>

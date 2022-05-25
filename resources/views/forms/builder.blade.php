@@ -112,7 +112,7 @@
                         });
 
                         // add close button
-                        $('.content-background').prepend(`<span class="material-icons-outlined popup-close-button">close</span>`);
+                        $('.content-background').prepend(`<span class="material-symbols-rounded popup-close-button">close</span>`);
                     }
                 });
             
@@ -138,7 +138,7 @@
                                     <div class="d-flex align-items-center" style="width: 100%">
                                         @if($form->getMetadata('website_uid'))
                                             <div class="mr-4" style="width:1%">
-                                                <span class="material-icons-round text-success" style="font-size: 20px;transform: translateY(3px)">
+                                                <span class="material-symbols-rounded text-success" style="font-size: 20px;transform: translateY(3px)">
                                                     link_on
                                                 </span>
                                             </div>
@@ -150,14 +150,14 @@
                                             </div>
                                             <div class="ml-auto">
                                                 <a href="javascript:;" class="connect-to-site link-dark">
-                                                    <span class="material-icons-round mr-1" style="font-size:11px">
+                                                    <span class="material-symbols-rounded mr-1" style="font-size:11px">
                                                         edit
                                                         </span>{{ trans('messages.form.connect_edit') }}
                                                 </a><span class="mx-1"> | </span>
                                                 <a target="_blank" href="{{ $form->getWebsite()->url }}"
                                                     class="link-dark  {{ !$form->isPublished() ? 'open-not-published-site-confirm' : '' }}"
                                                 >
-                                                    <span class="material-icons-round mr-0" style="font-size:11px">
+                                                    <span class="material-symbols-rounded mr-0" style="font-size:11px">
                                                         launch
                                                         </span>
                                                 {{ trans('messages.form.view_on_site') }}
@@ -166,7 +166,7 @@
                                             </div>
                                         @else
                                             <div class="mr-4" style="width:1%">
-                                                <span class="material-icons-round text-warning" style="font-size: 20px;transform: translateY(3px)">
+                                                <span class="material-symbols-rounded text-warning" style="font-size: 20px;transform: translateY(3px)">
                                                     link_off
                                                 </span>
                                             </div>

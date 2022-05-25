@@ -65,7 +65,7 @@
 									<a class="dropdown-item list-action-single" link-confirm="{{ trans('messages.sender.delete.confirm') }}"
 										href="{{ action('SenderController@delete', ["uids" => $sender->uid]) }}"
 									>
-										<span class="material-icons-outlined">
+										<span class="material-symbols-rounded">
 delete_outline
 </span> {{ trans('messages.delete') }}
 									</a>
@@ -81,7 +81,7 @@ delete_outline
 	
 @elseif (!empty(request()->keyword) || !empty(request()->filters["campaign_uid"]))
 	<div class="empty-list">
-		<span class="material-icons-outlined">
+		<span class="material-symbols-rounded">
 people_alt
 </span>
 		<span class="line-1">
@@ -90,7 +90,7 @@ people_alt
 	</div>
 @else
 	<div class="empty-list">
-		<span class="material-icons-outlined">
+		<span class="material-symbols-rounded">
 people_alt
 </span>
 		<span class="line-1">

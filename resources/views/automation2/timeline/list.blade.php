@@ -63,7 +63,7 @@
     
 @else
     <div class="empty-list">
-        <i class="material-icons-outlined">timeline</i>
+        <i class="material-symbols-rounded">timeline</i>
         <span class="line-1">
             {{ trans('messages.automation.timeline.no_activities') }}
         </span>

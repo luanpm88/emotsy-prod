@@ -14,7 +14,7 @@
             <li class="breadcrumb-item"><a href="{{ action("CampaignController@index") }}">{{ trans('messages.campaigns') }}</a></li>
         </ul>
         <h1>
-            <span class="text-semibold"><span class="material-icons-outlined me-2">
+            <span class="text-semibold"><span class="material-symbols-rounded me-2">
 forward_to_inbox
 </span> {{ $campaign->name }}</span>
         </h1>
@@ -47,7 +47,7 @@ forward_to_inbox
             <a
                 sample-url="{{ action('CampaignController@listSegmentForm', $campaign->uid) }}"
                 href="#add_condition" class="btn btn-secondary add-form">
-                <span class="material-icons-outlined">
+                <span class="material-symbols-rounded">
 add
 </span> {{ trans('messages.add_list_segment') }}
             </a>
@@ -56,7 +56,7 @@ add
         <hr>
 
         <div class="text-end">
-            <button class="btn btn-secondary">{{ trans('messages.save_and_next') }} <span class="material-icons-outlined">
+            <button class="btn btn-secondary">{{ trans('messages.save_and_next') }} <span class="material-symbols-rounded">
 arrow_forward
 </span> </button>
         </div>

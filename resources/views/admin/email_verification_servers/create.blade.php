@@ -10,7 +10,7 @@
 			<li class="breadcrumb-item"><a href="{{ action("Admin\EmailVerificationServerController@index") }}">{{ trans('messages.email_verification_servers') }}</a></li>
 		</ul>
 		<h1>
-			<span class="text-semibold"><span class="material-icons-round">
+			<span class="text-semibold"><span class="material-symbols-rounded">
 add
 </span> {{ trans('messages.create_email_verification_server') }}</span>
 		</h1>

@@ -13,11 +13,11 @@
 					@if ($item["type"] == "requirement")
 						<li class="d-flex align-items-center">
 							@if ($item["check"])
-								<span class="material-icons-round fs-3 text-success me-3">
+								<span class="material-symbols-rounded fs-3 text-success me-3">
 task_alt
 </span>
 							@else
-								<span class="material-icons-outlined fs-3 text-danger me-3">
+								<span class="material-symbols-rounded fs-3 text-danger me-3">
 error_outline
 </span>
 							@endif
@@ -45,11 +45,11 @@ error_outline
 					@if ($item["type"] == "permission")
 						<li class="d-flex align-items-center">
 							@if ($item["check"])
-								<span class="material-icons-round fs-3 text-success me-3">
+								<span class="material-symbols-rounded fs-3 text-success me-3">
 task_alt
 </span>
 							@else
-								<span class="material-icons-outlined fs-3 text-danger me-3">
+								<span class="material-symbols-rounded fs-3 text-danger me-3">
 error_outline
 </span>
 							@endif
@@ -71,7 +71,7 @@ error_outline
 	<div class="text-end">                                    
 		@if ($result)
 			<a href="{{ action('InstallController@siteInfo') }}" class="btn btn-primary bg-teal btn-effect">
-				{!! trans('messages.next') !!} <span class="material-icons-round">
+				{!! trans('messages.next') !!} <span class="material-symbols-rounded">
 east
 </span></a>
 		@else

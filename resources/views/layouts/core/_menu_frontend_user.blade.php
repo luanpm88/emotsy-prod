@@ -6,7 +6,7 @@
         </i>
         <span>{{ Auth::user()->displayName() }}</span>
         @if (Auth::user()->customer->hasSubscriptionNotice())
-            <i class="material-icons-outlined customer-warning-icon text-danger" style="right: 3px!important;
+            <i class="material-symbols-rounded customer-warning-icon text-danger" style="right: 3px!important;
             color: rgb(236, 124, 124)!important;
             top: 2px!important;
             position: absolute;
@@ -62,7 +62,7 @@
                 </i>{{ trans('messages.subscriptions') }}
                     <span class="position-relative" style="width:100%">
                         @if (Auth::user()->customer->hasSubscriptionNotice())
-                            <i class="material-icons-outlined subscription-warning-icon text-danger" style="font-size: inherit;
+                            <i class="material-symbols-rounded subscription-warning-icon text-danger" style="font-size: inherit;
                                 position: absolute;
                                 right: 0;
                                 top: 0;margin-top: -10px">info</i>

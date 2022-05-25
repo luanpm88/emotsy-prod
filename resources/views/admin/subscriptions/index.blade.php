@@ -37,7 +37,7 @@
                             </select>
                             <input type="hidden" name="sort_direction" value="desc" />
 <button type="button" class="btn btn-light sort-direction" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
-                                <span class="material-icons-outlined desc">
+                                <span class="material-symbols-rounded desc">
 sort
 </span>
                             </button>
@@ -67,7 +67,7 @@ sort
                     <a href="{{ action("Admin\SubscriptionController@create") }}" role="button"
                         class="btn btn-secondary modal-action new-subscription"
                     >
-                        <span class="material-icons-round">
+                        <span class="material-symbols-rounded">
 add
 </span> {{ trans('messages.subscription.new') }}
                     </a>

@@ -31,7 +31,7 @@
 				</td>
 				<td class="text-end">
 					<a target="_blank" href="{{ get_permalink( $wooProduct->id ) }}" class="btn btn-light m-icon pl-3 copy-product-page-url">
-						<span class="material-icons-outlined me-2">
+						<span class="material-symbols-rounded me-2">
 							inventory_2
 							</span>Copy Product Page URL</a>
 
@@ -45,11 +45,11 @@
 						
 					@endphp
 					<a target="_blank" href="{{ $checkout_url }}" class="btn btn-light m-icon pl-3 copy-product-checkout-url">
-						<span class="material-icons-outlined me-2">
+						<span class="material-symbols-rounded me-2">
 							monetization_on
 							</span>Copy checkout URL</a>
 					<a href="{{ action('Site\ProductController@edit', $wooProduct->id) }}" class="btn btn-secondary m-icon pl-3">
-						<span class="material-icons-outlined me-2">
+						<span class="material-symbols-rounded me-2">
 							edit
 							</span>{{ trans('messages.edit') }}</a>
 					<div class="btn-group">
@@ -63,7 +63,7 @@
 									]) }}"
 									link-method="POST"
 									href="{{ action('Site\ProductController@delete', $wooProduct->id) }}">
-									<span class="material-icons-outlined">
+									<span class="material-symbols-rounded">
 delete_outline
 </span> {{ trans('messages.delete') }}
 								</a>
@@ -106,7 +106,7 @@ delete_outline
 
 @elseif (!empty(request()->keyword))
 	<div class="empty-list">
-		<span class="material-icons-outlined">
+		<span class="material-symbols-rounded">
 			category
 			</span>
 		<span class="line-1">
@@ -115,7 +115,7 @@ delete_outline
 	</div>
 @else
 	<div class="empty-list">
-		<span class="material-icons-outlined">
+		<span class="material-symbols-rounded">
 			category
 			</span>
 		<span class="line-1 text-muted">
