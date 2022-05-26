@@ -272,8 +272,9 @@
     @endif
 
     <h3 class="mt-5 mb-3"><span class="material-symbols-rounded me-2">
-        group_work
-    </span> {{ trans('messages.activity_log') }}</h3>
+        web_stories
+        </span>
+         {{ trans('messages.activity_log') }}</h3>
 
     @if (Auth::user()->customer->logs()->count() == 0)
         <div class="empty-list">
