@@ -39,5 +39,6 @@ class LoadPlugin extends Command
     {
         $name = $this->argument('name');
         \Acelle\Model\Plugin::installFromDir($name);
+        echo "Plugin {$name} loaded\n";
     }
 }
