@@ -14,6 +14,9 @@
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet"> 
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"> 
 
+        <!-- Google icon -->
+        <link href="{{ URL::asset('core/css/google-font-icon.css') }}" rel="stylesheet">
+
         <script type="text/javascript" src="{{ URL::asset('core/validate/jquery.validate.min.js') }}"></script>
         <script type="text/javascript" src="{{ URL::asset('core/js/validate.js') }}"></script>
 
