@@ -19,7 +19,7 @@
     
     @include('senders._menu')
     
-    <h2 class="text-semibold"><i class="icon-list2 me-2"></i> {{ trans('messages.email_addresses') }}</h2>
+    <h2 class="text-semibold">{{ trans('messages.email_addresses') }}</h2>
     
     <p>{{ trans('messages.sender.wording') }}</p>
 
