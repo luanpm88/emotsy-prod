@@ -15,7 +15,6 @@ use Acelle\Library\Facades\Hook;
 use Illuminate\Support\Facades\File;
 use Acelle\Library\Traits\HasUid;
 use Exception;
-use Artisan;
 use function Acelle\Helpers\pcopy;
 
 class Plugin extends Model
@@ -717,7 +716,9 @@ class Plugin extends Model
         }
 
         // Register the plugin with Acelle (add a record to plugins DB table)
-        Artisan::call("plugin:load {$plugin}");
+        self::installFromDir($plugin);
+        echo "Plugin {$name} loaded!\n";
+        echo "You can find it in the storage/app/plugins/$name folder\n";
     }
 
     public static function makeClassNameFromString($name)
