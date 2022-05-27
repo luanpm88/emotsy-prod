@@ -1,19 +1,19 @@
 {
-    "name": "awesome/hello",
+    "name": "{{ plugin }}",
     "title": "Just to say hello world",
     "version": "1.0.0",
     "app_version": "4.0.0",
-    "description": "A sample plugin namely 'hello' by 'Awesome' team",
+    "description": "A sample plugin namely '{{ name }}' made by '{{ author }}' team",
     "autoload": {
         "psr-4": {
-            "Awesome\\Hello\\": "src/"
+            "{{ author_class }}\\{{ name_class }}\\": "src/"
         }
     },
     "extra": {
-        "setting-route": "\\Awesome\\Hello\\Controllers\\DashboardController@index",
+        "setting-route": "\\{{ author_class }}\\{{ name_class }}\\Controllers\\DashboardController@index",
         "laravel": {
             "providers": [
-                "Awesome\\Hello\\ServiceProvider"
+                "{{ author_class }}\\{{ name_class }}\\ServiceProvider"
             ]
         }
     }
