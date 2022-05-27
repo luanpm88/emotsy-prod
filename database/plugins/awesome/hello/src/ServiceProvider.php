@@ -14,16 +14,16 @@ class ServiceProvider extends Base
      */
     public function boot()
     {
-        // views
+        // Register views path
         $this->loadViewsFrom(__DIR__.'/../resources/views', '{{ name }}');
 
-        // routes
+        // Register routes file
         $this->loadRoutesFrom(__DIR__.'/../routes.php');
 
-        // translation
+        // Register translation file
         $this->loadTranslationsFrom(storage_path('app/data/plugins/{{ author }}/{{ name }}/lang/'), '{{ name }}');
 
-        // Make sure the translation file is copied from the master location
+        // Register the translation file against Acelle translation management
         Hook::register('add_translation_file', function() {
             return [
                 "id" => '#{{ plugin }}_translation_file',
