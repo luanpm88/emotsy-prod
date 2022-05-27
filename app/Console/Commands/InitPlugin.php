@@ -3,8 +3,7 @@
 namespace Acelle\Console\Commands;
 
 use Illuminate\Console\Command;
-use function Acelle\Helpers\pcopy;
-use Artisan;
+use Acelle\Model\Plugin;
 
 class InitPlugin extends Command
 {
@@ -13,14 +12,14 @@ class InitPlugin extends Command
      *
      * @var string
      */
-    protected $signature = 'plugin:init';
+    protected $signature = 'plugin:init {name}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Make a sample plugin namely awesome/hello';
+    protected $description = 'Make a sample plugin for Acelle. For example: php artisan plugin:init awesome/my_plugin';
 
     /**
      * Create a new command instance.
@@ -39,7 +38,7 @@ class InitPlugin extends Command
      */
     public function handle()
     {
-        pcopy(database_path('plugins/awesome/hello'), storage_path('app/plugins/awesome/hello'));
-        Artisan::call('plugin:load awesome/hello');
+        $name = $this->argument('name');
+        Plugin::init($name);
     }
 }
