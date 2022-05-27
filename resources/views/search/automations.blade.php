@@ -5,7 +5,7 @@
         <div class="d-flex">
             <div class="me-auto">
                 <label class="fw-600">
-                    <span class="material-icons-outlined me-1">
+                    <span class="material-symbols-rounded me-1">
                         account_tree 
                         </span> {{ trans('messages.automations') }}
                 </label>

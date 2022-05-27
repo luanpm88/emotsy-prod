@@ -47,7 +47,7 @@
                          title="{{ trans('messages.plans.send_via.empty') }}"
                     >
                         {{ trans('messages.plan.sending_server') }}
-                        <i class="material-icons-outlined tabs-warning-icon text-danger">info</i>
+                        <i class="material-symbols-rounded tabs-warning-icon text-danger">info</i>
                     </a>
                 @else
                     <a href="{{ action('Admin\PlanController@sendingServer', $plan->uid) }}" class="nav-link nav-link">

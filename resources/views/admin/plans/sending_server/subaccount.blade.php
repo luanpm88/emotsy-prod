@@ -31,7 +31,7 @@
             <div class="announce_box">
                 <div class="row flex-center">
                     <div class="col-md-8">
-                        <span class="material-icons-outlined announce_box-icon">
+                        <span class="material-symbols-rounded announce_box-icon">
 subtitles
 </span>
                         <label>{{ trans('messages.plan_option.delivery_setting') }}</label>

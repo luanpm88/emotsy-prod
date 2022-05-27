@@ -15,7 +15,7 @@
         <li class="nav-item d-flex align-items-center">
             <a  href="{{ action('SubscriptionController@index') }}"
                 class="nav-link py-3 lvl-1">
-                <i class="material-icons-outlined me-2">arrow_back</i>
+                <i class="material-symbols-rounded me-2">arrow_back</i>
                 <span>{{ trans('messages.go_back') }}</span>
             </a>
         </li>

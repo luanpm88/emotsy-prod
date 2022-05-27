@@ -10,7 +10,7 @@
 				</ul>
 
 				<h1>
-					<span class="text-semibold"><span class="material-icons-outlined">
+					<span class="text-semibold"><span class="material-symbols-rounded">
 add
 </span> {{ trans('messages.select_sending_servers_type') }}</span>
 				</h1>
@@ -30,7 +30,7 @@ add
 												<a href="{{ action('Admin\SendingServerController@create', ["type" => $key]) }}" class="btn btn-secondary">{{ trans('messages.choose') }}</a>
                                                 <a href="{{ action('Admin\SendingServerController@create', ["type" => $key]) }}">
                                                     <span class="server-avatar shadow-sm rounded server-avatar-{{ $key }}">
-                                                        <span class="material-icons-outlined">
+                                                        <span class="material-symbols-rounded">
 
 </span>
                                                     </span>

@@ -2655,6 +2655,7 @@
   'plugin.deleted' => 'プラグインは正常に削除されました',
   'plugin.installed' => 'プラグインが正常にインストールされました',
   'plugin.installing' => '<strong>Installing...</strong><p>Your plugin is being uploaded and processed, please wait!</p>',
+  'plugin.name' => 'Plugin',
   'plugin.type.email_verification' => 'メールの確認',
   'plugin.type.payment' => '支払い',
   'plugin.type.sending_server' => '送信サーバー',

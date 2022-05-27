@@ -60,7 +60,7 @@
 </div>
 <hr>
 <div class="mt-4">
-    <button class="btn btn-secondary me-1"><span class="material-icons-round">
+    <button class="btn btn-secondary me-1"><span class="material-symbols-rounded">
         done
         </span> {{ trans('messages.save') }}</button>
     <a target="_blank" href="{{ config('wordpress.url') . '/wp-admin/post-new.php?post_type=product' }}" role="button" class="btn btn-light">

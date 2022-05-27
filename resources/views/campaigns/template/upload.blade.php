@@ -1,7 +1,7 @@
 @extends('layouts.popup.medium')
 
 @section('title')
-    <i class="material-icons-outlined alert-icon mr-2">backup_table</i>
+    <i class="material-symbols-rounded alert-icon mr-2">backup_table</i>
     {{ trans("messages.template") }}
 @endsection
 

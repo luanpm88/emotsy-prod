@@ -129,7 +129,7 @@
 
 @elseif (!empty(request()->keyword))
     <div class="empty-list">
-        <span class="material-icons-outlined">
+        <span class="material-symbols-rounded">
 auto_awesome_mosaic
 </span>
         <span class="line-1">
@@ -138,7 +138,7 @@ auto_awesome_mosaic
     </div>
 @else
     <div class="empty-list">
-        <span class="material-icons-outlined">
+        <span class="material-symbols-rounded">
 auto_awesome_mosaic
 </span>
         <span class="line-1">

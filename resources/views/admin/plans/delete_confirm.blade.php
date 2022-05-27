@@ -2,7 +2,7 @@
 <ul class="modern-listing">
     @foreach ($plans->get() as $plan)
         <li class="d-flex align-items-center">
-            <i class="material-icons-outlined fs-4 me-3 text-danger">
+            <i class="material-symbols-rounded fs-4 me-3 text-danger">
 error_outline
             </i>
             <div>

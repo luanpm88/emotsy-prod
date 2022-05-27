@@ -46,7 +46,7 @@
 				</td>
 				<td class="text-end text-nowrap pe-0" width="5%">
 					@can('update', $item)
-						<a href="{{ action('Admin\CurrencyController@edit', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" role="button" class="btn btn-secondary btn-icon"><span class="material-icons-outlined">
+						<a href="{{ action('Admin\CurrencyController@edit', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" role="button" class="btn btn-secondary btn-icon"><span class="material-symbols-rounded">
 edit
 </span></a>
 					@endcan
@@ -59,7 +59,7 @@ edit
 										<a class="dropdown-item list-action-single"
 											link-confirm="{{ trans('messages.enable_admins_confirm') }}"
 											href="{{ action('Admin\CurrencyController@enable', ["uids" => $item->uid]) }}">
-											<span class="material-icons-outlined">
+											<span class="material-symbols-rounded">
 play_arrow
 </span> {{ trans('messages.enable') }}
 										</a>
@@ -69,7 +69,7 @@ play_arrow
 									<li>
 										<a class="dropdown-item list-action-single"
 										 link-confirm="{{ trans('messages.disable_admins_confirm') }}" href="{{ action('Admin\CurrencyController@disable', ["uids" => $item->uid]) }}">
-											<span class="material-icons-outlined">
+											<span class="material-symbols-rounded">
 hide_source
 </span> {{ trans('messages.disable') }}
 										</a>
@@ -77,7 +77,7 @@ hide_source
 								@endcan
 								<li>
 									<a class="dropdown-item list-action-single" link-confirm="{{ trans('messages.delete_currencies_confirm') }}" href="{{ action('Admin\CurrencyController@delete', ['uids' => $item->uid]) }}">
-										<span class="material-icons-outlined">
+										<span class="material-symbols-rounded">
 delete_outline
 </span> {{ trans('messages.delete') }}
 									</a>
@@ -93,7 +93,7 @@ delete_outline
 	
 @elseif (!empty(request()->filters))
 	<div class="empty-list">
-		<i class="material-icons-outlined">
+		<i class="material-symbols-rounded">
 assignment_turned_in
 </i>
 		<span class="line-1">
@@ -102,7 +102,7 @@ assignment_turned_in
 	</div>
 @else
 	<div class="empty-list">
-		<span class="material-icons-outlined">
+		<span class="material-symbols-rounded">
 paid
 </span>
 		<span class="line-1">

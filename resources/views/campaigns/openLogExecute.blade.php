@@ -26,12 +26,12 @@
                         <p class="mb-0">{{ trans('messages.webhook.type.' . $webhook->type . '.desc') }}</p>
                         @if ($webhook->type == 'click')
                             <p class="mb-0 text-muted2">
-                                <span class="material-icons-outlined text-muted2 me-1 xtooltip" title="{{ trans('messages.link') }}">ads_click</span>
+                                <span class="material-symbols-rounded text-muted2 me-1 xtooltip" title="{{ trans('messages.link') }}">ads_click</span>
                                 <a target="_blank" href="{{ $webhook->campaignLink->url }}">{{ $webhook->campaignLink->url }}</a>
                             </p>
                         @endif
                         <p class="mb-0 text-muted2">
-                            <span class="material-icons-outlined text-muted2 me-1 xtooltip" title="{{ trans('messages.webhook.endpoint') }}">gps_fixed</span> {{ $webhook->endpoint }}
+                            <span class="material-symbols-rounded text-muted2 me-1 xtooltip" title="{{ trans('messages.webhook.endpoint') }}">gps_fixed</span> {{ $webhook->endpoint }}
                         </p>
                     </td>
                     <td class="text-nowrap text-end">
@@ -44,7 +44,7 @@
                             'webhook_uid' => $webhook->uid,
                             'message_id' => request()->message_id,
                         ]) }}" class="btn btn-light test-webhook">
-                            <i class="material-icons-outlined">play_arrow</i>
+                            <i class="material-symbols-rounded">play_arrow</i>
                             {{ trans('messages.webhook.test') }}
                         </a>
                     </td>

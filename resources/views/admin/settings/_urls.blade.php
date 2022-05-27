@@ -12,7 +12,7 @@
                 @if (array_key_exists('cat', $setting) && $setting['cat'] == 'url')
                     <li>
                         <div class="d-flex">
-                            <span class="material-icons-outlined fs-4 me-4">link</span>
+                            <span class="material-symbols-rounded fs-4 me-4">link</span>
                             <div>
                                 <h5 class="mt-0 mb-0 text-semibold">
                                     {!! str_replace("LIST_UID", "<span class='text-info'>LIST_UID</span>",

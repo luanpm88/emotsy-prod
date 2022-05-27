@@ -60,7 +60,7 @@
             <div class="function-boxes">
                 <a href="{{ action('Site\ProductController@index2') }}" class="function-box btn btn-success me-4 mb-4 rounded-3">
                     <div class="d-flex align-items-center justify-content-center" style="height:100%">
-                        <span class="function-icon material-icons-outlined">
+                        <span class="function-icon material-symbols-rounded">
                             inventory_2
                         </span>
                         <h4 class="text-center m-0">Products</h4>
@@ -68,7 +68,7 @@
                 </a>
                 <a href="{{ action('Site\CategoryController@index') }}" class="function-box btn btn-warning me-4 mb-4 rounded-3">
                     <div class="d-flex align-items-center justify-content-center" style="height:100%">
-                        <span class="function-icon material-icons-outlined">
+                        <span class="function-icon material-symbols-rounded">
                             category
                         </span>
                         <h4 class="text-center m-0">Product<br>Categories</h4>
@@ -76,7 +76,7 @@
                 </a>
                 <a href="{{ action('Site\OrderController@index') }}" class="function-box btn btn-danger me-4 mb-4 rounded-3">
                     <div class="d-flex align-items-center justify-content-center" style="height:100%">
-                        <span class="function-icon material-icons-outlined">
+                        <span class="function-icon material-symbols-rounded">
                             grading
                         </span>
                         <h4 class="text-center m-0">Orders</h4>
@@ -84,7 +84,7 @@
                 </a>
                 <a href="{{ action('Site\CustomerController@index') }}" class="function-box btn btn-info me-4 mb-4 rounded-3">
                     <div class="d-flex align-items-center justify-content-center" style="height:100%">
-                        <span class="function-icon material-icons-outlined">
+                        <span class="function-icon material-symbols-rounded">
                             people
                         </span>
                         <h4 class="text-center m-0">Customers</h4>
@@ -92,7 +92,7 @@
                 </a>
                 <a href="{{ action('Site\SettingController@payments') }}" class="function-box btn btn-secondary bg-payment me-4 mb-4 rounded-3">
                     <div class="d-flex align-items-center justify-content-center" style="height:100%">
-                        <span class="function-icon material-icons-outlined">
+                        <span class="function-icon material-symbols-rounded">
                             payments
                         </span>
                         <h4 class="text-center m-0">Payment Settings</h4>

@@ -148,7 +148,7 @@
         <div class="text-end mt-5 {{ Auth::user()->customer->allowUnverifiedFromEmailAddress() ? '' : 'unverified_next_but' }}">
             <button class="btn btn-secondary">
                 <span class="d-flex align-items-center">
-                    <span>{{ trans('messages.email.setup.save_next') }}</span> <i class="material-icons-outlined">keyboard_arrow_right</i>
+                    <span>{{ trans('messages.email.setup.save_next') }}</span> <i class="material-symbols-rounded">keyboard_arrow_right</i>
                 </span>
             </button>
         </div>

@@ -96,7 +96,7 @@
             data-in-form="true"
             mask-title="{{ trans('messages.feedback_loop_handler.testing_connection') }}"
         >
-            <span class="material-icons-outlined">
+            <span class="material-symbols-rounded">
 quiz
 </span> {{ trans('messages.feedback_loop_handler.test') }}
         </a>

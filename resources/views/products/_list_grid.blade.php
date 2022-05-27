@@ -36,7 +36,7 @@
 		
 @elseif (!empty(request()->keyword))
 	<div class="empty-list">
-		<span class="material-icons-outlined">
+		<span class="material-symbols-rounded">
 			category
 			</span>
 		<span class="line-1">
@@ -45,7 +45,7 @@
 	</div>
 @else
 	<div class="empty-list">
-		<span class="material-icons-outlined">
+		<span class="material-symbols-rounded">
 			category
 			</span>
 		<span class="line-1 text-muted">

@@ -62,7 +62,7 @@
                 <td class="text-end text-nowrap pe-0">
                     @if (\Gate::allows('update', $automation))
                         <a data-popup="tooltip" href="{{ action('Automation2Controller@edit', $automation->uid) }}" role="button" class="btn btn-secondary btn-icon">
-                            <i class="material-icons-outlined">multiline_chart</i> {{ trans('messages.automation.design') }}
+                            <i class="material-symbols-rounded">multiline_chart</i> {{ trans('messages.automation.design') }}
                         </a>
                     @endif
                     @if (\Gate::allows('delete', $automation) || Auth::user()->can('disable', $automation) || Auth::user()->can('enable', $automation))
@@ -77,7 +77,7 @@
                                             link-confirm="{{ trans('messages.enable_automations_confirm') }}"
                                             href="{{ action('Automation2Controller@enable', ["uids" => $automation->uid]) }}"
                                         >
-                                            <span class="material-icons-outlined me-2">
+                                            <span class="material-symbols-rounded me-2">
 play_arrow
 </span> {{ trans('messages.enable') }}
                                         </a>
@@ -90,7 +90,7 @@ play_arrow
                                             link-method="PATCH" link-confirm="{{ trans('messages.disable_automations_confirm') }}"
                                             href="{{ action('Automation2Controller@disable', ["uids" => $automation->uid]) }}"
                                         >
-                                            <span class="material-icons-outlined me-2">
+                                            <span class="material-symbols-rounded me-2">
 hide_source
 </span> {{ trans('messages.disable') }}
                                         </a>
@@ -104,7 +104,7 @@ hide_source
                                             link-confirm="{{ trans('messages.delete_automations_confirm') }}"
                                             href="{{ action('Automation2Controller@delete', ["uids" => $automation->uid]) }}"
                                         >
-                                            <span class="material-icons-outlined me-2">
+                                            <span class="material-symbols-rounded me-2">
 delete_outline
 </span> {{ trans("messages.delete") }}
                                         </a>
@@ -121,7 +121,7 @@ delete_outline
     
 @elseif (!empty(request()->keyword))
     <div class="empty-list">
-        <span class="material-icons-outlined">
+        <span class="material-symbols-rounded">
             schedule
 </span>
         <span class="line-1">
@@ -130,7 +130,7 @@ delete_outline
     </div>
 @else
     <div class="empty-list">
-        <span class="material-icons-outlined">
+        <span class="material-symbols-rounded">
 schedule
 </span>
         <span class="line-1">

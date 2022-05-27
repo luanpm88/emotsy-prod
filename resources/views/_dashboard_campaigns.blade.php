@@ -7,7 +7,7 @@
 
 @if (Auth::user()->customer->sentCampaigns()->count() == 0)
     <div class="empty-list">
-        <span class="material-icons-outlined">
+        <span class="material-symbols-rounded">
             auto_awesome
         </span>
         <span class="line-1">

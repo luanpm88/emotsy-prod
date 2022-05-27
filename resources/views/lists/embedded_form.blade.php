@@ -124,7 +124,7 @@
                     <div>
                         <a href="javascript:;" onclick="copyToClipboard(htmlDecode($('.main-code').html()));
                         notify('success', '{{ trans('messages.notify.success') }}', '{{ trans('messages.embedded_form_code.copied') }}');" class="btn btn-sm btn-light copy-clipboard">
-                            <span class="material-icons-outlined">
+                            <span class="material-symbols-rounded">
                                 content_copy
                                 </span> {{ trans('messages.copy') }}</a>
                     </div>

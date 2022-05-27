@@ -10,7 +10,7 @@
             <li class="breadcrumb-item"><a href="{{ action('Admin\AuthController@index') }}">{{ trans('messages.oauth') }}</a></li>
         </ul>
         <h1>
-            <span class="text-gear"><span class="material-icons-outlined">
+            <span class="text-gear"><span class="material-symbols-rounded">
                 admin_panel_settings
 </span> {{ trans('messages.setting.facebook_oauth') }}</span>
         </h1>				
@@ -62,12 +62,12 @@
                         <h5 class="text-semibold">{{ trans('messages.oauth.origin_uri') }}</h5>
                         <p style="margin-bottom: 30px" class="d-flex align-items-center">
                                 <code style="font-size: 18px" class="origin_uri">{{ url('') }}</code>
-                                <button class="btn btn-light origin_uri-copy-button ml-4"><i class="material-icons-outlined me-2">copy</i>{{ trans('messages.copy') }}</button>
+                                <button class="btn btn-light origin_uri-copy-button ml-4"><i class="material-symbols-rounded me-2">content_copy</i>{{ trans('messages.copy') }}</button>
 
                         <h5 class="text-semibold">{{ trans('messages.oauth.redirect_uri') }}</h5>
                         <p style="margin-bottom: 30px" class="d-flex align-items-center">
                                 <code style="font-size: 18px" class="redirect_uri">{{ action('AuthController@facebookCallback') }}</code>
-                                <button class="btn btn-light redirect_uri-copy-button ml-4"><i class="material-icons-outlined me-2">copy</i>{{ trans('messages.copy') }}</button>
+                                <button class="btn btn-light redirect_uri-copy-button ml-4"><i class="material-symbols-rounded me-2">content_copy</i>{{ trans('messages.copy') }}</button>
                         </p>
                     </div>
                 </div>

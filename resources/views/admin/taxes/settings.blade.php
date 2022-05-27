@@ -13,7 +13,7 @@
             <li class="breadcrumb-item"><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
         </ul>
         <h1>
-            <span class="text-semibold"><span class="material-icons-outlined">
+            <span class="text-semibold"><span class="material-symbols-rounded">
                 payments
                 </span> {{ trans('messages.tax_settings') }}</span>
         </h1>

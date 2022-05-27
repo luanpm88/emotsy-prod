@@ -78,7 +78,7 @@
                     'email_uid' => $email->uid
                 ]) }}')" class="btn btn-secondary">
                     <span class="d-flex align-items-center">
-                        <span>{{ trans('messages.automation.email.next_confirm') }}</span> <i class="material-icons-outlined">keyboard_arrow_right</i>
+                        <span>{{ trans('messages.automation.email.next_confirm') }}</span> <i class="material-symbols-rounded">keyboard_arrow_right</i>
                     </span>
                 </a>
             </div>

@@ -13,7 +13,7 @@
                 <p class="m-0 text-muted">{!! $invoice->getBillingInfo()['description'] !!}</p>
             </div>
             <div class="ms-auto">
-                <span class="material-icons-outlined fs-4 text-success">
+                <span class="material-symbols-rounded fs-4 text-success">
                     task_alt
                     </span>
             </div>

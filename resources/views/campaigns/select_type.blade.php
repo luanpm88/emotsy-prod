@@ -9,7 +9,7 @@
         <li class="breadcrumb-item"><a href="{{ action("CampaignController@index") }}">{{ trans('messages.campaigns') }}</a></li>
     </ul>
     <h1>
-        <span class="text-semibold"><span class="material-icons-outlined">
+        <span class="text-semibold"><span class="material-symbols-rounded">
 schedule
 </span> {{ trans('messages.select_campaign_type') }}</span>
     </h1>

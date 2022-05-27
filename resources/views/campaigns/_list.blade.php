@@ -31,7 +31,7 @@
 					@endif
 
 					@if ($campaign->status != 'new' && isset($campaign->run_at))
-						<span class="text-muted2 d-block">{{ trans('messages.run_at') }}: <span class="material-icons-outlined">
+						<span class="text-muted2 d-block">{{ trans('messages.run_at') }}: <span class="material-symbols-rounded">
 							alarm
 							</span>
 							 {{ isset($campaign->run_at) ? Auth::user()->customer->formatDateTime($campaign->run_at, 'date_full') : "" }}</span>
@@ -87,7 +87,7 @@
 					<div class="d-flex align-items-center text-nowrap justify-content-end">
 						@if (\Gate::allows('update', $campaign))
 							<a href="{{ action('CampaignController@edit', $campaign->uid) }}" role="button"
-								class="btn btn-secondary btn-icon ms-1"> <span class="material-icons-outlined">
+								class="btn btn-secondary btn-icon ms-1"> <span class="material-symbols-rounded">
 	edit
 	</span> {{ trans('messages.edit') }}</a>
 						@endif
@@ -106,7 +106,7 @@
 										<li>
 											<a class="dropdown-item resend-campaign"
 											href="{{ action('CampaignController@resend', ["uid" => $campaign->uid]) }}">
-											<span class="material-icons-outlined me-2">
+											<span class="material-symbols-rounded me-2">
 	restart_alt
 	</span> {{ trans("messages.campaign.resend") }}</a></li>
 									@endif
@@ -114,7 +114,7 @@
 										<li><a class="dropdown-item send-a-test-email-link" href="{{ action('CampaignController@sendTestEmail', [
 											'uid' => $campaign->uid,
 										]) }}">
-											<span class="material-icons-outlined me-2">
+											<span class="material-symbols-rounded me-2">
 forward_to_inbox
 </span> {{ trans("messages.send_a_test_email") }}</a></li>
 									@endif
@@ -123,7 +123,7 @@ forward_to_inbox
 											link-method="POST"
 											link-confirm="{{ trans('messages.pause_campaigns_confirm', ['number' => '1']) }}"
 											href="{{ action('CampaignController@pause', ["uids" => $campaign->uid]) }}">
-											<span class="material-icons-outlined me-2">
+											<span class="material-symbols-rounded me-2">
 	motion_photos_pause
 	</span>{{ trans("messages.pause") }}</a></li>
 									@endif
@@ -131,7 +131,7 @@ forward_to_inbox
 										<li><a class="dropdown-item list-action-single"
 											link-method="POST"
 											link-confirm="{{ trans('messages.restart_campaigns_confirm', ['number' => '1']) }}" href="{{ action('CampaignController@restart', ["uids" => $campaign->uid]) }}">
-											<span class="material-icons-outlined me-2">
+											<span class="material-symbols-rounded me-2">
 	restore
 	</span> {{ trans("messages.restart") }}</a></li>
 									@endif
@@ -143,7 +143,7 @@ forward_to_inbox
 													'copy_campaign_uid' => $campaign->uid,
 												]) }}"
 											>
-												<span class="material-icons-outlined me-2">
+												<span class="material-symbols-rounded me-2">
 													copy_all
 												</span> {{ trans('messages.copy') }}
 											</a>
@@ -155,7 +155,7 @@ forward_to_inbox
 											link-method="POST"
 											link-confirm="{{ trans('messages.delete_campaign_confirm', ['name' => $campaign->name]) }}"
 											href="{{ action('CampaignController@delete', ["uids" => $campaign->uid]) }}">
-											<span class="material-icons-outlined me-2">
+											<span class="material-symbols-rounded me-2">
 	delete_outline
 	</span> {{ trans("messages.delete") }}</a></li>
 									@endif
@@ -239,7 +239,7 @@ forward_to_inbox
 	</script>
 @elseif (!empty(request()->keyword))
 	<div class="empty-list">
-		<span class="material-icons-outlined">
+		<span class="material-symbols-rounded">
 			auto_awesome
 			</span>
 		<span class="line-1">
@@ -248,7 +248,7 @@ forward_to_inbox
 	</div>
 @else
 	<div class="empty-list">
-		<span class="material-icons-outlined">
+		<span class="material-symbols-rounded">
 			auto_awesome
 			</span>
 		<span class="line-1">

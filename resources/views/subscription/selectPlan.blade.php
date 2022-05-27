@@ -66,7 +66,7 @@
                                             {!! format_price($plan->price, $plan->currency->format, true) !!}
                                             <span class="p-currency-code">{{ $plan->currency->code }}</span>
                                         </div>
-                                        <p><span class="material-icons-outlined text-muted2">
+                                        <p><span class="material-symbols-rounded text-muted2">
                                             restore
                                             </span> {{ $plan->displayFrequencyTime() }}</p>
                                     </div>

@@ -46,7 +46,7 @@
                 href="{{ action('CampaignController@webhooksEdit', [
                     'webhook_uid' => $webhook->uid,
                 ]) }}">
-                    <i class="material-icons-outlined">edit</i>
+                    <i class="material-symbols-rounded">edit</i>
                     {{ trans('messages.edit') }}
             </a>
             <button type="button" class="btn btn-light close ms-1">{{ trans('messages.close') }}</button>

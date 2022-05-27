@@ -4,7 +4,7 @@
     @if(config('app.brand'))
         <div class="me-2">
             <a class="open-site-top-menu xtooltip" title="{{ trans('messages.open_website') }}" target="_blank" href="{{ config('wordpress.url') }}">
-                <span class="material-icons-outlined">public</span>
+                <span class="material-symbols-rounded">public</span>
             </a>
         </div>
     @endif

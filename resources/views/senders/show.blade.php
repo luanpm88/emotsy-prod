@@ -42,7 +42,7 @@
                 </div>
             @endif
             <h2>
-                <span class="text-semibold"><span class="material-icons-round">
+                <span class="text-semibold"><span class="material-symbols-rounded">
                             person_outline
                             </span> {{ $sender->name }} </span>
                 <span class="label label-primary bg-{{ $sender->status }}">
@@ -82,7 +82,7 @@
                 @if ($sender->status == Acelle\Model\Sender::STATUS_NEW)
                     <button class="btn btn-primary">{{ trans('messages.sending_domain.verify') }}</button>
                 @endif
-                <a href="{{ action('SenderController@edit', $sender->uid) }}" class="btn btn-primary bg-grey" style="min-width: 100px"><span class="material-icons-outlined">
+                <a href="{{ action('SenderController@edit', $sender->uid) }}" class="btn btn-primary bg-grey" style="min-width: 100px"><span class="material-symbols-rounded">
 edit
 </span> {{ trans('messages.sender.edit') }}</a>
             </form>

@@ -61,7 +61,7 @@
     
 @elseif (!empty(request()->keyword) || !empty(request()->filters["type"]))
     <div class="empty-list">
-        <span class="material-icons-outlined">
+        <span class="material-symbols-rounded">
 approval
 </span>
         <span class="line-1">
@@ -70,7 +70,7 @@ approval
     </div>
 @else
     <div class="empty-list">
-        <span class="material-icons-outlined">
+        <span class="material-symbols-rounded">
 approval
 </span>
         <span class="line-1">

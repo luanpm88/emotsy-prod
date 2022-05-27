@@ -4,7 +4,7 @@
 
 @section('content')
 
-<h3 class="text-primary"><span class="material-icons-outlined">
+<h3 class="text-primary"><span class="material-symbols-rounded">
 dns
 </span> {{ trans('messages.database_configuration') }}</h3>
 
@@ -19,10 +19,10 @@ dns
 	@endif
 
     <div class="text-end">
-        <a href="{{ action('InstallController@database') }}" class="btn btn-secondary me-1"><span class="material-icons-round">
+        <a href="{{ action('InstallController@database') }}" class="btn btn-secondary me-1"><span class="material-symbols-rounded">
 undo
 </span> {!! trans('messages.back') !!}</a>
-        <a href="{{ action('InstallController@import') }}" class="btn btn-primary">{!! trans('messages.setup_database') !!} <span class="material-icons-round">
+        <a href="{{ action('InstallController@import') }}" class="btn btn-primary">{!! trans('messages.setup_database') !!} <span class="material-symbols-rounded">
 east
 </span></a>
 		
