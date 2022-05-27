@@ -717,9 +717,6 @@ class Plugin extends Model
 
         // Register the plugin with Acelle (add a record to plugins DB table)
         self::installFromDir($plugin);
-
-        echo "Plugin {$plugin} loaded!\n";
-        echo "You can find it in the storage/app/plugins/{$plugin} folder\n";
     }
 
     public static function makeClassNameFromString($name)
