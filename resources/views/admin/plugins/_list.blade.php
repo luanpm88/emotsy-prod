@@ -13,7 +13,7 @@
                         {{ $plugin->description }}
                     </span>
                     <br />
-                    <span class="text-muted">{{ trans('messages.plugin.version') }}: {{ $plugin->version }}</span>
+                    <span class="text-muted">{{ trans('messages.plugin.name') }}: {{ $plugin->name }} | {{ trans('messages.plugin.version') }}: {{ $plugin->version }}</span>
                 </td>
                 <td>
                     @if (array_key_exists($plugin->name, $blacklist))

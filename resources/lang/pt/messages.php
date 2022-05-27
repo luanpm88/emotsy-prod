@@ -2700,6 +2700,7 @@
   'plugin.installed' => 'Plugin was successfully installed',
   'plugin.installing' => '<strong>Installing...</strong><p>Your plugin is being uploaded
       and processed, please wait!</p>',
+  'plugin.name' => 'Plugin',
   'plugin.type.email_verification' => 'Email Verification',
   'plugin.type.payment' => 'Payment',
   'plugin.type.sending_server' => 'Sending Server',

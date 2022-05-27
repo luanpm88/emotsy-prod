@@ -2673,6 +2673,7 @@
   'plugin.installed' => 'Plugin wurde erfolgreich installiert',
   'plugin.installing' => '<strong>Installiere...</strong><p> Benutzer Plugin wird hochgeladen
       und wird verarbeitet, bitte warten!</p>',
+  'plugin.name' => 'Plugin',
   'plugin.type.email_verification' => 'Email Verifikation',
   'plugin.type.payment' => 'Zahlung',
   'plugin.type.sending_server' => 'zu sendender Server',
