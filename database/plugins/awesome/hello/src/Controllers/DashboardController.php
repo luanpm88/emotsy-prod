@@ -13,7 +13,8 @@ class DashboardController extends BaseController
         // Get the plugin record in the plugin table
         $plugin = Plugin::where('name', '{{ plugin }}')->first();
 
-        //
+        // View files are available in the storage/app/plugins/{{ author }}/{{ name }}/resources/views/ folder
+        // Remember to use the {{ name }}:: prefix for specifying view
         return view('{{ name }}::index', [
             'plugin' => $plugin,
         ]);

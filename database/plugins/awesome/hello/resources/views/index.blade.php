@@ -16,12 +16,34 @@
     <!-- Begin page content -->
     <main role="main" class="container">
       <h1 class="mt-5">Hello World</h1>
-      <p class="lead">This is a sample dashboard page, powered by <strong>{{ '{{' }} $plugin->name {{ '}}' }}</strong> plugin!</p>
-      <p class="lead">Below is a phrase retrieved from I18n. If it does not work, you can issue the <code>php artisan translation:upgrade</code> command then refresh this page</p>
-      <p class="lead">{{ '{{' }} trans('{{ name }}::messages.intro') {{ '}}' }}</p>
+      <p class="lead">
+        This is the default setting page of the <strong>{{ '{{' }} $plugin->name {{ '}}' }}</strong> plugin!
+        <br>
+        The page is rendered by <code>\{{ author_class }}\{{ name_class }}\Controllers\DashboardController@index</code>, feel free to replace it with actual content.
+      </p>
+      <h2>Translation</h2>
+      <p class="lead">Below is a phrase retrieved from I18n.<br>If it does not work, you can issue the <code>php artisan translation:upgrade</code> command then refresh this page</p>
+      <blockquote>{{ '{{' }} trans('{{ name }}::messages.intro') {{ '}}' }}</blockquote>
+      <p class="lead"><strong>IMPORTANT</strong>. The translation file is available at <code>storage/app/plugins/{{ author }}/{{ name }}/resources/lang/en/messages.php</code>.<br>However, remember to execute the <code>artisan</code> command above every time you update the file. <br>Otherwise new translation phrases will not load.</p>
 
-      <p class="lead">Click <a href="{{ '{{' }} action('\{{ author_class }}\{{ name_class }}\Controllers\DashboardController@index') {{ '}}' }}">here</a> to reload the page. Or <a href="{{ '{{' }} action('Admin\PluginController@index') {{ '}}' }}">go back to the Plugin list</a></p>
+      <h2>Get started</h2>
+      <p class="lead">
+        You can now now modify this plugin template to add functionality.
+      </p>
+      <ul>
+        <li>Add new routes in <code>./routes.php</code></li>
+        <li>Add more actions to this controller file at <code>./src/Controllers/DashboardController.php</code></li>
+        <li>Add new pages to the <code>./resources/views/</code> folder.</li>
+        <li>Check out the service provider for this plugin at <code>./src/ServiceProvider.php</code> folder.</li>
+        <li>Add any PHP file and class you desire to <code>./src</code> folder which follows the PRS-4 convention.<br>For example, add a <code>Sample</code> class in a <code>./src/Sample.php</code> file and access it using the its full namespace of <code>\{{ author_class }}\{{ name_class }}\Sample</code></li>
+      </ul>
+      <footer>
+        <p class="lead">Click <a href="{{ '{{' }} action('\{{ author_class }}\{{ name_class }}\Controllers\DashboardController@index') {{ '}}' }}">here</a> to reload the page. Or <a href="{{ '{{' }} action('Admin\PluginController@index') {{ '}}' }}">go back to the Plugin list</a></p>
+      </footer>
+
     </main>
+
+
 
   </body>
 </html>
