@@ -39,7 +39,7 @@ class LoadPlugin extends Command
     {
         $name = $this->argument('name');
         \Acelle\Model\Plugin::installFromDir($name);
-        echo "Plugin {$name} loaded!\n";
-        echo "You can find it in the storage/app/plugins/$name folder\n";
+
+        echo "\e[32mPlugin \e[35m{$name}\033[0m \e[32mloaded!\n\033[0m";
     }
 }
