@@ -38,7 +38,7 @@
         <li>Add any PHP file and class you desire to <code>./src</code> folder which follows the PRS-4 convention.<br>For example, add a <code>Sample</code> class in a <code>./src/Sample.php</code> file and access it using the its full namespace of <code>\{{ author_class }}\{{ name_class }}\Sample</code></li>
       </ul>
       <footer>
-        <p class="lead">Click <a href="{{ '{{' }} action('\{{ author_class }}\{{ name_class }}\Controllers\DashboardController@index') {{ '}}' }}">here</a> to reload the page. Or <a href="{{ '{{' }} action('Admin\PluginController@index') {{ '}}' }}">go back to the Plugin list</a></p>
+        <p class="lead">Click <a href="{{ '{{' }} action('\{{ author_class }}\{{ name_class }}\Controllers\DashboardController@index') {{ '}}' }}">here</a> to reload the page. Or <a href="{{ '{{' }} action('Admin\PluginController@index') {{ '}}' }}">click to go back to the Plugin management</a> where you can <strong>enable</strong>, <strong>disable</strong> or <strong>delete</strong> this plugin.</p>
       </footer>
 
     </main>
