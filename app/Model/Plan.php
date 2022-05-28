@@ -63,7 +63,6 @@ class Plan extends Model
         'admin_id',
         'trial_amount',
         'trial_unit',
-        'vat',
         'own_tracking_domain_required',
     ];
 
