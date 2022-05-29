@@ -2345,6 +2345,8 @@
   'own' => 'Besitzer',
   'padding' => 'Abstand',
   'paddle.public_key' => 'Public key',
+  'paddle.user.description' => 'Pay for your subscription & services using your debit
+        or credit cards. Auto billing is not supported',
   'paddle.vendor_auth_code' => 'Verkäufer auth code',
   'paddle.vendor_id' => 'Verkäufer ID',
   'paddle_card' => 'Paddle / Karte',
