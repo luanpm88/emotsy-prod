@@ -39,7 +39,7 @@
       </ul>
       <h2>Storage</h2>
       <p class="lead">
-        Sometimes a plugin may require users' input or settings. Then you can use the <code>data</code> field of the plugins table to store the information.
+        Sometimes a plugin may require users' input or settings. Then you can use the <code>data</code> field of the <code>plugins</code> DB table to store the information.
       </p>
       <pre style="background-color:#efefef"><code>
           $plugin = \Acelle\Model\Plugin::where('name', '{{ plugin }}')->first();
