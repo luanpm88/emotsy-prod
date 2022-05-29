@@ -1227,6 +1227,8 @@
   'contacts' => 'contacts',
   'contains' => 'contains',
   'content' => 'Content',
+  'continue_with_facebook' => 'Continue with Facebook',
+  'continue_with_google' => 'Continue with Google',
   'copy' => 'Copy',
   'copy_and_keep' => 'Copy & Keep',
   'copy_and_replace' => 'Copy & Replace',
@@ -4187,6 +4189,4 @@
   'your_current_license' => 'Thank you for purchasing! Below is your license key, also known as Purchase Code. Your license type is',
   'your_subscriptions' => 'Your subscriptions',
   'zip_postal_code' => 'Zip / Postal code',
-  'continue_with_google' => 'Continue with Google',
-  'continue_with_facebook' => 'Continue with Facebook',
 ) ?>
