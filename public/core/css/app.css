@@ -5935,7 +5935,7 @@ table.table-log tr th {
   background-repeat: no-repeat;
   background-position: 0px 0;
 }
-.choose-payment-stripe, .choose-payment-paypal, .choose-payment-paypal_subscription, .choose-payment-braintree, .choose-payment-paystack, .choose-payment-razorpay {
+.choose-payment-stripe, .choose-payment-paddle, .choose-payment-paypal, .choose-payment-paypal_subscription, .choose-payment-braintree, .choose-payment-paystack, .choose-payment-razorpay {
   background-image: url(../../images/cards.svg);
   background-size: 238px;
   background-repeat: no-repeat;

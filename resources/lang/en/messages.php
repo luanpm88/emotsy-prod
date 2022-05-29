@@ -3833,6 +3833,7 @@
   'transaction.method.braintree' => 'Braintree',
   'transaction.method.coinpayments' => 'Coinpayments',
   'transaction.method.offline' => 'Offline',
+  'transaction.method.paddle' => 'Paddle',
   'transaction.method.paypal' => 'Paypal',
   'transaction.method.paystack' => 'Paystack',
   'transaction.method.razorpay' => 'Razorpay',
