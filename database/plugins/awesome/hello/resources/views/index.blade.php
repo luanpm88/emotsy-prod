@@ -37,6 +37,16 @@
         <li>Check out the service provider for this plugin at <code>./src/ServiceProvider.php</code> folder.</li>
         <li>Add any PHP file and class you desire to <code>./src</code> folder which follows the PRS-4 convention.<br>For example, add a <code>Sample</code> class in a <code>./src/Sample.php</code> file and access it using the its full namespace of <code>\{{ author_class }}\{{ name_class }}\Sample</code></li>
       </ul>
+      <h2>Storage</h2>
+      <p class="lead">
+        Sometimes a plugin may require users' input or settings. Then you can use the <code>data</code> field of the plugins table to store the information.
+      </p>
+      <pre style="background-color:#efefef"><code>
+          $plugin = \Acelle\Model\Plugin::where('name', '{{ plugin }}')->first();
+          $plugin->data = json_encode( [ 'plugin data' ] );
+          $plugin->save();
+        </code></pre>
+      <hr />
       <footer>
         <p class="lead">Click <a href="{{ '{{' }} action('\{{ author_class }}\{{ name_class }}\Controllers\DashboardController@index') {{ '}}' }}">here</a> to reload the page. Or <a href="{{ '{{' }} action('Admin\PluginController@index') {{ '}}' }}">click to go back to the Plugin management</a> where you can <strong>enable</strong>, <strong>disable</strong> or <strong>delete</strong> this plugin.</p>
       </footer>
