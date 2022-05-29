@@ -2330,6 +2330,8 @@
   'own' => '自分の',
   'padding' => 'パディング',
   'paddle.public_key' => '公開鍵',
+  'paddle.user.description' => 'Pay for your subscription & services using your debit
+        or credit cards. Auto billing is not supported',
   'paddle.vendor_auth_code' => 'ベンダー認証コード',
   'paddle.vendor_id' => 'ベンダーID',
   'paddle_card' => 'Paddle / Card',

@@ -2371,6 +2371,8 @@
   'own' => 'Propietario',
   'padding' => 'Relleno',
   'paddle.public_key' => 'key Publica',
+  'paddle.user.description' => 'Pay for your subscription & services using your debit
+        or credit cards. Auto billing is not supported',
   'paddle.vendor_auth_code' => 'Código de autenticación del proveedor',
   'paddle.vendor_id' => 'ID Vendedor',
   'paddle_card' => 'Paleta / Tarjeta',

@@ -2370,6 +2370,8 @@
   'own' => 'Próprio',
   'padding' => 'Padding',
   'paddle.public_key' => 'Public key',
+  'paddle.user.description' => 'Pay for your subscription & services using your debit
+        or credit cards. Auto billing is not supported',
   'paddle.vendor_auth_code' => 'Vendor auth code',
   'paddle.vendor_id' => 'Vendor ID',
   'paddle_card' => 'Paddle / Card',
