@@ -160,8 +160,8 @@ class Segment extends Model
     public static function createdDateOperators()
     {
         return [
-            ['text' => trans('messages.greater'), 'value' => 'created_date_greater'],
-            ['text' => trans('messages.less'), 'value' => 'created_date_less'],
+            ['text' => trans('messages.greater_than'), 'value' => 'created_date_greater'],
+            ['text' => trans('messages.less_than'), 'value' => 'created_date_less'],
         ];
     }
 

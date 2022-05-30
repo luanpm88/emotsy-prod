@@ -4190,4 +4190,6 @@
   'continue_with_google' => 'Continue with Google',
   'continue_with_facebook' => 'Continue with Facebook',
   'segment.created_date' => 'Created date',
+  'greater_than' => 'greater than',
+  'less_than' => 'less than',
 ) ?>
