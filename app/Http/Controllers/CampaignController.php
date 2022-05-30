@@ -1090,7 +1090,7 @@ class CampaignController extends Controller
 
         $items = TrackingLog::search($request, $campaign)->paginate($request->per_page);
 
-        return view('admin.tracking_logs._list', [
+        return view('campaigns.tracking_logs_list', [
             'items' => $items,
             'campaign' => $campaign,
         ]);
@@ -1178,7 +1178,7 @@ class CampaignController extends Controller
 
         $items = \Acelle\Model\BounceLog::search($request, $campaign)->paginate($request->per_page);
 
-        return view('admin.bounce_logs._list', [
+        return view('campaigns.bounce_logs_list', [
             'items' => $items,
             'campaign' => $campaign,
         ]);
@@ -1218,7 +1218,7 @@ class CampaignController extends Controller
 
         $items = \Acelle\Model\FeedbackLog::search($request, $campaign)->paginate($request->per_page);
 
-        return view('admin.feedback_logs._list', [
+        return view('campaigns.feedback_logs_list', [
             'items' => $items,
             'campaign' => $campaign,
         ]);
@@ -1338,7 +1338,7 @@ class CampaignController extends Controller
 
         $items = \Acelle\Model\UnsubscribeLog::search($request, $campaign)->paginate($request->per_page);
 
-        return view('admin.unsubscribe_logs._list', [
+        return view('campaigns.unsubscribe_logs_list', [
             'items' => $items,
             'campaign' => $campaign,
         ]);

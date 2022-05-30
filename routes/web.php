@@ -28,14 +28,6 @@ Route::group(['middleware' => ['installed']], function () {
     Route::get('install/finish', 'InstallController@finish');
 });
 
-// Google OAuth 2.0
-Route::get('/auth/google/redirect', 'AuthController@googleRedirect');
-Route::get('/auth/google/callback', 'AuthController@googleCallback');
-
-// Facebook OAuth 2.0
-Route::get('/auth/facebook/redirect', 'AuthController@facebookRedirect');
-Route::get('/auth/facebook/callback', 'AuthController@facebookCallback');
-
 /*
  * The following routes
  * + customer_files
@@ -110,6 +102,13 @@ Route::get('/terms-of-service', 'Controller@termsOfService');
 Route::group(['middleware' => ['not_installed', 'not_logged_in']], function () {
     // Helper method to generate other routes for authentication
     Auth::routes();
+    // Google OAuth 2.0
+    Route::get('/auth/google/redirect', 'AuthController@googleRedirect');
+    Route::get('/auth/google/callback', 'AuthController@googleCallback');
+
+    // Facebook OAuth 2.0
+    Route::get('/auth/facebook/redirect', 'AuthController@facebookRedirect');
+    Route::get('/auth/facebook/callback', 'AuthController@facebookCallback');
 
     Route::get('/login/token/{token}', 'Controller@tokenLogin');
 
