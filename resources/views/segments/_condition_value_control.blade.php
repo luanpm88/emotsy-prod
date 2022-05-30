@@ -91,8 +91,16 @@
             ])
         </div>
         <div class="col-md-6 value-col">
+            @php
+                if (isset($value)) {
+                    $zone = Auth::user()->customer->getTimezone();
+                    $date = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $value, 'UTC');
+                    $date->setTimezone($zone);
+                    $value = $date->format('Y-m-d, H:i');
+                }
+            @endphp
             @include('helpers.form_control', [
-                'type' => 'date',
+                'type' => 'datetime',
                 'name' => 'conditions['.$index.'][value]',
                 'label' => '',
                 'value' => (isset($value) ? $value : ''),

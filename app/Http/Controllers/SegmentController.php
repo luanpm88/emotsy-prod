@@ -124,19 +124,7 @@ class SegmentController extends Controller
             $segment->save();
 
             // save conditions
-            foreach ($request->conditions as $key => $param) {
-                $condition = new \Acelle\Model\SegmentCondition();
-                $condition->fill($param);
-                $condition->segment_id = $segment->id;
-                $field = \Acelle\Model\Field::findByUid($param['field_id']);
-                if (is_object($field)) {
-                    $condition->field_id = $field->id;
-                } else {
-                    $condition->field_id = null;
-                }
-
-                $condition->save();
-            }
+            $segment->updateConditions($request->conditions);
 
             // Log
             $segment->log('created', $request->user()->customer);
@@ -293,21 +281,9 @@ class SegmentController extends Controller
             // Save segment
             $segment->fill($request->all());
             $segment->save();
-            // save conditions
-            $segment->segmentConditions()->delete();
-            foreach ($request->conditions as $key => $param) {
-                $condition = new \Acelle\Model\SegmentCondition();
-                $condition->fill($param);
-                $condition->segment_id = $segment->id;
-                $field = \Acelle\Model\Field::findByUid($param['field_id']);
-                if (is_object($field)) {
-                    $condition->field_id = $field->id;
-                } else {
-                    $condition->field_id = null;
-                }
 
-                $condition->save();
-            }
+            // save conditions
+            $segment->updateConditions($request->conditions);
 
             // Log
             $segment->log('updated', $request->user()->customer);
