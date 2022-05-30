@@ -36,7 +36,7 @@ class AuthController extends Controller
     public function googleRedirect(Request $request)
     {
         return $this->getGoogleOAuthProvider()
-            ->with(['hl' => language_code()])    
+            ->with(['hl' => language_code()])
             ->redirect();
     }
 
@@ -108,7 +108,6 @@ class AuthController extends Controller
     public function facebookRedirect(Request $request)
     {        
         $langCode = str_replace('-', '_', getFullCodeByLanguageCode(language_code()));
-        // var_dump($langCode);die();
         return $this->getFacebookOAuthProvider()
             ->with(['locale' => $langCode])  
             ->redirect();

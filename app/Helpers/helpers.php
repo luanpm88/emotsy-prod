@@ -1047,7 +1047,7 @@ function getFullCodeByLanguageCode($languageCode)
         'en-NZ',
         'en-PH',
         'en-SG',
-        'en-TT',        
+        'en-TT',
         'en-ZA',
         'en-ZW',
         'es-AR',
