@@ -106,9 +106,11 @@ class AuthController extends Controller
      * Facebook OAuth 2.0.
      */
     public function facebookRedirect(Request $request)
-    {
+    {        
+        $langCode = str_replace('-', '_', getFullCodeByLanguageCode(language_code()));
+        // var_dump($langCode);die();
         return $this->getFacebookOAuthProvider()
-            ->with(['locale' => str_replace('-', '_', getFullCodeByLanguageCode(language_code()))])  
+            ->with(['locale' => $langCode])  
             ->redirect();
     }
 

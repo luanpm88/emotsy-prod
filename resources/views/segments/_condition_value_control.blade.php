@@ -79,6 +79,26 @@
             ])
         </div>
     </div>
+@elseif (strpos($operator, 'created_date') !== false)
+    <div class="row">
+        <div class="col-md-6 operator-col">
+            @include('helpers.form_control', [
+                'type' => 'select',
+                'name' => 'conditions['.$index.'][operator]',
+                'label' => '',
+                'value' => (isset($operator) ? $operator : ''),
+                'options' => Acelle\Model\Segment::createdDateOperators()
+            ])
+        </div>
+        <div class="col-md-6 value-col">
+            @include('helpers.form_control', [
+                'type' => 'date',
+                'name' => 'conditions['.$index.'][value]',
+                'label' => '',
+                'value' => (isset($value) ? $value : ''),
+            ])
+        </div>
+    </div>
 @else
     <div class="row">
         <div class="col-md-6 operator-col">

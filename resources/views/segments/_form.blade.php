@@ -37,6 +37,7 @@
 														<optgroup label="{{ trans('messages.segment.activities') }}">
 															<option{{ strpos($condition->operator, 'last_open_email') !== false ? " selected" : "" }} value="last_open_email">{{ trans('messages.segment.last_open_email') }}</option>
 															<option{{ strpos($condition->operator, 'last_link_click') !== false ? " selected" : "" }} value="last_link_click">{{ trans('messages.segment.last_link_click') }}</option>
+															<option{{ strpos($condition->operator, 'created_date') !== false ? " selected" : "" }} value="created_date">{{ trans('messages.segment.created_date') }}</option>
 														</optgroup>
 													</select>
 												</div>
@@ -47,7 +48,6 @@
 													'field_uid' => $condition->field_id,
 													'operator' => $condition->operator,
 													'index' => $condition->uid,
-													'operator' => $condition->operator,
 													'value' => $condition->value
 												])
 											</div>

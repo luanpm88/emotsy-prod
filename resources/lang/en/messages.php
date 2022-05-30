@@ -4189,4 +4189,5 @@
   'zip_postal_code' => 'Zip / Postal code',
   'continue_with_google' => 'Continue with Google',
   'continue_with_facebook' => 'Continue with Facebook',
+  'segment.created_date' => 'Created date',
 ) ?>

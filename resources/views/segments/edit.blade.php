@@ -1,6 +1,13 @@
 @extends('layouts.core.frontend')
 
 @section('title', $list->name . ": " . trans('messages.create_subscriber'))
+
+@section('head')
+    <script type="text/javascript" src="{{ URL::asset('core/datetime/anytime.min.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('core/datetime/moment.min.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('core/datetime/pickadate/picker.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('core/datetime/pickadate/picker.date.js') }}"></script>
+@endsection
 	
 @section('page_header')
 			
@@ -49,11 +56,12 @@ edit
 				$('.segment-conditions-container').append(msg);
 
 				var new_line = $('.segment-conditions-container .condition-line').last();
-				new_line.find('select').select2({
-					templateResult: formatSelect2TextOption,
-					templateSelection: formatSelect2TextSelected
-				});
-				new_line.find('select').trigger('change');
+				// new_line.find('select').select2({
+				// 	templateResult: formatSelect2TextOption,
+				// 	templateSelection: formatSelect2TextSelected
+				// });
+				// new_line.find('select').trigger('change');
+				initJs(new_line);
 			});
 		});
 
@@ -91,7 +99,8 @@ edit
 					success: function(data)
 					{
 						value_col.html(data);
-						value_col.find('select').select2();
+						// value_col.find('select').select2();
+						initJs(value_col);
 					}
 				});
 			}
