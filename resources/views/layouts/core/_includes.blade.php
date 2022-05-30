@@ -27,7 +27,7 @@
 <script type="text/javascript" src="{{ URL::asset('core/tooltipster/js/tooltipster.bundle.min.js') }}"></script>
 
 <!-- Google icon -->
-<link href="{{ URL::asset('core/css/google-font-icon.css') }}" rel="stylesheet">
+<link href="{{ URL::asset('core/css/google-font-icon.css') }}?v=2" rel="stylesheet">
 
 <!-- Autofill -->
 <link rel="stylesheet" type="text/css" href="{{ URL::asset('core/css/autofill.css') }}">
