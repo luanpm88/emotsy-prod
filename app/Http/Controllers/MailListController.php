@@ -461,58 +461,48 @@ class MailListController extends Controller
         $result = [
             'data' => [],
         ];
+        
+        if (isset($list->id)) {
+            if ($list->readCache('SubscribeCount', 0)) {
+                $result['data'][] = ['value' => $list->readCache('SubscribeCount', 0), 'name' => trans('messages.subscribed')];
+            }
 
-        $target = $list;
-        if (!isset($list->id)) {
-            $target = $customer;
+            if ($list->readCache('UnsubscribeCount', 0)) {
+                $result['data'][] = ['value' => $list->readCache('UnsubscribeCount', 0), 'name' => trans('messages.unsubscribed')];
+            }
+
+            if ($list->readCache('UnconfirmedCount', 0)) {
+                $result['data'][] = ['value' => $list->readCache('UnconfirmedCount', 0), 'name' => trans('messages.unconfirmed')];
+            }
+
+            if ($list->readCache('BlacklistedCount', 0)) {
+                $result['data'][] = ['value' => $list->readCache('BlacklistedCount', 0), 'name' => trans('messages.blacklisted')];
+            }
+
+            if ($list->readCache('SpamReportedCount', 0)) {
+                $result['data'][] = ['value' => $list->readCache('SpamReportedCount', 0), 'name' => trans('messages.spam_reported')];
+            }
+        } else {
+            if ($customer->readCache('SubscribedCount', 0)) {
+                $result['data'][] = ['value' => $customer->readCache('SubscribeCount', 0), 'name' => trans('messages.subscribed')];
+            }
+
+            if ($customer->readCache('UnsubscribedCount', 0)) {
+                $result['data'][] = ['value' => $customer->readCache('UnsubscribeCount', 0), 'name' => trans('messages.unsubscribed')];
+            }
+
+            if ($customer->readCache('UnconfirmedCount', 0)) {
+                $result['data'][] = ['value' => $customer->readCache('UnconfirmedCount', 0), 'name' => trans('messages.unconfirmed')];
+            }
+
+            if ($customer->readCache('BlacklistedCount', 0)) {
+                $result['data'][] = ['value' => $customer->readCache('BlacklistedCount', 0), 'name' => trans('messages.blacklisted')];
+            }
+
+            if ($customer->readCache('SpamReportedCount', 0)) {
+                $result['data'][] = ['value' => $customer->readCache('SpamReportedCount', 0), 'name' => trans('messages.spam_reported')];
+            }
         }
-        // if (isset($list->id)) {
-        if ($target->readCache('SubscribeCount', 0)) {
-            $result['data'][] = ['value' => $target->readCache('SubscribeCount', 0), 'name' => trans('messages.subscribed')];
-        }
-
-        if ($target->readCache('UnsubscribeCount', 0)) {
-            $result['data'][] = ['value' => $target->readCache('UnsubscribeCount', 0), 'name' => trans('messages.unsubscribed')];
-        }
-
-        if ($target->readCache('UnconfirmedCount', 0)) {
-            $result['data'][] = ['value' => $target->readCache('UnconfirmedCount', 0), 'name' => trans('messages.unconfirmed')];
-        }
-
-        if ($target->readCache('BlacklistedCount', 0)) {
-            $result['data'][] = ['value' => $target->readCache('BlacklistedCount', 0), 'name' => trans('messages.blacklisted')];
-        }
-
-        if ($target->readCache('SpamReportedCount', 0)) {
-            $result['data'][] = ['value' => $target->readCache('SpamReportedCount', 0), 'name' => trans('messages.spam_reported')];
-        }
-        // } else {
-        //     // create data
-        //     if ($customer->readCache('SubscribedCount', 0)) {
-        //         $result['bar_names'][] = trans('messages.subscribed');
-        //         $datas[] = ['value' => $request->user()->customer->readCache('SubscribedCount', 0), 'name' => trans('messages.subscribed')];
-        //     }
-
-        //     if ($customer->readCache('UnsubscribedCount', 0)) {
-        //         $result['bar_names'][] = trans('messages.unsubscribed');
-        //         $datas[] = ['value' => $customer->readCache('UnsubscribedCount', 0), 'name' => trans('messages.unsubscribed')];
-        //     }
-
-        //     if ($customer->readCache('UnconfirmedCount', 0)) {
-        //         $result['bar_names'][] = trans('messages.unconfirmed');
-        //         $datas[] = ['value' => $customer->readCache('UnconfirmedCount', 0), 'name' => trans('messages.unconfirmed')];
-        //     }
-
-        //     if ($customer->readCache('BlackListedCount', 0)) {
-        //         $result['bar_names'][] = trans('messages.blacklisted');
-        //         $datas[] = ['value' => $customer->readCache('BlackListedCount', 0), 'name' => trans('messages.blacklisted')];
-        //     }
-
-        //     if ($customer->readCache('SpamReportedCount', 0)) {
-        //         $result['bar_names'][] = trans('messages.spam_reported');
-        //         $datas[] = ['value' => $customer->readCache('SpamReportedCount', 0), 'name' => trans('messages.spam_reported')];
-        //     }
-        // }
 
         // // datas
         // $result['data'][] = [
