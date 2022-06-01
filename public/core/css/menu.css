@@ -235,6 +235,9 @@
     .leftbar-closed .navbar-main .navbar-nav {
         margin-top: 70px;
     }
+    .leftbar-closed .navbar-main .navbar-right .navbar-nav {
+        margin-top: 0;
+    }
     .leftbar-closed .navbar-right {
         border-top: none;
     }
@@ -460,6 +463,7 @@
     left: 0;
     border: none;
     border-radius: 0;
+    margin: 0;
 }
 .leftbar:not(.leftbar-closed) .navbar-nav > .nav-item.active .dropdown-menu:not(.top-user-menus) {
     display: block;

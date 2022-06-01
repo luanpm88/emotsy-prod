@@ -466,6 +466,9 @@ body.mode-dark.theme-white.leftbar .leftbar-hide-menu {
 .theme-white.leftbar:not(.leftbar-closed, .mode-dark) ul.dropdown-menu:not(.top-user-menus) .nav-item.active a.dropdown-item {
     background-color: rgba(0,0,0,0.05)!important;
 }
+.theme-white .navbar-dark .navbar-toggler {
+    color: rgba(0,0,0,.8);
+}
 
 
 .text-default.theme-option {
