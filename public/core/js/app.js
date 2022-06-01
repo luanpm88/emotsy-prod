@@ -79,6 +79,10 @@ $(function(){
         $('.leftbar .navbar-main').css('margin-top', '0px');
     });
 
+    $('.nav-item.active').on('mouseup', function() {
+        $(this).removeClass('active');
+    });
+
     $( window ).on('resize', function() {
         $('.leftbar .navbar-main').css('margin-top', '0px');
 
