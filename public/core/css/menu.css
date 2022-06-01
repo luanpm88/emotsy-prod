@@ -13,7 +13,7 @@
 .leftbar:not(.leftbar-closed) .navbar-main .nav-item > .nav-link.active {
     background-color: transparent;
 }
-.leftbar:not(.leftbar-closed) .navbar-main .nav-item.active .dropdown-toggle::after,
+/* .leftbar:not(.leftbar-closed) .navbar-main .nav-item.active .dropdown-toggle::after, */
 .leftbar:not(.leftbar-closed) .navbar-main .nav-item .nav-link.show::after {
     transform: rotate(0deg);
 }
@@ -465,9 +465,9 @@
     border-radius: 0;
     margin: 0;
 }
-.leftbar:not(.leftbar-closed) .navbar-nav > .nav-item.active .dropdown-menu:not(.top-user-menus) {
+/* .leftbar:not(.leftbar-closed) .navbar-nav > .nav-item.active .dropdown-menu:not(.top-user-menus) {
     display: block;
-}
+} */
 .leftbar:not(.leftbar-closed) .collapse.navbar-collapse > ul {
     overflow-x: hidden;
     overflow-y: auto;

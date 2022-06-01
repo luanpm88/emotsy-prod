@@ -79,8 +79,10 @@ $(function(){
         $('.leftbar .navbar-main').css('margin-top', '0px');
     });
 
-    $('.nav-item.active').on('mouseup', function() {
-        $(this).removeClass('active');
+    $('.nav-link.active').on('hide.bs.dropdown', function (e) {
+        if (e.clickEvent && e.clickEvent.target.className!="nav-link") {
+          e.preventDefault();
+        }
     });
 
     $( window ).on('resize', function() {
