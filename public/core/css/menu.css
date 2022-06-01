@@ -481,6 +481,8 @@
 .leftbar:not(.leftbar-closed) .navbar-nav > .nav-item .dropdown-menu:not(.top-user-menus) a.dropdown-item {
     padding-left: 23px;
     font-size: 95%;
+    padding-top: 10px;
+    padding-bottom: 10px;
 }
 .leftbar:not(.leftbar-closed) .navbar-nav > .nav-item .dropdown-menu:not(.top-user-menus) a.dropdown-item .navbar-icon {
     width: 16px!important;
