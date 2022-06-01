@@ -19,7 +19,7 @@
     background-color: transparent;
 }
 /* .leftbar:not(.leftbar-closed) .navbar-main .nav-item.active .dropdown-toggle::after, */
-.leftbar:not(.leftbar-closed) .navbar-main .nav-item .nav-link.show::after {
+.leftbar:not(.leftbar-closed) .navbar-main .main-menu .nav-item .nav-link.show::after {
     transform: rotate(0deg);
 }
 .leftbar-item {
