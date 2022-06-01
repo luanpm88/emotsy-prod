@@ -480,7 +480,7 @@
 }
 .leftbar:not(.leftbar-closed) .navbar-nav > .nav-item .dropdown-menu:not(.top-user-menus) a.dropdown-item {
     padding-left: 23px;
-    font-size: 95%;
+    font-size: 94%;
     padding-top: 10px;
     padding-bottom: 10px;
 }
