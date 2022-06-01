@@ -1,13 +1,13 @@
-.leftbar:not(.leftbar-closed) .dropdown-menu {
+.leftbar:not(.leftbar-closed) .navbar-main:not(.navbar-right) .dropdown-menu {
     background-color: rgba(0,0,0,0.3)!important;
 }
-.leftbar:not(.leftbar-closed) ul.dropdown-menu:not(.top-user-menus) .nav-item a.dropdown-item {
+.leftbar:not(.leftbar-closed) .navbar-main:not(.navbar-right) ul.dropdown-menu:not(.top-user-menus) .nav-item a.dropdown-item {
     color: rgba(255,255,255,0.85);
 }
-.leftbar:not(.leftbar-closed) ul.dropdown-menu:not(.top-user-menus) .nav-item.active a.dropdown-item {
+.leftbar:not(.leftbar-closed) .navbar-main:not(.navbar-right) ul.dropdown-menu:not(.top-user-menus) .nav-item.active a.dropdown-item {
     background-color: rgba(0,0,0,0.15)!important;
 }
-.leftbar:not(.leftbar-closed) ul.dropdown-menu:not(.top-user-menus) .nav-item a.dropdown-item:hover {
+.leftbar:not(.leftbar-closed) .navbar-main:not(.navbar-right) ul.dropdown-menu:not(.top-user-menus) .nav-item a.dropdown-item:hover {
     background-color: rgba(0,0,0,0.08);
 }
 .leftbar:not(.leftbar-closed) .navbar-main .nav-item > .nav-link.active {

@@ -79,10 +79,13 @@ $(function(){
         $('.leftbar .navbar-main').css('margin-top', '0px');
     });
 
-    $('.nav-link.active').on('hide.bs.dropdown', function (e) {
-        if (e.clickEvent && e.clickEvent.target.className!="nav-link") {
+    $('.leftbar:not(.leftbar-closed)  .navbar-main:not(.navbar-right) .nav-link.active').on('hide.bs.dropdown', function (e) {
+        if ($(this).hasClass('active') && e.clickEvent && e.clickEvent.target.className!="nav-link") {
           e.preventDefault();
+        } else {
+            // $(this).removeClass('active');
         }
+       
     });
 
     $( window ).on('resize', function() {

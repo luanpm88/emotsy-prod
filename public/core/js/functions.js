@@ -282,7 +282,7 @@ function menuActiveCheck() {
     }
 
     $('.dropdown-item.active').closest('.nav-item').addClass("active");
-    $('.nav-link.dropdown-toggle.active').dropdown('toggle');
+    $('.leftbar:not(.leftbar-closed) .navbar-main:not(.navbar-right) .nav-link.dropdown-toggle.active').dropdown('toggle');
 }
 
 function applyLinkListener(links, options) {
