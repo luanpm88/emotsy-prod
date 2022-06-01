@@ -765,6 +765,6 @@ body.mode-dark .top-controls-container a {
 body.mode-dark.leftbar:not(.leftbar-closed) ul.dropdown-menu:not(.top-user-menus) .nav-item.active a.dropdown-item {
     background-color: rgba(255,255,255,0.03)!important;
 }
-body.mode-dark:not(.leftbar-closed) .dropdown-menu:not(.top-user-menus) li {
+body.mode-dark:not(.leftbar-closed) .main-menu .dropdown-menu:not(.top-user-menus) li {
     background-color: transparent;
 }
