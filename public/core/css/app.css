@@ -6059,7 +6059,7 @@ h1, h1 {
     font-size: 0.82rem
 }
 .navbar-main .navbar-nav .nav-item:hover .lvl-1 {
-    background-color: rgba(0,0,0,.1);
+    background-color: rgba(0,0,0,.05);
     color: #fff;
 }
 .fw-600 {
