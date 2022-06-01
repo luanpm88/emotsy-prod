@@ -311,14 +311,10 @@ function initMainMenu()
         $('.leftbar .navbar-main').css('margin-top', '0px');
     });
 
-    $('.leftbar:not(.leftbar-closed) .main-menu .nav-link.active').on('hide.bs.dropdown', function (e) {
-        if (!$('.leftbar').hasClass('leftbar-closed') && $(this).hasClass('active') && e.clickEvent && e.clickEvent.target.className!="nav-link") {
-            console.log('aa');
-          e.preventDefault();
-        } else {
-            // $(this).removeClass('active');
+    $('.leftbar .main-menu .nav-link').on('hide.bs.dropdown', function (e) {
+        if (!$('.leftbar').hasClass('leftbar-closed') && e.clickEvent && e.clickEvent.target.className!="nav-link") {
+            e.preventDefault();
         }
-       
     });
 
     $( window ).on('resize', function() {
