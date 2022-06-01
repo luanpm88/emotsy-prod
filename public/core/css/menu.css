@@ -459,7 +459,7 @@
     position: relative;
     left: 0;
     border: none;
-    border-radius: none;
+    border-radius: 0;
 }
 .leftbar:not(.leftbar-closed) .navbar-nav > .nav-item.active .dropdown-menu:not(.top-user-menus) {
     display: block;
