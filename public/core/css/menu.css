@@ -484,5 +484,5 @@
 }
 .leftbar:not(.leftbar-closed) .navbar-nav > .nav-item .dropdown-menu:not(.top-user-menus) a.dropdown-item .navbar-icon {
     width: 16px!important;
-    margin-right: 12.5px;
+    margin-right: 12px;
 }
