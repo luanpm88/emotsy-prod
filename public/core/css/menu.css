@@ -10,7 +10,7 @@
     color: rgba(255,255,255,0.9);
 }
 .leftbar:not(.leftbar-closed) .navbar-main:not(.navbar-right) ul.dropdown-menu:not(.top-user-menus) .nav-item.active a.dropdown-item {
-    background-color: rgba(0,0,0,0.25);
+    background-color: rgba(0,0,0,0.15);
 }
 .leftbar:not(.leftbar-closed) .navbar-main:not(.navbar-right) ul.dropdown-menu:not(.top-user-menus) .nav-item a.dropdown-item:hover {
     background-color: rgba(0,0,0,0.08);
@@ -480,9 +480,9 @@
 }
 .leftbar:not(.leftbar-closed) .navbar-nav > .nav-item .dropdown-menu:not(.top-user-menus) a.dropdown-item {
     padding-left: 23px;
-    font-size: 92%;
+    font-size: 95%;
 }
 .leftbar:not(.leftbar-closed) .navbar-nav > .nav-item .dropdown-menu:not(.top-user-menus) a.dropdown-item .navbar-icon {
-    width: 18px!important;
-    margin-right: 12px;
+    width: 16px!important;
+    margin-right: 12.5px;
 }
