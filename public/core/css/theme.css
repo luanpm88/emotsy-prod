@@ -463,8 +463,9 @@ body.mode-dark.theme-white.leftbar .leftbar-hide-menu {
 .theme-white.leftbar:not(.leftbar-closed, .mode-dark) ul.dropdown-menu:not(.top-user-menus) .nav-item a.dropdown-item {
     color: #333!important;
 }
-.theme-white.leftbar:not(.leftbar-closed, .mode-dark) ul.dropdown-menu:not(.top-user-menus) .nav-item.active a.dropdown-item {
-    background-color: rgba(0,0,0,0.05)!important;
+.theme-white.leftbar:not(.leftbar-closed, .mode-dark) ul.dropdown-menu:not(.top-user-menus) .nav-item.active a.dropdown-item,
+.theme-white.leftbar:not(.leftbar-closed, .mode-dark) ul.dropdown-menu:not(.top-user-menus) .nav-item:hover a.dropdown-item {
+    background-color: rgba(0,0,0,0.02)!important;
 }
 .theme-white .navbar-dark .navbar-toggler {
     color: rgba(0,0,0,.8);
