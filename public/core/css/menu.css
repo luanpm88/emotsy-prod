@@ -488,3 +488,6 @@
     width: 16px!important;
     margin-right: 12px;
 }
+.leftbar:not(.leftbar-closed) .main-menu .dropdown-menu {
+    box-shadow: inset 0 .5rem 1rem rgba(0,0,0,.15) !important;
+}
