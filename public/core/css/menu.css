@@ -480,14 +480,14 @@
 }
 .leftbar:not(.leftbar-closed) .navbar-nav > .nav-item .dropdown-menu:not(.top-user-menus) a.dropdown-item {
     padding-left: 23px;
-    font-size: 0.9rem;
-    padding-top: 10px;
-    padding-bottom: 10px;
+    font-size: 0.87rem;
+    padding-top: 12px;
+    padding-bottom: 12px;
 }
 .leftbar:not(.leftbar-closed) .navbar-nav > .nav-item .dropdown-menu:not(.top-user-menus) a.dropdown-item .navbar-icon {
     width: 16px!important;
     margin-right: 12px;
 }
 .leftbar:not(.leftbar-closed) .main-menu .dropdown-menu {
-    box-shadow: inset 0 .5rem 1rem rgba(0,0,0,.15) !important;
+    box-shadow: inset 0 .5rem 1rem rgba(0,0,0,.08) !important;
 }
