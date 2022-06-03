@@ -120,7 +120,7 @@
                                     <span class="no-margin kq_search font-weight-semibold">
                                         {!! $billInfo['title'] !!}
                                     </span>
-                                    <div class="text-muted small">
+                                    <div class="text-muted">
                                         {!! $billInfo['description'] !!}
                                     </div>
                                 </td>
