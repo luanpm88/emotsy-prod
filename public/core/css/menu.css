@@ -1,19 +1,22 @@
 .leftbar:not(.leftbar-closed) .navbar-main:not(.navbar-right) .dropdown-menu {
     background-color: rgba(0,0,0,0.2);
 }
-.leftbar:not(.leftbar-closed) .navbar-main:not(.navbar-right) ul.dropdown-menu:not(.top-user-menus) .nav-item a.dropdown-item {
-    color: rgba(255,255,255,0.65);
+.leftbar:not(.leftbar-closed) .navbar-main:not(.navbar-right)  .main-menu ul.dropdown-menu:not(.top-user-menus) .nav-item a.dropdown-item {
+    color: rgba(255,255,255,0.65);    
 }
-.leftbar:not(.leftbar-closed) .navbar-main:not(.navbar-right) ul.dropdown-menu:not(.top-user-menus) .nav-item.active a.dropdown-item,
-.leftbar:not(.leftbar-closed) .navbar-main:not(.navbar-right) ul.dropdown-menu:not(.top-user-menus) .nav-item:hover a.dropdown-item
- {
-    color: rgba(255,255,255,0.9);
+.leftbar:not(.leftbar-closed) .navbar-main:not(.navbar-right)  .main-menu ul.dropdown-menu:not(.top-user-menus) .nav-item.active a.dropdown-item,
+.leftbar:not(.leftbar-closed) .navbar-main:not(.navbar-right)  .main-menu ul.dropdown-menu:not(.top-user-menus) .nav-item:hover a.dropdown-item,
+.leftbar:not(.leftbar-closed) .navbar-main:not(.navbar-right)  .main-menu ul.dropdown-menu:not(.top-user-menus) .nav-item.active a.dropdown-item .navbar-icon,
+.leftbar:not(.leftbar-closed) .navbar-main:not(.navbar-right)  .main-menu ul.dropdown-menu:not(.top-user-menus) .nav-item:hover a.dropdown-item .navbar-icon
+{
+    color: rgba(255,255,255,1);
+    transition: all 0.2s ease-in-out;
 }
 .leftbar:not(.leftbar-closed) .navbar-main:not(.navbar-right) ul.dropdown-menu:not(.top-user-menus) .nav-item.active a.dropdown-item {
-    background-color: rgba(0,0,0,0.15);
+    background-color: transparent;
 }
 .leftbar:not(.leftbar-closed) .navbar-main:not(.navbar-right) ul.dropdown-menu:not(.top-user-menus) .nav-item a.dropdown-item:hover {
-    background-color: rgba(0,0,0,0.08);
+    background-color: transparent;
 }
 .leftbar:not(.leftbar-closed) .navbar-main .nav-item > .nav-link.active {
     background-color: transparent;
@@ -53,6 +56,23 @@
 }
 .fullscreen-search-box.topbar.search-open .search-results {
     max-height: calc(100vh - 160px);
+}
+.leftbar:not(.leftbar-closed) .navbar-main .navbar-nav a.nav-link {
+    color: rgba(255,255,255,0.7);
+    transition: all 0.2s ease-in-out;
+}
+.leftbar:not(.leftbar-closed) .navbar-main .navbar-nav a.nav-link .navbar-icon {
+    opacity: 0.7;
+    transition: all 0.2s ease-in-out;
+}
+.leftbar:not(.leftbar-closed) .navbar-main .navbar-nav .nav-item:hover a.nav-link, .leftbar:not(.leftbar-closed) .navbar-main .navbar-nav .nav-item.active a.nav-link {
+    color: rgba(255,255,255,1);
+}
+.leftbar:not(.leftbar-closed) .navbar-main .navbar-nav .nav-item:hover a.nav-link .navbar-icon, .leftbar:not(.leftbar-closed) .navbar-main .navbar-nav .nav-item.active a.nav-link  .navbar-icon {
+    opacity: 1;
+}
+.leftbar:not(.leftbar-closed) .navbar-main .navbar-nav.main-menu .nav-item:hover a {
+    background-color: transparent!important;
 }
 @media (min-width: 1200px) {
     .leftbar .leftbar-hide-menu {
