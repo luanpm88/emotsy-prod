@@ -2,7 +2,7 @@
     background-color: rgba(0,0,0,0.2);
 }
 .leftbar:not(.leftbar-closed) .navbar-main:not(.navbar-right)  .main-menu ul.dropdown-menu:not(.top-user-menus) .nav-item a.dropdown-item {
-    color: rgba(255,255,255,0.65);    
+    color: rgba(255,255,255,0.6);    
 }
 .leftbar:not(.leftbar-closed) .navbar-main:not(.navbar-right)  .main-menu ul.dropdown-menu:not(.top-user-menus) .nav-item.active a.dropdown-item,
 .leftbar:not(.leftbar-closed) .navbar-main:not(.navbar-right)  .main-menu ul.dropdown-menu:not(.top-user-menus) .nav-item:hover a.dropdown-item,
@@ -59,7 +59,7 @@
     max-height: calc(100vh - 160px);
 }
 .leftbar:not(.leftbar-closed) .navbar-main .navbar-nav a.nav-link {
-    color: rgba(255,255,255,0.7);
+    color: rgba(255,255,255,0.6);
     transition: all 0.2s ease-in-out;
 }
 .leftbar:not(.leftbar-closed) .navbar-main .navbar-nav a.nav-link .navbar-icon {
