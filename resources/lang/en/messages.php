@@ -1224,7 +1224,7 @@
   'confirm_password' => 'Confirm password',
   'connections.manage' => 'Manage connections',
   'contact_information' => 'Contact information',
-  'contacts' => 'contacts',
+  'contacts' => 'Contacts',
   'contains' => 'contains',
   'content' => 'Content',
   'continue_with_facebook' => 'Continue with Facebook',
