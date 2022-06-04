@@ -10,6 +10,7 @@
 .leftbar:not(.leftbar-closed) .navbar-main:not(.navbar-right)  .main-menu ul.dropdown-menu:not(.top-user-menus) .nav-item:hover a.dropdown-item .navbar-icon
 {
     color: rgba(255,255,255,1);
+    opacity: 1;
     transition: all 0.2s ease-in-out;
 }
 .leftbar:not(.leftbar-closed) .navbar-main:not(.navbar-right) ul.dropdown-menu:not(.top-user-menus) .nav-item.active a.dropdown-item {
@@ -149,7 +150,7 @@
         margin-bottom: 1px;
     }
     .leftbar .navbar-main .navbar-nav .lvl-1 {
-        font-size: 0.9rem;
+        font-size: 14px;
     }
     .leftbar .navbar-brand > img {
         max-width: 132px;
@@ -502,6 +503,7 @@
     padding-left: 22px;
     padding-top: 12px;
     padding-bottom: 12px;
+    font-size: 13px;
 }
 .leftbar:not(.leftbar-closed) .navbar-nav > .nav-item .dropdown-menu:not(.top-user-menus) a.dropdown-item .navbar-icon {
     width: 16px!important;
