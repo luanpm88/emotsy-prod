@@ -446,10 +446,10 @@ body.mode-dark.theme-white.leftbar .leftbar-hide-menu {
 }
 
 
-.theme-white.leftbar:not(.mode-dark) .navbar-main .navbar-nav a.nav-link {
+.theme-white:not(.mode-dark) .navbar-main .navbar-nav a.nav-link {
     color: rgba(0,0,0,0.7)!important;
 }
-.theme-white.leftbar:not(.mode-dark) .navbar-main .navbar-nav .nav-item:hover a.nav-link, .theme-white.leftbar:not(.mode-dark) .navbar-main .navbar-nav .nav-item.active a.nav-link {
+.theme-white:not(.mode-dark) .navbar-main .navbar-nav .nav-item:hover a.nav-link, .theme-white:not(.mode-dark) .navbar-main .navbar-nav .nav-item.active a.nav-link {
     color: rgba(0,0,0,1)!important;
 }
 .theme-white.leftbar:not(.leftbar-closed, .mode-dark) .navbar-main:not(.navbar-right) .dropdown-menu {
