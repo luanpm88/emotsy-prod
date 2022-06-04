@@ -4194,4 +4194,6 @@
   'segment.created_date' => 'Created date',
   'greater_than' => 'greater than',
   'less_than' => 'less than',
+  'plugins.new_plugin' => 'New plugin',
+  'plugins.all_plugins' => 'All plugins',
 ) ?>
