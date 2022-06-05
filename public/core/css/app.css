@@ -6175,7 +6175,7 @@ h1, h1 {
     position: absolute;
     border-radius: 100%;
     left: 3px;
-    top: 1px;
+    top: 4px;
     /* transform: translateY(19997px); */
 }
 .styled.check_all ~ .check-symbol {
