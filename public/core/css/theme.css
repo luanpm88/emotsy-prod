@@ -389,7 +389,7 @@ body.mode-dark.theme-grey .template-create-sticky {
     background-color: rgb(27, 27, 27);
 }
 body.mode-dark.theme-grey .navbar-main {
-    background-color: rgba(18, 18, 18, 0.9)!important;
+    background-color: rgba(18, 18, 18, 0.5)!important;
 }
 body.mode-dark.theme-pink a:not(.btn, .dropdown-item, .nav-link):hover {
     color: #ffbaff;
