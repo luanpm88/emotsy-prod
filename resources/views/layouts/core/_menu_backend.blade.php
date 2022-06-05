@@ -460,9 +460,15 @@
             if (!$('.leftbar').hasClass('leftbar-closed')) {
                 $('.leftbar').addClass('leftbar-closed');
 
+                $('.leftbar').removeClass('state-open');
+                $('.leftbar').addClass('state-closed');
+
                 MenuFrontend.saveLeftbarState('closed');
             } else {
                 $('.leftbar').removeClass('leftbar-closed');
+
+                $('.leftbar').removeClass('state-closed');
+                $('.leftbar').addClass('state-open');
 
                 MenuFrontend.saveLeftbarState('open');
             }

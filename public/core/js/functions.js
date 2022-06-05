@@ -272,7 +272,6 @@ function initMainMenu()
     // leftbar scroll behaviour
     $('.leftbar .navbar-main').on( 'DOMMouseScroll mousewheel', function ( event ) {
         if ($('.leftbar').hasClass('leftbar-closed')) {
-            console.log('dsss');
             if ($(window).width() < 1200) {
                 return;
             }
@@ -317,13 +316,27 @@ function initMainMenu()
         }
     });
 
-    $( window ).on('resize', function() {
+    var leftbarAdjust = function() {
         $('.leftbar .navbar-main').css('margin-top', '0px');
 
-        if ($(window).width() > 1300 && $(window).width() < 1600) {
+        if ($(window).width() > 1300 && $(window).width() < 1500) {
             $('.leftbar').removeClass('leftbar-open');
             $('.leftbar').addClass('leftbar-closed');
         }
+
+        if ($(window).width() > 1500 && $('body').hasClass('state-open')) {
+            $('.leftbar').addClass('leftbar-open');
+            $('.leftbar').removeClass('leftbar-closed');
+        }
+
+        if ($(window).width() < 1200) {
+            $('.leftbar').removeClass('leftbar-open');
+            $('.leftbar').addClass('leftbar-closed');
+        }
+    };
+    leftbarAdjust();
+    $( window ).on('resize', function() {
+        leftbarAdjust();
     });
 }
 
