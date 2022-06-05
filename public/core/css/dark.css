@@ -765,3 +765,19 @@ body.mode-dark .top-controls-container a {
 body.mode-dark:not(.leftbar-closed) .main-menu .dropdown-menu:not(.top-user-menus) li {
     background-color: transparent;
 }
+body.mode-dark .tooltipster-sidetip.tooltipster-light .tooltipster-box {
+    border-color: rgba(255, 255, 255, 0.05);
+}
+body.mode-dark .tooltipster-sidetip.tooltipster-light .tooltipster-content {
+    color: rgba(255,255,255,0.85)!important;    
+}
+body.mode-dark .tooltipster-sidetip.tooltipster-light .tooltipster-box {
+    background-color: rgba(255,255,255,0.1);
+}
+body.mode-dark .tooltipster-arrow-background {
+    background-color: transparent!important;
+}
+body.mode-dark .tooltipster-sidetip.tooltipster-light.tooltipster-bottom .tooltipster-arrow-background,
+body.mode-dark .tooltipster-sidetip.tooltipster-light.tooltipster-bottom .tooltipster-arrow-border {
+    border-bottom-color: rgba(255, 255, 255, 0.1)!important;
+}
