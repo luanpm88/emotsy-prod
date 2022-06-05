@@ -778,6 +778,9 @@ body.mode-dark .tooltipster-arrow-background {
     background-color: transparent!important;
 }
 body.mode-dark .tooltipster-sidetip.tooltipster-light.tooltipster-bottom .tooltipster-arrow-background,
-body.mode-dark .tooltipster-sidetip.tooltipster-light.tooltipster-bottom .tooltipster-arrow-border {
+body.mode-dark .tooltipster-sidetip.tooltipster-light.tooltipster-bottom .tooltipster-arrow-border,
+body.mode-dark .tooltipster-sidetip.tooltipster-light.tooltipster-top .tooltipster-arrow-background,
+body.mode-dark .tooltipster-sidetip.tooltipster-light.tooltipster-top .tooltipster-arrow-border {
     border-bottom-color: rgba(255, 255, 255, 0.1)!important;
+    border-top-color: rgba(255, 255, 255, 0.1)!important;
 }
