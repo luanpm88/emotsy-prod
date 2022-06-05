@@ -319,7 +319,7 @@ body.mode-dark.theme-pink a:not(.btn, .dropdown-item, .nav-link):hover {
 }
 
 .theme-grey .navbar-main {
-    background-color: rgba(40,40,40,0.8)!important;
+    background-color: rgba(40,40,40,0.85)!important;
 }
 .theme-grey .btn-info {
     background-color: #c4c4c4;
