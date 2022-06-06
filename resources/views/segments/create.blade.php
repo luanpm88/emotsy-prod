@@ -65,6 +65,7 @@ add
 				// new_line.find('select').trigger('change');
 				
 				initJs(new_line);
+				new_line.find('select').trigger('change');
 			});
 		});
 
@@ -104,6 +105,7 @@ add
 						value_col.html(data);
 						// value_col.find('select').select2();
 						initJs(value_col);
+						value_col.find('select').select2();
 					}
 				});
 			}
