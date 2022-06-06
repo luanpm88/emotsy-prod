@@ -34,7 +34,6 @@
                         <br/>
                         <span class="text-muted">{{ trans("messages.subscribers") }}</span>
                     </div>
-                    <br style="clear:both"/>
                 </td>
 
                 <td class="text-end text-nowrap pe-0">
