@@ -772,7 +772,9 @@ body.mode-dark .tooltipster-sidetip.tooltipster-light .tooltipster-content {
     color: rgba(255,255,255,0.85)!important;    
 }
 body.mode-dark .tooltipster-sidetip.tooltipster-light .tooltipster-box {
-    background-color: rgba(255,255,255,0.1);
+    background-color: rgba(255,255,255,0.05);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
 }
 body.mode-dark .tooltipster-arrow-background {
     background-color: transparent!important;
