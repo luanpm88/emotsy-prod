@@ -2813,9 +2813,7 @@ p.link-inline a {
 }
 .hover-list li .list-body h4 {
   margin: 0 0 3px 0;
-  font-size: 15px;
-  font-weight: 600;
-  color: #00695B;
+  font-size: 1.05rem;
 }
 .hover-list li .list-body p {
   font-size: 14px;
