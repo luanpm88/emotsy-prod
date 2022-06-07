@@ -1,4 +1,7 @@
-<h4 class="mt-4 mb-3"><i class="icon-stats-dots"></i> {{ trans('messages.statistics') }}</h4>
+<h3 class="mt-4 mb-3"><span class="material-symbols-rounded me-2">
+monitoring
+</span>
+ {{ trans('messages.statistics') }}</h3>
 <p class="mb-3">{!! trans('messages.campaign_table_chart_intro') !!}</p>
 
 <div class="row">
