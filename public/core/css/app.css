@@ -6615,7 +6615,7 @@ h3, h4 [class^="material-"] {
     content: 'keyboard_arrow_down';
     font-family: 'Material Icons Outlined';
     border: none;
-    line-height: 21px;
+    line-height: 30px;
     position: absolute;
     margin-left: 0;
 }
