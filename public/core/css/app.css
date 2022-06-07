@@ -6440,6 +6440,9 @@ h1, h1 {
 .campaign-steps .nav-link {
     margin-right: 35px!important;
 }
+.campaign-steps .nav-link.me-0 {
+    margin-right: 0!important;
+}
 .alert {
     position: relative;
     padding-left: 50px;
@@ -6600,6 +6603,7 @@ h5 {
 }
 .nav-underline .nav-item .nav-link [class^="material-"] {
     margin-right: .3rem;
+    font-size: 18px;
 }
 h1 [class^="material-"] {
     margin-right: .5rem;
