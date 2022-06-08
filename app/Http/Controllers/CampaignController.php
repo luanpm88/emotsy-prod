@@ -1516,7 +1516,7 @@ class CampaignController extends Controller
         $subscribers = $subscribers->search($request->keyword)->paginate($request->per_page);
 
         // Field information
-        $fields = $campaign->defaultMailList->getFields->whereIn('uid', explode(',', $request->columns));
+        $fields = $campaign->defaultMailList->getFields->whereIn('uid', $request->columns);
 
         return view('campaigns._subscribers_list', [
             'subscribers' => $subscribers,
