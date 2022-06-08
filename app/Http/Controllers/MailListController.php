@@ -461,7 +461,7 @@ class MailListController extends Controller
         $result = [
             'data' => [],
         ];
-        
+
         if (isset($list->id)) {
             if ($list->readCache('SubscribeCount', 0)) {
                 $result['data'][] = ['value' => $list->readCache('SubscribeCount', 0), 'name' => trans('messages.subscribed')];
