@@ -25,7 +25,11 @@ person_outline
                     <div class="d-flex py-2 border-bottom">
                         <div class="row" style="width: 100%">
                             <div class="col-md-3 text-end text-md-left">
-                                <h4 class="text-primary">{{ trans('messages.' . $key) }}</h4>
+                                <h4 class="text-primary">{{ trans('messages.' . $key) }}
+                                    <span class="material-symbols-rounded text-muted2 ps-3">
+                                        drag_indicator
+                                        </span>
+                                </h4>
                             </div>
                             <div class="col-md-9">
                                 <div class="row">

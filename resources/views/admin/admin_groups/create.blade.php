@@ -25,7 +25,7 @@ add
 
 		@include("admin.admin_groups._form")
 
-		<div class="text-left">
+		<div class="text-left mt-4">
 			<button class="btn btn-secondary me-2"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
 			<a href="{{ action('Admin\AdminGroupController@index') }}" class="btn btn-link"><i class="icon-cross2"></i> {{ trans('messages.cancel') }}</a>
 		</div>
