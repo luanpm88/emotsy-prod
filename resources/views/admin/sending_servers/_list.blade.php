@@ -16,7 +16,7 @@
                         </div>
                     </div>
                 </td>
-                <td>
+                <td width="1%">
                     @php
                         $server = $item->mapType();
                     @endphp
