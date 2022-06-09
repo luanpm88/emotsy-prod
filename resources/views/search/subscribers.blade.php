@@ -9,7 +9,7 @@
                 </label>
             </div>
             <div>
-                {{ $subscribers->count() }} / {{ format_number($subscribers->total()) }} · {{ trans('messages.search.go_to_lists') }}
+                {{ $subscribers->count() }} / {{ number_with_delimiter($subscribers->total(), $precision = 0) }} · {{ trans('messages.search.go_to_lists') }}
             </div>
         </div>
     </a>

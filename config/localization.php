@@ -20,7 +20,7 @@ return [
         'datetime_full' => 'Y-m-d H:i',
         'datetime_short' => 'Y-m-d H:i',
         'time_only' => 'H:i',
-        'number_precision' => '0',
+        'number_precision' => '2',
         'number_decimal_separator' => '.',
         'number_thousands_separator' => ','
     ],

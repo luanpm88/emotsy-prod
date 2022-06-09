@@ -495,31 +495,14 @@ function doublequote($str)
  *
  * @return string
  */
-function format_number($number)
-{
-    if (is_numeric($number) && floor($number) != $number) {
-        return number_format($number, 2, trans('messages.dec_point'), trans('messages.thousands_sep'));
-    } elseif (is_numeric($number)) {
-        return number_format($number, 0, trans('messages.dec_point'), trans('messages.thousands_sep'));
-    } else {
-        return $number;
-    }
-}
-/**
- * Format price.
- *
- * @param string
- *
- * @return string
- */
 function format_price($price, $format = '{PRICE}', $html=false)
 {
     if ($html) {
-        $html = str_replace('{PRICE}', ' <span class="p-amount">' . format_number($price) . '</span> ', $format);
-        // $html = str_replace(format_number($price), ' <span class="p-amount">' . format_number($price) . '</span> ', $html);
+        $html = str_replace('{PRICE}', ' <span class="p-amount">' . number_with_delimiter($price) . '</span> ', $format);
+        // $html = str_replace(number_with_delimiter($price), ' <span class="p-amount">' . number_with_delimiter($price) . '</span> ', $html);
         return $html;
     } else {
-        return str_replace('{PRICE}', format_number($price), $format);
+        return str_replace('{PRICE}', number_with_delimiter($price), $format);
     }
 }
 

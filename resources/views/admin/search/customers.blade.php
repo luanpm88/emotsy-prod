@@ -11,7 +11,7 @@
                 </label>
             </div>
             <div>
-                {{ $customers->count() }} / {{ format_number($customers->total()) }} · 
+                {{ $customers->count() }} / {{ number_with_delimiter($customers->total(), $precision = 0) }} ·
                 {{ trans('messages.search.view_all') }}
             </div>
         </div>

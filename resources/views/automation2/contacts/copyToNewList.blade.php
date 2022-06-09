@@ -12,7 +12,7 @@
 
                 <h3 class="mb-3">{{ trans('messages.automation.contacts.copy_to_new_list') }}</h3>
                 <p>{!! trans('messages.automation.contacts.copy_to_new_list.intro', [
-                    'count' => format_number($subscribers->count()),
+                    'count' => number_with_delimiter($subscribers->count(), $precision = 0),
                 ]) !!}</p>
                     
                 @include('helpers.form_control', [

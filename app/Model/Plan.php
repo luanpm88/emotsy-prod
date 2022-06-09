@@ -394,8 +394,8 @@ class Plan extends Model
         // exist
         if ($this->getOption('sending_limit') == 'other') {
             $wording = trans('messages.plan.sending_limit.phrase', [
-                'quota_value' => format_number($this->getOption('sending_quota')),
-                'quota_base' => format_number($this->getOption('sending_quota_time')),
+                'quota_value' => number_with_delimiter($this->getOption('sending_quota'), $precision = 0),
+                'quota_base' => number_with_delimiter($this->getOption('sending_quota_time'), $precision = 0),
                 'quota_unit' => $this->getOption('sending_quota_time_unit'),
             ]);
 
@@ -425,7 +425,7 @@ class Plan extends Model
         // exist
         if ($this->getOption('billing_cycle') == 'other') {
             $wording = trans('messages.plan.billing_cycle.phrase', [
-                'frequency_amount' => format_number($this->frequency_amount),
+                'frequency_amount' => number_with_delimiter($this->frequency_amount),
                 'frequency_unit' => $this->frequency_unit,
             ]);
 

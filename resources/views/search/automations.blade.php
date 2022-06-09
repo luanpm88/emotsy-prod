@@ -11,7 +11,7 @@
                 </label>
             </div>
             <div>
-                {{ $automations->count() }} / {{ format_number($automations->total()) }} · {{ trans('messages.search.view_all') }}
+                {{ $automations->count() }} / {{ number_with_delimiter($automations->total(), $precision = 0) }} · {{ trans('messages.search.view_all') }}
             </div>
         </div>
     </a>
