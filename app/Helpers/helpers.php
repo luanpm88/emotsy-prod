@@ -336,6 +336,11 @@ function number_with_delimiter($number, $precision = null, $seperator = null, $l
         $locale = config('app.locale');
     }
 
+    // Trick!
+    if (floor($number) == $number && is_null($precision)) {
+        $precision = 0;
+    }
+
     if (is_null($precision)) {
         $precision = get_localization_config('number_precision', $locale);
     }
