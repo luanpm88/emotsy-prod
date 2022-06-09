@@ -148,6 +148,23 @@ function array_unique_by($array, $callback)
     return array_values($result);
 }
 
+function get_localization_config($name, $locale)
+{
+    $defaultConfig = config('localization')['*'];
+
+    if (array_key_exists($locale, config('localization'))) {
+        $config = config('localization')[$locale];
+    }
+
+    if (isset($config) && array_key_exists($name, $config) && array_key_exists($name, $defaultConfig)) {
+        return $config[$name];
+    } elseif (array_key_exists($name, $defaultConfig)) {
+        return $defaultConfig[$name];
+    } else {
+        throw new \Exception('Localization config for "'.$name.'" does not exist');
+    }
+}
+
 function get_datetime_format($name, $locale)
 {
     $defaultConfig = config('localization')['*'];
@@ -309,13 +326,27 @@ function number_to_percentage($number, $precision = 2)
  *
  * @return string
  */
-function number_with_delimiter($number, $precision = 0, $seperator = ',')
+function number_with_delimiter($number, $precision = null, $seperator = null, $locale = null)
 {
     if (!is_numeric($number)) {
         return $number;
     }
 
-    return number_format($number, $precision, '.', $seperator);
+    if (is_null($locale)) {
+        $locale = config('app.locale');
+    }
+
+    if (is_null($precision)) {
+        $precision = get_localization_config('number_precision', $locale);
+    }
+
+    $decimal = get_localization_config('number_decimal_separator', $locale);
+
+    if (is_null($seperator)) {
+        $seperator = get_localization_config('number_thousands_separator', $locale);
+    }
+
+    return number_format($number, $precision, $decimal, $seperator);
 }
 
 /**
