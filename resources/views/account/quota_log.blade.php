@@ -42,7 +42,7 @@
                     <div class="d-flex align-items-center">
                         <h5 class="text-semibold mb-1 me-auto">{{ trans('messages.list') }}</h5>
                         <div class="pull-right text-primary text-semibold">
-                            <span class="text-muted">{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->listsCount()) }}/{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->maxLists()) }}</span>
+                            <span class="text-muted">{{ number_with_delimiter(Auth::user()->customer->listsCount()) }}/{{ number_with_delimiter(Auth::user()->customer->maxLists()) }}</span>
                             &nbsp;&nbsp;&nbsp;{{ Auth::user()->customer->displayListsUsage() }}
                         </div>
                     </div>
@@ -57,7 +57,7 @@
                     <div class="d-flex align-items-center">
                         <h5 class="text-semibold mb-1 me-auto">{{ trans('messages.campaign') }}</h5>
                         <div class="pull-right text-primary text-semibold">
-                            <span class="text-muted progress-xxs">{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->campaignsCount()) }}/{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->maxCampaigns()) }}</span>
+                            <span class="text-muted progress-xxs">{{ number_with_delimiter(Auth::user()->customer->campaignsCount()) }}/{{ number_with_delimiter(Auth::user()->customer->maxCampaigns()) }}</span>
                             &nbsp;&nbsp;&nbsp;{{ Auth::user()->customer->displayCampaignsUsage() }}
                         </div>
                     </div>
@@ -72,7 +72,7 @@
                     <div class="d-flex align-items-center">
                         <h5 class="text-semibold mb-1 me-auto">{{ trans('messages.subscriber') }}</h5>
                         <div class="pull-right text-primary text-semibold">
-                            <span class="text-muted">{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->readCache('SubscriberCount')) }}/{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->maxSubscribers()) }}</span>
+                            <span class="text-muted">{{ number_with_delimiter(Auth::user()->customer->readCache('SubscriberCount')) }}/{{ number_with_delimiter(Auth::user()->customer->maxSubscribers()) }}</span>
                             &nbsp;&nbsp;&nbsp;{{ Auth::user()->customer->displaySubscribersUsage() }}
                         </div>
                     </div>
@@ -88,7 +88,7 @@
                     <div class="d-flex align-items-center">
                         <h5 class="text-semibold mb-1 me-auto">{{ trans('messages.automation') }}</h5>
                         <div class="pull-right text-primary text-semibold">
-                            <span class="text-muted progress-xxs">{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->automationsCount()) }}/{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->maxAutomations()) }}</span>
+                            <span class="text-muted progress-xxs">{{ number_with_delimiter(Auth::user()->customer->automationsCount()) }}/{{ number_with_delimiter(Auth::user()->customer->maxAutomations()) }}</span>
                             &nbsp;&nbsp;&nbsp;{{ Auth::user()->customer->displayAutomationsUsage() }}
                         </div>
                     </div>
@@ -104,7 +104,7 @@
                     <div class="d-flex align-items-center">
                         <h5 class="text-semibold mb-1 me-auto">{{ trans('messages.total_upload_size') }}</h5>
                         <div class="pull-right text-primary text-semibold">
-                            <span class="text-muted progress-xxs">{{ \Acelle\Library\Tool::format_number(round(Auth::user()->customer->totalUploadSize(),2)) }}/{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->maxTotalUploadSize()) }} (MB)</span>
+                            <span class="text-muted progress-xxs">{{ number_with_delimiter(round(Auth::user()->customer->totalUploadSize(),2)) }}/{{ number_with_delimiter(Auth::user()->customer->maxTotalUploadSize()) }} (MB)</span>
                             &nbsp;&nbsp;&nbsp;{{ Auth::user()->customer->totalUploadSizeUsage() }}%
                         </div>
                     </div>
@@ -121,7 +121,7 @@
                         <div class="d-flex align-items-center">
                             <h5 class="text-semibold mb-1 me-auto">{{ trans('messages.sending_server') }}</h5>
                             <div class="pull-right text-primary text-semibold">
-                                <span class="text-muted">{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->sendingServersCount()) }}/{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->maxSendingServers()) }}</span>
+                                <span class="text-muted">{{ number_with_delimiter(Auth::user()->customer->sendingServersCount()) }}/{{ number_with_delimiter(Auth::user()->customer->maxSendingServers()) }}</span>
                                 &nbsp;&nbsp;&nbsp;{{ Auth::user()->customer->displaySendingServersUsage() }}
                             </div>
                         </div>
@@ -139,7 +139,7 @@
                         <div class="d-flex align-items-center">
                             <h5 class="text-semibold mb-1 me-auto">{{ trans('messages.sending_domain') }}</h5>
                             <div class="pull-right text-primary text-semibold">
-                                <span class="text-muted">{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->sendingDomainsCount()) }}/{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->maxSendingDomains()) }}</span>
+                                <span class="text-muted">{{ number_with_delimiter(Auth::user()->customer->sendingDomainsCount()) }}/{{ number_with_delimiter(Auth::user()->customer->maxSendingDomains()) }}</span>
                                 &nbsp;&nbsp;&nbsp;{{ Auth::user()->customer->displaySendingDomainsUsage() }}
                             </div>
                         </div>
@@ -157,7 +157,7 @@
                         <div class="d-flex align-items-center">
                             <h5 class="text-semibold mb-1 me-auto">{{ trans('messages.email_verification_server') }}</h5>
                             <div class="pull-right text-primary text-semibold">
-                                <span class="text-muted">{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->emailVerificationServersCount()) }}/{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->maxEmailVerificationServers()) }}</span>
+                                <span class="text-muted">{{ number_with_delimiter(Auth::user()->customer->emailVerificationServersCount()) }}/{{ number_with_delimiter(Auth::user()->customer->maxEmailVerificationServers()) }}</span>
                                 &nbsp;&nbsp;&nbsp;{{ Auth::user()->customer->displayEmailVerificationServersUsage() }}
                             </div>
                         </div>
