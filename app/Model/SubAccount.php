@@ -52,9 +52,7 @@ class SubAccount extends Model
         if (!empty(trim($request->keyword))) {
             foreach (explode(' ', trim($request->keyword)) as $keyword) {
                 $query = $query->where(function ($q) use ($keyword) {
-                    $q->orwhere('sub_accounts.username', 'like', '%'.$keyword.'%')
-                        ->orwhere('sending_servers.username', 'like', '%'.$keyword.'%')
-                        ->orwhere('customers.username', 'like', '%'.$keyword.'%');
+                    $q->orwhere('sub_accounts.username', 'like', '%'.$keyword.'%');
                 });
             }
         }
