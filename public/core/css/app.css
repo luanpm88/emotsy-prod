@@ -7434,6 +7434,7 @@ hr {
 @media (max-width: 800px) {
     .search-results {
         width: 90vw!important;
+        min-width: auto;
     }
     .fullscreen-search-box.search-open .search-results {
         width: 90vw!important;
