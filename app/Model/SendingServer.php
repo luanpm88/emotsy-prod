@@ -1018,8 +1018,8 @@ class SendingServer extends Model implements HasQuotaInterface
     {
         $options = [];
         $current = trans('messages.sending_servers.sending_limit.phrase', [
-            'quota_value' => \Acelle\Library\Tool::format_number($this->quota_value),
-            'quota_base' => \Acelle\Library\Tool::format_number($this->quota_base),
+            'quota_value' => number_with_delimiter($this->quota_value, $precision = 0),
+            'quota_base' => number_with_delimiter($this->quota_base, $precision = 0),
             'quota_unit' => $this->quota_unit,
         ]);
         if ($this->quota_value == -1) {
@@ -1029,8 +1029,8 @@ class SendingServer extends Model implements HasQuotaInterface
         $exist = false;
         foreach (self::sendingLimitValues() as $key => $data) {
             $wording = trans('messages.sending_servers.sending_limit.phrase', [
-                'quota_value' => \Acelle\Library\Tool::format_number($data['quota_value']),
-                'quota_base' => \Acelle\Library\Tool::format_number($data['quota_base']),
+                'quota_value' => number_with_delimiter($data['quota_value'], $precision = 0),
+                'quota_base' => number_with_delimiter($data['quota_base'], $precision = 0),
                 'quota_unit' => $data['quota_unit'],
             ]);
 

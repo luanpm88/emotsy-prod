@@ -667,19 +667,7 @@ class Tool
      */
     public static function format_price($price, $format = '{PRICE}')
     {
-        return str_replace('{PRICE}', self::format_number($price), $format);
-    }
-
-    /**
-     * Format price.
-     *
-     * @param string
-     *
-     * @return string
-     */
-    public static function format_number($number)
-    {
-        return number_with_delimiter($number);
+        return str_replace('{PRICE}', number_with_delimiter($price), $format);
     }
 
     /**
