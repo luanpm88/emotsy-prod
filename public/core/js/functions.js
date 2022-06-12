@@ -324,7 +324,7 @@ function initMainMenu()
             $('.leftbar').addClass('leftbar-closed');
         }
 
-        if ($(window).width() >= 1500 && $('body').hasClass('state-open')) {
+        if ($(window).width() >= 1500 && ($('body').hasClass('state-open') || $('body').hasClass('state-'))) {
             $('.leftbar').addClass('leftbar-open');
             $('.leftbar').removeClass('leftbar-closed');
         }
