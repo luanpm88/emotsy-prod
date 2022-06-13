@@ -1,4 +1,4 @@
-@extends('layouts.clean')
+@extends('layouts.core.login')
 
 @section('title', trans('messages.password_reset'))
 
@@ -10,7 +10,7 @@
         
         <input type="hidden" name="token" value="{{ $token }}">
         
-        <div class="panel panel-body">                        
+        <div class="panel panel-body p-4 rounded-3 bg-white shadow">                        
             
             @if (session('status'))
                 <div class="alert alert-success">
@@ -21,7 +21,7 @@
             <h4 class="text-semibold mt-0">{{ trans('messages.password_reset') }}</h4>
             
             <div class="form-group has-feedback has-feedback-left{{ $errors->has('email') ? ' has-error' : '' }}">
-                <input id="email" type="email" class="form-control" name="email" placeholder="{{ trans("messages.email") }}" value="{{ $email or old('email') }}">
+                <input id="email" type="email" class="form-control" name="email" placeholder="{{ trans("messages.email") }}" value="{{ $email ?? old('email') }}">
                 <div class="form-control-feedback has-label">
         <i class="icon-envelop5 text-muted"></i>
                 </div>
@@ -56,10 +56,10 @@
                 @endif
             </div>
             
-            <button type="submit" class="btn btn-lg bg-teal btn-block">
+            <button type="submit" class="btn btn-secondary">
                 {{ trans('messages.reset_password') }}  <i class="icon-circle-right2 position-right"></i>
             </button>
-            <a href="{{ url("/login") }}" class="btn btn-white btn-lg btn-block  text-semibold">
+            <a href="{{ url("/login") }}" class="btn btn-light">
                 {{ trans("messages.return_to_login") }}
             </a>
             

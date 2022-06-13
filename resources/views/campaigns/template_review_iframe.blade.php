@@ -21,6 +21,7 @@
                 width: 100%;
                 left: 0;
             @endif
+            z-index: 2;
         }
 
         /* Style the buttons inside the tab */
@@ -63,7 +64,7 @@
         </div>
 
         <div id="html" class="tabcontent" style="display: block">
-            {!! $campaign->html !!}
+            {!! $campaign->getHtmlContent() !!}
         </div>
     @endif
 

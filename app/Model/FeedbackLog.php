@@ -68,14 +68,13 @@ class FeedbackLog extends Model
                         ->orwhere('feedback_logs.feedback_type', 'like', '%'.$keyword.'%')
                         ->orwhere('feedback_logs.raw_feedback_content', 'like', '%'.$keyword.'%')
                         ->orwhere('sending_servers.name', 'like', '%'.$keyword.'%')
-                        ->orwhere(\DB::raw('CONCAT(first_name, last_name)'), 'like', '%'.$keyword.'%')
                         ->orwhere('subscribers.email', 'like', '%'.$keyword.'%');
                 });
             }
         }
 
         // filters
-        $filters = $request->filters;
+        $filters = $request->all();
         if (!empty($filters)) {
             if (!empty($filters['campaign_uid'])) {
                 $query = $query->where('campaigns.uid', '=', $filters['campaign_uid']);

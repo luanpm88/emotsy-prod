@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Acelle\Events\MailListSubscription;
 use Acelle\Model\Setting;
+use Acelle\Model\MailList;
+use Acelle\Model\IpLocation;
 
 class PageController extends Controller
 {
@@ -125,6 +127,12 @@ class PageController extends Controller
         $layout = \Acelle\Model\Layout::where('alias', 'sign_up_form')->first();
         $page = \Acelle\Model\Page::findPage($list, $layout);
 
+        // Language
+        if (is_object($list->customer) && is_object($list->customer->language)) {
+            \App::setLocale($list->customer->language->code);
+            \Carbon\Carbon::setLocale($list->customer->language->code);
+        }
+
         // Get old post values
         $values = [];
         if (null !== $request->old()) {
@@ -141,67 +149,29 @@ class PageController extends Controller
 
         // Create subscriber
         if ($request->isMethod('post')) {
-            $subscriber = \Acelle\Model\Subscriber::where('email', '=', strtolower($request->EMAIL))
-                ->where('mail_list_id', '=', $list->id)->first();
-            if (!is_object($subscriber)) {
-                $subscriber = new \Acelle\Model\Subscriber($request->all());
-                $subscriber->mail_list_id = $list->id;
+            try {
+                list($validator, $subscriber) = $list->subscribe($request, MailList::SOURCE_WEB);
+            } catch (\Exception $ex) {
+                return view('somethingWentWrong', ['message' => $ex->getMessage()]);
             }
 
-            // Validation
-            $this->validate($request, $subscriber->getRules());
+            if ($validator->fails()) {
+                return back()->withErrors($validator)->withInput();
+            }
 
-            $subscriber->email = $request->EMAIL;
-            $subscriber->ip = $request->ip();
-            $subscriber->from = 'web';
-            if ($list->subscribe_confirmation) {
-                $subscriber->status = 'unconfirmed';
+            if ($request->redirect_url) {
+                return redirect()->away($request->redirect_url);
+            } elseif ($list->subscribe_confirmation && !$subscriber->isSubscribed()) {
+                // tell subscriber to check email for confirmation
+                return redirect()->action('PageController@signUpThankyouPage', ['list_uid' => $list->uid, 'subscriber_uid' => $subscriber->uid]);
             } else {
-                $subscriber->status = 'subscribed';
-            }
-
-            $subscriber->save();
-            // Update field
-            $subscriber->updateFields($request->all());
-
-            Log::info("Subscriber {$subscriber->email} is added to list {$subscriber->mailList->name} via subscription form");
-
-            // trigger the event
-            if (Setting::isYes('send_notification_email_for_list_subscription')) {
-                Log::info("Sending notification email for subscriber {$subscriber->email}, list {$subscriber->mailList->name}");
-                event(new MailListSubscription($list->customer->user, $subscriber));
-            } else {
-                Log::info("No notification email for subscriber {$subscriber->email}, list {$subscriber->mailList->name}");
-            }
-
-            if ($list->subscribe_confirmation) {
-                // SEND subscription confirmation email
-                $list->sendSubscriptionConfirmationEmail($subscriber);
-
-                return redirect()->action('PageController@signUpConfirmationThankyou', [
+                // All done, confirmed
+                return redirect()->action(
+                    'PageController@signUpConfirmationThankyou',
+                    [
                         'list_uid' => $list->uid,
                         'uid' => $subscriber->uid,
                         'code' => 'empty',
-                    ]
-                );
-            } else {
-                // change status to subscribed
-                $subscriber->updateStatus('subscribed');
-
-                // Send welcome email
-                if ($list->send_welcome_email) {
-                    // SEND subscription confirmation email
-                    try {
-                        $list->sendSubscriptionWelcomeEmail($subscriber);
-                    } catch (\Exception $ex) {
-                        return view('somethingWentWrong', ['message' => $ex->getMessage()]);
-                    }
-                }
-
-                // find display thank you page
-                return redirect()->action('PageController@signUpThankyouPage', [
-                        'list_uid' => $list->uid,
-                        'subscriber_uid' => $subscriber->uid,
                     ]
                 );
             }
@@ -227,6 +197,12 @@ class PageController extends Controller
         $layout = \Acelle\Model\Layout::where('alias', 'sign_up_thankyou_page')->first();
         $page = \Acelle\Model\Page::findPage($list, $layout);
         $subscriber = \Acelle\Model\Subscriber::findByUid($request->subscriber_uid);
+
+        // Language
+        if (is_object($list->customer) && is_object($list->customer->language)) {
+            \App::setLocale($list->customer->language->code);
+            \Carbon\Carbon::setLocale($list->customer->language->code);
+        }
 
         // redirect if use outside url
         if ($page->use_outside_url) {
@@ -256,6 +232,12 @@ class PageController extends Controller
         $page = \Acelle\Model\Page::findPage($list, $layout);
         $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
 
+        // Language
+        if (is_object($list->customer) && is_object($list->customer->language)) {
+            \App::setLocale($list->customer->language->code);
+            \Carbon\Carbon::setLocale($list->customer->language->code);
+        }
+
         if (is_null($subscriber)) {
             echo "Subscriber no longer exists";
             return;
@@ -264,18 +246,7 @@ class PageController extends Controller
         $page->renderContent(null, $subscriber);
 
         if ($subscriber->getSecurityToken('subscribe-confirm') == $request->code && $subscriber->status == 'unconfirmed') {
-            $subscriber->status = 'subscribed';
-            $subscriber->save();
-
-            // Send welcome email
-            if ($list->send_welcome_email) {
-                // SEND subscription confirmation email
-                try {
-                    $list->sendSubscriptionWelcomeEmail($subscriber);
-                } catch (\Exception $ex) {
-                    return view('somethingWentWrong', ['message' => $ex->getMessage()]);
-                }
-            }
+            $subscriber->confirm();
         }
 
         // redirect if use outside url
@@ -298,31 +269,37 @@ class PageController extends Controller
      */
     public function unsubscribeForm(Request $request)
     {
+        // IMPORTANT: it does not create TrackingLog!!!
         $user = $request->user();
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
         $layout = \Acelle\Model\Layout::where('alias', 'unsubscribe_form')->first();
         $page = \Acelle\Model\Page::findPage($list, $layout);
         $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
 
+        // Language
+        if (is_object($list->customer) && is_object($list->customer->language)) {
+            \App::setLocale($list->customer->language->code);
+            \Carbon\Carbon::setLocale($list->customer->language->code);
+        }
+
         $page->renderContent(null, $subscriber);
 
         if ($request->isMethod('post')) {
             if ($subscriber->getSecurityToken('unsubscribe') == $request->code && $subscriber->status == 'subscribed') {
-                // Validation
-                $this->validate($request, ['EMAIL' => 'required|email|exists:subscribers,email']);
 
-                $subscriber->status = 'unsubscribed';
-                $subscriber->save();
+                // User Tracking Information
+                $trackingInfo = [
+                    'message_id' => null,
+                    'user_agent' => $_SERVER['HTTP_USER_AGENT'],
+                ];
 
-                // Send goodbye email
-                if ($list->unsubscribe_notification) {
-                    // SEND subscription confirmation email
-                    try {
-                        $list->sendUnsubscriptionNotificationEmail($subscriber);
-                    } catch (\Exception $ex) {
-                        return view('somethingWentWrong', ['message' => $ex->getMessage()]);
-                    }
+                // GeoIP information
+                $location = IpLocation::add($_SERVER['REMOTE_ADDR']);
+                if (!is_null($location)) {
+                    $trackingInfo['ip_address'] = $location->ip_address;
                 }
+
+                $subscriber->unsubscribe($trackingInfo);
             }
 
             return redirect()->action('PageController@unsubscribeSuccessPage', ['list_uid' => $list->uid, 'uid' => $subscriber->uid]);
@@ -348,6 +325,12 @@ class PageController extends Controller
         $layout = \Acelle\Model\Layout::where('alias', 'unsubscribe_success_page')->first();
         $page = \Acelle\Model\Page::findPage($list, $layout);
         $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
+
+        // Language
+        if (is_object($list->customer) && is_object($list->customer->language)) {
+            \App::setLocale($list->customer->language->code);
+            \Carbon\Carbon::setLocale($list->customer->language->code);
+        }
 
         $page->renderContent(null, $subscriber);
 
@@ -377,6 +360,12 @@ class PageController extends Controller
         $layout = \Acelle\Model\Layout::where('alias', 'profile_update_form')->first();
         $page = \Acelle\Model\Page::findPage($list, $layout);
         $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
+
+        // Language
+        if (is_object($list->customer) && is_object($list->customer->language)) {
+            \App::setLocale($list->customer->language->code);
+            \Carbon\Carbon::setLocale($list->customer->language->code);
+        }
 
         $values = [];
 
@@ -439,6 +428,12 @@ class PageController extends Controller
         $page = \Acelle\Model\Page::findPage($list, $layout);
         $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
 
+        // Language
+        if (is_object($list->customer) && is_object($list->customer->language)) {
+            \App::setLocale($list->customer->language->code);
+            \Carbon\Carbon::setLocale($list->customer->language->code);
+        }
+
         $page->renderContent(null, $subscriber);
 
         // redirect if use outside url
@@ -468,6 +463,12 @@ class PageController extends Controller
         $page = \Acelle\Model\Page::findPage($list, $layout);
         $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
 
+        // Language
+        if (is_object($list->customer) && is_object($list->customer->language)) {
+            \App::setLocale($list->customer->language->code);
+            \Carbon\Carbon::setLocale($list->customer->language->code);
+        }
+
         $page->renderContent(null, $subscriber);
 
         // SEND EMAIL
@@ -487,5 +488,23 @@ class PageController extends Controller
             'page' => $page,
             'subscriber' => $subscriber,
         ]);
+    }
+
+    public function restoreDefault(Request $request)
+    {
+        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+
+        // authorize
+        if (\Gate::denies('update', $list)) {
+            return $this->notAuthorized();
+        }
+
+        $layout = \Acelle\Model\Layout::where('alias', $request->alias)->first();
+        $page = \Acelle\Model\Page::findPage($list, $layout);
+
+        $page->delete();
+
+        $request->session()->flash('alert-success', trans('messages.page.reset.success'));
+        return redirect()->action('PageController@update', array('list_uid' => $list->uid, 'alias' => $layout->alias));
     }
 }

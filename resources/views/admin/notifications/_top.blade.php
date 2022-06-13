@@ -1,11 +1,16 @@
-@foreach ($notifications as $n)
-    @include('elements._notification', [
-        'level' => $n->level,
-        'title' => $n->title,
-        'message' => $n->message,
-        'params' => ['id' => $n->uid, 'data-type' => 'admin-notification']
-    ])
-@endforeach
+@if (count($notifications))
+    <div class="mt-4">
+        @foreach ($notifications as $n)
+            @include('elements._notification', [
+                'level' => $n->level,
+                'title' => $n->title,
+                'message' => strip_tags($n->message),
+                'debug' => $n->debug,
+                'params' => ['id' => $n->uid, 'data-type' => 'admin-notification']
+            ])
+        @endforeach
+    </div>
+@endif
 
 <script>
     $('div[data-type="admin-notification"]').click(function() {

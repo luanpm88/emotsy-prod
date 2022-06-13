@@ -28,11 +28,11 @@ use Mailgun\Mailgun;
 
 class SendingServerMailgun extends SendingServer
 {
-    const WEBHOOK = 'mailgun';
+    public const WEBHOOK = 'mailgun';
 
     protected $table = 'sending_servers';
-    public static $client = null;
-    public static $isWebhookSetup = false;
+    public $client = null;
+    public $isWebhookSetup = false;
 
     // Inherit class to implementation of this method
     public function send($message, $params = array())
@@ -47,11 +47,11 @@ class SendingServerMailgun extends SendingServer
      */
     public function client()
     {
-        if (!self::$client) {
-            self::$client = new Mailgun($this->api_key);
+        if (!$this->client) {
+            $this->client = Mailgun::create($this->api_key, $this->host);
         }
 
-        return self::$client;
+        return $this->client;
     }
 
     /**
@@ -61,7 +61,7 @@ class SendingServerMailgun extends SendingServer
      */
     public function setupWebhooks()
     {
-        if (self::$isWebhookSetup) {
+        if ($this->isWebhookSetup) {
             return true;
         }
 
@@ -73,32 +73,23 @@ class SendingServerMailgun extends SendingServer
         MailLog::info('Webhook set to: '.$subscribeUrl);
 
         try {
-            $result = $this->client()->delete("domains/$domain/webhooks/bounce");
+            $result = $this->client()->webhooks()->delete($domain, 'complained');
         } catch (\Exception $e) {
             // just ignore
         }
 
         try {
-            $result = $this->client()->delete("domains/$domain/webhooks/spam");
+            $result = $this->client()->webhooks()->delete($domain, 'permanent_fail');
         } catch (\Exception $e) {
             // just ignore
         }
 
-        $result = $this->client()->post("domains/$domain/webhooks", array(
-            'id' => 'bounce',
-            'url' => $subscribeUrl,
-        ));
+        $result = $this->client()->webhooks()->create($domain, 'complained', [ $subscribeUrl ]);
+        $result = $this->client()->webhooks()->create($domain, 'permanent_fail', [ $subscribeUrl ]);
 
-        MailLog::info('Bounce webhook created');
+        MailLog::info('3 webhooks created');
 
-        $result = $this->client()->post("domains/$domain/webhooks", array(
-            'id' => 'spam',
-            'url' => $subscribeUrl,
-        ));
-
-        MailLog::info('Complaint webhook created');
-
-        self::$isWebhookSetup = true;
+        $this->isWebhookSetup = true;
     }
 
     /**
@@ -106,12 +97,23 @@ class SendingServerMailgun extends SendingServer
      *
      * @return bool
      */
-    public function getVerifiedIdentities()
+    public function syncIdentities()
     {
-        $response = $this->client()->get('domains');
-        $json = json_decode(json_encode($response), true);
+        $domains = $this->client()->domains()->index()->getDomains();
 
-        return array_map(function ($domain) { return $domain['name']; }, $json['http_response_body']['items']);
+        $identities = [];
+        foreach ($domains as $domain) {
+            $name = $domain->getName();
+            $identities[$name] = ['VerificationStatus' => $domain->getState() == 'active'];
+        }
+
+        $identityStore = $this->getIdentityStore();
+        $identityStore->update($identities);
+
+        $options = $this->getOptions();
+        $options['identities'] = $identityStore->get();
+        $this->setOptions($options);
+        $this->save();
     }
 
     /**
@@ -121,8 +123,95 @@ class SendingServerMailgun extends SendingServer
      */
     public function test()
     {
-        $response = $this->client()->get('domains');
+        $response = $this->client()->domains()->index();
 
         return true;
+    }
+
+    /**
+     * Allow user to verify his/her own sending domain against Acelle Mail.
+     *
+     * @return bool
+     */
+    public function allowVerifyingOwnDomains()
+    {
+        return false;
+    }
+
+    /**
+     * Allow user to verify his/her own sending domain against Acelle Mail.
+     *
+     * @return bool
+     */
+    public function allowVerifyingOwnEmails()
+    {
+        return false;
+    }
+
+    /**
+     * Allow user to verify his/her own emails against AWS.
+     *
+     * @return bool
+     */
+    public function allowVerifyingOwnDomainsRemotely()
+    {
+        return false;
+    }
+
+    /**
+     * Allow user to verify his/her own emails against AWS.
+     *
+     * @return bool
+     */
+    public function allowVerifyingOwnEmailsRemotely()
+    {
+        return false;
+    }
+
+    public static function handleNofification()
+    {
+        MailLog::configure(storage_path().'/logs/handler-mailgun.log');
+
+        $inputJSON = file_get_contents('php://input');
+        $input = json_decode($inputJSON, true);
+
+        if (isset($input['signature'])) {
+            if ($input['event-data']['event'] == 'complained') {
+                $feedbackLog = new FeedbackLog();
+                $feedbackLog->runtime_message_id = StringHelper::cleanupMessageId($input['event-data']['message']['headers']['message-id']);
+                // For Mailgun, runtime_message_id EQUIV. message_id
+                $feedbackLog->message_id = $feedbackLog->runtime_message_id;
+                $feedbackLog->feedback_type = 'spam';
+                $feedbackLog->raw_feedback_content = $inputJSON;
+                $feedbackLog->save();
+                MailLog::info('Feedback recorded for message '.$feedbackLog->runtime_message_id);
+                $subscriber = $feedbackLog->findSubscriberByRuntimeMessageId();
+                if (!is_null($subscriber)) {
+                    $subscriber->sendToBlacklist($feedbackLog->raw_feedback_content);
+                }
+            } elseif ($input['event-data']['event'] == 'failed') {
+                $bounceLog = new BounceLog();
+                $bounceLog->runtime_message_id = StringHelper::cleanupMessageId($input['event-data']['message']['headers']['message-id']);
+                // For Mailgun, runtime_message_id EQUIV. message_id
+                $bounceLog->message_id = $bounceLog->runtime_message_id;
+                $bounceLog->bounce_type = BounceLog::HARD;
+                $bounceLog->raw = $inputJSON;
+                $bounceLog->save();
+                MailLog::info('Bounce recorded for message '.$bounceLog->runtime_message_id);
+                MailLog::info('Adding email to blacklist');
+                $subscriber = $bounceLog->findSubscriberByRuntimeMessageId();
+                if (!is_null($subscriber)) {
+                    $subscriber->sendToBlacklist($bounceLog->raw);
+                }
+            }
+        } else {
+            MailLog::warning('Invalid request: '.$inputJSON);
+        }
+        header('X-PHP-Response-Code: 200', true, 200);
+    }
+
+    public function setupBeforeSend($fromEmailAddress)
+    {
+        $this->setupWebhooks();
     }
 }

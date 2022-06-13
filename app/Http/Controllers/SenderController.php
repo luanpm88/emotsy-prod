@@ -9,7 +9,6 @@ use Acelle\Model\SendingDomain;
 
 class SenderController extends Controller
 {
-
     /**
      * Search items.
      */
@@ -33,19 +32,18 @@ class SenderController extends Controller
         }
 
         $subscription = $request->user()->customer->subscription;
-        $server = $subscription->plan->primarySendingServer();
+        $plan = $subscription->plan;
 
         if ($subscription->plan->useOwnSendingServer()) {
-            $email = false;
+            $email = true;
             $domain = true;
-        } else {    
+        } else {
+            $server = $plan->primarySendingServer();
             $email = $server->allowVerifyingOwnEmails() || $server->allowVerifyingOwnEmailsRemotely();
-            $domain = $server->allowVerifyingOwnDomains();    
+            $domain = $server->allowVerifyingOwnDomains() || $server->allowVerifyingOwnDomainsRemotely();
         }
 
-        if ($email || $domain ) {
-            //
-        } else {
+        if (!$email && !$domain) {
             return view('senders.available', [
                 'identities' => $subscription->plan->getVerifiedIdentities(),
             ]);
@@ -58,7 +56,6 @@ class SenderController extends Controller
                 'senders' => $this->search($request),
             ]);
         }
-        
     }
 
     /**
@@ -114,19 +111,24 @@ class SenderController extends Controller
             return $this->notAuthorized();
         }
 
-        // save posted data
-        if ($request->isMethod('post')) {
-            $sender->fill($request->all());
-            $sender->customer_id = $request->user()->customer->id;
-            $sender->status = Sender::STATUS_NEW;
+        $plan = $request->user()->customer->activeSubscription()->plan;
 
-            $this->validate($request, $sender->rules());
+        $sender->fill($request->all());
+        $sender->customer_id = $request->user()->customer->id;
+        $sender->status = Sender::STATUS_PENDING;
 
-            if ($sender->save()) {
-                $request->session()->flash('alert-success', trans('messages.sender.created'));
-                return redirect()->action('SenderController@show', $sender->uid);
-            }
+        $this->validate($request, $sender->rules());
+
+        $sender->save();
+
+        if ($plan->useSystemSendingServer()) {
+            $server = $plan->primarySendingServer();
+        } else {
+            $server = null;
         }
+
+        $sender->verifyWith($server);
+        return redirect()->action('SenderController@show', $sender->uid);
     }
 
     /**
@@ -139,8 +141,7 @@ class SenderController extends Controller
     public function show(Request $request, $id)
     {
         $sender = Sender::findByUid($id);
-        $subscription = $request->user()->customer->subscription;
-        $server = $subscription->plan->primarySendingServer();
+        $sender->updateVerificationStatus();
 
         // authorize
         if (\Gate::denies('read', $sender)) {
@@ -149,7 +150,6 @@ class SenderController extends Controller
 
         return view('senders.show', [
             'sender' => $sender,
-            'verificationOptions' => Sender::verificationTypeSelectOptions($server)
         ]);
     }
 
@@ -214,41 +214,41 @@ class SenderController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function verify(Request $request, $id)
+    public function verify(Request $request)
     {
-        $sender = Sender::findByUid($id);
-
-        // authorize
-        if (\Gate::denies('verify', $sender)) {
-            return $this->notAuthorized();
+        try {
+            $sender = Sender::verifyToken($request->token);
+            return view('senders.verified', [
+                'sender' => $sender,
+            ]);
+        } catch (\Exception $ex) {
+            return view('senders.failed', [
+                'message' => $ex->getMessage(),
+            ]);
         }
+    }
 
-        // save posted data
-        if ($request->isMethod('post')) {
-            $sender->fill($request->all());
+    /**
+     * Verify sender.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int                      $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function verifyResult(Request $request)
+    {
+        $sender = Sender::findByUid($request->uid);
+        $sender->updateVerificationStatus();
 
-            $this->validate($request, $sender->verificationRules());
-
-            $sender->save();
-
-            if (!$sender->isVerified()) {
-                if ($sender->type == Sender::VERIFICATION_TYPE_ACELLE) {
-                    // Set pending and return to show with guide
-                    $sender->setPending();
-                    return redirect()->action('SenderController@show', $sender->uid);
-                } else if ($sender->type = Sender::VERIFICATION_TYPE_AMAZON_SES) {
-                    // Wroking with Amazon SES here...
-                    $sender->setPending();
-
-                    // Trigger AWS API to send a verification email
-                    $sender->sendVerificationEmail();
-
-                    return redirect()->action('SenderController@show', $sender->uid);
-                }
-            } else {
-                $request->session()->flash('alert-success', trans('messages.sender.verified'));
-                return redirect()->action('SenderController@show', $sender->uid);
-            }
+        if ($sender->isVerified()) {
+            return view('senders.verified', [
+                'sender' => $sender,
+            ]);
+        } else {
+            return view('senders.failed', [
+                'message' => 'Failed to verify identity',
+            ]);
         }
     }
 
@@ -264,7 +264,10 @@ class SenderController extends Controller
         if ($request->select_tool == 'all_items') {
             $senders = $this->search($request);
         } else {
-            $senders = Sender::whereIn('uid', explode(',', $request->uids));
+            $senders = Sender::whereIn(
+                'uid',
+                is_array($request->uids) ? $request->uids : explode(',', $request->uids)
+            );
         }
 
         foreach ($senders->get() as $sender) {
@@ -305,57 +308,10 @@ class SenderController extends Controller
             }
         }
 
-        // Get current job
-        $system_job = $customer->getLastActiveImportSenderJob();
 
         return view('senders.import', [
-            'system_job' => $system_job
+
         ]);
-    }
-
-    /**
-     * Check import proccessing.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function importProcess(Request $request)
-    {
-        $customer = $request->user()->customer;
-        $system_job = \Acelle\Model\SystemJob::find($request->system_job_id);
-
-        // authorize
-        if (\Gate::denies('read', new Sender())) {
-            return $this->notAuthorized();
-        }
-
-        return view('senders.import_process', [
-            'system_job' => $system_job
-        ]);
-    }
-
-    /**
-     * Cancel importing job.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function cancel(Request $request)
-    {
-        $customer = $request->user()->customer;
-        $system_job = $customer->getLastActiveImportSenderJob();
-
-        // authorize
-        if (\Gate::denies('importCancel', new Sender())) {
-            return $this->notAuthorized();
-        }
-
-        $system_job->setCancelled();
-
-        $request->session()->flash('alert-success', trans('messages.sender.import.cancelled'));
-        return redirect()->action('SenderController@index');
     }
 
     /**
@@ -367,56 +323,6 @@ class SenderController extends Controller
      */
     public function dropbox(Request $request)
     {
-        //$droplist = [];
-        //$keyword = strtolower(trim($request->keyword));
-        //// Find all senders
-        //$senders = $request->user()->customer->senders()->whereRAW('LOWER(email) LIKE ?', $keyword.'%')->limit(10)->get();
-        //
-        //foreach($senders as $key => $sender) {
-        //    $sender->email = strtolower(trim($sender->email));
-        //    $row = [
-        //        'text' => $sender->name,
-        //        'value' => $sender->email,
-        //        'desc' => str_replace($keyword, '<span class="text-semibold text-primary">'.$keyword.'</span>', $sender->email),
-        //    ];
-        //    $droplist[] = $row;
-        //}
-        //
-        //// Domains
-        //$parts = explode('@', $keyword);
-        //$keyword = isset($parts[1]) ? $parts[1] : null;
-        //
-        //$domains = $request->user()->customer->getAllSystemAndOwnDomains();
-        //
-        //if (!empty($keyword)) {
-        //    $domains = $domains->whereRaw('LOWER(name) LIKE ?', $keyword.'%')->limit(10);
-        //}
-        //
-        //$domains = $domains->get();
-        //foreach($domains as $key => $domain) {
-        //    $domain->name = strtolower(trim($domain->name));
-        //    $row = [
-        //        'text' => '****@'.str_replace($keyword, '<span class="text-semibold text-primary">'.$keyword.'</span>', $domain->name),
-        //        'subfix' => $domain->name,
-        //        'desc' => null,
-        //    ];
-        //    $droplist[] = $row;
-        //}
-        //
-        //if (Sender::getAllVerified()->count() == 0 && $request->user()->customer->getAllSystemAndOwnDomains()->count() == 0) {
-        //    $row = [
-        //        '_warning' => trans('messages.senders.empty_verified_domain_sender.warning', [
-        //            'domain_link' => action('SendingDomainController@index'),
-        //            'sender_link' => action('SenderController@index'),
-        //        ]),
-        //    ];
-        //    $droplist[] = $row;
-        //}
-
-        //return view('senders.dropbox', [
-        //    'droplist' => $droplist,
-        //]);
-
         $droplist = $request->user()->customer->verifiedIdentitiesDroplist(strtolower(trim($request->keyword)));
         return response()->json($droplist);
     }

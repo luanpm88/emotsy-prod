@@ -2,42 +2,40 @@
 
 namespace Acelle\Jobs;
 
-use Acelle\Library\Log as MailLog;
 use Acelle\Model\MailList;
+use Exception;
+use Acelle\Library\Traits\Trackable;
+use Illuminate\Bus\Batchable;
 
-class VerifyMailListJob extends SystemJob
+class VerifyMailListJob extends Base
 {
-    protected $mailListId;
-    protected $serverId;
+    use Batchable;
+    use Trackable;
+
+    public $timeout = 14400;
+
+    protected $mailList;
+    protected $server;
 
     /**
      * Create a new job instance.
-     * @note: Parent constructors are not called implicitly if the child class defines a constructor.
-     *        In order to run a parent constructor, a call to parent::__construct() within the child constructor is required.
      *
      * @return void
      */
-    public function __construct($mailListId, $serverId)
+    public function __construct($mailList, $server)
     {
-        $this->mailListId = $mailListId;
-        $this->serverId = $serverId;
+        $this->mailList = $mailList;
+        $this->server = $server;
 
-        parent::__construct();
-
-        // This line must go after the constructor
-        $this->linkJobToMailList();
-    }
-
-    /**
-     * Execute the job.
-     *
-     * @return void
-     */
-    public function linkJobToMailList()
-    {
-        $systemJob = $this->getSystemJob();
-        $systemJob->data = $this->mailListId;
-        $systemJob->save();
+        $this->afterDispatched(function ($thisJob, $monitor) {
+            $monitor->setJsonData([
+                'percentage' => 0,
+                'total' => 0,
+                'processed' => 0,
+                'failed' => 0,
+                'message' => 'Verification process is being queued...',
+            ]);
+        });
     }
 
     /**
@@ -47,18 +45,31 @@ class VerifyMailListJob extends SystemJob
      */
     public function handle()
     {
-        try {
-            // start verification process
-            $list = MailList::find($this->mailListId);
-            $list->runVerification($this->serverId);
-        } catch (\Exception $e) {
-            $systemJob = $this->getSystemJob();
-            $systemJob->last_error = $e->getMessage();
-            $systemJob->save();
-
-            MailLog::warning(sprintf('Verification process for list `%s` failed. %s', $list->id, $e->getMessage()));
-            throw $e;
+        if ($this->batch()->cancelled()) {
+            return;
         }
 
+        $this->monitor->updateJsonData([
+            'message' => 'Verification is in progress...',
+        ]);
+
+        // Get subscribers that are not verified
+        $query = $this->mailList->subscribers()->unverified();
+
+        if (!$query->exists()) {
+            throw new Exception('There is no unverified contact in your list');
+        }
+
+        $this->monitor->updateJsonData([
+            'message' => "Verification is in progress ({$query->count()})...",
+        ]);
+
+        // Query batches of 1000 records each, dispatch the verification job
+        // Add job to batch
+        cursorIterate($query, 'subscribers.id', $size = 1000, function ($subscribers, $page) {
+            foreach ($subscribers as $subscriber) {
+                $this->batch()->add(new VerifySubscriber($subscriber, $this->server));
+            }
+        });
     }
 }

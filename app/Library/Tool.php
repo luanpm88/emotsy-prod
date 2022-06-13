@@ -22,6 +22,12 @@
 
 namespace Acelle\Library;
 
+use ZipArchive;
+use RecursiveIteratorIterator;
+use RecursiveDirectoryIterator;
+use Illuminate\Support\Facades\File;
+use Exception;
+
 class Tool
 {
     /**
@@ -77,20 +83,16 @@ class Tool
      *
      * @return bool Returns true on success, false on failure
      */
-    public static function xdelete($dir)
+    public static function xdelete($file)
     {
-        if (is_dir($dir)) {
-            $objects = scandir($dir);
-            foreach ($objects as $object) {
-                if ($object != '.' && $object != '..') {
-                    if (is_dir($dir.'/'.$object)) {
-                        self::xdelete($dir.'/'.$object);
-                    } else {
-                        unlink($dir.'/'.$object);
-                    }
-                }
-            }
-            rmdir($dir);
+        if (!file_exists($file)) {
+            throw new Exception("File {$file} does not exist");
+        }
+
+        if (is_link($file) || is_file($file)) {
+            File::delete($file);
+        } else {
+            File::deleteDirectory($file);
         }
 
         return true;
@@ -142,18 +144,6 @@ class Tool
      *
      * @var string
      */
-    public static function formatDateTime($datetime)
-    {
-        $result = self::dateTime($datetime)->format(trans('messages.datetime_format'));
-
-        return $result;
-    }
-
-    /**
-     * Format display datetime.
-     *
-     * @var string
-     */
     public static function dateTime($datetime)
     {
         $timezone = self::currentTimezone();
@@ -161,44 +151,6 @@ class Tool
         $result = $result->timezone($timezone);
 
         return $result;
-    }
-
-    /**
-     * Format display datetime.
-     *
-     * @var string
-     */
-    public static function customerDateTime($datetime)
-    {
-        $timezone = is_object(\Auth::user()) && is_object(\Auth::user()->customer) ? \Auth::user()->customer->timezone : '';
-        $result = $datetime;
-        if (!empty($timezone)) {
-            $result = $result->timezone($timezone);
-        }
-
-        return $result;
-    }
-
-    /**
-     * Format display datetime.
-     *
-     * @var string
-     */
-    public static function dateTimeFromString($time_string)
-    {
-        return self::dateTime(\Carbon\Carbon::parse($time_string));
-    }
-
-    /**
-     * For mat human time.
-     *
-     * @param       DateTime
-     *
-     * @return string
-     */
-    public static function formatHumanTime($time)
-    {
-        return $time->diffForHumans();
     }
 
     /**
@@ -224,18 +176,6 @@ class Tool
         }
 
         return $phrase;
-    }
-
-    /**
-     * Get file/folder permissions.
-     *
-     * @param       string
-     *
-     * @return string
-     */
-    public static function getPerms($path)
-    {
-        return substr(sprintf('%o', fileperms($path)), -4);
     }
 
     /**
@@ -437,121 +377,6 @@ class Tool
         }
 
         return $arr;
-    }
-
-    /**
-     * Get day string from timestamp.
-     *
-     * @param timestamp
-     *
-     * @return string
-     */
-    public static function dayStringFromTimestamp($timestamp)
-    {
-        if (isset($timestamp) && $timestamp != '0000-00-00 00:00:00') {
-            // @todo: hard day format code: 'Y-m-d'
-            $result = \Acelle\Library\Tool::dateTime($timestamp)->format('Y-m-d');
-        } else {
-            $result = \Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->format('Y-m-d');
-        }
-
-        return $result;
-    }
-
-    /**
-     * Get time string from timestamp.
-     *
-     * @param timestamp
-     *
-     * @return string
-     */
-    public static function timeStringFromTimestamp($timestamp)
-    {
-        if (isset($timestamp) && $timestamp != '0000-00-00 00:00:00') {
-            // @todo: hard day format code: 'H:i'
-            $result = \Acelle\Library\Tool::dateTime($timestamp)->format('H:i');
-        } else {
-            $result = \Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->format('H:i');
-        }
-
-        return $result;
-    }
-
-    /**
-     * Convert numbers array to weekdays array.
-     *
-     * @param timestamp
-     *
-     * @return string
-     */
-    public static function numberArrayToWeekdaysArray($numbers)
-    {
-        $weekdays_texts = self::weekdaysArray();
-        $weekdays = [];
-        foreach ($numbers as $number) {
-            $weekdays[] = $weekdays_texts[$number];
-        }
-
-        return $weekdays;
-    }
-
-    /**
-     * Convert numbers array to weeks array.
-     *
-     * @param timestamp
-     *
-     * @return string
-     */
-    public static function numberArrayToWeeksArray($numbers)
-    {
-        $weeks_texts = self::weeksArray();
-        $weeks = [];
-        foreach ($numbers as $number) {
-            $weeks[] = $weeks_texts[$number];
-        }
-
-        return $weeks;
-    }
-
-    /**
-     * Convert numbers array to months array.
-     *
-     * @param timestamp
-     *
-     * @return string
-     */
-    public static function numberArrayToMonthsArray($numbers)
-    {
-        $month_texts = self::monthsArray();
-        $months = [];
-        foreach ($numbers as $number) {
-            $months[] = $month_texts[$number];
-        }
-
-        return $months;
-    }
-
-    /**
-     * Get day names from array of numbers.
-     *
-     * @param timestamp
-     *
-     * @return string
-     */
-    public static function getDayNamesFromArrayOfNumber($numbers)
-    {
-        $names = [];
-
-        $ends = array('th', 'st', 'nd', 'rd', 'th', 'th', 'th', 'th', 'th', 'th');
-        foreach ($numbers as $number) {
-            if (($number % 100) >= 11 && ($number % 100) <= 13) {
-                $names[] = $number.'th';
-            } else {
-                $names[] = $number.$ends[$number % 10];
-            }
-        }
-
-        return $names;
     }
 
     /**
@@ -801,15 +626,14 @@ class Tool
                 <script src='https://www.google.com/recaptcha/api.js?hl=<?php echo language_code() ?>'></script>
                 <div class="g-recaptcha" data-sitekey="6LfyISoTAAAAABJV8zycUZNLgd0sj-sBFjctzXKw"></div>
                 <?php if (isset($errors) && $errors->has('recaptcha_invalid')) {
-    ?>
+            ?>
                     <span class="help-block text-danger">
                         <strong><?php echo $errors->first('recaptcha_invalid'); ?></strong>
                     </span>
-                <?php 
-} ?>
+                <?php
+        } ?>
             </div>
         <?php
-
     }
 
     /**
@@ -824,7 +648,7 @@ class Tool
         }
 
         // Check recaptch
-        $client = new \GuzzleHttp\Client();
+        $client = new \GuzzleHttp\Client(['verify' => false]);
         $res = $client->post('https://www.google.com/recaptcha/api/siteverify', ['verify' => false, 'form_params' => [
             'secret' => '6LfyISoTAAAAAC0hJ916unwi0m_B0p7fAvCRK4Kp',
             'remoteip' => $request->ip(),
@@ -832,24 +656,6 @@ class Tool
         ]]);
 
         return json_decode($res->getBody(), true)['success'];
-    }
-
-    /**
-     * Number select options.
-     *
-     * @param string
-     *
-     * @return array
-     */
-    public static function numberSelectOptions($min = 1, $max = 100)
-    {
-        $options = [];
-
-        for ($i = $min; $i <= $max; ++$i) {
-            $options[] = ['value' => $i, 'text' => $i];
-        }
-
-        return $options;
     }
 
     /**
@@ -861,80 +667,7 @@ class Tool
      */
     public static function format_price($price, $format = '{PRICE}')
     {
-        return str_replace('{PRICE}', self::format_number($price), $format);
-    }
-
-    /**
-     * Format price.
-     *
-     * @param string
-     *
-     * @return string
-     */
-    public static function format_number($number)
-    {
-        if (is_numeric($number) && floor($number) != $number) {
-            return number_format($number, 2, trans('messages.dec_point'), trans('messages.thousands_sep'));
-        } elseif (is_numeric($number)) {
-            return number_format($number, 0, trans('messages.dec_point'), trans('messages.thousands_sep'));
-        } else {
-            return $number;
-        }
-    }
-
-    /**
-     * Format display date.
-     *
-     * @var string
-     */
-    public static function formatDate($datetime)
-    {
-        $result = !isset($datetime) ? '' : self::dateTime($datetime)->format(trans('messages.date_format'));
-
-        return $result;
-    }
-
-    /**
-     * Replace HTML url.
-     *
-     * @return text
-     */
-    public static function replaceTemplateUrl($content, $path)
-    {
-        // find all link in html content
-        preg_match_all('/(?<=src=|background=|href=|url\()(\'|")?(?<url>.*?)(?=\1|\))/i', $content, $matches);
-        $srcs = array_unique($matches['url']);
-
-        foreach ($srcs as $src) {
-            if (empty(trim($src))) {
-                continue;
-            }
-            
-            $new_src = str_replace('"', '', $src);
-            $new_src = str_replace('\'', '', $new_src);
-            $new_src = htmlspecialchars_decode($new_src); // Convert &amp; back to & (which was encoded by TinyMCE)
-
-            if (preg_match('/https?/i', $src) || preg_match('/^\{/i', $src) || preg_match('/^\%/i', $src) || preg_match('/^https?/i', $src) || preg_match('/^#/i', $src) || strpos($src, '//') === 0 || preg_match('/^mailto:/i', $src) || preg_match('/^tel:/i', $src)) {
-                // nothing
-            } else {
-                // Build the full path
-                $new_src = $path.'/'.$new_src;
-            }
-
-            // using a quote in replacement to avoid replacing twice
-            // for example
-            //
-            // dir/assets/2984023984320
-            //    ==> http://$path/dir/assets/2984023984320
-            // dir/assets
-            //    ==> http://$path/http://$path/2984023984320
-            // Example of quote: href="http://, href=http://, or url: (http://)
-            $content = preg_replace('/(src=|background=|href=|url\s*\()([\'"]?\s*)'.preg_quote($src, '/').'(\s*[\s\'"\)])/', "$1$2$new_src$3", $content);
-        }
-
-        $content = str_replace('&quot;', '', $content);
-
-        return $content;
+        return str_replace('{PRICE}', number_with_delimiter($price), $format);
     }
 
     /**
@@ -984,33 +717,6 @@ class Tool
     }
 
     /**
-     * Formats a line (passed as a fields  array) as CSV and returns the CSV as a string.
-     * Adapted from http://us3.php.net/manual/en/function.fputcsv.php#87120.
-     */
-    public static function arrayToCsv(array &$fields, $delimiter = ';', $enclosure = '"', $encloseAll = false, $nullToMysqlNull = false)
-    {
-        $delimiter_esc = preg_quote($delimiter, '/');
-        $enclosure_esc = preg_quote($enclosure, '/');
-
-        $output = array();
-        foreach ($fields as $field) {
-            if ($field === null && $nullToMysqlNull) {
-                $output[] = 'NULL';
-                continue;
-            }
-
-            // Enclose fields containing $delimiter, $enclosure or whitespace
-            if ($encloseAll || preg_match("/(?:${delimiter_esc}|${enclosure_esc}|\s)/", $field)) {
-                $output[] = $enclosure.str_replace($enclosure, $enclosure.$enclosure, $field).$enclosure;
-            } else {
-                $output[] = $field;
-            }
-        }
-
-        return implode($delimiter, $output);
-    }
-
-    /**
      * Check email is valid.
      *
      * @var string
@@ -1020,81 +726,36 @@ class Tool
         return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
     }
 
-    /**
-     * Get all timezones.
-     *
-     * @var array
-     */
-    public static function getFileType($filename)
+    public static function zip($folder, $zipfile)
     {
-        $mime_types = array(
+        // Trick: add a trailing slash "/" to the path, it is needed for sre_replace to work properly
+        $folder = join_paths($folder, '/');
 
-            'txt' => 'text/plain',
-            'htm' => 'text/html',
-            'html' => 'text/html',
-            'php' => 'text/html',
-            'css' => 'text/css',
-            'js' => 'application/javascript',
-            'json' => 'application/json',
-            'xml' => 'application/xml',
-            'swf' => 'application/x-shockwave-flash',
-            'flv' => 'video/x-flv',
+        // IMPORTANT: $folder  must be an absolute path
+        // Initialize archive object
+        $zip = new ZipArchive();
+        $zip->open($zipfile, ZipArchive::CREATE | ZipArchive::OVERWRITE);
 
-            // images
-            'png' => 'image/png',
-            'jpe' => 'image/jpeg',
-            'jpeg' => 'image/jpeg',
-            'jpg' => 'image/jpeg',
-            'gif' => 'image/gif',
-            'bmp' => 'image/bmp',
-            'ico' => 'image/vnd.microsoft.icon',
-            'tiff' => 'image/tiff',
-            'tif' => 'image/tiff',
-            'svg' => 'image/svg+xml',
-            'svgz' => 'image/svg+xml',
-
-            // archives
-            'zip' => 'application/zip',
-            'rar' => 'application/x-rar-compressed',
-            'exe' => 'application/x-msdownload',
-            'msi' => 'application/x-msdownload',
-            'cab' => 'application/vnd.ms-cab-compressed',
-
-            // audio/video
-            'mp3' => 'audio/mpeg',
-            'qt' => 'video/quicktime',
-            'mov' => 'video/quicktime',
-
-            // adobe
-            'pdf' => 'application/pdf',
-            'psd' => 'image/vnd.adobe.photoshop',
-            'ai' => 'application/postscript',
-            'eps' => 'application/postscript',
-            'ps' => 'application/postscript',
-
-            // ms office
-            'doc' => 'application/msword',
-            'rtf' => 'application/rtf',
-            'xls' => 'application/vnd.ms-excel',
-            'ppt' => 'application/vnd.ms-powerpoint',
-
-            // open office
-            'odt' => 'application/vnd.oasis.opendocument.text',
-            'ods' => 'application/vnd.oasis.opendocument.spreadsheet',
+        // Create recursive directory iterator
+        /** @var SplFileInfo[] $files */
+        $files = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($folder),
+            RecursiveIteratorIterator::LEAVES_ONLY
         );
 
-        $arr = explode('.', $filename);
-        $ext = strtolower(array_pop($arr));
-        if (array_key_exists($ext, $mime_types)) {
-            return $mime_types[$ext];
-        } elseif (function_exists('finfo_open')) {
-            $finfo = finfo_open(FILEINFO_MIME);
-            $mimetype = finfo_file($finfo, $filename);
-            finfo_close($finfo);
+        foreach ($files as $name => $file) {
+            // Skip directories (they would be added automatically)
+            if (!$file->isDir()) {
+                // Get real and relative path for current file
+                $filePath = $file->getRealPath();
+                $relativePath = str_replace($folder, "", $filePath);
 
-            return $mimetype;
-        } else {
-            return 'application/octet-stream';
+                // Add current file to archive
+                $zip->addFile($filePath, $relativePath);
+            }
         }
+
+        // Zip archive will be created only after closing object
+        $zip->close();
     }
 }

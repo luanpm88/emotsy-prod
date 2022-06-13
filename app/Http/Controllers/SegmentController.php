@@ -3,10 +3,10 @@
 namespace Acelle\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Acelle\Model\Segment;
 
 class SegmentController extends Controller
 {
-
     /**
      * Display a listing of the resource.
      *
@@ -124,19 +124,7 @@ class SegmentController extends Controller
             $segment->save();
 
             // save conditions
-            foreach ($request->conditions as $key => $param) {
-                $condition = new \Acelle\Model\SegmentCondition();
-                $condition->fill($param);
-                $condition->segment_id = $segment->id;
-                $field = \Acelle\Model\Field::findByUid($param['field_id']);
-                if (is_object($field)) {
-                    $condition->field_id = $field->id;
-                } else {
-                    $condition->field_id = NULL;
-                }
-
-                $condition->save();
-            }
+            $segment->updateConditions($request->conditions);
 
             // Log
             $segment->log('created', $request->user()->customer);
@@ -190,9 +178,16 @@ class SegmentController extends Controller
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
         $segment = \Acelle\Model\Segment::findByUid($request->uid);
 
-        $subscribers = $segment->subscribers($request);
-        $total = distinctCount($subscribers, 'subscribers.id');
-        $subscribers = \optimized_paginate($subscribers, $request->per_page, null, null, null, $total);
+        $subscribers = $segment->subscribers();
+
+        if ($request->sort_order) {
+            $subscribers->orderBy($request->sort_order, $request->sort_direction);
+        }
+
+        $total = $subscribers->count();
+
+        $subscribers = $subscribers->orderBy($request->sort_order, $request->sort_direction)
+            ->paginate($request->per_page);
 
         $fields = $list->getFields->whereIn('uid', explode(',', $request->columns));
         return view('subscribers._list', [
@@ -286,21 +281,9 @@ class SegmentController extends Controller
             // Save segment
             $segment->fill($request->all());
             $segment->save();
-            // save conditions
-            $segment->segmentConditions()->delete();
-            foreach ($request->conditions as $key => $param) {
-                $condition = new \Acelle\Model\SegmentCondition();
-                $condition->fill($param);
-                $condition->segment_id = $segment->id;
-                $field = \Acelle\Model\Field::findByUid($param['field_id']);
-                if (is_object($field)) {
-                    $condition->field_id = $field->id;
-                } else {
-                    $condition->field_id = NULL;
-                }
 
-                $condition->save();
-            }
+            // save conditions
+            $segment->updateConditions($request->conditions);
 
             // Log
             $segment->log('updated', $request->user()->customer);
@@ -322,20 +305,12 @@ class SegmentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
-    {
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function delete(Request $request)
     {
-        $items = \Acelle\Model\Segment::whereIn('uid', explode(',', $request->uids));
+        $items = \Acelle\Model\Segment::whereIn(
+            'uid',
+            is_array($request->uids) ? $request->uids : explode(',', $request->uids)
+        );
 
         foreach ($items->get() as $item) {
             // authorize
@@ -352,7 +327,7 @@ class SegmentController extends Controller
         }
 
         // Redirect to my lists page
-         // Redirect to my lists page
+        // Redirect to my lists page
         echo trans('messages.segments.deleted');
     }
 
@@ -405,88 +380,6 @@ class SegmentController extends Controller
             'field_uid' => $request->field_uid,
             'field' => $field,
             'index' => $request->index,
-        ]);
-    }
-
-
-    /**
-     * Export to csv.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function export(Request $request)
-    {
-        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
-
-        // authorize
-        if (\Gate::denies('export', $list)) {
-            return $this->notAuthorized();
-        }
-        // Start system job
-        $job = new \Acelle\Jobs\ExportSegmentsJob($list, $request->user()->customer,$request->input("fields"),$request->uid);
-        $this->dispatch($job);
-
-        // Action Log
-        $list->log('export_started', $request->user()->customer);
-    }
-
-
-
-    /**
-     * Export to csv.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function viewExport(Request $request)
-    {
-        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
-
-        // authorize
-        if (\Gate::denies('export', $list)) {
-            return $this->notAuthorized();
-        }
-
-        $system_jobs = $list->exportSegmentJobs($request->uid);
-        $segment = \Acelle\Model\Segment::findByUid($request->uid);
-
-
-        // authorize
-        if (\Gate::denies('export', $list)) {
-            return $this->notAuthorized();
-        }
-        return view('segments.export', [
-            'list' => $list,
-            'segment' => $segment,
-            'system_jobs' => $system_jobs
-        ]);
-    }
-
-    /**
-     * Display a listing of segment export  job.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function exportList(Request $request)
-    {
-        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
-
-        // authorize
-        if (\Gate::denies('export', $list)) {
-            return $this->notAuthorized();
-        }
-
-        $system_jobs = $list->exportSegmentJobs($request->uid);
-        $system_jobs = $system_jobs->orderBy($request->sort_order, $request->sort_direction);
-        $system_jobs = $system_jobs->paginate($request->per_page);
-
-        return view('helpers._export_list', [
-            'system_jobs' => $system_jobs,
-            'list' => $list,
-            'label' => trans('messages.export_segments')
         ]);
     }
 }

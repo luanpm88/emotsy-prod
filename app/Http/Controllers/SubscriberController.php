@@ -3,20 +3,26 @@
 namespace Acelle\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Acelle\Model\Subscriber;
-use Acelle\Model\EmailVerificationServer;
 use Acelle\Library\Log as MailLog;
+use Acelle\Model\EmailVerificationServer;
 use Acelle\Model\MailList;
+use Acelle\Model\Segment;
+use Acelle\Model\Subscriber;
+use Acelle\Model\JobMonitor;
+use Acelle\Library\Facades\Hook;
 
 class SubscriberController extends Controller
 {
-
     /**
      * Search items.
      */
     public function search($list, $request)
     {
-        $subscribers = \Acelle\Model\Subscriber::search($request)
+        $customer = $request->user()->customer;
+        $subscribers = $customer->subscribers()
+            ->search($request->keyword)
+            ->filter($request)
+            ->orderBy($request->sort_order ? $request->sort_order : 'created_at', $request->sort_direction ? $request->sort_direction : 'asc')
             ->where('mail_list_id', '=', $list->id);
 
         return $subscribers;
@@ -29,7 +35,7 @@ class SubscriberController extends Controller
      */
     public function index(Request $request)
     {
-        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+        $list = MailList::findByUid($request->list_uid);
 
         return view('subscribers.index', [
             'list' => $list
@@ -43,7 +49,7 @@ class SubscriberController extends Controller
      */
     public function listing(Request $request)
     {
-        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+        $list = MailList::findByUid($request->list_uid);
 
         // authorize
         if (\Gate::denies('read', $list)) {
@@ -51,11 +57,12 @@ class SubscriberController extends Controller
         }
 
         $subscribers = $this->search($list, $request);
-        $total = distinctCount($subscribers);
+        // $total = distinctCount($subscribers);
+        $total = $subscribers->count();
         $subscribers->with(['mailList', 'subscriberFields']);
-        $subscribers = \optimized_paginate($subscribers, $request->per_page, null, null, null, $total);
+        $subscribers = $subscribers->paginate($request->per_page);
 
-        $fields = $list->getFields->whereIn('uid', explode(',', $request->columns));
+        $fields = $list->getFields->whereIn('uid', $request->columns);
 
         return view('subscribers._list', [
             'subscribers' => $subscribers,
@@ -72,7 +79,7 @@ class SubscriberController extends Controller
      */
     public function create(Request $request)
     {
-        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+        $list = MailList::findByUid($request->list_uid);
         $subscriber = new \Acelle\Model\Subscriber();
         $subscriber->mail_list_id = $list->id;
 
@@ -109,38 +116,26 @@ class SubscriberController extends Controller
      */
     public function store(Request $request)
     {
+        $list = MailList::findByUid($request->list_uid);
         $customer = $request->user()->customer;
-        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
-        $subscriber = new \Acelle\Model\Subscriber();
-        $subscriber->mail_list_id = $list->id;
-        $subscriber->status = 'subscribed';
 
-        // authorize
-        if (\Gate::denies('create', $subscriber)) {
+        if (!$customer->user->can('addMoreSubscribers', [ $list, $more = 1 ])) {
             return $this->noMoreItem();
         }
 
-        // validate and save posted data
-        if ($request->isMethod('post')) {
-            $this->validate($request, $subscriber->getRules());
+        // Validate & and create subscriber
+        // Throw ValidationError exception in case of failure
+        list($validator, $subscriber) = $list->subscribe($request, Subscriber::SUBSCRIPTION_TYPE_ADDED);
 
-            // Save subscriber
-            $subscriber->email = $request->EMAIL;
-            $subscriber->save();
-            // Update field
-            $subscriber->updateFields($request->all());
-
-            // update MailList cache
-            event(new \Acelle\Events\MailListUpdated($subscriber->mailList));
-
-            // Log
-            $subscriber->log('created', $customer);
-
-            // Redirect to my lists page
-            $request->session()->flash('alert-success', trans('messages.subscriber.created'));
-
-            return redirect()->action('SubscriberController@index', $list->uid);
+        // @IMPORTANT: do not use $validator->fails() again,
+        // if validation runs again, it is now TRUE! subscriber's email inserted => no longer unique
+        if (is_null($subscriber)) {
+            return back()->withInput()->withErrors($validator);
         }
+
+        // Redirect to my lists page
+        $request->session()->flash('alert-success', trans('messages.subscriber.created'));
+        return redirect()->action('SubscriberController@index', $list->uid);
     }
 
     /**
@@ -163,7 +158,7 @@ class SubscriberController extends Controller
      */
     public function edit(Request $request)
     {
-        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+        $list = MailList::findByUid($request->list_uid);
         $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
 
         // authorize
@@ -204,7 +199,7 @@ class SubscriberController extends Controller
     public function update(Request $request, $id)
     {
         $customer = $request->user()->customer;
-        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+        $list = MailList::findByUid($request->list_uid);
         $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
 
         // authorize
@@ -228,7 +223,7 @@ class SubscriberController extends Controller
                 $subscriber->removeImage();
             }
 
-                // Update field
+            // Update field
             $subscriber->updateFields($request->all());
 
             event(new \Acelle\Events\MailListUpdated($subscriber->mailList));
@@ -250,22 +245,16 @@ class SubscriberController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
-    {
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function delete(Request $request)
     {
         $customer = $request->user()->customer;
-        $subscribers = \Acelle\Model\Subscriber::whereIn('uid', explode(',', $request->uids));
-        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+        $uids = $request->uids;
+
+        if (!is_array($request->uids)) {
+            $uids = explode(',', $request->uids);
+        }
+        $subscribers = \Acelle\Model\Subscriber::whereIn('uid', $uids);
+        $list = MailList::findByUid($request->list_uid);
 
         // Select all items
         if ($request->select_tool == 'all_items') {
@@ -273,7 +262,9 @@ class SubscriberController extends Controller
         }
 
         // get related mail lists to update the cached information
-        $lists = $subscribers->get()->map(function($e) { return \Acelle\Model\MailList::find($e->mail_list_id); })->unique();
+        $lists = $subscribers->get()->map(function ($e) {
+            return MailList::find($e->mail_list_id);
+        })->unique();
 
         // actually delete the subscriber
         foreach ($subscribers->get() as $subscriber) {
@@ -306,20 +297,26 @@ class SubscriberController extends Controller
      */
     public function subscribe(Request $request)
     {
-        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+        $list = MailList::findByUid($request->list_uid);
         $customer = $request->user()->customer;
 
         if ($request->select_tool == 'all_items') {
             $subscribers = $this->search($list, $request);
         } else {
-            $subscribers = \Acelle\Model\Subscriber::whereIn('uid', explode(',', $request->uids));
+            $subscribers = \Acelle\Model\Subscriber::whereIn(
+                'uid',
+                is_array($request->uids) ? $request->uids : explode(',', $request->uids)
+            );
         }
 
         foreach ($subscribers->get() as $subscriber) {
             // authorize
             if (\Gate::allows('subscribe', $subscriber)) {
-                $subscriber->status = 'subscribed';
-                $subscriber->save();
+                $subscriber->subscribe([
+                    'message_id' => null,
+                    'user_agent' => $_SERVER['HTTP_USER_AGENT'],
+                ]);
+
                 // update MailList cache
                 event(new \Acelle\Events\MailListUpdated($subscriber->mailList));
 
@@ -341,20 +338,25 @@ class SubscriberController extends Controller
      */
     public function unsubscribe(Request $request)
     {
-        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+        $list = MailList::findByUid($request->list_uid);
         $customer = $request->user()->customer;
 
         if ($request->select_tool == 'all_items') {
             $subscribers = $this->search($list, $request);
         } else {
-            $subscribers = \Acelle\Model\Subscriber::whereIn('uid', explode(',', $request->uids));
+            $subscribers = \Acelle\Model\Subscriber::whereIn(
+                'uid',
+                is_array($request->uids) ? $request->uids : explode(',', $request->uids)
+            );
         }
 
         foreach ($subscribers->get() as $subscriber) {
             // authorize
             if (\Gate::allows('unsubscribe', $subscriber)) {
-                $subscriber->status = 'unsubscribed';
-                $subscriber->save();
+                $subscriber->unsubscribe([
+                    'message_id' => null,
+                    'user_agent' => $_SERVER['HTTP_USER_AGENT'],
+                ]);
 
                 // Log
                 $subscriber->log('unsubscribed', $customer);
@@ -378,33 +380,115 @@ class SubscriberController extends Controller
     public function import(Request $request)
     {
         $customer = $request->user()->customer;
-        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
-
-        $system_jobs = $list->importJobs();
+        $list = MailList::findByUid($request->list_uid);
+        $currentJob = $list->importJobs()->first();
 
         // authorize
         if (\Gate::denies('import', $list)) {
             return $this->notAuthorized();
         }
 
-        if ($request->isMethod('post')) {
-            if ($request->hasFile('file')) {
-                // Start system job
-                $job = new \Acelle\Jobs\ImportSubscribersJob($list, $request->user()->customer, $request->file('file')->path());
-                $this->dispatch($job);
+        $importNotifications = Hook::execute('list_import_notifications');
 
-                // Action Log
-                $list->log('import_started', $request->user()->customer);
-            } else {
-                // @note: use try/catch instead
-                echo "max_file_upload";
-            }
+        // GET, has a current job
+        if ($currentJob) {
+            return view('subscribers.import', [
+                'list' => $list,
+                'currentJobUid' => $currentJob->uid,
+                'progressCheckUrl' => action('SubscriberController@importProgress', ['job_uid' => $currentJob->uid, 'list_uid' => $list->uid]),
+                'cancelUrl' => action('SubscriberController@cancelImport', ['job_uid' => $currentJob->uid]),
+                'logDownloadUrl' => action('SubscriberController@downloadImportLog', ['job_uid' => $currentJob->uid]),
+                'importNotifications' => $importNotifications,
+            ]);
+        // GET, do not have any job
         } else {
             return view('subscribers.import', [
                 'list' => $list,
-                'system_jobs' => $system_jobs
+                'importNotifications' => $importNotifications,
             ]);
         }
+    }
+
+    public function dispatchImportJob(Request $request)
+    {
+        // Get the list
+        $list = MailList::findByUid($request->list_uid);
+
+        // Upload to server
+        // Example of outcome: /home/acelle/storage/app/tmp/import-000000.csv
+        $filepath = $list->uploadCsv($request->file('file'));
+
+        // Use the default way if there is no other plugin
+        Hook::registerIfEmpty('dispatch_list_import_job', function ($list, $filepath) {
+            return $list->dispatchImportJob($filepath);
+        });
+
+        // Dispatch the import job
+        $currentJob = Hook::perform('dispatch_list_import_job', [$list, $filepath]);
+
+        // Return the job information
+        return response()->json([
+            'currentJobUid' => $currentJob->uid,
+            'progressCheckUrl' => action('SubscriberController@importProgress', ['job_uid' => $currentJob->uid, 'list_uid' => $list->uid]),
+            'cancelUrl' => action('SubscriberController@cancelImport', ['job_uid' => $currentJob->uid]),
+            'logDownloadUrl' => action('SubscriberController@downloadImportLog', ['job_uid' => $currentJob->uid]),
+        ]);
+    }
+
+    /**
+     * Import from file.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function cancelImport(Request $request)
+    {
+        $job = JobMonitor::findByUid($request->job_uid);
+
+        try {
+            $job->cancel();
+            return response()->json(['status' => 'done']);
+        } catch (\Exception $ex) {
+            $job->delete(); // delete anyway if already done or failed, to make it simple to user
+            return response()->json(['status' => '']);
+        }
+    }
+
+    /**
+     * Import from file.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function cancelExport(Request $request)
+    {
+        $job = JobMonitor::findByUid($request->job_uid);
+
+        try {
+            $job->cancel();
+            return response()->json(['status' => 'done']);
+        } catch (\Exception $ex) {
+            $job->delete(); // delete anyway if already done or failed, to make it simple to user
+            return response()->json(['status' => '']);
+        }
+    }
+
+    public function downloadImportLog(Request $request)
+    {
+        $job = JobMonitor::findByUid($request->job_uid);
+
+        // Only available if job has moved out of queued status
+        return response()->download($job->getJsonData()['logfile']);
+    }
+
+    public function downloadExportedFile(Request $request)
+    {
+        $job = JobMonitor::findByUid($request->job_uid);
+
+        // Only available if job has moved out of queued status
+        return response()->download($job->getJsonData()['filepath']);
     }
 
     /**
@@ -414,81 +498,15 @@ class SubscriberController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function importProccess(Request $request)
+    public function importProgress(Request $request)
     {
-        $list = \Acelle\Model\MailList::findByUid($request->current_list_uid);
-        $system_job = $list->getLastImportJob();
+        $list = MailList::findByUid($request->list_uid);
+        $job = $list->importJobs()->first();
 
-        // authorize
-        if (\Gate::denies('import', $list)) {
-            return $this->notAuthorized();
-        }
+        $progress = $list->getProgress($job);
 
-        if(!is_object($system_job)) {
-            return "none";
-        }
-
-        // authorize
-        if (\Gate::denies('import', $list)) {
-            return $this->notAuthorized();
-        }
-
-        // Messages
-        $message = \Acelle\Helpers\ImportSubscribersHelper::getMessage($system_job);
-
-        return response()->json([
-            "job" => $system_job,
-            "data" => json_decode($system_job->data),
-            "timer" => $system_job->runTime(),
-            "message" => $message,
-        ]);
-    }
-
-    /**
-     * Download import log.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     * @todo move this to the MailList controller
-     */
-    public function downloadImportLog(Request $request)
-    {
-        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
-
-        // authorize
-        if (\Gate::denies('import', $list)) {
-            return $this->notAuthorized();
-        }
-
-        // @todo: should be the exact MailList here
-        $log = $list->getLastImportLog();
-        // @todo what if log does not exist (removed)?
-        return response()->download($log);
-    }
-
-    /**
-     * Display a listing of subscriber import job.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function importList(Request $request)
-    {
-        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
-
-        // authorize
-        if (\Gate::denies('import', $list)) {
-            return $this->notAuthorized();
-        }
-
-        $system_jobs = $list->importJobs();
-        $system_jobs = $system_jobs->orderBy($request->sort_order, $request->sort_direction);
-        $system_jobs = $system_jobs->paginate($request->per_page);
-
-        return view('subscribers._import_list', [
-            'system_jobs' => $system_jobs,
-            'list' => $list
-        ]);
+        // Get progress updated by the import process and status of the final job monitor
+        return response()->json($progress);
     }
 
     /**
@@ -500,36 +518,51 @@ class SubscriberController extends Controller
      */
     public function export(Request $request)
     {
-        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+        $list = MailList::findByUid($request->list_uid);
 
         // authorize
         if (\Gate::denies('export', $list)) {
             return $this->notAuthorized();
         }
 
-        $system_jobs = $list->exportJobs();
+        $currentJob = $list->exportJobs()->first();
 
-        $customer = $request->user()->customer;
-
-        // authorize
-        if (\Gate::denies('export', $list)) {
-            return $this->notAuthorized();
-        }
-
-        if ($request->isMethod('post')) {
-
-            // Start system job
-            $job = new \Acelle\Jobs\ExportSubscribersJob($list, $request->user()->customer);
-            $this->dispatch($job);
-
-            // Action Log
-            $list->log('export_started', $request->user()->customer);
-        } else {
+        // GET, has a current job
+        if ($currentJob) {
             return view('subscribers.export', [
                 'list' => $list,
-                'system_jobs' => $system_jobs
+                'currentJobUid' => $currentJob->uid,
+                'progressCheckUrl' => action('SubscriberController@exportProgress', ['job_uid' => $currentJob->uid]),
+                'cancelUrl' => action('SubscriberController@cancelExport', ['job_uid' => $currentJob->uid]),
+                'downloadUrl' => action('SubscriberController@downloadExportedFile', ['job_uid' => $currentJob->uid]),
+            ]);
+        // GET, do not have any job
+        } else {
+            return view('subscribers.export', [
+                'list' => $list
             ]);
         }
+    }
+
+    public function dispatchExportJob(Request $request)
+    {
+        // Get the list
+        $list = MailList::findByUid($request->list_uid);
+
+        // Get segment if any
+        $segmentUid = $request->input('segment_uid');
+        $segment = (is_null($segmentUid)) ? null : Segment::findByUid($segmentUid);
+
+        // Dispatch import job
+        $currentJob = $list->dispatchExportJob($segment);
+
+        // Return the job information
+        return response()->json([
+            'currentJobUid' => $currentJob->uid,
+            'progressCheckUrl' => action('SubscriberController@exportProgress', ['job_uid' => $currentJob->uid]),
+            'cancelUrl' => action('SubscriberController@cancelExport', ['job_uid' => $currentJob->uid]),
+            'downloadUrl' => action('SubscriberController@downloadExportedFile', ['job_uid' => $currentJob->uid]),
+        ]);
     }
 
     /**
@@ -539,75 +572,16 @@ class SubscriberController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function exportProccess(Request $request)
+    public function exportProgress(Request $request)
     {
-        $list = \Acelle\Model\MailList::findByUid($request->current_list_uid);
-        $system_job = $list->getLastExportJob();
+        $job = JobMonitor::findByUid($request->job_uid);
 
-        // authorize
-        if (\Gate::denies('export', $list)) {
-            return $this->notAuthorized();
-        }
+        // Get progress updated by the import process and status of the final job monitor
+        $progress = $job->getJsonData();
+        $progress['status'] = $job->status;
+        $progress['error'] = $job->error;
 
-        if(!is_object($system_job)) {
-            return "none";
-        }
-
-        // authorize
-        if (\Gate::denies('export', $list)) {
-            return $this->notAuthorized();
-        }
-
-        return response()->json([
-            "job" => $system_job,
-            "data" => json_decode($system_job->data),
-            "timer" => $system_job->runTime(),
-        ]);
-    }
-
-    /**
-     * Download exported csv file after exporting.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function downloadExportedCsv(Request $request)
-    {
-        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
-
-        // authorize
-        if (\Gate::denies('export', $list)) {
-            return $this->notAuthorized();
-        }
-
-        $system_job = $list->getLastExportJob();
-
-        return response()->download(storage_path('job/'.$system_job->id.'/data.csv'));
-    }
-
-    /**
-     * Display a listing of subscriber import job.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function exportList(Request $request)
-    {
-        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
-
-        // authorize
-        if (\Gate::denies('export', $list)) {
-            return $this->notAuthorized();
-        }
-
-        $system_jobs = $list->exportJobs();
-        $system_jobs = $system_jobs->orderBy($request->sort_order, $request->sort_direction);
-        $system_jobs = $system_jobs->paginate($request->per_page);
-
-        return view('subscribers._export_list', [
-            'system_jobs' => $system_jobs,
-            'list' => $list
-        ]);
+        return response()->json($progress);
     }
 
     /**
@@ -619,19 +593,22 @@ class SubscriberController extends Controller
      */
     public function copy(Request $request)
     {
-        $from_list = \Acelle\Model\MailList::findByUid($request->from_uid);
-        $to_list = \Acelle\Model\MailList::findByUid($request->to_uid);
+        $from_list = MailList::findByUid($request->from_uid);
+        $to_list = MailList::findByUid($request->to_uid);
 
         if ($request->select_tool == 'all_items') {
             $subscribers = $this->search($from_list, $request)->select('subscribers.*');
         } else {
-            $subscribers = \Acelle\Model\Subscriber::whereIn('uid', explode(',', $request->uids));
+            $subscribers = \Acelle\Model\Subscriber::whereIn(
+                'uid',
+                is_array($request->uids) ? $request->uids : explode(',', $request->uids)
+            );
         }
 
         foreach ($subscribers->get() as $subscriber) {
             // authorize
             if (\Gate::allows('update', $to_list)) {
-                $subscriber->copy($to_list, $request->type);
+                $subscriber->copy($to_list);
             }
         }
 
@@ -660,19 +637,22 @@ class SubscriberController extends Controller
      */
     public function move(Request $request)
     {
-        $from_list = \Acelle\Model\MailList::findByUid($request->from_uid);
-        $to_list = \Acelle\Model\MailList::findByUid($request->to_uid);
+        $from_list = MailList::findByUid($request->from_uid);
+        $to_list = MailList::findByUid($request->to_uid);
 
         if ($request->select_tool == 'all_items') {
             $subscribers = $this->search($from_list, $request)->select('subscribers.*');
         } else {
-            $subscribers = \Acelle\Model\Subscriber::whereIn('uid', explode(',', $request->uids));
+            $subscribers = \Acelle\Model\Subscriber::whereIn(
+                'uid',
+                is_array($request->uids) ? $request->uids : explode(',', $request->uids)
+            );
         }
 
         foreach ($subscribers->get() as $subscriber) {
             // authorize
             if (\Gate::allows('update', $to_list)) {
-                $subscriber->move($to_list, $request->type);
+                $subscriber->move($to_list);
             }
         }
 
@@ -702,12 +682,15 @@ class SubscriberController extends Controller
      */
     public function copyMoveForm(Request $request)
     {
-        $from_list = \Acelle\Model\MailList::findByUid($request->from_uid);
+        $from_list = MailList::findByUid($request->from_uid);
 
         if ($request->select_tool == 'all_items') {
             $subscribers = $this->search($from_list, $request);
         } else {
-            $subscribers = \Acelle\Model\Subscriber::whereIn('uid', explode(',', $request->uids));
+            $subscribers = \Acelle\Model\Subscriber::whereIn(
+                'uid',
+                is_array($request->uids) ? $request->uids : explode(',', $request->uids)
+            );
         }
 
         return view('subscribers.copy_move_form', [
@@ -750,7 +733,7 @@ class SubscriberController extends Controller
 
         try {
             MailLog::info(sprintf("Cleaning up verification data for %s (%s)", $subscriber->email, $subscriber->id));
-            $subscriber->emailVerification->delete();
+            $subscriber->resetVerification();
             // success message
             $request->session()->flash('alert-success', trans('messages.verification.reset'));
 
@@ -776,7 +759,7 @@ class SubscriberController extends Controller
         if (!empty($subscriber->imagePath())) {
             $img = \Image::make($subscriber->imagePath());
         } else {
-            $img = \Image::make(public_path('assets/images/placeholder.jpg'));
+            $img = \Image::make(public_path('images/subscriber-icon.jpg'));
         }
 
         return $img->response();
@@ -791,8 +774,11 @@ class SubscriberController extends Controller
      */
     public function resendConfirmationEmail(Request $request)
     {
-        $subscribers = \Acelle\Model\Subscriber::whereIn('uid', explode(',', $request->uids));
-        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+        $subscribers = \Acelle\Model\Subscriber::whereIn(
+            'uid',
+            is_array($request->uids) ? $request->uids : explode(',', $request->uids)
+        );
+        $list = MailList::findByUid($request->list_uid);
 
         // Select all items
         if ($request->select_tool == 'all_items') {
@@ -800,7 +786,7 @@ class SubscriberController extends Controller
         }
 
         // Launch re-sending job
-        dispatch(new \Acelle\Jobs\SendConfirmationEmailJob($subscribers->get(), $list));
+        dispatch_now(new \Acelle\Jobs\SendConfirmationEmailJob($subscribers->get(), $list));
 
         // Redirect to my lists page
         echo trans('messages.subscribers.resend_confirmation_email.being_sent');
@@ -817,14 +803,14 @@ class SubscriberController extends Controller
     {
         $list = MailList::findByUid($list_uid);
         $subscriber = Subscriber::findByUid($uid);
-        
+
         // authorize
         if (\Gate::denies('update', $subscriber)) {
             return $this->notAuthorized();
         }
 
         // saving
-        if($request->isMethod('post')) {
+        if ($request->isMethod('post')) {
             $subscriber->updateTags($request->tags);
 
             return response()->json([
@@ -852,7 +838,7 @@ class SubscriberController extends Controller
     {
         $list = MailList::findByUid($list_uid);
         $subscriber = Subscriber::findByUid($uid);
-        
+
         // authorize
         if (\Gate::denies('delete', $subscriber)) {
             return $this->notAuthorized();
@@ -868,13 +854,6 @@ class SubscriberController extends Controller
         ], 201);
     }
 
-    /**
-     * Import from csv file.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function import2(Request $request)
     {
         $customer = $request->user()->customer;
@@ -890,13 +869,41 @@ class SubscriberController extends Controller
         ]);
     }
 
-    /**
-     * Import from csv file.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function bulkDelete(Request $request)
+    {
+        // init
+        $list = MailList::findByUid($request->list_uid);
+
+        // validate and save posted data
+        if ($request->isMethod('post')) {
+            // make validator
+            $validator = \Validator::make($request->all(), ['emails' => 'required']);
+
+            // redirect if fails
+            if ($validator->fails()) {
+                return response()->view('subscribers.bulkDelete', [
+                    'list' => $list,
+                    'errors' => $validator->errors(),
+                ], 400);
+            }
+
+            // get all emails
+            $emails = array_unique(preg_split("/[\s,\r\n]+/", $request->emails));
+            $subscribers = $list->subscribers()->whereIn('email', $emails)->get();
+
+            //
+            return view('subscribers.bulkDeleteConfirm', [
+                'list' => $list,
+                'emails' => $emails,
+                'subscribers' => $subscribers,
+            ]);
+        }
+
+        return view('subscribers.bulkDelete', [
+            'list' => $list,
+        ]);
+    }
+
     public function import2Wizard(Request $request)
     {
         $customer = $request->user()->customer;
@@ -912,13 +919,39 @@ class SubscriberController extends Controller
         ]);
     }
 
-    /**
-     * Import from csv file.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function bulkDeleteConfirm(Request $request)
+    {
+        // init
+        $list = MailList::findByUid($request->list_uid);
+
+        // validate and save posted data
+        if ($request->isMethod('post')) {
+            // make validator
+            $validator = \Validator::make($request->all(), ['emails' => 'required']);
+
+            // redirect if fails
+            if ($validator->fails()) {
+                return response()->view('subscribers.bulkDelete', [
+                    'list' => $list,
+                    'errors' => $validator->errors(),
+                ], 400);
+            }
+
+            // get all emails
+            $emails = preg_split("/[\s,\r\n]+/", $request->emails);
+
+            //
+            return view('subscribers.bulkDeleteConfirm', [
+                'list' => $list,
+                'emails' => $emails,
+            ]);
+        }
+
+        return view('subscribers.bulkDelete', [
+            'list' => $list,
+        ]);
+    }
+
     public function import2Upload(Request $request)
     {
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
@@ -952,14 +985,7 @@ class SubscriberController extends Controller
             "message" => trans('messages.subscriber.import.csv_uploaded'),
         ]);
     }
-    
-    /**
-     * Import mapping fields.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function import2Mapping(Request $request)
     {
         $customer = $request->user()->customer;
@@ -998,6 +1024,42 @@ class SubscriberController extends Controller
 
         return view('subscribers.import2.run', [
             'list' => $list,
+        ]);
+    }
+
+    public function assignValues(Request $request, $list_uid)
+    {
+        // init
+        $list = MailList::findByUid($request->list_uid);
+        $subscribers = \Acelle\Model\Subscriber::whereIn('uid', $request->uids);
+
+        // Select all items
+        if ($request->select_tool == 'all_items') {
+            $subscribers = $this->search($list, $request);
+        }
+
+        // validate and save posted data
+        if ($request->isMethod('post')) {
+            $validator = \Acelle\Model\Subscriber::assginValues($subscribers, $request);
+
+            // redirect if fails
+            if ($validator->fails()) {
+                return response()->view('subscribers.assignValues', [
+                    'list' => $list,
+                    'subscribers' => $subscribers,
+                    'errors' => $validator->errors(),
+                ], 400);
+            }
+
+            return response()->json([
+                'status' => 'success',
+                'message' => trans('messages.subscribers.values_assigned'),
+            ]);
+        }
+
+        return view('subscribers.assignValues', [
+            'list' => $list,
+            'subscribers' => $subscribers,
         ]);
     }
 }

@@ -5,14 +5,13 @@
 require 'json'
 
 # Settings
-old_versions = ['4.0.9']                    # sort by chronological order
-packages = ['acelle', 'paypal', 'doctrine', 'ramsey']       # vendor packages to be replaced
-dirs = ['resources/lang/default', 'public/builder']               # 'resources/lang/default' for example
+last_supported = '4.0.24-p4'
+packages = ['acelle']       # vendor packages to be replaced
+dirs = ['public/builder', 'database', 'resources/lang/default', 'vendor']                   # 'resources/lang/default' for example
 
 # Auto setting
 release_date = Time.now.to_s
-packages += ['autoload.php', 'composer'] unless packages.empty?
-last_supported = old_versions[0]
+packages += ['autoload.php', 'composer'] unless (packages.empty? && dirs.empty?)
 
 # Retrieve input
 new_version = ARGV[2]
@@ -24,34 +23,25 @@ if last_supported == new_version
   exit(0)
 end
 
+history = `git --git-dir #{File.join(gitdir, '.git')}  --work-tree #{gitdir} log #{last_supported}..#{new_version} --pretty=format:"%h"`.split("\n")
+
 # Get deleted files
 deleted = []
-for version in old_versions
-  deleted += `git --git-dir #{File.join(gitdir, '.git')}  --work-tree #{gitdir} diff --diff-filter=D --name-only #{version} #{new_version}`.split("\n")
-  deleted.uniq!
+updated = []
+for version in history
+  deleted += `git --git-dir #{File.join(gitdir, '.git')}  --work-tree #{gitdir} show --diff-filter=D --pretty='format:' --name-only #{version}`.split("\n")
+  deleted += `git --git-dir #{File.join(gitdir, '.git')}  --work-tree #{gitdir} show --diff-filter=R --pretty='format:' --name-only #{version} | awk '{print $1}'`.split("\n")
+  updated += `git --git-dir #{File.join(gitdir, '.git')}  --work-tree #{gitdir} show --diff-filter=ACMRTUXB --pretty='format:' --name-only #{version}`.split("\n")
 end
 
-# Get updated flies
-updated = `git --git-dir #{File.join(gitdir, '.git')}  --work-tree #{gitdir} diff --diff-filter=ACMRTUXB --name-only #{last_supported} #{new_version}`.split("\n")
-
 updated << 'VERSION'
+
+deleted.uniq!
 updated.uniq!
 
 skipped = [
-  'public/images/default_site_logo_small_dark.png',
-  'public/images/default_site_logo_small_light.png',
   'patch.rb'
 ]
-
-for f in updated
-  unless File.exists?(f)
-    skipped << f
-  end
-end
-
-puts skipped.uniq.map{|f| "* Skipped: #{f}"}.join("\n")
-
-updated.delete_if{ |f| skipped.include?(f) }
 
 # Resolve the updated/deleted stuffs
 # Make sure your working copy is of the correct version: "git checkout v3.0.0-p3" for example
@@ -63,6 +53,16 @@ for e in intersected
     updated.delete_if { |i| i == e }
   end
 end
+
+for f in updated
+  unless File.exists?(f)
+    skipped << f
+  end
+end
+
+puts skipped.uniq.map{|f| "* Skipped: #{f}"}.join("\n")
+
+updated.delete_if{ |f| skipped.include?(f) }
 
 if !updated.select{|f| f[/resources.lang.en.[a-z0-9]+\.php$/] }.empty?
   dirs << 'resources/lang/default'
@@ -92,7 +92,7 @@ end
 ## copy files
 for file in meta[:updated]
   if File.exists?(file)
-    `cp --parent #{file} #{File.join(output, subdir)}`
+    `cp -r --parent "#{file}" "#{File.join(output, subdir)}"`
   else
     puts "File #{file} skipped!"
   end
@@ -113,4 +113,4 @@ for dir in meta[:dirs]
 end
 
 ## zip file
-`cd #{File.join(output, subdir)}; zip -r ../#{subdir}.bin .; cd ..; rm -fr #{subdir}`
+`cd #{File.join(output, subdir)}; chmod 755 -R . ; zip -r ../#{subdir}.bin .; cd ..; rm -fr #{subdir}`

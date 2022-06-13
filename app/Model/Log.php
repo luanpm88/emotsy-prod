@@ -178,7 +178,7 @@ class Log extends Model
         }
 
         // filters
-        $filters = $request->filters;
+        $filters = $request->all();
         if (!empty($filters)) {
             if (!empty($filters['type'])) {
                 $query = $query->where('logs.type', '=', $filters['type']);

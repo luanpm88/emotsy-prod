@@ -8,7 +8,7 @@
 			{{ isset($multiple) && $multiple == true ? "multiple='multiple'" : "" }}
 			{{ isset($readonly) && $readonly == true ? "readonly='readonly'" : "" }}
 		>
-	@if (isset($include_blank))
+	@if (isset($include_blank) && $include_blank !== false)
 		<option value="">{{ $include_blank }}</option>
 	@endif
 	@foreach($options as $option)

@@ -24,22 +24,26 @@ class FileController extends Controller
         $user = \Auth::guard('api')->user();
 
         // Get path
-        $path = $user->storagePath();
+        $path = $user->getAssetsPath();
 
-        $files = json_decode($request->all()["files"]);
+        if (!is_array($request->all()["files"])) {
+            $files = json_decode($request->all()["files"]);
+        } else {
+            $files = $request->all()["files"];
+        }
 
         $result = [];
         foreach ($files as $file) {
             $fileUrl = $file->url;
 
             // Check and merge custom path
-            $path = $user->storagePath();
-            if($file->subdirectory) {
-                $parts = explode ('/', $file->subdirectory);
+            $path = $user->getAssetsPath();
+            if ($file->subdirectory) {
+                $parts = explode('/', $file->subdirectory);
                 $validParts = [];
                 foreach ($parts as $part) {
                     if ($part) {
-                        if (strpbrk($part, "\\/?%*:|\"<>") === FALSE) {
+                        if (strpbrk($part, "\\/?%*:|\"<>") === false) {
                             $validParts[] = $part;
                         } else {
                             // return response()->json('Path is not valid', 400);
@@ -57,7 +61,7 @@ class FileController extends Controller
             }
 
             // Get file name
-            $urlArr = explode ('/', $fileUrl);
+            $urlArr = explode('/', $fileUrl);
             $ct = count($urlArr);
             $name = $urlArr[$ct-1];
 
@@ -76,8 +80,8 @@ class FileController extends Controller
             }
 
             // Download file
-            try{
-                if( ! \File::isDirectory($path) ) {
+            try {
+                if (! \File::isDirectory($path)) {
                     \File::makeDirectory($path, 0777, true);
                 }
 

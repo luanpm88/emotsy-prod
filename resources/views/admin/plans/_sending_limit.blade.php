@@ -12,3 +12,15 @@
 <input type="hidden" name="plan[options][sending_quota]" value="{{ $plan->getOption('sending_quota') }}" />
 <input type="hidden" name="plan[options][sending_quota_time]" value="{{ $plan->getOption('sending_quota_time') }}" />
 <input type="hidden" name="plan[options][sending_quota_time_unit]" value="{{ $plan->getOption('sending_quota_time_unit') }}" />
+
+<script>
+    $(function() {
+        $('[name="plan[options][sending_limit]"]').on('change', function() {
+            var val = $(this).val();
+
+            if (val == 'custom') {
+                PlansSecurity.getSendingLimitPopup().load();
+            }
+        });
+    });
+</script>

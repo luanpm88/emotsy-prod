@@ -1,5 +1,5 @@
 @if ($automations->count() > 0)
-    <table class="table table-box pml-table"
+    <table class="table table-box pml-table mt-2"
         current-page="{{ empty(request()->page) ? 1 : empty(request()->page) }}"
     >
         @foreach ($automations as $key => $automation)
@@ -9,91 +9,104 @@
                         <div class="checkbox inline">
                             <label>
                                 <input type="checkbox" class="node styled"
-                                    custom-order="{{ $automation->custom_order }}"
-                                    name="ids[]"
+                                    name="uids[]"
                                     value="{{ $automation->uid }}"
                                 />
                             </label>
                         </div>
-                        @if (request()->sort_order == 'custom_order' && empty(request()->keyword))
-                            <i data-action="move" class="icon icon-more2 list-drag-button"></i>
-                        @endif
                     </div>
                 </td>
                 <td>
-                    <h5 class="no-margin text-bold">
-                        <a class="kq_search" href="{{ action('Automation2Controller@edit', $automation->uid) }}">
-                            {{ $automation->name }}
-                        </a>
-                    </h5>
-                    <div class="text-semibold" data-popup="tooltip">
+                    <a class="kq_search fw-600 d-block list-title" href="{{ action('Automation2Controller@edit', $automation->uid) }}">
+                        {{ $automation->name }}
+                    </a>
+                    <div class="" data-popup="tooltip">
                         {{ $automation->getBriefIntro() }}
                     </div>
                 </td>
                 <td>
-                    <h5 class="no-margin">
-                        {{ $automation->mailList->readCache('SubscriberCount') }}
+                    <h5 class="no-margin stat-num">
+                        {{ $automation->mailList->readCache('SubscriberCount', '#') }}
                     </h5>
                     <span class="text-muted2">{{ trans('messages.automation.overview.contacts') }}</span>
                 </td>
                 <td>
-                    <h5 class="no-margin text-teal-800 stat-num">
+                    <h5 class="no-margin text-primary stat-num">
                         {{ $automation->countEmails() }}
                     </h5>
                     <span class="text-muted2">{{ trans('messages.emails') }}</span>
                 </td>
                 <td>
-                    <h5 class="no-margin text-teal-800 stat-num">
-                        {{ number_to_percentage($automation->getSummaryStats()['complete']) }}
+                    <h5 class="no-margin text-primary stat-num">
+                        {{ $automation->readCache('SummaryStats') ? number_to_percentage($automation->readCache('SummaryStats')['complete']) : '#' }}
                     </h5>
                     <span class="text-muted2">{{ trans('messages.complete') }}</span>
                 </td>
                 <td>
                     <span class="no-margin text-bold">
-                        {{ Tool::formatDateTime($automation->created_at) }}
+                        {{ $automation->updated_at->diffForHumans(['options' => 2]) }}
                     </span>
                     <br />
-                    <span class="text-muted">{{ trans('messages.created_at') }}</span>
+                    <span class="text-muted">{{ trans('messages.automation.action.last_updated') }}</span>
                 </td>
                 <td class="text-center">
                     <span class="text-muted2 list-status">
-                        <span class="label label-flat bg-{{ $automation->status }}">{{ trans('messages.automation.status.' . $automation->status) }}</span>
+                        @if (empty($automation->last_error))
+                            <span class="label label-flat bg-{{ $automation->status }}">{{ trans('messages.automation.status.' . $automation->status) }}</span>
+                        @else
+                            <span class="label xtooltip label-flat bg-error" title="{{ $automation->last_error }}">Error</span>
+                            <pre style="display:none">{{ $automation->last_error }}</pre>
+                        @endif
                     </span>
                 </td>
-                <td class="text-right text-nowrap">
+                <td class="text-end text-nowrap pe-0">
                     @if (\Gate::allows('update', $automation))
-                        <a data-popup="tooltip" href="{{ action('Automation2Controller@edit', $automation->uid) }}" type="button" class="btn bg-grey btn-icon">
-                            <i class="material-icons">multiline_chart</i> {{ trans('messages.automation.design') }}
+                        <a data-popup="tooltip" href="{{ action('Automation2Controller@edit', $automation->uid) }}" role="button" class="btn btn-secondary btn-icon">
+                            <i class="material-symbols-rounded">multiline_chart</i> {{ trans('messages.automation.design') }}
                         </a>
                     @endif
                     @if (\Gate::allows('delete', $automation) || Auth::user()->can('disable', $automation) || Auth::user()->can('enable', $automation))
                         <div class="btn-group">
-                            <button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
-                            <ul class="dropdown-menu dropdown-menu-right">
+                            <button role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"></button>
+                            <ul class="dropdown-menu dropdown-menu-end">
                                 @can('enable', $automation)
                                     <li>
-                                        <a data-method="PATCH" link-confirm="{{ trans('messages.enable_automations_confirm') }}"
+                                        <a
+                                            class="dropdown-item list-action-single"
+                                            link-method="PATCH"
+                                            link-confirm="{{ trans('messages.enable_automations_confirm') }}"
                                             href="{{ action('Automation2Controller@enable', ["uids" => $automation->uid]) }}"
                                         >
-                                            <i class="icon-checkbox-checked2"></i> {{ trans('messages.enable') }}
+                                            <span class="material-symbols-rounded me-2">
+play_arrow
+</span> {{ trans('messages.enable') }}
                                         </a>
                                     </li>
                                 @endcan
                                 @can('disable', $automation)
                                     <li>
-                                        <a data-method="PATCH" link-confirm="{{ trans('messages.disable_automations_confirm') }}"
+                                        <a
+                                            class="dropdown-item list-action-single"
+                                            link-method="PATCH" link-confirm="{{ trans('messages.disable_automations_confirm') }}"
                                             href="{{ action('Automation2Controller@disable', ["uids" => $automation->uid]) }}"
                                         >
-                                            <i class="icon-checkbox-unchecked2"></i> {{ trans('messages.disable') }}
+                                            <span class="material-symbols-rounded me-2">
+hide_source
+</span> {{ trans('messages.disable') }}
                                         </a>
                                     </li>
                                 @endcan
                                 @if (\Gate::allows('delete', $automation))
                                     <li>
-                                        <a data-method='delete' delete-confirm="{{ trans('messages.delete_automations_confirm') }}"
+                                        <a  
+                                            class="dropdown-item list-action-single"
+                                            link-method='delete'
+                                            link-confirm="{{ trans('messages.delete_automations_confirm') }}"
                                             href="{{ action('Automation2Controller@delete', ["uids" => $automation->uid]) }}"
                                         >
-                                            <i class="icon-trash"></i> {{ trans("messages.delete") }}
+                                            <span class="material-symbols-rounded me-2">
+delete_outline
+</span> {{ trans("messages.delete") }}
                                         </a>
                                     </li>
                                 @endif
@@ -105,17 +118,21 @@
         @endforeach
     </table>
     @include('elements/_per_page_select', ["items" => $automations])
-    {{ $automations->links() }}
+    
 @elseif (!empty(request()->keyword))
     <div class="empty-list">
-        <i class="icon-paperplane"></i>
+        <span class="material-symbols-rounded">
+            schedule
+</span>
         <span class="line-1">
             {{ trans('messages.no_search_result') }}
         </span>
     </div>
 @else
     <div class="empty-list">
-        <i class="icon-alarm-check"></i>
+        <span class="material-symbols-rounded">
+schedule
+</span>
         <span class="line-1">
             {{ trans('messages.automation_empty_line_1') }}
         </span>

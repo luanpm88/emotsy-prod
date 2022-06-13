@@ -23,9 +23,12 @@
 namespace Acelle\Model;
 
 use Acelle\Library\Log;
+use Acelle\Library\Traits\HasUid;
 
 class FeedbackLoopHandler extends DeliveryHandler
 {
+    use HasUid;
+
     /**
      * Process feedback message, extract the feedback information (comply to RFC).
      *
@@ -119,7 +122,7 @@ class FeedbackLoopHandler extends DeliveryHandler
         }
 
         // filters
-        $filters = $request->filters;
+        $filters = $request->all();
         if (!empty($filters)) {
             if (!empty($filters['type'])) {
                 $query = $query->where('feedback_loop_handlers.type', '=', $filters['type']);
@@ -150,43 +153,11 @@ class FeedbackLoopHandler extends DeliveryHandler
     }
 
     /**
-     * Find item by uid.
-     *
-     * @return object
-     */
-    public static function findByUid($uid)
-    {
-        return self::where('uid', '=', $uid)->first();
-    }
-
-    /**
      * Items per page.
      *
      * @var array
      */
     public static $itemsPerPage = 25;
-
-    /**
-     * Bootstrap any application services.
-     */
-    public static function boot()
-    {
-        parent::boot();
-
-        // Create uid when creating list.
-        static::creating(function ($item) {
-            // Create new uid
-            $uid = uniqid();
-            while (FeedbackLoopHandler::where('uid', '=', $uid)->count() > 0) {
-                $uid = uniqid();
-            }
-            $item->uid = $uid;
-
-            // FeedbackLoopHandler custom order
-            FeedbackLoopHandler::getAll()->increment('custom_order', 1);
-            $item->custom_order = 0;
-        });
-    }
 
     /**
      * The attributes that are mass assignable.

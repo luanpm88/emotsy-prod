@@ -6,11 +6,10 @@ use Illuminate\Http\Request;
 use Acelle\Http\Controllers\Controller;
 use Acelle\Model\Plan;
 use Acelle\Cashier\Cashier;
-use Acelle\Cashier\SubscriptionTransaction;
+use Acelle\Library\Facades\Hook;
 
 class CustomerController extends Controller
 {
-
     /**
      * Display a listing of the resource.
      *
@@ -28,7 +27,8 @@ class CustomerController extends Controller
             $request->merge(array("admin_id" => $request->user()->admin->id));
         }
 
-        $customers = \Acelle\Model\Customer::search($request);
+        $customers = \Acelle\Model\Customer::search($request)
+            ->filter($request);
 
         return view('admin.customers.index', [
             'customers' => $customers,
@@ -52,7 +52,10 @@ class CustomerController extends Controller
             $request->merge(array("admin_id" => $request->user()->admin->id));
         }
 
-        $customers = \Acelle\Model\Customer::search($request)->paginate($request->per_page);
+        $customers = \Acelle\Model\Customer::search($request->keyword)
+            ->filter($request)
+            ->orderBy($request->sort_order, $request->sort_direction ? $request->sort_direction : 'asc')
+            ->paginate($request->per_page);
 
         return view('admin.customers._list', [
             'customers' => $customers,
@@ -66,16 +69,17 @@ class CustomerController extends Controller
      */
     public function create(Request $request)
     {
-        $customer = new \Acelle\Model\Customer();
+        $customer = \Acelle\Model\Customer::newCustomer();
         $customer->status = 'active';
         $customer->uid = '0';
 
         if (!empty($request->old())) {
             $customer->fill($request->old());
-            // User info
-            $customer->user = new \Acelle\Model\User();
-            $customer->user->fill($request->old());
         }
+
+        // User info
+        $customer->user = new \Acelle\Model\User();
+        $customer->user->fill($request->old());
 
         // authorize
         if (\Gate::denies('create', $customer)) {
@@ -98,7 +102,7 @@ class CustomerController extends Controller
     {
         // Get current user
         $current_user = $request->user();
-        $customer = new \Acelle\Model\Customer();
+        $customer = \Acelle\Model\Customer::newCustomer();
         $contact = new \Acelle\Model\Contact();
 
         // authorize
@@ -108,13 +112,12 @@ class CustomerController extends Controller
 
         // save posted data
         if ($request->isMethod('post')) {
-            $rules = $customer->rules();
-            $this->validate($request, $rules);
-
-            // Create user account for customer
             $user = new \Acelle\Model\User();
-            $user->email = $request->email;
+            $user->fill($request->all());
             $user->activated = true;
+
+            $this->validate($request, $user->rules());
+
             // Update password
             if (!empty($request->password)) {
                 $user->password = bcrypt($request->password);
@@ -122,27 +125,28 @@ class CustomerController extends Controller
             $user->save();
 
             // Save current user info
-            $customer->user_id = $user->id;
             $customer->admin_id = $request->user()->admin->id;
             $customer->fill($request->all());
             $customer->status = 'active';
 
             if ($customer->save()) {
+                $user->customer_id = $customer->id;
+                $user->save();
                 // Upload and save image
                 if ($request->hasFile('image')) {
                     if ($request->file('image')->isValid()) {
                         // Remove old images
-                        $customer->removeImage();
-                        $customer->image = $customer->uploadImage($request->file('image'));
-                        $customer->save();
+                        $user->uploadProfileImage($request->file('image'));
                     }
                 }
 
                 // Remove image
                 if ($request->_remove_image == 'true') {
-                    $customer->removeImage();
-                    $customer->image = '';
+                    $user->removeProfileImage();
                 }
+
+                // Execute registered hooks
+                Hook::execute('customer_added', [$customer]);
 
                 $request->session()->flash('alert-success', trans('messages.customer.created'));
 
@@ -209,25 +213,23 @@ class CustomerController extends Controller
             return $this->notAuthorized();
         }
 
-        // prevent action from demo mod
-        if($this->isDemoMode()) {
-            return $this->notAuthorized();
+        // Prenvent save from demo mod
+        if ($this->isDemoMode()) {
+            return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
         }
 
         // save posted data
         if ($request->isMethod('patch')) {
-
-            if($this->isDemoMode()) {
-                return $this->notAuthorized();
+            // Prenvent save from demo mod
+            if ($this->isDemoMode()) {
+                return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
             }
 
-            $rules = $customer->rules();
-
-            $this->validate($request, $rules);
-
-            // Update user account for customer
             $user = $customer->user;
-            $user->email = $request->email;
+            $user->fill($request->all());
+
+            $this->validate($request, $user->rules());
+
             // Update password
             if (!empty($request->password)) {
                 $user->password = bcrypt($request->password);
@@ -242,15 +244,13 @@ class CustomerController extends Controller
             if ($request->hasFile('image')) {
                 if ($request->file('image')->isValid()) {
                     // Remove old images
-                    $customer->removeImage();
-                    $customer->image = $customer->uploadImage($request->file('image'));
+                    $user->uploadProfileImage($request->file('image'));
                 }
             }
 
             // Remove image
             if ($request->_remove_image == 'true') {
-                $customer->removeImage();
-                $customer->image = '';
+                $user->removeProfileImage();
             }
 
             if ($customer->save()) {
@@ -258,17 +258,6 @@ class CustomerController extends Controller
                 return redirect()->action('Admin\CustomerController@index');
             }
         }
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
     }
 
     /**
@@ -280,7 +269,10 @@ class CustomerController extends Controller
      */
     public function enable(Request $request)
     {
-        $items = \Acelle\Model\Customer::whereIn('uid', explode(',', $request->uids));
+        $items = \Acelle\Model\Customer::whereIn(
+            'uid',
+            is_array($request->uids) ? $request->uids : explode(',', $request->uids)
+        );
 
         foreach ($items->get() as $item) {
             // authorize
@@ -302,7 +294,10 @@ class CustomerController extends Controller
      */
     public function disable(Request $request)
     {
-        $items = \Acelle\Model\Customer::whereIn('uid', explode(',', $request->uids));
+        $items = \Acelle\Model\Customer::whereIn(
+            'uid',
+            is_array($request->uids) ? $request->uids : explode(',', $request->uids)
+        );
 
         foreach ($items->get() as $item) {
             // authorize
@@ -324,21 +319,25 @@ class CustomerController extends Controller
      */
     public function delete(Request $request)
     {
-        $items = \Acelle\Model\Customer::whereIn('uid', explode(',', $request->uids));
+        if (isSiteDemo()) {
+            return response()->json(["message" => trans('messages.operation_not_allowed_in_demo')], 404);
+        }
 
-        foreach ($items->get() as $item) {
+        $customers = \Acelle\Model\Customer::whereIn(
+            'uid',
+            is_array($request->uids) ? $request->uids : explode(',', $request->uids)
+        );
+
+        foreach ($customers->get() as $customer) {
             // authorize
-            if (\Gate::denies('delete', $item)) {
+            if (\Gate::denies('delete', $customer)) {
                 return;
             }
         }
 
-        foreach ($items->get() as $item) {
-            $user = $item->user;
-            $item->delete();
-            if (!is_object($user->admin)) {
-                $user->delete();
-            }
+        foreach ($customers->get() as $customer) {
+            // Delete Customer account but KEEP user account if it is associated with an Admin
+            $customer->deleteAccount();
         }
 
         // Redirect to my lists page
@@ -433,43 +432,19 @@ class CustomerController extends Controller
         $result = [
             'columns' => [],
             'data' => [],
-            'bar_names' => [trans('messages.customers_growth')],
         ];
 
         // columns
         for ($i = 4; $i >= 0; --$i) {
             $result['columns'][] = \Carbon\Carbon::now()->subMonthsNoOverflow($i)->format('m/Y');
+            $result['data'][] = \Acelle\Model\Customer::customersCountByTime(
+                \Carbon\Carbon::now()->subMonthsNoOverflow($i)->startOfMonth(),
+                \Carbon\Carbon::now()->subMonthsNoOverflow($i)->endOfMonth(),
+                $request->user()->admin
+            );
         }
 
-        // datas
-        foreach ($result['bar_names'] as $bar) {
-            $data = [];
-            for ($i = 4; $i >= 0; --$i) {
-                $data[] = \Acelle\Model\Customer::customersCountByTime(
-                    \Carbon\Carbon::now()->subMonthsNoOverflow($i)->startOfMonth(),
-                    \Carbon\Carbon::now()->subMonthsNoOverflow($i)->endOfMonth(),
-                    $request->user()->admin
-                );
-            }
-
-            $result['data'][] = [
-                'name' => $bar,
-                'type' => 'bar',
-                'data' => $data,
-                'itemStyle' => [
-                    'normal' => [
-                        'label' => [
-                            'show' => true,
-                            'textStyle' => [
-                                'fontWeight' => 500,
-                            ],
-                        ],
-                    ],
-                ],
-            ];
-        }
-
-        return json_encode($result);
+        return response()->json($result);
     }
 
     /**
@@ -493,9 +468,9 @@ class CustomerController extends Controller
             $contact = $customer->contact;
         } else {
             $contact = new \Acelle\Model\Contact([
-                'first_name' => $customer->first_name,
-                'last_name' => $customer->last_name,
-                'email' => $customer->user->email,
+                'first_name' => $request->user()->first_name,
+                'last_name' => $request->user()->last_name,
+                'email' => $request->user()->email,
             ]);
         }
 
@@ -558,8 +533,7 @@ class CustomerController extends Controller
     public function assignPlan(Request $request, $uid)
     {
         $customer = \Acelle\Model\Customer::findByUid($uid);
-        $plans = Plan::getAvailablePlans();
-        $gateway = Cashier::getPaymentGateway();
+        $plans = Plan::active()->get();
 
         // authorize
         if (\Gate::denies('assignPlan', $customer)) {
@@ -576,7 +550,7 @@ class CustomerController extends Controller
                 'status' => 'success',
                 'message' => trans('messages.customer.plan.assigned', [
                     'plan' => $plan->name,
-                    'customer' => $customer->displayName(),
+                    'customer' => $customer->user->displayName(),
                 ]),
             ], 201);
         }
@@ -584,7 +558,6 @@ class CustomerController extends Controller
         return view('admin.customers.assign_plan', [
             'customer' => $customer,
             'plans' => $plans,
-            'gateway' => $gateway,
         ]);
     }
 }

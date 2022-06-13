@@ -1,17 +1,29 @@
-<div class="sidebar-header flex-center mb-2">
-    <h5 class="m-0 mr-auto">{{ $automation->name }}</h5>
-    <span class="mr-2 small">{{ trans('messages.automation.status.' . $automation->status) }}</span>
-    <div>
-        @include('helpers.form_control', [
-            'type' => 'checkbox',
-            'name' => 'automation_status',
-            'label' => '',
-            'class' => 'automation_status',
-            'value' => ($automation->status == \Acelle\Model\Automation2::STATUS_ACTIVE ? true : false),
-            'options' => [false,true],
-            'help_class' => '',
-            'rules' => []
+@if (!is_null($automation->last_error))
+    <div class="mb-4">
+        @include('elements._notification', [
+            'level' => 'warning',
+            'message' => '<h4>Execution Error</h4>
+                <p>' . $automation->last_error . '</p>'
         ])
+    </div>
+@endif
+
+<div class="sidebar-header d-flex flex-center mb-2">
+    <h5 class="m-0 mr-auto">{{ $automation->name }}</h5>
+    <div class="d-flex align-items-center campaign-status-section">
+        <span class="mr-auto small pe-2">{{ trans('messages.automation.status.' . $automation->status) }}</span>
+        <label>
+            @include('helpers.form_control', [
+                'type' => 'checkbox',
+                'name' => 'automation_status',
+                'label' => '',
+                'class' => 'automation_status styled3',
+                'value' => ($automation->status == \Acelle\Model\Automation2::STATUS_ACTIVE ? true : false),
+                'options' => [false,true],
+                'help_class' => '',
+                'rules' => []
+            ])
+        </label>
     </div>
 </div>
 <div class="d-flex align-items-center mb-4">
@@ -19,8 +31,8 @@
         {!! $automation->getIntro() !!}
     </p>
     <div>
-        <a href="javascrip:;" class="btn btn-info text-nowrap d-flex align-items-center" onclick="sidebar.load('{{ action('Automation2Controller@settings', $automation->uid) }}')">
-            <i class="material-icons mr-2">show_chart</i>{{ trans('messages.automation.settings') }}
+        <a href="javascript:;" class="btn btn-info text-nowrap d-flex align-items-center" onclick="sidebar.load('{{ action('Automation2Controller@settings', $automation->uid) }}')">
+            <i class="material-symbols-rounded me-2">auto_graph</i> {{ trans('messages.automation.settings') }}
         </a>
     </div>         
 </div>
@@ -30,8 +42,6 @@
     $('[name="automation_status"]').change(function() {
         var value = $(this).is(":checked");
         var url, confirm;
-
-        console.log(value);
         
         if (value) {
             url = '{{ action('Automation2Controller@enable', ["uids" => $automation->uid]) }}';
@@ -47,16 +57,17 @@
                 $.ajax({
                     url: url,
                     type: 'PATCH',
+                    globalError: false,
                     data: {
                         _token: CSRF_TOKEN
                     }
-                }).always(function(response) {
+                }).done(function(response) {
                     if (!value) {
                         notify(response.status, '{{ trans('messages.notify.success') }}', response.message);
                     } else {
-                        var dialog = new Dialog('notification', {
-                            title: '{{ trans('messages.automation.started.title') }} <i class="lnr lnr-rocket ml-3"></i> ',
-                            message: `{{ trans('messages.automation.started.desc') }}`,
+                        var dialog = new Dialog('alert', {
+                            title: '{{ trans('messages.automation.started.title') }}  ',
+                            message: `{!! trans('messages.automation.started.desc') !!}`,
                             ok: function(dialog) {        
                                 sidebar.load();                    
                             },
@@ -69,6 +80,14 @@
                         });
                     }
                 
+                    sidebar.load();
+                }).fail(function(e) {
+                    var error = JSON.parse(e.responseText);
+                    notify({
+                        type: 'danger',
+                        title: '{{ trans('messages.notify.error') }}',
+                        message: error.message
+                    });
                     sidebar.load();
                 });      
             },

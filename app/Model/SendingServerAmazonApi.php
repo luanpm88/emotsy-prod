@@ -37,27 +37,17 @@ class SendingServerAmazonApi extends SendingServerAmazon
      */
     public function send($message, $params = array())
     {
-        $this->setupSnsThreadSafe($message);
-        try {
-            $sent = $this->sesClient()->sendRawEmail(array(
-                'RawMessage' => array(
-                    'Data' => $message->toString(),
-                ),
-            ));
+        $sent = $this->sesClient()->sendRawEmail(array(
+            'RawMessage' => array(
+                'Data' => $message->toString(),
+            ),
+        ));
 
-            MailLog::info('Sent!');
+        MailLog::info('Sent!');
 
-            return array(
-                'runtime_message_id' => $sent['MessageId'],
-                'status' => self::DELIVERY_STATUS_SENT,
-            );
-        } catch (\Exception $e) {
-            $this->raiseSendingError($e);
-
-            return array(
-                'status' => self::DELIVERY_STATUS_FAILED,
-                'error' => $e->getMessage(),
-            );
-        }
+        return array(
+            'runtime_message_id' => $sent['MessageId'],
+            'status' => self::DELIVERY_STATUS_SENT,
+        );
     }
 }

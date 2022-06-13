@@ -23,11 +23,18 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
-use Acelle\Cashier\Subscription;
+use Acelle\Model\Subscription;
+use Acelle\Library\Traits\TrackJobs;
+use Acelle\Jobs\ImportBlacklistJob;
+use Acelle\Library\Traits\HasUid;
+use Carbon\Carbon;
 
 class Admin extends Model
 {
-    const STATUS_ACTIVE = 'active';
+    use TrackJobs;
+    use HasUid;
+
+    public const STATUS_ACTIVE = 'active';
 
     /**
      * The attributes that are mass assignable.
@@ -35,52 +42,8 @@ class Admin extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'first_name', 'last_name', 'timezone', 'language_id', 'color_scheme',
+        'timezone', 'language_id', 'color_scheme', 'text_direction', 'menu_layout', 'theme_mode'
     ];
-
-    /**
-     * The rules for validation.
-     *
-     * @var array
-     */
-    public function rules()
-    {
-        $rules = array(
-            'email' => 'required|email|unique:users,email,'.$this->user_id.',id',
-            'first_name' => 'required',
-            'last_name' => 'required',
-            'timezone' => 'required',
-            'language_id' => 'required',
-        );
-
-        if (isset($this->id)) {
-            $rules['password'] = 'confirmed|min:5';
-        } else {
-            $rules['password'] = 'required|confirmed|min:5';
-        }
-
-        return $rules;
-    }
-
-    /**
-     * Admin email.
-     *
-     * @return string
-     */
-    public function email()
-    {
-        return is_object($this->user) ? $this->user->email : '';
-    }
-
-    /**
-     * Find item by uid.
-     *
-     * @return object
-     */
-    public static function findByUid($uid)
-    {
-        return self::where('uid', '=', $uid)->first();
-    }
 
     /**
      * Associations.
@@ -123,89 +86,13 @@ class Admin extends Model
     }
 
     /**
-     * Bootstrap any application services.
-     */
-    public static function boot()
-    {
-        parent::boot();
-
-        // Create uid when creating list.
-        static::creating(function ($item) {
-            // Create new uid
-            $uid = uniqid();
-            while (Admin::where('uid', '=', $uid)->count() > 0) {
-                $uid = uniqid();
-            }
-            $item->uid = $uid;
-        });
-    }
-
-    /**
-     * Display admin name: first_name last_name.
+     * Check if admin has customer account.
      *
-     * @var string
+     * @return bool
      */
-    public function displayName()
+    public function hasCustomerAccount()
     {
-        return $this->first_name.' '.$this->last_name;
-    }
-
-    /**
-     * Upload and resize avatar.
-     *
-     * @var void
-     */
-    public function uploadImage($file)
-    {
-        $path = 'app/admins/';
-        $upload_path = storage_path($path);
-
-        if (!file_exists($upload_path)) {
-            mkdir($upload_path, 0777, true);
-        }
-
-        $filename = 'avatar-'.$this->id.'.'.$file->getClientOriginalExtension();
-
-        // save to server
-        $file->move($upload_path, $filename);
-
-        // create thumbnails
-        $img = \Image::make($upload_path.$filename);
-        $img->fit(120, 120)->save($upload_path.$filename.'.thumb.jpg');
-
-        return $path.$filename;
-    }
-
-    /**
-     * Get image thumb path.
-     *
-     * @var string
-     */
-    public function imagePath()
-    {
-        if (!empty($this->image) && !empty($this->id)) {
-            return storage_path($this->image).'.thumb.jpg';
-        } else {
-            return '';
-        }
-    }
-
-    /**
-     * Get image thumb path.
-     *
-     * @var string
-     */
-    public function removeImage()
-    {
-        if (!empty($this->image) && !empty($this->id)) {
-            $path = storage_path($this->image);
-            if (is_file($path)) {
-                unlink($path);
-            }
-            if (is_file($path.'.thumb.jpg')) {
-                unlink($path.'.thumb.jpg');
-            }
-        }
+        return is_object($this->user) && is_object($this->user->customer);
     }
 
     /**
@@ -240,15 +127,15 @@ class Admin extends Model
         if (!empty(trim($request->keyword))) {
             foreach (explode(' ', trim($request->keyword)) as $keyword) {
                 $query = $query->where(function ($q) use ($keyword) {
-                    $q->orwhere('admins.first_name', 'like', '%'.$keyword.'%')
+                    $q->orwhere('users.first_name', 'like', '%'.$keyword.'%')
                         ->orWhere('admin_groups.name', 'like', '%'.$keyword.'%')
-                        ->orWhere('admins.last_name', 'like', '%'.$keyword.'%');
+                        ->orWhere('users.last_name', 'like', '%'.$keyword.'%');
                 });
             }
         }
 
         // filters
-        $filters = $request->filters;
+        $filters = $request->all();
         if (!empty($filters)) {
             if (!empty($filters['admin_group_id'])) {
                 $query = $query->where('admins.admin_group_id', '=', $filters['admin_group_id']);
@@ -388,10 +275,10 @@ class Admin extends Model
     public function getAllSubscriptions()
     {
         if ($this->user->can('readAll', new \Acelle\Model\Customer())) {
-            $query = Subscription::select('subscriptions.*')->leftJoin('customers', 'customers.uid', '=', 'subscriptions.user_id');
+            $query = Subscription::select('subscriptions.*')->leftJoin('customers', 'customers.id', '=', 'subscriptions.customer_id');
         } else {
             $query = Subscription::select('subscriptions.*')
-                ->join('customers', 'customers.uid', '=', 'subscriptions.user_id')
+                ->join('customers', 'customers.id', '=', 'subscriptions.customer_id')
                 ->where('customers.admin_id', '=', $this->id);
             /* ERROR
             $query = $query->where(function ($q) {
@@ -449,7 +336,8 @@ class Admin extends Model
      */
     public function getLanguageCodeFull()
     {
-        return is_object($this->language) ? ($this->language->code.'-'.strtoupper($this->language->region_code)) : null;
+        $region_code = $this->language->region_code ? strtoupper($this->language->region_code) : strtoupper($this->language->code);
+        return is_object($this->language) ? ($this->language->code.'-'.$region_code) : null;
     }
 
     /**
@@ -472,31 +360,28 @@ class Admin extends Model
     /**
      * Create customer account.
      */
-    public function createCustomerAccount($admin)
+    public function createCustomerAccount()
     {
-        if (!$this->hasCustomerAccount()) {
-            // Create customer
-            $customer = new \Acelle\Model\Customer();
-            $customer->user_id = $this->user_id;
-            $customer->admin_id = $this->id;
-            $customer->language_id = $this->language_id;
-            $customer->first_name = $this->first_name;
-            $customer->last_name = $this->last_name;
-            $customer->image = $this->image;
-            $customer->timezone = $this->timezone;
-            $customer->status = $this->status;
-            $customer->save();
-        }
-    }
+        $customer = \Acelle\Model\Customer::newCustomer();
+        $customer->admin_id = $this->id;
+        $customer->language_id = $this->language_id;
+        // [moved] $customer->first_name = $this->first_name;
+        // [moved] $customer->last_name = $this->last_name;
+        $customer->timezone = $this->timezone;
+        $customer->status = $this->status;
+        $customer->save();
 
-    /**
-     * Check if admin has customer account.
-     *
-     * @return bool
-     */
-    public function hasCustomerAccount()
-    {
-        return is_object($this->user) && is_object($this->user->customer);
+        // add cutomer to user
+        $user = $this->user;
+        $user->customer_id = $customer->id;
+        $user->save();
+
+        // assign unlimited plan id saas == false
+        if (!config('app.saas')) {
+            \Acelle\Helpers\saasToSingleMode();
+        }
+
+        return $customer;
     }
 
     /**
@@ -514,9 +399,13 @@ class Admin extends Model
      *
      * @return bool
      */
-    public function can($action, $item)
+    public function can($action, $item=null)
     {
-        return $this->user->can($action, [$item, 'admin']);
+        if ($item) {
+            return $this->user->can($action, [$item, 'admin']);
+        } else {
+            return $this->user->can($action, ['admin']);
+        }
     }
 
     /**
@@ -524,15 +413,19 @@ class Admin extends Model
      *
      * @return bool
      */
-    public function deleteRecursive()
+    public function deleteAccount()
     {
         // unset all customers
         $this->customers()->update(['admin_id' => null]);
 
         // Delete admin and user
         $user = $this->user;
+
         $this->delete();
-        $user->delete();
+
+        if (!$user->customer()->exists()) {
+            $user->deleteAndCleanup();
+        }
     }
 
     /**
@@ -542,7 +435,7 @@ class Admin extends Model
      */
     public function getAllSubscriptionsByPlan($plan)
     {
-        return $this->getAllSubscriptions()->where('subscriptions.plan_id', '=', $plan->uid);
+        return $this->getAllSubscriptions()->where('subscriptions.plan_id', '=', $plan->id);
     }
 
     /**
@@ -552,24 +445,7 @@ class Admin extends Model
      */
     public function getAllPlans()
     {
-        return \Acelle\Model\Plan::getAllActive($this);
-    }
-
-    /**
-     * Get all payment methods.
-     *
-     * @return int
-     */
-    public function getAllPaymentMethods()
-    {
-        $query = \Acelle\Model\PaymentMethod::getAll()
-            ->where('payment_methods.status', '=', \Acelle\Model\PaymentMethod::STATUS_ACTIVE);
-
-        if (!$this->can('readAll', new \Acelle\Model\PaymentMethod())) {
-            $query = $query->where('payment_methods.admin_id', '=', $this->id);
-        }
-
-        return $query;
+        return \Acelle\Model\Plan::active();
     }
 
     /**
@@ -625,25 +501,6 @@ class Admin extends Model
     }
 
     /**
-     * Get all sending servers.
-     *
-     * @return int
-     */
-    public function getAllSendingDomains()
-    {
-        $query = \Acelle\Model\SendingDomain::getAll();
-
-        if (!$this->can('readAll', new \Acelle\Model\SendingDomain())) {
-            $query = $query->where('sending_domains.admin_id', '=', $this->id);
-        }
-
-        // remove customer sending servers
-        $query = $query->whereNull('customer_id');
-
-        return $query;
-    }
-
-    /**
      * Get all campaigns.
      *
      * @return collect
@@ -675,95 +532,6 @@ class Admin extends Model
         }
 
         return $query;
-    }
-
-    /**
-     * Get all automations.
-     *
-     * @return collect
-     */
-    public function getAllAutomations()
-    {
-        $query = \Acelle\Model\Automation2::query();
-
-        if (!$this->can('readAll', new \Acelle\Model\Customer())) {
-            $query = $query->leftJoin('customers', 'customers.id', '=', 'automation2s.customer_id')
-                ->where('customers.admin_id', '=', $this->id);
-        }
-
-        return $query;
-    }
-
-    /**
-     * Get all automations.
-     *
-     * @return collect
-     */
-    public function getAllSubscribers()
-    {
-        $query = \Acelle\Model\Subscriber::getAll();
-
-        if (!$this->can('readAll', new \Acelle\Model\Customer())) {
-            $query = $query->leftJoin('mail_lists', 'mail_lists.id', '=', 'subscribers.mail_list_id')
-                ->leftJoin('customers', 'customers.id', '=', 'mail_lists.customer_id')
-                ->where('customers.admin_id', '=', $this->id);
-        }
-
-        return $query;
-    }
-
-    /**
-     * Get import jobs.
-     *
-     * @return number
-     */
-    public function getImportBlacklistJobs()
-    {
-        return \Acelle\Model\SystemJob::where('name', '=', "Acelle\Jobs\ImportBlacklistJob")
-            ->where('data', 'like', '%"admin_id":'.$this->id.'%');
-    }
-
-    /**
-     * Get running import jobs.
-     *
-     * @return number
-     */
-    public function getActiveImportBlacklistJobs()
-    {
-        return $this->getImportBlacklistJobs()
-            ->where('status', '!=', \Acelle\Model\SystemJob::STATUS_DONE)
-            ->where('status', '!=', \Acelle\Model\SystemJob::STATUS_FAILED)
-            ->where('status', '!=', \Acelle\Model\SystemJob::STATUS_CANCELLED);
-    }
-
-    /**
-     * Get last import black list job.
-     *
-     * @return number
-     */
-    public function getLastActiveImportBlacklistJob()
-    {
-        return $this->getActiveImportBlacklistJobs()
-            ->orderBy('created_at', 'DESC')
-            ->first();
-    }
-
-    /**
-     * Add email to admin blacklist.
-     */
-    public function addEmaillToBlacklist($email)
-    {
-        $email = trim(strtolower($email));
-
-        if (\Acelle\Library\Tool::isValidEmail($email)) {
-            $exist = \Acelle\Model\Blacklist::whereNull('customer_id')->where('email', '=', $email)->count();
-            if (!$exist) {
-                $blacklist = new \Acelle\Model\Blacklist();
-                $blacklist->admin_id = $this->id;
-                $blacklist->email = $email;
-                $blacklist->save();
-            }
-        }
     }
 
     /**
@@ -804,5 +572,37 @@ class Admin extends Model
     public function notifications()
     {
         return Notification::orderBy('created_at', 'desc');
+    }
+
+    public function importBlacklistJobs()
+    {
+        return $this->jobMonitors()->orderBy('job_monitors.id', 'DESC')->where('job_type', ImportBlacklistJob::class);
+    }
+
+    public function getMenuLayout()
+    {
+        return ($this->menu_layout == 'left' ? 'left' : 'top');
+    }
+
+    public static function newAdmin()
+    {
+        $admin = new self();
+        $admin->menu_layout = \Acelle\Model\Setting::get('layout.menu_bar');
+
+        return $admin;
+    }
+
+    // Get the current time in Customer timezone
+    public function getCurrentTime()
+    {
+        return Carbon::now($this->timezone);
+    }
+
+    public function formatDateTime(?Carbon $datetime, string $name)
+    {
+        // $name is a format name like: date_full | date_short
+        // See config('localization')['*'] for the full list of available format names
+
+        return format_datetime($datetime, $name, $this->getLanguageCode());
     }
 }

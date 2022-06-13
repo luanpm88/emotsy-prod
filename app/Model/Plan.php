@@ -25,20 +25,27 @@ namespace Acelle\Model;
 use Illuminate\Database\Eloquent\Model;
 use Validator;
 use Illuminate\Validation\ValidationException;
-use Acelle\Cashier\Interfaces\BillablePlanInterface;
-use Acelle\Cashier\Subscription;
+use Acelle\Model\Subscription;
 use Acelle\Cashier\Cashier;
+use Acelle\Model\SendingServer;
+use Acelle\Library\Traits\HasUid;
+use Acelle\Library\QuotaManager;
 
-class Plan extends Model implements BillablePlanInterface
+class Plan extends Model
 {
-    // Plan status
-    const STATUS_INACTIVE = 'inactive';
-    const STATUS_ACTIVE = 'active';
+    use HasUid;
 
     // Plan status
-    const SENDING_SERVER_OPTION_SYSTEM = 'system';
-    const SENDING_SERVER_OPTION_OWN = 'own';
-    const SENDING_SERVER_OPTION_SUBACCOUNT = 'subaccount';
+    public const STATUS_INACTIVE = 'inactive';
+    public const STATUS_ACTIVE = 'active';
+
+    // Plan status
+    public const SENDING_SERVER_OPTION_SYSTEM = 'system';
+    public const SENDING_SERVER_OPTION_OWN = 'own';
+    public const SENDING_SERVER_OPTION_SUBACCOUNT = 'subaccount';
+
+    //
+    public const UNLIMITED_PLAN_ID = '9999';
 
     /**
      * The attributes that are mass assignable.
@@ -51,11 +58,12 @@ class Plan extends Model implements BillablePlanInterface
         'frequency_amount',
         'frequency_unit',
         'price',
-        'color',
         'currency_id',
-        'tax_billing_required',
         'paddle_plan_id',
         'admin_id',
+        'trial_amount',
+        'trial_unit',
+        'own_tracking_domain_required',
     ];
 
     /**
@@ -71,7 +79,6 @@ class Plan extends Model implements BillablePlanInterface
             'frequency_amount' => 'required|min:1',
             'frequency_unit' => 'required',
             'price' => 'required|min:0',
-            'color' => 'required',
         );
 
         $options = self::defaultOptions();
@@ -102,14 +109,13 @@ class Plan extends Model implements BillablePlanInterface
                 'plan.general.frequency_amount' => 'sometimes|required|min:1',
                 'plan.general.frequency_unit' => 'sometimes|required',
                 'plan.general.price' => 'required|min:0',
-                'plan.general.color' => 'sometimes|required',
             ],
             'options' => [],
         ];
 
         $options = self::defaultOptions();
         foreach ($options as $type => $option) {
-            if ($type != 'sending_server_subaccount_uid' && !in_array($type, ['plain_text_footer', 'html_footer'])) {
+            if ($type != 'sending_server_subaccount_uid' && !in_array($type, ['plain_text_footer', 'html_footer', 'bounce_rate_theshold'])) {
                 $rules['options']['plan.options.'.$type] = 'sometimes|required';
             }
         }
@@ -134,7 +140,8 @@ class Plan extends Model implements BillablePlanInterface
             'frequency_amount' => 'required|min:1',
             'frequency_unit' => 'required',
             'price' => 'required|min:0',
-            'color' => 'required',
+            'trial_amount' => 'required|min:0',
+            'trial_unit' => 'required',
         );
 
         return $rules;
@@ -193,7 +200,6 @@ class Plan extends Model implements BillablePlanInterface
             'frequency_amount' => 'required|min:1',
             'frequency_unit' => 'required',
             'price' => 'required|min:0',
-            'color' => 'required',
         );
 
         if ($this->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_SUBACCOUNT) {
@@ -201,16 +207,6 @@ class Plan extends Model implements BillablePlanInterface
         }
 
         return $rules;
-    }
-
-    /**
-     * Find item by uid.
-     *
-     * @return object
-     */
-    public static function findByUid($uid)
-    {
-        return self::where('uid', '=', $uid)->first();
     }
 
     public function admin()
@@ -230,49 +226,17 @@ class Plan extends Model implements BillablePlanInterface
 
     public function subscriptions()
     {
-        return $this->hasMany('Acelle\Cashier\Subscription', 'plan_id', 'uid')
-            ->where(function ($query) {
-                $query->whereNull('ends_at')
-                      ->orWhere('ends_at', '>=', \Carbon\Carbon::now());
-            })
-            ->orderBy('created_at', 'desc');
+        return $this->hasMany('Acelle\Model\Subscription');
+    }
+
+    public function activeSubscriptions()
+    {
+        return $this->subscriptions()->active();
     }
 
     public function plansEmailVerificationServers()
     {
         return $this->hasMany('Acelle\Model\PlansEmailVerificationServer');
-    }
-
-    /**
-     * Bootstrap any application services.
-     */
-    public static function boot()
-    {
-        parent::boot();
-
-        // Create uid when creating list.
-        static::creating(function ($item) {
-            // Create new uid
-            $uid = uniqid();
-            while (Plan::where('uid', '=', $uid)->count() > 0) {
-                $uid = uniqid();
-            }
-            $item->uid = $uid;
-
-            // Update custom order
-            Plan::getAll()->increment('custom_order', 1);
-            $item->custom_order = 0;
-        });
-    }
-
-    /**
-     * Get all items.
-     *
-     * @return collect
-     */
-    public static function getAll()
-    {
-        return self::select('*');
     }
 
     /**
@@ -287,27 +251,16 @@ class Plan extends Model implements BillablePlanInterface
      *
      * @return collect
      */
-    public static function filter($request)
+    public static function scopeFilter($query, $request)
     {
-        $query = self::select('plans.*');
-
-        // Keyword
-        if (!empty(trim($request->keyword))) {
-            foreach (explode(' ', trim($request->keyword)) as $keyword) {
-                $query = $query->where(function ($q) use ($keyword) {
-                    $q->orwhere('plans.name', 'like', '%'.$keyword.'%');
-                });
-            }
-        }
+        $query = $query->select('plans.*');
 
         // filters
-        $filters = $request->filters;
+        $filters = $request->all();
 
         if (!empty($request->admin_id)) {
             $query = $query->where('plans.admin_id', '=', $request->admin_id);
         }
-
-        return $query;
     }
 
     /**
@@ -315,56 +268,16 @@ class Plan extends Model implements BillablePlanInterface
      *
      * @return collect
      */
-    public static function search($request)
+    public static function scopeSearch($query, $keyword)
     {
-        $query = self::filter($request);
-
-        if (!empty($request->sort_order)) {
-            $query = $query->orderBy($request->sort_order, $request->sort_direction);
+        // Keyword
+        if (!empty(trim($keyword))) {
+            foreach (explode(' ', trim($keyword)) as $keyword) {
+                $query = $query->where(function ($q) use ($keyword) {
+                    $q->orwhere('plans.name', 'like', '%'.$keyword.'%');
+                });
+            }
         }
-
-        return $query;
-    }
-
-    /**
-     * Disable plan.
-     *
-     * @return bool
-     */
-    public function disable()
-    {
-        $this->status = PaymentMethod::STATUS_INACTIVE;
-        $this['visible'] = false;
-
-        return $this->save();
-    }
-
-    /**
-     * Enable plan.
-     *
-     * @return bool
-     */
-    public function enable()
-    {
-        $this->status = PaymentMethod::STATUS_ACTIVE;
-
-        return $this->save();
-    }
-
-    /**
-     * Color array.
-     *
-     * @return array
-     */
-    public static function colors($default)
-    {
-        return [
-            ['value' => '#1482a0', 'text' => trans('messages.blue')],
-            ['value' => '#008c6e', 'text' => trans('messages.green')],
-            ['value' => '#917319', 'text' => trans('messages.brown')],
-            ['value' => '#aa5064', 'text' => trans('messages.pink')],
-            ['value' => '#555', 'text' => trans('messages.grey')],
-        ];
     }
 
     /**
@@ -381,6 +294,18 @@ class Plan extends Model implements BillablePlanInterface
             ['value' => 'year', 'text' => trans('messages.year')],
             // ['value' => 'unlimited', 'text' => trans('messages.plan_time_unlimited')],
         ];
+    }
+
+    public static function bounceRateThesholdOptions()
+    {
+        $options = [
+            ['value' => '', 'text' => trans('messages.none')],
+        ];
+        for ($i=1; $i <= 100; $i++) {
+            $options[] = ['value' => $i, 'text' => $i . '%'];
+        }
+
+        return $options;
     }
 
     /**
@@ -469,8 +394,8 @@ class Plan extends Model implements BillablePlanInterface
         // exist
         if ($this->getOption('sending_limit') == 'other') {
             $wording = trans('messages.plan.sending_limit.phrase', [
-                'quota_value' => format_number($this->getOption('sending_quota')),
-                'quota_base' => format_number($this->getOption('sending_quota_time')),
+                'quota_value' => number_with_delimiter($this->getOption('sending_quota'), $precision = 0),
+                'quota_base' => number_with_delimiter($this->getOption('sending_quota_time'), $precision = 0),
                 'quota_unit' => $this->getOption('sending_quota_time_unit'),
             ]);
 
@@ -500,7 +425,7 @@ class Plan extends Model implements BillablePlanInterface
         // exist
         if ($this->getOption('billing_cycle') == 'other') {
             $wording = trans('messages.plan.billing_cycle.phrase', [
-                'frequency_amount' => format_number($this->frequency_amount),
+                'frequency_amount' => number_with_delimiter($this->frequency_amount),
                 'frequency_unit' => $this->frequency_unit,
             ]);
 
@@ -537,7 +462,7 @@ class Plan extends Model implements BillablePlanInterface
             'all_sending_servers' => 'yes',
             'max_size_upload_total' => '500',
             'max_file_size_upload' => '5',
-            'unsubscribe_url_required' => 'yes',
+            'unsubscribe_url_required' => 'no',
             'access_when_offline' => 'no',
             //'create_sending_servers' => 'no',
             'create_sending_domains' => 'yes',
@@ -545,6 +470,7 @@ class Plan extends Model implements BillablePlanInterface
             'sending_domains_max' => '-1',
             'all_email_verification_servers' => 'yes',
             'create_email_verification_servers' => 'no',
+            'verification_credits_limit' => '10000',
             'email_verification_servers_max' => '-1',
             'list_import' => 'yes',
             'list_export' => 'yes',
@@ -558,6 +484,7 @@ class Plan extends Model implements BillablePlanInterface
             'html_footer' => '',
             'plain_text_footer' => '',
             'payment_gateway' => '',
+            'bounce_rate_theshold' => '',
         ];
 
         // Sending server types
@@ -647,7 +574,7 @@ class Plan extends Model implements BillablePlanInterface
         } elseif ($this->getOption('sending_quota_time') == -1) {
             return $this->getOption('sending_quota');
         } else {
-            return strtolower(\Acelle\Library\Tool::format_number($this->getOption('sending_quota')).' '.trans('messages.'.\Acelle\Library\Tool::getPluralPrase('email', $this->getOption('sending_quota'))).' / '.$this->getOption('sending_quota_time').' '.trans('messages.'.\Acelle\Library\Tool::getPluralPrase($this->getOption('sending_quota_time_unit'), $this->getOption('sending_quota'))));
+            return strtolower(number_with_delimiter($this->getOption('sending_quota')).' '.trans('messages.'.\Acelle\Library\Tool::getPluralPrase('email', $this->getOption('sending_quota'))).' / '.$this->getOption('sending_quota_time').' '.trans('messages.'.\Acelle\Library\Tool::getPluralPrase($this->getOption('sending_quota_time_unit'), $this->getOption('sending_quota'))));
         }
     }
 
@@ -671,7 +598,7 @@ class Plan extends Model implements BillablePlanInterface
         if ($this->getOption('email_max') == -1) {
             return trans('messages.unlimited');
         } else {
-            return \Acelle\Library\Tool::format_number($this->getOption('email_max'));
+            return number_with_delimiter($this->getOption('email_max'));
         }
     }
 
@@ -685,7 +612,7 @@ class Plan extends Model implements BillablePlanInterface
         if ($this->getOption('list_max') == -1) {
             return trans('messages.unlimited');
         } else {
-            return \Acelle\Library\Tool::format_number($this->getOption('list_max'));
+            return number_with_delimiter($this->getOption('list_max'));
         }
     }
 
@@ -699,7 +626,7 @@ class Plan extends Model implements BillablePlanInterface
         if ($this->getOption('subscriber_max') == -1) {
             return trans('messages.unlimited');
         } else {
-            return \Acelle\Library\Tool::format_number($this->getOption('subscriber_max'));
+            return number_with_delimiter($this->getOption('subscriber_max'));
         }
     }
 
@@ -713,7 +640,7 @@ class Plan extends Model implements BillablePlanInterface
         if ($this->getOption('campaign_max') == -1) {
             return trans('messages.unlimited');
         } else {
-            return \Acelle\Library\Tool::format_number($this->getOption('campaign_max'));
+            return number_with_delimiter($this->getOption('campaign_max'));
         }
     }
 
@@ -727,7 +654,7 @@ class Plan extends Model implements BillablePlanInterface
         if ($this->getOption('max_size_upload_total') == -1) {
             return trans('messages.unlimited');
         } else {
-            return \Acelle\Library\Tool::format_number($this->getOption('max_size_upload_total'));
+            return number_with_delimiter($this->getOption('max_size_upload_total'));
         }
     }
 
@@ -790,7 +717,7 @@ class Plan extends Model implements BillablePlanInterface
     {
         $data = ['items' => [], 'more' => true];
 
-        $query = \Acelle\Model\Plan::getAllActive()->orderBy('custom_order', 'asc');
+        $query = self::active();
         if (isset($request->q)) {
             $keyword = $request->q;
             $query = $query->where(function ($q) use ($keyword) {
@@ -819,76 +746,6 @@ class Plan extends Model implements BillablePlanInterface
         return json_encode($data);
     }
 
-    /**
-     * Get all items.
-     *
-     * @return collect
-     */
-    public static function getAllActiveWithDefault($admin = null)
-    {
-        $query = self::getAll()
-            ->where('plans.status', '=', self::STATUS_ACTIVE);
-
-        if (isset($admin) && !$admin->can('readAll', new \Acelle\Model\Plan())) {
-            $query = $query->where('plans.admin_id', '=', $admin->id);
-        }
-
-        $query = $query->orderBy('custom_order', 'asc');
-
-        return $query;
-    }
-
-    /**
-     * Get all items.
-     *
-     * @return collect
-     */
-    public static function getActive($admin = null)
-    {
-        $query = self::getAll()
-            ->where('plans.status', '=', self::STATUS_ACTIVE);
-        $query = $query->orderBy('custom_order', 'asc');
-
-        return $query;
-    }
-
-    /**
-     * Get all items.
-     *
-     * @return collect
-     */
-    public static function getAllActiveVisible($admin = null)
-    {
-        $query = self::getAll()
-            ->where('plans.status', '=', self::STATUS_ACTIVE)
-            ->where('plans.visible', '=', true);
-
-        if (isset($admin) && !$admin->can('readAll', new \Acelle\Model\Plan())) {
-            $query = $query->where('plans.admin_id', '=', $admin->id);
-        }
-
-        $query = $query->orderBy('custom_order', 'asc');
-
-        return $query;
-    }
-
-    /**
-     * Get all items.
-     *
-     * @return collect
-     */
-    public static function getAllActive($admin = null)
-    {
-        $query = self::getAllActiveVisible();
-
-        return $query;
-    }
-
-    /**
-     * Display plan time.
-     *
-     * @return collect
-     */
     public function displayFrequencyTime()
     {
         // unlimited
@@ -896,7 +753,7 @@ class Plan extends Model implements BillablePlanInterface
             return trans('messages.plan_time_unlimited');
         }
 
-        return $this->frequency_amount.' '.\Acelle\Library\Tool::getPluralPrase($this->frequency_unit, $this->frequency_amount);
+        return $this->frequency_amount.' ' . trans('messages.' . \Acelle\Library\Tool::getPluralPrase($this->frequency_unit, $this->frequency_amount));
     }
 
     /**
@@ -916,7 +773,7 @@ class Plan extends Model implements BillablePlanInterface
      */
     public function customersCount()
     {
-        return $this->subscriptions()->distinct('user_id')->count('user_id');
+        return $this->activeSubscriptions()->count();
     }
 
     /**
@@ -1033,7 +890,7 @@ class Plan extends Model implements BillablePlanInterface
             }
         }
 
-    // workaround
+        // workaround
         if (empty($this->description)) {
             $this->description = '[ plan description goes here ]';
         }
@@ -1118,20 +975,12 @@ class Plan extends Model implements BillablePlanInterface
      */
     public function saveAll($request)
     {
-        $oldPlan = $this->replicate();
-
         $this->fillAll($request);
-
-        // sync remote plan            
-        if (config('cashier.gateway') == 'paypal_subscription' && isset($request->plan) && isset($request->plan['general'])) {
-            $service = \Acelle\Cashier\Cashier::getPaymentGateway('paypal_subscription');
-            $service->syncPlan($this, $oldPlan);
-        }
 
         $validator = $this->validate($request);
 
         if ($validator->fails()) {
-            throw new ValidationException($validator);
+            return $validator;
         }
 
         $this->save();
@@ -1140,6 +989,8 @@ class Plan extends Model implements BillablePlanInterface
         if (isset($request->plan['email_verification_servers'])) {
             $this->updateEmailVerificationServers($request->plan['email_verification_servers']);
         }
+
+        return $validator;
     }
 
     /**
@@ -1148,64 +999,15 @@ class Plan extends Model implements BillablePlanInterface
     public function copy($name)
     {
         $copy = $this->replicate(['cache', 'last_error', 'run_at']);
+        $copy->uid = uniqid();
         $copy->name = $name;
         $copy->created_at = \Carbon\Carbon::now();
         $copy->updated_at = \Carbon\Carbon::now();
-        $copy->status = PaymentMethod::STATUS_ACTIVE;
-        $copy->custom_order = 0;
+        $copy->status = self::STATUS_ACTIVE;
         $copy->save();
 
         // check status
         $copy->checkStatus();
-    }
-
-    /**
-     **All Payment Methods: create plan on server.
-     **/
-    public function createPlanOnServer($data, $plan)
-    {
-        $planMethodlist = \Acelle\Model\PaymentMethod::getAllActive();
-        if (count($planMethodlist) > 0) {
-            foreach ($planMethodlist as $payment_method) {
-                if ($payment_method->type == PaymentMethod::TYPE_PADDLE_CARD) {
-                    if ($data !== 'unlimited') {
-                        $vendorId = $payment_method->getOption('vendor_id');
-                        $vendor_auth_code = $payment_method->getOption('vendor_auth_code');
-                        // plan_type: accepts day, week, month, year
-                        $json_body = 'vendor_id='.$vendorId.'&vendor_auth_code='.$vendor_auth_code.'&plan_name='.$data['name'].'&plan_trial_days=0&plan_type='.$data['frequency_unit'].'&plan_length='.$data['frequency_amount'].'&main_currency_code=USD&initial_price_usd=0.00&recurring_price_usd='.$data['price'];
-                        $this->createPaddlePlan($json_body, $plan);
-                    }
-                }
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     ** Create paddle plan on servers.
-     **/
-    public function createPaddlePlan($json_body, $plan)
-    {
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, 'https://vendors.paddle.com/api/2.0/subscription/plans_create');
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $json_body);
-        curl_setopt($ch, CURLOPT_POST, 1);
-        $headers = array();
-        $headers[] = 'Content-Type: application/x-www-form-urlencoded';
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        $result = curl_exec($ch);
-        //close connection
-        curl_close($ch);
-        $result = json_decode($result);
-        if ($result->success) {
-            $paddle_plan_id = $result->response->product_id;
-            $plan->paddle_plan_id = $paddle_plan_id;
-            $plan->save();
-        }
-
-        return true;
     }
 
     /**
@@ -1274,19 +1076,21 @@ class Plan extends Model implements BillablePlanInterface
      **/
     public function primarySendingServer()
     {
-        $pss = $this->plansSendingServers()->where('is_primary', '=', true)->first();
-        // @todo: quăng 1 cái exception nếu $pss null, ko return null sẽ gây lỗi tiềm ẩn
-        return is_object($pss) ? $pss->sendingServer : null;
-    }
+        if (!config('app.saas')) {
+            if (\Acelle\Model\SendingServer::active()->count()) {
+                return \Acelle\Model\SendingServer::active()->first()->mapType();
+            } else {
+                return null;
+            }
+        }
 
-    /**
-     ** Get Primary sending server.
-     **/
-    public function primarySendingServerAdded()
-    {
+        if (!$this->useSystemSendingServer()) {
+            throw new \Exception('ACELLE ERROR: 120000700392');
+        }
+
         $pss = $this->plansSendingServers()->where('is_primary', '=', true)->first();
-        // @todo: quăng 1 cái exception nếu $pss null, ko return null sẽ gây lỗi tiềm ẩn
-        return is_object($pss) ? $pss->updated_at : null;
+        // @todo: raise 1 cái exception nếu $pss null, ko return null sẽ gây lỗi tiềm ẩn
+        return is_object($pss) ? $pss->sendingServer->mapType() : null;
     }
 
     /**
@@ -1296,19 +1100,10 @@ class Plan extends Model implements BillablePlanInterface
      */
     public function getVerifiedIdentities()
     {
-        //$server = $this->primarySendingServer();
-        //
-        //if (isset($server)) {
-        //    return $this->primarySendingServer()->getVerifiedIdentities();
-        //} else {
-        //    return [];
-        //}
         $result = [];
-
         foreach ($this->sendingServers()->get() as $sendingServer) {
-            $result = array_merge($result, $sendingServer->getVerifiedIdentities());
+            $result = array_merge($result, $sendingServer->mapType()->getVerifiedIdentities());
         }
-
         return array_unique($result);
     }
 
@@ -1323,102 +1118,11 @@ class Plan extends Model implements BillablePlanInterface
     }
 
     /**
-     * Get stripe price.
-     *
-     * @return string
-     */
-    public function stripePrice()
-    {
-        $currency_rates = [
-            'CLP' => 1,
-            'DJF' => 1,
-            'JPY' => 1,
-            'KMF' => 1,
-            'RWF' => 1,
-            'VUV' => 1,
-            'XAF' => 1,
-            'XOF' => 1,
-            'BIF' => 1,
-            'GNF' => 1,
-            'KRW' => 1,
-            'MGA' => 1,
-            'PYG' => 1,
-            'VND' => 1,
-            'XPF' => 1,
-        ];
-        $rate = isset($currency_rates[$this->currency->code]) ? $currency_rates[$this->currency->code] : 100;
-
-        return $this->price * $rate;
-    }
-
-    //====================================== BILLABLE PLAN INTERFACE =======================================
-
-    /**
-     * PlanInterface: get remote plan id.
-     *
-     * @return string
-     */
-    public function getBillableId()
-    {
-        return $this->uid;
-    }
-
-    /**
-     * PlanInterface: get name.
-     *
-     * @return string
-     */
-    public function getBillableName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * PlanInterface: get interval.
-     *
-     * @return string
-     */
-    public function getBillableInterval()
-    {
-        return $this->frequency_unit;
-    }
-
-    /**
      * PlanInterface: get interval count.
      *
      * @return string
      */
-    public function getBillableIntervalCount()
-    {
-        return $this->frequency_amount;
-    }
-
-    /**
-     * PlanInterface: get currency.
-     *
-     * @return string
-     */
-    public function getBillableCurrency()
-    {
-        return $this->currency->code;
-    }
-
-    /**
-     * PlanInterface: get interval count.
-     *
-     * @return string
-     */
-    public function getBillableAmount()
-    {
-        return $this->price;
-    }
-
-    /**
-     * PlanInterface: get interval count.
-     *
-     * @return string
-     */
-    public function getBillableFormattedPrice()
+    public function getFormattedPrice()
     {
         return \Acelle\Library\Tool::format_price($this->price, $this->currency->format);
     }
@@ -1438,7 +1142,7 @@ class Plan extends Model implements BillablePlanInterface
      *
      * @var bool
      */
-    public function getEmailVerificaionServers()
+    public function getEmailVerificationServers()
     {
         if ($this->getOption('all_email_verification_servers') == 'yes') {
             $result = \Acelle\Model\EmailVerificationServer::getAllAdminActive()->get()->map(function ($server) {
@@ -1485,17 +1189,7 @@ class Plan extends Model implements BillablePlanInterface
      */
     public function isActive()
     {
-        return $this->status == PlansEmailVerificationServer::STATUS_ACTIVE;
-    }
-
-    /**
-     * Check if plan is available.
-     *
-     * @var bool
-     */
-    public function isAvailable()
-    {
-        return $this->isActive();
+        return $this->status == self::STATUS_ACTIVE;
     }
 
     /**
@@ -1505,21 +1199,7 @@ class Plan extends Model implements BillablePlanInterface
      */
     public static function getAvailablePlans()
     {
-        $plans = self::getAllActiveVisible()->get();
-        $service = \Acelle\Cashier\Cashier::getPaymentGateway();
-
-        $aPlans = [];
-        foreach ($plans as $plan) {
-            if ($plan->isAvailable()) {
-                if (config('cashier.gateway') !== 'paypal_subscription' ||
-                    $service->findPlanConnection($plan)
-                ) {
-                    $aPlans[] = $plan;
-                }
-            }
-        }
-
-        return $aPlans;
+        return self::active()->available()->get();
     }
 
     /**
@@ -1534,7 +1214,8 @@ class Plan extends Model implements BillablePlanInterface
 
     public function activeSendingServers()
     {
-        return $this->plansSendingServers()->join('sending_servers', 'sending_servers.id', 'plans_sending_servers.sending_server_id')->where('sending_servers.status', 'active');
+        // do not care if sending server is enabled or not
+        return $this->plansSendingServers()->join('sending_servers', 'sending_servers.id', 'plans_sending_servers.sending_server_id');
     }
 
     /**
@@ -1554,32 +1235,6 @@ class Plan extends Model implements BillablePlanInterface
     }
 
     /**
-     * Check plan error status.
-     *
-     * @var array
-     */
-    public function errors()
-    {
-        $errors = [];
-
-        // use system sending server but has no primary sending server
-        if ($this->useSystemSendingServer() && !$this->hasPrimarySendingServer()) {
-            $errors[] = 'sending_server_empty';
-        }
-
-        if (config('cashier.gateway') == 'paypal_subscription') {
-            $service = Cashier::getPaymentGateway();
-
-            if (!$service->findPlanConnection($this)) {
-                $errors[] = 'plan_not_connected';
-            }
-        }
-
-        // else return true
-        return $errors;
-    }
-
-    /**
      * Check status of sending server.
      *
      * @var void
@@ -1593,15 +1248,6 @@ class Plan extends Model implements BillablePlanInterface
             $this->visibleOff();
         } else {
             $this->enable();
-        }
-
-        if (config('cashier.gateway') == 'paypal_subscription') {
-            $service = Cashier::getPaymentGateway();
-
-            if (!$service->findPlanConnection($this)) {
-                $this->disable();
-                $this->visibleOff();
-            }
         }
     }
 
@@ -1625,5 +1271,199 @@ class Plan extends Model implements BillablePlanInterface
     {
         $this['visible'] = true;
         $this->save();
+    }
+
+    /**
+     * Disable plan.
+     *
+     * @return bool
+     */
+    public function disable()
+    {
+        $this->status = self::STATUS_INACTIVE;
+        $this['visible'] = false;
+
+        return $this->save();
+    }
+
+    /**
+     * Enable plan.
+     *
+     * @return bool
+     */
+    public function enable()
+    {
+        $this->status = self::STATUS_ACTIVE;
+
+        return $this->save();
+    }
+
+    public static function newDefaultPlan()
+    {
+        $plan = new self([
+            'price' => 0,
+            'frequency_amount' => 1,
+            'frequency_unit' => 'month',
+            'trial_amount' => '0',
+            'trial_unit' => 'day',
+            'vat' => 0
+        ]);
+
+        $plan->status = self::STATUS_INACTIVE;
+
+        return $plan;
+    }
+
+    public function scopeActive($query)
+    {
+        $query = $query->where('plans.status', '=', self::STATUS_ACTIVE);
+    }
+
+    public function scopeAvailable($query)
+    {
+        $query = $query->where('plans.visible', '=', true);
+    }
+
+    public function total()
+    {
+        return $this->price;
+    }
+
+    public function getQuotaSettings($name): ?array
+    {
+        $quota = [];
+        $options = $this->getOptions();
+
+        // Take limits from sending credits
+        $sendingCredits = $options['email_max'];
+        if ($sendingCredits != QuotaManager::QUOTA_UNLIMITED) {
+            $quota[] = [
+                'name' => "Plan's sending limit",
+                'period_unit' => $this->frequency_unit,
+                'period_value' => $this->frequency_amount,
+                'limit' => $sendingCredits
+            ];
+        }
+
+        $timeValue = $options['sending_quota_time'];
+        if ($timeValue != QuotaManager::QUOTA_UNLIMITED) {
+            $timeUnit = $options['sending_quota_time_unit'];
+            $limit = $options['sending_quota'];
+
+            $quota[] = [
+                'name' => "Sending limit of {$limit} per {$timeValue} {$timeUnit}",
+                'period_unit' => $timeUnit,
+                'period_value' => $timeValue,
+                'limit' => $limit,
+            ];
+        }
+
+        return $quota;
+    }
+
+    public function updateTos($params)
+    {
+        $rules = [];
+        if ($params['terms_of_service']['enabled'] == 'no') {
+            $rules['terms_of_service.content'] = 'required';
+        }
+
+        // make validator
+        $validator = \Validator::make($params, $rules);
+
+        // redirect if fails
+        if ($validator->fails()) {
+            return $validator;
+        }
+
+        //
+        \Acelle\Model\Setting::set('terms_of_service.enabled', $params['terms_of_service']['enabled']);
+        \Acelle\Model\Setting::set('terms_of_service.content', $params['terms_of_service']['content']);
+
+        return $validator;
+    }
+
+    public function hasTrial()
+    {
+        return $this->trial_amount > 0;
+    }
+
+    public function getTrialPeriodTimePhrase()
+    {
+        return $this->trial_amount . ' ' . trans_choice('messages.' . $this->trial_unit . '.choice', $this->trial_amount);
+    }
+
+    public static function getUnlimitedPlan()
+    {
+        return self::find(self::UNLIMITED_PLAN_ID);
+    }
+
+    public static function createUnlimitedPlan()
+    {
+        $plan = new self();
+        $plan->currency_id = \Acelle\Model\Currency::first()->id;
+        $plan->id = self::UNLIMITED_PLAN_ID;
+        $plan->name = 'Unlimited';
+        $plan->price = 0;
+        $plan->frequency_amount = 1000;
+        $plan->frequency_unit = 'year';
+        $plan->options = json_encode([
+            "email_max" => "-1",
+            "list_max" => "-1",
+            "subscriber_max" => "-1",
+            "subscriber_per_list_max" => "-1",
+            "segment_per_list_max" => "-1",
+            "campaign_max" => "-1",
+            "automation_max" => "-1",
+            "billing_cycle" => "other",
+            "sending_limit" => "1000_per_hour",
+            "sending_quota" => 1000,
+            "sending_quota_time" => 1,
+            "sending_quota_time_unit" => "hour",
+            "max_process" => "1",
+            "all_sending_servers" => "yes",
+            "max_size_upload_total" => "5000000000",
+            "max_file_size_upload" => "50000000",
+            "unsubscribe_url_required" => "yes",
+            "access_when_offline" => "no",
+            "create_sending_domains" => "yes",
+            "sending_servers_max" => "-1",
+            "sending_domains_max" => "-1",
+            "all_email_verification_servers" => "yes",
+            "create_email_verification_servers" => "no",
+            "email_verification_servers_max" => "-1",
+            "list_import" => "yes",
+            "list_export" => "yes",
+            "all_sending_server_types" => "yes",
+            "sending_server_types" => [
+                "amazon-smtp" => "yes",
+                "amazon-api" => "yes",
+                "sendgrid-smtp" => "yes",
+                "sendgrid-api" => "yes",
+                "mailgun-api" => "yes",
+                "mailgun-smtp" => "yes",
+                "elasticemail-api" => "yes",
+                "elasticemail-smtp" => "yes",
+                "sparkpost-api" => "yes",
+                "sparkpost-smtp" => "yes",
+                "smtp" => "yes",
+                "sendmail" => "yes",
+            ],
+            "sending_server_option" => "system",
+            "sending_server_subaccount_uid" => null,
+            "api_access" => "yes",
+            "email_footer_enabled" => "no",
+            "email_footer_trial_period_only" => "no",
+            "html_footer" => "",
+            "plain_text_footer" => "",
+            "payment_gateway" => "",
+        ]);
+        $plan->status = 'active';
+        $plan->save();
+    }
+
+    public function isCustomTrackingDomainRequired()
+    {
+        return $this->own_tracking_domain_required;
     }
 }

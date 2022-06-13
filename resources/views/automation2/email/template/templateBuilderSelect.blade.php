@@ -2,12 +2,11 @@
 
 @section('content')
 	<div class="row">
-        <div class="col-md-1"></div>
-        <div class="col-md-10">
+        <div class="col-md-12">
             <h2>{{ trans('messages.automation.template.builder.select') }}</h2>
             <p>{{ trans('messages.automation.template.builder.select.intro') }}</p>
             
-            @if (in_array(Acelle\Model\Setting::get('builder'), ['both','pro']))
+            @if (in_array(Acelle\Model\Setting::get('builder'), ['both','pro']) && $email->template->builder)
                 <a href="{{ action('Automation2Controller@templateEdit', [
                         'uid' => $automation->uid,
                         'email_uid' => $email->uid,
@@ -20,7 +19,7 @@
                 <a href="{{ action('Automation2Controller@templateEditClassic', [
                         'uid' => $automation->uid,
                         'email_uid' => $email->uid,
-                    ]) }}" class="btn btn-outline-secondary mr-1 template-compose-classic"
+                    ]) }}" class="btn btn-secondary mr-1 template-compose-classic"
                 >
                     {{ trans('messages.campaign.email_builder_classic') }}
                 </a>

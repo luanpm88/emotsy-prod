@@ -31,9 +31,9 @@ class CustomerPolicy
         return $can;
     }
 
-    public function profile(User $user, Customer $item)
+    public function profile(User $user, Customer $customer)
     {
-        return $user->id == $item->user_id;
+        return $user->customer_id == $customer->id;
     }
 
     public function update(User $user, Customer $item)
@@ -57,10 +57,8 @@ class CustomerPolicy
     public function loginAs(User $user, Customer $item)
     {
         $ability = $user->admin->getPermission('customer_login_as');
-        $can = $ability == 'all'
-                || ($ability == 'own' && $user->admin->id == $item->admin_id);
-
-        return $can && $user->admin->user_id != $item->user_id;
+        $can = $item->id != $user->customer_id && ($ability == 'all');
+        return $can;
     }
 
     public function disable(User $user, Customer $item)
@@ -97,15 +95,12 @@ class CustomerPolicy
         $can = $can && $item->subAccounts()->count();
         return $can;
     }
-    
+
     public function assignPlan(User $user, Customer $item)
     {
         $ability = $user->admin->getPermission('customer_update');
         $can = $ability == 'all'
                 || ($ability == 'own' && $user->admin->id == $item->admin_id);
-
-        $service = \Acelle\Cashier\Cashier::getPaymentGateway();
-        $can = $can;
 
         return $can;
     }

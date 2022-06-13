@@ -1,12 +1,6 @@
-@extends('layouts.install')
+@extends('layouts.core.install')
 
 @section('title', trans('messages.cron_jobs'))
-
-@section('page_script')    
-    <script type="text/javascript" src="{{ URL::asset('assets/js/plugins/forms/styling/uniform.min.js') }}"></script>
-		
-    <script type="text/javascript" src="{{ URL::asset('js/validate.js') }}"></script>
-@endsection
 
 @section('content')
 	<form action="{{ action('InstallController@cronJobs') }}" method="POST" class="form-validate-jqueryz">
@@ -15,13 +9,17 @@
 		@include('elements._cron_jobs')
     
 		<hr>
-		<div class="text-right">
+		<div class="text-end">
 			@if($valid)
-				<a href="{{ action('InstallController@cronJobs') }}" class="btn btn-primary bg-grey">
-					<i class="icon-gear"></i> {!! trans('messages.change_cronjob_setting') !!}
+				<a href="{{ action('InstallController@cronJobs') }}" class="btn btn-secondary">
+					<span class="material-symbols-rounded">
+settings
+</span> {!! trans('messages.change_cronjob_setting') !!}
 				</a>
-				<a href="{{ action('InstallController@finishing') }}" class="btn btn-primary bg-teal">
-					{!! trans('messages.next') !!} <i class="icon-arrow-right14 position-right"></i>
+				<a href="{{ action('InstallController@finishing') }}" class="btn btn-primary">
+					{!! trans('messages.next') !!} <span class="material-symbols-rounded">
+east
+</span>
 				</a>				
 			@else
 				<button type="submit" class="btn btn-primary bg-teal">

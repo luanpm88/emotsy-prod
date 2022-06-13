@@ -4,10 +4,10 @@ namespace Acelle\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use Acelle\Http\Controllers\Controller;
+use function Acelle\Helpers\generatePublicPath;
 
 class BounceHandlerController extends Controller
 {
-
     /**
      * Display a listing of the resource.
      *
@@ -180,17 +180,6 @@ class BounceHandlerController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-    }
-
-    /**
      * Custom sort items.
      *
      * @param \Illuminate\Http\Request $request
@@ -199,20 +188,7 @@ class BounceHandlerController extends Controller
      */
     public function sort(Request $request)
     {
-        $sort = json_decode($request->sort);
-        foreach ($sort as $row) {
-            $item = \Acelle\Model\BounceHandler::findByUid($row[0]);
-
-            // authorize
-            if (\Gate::denies('update', $item)) {
-                return $this->notAuthorized();
-            }
-
-            $item->custom_order = $row[1];
-            $item->save();
-        }
-
-        echo trans('messages.bounce_handler.custom_order.updated');
+        echo trans('messages._deleted_');
     }
 
     /**
@@ -224,7 +200,10 @@ class BounceHandlerController extends Controller
      */
     public function delete(Request $request)
     {
-        $items = \Acelle\Model\BounceHandler::whereIn('uid', explode(',', $request->uids));
+        $items = \Acelle\Model\BounceHandler::whereIn(
+            'uid',
+            is_array($request->uids) ? $request->uids : explode(',', $request->uids)
+        );
 
         foreach ($items->get() as $item) {
             // authorize
@@ -270,15 +249,23 @@ class BounceHandlerController extends Controller
 
         try {
             $server->test();
-            echo json_encode([
+            return response()->json([
                 'status' => 'success', // or success
                 'message' => trans('messages.bounce_handler.test_success')
             ]);
-        } catch(\Exception $e) {
-            echo json_encode([
+        } catch (\Exception $e) {
+            return response()->json([
                 'status' => 'error', // or success
                 'message' => $e->getMessage()
             ]);
         }
+    }
+
+    public function run(Request $request, $uid)
+    {
+        $handler = \Acelle\Model\BounceHandler::findByUid($uid);
+        $todayLogFile = storage_path('logs/' . php_sapi_name() . '/handler-'.$handler->uid.'-'.date('Y-m-d').'.log');
+        echo url(generatePublicPath($todayLogFile));
+        $handler->start();
     }
 }

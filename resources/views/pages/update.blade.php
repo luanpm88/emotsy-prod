@@ -1,11 +1,10 @@
-@extends('layouts.frontend')
+@extends('layouts.core.frontend')
 
 @section('title', $list->name . ": " . trans('messages.update_page', ['name' => trans('messages.' . $layout->alias)]))
 
-@section('page_script')
-	<script type="text/javascript" src="{{ URL::asset('js/tinymce/tinymce.min.js') }}"></script>
-
-    <script type="text/javascript" src="{{ URL::asset('js/editor.js') }}"></script>
+@section('head')      
+    <script type="text/javascript" src="{{ URL::asset('core/tinymce/tinymce.min.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('core/js/editor.js') }}"></script>
 @endsection
 
 @section('page_header')
@@ -18,15 +17,13 @@
 
 				@include("lists._menu")
 
-				<!--<h2 class="text-bold text-teal-800 mb-10"><i class="icon-certificate position-left"></i> {{ trans('messages.update_page') }}</h2>-->
-
-                <h2>{{ trans('messages.' . $layout->alias) }}</h2>
+                <h2 class="my-4">{{ trans('messages.' . $layout->alias) }}</h2>
 
                 @if ($layout->alias == 'sign_up_form')
                     <p class="alert alert-info mt-20 mb-20">{{ trans('messages.sign_up_form_url') }}<br /> <a target="_blank" href="{{ action('PageController@signUpForm', ['list_uid' => $list->uid]) }}" class="text-semibold">{{ action('PageController@signUpForm', ['list_uid' => $list->uid]) }}</a></p>
                 @endif
 
-                <form id="update-page" action="{{ action('PageController@update', ['list' => $list->uid, 'alias' => $layout->alias]) }}" method="POST" class="form-validate-jqueryz">
+                <form id="update-page" action="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => $layout->alias]) }}" method="POST" class="form-validate-jqueryz">
 					{{ csrf_field() }}
 					
 					@if ($page->canHasOutsideUrl())
@@ -37,9 +34,9 @@
 										{{ ($page->use_outside_url ? 'checked' : '') }}
 										checked type="radio"
 										name="use_outside_url"
-										value="1" class="styled" /><rtitle>{{ trans('messages.form_page.use_outside_url') }}</rtitle>
+										value="1" class="styled" /><rtitle> {{ trans('messages.form_page.use_outside_url') }}</rtitle>
 									<div class="desc text-normal mb-10">
-										{{ trans('messages.form_page.use_outside_url.intro') }}
+										{!! trans('messages.form_page.use_outside_url.intro') !!}
 									</div>
 								</label>
 								<div class="radio_more_box">
@@ -52,7 +49,7 @@
 										'placeholder' => trans('messages.form_page.enter_outside_url'),
 									])
 									<div class="">
-										<button type="submit" class="btn bg-teal mr-10"><i class="icon-check"></i> {{ trans('messages.save_change') }}</button>
+										<button type="submit" class="btn btn-secondary me-2"><i class="icon-check"></i> {{ trans('messages.save_change') }}</button>
 									</div>
 						
 								</div>
@@ -63,7 +60,7 @@
 									<input type="radio"
 										{{ (!$page->use_outside_url ? 'checked' : '') }}
 										name="use_outside_url"
-										value="0" class="styled" /><rtitle>{{ trans('messages.form_page.use_built_in_page') }}</rtitle>
+										value="0" class="styled" /><rtitle> {{ trans('messages.form_page.use_built_in_page') }}</rtitle>
 									<div class="desc text-normal mb-10">
 										{{ trans('messages.form_page.use_built_in_page.intro') }}
 									</div>
@@ -73,8 +70,10 @@
 									
 									<hr />
 									<div class="">
-										<a page-url="{{ action('PageController@preview', ['list_uid' => $list->uid, 'alias' => $layout->alias]) }}" class="btn btn-info bg-grey-800 mr-10 preview-page-button" data-toggle="modal" data-target="#preview_page"><i class="icon-eye"></i> {{ trans('messages.preview') }}</a>
-										<button type="submit" class="btn bg-teal mr-10"><i class="icon-check"></i> {{ trans('messages.save_change') }}</button>
+										<a page-url="{{ action('PageController@preview', ['list_uid' => $list->uid, 'alias' => $layout->alias]) }}" class="btn btn-info me-1 preview-page-button" data-toggle="modal" data-target="#preview_page"><span class="material-symbols-rounded">
+visibility
+</span> {{ trans('messages.preview') }}</a>
+										<button type="submit" class="btn btn-secondary me-2"><i class="icon-check"></i> {{ trans('messages.save_change') }}</button>
 									</div>
 								</div>
 							</div>
@@ -83,35 +82,81 @@
 						@include('pages._form')
 						
 						<hr />
-						<div class="">
-							<a page-url="{{ action('PageController@preview', ['list_uid' => $list->uid, 'alias' => $layout->alias]) }}" class="btn btn-info bg-grey-800 mr-10 preview-page-button" data-toggle="modal" data-target="#preview_page"><i class="icon-eye"></i> {{ trans('messages.preview') }}</a>
-							<button type="submit" class="btn bg-teal mr-10"><i class="icon-check"></i> {{ trans('messages.save_change') }}</button>
+						<div class="d-flex">
+							<a page-url="{{ action('PageController@preview', ['list_uid' => $list->uid, 'alias' => $layout->alias]) }}"
+								class="btn btn-info me-2 preview-page-button" data-toggle="modal" data-target="#preview_page"><span class="material-symbols-rounded">
+visibility
+</span> {{ trans('messages.preview') }}</a>
+
+							<button type="submit" class="btn btn-secondary me-3"><i class="icon-check"></i> {{ trans('messages.save_change') }}</button>
+							<a href="{{ action('PageController@restoreDefault', [
+								'list_uid' => $list->uid,
+								'alias' => $layout->alias
+							]) }}"
+								link-method="POST"
+								link-confirm="{{ trans('messages.page.restore.confirm') }}"
+								class="btn btn-danger ms-auto">
+								<span class="material-symbols-rounded">
+									restart_alt
+								</span> {{ trans('messages.page.reset_default') }}</a>
 						</div>
 					@endif
 										
 					
                 </form>
 
+				<script>
+					var PagesUpdate = {
+						previewPopup: null,
 
-				<!-- Full width modal -->
-				<div id="preview_page" class="modal fade">
-					<div class="modal-dialog modal-full">
-						<div class="modal-content">
-							<div class="modal-header">
-								<button type="button" class="close" data-dismiss="modal">&times;</button>
-								<h5 class="modal-title"></h5>
-							</div>
+						getPreviewPopup: function() {
+							if (this.previewPopup == null) {
+								this.previewPopup = new Popup();
+							}
+							return this.previewPopup;
+						},
 
-							<div class="modal-body">
-								<iframe name="preview_page_frame" class="preview_page_frame" src="/"></iframe>
-							</div>
+						showPreviewPopup: function(callback) {
+							this.getPreviewPopup().loadHtml(`
+								<div class="modal-dialog shadow modal-fullscreen">
+									<div class="modal-content">
+										<div class="modal-header">
+											<h5 class="modal-title">
+												<span class="material-symbols-rounded me-1">
+visibility
+</span> {{ trans('messages.' . $layout->alias) }}
+											</h5>
+											<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+										</div>
+										<div class="modal-body text-center p-0">
+											<iframe style="height: calc(100vh - 59px);
+margin-bottom: -10px;" scrolling="yes" name="preview_page_frame" class="preview_page_frame" src="/"></iframe>
+										</div>
+									</div>
+								</div>
+							`, callback);
+						}
+					}
+					$(function() {
+						// page preview action
+						$(".preview-page-button").on('click', function(e) {
+							var url = $(this).attr('page-url');
+							tinyMCE.triggerSave();
+							var formData = new FormData($("#update-page")[0]);
+							var frame = $('.preview_page_frame');
+							var current_action = $("#update-page").attr("action");
 
-							<div class="modal-footer">
-								<button type="button" class="btn btn-info bg-grey-800" data-dismiss="modal">{{ trans('messages.close') }}</button>
-							</div>
-						</div>
-					</div>
-				</div>
-				<!-- /full width modal -->
+							PagesUpdate.showPreviewPopup(function() {
+								$("#update-page").attr('target', 'preview_page_frame');
+								$("#update-page").attr('action', url);
+								$("#update-page").submit();
+
+								// after submit
+								$("#update-page").removeAttr('target');
+								$("#update-page").attr('action', current_action);
+							});
+						});
+					});
+				</script>
 
 @endsection

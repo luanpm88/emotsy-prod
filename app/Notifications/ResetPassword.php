@@ -11,7 +11,7 @@ use Illuminate\Auth\Notifications\ResetPassword as BaseResetPassword;
 class ResetPassword extends BaseResetPassword
 {
     protected $resetPasswordUrl;
-    
+
     /**
      * Create a notification instance.
      *
@@ -32,9 +32,9 @@ class ResetPassword extends BaseResetPassword
      */
     public function toMail($notifiable)
     {
-        return (new MailMessage)
+        return (new MailMessage())
             ->line(trans('messages.click_here_to_reset_password'))
             ->action(trans('messages.reset_password'), $this->resetPasswordUrl);
-            //->line('If you did not request a password reset, no further action is required.');
+        //->line('If you did not request a password reset, no further action is required.');
     }
 }

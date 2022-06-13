@@ -8,8 +8,8 @@ use Carbon\Carbon;
 class LicenseHelper
 {
     // license type
-    const TYPE_REGULAR = 'regular';
-    const TYPE_EXTENDED = 'extended';
+    public const TYPE_REGULAR = 'regular';
+    public const TYPE_EXTENDED = 'extended';
 
     /**
      * Get license type: normal / extended.
@@ -23,13 +23,17 @@ class LicenseHelper
         curl_setopt($ch, CURLOPT_URL, 'http://verify.acellemail.com/'); // @todo hard-coded here
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_TIMEOUT_MS, 100000);
-        curl_setopt($ch, CURLOPT_POSTFIELDS,
-            htmlspecialchars_decode(http_build_query(array(
+        curl_setopt(
+            $ch,
+            CURLOPT_POSTFIELDS,
+            htmlspecialchars_decode(
+                http_build_query(array(
                 'purchase-code' => $license,
                 'item-id' => '17796082', // @todo hard-coded here
                 'secret' => session('secret'),
             ))
-        ));
+            )
+        );
         curl_setopt($ch, CURLOPT_USERAGENT, md5($license));
 
         // receive server response ...

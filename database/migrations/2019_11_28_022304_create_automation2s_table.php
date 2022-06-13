@@ -22,9 +22,9 @@ class CreateAutomation2sTable extends Migration
             $table->string('time_zone');
             $table->string('status');
             $table->text('data');
-            
+
             $table->timestamps();
-            
+
             $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
             $table->foreign('mail_list_id')->references('id')->on('mail_lists')->onDelete('cascade');
         });

@@ -2,8 +2,7 @@
 
 @section('content')
 	<div class="row">
-        <div class="col-md-1"></div>
-        <div class="col-md-10">
+        <div class="col-md-12">
             <form class="copy-new-list" action="{{ action("Automation2Controller@copyToNewList", $automation->uid) }}"
                 method="POST" class="form-validate-jqueryz"
             >
@@ -13,7 +12,7 @@
 
                 <h3 class="mb-3">{{ trans('messages.automation.contacts.copy_to_new_list') }}</h3>
                 <p>{!! trans('messages.automation.contacts.copy_to_new_list.intro', [
-                    'count' => format_number($subscribers->count()),
+                    'count' => number_with_delimiter($subscribers->count(), $precision = 0),
                 ]) !!}</p>
                     
                 @include('helpers.form_control', [
@@ -47,6 +46,7 @@
                 url: url,
                 method: 'POST',
                 data: data,
+                globalError: false,
                 statusCode: {
                     // validate error
                     400: function (res) {

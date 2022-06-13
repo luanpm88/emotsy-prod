@@ -34,7 +34,7 @@ class CampaignPolicy
     {
         $customer = $user->customer;
         return $item->customer_id == $customer->id
-            && ($item->is_auto || in_array($item->status, ['new', 'ready', 'error']));
+            && (in_array($item->status, ['new', 'ready', 'error', 'paused']));
     }
 
     public function delete(User $user, Campaign $item)
@@ -46,7 +46,7 @@ class CampaignPolicy
     public function pause(User $user, Campaign $item)
     {
         $customer = $user->customer;
-        return $item->customer_id == $customer->id && in_array($item->status, ['sending', 'ready']);
+        return $item->customer_id == $customer->id && in_array($item->status, ['queuing', 'queued', 'sending', 'ready']);
     }
 
     public function restart(User $user, Campaign $item)
@@ -73,12 +73,6 @@ class CampaignPolicy
         return $item->customer_id == $customer->id;
     }
 
-    public function saveImage(User $user, Campaign $item)
-    {
-        $customer = $user->customer;
-        return $item->customer_id == $customer->id;
-    }
-
     public function image(User $user, Campaign $item)
     {
         $customer = $user->customer;
@@ -88,6 +82,19 @@ class CampaignPolicy
     public function resend(User $user, Campaign $item)
     {
         $customer = $user->customer;
-        return $item->customer_id == $customer->id && $item->isDone();
+        return $item->customer_id == $customer->id && ($item->isDone() || $item->isPaused());
+    }
+
+    public function send_test_email(User $user, Campaign $item)
+    {
+        $customer = $user->customer;
+        return $item->customer_id == $customer->id && in_array($item->status, [
+            Campaign::STATUS_QUEUING,
+            Campaign::STATUS_QUEUED,
+            Campaign::STATUS_SENDING,
+            Campaign::STATUS_ERROR,
+            Campaign::STATUS_PAUSED,
+            Campaign::STATUS_DONE,
+        ]);
     }
 }

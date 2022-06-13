@@ -1,14 +1,17 @@
-@extends('layouts.page')
+@extends('layouts.core.page')
 
 @section('title', $page->subject)
-	
-@section('page_script')
-	<script type="text/javascript" src="{{ URL::asset('assets/js/plugins/forms/styling/uniform.min.js') }}"></script>
-	<script type="text/javascript" src="{{ URL::asset('assets/js/plugins/pickers/anytime.min.js') }}"></script>
-		
-    <script type="text/javascript" src="{{ URL::asset('js/validate.js') }}"></script>
-		
-	
+
+@section('head')
+    <link rel="stylesheet" type="text/css" href="{{ URL::asset('core/prismjs/prism.css') }}">
+    <script type="text/javascript" src="{{ URL::asset('core/prismjs/prism.js') }}"></script>
+
+
+    <script type="text/javascript" src="{{ URL::asset('core/datetime/anytime.min.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('core/datetime/moment.min.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('core/datetime/pickadate/picker.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('core/datetime/pickadate/picker.date.js') }}"></script>
+
 @endsection
 
 @section('content')

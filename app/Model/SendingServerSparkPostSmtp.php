@@ -37,44 +37,28 @@ class SendingServerSparkPostSmtp extends SendingServerSparkPost
      */
     public function send($message, $params = [])
     {
-        try {
-            $this->setupWebhook();
+        $transport = new \Swift_SmtpTransport($this->host, (int) $this->smtp_port, $this->smtp_protocol);
+        $transport->setUsername($this->smtp_username);
+        $transport->setPassword($this->smtp_password);
 
-            $transport = new \Swift_SmtpTransport($this->host, (int) $this->smtp_port, $this->smtp_protocol);
-            $transport->setUsername($this->smtp_username);
-            $transport->setPassword($this->smtp_password);
+        // tracking bounce/feedback
+        $msgId = $message->getHeaders()->get('X-Acelle-Message-Id')->getFieldBody();
+        $message->getHeaders()->addTextHeader('X-MSYS-API', json_encode(['metadata' => ['runtime_message_id' => $msgId]]));
 
-            // tracking bounce/feedback
-            $msgId = $message->getHeaders()->get('X-Acelle-Message-Id')->getFieldBody();
-            $message->getHeaders()->addTextHeader('X-MSYS-API', json_encode(['metadata' => ['runtime_message_id' => $msgId]]));
+        // Create the Mailer using your created Transport
+        $mailer = new \Swift_Mailer($transport);
 
-            // Create the Mailer using your created Transport
-            $mailer = new \Swift_Mailer($transport);
+        // Actually send
+        $sent = $mailer->send($message);
 
-            // Actually send
-            $sent = $mailer->send($message);
-
-            if ($sent) {
-                MailLog::info('Sent!');
-
-                return array(
-                    'status' => self::DELIVERY_STATUS_SENT,
-                );
-            } else {
-                MailLog::warning('Sending failed');
-
-                return array(
-                    'status' => self::DELIVERY_STATUS_FAILED,
-                    'error' => 'Unknown SMTP error',
-                );
-            }
-        } catch (\Exception $e) {
-            MailLog::warning('Sending failed: '.$e->getMessage());
+        if ($sent) {
+            MailLog::info('Sent!');
 
             return array(
-                'status' => self::DELIVERY_STATUS_FAILED,
-                'error' => $e->getMessage(),
+                'status' => self::DELIVERY_STATUS_SENT,
             );
+        } else {
+            throw new \Exception('Unknown SMTP error');
         }
     }
 }

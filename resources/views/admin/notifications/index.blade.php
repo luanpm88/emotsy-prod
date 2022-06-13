@@ -1,22 +1,15 @@
-@extends('layouts.backend')
+@extends('layouts.core.backend')
 
 @section('title', trans('messages.notifications'))
 	
-@section('page_script')
-	<script type="text/javascript" src="{{ URL::asset('assets/js/core/libraries/jquery_ui/interactions.min.js') }}"></script>
-	<script type="text/javascript" src="{{ URL::asset('assets/js/core/libraries/jquery_ui/touch.min.js') }}"></script>
-		
-    <script type="text/javascript" src="{{ URL::asset('js/listing.js') }}"></script>
-@endsection
-
 @section('page_header')	
 	<div class="page-title">
 		<ul class="breadcrumb breadcrumb-caret position-right">
-			<li><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
-			<li class="active">{{ trans('messages.notifications') }}</li>
+			<li class="breadcrumb-item"><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+			<li class="breadcrumb-item active">{{ trans('messages.notifications') }}</li>
 		</ul>
 		<h1>
-			<span class="text-semibold"><i class="material-icons">message</i>  {{ trans('messages.all_notifications') }}</span>
+			<span class="text-semibold"><i class="material-symbols-rounded">message</i>  {{ trans('messages.all_notifications') }}</span>
 		</h1>
 	</div>				
 @endsection
@@ -25,35 +18,40 @@
 	
 	@include("admin.account._menu")	
 
-	<form class="listing-form"
+	<div class="listing-form"
 		data-url="{{ action('Admin\NotificationController@listing') }}"
 		per-page="20"				
 	>				
-		<div class="row top-list-controls">
-			<div class="col-md-10">			
+		<div class="d-flex top-list-controls top-sticky-content">
+			<div class="">			
 				<div class="filter-box">
-					<div class="btn-group list_actions hide">
-						<button type="button" class="btn btn-xs btn-grey-600 dropdown-toggle" data-toggle="dropdown">
-							{{ trans('messages.actions') }} <span class="caret"></span>
+					<div class="checkbox inline check_all_list">
+						<label>
+							<input type="checkbox" name="page_checked" class="styled check_all">
+						</label>
+					</div>
+					<div class="dropdown list_actions" style="display: none">
+						<button role="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown">
+							{{ trans('messages.actions') }} <span class="number"></span><span class="caret"></span>
 						</button>
 						<ul class="dropdown-menu">
 							<li>
-								<a delete-confirm="{{ trans('messages.notification.delete.confirm') }}" href="{{ action('Admin\NotificationController@delete') }}"><i class="icon-trash"></i> {{ trans('messages.delete') }}</a>
+								<a link-method="POST" href="{{ action('Admin\NotificationController@delete') }}" class="dropdown-item"><span class="material-symbols-rounded">
+delete_outline
+</span> {{ trans('messages.delete') }}</a>
 							</li>
 						</ul>
 					</div>
-					<div class="checkbox inline check_all_list">
-						<label>
-							<input type="checkbox" class="styled check_all">
-						</label>
-					</div>
 					<span class="filter-group">
 						<span class="title text-semibold text-muted">{{ trans('messages.sort_by') }}</span>
-						<select class="select" name="sort-order">
+						<select class="select" name="sort_order">
 							<option value="created_at">{{ trans('messages.created_at') }}</option>
 						</select>										
-						<button class="btn btn-xs sort-direction" rel="desc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" type="button" class="btn btn-xs">
-							<i class="icon-sort-amount-desc"></i>
+						<input type="hidden" name="sort_direction" value="desc" />
+<button type="button" class="btn btn-xs sort-direction" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
+							<span class="material-symbols-rounded desc">
+sort
+</span>
 						</button>
 					</span>
 					<span class="filter-group ml-10">
@@ -66,17 +64,33 @@
 						</select>										
 					</span>
 					<span class="text-nowrap">
-						<input name="search_keyword" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
-						<i class="icon-search4 keyword_search_button"></i>
+						<input type="text" name="keyword" class="form-control search" value="{{ request()->keyword }}" placeholder="{{ trans('messages.type_to_search') }}" />
+						<span class="material-symbols-rounded">
+search
+</span>
 					</span>
 				</div>
 			</div>
 		</div>
 		
 		<div class="pml-table-container">
-			
-			
-			
+
 		</div>
-	</form>	
+	</div>	
+
+	<script>
+        var NotificationsIndex = {
+            getList: function() {
+                return makeList({
+                    url: '{{ action('Admin\NotificationController@listing') }}',
+                    container: $('.listing-form'),
+                    content: $('.pml-table-container')
+                });
+            }
+        };
+
+        $(function() {
+            NotificationsIndex.getList().load();
+        });
+    </script>
 @endsection

@@ -7,7 +7,6 @@ use Acelle\Http\Controllers\Controller;
 
 class LayoutController extends Controller
 {
-
     /**
      * Display a listing of the resource.
      *
@@ -116,9 +115,10 @@ class LayoutController extends Controller
         // Generate info
         $user = $request->user();
         $layout = \Acelle\Model\Layout::findByUid($id);
-        
-        if($this->isDemoMode()) {
-            return $this->notAuthorized();
+
+        // Prenvent save from demo mod
+        if ($this->isDemoMode()) {
+            return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
         }
 
         // authorize
@@ -133,7 +133,26 @@ class LayoutController extends Controller
                 'subject' => 'required',
             );
 
-            $this->validate($request, $rules);
+            // $this->validate($request, $rules);
+
+            // make validator
+            $validator = \Validator::make($request->all(), $rules);
+
+            // redirect if fails
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => $validator->errors()->all()[0],
+                ], 400);
+            }
+
+            // check ses email tags
+            if ($layout->alias == 'sender_verification_email_for_amazon_ses' && preg_match("/\<((meta)|(title)|(style))/i", $request->content)) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => trans('messages.layout.amazon_ses.tag_not_permit'),
+                ], 400);
+            }
 
             // Save template
             $layout->fill($request->all());
@@ -141,19 +160,10 @@ class LayoutController extends Controller
 
             // Redirect to my lists page
             $request->session()->flash('alert-success', trans('messages.layout.updated'));
-
-            return redirect()->action('Admin\LayoutController@edit', $layout->uid);
+            return response()->json([
+                'status' => 'success',
+                'url' => action('Admin\LayoutController@edit', $layout->uid),
+            ]);
         }
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
     }
 }

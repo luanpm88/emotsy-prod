@@ -1,63 +1,65 @@
-<pagination class="d-flex d-block align-items-center mt-3">
-    <label class="small mb-0 mr-auto">
+<pagination class="d-flex align-items-center">
+    <label class="small">
         {!! trans('messages.pagination.page_of', [
-            'pages' => $pagination["pageCount"],
-            'page' => $pagination["page"] + 1,
+            'pages' => $paginator->lastPage(),
+            'page' => $paginator->currentPage(),
         ]) !!}        
     </label>
-    <ul class="pagination justify-content-end small align-items-center mb-0">
-        <li class="page-item {{ $pagination["page"] == 0 ? 'disabled' : '' }}">
-            <a class="page-link" href="javascript:;" tabindex="-1" aria-disabled="true" data-page="{{ $pagination["page"]-1 }}">{{ trans('messages.pagination.previous') }}</a>
-        </li>
+    @if ($paginator->lastPage() > 1)
+        <ul class="pagination justify-content-end small align-items-center mb-0 ms-4 border-start">
+            <li class="page-item {{ $paginator->currentPage() == 1 ? 'disabled' : '' }}">
+                <a class="page-link" href="{{ $paginator->url($paginator->currentPage()-1) }}" tabindex="-1" aria-disabled="true" data-page="{{ $paginator->currentPage()-1 }}">{{ trans('messages.pagination.previous') }}</a>
+            </li>
 
-        @php
-            $arr = [];
+            @php
+                $arr = [];
 
-            if ($pagination["pageCount"] > 7) {
-                if ($pagination["page"] < 3) {
-                    for ($i = 0; $i <= $pagination["page"]+3; $i++) {
-                        $arr[] = $i;
+                if ($paginator->lastPage() > 7) {
+                    if ($paginator->currentPage() < 3) {
+                        for ($i = 0; $i <= $paginator->currentPage()+3; $i++) {
+                            $arr[] = $i;
+                        }
+                    } else {
+                        $arr[] = 0;
+                        $arr[] = '...';
+                        for ($i = $paginator->currentPage()-2; $i <= $paginator->currentPage()+2 && $i < $paginator->lastPage(); $i++) {
+                            $arr[] = $i;
+                        }
                     }
+                    
+                    if ($paginator->currentPage() < $paginator->lastPage() - 4) {
+                        $arr[] = '...';
+                    }
+                    if ($paginator->currentPage() < $paginator->lastPage() - 3) {
+                        $arr[] = $paginator->lastPage() - 1;
+                    }
+                    
                 } else {
-                    $arr[] = 0;
-                    $arr[] = '...';
-                    for ($i = $pagination["page"]-2; $i <= $pagination["page"]+2 && $i < $pagination["pageCount"]; $i++) {
+                    for ($i = 0; $i < $paginator->lastPage(); $i++) {
                         $arr[] = $i;
                     }
                 }
-                
-                if ($pagination["page"] < $pagination["pageCount"] - 4) {
-                    $arr[] = '...';
-                }
-                if ($pagination["page"] < $pagination["pageCount"] - 3) {
-                    $arr[] = $pagination["pageCount"] - 1;
-                }
-                
-            } else {
-                for ($i = 0; $i < $pagination["pageCount"]; $i++) {
-                    $arr[] = $i;
-                }
-            }
-        @endphp
+            @endphp
 
-        @foreach ($arr as $i)
-            @if ($i !== '...')
-                @if ($i == $pagination["page"])
-                    <li style="pointer-events: none" class="page-item active" aria-current="page">
-                        <span class="page-link">
-                            {{ $pagination["page"] + 1 }}
-                            <span class="sr-only">(current)</span>
-                        </span>
-                    </li>                    
+            @foreach ($arr as $i)
+                @if ($i !== '...')
+                    @if ($i == $paginator->currentPage() - 1)
+                        <li style="pointer-events: none" class="page-item active" aria-current="page">
+                            <span class="page-link">
+                                {{ $paginator->currentPage() }}
+                                <span class="sr-only">(current)</span>
+                            </span>
+                        </li>                    
+                    @else
+                        <li class="page-item"><a class="page-link" href="{{ $paginator->url($i+1) }}" data-page="{{ $i + 1 }}">{{ $i + 1 }}</a></li>
+                    @endif
                 @else
-                    <li class="page-item"><a class="page-link" href="javascript:;" data-page="{{ $i }}">{{ $i + 1 }}</a></li>
+                    ...
                 @endif
-            @else
-                ...
-            @endif
-        @endforeach
-        <li class="page-item {{ $pagination["page"] == $pagination["pageCount"]-1 ? 'disabled' : '' }}">
-          <a class="page-link" href="javascript:;" data-page="{{ $pagination["page"]+1 }}">{{ trans('messages.pagination.next') }}</a>
-        </li>
-    </ul>
+            @endforeach
+            <li class="page-item {{ $paginator->currentPage() == $paginator->lastPage() ? 'disabled' : '' }}">
+            <a class="page-link" href="{{ $paginator->url($paginator->currentPage()+1) }}" data-page="{{ $paginator->currentPage()+1 }}">{{ trans('messages.pagination.next') }}</a>
+            </li>
+        </ul>
+    @endif
 </pagination>

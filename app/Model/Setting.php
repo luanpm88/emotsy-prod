@@ -24,14 +24,12 @@ namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use Acelle\Cashier\Cashier;
+use Acelle\Model\Plugin;
+use Acelle\Library\Facades\Billing;
 
 class Setting extends Model
 {
-    const UPLOAD_PATH = 'app/setting/';
-
-    // Payment status
-    const PAYMENT_STATUS_ACTIVE = 'active';
-    const PAYMENT_STATUS_INACTIVE = 'inactive';
+    public const UPLOAD_PATH = 'app/setting/';
 
     /**
      * Get all items.
@@ -55,7 +53,7 @@ class Setting extends Model
      *
      * @return object
      */
-    public static function get($name)
+    public static function get($name, $defaultValue=null)
     {
         $setting = self::where('name', $name)->first();
 
@@ -65,7 +63,7 @@ class Setting extends Model
             return self::defaultSettings()[$name]['value'];
         } else {
             // @todo exception case not handled
-            return;
+            return $defaultValue;
         }
     }
 
@@ -347,7 +345,13 @@ class Setting extends Model
                 'type' => 'text',
                 'not_required' => true,
             ],
-            'spf' => [
+            'spf_record' => [
+                'cat' => 'dns',
+                'value' => null,
+                'type' => 'text',
+                'not_required' => true,
+            ],
+            'spf_host' => [
                 'cat' => 'dns',
                 'value' => null,
                 'type' => 'text',
@@ -421,19 +425,19 @@ class Setting extends Model
             ],
             'geoip.sqlite.dbname' => [
                 'cat' => 'others',
-                'value' => 'storage/app/ip2locationdb11.db',
+                'value' => 'storage/app/GeoLite2-City.mmdb',
                 'type' => 'text',
                 'not_required' => true,
             ],
             'geoip.sqlite.source_url' => [
                 'cat' => 'others',
-                'value' => 'https://www.dropbox.com/s/l4n52l1hdvwlqsc/ip2locationdb11.db?dl=1',
+                'value' => 'https://acellemail.s3.amazonaws.com/GeoLite2-City.mmdb',
                 'type' => 'text',
                 'not_required' => true,
             ],
             'geoip.sqlite.source_hash' => [
                 'cat' => 'others',
-                'value' => 'b09b6107c83be6e036a14a54a46ac97a',
+                'value' => 'b95ecaff82017c4f52577196c41db946',
                 'type' => 'text',
                 'not_required' => true,
             ],
@@ -449,17 +453,12 @@ class Setting extends Model
                 'type' => 'text',
                 'not_required' => true,
             ],
-            'system.payment_gateway' => [
-                'cat' => 'others',
-                'value' => '',
-                'type' => 'text',
-            ],
-            'system.end_period_last_days' => [
+            'end_period_last_days' => [
                 'cat' => 'payment',
-                'value' => '10',
+                'value' => '7',
                 'type' => 'text',
             ],
-            'system.renew_free_plan' => [
+            'renew_free_plan' => [
                 'cat' => 'payment',
                 'value' => 'no',
                 'type' => 'text',
@@ -482,6 +481,12 @@ class Setting extends Model
                 'type' => 'text',
                 'not_required' => true,
             ],
+            'spamassassin.enabled' => [
+                'cat' => 'others',
+                'value' => 'no',
+                'type' => 'text',
+                'not_required' => true,
+            ],
             'mta.api_endpoint' => [
                 'cat' => 'others',
                 'value' => null,
@@ -493,6 +498,76 @@ class Setting extends Model
                 'value' => null,
                 'type' => 'text',
                 'not_required' => true,
+            ],
+            'storage.s3' => [
+                'cat' => 'others',
+                'value' => null,
+                'type' => 'text',
+                'not_required' => true,
+            ],
+            'rss.enabled' => [
+                'cat' => 'others',
+                'value' => 'yes',
+                'type' => 'text',
+                'not_required' => true,
+            ],
+            'list.clone_for_others' => [
+                'cat' => 'others',
+                'value' => 'no',
+                'type' => 'text',
+                'not_required' => true,
+            ],
+            'gateways' => [
+                'cat' => 'others',
+                'value' => '["direct"]',
+                'type' => 'array',
+                'not_required' => true,
+            ],
+            'automation.trigger_imported_contacts' => [
+                'cat' => 'others',
+                'value' => 'no',
+                'type' => 'text',
+                'not_required' => true,
+            ],
+            'campaign.bcc' => [
+                'cat' => 'others',
+                'value' => '',
+                'type' => 'text',
+                'not_required' => true,
+            ],
+            'campaign.cc' => [
+                'cat' => 'others',
+                'value' => '',
+                'type' => 'text',
+                'not_required' => true,
+            ],
+            'list.allow_single_optin' => [
+                'cat' => 'others',
+                'value' => 'yes',
+                'type' => 'text',
+                'not_required' => true,
+            ],
+            'campaign.enforce_unsubscribe_url_check' => [
+                'cat' => 'others',
+                'value' => 'no',
+                'type' => 'text',
+                'not_required' => true,
+            ],
+            'layout.menu_bar' => [
+                'cat' => 'others',
+                'value' => 'left',
+                'type' => 'text',
+                'not_required' => true,
+            ],
+            'invoice.current' => [
+                'cat' => 'general',
+                'value' => '1',
+                'type' => 'number',
+            ],
+            'invoice.format' => [
+                'cat' => 'general',
+                'value' => '%08d',  // a number of 8 digit, for example: sprintf('%08d', 15) -> 00000015
+                'type' => 'text',
             ],
         ];
     }
@@ -511,7 +586,7 @@ class Setting extends Model
             ['value' => 'brown', 'text' => trans('messages.brown')],
             ['value' => 'pink', 'text' => trans('messages.pink')],
             ['value' => 'grey', 'text' => trans('messages.grey')],
-            ['value' => 'white', 'text' => trans('messages.white')],
+            // ['value' => 'white', 'text' => trans('messages.white')],
         ];
     }
 
@@ -546,8 +621,12 @@ class Setting extends Model
 
         // Write file
         $env_file = fopen($file_path, 'w') or die('Unable to open file!');
-        fwrite($env_file, implode($data, ''));
+        fwrite($env_file, implode('', $data));
         fclose($env_file);
+
+        if (file_exists(base_path('bootstrap/cache/config.php'))) {
+            unlink(base_path('bootstrap/cache/config.php'));
+        }
     }
 
     /**
@@ -560,12 +639,11 @@ class Setting extends Model
         if (empty($license)) {
             self::set('license', '');
             self::set('license_type', '');
-
-            return;
+        } else {
+            $license_type = \Acelle\Helpers\LicenseHelper::getLicenseType($license);
+            self::set('license', $license);
+            self::set('license_type', $license_type);
         }
-        $license_type = \Acelle\Helpers\LicenseHelper::getLicenseType($license);
-        self::set('license', $license);
-        self::set('license_type', $license_type);
     }
 
     /**
@@ -602,7 +680,7 @@ class Setting extends Model
      *
      * @var bool
      */
-    public static function uploadFile($file, $type = null)
+    public static function uploadFile($file, $type = null, $thumbnail = true)
     {
         $uploadPath = storage_path(self::UPLOAD_PATH);
 
@@ -618,7 +696,9 @@ class Setting extends Model
         $file->move($uploadPath, $filename);
 
         // create thumbnails
-        $img = \Image::make($uploadPath.$filename);
+        if ($thumbnail) {
+            $img = \Image::make($uploadPath.$filename);
+        }
 
         self::set($type, $filename);
 
@@ -656,53 +736,62 @@ class Setting extends Model
         }
     }
 
-    /**
-     * Get payments gateways.
-     *
-     * @var array
-     */
-    public static function getPaymentGateways()
+    public static function getTaxSettings()
     {
-        return config('cashier.gateways');
-    }
-
-    /**
-     * Get payments gateway by name.
-     *
-     * @var array
-     */
-    public static function getPaymentGateway($name)
-    {
-        if (!isset(config('cashier.gateways')[$name])) {
-            return;
+        if (self::get('tax') == null) {
+            return [
+                'enabled' => 'no',
+                'default_rate' => 10,
+                'countries' => [],
+            ];
         }
 
-        $gateway = config('cashier.gateways')[$name];
-
-        return $gateway;
+        return json_decode(self::get('tax'), true);
     }
 
-    /**
-     * Get payment status select options.
-     *
-     * @var array
-     */
-    public static function paymentStatusSelectOptions()
+    public static function setTaxSettings($params)
     {
-        return [self::PAYMENT_STATUS_INACTIVE, self::PAYMENT_STATUS_ACTIVE];
-    }
+        $settings = self::getTaxSettings();
+        $countries = $settings['countries'];
 
-    /**
-     * Update payment gateway.
-     *
-     * @var void
-     */
-    public static function updatePaymentGateway($name, $params)
-    {
-        foreach ($params as $key => $value) {
-            $setting = 'payment.'.$name.'.'.$key;
-
-            self::set($setting, $value);
+        if (isset($params['countries'])) {
+            $countries = array_merge($countries, $params['countries']);
         }
+
+        $settings = array_merge($settings, $params);
+        $settings['countries'] = $countries;
+
+        self::set('tax', json_encode($settings));
+    }
+
+    public static function getTaxByCountry($country=null)
+    {
+        if (self::getTaxSettings()['enabled'] !== 'yes') {
+            return 0;
+        }
+
+        if ($country == null) {
+            return self::getTaxSettings()['default_rate'];
+        }
+
+        $countries = self::getTaxSettings()['countries'];
+
+        if (isset($countries[$country->code])) {
+            return $countries[$country->code];
+        } else {
+            return self::getTaxSettings()['default_rate'];
+        }
+    }
+
+    public static function removeTaxCountryByCode($code)
+    {
+        $settings = self::getTaxSettings();
+        $countries = $settings['countries'];
+
+        unset($countries[$code]);
+
+        $settings['countries'] = $countries;
+
+        self::set('tax', json_encode($settings));
     }
 }

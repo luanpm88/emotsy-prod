@@ -37,29 +37,18 @@ class SendingServerSparkPostApi extends SendingServerSparkPost
      */
     public function send($message, $params = array())
     {
-        try {
-            $this->setupWebhook();
+        $response = $this->client()->transmissions->post($this->prepareEmail($message));
 
-            $response = $this->client()->transmissions->post($this->prepareEmail($message));
-
-            if ($response->getStatusCode() == 200) {
-                $body = $response->getBody();
-                MailLog::info('Sent!');
-
-                return array(
-                    'status' => self::DELIVERY_STATUS_SENT,
-                );
-            } else {
-                // throw the exception with body string
-                throw new \Exception($response->getBody(true));
-            }
-        } catch (\Exception $e) {
-            MailLog::warning('SparkPost failed to send'.$e->getMessage());
+        if ($response->getStatusCode() == 200) {
+            $body = $response->getBody();
+            MailLog::info('Sent!');
 
             return array(
-                'status' => self::DELIVERY_STATUS_FAILED,
-                'error' => $e->getMessage(),
+                'status' => self::DELIVERY_STATUS_SENT,
             );
+        } else {
+            // throw the exception with body string
+            throw new \Exception($response->getBody(true));
         }
     }
 

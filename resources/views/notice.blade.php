@@ -1,4 +1,4 @@
-@extends('layouts.clean')
+@extends('layouts.core.login')
 
 @section('title', trans('messages.app.notice.title'))
 
@@ -8,5 +8,5 @@
             {!! $message !!}
         </span>
     </div>
-    <a href='#back' onclick='history.back()' class='btn bg-grey-400'>{{ trans('messages.go_back') }}</a>
+    <a href='#back' onclick='history.back();return false;' class='btn btn-secondary'>{{ trans('messages.go_back') }}</a>
 @endsection

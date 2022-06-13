@@ -49,32 +49,32 @@ class IpLocation extends Model
     {
         //SELECT * FROM `ip2location_db11` WHERE INET_ATON('116.109.245.204') <= ip_to LIMIT 1
         $location = self::firstOrNew(['ip_address' => $ip]);
+        $geoip = App::make('Acelle\Library\Contracts\GeoIpInterface');
 
-        // Get info
         try {
-            $geoip = App::make('Acelle\Library\Contracts\GeoIpInterface');
             $geoip->resolveIp($ip);
-
-            $location->ip_address = $ip;
-            $location->country_code = $geoip->getCountryCode();
-            $location->country_name = $geoip->getCountryName();
-            $location->region_name = $geoip->getRegionName();
-            $location->city = $geoip->getCity();
-            $location->zipcode = $geoip->getZipcode();
-            $location->latitude = $geoip->getLatitude();
-            $location->longitude = $geoip->getLongitude();
-            $location->save();
         } catch (\Exception $e) {
             // Note log
             $title = 'GeoIP Error';
-            BackendError::cleanupDuplicateNotifications($title);
-            BackendError::warning([
+            LaravelLog::warning('Cannot get IP location info for '.$ip.'. Error: '.$e->getMessage());
+
+            Notification::warning([
                 'title' => $title,
-                'message' => 'Cannot resolve IP address. '.$e->getMessage(),
+                'message' => $e->getMessage(),
             ]);
 
-            LaravelLog::warning('Cannot get IP location info: '.$e->getMessage());
+            throw $e;
         }
+
+        $location->ip_address = $ip;
+        $location->country_code = $geoip->getCountryCode();
+        $location->country_name = $geoip->getCountryName();
+        $location->region_name = $geoip->getRegionName();
+        $location->city = $geoip->getCity();
+        $location->zipcode = $geoip->getZipcode();
+        $location->latitude = $geoip->getLatitude();
+        $location->longitude = $geoip->getLongitude();
+        $location->save();
 
         return $location;
     }
@@ -99,5 +99,21 @@ class IpLocation extends Model
         $name = implode(', ', $str);
 
         return empty($name) ? trans('messages.unknown') : $name;
+    }
+
+    public function getFlagPath()
+    {
+        $path = "/images/flags/" . $this->country_code . ".png";
+
+        if (!file_exists(public_path($path))) {
+            $path = "/images/flags/unknown.png";
+        }
+
+        return $path;
+    }
+
+    public function getCountryName()
+    {
+        return (empty($this->country_name) ? trans("messages.unknown") : $this->country_name);
     }
 }

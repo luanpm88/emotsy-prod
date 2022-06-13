@@ -2,14 +2,13 @@
 
 @section('content')
 	<div class="row">
-        <div class="col-md-1"></div>
-        <div class="col-md-10">
+        <div class="col-md-12">
             <div class="text-center">
-                <ul class="nav nav-tabs mc-nav campaign-template-tabs inline-tabs">
-                    <li class="active"><a href="javascript:;">
+                <ul class="nav nav-tabs mc-nav campaign-template-tabs nav-underline">
+                    <li class="active nav-item"><a class="nav-link" href="javascript:;">
                         {{ trans('messages.template.thumb.upload') }}
                     </a></li>
-                    <li><a class="thumb-url-tab" href="{{ action('Admin\TemplateController@updateThumbUrl', $template->uid) }}">
+                    <li class="nav-item"><a class="nav-link thumb-url-tab" href="{{ action('Admin\TemplateController@updateThumbUrl', $template->uid) }}">
                         {{ trans('messages.template.thumb.url') }}
                     </a></li>
                 </ul>
@@ -28,11 +27,14 @@
                     'required' => true,
                     'type' => 'file',
                     'label' => trans('messages.upload_file'),
-                    'name' => 'file'
+                    'name' => 'file',
+                    'attributes' => [
+                        'accept' => 'image/png, image/gif, image/jpeg',
+                    ],
                 ])
 				
                 <div class="mt-20">
-                    <button class="btn btn-primary bg-grey-600 mr-5">{{ trans('messages.upload') }}</button>
+                    <button class="btn btn-primary bg-grey-600 me-1">{{ trans('messages.upload') }}</button>
                 </div>
 
             </form>
@@ -60,10 +62,10 @@
                 url: url,
                 method: 'POST',
                 data: formData,
-                async: false,
                 cache: false,
                 contentType: false,
                 processData: false,
+                globalError: false,
                 statusCode: {
                     // validate error
                     400: function (res) {
@@ -81,7 +83,7 @@
 
                     thumbPopup.hide();  
 
-                    tableFilterAll();      
+                    TemplatesIndex.getList().load();
                 }
             });
         });

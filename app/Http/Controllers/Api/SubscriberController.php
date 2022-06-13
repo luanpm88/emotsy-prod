@@ -8,6 +8,8 @@ use Acelle\Library\Log as MailLog;
 use Illuminate\Support\Facades\Log;
 use Acelle\Events\MailListSubscription;
 use Acelle\Model\Setting;
+use Acelle\Model\MailList;
+use Acelle\Model\IpLocation;
 
 /**
  * /api/v1/lists/{list_id}/subscribers - API controller for managing list's subscribers.
@@ -24,21 +26,19 @@ class SubscriberController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request, $list_id)
+    public function index(Request $request)
     {
         $user = \Auth::guard('api')->user();
-        $list = \Acelle\Model\MailList::findByUid($list_id);
+        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
 
         // authorize
         if (!is_object($list)) {
-            return \Response::json(array('message' => trans('List not found')), 404);
+            return \Response::json(array('message' => trans('List not found')), 400);
         }
-
         // authorize
         if (!$user->can('read', $list)) {
-            return \Response::json(array('message' => 'Unauthorized'), 401);
+            return \Response::json(array('message' => 'You\'re not authorized to access this resources'), 401);
         }
-
         if (isset($request->per_page)) {
             $per_page = $request->per_page;
         } else {
@@ -47,7 +47,6 @@ class SubscriberController extends Controller
 
         $items = \Acelle\Model\Subscriber::search($request, $user->customer)
             ->where('mail_list_id', '=', $list->id)
-            ->groupBy('subscribers.id')
             ->paginate($per_page);
 
         $subscribers = [];
@@ -80,120 +79,71 @@ class SubscriberController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, $list_id)
+    public function store(Request $request)
     {
         try {
             $user = \Auth::guard('api')->user();
-            $list = \Acelle\Model\MailList::findByUid($list_id);
-    
+            $list = MailList::findByUid($request->list_uid);
+
             // authorize
             if (!is_object($list)) {
-                return \Response::json(array('message' => trans('List not found')), 404);
+                return \Response::json(array('message' => trans('List not found')), 400);
             }
-    
-            $subscriber = \Acelle\Model\Subscriber::where('mail_list_id', $list->id)->where('email', '=', $request->EMAIL)->first();
-    
+
+            if (!$user->can('update', [ $list, $more = 1 ])) {
+                return response()->json(['message' => 'Unauthorized!'], 401);
+            }
+
+            if (!$user->can('addMoreSubscribers', [ $list, $more = 1 ])) {
+                return response()->json(['message' => 'List quota exceeded'], 403);
+            }
+
+            // Validate & and create subscriber
+            // Throw ValidationError exception in case of failure
+            list($validator, $subscriber) = $list->subscribe($request, MailList::SOURCE_API);
+
             if (is_null($subscriber)) {
-                $subscriber = new \Acelle\Model\Subscriber();
-                $subscriber->mail_list_id = $list->id;
-                $subscriber->from = 'api';
+                return response()->json($validator->messages(), 403);
             }
-    
-            // authorize
-            if (!$user->can('create', $subscriber)) {
-                return \Response::json(array('message' => trans('messages.no_more_item')), 403);
+
+            // update tags
+            if ($request->tag) {
+                $subscriber->updateTags(explode(',', $request->tag));
             }
-    
-            // validate and save posted data
-            if ($request->isMethod('post')) {
-                $validator = \Validator::make($request->all(), $subscriber->getRules());
-                if ($validator->fails()) {
-                    return response()->json($validator->messages(), 403);
-                }
-    
-                // Save subscriber
-                $subscriber->email = $request->EMAIL;
-    
-                if ($list->subscribe_confirmation) {
-                    // SEND subscription confirmation email
-                    try {
-                        $subscriber->status = \Acelle\Model\Subscriber::STATUS_UNCONFIRMED;
-                        $subscriber->save();
-                        MailLog::info(sprintf('Sending confirmation email to %s who is being added to mail list `%s` (#%s)', $subscriber->email, $list->name, $list->id));
-                        $list->sendSubscriptionConfirmationEmail($subscriber);
-                    } catch (\Exception $ex) {
-                        return \Response::json(array('message' => 'Something went wrong adding subscriber. '.$ex->getMessage()), 404);
-                    }
-                } else {
-                    $subscriber->status = \Acelle\Model\Subscriber::STATUS_SUBSCRIBED;
-                    $subscriber->save();
-                }
-    
-                // Update field
-                $subscriber->updateFields($request->all());
-    
-                // Log
-                $subscriber->log('created', $user->customer);
-    
-                // update MailList cache
-                event(new \Acelle\Events\MailListUpdated($subscriber->mailList));
-                
-                Log::info("Subscriber {$subscriber->email} is added to list {$subscriber->mailList->name} via API");
-    
-                // trigger the event
-                if (Setting::isYes('send_notification_email_for_list_subscription')) {
-                    Log::info("Sending notification email for subscriber {$subscriber->email}, list {$subscriber->mailList->name}");
-                    event(new MailListSubscription($user, $subscriber));    
-                } else {
-                    Log::info("No notification email for subscriber {$subscriber->email}, list {$subscriber->mailList->name}");
-                }
-    
-                return \Response::json(array(
-                    'status' => 1,
-                    'message' => ($list->subscribe_confirmation) ? trans('messages.subscriber.confirmation_email_sent') : trans('messages.subscriber.created'),
-                    'subscriber_uid' => $subscriber->uid,
-                ), 200);
-            }
+
+            return \Response::json(array(
+                'status' => 1,
+                'message' => ($list->subscribe_confirmation) ? trans('messages.subscriber.confirmation_email_sent') : trans('messages.subscriber.created'),
+                'subscriber_uid' => $subscriber->uid,
+            ), 200);
         } catch (\Exception $ex) {
-            return \Response::json(array('message' => $ex->getMessage()), 400);
+            return \Response::json(array('message' => $ex->getMessage()), 500);
         }
     }
 
     /**
      * Display the specified subscriber information.
      *
-     * GET /api/v1/lists/{list_id}/subscribers/{id}
+     * GET /api/v1/subscribers/{id}
      *
      * @param string $list_id List's id
      * @param string $id      Subsciber's id
      *
      * @return \Illuminate\Http\Response
      */
-    public function show($list_id, $id)
+    public function show($uid)
     {
         $user = \Auth::guard('api')->user();
 
-        $list = \Acelle\Model\MailList::findByUid($list_id);
+        $item = \Acelle\Model\Subscriber::
+            where('uid', '=', $uid)
+            ->first();
 
-        // authorize
-        if (!is_object($list)) {
-            return \Response::json(array('message' => trans('List not found')), 404);
-        }
-
-        if (strpos($id, '@') !== false) {
-            $item = \Acelle\Model\Subscriber::
-                where('email', '=', $id)
-                ->where('mail_list_id', '=', $list->id)
-                ->first();
-        } else {
-            $item = \Acelle\Model\Subscriber::
-                where('uid', '=', $id)
-                ->first();
-        }
+        $list = $item->mailList;
 
         // check if item exists
         if (!is_object($item)) {
-            return \Response::json(array('message' => 'Item not found'), 404);
+            return \Response::json(array('message' => 'Subscriber not found'), 404);
         }
 
         // authorize
@@ -208,6 +158,7 @@ class SubscriberController extends Controller
             'status' => $item->status,
             'source' => $item->from,
             'ip_address' => $item->ip,
+            'tags' => $item->getTags(),
         ];
 
         foreach ($list->fields as $field) {
@@ -229,23 +180,17 @@ class SubscriberController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function subscribe($list_id, $id)
+    public function subscribe($uid)
     {
         $user = \Auth::guard('api')->user();
-
-        $list = \Acelle\Model\MailList::findByUid($list_id);
-
-        // authorize
-        if (!is_object($list)) {
-            return \Response::json(array('status' => 0, 'message' => trans('List not found')), 404);
-        }
-
-        $subscriber = \Acelle\Model\Subscriber::findByUid($id);
+        $subscriber = \Acelle\Model\Subscriber::findByUid($uid);
 
         // check if item exists
         if (!is_object($subscriber)) {
-            return \Response::json(array('status' => 0, 'message' => 'Item not found'), 404);
+            return \Response::json(array('status' => 0, 'message' => 'Subscriber not found'), 404);
         }
+
+        $list = $subscriber->mailList;
 
         // check if item subscribed
         if ($subscriber->status == 'subscribed') {
@@ -257,9 +202,19 @@ class SubscriberController extends Controller
             return \Response::json(array('status' => 0, 'message' => 'Unauthorized'), 401);
         }
 
-        // Unsubscribe
-        $subscriber->status = 'subscribed';
-        $subscriber->save();
+        // User Tracking Information
+        $trackingInfo = [
+            'message_id' => null,
+            'user_agent' => $_SERVER['HTTP_USER_AGENT'],
+        ];
+
+        // GeoIP information
+        $location = IpLocation::add($_SERVER['REMOTE_ADDR']);
+        if (!is_null($location)) {
+            $trackingInfo['ip_address'] = $location->ip_address;
+        }
+
+        $subscriber->subscribe($trackingInfo);
 
         // Log
         $subscriber->log('subscribed', $user->customer);
@@ -277,23 +232,17 @@ class SubscriberController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function unsubscribe($list_id, $id)
+    public function unsubscribe($uid)
     {
         $user = \Auth::guard('api')->user();
-
-        $list = \Acelle\Model\MailList::findByUid($list_id);
-
-        // authorize
-        if (!is_object($list)) {
-            return \Response::json(array('status' => 0, 'message' => trans('List not found')), 404);
-        }
-
-        $subscriber = \Acelle\Model\Subscriber::findByUid($id);
+        $subscriber = \Acelle\Model\Subscriber::findByUid($uid);
 
         // check if item exists
         if (!is_object($subscriber)) {
-            return \Response::json(array('status' => 0, 'message' => 'Item not found'), 404);
+            return \Response::json(array('status' => 0, 'message' => 'Subscriber not found'), 404);
         }
+
+        $list = $subscriber->mailList;
 
         // check if item unsubscribed
         if ($subscriber->status == 'unsubscribed') {
@@ -305,9 +254,20 @@ class SubscriberController extends Controller
             return \Response::json(array('status' => 0, 'message' => 'Unauthorized'), 401);
         }
 
-        // Unsubscribe
-        $subscriber->status = 'unsubscribed';
-        $subscriber->save();
+        // User Tracking Information
+        $trackingInfo = [
+            'message_id' => null,
+            'user_agent' => $_SERVER['HTTP_USER_AGENT'],
+        ];
+
+        // GeoIP information
+        $location = IpLocation::add($_SERVER['REMOTE_ADDR']);
+        if (!is_null($location)) {
+            $trackingInfo['ip_address'] = $location->ip_address;
+        }
+
+        // Actually Unsubscribe with tracking information
+        $subscriber->unsubscribe($trackingInfo);
 
         // Log
         $subscriber->log('unsubscribed', $user->customer);
@@ -325,25 +285,21 @@ class SubscriberController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function delete($list_id, $id)
+    public function delete($uid)
     {
         $user = \Auth::guard('api')->user();
-        $list = \Acelle\Model\MailList::findByUid($list_id);
-
-        // authorize
-        if (!is_object($list)) {
-            return \Response::json(array('message' => trans('List not found')), 404);
-        }
-
-        $subscriber = \Acelle\Model\Subscriber::findByUid($id);
-
-        if (!is_object($subscriber)) {
-            $subscriber = \Acelle\Model\Subscriber::where('mail_list_id', '=', $list->id)->where('email', '=', $id)->first();
-        }
+        $subscriber = \Acelle\Model\Subscriber::findByUid($uid);
 
         // check if item exists
         if (!is_object($subscriber)) {
-            return \Response::json(array('status' => 0, 'message' => 'Item not found'), 404);
+            return \Response::json(array('status' => 0, 'message' => 'Subscriber not found'), 404);
+        }
+
+        $list = $subscriber->mailList;
+
+        // check if item exists
+        if (!is_object($subscriber)) {
+            return \Response::json(array('status' => 0, 'message' => 'Subscriber not found'), 404);
         }
 
         // authorize
@@ -420,16 +376,15 @@ class SubscriberController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $uid)
     {
         $user = \Auth::guard('api')->user();
         $customer = $user->customer;
-        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
-        $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
+        $subscriber = \Acelle\Model\Subscriber::findByUid($uid);
 
         // authorize
         if (!$user->can('update', $subscriber)) {
-            return \Response::json(array('status' => 0, 'message' => trans('no_more_item')), 403);
+            return \Response::json(array('message' => 'Unauthorized'), 401);
         }
 
         // validate and save posted data
@@ -441,6 +396,11 @@ class SubscriberController extends Controller
 
             // Update field
             $subscriber->updateFields($request->all());
+
+            // update tags
+            if ($request->tag) {
+                $subscriber->updateTags(explode(',', $request->tag));
+            }
 
             // Log
             $subscriber->log('updated', $customer);
@@ -454,5 +414,37 @@ class SubscriberController extends Controller
                 'subscriber_uid' => $subscriber->uid,
             ), 200);
         }
+    }
+
+    /**
+     * Add subscriber tag.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int                      $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function addTag(Request $request, $uid)
+    {
+        $user = \Auth::guard('api')->user();
+        $subscriber = \Acelle\Model\Subscriber::findByUid($uid);
+
+        // authorize
+        if (!$user->can('update', $subscriber)) {
+            return \Response::json(array('message' => 'Unauthorized'), 401);
+        }
+
+        // update tags
+        if ($request->tag) {
+            $subscriber->addTags(explode(',', $request->tag));
+        }
+
+        // add tag
+        return \Response::json(array(
+            'status' => 1,
+            'message' => trans('messages.subscriber.tag_added'),
+            'subscriber_uid' => $subscriber->uid,
+            'tags' => $subscriber->getTags(),
+        ), 200);
     }
 }

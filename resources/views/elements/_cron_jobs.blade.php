@@ -1,4 +1,4 @@
-<h3 class="text-teal-800"><i class="icon-puzzle2"></i> {{ trans('messages.setting_up_background_job') }}</h3>
+<h3 class="text-primary"><i class="icon-puzzle2"></i> {{ trans('messages.setting_up_background_job') }}</h3>
 
 @if(!$valid || isset($show_all))
     @include('helpers.form_control', [
@@ -57,22 +57,29 @@
         <div id="result_box">
             <hr>
 
-            <label class="text-bold">{!! trans('messages.cron_jobs_guide') !!} </label>
-            <pre style="font-size: 16px;background:#f5f5f5">* * * * * <span class="current_path_value">{!! $php_bin_path_value !!}</span> -q {{ base_path() }}/artisan schedule:run 2&gt;&amp;1    </pre>
-
-            <!--<hr>
-            <label class="text-bold">{!! trans('messages.remote_job_guide') !!} </label>
-            <div class="form-group mb-10">
-                <pre class="remote-job-url" style="font-size: 16px;background:#f5f5f5">{{ action('Controller@remoteJob', ['remote_job_token' => \Acelle\Model\Setting::get('remote_job_token')]) }}</pre>
+            <label class="mb-4" onclick="copy">{!! trans('messages.cron_jobs_guide') !!} </label>
+            <div class="d-flex">
+                <pre id="cronString" class="py-2 px-2 mb-0 pr-4" style="font-size: 16px;background:#f5f5f5">* * * * * <span class="current_path_value">{!! $php_bin_path_value !!}</span> -q {{ base_path() }}/artisan schedule:run 2&gt;&amp;1</pre>
+                <button type="button" class="btn btn-info copy-button rounded-0 rounded-end"><span class="material-symbols-rounded">
+                    content_copy
+                    </span> {{ trans('messages.copy') }}</button>
             </div>
-            <a class="btn btn-default re_generate_remote_job_url">
-                <i class="icon-reload-alt"></i> {!! trans('messages.re_generate_remote_job_url') !!}</a>-->
         </div>
     @endif
 </div>
 
 <script>
     $(document).ready(function() {
+        // copy
+        $('.copy-button').on('click', function() {
+            copyToClipboard($('#cronString').text());
+
+            notify({
+                type: 'success',
+                message: '{{ trans('messages.cron_string.copied') }}'
+            })
+        });
+
         // pickadate mask
         $(document).on('change', 'input[name="php_bin_path"]', function() {
             var value = $(this).val();

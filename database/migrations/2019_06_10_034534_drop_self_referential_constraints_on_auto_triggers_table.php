@@ -14,7 +14,7 @@ class DropSelfReferentialConstraintsOnAutoTriggersTable extends Migration
     public function up()
     {
         Schema::table('auto_triggers', function (Blueprint $table) {
-            $table->dropForeign('auto_triggers_preceded_by_foreign');
+            $table->dropForeign(['preceded_by']);
         });
     }
 
@@ -30,4 +30,3 @@ class DropSelfReferentialConstraintsOnAutoTriggersTable extends Migration
         });
     }
 }
-

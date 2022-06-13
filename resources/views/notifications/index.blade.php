@@ -1,8 +1,8 @@
-@extends('layouts.frontend')
+@extends('layouts.core.frontend')
 
 @section('content')@section('content')
     @include('admin.notifications._top', ['notifications' => $notifications])
-    {{ $notifications->links() }}
+    
 
 <script>
     $('div[data-type="admin-notification"]').unbind('click');

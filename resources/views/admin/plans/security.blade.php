@@ -1,19 +1,17 @@
-@extends('layouts.backend')
+@extends('layouts.core.backend')
 
 @section('title', $plan->name)
 
-@section('page_script')
-    <script type="text/javascript" src="{{ URL::asset('assets/js/plugins/forms/styling/uniform.min.js') }}"></script>
-
-    <script type="text/javascript" src="{{ URL::asset('js/validate.js') }}"></script>
+@section('head')
+    <script type="text/javascript" src="{{ URL::asset('core/js/group-manager.js') }}"></script>
 @endsection
 
 @section('page_header')
 
     <div class="page-title">
         <ul class="breadcrumb breadcrumb-caret position-right">
-            <li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
-            <li><a href="{{ action("Admin\PlanController@index") }}">{{ trans('messages.plans') }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ action("Admin\PlanController@index") }}">{{ trans('messages.plans') }}</a></li>
         </ul>
         <h1 class="mc-h1">
             <span class="text-semibold">{{ $plan->name }}</span>
@@ -36,7 +34,7 @@
                         
                     <p>{{ trans('messages.plan.speed_limit.intro') }}</p>
                         
-                    <div class="select-custom" data-url="{{ action('Admin\PlanController@sendingLimit', $plan->uid) }}">
+                    <div class="sending-limit-box" data-url="{{ action('Admin\PlanController@sendingLimit', $plan->uid) }}">
                         @include ('admin.plans._sending_limit')
                     </div>
                     <p>{{ trans('messages.plan.process_limit.intro') }}</p>
@@ -54,13 +52,48 @@
                             </div>
                         </div>
                     </div>
-                    <button class="btn btn-mc_primary mr-10">{{ trans('messages.save') }}</button>
-                    <a href="{{ action('Admin\PlanController@index') }}" type="button" class="btn btn-mc_inline">
+                    <h2 class="text-semibold mt-4">{{ trans('messages.bounce_rate_theshold') }}</h2>
+            
+                    <p>{!! trans('messages.bounce_rate_theshold.wording') !!}</p>
+
+                    @include('helpers.form_control', ['type' => 'select',
+                        'name' => 'plan[options][bounce_rate_theshold]',
+                        'value' => $plan->getOption('bounce_rate_theshold'),
+                        'label' => trans('messages.bounce_rate_theshold.set_a_limit'),
+                        'options' => \Acelle\Model\Plan::bounceRateThesholdOptions(),
+                        'help_class' => 'plan',
+                        'rules' => $plan->validationRules()['general'],
+                    ])
+                    <hr>
+                    <button class="btn btn-secondary me-2">{{ trans('messages.save') }}</button>
+                    <a href="{{ action('Admin\PlanController@index') }}" role="button" class="btn btn-link">
                         {{ trans('messages.cancel') }}
                     </a>
                 </div>
             </div>
         </div>
     </form>
-        
+    
+    <script>
+        var PlansSecurity = {
+            sendingLimitPopup: null,
+
+            getBox: function() {
+                return $('.sending-limit-box');
+            },
+
+            getSendingLimitPopup: function() {
+                if (this.sendingLimitPopup == null) {
+                    this.sendingLimitPopup = new Popup({
+                        url: '{{ action('Admin\PlanController@sendingLimit', $plan->uid) }}'
+                    });
+                }
+
+                return this.sendingLimitPopup;
+            }
+        }
+
+        $(function() {
+        });
+    </script>
 @endsection

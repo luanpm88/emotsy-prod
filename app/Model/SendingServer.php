@@ -24,32 +24,41 @@ namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use Acelle\Library\Log as MailLog;
-use Acelle\Library\QuotaTrackerFile;
+use Acelle\Library\IdentityStore;
+use Acelle\Library\ExtendedSwiftMessage;
 use Carbon\Carbon;
 use Acelle\Library\StringHelper;
 use Acelle\Library\Notification\BackendError as BackendErrorNotification;
+use Acelle\Library\Facades\Hook;
+use Acelle\Library\Traits\HasUid;
+use Acelle\Library\Traits\HasQuota;
+use Acelle\Library\Contracts\HasQuota as HasQuotaInterface;
+use Acelle\Library\QuotaManager;
+use Exception;
 
-class SendingServer extends Model
+class SendingServer extends Model implements HasQuotaInterface
 {
-    const DELIVERY_STATUS_SENT = 'sent';
-    const DELIVERY_STATUS_FAILED = 'failed';
-    const STATUS_ACTIVE = 'active';
-    const STATUS_INACTIVE = 'inactive';
+    use HasUid;
+    use HasQuota;
+
+    public const DELIVERY_STATUS_SENT = 'sent';
+    public const DELIVERY_STATUS_FAILED = 'failed';
+    public const STATUS_ACTIVE = 'active';
+    public const STATUS_INACTIVE = 'inactive';
 
     // TYPE
-    const TYPE_AMAZON_API = 'amazon-api';
-    const TYPE_AMAZON_SMTP = 'amazon-smtp';
-    const TYPE_SENDGRID_API = 'sendgrid-api';
-    const TYPE_SENDGRID_SMTP = 'sendgrid-smtp';
-    const TYPE_MAILGUN_API = 'mailgun-api';
-    const TYPE_MAILGUN_SMTP = 'mailgun-smtp';
-    const TYPE_ELASTICEMAIL_API = 'elasticemail-api';
-    const TYPE_ELASTICEMAIL_SMTP = 'elasticemail-smtp';
-    const TYPE_SPARKPOST_API = 'sparkpost-api';
-    const TYPE_SPARKPOST_SMTP = 'sparkpost-smtp';
-    const TYPE_PHP_MAIL = 'php-mail';
-    const TYPE_SENDMAIL = 'sendmail';
-    const TYPE_SMTP = 'smtp';
+    public const TYPE_AMAZON_API = 'amazon-api';
+    public const TYPE_AMAZON_SMTP = 'amazon-smtp';
+    public const TYPE_SENDGRID_API = 'sendgrid-api';
+    public const TYPE_SENDGRID_SMTP = 'sendgrid-smtp';
+    public const TYPE_MAILGUN_API = 'mailgun-api';
+    public const TYPE_MAILGUN_SMTP = 'mailgun-smtp';
+    public const TYPE_ELASTICEMAIL_API = 'elasticemail-api';
+    public const TYPE_ELASTICEMAIL_SMTP = 'elasticemail-smtp';
+    public const TYPE_SPARKPOST_API = 'sparkpost-api';
+    public const TYPE_SPARKPOST_SMTP = 'sparkpost-smtp';
+    public const TYPE_SENDMAIL = 'sendmail';
+    public const TYPE_SMTP = 'smtp';
 
     protected $quotaTracker;
     protected $subAccount;
@@ -72,7 +81,6 @@ class SendingServer extends Model
         self::TYPE_AMAZON_SMTP => 'SendingServerAmazonSmtp',
         self::TYPE_SMTP => 'SendingServerSmtp',
         self::TYPE_SENDMAIL => 'SendingServerSendmail',
-        self::TYPE_PHP_MAIL => 'SendingServerPhpMail',
         self::TYPE_MAILGUN_API => 'SendingServerMailgunApi',
         self::TYPE_MAILGUN_SMTP => 'SendingServerMailgunSmtp',
         self::TYPE_SENDGRID_API => 'SendingServerSendGridApi',
@@ -104,11 +112,36 @@ class SendingServer extends Model
     }
 
     /**
+     * Plans.
+     *
+     * @return collection
+     */
+    public function plansSendingServers()
+    {
+        return $this->hasMany('Acelle\Model\PlansSendingServer', 'sending_server_id');
+    }
+
+    /**
      * Get the bounce handler.
      */
     public function bounceHandler()
     {
         return $this->belongsTo('Acelle\Model\BounceHandler');
+    }
+
+    public function sendingDomains()
+    {
+        return $this->hasMany('Acelle\Model\SendingDomain', 'sending_server_id');
+    }
+
+    /**
+     * Senders.
+     *
+     * @return collection
+     */
+    public function senders()
+    {
+        return $this->hasMany('Acelle\Model\Sender', 'sending_server_id');
     }
 
     /**
@@ -120,7 +153,21 @@ class SendingServer extends Model
      */
     public static function mapServerType($server)
     {
-        $class_name = '\Acelle\Model\\'.self::$serverMapping[$server->type];
+        if (array_key_exists($server->type, self::$serverMapping)) {
+            // Old sending server types
+            $class_name = '\Acelle\Model\\'.self::$serverMapping[$server->type];
+        } else {
+            $extendedTypes = Hook::execute('register_sending_server');
+            foreach ($extendedTypes as $meta) {
+                if ($meta['type'] == $server->type) {
+                    $class_name = $meta['class'];
+                }
+            }
+        }
+
+        if (!isset($class_name)) {
+            throw new Exception('Unknown sending server type '.$server->type);
+        }
 
         if ($server->id) {
             $instance = $class_name::find($server->id);
@@ -131,22 +178,6 @@ class SendingServer extends Model
         $instance->fill($server->getAttributes());
 
         return $instance;
-    }
-
-    /**
-     * Map a server to its class type and initiate an instance.
-     *
-     * @return object sending server of its particular type
-     */
-    public static function getInstance($server)
-    {
-        $class_name = '\Acelle\Model\\'.self::$serverMapping[$server->type];
-        $attributes = $server->toArray();
-        if (array_key_exists('id', $attributes)) {
-            unset($attributes['id']);
-        }
-
-        return new $class_name($attributes);
     }
 
     /**
@@ -205,24 +236,12 @@ class SendingServer extends Model
      *
      * @return collect
      */
-    public static function filter($request)
+    public static function scopeFilter($query, $request)
     {
-        $user = $request->user();
-        $query = self::select('sending_servers.*');
-
-        // Keyword
-        if (!empty(trim($request->keyword))) {
-            foreach (explode(' ', trim($request->keyword)) as $keyword) {
-                $query = $query->where(function ($q) use ($keyword) {
-                    $q->orwhere('sending_servers.name', 'like', '%'.$keyword.'%')
-                        ->orWhere('sending_servers.type', 'like', '%'.$keyword.'%')
-                        ->orWhere('sending_servers.host', 'like', '%'.$keyword.'%');
-                });
-            }
-        }
+        $query = $query->select('sending_servers.*');
 
         // filters
-        $filters = $request->filters;
+        $filters = $request->all();
         if (!empty($filters)) {
             if (!empty($filters['type'])) {
                 $query = $query->where('sending_servers.type', '=', $filters['type']);
@@ -237,13 +256,6 @@ class SendingServer extends Model
         if (!empty($request->admin_id)) {
             $query = $query->where('sending_servers.admin_id', '=', $request->admin_id);
         }
-
-        // remove customer sending servers
-        if (!empty($request->no_customer)) {
-            $query = $query->whereNull('customer_id');
-        }
-
-        return $query;
     }
 
     /**
@@ -251,25 +263,18 @@ class SendingServer extends Model
      *
      * @return collect
      */
-    public static function search($request)
+    public static function scopeSearch($query, $keyword)
     {
-        $query = self::filter($request);
-
-        if (!empty($request->sort_order)) {
-            $query = $query->orderBy($request->sort_order, $request->sort_direction);
+        // Keyword
+        if (!empty(trim($keyword))) {
+            foreach (explode(' ', trim($keyword)) as $keyword) {
+                $query = $query->where(function ($q) use ($keyword) {
+                    $q->orwhere('sending_servers.name', 'like', '%'.$keyword.'%')
+                        ->orWhere('sending_servers.type', 'like', '%'.$keyword.'%')
+                        ->orWhere('sending_servers.host', 'like', '%'.$keyword.'%');
+                });
+            }
         }
-
-        return $query;
-    }
-
-    /**
-     * Find item by uid.
-     *
-     * @return object
-     */
-    public static function findByUid($uid)
-    {
-        return self::where('uid', '=', $uid)->first();
     }
 
     /**
@@ -278,28 +283,6 @@ class SendingServer extends Model
      * @var array
      */
     public static $itemsPerPage = 25;
-
-    /**
-     * Bootstrap any application services.
-     */
-    public static function boot()
-    {
-        parent::boot();
-
-        // Create uid when creating list.
-        static::creating(function ($item) {
-            // Create new uid
-            $uid = uniqid();
-            while (SendingServer::where('uid', '=', $uid)->count() > 0) {
-                $uid = uniqid();
-            }
-            $item->uid = $uid;
-
-            // SendingServer custom order
-            SendingServer::getAll()->increment('custom_order', 1);
-            $item->custom_order = 0;
-        });
-    }
 
     /**
      * Type of server.
@@ -362,6 +345,7 @@ class SendingServer extends Model
                 'cols' => [
                     'api_key' => 'required',
                     'domain' => 'required',
+                    'host' => 'required',
                 ],
                 'settings' => [
                     'name' => 'required',
@@ -373,6 +357,7 @@ class SendingServer extends Model
                     'domain' => 'required',
                     'api_key' => 'required',
                     'host' => 'required',
+                    'aws_region' => 'required',
                     'smtp_username' => 'required',
                     'smtp_password' => 'required',
                     'smtp_port' => 'required',
@@ -520,7 +505,6 @@ class SendingServer extends Model
                     'name' => 'required',
                     'domain' => 'required',
                     'api_key' => 'required',
-                    'host' => 'required',
                     'smtp_username' => 'required',
                     'smtp_password' => 'required',
                     'smtp_port' => 'required',
@@ -623,28 +607,6 @@ class SendingServer extends Model
     }
 
     /**
-     * Get sending server's quota.
-     *
-     * @return string
-     */
-    public function getSendingQuota()
-    {
-        return $this->quota_value;
-    }
-
-    /**
-     * Get sending server's sending quota.
-     *
-     * @return string
-     */
-    public function getSendingQuotaUsage()
-    {
-        $tracker = $this->getQuotaTracker();
-
-        return $tracker->getUsage();
-    }
-
-    /**
      * Get rules.
      *
      * @return string
@@ -698,14 +660,19 @@ class SendingServer extends Model
         return $rules;
     }
 
+    public function getCustomValidationError()
+    {
+        return [];
+    }
+
     /**
      * Test connection.
      *
      * @return object
      */
-    public function validConnection($request)
+    public function validConnection($params)
     {
-        $validator = \Validator::make($request->all(), $this->getRules());
+        $validator = \Validator::make($params, $this->getRules(), $this->getCustomValidationError());
 
         // test amazon api connection
         $validator->after(function ($validator) {
@@ -769,11 +736,22 @@ class SendingServer extends Model
         return [
             ['value' => '', 'text' => trans('messages.choose')],
             ['value' => 'us-east-1', 'text' => 'US East (N. Virginia)', 'host' => 'email-smtp.us-east-1.amazonaws.com'],
+            ['value' => 'us-east-2', 'text' => 'US East (Ohio)', 'host' => 'email-smtp.us-east-2.amazonaws.com'],
+            ['value' => 'us-west-1', 'text' => 'US West (N. California)', 'host' => 'email-smtp.us-west-1.amazonaws.com'],
             ['value' => 'us-west-2', 'text' => 'US West (Oregon)', 'host' => 'email-smtp.us-west-2.amazonaws.com'],
-            ['value' => 'eu-west-1', 'text' => 'EU (Ireland)', 'host' => 'email-smtp.eu-west-1.amazonaws.com'],
             ['value' => 'ap-south-1', 'text' => 'Asia Pacific (Mumbai)', 'host' => 'email-smtp.ap-south-1.amazonaws.com'],
+            ['value' => 'ap-southeast-1', 'text' => 'Asia Pacific (Singapore)', 'host' => 'email-smtp.ap-southeast-1.amazonaws.com'],
             ['value' => 'ap-southeast-2', 'text' => 'Asia Pacific (Sydney)', 'host' => 'email-smtp.ap-southeast-2.amazonaws.com'],
+            ['value' => 'ap-northeast-1', 'text' => 'Asia Pacific (Tokyo)', 'host' => 'email-smtp.ap-northeast-1.amazonaws.com'],
+            ['value' => 'ap-northeast-2', 'text' => 'Asia Pacific (Seoul)', 'host' => 'email-smtp.ap-northeast-2.amazonaws.com'],
+            ['value' => 'ca-central-1', 'text' => 'Canada (Central)', 'host' => 'email-smtp.ca-central-1.amazonaws.com'],
             ['value' => 'eu-central-1', 'text' => 'Europe (Frankfurt)', 'host' => 'email-smtp.eu-central-1.amazonaws.com'],
+            ['value' => 'eu-west-1', 'text' => 'EU (Ireland)', 'host' => 'email-smtp.eu-west-1.amazonaws.com'],
+            ['value' => 'eu-west-2', 'text' => 'Europe (London)', 'host' => 'email-smtp.eu-west-2.amazonaws.com'],
+            ['value' => 'eu-west-3', 'text' => 'Europe (Paris)', 'host' => 'email-smtp.eu-west-3.amazonaws.com'],
+            ['value' => 'eu-north-1', 'text' => 'Europe (Stockholm)', 'host' => 'email-smtp.eu-north-1.amazonaws.com'],
+            ['value' => 'me-south-1', 'text' => 'Middle East (Bahrain)', 'host' => 'email-smtp.me-south-1.amazonaws.com'],
+            ['value' => 'sa-east-1', 'text' => 'South America (São Paulo)', 'host' => 'email-smtp.sa-east-1.amazonaws.com'],
         ];
     }
 
@@ -786,8 +764,8 @@ class SendingServer extends Model
     {
         return [
             ['value' => '', 'text' => trans('messages.choose')],
-            ['value' => 'https://api.mailgun.net/v3', 'text' => 'US/Global Server'],
-            ['value' => 'https://api.eu.mailgun.net/v3', 'text' => 'EU Server'],
+            ['value' => 'https://api.mailgun.net', 'text' => 'US/Global Server'],
+            ['value' => 'https://api.eu.mailgun.net', 'text' => 'EU Server'],
         ];
     }
 
@@ -814,88 +792,6 @@ class SendingServer extends Model
     }
 
     /**
-     * Get sending server's QuotaTracker.
-     *
-     * @return array
-     */
-    public function getQuotaTracker()
-    {
-        if (!$this->quotaTracker) {
-            $this->initQuotaTracker();
-        }
-
-        return $this->quotaTracker;
-    }
-
-    /**
-     * Initialize the quota tracker.
-     */
-    public function initQuotaTracker()
-    {
-        $this->quotaTracker = new QuotaTrackerFile($this->getSendingQuotaLockFile(), ['start' => $this->created_at->timestamp, 'max' => -1], [$this->getQuotaIntervalString() => $this->getSendingQuota()]);
-        $this->quotaTracker->cleanupSeries();
-        // @note: in case of multi-process, the following command must be issued manually
-        //     $this->renewQuotaTracker();
-    }
-
-    /**
-     * Clean up the quota tracking files to prevent it from growing too large.
-     */
-    public function cleanupQuotaTracker()
-    {
-        // @todo: hard-coded for 1 month
-        $this->getQuotaTracker()->cleanupSeries(null, '1 month');
-    }
-
-    /**
-     * Get sending quota lock file.
-     *
-     * @return string file path
-     */
-    public function getSendingQuotaLockFile()
-    {
-        return storage_path("app/server/quota/{$this->uid}");
-    }
-
-    /**
-     * Get quota starting time.
-     *
-     * @return string
-     */
-    public function getQuotaIntervalString()
-    {
-        return "{$this->quota_base} {$this->quota_unit}";
-    }
-
-    /**
-     * Get quota starting time.
-     *
-     * @return array
-     */
-    public function getQuotaStartingTime()
-    {
-        return "{$this->getQuotaIntervalString()} ago";
-    }
-
-    /**
-     * Increment quota usage.
-     */
-    public function countUsage(Carbon $timePoint = null)
-    {
-        return $this->getQuotaTracker($timePoint)->add();
-    }
-
-    /**
-     * Check if user has used up all quota allocated.
-     *
-     * @return string
-     */
-    public function overQuota()
-    {
-        return !$this->getQuotaTracker()->check();
-    }
-
-    /**
      * Check if sending server supports custom ReturnPath header (used for bounced/feedback handling).
      *
      * @return bool
@@ -910,9 +806,9 @@ class SendingServer extends Model
      *
      * @return collect
      */
-    public static function getAllActive()
+    public function scopeActive($query)
     {
-        return self::where('status', '=', self::STATUS_ACTIVE);
+        return $query->where('status', '=', self::STATUS_ACTIVE);
     }
 
     /**
@@ -920,9 +816,9 @@ class SendingServer extends Model
      *
      * @return collect
      */
-    public static function getAllAdminActive()
+    public function scopeSystem($query)
     {
-        return self::getAllActive()->whereNotNull('admin_id');
+        return $query->active()->whereNull('customer_id');
     }
 
     /**
@@ -958,7 +854,7 @@ class SendingServer extends Model
          *     + plain
          */
         MailLog::info(sprintf('Sending test email to %s for sending server `%s`', $params['to_email'], $this->name));
-        $message = new \Swift_Message();
+        $message = new ExtendedSwiftMessage();
         $msgId = StringHelper::generateMessageId(StringHelper::getDomainFromEmail($params['from_email']));
         $message->setId($msgId);
         $message->getHeaders()->addTextHeader('X-Acelle-Message-Id', $msgId); // this header is required for SendGrid API sending server
@@ -970,11 +866,9 @@ class SendingServer extends Model
         // $message->setEncoder(\Swift_Encoding::get8bitEncoding());
         $message->setEncoder(new \Swift_Mime_ContentEncoder_PlainContentEncoder('8bit'));
         $message->addPart($params['plain'], 'text/plain');
-        $result = self::getInstance($this)->send($message);
 
-        if (array_key_exists('error', $result)) {
-            throw new \Exception($result['error']);
-        }
+        $this->setupBeforeSend($params['from_email']);
+        $this->send($message);
 
         return true;
     }
@@ -1076,7 +970,8 @@ class SendingServer extends Model
                     'disabled' => true,
                 ];
             } else {
-                $data['items'][] = ['id' => $server->uid, 'text' => $server->name.'|||'.trans('messages.'.$server->type)];
+                $type = ($server->mapType()->isExtended()) ? $server->mapType()->getTypeName() : trans('messages.'.$server->type);
+                $data['items'][] = ['id' => $server->uid, 'text' => $server->name.'|||'.$type ];
             }
         }
 
@@ -1123,8 +1018,8 @@ class SendingServer extends Model
     {
         $options = [];
         $current = trans('messages.sending_servers.sending_limit.phrase', [
-            'quota_value' => \Acelle\Library\Tool::format_number($this->quota_value),
-            'quota_base' => \Acelle\Library\Tool::format_number($this->quota_base),
+            'quota_value' => number_with_delimiter($this->quota_value, $precision = 0),
+            'quota_base' => number_with_delimiter($this->quota_base, $precision = 0),
             'quota_unit' => $this->quota_unit,
         ]);
         if ($this->quota_value == -1) {
@@ -1134,8 +1029,8 @@ class SendingServer extends Model
         $exist = false;
         foreach (self::sendingLimitValues() as $key => $data) {
             $wording = trans('messages.sending_servers.sending_limit.phrase', [
-                'quota_value' => \Acelle\Library\Tool::format_number($data['quota_value']),
-                'quota_base' => \Acelle\Library\Tool::format_number($data['quota_base']),
+                'quota_value' => number_with_delimiter($data['quota_value'], $precision = 0),
+                'quota_base' => number_with_delimiter($data['quota_base'], $precision = 0),
                 'quota_unit' => $data['quota_unit'],
             ]);
 
@@ -1176,8 +1071,6 @@ class SendingServer extends Model
             'allow_unverified_from_email' => 'no',
             'allow_verify_domain_remotely' => 'no',
             'allow_verify_email_remotely' => 'no',
-            'allow_verify_domain_remotely' => 'no',
-            'allow_verify_email_remotely' => 'no',
         ];
     }
 
@@ -1202,7 +1095,25 @@ class SendingServer extends Model
     {
         $options = $this->getOptions();
 
-        return isset($options[$name]) ? $options[$name] : null;
+        $value = isset($options[$name]) ? $options[$name] : null;
+
+        // default value
+        if (!$value) {
+            // default verification email
+            if ($name == 'custom_verification_email') {
+                $value = trans('messages.sending_server.default_email_verification.content');
+                ;
+            }
+
+            // default verification email
+            if ($name == 'custom_verification_email_subject') {
+                $value = trans('messages.sending_server.default_email_verification.subject');
+                ;
+            }
+        }
+
+
+        return $value;
     }
 
     /**
@@ -1284,57 +1195,15 @@ class SendingServer extends Model
     }
 
     /**
-     * Get domains.
+     * Add domain.
      *
      * @return array
      */
-    public function getDomains()
+    public function addIdentity($domain)
     {
-        $domains = $this->getOption('domains');
-
-        return $domains ? $domains : [];
-    }
-
-    /**
-     * Get emails.
-     *
-     * @return array
-     */
-    public function getEmails()
-    {
-        $emails = $this->getOption('emails');
-
-        return $emails ? $emails : [];
-    }
-
-    /**
-     * Add email.
-     *
-     * @return array
-     */
-    public function addEmail($email)
-    {
-        $emails = $this->getOption('emails');
-        $emails[] = $email;
-
-        $this->setOption('emails', $emails);
-        $this->save();
-    }
-
-    /**
-     * Add email.
-     *
-     * @return array
-     */
-    public function removeEmail($email)
-    {
-        $emails = $this->getOption('emails');
-
-        if (($key = array_search($email, $emails)) !== false) {
-            unset($emails[$key]);
-        }
-
-        $this->setOption('emails', $emails);
+        $identityStore = $this->getIdentityStore();
+        $identityStore->add([ $domain => ['VerificationStatus' => true ]]);
+        $this->setOption('identities', $identityStore->get());
         $this->save();
     }
 
@@ -1343,29 +1212,11 @@ class SendingServer extends Model
      *
      * @return array
      */
-    public function addDomain($domain)
+    public function removeIdentity($identity)
     {
-        $domains = $this->getOption('domains');
-        $domains[] = $domain;
-
-        $this->setOption('domains', $domains);
-        $this->save();
-    }
-
-    /**
-     * Add domain.
-     *
-     * @return array
-     */
-    public function removeDomain($domain)
-    {
-        $domains = $this->getOption('domains');
-
-        if (($key = array_search($domain, $domains)) !== false) {
-            unset($domains[$key]);
-        }
-
-        $this->setOption('domains', $domains);
+        $identityStore = $this->getIdentityStore();
+        $identityStore->remove($identity);
+        $this->setOption('identities', $identityStore->get());
         $this->save();
     }
 
@@ -1476,6 +1327,7 @@ class SendingServer extends Model
      */
     public function allowUnverifiedFromEmailAddress()
     {
+        return true;
         $options = json_decode($this->options, true);
 
         if (is_null($options)) {
@@ -1496,41 +1348,6 @@ class SendingServer extends Model
     }
 
     /**
-     * Get verified identities.
-     *
-     * @return array
-     */
-    public function getVerifiedIdentities()
-    {
-        return array_merge($this->getOption('domains'), $this->getOption('emails'));
-    }
-
-    /**
-     * Get verified identities.
-     *
-     * @return array
-     */
-    public function initVerifiedIdentities()
-    {
-        $items = $this->getVerifiedIdentities();
-
-        $domains = [];
-        $emails = [];
-        foreach ($items as $item) {
-            if (checkEmail($item)) {
-                $emails[] = $item;
-            } else {
-                $domains[] = $item;
-            }
-        }
-
-        $this->setOption('emails', $emails);
-        $this->setOption('domains', $domains);
-
-        $this->save();
-    }
-
-    /**
      * Get all verified identities.
      *
      * @return array
@@ -1547,53 +1364,37 @@ class SendingServer extends Model
 
         foreach ($this->getVerifiedIdentities() as $item) {
             // check if email
-                if (extract_email($item) !== null) {
-                    $email = extract_email($item);
-                    if (strpos(strtolower($email), $keyword) === 0) {
-                        $topList[] = [
+            if (extract_email($item) !== null) {
+                $email = extract_email($item);
+                if (strpos(strtolower($email), $keyword) === 0) {
+                    $topList[] = [
                             'text' => extract_name($item),
                             'value' => $email,
                             'desc' => str_replace($keyword, '<span class="text-semibold text-primary"><strong>'.$keyword.'</strong></span>', $email),
                         ];
-                    } else {
-                        $bottomList[] = [
+                } else {
+                    $bottomList[] = [
                             'text' => extract_name($item),
                             'value' => $email,
                             'desc' => $email,
                         ];
-                    }
-                } else { // domains are alse
-                    $dKey = explode('@', $keyword);
-                    $dKey = isset($dKey[1]) ? $dKey[1] : null;
-                    // if ( (!isset($dKey) || $dKey == '') || ($dKey && strpos(strtolower($item), $dKey) === 0 )) {
-                        $topList[] = [
+                }
+            } else { // domains are alse
+                $dKey = explode('@', $keyword);
+                $dKey = isset($dKey[1]) ? $dKey[1] : null;
+                // if ( (!isset($dKey) || $dKey == '') || ($dKey && strpos(strtolower($item), $dKey) === 0 )) {
+                $topList[] = [
                             'text' => '****@'.str_replace($dKey, '<span class="text-semibold text-primary"><strong>'.$dKey.'</strong></span>', $item),
                             'subfix' => $item,
                             'desc' => null,
                         ];
-                    // }
-                }
+                // }
+            }
         }
 
         $droplist = array_merge($topList, $bottomList);
 
         return $droplist;
-    }
-
-    /**
-     * Show up sending notification to admin dashboard.
-     *
-     * @return array
-     * @note the scope of this function is private, use public only for inheritance
-     */
-    public function raiseSendingError($exception)
-    {
-        MailLog::warning('Sending failed');
-        MailLog::warning($exception->getMessage());
-
-        $errorTitle = "Server `{$this->name}` ({$this->uid}) failed to send";
-        BackendErrorNotification::cleanupDuplicateNotifications($errorTitle);
-        BackendErrorNotification::warning(['title' => $errorTitle, 'message' => date('Y-m-d').' '.$errorTitle.': '.$exception->getMessage()], false);
     }
 
     /**
@@ -1610,5 +1411,197 @@ class SendingServer extends Model
         foreach ($plans as $plan) {
             $plan->checkStatus();
         }
+    }
+
+    public function updateIdentitiesList($selected)
+    {
+        // For now, it is for Amazon only
+        $options = $this->getOptions();
+        if (!array_key_exists('identities', $options)) {
+            return;
+        }
+
+        $selectedEmails = array_key_exists('emails', $selected) ? $selected['emails'] : [];
+        $selectedDomains = array_key_exists('domains', $selected) ? $selected['domains'] : [];
+        $identityStore = new IdentityStore($options['identities']);
+        $identityStore->select(array_merge($selectedEmails, $selectedDomains));
+
+        $options['identities'] = $identityStore->get();
+        $this->setOptions($options);
+    }
+
+    public function getVerifiedIdentities()
+    {
+        // by default, only return SELECTED | VERIRIED | NON-PRIVATE identities
+        $filtered = $this->getIdentityStore()->get(['Selected' => true, 'UserId' => null, 'VerificationStatus' => 'Success']);
+        return array_keys($filtered);
+    }
+
+    public function getIdentityStore(): IdentityStore
+    {
+        $options = $this->getOptions();
+        $identityStore = new IdentityStore(array_key_exists('identities', $options) ? $options['identities'] : []);
+        return $identityStore;
+    }
+
+    public function mapType()
+    {
+        return self::mapServerType($this);
+    }
+
+    /**
+     * Check an identity (email or domain) if it is verified against AWS.
+     *
+     * @return bool
+     */
+    public function verifyIdentity($identity)
+    {
+        $this->syncIdentities();
+        $verifiedIdentities = array_keys($this->getIdentityStore()->get(['VerificationStatus' => IdentityStore::VERIFICATION_STATUS_SUCCESS]));
+        return in_array($identity, $verifiedIdentities);
+    }
+
+    public function sendWithDefaultFromAddress($message, $params = [])
+    {
+        if (empty($this->from_name)) {
+            $message->setFrom([ $this->from_name => $this->from_address ]);
+        } else {
+            $message->setFrom($this->from_address);
+        }
+
+        return  $this->send($message, $params);
+    }
+
+    public function setDefaultFromEmailAddress()
+    {
+        if (!empty($this->default_from_email)) {
+            return;
+        }
+
+        $identityStore = $this->getIdentityStore();
+        $names = array_keys($identityStore->get(['VerificationStatus' => 'Success']));
+
+        $emails = array_values(array_filter($names, function ($name) {
+            return checkEmail($name);
+        }));
+        $domains = array_values(array_filter($names, function ($name) {
+            return !checkEmail($name);
+        }));
+
+        $default = null;
+
+        if (!empty($domains)) {
+            $default = 'noreply@'.$domains[0];
+        } elseif (!empty($emails)) {
+            $default = $emails[0];
+        }
+
+        if (!is_null($default)) {
+            $this->default_from_email = $default;
+            $this->save();
+        }
+    }
+
+    public function getSpfHost()
+    {
+        return null;
+    }
+
+    public function isExtended()
+    {
+        return false;
+    }
+
+    public function getIconUrl()
+    {
+        return null;
+    }
+
+    public function getDefaultName()
+    {
+        return null;
+    }
+
+    public static function createFromArray($params)
+    {
+        $server = new self();
+        $server->fill($params);
+        $server = $server->mapType();
+
+        // validation
+        $validator = $server->validConnection($params);
+
+        if ($validator->fails()) {
+            return [$validator, $server]; // IMPORTANT, $server instance (not saved) is required by parent controller
+        }
+
+        if (isset($params['admin_id'])) {
+            $server->admin_id = $params['admin_id'];
+        }
+        if (isset($params['customer_id'])) {
+            $server->customer_id = $params['customer_id'];
+        }
+
+        $server->status = self::STATUS_ACTIVE;
+
+        // default name
+        if (!$server->name) {
+            $server->name = $server->getDefaultName() ?: trans('messages.' . $server->type);
+        }
+
+        // default sever quota
+        if (!$server->quota_value) {
+            $server->quota_value = 1000;
+            $server->quota_base = 1;
+            $server->quota_unit = 'hour';
+            $options = ['sending_limit' => '1000_per_hour'];
+            $server->options = json_encode($options);
+        }
+
+        // bounce / feedback hanlder nullable
+        if (!isset($params['bounce_handler_id'])) {
+            $server->bounce_handler_id = null;
+        }
+        if (!isset($params['feedback_loop_handler_id'])) {
+            $server->feedback_loop_handler_id = null;
+        }
+
+        $server->save();
+
+        return [ $validator, $server ];
+    }
+
+    public function getTypeName()
+    {
+        return trans('messages.' . $this->type);
+    }
+
+    public function allowOtherSendingDomains()
+    {
+        return false;
+    }
+
+    public function setQuotaSettings(int $value, string $periodUnit, int $periodBase)
+    {
+        $this->quota_base = $periodBase;
+        $this->quota_unit = $periodUnit;
+        $this->quota_value = $value;
+    }
+
+    /*** IMPLEMENTATION OF HasQuotaInterface ***/
+    public function getQuotaSettings($name): ?array
+    {
+        $quota = [];
+
+        if ($this->quota_value != QuotaManager::QUOTA_UNLIMITED) {
+            $quota[] = [
+                'name' => "Server's sending limit of {$this->quota_value} per {$this->quota_base} {$this->quota_unit}",
+                'period_unit' => $this->quota_unit,
+                'period_value' => $this->quota_base,
+                'limit' => $this->quota_value,
+            ];
+        }
+
+        return $quota;
     }
 }

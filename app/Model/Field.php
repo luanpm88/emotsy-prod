@@ -23,26 +23,20 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Acelle\Library\Traits\HasUid;
 
 class Field extends Model
 {
+    use HasUid;
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'mail_list_id', 'type', 'label', 'tag', 'default_value', 'visible', 'required', 'custom_order',
+        'mail_list_id', 'type', 'label', 'tag', 'default_value', 'visible', 'required',
     ];
-
-    /**
-     * The rules for validation.
-     *
-     * @var array
-     */
-    public static $fields_rules = array(
-
-    );
 
     /**
      * Associations.
@@ -60,24 +54,6 @@ class Field extends Model
     }
 
     /**
-     * Bootstrap any application services.
-     */
-    public static function boot()
-    {
-        parent::boot();
-
-        // Create uid when creating list.
-        static::creating(function ($item) {
-            // Create new uid
-            $uid = uniqid();
-            while (Field::where('uid', '=', $uid)->count() > 0) {
-                $uid = uniqid();
-            }
-            $item->uid = $uid;
-        });
-    }
-
-    /**
      * Format string to field tag.
      *
      * @var string
@@ -85,16 +61,6 @@ class Field extends Model
     public static function formatTag($string)
     {
         return strtoupper(preg_replace('/[^0-9a-zA-Z_]/m', '', $string));
-    }
-
-    /**
-     * Find item by uid.
-     *
-     * @return object
-     */
-    public static function findByUid($uid)
-    {
-        return self::where('uid', '=', $uid)->first();
     }
 
     /**
@@ -120,6 +86,8 @@ class Field extends Model
     {
         if ($type == 'date') {
             return 'date';
+        } elseif ($type == 'number') {
+            return 'number';
         } elseif ($type == 'datetime') {
             return 'datetime';
         }

@@ -1,11 +1,12 @@
-@extends('layouts.frontend')
+@extends('layouts.core.frontend')
 
 @section('title', $list->name . ": " . trans('messages.create_subscriber'))
 
-@section('page_script')
-    <script type="text/javascript" src="{{ URL::asset('assets/js/plugins/forms/styling/uniform.min.js') }}"></script>
-    <script type="text/javascript" src="{{ URL::asset('assets/js/plugins/pickers/anytime.min.js') }}"></script>
-    <script type="text/javascript" src="{{ URL::asset('js/validate.js') }}"></script>
+@section('head')
+    <script type="text/javascript" src="{{ URL::asset('core/datetime/anytime.min.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('core/datetime/moment.min.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('core/datetime/pickadate/picker.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('core/datetime/pickadate/picker.date.js') }}"></script>
 @endsection
 
 @section('page_header')
@@ -17,51 +18,55 @@
 @section('content')
     @include("lists._menu")
 
-    <div class="row">
+    <div class="row mt-4">
         <div class="col-sm-12 col-md-6 col-lg-6">
             <div class="sub-section">
                 <form enctype="multipart/form-data"  action="{{ action('SubscriberController@update', ['list_uid' => $list->uid, "uid" => $subscriber->uid]) }}" method="POST" class="form-validate-jqueryz">
                     {{ csrf_field() }}
                     <input type="hidden" name="_method" value="PATCH">
                     <input type="hidden" name="list_uid" value="{{ $list->uid }}" />
-                    
+                    <h2 class="font-weight-semibold">{{ $subscriber->getFullName() }}</h2>
+                    <div class="tags mb-4" style="clear:both">
+                        <span class="font-weight-semibold mr-3">{{ trans('messages.tags') }}:</span>
+                        @if ($subscriber->getTags())
+                            @foreach ($subscriber->getTags() as $tag)
+                                <a href="{{ action('SubscriberController@removeTag', [
+                                    'list_uid' => $subscriber->mailList->uid,
+                                    'uid' => $subscriber->uid,
+                                    'tag' => $tag,
+                                ]) }}" class="btn-group remove-contact-tag" role="group" aria-label="Basic example">
+                                    <button role="button" class="btn btn-light btn-tag font-weight-semibold">{{ $tag }}</button>
+                                    <button role="button" class="btn btn-light btn-tag font-weight-semibold ml-0">
+                                        <i class="material-symbols-rounded">
+close
+</i>
+                                    </button>
+                                </a>
+                            @endforeach
+                        @else
+                            <a href="" class="btn-group profile-tag-contact" role="group" aria-label="Basic example">
+                                <button role="button" class="btn btn-light btn-tag d-flex align-items-center">
+                                    <i class="material-symbols-rounded me-2">add</i>
+                                    <span class="font-italic">{{ trans('messages.automation.profile.click_to_add_tag') }}<span>
+                                </button>
+                            </a>
+                        @endif
+                    </div>
                     <div class="d-flex align-items-top">
                         <div>
                             @include('helpers._upload',['src' => (isSiteDemo() ? 'https://i.pravatar.cc/300' : action('SubscriberController@avatar',  $subscriber->uid)), 'dragId' => 'upload-avatar', 'preview' => 'image'])
                             
-                            <div class="tags" style="clear:both">
-                                @if ($subscriber->getTags())
-                                    @foreach ($subscriber->getTags() as $tag)
-                                        <a href="{{ action('SubscriberController@removeTag', [
-                                            'list_uid' => $subscriber->mailList->uid,
-                                            'uid' => $subscriber->uid,
-                                            'tag' => $tag,
-                                        ]) }}" class="btn-group remove-contact-tag" role="group" aria-label="Basic example">
-                                            <button type="button" class="btn btn-light btn-tag font-weight-semibold">{{ $tag }}</button>
-                                            <button type="button" class="btn btn-light btn-tag font-weight-semibold ml-0">
-                                                <i class="lnr lnr-cross"></i>
-                                            </button>
-                                        </a>
-                                    @endforeach
-                                @else
-                                    <a href="" class="btn-group profile-tag-contact" role="group" aria-label="Basic example">
-                                        <button type="button" class="btn btn-light btn-tag d-flex align-items-center">
-                                            <i class="material-icons mr-2">add</i>
-                                            <span class="font-italic">{{ trans('messages.automation.profile.click_to_add_tag') }}<span>
-                                        </button>
-                                    </a>
-                                @endif
-                            </div>
+                            
                         </div>
                         <div class="mt-20">
                             <div class="dropdown">
-                            <button class="btn btn-default bg-grey dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                            <button class="btn btn-default bg-grey dropdown-toggle" role="button" id="dropdownMenu1" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                                 {{ trans('messages.subscribers.profile.action') }}
                                 <span class="caret"></span>
                             </button>
-                            <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu1">
-                                <li><a class="profile-remove-contact" href="#">{{ trans('messages.subscribers.profile.remove_subscriber') }}</a></li>
-                                <li><a class="profile-tag-contact" href="#">{{ trans('messages.subscribers.profile.manage_tags') }}</a></li>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenu1">
+                                <li><a class="dropdown-item profile-remove-contact" href="#">{{ trans('messages.subscribers.profile.remove_subscriber') }}</a></li>
+                                <li><a class="dropdown-item profile-tag-contact" href="#">{{ trans('messages.subscribers.profile.manage_tags') }}</a></li>
                             </ul>
                             </div>
                         </div>
@@ -70,8 +75,8 @@
                     <h3 class="clear-both">{{trans("messages.basic_information")}}</h3>
                     @include("subscribers._form")
 
-                    <button class="btn bg-teal mr-10"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
-                    <a href="{{ action('SubscriberController@index', $list->uid) }}" class="btn bg-grey-800"><i class="icon-cross2"></i> {{ trans('messages.cancel') }}</a>
+                    <button class="btn btn-secondary me-2"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
+                    <a href="{{ action('SubscriberController@index', $list->uid) }}" class="btn btn-link"><i class="icon-cross2"></i> {{ trans('messages.cancel') }}</a>
 
                 </form>
             </div>
@@ -79,7 +84,7 @@
             <div class="sub-section">
                 <h3 class="text-semibold">{{ trans('messages.verification.title.email_verification') }}</h3>
 
-                @if (is_null($subscriber->emailVerification))
+                @if (is_null($subscriber->verification_status))
                     <p>{!! trans('messages.verification.wording.verify', [ 'email' => sprintf("<strong>%s</strong>", $subscriber->email) ]) !!}</p>
                     <form enctype="multipart/form-data" action="{{ action('SubscriberController@startVerification', ['uid' => $subscriber->uid]) }}" method="POST" class="form-validate-jquery">
                         {{ csrf_field() }}
@@ -96,35 +101,37 @@
                             'include_blank' => trans('messages.select_email_verification_server')
                         ])
                         <div class="text-left">
-                            <button class="btn bg-teal mr-10"> {{ trans('messages.verification.button.verify') }}</button>
+                            <button class="btn btn-secondary me-2"> {{ trans('messages.verification.button.verify') }}</button>
                         </div>
                     </form>
-                @elseif ($subscriber->emailVerification->isDeliverable())
-                    <p>{!! trans('messages.verification.wording.deliverable', [ 'email' => sprintf("<strong>%s</strong>", $subscriber->email), 'at' => sprintf("<strong>%s</strong>", $subscriber->emailVerification->created_at) ]) !!}</p>
+                @elseif ($subscriber->isDeliverable())
+                    <p>{!! trans('messages.verification.wording.deliverable', [ 'email' => sprintf("<strong>%s</strong>", $subscriber->email), 'at' => sprintf("<strong>%s</strong>", $subscriber->last_verification_at) ]) !!}</p>
                     <form enctype="multipart/form-data" action="{{ action('SubscriberController@resetVerification', ['uid' => $subscriber->uid]) }}" method="POST" class="form-validate-jquery">
                         {{ csrf_field() }}
                         <input type="hidden" name="list_uid" value="{{ $list->uid }}" />
 
                         <div class="text-left">
-                            <button class="btn bg-teal mr-10">{{ trans('messages.verification.button.reset') }}</button>
+                            <button class="btn btn-secondary me-2">{{ trans('messages.verification.button.reset') }}</button>
                         </div>
                     </form>
-                @elseif ($subscriber->emailVerification->isUndeliverable())
+                @elseif ($subscriber->isUndeliverable())
                     <p>{!! trans('messages.verification.wording.undeliverable', [ 'email' => sprintf("<strong>%s</strong>", $subscriber->email)]) !!}</p>
                     <form enctype="multipart/form-data" action="{{ action('SubscriberController@resetVerification', ['uid' => $subscriber->uid]) }}" method="POST" class="form-validate-jquery">
+                        {{ csrf_field() }}
                         <input type="hidden" name="list_uid" value="{{ $list->uid }}" />
 
                         <div class="text-left">
-                            <button class="btn bg-teal mr-10">{{ trans('messages.verification.button.reset') }}</button>
+                            <button class="btn btn-secondary me-2">{{ trans('messages.verification.button.reset') }}</button>
                         </div>
                     </form>
                 @else
-                    <p>{!! trans('messages.verification.wording.risky_or_unknown', [ 'email' => sprintf("<strong>%s</strong>", $subscriber->email), 'at' => sprintf("<strong>%s</strong>", $subscriber->emailVerification->created_at), 'result' => sprintf("<strong>%s</strong>", $subscriber->emailVerification->result)]) !!}</p>
+                    <p>{!! trans('messages.verification.wording.risky_or_unknown', [ 'email' => sprintf("<strong>%s</strong>", $subscriber->email), 'at' => sprintf("<strong>%s</strong>", $subscriber->last_verification_at), 'result' => sprintf("<strong>%s</strong>", $subscriber->verification_status)]) !!}</p>
                     <form enctype="multipart/form-data" action="{{ action('SubscriberController@resetVerification', ['uid' => $subscriber->uid]) }}" method="POST" class="form-validate-jquery">
+                        {{ csrf_field() }}
                         <input type="hidden" name="list_uid" value="{{ $list->uid }}" />
 
                         <div class="text-left">
-                            <button class="btn bg-teal mr-10">{{ trans('messages.verification.button.reset') }}</button>
+                            <button class="btn btn-secondary me-2">{{ trans('messages.verification.button.reset') }}</button>
                         </div>
                     </form>
                 @endif
@@ -138,11 +145,11 @@
                     <div class="">
                         <div class="mt-10">
                             <div class="dropdown">
-                            <button class="btn btn-default bg-grey dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                            <button class="btn btn-default bg-grey dropdown-toggle" role="button" id="dropdownMenu1" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                                 {{ trans('messages.automation.contact.all_activities') }}
                                 <span class="caret"></span>
                             </button>
-                            <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu1">
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenu1">
                                 <li><a href="#">Open</a></li>
                                 <li><a href="#">Click</a></li>
                                 <li><a href="#">Subscribe</a></li>
@@ -160,28 +167,36 @@
                     <div class="activity d-flex py-3 px-4">
                         <div class="activity-media pr-4 text-center">
                             <time class="d-block text-center mini mb-2">3 days ago</time>
-                            <i class="lnr lnr-envelope bg-primary"></i>
+                            <i class="material-symbols-rounded bg-primary">
+forward_to_inbox
+                            </i>
                         </div>
                         <div class="small">
                             <action class="d-block font-weight-semibold mb-1">
                                 User Ardella Goldrup receives email entitled "Follow up Email"
                             </action>
                             <desc class="d-block small text-muted">
-                                <i class="lnr lnr-clock mr-1"></i> Jan 07th, 2020 09:36
+                                <i class="material-symbols-rounded me-1">
+schedule
+                                </i> Jan 07th, 2020 09:36
                             </desc>
                         </div>
                     </div>
                                         <div class="activity d-flex py-3 px-4">
                         <div class="activity-media pr-4 text-center">
                             <time class="d-block text-center mini mb-2">3 days ago</time>
-                            <i class="lnr lnr-envelope bg-primary"></i>
+                            <i class="material-symbols-rounded bg-primary">
+forward_to_inbox
+                            </i>
                         </div>
                         <div class="small">
                             <action class="d-block font-weight-semibold mb-1">
                                 User Ardella Goldrup receives email entitled "Welcome to our list"
                             </action>
                             <desc class="d-block small text-muted">
-                                <i class="lnr lnr-clock mr-1"></i> Jan 07th, 2020 09:36
+                                <i class="material-symbols-rounded me-1">
+schedule
+                                </i> Jan 07th, 2020 09:36
                             </desc>
                         </div>
                     </div>
@@ -195,35 +210,43 @@
                                 Wait for 24 hours before proceeding with the next event for user Ardella Goldrup
                             </action>
                             <desc class="d-block small text-muted">
-                                <i class="lnr lnr-clock mr-1"></i> Jan 07th, 2020 09:36
+                                <i class="material-symbols-rounded me-1">
+schedule
+                                </i> Jan 07th, 2020 09:36
                             </desc>
                         </div>
                     </div>
                                         <div class="activity d-flex py-3 px-4">
                         <div class="activity-media pr-4 text-center">
                             <time class="d-block text-center mini mb-2">3 days ago</time>
-                            <i class="material-icons bg-warning">call_split</i>
+                            <i class="material-symbols-rounded bg-warning">call_split</i>
                         </div>
                         <div class="small">
                             <action class="d-block font-weight-semibold mb-1">
                                 User Ardella Goldrup reads email entitled "Welcome email"
                             </action>
                             <desc class="d-block small text-muted">
-                                <i class="lnr lnr-clock mr-1"></i> Jan 07th, 2020 09:36
+                                <i class="material-symbols-rounded me-1">
+schedule
+                                </i> Jan 07th, 2020 09:36
                             </desc>
                         </div>
                     </div>
                                         <div class="activity d-flex py-3 px-4">
                         <div class="activity-media pr-4 text-center">
                             <time class="d-block text-center mini mb-2">3 days ago</time>
-                            <i class="lnr lnr-exit-up bg-success"></i>
+                            <i class="material-symbols-rounded bg-success">
+merge
+</i>
                         </div>
                         <div class="small">
                             <action class="d-block font-weight-semibold mb-1">
                                 User Ardella Goldrup subscribes to mail list, automation triggered!
                             </action>
                             <desc class="d-block small text-muted">
-                                <i class="lnr lnr-clock mr-1"></i> Jan 07th, 2020 09:36
+                                <i class="material-symbols-rounded me-1">
+schedule
+                                </i> Jan 07th, 2020 09:36
                             </desc>
                         </div>
                     </div>
@@ -266,7 +289,11 @@
                 },
                 success: function (response) {
                     // notify
-                    notify('success', '{{ trans('messages.notify.success') }}', response.message);
+                    notify({
+    type: 'success',
+    title: '{!! trans('messages.notify.success') !!}',
+    message: response.message
+});
 
                     location.reload();
                 }
@@ -299,7 +326,11 @@
                         },
                         success: function (response) {
                             // notify
-                            // notify('success', '{{ trans('messages.notify.success') }}', response.message);
+                            notify({
+    type: 'success',
+    title: '{!! trans('messages.notify.success') !!}',
+    message: response.message
+});
 
                             // redirect
                             addMaskLoading('{{ trans('messages.subscriber.deleted.redirect') }}', function() {

@@ -25,7 +25,7 @@
                                             <span class="text-muted second-line-mobile">{{ trans('messages.raw_feedback_content') }}</span>
                                         </td>
                                         <td>
-                                            <span class="no-margin kq_search">{{ $item->trackingLog->campaign->name }}</span>
+                                            <span class="no-margin kq_search">{{ is_null($item->trackingLog->campaign) ? 'N/A' : $item->trackingLog->campaign->name }}</span>
                                             <span class="text-muted second-line-mobile">{{ trans('messages.campaign') }}</span>
                                         </td>
                                         <td>
@@ -33,24 +33,28 @@
                                             <span class="text-muted second-line-mobile">{{ trans('messages.sending_server') }}</span>
                                         </td>
                                         <td>
-                                            <span class="no-margin kq_search">{{ Tool::formatDateTime($item->created_at) }}</span>
+                                            <span class="no-margin kq_search">{{ Auth::user()->admin->formatDateTime($item->created_at, 'date_full') }}</span>
                                             <span class="text-muted second-line-mobile">{{ trans('messages.created_at') }}</span>
                                         </td>
                                     </tr>
                                 @endforeach
                             </table>
                             @include('elements/_per_page_select')
-                            {{ $items->links() }}
+                            
                         @elseif (!empty(request()->keyword) || !empty(request()->filters["campaign_uid"]))
                             <div class="empty-list">
-                                <i class="icon-file-text2"></i>
+                                <span class="material-symbols-rounded">
+auto_awesome
+</span>
                                 <span class="line-1">
                                     {{ trans('messages.no_search_result') }}
                                 </span>
                             </div>
                         @else
                             <div class="empty-list">
-                                <i class="icon-file-text2"></i>
+                                <span class="material-symbols-rounded">
+auto_awesome
+</span>
                                 <span class="line-1">
                                     {{ trans('messages.log_empty_line_1') }}
                                 </span>

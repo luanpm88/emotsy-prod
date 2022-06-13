@@ -1,25 +1,18 @@
-@extends('layouts.backend')
+@extends('layouts.core.backend')
 
 @section('title', trans('messages.create_template'))
 
-@section('page_script')
-	<script type="text/javascript" src="{{ URL::asset('js/tinymce/tinymce.min.js') }}"></script>
-    <script type="text/javascript" src="{{ URL::asset('assets/js/plugins/forms/styling/uniform.min.js') }}"></script>
-		
-	<script type="text/javascript" src="{{ URL::asset('assets/js/core/libraries/jquery_ui/interactions.min.js') }}"></script>
-	<script type="text/javascript" src="{{ URL::asset('assets/js/core/libraries/jquery_ui/touch.min.js') }}"></script>
-
-    <script type="text/javascript" src="{{ URL::asset('js/validate.js') }}"></script>
-    <script type="text/javascript" src="{{ URL::asset('js/editor.js') }}"></script>
-	<script type="text/javascript" src="{{ URL::asset('js/listing.js') }}"></script>
+@section('head')
+	<script type="text/javascript" src="{{ URL::asset('core/tinymce/tinymce.min.js') }}"></script>
+	<script type="text/javascript" src="{{ URL::asset('core/js/editor.js') }}"></script>
 @endsection
 
 @section('page_header')
 
     <div class="page-title">				
         <ul class="breadcrumb breadcrumb-caret position-right">
-            <li><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
-            <li><a href="{{ action("Admin\TemplateController@index") }}">{{ trans('messages.templates') }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ action("Admin\TemplateController@index") }}">{{ trans('messages.templates') }}</a></li>
         </ul>
         <h1>
             <span class="text-semibold">{{ trans('messages.template.new_template') }}</span>
@@ -34,8 +27,7 @@
         <div class="col-md-6">
             <form action="{{ action('Admin\TemplateController@builderCreate') }}" method="POST" class="template-form form-validate-jquery">
                 {{ csrf_field() }}
-                
-                <input type="hidden" value="" name="layout" />
+
 				<input type="hidden" value="" name="template" />
                 
                 <div class="sub_section">
@@ -44,7 +36,7 @@
                         'class' => '',
                         'name' => 'name',
                         'value' => $template->name,
-                        'label' => 'Enter your template\'s name here',
+                        'label' => trans('messages.enter_template_name'),
                         'help_class' => 'template',
                         'rules' => ['name' => 'required']
                     ])
@@ -54,105 +46,91 @@
     </div>
         
     <div class="row">
-        <div class="col-md-12">
-            <h3 class="text-semibold">{{ trans('messages.template.select_your_template') }}</h3>
-				
-			<ul class="nav nav-tabs mc-tabs">
-				<li class="active"><a data-toggle="tab" href="#layout">{{ trans('messages.layouts') }}</a></li>
-				<li><a data-toggle="tab" href="#gallery">{{ trans('messages.templates') }}</a></li>
-			</ul>
-			  
-			<div class="tab-content">
-				<div id="layout" class="tab-pane fade in active template-boxes" style="
-					margin-left: -20px;
-					margin-right: -20px;
-				">
-					@foreach(Acelle\Model\Template::templateStyles() as $name => $style)
-						<div class="col-xxs-12 col-xs-6 col-sm-3 col-md-2">
-							<a href="javascript:;" class="select-template-layout" data-layout="{{ $name }}">
-								<div class="panel panel-flat panel-template-style">
-									<div class="panel-body">
-										<img src="{{ url('images/template_styles/'.$name.'.png') }}" />
-										<h5 class="mb-20 text-center">{{ trans('messages.'.$name) }}</h5>
-									</div>
-								</div>
-							</a>
-						</div>
-					@endforeach
-				</div>
-				<div id="gallery" class="tab-pane fade">
-					<form class="listing-form"
-						data-url="{{ action('Admin\TemplateController@builderTemplates') }}"
-						per-page="{{ Acelle\Model\Template::$itemsPerPage }}"					
-					>				
-						<div class="row top-list-controls">
-							<div class="col-md-9">
-								@if ($templates->count() >= 0)					
-									<div class="filter-box">										
-										<span class="filter-group">
-											<span class="title text-semibold text-muted">{{ trans('messages.from') }}</span>
-											<select class="select" name="from">
-												<option value="gallery" selected='selected'>{{ trans('messages.gallery') }}</option>
-											</select>										
-										</span>
-										<span class="filter-group">
-											<span class="title text-semibold text-muted">{{ trans('messages.sort_by') }}</span>
-											<select class="select" name="sort-order">
-												<option value="custom_order" class="active">{{ trans('messages.custom_order') }}</option>
-												<option value="name">{{ trans('messages.name') }}</option>
-												<option value="created_at">{{ trans('messages.created_at') }}</option>
-											</select>										
-											<button class="btn btn-xs sort-direction" rel="asc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" type="button" class="btn btn-xs">
-												<i class="icon-sort-amount-asc"></i>
-											</button>
-										</span>
-										<span class="text-nowrap">
-											<input name="search_keyword" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
-											<i class="icon-search4 keyword_search_button"></i>
-										</span>
-									</div>
-								@endif
-							</div>
-						</div>
-						
-						<div class="pml-table-container">
-							
-							
-							
-						</div>
-					</form>
+        <div class="col-md-12" style="position: relative;">
+            <div class="d-flex align-items-center mt-4 template-create-sticky">
+				<h3 class="text-semibold mr-auto mb-0 mt-0">{{ trans('messages.template.select_your_template') }}</h3>
+				<div class="text-left">
+					<button class="btn btn-secondary start-design"><i class="icon-check"></i> {{ trans('messages.template.create_and_design') }}</button>
 				</div>
 			</div>
-        </div>
-    </div>
-    
 
-    
-    <hr>
-    <div class="text-left">
-        <button class="btn bg-teal mr-10 start-design"><i class="icon-check"></i> {{ trans('messages.template.create_and_design') }}</button>
+			@foreach (Acelle\Model\TemplateCategory::all() as $category)
+				@if ($category->templates()->count())
+					<div class="subsection pb-4">
+						<h2 class="font-weight-semibold mb-0">{{ $category->name }}</h2>
+						<hr>
+
+						<div id="gallery-{{ $category->id }}" class="pb-4">
+							<div class="listing-form"
+								data-url="{{ action('Admin\TemplateController@builderTemplates', [
+									'category_uid' => $category->uid,
+								]) }}"
+								per-page="25"					
+							>				
+								<div class="d-flex top-list-controls top-sticky-contentx">
+									<div class="me-auto">
+										<div class="filter-box">
+											<span class="filter-group">
+												<span class="title text-semibold text-muted">{{ trans('messages.sort_by') }}</span>
+												<select class="select" name="sort_order">
+													<option value="id">{{ trans('messages.default') }}</option>
+													<option value="name">{{ trans('messages.name') }}</option>
+												</select>										
+												<input type="hidden" name="sort_direction" value="asc" />
+												<button class="btn btn-xs sort-direction" rel="asc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
+													<span class="material-symbols-rounded desc">
+	sort
+	</span>
+												</button>
+											</span>
+											<span class="text-nowrap">
+												<input type="text" name="keyword" class="form-control search" value="{{ request()->keyword }}" placeholder="{{ trans('messages.type_to_search') }}" />
+												<span class="material-symbols-rounded">
+	search
+	</span>
+											</span>
+										</div>
+									</div>
+								</div>
+								
+								<div id="gallery-{{ $category->id }}-content" class="pml-table-container">
+								</div>
+							</div>
+						</div>
+						<br style="clear:both" /><br style="clear:both" />
+					</div>
+
+					<script>
+						$(function() {
+							var list = makeList({
+								url: '{{ action('Admin\TemplateController@builderTemplates', [
+									'category_uid' => $category->uid,
+								]) }}',
+								container: $('#gallery-{{ $category->id }}'),
+								content: $('#gallery-{{ $category->id }}-content')
+							});
+
+							list.load();
+						});
+					</script>
+				@endif
+			@endforeach
+        </div>
     </div>
         
     <script>	
         $(document).ready(function() {
             $(document).on('click', '.select-template-layout', function() {
-                var layout = $(this).attr('data-layout');
-				var template = $(this).attr('data-template');
+                var template = $(this).attr('data-template');
                 
                 // unselect all layouts
                 $('.select-template-layout').removeClass('selected');
                 
                 // select this
                 $(this).addClass('selected');
-				
+
 				// unselect all
-				$('[name=layout]').val('');
 				$('[name=template]').val('');
-                
-                // update layout value
-				if (typeof(layout) !== 'undefined') {
-					$('[name=layout]').val(layout);
-				}
 				
 				// update template value
 				if (typeof(template) !== 'undefined') {
@@ -167,15 +145,9 @@
 				
 				if ($('.select-template-layout.selected').length == 0) {
 					// Success alert
-					swal({
-						title: "{{ trans('messages.template.need_select_template') }}",
-						text: "",
-						confirmButtonColor: "#666",
-						type: "error",
-						allowOutsideClick: true,
-						confirmButtonText: "{{ trans('messages.ok') }}",
-						customClass: "swl-error",
-						html:true
+					new Dialog('alert', {
+						title: "{{ trans('messages.notify.error') }}",
+						message: "{{ trans('messages.template.need_select_template') }}",
 					});
 					return;
 				}

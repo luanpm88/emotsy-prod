@@ -32,19 +32,19 @@ use Acelle\Library\Log as MailLog;
 use Acelle\Library\StringHelper;
 use SparkPost\SparkPost;
 use GuzzleHttp\Client;
-use Http\Adapter\Guzzle6\Client as GuzzleAdapter;
+use Http\Adapter\Guzzle7\Client as GuzzleAdapter;
 
 class SendingServerSparkPost extends SendingServer
 {
-    const WEBHOOK = 'sparkpost';
-    const HOSTS = [
+    public const WEBHOOK = 'sparkpost';
+    public const HOSTS = [
         ['text' => 'SparkPost Global', 'value' => 'api.sparkpost.com'],
         ['text' => 'SparkPost EU', 'value' => 'api.eu.sparkpost.com'],
     ];
 
     protected $table = 'sending_servers';
-    public static $client = null;
-    public static $isWebhookSetup = false;
+    public $client = null;
+    public $isWebhookSetup = false;
 
     // Inherit class to implementation of this method
     public function send($message, $params = array())
@@ -59,14 +59,14 @@ class SendingServerSparkPost extends SendingServer
      */
     public function client()
     {
-        if (!self::$client) {
-            $httpClient = new GuzzleAdapter(new Client());
+        if (!$this->client) {
+            $httpClient = new GuzzleAdapter(new Client(['verify' => false]));
             $sparky = new SparkPost($httpClient, ['key' => $this->api_key, 'host' => $this->host]);
             $sparky->setOptions(['async' => false]);
-            self::$client = $sparky;
+            $this->client = $sparky;
         }
 
-        return self::$client;
+        return $this->client;
     }
 
     /**
@@ -76,7 +76,7 @@ class SendingServerSparkPost extends SendingServer
      */
     public function setupWebhook()
     {
-        if (self::$isWebhookSetup) {
+        if ($this->isWebhookSetup) {
             return true;
         }
 
@@ -99,7 +99,7 @@ class SendingServerSparkPost extends SendingServer
             ]);
 
             if ($response->getStatusCode() == 200) {
-                self::$isWebhookSetup = true;
+                $this->isWebhookSetup = true;
                 MailLog::info('SparkPost webhook set!');
             } else {
                 // throw the exception with body string
@@ -107,7 +107,7 @@ class SendingServerSparkPost extends SendingServer
             }
         } catch (\Exception $e) {
             // just ignore the error
-            self::$isWebhookSetup = true;
+            $this->isWebhookSetup = true;
             MailLog::warning('Cannot setup Spark Post webhook. Error: '.$e->getMessage());
         }
     }
@@ -269,7 +269,7 @@ class SendingServerSparkPost extends SendingServer
      *
      * @return bool
      */
-    public function getVerifiedIdentities()
+    public function syncIdentities()
     {
         $response = $this->client()->request('GET', 'sending-domains', ['ownership_verified' => 'true']);
 
@@ -277,9 +277,19 @@ class SendingServerSparkPost extends SendingServer
             throw new \Exception($response->getBody(true));
         }
 
-        $domains = $response->getBody();
+        $json = $response->getBody();
+        $identities = [];
+        foreach ($json['results'] as $domain) {
+            $name = $domain['domain'];
+            $identities[$name] = ['VerificationStatus' => $domain['status']['ownership_verified'] == true];
+        }
 
-        return array_map(function ($domain) { return $domain['domain']; }, $domains['results']);
+        $identityStore = $this->getIdentityStore();
+        $identityStore->update($identities);
+        $options = $this->getOptions();
+        $options['identities'] = $identityStore->get();
+        $this->setOptions($options);
+        $this->save();
     }
 
     /**
@@ -296,5 +306,50 @@ class SendingServerSparkPost extends SendingServer
         }
 
         return true;
+    }
+
+    /**
+     * Allow user to verify his/her own sending domain against Acelle Mail.
+     *
+     * @return bool
+     */
+    public function allowVerifyingOwnDomains()
+    {
+        return false;
+    }
+
+    /**
+     * Allow user to verify his/her own sending domain against Acelle Mail.
+     *
+     * @return bool
+     */
+    public function allowVerifyingOwnEmails()
+    {
+        return false;
+    }
+
+    /**
+     * Allow user to verify his/her own emails against AWS.
+     *
+     * @return bool
+     */
+    public function allowVerifyingOwnDomainsRemotely()
+    {
+        return false;
+    }
+
+    /**
+     * Allow user to verify his/her own emails against AWS.
+     *
+     * @return bool
+     */
+    public function allowVerifyingOwnEmailsRemotely()
+    {
+        return false;
+    }
+
+    public function setupBeforeSend($fromEmailAddress)
+    {
+        $this->setupWebhook();
     }
 }

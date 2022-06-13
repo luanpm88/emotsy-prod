@@ -1,5 +1,7 @@
 <?php
 
+use function Acelle\Helpers\xml_to_array;
+
 /**
  * Globally available helper methods.
  *
@@ -87,22 +89,6 @@ function each_batch($array, $batchSize, $skipHeader, $callback)
 }
 
 /**
- * Count the total number of line of a given file without loading the entire file.
- * This is effective for large file.
- *
- * @param string file path
- *
- * @return int line count
- */
-function line_count($path)
-{
-    $file = new \SplFileObject($path, 'r');
-    $file->seek(PHP_INT_MAX);
-
-    return $file->key() + 1;
-}
-
-/**
  * Join filesystem path strings.
  *
  * @param * parts of the path
@@ -113,6 +99,10 @@ function join_paths()
 {
     $paths = array();
     foreach (func_get_args() as $arg) {
+        if (preg_match('/http:\/\//i', $arg)) {
+            throw new \Exception('Path contains http://! Use `join_url` instead. Error for '.implode('/', func_get_args()));
+        }
+
         if ($arg !== '') {
             $paths[] = $arg;
         }
@@ -132,7 +122,7 @@ function join_url()
 {
     $paths = array();
     foreach (func_get_args() as $arg) {
-        if ($arg !== '') {
+        if (!empty($arg)) {
             $paths[] = $arg;
         }
     }
@@ -158,6 +148,48 @@ function array_unique_by($array, $callback)
     return array_values($result);
 }
 
+function get_localization_config($name, $locale)
+{
+    $defaultConfig = config('localization')['*'];
+
+    if (array_key_exists($locale, config('localization'))) {
+        $config = config('localization')[$locale];
+    }
+
+    if (isset($config) && array_key_exists($name, $config) && array_key_exists($name, $defaultConfig)) {
+        return $config[$name];
+    } elseif (array_key_exists($name, $defaultConfig)) {
+        return $defaultConfig[$name];
+    } else {
+        throw new \Exception('Localization config for "'.$name.'" does not exist');
+    }
+}
+
+function get_datetime_format($name, $locale)
+{
+    $defaultConfig = config('localization')['*'];
+
+    if (array_key_exists($locale, config('localization'))) {
+        $config = config('localization')[$locale];
+    }
+
+    if (isset($config) && array_key_exists($name, $config) && array_key_exists($name, $defaultConfig)) {
+        return $config[$name];
+    } elseif (array_key_exists($name, $defaultConfig)) {
+        return $defaultConfig[$name];
+    } else {
+        throw new \Exception('AC: Invalid datetime format type: '.$name.' => make sure the type is available in BOTH local and default (*) settings');
+    }
+}
+
+function format_datetime(?\Carbon\Carbon $datetime, $name, $locale)
+{
+    if (is_null($datetime)) {
+        return;
+    }
+    return $datetime->format(get_datetime_format($name, $locale));
+}
+
 /**
  * Get UTC offset of a particular time zone.
  *
@@ -173,22 +205,6 @@ function utc_offset($timezone)
 }
 
 /**
- * Get Database UTC offset.
- *
- * @return string UTC offset (+02:00 for example)
- */
-function db_utc_offset()
-{
-    $zone = DB::select("SELECT TIME_FORMAT(TIMEDIFF(NOW(), UTC_TIMESTAMP), '%H:%i') AS zone")[0]->zone;
-
-    if (!preg_match('/^-/', $zone)) {
-        $zone = "+$zone";
-    }
-
-    return $zone;
-}
-
-/**
  * Check if exec() function is available.
  *
  * @return bool
@@ -197,10 +213,10 @@ function exec_enabled()
 {
     try {
         // make a small test
-       exec('ls');
+        exec('ls');
 
         return function_exists('exec') && !in_array('exec', array_map('trim', explode(', ', ini_get('disable_functions'))));
-    } catch (\Exception $ex) {
+    } catch (\Throwable $ex) {
         return false;
     }
 }
@@ -239,66 +255,6 @@ function reset_app_url($force = false)
 }
 
 /**
- * Run artisan config cache.
- *
- * @return bool
- */
-function artisan_config_cache()
-{
-    // Artisan config:cache generate the following two files
-    // Since config:cache runs in the background
-    // to determine if it is done, we just check if the files modified time have been changed
-    $files = ['bootstrap/cache/config.php', 'bootstrap/cache/services.php'];
-
-    // get the last modified time of the files
-    $last = 0;
-    foreach ($files as $file) {
-        $path = base_path($file);
-        if (file_exists($path)) {
-            if (filemtime($path) > $last) {
-                $last = filemtime($path);
-            }
-        }
-    }
-
-    // prepare to run
-    $timeout = 5;
-    $start = time();
-
-    // actually call the Artisan command
-    \Artisan::call('config:cache');
-
-    // Check if Artisan call is done
-    while (true) {
-        // just finish if timeout
-        if (time() - $start >= $timeout) {
-            echo "Timeout\n";
-            break;
-        }
-
-        // if any file is still missing, keep waiting
-        // if any file is not updated, keep waiting
-        // @todo: services.php file keeps unchanged after artisan config:cache
-        foreach ($files as $file) {
-            $path = base_path($file);
-            if (!file_exists($path)) {
-                sleep(1);
-                continue;
-            } else {
-                if (filemtime($path) == $last) {
-                    sleep(1);
-                    continue;
-                }
-            }
-        }
-
-        // just wait another extra 3 seconds before finishing
-        sleep(3);
-        break;
-    }
-}
-
-/**
  * Run artisan migrate.
  *
  * @return bool
@@ -306,27 +262,6 @@ function artisan_config_cache()
 function artisan_migrate()
 {
     \Artisan::call('migrate', ['--force' => true]);
-}
-
-/**
- * Run artisan storage link.
- *
- * @return bool
- */
-function artisan_storage_link()
-{
-    \Artisan::call('storage:link');
-}
-
-/**
- * Run artisan clean up.
- *
- * @return bool
- */
-function artisan_clear()
-{
-    \Artisan::call('view:clear');
-    \Artisan::call('route:clear');
 }
 
 /**
@@ -346,13 +281,13 @@ function isSiteDemo()
  */
 function language_code()
 {
-    // Generate info
-    $user = \Auth::user();
-
+    // Get default language code from setting
     $default_language = \Acelle\Model\Language::find(\Acelle\Model\Setting::get('default_language'));
 
     if (isset($_COOKIE['last_language_code'])) {
         $language_code = $_COOKIE['last_language_code'];
+    } elseif (app()->getLocale()) {
+        $language_code = app()->getLocale();
     } elseif (is_object($default_language)) {
         $language_code = $default_language->code;
     } else {
@@ -360,6 +295,16 @@ function language_code()
     }
 
     return $language_code;
+}
+
+/**
+ * Get language code.
+ *
+ * @return string
+ */
+function language()
+{
+    return \Acelle\Model\Language::where('code', '=', language_code())->first();
 }
 
 /**
@@ -381,70 +326,32 @@ function number_to_percentage($number, $precision = 2)
  *
  * @return string
  */
-function number_with_delimiter($number, $precision = 0, $seperator = ',')
+function number_with_delimiter($number, $precision = null, $seperator = null, $locale = null)
 {
     if (!is_numeric($number)) {
         return $number;
     }
 
-    return number_format($number, $precision, '.', $seperator);
-}
-
-/**
- * Function to convert IP address to IP number (IPv6).
- *
- * @return string
- */
-function Dot2LongIPv6($IPaddr)
-{
-    $int = inet_pton($IPaddr);
-    $bits = 15;
-    $ipv6long = 0;
-    while ($bits >= 0) {
-        $bin = sprintf('%08b', (ord($int[$bits])));
-        if ($ipv6long) {
-            $ipv6long = $bin.$ipv6long;
-        } else {
-            $ipv6long = $bin;
-        }
-        --$bits;
-    }
-    $ipv6long = gmp_strval(gmp_init($ipv6long, 2), 10);
-
-    return $ipv6long;
-}
-
-/**
- * Paginate a Laravel collection, used for service only as
- * it DOES NOT return a true Pagination object (for rendering to view).
- *
- * @input Laravel Query Builder
- * @input callback function
- *
- * @return collection result set
- */
-function paginate($builder, $callback, $params = [])
-{
-    $default = [
-        'limit' => 10000,
-    ];
-
-    $params = array_merge($default, $params);
-
-    // in some cases, use the pre-computed count rather than counting against the builder
-    if (!array_key_exists('count', $params)) {
-        $params['count'] = $builder->count();
+    if (is_null($locale)) {
+        $locale = config('app.locale');
     }
 
-    // count the number of pages needed
-    $pages = ceil($params['count'] / $params['limit']);
-
-    for ($page = 1; $page <= $pages; $page += 1) {
-        $offset = $params['limit'] * ($page - 1);
-
-        $builder = $builder->skip($offset)->take($params['limit']);
-        $callback($builder, $page);
+    // Trick!
+    if (floor($number) == $number && is_null($precision)) {
+        $precision = 0;
     }
+
+    if (is_null($precision)) {
+        $precision = get_localization_config('number_precision', $locale);
+    }
+
+    $decimal = get_localization_config('number_decimal_separator', $locale);
+
+    if (is_null($seperator)) {
+        $seperator = get_localization_config('number_thousands_separator', $locale);
+    }
+
+    return number_format($number, $precision, $decimal, $seperator);
 }
 
 /**
@@ -463,8 +370,8 @@ function optimized_paginate($builder, $perPage = 15, $columns = null, $pageName 
     $page = $page ?: \Illuminate\Pagination\Paginator::resolveCurrentPage($pageName);
     $columns = $columns ?: ['*'];
     $total = is_null($total) ? $builder->getCountForPagination() : $total;
-  // in case $total == 0
-  $results = $total ? $builder->forPage($page, $perPage)->get($columns) : collect([]);
+    // in case $total == 0
+    $results = $total ? $builder->forPage($page, $perPage)->get($columns) : collect([]);
 
     return new \Illuminate\Pagination\LengthAwarePaginator($results, $total, $perPage, $page, [
     'path' => \Illuminate\Pagination\Paginator::resolveCurrentPath(),
@@ -501,27 +408,6 @@ function distinctCount($builder, $column = null, $method = 'group')
         ->count();
 
     return $count;
-}
-
-/**
- * Measure execution time of a script.
- *
- * @return float execution time
- */
-function measure($callback, $tests = 5)
-{
-    $results = [];
-
-    for ($i = 0; $i <= $tests; $i += 1) {
-        $start = microtime(true);
-        $callback();
-        $time = microtime(true) - $start;
-        $results[] = $time;
-    }
-    $agv = array_sum($results) / count($results);
-    echo "$agv\n";
-
-    return $agv;
 }
 
 /**
@@ -607,14 +493,6 @@ function doublequote($str)
     return sprintf('"%s"', preg_replace('/^"+|"+$/', '', $str));
 }
 
-function jsonGet($array, $path)
-{
-    $jsonObject = new \JsonPath\JsonObject($array);
-    $result = $jsonObject->get($path)[0];
-
-    return $result;
-}
-
 /**
  * Format price.
  *
@@ -622,26 +500,15 @@ function jsonGet($array, $path)
  *
  * @return string
  */
-function format_number($number)
+function format_price($price, $format = '{PRICE}', $html=false)
 {
-    if (is_numeric($number) && floor($number) != $number) {
-        return number_format($number, 2, trans('messages.dec_point'), trans('messages.thousands_sep'));
-    } elseif (is_numeric($number)) {
-        return number_format($number, 0, trans('messages.dec_point'), trans('messages.thousands_sep'));
+    if ($html) {
+        $html = str_replace('{PRICE}', ' <span class="p-amount">' . number_with_delimiter($price) . '</span> ', $format);
+        // $html = str_replace(number_with_delimiter($price), ' <span class="p-amount">' . number_with_delimiter($price) . '</span> ', $html);
+        return $html;
     } else {
-        return $number;
+        return str_replace('{PRICE}', number_with_delimiter($price), $format);
     }
-}
-/**
- * Format price.
- *
- * @param string
- *
- * @return string
- */
-function format_price($price, $format = '{PRICE}')
-{
-    return str_replace('{PRICE}', format_number($price), $format);
 }
 
 /**
@@ -674,38 +541,6 @@ function formatSizeUnits($bytes)
 }
 
 /**
- * Pagination for items.
- *
- * @return array
- */
-function pagination($request, $collect)
-{
-    $page = 0;
-    $per_page = 10;
-    $total = $collect->count();
-
-    if ($request->page) {
-        $page = $request->page;
-    }
-
-    if ($request->per_page) {
-        $per_page = $request->per_page;
-    }
-
-    $items = $collect->skip($page * $per_page)->take($per_page);
-
-    return [
-        $items->get(),
-        [
-            'page' => $page,
-            'per_page' => $per_page,
-            'total' => $total,
-            'pageCount' => ceil($total / $per_page),
-        ],
-    ];
-}
-
-/**
  * Get random item from array.
  *
  * @return object
@@ -716,70 +551,687 @@ function rand_item($arr)
 }
 
 /**
- * Return date string.
- *
- * @return object
- */
-function toDateString($datetime)
-{
-    return \Acelle\Library\Tool::dateTime($datetime)->format('Y-m-d');
-}
-
-/**
- * Return time string.
- *
- * @return object
- */
-function toTimeString($datetime)
-{
-    return \Acelle\Library\Tool::dateTime($datetime)->format('h:i A');
-}
-
-/**
  * Check if string is email.
  *
  * @return object
  */
-function checkEmail($email) {
+function checkEmail($email)
+{
     return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
 }
 
-function create_basedir($path, $createBasename = true)
+function demo_auth()
 {
-    $dirname = pathinfo($path)['dirname'];
+    $auth = \Acelle\Model\User::getAuthenticateFromFile();
 
-    $a = explode(DIRECTORY_SEPARATOR, $dirname);
-    for ($i = 0; $i <= sizeof($a); $i += 1) { // @important: use <= here
-        $tmppath = implode(DIRECTORY_SEPARATOR, array_slice($a, 0, $i));
-        if (empty($tmppath)) {
-            continue;
-        }
-
-        if (!file_exists($tmppath)) {
-            mkdir($tmppath);
-        }
-    }
-
-    if ($createBasename) {
-        mkdir($path); // create the last file name
-    }
+    return [
+        'email' => isset($auth['email']) ? $auth['email'] : '',
+        'password' => $auth['password'] ? $auth['password'] : '',
+    ];
 }
 
-function tinyDocTypeTransform($content)
+function get_app_identity()
 {
-    if(stripos(strtolower($content), '<!doctype') === false) { 
-        $doctype = '<!DoCtYPe html>';
-    } else {
-        $doctype = '';
-    }
-
-    return $doctype . $content;
+    return md5(config('app.key'));
 }
 
-function tinyDocTypeUntransform($content)
+function quoteDotEnvValue($value)
 {
-    return str_replace(
-        '<!DoCtYPe html>', '', 
-        $content
+    $containsSharp = (strpos($value, '#') !== false);
+
+    if ($containsSharp) {
+        $value = str_replace('"', '\"', $value);
+        $value = '"'.$value.'"';
+    }
+
+    return $value;
+}
+
+function generateRandomString($length = 10)
+{
+    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $charactersLength = strlen($characters);
+    $randomString = '';
+    for ($i = 0; $i < $length; $i++) {
+        $randomString .= $characters[rand(0, $charactersLength - 1)];
+    }
+    return $randomString;
+}
+
+/**
+ * Strip Tags Only
+ *
+ * Just like strip_tags, but only removes the HTML tags specified and not all of
+ * them.
+ *
+ * @param String $text The text to strip the tags from.
+ * @param String|Array $allowedTags This can either be one tag (eg. 'p') or an
+ *     array, (eg. ['p','br','h1']).
+ * @return String The text with the mentioned tags stripped.
+ * @author Aalaap Ghag <aalaap@gmail.com>
+ */
+function strip_tags_only($text, $allowedTags = [])
+{
+    if (!is_array($allowedTags)) {
+        $allowedTags = [
+            $allowedTags
+        ];
+    }
+
+    array_map(
+        function ($allowedTag) use (&$text) {
+            $regEx = '#<' . $allowedTag . '.*?>(.*?)</' . $allowedTag . '>#is';
+            $text = preg_replace($regEx, '', $text);
+        },
+        $allowedTags
     );
+
+    return $text;
+}
+
+/**
+ * Get controller action name
+ **/
+function controllerAction()
+{
+    // GET FROM SCREEN OPTION
+    $controller = explode('\\', request()->route()->getAction()['controller']);
+    return $controller[count($controller)-1];
+}
+
+/**
+ * Get controller name
+ **/
+function controllerName()
+{
+    $controllerAction = controllerAction();
+    return explode('@', $controllerAction)[0];
+}
+
+/**
+ * Get action name
+ **/
+function actionName()
+{
+    $controllerAction = controllerAction();
+    return explode('@', $controllerAction)[1];
+}
+
+/*
+ *  Iterate through a Eloquent $query using cursor paginate
+ *  The $orderBy parameter is critically required for a cursor pagination
+ */
+function cursorIterate($query, $orderBy, $size, $callback)
+{
+    $cursor = null;
+    $page = 1;
+    do {
+        $q = clone $query;
+        // The 4th parameter contains the offset cursor
+        $list = $q->orderBy($orderBy)->cursorPaginate($size, ['*'], 'cursor', $cursor);
+        $callback($list->items(), $page);
+        $cursor = $list->nextCursor();
+        $page += 1;
+    } while ($list->hasMorePages());
+}
+
+/**
+ * Convert html to inline.
+ *
+ * @todo not very OOP here, consider moving this to a Helper instead
+*/
+function makeInlineCss($html, array $cssFiles)
+{
+    // disable warning when parsing html content
+    libxml_use_internal_errors(true);
+
+    $htmldoc = new \Acelle\Library\InlineStyleWrapper($html);
+
+    foreach ($cssFiles as $file) {
+        // For safety, in case template is uploaded by user
+        if (file_exists($file)) {
+            $styles = file_get_contents($file);
+            $htmldoc->applyStylesheet($styles);
+        }
+    }
+
+    return $htmldoc->getHTML();
+}
+
+function putPermanentEnv($arr = [])
+{
+    $path = app()->environmentFilePath();
+    $config = file_get_contents($path);
+
+    foreach ($arr as $key => $value) {
+        $config = preg_replace(
+            "/^{$key}\=.*/m",
+            "{$key}='{$value}'",
+            $config
+        );
+
+        // if not exist
+        if (strpos($config, $key) === false) {
+            $config = $config . "\n" . $key . '=' . $value;
+        }
+    }
+
+    file_put_contents($path, $config);
+}
+
+//resize and crop image by center
+function resize_crop_image($max_width, $max_height, $source_file, $dst_dir, $quality = 80)
+{
+    $imgsize = getimagesize($source_file);
+    $width = $imgsize[0];
+    $height = $imgsize[1];
+    $mime = $imgsize['mime'];
+
+    switch ($mime) {
+        case 'image/gif':
+            $image_create = "imagecreatefromgif";
+            $image = "imagegif";
+            break;
+
+        case 'image/png':
+            $image_create = "imagecreatefrompng";
+            $image = "imagepng";
+            $quality = 7;
+            break;
+
+        case 'image/jpeg':
+            $image_create = "imagecreatefromjpeg";
+            $image = "imagejpeg";
+            $quality = 80;
+            break;
+
+        default:
+            return false;
+            break;
+    }
+
+    $dst_img = imagecreatetruecolor($max_width, $max_height);
+    $src_img = $image_create($source_file);
+
+    $width_new = $height * $max_width / $max_height;
+    $height_new = $width * $max_height / $max_width;
+    //if the new width is greater than the actual width of the image, then the height is too large and the rest cut off, or vice versa
+    if ($width_new > $width) {
+        //cut point by height
+        $h_point = (($height - $height_new) / 2);
+        //copy image
+        imagecopyresampled($dst_img, $src_img, 0, 0, 0, $h_point, $max_width, $max_height, $width, $height_new);
+    } else {
+        //cut point by width
+        $w_point = (($width - $width_new) / 2);
+        imagecopyresampled($dst_img, $src_img, 0, 0, $w_point, 0, $max_width, $max_height, $width_new, $height);
+    }
+
+    $image($dst_img, $dst_dir, $quality);
+
+    if ($dst_img) {
+        imagedestroy($dst_img);
+    }
+    if ($src_img) {
+        imagedestroy($src_img);
+    }
+}
+
+function filterSearchArray($items, $keyword)
+{
+    // search
+    $results = [];
+    foreach ($items as $item) {
+        $row = [
+            'rate' => 0,
+            'item' => $item,
+        ];
+
+        if (isset($keyword)) {
+            $keyword = trim(strtolower($keyword));
+
+            // Keywords
+            if (!empty($keyword)) {
+                $keywords = preg_split('/\s+/', $keyword);
+                $allExist = true;
+
+                foreach ($keywords as $keyword) {
+                    $exist = false;
+
+                    // search by names
+                    foreach ($item['names'] as $name) {
+                        $name = trim(strtolower($name));
+                        if (strpos($name, $keyword) !== false) {
+                            $row['rate'] += 1;
+                            $exist = true;
+                        }
+                    }
+
+                    // search by keywords
+                    if (isset($item['keywords'])) {
+                        foreach ($item['keywords'] as $k) {
+                            $k = trim(strtolower($k));
+                            if (strpos($k, $keyword) !== false) {
+                                $row['rate'] += 1;
+                                $exist = true;
+                            }
+                        }
+                    }
+
+                    if (!$exist) {
+                        $allExist = false;
+                    }
+                }
+
+                if (!$allExist) {
+                    $row['rate'] = 0;
+                }
+            }
+        }
+
+        if ($row['rate'] > 0) {
+            $results[] = $row;
+        }
+    }
+
+    // sort
+    usort($results, function ($a, $b) {
+        if ($a['rate'] != $b['rate']) {
+            return $a['rate'] <=> $b['rate'];
+        } else {
+            return strcmp(implode(' ', $a['item']['names']), implode(' ', $b['item']['names']));
+        }
+    });
+
+    return $results;
+}
+
+function getPeriodEndsAt($startDate, $amount, $unit)
+{
+    switch ($unit) {
+        case 'month':
+            $endsAt = $startDate->addMonthsNoOverflow($amount);
+            break;
+        case 'day':
+            $endsAt = $startDate->addDay($amount);
+            break;
+        case 'week':
+            $endsAt = $startDate->addWeek($amount);
+            break;
+        case 'year':
+            $endsAt = $startDate->addYearsNoOverflow($amount);
+            break;
+        default:
+            throw new \Exception('Invalid time period unit: ' . $unit);
+    }
+
+    return $endsAt;
+}
+
+function getThemeColor($theme = false)
+{
+    $colors = [
+        'default' => 'rgba(13, 24, 29, 0.85)',
+        'blue' => 'rgba(9, 22, 28, 0.9)',
+        'green' => 'rgba(11, 29, 29, 0.9)',
+        'brown' => 'rgba(27, 21, 10, 0.9)',
+        'pink' => 'rgba(28, 11, 19, 0.9)',
+        'grey' => '#111111',
+        'white' => '#444',
+    ];
+
+    if (!$theme || !isset($colors[$theme])) {
+        return $colors['default'];
+    }
+
+    return $colors[$theme];
+}
+
+function getThemeMode($mode, $auto='light')
+{
+    $themeMode = $mode;
+
+    if ($mode == 'auto') {
+        if ($auto) {
+            $themeMode = $auto;
+        }
+    }
+
+    return $themeMode;
+}
+
+function parseRss($config)
+{
+    $rss = [];
+
+    // Parse RSS content
+    $rssArray = xml_to_array(simplexml_load_string(file_get_contents($config['url']), 'SimpleXMLElement', LIBXML_NOCDATA));
+    $rssFeed = simplexml_load_string(file_get_contents($config['url']), 'SimpleXMLElement', LIBXML_NOCDATA);
+
+    // Take 10 records only
+    $records = array_slice($rssArray['rss']['channel']['item'], 0, $config['size']);
+
+    // feed data
+    $feedData = [];
+    $feedData['feed_title'] = (string) $rssFeed->channel->title;
+    $feedData['feed_description'] = $rssFeed->channel->description->__toString();
+    $feedData['feed_link'] = $rssFeed->channel->link->__toString();
+    $feedData['feed_pubdate'] = $rssFeed->channel->pubDate->__toString();
+    $feedData['feed_build_date'] = $rssFeed->channel->lastBuildDate->__toString();
+
+    // feed parse template
+    $rss['FeedTitle'] = parseRssTemplate($config['templates']['FeedTitle']['template'], $feedData);
+    $rss['FeedSubtitle'] = parseRssTemplate($config['templates']['FeedSubtitle']['template'], $feedData);
+    $rss['FeedTagdLine'] = parseRssTemplate($config['templates']['FeedTagdLine']['template'], $feedData);
+
+    // records
+    $rss['items'] = [];
+    $count = 0;
+    foreach ($rssFeed->channel->item as $item) {
+        // item data
+        $itemData['item_title'] = $item->title;
+        $itemData['item_pubdate'] = $item->pubDate;
+        $itemData['item_description'] = $item->description;
+        $itemData['item_url'] = $item->link;
+        $itemData['item_enclosure_url'] = $item->enclosure['url'];
+        $itemData['item_enclosure_type'] = $item->enclosure['type'];
+
+        // item parse template
+        $item = [];
+        $item['ItemTitle'] = parseRssTemplate($config['templates']['ItemTitle']['template'], $itemData);
+        $item['ItemDescription'] = parseRssTemplate($config['templates']['ItemDescription']['template'], $itemData);
+        $item['ItemMeta'] = parseRssTemplate($config['templates']['ItemMeta']['template'], $itemData);
+        $item['ItemEnclosure'] = parseRssTemplate($config['templates']['ItemEnclosure']['template'], $itemData);
+        $item['ItemStats'] = parseRssTemplate($config['templates']['ItemStats']['template'], $itemData);
+
+        // add item to rss items
+        $rss['items'][] = $item;
+
+        $count += 1;
+        if ($config['size'] == $count) {
+            break;
+        }
+    }
+
+
+    // Return HTML
+    return view('helpers.rss.template', [
+        'rss' => $rss,
+        'templates' => $config['templates'],
+    ]);
+}
+
+function parseRssTemplate($template, $feedData)
+{
+    foreach ($feedData as $key => $value) {
+        $template = str_replace('@' . $key, $value, $template);
+    }
+
+    if (isset($feedData['item_enclosure_url']) && $feedData['item_enclosure_url'] != '') {
+        if (strpos($feedData['item_enclosure_type'], 'video') !== false) {
+            $html = '<video controls width="320">
+                        <source src="https://file-examples-com.github.io/uploads/2017/04/file_example_MP4_480_1_5MG.mp4" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                </video>';
+        } elseif (strpos($feedData['item_enclosure_type'], 'video') !== false) {
+            $html = '<audio controls>
+                        <source src="' . $feedData['item_enclosure_url'] . '" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                </audio>';
+        } else {
+            $html = '<img class="my-2" src="' . $feedData['item_enclosure_url'] . '" height="100px" />';
+        }
+        $template = str_replace('@item_enclosure', $html, $template);
+    }
+
+    return $template;
+}
+
+function rssTags()
+{
+    return [
+        'feed' => [
+            '@feed_title',
+            '@feed_description',
+            '@feed_link',
+            '@feed_pubdate',
+            '@feed_build_date',
+        ],
+        'item' => [
+            '@item_title',
+            '@item_pubdate',
+            '@item_description',
+            '@item_image_url',
+        ],
+    ];
+}
+
+function getFullCodeByLanguageCode($languageCode)
+{
+    $locales = array(
+        'af-ZA',
+        'am-ET',
+        'ar-AE',
+        'ar-BH',
+        'ar-DZ',
+        'ar-EG',
+        'ar-IQ',
+        'ar-JO',
+        'ar-KW',
+        'ar-LB',
+        'ar-LY',
+        'ar-MA',
+        'arn-CL',
+        'ar-OM',
+        'ar-QA',
+        'ar-SA',
+        'ar-SY',
+        'ar-TN',
+        'ar-YE',
+        'as-IN',
+        'az-Cyrl-AZ',
+        'az-Latn-AZ',
+        'ba-RU',
+        'be-BY',
+        'bg-BG',
+        'bn-BD',
+        'bn-IN',
+        'bo-CN',
+        'br-FR',
+        'bs-Cyrl-BA',
+        'bs-Latn-BA',
+        'ca-ES',
+        'co-FR',
+        'cs-CZ',
+        'cy-GB',
+        'da-DK',
+        'de-AT',
+        'de-CH',
+        'de-DE',
+        'de-LI',
+        'de-LU',
+        'dsb-DE',
+        'dv-MV',
+        'el-GR',
+        'en-US',
+        'en-029',
+        'en-AU',
+        'en-BZ',
+        'en-CA',
+        'en-GB',
+        'en-IE',
+        'en-IN',
+        'en-JM',
+        'en-MY',
+        'en-NZ',
+        'en-PH',
+        'en-SG',
+        'en-TT',
+        'en-ZA',
+        'en-ZW',
+        'es-AR',
+        'es-BO',
+        'es-CL',
+        'es-CO',
+        'es-CR',
+        'es-DO',
+        'es-EC',
+        'es-ES',
+        'es-GT',
+        'es-HN',
+        'es-MX',
+        'es-NI',
+        'es-PA',
+        'es-PE',
+        'es-PR',
+        'es-PY',
+        'es-SV',
+        'es-US',
+        'es-UY',
+        'es-VE',
+        'et-EE',
+        'eu-ES',
+        'fa-IR',
+        'fi-FI',
+        'fil-PH',
+        'fo-FO',
+        'fr-BE',
+        'fr-CA',
+        'fr-CH',
+        'fr-FR',
+        'fr-LU',
+        'fr-MC',
+        'fy-NL',
+        'ga-IE',
+        'gd-GB',
+        'gl-ES',
+        'gsw-FR',
+        'gu-IN',
+        'ha-Latn-NG',
+        'he-IL',
+        'hi-IN',
+        'hr-BA',
+        'hr-HR',
+        'hsb-DE',
+        'hu-HU',
+        'hy-AM',
+        'id-ID',
+        'ig-NG',
+        'ii-CN',
+        'is-IS',
+        'it-CH',
+        'it-IT',
+        'iu-Cans-CA',
+        'iu-Latn-CA',
+        'ja-JP',
+        'ka-GE',
+        'kk-KZ',
+        'kl-GL',
+        'km-KH',
+        'kn-IN',
+        'kok-IN',
+        'ko-KR',
+        'ky-KG',
+        'lb-LU',
+        'lo-LA',
+        'lt-LT',
+        'lv-LV',
+        'mi-NZ',
+        'mk-MK',
+        'ml-IN',
+        'mn-MN',
+        'mn-Mong-CN',
+        'moh-CA',
+        'mr-IN',
+        'ms-BN',
+        'ms-MY',
+        'mt-MT',
+        'nb-NO',
+        'ne-NP',
+        'nl-BE',
+        'nl-NL',
+        'nn-NO',
+        'nso-ZA',
+        'oc-FR',
+        'or-IN',
+        'pa-IN',
+        'pl-PL',
+        'prs-AF',
+        'ps-AF',
+        'pt-BR',
+        'pt-PT',
+        'qut-GT',
+        'quz-BO',
+        'quz-EC',
+        'quz-PE',
+        'rm-CH',
+        'ro-RO',
+        'ru-RU',
+        'rw-RW',
+        'sah-RU',
+        'sa-IN',
+        'se-FI',
+        'se-NO',
+        'se-SE',
+        'si-LK',
+        'sk-SK',
+        'sl-SI',
+        'sma-NO',
+        'sma-SE',
+        'smj-NO',
+        'smj-SE',
+        'smn-FI',
+        'sms-FI',
+        'sq-AL',
+        'sr-Cyrl-BA',
+        'sr-Cyrl-CS',
+        'sr-Cyrl-ME',
+        'sr-Cyrl-RS',
+        'sr-Latn-BA',
+        'sr-Latn-CS',
+        'sr-Latn-ME',
+        'sr-Latn-RS',
+        'sv-FI',
+        'sv-SE',
+        'sw-KE',
+        'syr-SY',
+        'ta-IN',
+        'te-IN',
+        'tg-Cyrl-TJ',
+        'th-TH',
+        'tk-TM',
+        'tn-ZA',
+        'tr-TR',
+        'tt-RU',
+        'tzm-Latn-DZ',
+        'ug-CN',
+        'uk-UA',
+        'ur-PK',
+        'uz-Cyrl-UZ',
+        'uz-Latn-UZ',
+        'vi-VN',
+        'wo-SN',
+        'xh-ZA',
+        'yo-NG',
+        'zh-CN',
+        'zh-HK',
+        'zh-MO',
+        'zh-SG',
+        'zh-TW',
+        'zu-ZA',
+    );
+
+    foreach ($locales as $locale) {
+        if ($languageCode . '-' . strtoupper($languageCode) === $locale) {
+            return $locale;
+        }
+    }
+
+    foreach ($locales as $locale) {
+        if (strpos($locale, $languageCode) === 0) {
+            return $locale;
+        }
+    }
+
+    return null;
 }

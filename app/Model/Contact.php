@@ -23,9 +23,12 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Acelle\Library\Traits\HasUid;
 
 class Contact extends Model
 {
+    use HasUid;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -48,29 +51,11 @@ class Contact extends Model
         'address_1' => 'required',
         'city' => 'required',
         'zip' => 'required',
-        'url' => 'regex:/^https{0,1}:\/\//',
+        'url' => 'nullable|regex:/^https{0,1}:\/\//',
         //'url' => 'url', # do not use the default 'url' validator of Laravel, otherwise, error: preg_match(): Compilation failed: invalid range in character class at offset 20
         'company' => 'required',
         'country_id' => 'required',
     );
-
-    /**
-     * Bootstrap any application services.
-     */
-    public static function boot()
-    {
-        parent::boot();
-
-        // Create uid when creating list.
-        static::creating(function ($item) {
-            // Create new uid
-            $uid = uniqid();
-            while (Contact::where('uid', '=', $uid)->count() > 0) {
-                $uid = uniqid();
-            }
-            $item->uid = $uid;
-        });
-    }
 
     /**
      * Associations.

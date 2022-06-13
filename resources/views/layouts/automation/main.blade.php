@@ -3,9 +3,9 @@
 <head>
 	<title>@yield('title') - {{ \Acelle\Model\Setting::get("site_name") }}</title>
 
-	@include('layouts._favicon')
+	@include('layouts.core._favicon')
 
-	@include('layouts._head')
+	@include('layouts.core._head')
 	
 	<!-- Bootstrap -->
 	<link href="{{ URL::asset('assets2/lib/bootstrap-4.4.0/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css">
@@ -53,12 +53,12 @@
     <script type="text/javascript" src="{{ URL::asset('js/scrollbar/jquery.mCustomScrollbar.concat.min.js') }}"></script>
     <script type="text/javascript" src="{{ URL::asset('js/jquery.cookie.js') }}"></script>
 	<script type="text/javascript" src="{{ URL::asset('rangeslider/bootstrap-slider.js') }}"></script>	
-	<script type="text/javascript" src="{{ URL::asset('bootstrap3-editable/js/bootstrap-editable.js') }}"></script>		
+	<script type="text/javascript" src="{{ URL::asset('bootstrap3-editable/js/bootstrap-editable.min.js') }}"></script>		
 
 	<!-- Tooltip -->
-	<link rel="stylesheet" href="{{ URL::asset('assets/tooltipster/css/tooltipster.bundle.css') }}">
+	<link rel="stylesheet" href="{{ URL::asset('assets/tooltipster/css/tooltipster.bundle.min.css') }}">
 	<link rel="stylesheet" href="{{ URL::asset('assets/tooltipster/css/plugins/tooltipster/sideTip/themes/tooltipster-sideTip-light.min.css') }}">
-	<script type="text/javascript" src="{{ URL::asset('assets/tooltipster/js/tooltipster.bundle.js') }}"></script>		
+	<script type="text/javascript" src="{{ URL::asset('assets/tooltipster/js/tooltipster.bundle.min.js') }}"></script>		
 
 	<script type="text/javascript" src="{{ URL::asset('assets/timepicker/jquery.timepicker.js') }}"></script>		
 	<script type="text/javascript" src="{{ URL::asset('assets/datepicker/dist/datepicker.min.js') }}"></script>		
@@ -78,17 +78,18 @@
 	<script src="{{ URL::asset('assets2/lib/automation.js') }}"></script>
 		
 	<!-- App -->
-	<link href="{{ URL::asset('assets2/css/app.css') }}" rel="stylesheet" type="text/css">
+	<link href="{{ URL::asset('assets2/css/app.css') }}?v={{ app_version() }}" rel="stylesheet" type="text/css">
 	
 	<!-- Dropzone -->
-	<script type="text/javascript" src="{{ URL::asset('assets2/lib/dropzone/dropzone.js') }}"></script>
-	<link href="{{ URL::asset('assets2/lib/dropzone/dropzone.css') }}" rel="stylesheet" type="text/css">
+	<script type="text/javascript" src="{{ URL::asset('core/dropzone/dropzone.js') }}"></script>
+	@include('helpers._dropzone_lang')
+	<link href="{{ URL::asset('core/dropzone/dropzone.css') }}" rel="stylesheet" type="text/css">
 	
 	<!-- Ajax box -->
 	<script type="text/javascript" src="{{ URL::asset('assets2/js/box.js') }}"></script>
 		
 	<!-- Scrollbar -->
-	<script type="text/javascript" src="{{ URL::asset('assets2/lib/scrollbar/jquery.scrollbar.js') }}"></script>
+	<script type="text/javascript" src="{{ URL::asset('assets2/lib/scrollbar/jquery.scrollbar.min.js') }}"></script>
 	<link href="{{ URL::asset('assets2/lib/scrollbar/jquery.scrollbar.css') }}" rel="stylesheet" type="text/css">
 
 	@yield('page_script')
@@ -96,6 +97,7 @@
 	<script type="text/javascript" src="{{ URL::asset('js/autofill.js') }}"></script>
 	<script type="text/javascript" src="{{ URL::asset('js/select-custom.js') }}"></script>
 	<script type="text/javascript" src="{{ URL::asset('js/modal.js') }}"></script>
+	<script type="text/javascript" src="{{ URL::asset('js/validate.js') }}"></script>
     <script type="text/javascript" src="{{ URL::asset('assets2/js/app.js') }}?v={{ app_version() }}"></script>
 	<script type="text/javascript" src="{{ URL::asset('js/mc_modal.js') }}"></script>
     <script type="text/javascript" src="{{ URL::asset('js/iframe_modal.js') }}"></script>
@@ -105,7 +107,9 @@
 	<script type="text/javascript" src="{{ URL::asset('assets2/js/list.js') }}"></script>
 	<!-- /theme JS files -->
 
-	@include('layouts._script_vars')
+	<script src="https://cdn.jsdelivr.net/npm/chart.js@3.1.0/dist/chart.min.js"></script>
+
+	@include('layouts.core._script_vars')
 	@include('layouts._menu_script')
 
 	<!-- display flash message -->
@@ -124,12 +128,23 @@
 	@endif
 
 	<script>
-		$.cookie('last_language_code', '{{ Auth::user()->customer->getLanguageCode() }}');
+		$( document ).ajaxError(function( event, request, settings ) {
+			if(typeof(settings.globalError) != 'undefined' || settings.globalError == false) {
+				return;
+			}
+			
+			// abort ajax
+			if (request.statusText =='abort') {
+				return;
+			}
+
+			alert(request.responseText);
+		});
 	</script>
 
 </head>
 
-<body class="">
+<body class="{{ request()->auto_popup ? 'auto_popup' : '' }}">
 
 	<!-- display flash message -->
 	@include('common.errors')

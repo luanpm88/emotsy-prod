@@ -23,14 +23,17 @@
 </div>
 
 <div class="row">
-	<div class="col-md-12 ajax-detail-box" data-url="{{ action('Admin\EmailVerificationServerController@options') }}" data-form=".email-verification-server-form">
+	<div class="col-md-12 ajax-detail-box"
+		data-url="{{ action('Admin\EmailVerificationServerController@options') }}"
+		data-form=".email-verification-server-form"
+	>
 		@include('admin.email_verification_servers._options', [
 			'options' => $options
 		])
 	</div>
 </div>
 
-<h4 class="text-semibold text-teal-800">{{ trans('messages.verification_server_credits') }}</h4>
+<h4 class="text-semibold text-primary">{{ trans('messages.verification_server_credits') }}</h4>
 
 <div class="row">
 	<div class="col-md-12">
@@ -73,8 +76,8 @@
 
 <hr >
 <div class="text-left">
-	<button class="btn bg-teal mr-5"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
-	<a href="{{ action('Admin\EmailVerificationServerController@index') }}" type="button" class="btn bg-grey">
+	<button class="btn btn-primary me-1"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
+	<a href="{{ action('Admin\EmailVerificationServerController@index') }}" role="button" class="btn btn-secondary">
 		<i class="icon-cross2"></i> {{ trans('messages.cancel') }}
 	</a>
 </div>

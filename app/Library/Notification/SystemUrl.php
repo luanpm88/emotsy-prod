@@ -31,13 +31,14 @@ class SystemUrl extends Notification
      */
     public static function check()
     {
-        self::cleanupSimilarNotifications();
+        $title = trans('messages.admin.notification.system_url_title');
+        self::cleanupDuplicateNotifications($title);
 
         $current = url('/');
         $cached = config('app.url');
         if ($current != $cached) {
             $warning = [
-                'title' => trans('messages.admin.notification.system_url_title'),
+                'title' => $title,
                 'message' => trans('messages.admin.notification.system_url_not_match', ['cached' => $cached, 'current' => $current]),
             ];
 

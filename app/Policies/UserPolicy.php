@@ -8,14 +8,14 @@ use Acelle\Model\User;
 class UserPolicy
 {
     use HandlesAuthorization;
-    
+
     public function read(User $user)
     {
         $can = $user->admin->getPermission('user_read') != 'no';
 
         return $can;
     }
-    
+
     public function read_all(User $user)
     {
         $can = $user->admin->getPermission('user_read') == 'all';
@@ -39,7 +39,7 @@ class UserPolicy
     {
         $ability = $user->admin->getPermission('user_update');
         $can = $ability == 'all'
-                || ($ability == 'own' && $user->id == $item->user_id);
+                || ($ability == 'own' && $user->id == $item->id);
 
         return $can;
     }
@@ -48,37 +48,27 @@ class UserPolicy
     {
         $ability = $user->admin->getPermission('user_delete');
         $can = $ability == 'all'
-                || ($ability == 'own' && $user->id == $item->user_id);
+                || ($ability == 'own' && $user->id == $item->id);
         $can = $can && $user->id != $item->id;
 
         return $can;
     }
 
-    public function switch_user(User $user, User $item)
-    {
-        $ability = $user->admin->getPermission('user_switch');
-        $can = $ability == 'all'
-                || ($ability == 'own' && $user->id == $item->user_id);
-        $can = $can && $item->id != $user->id;
-
-        return $can;
-    }
-    
     public function customer_access(User $user)
     {
         return is_object($user->customer);
     }
-    
+
     public function admin_access(User $user)
-    {        
+    {
         return is_object($user->admin);
     }
-    
+
     public function reseller_access(User $user)
-    {        
+    {
         return is_object($user->reseller);
     }
-    
+
     public function change_group(User $user)
     {
         $ability = $user->admin->getPermission('user_update');

@@ -7,7 +7,6 @@ use Acelle\Http\Controllers\Controller;
 
 class FeedbackLoopHandlerController extends Controller
 {
-
     /**
      * Display a listing of the resource.
      *
@@ -180,17 +179,6 @@ class FeedbackLoopHandlerController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-    }
-
-    /**
      * Custom sort items.
      *
      * @param \Illuminate\Http\Request $request
@@ -199,20 +187,7 @@ class FeedbackLoopHandlerController extends Controller
      */
     public function sort(Request $request)
     {
-        $sort = json_decode($request->sort);
-        foreach ($sort as $row) {
-            $item = \Acelle\Model\FeedbackLoopHandler::findByUid($row[0]);
-
-            // authorize
-            if (\Gate::denies('update', $item)) {
-                return $this->notAuthorized();
-            }
-
-            $item->custom_order = $row[1];
-            $item->save();
-        }
-
-        echo trans('messages.feedback_loop_handler.custom_order.updated');
+        echo trans('messages._deleted_');
     }
 
     /**
@@ -224,7 +199,10 @@ class FeedbackLoopHandlerController extends Controller
      */
     public function delete(Request $request)
     {
-        $items = \Acelle\Model\FeedbackLoopHandler::whereIn('uid', explode(',', $request->uids));
+        $items = \Acelle\Model\FeedbackLoopHandler::whereIn(
+            'uid',
+            is_array($request->uids) ? $request->uids : explode(',', $request->uids)
+        );
 
         foreach ($items->get() as $item) {
             // authorize
@@ -270,12 +248,12 @@ class FeedbackLoopHandlerController extends Controller
 
         try {
             $server->test();
-            echo json_encode([
+            return response()->json([
                 'status' => 'success', // or success
                 'message' => trans('messages.feedback_loop_handler.test_success')
             ]);
-        } catch(\Exception $e) {
-            echo json_encode([
+        } catch (\Exception $e) {
+            return response()->json([
                 'status' => 'error', // or success
                 'message' => $e->getMessage()
             ]);

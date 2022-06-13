@@ -13,7 +13,6 @@ use Acelle\Model\Notification;
 
 class NotificationController extends Controller
 {
-
     /**
      * Notification index.
      */
@@ -48,13 +47,22 @@ class NotificationController extends Controller
             return;
         }
 
-        $notifications = Notification::whereIn('uid', explode(',', $request->uids));
+        $notifications = Notification::whereIn(
+            'uid',
+            is_array($request->uids) ? $request->uids : explode(',', $request->uids)
+        );
+        $count = $notifications->count();
 
         foreach ($notifications->get() as $notification) {
             $notifications->delete();
         }
 
         // Redirect to my lists page
-        echo trans('messages.notifications.deleted', ['number' => $notifications->count()]);
+        echo trans('messages.notifications.deleted', ['number' => $count]);
+    }
+
+    public function popup(Request $request)
+    {
+        return view('admin.notifications.popup');
     }
 }

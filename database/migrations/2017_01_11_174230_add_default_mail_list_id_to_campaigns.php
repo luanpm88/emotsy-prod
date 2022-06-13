@@ -14,7 +14,7 @@ class AddDefaultMailListIdToCampaigns extends Migration
     {
         Schema::table('campaigns', function (Blueprint $table) {
             $table->integer('default_mail_list_id')->unsigned()->nullable();
-            
+
             $table->foreign('default_mail_list_id')->references('id')->on('mail_lists')->onDelete('cascade');
         });
     }
@@ -27,7 +27,7 @@ class AddDefaultMailListIdToCampaigns extends Migration
     public function down()
     {
         Schema::table('campaigns', function (Blueprint $table) {
-            $table->dropForeign('campaigns_default_mail_list_id_foreign');
+            $table->dropForeign(['default_mail_list_id']);
             $table->dropColumn('default_mail_list_id');
         });
     }

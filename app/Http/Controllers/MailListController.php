@@ -9,6 +9,7 @@ use Acelle\Model\EmailVerificationServer;
 use Acelle\Events\MailListSubscription;
 use Acelle\Model\Setting;
 use Acelle\Model\Customer;
+use Exception;
 
 class MailListController extends Controller
 {
@@ -31,10 +32,19 @@ class MailListController extends Controller
      */
     public function listing(Request $request)
     {
-        $lists = \Acelle\Model\MailList::search($request)->paginate($request->per_page);
+        $customer = $request->user()->customer;
 
+        $lists = $customer->mailLists()
+            ->search($request->keyword)
+            ->orderBy($request->sort_order, $request->sort_direction)
+            ->paginate($request->per_page);
+
+        $settings = [
+            'list.clone_for_others' => Setting::isYes('list.clone_for_others')
+        ];
         return view('lists._list', [
             'lists' => $lists,
+            'settings' => $settings,
         ]);
     }
 
@@ -58,9 +68,9 @@ class MailListController extends Controller
         }
 
         // default values
-        $list->subscribe_confirmation = true;
-        $list->send_welcome_email = true;
-        $list->unsubscribe_notification = true;
+        $list->subscribe_confirmation = false;
+        $list->send_welcome_email = false;
+        $list->unsubscribe_notification = false;
 
         // authorize
         if (\Gate::denies('create', $list)) {
@@ -90,8 +100,11 @@ class MailListController extends Controller
             }
         }
 
+        $allowedSingleOptin = Setting::isYes('list.allow_single_optin');
+
         return view('lists.create', [
             'list' => $list,
+            'allowedSingleOptin' => $allowedSingleOptin
         ]);
     }
 
@@ -204,8 +217,11 @@ class MailListController extends Controller
             }
         }
 
+        $allowedSingleOptin = Setting::isYes('list.allow_single_optin');
+
         return view('lists.edit', [
             'list' => $list,
+            'allowedSingleOptin' => $allowedSingleOptin
         ]);
     }
 
@@ -264,17 +280,6 @@ class MailListController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-    }
-
-    /**
      * Custom sort items.
      *
      * @param \Illuminate\Http\Request $request
@@ -292,11 +297,10 @@ class MailListController extends Controller
                 return $this->notAuthorized();
             }
 
-            $list->custom_order = $row[1];
             $list->save();
         }
 
-        echo trans('messages.lists.custom_order.updated');
+        echo trans('messages.lists._deleted_');
     }
 
     /**
@@ -308,7 +312,10 @@ class MailListController extends Controller
      */
     public function deleteConfirm(Request $request)
     {
-        $lists = \Acelle\Model\MailList::whereIn('uid', explode(',', $request->uids));
+        $lists = \Acelle\Model\MailList::whereIn(
+            'uid',
+            is_array($request->uids) ? $request->uids : explode(',', $request->uids)
+        );
 
         return view('lists.delete_confirm', [
             'lists' => $lists,
@@ -325,11 +332,13 @@ class MailListController extends Controller
     public function delete(Request $request)
     {
         if (isSiteDemo()) {
-            echo trans('messages.operation_not_allowed_in_demo');
-            return;
+            return response()->json(["message" => trans('messages.operation_not_allowed_in_demo')], 404);
         }
 
-        $lists = \Acelle\Model\MailList::whereIn('uid', explode(',', $request->uids));
+        $lists = \Acelle\Model\MailList::whereIn(
+            'uid',
+            is_array($request->uids) ? $request->uids : explode(',', $request->uids)
+        );
 
         foreach ($lists->get() as $item) {
             // authorize
@@ -411,34 +420,17 @@ class MailListController extends Controller
 
         // datas
         foreach ($result['bar_names'] as $bar) {
-            $data = [];
             for ($i = 4; $i >= 0; --$i) {
-                $data[] = \Acelle\Model\Customer::subscribersCountByTime(
+                $result['data'][] = \Acelle\Model\Customer::subscribersCountByTime(
                     \Carbon\Carbon::now()->subMonthsNoOverflow($i)->startOfMonth(),
                     \Carbon\Carbon::now()->subMonthsNoOverflow($i)->endOfMonth(),
                     $request->user()->customer->id,
                     $list_id
                 );
             }
-
-            $result['data'][] = [
-                'name' => $bar,
-                'type' => 'bar',
-                'data' => $data,
-                'itemStyle' => [
-                    'normal' => [
-                        'label' => [
-                            'show' => true,
-                            'textStyle' => [
-                                'fontWeight' => 500,
-                            ],
-                        ],
-                    ],
-                ],
-            ];
         }
 
-        return json_encode($result);
+        return response()->json($result);
     }
 
     /**
@@ -467,77 +459,62 @@ class MailListController extends Controller
         }
 
         $result = [
-            'title' => '',
-            'columns' => [],
             'data' => [],
-            'bar_names' => [],
         ];
 
-        $datas = [];
         if (isset($list->id)) {
             if ($list->readCache('SubscribeCount', 0)) {
-                $result['bar_names'][] = trans('messages.subscribed');
-                $datas[] = ['value' => $list->readCache('SubscribeCount', 0), 'name' => trans('messages.subscribed')];
+                $result['data'][] = ['value' => $list->readCache('SubscribeCount', 0), 'name' => trans('messages.subscribed')];
             }
 
             if ($list->readCache('UnsubscribeCount', 0)) {
-                $result['bar_names'][] = trans('messages.unsubscribed');
-                $datas[] = ['value' => $list->readCache('UnsubscribeCount', 0), 'name' => trans('messages.unsubscribed')];
+                $result['data'][] = ['value' => $list->readCache('UnsubscribeCount', 0), 'name' => trans('messages.unsubscribed')];
             }
 
             if ($list->readCache('UnconfirmedCount', 0)) {
-                $result['bar_names'][] = trans('messages.unconfirmed');
-                $datas[] = ['value' => $list->readCache('UnconfirmedCount', 0), 'name' => trans('messages.unconfirmed')];
+                $result['data'][] = ['value' => $list->readCache('UnconfirmedCount', 0), 'name' => trans('messages.unconfirmed')];
             }
 
             if ($list->readCache('BlacklistedCount', 0)) {
-                $result['bar_names'][] = trans('messages.blacklisted');
-                $datas[] = ['value' => $list->readCache('BlacklistedCount', 0), 'name' => trans('messages.blacklisted')];
+                $result['data'][] = ['value' => $list->readCache('BlacklistedCount', 0), 'name' => trans('messages.blacklisted')];
             }
 
             if ($list->readCache('SpamReportedCount', 0)) {
-                $result['bar_names'][] = trans('messages.spam_reported');
-                $datas[] = ['value' => $list->readCache('SpamReportedCount', 0), 'name' => trans('messages.spam_reported')];
+                $result['data'][] = ['value' => $list->readCache('SpamReportedCount', 0), 'name' => trans('messages.spam_reported')];
             }
         } else {
-            // create data
             if ($customer->readCache('SubscribedCount', 0)) {
-                $result['bar_names'][] = trans('messages.subscribed');
-                $datas[] = ['value' => $request->user()->customer->readCache('SubscribedCount', 0), 'name' => trans('messages.subscribed')];
+                $result['data'][] = ['value' => $customer->readCache('SubscribeCount', 0), 'name' => trans('messages.subscribed')];
             }
 
             if ($customer->readCache('UnsubscribedCount', 0)) {
-                $result['bar_names'][] = trans('messages.unsubscribed');
-                $datas[] = ['value' => $customer->readCache('UnsubscribedCount', 0), 'name' => trans('messages.unsubscribed')];
+                $result['data'][] = ['value' => $customer->readCache('UnsubscribeCount', 0), 'name' => trans('messages.unsubscribed')];
             }
 
             if ($customer->readCache('UnconfirmedCount', 0)) {
-                $result['bar_names'][] = trans('messages.unconfirmed');
-                $datas[] = ['value' => $customer->readCache('UnconfirmedCount', 0), 'name' => trans('messages.unconfirmed')];
+                $result['data'][] = ['value' => $customer->readCache('UnconfirmedCount', 0), 'name' => trans('messages.unconfirmed')];
             }
 
-            if ($customer->readCache('BlackListedCount', 0)) {
-                $result['bar_names'][] = trans('messages.blacklisted');
-                $datas[] = ['value' => $customer->readCache('BlackListedCount', 0), 'name' => trans('messages.blacklisted')];
+            if ($customer->readCache('BlacklistedCount', 0)) {
+                $result['data'][] = ['value' => $customer->readCache('BlacklistedCount', 0), 'name' => trans('messages.blacklisted')];
             }
 
             if ($customer->readCache('SpamReportedCount', 0)) {
-                $result['bar_names'][] = trans('messages.spam_reported');
-                $datas[] = ['value' => $customer->readCache('SpamReportedCount', 0), 'name' => trans('messages.spam_reported')];
+                $result['data'][] = ['value' => $customer->readCache('SpamReportedCount', 0), 'name' => trans('messages.spam_reported')];
             }
         }
 
-        // datas
-        $result['data'][] = [
-            'name' => trans('messages.statistics'),
-            'type' => 'pie',
-            'radius' => '70%',
-            'center' => ['50%', '57.5%'],
-            'data' => $datas
-        ];
+        // // datas
+        // $result['data'][] = [
+        //     'name' => trans('messages.statistics'),
+        //     'type' => 'pie',
+        //     'radius' => '70%',
+        //     'center' => ['50%', '57.5%'],
+        //     'data' => $datas
+        // ];
 
-        $result['pie'] = 1;
-        return json_encode($result);
+        // $result['pie'] = 1;
+        return response()->json($result);
     }
 
     /**
@@ -583,9 +560,27 @@ class MailListController extends Controller
             return $this->notAuthorized();
         }
 
-        $list->copy($request->copy_list_name);
+        if ($request->isMethod('post')) {
+            // make validator
+            $validator = \Validator::make($request->all(), [
+                'name' => 'required',
+            ]);
 
-        echo trans('messages.list.copied');
+            // redirect if fails
+            if ($validator->fails()) {
+                return response()->view('lists.copy', [
+                    'list' => $list,
+                    'errors' => $validator->errors(),
+                ], 400);
+            }
+
+            $list->copy($request->name);
+            return trans('messages.list.copied');
+        }
+
+        return view('lists.copy', [
+            'list' => $list,
+        ]);
     }
 
     /**
@@ -602,6 +597,10 @@ class MailListController extends Controller
         // authorize
         if (\Gate::denies('read', $list)) {
             return $this->notAuthorized();
+        }
+
+        if ($request->isMethod('post')) {
+            $list->setEmbeddedFormOptions($request->options);
         }
 
         return view('lists.embedded_form', [
@@ -640,7 +639,7 @@ class MailListController extends Controller
     public function embeddedFormCaptcha(Request $request)
     {
         $list = \Acelle\Model\MailList::findByUid($request->uid);
-        
+
         // Check if list does exist
         if (!is_object($list)) {
             return view('somethingWentWrong', ['message' => trans('messages.embedded_form.list_not_exsit')]);
@@ -662,14 +661,26 @@ class MailListController extends Controller
      */
     public function embeddedFormSubscribe(Request $request)
     {
+        $list = \Acelle\Model\MailList::findByUid($request->uid);
+
         if (\Acelle\Model\Setting::get('embedded_form_recaptcha') == 'yes') {
-            $success = \Acelle\Library\Tool::checkReCaptcha($request);
+            if ($request->hasCaptcha) {
+                $success = \Acelle\Library\Tool::checkReCaptcha($request);
+            } else {
+                return view('lists.embedded_form_captcha', [
+                    'list' => $list,
+                ]);
+            }
         } else {
             $success = true;
         }
 
-        $list = \Acelle\Model\MailList::findByUid($request->uid);
-        
+        // Language
+        if (is_object($list->customer) && is_object($list->customer->language)) {
+            \App::setLocale($list->customer->language->code);
+            \Carbon\Carbon::setLocale($list->customer->language->code);
+        }
+
         // Check if list does exist
         if (!is_object($list)) {
             return view('somethingWentWrong', ['message' => trans('messages.embedded_form.list_not_exsit')]);
@@ -685,105 +696,55 @@ class MailListController extends Controller
             ]);
         }
 
-        // Create subscriber
-        if ($request->isMethod('post')) {
-            $subscriber = $list->subscribers()->where('email','=',strtolower(trim($request->EMAIL)))->first();
+        try {
+            // Create subscriber
+            list($validator, $subscriber) = $list->subscribe($request, MailList::SOURCE_EMBEDDED_FORM);
+        } catch (\Exception $ex) {
+            return view('somethingWentWrong', ['message' => $ex->getMessage()]);
+        }
 
-            if (!is_object($subscriber)) {
-                $subscriber = new \Acelle\Model\Subscriber($request->all());
-                $subscriber->mail_list_id = $list->id;
-            }
 
-            // Validation
-            $rules = $subscriber->getRules();
-            if(is_object($subscriber) && $subscriber->status == \Acelle\Model\Subscriber::STATUS_SUBSCRIBED) {
-                $rules['email_already_subscribed'] = 'required';
-            }
-
-            if ($list->subscribe_confirmation) {
-                $subscriber->status = 'unconfirmed';
-            } else {
-                $subscriber->status = 'subscribed';
-            }
-            $subscriber->from = 'embedded-form';
-
-            // Validate
-            $validator = \Validator::make($request->all(), $rules);
-
-            if ($validator->fails()) {
-                $url = $request->session()->pull('form_url');
-                // $validator->errors()
-                $errs = [];
-                foreach($validator->errors()->toArray() as $key => $error) {
-                    if ($key != 'email_already_subscribed') {
-                        $errs[] = $key . ": " . $error[0];
-                    } else {
-                        $errs[] = $error[0];
-                    }
-                }
-
-                if (strpos($url, '?') !== false) {
-                    $url = $url . "&" . implode('&', $errs);
-                } else {
-                    $url = $url . "?" . implode('&', $errs);
-                }
-
-                // return redirect()->away($url);
-                return view('lists.embedded_form_errors', [
-                    'errors' => $errs,
-                    'list' => $list,
-                    'back_link' => $url,
+        if ($validator->fails()) {
+            $url = $request->session()->pull('form_url');
+            // $validator->errors()
+            $errs = [];
+            foreach ($validator->errors()->toArray() as $key => $error) {
+                $field = $list->getFieldByTag($key);
+                $errs[] = trans('messages.list.field_not_valid', [
+                    'field' => $field->label,
                 ]);
             }
 
-            $subscriber->email = $request->EMAIL;
-            $subscriber->ip = $request->ip();
-            $subscriber->save();
-            // Update field
-            $subscriber->updateFields($request->all());
-            
-            Log::info("Subscriber {$subscriber->email} is added to list {$subscriber->mailList->name} via embedded form");
-
-            // trigger the event
-            if (Setting::isYes('send_notification_email_for_list_subscription')) {
-                Log::info("Sending notification email for subscriber {$subscriber->email}, list {$subscriber->mailList->name}");
-                event(new MailListSubscription($list->customer->user, $subscriber));
+            if (strpos($url, '?') !== false) {
+                $url = $url . "&" . implode('&', $errs);
             } else {
-                Log::info("No notification email for subscriber {$subscriber->email}, list {$subscriber->mailList->name}");
+                $url = $url . "?" . implode('&', $errs);
             }
 
-            if ($list->subscribe_confirmation) {
-                // SEND subscription confirmation email
-                try {
-                    if ($subscriber->isListedInBlacklist()) {
-                        throw new \Exception(trans('messages.subscriber.blacklisted'));
-                    }
-                    $list->sendSubscriptionConfirmationEmail($subscriber);
-                } catch (\Exception $ex) {
-                    return view('somethingWentWrong', ['message' => $ex->getMessage()]);
-                }
+            // return redirect()->away($url);
+            return view('lists.embedded_form_errors', [
+                'errors' => $errs,
+                'list' => $list,
+                'back_link' => $url,
+            ]);
+        }
 
-                // update MailList cache
-                event(new \Acelle\Events\MailListUpdated($subscriber->mailList));
-
-                return redirect()->action('PageController@signUpThankyouPage', ['list_uid' => $list->uid, 'subscriber_uid' => $subscriber->uid]);
-            } else {
-                // change status to subscribed
-                $subscriber->updateStatus('subscribed');
-
-                // Send welcome email
-                if($list->send_welcome_email) {
-                    // SEND subscription confirmation email
-                    $list->sendSubscriptionWelcomeEmail($subscriber);
-                }
-
-                return redirect()->action('PageController@signUpConfirmationThankyou', [
-                        'list_uid' => $list->uid,
-                        'uid' => $subscriber->uid,
-                        'code' => 'empty',
-                    ]
-                );
-            }
+        // custom redirect
+        if ($request->redirect_url) {
+            return redirect()->away($request->redirect_url);
+        } elseif ($list->subscribe_confirmation && !$subscriber->isSubscribed()) {
+            // tell subscriber to check email for confirmation
+            return redirect()->action('PageController@signUpThankyouPage', ['list_uid' => $list->uid, 'subscriber_uid' => $subscriber->uid]);
+        } else {
+            // All done, confirmed
+            return redirect()->action(
+                'PageController@signUpConfirmationThankyou',
+                [
+                    'list_uid' => $list->uid,
+                    'uid' => $subscriber->uid,
+                    'code' => 'empty',
+                ]
+            );
         }
     }
 
@@ -797,10 +758,20 @@ class MailListController extends Controller
     public function verification(Request $request)
     {
         $list = \Acelle\Model\MailList::findByUid($request->uid);
+        $currentJob = $list->verificationJobs()->first();
 
-        return view('lists.email_verification', [
-            'list' => $list,
-        ]);
+        if ($currentJob) {
+            return view('lists.email_verification', [
+                'list' => $list,
+                'currentJobUid' => $currentJob->uid,
+                'cancelUrl' => action('MailListController@stopVerification', [ 'uid' => $list->uid, 'job_uid' => $currentJob->uid ]),
+                'progressCheckUrl' => action('MailListController@verificationProgress', [ 'uid' => $list->uid, 'job_uid' => $currentJob->uid ]),
+            ]);
+        } else {
+            return view('lists.email_verification', [
+                'list' => $list,
+            ]);
+        }
     }
 
     /**
@@ -809,11 +780,19 @@ class MailListController extends Controller
      */
     public function startVerification(Request $request)
     {
+        // Get list & server
         $list = MailList::findByUid($request->uid);
         $server = EmailVerificationServer::findByUid($request->email_verification_server_id);
-        Log::info("Trying to start verification process for list " . $list->id);
-        $list->queueForVerification($server->id);
-        return redirect()->action('MailListController@verification', $list->uid);
+
+        // Dispatch
+        $job = $list->dispatchVerificationJob($server);
+
+        // Return
+        return response()->json([
+            'currentJobUid' => $job->uid,
+            'cancelUrl' => action('MailListController@stopVerification', [ 'uid' => $list->uid, 'job_uid' => $job->uid ]),
+            'progressCheckUrl' => action('MailListController@verificationProgress', [ 'uid' => $list->uid, 'job_uid' => $job->uid ]),
+        ]);
     }
 
     /**
@@ -823,8 +802,14 @@ class MailListController extends Controller
     public function stopVerification(Request $request)
     {
         $list = MailList::findByUid($request->uid);
-        $list->stopVerification();
-        return redirect()->action('MailListController@verification', $list->uid);
+        $job = $list->verificationJobs()->where('uid', $request->job_uid)->first();
+
+        if (is_null($job)) {
+            throw new Exception(sprintf('Verification job #%s does not exist', $request->job_uid));
+        }
+
+        $job->cancel();
+        return response()->json();
     }
 
     /**
@@ -844,18 +829,17 @@ class MailListController extends Controller
      */
     public function verificationProgress(Request $request)
     {
-        $list = \Acelle\Model\MailList::findByUid($request->uid);
-        $percent = $list->getVerifiedSubscribersPercentage();
+        $list = MailList::findByUid($request->uid);
+        $job = $list->verificationJobs()->where('uid', $request->job_uid)->first();
 
-        if (!$list->isVerificationRunning()) {
-            echo 'done';
-            $request->session()->flash('alert-success', trans('messages.verification.done'));
-            return;
+        if (is_null($job)) {
+            throw new Exception(sprintf('Verification job #%s does not exist', $request->job_uid));
         }
 
-        return view('lists.email_verification_progress', [
-            'list' => $list,
-        ]);
+        $progress = $list->getProgress($job);
+
+        // Get progress updated by the import process and status of the final job monitor
+        return response()->json($progress);
     }
 
     /**
@@ -867,9 +851,9 @@ class MailListController extends Controller
         header("Access-Control-Allow-Origin: *");
 
         $list = \Acelle\Model\MailList::findByUid($request->uid);
-        $subscriber = $list->subscribers()->where('email','=',strtolower(trim($request->EMAIL)))->first();
+        $subscriber = $list->subscribers()->where('email', '=', strtolower(trim($request->EMAIL)))->first();
 
-        if(is_object($subscriber) && $subscriber->status == \Acelle\Model\Subscriber::STATUS_SUBSCRIBED) {
+        if (is_object($subscriber) && $subscriber->status == \Acelle\Model\Subscriber::STATUS_SUBSCRIBED) {
             $result = trans('messages.email_already_subscribed');
         } else {
             $result = true;
@@ -877,7 +861,7 @@ class MailListController extends Controller
 
         return response()->json($result);
     }
-    
+
     /**
      * Clone list for other users
      *
@@ -886,18 +870,18 @@ class MailListController extends Controller
     {
         $list = \Acelle\Model\MailList::findByUid($request->uid);
         $customers = Customer::where('id', '!=', $list->customer_id);
-        
+
         $options = [];
-        foreach($customers->get() as $customer) {
-            $options[] = ['text' => $customer->displayName(), 'value' => $customer->uid];
+        foreach ($customers->get() as $customer) {
+            $options[] = ['text' => $customer->user->displayName(), 'value' => $customer->uid];
         }
-        
+
         return view('lists.cloneForCustomersChoose', [
             'list' => $list,
             'options' => $options,
         ]);
     }
-    
+
     /**
      * Clone list for other users
      *
@@ -906,12 +890,78 @@ class MailListController extends Controller
     {
         $list = \Acelle\Model\MailList::findByUid($request->uid);
         $customers = Customer::WhereIn('uid', $request->customers);
-        
+
         $list->cloneForCustomers($customers->get());
-        
+
         return response()->json([
             'status' => 'success',
             'message' => trans('messages.list.clone_for.success'),
         ]);
+    }
+
+    public function selectList(Request $request)
+    {
+        if ($request->isMethod('post')) {
+            // make validator
+            $validator = \Validator::make($request->all(), [
+                'list_uid' => 'required',
+            ]);
+
+            // redirect if fails
+            if ($validator->fails()) {
+                return response()->view('lists.selectList', [
+                    'errors' => $validator->errors(),
+                ], 400);
+            }
+
+            $url = str_replace('list_uid', $request->list_uid, $request->redirect);
+            return response()->json([
+                'url' => $url,
+            ]);
+        }
+
+        return view('lists.selectList');
+    }
+
+    public function emailVerificationChart(Request $request)
+    {
+        $list = \Acelle\Model\MailList::findByUid($request->uid);
+
+        // authorize
+        if (\Gate::denies('read', $list)) {
+            return $this->notAuthorized();
+        }
+
+        $result = [
+            'data' => [
+                [
+                    'name' => trans('messages.email_verification_result_deliverable'),
+                    'value' => $list->subscribers()->deliverable()->count(),
+                ],
+                [
+                    'name' => trans('messages.email_verification_result_undeliverable'),
+                    'value' => $list->subscribers()->undeliverable()->count(),
+                ],
+                [
+                    'name' => trans('messages.email_verification_result_risky'),
+                    'value' =>  $list->subscribers()->risky()->count(),
+                ],
+                [
+                    'name' => trans('messages.email_verification_result_unverified'),
+                    'value' => $list->subscribers()->unverified()->count(),
+                ],
+                [
+                    'name' => trans('messages.email_verification_result_unknown'),
+                    'value' => $list->subscribers()->unknown()->count(),
+                ],
+            ],
+        ];
+
+        // usort($result['data'], function ($a, $b) {
+        //     return strcmp($a['value'], $b['value']);
+        // });
+        // $result['data'] = array_reverse($result['data']);
+
+        return response()->json($result);
     }
 }

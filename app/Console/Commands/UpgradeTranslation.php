@@ -4,6 +4,7 @@ namespace Acelle\Console\Commands;
 
 use Illuminate\Console\Command;
 use Acelle\Library\UpgradeManager;
+use Acelle\Model\Language;
 
 class UpgradeTranslation extends Command
 {
@@ -38,11 +39,7 @@ class UpgradeTranslation extends Command
      */
     public function handle()
     {
-        $manager = new UpgradeManager();
-        $files = ['auth', 'messages', 'pagination', 'passwords', 'validation'];
-        foreach($files as $f) {
-            $path = base_path("resources/lang/en/$f.php");
-            $manager->upgradeLanguageFiles($path);
-        }
+        \Acelle\Helpers\pcopy(resource_path('lang/en'), resource_path('lang/default'));
+        Language::dump();
     }
 }

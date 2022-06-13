@@ -54,7 +54,6 @@ class InstallController extends Controller
     public function starting(Request $request)
     {
         $next = action('InstallController@systemCompatibility');
-        artisan_config_cache();
         return redirect()->away($next);
     }
 
@@ -85,7 +84,6 @@ class InstallController extends Controller
             ]);
         } catch (\Exception $e) {
             $next_page = action('InstallController@systemCompatibility');
-            artisan_config_cache();
             return redirect()->away($next_page);
         }
     }
@@ -107,21 +105,28 @@ class InstallController extends Controller
             'password' => 'required',
             'timezone' => 'required',
         ];
-        $smtp_rules = [
-            'smtp_hostname' => 'required',
-            'smtp_port' => 'required',
-            'smtp_username' => 'required',
-            'smtp_password' => 'required',
-            'smtp_from_email' => 'required|email',
-            'smtp_from_name' => 'required',
+        $mail_rules = [
+            'smtp' => [
+                'smtp_hostname' => 'required',
+                'smtp_port' => 'required',
+                'smtp_username' => 'required',
+                'smtp_password' => 'required',
+                'mail_from_email' => 'required|email',
+                'mail_from_name' => 'required',
+            ],
+            'sendmail' => [
+                'mail_from_email' => 'required|email',
+                'mail_from_name' => 'required',
+                'sendmail_path' => 'required',
+            ],
         ];
+        $smtp_rules = $mail_rules['smtp'];
+
         // validate and save posted data
         if ($request->isMethod('post')) {
             $request->session()->forget('site_info');
 
-            if ($request->mail_driver == 'smtp') {
-                $rules = array_merge($rules, $smtp_rules);
-            }
+            $rules = array_merge($rules, $mail_rules[$request->mail_mailer]);
             $this->validate($request, $rules);
 
             $site_info = $request->all();
@@ -139,7 +144,7 @@ class InstallController extends Controller
             }
 
             // Check SMTP connection
-            if ($request->mail_driver == 'smtp') {
+            if ($request->mail_mailer == 'smtp') {
                 $rules = [];
                 try {
                     $transport = new \Swift_SmtpTransport($request->smtp_hostname, $request->smtp_port, $request->smtp_encryption);
@@ -153,9 +158,6 @@ class InstallController extends Controller
                     $rules['smtp_valid'] = 'required';
                 }
                 $this->validate($request, $rules);
-            } else {
-                $site_info["smtp_from_name"] = $site_info["site_name"];
-                $site_info["smtp_from_email"] = $site_info["email"];
             }
 
             $request->session()->put('site_info', $site_info);
@@ -321,12 +323,15 @@ class InstallController extends Controller
 
         // Insert default superuser
         $mysqli->query('DELETE FROM `'.$database['tables_prefix'].'users` WHERE 1');
-        $mysqli->query('INSERT INTO `'.$database['tables_prefix']."users`
+        $mysqli->query(
+            'INSERT INTO `'.$database['tables_prefix']."users`
             (
                 `id`,
                 `uid`,
                 `api_token`,
                 `email`,
+                `first_name`,
+                `last_name`,
                 `password`,
                 `remember_token`,
                 `status`,
@@ -338,6 +343,8 @@ class InstallController extends Controller
                 '" .uniqid()."',
                 '".str_random(60)."',
                 '".$site_info['email']."',
+                '".$site_info['first_name']."',
+                '".$site_info['last_name']."',
                 '".bcrypt($site_info['password'])."',
                 '',
                 'active',
@@ -348,7 +355,8 @@ class InstallController extends Controller
         );
 
         $mysqli->query('DELETE FROM `'.$database['tables_prefix'].'admins` WHERE 1');
-        $mysqli->query('INSERT INTO `'.$database['tables_prefix']."admins`
+        $mysqli->query(
+            'INSERT INTO `'.$database['tables_prefix']."admins`
             (
                 `id`,
                 `uid`,
@@ -357,12 +365,10 @@ class InstallController extends Controller
                 `contact_id`,
                 `admin_group_id`,
                 `language_id`,
-                `first_name`,
-                `last_name`,
-                `image`,
                 `timezone`,
                 `status`,
                 `color_scheme`,
+                `menu_layout`,
                 `created_at`,
                 `updated_at`) VALUES
             (
@@ -373,12 +379,10 @@ class InstallController extends Controller
                 NULL,
                 1,
                 1,
-                '".$site_info['first_name']."',
-                '".$site_info['last_name']."',
-                NULL,
                 '".$site_info['timezone']."',
                 'active',
                 NULL,
+                '".\Acelle\Model\Setting::get('layout.menu_bar')."',
                 '".$date."',
                 '".$date."'
             );"
@@ -388,7 +392,10 @@ class InstallController extends Controller
             $mysqli->query('DELETE FROM `'.$database['tables_prefix'].'customers` WHERE 1');
             // Subscribe to default plan
             $admin = \Acelle\Model\Admin::find(1);
-            $admin->createCustomerAccount($admin);
+            $user = \Acelle\Model\User::find(1);
+            $customer = $admin->createCustomerAccount();
+            $user->customer_id = $customer->id;
+            $user->save();
         }
 
         // Insert system urls
@@ -397,7 +404,7 @@ class InstallController extends Controller
                         ('url_delivery_handler', '".action('DeliveryController@notify', ['stype' => ''])."', '".$date."', '".$date."');");
         $mysqli->query('DELETE FROM `'.$database['tables_prefix']."settings` WHERE name='url_unsubscribe'");
         $mysqli->query('INSERT INTO `'.$database['tables_prefix']."settings` (`name`, `value`, `created_at`, `updated_at`) VALUES
-                        ('url_unsubscribe', '".action('CampaignController@unsubscribe', ['message_id' => 'MESSAGE_ID'])."', '".$date."', '".$date."');");
+                        ('url_unsubscribe', '".action('CampaignController@unsubscribe', ['message_id' => 'MESSAGE_ID', 'subscriber' => 'SUBSCRIBER'])."', '".$date."', '".$date."');");
         $mysqli->query('DELETE FROM `'.$database['tables_prefix']."settings` WHERE name='url_open_track'");
         $mysqli->query('INSERT INTO `'.$database['tables_prefix']."settings` (`name`, `value`, `created_at`, `updated_at`) VALUES
                         ('url_open_track', '".action('CampaignController@open', ['message_id' => 'MESSAGE_ID'])."', '".$date."', '".$date."');");
@@ -423,6 +430,18 @@ class InstallController extends Controller
                         ('license', '".$site_info['license']."', '".$date."', '".$date."');");
         $mysqli->query('INSERT INTO `'.$database['tables_prefix']."settings` (`name`, `value`, `created_at`, `updated_at`) VALUES
                         ('license_type', '".$site_info['license_type']."', '".$date."', '".$date."');");
+
+        // mail setting
+        \Acelle\Model\Setting::set('mailer.mailer', $site_info['mail_mailer']);
+        \Acelle\Model\Setting::set('mailer.host', $site_info['smtp_hostname']);
+        \Acelle\Model\Setting::set('mailer.port', $site_info['smtp_port']);
+        \Acelle\Model\Setting::set('mailer.encryption', $site_info['smtp_encryption']);
+        \Acelle\Model\Setting::set('mailer.username', $site_info['smtp_username']);
+        \Acelle\Model\Setting::set('mailer.password', $site_info['smtp_password']);
+        \Acelle\Model\Setting::set('mailer.from.name', $site_info['mail_from_name']);
+        \Acelle\Model\Setting::set('mailer.from.address', $site_info['mail_from_email']);
+        \Acelle\Model\Setting::set('mailer.sendmail_path', $site_info['sendmail_path']);
+
 
         $request->session()->flash('alert-success', trans('messages.install.database_import.success'));
 
@@ -466,16 +485,8 @@ class InstallController extends Controller
             return redirect()->action('InstallController@database');
         }
 
-        // Re-generate remote job url
-        if($request->re_generate_remote_job_url) {
-            $remote_job_token = str_random(60);
-            \Acelle\Model\Setting::set('remote_job_token', $remote_job_token);
-            echo action('Controller@remoteJob', ['remote_job_token' => $remote_job_token]);
-            return;
-        }
-
         $respone = \Acelle\Library\Tool::cronjobUpdateController($request, $this);
-        if($respone == 'done' || $respone == 'remote') {
+        if ($respone == 'done' || $respone == 'remote') {
             return redirect()->action('InstallController@finishing');
         }
 
@@ -485,7 +496,6 @@ class InstallController extends Controller
     public function finishing(Request $request)
     {
         $next_page = action('InstallController@finish');
-        artisan_config_cache();
         AppNotification::cleanup();
         return redirect()->away($next_page);
     }
@@ -516,8 +526,8 @@ class InstallController extends Controller
             [
                 'type' => 'requirement',
                 'name' => 'PHP version',
-                'check' => version_compare(PHP_VERSION, '7.0.0', '>='),
-                'note' => 'PHP 7.0.0 or higher is required.',
+                'check' => version_compare(PHP_VERSION, config('custom.php'), '>='),
+                'note' => 'PHP '.config('custom.php').' or higher is required.',
             ],
             [
                 'type' => 'requirement',
@@ -597,12 +607,14 @@ class InstallController extends Controller
                 'check' => extension_loaded('xml'),
                 'note' => 'PHP XML extension is required.',
             ],
+            /*
             [
                 'type' => 'requirement',
                 'name' => 'proc_close()',
                 'check' => func_enabled('proc_close'),
                 'note' => 'proc_close() must be enabled.',
             ],
+            */
             [
                 'type' => 'requirement',
                 'name' => 'escapeshellarg()',
@@ -639,12 +651,6 @@ class InstallController extends Controller
                 'type' => 'permission',
                 'name' => base_path('bootstrap/cache'),
                 'check' => file_exists(base_path('/bootstrap/cache')) && is_dir(base_path('/bootstrap/cache')) && (is_writable(base_path('/bootstrap/cache'))),
-                'note' => 'The directory must be writable by the web server.',
-            ],
-            [
-                'type' => 'permission',
-                'name' => base_path('public'),
-                'check' => file_exists(base_path('/public')) && is_dir(base_path('/public')) && (is_writable(base_path('/public'))),
                 'note' => 'The directory must be writable by the web server.',
             ],
         ];
@@ -706,14 +712,6 @@ class InstallController extends Controller
     // Write configuration values to file
     public function writeEnv($request)
     {
-        // read app key from file
-        $file_path = base_path('.env');
-        $file = fopen($file_path, 'r') or die('Unable to open file!');
-        $app_config = fread($file, filesize($file_path));
-        preg_match('/APP_KEY=(.*)\n/', $app_config, $match);
-        $app_key = trim($match[1]);
-        fclose($file);
-
         // get database config
         $database = $request->session()->get('database');
         $database = !empty($database) ? $database : [];
@@ -722,42 +720,23 @@ class InstallController extends Controller
         $smtp = $request->session()->get('site_info');
         $smtp = !empty($smtp) ? $smtp : [];
 
-        $env_file = fopen(base_path('.env'), 'w') or die('Unable to open file!');
-        $config_string = 'APP_ENV=production
-APP_DEBUG=true
-APP_KEY='.$app_key.'
-APP_URL='.url('/').'
-
-DB_HOST='.(isset($database['hostname']) ? $database['hostname'] : '').'
-DB_DATABASE='.(isset($database['database_name']) ? $database['database_name'] : '').'
-DB_USERNAME='.(isset($database['username']) ? $database['username'] : '').'
-DB_PASSWORD='.(isset($database['password']) ? $database['password'] : '').'
-DB_PORT='.(isset($database['port']) ? $database['port'] : '').'
-DB_TABLES_PREFIX='.(isset($database['tables_prefix']) ? $database['tables_prefix'] : '').'
-
-CACHE_DRIVER=file
-SESSION_DRIVER=file
-QUEUE_DRIVER=database
-
-REDIS_HOST=localhost
-REDIS_PASSWORD=null
-REDIS_PORT=6379
-
-MAIL_DRIVER='.(isset($smtp['mail_driver']) ? $smtp['mail_driver'] : 'mail').'
-MAIL_HOST='.(isset($smtp['smtp_hostname']) ? $smtp['smtp_hostname'] : '').'
-MAIL_PORT='.(isset($smtp['smtp_port']) ? $smtp['smtp_port'] : '').'
-MAIL_USERNAME="'.(isset($smtp['smtp_username']) ? $smtp['smtp_username'] : '').'"
-MAIL_PASSWORD="'.(isset($smtp['smtp_password']) ? $smtp['smtp_password'] : '').'"
-MAIL_ENCRYPTION='.(isset($smtp['smtp_encryption']) ? $smtp['smtp_encryption'] : '').'
-MAIL_FROM_ADDRESS="'.(isset($smtp['smtp_from_email']) ? $smtp['smtp_from_email'] : '').'"
-MAIL_FROM_NAME="'.(isset($smtp['smtp_from_name']) ? $smtp['smtp_from_name'] : '').'"
-';
-        $config_string;
-        fwrite($env_file, $config_string);
-        fclose($env_file);
-
-        // Reload .env
-        artisan_config_cache();
+        putPermanentEnv([
+            'APP_URL' => url('/'),
+            'DB_HOST' => (isset($database['hostname']) ? $database['hostname'] : ''),
+            'DB_DATABASE' => (isset($database['database_name']) ? $database['database_name'] : ''),
+            'DB_USERNAME' => (isset($database['username']) ? $database['username'] : ''),
+            'DB_PASSWORD' => (isset($database['password']) ? quoteDotEnvValue($database['password']) : ''),
+            'DB_PORT' => (isset($database['port']) ? $database['port'] : ''),
+            'DB_TABLES_PREFIX' => (isset($database['tables_prefix']) ? $database['tables_prefix'] : ''),
+            'MAIL_MAILER' => (isset($smtp['mail_mailer']) ? $smtp['mail_mailer'] : 'mail'),
+            'MAIL_HOST' => (isset($smtp['smtp_hostname']) ? $smtp['smtp_hostname'] : ''),
+            'MAIL_PORT' => (isset($smtp['smtp_port']) ? $smtp['smtp_port'] : ''),
+            'MAIL_USERNAME' => (isset($smtp['smtp_username']) ? $smtp['smtp_username'] : ''),
+            'MAIL_PASSWORD' => (isset($smtp['smtp_password']) ? quoteDotEnvValue($smtp['smtp_password']) : ''),
+            'MAIL_ENCRYPTION' => (isset($smtp['smtp_encryption']) ? $smtp['smtp_encryption'] : ''),
+            'MAIL_FROM_ADDRESS' => (isset($smtp['mail_from_email']) ? $smtp['mail_from_email'] : ''),
+            'MAIL_FROM_NAME' => (isset($smtp['mail_from_name']) ? $smtp['mail_from_name'] : ''),
+        ]);
     }
 
     public function importDatabase($database)

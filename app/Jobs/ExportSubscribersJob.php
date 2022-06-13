@@ -2,35 +2,40 @@
 
 namespace Acelle\Jobs;
 
-use Acelle\Jobs\Job;
+use Acelle\Library\Traits\Trackable;
+use Exception;
 
-class ExportSubscribersJob extends ImportExportJob
+class ExportSubscribersJob extends Base
 {
+    use Trackable;
+
+    public $timeout = 3600;
+
+    protected $mailList;
+    protected $segment;
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($mailList, $customer)
+    public function __construct($mailList, $segment = null)
     {
-        // call parent's constructor
-        parent::__construct($mailList, $customer);
-        
-        
-        $systemJob = $this->getSystemJob();
-        // set failed
-        $systemJob->data = json_encode([
-            "mail_list_uid" => $mailList->uid,
-            "status" => "new",
-            "message" => trans('messages.starting'),
-            "total" => 0,
-            "success" => 0,
-            "error" => 0,
-            "percent" => 0
-        ]);
-        $systemJob->save();
+        $this->mailList = $mailList;
+        $this->segment = $segment;
+
+        // Set the initial value for progress check
+        $this->afterDispatched(function ($thisJob, $monitor) {
+            $monitor->setJsonData([
+                'percentage' => 0,
+                'total' => 0,
+                'processed' => 0,
+                'failed' => 0,
+                'message' => 'Export is being queued for processing...',
+                'filepath' => $this->mailList->getExportFilePath(),
+            ]);
+        });
     }
-    
+
     /**
      * Execute the job.
      *
@@ -38,33 +43,20 @@ class ExportSubscribersJob extends ImportExportJob
      */
     public function handle()
     {
-        $job = $this;
-        
-        // Set language
-        try {
-            if (is_object($job->customer) && is_object($job->customer->language)) {
-                \App::setLocale($job->customer->language->code);
-                \Carbon\Carbon::setLocale($job->customer->language->code);
+        $this->mailList->export(function ($processed, $total, $failed, $message) {
+            $percentage = ($total && $processed) ? (int)($processed*100/$total) : 0;
+
+            if ($total === 0) {
+                $percentage = 100;
             }
-        } catch (\Exception $e) {
-        }
-        
-        try {            
-            \Acelle\Model\MailList::export($job->mailList, $job->customer, $job);
-        } catch (\Exception $e) {
-            $systemJob = $this->getSystemJob();
-        
-            // set failed
-            $systemJob->data = json_encode([
-                "mail_list_uid" => $job->mailList->uid,
-                "status" => "failed",
-                "message" => $e->getMessage(),
-                "total" => 0,
-                "success" => 0,
-                "error" => 0,
-                "percent" => 0
+
+            $this->monitor->updateJsonData([
+                'percentage' => $percentage,
+                'total' => $total,
+                'processed' => $processed,
+                'failed' => $failed,
+                'message' => $message,
             ]);
-            $systemJob->save();
-        }
+        }, $this->segment);
     }
 }

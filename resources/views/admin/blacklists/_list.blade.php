@@ -6,13 +6,13 @@
 			<th>
 				<div class="checkbox inline check_all_list">
 					<label>
-						<input type="checkbox" class="styled check_all">
+						<input type="checkbox" name="page_checked" class="styled check_all">
 					</label>
 				</div>
 			</th>
 			<th>{{ trans('messages.email') }}</th>
 			<th>{{ trans('messages.created_at') }}</th>
-			<th class="text-right">{{ trans('messages.action') }}</th>
+			<th class="text-end">{{ trans('messages.action') }}</th>
 		</tr>
 		@foreach ($blacklists as $key => $blacklist)
 			<tr>
@@ -20,26 +20,29 @@
 					<div class="checkbox inline">
 						<label>
 							<input type="checkbox" class="node styled"
-								name="ids[]"
+								name="uids[]"
 								value="{{ $blacklist->id }}"
 							/>
 						</label>
 					</div>
 				</td>
 				<td>
-					<span class="no-margin kq_search">{{ $blacklist->email }}</span>
-					<span class="text-muted second-line-mobile">{{ trans('messages.email') }}</span>
+					<span class="no-margin kq_search"><a class="reason-link" href="{{ action('Admin\BlacklistController@reason', $blacklist->id) }}">{{ $blacklist->email }}</a></span>
+					<span class="text-muted second-line-mobile">
+					<a class="reason-link" href="{{ action('Admin\BlacklistController@reason', $blacklist->id) }}">
+						{{ trans('messages.email') }}
+					</a></span>
 				</td>
 				<td>
-					<span class="no-margin kq_search">{{ Tool::formatDateTime($blacklist->created_at) }}</span>
+					<span class="no-margin kq_search">{{ Auth::user()->admin->formatDateTime($blacklist->created_at, 'date_full') }}</span>
 					<span class="text-muted second-line-mobile">{{ trans('messages.created_at') }}</span>
 				</td>
-				<td class="text-right">
+				<td class="text-end">
 					@if (Auth::user()->admin->can('delete', $blacklist))
 						<a
-							delete-confirm="{{ trans('messages.remove_blacklist_confirm') }}"
+							link-confirm="{{ trans('messages.remove_blacklist_confirm') }}"
 							href="{{ action('Admin\BlacklistController@delete', ["uids" => $blacklist->id]) }}"
-							class="btn btn-primary btn-xs bg-grey"
+							class="btn btn-primary btn-xs bg-grey list-action-single"
 							data-popup="tooltip" title="{{ trans('messages.remove_from_blacklist') }}"
 						>
 							{{ trans('messages.blacklist.remove') }}
@@ -50,17 +53,29 @@
 		@endforeach
 	</table>
 	@include('elements/_per_page_select', ["items" => $blacklists])
-	{{ $blacklists->links() }}
+
+	<script>
+		$('.reason-link').click(function(e) {
+			e.preventDefault();
+
+			var bp = new Popup();
+			bp.load($(this).attr('href'));
+		});
+	</script>
 @elseif (!empty(request()->keyword) || !empty(request()->filters["campaign_uid"]))
 	<div class="empty-list">
-		<i class="glyphicon glyphicon-minus-sign"></i>
+		<span class="material-symbols-rounded">
+block
+</span>
 		<span class="line-1">
 			{{ trans('messages.no_search_result') }}
 		</span>
 	</div>
 @else
 	<div class="empty-list">
-		<i class="glyphicon glyphicon-minus-sign"></i>
+		<span class="material-symbols-rounded">
+block
+</span>
 		<span class="line-1">
 			{{ trans('messages.blacklist_empty_line_1') }}
 		</span>

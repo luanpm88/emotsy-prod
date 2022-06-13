@@ -36,7 +36,7 @@ class MailListPolicy
         return $item->customer_id == $customer->id;
     }
 
-    public function addMoreSubscribers(User $user, MailList $mailList, $numberOfSubscribers)
+    public function addMoreSubscribers(User $user, MailList $mailList, $numberOfSubscribers = 1)
     {
         $max = $user->customer->getOption('subscriber_max');
         $maxPerList = $user->customer->getOption('subscriber_per_list_max');

@@ -23,9 +23,12 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Acelle\Library\Traits\HasUid;
 
 class Currency extends Model
 {
+    use HasUid;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -50,16 +53,6 @@ class Currency extends Model
     }
 
     /**
-     * Find item by uid.
-     *
-     * @return object
-     */
-    public static function findByUid($uid)
-    {
-        return self::where('uid', '=', $uid)->first();
-    }
-
-    /**
      * Associations.
      *
      * @var object | collect
@@ -78,12 +71,7 @@ class Currency extends Model
 
         // Create uid when creating list.
         static::creating(function ($item) {
-            // Create new uid
-            $uid = uniqid();
-            while (Currency::where('uid', '=', $uid)->count() > 0) {
-                $uid = uniqid();
-            }
-            $item->uid = $uid;
+            $item->uid = uniqid();
 
             // uppercase for currency code
             $item->code = strtoupper($item->code);

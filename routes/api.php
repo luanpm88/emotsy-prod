@@ -15,31 +15,32 @@ use Illuminate\Http\Request;
 
 Route::group(['namespace' => 'Api', 'prefix' => 'v1', 'middleware' => 'auth:api'], function () {
     //
-    Route::get('', function(){
+    Route::get('', function () {
         return \Response::json(\Auth::guard('api')->user());
     });
 
     // Simple authentication
-    Route::get('me', function() {
+    Route::get('me', function () {
         return \Response::json(\Auth::guard('api')->user());
     });
 
     // List
+    Route::delete('lists/{uid}', 'MailListController@delete');
+    Route::post('lists/{uid}/add-field', 'MailListController@addField');
     Route::resource('lists', 'MailListController');
 
     // Campaign
+    Route::post('campaigns/{uid}/pause', 'CampaignController@pause');
     Route::resource('campaigns', 'CampaignController');
 
     // Subscriber
-    Route::patch('lists/{list_uid}/subscribers/{uid}/update', 'SubscriberController@update');
+    Route::post('subscribers/{uid}/add-tag', 'SubscriberController@addTag');
     Route::get('subscribers/email/{email}', 'SubscriberController@showByEmail');
-    Route::patch('lists/{list_uid}/subscribers/{uid}/update', 'SubscriberController@update');
-    Route::get('lists/{list_uid}/subscribers', 'SubscriberController@index');
-    Route::get('lists/{list_uid}/subscribers/{uid}', 'SubscriberController@show')->name('subscriber');
-    Route::patch('lists/{list_uid}/subscribers/{uid}/subscribe', 'SubscriberController@subscribe');
-    Route::patch('lists/{list_uid}/subscribers/{uid}/unsubscribe', 'SubscriberController@unsubscribe');
-    Route::delete('lists/{list_uid}/subscribers/{uid}/delete', 'SubscriberController@delete');
-    Route::post('lists/{list_uid}/subscribers/store', 'SubscriberController@store');
+    Route::patch('subscribers/{uid}/subscribe', 'SubscriberController@subscribe');
+    Route::patch('subscribers/{uid}/unsubscribe', 'SubscriberController@unsubscribe');
+    Route::delete('subscribers/{uid}', 'SubscriberController@delete');
+
+    Route::resource('subscribers', 'SubscriberController');
 
     // Automation
     Route::post('automations/{uid}/api/call', 'AutomationController@apiCall');
@@ -51,13 +52,13 @@ Route::group(['namespace' => 'Api', 'prefix' => 'v1', 'middleware' => 'auth:api'
     Route::resource('plans', 'PlanController');
 
     // Customer
+    Route::match(['get','post'], 'login-token', 'CustomerController@loginToken');
     Route::post('customers/{uid}/assign-plan/{plan_uid}', 'CustomerController@assignPlan');
     Route::patch('customers/{uid}/disable', 'CustomerController@disable');
     Route::patch('customers/{uid}/enable', 'CustomerController@enable');
     Route::resource('customers', 'CustomerController');
 
     // Subscription
-    Route::post('subscriptions/{id}/activate', 'SubscriptionController@setActive');
     Route::resource('subscriptions', 'SubscriptionController');
 
     // File
@@ -65,4 +66,7 @@ Route::group(['namespace' => 'Api', 'prefix' => 'v1', 'middleware' => 'auth:api'
 
     // File
     Route::post('automations/{uid}/execute', 'AutomationController@execute')->name('automation_execute');
+
+    // Subscription
+    Route::resource('notification', 'NotificationController');
 });

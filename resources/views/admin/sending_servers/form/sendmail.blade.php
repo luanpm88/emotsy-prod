@@ -1,9 +1,9 @@
 @if (!$server->id)
-<form action="{{ action('Admin\SendingServerController@store', ["type" => request()->type]) }}" method="POST" class="form-validate-jqueryz">
+<form id="editServerForm" action="{{ action('Admin\SendingServerController@store', ["type" => request()->type]) }}" method="POST" class="form-validate-jqueryz">
     {{ csrf_field() }}
     <input type="hidden" name="type" value="{{ $server->type }}" />
 @else
-<form enctype="multipart/form-data" action="{{ action('Admin\SendingServerController@update', [$server->uid, $server->type]) }}" method="POST" class="form-validate-jqueryz">
+<form id="editServerForm" enctype="multipart/form-data" action="{{ action('Admin\SendingServerController@update', [$server->uid, $server->type]) }}" method="POST" class="form-validate-jqueryz">
     <input type="hidden" name="_method" value="PATCH">
     {{ csrf_field() }}
 @endif
@@ -29,35 +29,34 @@
                 <span class="edit-group">
                     <a
                         href="{{ action('Admin\SendingServerController@testConnection', $server->uid) }}"
-                        type="button"
-                        class="btn btn-mc_primary mr-10 ajax_link"
-                        data-method="POST"
+                        role="button"
+                        class="btn btn-secondary me-2 test-connection-button"
                         mask-title="{{ trans('messages.sending_server.testing') }}"
                     >
                         {{ trans('messages.sending_server.test_connection') }}
                     </a>
-                        <a
+                        <a id="SendTestEmailButton"
                         href="{{ action('Admin\SendingServerController@test', $server->uid) }}"
-                        type="button"
-                        class="btn btn-mc_default mr-10 modal_link"
+                        role="button"
+                        class="btn btn-secondary me-2 modal_link"
                         data-in-form="true"
-                        data-method="GET"
+                        link-method="GET"
                     >
                         {{ trans('messages.sending_server.send_a_test_email') }}
                     </a>
+                    <a href="javascript:;" role="button" class="btn btn-link switch-form-toggle">
+                        {{ trans('messages.edit') }}
+                    </a>
                 </span>
                 <span class="cancel-group hide">
-                    <button class="btn btn-mc_primary mr-10">{{ trans('messages.save') }}</button>
+                    <button class="btn btn-secondary me-2">{{ trans('messages.save') }}</button>
+                    <a href="javascript:;" role="button" class="btn btn-link switch-form-toggle">
+                        {{ trans('messages.cancel') }}
+                    </a>
                 </span>
-                <a href="javascript:;" type="button" class="btn btn-mc_inline switch-form-toggle"
-                    data-disabled="true"
-                    data-edit="{{ trans('messages.edit') }}"
-                    data-cancel="{{ trans('messages.cancel') }}">
-                        {{ trans('messages.edit') }}
-                </a>
             @else
-                <button class="btn btn-mc_primary mr-10">{{ trans('messages.save') }}</button>
-                <a href="{{ action('Admin\SendingServerController@index') }}" type="button" class="btn btn-mc_inline">
+                <button class="btn btn-secondary me-2">{{ trans('messages.save') }}</button>
+                <a href="{{ action('Admin\SendingServerController@index') }}" role="button" class="btn btn-link">
                     {{ trans('messages.cancel') }}
                 </a>
             @endif
@@ -121,7 +120,7 @@
 
                 <p>{!! trans('messages.sending_servers.sending_limit.mailgun.intro') !!}</p>
                     
-                <div class="select-custom" data-url="{{ action('Admin\SendingServerController@sendingLimit', ['uid' => ($server->uid ? $server->uid : 0)]) }}">
+                <div class="sendind-limit-select-custom" data-url="{{ action('Admin\SendingServerController@sendingLimit', ['uid' => ($server->uid ? $server->uid : 0)]) }}">
                     @include ('admin.sending_servers.form._sending_limit', [
                         'quotaValue' => $server->quota_value,
                         'quotaBase' => $server->quota_base,
@@ -140,29 +139,62 @@
                 <p>
                     {!! trans('messages.sending_servers.local_identity.intro') !!}                    
                 </p>
+            </div>
+
+            <div class="col-md-9">
                 @if (is_null($identities))
                     @include('elements._notification', [
                         'level' => 'warning',
                         'title' => 'Error fetching identities list',
-                        'message' => 'Please check your connection',
+                        'message' => 'Please check your connection to AWS',
                     ])
                 @else
                     <table class="table table-box table-box-head field-list">
                         <thead>
                             <tr>
-                                <td>{{ trans('messages.email_domain') }}</td>
+                                <td>{{ trans('messages.domain') }}</td>
                                 <td>{{ trans('messages.status') }}</td>
-                                <td>{{ trans('messages.action') }}</td>
+                                <td align="center" class="xtooltip" title="Set whether or not this identity is available for all users">Available for All</td>
+                                <td>Added By</td>
+                                <td>Action</td>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($identities as $domain)
+                            @foreach ($allIdentities as $domain => $attributes)
                                 <tr class="odd">
                                     <td>
                                         {{ $domain }}
                                     </td>
                                     <td>
-                                        <span class="badge badge-success badge-lg">{{ trans('messages.sending_identity.status.active') }}</span>
+                                        @if ($attributes['VerificationStatus'] == 'Success')
+                                            <span class="label label-flat bg-active">{{ trans('messages.sending_domain_status_active') }}</span>
+                                        @else
+                                            <span class="label label-flat bg-inactive">{{ trans('messages.sending_domain_status_inactive') }}</span>
+                                        @endif
+                                        
+                                    </td>
+
+                                    @if (!is_null($attributes['UserId']))
+                                        <td align="center"><span class="xtooltip" title="This domain is private and is available for the owner user only">Private</span></td>
+                                    @elseif ($attributes['VerificationStatus'] == 'Success')
+                                        <td align="center">
+                                            <label>
+                                                @if (checkEmail($domain))
+                                                    <input type="checkbox" name="options[emails][]" value="{{ $domain }}" class="switchery"
+                                                        {{ $attributes['Selected'] ? " checked" : "" }}
+                                                    />
+                                                @else
+                                                    <input type="checkbox" name="options[domains][]" value="{{ $domain }}" class="switchery"
+                                                        {{ $attributes['Selected'] ? " checked" : "" }}
+                                                    />
+                                                @endif
+                                            </label>
+                                        </td>
+                                    @else
+                                        <td align="center"></td>
+                                    @endif
+                                    <td>
+                                        <a href="{{ action('Admin\CustomerController@index') }}" target="_blank">{{ $attributes['UserName'] }}</a>
                                     </td>
                                     <td>
                                         <a href="{{ action('Admin\SendingServerController@removeDomain', [$server->uid, base64_encode($domain)]) }}"
@@ -176,13 +208,15 @@
                         </tbody>
                     </table>
                 @endif
+            </div>
+            <div class="col-md-6">
                 <br>
                 <a href="{{ action('Admin\SendingServerController@addDomain', $server->uid) }}"
-                  class="btn btn-mc_default mr-10 modal_link" data-size="md">
+                  class="btn btn-secondary me-2 add-domain-button" data-size="md">
                     {{ trans('messages.sending_serbers.add_email_domain') }}
                 </a>
                     
-                <p class="mt-40">
+                <p class="mt-5">
                     {{ trans('messages.sending_serbers.php-mail.allow_verify.intro') }}                    
                 </p>
                     
@@ -212,24 +246,11 @@
                     'help_class' => 'sending_server',
                     'options' => ['no', 'yes'],
                 ])
-
-                <div class="use_custom_verification_email" style="display:none;padding-left:35px">
-                    @include('helpers.form_control', [
-                        'type' => 'checkbox2',
-                        'label' => trans('messages.use_custom_verification_email', [
-                            'link' => action('Admin\SendingServerController@customVerificationEmail', $server->uid)
-                        ]),
-                        'name' => 'options[use_custom_verification_email]',
-                        'value' => $server->getOption('use_custom_verification_email'),
-                        'help_class' => 'sending_server',
-                        'options' => ['no', 'yes'],
-                    ])
-                </div>
                 
                 <hr>
                 <div class="mt-20">
-                    <button class="btn btn-mc_primary mr-10">{{ trans('messages.save') }}</button>
-                    <a href="{{ action('Admin\SendingServerController@index') }}" type="button" class="btn btn-mc_inline">
+                    <button class="btn btn-secondary me-2">{{ trans('messages.save') }}</button>
+                    <a href="{{ action('Admin\SendingServerController@index') }}" role="button" class="btn btn-link">
                         {{ trans('messages.cancel') }}
                     </a>
                 </div>
@@ -240,6 +261,8 @@
 </form>
 
 <script>
+    var addDomain;
+
     $(function() {
         $('[name="options[allow_verify_email_against_acelle]"]').change(function() {
             var value = $(this).is(':checked');
@@ -251,12 +274,16 @@
         });
         $('[name="options[allow_verify_email_against_acelle]"]').change();
 
-        $('.custom-verification-email-edit').click(function(e) {
+        // add domain
+        $('.add-domain-button').on('click', function(e) {
             e.preventDefault();
-            
+
             var url = $(this).attr('href');
-            
-            openBuilderClassic(url);
+            addDomain = new Popup({
+                url: url
+            });
+
+            addDomain.load();
         });
     });
 </script>

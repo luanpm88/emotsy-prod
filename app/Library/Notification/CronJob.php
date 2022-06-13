@@ -32,12 +32,13 @@ class CronJob extends Notification
      */
     public static function check()
     {
-        self::cleanupSimilarNotifications();
+        $title = trans('messages.admin.notification.cronjob_title');
+        self::cleanupDuplicateNotifications($title);
 
         $interval = Setting::get('cronjob_min_interval');
         if (!self::isCronjobExecutedWithin($interval)) {
             $warning = [
-                'title' => trans('messages.admin.notification.cronjob_title'),
+                'title' => $title,
                 'message' => trans('messages.admin.notification.cronjob_not_active', ['cronjob_min_interval' => "$interval", 'cronjob_last_executed' => self::getLastExecutionDateTime()]),
             ];
 

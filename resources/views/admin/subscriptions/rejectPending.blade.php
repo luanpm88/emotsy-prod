@@ -2,8 +2,7 @@
 
 @section('content')
 	<div class="row">
-        <div class="col-md-1"></div>
-        <div class="col-md-10">
+        <div class="col-md-12">
             <h2 class="mt-0">{{ trans('messages.subscription.reject_pending_payment') }}</h2>
             <p>{{ trans('messages.subscription.reject_pending_payment.leave_note') }}</p>
 
@@ -18,7 +17,7 @@
                     'rules' => ['reason' => 'required']
                 ])
 
-                <button class="btn btn-mc_primary">{{ trans('messages.subscription.reject_pending') }}</button>
+                <button class="btn btn-secondary">{{ trans('messages.subscription.reject_pending') }}</button>
             </form>
         </div>
     </div>
@@ -34,6 +33,7 @@
                 url: url,
                 method: 'POST',
                 data: data,
+                globalError: false,
                 statusCode: {
                     // validate error
                     400: function (res) {
@@ -44,9 +44,13 @@
                     rejectPendingSub.hide();
 
                     // notify
-                    notify('success', '{{ trans('messages.notify.success') }}', response.message);
+                    notify({
+    type: 'success',
+    title: '{!! trans('messages.notify.success') !!}',
+    message: response.message
+});
 
-                    tableFilterAll();
+                    SubscriptionsIndex.getList().load();
                 }
             });
         });

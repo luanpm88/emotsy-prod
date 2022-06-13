@@ -5,6 +5,8 @@
             <p>
                 {!! trans('messages.sending_servers.sending_identity.intro', ['link' => 'https://us-west-2.console.aws.amazon.com/ses/home#verified-senders-domain']) !!}
             </p>
+        </div>
+        <div class="col-md-8">
             @if (is_null($identities))
                 @include('elements._notification', [
                     'level' => 'warning',
@@ -17,43 +19,65 @@
                         <tr>
                             <td>{{ trans('messages.domain') }}</td>
                             <td>{{ trans('messages.status') }}</td>
-                            <td>{{ trans('messages.action') }}</td>
+                            <td align="center" class="xtooltip" title="Set whether or not this identity is available for all users">Available for All</td>
+                            <td>Added By</td>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($identities as $domain)
+                        @foreach ($allIdentities as $domain => $attributes)
                             <tr class="odd">
                                 <td>
                                     {{ $domain }}
                                 </td>
                                 <td>
-                                    <span class="badge badge-success badge-lg">{{ trans('messages.sending_identity.status.active') }}</span>
-                                </td>
-                                <td>
-                                    @if (checkEmail($domain))
-                                        <input type="checkbox" name="options[emails][]" value="{{ $domain }}" class="switchery"
-                                            {{ $server->isEmailEnabled($domain) ? " checked" : "" }}
-                                        />
+                                    @if ($attributes['VerificationStatus'] == 'Success')
+                                        <span class="label label-flat bg-active">{{ trans('messages.sending_domain_status_active') }}</span>
                                     @else
-                                        <input type="checkbox" name="options[domains][]" value="{{ $domain }}" class="switchery"
-                                            {{ $server->isDomainEnabled($domain) ? " checked" : "" }}
-                                        />
+                                        <span class="label label-flat bg-inactive">{{ trans('messages.sending_domain_status_inactive') }}</span>
                                     @endif
+                                    
+                                </td>
+
+                                @if (!is_null($attributes['UserId']))
+                                    <td align="center"><span class="xtooltip" title="This domain is private and is available for the owner user only">Private</span></td>
+                                @elseif ($attributes['VerificationStatus'] == 'Success')
+                                    <td align="center">
+                                        @if (checkEmail($domain))
+                                            <label>
+                                                <input type="checkbox" name="options[emails][]" value="{{ $domain }}" class="switchery"
+                                                    {{ $attributes['Selected'] ? " checked" : "" }}
+                                                />
+                                            </label>
+                                        @else
+                                            <label>
+                                                <input type="checkbox" name="options[domains][]" value="{{ $domain }}" class="switchery"
+                                                    {{ $attributes['Selected'] ? " checked" : "" }}
+                                                />
+                                            </label>
+                                        @endif
+                                    </td>
+                                @else
+                                    <td align="center"></td>
+                                @endif
+                                <td>
+                                    <a href="{{ action('Admin\CustomerController@index') }}" target="_blank">{{ $attributes['UserName'] }}</a>
                                 </td>
                             </tr>
                         @endforeach
                     </tbody>
                 </table>
             @endif
+        </div>
+        <div class="col-md-6">
             <br>
-            <a target="_blank" confirm="{{ trans('messages.sending_server.aws.add_domain_redirect_confirm') }}" href="https://us-west-2.console.aws.amazon.com/ses/home?region={{ $server->type }}" class="btn btn-mc_default mr-10">
+            <a target="_blank" confirm="{{ trans('messages.sending_server.aws.add_domain_redirect_confirm') }}" href="https://us-west-2.console.aws.amazon.com/ses/home?region={{ $server->type }}" class="btn btn-secondary me-2">
                 {{ trans('messages.sending_serbers.add_domain') }}
             </a>
-            <a target="_blank" href="https://console.aws.amazon.com/ses/home?region={{ $server->aws_region }}" type="button"
-              class="btn btn-mc_default">
+            <a target="_blank" href="https://console.aws.amazon.com/ses/home?region={{ $server->aws_region }}" role="button"
+              class="btn btn-primary">
                 {{ trans('messages.sending_serbers.go_to_amazon_dashboard') }}
             </a>
-            <p class="mt-40">
+            <p class="mt-5">
                 {{ trans('messages.sending_serbers.aws.allow_verify.intro') }}
             </p>
 
@@ -75,23 +99,10 @@
                 'options' => ['no', 'yes'],
             ])
 
-            <div class="use_custom_verification_email" style="display:none;padding-left:35px">
-                @include('helpers.form_control', [
-                    'type' => 'checkbox2',
-                    'label' => trans('messages.use_custom_verification_email', [
-                        'link' => action('Admin\SendingServerController@customVerificationEmail', $server->uid)
-                    ]),
-                    'name' => 'options[use_custom_verification_email]',
-                    'value' => $server->getOption('use_custom_verification_email'),
-                    'help_class' => 'sending_server',
-                    'options' => ['no', 'yes'],
-                ])
-            </div>
-
             <hr>
             <div class="mt-20">
-                <button class="btn btn-mc_primary mr-10">{{ trans('messages.save') }}</button>
-                <a href="{{ action('Admin\SendingServerController@index') }}" type="button" class="btn btn-mc_inline">
+                <button class="btn btn-secondary me-2">{{ trans('messages.save') }}</button>
+                <a href="{{ action('Admin\SendingServerController@index') }}" role="button" class="btn btn-link">
                     {{ trans('messages.cancel') }}
                 </a>
             </div>
@@ -110,13 +121,5 @@
             }
         });
         $('[name="options[allow_verify_email_remotely]"]').change();
-
-        $('.custom-verification-email-edit').click(function(e) {
-            e.preventDefault();
-            
-            var url = $(this).attr('href');
-            
-            openBuilderClassic(url);
-        });
     });
 </script>

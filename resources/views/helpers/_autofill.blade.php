@@ -1,7 +1,3 @@
-@if (isset($unlimited_check))
-    <div class="row">
-        <div class="col-md-6">
-@endif
             <div {{ isset($id) ? "id=" . $id : 'class="autofill"' }}>
                 <input
                     header="{{ isset($header) ? $header : "" }}"
@@ -19,15 +15,3 @@
                     {{ isset($readonly) && $readonly ? "readonly=readonly" : "" }}
                 >
             </div>
-@if (isset($unlimited_check))
-        </div>
-        <div class="col-md-6">
-            <div class="checkbox inline unlimited-check text-semibold">
-                <label>
-                    <input{{ $value  == -1 ? " checked=checked" : "" }} type="checkbox" class="styled">
-                    {{ trans('messages.unlimited') }}
-                </label>
-            </div>
-        </div>
-    </div>
-@endif

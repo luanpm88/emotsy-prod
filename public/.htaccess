@@ -20,5 +20,6 @@
 </IfModule>
 
 <IfModule mod_headers.c>
-    Header set Access-Control-Allow-Origin *
+    # CORS is already configured in Laravel
+    # Header set Access-Control-Allow-Origin *
 </IfModule>

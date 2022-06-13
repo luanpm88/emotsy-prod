@@ -1,22 +1,17 @@
-@extends('layouts.backend')
+@extends('layouts.core.backend')
 
 @section('title', trans('messages.settings'))
-
-@section('page_script')
-    <script type="text/javascript" src="{{ URL::asset('assets/js/core/libraries/jquery_ui/interactions.min.js') }}"></script>
-	<script type="text/javascript" src="{{ URL::asset('assets/js/core/libraries/jquery_ui/touch.min.js') }}"></script>
-		
-	<script type="text/javascript" src="{{ URL::asset('js/listing.js') }}"></script>		
-@endsection
 
 @section('page_header')
 
     <div class="page-title">				
         <ul class="breadcrumb breadcrumb-caret position-right">
-            <li><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
         </ul>
         <h1>
-            <span class="text-gear"><i class="icon-list2"></i> {{ trans('messages.settings') }}</span>
+            <span class="text-gear"><span class="material-symbols-rounded">
+email
+</span> {{ trans('messages.system_email') }}</span>
         </h1>				
     </div>
 
@@ -35,13 +30,15 @@
         </div>
     @endif
     
-    <form action="{{ action('Admin\SettingController@mailer') }}" method="POST" class="form-validate-jqueryz">
+    <form action="{{ action('Admin\SettingController@mailer') }}" method="POST" class="form-validate-jqueryz mailer-form">
         {{ csrf_field() }}
         
         <div class="tabbable">
             @include("admin.settings._tabs")
 
             <div class="tab-content">
+                <p>{{ trans('messages.system_email.intro') }}</p>
+
                 @include("admin.settings._mailer")
             </div>
         </div>
@@ -49,18 +46,16 @@
         
     <script>
         function toogleMailer() {
-            var value = $("select[name='env[MAIL_DRIVER]']").val();
-            if (value == 'sendmail') {
-                $('.smtp_box').hide();
-            } else {
-                $('.smtp_box').show();
-            }
+            var value = $("select[name='env[MAIL_MAILER]']").val();
+            $('.mailer-setting').hide();
+            $('.mailer-setting.' + value).show();
         }
         
         $(document).ready(function() {
             // SMTP toogle
             toogleMailer();
-            $("select[name='env[MAIL_DRIVER]']").change(function() {
+
+            $("select[name='env[MAIL_MAILER]']").change(function() {
                 toogleMailer();
             });
         });

@@ -25,10 +25,10 @@ class AddTrackingLogsForeignKeys extends Migration
     public function down()
     {
         Schema::table('tracking_logs', function (Blueprint $table) {
-            $table->dropForeign('tracking_logs_customer_id_foreign');
-            $table->dropForeign('tracking_logs_sending_server_id_foreign');
-            $table->dropForeign('tracking_logs_campaign_id_foreign');
-            $table->dropForeign('tracking_logs_subscriber_id_foreign');
+            $table->dropForeign(['customer_id']);
+            $table->dropForeign(['sending_server_id']);
+            $table->dropForeign(['campaign_id']);
+            $table->dropForeign(['subscriber_id']);
         });
     }
 }

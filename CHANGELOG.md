@@ -1,4 +1,97 @@
-4.0.19 / 2020-03-04
+4.0.24 / 2021-09-19
+==================
+
+ * Added: upgrade to Laravel 8
+ * Added: upgrade to Carbon 2
+ * Added: more base templates available
+ * Added: improved loading performance statistics dashboard
+ * Added: better verification and sending speed throttling
+ * Added: new layout and color themes options
+ * Added: better compliance with Laravel 8, ready to upgrade
+ * Added: refined automation UI
+ * Added: updated GeoIP dataset
+ * Added: multiple payment options supported
+ * Added: mass assign values to custom fields
+ * Added: more PRO builder widgets
+ * Added: more campaign setup options
+ * Added: improved sending domain verification process
+ * Added: plugin mechanism now allows hooking into the core application
+ * Added: better PHP CLI detection
+ * Added: file manager is now supported in PRO builder
+ * Added: user's space for storing assets
+ * Added: more plan setup options
+ * Added: easier form generation options
+ * Added: more unsubscription options
+ * Changed: PHP versions older than 7.3 is no longer supported
+ * Changed: default editor (classic) for uploaded templates
+ * Changed: allow admins to modify base templates
+
+4.0.23 / 2021-03-17
+==================
+
+ * Added: plugin mechanism 1.0 is now available, embracing plugin development
+ * Added: more widgets for PRO builder
+ * Added: one-time login token generation (via API)
+ * Fixed: better SSL detection for shared hosting environment
+ * Fixed: better multi-process support & detection
+ * Fixed: faster authentication process
+ * Fixed: fixed Chrome browser glithes
+ * Fixed: better compatibility with PHP 7.4
+ * Fixed: better compatibility with different types of HTML email templates
+ * Fixed: email builder not working with legacy versions of Internet Explorer
+ * Fixed: better AWS bounce/feedback handling
+ * Fixed: sending domain verification not working properly with certain DNS providers
+ * Fixed: faster web page load in general
+ * Fixed: upgrade issue from version 3x to 4x
+ * Fixed: performance issue on servers with limited memory
+ * Fixed: performance issue with certain types of PCNTL setup
+ * Fixed: email builder not working well with SVG
+ * Fixed: better compatibility with older versions of Thunderbird
+
+4.0.22 / 2021-02-11
+==================
+
+ * Added: tracking domain support
+ * Added: tracking domain with HTTPS support
+ * Added: purify users' HTML content
+ * Added: strict password reset policy
+ * Added: spam scoring improved
+ * Added: trailing comma clean up, better compatibility with PHP 7.3 or older
+ * Added: new Amazon Web Service regions support
+ * Added: more automation delay options
+ * Added: more timezone converting options
+ * Added: RSS feed support with advanced template engine
+ * Fixed: DNS record for tracking domain may not correctly show up
+ * Fixed: email attachement improved
+ * Fixed: InnoDB compatibility improved
+ * Fixed: list subscription performance improved
+ * Fixed: PRO builder translation improved
+ * Fixed: better RFC 1341 compliance
+ * Fixed: ENV file quoting
+ * Fixed: better load performance for JS/CSS
+ * Fixed: delivery attempt tracking improved
+
+4.0.21 / 2020-11-11
+==================
+
+ * Fixed: default template missing
+ * Fixed: users cannot add custom sending identities
+ * Fixed: translation missing
+ * Fixed: SendGrid subaccount issue
+ * Fixed: PayPal integration error while checking out
+ * Fixed: click tracking error for Automation
+ * Fixed: Pro builder loading performance
+ * Fixed: SPF cannot be verified
+ * Fixed: translation cache issue
+ * Added: upgrade to Laravel 5.8 (current 5.5)
+ * Added: minimum PHP version required is now 7.1.3
+ * Added: send test email for system email
+ * Added: autofill support for tags
+ * Added: clean up bare linefeed characters in email
+ * Added: assign plan to customer support
+ * Added: reorganization of users assets storage
+
+4.0.19 / 2020-09-10
 ==================
 
  + Fixed: automation elements are not well organized
@@ -17,7 +110,7 @@
  + Added: subscription notification for admin
  + Added: notification management dashboard
 
-4.0.18 / 2020-02-10
+4.0.18 / 2020-06-08
 ==================
 
  * Fixed: sending identity not working in certain cases

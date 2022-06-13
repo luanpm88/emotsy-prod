@@ -1,13 +1,16 @@
-<div class="modal-header">
-    <h5 class="modal-title">{{ trans('messages.customer.admin_area') }}</h5>
-    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-      <span aria-hidden="true">&times;</span>
-    </button>
-</div>
-<div class="modal-body">
-    <p class="alert alert-info">{!! trans('messages.current_login_as', ["name" => Auth::user()->customer->displayName()]) !!}</p>
+@extends('layouts.popup.small')
 
-    <h5 class="mt-0 mb-10"><i class="icon-magazine"></i> {{ trans('messages.subscription_of', ['name' => $customer->displayName()]) }}</h5>
+@section('title')
+    {{ trans('messages.customer.admin_area') }}
+@endsection
+
+@section('content')
+
+    <p class="alert alert-info">{!! trans('messages.current_login_as', ["name" => Auth::user()->displayName()]) !!}</p>
+
+    <h5 class="mt-0 mb-10"><span class="material-symbols-rounded">
+auto_awesome_mosaic
+</span> {{ trans('messages.subscription_of', ['name' => Auth::user()->displayName()]) }}</h5>
     
     @if (isset($subscription))
         <ul class="dotted-list topborder section">
@@ -19,61 +22,39 @@
                     <mc:flag><strong>{{ $subscription->plan->name }}</strong></mc:flag>
                 </div>
             </li>
-            @if ($subscription->active())
-                @if ($subscription->recurring())
-                    <li>
-                        <div class="unit size1of2">
-                            <strong>{{ trans('messages.subscription.status.recurring') }}</strong>
-                        </div>
-                        <div class="lastUnit size1of2">
-                            <mc:flag><strong>{{ trans('messages.yes') }}</strong></mc:flag>
-                        </div>
-                    </li>
-                @else
-                    <li>
-                        <div class="unit size1of2">
-                            <strong>{{ trans('messages.subscription.status.recurring') }}</strong>
-                        </div>
-                        <div class="lastUnit size1of2">
-                            <mc:flag><strong>{{ trans('messages.no') }}</strong></mc:flag>
-                        </div>
-                    </li>
-                @endif
-            @endif
             <li>
                 <div class="unit size1of2">
                     <strong>{{ trans('messages.status') }}</strong>
                 </div>
                 <div class="lastUnit size1of2">
                     <mc:flag>
-                        @if (!$subscription->active())
-							@if ($subscription->ended())
-								<span class="label label-flat bg-cancelled">{{ trans('messages.subscription.status.ended') }}</span>
-							@elseif ($subscription->isNew())
-								<span class="label label-flat bg-new">{{ trans('messages.subscription.status.new') }}</span>
-							@elseif ($subscription->isPending())								
-								@if ($subscription->isPaymentClaimed())
-									<span class="label label-flat bg-pending">{{ trans('messages.invoice.status.claimed') }}</span>
-								@else
-									<span class="label label-flat bg-pending">{{ trans('messages.subscription.status.pending') }}</span>
-								@endif
-							@endif
-						@else
-							@if ($subscription->recurring())
-								<span class="label label-flat bg-info">{{ trans('messages.subscription.status.recurring') }}</span>
-							@else
-								<span class="label label-flat bg-active">{{ trans('messages.subscription.status.active') }}</span>
-							@endif
-						@endif
+                        @switch($subscription->status)
+                            @case(Acelle\Model\Subscription::STATUS_ACTIVE)
+                                <span style="cursor:pointer"
+                                    class=" label bg-success"
+                                >
+                                    {{ trans('messages.subscription.status.active') }}
+                                </span>
+
+                                @break
+                            @case(Acelle\Model\Subscription::STATUS_NEW)
+                                @if ($subscription->getUnpaidInvoice())
+                                    <span style="cursor:pointer"
+                                        class="label bg-m-warning"
+                                    >
+                                        {{ trans('messages.subscription.status.wait_for_payment') }}
+                                    </span>	
+                                @endif
+                                
+                                @break
+                            @default
+                                <span style="cursor:pointer"
+                                    class="label bg-{{ $subscription->status }}"
+                                >
+                                    {{ trans('messages.subscription.status.' . $subscription->status) }}
+                                </span>
+                        @endswitch
                     </mc:flag>
-                </div>
-            </li>
-            <li>
-                <div class="unit size1of2">
-                    <strong>{{ trans('messages.payment_method') }}</strong>
-                </div>
-                <div class="lastUnit size1of2">
-                    <mc:flag>{{ trans('messages.payment.' . Acelle\Model\Setting::get('system.payment_gateway')) }}</mc:flag>
                 </div>
             </li>
             <li>
@@ -89,7 +70,7 @@
                     <strong>{{ trans('messages.subscription.next_billing_date') }}</strong>
                 </div>
                 <div class="lastUnit size1of2">
-                    <mc:flag>{{ Acelle\Library\Tool::formatDate($next_billing_date) }}</mc:flag>
+                    <mc:flag>{{ Auth::user()->customer->formatDateTime($next_billing_date, 'date_full') }}</mc:flag>
                 </div>
             </li>
         </ul>
@@ -98,8 +79,8 @@
             {{ trans('messages.customer_has_no_plan') }}
         </div>
     @endif
-</div>
-<div class="modal-footer text-left">
-    <a href="{{ action("CustomerController@loginBack") }}" class="btn btn-mc_primary">{{ trans('messages.customer.back_to_admin') }}</a>
-    <button type="button" class="btn btn-mc_inline" data-dismiss="modal">{{ trans('messages.close') }}</button>
-</div>
+    <div class="text-left mt-5">
+        <a href="{{ action("CustomerController@loginBack") }}" class="btn btn-secondary">{{ trans('messages.customer.back_to_admin') }}</a>
+        <button role="button" class="btn btn-link" data-dismiss="modal">{{ trans('messages.close') }}</button>
+    </div>
+@endsection

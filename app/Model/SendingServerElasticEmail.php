@@ -24,17 +24,18 @@ namespace Acelle\Model;
 
 use Acelle\Library\Log as MailLog;
 use Acelle\Library\StringHelper;
+use CurlFile;
 
 class SendingServerElasticEmail extends SendingServer
 {
-    const WEBHOOK = 'elasticemail';
-    const WEBHOOK_NAME = 'acellemail';
-    const API_ENDPOINT = 'https://api.elasticemail.com/v2';
+    public const WEBHOOK = 'elasticemail';
+    public const WEBHOOK_NAME = 'acellemail';
+    public const API_ENDPOINT = 'https://api.elasticemail.com/v2';
 
     protected $table = 'sending_servers';
-    public static $client = null;
-    public static $isWebhookSetup = false;
-    public static $isCustomHeadersEnabled = false;
+    public $client = null;
+    public $isWebhookSetup = false;
+    public $isCustomHeadersEnabled = false;
 
     /**
      * Get authenticated to Mailgun and return the session object.
@@ -43,11 +44,11 @@ class SendingServerElasticEmail extends SendingServer
      */
     public function client()
     {
-        if (!self::$client) {
-            self::$client = new \ElasticEmail\ElasticEmailV2($this->api_key);
+        if (!$this->client) {
+            $this->client = new \ElasticEmail\ElasticEmail($this->api_key);
         }
 
-        return self::$client;
+        return $this->client;
     }
 
     /**
@@ -131,7 +132,7 @@ class SendingServerElasticEmail extends SendingServer
      */
     public function enableCustomHeaders()
     {
-        if (self::$isCustomHeadersEnabled) {
+        if ($this->isCustomHeadersEnabled) {
             return true;
         }
 
@@ -142,7 +143,7 @@ class SendingServerElasticEmail extends SendingServer
 
         if ($responseJson->success == true) {
             MailLog::info('Custom headers enabled');
-            self::$isCustomHeadersEnabled = true;
+            $this->isCustomHeadersEnabled = true;
         } else {
             throw new \Exception('Cannot enable customer headers: '.$response);
         }
@@ -155,7 +156,7 @@ class SendingServerElasticEmail extends SendingServer
      */
     public function setupWebhooks()
     {
-        if (self::$isWebhookSetup) {
+        if ($this->isWebhookSetup) {
             return true;
         }
 
@@ -170,7 +171,7 @@ class SendingServerElasticEmail extends SendingServer
 
         if ($response['success'] == true) {
             MailLog::info('webhook set!');
-            self::$isWebhookSetup = true;
+            $this->isWebhookSetup = true;
         } else {
             $msg = 'ElasticEmail Erorr. Cannot setup webhook for "'.$subscribeUrl.'". Make sure your Elastic API key has full access. Also, please note that the webhook feature is reserved for Elastic Unlimited PRO & API PRO plans only. Response from server: '.json_encode($response);
             MailLog::error($msg);
@@ -239,8 +240,10 @@ class SendingServerElasticEmail extends SendingServer
         // @todo: what if there are more than 2 parts?
         $html = null;
         $plain = null;
+
         foreach ($message->getChildren() as $part) {
             $contentType = $part->getContentType();
+
             if ($contentType == 'text/html') {
                 $html = $part->getBody();
             } elseif ($contentType == 'text/plain') {
@@ -258,7 +261,7 @@ class SendingServerElasticEmail extends SendingServer
         $toEmail = array_keys($message->getTo())[0];
         $replyToEmail = (is_null($message->getReplyTo())) ? null : array_keys($message->getReplyTo())[0];
 
-        $result = $this->client()->email()->send([
+        $params = [
             'to' => $toEmail,
             'replyTo' => $replyToEmail,
             'subject' => $message->getSubject(),
@@ -267,9 +270,97 @@ class SendingServerElasticEmail extends SendingServer
             'bodyHtml' => $html,
             'bodyText' => $plain,
             'charset' => 'utf-8',
-        ]);
+        ];
 
+        $attachmentKey = 1;
+        foreach ($message->extAttachments as $file) {
+            $params['file_'.$attachmentKey] = new CurlFile($file['path'], $file['type'], basename($file['path']));
+            $attachmentKey += 1;
+        }
+
+        $result = $this->client()->email()->send($params);
         $jsonResponse = json_decode($result->getData());
+
+        // Use transactionid returned from ElasticEmail as runtime_message_id
+        return $jsonResponse->data->transactionid;
+    }
+
+    /**
+     * Delivery message.
+     *
+     * @return mixed
+     */
+    public function sendElasticEmailV2Fixed($message)
+    {
+        // @todo: what if there are more than 2 parts?
+        $html = null;
+        $plain = null;
+
+        foreach ($message->getChildren() as $part) {
+            $contentType = $part->getContentType();
+
+            if ($contentType == 'text/html') {
+                $html = $part->getBody();
+            } elseif ($contentType == 'text/plain') {
+                $plain = $part->getBody();
+            }
+        }
+
+        if (!is_null($html)) {
+            $html = $this->unescapeUnsubscribeUrl($html);
+        }
+
+        // @todo: custom headers not correctly supported by Elastic Email API v2
+        $fromEmail = array_keys($message->getFrom())[0];
+        $fromName = (is_null($message->getFrom())) ? null : array_values($message->getFrom())[0];
+        $toEmail = array_keys($message->getTo())[0];
+        $replyToEmail = (is_null($message->getReplyTo())) ? null : array_keys($message->getReplyTo())[0];
+
+        $params = [
+            'apikey' => $this->api_key,
+            'to' => $toEmail,
+            'replyTo' => $replyToEmail,
+            'subject' => $message->getSubject(),
+            'from' => $fromEmail,
+            'fromName' => $fromName,
+            'bodyHtml' => $html,
+            'bodyText' => $plain,
+            'charset' => 'utf-8',
+        ];
+
+        $attachmentKey = 1;
+        foreach ($message->extAttachments as $file) {
+            $params['file_'.$attachmentKey] = new CurlFile($file['path'], $file['type'], basename($file['path']));
+            $attachmentKey += 1;
+        }
+
+        $ch = curl_init();
+
+        curl_setopt_array($ch, array(
+            CURLOPT_URL => 'https://api.elasticemail.com/v2/email/send',
+            CURLOPT_POST => true,
+            CURLOPT_POSTFIELDS => $params,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_HEADER => false,
+            CURLOPT_SSL_VERIFYPEER => false
+        ));
+
+        $result = curl_exec($ch);
+        curl_close($ch);
+
+        if ($result === false || empty($result)) {
+            throw new \Exception("Cannot send using Elastic API, curl_exec returns false or empty");
+        }
+
+        $jsonResponse = json_decode($result);
+
+        try {
+            if ($jsonResponse->success == false) {
+                throw new \Exception("ElasticEmail error: ".$result);
+            }
+        } catch (\Throwable $t) {
+            throw new \Exception("Abnormal response from ElasticEmail: ".$result);
+        }
 
         // Use transactionid returned from ElasticEmail as runtime_message_id
         return $jsonResponse->data->transactionid;
@@ -280,8 +371,10 @@ class SendingServerElasticEmail extends SendingServer
      *
      * @return array
      */
-    public function getVerifiedIdentities()
+    public function syncIdentities()
     {
+        // Sample result:
+        // {"success":true,"data":[{"domain":"marcurselli.com (info@marcurselli.com)","defaultdomain":true,"spf":true,"dkim":true,"mx":true,"dmarc":true,"isrewritedomainvalid":true,"verify":false,"type":0,"trackingstatus":0,"certificatestatus":0,"certificatevalidationerror":null,"trackingtypeuserrequest":null,"verp":true,"custombouncesdomain":"bounces.marcurselli.com","iscustombouncesdomaindefault":true,"ownership":0},{"domain":"acellemail.com","defaultdomain":false,"spf":false,"dkim":false,"mx":true,"dmarc":false,"isrewritedomainvalid":false,"verify":true,"type":0,"trackingstatus":2,"certificatestatus":0,"certificatevalidationerror":null,"trackingtypeuserrequest":null,"verp":true,"custombouncesdomain":null,"iscustombouncesdomaindefault":false,"ownership":0}]}
         $response = file_get_contents(self::API_ENDPOINT.'/domain/list?apikey='.$this->api_key);
         $json = json_decode($response, true);
         if ($json['success'] == false) {
@@ -289,9 +382,22 @@ class SendingServerElasticEmail extends SendingServer
         }
 
         // just in case the 'domain' value comes in "domain.com (admin@emailaddress.com)"
-        $domains = array_map(function ($e) { return preg_split('/\s+/', $e['domain'])[0]; }, $json['data']);
+        $identities = [];
+        foreach ($json['data'] as $domain) {
+            $name = preg_split('/\s+/', $domain['domain'])[0];
 
-        return $domains;
+            // Notice that verify:true means NOT verified while verify:false => already verified!!!! STUPID!
+            // Use DKIM instead
+            $identities[$name] = ['VerificationStatus' => ($domain['dkim'] == true)];
+        }
+
+        $identityStore = $this->getIdentityStore();
+        $identityStore->update($identities);
+
+        $options = $this->getOptions();
+        $options['identities'] = $identityStore->get();
+        $this->setOptions($options);
+        $this->save();
     }
 
     /**
@@ -308,5 +414,54 @@ class SendingServerElasticEmail extends SendingServer
         }
 
         return true;
+    }
+
+    /**
+     * Allow user to verify his/her own sending domain against Acelle Mail.
+     *
+     * @return bool
+     */
+    public function allowVerifyingOwnDomains()
+    {
+        return false;
+    }
+
+    /**
+     * Allow user to verify his/her own sending domain against Acelle Mail.
+     *
+     * @return bool
+     */
+    public function allowVerifyingOwnEmails()
+    {
+        return false;
+    }
+
+    /**
+     * Allow user to verify his/her own emails against AWS.
+     *
+     * @return bool
+     */
+    public function allowVerifyingOwnDomainsRemotely()
+    {
+        return false;
+    }
+
+    /**
+     * Allow user to verify his/her own emails against AWS.
+     *
+     * @return bool
+     */
+    public function allowVerifyingOwnEmailsRemotely()
+    {
+        return false;
+    }
+
+    public function setupBeforeSend($fromEmailAddress)
+    {
+        try {
+            $this->setupWebhooks();
+        } catch (\Exception $ex) {
+            MailLog::warning('Cannot set up Elastic webhook: ' . $ex->getMessage());
+        }
     }
 }

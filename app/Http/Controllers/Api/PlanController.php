@@ -26,8 +26,7 @@ class PlanController extends Controller
             return \Response::json(array('message' => 'Unauthorized'), 401);
         }
 
-        $rows = \Acelle\Model\Plan::getAll()->limit(100)
-            ->get();
+        $rows = \Acelle\Model\Plan::limit(100)->get();
 
         $plans = $rows->map(function ($plan) {
             return [
@@ -39,9 +38,7 @@ class PlanController extends Controller
                 'frequency_unit' => $plan->frequency_unit,
                 'options' => $plan->getOptions(),
                 'status' => $plan->status,
-                'color' => $plan->color,
                 'quota' => $plan->quota,
-                'custom_order' => $plan->custom_order,
                 'created_at' => $plan->created_at,
                 'updated_at' => $plan->updated_at,
             ];
@@ -96,6 +93,7 @@ class PlanController extends Controller
             }
 
             $plan->admin_id = $user->admin->id;
+            $plan->status = \Acelle\Model\Plan::STATUS_INACTIVE;
             $plan->save();
 
             // check status
@@ -112,7 +110,7 @@ class PlanController extends Controller
             }
 
             return \Response::json(array(
-                'status' => 1, 
+                'status' => 1,
                 'message' => trans('messages.plan.created'),
                 'plan_uid' => $plan->uid
             ), 200);

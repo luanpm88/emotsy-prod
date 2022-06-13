@@ -22,20 +22,43 @@
 
 namespace Acelle\Model;
 
-use Acelle\Library\QuotaTrackerFile;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
-use Acelle\Cashier\Interfaces\BillableUserInterface;
 use Acelle\Cashier\Cashier;
-use Acelle\Cashier\Subscription;
+use Acelle\Model\Subscription;
+use Acelle\Model\SendingDomain;
+use Acelle\Model\Source;
+use Acelle\Model\WooCommerce;
+use Acelle\Model\Lazada;
+use Acelle\Model\MailList;
+use DateTime;
+use DateTimeZone;
+use Exception;
+use DB;
+use Acelle\Library\Facades\Billing;
+use Acelle\Library\AutoBillingData;
+use File;
+use Acelle\Library\Traits\TrackJobs;
+use Acelle\Jobs\ImportBlacklistJob;
+use Acelle\Library\Traits\HasUid;
+use Acelle\Library\QuotaManager;
 
-class Customer extends Model implements BillableUserInterface
+class Customer extends Model
 {
+    use TrackJobs;
+    use HasUid;
+
     protected $quotaTracker;
 
     // Plan status
-    const STATUS_INACTIVE = 'inactive';
-    const STATUS_ACTIVE = 'active';
+    public const STATUS_INACTIVE = 'inactive';
+    public const STATUS_ACTIVE = 'active';
+
+    public const BASE_DIR = 'app/customers'; // storage/customers/000000
+    public const ATTACHMENTS_DIR = 'home/attachments';  // storage/customers/000000/home/files
+    public const TEMPLATES_DIR = 'home/templates';  // storage/customers/000000/home/files
+    public const PRODUCT_DIR = 'home/products';
+    public const LOGS_DIR = 'home/logs/';
 
     /**
      * The attributes that are mass assignable.
@@ -43,76 +66,8 @@ class Customer extends Model implements BillableUserInterface
      * @var array
      */
     protected $fillable = [
-        'name', 'first_name', 'last_name', 'timezone', 'language_id', 'color_scheme',
+        'name', 'timezone', 'language_id', 'color_scheme', 'text_direction', 'menu_layout', 'theme_mode'
     ];
-
-    /**
-     * The rules for validation.
-     *
-     * @var array
-     */
-    public function rules()
-    {
-        $rules = array(
-            'email' => 'required|email|unique:users,email,'.$this->user_id.',id',
-            'first_name' => 'required',
-            'last_name' => 'required',
-            'timezone' => 'required',
-            'language_id' => 'required',
-        );
-
-        if (isset($this->id)) {
-            $rules['password'] = 'confirmed|min:5';
-        } else {
-            $rules['password'] = 'required|confirmed|min:5';
-        }
-
-        return $rules;
-    }
-
-    /**
-     * The rules for validation.
-     *
-     * @var array
-     */
-    public function registerRules()
-    {
-        $rules = array(
-            'email' => 'required|email|unique:users,email,'.$this->user_id.',id',
-            'first_name' => 'required',
-            'last_name' => 'required',
-            'timezone' => 'required',
-            'language_id' => 'required',
-        );
-
-        if (isset($this->id)) {
-            $rules['password'] = 'min:5';
-        } else {
-            $rules['password'] = 'required|min:5';
-        }
-
-        return $rules;
-    }
-
-    /**
-     * Customer email.
-     *
-     * @return string
-     */
-    public function email()
-    {
-        return is_object($this->user) ? $this->user->email : '';
-    }
-
-    /**
-     * Find item by uid.
-     *
-     * @return object
-     */
-    public static function findByUid($uid)
-    {
-        return self::where('uid', '=', $uid)->first();
-    }
 
     /**
      * Associations.
@@ -121,8 +76,8 @@ class Customer extends Model implements BillableUserInterface
      */
     public function subscription()
     {
-        return $this->hasOne('Acelle\Cashier\Subscription', 'user_id', 'uid')
-            // ->where('status', '<>', Subscription::STATUS_ENDED)
+        return $this->hasOne('Acelle\Model\Subscription')
+            ->where('status', '!=', Subscription::STATUS_ENDED)
             ->orderBy('created_at', 'desc');
     }
 
@@ -131,9 +86,19 @@ class Customer extends Model implements BillableUserInterface
         return $this->belongsTo('Acelle\Model\Contact');
     }
 
+    public function subscriptions()
+    {
+        return $this->hasMany('Acelle\Model\Subscription');
+    }
+
+    public function mailLists()
+    {
+        return $this->hasMany('Acelle\Model\MailList');
+    }
+
     public function user()
     {
-        return $this->belongsTo('Acelle\Model\User');
+        return $this->hasOne('Acelle\Model\User');
     }
 
     public function admin()
@@ -143,7 +108,12 @@ class Customer extends Model implements BillableUserInterface
 
     public function lists()
     {
-        return $this->hasMany('Acelle\Model\MailList')->orderBy('created_at', 'desc');
+        return $this->hasMany('Acelle\Model\MailList');
+    }
+
+    public function templates()
+    {
+        return $this->hasMany('Acelle\Model\Template');
     }
 
     public function language()
@@ -153,7 +123,7 @@ class Customer extends Model implements BillableUserInterface
 
     public function campaigns()
     {
-        return $this->hasMany('Acelle\Model\Campaign')->orderBy('created_at', 'desc');
+        return $this->hasMany('Acelle\Model\Campaign');
     }
 
     public function sentCampaigns()
@@ -191,16 +161,6 @@ class Customer extends Model implements BillableUserInterface
         return $this->hasMany('Acelle\Model\SendingDomain');
     }
 
-    public function activeSendingDomains()
-    {
-        return $this->sendingDomains()->where('status', '=', SendingDomain::STATUS_ACTIVE);
-    }
-
-    public function activeDkimSendingDomains()
-    {
-        return $this->activeSendingDomains()->where('dkim_verified', true);
-    }
-
     public function emailVerificationServers()
     {
         return $this->hasMany('Acelle\Model\EmailVerificationServer');
@@ -216,16 +176,105 @@ class Customer extends Model implements BillableUserInterface
         return $this->hasMany('Acelle\Model\Blacklist');
     }
 
+    // Only direct senders children
     public function senders()
     {
-        return $this->hasMany('Acelle\Model\Sender')->where('status', '=', \Acelle\Model\Sender::STATUS_VERIFIED);
+        return $this->hasMany('Acelle\Model\Sender');
     }
 
-    public function activeVerifiedSendingDomains()
+    // tracking domain
+    public function trackingDomains()
     {
-        return $this->sendingDomains()
-            ->where('status', '=', \Acelle\Model\SendingDomain::STATUS_ACTIVE)
-            ->where('domain_verified', '=', \Acelle\Model\SendingDomain::VERIFIED);
+        return $this->hasMany('Acelle\Model\TrackingDomain');
+    }
+
+    public function products()
+    {
+        return $this->hasMany('Acelle\Model\Product');
+    }
+
+    public function invoices()
+    {
+        return $this->hasMany('Acelle\Model\Invoice');
+    }
+
+    public function forms()
+    {
+        return $this->hasMany('Acelle\Model\Form');
+    }
+
+    public function websites()
+    {
+        return $this->hasMany('Acelle\Model\Website');
+    }
+
+    /**
+     * Get user sources.
+     */
+    public function sources()
+    {
+        return $this->hasmany('Acelle\Model\Source');
+    }
+
+    // billing addresses
+    public function billingAddresses()
+    {
+        return $this->hasMany('Acelle\Model\BillingAddress');
+    }
+
+    public function getBasePath($path = null)
+    {
+        $base = storage_path(join_paths(self::BASE_DIR, $this->uid)); // storage/app/customers/000000/
+
+        if (!\File::exists($base)) {
+            \File::makeDirectory($base, 0777, true, true);
+        }
+
+        return join_paths($base, $path);
+    }
+
+    public function getTemplatesPath($path = null)
+    {
+        $base = $this->getBasePath(self::TEMPLATES_DIR);
+
+        if (!\File::exists($base)) {
+            \File::makeDirectory($base, 0777, true, true);
+        }
+
+        return join_paths($base, $path);
+    }
+
+    public function getProductsPath($path = null)
+    {
+        $base = $this->getBasePath(self::PRODUCT_DIR);
+
+        if (!\File::exists($base)) {
+            \File::makeDirectory($base, 0777, true, true);
+        }
+
+        return join_paths($base, $path);
+    }
+
+    public function getAttachmentsPath($path = null)
+    {
+        $base = $this->getBasePath(self::ATTACHMENTS_DIR);
+
+        if (!\File::exists($base)) {
+            \File::makeDirectory($base, 0777, true, true);
+        }
+
+        return join_paths($base, $path);
+    }
+
+    public function getLogPath($path = null)
+    {
+        $base = $this->getBasePath(self::LOGS_DIR);
+
+        if (!\File::exists($base)) {
+            \File::makeDirectory($base, 0777, true, true);
+        }
+
+        return join_paths($base, $path);
     }
 
     /**
@@ -233,93 +282,18 @@ class Customer extends Model implements BillableUserInterface
      */
     public function activeSubscription()
     {
-        return (is_object($this->subscription) && $this->subscription->active()) ? $this->subscription : null;
+        return (is_object($this->subscription) && $this->subscription->isActive()) ? $this->subscription : null;
     }
 
-    /**
-     * Bootstrap any application services.
-     */
-    public static function boot()
+    public function useOwnSendingServer()
     {
-        parent::boot();
+        $subscription = $this->activeSubscription();
 
-        // Create uid when creating list.
-        static::creating(function ($item) {
-            // Create new uid
-            $uid = uniqid();
-            while (Customer::where('uid', '=', $uid)->count() > 0) {
-                $uid = uniqid();
-            }
-            $item->uid = $uid;
-        });
-    }
-
-    /**
-     * Display customer name: first_name last_name.
-     *
-     * @var string
-     */
-    public function displayName()
-    {
-        return htmlspecialchars(trim($this->first_name.' '.$this->last_name));
-    }
-
-    /**
-     * Upload and resize avatar.
-     *
-     * @var void
-     */
-    public function uploadImage($file)
-    {
-        $path = 'app/customers/';
-        $upload_path = storage_path($path);
-
-        if (!file_exists($upload_path)) {
-            mkdir($upload_path, 0777, true);
+        if (is_null($subscription)) {
+            return false;
         }
 
-        $filename = 'avatar-'.$this->id.'.'.$file->getClientOriginalExtension();
-
-        // save to server
-        $file->move($upload_path, $filename);
-
-        // create thumbnails
-        $img = \Image::make($upload_path.$filename);
-        $img->fit(120, 120)->save($upload_path.$filename.'.thumb.jpg');
-
-        return $path.$filename;
-    }
-
-    /**
-     * Get image thumb path.
-     *
-     * @var string
-     */
-    public function imagePath()
-    {
-        if (!empty($this->image) && !empty($this->id)) {
-            return storage_path($this->image).'.thumb.jpg';
-        } else {
-            return '';
-        }
-    }
-
-    /**
-     * Get image thumb path.
-     *
-     * @var string
-     */
-    public function removeImage()
-    {
-        if (!empty($this->image) && !empty($this->id)) {
-            $path = storage_path($this->image);
-            if (is_file($path)) {
-                unlink($path);
-            }
-            if (is_file($path.'.thumb.jpg')) {
-                unlink($path.'.thumb.jpg');
-            }
-        }
+        return $subscription->plan->useOwnSendingServer();
     }
 
     /**
@@ -344,24 +318,10 @@ class Customer extends Model implements BillableUserInterface
      *
      * @return collect
      */
-    public static function filter($request)
+    public static function scopeFilter($query, $request)
     {
-        $query = self::select('customers.*')
-            ->leftJoin('users', 'users.id', '=', 'customers.user_id');
-
-        // Keyword
-        if (!empty(trim($request->keyword))) {
-            foreach (explode(' ', trim($request->keyword)) as $keyword) {
-                $query = $query->where(function ($q) use ($keyword) {
-                    $q->orwhere('customers.first_name', 'like', '%'.$keyword.'%')
-                        ->orWhere('customers.last_name', 'like', '%'.$keyword.'%')
-                        ->orWhere('users.email', 'like', '%'.$keyword.'%');
-                });
-            }
-        }
-
         // filters
-        $filters = $request->filters;
+        $filters = $request->all();
         if (!empty($filters)) {
         }
 
@@ -369,8 +329,6 @@ class Customer extends Model implements BillableUserInterface
         if (!empty($request->admin_id)) {
             $query = $query->where('customers.admin_id', '=', $request->admin_id);
         }
-
-        return $query;
     }
 
     /**
@@ -378,15 +336,21 @@ class Customer extends Model implements BillableUserInterface
      *
      * @return collect
      */
-    public static function search($request)
+    public static function scopeSearch($query, $keyword)
     {
-        $query = self::filter($request);
+        $query = $query->select('customers.*')
+            ->leftJoin('users', 'users.customer_id', '=', 'customers.id');
 
-        if (!empty($request->sort_order)) {
-            $query = $query->orderBy($request->sort_order, $request->sort_direction);
+        // Keyword
+        if (!empty(trim($keyword))) {
+            foreach (explode(' ', trim($keyword)) as $keyword) {
+                $query = $query->where(function ($q) use ($keyword) {
+                    $q->orwhere('users.first_name', 'like', '%'.$keyword.'%')
+                        ->orWhere('users.last_name', 'like', '%'.$keyword.'%')
+                        ->orWhere('users.email', 'like', '%'.$keyword.'%');
+                });
+            }
         }
-
-        return $query;
     }
 
     /**
@@ -394,7 +358,7 @@ class Customer extends Model implements BillableUserInterface
      *
      * @return number
      */
-    public static function subscribersCountByTime($begin, $end, $customer_id = null, $list_id = null)
+    public static function subscribersCountByTime($begin, $end, $customer_id = null, $list_id = null, $status=null)
     {
         $query = \Acelle\Model\Subscriber::leftJoin('mail_lists', 'mail_lists.id', '=', 'subscribers.mail_list_id')
                                 ->leftJoin('customers', 'customers.id', '=', 'mail_lists.customer_id');
@@ -404,6 +368,9 @@ class Customer extends Model implements BillableUserInterface
         }
         if (isset($customer_id)) {
             $query = $query->where('customers.id', '=', $customer_id);
+        }
+        if (isset($status)) {
+            $query = $query->where('subscribers.status', '=', $status);
         }
 
         $query = $query->where('subscribers.created_at', '>=', $begin)
@@ -564,7 +531,8 @@ class Customer extends Model implements BillableUserInterface
             return $this->readCache('SubscriberCount');
         }
 
-        return distinctCount($this->subscribers(), 'subscribers.email', 'distinct');
+        // return distinctCount($this->subscribers(), 'subscribers.email', 'distinct');
+        return $this->subscribers()->count();
     }
 
     /**
@@ -634,46 +602,6 @@ class Customer extends Model implements BillableUserInterface
     }
 
     /**
-     * Check if customer has used up all quota allocated.
-     *
-     * @return string
-     */
-    public function overQuota()
-    {
-        return !$this->getQuotaTracker()->check();
-    }
-
-    /**
-     * Increment quota usage.
-     */
-    public function countUsage(Carbon $timePoint = null)
-    {
-        return $this->getQuotaTracker($timePoint)->add();
-    }
-
-    /**
-     * Get customer's sending quota rate.
-     *
-     * @return string
-     */
-    public function displaySendingQuotaUsage()
-    {
-        if ($this->getSendingQuota() == -1) {
-            return trans('messages.unlimited');
-        }
-        // @todo use percentage helper here
-        return $this->getSendingQuotaUsagePercentage().'%';
-    }
-
-    /**
-     * Clean up the quota tracking files to prevent it from growing too large.
-     */
-    public function cleanupQuotaTracker()
-    {
-        $this->getQuotaTracker()->cleanupSeries();
-    }
-
-    /**
      * Get customer's color scheme.
      *
      * @return string
@@ -695,7 +623,7 @@ class Customer extends Model implements BillableUserInterface
     public static function colors($default)
     {
         return [
-            ['value' => '', 'text' => trans('messages.system_default')],
+            ['value' => 'default', 'text' => trans('messages.system_default')],
             ['value' => 'blue', 'text' => trans('messages.blue')],
             ['value' => 'green', 'text' => trans('messages.green')],
             ['value' => 'brown', 'text' => trans('messages.brown')],
@@ -730,127 +658,6 @@ class Customer extends Model implements BillableUserInterface
     }
 
     /**
-     * Get customer's quota.
-     *
-     * @return string
-     */
-    public function getSendingQuota()
-    {
-        // -1 indicate unlimited
-        return $this->getOption('email_max');
-    }
-
-    /**
-     * Get customer's sending quota.
-     *
-     * @return string
-     */
-    public function getSendingQuotaUsage()
-    {
-        $tracker = $this->getQuotaTracker();
-
-        return $tracker->getUsage();
-    }
-
-    /**
-     * Get customer's sending quota rate.
-     *
-     * @return string
-     */
-    public function getSendingQuotaUsagePercentage()
-    {
-        $max = $this->getSendingQuota();
-        $count = $this->getSendingQuotaUsage();
-
-        if ($max == -1) {
-            return 0;
-        }
-        if ($max == 0) {
-            return 0;
-        }
-        if ($count > $max) {
-            return 100;
-        }
-
-        return round((($count / $max) * 100), 2);
-    }
-
-    /**
-     * Get the quota/limit object.
-     *
-     * @return array
-     */
-    public function getQuotaHash()
-    {
-        $current = $this->getCurrentSubscription();
-        $quota = [
-            'start' => (isset($current->created_at) ? $current->created_at->timestamp : null),
-            'max' => $this->getOption('email_max'),
-        ];
-
-        return $quota;
-    }
-
-    /**
-     * Initialize the quota tracker.
-     *
-     * @return array
-     */
-    public function initQuotaTracker()
-    {
-        $this->quotaTracker = new QuotaTrackerFile($this->getSendingQuotaLockFile(), $this->getQuotaHash(), $this->getSendingLimits());
-        $this->quotaTracker->cleanupSeries();
-        // @note: in case of multi-process, the following command must be issued manually
-        //     $this->renewQuotaTracker();
-    }
-
-    public function getSendingLimits()
-    {
-        $timeValue = $this->getOption('sending_quota_time');
-        if ($timeValue == -1) {
-            return []; // no limit
-        }
-        $timeUnit = $this->getOption('sending_quota_time_unit');
-        $limit = $this->getOption('sending_quota');
-
-        return ["{$timeValue} {$timeUnit}" => $limit];
-    }
-
-    /**
-     * Get sending quota lock file.
-     *
-     * @return string file path
-     */
-    public function getSendingQuotaLockFile()
-    {
-        return storage_path("app/customer/quota/{$this->uid}");
-    }
-
-    /**
-     * Get customer's QuotaTracker.
-     *
-     * @return array
-     */
-    public function getQuotaTracker()
-    {
-        if (!$this->quotaTracker) {
-            $this->initQuotaTracker();
-        }
-
-        return $this->quotaTracker;
-    }
-
-    /**
-     * Get not auto campaign.
-     *
-     * @return array
-     */
-    public function getNormalCampaigns()
-    {
-        return $this->campaigns()->where('is_auto', '=', false);
-    }
-
-    /**
      * Get customer timezone.
      *
      * @return string
@@ -877,7 +684,8 @@ class Customer extends Model implements BillableUserInterface
      */
     public function getLanguageCodeFull()
     {
-        return is_object($this->language) ? ($this->language->code.'-'.strtoupper($this->language->region_code)) : null;
+        $region_code = $this->language->region_code ? strtoupper($this->language->region_code) : strtoupper($this->language->code);
+        return is_object($this->language) ? ($this->language->code.'-'.$region_code) : null;
     }
 
     /**
@@ -889,12 +697,12 @@ class Customer extends Model implements BillableUserInterface
     {
         $data = ['items' => [], 'more' => true];
 
-        $query = \Acelle\Model\Customer::getAll()->leftJoin('users', 'users.id', '=', 'customers.user_id');
+        $query = \Acelle\Model\Customer::getAll()->leftJoin('users', 'users.customer_id', '=', 'customers.id');
         if (isset($request->q)) {
             $keyword = $request->q;
             $query = $query->where(function ($q) use ($keyword) {
-                $q->orwhere('customers.first_name', 'like', '%'.$keyword.'%')
-                    ->orWhere('customers.last_name', 'like', '%'.$keyword.'%')
+                $q->orwhere('users.first_name', 'like', '%'.$keyword.'%')
+                    ->orWhere('users.last_name', 'like', '%'.$keyword.'%')
                     ->orWhere('users.email', 'like', '%'.$keyword.'%');
             });
         }
@@ -916,43 +724,26 @@ class Customer extends Model implements BillableUserInterface
      *
      * @return object
      */
-    public function updateInformation($request)
+    public function createAccountAndUser($request)
     {
-        // Create user account for customer
-        $user = is_object($this->user) ? $this->user : new \Acelle\Model\User();
-        $user->email = $request->email;
-        // Update password
-        if (!empty($request->password)) {
+        $user = new User();
+
+        DB::transaction(function () use ($request, &$user) {
+            // Customer
+            $this->fill($request->all());
+            $this->status = self::STATUS_ACTIVE;
+            $this->save();
+
+            // User
+            $user = new User();
+            $user->fill($request->all());
             $user->password = bcrypt($request->password);
-        }
-        $user->save();
+            $user->customer()->associate($this);
+            $user->save();
+        });
 
-        // Save current user info
-        if (!$this->id) {
-            $this->user_id = $user->id;
-            $this->admin_id = is_object($request->user()) ? $request->user()->admin->id : null;
-            $this->status = 'active';
-        }
-
-        $this->fill($request->all());
-
-        $this->save();
-
-        // Upload and save image
-        if ($request->hasFile('image')) {
-            if ($request->file('image')->isValid()) {
-                // Remove old images
-                $this->removeImage();
-                $this->image = $this->uploadImage($request->file('image'));
-                $this->save();
-            }
-        }
-
-        // Remove image
-        if ($request->_remove_image == 'true') {
-            $this->removeImage();
-            $this->image = '';
-        }
+        // Important: return the newly created USER
+        return $user;
     }
 
     public function sendingServers()
@@ -982,54 +773,6 @@ class Customer extends Model implements BillableUserInterface
             ->where('customers.created_at', '<=', $end);
 
         return $query->count();
-    }
-
-    /**
-     * The rules for validation via api.
-     *
-     * @var array
-     */
-    public function apiRules()
-    {
-        return array(
-            'email' => 'required|email|unique:users,email,'.$this->user_id.',id',
-            'first_name' => 'required',
-            'last_name' => 'required',
-            'timezone' => 'required',
-            'language_id' => 'required',
-            'password' => 'required|min:5',
-        );
-    }
-
-    /**
-     * The rules for validation via api.
-     *
-     * @var array
-     */
-    public function apiUpdateRules($request)
-    {
-        $arr = [];
-
-        if (isset($request->email)) {
-            $arr['email'] = 'required|email|unique:users,email,'.$this->user_id.',id';
-        }
-        if (isset($request->first_name)) {
-            $arr['first_name'] = 'required';
-        }
-        if (isset($request->last_name)) {
-            $arr['last_name'] = 'required';
-        }
-        if (isset($request->timezone)) {
-            $arr['timezone'] = 'required';
-        }
-        if (isset($request->language_id)) {
-            $arr['language_id'] = 'required';
-        }
-        if (isset($request->password)) {
-            $arr['password'] = 'min:5';
-        }
-
-        return $arr;
     }
 
     public function getSubscriberCountByStatus($status)
@@ -1072,12 +815,15 @@ class Customer extends Model implements BillableUserInterface
             'MailListSelectOptions' => function (&$customer) {
                 return $customer->getMailListSelectOptions([], true);
             },
+            'Bounce/FeedbackRate' => function (&$customer) {
+                return $customer->getBounceFeedbackRate();
+            },
 
         ];
 
         // retrieve cached data
         $cache = json_decode($this->cache, true);
-        if (is_null($cache)) {
+        if (empty($cache)) {
             $cache = [];
         }
 
@@ -1122,6 +868,20 @@ class Customer extends Model implements BillableUserInterface
         } else {
             return $default;
         }
+    }
+
+    public function getBounceFeedbackRate()
+    {
+        $delivery = $this->trackingLogs()->count();
+
+        if ($delivery == 0) {
+            return 0;
+        }
+
+        $bounce = DB::table('bounce_logs')->leftJoin('tracking_logs', 'tracking_logs.message_id', '=', 'bounce_logs.message_id')->count();
+        $feedback = DB::table('feedback_logs')->leftJoin('tracking_logs', 'tracking_logs.message_id', '=', 'feedback_logs.message_id')->count();
+
+        $percentage = ($feedback + $bounce) / $delivery;
     }
 
     /**
@@ -1458,16 +1218,6 @@ class Customer extends Model implements BillableUserInterface
     }
 
     /**
-     * Custom name + email.
-     *
-     * @return string
-     */
-    public function displayNameEmail()
-    {
-        return $this->displayName().' ('.$this->user->email.')';
-    }
-
-    /**
      * Get customer contact.
      *
      * @return Contact
@@ -1494,7 +1244,7 @@ class Customer extends Model implements BillableUserInterface
      */
     public function displayNameEmailOption()
     {
-        return $this->displayName().'|||'.$this->user->email;
+        return $this->user->displayName().'|||'.$this->user->email;
     }
 
     /**
@@ -1512,7 +1262,7 @@ class Customer extends Model implements BillableUserInterface
      *
      * @var bool
      */
-    public function getEmailVerificaionServers()
+    public function getEmailVerificationServers()
     {
         // Check the customer has permissions using email verification servers and has his own email verification servers
         if ($this->getOption('create_email_verification_servers') == 'yes') {
@@ -1522,45 +1272,8 @@ class Customer extends Model implements BillableUserInterface
         // If customer dont have permission creating sending servers
         } else {
             // Get server from the plan
-            return  $this->activeSubscription()->plan->getEmailVerificaionServers();
+            return  $this->activeSubscription()->plan->getEmailVerificationServers();
         }
-    }
-
-    /**
-     * Get list of available sending domains.
-     *
-     * @var bool
-     */
-    public function getSendingDomains()
-    {
-        $result = [];
-
-        // Check the customer has permissions using sending domains and has his own sending domains
-        if ($this->getOption('create_sending_domains') == 'yes') {
-            $result = $this->activeSendingDomains()->get()->map(function ($server) {
-                return $server;
-            });
-        // If customer dont have permission creating sending domain
-        } else {
-            // Check if has email verification servers for current subscription
-            $result = \Acelle\Model\SendingDomain::getAllAdminActive()->get()->map(function ($server) {
-                return $server;
-            });
-        }
-
-        return $result;
-    }
-
-    /**
-     * Get list of available sending domains options.
-     *
-     * @var bool
-     */
-    public function getSendingDomainOptions()
-    {
-        return $this->getSendingDomains()->map(function ($domain) {
-            return ['value' => $domain->uid, 'text' => $domain->name];
-        });
     }
 
     /**
@@ -1570,8 +1283,7 @@ class Customer extends Model implements BillableUserInterface
      */
     public function getMailListSelectOptions($options = [], $cache = false)
     {
-        $query = \Acelle\Model\MailList::getAll();
-        $query->where('customer_id', '=', $this->id);
+        $query = $this->mailLists();
 
         # Other list
         if (isset($options['other_list_of'])) {
@@ -1592,7 +1304,7 @@ class Customer extends Model implements BillableUserInterface
      */
     public function emailVerificationServerSelectOptions()
     {
-        $servers = $this->getEmailVerificaionServers();
+        $servers = $this->getEmailVerificationServers();
         $options = [];
         foreach ($servers as $server) {
             $options[] = ['text' => $server->name, 'value' => $server->uid];
@@ -1646,42 +1358,6 @@ class Customer extends Model implements BillableUserInterface
     }
 
     /**
-     * Get import jobs.
-     *
-     * @return number
-     */
-    public function getImportBlacklistJobs()
-    {
-        return \Acelle\Model\SystemJob::where('name', '=', "Acelle\Jobs\ImportBlacklistJob")
-            ->where('data', 'like', '%"customer_id":'.$this->id.'%');
-    }
-
-    /**
-     * Get running import jobs.
-     *
-     * @return number
-     */
-    public function getActiveImportBlacklistJobs()
-    {
-        return $this->getImportBlacklistJobs()
-            ->where('status', '!=', \Acelle\Model\SystemJob::STATUS_DONE)
-            ->where('status', '!=', \Acelle\Model\SystemJob::STATUS_FAILED)
-            ->where('status', '!=', \Acelle\Model\SystemJob::STATUS_CANCELLED);
-    }
-
-    /**
-     * Get last import black list job.
-     *
-     * @return number
-     */
-    public function getLastActiveImportBlacklistJob()
-    {
-        return $this->getActiveImportBlacklistJobs()
-            ->orderBy('created_at', 'DESC')
-            ->first();
-    }
-
-    /**
      * Add email to customer's blacklist.
      */
     public function addEmaillToBlacklist($email)
@@ -1697,75 +1373,6 @@ class Customer extends Model implements BillableUserInterface
                 $blacklist->save();
             }
         }
-    }
-
-    /**
-     * Get all customer's and system domains.
-     *
-     * @return bool
-     */
-    public function getAllSystemAndOwnDomains()
-    {
-        return \Acelle\Model\SendingDomain::getAllActive();
-    }
-
-    //====================================== BILLABLE USER INTERFACE =======================================
-
-    /**
-     * Customer get email.
-     *
-     * @return string
-     */
-    public function getBillableEmail()
-    {
-        return $this->email();
-    }
-
-    /**
-     * Customer get remote owner id.
-     *
-     * @return string
-     */
-    public function getBillableId()
-    {
-        return $this->uid;
-    }
-
-    /**
-     * Customer get local owner id.
-     *
-     * @return string
-     */
-    public function getLocalOwnerId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * Update billable owner id.
-     */
-    public function updateRemoteOwnerId($ownerId)
-    {
-        $this->remote_owner_id = $ownerId;
-        $this->save();
-    }
-
-    /**
-     * Update billable card brand.
-     */
-    public function updateBillableCardBrand($cardBrand)
-    {
-        $this->billable_card_brand = $cardBrand;
-        $this->save();
-    }
-
-    /**
-     * Update billable card last four.
-     */
-    public function updateBillableCardLastFour($cardLastFour)
-    {
-        $this->billable_card_last_four = $cardLastFour;
-        $this->save();
     }
 
     /**
@@ -1815,21 +1422,33 @@ class Customer extends Model implements BillableUserInterface
         $list = [];
 
         // own emails
-        $senders = $this->senders()->get();
-        foreach ($senders as $sender) {
-            $list[] = $sender->name.' <'.$sender->email.'>';
+        if ($this->allowSenderVerification()) {
+            $senders = $this->senders()->verified()->get();
+            foreach ($senders as $sender) {
+                $list[] = $sender->name.' <'.$sender->email.'>';
+            }
         }
 
         // own domain
-        $domains = $this->activeVerifiedSendingDomains()->get();
-        foreach ($domains as $domain) {
+        $domains = $this->sendingDomains()->active();
+        $plan = $this->activeSubscription()->plan;
+        if ($plan->useSystemSendingServer()) {
+            $server = $plan->primarySendingServer();
+            if (!$server->allowOtherSendingDomains()) {
+                $domains->bySendingServer($server);
+            }
+        }
+
+        foreach ($domains->get() as $domain) {
             $list[] = $domain->name;
         }
 
-        // plan sending server emails
-        $list = array_merge($this->activeSubscription()->plan->getVerifiedIdentities(), $list);
+        // plan sending server emails if system sending servers
+        if ($plan->useSystemSendingServer()) {
+            $list = array_merge($plan->getVerifiedIdentities(), $list);
+        }
 
-        return $list;
+        return array_values(array_unique($list));
     }
 
     /**
@@ -1849,36 +1468,36 @@ class Customer extends Model implements BillableUserInterface
 
         foreach ($this->getVerifiedIdentities() as $item) {
             // check if email
-                if (extract_email($item) !== null) {
-                    $email = extract_email($item);
-                    if (strpos(strtolower($email), $keyword) === 0) {
-                        $topList[] = [
-                            'text' => extract_name($item),
-                            'value' => $email,
-                            'desc' => str_replace($keyword, '<span class="text-semibold text-primary"><strong>'.$keyword.'</strong></span>', $email),
-                        ];
-                    } else {
-                        $bottomList[] = [
-                            'text' => extract_name($item),
-                            'value' => $email,
-                            'desc' => $email,
-                        ];
-                    }
-                } else { // domains are alse
-                    $dKey = explode('@', $keyword);
-                    $eKey = $dKey[0];
-                    $dKey = isset($dKey[1]) ? $dKey[1] : null;
-                    // if ( (!isset($dKey) || $dKey == '') || ($dKey && strpos(strtolower($item), $dKey) === 0 )) {
-                        if ($keyword == '###') {
-                            $eKey = '****';
-                        }
+            if (extract_email($item) !== null) {
+                $email = extract_email($item);
+                if (strpos(strtolower($email), $keyword) === 0) {
                     $topList[] = [
-                            'text' => $eKey.'@'.str_replace($dKey, '<span class="text-semibold text-primary"><strong>'.$dKey.'</strong></span>', $item),
-                            'subfix' => $item,
-                            'desc' => null,
-                        ];
-                    // }
+                        'text' => extract_name($item),
+                        'value' => $email,
+                        'desc' => str_replace($keyword, '<span class="text-semibold text-primary"><strong>'.$keyword.'</strong></span>', $email),
+                    ];
+                } else {
+                    $bottomList[] = [
+                        'text' => extract_name($item),
+                        'value' => $email,
+                        'desc' => $email,
+                    ];
                 }
+            } else { // domains are alse
+                $dKey = explode('@', $keyword);
+                $eKey = $dKey[0];
+                $dKey = isset($dKey[1]) ? $dKey[1] : null;
+                // if ( (!isset($dKey) || $dKey == '') || ($dKey && strpos(strtolower($item), $dKey) === 0 )) {
+                if ($keyword == '###') {
+                    $eKey = '****';
+                }
+                $topList[] = [
+                        'text' => $eKey.'@'.str_replace($dKey, '<span class="text-semibold text-primary"><strong>'.$dKey.'</strong></span>', $item),
+                        'subfix' => $item,
+                        'desc' => null,
+                    ];
+                // }
+            }
         }
 
         $droplist = array_merge($topList, $bottomList);
@@ -1886,52 +1505,6 @@ class Customer extends Model implements BillableUserInterface
         return $droplist;
     }
 
-    /**
-     * Begin creating a new subscription.
-     *
-     * @param string $subscription
-     * @param string $plan
-     *
-     * @return \Laravel\Cashier\SubscriptionBuilder
-     */
-    public function createSubscription($plan, $gateway)
-    {
-        // update subscription model
-        $subscription = new Subscription();
-        $subscription->user_id = $this->getBillableId();
-        $subscription->plan_id = $plan->getBillableId();
-        $subscription->status = Subscription::STATUS_NEW;
-
-        // Always set ends at if gateway dose not support recurring
-        if (!$gateway->isSupportRecurring()) {
-            $interval = $plan->getBillableInterval();
-            $intervalCount = $plan->getBillableIntervalCount();
-
-            switch ($interval) {
-                case 'month':
-                    $endsAt = \Carbon\Carbon::now()->addMonth($intervalCount)->timestamp;
-                    break;
-                case 'day':
-                    $endsAt = \Carbon\Carbon::now()->addDay($intervalCount)->timestamp;
-                case 'week':
-                    $endsAt = \Carbon\Carbon::now()->addWeek($intervalCount)->timestamp;
-                    break;
-                case 'year':
-                    $endsAt = \Carbon\Carbon::now()->addYear($intervalCount)->timestamp;
-                    break;
-                default:
-                    $endsAt = null;
-            }
-
-            $subscription->ends_at = $endsAt;
-        }
-
-        $subscription->save();
-
-        $gateway->createSubscription($subscription);
-
-        return $subscription;
-    }
 
     public function getCurrentSubscription()
     {
@@ -1953,12 +1526,37 @@ class Customer extends Model implements BillableUserInterface
      */
     public function assignPlan($plan)
     {
-        if ($this->activeSubscription()) {
-            $this->activeSubscription()->cancelNow();
+        $subscription = $this->subscription;
+        // create tmp subscription
+        if (!$subscription) {
+            $subscription = new Subscription();
+            $subscription->customer_id = $this->id;
         }
 
-        // assign new plan
-        Cashier::assignPlan($this, $plan);
+        // cancel all pending invoices (new)
+        $subscription->invoices()->new()->delete();
+
+        // reset value
+        $subscription->plan_id = $plan->id;
+        $subscription->current_period_ends_at = null;
+        $subscription->ends_at = null;
+        $subscription->started_at = null;
+        $subscription->status = Subscription::STATUS_NEW;
+
+        // Important:
+        // With current quota tracking design, there is no fixed 'available credits'
+        // As a result, the setCredits() method takes QUOTA_UNLIMITED value as default, meaning no credits check
+        // The application only enforce the quota limits rules: how many credits are allowed during a fixed period of time (month)
+        // It is pre-designed for "Buy Credits" feature which will be supported later on
+        $subscription->setCredits('send', QuotaManager::QUOTA_UNLIMITED);
+
+        // Actually store
+        $subscription->save();
+
+        // create init invoice
+        $subscription->createInitInvoice();
+
+        return $subscription;
     }
 
     /**
@@ -1966,16 +1564,14 @@ class Customer extends Model implements BillableUserInterface
      */
     public function hasSubscriptionNotice()
     {
-        $gateway = \Acelle\Cashier\Cashier::getPaymentGateway();
+        $subscription = $this->subscription;
 
-        if (is_object($this->subscription)) {
-            if ($this->subscription->isNew() || $this->subscription->isPending()) {
-                return true;
-            }
+        if (!$subscription) {
+            return false;
+        }
 
-            if ($gateway->hasPending($this->subscription) || $gateway->hasError($this->subscription)) {
-                return true;
-            }
+        if ($subscription->getUnpaidInvoice()) {
+            return true;
         }
 
         return false;
@@ -1988,14 +1584,484 @@ class Customer extends Model implements BillableUserInterface
             return false;
         }
 
-        return $subscription->active();
+        return $subscription->isActive();
     }
 
-    public function getHomePath($path = null)
+    public function getLockPath($path)
     {
-        $full = storage_path(join_paths("app/users/{$this->user->uid}/home", $path));
-        // false means => do not create the last element of path, which is normally a file
-        create_basedir($full, false);
-        return $full;
+        return $this->user->getLockPath($path);
+    }
+
+    public function allowUnverifiedFromEmailAddress()
+    {
+        $plan = $this->subscription->plan;
+
+        if (!$plan) {
+            return false;
+        }
+
+        if ($plan->useSystemSendingServer() && is_object($plan->primarySendingServer())) {
+            return $plan->primarySendingServer()->allowUnverifiedFromEmailAddress();
+        }
+
+        return true;
+    }
+
+    /**
+     * Get current period ends at.
+     */
+    public function getCurrentPeriodEndsAt()
+    {
+        return (is_object($this->subscription) && $this->subscription->isActive()) ? $this->current_period_ends_at : null;
+    }
+
+    /**
+     * Get list of available tracking domain options.
+     *
+     * @var bool
+     */
+    public function getVerifiedTrackingDomainOptions()
+    {
+        return $this->trackingDomains()->verified()->get()->map(function ($domain) {
+            return ['value' => $domain->uid, 'text' => $domain->name];
+        });
+    }
+
+    // Get the current time in Customer timezone
+    public function getCurrentTime()
+    {
+        return Carbon::now($this->timezone);
+    }
+
+    public function parseDateTime($datetime, $fallback = false)
+    {
+        // IMPORTANT: datetime string must NOT contain timezone information
+        try {
+            $dt = Carbon::parse($datetime, $this->timezone);
+            $dt = $dt->timezone($this->timezone);
+        } catch (\Exception $ex) {
+            // parse special chars, for example ('sadfh&#($783943') ==> exception
+            if ($fallback) {
+                $dt = $this->parseDateTime('1900-01-01');
+            } else {
+                throw $ex;
+            }
+        }
+        return $dt;
+    }
+
+    public function formatCurrentDateTime($name)
+    {
+        return $this->formatDateTime($this->getCurrentTime(), $name);
+    }
+
+    public function formatDateTime(Carbon $datetime, string $name)
+    {
+        // $name is a format name like: date_full | date_short
+        // See config('localization')['*'] for the full list of available format names
+
+        return format_datetime($datetime, $name, $this->getLanguageCode());
+    }
+
+    /**
+     * Get customer product source.
+     *
+     * @var collect
+     */
+    public function newProductSource($type)
+    {
+        $class = '\\Acelle\\Model\\' . $type;
+        $source = new $class();
+        $source->customer_id = $this->id;
+        $source->type = $type;
+
+        return $source;
+    }
+
+    /**
+     * Get customer product source.
+     *
+     * @var collect
+     */
+    public function findProductSource($type)
+    {
+        $source = $this->sources()
+            ->where('type', '=', $type)
+            ->first();
+
+        if (!$source) {
+            $source = new Source();
+            $source->customer_id = $this->id;
+            $source->type = $type;
+        }
+
+        return $source;
+    }
+
+    /**
+     * Get source select options.
+     *
+     * @return object
+     */
+    public function getSelectOptions($type=null)
+    {
+        $query = $this->sources();
+
+        if ($type) {
+            $query = $query->where('type', '=', $type);
+        }
+
+        return $query->get()->map(function ($source) {
+            return ['text' => $source->getData()['data']['name'], 'value' => $source->uid];
+        });
+    }
+
+    /**
+     * Get payment method.
+     *
+     * @var object | collect
+     */
+    public function getPreferredPaymentGateway()
+    {
+        if (!$this['payment_method']) {
+            return null;
+        }
+
+        // For example, the user preferred method is "paddle", but paddle is no longer available
+        // Then simply return null
+        // So, in the web UI, this user does not have a preferred payment method
+        $meta = json_decode($this['payment_method'], true);
+
+        if (!array_key_exists('method', $meta)) {
+            throw new Exception("The 'method' key is required for 'preferred payment' data");
+        }
+
+        $type = $meta['method'];
+
+        if ($type && Billing::isGatewayTypeRegistered($type)) {
+            return Billing::getGateway($type);
+        } else {
+            // payment method was previously stored but it is dropped in the current version
+            return null;
+        }
+    }
+
+    /**
+     * Update payment method.
+     *
+     * @var object | collect
+     */
+    public function updatePaymentMethod($data=[])
+    {
+        // $paymentMethod = $this->getPaymentMethod();
+
+        // if (!isset($paymentMethod)) {
+        //     $paymentMethod = [];
+        // }
+
+        // $data = (object) array_merge((array) $paymentMethod, $data);
+        $this['payment_method'] = json_encode($data);
+
+        $this->save();
+    }
+
+    /**
+     * Update payment method.
+     *
+     * @var object | collect
+     */
+    public function updatePaymentMethodData($data=[])
+    {
+        $paymentMethod = $this->getPaymentMethod();
+
+        if (!isset($paymentMethod)) {
+            $paymentMethod = [];
+        }
+
+        $data = (object) array_merge((array) $paymentMethod, $data);
+        $this['payment_method'] = json_encode($data);
+
+        $this->save();
+    }
+
+    /**
+     * Remove payment method.
+     *
+     * @var object | collect
+     */
+    public function removePaymentMethod()
+    {
+        $this->payment_method = null;
+        $this->save();
+    }
+
+    /**
+     * Get default billing address.
+     *
+     * @var object
+     */
+    public function newBillingAddress()
+    {
+        $address = new \Acelle\Model\BillingAddress();
+        $address->customer_id = $this->id;
+        return $address;
+    }
+
+    /**
+     * Get default billing address.
+     *
+     * @var object
+     */
+    public function getDefaultBillingAddress()
+    {
+        return $this->billingAddresses()->first();
+    }
+
+    public function createAbandonedEmailAutomation($store)
+    {
+        $auto = $this->automation2s()->create([
+            'name' => 'Abandoned Cart Notification - Auto',
+            'mail_list_id' => $store->getList()->id,
+            'status' => 'inactive',
+        ]);
+
+        $email = new \Acelle\Model\Email([
+            'action_id' => '1000000001',
+        ]);
+        $email->customer_id = $this->id;
+        $email->automation2_id = $auto->id;
+        $email->save();
+
+        $auto->data = json_encode([
+            [
+                "title" => "Abandoned Cart Reminder",
+                "id" => "trigger",
+                "type" => "ElementTrigger",
+                "child" => "1000000001",
+                "options" => [
+                    "key" => "woo-abandoned-cart",
+                    "type" => "woo-abandoned-cart",
+                    "source_uid" => $store->uid,
+                    "wait" => "24_hour",
+                    "init"  => "true"
+                ]
+            ], [
+                "title" => "Hey, you have an item left in cart",
+                "id" => "1000000001",
+                "type" => "ElementAction",
+                "child" => null,
+                "options" => [
+                    "init" => "true",
+                    "email_uid" => $email->uid
+                ]
+            ]
+        ]);
+
+        $auto->save();
+
+        return $auto;
+    }
+
+    public function getAbandonedEmailAutomation($store)
+    {
+        $auto = $this->automation2s()->where('mail_list_id', '=', $store->mail_list_id)->first();
+        if (!$auto) {
+            $auto = $this->createAbandonedEmailAutomation($store);
+        }
+        return $auto;
+    }
+
+    /**
+     * Get auto billing data.
+     *
+     * @var object
+     */
+    public function getAutoBillingData()
+    {
+        if ($this->auto_billing_data == null) {
+            return null;
+        }
+
+        return AutoBillingData::fromJson($this->auto_billing_data);
+    }
+
+    /**
+     * Get auto billing data.
+     *
+     * @var object
+     */
+    public function setAutoBillingData(AutoBillingData $autoBillingData)
+    {
+        $this->auto_billing_data = $autoBillingData->toJson();
+        $this->save();
+    }
+
+    // Do not call delete() directly on Customer
+    // This method helps delete Customer account but KEEP
+    // the associated User account if it is also associated with an Admin
+    public function deleteAccount()
+    {
+        DB::transaction(function () {
+            $user = $this->user;
+            $this->delete();
+            if (!$user->admin()->exists()) {
+                $user->deleteAndCleanup();
+            }
+        });
+    }
+
+    public function copyTemplateAs(Template $template, $name)
+    {
+        $copy = $template->copy([
+            'name' => $name,
+            'customer_id' => $this->id
+        ]);
+
+        return $copy;
+    }
+
+    /**
+     * Get builder templates.
+     *
+     * @return mixed
+     */
+    public function getBuilderTemplates()
+    {
+        $result = [];
+
+        // Gallery
+        $templates = \Acelle\Model\Template::where('customer_id', '=', null)
+            ->orWhere('customer_id', '=', $this->id)
+            ->orderBy('customer_id')
+            ->get();
+
+        foreach ($templates as $template) {
+            $result[] = [
+                'name' => $template->name,
+                'url' => '', // action('CampaignController@templateChangeTemplate', ['uid' => $this->uid, 'template_uid' => $template->uid]),
+                'thumbnail' => $template->getThumbUrl(),
+            ];
+        }
+
+        return $result;
+    }
+
+    public function preferredPaymentGatewayCanAutoCharge()
+    {
+        // check auto billing data
+        if ($this->getPreferredPaymentGateway() == null) {
+            return false;
+        }
+
+        // support auto billing
+        if (!$this->getPreferredPaymentGateway()->supportsAutoBilling()) {
+            return false;
+        }
+
+        // no autobilling data
+        if ($this->getAutoBillingData() == null || $this->getAutoBillingData()->getGateway() == null) {
+            return false;
+        }
+
+        // check payment
+        if ($this->getPreferredPaymentGateway()->getType() != $this->getAutoBillingData()->getGateway()->getType()) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public function importBlacklistJobs()
+    {
+        return $this->jobMonitors()->orderBy('job_monitors.id', 'DESC')->where('job_type', ImportBlacklistJob::class);
+    }
+
+    public function getMenuLayout()
+    {
+        return ($this->menu_layout == 'left' ? 'left' : 'top');
+    }
+
+    public function allowSenderVerification()
+    {
+        $subscription = $this->activeSubscription();
+
+        if (is_null($subscription)) {
+            return false;
+        }
+
+        $plan = $subscription->plan;
+        if ($plan->useSystemSendingServer()) {
+            $server = $plan->primarySendingServer();
+            if ($server && ($server->allowVerifyingOwnEmailsRemotely() || $server->allowVerifyingOwnDomains())) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return true;
+        }
+    }
+
+    public function getConnectedWebsiteSelectOptions($long=true)
+    {
+        $query = $this->websites()->connected();
+
+        $result = $query->orderBy('title')->get()->map(function ($item) use ($long) {
+            if ($long) {
+                return ['value' => $item->uid, 'text' => '<span class="fw-600">' . $item->title . '</span><br><span class="text-muted">' . $item->url . '</span>'];
+            } else {
+                return ['value' => $item->uid, 'text' => $item->title];
+            }
+        });
+
+        return $result;
+    }
+
+    public function updateBillingInformationFromInvoice($invoice)
+    {
+        $billingAddress = $this->getDefaultBillingAddress();
+
+        // has no address yet
+        if (!$billingAddress) {
+            $billingAddress = $this->newBillingAddress();
+        }
+
+        $billingAddress->fill([
+            'first_name' => $invoice->billing_first_name,
+            'last_name' => $invoice->billing_last_name,
+            'address' => $invoice->billing_address,
+            'email' => $invoice->billing_email,
+            'phone' => $invoice->billing_phone,
+            'country_id' => $invoice->billing_country_id,
+        ]);
+
+        $billingAddress->save();
+    }
+
+    public static function newCustomer()
+    {
+        $customer = new self();
+        $customer->menu_layout = \Acelle\Model\Setting::get('layout.menu_bar');
+
+        return $customer;
+    }
+
+    public function newProduct()
+    {
+        $product = new \Acelle\Model\Product();
+        $product->customer_id = $this->id;
+
+        return $product;
+    }
+
+    public function isCustomTrackingDomainRequired()
+    {
+        $plan = $this->subscription->plan;
+
+        if (!$plan) {
+            return false;
+        }
+
+        return $plan->isCustomTrackingDomainRequired();
     }
 }

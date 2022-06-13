@@ -40,9 +40,9 @@ class CreateSendingServersTable extends Migration
 
             // foreign
             $table->foreign('admin_id')->references('id')->on('admins')->onDelete('cascade');
-            $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
-            $table->foreign('bounce_handler_id')->references('id')->on('bounce_handlers')->onDelete('cascade');
-            $table->foreign('feedback_loop_handler_id')->references('id')->on('feedback_loop_handlers')->onDelete('cascade');
+            $table->foreign('customer_id', table('ss_customer_id_fk'))->references('id')->on('customers')->onDelete('cascade');
+            $table->foreign('bounce_handler_id', table('ss_bounce_handler_id_fk'))->references('id')->on('bounce_handlers')->onDelete('cascade');
+            $table->foreign('feedback_loop_handler_id', table('ss_feedback_loop_handler_id_fk'))->references('id')->on('feedback_loop_handlers')->onDelete('cascade');
         });
     }
 

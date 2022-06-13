@@ -1,8 +1,8 @@
 <!-- Basic modal -->
 <div id="export-segments-modal" class="modal fade list-form-modal">
     <div class="modal-dialog modal-md">
-        <div class="modal-header bg-teal">
-            <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <div class="modal-header">
+            <button role="button" class="close" data-dismiss="modal">&times;</button>
             <h4 class="modal-title">{{ trans('messages.export') }}</h4>
         </div>
         <div class="modal-content">
@@ -26,7 +26,7 @@
             </div>
             <div class="modal-footer">
                 <button type="submit" id="exportCSV" data-dismiss="modal" class="btn btn-primary bg-teal">{{ trans('messages.export') }}</button>
-                <button type="button" class="btn btn-default" data-dismiss="modal">{{ trans('messages.Cancel') }}</button>
+                <button role="button" class="btn btn-default" data-dismiss="modal">{{ trans('messages.Cancel') }}</button>
 
             </div>
         </div>

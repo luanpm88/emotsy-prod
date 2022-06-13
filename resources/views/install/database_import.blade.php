@@ -1,20 +1,16 @@
-@extends('layouts.install')
+@extends('layouts.core.install')
 
 @section('title', trans('messages.database'))
 
-@section('page_script')
-    <script type="text/javascript" src="{{ URL::asset('assets/js/plugins/forms/styling/uniform.min.js') }}"></script>
-
-    <script type="text/javascript" src="{{ URL::asset('js/validate.js') }}"></script>
-@endsection
-
 @section('content')
 
-<h3 class="text-teal-800"><i class="icon-database"></i> {{ trans('messages.database_configuration') }}</h3>
+<h3 class="text-primary"><span class="material-symbols-rounded">
+dns
+</span> {{ trans('messages.database_configuration') }}</h3>
 
-    <h5 class="">
-        The settings was successfully configured! Click <span class="text-semibold">{!! trans('messages.setup_database') !!}</span> button to start importing data to database '{{ $database["database_name"] }}'.
-    </h5>
+    <p class="">
+        The settings was successfully configured! Click <span class="fw-600">{!! trans('messages.setup_database') !!}</span> button to start importing data to database '{{ $database["database_name"] }}'.
+    </p>
 
 	@if ($tables_exist)
 		<div class="alert alert-danger">
@@ -22,9 +18,14 @@
 		</div>
 	@endif
 
-    <div class="text-right">
-        <a href="{{ action('InstallController@import') }}" class="btn btn-info bg-info-800">{!! trans('messages.setup_database') !!} <i class="icon-arrow-right14 position-right"></i></a>
-		<a href="{{ action('InstallController@database') }}" class="btn btn-info bg-grey-600"><i class="icon-undo2"></i> {!! trans('messages.back') !!}</a>
+    <div class="text-end">
+        <a href="{{ action('InstallController@database') }}" class="btn btn-secondary me-1"><span class="material-symbols-rounded">
+undo
+</span> {!! trans('messages.back') !!}</a>
+        <a href="{{ action('InstallController@import') }}" class="btn btn-primary">{!! trans('messages.setup_database') !!} <span class="material-symbols-rounded">
+east
+</span></a>
+		
     </div>
 
 @endsection

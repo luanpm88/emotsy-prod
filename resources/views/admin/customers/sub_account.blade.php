@@ -1,22 +1,18 @@
-@extends('layouts.backend')
+@extends('layouts.core.backend')
 
 @section('title', trans('messages.contact_information'))
-
-@section('page_script')
-    <script type="text/javascript" src="{{ URL::asset('assets/js/plugins/forms/styling/uniform.min.js') }}"></script>
-
-    <script type="text/javascript" src="{{ URL::asset('js/validate.js') }}"></script>
-@endsection
 
 @section('page_header')
 
 	<div class="page-title">
 		<ul class="breadcrumb breadcrumb-caret position-right">
-			<li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
-			<li class="active">{{ trans('messages.customer.sub_account') }}</li>
+			<li class="breadcrumb-item"><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+			<li class="breadcrumb-item active">{{ trans('messages.customer.sub_account') }}</li>
 		</ul>
 		<h1>
-            <span class="text-semibold"><i class="icon-profile"></i> {{ $customer->displayName() }}</span>
+            <span class="text-semibold"><span class="material-symbols-rounded">
+                            person_outline
+                            </span> {{ $customer->user->displayName() }}</span>
         </h1>
 	</div>
 
@@ -38,9 +34,9 @@
                             @if (Auth::user()->admin->can('delete', $account))
                                 <a href="{{ action('Admin\SubAccountController@delete', $account->uid) }}"
                                     data-popup="tooltip" title="{{ trans('messages.subaccount.delete.tooltip') }}"
-                                    type="button" class="btn btn-danger reload_page"
-                                    data-method="delete"
-                                    list-delete-confirm="{{ action('Admin\SubAccountController@deleteConfirm', $account->uid) }}"
+                                    role="button" class="btn btn-danger reload_page"
+                                    link-method="delete"
+                                    link-confirm-url="{{ action('Admin\SubAccountController@deleteConfirm', $account->uid) }}"
                                 >
                                         <i class="icon-cross2"></i> {{ trans('messages.subaccount.delete') }}
                                 </a>
@@ -50,7 +46,7 @@
                                     <i class="icon-drive text-grey-800"></i>
                                 </span>
                             </div>
-                            <h4><span class="text-teal-800">{{ $account->username }}</span></h4>
+                            <h4><span class="text-primary">{{ $account->username }}</span></h4>
                             <p>
                                 {{ $account->sendingServer->name }} ({{ trans('messages.' . $account->sendingServer->type) }})
                             </p>

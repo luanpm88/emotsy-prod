@@ -1,21 +1,22 @@
-@extends('layouts.backend')
+@extends('layouts.core.backend')
 
 @section('title', trans('messages.settings'))
 
-@section('page_script')
-    <script type="text/javascript" src="{{ URL::asset('assets/js/core/libraries/jquery_ui/interactions.min.js') }}"></script>
-	<script type="text/javascript" src="{{ URL::asset('assets/js/core/libraries/jquery_ui/touch.min.js') }}"></script>
-	<script type="text/javascript" src="{{ URL::asset('js/listing.js') }}"></script>
+@section('head')
+	<script type="text/javascript" src="{{ URL::asset('core/tinymce/tinymce.min.js') }}"></script>        
+    <script type="text/javascript" src="{{ URL::asset('core/js/editor.js') }}"></script>
 @endsection
 
 @section('page_header')
 
     <div class="page-title">
         <ul class="breadcrumb breadcrumb-caret position-right">
-            <li><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
         </ul>
         <h1>
-            <span class="text-gear"><i class="icon-list2"></i> {{ trans('messages.settings') }}</span>
+            <span class="text-gear"><span class="material-symbols-rounded">
+                tune
+</span> {{ trans('messages.settings') }}</span>
         </h1>
     </div>
 

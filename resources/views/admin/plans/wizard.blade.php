@@ -1,20 +1,16 @@
-<div class="modal-header">    
-    <h5 class="modal-title">{{ trans('messages.plan.new_plan') }}</h5>
-    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-    </button>
-</div>
-<div class="modal-body">
+@extends('layouts.popup.small')
+
+@section('bar-title')
+{{ trans('messages.plan.new_plan') }}
+@endsection
+
+@section('content')
     <div class="mc_section mb-0">
-        <form id="wizard" action="{{ action('Admin\PlanController@wizard') }}" method="POST">
+        <form id="createPlanWizard" action="{{ action('Admin\PlanController@wizard') }}" method="POST">
             {{ csrf_field() }}
                 
             <div class="row">
-                <div class="col-md-2"></div>
-                <div class="col-md-8">
-                    <!-- display flash message -->
-                    @include('common.errors')
-    
+                <div class="col-md-12">    
                     <h2 class="mt-0">{{ trans('messages.plan.general.details') }}</h2>
             
                     <p>{{ trans('messages.plan.general.details.intro') }}</p>
@@ -38,7 +34,7 @@
                         'rules' => $plan->generalRules()
                     ])
                     
-                    <div class="select-custom-2" data-url="{{ action('Admin\PlanController@billingCycle', '00') }}">
+                    <div id="billingCycleSelectContainer">
                         @include ('admin.plans._billing_cycle', [
                             'plan' => $plan,
                         ])
@@ -57,32 +53,149 @@
                         'url' => action('Admin\CurrencyController@select2'),
                         'placeholder' => trans('messages.select_currency')
                     ])
+
+                    <div class="mb-2">
+                        @include('helpers.form_control.checkbox', [
+                            'name' => 'has_trial',
+                            'value' => 'yes',
+                            'label' => trans('messages.plan.has_trial_period'),
+                            'attributes' => [
+                                'class' => 'numeric'
+                            ],
+                        ])
+                    </div>
+                        
+
+                    <div class="trial_settings">
+                        <label class="mb-2">{{ trans('messages.plan.trial_setting') }}</label>
+                        <div class="d-flex mb-4">
+                            <div class="me-3">
+                                @include('helpers.form_control.number', [
+                                    'name' => 'plan[general][trial_amount]',
+                                    'value' => $plan->trial_amount,
+                                    'attributes' => [
+                                        'class' => 'numeric',
+                                        'min' => '0',
+                                    ],
+                                ])
+                            </div>
+                            <div class="" style="width:100px">
+                                @include('helpers.form_control', [
+                                    'type' => 'select',
+                                    'name' => 'plan[general][trial_unit]',
+                                    'value' => $plan->trial_unit,
+                                    'options' => $plan->timeUnitOptions(),
+                                    'help_class' => 'plan',
+                                ])
+                            </div>
+                        </div>
+                    </div>
                  </div>
             </div>
+            <div class="mt-4 text-center">
+                <button type="submit" class="btn btn-secondary me-2">{{ trans('messages.plan.wizard.next') }}</button>
+                <a href="javascript:;" class="btn btn-link me-2" data-dismiss="modal">{{ trans('messages.plan.wizard.cancel') }}</a>
+            </div>
+            
         </form>
     </div>
-</div>
-<div class="modal-footer text-center">
-    <button onClick="$('#wizard').submit();" class="btn btn-mc_primary mr-10">{{ trans('messages.plan.wizard.next') }}</button>
-    <a href="javascript:;" class="btn btn-mc_inline mr-10" data-dismiss="modal">{{ trans('messages.plan.wizard.cancel') }}</a>
-</div>
+
     
 <script>
-    $('#wizard').submit(function() {
-        var form = $(this);
-        
-        // ajax load url
-        $.ajax({
-            url: form.attr('action'),
-            method: form.attr('method'),
-            data: form.serialize(),
-            dataType: 'html',
-        }).success(function(response) {
-            mcModal.fill(response);
+    $(function() {
+        var manager = new GroupManager();
+        manager.add({
+            checkbox: $('[name="has_trial"]'),
+            isChecked: function() {
+                return $('[name="has_trial"]').is(':checked');
+            },
+            box: $('.trial_settings'),
+            textbox: $('[name="plan[general][trial_amount]"]'),
+            currentValue: $('[name="plan[general][trial_amount]"]').val()
         });
+
+        manager.bind(function(group) {
+            var check = function() {
+                if (group.isChecked()) {
+                    group.box.show();
+
+                    group.textbox.prop('min', '1');
+                    if (group.currentValue > 0) {
+                        group.textbox.val(group.currentValue);
+                    } else {
+                        group.textbox.val(1);
+                    }
+                } else {
+                    group.box.hide();
+                    group.currentValue = group.textbox.val();
+
+                    group.textbox.prop('min', '0');
+                    group.textbox.val(0);
+                }
+            };
+
+            group.checkbox.on('change', function() {
+                check();
+            });
+
+            check();
+        });
+
+        PlansCustomBillingCycle.getSelector().on('change', function() {
+            var value = $(this).val();
+
+            if (value == 'custom') {
+                PlansCustomBillingCycle.getPopup().load();
+            }
+        });
+
+
+        $('#createPlanWizard').submit(function() {
+            var form = $(this);
+            
+            // ajax load url
+            $.ajax({
+                url: form.attr('action'),
+                method: form.attr('method'),
+                data: form.serialize(),
+                dataType: 'html',
+            }).done(function(response) {
+                PlansIndex.getWizardPopup().loadHtml(response);
+            });
+            
+            return false;
+        });
+
+        PlansCustomBillingCycle.getSelector().on('change', function() {
+            var value = $(this).val();
+
+            if (value == 'custom') {
+                PlansCustomBillingCycle.getPopup().load();
+            }
+        });
+    })
         
-        return false;
-    });
-    
-    $('.select-custom-2').select_custom();
+
+    var PlansCustomBillingCycle = {
+        popup: null,
+
+        getPopup: function() {
+            if (this.popup == null) {
+                this.popup = new Popup({
+                    url: '{{ action('Admin\PlanController@billingCycle', '00') }}',
+                });
+            }
+            return this.popup;
+        },
+
+        getSelectContainer: function() {
+            return $('#billingCycleSelectContainer');
+        },
+
+        getSelector: function() {
+            return $('#billingCycleSelectContainer select');
+        },
+    }
 </script>
+
+@endsection

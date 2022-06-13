@@ -35,14 +35,16 @@ class AuthServiceProvider extends ServiceProvider
         \Acelle\Model\Setting::class => \Acelle\Policies\SettingPolicy::class,
         \Acelle\Model\Plan::class => \Acelle\Policies\PlanPolicy::class,
         \Acelle\Model\Currency::class => \Acelle\Policies\CurrencyPolicy::class,
-        \Acelle\Model\SystemJob::class => \Acelle\Policies\SystemJobPolicy::class,
-        \Acelle\Cashier\Subscription::class => \Acelle\Policies\SubscriptionPolicy::class,
-        \Acelle\Model\PaymentMethod::class => \Acelle\Policies\PaymentMethodPolicy::class,
+        \Acelle\Model\Subscription::class => \Acelle\Policies\SubscriptionPolicy::class,
         \Acelle\Model\EmailVerificationServer::class => \Acelle\Policies\EmailVerificationServerPolicy::class,
         \Acelle\Model\Blacklist::class => \Acelle\Policies\BlacklistPolicy::class,
         \Acelle\Model\SubAccount::class => \Acelle\Policies\SubAccountPolicy::class,
         \Acelle\Model\Sender::class => \Acelle\Policies\SenderPolicy::class,
         \Acelle\Model\Automation2::class => \Acelle\Policies\Automation2Policy::class,
+        \Acelle\Model\TrackingDomain::class => \Acelle\Policies\TrackingDomainPolicy::class,
+        \Acelle\Model\Plugin::class => \Acelle\Policies\PluginPolicy::class,
+        \Acelle\Model\Source::class => \Acelle\Policies\SourcePolicy::class,
+        \Acelle\Model\Invoice::class => \Acelle\Policies\InvoicePolicy::class,
     ];
 
     /**
@@ -51,15 +53,5 @@ class AuthServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerPolicies();
-
-        Gate::define('send-from', function ($user, $fromEmail) {
-            if (Setting::get('allow_send_from_unverified_domain') == 'yes') {
-                return true;
-            }
-
-            $domain = substr(strrchr($fromEmail, '@'), 1);
-
-            return $user->customer->activeSendingDomains()->where('name', $domain)->exists();
-        });
     }
 }

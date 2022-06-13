@@ -4,9 +4,11 @@ namespace Acelle\Jobs;
 
 use Exception;
 
-class RunAutomation extends SystemJob
+class RunAutomation extends Base
 {
     protected $automation;
+
+    public $timeout = 7200;
 
     public function __construct($automation)
     {
@@ -14,7 +16,6 @@ class RunAutomation extends SystemJob
         if (!$this->automation->allowApiCall()) {
             throw new Exception(sprintf('Automation "%s" is not set up to be triggered via API. Cannot start!', $this->automation->name));
         }
-        parent::__construct();
     }
 
     /**

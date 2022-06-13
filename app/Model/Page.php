@@ -23,9 +23,12 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Acelle\Library\Traits\HasUid;
 
 class Page extends Model
 {
+    use HasUid;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -34,24 +37,6 @@ class Page extends Model
     protected $fillable = [
         'content', 'subject', 'use_outside_url', 'outside_url',
     ];
-
-    /**
-     * Bootstrap any application services.
-     */
-    public static function boot()
-    {
-        parent::boot();
-
-        // Create uid when creating list.
-        static::creating(function ($item) {
-            // Create new uid
-            $uid = uniqid();
-            while (Page::where('uid', '=', $uid)->count() > 0) {
-                $uid = uniqid();
-            }
-            $item->uid = $uid;
-        });
-    }
 
     /**
      * Associations.
@@ -105,7 +90,9 @@ class Page extends Model
         $this->content = str_replace('{CONTACT_ADDRESS_2}', $this->mailList->contact->address_2, $this->content);
         $this->content = str_replace('{CONTACT_CITY}', $this->mailList->contact->city, $this->content);
         $this->content = str_replace('{CONTACT_ZIP}', $this->mailList->contact->zip, $this->content);
-        $this->content = str_replace('{CONTACT_COUNTRY}', $this->mailList->contact->country->name, $this->content);
+        if ($this->mailList->contact->country) {
+            $this->content = str_replace('{CONTACT_COUNTRY}', $this->mailList->contact->country->name, $this->content);
+        }
         $this->content = str_replace('{CONTACT_PHONE}', $this->mailList->contact->phone, $this->content);
         $this->content = str_replace('{CONTACT_EMAIL}', $this->mailList->contact->email, $this->content);
         $this->content = str_replace('{CONTACT_URL}', $this->mailList->contact->url, $this->content);
@@ -113,10 +100,16 @@ class Page extends Model
         // FIELDS
         $fields = view('subscribers._form', array('list' => $this->mailList, 'is_page' => true, 'col' => '12', 'values' => $values, 'email_readonly' => true))->render();
         $this->content = str_replace('{FIELDS}', $fields, $this->content);
-        $this->content = str_replace('{SUBSCRIBE_BUTTON}', '<button class="btn btn-info bg-teal-800" type="submit">'.trans('messages.subscribe').' <i class="icon-arrow-right14 position-right"></i></button>', $this->content);
+        $this->content = str_replace('{SUBSCRIBE_BUTTON}', '<button class="btn btn-info bg-teal-800" type="submit">'.trans('messages.subscribe').' <span class="material-icons-round">
+east
+</span></button>', $this->content);
         $this->content = str_replace('{EMAIL_FIELD}', view('helpers.form_control', ['type' => 'text', 'name' => 'EMAIL', 'label' => trans('messages.email_address'), 'value' => '', 'rules' => $this->mailList->getFieldRules()])->render(), $this->content);
-        $this->content = str_replace('{UNSUBSCRIBE_BUTTON}', '<button class="btn btn-info bg-teal-800" type="submit">'.trans('messages.unsubscribe').' <i class="icon-arrow-right14 position-right"></i></button>', $this->content);
-        $this->content = str_replace('{UPDATE_PROFILE_BUTTON}', '<button class="btn btn-info bg-teal-800" type="submit">'.trans('messages.update_profile').' <i class="icon-arrow-right14 position-right"></i></button>', $this->content);
+        $this->content = str_replace('{UNSUBSCRIBE_BUTTON}', '<button class="btn btn-info bg-teal-800" type="submit">'.trans('messages.unsubscribe').' <span class="material-icons-round">
+east
+</span></button>', $this->content);
+        $this->content = str_replace('{UPDATE_PROFILE_BUTTON}', '<button class="btn btn-info bg-teal-800" type="submit">'.trans('messages.update_profile').' <span class="material-icons-round">
+east
+</span></button>', $this->content);
         $this->content = str_replace('{SUBSCRIBE_URL}', config('app.url').action('PageController@signUpForm', $this->mailList->uid, false), $this->content);
 
         // SUBSCRIBE CONFIRM URL
@@ -161,16 +154,24 @@ class Page extends Model
         $subject = str_replace('{CONTACT_ADDRESS_2}', $this->mailList->contact->address_2, $subject);
         $subject = str_replace('{CONTACT_CITY}', $this->mailList->contact->city, $subject);
         $subject = str_replace('{CONTACT_ZIP}', $this->mailList->contact->zip, $subject);
-        $subject = str_replace('{CONTACT_COUNTRY}', $this->mailList->contact->country->name, $subject);
+        if ($this->mailList->contact->country) {
+            $this->content = str_replace('{CONTACT_COUNTRY}', $this->mailList->contact->country->name, $this->content);
+        }
         $subject = str_replace('{CONTACT_PHONE}', $this->mailList->contact->phone, $subject);
         $subject = str_replace('{CONTACT_EMAIL}', $this->mailList->contact->email, $subject);
         $subject = str_replace('{CONTACT_URL}', $this->mailList->contact->url, $subject);
 
         // FIELDS
-        $subject = str_replace('{SUBSCRIBE_BUTTON}', '<button class="btn btn-info bg-teal-800" type="submit">'.trans('messages.subscribe').' <i class="icon-arrow-right14 position-right"></i></button>', $subject);
+        $subject = str_replace('{SUBSCRIBE_BUTTON}', '<button class="btn btn-info bg-teal-800" type="submit">'.trans('messages.subscribe').' <span class="material-icons-round">
+east
+</span></button>', $subject);
         $subject = str_replace('{EMAIL_FIELD}', view('helpers.form_control', ['type' => 'text', 'name' => 'EMAIL', 'label' => trans('messages.email_address'), 'value' => '', 'rules' => $this->mailList->getFieldRules()])->render(), $subject);
-        $subject = str_replace('{UNSUBSCRIBE_BUTTON}', '<button class="btn btn-info bg-teal-800" type="submit">'.trans('messages.unsubscribe').' <i class="icon-arrow-right14 position-right"></i></button>', $subject);
-        $subject = str_replace('{UPDATE_PROFILE_BUTTON}', '<button class="btn btn-info bg-teal-800" type="submit">'.trans('messages.update_profile').' <i class="icon-arrow-right14 position-right"></i></button>', $subject);
+        $subject = str_replace('{UNSUBSCRIBE_BUTTON}', '<button class="btn btn-info bg-teal-800" type="submit">'.trans('messages.unsubscribe').' <span class="material-icons-round">
+east
+</span></button>', $subject);
+        $subject = str_replace('{UPDATE_PROFILE_BUTTON}', '<button class="btn btn-info bg-teal-800" type="submit">'.trans('messages.update_profile').' <span class="material-icons-round">
+east
+</span></button>', $subject);
         $subject = str_replace('{SUBSCRIBE_URL}', config('app.url').action('PageController@signUpForm', $this->mailList->uid, false), $subject);
 
         // SUBSCRIBE CONFIRM URL
@@ -243,15 +244,24 @@ class Page extends Model
     public function getOutsideUrlWithUid($subscriber)
     {
         $url = $this->outside_url;
+
         // LIST FIELDS
         foreach ($this->mailList->fields as $field) {
             $url = str_replace('{SUBSCRIBER_'.$field->tag.'}', urlencode($subscriber->getValueByField($field)), $url);
         }
 
         if (parse_url($this->outside_url, PHP_URL_QUERY)) {
-            return $url.'&subscriber_id='.$subscriber->uid;
+            $url = $url.'&subscriber_id='.$subscriber->uid;
         } else {
-            return $url.'?subscriber_id='.$subscriber->uid;
+            $url = $url.'?subscriber_id='.$subscriber->uid;
         }
+
+        // replacing tags
+        $url = str_replace('{EMAIL}', $subscriber->getValueByTag('EMAIL'), $url);
+        $url = str_replace('{FIRST_NAME}', urlencode($subscriber->getValueByTag('FIRST_NAME')), $url);
+        $url = str_replace('{LAST_NAME}', urlencode($subscriber->getValueByTag('LAST_NAME')), $url);
+        $url = str_replace('{ID}', $subscriber->uid, $url);
+
+        return $url;
     }
 }

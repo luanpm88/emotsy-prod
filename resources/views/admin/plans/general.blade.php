@@ -1,19 +1,17 @@
-@extends('layouts.backend')
+@extends('layouts.core.backend')
 
 @section('title', $plan->name)
 
-@section('page_script')
-    <script type="text/javascript" src="{{ URL::asset('assets/js/plugins/forms/styling/uniform.min.js') }}"></script>
-
-    <script type="text/javascript" src="{{ URL::asset('js/validate.js') }}"></script>
+@section('head')
+    <script type="text/javascript" src="{{ URL::asset('core/js/group-manager.js') }}"></script>
 @endsection
 
 @section('page_header')
 
     <div class="page-title">
         <ul class="breadcrumb breadcrumb-caret position-right">
-            <li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
-            <li><a href="{{ action("Admin\PlanController@index") }}">{{ trans('messages.plans') }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ action("Admin\PlanController@index") }}">{{ trans('messages.plans') }}</a></li>
         </ul>
         <h1 class="mc-h1">
             <span class="text-semibold">{{ $plan->name }}</span>
@@ -28,7 +26,7 @@
 
     <form enctype="multipart/form-data" action="{{ action('Admin\PlanController@save', $plan->uid) }}" method="POST" class="form-validate-jqueryx">
         {{ csrf_field() }}                
-        <div class="mc_section">
+        <div class="">
             <div class="row">
                 <div class="col-md-7">
                     <h2>{{ trans('messages.plan.general.overview') }}</h2>
@@ -51,10 +49,18 @@
                     <div class="stats-boxes">
                         <div class="width1of4 stats-box">
                             <h3>
+                                
+                                {{ $plan->name }}
+                                
+                            </h3>
+                            <p>{{ trans('messages.plan') }}</p>
+                        </div>
+                        <div class="width1of4 stats-box">
+                            <h3>
                                 {{ $plan->displayPrice() }}
                             </h3>
                             <p>{{ trans('messages.plan.quota_time.wording', [
-                                'amount' => format_number($plan->frequency_amount),
+                                'amount' => number_with_delimiter($plan->frequency_amount, $precision = 0),
                                 'unit' => trans('messages.' . $plan->frequency_unit),
                             ]) }}</p>
                         </div>
@@ -66,22 +72,17 @@
                         </div>
                         <div class="width1of4 stats-box">
                             <h3>
-                                
-                                @if (Acelle\Model\Setting::get('system.payment_gateway'))
-                                    <a href="{{ action('Admin\PaymentController@index') }}">{{ trans('messages.payment.' . Acelle\Model\Setting::get('system.payment_gateway')) }}</a>
-                                @else
-                                    <a class="text-warning" href="{{ action('Admin\PaymentController@index') }}">{{ trans('messages.payment.not_set') }}</a>
-                                @endif
-                                
-                            </h3>
-                            <p>{{ trans('messages.plan.payment') }}</p>
-                        </div>
-                        <div class="width1of4 stats-box">
-                            <h3>
                                 @if ($plan->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_SYSTEM)
                                     @if ($plan->primarySendingServer())
                                         <a href="{{ action('Admin\PlanController@sendingServers', $plan->uid) }}">
-                                            {{ trans('messages.' . $plan->primarySendingServer()->type) }}
+                                            @php
+                                                $server = $plan->primarySendingServer()->mapType();
+                                            @endphp
+                                            @if ($server->isExtended())
+                                                {{ $server->getTypeName() }}
+                                            @else
+                                                {{ trans('messages.' . $plan->primarySendingServer()->type) }}
+                                            @endif
                                         </a>
                                     @else
                                         <a class="text-warning" href="{{ action('Admin\PlanController@sendingServers', $plan->uid) }}">
@@ -89,7 +90,9 @@
                                         </a>
                                     @endif
                                 @else
-                                    {{ trans('messages.plan.sending_server.custom') }}
+                                    <a href="{{ action('Admin\PlanController@sendingServer', $plan->uid) }}">
+                                        {{ trans('messages.plan.sending_server.custom') }}
+                                    </a>
                                 @endif
                             </h3>
                             <p>{{ trans('messages.plan.delivery') }}</p>
@@ -140,41 +143,141 @@
                         'placeholder' => trans('messages.select_currency')
                     ])
                     
-                    <div class="select-custom" data-url="{{ action('Admin\PlanController@billingCycle', $plan->uid) }}">
+                    <div id="billingCycleSelectContainer">
                         @include ('admin.plans._billing_cycle', [
                             'plan' => $plan,
                         ])
-                    </div>                    
-                    <!--
-                    @include('helpers.form_control', [
-                        'type' => 'select',
-                        'class' => '',
-                        'name' => 'plan[general][color]',
-                        'label' => trans('messages.plan.color'),
-                        'value' => $plan->color,
-                        'help_class' => 'admin',
-                        'options' => $plan->colors("color"),
-                        'rules' => '',
-                    ])
-                    -->
-                    
+                    </div>
+
+                    <div class="mb-2">
+                        @include('helpers.form_control.checkbox', [
+                            'name' => 'has_trial',
+                            'value' => 'yes',
+                            'label' => trans('messages.plan.has_trial_period'),
+                            'attributes' => [
+                                'class' => 'numeric',
+                                'checked' => $plan->hasTrial() ? 'checked' : false
+                            ],
+                        ])
+                    </div>
+                        
+
+                    <div class="trial_settings">
+                        <label class="mb-2">{{ trans('messages.plan.trial_setting') }}</label>
+                        <div class="d-flex">
+                            <div class="me-3">
+                                @include('helpers.form_control.number', [
+                                    'name' => 'plan[general][trial_amount]',
+                                    'value' => $plan->trial_amount,
+                                    'attributes' => [
+                                        'class' => 'numeric',
+                                        'min' => '0',
+                                    ],
+                                ])
+                            </div>
+                            <div class="">
+                                @include('helpers.form_control', [
+                                    'type' => 'select',
+                                    'name' => 'plan[general][trial_unit]',
+                                    'value' => $plan->trial_unit,
+                                    'options' => $plan->timeUnitOptions(),
+                                    'help_class' => 'plan',
+                                ])
+                            </div>
+                        </div>
+                    </div>
+
                     @include('helpers.form_control', [
                         'class' => '',
                         'type' => 'checkbox2',
-                        'name' => 'plan[general][tax_billing_required]',
-                        'label' => trans('messages.plan.tax_billing_required'),
-                        'help' => trans('messages.plan.tax_billing_required.help'),
-                        'value' => $plan->tax_billing_required,
-                        'options' => [false,true],
+                        'name' => 'plan[general][own_tracking_domain_required]',
+                        'label' => trans('messages.plan.own_tracking_domain_required'),
+                        'help' => trans('messages.plan.own_tracking_domain_required.help'),
+                        'value' => $plan->own_tracking_domain_required,
+                        'options' => ['0','1'],
                         'help_class' => 'plan',
                         'rules' => $plan->generalRules()
                     ])
                  </div>
             </div>
         </div>
-        <button class="btn btn-mc_primary mr-10">{{ trans('messages.save') }}</button>
-        <a href="{{ action('Admin\PlanController@index') }}" type="button" class="btn btn-mc_inline">
-            {{ trans('messages.cancel') }}
-        </a>
+        <div class="mt-4">
+            <button class="btn btn-secondary me-2">{{ trans('messages.save') }}</button>
+            <a href="{{ action('Admin\PlanController@index') }}" role="button" class="btn btn-link">
+                {{ trans('messages.cancel') }}
+            </a>
+        </div>
     </form>
+
+    <script>
+        $(function() {    
+            var manager = new GroupManager();
+            manager.add({
+                checkbox: $('[name="has_trial"]'),
+                isChecked: function() {
+                    return $('[name="has_trial"]').is(':checked');
+                },
+                box: $('.trial_settings'),
+                textbox: $('[name="plan[general][trial_amount]"]'),
+                currentValue: $('[name="plan[general][trial_amount]"]').val()
+            });
+
+            manager.bind(function(group) {
+                var check = function() {
+                    if (group.isChecked()) {
+                        group.box.show();
+
+                        group.textbox.prop('min', '1');
+                        if (group.currentValue > 0) {
+                            group.textbox.val(group.currentValue);
+                        } else {
+                            group.textbox.val(1);
+                        }
+                    } else {
+                        group.box.hide();
+                        group.currentValue = group.textbox.val();
+
+                        group.textbox.prop('min', '0');
+                        group.textbox.val(0);
+                    }
+                };
+
+                group.checkbox.on('change', function() {
+                    check();
+                });
+
+                check();
+            });
+
+            PlansCustomBillingCycle.getSelector().on('change', function() {
+                var value = $(this).val();
+    
+                if (value == 'custom') {
+                    PlansCustomBillingCycle.getPopup().load();
+                }
+            });
+        })
+            
+    
+        var PlansCustomBillingCycle = {
+            popup: null,
+    
+            getPopup: function() {
+                if (this.popup == null) {
+                    this.popup = new Popup({
+                        url: '{{ action('Admin\PlanController@billingCycle', $plan->uid) }}',
+                    });
+                }
+                return this.popup;
+            },
+    
+            getSelectContainer: function() {
+                return $('#billingCycleSelectContainer');
+            },
+    
+            getSelector: function() {
+                return $('#billingCycleSelectContainer select');
+            },
+        }
+    </script>
 @endsection

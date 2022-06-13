@@ -1,7 +1,8 @@
+@extends('layouts.popup.small')
+
+@section('content')
 <!-- Basic modal -->
-<div id="copy-move-subscribers-form" class="modal fade">
-    <div class="modal-dialog">
-        <div class="modal-content">
+<div id="copy-move-subscribers-form" class="">
             <form action="{{ action("SubscriberController@" . request()->action) }}" method="POST" class="form-validate-jquery">
                 {{ csrf_field() }}
                 <input type="hidden" name="from_uid" value="{{ $from_list->uid }}" />
@@ -15,21 +16,19 @@
                     @endif
                 @endforeach
 
-                <div class="modal-header bg-teal">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h2 class="modal-title">
+
+                    <h2 class="mb-3">
                         {{ trans('messages.' . request()->action . '_subscriber') }}
                     </h2>
-                </div>
-
-                <div class="modal-body">
-                    <h4>{!! trans('messages.subscribers_' . request()->action . '_message', ['number' => $subscribers->count()]) !!}</h4>
+                    <p>{!! trans('messages.subscribers_' . request()->action . '_message', ['number' => $subscribers->count()]) !!}</p>
 
                     <input type="hidden" name="action" value="{{ request()->action }}" />
                     <input type="hidden" name="uids" value="{{ request()->uids }}" />
                     <?php
                         $lists = collect(Auth::user()->customer->readCache('MailListSelectOptions', []));
-                        $lists = $lists->filter(function ($record, $key) use($from_list) { return $record['id'] != $from_list->id; });
+                        $lists = $lists->filter(function ($record, $key) use ($from_list) {
+                            return $record['id'] != $from_list->id;
+                        });
                     ?>
                     @include('helpers.form_control', [
                         'type' => 'select',
@@ -53,13 +52,11 @@
                         'rules' => []
                     ])
 
-                </div>
-
-                <div class="modal-footer">
+                <div class="">
                     <button type="submit" class="btn btn-primary bg-teal">{{ trans('messages.submit') }}</button>
-                    <button type="button" class="btn btn-white" data-dismiss="modal">{{ trans('messages.cancel') }}</button>
+                    <button role="button" class="btn btn-white" onclick="copyMovePopup.hide()">{{ trans('messages.cancel') }}</button>
                 </div>
-        </div>
-    </div>
+            </form>
 </div>
 <!-- /basic modal -->
+@endsection

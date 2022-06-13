@@ -33,6 +33,27 @@ class ApiHelper
     {
         $docs = [];
 
+        // AUTHENTICATION
+        $docs[] = [
+            'view' => 'frontend',
+            'title' => trans('messages.authentication'),
+            'functions' => [
+                [
+                    'method' => 'POST',
+                    'uri' => '/api/v1/login-token',
+                    'description' => 'Generate one time login token',
+                    'help' => 'User can login by visiting the following URL:<br>
+                        <code>' . action('Controller@tokenLogin', ['token' => '*|token_string|*']) . '</code>',
+                    'parameters' => [
+                    ],
+                    'returns' => 'Token string',
+                    'example' => 'curl -X POST -H "accept:application/json" -G \
+' .str_replace('-uid-', '<redbold>{uid}</redbold>', action("Api\CustomerController@loginToken")).' \
+-d api_token=' .\Auth::user()->api_token,
+                ],
+            ],
+        ];
+
         // LIST
         $docs[] = [
             'view' => 'frontend',
@@ -65,7 +86,7 @@ class ApiHelper
                     ],
                     'returns' => 'Creation messages in json',
                     'example' => 'curl -X POST -H "accept:application/json" -G \
-' .action("Api\MailListController@store").'? \
+' .action("Api\MailListController@store").' \
 -d api_token=' .\Auth::user()->api_token.' \
 -d name=List+1 \
 -d from_email=admin@abccorp.org \
@@ -93,7 +114,7 @@ class ApiHelper
                     'parameters' => [],
                     'returns' => 'List of all user\'s mail lists in json',
                     'example' => 'curl -X GET -H "accept:application/json" -G \
-' .action("Api\MailListController@index").'? \
+' .action("Api\MailListController@index").' \
 -d api_token=' .\Auth::user()->api_token,
                 ],
 
@@ -104,7 +125,40 @@ class ApiHelper
                     'parameters' => [],
                     'returns' => 'All list informations in json',
                     'example' => 'curl -X GET -H "accept:application/json" -G \
-' .str_replace('-ID-', '<redbold>{uid}</redbold>', action("Api\MailListController@show", '-ID-')).'? \
+' .str_replace('-ID-', '<redbold>{uid}</redbold>', action("Api\MailListController@show", '-ID-')).' \
+-d api_token=' .\Auth::user()->api_token,
+                ],
+
+                [
+                    'method' => 'POST',
+                    'uri' => '/api/v1/lists/{uid}/add-field',
+                    'description' => 'Add custom field to list',
+                    'parameters' => [
+                        ['name' => '$type', 'description' => 'Choose one of these types: text, number, datetime.'],
+                        ['name' => '$label', 'description' => 'Field\' label'],
+                        ['name' => '$tag', 'description' => 'The tag name may have alpha-numeric characters, as well as dashes and underscores.'],
+                        ['name' => '$default_value', 'description' => 'Default value of the field', 'optional' => true],
+                    ],
+                    'returns' => 'Creation messages in json',
+                    'example' => 'curl -X POST -H "accept:application/json" -G \
+' .str_replace('-ID-', '<redbold>{uid}</redbold>', action("Api\MailListController@addField", '-ID-')).' \
+-d api_token=' .\Auth::user()->api_token . ' \
+-d type=text \
+-d label=Custom \
+-d tag=CUSTOM_FIELD_1 \
+-d default_value=test'
+                ],
+
+                [
+                    'method' => 'DELETE',
+                    'uri' => '/api/v1/lists/{uid}',
+                    'description' => 'Delete a list',
+                    'parameters' => [
+                        ['name' => '$uid', 'description' => 'List\'s uid'],
+                    ],
+                    'returns' => 'Result messages in json',
+                    'example' => 'curl -X DELETE -H "accept:application/json" -G \
+' .str_replace('-ID-', '<redbold>{uid}</redbold>', str_replace('-LIST_ID-', '<redbold>{list_uid}</redbold>', action("Api\MailListController@delete", ['uid' => '-ID-']))).' \
 -d api_token=' .\Auth::user()->api_token,
                 ],
             ],
@@ -122,7 +176,7 @@ class ApiHelper
                     'parameters' => [],
                     'returns' => 'List of all user\'s campaigns in json',
                     'example' => 'curl -X GET -H "accept:application/json" -G \
-' .action("Api\CampaignController@index").'? \
+' .action("Api\CampaignController@index").' \
 -d api_token=' .\Auth::user()->api_token,
                 ],
 
@@ -133,7 +187,18 @@ class ApiHelper
                     'parameters' => [],
                     'returns' => 'Campaign\'s information in json',
                     'example' => 'curl -X GET -H "accept:application/json" -G \
-' .str_replace('-ID-', '<redbold>{uid}</redbold>', action("Api\CampaignController@show", '-ID-')).'? \
+' .str_replace('-ID-', '<redbold>{uid}</redbold>', action("Api\CampaignController@show", '-ID-')).' \
+-d api_token=' .\Auth::user()->api_token,
+                ],
+
+                [
+                    'method' => 'POST',
+                    'uri' => '/api/v1/campaigns/{uid}/pause',
+                    'description' => 'Pause a specific campaign',
+                    'parameters' => [],
+                    'returns' => 'Action messages in json',
+                    'example' => 'curl -X POST -H "accept:application/json" -G \
+' .str_replace('-ID-', '<redbold>{uid}</redbold>', action("Api\CampaignController@pause", '-ID-')).' \
 -d api_token=' .\Auth::user()->api_token,
                 ],
             ],
@@ -146,7 +211,7 @@ class ApiHelper
             'functions' => [
                 [
                     'method' => 'GET',
-                    'uri' => '/api/v1/lists/{list_uid}/subscribers',
+                    'uri' => '/api/v1/subscribers',
                     'description' => 'Display list\'s subscribers',
                     'parameters' => [
                         ['name' => '$list_uid', 'description' => 'List\'s uid'],
@@ -157,23 +222,79 @@ class ApiHelper
                     ],
                     'returns' => 'List of all list\'s subscribers in json',
                     'example' => 'curl -X GET -H "accept:application/json" -G \
-' .str_replace('-LIST_ID-', '<redbold>{list_uid}</redbold>', action("Api\SubscriberController@index", ['list_id' => '-LIST_ID-'])).'? \
+' .action("Api\SubscriberController@index").' \
 -d api_token=' .\Auth::user()->api_token.' \
+-d list_uid=<redbold>{list_uid}</redbold> \
 -d per_page=20 \
 -d page=1',
                 ],
 
                 [
+                    'method' => 'POST',
+                    'uri' => '/api/v1/subscribers',
+                    'description' => 'Create subscriber for a mail list',
+                    'parameters' => [
+                        ['name' => '$list_uid', 'description' => 'List\'s uid'],
+                        ['name' => '$EMAIL', 'description' => 'Subscriber\'s email'],
+                        ['name' => '$tag', 'description' => 'Subscriber\'s tags, seperated by a comma (,).', 'optional' => true],
+                        ['name' => '$[OTHER_FIELDS...]', 'description' => 'All subscriber\'s other fields: FIRST_NAME (?), LAST_NAME (?),... (depending on the list fields configuration)', 'optional' => true],
+                    ],
+                    'returns' => 'Creation messages in json',
+                    'example' => 'curl -X POST -H "accept:application/json" -G \
+' .action("Api\SubscriberController@store").' \
+-d api_token=' .\Auth::user()->api_token.' \
+-d list_uid=<redbold>{list_uid}</redbold> \
+-d EMAIL=test@gmail.com \
+-d tag=foo,bar,tag+with+space, \
+-d FIRST_NAME=Marine \
+-d LAST_NAME=Joze',
+                ],
+
+                [
                     'method' => 'GET',
-                    'uri' => '/api/v1/lists/{list_uid}/subscribers/{uid}',
+                    'uri' => '/api/v1/subscribers/{uid}',
                     'description' => 'Get information about a specific subscriber',
                     'parameters' => [
                         ['name' => '$uid', 'description' => 'Subsciber\'s uid or email'],
                     ],
                     'returns' => 'All subscriber information in json',
                     'example' => 'curl -X GET -H "accept:application/json" -G \
-' .str_replace('-ID-', '<redbold>{uid}</redbold>', str_replace('-LIST_ID-', '<redbold>{list_uid}</redbold>', action("Api\SubscriberController@show", ['list_id' => '-LIST_ID-',  'id' => '-ID-']))).'? \
+' .str_replace('-ID-', '<redbold>{uid}</redbold>', str_replace('-LIST_ID-', '<redbold>{list_uid}</redbold>', action("Api\SubscriberController@show", ['subscriber' => '-ID-']))).' \
 -d api_token=' .\Auth::user()->api_token,
+                ],
+
+                [
+                    'method' => 'PATCH',
+                    'uri' => '/api/v1/subscribers/{uid}',
+                    'description' => 'Update subscriber for a mail list',
+                    'parameters' => [
+                        ['name' => '$uid', 'description' => 'Subscriber\'s uid'],
+                        ['name' => '$EMAIL', 'description' => 'Subscriber\'s email'],
+                        ['name' => '$tag', 'description' => 'Subscriber\'s tags, seperated by a comma (,).', 'optional' => true],
+                        ['name' => '$[OTHER_FIELDS...]', 'description' => 'All subscriber\'s other fields: FIRST_NAME (?), LAST_NAME (?),... (depending on the list fields configuration)', 'optional' => true],
+                    ],
+                    'returns' => 'Update messages in json',
+                    'example' => 'curl -X PATCH -H "accept:application/json" -G \
+' .str_replace('-ID-', '<redbold>{uid}</redbold>', str_replace('-LIST_ID-', '<redbold>{list_uid}</redbold>', action("Api\SubscriberController@update", ['subscriber' => '-ID-']))).' \
+-d api_token=' .\Auth::user()->api_token.' \
+-d EMAIL=test@gmail.com \
+-d tag=foo,bar,tag+with+space, \
+-d FIRST_NAME=Marine \
+-d LAST_NAME=Joze',
+                ],
+
+                [
+                    'method' => 'POST',
+                    'uri' => '/api/v1/subscribers/{uid}/add-tag',
+                    'description' => 'Add tag(s) to subscriber',
+                    'parameters' => [
+                        ['name' => '$tag', 'description' => 'Subscriber\'s tags, seperated by a comma (,).', 'optional' => true],
+                    ],
+                    'returns' => 'Creation messages in json',
+                    'example' => 'curl -X POST -H "accept:application/json" -G \
+' .str_replace('-UID-', '<redbold>{uid}</redbold>', action("Api\SubscriberController@addTag", ['uid' => '-UID-'])).' \
+-d api_token=' .\Auth::user()->api_token.' \
+-d tag=foo,bar,tag+with+space',
                 ],
 
                 [
@@ -185,47 +306,13 @@ class ApiHelper
                     ],
                     'returns' => 'All subscribers with the email',
                     'example' => 'curl -X GET -H "accept:application/json" -G \
-' .str_replace('-ID-', '<redbold>{email}</redbold>', str_replace('-LIST_ID-', '<redbold>{list_uid}</redbold>', action("Api\SubscriberController@showByEmail", ['email' => '-ID-']))).'? \
+' .str_replace('-ID-', '<redbold>{email}</redbold>', str_replace('-LIST_ID-', '<redbold>{list_uid}</redbold>', action("Api\SubscriberController@showByEmail", ['email' => '-ID-']))).' \
 -d api_token=' .\Auth::user()->api_token,
                 ],
 
                 [
-                    'method' => 'POST',
-                    'uri' => '/api/v1/lists/{list_uid}/subscribers/store',
-                    'description' => 'Create subscriber for a mail list',
-                    'parameters' => [
-                        ['name' => '$EMAIL', 'description' => 'Subscriber\'s email'],
-                        ['name' => '$[OTHER_FIELDS...]', 'description' => 'All subscriber\'s other fields: FIRST_NAME (?), LAST_NAME (?),... (depending on the list fields configuration)', 'optional' => true],
-                    ],
-                    'returns' => 'Creation messages in json',
-                    'example' => 'curl -X POST -H "accept:application/json" -G \
-' .str_replace('-LIST_ID-', '<redbold>{list_uid}</redbold>', action("Api\SubscriberController@store", ['list_id' => '-LIST_ID-'])).'? \
--d api_token=' .\Auth::user()->api_token.' \
--d EMAIL=test@gmail.com \
--d FIRST_NAME=Marine \
--d LAST_NAME=Joze',
-                ],
-
-                [
                     'method' => 'PATCH',
-                    'uri' => '/api/v1/lists/{list_uid}/subscribers',
-                    'description' => 'Update subscriber for a mail list',
-                    'parameters' => [
-                        ['name' => '$EMAIL', 'description' => 'Subscriber\'s email'],
-                        ['name' => '$[OTHER_FIELDS...]', 'description' => 'All subscriber\'s other fields: FIRST_NAME (?), LAST_NAME (?),... (depending on the list fields configuration)', 'optional' => true],
-                    ],
-                    'returns' => 'Update messages in json',
-                    'example' => 'curl -X PATCH -H "accept:application/json" -G \
-' .str_replace('-ID-', '<redbold>{uid}</redbold>', str_replace('-LIST_ID-', '<redbold>{list_uid}</redbold>', action("Api\SubscriberController@update", ['list_uid' => '-LIST_ID-',  'uid' => '-ID-']))).'? \
--d api_token=' .\Auth::user()->api_token.' \
--d EMAIL=test@gmail.com \
--d FIRST_NAME=Marine \
--d LAST_NAME=Joze',
-                ],
-
-                [
-                    'method' => 'PATCH',
-                    'uri' => '/api/v1/lists/{list_uid}/subscribers/{uid}/subscribe',
+                    'uri' => '/api/v1/subscribers/{uid}/subscribe',
                     'description' => 'Subscribe a subscriber',
                     'parameters' => [
                         ['name' => '$list_uid', 'description' => 'List\'s uid'],
@@ -233,13 +320,13 @@ class ApiHelper
                     ],
                     'returns' => 'Result messages in json',
                     'example' => 'curl -X PATCH -H "accept:application/json" -G \
-' .str_replace('-ID-', '<redbold>{uid}</redbold>', str_replace('-LIST_ID-', '<redbold>{list_uid}</redbold>', action("Api\SubscriberController@subscribe", ['list_id' => '-LIST_ID-',  'id' => '-ID-']))).'? \
+' .str_replace('-ID-', '<redbold>{uid}</redbold>', str_replace('-LIST_ID-', '<redbold>{list_uid}</redbold>', action("Api\SubscriberController@subscribe", ['uid' => '-ID-']))).' \
 -d api_token=' .\Auth::user()->api_token,
                 ],
 
                 [
                     'method' => 'PATCH',
-                    'uri' => '/api/v1/lists/{list_uid}/subscribers/{uid}/unsubscribe',
+                    'uri' => '/api/v1/subscribers/{uid}/unsubscribe',
                     'description' => 'Unsubscribe a subscriber',
                     'parameters' => [
                         ['name' => '$list_uid', 'description' => 'List\'s uid'],
@@ -247,13 +334,13 @@ class ApiHelper
                     ],
                     'returns' => 'Result messages in json',
                     'example' => 'curl -X PATCH -H "accept:application/json" -G \
-' .str_replace('-ID-', '<redbold>{uid}</redbold>', str_replace('-LIST_ID-', '<redbold>{list_uid}</redbold>', action("Api\SubscriberController@unsubscribe", ['list_id' => '-LIST_ID-',  'id' => '-ID-']))).'? \
+' .str_replace('-ID-', '<redbold>{uid}</redbold>', str_replace('-LIST_ID-', '<redbold>{list_uid}</redbold>', action("Api\SubscriberController@unsubscribe", ['uid' => '-ID-']))).' \
 -d api_token=' .\Auth::user()->api_token,
                 ],
 
                 [
                     'method' => 'DELETE',
-                    'uri' => '/api/v1/lists/{list_uid}/subscribers/{uid}/delete',
+                    'uri' => '/api/v1/subscribers/{uid}',
                     'description' => 'Delete a subscriber',
                     'parameters' => [
                         ['name' => '$list_uid', 'description' => 'List\'s uid'],
@@ -261,8 +348,31 @@ class ApiHelper
                     ],
                     'returns' => 'Result messages in json',
                     'example' => 'curl -X DELETE -H "accept:application/json" -G \
-' .str_replace('-ID-', '<redbold>{uid}</redbold>', str_replace('-LIST_ID-', '<redbold>{list_uid}</redbold>', action("Api\SubscriberController@delete", ['list_id' => '-LIST_ID-',  'id' => '-ID-']))).'? \
+' .str_replace('-ID-', '<redbold>{uid}</redbold>', str_replace('-LIST_ID-', '<redbold>{list_uid}</redbold>', action("Api\SubscriberController@delete", ['uid' => '-ID-']))).' \
 -d api_token=' .\Auth::user()->api_token,
+                ],
+            ],
+        ];
+
+        // AUTHENTICATION
+        $docs[] = [
+            'view' => 'backend',
+            'title' => trans('messages.authentication'),
+            'functions' => [
+                [
+                    'method' => 'POST',
+                    'uri' => '/api/v1/login-token',
+                    'description' => 'Generate one time login token',
+                    'help' => 'User can login by visiting the following URL:<br>
+                        <code>' . action('Controller@tokenLogin', ['token' => '*|token_string|*']) . '</code>',
+                    'parameters' => [
+                        ['name' => '$uid', 'description' => 'Customer\'s uid'],
+                    ],
+                    'returns' => 'Token string',
+                    'example' => 'curl -X POST -H "accept:application/json" -G \
+' .str_replace('-uid-', '<redbold>{uid}</redbold>', action("Api\CustomerController@loginToken")).' \
+-d api_token=' .\Auth::user()->api_token.' \
+-d customer_uid=600684b234b98',
                 ],
             ],
         ];
@@ -279,7 +389,7 @@ class ApiHelper
                     'parameters' => [],
                     'returns' => 'List of all plans in json',
                     'example' => 'curl -X GET -H "accept:application/json" -G \
-' .action("Api\PlanController@index").'? \
+' .action("Api\PlanController@index").' \
 -d api_token=' .\Auth::user()->api_token,
                 ],
                 [
@@ -328,7 +438,7 @@ class ApiHelper
                     ],
                     'returns' => 'Creation messages in json',
                     'example' => 'curl -X POST -H "accept:application/json" -G \
-' .action("Api\PlanController@store").'? \
+' .action("Api\PlanController@store").' \
 -d api_token=' .\Auth::user()->api_token.'  \
 -d name=Advanced \
 -d currency_id=' .\Acelle\Model\Currency::first()->id.' \
@@ -354,7 +464,7 @@ class ApiHelper
                     'parameters' => [],
                     'returns' => 'List of all sending servers in json',
                     'example' => 'curl -X GET -H "accept:application/json" -G \
-' .action("Api\SendingServerController@index").'? \
+' .action("Api\SendingServerController@index").' \
 -d api_token=' .\Auth::user()->api_token,
                 ],
             ],
@@ -373,7 +483,7 @@ class ApiHelper
                     ],
                     'returns' => 'Creation messages in json',
                     'example' => 'curl -X POST -H "accept:application/json" -G \
-' .action("Api\CustomerController@store").'? \
+' .action("Api\CustomerController@store").' \
 -d api_token=' .\Auth::user()->api_token.'  \
 -d email=user_name@gmail.com \
 -d first_name=Luan \
@@ -393,7 +503,7 @@ class ApiHelper
                     ],
                     'returns' => 'Customer information in json (profile, contact, sunscriptions,... )',
                     'example' => 'curl -X GET -H "accept:application/json" -G \
-' .str_replace('-ID-', '<redbold>{uid}</redbold>', action("Api\CustomerController@update", '-ID-')).'? \
+' .str_replace('-ID-', '<redbold>{uid}</redbold>', action("Api\CustomerController@update", '-ID-')).' \
 -d api_token=' .\Auth::user()->api_token,
                 ],
 
@@ -406,7 +516,7 @@ class ApiHelper
                     ],
                     'returns' => 'Creation messages in json',
                     'example' => 'curl -X PATCH -H "accept:application/json" -G \
-' .str_replace('-ID-', '<redbold>{uid}</redbold>', action("Api\CustomerController@update", '-ID-')).'? \
+' .str_replace('-ID-', '<redbold>{uid}</redbold>', action("Api\CustomerController@update", '-ID-')).' \
 -d api_token=' .\Auth::user()->api_token.'  \
 -d email=user_name@gmail.com \
 -d first_name=Luan \
@@ -425,7 +535,7 @@ class ApiHelper
                     ],
                     'returns' => 'Action messages in json',
                     'example' => 'curl -X PATCH -H "accept:application/json" -G \
-' .str_replace('-ID-', '<redbold>{uid}</redbold>', action("Api\CustomerController@enable", '-ID-')).'? \
+' .str_replace('-ID-', '<redbold>{uid}</redbold>', action("Api\CustomerController@enable", '-ID-')).' \
 -d api_token=' .\Auth::user()->api_token,
                 ],
 
@@ -438,7 +548,7 @@ class ApiHelper
                     ],
                     'returns' => 'Action messages in json',
                     'example' => 'curl -X PATCH -H "accept:application/json" -G \
-' .str_replace('-ID-', '<redbold>{uid}</redbold>', action("Api\CustomerController@disable", '-ID-')).'? \
+' .str_replace('-ID-', '<redbold>{uid}</redbold>', action("Api\CustomerController@disable", '-ID-')).' \
 -d api_token=' .\Auth::user()->api_token,
                 ],
 
@@ -452,7 +562,7 @@ class ApiHelper
                     ],
                     'returns' => 'Action messages in json',
                     'example' => 'curl -X POST -H "accept:application/json" -G \
-' .str_replace('-plan_uid-', '<redbold>{plan_uid}</redbold>', str_replace('-uid-', '<redbold>{uid}</redbold>', action("Api\CustomerController@assignPlan", ['uid' => '-uid-', 'plan_uid' => '-plan_uid-']))).'? \
+' .str_replace('-plan_uid-', '<redbold>{plan_uid}</redbold>', str_replace('-uid-', '<redbold>{uid}</redbold>', action("Api\CustomerController@assignPlan", ['uid' => '-uid-', 'plan_uid' => '-plan_uid-']))).' \
 -d api_token=' .\Auth::user()->api_token,
                 ],
             ],
@@ -464,33 +574,143 @@ class ApiHelper
             'title' => trans('messages.subscription'),
             'functions' => [
                 [
-                    'method' => 'POST',
+                    'view' => 'backend',
+                    'method' => 'GET',
                     'uri' => '/api/v1/subscriptions',
-                    'description' => 'Subscribe customer to a plan',
+                    'description' => 'Get information about all subscriptions',
                     'parameters' => [
-                        ['name' => '$customer_uid', 'description' => 'Customer\'s uid'],
-                        ['name' => '$plan_uid', 'description' => 'Plan\'s uid'],
-                        ['name' => '$start_at', 'description' => 'Subscription\'s start date', 'optional' => true, 'default' => 'Next customer\'s subscription start date'],
-                        ['name' => '$end_at', 'description' => 'Subscription\'s end date', 'optional' => true, 'default' => 'End date of the plan from start_at date'],
+                        ['name' => '$per_page', 'description' => 'Number of subscriptions per page', 'optional' => true, 'default' => 25],
+                        ['name' => '$page', 'description' => 'Page number'],
                     ],
-                    'returns' => 'Action messages in json',
-                    'example' => 'curl -X POST -H "accept:application/json" -G \
-' .action("Api\SubscriptionController@store").'? \
--d api_token=' .\Auth::user()->api_token.'  \
--d customer_uid={customer_uid} \
--d plan_uid={plan_uid}',
+                    'returns' => 'Subscriptions information in json (plan, customer,... )',
+                    'example' => 'curl -X GET -H "accept:application/json" -G \
+' .action("Api\SubscriptionController@index").' \
+-d api_token=' .\Auth::user()->api_token.' \
+-d page=1',
                 ],
+
                 [
                     'method' => 'POST',
-                    'uri' => '/api/v1/subscriptions/{uid}/activate',
-                    'description' => 'Admin activate pending subscription',
+                    'uri' => '/api/v1/customers/{uid}/assign-plan/{plan_uid}',
+                    'description' => 'Assign Plan to Customer',
                     'parameters' => [
-                        ['name' => '$uid', 'description' => 'Subscription\'s uid'],
+                        ['name' => '$uid', 'description' => 'Customer\'s uid'],
+                        ['name' => '$plan_uid', 'description' => 'Plan\'s uid'],
                     ],
                     'returns' => 'Action messages in json',
                     'example' => 'curl -X POST -H "accept:application/json" -G \
-' .str_replace('-uid-', '<redbold>{uid}</redbold>', action("Api\SubscriptionController@setActive", "-uid-")).'? \
+' .str_replace('-plan_uid-', '<redbold>{plan_uid}</redbold>', str_replace('-uid-', '<redbold>{uid}</redbold>', action("Api\CustomerController@assignPlan", ['uid' => '-uid-', 'plan_uid' => '-plan_uid-']))).' \
 -d api_token=' .\Auth::user()->api_token,
+                ],
+            ],
+        ];
+
+        // NOTIFICATION
+        $docs[] = [
+            'view' => 'backend',
+            'title' => trans('messages.api.notification'),
+            'functions' => [
+                [
+                    'method' => 'POST',
+                    'uri' => '/api/v1/notification',
+                    'description' => 'Send a delivery or abuse report to the application. It could be a success / bounce / feedback or abuse report',
+                    'parameters' => [
+                        ['name' => '$message_id', 'description' => 'Message\'s id'],
+                        ['name' => '$type', 'description' => 'One of 4 types: sent | bounced | reported | failed'],
+                        ['name' => '$bounce_type', 'description' => 'Required if type is bounced'],
+                        ['name' => '$report_type', 'description' => 'Required if type is reported'],
+                        ['name' => '$description', 'description' => 'Notification message'],
+                    ],
+                    'returns' => 'Action messages in json',
+                    'example' => [
+                        'curl -X POST -H "accept:application/json" -G \
+' .action("Api\NotificationController@index").' \
+-d api_token=' .\Auth::user()->api_token.'  \
+-d message_id=201637442604422402.6199642caf7f3@example.com  \
+-d type=sent',
+                        'curl -X POST -H "accept:application/json" -G \
+' .action("Api\NotificationController@index").' \
+-d api_token=' .\Auth::user()->api_token.'  \
+-d message_id=201637442604422402.6199642caf7f3@example.com  \
+-d type=bounced \
+-d bounce_type=hard \
+-d description=Email+address+does+not+exist',
+                        'curl -X POST -H "accept:application/json" -G \
+' .action("Api\NotificationController@index").' \
+-d api_token=' .\Auth::user()->api_token.'  \
+-d message_id=201637442604422402.6199642caf7f3@example.com  \
+-d type=abuse \
+-d report_type=hard \
+-d description=Email+address+does+not+exist',
+                        'curl -X POST -H "accept:application/json" -G \
+' .action("Api\NotificationController@index").' \
+-d api_token=' .\Auth::user()->api_token.'  \
+-d message_id=201637442604422402.6199642caf7f3@example.com  \
+-d type=spam \
+-d report_type=hard \
+-d description=Email+address+does+not+exist',
+                        'curl -X POST -H "accept:application/json" -G \
+' .action("Api\NotificationController@index").' \
+-d api_token=' .\Auth::user()->api_token.'  \
+-d message_id=201637442604422402.6199642caf7f3@example.com  \
+-d type=failed \
+-d description=Email+address+does+not+exist',
+                    ],
+                ],
+            ],
+        ];
+
+        // NOTIFICATION
+        $docs[] = [
+            'view' => 'frontend',
+            'title' => trans('messages.api.notification'),
+            'functions' => [
+                [
+                    'method' => 'POST',
+                    'uri' => '/api/v1/notification',
+                    'description' => 'Send a delivery or abuse report to the application. It could be a success / bounce / feedback or abuse report',
+                    'parameters' => [
+                        ['name' => '$message_id', 'description' => 'Message\'s id'],
+                        ['name' => '$type', 'description' => 'One of 4 types: sent | bounced | reported | failed'],
+                        ['name' => '$bounce_type', 'description' => 'Required if type is bounced'],
+                        ['name' => '$report_type', 'description' => 'Required if type is reported'],
+                        ['name' => '$description', 'description' => 'Notification message'],
+                    ],
+                    'returns' => 'Action messages in json',
+                    'example' => [
+                        'curl -X POST -H "accept:application/json" -G \
+' .action("Api\NotificationController@index").' \
+-d api_token=' .\Auth::user()->api_token.'  \
+-d message_id=201637442604422402.6199642caf7f3@example.com  \
+-d type=sent',
+                        'curl -X POST -H "accept:application/json" -G \
+' .action("Api\NotificationController@index").' \
+-d api_token=' .\Auth::user()->api_token.'  \
+-d message_id=201637442604422402.6199642caf7f3@example.com  \
+-d type=bounced \
+-d bounce_type=hard \
+-d description=Email+address+does+not+exist',
+                        'curl -X POST -H "accept:application/json" -G \
+' .action("Api\NotificationController@index").' \
+-d api_token=' .\Auth::user()->api_token.'  \
+-d message_id=201637442604422402.6199642caf7f3@example.com  \
+-d type=abuse \
+-d report_type=hard \
+-d description=Email+address+does+not+exist',
+                        'curl -X POST -H "accept:application/json" -G \
+' .action("Api\NotificationController@index").' \
+-d api_token=' .\Auth::user()->api_token.'  \
+-d message_id=201637442604422402.6199642caf7f3@example.com  \
+-d type=spam \
+-d report_type=hard \
+-d description=Email+address+does+not+exist',
+                        'curl -X POST -H "accept:application/json" -G \
+' .action("Api\NotificationController@index").' \
+-d api_token=' .\Auth::user()->api_token.'  \
+-d message_id=201637442604422402.6199642caf7f3@example.com  \
+-d type=failed \
+-d description=Email+address+does+not+exist',
+                    ],
                 ],
             ],
         ];
@@ -510,9 +730,9 @@ class ApiHelper
                     ],
                     'returns' => 'Upload result message',
                     'example' => 'curl -X POST -H "accept:application/json" -G \
-' .action("Api\FileController@upload").'? \
+' .action("Api\FileController@upload").' \
 -d api_token=' .\Auth::user()->api_token.'  \
--d files=\'[{"url":"http://demo.acellemail.com/images/logo_big.png","subdirectory":"path/to/file"},{"url":"http://demo.acellemail.com/images/logo_big.png","subdirectory":"path/to/file2"}]\'',
+-d files=\'[{"url":"http://demo.acellemail.com/images/logo_big.svg","subdirectory":"path/to/file"},{"url":"http://demo.acellemail.com/images/logo_big.svg","subdirectory":"path/to/file2"}]\'',
                 ],
             ],
         ];

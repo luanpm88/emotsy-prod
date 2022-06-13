@@ -1,4 +1,4 @@
-@extends('layouts.popup.medium')
+@extends('layouts.popup.large')
 
 @section('content')
 	<div class="row">
@@ -7,17 +7,14 @@
             <p>{{ trans('messages.automation.trigger.intro') }}</p>
                 
             <div class="box-list mt-3">
-				<div class="box-list mt-40">
+				<div class="box-list mt-5">
 					@foreach ($types as $type)
-						<a class="box-item trigger-select-but
+						<a class="box-item trigger-select-but trigger-{{ $type }} shadow-sm
 								{{ $trigger->getOption('key') == $type ? 'current' : '' }}
 							"
 							data-key="{{ $type }}"						
 						>							
-							<h6 class="d-flex align-items-center text-center justify-content-center">
-								<i class="material-icons-outlined mr-2">{{ trans('messages.automation.trigger.icon.' . $type) }}</i>
-								{{ trans('messages.automation.trigger.' . $type) }}</h6>
-							<p>{{ trans('messages.automation.trigger.' . $type . '.desc') }}</p>
+							@include('automation2.trigger.icons.' . $type)
 						</a>
 					@endforeach                
             </div>

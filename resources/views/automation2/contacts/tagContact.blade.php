@@ -2,8 +2,7 @@
 
 @section('content')
 	<div class="row">
-        <div class="col-md-1"></div>
-        <div class="col-md-10">
+        <div class="col-md-12">
             <form class="tag-contact" action="{{ action("Automation2Controller@tagContact", [
                     'uid' => $automation->uid,
                     'contact_uid' => $contact->uid,
@@ -51,6 +50,7 @@
                 url: url,
                 method: 'POST',
                 data: data,
+                globalError: false,
                 statusCode: {
                     // validate error
                     400: function (res) {

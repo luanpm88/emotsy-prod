@@ -13,8 +13,8 @@ class AddOutsideUrlColumnsToPages extends Migration
     public function up()
     {
         Schema::table('pages', function (Blueprint $table) {
-              $table->boolean('use_outside_url')->default(false);
-              $table->string('outside_url')->nullable();
+            $table->boolean('use_outside_url')->default(false);
+            $table->string('outside_url')->nullable();
         });
     }
 

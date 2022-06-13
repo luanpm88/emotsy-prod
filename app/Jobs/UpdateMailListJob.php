@@ -2,39 +2,23 @@
 
 namespace Acelle\Jobs;
 
-use Acelle\Library\Log as MailLog;
+use Acelle\Model\MailList;
 use Acelle\Model\Blacklist;
+use Illuminate\Contracts\Queue\ShouldBeUnique;
 
-class UpdateMailListJob extends SystemJob
+class UpdateMailListJob extends Base implements ShouldBeUnique
 {
-    protected $list;
+    public $list;
+    public $uniqueFor = 3600;
 
     /**
      * Create a new job instance.
-     * @note: Parent constructors are not called implicitly if the child class defines a constructor.
-     *        In order to run a parent constructor, a call to parent::__construct() within the child constructor is required.
      *
      * @return void
      */
-    public function __construct($list)
+    public function __construct(MailList $list)
     {
         $this->list = $list;
-        parent::__construct();
-
-        // This line must go after the constructor
-        $this->linkJobToMailList();
-    }
-
-    /**
-     * Execute the job.
-     *
-     * @return void
-     */
-    public function linkJobToMailList()
-    {
-        $systemJob = $this->getSystemJob();
-        $systemJob->data = $this->list->id;
-        $systemJob->save();
     }
 
     /**
@@ -47,5 +31,15 @@ class UpdateMailListJob extends SystemJob
         $this->list->updateCachedInfo();
         // blacklist new emails (if any)
         Blacklist::doBlacklist($this->list->customer);
+    }
+
+    /**
+     * The unique ID of the job.
+     *
+     * @return string
+     */
+    public function uniqueId()
+    {
+        return $this->list->id;
     }
 }

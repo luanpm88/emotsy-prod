@@ -7,7 +7,6 @@ use Acelle\Http\Controllers\Controller;
 
 class EmailVerificationServerController extends Controller
 {
-
     /**
      * Display a listing of the resource.
      *
@@ -154,9 +153,9 @@ class EmailVerificationServerController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function edit(Request $request, $id)
+    public function edit(Request $request, $uid)
     {
-        $server = \Acelle\Model\EmailVerificationServer::findByUid($id);
+        $server = \Acelle\Model\EmailVerificationServer::findByUid($uid);
 
         // authorize
         if (!$request->user()->admin->can('update', $server)) {
@@ -198,7 +197,7 @@ class EmailVerificationServerController extends Controller
         // save posted data
         if ($request->isMethod('patch')) {
             $server->fill($request->all());
-            
+
             $this->validate($request, $server->rules());
 
             // Save current user info
@@ -218,20 +217,12 @@ class EmailVerificationServerController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
-    {
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function delete(Request $request)
     {
-        $items = \Acelle\Model\EmailVerificationServer::whereIn('uid', explode(',', $request->uids));
+        $items = \Acelle\Model\EmailVerificationServer::whereIn(
+            'uid',
+            is_array($request->uids) ? $request->uids : explode(',', $request->uids)
+        );
 
         foreach ($items->get() as $item) {
             // authorize
@@ -253,7 +244,10 @@ class EmailVerificationServerController extends Controller
      */
     public function disable(Request $request)
     {
-        $items = \Acelle\Model\EmailVerificationServer::whereIn('uid', explode(',', $request->uids));
+        $items = \Acelle\Model\EmailVerificationServer::whereIn(
+            'uid',
+            is_array($request->uids) ? $request->uids : explode(',', $request->uids)
+        );
 
         foreach ($items->get() as $item) {
             // authorize
@@ -275,7 +269,10 @@ class EmailVerificationServerController extends Controller
      */
     public function enable(Request $request)
     {
-        $items = \Acelle\Model\EmailVerificationServer::whereIn('uid', explode(',', $request->uids));
+        $items = \Acelle\Model\EmailVerificationServer::whereIn(
+            'uid',
+            is_array($request->uids) ? $request->uids : explode(',', $request->uids)
+        );
 
         foreach ($items->get() as $item) {
             // authorize

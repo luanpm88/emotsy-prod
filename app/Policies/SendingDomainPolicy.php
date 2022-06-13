@@ -24,7 +24,7 @@ class SendingDomainPolicy
                     $can = true;
                 } else {
                     $server = $subscription->plan->primarySendingServer();
-                    $can = $server->allowVerifyingOwnDomains();    
+                    $can = $server->allowVerifyingOwnDomains() || $server->allowVerifyingOwnDomainsRemotely();
                 }
 
                 break;
@@ -47,25 +47,9 @@ class SendingDomainPolicy
         return $can;
     }
 
-    public function create(User $user, SendingDomain $item, $role)
+    public function create(User $user)
     {
-        switch ($role) {
-            case 'admin':
-                $can = $user->admin->getPermission('sending_domain_create') == 'yes';
-                break;
-            case 'customer':
-                $subscription = $user->customer->subscription;
-
-                if ($subscription->plan->useOwnSendingServer()) {
-                    $can = true;
-                } else {
-                    $server = $subscription->plan->primarySendingServer();
-                    $can = $server->allowVerifyingOwnDomains();    
-                }
-                break;
-        }
-
-        return $can;
+        return true;
     }
 
     public function update(User $user, SendingDomain $item, $role)
@@ -83,7 +67,7 @@ class SendingDomainPolicy
                     $can = true;
                 } else {
                     $server = $subscription->plan->primarySendingServer();
-                    $can = $server->allowVerifyingOwnDomains();    
+                    $can = $server->allowVerifyingOwnDomains();
                 }
 
                 $can = $can && $user->customer->id == $item->customer_id;
@@ -108,9 +92,9 @@ class SendingDomainPolicy
                     $can = true;
                 } else {
                     $server = $subscription->plan->primarySendingServer();
-                    $can = $server->allowVerifyingOwnDomains();    
+                    $can = $server->allowVerifyingOwnDomains() || $server->allowVerifyingOwnDomainsRemotely();
                 }
-                
+
                 $can = $can && $user->customer->id == $item->customer_id;
                 break;
         }

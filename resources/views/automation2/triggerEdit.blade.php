@@ -1,14 +1,11 @@
-@include('automation2._info')
+@include('automation2._back')
 
-@include('automation2._tabs', ['tab' => 'settings'])
-                        
-<h5 class="mb-3 mt-4">
+<h4 class="mb-2 mt-4">
     {{ trans('messages.automation.trigger.' . $key) }}
-</h5>
+</h4>
 <p class="mb-10">
-    {{ trans('messages.automation.trigger.' . $key . '.intro') }}
+    {!! trans('messages.automation.trigger.' . $key . '.intro') !!}
 </p>
-    
 <form id="trigger-select" action="{{ action("Automation2Controller@triggerEdit", ['uid' => $automation->uid, 'key' => $key]) }}" method="POST" class="form-validate-jqueryz">
     {{ csrf_field() }}
     
@@ -25,8 +22,8 @@
             </button>
         @endif
 
-        <a href="javascript:;" class="btn btn-outline-secondary change-trigger-but">
-            Change Trigger
+        <a href="javascript:;" class="btn btn-secondary change-trigger-but">
+            {{ trans('messages.automation.trigger.change') }}
         </a>
     </div>
 </form>
@@ -45,6 +42,7 @@
             url: url,
             method: 'POST',
             data: data,
+            globalError: false,
             statusCode: {
                 // validate error
                 400: function (res) {
@@ -61,10 +59,17 @@
                 // save tree
                 saveData(function() {
                     // notify
-                    notify('success', '{{ trans('messages.notify.success') }}', response.message);
+                    notify({
+    type: 'success',
+    title: '{!! trans('messages.notify.success') !!}',
+    message: response.message
+});
                     
                     // reload sidebar
                     sidebar.load();
+
+                    // re validate tree
+                    tree.validate();
                 });
             }
         });

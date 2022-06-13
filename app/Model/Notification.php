@@ -23,14 +23,17 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Acelle\Library\Traits\HasUid;
 
 class Notification extends Model
 {
+    use HasUid;
+
     protected $table = 'notifications';
 
-    const LEVEL_INFO = 'info';
-    const LEVEL_WARNING = 'warning';
-    const LEVEL_ERROR = 'error';
+    public const LEVEL_INFO = 'info';
+    public const LEVEL_WARNING = 'warning';
+    public const LEVEL_ERROR = 'error';
 
     protected $fillable = [
         'type',
@@ -38,6 +41,7 @@ class Notification extends Model
         'message',
         'level',
         'uid',
+        'debug',
     ];
 
     /**
@@ -101,7 +105,7 @@ class Notification extends Model
         ];
         $attributes = array_merge($default, $attributes);
         if ($cleanup) {
-            self::cleanupSimilarNotifications();
+            self::cleanupDuplicateNotifications($attributes['title']);
         }
 
         return self::create($attributes);
@@ -115,14 +119,6 @@ class Notification extends Model
     public static function top($limit = 3)
     {
         return static::where('visibility', true)->limit($limit)->get();
-    }
-
-    /**
-     * Clean up notifications of the same type as the called class.
-     */
-    public static function cleanupSimilarNotifications()
-    {
-        static::where('type', get_called_class())->delete();
     }
 
     /**
@@ -178,7 +174,7 @@ class Notification extends Model
         }
 
         // filters
-        $filters = $request->filters;
+        $filters = $request->all();
         if (!empty($filters)) {
             if (!empty($filters['level'])) {
                 $query = $query->where('notifications.level', '=', $filters['level']);

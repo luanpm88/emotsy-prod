@@ -1,4 +1,4 @@
-@extends('layouts.empty')
+@extends('layouts.core.empty')
 
 @section('title', $campaign->name)
 
@@ -20,28 +20,28 @@
 
     <script>
         var interval;
-        var check = function() {
+        var checkProgress = function() {
             $.ajax({
-                url: "{{ action('CampaignController@trackingLogExportProgress', $job->id) }}"
+                url: "{{ action('CampaignController@trackingLogExportProgress', [ 'uid' => $job->uid] ) }}"
             }).done(function( data, textStatus, jqXHR ) {
-                console.log(data);
-                if (data.progress != 1) {
+                if (data.status == 'done') {
                     $("#progress").html(data.progress * 100 + "%");
-                } else {
-                    clearInterval(interval);
+                    clearTimeout(interval);
                     $("#done").show();
                     $("#inprogress").hide();
-
-                    // tell the parent: ready to close
                     $("#download").click(function(){
-                        window.opener.downloadAndCloseDownloadWindow(data.download_url);
+                        window.opener.downloadAndCloseDownloadWindow(data.download);
                     });
+                } else {
+                    interval = setTimeout(checkProgress, 2500);
                 }
             }).fail(function( jqXHR, textStatus, errorThrown ) {
                 alert(errorThrown);
             });
         };
 
-        interval = setInterval(check, 2500);
+        $(document).ready(function() {
+            checkProgress();
+        });
     </script>
 @endsection

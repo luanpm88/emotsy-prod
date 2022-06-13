@@ -1,16 +1,16 @@
 <?php
 
 try {
-  // to prevent it that the output is compressed, resulting in invalid string
-  ini_set('zlib.output_compression', 'Off');
-} catch(\Exception $e) {
-  // just ignore it
+    // to prevent it that the output is compressed, resulting in invalid string
+    ini_set('zlib.output_compression', 'Off');
+} catch (\Exception $e) {
+    // just ignore it
 }
 
 $valid = true;
 
-if (!version_compare(PHP_VERSION, '7.0.0', '>=')) {
-    echo "ERROR: PHP 7.0.0 or higher is required.<br />";
+if (!version_compare(PHP_VERSION, '7.3.0', '>=')) {
+    echo "ERROR: PHP CLI 7.3.0 or higher is required.<br />";
     $valid = false;
 }
 
@@ -47,14 +47,21 @@ if (!extension_loaded('imap')) {
     echo "ERROR: PHP IMAP Extension is required.<br />";
     $valid = false;
 }
+
+/*** not required for PHP CLI
 if (!(extension_loaded('gd') && function_exists('gd_info'))) {
     echo "ERROR: PHP GD Library is required.<br />";
     $valid = false;
 }
+***/
+
+/*** not required for PHP CLI
 if (!extension_loaded('fileinfo')) {
     echo "ERROR: PHP Fileinfo extension is required.<br />";
     $valid = false;
 }
+***/
+
 if (!extension_loaded('curl')) {
     echo "ERROR: PHP CURL extension is required.<br />";
     $valid = false;
@@ -68,6 +75,7 @@ if (!class_exists('SQLite3')) {
     $valid = false;
 }
 
+/*
 // proc_close() check =========
 $proc_close_enabled = true;
 try {
@@ -80,6 +88,7 @@ if (!$proc_close_enabled) {
     echo "ERROR: <strong>proc_close()</strong> must be enabled.<br />";
     $valid = false;
 }
+*/
 // =============================
 // escapeshellarg() check =========
 $escapeshellarg_enabled = true;
@@ -107,6 +116,6 @@ foreach ($dirs as $dir) {
 }
 
 // just finish
-if($valid) {
+if ($valid) {
     echo "ok";
 }

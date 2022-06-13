@@ -48,7 +48,7 @@ class MailListController extends Controller
 
         // check if item exists
         if (!is_object($item)) {
-            return \Response::json(array('message' => 'Item not found'), 404);
+            return \Response::json(array('message' => 'Mail list not found'), 404);
         }
 
         // authorize
@@ -80,7 +80,6 @@ class MailListController extends Controller
                 'default_value' => $field->default_value,
                 'visible' => $field->visible,
                 'required' => $field->required ? true : false,
-                'custom_order' => $field->custom_order,
             ];
         }
 
@@ -156,10 +155,99 @@ class MailListController extends Controller
             $list->updateCachedInfo();
 
             return \Response::json(array(
-                'status' => 1, 
+                'status' => 1,
                 'message' => trans('messages.list.created'),
                 'list_uid' => $list->uid
             ), 200);
         }
+    }
+
+    /**
+     * Add custom field for mail list.
+     *
+     * POST /api/v1/lists/store
+     *
+     * @param \Illuminate\Http\Request $request All list information.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function addField(Request $request, $uid)
+    {
+        $user = \Auth::guard('api')->user();
+        $list = \Acelle\Model\MailList::findByUid($uid);
+
+        if (!$list) {
+            return \Response::json(array('status' => 0, 'message' => 'Can not find list with uid=' . $uid), 404);
+        }
+
+        // authorize
+        if (!$user->can('update', $list)) {
+            return \Response::json(array('status' => 0, 'message' => trans('no_more_item')), 403);
+        }
+
+        // validate and save posted data
+        if ($request->isMethod('post')) {
+            $rules = [
+                // check required input
+                'type' => 'required|in:text,number,datetime',
+                'label' => 'required',
+                'tag' => 'required|alpha_dash',
+            ];
+            $validator = \Validator::make($request->all(), $rules);
+            if ($validator->fails()) {
+                return response()->json($validator->messages(), 403);
+            }
+
+            $exist = \Acelle\Model\Field::where('mail_list_id', '=', $list->id)
+                ->where('tag', '=', $request->tag)
+                ->count();
+
+            if ($exist) {
+                return \Response::json(array('status' => 0, 'message' => 'Field tag exists'), 403);
+            }
+
+            // Save field
+            $field = new \Acelle\Model\Field();
+            $field->mail_list_id = $list->id;
+            $field->visible = true;
+            $field->required = false;
+            $field->fill($request->all());
+            $field->save();
+
+            return \Response::json(array(
+                'status' => 1,
+                'message' => trans('messages.field.created'),
+                'field' => $field->toArray()
+            ), 200);
+        }
+    }
+
+    public function delete($uid)
+    {
+        $user = \Auth::guard('api')->user();
+        $list = \Acelle\Model\MailList::findByUid($uid);
+
+        // check if item exists
+        if (!$list) {
+            return \Response::json(array('status' => 0, 'message' => 'Mail list not found'), 404);
+        }
+
+        // authorize
+        if (!$user->can('delete', $list)) {
+            return \Response::json(array('status' => 0, 'message' => 'Unauthorized'), 401);
+        }
+
+        $list->delete();
+
+        // not needed as the related campaigns will be deleted as well
+        // $item->updateCachedInfo();
+
+        // Log
+        $list->log('deleted', $user->customer);
+
+        // update MailList cache
+        event(new \Acelle\Events\MailListUpdated($list));
+
+        return \Response::json(array('status' => 1, 'message' => 'Deleted'), 200);
     }
 }

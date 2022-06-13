@@ -24,20 +24,6 @@ class TemplatePolicy
         return $can;
     }
 
-    public function readAll(User $user, Template $item, $role)
-    {
-        switch ($role) {
-            case 'admin':
-                $can = $user->admin->getPermission('template_read') == 'all';
-                break;
-            case 'customer':
-                $can = false;
-                break;
-        }
-
-        return $can;
-    }
-
     public function create(User $user, $role)
     {
         switch ($role) {
@@ -58,7 +44,7 @@ class TemplatePolicy
             case 'admin':
                 $ability = $user->admin->getPermission('template_read');
                 $can = $ability == 'all'
-                    || ($ability == 'own' && $user->admin->id == $item->admin_id);
+                    || ($ability == 'own');
                 break;
             case 'customer':
                 $can = $user->customer->id == $item->customer_id || !isset($item->customer_id);
@@ -74,7 +60,7 @@ class TemplatePolicy
             case 'admin':
                 $ability = $user->admin->getPermission('template_update');
                 $can = $ability == 'all'
-                    || ($ability == 'own' && $user->admin->id == $item->admin_id);
+                    || ($ability == 'own');
                 break;
             case 'customer':
                 $can = $user->customer->id == $item->customer_id;
@@ -90,7 +76,7 @@ class TemplatePolicy
             case 'admin':
                 $ability = $user->admin->getPermission('template_read');
                 $can = $ability == 'all'
-                    || ($ability == 'own' && $user->admin->id == $item->admin_id);
+                    || ($ability == 'own');
                 break;
             case 'customer':
                 $can = $user->customer->id == $item->customer_id || !isset($item->customer_id);
@@ -106,7 +92,7 @@ class TemplatePolicy
             case 'admin':
                 $ability = $user->admin->getPermission('template_delete');
                 $can = $ability == 'all'
-                    || ($ability == 'own' && $user->admin->id == $item->admin_id);
+                    || ($ability == 'own');
                 break;
             case 'customer':
                 $can = $user->customer->id == $item->customer_id;
@@ -122,23 +108,7 @@ class TemplatePolicy
             case 'admin':
                 $ability = $user->admin->getPermission('template_read');
                 $can = $ability == 'all'
-                    || ($ability == 'own' && $user->admin->id == $item->admin_id);
-                break;
-            case 'customer':
-                $can = $user->customer->id == $item->customer_id || !isset($item->customer_id);
-                break;
-        }
-
-        return $can;
-    }
-
-    public function saveImage(User $user, Template $item, $role)
-    {
-        switch ($role) {
-            case 'admin':
-                $ability = $user->admin->getPermission('template_update');
-                $can = $ability == 'all'
-                    || ($ability == 'own' && $user->admin->id == $item->admin_id);
+                    || ($ability == 'own');
                 break;
             case 'customer':
                 $can = $user->customer->id == $item->customer_id || !isset($item->customer_id);
@@ -154,7 +124,7 @@ class TemplatePolicy
             case 'admin':
                 $ability = $user->admin->getPermission('template_update');
                 $can = $ability == 'all'
-                    || ($ability == 'own' && $user->admin->id == $item->admin_id);
+                    || ($ability == 'own');
                 break;
             case 'customer':
                 $can = $user->customer->id == $item->customer_id || !isset($item->customer_id);

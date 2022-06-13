@@ -4,9 +4,11 @@ namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
+use Acelle\Library\Traits\HasUid;
 
 class Attachment extends Model
 {
+    use HasUid;
     /**
      * The attributes that are mass assignable.
      *
@@ -24,42 +26,13 @@ class Attachment extends Model
     }
 
     /**
-     * Bootstrap any application services.
-     */
-    public static function boot()
-    {
-        parent::boot();
-
-        // Create uid when creating automation.
-        static::creating(function ($item) {
-            // Create new uid
-            $uid = uniqid();
-            while (self::where('uid', '=', $uid)->count() > 0) {
-                $uid = uniqid();
-            }
-            $item->uid = $uid;
-        });
-    }
-
-    /**
-     * Find item by uid.
-     *
-     * @return object
-     */
-    public static function findByUid($uid)
-    {
-        return self::where('uid', '=', $uid)->first();
-    }
-
-    /**
      * Remove attachment.
      *
      * @return object
      */
     public function remove()
     {
-        Storage::disk('local')->delete($this->file);
-
+        unlink($this->file);
         $this->delete();
     }
 }

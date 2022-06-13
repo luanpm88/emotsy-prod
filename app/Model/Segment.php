@@ -23,10 +23,12 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
-use Acelle\Model\SystemJob as SystemJobModel;
+use Acelle\Library\Traits\HasUid;
 
 class Segment extends Model
 {
+    use HasUid;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -66,34 +68,6 @@ class Segment extends Model
     public function segmentConditions()
     {
         return $this->hasMany('Acelle\Model\SegmentCondition');
-    }
-
-    /**
-     * Bootstrap any application services.
-     */
-    public static function boot()
-    {
-        parent::boot();
-
-        // Create uid when creating list.
-        static::creating(function ($item) {
-            // Create new uid
-            $uid = uniqid();
-            while (Segment::where('uid', '=', $uid)->count() > 0) {
-                $uid = uniqid();
-            }
-            $item->uid = $uid;
-        });
-    }
-
-    /**
-     * Find item by uid.
-     *
-     * @return object
-     */
-    public static function findByUid($uid)
-    {
-        return self::where('uid', '=', $uid)->first();
     }
 
     /**
@@ -179,6 +153,19 @@ class Segment extends Model
     }
 
     /**
+     * Get created date operators.
+     *
+     * @return options
+     */
+    public static function createdDateOperators()
+    {
+        return [
+            ['text' => trans('messages.greater_than'), 'value' => 'created_date_greater'],
+            ['text' => trans('messages.less_than'), 'value' => 'created_date_less'],
+        ];
+    }
+
+    /**
      * Get verification operators.
      *
      * @return options
@@ -188,6 +175,32 @@ class Segment extends Model
         return [
             ['text' => trans('messages.contains'), 'value' => 'tag_contains'],
             ['text' => trans('messages.not_contains'), 'value' => 'tag_not_contains'],
+        ];
+    }
+
+    /**
+     * Get verification operators.
+     *
+     * @return options
+     */
+    public static function openMailOperators()
+    {
+        return [
+            ['text' => trans('messages.segment.greater_than_days'), 'value' => 'last_open_email_greater_than_days'],
+            ['text' => trans('messages.segment.less_than_days'), 'value' => 'last_open_email_less_than_days'],
+        ];
+    }
+
+    /**
+     * Get verification operators.
+     *
+     * @return options
+     */
+    public static function clickLinkOperators()
+    {
+        return [
+            ['text' => trans('messages.segment.greater_than_days'), 'value' => 'last_link_click_greater_than_days'],
+            ['text' => trans('messages.segment.less_than_days'), 'value' => 'last_link_click_less_than_days'],
         ];
     }
 
@@ -269,6 +282,7 @@ class Segment extends Model
                         $cond = '(LOWER(sf'.$number.".value) = '' OR LOWER(sf".$number.'.value) IS NULL)';
                         break;
                     default:
+                        throw new \Exception("Unknown segment condition type (operator): ".$condition->operator);
                 }
 
                 // add to joins array
@@ -282,20 +296,16 @@ class Segment extends Model
 
                 // add condition
                 $conditions[] = $cond;
-            } elseif (strpos($condition->operator, 'verification') === 0) {
+            } else {
                 switch ($condition->operator) {
                     case 'verification_equal':
                         // add condition
-                        $conditions[] = '('.\DB::getTablePrefix()."email_verifications.result = '".$condition->value."')";
+                        $conditions[] = '('.\DB::getTablePrefix()."subscribers.verification_status = '".$condition->value."')";
                         break;
                     case 'verification_not_equal':
                         // add condition
-                        $conditions[] = '('.\DB::getTablePrefix().'email_verifications.result IS NULL OR '.\DB::getTablePrefix()."email_verifications.result != '".$condition->value."')";
+                        $conditions[] = '('.\DB::getTablePrefix().'subscribers.verification_status IS NULL OR '.\DB::getTablePrefix()."subscribers.verification_status != '".$condition->value."')";
                         break;
-                    default:
-                }
-            } elseif (strpos($condition->operator, 'tag') === 0) {
-                switch ($condition->operator) {
                     case 'tag_contains':
                         // add condition
                         $conditions[] = '('.\DB::getTablePrefix().'subscribers.tags LIKE '.db_quote('%"'.$keyword.'"%').')';
@@ -304,7 +314,32 @@ class Segment extends Model
                         // add condition
                         $conditions[] = '('.\DB::getTablePrefix().'subscribers.tags NOT LIKE '.db_quote('%"'.$keyword.'"%').')';
                         break;
+                    case 'last_open_email_less_than_days':
+                        // IMPORTANT: NO LEFT JOIN HERE
+                        $conditions[] = sprintf('(%s IN (SELECT s.id FROM %s s JOIN %s l ON s.id = l.subscriber_id JOIN %s o ON l.message_id = o.message_id WHERE DATEDIFF(now(), o.created_at) < %s))', table('subscribers.id'), table('subscribers'), table('tracking_logs'), table('open_logs'), db_quote($keyword));
+                        break;
+                    case 'last_open_email_greater_than_days':
+                        // IMPORTANT: LEFT JOIN HERE
+                        $conditions[] = sprintf('(%s IN (SELECT s.id FROM %s s LEFT JOIN %s l ON s.id = l.subscriber_id LEFT JOIN %s o ON l.message_id = o.message_id WHERE DATEDIFF(now(), o.created_at) > %s OR o.created_at IS NULL))', table('subscribers.id'), table('subscribers'), table('tracking_logs'), table('open_logs'), db_quote($keyword));
+                        break;
+                    case 'last_link_click_less_than_days':
+                        // IMPORTANT: NO LEFT JOIN HERE
+                        $conditions[] = sprintf('(%s IN (SELECT s.id FROM %s s JOIN %s l ON s.id = l.subscriber_id JOIN %s o ON l.message_id = o.message_id WHERE DATEDIFF(now(), o.created_at) < %s))', table('subscribers.id'), table('subscribers'), table('tracking_logs'), table('click_logs'), db_quote($keyword));
+                        break;
+                    case 'last_link_click_greater_than_days':
+                        // IMPORTANT: LEFT JOIN HERE
+                        $conditions[] = sprintf('(%s IN (SELECT s.id FROM %s s LEFT JOIN %s l ON s.id = l.subscriber_id LEFT JOIN %s o ON l.message_id = o.message_id WHERE DATEDIFF(now(), o.created_at) > %s OR o.created_at IS NULL))', table('subscribers.id'), table('subscribers'), table('tracking_logs'), table('click_logs'), db_quote($keyword));
+                        break;
+                    case 'created_date_greater':
+                        $ts = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $condition->value, "UTC")->timestamp;
+                        $conditions[] = '(UNIX_TIMESTAMP('.\DB::getTablePrefix().'subscribers.created_at) > '.$ts.')';
+                        break;
+                    case 'created_date_less':
+                        $ts = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $condition->value, "UTC")->timestamp;
+                        $conditions[] = '(UNIX_TIMESTAMP('.\DB::getTablePrefix().'subscribers.created_at) < '.$ts.')';
+                        break;
                     default:
+                        throw new \Exception("Unknown segment condition type (operator): ".$condition->operator);
                 }
             }
         }
@@ -327,14 +362,15 @@ class Segment extends Model
      *
      * @return collect
      */
-    public function subscribers($request = null)
+    public function subscribers()
     {
-        $query = \Acelle\Model\Subscriber::select('subscribers.*', 'email_verifications.result AS verify_result');
-        $query = Subscriber::filter($query, $request);
+        $query = $this->mailList->subscribers();
+        $query->select('subscribers.*');
 
+        // Get segment filter criteria
         $conditions = $this->getSubscribersConditions();
 
-        // JOINS...
+        // Apply the filter
         if (!empty($conditions['joins'])) {
             foreach ($conditions['joins'] as $joining) {
                 $query = $query->leftJoin($joining['table'], function ($join) use ($joining) {
@@ -348,16 +384,12 @@ class Segment extends Model
             }
         }
 
-        // WHERE...
-        $query = $query->where('subscribers.mail_list_id', $this->mail_list_id);
+        // var_dump($conditions['conditions']);die();
         if (!empty($conditions['conditions'])) {
             $query = $query->whereRaw('('.$conditions['conditions'].')');
         }
 
-        // filters
-        if (isset($request)) {
-            $query = $query->orderBy($request->sort_order, $request->sort_direction);
-        }
+        // var_dump($query->toSql());die();
 
         return $query;
     }
@@ -395,7 +427,8 @@ class Segment extends Model
             return $this->readCache('SubscriberCount');
         }
 
-        return distinctCount($this->subscribers());
+        // return distinctCount($this->subscribers());
+        return $this->subscribers()->count();
     }
 
     /**
@@ -403,22 +436,7 @@ class Segment extends Model
      */
     public function updateCacheDelayed()
     {
-        $existed = SystemJobModel::getNewJobs()
-                       ->where('name', \Acelle\Jobs\UpdateSegmentJob::class)
-                       ->where('data', $this->id)
-                       ->exists();
-
-        // check if a pending cache updating process is already there for the list
-        if (!$existed) {
-            $existed = SystemJobModel::getNewJobs()
-                       ->where('name', \Acelle\Jobs\UpdateMailListJob::class)
-                       ->where('data', $this->mailList->id)
-                       ->exists();
-        }
-
-        if (!$existed) {
-            dispatch(new \Acelle\Jobs\UpdateSegmentJob($this));
-        }
+        dispatch(new \Acelle\Jobs\UpdateSegmentJob($this));
     }
 
     /**
@@ -474,6 +492,35 @@ class Segment extends Model
             }
         } else {
             return $default;
+        }
+    }
+
+    public function updateConditions($conditions)
+    {
+        if ($this->id) {
+            $this->segmentConditions()->delete();
+        }
+        foreach ($conditions as $key => $param) {
+            $condition = new \Acelle\Model\SegmentCondition();
+            $condition->fill($param);
+
+            if (strpos($condition->operator, 'created_date') === 0) {
+                $zone = $this->mailList->customer->getTimezone();
+                $date = \Carbon\Carbon::createFromFormat('Y-m-d, H:i', $condition->value, $zone);
+                $date->setTimezone('UTC');
+
+                $condition->value = $date->toDateTimeString();
+            }
+
+            $condition->segment_id = $this->id;
+            $field = \Acelle\Model\Field::findByUid($param['field_id']);
+            if (is_object($field)) {
+                $condition->field_id = $field->id;
+            } else {
+                $condition->field_id = null;
+            }
+
+            $condition->save();
         }
     }
 }

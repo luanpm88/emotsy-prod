@@ -24,17 +24,19 @@ namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log as LaravelLog;
+use Acelle\Library\ExtendedSwiftMessage;
+use Acelle\Model\Setting;
+use Acelle\Library\Traits\HasUid;
+use App;
 
 class Sender extends Model
 {
-    // Statuses
-    const STATUS_NEW = 'new';
-    const STATUS_PENDING = 'pending';
-    const STATUS_VERIFIED = 'verified';
+    use HasUid;
 
-    // Verifiation types
-    const VERIFICATION_TYPE_ACELLE = 'acelle';
-    const VERIFICATION_TYPE_AMAZON_SES = 'amazon_ses';
+    // Statuses
+    public const STATUS_NEW = 'new'; // deprecated
+    public const STATUS_PENDING = 'pending';
+    public const STATUS_VERIFIED = 'verified';
 
     /**
      * Items per page.
@@ -51,7 +53,7 @@ class Sender extends Model
     public static function filter($request)
     {
         $user = $request->user();
-        $query = self::select('senders.*');
+        $query = $user->customer->senders();
 
         // Keyword
         if (!empty(trim($request->keyword))) {
@@ -76,9 +78,19 @@ class Sender extends Model
         return $this->belongsTo('Acelle\Model\Customer');
     }
 
+    public function sendingServer()
+    {
+        return $this->belongsTo('Acelle\Model\SendingServer');
+    }
+
     public static function pending()
     {
         return self::where('status', self::STATUS_PENDING);
+    }
+
+    public function scopeVerified($query)
+    {
+        return $query->where('status', self::STATUS_VERIFIED);
     }
 
     /**
@@ -103,7 +115,7 @@ class Sender extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'type',
+        'name', 'email'
     ];
 
     /**
@@ -147,69 +159,6 @@ class Sender extends Model
     }
 
     /**
-     * The rules for verification.
-     *
-     * @var array
-     */
-    public function verificationRules()
-    {
-        $rules = array(
-            'type' => 'required',
-        );
-
-        return $rules;
-    }
-
-    /**
-     * Bootstrap any application services.
-     */
-    public static function boot()
-    {
-        parent::boot();
-
-        // Create uid when creating list.
-        static::creating(function ($item) {
-            // Create new uid
-            $uid = uniqid();
-            while (self::where('uid', '=', $uid)->count() > 0) {
-                $uid = uniqid();
-            }
-            $item->uid = $uid;
-        });
-    }
-
-    /**
-     * Find item by uid.
-     *
-     * @return object
-     */
-    public static function findByUid($uid)
-    {
-        return self::where('uid', '=', $uid)->first();
-    }
-
-    /**
-     * Verification type select options.
-     *
-     * @return array
-     */
-    public static function verificationTypeSelectOptions($server)
-    {
-        $options = [];
-
-        if ($server->allowVerifyingOwnEmails()) {
-            $options[] = ['value' => self::VERIFICATION_TYPE_ACELLE, 'text' => \Acelle\Model\Setting::get('site_name')];
-        }
-
-        if ($server->allowVerifyingOwnEmailsRemotely()) {
-            // AWS server name
-            $options[] = ['value' => self::VERIFICATION_TYPE_AMAZON_SES, 'text' => $server->name];
-        }
-
-        return $options;
-    }
-
-    /**
      * Check if sender is verified.
      *
      * @return object
@@ -246,39 +195,123 @@ class Sender extends Model
      */
     public function updateVerificationStatus()
     {
-        LaravelLog::info(sprintf('Verifying sender %s (%s)', $this->email, $this->type));
-        if ($this->type == self::VERIFICATION_TYPE_AMAZON_SES) {
-            $this->status = $this->getAwsVerificationServer()->verifyIdentity($this->email) ? self::STATUS_VERIFIED : self::STATUS_PENDING;
+        // only work for server of allowVerifyingOwnEmailsRemotely() == true
+        $server = $this->sendingServer;
+        if (!is_null($server)) {
+            $verified = $server->mapType()->verifyIdentity($this->email);
+            $this->status = $verified ? self::STATUS_VERIFIED : self::STATUS_PENDING;
+            $this->save();
+            LaravelLog::info(sprintf('Verify sender %s done, status: %s', $this->email, $this->status));
         } else {
-            $domain = extract_domain($this->email);
-            $this->status = $this->customer->getSendingDomains()->contains(function ($r) use ($domain) { return $r->name == $domain; }) ? self::STATUS_VERIFIED : self::STATUS_PENDING;
+            // verify by clicking on an Acelle link
+            // so nothing to do here
+        }
+    }
+
+    public function setVerified()
+    {
+        $this->status = self::STATUS_VERIFIED;
+        $this->save();
+        return $this;
+    }
+
+    public function toRFCEmailAddress()
+    {
+        return "{$this->name} <{$this->email}>";
+    }
+
+    public function isPending()
+    {
+        return $this->status == self::STATUS_PENDING;
+    }
+
+    public function verifyWith($server = null)
+    {
+        // Check if it is already verify
+        $this->updateVerificationStatus();
+
+        if ($this->isVerified()) {
+            return;
         }
 
-        $this->save();
-        LaravelLog::info(sprintf('Verify sender %s (%s) done, status: %s', $this->email, $this->type, $this->status));
+        if (!is_null($server) && $server->allowVerifyingOwnEmailsRemotely()) {
+            // this sender is bound with a specific sending server
+            // set $this->sending_server_id = $server->id the correct way
+            $this->sendingServer()->associate($server);
+            $this->setPending();
+            $this->save();
+
+            $server->mapType()->sendVerificationEmail($this);
+        } else {
+            // If server does not support verification
+            $this->sendVerificationEmail();
+        }
     }
 
-    /**
-     * Get AWS Verification Server.
-     *
-     * @return string
-     */
-    public function getAwsVerificationServer()
-    {
-        $subscription = $this->customer->subscription;
-        $server = $subscription->plan->primarySendingServer();
-
-        return SendingServerAmazonApi::find($server->id);
-    }
-
-    /**
-     * Get AWS Verification Server.
-     *
-     * @return string
-     */
     public function sendVerificationEmail()
     {
-        LaravelLog::info(sprintf('Sending verification email for %s (%s)', $this->email, $this->type));
-        $this->getAwsVerificationServer()->sendVerificationEmail($this->email);
+        $template = Layout::where('alias', 'sender_verification_email')->first();
+
+        if (is_null($template)) {
+            throw new \Exception("Layout/template 'sender_verification_email' is missing!");
+        }
+
+        $htmlContent = $template->content;
+
+        $htmlContent = str_replace('{USER_NAME}', $this->name, $htmlContent);
+        $htmlContent = str_replace('{USER_EMAIL}', $this->email, $htmlContent);
+        $htmlContent = str_replace('{VERIFICATION_LINK}', $this->generateVerificationUrl(), $htmlContent);
+
+        // build the message
+        $message = new ExtendedSwiftMessage();
+        $message->setEncoder(new \Swift_Mime_ContentEncoder_PlainContentEncoder('8bit'));
+        $message->setContentType('text/html; charset=utf-8');
+
+        $message->setSubject($template->subject);
+        $message->setTo($this->email);
+        $message->setReplyTo(Setting::get('mail.reply_to'));
+        $message->addPart($htmlContent, 'text/html');
+
+        $mailer = App::make('xmailer');
+        $result = $mailer->sendWithDefaultFromAddress($message);
+
+        if (array_key_exists('error', $result)) {
+            throw new \Exception($result['error']);
+        }
+    }
+
+    public function generateVerificationToken()
+    {
+        $token = urlencode(encrypt($this->uid));
+        return $token;
+    }
+
+    public function generateVerificationUrl()
+    {
+        return action('SenderController@verify', [ 'token' => $this->generateVerificationToken() ]);
+    }
+
+    public function generateVerificationResultUrl()
+    {
+        return action('SenderController@verifyResult', [ 'uid' => $this->uid ]);
+    }
+
+    public static function verifyToken($token)
+    {
+        $uid = null;
+
+        try {
+            $uid = decrypt(urldecode($token));
+        } catch (\Exception $ex) {
+            throw new \Exception("Invalid sender verification token", 1);
+        }
+
+        $sender = self::findByUid($uid);
+
+        if (is_null($sender)) {
+            throw new \Exception("Identity not found", 1);
+        }
+
+        return $sender->setVerified();
     }
 }

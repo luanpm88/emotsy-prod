@@ -1,10 +1,8 @@
-@include('automation2._info')
+@include('automation2._back')
 
-@include('automation2._tabs', ['tab' => 'settings'])
-    
-<h5 class="mb-20 mt-3"h5>
+<h4 class="mb-20 mt-3"h5>
     {{ trans('messages.automation.action.send-an-email') }}
-</h5>
+</h4>
 <p class="mb-10">
     {{ trans('messages.automation.action.send-an-email.intro') }}
 </p>
@@ -19,23 +17,38 @@
         >
             {{ trans('messages.automation.email.settings') }}
         </span>
+        <a onclick="popupwindow('{{ action('Automation2Controller@templatePreview', [
+                            'uid' => $automation->uid,
+                            'email_uid' => $email->uid,
+                        ]) }}', `{{ $automation->name }}`, 800)"
+                        href="javascript:;"
+                        class="btn btn-default"
+                    >
+                        {{ trans('messages.automation.template.preview') }}
+                    </a>
     </div>
     
 <form>
 
-<h6 class="mb-2 mt-5 text-danger">
-    {{ trans('messages.automation.dangerous_zone') }}
-</h6>
-<p class="">
-    {{ trans('messages.automation.action.delete.confirm') }}        
-</p>
-<div class="mt-3">
-    <a href="{{ action('Automation2Controller@emailDelete', [
-        'uid' => $automation->uid,
-        'email_uid' => $email->uid,
-    ]) }}" data-confirm="{{ trans('messages.automation.email.delete.confirm') }}" class="btn btn-danger email-action-delete">
-        <i class='lnr lnr-trash mr-2'></i> {{ trans('messages.automation.delete_this_action') }}
-    </a>
+<div class="mt-4 d-flex py-3">
+    <div>
+        <h4 class="mb-2">
+            {{ trans('messages.automation.dangerous_zone') }}
+        </h4>
+        <p class="">
+            {{ trans('messages.automation.action.delete.wording') }}         
+        </p>
+        <div class="mt-3">
+            <a href="{{ action('Automation2Controller@emailDelete', [
+                'uid' => $automation->uid,
+                'email_uid' => $email->uid,
+            ]) }}" data-confirm="{{ trans('messages.automation.action.delete.confirm') }}" class="btn btn-secondary email-action-delete">
+                <span class="material-symbols-rounded">
+delete
+</span> {{ trans('messages.automation.remove_this_action') }}
+            </a>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -63,6 +76,7 @@
                     data: {
                         _token: CSRF_TOKEN
                     },
+                    globalError: false,
                     statusCode: {
                         // validate error
                         400: function (res) {
@@ -78,7 +92,11 @@
                         // save tree
                         saveData(function() {                            
                             // notify
-                            notify('success', '{{ trans('messages.notify.success') }}', response.message);
+                            notify({
+    type: 'success',
+    title: '{!! trans('messages.notify.success') !!}',
+    message: response.message
+});
                             
                             // load default sidebar
                             sidebar.load('{{ action('Automation2Controller@settings', $automation->uid) }}');

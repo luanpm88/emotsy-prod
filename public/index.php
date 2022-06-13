@@ -1,13 +1,14 @@
 <?php
 
 // check if a function is disable
-function f_enabled($name) {
-  $disabled = preg_split('/[\s,]+/', ini_get('disable_functions'));
-  return function_exists($name) && !in_array($name, $disabled);
+function f_enabled($name)
+{
+    $disabled = preg_split('/[\s,]+/', ini_get('disable_functions'));
+    return function_exists($name) && !in_array($name, $disabled);
 }
 
 // fucntions that are required by Acelle Mail
-$required_functions = ['proc_close', 'proc_open', 'escapeshellarg', ];
+$required_functions = ['escapeshellarg', ];
 
 // Check required functions
 foreach ($required_functions as $f) {
@@ -18,8 +19,8 @@ foreach ($required_functions as $f) {
 }
 
 // Check PHP version
-if (!version_compare(PHP_VERSION, '7.0.0', '>=')) {
-    echo "ERROR: PHP 7.0.0 or higher is required.<br />";
+if (!version_compare(PHP_VERSION, '7.3.0', '>=')) {
+    echo "ERROR: Your current PHP version is ".PHP_VERSION.". However, Acelle requires PHP version 7.3.0 or higher.<br />";
     exit(0);
 }
 

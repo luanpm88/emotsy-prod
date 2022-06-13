@@ -1,6 +1,4 @@
-@include('automation2._info')
-
-@include('automation2._tabs', ['tab' => 'settings'])
+@include('automation2._back')
 
 <form class="action-edit" action="{{ action("Automation2Controller@actionEdit", ['uid' => $automation->uid, 'key' => $key]) }}" method="POST" class="form-validate-jqueryz">
     {{ csrf_field() }}
@@ -12,7 +10,7 @@
     @endif
     
     <div class="trigger-action mt-2">    
-        <button class="btn btn-secondary action-save-change mr-1"
+        <button class="btn btn-secondary action-save-change mr-1 mt-2"
             data-url="{{ action('Automation2Controller@triggerSelect', ['uid' => $automation->uid, 'key' => $key]) }}"
         >
                 {{ trans('messages.automation.action.save_change') }}
@@ -20,16 +18,22 @@
     </div>
 </form>
 
-<h6 class="mb-2 mt-5 text-danger">
-    {{ trans('messages.automation.dangerous_zone') }}
-</h6>
-<p class="">
-    {{ trans('messages.automation.action.delete.wording') }}        
-</p>
-<div class="mt-3">
-    <a href="javascript:;" data-confirm="{{ trans('messages.automation.action.delete.confirm') }}" class="btn btn-danger action-delete">
-        <i class='lnr lnr-trash mr-2'></i> {{ trans('messages.automation.delete_this_action') }}
-    </a>
+<div class="mt-4 d-flex py-3">
+    <div>
+        <h4 class="mb-2">
+            {{ trans('messages.automation.dangerous_zone') }}
+        </h4>
+        <p class="">
+            {{ trans('messages.automation.action.delete.wording') }}                
+        </p>
+        <div class="mt-3">
+            <a href="javascript:;" data-confirm="{{ trans('messages.automation.action.delete.confirm') }}" class="btn btn-secondary action-delete">
+                <span class="material-symbols-rounded">
+delete
+</span> {{ trans('messages.automation.remove_this_action') }}
+            </a>
+        </div>
+    </div>
 </div>
     
 <script>
@@ -56,7 +60,11 @@
             // save tree
             saveData(function() {
                 // notify
-                notify('success', '{{ trans('messages.notify.success') }}', response.message);
+                notify({
+    type: 'success',
+    title: '{!! trans('messages.notify.success') !!}',
+    message: response.message
+});
                 
                 // reload sidebar
                 sidebar.load();

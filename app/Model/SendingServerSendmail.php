@@ -38,37 +38,22 @@ class SendingServerSendmail extends SendingServer
      */
     public function send($message, $params = array())
     {
-        try {
-            $transport = new \Swift_SendmailTransport($this->sendmail_path.' -bs');
+        $transport = new \Swift_SendmailTransport($this->sendmail_path.' -bs');
 
-            // Create the Mailer using your created Transport
-            $mailer = new \Swift_Mailer($transport);
+        // Create the Mailer using your created Transport
+        $mailer = new \Swift_Mailer($transport);
 
-            // Actually send
-            $sent = $mailer->send($message);
+        // Actually send
+        $sent = $mailer->send($message);
 
-            if ($sent) {
-                MailLog::info('Sent!');
-
-                return array(
-                    'status' => self::DELIVERY_STATUS_SENT,
-                );
-            } else {
-                MailLog::warning('Sending failed');
-
-                return array(
-                    'status' => self::DELIVERY_STATUS_FAILED,
-                    'error' => 'Unknown SMTP error',
-                );
-            }
-        } catch (\Exception $e) {
-            MailLog::warning('Sending failed');
-            MailLog::warning($e->getMessage());
+        if ($sent) {
+            MailLog::info('Sent!');
 
             return array(
-                'status' => self::DELIVERY_STATUS_FAILED,
-                'error' => $e->getMessage(),
+                'status' => self::DELIVERY_STATUS_SENT,
             );
+        } else {
+            throw new \Exception('Unknown SMTP error');
         }
     }
 
@@ -87,6 +72,50 @@ class SendingServerSendmail extends SendingServer
             throw new \Exception("File {$this->sendmail_path} is not executable");
         }
 
+        return true;
+    }
+
+    public function allowVerifyingOwnEmailsRemotely()
+    {
+        return false;
+    }
+
+    public function allowVerifyingOwnDomainsRemotely()
+    {
+        return false;
+    }
+
+    public function syncIdentities()
+    {
+        // just do nothing
+    }
+
+    public static function instantiateFromSettings($settings = [])
+    {
+        $properties = [ 'sendmail_path', 'from_name', 'from_address' ];
+        $required = ['sendmail_path', 'from_address'];
+
+        $server = new self();
+
+        // Validate
+        foreach ($properties as $property) {
+            if ((!array_key_exists($property, $settings) || empty($settings[$property])) && in_array($property, $required)) {
+                throw new \Exception("Cannot instantiate Sendmail mailer, '{$property}' property is missing");
+            }
+
+            $server->{$property} = $settings[$property];
+        }
+
+        return $server;
+    }
+
+    public function setupBeforeSend($fromEmailAddress)
+    {
+        //
+    }
+
+    public function allowOtherSendingDomains()
+    {
         return true;
     }
 }

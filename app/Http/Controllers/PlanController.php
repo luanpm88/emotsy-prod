@@ -14,7 +14,7 @@ class PlanController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function select2(Request $request)
-    {        
+    {
         echo \Acelle\Model\Plan::select2($request);
     }
 }

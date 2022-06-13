@@ -1,12 +1,12 @@
-@extends('layouts.clean')
+@extends('layouts.core.login')
 
 @section('title', trans('messages.not_authorized'))
 
 @section('content')
-                <div class="alert bg-danger alert-styled-left">
-                    <span class="text-semibold">
-                        {{ trans('messages.not_authorized_message') }}
-                    </span>
-                </div>
-                <a href='#back' onclick='history.back()' class='btn bg-grey-400'>{{ trans('messages.go_back') }}</a>                
+    <div class="alert alert-danger alert-styled-left">
+        <span class="text-semibold">
+            {{ trans('messages.not_authorized_message') }}
+        </span>
+    </div>
+    <a href='#back' onclick='history.back();return false;' class='btn btn-secondary'>{{ trans('messages.go_back') }}</a>
 @endsection

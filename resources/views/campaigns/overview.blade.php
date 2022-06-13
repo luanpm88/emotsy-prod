@@ -1,55 +1,58 @@
-@extends('layouts.frontend')
+@extends('layouts.core.frontend')
 
 @section('title', $campaign->name)
 
-@section('page_script')
-    <script type="text/javascript" src="{{ URL::asset('assets/js/plugins/visualization/echarts/echarts.js') }}"></script>
-
-    <script type="text/javascript" src="{{ URL::asset('js/chart.js') }}"></script>
+@section('head')
+    <script type="text/javascript" src="{{ URL::asset('core/echarts/echarts.min.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('core/echarts/dark.js') }}"></script> 
 @endsection
 
 @section('page_header')
 
-			@include("campaigns._header")
+    @include("campaigns._header")
 
 @endsection
 
 @section('content')
 
-            @include("campaigns._menu")
+    @include("campaigns._menu")
 
-			@include("campaigns._info")
+    @include("campaigns._info")
 
-            <br />
+    <br />
 
-            @include("campaigns._chart")
+    @include("campaigns._chart")
 
-            <hr />
+    @if (config('custom.woo'))
 
-			@include("campaigns._open_click_rate")
+        @include("campaigns._chart2")
 
-			@include("campaigns._count_boxes")
+    @endif
 
-            <br />
+    @include("campaigns._open_click_rate")
 
-            @include("campaigns._24h_chart")
+    @include("campaigns._count_boxes")
+
+    <br />
+
+    @include("campaigns._24h_chart")
 
 
-            <br />
+    <br />
 
-			@include("campaigns._top_link")
+    @include("campaigns._top_link")
 
-            <br />
+    <br />
 
-			@include("campaigns._most_click_country")
+    @include("campaigns._most_click_country")
 
-            <br />
+    <br />
 
-			@include("campaigns._most_open_country")
+    @include("campaigns._most_open_country")
 
-			<br />
+    <br />
 
-			@include("campaigns._most_open_location")
+    @include("campaigns._most_open_location")
 
-            <br />
+    <br />
 @endsection

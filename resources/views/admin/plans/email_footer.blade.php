@@ -1,21 +1,18 @@
-@extends('layouts.backend')
+@extends('layouts.core.backend')
 
 @section('title', $plan->name)
 
-@section('page_script')
-    <script type="text/javascript" src="{{ URL::asset('assets/js/plugins/forms/styling/uniform.min.js') }}"></script>
-    <script type="text/javascript" src="{{ URL::asset('js/tinymce/tinymce.min.js') }}"></script>
-        
-    <script type="text/javascript" src="{{ URL::asset('js/editor.js') }}"></script>
-    <script type="text/javascript" src="{{ URL::asset('js/validate.js') }}"></script>
+@section('head')
+    <script type="text/javascript" src="{{ URL::asset('core/tinymce/tinymce.min.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('core/js/editor.js') }}"></script>
 @endsection
 
 @section('page_header')
 
     <div class="page-title">
         <ul class="breadcrumb breadcrumb-caret position-right">
-            <li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
-            <li><a href="{{ action("Admin\PlanController@index") }}">{{ trans('messages.plans') }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ action("Admin\PlanController@index") }}">{{ trans('messages.plans') }}</a></li>
         </ul>
         <h1 class="mc-h1">
             <span class="text-semibold">{{ $plan->name }}</span>
@@ -63,7 +60,7 @@
                     </div>
                     
                     @include('helpers.form_control', [
-                        'class' => 'builder-editor',
+                        'class' => 'setting-editor',
                         'type' => 'textarea',
                         'name' => 'plan[options][html_footer]',
                         'label' => trans('messages.plan.html_footer'),
@@ -82,8 +79,8 @@
                         'rules' => $plan->validationRules()['options'],
                     ])
                     
-                    <button class="btn btn-mc_primary mr-10">{{ trans('messages.save') }}</button>
-                    <a href="{{ action('Admin\PlanController@index') }}" type="button" class="btn btn-mc_inline">
+                    <button class="btn btn-secondary me-2">{{ trans('messages.save') }}</button>
+                    <a href="{{ action('Admin\PlanController@index') }}" role="button" class="btn btn-link">
                         {{ trans('messages.cancel') }}
                     </a>
                 </div>
@@ -96,7 +93,6 @@
             // Sending domains checking setting
             $(document).on("change", "input[name='plan[options][email_footer_enabled]']", function(e) {
                 var email_footer_enabled = $('input[name="plan[options][email_footer_enabled]"]:checked').val();
-                console.log(email_footer_enabled);
                 
                 if (email_footer_enabled == 'yes') {
                     $('input[name="plan[options][email_footer_trial_period_only]"]').closest('.checkbox').removeClass('disabled');

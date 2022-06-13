@@ -27,6 +27,15 @@ use Illuminate\Database\Eloquent\Model;
 class UnsubscribeLog extends Model
 {
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'message_id', 'ip_address', 'user_agent'
+    ];
+
+    /**
      * Associations.
      *
      * @var object | collect
@@ -34,6 +43,16 @@ class UnsubscribeLog extends Model
     public function trackingLog()
     {
         return $this->belongsTo('Acelle\Model\TrackingLog', 'message_id', 'message_id');
+    }
+
+    /**
+     * Associations.
+     *
+     * @var object | collect
+     */
+    public function subscriber()
+    {
+        return $this->belongsTo('Acelle\Model\Subscriber');
     }
 
     /**
@@ -70,14 +89,13 @@ class UnsubscribeLog extends Model
                         ->orwhere('unsubscribe_logs.ip_address', 'like', '%'.$keyword.'%')
                         ->orwhere('unsubscribe_logs.user_agent', 'like', '%'.$keyword.'%')
                         ->orwhere('sending_servers.name', 'like', '%'.$keyword.'%')
-                        ->orwhere(\DB::raw('CONCAT(first_name, last_name)'), 'like', '%'.$keyword.'%')
                         ->orwhere('subscribers.email', 'like', '%'.$keyword.'%');
                 });
             }
         }
 
         // filters
-        $filters = $request->filters;
+        $filters = $request->all();
         if (!empty($filters)) {
             if (!empty($filters['campaign_uid'])) {
                 $query = $query->where('campaigns.uid', '=', $filters['campaign_uid']);

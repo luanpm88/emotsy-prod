@@ -1,13 +1,6 @@
-@extends('layouts.frontend')
+@extends('layouts.core.frontend')
 
 @section('title', $list->name . ": " . trans('messages.import'))
-
-@section('page_script')
-    <script type="text/javascript" src="{{ URL::asset('assets/js/core/libraries/jquery_ui/interactions.min.js') }}"></script>
-    <script type="text/javascript" src="{{ URL::asset('assets/js/core/libraries/jquery_ui/touch.min.js') }}"></script>
-    <script type="text/javascript" src="{{ URL::asset('js/listing.js') }}"></script>
-	<script type="text/javascript" src="{{ URL::asset('js/validate.js') }}"></script>
-@endsection
 
 @section('page_header')
 
@@ -17,278 +10,378 @@
 
 @section('content')
 
-	@include("lists._menu")
+    @include("lists._menu")
 
-	<h2 class="text-bold text-teal-800"><i class="icon-users4"></i> {{ trans('messages.import_subscribers') }}</h2>
+    <h2 class="text-primary my-4"><span class="material-symbols-rounded">
+people
+</span> {{ trans('messages.import_subscribers') }}</h2>
 
-	<div class="row">
-		<div class="col-md-12">
-			<form
-				process-url="{{ action('SubscriberController@importProccess', $list->uid) }}"
-				action="{{ action('SubscriberController@import', $list->uid) }}" method="POST" class="ajax_upload_form form-validate-jquery">
-				{{ csrf_field() }}
+    <div class="row">
+        <div class="col-md-8">
+            <form id="importForm"
+                action="{{ action('SubscriberController@dispatchImportJob', ['list_uid' => $list->uid]) }}" method="POST" class="ajax_upload_form form-validate-jquery">
+                {{ csrf_field() }}
 
-				<div class="alert alert-info">
-					{!! trans('messages.import_file_help', ['csv_link' => url('files/csv_import_example.csv')]) !!}
-				</div>
+                <div class="alert alert-info">
+                    {!! trans('messages.list.import.instruction', [
+                        'csv_link' => url('files/csv_import_example.csv'),
+                        'size' => \Acelle\Library\Tool::maxFileUploadInBytes()
+                    ]) !!}
+                </div>
+                @foreach ($importNotifications as $notification)
+                <div class="alert alert-info">
+                    {!! $notification !!}
+                </div>
+                @endforeach
+                <div class="upload_file before">
 
-				<div class="upload_file before">
-					{!! trans('messages.max_file_upload', ['size' => \Acelle\Library\Tool::maxFileUploadInBytes()]) !!}
+                    @include('helpers.form_control', ['required' => true, 'type' => 'file', 'label' => trans('messages.upload_file'), 'name' => 'file', 'value' => $list->name])
 
-					@include('helpers.form_control', ['required' => true, 'type' => 'file', 'label' => trans('messages.upload_file'), 'name' => 'file', 'value' => $list->name])
+                    @if (\Acelle\Model\Setting::get('import_subscribers_commitment'))
+                        <div class="mt-5">
+                            @include('helpers.form_control', [
+                                'type' => 'checkbox2',
+                                'class' => 'policy_commitment mb-10 required',
+                                'name' => 'policy_commitment',
+                                'value' => 'no',
+                                'required' => true,
+                                'label' => \Acelle\Model\Setting::get('import_subscribers_commitment'),
+                                'options' => ['no','yes'],
+                                'rules' => []
+                            ])
+                        </div>
+                        <hr>
+                    @endif
 
-					@if (\Acelle\Model\Setting::get('import_subscribers_commitment'))
-						<div class="mt-40">
-							@include('helpers.form_control', [
-								'type' => 'checkbox2',
-								'class' => 'policy_commitment mb-10 required',
-								'name' => 'policy_commitment',
-								'value' => 'no',
-								'required' => true,
-								'label' => \Acelle\Model\Setting::get('import_subscribers_commitment'),
-								'options' => ['no','yes'],
-								'rules' => []
-							])
-						</div>
-						<hr>
-					@endif
+                    <div class="text-left">
+                        <button class="btn btn-secondary me-2"><i class="icon-check"></i> {{ trans('messages.import') }}</button>
+                    </div>
+                    <br />
+                </div>
 
-					<div class="text-left">
-						<button class="btn bg-teal mr-10"><i class="icon-check"></i> {{ trans('messages.import') }}</button>
-					</div>
-					<br />
-				</div>
+                <div class="form-group processing hide">
+                    <h4 style="margin-bottom: 20px" id="notice">{!! trans('messages.please_wait_import') !!}</h4>
+                    <div id="errorBox" class="alert alert-danger" style="display: none; flex-direction: row; align-items: center; justify-content: space-between;">
+		                <div style="display: flex; flex-direction: row; align-items: center;">
+		                    <div style="margin-right:15px">
+		                        <i class="lnr lnr-circle-minus"></i>
+		                    </div>
+		                    <div style="padding-right: 40px">
+		                        <h4>ERROR</h4>
+		                        <p id="errorMsg"></p>
+		                    </div>
+		                </div>
+		            </div>
 
-				<div class="form-group processing hide">
-					<h4>{{ trans('messages.please_wait_import') }}</h4>
-					<div class="progress progress-lg">
-						<!--<div class="progress-bar progress-success bg-success-400" style="width: 20%">
-							<span class="sr-only"><span class="number">20</span>% Complete</span>
-						</div>-->
+                    <div class="progress progress-lg">
+                        <!--<div class="progress-bar progress-success bg-success-400" style="width: 20%">
+                            <span class="sr-only"><span class="number">20</span>% Complete</span>
+                        </div>-->
 
-						<div class="progress-bar progress-error progress-bar-danger" style="width: 0%">
-							<span><span class="number">0</span>% {{ trans('messages.error') }}</span>
-						</div>
+                        <div class="progress-bar progress-error progress-bar-danger" style="width: 0%">
+                            <span><span class="number">0</span>% {{ trans('messages.error') }}</span>
+                        </div>
 
-						<div class="progress-bar progress-total active" style="width: 0%">
-							<span><span class="number">0</span>% {{ trans('messages.complete') }}</span>
-						</div>
-					</div>
-					<label></label>
-					<a data-method="POST" link-confirm="{{ trans('messages.cancel_system_jobs_confirm') }}" data-href="{{ action('SystemJobController@cancel', ["uids" => ""]) }}" type="button" class="btn bg-grey btn-icon cancel processing">
-						{{ trans('messages.cancel') }}
-					</a>
-				</div>
+                        <div class="progress-bar progress-total active" style="width: 0%">
+                            <span><span class="number">0</span>% {{ trans('messages.complete') }}</span>
+                        </div>
+                    </div>
+                    <label style="margin-bottom:20px;font-style:italic;" id="bottomNotice"></label>
+                    <a id="cancelBtn" class="btn btn-secondary btn-icon cancel processing">
+                        {{ trans('messages.cancel') }}
+                    </a>
+                </div>
 
-				<div class="form-group finish hide">
-					<div class="text-left">
-						<a target="_blank" href="{{ action('SubscriberController@downloadImportLog', ["list_uid" => $list->uid]) }}" type="button" class="btn bg-teal success">
-							<i class="icon-download"></i> {{ trans('messages.download_import_log') }}
-						</a>
-						<a href="#retry" class="btn bg-grey-800 mr-10 retry"><i class="icon-reload-alt"></i> {{ trans('messages.import_another') }}</a>
-					</div>
-				</div>
-			</form>
+                <div class="form-group finish hide">
+                    <div class="text-left">
+                    	<a id="downloadLog" target="_blank" href="#" role="button" class="btn btn-secondary">
+                                <span class="material-symbols-rounded">
+file_download
+</span> {{ trans('messages.download_import_log') }}
+                        </a>
+                        <a href="#retry" class="btn btn-link me-2 retry"><span class="material-symbols-rounded">
+restart_alt
+</span> {{ trans('messages.import_another') }}</a>
+                    </div>
+                </div>
+            </form>
 
-		</div>
-	</div>
+        </div>
+    </div>
 
-	<script>
-		var current_list_uid = '{{ $list->uid }}';
+    <script>
+        var AcelleImport = {
+            
+            // Current import job if any
+            currentImportJobUid: null,
+            progressCheckUrl: null,
+            cancelUrl: null,
+            logDownloadUrl: null,
 
-		function check_process(first) {
-			var form = $("form.ajax_upload_form")
-			var url = form.attr("process-url")
-			var bar = form.find('.progress-total');
-			var bar_s = form.find('.progress-success');
-			var bar_e = form.find('.progress-error');
+            progressCheck: null,
 
-			$.ajax({
-				url : url + "?&current_list_uid="+current_list_uid,
-				type: "GET",
-				success:function(result, textStatus, jqXHR)
-				{
-					if(result != "none" && result.job.status != "cancelled") {
-						// Update cancel link
-						form.find('.cancel').attr('href', form.find('.cancel').attr('data-href') + result.job.id);
+            // Update import progress
+            updateProgressBar: function(percentage, message) { // percentage from 0 to 100
+                var form = $("form.ajax_upload_form");
+                var bar = form.find('.progress-total');
 
-						// update progress bar
-						var total = parseFloat(result.data.total);
-						var success = parseFloat(result.data.processed);
-						//var error = parseFloat(result.data.error);
+                form.find("#bottomNotice").show();
+                form.find("#bottomNotice").html(message);
+                bar.find(".number").html(percentage);
+                bar.css({
+                    width: (percentage) + '%'
+                });
+            },
 
-						if (typeof(first) == "undefined") {
-							form.find(".processing label").html(result.message);
-							bar.find(".number").html(Math.round(success/total*100));
-							bar.css({
-								width: (success/total*100) + '%'
-							});
-							//bar_e.find(".number").html(Math.round(error/total*100));
-							//bar_e.css({
-							//    width: (error/total*100) + '%'
-							//});
+            resetCurrentJob: function() {
+            	AcelleImport.currentImportJobUid = null;
+                AcelleImport.progressCheckUrl = null;
+                AcelleImport.cancelUrl = null;
+                AcelleImport.logDownloadUrl = null;
+            },
 
-							if (result.data.status == "failed") {
-								form.find('.finish').removeClass("hide");
-								form.find('.before').addClass("hide");
-								form.find(".processing").removeClass('hide');
-								form.find('.success').addClass("hide");
-							}
+            setCurrentJob: function(data) {
+            	AcelleImport.currentImportJobUid = data.currentImportJobUid;
+                AcelleImport.progressCheckUrl = data.progressCheckUrl;
+                AcelleImport.cancelUrl = data.cancelUrl;
+                AcelleImport.logDownloadUrl = data.logDownloadUrl;
+            },
 
-							if (result.data.status == "done") {
-								form.find('.upload_file .progress-bar').addClass('success');
-								form.find(".before").addClass('hide');
-								form.find(".processing").removeClass('hide');
-								form.find('.finish').removeClass('hide');
-								form.find('.success').removeClass("hide");
+            // Toggle: show progress bar, hide input upload bar
+            showProgressBar: function() {
+            	// Also hide upload input
+                var form = $("form.ajax_upload_form");
+                form.find('.before').addClass("hide");
+                form.find(".processing").removeClass('hide');
+                $('#errorBox').hide();
+            },
 
-								form.find(".processing h4").html('{{ trans('messages.import_completed') }}');
+            hideProgressBar: function() {
+            	// Also show upload input
+                var form = $("form.ajax_upload_form");
+                form.find('.before').removeClass("hide");
+                form.find(".processing").addClass('hide');
+                $('#errorBox').hide();
+            },
 
-								if(!form.find('.finish').hasClass('hide')) {
-									// Success alert
-									swal({
-										title: '{{ trans('messages.import_completed') }}',
-										text: "",
-										confirmButtonColor: "#00695C",
-										type: "success",
-										allowOutsideClick: true,
-										confirmButtonText: LANG_OK,
-									});
-								}
-							}
+            showCancelButton: function() {
+                var form = $("form.ajax_upload_form");
+                form.find('.cancel').removeClass('hide');
+            },
 
-							if (result.job.status == "cancelled") {
-								form.find('.finish').addClass("hide");
-								form.find('.before').removeClass("hide");
-								form.find(".processing").addClass('hide');
-								form.find('.success').removeClass("hide");
-							}
-						}
+            hideCancelButton: function() {
+                var form = $("form.ajax_upload_form");
+                form.find('.cancel').addClass('hide');
+            },
 
-						if (result.data.status == "running" || result.data.status == "new") {
-							setTimeout("check_process()", 3000);
-							form.find(".before").addClass('hide');
-							form.find(".processing").removeClass('hide');
-							form.find('.finish').addClass('hide');
-							form.find('.cancel').removeClass('hide');
-						} else {
-							form.find('.cancel').addClass('hide');
-						}
-					}
+            checkProgress: function(completeAlert = true) {
+            	var form = $("form.ajax_upload_form");
+	            var bar = form.find('.progress-total');
+	            var bar_s = form.find('.progress-success');
+	            var bar_e = form.find('.progress-error');
 
-					if (result.job.status == "cancelled") {
-						form.find('.retry').trigger('click');
-					}
-				}
-			})
-		}
+	            $.ajax({
+	                url : AcelleImport.progressCheckUrl,
+	                type: "GET",
+	                success: function(result, textStatus, jqXHR) {
+	                    // Upgrade progress, no matter which status is
+	                    AcelleImport.showProgressBar();
+	                    AcelleImport.updateProgressBar(result.percentage, result.message);
 
-		$(document).on("submit", "form.ajax_upload_form", function() {
-			var form = $(this);
+	                    if (result.status == "failed") {
+	                        AcelleImport.showFinishButtonBar();
+	                        AcelleImport.hideCancelButton();
+	                        $("#notice").hide();
+	                        $("#bottomNotice").hide();
+	                        $('#errorBox').show();
+	                        $('#errorMsg').html(result.error);
+	                    } else if (result.status == "done") {
+	                        AcelleImport.hideCancelButton();
+	                        $("#notice").show();
+	                        $("#notice").html('{!! trans('messages.import_completed') !!}');
+	                        $('#bottomNotice').show();
+	                        $("#bottomNotice").html(result.message);
+	                        form.find('.upload_file .progress-bar').addClass('success');
+	                        form.find('.finish').removeClass('hide');
+	                        form.find('.success').removeClass("hide");
+	                        
 
-			//var input = form.find();
-			//var form = input.closest('form');
-			//
-			//form.submit(function(e) {
-			//	console.log(input.is(':checked'));
-			//	if (form.valid()) {
-			//		if (input.is(':checked')) {
-			//			return true;
-			//		} else {
-			//			alert('aaa');
-			//			e.preventDedault();
-			//			return false;
-			//		}
-			//	}
-			//});
+	                        if (completeAlert) {
+	                            // Success alert
+                                new Dialog('alert', {
+                                    title: "{{ trans('messages.notify.success') }}",
+                                    message: '{!! trans('messages.import_completed') !!}',
+                                });
+	                        }
+	                    } else if (result.status == "cancelled") {
+	                        /*
+	                        AcelleImport.hideProgressBar();
+	                        form.find('.finish').addClass("hide");
+	                        form.find('.success').removeClass("hide");
+	                        */
+	                    } else if (result.status == "running" || result.status == "queued") {
+	                        AcelleImport.showProgressBar();
+	                        AcelleImport.progressCheck = setTimeout(function() {
+	                        	 AcelleImport.checkProgress();
+	                        }, 2000);
+	                    } else {
+                            alert('Invalid result status');
+                            console.log(result);
+                        }
+	                }
+	            });
+            },
 
-			if(!form.valid()) {
-				$("label.error").insertAfter(".uploader");
-			} else {
-				setTimeout("check_process()", 2000);
+            showFinishButtonBar: function() {
+            	$(".finish").removeClass('hide');
+            },
 
-				var formData = new FormData($(this)[0]);
-				var url = form.attr('action');
-				var bar = form.find('.progress-total');
-				var bar_s = form.find('.progress-success');
-				var bar_e = form.find('.progress-error');
+            hideFinishButtonBar: function() {
+            	$(".finish").addClass('hide');
+            },
 
-				// return to 0
-				bar_s.find(".number").html(parseInt(0));
-				bar_s.css({
-					width: 0 + '%'
-				});
-				bar_e.find(".number").html(parseInt(0));
-				bar_e.css({
-					width: 0 + '%'
-				});
+            stopCheckingProgress: function() {
+            	clearTimeout(AcelleImport.progressCheck);
+            },
 
-				form.find(".processing h4").html('{{ trans('messages.please_wait_import') }}');
+            upload: function() {
+                var form = $("form.ajax_upload_form");
 
-				$(".processing label").html("{{ trans('messages.uploading') }}");
-				$(".before").addClass('hide');
-				$(".processing").removeClass('hide');
+                if (!form.valid()) {
+                    $("label.error").insertAfter(".uploader");
+                    return false;
+                }
 
-				$.ajax({
-					url: url,
-					type: 'POST',
-					data: formData,
-					success: function (data) {
-						check_process();
+                var formData = new FormData(form[0]); // Make the upload form and submit
+                var url = form.attr('action');
+                AcelleImport.showProgressBar();
+                AcelleImport.updateProgressBar(0, "{{ trans('messages.uploading') }}");
 
-						if (data == 'max_file_upload') {
-							// Success alert
-							swal({
-								title: '{{ trans('messages.file_import_to_large') }}',
-								text: "",
-								confirmButtonColor: "#00695C",
-								type: "error",
-								allowOutsideClick: true,
-								confirmButtonText: LANG_OK,
-							});
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: formData,
+                    success: function (data) {
+                        // Set the JobID to query progress
+                        // Upon receiving the response containing the job_id as well as progress_check_url
+                        // Make another request to query progress
+                        AcelleImport.setCurrentJob(data);
+                        AcelleImport.checkProgress();
+                    },
+                    cache: false,
+                    contentType: false,
+                    processData: false
+                }).fail(function( jqXHR, textStatus, errorThrown ) {
+                    AcelleImport.hideProgressBar();
+                    new Dialog('alert', {
+                        title: "{{ trans('messages.notify.error') }}",
+                        message: errorThrown,
+                    });
+                });
+            },
 
-							form.find('.retry').trigger('click');
-							return;
-						}
-					},
-					cache: false,
-					contentType: false,
-					processData: false
-				}).fail(function( jqXHR, textStatus, errorThrown ) {
-                    swal({
-                        title: errorThrown,
-                        text: "",
-                        confirmButtonColor: "#00695C",
-                        type: "error",
-                        allowOutsideClick: true,
-                        confirmButtonText: LANG_OK,
+            importAnotherFile: function() {
+            	// Same as cancel, simply delete the only import job associated with list
+            	AcelleImport.stopCheckingProgress();
+            	var token = $('form#importForm').find('input[name="_token"]').val();
+
+                $.ajax({
+                    url : AcelleImport.cancelUrl,
+                    type: "POST",
+                    data: {
+                    	'_token': token
+                    },
+                    success: function(result, textStatus, jqXHR) {
+                        AcelleImport.hideFinishButtonBar();
+                        AcelleImport.hideProgressBar();
+                        AcelleImport.resetCurrentJob();
+                    }
+                }).fail(function(jqXHR, textStatus, errorThrown) {
+                    new Dialog('alert', {
+                        title: "{{ trans('messages.notify.error') }}",
+                        message: errorThrown,
                     });
 
-                    form.find('.retry').trigger('click');
-                    return;
+                    // Resume progress checking
+                    AcelleImport.checkProgress();
                 });
-			}
+            },
 
-			return false;
-		});
+            cancel: function() {
+            	AcelleImport.stopCheckingProgress();
+            	var token = $('form#importForm').find('input[name="_token"]').val();
 
-		$(document).on("click", ".retry", function() {
-			$(".input[type=file]").val("");
-			$(".finish").addClass('hide');
-			$(".processing").addClass('hide');
-			$(".before").removeClass('hide');
-			var bars = $(".progress-bar");
-			bars.find(".number").html(parseInt(0));
-			bars.css({
-				width: 0 + '%'
-			});
-		});
+                $.ajax({
+                    url : AcelleImport.cancelUrl,
+                    type: "POST",
+                    data: {
+                    	'_token': token
+                    },
+                    success: function(result, textStatus, jqXHR) {
+                        AcelleImport.hideFinishButtonBar();
+                        AcelleImport.hideProgressBar();
+                        AcelleImport.resetCurrentJob();
+                    }
+                }).fail(function(jqXHR, textStatus, errorThrown) {
+                    new Dialog('alert', {
+                        title: "{{ trans('messages.notify.error') }}",
+                        message: errorThrown,
+                    });
 
-		$(document).ready(function() {
-			check_process(true);
-		});
-	</script>
+                    // Resume progress checking
+                    AcelleImport.checkProgress();
 
-	@include("subscribers._import")
+                    return false;
+                });
+            }
+        }
 
+        $(document).ready(function() {
+            
+            // Event bindings
+            $(document).on("submit", "form.ajax_upload_form", function() {
+                AcelleImport.upload();
+                return false; // avoid triggering the click action of <A>
+            });
+
+            $(document).on("click", ".retry", function() {
+                AcelleImport.importAnotherFile();
+                return false;
+            });
+
+            $(document).on("click", "#cancelBtn", function() {
+                var cancelConfirm = confirm("{{ trans('messages.list.import.cancel') }}");
+
+                if (cancelConfirm) {
+                    AcelleImport.cancel();
+                }
+
+                return false;
+            });
+
+            $(document).on("click", "#downloadLog", function() {
+                window.location.href = AcelleImport.logDownloadUrl;
+                return false;
+            });
+
+            // In case of existing job, start checking it
+            @if (isset($currentJobUid))
+            	// Temporary show the progress bar of 0 percentage, waiting for the checkProgress() call to update it
+                AcelleImport.showProgressBar();
+                AcelleImport.updateProgressBar(0, 'Checking...');
+
+                // Set up current job information
+                AcelleImport.setCurrentJob({
+					currentImportJobUid: '{{ $currentJobUid }}',
+	                progressCheckUrl: '{{ $progressCheckUrl }}',
+	                cancelUrl: '{{ $cancelUrl }}',
+	                logDownloadUrl: '{{ $logDownloadUrl }}'
+                });
+
+                // false means do not show the alert popup when progress is complete
+                // Don't worry, this is for the first check only
+                AcelleImport.checkProgress(false);
+            @endif
+        });
+    </script>
 @endsection

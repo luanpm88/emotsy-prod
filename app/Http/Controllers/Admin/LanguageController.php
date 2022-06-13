@@ -4,10 +4,11 @@ namespace Acelle\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use Acelle\Http\Controllers\Controller;
+use Acelle\Library\Tool;
+use Acelle\Model\Language;
 
 class LanguageController extends Controller
 {
-
     /**
      * Display a listing of the resource.
      *
@@ -15,15 +16,14 @@ class LanguageController extends Controller
      */
     public function index(Request $request)
     {
-        if (\Gate::denies('read', new \Acelle\Model\Language())) {
+        if (\Gate::denies('list', Language::class)) {
             return $this->notAuthorized();
         }
 
-        $items = \Acelle\Model\Language::getAll();
+        // @todo: workaround only
+        // Language::dump();
 
-        return view('admin.languages.index', [
-            'items' => $items,
-        ]);
+        return view('admin.languages.index');
     }
 
     /**
@@ -33,14 +33,16 @@ class LanguageController extends Controller
      */
     public function listing(Request $request)
     {
-        if (\Gate::denies('read', new \Acelle\Model\Language())) {
+        if (\Gate::denies('list', Language::class)) {
             return $this->notAuthorized();
         }
 
-        $items = \Acelle\Model\Language::search($request)->paginate($request->per_page);
+        $languages = Language::search($request->keyword)
+            ->orderBy($request->sort_order, $request->sort_direction)
+            ->paginate($request->per_page);
 
         return view('admin.languages._list', [
-            'items' => $items,
+            'languages' => $languages,
         ]);
     }
 
@@ -51,12 +53,7 @@ class LanguageController extends Controller
      */
     public function create(Request $request)
     {
-        $language = new \Acelle\Model\Language([
-            'signing_enabled' => true,
-        ]);
-        $language->status = 'active';
-        $language->uid = '0';
-        $language->fill($request->old());
+        $language = Language::newDefaultLanguage();
 
         // authorize
         if (\Gate::denies('create', $language)) {
@@ -77,29 +74,22 @@ class LanguageController extends Controller
      */
     public function store(Request $request)
     {
-        // Get current user
-        $current_user = $request->user();
-        $language = new \Acelle\Model\Language();
-
         // authorize
-        if (\Gate::denies('create', $language)) {
+        if (\Gate::denies('create', Language::class)) {
             return $this->notAuthorized();
         }
 
-        // save posted data
-        if ($request->isMethod('post')) {
-            $this->validate($request, $language->rules());
+        list($language, $validator) = Language::createFromArray($request->all());
 
-            // Save current user info
-            $language->fill($request->all());
-            $language->status = 'inactive';
-
-            if ($language->save()) {
-                $request->session()->flash('alert-success', trans('messages.language.created'));
-
-                return redirect()->action('Admin\LanguageController@index');
-            }
+        if ($validator !== true) {
+            return response()->view('admin.languages.create', [
+                'language' => $language,
+                'errors' => $validator->errors(),
+            ], 400);
         }
+
+        $request->session()->flash('alert-success', trans('messages.language.created'));
+        return redirect()->action('Admin\LanguageController@index');
     }
 
     /**
@@ -122,14 +112,12 @@ class LanguageController extends Controller
      */
     public function edit(Request $request, $id)
     {
-        $language = \Acelle\Model\Language::findByUid($id);
+        $language = Language::findByUid($id);
 
         // authorize
         if (\Gate::denies('update', $language)) {
             return $this->notAuthorized();
         }
-
-        $language->fill($request->old());
 
         return view('admin.languages.edit', [
             'language' => $language,
@@ -146,44 +134,24 @@ class LanguageController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // Get current user
-        $current_user = $request->user();
-        $language = \Acelle\Model\Language::findByUid($id);
+        $language = Language::findByUid($id);
 
         // authorize
         if (\Gate::denies('update', $language)) {
             return $this->notAuthorized();
         }
 
-        // save posted data
-        if ($request->isMethod('patch')) {
-            $this->validate($request, $language->rules());
+        $validator = $language->updateFromRequest($request);
 
-            // rename locale folder
-            if($language->code != $request->code) {
-                rename(base_path("resources/lang/") . $language->code, base_path("resources/lang/") . $request->code);
-            }
-
-            // Save current user info
-            $language->fill($request->all());
-
-            if ($language->save()) {
-                $request->session()->flash('alert-success', trans('messages.language.updated'));
-
-                return redirect()->action('Admin\LanguageController@index');
-            }
+        if ($validator !== true) {
+            return response()->view('admin.languages.edit', [
+                'language' => $language,
+                'errors' => $validator->errors(),
+            ], 400);
         }
-    }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
+        $request->session()->flash('alert-success', trans('messages.language.created'));
+        return redirect()->action('Admin\LanguageController@index');
     }
 
     /**
@@ -195,23 +163,34 @@ class LanguageController extends Controller
      */
     public function delete(Request $request)
     {
-        $items = \Acelle\Model\Language::whereIn('uid', explode(',', $request->uids));
+        if (isSiteDemo()) {
+            return response()->json(["message" => trans('messages.operation_not_allowed_in_demo')], 404);
+        }
 
-        foreach ($items->get() as $item) {
+        $languages = Language::whereIn(
+            'uid',
+            is_array($request->uids) ? $request->uids : explode(',', $request->uids)
+        );
+
+        foreach ($languages->get() as $language) {
             // authorize
-            if (\Gate::denies('delete', $item)) {
-                return;
+            if (\Gate::allows('delete', $language)) {
+                $language->deleteAndCleanup();
             }
         }
 
-        foreach ($items->get() as $item) {
-            $item->delete();
-        }
-
-        // Redirect to my lists page
         echo trans('messages.languages.deleted');
     }
-    
+
+    public function translateIntro(Request $request)
+    {
+        $language = Language::findByUid($request->id);
+
+        return view('admin.languages.translateIntro', [
+            'language' => $language,
+        ]);
+    }
+
     /**
      * Translate.
      *
@@ -221,50 +200,46 @@ class LanguageController extends Controller
      */
     public function translate(Request $request, $id)
     {
-        $language = \Acelle\Model\Language::findByUid($id);
-        $parse_error = $request->session()->get("parse_error");
-        $filename = $request->file;
-        
-        if($this->isDemoMode() && $language->is_default) {
-            return $this->notAuthorized();
+        $language = Language::findByUid($id);
+        $currentFile = $language->findFileById($request->file_id);
+
+        // @todo: does it make sense to do this here? just a workaround
+        // $language->createOrUpdateTranslationFiles();
+
+        // Prenvent save from demo mod
+        if ($this->isDemoMode()) {
+            return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
         }
-        
+
         // authorize
         if (\Gate::denies('translate', $language)) {
             return $this->notAuthorized();
         }
-        
+
         // save posted data
         if ($request->isMethod('post')) {
-            $rules = [];
-            try {
-                $language->updateFromYaml($filename, $request->all()[$filename]);
-            } catch (\Symfony\Component\Yaml\Exception\ParseException $e) {
-                $request->session()->put("parse_error", $e->getMessage());
-                $rules = ['yaml_parse_error' => 'required'];
+            list($currentFile, $validator) = $language->translateFile($request->file_id, $request->content);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => $validator->errors()->first(),
+                ], 400);
             }
-            $this->validate($request, $rules);
-            
-            $request->session()->flash('alert-success', trans('messages.language.updated'));
-            return redirect()->action('Admin\LanguageController@translate', ["id" => $language->uid, "file" => $filename]);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => trans('messages.language.updated'),
+            ]);
         }
-        
-        // Get current values
-        $content = \Yaml::dump($language->getLocaleArrayFromFile($filename));
-        
-        // Get old post values
-        if (!empty($request->old())) {
-            $content = $request->old()[$filename];
-        }
-        
+
         return view('admin.languages.translate', [
             'language' => $language,
-            'content' => $content,
-            'filename' => $filename,
-            'parse_error' => $parse_error
+            'currentFile' => $currentFile,
+            'content' => Language::fileToYaml($currentFile['path']),
         ]);
     }
-    
+
     /**
      * Disable language.
      *
@@ -274,7 +249,10 @@ class LanguageController extends Controller
      */
     public function disable(Request $request)
     {
-        $items = \Acelle\Model\Language::whereIn('uid', explode(',', $request->uids));
+        $items = Language::whereIn(
+            'uid',
+            is_array($request->uids) ? $request->uids : explode(',', $request->uids)
+        );
 
         foreach ($items->get() as $item) {
             // authorize
@@ -286,7 +264,7 @@ class LanguageController extends Controller
         // Redirect to my lists page
         echo trans('messages.languages.disabled');
     }
-    
+
     /**
      * Disable language.
      *
@@ -296,7 +274,10 @@ class LanguageController extends Controller
      */
     public function enable(Request $request)
     {
-        $items = \Acelle\Model\Language::whereIn('uid', explode(',', $request->uids));
+        $items = Language::whereIn(
+            'uid',
+            is_array($request->uids) ? $request->uids : explode(',', $request->uids)
+        );
 
         foreach ($items->get() as $item) {
             // authorize
@@ -308,7 +289,7 @@ class LanguageController extends Controller
         // Redirect to my lists page
         echo trans('messages.languages.enabled');
     }
-    
+
     /**
      * Download language package.
      *
@@ -318,16 +299,14 @@ class LanguageController extends Controller
      */
     public function download(Request $request, $id)
     {
-        $language = \Acelle\Model\Language::findByUid($id);
-        
-        // Create tmp language package
-        $files = glob($language->languageDir() . "*");
-        $zip = storage_path("tmp/language-" . $language->code . ".zip");
-        \Zipper::make($zip)->add($files)->close();
-       
-        return response()->download($zip);
+        $language = Language::findByUid($id);
+        $tmpzip = storage_path("tmp/language-" . $language->code . ".zip");
+
+        Tool::zip($language->languageDir(), $tmpzip);
+
+        return response()->download($tmpzip)->deleteFileAfterSend(true);
     }
-    
+
     /**
      * Upload language package.
      *
@@ -337,60 +316,28 @@ class LanguageController extends Controller
      */
     public function upload(Request $request, $id)
     {
-        $language = \Acelle\Model\Language::findByUid($id);
-        
+        $language = Language::findByUid($id);
+
         // validate and save posted data
         if ($request->isMethod('post')) {
-            $zip = new \ZipArchive();
+            $validator = $language->upload($request);
 
-            $rules = array(
-                'file' => 'required',
-            );
+            if ($validator->fails()) {
+                return response()->view('admin.languages.upload', [
+                    'language' => $language,
+                    'errors' => $validator->errors(),
+                ], 400);
+            }
 
-            // check if file exsits
-            if (!$request->hasFile('file')) {
-                $rules['file_not_found'] = 'required';
-            }
-            
-            $this->validate($request, $rules);
-            
-            // check if file is zip achive
-            $file_ext = $request->file('file')->guessExtension();
-            if ($file_ext != 'zip') {
-                $rules['not_zip_archive'] = 'required';
-                $this->validate($request, $rules);
-            }
-            
-            // move file to temp place
-            $tmp_path = storage_path('tmp');
-            $file_name = 'language-package';
-            $request->file('file')->move($tmp_path, $file_name);
-            
-            // after moving, request['file'] will no longer be there
-            $rules = [];
-            $tmp_zip = storage_path("tmp/{$file_name}");
-            $openZip = $zip->open($tmp_zip, \ZipArchive::CREATE);
-
-            // read zip file check if zip archive invalid
-            if ($openZip !== TRUE) {
-                $rules["zip_archive_unvalid"] = 'required';
-                $this->validate($request, $rules);
-            }
-            
-            // unzip template archive and remove zip file
-            $zip->extractTo($language->languageDir());
-            $zip->close();
-            unlink($tmp_zip);
-                       
-            $request->session()->flash('alert-success', trans('messages.language.uploaded'));            
-            return redirect()->action('Admin\LanguageController@translate', ["id" => $language->uid, "file" => "messages"]);
+            $request->session()->flash('alert-success', trans('messages.language.uploaded'));
+            return redirect()->action('Admin\LanguageController@index');
         }
-        
+
         return view('admin.languages.upload', [
             'language' => $language,
         ]);
     }
-    
+
     /**
      * Delete confirm message.
      *
@@ -400,7 +347,10 @@ class LanguageController extends Controller
      */
     public function deleteConfirm(Request $request)
     {
-        $languages = \Acelle\Model\Language::whereIn('uid', explode(',', $request->uids));
+        $languages = Language::whereIn(
+            'uid',
+            is_array($request->uids) ? $request->uids : explode(',', $request->uids)
+        );
 
         return view('admin.languages.delete_confirm', [
             'languages' => $languages,

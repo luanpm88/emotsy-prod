@@ -6,16 +6,15 @@
 			<th>
 				<div class="checkbox inline check_all_list">
 					<label>
-						<input type="checkbox" class="styled check_all">
+						<input type="checkbox" name="page_checked" class="styled check_all">
 					</label>
 				</div>
 			</th>
 			<th>{{ trans('messages.name') }}</th>
 			<th>{{ trans('messages.email') }}</th>
-			<th>{{ trans('messages.sender.type') }}</th>
 			<th>{{ trans('messages.created_at') }}</th>
-			<th>{{ trans('messages.sender.type') }}</th>
-			<th class="text-right">{{ trans('messages.action') }}</th>
+			<th>{{ trans('messages.status') }}</th>
+			<th class="text-end">{{ trans('messages.action') }}</th>
 		</tr>
 		@foreach ($senders as $key => $sender)
 			<tr>
@@ -23,8 +22,8 @@
 					<div class="checkbox inline">
 						<label>
 							<input type="checkbox" class="node styled"
-								name="ids[]"
-								value="{{ $sender->id }}"
+								name="uids[]"
+								value="{{ $sender->uid }}"
 							/>
 						</label>
 					</div>
@@ -42,35 +41,33 @@
 					<span class="text-muted second-line-mobile">{{ trans('messages.email') }}</span>
 				</td>
 				<td>
-					<span class="no-margin kq_search">{{ $sender->type ? trans('messages.sender.type.' . $sender->type) : trans('messages.sender.type.none') }}</span>
-					<span class="text-muted second-line-mobile">{{ trans('messages.sender.type') }}</span>
-				</td>
-				<td>
-					<span class="no-margin kq_search">{{ Tool::formatDateTime($sender->created_at) }}</span>
+					<span class="no-margin kq_search">{{ Auth::user()->customer->formatDateTime($sender->created_at, 'date_full') }}</span>
 					<span class="text-muted second-line-mobile">{{ trans('messages.created_at') }}</span>
 				</td>
 				<td>
 					<span class="label label-primary bg-{{ $sender->status }}">
 						{{ trans('messages.sender.status.' . $sender->status) }}
 					</span>
-					<span class="text-muted second-line-mobile">{{ trans('messages.sender.status') }}</span>
+					<span class="text-muted second-line-mobile">{{ trans('messages.sender.status.' . $sender->status) }}</span>
 				</td>
-				<td class="text-right">
+				<td class="text-end">
 					<div class="btn-group">
 						@if (Auth::user()->can('read', $sender))
 							<a href="{{ action('SenderController@show', $sender->uid) }}"
-								type="button" class="btn btn-default">
+								role="button" class="btn btn-secondary">
 									{{ trans('messages.sender.view') }}
 							</a>
 						@endif
-						<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
-						<ul class="dropdown-menu dropdown-menu-right">
+						<button role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"></button>
+						<ul class="dropdown-menu dropdown-menu-end">
 							@if (Auth::user()->customer->can('delete', $sender))
 								<li>
-									<a delete-confirm="{{ trans('messages.sender.delete.confirm') }}"
+									<a class="dropdown-item list-action-single" link-confirm="{{ trans('messages.sender.delete.confirm') }}"
 										href="{{ action('SenderController@delete', ["uids" => $sender->uid]) }}"
 									>
-										<i class="icon-trash"></i> {{ trans('messages.delete') }}
+										<span class="material-symbols-rounded">
+delete_outline
+</span> {{ trans('messages.delete') }}
 									</a>
 								</li>
 							@endif
@@ -81,17 +78,21 @@
 		@endforeach
 	</table>
 	@include('elements/_per_page_select', ["items" => $senders])
-	{{ $senders->links() }}
+	
 @elseif (!empty(request()->keyword) || !empty(request()->filters["campaign_uid"]))
 	<div class="empty-list">
-		<i class="icon icon-user-check"></i>
+		<span class="material-symbols-rounded">
+people_alt
+</span>
 		<span class="line-1">
 			{{ trans('messages.no_search_result') }}
 		</span>
 	</div>
 @else
 	<div class="empty-list">
-		<i class="icon icon-user-check"></i>
+		<span class="material-symbols-rounded">
+people_alt
+</span>
 		<span class="line-1">
 			{{ trans('messages.senders.empty.message') }}
 		</span>

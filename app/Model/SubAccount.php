@@ -3,36 +3,11 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Acelle\Library\Traits\HasUid;
 
 class SubAccount extends Model
 {
-    /**
-     * Bootstrap any application services.
-     */
-    public static function boot()
-    {
-        parent::boot();
-
-        // Create uid when creating resource.
-        static::creating(function ($account) {
-            // Create new uid
-            $uid = uniqid();
-            while (self::where('uid', '=', $uid)->count() > 0) {
-                $uid = uniqid();
-            }
-            $account->uid = $uid;
-        });
-    }
-
-    /**
-     * Find resource by uid.
-     *
-     * @return object
-     */
-    public static function findByUid($uid)
-    {
-        return self::where('uid', '=', $uid)->first();
-    }
+    use HasUid;
 
     /**
      * Items per page.
@@ -77,9 +52,7 @@ class SubAccount extends Model
         if (!empty(trim($request->keyword))) {
             foreach (explode(' ', trim($request->keyword)) as $keyword) {
                 $query = $query->where(function ($q) use ($keyword) {
-                    $q->orwhere('sub_accounts.username', 'like', '%'.$keyword.'%')
-                        ->orwhere('sending_servers.username', 'like', '%'.$keyword.'%')
-                        ->orwhere('customers.username', 'like', '%'.$keyword.'%');
+                    $q->orwhere('sub_accounts.username', 'like', '%'.$keyword.'%');
                 });
             }
         }
@@ -89,7 +62,7 @@ class SubAccount extends Model
         }
 
         // filters
-        $filters = $request->filters;
+        $filters = $request->all();
         if (!empty($filters)) {
             if (!empty($filters['type'])) {
                 $query = $query->where('sending_servers.type', '=', $filters['type']);

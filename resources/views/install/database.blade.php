@@ -1,16 +1,12 @@
-@extends('layouts.install')
+@extends('layouts.core.install')
 
 @section('title', trans('messages.database'))
 
-@section('page_script')    
-    <script type="text/javascript" src="{{ URL::asset('assets/js/plugins/forms/styling/uniform.min.js') }}"></script>
-		
-    <script type="text/javascript" src="{{ URL::asset('js/validate.js') }}"></script>
-@endsection
-
 @section('content')
 
-<h3 class="text-teal-800"><i class="icon-database"></i> {{ trans('messages.database_configuration') }}</h3>
+<h3 class="text-primary"><span class="material-symbols-rounded">
+dns
+</span> {{ trans('messages.database_configuration') }}</h3>
 
 @if (isset($connect_error))
 	<div class="alert alert-danger">
@@ -87,8 +83,10 @@
         </div>
     </div>
     <hr >
-    <div class="text-right">                                    
-        <button type="submit" class="btn btn-primary bg-teal">{!! trans('messages.save') !!} <i class="icon-arrow-right14 position-right"></i></button>
+    <div class="text-end">                                    
+        <button type="submit" class="btn btn-primary">{!! trans('messages.save') !!} <span class="material-symbols-rounded">
+east
+</span></button>
     </div>
 </form>
 @endsection

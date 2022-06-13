@@ -2,9 +2,8 @@
 
 @section('content')
 	<div class="row">
-        <div class="col-md-1"></div>
-        <div class="col-md-10">
-            <h2>{{ trans('messages.subscription.create_new_subsctiption') }}</h2>
+        <div class="col-md-12">
+            <h2 class="mt-0">{{ trans('messages.subscription.create_new_subsctiption') }}</h2>
             <p>{{ trans('messages.subscription.create_new_subsctiption.intro') }}</p>   
 
             <form enctype="multipart/form-data" action="{{ action('Admin\SubscriptionController@create') }}" method="POST" class="subscription-form form-validate-jqueryx">
@@ -62,9 +61,11 @@
                     newSubscription.hide();
 
                     // notify
-                    notify('success', '{{ trans('messages.notify.success') }}', response.message);
-
-                    tableFilterAll();
+                    notify({
+    type: 'success',
+    title: '{!! trans('messages.notify.success') !!}',
+    message: response.message
+});
                 }
             });
         });

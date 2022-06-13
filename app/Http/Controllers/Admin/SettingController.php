@@ -5,10 +5,15 @@ namespace Acelle\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use Acelle\Http\Controllers\Controller;
 use Acelle\Library\UpgradeManager;
+use Acelle\Library\ExtendedSwiftMessage;
 use Illuminate\Support\Facades\Log;
 use Acelle\Model\Setting;
+use Acelle\Model\Language;
+use Acelle\Model\Template;
 use Illuminate\Support\Facades\Session;
 use Acelle\Helpers\LicenseHelper;
+use App;
+use Acelle\Library\Downloader;
 
 class SettingController extends Controller
 {
@@ -41,8 +46,8 @@ class SettingController extends Controller
             return $this->notAuthorized();
         }
 
-        // \Acelle\Model\Setting::updateAll();
-        $settings = \Acelle\Model\Setting::getAll();
+        // Setting::updateAll();
+        $settings = Setting::getAll();
         if (null !== $request->old()) {
             foreach ($request->old() as $name => $value) {
                 if (isset($settings[$name])) {
@@ -53,8 +58,9 @@ class SettingController extends Controller
 
         // validate and save posted data
         if ($request->isMethod('post')) {
+            // Prenvent save from demo mod
             if ($this->isDemoMode()) {
-                return $this->notAuthorized();
+                return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
             }
 
             $rules = [
@@ -71,15 +77,22 @@ class SettingController extends Controller
 
             // Save settings
             foreach ($request->all() as $name => $value) {
+                if (in_array($name, [
+                    'invoice_current',
+                    'invoice_format',
+                ])) {
+                    $name = str_replace('_', '.', $name);
+                }
+
                 if ($name != '_token' && isset($settings[$name])) {
                     // Upload and save image
                     if ($name == 'site_logo_small' || $name == 'site_logo_big' || $name == 'site_favicon') {
                         if ($request->hasFile($name) && $request->file($name)->isValid()) {
-                            \Acelle\Model\Setting::uploadFile($request->file($name), $name);
+                            Setting::uploadFile($request->file($name), $name, false);
                         }
                     } else {
                         if ($settings[$name]['cat'] == 'general' && $request->user()->admin->getPermission('setting_general') == 'yes') {
-                            \Acelle\Model\Setting::set($name, $value);
+                            Setting::set($name, $value);
                         }
                     }
                 }
@@ -107,8 +120,8 @@ class SettingController extends Controller
             return $this->notAuthorized();
         }
 
-        // \Acelle\Model\Setting::updateAll();
-        $settings = \Acelle\Model\Setting::getAll();
+        // Setting::updateAll();
+        $settings = Setting::getAll();
         if (null !== $request->old()) {
             foreach ($request->old() as $name => $value) {
                 if (isset($settings[$name])) {
@@ -119,8 +132,9 @@ class SettingController extends Controller
 
         // validate and save posted data
         if ($request->isMethod('post')) {
+            // Prenvent save from demo mod
             if ($this->isDemoMode()) {
-                return $this->notAuthorized();
+                return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
             }
 
             $rules = [
@@ -137,7 +151,7 @@ class SettingController extends Controller
             foreach ($request->all() as $name => $value) {
                 if ($name != '_token' && isset($settings[$name])) {
                     if ($settings[$name]['cat'] == 'sending' && $request->user()->admin->getPermission('setting_sending') == 'yes') {
-                        \Acelle\Model\Setting::set($name, $value);
+                        Setting::set($name, $value);
                     }
                 }
             }
@@ -164,11 +178,16 @@ class SettingController extends Controller
             return $this->notAuthorized();
         }
 
-        $settings = \Acelle\Model\Setting::getAll();
+        $settings = Setting::getAll();
 
         // Check URL
         $current = url('/');
         $cached = config('app.url');
+
+        if (!is_null($request->input('debug'))) {
+            echo "Current: {$current} vs. Cached: {$cached}";
+            return;
+        }
 
         return view('admin.settings.urls', [
             'settings' => $settings,
@@ -189,20 +208,9 @@ class SettingController extends Controller
             return $this->notAuthorized();
         }
 
-        // Re-generate remote job url
-        if ($request->re_generate_remote_job_url) {
-            $remote_job_token = str_random(60);
-            \Acelle\Model\Setting::set('remote_job_token', $remote_job_token);
-            echo action('Controller@remoteJob', ['remote_job_token' => $remote_job_token]);
-
-            return;
-        }
-
         $respone = \Acelle\Library\Tool::cronjobUpdateController($request, $this);
         if ($respone == 'done' || $respone['valid'] == true) {
             $next = action('Admin\SettingController@cronjob').'#result_box';
-            artisan_config_cache();
-
             return redirect()->away($next);
         }
 
@@ -220,89 +228,137 @@ class SettingController extends Controller
             return $this->notAuthorized();
         }
 
-        // SMTP
-        $env = [
-            'MAIL_DRIVER' => config('mail.driver'),
-            'MAIL_HOST' => config('mail.host'),
-            'MAIL_PORT' => config('mail.port'),
-            'MAIL_USERNAME' => config('mail.username'),
-            'MAIL_PASSWORD' => config('mail.password'),
-            'MAIL_ENCRYPTION' => config('mail.encryption'),
-            'MAIL_FROM_ADDRESS' => config('mail.from')['address'],
-            'MAIL_FROM_NAME' => config('mail.from')['name'],
-        ];
-
-        if (null !== $request->old() && isset($request->old()['env'])) {
-            foreach ($request->old()['env'] as $name => $value) {
-                $env[$name] = $value;
-            }
+        if ($request->old('env')) {
+            $mailSettings = $request->old('env');
+        } else {
+            // SMTP
+            $mailSettings = [
+                'MAIL_MAILER' => Setting::get('mailer.mailer') ?: Setting::get('mailer.driver'), // Laravel 5.8 compatibility
+                'MAIL_HOST' => Setting::get('mailer.host'),
+                'MAIL_PORT' => Setting::get('mailer.port'),
+                'MAIL_USERNAME' => Setting::get('mailer.username'),
+                'MAIL_PASSWORD' => Setting::get('mailer.password'),
+                'MAIL_ENCRYPTION' => Setting::get('mailer.encryption'),
+                'MAIL_FROM_ADDRESS' => Setting::get('mailer.from.address'),
+                'MAIL_FROM_NAME' => Setting::get('mailer.from.name'),
+                'sendmail_path' => Setting::get('mailer.sendmail_path') ?: "/usr/sbin/sendmail",
+            ];
         }
 
-        $env_rules = [
-            'env.MAIL_DRIVER' => 'required',
-            'env.MAIL_HOST' => 'required',
-            'env.MAIL_PORT' => 'required',
-            'env.MAIL_USERNAME' => 'required',
-            'env.MAIL_PASSWORD' => 'required',
-            'env.MAIL_FROM_ADDRESS' => 'required|email',
-            'env.MAIL_FROM_NAME' => 'required',
+        $rules = [
+            'smtp' => [
+                'env.MAIL_MAILER' => 'required',
+                'env.MAIL_HOST' => 'required',
+                'env.MAIL_PORT' => 'required',
+                'env.MAIL_USERNAME' => 'required',
+                'env.MAIL_PASSWORD' => 'required',
+                'env.MAIL_FROM_ADDRESS' => 'required|email',
+                'env.MAIL_FROM_NAME' => 'required',
+            ],
+            'sendmail' => [
+                'env.MAIL_FROM_ADDRESS' => 'required|email',
+                'env.MAIL_FROM_NAME' => 'required',
+                'env.sendmail_path' => 'required',
+            ],
         ];
 
         // validate and save posted data
         if ($request->isMethod('post')) {
+            // Prenvent save from demo mod
             if ($this->isDemoMode()) {
-                return $this->notAuthorized();
+                return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
             }
 
-            $env = $request->env;
+            $mailSettings = $request->env;
 
-            if ($env['MAIL_DRIVER'] == 'smtp') {
-                $this->validate($request, $env_rules);
-            }
+            $this->validate($request, $rules[$mailSettings['MAIL_MAILER']]);
 
-            // Check SMTP connection
-            $site_info = $request->all();
-            if ($env['MAIL_DRIVER'] == 'smtp') {
-                $rules = [];
+            // Test connection if mailer == SMTP
+            if ($mailSettings['MAIL_MAILER'] == 'smtp') {
+                $moreRules = [];
                 $messages = [];
                 try {
-                    $transport = new \Swift_SmtpTransport($env['MAIL_HOST'], $env['MAIL_PORT'], $env['MAIL_ENCRYPTION']);
-                    $transport->setUsername($env['MAIL_USERNAME']);
-                    $transport->setPassword($env['MAIL_PASSWORD']);
-                    // @todo: it is not recommended to allow self-signed
+                    $transport = new \Swift_SmtpTransport($mailSettings['MAIL_HOST'], $mailSettings['MAIL_PORT'], $mailSettings['MAIL_ENCRYPTION']);
+                    $transport->setUsername($mailSettings['MAIL_USERNAME']);
+                    $transport->setPassword($mailSettings['MAIL_PASSWORD']);
                     $transport->setStreamOptions(array('ssl' => array('allow_self_signed' => true, 'verify_peer' => false, 'verify_peer_name' => false)));
                     $mailer = new \Swift_Mailer($transport);
                     $mailer->getTransport()->start();
                 } catch (\Swift_TransportException $e) {
-                    $rules['smtp_valid'] = 'required';
+                    $moreRules['smtp_valid'] = 'required';
                     $messages['required'] = $e->getMessage();
                 } catch (\Exception $e) {
-                    $rules['smtp_valid'] = 'required';
+                    $moreRules['smtp_valid'] = 'required';
                     $messages['required'] = $e->getMessage();
                 }
-                $this->validate($request, $rules, $messages);
+
+                // Trick: make validation failed if SMTP test fails
+                $this->validate($request, $moreRules, $messages);
             }
 
-            foreach ($env as $key => $value) {
-                if (empty($value)) {
-                    $value = 'null';
-                }
-                \Acelle\Model\Setting::setEnv($key, $value);
-            }
+            // update settings table
+            Setting::set('mailer.mailer', $mailSettings['MAIL_MAILER']);
+            Setting::set('mailer.host', $mailSettings['MAIL_HOST']);
+            Setting::set('mailer.port', $mailSettings['MAIL_PORT']);
+            Setting::set('mailer.encryption', $mailSettings['MAIL_ENCRYPTION']);
+            Setting::set('mailer.username', $mailSettings['MAIL_USERNAME']);
+            Setting::set('mailer.password', $mailSettings['MAIL_PASSWORD']);
+            Setting::set('mailer.from.name', $mailSettings['MAIL_FROM_NAME']);
+            Setting::set('mailer.from.address', $mailSettings['MAIL_FROM_ADDRESS']);
+            Setting::set('mailer.sendmail_path', $mailSettings['sendmail_path']);
 
             // Redirect to my lists page
             $next = action('Admin\SettingController@mailer');
-            \Artisan::call('config:cache');
             $request->session()->flash('alert-success', trans('messages.setting.updated'));
-            sleep(3);
 
             return redirect()->away($next);
         }
 
         return view('admin.settings.mailer', [
-            'env_rules' => $env_rules,
-            'env' => $env,
+            'rules' => $rules,
+            'env' => $mailSettings,
         ]);
+    }
+
+    /**
+     * Mailer settings.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function mailerTest(Request $request)
+    {
+        if ($request->user()->admin->getPermission('setting_general') != 'yes') {
+            return $this->notAuthorized();
+        }
+
+        // validate and save posted data
+        if ($request->isMethod('post')) {
+            // Prenvent save from demo mod
+            if ($this->isDemoMode()) {
+                return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
+            }
+
+            try {
+                // build the message
+                $message = new ExtendedSwiftMessage();
+                $message->setEncoder(new \Swift_Mime_ContentEncoder_PlainContentEncoder('8bit'));
+                $message->setContentType('text/html; charset=utf-8');
+
+                $message->setSubject($request->input('subject'));
+                $message->setTo($request->input('to_email'));
+                $message->addPart($request->input('content'), 'text/html');
+
+                $mailer = App::make('xmailer');
+                $result = $mailer->sendWithDefaultFromAddress($message);
+                return response()->json(['status' => 'ok'], 200);
+            } catch (\Exception $e) {
+                return response()->json([
+                    'error' => $e->getMessage(),
+                ], 400);
+            }
+        }
+
+        return view('admin.settings.mailerTest');
     }
 
     /**
@@ -325,16 +381,18 @@ class SettingController extends Controller
             return $this->notAuthorized();
         }
 
-        \Acelle\Model\Setting::set('url_unsubscribe', action('CampaignController@unsubscribe', ['message_id' => 'MESSAGE_ID']));
-        \Acelle\Model\Setting::set('url_open_track', action('CampaignController@open', ['message_id' => 'MESSAGE_ID']));
-        \Acelle\Model\Setting::set('url_click_track', action('CampaignController@click', ['message_id' => 'MESSAGE_ID', 'url' => 'URL']));
-        \Acelle\Model\Setting::set('url_delivery_handler', action('DeliveryController@notify', ['stype' => '']));
-        \Acelle\Model\Setting::set('url_update_profile', action('PageController@profileUpdateForm', array(
+        Setting::set('url_unsubscribe', action('CampaignController@unsubscribe', ['message_id' => 'MESSAGE_ID', 'subscriber' => 'SUBSCRIBER']));
+        Setting::set('url_open_track', action('CampaignController@open', ['message_id' => 'MESSAGE_ID']));
+        Setting::set('url_click_track', action('CampaignController@click', ['message_id' => 'MESSAGE_ID', 'url' => 'URL']));
+        Setting::set('url_delivery_handler', action('DeliveryController@notify', ['stype' => '']));
+        Setting::set(
+            'url_update_profile',
+            action('PageController@profileUpdateForm', array(
             'list_uid' => 'LIST_UID',
             'uid' => 'SUBSCRIBER_UID',
             'code' => 'SECURE_CODE', ))
         );
-        \Acelle\Model\Setting::set('url_web_view', action('CampaignController@webView', ['message_id' => 'MESSAGE_ID']));
+        Setting::set('url_web_view', action('CampaignController@webView', ['message_id' => 'MESSAGE_ID']));
 
         // Redirect to my lists page
         $request->session()->flash('alert-success', trans('messages.setting.updated'));
@@ -386,8 +444,8 @@ class SettingController extends Controller
             return $this->notAuthorized();
         }
 
-        // \Acelle\Model\Setting::updateAll();
-        $settings = \Acelle\Model\Setting::getAll();
+        // Setting::updateAll();
+        $settings = Setting::getAll();
         if (null !== $request->old()) {
             foreach ($request->old() as $name => $value) {
                 if (isset($settings[$name])) {
@@ -398,18 +456,19 @@ class SettingController extends Controller
 
         // validate and save posted data
         if ($request->isMethod('post')) {
+            // Prenvent save from demo mod
             if ($this->isDemoMode()) {
-                return $this->notAuthorized();
+                return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
             }
 
             try {
                 // Update license type
-                \Acelle\Model\Setting::updateLicense($request->license);
+                Setting::updateLicense($request->license);
 
                 // Save settings
                 foreach ($request->all() as $name => $value) {
                     if ($name != '_token' && isset($settings[$name])) {
-                        \Acelle\Model\Setting::set($name, $value);
+                        Setting::set($name, $value);
                     }
                 }
 
@@ -424,7 +483,7 @@ class SettingController extends Controller
 
         return view('admin.settings.license', [
             'settings' => $settings,
-            'current_license' => \Acelle\Model\Setting::get('license'),
+            'current_license' => Setting::get('license'),
             'license_error' => isset($license_error) ? $license_error : '',
         ]);
     }
@@ -436,50 +495,18 @@ class SettingController extends Controller
      */
     public function upgrade(Request $request)
     {
-        if ($request->user()->admin->getPermission('setting_upgrade_manager') != 'yes') {
-            return $this->notAuthorized();
-        }
-
+        Log::info('Going to @upgrade page');
         // secret key to send to the verification server
         session(['secret' => $request->input('secret')]);
 
         // Upgrade manager
+        Log::info('Initiate upgrade manager');
         $manager = new UpgradeManager();
-
-        // Redirect URL
-        $pageUrl = action('Admin\SettingController@upgrade');
-
-        // If upgrade done successfully, perform config:cache
-        // The config:cache must be done in a subsequent process, not in the 'doUpgrade' one
-        if ($request->session()->has('upgraded')) {
-            $request->session()->forget('upgraded');
-            $request->session()->put('reset', true);
-            Session::save();
-            $manager->refreshConfig();
-            Setting::writeDefaultSettings();
-            echo '<html>
-                <head>
-                    <meta http-equiv="refresh" content="3;'.$pageUrl.'" />
-                <title>Page Moved</title>
-                </head>
-                <body>
-                    Upgrade done, redirecting...
-                </body>
-                </html>';
-
-            return;
-        }
-
-        if ($request->session()->has('reset')) {
-            $pageUrl = action('Admin\SettingController@upgrade');
-            $request->session()->forget('reset');
-            Session::save();
-            $request->session()->flash('alert-success', trans('messages.upgrade.alert.upgrade_success'));
-        }
 
         return view('admin.settings.upgrade', [
             'any' => 'any',
             'manager' => $manager,
+            'phpversion' => version_compare(PHP_VERSION, config('custom.php_recommended'), '>='),
         ]);
     }
 
@@ -493,20 +520,31 @@ class SettingController extends Controller
         if ($request->user()->admin->getPermission('setting_upgrade_manager') != 'yes') {
             return $this->notAuthorized();
         }
+
         $manager = new UpgradeManager();
         $failed = $manager->test();
+
         if (empty($failed)) {
-            $pageUrl = action('Admin\SettingController@upgrade');
+            // RUN UPGRADE
+            Log::info('Actually run.....');
             $manager->run();
+
             Log::info('System successfully upgraded to the new version');
+            Log::info('Redirecting to work with new request');
             $request->session()->put('upgraded', true);
-            // Redirect to an entirely new page
+
+            // REFRESH by redirecting to an entirely new page
             // Then make a new request from browser to load new config
-            // Simple using redirect() will retain the current setting
+            // A normal redirect() will retain the current setting
+
+            // Do not use action('...'), the route may not exist yet
+            //     $pageUrl = action('Admin\Upgrade@migrate');
+            // Use route()
+            $pageUrl = url('/migrate/run');
             echo '<html>
                 <head>
                     <meta http-equiv="refresh" content="3;'.$pageUrl.'" />
-                <title>Page Moved</title>
+                <title>Application Upgrade...</title>
                 </head>
                 <body>
                     Upgrade is in progress, please wait...
@@ -516,7 +554,6 @@ class SettingController extends Controller
             return;
         } else {
             Log::warning('Cannot upgrade, certain files are not writable');
-
             return view('admin.settings.upgrade', [
                 'any' => 'any',
                 'manager' => $manager,
@@ -564,7 +601,7 @@ class SettingController extends Controller
         try {
             list($supported, $supportedUntil) = LicenseHelper::isSupported();
             if (!$supported) {
-                $request->session()->flash('alert-error', sprintf('Your Acelle Mail SUPPORT was already expired on <strong>%s</strong>. Please <a style="text-decoration:underline;font-style: normal;" target="_blank" href="%s">renew</a> it first before proceeding with our LIVE upgrade service.', $supportedUntil->toFormattedDateString(),  'https://codecanyon.net/item/acelle-email-marketing-web-application/17796082'));
+                $request->session()->flash('alert-error', sprintf('Your Acelle Mail SUPPORT was already expired on <strong>%s</strong>. Please <a style="text-decoration:underline;font-style: normal;" target="_blank" href="%s">renew</a> it first before proceeding with our LIVE upgrade service.', $supportedUntil->toFormattedDateString(), 'https://codecanyon.net/item/acelle-email-marketing-web-application/17796082'));
 
                 return redirect()->action('Admin\SettingController@upgrade');
             }
@@ -606,8 +643,8 @@ class SettingController extends Controller
             return $this->notAuthorized();
         }
 
-        // \Acelle\Model\Setting::updateAll();
-        $settings = \Acelle\Model\Setting::getAll();
+        // Setting::updateAll();
+        $settings = Setting::getAll();
         if (null !== $request->old()) {
             foreach ($request->old() as $name => $value) {
                 if (isset($settings[$name])) {
@@ -618,8 +655,9 @@ class SettingController extends Controller
 
         // validate and save posted data
         if ($request->isMethod('post')) {
+            // Prenvent save from demo mod
             if ($this->isDemoMode()) {
-                return $this->notAuthorized();
+                return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
             }
 
             $rules = [];
@@ -631,11 +669,11 @@ class SettingController extends Controller
                     // Upload and save image
                     if ($name == 'site_logo_small' || $name == 'site_logo_big') {
                         if ($request->hasFile($name) && $request->file($name)->isValid()) {
-                            \Acelle\Model\Setting::uploadSiteLogo($request->file($name), $name);
+                            Setting::uploadSiteLogo($request->file($name), $name);
                         }
                     } else {
                         if ($settings[$name]['cat'] == 'advanced' && $request->user()->admin->getPermission('setting_general') == 'yes') {
-                            \Acelle\Model\Setting::set($name, $value);
+                            Setting::set($name, $value);
                         }
                     }
                 }
@@ -668,7 +706,7 @@ class SettingController extends Controller
         }
 
         // update setting value
-        \Acelle\Model\Setting::set($name, $request->value);
+        Setting::set($name, $request->value);
 
         echo trans('messages.setting.update.success', ['name' => $name]);
     }
@@ -684,28 +722,98 @@ class SettingController extends Controller
             return $this->notAuthorized();
         }
 
-        // \Acelle\Model\Setting::updateAll();
-        $settings = \Acelle\Model\Setting::getAll();
+        // Setting::updateAll();
+        $settings = Setting::getAll();
 
         if ($this->isDemoMode()) {
             return $this->notAuthorized();
         }
 
         $rules = [
-            'end_period_last_days' => 'required',
             'renew_free_plan' => 'required',
             'recurring_charge_before_days' => 'required',
         ];
         $this->validate($request, $rules);
 
         // Save settings
-        \Acelle\Model\Setting::set('system.end_period_last_days', $request->end_period_last_days);
-        \Acelle\Model\Setting::set('system.renew_free_plan', $request->renew_free_plan);
-        \Acelle\Model\Setting::set('system.recurring_charge_before_days', $request->recurring_charge_before_days);
+        Setting::set('renew_free_plan', $request->renew_free_plan);
+        Setting::set('recurring_charge_before_days', $request->recurring_charge_before_days);
+
 
         // Redirect to my lists page
         $request->session()->flash('alert-success', trans('messages.setting.updated'));
 
         return redirect()->action('Admin\PaymentController@index');
+    }
+
+    /**
+     * Upgrade from URL.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function upgradeFromUrl(Request $request)
+    {
+        if ($request->isMethod('post')) {
+            $downloader = new Downloader($request->input('url'));
+            $tmpPath = storage_path('tmp/upgrade.bin.zip');
+            $downloader->downloadTo($tmpPath);
+
+            $manager = new UpgradeManager();
+            $manager->load($tmpPath);
+            $failed = $manager->test();
+
+            if (!empty($failed)) {
+                Log::warning('Cannot upgrade, certain files are not writable');
+                return view('admin.settings.upgrade', [
+                    'any' => 'any',
+                    'manager' => $manager,
+                    'failed' => $failed,
+                ]);
+            }
+
+            // RUN UPGRADE
+            Log::info('Actually run from URL.....');
+            $manager->run();
+
+            Log::info('System successfully upgraded to the new version');
+            Log::info('Redirecting to work with new request');
+            $request->session()->put('upgraded', true);
+
+            // REFRESH by redirecting to an entirely new page
+            // Then make a new request from browser to load new config
+            // A normal redirect() will retain the current setting
+
+            // Do not use action('...'), the route may not exist yet
+            //     $pageUrl = action('Admin\Upgrade@migrate');
+            // Use route()
+            $pageUrl = url('/migrate/run');
+            echo '<html>
+                <head>
+                    <meta http-equiv="refresh" content="3;'.$pageUrl.'" />
+                <title>Application Upgrade...</title>
+                </head>
+                <body>
+                    Upgrade is in progress, please wait...
+                </body>
+                </html>';
+
+            return;
+        }
+
+        // GET ONLY
+        return view('admin.settings.upgradeFromUrl');
+    }
+
+    public function licenseRemove()
+    {
+        try {
+            Setting::updateLicense(null);
+
+            return redirect()->action('Admin\SettingController@license')
+                ->with('alert-success', trans('messages.license.removed'));
+        } catch (\Exception $ex) {
+            return redirect()->action('Admin\SettingController@license')
+                ->with('alert-error', $ex->getMessage());
+        }
     }
 }

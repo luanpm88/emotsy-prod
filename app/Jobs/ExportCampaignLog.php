@@ -2,24 +2,33 @@
 
 namespace Acelle\Jobs;
 
-class ExportCampaignLog extends SystemJob
+use Acelle\Library\Traits\Trackable;
+
+class ExportCampaignLog extends Base
 {
+    use Trackable;
+
+    public $timeout = 3600;
+
     protected $campaign;
+    protected $logtype;
 
     /**
      * Create a new job instance.
-     * @note: Parent constructors are not called implicitly if the child class defines a constructor.
-     *        In order to run a parent constructor, a call to parent::__construct() within the child constructor is required.
      *
      * @return void
      */
-    public function __construct($campaign)
+    public function __construct($campaign, $logtype)
     {
         $this->campaign = $campaign;
-        parent::__construct();
+        $this->logtype = $logtype;
 
-        // This line must go after the constructor
-        $this->updateStatus([ 'campaign_id' => $campaign->id, 'progress' => 0 ]);
+        // Set the initial value for progress check
+        $this->afterDispatched(function ($thisJob, $monitor) {
+            $monitor->setJsonData([
+                'percentage' => 0
+            ]);
+        });
     }
 
     /**
@@ -29,21 +38,11 @@ class ExportCampaignLog extends SystemJob
      */
     public function handle()
     {
-        $this->campaign->generateTrackingLogCsv(function($progress) {
-            $this->updateStatus($progress);
+        $this->campaign->generateTrackingLogCsv($this->logtype, function ($percentage, $path) {
+            $this->monitor->updateJsonData([
+                'percentage' => $percentage,
+                'path' => $path,
+            ]);
         });
-    }
-
-    /**
-     * Get import file name.
-     *
-     * @return void
-     */
-    public function updateStatus($data)
-    {
-        $systemJobModel = $this->getSystemJob();
-        $json = ($systemJobModel->data) ? json_decode($systemJobModel->data, true) : [];
-        $systemJobModel->data = json_encode(array_merge($json, $data));
-        $systemJobModel->save();
     }
 }

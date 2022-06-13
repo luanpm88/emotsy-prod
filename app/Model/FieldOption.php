@@ -23,9 +23,12 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Acelle\Library\Traits\HasUid;
 
 class FieldOption extends Model
 {
+    use HasUid;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -43,23 +46,5 @@ class FieldOption extends Model
     public function field()
     {
         return $this->belongsTo('Acelle\Model\Field');
-    }
-
-    /**
-     * Bootstrap any application services.
-     */
-    public static function boot()
-    {
-        parent::boot();
-
-        // Create uid when creating list.
-        static::creating(function ($item) {
-            // Create new uid
-            $uid = uniqid();
-            while (FieldOption::where('uid', '=', $uid)->count() > 0) {
-                $uid = uniqid();
-            }
-            $item->uid = $uid;
-        });
     }
 }

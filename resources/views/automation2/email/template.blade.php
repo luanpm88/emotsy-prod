@@ -1,4 +1,4 @@
-@extends('layouts.popup.medium')
+@extends('layouts.popup.large')
 
 @section('content')
         
@@ -15,14 +15,14 @@
                         <div class="main">
                             <label class="font-weight-bold">{{ trans('messages.campaign.html_email') }}</label>
                             <p>{{ trans('messages.campaign.html_email.last_edit', [
-                                'date' => Acelle\Library\Tool::formatDateTime($email->updated_at),
+                                'date' => Auth::user()->customer->formatDateTime($email->updated_at, 'date_full'),
                             ]) }}</p>
                             
-                            @if (in_array(Acelle\Model\Setting::get('builder'), ['both','pro']))
+                            @if (in_array(Acelle\Model\Setting::get('builder'), ['both','pro']) && $email->template->builder)
                                 <a href="{{ action('Automation2Controller@templateEdit', [
                                         'uid' => $automation->uid,
                                         'email_uid' => $email->uid,
-                                    ]) }}" class="btn btn-secondary mr-1 template-compose"
+                                    ]) }}" class="btn btn-primary mr-1 template-compose"
                                 >
                                     {{ trans('messages.campaign.compose_email') }}
                                 </a>
@@ -31,7 +31,7 @@
                                 <a href="{{ action('Automation2Controller@templateEditClassic', [
                                         'uid' => $automation->uid,
                                         'email_uid' => $email->uid,
-                                    ]) }}" class="btn btn-outline-secondary mr-1 template-compose-classic"
+                                    ]) }}" class="btn btn-secondary mr-1 template-compose-classic"
                                 >
                                     {{ trans('messages.campaign.compose_email_classic') }}
                                 </a>
@@ -39,7 +39,7 @@
                             <a href="{{ action('Automation2Controller@templateRemove', [
                                     'uid' => $automation->uid,
                                     'email_uid' => $email->uid,
-                                ]) }}" class="btn btn-outline-primary template-change"
+                                ]) }}" class="btn btn-link template-change"
                             >
                                 {{ trans('messages.campaign.change_template') }}
                             </a>
@@ -47,28 +47,18 @@
                     </div>
                 </div>
                 <div class="template-thumb-container">
-                    <img class="automation-template-thumb" src="{{ action('EmailController@image', [
-                            'uid' => $automation->uid,
-                            'email_uid' => $email->uid,
-                        ]) }}?v={{ Carbon\Carbon::now() }}"
+                    <img class="automation-template-thumb" src="{{ $email->getThumbUrl() }}?v={{ Carbon\Carbon::now() }}"
                     />
-                    @if (in_array(Acelle\Model\Setting::get('builder'), ['both','classic']))
-                        <a href="{{ action('Automation2Controller@templateEditClassic', [
+                    <a
+                        onclick="popupwindow('{{ action('Automation2Controller@templatePreview', [
                             'uid' => $automation->uid,
                             'email_uid' => $email->uid,
-                        ]) }}" class="btn btn-primary template-compose" style="display:none">
-                            {{ trans('messages.automation.template.edit_with_builder') }}
-                        </a>
-                    @endif
-                    @if (in_array(Acelle\Model\Setting::get('builder'), ['both','pro']))
-                        <a href="{{ action('Automation2Controller@templateEdit', [
-                            'uid' => $automation->uid,
-                            'email_uid' => $email->uid,
-                        ]) }}" class="btn btn-primary template-compose" style="display:none">
-                            {{ trans('messages.automation.template.edit_with_builder') }}
-                        </a>
-                    @endif
-                    
+                        ]) }}', `{{ $automation->name }}`, 800)"
+                        href="javascript:;"
+                        class="btn btn-primary" style="display:none"
+                    >
+                        {{ trans('messages.automation.template.preview') }}
+                    </a>
                 </div>
             </div>
                 
@@ -79,7 +69,7 @@
                 @include('automation2.email._attachment')
             </div>
                 
-            <div class="text-right mt-5">
+            <div class="text-end mt-5">
                 <a href="javascript:;" onclick="sidebar.load(); popup.hide()" class="btn btn-inline-secondary mr-1">
                     {{ trans('messages.close') }}
                 </a>
@@ -88,7 +78,7 @@
                     'email_uid' => $email->uid
                 ]) }}')" class="btn btn-secondary">
                     <span class="d-flex align-items-center">
-                        <span>{{ trans('messages.automation.email.next_confirm') }}</span> <i class="material-icons">keyboard_arrow_right</i>
+                        <span>{{ trans('messages.automation.email.next_confirm') }}</span> <i class="material-symbols-rounded">keyboard_arrow_right</i>
                     </span>
                 </a>
             </div>

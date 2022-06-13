@@ -22,8 +22,8 @@
 
 		</div>
 		<div class="text-left">
-			<button class="btn bg-teal mr-5"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
-			<a href="{{ action("SenderController@index") }}" class="btn bg-grey"><i class="icon-cross"></i> {{ trans('messages.cancel') }}</a>
+			<button class="btn btn-secondary me-1"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
+			<a href="{{ action("SenderController@index") }}" class="btn btn-secondary"><i class="icon-cross"></i> {{ trans('messages.cancel') }}</a>
 		</div>
 	</div>
 </div>

@@ -9,22 +9,22 @@ use Acelle\Model\Language;
 class LanguagePolicy
 {
     use HandlesAuthorization;
-    
+
     public function read(User $user, Language $item)
     {
         $can = $user->admin->getPermission('language_read') != 'no';
 
         return $can;
     }
-    
-    public function read_all(User $user, Language $item)
+
+    public function list(User $user)
     {
-        $can = $user->admin->getPermission('language_read') == 'all';
+        $can = $user->admin->getPermission('language_read') != 'no';
 
         return $can;
     }
 
-    public function create(User $user, Language $item)
+    public function create(User $user)
     {
         $can = $user->admin->getPermission('language_create') == 'yes';
 
@@ -46,7 +46,7 @@ class LanguagePolicy
 
         return $can;
     }
-    
+
     public function translate(User $user, Language $item)
     {
         $ability = $user->admin->getPermission('language_update');
@@ -54,7 +54,7 @@ class LanguagePolicy
 
         return $can;
     }
-    
+
     public function disable(User $user, Language $item)
     {
         $ability = $user->admin->getPermission('language_update');
@@ -62,7 +62,7 @@ class LanguagePolicy
 
         return ($can && $item->status != "inactive");
     }
-    
+
     public function enable(User $user, Language $item)
     {
         $ability = $user->admin->getPermission('language_update');
@@ -70,7 +70,7 @@ class LanguagePolicy
 
         return ($can && $item->status != "active");
     }
-    
+
     public function download(User $user, Language $item)
     {
         $ability = $user->admin->getPermission('language_read');
@@ -78,7 +78,7 @@ class LanguagePolicy
 
         return $can;
     }
-    
+
     public function upload(User $user, Language $item)
     {
         $ability = $user->admin->getPermission('language_update');

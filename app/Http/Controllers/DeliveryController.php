@@ -15,15 +15,15 @@ use Acelle\Model\SendingServerMailgun;
 use Acelle\Model\SendingServerSendGrid;
 use Acelle\Model\SendingServerElasticEmail;
 use Acelle\Model\SendingServerSparkPost;
+use Acelle\Model\SendingServerPostal;
 use Acelle\Model\FeedbackLog;
 use Acelle\Model\Blacklist;
-use Acelle\Library\Notification\BackendError as BackendErrorNotification;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Validator;
+use Exception;
 
 class DeliveryController extends Controller
 {
-
     /**
      * Campaign notification.
      *
@@ -41,20 +41,30 @@ class DeliveryController extends Controller
 
         $type = $request->stype;
 
-        if ($type == 'amazon') { // @TODO hard-coded here, seeking for a solution
-            $this->handleAws();
-        } elseif ($type == SendingServerMailgun::WEBHOOK) {
-            $this->handleMailgun();
-        } elseif ($type == SendingServerSendGrid::WEBHOOK) {
-            $this->handleSendGrid();
-        } elseif ($type == SendingServerElasticEmail::WEBHOOK) {
-            MailLog::configure(storage_path().'/logs/handler-elasticemail.log');
-            SendingServerElasticEmail::handleNotification($_GET);
-        } elseif ($type == SendingServerSparkPost::WEBHOOK) {
-            MailLog::configure(storage_path().'/logs/handler-sparkpost.log');
-            return SendingServerSparkPost::handleNotification($_GET);
-        } else {
-            return;
+        try {
+            if ($type == 'amazon') { // @TODO hard-coded here, seeking for a solution
+                $this->handleAws();
+            } elseif ($type == SendingServerMailgun::WEBHOOK) {
+                SendingServerMailgun::handleNofification();
+            } elseif ($type == SendingServerSendGrid::WEBHOOK) {
+                $this->handleSendGrid();
+            } elseif ($type == SendingServerElasticEmail::WEBHOOK) {
+                MailLog::configure(storage_path().'/logs/handler-elasticemail.log');
+                SendingServerElasticEmail::handleNotification($_GET);
+            } elseif ($type == SendingServerSparkPost::WEBHOOK) {
+                MailLog::configure(storage_path().'/logs/handler-sparkpost.log');
+                SendingServerSparkPost::handleNotification($_GET);
+            } else {
+                throw new Exception('Unknown notification type');
+            }
+
+            return response()->json(['success' => 'OK']);
+        } catch (Exception $ex) {
+            return response()->json([
+                'success' => false,
+                'error' => $ex->getMessage(),
+                'debug' => $ex->getTraceAsString(),
+            ], 500);
         }
     }
 
@@ -65,11 +75,13 @@ class DeliveryController extends Controller
      */
     private function handleSendGrid()
     {
+        // Reference: https://sendgrid.com/docs/for-developers/tracking-events/event/
+
         MailLog::configure(storage_path().'/logs/handler-sendgrid.log');
         $messages = json_decode(file_get_contents('php://input'), true);
         MailLog::info(file_get_contents('php://input'));
 
-        foreach($messages as $message) {
+        foreach ($messages as $message) {
             switch ($message['event']) {
                 case 'dropped':
                 case 'bounce':
@@ -140,39 +152,6 @@ class DeliveryController extends Controller
         header('X-PHP-Response-Code: 200', true, 200);
     }
 
-    private function handleMailgun()
-    {
-        MailLog::configure(storage_path().'/logs/handler-mailgun.log');
-
-        // @TODO: POST request not verified because we cannot retrive sending server information
-        // The complete check should be
-        //    if (isset($_POST['timestamp']) && isset($_POST['token']) && isset($_POST['signature']) && hash_hmac('sha256', $_POST['timestamp'].$_POST['token'], $sendingServer->api_key) === $_POST['signature']) {
-        if (isset($_POST['timestamp']) && isset($_POST['token']) && isset($_POST['signature'])) {
-            if ($_POST['event'] == 'complained') {
-                $feedbackLog = new FeedbackLog();
-                $feedbackLog->runtime_message_id = StringHelper::cleanupMessageId($_POST['Message-Id']);
-                // For Mailgun, runtime_message_id EQUIV. message_id
-                $feedbackLog->message_id = $feedbackLog->runtime_message_id;
-                $feedbackLog->feedback_type = 'spam';
-                $feedbackLog->raw_feedback_content = '';
-                $feedbackLog->save();
-                MailLog::info('Feedback recorded for message '.$feedbackLog->runtime_message_id);
-            } elseif ($_POST['event'] == 'bounced') {
-                $bounceLog = new BounceLog();
-                $bounceLog->runtime_message_id = StringHelper::cleanupMessageId($_POST['Message-Id']);
-                // For Mailgun, runtime_message_id EQUIV. message_id
-                $bounceLog->message_id = $bounceLog->runtime_message_id;
-                $bounceLog->bounce_type = BounceLog::HARD;
-                $bounceLog->raw = $_POST['error'];
-                $bounceLog->save();
-                MailLog::info('Bounce recorded for message '.$bounceLog->runtime_message_id);
-                MailLog::info('Adding email to blacklist');
-                $bounceLog->findSubscriberByRuntimeMessageId()->sendToBlacklist($bounceLog->raw);
-            }
-        }
-        header('X-PHP-Response-Code: 200', true, 200);
-    }
-
     private function handleAws()
     {
         MailLog::configure(storage_path().'/logs/handler-aws.log');
@@ -187,14 +166,13 @@ class DeliveryController extends Controller
         } catch (\Exception $e) {
             // Pretend we're not here if the message is invalid
             MailLog::warning($e->getMessage());
-            BackendErrorNotification::warning('Cannot handle AWS bounce/feedback. '.$e->getMessage(), false);
             return;
         }
 
         if ($message['Type'] === 'SubscriptionConfirmation') {
             MailLog::info('subscription received');
             // Send a request to the SubscribeURL to complete subscription
-            (new Client())->get($message['SubscribeURL']);
+            (new Client(['verify' => false]))->get($message['SubscribeURL']);
 
             MailLog::info('subscription confirmed');
 
@@ -234,14 +212,14 @@ class DeliveryController extends Controller
             $bounceLog->raw = $message['Message'];
             $trackingLog = TrackingLog::where('runtime_message_id', $bounceLog->runtime_message_id)->first();
             if (!is_null($trackingLog)) {
-                $bounceLog->message_id = $trackingLog->message_id;    
+                $bounceLog->message_id = $trackingLog->message_id;
                 $bounceLog->save();
                 MailLog::info('Bounce recorded for message '.$bounceLog->runtime_message_id);
-    
+
                 if ($bounce['bounceType'] === 'Permanent') {
                     MailLog::info('Adding email to blacklist');
                     $bounceLog->findSubscriberByRuntimeMessageId()->sendToBlacklist($bounceLog->raw);
-                }    
+                }
             } else {
                 MailLog::info('No tracking log found');
                 $bounceLog->save();
@@ -265,7 +243,7 @@ class DeliveryController extends Controller
             } catch (\Exception $ex) {
                 $feedbackLog->feedback_type = 'unknown';
             }
-            
+
             $feedbackLog->raw_feedback_content = $message['Message'];
             $feedbackLog->save();
             MailLog::info('Feedback recorded for message '.$feedbackLog->runtime_message_id);
@@ -277,7 +255,7 @@ class DeliveryController extends Controller
             }
         }
     }
-    
+
     /**
      * Receive bounce/feedback report via API.
      *
@@ -289,38 +267,38 @@ class DeliveryController extends Controller
     {
         // Retrieve input
         $params = $request->all();
-                
+
         // Validation rules
         $rules = [
             'event' => 'required|in:bounce,feedback',
             'message_id' => 'required',
         ];
-        
+
         // Custom error messages
         $msg = [
             'event.in' => 'Invalid event. Possible values are: bounce, feedback',
             'bounce_type.in' => 'Invalid bounce type. Possible values are: hard, soft',
             'feedback_type.in' => 'Invalid feedback type. Possible values are: spam, abuse',
         ];
-        
+
         // Execute validation
         $validation = Validator::make($params, $rules, $msg);
-        
+
         // Rules for bounce
-        $validation->sometimes('bounce_type', 'required|in:hard,soft', function($input) {
+        $validation->sometimes('bounce_type', 'required|in:hard,soft', function ($input) {
             return $input->event == 'bounce';
         });
-        
+
         // Rules for feedback
-        $validation->sometimes('feedback_type', 'required|in:spam,abuse', function($input) {
+        $validation->sometimes('feedback_type', 'required|in:spam,abuse', function ($input) {
             return $input->event == 'feedback';
         });
-        
+
         // Return 400 if validation fails
         if ($validation->fails()) {
             return response()->json(['error' => $validation->errors()->toArray()], 400);
         }
-        
+
         // Proceed with blacklisting
         if ($params['event'] == 'feedback') {
             $feedbackLog = new FeedbackLog();
@@ -331,7 +309,7 @@ class DeliveryController extends Controller
             $feedbackLog->raw_feedback_content = (array_key_exists('response', $params)) ? $params['response'] : '';
             $feedbackLog->save();
             MailLog::info('Feedback recorded (from API) for message '.$feedbackLog->runtime_message_id);
-            
+
             $subscriber = $feedbackLog->findSubscriberByRuntimeMessageId();
             if (!is_null($subscriber)) {
                 MailLog::info('Adding email to abuse list');
@@ -351,12 +329,12 @@ class DeliveryController extends Controller
             $subscriber = $bounceLog->findSubscriberByRuntimeMessageId();
             if (!is_null($subscriber)) {
                 MailLog::info('Adding email to blacklist');
-                $bounceLog->findSubscriberByRuntimeMessageId()->sendToBlacklist($bounceLog->raw);    
+                $bounceLog->findSubscriberByRuntimeMessageId()->sendToBlacklist($bounceLog->raw);
             } else {
                 MailLog::warning('Subscriber not found');
             }
         }
-        
+
         return response()->json(['status' => 'ok'], 200);
     }
 }

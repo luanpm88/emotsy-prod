@@ -1,9 +1,8 @@
 @extends('layouts.popup.small')
 
 @section('content')
-	<div class="row">
-        <div class="col-md-1"></div>
-        <div class="col-md-10">
+    <div class="row">
+        <div class="col-md-12">
             <h2>{{ trans('messages.list.select_customer_for_clone_list', ['list' => $list->name]) }}</h2>
             <p>{{ trans('messages.list.select_customer_for_clone_list.intro') }}</p>
                 
@@ -41,22 +40,16 @@
                 addMaskLoading();
             
                 $.ajax({
-                	method: "POST",
-                	url: url,
-                	data: form.serialize(),
+                    method: "POST",
+                    url: url,
+                    data: form.serialize(),
                 })
                 .done(function( data ) {
-                	removeMaskLoading();
-                    
-                    // Success alert
-                    swal({
-                        title: data.message,
-                        text: "",
-                        confirmButtonColor: "#00695C",
-                        type: "success",
-                        allowOutsideClick: true,
-                        confirmButtonText: "{{ trans('messages.ok') }}",
-                        customClass: "swl-success"
+                    removeMaskLoading();
+
+                    notify({
+                        title: "{{ trans('messages.notify.success') }}",
+                        message: data.message,
                     });
                 });
             }

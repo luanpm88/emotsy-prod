@@ -137,21 +137,6 @@ class CustomerGroup extends Model
     }
 
     /**
-     * Bootstrap any application services.
-     */
-    public static function boot()
-    {
-        parent::boot();
-
-        // Create uid when creating list.
-        static::creating(function ($item) {
-            // Update custom order
-            CustomerGroup::getAll()->increment('custom_order', 1);
-            $item->custom_order = 0;
-        });
-    }
-
-    /**
      * Get select options.
      *
      * @return array

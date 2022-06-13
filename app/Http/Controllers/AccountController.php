@@ -4,10 +4,10 @@ namespace Acelle\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log as LaravelLog;
+use Acelle\Library\Facades\Billing;
 
 class AccountController extends Controller
 {
-
     /**
      * Update user profile.
      *
@@ -18,7 +18,8 @@ class AccountController extends Controller
     public function profile(Request $request)
     {
         // Get current user
-        $customer = $request->user()->customer;
+        $user = $request->user();
+        $customer = $user->customer;
         $customer->getColorScheme();
 
         // Authorize
@@ -28,20 +29,15 @@ class AccountController extends Controller
 
         // Save posted data
         if ($request->isMethod('post')) {
-            // Prenvent save from demo mod
-            if ($this->isDemoMode()) {
-                return $this->notAuthorized();
-            }
-
-            $this->validate($request, $customer->rules());
+            $this->validate($request, $user->rules());
 
             // Update user account for customer
-            $user = $customer->user;
-            $user->email = $request->email;
+            $user->fill($request->all());
             // Update password
             if (!empty($request->password)) {
                 $user->password = bcrypt($request->password);
             }
+
             $user->save();
 
             // Save current user info
@@ -51,20 +47,20 @@ class AccountController extends Controller
             if ($request->hasFile('image')) {
                 if ($request->file('image')->isValid()) {
                     // Remove old images
-                    $customer->removeImage();
-                    $customer->image = $customer->uploadImage($request->file('image'));
+                    $user->uploadProfileImage($request->file('image'));
                 }
             }
 
             // Remove image
             if ($request->_remove_image == 'true') {
-                $customer->removeImage();
-                $customer->image = '';
+                $user->removeProfileImage();
             }
 
             if ($customer->save()) {
                 $request->session()->flash('alert-success', trans('messages.profile.updated'));
             }
+
+            return redirect()->action('AccountController@profile');
         }
 
         if (!empty($request->old())) {
@@ -75,6 +71,7 @@ class AccountController extends Controller
 
         return view('account.profile', [
             'customer' => $customer,
+            'user' => $request->user(),
         ]);
     }
 
@@ -98,9 +95,9 @@ class AccountController extends Controller
 
         // save posted data
         if ($request->isMethod('post')) {
-            // Prenvent save contact
-            if (isset($contact->id) && $this->isDemoMode()) {
-                return $this->notAuthorized();
+            // Prenvent save from demo mod
+            if ($this->isDemoMode()) {
+                return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
             }
 
             $this->validate($request, \Acelle\Model\Contact::$rules);
@@ -172,58 +169,6 @@ class AccountController extends Controller
     }
 
     /**
-     * Api token.
-     */
-    public function subscription(Request $request)
-    {
-        $customer = $request->user()->customer;
-
-        // Get current subscription
-        $subscription = $customer->getCurrentSubscriptionIgnoreStatus();
-        
-        // Get next subscription
-        $nextSubscription = $customer->getNextSubscription();
-
-        // If has no subscription
-        if (!$subscription) {
-            return redirect()->action('AccountController@subscriptionNew');
-        }
-
-        return view('account.subscription', [
-            'subscription' => $subscription,
-            'nextSubscription' => $nextSubscription,
-        ]);
-    }
-
-    /**
-     * Api token.
-     */
-    public function subscriptionNew(Request $request)
-    {
-        $customer = $request->user()->customer;
-
-        $subscription = new \Acelle\Model\Subscription();
-        $subscription->customer_id = $customer->id;
-
-        if ($request->plan_uid) {
-            $subscription->fillAttributes($request->all());
-        }
-
-        // authorize
-        if (!$request->user()->customer->can('create', $subscription)) {
-            return $this->notAuthorized();
-        }
-
-        if (!empty($request->old())) {
-            $subscription->fillAttributes($request->old());
-        }
-
-        return view('account.subscription_new', [
-            'subscription' => $subscription
-        ]);
-    }
-
-    /**
      * Renew api token.
      */
     public function renewToken(Request $request)
@@ -237,5 +182,151 @@ class AccountController extends Controller
         $request->session()->flash('alert-success', trans('messages.user_api.renewed'));
 
         return redirect()->action('AccountController@api');
+    }
+
+    /**
+     * Billing.
+     */
+    public function billing(Request $request)
+    {
+        return view('account.billing', [
+            'customer' => $request->user()->customer,
+            'user' => $request->user(),
+        ]);
+    }
+
+    /**
+     * Edit billing address.
+     */
+    public function editBillingAddress(Request $request)
+    {
+        $customer = $request->user()->customer;
+        $billingAddress = $customer->getDefaultBillingAddress();
+
+        // has no address yet
+        if (!$billingAddress) {
+            $billingAddress = $customer->newBillingAddress();
+        }
+
+        // copy from contacy
+        if ($request->same_as_contact == 'true') {
+            $billingAddress->copyFromContact();
+        }
+
+        // Save posted data
+        if ($request->isMethod('post')) {
+            list($validator, $billingAddress) = $billingAddress->updateAll($request);
+
+            // redirect if fails
+            if ($validator->fails()) {
+                return response()->view('account.editBillingAddress', [
+                    'billingAddress' => $billingAddress,
+                    'errors' => $validator->errors(),
+                ], 400);
+            }
+
+            $request->session()->flash('alert-success', trans('messages.billing_address.updated'));
+
+            return;
+        }
+
+        return view('account.editBillingAddress', [
+            'billingAddress' => $billingAddress,
+        ]);
+    }
+
+    /**
+     * Remove payment method
+     */
+    public function removePaymentMethod(Request $request)
+    {
+        $customer = $request->user()->customer;
+
+        $customer->removePaymentMethod();
+    }
+
+    /**
+     * Edit payment method
+     */
+    public function editPaymentMethod(Request $request)
+    {
+        // Save posted data
+        if ($request->isMethod('post')) {
+            if (!Billing::isGatewayRegistered($request->payment_method)) {
+                throw new \Exception('Gateway for ' . $request->payment_method . ' is not registered!');
+            }
+
+            $gateway = Billing::getGateway($request->payment_method);
+
+            $request->user()->customer->updatePaymentMethod([
+                'method' => $request->payment_method,
+            ]);
+
+            if ($gateway->supportsAutoBilling()) {
+                return redirect()->away($gateway->getAutoBillingDataUpdateUrl($request->return_url));
+            }
+
+            return redirect()->away($request->return_url);
+        }
+
+        return view('account.editPaymentMethod', [
+            'redirect' => $request->redirect ? $request->redirect : action('AccountController@billing'),
+        ]);
+    }
+
+    public function leftbarState(Request $request)
+    {
+        $request->session()->put('customer-leftbar-state', $request->state);
+    }
+
+    public function wizardColorScheme(Request $request)
+    {
+        $customer = $request->user()->customer;
+
+        // Save color scheme
+        if ($request->isMethod('post')) {
+            $customer->color_scheme = $request->color_scheme;
+            $customer->theme_mode = $request->theme_mode;
+            $customer->save();
+
+            return view('account.wizardMenuLayout');
+        }
+
+        return view('account.wizardColorScheme');
+    }
+
+    public function wizardMenuLayout(Request $request)
+    {
+        $customer = $request->user()->customer;
+
+        // Save color scheme
+        if ($request->isMethod('post')) {
+            $customer->menu_layout = $request->menu_layout;
+            $customer->save();
+            return;
+        }
+
+        return view('account.wizardMenuLayout');
+    }
+
+    public function activity(Request $request)
+    {
+        return view('account.activity');
+    }
+
+    public function saveAutoThemeMode(Request $request)
+    {
+        $request->session()->put('customer-auto-theme-mode', $request->theme_mode);
+    }
+
+    public function changeThemeMode(Request $request)
+    {
+        $customer = $request->user()->customer;
+
+        // Save color scheme
+        if ($request->isMethod('post')) {
+            $customer->theme_mode = $request->theme_mode;
+            $customer->save();
+        }
     }
 }

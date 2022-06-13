@@ -59,11 +59,19 @@ class RunHandler extends Command
      */
     public function handle()
     {
+        $timeoutCallback = function () {
+            // just do nothing, wait for the current process to finish
+            // passing a closure to avoid an exception
+        };
+
         $lock = new Lockable(storage_path('locks/bounce-feedback-handler'));
-        $lock->getExclusiveLock(function() {
+        $lock->getExclusiveLock(function () {
             $this->execRunHandler();
-        });
+        }, $timeout = 5, $timeoutCallback);
+
         Log::info('Handlers finished!');
+
+        return 0;
     }
 
     /**

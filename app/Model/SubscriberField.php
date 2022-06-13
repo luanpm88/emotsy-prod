@@ -23,9 +23,11 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Acelle\Library\Traits\QueryHelper;
 
 class SubscriberField extends Model
 {
+    use QueryHelper;
     /**
      * The attributes that are mass assignable.
      *

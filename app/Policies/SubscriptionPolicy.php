@@ -6,11 +6,27 @@ use Illuminate\Auth\Access\HandlesAuthorization;
 use Acelle\Model\User;
 use Acelle\Model\Setting;
 use Acelle\Cashier\Cashier;
-use Acelle\Cashier\Subscription;
+use Acelle\Model\Subscription;
 
 class SubscriptionPolicy
 {
     use HandlesAuthorization;
+
+    public function approve(User $user, Subscription $subscription, $role)
+    {
+        switch ($role) {
+            case 'admin':
+                $can = $subscription->getUnpaidInvoice() &&
+                    $subscription->getUnpaidInvoice()->getPendingTransaction() &&
+                    $subscription->getUnpaidInvoice()->getPendingTransaction()->allowManualReview();
+                break;
+            case 'customer':
+                $can = false;
+                break;
+        }
+
+        return $can;
+    }
 
     public function readAll(User $user, Subscription $subscription, $role)
     {
@@ -42,8 +58,7 @@ class SubscriptionPolicy
 
     public function cancel(User $user, Subscription $subscription, $role)
     {
-        $gateway = Cashier::getPaymentGateway();
-        $can = $subscription->isActive() && $subscription->isRecurring() && $gateway->isSupportRecurring();
+        $can = $subscription->isActive() && $subscription->isRecurring();
         switch ($role) {
             case 'admin':
                 break;
@@ -56,9 +71,7 @@ class SubscriptionPolicy
 
     public function resume(User $user, Subscription $subscription, $role)
     {
-        $gateway = Cashier::getPaymentGateway();
-        $can = $gateway->isSupportRecurring() && $subscription->cancelled() && !$subscription->isEnded();
-
+        $can = $subscription->isActive() && $subscription->cancelled() && !$subscription->isEnded();
         switch ($role) {
             case 'admin':
                 break;
@@ -71,7 +84,7 @@ class SubscriptionPolicy
 
     public function cancelNow(User $user, Subscription $subscription, $role)
     {
-        $can = !$subscription->isEnded() && !$subscription->isNew();
+        $can = !$subscription->isEnded();
 
         switch ($role) {
             case 'admin':
@@ -99,126 +112,12 @@ class SubscriptionPolicy
 
     public function changePlan(User $user, Subscription $subscription, $role)
     {
-        $gateway = Cashier::getPaymentGateway();
-        
         switch ($role) {
             case 'admin':
                 $can = false;
                 break;
             case 'customer':
-                $can = $subscription->isActive() && !$gateway->hasPending($subscription);
-                break;
-        }
-
-        return $can;
-    }
-
-    public function renew(User $user, Subscription $subscription, $role)
-    {
-        $gateway = Cashier::getPaymentGateway();
-        $can = $subscription->isActive() && !$gateway->hasPending($subscription) && !$gateway->isSupportRecurring();
-        $can = $can && (
-            config('cashier.renew_free_plan') == 'yes' ||
-            (config('cashier.renew_free_plan') == 'no' && !$subscription->plan->isFree())
-        );
-
-        $goingToExpire = $subscription->goingToExpire();
-
-        // $can = $can && $goingToExpire;
-
-        switch ($role) {
-            case 'admin':
-                break;
-            case 'customer':
-                break;
-        }
-
-        return $can;
-    }
-
-    ////
-    public function create(User $user, Subscription $subscription, $role)
-    {
-        switch ($role) {
-            case 'admin':
-                $can = true;
-                break;
-            case 'customer':
-                $can = !isset($subscription);
-                break;
-        }
-
-        return $can;
-    }
-
-    public function subscribe(User $user, Subscription $subscription, $role)
-    {
-        switch ($role) {
-            case 'admin':
-                $can = false;
-                break;
-            case 'customer':
-                $can = $subscription->isPending();
-                break;
-        }
-
-        return $can;
-    }
-
-    public function checkout(User $user, Subscription $subscription, $role)
-    {
-        switch ($role) {
-            case 'admin':
-                $can = false;
-                break;
-            case 'customer':
-                $can = $subscription->isNew() || $subscription->isPending();
-                break;
-        }
-
-        return $can;
-    }
-
-    public function updateCard(User $user, Subscription $subscription, $role)
-    {
-        switch ($role) {
-            case 'admin':
-                $can = false;
-                break;
-            case 'customer':
-                $can = $subscription->isPending();
-                break;
-        }
-
-        return $can;
-    }
-
-    public function setActive(User $user, Subscription $subscription, $role)
-    {
-        $gateway = Cashier::getPaymentGateway();
-        $can = $subscription->isPending();
-
-        switch ($role) {
-            case 'admin':
-                break;
-            case 'customer':
-                $can = false;
-                break;
-        }
-
-        return $can;
-    }
-
-    public function approvePending(User $user, Subscription $subscription, $role)
-    {
-        $gateway = Cashier::getPaymentGateway();
-        $can = $gateway->hasPending($subscription);
-
-        switch ($role) {
-            case 'admin':
-                break;
-            case 'customer':
-                $can = false;
+                $can = $subscription->isActive();
                 break;
         }
 
@@ -227,11 +126,11 @@ class SubscriptionPolicy
 
     public function rejectPending(User $user, Subscription $subscription, $role)
     {
-        $gateway = Cashier::getPaymentGateway();
-        $can = $gateway->hasPending($subscription);
-
         switch ($role) {
             case 'admin':
+                $can = $subscription->getUnpaidInvoice() &&
+                    $subscription->getUnpaidInvoice()->getPendingTransaction() &&
+                    $subscription->getUnpaidInvoice()->getPendingTransaction()->allowManualReview();
                 break;
             case 'customer':
                 $can = false;
@@ -243,12 +142,13 @@ class SubscriptionPolicy
 
     public function delete(User $user, Subscription $subscription, $role)
     {
-        $can = $subscription->isEnded() || $subscription->isNew();
+        $can = $subscription->isEnded();
 
         switch ($role) {
             case 'admin':
                 break;
             case 'customer':
+                $can = false;
                 break;
         }
 

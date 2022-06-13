@@ -27,6 +27,7 @@
         >
             @include('helpers.form_control', [
                 'name' => 'lists_segments[' . $index . '][mail_list_uid]',
+                'class' => 'list-select',
                 'include_blank' => trans('messages.choose'),
                 'type' => 'select',
                 'label' => trans('messages.which_list_send'),
@@ -49,7 +50,9 @@
             @endif
         </div>
         <div class="col-md-1 pt-28 del-col">
-            <a onclick="$(this).parents('.condition-line').remove()" href="#delete" class="btn bg-danger-400"><i class="icon-trash"></i></a>
+            <a onclick="$(this).parents('.condition-line').remove()" href="#delete" class="btn bg-danger-400"><span class="material-symbols-rounded">
+delete_outline
+</span></a>
         </div>
     </div>
     <hr class="mt-10">

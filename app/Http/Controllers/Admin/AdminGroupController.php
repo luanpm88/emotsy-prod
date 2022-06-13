@@ -7,7 +7,6 @@ use Acelle\Http\Controllers\Controller;
 
 class AdminGroupController extends Controller
 {
-
     /**
      * Display a listing of the resource.
      *
@@ -199,17 +198,6 @@ class AdminGroupController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-    }
-
-    /**
      * Custom sort items.
      *
      * @param \Illuminate\Http\Request $request
@@ -218,20 +206,7 @@ class AdminGroupController extends Controller
      */
     public function sort(Request $request)
     {
-        $sort = json_decode($request->sort);
-        foreach ($sort as $row) {
-            $item = \Acelle\Model\AdminGroup::find($row[0]);
-
-            // authorize
-            if (\Gate::denies('sort', $item)) {
-                return $this->notAuthorized();
-            }
-
-            $item->custom_order = $row[1];
-            $item->save();
-        }
-
-        echo trans('messages.admin_groups.custom_order.updated');
+        echo trans('messages._deleted_');
     }
 
     /**

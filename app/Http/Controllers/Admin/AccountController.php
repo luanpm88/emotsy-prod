@@ -7,7 +7,6 @@ use Acelle\Http\Controllers\Controller;
 
 class AccountController extends Controller
 {
-
     /**
      * Update user profile.
      *
@@ -30,18 +29,20 @@ class AccountController extends Controller
         if ($request->isMethod('post')) {
             // Prenvent save from demo mod
             if ($this->isDemoMode()) {
-                return $this->notAuthorized();
+                return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
             }
 
-            $this->validate($request, $admin->rules());
-
             // Update user account for admin
-            $user = $admin->user;
-            $user->email = $request->email;
+            $user = $request->user();
+            $user->fill($request->all());
+
+            $this->validate($request, $user->rules());
+
             // Update password
             if (!empty($request->password)) {
                 $user->password = bcrypt($request->password);
             }
+
             $user->save();
 
             // Save current user info
@@ -50,21 +51,20 @@ class AccountController extends Controller
             // Upload and save image
             if ($request->hasFile('image')) {
                 if ($request->file('image')->isValid()) {
-                    // Remove old images
-                    $admin->removeImage();
-                    $admin->image = $admin->uploadImage($request->file('image'));
+                    $user->uploadProfileImage($request->file('image'));
                 }
             }
 
             // Remove image
             if ($request->_remove_image == 'true') {
-                $admin->removeImage();
-                $admin->image = '';
+                $user->removeProfileImage();
             }
 
             if ($admin->save()) {
                 $request->session()->flash('alert-success', trans('messages.profile.updated'));
             }
+
+            return redirect()->action('Admin\AccountController@profile');
         }
 
         if (!empty($request->old())) {
@@ -75,6 +75,7 @@ class AccountController extends Controller
 
         return view('admin.account.profile', [
             'admin' => $admin,
+            'user' => $request->user(),
         ]);
     }
 
@@ -93,9 +94,9 @@ class AccountController extends Controller
             $contact = $admin->contact;
         } else {
             $contact = new \Acelle\Model\Contact([
-                                        'first_name' => $admin->first_name,
-                                        'last_name' => $admin->last_name,
-                                        'email' => $admin->user->email,
+                                        'first_name' => $request->user()->first_name,
+                                        'last_name' => $request->user()->last_name,
+                                        'email' => $request->user()->email,
                                     ]);
         }
 
@@ -106,9 +107,9 @@ class AccountController extends Controller
 
         // save posted data
         if ($request->isMethod('post')) {
-            // Prenvent save contact
-            if (isset($contact->id) && $this->isDemoMode()) {
-                return $this->notAuthorized();
+            // Prenvent save from demo mod
+            if ($this->isDemoMode()) {
+                return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
             }
 
             $this->validate($request, \Acelle\Model\Contact::$rules);
@@ -153,5 +154,26 @@ class AccountController extends Controller
         $request->session()->flash('alert-success', trans('messages.user_api.renewed'));
 
         return redirect()->action('Admin\AccountController@api');
+    }
+
+    public function leftbarState(Request $request)
+    {
+        $request->session()->put('admin-leftbar-state', $request->state);
+    }
+
+    public function saveAutoThemeMode(Request $request)
+    {
+        $request->session()->put('admin-auto-theme-mode', $request->theme_mode);
+    }
+
+    public function changeThemeMode(Request $request)
+    {
+        $admin = $request->user()->admin;
+
+        // Save color scheme
+        if ($request->isMethod('post')) {
+            $admin->theme_mode = $request->theme_mode;
+            $admin->save();
+        }
     }
 }

@@ -11,6 +11,23 @@ use Acelle\Http\Controllers\Controller;
 class SubscriptionController extends Controller
 {
     /**
+     * Display all subscriptions.
+     *
+     * GET /api/v1/campaigns
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index(Request $request)
+    {
+        $user = \Auth::guard('api')->user();
+
+        $subscriptions = \Acelle\Model\Subscription::select('*')
+            ->paginate($request->per_page ? $request->per_page : 25);
+
+        return \Response::json($subscriptions, 200);
+    }
+
+    /**
      * Subscribe customer to a plan (For admin only).
      *
      * POST /api/v1/subscriptions
@@ -50,53 +67,10 @@ class SubscriptionController extends Controller
         $customer->assignPlan($plan);
 
         return \Response::json(array(
-            'status' => 1, 
-            'message' => 'Assigned '.$customer->displayName().' plan to '.$plan->name.' successfully.',
+            'status' => 1,
+            'message' => 'Assigned '.$customer->user->displayName().' plan to '.$plan->name.' successfully.',
             'customer_uid' => $customer->uid,
             'plan_uid' => $plan->uid
         ), 200);
-    }
-
-    /**
-     * Approve subscription pending.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     **/
-    public function setActive(Request $request, $uid)
-    {
-        // Get current subscription
-        $subscription = \Acelle\Cashier\Subscription::findByUid($uid);
-        $gateway = \Acelle\Cashier\Cashier::getPaymentGateway();
-
-        // check if item exists
-        if (!is_object($subscription)) {
-            return \Response::json(array('status' => 0, 'message' => 'Can not find subscription with uid: ' . $uid), 404);
-        }
-
-        // check if item is pending
-        if (!$subscription->isPending()) {
-            return \Response::json(array('status' => 0, 'message' => 'Can not set active for subscription. Subscription is not pending.'), 403);
-        }
-
-        // authorize
-        if (!$request->user()->admin->can('setActive', $subscription)) {
-            return \Response::json(array('message' => 'Unauthorized'), 401);
-        }
-
-        try {
-            $gateway->setActive($subscription);
-        } catch (\Exception $ex) {
-            return \Response::json([
-                'status' => 'error',
-                'message' => $ex->getMessage(),
-            ], 403);
-        }
-
-        return \Response::json([
-            'status' => 'success',
-            'message' => trans('messages.subscription.set_active.success'),
-        ]);
     }
 }

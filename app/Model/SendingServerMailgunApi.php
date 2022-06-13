@@ -38,34 +38,14 @@ class SendingServerMailgunApi extends SendingServerMailgun
      */
     public function send($message, $params = array())
     {
-        try {
-            $this->setupWebhooks();
+        $toEmail = array_keys($message->getTo())[0];
+        $result = $this->client()->messages()->sendMime($this->domain, [$toEmail], $message->toString(), []);
 
-            $fromEmail = array_keys($message->getFrom())[0];
-            $toEmail = array_keys($message->getTo())[0];
+        MailLog::info('Sent!');
 
-            $result = $this->client()->sendMessage(
-                $this->domain, array(
-                    'from' => $fromEmail,
-                    'to' => $toEmail,
-                ),
-                $message->toString()
-            );
-
-            MailLog::info('Sent!');
-
-            return array(
-                'runtime_message_id' => StringHelper::cleanupMessageId($result->http_response_body->id),
-                'status' => self::DELIVERY_STATUS_SENT,
-            );
-        } catch (\Exception $e) {
-            MailLog::warning('Sending failed');
-            MailLog::warning($e->getMessage());
-
-            return array(
-                'status' => self::DELIVERY_STATUS_FAILED,
-                'error' => $e->getMessage(),
-            );
-        }
+        return array(
+            'runtime_message_id' => StringHelper::cleanupMessageId($result->getId()),
+            'status' => self::DELIVERY_STATUS_SENT,
+        );
     }
 }

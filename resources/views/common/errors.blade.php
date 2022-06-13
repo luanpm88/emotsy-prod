@@ -1,16 +1,26 @@
 @if (count($errors) > 0)
     <!-- Form Error List -->
-    <div class="alert alert-danger alert-noborder">
-        <button data-dismiss="alert" class="close" type="button"><span>×</span><span class="sr-only">Close</span></button>
+    <div class="alert alert-danger alert-noborder alert-dismissible">
         <strong>{{ trans('messages.check_entry_try_again') }}</strong>
 
-        <br><br>
+        <br>
 
         <ul>
             @foreach ($errors->all() as $error)
                 <li>{{ $error }}</li>
             @endforeach
         </ul>
+
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
+
+@if (!count($errors) && isset($error))
+    <!-- Form Error List -->
+    <div class="alert alert-danger alert-noborder alert-dismissible">
+        <p>{{ trans('messages.notify.error') }}: {{ $error }}</p>
+
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 @endif
 
@@ -23,13 +33,13 @@
     @endphp
     @if(Session::has('alert-' . $msg))
         <!-- Form Error List -->
-        <div class="alert alert-{{ $class }} alert-noborder">
-            <button data-dismiss="alert" class="close" type="button"><span>×</span><span class="sr-only">Close</span></button>
+        <div class="alert alert-{{ $class }} alert-noborder alert-dismissible">
             <strong>{{ trans('messages.' . $msg) }}</strong>
 
             <br>
 
             <p>{!! preg_replace('/[\r\n]+/', ' ', Session::get('alert-' . $msg)) !!}</p>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     @endif    
 @endforeach

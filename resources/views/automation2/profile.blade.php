@@ -1,17 +1,17 @@
 @extends('layouts.popup.small')
 
 @section('content')
-	<div class="row">
+    <div class="row">
         <div class="col-md-12">
             <div class="d-flex align-items-center">
                 <h3 class="mr-auto mb-4">{{ trans('messages.automation.contact.profile') }}</h3>
                 <div class="">
                     <div class="btn-group btn-group-sm" role="group" aria-label="Button group with nested dropdown">
                         <div class="btn-group btn-group-sm" role="group">
-                            <button id="btnGroupDrop1" type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <button id="btnGroupDrop1" role="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 {{ trans('messages.automation.profile.action') }}
                             </button>
-                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="btnGroupDrop1">
+                            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="btnGroupDrop1">
                                 <a class="dropdown-item profile-remove-contact"
                                     href="{{ action('Automation2Controller@removeContact', [
                                         'uid' => $automation->uid,
@@ -59,9 +59,11 @@
                                     'contact_uid' => $contact->uid,
                                     'tag' => $tag,
                                 ]) }}" class="btn-group remove-contact-tag" role="group" aria-label="Basic example">
-                                    <button type="button" class="btn btn-light btn-tag">{{ $tag }}</button>
-                                    <button type="button" class="btn btn-light btn-tag">
-                                        <i class="lnr lnr-cross"></i>
+                                    <button role="button" class="btn btn-light btn-tag">{{ $tag }}</button>
+                                    <button role="button" class="btn btn-light btn-tag">
+                                        <i class="material-symbols-rounded">
+close
+</i>
                                     </button>
                                 </a>
                             @endforeach
@@ -70,8 +72,8 @@
                                         'uid' => $automation->uid,
                                         'contact_uid' => $contact->uid,
                                     ]) }}" class="btn-group profile-tag-contact" role="group" aria-label="Basic example">
-                                <button type="button" class="btn btn-light btn-tag d-flex align-items-center">
-                                    <i class="material-icons">add</i>
+                                <button role="button" class="btn btn-light btn-tag d-flex align-items-center">
+                                    <i class="material-symbols-rounded">add</i>
                                     <span class="font-italic">{{ trans('messages.automation.profile.click_to_add_tag') }}<span>
                                 </button>
                             </a>
@@ -86,10 +88,10 @@
                 <div class="">
                     <div class="btn-group btn-group-sm" role="group" aria-label="Button group with nested dropdown">
                         <div class="btn-group btn-group-sm" role="group">
-                            <button id="btnGroupDrop1" type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <button id="btnGroupDrop1" role="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 {{ trans('messages.automation.contact.all_activities') }}
                             </button>
-                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="btnGroupDrop1">
+                            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="btnGroupDrop1">
                                 <a class="dropdown-item" href="#">Open</a>
                                 <a class="dropdown-item" href="#">Click</a>
                                 <a class="dropdown-item" href="#">Subscribe</a>
@@ -116,14 +118,16 @@
                                     {{ $timeline->activity }}
                                 </action>
                                 <desc class="d-block small text-muted">
-                                    <i class="lnr lnr-clock mr-1"></i> {{ Acelle\Library\Tool::formatDateTime($timeline->created_at) }}
+                                    <span class="material-symbols-rounded me-1">
+schedule
+</span> {{ Auth::user()->customer->formatDateTime($timeline->created_at, 'date_full') }}
                                 </desc>
                             </div>
                         </div>
                     @endforeach
                 @else
                     <div class="empty-list">
-                        <i class="material-icons">timeline</i>
+                        <i class="material-symbols-rounded">timeline</i>
                         <span class="line-1">
                             {{ trans('messages.automation.timeline.no_activities') }}
                         </span>
@@ -157,7 +161,11 @@
                         },
                         success: function (response) {
                             // notify
-                            notify('success', '{{ trans('messages.notify.success') }}', response.message);
+                            notify({
+    type: 'success',
+    title: '{!! trans('messages.notify.success') !!}',
+    message: response.message
+});
 
                             popup.hide();
                         }
@@ -167,18 +175,18 @@
         });
 
         var tagContact = new Popup(undefined, undefined, {
-			onclose: function() {
-				sidebar.load();
-			}
-		});
+            onclose: function() {
+                sidebar.load();
+            }
+        });
         $('.profile-tag-contact').click(function(e) {
             e.preventDefault();
 
             var url = $(this).attr('href');
 
             tagContact.load(url, function() {
-				console.log('Confirm action type popup loaded!');				
-			});
+                console.log('Confirm action type popup loaded!');                
+            });
         });
         
         $('.remove-contact-tag').click(function(e) {
@@ -202,7 +210,11 @@
                 },
                 success: function (response) {
                     // notify
-                    notify('success', '{{ trans('messages.notify.success') }}', response.message);
+                    notify({
+    type: 'success',
+    title: '{!! trans('messages.notify.success') !!}',
+    message: response.message
+});
 
                     // reload popup
                     popup.load();

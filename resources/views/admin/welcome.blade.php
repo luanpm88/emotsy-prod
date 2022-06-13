@@ -1,4 +1,4 @@
-@extends('layouts.backend')
+@extends('layouts.core.backend')
 
 @section('content')
     <br />

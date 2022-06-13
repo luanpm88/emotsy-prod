@@ -22,9 +22,8 @@ class CreateSubscriptionLogsTable extends Migration
             $table->text('data');
 
             $table->timestamps();
-            
-            $table->foreign('subscription_id')->references('id')->on('subscriptions')->onDelete('cascade');
-            $table->foreign('transaction_id')->references('id')->on('subscription_transactions')->onDelete('cascade');
+
+            $table->foreign('subscription_id', table('sl_subscription_id_fk'))->references('id')->on('subscriptions')->onDelete('cascade');
         });
     }
 

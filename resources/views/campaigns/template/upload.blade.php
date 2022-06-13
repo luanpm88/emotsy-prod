@@ -1,28 +1,33 @@
-@extends('layouts.popup.small')
+@extends('layouts.popup.medium')
+
+@section('title')
+    <i class="material-symbols-rounded alert-icon mr-2">backup_table</i>
+    {{ trans("messages.template") }}
+@endsection
 
 @section('content')
 	<div class="row">
-        <div class="col-md-1"></div>
-        <div class="col-md-10">
-            <h2>{{ trans('messages.campaign.choose_your_template_layout') }}</h2>
+        <div class="col-md-12">
+            <h4 class="">{{ trans('messages.campaign.upload_custom_template') }}</h4>
                 
-            <ul class="nav nav-tabs mc-nav campaign-template-tabs">
-                <li><a href="{{ action('CampaignController@templateLayout', $campaign->uid) }}">Layouts</a></li>
-                <li><a href="{{ action('CampaignController@templateTheme', $campaign->uid) }}">Themes</a></li>
-                <li class="active"><a href="{{ action('CampaignController@templateUpload', $campaign->uid) }}">Upload</a></li>
-            </ul>
+            @include('campaigns.template._tabs')
             
+            <p>{!! trans('messages.template.upload.instruction', ["link" => url('/download/Sample-Template.zip') ]) !!}</p>
+
             <div class="alert alert-info">
-                {!! trans('messages.template_upload_guide', ["link" => 'https://s3.amazonaws.com/acellemail/newsletter-template-green.zip']) !!}
+                {{ trans('messages.template.upload.warning') }}
             </div>
             
             <form enctype="multipart/form-data" action="{{ action('CampaignController@templateUpload', $campaign->uid) }}" method="POST" class="ajax_upload_form form-validate-jquery">
                 {{ csrf_field() }}
 
+                <input type="hidden" name="name" value="{{ $campaign->name }}" />
+                <input type="hidden" name="type" value="{{ Acelle\Model\Template::TYPE_EMAIL }}" />
+
                 @include('helpers.form_control', ['required' => true, 'type' => 'file', 'label' => trans('messages.upload_file'), 'name' => 'file'])
 				
                 <div class="mt-20">
-                    <button class="btn btn-primary bg-grey-600 mr-5">{{ trans('messages.upload') }}</button>
+                    <button class="btn btn-primary bg-grey-600 me-1">{{ trans('messages.upload') }}</button>
                 </div>
 
             </form>
@@ -30,7 +35,7 @@
     </div>
         
     <script>
-        $('.campaign-template-tabs a').click(function(e) {
+        $('a.choose-template-tab').click(function(e) {
             e.preventDefault();
         
             var url = $(this).attr('href');
@@ -38,7 +43,7 @@
             templatePopup.load(url);
         });
 
-        var builderSelectPopup = new Popup(null, undefined, {onclose: function() {
+        var builderSelectPopup = new Popup({onclose: function() {
             window.location = '{{ action('CampaignController@template', $campaign->uid) }}';
         }});
 
@@ -54,7 +59,6 @@
                 url: url,
                 method: 'POST',
                 data: formData,
-                async: false,
                 cache: false,
                 contentType: false,
                 processData: false,
@@ -64,11 +68,19 @@
                         alert('Something went wrong!');
                     }
                 },
+                error: function (data) {
+                    alert(data.responseText);
+                    removeMaskLoading();
+                },
                 success: function (response) {
                     removeMaskLoading();
 
                     // notify
-                    notify('success', '{{ trans('messages.notify.success') }}', response.message);
+                    notify({
+    type: 'success',
+    title: '{!! trans('messages.notify.success') !!}',
+    message: response.message
+});
 
                     builderSelectPopup.load(response.url);
                     templatePopup.hide();

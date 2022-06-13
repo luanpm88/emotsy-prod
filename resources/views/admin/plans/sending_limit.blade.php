@@ -1,12 +1,8 @@
-<div class="modal-header">
-    <h5 class="modal-title">{{ trans('messages.plan.sending_limit') }}</h5>
-    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-    </button>
-</div>
-<div class="modal-body">
+@extends('layouts.popup.small')
+
+@section('content')
     <div class="mc_section">
-        <form action="{{ action('Admin\PlanController@sendingLimit', ['uid' => $plan->uid]) }}" method="POST">
+        <form id="sendingLimitForm" action="{{ action('Admin\PlanController@sendingLimit', ['uid' => $plan->uid]) }}" method="POST">
             {{ csrf_field() }}
             
             <input type="hidden" name="plan[options][sending_limit]" value="other" />
@@ -26,12 +22,6 @@
                         'help_class' => 'plan',
                         'rules' => $plan->rules()
                     ])
-                    <div class="checkbox inline unlimited-check text-semibold">
-                        <label>
-                            <input{{ $plan->getOption('sending_quota')  == -1 ? " checked=checked" : "" }} type="checkbox" class="styled">
-                            {{ trans('messages.unlimited') }}
-                        </label>
-                    </div>
                 </div>
                 <div class="col-md-4">
                     @include('helpers.form_control', [
@@ -56,8 +46,31 @@
                 </div>
             </div>
             <hr>
-            <button class="btn btn-mc_primary mr-10">{{ trans('messages.sending_limit.save') }}</button>
-            <a href="javascript:;" class="btn btn-mc_inline mr-10" data-dismiss="modal">{{ trans('messages.sending_limit.close') }}</a>
+            <button class="btn btn-secondary me-2">{{ trans('messages.sending_limit.save') }}</button>
+            <a href="javascript:;" class="btn btn-link me-2" data-dismiss="modal">{{ trans('messages.sending_limit.close') }}</a>
         </form>
     </div>
-</div>
+
+    <script>
+        $(function() {
+            // trigger modal form submit
+            $("#sendingLimitForm").submit(function( event ) {
+                event.preventDefault();
+
+                $.ajax({
+                    url: $(this).prop('action'),
+                    type: $(this).prop('method'),
+                    dataType: 'html',
+                    data: $(this).serialize(),
+                }).done(function(response) {
+                    PlansSecurity.getBox().html(response);
+                    
+                    initJs(PlansSecurity.getBox());
+
+                    PlansSecurity.getSendingLimitPopup().hide();
+                });
+            });
+        });
+    </script>
+
+@endsection

@@ -4,10 +4,13 @@ namespace Acelle\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Acelle\Http\Controllers\Controller;
+use Exception;
+use Acelle\Model\Blacklist;
+use Acelle\Model\JobMonitor;
+use Acelle\Jobs\ImportBlacklistJob;
 
 class BlacklistController extends Controller
 {
-
     /**
      * Search items.
      */
@@ -34,12 +37,8 @@ class BlacklistController extends Controller
 
         $blacklists = $this->search($request);
 
-        # Get current job
-        $system_job = $customer->getLastActiveImportBlacklistJob();
-
         return view('blacklists.index', [
             'blacklists' => $blacklists,
-            'system_job' => $system_job,
         ]);
     }
 
@@ -121,65 +120,6 @@ class BlacklistController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Request $request, $id)
-    {
-        $blacklist = \Acelle\Model\Blacklist::findByUid($id);
-
-        // authorize
-        if (!$request->user()->customer->can('update', $blacklist)) {
-            return $this->notAuthorized();
-        }
-
-        $blacklist->fill($request->old());
-
-        return view('blacklists.edit', [
-            'blacklist' => $blacklist,
-        ]);
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param int                      $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        // Get current user
-        $current_user = $request->user();
-        $blacklist = \Acelle\Model\Blacklist::findByUid($id);
-
-        // authorize
-        if (!$request->user()->customer->can('update', $blacklist)) {
-            return $this->notAuthorized();
-        }
-
-        // save posted data
-        if ($request->isMethod('patch')) {
-            $this->validate($request, \Acelle\Model\Blacklist::rules());
-
-            // Save current user info
-            $blacklist->fill($request->all());
-
-            if ($blacklist->save()) {
-                // Log
-                $blacklist->log('updated', $request->user()->customer);
-
-                $request->session()->flash('alert-success', trans('messages.blacklist.updated'));
-                return redirect()->action('BlacklistController@index');
-            }
-        }
-    }
-
-    /**
      * Remove the specified resource from storage.
      *
      * @param int $id
@@ -191,7 +131,10 @@ class BlacklistController extends Controller
         if ($request->select_tool == 'all_items') {
             $blacklists = $this->search($request);
         } else {
-            $blacklists = \Acelle\Model\Blacklist::whereIn('id', explode(',', $request->uids));
+            $blacklists = \Acelle\Model\Blacklist::whereIn(
+                'id',
+                is_array($request->uids) ? $request->uids : explode(',', $request->uids)
+            );
         }
 
         foreach ($blacklists->get() as $blacklist) {
@@ -217,29 +160,35 @@ class BlacklistController extends Controller
     public function import(Request $request)
     {
         $customer = $request->user()->customer;
+        $job = $customer->importBlacklistJobs()->first();
 
-        if ($request->isMethod('post')) {
-            // authorize
-            if (!$request->user()->customer->can('import', new \Acelle\Model\Blacklist())) {
-                return $this->notAuthorized();
-            }
-
-            if ($request->hasFile('file')) {
-                // Start system job
-                $job = new \Acelle\Jobs\ImportBlacklistJob($request->file('file')->path(), $request->user()->customer);
-                $this->dispatch($job);
-            } else {
-                // @note: use try/catch instead
-                echo "max_file_upload";
-            }
+        if ($job) {
+            return view('blacklists.import', [
+                'currentJobUid' => $job->uid,
+                'cancelUrl' => action('BlacklistController@cancelImport', [ 'job_uid' => $job->uid ]),
+                'progressCheckUrl' => action('BlacklistController@importProgress', [ 'job_uid' => $job->uid ]),
+            ]);
+        } else {
+            return view('blacklists.import', [
+                //
+            ]);
         }
+    }
 
-        // Get current job
-        $system_job = $customer->getLastActiveImportBlacklistJob();
+    public function startImport(Request $request)
+    {
+        $customer = $request->user()->customer;
 
-        return view('blacklists.import', [
-            'system_job' => $system_job
-        ]);
+        if ($request->hasFile('file')) {
+            $filepath = Blacklist::upload($request->file('file'));
+
+            // Start system job
+            $job = $customer->dispatchWithMonitor(new ImportBlacklistJob($filepath, $customer));
+
+            return redirect()->action('BlacklistController@import');
+        } else {
+            throw new Exception('no upload file');
+        }
     }
 
     /**
@@ -249,19 +198,20 @@ class BlacklistController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function importProcess(Request $request)
+    public function importProgress(Request $request)
     {
-        $customer = $request->user()->customer;
-        $system_job = \Acelle\Model\SystemJob::find($request->system_job_id);
+        $job = JobMonitor::findByUid($request->job_uid);
 
-        // authorize
-        if (!$customer->can('read', new \Acelle\Model\Blacklist())) {
-            return $this->notAuthorized();
+        if (is_null($job)) {
+            throw new Exception(sprintf('Blacklist import job #%s does not exist', $request->job_uid));
         }
 
-        return view('blacklists.import_process', [
-            'system_job' => $system_job
-        ]);
+        $progress = $job->getJsonData();
+        $progress['status'] = $job->status;
+        $progress['error'] = $job->error;
+
+        // Get progress updated by the import process and status of the final job monitor
+        return response()->json($progress);
     }
 
     /**
@@ -271,19 +221,14 @@ class BlacklistController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function cancel(Request $request)
+    public function cancelImport(Request $request)
     {
-        $customer = $request->user()->customer;
-        $system_job = $customer->getLastActiveImportBlacklistJob();
-
-        // authorize
-        if (!$customer->can('importCancel', new \Acelle\Model\Blacklist())) {
-            return $this->notAuthorized();
+        $job = JobMonitor::findByUid($request->job_uid);
+        if (is_null($job)) {
+            throw new Exception(sprintf('Verification job #%s does not exist', $request->job_uid));
         }
 
-        $system_job->setCancelled();
-
-        $request->session()->flash('alert-success', trans('messages.blacklist.import.cancelled'));
-        return redirect()->action('BlacklistController@index');
+        $job->cancel();
+        return response()->json();
     }
 }

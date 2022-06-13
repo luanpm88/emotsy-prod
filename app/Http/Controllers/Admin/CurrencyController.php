@@ -9,7 +9,6 @@ use Acelle\Http\Controllers\Controller;
 
 class CurrencyController extends Controller
 {
-
     /**
      * Display a listing of the resource.
      *
@@ -168,9 +167,9 @@ class CurrencyController extends Controller
         $current_user = $request->user();
         $currency = \Acelle\Model\Currency::findByUid($id);
 
-        // prevent action from demo mod
-        if($this->isDemoMode()) {
-            return $this->notAuthorized();
+        // Prenvent save from demo mod
+        if ($this->isDemoMode()) {
+            return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
         }
 
         // authorize
@@ -195,17 +194,6 @@ class CurrencyController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-    }
-
-    /**
      * Enable item.
      *
      * @param \Illuminate\Http\Request $request
@@ -214,7 +202,10 @@ class CurrencyController extends Controller
      */
     public function enable(Request $request)
     {
-        $items = \Acelle\Model\Currency::whereIn('uid', explode(',', $request->uids));
+        $items = \Acelle\Model\Currency::whereIn(
+            'uid',
+            is_array($request->uids) ? $request->uids : explode(',', $request->uids)
+        );
 
         foreach ($items->get() as $item) {
             // authorize
@@ -236,7 +227,10 @@ class CurrencyController extends Controller
      */
     public function disable(Request $request)
     {
-        $items = \Acelle\Model\Currency::whereIn('uid', explode(',', $request->uids));
+        $items = \Acelle\Model\Currency::whereIn(
+            'uid',
+            is_array($request->uids) ? $request->uids : explode(',', $request->uids)
+        );
 
         foreach ($items->get() as $item) {
             // authorize
@@ -258,7 +252,10 @@ class CurrencyController extends Controller
      */
     public function delete(Request $request)
     {
-        $items = \Acelle\Model\Currency::whereIn('uid', explode(',', $request->uids));
+        $items = \Acelle\Model\Currency::whereIn(
+            'uid',
+            is_array($request->uids) ? $request->uids : explode(',', $request->uids)
+        );
 
         foreach ($items->get() as $item) {
             // authorize

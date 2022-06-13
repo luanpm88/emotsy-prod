@@ -1,22 +1,17 @@
-@extends('layouts.backend')
+@extends('layouts.core.backend')
 
 @section('title', trans('messages.license'))
-
-@section('page_script')
-    <script type="text/javascript" src="{{ URL::asset('assets/js/core/libraries/jquery_ui/interactions.min.js') }}"></script>
-	<script type="text/javascript" src="{{ URL::asset('assets/js/core/libraries/jquery_ui/touch.min.js') }}"></script>
-
-	<script type="text/javascript" src="{{ URL::asset('js/listing.js') }}"></script>
-@endsection
 
 @section('page_header')
 
     <div class="page-title">
         <ul class="breadcrumb breadcrumb-caret position-right">
-            <li><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
         </ul>
         <h1>
-            <span class="text-gear"><i class="icon-key"></i> {{ trans('messages.license') }}</span>
+            <span class="text-gear"><span class="material-symbols-rounded">
+vpn_key
+</span> {{ trans('messages.license') }}</span>
         </h1>
     </div>
 
@@ -45,9 +40,16 @@
 							<div class="sub-section">
 								<h3>{{ trans('messages.license.your_license') }}</h3>
 								<p>{{ trans('messages.your_current_license') }} <strong>{{ trans('messages.license_label_' . \Acelle\Model\Setting::get('license_type')) }}</strong></p>
-								<h4>
-									{{ $current_license }}
-								</h4>
+								<div class="d-flex align-items-center">
+									<h4 class="mb-0">
+										{{ $current_license }}
+									</h4>
+									<a href="{{ action('Admin\SettingController@licenseRemove') }}" class="btn btn-default ms-4" link-confirm="{{ trans('messages.license.remove.confirm') }}" link-method="POST">
+										<i class="material-symbols-rounded">delete</i>
+										{{ trans('messages.license.remove') }}
+									</a>
+								</div>
+									
 							</div>
                         @else
 							<div class="sub-section">
@@ -84,9 +86,9 @@
 									<br />
 									<div class="text-left">
 										@if ($current_license)
-											<button class="btn bg-teal"><i class="icon-check"></i> {{ trans('messages.change_license') }}</button>
+											<button class="btn btn-secondary"><i class="icon-check"></i> {{ trans('messages.change_license') }}</button>
 										@else
-											<button class="btn bg-teal"><i class="icon-check"></i> {{ trans('messages.verify_license') }}</button>
+											<button class="btn btn-secondary"><i class="icon-check"></i> {{ trans('messages.verify_license') }}</button>
 										@endif
 									</div>
 								</div>

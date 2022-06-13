@@ -9,7 +9,8 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 
 class RegistrationConfirmationMailer extends Mailable
 {
-    use Queueable, SerializesModels;
+    use Queueable;
+    use SerializesModels;
 
     protected $content;
     public $subject;

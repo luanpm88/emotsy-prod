@@ -14,12 +14,12 @@ class SenderPolicy
     {
         return true;
     }
-    
+
     public function read(User $user, Sender $sender)
     {
         return $user->customer->id == $sender->customer_id;
     }
-    
+
     public function create(User $user, Sender $sender)
     {
         return true;
@@ -34,7 +34,7 @@ class SenderPolicy
     {
         return $user->customer->id == $sender->customer_id;
     }
-    
+
     public function verify(User $user, Sender $sender)
     {
         return $user->customer->id == $sender->customer_id;

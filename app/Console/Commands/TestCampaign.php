@@ -4,10 +4,8 @@ namespace Acelle\Console\Commands;
 
 use Illuminate\Console\Command;
 use Acelle\Library\Log;
-use Acelle\Library\QuotaTrackerStd;
-use Acelle\Library\QuotaTrackerRedis;
 use Acelle\Library\StringHelper;
-use Acelle\Library\QuotaTracker;
+use Acelle\Library\ExtendedSwiftMessage;
 use Acelle\Model\Campaign;
 use Acelle\Model\User;
 use Acelle\Model\MailList;
@@ -54,30 +52,31 @@ class TestCampaign extends Command
     public function handle()
     {
         $this->testImap();
+        return 0;
     }
 
-    public function testSmtp() {
+    public function testSmtp()
+    {
         $transport = new \Swift_SmtpTransport('smtp.elasticemail.com', 2525, 'tls');
         $transport->setUsername('');
         $transport->setPassword('');
-          ;
+        ;
 
         // Create the Mailer using your created Transport
         $mailer = new \Swift_Mailer($transport);
 
         // Create a message
-        $message = new \Swift_Message('Wonderful Subject');
+        $message = new ExtendedSwiftMessage('Wonderful Subject');
         $message->setFrom(array('' => 'Asish'));
         $message->setTo(array('' => 'Louis'));
         $message->setBody('Here is the message itself');
 
         // Send the message
-        $result = $mailer->send($message);
-
-        var_dump($result);
+        $mailer->send($message);
     }
 
-    public function testImap() {
+    public function testImap()
+    {
         // Connect to IMAP server
         $imapPath = "{mail.example.com:993/imap/tls}INBOX";
 

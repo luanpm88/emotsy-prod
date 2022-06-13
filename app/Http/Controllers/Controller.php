@@ -8,9 +8,16 @@ use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Log;
+use Acelle\Model\Setting;
+use Artisan;
+
 class Controller extends BaseController
 {
-    use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+    use AuthorizesRequests;
+    use DispatchesJobs;
+    use ValidatesRequests;
 
     /**
      * Create a new controller instance.
@@ -24,7 +31,7 @@ class Controller extends BaseController
      *
      * @return \Illuminate\Http\Response
      */
-    function isDemoMode()
+    public function isDemoMode()
     {
         return config('app.demo');
     }
@@ -36,11 +43,11 @@ class Controller extends BaseController
      */
     public function notAuthorized()
     {
-        if(request()->ajax()){
+        if (request()->ajax()) {
             return response()->json(['message' => trans('messages.not_authorized_message')], 403);
         }
 
-        return response()->view('notAuthorized')->setStatusCode(403); 
+        return response()->view('notAuthorized')->setStatusCode(403);
     }
 
     /**
@@ -115,6 +122,42 @@ class Controller extends BaseController
         return redirect()->action('HomeController@index');
     }
 
+    public function validateToken($api_token)
+    {
+        $valid = is_object(\Acelle\Model\User::where('api_token', $api_token)->first());
+
+        if ($valid) {
+            return response()
+                ->json([
+                    'status' => 'success',
+                ], 200);
+        } else {
+            return response()
+                ->json([
+                    'status' => 'failed',
+                ], 401);
+        }
+    }
+
+    /**
+     * Login from outsite.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function tokenLogin($token)
+    {
+        $user = \Acelle\Model\User::where('one_time_api_token', $token)->first();
+
+        if (!$user) {
+            return view('somethingWentWrong', ['message' => trans('messages.token_expired')]);
+        }
+
+        \Auth::login($user);
+        $user->clearOneTimeToken();
+
+        return redirect()->action('HomeController@index');
+    }
+
     /**
      * Translate datatable.
      *
@@ -153,67 +196,27 @@ class Controller extends BaseController
      */
     public function jquery_validate_locale()
     {
-        echo 'jQuery.extend(jQuery.validator.messages, {
-                required: "'.trans('messages.jvalidate_required').'",
-                remote: "'.trans('messages.jvalidate_remote').'",
-                email: "'.trans('messages.jvalidate_email').'",
-                url: "'.trans('messages.jvalidate_url').'",
-                date: "'.trans('messages.jvalidate_date').'",
-                dateISO: "'.trans('messages.jvalidate_dateISO').'",
-                number: "'.trans('messages.jvalidate_number').'",
-                digits: "'.trans('messages.jvalidate_digits').'",
-                creditcard: "'.trans('messages.jvalidate_creditcard').'",
-                equalTo: "'.trans('messages.jvalidate_equalTo').'",
-                accept: "'.trans('messages.jvalidate_accept').'",
-                maxlength: jQuery.validator.format("'.trans('messages.jvalidate_maxlength').'"),
-                minlength: jQuery.validator.format("'.trans('messages.jvalidate_minlength').'"),
-                rangelength: jQuery.validator.format("'.trans('messages.jvalidate_rangelength').'"),
-                range: jQuery.validator.format("'.trans('messages.jvalidate_range').'"),
-                max: jQuery.validator.format("'.trans('messages.jvalidate_max').'"),
-                min: jQuery.validator.format("'.trans('messages.jvalidate_min').'")
-            });';
+        return response('jQuery.extend(jQuery.validator.messages, {
+            required: "'.trans('messages.jvalidate_required').'",
+            remote: "'.trans('messages.jvalidate_remote').'",
+            email: "'.trans('messages.jvalidate_email').'",
+            url: "'.trans('messages.jvalidate_url').'",
+            date: "'.trans('messages.jvalidate_date').'",
+            dateISO: "'.trans('messages.jvalidate_dateISO').'",
+            number: "'.trans('messages.jvalidate_number').'",
+            digits: "'.trans('messages.jvalidate_digits').'",
+            creditcard: "'.trans('messages.jvalidate_creditcard').'",
+            equalTo: "'.trans('messages.jvalidate_equalTo').'",
+            accept: "'.trans('messages.jvalidate_accept').'",
+            maxlength: jQuery.validator.format("'.trans('messages.jvalidate_maxlength').'"),
+            minlength: jQuery.validator.format("'.trans('messages.jvalidate_minlength').'"),
+            rangelength: jQuery.validator.format("'.trans('messages.jvalidate_rangelength').'"),
+            range: jQuery.validator.format("'.trans('messages.jvalidate_range').'"),
+            max: jQuery.validator.format("'.trans('messages.jvalidate_max').'"),
+            min: jQuery.validator.format("'.trans('messages.jvalidate_min').'")
+        });')->header('Content-Type', 'application/javascript');
     }
 
-    /**
-     * Reload application settings
-     *
-     * @todo only authenticated user can execute this
-     */
-    public function reloadCache()
-    {
-        $next = action('HomeController@index');
-        \Artisan::call('config:cache');
-        sleep(5);
-        return redirect()->away($next);
-    }
-
-    /**
-     * Reload application settings
-     *
-     * @todo only authenticated user can execute this
-     */
-    public function runMigration()
-    {
-        \Artisan::call('migrate', ['--force' => true]);
-        \Acelle\Model\Notification::truncate();
-        sleep(5);
-        echo "Migration done! Redirecting...<meta http-equiv=\"refresh\" content=\"5;URL='".url('/')."'\" />";
-    }
-
-    /**
-     * Run remote cronjob
-     *
-     * @return boolean
-     */
-    public function remoteJob($remote_job_token)
-    {
-        if(\Acelle\Model\Setting::get('remote_job_token') === $remote_job_token) {
-            // @todo remote cronjob code here...
-        } else {
-            echo trans('messages.invalid_token');
-        }
-    }
-    
     /**
      * When user is diabled.
      *
@@ -223,5 +226,15 @@ class Controller extends BaseController
     {
         \Auth::logout();
         return view('isDisabled');
+    }
+
+    public function appkey()
+    {
+        echo get_app_identity();
+    }
+
+    public function termsOfService()
+    {
+        return view('termsOfService');
     }
 }

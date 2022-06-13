@@ -4,12 +4,23 @@ namespace Acelle\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use Acelle\Http\Controllers\Controller;
+use Acelle\Model\Customer;
 
 /**
  * /api/v1/customers - API controller for managing customers.
  */
 class CustomerController extends Controller
 {
+    public function index()
+    {
+        $user = \Auth::guard('api')->user();
+
+        $customers = \Acelle\Model\MailList::getAll()
+            ->get();
+
+        return \Response::json($customers, 200);
+    }
+
     /**
      * Create new customer.
      *
@@ -23,7 +34,8 @@ class CustomerController extends Controller
     {
         // Get current user
         $current_user = \Auth::guard('api')->user();
-        $customer = new \Acelle\Model\Customer();
+        $customer = \Acelle\Model\Customer::newCustomer();
+        $user = new \Acelle\Model\User();
 
         // authorize
         if (!$current_user->can('create', $customer)) {
@@ -32,7 +44,7 @@ class CustomerController extends Controller
 
         // save posted data
         if ($request->isMethod('post')) {
-            $rules = $customer->apiRules();
+            $rules = $user->apiRules();
 
             $validator = \Validator::make($request->all(), $rules);
             if ($validator->fails()) {
@@ -42,6 +54,7 @@ class CustomerController extends Controller
             // Create user account for customer
             $user = new \Acelle\Model\User();
             $user->email = $request->email;
+            $user->activated = true;
             // Update password
             if (!empty($request->password)) {
                 $user->password = bcrypt($request->password);
@@ -49,30 +62,27 @@ class CustomerController extends Controller
             $user->save();
 
             // Save current user info
-            $customer->user_id = $user->id;
             $customer->admin_id = $current_user->admin->id;
             $customer->fill($request->all());
             $customer->status = 'active';
 
             if ($customer->save()) {
+                $user->customer_id = $customer->id;
+                $user->save();
                 // Upload and save image
                 if ($request->hasFile('image')) {
                     if ($request->file('image')->isValid()) {
-                        // Remove old images
-                        $customer->removeImage();
-                        $customer->image = $customer->uploadImage($request->file('image'));
-                        $customer->save();
+                        $user->uploadProfileImage($request->file('image'));
                     }
                 }
 
                 // Remove image
                 if ($request->_remove_image == 'true') {
-                    $customer->removeImage();
-                    $customer->image = '';
+                    $user->removeProfileImage();
                 }
 
                 return \Response::json(array(
-                    'status' => 1, 
+                    'status' => 1,
                     'message' => trans('messages.customer.created'),
                     'customer_uid' => $customer->uid,
                     'api_token' => $customer->user->api_token
@@ -98,7 +108,7 @@ class CustomerController extends Controller
 
         // check if item exists
         if (!is_object($customer)) {
-            return \Response::json(array('status' => 0, 'message' => 'Item not found'), 404);
+            return \Response::json(array('status' => 0, 'message' => 'Customer not found'), 404);
         }
 
         // authorize
@@ -108,23 +118,22 @@ class CustomerController extends Controller
 
         // save posted data
         if ($request->isMethod('patch')) {
+            // Prenvent save from demo mod
+            $user = $customer->user;
+            $user->fill($request->all());
 
-            if($this->isDemoMode()) {
-                return $this->notAuthorized();
+            if ($this->isDemoMode()) {
+                return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
             }
 
-            $rules = $customer->apiUpdateRules($request);
+            $rules = $user->apiUpdateRules($request);
 
             $validator = \Validator::make($request->all(), $rules);
+
             if ($validator->fails()) {
                 return response()->json($validator->messages(), 403);
             }
 
-            // Update user account for customer
-            $user = $customer->user;
-            if (!empty($request->email)) {
-                $user->email = $request->email;
-            }
             // Update password
             if (!empty($request->password)) {
                 $user->password = bcrypt($request->password);
@@ -138,20 +147,17 @@ class CustomerController extends Controller
             // Upload and save image
             if ($request->hasFile('image')) {
                 if ($request->file('image')->isValid()) {
-                    // Remove old images
-                    $customer->removeImage();
-                    $customer->image = $customer->uploadImage($request->file('image'));
+                    $user->uploadProfileImage($request->file('image'));
                 }
             }
 
             // Remove image
             if ($request->_remove_image == 'true') {
-                $customer->removeImage();
-                $customer->image = '';
+                $user->removeProfileImage();
             }
 
             return \Response::json(array(
-                'status' => 1, 
+                'status' => 1,
                 'message' => trans('messages.customer.updated'),
                 'customer_uid' => $customer->uid
             ), 200);
@@ -186,13 +192,12 @@ class CustomerController extends Controller
         // Customer info
         $result = [
             'uid' => $customer->uid,
-            'first_name' => $customer->first_name,
-            'last_name' => $customer->last_name,
-            'image' => $customer->image,
+            'first_name' => $user->first_name,
+            'last_name' => $user->last_name,
             'timezone' => $customer->timezone,
             'status' => $customer->status,
             'options' => $customer->getOptions(),
-            'next_subscription_start_at' => $customer->getNextScriptionStartAt(),
+            'current_period_ends_at' => $customer->getCurrentPeriodEndsAt(),
         ];
 
         // Customer contact
@@ -225,25 +230,6 @@ class CustomerController extends Controller
                 'start_at' => $subscription->start_at,
                 'end_at' => $subscription->end_at,
                 'status' => $subscription->status,
-                'paid' => $subscription->paid,
-                'time_status' => $subscription->timeStatus(),
-            ];
-        }
-
-        // All subscription
-        $subscriptions = $customer->subscriptions()->get();
-        $result['subscriptions'] = [];
-        foreach ($subscriptions as $subscription) {
-            $result['subscriptions'][] = [
-                'uid' => $subscription->uid,
-                'plan_name' => $subscription->plan_name,
-                'price' => $subscription->price,
-                'currency_code' => $subscription->currency_code,
-                'start_at' => $subscription->start_at,
-                'end_at' => $subscription->end_at,
-                'status' => $subscription->status,
-                'paid' => $subscription->paid,
-                'time_status' => $subscription->timeStatus(),
             ];
         }
 
@@ -278,7 +264,7 @@ class CustomerController extends Controller
         $customer->enable();
 
         return \Response::json(array(
-            'status' => 1, 
+            'status' => 1,
             'message' => trans('messages.customer.enabled'),
             'customer_uid' => $customer->uid
         ), 200);
@@ -312,7 +298,7 @@ class CustomerController extends Controller
         $customer->disable();
 
         return \Response::json(array(
-            'status' => 1, 
+            'status' => 1,
             'message' => trans('messages.customer.disabled'),
             'customer_uid' => $customer->uid
         ), 200);
@@ -355,10 +341,43 @@ class CustomerController extends Controller
         $customer->assignPlan($plan);
 
         return \Response::json(array(
-            'status' => 1, 
-            'message' => 'Assigned '.$customer->displayName().' plan to '.$plan->name.' successfully.',
+            'status' => 1,
+            'message' => 'Assigned '.$customer->user->displayName().' plan to '.$plan->name.' successfully.',
             'customer_uid' => $customer->uid,
             'plan_uid' => $plan->uid
         ), 200);
+    }
+
+    /**
+     * Generate one time token.
+     *
+     * PATCH /api/v1/customers/{uid}/login-token
+     *
+     * @param int $id customer's uid
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function loginToken(Request $request)
+    {
+        $user = \Auth::guard('api')->user();
+
+        // if for another customer
+        if ($request->customer_uid) {
+            $customer = Customer::findByUid($request->customer_uid);
+
+            // authorize
+            if (!$user->can('loginAs', $customer)) {
+                return \Response::json(array('status' => 0, 'message' => 'Unauthorized'), 401);
+            }
+
+            $user = $customer->user;
+        }
+
+        $user->generateOneTimeToken();
+
+        echo json_encode(array(
+            'token' => $user->one_time_api_token,
+            'url' => action('Controller@tokenLogin', ['token' => $user->one_time_api_token]),
+        ), JSON_UNESCAPED_SLASHES);
     }
 }

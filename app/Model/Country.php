@@ -43,7 +43,13 @@ class Country extends Model
      */
     public static function getSelectOptions()
     {
-        $options = self::getAll()->map(function ($item) {
+        $options = self::getAll();
+
+        if (config('custom.japan')) {
+            $options = $options->where('code', '=', 'JP');
+        }
+
+        $options = $options->map(function ($item) {
             return ['value' => $item->id, 'text' => $item->name];
         });
 
@@ -308,5 +314,10 @@ class Country extends Model
             $c->status = 'active';
             $c->save();
         }
+    }
+
+    public static function findByCode($code)
+    {
+        return self::where('code', '=', $code)->first();
     }
 }

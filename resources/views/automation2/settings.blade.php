@@ -23,7 +23,6 @@
             
             @include('helpers.form_control', [
                 'name' => 'mail_list_uid',
-                'include_blank' => trans('messages.automation.choose_list'),
                 'type' => 'select',
                 'label' => trans('messages.automation.change_mail_list'),
                 'value' => (is_object($automation->mailList) ? $automation->mailList->uid : ''),
@@ -50,19 +49,25 @@
     <button class="btn btn-secondary mt-20">{{ trans('messages.automation.settings.save') }}</button>            
 </form>
 
-<h6 class="mb-2 mt-5 text-danger">
-    {{ trans('messages.automation.dangerous_zone') }}
-</h6>
-<p class="">
-    {{ trans('messages.automation.delete.wording') }}        
-</p>
-<div class="mt-3">
-    <a href="{{ action('Automation2Controller@delete', ['uids' => $automation->uid]) }}"
-        data-confirm="{{ trans('messages.automation.delete.confirm') }}"
-        class="btn btn-danger automation-delete"
-    >
-        <i class='lnr lnr-trash mr-2'></i> {{ trans('messages.automation.delete_automation') }}
-    </a>
+<div class="mt-4 d-flex py-3">
+    <div>
+        <h4 class="mb-2">
+            {{ trans('messages.automation.dangerous_zone') }}
+        </h4>
+        <p class="">
+            {{ trans('messages.automation.delete.wording') }}        
+        </p>
+        <div class="mt-3">
+            <a href="{{ action('Automation2Controller@delete', ['uids' => $automation->uid]) }}"
+                data-confirm="{{ trans('messages.automation.delete.confirm') }}"
+                class="btn btn-secondary automation-delete"
+            >
+                <span class="material-symbols-rounded">
+delete
+</span> {{ trans('messages.automation.delete_automation') }}
+            </a>
+        </div>
+    </div>
 </div>
     
 <script>
@@ -102,6 +107,9 @@
                 sidebar.load();
                 
                 notify(response.status, '{{ trans('messages.notify.success') }}', response.message);
+
+                // need to reload to update tree data
+                location.reload();
              }
         });
     });
@@ -167,7 +175,11 @@
                         );
 
                         // notify
-                        notify('success', '{{ trans('messages.notify.success') }}', response.message);
+                        notify({
+    type: 'success',
+    title: '{!! trans('messages.notify.success') !!}',
+    message: response.message
+});
                     }
                 });
             },

@@ -16,9 +16,11 @@
         <div class="col-md-12">
             <ul class="key-value-list list-small">
                 @foreach ($email->attachments as $attachment)
-                    <li class="flex">
+                    <li class="flex align-items-center">
                         <div class="icon">
-                            <i class="lnr lnr-file-empty"></i>
+                            <span class="material-symbols-rounded me-2">
+attach_email
+</span>
                         </div>
                         <div class="content mr-auto">
                             <label>
@@ -38,7 +40,9 @@
                                 class=""
                                 title="{{ trans('messages.automation.email.attachment.download') }}"
                             >
-                                <i class="lnr lnr-download"></i>
+                                <span class="material-symbols-rounded">
+file_download
+</span>
                             </a>
                             <a                                
                                 href="{{ action('Automation2Controller@emailAttachmentRemove', [
@@ -49,7 +53,9 @@
                                 class="attachment-remove"
                                 title="{{ trans('messages.automation.email.attachment.remove') }}"
                             >
-                                <i class="lnr lnr-trash"></i>
+                                <span class="material-symbols-rounded">
+delete
+</span>
                             </a>
                         </div>
                     </li>
@@ -63,7 +69,12 @@
     //
     // Dropzone
     // ------------------------------
-    $(".dropzone").dropzone({uploadMultiple: true});
+    $(".dropzone").dropzone({
+        uploadMultiple: true,
+        success: function() {
+            popup.load();
+        }
+    });
     
     $('.attachment-remove').click(function(e) {
         e.preventDefault();
@@ -80,7 +91,11 @@
             success: function (response) {
                 popup.load();
                 
-                notify('success', '{{ trans('messages.notify.success') }}', response.message);
+                notify({
+    type: 'success',
+    title: '{!! trans('messages.notify.success') !!}',
+    message: response.message
+});
              }
         });
     });

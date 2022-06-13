@@ -91,14 +91,43 @@
     @can('test', $server)
         <a
             href="{{ action('Admin\FeedbackLoopHandlerController@test', $server->uid) }}"
-            type="button"
-            class="btn bg-grey-800 mr-5 btn-icon ajax_link"
+            role="button"
+            class="btn btn-primary me-1 test-button"
             data-in-form="true"
-            data-method="POST"
             mask-title="{{ trans('messages.feedback_loop_handler.testing_connection') }}"
         >
-            <i class="icon-rotate-cw3"></i> {{ trans('messages.feedback_loop_handler.test') }}
+            <span class="material-symbols-rounded">
+quiz
+</span> {{ trans('messages.feedback_loop_handler.test') }}
         </a>
     @endcan
-    <button class="btn bg-teal"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
+    <button class="btn btn-secondary"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
 </div>
+
+<script>
+    $(function() {
+        $('.test-button').on('click', function(e) {
+            e.preventDefault();
+            var url = $(this).attr('href');
+
+            addMaskLoading();
+
+            new Link({
+                type: 'ajax',
+                url: url,
+                method: 'POST',
+                done: function(response) {
+                    new Dialog('alert', {
+                        message: response.message,
+                    });
+
+                    removeMaskLoading();
+                },
+                data: {
+                    _token: CSRF_TOKEN
+                }
+            });
+        });
+            
+    });
+</script>

@@ -23,26 +23,45 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
-use Acelle\Library\Log as MailLog;
-
+use Acelle\Model\MailList;
+use Acelle\Model\Setting;
+use Acelle\Events\MailListSubscription;
+use Acelle\Events\MailListUnsubscription;
+use Acelle\Library\StringHelper;
+use DB;
+use Exception;
+use File;
+use Acelle\Library\Traits\HasUid;
+use Closure;
+use Carbon\Carbon;
 
 class Subscriber extends Model
 {
-    const STATUS_SUBSCRIBED = 'subscribed';
-    const STATUS_UNSUBSCRIBED = 'unsubscribed';
-    const STATUS_BLACKLISTED = 'blacklisted';
-    const STATUS_SPAM_REPORTED = 'spam-reported';
-    const STATUS_UNCONFIRMED = 'unconfirmed';
+    use HasUid;
 
-    const SUBSCRIPTION_TYPE_DOUBLE_OPTIN = 'double';
-    const SUBSCRIPTION_TYPE_SINGLE_OPTIN = 'single';
-    const SUBSCRIPTION_TYPE_IMPORTED = 'imported';
+    public const STATUS_SUBSCRIBED = 'subscribed';
+    public const STATUS_UNSUBSCRIBED = 'unsubscribed';
+    public const STATUS_BLACKLISTED = 'blacklisted';
+    public const STATUS_SPAM_REPORTED = 'spam-reported';
+    public const STATUS_UNCONFIRMED = 'unconfirmed';
+
+    public const SUBSCRIPTION_TYPE_ADDED = 'added';
+    public const SUBSCRIPTION_TYPE_DOUBLE_OPTIN = 'double';
+    public const SUBSCRIPTION_TYPE_SINGLE_OPTIN = 'single';
+    public const SUBSCRIPTION_TYPE_IMPORTED = 'imported';
+
+    public const VERIFICATION_STATUS_DELIVERABLE = 'deliverable';
+    public const VERIFICATION_STATUS_UNDELIVERABLE = 'undeliverable';
+    public const VERIFICATION_STATUS_UNKNOWN = 'unknown';
+    public const VERIFICATION_STATUS_RISKY = 'risky';
+    public const VERIFICATION_STATUS_UNVERIFIED = 'unverified';
 
     protected $dates = ['unsubscribed_at'];
 
     public static $rules = [
-        'email' => ['required', 'email'],
+        'email' => ['required', 'email:rfc,filter'],
     ];
+
 
     /**
      * The attributes that are mass assignable.
@@ -55,15 +74,6 @@ class Subscriber extends Model
     ];
 
     /**
-     * The rules for validation.
-     *
-     * @var array
-     */
-    public static $fields_rules = array(
-
-    );
-
-    /**
      * Associations.
      *
      * @var object | collect
@@ -71,21 +81,6 @@ class Subscriber extends Model
     public function mailList()
     {
         return $this->belongsTo('Acelle\Model\MailList');
-    }
-
-    public function emailVerifications()
-    {
-        return $this->hasMany('Acelle\Model\EmailVerification');
-    }
-
-    public function emailVerification()
-    {
-        return $this->hasOne('Acelle\Model\EmailVerification');
-    }
-
-    public function campaign()
-    {
-        return $this->belongsTo('Acelle\Model\Campaign');
     }
 
     public function subscriberFields()
@@ -103,6 +98,36 @@ class Subscriber extends Model
         return $this->hasMany('Acelle\Model\UnsubscribeLog');
     }
 
+    public function scopeUnverified($query)
+    {
+        return $query->whereNull('subscribers.verification_status');
+    }
+
+    public function scopeVerified($query)
+    {
+        return $query->whereNotNull('subscribers.verification_status');
+    }
+
+    public function scopeDeliverable($query)
+    {
+        return $query->where('subscribers.verification_status', self::VERIFICATION_STATUS_DELIVERABLE);
+    }
+
+    public function scopeUndeliverable($query)
+    {
+        return $query->where('subscribers.verification_status', self::VERIFICATION_STATUS_UNDELIVERABLE);
+    }
+
+    public function scopeUnknown($query)
+    {
+        return $query->where('subscribers.verification_status', self::VERIFICATION_STATUS_UNKNOWN);
+    }
+
+    public function scopeRisky($query)
+    {
+        return $query->where('subscribers.verification_status', self::VERIFICATION_STATUS_RISKY);
+    }
+
     /**
      * Bootstrap any application services.
      */
@@ -112,12 +137,11 @@ class Subscriber extends Model
 
         // Create uid when creating list.
         static::creating(function ($item) {
-            // Create new uid
-            $uid = uniqid();
-            while (Subscriber::where('uid', '=', $uid)->count() > 0) {
-                $uid = uniqid();
-            }
-            $item->uid = $uid;
+            $item->uid = uniqid();
+        });
+
+        static::updated(function ($item) {
+            $item->reformatDateFields();
         });
     }
 
@@ -169,13 +193,20 @@ class Subscriber extends Model
     /**
      * Unsubscribe to the list.
      */
-    public function unsubscribe()
+    public function unsubscribe($trackingInfo)
     {
-        $this->status = 'unsubscribed';
-        $this->save();
-        $this->unsubscribeLogs()->create([
-            //            
-        ]);
+        // Transaction safe
+        DB::transaction(function () use ($trackingInfo) {
+            // Update status
+            $this->status = self::STATUS_UNSUBSCRIBED;
+            $this->save();
+
+            // Trigger events
+            MailListUnsubscription::dispatch($this);
+
+            // Create log
+            $this->unsubscribeLogs()->create($trackingInfo);
+        });
     }
 
     /**
@@ -183,6 +214,13 @@ class Subscriber extends Model
      */
     public function updateFields($params)
     {
+        foreach ($this->mailList->getFields as $field) {
+            // Thank you John Wigley and acorna.com team for pointing this out
+            if (!isset($params[$field->tag])) {
+                $params[$field->tag] = null;  // Fix for inability to clear checkboxes and multiselects, add in null elements for those missing from the form submission but defined as custom fields for that mailing list
+            }
+        }
+
         foreach ($params as $tag => $value) {
             $field = $this->mailList->getFieldByTag(str_replace('[]', '', $tag));
             if (is_object($field)) {
@@ -208,6 +246,31 @@ class Subscriber extends Model
         }
     }
 
+    public function updateFields2($attributes)
+    {
+        foreach ($attributes as $tag => $value) {
+            $field = $this->mailList->getFieldByTag($tag);
+            if (!is_null($field)) {
+                $fv = $this->subscriberFields()->where('field_id', '=', $field->id)->first();
+
+                if (is_null($fv)) {
+                    $fv = $this->subscriberFields()->make();
+                    $fv->field()->associate($field);
+                }
+
+                $fv->value = $value;
+                $fv->save();
+
+                // @IMPORTANT: avoid updating 'subscribers' table, especially for jobs!
+                // update email attribute of subscriber
+                // if (strcasecmp($field->tag, 'EMAIL') == 0) {
+                //     $this->email = $fv->value;
+                //     $this->save();
+                // }
+            }
+        }
+    }
+
     /**
      * Filter items.
      *
@@ -221,18 +284,15 @@ class Subscriber extends Model
         */
         $query = $query->leftJoin('mail_lists', 'subscribers.mail_list_id', '=', 'mail_lists.id');
 
-        // Email verification join
-        $query = $query->leftJoin('email_verifications', 'email_verifications.subscriber_id', '=', 'subscribers.id');
-
         if (isset($request)) {
             // Keyword
             if (!empty(trim($request->keyword))) {
                 foreach (explode(' ', trim($request->keyword)) as $keyword) {
                     $query = $query->where(function ($q) use ($keyword) {
                         $q->orwhere('subscribers.email', 'like', '%'.$keyword.'%');
-                            /* does not support searching on subscriber fields, for the sake of performance
-                            ->orWhere('subscriber_fields.value', 'like', '%'.$keyword.'%');
-                            */
+                        /* does not support searching on subscriber fields, for the sake of performance
+                        ->orWhere('subscriber_fields.value', 'like', '%'.$keyword.'%');
+                        */
                     });
                 }
             }
@@ -244,7 +304,11 @@ class Subscriber extends Model
                     $query = $query->where('subscribers.status', '=', $filters['status']);
                 }
                 if (!empty($filters['verification_result'])) {
-                    $query = $query->where('email_verifications.result', '=', $filters['verification_result']);
+                    if ($filters['verification_result'] == 'unverified') {
+                        $query = $query->whereNull('subscribers.verification_status');
+                    } else {
+                        $query = $query->where('subscribers.verification_status', '=', $filters['verification_result']);
+                    }
                 }
             }
 
@@ -253,7 +317,11 @@ class Subscriber extends Model
                 $query = $query->where('subscribers.status', '=', $request->status);
             }
             if (!empty($request->verification_result)) {
-                $query = $query->where('email_verifications.result', '=', $request->verification_result);
+                if ($request->verification_result == 'unverified') {
+                    $query = $query->whereNull('subscribers.verification_status');
+                } else {
+                    $query = $query->where('subscribers.verification_status', '=', $request->verification_result);
+                }
             }
 
             // Open
@@ -307,33 +375,7 @@ class Subscriber extends Model
      */
     public static function search($request, $customer = null)
     {
-        $query = self::select('subscribers.*', 'email_verifications.result as verify_result');
-
-        // Filter by customer
-        if (!isset($customer)) {
-            $customer = $request->user()->customer;
-        }
-        $query = $query->where('mail_lists.customer_id', '=', $customer->id);
-
-        // Filter
-        $query = self::filter($query, $request);
-
-        // Order
-        if (isset($request->sort_order)) {
-            $query = $query->orderBy($request->sort_order, $request->sort_direction);
-        }
-
-        return $query;
-    }
-
-    /**
-     * Get all languages.
-     *
-     * @return collect
-     */
-    public static function gSearch($collect, $request, $customer = null)
-    {
-        $query = $collect->select('subscribers.*', 'email_verifications.result as verify_result');
+        $query = self::select('subscribers.*');
 
         // Filter by customer
         if (!isset($customer)) {
@@ -359,7 +401,9 @@ class Subscriber extends Model
      */
     public function getValueByField($field)
     {
-        $fv = $this->subscriberFields->filter(function ($r, $key) use ($field) { return $r->field_id == $field->id; })->first();
+        $fv = $this->subscriberFields->filter(function ($r, $key) use ($field) {
+            return $r->field_id == $field->id;
+        })->first();
         if (is_object($fv)) {
             return $fv->value;
         } else {
@@ -409,208 +453,6 @@ class Subscriber extends Model
     public static $itemsPerPage = 25;
 
     /**
-     * Find item by uid.
-     *
-     * @return object
-     */
-    public static function findByUid($uid)
-    {
-        return self::where('uid', '=', $uid)->first();
-    }
-
-    /**
-     * Import subscribers from file.
-     *
-     * @return object
-     */
-    public static function import($user, $list)
-    {
-        $customer = $user->customer;
-        $directory = storage_path('import/');
-
-        // Import to database
-        $filename = $list->id.'-data.csv';
-        $content = \File::get($directory.$filename);
-        $lines = preg_split('/\r\n|\r|\n/', $content); // explode("\n\r", $content);
-        $total = count($lines) - 1;
-        $success = 0;
-        $error = 0;
-        $lines_per_second = 1;
-        $headers = explode(',', $lines[0]);
-        $header_names = explode(',', $lines[0]);
-
-        // update header tags
-        foreach ($headers as $key => $tag) {
-            $tag = trim(strtoupper(preg_replace('!\s+!', '_', preg_replace('![\'|\"|\\r|\\n]!', '', rtrim($tag)))));
-            $headers[$key] = $tag;
-            if ($tag == 'EMAIL') {
-                $main_index = $key;
-            }
-        }
-
-        // check valid file
-        if (!in_array('EMAIL', $headers)) {
-            $str = "error\n<span style='color:red'>".trans('messages.invalid_csv_file').'</span>';
-            $str .= "\n0";
-            $bytes_written = \File::put($directory.$list->id.'-process.log', $str);
-
-            return;
-        }
-
-        $content_cache = '';
-        $count = '0';
-        foreach ($lines as $key => $line) {
-
-            // authorize
-            if ($user->cannot('create', new \Acelle\Model\Subscriber(['mail_list_id' => $list->id]))) {
-                $str = "error\n<span style='color:red'>".trans('messages.error_add_max_quota').'</span><br />'.$content_cache;
-                $str .= "\n".$count;
-                $bytes_written = \File::put($directory.$list->id.'-process.log', $str);
-
-                // Action Log
-                $list->log('import_max_error', $customer, ['count' => $count]);
-
-                $error_detail = trans('messages.error_add_max_quota');
-                $myfile = file_put_contents($directory.$list->uid.'-detail.log', $error_detail.PHP_EOL, FILE_APPEND | LOCK_EX);
-
-                return;
-            }
-
-            if ($key > 0) {
-                $parts = explode(',', $line);
-                if (isset($parts[$main_index])) {
-                    $email = strtolower(trim(preg_replace('!\s+!', '_', preg_replace('![\'|\"|\\r|\\n]!', '', rtrim($parts[$main_index])))));
-                } else {
-                    $email = '';
-                }
-
-                $valid = $list->checkExsitEmail($email);
-                if ($valid) {
-                    //// save subscribers
-                    $subscriber = new \Acelle\Model\Subscriber();
-                    $subscriber->mail_list_id = $list->id;
-                    $subscriber->email = $email;
-                    $subscriber->status = 'subscribed';
-                    $subscriber->save();
-
-                    foreach ($parts as $key => $value) {
-                        $value = trim(preg_replace('!\s+!', '_', preg_replace('![\'|\"|\\r|\\n]!', '', rtrim($value))));
-                        if (isset($headers[$key])) {
-                            $lf = $list->fields()->where('tag', '=', $headers[$key])->first();
-                            if (is_object($lf)) {
-                                //// save fields
-                                $lfv = new \Acelle\Model\SubscriberField(array(
-                                                'field_id' => $lf->id,
-                                                'subscriber_id' => $subscriber->id,
-                                                'value' => $value,
-                                            ));
-                                $lfv->save();
-                            }
-                        }
-                    }
-
-                    ++$success;
-                    $error_detail = trans('messages.email_imported', ['time' => \Carbon\Carbon::now()->timezone($user->customer->timezone)->format(trans('messages.datetime_format_2')), 'email' => $email]);
-                } else {
-                    ++$error;
-                    $error_detail = trans('messages.email_existed_invalid', ['time' => \Carbon\Carbon::now()->timezone($user->customer->timezone)->format(trans('messages.datetime_format_2')), 'email' => $email]);
-                }
-                if ($key % $lines_per_second == 0) {
-                    $content_cache = trans('messages.import_export_statistics_line', [
-                                            'total' => $total,
-                                            'processed' => $success + $error,
-                                            'success' => $success,
-                                            'error' => $error,
-                                        ]); //"Total of ".$total." subscribers; ".($success+$error)." have been processed; ".$success." successfully and ".$error." with errors.";
-                    $count = round((($success + $error) / $total) * 100, 0);
-                    $str = "processing\n".$content_cache;
-                    $str .= "\n".$count.'';
-                    $bytes_written = \File::put($directory.$list->id.'-process.log', $str);
-
-                    // Details
-                    $myfile = file_put_contents($directory.$list->uid.'-detail.log', $error_detail."\r\n".PHP_EOL, FILE_APPEND | LOCK_EX);
-                }
-            }
-        }
-
-        $content_cache = trans('messages.import_export_statistics_line', [
-                                            'total' => $total,
-                                            'processed' => $success + $error,
-                                            'success' => $success,
-                                            'error' => $error,
-                                        ]);
-        $str = "finished\n".$content_cache."\n100";
-        $bytes_written = \File::put($directory.$list->id.'-process.log', $str);
-
-        // Action Log
-        $list->log('import_success', $customer, ['count' => $success, 'error' => $error]);
-    }
-
-    /**
-     * Export subscribers to csv.
-     *
-     * @return object
-     */
-    public static function export($user, $list)
-    {
-        $customer = $user->customer;
-        $directory = storage_path('export/');
-        // Import to database
-        $total = $list->subscribersCount(); // no cache
-        $success = 0;
-        $error = 0;
-        $lines_per_second = 1;
-        $data = [];
-        $headers = [];
-        foreach ($list->getFields as $key => $field) {
-            $headers[] = $field->tag;
-        }
-        $headers = implode(',', $headers);
-
-        foreach ($list->subscribers as $key => $item) {
-            $cols = [];
-            if (true) {
-                if (true) {
-                    foreach ($list->fields as $key => $field) {
-                        $value = $item->getValueByField($field);
-                        $cols[] = $value;
-                    }
-                    $data[] = implode(',', $cols);
-
-                    ++$success;
-                } else {
-                    ++$error;
-                }
-                if ($key % $lines_per_second == 0) {
-                    $content_cache = trans('messages.import_export_statistics_line', [
-                                            'total' => $total,
-                                            'processed' => $success + $error,
-                                            'success' => $success,
-                                            'error' => $error,
-                                        ]);
-                    $str = "processing\n".$content_cache;
-                    $str .= "\n".round((($success + $error) / $total) * 100, 0).'';
-                    $bytes_written = \File::put($directory.$list->id.'-process.log', $str);
-                }
-            }
-        }
-
-        $str = $headers."\n".implode("\n", $data);
-        $bytes_written = \File::put($directory.$list->id.'-data.csv', $str);
-        $content_cache = trans('messages.import_export_statistics_line', [
-                                            'total' => $total,
-                                            'processed' => $success + $error,
-                                            'success' => $success,
-                                            'error' => $error,
-                                        ]);
-        $str = "finished\n".$content_cache."\n100";
-        $bytes_written = \File::put($directory.$list->id.'-process.log', $str);
-
-        // Action Log
-        $list->log('export_success', $customer, ['count' => $success, 'error' => $error]);
-    }
-
-    /**
      * Get secure code for updating subscriber.
      *
      * @param string $action
@@ -653,24 +495,24 @@ class Subscriber extends Model
      *
      * @param MailList $list
      */
-    public function copy($list, $type = 'keep')
+    public function copy(MailList $list, Closure $duplicateCallback = null)
     {
         // find exists
         $copy = $list->subscribers()->where('email', '=', $this->email)->first();
 
-        if (!is_object($copy)) {
-            $copy = $this->replicate();
-            $copy->mail_list_id = $list->id;
-            unset($copy->verify_result);
-            $copy->save();
-
-            $copy = \Acelle\Model\Subscriber::find($copy->id);
-        } else {
-            // return if keep
-            if ($type == 'keep') {
-                return false;
+        if (!is_null($copy)) {
+            if (!is_null($duplicateCallback)) {
+                $duplicateCallback($this);
             }
+
+            return null;
         }
+
+        // Actually copy
+        $copy = self::find($this->id)->replicate();
+        $copy->uid = uniqid();
+        $copy->mail_list_id = $list->id;
+        $copy->save();
 
         // update fields
         foreach ($this->subscriberFields as $item) {
@@ -689,15 +531,10 @@ class Subscriber extends Model
      *
      * @param MailList $list
      */
-    public function move($list, $type = 'keep')
+    public function move($list)
     {
-        $fromList = $this->mailList;
-        $this->copy($list, $type);
+        $this->copy($list);
         $this->delete();
-
-        // update related campaign cache information
-        $fromList->updateCachedInfo();
-        $list->updateCachedInfo();
     }
 
     /**
@@ -775,17 +612,6 @@ class Subscriber extends Model
     }
 
     /**
-     * Update subscriber status.
-     *
-     * @param MailList $list
-     */
-    public function updateStatus($status)
-    {
-        $this->status = $status;
-        $this->save();
-    }
-
-    /**
      * Is overide copy/move subscriber.
      *
      * return array
@@ -799,64 +625,17 @@ class Subscriber extends Model
     }
 
     /**
-     * Get all items.
-     *
-     * @return collect
-     */
-    public static function getAll()
-    {
-        return self::select('*');
-    }
-
-    /**
      * Verify subscriber email address using a given service.
      */
     public function verify($verifier)
     {
-        MailLog::info(sprintf('Start verifying %s (%s)', $this->email, $this->id));
-        $log = new EmailVerification();
-        list($result, $details) = $verifier->verify($this->email);
-        $log->result = $result;
-        $log->details = $details;
-        $log->email_verification_server_id = $verifier->id;
-        $this->emailVerifications()->save($log);
-        MailLog::info(sprintf('Finish verifying %s (%s)', $this->email, $this->id));
-
-        return $log->isDeliverable();
-    }
-
-    /**
-     * Get email verification of a subcriber.
-     *
-     * @return EmailVerification
-     */
-    public function getEmailVerification()
-    {
-        return $this->emailVerifications()->orderBy('created_at', 'desc')->first();
-    }
-
-    /**
-     * Get email verification of a subcriber.
-     *
-     * @return EmailVerification
-     */
-    public function getVerificationResult()
-    {
-        if (!$this->isVerifed()) {
-            return '';
-        }
-
-        return $this->getEmailVerification()->result;
-    }
-
-    /**
-     * Check if subscriber is verified.
-     *
-     * @return bool
-     */
-    public function isVerifed()
-    {
-        return is_object($this->getEmailVerification());
+        list($status, $response) = $verifier->verify($this->email);
+        $this->verification_status = $status;
+        $this->last_verification_at = Carbon::now();
+        $this->last_verification_by = $verifier->name;
+        $this->last_verification_result = (string)$response->getBody();
+        $this->save();
+        return $this;
     }
 
     /**
@@ -864,7 +643,11 @@ class Subscriber extends Model
      */
     public function resetVerification()
     {
-        return $this->emailVerifications()->delete();
+        $this->verification_status = null;
+        $this->last_verification_at = null;
+        $this->last_verification_by = null;
+        $this->last_verification_result = null;
+        $this->save();
     }
 
     /**
@@ -965,13 +748,23 @@ class Subscriber extends Model
     /**
      * Get tags.
      */
-    public function getTags()
+    public function getTags(): array
     {
-        if (!$this->tags) {
-            return [];
+        // Notice: json_decode() returns null if input is null or empty
+        return json_decode($this->tags, true) ?: [];
+    }
+
+    /**
+     * Get tags.
+     */
+    public function getTagOptions()
+    {
+        $arr = [];
+        foreach ($this->getTags() as $tag) {
+            $arr[] = ['text' => $tag, 'value' => $tag];
         }
 
-        return json_decode($this->tags, true);
+        return $arr;
     }
 
     /**
@@ -990,13 +783,31 @@ class Subscriber extends Model
     /**
      * Add tags.
      */
-    public function updateTags($arr)
+    public function updateTags(array $newTags, $merge = false)
     {
-        if (!$arr) {
-            $arr = [];
+        // remove trailing space
+        array_walk($newTags, function (&$val) {
+            $val = trim($val);
+        });
+
+        // remove empty tag
+        $newTags = array_filter($newTags, function (&$val) {
+            return !empty($val);
+        });
+
+        if ($merge == true) {
+            $currentTags = $this->getTags();
+            $newTags = array_values(array_unique(array_merge($currentTags, $newTags)));
         }
 
-        $this->tags = json_encode($arr);
+        // Without JSON_UNESCAPED_UNICODE specified
+        // Results of json_encode(['русский']) may look like this
+        //
+        //     ["\u0440\u0443\u0441\u0441\u043a\u0438\u0439"]
+        //
+        // which cannot be searched for
+        //
+        $this->tags = json_encode($newTags, JSON_UNESCAPED_UNICODE);
         $this->save();
     }
 
@@ -1013,5 +824,325 @@ class Subscriber extends Model
 
         $this->tags = json_encode($tags);
         $this->save();
+    }
+
+    /**
+     * Filter items.
+     *
+     * @return collect
+     */
+    public function scopeFilter($query, $request)
+    {
+        if (isset($request)) {
+            // filters
+            $filters = $request->filters;
+            if (!empty($filters)) {
+                if (!empty($filters['status'])) {
+                    $query = $query->where('subscribers.status', '=', $filters['status']);
+                }
+                if (!empty($filters['verification_result'])) {
+                    if ($filters['verification_result'] == 'unverified') {
+                        $query = $query->whereNull('subscribers.verification_status');
+                    } else {
+                        $query = $query->where('subscribers.verification_status', '=', $filters['verification_result']);
+                    }
+                }
+            }
+
+            // outside filters
+            if (!empty($request->status)) {
+                $query = $query->where('subscribers.status', '=', $request->status);
+            }
+            if (!empty($request->verification_result)) {
+                $query = $query->where('subscribers.verification_status', '=', $request->verification_result);
+            }
+
+            // Open
+            if ($request->open == 'yes') {
+                $query = $query->whereExists(function ($q) {
+                    $q->select(\DB::raw(1))
+                        ->from('open_logs')
+                        ->join('tracking_logs', 'open_logs.message_id', '=', 'tracking_logs.message_id')
+                        ->whereRaw(table('tracking_logs').'.subscriber_id = '.table('subscribers').'.id');
+                });
+            }
+
+            // Not Open
+            if ($request->open == 'no') {
+                $query = $query->whereNotExists(function ($q) {
+                    $q->select(\DB::raw(1))
+                        ->from('open_logs')
+                        ->join('tracking_logs', 'open_logs.message_id', '=', 'tracking_logs.message_id')
+                        ->whereRaw(table('tracking_logs').'.subscriber_id = '.table('subscribers').'.id');
+                });
+            }
+
+            // Click
+            if ($request->click == 'yes') {
+                $query = $query->whereExists(function ($q) {
+                    $q->select(\DB::raw(1))
+                        ->from('click_logs')
+                        ->join('tracking_logs', 'click_logs.message_id', '=', 'tracking_logs.message_id')
+                        ->whereRaw(table('tracking_logs').'.subscriber_id = '.table('subscribers').'.id');
+                });
+            }
+
+            // Not Click
+            if ($request->click == 'no') {
+                $query = $query->whereNotExists(function ($q) {
+                    $q->select(\DB::raw(1))
+                        ->from('click_logs')
+                        ->join('tracking_logs', 'click_logs.message_id', '=', 'tracking_logs.message_id')
+                        ->whereRaw(table('tracking_logs').'.subscriber_id = '.table('subscribers').'.id');
+                });
+            }
+        }
+
+        return $query;
+    }
+
+    /**
+     * Get all languages.
+     *
+     * @return collect
+     */
+    public function scopeSearch($query, $keyword)
+    {
+        /* does not support searching on subscriber fields, for the sake of performance
+        $query = $query->leftJoin('subscriber_fields', 'subscribers.id', '=', 'subscriber_fields.subscriber_id')
+            ->leftJoin('mail_lists', 'subscribers.mail_list_id', '=', 'mail_lists.id');
+        */
+        // Keyword
+        if (!empty(trim($keyword))) {
+            foreach (explode(' ', trim($keyword)) as $keyword) {
+                $query = $query->where(function ($q) use ($keyword) {
+                    $q->orwhere('subscribers.email', 'like', '%'.$keyword.'%');
+                    /* does not support searching on subscriber fields, for the sake of performance
+                    ->orWhere('subscriber_fields.value', 'like', '%'.$keyword.'%');
+                    */
+                });
+            }
+        }
+
+        return $query;
+    }
+
+    public function scopeSubscribed($query)
+    {
+        return $query->where('subscribers.status', self::STATUS_SUBSCRIBED);
+    }
+
+    public function isSubscribed()
+    {
+        return $this->status == self::STATUS_SUBSCRIBED;
+    }
+
+    public function isUnsubscribed()
+    {
+        return $this->status == self::STATUS_UNSUBSCRIBED;
+    }
+
+    public function getHistory()
+    {
+        $openLogs = table('open_logs');
+        $clickLogs = table('click_logs');
+        $subscribeLogs = table('subscribe_logs');
+        $subscribers = table('subscribers');
+        $mailLists = table('mail_lists');
+        $campaigns = table('campaigns');
+        $trackingLogs = table('tracking_logs');
+
+        $sql = "
+            SELECT subscriber_id, activity, list_id, list_name, campaign_id, campaign_name, at
+            FROM
+            (
+                SELECT t.subscriber_id, 'open' as activity, null as list_id, null as list_name, t.campaign_id, c.name as campaign_name, open.created_at as at
+                FROM {$openLogs} open
+                JOIN {$trackingLogs} t on open.message_id = t.message_id
+                JOIN {$subscribers} s on s.id = t.subscriber_id
+                JOIN {$campaigns} c on c.id  = t.campaign_id
+                WHERE s.email = '{$this->email}'
+            ) AS open
+
+            UNION
+            (
+                SELECT t.subscriber_id, 'click' as activity, null as list_id, null as list_name, t.campaign_id, c.name as campaign_name, click.created_at as at
+                FROM {$clickLogs} click
+                JOIN {$trackingLogs} t on click.message_id = t.message_id
+                JOIN {$subscribers} s on s.id = t.subscriber_id
+                JOIN {$campaigns} c on c.id  = t.campaign_id
+                WHERE s.email = '{$this->email}'
+            )
+
+            UNION
+            (
+                SELECT s.id AS subscriber_id, 'subscribe' AS activity, l.id as list_id, l.name as list_name, null AS campaign_id, null AS campaign_name, s.created_at as at
+                FROM {$subscribers} s
+                JOIN {$mailLists} l on l.id  = s.mail_list_id
+                WHERE s.email = '{$this->email}'
+            )
+
+            ORDER BY at DESC;
+        ";
+
+        $result = DB::select($sql);
+
+        return json_decode(json_encode($result), true);
+    }
+
+    public function scopeSearchByEmail($query, $email)
+    {
+        return $query->where('subscribers.email', $email);
+    }
+
+    public function reformatDateFields()
+    {
+        $this->mailList->reformatDateFields($this->id);
+    }
+
+    /**
+     * assgin values.
+     */
+    public static function assginValues($subscribers, $request)
+    {
+        if ($request->assign_type == 'single') {
+            $rules = [
+                'single_value' => 'required',
+            ];
+        } else {
+            $rules = [
+                'list_value' => 'required',
+            ];
+        }
+        // make validator
+        $validator = \Validator::make($request->all(), $rules);
+
+        // redirect if fails
+        if ($validator->fails()) {
+            return $validator;
+        }
+
+        // do assign
+        if ($request->assign_type == 'single') {
+            // do assign a value: $request->single_value
+        } else {
+            // do assign a list: $request->list_value
+        }
+
+        return $validator;
+    }
+
+
+    // Confirm a subscription via double opt-in form
+    public function confirm()
+    {
+        $this->status = self::STATUS_SUBSCRIBED;
+        $this->save();
+
+        MailListSubscription::dispatch($this);
+    }
+
+    public function scopeUnsubscribed($query)
+    {
+        return $query->where('status', '=', self::STATUS_UNSUBSCRIBED);
+    }
+
+    public function generateUnsubscribeUrl($messageId = null, $absoluteUrl = true)
+    {
+        $url = route('unsubscribeUrl', [
+            'message_id' => StringHelper::base64UrlEncode($messageId),
+            'subscriber' => $this->uid
+        ], $absoluteUrl);
+
+        return $url;
+    }
+
+    public function generateUpdateProfileUrl()
+    {
+        return route('updateProfileUrl', ['list_uid' => $this->mailList->uid, 'uid' => $this->uid, 'code' => $this->getSecurityToken('update-profile')]);
+    }
+
+    // Change status to SUBSCRIBED
+    // @important: need subscription log in the future?
+    public function subscribe()
+    {
+        $this->status = self::STATUS_SUBSCRIBED;
+        $this->save();
+
+        MailListSubscription::dispatch($this);
+    }
+
+    public function scopeSimpleSearch($query, $keyword)
+    {
+        if (empty($keyword)) {
+            return $query;
+        }
+
+        $cleanKeyword = preg_replace('/[^a-z0-9_\.@]+/i', ' ', $keyword);
+
+        return $query->where(function ($query) use ($cleanKeyword) {
+            $query->where('subscribers.email', 'LIKE', "%{$cleanKeyword}%");
+        });
+    }
+
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    /**
+     * Check if the email address is deliverable.
+     *
+     * @return bool
+     */
+    public function isDeliverable()
+    {
+        return $this->verification_result == self::VERIFICATION_STATUS_DELIVERABLE;
+    }
+
+    /**
+     * Check if the email address is undeliverable.
+     *
+     * @return bool
+     */
+    public function isUndeliverable()
+    {
+        return $this->verification_result == self::VERIFICATION_STATUS_UNDELIVERABLE;
+    }
+
+    /**
+     * Check if the email address is risky.
+     *
+     * @return bool
+     */
+    public function isRisky()
+    {
+        return $this->verification_result == self::VERIFICATION_STATUS_RISKY;
+    }
+
+    /**
+     * Check if the email address is unknown.
+     *
+     * @return bool
+     */
+    public function isUnknown()
+    {
+        return $this->verification_result == self::VERIFICATION_STATUS_UNKNOWN;
+    }
+
+    /**
+     * Email verification result types select options.
+     *
+     * @return array
+     */
+    public static function getVerificationStates()
+    {
+        return [
+            ['value' => self::VERIFICATION_STATUS_DELIVERABLE, 'text' => trans('messages.email_verification_result_deliverable')],
+            ['value' => self::VERIFICATION_STATUS_UNDELIVERABLE, 'text' => trans('messages.email_verification_result_undeliverable')],
+            ['value' => self::VERIFICATION_STATUS_UNKNOWN, 'text' => trans('messages.email_verification_result_unknown')],
+            ['value' => self::VERIFICATION_STATUS_RISKY, 'text' => trans('messages.email_verification_result_risky')],
+            ['value' => self::VERIFICATION_STATUS_UNVERIFIED, 'text' => trans('messages.email_verification_result_unverified')],
+        ];
     }
 }

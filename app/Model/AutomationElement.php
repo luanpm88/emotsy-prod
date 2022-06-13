@@ -22,6 +22,8 @@
 
 namespace Acelle\Model;
 
+use Carbon\Carbon;
+
 class AutomationElement
 {
     protected $data;
@@ -41,6 +43,20 @@ class AutomationElement
      *
      * @return string
      */
+    public function getOptions()
+    {
+        if (isset($this->data) && isset($this->data->options)) {
+            return (array) $this->data->options;
+        }
+
+        return;
+    }
+
+    /**
+     * Get options.
+     *
+     * @return string
+     */
     public function getOption($name)
     {
         if (isset($this->data) && isset($this->data->options) && isset($this->data->options->$name)) {
@@ -48,6 +64,17 @@ class AutomationElement
         }
 
         return;
+    }
+
+    public function getOptionAsDateTime($key)
+    {
+        $datetime = $this->getOption($key);
+
+        if ($datetime) {
+            return Carbon::parse($datetime);
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -119,16 +146,25 @@ class AutomationElement
     {
         switch ($type) {
             case 'ElementTrigger':
-                return '<i class="lnr lnr-exit-up bg-success"></i>';
+                return '<span class="material-icons-outlined">
+                alt_route
+                </span>';
                 break;
             case 'ElementAction':
-                return '<i class="lnr lnr-envelope bg-primary"></i>';
+                return '<span class="material-icons-outlined">
+                        forward_to_inbox
+                    </span>';
                 break;
             case 'ElementWait':
-                return '<i class="lnr lnr-clock bg-secondary"></i>';
+                return '<span class="material-icons-outlined">
+                timer
+                </span>';
                 break;
             case 'ElementCondition':
-                return '<i class="material-icons bg-warning">call_split</i>';
+                return '<i class="material-icons-outlined bg-warning">call_split</i>';
+                break;
+            case 'ElementOperation':
+                return '<i class="material-icons-outlined bg-info">checklist_rtl</i>';
                 break;
             default:
         }
@@ -143,18 +179,45 @@ class AutomationElement
     {
         switch ($this->get('type')) {
             case 'ElementTrigger':
-                return '<i class="lnr lnr-exit-up '.$class.'"></i>';
+                return '<span class="material-icons-outlined">
+                alt_route
+                </span>';
                 break;
             case 'ElementAction':
-                return '<i class="lnr lnr-envelope '.$class.'"></i>';
+                return '<span class="material-icons-outlined">
+                        forward_to_inbox
+                    </span>';
                 break;
             case 'ElementWait':
-                return '<i class="lnr lnr-clock '.$class.'"></i>';
+                return '<span class="material-icons-outlined">
+                timer
+                </span>';
                 break;
             case 'ElementCondition':
-                return '<i class="material-icons '.$class.'">call_split</i>';
+                return '<i class="material-icons-outlined bg-warning">call_split</i>';
+                break;
+            case 'ElementOperation':
+                return '<i class="material-icons-outlined bg-info">checklist_rtl</i>';
                 break;
             default:
         }
+    }
+
+    /**
+     * Get abandoned cart.
+     *
+     * @return string
+     */
+    public function wooGetAbandonedCart()
+    {
+        $client = new \GuzzleHttp\Client();
+        $uri = $this->getOption('connect_url');
+        $response = $client->request('GET', $uri, [
+            'headers' => [
+                "content-type" => "application/json"
+            ],
+        ]);
+
+        return json_decode($response->getBody(), true);
     }
 }

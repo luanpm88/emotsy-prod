@@ -24,8 +24,6 @@ class CreateAdminGroupsTable extends Migration
 
             // foreign
             $table->foreign('creator_id')->references('id')->on('users')->onDelete('cascade');
-
-
         });
     }
 

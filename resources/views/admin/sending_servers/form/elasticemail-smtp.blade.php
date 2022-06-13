@@ -1,9 +1,9 @@
 @if (!$server->id)
-<form action="{{ action('Admin\SendingServerController@store', ["type" => request()->type]) }}" method="POST" class="form-validate-jqueryz">
+<form id="editServerForm" action="{{ action('Admin\SendingServerController@store', ["type" => request()->type]) }}" method="POST" class="form-validate-jqueryz">
     {{ csrf_field() }}
     <input type="hidden" name="type" value="{{ $server->type }}" />
 @else
-<form enctype="multipart/form-data" action="{{ action('Admin\SendingServerController@update', [$server->uid, $server->type]) }}" method="POST" class="form-validate-jqueryz">
+<form id="editServerForm" enctype="multipart/form-data" action="{{ action('Admin\SendingServerController@update', [$server->uid, $server->type]) }}" method="POST" class="form-validate-jqueryz">
     <input type="hidden" name="_method" value="PATCH">
     {{ csrf_field() }}
 @endif
@@ -81,35 +81,34 @@
                 <span class="edit-group">
                     <a
                         href="{{ action('Admin\SendingServerController@testConnection', $server->uid) }}"
-                        type="button"
-                        class="btn btn-mc_primary mr-10 ajax_link"
-                        data-method="POST"
+                        role="button"
+                        class="btn btn-secondary me-2 test-connection-button"
                         mask-title="{{ trans('messages.sending_server.testing') }}"
                     >
                         {{ trans('messages.sending_server.test_connection') }}
                     </a>
-                        <a
+                        <a id="SendTestEmailButton"
                         href="{{ action('Admin\SendingServerController@test', $server->uid) }}"
-                        type="button"
-                        class="btn btn-mc_default mr-10 modal_link"
+                        role="button"
+                        class="btn btn-secondary me-2 modal_link"
                         data-in-form="true"
-                        data-method="GET"
+                        link-method="GET"
                     >
                         {{ trans('messages.sending_server.send_a_test_email') }}
                     </a>
+                    <a href="javascript:;" role="button" class="btn btn-link switch-form-toggle">
+                        {{ trans('messages.edit') }}
+                    </a>
                 </span>
                 <span class="cancel-group hide">
-                    <button class="btn btn-mc_primary mr-10">{{ trans('messages.save') }}</button>
+                    <button class="btn btn-secondary me-2">{{ trans('messages.save') }}</button>
+                    <a href="javascript:;" role="button" class="btn btn-link switch-form-toggle">
+                        {{ trans('messages.cancel') }}
+                    </a>
                 </span>
-                <a href="javascript:;" type="button" class="btn btn-mc_inline switch-form-toggle"
-                    data-disabled="true"
-                    data-edit="{{ trans('messages.edit') }}"
-                    data-cancel="{{ trans('messages.cancel') }}">
-                        {{ trans('messages.edit') }}
-                </a>
             @else
-                <button class="btn btn-mc_primary mr-10">{{ trans('messages.save') }}</button>
-                <a href="{{ action('Admin\SendingServerController@index') }}" type="button" class="btn btn-mc_inline">
+                <button class="btn btn-secondary me-2">{{ trans('messages.save') }}</button>
+                <a href="{{ action('Admin\SendingServerController@index') }}" role="button" class="btn btn-link">
                     {{ trans('messages.cancel') }}
                 </a>
             @endif
@@ -148,7 +147,7 @@
 
                 <p>{!! trans('messages.sending_servers.sending_limit.elasticemail.intro') !!}</p>
 
-                <div class="select-custom" data-url="{{ action('Admin\SendingServerController@sendingLimit', ['uid' => ($server->uid ? $server->uid : 0)]) }}">
+                <div class="sendind-limit-select-custom" data-url="{{ action('Admin\SendingServerController@sendingLimit', ['uid' => ($server->uid ? $server->uid : 0)]) }}">
                     @include ('admin.sending_servers.form._sending_limit', [
                         'quotaValue' => $server->quota_value,
                         'quotaBase' => $server->quota_base,
