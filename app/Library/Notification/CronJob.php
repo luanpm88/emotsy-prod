@@ -32,7 +32,7 @@ class CronJob extends Notification
      */
     public static function check()
     {
-        $title = trans('messages.admin.notification.cronjob_title');
+        $title = 'CronJob';
         self::cleanupDuplicateNotifications($title);
 
         $interval = Setting::get('cronjob_min_interval');
