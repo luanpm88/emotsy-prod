@@ -260,7 +260,6 @@
   'admin.loginas_area' => 'Back to <strong>:name</strong>',
   'admin.no_primary_payment' => 'No Primary Payment Gateway selected. Click <a href=":link"><strong>here</strong></a> to select one.',
   'admin.notification.cronjob_not_active' => 'Application\'s CronJob has not been executed during the last :cronjob_min_interval. Last executed at :cronjob_last_executed',
-  'admin.notification.cronjob_title' => 'CronJob',
   'admin.notification.subscription.pending' => 'There are :count pending subscriptions that need your approval',
   'admin.notification.subscription.pending.title' => 'Pending subscription',
   'admin.notification.subscription.title' => 'Subscription',

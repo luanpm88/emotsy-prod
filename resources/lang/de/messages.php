@@ -258,7 +258,6 @@
   'admin.loginas_area' => 'Back to <strong>:name</strong>',
   'admin.no_primary_payment' => 'Kein primäres Zahlungsgateway ausgewählt. Klicken Sie <a href=":link"> <strong> hier </strong> </a>, um eine auszuwählen.',
   'admin.notification.cronjob_not_active' => 'Der CronJob der Anwendung wurde während des letzten Vorgangs nicht ausgeführt :cronjob_min_interval. Zuletzt ausgeführt am :cronjob_last_executed',
-  'admin.notification.cronjob_title' => 'CronJob',
   'admin.notification.subscription.pending' => 'Es gibt: Anzahl ausstehender Abonnements, die Ihrer Genehmigung bedürfen',
   'admin.notification.subscription.pending.title' => 'Ausstehendes Abo',
   'admin.notification.subscription.title' => 'Abonnement',

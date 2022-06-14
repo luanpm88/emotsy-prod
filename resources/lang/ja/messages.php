@@ -260,7 +260,6 @@
   'admin.loginas_area' => '<strong>:name</strong>に戻る',
   'admin.no_primary_payment' => 'No Primary Payment Gateway selected. Click <a href=":link"><strong>here</strong></a> to select one.',
   'admin.notification.cronjob_not_active' => 'アプリケーションのCronJobは、最後の：cronjob_min_interval中に実行されていません。 最後に実行された場所：cronjob_last_executed',
-  'admin.notification.cronjob_title' => 'CronJob',
   'admin.notification.subscription.pending' => '承認が必要な保留中のサブスクリプションがあります :count ',
   'admin.notification.subscription.pending.title' => '保留中のサブスクリプション',
   'admin.notification.subscription.title' => 'サブスクリプション',

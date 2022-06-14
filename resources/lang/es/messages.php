@@ -260,7 +260,6 @@
   'admin.loginas_area' => 'Back to <strong>:name</strong>',
   'admin.no_primary_payment' => 'No hay ninguna forma de pago establecida. Click <a href=":link"><strong>aqui</strong></a> para seleccionar uno.',
   'admin.notification.cronjob_not_active' => 'La aplicación CronJob no se ha ejecutado durante el último :cronjob_min_interval. ultima ejecucion a las :cronjob_last_executed',
-  'admin.notification.cronjob_title' => 'CronJob',
   'admin.notification.subscription.pending' => 'Existen :count suscripciones pendientes que requieren de su aprobación',
   'admin.notification.subscription.pending.title' => 'Pending subscription',
   'admin.notification.subscription.title' => 'Suscripción',
