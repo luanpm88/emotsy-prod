@@ -2,13 +2,6 @@
 
 @section('title', $list->name . ": " . trans('messages.import'))
 
-@section('page_script')
-    <script type="text/javascript" src="{{ URL::asset('assets/js/core/libraries/jquery_ui/interactions.min.js') }}"></script>
-    <script type="text/javascript" src="{{ URL::asset('assets/js/core/libraries/jquery_ui/touch.min.js') }}"></script>
-    <script type="text/javascript" src="{{ URL::asset('js/listing.js') }}"></script>
-	<script type="text/javascript" src="{{ URL::asset('js/validate.js') }}"></script>
-@endsection
-
 @section('page_header')
 
     @include("lists._header")
@@ -21,7 +14,7 @@
 
     <div class="row">
         <div class="col-md-6">
-            <h2 class="">
+            <h2 class="my-4">
                 {{ trans('messages.subscribers.import_csv') }}
             </h2>
             <p class="">{!! trans('messages.subscribers.import_csv.intro', [
@@ -38,8 +31,11 @@
         $(function() {
             $('.start-import').click(function(e) {
                 e.preventDefault();
+                var url = $(this).attr('href');
 
-                wizard = new Popup($(this).attr('href'));
+                wizard = new Popup({
+                    url: url
+                });
                 wizard.load();
             });
         });

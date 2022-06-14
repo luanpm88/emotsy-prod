@@ -1,13 +1,13 @@
-@extends('layouts.popup.medium')
+@extends('layouts.popup.large')
 
-@section('title')
+@section('bar-title')
     {{ trans('messages.subscriber_import') }}
 @endsection
 
 @section('content')
     <!-- Dropzone -->
-	<script type="text/javascript" src="{{ URL::asset('assets2/lib/dropzone/dropzone.js') }}"></script>
-	<link href="{{ URL::asset('assets2/lib/dropzone/dropzone.css') }}" rel="stylesheet" type="text/css">
+	<script type="text/javascript" src="{{ URL::asset('core/dropzone/dropzone.js') }}"></script>
+	<link href="{{ URL::asset('core/dropzone/dropzone.css') }}" rel="stylesheet" type="text/css">
 
 	<div class="popup-wizard">
 
@@ -18,7 +18,7 @@
                 'link' => url('files/csv_import_example.csv')
             ]) !!}</p>   
 
-            <link rel="stylesheet" type="text/css" href="{{ URL::asset('assets/js/plugins/dropzone/css/dropzone.css') }}" />
+            <link rel="stylesheet" type="text/css" href="{{ URL::asset('core/dropzone/dropzone.css') }}" />
             @php
                 $formId = uniqid();
             @endphp

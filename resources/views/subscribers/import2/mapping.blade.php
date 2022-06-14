@@ -1,13 +1,13 @@
-@extends('layouts.popup.medium')
+@extends('layouts.popup.large')
 
-@section('title')
+@section('bar-title')
     {{ trans('messages.subscriber_import') }}
 @endsection
 
 @section('content')
     <!-- Dropzone -->
-	<script type="text/javascript" src="{{ URL::asset('assets2/lib/dropzone/dropzone.js') }}"></script>
-	<link href="{{ URL::asset('assets2/lib/dropzone/dropzone.css') }}" rel="stylesheet" type="text/css">
+	<script type="text/javascript" src="{{ URL::asset('core/dropzone/dropzone.js') }}"></script>
+	<link href="{{ URL::asset('core/dropzone/dropzone.css') }}" rel="stylesheet" type="text/css">
 
 	<div class="popup-wizard">
 
@@ -25,27 +25,33 @@
 
                         <div class="d-flex align-items-center">
                             <div class="field-checkbox">
-                                <input  type="checkbox" name="field_{{ $key }}" value="true" class="switchery select-field">
+                                <label>
+                                    <input  type="checkbox" name="field_{{ $key }}" value="true" class="styled select-field">
+                                </label>
                             </div>
                             <label class="m-0 field-name mr-auto">{{ $column }}</label>
                             <div class="field-actions">
-                                <span class="lnr lnr-chevron-down toogle-icon" style="display: none"></span>
+                                <span class="material-symbols-rounded toogle-icon" style="display: none">keyboard_arrow_up</span>
 
-                                <div class="d-flex align-items-center quick-info exist" style="display:none">
-                                    <span class="mr-2 text-nowrap">{{ trans('messages.subscriber.import.associate_with') }}</span>
-                                    <select class="select" style="max-width: 100px;">
-                                        @foreach ($list->fields as $field)
-                                            <option value="{{ $field->tag }}">{{ $field->tag }}</option>
-                                        @endforeach
-                                        <option value="more">{{ trans('messages.subscriber.import.more_options') }}</option>
-                                    </select>
+                                <div class="quick-info exist" style="display:none">
+                                    <div class="d-flex align-items-center">
+                                        <span class="mr-2 text-nowrap">{{ trans('messages.subscriber.import.associate_with') }}</span>
+                                        <select class="select" style="max-width: 100px;">
+                                            @foreach ($list->fields as $field)
+                                                <option value="{{ $field->tag }}">{{ $field->tag }}</option>
+                                            @endforeach
+                                            <option value="more">{{ trans('messages.subscriber.import.more_options') }}</option>
+                                        </select>
+                                    </div>
                                 </div>
-                                <div class="d-flex align-items-center quick-info create" style="display:none">
-                                    <span class="mr-2 text-nowrap">{{ trans('messages.subscriber.import.create') }}</span>
-                                    <select class="select " style="max-width: 100px;">
-                                        <option value="" data-value="create-field"></option>
-                                        <option value="more">{{ trans('messages.subscriber.import.more_options') }}</option>
-                                    </select>
+                                <div class="quick-info create" style="display:none">
+                                    <div class="d-flex align-items-center">
+                                        <span class="mr-2 text-nowrap">{{ trans('messages.subscriber.import.create') }}</span>
+                                        <select class="select " style="max-width: 100px;">
+                                            <option value="" data-value="create-field"></option>
+                                            <option value="more">{{ trans('messages.subscriber.import.more_options') }}</option>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -141,8 +147,8 @@
                 _this.data = [];
 
                 // check/uncheck column
-                $('.field-checkbox').click(function() {
-                    var checked = $(this).find('.select-field').is(':checked');
+                $('.select-field').on('change', function() {
+                    var checked = $(this).is(':checked');
 
                     if (checked) {
                         _this.selectColumn($(this).closest('li'));
