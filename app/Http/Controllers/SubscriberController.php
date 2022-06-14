@@ -975,14 +975,14 @@ class SubscriberController extends Controller
         }
 
         $path = $request->file('file')->storeAs(
-            'users/'.$request->user()->uid.'/home/tmp',
-            $request->file('file')->getClientOriginalName()
+            str_replace(storage_path('app'), '', $request->user()->getAssetsPath('tmp')),
+            'import_data.csv'
         );
 
         // Redirect to my lists page
         return response()->json([
-            "status" => 'success',
-            "message" => trans('messages.subscriber.import.csv_uploaded'),
+            'status' => 'success',
+            'message' => trans('messages.subscriber.import.csv_uploaded'),
         ]);
     }
 
@@ -996,7 +996,7 @@ class SubscriberController extends Controller
             return $this->notAuthorized();
         }
 
-        // init
+        // @todo get first line and convert to array. File location: $request->user()->getAssetsPath('tmp') . '/import_data.csv',
         $header = ['Address', 'Forename', 'Lastname'];
 
         return view('subscribers.import2.mapping', [

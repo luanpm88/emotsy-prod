@@ -42,8 +42,6 @@
             url: "{{ action('SubscriberController@import2Upload', $list->uid) }}",
             maxFiles: 1,
             success: function(file, res) {
-                console.log('success');
-                console.log(res);
                 $('.mapping-step').show();
                 // disable dropzone
                 myDropzone.disable();

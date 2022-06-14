@@ -7815,9 +7815,9 @@ textarea.form-control {
     font-size: 98%;
 }
 .wizard-steps li a [class^="material-"] {
-    font-size: 28px;
-    margin-right: 20px;
-    color: #666;
+    font-size: 34px;
+    margin-right: 26px;
+    color: #777;
 }
 .wizard-link p {
     color: #444;
@@ -7911,7 +7911,7 @@ textarea.form-control {
     border-radius: 3px;
 }
 .import-mapping .field-options .field-option {    
-    border: dashed 1px #fff;
+    border: dashed 1px transparent;
     border-radius: 3px;
 }
 .import-mapping .field-options .field-option.current {

@@ -1,4 +1,4 @@
-@extends('layouts.popup.medium')
+@extends('layouts.popup.large')
 
 @section('bar-title')
     {{ trans('messages.subscriber_import') }}
