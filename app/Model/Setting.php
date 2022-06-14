@@ -232,6 +232,14 @@ class Setting extends Model
                 'type' => 'checkbox',
                 'options' => ['no', 'yes'],
             ],
+            'captcha_engine' => [
+                'cat' => 'general',
+                'value' => 'recaptcha',
+                'type' => 'select',
+                'options' => array_map(function($cap) {
+                    return ['value' => $cap['id'], 'text' => $cap['title']];
+                }, \Acelle\Library\Facades\Hook::execute('captcha_method')),
+            ],
             'custom_script' => [
                 'cat' => 'general',
                 'value' => '',
@@ -793,5 +801,24 @@ class Setting extends Model
         $settings['countries'] = $countries;
 
         self::set('tax', json_encode($settings));
+    }
+
+    public static function getCaptchaProvider()
+    {
+        $captcha = self::get('captcha_engine');
+
+        if (in_array(
+            $captcha,
+            array_map(
+                function($cap) {
+                    return $cap['id'];
+                },
+                \Acelle\Library\Facades\Hook::execute('captcha_method'))
+            )
+        ) {
+            return $captcha;
+        }
+        
+        return 'recaptcha';
     }
 }

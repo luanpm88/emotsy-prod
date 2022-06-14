@@ -77,10 +77,15 @@
                     <div class="row">
                         <div class="col-md-3"></div>
                         <div class="col-md-6">
-                            @if ($errors->has('recaptcha_invalid'))
-                                <div class="text-danger text-center">{{ $errors->first('recaptcha_invalid') }}</div>
+                            <!-- hCaptcha -->
+                            @if (\Acelle\Model\Setting::getCaptchaProvider() == 'hcaptcha')
+                                @php
+                                    $hcaptcha = \Acelle\Hcaptcha\Client::initialize();
+                                @endphp
+                                {!! $hcaptcha->renderFormHtml($errors) !!}
+                            @else
+                                {!! Acelle\Library\Tool::showReCaptcha($errors) !!}
                             @endif
-                            {!! Acelle\Library\Tool::showReCaptcha() !!}
                         </div>
                     </div>
                 @endif

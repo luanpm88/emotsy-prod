@@ -60,7 +60,16 @@
         </div>
 
         @if (\Acelle\Model\Setting::get('login_recaptcha') == 'yes')
-            {!! \Acelle\Library\Tool::showReCaptcha($errors) !!}
+
+            <!-- hCaptcha -->
+            @if (\Acelle\Model\Setting::getCaptchaProvider() == 'hcaptcha')
+                @php
+                    $hcaptcha = \Acelle\Hcaptcha\Client::initialize();
+                @endphp
+                {!! $hcaptcha->renderFormHtml($errors) !!}
+            @else
+                {!! \Acelle\Library\Tool::showReCaptcha($errors) !!}
+            @endif
         @endif
 
         <button type="submit" class="btn rounded-2 btn-primary d-block login-button py-2 fw-600"

@@ -665,7 +665,13 @@ class MailListController extends Controller
 
         if (\Acelle\Model\Setting::get('embedded_form_recaptcha') == 'yes') {
             if ($request->hasCaptcha) {
-                $success = \Acelle\Library\Tool::checkReCaptcha($request);
+                // @hCaptcha
+                if (\Acelle\Model\Setting::getCaptchaProvider() == 'hcaptcha') {
+                    $hcaptcha = \Acelle\Hcaptcha\Client::initialize();
+                    $success = $hcaptcha->check($request);
+                } else {
+                    $success = \Acelle\Library\Tool::checkReCaptcha($request);
+                }                
             } else {
                 return view('lists.embedded_form_captcha', [
                     'list' => $list,

@@ -106,9 +106,19 @@ class UserController extends Controller
 
             // Captcha check
             if (\Acelle\Model\Setting::get('registration_recaptcha') == 'yes') {
-                $success = \Acelle\Library\Tool::checkReCaptcha($request);
-                if (!$success) {
-                    $rules['recaptcha_invalid'] = 'required';
+
+                // @hCaptcha
+                if (\Acelle\Model\Setting::getCaptchaProvider() == 'hcaptcha') {
+                    $hcaptcha = \Acelle\Hcaptcha\Client::initialize();
+                    $success = $hcaptcha->check($request);
+                    if (!$success) {
+                        $rules['captcha_invalid'] = 'required';
+                    }
+                } else {
+                    $success = \Acelle\Library\Tool::checkReCaptcha($request);
+                    if (!$success) {
+                        $rules['recaptcha_invalid'] = 'required';
+                    }
                 }
             }
 
