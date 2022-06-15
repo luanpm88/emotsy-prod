@@ -208,6 +208,14 @@ class Setting extends Model
                 'type' => 'select',
                 'options' => self::colors(),
             ],
+            'captcha_engine' => [
+                'cat' => 'general',
+                'value' => 'recaptcha',
+                'type' => 'select',
+                'options' => array_map(function($cap) {
+                    return ['value' => $cap['id'], 'text' => $cap['title']];
+                }, \Acelle\Library\Facades\Hook::execute('captcha_method')),
+            ],
             'login_recaptcha' => [
                 'cat' => 'general',
                 'value' => 'no',
@@ -231,15 +239,7 @@ class Setting extends Model
                 'value' => 'yes',
                 'type' => 'checkbox',
                 'options' => ['no', 'yes'],
-            ],
-            'captcha_engine' => [
-                'cat' => 'general',
-                'value' => 'recaptcha',
-                'type' => 'select',
-                'options' => array_map(function($cap) {
-                    return ['value' => $cap['id'], 'text' => $cap['title']];
-                }, \Acelle\Library\Facades\Hook::execute('captcha_method')),
-            ],
+            ],            
             'custom_script' => [
                 'cat' => 'general',
                 'value' => '',
