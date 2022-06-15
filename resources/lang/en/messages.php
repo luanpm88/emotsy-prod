@@ -1094,6 +1094,7 @@
   'cancel' => 'Cancel',
   'cancel_invoice' => 'Cancel Invoice',
   'cancelled' => 'cancelled',
+  'captcha_engine' => 'Captcha provider',
   'card.holder' => 'Card holder',
   'card.last4' => 'Last 4 number',
   'card_number' => 'Card number',
@@ -2780,6 +2781,7 @@
   're_generate_remote_job_url' => 'Re-generate URL',
   'read' => 'Read',
   'rebuild' => 'Rebuild',
+  'recaptcha' => 'reCaptcha',
   'recent_customers' => 'Recent customers',
   'recent_export' => 'Recent export',
   'recent_import' => 'Recent import',
@@ -4191,6 +4193,4 @@
   'your_current_license' => 'Thank you for purchasing! Below is your license key, also known as Purchase Code. Your license type is',
   'your_subscriptions' => 'Your subscriptions',
   'zip_postal_code' => 'Zip / Postal code',
-  'captcha_engine' => 'Captcha provider',
-  'recaptcha' => 'reCaptcha',
 ) ?>
