@@ -160,6 +160,10 @@
     array (
       'required' => 'Invalid reCAPTCHA check.',
     ),
+    'captcha_invalid' => 
+    array (
+      'required' => 'Invalid CAPTCHA check.',
+    ),
     'payment_method_not_valid' => 
     array (
       'required' => 'Something went wrong with payment method setting. Please check again.',
