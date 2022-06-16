@@ -23,7 +23,7 @@ auto_awesome
                             {{ $location->getCountryName() }}
                         </p>
                         <span class="pull-right num">
-                            {{ $location->aggregate }}
+                            {{ number_with_delimiter($location->aggregate, $precision = 0) }}
                         </span>
                     </div>
                 @endforeach 

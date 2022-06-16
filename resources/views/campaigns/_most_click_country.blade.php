@@ -20,7 +20,7 @@ auto_awesome
                     <div class="stat-row">
                         <p class="text-muted">{{ $location->country_name }}</p>
                         <span class="pull-right num">
-                            {{ $location->aggregate }}
+                            {{ number_with_delimiter($location->aggregate, $precision = 0) }}
                         </span>
                     </div>
                 @endforeach 
