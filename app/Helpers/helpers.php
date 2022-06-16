@@ -665,27 +665,6 @@ function makeInlineCss($html, array $cssFiles)
     return $htmldoc->getHTML();
 }
 
-function putPermanentEnv($arr = [])
-{
-    $path = app()->environmentFilePath();
-    $config = file_get_contents($path);
-
-    foreach ($arr as $key => $value) {
-        $config = preg_replace(
-            "/^{$key}\=.*/m",
-            "{$key}='{$value}'",
-            $config
-        );
-
-        // if not exist
-        if (strpos($config, $key) === false) {
-            $config = $config . "\n" . $key . '=' . $value;
-        }
-    }
-
-    file_put_contents($path, $config);
-}
-
 //resize and crop image by center
 function resize_crop_image($max_width, $max_height, $source_file, $dst_dir, $quality = 80)
 {
