@@ -279,7 +279,7 @@ class UpgradeManager
 
             // reload the config & run migration
             LaravelLog::info('UPDATE .env file');
-            $this->mergeEnv(base_path('.env'), base_path('.env.example'));
+            $this->mergeEnv(base_path('.env.example'));
 
             // cleanup
             LaravelLog::info('Cleaning up');
@@ -330,13 +330,13 @@ class UpgradeManager
     /**
      * Merge .env files.
      */
-    private function mergeEnv($mainfile, $updatefile)
+    public function mergeEnv($updatefile)
     {
         if (!file_exists($updatefile)) {
             return;
         }
 
-        $maindb = file($mainfile);
+        $maindb = $_ENV;
         $updatedb = file($updatefile);
 
         $rexp = '/\s*=\s*/';
@@ -359,11 +359,10 @@ class UpgradeManager
             list($updatekey, $updatevalue) = preg_split($rexp, $updaterecord);
             // echo "Checking $updatekey\n";
             if (!in_array($updatekey, $mainkeys)) {
-                // echo "--> {$updatekey} NOT AVAILABLE\n";
-                $maindb[] = $updaterecord;
+                $updatevalue = stripslashes(trim(trim($updatevalue), '"'));
+                \Acelle\Helpers\write_env($updatekey, $updatevalue);
             }
         }
-        file_put_contents($mainfile, $maindb);
     }
 
     /**
