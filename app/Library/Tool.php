@@ -591,7 +591,7 @@ class Tool
 
             // Update .env
             if (in_array($queue_driver, ['database', 'async']) && config('queue.default') != $queue_driver) {
-                \Acelle\Model\Setting::setEnv('QUEUE_DRIVER', $queue_driver);
+                \Acelle\Helpers\write_env('QUEUE_DRIVER', $queue_driver);
             }
 
             if ($request->queue_driver == 'async') {

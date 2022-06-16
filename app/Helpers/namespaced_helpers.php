@@ -273,3 +273,40 @@ function isValidPublicHostnameOrIpAddress($host)
         return false;
     }
 }
+
+function write_env($key, $value)
+{
+    // Get current env
+    $outputs = $_ENV;
+
+    // Set the value
+    $outputs[$key] = $value;
+
+    // Prepare for writing back to file
+    array_walk($outputs, function(&$v, $k) {
+        // Escape double quote
+        $cleaned = addcslashes($v, '"');
+
+        // Quote if there is at least one space or # or any suspected char!
+        if (preg_match('/[\s\#!\$]/', $cleaned)) {
+            $cleaned = "\"$cleaned\"";
+        }
+
+        $v = "$k=$cleaned";
+    });
+
+    $outputs = array_values($outputs);
+    $outputs = implode("\n", $outputs);
+
+    // Actually write to file
+    file_put_contents(base_path('.env'), $outputs);
+}
+
+function reset_app_url($force = false)
+{
+    $envs = getenv();
+    if (!array_key_exists('APP_URL', $envs) || $force) {
+        $url = url('/');
+        write_env('APP_URL', $url);
+    }
+}

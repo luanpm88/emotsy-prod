@@ -239,7 +239,7 @@ class Setting extends Model
                 'value' => 'yes',
                 'type' => 'checkbox',
                 'options' => ['no', 'yes'],
-            ],            
+            ],
             'custom_script' => [
                 'cat' => 'general',
                 'value' => '',
@@ -613,31 +613,6 @@ class Setting extends Model
     }
 
     /**
-     * Update setting one line.
-     */
-    public static function setEnv($key, $value)
-    {
-        $file_path = base_path('.env');
-        $data = file($file_path);
-        $data = array_map(function ($data) use ($key, $value) {
-            if (stristr($value, ' ')) {
-                return stristr($data, $key) ? "$key='$value'\n" : $data;
-            } else {
-                return stristr($data, $key) ? "$key=$value\n" : $data;
-            }
-        }, $data);
-
-        // Write file
-        $env_file = fopen($file_path, 'w') or die('Unable to open file!');
-        fwrite($env_file, implode('', $data));
-        fclose($env_file);
-
-        if (file_exists(base_path('bootstrap/cache/config.php'))) {
-            unlink(base_path('bootstrap/cache/config.php'));
-        }
-    }
-
-    /**
      * Update license type.
      *
      * @return array
@@ -818,7 +793,7 @@ class Setting extends Model
         ) {
             return $captcha;
         }
-        
+
         return 'recaptcha';
     }
 }

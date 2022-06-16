@@ -350,6 +350,12 @@ class UpgradeManager
             if (empty(trim($updaterecord))) {
                 continue;
             }
+
+            if (preg_match('/^\s*#/', $updaterecord)) {
+                // skip commented line with leading #
+                continue;
+            }
+
             list($updatekey, $updatevalue) = preg_split($rexp, $updaterecord);
             // echo "Checking $updatekey\n";
             if (!in_array($updatekey, $mainkeys)) {
