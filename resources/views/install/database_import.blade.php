@@ -22,10 +22,20 @@ dns
         <a href="{{ action('InstallController@database') }}" class="btn btn-secondary me-1"><span class="material-symbols-rounded">
 undo
 </span> {!! trans('messages.back') !!}</a>
-        <a href="{{ action('InstallController@import') }}" class="btn btn-primary">{!! trans('messages.setup_database') !!} <span class="material-symbols-rounded">
+        <a href="{{ action('InstallController@import') }}" class="btn btn-primary db-setup">{!! trans('messages.setup_database') !!} <span class="material-symbols-rounded">
 east
 </span></a>
 		
     </div>
+
+    <script>
+
+        $(function() {
+            $('.db-setup').on('click', function() {
+                addButtonMask($(this));
+            });
+        });
+
+    </script>
 
 @endsection
