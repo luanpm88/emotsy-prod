@@ -232,13 +232,20 @@ mark_email_read
 	
 	<hr >
 	<div class="text-end">                                    
-		<button data-wait="{{ trans('messages.button_processing') }}" type="submit" class="btn btn-primary bg-teal">{!! trans('messages.next') !!} <span class="material-symbols-rounded">
+		<button data-wait="{{ trans('messages.button_processing') }}" type="submit" class="btn btn-primary bg-teal save-button">{!! trans('messages.next') !!} <span class="material-symbols-rounded">
 east
 </span></button>
 	</div>
 	
 </form>
 <script>
+
+	$(function() {
+		$('.save-button').on('click', function() {
+			addButtonMask($(this));
+		});
+	});
+
 	function toogleMailer() {
 		var value = $("select[name='mail_mailer']").val();
 		$('.mailer-setting').hide();
