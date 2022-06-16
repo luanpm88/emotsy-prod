@@ -298,6 +298,10 @@ function write_env($key, $value)
 
     // Actually write to file .env
     file_put_contents(app()->environmentFilePath(), $outputs);
+
+    // Important, make the new environment var available
+    // Otherwise, this method may failed if called twice (in a loop for example) in the same process
+    \Artisan::call('config:cache');
 }
 
 function write_envs($params)
