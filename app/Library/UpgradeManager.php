@@ -339,15 +339,10 @@ class UpgradeManager
         // Important: load all available env variables (in case they are erased by cache:clear)
         \Artisan::call('config:cache');
 
-        $maindb = $_ENV;
         $updatedb = file($updatefile);
 
         $rexp = '/\s*=\s*/';
-        $mainkeys = array_map(function ($record) use ($rexp) {
-            $pair = preg_split($rexp, $record);
-
-            return (empty($pair)) ? null : $pair[0];
-        }, $maindb);
+        $mainkeys = array_keys($_ENV);
 
         foreach ($updatedb as $updaterecord) {
             if (empty(trim($updaterecord))) {
