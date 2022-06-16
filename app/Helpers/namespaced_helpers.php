@@ -274,6 +274,9 @@ function isValidPublicHostnameOrIpAddress($host)
 
 function write_env($key, $value)
 {
+    // Important: make sure all variables are already loaded before retrieving $_ENV
+    \Artisan::call('config:cache');
+
     // Get current env
     $outputs = $_ENV;
 
