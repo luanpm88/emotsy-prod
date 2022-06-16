@@ -14,10 +14,10 @@ people
                             alternate_email
                             </span> {{ $subscriber->email }}</p>
                         <span class="pull-right num">
-                            {{ $subscriber->count }}
+                            {{ number_with_delimiter($subscriber->count, $precision = 0) }}
                         </span>
                     </div>
-                @endforeach                        
+                @endforeach
             </div>
             <div class="text-end">
                 <a href="{{ action('CampaignController@openLog', $campaign->uid) }}" class="btn btn-info bg-teal-600">{{ trans('messages.open_log') }} <span class="material-symbols-rounded">
@@ -51,7 +51,7 @@ auto_awesome
                             place
                             </span> <span class="fw-600">{{ $location->name() }}</span> - {{ $location->ip_address }}</p>
                         <span class="pull-right num">
-                            {{ $location->aggregate }}
+                            {{ number_with_delimiter($location->aggregate, $precision = 0) }}
                         </span>
                     </div>
                 @endforeach 
