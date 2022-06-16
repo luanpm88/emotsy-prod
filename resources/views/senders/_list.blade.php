@@ -19,7 +19,7 @@
 		@foreach ($senders as $key => $sender)
 			<tr>
 				<td width="1%">
-					<div class="checkbox inline">
+					<div class="checkbox inline me-1">
 						<label>
 							<input type="checkbox" class="node styled"
 								name="uids[]"

@@ -353,7 +353,9 @@ function menuActiveCheck() {
     }
 
     $('.dropdown-item.active').closest('.nav-item').addClass("active");
-    $('.leftbar:not(.leftbar-closed) .main-menu .nav-link.dropdown-toggle.active').dropdown('toggle');
+    setTimeout(function() {
+        $('.leftbar:not(.leftbar-closed) .main-menu .nav-link.dropdown-toggle.active').dropdown('toggle');
+    }, 100);
 }
 
 function applyLinkListener(links, options) {
