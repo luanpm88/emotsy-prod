@@ -16,7 +16,7 @@ auto_awesome
             </div>
         @else
             <div class="stat-table">
-                @foreach ($campaign->topCountries(7)->get() as $location)
+                @foreach ($campaign->topOpenCountries(7)->get() as $location)
                     <div class="stat-row">
                         <p class="">
                             <img class="flag-icon" src="{{ url($location->getFlagPath()) }}" />
