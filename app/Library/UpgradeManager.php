@@ -336,6 +336,9 @@ class UpgradeManager
             return;
         }
 
+        // Important: load all available env variables (in case they are erased by cache:clear)
+        \Artisan::call('config:cache');
+
         $maindb = $_ENV;
         $updatedb = file($updatefile);
 
