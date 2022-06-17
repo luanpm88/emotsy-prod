@@ -16,6 +16,7 @@ use Cache;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Exception;
+use Acelle\Library\UpgradeManager;
 
 class Upgrade extends Controller
 {
@@ -53,6 +54,10 @@ class Upgrade extends Controller
         Setting::set('geoip.sqlite.source_url', 'https://acellemail.s3.amazonaws.com/GeoLite2-City.mmdb');
         Setting::set('geoip.sqlite.source_hash', 'b95ecaff82017c4f52577196c41db946');
         Setting::set('geoip.enabled', 'no');
+
+        // Merge .env.example to .env
+        $manager = new UpgradeManager();
+        $manager->mergeEnv(base_path('.env.example'));
 
         // Upgrade post-processing
         if ($request->session()->has('upgraded')) {

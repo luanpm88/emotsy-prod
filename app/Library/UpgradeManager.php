@@ -277,10 +277,6 @@ class UpgradeManager
                 return $errors;
             }
 
-            // reload the config & run migration
-            LaravelLog::info('UPDATE .env file');
-            $this->mergeEnv(base_path('.env.example'));
-
             // cleanup
             LaravelLog::info('Cleaning up');
             $this->cleanup();
