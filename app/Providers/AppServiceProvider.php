@@ -120,7 +120,7 @@ class AppServiceProvider extends ServiceProvider
         });
 
         // default captcha method
-        Hook::register('captcha_method', function() {
+        Hook::register('captcha_method', function () {
             return [
                 "id" => 'recaptcha',
                 "title" => trans('messages.recaptcha'),

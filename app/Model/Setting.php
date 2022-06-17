@@ -212,7 +212,7 @@ class Setting extends Model
                 'cat' => 'general',
                 'value' => 'recaptcha',
                 'type' => 'select',
-                'options' => array_map(function($cap) {
+                'options' => array_map(function ($cap) {
                     return ['value' => $cap['id'], 'text' => $cap['title']];
                 }, \Acelle\Library\Facades\Hook::execute('captcha_method')),
             ],
@@ -785,11 +785,12 @@ class Setting extends Model
         if (in_array(
             $captcha,
             array_map(
-                function($cap) {
+                function ($cap) {
                     return $cap['id'];
                 },
-                \Acelle\Library\Facades\Hook::execute('captcha_method'))
+                \Acelle\Library\Facades\Hook::execute('captcha_method')
             )
+        )
         ) {
             return $captcha;
         }

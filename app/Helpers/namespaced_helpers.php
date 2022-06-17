@@ -284,7 +284,7 @@ function write_env($key, $value)
     $outputs[$key] = $value;
 
     // Prepare for writing back to file
-    array_walk($outputs, function(&$v, $k) {
+    array_walk($outputs, function (&$v, $k) {
         // Escape double quote
         $cleaned = addcslashes($v, '"');
 
@@ -309,7 +309,7 @@ function write_env($key, $value)
 
 function write_envs($params)
 {
-    foreach($params as $key => $value) {
+    foreach ($params as $key => $value) {
         write_env($key, $value);
     }
 }
