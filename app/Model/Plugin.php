@@ -440,6 +440,9 @@ class Plugin extends Model
 
         $this->status = self::STATUS_ACTIVE;
         $this->save();
+
+        // IMPORTANT: produce the translation files for plugins
+        Language::dump();
     }
 
     public function reset()
