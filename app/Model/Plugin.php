@@ -578,6 +578,8 @@ class Plugin extends Model
         $plugin->save();
 
         // Important: publish language files after installing a plugin
+        // Remember to load the plugin first, make sure its service provider runs first
+        $plugin->load($withServiceProvider = true);
         Language::dump();
 
         // Return it
