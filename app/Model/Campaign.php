@@ -2513,7 +2513,7 @@ class Campaign extends Model
 
         $formatter = new LineFormatter("[%datetime%] %channel%.%level_name%: %message%\n");
 
-        $logfile = storage_path(join_paths('logs', php_sapi_name(), '/campaign-'.$this->uid.'.log'));
+        $logfile = $this->getLogFile();
         $stream = new RotatingFileHandler($logfile, 0, Logger::DEBUG);
         $stream->setFormatter($formatter);
 
@@ -2523,6 +2523,12 @@ class Campaign extends Model
         $this->logger = $logger;
 
         return $this->logger;
+    }
+
+    public function getLogFile()
+    {
+        $path = storage_path(join_paths('logs', php_sapi_name(), '/campaign-'.$this->uid.'.log'));
+        return $path;
     }
 
     public function deleteAndCleanup()
