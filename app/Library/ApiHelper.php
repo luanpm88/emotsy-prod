@@ -559,6 +559,7 @@ class ApiHelper
                     'parameters' => [
                         ['name' => '$uid', 'description' => 'Customer\'s uid'],
                         ['name' => '$plan_uid', 'description' => 'Plan\'s uid'],
+                        ['name' => '$disable_billing', 'description' => 'Activate the subscription without checking out. Default: false'],
                     ],
                     'returns' => 'Action messages in json',
                     'example' => 'curl -X POST -H "accept:application/json" -G \
@@ -596,6 +597,7 @@ class ApiHelper
                     'parameters' => [
                         ['name' => '$uid', 'description' => 'Customer\'s uid'],
                         ['name' => '$plan_uid', 'description' => 'Plan\'s uid'],
+                        ['name' => '$disable_billing', 'description' => 'Activate the subscription without checking out. Default: false'],
                     ],
                     'returns' => 'Action messages in json',
                     'example' => 'curl -X POST -H "accept:application/json" -G \
