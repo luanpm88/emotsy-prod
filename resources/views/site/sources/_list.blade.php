@@ -20,7 +20,7 @@
 				</td>				
 				<td>
 					<h5 class="no-margin stat-num">
-						{{ format_number($source->productsCount()) }}
+						{{ number_with_delimiter($source->productsCount(), $precision = 0) }}
 					</h5>
 					<span class="text-muted d-block mt-2">{{ trans('messages.products') }}</span>
 				</td>

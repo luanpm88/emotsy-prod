@@ -1,4 +1,4 @@
-<h4 class="mt-4 mb-3"><i class="icon-stats-dots"></i> {{ trans('messages.statistics') }}</h4>
+<h4 class="mt-4 mb-3">{{ trans('messages.statistics') }}</h4>
 <p class="mb-3">{!! trans('messages.campaign_table_chart_intro') !!}</p>
 
 <div class="row">

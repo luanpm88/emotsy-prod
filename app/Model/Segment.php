@@ -153,6 +153,19 @@ class Segment extends Model
     }
 
     /**
+     * Get created date operators.
+     *
+     * @return options
+     */
+    public static function createdDateOperators()
+    {
+        return [
+            ['text' => trans('messages.greater_than'), 'value' => 'created_date_greater'],
+            ['text' => trans('messages.less_than'), 'value' => 'created_date_less'],
+        ];
+    }
+
+    /**
      * Get verification operators.
      *
      * @return options
@@ -317,6 +330,14 @@ class Segment extends Model
                         // IMPORTANT: LEFT JOIN HERE
                         $conditions[] = sprintf('(%s IN (SELECT s.id FROM %s s LEFT JOIN %s l ON s.id = l.subscriber_id LEFT JOIN %s o ON l.message_id = o.message_id WHERE DATEDIFF(now(), o.created_at) > %s OR o.created_at IS NULL))', table('subscribers.id'), table('subscribers'), table('tracking_logs'), table('click_logs'), db_quote($keyword));
                         break;
+                    case 'created_date_greater':
+                        $ts = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $condition->value, "UTC")->timestamp;
+                        $conditions[] = '(UNIX_TIMESTAMP('.\DB::getTablePrefix().'subscribers.created_at) > '.$ts.')';
+                        break;
+                    case 'created_date_less':
+                        $ts = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $condition->value, "UTC")->timestamp;
+                        $conditions[] = '(UNIX_TIMESTAMP('.\DB::getTablePrefix().'subscribers.created_at) < '.$ts.')';
+                        break;
                     default:
                         throw new \Exception("Unknown segment condition type (operator): ".$condition->operator);
                 }
@@ -471,6 +492,35 @@ class Segment extends Model
             }
         } else {
             return $default;
+        }
+    }
+
+    public function updateConditions($conditions)
+    {
+        if ($this->id) {
+            $this->segmentConditions()->delete();
+        }
+        foreach ($conditions as $key => $param) {
+            $condition = new \Acelle\Model\SegmentCondition();
+            $condition->fill($param);
+
+            if (strpos($condition->operator, 'created_date') === 0) {
+                $zone = $this->mailList->customer->getTimezone();
+                $date = \Carbon\Carbon::createFromFormat('Y-m-d, H:i', $condition->value, $zone);
+                $date->setTimezone('UTC');
+
+                $condition->value = $date->toDateTimeString();
+            }
+
+            $condition->segment_id = $this->id;
+            $field = \Acelle\Model\Field::findByUid($param['field_id']);
+            if (is_object($field)) {
+                $condition->field_id = $field->id;
+            } else {
+                $condition->field_id = null;
+            }
+
+            $condition->save();
         }
     }
 }

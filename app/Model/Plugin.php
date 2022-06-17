@@ -575,9 +575,14 @@ class Plugin extends Model
         $plugin->description = array_key_exists('description', $composer) ? $composer['description'] : null;
         $plugin->version = array_key_exists('version', $composer) ? $composer['version'] : '0.0.0';
         $plugin->status = self::STATUS_INACTIVE;
-
         $plugin->save();
 
+        // Important: publish language files after installing a plugin
+        // Remember to load the plugin first, make sure its service provider runs first
+        $plugin->load($withServiceProvider = true);
+        Language::dump();
+
+        // Return it
         return $plugin;
     }
 
@@ -705,6 +710,7 @@ class Plugin extends Model
         $files = [
             'composer.json',
             'routes.php',
+            'build.sh',
             'src/ServiceProvider.php',
             'src/Controllers/DashboardController.php',
             'resources/views/index.blade.php'

@@ -427,7 +427,7 @@ class Invoice extends Model
                     'description' => $item->description,
                     'price' => format_price($item->amount, $item->invoice->currency->format),
                     'tax' => format_price($item->getTax(), $item->invoice->currency->format),
-                    'tax_p' => format_number($item->getTaxPercent()),
+                    'tax_p' => number_with_delimiter($item->getTaxPercent()),
                     'discount' => format_price($item->discount, $item->invoice->currency->format),
                     'sub_total' => format_price($item->subTotal(), $item->invoice->currency->format),
                 ];

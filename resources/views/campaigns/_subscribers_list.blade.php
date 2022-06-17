@@ -6,7 +6,7 @@
             <tr>
                 <td width="1%">
                     <div class="text-nowrap">
-                        <div class="checkbox inline">
+                        <div class="checkbox inline me-1">
                             <label>
                                 <input type="checkbox" class="node styled"
                                     name="uids[]"
@@ -41,7 +41,7 @@
                     </td>
                 @endforeach
 
-                @if (in_array("created_at", explode(",", request()->columns)))
+                @if (in_array("created_at", is_array(request()->columns) ? request()->columns : []))
                     <td>
                         <span class="no-margin stat-num">{{ Auth::user()->customer->formatDateTime($subscriber->created_at, 'date_full') }}</span>
                         <br>
@@ -49,7 +49,7 @@
                     </td>
                 @endif
 
-                @if (in_array("updated_at", explode(",", request()->columns)))
+                @if (in_array("updated_at", is_array(request()->columns) ? request()->columns : []))
                     <td>
                         <span class="no-margin stat-num">{{ Auth::user()->customer->formatDateTime($subscriber->updated_at, 'date_full') }}</span>
                         <br>

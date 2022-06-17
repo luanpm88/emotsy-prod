@@ -1,6 +1,6 @@
 @if ($contacts->count() > 0)
     <p class="insight-intro mb-2 small">
-        {{ trans('messages.automation.contact.all_count', ['count' => format_number($contacts->total())]) }}
+        {{ trans('messages.automation.contact.all_count', ['count' => number_with_delimiter($contacts->total(), $precision = 0)]) }}
     </p>
         
     <div class="mc-table small border-top">

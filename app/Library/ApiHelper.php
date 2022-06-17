@@ -222,8 +222,9 @@ class ApiHelper
                     ],
                     'returns' => 'List of all list\'s subscribers in json',
                     'example' => 'curl -X GET -H "accept:application/json" -G \
-' .str_replace('-LIST_ID-', '<redbold>{list_uid}</redbold>', action("Api\SubscriberController@index", ['list_uid' => '-LIST_ID-'])).' \
+' .action("Api\SubscriberController@index").' \
 -d api_token=' .\Auth::user()->api_token.' \
+-d list_uid=<redbold>{list_uid}</redbold> \
 -d per_page=20 \
 -d page=1',
                 ],
@@ -240,8 +241,9 @@ class ApiHelper
                     ],
                     'returns' => 'Creation messages in json',
                     'example' => 'curl -X POST -H "accept:application/json" -G \
-' .str_replace('-LIST_ID-', '<redbold>{list_uid}</redbold>', action("Api\SubscriberController@store", ['list_uid' => '-LIST_ID-'])).' \
+' .action("Api\SubscriberController@store").' \
 -d api_token=' .\Auth::user()->api_token.' \
+-d list_uid=<redbold>{list_uid}</redbold> \
 -d EMAIL=test@gmail.com \
 -d tag=foo,bar,tag+with+space, \
 -d FIRST_NAME=Marine \
@@ -557,6 +559,7 @@ class ApiHelper
                     'parameters' => [
                         ['name' => '$uid', 'description' => 'Customer\'s uid'],
                         ['name' => '$plan_uid', 'description' => 'Plan\'s uid'],
+                        ['name' => '$disable_billing', 'description' => 'Activate the subscription without checking out. Default: false'],
                     ],
                     'returns' => 'Action messages in json',
                     'example' => 'curl -X POST -H "accept:application/json" -G \
@@ -594,6 +597,7 @@ class ApiHelper
                     'parameters' => [
                         ['name' => '$uid', 'description' => 'Customer\'s uid'],
                         ['name' => '$plan_uid', 'description' => 'Plan\'s uid'],
+                        ['name' => '$disable_billing', 'description' => 'Activate the subscription without checking out. Default: false'],
                     ],
                     'returns' => 'Action messages in json',
                     'example' => 'curl -X POST -H "accept:application/json" -G \

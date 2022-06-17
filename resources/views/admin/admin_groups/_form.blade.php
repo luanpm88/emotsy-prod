@@ -21,39 +21,57 @@ person_outline
 
         <div class="tab-content">
             <div class="tab-pane active" id="top-tab1">
+                @php
+                    $count = 0;
+                @endphp
                 @foreach (Acelle\Model\AdminGroup::allPermissions() as $key => $items)
-                    <h3 class="text-primary">{{ trans('messages.' . $key) }}</h3>
-                    <div class="row">
-                        @foreach ($items as $act => $ops)
-                            <div class="col-md-3">
-                                @if (count($ops["options"]) > 2)
-                                    @include('helpers.form_control', [
-                                        'type' => 'select',
-                                        'class' => 'numeric',
-                                        'name' => 'permissions[' . $key . "_" . $act .']',
-                                        'value' => $permissions[$key . "_" . $act],
-                                        'label' => trans('messages.' . $act),
-                                        'options' => $ops["options"],
-                                        'help_class' => 'admin_group',
-                                        'rules' => Acelle\Model\AdminGroup::rules()
-                                    ])
-                                @else
-                                    <div class="checkbox-box-group">
-                                        <label class="mb-2">{{ trans('messages.' . $act) }}</label>
-                                        @include('helpers.form_control', [
-                                            'type' => 'checkbox',
-                                            'class' => 'numeric',
-                                            'name' => 'permissions[' . $key . "_" . $act .']',
-                                            'value' => $permissions[$key . "_" . $act],
-                                            'label' => '',
-                                            'options' => ['no','yes'],
-                                            'help_class' => 'admin_group',
-                                            'rules' => Acelle\Model\AdminGroup::rules()
-                                        ])
-                                    </div>
-                                @endif
+                    @php
+                        $count += 1;
+                    @endphp
+                    <div class="d-flex py-2 border-bottom {{ $count%2 == 0 ? 'bg-light' : '' }}">
+                        <div class="row" style="width: 100%">
+                            <div class="col-md-3 text-end text-md-left">
+                                <h5 class="text-primary">{{ trans('messages.' . $key) }}
+                                    <span class="material-symbols-rounded text-muted2 ps-4">
+                                        drag_indicator
+                                        </span>
+                                </h5>
                             </div>
-                        @endforeach
+                            <div class="col-md-9">
+                                <div class="row">
+                                    @foreach ($items as $act => $ops)
+                                        <div class="col-6 col-md-3">
+                                            @if (count($ops["options"]) > 1)
+                                                @include('helpers.form_control', [
+                                                    'type' => 'select',
+                                                    'class' => 'numeric',
+                                                    'name' => 'permissions[' . $key . "_" . $act .']',
+                                                    'value' => $permissions[$key . "_" . $act],
+                                                    'label' => trans('messages.' . $act),
+                                                    'options' => $ops["options"],
+                                                    'help_class' => 'admin_group',
+                                                    'rules' => Acelle\Model\AdminGroup::rules()
+                                                ])
+                                            @else
+                                                <div class="checkbox-box-group">
+                                                    <label class="mb-2">{{ trans('messages.' . $act) }}</label>
+                                                    @include('helpers.form_control', [
+                                                        'type' => 'checkbox',
+                                                        'class' => 'numeric',
+                                                        'name' => 'permissions[' . $key . "_" . $act .']',
+                                                        'value' => $permissions[$key . "_" . $act],
+                                                        'label' => '',
+                                                        'options' => ['no','yes'],
+                                                        'help_class' => 'admin_group',
+                                                        'rules' => Acelle\Model\AdminGroup::rules()
+                                                    ])
+                                                </div>
+                                            @endif
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 @endforeach
             </div>

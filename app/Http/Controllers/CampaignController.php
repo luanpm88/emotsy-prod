@@ -875,7 +875,7 @@ class CampaignController extends Controller
         // create data
         $total = $campaign->uniqueOpenCount();
         $count = 0;
-        foreach ($campaign->topCountries()->get() as $location) {
+        foreach ($campaign->topOpenCountries()->get() as $location) {
             $country_name = (!empty($location->country_name) ? $location->country_name : trans('messages.unknown'));
             $result['data'][] = ['value' => $location->aggregate, 'name' => $country_name];
             $count += $location->aggregate;
@@ -1516,7 +1516,7 @@ class CampaignController extends Controller
         $subscribers = $subscribers->search($request->keyword)->paginate($request->per_page);
 
         // Field information
-        $fields = $campaign->defaultMailList->getFields->whereIn('uid', explode(',', $request->columns));
+        $fields = $campaign->defaultMailList->getFields->whereIn('uid', $request->columns);
 
         return view('campaigns._subscribers_list', [
             'subscribers' => $subscribers,

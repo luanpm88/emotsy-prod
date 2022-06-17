@@ -591,7 +591,7 @@ class Tool
 
             // Update .env
             if (in_array($queue_driver, ['database', 'async']) && config('queue.default') != $queue_driver) {
-                \Acelle\Model\Setting::setEnv('QUEUE_DRIVER', $queue_driver);
+                \Acelle\Helpers\write_env('QUEUE_DRIVER', $queue_driver);
             }
 
             if ($request->queue_driver == 'async') {
@@ -667,25 +667,7 @@ class Tool
      */
     public static function format_price($price, $format = '{PRICE}')
     {
-        return str_replace('{PRICE}', self::format_number($price), $format);
-    }
-
-    /**
-     * Format price.
-     *
-     * @param string
-     *
-     * @return string
-     */
-    public static function format_number($number)
-    {
-        if (is_numeric($number) && floor($number) != $number) {
-            return number_format($number, 2, trans('messages.dec_point'), trans('messages.thousands_sep'));
-        } elseif (is_numeric($number)) {
-            return number_format($number, 0, trans('messages.dec_point'), trans('messages.thousands_sep'));
-        } else {
-            return $number;
-        }
+        return str_replace('{PRICE}', number_with_delimiter($price), $format);
     }
 
     /**

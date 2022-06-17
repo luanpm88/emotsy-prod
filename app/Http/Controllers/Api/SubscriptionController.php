@@ -64,7 +64,16 @@ class SubscriptionController extends Controller
             return \Response::json(array('status' => 0, 'message' => 'Plan is not active'), 404);
         }
 
-        $customer->assignPlan($plan);
+        $subscription = $customer->assignPlan($plan);
+
+        // * Disable billing information: customer does not need to pay the invoice. Pass by the billing and checkout step
+        // * assignPlan always create a subscription with an unpaid invoice.
+        // * So just fulfill the invoice
+        // * By design: when the subscription invoice is fulfilled, the callback function will be triggered
+        //              to set subscription as active automatically.
+        if ($request->disable_billing && $request->disable_billing !== 'false') {
+            $subscription->getUnpaidInvoice()->fulfill();
+        }
 
         return \Response::json(array(
             'status' => 1,

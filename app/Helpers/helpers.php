@@ -148,6 +148,23 @@ function array_unique_by($array, $callback)
     return array_values($result);
 }
 
+function get_localization_config($name, $locale)
+{
+    $defaultConfig = config('localization')['*'];
+
+    if (array_key_exists($locale, config('localization'))) {
+        $config = config('localization')[$locale];
+    }
+
+    if (isset($config) && array_key_exists($name, $config) && array_key_exists($name, $defaultConfig)) {
+        return $config[$name];
+    } elseif (array_key_exists($name, $defaultConfig)) {
+        return $defaultConfig[$name];
+    } else {
+        throw new \Exception('Localization config for "'.$name.'" does not exist');
+    }
+}
+
 function get_datetime_format($name, $locale)
 {
     $defaultConfig = config('localization')['*'];
@@ -202,39 +219,6 @@ function exec_enabled()
     } catch (\Throwable $ex) {
         return false;
     }
-}
-
-function reset_app_url($force = false)
-{ // replace if already exists
-    // update .env file, set app_url to current host url
-
-    // get .env file path
-    $path = base_path('.env');
-    $raw = preg_split('/[\r\n]+/', file_get_contents($path));
-
-    // read from .env, load into $settings as [ key1 => value1, key2 => value2, etc. ]
-    $settings = [];
-    foreach ($raw as $e) {
-        preg_match('/^(?<key>[A-Z0-9_]+)=(?<value>.*)/', $e, $matched);
-
-        if (array_key_exists('key', $matched) && array_key_exists('value', $matched)) {
-            $settings[$matched['key']] = $matched['value'];
-        }
-    }
-
-    // add APP_URL setting if not exists
-    if (!array_key_exists('APP_URL', $settings)) {
-        $settings['APP_URL'] = url('/');
-    } elseif ($force) {
-        $settings['APP_URL'] = url('/');
-    }
-
-    // Write back to .env file
-    $file = fopen($path, 'w');
-    foreach ($settings as $key => $value) {
-        fwrite($file, "{$key}=$value\n");
-    }
-    fclose($file);
 }
 
 /**
@@ -309,13 +293,32 @@ function number_to_percentage($number, $precision = 2)
  *
  * @return string
  */
-function number_with_delimiter($number, $precision = 0, $seperator = ',')
+function number_with_delimiter($number, $precision = null, $seperator = null, $locale = null)
 {
     if (!is_numeric($number)) {
         return $number;
     }
 
-    return number_format($number, $precision, '.', $seperator);
+    if (is_null($locale)) {
+        $locale = config('app.locale');
+    }
+
+    // Trick!
+    if (floor($number) == $number && is_null($precision)) {
+        $precision = 0;
+    }
+
+    if (is_null($precision)) {
+        $precision = get_localization_config('number_precision', $locale);
+    }
+
+    $decimal = get_localization_config('number_decimal_separator', $locale);
+
+    if (is_null($seperator)) {
+        $seperator = get_localization_config('number_thousands_separator', $locale);
+    }
+
+    return number_format($number, $precision, $decimal, $seperator);
 }
 
 /**
@@ -464,31 +467,14 @@ function doublequote($str)
  *
  * @return string
  */
-function format_number($number)
-{
-    if (is_numeric($number) && floor($number) != $number) {
-        return number_format($number, 2, trans('messages.dec_point'), trans('messages.thousands_sep'));
-    } elseif (is_numeric($number)) {
-        return number_format($number, 0, trans('messages.dec_point'), trans('messages.thousands_sep'));
-    } else {
-        return $number;
-    }
-}
-/**
- * Format price.
- *
- * @param string
- *
- * @return string
- */
 function format_price($price, $format = '{PRICE}', $html=false)
 {
     if ($html) {
-        $html = str_replace('{PRICE}', ' <span class="p-amount">' . format_number($price) . '</span> ', $format);
-        // $html = str_replace(format_number($price), ' <span class="p-amount">' . format_number($price) . '</span> ', $html);
+        $html = str_replace('{PRICE}', ' <span class="p-amount">' . number_with_delimiter($price) . '</span> ', $format);
+        // $html = str_replace(number_with_delimiter($price), ' <span class="p-amount">' . number_with_delimiter($price) . '</span> ', $html);
         return $html;
     } else {
-        return str_replace('{PRICE}', format_number($price), $format);
+        return str_replace('{PRICE}', number_with_delimiter($price), $format);
     }
 }
 
@@ -677,27 +663,6 @@ function makeInlineCss($html, array $cssFiles)
     }
 
     return $htmldoc->getHTML();
-}
-
-function putPermanentEnv($arr = [])
-{
-    $path = app()->environmentFilePath();
-    $config = file_get_contents($path);
-
-    foreach ($arr as $key => $value) {
-        $config = preg_replace(
-            "/^{$key}\=.*/m",
-            "{$key}='{$value}'",
-            $config
-        );
-
-        // if not exist
-        if (strpos($config, $key) === false) {
-            $config = $config . "\n" . $key . '=' . $value;
-        }
-    }
-
-    file_put_contents($path, $config);
 }
 
 //resize and crop image by center

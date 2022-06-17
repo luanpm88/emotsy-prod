@@ -394,8 +394,8 @@ class Plan extends Model
         // exist
         if ($this->getOption('sending_limit') == 'other') {
             $wording = trans('messages.plan.sending_limit.phrase', [
-                'quota_value' => format_number($this->getOption('sending_quota')),
-                'quota_base' => format_number($this->getOption('sending_quota_time')),
+                'quota_value' => number_with_delimiter($this->getOption('sending_quota'), $precision = 0),
+                'quota_base' => number_with_delimiter($this->getOption('sending_quota_time'), $precision = 0),
                 'quota_unit' => $this->getOption('sending_quota_time_unit'),
             ]);
 
@@ -425,7 +425,7 @@ class Plan extends Model
         // exist
         if ($this->getOption('billing_cycle') == 'other') {
             $wording = trans('messages.plan.billing_cycle.phrase', [
-                'frequency_amount' => format_number($this->frequency_amount),
+                'frequency_amount' => number_with_delimiter($this->frequency_amount),
                 'frequency_unit' => $this->frequency_unit,
             ]);
 
@@ -574,7 +574,7 @@ class Plan extends Model
         } elseif ($this->getOption('sending_quota_time') == -1) {
             return $this->getOption('sending_quota');
         } else {
-            return strtolower(\Acelle\Library\Tool::format_number($this->getOption('sending_quota')).' '.trans('messages.'.\Acelle\Library\Tool::getPluralPrase('email', $this->getOption('sending_quota'))).' / '.$this->getOption('sending_quota_time').' '.trans('messages.'.\Acelle\Library\Tool::getPluralPrase($this->getOption('sending_quota_time_unit'), $this->getOption('sending_quota'))));
+            return strtolower(number_with_delimiter($this->getOption('sending_quota')).' '.trans('messages.'.\Acelle\Library\Tool::getPluralPrase('email', $this->getOption('sending_quota'))).' / '.$this->getOption('sending_quota_time').' '.trans('messages.'.\Acelle\Library\Tool::getPluralPrase($this->getOption('sending_quota_time_unit'), $this->getOption('sending_quota'))));
         }
     }
 
@@ -598,7 +598,7 @@ class Plan extends Model
         if ($this->getOption('email_max') == -1) {
             return trans('messages.unlimited');
         } else {
-            return \Acelle\Library\Tool::format_number($this->getOption('email_max'));
+            return number_with_delimiter($this->getOption('email_max'));
         }
     }
 
@@ -612,7 +612,7 @@ class Plan extends Model
         if ($this->getOption('list_max') == -1) {
             return trans('messages.unlimited');
         } else {
-            return \Acelle\Library\Tool::format_number($this->getOption('list_max'));
+            return number_with_delimiter($this->getOption('list_max'));
         }
     }
 
@@ -626,7 +626,7 @@ class Plan extends Model
         if ($this->getOption('subscriber_max') == -1) {
             return trans('messages.unlimited');
         } else {
-            return \Acelle\Library\Tool::format_number($this->getOption('subscriber_max'));
+            return number_with_delimiter($this->getOption('subscriber_max'));
         }
     }
 
@@ -640,7 +640,7 @@ class Plan extends Model
         if ($this->getOption('campaign_max') == -1) {
             return trans('messages.unlimited');
         } else {
-            return \Acelle\Library\Tool::format_number($this->getOption('campaign_max'));
+            return number_with_delimiter($this->getOption('campaign_max'));
         }
     }
 
@@ -654,7 +654,7 @@ class Plan extends Model
         if ($this->getOption('max_size_upload_total') == -1) {
             return trans('messages.unlimited');
         } else {
-            return \Acelle\Library\Tool::format_number($this->getOption('max_size_upload_total'));
+            return number_with_delimiter($this->getOption('max_size_upload_total'));
         }
     }
 

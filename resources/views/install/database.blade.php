@@ -84,9 +84,19 @@ dns
     </div>
     <hr >
     <div class="text-end">                                    
-        <button type="submit" class="btn btn-primary">{!! trans('messages.save') !!} <span class="material-symbols-rounded">
+        <button type="submit" class="btn btn-primary save-button">{!! trans('messages.save') !!} <span class="material-symbols-rounded">
 east
 </span></button>
     </div>
 </form>
+
+<script>
+
+    $(function() {
+        $('.save-button').on('click', function() {
+            addButtonMask($(this));
+        });
+    });
+
+</script>
 @endsection

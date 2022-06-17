@@ -11,7 +11,7 @@
 
 <p>{!! trans('messages.verification_process_running', [
     'verified' => $list->subscribers()->verified()->count(),
-    'total' => \Acelle\Library\Tool::format_number($list->readCache('SubscriberCount')),
+    'total' => number_with_delimiter($list->readCache('SubscriberCount'), $precision = 0),
 ]) !!}</p>
 
 <p>

@@ -18,7 +18,7 @@ class GenerateAppUrlEnviromentSettingIfNotExist extends Migration
             return;
         }
 
-        reset_app_url();
+        \Acelle\Helpers\reset_app_url();
     }
 
     /**

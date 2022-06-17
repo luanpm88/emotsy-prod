@@ -237,6 +237,7 @@ body.mode-dark .navbar-main .navbar-nav .nav-link {
 body.mode-dark .navbar-main .nav-item > .nav-link.active,
 body.mode-dark .navbar-main .navbar-nav .nav-link:hover {
     color: rgba(255,255,255,0.9);
+    background-color: transparent;
 }
 body.mode-dark .navbar-icon {
     opacity: 0.7;
@@ -404,7 +405,7 @@ body.mode-dark .dropdown-menu > .active > a,
 body.mode-dark .dropdown-menu > .active > a:hover,
 body.mode-dark .navbar-main .nav-item .dropdown-item:active,
 body.mode-dark .dropdown-menu > .active > a:focus {
-    background-color: rgba(0,0,0,0.4);
+    background-color: rgba(255,255,255,0.05);
     color: rgba(255, 255, 255, 0.9);
 }
 body.mode-dark .dropdown-menu li:hover > a {
@@ -760,4 +761,28 @@ body.mode-dark .but-change-theme-mode:hover {
 }
 body.mode-dark .top-controls-container a {
     color: rgba(255,255,255,0.7);
+}
+body.mode-dark:not(.leftbar-closed) .main-menu .dropdown-menu:not(.top-user-menus) li {
+    background-color: transparent;
+}
+body.mode-dark .tooltipster-sidetip.tooltipster-light .tooltipster-box {
+    border-color: rgba(255, 255, 255, 0.05);
+}
+body.mode-dark .tooltipster-sidetip.tooltipster-light .tooltipster-content {
+    color: rgba(255,255,255,0.85)!important;    
+}
+body.mode-dark .tooltipster-sidetip.tooltipster-light .tooltipster-box {
+    background-color: rgba(255,255,255,0.05);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+}
+body.mode-dark .tooltipster-arrow-background {
+    background-color: transparent!important;
+}
+body.mode-dark .tooltipster-sidetip.tooltipster-light.tooltipster-bottom .tooltipster-arrow-background,
+body.mode-dark .tooltipster-sidetip.tooltipster-light.tooltipster-bottom .tooltipster-arrow-border,
+body.mode-dark .tooltipster-sidetip.tooltipster-light.tooltipster-top .tooltipster-arrow-background,
+body.mode-dark .tooltipster-sidetip.tooltipster-light.tooltipster-top .tooltipster-arrow-border {
+    border-bottom-color: rgba(255, 255, 255, 0.1)!important;
+    border-top-color: rgba(255, 255, 255, 0.1)!important;
 }

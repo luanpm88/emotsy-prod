@@ -34,7 +34,7 @@
                             <a style="height:34px" href="javascript:;" class="btn btn-light btn-sm ms-1 copy-web-view-url text-nowrap py-1 d-flex align-items-center"
                                 data-url="{!! $webViewerPreviewUrl !!}"
                             >
-                                <i class="material-symbols-rounded me-1">copy</i>{{ trans('messages.copy') }}
+                                <i class="material-symbols-rounded me-1">content_copy</i>{{ trans('messages.copy') }}
                             </a>
                         </div>
                     </div>

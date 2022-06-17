@@ -118,6 +118,14 @@ class AppServiceProvider extends ServiceProvider
                 "master_translation_file" => resource_path('lang/default/validation.php'),
             ];
         });
+
+        // default captcha method
+        Hook::register('captcha_method', function () {
+            return [
+                "id" => 'recaptcha',
+                "title" => trans('messages.recaptcha'),
+            ];
+        });
     }
 
     private function loadPlugins()

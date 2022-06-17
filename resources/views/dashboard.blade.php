@@ -24,7 +24,7 @@
                 <div class="d-flex mb-2">
                     <label class="fw-600 me-auto">{{ trans('messages.sending_quota') }}</label>
                     <div class="pull-right text-semibold">
-                        <span class="text-muted">{{ number_with_delimiter($sendingCreditsUsed) }}/{{ ($sendingCreditsLimit == -1) ? '∞' : \Acelle\Library\Tool::format_number($sendingCreditsLimit) }}</span>
+                        <span class="text-muted">{{ number_with_delimiter($sendingCreditsUsed) }}/{{ ($sendingCreditsLimit == -1) ? '∞' : number_with_delimiter($sendingCreditsLimit) }}</span>
                         &nbsp;&nbsp;&nbsp;<span>{{ number_to_percentage($sendingCreditsUsedPercentage) }}</span>
                     </div>
                 </div>
@@ -40,7 +40,7 @@
                 <div class="d-flex mb-2">
                     <label class="fw-600 me-auto">{{ trans('messages.list') }}</label>
                     <div class="pull-right  text-semibold">
-                        <span class="text-muted">{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->listsCount()) }}/{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->maxLists()) }}</span>
+                        <span class="text-muted">{{ number_with_delimiter(Auth::user()->customer->listsCount()) }}/{{ number_with_delimiter(Auth::user()->customer->maxLists()) }}</span>
                         &nbsp;&nbsp;&nbsp;<span>{{ Auth::user()->customer->displayListsUsage() }}</span>
                     </div>
                 </div>
@@ -55,7 +55,7 @@
                 <div class="d-flex mb-2">
                     <label class="fw-600 me-auto">{{ trans('messages.campaign') }}</label>
                     <div class="pull-right  text-semibold">
-                        <span class="text-muted">{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->campaignsCount()) }}/{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->maxCampaigns()) }}</span>
+                        <span class="text-muted">{{ number_with_delimiter(Auth::user()->customer->campaignsCount()) }}/{{ number_with_delimiter(Auth::user()->customer->maxCampaigns()) }}</span>
                         &nbsp;&nbsp;&nbsp;<span>{{ Auth::user()->customer->displayCampaignsUsage() }}</span>
                     </div>
                 </div>
@@ -70,7 +70,7 @@
                 <div class="d-flex mb-2">
                     <label class="fw-600 me-auto">{{ trans('messages.subscriber') }}</label>
                     <div class="pull-right  text-semibold">
-                        <span class="text-muted">{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->readCache('SubscriberCount', 0)) }}/{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->maxSubscribers()) }}</span>
+                        <span class="text-muted">{{ number_with_delimiter(Auth::user()->customer->readCache('SubscriberCount', 0)) }}/{{ number_with_delimiter(Auth::user()->customer->maxSubscribers()) }}</span>
                         &nbsp;&nbsp;&nbsp;<span>{{ Auth::user()->customer->displaySubscribersUsage() }}</span>
                     </div>
                 </div>

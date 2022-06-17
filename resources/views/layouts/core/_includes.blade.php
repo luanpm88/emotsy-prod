@@ -1,6 +1,5 @@
 <!-- Font -->
-{{-- <link href="{{ URL::asset('core/css/google-open-sans.css') }}" rel="stylesheet"> --}}
-<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,600,600i,700,700i,800,800i&amp;subset=cyrillic,cyrillic-ext,greek,greek-ext,latin-ext,vietnamese" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Poppins:400,400i,600,600i,700,700i,800,800i&amp;subset=cyrillic,cyrillic-ext,greek,greek-ext,latin-ext,vietnamese" rel="stylesheet">
 
 <!-- jQuery -->
 <script type="text/javascript" src="{{ URL::asset('core/js/jquery-3.6.0.min.js') }}"></script>
@@ -27,7 +26,7 @@
 <script type="text/javascript" src="{{ URL::asset('core/tooltipster/js/tooltipster.bundle.min.js') }}"></script>
 
 <!-- Google icon -->
-<link href="{{ URL::asset('core/css/google-font-icon.css') }}" rel="stylesheet">
+<link href="{{ URL::asset('core/css/google-font-icon.css') }}?v=2" rel="stylesheet">
 
 <!-- Autofill -->
 <link rel="stylesheet" type="text/css" href="{{ URL::asset('core/css/autofill.css') }}">

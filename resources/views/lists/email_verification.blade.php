@@ -88,7 +88,7 @@ restart_alt
             <h2 class="text-semibold" style="margin-top:40px;margin-bottom:10px">{{ trans('messages.verification_status') }}</h2>
             <p>{!! trans('messages.verification_process_not_running', [
                 'verified' => $list->subscribers()->verified()->count(),
-                'total' => \Acelle\Library\Tool::format_number($list->readCache('SubscriberCount')),
+                'total' => number_with_delimiter($list->readCache('SubscriberCount')),
             ]) !!}</p>
             <p>
                 <a link-confirm="{{ trans('messages.reset_list_verification_confirm') }}" link-method="POST" class="btn btn-secondary"
