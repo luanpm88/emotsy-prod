@@ -1080,23 +1080,20 @@ class Campaign extends Model
      *
      * @return datetime
      */
-    public function topLocations($number = 5, $customer = null)
+    public function topLocations($number = 5)
     {
         $records = IpLocation::select('ip_locations.ip_address', 'ip_locations.country_code', 'ip_locations.country_name')
             ->addSelect(DB::raw('count(*) as aggregate'))
             ->join('open_logs', 'open_logs.ip_address', '=', 'ip_locations.ip_address')
             ->join('tracking_logs', 'open_logs.message_id', '=', 'tracking_logs.message_id')
-            ->where('tracking_logs.campaign_id', '=', $this->id);
+            ->where('tracking_logs.campaign_id', '=', $this->id)
+            ->join('campaigns', 'tracking_logs.campaign_id', '=', 'campaigns.id')
+            ->where('campaigns.customer_id', '=', $this->customer->id)
+            ->groupBy('ip_locations.ip_address', 'ip_locations.country_code', 'ip_locations.country_name')
+            ->orderBy('aggregate', 'desc')
+            ->take($number);
 
-        if (isset($customer)) {
-            $records = $records->join('campaigns', 'tracking_logs.campaign_id', '=', 'campaigns.id')
-                ->where('campaigns.customer_id', '=', $customer->id);
-        }
-
-        $records = $records->groupBy('ip_locations.ip_address', 'ip_locations.country_code', 'ip_locations.country_name')
-            ->orderBy('aggregate', 'desc');
-
-        return $records->take($number);
+        return $records;
     }
 
     /**
