@@ -24,14 +24,14 @@ person_outline
                 @foreach (Acelle\Model\AdminGroup::allPermissions() as $key => $items)
                     <div class="d-flex py-2 border-bottom">
                         <div class="row" style="width: 100%">
-                            <div class="col-md-3 text-end text-md-left">
+                            <div class="col-md-4 text-end text-md-left">
                                 <h4 class="text-primary">{{ trans('messages.' . $key) }}
                                     <span class="material-symbols-rounded text-muted2 ps-3">
                                         drag_indicator
                                         </span>
                                 </h4>
                             </div>
-                            <div class="col-md-9">
+                            <div class="col-md-8">
                                 <div class="row">
                                     @foreach ($items as $act => $ops)
                                         <div class="col-6 col-md-3">
