@@ -2385,7 +2385,7 @@ class Campaign extends Model
 
         // Iterate through batches of subscribers, 100 each
         cursorIterate(
-            $query,
+            $this->subscribersToSend(),
             $orderBy = 'subscribers.id',
             $perPage = 100,
             function ($subscribers) use (&$i, &$sendingServersPool, $callback) {
@@ -2404,7 +2404,8 @@ class Campaign extends Model
         // Retrieve subscribers to send!
         $query = $this->subscribers([])
                 ->whereRaw(sprintf(table('subscribers').'.email NOT IN (SELECT email FROM %s t JOIN %s s ON t.subscriber_id = s.id WHERE t.campaign_id = %s)', table('tracking_logs'), table('subscribers'), $this->id))
-                ->subscribed();
+                ->subscribed()
+                ->deliverableOrNotVerified();
 
         return $query;
     }

@@ -113,6 +113,16 @@ class Subscriber extends Model
         return $query->where('subscribers.verification_status', self::VERIFICATION_STATUS_DELIVERABLE);
     }
 
+    public function scopeDeliverableOrNotVerified($query)
+    {
+        return $query->whereRaw(sprintf(
+            "(%s = '%s' OR %s IS NULL)",
+            table('subscribers.verification_status'),
+            self::VERIFICATION_STATUS_DELIVERABLE,
+            table('subscribers.verification_status')
+        ));
+    }
+
     public function scopeUndeliverable($query)
     {
         return $query->where('subscribers.verification_status', self::VERIFICATION_STATUS_UNDELIVERABLE);
@@ -634,6 +644,17 @@ class Subscriber extends Model
         $this->last_verification_at = Carbon::now();
         $this->last_verification_by = $verifier->name;
         $this->last_verification_result = (string)$response->getBody();
+        $this->save();
+        return $this;
+    }
+
+    public function setVerificationStatus($status)
+    {
+        // note: status must be one of the pre-defined list: see related constants
+        $this->verification_status = $status;
+        $this->last_verification_at = Carbon::now();
+        $this->last_verification_by = 'ADMIN';
+        $this->last_verification_result = 'Manually set';
         $this->save();
         return $this;
     }
