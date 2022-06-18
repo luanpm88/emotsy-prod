@@ -2385,7 +2385,7 @@ class Campaign extends Model
 
         // Iterate through batches of subscribers, 100 each
         cursorIterate(
-            $query,
+            $this->subscribersToSend(),
             $orderBy = 'subscribers.id',
             $perPage = 100,
             function ($subscribers) use (&$i, &$sendingServersPool, $callback) {
@@ -2404,7 +2404,8 @@ class Campaign extends Model
         // Retrieve subscribers to send!
         $query = $this->subscribers([])
                 ->whereRaw(sprintf(table('subscribers').'.email NOT IN (SELECT email FROM %s t JOIN %s s ON t.subscriber_id = s.id WHERE t.campaign_id = %s)', table('tracking_logs'), table('subscribers'), $this->id))
-                ->subscribed();
+                ->subscribed()
+                ->deliverableOrNotVerified();
 
         return $query;
     }
@@ -2513,7 +2514,7 @@ class Campaign extends Model
 
         $formatter = new LineFormatter("[%datetime%] %channel%.%level_name%: %message%\n");
 
-        $logfile = storage_path(join_paths('logs', php_sapi_name(), '/campaign-'.$this->uid.'.log'));
+        $logfile = $this->getLogFile();
         $stream = new RotatingFileHandler($logfile, 0, Logger::DEBUG);
         $stream->setFormatter($formatter);
 
@@ -2523,6 +2524,12 @@ class Campaign extends Model
         $this->logger = $logger;
 
         return $this->logger;
+    }
+
+    public function getLogFile()
+    {
+        $path = storage_path(join_paths('logs', php_sapi_name(), '/campaign-'.$this->uid.'.log'));
+        return $path;
     }
 
     public function deleteAndCleanup()
