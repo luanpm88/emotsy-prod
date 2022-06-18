@@ -4193,4 +4193,7 @@
   'your_current_license' => 'Thank you for purchasing! Below is your license key, also known as Purchase Code. Your license type is',
   'your_subscriptions' => 'Your subscriptions',
   'zip_postal_code' => 'Zip / Postal code',
+  'flutterwave.user.description' => 'Pay for your subscription & services using your debit
+        or credit cards. Auto billing is not supported',
+  'transaction.method.flutterwave' => 'Flutterwave',
 ) ?>
