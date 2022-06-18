@@ -4,12 +4,12 @@
     @php
         $customer = Auth::user()->customer;
 
-        $date = $trigger->getOptionAsDateTime('date');
-        if (!$date) {
+        $date = $trigger->getOptionAsDateTime('date')->format('Y-m-d');
+        if (!$date) {            
             $date = $customer->getCurrentTime()->format('Y-m-d');
         }
 
-        $time = $trigger->getOption('at');
+        $time = $trigger->getOptionAsDateTime('at')->format('h:i A');
         if (!$time) {
             $time = $customer->getCurrentTime()->format('h:i A');
         }
