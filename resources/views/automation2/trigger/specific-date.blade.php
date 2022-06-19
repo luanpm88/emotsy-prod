@@ -4,14 +4,14 @@
     @php
         $customer = Auth::user()->customer;
 
-        $date = $trigger->getOptionAsDateTime('date')->format('Y-m-d');
+        $date = $trigger->getOptionAsDateTime('date')->timezone(Auth::user()->customer->timezone)->format('Y-m-d');
         if (!$date) {            
             $date = $customer->getCurrentTime()->format('Y-m-d');
         }
 
-        $time = $trigger->getOptionAsDateTime('at')->format('h:i A');
+        $time = $trigger->getOptionAsDateTime('at')->timezone(Auth::user()->customer->timezone)->format('H:i');
         if (!$time) {
-            $time = $customer->getCurrentTime()->format('h:i A');
+            $time = $customer->getCurrentTime()->format('H:i');
         }
     @endphp
 
