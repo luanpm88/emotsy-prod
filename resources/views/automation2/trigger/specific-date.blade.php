@@ -1,6 +1,6 @@
 <div class="mb-20">
     <input type="hidden" name="options[type]" value="datetime" />
-
+    
     @php
         $customer = Auth::user()->customer;
 
