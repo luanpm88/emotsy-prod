@@ -403,7 +403,7 @@ class Automation2Controller extends Controller
                 $date = \Carbon\Carbon::createFromFormat('Y-m-d H:i', $options['date'] . ' ' . $options['at'], $customer->timezone);
 
                 $options['date'] = $date->timezone('UTC')->format(config('custom.date_format'));
-                $options['at'] = $date->timezone('UTC')->format('H:i');
+                $options['at'] = $date->timezone('UTC')->format(config('custom.time_format'));
             }
         }
 
