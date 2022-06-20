@@ -1,40 +1,46 @@
 @if ($plugins->count() > 0)
-    <table class="table table-box pml-table mt-2"
+    <div class="mt-4 plugins-list-container mb-4 pb-2"
         current-page="{{ empty(request()->page) ? 1 : empty(request()->page) }}"
     >
         @foreach ($plugins as $key => $plugin)
-            <tr>
-                <td class="plugin-title-column plugin-title-{{ $plugin->name }}" >
-                    <img class="plugin-icon me-4 pe-2" src="{{ $plugin->getIconUrl() ? $plugin->getIconUrl() : url('/images/plugin.svg') }}" />
-                    <h5 class="no-margin text-bold kq_search">
-                        {{ $plugin->title }}
-                    </h5>
-                    <span class="">
-                        {{ $plugin->description }}
-                    </span>
-                    <br />
-                    <span class="text-muted">{{ trans('messages.plugin.name') }}: {{ $plugin->name }} | {{ trans('messages.plugin.version') }}: {{ $plugin->version }}</span>
-                </td>
-                <td>
-                    @if (array_key_exists($plugin->name, $blacklist))
-                        <span style="cursor:pointer" class="text-muted2 list-status pull-left">
-                            <span title="{{ $blacklist[$plugin->name] }}" class="xtooltip tooltipstered label label-flat bg-risky">
-                                error
-                            </span>
+            <div class="p-4 shadow-sm bg-white rounded-3">
+                <div class="d-flex">
+                    <div>
+                        <img class="plugin-icon me-4 pe-2" src="{{ $plugin->getIconUrl() ? $plugin->getIconUrl() : url('/images/plugin.svg') }}" />
+                    </div>
+                    <div class="plugin-title-column plugin-title-{{ $plugin->name }}" >
+                        
+                        <h5 class="no-margin text-bold kq_search">
+                            {{ $plugin->title }}                            
+                        </h5>
+                        <div class="mt-1 mb-2">
+                            @if (array_key_exists($plugin->name, $blacklist))
+                                <span style="cursor:pointer" class="text-muted2 list-status pull-left small">
+                                    <span title="{{ $blacklist[$plugin->name] }}" class="xtooltip tooltipstered label label-flat bg-risky">
+                                        error
+                                    </span>
+                                </span>
+                            @else
+                                <span class="text-muted2 list-status pull-left small">
+                                    <span class="label label-flat bg-{{ $plugin->status }}">
+                                        {{ trans('messages.email_verification_server_status_' . $plugin->status) }}
+                                    </span>
+                                </span>
+                            @endif
+                        </div>
+                            
+                        <span class="mt-1 d-block">
+                            {{ $plugin->description }}
                         </span>
-                    @else
-                        <span class="text-muted2 list-status pull-left">
-                            <span class="label label-flat bg-{{ $plugin->status }}">
-                                {{ trans('messages.email_verification_server_status_' . $plugin->status) }}
-                            </span>
-                        </span>
-                    @endif
-                </td>
-                <td class="text-end text-nowrap pe-0">
+                        <span class="text-muted2">{{ trans('messages.plugin.name') }}: {{ $plugin->name }} | {{ trans('messages.plugin.version') }}: {{ $plugin->version }}</span>
+                    </div>
+                </div>
+                    
+                <div class="text-end text-nowrap pe-0 ms-auto mt-4">
                     @if (isset($settingUrls[$plugin->name]))
                         <a
                             href="{{ $settingUrls[$plugin->name] }}"
-                            class="btn btn-primary"
+                            class="btn btn-default"
                         >
                             {{ trans('messages.setting') }}
                         </a>
@@ -43,7 +49,7 @@
                     @if (Auth::user()->admin->can('enable', $plugin))
                         <a link-confirm="{{ trans('messages.enable_plugins_confirm') }}"
                             href="{{ action('Admin\PluginController@enable', ["uids" => $plugin->uid]) }}"
-                            class="btn btn-secondary list-action-single"
+                            class="btn btn-primary list-action-single"
                         >
                             {{ trans('messages.enable') }}
                         </a>
@@ -52,7 +58,7 @@
                     @if (Auth::user()->admin->can('disable', $plugin))
                         <a link-confirm="{{ trans('messages.disable_plugins_confirm') }}"
                             href="{{ action('Admin\PluginController@disable', ["uids" => $plugin->uid]) }}"
-                            class="btn btn-secondary list-action-single"
+                            class="btn btn-default list-action-single"
                         >
                             {{ trans('messages.disable') }}
                         </a>
@@ -74,10 +80,10 @@
 							</li>
 						</ul>
 					</div>
-                </td>
-            </tr>
+                </div>
+            </div>
         @endforeach
-    </table>
+        </div>
     @include('elements/_per_page_select', [
         'items' => $plugins
     ])
