@@ -1,5 +1,5 @@
 @if ($plugins->count() > 0)
-    <div class="mt-0 plugins-list-container mb-4 pb-2"
+    <div class="mt-3 plugins-list-container mb-4 pb-2"
         current-page="{{ empty(request()->page) ? 1 : empty(request()->page) }}"
     >
         @foreach ($plugins as $key => $plugin)

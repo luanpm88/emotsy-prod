@@ -11,7 +11,7 @@
 			<div style="width: 20%">
 				<div class="d-flex align-items-center">
 					<h4 class="mb-0 me-3">{{ trans('messages.plugins') }}</h4>
-					<div class="text-muted2 small how-use">
+					<div class="text-muted2 small how-use hide">
 						<a href="javascript:;" class="text-secondary">
 							<span class="material-symbols-rounded">
 								help
@@ -46,7 +46,7 @@
 			<div class="d-flex align-items-center">
 				<div>
 					<h4 class="font-weight-semibold">{{ trans('messages.installed_plugins') }}</h4>
-					<p>{{ trans('messages.plugin.wording') }}</p>
+					<p class="mb-0">{{ trans('messages.plugin.wording') }}</p>
 				</div>
 				<div class="text-end ms-auto">
 					<a href="{{ action("Admin\PluginController@install") }}" role="button" class="btn btn-secondary text-nowarp ms-3">
