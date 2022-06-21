@@ -13,7 +13,7 @@
                         <h5 class="no-margin text-bold kq_search">
                             {{ $plugin->title }}                            
                         </h5>
-                        <div class="mt-1 mb-2">
+                        <div class="mt-1 mb-3">
                             @if (array_key_exists($plugin->name, $blacklist))
                                 <span style="cursor:pointer" class="text-muted2 list-status pull-left small">
                                     <span title="{{ $blacklist[$plugin->name] }}" class="xtooltip tooltipstered label label-flat bg-risky">
@@ -29,10 +29,10 @@
                             @endif
                         </div>
                             
-                        <span class="mt-1 d-block">
+                        <span class="mt-1 d-block text-muted">
                             {{ $plugin->description }}
                         </span>
-                        <span class="text-muted2">{{ trans('messages.plugin.name') }}: {{ $plugin->name }} | {{ trans('messages.plugin.version') }}: {{ $plugin->version }}</span>
+                        <span class="text-muted2 small mt-2 d-block">{{ trans('messages.plugin.name') }}: {{ $plugin->name }} | {{ trans('messages.plugin.version') }}: {{ $plugin->version }}</span>
 
                         <div class="text-left text-nowrap pe-0 ms-auto mt-4">
                             @if (isset($settingUrls[$plugin->name]))
