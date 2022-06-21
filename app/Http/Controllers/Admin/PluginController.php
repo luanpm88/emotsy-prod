@@ -30,7 +30,7 @@ class PluginController extends Controller
 
         $plugins = \Acelle\Model\Plugin::search($request);
 
-        return view('admin.plugins.index', [
+        return view('admin.plugins.index2', [
             'plugins' => $plugins
         ]);
     }

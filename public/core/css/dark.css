@@ -788,3 +788,25 @@ body.mode-dark .tooltipster-sidetip.tooltipster-light.tooltipster-top .tooltipst
     border-bottom-color: rgba(255, 255, 255, 0.1)!important;
     border-top-color: rgba(255, 255, 255, 0.1)!important;
 }
+body.mode-dark .text-secondary {
+    color: rgba(255,255,255,06)!important;    
+}
+body.mode-dark .topfix-header {
+    background-color: rgba(0,0,0,0.1);
+}
+body.mode-dark .topfix-container {
+    box-shadow: 0 .125rem .25rem rgba(0,0,0,.015)!important;
+}
+body.mode-dark .topfix-search-input {
+    box-shadow: inset 0px 1px 1px rgba(255,255,255,0.05);
+}
+body.mode-dark .topfix-search-input:focus {
+    background-color: rgba(255,255,255,0.03);
+    box-shadow: inset 0px 1px 3px rgba(0,0,0,0.035);
+}
+body.mode-dark .topfix-search-icon-span {
+    color: rgba(255,255,255,0.4);    
+}
+body.mode-dark .topfix-search-icon:focus ~ span {
+    color: rgba(255,255,255,0.9);    
+}
