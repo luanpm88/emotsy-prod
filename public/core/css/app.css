@@ -7801,7 +7801,7 @@ textarea.form-control {
         margin: 1px -20px 0px -20px;
     }
     .topfix-body {
-        margin: 0 -50px 0px -45px;
+        margin: 0 -24px 0px -24px;
     }
     .how-use {
         display: block;
@@ -7825,8 +7825,8 @@ textarea.form-control {
 }
 .topfix-container {
     height: 70px;
-    padding-left: 20px;
-    padding-right: 20px;
+    padding-left: 44px;
+    padding-right: 44px;
     box-shadow: 0 .125rem .25rem rgba(0,0,0,.015)!important;
 }
 .has-topfix-header {
@@ -7868,4 +7868,7 @@ textarea.form-control {
 .empty-list.plugins-list {
     background-color: transparent;
     border: none;
+}
+.text-nowarp {
+    white-space: nowrap;
 }

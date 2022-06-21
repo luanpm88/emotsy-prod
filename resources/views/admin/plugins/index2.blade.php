@@ -49,7 +49,7 @@
 					<p>{{ trans('messages.plugin.wording') }}</p>
 				</div>
 				<div class="text-end ms-auto">
-					<a href="{{ action("Admin\PluginController@install") }}" role="button" class="btn btn-secondary">
+					<a href="{{ action("Admin\PluginController@install") }}" role="button" class="btn btn-secondary text-nowarp ms-3">
 						<span class="material-symbols-rounded">
 	add
 	</span> {{ trans('messages.install_plugin') }}
