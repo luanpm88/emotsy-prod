@@ -35,14 +35,7 @@
                         <span class="text-muted2 small mt-2 d-block">{{ trans('messages.plugin.name') }}: {{ $plugin->name }} | {{ trans('messages.plugin.version') }}: {{ $plugin->version }}</span>
 
                         <div class="text-left text-nowrap pe-0 ms-auto mt-4">
-                            @if (isset($settingUrls[$plugin->name]))
-                                <a
-                                    href="{{ $settingUrls[$plugin->name] }}"
-                                    class="btn btn-default"
-                                >
-                                    {{ trans('messages.setting') }}
-                                </a>
-                            @endif
+                            
         
                             @if (Auth::user()->admin->can('enable', $plugin))
                                 <a link-confirm="{{ trans('messages.enable_plugins_confirm') }}"
@@ -59,6 +52,15 @@
                                     class="btn btn-default list-action-single"
                                 >
                                     {{ trans('messages.disable') }}
+                                </a>
+                            @endif
+
+                            @if (isset($settingUrls[$plugin->name]))
+                                <a
+                                    href="{{ $settingUrls[$plugin->name] }}"
+                                    class="btn btn-default"
+                                >
+                                    {{ trans('messages.setting') }}
                                 </a>
                             @endif
         
