@@ -24,8 +24,8 @@
 			
 			<div class="topfix-search text-center d-flex justify-content-center" style="width: 60%">
 				<div class="topfix-search-icon">
-					<input type="text" name="plugin-name" class="topfix-search-input form-control"
-						placeholder="Search plugins..." />
+					<input type="text" name="keyword" class="topfix-search-input form-control"
+						placeholder="{{ trans('messages.search_installed_plugins') }}" />
 					<span class="topfix-search-icon-span material-symbols-rounded">search</span>
 				</div>
 			</div>
@@ -43,7 +43,19 @@
 @section('content')
 	<div class="topfix-body px-4 py-4">
 		
-			<p>{{ trans('messages.plugin.wording') }}</p>
+			<div class="d-flex align-items-center">
+				<div>
+					<h4 class="font-weight-semibold">{{ trans('messages.installed_plugins') }}</h4>
+					<p>{{ trans('messages.plugin.wording') }}</p>
+				</div>
+				<div class="text-end ms-auto">
+					<a href="{{ action("Admin\PluginController@install") }}" role="button" class="btn btn-secondary">
+						<span class="material-symbols-rounded">
+	add
+	</span> {{ trans('messages.install_plugin') }}
+					</a>
+				</div>
+			</div>
 
 			<div class="listing-form"
 				sort-url="{{ action('Admin\PluginController@sort') }}"
@@ -70,22 +82,10 @@
 		</span> {{ trans('messages.delete') }}</a></li>
 									</ul>
 								</div>
-								<span class="text-nowrap">
-									<input type="text" name="keyword" class="form-control search" value="{{ request()->keyword }}" placeholder="{{ trans('messages.type_to_search') }}" />
-									<span class="material-symbols-rounded">
-		search
-		</span>
-								</span>
 							</div>
 						@endif
 					</div>
-					<div class="text-end">
-						<a href="{{ action("Admin\PluginController@install") }}" role="button" class="btn btn-secondary">
-							<span class="material-symbols-rounded">
-		add
-		</span> {{ trans('messages.install_plugin') }}
-						</a>
-					</div>
+					
 				</div>
 				
 				<div class="pml-table-container">
@@ -96,17 +96,32 @@
 
 		<script>
 			var PluginsIndex = {
+				list: null,
 				getList: function() {
-					return makeList({
-						url: '{{ action('Admin\PluginController@listing') }}',
-						container: $('.listing-form'),
-						content: $('.pml-table-container')
-					});
+					if (this.list == null) {
+						this.list = makeList({
+							url: '{{ action('Admin\PluginController@listing') }}',
+							container: $('.listing-form'),
+							content: $('.pml-table-container'),
+							data: function() {
+								return {
+									keyword: $('.topfix-search [name=keyword]').val()
+								};
+							}
+						});
+					}
+
+					return this.list;
 				}
 			};
 
 			$(function() {
 				PluginsIndex.getList().load();
+
+				// keyword change
+				$('.topfix-search [name=keyword]').on('keyup', function() {
+					PluginsIndex.getList().load();
+				});
 			});
 		</script>
 	</div>

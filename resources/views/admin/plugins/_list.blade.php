@@ -1,5 +1,5 @@
 @if ($plugins->count() > 0)
-    <div class="mt-4 plugins-list-container mb-4 pb-2"
+    <div class="mt-0 plugins-list-container mb-4 pb-2"
         current-page="{{ empty(request()->page) ? 1 : empty(request()->page) }}"
     >
         @foreach ($plugins as $key => $plugin)
@@ -33,54 +33,56 @@
                             {{ $plugin->description }}
                         </span>
                         <span class="text-muted2">{{ trans('messages.plugin.name') }}: {{ $plugin->name }} | {{ trans('messages.plugin.version') }}: {{ $plugin->version }}</span>
+
+                        <div class="text-left text-nowrap pe-0 ms-auto mt-4">
+                            @if (isset($settingUrls[$plugin->name]))
+                                <a
+                                    href="{{ $settingUrls[$plugin->name] }}"
+                                    class="btn btn-default"
+                                >
+                                    {{ trans('messages.setting') }}
+                                </a>
+                            @endif
+        
+                            @if (Auth::user()->admin->can('enable', $plugin))
+                                <a link-confirm="{{ trans('messages.enable_plugins_confirm') }}"
+                                    href="{{ action('Admin\PluginController@enable', ["uids" => $plugin->uid]) }}"
+                                    class="btn btn-primary list-action-single"
+                                >
+                                    {{ trans('messages.enable') }}
+                                </a>
+                            @endif
+        
+                            @if (Auth::user()->admin->can('disable', $plugin))
+                                <a link-confirm="{{ trans('messages.disable_plugins_confirm') }}"
+                                    href="{{ action('Admin\PluginController@disable', ["uids" => $plugin->uid]) }}"
+                                    class="btn btn-default list-action-single"
+                                >
+                                    {{ trans('messages.disable') }}
+                                </a>
+                            @endif
+        
+                            <div class="btn-group">
+                                <button role="button" class="btn btn-light icon-only dropdown-toggle" data-bs-toggle="dropdown">
+                                    
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li>
+                                        <a
+                                            class="dropdown-item list-action-single"
+                                            link-confirm="{{ trans('messages.delete_plugins_confirm') }}"
+                                            href="{{ action('Admin\PluginController@delete', ["uids" => $plugin->uid]) }}"
+                                            role="button">
+                                            <i class="material-symbols-rounded">delete</i> {{ trans('messages.uninstall') }}
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
                 </div>
                     
-                <div class="text-end text-nowrap pe-0 ms-auto mt-4">
-                    @if (isset($settingUrls[$plugin->name]))
-                        <a
-                            href="{{ $settingUrls[$plugin->name] }}"
-                            class="btn btn-default"
-                        >
-                            {{ trans('messages.setting') }}
-                        </a>
-                    @endif
-
-                    @if (Auth::user()->admin->can('enable', $plugin))
-                        <a link-confirm="{{ trans('messages.enable_plugins_confirm') }}"
-                            href="{{ action('Admin\PluginController@enable', ["uids" => $plugin->uid]) }}"
-                            class="btn btn-primary list-action-single"
-                        >
-                            {{ trans('messages.enable') }}
-                        </a>
-                    @endif
-
-                    @if (Auth::user()->admin->can('disable', $plugin))
-                        <a link-confirm="{{ trans('messages.disable_plugins_confirm') }}"
-                            href="{{ action('Admin\PluginController@disable', ["uids" => $plugin->uid]) }}"
-                            class="btn btn-default list-action-single"
-                        >
-                            {{ trans('messages.disable') }}
-                        </a>
-                    @endif
-
-                    <div class="btn-group">
-						<button role="button" class="btn btn-light icon-only dropdown-toggle" data-bs-toggle="dropdown">
-                            
-                        </button>
-						<ul class="dropdown-menu dropdown-menu-end">
-							<li>
-								<a
-                                    class="dropdown-item list-action-single"
-                                    link-confirm="{{ trans('messages.delete_plugins_confirm') }}"
-                                    href="{{ action('Admin\PluginController@delete', ["uids" => $plugin->uid]) }}"
-                                    role="button">
-                                    <i class="material-symbols-rounded">delete</i> {{ trans('messages.uninstall') }}
-                                </a>
-							</li>
-						</ul>
-					</div>
-                </div>
+                
             </div>
         @endforeach
         </div>
@@ -89,7 +91,7 @@
     ])
     
 @elseif (!empty(request()->keyword) || !empty(request()->filters["type"]))
-    <div class="empty-list">
+    <div class="empty-list plugins-list">
         <span class="material-symbols-rounded">
             extension
             </span>
@@ -98,12 +100,13 @@
         </span>
     </div>
 @else
-    <div class="empty-list">
+    <div class="empty-list plugins-list">
         <span class="material-symbols-rounded">
             extension
             </span>
-        <span class="line-1">
-            {{ trans('messages.plugin_empty_line_1') }}
-        </span>
+            <span class="line-1">
+                <h5 class="mb-2">{{ trans('messages.plugin.no_plugin') }}</h5>
+                <p>{!! trans('messages.plugin.no_plugin.wording') !!}</p>
+            </span>
     </div>
 @endif

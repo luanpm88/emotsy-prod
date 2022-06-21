@@ -2696,7 +2696,8 @@
   'plugin.version' => 'Version',
   'plugin.wording' => 'Empower your application with tons of awesome plugins developed by the community.
       Integration made easier than ever!',
-  'plugin_empty_line_1' => 'You have no plugin',
+  'plugin.no_plugin' => 'You have no plugin',
+  'plugin.no_plugin.wording' => 'Let\'s extend the system functionalities <br>by installing a new plugins',
   'plugin_status_active' => 'Active',
   'plugin_status_inactive' => 'Inactive',
   'plugins' => 'Plugins',
@@ -4173,4 +4174,6 @@
   'your_current_license' => 'Thank you for purchasing! Below is your license key, also known as Purchase Code. Your license type is',
   'your_subscriptions' => 'Your subscriptions',
   'zip_postal_code' => 'Zip / Postal code',
+  'installed_plugins' => 'Installed plugins',
+  'search_installed_plugins' => 'Search installed plugins...',
 ) ?>
