@@ -7865,7 +7865,7 @@ textarea.form-control {
 .topbar .top-controls-container {
     padding-top: 17px;
 }
-.empty-list.plugins-list {
+.empty-list.plugins-list, body.mode-dark .empty-list.plugins-list {
     background-color: transparent;
     border: none;
 }

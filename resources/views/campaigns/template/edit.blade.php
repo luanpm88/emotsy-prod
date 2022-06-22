@@ -38,6 +38,7 @@
                 strict: true,
                 showHelp: false,
                 showInlineToolbar: false,
+                emailMode: true,
                 lang: {!! json_encode(language()->getBuilderLang()) !!},
                 url: '{{ action('CampaignController@templateContent', $campaign->uid) }}',
                 backCallback: function() {
