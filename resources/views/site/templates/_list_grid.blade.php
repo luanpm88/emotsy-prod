@@ -6,7 +6,7 @@
                     <span class="template-image-box2">
                         <img class="card-img-top" src="{{ $template['screenshot'][0] }}" style="height: 100%; width: auto; display: block;">
                         <div class="preview_control">
-                            <div style="width: calc(80% - 20px);">
+                            <div style="width: calc(80% - 0px);">
                                 <div>
                                     <div>
                                         <div>
