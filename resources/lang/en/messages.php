@@ -4176,4 +4176,5 @@
   'zip_postal_code' => 'Zip / Postal code',
   'installed_plugins' => 'Installed plugins',
   'search_installed_plugins' => 'Search installed plugins...',
+  'last_x_days' => 'In the last X days',
 ) ?>

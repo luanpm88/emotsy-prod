@@ -162,6 +162,7 @@ class Segment extends Model
         return [
             ['text' => trans('messages.greater_than'), 'value' => 'created_date_greater'],
             ['text' => trans('messages.less_than'), 'value' => 'created_date_less'],
+            ['text' => trans('messages.last_x_days'), 'value' => 'created_date_last_x_days'],
         ];
     }
 
@@ -338,6 +339,10 @@ class Segment extends Model
                         $ts = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $condition->value, "UTC")->timestamp;
                         $conditions[] = '(UNIX_TIMESTAMP('.\DB::getTablePrefix().'subscribers.created_at) < '.$ts.')';
                         break;
+                    case 'created_date_last_x_days':
+                        $ts = \Carbon\Carbon::now()->subDays($condition->value)->timestamp;
+                        $conditions[] = '(UNIX_TIMESTAMP('.\DB::getTablePrefix().'subscribers.created_at) >= '.$ts.')';
+                        break;
                     default:
                         throw new \Exception("Unknown segment condition type (operator): ".$condition->operator);
                 }
@@ -504,7 +509,7 @@ class Segment extends Model
             $condition = new \Acelle\Model\SegmentCondition();
             $condition->fill($param);
 
-            if (strpos($condition->operator, 'created_date') === 0) {
+            if (strpos($condition->operator, 'created_date') === 0 && $condition->operator !== 'created_date_last_x_days') {
                 $zone = $this->mailList->customer->getTimezone();
                 $date = \Carbon\Carbon::createFromFormat('Y-m-d, H:i', $condition->value, $zone);
                 $date->setTimezone('UTC');
