@@ -1,7 +1,7 @@
 @if (count($templates) > 0)
     <div class="row mt-4">
         @foreach ($templates as $key => $template)
-            <div class="col-md-3 col-sm-6 mb-4">
+            <div class="col-md-2 col-sm-6 mb-4">
                 <div class="card mb-4 shadow-sm template-card">
                     <span class="template-image-box2">
                         <img class="card-img-top" src="{{ $template['screenshot'][0] }}" style="height: 100%; width: auto; display: block;">

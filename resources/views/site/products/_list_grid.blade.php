@@ -4,7 +4,7 @@
 			@php
 				$wooProduct = wc_get_product($product->ID);
 			@endphp
-			<div class="col-md-3 col-sm-6 mb-4">
+			<div class="col-md-2 col-sm-6 mb-4">
 				<div class="card mb-4 shadow-sm">
 					<span class="product-image-box woo-image border-bottom">
 						{!! $wooProduct->get_image() !!}
