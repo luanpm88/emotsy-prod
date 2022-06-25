@@ -357,6 +357,9 @@ class UpgradeManager
                 \Acelle\Helpers\write_env($updatekey, $updatevalue);
             }
         }
+
+        // Important: cache configs AGAIN to reload the settings from .env
+        \Artisan::call('config:cache');
     }
 
     /**
