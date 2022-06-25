@@ -359,6 +359,7 @@ class UpgradeManager
         }
 
         // Important: cache configs AGAIN to reload the settings from .env
+        \Artisan::call('config:clear');
         \Artisan::call('config:cache');
     }
 
