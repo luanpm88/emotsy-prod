@@ -1485,11 +1485,11 @@ class CampaignController extends Controller
             // Query of email addresses that DID open
             $openByEmails = $campaign->openLogs()->join('subscribers', 'tracking_logs.subscriber_id', '=', 'subscribers.id')->groupBy('subscribers.email')->select('subscribers.email');
 
-            if ($request->open == 'opened') {
+            if ($request->open == 'yes') {
                 $subscribers = $subscribers->joinSub($openByEmails, 'OpenedByEmails', function ($join) {
                     $join->on('subscribers.email', '=', 'OpenedByEmails.email');
                 });
-            } elseif ($request->open = 'not_opened') {
+            } elseif ($request->open = 'no') {
                 $subscribers = $subscribers->leftJoinSub($openByEmails, 'OpenedByEmails', function ($join) {
                     $join->on('subscribers.email', '=', 'OpenedByEmails.email');
                 })->whereNull('OpenedByEmails.email');
