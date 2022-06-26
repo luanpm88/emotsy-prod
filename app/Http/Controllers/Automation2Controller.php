@@ -397,7 +397,7 @@ class Automation2Controller extends Controller
     }
 
     public function prepareOptions($options, $customer)
-    {      
+    {
         if (isset($options['key']) && $options['key'] == 'specific-date') {
             if (isset($options['date'])) {
                 $date = \Carbon\Carbon::createFromFormat('Y-m-d H:i', $options['date'] . ' ' . $options['at'], $customer->timezone);
