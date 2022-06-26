@@ -311,7 +311,10 @@ class AccountController extends Controller
 
     public function activity(Request $request)
     {
-        return view('account.activity');
+        $currentTimezone = $request->user()->customer->getTimezone();
+        return view('account.activity', [
+            'currentTimezone' => $currentTimezone
+        ]);
     }
 
     public function saveAutoThemeMode(Request $request)
