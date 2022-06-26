@@ -27,6 +27,7 @@
 					<input type="text" name="keyword" class="topfix-search-input form-control"
 						placeholder="{{ trans('messages.search_installed_plugins') }}" />
 					<span class="topfix-search-icon-span material-symbols-rounded">search</span>
+					<span class="topfix-close-icon-span material-symbols-rounded" style="display: none">close</span>
 				</div>
 			</div>
 		</div>
@@ -112,6 +113,24 @@
 					}
 
 					return this.list;
+				},
+				getSearchInput: function() {
+					return $('.topfix-search [name=keyword]');
+				},
+				getSearchKeyword: function() {
+					return this.getSearchInput().val();
+				},
+				toggleCloseIcon: function() {
+					if (this.getSearchKeyword().trim() == '') {
+						$('.topfix-close-icon-span').hide();
+					} else {
+						$('.topfix-close-icon-span').show();
+					}
+				},
+				clearSearchKeyword: function() {
+					this.getSearchInput().val('');
+					this.getSearchInput().trigger('change');
+					this.getSearchInput().focus();
 				}
 			};
 
@@ -119,8 +138,16 @@
 				PluginsIndex.getList().load();
 
 				// keyword change
-				$('.topfix-search [name=keyword]').on('keyup', function() {
+				$('.topfix-search [name=keyword]').on('keyup change', function() {
 					PluginsIndex.getList().load();
+
+					// 
+					PluginsIndex.toggleCloseIcon();
+				});
+
+				$('.topfix-close-icon-span').on('click', function() {
+					// 
+					PluginsIndex.clearSearchKeyword();
 				});
 			});
 		</script>

@@ -7838,6 +7838,7 @@ textarea.form-control {
     border-width: 0px;
     box-shadow: inset 0px 1px 1px rgba(0,0,0,0.055);
     padding-left: 40px;
+    padding-right: 40px;
 }
 .topfix-search-input:focus {
     outline: none;
@@ -7855,6 +7856,17 @@ textarea.form-control {
     font-size: 24px;
     color: rgba(0,0,0,0.5);
     top: 5px;
+}
+.topfix-close-icon-span {
+    position: absolute;
+    right: 10px;
+    font-size: 24px;
+    color: rgba(0,0,0,0.5);
+    top: 5px;
+    cursor: pointer;
+}
+.topfix-close-icon-span:hover {
+    color: rgba(0,0,0,0.8);
 }
 .topfix-search-icon:focus ~ span {
     color: rgba(0,0,0,0.8);
