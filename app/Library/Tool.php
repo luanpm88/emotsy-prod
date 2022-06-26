@@ -165,18 +165,6 @@ class Tool
     }
 
     /**
-     * Get system time conversion.
-     *
-     * @param       string
-     *
-     * @return string
-     */
-    public static function systemTime($time)
-    {
-        return $time->setTimezone(config('app.timezone'));
-    }
-
-    /**
      * Get bytes from string.
      *
      * @param string
