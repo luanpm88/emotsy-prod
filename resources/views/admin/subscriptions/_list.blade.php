@@ -48,7 +48,7 @@ remove_circle_outline
 					@elseif ($subscription->cancelled())
 						<h5 class="no-margin stat-num">
 							@if ($subscription->current_period_ends_at)
-								<span class="kq_search">{{ Acelle\Library\Tool::dateTime($subscription->current_period_ends_at)->diffForHumans() }}</span>
+								<span class="kq_search">{{ $subscription->current_period_ends_at->timezone($currentTimezone)->diffForHumans() }}</span>
 							@else
 								<span class="kq_search">--</span>
 							@endif
@@ -58,7 +58,7 @@ remove_circle_outline
 						<h5 class="no-margin stat-num">
 							<span class="kq_search">
 								@if ($subscription->current_period_ends_at)
-									{{ Acelle\Library\Tool::dateTime($subscription->current_period_ends_at)->diffForHumans() }}
+									{{ $subscription->current_period_ends_at->timezone($currentTimezone)->diffForHumans() }}
 								@else
 									--
 								@endif									

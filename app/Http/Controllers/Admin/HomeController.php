@@ -3,6 +3,7 @@
 namespace Acelle\Http\Controllers\Admin;
 
 use Acelle\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use Acelle\Model\Notification;
 use Acelle\Model\Subscriber;
 use Acelle\Model\Automation2;
@@ -26,11 +27,13 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         if (!config('app.saas')) {
             return redirect()->action('HomeController@index');
         }
+
+        $currentTimezone = $request->user()->admin->getTimezone();
 
         $notifications = Notification::top();
         return view('admin.dashboard', [
@@ -38,6 +41,7 @@ class HomeController extends Controller
             'subscribersCount' => Subscriber::count(),
             'automationsCount' => Automation2::count(),
             'sendingDomainsCount' => SendingDomain::count(),
+            'currentTimezone' => $currentTimezone
         ]);
     }
 }

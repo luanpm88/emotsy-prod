@@ -767,6 +767,7 @@ class CampaignController extends Controller
      */
     public function chart24h(Request $request)
     {
+        $currentTimezone = $request->user()->customer->getTimezone();
         $campaign = Campaign::findByUid($request->uid);
 
         // authorize
@@ -784,14 +785,14 @@ class CampaignController extends Controller
 
         // columns
         for ($i = 23; $i >= 0; --$i) {
-            $time = \Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->subHours($i);
+            $time = Carbon::now()->timezone($currentTimezone)->subHours($i);
             $result['columns'][] = $time->format('h') . ':00 ' . $time->format('A');
             $hours[] = $time->format('H');
         }
 
         // 24h collection
-        $openData24h = $campaign->openUniqHours(\Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->subHours(24), \Carbon\Carbon::now());
-        $clickData24h = $campaign->clickHours(\Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->subHours(24), \Carbon\Carbon::now());
+        $openData24h = $campaign->openUniqHours(Carbon::now()->timezone($currentTimezone)->subHours(24), Carbon::now()->timezone($currentTimezone));
+        $clickData24h = $campaign->clickHours(Carbon::now()->timezone($currentTimezone)->subHours(24), Carbon::now()->timezone($currentTimezone));
 
         // data
         foreach ($hours as $hour) {
