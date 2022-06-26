@@ -191,22 +191,6 @@ class Tool
     }
 
     /**
-     * Get system time conversion.
-     *
-     * @param       string
-     *
-     * @return string
-     */
-    public static function systemTimeFromString($string)
-    {
-        $timezone = self::currentTimezone();
-        $time = \Carbon\Carbon::createFromFormat('Y-m-d H:i', $string, $timezone);
-        $time = self::systemTime($time);
-
-        return $time;
-    }
-
-    /**
      * Get bytes from string.
      *
      * @param string

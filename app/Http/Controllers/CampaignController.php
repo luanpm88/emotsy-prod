@@ -22,6 +22,7 @@ use Acelle\Model\TemplateCategory;
 use Acelle\Model\JobMonitor;
 use DB;
 use Exception;
+use Carbon\Carbon;
 
 class CampaignController extends Controller
 {
@@ -557,6 +558,7 @@ class CampaignController extends Controller
     public function schedule(Request $request)
     {
         $campaign = Campaign::findByUid($request->uid);
+        $currentTimezone = $campaign->customer->getTimezone();
 
         // check step
         if ($campaign->step() < 3) {
@@ -568,8 +570,26 @@ class CampaignController extends Controller
             return $this->notAuthorized();
         }
 
-        $delivery_date = isset($campaign->run_at) && $campaign->run_at != '0000-00-00 00:00:00' ? \Acelle\Library\Tool::dateTime($campaign->run_at)->format('Y-m-d') : \Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->format('Y-m-d');
-        $delivery_time = isset($campaign->run_at) && $campaign->run_at != '0000-00-00 00:00:00' ? \Acelle\Library\Tool::dateTime($campaign->run_at)->format('H:i') : \Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->format('H:i');
+        // validate and save posted data
+        if ($request->isMethod('post')) {
+            if ($request->send_now == 'yes') {
+                $campaign->run_at = null;
+            } else {
+                $runAtStr = $request->delivery_date.' '.$request->delivery_time;
+                $runAt = Carbon::createFromFormat('Y-m-d H:i', $runAtStr, $currentTimezone);
+                $campaign->run_at = $runAt->timezone('UTC'); // store in UTC
+            }
+
+            $campaign->save();
+            return redirect()->action('CampaignController@confirm', ['uid' => $campaign->uid]);
+        }
+
+        // Get the run_at datetime in current customer timezone
+        $runAt = is_null($campaign->run_at) ? Carbon::now() : $campaign->run_at;
+        $runAt->timezone($currentTimezone);
+
+        $delivery_date = $runAt->format('Y-m-d');
+        $delivery_time = $runAt->format('H:i');
 
         $rules = array(
             'delivery_date' => 'required',
@@ -579,19 +599,6 @@ class CampaignController extends Controller
         // Get old post values
         if (null !== $request->old()) {
             $campaign->fill($request->old());
-        }
-
-        // validate and save posted data
-        if ($request->isMethod('post')) {
-            if ($request->send_now == 'yes') {
-                $campaign->run_at = null;
-            } else {
-                $time = \Acelle\Library\Tool::systemTimeFromString($request->delivery_date.' '.$request->delivery_time);
-                $campaign->run_at = $time;
-            }
-
-            $campaign->save();
-            return redirect()->action('CampaignController@confirm', ['uid' => $campaign->uid]);
         }
 
         return view('campaigns.schedule', [
