@@ -11,7 +11,16 @@
                     <div class="plugin-title-column plugin-title-{{ $plugin->name }}" >
                         
                         <h5 class="no-margin text-bold kq_search">
-                            {{ $plugin->title }}                            
+                            @if (isset($settingUrls[$plugin->name]))
+                                <a
+                                    href="{{ $settingUrls[$plugin->name] }}"
+                                    class=""
+                                >
+                                    {{ $plugin->title }} 
+                                </a>
+                            @else
+                                {{ $plugin->title }} 
+                            @endif                           
                         </h5>
                         <div class="mt-1 mb-3">
                             @if (array_key_exists($plugin->name, $blacklist))
