@@ -19,11 +19,11 @@
         }
 
         getContent() {
-            return this.getContainer().find('product').html();
+            return this.getHtmlContainer().find('product').html();
         }
 
         setContent(html) {
-            this.getContainer().find('product').html(html);
+            this.getHtmlContainer().find('product').html(html);
         }
 
         setOptions(options) {
@@ -110,7 +110,7 @@
             }
         }
 
-        getContainer() {
+        getHtmlContainer() {
             if (!this.obj.find('.container').length) {
                 var div = $(`
                     <div>
