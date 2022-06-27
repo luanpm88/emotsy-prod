@@ -22,6 +22,7 @@ use Acelle\Model\TemplateCategory;
 use Acelle\Model\JobMonitor;
 use DB;
 use Exception;
+use Carbon\Carbon;
 
 class CampaignController extends Controller
 {
@@ -557,6 +558,7 @@ class CampaignController extends Controller
     public function schedule(Request $request)
     {
         $campaign = Campaign::findByUid($request->uid);
+        $currentTimezone = $campaign->customer->getTimezone();
 
         // check step
         if ($campaign->step() < 3) {
@@ -568,8 +570,26 @@ class CampaignController extends Controller
             return $this->notAuthorized();
         }
 
-        $delivery_date = isset($campaign->run_at) && $campaign->run_at != '0000-00-00 00:00:00' ? \Acelle\Library\Tool::dateTime($campaign->run_at)->format('Y-m-d') : \Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->format('Y-m-d');
-        $delivery_time = isset($campaign->run_at) && $campaign->run_at != '0000-00-00 00:00:00' ? \Acelle\Library\Tool::dateTime($campaign->run_at)->format('H:i') : \Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->format('H:i');
+        // validate and save posted data
+        if ($request->isMethod('post')) {
+            if ($request->send_now == 'yes') {
+                $campaign->run_at = null;
+            } else {
+                $runAtStr = $request->delivery_date.' '.$request->delivery_time;
+                $runAt = Carbon::createFromFormat('Y-m-d H:i', $runAtStr, $currentTimezone);
+                $campaign->run_at = $runAt->timezone('UTC'); // store in UTC
+            }
+
+            $campaign->save();
+            return redirect()->action('CampaignController@confirm', ['uid' => $campaign->uid]);
+        }
+
+        // Get the run_at datetime in current customer timezone
+        $runAt = is_null($campaign->run_at) ? Carbon::now() : $campaign->run_at;
+        $runAt->timezone($currentTimezone);
+
+        $delivery_date = $runAt->format('Y-m-d');
+        $delivery_time = $runAt->format('H:i');
 
         $rules = array(
             'delivery_date' => 'required',
@@ -579,19 +599,6 @@ class CampaignController extends Controller
         // Get old post values
         if (null !== $request->old()) {
             $campaign->fill($request->old());
-        }
-
-        // validate and save posted data
-        if ($request->isMethod('post')) {
-            if ($request->send_now == 'yes') {
-                $campaign->run_at = null;
-            } else {
-                $time = \Acelle\Library\Tool::systemTimeFromString($request->delivery_date.' '.$request->delivery_time);
-                $campaign->run_at = $time;
-            }
-
-            $campaign->save();
-            return redirect()->action('CampaignController@confirm', ['uid' => $campaign->uid]);
         }
 
         return view('campaigns.schedule', [
@@ -760,6 +767,7 @@ class CampaignController extends Controller
      */
     public function chart24h(Request $request)
     {
+        $currentTimezone = $request->user()->customer->getTimezone();
         $campaign = Campaign::findByUid($request->uid);
 
         // authorize
@@ -777,14 +785,14 @@ class CampaignController extends Controller
 
         // columns
         for ($i = 23; $i >= 0; --$i) {
-            $time = \Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->subHours($i);
+            $time = Carbon::now()->timezone($currentTimezone)->subHours($i);
             $result['columns'][] = $time->format('h') . ':00 ' . $time->format('A');
             $hours[] = $time->format('H');
         }
 
         // 24h collection
-        $openData24h = $campaign->openUniqHours(\Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->subHours(24), \Carbon\Carbon::now());
-        $clickData24h = $campaign->clickHours(\Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->subHours(24), \Carbon\Carbon::now());
+        $openData24h = $campaign->openUniqHours(Carbon::now()->timezone($currentTimezone)->subHours(24), Carbon::now()->timezone($currentTimezone));
+        $clickData24h = $campaign->clickHours(Carbon::now()->timezone($currentTimezone)->subHours(24), Carbon::now()->timezone($currentTimezone));
 
         // data
         foreach ($hours as $hour) {
@@ -1485,11 +1493,11 @@ class CampaignController extends Controller
             // Query of email addresses that DID open
             $openByEmails = $campaign->openLogs()->join('subscribers', 'tracking_logs.subscriber_id', '=', 'subscribers.id')->groupBy('subscribers.email')->select('subscribers.email');
 
-            if ($request->open == 'opened') {
+            if ($request->open == 'yes') {
                 $subscribers = $subscribers->joinSub($openByEmails, 'OpenedByEmails', function ($join) {
                     $join->on('subscribers.email', '=', 'OpenedByEmails.email');
                 });
-            } elseif ($request->open = 'not_opened') {
+            } elseif ($request->open = 'no') {
                 $subscribers = $subscribers->leftJoinSub($openByEmails, 'OpenedByEmails', function ($join) {
                     $join->on('subscribers.email', '=', 'OpenedByEmails.email');
                 })->whereNull('OpenedByEmails.email');

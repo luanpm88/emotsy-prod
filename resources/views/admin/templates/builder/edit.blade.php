@@ -40,6 +40,7 @@
                 strict: true,
                 showHelp: false,
                 showInlineToolbar: false,
+                emailMode: true,
                 lang: {!! json_encode(language()->getBuilderLang()) !!},
                 url: '{{ action('Admin\TemplateController@builderEditContent', $template->uid) }}',
                 backCallback: function() {
