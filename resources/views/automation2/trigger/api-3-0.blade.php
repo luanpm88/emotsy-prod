@@ -16,9 +16,11 @@
 
     <h6 class="mt-3">{{ trans('messages.curl_example') }}:</h6>
     <div class="small mb-3 alert bg-light py-1 px-2">
-        <code class="text-info" style="word-wrap:normal;font-size:11px">curl -X POST -H "accept:application/json" -G \
-            {{ route('automation_execute', [
+        <code class="text-info" style="word-wrap:normal;">
+<pre style="font-size:12px">curl -X POST -H "accept:application/json" -G \
+{{ route('automation_execute', [
                 'uid' => $automation->uid,
-            ]) }}? \<br> -d api_token={{ \Auth::user()->api_token }}</code>
+]) }} \
+-d api_token={{ \Auth::user()->api_token }}</pre></code>
     </div>
 </div>
