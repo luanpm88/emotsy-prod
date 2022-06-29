@@ -54,6 +54,11 @@
                         @if (empty($automation->last_error))
                             <span class="label label-flat bg-{{ $automation->status }}">{{ trans('messages.automation.status.' . $automation->status) }}</span>
                         @else
+                            <!--
+                                Automations with .last_error are still of "active" status
+                                As a result, thy will still be executed at the next cronjob check
+                                and the error might be solved then
+                            -->
                             <span class="label xtooltip label-flat bg-error" title="{{ $automation->last_error }}">Error</span>
                             <pre style="display:none">{{ $automation->last_error }}</pre>
                         @endif
