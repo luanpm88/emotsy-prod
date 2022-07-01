@@ -129,7 +129,7 @@ class OpenLog extends Model
         $messageId = StringHelper::base64UrlDecode($request->message_id);
 
         if (!TrackingLog::where('message_id', $messageId)->exists()) {
-            throw new Exception(sprintf('Message ID % not found', $messageId));
+            throw new Exception(sprintf('Message ID %s not found', $messageId));
         }
 
         $log = new self();
