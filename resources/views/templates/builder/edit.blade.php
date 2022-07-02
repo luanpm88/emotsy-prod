@@ -228,25 +228,24 @@
                 loaded: function() {
                     var thisEditor = this;
 
-                    // product widgets
-                    this.addContentWidget(new ProductListWidget(), 0, '{{ trans('builder.widget.e_commerce') }}');
-                    this.addContentWidget(new ProductWidget(), 0, '{{ trans('builder.widget.e_commerce') }}');
-
-                    // Rss widget
-                    this.addWidget(new RssWidget(), 'content', 3);
-
                     // add custom css
                     this.addCustomCss('{{ url('/core/css/builder-edit.css') }}');
-
-                    // load widgets from theme.js
-                    if (typeof(WidgetManager) !== 'undefined') {
-                        var widgets = WidgetManager.init();
-
-                        widgets.forEach(function(widget) {
-                            thisEditor.addContentWidget(widget, 0, '{{ trans('builder.widget.template_content') }}');
-                        });
-                    }
                 }
+            });
+
+            // product widgets
+            editor.addWidget(new ProductListWidget(), {
+                index: 0,
+                group: '{{ trans('builder.widget.e_commerce') }}',
+            });
+            editor.addWidget(new ProductWidget(), {
+                index: 0,
+                group: '{{ trans('builder.widget.e_commerce') }}',
+            });
+
+            // Rss widget
+            editor.addWidget(new RssWidget(), {
+                index: 3
             });
           
             editor.init();
