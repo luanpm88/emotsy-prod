@@ -43,7 +43,7 @@ class DeliveryHandler extends Model
         $formatter = new LineFormatter("[%datetime%] %channel%.%level_name%: %message%\n");
 
         $logfile = $this->getLogFile();
-        $stream = new RotatingFileHandler($logfile, 0, env('LOG_LEVEL'));
+        $stream = new RotatingFileHandler($logfile, 0, 'debug');
 
         $stream->setFormatter($formatter);
 
