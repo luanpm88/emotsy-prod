@@ -451,7 +451,7 @@ body.mode-dark.theme-white.leftbar .leftbar-hide-menu {
     background-color: #fff;
 }
 .theme-white.leftbar:not(.leftbar-closed, .mode-dark) .navbar-main:not(.navbar-right)  .main-menu ul.dropdown-menu:not(.top-user-menus) .nav-item a.dropdown-item {
-    color: rgba(0,0,0,0.65)!important;
+    color: rgba(0,0,0,0.5)!important;
 }
 .theme-white.leftbar:not(.leftbar-closed, .mode-dark) .navbar-main:not(.navbar-right)  .main-menu ul.dropdown-menu:not(.top-user-menus) .nav-item.active a.dropdown-item,
 .theme-white.leftbar:not(.leftbar-closed, .mode-dark) .navbar-main:not(.navbar-right)  .main-menu ul.dropdown-menu:not(.top-user-menus) .nav-item:hover a.dropdown-item,
