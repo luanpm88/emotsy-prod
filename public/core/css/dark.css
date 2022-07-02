@@ -813,3 +813,12 @@ body.mode-dark .topfix-close-icon-span:hover {
 body.mode-dark .topfix-search-icon:focus ~ span {
     color: rgba(255,255,255,0.9);    
 }
+body.mode-dark.leftbar:not(.leftbar-closed) .navbar-main:not(.navbar-right)  .main-menu ul.dropdown-menu:not(.top-user-menus) .nav-item a.dropdown-item {
+    color: rgba(255,255,255,0.45);    
+}
+body.mode-dark.leftbar:not(.leftbar-closed) .navbar-main:not(.navbar-right) .main-menu ul.dropdown-menu:not(.top-user-menus) .nav-item.active a.dropdown-item,
+body.mode-dark.leftbar:not(.leftbar-closed) .navbar-main:not(.navbar-right) .main-menu ul.dropdown-menu:not(.top-user-menus) .nav-item:hover a.dropdown-item,
+body.mode-dark.leftbar:not(.leftbar-closed) .navbar-main:not(.navbar-right) .main-menu ul.dropdown-menu:not(.top-user-menus) .nav-item.active a.dropdown-item .navbar-icon,
+body.mode-dark.leftbar:not(.leftbar-closed) .navbar-main:not(.navbar-right) .main-menu ul.dropdown-menu:not(.top-user-menus) .nav-item:hover a.dropdown-item .navbar-icon {
+    color: rgba(255,255,255,0.8);
+}
