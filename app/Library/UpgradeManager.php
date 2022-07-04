@@ -511,6 +511,6 @@ class UpgradeManager
      */
     public function mergeTranslationFileWithoutOverwritting($target, $source)
     {
-        updateTranslationFile($target, $source, $overwrite = false, $sort = true);
+        updateTranslationFile($target, $source, $overwrite = false, $deleteTargetKeys = true, $sort = true);
     }
 }
