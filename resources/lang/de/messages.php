@@ -901,8 +901,6 @@
        Sie können sie unten einen bestimmten Wert einrichten, der für alle Benutzer gilt, die diesen Plan abonnieren.',
   'bounce_type' => 'Art der Abweisung',
   'bounced' => 'abgewiesen',
-  'braintree.user.description' => 'Bezahlen Sie Ihr Abonnement und Ihre Dienste per Lastschrift
-     oder Kreditkarten. Automatische Abrechnung wird unterstützt',
   'brand.account_privacy' => 'Account & Privacy',
   'brand.categories' => 'Categories',
   'brand.emails' => 'Emails',
@@ -1140,7 +1138,6 @@
   'clicks_per_unique_open' => 'Klicks je eindeutige Öffnung',
   'close' => 'schließen',
   'code' => 'Code',
-  'coinpayments.user.description' => 'Bezahlen Sie Ihr Abonnement und Ihre Dienste mit einer Kryptowährung über coinpayment.com',
   'color' => 'Farbe',
   'color_scheme' => 'Farbschema',
   'color_scheme.blue' => 'Blue',
@@ -2289,8 +2286,6 @@
     mit Facebook, Twitter, LinkedIn, Google.',
   'office_phone' => 'Telefon (geschäftlich)',
   'offline' => 'Offline',
-  'offline.user.description' => 'Bezahlen Sie Ihr Abonnement und Ihre Dienste außerhalb von
-         dieser Anwendung, indem Sie die Anweisungen an der Kasse befolgen',
   'ok' => 'OK',
   'ok_enable' => 'OK, Aktivieren',
   'on_off' => 'an / aus',
@@ -2410,9 +2405,6 @@
   'payment_note' => 'Zahlungshinweis',
   'payments_history' => 'Zahlungschronik',
   'paypal' => 'PayPal',
-  'paypal.user.description' => 'Bezahlen Sie Ihr Abo und Ihre Dienste mit Ihrem PayPal-Konto.',
-  'paystack.user.description' => 'Bezahlen Sie Ihr Abonnement und Ihre Dienste per Lastschrift
-         oder Kreditkarten. Automatische Abrechnung wird unterstützt',
   'payu.merchant_key' => 'Händlerschlüssel',
   'payu.payu_base_url' => 'PayU Basis URL',
   'payu.production' => 'Für die Produktion',
@@ -2728,8 +2720,6 @@
   'rate.send' => 'Senden',
   'raw' => 'Raw',
   'raw_feedback_content' => 'Quellinhalt',
-  'razorpay.user.description' => 'Bezahlen Sie Ihr Abo und Ihre Dienste per Lastschrift
-         oder Kreditkarten. Automatische Abrechnung wird nicht unterstützt',
   're_generate_remote_job_url' => 'Re-generate URL',
   'read' => 'Lese',
   'rebuild' => 'Erneuern',
@@ -3282,8 +3272,6 @@
   'store.connected_with_acelle.desc' => 'Während der Verbindung kann Acell Produkte synchronisieren
      und Kontakte aus Ihrem Shop in eine bestimmte Mailingliste abspeichern',
   'stores_connections' => 'Geschäfte & Verbindungen',
-  'stripe.user.description' => 'Bezahlen Sie Ihr Abonnement und Ihre Dienste per Lastschrift
-     oder Kreditkarten. Automatische Abrechnung wird unterstützt',
   'style' => 'Style',
   'stylesheet_included' => 'Stylesheet einschließen',
   'sub_account.api_key' => 'API key',

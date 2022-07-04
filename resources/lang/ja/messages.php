@@ -903,8 +903,6 @@
 以下に特定の値を設定できます。これは、このプランに加入しているすべてのユーザーに適用されます。',
   'bounce_type' => 'バウンスタイプ',
   'bounced' => 'バウンス',
-  'braintree.user.description' => 'デビットを使用してサブスクリプションとサービスの支払いを行う
-     またはクレジットカード。 自動請求がサポートされています',
   'brand.account_privacy' => 'アカウントとプライバシー',
   'brand.categories' => 'カテゴリ',
   'brand.emails' => 'メール',
@@ -1139,7 +1137,6 @@
   'clicks_per_unique_open' => '開いているuniqあたりのクリック数',
   'close' => '閉じる',
   'code' => 'コード',
-  'coinpayments.user.description' => 'coinpayment.comを介して、暗号通貨でサブスクリプションとサービスの支払いを行う',
   'color' => '色',
   'color_scheme' => 'カラースキーム',
   'color_scheme.blue' => 'Blue',
@@ -2276,7 +2273,6 @@
      Facebook、Twitter、LinkedIn、Googleで。',
   'office_phone' => '会社電話番号',
   'offline' => 'オフライン',
-  'offline.user.description' => 'チェックアウト時に提供される指示に従って、アプリケーションの外部でサブスクリプションとサービスの料金を支払います。',
   'ok' => 'OK',
   'ok_enable' => 'OK, Enable',
   'on_off' => 'on / off',
@@ -2395,9 +2391,6 @@
   'payment_note' => '支払手形',
   'payments_history' => '支払い履歴',
   'paypal' => 'PayPal',
-  'paypal.user.description' => 'PayPalアカウントを使用してサブスクリプションとサービスの料金を支払います。',
-  'paystack.user.description' => 'デビットを使用してサブスクリプションとサービスの支払いを行う
-         またはクレジットカード。 自動請求がサポートされています',
   'payu.merchant_key' => 'マーチャントキー',
   'payu.payu_base_url' => 'PayUベースURL',
   'payu.production' => '生産用',
@@ -2705,8 +2698,6 @@
   'rate.send' => 'Send',
   'raw' => '生',
   'raw_feedback_content' => 'コンテンツ',
-  'razorpay.user.description' => 'デビットを使用してサブスクリプションとサービスの支払いを行う
-         またはクレジットカード。 自動請求はサポートされていません',
   're_generate_remote_job_url' => 'URLを再生成する',
   'read' => '読んだ',
   'rebuild' => '再構築',
@@ -3251,8 +3242,6 @@
   'store.connected_with_acelle' => 'あなたの店はAcelleとつながっています',
   'store.connected_with_acelle.desc' => '接続中、Acelleはストアの製品と連絡先を指定されたメールリストに同期できます',
   'stores_connections' => '店舗と接続',
-  'stripe.user.description' => 'デビットを使用してサブスクリプションとサービスの支払いを行う
-またはクレジットカード。 自動請求がサポートされています',
   'style' => 'スタイル',
   'stylesheet_included' => 'スタイルシートを含める',
   'sub_account.api_key' => 'APIキー',

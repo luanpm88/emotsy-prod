@@ -925,8 +925,6 @@
       You can set up a specific value below, which shall apply to any users subscribing to this plan.',
   'bounce_type' => 'Tipo de Bounce',
   'bounced' => 'Bounced',
-  'braintree.user.description' => 'Pay for your subscription & services using your debit
-    or credit cards. Auto billing is supported',
   'brand.account_privacy' => 'Account & Privacy',
   'brand.categories' => 'Categories',
   'brand.emails' => 'Emails',
@@ -1165,7 +1163,6 @@
   'clicks_per_unique_open' => 'Cliques únicos de aberturas',
   'close' => 'Fechar',
   'code' => 'Código',
-  'coinpayments.user.description' => 'Pay for your subscription & services with a cryptocurrency, via coinpayment.com',
   'color' => 'Cor',
   'color_scheme' => 'Esquema de cores',
   'color_scheme.blue' => 'Blue',
@@ -2315,8 +2312,6 @@
     with Facebook, Twitter, LinkedIn, Google.',
   'office_phone' => 'Telefone do escritório',
   'offline' => 'Desconectado',
-  'offline.user.description' => 'Pay for your subscription & services outside of
-        the application, following the instructions provided during checkout',
   'ok' => 'OK',
   'ok_enable' => 'OK, Enable',
   'on_off' => 'on / off',
@@ -2436,9 +2431,6 @@
   'payment_note' => 'Nota de pagamento',
   'payments_history' => 'Histórico de pagamentos',
   'paypal' => 'PayPal',
-  'paypal.user.description' => 'Pay for your subscription & services using your PayPal account.',
-  'paystack.user.description' => 'Pay for your subscription & services using your debit
-        or credit cards. Auto billing is supported',
   'payu.merchant_key' => 'Merchant Key',
   'payu.payu_base_url' => 'PayU Base URL',
   'payu.production' => 'For Production',
@@ -2758,8 +2750,6 @@
   'rate.send' => 'Send',
   'raw' => 'Raw',
   'raw_feedback_content' => 'Conteúdo bruto',
-  'razorpay.user.description' => 'Pay for your subscription & services using your debit
-        or credit cards. Auto billing is not supported',
   're_generate_remote_job_url' => 'Gerar URL',
   'read' => 'Ler',
   'rebuild' => 'Refazer',
@@ -3317,8 +3307,6 @@
   'store.connected_with_acelle.desc' => 'While connected, Acelle can synchronize products
     and contacts from your store to a specified mail list',
   'stores_connections' => 'Stores & Connections',
-  'stripe.user.description' => 'Pay for your subscription & services using your debit
-    or credit cards. Auto billing is supported',
   'style' => 'Estilo',
   'stylesheet_included' => 'Incluir folha de estilo',
   'sub_account.api_key' => 'API key',
