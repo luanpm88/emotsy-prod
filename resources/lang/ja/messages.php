@@ -2390,7 +2390,6 @@
   'payment_methods.not_valid' => 'Payment method\'s setting is not valid. Click <a href=":link">here</a> to update.',
   'payment_note' => '支払手形',
   'payments_history' => '支払い履歴',
-  'paypal' => 'PayPal',
   'payu.merchant_key' => 'マーチャントキー',
   'payu.payu_base_url' => 'PayUベースURL',
   'payu.production' => '生産用',
@@ -3489,8 +3488,6 @@
   'subscription_done.email_subject' => 'サブスクリプションが正常に作成されました',
   'subscription_done.razorpay.email' => 'Hello :customer, <br/>Your subscription to :plan plan was successfully created.<br>
     Click <a href=":link">here</a> to check your subscription status and process with payment.',
-  'subscription_done.stripe.email' => 'Hello :customer, <br/>Your subscription to :plan plan was successfully created.<br>
-    Click <a href=":link">here</a> to check your subscription status and process with payment.',
   'subscription_empty_line_1' => '現在、どのプランにも加入していません',
   'subscription_empty_line_1_admin' => 'サブスクリプションはありません',
   'subscription_finish_messages' => '<h2 class="text-semibold mt-0 text-primary">Congratulation!</h2>
@@ -3731,13 +3728,6 @@
   'transaction.amount' => '価格',
   'transaction.failed' => '失敗',
   'transaction.method' => 'メゾット',
-  'transaction.method.braintree' => 'Braintree',
-  'transaction.method.coinpayments' => 'Coinpayments',
-  'transaction.method.offline' => 'オフライン',
-  'transaction.method.paypal' => 'Paypal',
-  'transaction.method.paystack' => 'Paystack',
-  'transaction.method.razorpay' => 'Razorpay',
-  'transaction.method.stripe' => 'Stripe',
   'transaction.pending' => '保留',
   'transaction.success' => '成功',
   'transaction_for_invoice' => '請求書のトランザクション<span class="font-weight-semibold">#:uid</span>',

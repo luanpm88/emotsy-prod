@@ -2431,7 +2431,6 @@
   'payment_methods.not_valid' => 'La configuración del método de pago no es válida. Hacer clic<a href=":link">aqui</a> para actualizar.',
   'payment_note' => 'Nota de pago',
   'payments_history' => 'Historial de pagos',
-  'paypal' => 'PayPal',
   'payu.merchant_key' => 'Merchant Key',
   'payu.payu_base_url' => 'Base URL PayU',
   'payu.production' => 'Para produccion',
@@ -3566,8 +3565,6 @@
   'subscription_done.email_subject' => 'Suscripción creada!',
   'subscription_done.razorpay.email' => 'Hello :customer, <br/>Your subscription to :plan plan was successfully created.<br>
     Click <a href=":link">here</a> to check your subscription status and process with payment.',
-  'subscription_done.stripe.email' => 'Hola :customer, <br/>Su suscripción al plan :plan ha sido creada.<br>
-     Click <a href=":link">aqui</a> para verificar el estado de su suscripción y proceder con el pago.',
   'subscription_empty_line_1' => 'No se registran suscripciones en ningun plan vigente',
   'subscription_empty_line_1_admin' => 'No se registran suscriptores',
   'subscription_finish_messages' => '<h2 class="text-semibold mt-0 text-primary">Felicitaciones!</h2>
@@ -3811,13 +3808,6 @@
   'transaction.amount' => 'Amount',
   'transaction.failed' => 'Failed',
   'transaction.method' => 'Method',
-  'transaction.method.braintree' => 'Braintree',
-  'transaction.method.coinpayments' => 'Coinpayments',
-  'transaction.method.offline' => 'Offline',
-  'transaction.method.paypal' => 'Paypal',
-  'transaction.method.paystack' => 'Paystack',
-  'transaction.method.razorpay' => 'Razorpay',
-  'transaction.method.stripe' => 'Stripe',
   'transaction.pending' => 'Pending',
   'transaction.success' => 'Success',
   'transaction_for_invoice' => 'Transaction for invoice <span class="font-weight-semibold">#:uid</span>',
