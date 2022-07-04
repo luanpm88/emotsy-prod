@@ -304,7 +304,7 @@ class MailList extends Model
                             'mail_list_id' => $this->id,
                             'type' => 'text',
                             'label' => trans('messages.first_name'),
-                            'tag' => \Acelle\Model\Field::formatTag(trans('messages.first_name_tag')),
+                            'tag' => 'FIRST_NAME',
                             'required' => false,
                             'visible' => true,
                         ]);
@@ -313,7 +313,7 @@ class MailList extends Model
                             'mail_list_id' => $this->id,
                             'type' => 'text',
                             'label' => trans('messages.last_name'),
-                            'tag' => \Acelle\Model\Field::formatTag(trans('messages.last_name_tag')),
+                            'tag' => 'LAST_NAME',
                             'required' => false,
                             'visible' => true,
                         ]);
