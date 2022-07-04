@@ -249,12 +249,12 @@
      Besuchen Sie das <a href=":here"> Kunden-Dashboard </a>, um die vollständige Liste anzuzeigen',
   'admin.dashboard.recent_customers.wording' => 'Ihre Plan Leistung in den  letzten Zeiträumen. Sehen Sie, wie Leute Ihre Servicepläne abonnieren. Besuchen Sie das <a href=":here"> Kunden-Dashboard </a>, um die vollständige Liste anzuzeigen',
   'admin.dashboard.recent_subscriptions.wording' => 'Aktive Benutzer, die kürzlich abonniert haben oder vom Systemadministrator hinzugefügt wurden. Besuchen Sie das <a href=":here"> Aboverwaltungs Dashboard </a>, um die vollständige Liste anzuzeigen',
-  'admin.install_mode.saas.help' => 'SAAS mode allows you to set up your app as a web
-    platform where users can register and subscribe. You can charge
-    your users for using the email service.',
-  'admin.install_mode.standard.help' => 'This is ideal for using app as a standard email marketing
-    plugin for yourself, your team or company. All email marketing
-    features are available.',
+  'admin.install_mode.saas.help' => 'Der SAAS-Modus ermöglicht es Ihnen, Ihre App als Web einzurichten
+     Plattform, auf der sich Benutzer registrieren und abonnieren können. Sie können aufladen
+     Ihre Benutzer für die Nutzung des E-Mail-Dienstes.',
+  'admin.install_mode.standard.help' => 'Dies ist ideal, um die App als Standard-E-Mail-Marketing zu verwenden
+     Plugin für sich selbst, Ihr Team oder Unternehmen. Alles E-Mail-Marketing
+     Funktionen sind verfügbar.',
   'admin.loginas_area' => 'Back to <strong>:name</strong>',
   'admin.no_primary_payment' => 'Kein primäres Zahlungsgateway ausgewählt. Klicken Sie <a href=":link"> <strong> hier </strong> </a>, um eine auszuwählen.',
   'admin.notification.cronjob_not_active' => 'Der CronJob der Anwendung wurde während des letzten Vorgangs nicht ausgeführt :cronjob_min_interval. Zuletzt ausgeführt am :cronjob_last_executed',
@@ -342,22 +342,22 @@
   'async_job_type_desc' => 'Senden Sie E-Mails, indem Sie die PHP-untergeordneten Prozesse forcieren. Es ist erforderlich, dass die PHP `exec` Funktion auf Ihrem Server aktiviert ist. Beachten Sie, dass Async nicht mit den Funktionen Automation & Autoresponder arbeitet.',
   'at' => 'am',
   'attachments' => 'Anhänge',
-  'audience' => 'Audience',
-  'audience.audience_growth.desc' => 'How your audience growth over time',
-  'audience.audience_growth.title' => 'Your audience growth',
-  'audience.import_contacts' => 'Import contacts',
-  'audience.import_contacts.desc' => 'Import your existing contacts from a CSV or Excel file<br>
-    to quickly grow your ideas base',
-  'audience.import_contacts.title' => 'Import contacts',
-  'audience.intro' => 'Your audience is where you\'ll store and manage your contacts.<br>
-    Once you add your contacts. You\'ll be able send your first campaign.
-    We\'ll work you through the process.',
-  'audience.manage' => 'Manage your audience',
-  'audience.overview' => 'Overview',
-  'audience.quick_action' => 'Quick action',
-  'audience.quick_action.desc' => 'We\'ll show you how to grow your audience and add contacts quickly',
+  'audience' => 'publikum',
+  'audience.audience_growth.desc' => 'Wie Ihr Publikum im Laufe der Zeit wächst',
+  'audience.audience_growth.title' => 'Wachstum Ihres Publikums',
+  'audience.import_contacts' => 'Kontakte importieren',
+  'audience.import_contacts.desc' => 'Importieren Sie Ihre bestehenden Kontakte aus einer CSV- oder Excel-Datei<br>
+     um Ihre Ideenbasis schnell zu erweitern',
+  'audience.import_contacts.title' => 'Kontakte importieren',
+  'audience.intro' => 'Deine Zielgruppe ist der Ort, an dem du deine Kontakte speicherst und verwaltest.<br>
+     Sobald Sie Ihre Kontakte hinzugefügt haben. Sie können Ihre erste Kampagne senden.
+     Wir führen Sie durch den Prozess.',
+  'audience.manage' => 'Ihr Publikum verwalten',
+  'audience.overview' => 'Übersicht',
+  'audience.quick_action' => 'Schnelle Aktion',
+  'audience.quick_action.desc' => 'Wir zeigen Ihnen, wie Sie Ihr Publikum vergrößern und Kontakte schnell hinzufügen',
   'auth' => 'Auth',
-  'authentication' => 'Authentication',
+  'authentication' => 'Authentifizierung',
   'auto_event.moved' => 'Automatisierung wurde erfolgreich verschoben',
   'auto_event.updated' => 'Automatisches Event wurde erfolgreich aktualisiert.',
   'auto_event_api-call' => 'API-Abruf',
