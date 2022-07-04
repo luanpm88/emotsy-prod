@@ -4,7 +4,7 @@
     @php
         $customer = Auth::user()->customer;
         $date = $customer->getCurrentTime()->format('Y-m-d');
-        $time = $customer->getCurrentTime()->format('h:i A');
+        $time = $customer->getCurrentTime()->format('H:i');
     @endphp
 
     @include('helpers.form_control', [

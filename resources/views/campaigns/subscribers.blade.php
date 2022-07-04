@@ -185,8 +185,8 @@
                         <span class="title text-semibold text-muted">{{ trans('messages.subscribers_who') }}</span>
                         <select class="select me-3" name="open">
                             <option value="">-- {{ trans('messages.open') }} --</option>
-                            <option value="opened">{{ trans('messages.opened') }}</option>
-                            <option {{ (request()->open == 'not_opened' ? "selected" : '') }} value="not_opened">{{ trans('messages.not_opened') }}</option>
+                            <option {{ (request()->open == 'yes' ? "selected" : '') }}  value="yes">{{ trans('messages.opened') }}</option>
+                            <option {{ (request()->open == 'no' ? "selected" : '') }} value="no">{{ trans('messages.not_opened') }}</option>
                         </select>
                         <!--<span class="small-select2">
                             <select class="select" name="and_or">

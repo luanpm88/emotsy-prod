@@ -605,4 +605,14 @@ class Admin extends Model
 
         return format_datetime($datetime, $name, $this->getLanguageCode());
     }
+
+    /**
+     * Get customer timezone.
+     *
+     * @return string
+     */
+    public function getTimezone()
+    {
+        return $this->timezone;
+    }
 }

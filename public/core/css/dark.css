@@ -106,6 +106,8 @@ body.mode-dark .card {
 }
 body.mode-dark .middle-bar {
     background: rgba(0,0,0,0.3);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
 }
 body.mode-dark .middle-bar-head .middle-bar-close-button {
     background: rgba(255,255,255,0.1);
@@ -785,4 +787,38 @@ body.mode-dark .tooltipster-sidetip.tooltipster-light.tooltipster-top .tooltipst
 body.mode-dark .tooltipster-sidetip.tooltipster-light.tooltipster-top .tooltipster-arrow-border {
     border-bottom-color: rgba(255, 255, 255, 0.1)!important;
     border-top-color: rgba(255, 255, 255, 0.1)!important;
+}
+body.mode-dark .text-secondary {
+    color: rgba(255,255,255,06)!important;    
+}
+body.mode-dark .topfix-header {
+    background-color: rgba(0,0,0,0.1);
+}
+body.mode-dark .topfix-container {
+    box-shadow: 0 .125rem .25rem rgba(0,0,0,.015)!important;
+}
+body.mode-dark .topfix-search-input {
+    box-shadow: inset 0px 1px 1px rgba(255,255,255,0.05);
+}
+body.mode-dark .topfix-search-input:focus {
+    background-color: rgba(255,255,255,0.03);
+    box-shadow: inset 0px 1px 3px rgba(0,0,0,0.035);
+}
+body.mode-dark .topfix-search-icon-span, body.mode-dark .topfix-close-icon-span {
+    color: rgba(255,255,255,0.4);    
+}
+body.mode-dark .topfix-close-icon-span:hover {
+    color: rgba(255,255,255,0.8);    
+}
+body.mode-dark .topfix-search-icon:focus ~ span {
+    color: rgba(255,255,255,0.9);    
+}
+body.mode-dark.leftbar:not(.leftbar-closed) .navbar-main:not(.navbar-right)  .main-menu ul.dropdown-menu:not(.top-user-menus) .nav-item a.dropdown-item {
+    color: rgba(255,255,255,0.45);    
+}
+body.mode-dark.leftbar:not(.leftbar-closed) .navbar-main:not(.navbar-right) .main-menu ul.dropdown-menu:not(.top-user-menus) .nav-item.active a.dropdown-item,
+body.mode-dark.leftbar:not(.leftbar-closed) .navbar-main:not(.navbar-right) .main-menu ul.dropdown-menu:not(.top-user-menus) .nav-item:hover a.dropdown-item,
+body.mode-dark.leftbar:not(.leftbar-closed) .navbar-main:not(.navbar-right) .main-menu ul.dropdown-menu:not(.top-user-menus) .nav-item.active a.dropdown-item .navbar-icon,
+body.mode-dark.leftbar:not(.leftbar-closed) .navbar-main:not(.navbar-right) .main-menu ul.dropdown-menu:not(.top-user-menus) .nav-item:hover a.dropdown-item .navbar-icon {
+    color: rgba(255,255,255,0.8);
 }

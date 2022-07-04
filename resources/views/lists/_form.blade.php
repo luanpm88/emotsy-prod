@@ -105,11 +105,11 @@
     <h2 class="text-semibold">{{ trans('messages.settings') }}</h2>
     <h3 class="text-semibold">{{ trans('messages.subscription') }}</h3>
     <div class="row">
-        <div class="col-md-6 hide">
+        {{-- <div class="col-md-6 hide">
             @include('helpers.form_control', ['type' => 'text', 'name' => 'email_subscribe', 'value' => $list->email_subscribe, 'help_class' => 'list', 'rules' => Acelle\Model\MailList::$rules])
             @include('helpers.form_control', ['type' => 'text', 'name' => 'email_unsubscribe', 'value' => $list->email_unsubscribe, 'help_class' => 'list', 'rules' => Acelle\Model\MailList::$rules])
             <br />
-        </div>
+        </div> --}}
         <div class="col-md-6">
             <div class="form-group checkbox-right-switch">
                 @if ($allowedSingleOptin)

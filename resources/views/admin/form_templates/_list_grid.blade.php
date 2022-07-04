@@ -6,7 +6,7 @@
                     <span class="template-image-box2">
                         <img class="card-img-top" src="{{ $template->getThumbUrl() }}" style="height: 100%; width: auto; display: block;">
                         <div class="preview_control">
-                            <div style="width: calc(80% - 20px);">
+                            <div style="width: calc(80% - 0px);">
                                 <div class="mb-2">
                                     <a class="btn btn-light d-block form-popup-preview" href="{{ action('Admin\FormTemplateController@preview', $template->uid) }}" oxnclick="popupwindow('{{ action('Admin\TemplateController@preview', $template->uid) }}', `{{ $template->name }}`, 800, 320)"><span class="material-symbols-rounded">
                                         zoom_in

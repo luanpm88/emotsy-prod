@@ -179,7 +179,7 @@ history_toggle_off
                                                 history
                                             </span>
                                             <div class="">
-                                                <span class="heading-text"><i class="icon-history position-left text-success"></i> {{ Tool::dateTime($log->created_at)->diffForHumans() }}</span>
+                                                <span class="heading-text"><i class="icon-history position-left text-success"></i> {{ $log->created_at->timezone($currentTimezone)->diffForHumans() }}</span>
                                             </div>
                                         </div>
                                     </div>
