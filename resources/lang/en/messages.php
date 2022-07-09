@@ -2040,7 +2040,7 @@
   'list.from_email.help' => 'This is the address people will reply to.',
   'list.from_name.help' => 'This is who your emails will come from. Use something they\'ll instantly recognize, like your company name.',
   'list.import.cancel' => 'Are you sure you want to cancel the import job?',
-  'list.import.instruction' => 'Server\'s max upload file size is limited to <strong class="text-bold">:size</strong></span>. Make sure your input file does not exceed this limit.<br>Acceptable file type is CSV with a header row containing the column / field names like EMAIL, FIRST_NAME, LAST_NAME...<br>You can download a sample input file <a target="_blank" href=":csv_link"><strong> here (Sample.csv)</strong></a>',
+  'list.import.instruction' => 'Server\'s max upload file size is limited to <strong class="text-bold">:size</strong></span>. Make sure your input file does not exceed this limit.<br>Acceptable file type is CSV with a header row containing the column / field names like EMAIL, FIRST_NAME, LAST_NAME...<br>You can download a sample input file <a href=":csv_link"><strong> here (Sample.csv)</strong></a>',
   'list.import.progress.done' => 'Import is complete!',
   'list.import.progress.failed' => 'Import failed',
   'list.import.progress.queued' => 'Import is being queued for processing (job dispatched)...',
