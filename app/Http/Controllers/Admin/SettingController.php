@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Session;
 use Acelle\Helpers\LicenseHelper;
 use App;
 use Acelle\Library\Downloader;
+use Acelle\Library\Notification\SystemUrl;
 
 class SettingController extends Controller
 {
@@ -393,6 +394,9 @@ class SettingController extends Controller
             'code' => 'SECURE_CODE', ))
         );
         Setting::set('url_web_view', action('CampaignController@webView', ['message_id' => 'MESSAGE_ID']));
+
+        // Check again to clean up notification
+        SystemUrl::check();
 
         // Redirect to my lists page
         $request->session()->flash('alert-success', trans('messages.setting.updated'));
