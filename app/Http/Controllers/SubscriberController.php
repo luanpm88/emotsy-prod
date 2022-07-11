@@ -314,7 +314,7 @@ class SubscriberController extends Controller
             if (\Gate::allows('subscribe', $subscriber)) {
                 $subscriber->subscribe([
                     'message_id' => null,
-                    'user_agent' => $_SERVER['HTTP_USER_AGENT'],
+                    'user_agent' => array_key_exists('HTTP_USER_AGENT', $_SERVER) ? $_SERVER['HTTP_USER_AGENT'] : '#unknown',
                 ]);
 
                 // update MailList cache
@@ -355,7 +355,7 @@ class SubscriberController extends Controller
             if (\Gate::allows('unsubscribe', $subscriber)) {
                 $subscriber->unsubscribe([
                     'message_id' => null,
-                    'user_agent' => $_SERVER['HTTP_USER_AGENT'],
+                    'user_agent' => array_key_exists('HTTP_USER_AGENT', $_SERVER) ? $_SERVER['HTTP_USER_AGENT'] : '#unknown',
                 ]);
 
                 // Log
