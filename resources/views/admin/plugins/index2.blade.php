@@ -7,7 +7,7 @@
 @section('page_header')
 
 	<div class="topfix-header">
-		<div class="topfix-container border-bottom d-flex align-items-center shadow-sm">
+		<div class="topfix-container border-bottom d-flex align-items-center shadow-sm py-3">
 			<div style="width: 20%">
 				<div class="d-flex align-items-center">
 					<h4 class="mb-0 me-3">{{ trans('messages.plugins') }}</h4>

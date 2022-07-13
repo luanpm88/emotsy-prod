@@ -7824,7 +7824,6 @@ textarea.form-control {
     }
 }
 .topfix-container {
-    height: 70px;
     padding-left: 44px;
     padding-right: 44px;
     box-shadow: 0 .125rem .25rem rgba(0,0,0,.015)!important;
@@ -7892,4 +7891,7 @@ textarea.form-control {
     .user-menu-titles a {
         max-width: 180px;
     }
+}
+.link-underline {
+    text-decoration: underline;
 }

@@ -131,6 +131,11 @@ class PluginController extends Controller
             }
         }
 
+        if(!$request->ajax()){
+            return redirect()->action('Admin\PluginController@index')
+                ->with('alert-success', 'messages.plugins.deleted');
+        }
+
         // Redirect to my lists page
         echo trans('messages.plugins.deleted');
     }
