@@ -3600,6 +3600,7 @@
     invoice details will be calculated and
     display here',
   'switch' => 'Switch user',
+  'switch_view' => 'Switch view',
   'system' => 'System',
   'system.end_period_last_days' => 'End period last days',
   'system.recurring_charge_before_days' => 'Auto charge renew invoice before',

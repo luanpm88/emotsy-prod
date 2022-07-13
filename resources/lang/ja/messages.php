@@ -3530,6 +3530,7 @@
   'successful_deliveries' => '成功した送信',
   'suscription.order_empty' => '利用可能なプランの1つを選択すると、請求書の詳細が計算され、ここに表示されます',
   'switch' => 'ユーザーの切り替え',
+  'switch_view' => 'Switch view',
   'system' => 'システム',
   'system.end_period_last_days' => 'サブスクリプション期間が終了するまでの日数',
   'system.recurring_charge_before_days' => '前の自動定期料金',

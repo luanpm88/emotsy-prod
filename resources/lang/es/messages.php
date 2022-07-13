@@ -3609,6 +3609,7 @@
     invoice details will be calculated and
     display here',
   'switch' => 'Cambiar usuario',
+  'switch_view' => 'Switch view',
   'system' => 'Sistema',
   'system.end_period_last_days' => 'End period last days',
   'system.recurring_charge_before_days' => 'Auto charge renew invoice before',

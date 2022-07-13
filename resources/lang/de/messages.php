@@ -3565,6 +3565,7 @@
      Rechnungsdetails werden berechnet und
      hier anzeigen',
   'switch' => 'Nutzer wechseln',
+  'switch_view' => 'Switch view',
   'system' => 'System',
   'system.end_period_last_days' => 'Anzahl der Tage vor Ablauf der Abonnementlaufzeit',
   'system.recurring_charge_before_days' => 'Wiederkehrende und automatische Einladung eistellen',
