@@ -5,8 +5,8 @@
         @foreach ($plugins as $key => $plugin)
             <div class="p-4 shadow-sm bg-white rounded-3">
                 <div class="d-flex">
-                    <div>
-                        <img class="plugin-icon me-4 pe-2" src="{{ $plugin->getIconUrl() ? $plugin->getIconUrl() : url('/images/plugin.svg') }}" />
+                    <div class="me-0">
+                        <img class="plugin-icon me-4 rounded" src="{{ $plugin->getIconUrl() ? $plugin->getIconUrl() : url('/images/plugin.svg') }}" />
                     </div>
                     <div class="plugin-title-column plugin-title-{{ $plugin->name }}" >
                         
