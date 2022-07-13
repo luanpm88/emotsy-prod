@@ -1429,6 +1429,7 @@
   'disable_languages_confirm' => 'Sie sind dabei :number Sprache(n) zu deaktivieren.',
   'disable_payment_methods_confirm' => 'Sie sind dabei :number Zahlungsmethode(n) zu deaktivieren.',
   'disable_plans_confirm' => 'Sie sind dabei :number Paket/Pakete zu deaktivieren.',
+  'disable_plugin_confirm' => 'You\'re about to disable this plugin.',
   'disable_plugins_confirm' => 'Sie sind dabei das :number Plugin zu deaktivieren.',
   'disable_sending_servers_confirm' => 'Sie sind dabei :number Ausgangsserver von der Liste zu deaktivieren.',
   'disable_subscriptions_confirm' => 'Sie sind dabei :number Abonnement(s) zu deaktivieren.',
@@ -1560,6 +1561,7 @@
   'enable_email_verification_servers_confirm' => 'Sie sind dabei :number E-Mail-Verifizierungsserver(s) von der Liste zu aktivieren.',
   'enable_languages_confirm' => 'Sie sind dabei :number Sprache(n) zu aktivieren.',
   'enable_payment_methods_confirm' => 'Sie sind dabei :number Zahlungsmethode(n) zu aktivieren.',
+  'enable_plugin_confirm' => 'You\'re about to enable this plugin.',
   'enable_plugins_confirm' => 'Sie sind dabei, Folgendes zu aktivieren, :number Plugins aus der Liste.',
   'enable_sending_servers_confirm' => 'Sie sind dabei :number Ausgangsserver von der Liste zu aktivieren.',
   'enable_subscriptions_confirm' => 'Sie sind dabei :number Abonnement(s) zu aktivieren.',
@@ -2637,6 +2639,7 @@
   'please_wait_export' => 'Bitte warten bis der Export abgeschlossen ist.',
   'please_wait_import' => 'Bitte warten bis der Import abgeschlossen ist.',
   'plugin' => 'Plugin',
+  'plugin.back_to_plugins' => 'Back to plugins',
   'plugin.deleted' => 'Plugin wurde erfolgreich gelöscht',
   'plugin.installed' => 'Plugin wurde erfolgreich installiert',
   'plugin.installing' => '<strong>Installiere...</strong><p> Benutzer Plugin wird hochgeladen

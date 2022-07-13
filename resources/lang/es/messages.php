@@ -1454,6 +1454,7 @@
   'disable_languages_confirm' => 'A punto de deshabilitar :number idioma/s.',
   'disable_payment_methods_confirm' => 'A punto de deshabilitar :number metodo/ de pago/s.',
   'disable_plans_confirm' => 'A punto de deshabilitar :number plan/es.',
+  'disable_plugin_confirm' => 'You\'re about to disable this plugin.',
   'disable_plugins_confirm' => 'You\'re about to disable :number plugin(s) from the list.',
   'disable_sending_servers_confirm' => 'Estás a punto de deshabilitar :number servidor/es de envío de la lista',
   'disable_subscriptions_confirm' => 'A punto de deshabilitar :number suscripcion/es.',
@@ -1585,6 +1586,7 @@
   'enable_email_verification_servers_confirm' => 'A punto de habilitar :number email servidor de verificacion de la lista.',
   'enable_languages_confirm' => 'A punto de habilitar :number idioma/s.',
   'enable_payment_methods_confirm' => 'Esta a punto de habilitar :number metodo/s de pago/s.',
+  'enable_plugin_confirm' => 'You\'re about to enable this plugin.',
   'enable_plugins_confirm' => 'You\'re about to enable :number plugin(s) from the list.',
   'enable_sending_servers_confirm' => 'Estás a punto de habilitar :number servidor/es de envío de la lista',
   'enable_subscriptions_confirm' => 'A punto de activar :number suscripcion/es.',
@@ -2668,6 +2670,7 @@
   'please_wait_export' => 'Aguardar a que la importación finalice...',
   'please_wait_import' => 'Aguardar a que la importación finalice...',
   'plugin' => 'Plugin',
+  'plugin.back_to_plugins' => 'Back to plugins',
   'plugin.deleted' => 'Plugin was successfully deleted',
   'plugin.installed' => 'Plugin was successfully installed',
   'plugin.installing' => '<strong>Installing...</strong><p>Your plugin is being uploaded

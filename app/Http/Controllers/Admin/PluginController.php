@@ -133,7 +133,7 @@ class PluginController extends Controller
 
         if(!$request->ajax()){
             return redirect()->action('Admin\PluginController@index')
-                ->with('alert-success', 'messages.plugins.deleted');
+                ->with('alert-success',  trans('messages.plugins.deleted'));
         }
 
         // Redirect to my lists page
@@ -161,6 +161,11 @@ class PluginController extends Controller
             }
         }
 
+        if(!$request->ajax()){
+            return redirect()->back()
+                ->with('alert-success', trans('messages.plugins.disabled'));
+        }
+
         // Redirect to my lists page
         echo trans('messages.plugins.disabled');
     }
@@ -184,6 +189,11 @@ class PluginController extends Controller
             if ($request->user()->admin->can('enable', $item)) {
                 $item->activate();
             }
+        }
+
+        if(!$request->ajax()){
+            return redirect()->back()
+                ->with('alert-success',  trans('messages.plugins.enabled'));
         }
 
         // Redirect to my lists page

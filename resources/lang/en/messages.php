@@ -1447,6 +1447,7 @@
   'disable_languages_confirm' => 'You\'re about to disable :number language(s).',
   'disable_payment_methods_confirm' => 'You\'re about to disable :number payment method(s).',
   'disable_plans_confirm' => 'You\'re about to disable :number plan(s).',
+  'disable_plugin_confirm' => 'You\'re about to disable this plugin.',
   'disable_plugins_confirm' => 'You\'re about to disable :number plugin(s) from the list.',
   'disable_sending_servers_confirm' => 'You\'re about to disable :number sending server(s) from the list.',
   'disable_subscriptions_confirm' => 'You\'re about to disable subscription(s).',
@@ -1578,6 +1579,7 @@
   'enable_email_verification_servers_confirm' => 'You\'re about to enable :number email verification server(s) from the list.',
   'enable_languages_confirm' => 'You\'re about to enable :number language(s).',
   'enable_payment_methods_confirm' => 'You\'re about to enable :number payment method(s).',
+  'enable_plugin_confirm' => 'You\'re about to enable this plugin.',
   'enable_plugins_confirm' => 'You\'re about to enable :number plugin(s) from the list.',
   'enable_sending_servers_confirm' => 'You\'re about to enable :number sending server(s) from the list.',
   'enable_subscriptions_confirm' => 'You\'re about to enable subscription(s).',
@@ -2661,6 +2663,7 @@
   'please_wait_export' => 'Please wait for export to complete, it may take a few minutes. You can navigate away or even close the browser and get back later on to download the exported file.',
   'please_wait_import' => 'Import is running in the backgroud, please wait... <br>You can navigate away or even close this page and get back later to check the progress',
   'plugin' => 'Plugin',
+  'plugin.back_to_plugins' => 'Back to plugins',
   'plugin.deleted' => 'Plugin was successfully deleted',
   'plugin.installed' => 'Plugin was successfully installed',
   'plugin.installing' => '<strong>Installing...</strong><p>Your plugin is being uploaded
@@ -4140,5 +4143,4 @@
   'your_current_license' => 'Thank you for purchasing! Below is your license key, also known as Purchase Code. Your license type is',
   'your_subscriptions' => 'Your subscriptions',
   'zip_postal_code' => 'Zip / Postal code',
-  'plugin.back_to_plugins' => 'Back to plugins',
 ) ?>
