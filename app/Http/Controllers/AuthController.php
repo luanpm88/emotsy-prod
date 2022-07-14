@@ -3,7 +3,6 @@
 namespace Acelle\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Acelle\Library\Log as MailLog;
 use Acelle\Model\Customer;
 use Acelle\Model\User;
 use Acelle\Library\Facades\Hook;

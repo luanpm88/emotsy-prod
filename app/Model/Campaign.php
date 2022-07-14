@@ -24,7 +24,6 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
-use Acelle\Library\Log as MailLog;
 use DB;
 use Acelle\Model\SendingServer;
 use Monolog\Logger;
@@ -304,13 +303,9 @@ class Campaign extends Model
      */
     public static function resetMaxExecutionTime()
     {
-        try {
-            set_time_limit(0);
-            ini_set('max_execution_time', 0);
-            ini_set('memory_limit', '-1');
-        } catch (\Exception $e) {
-            MailLog::warning('Cannot reset max_execution_time: '.$e->getMessage());
-        }
+        set_time_limit(0);
+        ini_set('max_execution_time', 0);
+        ini_set('memory_limit', '-1');
     }
 
     /**
@@ -1246,9 +1241,6 @@ class Campaign extends Model
         $this->updateLinks();
 
         try {
-            MailLog::info('Sending test email for campaign `'.$this->name.'`');
-            MailLog::info('Sending test email to `'.$email.'`');
-
             // @todo: only send a test message when campaign sufficient information is available
 
             // build a temporary subscriber oject used to pass through the sending methods
@@ -1326,7 +1318,6 @@ class Campaign extends Model
     {
         // clean up failed log so that they will be included in resend
         $recipients = $this->trackingLogs()->failed();
-        MailLog::warning('Resend to those who failed to deliver: '.$recipients->count());
         $recipients->delete();
     }
 
@@ -1336,7 +1327,6 @@ class Campaign extends Model
         $recipients = $this->trackingLogs()
                          ->leftJoin('open_logs', 'tracking_logs.message_id', 'open_logs.message_id')
                          ->whereNull('open_logs.id');
-        MailLog::warning('Resend to those who did not open: '.$recipients->count());
         $recipients->delete();
     }
 
@@ -1346,7 +1336,6 @@ class Campaign extends Model
         $recipients = $this->trackingLogs()
                          ->leftJoin('click_logs', 'tracking_logs.message_id', 'click_logs.message_id')
                          ->whereNull('click_logs.id');
-        MailLog::warning('Resend to those who did not click: '.$recipients->count());
         $recipients->delete();
     }
 
