@@ -2664,6 +2664,10 @@
   'please_wait_import' => 'Import is running in the backgroud, please wait... <br>You can navigate away or even close this page and get back later to check the progress',
   'plugin' => 'Plugin',
   'plugin.back_to_plugins' => 'Back to plugins',
+  'plugin.delete_confirmation' => 'Delete confirmation',
+  'plugin.delete_confirmation.wording' => 'Removing the plugin will also remove all its data <br>
+    Are you sure you want to completely remove the plugin?
+  ',
   'plugin.deleted' => 'Plugin [:plugin] was deleted!',
   'plugin.deleted.wording' => 'The Paddle plugin and all its data have been removed from the application.
     <br>You can no longer get them back!
@@ -2682,6 +2686,7 @@
   'plugin.version' => 'Version',
   'plugin.wording' => 'Empower your application with tons of awesome plugins developed by the community.
       Integration made easier than ever!',
+  'plugin.yes_delete' => 'Yes, Delete plugin!',
   'plugin_status_active' => 'Active',
   'plugin_status_inactive' => 'Inactive',
   'plugins' => 'Plugins',
@@ -4147,9 +4152,4 @@
   'your_current_license' => 'Thank you for purchasing! Below is your license key, also known as Purchase Code. Your license type is',
   'your_subscriptions' => 'Your subscriptions',
   'zip_postal_code' => 'Zip / Postal code',
-  'plugin.delete_confirmation' => 'Delete confirmation',
-  'plugin.delete_confirmation.wording' => 'Removing the plugin will also remove all its data <br>
-    Are you sure you want to completely remove the plugin?
-  ',
-  'plugin.yes_delete' => 'Yes, Delete plugin!',
 ) ?>

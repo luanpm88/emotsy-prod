@@ -2664,7 +2664,10 @@
   'please_wait_import' => 'Import is running in the backgroud, please wait... <br>You can navigate away or even close this page and get back later to check the progress',
   'plugin' => 'Plugin',
   'plugin.back_to_plugins' => 'Back to plugins',
-  'plugin.deleted' => 'Plugin was successfully deleted',
+  'plugin.deleted' => 'Plugin [:plugin] was deleted!',
+  'plugin.deleted.wording' => 'The Paddle plugin and all its data have been removed from the application.
+    <br>You can no longer get them back!
+  ',
   'plugin.installed' => 'Plugin was successfully installed',
   'plugin.installing' => '<strong>Installing...</strong><p>Your plugin is being uploaded
       and processed, please wait!</p>',
@@ -3600,6 +3603,7 @@
     invoice details will be calculated and
     display here',
   'switch' => 'Switch user',
+  'switch_view' => 'Switch view',
   'system' => 'System',
   'system.end_period_last_days' => 'End period last days',
   'system.recurring_charge_before_days' => 'Auto charge renew invoice before',
@@ -4143,5 +4147,9 @@
   'your_current_license' => 'Thank you for purchasing! Below is your license key, also known as Purchase Code. Your license type is',
   'your_subscriptions' => 'Your subscriptions',
   'zip_postal_code' => 'Zip / Postal code',
-  'switch_view' => 'Switch view',
+  'plugin.delete_confirmation' => 'Delete confirmation',
+  'plugin.delete_confirmation.wording' => 'Removing the plugin will also remove all its data <br>
+    Are you sure you want to completely remove the plugin?
+  ',
+  'plugin.yes_delete' => 'Yes, Delete plugin!',
 ) ?>
