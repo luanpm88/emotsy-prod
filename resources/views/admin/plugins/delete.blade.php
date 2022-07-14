@@ -10,10 +10,7 @@
                     <img class="rounded-3" src="{{ $plugin->getIconUrl() }}" width="80px" />
                 </div>
                 <div>
-                    <h4 class="mb-2 font-weight-semibold d-flex align-items-center">{{ $plugin->title }}
-                        <span class="label label-flat bg-{{ $plugin->status }} ms-3">
-                        {{ trans('messages.email_verification_server_status_' . $plugin->status) }}
-                    </span></h4>
+                    <h4 class="mb-2 font-weight-semibold d-flex align-items-center">{{ $plugin->title }}</h4>
                     <p class="mb-1">{{ $plugin->description }}</p>
                     <p class="mb-3"><span class="small d-block">
                         {{ trans('messages.plugin.name') }}: 
@@ -41,14 +38,7 @@
                         @endif
                         <a class="small link-underline" href="{{ action('Admin\PluginController@index') }}">
                             {{ trans('messages.plugin.back_to_plugins') }}
-                        </a> <span class="mx-2">|</span>
-                        <a
-                            class="small link-underline"
-                            link-method="POST"
-                            href="{{ action('Admin\PluginController@delete', ["uid" => $plugin->uid]) }}">
-                            {{ trans('messages.uninstall') }}
                         </a>
-                        
                     </div>
                 </div>
                 
@@ -60,7 +50,7 @@
     <form id="deletePluginForm" action="{{ action('Admin\PluginController@delete', ["uid" => $plugin->uid]) }}" method="POST">
         @csrf
 
-        <h3>{{ trans('messages.plugin.delete_confirmation') }}</h3>
+        <h4 class="font-weight-semibold">{{ trans('messages.plugin.delete_confirmation') }}</h4>
         <p>
             {!! trans('messages.plugin.delete_confirmation.wording') !!}
         </p>
