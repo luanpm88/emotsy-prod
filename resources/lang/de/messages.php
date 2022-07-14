@@ -2640,7 +2640,14 @@
   'please_wait_import' => 'Bitte warten bis der Import abgeschlossen ist.',
   'plugin' => 'Plugin',
   'plugin.back_to_plugins' => 'Back to plugins',
+  'plugin.delete_confirmation' => 'Delete confirmation',
+  'plugin.delete_confirmation.wording' => 'Removing the plugin will also remove all its data <br>
+    Are you sure you want to completely remove the plugin?
+  ',
   'plugin.deleted' => 'Plugin wurde erfolgreich gelöscht',
+  'plugin.deleted.wording' => 'The Paddle plugin and all its data have been removed from the application.
+    <br>You can no longer get them back!
+  ',
   'plugin.installed' => 'Plugin wurde erfolgreich installiert',
   'plugin.installing' => '<strong>Installiere...</strong><p> Benutzer Plugin wird hochgeladen
       und wird verarbeitet, bitte warten!</p>',
@@ -2654,6 +2661,7 @@
   'plugin.upload.instruction' => 'Wählen Sie ein Plugin-Paket von Ihrem PC zum Hochladen aus. Normalerweise ist es ein ZIP-Archiv, das die Quelldateien sowie Metainformationen für das Plugin enthält.',
   'plugin.version' => 'Version',
   'plugin.wording' => 'Stärken Sie Ihre Anwendung mit unzähligen fantastischen Plugins, die vom Acelle Mail Team entwickelt wurden. Integration einfacher als je zuvor!',
+  'plugin.yes_delete' => 'Yes, Delete plugin!',
   'plugin_status_active' => 'Aktiv',
   'plugin_status_inactive' => 'Inaktiv',
   'plugins' => 'Plugins',
@@ -3565,6 +3573,7 @@
      Rechnungsdetails werden berechnet und
      hier anzeigen',
   'switch' => 'Nutzer wechseln',
+  'switch_view' => 'Switch view',
   'system' => 'System',
   'system.end_period_last_days' => 'Anzahl der Tage vor Ablauf der Abonnementlaufzeit',
   'system.recurring_charge_before_days' => 'Wiederkehrende und automatische Einladung eistellen',

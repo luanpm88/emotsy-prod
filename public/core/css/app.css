@@ -7895,3 +7895,15 @@ textarea.form-control {
 .link-underline {
     text-decoration: underline;
 }
+@media (max-width: 1200px) {
+    .leftbar .topfix-container {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+}
+@media (min-width: 1200px) {
+    .topbar .topfix-container {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+}

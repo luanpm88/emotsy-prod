@@ -2627,7 +2627,14 @@
   'please_wait_import' => 'インポートが完了するまでお待ちください...',
   'plugin' => 'プラグイン',
   'plugin.back_to_plugins' => 'Back to plugins',
+  'plugin.delete_confirmation' => 'Delete confirmation',
+  'plugin.delete_confirmation.wording' => 'Removing the plugin will also remove all its data <br>
+    Are you sure you want to completely remove the plugin?
+  ',
   'plugin.deleted' => 'プラグインは正常に削除されました',
+  'plugin.deleted.wording' => 'The Paddle plugin and all its data have been removed from the application.
+    <br>You can no longer get them back!
+  ',
   'plugin.installed' => 'プラグインが正常にインストールされました',
   'plugin.installing' => '<strong>Installing...</strong><p>Your plugin is being uploaded and processed, please wait!</p>',
   'plugin.name' => 'Plugin',
@@ -2640,6 +2647,7 @@
   'plugin.upload.instruction' => 'PCからプラグインパッケージを選択してアップロードします。 通常、これはプラグインのソースファイルとメタ情報を含むZIPアーカイブです。',
   'plugin.version' => 'バージョン',
   'plugin.wording' => 'Acelle Teamによって開発された多数の素晴らしいプラグインでアプリケーションを強化します。統合がこれまでになく簡単になりました！',
+  'plugin.yes_delete' => 'Yes, Delete plugin!',
   'plugin_status_active' => '有効',
   'plugin_status_inactive' => '無効',
   'plugins' => 'プラグイン',
@@ -3530,6 +3538,7 @@
   'successful_deliveries' => '成功した送信',
   'suscription.order_empty' => '利用可能なプランの1つを選択すると、請求書の詳細が計算され、ここに表示されます',
   'switch' => 'ユーザーの切り替え',
+  'switch_view' => 'Switch view',
   'system' => 'システム',
   'system.end_period_last_days' => 'サブスクリプション期間が終了するまでの日数',
   'system.recurring_charge_before_days' => '前の自動定期料金',

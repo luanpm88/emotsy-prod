@@ -2671,7 +2671,14 @@
   'please_wait_import' => 'Aguardar a que la importación finalice...',
   'plugin' => 'Plugin',
   'plugin.back_to_plugins' => 'Back to plugins',
+  'plugin.delete_confirmation' => 'Delete confirmation',
+  'plugin.delete_confirmation.wording' => 'Removing the plugin will also remove all its data <br>
+    Are you sure you want to completely remove the plugin?
+  ',
   'plugin.deleted' => 'Plugin was successfully deleted',
+  'plugin.deleted.wording' => 'The Paddle plugin and all its data have been removed from the application.
+    <br>You can no longer get them back!
+  ',
   'plugin.installed' => 'Plugin was successfully installed',
   'plugin.installing' => '<strong>Installing...</strong><p>Your plugin is being uploaded
       and processed, please wait!</p>',
@@ -2686,6 +2693,7 @@
   'plugin.version' => 'Version',
   'plugin.wording' => 'Empower your application with tons of awesome plugins developed by Acelle Mail Team.
       Integration made easier than ever!',
+  'plugin.yes_delete' => 'Yes, Delete plugin!',
   'plugin_status_active' => 'Active',
   'plugin_status_inactive' => 'Inactive',
   'plugins' => 'Plugins',
@@ -3609,6 +3617,7 @@
     invoice details will be calculated and
     display here',
   'switch' => 'Cambiar usuario',
+  'switch_view' => 'Switch view',
   'system' => 'Sistema',
   'system.end_period_last_days' => 'End period last days',
   'system.recurring_charge_before_days' => 'Auto charge renew invoice before',
