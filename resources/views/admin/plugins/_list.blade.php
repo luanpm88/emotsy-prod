@@ -80,10 +80,9 @@
                                 <ul class="dropdown-menu dropdown-menu-end">
                                     <li>
                                         <a
-                                            class="dropdown-item list-action-single"
-                                            link-confirm="{{ trans('messages.delete_plugins_confirm') }}"
-                                            href="{{ action('Admin\PluginController@delete', ["uids" => $plugin->uid]) }}"
-                                            role="button">
+                                            class="dropdown-item"
+                                            href="{{ action('Admin\PluginController@delete', ["uid" => $plugin->uid]) }}"
+                                        >
                                             <i class="material-symbols-rounded">delete</i> {{ trans('messages.uninstall') }}
                                         </a>
                                     </li>

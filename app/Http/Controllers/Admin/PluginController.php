@@ -119,25 +119,44 @@ class PluginController extends Controller
             return response()->json(["message" => trans('messages.operation_not_allowed_in_demo')], 404);
         }
 
-        $items = \Acelle\Model\Plugin::whereIn(
-            'uid',
-            is_array($request->uids) ? $request->uids : explode(',', $request->uids)
-        );
+        $plugin = Plugin::findByUid($request->uid);
 
-        foreach ($items->get() as $item) {
-            // authorize
-            if ($request->user()->admin->can('delete', $item)) {
-                $item->deleteAndCleanup();
-            }
+        if (!$request->user()->admin->can('delete', $plugin)) {
+            return $this->notAuthorized();
         }
 
-        if(!$request->ajax()){
-            return redirect()->action('Admin\PluginController@index')
-                ->with('alert-success',  trans('messages.plugins.deleted'));
+        if ($request->isMethod('post')) {
+            $pluginName = $plugin->name;
+            $plugin->deleteAndCleanup();
+
+            return view('admin.plugins.deleted', [
+                'pluginName' => $pluginName,
+            ]);
         }
 
-        // Redirect to my lists page
-        echo trans('messages.plugins.deleted');
+        return view('admin.plugins.delete', [
+            'plugin' => $plugin,
+        ]);
+
+        // $items = \Acelle\Model\Plugin::whereIn(
+        //     'uid',
+        //     is_array($request->uids) ? $request->uids : explode(',', $request->uids)
+        // );
+
+        // foreach ($items->get() as $item) {
+        //     // authorize
+        //     if ($request->user()->admin->can('delete', $item)) {
+        //         $item->deleteAndCleanup();
+        //     }
+        // }
+
+        // if(!$request->ajax()){
+        //     return redirect()->action('Admin\PluginController@index')
+        //         ->with('alert-success',  trans('messages.plugins.deleted'));
+        // }
+
+        // // Redirect to my lists page
+        // echo trans('messages.plugins.deleted');
     }
 
     /**

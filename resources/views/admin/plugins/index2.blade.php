@@ -78,9 +78,7 @@
 										<li><a class="dropdown-item" link-confirm="{{ trans('messages.disable_plugins_confirm') }}" href="{{ action('Admin\PluginController@disable') }}"><span class="material-symbols-rounded">
 		hide_source
 		</span> {{ trans('messages.disable') }}</a></li>
-										<li><a class="dropdown-item" link-confirm="{{ trans('messages.delete_plugins_confirm') }}" href="{{ action('Admin\PluginController@delete') }}"><span class="material-symbols-rounded">
-		delete_outline
-		</span> {{ trans('messages.delete') }}</a></li>
+										
 									</ul>
 								</div>
 							</div>
