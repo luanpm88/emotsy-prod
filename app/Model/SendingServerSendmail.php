@@ -23,7 +23,6 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
-use Acelle\Library\Log as MailLog;
 
 class SendingServerSendmail extends SendingServer
 {
@@ -47,8 +46,6 @@ class SendingServerSendmail extends SendingServer
         $sent = $mailer->send($message);
 
         if ($sent) {
-            MailLog::info('Sent!');
-
             return array(
                 'status' => self::DELIVERY_STATUS_SENT,
             );

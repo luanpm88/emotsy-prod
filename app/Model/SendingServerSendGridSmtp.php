@@ -22,7 +22,6 @@
 
 namespace Acelle\Model;
 
-use Acelle\Library\Log as MailLog;
 use Smtpapi\Header;
 
 class SendingServerSendGridSmtp extends SendingServerSendGrid
@@ -66,8 +65,6 @@ class SendingServerSendGridSmtp extends SendingServerSendGrid
         $sent = $mailer->send($message);
 
         if ($sent) {
-            MailLog::info('Sent!');
-
             $result = array(
                 'runtime_message_id' => $msgId,
                 'status' => self::DELIVERY_STATUS_SENT,

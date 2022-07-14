@@ -22,7 +22,6 @@
 
 namespace Acelle\Model;
 
-use Acelle\Library\Log as MailLog;
 use Acelle\Library\ExtendedSmtpTransport;
 use Exception;
 
@@ -53,8 +52,6 @@ class SendingServerElasticEmailSmtp extends SendingServerElasticEmail
         $sent = $mailer->send($message);
 
         if ($sent && $transport->getMessageId()) {
-            MailLog::info('Sent!');
-
             return array(
                 'runtime_message_id' => $transport->getMessageId(),
                 'status' => self::DELIVERY_STATUS_SENT,

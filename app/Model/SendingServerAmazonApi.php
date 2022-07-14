@@ -22,8 +22,6 @@
 
 namespace Acelle\Model;
 
-use Acelle\Library\Log as MailLog;
-
 class SendingServerAmazonApi extends SendingServerAmazon
 {
     protected $table = 'sending_servers';
@@ -42,8 +40,6 @@ class SendingServerAmazonApi extends SendingServerAmazon
                 'Data' => $message->toString(),
             ),
         ));
-
-        MailLog::info('Sent!');
 
         return array(
             'runtime_message_id' => $sent['MessageId'],

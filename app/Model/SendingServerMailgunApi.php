@@ -22,7 +22,6 @@
 
 namespace Acelle\Model;
 
-use Acelle\Library\Log as MailLog;
 use Acelle\Library\StringHelper;
 
 class SendingServerMailgunApi extends SendingServerMailgun
@@ -40,8 +39,6 @@ class SendingServerMailgunApi extends SendingServerMailgun
     {
         $toEmail = array_keys($message->getTo())[0];
         $result = $this->client()->messages()->sendMime($this->domain, [$toEmail], $message->toString(), []);
-
-        MailLog::info('Sent!');
 
         return array(
             'runtime_message_id' => StringHelper::cleanupMessageId($result->getId()),
