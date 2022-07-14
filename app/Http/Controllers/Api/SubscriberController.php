@@ -4,7 +4,6 @@ namespace Acelle\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use Acelle\Http\Controllers\Controller;
-use Acelle\Library\Log as MailLog;
 use Illuminate\Support\Facades\Log;
 use Acelle\Events\MailListSubscription;
 use Acelle\Model\Setting;

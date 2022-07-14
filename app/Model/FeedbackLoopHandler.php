@@ -22,7 +22,6 @@
 
 namespace Acelle\Model;
 
-use Acelle\Library\Log;
 use Acelle\Library\Traits\HasUid;
 
 class FeedbackLoopHandler extends DeliveryHandler
@@ -51,7 +50,7 @@ class FeedbackLoopHandler extends DeliveryHandler
                 throw new \Exception('cannot find Message-ID, skipped');
             }
 
-            Log::info('Processing abuse notification for message '.$msgId);
+            $this->logger()->info('Processing abuse notification for message '.$msgId);
 
             $trackingLog = TrackingLog::where('message_id', $msgId)->first();
             if (empty($trackingLog)) {
@@ -69,9 +68,9 @@ class FeedbackLoopHandler extends DeliveryHandler
             // just delete the bounce notification email
             imap_delete($mbox, $msgNo);
 
-            Log::info('Feedback recorded for message '.$msgId);
+            $this->logger()->info('Feedback recorded for message '.$msgId);
         } catch (\Exception $ex) {
-            Log::warning($ex->getMessage());
+            $this->logger()->warning($ex->getMessage());
         }
     }
 
