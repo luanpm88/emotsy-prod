@@ -3877,7 +3877,7 @@
   'upgrade.button.cancel' => 'Cancel',
   'upgrade.button.retry' => 'Retry',
   'upgrade.button.upgrade_now' => 'Yes, upgrade now',
-  'upgrade.checking_dependencies' => 'Checking for upgrade dependencies...',
+  'upgrade.checking_dependencies' => 'Upgrade is starting, please DO NOT close your browser...',
   'upgrade.error.cannot_write' => 'Some files cannot be updated. Please check and make sure the following files are <strong>writable</strong> by the web application, then click the <strong>Retry</strong> button',
   'upgrade.error.something_wrong' => 'Something went wrong while upgrading your application',
   'upgrade.notice' => 'Upgrade may not work correctly if the upgrade package file size exceeds the upload limit set by your hosting\'s PHP settings:',

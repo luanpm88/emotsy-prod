@@ -3,7 +3,6 @@
 namespace Acelle\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Acelle\Library\Log as MailLog;
 use Illuminate\Support\Facades\Log as LaravelLog;
 use Gate;
 use Validator;
@@ -1768,8 +1767,6 @@ class CampaignController extends Controller
                 'message_id' => $message_id,
             ]);
         } catch (\Exception $e) {
-            MailLog::error($e->getMessage());
-
             return view('somethingWentWrong', ['message' => trans('messages.the_email_no_longer_exists')]);
         }
     }

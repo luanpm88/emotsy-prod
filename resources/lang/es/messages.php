@@ -3887,7 +3887,7 @@
   'upgrade.button.cancel' => 'Cancelar',
   'upgrade.button.retry' => 'Reintentar',
   'upgrade.button.upgrade_now' => 'Si, actualizar ahora',
-  'upgrade.checking_dependencies' => 'Checking for upgrade dependencies...',
+  'upgrade.checking_dependencies' => 'Upgrade is starting, please DO NOT close your browser...',
   'upgrade.error.cannot_write' => 'Algunos archivos no se pueden actualizar. Compruebe y asegúrese de que la aplicación web <strong> puede escribir </strong> en los siguientes archivos, luego haga clic en el botón <strong> Reintentar </strong>',
   'upgrade.error.something_wrong' => 'Algo salió mal al actualizar su aplicación',
   'upgrade.notice' => 'Upgrade may not work correctly if the upgrade package file size exceeds the upload limit set by your hosting\'s PHP settings:',

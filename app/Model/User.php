@@ -25,7 +25,6 @@ namespace Acelle\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Acelle\Notifications\ResetPassword;
-use Acelle\Library\Log as MailLog;
 use Acelle\Library\ExtendedSwiftMessage;
 use Acelle\Model\Setting;
 use Illuminate\Http\UploadedFile;
@@ -164,8 +163,6 @@ class User extends Authenticatable
         if (array_key_exists('error', $result)) {
             throw new \Exception($result['error']);
         }
-
-        MailLog::info('Sent activation email to '.$this->email);
     }
 
     /**

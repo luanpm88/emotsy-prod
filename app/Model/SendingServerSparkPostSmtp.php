@@ -22,8 +22,6 @@
 
 namespace Acelle\Model;
 
-use Acelle\Library\Log as MailLog;
-
 class SendingServerSparkPostSmtp extends SendingServerSparkPost
 {
     protected $table = 'sending_servers';
@@ -52,8 +50,6 @@ class SendingServerSparkPostSmtp extends SendingServerSparkPost
         $sent = $mailer->send($message);
 
         if ($sent) {
-            MailLog::info('Sent!');
-
             return array(
                 'status' => self::DELIVERY_STATUS_SENT,
             );
