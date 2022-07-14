@@ -1845,7 +1845,7 @@ class MailList extends Model
             $subscriber->status = 'subscribed';
         } elseif ($this->subscribe_confirmation) {
             if ($subscriber->isSubscribed()) {
-                MailLog::info("Subscriber {$subscriber->email} already in the list");
+                //
             } else {
                 $subscriber->status = 'unconfirmed';
             }
@@ -1870,10 +1870,7 @@ class MailList extends Model
             MailListSubscription::dispatch($subscriber);
         }
 
-        MailLog::info("Subscriber {$subscriber->email} is added to list {$this->name} via {$source}");
-
         if ($this->subscribe_confirmation && !$subscriber->isSubscribed() && $source != Subscriber::SUBSCRIPTION_TYPE_ADDED) {
-            MailLog::info("Send subscription confirmation email to {$subscriber->email}, list {$this->name}");
             $this->sendSubscriptionConfirmationEmail($subscriber);
         }
 
