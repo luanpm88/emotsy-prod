@@ -124,7 +124,13 @@ class Automation2Controller extends Controller
 
         // saving
         if ($request->isMethod('post')) {
-            $validator = $automation->createFromArray($request->all());
+            $params = $request->all();
+
+            if (isset($params['options'])) {
+                $params['options'] = $this->prepareOptions($params['options'], $customer);
+            }
+
+            $validator = $automation->createFromArray($params);
 
             // redirect if fails
             if ($validator->fails()) {
