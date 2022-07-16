@@ -114,9 +114,9 @@ class Controller extends BaseController
 
     public function validateToken($api_token)
     {
-        $valid = is_object(\Acelle\Model\User::where('api_token', $api_token)->first());
+        $first = \Acelle\Model\User::where('api_token', $api_token)->first();
 
-        if ($valid) {
+        if ($first) {
             return response()
                 ->json([
                     'status' => 'success',
