@@ -92,7 +92,7 @@ class Admin extends Model
      */
     public function hasCustomerAccount()
     {
-        return is_object($this->user) && is_object($this->user->customer);
+        return $this->user && $this->user->customer;
     }
 
     /**
@@ -326,7 +326,7 @@ class Admin extends Model
      */
     public function getLanguageCode()
     {
-        return is_object($this->language) ? $this->language->code : null;
+        return $this->language ? $this->language->code : null;
     }
 
     /**
@@ -337,7 +337,7 @@ class Admin extends Model
     public function getLanguageCodeFull()
     {
         $region_code = $this->language->region_code ? strtoupper($this->language->region_code) : strtoupper($this->language->code);
-        return is_object($this->language) ? ($this->language->code.'-'.$region_code) : null;
+        return $this->language ? ($this->language->code.'-'.$region_code) : null;
     }
 
     /**
