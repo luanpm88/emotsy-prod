@@ -682,7 +682,7 @@ class MailList extends Model
         // @todo: trigger MailListSubscription event here?
 
         // Contact
-        if (is_object($this->contact)) {
+        if ($this->contact) {
             $new_contact = $this->contact->replicate();
             $new_contact->uid = uniqid();
             $new_contact->save();
@@ -1648,7 +1648,7 @@ class MailList extends Model
             // If customer dont have permission creating sending servers
         } elseif ($this->customer->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_SYSTEM) {
             // Check if has sending servers for current subscription
-            if (is_object($subscription)) {
+            if ($subscription) {
                 /*
                 if ($subscription->plan->getOption('all_sending_servers') == 'yes') {
                     if (\Acelle\Model\SendingServer::system()->count()) {
@@ -1746,7 +1746,7 @@ class MailList extends Model
         $copy->save();
 
         // Contact
-        if (is_object($this->contact)) {
+        if ($this->contact) {
             $new_contact = $this->contact->replicate();
             $new_contact->save();
 
@@ -1794,7 +1794,7 @@ class MailList extends Model
     {
         // Validation
         // It is ok to have subscriber subscribe again without any confusing message
-        //     if (is_object($subscriber) && $subscriber->status == \Acelle\Model\Subscriber::STATUS_SUBSCRIBED) {
+        //     if ($subscriber && $subscriber->status == \Acelle\Model\Subscriber::STATUS_SUBSCRIBED) {
         //        $rules['email_already_subscribed'] = 'required';
         //     }
 
@@ -2019,7 +2019,7 @@ class MailList extends Model
         $saved_ids = [];
         foreach ($request->fields as $uid => $item) {
             $field = \Acelle\Model\Field::findByUid($item['uid']);
-            if (!is_object($field)) {
+            if (!$field) {
                 $field = new \Acelle\Model\Field();
                 $field->mail_list_id = $this->id;
             }
@@ -2067,7 +2067,7 @@ class MailList extends Model
         if (isset($params['fields'])) {
             foreach ($params['fields'] as $key => $item) {
                 $field = \Acelle\Model\Field::findByUid($item['uid']);
-                if (!is_object($field)) {
+                if (!$field) {
                     $field = new \Acelle\Model\Field();
                     $field->uid = $key;
                 }
