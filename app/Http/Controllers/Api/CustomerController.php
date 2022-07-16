@@ -221,7 +221,7 @@ class CustomerController extends Controller
 
         // Current subscription
         $subscription = $customer->getCurrentSubscription();
-        if (is_object($subscription)) {
+        if ($subscription) {
             $result['current_subscription'] = [
                 'uid' => $subscription->uid,
                 'plan_name' => $subscription->plan_name,
@@ -329,7 +329,7 @@ class CustomerController extends Controller
         $plan = \Acelle\Model\Plan::findByUid($plan_uid);
 
         // check if item exists
-        if (!is_object($plan)) {
+        if (!$plan) {
             return \Response::json(array('status' => 0, 'message' => 'Can not find plan with id: ' . $plan_uid), 404);
         }
 

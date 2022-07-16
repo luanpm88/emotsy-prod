@@ -186,7 +186,7 @@ class SendingServer extends Model implements HasQuotaInterface
      */
     public function getVerp($recipient)
     {
-        if (is_object($this->bounceHandler)) {
+        if ($this->bounceHandler) {
             $validator = \Validator::make(
                 ['email' => $this->bounceHandler->username],
                 ['email' => 'required|email']

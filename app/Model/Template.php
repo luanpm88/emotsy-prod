@@ -229,7 +229,7 @@ class Template extends Model
      */
     public function displayCreatorName()
     {
-        return is_object($this->admin) ? $this->admin->user->displayName() : (is_object($this->customer) ? $this->customer->user->displayName() : '');
+        return $this->admin ? $this->admin->user->displayName() : ($this->customer ? $this->customer->user->displayName() : '');
     }
 
     /**

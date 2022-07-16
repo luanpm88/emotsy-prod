@@ -46,7 +46,7 @@ class CustomerController extends Controller
         $subscription = $customer->subscription;
 
         $next_billing_date = null;
-        if (is_object($subscription)) {
+        if ($subscription) {
             $next_billing_date = $subscription->ends_at;
             if ($subscription->isActive()) {
                 $next_billing_date = $subscription->current_period_ends_at;

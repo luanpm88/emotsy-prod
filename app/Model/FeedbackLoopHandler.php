@@ -32,8 +32,8 @@ class FeedbackLoopHandler extends DeliveryHandler
 
     // Available feedback types
     // Reference https://en.wikipedia.org/wiki/Abuse_Reporting_Format
-    const FEEDBACK_TYPES = ['abuse', 'fraud', 'virus', 'other', 'not-spam'];
-    const EXCLUDED_FEEDBACK_TYPES = ['not-spam'];
+    public const FEEDBACK_TYPES = ['abuse', 'fraud', 'virus', 'other', 'not-spam'];
+    public const EXCLUDED_FEEDBACK_TYPES = ['not-spam'];
 
     /**
      * Process feedback message, extract the feedback information (comply to RFC).

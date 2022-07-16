@@ -292,7 +292,7 @@ class User extends Authenticatable
 
         $userActivation = $this->userActivation;
 
-        if (!is_object($userActivation)) {
+        if (!$userActivation) {
             $userActivation = new \Acelle\Model\UserActivation();
             $userActivation->user_id = $this->id;
         }
@@ -337,7 +337,7 @@ class User extends Authenticatable
      */
     public function isAdmin()
     {
-        return is_object($this->admin);
+        return !is_null($this->admin);
     }
 
     /**
