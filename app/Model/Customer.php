@@ -282,7 +282,7 @@ class Customer extends Model
      */
     public function activeSubscription()
     {
-        return (is_object($this->subscription) && $this->subscription->isActive()) ? $this->subscription : null;
+        return ($this->subscription && $this->subscription->isActive()) ? $this->subscription : null;
     }
 
     public function useOwnSendingServer()
@@ -674,7 +674,7 @@ class Customer extends Model
      */
     public function getLanguageCode()
     {
-        return is_object($this->language) ? $this->language->code : null;
+        return $this->language ? $this->language->code : null;
     }
 
     /**
@@ -685,7 +685,7 @@ class Customer extends Model
     public function getLanguageCodeFull()
     {
         $region_code = $this->language->region_code ? strtoupper($this->language->region_code) : strtoupper($this->language->code);
-        return is_object($this->language) ? ($this->language->code.'-'.$region_code) : null;
+        return $this->language ? ($this->language->code.'-'.$region_code) : null;
     }
 
     /**
@@ -1129,7 +1129,7 @@ class Customer extends Model
      */
     public function hasAdminAccount()
     {
-        return is_object($this->user) && is_object($this->user->admin);
+        return $this->user && $this->user->admin;
     }
 
     /**
@@ -1159,7 +1159,7 @@ class Customer extends Model
      */
     public function currentPlanName()
     {
-        return is_object($this->activeSubscription()) ?
+        return $this->activeSubscription() ?
             $this->activeSubscription()->plan->name :
             ''
         ;
@@ -1224,7 +1224,7 @@ class Customer extends Model
      */
     public function getContact()
     {
-        if (is_object($this->contact)) {
+        if ($this->contact) {
             $contact = $this->contact;
         } else {
             $contact = new \Acelle\Model\Contact([
@@ -1382,7 +1382,7 @@ class Customer extends Model
      */
     public function getOptions()
     {
-        if (is_object($this->activeSubscription())) {
+        if ($this->activeSubscription()) {
             // Find plan
             return $this->activeSubscription()->plan->getOptions();
         } else {
@@ -1600,7 +1600,7 @@ class Customer extends Model
             return false;
         }
 
-        if ($plan->useSystemSendingServer() && is_object($plan->primarySendingServer())) {
+        if ($plan->useSystemSendingServer() && $plan->primarySendingServer()) {
             return $plan->primarySendingServer()->allowUnverifiedFromEmailAddress();
         }
 
@@ -1612,7 +1612,7 @@ class Customer extends Model
      */
     public function getCurrentPeriodEndsAt()
     {
-        return (is_object($this->subscription) && $this->subscription->isActive()) ? $this->current_period_ends_at : null;
+        return ($this->subscription && $this->subscription->isActive()) ? $this->current_period_ends_at : null;
     }
 
     /**
