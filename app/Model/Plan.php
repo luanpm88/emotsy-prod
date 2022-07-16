@@ -1090,7 +1090,7 @@ class Plan extends Model
 
         $pss = $this->plansSendingServers()->where('is_primary', '=', true)->first();
         // @todo: raise 1 cái exception nếu $pss null, ko return null sẽ gây lỗi tiềm ẩn
-        return is_object($pss) ? $pss->sendingServer->mapType() : null;
+        return $pss ? $pss->sendingServer->mapType() : null;
     }
 
     /**
@@ -1164,7 +1164,7 @@ class Plan extends Model
      */
     public function hasPrimarySendingServer()
     {
-        return is_object($this->primarySendingServer());
+        return !is_null($this->primarySendingServer());
     }
 
     /**
