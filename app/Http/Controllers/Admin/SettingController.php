@@ -60,7 +60,7 @@ class SettingController extends Controller
         // validate and save posted data
         if ($request->isMethod('post')) {
             // Prenvent save from demo mod
-            if ($this->isDemoMode()) {
+            if (config('app.demo')) {
                 return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
             }
 
@@ -134,7 +134,7 @@ class SettingController extends Controller
         // validate and save posted data
         if ($request->isMethod('post')) {
             // Prenvent save from demo mod
-            if ($this->isDemoMode()) {
+            if (config('app.demo')) {
                 return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
             }
 
@@ -266,7 +266,7 @@ class SettingController extends Controller
         // validate and save posted data
         if ($request->isMethod('post')) {
             // Prenvent save from demo mod
-            if ($this->isDemoMode()) {
+            if (config('app.demo')) {
                 return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
             }
 
@@ -335,7 +335,7 @@ class SettingController extends Controller
         // validate and save posted data
         if ($request->isMethod('post')) {
             // Prenvent save from demo mod
-            if ($this->isDemoMode()) {
+            if (config('app.demo')) {
                 return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
             }
 
@@ -461,7 +461,7 @@ class SettingController extends Controller
         // validate and save posted data
         if ($request->isMethod('post')) {
             // Prenvent save from demo mod
-            if ($this->isDemoMode()) {
+            if (config('app.demo')) {
                 return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
             }
 
@@ -660,7 +660,7 @@ class SettingController extends Controller
         // validate and save posted data
         if ($request->isMethod('post')) {
             // Prenvent save from demo mod
-            if ($this->isDemoMode()) {
+            if (config('app.demo')) {
                 return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
             }
 
@@ -705,7 +705,7 @@ class SettingController extends Controller
             return $this->notAuthorized();
         }
 
-        if ($this->isDemoMode()) {
+        if (config('app.demo')) {
             return $this->notAuthorized();
         }
 
@@ -729,7 +729,7 @@ class SettingController extends Controller
         // Setting::updateAll();
         $settings = Setting::getAll();
 
-        if ($this->isDemoMode()) {
+        if (config('app.demo')) {
             return $this->notAuthorized();
         }
 

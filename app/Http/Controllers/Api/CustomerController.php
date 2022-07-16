@@ -122,7 +122,7 @@ class CustomerController extends Controller
             $user = $customer->user;
             $user->fill($request->all());
 
-            if ($this->isDemoMode()) {
+            if (config('app.demo')) {
                 return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
             }
 

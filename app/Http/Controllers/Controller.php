@@ -27,16 +27,6 @@ class Controller extends BaseController
     }
 
     /**
-     * Check if the site is in demo mode.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function isDemoMode()
-    {
-        return config('app.demo');
-    }
-
-    /**
      * Check if the user is not authorized.
      *
      * @return \Illuminate\Http\Response

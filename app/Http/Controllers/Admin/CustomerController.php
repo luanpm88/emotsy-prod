@@ -214,14 +214,14 @@ class CustomerController extends Controller
         }
 
         // Prenvent save from demo mod
-        if ($this->isDemoMode()) {
+        if (config('app.demo')) {
             return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
         }
 
         // save posted data
         if ($request->isMethod('patch')) {
             // Prenvent save from demo mod
-            if ($this->isDemoMode()) {
+            if (config('app.demo')) {
                 return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
             }
 

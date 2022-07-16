@@ -28,7 +28,7 @@ class AccountController extends Controller
         // Save posted data
         if ($request->isMethod('post')) {
             // Prenvent save from demo mod
-            if ($this->isDemoMode()) {
+            if (config('app.demo')) {
                 return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
             }
 
@@ -108,7 +108,7 @@ class AccountController extends Controller
         // save posted data
         if ($request->isMethod('post')) {
             // Prenvent save from demo mod
-            if ($this->isDemoMode()) {
+            if (config('app.demo')) {
                 return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
             }
 
