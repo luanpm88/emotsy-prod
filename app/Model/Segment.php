@@ -247,7 +247,7 @@ class Segment extends Model
                         $cond = 'LOWER(sf'.$number.'.value) LIKE '.db_quote('%'.$keyword.'%');
                         break;
                     case 'not_contains':
-                        $cond = 'LOWER(sf'.$number.'.value) NOT LIKE '.db_quote('%'.$keyword.'%');
+                        $cond = '(LOWER(sf'.$number.'.value) NOT LIKE '.db_quote('%'.$keyword.'%').' OR sf'.$number.'.value IS NULL)';
                         break;
                     case 'starts':
                         $cond = 'LOWER(sf'.$number.'.value) LIKE '.db_quote('%'.$keyword.'%');
