@@ -90,7 +90,7 @@ class AccountController extends Controller
     {
         // Get current user
         $admin = $request->user()->admin;
-        if (is_object($admin->contact)) {
+        if ($admin->contact) {
             $contact = $admin->contact;
         } else {
             $contact = new \Acelle\Model\Contact([
@@ -101,7 +101,7 @@ class AccountController extends Controller
         }
 
         // Create new company if null
-        if (!is_object($contact)) {
+        if (!$contact) {
             $contact = new \Acelle\Model\Contact();
         }
 
@@ -118,7 +118,7 @@ class AccountController extends Controller
 
             // Save current user info
             if ($contact->save()) {
-                if (is_object($contact)) {
+                if ($contact) {
                     $admin->contact_id = $contact->id;
                     $admin->save();
                 }
