@@ -255,7 +255,7 @@ function language_code()
         $language_code = $_COOKIE['last_language_code'];
     } elseif (app()->getLocale()) {
         $language_code = app()->getLocale();
-    } elseif (is_object($default_language)) {
+    } elseif ($default_language) {
         $language_code = $default_language->code;
     } else {
         $language_code = 'en';

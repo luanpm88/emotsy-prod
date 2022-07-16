@@ -57,7 +57,7 @@ class Setting extends Model
     {
         $setting = self::where('name', $name)->first();
 
-        if (is_object($setting)) {
+        if ($setting) {
             return $setting->value;
         } elseif (isset(self::defaultSettings()[$name])) {
             return self::defaultSettings()[$name]['value'];
@@ -96,7 +96,7 @@ class Setting extends Model
     {
         $option = self::where('name', $name)->first();
 
-        if (is_object($option)) {
+        if ($option) {
             $option->value = $val;
         } else {
             $option = new self();
