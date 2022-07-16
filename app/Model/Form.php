@@ -28,6 +28,11 @@ class Form extends Model
         return $this->belongsTo('Acelle\Model\Template');
     }
 
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class);
+    }
+
     public static function newDefault($customer)
     {
         $form = new self();

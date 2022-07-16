@@ -1041,7 +1041,7 @@ class Plan extends Model
         $query = $this->plansSendingServers()->where('is_primary', '=', true);
         if (!$query->count()) {
             $first = $this->plansSendingServers()->first();
-            if (is_object($first)) {
+            if ($first) {
                 $first->is_primary = true;
                 $first->save();
             }
