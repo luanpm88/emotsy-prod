@@ -107,7 +107,7 @@ class CustomerController extends Controller
         $customer = \Acelle\Model\Customer::findByUid($uid);
 
         // check if item exists
-        if (!is_object($customer)) {
+        if (!$customer) {
             return \Response::json(array('status' => 0, 'message' => 'Customer not found'), 404);
         }
 
@@ -180,7 +180,7 @@ class CustomerController extends Controller
         $customer = \Acelle\Model\Customer::findByUid($uid);
 
         // check if item exists
-        if (!is_object($customer)) {
+        if (!$customer) {
             return \Response::json(array('message' => 'Customer not found'), 404);
         }
 
@@ -202,7 +202,7 @@ class CustomerController extends Controller
 
         // Customer contact
         $contact = $customer->contact;
-        if (is_object($contact)) {
+        if ($contact) {
             $result['contact'] = [
                 'first_name' => $contact->first_name,
                 'last_name' => $contact->last_name,
@@ -252,7 +252,7 @@ class CustomerController extends Controller
         $customer = \Acelle\Model\Customer::findByUid($uid);
 
         // check if item exists
-        if (!is_object($customer)) {
+        if (!$customer) {
             return \Response::json(array('status' => 0, 'message' => 'Customer not found'), 404);
         }
 
@@ -286,7 +286,7 @@ class CustomerController extends Controller
         $customer = \Acelle\Model\Customer::findByUid($uid);
 
         // check if item exists
-        if (!is_object($customer)) {
+        if (!$customer) {
             return \Response::json(array('status' => 0, 'message' => 'Customer not found'), 404);
         }
 
@@ -317,7 +317,7 @@ class CustomerController extends Controller
         $customer = \Acelle\Model\Customer::findByUid($uid);
 
         // check if item exists
-        if (!is_object($customer)) {
+        if (!$customer) {
             return \Response::json(array('status' => 0, 'message' => 'Customer not found'), 404);
         }
 
