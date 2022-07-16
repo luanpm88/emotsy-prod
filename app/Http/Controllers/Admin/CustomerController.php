@@ -5,7 +5,6 @@ namespace Acelle\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use Acelle\Http\Controllers\Controller;
 use Acelle\Model\Plan;
-use Acelle\Cashier\Cashier;
 use Acelle\Library\Facades\Hook;
 
 class CustomerController extends Controller
