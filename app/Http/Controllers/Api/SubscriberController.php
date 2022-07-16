@@ -31,7 +31,7 @@ class SubscriberController extends Controller
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
 
         // authorize
-        if (!is_object($list)) {
+        if (!$list) {
             return \Response::json(array('message' => trans('List not found')), 400);
         }
         // authorize
@@ -85,7 +85,7 @@ class SubscriberController extends Controller
             $list = MailList::findByUid($request->list_uid);
 
             // authorize
-            if (!is_object($list)) {
+            if (!$list) {
                 return \Response::json(array('message' => trans('List not found')), 400);
             }
 
@@ -141,7 +141,7 @@ class SubscriberController extends Controller
         $list = $item->mailList;
 
         // check if item exists
-        if (!is_object($item)) {
+        if (!$item) {
             return \Response::json(array('message' => 'Subscriber not found'), 404);
         }
 
@@ -185,7 +185,7 @@ class SubscriberController extends Controller
         $subscriber = \Acelle\Model\Subscriber::findByUid($uid);
 
         // check if item exists
-        if (!is_object($subscriber)) {
+        if (!$subscriber) {
             return \Response::json(array('status' => 0, 'message' => 'Subscriber not found'), 404);
         }
 
@@ -237,7 +237,7 @@ class SubscriberController extends Controller
         $subscriber = \Acelle\Model\Subscriber::findByUid($uid);
 
         // check if item exists
-        if (!is_object($subscriber)) {
+        if (!$subscriber) {
             return \Response::json(array('status' => 0, 'message' => 'Subscriber not found'), 404);
         }
 
@@ -290,14 +290,14 @@ class SubscriberController extends Controller
         $subscriber = \Acelle\Model\Subscriber::findByUid($uid);
 
         // check if item exists
-        if (!is_object($subscriber)) {
+        if (!$subscriber) {
             return \Response::json(array('status' => 0, 'message' => 'Subscriber not found'), 404);
         }
 
         $list = $subscriber->mailList;
 
         // check if item exists
-        if (!is_object($subscriber)) {
+        if (!$subscriber) {
             return \Response::json(array('status' => 0, 'message' => 'Subscriber not found'), 404);
         }
 
