@@ -463,7 +463,7 @@ class CustomerController extends Controller
             return $this->notAuthorized();
         }
 
-        if (is_object($customer->contact)) {
+        if ($customer->contact) {
             $contact = $customer->contact;
         } else {
             $contact = new \Acelle\Model\Contact([
@@ -474,7 +474,7 @@ class CustomerController extends Controller
         }
 
         // Create new company if null
-        if (!is_object($contact)) {
+        if (!$contact) {
             $contact = new \Acelle\Model\Contact();
         }
 
@@ -486,10 +486,8 @@ class CustomerController extends Controller
 
             // Save current user info
             if ($contact->save()) {
-                if (is_object($contact)) {
-                    $customer->contact_id = $contact->id;
-                    $customer->save();
-                }
+                $customer->contact_id = $contact->id;
+                $customer->save();
                 $request->session()->flash('alert-success', trans('messages.customer_contact.updated'));
             }
         }
