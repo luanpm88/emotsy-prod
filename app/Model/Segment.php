@@ -519,7 +519,7 @@ class Segment extends Model
 
             $condition->segment_id = $this->id;
             $field = \Acelle\Model\Field::findByUid($param['field_id']);
-            if (is_object($field)) {
+            if ($field) {
                 $condition->field_id = $field->id;
             } else {
                 $condition->field_id = null;

@@ -278,7 +278,7 @@ class Campaign extends Model
                 }
                 $groups[$lists_segment->mail_list_id]['segment_uids'] = [];
             }
-            if (is_object($lists_segment->segment) && !in_array($lists_segment->segment->uid, $groups[$lists_segment->mail_list_id]['segment_uids'])) {
+            if ($lists_segment->segment && !in_array($lists_segment->segment->uid, $groups[$lists_segment->mail_list_id]['segment_uids'])) {
                 $groups[$lists_segment->mail_list_id]['segment_uids'][] = $lists_segment->segment->uid;
             }
         }
@@ -454,7 +454,7 @@ class Campaign extends Model
     public static function getSelectOptions($customer = null, $status = null)
     {
         $query = self::getAll();
-        if (is_object($customer)) {
+        if ($customer) {
             $query = $query->where('customer_id', '=', $customer->id);
         }
         if (isset($status)) {
@@ -543,7 +543,7 @@ class Campaign extends Model
         $step = 0;
 
         // Step 1
-        if (is_object($this->defaultMailList)) {
+        if ($this->defaultMailList) {
             $step = 1;
         } else {
             return $step;
@@ -573,7 +573,7 @@ class Campaign extends Model
 
         // Step 5
         // @todo: consider removing this check!
-        if (is_object($this->subscribers([])->limit(1)->first())) {
+        if ($this->subscribers([])->limit(1)->first()) {
             $step = 5;
         } else {
             return $step;
@@ -627,12 +627,12 @@ class Campaign extends Model
                 'name' => $this->name,
         ];
 
-        if (is_object($this->defaultMailList)) {
+        if ($this->defaultMailList) {
             $data['list_id'] = $this->default_mail_list_id;
             $data['list_name'] = $this->defaultMailList->name;
         }
 
-        if (is_object($this->segment)) {
+        if ($this->segment) {
             $data['segment_id'] = $this->segment_id;
             $data['segment_name'] = $this->segment->name;
         }
@@ -981,7 +981,7 @@ class Campaign extends Model
     {
         $last = $this->campaign_track_opens()->orderBy('created_at', 'desc')->first();
 
-        return is_object($last) ? $last->created_at : null;
+        return $last ? $last->created_at : null;
     }
 
     public static function topOpens($number = 5, $customer = null)
@@ -1410,7 +1410,7 @@ class Campaign extends Model
 
                         $lists_segment = new CampaignsListsSegment();
                         $lists_segment->campaign_id = $this->id;
-                        if (is_object($mail_list)) {
+                        if ($mail_list) {
                             $lists_segment->mail_list_id = $mail_list->id;
                         }
                         $lists_segment->segment_id = $segment->id;
@@ -1419,7 +1419,7 @@ class Campaign extends Model
                 } else {
                     $lists_segment = new CampaignsListsSegment();
                     $lists_segment->campaign_id = $this->id;
-                    if (is_object($mail_list)) {
+                    if ($mail_list) {
                         $lists_segment->mail_list_id = $mail_list->id;
                     }
                     $this->listsSegments->push($lists_segment);
@@ -1481,13 +1481,13 @@ class Campaign extends Model
      */
     public function displayRecipients()
     {
-        if (!is_object($this->defaultMailList)) {
+        if (!$this->defaultMailList) {
             return '';
         }
 
         $lines = [];
         foreach ($this->getListsSegmentsGroups() as $lists_segments_group) {
-            if (is_object($lists_segments_group['list'])) {
+            if ($lists_segments_group['list']) {
                 $list_name = $lists_segments_group['list']->name;
 
                 $segment_names = [];
@@ -1722,7 +1722,7 @@ class Campaign extends Model
         // Tacking domain
         if (isset($params['custom_tracking_domain']) && $params['custom_tracking_domain'] && isset($params['tracking_domain_uid'])) {
             $tracking_domain = \Acelle\Model\TrackingDomain::findByUid($params['tracking_domain_uid']);
-            if (is_object($tracking_domain)) {
+            if ($tracking_domain) {
                 $this->tracking_domain_id = $tracking_domain->id;
             } else {
                 $this->tracking_domain_id = null;
