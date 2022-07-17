@@ -171,7 +171,7 @@ dns
         });
     </script>
     
-    @if (is_object($plan->primarySendingServer()))
+    @if ($plan->primarySendingServer())
         @php
             $server = $plan->primarySendingServer()->mapType();
         @endphp

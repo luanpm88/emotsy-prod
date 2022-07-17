@@ -93,16 +93,12 @@ fact_check
 						</td>
 						<td>
 							@if ($item->tag != 'EMAIL')
-								@if (is_object(Acelle\Model\Field::findByUid($item->uid)))
+								@if (Acelle\Model\Field::findByUid($item->uid))
 									<a no-ajax="true" href="{{ action('FieldController@delete', ['list_uid' => $list->uid, 'uid' => $item->uid]) }}" link-confirm="{!! trans('messages.delete_field_alert') !!}" class="btn bg-danger-400 remove-field-button">
-										<span class="material-symbols-rounded">
-delete_outline
-</span>
+										<span class="material-symbols-rounded">delete_outline</span>
 									</a>
 								@else
-									<a href="#delete" class="btn bg-danger-400 remove-not-saved-field"><span class="material-symbols-rounded">
-delete_outline
-</span></a>
+									<a href="#delete" class="btn bg-danger-400 remove-not-saved-field"><span class="material-symbols-rounded">delete_outline</span></a>
 								@endif
 							@endif
 						</td>
