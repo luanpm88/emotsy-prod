@@ -107,6 +107,7 @@ class SettingController extends Controller
 
         return view('admin.settings.general', [
             'settings' => $settings,
+            'action' => 'general',
         ]);
     }
 
@@ -195,6 +196,7 @@ class SettingController extends Controller
             'matched' => ($cached == $current),
             'current' => $current,
             'cached' => $cached,
+            'action' => 'urls'
         ]);
     }
 
@@ -214,6 +216,8 @@ class SettingController extends Controller
             $next = action('Admin\SettingController@cronjob').'#result_box';
             return redirect()->away($next);
         }
+
+        $respone['action'] = 'cronjob';
 
         return view('admin.settings.cronjob', $respone);
     }
@@ -318,6 +322,7 @@ class SettingController extends Controller
         return view('admin.settings.mailer', [
             'rules' => $rules,
             'env' => $mailSettings,
+            'action' => 'mailer',
         ]);
     }
 
@@ -489,6 +494,7 @@ class SettingController extends Controller
             'settings' => $settings,
             'current_license' => Setting::get('license'),
             'license_error' => isset($license_error) ? $license_error : '',
+            'action' => 'license'
         ]);
     }
 
@@ -511,6 +517,7 @@ class SettingController extends Controller
             'any' => 'any',
             'manager' => $manager,
             'phpversion' => version_compare(PHP_VERSION, config('custom.php_recommended'), '>='),
+            'action' => 'upgrade',
         ]);
     }
 

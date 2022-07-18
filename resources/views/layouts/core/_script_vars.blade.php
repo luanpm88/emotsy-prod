@@ -23,8 +23,4 @@
 		'notice': '{{ trans('messages.notify.notice') }}'
 	};
 	var LOADING_WAIT = '{{ trans('messages.loading_wait') }}';
-
-	// current controller action
-	var CONTROLLER = '{{ $controller }}';
-	var ACTION = '{{ $action }}';
 </script>
