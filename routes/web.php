@@ -1095,7 +1095,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::match(['get', 'post'], 'admin/plugins/install', 'PluginController@install');
     Route::get('admin/plugins/listing/{page?}', 'PluginController@listing');
     Route::get('admin/plugins/sort', 'PluginController@sort');
-    Route::get('admin/plugins/delete', 'PluginController@delete');
+    Route::match(['get', 'post'], 'admin/plugins/{uid}/delete', 'PluginController@delete');
     Route::get('admin/plugins/disable', 'PluginController@disable');
     Route::get('admin/plugins/enable', 'PluginController@enable');
     Route::resource('admin/plugins', 'PluginController');

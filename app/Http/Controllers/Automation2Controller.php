@@ -124,7 +124,13 @@ class Automation2Controller extends Controller
 
         // saving
         if ($request->isMethod('post')) {
-            $validator = $automation->createFromArray($request->all());
+            $params = $request->all();
+
+            if (isset($params['options'])) {
+                $params['options'] = $this->prepareOptions($params['options'], $customer);
+            }
+
+            $validator = $automation->createFromArray($params);
 
             // redirect if fails
             if ($validator->fails()) {
@@ -777,7 +783,7 @@ class Automation2Controller extends Controller
             // Tacking domain
             if (isset($params['custom_tracking_domain']) && $params['custom_tracking_domain'] && isset($params['tracking_domain_uid'])) {
                 $tracking_domain = \Acelle\Model\TrackingDomain::findByUid($params['tracking_domain_uid']);
-                if (is_object($tracking_domain)) {
+                if ($tracking_domain) {
                     $this->tracking_domain_id = $tracking_domain->id;
                 } else {
                     $this->tracking_domain_id = null;

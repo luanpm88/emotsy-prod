@@ -7795,10 +7795,10 @@ textarea.form-control {
 }
 @media (min-width: 1200px) {
     .topfix-header, .leftbar .topfix-header {
-        margin: -9px -50px 0px -45px;
+        margin: -10px -50px 0px -45px;
     }
     .topbar .topfix-header {
-        margin: 1px -20px 0px -20px;
+        margin: 0px -20px 0px -20px;
     }
     .topfix-body {
         margin: 0 -24px 0px -24px;
@@ -7824,7 +7824,6 @@ textarea.form-control {
     }
 }
 .topfix-container {
-    height: 70px;
     padding-left: 44px;
     padding-right: 44px;
     box-shadow: 0 .125rem .25rem rgba(0,0,0,.015)!important;
@@ -7883,4 +7882,28 @@ textarea.form-control {
 }
 .text-nowarp {
     white-space: nowrap;
+}
+@media (min-width: 1200px) {
+    .user-menu-titles p {
+        max-width: 180px;
+        word-break: break-all;
+    }
+    .user-menu-titles a {
+        max-width: 180px;
+    }
+}
+.link-underline {
+    text-decoration: underline;
+}
+@media (max-width: 1200px) {
+    .leftbar .topfix-container {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+}
+@media (min-width: 1200px) {
+    .topbar .topfix-container {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
 }

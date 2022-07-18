@@ -89,11 +89,7 @@
                                                     <div class="mr-auto pr-4">
                                                         <h5 class="font-weight-semibold mb-1">{{ $gateway->getName() }}</h5>
                                                         <p class="mb-0">
-                                                            @if (Lang::has('messages.'.$gateway->getType().'.user.description'))
-                                                                {{ trans('messages.'.$gateway->getType().'.user.description') }}
-                                                            @else
-                                                                {{ $gateway->getDescription() }}
-                                                            @endif
+                                                            {{ $gateway->getShortDescription() }}
                                                         </p>
                                                     </div>    
                                                 </div>           

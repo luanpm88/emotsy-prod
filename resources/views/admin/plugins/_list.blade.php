@@ -5,8 +5,8 @@
         @foreach ($plugins as $key => $plugin)
             <div class="p-4 shadow-sm bg-white rounded-3">
                 <div class="d-flex">
-                    <div>
-                        <img class="plugin-icon me-4 pe-2" src="{{ $plugin->getIconUrl() ? $plugin->getIconUrl() : url('/images/plugin.svg') }}" />
+                    <div class="me-0">
+                        <img class="plugin-icon me-4 rounded" src="{{ $plugin->getIconUrl() ? $plugin->getIconUrl() : url('/images/plugin.svg') }}" />
                     </div>
                     <div class="plugin-title-column plugin-title-{{ $plugin->name }}" >
                         
@@ -80,10 +80,9 @@
                                 <ul class="dropdown-menu dropdown-menu-end">
                                     <li>
                                         <a
-                                            class="dropdown-item list-action-single"
-                                            link-confirm="{{ trans('messages.delete_plugins_confirm') }}"
-                                            href="{{ action('Admin\PluginController@delete', ["uids" => $plugin->uid]) }}"
-                                            role="button">
+                                            class="dropdown-item"
+                                            href="{{ action('Admin\PluginController@delete', ["uid" => $plugin->uid]) }}"
+                                        >
                                             <i class="material-symbols-rounded">delete</i> {{ trans('messages.uninstall') }}
                                         </a>
                                     </li>

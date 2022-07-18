@@ -4,7 +4,11 @@
         <i class="navbar-icon">
             <img src="{{ Auth::user()->getProfileImageUrl() }}" style="border-radius:100%" class="menu-user-avatar" alt="">
         </i>
-        <span>{{ Auth::user()->displayName() }}</span>
+        <span style="
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        ">{{ Auth::user()->displayName() }}</span>
     </a>
     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-bottom top-user-menus" aria-labelledby="content-menu">
         <li class="backdrop backdrop-backend p-4 d-flex align-items-center justify-content-center">
@@ -14,12 +18,12 @@
             <div class="d-flex mb-2">
                 <div class="big-avatar me-3">
                     <a href="{{ action('Admin\AccountController@profile') }}">
-                        <img width="80px" class="" src="{{ Auth::user()->getProfileImageUrl() }}"
+                        <img width="70px" class="" src="{{ Auth::user()->getProfileImageUrl() }}"
                             style="border-radius:100%"
                             class="menu-user-avatar" alt="">
                     </a>
                 </div>
-                <div>
+                <div class="user-menu-titles">
                     <a href="{{ action('Admin\AccountController@profile') }}" class="fs-6 fw-600 d-flex align-items-center">
                         <span class="me-3">{{ Auth::user()->displayName() }}</span>
                     </a>

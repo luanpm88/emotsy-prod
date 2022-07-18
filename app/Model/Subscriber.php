@@ -233,9 +233,9 @@ class Subscriber extends Model
 
         foreach ($params as $tag => $value) {
             $field = $this->mailList->getFieldByTag(str_replace('[]', '', $tag));
-            if (is_object($field)) {
+            if ($field) {
                 $fv = SubscriberField::where('subscriber_id', '=', $this->id)->where('field_id', '=', $field->id)->first();
-                if (!is_object($fv)) {
+                if (!$fv) {
                     $fv = new SubscriberField();
                     $fv->subscriber_id = $this->id;
                     $fv->field_id = $field->id;
@@ -414,7 +414,7 @@ class Subscriber extends Model
         $fv = $this->subscriberFields->filter(function ($r, $key) use ($field) {
             return $r->field_id == $field->id;
         })->first();
-        if (is_object($fv)) {
+        if ($fv) {
             return $fv->value;
         } else {
             return '';
@@ -430,7 +430,7 @@ class Subscriber extends Model
     {
         $fv = SubscriberField::leftJoin('fields', 'fields.id', '=', 'subscriber_fields.field_id')
             ->where('subscriber_id', '=', $this->id)->where('fields.tag', '=', $tag)->first();
-        if (is_object($fv)) {
+        if ($fv) {
             return $fv->value;
         } else {
             return '';
@@ -445,7 +445,7 @@ class Subscriber extends Model
     public function setField($field, $value)
     {
         $fv = SubscriberField::where('subscriber_id', '=', $this->id)->where('field_id', '=', $field->id)->first();
-        if (!is_object($fv)) {
+        if (!$fv) {
             $fv = new SubscriberField();
             $fv->field_id = $field->id;
             $fv->subscriber_id = $this->id;

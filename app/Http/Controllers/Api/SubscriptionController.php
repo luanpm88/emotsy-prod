@@ -45,12 +45,12 @@ class SubscriptionController extends Controller
         $plan = \Acelle\Model\Plan::findByUid($request->plan_uid);
 
         // check if customer exists
-        if (!is_object($customer)) {
+        if (!$customer) {
             return \Response::json(array('status' => 0, 'message' => 'Customer not found'), 404);
         }
 
         // check if plan exists
-        if (!is_object($plan)) {
+        if (!$plan) {
             return \Response::json(array('status' => 0, 'message' => 'Plan not found'), 404);
         }
 

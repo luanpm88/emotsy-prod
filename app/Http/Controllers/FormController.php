@@ -333,7 +333,7 @@ class FormController extends Controller
     public function frontendLanguage($form)
     {
         // Language
-        if (is_object($form->customer) && is_object($form->customer->language)) {
+        if ($form->customer && $form->customer->language) {
             \App::setLocale($form->customer->language->code);
             \Carbon\Carbon::setLocale($form->customer->language->code);
         }

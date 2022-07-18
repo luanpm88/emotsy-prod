@@ -25,7 +25,7 @@
                 'name' => 'mail_list_uid',
                 'type' => 'select',
                 'label' => trans('messages.automation.change_mail_list'),
-                'value' => (is_object($automation->mailList) ? $automation->mailList->uid : ''),
+                'value' => ($automation->mailList ? $automation->mailList->uid : ''),
                 'options' => Auth::user()->customer->readCache('MailListSelectOptions', []),
                 'rules' => $automation->rules(),
             ])

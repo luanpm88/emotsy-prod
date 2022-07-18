@@ -32,6 +32,8 @@ class BounceHandler extends DeliveryHandler
 
     public static $itemsPerPage = 25;
 
+    protected $logfile = 'bounce-handler';
+
     /**
      * Process bounce message, extract the bounce information.
      *

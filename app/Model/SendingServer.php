@@ -23,7 +23,6 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
-use Acelle\Library\Log as MailLog;
 use Acelle\Library\IdentityStore;
 use Acelle\Library\ExtendedSwiftMessage;
 use Carbon\Carbon;
@@ -187,7 +186,7 @@ class SendingServer extends Model implements HasQuotaInterface
      */
     public function getVerp($recipient)
     {
-        if (is_object($this->bounceHandler)) {
+        if ($this->bounceHandler) {
             $validator = \Validator::make(
                 ['email' => $this->bounceHandler->username],
                 ['email' => 'required|email']
@@ -853,7 +852,6 @@ class SendingServer extends Model implements HasQuotaInterface
          *     + subject
          *     + plain
          */
-        MailLog::info(sprintf('Sending test email to %s for sending server `%s`', $params['to_email'], $this->name));
         $message = new ExtendedSwiftMessage();
         $msgId = StringHelper::generateMessageId(StringHelper::getDomainFromEmail($params['from_email']));
         $message->setId($msgId);

@@ -66,17 +66,6 @@ class AutomationElement
         return;
     }
 
-    public function getOptionAsDateTime($key)
-    {
-        $datetime = $this->getOption($key);
-
-        if ($datetime) {
-            return Carbon::parse($datetime);
-        } else {
-            return null;
-        }
-    }
-
     /**
      * Get value.
      *

@@ -3,7 +3,6 @@
 namespace Acelle\Console\Commands;
 
 use Illuminate\Console\Command;
-use Acelle\Library\Log;
 use Acelle\Library\StringHelper;
 use Acelle\Library\ExtendedSwiftMessage;
 use Acelle\Model\Campaign;

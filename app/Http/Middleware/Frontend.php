@@ -38,13 +38,13 @@ class Frontend
 
         // If user is disabled
         if (
-            (isset($user) && is_object($user->customer) && !$user->customer->isActive() && is_null($user->admin))
+            (isset($user) && $user->customer && !$user->customer->isActive() && is_null($user->admin))
         ) {
             return redirect()->action('Controller@userDisabled');
         }
 
         // Language
-        if (is_object($user->customer->language)) {
+        if ($user->customer->language) {
             \App::setLocale($user->customer->language->code);
             \Carbon\Carbon::setLocale($user->customer->language->code);
         }

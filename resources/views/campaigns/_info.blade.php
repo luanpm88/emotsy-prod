@@ -11,7 +11,7 @@
                     alternate_email
                     </span></span>
             </span>
-            @if (is_object($campaign->defaultMailList))
+            @if ($campaign->defaultMailList)
                 <a href="{{ action('MailListController@overview', ['uid' => $campaign->defaultMailList->uid]) }}">
                     {!! $campaign->displayRecipients() !!}
                 </a>

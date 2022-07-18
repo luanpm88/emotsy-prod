@@ -24,7 +24,6 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
-use Acelle\Library\Log as MailLog;
 use DB;
 use Acelle\Model\SendingServer;
 use Monolog\Logger;
@@ -279,7 +278,7 @@ class Campaign extends Model
                 }
                 $groups[$lists_segment->mail_list_id]['segment_uids'] = [];
             }
-            if (is_object($lists_segment->segment) && !in_array($lists_segment->segment->uid, $groups[$lists_segment->mail_list_id]['segment_uids'])) {
+            if ($lists_segment->segment && !in_array($lists_segment->segment->uid, $groups[$lists_segment->mail_list_id]['segment_uids'])) {
                 $groups[$lists_segment->mail_list_id]['segment_uids'][] = $lists_segment->segment->uid;
             }
         }
@@ -304,13 +303,9 @@ class Campaign extends Model
      */
     public static function resetMaxExecutionTime()
     {
-        try {
-            set_time_limit(0);
-            ini_set('max_execution_time', 0);
-            ini_set('memory_limit', '-1');
-        } catch (\Exception $e) {
-            MailLog::warning('Cannot reset max_execution_time: '.$e->getMessage());
-        }
+        set_time_limit(0);
+        ini_set('max_execution_time', 0);
+        ini_set('memory_limit', '-1');
     }
 
     /**
@@ -459,7 +454,7 @@ class Campaign extends Model
     public static function getSelectOptions($customer = null, $status = null)
     {
         $query = self::getAll();
-        if (is_object($customer)) {
+        if ($customer) {
             $query = $query->where('customer_id', '=', $customer->id);
         }
         if (isset($status)) {
@@ -548,7 +543,7 @@ class Campaign extends Model
         $step = 0;
 
         // Step 1
-        if (is_object($this->defaultMailList)) {
+        if ($this->defaultMailList) {
             $step = 1;
         } else {
             return $step;
@@ -578,7 +573,7 @@ class Campaign extends Model
 
         // Step 5
         // @todo: consider removing this check!
-        if (is_object($this->subscribers([])->limit(1)->first())) {
+        if ($this->subscribers([])->limit(1)->first()) {
             $step = 5;
         } else {
             return $step;
@@ -632,12 +627,12 @@ class Campaign extends Model
                 'name' => $this->name,
         ];
 
-        if (is_object($this->defaultMailList)) {
+        if ($this->defaultMailList) {
             $data['list_id'] = $this->default_mail_list_id;
             $data['list_name'] = $this->defaultMailList->name;
         }
 
-        if (is_object($this->segment)) {
+        if ($this->segment) {
             $data['segment_id'] = $this->segment_id;
             $data['segment_name'] = $this->segment->name;
         }
@@ -986,7 +981,7 @@ class Campaign extends Model
     {
         $last = $this->campaign_track_opens()->orderBy('created_at', 'desc')->first();
 
-        return is_object($last) ? $last->created_at : null;
+        return $last ? $last->created_at : null;
     }
 
     public static function topOpens($number = 5, $customer = null)
@@ -1075,6 +1070,20 @@ class Campaign extends Model
         return $query->take($number);
     }
 
+    public function getTopOpenSubscribersToCsv($file)
+    {
+        $records = $this->getTopOpenSubscribers(null)->get()->toArray(); // null mean all
+        $headers = ['Email', 'ID', 'Count'];
+
+        $csv = Writer::createFromPath($file, 'w+');
+
+        //insert the header
+        $csv->insertOne($headers);
+
+        //insert all the records
+        $csv->insertAll($records);
+    }
+
     /**
      * Campaign top 5 open location.
      *
@@ -1094,6 +1103,20 @@ class Campaign extends Model
             ->take($number);
 
         return $records;
+    }
+
+    public function topLocationsToCsv($file)
+    {
+        $records = $this->topLocations(null)->get()->toArray(); // null mean all
+        $headers = ['IP Address', 'Country Code', 'Country Name', 'Count'];
+
+        $csv = Writer::createFromPath($file, 'w+');
+
+        //insert the header
+        $csv->insertOne($headers);
+
+        //insert all the records
+        $csv->insertAll($records);
     }
 
     /**
@@ -1117,6 +1140,20 @@ class Campaign extends Model
         return $records;
     }
 
+    public function topOpenCountriesToCsv($file)
+    {
+        $records = $this->topOpenCountries(null)->get()->toArray(); // null mean all
+        $headers = ['Country Name', 'Country Code', 'Open Count'];
+
+        $csv = Writer::createFromPath($file, 'w+');
+
+        //insert the header
+        $csv->insertOne($headers);
+
+        //insert all the records
+        $csv->insertAll($records);
+    }
+
     /**
      * Campaign top 5 click countries.
      *
@@ -1136,6 +1173,20 @@ class Campaign extends Model
             ->take($number);
 
         return $records;
+    }
+
+    public function topClickCountriesToCsv($file)
+    {
+        $records = $this->topClickCountries(null)->get()->toArray(); // null mean all
+        $headers = ['Country Name', 'Country Code', 'Click Count'];
+
+        $csv = Writer::createFromPath($file, 'w+');
+
+        //insert the header
+        $csv->insertOne($headers);
+
+        //insert all the records
+        $csv->insertAll($records);
     }
 
     /**
@@ -1246,9 +1297,6 @@ class Campaign extends Model
         $this->updateLinks();
 
         try {
-            MailLog::info('Sending test email for campaign `'.$this->name.'`');
-            MailLog::info('Sending test email to `'.$email.'`');
-
             // @todo: only send a test message when campaign sufficient information is available
 
             // build a temporary subscriber oject used to pass through the sending methods
@@ -1326,7 +1374,6 @@ class Campaign extends Model
     {
         // clean up failed log so that they will be included in resend
         $recipients = $this->trackingLogs()->failed();
-        MailLog::warning('Resend to those who failed to deliver: '.$recipients->count());
         $recipients->delete();
     }
 
@@ -1336,7 +1383,6 @@ class Campaign extends Model
         $recipients = $this->trackingLogs()
                          ->leftJoin('open_logs', 'tracking_logs.message_id', 'open_logs.message_id')
                          ->whereNull('open_logs.id');
-        MailLog::warning('Resend to those who did not open: '.$recipients->count());
         $recipients->delete();
     }
 
@@ -1346,7 +1392,6 @@ class Campaign extends Model
         $recipients = $this->trackingLogs()
                          ->leftJoin('click_logs', 'tracking_logs.message_id', 'click_logs.message_id')
                          ->whereNull('click_logs.id');
-        MailLog::warning('Resend to those who did not click: '.$recipients->count());
         $recipients->delete();
     }
 
@@ -1421,7 +1466,7 @@ class Campaign extends Model
 
                         $lists_segment = new CampaignsListsSegment();
                         $lists_segment->campaign_id = $this->id;
-                        if (is_object($mail_list)) {
+                        if ($mail_list) {
                             $lists_segment->mail_list_id = $mail_list->id;
                         }
                         $lists_segment->segment_id = $segment->id;
@@ -1430,7 +1475,7 @@ class Campaign extends Model
                 } else {
                     $lists_segment = new CampaignsListsSegment();
                     $lists_segment->campaign_id = $this->id;
-                    if (is_object($mail_list)) {
+                    if ($mail_list) {
                         $lists_segment->mail_list_id = $mail_list->id;
                     }
                     $this->listsSegments->push($lists_segment);
@@ -1492,13 +1537,13 @@ class Campaign extends Model
      */
     public function displayRecipients()
     {
-        if (!is_object($this->defaultMailList)) {
+        if (!$this->defaultMailList) {
             return '';
         }
 
         $lines = [];
         foreach ($this->getListsSegmentsGroups() as $lists_segments_group) {
-            if (is_object($lists_segments_group['list'])) {
+            if ($lists_segments_group['list']) {
                 $list_name = $lists_segments_group['list']->name;
 
                 $segment_names = [];
@@ -1733,7 +1778,7 @@ class Campaign extends Model
         // Tacking domain
         if (isset($params['custom_tracking_domain']) && $params['custom_tracking_domain'] && isset($params['tracking_domain_uid'])) {
             $tracking_domain = \Acelle\Model\TrackingDomain::findByUid($params['tracking_domain_uid']);
-            if (is_object($tracking_domain)) {
+            if ($tracking_domain) {
                 $this->tracking_domain_id = $tracking_domain->id;
             } else {
                 $this->tracking_domain_id = null;

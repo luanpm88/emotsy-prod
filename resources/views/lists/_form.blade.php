@@ -186,7 +186,7 @@
                                 'class' => 'numeric',
                                 'name' => 'sending_servers[' . $server->uid . '][fitness]',
                                 'label' => '',
-                                'value' => (is_object($list->mailListsSendingServers()->where('sending_server_id', $server->id)->first()) ? $list->mailListsSendingServers()->where('sending_server_id', $server->id)->first()->fitness : "100"),
+                                'value' => ($list->mailListsSendingServers()->where('sending_server_id', $server->id)->first() ? $list->mailListsSendingServers()->where('sending_server_id', $server->id)->first()->fitness : "100"),
                                 'help_class' => 'list',
                                 'rules' => Acelle\Model\MailList::$rules
                             ])

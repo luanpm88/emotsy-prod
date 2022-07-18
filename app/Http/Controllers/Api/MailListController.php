@@ -47,7 +47,7 @@ class MailListController extends Controller
             ->first();
 
         // check if item exists
-        if (!is_object($item)) {
+        if (!$item) {
             return \Response::json(array('message' => 'Mail list not found'), 404);
         }
 

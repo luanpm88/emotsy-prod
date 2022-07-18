@@ -89,14 +89,14 @@ class AccountController extends Controller
         $contact = $customer->getContact();
 
         // Create new company if null
-        if (!is_object($contact)) {
+        if (!$contact) {
             $contact = new \Acelle\Model\Contact();
         }
 
         // save posted data
         if ($request->isMethod('post')) {
             // Prenvent save from demo mod
-            if ($this->isDemoMode()) {
+            if (config('app.demo')) {
                 return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
             }
 
@@ -106,10 +106,8 @@ class AccountController extends Controller
 
             // Save current user info
             if ($contact->save()) {
-                if (is_object($contact)) {
-                    $customer->contact_id = $contact->id;
-                    $customer->save();
-                }
+                $customer->contact_id = $contact->id;
+                $customer->save();
                 $request->session()->flash('alert-success', trans('messages.customer_contact.updated'));
             }
         }

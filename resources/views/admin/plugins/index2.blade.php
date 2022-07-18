@@ -7,7 +7,7 @@
 @section('page_header')
 
 	<div class="topfix-header">
-		<div class="topfix-container border-bottom d-flex align-items-center shadow-sm">
+		<div class="topfix-container border-bottom d-flex align-items-center shadow-sm py-3">
 			<div style="width: 20%">
 				<div class="d-flex align-items-center">
 					<h4 class="mb-0 me-3">{{ trans('messages.plugins') }}</h4>
@@ -78,9 +78,7 @@
 										<li><a class="dropdown-item" link-confirm="{{ trans('messages.disable_plugins_confirm') }}" href="{{ action('Admin\PluginController@disable') }}"><span class="material-symbols-rounded">
 		hide_source
 		</span> {{ trans('messages.disable') }}</a></li>
-										<li><a class="dropdown-item" link-confirm="{{ trans('messages.delete_plugins_confirm') }}" href="{{ action('Admin\PluginController@delete') }}"><span class="material-symbols-rounded">
-		delete_outline
-		</span> {{ trans('messages.delete') }}</a></li>
+										
 									</ul>
 								</div>
 							</div>

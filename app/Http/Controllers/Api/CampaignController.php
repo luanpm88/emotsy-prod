@@ -46,7 +46,7 @@ class CampaignController extends Controller
             ->first();
 
         // check if item exists
-        if (!is_object($item)) {
+        if (!$item) {
             return \Response::json(array('message' => 'Campaign not found'), 404);
         }
 
@@ -59,8 +59,8 @@ class CampaignController extends Controller
         $campaign = [
             'uid' => $item->uid,
             'name' => $item->name,
-            'list' => (is_object($item->mailList) ? $item->mailList->name : ''),
-            'segment' => (is_object($item->segment) ? $item->segment->name : ''),
+            'list' => ($item->mailList ? $item->mailList->name : ''),
+            'segment' => ($item->segment ? $item->segment->name : ''),
             'default_subject' => $item->default_subject,
             'from_email' => $item->from_email,
             'from_name' => $item->from_name,
@@ -78,11 +78,11 @@ class CampaignController extends Controller
             'unique_open_count' => $item->uniqueOpenCount(),
             'open_rate' => $item->openRate(),
             'uniq_open_count' => $item->openUniqCount(),
-            'last_open' => (is_object($item->lastOpen()) ? $item->lastOpen()->created_at : ''),
+            'last_open' => ($item->lastOpen() ? $item->lastOpen()->created_at : ''),
             'click_rate' => $item->clickRate(),
             'click_count' => $item->clickCount(),
             'abuse_feedback_count' => $item->abuseFeedbackCount(),
-            'last_click' => (is_object($item->lastClick()) ? $item->lastClick()->created_at : ''),
+            'last_click' => ($item->lastClick() ? $item->lastClick()->created_at : ''),
             'click_count' => $item->clickCount(),
             'bounce_count' => $item->bounceCount(),
             'unsubscribe_count' => $item->unsubscribeCount(),
@@ -117,7 +117,7 @@ class CampaignController extends Controller
             ->first();
 
         // check if item exists
-        if (!is_object($campaign)) {
+        if (!$campaign) {
             return \Response::json(array('message' => 'Campaign not found'), 404);
         }
 
@@ -132,8 +132,8 @@ class CampaignController extends Controller
         $campaign = [
             'uid' => $campaign->uid,
             'name' => $campaign->name,
-            'list' => (is_object($campaign->mailList) ? $campaign->mailList->name : ''),
-            'segment' => (is_object($campaign->segment) ? $campaign->segment->name : ''),
+            'list' => ($campaign->mailList ? $campaign->mailList->name : ''),
+            'segment' => ($campaign->segment ? $campaign->segment->name : ''),
             'default_subject' => $campaign->default_subject,
             'from_email' => $campaign->from_email,
             'from_name' => $campaign->from_name,

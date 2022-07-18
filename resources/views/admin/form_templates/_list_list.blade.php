@@ -27,8 +27,8 @@
                         </a>
                     </h5>
                     <div class="text-muted">
-                        {!! is_object($template->admin) ? '<i class="icon-user-tie" data="admin"></i>' . $template->admin->user->displayName() : '' !!}
-                        {!! is_object($template->customer) ? '<i class="icon-user" data="customer"></i>' . $template->admin->user->displayName() : '' !!}
+                        {!! $template->admin ? '<i class="icon-user-tie" data="admin"></i>' . $template->admin->user->displayName() : '' !!}
+                        {!! $template->customer ? '<i class="icon-user" data="customer"></i>' . $template->admin->user->displayName() : '' !!}
                     </div>
                     <span class="text-muted">{{ trans('messages.updated_at') }}: {{ Auth::user()->admin->formatDateTime($template->created_at, 'date_full') }}</span>
                 </td>

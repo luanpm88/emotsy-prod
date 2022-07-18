@@ -247,7 +247,7 @@ class Segment extends Model
                         $cond = 'LOWER(sf'.$number.'.value) LIKE '.db_quote('%'.$keyword.'%');
                         break;
                     case 'not_contains':
-                        $cond = 'LOWER(sf'.$number.'.value) NOT LIKE '.db_quote('%'.$keyword.'%');
+                        $cond = '(LOWER(sf'.$number.'.value) NOT LIKE '.db_quote('%'.$keyword.'%').' OR sf'.$number.'.value IS NULL)';
                         break;
                     case 'starts':
                         $cond = 'LOWER(sf'.$number.'.value) LIKE '.db_quote('%'.$keyword.'%');
@@ -519,7 +519,7 @@ class Segment extends Model
 
             $condition->segment_id = $this->id;
             $field = \Acelle\Model\Field::findByUid($param['field_id']);
-            if (is_object($field)) {
+            if ($field) {
                 $condition->field_id = $field->id;
             } else {
                 $condition->field_id = null;

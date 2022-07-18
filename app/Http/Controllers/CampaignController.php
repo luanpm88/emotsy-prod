@@ -3,7 +3,6 @@
 namespace Acelle\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Acelle\Library\Log as MailLog;
 use Illuminate\Support\Facades\Log as LaravelLog;
 use Gate;
 use Validator;
@@ -1751,14 +1750,14 @@ class CampaignController extends Controller
         $tracking_log = TrackingLog::where('message_id', '=', $message_id)->first();
 
         try {
-            if (!is_object($tracking_log)) {
+            if (!$tracking_log) {
                 throw new \Exception(trans('messages.web_view_can_not_find_tracking_log_with_message_id'));
             }
 
             $subscriber = $tracking_log->subscriber;
             $campaign = $tracking_log->campaign;
 
-            if (!is_object($campaign) || !is_object($subscriber)) {
+            if (!$campaign || !$subscriber) {
                 throw new \Exception(trans('messages.web_view_can_not_find_campaign_or_subscriber'));
             }
 
@@ -1768,8 +1767,6 @@ class CampaignController extends Controller
                 'message_id' => $message_id,
             ]);
         } catch (\Exception $e) {
-            MailLog::error($e->getMessage());
-
             return view('somethingWentWrong', ['message' => trans('messages.the_email_no_longer_exists')]);
         }
     }
