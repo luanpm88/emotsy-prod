@@ -9,7 +9,6 @@
 	var LANG_DELETE_VALIDATE = '{{ trans('messages.delete_validate') }}';
 	var LANG_DATE_FORMAT = 'yyyy-mm-dd';
 	var LANG_ANY_DATETIME_FORMAT = '%Z-%m-%d, %H:%i';
-	var LANG_J_DATE_FORMAT = '{{ trans('messages.j_date_format') }}';
 	var CSRF_TOKEN = "{{ csrf_token() }}";
 	var LANG_SUCCESS = '{{ trans('messages.notify.success') }}';
 	var LANG_ALERT = '{{ trans('messages.notify.alert') }}';
