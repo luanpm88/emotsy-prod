@@ -61,7 +61,7 @@
                                 ]) }}" class="btn-group remove-contact-tag" role="group" aria-label="Basic example">
                                     <button role="button" class="btn btn-light btn-tag">{{ $tag }}</button>
                                     <button role="button" class="btn btn-light btn-tag">
-                                        <i class="material-icons-round">
+                                        <i class="material-symbols-rounded">
 close
 </i>
                                     </button>
@@ -73,7 +73,7 @@ close
                                         'contact_uid' => $contact->uid,
                                     ]) }}" class="btn-group profile-tag-contact" role="group" aria-label="Basic example">
                                 <button role="button" class="btn btn-light btn-tag d-flex align-items-center">
-                                    <i class="material-icons-outlined">add</i>
+                                    <i class="material-symbols-rounded">add</i>
                                     <span class="font-italic">{{ trans('messages.automation.profile.click_to_add_tag') }}<span>
                                 </button>
                             </a>
@@ -118,14 +118,16 @@ close
                                     {{ $timeline->activity }}
                                 </action>
                                 <desc class="d-block small text-muted">
-                                    <i class="lnr lnr-clock mr-1"></i> {{ Auth::user()->customer->formatDateTime($timeline->created_at, 'date_full') }}
+                                    <span class="material-symbols-rounded me-1">
+schedule
+</span> {{ Auth::user()->customer->formatDateTime($timeline->created_at, 'date_full') }}
                                 </desc>
                             </div>
                         </div>
                     @endforeach
                 @else
                     <div class="empty-list">
-                        <i class="material-icons-outlined">timeline</i>
+                        <i class="material-symbols-rounded">timeline</i>
                         <span class="line-1">
                             {{ trans('messages.automation.timeline.no_activities') }}
                         </span>

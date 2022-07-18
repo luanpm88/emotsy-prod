@@ -168,7 +168,7 @@ class CurrencyController extends Controller
         $currency = \Acelle\Model\Currency::findByUid($id);
 
         // Prenvent save from demo mod
-        if ($this->isDemoMode()) {
+        if (config('app.demo')) {
             return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
         }
 

@@ -43,7 +43,7 @@
                 'uid' => $automation->uid,
                 'email_uid' => $email->uid,
             ]) }}" data-confirm="{{ trans('messages.automation.action.delete.confirm') }}" class="btn btn-secondary email-action-delete">
-                <span class="material-icons-outlined">
+                <span class="material-symbols-rounded">
 delete
 </span> {{ trans('messages.automation.remove_this_action') }}
             </a>

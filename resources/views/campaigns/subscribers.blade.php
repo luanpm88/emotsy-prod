@@ -72,7 +72,7 @@
                                 <li>
                                     <a class="dropdown-item assign-values-button"
                                     href="{{ action('SubscriberController@assignValues', $list->uid) }}">
-                                        <span class="material-icons-outlined">
+                                        <span class="material-symbols-rounded">
         control_point_duplicate
         </span> {{ trans('messages.subscriber.assign_values') }}
                                     </a>
@@ -80,7 +80,7 @@
                                 <li>
                                     <a class="dropdown-item"  link-method="POST" link-confirm="{{ trans('messages.subscribe_subscribers_confirm') }}"
                                         href="{{ action('SubscriberController@subscribe', $list->uid) }}">
-                                        <span class="material-icons-outlined">
+                                        <span class="material-symbols-rounded">
         mark_email_read
         </span> {{ trans('messages.subscribe') }}
                                     </a>
@@ -89,7 +89,7 @@
                                     <a class="dropdown-item"
                                         link-confirm="{{ trans('messages.unsubscribe_subscribers_confirm') }}"
                                         href="{{ action('SubscriberController@unsubscribe', $list->uid) }}">
-                                        <span class="material-icons-round">
+                                        <span class="material-symbols-rounded">
         logout
         </span> {{ trans('messages.unsubscribe') }}
                                     </a>
@@ -98,7 +98,7 @@
                                     <a class="dropdown-item list-action-single"
                                         link-method="POST"
                                         link-confirm="{{ trans('messages.subscribers.resend_confirmation_email.confirm') }}" href="{{ action('SubscriberController@resendConfirmationEmail', $list->uid) }}">
-                                        <span class="material-icons-outlined">
+                                        <span class="material-symbols-rounded">
         mark_email_read
         </span> {{ trans('messages.subscribers.resend_confirmation_email') }}
                                     </a>
@@ -109,7 +109,7 @@
                                             'from_uid' => $list->uid,
                                             'action' => 'copy',
                                         ]) }}">
-                                            <span class="material-icons-outlined">
+                                            <span class="material-symbols-rounded">
         copy_all
         </span> {{ trans('messages.copy_to') }}
                                     </a>
@@ -120,7 +120,7 @@
                                             'from_uid' => $list->uid,
                                             'action' => 'move',
                                         ]) }}">
-                                        <span class="material-icons-outlined">
+                                        <span class="material-symbols-rounded">
         exit_to_app
         </span> {{ trans('messages.move_to') }}
                                     </a>
@@ -129,7 +129,7 @@
                                     <a class="dropdown-item list-action-single"
                                         link-confirm="{{ trans('messages.delete_subscribers_confirm') }}"
                                         href="{{ action('SubscriberController@delete', $list->uid) }}">
-                                        <span class="material-icons-outlined">
+                                        <span class="material-symbols-rounded">
         delete_outline
         </span> {{ trans('messages.delete') }}
                                     </a>
@@ -138,7 +138,7 @@
                                     <a
                                         href="{{ action('SubscriberController@bulkDelete', $list->uid) }}"
                                         class="dropdown-item bulk-delete">
-                                        <span class="material-icons-outlined">
+                                        <span class="material-symbols-rounded">
         delete_outline
         </span> {{ trans('messages.subscriber.bulk_delete') }}
                                     </a>
@@ -156,7 +156,7 @@
                                     <li>
                                         <div class="checkbox">
                                             <label>
-                                                <input {{ ($field->required ? "checked='checked'" : "") }} type="checkbox" id="{{ $field->tag }}" name="columns_[]" value="{{ $field->uid }}" class="styled">
+                                                <input {{ ($field->required ? "checked='checked'" : "") }} type="checkbox" id="{{ $field->tag }}" name="columns[]" value="{{ $field->uid }}" class="styled">
                                                 {{ $field->label }}
                                             </label>
                                         </div>
@@ -166,7 +166,7 @@
                             <li>
                                 <div class="checkbox">
                                     <label>
-                                        <input type="checkbox" id="created_at" name="columns_[]" value="created_at" class="styled">
+                                        <input type="checkbox" id="created_at" name="columns[]" value="created_at" class="styled">
                                         {{ trans('messages.created_at') }}
                                     </label>
                                 </div>
@@ -174,7 +174,7 @@
                             <li>
                                 <div class="checkbox">
                                     <label>
-                                        <input type="checkbox" id="updated_at" name="columns_[]" value="updated_at" class="styled">
+                                        <input type="checkbox" id="updated_at" name="columns[]" value="updated_at" class="styled">
                                         {{ trans('messages.updated_at') }}
                                     </label>
                                 </div>
@@ -185,8 +185,8 @@
                         <span class="title text-semibold text-muted">{{ trans('messages.subscribers_who') }}</span>
                         <select class="select me-3" name="open">
                             <option value="">-- {{ trans('messages.open') }} --</option>
-                            <option value="opened">{{ trans('messages.opened') }}</option>
-                            <option {{ (request()->open == 'not_opened' ? "selected" : '') }} value="not_opened">{{ trans('messages.not_opened') }}</option>
+                            <option {{ (request()->open == 'yes' ? "selected" : '') }}  value="yes">{{ trans('messages.opened') }}</option>
+                            <option {{ (request()->open == 'no' ? "selected" : '') }} value="no">{{ trans('messages.not_opened') }}</option>
                         </select>
                         <!--<span class="small-select2">
                             <select class="select" name="and_or">
@@ -211,7 +211,7 @@
                     </span>
                     <span class="text-nowrap">
                         <input type="text" name="keyword" class="form-control search" value="{{ request()->keyword }}" placeholder="{{ trans('messages.type_to_search') }}" />
-                        <span class="material-icons-round">
+                        <span class="material-symbols-rounded">
 search
 </span>
                     </span>

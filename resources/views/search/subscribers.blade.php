@@ -3,13 +3,13 @@
         <div class="d-flex">
             <div class="me-auto">
                 <label class="fw-600">
-                    <span class="material-icons-outlined me-1">
+                    <span class="material-symbols-rounded me-1">
                         people 
                         </span> {{ trans('messages.subscribers') }}
                 </label>
             </div>
             <div>
-                {{ $subscribers->count() }} / {{ format_number($subscribers->total()) }} · {{ trans('messages.search.go_to_lists') }}
+                {{ $subscribers->count() }} / {{ number_with_delimiter($subscribers->total(), $precision = 0) }} · {{ trans('messages.search.go_to_lists') }}
             </div>
         </div>
     </a>
@@ -33,7 +33,7 @@
                             @endif
                             <span class="label label-flat label-sm bg-{{ $subscriber->status }}">{{ trans('messages.' . $subscriber->status) }}</span></span>
                         <span class="text-truncate d-block mb-1" style="max-width:300px;overflow:hidden;">
-                            <span class="material-icons-outlined">
+                            <span class="material-symbols-rounded">
                                 fact_check
                                 </span> <span>{{ $subscriber->mailList->name }}</span>
                         </span>

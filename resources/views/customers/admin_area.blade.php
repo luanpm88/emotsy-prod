@@ -8,7 +8,7 @@
 
     <p class="alert alert-info">{!! trans('messages.current_login_as', ["name" => Auth::user()->displayName()]) !!}</p>
 
-    <h5 class="mt-0 mb-10"><span class="material-icons-outlined">
+    <h5 class="mt-0 mb-10"><span class="material-symbols-rounded">
 auto_awesome_mosaic
 </span> {{ trans('messages.subscription_of', ['name' => Auth::user()->displayName()]) }}</h5>
     
@@ -65,14 +65,16 @@ auto_awesome_mosaic
                     <mc:flag>{{ $subscription->created_at->diffForHumans() }}</mc:flag>
                 </div>
             </li>
-            <li>
-                <div class="unit size1of2">
-                    <strong>{{ trans('messages.subscription.next_billing_date') }}</strong>
-                </div>
-                <div class="lastUnit size1of2">
-                    <mc:flag>{{ Auth::user()->customer->formatDateTime($next_billing_date, 'date_full') }}</mc:flag>
-                </div>
-            </li>
+            @if ($next_billing_date)
+                <li>
+                    <div class="unit size1of2">
+                        <strong>{{ trans('messages.subscription.next_billing_date') }}</strong>
+                    </div>
+                    <div class="lastUnit size1of2">
+                        <mc:flag>{{ Auth::user()->customer->formatDateTime($next_billing_date, 'date_full') }}</mc:flag>
+                    </div>
+                </li>
+            @endif
         </ul>
     @else
         <div class="alert alert-warning mb-0">

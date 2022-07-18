@@ -29,12 +29,12 @@
                             <a style="height:34px" href="{!! $webViewerPreviewUrl !!}" target="_blank" class="btn btn-secondary btn-sm ms-2 text-nowrap d-flex align-items-center"
                                 data-url="{!! $webViewerPreviewUrl !!}"
                             >
-                                <i class="material-icons-outlined me-1">open_in_new</i>{{ trans('messages.open') }}
+                                <i class="material-symbols-rounded me-1">open_in_new</i>{{ trans('messages.open') }}
                             </a>
                             <a style="height:34px" href="javascript:;" class="btn btn-light btn-sm ms-1 copy-web-view-url text-nowrap py-1 d-flex align-items-center"
                                 data-url="{!! $webViewerPreviewUrl !!}"
                             >
-                                <i class="material-icons-outlined me-1">copy</i>{{ trans('messages.copy') }}
+                                <i class="material-symbols-rounded me-1">content_copy</i>{{ trans('messages.copy') }}
                             </a>
                         </div>
                     </div>
@@ -70,7 +70,7 @@
     
 @elseif (!empty(request()->keyword) || !empty(request()->filters))
     <div class="empty-list">
-        <span class="material-icons-outlined">
+        <span class="material-symbols-rounded">
 people
 </span>
         <span class="line-1">
@@ -79,7 +79,7 @@ people
     </div>
 @else
     <div class="empty-list">
-        <span class="material-icons-outlined">
+        <span class="material-symbols-rounded">
 people
 </span>
         <span class="line-1">

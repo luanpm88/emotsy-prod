@@ -67,7 +67,7 @@
                     </div>
                     <div class="desc">
                         <h5 class="mt-0 mb-1 text-primary">{!! trans('messages.source.have_products', [
-                            'count' => format_number($source->productsCount()),
+                            'count' => number_with_delimiter($source->productsCount(), $precision = 0),
                         ]) !!}</h5>
                         <div class="">{{ trans('messages.source.your_store_synchronized') }}</div>
                     </div>

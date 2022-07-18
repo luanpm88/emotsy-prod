@@ -17,7 +17,7 @@
         'uid' => $automation->uid,
         'type' => 'in_action',
       ]) }}')" class="xtooltip insight-stat-col flex-fill">
-        <number>{{ format_number($stats['total']) }}</number>
+        <number>{{ number_with_delimiter($stats['total'], $precision = 0) }}</number>
         <desc class="text-muted text-center">
             <span class="stats-title">{{ trans_choice('messages.automation.contacts', $stats['total']) }}</span>
         </desc>

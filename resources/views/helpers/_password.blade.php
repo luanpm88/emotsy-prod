@@ -10,6 +10,6 @@
         {{ isset($disabled) && $disabled == true ? ' disabled="disabled"' : "" }}
     >
     @if (isset($eye) && $eye == true)
-        <span class="material-icons-outlined btn-view-password">visibility</span>
+        <span class="material-symbols-rounded btn-view-password">visibility</span>
     @endif
 </div>

@@ -14,7 +14,7 @@
             <tr>
                 <td width="1%">
                     <div class="text-nowrap">
-                        <div class="checkbox inline">
+                        <div class="checkbox inline me-1">
                             <label>
                                 <input type="checkbox" class="node styled"
                                     name="uids[]"
@@ -38,11 +38,11 @@
                 <td class="text-center">
                     <div class="single-stat-box pull-left">
                         @if ($item->isIdentityVerified())
-                            <span class="material-icons-round d-block text-success domain-check-icon">
+                            <span class="material-symbols-rounded d-block text-success domain-check-icon">
                                 task_alt
                             </span>
                         @else
-                        <span class="material-icons-outlined d-block text-danger domain-check-icon">
+                        <span class="material-symbols-rounded d-block text-danger domain-check-icon">
                             not_interested
                             </span>
                         @endif
@@ -53,11 +53,11 @@
                 <td class="text-center">
                     <div class="single-stat-box pull-left">
                         @if ($item->isDkimVerified())
-                            <span class="material-icons-round d-block text-success domain-check-icon">
+                            <span class="material-symbols-rounded d-block text-success domain-check-icon">
                                 task_alt
                                 </span>
                         @else
-                        <span class="material-icons-outlined d-block text-danger domain-check-icon">
+                        <span class="material-symbols-rounded d-block text-danger domain-check-icon">
                             not_interested
                             </span>
                         @endif
@@ -69,11 +69,11 @@
                     @if ($item->isSpfNeeded())
                         <div class="single-stat-box pull-left">
                             @if ($item->isSpfVerified())
-                                <span class="material-icons-round d-block text-success domain-check-icon">
+                                <span class="material-symbols-rounded d-block text-success domain-check-icon">
                                     task_alt
                                     </span>
                             @else
-                            <span class="material-icons-outlined d-block text-danger domain-check-icon">
+                            <span class="material-symbols-rounded d-block text-danger domain-check-icon">
                                 not_interested
                                 </span>
                             @endif
@@ -107,7 +107,7 @@
                             <ul class="dropdown-menu dropdown-menu-end">
                                 <li>
                                     <a class="dropdown-item list-action-single" link-confirm="{{ trans('messages.delete_sending_domains_confirm') }}" href="{{ action('SendingDomainController@delete', ["uids" => $item->uid]) }}">
-                                        <span class="material-icons-outlined">
+                                        <span class="material-symbols-rounded">
 delete_outline
 </span> {{ trans('messages.delete') }}
                                     </a>
@@ -123,7 +123,7 @@ delete_outline
     
 @elseif (!empty(request()->keyword))
     <div class="empty-list">
-        <span class="material-icons-outlined">
+        <span class="material-symbols-rounded">
 public
 </span>
         <span class="line-1">
@@ -132,7 +132,7 @@ public
     </div>
 @else
     <div class="empty-list">
-        <span class="material-icons-outlined">
+        <span class="material-symbols-rounded">
 public
 </span>
         <span class="line-1">

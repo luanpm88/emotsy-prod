@@ -30,7 +30,7 @@ class PluginController extends Controller
 
         $plugins = \Acelle\Model\Plugin::search($request);
 
-        return view('admin.plugins.index', [
+        return view('admin.plugins.index2', [
             'plugins' => $plugins
         ]);
     }
@@ -119,20 +119,44 @@ class PluginController extends Controller
             return response()->json(["message" => trans('messages.operation_not_allowed_in_demo')], 404);
         }
 
-        $items = \Acelle\Model\Plugin::whereIn(
-            'uid',
-            is_array($request->uids) ? $request->uids : explode(',', $request->uids)
-        );
+        $plugin = Plugin::findByUid($request->uid);
 
-        foreach ($items->get() as $item) {
-            // authorize
-            if ($request->user()->admin->can('delete', $item)) {
-                $item->deleteAndCleanup();
-            }
+        if (!$request->user()->admin->can('delete', $plugin)) {
+            return $this->notAuthorized();
         }
 
-        // Redirect to my lists page
-        echo trans('messages.plugins.deleted');
+        if ($request->isMethod('post')) {
+            $pluginName = $plugin->name;
+            $plugin->deleteAndCleanup();
+
+            return view('admin.plugins.deleted', [
+                'pluginName' => $pluginName,
+            ]);
+        }
+
+        return view('admin.plugins.delete', [
+            'plugin' => $plugin,
+        ]);
+
+        // $items = \Acelle\Model\Plugin::whereIn(
+        //     'uid',
+        //     is_array($request->uids) ? $request->uids : explode(',', $request->uids)
+        // );
+
+        // foreach ($items->get() as $item) {
+        //     // authorize
+        //     if ($request->user()->admin->can('delete', $item)) {
+        //         $item->deleteAndCleanup();
+        //     }
+        // }
+
+        // if(!$request->ajax()){
+        //     return redirect()->action('Admin\PluginController@index')
+        //         ->with('alert-success',  trans('messages.plugins.deleted'));
+        // }
+
+        // // Redirect to my lists page
+        // echo trans('messages.plugins.deleted');
     }
 
     /**
@@ -154,6 +178,11 @@ class PluginController extends Controller
             if ($request->user()->admin->can('disable', $item)) {
                 $item->disable();
             }
+        }
+
+        if (!$request->ajax()) {
+            return redirect()->back()
+                ->with('alert-success', trans('messages.plugins.disabled'));
         }
 
         // Redirect to my lists page
@@ -179,6 +208,11 @@ class PluginController extends Controller
             if ($request->user()->admin->can('enable', $item)) {
                 $item->activate();
             }
+        }
+
+        if (!$request->ajax()) {
+            return redirect()->back()
+                ->with('alert-success', trans('messages.plugins.enabled'));
         }
 
         // Redirect to my lists page

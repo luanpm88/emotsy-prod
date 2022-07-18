@@ -22,7 +22,7 @@
     @include('senders._menu')
     
     <h2>
-        <span class="text-semibold"><span class="material-icons-outlined">
+        <span class="text-semibold"><span class="material-symbols-rounded">
 edit
 </span> {{ $server->name }}</span>
     </h2>

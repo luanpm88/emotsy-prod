@@ -7,17 +7,17 @@
 				<td width="1%">
 					@switch($subscription->status)
 						@case(Acelle\Model\Subscription::STATUS_ACTIVE)
-							<i class="material-icons-outlined fs-4 me-2 text-success">
+							<i class="material-symbols-rounded fs-4 me-2 text-success">
 settings_backup_restore
 							</i>
 							@break
 						@case(Acelle\Model\Subscription::STATUS_NEW)
-							<i class="material-icons-outlined fs-4 me-2 text-warning">
+							<i class="material-symbols-rounded fs-4 me-2 text-warning">
 								add_circle_outline
 							</i>
 							@break
 						@default
-							<i class="material-icons-outlined fs-4 me-2 text-muted">
+							<i class="material-symbols-rounded fs-4 me-2 text-muted">
 remove_circle_outline
 							</i>
 					@endswitch
@@ -48,7 +48,7 @@ remove_circle_outline
 					@elseif ($subscription->cancelled())
 						<h5 class="no-margin stat-num">
 							@if ($subscription->current_period_ends_at)
-								<span class="kq_search">{{ Acelle\Library\Tool::dateTime($subscription->current_period_ends_at)->diffForHumans() }}</span>
+								<span class="kq_search">{{ $subscription->current_period_ends_at->timezone($currentTimezone)->diffForHumans() }}</span>
 							@else
 								<span class="kq_search">--</span>
 							@endif
@@ -58,7 +58,7 @@ remove_circle_outline
 						<h5 class="no-margin stat-num">
 							<span class="kq_search">
 								@if ($subscription->current_period_ends_at)
-									{{ Acelle\Library\Tool::dateTime($subscription->current_period_ends_at)->diffForHumans() }}
+									{{ $subscription->current_period_ends_at->timezone($currentTimezone)->diffForHumans() }}
 								@else
 									--
 								@endif									
@@ -219,7 +219,7 @@ remove_circle_outline
 
 @elseif (!empty(request()->keyword) || !empty(request()->filters))
 	<div class="empty-list">
-		<span class="material-icons-outlined">
+		<span class="material-symbols-rounded">
 assignment_turned_in
 </span>
 		<span class="line-1">
@@ -228,7 +228,7 @@ assignment_turned_in
 	</div>
 @else
 	<div class="empty-list">
-		<span class="material-icons-outlined">
+		<span class="material-symbols-rounded">
 assignment_turned_in
 </span>
 		<span class="line-1">

@@ -107,7 +107,7 @@ class CustomerController extends Controller
         $customer = \Acelle\Model\Customer::findByUid($uid);
 
         // check if item exists
-        if (!is_object($customer)) {
+        if (!$customer) {
             return \Response::json(array('status' => 0, 'message' => 'Customer not found'), 404);
         }
 
@@ -122,7 +122,7 @@ class CustomerController extends Controller
             $user = $customer->user;
             $user->fill($request->all());
 
-            if ($this->isDemoMode()) {
+            if (config('app.demo')) {
                 return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
             }
 
@@ -180,7 +180,7 @@ class CustomerController extends Controller
         $customer = \Acelle\Model\Customer::findByUid($uid);
 
         // check if item exists
-        if (!is_object($customer)) {
+        if (!$customer) {
             return \Response::json(array('message' => 'Customer not found'), 404);
         }
 
@@ -202,7 +202,7 @@ class CustomerController extends Controller
 
         // Customer contact
         $contact = $customer->contact;
-        if (is_object($contact)) {
+        if ($contact) {
             $result['contact'] = [
                 'first_name' => $contact->first_name,
                 'last_name' => $contact->last_name,
@@ -221,7 +221,7 @@ class CustomerController extends Controller
 
         // Current subscription
         $subscription = $customer->getCurrentSubscription();
-        if (is_object($subscription)) {
+        if ($subscription) {
             $result['current_subscription'] = [
                 'uid' => $subscription->uid,
                 'plan_name' => $subscription->plan_name,
@@ -252,7 +252,7 @@ class CustomerController extends Controller
         $customer = \Acelle\Model\Customer::findByUid($uid);
 
         // check if item exists
-        if (!is_object($customer)) {
+        if (!$customer) {
             return \Response::json(array('status' => 0, 'message' => 'Customer not found'), 404);
         }
 
@@ -286,7 +286,7 @@ class CustomerController extends Controller
         $customer = \Acelle\Model\Customer::findByUid($uid);
 
         // check if item exists
-        if (!is_object($customer)) {
+        if (!$customer) {
             return \Response::json(array('status' => 0, 'message' => 'Customer not found'), 404);
         }
 
@@ -317,7 +317,7 @@ class CustomerController extends Controller
         $customer = \Acelle\Model\Customer::findByUid($uid);
 
         // check if item exists
-        if (!is_object($customer)) {
+        if (!$customer) {
             return \Response::json(array('status' => 0, 'message' => 'Customer not found'), 404);
         }
 
@@ -329,7 +329,7 @@ class CustomerController extends Controller
         $plan = \Acelle\Model\Plan::findByUid($plan_uid);
 
         // check if item exists
-        if (!is_object($plan)) {
+        if (!$plan) {
             return \Response::json(array('status' => 0, 'message' => 'Can not find plan with id: ' . $plan_uid), 404);
         }
 
@@ -338,7 +338,16 @@ class CustomerController extends Controller
             return \Response::json(array('status' => 0, 'message' => 'Plan is not active'), 404);
         }
 
-        $customer->assignPlan($plan);
+        $subscription = $customer->assignPlan($plan);
+
+        // * Disable billing information: customer does not need to pay the invoice. Pass by the billing and checkout step
+        // * assignPlan always create a subscription with an unpaid invoice.
+        // * So just fulfill the invoice
+        // * By design: when the subscription invoice is fulfilled, the callback function will be triggered
+        //              to set subscription as active automatically.
+        if ($request->disable_billing && $request->disable_billing !== 'false') {
+            $subscription->getUnpaidInvoice()->fulfill();
+        }
 
         return \Response::json(array(
             'status' => 1,

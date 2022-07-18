@@ -151,10 +151,3 @@ function customValidate(selector) {
         }
     });
 }
-
-$(function() {
-
-    // // load locale
-    // $.getScript(JVALIDATE_TRANSLATE_URL, function(){
-    // });
-});

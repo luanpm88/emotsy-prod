@@ -43,7 +43,7 @@
                                 link-method="POST"
                                 link-confirm="{{ trans('messages.websites.disconnect.confirm') }}"
                                 href="{{ action('WebsiteController@disconnect') }}">
-                                    <span class="material-icons-outlined me-2"> pause_circle </span>
+                                    <span class="material-symbols-rounded me-2"> pause_circle </span>
                                     {{ trans('messages.website.disconnect') }}</a>
                             </li>
                             <li>
@@ -51,7 +51,7 @@
                                 link-method="POST"
                                 link-confirm="{{ trans('messages.websites.delete.confirm') }}"
                                 href="{{ action('WebsiteController@delete') }}">
-                                    <span class="material-icons-outlined me-2">delete_outline</span>
+                                    <span class="material-symbols-rounded me-2">delete_outline</span>
                                     {{ trans('messages.delete') }}</a>
                             </li>
                         </ul>
@@ -64,14 +64,14 @@
                         </select>
                         <input type="hidden" name="sort_direction" value="desc" />
 <button type="button" class="btn btn-light sort-direction" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
-                            <span class="material-icons-outlined desc">
+                            <span class="material-symbols-rounded desc">
 sort
 </span>
                         </button>
                     </span>
                     <span class="text-nowrap">
                         <input type="text" name="keyword" class="form-control search" value="{{ request()->keyword }}" value="{{ request()->keyword }}" placeholder="{{ trans('messages.type_to_search') }}" />
-                        <span class="material-icons-round">
+                        <span class="material-symbols-rounded">
 search
 </span>
                     </span>
@@ -79,7 +79,7 @@ search
             </div>
             <div class="text-end">
                 <a href="{{ action('WebsiteController@create') }}" role="button" class="btn btn-secondary">
-                    <span class="material-icons-round">
+                    <span class="material-symbols-rounded">
 add
 </span> {{ trans('messages.website.add') }}
                 </a>

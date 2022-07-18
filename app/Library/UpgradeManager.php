@@ -277,10 +277,6 @@ class UpgradeManager
                 return $errors;
             }
 
-            // reload the config & run migration
-            LaravelLog::info('UPDATE .env file');
-            $this->mergeEnv(base_path('.env'), base_path('.env.example'));
-
             // cleanup
             LaravelLog::info('Cleaning up');
             $this->cleanup();
@@ -330,34 +326,41 @@ class UpgradeManager
     /**
      * Merge .env files.
      */
-    private function mergeEnv($mainfile, $updatefile)
+    public function mergeEnv($updatefile)
     {
         if (!file_exists($updatefile)) {
             return;
         }
 
-        $maindb = file($mainfile);
+        // Important: load all available env variables (in case they are erased by cache:clear)
+        \Artisan::call('config:cache');
+
         $updatedb = file($updatefile);
 
         $rexp = '/\s*=\s*/';
-        $mainkeys = array_map(function ($record) use ($rexp) {
-            $pair = preg_split($rexp, $record);
-
-            return (empty($pair)) ? null : $pair[0];
-        }, $maindb);
+        $mainkeys = array_keys($_ENV);
 
         foreach ($updatedb as $updaterecord) {
             if (empty(trim($updaterecord))) {
                 continue;
             }
+
+            if (preg_match('/^\s*#/', $updaterecord)) {
+                // skip commented line with leading #
+                continue;
+            }
+
             list($updatekey, $updatevalue) = preg_split($rexp, $updaterecord);
             // echo "Checking $updatekey\n";
             if (!in_array($updatekey, $mainkeys)) {
-                // echo "--> {$updatekey} NOT AVAILABLE\n";
-                $maindb[] = $updaterecord;
+                $updatevalue = stripslashes(trim(trim($updatevalue), '"'));
+                \Acelle\Helpers\write_env($updatekey, $updatevalue);
             }
         }
-        file_put_contents($mainfile, $maindb);
+
+        // Important: cache configs AGAIN to reload the settings from .env
+        \Artisan::call('config:clear');
+        \Artisan::call('config:cache');
     }
 
     /**
@@ -508,6 +511,6 @@ class UpgradeManager
      */
     public function mergeTranslationFileWithoutOverwritting($target, $source)
     {
-        updateTranslationFile($target, $source, $overwrite = false, $sort = true);
+        updateTranslationFile($target, $source, $overwrite = false, $deleteTargetKeys = true, $sort = true);
     }
 }

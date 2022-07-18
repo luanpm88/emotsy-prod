@@ -10,10 +10,10 @@
                             <div class="label mr-auto">{{ trans('messages.woo_item.product') }}</div>
                             <div class="d-flex align-items-center">
                                 <a href="javascript:;" class="btn btn-default but-toggle btn-widget-preview mr-1">
-                                    <span class="material-icons-outlined">visibility</span>
+                                    <span class="material-symbols-rounded">visibility</span>
                                 </a>
                                 <a href="javascript:;" class="btn btn-default but-toggle btn-widget-unpreview mr-1">
-                                    <span class="material-icons-outlined">visibility_off</span>
+                                    <span class="material-symbols-rounded">visibility_off</span>
                                 </a>
                                 <select class="product_id form-control">
                                     <option value="">Select product</option>

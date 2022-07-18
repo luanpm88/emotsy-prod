@@ -22,7 +22,6 @@
 
 namespace Acelle\Model;
 
-use Acelle\Library\Log as MailLog;
 use Acelle\Library\AmazonSmtpTransport;
 use Exception;
 
@@ -50,8 +49,6 @@ class SendingServerAmazonSmtp extends SendingServerAmazon
         $sent = $mailer->send($message);
 
         if ($sent) {
-            MailLog::info('Sent!');
-
             return array(
                 'runtime_message_id' => $transport->getMessageId(),
                 'status' => self::DELIVERY_STATUS_SENT,

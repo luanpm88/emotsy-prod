@@ -6,7 +6,7 @@
             <tr>
                 <td width="1%">
                     <div class="text-nowrap">
-                        <div class="checkbox inline">
+                        <div class="checkbox inline me-1">
                             <label>
                                 <input type="checkbox" class="node styled"
                                        name="uids[]"
@@ -34,14 +34,13 @@
                         <br/>
                         <span class="text-muted">{{ trans("messages.subscribers") }}</span>
                     </div>
-                    <br style="clear:both"/>
                 </td>
 
                 <td class="text-end text-nowrap pe-0">
                     @if (\Gate::allows('update', $item))
                         <a href="{{ action('SegmentController@edit', ['list_uid' => $list->uid, "uid" => $item->uid]) }}"
                            role="button" class="btn btn-secondary btn-icon">
-                            <span class="material-icons-outlined">
+                            <span class="material-symbols-rounded">
 edit
 </span> {{ trans('messages.edit') }}
                         </a>
@@ -75,7 +74,7 @@ edit
     
 @elseif (!empty(request()->keyword))
     <div class="empty-list">
-        <span class="material-icons-outlined">
+        <span class="material-symbols-rounded">
 splitscreen
 </span>
 		<span class="line-1">
@@ -84,7 +83,7 @@ splitscreen
     </div>
 @else
     <div class="empty-list">
-        <span class="material-icons-outlined">
+        <span class="material-symbols-rounded">
 splitscreen
 </span>
 		<span class="line-1">

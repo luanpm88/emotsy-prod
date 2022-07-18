@@ -1,4 +1,4 @@
-<h3 class="mt-5 mb-20"><span class="material-icons-outlined me-2">
+<h3 class="mt-5 mb-20"><span class="material-symbols-rounded me-2">
     schedule
     </span> {{ trans('messages.24h_performance') }}</h3>
 <p class="mb-4">{{ trans('messages.campaign_24h_intro') }}</p>

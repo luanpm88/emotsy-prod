@@ -28,14 +28,6 @@ Route::group(['middleware' => ['installed']], function () {
     Route::get('install/finish', 'InstallController@finish');
 });
 
-// Google OAuth 2.0
-Route::get('/auth/google/redirect', 'AuthController@googleRedirect');
-Route::get('/auth/google/callback', 'AuthController@googleCallback');
-
-// Facebook OAuth 2.0
-Route::get('/auth/facebook/redirect', 'AuthController@facebookRedirect');
-Route::get('/auth/facebook/callback', 'AuthController@facebookCallback');
-
 /*
  * The following routes
  * + customer_files
@@ -110,6 +102,13 @@ Route::get('/terms-of-service', 'Controller@termsOfService');
 Route::group(['middleware' => ['not_installed', 'not_logged_in']], function () {
     // Helper method to generate other routes for authentication
     Auth::routes();
+    // Google OAuth 2.0
+    Route::get('/auth/google/redirect', 'AuthController@googleRedirect');
+    Route::get('/auth/google/callback', 'AuthController@googleCallback');
+
+    // Facebook OAuth 2.0
+    Route::get('/auth/facebook/redirect', 'AuthController@facebookRedirect');
+    Route::get('/auth/facebook/callback', 'AuthController@facebookCallback');
 
     Route::get('/login/token/{token}', 'Controller@tokenLogin');
 
@@ -717,10 +716,10 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('site/categories', 'Site\CategoryController@index');
 
     // Site - Product
-    Route::post('site/profucts/{id}/delete', 'Site\ProductController@delete');
+    Route::post('site/products/{id}/delete', 'Site\ProductController@delete');
     Route::match(['get', 'post'], 'site/products/{id}/edit', 'Site\ProductController@edit');
     Route::match(['get', 'post'], 'site/products/add', 'Site\ProductController@add');
-    Route::post('site/profucts/{id}/activate', 'Site\TemplateController@activate');
+    Route::post('site/products/{id}/activate', 'Site\TemplateController@activate');
     Route::get('site/products/listing', 'Site\ProductController@listing');
     Route::get('site/products', 'Site\ProductController@index');
     Route::get('site/products-2', 'Site\ProductController@index2');
@@ -1096,7 +1095,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::match(['get', 'post'], 'admin/plugins/install', 'PluginController@install');
     Route::get('admin/plugins/listing/{page?}', 'PluginController@listing');
     Route::get('admin/plugins/sort', 'PluginController@sort');
-    Route::get('admin/plugins/delete', 'PluginController@delete');
+    Route::match(['get', 'post'], 'admin/plugins/{uid}/delete', 'PluginController@delete');
     Route::get('admin/plugins/disable', 'PluginController@disable');
     Route::get('admin/plugins/enable', 'PluginController@enable');
     Route::resource('admin/plugins', 'PluginController');

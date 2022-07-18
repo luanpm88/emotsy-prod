@@ -4,7 +4,7 @@
             <tr>
                 <td width="1%">
                     <div class="text-nowrap">
-                        <div class="checkbox inline">
+                        <div class="checkbox inline me-1">
                             <label>
                                 <input type="checkbox" class="node styled"
                                     name="uids[]"
@@ -58,7 +58,7 @@
                     @if (Auth::user()->customer->can('update', $form))
                         <a href="{{ action('FormController@build', $form->uid) }}"
                                 role="button" class="btn btn-primary">
-                            <span class="material-icons-outlined me-1">handyman</span> {{ trans('messages.form.builder') }}
+                            <span class="material-symbols-rounded me-1">handyman</span> {{ trans('messages.form.builder') }}
                         </a>
                     @endif
 
@@ -67,7 +67,7 @@
                             'uids' => [$form->uid],
                         ]) }}"
                             role="button" class="btn btn-secondary list-action-single">
-                            <span class="material-icons-outlined me-1">
+                            <span class="material-symbols-rounded me-1">
                                 task_alt
                                 </span> {{ trans('messages.form.publish') }}
                         </a>
@@ -78,7 +78,7 @@
                             'uids' => [$form->uid],
                         ]) }}"
                             role="button" class="btn btn-default list-action-single">
-                            <span class="material-icons-outlined me-1">
+                            <span class="material-symbols-rounded me-1">
                                 do_disturb_on
                                 </span> {{ trans('messages.form.unpublish') }}
                         </a>
@@ -87,7 +87,7 @@
                     <a href="{{ action('FormController@frontendContent', $form->uid) }}"
                         data-overlay="{{ $form->getMetadata('overlay_opacity') ? ($form->getMetadata('overlay_opacity')/100) : '0.2' }}"
                         role="button" class="btn btn-default form-popup-preview">
-                        <span class="material-icons-outlined">
+                        <span class="material-symbols-rounded">
                             zoom_in
                             </span>
                     </a>
@@ -102,7 +102,7 @@
                                     <li><a target="_blank" href="{{ $form->getWebsite()->url }}"
                                             class="dropdown-item"
                                         >
-                                        <span class="material-icons-round me-2" style="font-size:11px">
+                                        <span class="material-symbols-rounded me-2" style="font-size:11px">
                                             launch
                                             </span>
                                     {{ trans('messages.form.view_on_site') }}
@@ -115,7 +115,7 @@
                                         link-method="POST"
                                         link-confirm="{{ trans('messages.forms.delete.confirm') }}"
                                         href="{{ action('FormController@delete', ["uids" => $form->uid]) }}">
-                                        <span class="material-icons-outlined me-2">
+                                        <span class="material-symbols-rounded me-2">
 delete_outline
 </span> {{ trans("messages.delete") }}</a></li>
                                 @endif
@@ -147,7 +147,7 @@ delete_outline
     </script>
 @elseif (!empty(request()->keyword) || !empty(request()->mail_list_uid))
 	<div class="empty-list">
-		<span class="material-icons-outlined">
+		<span class="material-symbols-rounded">
 			auto_awesome
 			</span>
 		<span class="line-1">
@@ -156,7 +156,7 @@ delete_outline
 	</div>
 @else
 	<div class="empty-list">
-		<span class="material-icons-outlined">
+		<span class="material-symbols-rounded">
 			auto_awesome
 			</span>
 		<span class="line-1">

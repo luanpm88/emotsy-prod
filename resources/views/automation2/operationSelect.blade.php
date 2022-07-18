@@ -33,7 +33,7 @@
                                             $icon = "check";
                                     }
                                 @endphp
-                                <i class="material-icons-outlined me-2">{{ $icon }}</i>
+                                <i class="material-symbols-rounded me-2">{{ $icon }}</i>
                                 {{ trans('messages.automation.operation.' . $type) }}</h6>
                             <p>{{ trans('messages.automation.operation.' . $type . '.desc') }}</p>
                         </a>

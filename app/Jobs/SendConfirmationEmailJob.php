@@ -2,8 +2,6 @@
 
 namespace Acelle\Jobs;
 
-use Acelle\Library\Log as MailLog;
-
 class SendConfirmationEmailJob extends Base
 {
     protected $subscribers;
@@ -27,16 +25,8 @@ class SendConfirmationEmailJob extends Base
      */
     public function handle()
     {
-        MailLog::info(sprintf('Start re-sending confirmation email to %s contacts', sizeof($this->subscribers)));
         foreach ($this->subscribers as $subscriber) {
-            try {
-                MailLog::info(sprintf('Re-sending confirmation email to %s (%s)', $subscriber->email, $subscriber->id));
-                $this->mailList->sendSubscriptionConfirmationEmail($subscriber);
-            } catch (\Exception $e) {
-                MailLog::error(sprintf('Something went wrong when re-sending confirmation email for mail list %s. Error: %s', $this->mailList->name, $e->getMessage()));
-                break;
-            }
+            $this->mailList->sendSubscriptionConfirmationEmail($subscriber);
         }
-        MailLog::info('Finish re-sending confirmation email');
     }
 }

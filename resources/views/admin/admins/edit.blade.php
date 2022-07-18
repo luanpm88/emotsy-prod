@@ -11,7 +11,7 @@
             <li class="breadcrumb-item active">{{ trans('messages.update') }}</li>
         </ul>
         <h1>
-            <span class="text-semibold"><span class="material-icons-round">
+            <span class="text-semibold"><span class="material-symbols-rounded">
                             person_outline
                             </span> {{ $admin->user->displayName() }}</span>
         </h1>

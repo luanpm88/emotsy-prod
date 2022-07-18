@@ -10,7 +10,7 @@
 					<li class="breadcrumb-item"><a href="{{ action("Admin\Admin2Controller@index") }}">{{ trans('messages.users') }}</a></li>
 				</ul>
 				<h1>
-					<span class="text-semibold"><span class="material-icons-round">
+					<span class="text-semibold"><span class="material-symbols-rounded">
 add
 </span> {{ trans('messages.create_admin') }}</span>
 				</h1>

@@ -27,16 +27,6 @@ class Controller extends BaseController
     }
 
     /**
-     * Check if the site is in demo mode.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function isDemoMode()
-    {
-        return config('app.demo');
-    }
-
-    /**
      * Check if the user is not authorized.
      *
      * @return \Illuminate\Http\Response
@@ -124,9 +114,9 @@ class Controller extends BaseController
 
     public function validateToken($api_token)
     {
-        $valid = is_object(\Acelle\Model\User::where('api_token', $api_token)->first());
+        $first = \Acelle\Model\User::where('api_token', $api_token)->first();
 
-        if ($valid) {
+        if ($first) {
             return response()
                 ->json([
                     'status' => 'success',

@@ -60,7 +60,7 @@
                                 {{ $plan->displayPrice() }}
                             </h3>
                             <p>{{ trans('messages.plan.quota_time.wording', [
-                                'amount' => format_number($plan->frequency_amount),
+                                'amount' => number_with_delimiter($plan->frequency_amount, $precision = 0),
                                 'unit' => trans('messages.' . $plan->frequency_unit),
                             ]) }}</p>
                         </div>
@@ -135,7 +135,7 @@
                         'label' => trans('messages.plan.currency'),
                         'selected' => [
                             'value' => $plan->currency_id,
-                            'text' => is_object($plan->currency) ? $plan->currency->displayName() : ''
+                            'text' => $plan->currency ? $plan->currency->displayName() : ''
                         ],
                         'help_class' => 'plan',
                         'rules' => $plan->generalRules(),

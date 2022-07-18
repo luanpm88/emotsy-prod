@@ -95,7 +95,7 @@
                                 class="btn btn-primary me-1 test-button"
 								mask-title="{{ trans('messages.bounce_handler.testing_connection') }}"
                             >
-                                <span class="material-icons-outlined">
+                                <span class="material-symbols-rounded">
 quiz
 </span> {{ trans('messages.bounce_handler.test') }}
                             </a>

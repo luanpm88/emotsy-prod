@@ -14,7 +14,7 @@
         @endphp
         <li class="d-flex align-items-canter py-2 border-top">
           <div class="d-flex align-items-center mr-auto">
-            <span class="material-icons-outlined fs-4 text-muted me-3 d-block">
+            <span class="material-symbols-rounded fs-4 text-muted me-3 d-block">
               attach_email
             </span>
             <span><name class="d-block">{{ $filename }}</name><size class="text-muted">{{ trans('messages.campaign.attachment.file_size_is', ['size' => $fileszie]) }}</size></span> 

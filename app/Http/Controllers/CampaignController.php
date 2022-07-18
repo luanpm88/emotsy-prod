@@ -3,7 +3,6 @@
 namespace Acelle\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Acelle\Library\Log as MailLog;
 use Illuminate\Support\Facades\Log as LaravelLog;
 use Gate;
 use Validator;
@@ -22,6 +21,7 @@ use Acelle\Model\TemplateCategory;
 use Acelle\Model\JobMonitor;
 use DB;
 use Exception;
+use Carbon\Carbon;
 
 class CampaignController extends Controller
 {
@@ -557,6 +557,7 @@ class CampaignController extends Controller
     public function schedule(Request $request)
     {
         $campaign = Campaign::findByUid($request->uid);
+        $currentTimezone = $campaign->customer->getTimezone();
 
         // check step
         if ($campaign->step() < 3) {
@@ -568,8 +569,26 @@ class CampaignController extends Controller
             return $this->notAuthorized();
         }
 
-        $delivery_date = isset($campaign->run_at) && $campaign->run_at != '0000-00-00 00:00:00' ? \Acelle\Library\Tool::dateTime($campaign->run_at)->format('Y-m-d') : \Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->format('Y-m-d');
-        $delivery_time = isset($campaign->run_at) && $campaign->run_at != '0000-00-00 00:00:00' ? \Acelle\Library\Tool::dateTime($campaign->run_at)->format('H:i') : \Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->format('H:i');
+        // validate and save posted data
+        if ($request->isMethod('post')) {
+            if ($request->send_now == 'yes') {
+                $campaign->run_at = null;
+            } else {
+                $runAtStr = $request->delivery_date.' '.$request->delivery_time;
+                $runAt = Carbon::createFromFormat('Y-m-d H:i', $runAtStr, $currentTimezone);
+                $campaign->run_at = $runAt->timezone('UTC'); // store in UTC
+            }
+
+            $campaign->save();
+            return redirect()->action('CampaignController@confirm', ['uid' => $campaign->uid]);
+        }
+
+        // Get the run_at datetime in current customer timezone
+        $runAt = is_null($campaign->run_at) ? Carbon::now() : $campaign->run_at;
+        $runAt->timezone($currentTimezone);
+
+        $delivery_date = $runAt->format('Y-m-d');
+        $delivery_time = $runAt->format('H:i');
 
         $rules = array(
             'delivery_date' => 'required',
@@ -579,19 +598,6 @@ class CampaignController extends Controller
         // Get old post values
         if (null !== $request->old()) {
             $campaign->fill($request->old());
-        }
-
-        // validate and save posted data
-        if ($request->isMethod('post')) {
-            if ($request->send_now == 'yes') {
-                $campaign->run_at = null;
-            } else {
-                $time = \Acelle\Library\Tool::systemTimeFromString($request->delivery_date.' '.$request->delivery_time);
-                $campaign->run_at = $time;
-            }
-
-            $campaign->save();
-            return redirect()->action('CampaignController@confirm', ['uid' => $campaign->uid]);
         }
 
         return view('campaigns.schedule', [
@@ -760,6 +766,7 @@ class CampaignController extends Controller
      */
     public function chart24h(Request $request)
     {
+        $currentTimezone = $request->user()->customer->getTimezone();
         $campaign = Campaign::findByUid($request->uid);
 
         // authorize
@@ -777,14 +784,14 @@ class CampaignController extends Controller
 
         // columns
         for ($i = 23; $i >= 0; --$i) {
-            $time = \Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->subHours($i);
+            $time = Carbon::now()->timezone($currentTimezone)->subHours($i);
             $result['columns'][] = $time->format('h') . ':00 ' . $time->format('A');
             $hours[] = $time->format('H');
         }
 
         // 24h collection
-        $openData24h = $campaign->openUniqHours(\Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->subHours(24), \Carbon\Carbon::now());
-        $clickData24h = $campaign->clickHours(\Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->subHours(24), \Carbon\Carbon::now());
+        $openData24h = $campaign->openUniqHours(Carbon::now()->timezone($currentTimezone)->subHours(24), Carbon::now()->timezone($currentTimezone));
+        $clickData24h = $campaign->clickHours(Carbon::now()->timezone($currentTimezone)->subHours(24), Carbon::now()->timezone($currentTimezone));
 
         // data
         foreach ($hours as $hour) {
@@ -875,7 +882,7 @@ class CampaignController extends Controller
         // create data
         $total = $campaign->uniqueOpenCount();
         $count = 0;
-        foreach ($campaign->topCountries()->get() as $location) {
+        foreach ($campaign->topOpenCountries()->get() as $location) {
             $country_name = (!empty($location->country_name) ? $location->country_name : trans('messages.unknown'));
             $result['data'][] = ['value' => $location->aggregate, 'name' => $country_name];
             $count += $location->aggregate;
@@ -1090,7 +1097,7 @@ class CampaignController extends Controller
 
         $items = TrackingLog::search($request, $campaign)->paginate($request->per_page);
 
-        return view('admin.tracking_logs._list', [
+        return view('campaigns.tracking_logs_list', [
             'items' => $items,
             'campaign' => $campaign,
         ]);
@@ -1178,7 +1185,7 @@ class CampaignController extends Controller
 
         $items = \Acelle\Model\BounceLog::search($request, $campaign)->paginate($request->per_page);
 
-        return view('admin.bounce_logs._list', [
+        return view('campaigns.bounce_logs_list', [
             'items' => $items,
             'campaign' => $campaign,
         ]);
@@ -1218,7 +1225,7 @@ class CampaignController extends Controller
 
         $items = \Acelle\Model\FeedbackLog::search($request, $campaign)->paginate($request->per_page);
 
-        return view('admin.feedback_logs._list', [
+        return view('campaigns.feedback_logs_list', [
             'items' => $items,
             'campaign' => $campaign,
         ]);
@@ -1338,7 +1345,7 @@ class CampaignController extends Controller
 
         $items = \Acelle\Model\UnsubscribeLog::search($request, $campaign)->paginate($request->per_page);
 
-        return view('admin.unsubscribe_logs._list', [
+        return view('campaigns.unsubscribe_logs_list', [
             'items' => $items,
             'campaign' => $campaign,
         ]);
@@ -1485,11 +1492,11 @@ class CampaignController extends Controller
             // Query of email addresses that DID open
             $openByEmails = $campaign->openLogs()->join('subscribers', 'tracking_logs.subscriber_id', '=', 'subscribers.id')->groupBy('subscribers.email')->select('subscribers.email');
 
-            if ($request->open == 'opened') {
+            if ($request->open == 'yes') {
                 $subscribers = $subscribers->joinSub($openByEmails, 'OpenedByEmails', function ($join) {
                     $join->on('subscribers.email', '=', 'OpenedByEmails.email');
                 });
-            } elseif ($request->open = 'not_opened') {
+            } elseif ($request->open = 'no') {
                 $subscribers = $subscribers->leftJoinSub($openByEmails, 'OpenedByEmails', function ($join) {
                     $join->on('subscribers.email', '=', 'OpenedByEmails.email');
                 })->whereNull('OpenedByEmails.email');
@@ -1516,7 +1523,7 @@ class CampaignController extends Controller
         $subscribers = $subscribers->search($request->keyword)->paginate($request->per_page);
 
         // Field information
-        $fields = $campaign->defaultMailList->getFields->whereIn('uid', explode(',', $request->columns));
+        $fields = $campaign->defaultMailList->getFields->whereIn('uid', $request->columns);
 
         return view('campaigns._subscribers_list', [
             'subscribers' => $subscribers,
@@ -1743,14 +1750,14 @@ class CampaignController extends Controller
         $tracking_log = TrackingLog::where('message_id', '=', $message_id)->first();
 
         try {
-            if (!is_object($tracking_log)) {
+            if (!$tracking_log) {
                 throw new \Exception(trans('messages.web_view_can_not_find_tracking_log_with_message_id'));
             }
 
             $subscriber = $tracking_log->subscriber;
             $campaign = $tracking_log->campaign;
 
-            if (!is_object($campaign) || !is_object($subscriber)) {
+            if (!$campaign || !$subscriber) {
                 throw new \Exception(trans('messages.web_view_can_not_find_campaign_or_subscriber'));
             }
 
@@ -1760,8 +1767,6 @@ class CampaignController extends Controller
                 'message_id' => $message_id,
             ]);
         } catch (\Exception $e) {
-            MailLog::error($e->getMessage());
-
             return view('somethingWentWrong', ['message' => trans('messages.the_email_no_longer_exists')]);
         }
     }

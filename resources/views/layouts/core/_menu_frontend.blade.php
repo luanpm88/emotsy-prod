@@ -113,7 +113,7 @@
                                     </a>
                                 </li>
                             @endif
-                            <li rel1="SendingDomainController">
+                            <li class="nav-item" rel1="SendingDomainController">
                                 <a href="{{ action('SendingDomainController@index') }}" class="dropdown-item d-flex align-items-center">
                                 <i class="navbar-icon" style="width:20	px">
                                     <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1" x="0px" y="0px" viewBox="0 0 77.4 77.5" style="enable-background:new 0 0 77.4 77.5;" xml:space="preserve"><style type="text/css">.st0{fill:#333333;}</style><g id="Layer_2_1_"><g id="Layer_1-2"><path class="st0" d="M38.7,77.4c-10.2,0-20.3-4-27.9-11.9C-4.1,50.1-3.5,25.6,11.9,10.8l0.4-0.4h0.1C27.3-3.3,50.1-3.3,65,10.4 h0.1l0.5,0.5l1,1.1c14.7,15.4,14.2,39.9-1.2,54.7C58,73.9,48.3,77.4,38.7,77.4z M5.8,41.5c1.5,17,15.6,30.2,32.9,30.3 c17.3,0,31.5-13.2,32.9-30.3H5.8z M61.4,35.9h10.3C71,28.8,68.1,22,63.4,16.7c-1.7,1.4-3.5,2.7-5.4,3.8 C60,25.4,61.1,30.6,61.4,35.9z M41.5,35.9h14.2c-0.3-4.5-1.3-8.8-2.9-13c-3.6,1.4-7.5,2.3-11.4,2.6V35.9z M21.7,35.9h14.2V25.5 c-3.9-0.3-7.7-1.2-11.4-2.6C22.9,27.1,22,31.4,21.7,35.9z M5.8,35.9h10.3c0.3-5.3,1.4-10.5,3.4-15.4c-1.9-1.1-3.7-2.3-5.4-3.8 C9.3,22,6.4,28.8,5.8,35.9z M41.5,7.2v12.6c3.1-0.3,6.1-0.9,9-2.1C48.2,13.7,45.1,10.1,41.5,7.2z M27,17.8 c2.9,1.1,5.8,1.8,8.9,2.1V7.2C32.3,10.1,29.3,13.7,27,17.8z M18.2,12.8c1.2,0.9,2.4,1.8,3.7,2.5c1.5-2.7,3.2-5.3,5.3-7.6 C23.9,8.9,20.9,10.6,18.2,12.8z M50.2,7.7c2,2.3,3.8,4.9,5.3,7.6c1.3-0.8,2.5-1.6,3.7-2.5C56.5,10.6,53.5,8.9,50.2,7.7z"/><rect x="22.5" y="51" class="st0" width="6.3" height="7"/><rect x="34.8" y="51" class="st0" width="7.2" height="7"/><rect x="47.5" y="51" class="st0" width="7.4" height="7"/></g></g></svg>
@@ -167,7 +167,7 @@
                         <span>{{ trans('messages.intergration') }}</span>
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="audience-menu">
-                        <li class="nav-item" rel0="AudienceController">
+                        <li class="nav-item" rel0="WebsiteController/create">
                             <a class="dropdown-item d-flex align-items-center" href="{{ action('WebsiteController@create') }}">
                                 <i class="navbar-icon" style="">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 97.7 97"><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><path d="M48.5,97A48.5,48.5,0,1,1,97,48.5a47.8,47.8,0,0,1-.9,9.2A3.4,3.4,0,0,1,92,60.4a3.5,3.5,0,0,1-2.7-4.1,40.4,40.4,0,0,0,.7-7.8A41.5,41.5,0,1,0,48.5,90a39.3,39.3,0,0,0,6.9-.6,3.5,3.5,0,0,1,4,2.9,3.4,3.4,0,0,1-2.8,4A43.6,43.6,0,0,1,48.5,97Z" style="fill:#333"/><path d="M89,52.5H7a3.5,3.5,0,0,1,0-7H89a3.5,3.5,0,0,1,0,7Z" style="fill:#333"/><path d="M25,52.5a3.5,3.5,0,0,1-3.5-3.4,51.1,51.1,0,0,1,23.6-45,3.4,3.4,0,0,1,4.8,1,3.4,3.4,0,0,1-1,4.8,44.2,44.2,0,0,0-20.4,39,3.5,3.5,0,0,1-3.4,3.6Z" style="fill:#333"/><path d="M72.6,51.5h-.1a3.6,3.6,0,0,1-3.4-3.6c.2-4.2-.1-9.9-3.7-18A45,45,0,0,0,48.7,10.4a3.4,3.4,0,0,1-1-4.8,3.4,3.4,0,0,1,4.8-1.1A52,52,0,0,1,71.8,27.1c4.2,9.5,4.5,16.5,4.3,21A3.5,3.5,0,0,1,72.6,51.5Z" style="fill:#333"/><path d="M79.2,95.7a3.5,3.5,0,0,1-3.5-3.5v-30a3.5,3.5,0,0,1,3.5-3.5,3.5,3.5,0,0,1,3.5,3.5v30A3.4,3.4,0,0,1,79.2,95.7Z" style="fill:#333"/><path d="M94.2,80.7h-30a3.5,3.5,0,0,1-3.5-3.5,3.5,3.5,0,0,1,3.5-3.5h30a3.5,3.5,0,0,1,3.5,3.5A3.4,3.4,0,0,1,94.2,80.7Z" style="fill:#333"/><path d="M49,52.5A3.5,3.5,0,0,1,45.5,49V7a3.5,3.5,0,0,1,7,0V49A3.5,3.5,0,0,1,49,52.5Z" style="fill:#333"/></g></g></svg>
@@ -175,7 +175,7 @@
                                 <span>{{ trans('messages.website.add_site') }}</span>
                             </a>
                         </li>
-                        <li class="nav-item" rel0="WebsiteController">
+                        <li class="nav-item" rel0="WebsiteController/index" rel1="WebsiteController/show">
                             <a class="dropdown-item d-flex align-items-center" href="{{ action('WebsiteController@index') }}">
                                 <i class="navbar-icon" style="">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 94.8 89.5"><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><path d="M69.2,89.5H15.1A15.1,15.1,0,0,1,0,74.5V20.3a15.1,15.1,0,0,1,15.1-15H41.6a3.5,3.5,0,0,1,0,7H15.1a8,8,0,0,0-8.1,8V74.5a8,8,0,0,0,8.1,8H69.2a8,8,0,0,0,8-8V47.9a3.5,3.5,0,1,1,7,0V74.5A15,15,0,0,1,69.2,89.5Z" style="fill:#333"/><path d="M67,43A21.5,21.5,0,1,1,88.4,21.5,21.5,21.5,0,0,1,67,43ZM67,7A14.5,14.5,0,1,0,81.4,21.5,14.5,14.5,0,0,0,67,7Z" style="fill:#333"/><path d="M29.4,46.1A12.5,12.5,0,1,1,41.9,33.6,12.5,12.5,0,0,1,29.4,46.1Zm0-17.9a5.5,5.5,0,1,0,5.5,5.4A5.5,5.5,0,0,0,29.4,28.2Z" style="fill:#333"/><path d="M45.3,78.9A12.5,12.5,0,1,1,57.8,66.4,12.5,12.5,0,0,1,45.3,78.9Zm0-18a5.5,5.5,0,0,0-5.5,5.5,5.5,5.5,0,0,0,11,0A5.5,5.5,0,0,0,45.3,60.9Z" style="fill:#333"/><path d="M40.5,33.4a3.5,3.5,0,0,1-.7-6.9l9.5-2.1a3.6,3.6,0,0,1,4.2,2.7,3.4,3.4,0,0,1-2.7,4.1l-9.5,2.2Z" style="fill:#333"/><path d="M52.2,60.9a2.7,2.7,0,0,1-1.3-.2,3.5,3.5,0,0,1-2-4.5l7.4-19.1a3.5,3.5,0,0,1,4.5-2,3.6,3.6,0,0,1,2,4.6l-7.4,19A3.3,3.3,0,0,1,52.2,60.9Z" style="fill:#333"/><path d="M66.9,31.6A10.6,10.6,0,1,1,77.5,21,10.6,10.6,0,0,1,66.9,31.6Zm0-13.2A2.6,2.6,0,0,0,64.3,21a2.6,2.6,0,1,0,5.2,0A2.6,2.6,0,0,0,66.9,18.4Z" style="fill:#333"/><path d="M91.3,78.9a3.5,3.5,0,0,1-3.5-3.5V60.6a3.5,3.5,0,0,1,7,0V75.4A3.5,3.5,0,0,1,91.3,78.9Z" style="fill:#333"/></g></g></svg>
@@ -228,9 +228,15 @@
             if (!$('.leftbar').hasClass('leftbar-closed')) {
                 $('.leftbar').addClass('leftbar-closed');
 
+                $('.leftbar').removeClass('state-open');
+                $('.leftbar').addClass('state-closed');
+
                 MenuFrontend.saveLeftbarState('closed');
             } else {
                 $('.leftbar').removeClass('leftbar-closed');
+
+                $('.leftbar').removeClass('state-closed');
+                $('.leftbar').addClass('state-open');
 
                 MenuFrontend.saveLeftbarState('open');
             }

@@ -6,7 +6,7 @@
             <tr>
                 <td width="1%">
                     <div class="text-nowrap">
-                        <div class="checkbox inline">
+                        <div class="checkbox inline me-1">
                             <label>
                                 <input type="checkbox" class="node styled"
                                     name="uids[]"
@@ -18,15 +18,15 @@
                 </td>
                 <td width="1%">
                     @if ($notification->level == \Acelle\Model\Notification::LEVEL_WARNING)
-                        <span class="material-icons-outlined bg-warning admin-notification-media text-white">
+                        <span class="material-symbols-rounded bg-warning admin-notification-media text-white">
                             warning_amber
                         </span>
                     @elseif ( false &&$notification->level == \Acelle\Model\Notification::LEVEL_ERROR)
-                        <span class="material-icons-outlined bg-danger admin-notification-media text-white">
+                        <span class="material-symbols-rounded bg-danger admin-notification-media text-white">
                             new_releases
                         </span>
                     @else
-                        <span class="material-icons-outlined bg-info admin-notification-media text-white">
+                        <span class="material-symbols-rounded bg-info admin-notification-media text-white">
                             lightbulb
                         </span>
                     @endif
@@ -50,14 +50,14 @@
                                 
 @elseif (!empty(request()->keyword) || !empty(request()->filters["type"]))
     <div class="empty-list">
-        <i class="material-icons-outlined">message</i> 
+        <i class="material-symbols-rounded">message</i> 
         <span class="line-1">
             {{ trans('messages.no_search_result') }}
         </span>
     </div>
 @else                    
     <div class="empty-list">
-        <i class="material-icons-outlined">message</i> 
+        <i class="material-symbols-rounded">message</i> 
         <span class="line-1">
             {{ trans('messages.no_action_notifications') }}
         </span>

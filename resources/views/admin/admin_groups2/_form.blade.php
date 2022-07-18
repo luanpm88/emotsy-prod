@@ -7,14 +7,14 @@
 </div>
 
 <div class="">
-    <h2><span class="material-icons-outlined">
+    <h2><span class="material-symbols-rounded">
 settings
 </span> {{ trans('messages.admin_group_options') }}</h2>
 
     <div class="tabbable">
         <ul class="nav nav-tabs nav-tabs-top nav-underline">
             <li class="nav-item active text-semibold"><a class="nav-link" href="#top-tab1" data-toggle="tab">
-                <span class="material-icons-round">
+                <span class="material-symbols-rounded">
 person_outline
 </span> {{ trans('messages.permissions') }}</a></li>
         </ul>

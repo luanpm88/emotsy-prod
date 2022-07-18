@@ -17,10 +17,10 @@
                                 'email_uid' => $email->uid,
                             ]) }}"
                         >
-                            <img width="35px" class="icon-img d-inline-block me-3" src="{{ url('images/icons/plus.svg') }}" />
+                            <img width="35px" class="icon-img d-inline-block me-4" src="{{ url('images/icons/plus.svg') }}" />
                             <div class="list-body">
                                 <label>{{ trans('messages.automation.template.from_layout') }}</label>
-                                <p>{{ trans('messages.automation.template.from_layout.intro') }}</p>
+                                <p class="text-muted">{{ trans('messages.automation.template.from_layout.intro') }}</p>
                             </div>
                             <div class="list-action">
                                 <button
@@ -35,10 +35,10 @@
                                 'email_uid' => $email->uid,
                             ]) }}"
                         >
-                            <img width="35px" class="icon-img d-inline-block me-3" src="{{ url('images/icons/upload.svg') }}" />
+                            <img width="35px" class="icon-img d-inline-block me-4" src="{{ url('images/icons/upload.svg') }}" />
                             <div class="list-body">
                                 <label>{{ trans('messages.automation.template.upload') }}</label>
-                                <p>{{ trans('messages.automation.template.upload.intro') }}</p>
+                                <p class="text-muted">{{ trans('messages.automation.template.upload.intro') }}</p>
                             </div>
                             <div class="list-action">
                                 <button

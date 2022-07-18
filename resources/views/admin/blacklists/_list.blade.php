@@ -17,7 +17,7 @@
 		@foreach ($blacklists as $key => $blacklist)
 			<tr>
 				<td width="1%">
-					<div class="checkbox inline">
+					<div class="checkbox inline me-1">
 						<label>
 							<input type="checkbox" class="node styled"
 								name="uids[]"
@@ -64,7 +64,7 @@
 	</script>
 @elseif (!empty(request()->keyword) || !empty(request()->filters["campaign_uid"]))
 	<div class="empty-list">
-		<span class="material-icons-outlined">
+		<span class="material-symbols-rounded">
 block
 </span>
 		<span class="line-1">
@@ -73,7 +73,7 @@ block
 	</div>
 @else
 	<div class="empty-list">
-		<span class="material-icons-outlined">
+		<span class="material-symbols-rounded">
 block
 </span>
 		<span class="line-1">

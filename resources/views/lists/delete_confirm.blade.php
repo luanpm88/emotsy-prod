@@ -3,7 +3,7 @@
     @foreach ($lists->get() as $list)
         <li>
             <div class="d-flex">
-                <span class="material-icons-outlined fs-5 text-danger me-3" style="margin-top: -5px;">
+                <span class="material-symbols-rounded fs-5 text-danger me-3" style="margin-top: -5px;">
                     error_outline
                 </span>
                 <div>

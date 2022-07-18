@@ -1,7 +1,7 @@
 @if (count($results))
     <div href="{{ action('CampaignController@index') }}" class="search-head border-bottom d-block">
         <label class="fw-600">
-            <span class="material-icons-outlined me-1">
+            <span class="material-symbols-rounded me-1">
                 manage_search 
                 </span> {{ trans('messages.search.general') }}
         </label>

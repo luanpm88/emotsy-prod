@@ -37,7 +37,7 @@
                                 ]) }}" class="btn-group remove-contact-tag" role="group" aria-label="Basic example">
                                     <button role="button" class="btn btn-light btn-tag font-weight-semibold">{{ $tag }}</button>
                                     <button role="button" class="btn btn-light btn-tag font-weight-semibold ml-0">
-                                        <i class="material-icons-round">
+                                        <i class="material-symbols-rounded">
 close
 </i>
                                     </button>
@@ -46,7 +46,7 @@ close
                         @else
                             <a href="" class="btn-group profile-tag-contact" role="group" aria-label="Basic example">
                                 <button role="button" class="btn btn-light btn-tag d-flex align-items-center">
-                                    <i class="material-icons-outlined me-2">add</i>
+                                    <i class="material-symbols-rounded me-2">add</i>
                                     <span class="font-italic">{{ trans('messages.automation.profile.click_to_add_tag') }}<span>
                                 </button>
                             </a>
@@ -167,28 +167,36 @@ close
                     <div class="activity d-flex py-3 px-4">
                         <div class="activity-media pr-4 text-center">
                             <time class="d-block text-center mini mb-2">3 days ago</time>
-                            <i class="lnr lnr-envelope bg-primary"></i>
+                            <i class="material-symbols-rounded bg-primary">
+forward_to_inbox
+                            </i>
                         </div>
                         <div class="small">
                             <action class="d-block font-weight-semibold mb-1">
                                 User Ardella Goldrup receives email entitled "Follow up Email"
                             </action>
                             <desc class="d-block small text-muted">
-                                <i class="lnr lnr-clock mr-1"></i> Jan 07th, 2020 09:36
+                                <i class="material-symbols-rounded me-1">
+schedule
+                                </i> Jan 07th, 2020 09:36
                             </desc>
                         </div>
                     </div>
                                         <div class="activity d-flex py-3 px-4">
                         <div class="activity-media pr-4 text-center">
                             <time class="d-block text-center mini mb-2">3 days ago</time>
-                            <i class="lnr lnr-envelope bg-primary"></i>
+                            <i class="material-symbols-rounded bg-primary">
+forward_to_inbox
+                            </i>
                         </div>
                         <div class="small">
                             <action class="d-block font-weight-semibold mb-1">
                                 User Ardella Goldrup receives email entitled "Welcome to our list"
                             </action>
                             <desc class="d-block small text-muted">
-                                <i class="lnr lnr-clock mr-1"></i> Jan 07th, 2020 09:36
+                                <i class="material-symbols-rounded me-1">
+schedule
+                                </i> Jan 07th, 2020 09:36
                             </desc>
                         </div>
                     </div>
@@ -202,35 +210,43 @@ close
                                 Wait for 24 hours before proceeding with the next event for user Ardella Goldrup
                             </action>
                             <desc class="d-block small text-muted">
-                                <i class="lnr lnr-clock mr-1"></i> Jan 07th, 2020 09:36
+                                <i class="material-symbols-rounded me-1">
+schedule
+                                </i> Jan 07th, 2020 09:36
                             </desc>
                         </div>
                     </div>
                                         <div class="activity d-flex py-3 px-4">
                         <div class="activity-media pr-4 text-center">
                             <time class="d-block text-center mini mb-2">3 days ago</time>
-                            <i class="material-icons-outlined bg-warning">call_split</i>
+                            <i class="material-symbols-rounded bg-warning">call_split</i>
                         </div>
                         <div class="small">
                             <action class="d-block font-weight-semibold mb-1">
                                 User Ardella Goldrup reads email entitled "Welcome email"
                             </action>
                             <desc class="d-block small text-muted">
-                                <i class="lnr lnr-clock mr-1"></i> Jan 07th, 2020 09:36
+                                <i class="material-symbols-rounded me-1">
+schedule
+                                </i> Jan 07th, 2020 09:36
                             </desc>
                         </div>
                     </div>
                                         <div class="activity d-flex py-3 px-4">
                         <div class="activity-media pr-4 text-center">
                             <time class="d-block text-center mini mb-2">3 days ago</time>
-                            <i class="lnr lnr-exit-up bg-success"></i>
+                            <i class="material-symbols-rounded bg-success">
+merge
+</i>
                         </div>
                         <div class="small">
                             <action class="d-block font-weight-semibold mb-1">
                                 User Ardella Goldrup subscribes to mail list, automation triggered!
                             </action>
                             <desc class="d-block small text-muted">
-                                <i class="lnr lnr-clock mr-1"></i> Jan 07th, 2020 09:36
+                                <i class="material-symbols-rounded me-1">
+schedule
+                                </i> Jan 07th, 2020 09:36
                             </desc>
                         </div>
                     </div>

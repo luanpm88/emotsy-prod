@@ -25,14 +25,14 @@ class Backend
 
         // If user is disabled
         if (
-            (isset($user) && is_object($user->admin) && !$user->admin->isActive())
+            (isset($user) && $user->admin && !$user->admin->isActive())
         ) {
             return redirect()->action('Controller@userDisabled');
         }
 
         // Language
         try {
-            if (is_object($user->admin->language)) {
+            if ($user->admin->language) {
                 \App::setLocale($user->admin->language->code);
                 \Carbon\Carbon::setLocale($user->admin->language->code);
             }

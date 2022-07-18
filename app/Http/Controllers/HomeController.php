@@ -15,6 +15,7 @@ class HomeController extends Controller
     public function index(Request $request)
     {
         event(new \Acelle\Events\UserUpdated($request->user()->customer));
+        $currentTimezone = $request->user()->customer->getTimezone();
 
         // Last month
         $customer = $request->user()->customer;
@@ -29,6 +30,7 @@ class HomeController extends Controller
                 'sendingCreditsUsed' => $sendingCreditsUsed,
                 'sendingCreditsUsedPercentage' => $sendingCreditsUsedPercentage,
                 'sendingCreditsLimit' => $sendingCreditsLimit,
+                'currentTimezone' => $currentTimezone
             ]);
         }
     }

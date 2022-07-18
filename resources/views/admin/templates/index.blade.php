@@ -41,7 +41,7 @@
                             <ul class="dropdown-menu">
                                 <li>
                                     <a class="dropdown-item" link-confirm="{{ trans('messages.delete_templates_confirm') }}" href="{{ action('Admin\TemplateController@delete') }}">
-                                        <span class="material-icons-outlined">
+                                        <span class="material-symbols-rounded">
     delete_outline
     </span> {{ trans('messages.delete') }}
                                     </a>
@@ -57,7 +57,7 @@
                         </select>                                        
                         <input type="hidden" name="sort_direction" value="desc" />
 <button type="button" class="btn btn-xs sort-direction" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
-                            <span class="material-icons-outlined desc">
+                            <span class="material-symbols-rounded desc">
 sort
 </span>
                         </button>
@@ -77,7 +77,7 @@ sort
                     </span>
                     <span class="text-nowrap">
                         <input type="text" name="keyword" class="form-control search" value="{{ request()->keyword }}" placeholder="{{ trans('messages.type_to_search') }}" />
-                        <span class="material-icons-round">
+                        <span class="material-symbols-rounded">
 search
 </span>
                     </span>
@@ -90,14 +90,14 @@ search
                             <a href="{{ action('Admin\TemplateController@index') }}"
                                 class="btn btn-default view-toogle grid m-icon"
                             >
-                                <span class="material-icons-outlined">
+                                <span class="material-symbols-rounded">
                                     grid_view
                                 </span>
                             </a>
                             <a href="{{ action('Admin\TemplateController@index', ['view' => 'list']) }}"
                                 class="btn btn-default view-toogle list m-icon mr-3"
                             >
-                                <span class="material-icons-outlined">
+                                <span class="material-symbols-rounded">
                                     reorder
                                 </span>
                             </a>
@@ -106,12 +106,12 @@ search
     
                     <div>
                         <a href="{{ action('Admin\TemplateController@uploadTemplate') }}" class="btn btn-secondary ml-auto">
-                            <span class="material-icons-outlined">
+                            <span class="material-symbols-rounded">
         file_upload
         </span> {{ trans('messages.upload') }}
                         </a>
                         <a href="{{ action('Admin\TemplateController@builderCreate') }}" class="btn btn-secondary">
-                            <span class="material-icons-round">
+                            <span class="material-symbols-rounded">
         add
         </span> {{ trans('messages.create') }}
                         </a>

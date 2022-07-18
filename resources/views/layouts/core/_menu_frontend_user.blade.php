@@ -4,9 +4,13 @@
         <i class="navbar-icon">
             <img src="{{ Auth::user()->getProfileImageUrl() }}" style="border-radius:100%;" class="menu-user-avatar" alt="">
         </i>
-        <span>{{ Auth::user()->displayName() }}</span>
+        <span style="
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        ">{{ Auth::user()->displayName() }}</span>
         @if (Auth::user()->customer->hasSubscriptionNotice())
-            <i class="material-icons-outlined customer-warning-icon text-danger" style="right: 3px!important;
+            <i class="material-symbols-rounded customer-warning-icon text-danger" style="right: 3px!important;
             color: rgb(236, 124, 124)!important;
             top: 2px!important;
             position: absolute;
@@ -21,12 +25,12 @@
             <div class="d-flex mb-2">
                 <div class="big-avatar me-3">
                     <a href="{{ action('AccountController@profile') }}">
-                        <img width="80px" class="" src="{{ Auth::user()->getProfileImageUrl() }}"
+                        <img width="70px" class="" src="{{ Auth::user()->getProfileImageUrl() }}"
                             style="border-radius:100%"
                             class="menu-user-avatar" alt="">
                     </a>
                 </div>
-                <div>
+                <div class="user-menu-titles">
                     <a href="{{ action('AccountController@profile') }}" class="fs-6 fw-600 d-flex align-items-center">
                         <span class="me-3">{{ Auth::user()->displayName() }}</span>
                     </a>
@@ -62,7 +66,7 @@
                 </i>{{ trans('messages.subscriptions') }}
                     <span class="position-relative" style="width:100%">
                         @if (Auth::user()->customer->hasSubscriptionNotice())
-                            <i class="material-icons-outlined subscription-warning-icon text-danger" style="font-size: inherit;
+                            <i class="material-symbols-rounded subscription-warning-icon text-danger" style="font-size: inherit;
                                 position: absolute;
                                 right: 0;
                                 top: 0;margin-top: -10px">info</i>

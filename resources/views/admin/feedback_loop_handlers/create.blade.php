@@ -10,7 +10,7 @@
 					<li class="breadcrumb-item"><a href="{{ action("Admin\FeedbackLoopHandlerController@index") }}">{{ trans('messages.feedback_loop_handlers') }}</a></li>
 				</ul>
 				<h1>
-					<span class="text-semibold"><span class="material-icons-round">
+					<span class="text-semibold"><span class="material-symbols-rounded">
 add
 </span> {{ trans('messages.create_feedback_loop_handler') }}</span>
 				</h1>

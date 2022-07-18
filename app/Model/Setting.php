@@ -57,7 +57,7 @@ class Setting extends Model
     {
         $setting = self::where('name', $name)->first();
 
-        if (is_object($setting)) {
+        if ($setting) {
             return $setting->value;
         } elseif (isset(self::defaultSettings()[$name])) {
             return self::defaultSettings()[$name]['value'];
@@ -96,7 +96,7 @@ class Setting extends Model
     {
         $option = self::where('name', $name)->first();
 
-        if (is_object($option)) {
+        if ($option) {
             $option->value = $val;
         } else {
             $option = new self();
@@ -207,6 +207,14 @@ class Setting extends Model
                 'value' => 'default',
                 'type' => 'select',
                 'options' => self::colors(),
+            ],
+            'captcha_engine' => [
+                'cat' => 'general',
+                'value' => 'recaptcha',
+                'type' => 'select',
+                'options' => array_map(function ($cap) {
+                    return ['value' => $cap['id'], 'text' => $cap['title']];
+                }, \Acelle\Library\Facades\Hook::execute('captcha_method')),
             ],
             'login_recaptcha' => [
                 'cat' => 'general',
@@ -605,31 +613,6 @@ class Setting extends Model
     }
 
     /**
-     * Update setting one line.
-     */
-    public static function setEnv($key, $value)
-    {
-        $file_path = base_path('.env');
-        $data = file($file_path);
-        $data = array_map(function ($data) use ($key, $value) {
-            if (stristr($value, ' ')) {
-                return stristr($data, $key) ? "$key='$value'\n" : $data;
-            } else {
-                return stristr($data, $key) ? "$key=$value\n" : $data;
-            }
-        }, $data);
-
-        // Write file
-        $env_file = fopen($file_path, 'w') or die('Unable to open file!');
-        fwrite($env_file, implode('', $data));
-        fclose($env_file);
-
-        if (file_exists(base_path('bootstrap/cache/config.php'))) {
-            unlink(base_path('bootstrap/cache/config.php'));
-        }
-    }
-
-    /**
      * Update license type.
      *
      * @return array
@@ -793,5 +776,25 @@ class Setting extends Model
         $settings['countries'] = $countries;
 
         self::set('tax', json_encode($settings));
+    }
+
+    public static function getCaptchaProvider()
+    {
+        $captcha = self::get('captcha_engine');
+
+        if (in_array(
+            $captcha,
+            array_map(
+                function ($cap) {
+                    return $cap['id'];
+                },
+                \Acelle\Library\Facades\Hook::execute('captcha_method')
+            )
+        )
+        ) {
+            return $captcha;
+        }
+
+        return 'recaptcha';
     }
 }

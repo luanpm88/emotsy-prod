@@ -6,7 +6,7 @@
             <tr>
                 <td width="1%">
                     <div class="text-nowrap">
-                        <div class="checkbox inline">
+                        <div class="checkbox inline me-1">
                             <label>
                                 <input type="checkbox" class="node styled"
                                     name="uids[]"
@@ -16,20 +16,20 @@
                         </div>
                     </div>
                 </td>
-                <td>
+                <td width="1%">
                     @php
                         $server = $item->mapType();
                     @endphp
 
                     @if ($server->isExtended())
                         <span class="mc-server-avatar shadow-sm rounded server-avatar" style="background: url({{ $server->getIconUrl() }}) top left/36px 36px no-repeat transparent;">
-                            <span class="material-icons-outlined">
+                            <span class="material-symbols-rounded">
 
 </span>
                         </span>
                     @else
                         <span class="server-avatar shadow-sm rounded server-avatar-{{ $item->type }} mr-0">
-                            <span class="material-icons-outlined">
+                            <span class="material-symbols-rounded">
 
 </span>
                         </span>
@@ -95,11 +95,11 @@
                 <td class="text-end text-nowrap pe-0">
                     @if (Auth::user()->admin->can('update', $item))
                         @if ($server->isExtended())
-                            <a href="{{ $server->getEditUrl() }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" role="button" class="btn btn-secondary btn-icon"><span class="material-icons-outlined">
+                            <a href="{{ $server->getEditUrl() }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" role="button" class="btn btn-secondary btn-icon"><span class="material-symbols-rounded">
 edit
 </span> {{ trans('messages.edit') }}</a>
                         @else
-                            <a href="{{ action('Admin\SendingServerController@edit', ["id" => $item->uid, "type" => $item->type]) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" role="button" class="btn btn-secondary btn-icon"><span class="material-icons-outlined">
+                            <a href="{{ action('Admin\SendingServerController@edit', ["id" => $item->uid, "type" => $item->type]) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" role="button" class="btn btn-secondary btn-icon"><span class="material-symbols-rounded">
 edit
 </span> {{ trans('messages.edit') }}</a>
                         @endif
@@ -111,7 +111,7 @@ edit
                                 @if (Auth::user()->admin->can('enable', $item))
                                     <li>
                                         <a class="dropdown-item list-action-single" link-confirm="{{ trans('messages.enable_sending_servers_confirm') }}" href="{{ action('Admin\SendingServerController@enable', ["uids" => $item->uid]) }}">
-                                            <span class="material-icons-outlined">
+                                            <span class="material-symbols-rounded">
 play_arrow
 </span> {{ trans('messages.enable') }}
                                         </a>
@@ -120,7 +120,7 @@ play_arrow
                                 @if (Auth::user()->admin->can('disable', $item))
                                     <li>
                                         <a class="dropdown-item list-action-single" link-confirm="{{ trans('messages.disable_sending_servers_confirm') }}" href="{{ action('Admin\SendingServerController@disable', ["uids" => $item->uid]) }}">
-                                            <span class="material-icons-outlined">
+                                            <span class="material-symbols-rounded">
 hide_source
 </span> {{ trans('messages.disable') }}
                                         </a>
@@ -129,7 +129,7 @@ hide_source
                                 @if (Auth::user()->admin->can('delete', $item))
                                     <li>
                                         <a class="dropdown-item list-action-single" link-confirm="{{ trans('messages.delete_sending_servers_confirm') }}" href="{{ action('Admin\SendingServerController@delete', ["uids" => $item->uid]) }}">
-                                            <span class="material-icons-outlined">
+                                            <span class="material-symbols-rounded">
 delete_outline
 </span> {{ trans('messages.delete') }}
                                         </a>
@@ -146,7 +146,7 @@ delete_outline
     
 @elseif (!empty(request()->keyword) || !empty(request()->filters["type"]))
     <div class="empty-list">
-        <span class="material-icons-outlined">
+        <span class="material-symbols-rounded">
 dns
 </span>
         <span class="line-1">
@@ -155,7 +155,7 @@ dns
     </div>
 @else
     <div class="empty-list">
-        <span class="material-icons-outlined">
+        <span class="material-symbols-rounded">
 dns
 </span>
         <span class="line-1">

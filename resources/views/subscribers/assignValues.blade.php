@@ -16,7 +16,7 @@
 
                 <h3 class="mb-3">{{ trans('messages.subscriber.assign_values') }}</h3>
                 <p>{!! trans('messages.subscriber.assign_to_subscriber', [
-                    'count' => format_number($subscribers->count()),
+                    'count' => number_with_delimiter($subscribers->count(), $precision = 0),
                 ]) !!}</p>
                     
                 @include('helpers.form_control', [

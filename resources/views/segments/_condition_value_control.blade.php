@@ -79,6 +79,8 @@
             ])
         </div>
     </div>
+@elseif (strpos($operator, 'created_date') !== false)
+    @include('segments.operator.created_date')
 @else
     <div class="row">
         <div class="col-md-6 operator-col">

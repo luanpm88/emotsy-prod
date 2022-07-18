@@ -3,7 +3,6 @@
 namespace Acelle\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Acelle\Library\Log as MailLog;
 use Acelle\Model\Customer;
 use Acelle\Model\User;
 use Acelle\Library\Facades\Hook;
@@ -35,7 +34,9 @@ class AuthController extends Controller
      */
     public function googleRedirect(Request $request)
     {
-        return $this->getGoogleOAuthProvider()->redirect();
+        return $this->getGoogleOAuthProvider()
+            ->with(['hl' => language_code()])
+            ->redirect();
     }
 
     /**
@@ -105,7 +106,10 @@ class AuthController extends Controller
      */
     public function facebookRedirect(Request $request)
     {
-        return $this->getFacebookOAuthProvider()->redirect();
+        $langCode = str_replace('-', '_', getFullCodeByLanguageCode(language_code()));
+        return $this->getFacebookOAuthProvider()
+            ->with(['locale' => $langCode])
+            ->redirect();
     }
 
     /**

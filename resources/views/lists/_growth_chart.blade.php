@@ -174,7 +174,7 @@
         @else
             <div class="empty-chart-pie">
                 <div class="empty-list">
-                    <span class="material-icons-outlined">
+                    <span class="material-symbols-rounded">
 auto_awesome
 </span>
                     <span class="line-1">

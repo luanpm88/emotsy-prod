@@ -22,8 +22,6 @@
 
 namespace Acelle\Model;
 
-use Acelle\Library\Log as MailLog;
-
 class SendingServerElasticEmailApi extends SendingServerElasticEmail
 {
     protected $table = 'sending_servers';
@@ -41,8 +39,6 @@ class SendingServerElasticEmailApi extends SendingServerElasticEmail
         $this->enableCustomHeaders();
 
         $result = $this->sendElasticEmailV2Fixed($message);
-
-        MailLog::info('Sent!');
 
         return array(
             'runtime_message_id' => $result,

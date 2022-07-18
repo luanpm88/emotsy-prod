@@ -24,7 +24,6 @@ namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use Acelle\Library\StringHelper;
-use Acelle\Library\Log as MailLog;
 use Carbon\Carbon;
 use Monolog\Logger;
 use Monolog\Handler\RotatingFileHandler;
@@ -43,7 +42,7 @@ class DeliveryHandler extends Model
         $formatter = new LineFormatter("[%datetime%] %channel%.%level_name%: %message%\n");
 
         $logfile = $this->getLogFile();
-        $stream = new RotatingFileHandler($logfile, 0, env('LOG_LEVEL'));
+        $stream = new RotatingFileHandler($logfile, 0, 'debug');
 
         $stream->setFormatter($formatter);
 
@@ -58,7 +57,7 @@ class DeliveryHandler extends Model
 
     public function getLogFile()
     {
-        return storage_path('logs/' . php_sapi_name() . '/handler-'.$this->uid.'.log');
+        return storage_path('logs/' . php_sapi_name() . '/'.$this->logfile.'-'.$this->uid.'.log');
     }
 
     /**
@@ -143,6 +142,7 @@ class DeliveryHandler extends Model
                 foreach ($emails as $message) {
                     $this->logger()->info(sprintf('Processing message %s/%s', $count, sizeof($emails)));
                     $this->processMessage($inbox, $message);
+                    $count += 1;
                 }
             }
 
@@ -155,6 +155,8 @@ class DeliveryHandler extends Model
             imap_errors();
             imap_alerts();
             $this->logger()->error('Failed. '.$e->getMessage());
+        } finally {
+            $this->logger()->info("Done!");
         }
     }
 

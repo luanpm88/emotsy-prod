@@ -1,7 +1,7 @@
 <ul class="key-value-list mt-2">
     {{-- <li class="d-flex align-items-center">
         <div class="list-media mr-4">
-            <i class="material-icons-outlined text-success">check</i>
+            <i class="material-symbols-rounded text-success">check</i>
         </div>
         <div class="values mr-auto">
             <label>
@@ -22,7 +22,7 @@
     </li> --}}
     <li class="d-flex align-items-center">
         <div class="list-media mr-4">
-            <i class="material-icons-outlined text-muted">textsms</i>
+            <i class="material-symbols-rounded text-muted">textsms</i>
         </div>
         <div class="values mr-auto">
             <label>
@@ -43,7 +43,7 @@
     </li>
     <li class="d-flex align-items-center">
         <div class="list-media mr-4">
-            <i class="material-icons-outlined text-muted">my_location</i>
+            <i class="material-symbols-rounded text-muted">my_location</i>
         </div>
         <div class="values mr-auto">
             <label>
@@ -64,7 +64,7 @@
     </li>
     <li class="d-flex align-items-center">
         <div class="list-media mr-4">
-            <i class="material-icons-outlined text-muted">reply</i>
+            <i class="material-symbols-rounded text-muted">reply</i>
         </div>
         <div class="values mr-auto">
             <label>
@@ -75,7 +75,7 @@
                     {{ $email->reply_to }}
                 @else
                     <span class="text-warning small">
-                        <i class="material-icons-outlined">warning</i>
+                        <i class="material-symbols-rounded">warning</i>
                         {{ trans('messages.email.no_reply_to') }}
                     </span>
                 @endif
@@ -93,9 +93,9 @@
     <li class="d-flex align-items-center">
         <div class="list-media mr-4">
             @if($email->content)
-                <i class="material-icons-outlined text-muted">vertical_split</i>
+                <i class="material-symbols-rounded text-muted">vertical_split</i>
             @else
-                <i class="material-icons-outlined text-muted">vertical_split</i>
+                <i class="material-symbols-rounded text-muted">vertical_split</i>
             @endif
         </div>
         <div class="values mr-auto">
@@ -109,7 +109,7 @@
                     ]) }}
                 @else
                     <span class="text-danger small">
-                        <i class="material-icons-outlined">error_outline</i>
+                        <i class="material-symbols-rounded">error_outline</i>
                         {{ trans('messages.automation.email.no_content') }}
                     </span>
                 @endif
@@ -126,7 +126,7 @@
     </li>
     <li class="d-flex align-items-center confirm-webhooks-summary">
         <div class="list-media mr-4">
-            <i class="material-icons-outlined text-muted">cable</i>
+            <i class="material-symbols-rounded text-muted">cable</i>
         </div>
         <div class="values mr-auto">
             <label>
@@ -139,7 +139,7 @@
                     ]) }}
                 @else
                     <span class="small">
-                        {{-- <i class="material-icons-outlined">error_outline</i> --}}
+                        {{-- <i class="material-symbols-rounded">error_outline</i> --}}
                         {{ trans('messages.webhooks.empty') }}
                     </span>
                 @endif
@@ -164,7 +164,7 @@
     </li>
     <li class="d-flex align-items-center">
         <div class="list-media mr-4">
-            <i class="material-icons-outlined text-muted">track_changes</i>
+            <i class="material-symbols-rounded text-muted">track_changes</i>
         </div>
         <div class="values mr-auto">
             <label>

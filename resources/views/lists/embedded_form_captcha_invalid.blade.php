@@ -7,8 +7,8 @@
 @section('content')
   <div class="row">
     <div class="col-md-12 tex-center">
-        <div style="margin: 100px auto; width: 400px;text-align:center">
-            <div class="alert alert-danger text-left">
+        <div style="margin: 100px auto; width: 400px;">
+            <div class="alert alert-danger">
                 <ul>
                     @foreach ($errors as $error)
                         <li>{{ $error }}</li>

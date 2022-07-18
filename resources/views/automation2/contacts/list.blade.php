@@ -1,6 +1,6 @@
 @if ($contacts->count() > 0)
     <p class="insight-intro mb-2 small">
-        {{ trans('messages.automation.contact.all_count', ['count' => format_number($contacts->total())]) }}
+        {{ trans('messages.automation.contact.all_count', ['count' => number_with_delimiter($contacts->total(), $precision = 0)]) }}
     </p>
         
     <div class="mc-table small border-top">
@@ -19,7 +19,7 @@
                         @elseif(isSiteDemo())
                             <img src="https://i.pravatar.cc/30{{ $key }}" />
                         @else
-                            <i style="opacity: 0.7" class="material-icons-round bg-{{ rand_item(['info', 'success', 'secondary', 'primary', 'danger', 'warning']) }}">person_outline</i>
+                            <i style="opacity: 0.7" class="material-symbols-rounded bg-{{ rand_item(['info', 'success', 'secondary', 'primary', 'danger', 'warning']) }}">person_outline</i>
                         @endif
                     </a>
                 </div>

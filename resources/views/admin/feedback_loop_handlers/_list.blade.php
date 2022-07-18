@@ -6,7 +6,7 @@
             <tr>
                 <td width="1%">
                     <div class="text-nowrap">
-                        <div class="checkbox inline">
+                        <div class="checkbox inline me-1">
                             <label>
                                 <input type="checkbox" class="node styled"
                                     name="uids[]"
@@ -34,7 +34,7 @@
                 </td>
                 <td class="text-end">
                     @can('update', $item)
-                        <a href="{{ action('Admin\FeedbackLoopHandlerController@edit', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" role="button" class="btn btn-secondary btn-icon"><span class="material-icons-outlined">
+                        <a href="{{ action('Admin\FeedbackLoopHandlerController@edit', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" role="button" class="btn btn-secondary btn-icon"><span class="material-symbols-rounded">
 edit
 </span> {{ trans('messages.edit') }}</a>
                     @endcan
@@ -45,7 +45,7 @@ edit
                                 @can('test', $item)
                                     <li>
                                         <a class="dropdown-item list-action-single" href="{{ action('Admin\FeedbackLoopHandlerController@test', $item->uid) }}" link-method="POST" role="button">
-                                            <span class="material-icons-outlined">
+                                            <span class="material-symbols-rounded">
 quiz
 </span> {{ trans('messages.feedback_loop_handler.test') }}
                                         </a>
@@ -54,7 +54,7 @@ quiz
                                 @can('delete', $item)
                                     <li>
                                         <a class="dropdown-item list-action-single" link-confirm="{{ trans('messages.delete_feedback_loop_handlers_confirm') }}" href="{{ action('Admin\FeedbackLoopHandlerController@delete', ["uids" => $item->uid]) }}">
-                                            <span class="material-icons-outlined">
+                                            <span class="material-symbols-rounded">
 delete_outline
 </span> {{ trans('messages.delete') }}
                                         </a>
@@ -71,7 +71,7 @@ delete_outline
     
 @elseif (!empty(request()->keyword) || !empty(request()->filters["type"]))
     <div class="empty-list">
-        <span class="material-icons-outlined">
+        <span class="material-symbols-rounded">
 restart_alt
 </span>
         <span class="line-1">
@@ -80,7 +80,7 @@ restart_alt
     </div>
 @else
     <div class="empty-list">
-        <span class="material-icons-outlined">
+        <span class="material-symbols-rounded">
 restart_alt
 </span>
         <span class="line-1">

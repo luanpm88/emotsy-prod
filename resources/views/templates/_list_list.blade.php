@@ -5,7 +5,7 @@
             <tr>
                 <td width="1%">
                     <div class="text-nowrap">
-                        <div class="checkbox inline">
+                        <div class="checkbox inline me-1">
                             <label>
                                 <input type="checkbox" class="node styled"
                                     name="uids[]"
@@ -25,8 +25,8 @@
                         {{ $template->name }}
                     </a>
                     <div class="text-muted">
-                        {!! is_object($template->admin) ? '<i class="icon-user-tie" data="admin"></i>' . $template->admin->user->displayName() : '' !!}
-                        {!! is_object($template->customer) ? '<i class="icon-user" data="customer"></i>' . $template->customer->user->displayName() : '' !!}
+                        {!! $template->admin ? '<i class="icon-user-tie" data="admin"></i>' . $template->admin->user->displayName() : '' !!}
+                        {!! $template->customer ? '<i class="icon-user" data="customer"></i>' . $template->customer->user->displayName() : '' !!}
                     </div>
                     <span class="text-muted">{{ trans('messages.updated_at') }}: {{ Auth::user()->customer->formatDateTime($template->created_at, 'date_full') }}</span>
                 </td>
@@ -72,20 +72,20 @@
                                             href="{{ action('TemplateController@changeName', [
                                                 'uid' => $template->uid,
                                             ]) }}">
-                                            <span class="material-icons-outlined">subtitles</span>
+                                            <span class="material-symbols-rounded">subtitles</span>
                                             {{ trans("messages.template.change_name") }}
                                         </a>
                                     </li>
                                 @endif
                                 @if (Auth::user()->customer->can('preview', $template))
-                                    <li><a class="dropdown-item" href="#preview" onclick="popupwindow('{{ action('TemplateController@preview', $template->uid) }}', `{{ $template->name }}`, 800)"><span class="material-icons-outlined">
+                                    <li><a class="dropdown-item" href="#preview" onclick="popupwindow('{{ action('TemplateController@preview', $template->uid) }}', `{{ $template->name }}`, 800)"><span class="material-symbols-rounded">
 zoom_in
 </span> {{ trans("messages.preview") }}</a></li>
                                 @endif
                                 @if (Auth::user()->customer->can('update', $template))
                                     <li>
                                         <a class="dropdown-item upload-thumb-button" href="{{ action('TemplateController@updateThumb', $template->uid) }}">
-                                            <span class="material-icons-outlined">
+                                            <span class="material-symbols-rounded">
 insert_photo
 </span> {{ trans("messages.template.upload_thumbnail") }}
                                         </a>
@@ -96,7 +96,7 @@ insert_photo
                                         <a class="dropdown-item template-categories" href="{{ action('TemplateController@categories', [
 											'uid' => $template->uid,
 										]) }}">
-                                            <span class="material-icons-outlined">
+                                            <span class="material-symbols-rounded">
 category
 </span> {{ trans("messages.template.categories") }}
                                         </a>
@@ -110,7 +110,7 @@ category
                                             class="dropdown-item"
                                             link-method="POST"
                                         >
-                                            <span class="material-icons-outlined me-2">
+                                            <span class="material-symbols-rounded me-2">
 download
 </span> {{ trans("messages.template.export") }}
                                         </a>
@@ -124,7 +124,7 @@ download
                                             class="dropdown-item copy-template-button"
                                             link-method="GET"
                                         >
-                                            <span class="material-icons-outlined me-2">
+                                            <span class="material-symbols-rounded me-2">
 copy_all
 </span> {{ trans("messages.template.copy") }}
                                         </a>
@@ -135,7 +135,7 @@ copy_all
                                         class="dropdown-item list-action-single"
                                         link-confirm="{{ trans('messages.delete_templates_confirm') }}"
                                         href="{{ action('TemplateController@delete', ["uids" => $template->uid]) }}">
-                                        <span class="material-icons-outlined me-2">
+                                        <span class="material-symbols-rounded me-2">
 delete_outline
 </span> {{ trans("messages.delete") }}</a></li>
                                 @endif
@@ -232,7 +232,7 @@ delete_outline
 
 @elseif (!empty(request()->keyword))
     <div class="empty-list">
-        <span class="material-icons-outlined">
+        <span class="material-symbols-rounded">
 auto_awesome_mosaic
 </span>
         <span class="line-1">
@@ -241,7 +241,7 @@ auto_awesome_mosaic
     </div>
 @else
     <div class="empty-list">
-        <span class="material-icons-outlined">
+        <span class="material-symbols-rounded">
 auto_awesome_mosaic
 </span>
         <span class="line-1">
