@@ -3,6 +3,7 @@
 namespace Acelle\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class AudienceController extends Controller
 {
@@ -25,6 +26,8 @@ class AudienceController extends Controller
 
     public function growthChart(Request $request)
     {
+        $currentTimezone = $request->user()->customer->getTimezone();
+
         $result = [
             'columns' => [],
             'total' => [],
@@ -35,7 +38,7 @@ class AudienceController extends Controller
 
         // columns
         for ($i = 15; $i >= 0; --$i) {
-            $time = \Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->subMonths($i);
+            $time = Carbon::now()->timezone($currentTimezone)->subMonths($i);
             $result['columns'][] = $time->format('y M');
             $times[] = $time;
         }

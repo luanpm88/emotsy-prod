@@ -89,7 +89,7 @@ people_outline
 				</ul>
 			</li>
 			<li class="nav-item" rel0="CampaignController/templateReview">
-				<a href="{{ action('CampaignController@templateReview', $campaign->uid) }}" class="nav-link">
+				<a href="javascript:;" onclick="popupwindow('{{ action('CampaignController@preview', $campaign->uid) }}', `{{ $campaign->name }}`, 800)" class="nav-link">
 					<span class="material-symbols-rounded">
 auto_awesome_mosaic
 </span> {{ trans('messages.email_review') }}

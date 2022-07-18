@@ -180,7 +180,7 @@ class SubscriberController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function subscribe($uid)
+    public function subscribe($list_uid, $uid)
     {
         $user = \Auth::guard('api')->user();
         $subscriber = \Acelle\Model\Subscriber::findByUid($uid);
@@ -232,7 +232,7 @@ class SubscriberController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function unsubscribe($uid)
+    public function unsubscribe($list_uid, $uid)
     {
         $user = \Auth::guard('api')->user();
         $subscriber = \Acelle\Model\Subscriber::findByUid($uid);

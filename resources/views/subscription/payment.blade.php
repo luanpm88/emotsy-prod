@@ -29,6 +29,13 @@
     <div class="container mt-4 mb-5">
         <div class="row">
             <div class="col-md-8">
+                @if (Auth::user()->customer->subscription && Auth::user()->customer->subscription->getUnpaidInvoice()  && Auth::user()->customer->subscription->getUnpaidInvoice()->lastTransactionIsFailed())
+                    @include('elements._notification', [
+                        'level' => 'danger',
+                        'message' => Auth::user()->customer->subscription->getUnpaidInvoice()->lastTransaction()->error
+                    ])
+                @endif
+
                 @include('subscription._selectPlan')
 
                 @include('subscription._billingInformation')
@@ -81,7 +88,13 @@
                                                     </div>
                                                     <div class="mr-auto pr-4">
                                                         <h5 class="font-weight-semibold mb-1">{{ $gateway->getName() }}</h5>
-                                                        <p class="mb-0">{{ trans('messages.'.$gateway->getType().'.user.description') }}</p>
+                                                        <p class="mb-0">
+                                                            @if (Lang::has('messages.'.$gateway->getType().'.user.description'))
+                                                                {{ trans('messages.'.$gateway->getType().'.user.description') }}
+                                                            @else
+                                                                {{ $gateway->getDescription() }}
+                                                            @endif
+                                                        </p>
                                                     </div>    
                                                 </div>           
                                             </div>

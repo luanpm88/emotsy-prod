@@ -140,20 +140,6 @@ class Tool
     }
 
     /**
-     * Format display datetime.
-     *
-     * @var string
-     */
-    public static function dateTime($datetime)
-    {
-        $timezone = self::currentTimezone();
-        $result = $datetime;
-        $result = $result->timezone($timezone);
-
-        return $result;
-    }
-
-    /**
      * Change singular to plural.
      *
      * @param       string
@@ -176,34 +162,6 @@ class Tool
         }
 
         return $phrase;
-    }
-
-    /**
-     * Get system time conversion.
-     *
-     * @param       string
-     *
-     * @return string
-     */
-    public static function systemTime($time)
-    {
-        return $time->setTimezone(config('app.timezone'));
-    }
-
-    /**
-     * Get system time conversion.
-     *
-     * @param       string
-     *
-     * @return string
-     */
-    public static function systemTimeFromString($string)
-    {
-        $timezone = self::currentTimezone();
-        $time = \Carbon\Carbon::createFromFormat('Y-m-d H:i', $string, $timezone);
-        $time = self::systemTime($time);
-
-        return $time;
     }
 
     /**
@@ -496,15 +454,19 @@ class Tool
             '/usr/bin/php',
             '/bin/php',
             '/usr/bin/php7',
-            '/usr/bin/php7.0',
-            '/usr/bin/php70',
-            '/usr/bin/php7.1',
-            '/usr/bin/php71',
-            '/usr/bin/php56',
-            '/usr/bin/php5.6',
-            '/opt/plesk/php/5.6/bin/php',
-            '/opt/plesk/php/7.0/bin/php',
-            '/opt/plesk/php/7.1/bin/php',
+            '/usr/bin/php7.3',
+            '/usr/bin/php7.4',
+            '/usr/bin/php73',
+            '/usr/bin/php74',
+            '/usr/bin/php8',
+            '/usr/bin/php8.0',
+            '/usr/bin/php8.1',
+            '/usr/bin/php80',
+            '/usr/bin/php81',
+            '/opt/plesk/php/7.3/bin/php',
+            '/opt/plesk/php/7.4/bin/php',
+            '/opt/plesk/php/8.0/bin/php',
+            '/opt/plesk/php/8.1/bin/php',
         ];
 
         // try to detect system's PHP CLI
@@ -678,24 +640,6 @@ class Tool
     public static function currentView()
     {
         return \Request::is('admin*') ? 'backend' : 'frontend';
-    }
-
-    /**
-     * Get current timezone.
-     *
-     * @var string
-     */
-    public static function currentTimezone()
-    {
-        if (self::currentView() == 'frontend') {
-            $timezone = is_object(\Auth::user()) && is_object(\Auth::user()->customer) ? \Auth::user()->customer->timezone : '+00:00';
-        } elseif (self::currentView() == 'backend') {
-            $timezone = is_object(\Auth::user()) && is_object(\Auth::user()->admin) ? \Auth::user()->admin->timezone : '+00:00';
-        } else {
-            $timezone = '+00:00';
-        }
-
-        return $timezone;
     }
 
     /**

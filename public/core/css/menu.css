@@ -2,7 +2,7 @@
     background-color: rgba(0,0,0,0.2);
 }
 .leftbar:not(.leftbar-closed) .navbar-main:not(.navbar-right)  .main-menu ul.dropdown-menu:not(.top-user-menus) .nav-item a.dropdown-item {
-    color: rgba(255,255,255,0.8);    
+    color: rgba(255,255,255,0.55);    
 }
 .leftbar:not(.leftbar-closed) .navbar-main:not(.navbar-right)  .main-menu ul.dropdown-menu:not(.top-user-menus) .nav-item.active a.dropdown-item,
 .leftbar:not(.leftbar-closed) .navbar-main:not(.navbar-right)  .main-menu ul.dropdown-menu:not(.top-user-menus) .nav-item:hover a.dropdown-item,

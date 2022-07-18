@@ -391,9 +391,23 @@ class Automation2Controller extends Controller
             'title' => trans('messages.automation.trigger.title', [
                 'title' => trans('messages.automation.trigger.tree.' . $request->options["key"])
             ]),
-            'options' => $request->options,
+            'options' => $this->prepareOptions($request->options, $request->user()->customer),
             'rules' => $this->triggerRules()[$request->options['key']],
         ]);
+    }
+
+    public function prepareOptions($options, $customer)
+    {
+        if (isset($options['key']) && $options['key'] == 'specific-date') {
+            if (isset($options['date'])) {
+                $date = \Carbon\Carbon::createFromFormat('Y-m-d H:i', $options['date'] . ' ' . $options['at'], $customer->timezone);
+
+                $options['date'] = $date->timezone('UTC')->format(config('custom.date_format'));
+                $options['at'] = $date->timezone('UTC')->format(config('custom.time_format'));
+            }
+        }
+
+        return $options;
     }
 
     /**
@@ -604,7 +618,7 @@ class Automation2Controller extends Controller
                 'title' => trans('messages.automation.trigger.title', [
                     'title' => trans('messages.automation.trigger.tree.' . $request->options["key"])
                 ]),
-                'options' => $request->options,
+                'options' => $this->prepareOptions($request->options, $request->user()->customer),
             ]);
         }
 

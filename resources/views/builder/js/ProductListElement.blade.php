@@ -73,7 +73,7 @@
                 data: this.getOptions()
             })
             .done(function( data ) {
-                _this.getContainer().find('products').html(data);
+                _this.getHtmlContainer().find('products').html(data);
 
                 _this.removeLoadingEffect();
 
@@ -91,7 +91,7 @@
             }
         }
 
-        getContainer() {
+        getHtmlContainer() {
             if (!this.obj.find('.container').length) {
                 var div = $(`
                     <div>
@@ -115,10 +115,10 @@
         loadPlaceholder() {
             var _this = this;
             var options = this.getOptions();
-            this.getContainer().find('products').html('');
+            this.getHtmlContainer().find('products').html('');
 
             for(var i = options.count; i > 0; i--) {
-                this.getContainer().find('products').append(`
+                this.getHtmlContainer().find('products').append(`
                     <div class="col-`+(12/options.cols)+` mb-5">
                         <div class="">
                             <div class="img-col mb-3">

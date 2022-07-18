@@ -1684,6 +1684,7 @@ class Campaign extends Model
     public function openUniqHours($start = null, $end = null)
     {
         $query = $this->openLogs()->select('open_logs.created_at');
+        $currentTimezone = $this->customer->getTimezone();
         if (isset($start)) {
             $query = $query->where('open_logs.created_at', '>=', $start);
         }
@@ -1691,8 +1692,8 @@ class Campaign extends Model
             $query = $query->where('open_logs.created_at', '<=', $end);
         }
 
-        return $query->orderBy('open_logs.created_at', 'asc')->get()->groupBy(function ($date) {
-            return \Acelle\Library\Tool::dateTime($date->created_at)->format('H'); // grouping by hours
+        return $query->orderBy('open_logs.created_at', 'asc')->get()->groupBy(function ($date) use ($currentTimezone) {
+            return $date->created_at->timezone($currentTimezone)->format('H'); // grouping by hours
         });
     }
 
@@ -1703,6 +1704,7 @@ class Campaign extends Model
      */
     public function clickHours($start = null, $end = null)
     {
+        $currentTimezone = $this->customer->getTimezone();
         $query = $this->clickLogs()->select('click_logs.created_at', 'tracking_logs.subscriber_id');
 
         if (isset($start)) {
@@ -1712,8 +1714,8 @@ class Campaign extends Model
             $query = $query->where('click_logs.created_at', '<=', $end);
         }
 
-        return $query->orderBy('click_logs.created_at', 'asc')->get()->groupBy(function ($date) {
-            return \Acelle\Library\Tool::dateTime($date->created_at)->format('H'); // grouping by hours
+        return $query->orderBy('click_logs.created_at', 'asc')->get()->groupBy(function ($date) use ($currentTimezone) {
+            return $date->created_at->timezone($currentTimezone)->format('H'); // grouping by hours
         });
     }
     public function fileInfo($filePath)

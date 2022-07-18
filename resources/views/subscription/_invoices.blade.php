@@ -76,8 +76,12 @@
                                     </span>
                                 </td> 
                                 <td>
-                                    <span class="no-margin kq_search">
-                                        {!! trans('messages.transaction.method.' . $transaction->method) !!}
+                                    <span class="no-margin kq_search" style="text-transform: capitalize;">
+                                        @if (Lang::has('messages.transaction.method.' . $transaction->method))
+                                            {{ trans('messages.transaction.method.' . $transaction->method) }}
+                                        @else
+                                            {{ $transaction->method }}
+                                        @endif
                                     </span>
                                 </td> 
                                 <td>

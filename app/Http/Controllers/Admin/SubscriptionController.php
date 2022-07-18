@@ -56,6 +56,8 @@ class SubscriptionController extends Controller
             return $this->notAuthorized();
         }
 
+        $currentTimezone = $request->user()->admin->getTimezone();
+
         // If admin can view all subscriptions of their customer
         if (!$request->user()->admin->can('readAll', new Subscription())) {
             $request->merge(array("customer_admin_id" => $request->user()->admin->id));
@@ -81,6 +83,7 @@ class SubscriptionController extends Controller
 
         return view('admin.subscriptions._list', [
             'subscriptions' => $subscriptions,
+            'currentTimezone' => $currentTimezone
         ]);
     }
 

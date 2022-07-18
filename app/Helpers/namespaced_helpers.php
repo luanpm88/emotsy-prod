@@ -92,7 +92,7 @@ function getAppHost()
     return $appHost;
 }
 
-function updateTranslationFile($targetFile, $sourceFile, $overwriteTargetPhrases = false, $sort = false)
+function updateTranslationFile($targetFile, $sourceFile, $overwriteTargetPhrases = false, $deleteTargetKeys = true, $sort = false)
 {
     $source = include $sourceFile;
     $target = include $targetFile;
@@ -105,11 +105,13 @@ function updateTranslationFile($targetFile, $sourceFile, $overwriteTargetPhrases
         $merged = $target + $source;
     }
 
-    // Find keys in $target that are that not available in $source
-    $diff = array_diff_key($target, $source);
+    if ($deleteTargetKeys) {
+        // Find keys in $target that are that not available in $source
+        $diff = array_diff_key($target, $source);
 
-    // Delete those keys in the final result
-    $merged = array_diff_key($merged, $diff);
+        // Delete those keys in the final result
+        $merged = array_diff_key($merged, $diff);
+    }
 
     if ($sort) {
         ksort($merged);

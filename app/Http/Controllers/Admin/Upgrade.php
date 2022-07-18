@@ -57,7 +57,7 @@ class Upgrade extends Controller
 
         // Merge .env.example to .env
         $manager = new UpgradeManager();
-        $manager->mergeEnv(base_path('.env.example'));
+        $manager->mergeEnv(base_path('.env.example')); // config:cache is already executed in this method
 
         // Upgrade post-processing
         if ($request->session()->has('upgraded')) {
