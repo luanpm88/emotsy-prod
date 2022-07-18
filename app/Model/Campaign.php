@@ -1070,6 +1070,20 @@ class Campaign extends Model
         return $query->take($number);
     }
 
+    public function getTopOpenSubscribersToCsv($file)
+    {
+        $records = $this->getTopOpenSubscribers(null)->get()->toArray(); // null mean all
+        $headers = ['Email', 'ID', 'Count'];
+
+        $csv = Writer::createFromPath($file, 'w+');
+
+        //insert the header
+        $csv->insertOne($headers);
+
+        //insert all the records
+        $csv->insertAll($records);
+    }
+
     /**
      * Campaign top 5 open location.
      *
@@ -1089,6 +1103,20 @@ class Campaign extends Model
             ->take($number);
 
         return $records;
+    }
+
+    public function topLocationsToCsv($file)
+    {
+        $records = $this->topLocations(null)->get()->toArray(); // null mean all
+        $headers = ['IP Address', 'Country Code', 'Country Name', 'Count'];
+
+        $csv = Writer::createFromPath($file, 'w+');
+
+        //insert the header
+        $csv->insertOne($headers);
+
+        //insert all the records
+        $csv->insertAll($records);
     }
 
     /**
@@ -1112,6 +1140,20 @@ class Campaign extends Model
         return $records;
     }
 
+    public function topOpenCountriesToCsv($file)
+    {
+        $records = $this->topOpenCountries(null)->get()->toArray(); // null mean all
+        $headers = ['Country Name', 'Country Code', 'Open Count'];
+
+        $csv = Writer::createFromPath($file, 'w+');
+
+        //insert the header
+        $csv->insertOne($headers);
+
+        //insert all the records
+        $csv->insertAll($records);
+    }
+
     /**
      * Campaign top 5 click countries.
      *
@@ -1131,6 +1173,20 @@ class Campaign extends Model
             ->take($number);
 
         return $records;
+    }
+
+    public function topClickCountriesToCsv($file)
+    {
+        $records = $this->topClickCountries(null)->get()->toArray(); // null mean all
+        $headers = ['Country Name', 'Country Code', 'Click Count'];
+
+        $csv = Writer::createFromPath($file, 'w+');
+
+        //insert the header
+        $csv->insertOne($headers);
+
+        //insert all the records
+        $csv->insertAll($records);
     }
 
     /**
