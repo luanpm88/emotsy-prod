@@ -267,7 +267,7 @@ function formatSelect2TextOption(d) {
 function initMainMenu()
 {
     // check menu active
-    menuActiveCheck();
+    // menuActiveCheck();
 
     // leftbar scroll behaviour
     $('.leftbar .navbar-main').on( 'DOMMouseScroll mousewheel', function ( event ) {
