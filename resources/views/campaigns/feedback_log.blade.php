@@ -10,7 +10,9 @@
 
 @section('content')
 
-@include("campaigns._menu")
+@include("campaigns._menu", [
+    'menu' => 'feedback_log',
+])
 
 <h2 class="text-semibold text-primary">{{ trans('messages.feedback_log') }}</h2>
 

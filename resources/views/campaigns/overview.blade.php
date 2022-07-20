@@ -15,7 +15,9 @@
 
 @section('content')
 
-    @include("campaigns._menu")
+    @include("campaigns._menu", [
+        'menu' => 'overview',
+    ])
 
     @include("campaigns._info")
 

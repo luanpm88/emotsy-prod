@@ -10,7 +10,9 @@
 
 @section('content')
 
-@include("campaigns._menu")
+@include("campaigns._menu", [
+    'menu' => 'subscribers',
+])
 
 <h2 class="text-semibold text-primary">{{ trans('messages.subscribers') }}</h2>
 
