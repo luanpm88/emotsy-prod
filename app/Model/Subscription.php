@@ -637,7 +637,11 @@ class Subscription extends Model implements HasQuotaInterface
      */
     public function isExpired()
     {
-        return isset($this->ends_at) && Carbon::now()->endOfDay() > $this->ends_at;
+        // Get the current datetime
+        $now = Carbon::now();
+
+        // Check if $now is Greater or Equal to...
+        return $now->gte($this->current_period_ends_at);
     }
 
     /**
