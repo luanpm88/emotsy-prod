@@ -25,7 +25,9 @@
 
 @section('content')
 
-    @include("account._menu")
+    @include("account._menu", [
+		'menu' => 'profile',
+	])
 
     <form enctype="multipart/form-data" action="{{ action('AccountController@profile') }}" method="POST" class="form-validate-jqueryz">
         {{ csrf_field() }}

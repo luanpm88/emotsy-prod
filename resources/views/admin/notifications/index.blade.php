@@ -16,7 +16,9 @@
 
 @section('content')
 	
-	@include("admin.account._menu")	
+	@include("admin.account._menu", [
+        'menu' => 'notification',
+    ])	
 
 	<div class="listing-form"
 		data-url="{{ action('Admin\NotificationController@listing') }}"

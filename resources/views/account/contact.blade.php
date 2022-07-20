@@ -18,7 +18,9 @@
 
 @section('content')
 
-    @include("account._menu")
+    @include("account._menu", [
+		'menu' => 'contact',
+	])
 
     <form enctype="multipart/form-data" action="{{ action('AccountController@contact') }}" method="POST" class="form-validate-jqueryz">
         {{ csrf_field() }}

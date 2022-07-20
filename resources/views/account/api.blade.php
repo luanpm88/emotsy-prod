@@ -20,7 +20,9 @@
 
 @section('content')
 
-	@include("account._menu")
+	@include("account._menu", [
+		'menu' => 'api',
+	])
 
 	<h4 class="text-semibold">{{ trans('messages.api_docs') }}</h4>
 

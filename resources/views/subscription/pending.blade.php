@@ -14,7 +14,7 @@
 @endsection
 
 @section('content')
-    @include("account._menu", ['tab' => 'subscription'])
+    @include("account._menu", ['menu' => 'subscription'])
 
     <div class="row">
         <div class="col-md-6">

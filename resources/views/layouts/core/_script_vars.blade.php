@@ -20,7 +20,4 @@
 		'notice': '{{ trans('messages.notify.notice') }}'
 	};
 	var LOADING_WAIT = '{{ trans('messages.loading_wait') }}';
-
-	var ACTION = '{{ controllerAction() }}';
-	var CONTROLLER = '{{ controllerName() }}';
 </script>

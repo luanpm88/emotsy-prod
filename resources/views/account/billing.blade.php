@@ -22,7 +22,9 @@
 
 @section('content')
 
-    @include("account._menu")
+    @include("account._menu", [
+		'menu' => 'billing',
+	])
 
     <div class="row">
         <div class="col-md-6">

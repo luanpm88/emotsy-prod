@@ -20,7 +20,9 @@
 
 @section('content')
     
-                @include("account._menu")    
+                @include("account._menu", [
+                    'menu' => 'log',
+                ])    
     
                 <div class="listing-form"
                     data-url="{{ action('AccountController@logsListing') }}"

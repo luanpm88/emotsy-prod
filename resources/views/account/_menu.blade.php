@@ -2,14 +2,14 @@
     <div class="col-md-12">
         <div class="tabbable pb-2">
             <ul class="nav nav-tabs nav-tabs-top nav-underline mb-4">
-                <li rel0="AccountController/profile" class="nav-item">
+                <li class="nav-item {{ $menu == 'profile' ? 'active' : '' }}">
                     <a href="{{ action("AccountController@profile") }}" class="nav-link">
                         <span class="material-symbols-rounded">
 face
 </span> {{ trans('messages.my_profile') }}
                     </a>
                 </li>
-                <li rel0="AccountController/contact" class="nav-item">
+                <li class="nav-item {{ $menu == 'contact' ? 'active' : '' }}">
                     <a href="{{ action("AccountController@contact") }}" class="nav-link">
                         <span class="material-symbols-rounded">
 maps_home_work
@@ -17,20 +17,14 @@ maps_home_work
                     </a>
                 </li>
                 @if (config('app.saas'))
-                    <li rel0="AccountController/billing" class="nav-item">
+                    <li class="nav-item {{ $menu == 'billing' ? 'active' : '' }}">
                         <a href="{{ action("AccountController@billing") }}" class="nav-link">
                             <span class="material-symbols-rounded">
     credit_card
     </span> {{ trans('messages.billing') }}
                         </a>
                     </li>
-                    <li class="nav-item"
-                        rel0="AccountController/subscription"
-                        rel1="PaymentController"
-                        rel2="AccountController/subscriptionNew"
-                        rel3="SubscriptionController"
-                        class="position-relative"
-                    >
+                    <li class="nav-item {{ $menu == 'subscription' ? 'active' : '' }}">
                         <a href="{{ action("SubscriptionController@index") }}" class="nav-link position-relative {{ isset($tab) && $tab == 'subscription' ? 'active' : '' }}">
                             <span class="material-symbols-rounded">
     assignment
@@ -41,8 +35,7 @@ maps_home_work
                         </a>
                     </li>
                 @endif
-                <li class="nav-item"
-                    rel0="AccountController/logs">
+                <li class="nav-item {{ $menu == 'log' ? 'active' : '' }}">
                     <a href="{{ action("AccountController@logs") }}" class="nav-link">
                         <span class="material-symbols-rounded">
 restore
@@ -50,7 +43,7 @@ restore
                     </a>
                 </li>
                 @if (Auth::user()->customer->canUseApi())
-                    <li class="nav-item" rel0="AccountController/api">
+                    <li class="nav-item {{ $menu == 'api' ? 'active' : '' }}">
                         <a href="{{ action("AccountController@api") }}" class="nav-link">
                             <span class="material-symbols-rounded">
 vpn_key
