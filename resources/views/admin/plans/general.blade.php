@@ -22,7 +22,9 @@
 
 @section('content')
     
-    @include('admin.plans._menu')
+    @include('admin.plans._menu', [
+        'menu' => 'general',
+    ])
 
     <form enctype="multipart/form-data" action="{{ action('Admin\PlanController@save', $plan->uid) }}" method="POST" class="form-validate-jqueryx">
         {{ csrf_field() }}                

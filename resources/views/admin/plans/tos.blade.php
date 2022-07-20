@@ -24,7 +24,9 @@
 
 @section('content')
     
-    @include('admin.plans._menu')
+    @include('admin.plans._menu', [
+        'menu' => 'tos',
+    ])
     
     <form enctype="multipart/form-data" action="{{ action('Admin\PlanController@tos', $plan->uid) }}" method="POST" class="form-validate-jqueryx">
         {{ csrf_field() }}

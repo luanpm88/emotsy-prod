@@ -27,7 +27,9 @@
 
 @section('content')
     
-    @include('admin.plans._menu')
+    @include('admin.plans._menu', [
+        'menu' => 'sending_server',
+    ])
     
     <div class="mc-section">
         <div class="announce_box">

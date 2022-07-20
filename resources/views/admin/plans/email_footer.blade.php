@@ -23,7 +23,9 @@
 
 @section('content')
     
-    @include('admin.plans._menu')
+    @include('admin.plans._menu', [
+        'menu' => 'email_footer',
+    ])
     
     <form enctype="multipart/form-data" action="{{ action('Admin\PlanController@save', $plan->uid) }}" method="POST" class="form-validate-jqueryx">
         {{ csrf_field() }}

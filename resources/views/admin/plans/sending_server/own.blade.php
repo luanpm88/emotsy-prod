@@ -26,7 +26,9 @@
 
 @section('content')
     
-    @include('admin.plans._menu')
+    @include('admin.plans._menu', [
+        'menu' => 'sending_server',
+    ])
     
     <form action="{{ action('Admin\PlanController@sendingServerOwn', $plan->uid) }}" method="POST" class="form-validate-jqueryx">
         {{ csrf_field() }}
