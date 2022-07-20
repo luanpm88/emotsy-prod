@@ -1,4 +1,6 @@
-@extends('layouts.core.frontend')
+@extends('layouts.core.frontend', [
+	'menu' => 'segment',
+])
 
 @section('title', $list->name . ": " . trans('messages.create_subscriber'))
 

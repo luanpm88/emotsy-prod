@@ -1,4 +1,6 @@
-@extends('layouts.core.frontend')
+@extends('layouts.core.frontend', [
+    'menu' => 'source',
+])
 
 @section('title', trans('messages.stores_connections'))
 

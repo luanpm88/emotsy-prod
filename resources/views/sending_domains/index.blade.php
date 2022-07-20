@@ -1,4 +1,6 @@
-@extends('layouts.core.frontend')
+@extends('layouts.core.frontend', [
+	'menu' => 'sending_domain',
+])
 
 @section('title', trans('messages.sending_domains'))
 

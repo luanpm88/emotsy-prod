@@ -1,4 +1,6 @@
-@extends('layouts.core.frontend')
+@extends('layouts.core.frontend', [
+	'menu' => 'blacklist',
+])
 
 @section('title', trans('messages.blacklist'))
 

@@ -1,4 +1,6 @@
-@extends('layouts.core.' . $view)
+@extends('layouts.core.' . $view, [
+    'menu' => 'api',
+])
 
 @section('title', trans('messages.API_Documentation'))
 

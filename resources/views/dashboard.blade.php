@@ -1,4 +1,6 @@
-@extends('layouts.core.frontend')
+@extends('layouts.core.frontend', [
+    'menu' => 'dashboard',
+])
 
 @section('title', trans('messages.dashboard'))
 

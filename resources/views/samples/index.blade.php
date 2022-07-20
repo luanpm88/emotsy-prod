@@ -1,4 +1,6 @@
-@extends('layouts.core.frontend')
+@extends('layouts.core.frontend', [
+    'menu' => false,
+])
 @section('title', 'Samplel UI')
 @section('page_header')
     <!-- nothing here -->

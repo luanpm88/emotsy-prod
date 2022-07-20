@@ -1,4 +1,6 @@
-@extends('layouts.core.frontend')
+@extends('layouts.core.frontend', [
+	'menu' => 'form',
+])
 
 @section('title', trans('messages.campaigns'))
 

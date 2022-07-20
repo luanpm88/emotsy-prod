@@ -1,4 +1,6 @@
-@extends('layouts.core.frontend')
+@extends('layouts.core.frontend', [
+    'menu' => 'sender',
+])
 
 @section('title', trans('messages.sender.create'))
     
