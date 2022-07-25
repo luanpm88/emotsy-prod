@@ -1,3 +1,5 @@
+@php $menu = $menu ?? false @endphp
+
 <nav class="navbar navbar-expand-xl navbar-dark fixed-top navbar-main frontend py-0">
     <div class="container-fluid ms-0">
         <a class="navbar-brand d-flex align-items-center me-2" href="{{ action('HomeController@index') }}">

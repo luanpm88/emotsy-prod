@@ -1,3 +1,5 @@
+@php $menu = $menu ?? false @endphp
+
 <div class="row">
     <div class="col-md-12">
         <div class="tabbable pb-2">

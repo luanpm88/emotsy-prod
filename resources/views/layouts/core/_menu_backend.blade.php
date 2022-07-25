@@ -19,7 +19,7 @@
 
         <div class="collapse navbar-collapse" id="navbarsExample04">
             <ul class="navbar-nav me-auto mb-md-0 main-menu">
-                <li class="nav-item" rel0="HomeController">
+                <li class="nav-item {{ $menu == 'dashboard' ? 'active' : '' }}">
 					<a href="{{ action('Admin\HomeController@index') }}" class="nav-link lvl-1 d-flex align-items-center">
 						<i class="navbar-icon">
 							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 92.1 86.1"><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><g id="Layer_2-2" data-name="Layer 2"><g id="Layer_1-2-2" data-name="Layer 1-2"><path d="M51.8,86.1H41.9a8.5,8.5,0,0,1-8.5-8.5V60.2a8.5,8.5,0,0,1,8.5-8.5h9.9a8.5,8.5,0,0,1,8.5,8.5V77.6A8.5,8.5,0,0,1,51.8,86.1ZM41.9,58.7a1.5,1.5,0,0,0-1.5,1.5V77.6a1.5,1.5,0,0,0,1.5,1.5h9.9a1.5,1.5,0,0,0,1.5-1.5V60.2a1.5,1.5,0,0,0-1.5-1.5Z" style="fill:aqua"/><path d="M60.4,86.1H31.7A20.6,20.6,0,0,1,11.2,65.7V24.6h7V65.7A13.5,13.5,0,0,0,31.7,79.1H60.4A13.5,13.5,0,0,0,73.9,65.7V25.3h7V65.7A20.6,20.6,0,0,1,60.4,86.1Z" style="fill:#f2f2f2"/><path d="M88.6,36.5a3.6,3.6,0,0,1-2-.6L45.7,7.7,5.5,35.1a3.5,3.5,0,1,1-4-5.8L43.7.6a3.6,3.6,0,0,1,4,0L90.6,30.1a3.5,3.5,0,0,1-2,6.4Z" style="fill:#f2f2f2"/></g></g></g></g></svg>
@@ -29,19 +29,19 @@
 				</li>
 
 				@if (Auth::user()->can("read", new Acelle\Model\Customer()))
-					<li class="nav-item dropdown language-switch"
+					<li class="nav-item dropdown language-switch {{ in_array($menu, ['customer','description']) ? 'active' : '' }}"
 						rel1="CustomerController"
 					>
-						<a role="button" class="nav-link lvl-1 dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown">
+						<a role="button" class="nav-link lvl-1 dropdown-toggle d-flex align-items-center {{ in_array($menu, ['customer','description']) ? 'show' : '' }}" data-bs-toggle="dropdown">
 							<i class="navbar-icon">
 								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 92 103"><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><g id="Layer_2-2" data-name="Layer 2"><g id="Layer_1-2-2" data-name="Layer 1-2"><path d="M46,51.6A25.8,25.8,0,1,1,71.8,25.8,25.9,25.9,0,0,1,46,51.6ZM46,7A18.8,18.8,0,1,0,64.8,25.8,18.8,18.8,0,0,0,46,7Z" style="fill:#f2f2f2"/><path d="M88.5,103A3.5,3.5,0,0,1,85,99.5a39,39,0,0,0-78,0A3.5,3.5,0,0,1,3.5,103,3.5,3.5,0,0,1,0,99.5a46,46,0,0,1,92,0A3.5,3.5,0,0,1,88.5,103Z" style="fill:#f2f2f2"/><path d="M19.5,103H3.5a3.5,3.5,0,0,1,0-7h16a3.5,3.5,0,0,1,0,7Z" style="fill:#f2f2f2"/><path d="M88.5,103H36.9a3.5,3.5,0,0,1,0-7H88.5a3.5,3.5,0,0,1,0,7Z" style="fill:#f2f2f2"/><path d="M46,39c-3.3,0-6.4-1.6-7.7-4a3.6,3.6,0,0,1,1.4-4.8,3.5,3.5,0,0,1,4.7,1.4A3.5,3.5,0,0,0,46,32a3,3,0,0,0,1.6-.5,3.4,3.4,0,0,1,4.5-1.6,3.4,3.4,0,0,1,1.8,4.6C52.6,37.6,48.9,39,46,39Zm-1.5-7.4Z" style="fill:lime"/></g></g></g></g></svg>
 							</i>
 							<span>{{ trans('messages.customer') }}</span>
 							<span class="caret"></span>
 						</a>
-						<ul class="dropdown-menu">
+						<ul class="dropdown-menu {{ in_array($menu, ['customer','description']) ? 'show' : '' }}">
 							@if (Auth::user()->can("read", new Acelle\Model\Customer()))
-								<li class="nav-item" rel0="CustomerController">
+								<li class="nav-item {{ $menu == 'customer' ? 'active' : '' }}">
 									<a href="{{ action('Admin\CustomerController@index') }}" class="dropdown-item d-flex align-items-center">
 										<i class="navbar-icon">
 											<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1" x="0px" y="0px" viewBox="0 0 104.4 103" style="enable-background:new 0 0 104.4 103;" xml:space="preserve"><style type="text/css">.st0{fill:#333333;}.st1{opacity:0.65;}</style><g id="Layer_2_1_"><g id="Layer_1-2"><path class="st0" d="M46,51.6c-14.2,0-25.8-11.6-25.8-25.8C20.2,11.6,31.8,0,46,0c14.2,0,25.8,11.6,25.8,25.8 C71.8,40,60.2,51.6,46,51.6z M46,7c-10.4,0-18.8,8.4-18.8,18.8c0,10.4,8.4,18.8,18.8,18.8s18.8-8.4,18.8-18.8 C64.8,15.4,56.4,7,46,7z"/><path class="st0" d="M88.5,103c-1.9,0-3.5-1.6-3.5-3.5c0-21.5-17.5-39-39-39S7,78,7,99.5c0,1.9-1.6,3.5-3.5,3.5S0,101.4,0,99.5 c0-25.4,20.6-46,46-46s46,20.6,46,46C92,101.4,90.4,103,88.5,103z"/><path class="st0" d="M19.5,103h-16c-1.9,0-3.5-1.6-3.5-3.5S1.6,96,3.5,96h16c1.9,0,3.5,1.6,3.5,3.5S21.4,103,19.5,103z"/><path class="st0" d="M88.5,103H36.9c-1.9,0-3.5-1.6-3.5-3.5S35,96,36.9,96h51.6c1.9,0,3.5,1.6,3.5,3.5S90.4,103,88.5,103z"/><path class="st0" d="M46,39c-3.3,0-6.4-1.6-7.7-4c-0.9-1.7-0.3-3.8,1.4-4.7c1.7-0.9,3.8-0.3,4.7,1.3c0.2,0.1,0.7,0.4,1.6,0.4 c0.7,0,1.3-0.3,1.6-0.5c0.8-1.7,2.8-2.4,4.5-1.7c1.8,0.8,2.6,2.8,1.8,4.6C52.6,37.6,48.9,39,46,39z M44.5,31.6 C44.5,31.6,44.5,31.6,44.5,31.6C44.5,31.6,44.5,31.6,44.5,31.6z M44.4,31.5L44.4,31.5L44.4,31.5z"/><g class="st1"><path class="st0" d="M73.6,46.7c-1,0-2.1-0.5-2.8-1.3c-1.2-1.5-0.9-3.7,0.6-4.9C77,36.1,79.8,29,78.6,22 c-0.9-6.9-5.7-12.7-12.2-14.8c-1.8-0.6-2.8-2.6-2.2-4.4c0.6-1.8,2.6-2.8,4.4-2.2c9,3,15.7,11,17,20.5c1.5,9.4-2.2,19-9.8,25 C75.1,46.5,74.4,46.7,73.6,46.7z"/><path class="st0" d="M100.9,99c-1.9,0-3.5-1.6-3.5-3.5c0-17.9-11.7-33.7-27.7-37.7c-1.9-0.5-3-2.4-2.6-4.2c0.5-1.9,2.4-3,4.2-2.6 c19.5,4.8,33.1,23.1,33.1,44.5C104.4,97.4,102.8,99,100.9,99z"/></g></g></g></svg>
@@ -50,7 +50,7 @@
 									</a>
 								</li>
 							@endif
-							<li class="nav-item" rel0="SubscriptionController">
+							<li class="nav-item {{ $menu == 'description' ? 'active' : '' }}">
 								<a href="{{ action('Admin\SubscriptionController@index') }}" class="dropdown-item d-flex align-items-center">
 									<i class="navbar-icon">
 										<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1" x="0px" y="0px" viewBox="0 0 92 94.2" style="enable-background:new 0 0 92 94.2;" xml:space="preserve"><style type="text/css">.st0{fill:#333333;}</style><g id="Layer_2_1_"><g id="Layer_1-2"><path class="st0" d="M46.1,94.2c-12.3,0-24.6-4.8-33.8-14.3c-1.3-1.4-1.3-3.6,0.1-4.9c1.4-1.3,3.6-1.3,4.9,0.1 C32.7,90.9,58,91.3,73.9,76c5.6-5.4,9.5-12.3,11.2-20c0.4-1.9,2.3-3.1,4.2-2.6c1.9,0.4,3.1,2.3,2.6,4.2c-2,9-6.6,17.1-13.2,23.5 C69.6,89.8,57.8,94.2,46.1,94.2z"/><polygon class="st0" points="4.1,89.6 3.5,56.8 32.2,72.6 "/><path class="st0" d="M3.5,40.9c-0.3,0-0.5,0-0.8-0.1c-1.9-0.4-3.1-2.3-2.6-4.2C5,15.1,23.9,0,46,0c0.1,0,0.1,0,0.2,0 C58.8,0,71,5.2,79.7,14.3c1.3,1.4,1.3,3.6-0.1,4.9c-1.4,1.3-3.6,1.3-4.9-0.1C67.3,11.4,56.9,7,46.2,7c-0.1,0-0.1,0-0.2,0 C27.2,7,11.1,19.8,6.9,38.2C6.5,39.8,5.1,40.9,3.5,40.9z"/><polygon class="st0" points="59.8,21.6 88.5,37.4 87.9,4.6 "/><path class="st0" d="M43.3,69.9V64c-3.4,0-6.8-0.9-9.8-2.6l1.7-5.6c2.8,1.6,6,2.5,9.3,2.6c3.8,0,6.4-1.9,6.4-4.7s-2.1-4.5-6.6-6.1 C38,45.3,34,42.4,34,36.9s3.6-9.1,9.6-10.2v-5.9h4.9v5.6c2.9,0,5.7,0.7,8.3,2l-1.6,5.5c-2.5-1.4-5.3-2.1-8.2-2.1 c-4.2,0-5.7,2.2-5.7,4.2s2.2,3.9,7.3,5.9c6.7,2.5,9.7,5.8,9.7,11.1s-3.5,9.6-10.1,10.7v6.2H43.3z"/></g></g></svg>
