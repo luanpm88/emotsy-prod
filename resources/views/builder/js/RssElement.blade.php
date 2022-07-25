@@ -187,10 +187,10 @@
                 </div>
             `);
 
-            _this.obj.find('img')[0].onload = function() {
-                currentEditor.select(_this);
-                currentEditor.handleSelect();
-            };
+            // _this.obj.find('img')[0].onload = function() {
+            //     currentEditor.select(_this);
+            //     currentEditor.handleSelect();
+            // };
         }
 
         loadRss(callback) {
