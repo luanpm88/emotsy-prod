@@ -380,7 +380,12 @@ class Subscription extends Model implements HasQuotaInterface
             case self::STATUS_ACTIVE:
                 // check expired
                 if ($this->isExpired()) {
-                    $this->cancelNow();
+                    if ($this->canRenewFreePlan()) {
+                        $this->renew(); // auto renew free plan
+                    } else {
+                        $this->cancelNow();
+                    }
+
                     return;
                 }
 
@@ -637,7 +642,11 @@ class Subscription extends Model implements HasQuotaInterface
      */
     public function isExpired()
     {
-        return isset($this->ends_at) && Carbon::now()->endOfDay() > $this->ends_at;
+        // Get the current datetime
+        $now = Carbon::now();
+
+        // Check if $now is Greater or Equal to...
+        return $now->gte($this->current_period_ends_at);
     }
 
     /**
@@ -775,8 +784,13 @@ class Subscription extends Model implements HasQuotaInterface
     public function canRenewPlan()
     {
         return ($this->plan->price > 0 ||
-            (Setting::isYes('renew_free_plan') && $this->plan->price == 0)
+            (Setting::isYes('renew_free_plan') && $this->plan->isFree())
         );
+    }
+
+    public function canRenewFreePlan()
+    {
+        return Setting::isYes('renew_free_plan') && $this->plan->isFree();
     }
 
     /**

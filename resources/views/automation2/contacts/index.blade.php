@@ -7,7 +7,7 @@ full-height
 @section('content')
                     
     @include('automation2._tabs_timeline', [
-        'tab' => 'statistics'
+        'tab' => 'audience'
     ])
 
     <div class="contacts-stats-boxes d-flex align-items-center" style="pointer-events: none;">

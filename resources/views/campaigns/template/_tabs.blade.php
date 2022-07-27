@@ -18,7 +18,7 @@
             ]) }}">{{ trans('messages.my_templates') }}</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link {{ actionName() == 'templateUpload' ? 'active' : '' }} choose-template-tab nav-link"
+        <a class="nav-link {{ isset($templateUpload) ? 'active' : '' }} choose-template-tab nav-link"
         href="{{ action('CampaignController@templateUpload', $campaign->uid) }}">
             {{ trans('messages.upload') }}
         </a>

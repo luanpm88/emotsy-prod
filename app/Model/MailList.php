@@ -1559,6 +1559,11 @@ class MailList extends Model
         $message->setTo(array($subscriber->email, $subscriber->email => $subscriber->getFullName(trans('messages.to_email_name'))));
         $message->addPart($body, 'text/html');
 
+        if (config('app.demo')) {
+            MailLog::info("In DEMO mode, send message '{$title}' to log instead: \n".$message->toString());
+            return;
+        }
+
         try {
             $this->send($message, [
                 'subscriber' => $subscriber,
