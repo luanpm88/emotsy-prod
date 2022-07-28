@@ -18,7 +18,9 @@
 @endsection
 
 @section('content')
-    @include('senders._menu')
+    @include('senders._menu', [
+        'menu' => 'sender',
+    ])
 
     <div class="row sub_section">
 

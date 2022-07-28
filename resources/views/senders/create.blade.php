@@ -20,7 +20,9 @@
 @endsection
 
 @section('content')
-    @include('senders._menu')
+    @include('senders._menu', [
+        'menu' => 'sender',
+    ])
     
     <h2>{{ trans('messages.sender.create') }}</h2>
         

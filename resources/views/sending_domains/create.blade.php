@@ -21,7 +21,9 @@
 
 @section('content')
     
-    @include('senders._menu')
+    @include('senders._menu', [
+        'menu' => 'sending_domain',
+    ])
     
     <h2>
         <span class="text-semibold"><span class="material-symbols-rounded">

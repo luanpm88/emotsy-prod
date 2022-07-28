@@ -1,8 +1,10 @@
+@php $menu = $menu ?? false @endphp
+
 <div class="row">
     <div class="col-md-12">
         <ul class="nav nav-tabs nav-tabs-top nav-underline">
             @if (Auth::user()->customer->subscription->plan->useOwnSendingServer())
-                <li class="nav-item" rel0="SenderController">
+                <li class="nav-item {{ in_array($menu, ['sender']) ? 'active' : '' }}">
                     <a href="{{ action('SenderController@index') }}" class="nav-link">
                     <span class="material-symbols-rounded">
 mail_outline
@@ -11,7 +13,7 @@ mail_outline
                 </li>
             @elseif ( Auth::user()->customer->subscription->plan->primarySendingServer()->allowVerifyingOwnEmails() ||
                 Auth::user()->customer->subscription->plan->primarySendingServer()->allowVerifyingOwnEmailsRemotely() )
-                <li class="nav-item" rel0="SenderController">
+                <li class="nav-item {{ in_array($menu, ['sender']) ? 'active' : '' }}">
                     <a href="{{ action('SenderController@index') }}" class="nav-link">
                     <span class="material-symbols-rounded">
 mail_outline
@@ -21,7 +23,7 @@ mail_outline
             @endif
 
             @if (Auth::user()->customer->subscription->plan->useOwnSendingServer())
-                <li class="nav-item" rel0="SendingDomainController">
+                <li class="nav-item {{ in_array($menu, ['sending_domain']) ? 'active' : '' }}">
                     <a href="{{ action('SendingDomainController@index') }}" class="nav-link">
                         <span class="material-symbols-rounded">
 alternate_email
@@ -31,7 +33,7 @@ alternate_email
             @elseif ( Auth::user()->customer->subscription->plan->useOwnSendingServer() ||
                 Auth::user()->customer->subscription->plan->primarySendingServer()->allowVerifyingOwnDomains() ||
                 Auth::user()->customer->subscription->plan->primarySendingServer()->allowVerifyingOwnDomainsRemotely() )
-                <li class="nav-item" rel0="SendingDomainController">
+                <li class="nav-item {{ in_array($menu, ['sending_domain']) ? 'active' : '' }}">
                     <a href="{{ action('SendingDomainController@index') }}" class="nav-link">
                     <span class="material-symbols-rounded">
 alternate_email
