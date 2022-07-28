@@ -12,7 +12,9 @@
 
 @section('content')
 
-	@include("lists._menu")
+	@include("lists._menu", [
+		'menu' => 'segment',
+	])
 
 	<h2 class="text-bold text-primary mb-10"><span class="material-symbols-rounded">
 splitscreen

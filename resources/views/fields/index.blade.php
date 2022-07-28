@@ -19,7 +19,9 @@
 
 @section('content')
 
-	@include("lists._menu")
+	@include("lists._menu", [
+		'menu' => 'field',
+	])
 
 	<h2 class="text-primary my-4"><span class="material-symbols-rounded">
 fact_check

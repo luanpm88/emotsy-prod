@@ -13,7 +13,7 @@
 
         <div class="collapse navbar-collapse" id="navbarsExample04">
             <ul class="navbar-nav me-auto mb-md-0">
-                <li class="nav-item" rel0="HomeController">
+                <li class="nav-item">
                     @yield('menu_title')
                 </li>
             </ul>

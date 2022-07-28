@@ -1,4 +1,6 @@
-@extends('layouts.core.backend')
+@extends('layouts.core.backend', [
+    'menu' => 'payment',
+])
 
 @section('title', trans('messages.payment_gateways'))
 

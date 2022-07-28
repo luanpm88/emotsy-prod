@@ -1,4 +1,6 @@
-@extends('layouts.core.backend')
+@extends('layouts.core.backend', [
+    'menu' => 'layout',
+])
 
 @section('title', trans('messages.page_form_layout'))
 

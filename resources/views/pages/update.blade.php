@@ -17,7 +17,9 @@
 
 @section('content')
 
-				@include("lists._menu")
+				@include("lists._menu", [
+					'menu' => 'page',
+				])
 
                 <h2 class="my-4">{{ trans('messages.' . $layout->alias) }}</h2>
 

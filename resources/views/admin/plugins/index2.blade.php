@@ -1,5 +1,6 @@
 @extends('layouts.core.backend', [
 	'body_class' => 'has-topfix-header',
+	'menu' => 'plugin',
 ])
 
 @section('title', trans('messages.plugins'))

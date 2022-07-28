@@ -19,7 +19,9 @@
 
 @section('content')
 	
-	@include("lists._menu")
+	@include("lists._menu", [
+		'menu' => 'segment',
+	])
 	
 	<h2 class="text-semibold text-primary my-4"><span class="material-symbols-rounded">
 edit

@@ -12,7 +12,9 @@
 
 @section('content')
 
-	@include("lists._menu")
+	@include("lists._menu", [
+		'menu' => 'subscriber',
+	])
 
 	<div class="d-flex my-4">
 		<h2 class="text-primary me-auto"><span class="material-symbols-rounded">
