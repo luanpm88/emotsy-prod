@@ -1,4 +1,6 @@
-@extends('layouts.core.backend')
+@extends('layouts.core.backend', [
+    'menu' => 'profile',
+])
 
 @section('title', trans('messages.my_profile'))
 

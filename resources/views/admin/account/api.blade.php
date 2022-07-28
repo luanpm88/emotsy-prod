@@ -1,4 +1,6 @@
-@extends('layouts.core.backend')
+@extends('layouts.core.backend', [
+    'menu' => 'api',
+])
 
 @section('title', trans('messages.api_token'))
 

@@ -1,4 +1,6 @@
-@extends('layouts.core.backend')
+@extends('layouts.core.backend', [
+    'menu' => 'contact',
+])
 
 @section('title', trans('messages.contact_information'))
 
