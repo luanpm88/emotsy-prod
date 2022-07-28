@@ -1,4 +1,6 @@
-@extends('layouts.core.frontend')
+@extends('layouts.core.frontend', [
+	'menu' => 'tracking_domain',
+])
 
 @section('title', trans('messages.tracking_domain.create'))
 

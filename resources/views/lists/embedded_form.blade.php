@@ -1,4 +1,6 @@
-@extends('layouts.core.frontend')
+@extends('layouts.core.frontend', [
+	'menu' => 'list',
+])
 
 @section('title', $list->name)
 
@@ -22,7 +24,9 @@
 
 @section('content')
 
-    @include("lists._menu")
+    @include("lists._menu", [
+		'menu' => 'embedded',
+	])
 
     <h2 class="text-semibold text-primary my-4">{{ trans('messages.Embedded_form') }}</h2>
     <div class="row">

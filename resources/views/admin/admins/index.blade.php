@@ -1,4 +1,6 @@
-@extends('layouts.core.backend')
+@extends('layouts.core.backend', [
+	'menu' => 'admin',
+])
 
 @section('title', trans('messages.admins'))
 

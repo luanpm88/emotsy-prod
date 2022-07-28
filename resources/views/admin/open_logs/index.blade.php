@@ -1,4 +1,6 @@
-@extends('layouts.core.backend')
+@extends('layouts.core.backend', [
+    'menu' => 'open',
+])
 
 @section('title', trans('messages.open_log'))
 

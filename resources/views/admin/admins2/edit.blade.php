@@ -1,4 +1,4 @@
-@extends('layouts.core.backend')
+
 
 @section('title', $admin->user->displayName())
     

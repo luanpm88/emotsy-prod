@@ -1,4 +1,6 @@
-@extends('layouts.core.frontend')
+@extends('layouts.core.frontend', [
+	'menu' => 'sending_server',
+])
 
 @section('title', trans('messages.create_sending_server'))
 

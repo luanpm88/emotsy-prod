@@ -8,7 +8,9 @@
 
 @section('menu_right')
     @include('layouts.core._top_activity_log')
-    @include('layouts.core._menu_frontend_user')
+    @include('layouts.core._menu_frontend_user', [
+        'menu' => 'subscription',
+    ])
 @endsection
 
 @section('content')

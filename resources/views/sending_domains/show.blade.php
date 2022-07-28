@@ -1,4 +1,6 @@
-@extends('layouts.core.frontend')
+@extends('layouts.core.frontend', [
+	'menu' => 'sending_domain',
+])
 
 @section('title', $server->name)
 
@@ -19,7 +21,9 @@
 
 @section('content')
     
-    @include('senders._menu')
+    @include('senders._menu', [
+        'menu' => 'sending_domain',
+    ])
 
     <div class="row">
         <div class="col-sm-12 col-md-10 col-lg-10">

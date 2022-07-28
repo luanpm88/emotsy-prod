@@ -1,4 +1,6 @@
-@extends('layouts.core.frontend')
+@extends('layouts.core.frontend', [
+    'menu' => 'sender',
+])
 
 @section('title', trans('messages.sender.create'))
     
@@ -18,7 +20,9 @@
 @endsection
 
 @section('content')
-    @include('senders._menu')
+    @include('senders._menu', [
+        'menu' => 'sender',
+    ])
     
     <h2>{{ trans('messages.sender.create') }}</h2>
         

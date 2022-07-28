@@ -1,4 +1,6 @@
-@extends('layouts.core.frontend')
+@extends('layouts.core.frontend', [
+    'menu' => 'sender',
+])
 
 @section('title', $sender->name)
     
@@ -16,7 +18,9 @@
 @endsection
 
 @section('content')
-    @include('senders._menu')
+    @include('senders._menu', [
+        'menu' => 'sender',
+    ])
 
     <div class="row sub_section">
 

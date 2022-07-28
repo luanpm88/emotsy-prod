@@ -1,4 +1,6 @@
-@extends('layouts.core.backend')
+@extends('layouts.core.backend', [
+	'menu' => 'customer',
+])
 
 @section('title', trans('messages.customers'))
 

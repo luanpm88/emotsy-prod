@@ -1,4 +1,6 @@
-@extends('layouts.core.frontend')
+@extends('layouts.core.frontend', [
+	'menu' => 'list',
+])
 
 @section('title', $list->name . ": " . trans('messages.update_page', ['name' => trans('messages.' . $layout->alias)]))
 
@@ -15,7 +17,9 @@
 
 @section('content')
 
-				@include("lists._menu")
+				@include("lists._menu", [
+					'menu' => 'page',
+				])
 
                 <h2 class="my-4">{{ trans('messages.' . $layout->alias) }}</h2>
 

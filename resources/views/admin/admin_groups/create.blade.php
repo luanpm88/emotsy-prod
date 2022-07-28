@@ -1,4 +1,6 @@
-@extends('layouts.core.backend')
+@extends('layouts.core.backend', [
+	'menu' => 'admin_group',
+])
 
 @section('title', trans('messages.create_admin_group'))
 

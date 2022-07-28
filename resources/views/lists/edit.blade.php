@@ -1,4 +1,6 @@
-@extends('layouts.core.frontend')
+@extends('layouts.core.frontend', [
+	'menu' => 'list',
+])
 
 @section('title', $list->name)
 
@@ -20,7 +22,9 @@
 
 @section('content')
 
-    @include("lists._menu")
+    @include("lists._menu", [
+		'menu' => 'edit',
+	])
 
     <form action="{{ action('MailListController@update', $list->uid) }}" method="POST" class="form-validate-jqueryz">
         {{ csrf_field() }}

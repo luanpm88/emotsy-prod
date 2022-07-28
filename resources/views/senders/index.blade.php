@@ -1,4 +1,6 @@
-@extends('layouts.core.frontend')
+@extends('layouts.core.frontend', [
+    'menu' => 'sender',
+])
 
 @section('title', trans('messages.verified_senders'))
 
@@ -17,7 +19,9 @@
 
 @section('content')
     
-    @include('senders._menu')
+    @include('senders._menu', [
+        'menu' => 'sender',
+    ])
     
     <h2 class="text-semibold">{{ trans('messages.email_addresses') }}</h2>
     

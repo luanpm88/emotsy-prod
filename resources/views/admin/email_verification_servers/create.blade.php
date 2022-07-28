@@ -1,4 +1,6 @@
-@extends('layouts.core.backend')
+@extends('layouts.core.backend', [
+	'menu' => 'email_verification',
+])
 
 @section('title', trans('messages.create_email_verification_server'))
 

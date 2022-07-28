@@ -1,4 +1,6 @@
-@extends('layouts.core.backend')
+@extends('layouts.core.backend', [
+    'menu' => 'unsubscribe',
+])
 
 @section('title', trans('messages.unsubscribe_log'))
 

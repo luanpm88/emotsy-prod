@@ -1,4 +1,6 @@
-@extends('layouts.core.frontend')
+@extends('layouts.core.frontend', [
+	'menu' => 'list',
+])
 
 @section('title', $list->name . ": " . trans('messages.manage_list_fields') )
 
@@ -17,7 +19,9 @@
 
 @section('content')
 
-	@include("lists._menu")
+	@include("lists._menu", [
+		'menu' => 'field',
+	])
 
 	<h2 class="text-primary my-4"><span class="material-symbols-rounded">
 fact_check

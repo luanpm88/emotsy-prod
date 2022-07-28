@@ -1,4 +1,6 @@
-@extends('layouts.core.frontend')
+@extends('layouts.core.frontend', [
+	'menu' => 'api',
+])
 
 @section('title', trans('messages.api_token'))
 
@@ -20,7 +22,9 @@
 
 @section('content')
 
-	@include("account._menu")
+	@include("account._menu", [
+		'menu' => 'api',
+	])
 
 	<h4 class="text-semibold">{{ trans('messages.api_docs') }}</h4>
 

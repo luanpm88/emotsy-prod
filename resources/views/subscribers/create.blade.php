@@ -1,4 +1,6 @@
-@extends('layouts.core.frontend')
+@extends('layouts.core.frontend', [
+	'menu' => 'subscriber',
+])
 
 @section('title', $list->name . ": " . trans('messages.create_subscriber'))
 
@@ -16,7 +18,9 @@
 @endsection
 
 @section('content')
-    @include("lists._menu")
+    @include("lists._menu", [
+		'menu' => 'subscriber_add',
+	])
         <div class="row">
 			<div class="col-sm-12 col-md-6 col-lg-6">
 				<div class="sub-section">

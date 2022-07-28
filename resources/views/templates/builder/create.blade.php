@@ -1,4 +1,6 @@
-@extends('layouts.core.frontend')
+@extends('layouts.core.frontend', [
+	'menu' => 'template',
+])
 
 @section('title', trans('messages.create_template'))
 

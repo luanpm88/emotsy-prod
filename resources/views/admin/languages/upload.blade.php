@@ -1,4 +1,6 @@
-@extends('layouts.core.backend')
+@extends('layouts.core.backend', [
+    'menu' => 'language',
+])
 
 @section('title', trans('messages.upload_template'))
 

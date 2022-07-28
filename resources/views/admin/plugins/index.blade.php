@@ -1,4 +1,6 @@
-@extends('layouts.core.backend')
+@extends('layouts.core.backend', [
+    'menu' => 'plugin',
+])
 
 @section('title', trans('messages.plugins'))
 
