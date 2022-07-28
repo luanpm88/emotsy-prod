@@ -1,4 +1,4 @@
-@extends('layouts.core.backend')
+
 
 @section('title', trans('messages.create_admin'))
 	
