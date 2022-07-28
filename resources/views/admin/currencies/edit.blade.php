@@ -1,4 +1,6 @@
-@extends('layouts.core.backend')
+@extends('layouts.core.backend', [
+	'menu' => 'currency',
+])
 
 @section('title', $currency->name)
 	

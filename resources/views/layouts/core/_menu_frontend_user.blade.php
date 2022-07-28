@@ -1,3 +1,5 @@
+@php $menu = $menu ?? false @endphp
+
 <li class="nav-item dropdown">
     <a href="{{ action('TemplateController@index') }}" class="nav-link d-flex align-items-center ps-3 pe-1 py-3 lvl-1 dropdown-toggle"
         id="content-menu" data-bs-toggle="dropdown" aria-expanded="false">

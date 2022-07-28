@@ -1,4 +1,6 @@
-@extends('layouts.core.backend')
+@extends('layouts.core.backend', [
+	'menu' => 'feedback',
+])
 
 @section('title', trans('messages.feedback_loop_handlers'))
 
