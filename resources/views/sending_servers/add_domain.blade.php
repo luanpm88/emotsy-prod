@@ -1,9 +1,5 @@
 @extends('layouts.popup.small')
 
-@section('title')
-    {{ trans('messages.billing_information') }}
-@endsection
-
 @section('content')
     <div class="row">
         <div class="col-md-12">
