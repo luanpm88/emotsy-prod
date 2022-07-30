@@ -44,7 +44,7 @@ class TemplateController extends Controller
             ->categoryUid($request->category_uid)
             ->notPreserved()
             ->orderBy($request->sort_order, $request->sort_direction)
-            ->paginate($request->per_page ? $request->per_page : ($view == 'grid' ? 8 : 15));
+            ->paginate($request->per_page ? $request->per_page : 12);
 
 
         return view('templates._list_' . $view, [

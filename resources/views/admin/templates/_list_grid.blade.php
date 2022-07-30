@@ -151,7 +151,7 @@
         @endforeach
     </div>
     
-    @include('elements/_per_page_select', ["items" => $templates, 'custom_per_pages' => [8, 16, 24]])
+    @include('elements/_per_page_select', ["items" => $templates, 'custom_per_pages' => [8, 12, 24]])
     
     <script>
         $(function() {
