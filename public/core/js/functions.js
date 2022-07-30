@@ -266,9 +266,6 @@ function formatSelect2TextOption(d) {
 
 function initMainMenu()
 {
-    // check menu active
-    // menuActiveCheck();
-
     // leftbar scroll behaviour
     $('.leftbar .navbar-main').on( 'DOMMouseScroll mousewheel', function ( event ) {
         if ($('.leftbar').hasClass('leftbar-closed')) {
@@ -333,29 +330,6 @@ function initMainMenu()
     $( window ).on('resize', function() {
         leftbarAdjust();
     });
-}
-
-function menuActiveCheck() {
-    // menu active
-    for (i=0; i < 10; i++) {
-        $("li[rel"+i+"='"+CONTROLLER+"']").addClass("active");
-        $("li[rel"+i+"='"+CONTROLLER+"']").find('.nav-link').eq(0).addClass("active");
-        $("li[rel"+i+"='"+CONTROLLER+"']").closest('.nav-link').addClass("active");
-        $("li[rel"+i+"='"+CONTROLLER+"']").parents('.nav-item').addClass("active");
-        $("li[rel"+i+"='"+CONTROLLER+"']").parents('.nav-item').find('.nav-link').eq(0).addClass("active");
-    }
-    for (i=0; i < 10; i++) {
-        $("li[rel"+i+"='"+CONTROLLER+"/"+ACTION+"']").addClass("active");
-        $("li[rel"+i+"='"+CONTROLLER+"/"+ACTION+"']").find('.nav-link').eq(0).addClass("active");
-        $("li[rel"+i+"='"+CONTROLLER+"/"+ACTION+"']").closest('.nav-link').addClass("active");
-        $("li[rel"+i+"='"+CONTROLLER+"/"+ACTION+"']").parents('.nav-item').addClass("active");
-        $("li[rel"+i+"='"+CONTROLLER+"/"+ACTION+"']").parents('.nav-item').find('.nav-link').eq(0).addClass("active");
-    }
-
-    $('.dropdown-item.active').closest('.nav-item').addClass("active");
-    setTimeout(function() {
-        $('.leftbar:not(.leftbar-closed) .main-menu .nav-link.dropdown-toggle.active').dropdown('toggle');
-    }, 100);
 }
 
 function applyLinkListener(links, options) {
