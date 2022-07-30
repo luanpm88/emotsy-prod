@@ -43,7 +43,7 @@ footer {
         width: 100%!important;
         max-width: none!important;        
     }
-    [builder-element="CellElement"]  [builder-element="BlockElement"] {
+    [builder-element="CellElement"] {
         padding: 0px!important;
     }
 }
