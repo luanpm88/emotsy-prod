@@ -20,7 +20,7 @@
             @include('helpers.form_control', [
                 'type' => 'autofill',
                 'id' => 'sender_from_input',
-                'class' => 'email',
+                'class' => '',
                 'name' => 'from_email',
                 'value' => '',
                 'label' => trans('messages.from_email'),
