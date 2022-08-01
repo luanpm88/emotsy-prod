@@ -633,16 +633,6 @@ class Tool
     }
 
     /**
-     * Check current view if exist.
-     *
-     * @return bool
-     */
-    public static function currentView()
-    {
-        return \Request::is('admin*') ? 'backend' : 'frontend';
-    }
-
-    /**
      * Get Directory Size.
      *
      * @var string
