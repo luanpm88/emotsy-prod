@@ -52,7 +52,7 @@
                         <ul class="dropdown-menu">
                             <li>
                                 <a class="dropdown-item"
-                                    link-method="PATCH"
+                                    link-method="POST"
                                     link-confirm="{{ trans('messages.enable_automations_confirm') }}"
                                     href="{{ action('Automation2Controller@enable') }}"
                                 >
@@ -62,7 +62,7 @@ play_arrow
                                 </a>
                             </li>
                             <li>
-                                <a class="dropdown-item" link-method="PATCH" link-confirm="{{ trans('messages.disable_automations_confirm') }}" href="{{ action('Automation2Controller@disable') }}">
+                                <a class="dropdown-item" link-method="POST" link-confirm="{{ trans('messages.disable_automations_confirm') }}" href="{{ action('Automation2Controller@disable') }}">
                                     <span class="material-symbols-rounded me-2">
 hide_source
 </span> {{ trans('messages.disable') }}</a></li>

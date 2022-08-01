@@ -78,7 +78,7 @@
                                     <li>
                                         <a
                                             class="dropdown-item list-action-single"
-                                            link-method="PATCH"
+                                            link-method="POST"
                                             link-confirm="{{ trans('messages.enable_automations_confirm') }}"
                                             href="{{ action('Automation2Controller@enable', ["uids" => $automation->uid]) }}"
                                         >
@@ -92,7 +92,7 @@ play_arrow
                                     <li>
                                         <a
                                             class="dropdown-item list-action-single"
-                                            link-method="PATCH" link-confirm="{{ trans('messages.disable_automations_confirm') }}"
+                                            link-method="POST" link-confirm="{{ trans('messages.disable_automations_confirm') }}"
                                             href="{{ action('Automation2Controller@disable', ["uids" => $automation->uid]) }}"
                                         >
                                             <span class="material-symbols-rounded me-2">
