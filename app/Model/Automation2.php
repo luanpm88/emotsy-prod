@@ -477,7 +477,10 @@ class Automation2 extends Model
         // @TODO: move to trigger object
         switch ($triggerName) {
             case self::TRIGGER_TYPE_WELCOME_NEW_SUBSCRIBER:
-                /* triggered immediately by MailListSubscription event */
+                /* Triggered immediately by MailListSubscription event
+                 * See TriggerAutomation listener
+                 *
+                 */
                 break;
             case self::TRIGGER_PARTICULAR_DATE:
                 $this->checkForSpecificDatetime();
