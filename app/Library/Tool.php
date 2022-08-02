@@ -588,12 +588,12 @@ class Tool
                 <script src='https://www.google.com/recaptcha/api.js?hl=<?php echo language_code() ?>'></script>
                 <div class="g-recaptcha" data-sitekey="6LfyISoTAAAAABJV8zycUZNLgd0sj-sBFjctzXKw"></div>
                 <?php if (isset($errors) && $errors->has('recaptcha_invalid')) {
-            ?>
+                    ?>
                     <span class="help-block text-danger">
                         <strong><?php echo $errors->first('recaptcha_invalid'); ?></strong>
                     </span>
                 <?php
-        } ?>
+                } ?>
             </div>
         <?php
     }

@@ -7,6 +7,7 @@ use SimpleXMLElement;
 use Twig\TwigFunction;
 use Twig\Loader\ArrayLoader;
 use Twig\Environment;
+
 use function Acelle\Helpers\xml_to_array;
 
 class ParseRss implements StageInterface

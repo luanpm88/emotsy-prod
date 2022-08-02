@@ -29,6 +29,7 @@ use Validator;
 use DB;
 use Exception;
 use Mika56\SPFCheck\SPFCheck;
+
 use function Acelle\Helpers\spfcheck;
 
 class SendingDomain extends Model

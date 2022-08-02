@@ -41,8 +41,7 @@ class CampaignController extends Controller
     {
         $user = \Auth::guard('api')->user();
 
-        $item = \Acelle\Model\Campaign::
-            where('uid', '=', $id)
+        $item = \Acelle\Model\Campaign::where('uid', '=', $id)
             ->first();
 
         // check if item exists
@@ -112,8 +111,7 @@ class CampaignController extends Controller
     {
         $user = \Auth::guard('api')->user();
 
-        $campaign = \Acelle\Model\Campaign::
-            where('uid', '=', $id)
+        $campaign = \Acelle\Model\Campaign::where('uid', '=', $id)
             ->first();
 
         // check if item exists

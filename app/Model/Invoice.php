@@ -9,6 +9,7 @@ use Acelle\Model\Transaction;
 use Acelle\Library\Traits\HasUid;
 use Dompdf\Dompdf;
 use Acelle\Library\StringHelper;
+
 use function Acelle\Helpers\getAppHost;
 
 class Invoice extends Model
