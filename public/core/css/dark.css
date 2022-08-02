@@ -237,6 +237,7 @@ body.mode-dark .navbar-main .navbar-nav .nav-link {
     color: rgba(255,255,255,0.7);
 }
 body.mode-dark .navbar-main .nav-item > .nav-link.active,
+body.mode-dark .navbar-main .nav-item.active > .nav-link,
 body.mode-dark .navbar-main .navbar-nav .nav-link:hover {
     color: rgba(255,255,255,0.9);
     background-color: transparent;
