@@ -32,6 +32,7 @@ use Acelle\Library\Traits\HasUid;
 use Validator;
 use Exception;
 use Acelle\Library\StringHelper;
+
 use function Acelle\Helpers\getAppHost;
 
 class TrackingDomain extends Model

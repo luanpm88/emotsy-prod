@@ -42,8 +42,7 @@ class MailListController extends Controller
     {
         $user = \Auth::guard('api')->user();
 
-        $item = \Acelle\Model\MailList::
-            where('uid', '=', $id)
+        $item = \Acelle\Model\MailList::where('uid', '=', $id)
             ->first();
 
         // check if item exists

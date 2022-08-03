@@ -1650,7 +1650,7 @@ class MailList extends Model
                     return [$server->sending_server_id, $server->fitness];
                 });
             }
-            // If customer dont have permission creating sending servers
+        // If customer dont have permission creating sending servers
         } elseif ($this->customer->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_SYSTEM) {
             // Check if has sending servers for current subscription
             if ($subscription) {

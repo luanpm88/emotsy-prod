@@ -31,6 +31,7 @@ use Acelle\Model\SendingDomain;
 use Aws\Route53\Route53Client;
 use Acelle\Library\Facades\Hook;
 use Exception;
+
 use function Acelle\Helpers\isValidPublicHostnameOrIpAddress;
 
 class SendingServerAmazon extends SendingServer implements DomainVerificationInterface

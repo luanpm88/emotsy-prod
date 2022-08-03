@@ -38,6 +38,7 @@ use Exception;
 use Closure;
 use League\Pipeline\PipelineBuilder;
 use Acelle\Library\HtmlHandler\TransformWidgets;
+
 use function Acelle\Helpers\getAppHost;
 
 class Template extends Model

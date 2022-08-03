@@ -113,7 +113,7 @@ class AutomationElement
                 }
                 break;
             default:
-        }
+            }
     }
 
     /**
@@ -156,7 +156,7 @@ class AutomationElement
                 return '<i class="material-icons-outlined bg-info">checklist_rtl</i>';
                 break;
             default:
-        }
+            }
     }
 
     /**
@@ -189,7 +189,7 @@ class AutomationElement
                 return '<i class="material-icons-outlined bg-info">checklist_rtl</i>';
                 break;
             default:
-        }
+            }
     }
 
     /**

@@ -74,7 +74,8 @@ class PluginPolicy
     {
         switch ($role) {
             case 'admin':
-                return  $plugin->status != Plugin::STATUS_INACTIVE;;
+                return  $plugin->status != Plugin::STATUS_INACTIVE;
+                ;
                 break;
             case 'customer':
                 return false;
@@ -86,7 +87,8 @@ class PluginPolicy
     {
         switch ($role) {
             case 'admin':
-                return  $plugin->status != Plugin::STATUS_ACTIVE;;
+                return  $plugin->status != Plugin::STATUS_ACTIVE;
+                ;
                 break;
             case 'customer':
                 return false;

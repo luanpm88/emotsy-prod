@@ -134,8 +134,7 @@ class SubscriberController extends Controller
     {
         $user = \Auth::guard('api')->user();
 
-        $item = \Acelle\Model\Subscriber::
-            where('uid', '=', $uid)
+        $item = \Acelle\Model\Subscriber::where('uid', '=', $uid)
             ->first();
 
         $list = $item->mailList;
