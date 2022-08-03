@@ -93,7 +93,7 @@ web
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end has-head">
                 <li>
-                    <a class="dropdown-item" href="{{ action('MailListController@embeddedForm', $list->uid) }}">
+                    <a class="dropdown-item {{ in_array($menu, ['embedded']) ? 'active' : '' }}" href="{{ action('MailListController@embeddedForm', $list->uid) }}">
                     <span class="material-symbols-rounded">
 dashboard
 </span> {{ trans('messages.Embedded_form') }}
@@ -105,27 +105,27 @@ dashboard
                         </span> {{ trans('messages.subscribe') }}
                 </li>
                 <li>
-                    <a class="dropdown-item" href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'sign_up_form']) }}">
+                    <a class="dropdown-item {{ in_array(request()->alias, ['sign_up_form']) ? 'active' : '' }}" href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'sign_up_form']) }}">
                     {{ trans('messages.sign_up_form') }}
                     </a>
                 </li>
                 <li>
-                    <a class="dropdown-item" href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'sign_up_thankyou_page']) }}">
+                    <a class="dropdown-item {{ in_array(request()->alias, ['sign_up_thankyou_page']) ? 'active' : '' }}" href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'sign_up_thankyou_page']) }}">
                     {{ trans('messages.sign_up_thankyou_page') }}
                     </a>
                 </li>
                 <li>
-                    <a class="dropdown-item" href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'sign_up_confirmation_email']) }}">
+                    <a class="dropdown-item {{ in_array(request()->alias, ['sign_up_confirmation_email']) ? 'active' : '' }}" href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'sign_up_confirmation_email']) }}">
                     {{ trans('messages.sign_up_confirmation_email') }}
                     </a>
                 </li>
                 <li>
-                    <a class="dropdown-item" href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'sign_up_confirmation_thankyou']) }}">
+                    <a class="dropdown-item {{ in_array(request()->alias, ['sign_up_confirmation_thankyou']) ? 'active' : '' }}" href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'sign_up_confirmation_thankyou']) }}">
                     {{ trans('messages.sign_up_confirmation_thankyou') }}
                     </a>
                 </li>
                 <li>
-                    <a class="dropdown-item" href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'sign_up_welcome_email']) }}">
+                    <a class="dropdown-item {{ in_array(request()->alias, ['sign_up_welcome_email']) ? 'active' : '' }}" href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'sign_up_welcome_email']) }}">
                     {{ trans('messages.sign_up_welcome_email') }}
                     </a>
                 </li>
@@ -135,17 +135,17 @@ dashboard
                         </span> {{ trans('messages.unsubscribe') }}
                     </li>
                 <li>
-                    <a class="dropdown-item" href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'unsubscribe_form']) }}">
+                    <a class="dropdown-item {{ in_array(request()->alias, ['unsubscribe_form']) ? 'active' : '' }}" href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'unsubscribe_form']) }}">
                     {{ trans('messages.unsubscribe_form') }}
                     </a>
                 </li>
                 <li>
-                    <a class="dropdown-item" href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'unsubscribe_success_page']) }}">
+                    <a class="dropdown-item {{ in_array(request()->alias, ['unsubscribe_success_page']) ? 'active' : '' }}" href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'unsubscribe_success_page']) }}">
                     {{ trans('messages.unsubscribe_success_page') }}
                     </a>
                 </li>
                 <li>
-                    <a class="dropdown-item" href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'unsubscribe_goodbye_email']) }}">
+                    <a class="dropdown-item {{ in_array(request()->alias, ['unsubscribe_goodbye_email']) ? 'active' : '' }}" href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'unsubscribe_goodbye_email']) }}">
                     {{ trans('messages.unsubscribe_goodbye_email') }}
                     </a>
                 </li>
@@ -155,22 +155,22 @@ dashboard
                             </span> {{ trans('messages.update_profile') }}
                 </li>
                 <li>
-                    <a class="dropdown-item" href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'profile_update_email_sent']) }}">
+                    <a class="dropdown-item {{ in_array(request()->alias, ['profile_update_email_sent']) ? 'active' : '' }}" href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'profile_update_email_sent']) }}">
                     {{ trans('messages.profile_update_email_sent') }}
                     </a>
                 </li>
                 <li>
-                    <a class="dropdown-item" href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'profile_update_email']) }}">
+                    <a class="dropdown-item {{ in_array(request()->alias, ['profile_update_email']) ? 'active' : '' }}" href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'profile_update_email']) }}">
                     {{ trans('messages.profile_update_email') }}
                     </a>
                 </li>
                 <li>
-                    <a class="dropdown-item" href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'profile_update_form']) }}">
+                    <a class="dropdown-item {{ in_array(request()->alias, ['profile_update_form']) ? 'active' : '' }}" href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'profile_update_form']) }}">
                     {{ trans('messages.profile_update_form') }}
                     </a>
                 </li>
                 <li>
-                    <a class="dropdown-item" href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'profile_update_success_page']) }}">
+                    <a class="dropdown-item {{ in_array(request()->alias, ['profile_update_success_page']) ? 'active' : '' }}" href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'profile_update_success_page']) }}">
                     {{ trans('messages.profile_update_success_page') }}
                     </a>
                 </li>
