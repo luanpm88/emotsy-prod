@@ -69,6 +69,11 @@ function getAppSubdirectory()
     // when calling from another file (like filemanager/config/config.php for example)
     // Otherwise, it will always return 'http://localhost' --> without subdirectory
     $path = parse_url(config('app.url'), PHP_URL_PATH);
+
+    if (is_null($path)) {
+        return null;
+    }
+
     $path = trim($path, '/');
     return empty($path) ? null : $path;
 }
