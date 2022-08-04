@@ -63,16 +63,5 @@ class CheckoutServiceProvider extends ServiceProvider
         $keySecret = Setting::get('cashier.razorpay.key_secret');
         $razorpay = new RazorpayPaymentGateway($keyId, $keySecret);
         Billing::register($razorpay);
-
-        Hook::register('add_translation_file', function() {
-            return [
-                "id" => 'cashier_message',
-                "plugin_name" => "Acelle/Cashier",
-                "file_title" => "Cashier: messages",
-                "translation_folder" => storage_path('app/cashier/lang'),
-                "file_name" => "messages.php",
-                "master_translation_file" => realpath(__DIR__.'/../resources/lang/en/messages.php'),
-            ];
-        });
     }
 }
