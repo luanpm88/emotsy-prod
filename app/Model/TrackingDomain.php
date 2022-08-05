@@ -32,6 +32,7 @@ use Acelle\Library\Traits\HasUid;
 use Validator;
 use Exception;
 use Acelle\Library\StringHelper;
+use Illuminate\Support\Facades\Log;
 
 use function Acelle\Helpers\getAppHost;
 
@@ -232,9 +233,11 @@ class TrackingDomain extends Model
                 $this->save();
                 return true;
             } else {
+                Log::warning(sprintf('Failed verifying tracking domain %s. Error: %s', $url, $result));
                 return false;
             }
         } catch (\Exception $ex) {
+            Log::warning(sprintf('Error verifying tracking domain %s. Error: %s', $url, $ex->getMessage()));
             return false;
         }
     }
