@@ -227,7 +227,18 @@ class TrackingDomain extends Model
         try {
             $url = $this->getUrl();
             $verifyUrl = "$url/ok";
-            $result = file_get_contents($verifyUrl);
+
+            $client = curl_init();
+            curl_setopt_array($client, array(
+                CURLOPT_URL => $verifyUrl,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_HEADER => false,
+                CURLOPT_SSL_VERIFYPEER => false
+            ));
+
+            $result = curl_exec($client);
+            curl_close($client);
+
             if ($result == 'ok') {
                 $this->setVerified();
                 $this->save();
