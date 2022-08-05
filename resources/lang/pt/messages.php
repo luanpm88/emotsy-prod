@@ -3777,6 +3777,8 @@
   'tracking_domain.refresh' => 'Refresh now',
   'tracking_domain.scheme' => 'Scheme',
   'tracking_domain.show.dns_setup' => 'DNS Setup',
+  'tracking_domain.show.nginx.description' => 'Since Nginx does not support .htaccess, make sure you set up the following rewrite rules to your Nginx setting',
+  'tracking_domain.show.nginx.title' => 'For Nginx server',
   'tracking_domain.show.redirect_setup.download' => 'Download tracking script .ZIP',
   'tracking_domain.show.redirect_setup.guide' => 'There are two files in the tracking script package <code>index.php</code> and <code>.htaccess</code>, make sure BOTH files are uploaded to the tracking domain\'s hosting server',
   'tracking_domain.show.redirect_setup.guide_title' => 'Notice',
