@@ -12,7 +12,7 @@ return [
 
     // Minimum recommended PHP version
     // which is required by Laravel 8
-    'php_recommended' => '8.0.0',
+    'php_recommended' => '7.3.0',
 
     // Minimum supported PHP version
     'php' => '7.3.0',
