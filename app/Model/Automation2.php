@@ -1182,8 +1182,8 @@ class Automation2 extends Model
     public function notTriggeredSubscribers()
     {
         return $this->subscribersToSend()->leftJoin('auto_triggers', function ($join) {
-                                          $join->on('subscribers.id', '=', 'auto_triggers.subscriber_id')->where('auto_triggers.automation2_id', '=', $this->id);
-                                      })
+            $join->on('subscribers.id', '=', 'auto_triggers.subscriber_id')->where('auto_triggers.automation2_id', '=', $this->id);
+        })
                                       ->whereNull('auto_triggers.id')->select('subscribers.*');
     }
 
