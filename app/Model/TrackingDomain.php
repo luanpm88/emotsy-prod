@@ -32,6 +32,7 @@ use Acelle\Library\Traits\HasUid;
 use Validator;
 use Exception;
 use Acelle\Library\StringHelper;
+use Illuminate\Support\Facades\Log;
 
 use function Acelle\Helpers\getAppHost;
 
@@ -226,15 +227,28 @@ class TrackingDomain extends Model
         try {
             $url = $this->getUrl();
             $verifyUrl = "$url/ok";
-            $result = file_get_contents($verifyUrl);
+
+            $client = curl_init();
+            curl_setopt_array($client, array(
+                CURLOPT_URL => $verifyUrl,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_HEADER => false,
+                CURLOPT_SSL_VERIFYPEER => false
+            ));
+
+            $result = curl_exec($client);
+            curl_close($client);
+
             if ($result == 'ok') {
                 $this->setVerified();
                 $this->save();
                 return true;
             } else {
+                Log::warning(sprintf('Failed verifying tracking domain %s. Error: %s', $url, $result));
                 return false;
             }
         } catch (\Exception $ex) {
+            Log::warning(sprintf('Error verifying tracking domain %s. Error: %s', $url, $ex->getMessage()));
             return false;
         }
     }

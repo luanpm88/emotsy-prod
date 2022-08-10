@@ -3698,6 +3698,8 @@
   'tracking_domain.refresh' => '今すぐ更新',
   'tracking_domain.scheme' => 'スキーム',
   'tracking_domain.show.dns_setup' => 'DNSセットアップ',
+  'tracking_domain.show.nginx.description' => 'Since Nginx does not support .htaccess, make sure you set up the following rewrite rules to your Nginx setting',
+  'tracking_domain.show.nginx.title' => 'For Nginx server',
   'tracking_domain.show.redirect_setup.download' => 'トラッキングスクリプト.ZIPのダウンロード',
   'tracking_domain.show.redirect_setup.guide' => 'トラッキングスクリプトパッケージ<code>index.php</code>と<code>.htaccess</code>には2つのファイルがあり、両方のファイルがトラッキングドメインのホスティングサーバーにアップロードされていることを確認してください',
   'tracking_domain.show.redirect_setup.guide_title' => '通知',

@@ -3777,6 +3777,8 @@
   'tracking_domain.show.redirect_setup.title' => 'Install tracking script',
   'tracking_domain.show.verified_note' => 'Your tracking domain is verified and is ready for use. You can now set up your campaigns or automation to use a tracking domain to improve delivery performance',
   'tracking_domain.show.verified_title' => 'Tracking domain verified',
+  'tracking_domain.show.nginx.title' => 'For Nginx server',
+  'tracking_domain.show.nginx.description' => 'Since Nginx does not support .htaccess, make sure you set up the following rewrite rules to your Nginx setting',
   'tracking_domain.signing_enabled.help' => 'Sign outgoing emails if the FROM email address matches this domain',
   'tracking_domain.spf_verification' => 'SPF verification',
   'tracking_domain.status.unverified' => 'unverified',
