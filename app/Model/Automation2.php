@@ -114,7 +114,7 @@ class Automation2 extends Model
     {
         $thisYear = $this->customer->getCurrentTime()->format('Y');
         $thisId = $this->id;
-        return $this->subscribers()->leftJoin('auto_triggers', function ($join) use ($thisId) {
+        return $this->subscribersToSend()->leftJoin('auto_triggers', function ($join) use ($thisId) {
             $join->on('auto_triggers.subscriber_id', 'subscribers.id');
             $join->where('auto_triggers.automation2_id', $thisId);
         })
@@ -542,7 +542,7 @@ class Automation2 extends Model
         // Counting by user timezone
         $startOfDayUtc = $today->startOfDay()->timezone('UTC');
 
-        $subscribers = $this->subscribers()->leftJoin('auto_triggers', function ($join) use ($thisId, $startOfDayUtc) {
+        $subscribers = $this->subscribersToSend()->leftJoin('auto_triggers', function ($join) use ($thisId, $startOfDayUtc) {
             $join->on('auto_triggers.subscriber_id', 'subscribers.id');
             $join->where('auto_triggers.automation2_id', $thisId);
             $join->where('auto_triggers.created_at', '>=', $startOfDayUtc);
@@ -582,7 +582,7 @@ class Automation2 extends Model
         // Counting by user timezone
         $startOfDayUtc = $today->startOfDay()->timezone('UTC');
 
-        $subscribers = $this->subscribers()->leftJoin('auto_triggers', function ($join) use ($thisId, $startOfDayUtc) {
+        $subscribers = $this->subscribersToSend()->leftJoin('auto_triggers', function ($join) use ($thisId, $startOfDayUtc) {
             $join->on('auto_triggers.subscriber_id', 'subscribers.id');
             $join->where('auto_triggers.automation2_id', $thisId);
             $join->where('auto_triggers.created_at', '>=', $startOfDayUtc);
@@ -976,6 +976,11 @@ class Automation2 extends Model
         return $query;
     }
 
+    public function subscribersToSend()
+    {
+        return $this->subscribers()->subscribed()->deliverableOrNotVerified();
+    }
+
     public function subscribersByLatestAction($actionId)
     {
         $query = $this->autoTriggers()->join('subscribers', 'auto_triggers.subscriber_id', '=', 'subscribers.id')
@@ -1176,8 +1181,7 @@ class Automation2 extends Model
 
     public function notTriggeredSubscribers()
     {
-        return $this->mailList->activeSubscribers()
-                                      ->leftJoin('auto_triggers', function ($join) {
+        return $this->subscribersToSend()->leftJoin('auto_triggers', function ($join) {
                                           $join->on('subscribers.id', '=', 'auto_triggers.subscriber_id')->where('auto_triggers.automation2_id', '=', $this->id);
                                       })
                                       ->whereNull('auto_triggers.id')->select('subscribers.*');
