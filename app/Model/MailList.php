@@ -1833,17 +1833,20 @@ class MailList extends Model
 
         $validator = \Validator::make($request->all(), $rules, $messages);
 
-        if ($validator->fails()) {
-            return [$validator, null];
-        }
-
         // Validated, proceed
         $subscriber = $this->subscribers()->firstOrNew(['email' => strtolower(trim($request->EMAIL))]);
         $subscriber->from = $source;
 
         // Check if subscriber already in blacklist
         if ($subscriber->isListedInBlacklist()) {
-            throw new \Exception(trans('messages.subscriber.blacklisted'));
+            // validate service
+            $validator->after(function ($validator) {
+                $validator->errors()->add('email', trans('messages.subscriber.blacklisted'));
+            });
+        }
+
+        if ($validator->fails()) {
+            return [$validator, null];
         }
 
         if ($source == Subscriber::SUBSCRIPTION_TYPE_ADDED || $source == self::SOURCE_API) {

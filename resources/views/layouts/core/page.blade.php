@@ -14,6 +14,22 @@
 
 <body class="list-page bg-slate-800 color-scheme-{{ $list ? $list->customer->getColorScheme() : '' }}">
 
+	<div class="row">
+		<div class="col-sm-2 col-md-3">
+			
+		</div>
+		<div class="col-sm-8 col-md-6">
+			<!-- display flash message -->
+@include('layouts.core._errors')
+			
+		</div>
+
+		<!-- /subscribe form -->
+
+			
+		</div>
+	</div>
+
 	@yield('content')
 	
 </body>
