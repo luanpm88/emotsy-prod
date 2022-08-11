@@ -576,6 +576,7 @@ class Subscription extends Model implements HasQuotaInterface
 
         if ($this->plan->hasTrial()) {
             $this->current_period_ends_at = $this->getTrialPeriodEndsAt(Carbon::now());
+            $this->trial_ends_at = $this->getTrialPeriodEndsAt(Carbon::now());
         } else {
             $this->current_period_ends_at = $this->getPeriodEndsAt(Carbon::now());
         }
@@ -752,6 +753,9 @@ class Subscription extends Model implements HasQuotaInterface
         if ($this->ends_at != null) {
             $this->ends_at = $this->current_period_ends_at;
         }
+
+        // trial_ends_at should be set back to null
+        $this->trial_ends_at = null;
 
         $this->save();
 
