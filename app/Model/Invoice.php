@@ -672,12 +672,6 @@ class Invoice extends Model
         return $invoice;
     }
 
-    public function setPaymentServiceFee($fee)
-    {
-        $this->fee = $fee;
-        $this->save();
-    }
-
     public function hasBillingInformation()
     {
         if (empty($this->billing_first_name) ||
@@ -818,5 +812,13 @@ class Invoice extends Model
 
         // update current number
         \Acelle\Model\Setting::set('invoice.current', ($currentNumber + 1));
+    }
+
+    public function updatePaymentServiceFee($gateway)
+    {
+        if ($this->subTotal() == 0) {
+            $this->fee = $gateway->getMinimumChargeAmount($this->currency->code);
+            $this->save();
+        }
     }
 }

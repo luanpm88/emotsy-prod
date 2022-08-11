@@ -399,12 +399,7 @@ class SubscriptionController extends Controller
                 $gateway = Billing::getGateway($request->payment_method);
 
                 // update invoice fee if trial and gatewaye need minimal fee for auto billing
-                if (
-                    $subscription->plan->hasTrial() &&
-                    $invoice->type !== Invoice::TYPE_RENEW_SUBSCRIPTION
-                ) {
-                    $invoice->setPaymentServiceFee($gateway->getMinimumChargeAmount($invoice->currency->code));
-                }
+                $invoice->updatePaymentServiceFee($gateway);
             }
 
 
