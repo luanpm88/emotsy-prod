@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Log as LaravelLog;
 use Acelle\Model\Subscription;
 use Acelle\Model\Setting;
 use Acelle\Model\Plan;
+use Acelle\Model\Invoice;
 use Acelle\Cashier\Cashier;
 use Acelle\Cashier\Services\StripeGatewayService;
 use Carbon\Carbon;
@@ -397,7 +398,13 @@ class SubscriptionController extends Controller
             if ($request->payment_method) {
                 $gateway = Billing::getGateway($request->payment_method);
 
-                $invoice->updatePaymentServiceFee($gateway);
+                // update invoice fee if trial and gatewaye need minimal fee for auto billing
+                if (
+                    $subscription->plan->hasTrial() &&
+                    $invoice->type !== Invoice::TYPE_RENEW_SUBSCRIPTION
+                ) {
+                    $invoice->setPaymentServiceFee($gateway->getMinimumChargeAmount($invoice->currency->code));
+                }
             }
 
 
