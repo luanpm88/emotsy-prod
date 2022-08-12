@@ -393,7 +393,6 @@ trait HasTemplate
         $pipeline->add(new TransformTag($this, $subscriber, $msgId, $server));
         $pipeline->add(new InjectTrackingPixel($this, $msgId));
         $pipeline->add(new TransformUrl($this->template, $msgId, $this->trackingDomain));
-        $pipeline->add(new ReplaceBareLineFeed());
 
         // Actually push HTML to pipeline for processing
         $html = $pipeline->build()->process($baseHtml);
@@ -422,6 +421,7 @@ trait HasTemplate
             $pipeline->add(new ParseRss());
             $pipeline->add(new MakeInlineCss($this->template->findCssFiles()));
             $pipeline->add(new TransformWidgets());
+            $pipeline->add(new ReplaceBareLineFeed());
             // $pipeline->add(new TransformTag($this, $subscriber, $msgId, $server));
             // $pipeline->add(new InjectTrackingPixel($this, $msgId));
             // $pipeline->add(new TransformUrl($this->template, $msgId, $this->trackingDomain));
