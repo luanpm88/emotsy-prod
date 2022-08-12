@@ -250,19 +250,7 @@ class InstallController extends Controller
         // connect mysql
         $mysqli = new \mysqli($database['hostname'], $database['username'], $database['password'], $database['database_name'], $database['port']);
 
-        // Check if database is not empty
-        $rules = [];
-        $tables_exist = false;
-        $prefix_check = empty($database['tables_prefix']) ? '' : "  AND table_name LIKE '".$database['tables_prefix']."%'";
-        $result = $mysqli->query("SELECT COUNT(DISTINCT `table_name`) as count FROM `information_schema`.`columns` WHERE `table_schema` = '".$database['database_name']."'");
-        $result = $result->fetch_object();
-        if ($result->count > 0) {
-            $tables_exist = true;
-        }
-
         $request->session()->forget('database_imported');
-
-        $this->validate($request, $rules);
 
         // Drop all EXISTING tables
         $sql = "SHOW TABLE STATUS";
@@ -275,9 +263,6 @@ class InstallController extends Controller
             $mysqli->query("DROP TABLE IF EXISTS {$tableName};");
             $mysqli->query("SET FOREIGN_KEY_CHECKS = 1;");
         }
-
-        // 3. Validation
-        $this->validate($request, $rules);
 
         $request->session()->put('database_imported', true);
         $next_page = action('InstallController@cronJobs');
@@ -435,21 +420,10 @@ class InstallController extends Controller
         // connect mysql
         $mysqli = new \mysqli($database['hostname'], $database['username'], $database['password'], $database['database_name'], $database['port']);
 
-        // Check if database is not empty
-        $rules = [];
-        $tables_exist = false;
-        $prefix_check = empty($database['tables_prefix']) ? '' : "  AND table_name LIKE '".$database['tables_prefix']."%'";
-        $result = $mysqli->query("SELECT COUNT(DISTINCT `table_name`) as count FROM `information_schema`.`columns` WHERE `table_schema` = '".$database['database_name']."'");
-        $result = $result->fetch_object();
-        if ($result->count > 0) {
-            $tables_exist = true;
-        }
-
         return view('install.database_import', [
             'database' => $database,
             'step' => $this->step($request),
-            'current' => 3,
-            'tables_exist' => $tables_exist,
+            'current' => 3
         ]);
     }
 
