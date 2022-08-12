@@ -9,7 +9,6 @@ use Acelle\Model\Transaction;
 use Acelle\Library\Traits\HasUid;
 use Dompdf\Dompdf;
 use Acelle\Library\StringHelper;
-
 use function Acelle\Helpers\getAppHost;
 
 class Invoice extends Model
@@ -442,6 +441,7 @@ class Invoice extends Model
             'due_date' => $this->created_at,
             'type' => $this->type,
             'plan' => $plan,
+            'has_fee' => $this->fee ? $this->fee > 0 : false,
             'fee' => $this->fee ? format_price($this->fee, $this->currency->format) : null,
             'billing_first_name' => $this->billing_first_name,
             'billing_last_name' => $this->billing_last_name,
@@ -659,7 +659,7 @@ class Invoice extends Model
         $invoice->updateMetadata($options['metadata']);
 
         // add item
-        foreach ($options['items'] as $item) {
+        foreach($options['items'] as $item) {
             $invoiceItem = $invoice->invoiceItems()->create([
                 'item_id' => $item['id'],
                 'item_type' => $item['type'],
@@ -670,12 +670,6 @@ class Invoice extends Model
         }
 
         return $invoice;
-    }
-
-    public function updatePaymentServiceFee($gateway)
-    {
-        $this->fee = $gateway->getMinimumChargeAmount($this->currency->code);
-        $this->save();
     }
 
     public function hasBillingInformation()
@@ -818,5 +812,13 @@ class Invoice extends Model
 
         // update current number
         \Acelle\Model\Setting::set('invoice.current', ($currentNumber + 1));
+    }
+
+    public function updatePaymentServiceFee($gateway)
+    {
+        if ($this->subTotal() == 0) {
+            $this->fee = $gateway->getMinimumChargeAmount($this->currency->code);
+            $this->save();
+        }
     }
 }
