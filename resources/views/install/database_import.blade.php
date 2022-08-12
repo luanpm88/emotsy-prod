@@ -12,11 +12,9 @@ dns
         The settings was successfully configured! Click <span class="fw-600">{!! trans('messages.setup_database') !!}</span> button to start importing data to database '{{ $database["database_name"] }}'.
     </p>
 
-	@if ($tables_exist)
-		<div class="alert alert-danger">
-			Acelle Mail is going to initialize your database, all existing data will be erased
-		</div>
-	@endif
+    <div class="alert alert-danger">
+        Acelle Mail is going to initialize your database, all existing data will be erased
+    </div>
 
     <div class="text-end">
         <a href="{{ action('InstallController@database') }}" class="btn btn-secondary me-1"><span class="material-symbols-rounded">
