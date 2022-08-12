@@ -264,42 +264,16 @@ class InstallController extends Controller
 
         $this->validate($request, $rules);
 
-        // Drop all old table
-        // 1. Get & Drop all table names, try 4 times
-        $table_names = [];
-        $try = 5;
-        while ($try > 0) {
-            // extend query max setting
-            $mysqli->query('FLUSH TABLES;');
-            $mysqli->query('SET group_concat_max_len=9999999;');
+        // Drop all EXISTING tables
+        $sql = "SHOW TABLE STATUS";
+        $statement = $mysqli->query($sql);
+        while ($result = $statement->fetch_object()) {
+            $tableName = $result->Name;
 
-            $table_names_query = "SELECT GROUP_CONCAT(table_name)
-                                        AS table_names FROM information_schema.tables
-                                        WHERE table_schema = '".$database['database_name']."'";
-            $result = $mysqli->query($table_names_query);
-            $result = $result->fetch_object();
-            $table_names = array_merge($table_names, explode(",", $result->table_names));
-
-            // drop all tables
+            // drop the table
             $mysqli->query("SET FOREIGN_KEY_CHECKS = 0;");
-            foreach ($table_names as $table_name) {
-                $mysqli->query("DROP TABLE $table_name;");
-            }
+            $mysqli->query("DROP TABLE IF EXISTS {$tableName};");
             $mysqli->query("SET FOREIGN_KEY_CHECKS = 1;");
-
-            $mysqli->query('FLUSH TABLES;');
-
-            $try--;
-        }
-
-        // 2. Check if all table are dropped
-        foreach ($table_names as $table_name) {
-            $result = $mysqli->query("SELECT COUNT(*) FROM $table_name LIMIT 1;");
-
-            // Table deleted if result == false
-            if ($result) {
-                $rules["can_not_empty_database"] = "required";
-            }
         }
 
         // 3. Validation
