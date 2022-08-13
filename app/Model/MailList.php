@@ -34,6 +34,7 @@ use Acelle\Events\MailListUpdated;
 use Acelle\Model\Setting;
 use Acelle\Model\SubscriberFields;
 use Acelle\Library\Traits\QueryHelper;
+use Acelle\Library\Traits\HasCache;
 use Acelle\Events\MailListImported;
 use Acelle\Library\Traits\TrackJobs;
 use DB;
@@ -52,6 +53,7 @@ class MailList extends Model
     use QueryHelper;
     use TrackJobs;
     use HasUid;
+    use HasCache;
 
     public const SOURCE_EMBEDDED_FORM = 'embedded-form';
     public const SOURCE_WEB = 'web';
@@ -1419,103 +1421,54 @@ class MailList extends Model
     /**
      * Update Campaign cached data.
      */
-    public function updateCache($key = null)
+    public function getCacheIndex()
     {
-        // cache indexes
-        $index = [
+        return [
             // @note: SubscriberCount must come first as its value shall be used by the others
-            'SubscriberCount' => function (&$list) {
-                return $list->subscribersCount(false);
+            'SubscriberCount' => function () {
+                return $this->subscribersCount(false);
             },
-            'VerifiedSubscriberCount' => function (&$list) {
-                return $list->subscribers()->verified()->count();
+            'VerifiedSubscriberCount' => function () {
+                return $this->subscribers()->verified()->count();
             },
-            'ClickedRate' => function (&$list) {
-                return $list->clickRate();
+            'ClickedRate' => function () {
+                return $this->clickRate();
             },
-            'UniqOpenRate' => function (&$list) {
-                return $list->openUniqRate();
+            'UniqOpenRate' => function () {
+                return $this->openUniqRate();
             },
-            'SubscribeRate' => function (&$list) {
-                return $list->subscribeRate(true);
+            'SubscribeRate' => function () {
+                return $this->subscribeRate(true);
             },
-            'SubscribeCount' => function (&$list) {
-                return $list->subscribeCount();
+            'SubscribeCount' => function () {
+                return $this->subscribeCount();
             },
-            'UnsubscribeRate' => function (&$list) {
-                return $list->unsubscribeRate(true);
+            'UnsubscribeRate' => function () {
+                return $this->unsubscribeRate(true);
             },
-            'UnsubscribeCount' => function (&$list) {
-                return $list->unsubscribeCount();
+            'UnsubscribeCount' => function () {
+                return $this->unsubscribeCount();
             },
-            'UnconfirmedCount' => function (&$list) {
-                return $list->unconfirmedCount();
+            'UnconfirmedCount' => function () {
+                return $this->unconfirmedCount();
             },
-            'BlacklistedCount' => function (&$list) {
-                return $list->blacklistedCount();
+            'BlacklistedCount' => function () {
+                return $this->blacklistedCount();
             },
-            'SpamReportedCount' => function (&$list) {
-                return $list->spamReportedCount();
+            'SpamReportedCount' => function () {
+                return $this->spamReportedCount();
             },
-            'SegmentSelectOptions' => function (&$list) {
-                return $list->getSegmentSelectOptions(true);
+            'SegmentSelectOptions' => function () {
+                return $this->getSegmentSelectOptions(true);
             },
-            'LongName' => function (&$list) {
-                return $list->longName(true);
+            'LongName' => function () {
+                return $this->longName(true);
             },
-            'VerifiedSubscribersPercentage' => function (&$list) {
-                return $list->getVerifiedSubscribersPercentage(true);
+            'VerifiedSubscribersPercentage' => function () {
+                return $this->getVerifiedSubscribersPercentage(true);
             },
 
         ];
-
-        // retrieve cached data
-        $cache = json_decode($this->cache, true);
-        if (is_null($cache)) {
-            $cache = [];
-        }
-
-        if (is_null($key)) {
-            // update all cache
-            foreach ($index as $key => $callback) {
-                $cache[$key] = $callback($this);
-                if ($key == 'SubscriberCount') {
-                    // SubscriberCount cache must always be updated as its value will be used for the others
-                    $this->cache = json_encode($cache);
-                    $this->save();
-                }
-            }
-        } else {
-            // update specific key
-            $callback = $index[$key];
-            $cache[$key] = $callback($this);
-        }
-
-        // write back to the DB
-        $this->cache = json_encode($cache);
-        $this->save();
-    }
-
-    /**
-     * Retrieve Campaign cached data.
-     *
-     * @return mixed
-     */
-    public function readCache($key, $default = null)
-    {
-        $cache = json_decode($this->cache, true);
-        if (is_null($cache)) {
-            return $default;
-        }
-        if (array_key_exists($key, $cache)) {
-            if (is_null($cache[$key])) {
-                return $default;
-            } else {
-                return $cache[$key];
-            }
-        } else {
-            return $default;
-        }
     }
 
     /**
