@@ -374,7 +374,7 @@ trait HasTemplate
         return "{$this->uid}-html";
     }
 
-    public function clearCache()
+    public function clearTemplateCache()
     {
         Cache::forget($this->getCachedHtmlId());
     }

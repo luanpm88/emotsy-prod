@@ -9,6 +9,7 @@ use Acelle\Model\Transaction;
 use Acelle\Library\Traits\HasUid;
 use Dompdf\Dompdf;
 use Acelle\Library\StringHelper;
+
 use function Acelle\Helpers\getAppHost;
 
 class Invoice extends Model
@@ -659,7 +660,7 @@ class Invoice extends Model
         $invoice->updateMetadata($options['metadata']);
 
         // add item
-        foreach($options['items'] as $item) {
+        foreach ($options['items'] as $item) {
             $invoiceItem = $invoice->invoiceItems()->create([
                 'item_id' => $item['id'],
                 'item_type' => $item['type'],
