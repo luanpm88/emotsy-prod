@@ -33,7 +33,7 @@
                 display: none!important;
             }
         }
-        @media (max-width: 767px) {
+        @media (max-width: 768px) {
             [builder-element=CellContainerElement] {
                 display: block!important;
             }
@@ -41,11 +41,12 @@
                 width: 100%!important;
                 max-width: none!important;        
             }
-            [builder-element="CellElement"] {
-                padding: 0px!important;
+            [builder-element="CellElement"], [builder-element="BlockElement"] {
+                padding-left: 0px!important;
+                padding-right: 0px!important;
             }
         }
-        @media (min-width: 768px) {
+        @media (min-width: 600px) {
             [builder-element=PricingTableElement] .col-12 {
                 flex-basis: 0;
                 flex-grow: 1;
