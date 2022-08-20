@@ -27,7 +27,7 @@
                     </p>
                     <div class="text-muted">
                         {{ trans('messages.source.connected_on', [
-                            'date' => Auth::user()->customer->formatDateTime($source->created_at, 'date_full'),
+                            'date' => Auth::user()->customer->formatDateTime($source->created_at, 'datetime_full'),
                         ]) }}
                         |
                         <a href="">{{ trans('messages.source.visit_store') }}</a>

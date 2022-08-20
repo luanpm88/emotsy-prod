@@ -76,7 +76,7 @@
                         <strong>{{ trans('messages.created_at') }}</strong>
                     </div>
                     <div class="size2of3">
-                        <span>{{ Auth::user()->customer->formatDateTime($sender->created_at, 'date_full') }}</span>
+                        <span>{{ Auth::user()->customer->formatDateTime($sender->created_at, 'datetime_full') }}</span>
                     </div>
                 </li>
             </ul>

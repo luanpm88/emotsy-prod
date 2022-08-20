@@ -167,7 +167,7 @@ class Subscription extends Model implements HasQuotaInterface
         }
 
         if ($this->plan->hasTrial()) {
-            $endDate = $this->customer->formatDateTime($this->getTrialPeriodEndsAt(Carbon::now()), "date_full");
+            $endDate = $this->customer->formatDateTime($this->getTrialPeriodEndsAt(Carbon::now()), "datetime_full");
         } else {
             $endDate = $this->customer->formatDateTime($this->getPeriodEndsAt(Carbon::now()), "datetime_full");
         }

@@ -37,7 +37,7 @@
                 </td>
                 <td>
                     <div class="single-stat-box pull-left ml-20">
-                        <span class="no-margin stat-num kq_search">{{ Auth::user()->admin->formatDateTime($account->created_at, 'date_full') }}</span>
+                        <span class="no-margin stat-num kq_search">{{ Auth::user()->admin->formatDateTime($account->created_at, 'datetime_full') }}</span>
                         <br />
                         <span class="text-muted">{{ trans('messages.created_at') }}</span>
                     </div>
