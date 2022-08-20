@@ -22,7 +22,7 @@
                     ]) }}">
                         {{ $list->name }}
                     </a>
-                    <span class="text-muted">{{ trans('messages.created_at') }}: {{ Auth::user()->customer->formatDateTime($list->created_at, 'date_full') }}</span>
+                    <span class="text-muted">{{ trans('messages.created_at') }}: {{ Auth::user()->customer->formatDateTime($list->created_at, 'datetime_full') }}</span>
                     @if (empty($list->getSendingServers()))
                         <div class="text-danger"><span class="material-symbols-rounded">
 					error_outline

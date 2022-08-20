@@ -44,7 +44,7 @@ forward_to_inbox
                         <div class="main">
                             <label>{{ trans('messages.campaign.html_email') }}</label>
                             <p>{{ trans('messages.campaign.html_email.last_edit', [
-                                'date' => Auth::user()->customer->formatDateTime($campaign->updated_at, 'date_full'),
+                                'date' => Auth::user()->customer->formatDateTime($campaign->updated_at, 'datetime_full'),
                             ]) }}</p>
 
                             <p class="mt-20">
