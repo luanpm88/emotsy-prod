@@ -6,7 +6,7 @@
     $var_name = str_replace(']', '', $var_name);
     $classes = (isset($rules) && isset($rules[$var_name])) ? ' '.str_replace('|', ' ', $rules[$var_name]) : '';
     $required = (isset($rules) && isset($rules[$var_name]) && in_array('required', explode('|', $rules[$var_name]))) ? true : '';
-?>
+    ?>
 
 @if ($type == 'checkbox' || $type == 'checkbox3' || $type == 'radio3')
     @include('helpers._' . $type)
