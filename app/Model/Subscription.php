@@ -169,7 +169,7 @@ class Subscription extends Model implements HasQuotaInterface
         if ($this->plan->hasTrial()) {
             $endDate = $this->customer->formatDateTime($this->getTrialPeriodEndsAt(Carbon::now()), "date_full");
         } else {
-            $endDate = $this->customer->formatDateTime($this->getPeriodEndsAt(Carbon::now()), "date_full");
+            $endDate = $this->customer->formatDateTime($this->getPeriodEndsAt(Carbon::now()), "datetime_full");
         }
 
         // create init invoice
@@ -217,7 +217,7 @@ class Subscription extends Model implements HasQuotaInterface
         $invoice->title = trans('messages.invoice.renew_subscription');
         $invoice->description = trans('messages.renew_subscription.desc', [
             'plan' => $this->plan->name,
-            'date' => $this->customer->formatDateTime($this->nextPeriod(), 'date_full'),
+            'date' => $this->customer->formatDateTime($this->nextPeriod(), 'datetime_full'),
         ]);
         $invoice->customer_id = $this->customer->id;
         $invoice->currency_id = $this->plan->currency_id;
@@ -279,7 +279,7 @@ class Subscription extends Model implements HasQuotaInterface
         $invoice->description = trans('messages.change_plan.desc', [
             'plan' => $this->plan->name,
             'newPlan' => $newPlan->name,
-            'date' => $this->customer->formatDateTime(Carbon::parse($metadata['endsAt']), 'date_full'),
+            'date' => $this->customer->formatDateTime(Carbon::parse($metadata['endsAt']), 'datetime_full'),
         ]);
         $invoice->customer_id = $this->customer->id;
         $invoice->currency_id = $this->plan->currency_id;

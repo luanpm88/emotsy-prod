@@ -401,7 +401,7 @@ class Invoice extends Model
             case self::TYPE_RENEW_SUBSCRIPTION:
                 $subscription = Subscription::findByUid($this->getMetadata()['subscription_uid']);
                 $chargeInfo = trans('messages.bill.charge_before', [
-                    'date' => $this->customer->formatDateTime($subscription->current_period_ends_at, 'date_full'),
+                    'date' => $this->customer->formatDateTime($subscription->current_period_ends_at, 'datetime_full'),
                 ]);
                 $plan = $subscription->plan;
                 break;
@@ -715,8 +715,8 @@ class Invoice extends Model
             ['tag' => '{EMAIL}', 'value' => $bill['billing_email']],
             ['tag' => '{PHONE}', 'value' => $bill['billing_phone']],
             ['tag' => '{INVOICE_NUMBER}', 'value' => $this->number],
-            ['tag' => '{CURRENT_DATETIME}', 'value' => $this->customer->formatCurrentDateTime('date_full')],
-            ['tag' => '{INVOICE_DUE_DATE}', 'value' => $this->customer->formatDateTime($bill['due_date'], 'date_full')],
+            ['tag' => '{CURRENT_DATETIME}', 'value' => $this->customer->formatCurrentDateTime('datetime_full')],
+            ['tag' => '{INVOICE_DUE_DATE}', 'value' => $this->customer->formatDateTime($bill['due_date'], 'datetime_full')],
             ['tag' => '{ITEMS}', 'value' => view('invoices._template_items', [
                 'bill' => $bill,
                 'invoice' => $this,
