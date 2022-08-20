@@ -22,7 +22,7 @@
 					</h5>
 					<span class="text-muted">
 						{{ trans('messages.updated_at') }}
-						{{ Auth::user()->admin->formatDateTime($item->updated_at, 'date_full') }}
+						{{ Auth::user()->admin->formatDateTime($item->updated_at, 'datetime_full') }}
 					</span>
 				</td>
 				<td class="stat-fix-size-sm">

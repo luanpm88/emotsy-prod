@@ -26,7 +26,7 @@
                     @include('elements._notification', [
                         'level' => 'warning',
                         'message' => trans('messages.subscription.ended_intro', [
-                            'ended_at' => Auth::user()->customer->formatDateTime($subscription->ends_at, 'date_full'),
+                            'ended_at' => Auth::user()->customer->formatDateTime($subscription->ends_at, 'datetime_full'),
                             'plan' => $subscription->plan->name,
                         ])
                     ])

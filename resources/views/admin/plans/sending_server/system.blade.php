@@ -216,7 +216,7 @@ dns
                                     </td>
                                     <td>
                                         <span>
-                                            {{ Auth::user()->admin->formatDateTime($plan->primarySendingServer()->updated_at, 'date_full') }}
+                                            {{ Auth::user()->admin->formatDateTime($plan->primarySendingServer()->updated_at, 'datetime_full') }}
                                         </span>
                                     </td>
                                     <td>

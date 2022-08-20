@@ -23,15 +23,11 @@
 
                     @if ($server->isExtended())
                         <span class="mc-server-avatar shadow-sm rounded server-avatar" style="background: url({{ $server->getIconUrl() }}) top left/36px 36px no-repeat transparent;">
-                            <span class="material-symbols-rounded">
-
-</span>
+                            <span class="material-symbols-rounded"></span>
                         </span>
                     @else
                         <span class="server-avatar shadow-sm rounded server-avatar-{{ $item->type }} mr-0">
-                            <span class="material-symbols-rounded">
-
-</span>
+                            <span class="material-symbols-rounded"></span>
                         </span>
                     @endif
                 </td>
@@ -45,7 +41,7 @@
                             <a class="kq_search d-block" href="{{ action('Admin\SendingServerController@edit', ["id" => $item->uid, "type" => $item->type]) }}">{{ $item->name }}</a>
                         </h5>
                     @endif
-                    <span class="text-muted">{{ trans('messages.created_at') }}: {{ Auth::user()->admin->formatDateTime($item->created_at, 'date_full') }}</span>
+                    <span class="text-muted">{{ trans('messages.created_at') }}: {{ Auth::user()->admin->formatDateTime($item->created_at, 'datetime_full') }}</span>
                 </td>
                 <td>
                     <div class="single-stat-box pull-left ml-20">

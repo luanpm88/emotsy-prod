@@ -41,7 +41,7 @@
                         @include('elements._notification', [
                             'level' => 'warning',
                             'message' => trans('messages.have_new_renew_invoice.auto', [
-                                'date' => Auth::user()->customer->formatDateTime($subscription->getDueDate(), 'date_full'),
+                                'date' => Auth::user()->customer->formatDateTime($subscription->getDueDate(), 'datetime_full'),
                             ])
                         ])
 
@@ -77,7 +77,7 @@
                                     'plan' => $plan->name,
                                     'money' => Acelle\Library\Tool::format_price($plan->price, $plan->currency->format),
                                     'remain' => $subscription->current_period_ends_at->diffForHumans(),
-                                    'next_on' => Auth::user()->customer->formatDateTime($subscription->current_period_ends_at, 'date_full')
+                                    'next_on' => Auth::user()->customer->formatDateTime($subscription->current_period_ends_at, 'datetime_full')
                                 ]) !!}
                             </p>
                         @else --}}
@@ -86,7 +86,7 @@
                                     'plan' => $plan->name,
                                     'money' => Acelle\Library\Tool::format_price($plan->price, $plan->currency->format),
                                     'remain' => $subscription->current_period_ends_at->diffForHumans(),
-                                    'next_on' => Auth::user()->customer->formatDateTime($subscription->current_period_ends_at, 'date_full')
+                                    'next_on' => Auth::user()->customer->formatDateTime($subscription->current_period_ends_at, 'datetime_full')
                                 ]) !!}
                             </p>
                         {{-- @endif --}}
@@ -96,7 +96,7 @@
                                 'plan' => $plan->name,
                                 'money' => Acelle\Library\Tool::format_price($plan->price, $plan->currency->format),
                                 'remain' => $subscription->current_period_ends_at->diffForHumans(),
-                                'end_at' => Auth::user()->customer->formatDateTime($subscription->current_period_ends_at, 'date_full')
+                                'end_at' => Auth::user()->customer->formatDateTime($subscription->current_period_ends_at, 'datetime_full')
                             ]) !!}
                         </p>
                     @endif                        
