@@ -16,7 +16,6 @@ class ChangeSegmentConditionsMakeValueNullable extends Migration
         Schema::table('segment_conditions', function (Blueprint $table) {
             $table->string('value')->nullable()->change();
         });
-
     }
 
     /**
