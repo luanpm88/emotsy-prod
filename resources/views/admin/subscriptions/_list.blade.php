@@ -38,7 +38,7 @@ remove_circle_outline
                         <span class="kq_search">{{ Auth::user()->admin->formatDateTime($subscription->created_at, 'datetime_full')}}</span>
                     </h5>
                     <span class="text-muted2">{{ trans('messages.subscribed_on') }}</span>
-                </td>		
+                </td>
 				<td width="15%">
 					@if ($subscription->isEnded())
 						<h5 class="no-margin stat-num">
@@ -70,7 +70,7 @@ remove_circle_outline
 				<td width="15%">
 					@if ($subscription->isActive())
 						<h5 class="no-margin stat-num">
-							<span class="kq_search">{{ format_number($subscription->getSendingCreditsRemaining()) }}</span>
+							<span class="kq_search">{{ number_with_delimiter($subscription->getSendingCreditsRemaining()) }}</span>
 						</h5>
 						<span class="text-muted2">{{ trans('messages.subscription.send_credits_remaining') }}</span>
 					@endif
