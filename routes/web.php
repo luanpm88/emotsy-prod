@@ -1052,6 +1052,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::resource('admin/currencies', 'CurrencyController');
 
     // Subscription
+    Route::post('admin/subscriptions/{id}/replenish-sending-credits', 'SubscriptionController@replenishSendingCredits');
     Route::post('admin/subscriptions/{id}/approve', 'SubscriptionController@approve');
     // Route::match(['get','post'], 'admin/subscriptions/create', 'SubscriptionController@create');
     // Route::post('admin/subscriptions/{id}/approve-pending', 'SubscriptionController@approvePending');
