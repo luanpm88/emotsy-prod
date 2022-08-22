@@ -3521,6 +3521,8 @@
   'subscription.renew.warning' => 'The subscription is going to expired in <strong>:remain</strong>, on <strong>:next_on</strong>.
     You should renew the plan for not interrupted when using app',
   'subscription.renew_invoice' => 'You have a pending renew invoice. Check the invoice information.',
+  'subscription.replenish_sending_credits' => 'Replenish sending credits',
+  'subscription.replenish_sending_credits.success' => 'Subscription is successfully updated',
   'subscription.resume' => 'Resume',
   'subscription.resume.confirm' => 'You\'re about to resume the subscription.',
   'subscription.resumed' => 'The subscription was successfully resumed',
@@ -3528,6 +3530,7 @@
   'subscription.secure_checkout' => 'SECURE CHECKOUT',
   'subscription.select_a_plan' => 'Select a Plan',
   'subscription.select_payment' => 'Select payment',
+  'subscription.send_credits_remaining' => 'Send credits remaining',
   'subscription.set_active.success' => 'The subscription was activated successfully.',
   'subscription.start_from' => 'Start from',
   'subscription.status.active' => 'Active',
@@ -4157,30 +4160,4 @@
   'your_current_license' => 'Thank you for purchasing! Below is your license key, also known as Purchase Code. Your license type is',
   'your_subscriptions' => 'Your subscriptions',
   'zip_postal_code' => 'Zip / Postal code',
-  'emails.link_empty' => 'The email dose not have links!',
-  'brand.product' => 'Product',
-  'brand.products' => 'Products',
-  'brand.categories' => 'Categories',
-  'webhook.select_email_link' => 'Select link',
-  'invoice_template' => 'Invoice template',
-  'invoice.current' => 'Current invoice number (it will be increased by 1 when a new invoice added)',
-  'invoice.format' => 'Invoice number format',
-  'company_email' => 'Company email',
-  'company_phone' => 'Company phone',
-  'list.mail_list_count.desc' => 'Total contacts<br>subscribed to
-    <span class="fw-600">:count</span> mail lists',
-  'list.active_contact.desc' => 'Active contacts, ready to receive marketing emails',
-  'forms_not_yet' => 'You do not have any subscription form yet!',
-  'list.form.desc' => 'Forms for collect the contact data you need
-    to grow your audience',
-  'list.blacklist.desc' => 'Contacts are blacklished<br/>
-    click here to view',
-  'quick_theme_mode.click_change' => 'Click to toggle Light/Dark/Auto theme mode',
-  'webhook.execute_open_callback' => 'Execute open callback',
-  'webhook.execute_click_callback' => 'Execute click callback',
-  'image.upload_help' => 'Acceptable file type is JPG/GIF/SVG<br/>
-    The current max upload file size is <strong class="text-bold">:max</strong>',
-  'subscription.send_credits_remaining' => 'Send credits remaining',
-  'subscription.replenish_sending_credits' => 'Replenish sending credits',
-  'subscription.replenish_sending_credits.success' => 'Subscription is successfully updated',
 ) ?>

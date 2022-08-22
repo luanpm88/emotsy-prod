@@ -3521,6 +3521,8 @@
   'subscription.renew.warning' => 'The subscription is going to expired in <strong>:remain</strong>, on <strong>:next_on</strong>.
     You should renew the plan for not interrupted when using app',
   'subscription.renew_invoice' => 'You have a pending renew invoice. Check the invoice information.',
+  'subscription.replenish_sending_credits' => 'Replenish sending credits',
+  'subscription.replenish_sending_credits.success' => 'Subscription is successfully updated',
   'subscription.resume' => 'Resume',
   'subscription.resume.confirm' => 'You\'re about to resume the subscription.',
   'subscription.resumed' => 'The subscription was successfully resumed',
@@ -3528,6 +3530,7 @@
   'subscription.secure_checkout' => 'SECURE CHECKOUT',
   'subscription.select_a_plan' => 'Select a Plan',
   'subscription.select_payment' => 'Select payment',
+  'subscription.send_credits_remaining' => 'Send credits remaining',
   'subscription.set_active.success' => 'The subscription was activated successfully.',
   'subscription.start_from' => 'Start from',
   'subscription.status.active' => 'Active',

@@ -3530,6 +3530,8 @@
   'subscription.renew.warning' => 'La suscripción expirará en <strong>:remain</strong>,en<strong>:next_on</strong>.  	  
       Debe renovar su plan para no ser suspendido cuando use la plataforma',
   'subscription.renew_invoice' => 'You have a pending renew invoice. Check the invoice information.',
+  'subscription.replenish_sending_credits' => 'Replenish sending credits',
+  'subscription.replenish_sending_credits.success' => 'Subscription is successfully updated',
   'subscription.resume' => 'Resume',
   'subscription.resume.confirm' => 'Está a punto de reanudar :number suscripción.',
   'subscription.resumed' => 'La suscripción se reanudó con éxito.',
@@ -3537,6 +3539,7 @@
   'subscription.secure_checkout' => 'ACELLE SECURE CHECKOUT',
   'subscription.select_a_plan' => 'Seleccionar un Plan',
   'subscription.select_payment' => 'Select payment',
+  'subscription.send_credits_remaining' => 'Send credits remaining',
   'subscription.set_active.success' => 'La factura de suscripción se aprobó con éxito.',
   'subscription.start_from' => 'Empezar desde',
   'subscription.status.active' => 'Activo',

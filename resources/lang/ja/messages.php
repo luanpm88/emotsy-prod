@@ -3455,6 +3455,8 @@
   'subscription.renew.warning' => 'The subscription is going to expired in <strong>:remain</strong>, on <strong>:next_on</strong>.
     You should renew the plan for not interrupted when using app',
   'subscription.renew_invoice' => '保留中の更新請求書があります。 請求書情報を確認してください。',
+  'subscription.replenish_sending_credits' => 'Replenish sending credits',
+  'subscription.replenish_sending_credits.success' => 'Subscription is successfully updated',
   'subscription.resume' => '再開する',
   'subscription.resume.confirm' => ' :number サブスクリプションを再開しようとしています。',
   'subscription.resumed' => 'サブスクリプションは正常に再開されました',
@@ -3462,6 +3464,7 @@
   'subscription.secure_checkout' => 'SECURE CHECKOUT',
   'subscription.select_a_plan' => 'プランを選択',
   'subscription.select_payment' => '支払いを選択',
+  'subscription.send_credits_remaining' => 'Send credits remaining',
   'subscription.set_active.success' => 'サブスクリプションは正常に有効化されました。',
   'subscription.start_from' => 'から始まる',
   'subscription.status.active' => '有効',

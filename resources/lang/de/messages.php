@@ -3489,6 +3489,8 @@
   'subscription.renew.warning' => 'Das Abonnement ist abgelaufen in <strong>:remain</strong> auf <strong>:next_on </strong>.
      Sie sollten den Plan nicht unterbrechen und frühzeitig erneuern, wenn Sie App verwenden',
   'subscription.renew_invoice' => 'Sie haben eine ausstehende Rechnung. Überprüfen Sie die Rechnungsinformationen.',
+  'subscription.replenish_sending_credits' => 'Replenish sending credits',
+  'subscription.replenish_sending_credits.success' => 'Subscription is successfully updated',
   'subscription.resume' => 'Fortsetzen',
   'subscription.resume.confirm' => 'Sie sind im Begriff, das Abonnement für :number fortzusetzen.',
   'subscription.resumed' => 'The subscription was successfully resumed',
@@ -3496,6 +3498,7 @@
   'subscription.secure_checkout' => 'ACELLE SICHERE KASSE',
   'subscription.select_a_plan' => 'Wählen Sie einen Plan',
   'subscription.select_payment' => 'Zahlung auswählen',
+  'subscription.send_credits_remaining' => 'Send credits remaining',
   'subscription.set_active.success' => 'Die Abonnementrechnung wurde erfolgreich genehmigt.',
   'subscription.start_from' => 'Beginne von',
   'subscription.status.active' => 'Aktiv',
