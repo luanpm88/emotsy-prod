@@ -10,15 +10,57 @@
 
         getControls() {
             var element = this;
+            element.getWidth = function() {
+                var width = element.obj.css('background-size').split(' ')[0].replace('%','');
+                if (width.includes('px')) {
+                    width = (width.replace('px','')/element.obj.width())*100;
+                } else if (width == 'auto') {
+                    width = '100';
+                }
 
+                return width;
+            };
+            element.getHeight = function() {
+                var height = element.obj.css('background-size').split(' ').length > 1 ? element.obj.css('background-size').split(' ')[1] : 'auto';
+                var autoHeight = false;
+                if (height.includes('%')) {
+                    height = height.replace('%','')*(height.replace('%','')/100);
+                } else if (height == 'auto') {
+                    autoHeight = true;
+                }
+
+                return height;
+            };
+            element.getAutoHeight = function() {
+                var height = element.obj.css('background-size').split(' ').length > 1 ? element.obj.css('background-size').split(' ')[1] : 'auto';
+                var autoHeight = false;
+                if (height == 'auto') {
+                    autoHeight = true;
+                }
+
+                return autoHeight;
+            };
+            
             return [
                 new ImageControl(getI18n('align'), {
-                    width: element.obj.css('background-size').split(' ')[1],
+                    width: element.getWidth(),
+                    height: element.getHeight(),
+                    autoHeight: element.getAutoHeight(),
                     src: element.obj.css('background-image').match(/url\((\"|\')?([^(\"|\')]+)/)[2],
                     alt: '',
                     align: element.obj.css('background-position').split(' ')[0],
-                    auto_width: element.obj.css('background-size').split(' ')[1] == '100%'
+                    widthRange: 500
                 }, {
+                    setWidth: function(width) {
+                        element.obj.css('background-size', width + ' ' + element.getHeight());
+                        currentEditor.select(element);
+                        currentEditor.handleSelect();
+                    },
+                    setHeight: function(height) {
+                        element.obj.css('background-size', element.getWidth() + '% ' + height);
+                        currentEditor.select(element);
+                        currentEditor.handleSelect();
+                    },
                     setRange: function(range) {
                         element.obj.css('background-size', 'auto ' + range);
                         currentEditor.select(element);
@@ -37,12 +79,6 @@
                     },
                     setAlt: function(alt) {
                         
-                    },
-                    setAutoWidth: function(auto_width) {
-                        if (auto_width) {
-                            element.obj.css('background-size', 'auto 100%');
-                            currentEditor.select(element);
-                        }
                     }
                 }),
                 new BackgroundImageControl(getI18n('background_image'), {
