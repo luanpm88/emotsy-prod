@@ -275,7 +275,7 @@ class SubscriptionController extends Controller
 
         echo trans('messages.subscription.deleted');
     }
-    
+
     public function replenishSendingCredits(Request $request, $id)
     {
         $subscription = Subscription::findByUid($request->id);

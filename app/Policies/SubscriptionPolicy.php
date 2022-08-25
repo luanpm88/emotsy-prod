@@ -154,7 +154,7 @@ class SubscriptionPolicy
 
         return $can;
     }
-    
+
     public function replenishSendingCredits(User $user, Subscription $subscription, $role)
     {
         $can = $subscription->isActive();
