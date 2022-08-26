@@ -329,3 +329,19 @@ function reset_app_url($force = false)
         write_env('APP_URL', $url);
     }
 }
+
+function file_get_contents_ssl_safe($url)
+{
+    $client = curl_init();
+    curl_setopt_array($client, array(
+        CURLOPT_URL => $url,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_HEADER => false,
+        CURLOPT_SSL_VERIFYPEER => false
+    ));
+
+    $result = curl_exec($client);
+    curl_close($client);
+
+    return $result;
+}
