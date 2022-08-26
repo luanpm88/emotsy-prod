@@ -25,6 +25,7 @@ namespace Acelle\Model;
 use Acelle\Library\Log as MailLog;
 use Acelle\Library\StringHelper;
 use CurlFile;
+
 use function Acelle\Helpers\file_get_contents_ssl_safe;
 
 class SendingServerElasticEmail extends SendingServer

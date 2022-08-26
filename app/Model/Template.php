@@ -889,32 +889,9 @@ class Template extends Model
 
     public function uploadAssetFromUrl($url)
     {
-        // Simply return the image URL
         return $url;
 
-        /* Another way is to fetch and save the image to the local directory
-        // upload file by upload image
-        $filename = uniqid();
-
-        // Storage path of the uploaded asset:
-        // For example: /storage/templates/{type}/{ID}/604ce5e36d0fa
-        $filepath = $this->getStoragePath($filename);
-
-        // Download the file's content
-        $content = file_get_contents($url);
-
-        // Store it:
-        $arrContextOptions=array(
-            "ssl"=>array(
-                "verify_peer"=>false,
-                "verify_peer_name"=>false,
-            ),
-        );
-        file_put_contents($filepath, $content, false, stream_context_create($arrContextOptions));
-        $assetUrl = \Acelle\Helpers\generatePublicPath($filepath);
-
-        return $assetUrl;
-        */
+        /* Another way is to fetch and save the image to the local directory of the template */
     }
 
     /**
