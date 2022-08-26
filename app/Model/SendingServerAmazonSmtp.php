@@ -41,6 +41,7 @@ class SendingServerAmazonSmtp extends SendingServerAmazon
         $transport = AmazonSmtpTransport::newInstance($this->host, (int) $this->smtp_port, $this->smtp_protocol);
         $transport->setUsername($this->smtp_username);
         $transport->setPassword($this->smtp_password);
+        $transport->setStreamOptions(array('ssl' => array('allow_self_signed' => true, 'verify_peer' => false, 'verify_peer_name' => false)));
 
         // Create the Mailer using your created Transport
         $mailer = new \Swift_Mailer($transport);
