@@ -1881,6 +1881,7 @@ class Automation2Controller extends Controller
                 return $this->notAuthorized();
             }
         }
+
         $list = MailList::findByUid($request->list_uid);
 
         return view('automation2.segmentSelect', [
