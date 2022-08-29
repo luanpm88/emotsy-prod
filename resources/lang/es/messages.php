@@ -248,7 +248,6 @@
   'automation.box.contacts_error' => 'Error!!!',
   'automation.box.contacts_in_action' => 'Contacts in action',
   'automation.box.contacts_skip_pending' => 'Skipped / Pending',
-  'automation.brief-intro.' => 'El Trigger no está configurado',
   'automation.brief-intro.api-3-0' => 'Trigger via API 3.0',
   'automation.brief-intro.mongthly-recurring' => 'Schedule your campaign to automatically send monthly',
   'automation.brief-intro.say-goodbye-subscriber' => 'Se activa cuando el suscriptor opta por salir de la lista',
@@ -501,8 +500,6 @@
   'automation.trigger.api-3-0.intro' => 'La automatización se activa manualmente o desde otra aplicación usando la  API 3.0. Haga una solicitud HTTP POST al punto final de la API a continuación',
   'automation.trigger.change' => 'Change Trigger',
   'automation.trigger.change.confirm' => 'Changing trigger will erase your automation history, are you sure?',
-  'automation.trigger.empty_msg' => 'Su activador de automatización aún no está configurado. Haga clic en el botón
-      a continuación para configurar su disparador',
   'automation.trigger.intro' => 'Un disparador es la acción que inicia una automatización. Por ejemplo,
       La plataforma puede activar un correo electrónico automatizado cuando alguien se suscribe a su lista o compra un determinado producto.
       La plataforma ofrece una amplia selección de tipos de automatización preestablecidos con disparadores integrados, que van desde abandonados

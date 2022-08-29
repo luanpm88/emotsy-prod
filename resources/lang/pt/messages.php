@@ -248,7 +248,6 @@
   'automation.box.contacts_error' => 'Error!!!',
   'automation.box.contacts_in_action' => 'Contacts in action',
   'automation.box.contacts_skip_pending' => 'Skipped / Pending',
-  'automation.brief-intro.' => 'Trigger is not set',
   'automation.brief-intro.api-3-0' => 'Trigger via API 3.0 request',
   'automation.brief-intro.mongthly-recurring' => 'Schedule your campaign to automatically send monthly',
   'automation.brief-intro.say-goodbye-subscriber' => 'Trigger when subscriber opts out of list',
@@ -501,8 +500,6 @@
   'automation.trigger.api-3-0.intro' => 'Automation is triggered manually or from another application using Acelle Mail API 3.0. Make an HTTP POST request to the API endpoint below',
   'automation.trigger.change' => 'Change Trigger',
   'automation.trigger.change.confirm' => 'Changing trigger will erase your automation history, are you sure?',
-  'automation.trigger.empty_msg' => 'Your automation trigger is not set up yet. Click the button
-        below to configure your trigger',
   'automation.trigger.intro' => 'A trigger is the action that starts an automation. For example,
     Acelle Mail can trigger an automated email when someone subscribes to your audience or purchases a certain product.
     Acelle Mail offers a wide selection of preset automation types with built-in triggers, ranging from abandoned

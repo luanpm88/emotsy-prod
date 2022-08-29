@@ -243,7 +243,6 @@
   'automation.box.contacts_error' => 'エラー',
   'automation.box.contacts_in_action' => '動作中の連絡先',
   'automation.box.contacts_skip_pending' => 'スキップ/保留中',
-  'automation.brief-intro.' => 'トリガーが設定されていません',
   'automation.brief-intro.api-3-0' => 'API3.0リクエストを介してトリガー',
   'automation.brief-intro.mongthly-recurring' => 'キャンペーンをスケジュールして、毎月自動的に送信する',
   'automation.brief-intro.say-goodbye-subscriber' => '契約者がリストからオプトアウトしたときにトリガーします',
@@ -490,8 +489,6 @@
   'automation.trigger.api-3-0.intro' => '自動化は、手動で、またはAPI1.0を使用して別のアプリケーションからトリガーされます。 以下のAPIエンドポイントにHTTPPOSTリクエストを送信します',
   'automation.trigger.change' => 'トリガーの変更',
   'automation.trigger.change.confirm' => 'トリガーを変更すると、自動化の履歴が消去されます。よろしいですか？',
-  'automation.trigger.empty_msg' => '自動化トリガーはまだ設定されていません。 ボタンをクリックします
-         以下でトリガーを構成します',
   'automation.trigger.intro' => 'トリガーは、自動化を開始するアクションです。 例えば、システムは、誰かがあなたのオーディエンスを購読したり、特定の製品を購入したりしたときに、自動化された電子メールをトリガーできます。放棄されたものから、トリガーが組み込まれたプリセットオートメーションタイプの幅広い選択肢を提供します。簡単なウェルカムメッセージへのカートメール。',
   'automation.trigger.is_not_setup' => 'トリガーはまだ設定されていません。 このアクションをクリックして、自動化トリガーを設定します',
   'automation.trigger.is_not_setup.title' => '！ トリガーはまだ設定されていません',
