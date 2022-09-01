@@ -65,7 +65,7 @@ add
                                 </a>
                             </div>
                             <div class="me-auto">
-                                <h4><a href="{{ action('Admin\SendingServerController@create', ["type" => $key]) }}">{{ trans('messages.' . $key) }}</a></h4>
+                                <h4><a href="{{ action('Admin\SendingServerController@create', ["type" => $key]) }}">{{ trans('messages.sending_server.type.' . $key) }}</a></h4>
                                 <p>
                                     {{ trans('messages.sending_server_intro_' . $key) }}
                                 </p>
