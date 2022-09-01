@@ -56,7 +56,7 @@ add
                         </a>
                         <h4><a href="{{ action('SendingServerController@create', ["type" => $key]) }}">{{ trans('messages.' . $key) }}</a></h4>
                         <p>
-                            {{ trans('messages.sending_server_intro_' . $key) }}
+                            {{ trans('messages.sending_server.intro.' . $key) }}
                         </p>
                     </li>
                 @endforeach
