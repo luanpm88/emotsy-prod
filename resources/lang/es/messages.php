@@ -49,11 +49,9 @@
   'access_when_offline' => 'Acceso cuando el sitio esta offline',
   'account' => 'Cuenta',
   'account.color_scheme' => 'Choose your account color scheme',
-  'account.color_scheme.into' => 'Customize your account panel with color scheme.
-    Select one of color below you want to personalize your account',
+  'account.color_scheme.into' => 'Customize your account panel with color scheme. Select one of color below you want to personalize your account',
   'account.menu_layout' => 'Menu layout',
-  'account.menu_layout.into' => 'Select menu one of menu layouts above you like.
-    Menu layout help you easier to navigate through app pages depending on your prefer style',
+  'account.menu_layout.into' => 'Select menu one of menu layouts above you like. Menu layout help you easier to navigate through app pages depending on your prefer style',
   'account.personality' => 'Personality',
   'account.welcome_user' => 'Welcome back, :name!',
   'action' => 'Acción',
@@ -61,8 +59,7 @@
   'actions' => 'Acciones',
   'activated' => 'Activated',
   'activation_email_resent_content' => '<p>Haga clic en el enlace en el correo electrónico que le acabamos de enviar..</p>',
-  'activation_email_sent_content' => '<p>Necesitamos confirmar su dirección de correo electrónico para completar el proceso de registro..</p>
-     <p>Para completar el proceso de registro, haga clic en el enlace del correo electrónico que le acabamos de enviar..</p>',
+  'activation_email_sent_content' => '<p>Necesitamos confirmar su dirección de correo electrónico para completar el proceso de registro..</p> <p>Para completar el proceso de registro, haga clic en el enlace del correo electrónico que le acabamos de enviar..</p>',
   'activation_email_sent_title' => 'Confirmacion de registro',
   'active' => 'Activo',
   'activities' => 'Actividades',
@@ -81,8 +78,7 @@
   'admin' => 'Admin',
   'admin.created' => 'Admin creado',
   'admin.dashboard.notification_delete_confirm' => 'Está seguro de que ha resuelto el problema y desea suprimir esta notificación?',
-  'admin.dashboard.recent_activity.wording' => 'Por defecto, todas las actividades de los clientes se registran para investigar..
-      Visit <a href=":here"> Escritorio Cliente</a> para ver la lista completa',
+  'admin.dashboard.recent_activity.wording' => 'Por defecto, todas las actividades de los clientes se registran para investigar.. Visit <a href=":here"> Escritorio Cliente</a> para ver la lista completa',
   'admin.dashboard.recent_customers.wording' => 'Your plan performance during the last period. See how people are subscribing to your which service plans. Visit <a href=":here">Customers Dashboard</a> to see the full list',
   'admin.dashboard.recent_subscriptions.wording' => 'Usuarios activos que se suscribieron recientemente o fueron agregados por el administrador del sistema.<a href=":here"> Administrador de usuarios</a> para visualizar la lista completa',
   'admin.loginas_area' => 'Back to <strong>:name</strong>',
@@ -141,9 +137,7 @@
   'api_endpoint.copied' => 'API endpoint was copied to clipboard',
   'api_token' => 'Token de la API',
   'api_token.copied' => 'API token was copied to clipboard',
-  'api_token_guide' => 'Necesitas añadir un parametro <span class="text-semibold">api_token=YOUR_API_TOKEN</span>a cada petición al sistema API
-          <br />Ejemplo: :link
-',
+  'api_token_guide' => 'Necesitas añadir un parametro <span class="text-semibold">api_token=YOUR_API_TOKEN</span>a cada petición al sistema API <br />Ejemplo: :link',
   'app.notice.title' => 'Noticia',
   'are_you_sure' => '¿Estás seguro?',
   'area' => 'Área',
@@ -154,9 +148,7 @@
   'audience.audience_growth.title' => 'Your audience growth',
   'audience.import_contacts' => 'Import contacts',
   'audience.import_contacts.title' => 'Import contacts',
-  'audience.intro' => 'Your audience is where you\'ll store and manage your contacts.<br>
-    Once you add your contacts. You\'ll be able send your first campaign.
-    We\'ll work you through the process.',
+  'audience.intro' => 'Your audience is where you\'ll store and manage your contacts.<br> Once you add your contacts. You\'ll be able send your first campaign. We\'ll work you through the process.',
   'audience.manage' => 'Manage your audience',
   'audience.overview' => 'Overview',
   'audience.quick_action' => 'Quick action',
@@ -173,20 +165,17 @@
   'automation.action.condition.cart_buy_item.title' => 'Condition: Buy “:item” item',
   'automation.action.condition.click_link.title' => 'Condicion: Pulsar sobre unlink',
   'automation.action.condition.desc' => 'Diseñe o envíe correos electrónicos automáticos o regulares a sus contactos..',
-  'automation.action.condition.intro' => 'Elija una de las siguientes condiciones para su flujo de trabajo. La plataforma evaluará la condición
-      y ramifica tu flujo de trabajo en consecuencia.',
+  'automation.action.condition.intro' => 'Elija una de las siguientes condiciones para su flujo de trabajo. La plataforma evaluará la condición y ramifica tu flujo de trabajo en consecuencia.',
   'automation.action.condition.read_email.title' => 'Condicion: Abrir correo electrónico anterior',
   'automation.action.condition.select_criterion' => 'Selecione criterio',
   'automation.action.condition.which_email' => 'Cual email',
   'automation.action.condition.which_link' => 'En qué clics de enlace suscriptor',
   'automation.action.contacts_count' => ':count contacto|:count contactos',
-  'automation.action.contacts_intro' => 'Hay <span class="font-weight-semibold">:count</span> contactos excluidos de la acción
-     `<span class="font-weight-semibold">:name</span>`',
+  'automation.action.contacts_intro' => 'Hay <span class="font-weight-semibold">:count</span> contactos excluidos de la acción `<span class="font-weight-semibold">:name</span>`',
   'automation.action.delete.confirm' => 'Haga clic en el botón de abajo para eliminar esta acción. Tenga en cuenta que al eliminar un elemento también se eliminarán todos sus elementos secundarios y los datos asociados. Esta acción no se puede deshacer.',
   'automation.action.delete.wording' => 'Eliminar esta acción también eliminará todos sus elementos secundarios. Esta acción no se puede deshacer.',
   'automation.action.deteled' => 'La acción ha sido removida',
-  'automation.action.intro' => 'Agilice su comunicación y personalice la experiencia de cada cliente. Use automatización
-      para crear un correo electrónico o una serie de correos electrónicos que se envían cuando se activan por fecha específica, evento o actividades de contacto.',
+  'automation.action.intro' => 'Agilice su comunicación y personalice la experiencia de cada cliente. Use automatización para crear un correo electrónico o una serie de correos electrónicos que se envían cuando se activan por fecha específica, evento o actividades de contacto.',
   'automation.action.last_updated' => 'Ultima actualizacion',
   'automation.action.operation' => 'Operation',
   'automation.action.operation.choose_contact_tags' => 'Elija etiquetas, presione ENTER para confirmar cada',
@@ -209,15 +198,13 @@
   'automation.action.save_change' => 'Guardar Cambios',
   'automation.action.send-an-email' => 'Enviar un correo electrónico',
   'automation.action.send-an-email.desc' => 'Diseñe o envíe correos electrónicos automáticos o regulares a sus contactos.',
-  'automation.action.send-an-email.intro' => 'Elija una de las siguientes condiciones para su flujo de trabajo. La plataforma evaluará la condición
-      y ramifica tu flujo de trabajo en consecuencia.',
+  'automation.action.send-an-email.intro' => 'Elija una de las siguientes condiciones para su flujo de trabajo. La plataforma evaluará la condición y ramifica tu flujo de trabajo en consecuencia.',
   'automation.action.set_up_your_condition' => 'Configura tu condición',
   'automation.action.title' => 'Acción: :title',
   'automation.action.updated' => 'La acción se actualizó correctamente.',
   'automation.action.wait' => 'Aguarde',
   'automation.action.wait.desc' => 'Diseñe o envíe correos electrónicos automáticos o regulares a sus contactos',
-  'automation.action.wait.intro' => 'Configure su flujo de trabajo de automatización, espere un momento antes de continuar con la próxima acción.
-      Cuánto tiempo se debe esperar. Elige a continuación.',
+  'automation.action.wait.intro' => 'Configure su flujo de trabajo de automatización, espere un momento antes de continuar con la próxima acción. Cuánto tiempo se debe esperar. Elige a continuación.',
   'automation.action.wait.title' => 'Esperar por :number :time',
   'automation.add_an_action' => 'Agregar una acción',
   'automation.all_activities' => 'Todas las actividades',
@@ -225,8 +212,7 @@
   'automation.at' => 'En',
   'automation.audience' => 'Audience',
   'automation.automation_email' => 'Automatización Email',
-  'automation.automation_email.intro' => 'Descubra quién abre sus campañas rastreando la cantidad de veces que un
-      se descarga la baliza web invisible incrustada en la campaña.',
+  'automation.automation_email.intro' => 'Descubra quién abre sus campañas rastreando la cantidad de veces que un se descarga la baliza web invisible incrustada en la campaña.',
   'automation.automation_name' => 'Nombre automatización',
   'automation.automation_trigger' => 'Automatización Trigger',
   'automation.back_to_automation' => 'Back to automation',
@@ -248,19 +234,16 @@
   'automation.brief-intro.welcome-new-subscriber' => 'Se activa cuando el nuevo suscriptor opta por',
   'automation.brief-intro.woo-abandoned-cart' => 'WooCommerce abandoned cart reminder',
   'automation.buy_now' => 'Buy now',
-  'automation.change_list.confirm' => 'Cambiar la lista de objetivos borrará todo el seguimiento de la lista actual / 
-      estadísticas En otras palabras, sus datos de automatización se restablecerán para la nueva lista.',
+  'automation.change_list.confirm' => 'Cambiar la lista de objetivos borrará todo el seguimiento de la lista actual /  estadísticas En otras palabras, sus datos de automatización se restablecerán para la nueva lista.',
   'automation.change_mail_list' => 'Cambiar lista de email',
   'automation.choose_a_product' => 'Choose a Product',
   'automation.choose_an_operation' => 'Choose an operation',
-  'automation.choose_an_operation.desc' => 'Perform an operation ont the contact
-      who reachs this point of the automation',
+  'automation.choose_an_operation.desc' => 'Perform an operation ont the contact who reachs this point of the automation',
   'automation.choose_birthday_field' => 'Si su lista de correo tiene el campo `Fecha de nacimiento`, elíjalo de la lista a continuación',
   'automation.choose_list' => 'Elige una lista de correo',
   'automation.choose_list_field' => 'Elige un campo de lista',
   'automation.choose_your_template_layout' => 'Elegir diseño para plantilla de campaña',
-  'automation.choose_your_template_layout.intro' => 'Puede crear rápidamente una plantilla para el correo electrónico eligiendo uno existe
-      diseño / tema, o subir desde el archivo fuente de la plantilla.',
+  'automation.choose_your_template_layout.intro' => 'Puede crear rápidamente una plantilla para el correo electrónico eligiendo uno existe diseño / tema, o subir desde el archivo fuente de la plantilla.',
   'automation.condition.cart_buy_anything' => 'Buy anything in cart',
   'automation.condition.cart_buy_item' => 'Buy a particular item',
   'automation.condition.choose_email' => 'Cambiar email',
@@ -279,21 +262,18 @@
   'automation.contact.tag.removed' => '<span class="font-weight-semibold">:tag</span> etiqueta fueron eliminados',
   'automation.contact.tagged' => ':contact\'s las etiquetas fueron actualizadas',
   'automation.contacts' => 'Contacto|Contactos',
-  'automation.contacts.copied_to_new_list' => '<span class="font-weight-semibold">:count</span> los contactos fueron copiados a  	  
-     `<span class="font-weight-semibold">:list</span>` Satisfactoriamente',
+  'automation.contacts.copied_to_new_list' => '<span class="font-weight-semibold">:count</span> los contactos fueron copiados a  	   `<span class="font-weight-semibold">:list</span>` Satisfactoriamente',
   'automation.contacts.copy_to_new_list' => 'Copiar contactos',
   'automation.contacts.copy_to_new_list.copy' => 'Crear y Copiar',
   'automation.contacts.copy_to_new_list.enter_list_name' => 'Nombre nueva lista',
-  'automation.contacts.copy_to_new_list.intro' => 'Estás a punto de copiar <span class="font-weight-semibold">:count</span>
-      contactos a la nueva lista de correo. Ingrese su nuevo nombre de lista de correo a continuación..',
+  'automation.contacts.copy_to_new_list.intro' => 'Estás a punto de copiar <span class="font-weight-semibold">:count</span> contactos a la nueva lista de correo. Ingrese su nuevo nombre de lista de correo a continuación..',
   'automation.contacts.copying_to_new_list' => 'Copiando contactos ... Por favor espere.',
   'automation.contacts.exported' => 'Contactos exportados satisfactoriamente.',
   'automation.contacts.search.placeholder' => 'Enter to search contacts...',
   'automation.contacts.tagged' => '<span class="font-weight-semibold">:count</span> los contactos fueron etiquetados con éxito',
   'automation.contacts.tagging_contacts' => 'Etiquetando contactos ... Por favor espere.',
   'automation.contacts.trigger.waiting' => 'Waiting...',
-  'automation.contacts_intro' => 'Hay <span class="font-weight-semibold">:count</span>
-      contactos involucrados en esta automatización',
+  'automation.contacts_intro' => 'Hay <span class="font-weight-semibold">:count</span> contactos involucrados en esta automatización',
   'automation.copy_to_new_list' => 'Copiar a una nueva lista',
   'automation.create' => 'Agregar nuevo',
   'automation.create_automation' => 'Crear Automatización',
@@ -322,8 +302,7 @@
   'automation.email.attachment.download' => 'Descargar',
   'automation.email.attachment.remove' => 'Eliminar',
   'automation.email.attachment.removed' => 'El archivo adjunto se eliminó correctamente',
-  'automation.email.change_template.confirm' => 'Cambiar la plantilla eliminará el contenido actual del correo electrónico con personalizaciones.
-      Esto se puede deshacer.',
+  'automation.email.change_template.confirm' => 'Cambiar la plantilla eliminará el contenido actual del correo electrónico con personalizaciones. Esto se puede deshacer.',
   'automation.email.clicks' => 'Clicks',
   'automation.email.confirm' => 'Confirmar',
   'automation.email.content' => 'Contenido del Email',
@@ -348,8 +327,7 @@
   'automation.email.set_up.success' => 'El correo electrónico se configuró correctamente',
   'automation.email.settings' => 'Configuración',
   'automation.email.setup' => 'Configuración',
-  'automation.email.setup.intro' => 'Please fill-up email information below. They will be used to apply
-    to all emails that send to customers.',
+  'automation.email.setup.intro' => 'Please fill-up email information below. They will be used to apply to all emails that send to customers.',
   'automation.email.subject' => 'Asunto',
   'automation.email.subject.placeholder' => 'Ej. Bienvenido a la lista de correo',
   'automation.email.summary.content' => 'Contenido',
@@ -378,17 +356,14 @@
   'automation.insight.intro' => 'A continuación se detalla el rendimiento de su campaña y cómo los usuarios responden a su campaña.',
   'automation.insight.percent_tip' => '% de contactos que han pasado por este paso',
   'automation.intro.api-3-0' => 'Campaña automatizada de marketing por correo electrónico que se desencadena por una solicitud de API de otra, aplicada para la lista de correo ": list"',
-  'automation.intro.monthly-recurring' => 'Schedule your campaign to automatically send on a
-      monthly basis, on a particular day of the month',
+  'automation.intro.monthly-recurring' => 'Schedule your campaign to automatically send on a monthly basis, on a particular day of the month',
   'automation.intro.say-goodbye-subscriber' => 'Campaña automatizada de marketing por correo electrónico que se activa cada vez que un suscriptor deja de participar en su lista y solicita ser removido de la lista ":list"',
   'automation.intro.say-happy-birthday' => 'Campaña automatizada de marketing por correo electrónico que se activa en la fecha de nacimiento de los suscriptores, solicitada ":list" lista',
   'automation.intro.specific-date' => 'Campaña automatizada de marketing por correo electrónico que se activa en una fecha / hora específica para todos los suscriptores, de la lista ":list" ',
   'automation.intro.subscriber-added-date' => 'Campaña automatizada de marketing por correo electrónico que se activa ANUALMENTE en la fecha de suscripción agregada, solicitada para ":list" lista',
-  'automation.intro.weekly-recurring' => 'Schedule your campaign to automatically
-      send on a weekly basis, on a particular week day you choose',
+  'automation.intro.weekly-recurring' => 'Schedule your campaign to automatically send on a weekly basis, on a particular week day you choose',
   'automation.intro.welcome-new-subscriber' => 'Campaña automatizada de marketing por correo electrónico que se activa para nuevos suscriptores, solicitada para ":list" lista',
-  'automation.intro.woo-abandoned-cart' => 'Send your buyer a reminder if they left
-      something in cart',
+  'automation.intro.woo-abandoned-cart' => 'Send your buyer a reminder if they left something in cart',
   'automation.last_activity' => 'Last activity',
   'automation.name_your_automation' => 'Nombra tu nueva automatización. Este nombre se utiliza para identificar la automatización más tarde..',
   'automation.no_email' => 'Email',
@@ -397,8 +372,7 @@
   'automation.operation.copy' => 'Copy contact',
   'automation.operation.copy.desc' => 'Copy contact to list <strong>:list_name</strong>',
   'automation.operation.copy_contact' => 'Copy contact',
-  'automation.operation.copy_contact.desc' => 'Copy or move contact to another list. You can also delete contact
-      from your list',
+  'automation.operation.copy_contact.desc' => 'Copy or move contact to another list. You can also delete contact from your list',
   'automation.operation.delete' => 'Delete contact',
   'automation.operation.delete.desc' => 'Delete contact',
   'automation.operation.move' => 'Move contact',
@@ -407,13 +381,11 @@
   'automation.operation.tag' => 'Tag contact',
   'automation.operation.tag.desc' => 'Tag your contacts who reach this point of the automation workflow using the tags below. Tags are helpful when you want to filter your contacts later on. You can also create dynamic segments for your list using tags. Selected tags:<br><br>:tags<br><br>',
   'automation.operation.tag_contact' => 'Tag contact',
-  'automation.operation.tag_contact.desc' => 'Assign one or more tags to your contact. Later you can filter
-      your contacts by tag',
+  'automation.operation.tag_contact.desc' => 'Assign one or more tags to your contact. Later you can filter your contacts by tag',
   'automation.operation.update' => 'Update contact',
   'automation.operation.update.desc' => 'Update contact',
   'automation.operation.update_contact' => 'Update contact\'s attributes',
-  'automation.operation.update_contact.desc' => 'Update contact\'s attributes like: first name, last name,... or any
-      custom field your contact has',
+  'automation.operation.update_contact.desc' => 'Update contact\'s attributes like: first name, last name,... or any custom field your contact has',
   'automation.operation.updated' => 'Operation was updated',
   'automation.overview.contacts' => 'Contactos',
   'automation.profile.action' => 'Acción',
@@ -424,11 +396,9 @@
   'automation.profile.remove_contact.confirm' => 'Seguro de eliminar el contacto <span class="font-weight-semibold">:name</span> ',
   'automation.profile.tag' => 'Guardar',
   'automation.profile.tag_contact' => 'Etiqueta contacto',
-  'automation.profile.tag_contact.intro' => 'Estás a punto de etiquetar <span class="font-weight-semibold">:name</span>.
-     Escriba sus etiquetas en el cuadro a continuación, presione ENTRAR para confirmar cada',
+  'automation.profile.tag_contact.intro' => 'Estás a punto de etiquetar <span class="font-weight-semibold">:name</span>. Escriba sus etiquetas en el cuadro a continuación, presione ENTRAR para confirmar cada',
   'automation.profile.tag_contacts' => 'Etiquetar contactos',
-  'automation.profile.tag_contacts.intro' => 'Estás a punto de etiquetar <span class="font-weight-semibold">:count</span> contactos
-      Escriba sus etiquetas en el cuadro a continuación, presione ENTRAR para confirmar cada',
+  'automation.profile.tag_contacts.intro' => 'Estás a punto de etiquetar <span class="font-weight-semibold">:count</span> contactos Escriba sus etiquetas en el cuadro a continuación, presione ENTRAR para confirmar cada',
   'automation.profile_timeline_head' => 'Cronograma',
   'automation.redirect_to_index' => 'Redireccionando a la lista de automatización...',
   'automation.remove_this_action' => 'Remove this Action',
@@ -437,13 +407,10 @@
   'automation.send_a_email' => 'Enviar email `:title`',
   'automation.send_test_email' => 'Send a test email',
   'automation.settings' => 'Configuración',
-  'automation.settings.intro' => 'A continuación se muestra información general de la automatización. Puede actualizar la configuración y hacer clic
-     boton `<span class="font-weight-semibold">Guardar</span>`.',
+  'automation.settings.intro' => 'A continuación se muestra información general de la automatización. Puede actualizar la configuración y hacer clic boton `<span class="font-weight-semibold">Guardar</span>`.',
   'automation.settings.save' => 'Guardar',
   'automation.started' => 'Evento iniciado',
-  'automation.started.desc' => 'Felicidades! Su campaña automatizada ya está en funcionamiento..
-      La plataforma realiza un seguimiento de sus actividades de contactos individuales, así como del rendimiento general de la campaña..
-      Consulte sus informes Insight y las estadisticas para obtener más detalles..',
+  'automation.started.desc' => 'Felicidades! Su campaña automatizada ya está en funcionamiento.. La plataforma realiza un seguimiento de sus actividades de contactos individuales, así como del rendimiento general de la campaña.. Consulte sus informes Insight y las estadisticas para obtener más detalles..',
   'automation.started.title' => 'Automatización iniciada',
   'automation.started_at' => 'Iniciado: :time',
   'automation.statistics' => 'Estadisticas',
@@ -459,11 +426,9 @@
   'automation.switch_automation.confirm' => 'Cambiar a automatización',
   'automation.tag_those_contacts' => 'Etiquetar esos contactos',
   'automation.template.builder.select' => 'Cambiar constructor',
-  'automation.template.builder.select.intro' => 'El contenido del correo electrónico se actualizó con éxito.
-      Elija uno de los constructores a continuación para editar',
+  'automation.template.builder.select.intro' => 'El contenido del correo electrónico se actualizó con éxito. Elija uno de los constructores a continuación para editar',
   'automation.template.email_content' => 'Contenido del Email',
-  'automation.template.email_content.intro' => 'Cree su correo electrónico desde cero o comience con las plantillas / temas integrados.
-      Personalice el contenido de la manera que desee con nuestro potente pero fácil constructor de correo electrónico HTML..',
+  'automation.template.email_content.intro' => 'Cree su correo electrónico desde cero o comience con las plantillas / temas integrados. Personalice el contenido de la manera que desee con nuestro potente pero fácil constructor de correo electrónico HTML..',
   'automation.template.from_layout' => 'Desde un diseño de plantilla',
   'automation.template.from_layout.intro' => 'Diseñe su correo electrónico basándose en un diseño prefabricado que creamos para usted',
   'automation.template.opening_builder' => 'Abriendo constructor...',
@@ -485,26 +450,20 @@
   'automation.trigger.change' => 'Change Trigger',
   'automation.trigger.change.confirm' => 'Changing trigger will erase your automation history, are you sure?',
   'automation.trigger.intro' => 'Un disparador es la acción que inicia una automatización. Por ejemplo,
-      La plataforma puede activar un correo electrónico automatizado cuando alguien se suscribe a su lista o compra un determinado producto.
-      La plataforma ofrece una amplia selección de tipos de automatización preestablecidos con disparadores integrados, que van desde abandonados
-      enviar correos electrónicos o un simple mensaje de bienvenida.',
+      La plataforma puede activar un correo electrónico automatizado cuando alguien se suscribe a su lista o compra un determinado producto. La plataforma ofrece una amplia selección de tipos de automatización preestablecidos con disparadores integrados, que van desde abandonados enviar correos electrónicos o un simple mensaje de bienvenida.',
   'automation.trigger.is_not_setup' => 'El disparador aún no está configurado. Haga clic en esta acción para configurar su activador de automatización',
   'automation.trigger.is_not_setup.title' => 'El disparador aún no está configurado',
   'automation.trigger.monthly-recurring' => 'Monthly recurring',
-  'automation.trigger.monthly-recurring.desc' => 'Schedule your campaign to automatically send on a
-      monthly basis, on a particular day of the month',
-  'automation.trigger.monthly-recurring.intro' => 'Schedule your campaign to automatically send on a
-      monthly basis, on a particular day of the month',
+  'automation.trigger.monthly-recurring.desc' => 'Schedule your campaign to automatically send on a monthly basis, on a particular day of the month',
+  'automation.trigger.monthly-recurring.intro' => 'Schedule your campaign to automatically send on a monthly basis, on a particular day of the month',
   'automation.trigger.no_date_of_birth_field' => 'There is no birthday field selected!',
   'automation.trigger.save_change' => 'Guardar Cambios',
   'automation.trigger.say-goodbye-subscriber' => 'Dice adios al suscriptor',
   'automation.trigger.say-goodbye-subscriber.desc' => 'Envía un correo electrónico para pedir perdón cuando un suscriptor se da de baja de tu audiencia.',
   'automation.trigger.say-goodbye-subscriber.intro' => 'Inicie la automatización cuando un suscriptor se da de baja de su audiencia. Normalmente, es posible que desee enviar un correo electrónico de seguimiento preguntando por el motivo, pregunte y ofrezca beneficios de resuscripción.',
   'automation.trigger.say-happy-birthday' => 'Dice `Feliz Cumpleaños`',
-  'automation.trigger.say-happy-birthday.desc' => 'Celebre con una oferta exclusiva o un mensaje alegre que envíe basado
-      en el campo de cumpleaños en tu perfil.',
-  'automation.trigger.say-happy-birthday.intro' => 'Celebre con una oferta exclusiva o un mensaje alegre que se envíe basado
-      en el campo de cumpleaños en tu audiencia.',
+  'automation.trigger.say-happy-birthday.desc' => 'Celebre con una oferta exclusiva o un mensaje alegre que envíe basado en el campo de cumpleaños en tu perfil.',
+  'automation.trigger.say-happy-birthday.intro' => 'Celebre con una oferta exclusiva o un mensaje alegre que se envíe basado en el campo de cumpleaños en tu audiencia.',
   'automation.trigger.select_confirm' => 'Confirmar',
   'automation.trigger.setup' => 'Configurar disparador',
   'automation.trigger.specific-date' => 'Fecha especifica',
@@ -525,27 +484,17 @@
   'automation.trigger.tree.woo-abandoned-cart' => 'Abandoned Cart Reminder',
   'automation.trigger.updated' => 'Trigger actualizado.',
   'automation.trigger.weekly-recurring' => 'Weekly recurring',
-  'automation.trigger.weekly-recurring.desc' => 'Schedule your campaign to automatically
-      send on a weekly basis, on a particular week day you choose',
-  'automation.trigger.weekly-recurring.intro' => 'Schedule your campaign to automatically
-      send on a weekly basis, on a particular week day you choose',
+  'automation.trigger.weekly-recurring.desc' => 'Schedule your campaign to automatically send on a weekly basis, on a particular week day you choose',
+  'automation.trigger.weekly-recurring.intro' => 'Schedule your campaign to automatically send on a weekly basis, on a particular week day you choose',
   'automation.trigger.welcome-new-subscriber' => 'Bienvenido nuevo suscriptor',
   'automation.trigger.welcome-new-subscriber.desc' => 'Introduce una presentacion de tu organizacion a la gente cuando se suscribe.',
-  'automation.trigger.welcome-new-subscriber.intro' => 'Se activa cuando el usuario se suscribe a su lista. Normalmente, se recomienda que envíe un
-      correo electrónico de bienvenida para saludar calurosamente a su nuevo suscriptor y ofrecerle sus productos o servicios',
+  'automation.trigger.welcome-new-subscriber.intro' => 'Se activa cuando el usuario se suscribe a su lista. Normalmente, se recomienda que envíe un correo electrónico de bienvenida para saludar calurosamente a su nuevo suscriptor y ofrecerle sus productos o servicios',
   'automation.trigger.woo-abandoned-cart' => 'Abandoned Cart Reminder',
-  'automation.trigger.woo-abandoned-cart.desc' => 'Send your buyer a reminder if they left
-      something in cart',
-  'automation.trigger.woo-abandoned-cart.download_plugin' => 'If you are not sure
-      what your WordPress endpoint is, please install
-      <a target="_blank" href=":link">AcelleSync</a> plugin',
-  'automation.trigger.woo-abandoned-cart.intro' => 'Send your buyer a reminder if they left
-      something in cart.<br/>Enter your WordPress site\'s endpoint to connect. If you are not sure
-      what your WordPress endpoint is, please install
-      <a target="_blank" href="https://1drv.ms/u/s!ApyR6ghcQzmdmOZVyzHYcqUHYJj2Vg?e=cQ4o5g">WP2Acelle</a> plugin',
+  'automation.trigger.woo-abandoned-cart.desc' => 'Send your buyer a reminder if they left something in cart',
+  'automation.trigger.woo-abandoned-cart.download_plugin' => 'If you are not sure what your WordPress endpoint is, please install <a target="_blank" href=":link">AcelleSync</a> plugin',
+  'automation.trigger.woo-abandoned-cart.intro' => 'Send your buyer a reminder if they left something in cart.<br/>Enter your WordPress site\'s endpoint to connect. If you are not sure what your WordPress endpoint is, please install <a target="_blank" href="https://1drv.ms/u/s!ApyR6ghcQzmdmOZVyzHYcqUHYJj2Vg?e=cQ4o5g">WP2Acelle</a> plugin',
   'automation.trigger_now' => 'Trigger Now',
-  'automation.trigger_now.confirm' => 'You are trying to manually trigger the automation for this
-      contact, although trigger criteria may not meet. Are you sure?',
+  'automation.trigger_now.confirm' => 'You are trying to manually trigger the automation for this contact, although trigger criteria may not meet. Are you sure?',
   'automation.untitled' => 'Automatización sin título',
   'automation.update_stats' => 'Update stats',
   'automation.updated' => 'Evento actualizado',
@@ -639,10 +588,7 @@
   'bounce_log.download' => 'Descarga',
   'bounce_rate_theshold' => 'Bounce rate theshold',
   'bounce_rate_theshold.set_a_limit' => 'Set a limit',
-  'bounce_rate_theshold.wording' => 'Bounce rate is the percentage of email addresses that your users\' campaigns could not be delivered to.<br>
-      Email providers and anti-spam networks monitor bounce rates for every campaign you send, and use that information to decide if they\'ll
-      accept mail from you in the future.
-      You can set up a specific value below, which shall apply to any users subscribing to this plan.',
+  'bounce_rate_theshold.wording' => 'Bounce rate is the percentage of email addresses that your users\' campaigns could not be delivered to.<br> Email providers and anti-spam networks monitor bounce rates for every campaign you send, and use that information to decide if they\'ll accept mail from you in the future. You can set up a specific value below, which shall apply to any users subscribing to this plan.',
   'bounce_type' => 'Tipo de bounce',
   'bounced' => 'Rebotados',
   'brand.account_privacy' => 'Account & Privacy',
@@ -672,8 +618,7 @@
   'campaign.attached_files' => 'Archivos adjuntos',
   'campaign.attachment' => 'Adjunto',
   'campaign.attachment.file_size_is' => 'Tamaño del archivo: :size',
-  'campaign.attachment.intro' => 'El correo electrónico se enviará con los siguientes archivos a continuación.
-      Arrastre y suelte sus archivos locales para cargar la zona para adjuntar archivos al correo electrónico de la campaña.',
+  'campaign.attachment.intro' => 'El correo electrónico se enviará con los siguientes archivos a continuación. Arrastre y suelte sus archivos locales para cargar la zona para adjuntar archivos al correo electrónico de la campaña.',
   'campaign.change_template' => 'Cambiar plantilla',
   'campaign.check_spam_score' => 'Verificar puntaje de Spam',
   'campaign.choose_your_template_layout' => 'Elegir diseño para plantilla de campaña',
@@ -686,8 +631,7 @@
   'campaign.email_builder_classic' => 'Constructor Clasico',
   'campaign.email_builder_pro' => 'Constructor PRO',
   'campaign.email_content' => 'Contenido del Email',
-  'campaign.email_content.intro' => 'Cree su correo electrónico desde cero o comience desde la plataforma con alguna de las plantillas incorporadas.
-      Customize the content the way you desire with our powerful but easy-to-use HTML email builder.',
+  'campaign.email_content.intro' => 'Cree su correo electrónico desde cero o comience desde la plataforma con alguna de las plantillas incorporadas. Customize the content the way you desire with our powerful but easy-to-use HTML email builder.',
   'campaign.email_content_plain' => 'Contenido del Email',
   'campaign.email_content_plain.intro' => 'Ingrese el texto sin formato de su correo electrónico a través del cuadro de texto a continuación..',
   'campaign.failed_delivery_attempt' => 'Fallo temporal de envio',
@@ -700,15 +644,13 @@
   'campaign.overview_statistics' => 'Estadisticas',
   'campaign.pending_delivery' => 'Pendiente de envio',
   'campaign.plain.automatically_extract' => 'Automatically extract plain content from HTML',
-  'campaign.plain.click_to_custom_html' => 'Plain content is automatically extracted from HTML.
-    Click the button below to switch it off and enter your plain content manually',
+  'campaign.plain.click_to_custom_html' => 'Plain content is automatically extracted from HTML. Click the button below to switch it off and enter your plain content manually',
   'campaign.plain.extract_from_html' => 'Extract from HTML content',
   'campaign.plain.save' => 'Guardar y Siguiente',
   'campaign.plain.use_custom_plain_content' => 'Use custom plain content',
   'campaign.plain_text.open_click_tracking_wanring' => 'Una campaña de texto sin formato no admite el seguimiento de apertura / clic. Considere crear una campaña regular para habilitar las funciones de seguimiento.',
   'campaign.plain_text_editor' => 'Editor Texto Plano',
-  'campaign.preheader.intro' => '<strong>Preheader</strong> is the short summary text that follows the subject line
-    when viewing an email from the inbox',
+  'campaign.preheader.intro' => '<strong>Preheader</strong> is the short summary text that follows the subject line when viewing an email from the inbox',
   'campaign.preview_as' => 'Preview as',
   'campaign.preview_as.enter_search' => 'Enter contact email to search',
   'campaign.preview_as.web_view_url' => 'Web view URL',
@@ -738,12 +680,10 @@
   'campaign.started_ago' => 'Started :time ago',
   'campaign.successfully_delivered' => 'Enviados exitosamente',
   'campaign.template.builder.select' => 'Cambiar constructor',
-  'campaign.template.builder.select.intro' => 'El contenido de la campaña fue actualizado con éxito.
-      Elija uno de los constructores a continuación para editar',
+  'campaign.template.builder.select.intro' => 'El contenido de la campaña fue actualizado con éxito. Elija uno de los constructores a continuación para editar',
   'campaign.template.from_layout' => 'Desde un diseño de plantilla',
   'campaign.template.from_layout.intro' => 'Diseñe su correo electrónico basándose en un diseño prefabricado que creamos para usted',
-  'campaign.template.old_ver_error' => 'Campaigns created by previous (older) versions cannot be loaded in the current version
-    of the application. Don\'t worry, it will work correctly for new campaigns you create',
+  'campaign.template.old_ver_error' => 'Campaigns created by previous (older) versions cannot be loaded in the current version of the application. Don\'t worry, it will work correctly for new campaigns you create',
   'campaign.template.start' => 'Comienzo',
   'campaign.template.upload' => 'Subir plantilla propia',
   'campaign.template.upload.intro' => 'Subir su plantilla en formato de archivo ZIP ',
@@ -783,8 +723,7 @@
   'card.last4' => 'Ultimos 4 numeros',
   'cart.auto_add_buyer.click_change' => 'Change list',
   'cart.auto_add_buyer.select_list' => 'Select list',
-  'cart.auto_add_buyer_to_list' => 'Automatically add buyer contacts to list:
-      <span class="text-semibold">:list</span>',
+  'cart.auto_add_buyer_to_list' => 'Automatically add buyer contacts to list: <span class="text-semibold">:list</span>',
   'cart.auto_add_buyer_to_list.none' => 'Automatically add buyer contacts to list.',
   'cart.choose_list' => 'Choose a list',
   'cart.connected_to_store' => 'Connected to store <span class="text-semibold">:store</span>',
@@ -793,8 +732,7 @@
   'cart.list' => 'Mail List',
   'cart.list.wording' => 'Choose the list for automatically adding buyer contacts',
   'cart.list_updated' => 'The list was updated',
-  'cart.send_notification_email_after' => 'Send notification emails 
-      <span class="text-semibold">:time</span> after items is left in cart',
+  'cart.send_notification_email_after' => 'Send notification emails  <span class="text-semibold">:time</span> after items is left in cart',
   'cart.store' => 'Mail List',
   'cart.store.wording' => 'Choose a WooCommerce Store source for connecting to Acelle Mail',
   'cart.store_updated' => 'Store source was updated',
@@ -807,8 +745,7 @@
   'change_list' => 'Cambiar lista',
   'change_password' => 'Cambiar contraseña',
   'change_payment_method' => 'Change payment method',
-  'change_plan.desc' => 'You’re changing from <strong>:plan</strong>
-      plan to <strong>:newPlan</strong> plan',
+  'change_plan.desc' => 'You’re changing from <strong>:plan</strong> plan to <strong>:newPlan</strong> plan',
   'change_sort_direction' => 'Cambiar dirección del orden',
   'check_and_save_crontab' => 'Verificar y Guardar',
   'check_entry_try_again' => 'Verifica y reintenta',
@@ -851,26 +788,9 @@
   'condition.custom_wait' => 'Custom wait',
   'condition.select_woo_item' => 'Select item',
   'condition.wait.intro' => '
-    <p class="mb-2">
-      For example: if the specified email is not opened or
-      clicked at the first check, and with a waiting time of
-      [<span class="fw-600 wait_day">:days</span>], Acelle will try to check again and
-      again during the next [<span class="fw-600 wait_day">:days</span>] before proceed
-      with NO branch.
-    </p>
-
-    <p class="mb-3">
-      In other words: wait for a maximum of [<span class="fw-600 wait_day">:days</span>]
-      until the recipients open or click. Only proceed with the NO branch
-      if the specified email is not opened or clicked after
-      [<span class="fw-600 wait_day">:days</span>].
-    </p>
-  ',
+    <p class="mb-2"> For example: if the specified email is not opened or clicked at the first check, and with a waiting time of [<span class="fw-600 wait_day">:days</span>], Acelle will try to check again and again during the next [<span class="fw-600 wait_day">:days</span>] before proceed with NO branch. </p> <p class="mb-3"> In other words: wait for a maximum of [<span class="fw-600 wait_day">:days</span>] until the recipients open or click. Only proceed with the NO branch if the specified email is not opened or clicked after [<span class="fw-600 wait_day">:days</span>]. </p> ',
   'condition.wait.title' => '
-    <p class="mb-2 fw-600">
-      Speicify the time to wait for the condition being met.
-    </p>
-  ',
+    <p class="mb-2 fw-600"> Speicify the time to wait for the condition being met. </p> ',
   'condition.wait_amount' => 'Amount',
   'condition.wait_unit' => 'Time unit',
   'condition.which_email_read' => 'Which email subscriber reads',
@@ -908,8 +828,7 @@
   'country' => 'País',
   'create' => 'Crear',
   'create_a_signup_form' => 'Create a signup form',
-  'create_a_signup_form.desc' => 'Capture contacts and collect the data you need<br>
-    to grow your audience',
+  'create_a_signup_form.desc' => 'Capture contacts and collect the data you need<br> to grow your audience',
   'create_admin' => 'Crear admin',
   'create_admin_group' => 'Crear grupo',
   'create_bounce_handler' => 'Nuevo controlador de los rebotes',
@@ -932,9 +851,7 @@
   'created_at' => 'Creado el',
   'cron_jobs' => 'Tareas programadas',
   'cron_jobs_guide' => '
-          Inserte las siguientes lineas en su comando de tareas programadas. <br />
-          Tenga en cuenta que los tiempos siguientes para ejecutar los trabajos cron son los recomendados, puede cambiarlos si lo desea.
-      ',
+          Inserte las siguientes lineas en su comando de tareas programadas. <br /> Tenga en cuenta que los tiempos siguientes para ejecutar los trabajos cron son los recomendados, puede cambiarlos si lo desea. ',
   'cron_string.copied' => 'Cron string was copied to clipboard',
   'curl_example' => 'CURL example',
   'currencies' => 'Monedas',
@@ -954,9 +871,7 @@
   'customer' => 'Cliente',
   'customer.admin_area' => 'Area Administracion',
   'customer.assign_plan' => 'Asignar Plan',
-  'customer.assign_plan.confirm' => ' Está a punto de asignar el plan <strong>:plan</strong> a <strong>:customer</strong>.
-      Esto cancelará la suscripción actual del cliente si existe. Esto se puede deshacer.
-  ',
+  'customer.assign_plan.confirm' => ' Está a punto de asignar el plan <strong>:plan</strong> a <strong>:customer</strong>. Esto cancelará la suscripción actual del cliente si existe. Esto se puede deshacer. ',
   'customer.back_to_admin' => 'Volver a la admin',
   'customer.bounce_feedback_rate' => 'Bounce/Feedback rate:',
   'customer.bounce_feedback_rate_desc' => 'Bounce / feedback rate refers to the percentage of email addresses in your subscriber list that didn\'t receive your message because it was returned by a recipient mail server or is reported as spam/abuse by the recipient.',
@@ -1009,8 +924,7 @@
   'delete_admins_confirm' => 'A punto de eliminar :number admin/s.',
   'delete_automations_confirm' => 'A punto de eliminar :number evento/s.',
   'delete_bounce_handlers_confirm' => 'Estas a punto de borrar :number controlador/es de rebote/s',
-  'delete_campaign_confirm' => 'You\'re about to delete <span class="fw-600">:name</span> campaign.
-    This can not be undone.',
+  'delete_campaign_confirm' => 'You\'re about to delete <span class="fw-600">:name</span> campaign. This can not be undone.',
   'delete_campaigns_confirm' => 'Estás a punto de borrar :number campaña/s',
   'delete_currencies_confirm' => 'A punto de deshabilitar :number moneda/s.',
   'delete_email_verification_servers_confirm' => 'A punto de eliminar :number email servidor de verficación de la lista.',
@@ -1135,9 +1049,7 @@
   'export.whole_list' => 'Whole list',
   'export_completed' => 'Exportación completada',
   'export_subscribers' => 'Exportar subscriptores',
-  'facebook_oauth.guide' => 'Visit your <a target="_blank" href="https://developers.facebook.com/apps" class="external">
-    Facebook Apps Console</a> to obtain credentials from an app such as a client
-    ID and client secret and set the values below:',
+  'facebook_oauth.guide' => 'Visit your <a target="_blank" href="https://developers.facebook.com/apps" class="external"> Facebook Apps Console</a> to obtain credentials from an app such as a client ID and client secret and set the values below:',
   'facebook_oauth.intro' => 'Use Facebook\'s OAuth 2.0 authentication system for customer to login and register.',
   'facebook_oauth.uri_guide' => 'Copy these URIs below and paste them into the corresponding OAuth setting fields.',
   'failed' => 'Fallado',
@@ -1199,8 +1111,7 @@
   'form.display.element_id' => 'Enter ID of clickable element',
   'form.display.element_id.desc' => 'Load the form when a specified element is clicked',
   'form.display.first_visit' => 'On page first visit',
-  'form.display.first_visit.desc' => 'Load the form immediately when the webpage
-    is loaded but for the first page visit only',
+  'form.display.first_visit.desc' => 'Load the form immediately when the webpage is loaded but for the first page visit only',
   'form.display.immediately' => 'Immediately',
   'form.display.immediately.desc' => 'Load the form immediately when the webpage is loaded',
   'form.display.wait' => 'After amount of time...',
@@ -1226,9 +1137,7 @@
   'form.unpublish' => 'Unpublish',
   'form.untitled' => 'Untitled form',
   'form.use_captcha' => 'Use Google reCaptcha',
-  'form.view_in_site_but_is_not_published' => 'The form is not published.
-    Publish the form first so you can view it on the site.
-  ',
+  'form.view_in_site_but_is_not_published' => 'The form is not published. Publish the form first so you can view it on the site. ',
   'form.view_on_site' => 'View on site',
   'form_page.enter_outside_url' => 'http://your-url.com',
   'form_page.use_built_in_page' => 'Página incorporada',
@@ -1236,8 +1145,7 @@
   'form_page.use_outside_url' => 'URL personalizada',
   'form_page.use_outside_url.intro' => 'Redireccionar a la URL a continuación',
   'form_templates' => 'Form templates',
-  'form_templates.intro' => 'Below are BASE form templates available for all users registered in the applicaiton<br>
-    When it comes to add a form popup, users can create a new form popup from a base one',
+  'form_templates.intro' => 'Below are BASE form templates available for all users registered in the applicaiton<br> When it comes to add a form popup, users can create a new form popup from a base one',
   'form_title' => 'Título del formulario',
   'forms' => 'Forms',
   'forms.delete.confirm' => 'You\'re about to delete :number form(s).',
@@ -1264,9 +1172,7 @@
   'go_to_admin_view' => 'Go to admin view',
   'go_to_sending_server_page' => 'Ir a la página de configuración del servidor de envío',
   'goodbye_email' => 'Email de despedida',
-  'google_oauth.guide' => 'Visit the <a target="_blank" href="https://console.developers.google.com/" class="external">
-    Google API Console</a> to obtain OAuth 2.0 credentials such as a client
-    ID and client secret and set the values below:',
+  'google_oauth.guide' => 'Visit the <a target="_blank" href="https://console.developers.google.com/" class="external"> Google API Console</a> to obtain OAuth 2.0 credentials such as a client ID and client secret and set the values below:',
   'google_oauth.intro' => 'Use Google\'s OAuth 2.0 authentication system for customer to login and register.',
   'google_oauth.uri_guide' => 'Copy these URIs below and paste them into the corresponding OAuth setting fields.',
   'greater' => 'Más grande que',
@@ -1276,8 +1182,7 @@
   'group' => 'Grupo',
   'growth_chart' => 'Growth chart',
   'has_no_billing_address' => 'You have no billing addresses yet. Click button below to add one.',
-  'have_new_change_plan_invoice' => 'You have a pending change plan invoice. <a href=":link">Click here</a>
-      to check details',
+  'have_new_change_plan_invoice' => 'You have a pending change plan invoice. <a href=":link">Click here</a> to check details',
   'have_new_renew_invoice' => 'You have a pending renew invoice. Check the invoice information',
   'have_new_renew_invoice.auto' => 'Your subscription will be automatically renewed on :date',
   'have_no_payment_method' => 'You have no payment method. Click button below to add one.',
@@ -1289,8 +1194,7 @@
   'how_subscribers_matching' => 'Como combinar las condiciones',
   'html_version' => 'HTML',
   'identity.supported' => 'DKIM y SPF soportados',
-  'image.upload_help' => 'Acceptable file type is JPG/GIF/SVG<br/>
-    Server max file upload size is <strong class="text-bold">:max</strong>',
+  'image.upload_help' => 'Acceptable file type is JPG/GIF/SVG<br/> Server max file upload size is <strong class="text-bold">:max</strong>',
   'import' => 'Importar',
   'import.notice.over_quota' => 'Notice: list quota exceeded, certain records were skipped',
   'import_another' => 'Importar otro',
@@ -1322,16 +1226,13 @@
   'invoice.footer' => 'Thanks for your purchase.',
   'invoice.header' => 'INVOICE',
   'invoice.init_subscription' => 'New Subscription',
-  'invoice.init_subscription.desc' => 'You’re subscring to plan <strong>:plan</strong>, and
-      your subscription will be due on <strong>:date</strong>',
+  'invoice.init_subscription.desc' => 'You’re subscring to plan <strong>:plan</strong>, and your subscription will be due on <strong>:date</strong>',
   'invoice.items' => 'Item(s)',
   'invoice.pay_now' => 'Pay Now',
   'invoice.payment_is_being_verified' => 'Payment is being verified',
   'invoice.pending' => 'Payment is pending',
   'invoice.pending.wording' => '
-      <p>You are paying for a pending subscription invoice.
-        Click the button below to go to the payment.</p>
-  ',
+      <p>You are paying for a pending subscription invoice. Click the button below to go to the payment.</p> ',
   'invoice.price' => 'Price',
   'invoice.renew_subscription' => 'Renew Subscription',
   'invoice.status' => 'Estado',
@@ -1375,20 +1276,11 @@
   'language.discard_change' => 'Your change in the current file will be discarded.',
   'language.load_translate' => 'Load & Translate',
   'language.select_translation_file' => 'Select file',
-  'language.translate.intro' => '<p>Acelle Mail lets you customize the user interface (UI) text in all areas of the web
-    application like titles, labels, tooltips, links, buttons... You can translate it from the original
-    English language to Spanish and/or change these phrases the way you want.</p><p>
-      Phrases are organized in different files which you can choose in the list below
-    </p>',
+  'language.translate.intro' => '<p>Acelle Mail lets you customize the user interface (UI) text in all areas of the web application like titles, labels, tooltips, links, buttons... You can translate it from the original English language to Spanish and/or change these phrases the way you want.</p><p> Phrases are organized in different files which you can choose in the list below </p>',
   'language.translation' => 'Translation',
   'language.updated' => 'El idioma ha sido actualizado',
   'language.uploaded' => 'El Idioma se cargo correctamente',
-  'language_upload_guide' => 'El archivo de subida de idioma debe ser un paquete zip que contenga archivos de traducción:<br />
-          <span class="text-semibold">messages.php</span><br />
-          <span class="text-semibold">auth.php</span><br />
-          <span class="text-semibold">pagination.php</span><br />
-          <span class="text-semibold">passwords.php</span><br />
-          <span class="text-semibold">validation.php</span>',
+  'language_upload_guide' => 'El archivo de subida de idioma debe ser un paquete zip que contenga archivos de traducción:<br /> <span class="text-semibold">messages.php</span><br /> <span class="text-semibold">auth.php</span><br /> <span class="text-semibold">pagination.php</span><br /> <span class="text-semibold">passwords.php</span><br /> <span class="text-semibold">validation.php</span>',
   'languages' => 'Idiomas',
   'languages.deleted' => 'El/los idioma/s ha/n sido eliminado/s',
   'languages.disabled' => 'Uno o más idiomas han sido deshabilitado/s',
@@ -1402,8 +1294,7 @@
   'last_opened' => 'El ultimo abierto',
   'last_x_days' => 'In the last X days',
   'layout' => 'Diseño',
-  'layout.amazon_ses.tag_not_permit' => 'Template content dose not except tags: meta|title|style.
-    Remove those tags if they exist and try again.',
+  'layout.amazon_ses.tag_not_permit' => 'Template content dose not except tags: meta|title|style. Remove those tags if they exist and try again.',
   'layout.description' => 'Below are default email templates & pages used by the application. You can customize those the way you desire. For example, you may want to add a logo to an email to reflect your brand',
   'layout.updated' => 'El diseño ha sido actualizado',
   'leave_empty_to_choose_all_list' => '* Dejar esta casilla vacía para elegir todos los suscriptores en la lista',
@@ -1418,16 +1309,8 @@
   'license.updated' => 'La licencia de la aplicación se actualizó correctamente',
   'license.your_license' => 'Su licencia actual',
   'license_guide' => '
-        <p>Cuando compra Acelle Mail desde el sitio web de Envato, en realidad está comprando una licencia para usar el producto. <br> Se emiten 2 tipos de licencia</p>
-        <h4>Licencia Regular</h4>
-        <p>
-            Todas las funciones están disponibles para un solo producto final por el que NO se cobra a los usuarios finales
-        </p>
-        <h4>Licencia Extendida</h4>
-        <p>
-            Todas las funciones están disponibles para un solo producto final por el que se puede cobrar a los usuarios finales (brindando el servicio)
-        </p>
-    ',
+        <p>Cuando compra Acelle Mail desde el sitio web de Envato, en realidad está comprando una licencia para usar el producto. <br> Se emiten 2 tipos de licencia</p> <h4>Licencia Regular</h4> <p> Todas las funciones están disponibles para un solo producto final por el que NO se cobra a los usuarios finales </p> <h4>Licencia Extendida</h4> <p> Todas las funciones están disponibles para un solo producto final por el que se puede cobrar a los usuarios finales (brindando el servicio)
+        </p> ',
   'license_is_not_valid' => 'Chequeo de licencia erroneo: La licencia no es valida. Reintente nuevamente.',
   'license_optional' => 'Licencia (Código de compra)',
   'license_tab' => 'Licencia',
@@ -1435,24 +1318,20 @@
   'links' => 'Enlaces',
   'list' => 'Lista',
   'list.active_contact.desc' => 'Active contacts, ready to receive marketing emails',
-  'list.blacklist.desc' => 'Contacts are blacklished<br/>
-    click here to view',
+  'list.blacklist.desc' => 'Contacts are blacklished<br/> click here to view',
   'list.clone_for.success' => 'Lista duplicada OK!',
   'list.clone_for_other_users' => 'Duplicar para otros usuarios',
   'list.copied' => 'La lista ha sido copiada',
   'list.created' => 'La lista ha sido creada',
   'list.embedded_form.redirect_url' => 'Custom redirect url',
   'list.export.cancel' => 'Are you sure you want to cancel the export job?',
-  'list.form.desc' => 'Forms for collect the contact data you need
-    to grow your audience',
+  'list.form.desc' => 'Forms for collect the contact data you need to grow your audience',
   'list.import.cancel' => 'Are you sure you want to cancel the import job?',
   'list.import.instruction' => 'Server\'s max upload file size is limited to <strong class="text-bold">:size</strong></span>. Make sure your input file does not exceed this limit.<br>Acceptable file type is CSV with a header row containing the column / field names like EMAIL, FIRST_NAME, LAST_NAME...<br>You can download a sample input file <a target="_blank" href=":csv_link"><strong> here (Sample.csv)</strong></a>',
   'list.import.progress.queued' => 'Import process is being processed...',
   'list.import.progress.running' => 'Importing is in progress...',
-  'list.mail_list_count.desc' => 'Total contacts<br>subscribed to
-    <span class="fw-600">:count</span> mail lists',
-  'list.no_date_or_datetime_field' => 'The selected list does not have any custom field of DATE or DATETIME type.
-    Go to your mail list\'s fields setting page and add a custom field of Date of Birth',
+  'list.mail_list_count.desc' => 'Total contacts<br>subscribed to <span class="fw-600">:count</span> mail lists',
+  'list.no_date_or_datetime_field' => 'The selected list does not have any custom field of DATE or DATETIME type. Go to your mail list\'s fields setting page and add a custom field of Date of Birth',
   'list.overview_statistics' => 'Estadisticas',
   'list.redirect_url.placeholder' => 'Leave blank for default thank you page',
   'list.select_customer_for_clone_list' => 'Duplicar lista :list ',
@@ -1594,9 +1473,7 @@
   'oauth.redirect_uri.copied' => 'Redirect URI was copied to clipboard',
   'oauth.status.active' => 'active',
   'oauth.status.disabled' => 'disabled',
-  'oauth.wording' => 'In addition to typical, form based authentication, the system also
-    provides a simple, convenient way to authenticate with OAuth providers. It currently supports authentication
-    with Facebook, Twitter, LinkedIn, Google.',
+  'oauth.wording' => 'In addition to typical, form based authentication, the system also provides a simple, convenient way to authenticate with OAuth providers. It currently supports authentication with Facebook, Twitter, LinkedIn, Google.',
   'office_phone' => 'Teléfono',
   'offline' => 'Fuera de linea',
   'ok' => 'OK',
@@ -1620,8 +1497,7 @@
   'operation.choose_field_to_update' => 'Choose field to update',
   'operation.field_value' => 'Value',
   'operation.tag_contact' => 'Tag Contact',
-  'operation.tag_contact.desc' => 'You are about to tag. Type your tags in the box below, press ENTER to confirm
-      each',
+  'operation.tag_contact.desc' => 'You are about to tag. Type your tags in the box below, press ENTER to confirm each',
   'operation.target_list' => 'Target list',
   'operation_not_allowed_in_demo' => 'Operation not allowed in DEMO mode',
   'optional' => 'opcional',
@@ -1657,11 +1533,9 @@
   'payment.all_available_gateways' => 'All available payment gateways',
   'payment.all_available_gateways.wording' => 'Belows are all payment gateways that installed',
   'payment.cannot_charge' => 'Acelle cannot charge the invoice #:id. Error from :service: :error',
-  'payment.choose_new_payment_method_to_proceed' => 'Please choose a new payment method below to 
-      proceed with the payment',
+  'payment.choose_new_payment_method_to_proceed' => 'Please choose a new payment method below to  proceed with the payment',
   'payment.choose_payment' => 'Choose your preferred payment methods',
-  'payment.choose_payment.desc' => 'Acelle supports the following payment methods
-      <br>Choose offline payment if you do not have a credit card or PayPal balance  ',
+  'payment.choose_payment.desc' => 'Acelle supports the following payment methods <br>Choose offline payment if you do not have a credit card or PayPal balance  ',
   'payment.connect' => 'Connect',
   'payment.disable' => 'Disable',
   'payment.enable' => 'Enable',
@@ -1697,18 +1571,15 @@
   'plan.description' => 'Descripción',
   'plan.disable_terms_of_service' => 'Disable terms of service',
   'plan.email_footer' => 'Email footer',
-  'plan.email_footer.intro' => 'Incluya un pie de página en cada mensaje de correo electrónico saliente para reflejar su marca..
-       Normalmente, puede habilitar esta opción para el período de prueba',
+  'plan.email_footer.intro' => 'Incluya un pie de página en cada mensaje de correo electrónico saliente para reflejar su marca.. Normalmente, puede habilitar esta opción para el período de prueba',
   'plan.email_footer_trial_period_only' => 'Solo por periodo DEMO',
   'plan.email_verification' => 'Verificacion de email',
   'plan.email_verification.intro' => 'Configurar servidores de verificación de correo electrónico para el plan',
   'plan.email_verification.use_own' => 'Use sus propios servidores de verificación de correo electrónico',
   'plan.email_verification.use_own.intro' => 'El cliente puede agregar sus propios servidores de envío',
   'plan.email_verification.use_system' => 'Usar servidores de verificación de correo electrónico de sistemas',
-  'plan.email_verification.use_system.intro' => 'El cliente no tiene permitido agregar servidores de verificación de correo electrónico.
-    Los correos electrónicos se enviarán utilizando servidores de verificación de correo electrónico de sistemas agregados por el administrador',
-  'plan.enable_and_visible.confirm' => 'Está a punto de habilitar el plan seleccionado. ¿Quieres
-      también hacerla visible a sus usuarios para que se suscriban a',
+  'plan.email_verification.use_system.intro' => 'El cliente no tiene permitido agregar servidores de verificación de correo electrónico. Los correos electrónicos se enviarán utilizando servidores de verificación de correo electrónico de sistemas agregados por el administrador',
+  'plan.enable_and_visible.confirm' => 'Está a punto de habilitar el plan seleccionado. ¿Quieres también hacerla visible a sus usuarios para que se suscriban a',
   'plan.enabled_email_footer' => 'Habilitar email footer',
   'plan.fitness' => 'Fitness',
   'plan.fitness.less' => 'Menos',
@@ -1724,20 +1595,15 @@
   'plan.hide' => 'Ocultar este plan',
   'plan.hide.denied' => 'No puedes ocultar este plan',
   'plan.html_footer' => 'Footer HTML',
-  'plan.info.subscriber_count' => 'Existen <strong>:count</strong> cliente(s) suscriptos actualmente a este plan.
-      Click <a href=":link"><strong>aqui</strong></a> para ver más detalles.',
+  'plan.info.subscriber_count' => 'Existen <strong>:count</strong> cliente(s) suscriptos actualmente a este plan. Click <a href=":link"><strong>aqui</strong></a> para ver más detalles.',
   'plan.name' => 'Nombre',
   'plan.new_plan' => 'Agregar nuevo plan',
   'plan.no_available_plan' => 'No hay planes ACTIVOS. Por favor, consulte con su administrador de servicios',
   'plan.own_tracking_domain_required' => 'Users must use their own tracking domains',
-  'plan.own_tracking_domain_required.help' => 'The system rewrites every link added to marketing emails in
-    order to track it. Upon clicking a link, user will be redirected to the application (where opens and
-    clicks are recorded) before eventually reaching the original link. While the system has the hosting’s
-    domain that it can use to rewrite links, it offer the ability to "white label" the tracking domain with users\' own domains.',
+  'plan.own_tracking_domain_required.help' => 'The system rewrites every link added to marketing emails in order to track it. Upon clicking a link, user will be redirected to the application (where opens and clicks are recorded) before eventually reaching the original link. While the system has the hosting’s domain that it can use to rewrite links, it offer the ability to "white label" the tracking domain with users\' own domains.',
   'plan.plain_text_footer' => 'Footer Texto plano footer',
   'plan.price' => 'Precio',
-  'plan.process_limit.intro' => 'La plataforma admite bifurcar múltiples procesos para enviar varias veces más rápido en términos de
-    rendimiento de correo electrónico. Sin embargo, consumirá varias veces más CPU y memoria como compensación.',
+  'plan.process_limit.intro' => 'La plataforma admite bifurcar múltiples procesos para enviar varias veces más rápido en términos de rendimiento de correo electrónico. Sin embargo, consumirá varias veces más CPU y memoria como compensación.',
   'plan.quota' => 'Cuota',
   'plan.quota_time.wording' => 'por :amount :unit(s)',
   'plan.resource.intro' => 'Configure la cuota de su plan para limitar los recursos o servicios que los usuarios suscritos a este plan pueden usar',
@@ -1746,9 +1612,7 @@
   'plan.select' => 'Seleccione',
   'plan.sending_credits' => 'Creditos de envios',
   'plan.sending_identify' => 'Enviando identidad',
-  'plan.sending_identify.intro' => 'Verificación de una identidad para la autorización de envío de Amazon SES. El primer paso para configurar el envío
-      la autorización es para demostrar que posee la dirección de correo electrónico o el dominio desde el cual
-      el remitente delegado enviará un correo electrónico',
+  'plan.sending_identify.intro' => 'Verificación de una identidad para la autorización de envío de Amazon SES. El primer paso para configurar el envío la autorización es para demostrar que posee la dirección de correo electrónico o el dominio desde el cual el remitente delegado enviará un correo electrónico',
   'plan.sending_identify.intro.amazon-api' => 'Su plan está configurado para usar Amazon SES como método de entrega principal. Los usuarios que se suscriban a este plan deben usar las siguientes identidades como su dirección de correo electrónico REMITENTE. Edite la configuración del servidor de envío para agregar más identidades',
   'plan.sending_identify.intro.amazon-smtp' => 'Su plan está configurado para usar Amazon SES como método de entrega principal. Los usuarios que se suscriban a este plan deben usar las siguientes identidades como su dirección de correo electrónico REMITENTE. Edite la configuración del servidor de envío para agregar más identidades',
   'plan.sending_identify.intro.elasticemail-api' => 'Su plan está configurado para usar Elasticemail como método de entrega principal. Los usuarios que se suscriban a este plan deben usar las siguientes identidades como su dirección de correo electrónico REMITENTE. Edite la configuración del servidor de envío para agregar más identidades',
@@ -1788,12 +1652,10 @@
   'plan.sending_servers' => 'Servidores de envio',
   'plan.sending_servers.add' => 'Agregar servidor de envio',
   'plan.sending_servers.add.ok' => 'OK',
-  'plan.sending_servers.add_empty_warning' => 'No hay un servidor de envío disponible para este plan.
-    Click <a target="_blank" href=":link"><strong>aqui</strong></a> para agregar uno',
+  'plan.sending_servers.add_empty_warning' => 'No hay un servidor de envío disponible para este plan. Click <a target="_blank" href=":link"><strong>aqui</strong></a> para agregar uno',
   'plan.sending_servers.choose' => 'Cambiar',
   'plan.sending_servers.fitness.updated' => 'Fitnesses actualizado satisfactoriamente',
-  'plan.sending_servers.list_intro' => 'A continuación se envían los servidores que se utilizarán para este plan.
-      En otras palabras, los correos electrónicos enviados por los usuarios que se suscriben a este plan serán entregados por estos servidores',
+  'plan.sending_servers.list_intro' => 'A continuación se envían los servidores que se utilizarán para este plan. En otras palabras, los correos electrónicos enviados por los usuarios que se suscriben a este plan serán entregados por estos servidores',
   'plan.sending_servers.listing' => 'Servidores de envio',
   'plan.sending_servers.own.setting' => 'Opciones',
   'plan.sending_servers.own.setting.intro' => 'A continuación se encuentran las opciones disponibles para configurar cómo los clientes pueden usar sus propios servidores de envío.',
@@ -1810,9 +1672,7 @@
   'plan.speed_limit.intro' => 'Limite la velocidad de envío para proteger su reputación de envío',
   'plan.starting_at' => 'A partir de',
   'plan.tos' => 'Term of Service',
-  'plan.tos.intro' => 'Terms of service are the legal agreements between a service provider and a
-    person who wants to use that service. The person must agree to abide by the terms of service in
-    order to use the offered service.',
+  'plan.tos.intro' => 'Terms of service are the legal agreements between a service provider and a person who wants to use that service. The person must agree to abide by the terms of service in order to use the offered service.',
   'plan.tos.updated' => 'Terms of service was updated',
   'plan.trial_setting' => 'Trial period (amout / time unit)',
   'plan.updated' => 'Plan actualizado',
@@ -1854,15 +1714,10 @@
   'plugin' => 'Plugin',
   'plugin.back_to_plugins' => 'Back to plugins',
   'plugin.delete_confirmation' => 'Delete confirmation',
-  'plugin.delete_confirmation.wording' => 'Removing the plugin will also remove all its data <br>
-    Are you sure you want to completely remove the plugin?
-  ',
+  'plugin.delete_confirmation.wording' => 'Removing the plugin will also remove all its data <br> Are you sure you want to completely remove the plugin? ',
   'plugin.deleted' => 'Plugin was successfully deleted',
-  'plugin.deleted.wording' => 'The Paddle plugin and all its data have been removed from the application.
-    <br>You can no longer get them back!
-  ',
-  'plugin.installing' => '<strong>Installing...</strong><p>Your plugin is being uploaded
-      and processed, please wait!</p>',
+  'plugin.deleted.wording' => 'The Paddle plugin and all its data have been removed from the application. <br>You can no longer get them back! ',
+  'plugin.installing' => '<strong>Installing...</strong><p>Your plugin is being uploaded and processed, please wait!</p>',
   'plugin.name' => 'Plugin',
   'plugin.no_plugin' => 'You have no plugin',
   'plugin.no_plugin.wording' => 'Let\'s extend the system functionalities <br>by installing a new plugins',
@@ -1871,8 +1726,7 @@
   'plugin.type.sending_server' => 'Sending Server',
   'plugin.upload.instruction' => 'Select a plugin package from your PC to upload. Normally it is a ZIP archive containing the source files as well as meta information for the plugin.',
   'plugin.version' => 'Version',
-  'plugin.wording' => 'Empower your application with tons of awesome plugins developed by Acelle Mail Team.
-      Integration made easier than ever!',
+  'plugin.wording' => 'Empower your application with tons of awesome plugins developed by Acelle Mail Team. Integration made easier than ever!',
   'plugin.yes_delete' => 'Yes, Delete plugin!',
   'plugins' => 'Plugins',
   'plugins.all_plugins' => 'All plugins',
@@ -1890,9 +1744,7 @@
   'product.create' => 'Create',
   'product.delete.confirm' => 'You\'re about to delete the product <span class="fw-600">:name</span>',
   'product.deleted' => 'The product was deleted successfully',
-  'product.no_product' => '<span class="fw-600 mb-2 d-block">You do not have any product yet</span>
-    Connect to your e-commerce platform or store to synchronize products and contacts <br>
-    Manage your audience in one centralized place',
+  'product.no_product' => '<span class="fw-600 mb-2 d-block">You do not have any product yet</span> Connect to your e-commerce platform or store to synchronize products and contacts <br> Manage your audience in one centralized place',
   'product.select_categories' => 'Select product categories',
   'product.sku' => 'SKU',
   'product.title' => 'Title',
@@ -1905,11 +1757,7 @@
   'profile_update_form' => 'Actualizar formulario del perfil',
   'profile_update_success_page' => 'Actualizar página "de éxito" del perfil',
   'quick_theme_mode.click_change' => 'Click to toggle Light/Dark/Auto theme mode',
-  'quicktip.identity.tip' => 'Add sending domains or email addresses as identities for the 
-      corresponding sending servers and they will be listed here.
-      Then users will be able to use those as FROM EMAIL addresses for their campaign emails.
-      If you are integrated with Amazon Simple Email Service (SES) or SendGrid, your users will
-      also be able to add their own sending identities here.',
+  'quicktip.identity.tip' => 'Add sending domains or email addresses as identities for the  corresponding sending servers and they will be listed here. Then users will be able to use those as FROM EMAIL addresses for their campaign emails. If you are integrated with Amazon Simple Email Service (SES) or SendGrid, your users will also be able to add their own sending identities here.',
   'quicktip.identity.title' => 'Notes for administrator',
   'quicktip.quick_tips' => 'Quick tips',
   'quota' => 'Cuota',
@@ -1931,16 +1779,13 @@
   'recipients.select_default_list.warning' => 'Please choose a DEFAULT mail list!',
   'region' => 'Región',
   'register' => 'Registrar',
-  'register.agreement_intro' => 'Clic en el boton  "Registro!" para crear su cuenta
-      y acepta Mailchimp\'s Términos de uso y política de privacidad.',
-  'register.intro' => 'Administre sus contactos, genere clientes potenciales, realice una campaña de marketing, ... Únase a nuestro servicio para disfrutar haciendo
-      todos los días  ventas y marketing sin problemas. Si ya tiene su cuenta <a href=":login">Ingresar</a>',
+  'register.agreement_intro' => 'Clic en el boton  "Registro!" para crear su cuenta y acepta Mailchimp\'s Términos de uso y política de privacidad.',
+  'register.intro' => 'Administre sus contactos, genere clientes potenciales, realice una campaña de marketing, ... Únase a nuestro servicio para disfrutar haciendo todos los días  ventas y marketing sin problemas. Si ya tiene su cuenta <a href=":login">Ingresar</a>',
   'remove' => 'Quitar',
   'remove_blacklist_confirm' => 'Estás a punto de eliminar :number email/s de la lista negra',
   'remove_current_photo' => 'Eliminar la foto actual',
   'remove_from_blacklist' => 'Quitar de la lista negra',
-  'renew_subscription.desc' => 'You’re renewing <strong>:plan</strong> plan, and
-          your subscription will be due on <strong>:date</strong>',
+  'renew_subscription.desc' => 'You’re renewing <strong>:plan</strong> plan, and your subscription will be due on <strong>:date</strong>',
   'renew_token' => 'Renovar token',
   'reply_to' => 'Responder a',
   'report' => 'Reporte',
@@ -2040,8 +1885,7 @@
   'sender.delete' => 'Eliminar',
   'sender.delete.confirm' => 'Estás a punto de eliminar el remitente de la lista.',
   'sender.dropbox.empty' => '(vacio)',
-  'sender.dropbox.error' => 'La dirección de correo electrónico que ingresó aún no está verificada.
-      Click <a href=":sender_link" target="blank">aqui</a> para verificar. De todos modos, puede continuar con un remitente no verificado si está seguro de ello',
+  'sender.dropbox.error' => 'La dirección de correo electrónico que ingresó aún no está verificada. Click <a href=":sender_link" target="blank">aqui</a> para verificar. De todos modos, puede continuar con un remitente no verificado si está seguro de ello',
   'sender.dropbox.error.' => 'The email address you entered is not verified yet. Please choose one that matches the suggested list or click <a href=":sender_link" target="blank"><strong>here</strong></a> to verify.',
   'sender.dropbox.reply.error' => 'La dirección de correo electrónico que ingresó aún no está verificada.',
   'sender.dropbox.reply.error.' => 'The email address you entered is not verified yet.',
@@ -2107,21 +1951,15 @@
   'sending_quota_label' => 'Limite de envio',
   'sending_serbers.add_domain' => 'Agregar dominio',
   'sending_serbers.add_email_domain' => 'Agregar email / dominio',
-  'sending_serbers.aws.allow_verify.intro' => 'También puede permitir que sus usuarios verifiquen una identidad por su cuenta.
-            Es decir, el usuario puede solicitar verificar su propia dirección de correo electrónico o dominio contra su
-            Cuenta de Amazon SES',
+  'sending_serbers.aws.allow_verify.intro' => 'También puede permitir que sus usuarios verifiquen una identidad por su cuenta. Es decir, el usuario puede solicitar verificar su propia dirección de correo electrónico o dominio contra su Cuenta de Amazon SES',
   'sending_serbers.go_to_amazon_dashboard' => 'Escritorio de Amazon',
   'sending_serbers.go_to_elasticemail_dashboard' => 'Ir al escritorio de Elastic Email',
   'sending_serbers.go_to_mailgun_dashboard' => 'Ir al escritorio Mailgun',
   'sending_serbers.go_to_sendgrid_dashboard' => 'Ir al escritorio Sendrid',
   'sending_serbers.go_to_sparkpost_dashboard' => 'Ir al escritorio de Sparkpost',
-  'sending_serbers.php-mail.allow_verify.intro' => 'También puede permitir que sus usuarios verifiquen una identidad por su cuenta.
-      Es decir, el usuario puede agregar sus propias direcciones de correo electrónico o dominios y verificar en la plataforma.
-      Una vez verificado, el usuario puede usar su propia dirección de correo electrónico REMITENTE al enviar',
+  'sending_serbers.php-mail.allow_verify.intro' => 'También puede permitir que sus usuarios verifiquen una identidad por su cuenta. Es decir, el usuario puede agregar sus propias direcciones de correo electrónico o dominios y verificar en la plataforma. Una vez verificado, el usuario puede usar su propia dirección de correo electrónico REMITENTE al enviar',
   'sending_serbers.remove_email_domain' => 'Eliminar',
-  'sending_serbers.sendgrid.allow_verify.intro' => 'También puede permitir que sus usuarios verifiquen una identidad por su cuenta.
-            Es decir, el usuario puede solicitar verificar su propia dirección de correo electrónico o dominio contra su
-            Cuenta Sendgrid',
+  'sending_serbers.sendgrid.allow_verify.intro' => 'También puede permitir que sus usuarios verifiquen una identidad por su cuenta. Es decir, el usuario puede solicitar verificar su propia dirección de correo electrónico o dominio contra su Cuenta Sendgrid',
   'sending_server' => 'Servidor de envío',
   'sending_server.action' => 'Accíon',
   'sending_server.add_email_domain' => 'Agregar email/dominio',
@@ -2131,14 +1969,7 @@
   'sending_server.connect_failed' => 'No se pudo conectar con el servicio remoto, verifique su conexión. El servidor de envío está DESACTIVADO',
   'sending_server.created' => 'El servidor de envío ha sido creado',
   'sending_server.date_added' => 'Fecha agregada',
-  'sending_server.default_email_verification.content' => '<!DOCTYPE html>
-    <html>
-    <head>
-    </head>
-    <body>
-    <br /><span style="font-size: 24pt;">Acelle Mail Verification Center</span><br /><br /><span style="font-size: 14pt;">Dear Mr. or Mrs. {USER_LAST_NAME}</span><br /><br /><span style="font-size: 14pt;">Thank you for registering your email</span><br /><br /><span style="font-size: 14pt;">Please click the link below to verify your identity</span><br /><br /><em>Verification link will automatically be inserted to the end of your email content</em><br /><em>You can safely delete this notification line</em>
-    </body>
-    </html>',
+  'sending_server.default_email_verification.content' => '<!DOCTYPE html> <html> <head> </head> <body> <br /><span style="font-size: 24pt;">Acelle Mail Verification Center</span><br /><br /><span style="font-size: 14pt;">Dear Mr. or Mrs. {USER_LAST_NAME}</span><br /><br /><span style="font-size: 14pt;">Thank you for registering your email</span><br /><br /><span style="font-size: 14pt;">Please click the link below to verify your identity</span><br /><br /><em>Verification link will automatically be inserted to the end of your email content</em><br /><em>You can safely delete this notification line</em> </body> </html>',
   'sending_server.default_email_verification.subject' => 'Verify your email address',
   'sending_server.domain.remove_domain.confirm' => 'Estás a punto de eliminar el dominio de la lista',
   'sending_server.domain.removed' => 'Dominio eliminado satisfactoriamente',
@@ -2188,9 +2019,7 @@
   'sending_server_status_inactive' => 'Inactivo',
   'sending_servers' => 'Servidores de envio',
   'sending_servers.amazon_api_key.intro' => 'Amazon Simple Email Service (Amazon SES) es un servicio de envío de correo electrónico basado en la nube diseñado para ayudar a los especialistas en marketing digital y desarrolladores de aplicaciones a enviar correos electrónicos de marketing, notificaciones y transacciones. Obtenga sus pares de claves de Amazon SES y complete el siguiente formulario para conectarse',
-  'sending_servers.amazon_smtp.intro' => 'Amazon Simple Email Service (Amazon SES) es un servicio de envío de correo electrónico basado en la nube diseñado
-    para ayudar a los especialistas en marketing digital y desarrolladores de aplicaciones a enviar correos electrónicos de marketing, notificaciones y transacciones.
-    Obtenga su configuración de Amazon SMTP y complete el siguiente formulario para conectarse',
+  'sending_servers.amazon_smtp.intro' => 'Amazon Simple Email Service (Amazon SES) es un servicio de envío de correo electrónico basado en la nube diseñado para ayudar a los especialistas en marketing digital y desarrolladores de aplicaciones a enviar correos electrónicos de marketing, notificaciones y transacciones. Obtenga su configuración de Amazon SMTP y complete el siguiente formulario para conectarse',
   'sending_servers.configuration_settings' => 'Ajustes de configuración',
   'sending_servers.configuration_settings.aws.intro' => 'Configure una conexión a su cuenta de Amazon Web Service para enviar correos electrónicos a través del Servicio de correo electrónico simple (SES).',
   'sending_servers.configuration_settings.elasticemail.intro' => 'Configure una conexión a su cuenta de Elastic Email para enviar correos electrónicos.',
@@ -2204,8 +2033,7 @@
   'sending_servers.enabled' => 'Servidor/es habilitado/s',
   'sending_servers.fitness' => 'Probabilidad',
   'sending_servers.fitness.explain' => 'Cuando se trata de entregar un correo electrónico, si hay más de un servidor de envío disponible, la plataforma elegirá uno al azar. Cuanto mayor sea el valor de probabilidad que tenga un servidor de envío, mayor será la probabilidad de que se seleccione',
-  'sending_servers.local_identity.intro' => 'Especifique los dominios de entrega que los usuarios pueden usar. Es decir, el usuario puede especificar un
-      email REMITENTE que coincide con uno de los siguientes dominios',
+  'sending_servers.local_identity.intro' => 'Especifique los dominios de entrega que los usuarios pueden usar. Es decir, el usuario puede especificar un email REMITENTE que coincide con uno de los siguientes dominios',
   'sending_servers.mailgun_api_key.intro' => 'Estás conectado a Mailgun usando la clave API',
   'sending_servers.mailgun_smtp.intro' => 'Estás conectado a Mailgun usando el servidor SMTP',
   'sending_servers.primary' => 'primario',
@@ -2219,26 +2047,16 @@
   'sending_servers.sendgrid_api_key.intro' => 'Estás conectado a Sendgrid usando la clave API',
   'sending_servers.sendgrid_smtp.intro' => 'Estás conectado a Sendgrid usando el servidor SMTP',
   'sending_servers.sending_identity' => 'Enviando identidad',
-  'sending_servers.sending_identity.elasticemail.intro' => 'Los siguientes dominios se verificaron en su cuenta de Elastic Email.
-      El usuario solo puede enviar desde los dominios siguientes y no puede enviar su propia identidad',
-  'sending_servers.sending_identity.intro' => 'Los siguientes dominios se verificaron en su cuenta de Amazon SES.
-    Click <a target="_blank" href=":link">aqui</a> para encontrar más detalles en su panel de Amazon. Elija el dominio que son los usuarios
-    autorizados a enviar en nombre de (dirección REMITENTE)',
-  'sending_servers.sending_identity.mailgun.intro' => 'Los siguientes dominios se verificaron en su cuenta de Mailgun.
-      El usuario solo puede enviar desde los dominios siguientes y no puede enviar su propia identidad',
-  'sending_servers.sending_identity.sendgrid.intro' => 'The following domains were verified against your Sendgrid account.
-      El usuario solo puede enviar desde los dominios siguientes y no puede enviar su propia identidad',
-  'sending_servers.sending_identity.sparkpost.intro' => 'Los siguientes dominios se verificaron en su cuenta de Sparkpost.
-      El usuario solo puede enviar desde los dominios siguientes y no puede enviar su propia identidad',
-  'sending_servers.sending_limit.aws.intro' => 'Controle qué tan rápido puede enviar su aplicación a través de esta conexión.
-    Cada cuenta de Amazon SES tiene su propio conjunto de límites de envío. Puede encontrar los detalles de los límites de AWS aquí',
-  'sending_servers.sending_limit.elasticemail.intro' => 'Especifique el límite de velocidad para controlar qué tan rápido puede enviar su aplicación a través de esta conexión en
-    términos de rendimiento de correo electrónico. Puede encontrar los detalles de los límites de SendGrid<a href="">aqui</a>',
-  'sending_servers.sending_limit.mailgun.intro' => 'Especifique el límite de velocidad para controlar qué tan rápido puede enviar su aplicación a través de esta conexión en
-    términos de rendimiento de correo electrónico. Puede encontrar los detalles de los límites de SendGrid <a href="">aqui</a>',
+  'sending_servers.sending_identity.elasticemail.intro' => 'Los siguientes dominios se verificaron en su cuenta de Elastic Email. El usuario solo puede enviar desde los dominios siguientes y no puede enviar su propia identidad',
+  'sending_servers.sending_identity.intro' => 'Los siguientes dominios se verificaron en su cuenta de Amazon SES. Click <a target="_blank" href=":link">aqui</a> para encontrar más detalles en su panel de Amazon. Elija el dominio que son los usuarios autorizados a enviar en nombre de (dirección REMITENTE)',
+  'sending_servers.sending_identity.mailgun.intro' => 'Los siguientes dominios se verificaron en su cuenta de Mailgun. El usuario solo puede enviar desde los dominios siguientes y no puede enviar su propia identidad',
+  'sending_servers.sending_identity.sendgrid.intro' => 'The following domains were verified against your Sendgrid account. El usuario solo puede enviar desde los dominios siguientes y no puede enviar su propia identidad',
+  'sending_servers.sending_identity.sparkpost.intro' => 'Los siguientes dominios se verificaron en su cuenta de Sparkpost. El usuario solo puede enviar desde los dominios siguientes y no puede enviar su propia identidad',
+  'sending_servers.sending_limit.aws.intro' => 'Controle qué tan rápido puede enviar su aplicación a través de esta conexión. Cada cuenta de Amazon SES tiene su propio conjunto de límites de envío. Puede encontrar los detalles de los límites de AWS aquí',
+  'sending_servers.sending_limit.elasticemail.intro' => 'Especifique el límite de velocidad para controlar qué tan rápido puede enviar su aplicación a través de esta conexión en términos de rendimiento de correo electrónico. Puede encontrar los detalles de los límites de SendGrid<a href="">aqui</a>',
+  'sending_servers.sending_limit.mailgun.intro' => 'Especifique el límite de velocidad para controlar qué tan rápido puede enviar su aplicación a través de esta conexión en términos de rendimiento de correo electrónico. Puede encontrar los detalles de los límites de SendGrid <a href="">aqui</a>',
   'sending_servers.sending_limit.phrase' => ':quota_value emails por :quota_base :quota_unit',
-  'sending_servers.sending_limit.sparkpost.intro' => 'Límite de velocidad de Sparkpost para controlar qué tan rápido puede enviar su aplicación a través de esta conexión en
-    términos de rendimiento de correo electrónico. Puede encontrar los detalles de los límites de Sparkpost <a href="">aqui</a>',
+  'sending_servers.sending_limit.sparkpost.intro' => 'Límite de velocidad de Sparkpost para controlar qué tan rápido puede enviar su aplicación a través de esta conexión en términos de rendimiento de correo electrónico. Puede encontrar los detalles de los límites de Sparkpost <a href="">aqui</a>',
   'sending_servers.sendmail.intro' => 'Configure la plataforma para enviar correos electrónicos directamente a través de su servidor de alojamiento <code>sendmail</code>. Asegúrese de que la función ya esté instalada en su servidor de alojamiento.',
   'sending_servers.set_primary' => 'Establecer primario',
   'sending_servers.smtp.intro' => 'Configure la plataforma para enviar correos electrónicos a través de un servicio SMTP que puede ser su propio sistema SMTP o de un tercer proveedor de servicios.',
@@ -2261,10 +2079,7 @@
   'setting.name' => 'Nombre',
   'setting.recurring_charge_before_days.after_text' => 'days before expiry date',
   'setting.recurring_charge_before_days.before_text' => 'Automatically charge a renewal invoice',
-  'setting.recurring_charge_before_days.desc' => 'If your customers\' selected payment gateway supports
-    auto billing and if the customers have previously
-    stored a payment method, a credit or debit card for example, then you can specify a timeframe
-    for the application to automatically charge your customers\' card.',
+  'setting.recurring_charge_before_days.desc' => 'If your customers\' selected payment gateway supports auto billing and if the customers have previously stored a payment method, a credit or debit card for example, then you can specify a timeframe for the application to automatically charge your customers\' card.',
   'setting.recurring_charge_before_days.title' => 'Renewal invoices billing date',
   'setting.update.success' => ':name la configuración se actualizó correctamente.',
   'setting.updated' => 'Las opciones del sistema han sido actualizadas',
@@ -2300,8 +2115,7 @@
   'source' => 'Source',
   'source.abandoned_cart_email' => 'Abandoned Cart Email',
   'source.abandoned_cart_email.all_setup' => 'Your abandoned cart email is all setup',
-  'source.abandoned_cart_email.desc' => 'Encourage customers to complete their purchase if they leave
-      items in their cart',
+  'source.abandoned_cart_email.desc' => 'Encourage customers to complete their purchase if they leave items in their cart',
   'source.add_new' => 'Add new',
   'source.can_not_get_woo_data' => 'Could not get shop information from woocommerce. Error: :error',
   'source.connect_url.help' => 'Your WordPress enpoint url',
@@ -2319,16 +2133,13 @@
   'source.not_found' => 'There are no source found',
   'source.products.manage' => 'Manage',
   'source.refresh' => 'Refresh',
-  'source.select_source_type.wording' => 'Select one of the following
-      E-commerce belows to connect with:',
+  'source.select_source_type.wording' => 'Select one of the following E-commerce belows to connect with:',
   'source.switch_store' => 'Switch store',
   'source.sync' => 'Sync',
   'source.visit_store' => 'Visit store',
   'source.woo.connect' => 'Connect to WooCommerce',
   'source.woo.connecting' => 'Connecting...',
-  'source.woo.desc' => 'Enter your WordPress Acelle enpoint here to connect to exist WooCommerce stores.
-      If you are not sure what your WordPress endpoint is, please install
-      <a target="_blank" href=":link">WordPress Plugin for Acelle</a> plugin',
+  'source.woo.desc' => 'Enter your WordPress Acelle enpoint here to connect to exist WooCommerce stores. If you are not sure what your WordPress endpoint is, please install <a target="_blank" href=":link">WordPress Plugin for Acelle</a> plugin',
   'source.your_store_synchronized' => 'your store\'s products are being synchronized to Acelle',
   'spam-reported' => 'Spam reportado',
   'spam_reported' => 'Spam reportado',
@@ -2341,8 +2152,7 @@
   'stay_logged_in' => 'No cerrar sesión',
   'stop_list_verification_confirm' => 'Estás a punto de detener el proceso de verificación de correo electrónico para esta lista',
   'store.connected_with_acelle' => 'Your store is connected with Acelle',
-  'store.connected_with_acelle.desc' => 'While connected, Acelle can synchronize products
-    and contacts from your store to a specified mail list',
+  'store.connected_with_acelle.desc' => 'While connected, Acelle can synchronize products and contacts from your store to a specified mail list',
   'stores_connections' => 'Stores & Connections',
   'style' => 'Estilo',
   'stylesheet_included' => 'Incluir hoja de estilos',
@@ -2364,15 +2174,13 @@
   'subscribed_on' => 'Suscripto a',
   'subscriber' => 'Subscriptor',
   'subscriber.a_fixed_value_for_contacts' => 'A fixed value for all contacts',
-  'subscriber.assign_to_subscriber' => 'Your are about to assign values to
-      <span class="font-weight-semibold">:count</span> contacts',
+  'subscriber.assign_to_subscriber' => 'Your are about to assign values to <span class="font-weight-semibold">:count</span> contacts',
   'subscriber.assign_values' => 'Assign Values',
   'subscriber.assign_values.value' => 'Field Value',
   'subscriber.blacklisted' => 'La dirección de correo electrónico está en la lista negra.',
   'subscriber.bulk_delete' => 'Bulk Delete',
   'subscriber.bulk_delete.enter_emails' => 'Enter email addresses you want to delete, seperate by a space or a line break',
-  'subscriber.bulk_delete.enter_emails.confirm' => 'Are you sure you want to delete the
-    following <strong>:count</strong> contact(s) from this mail list?',
+  'subscriber.bulk_delete.enter_emails.confirm' => 'Are you sure you want to delete the following <strong>:count</strong> contact(s) from this mail list?',
   'subscriber.bulk_delete.enter_emails.empty' => 'There are no subscribers found!',
   'subscriber.confirmation_email_sent' => 'Correo electrónico de confirmación enviado al suscriptor',
   'subscriber.created' => 'Suscriptor registrado',
@@ -2405,8 +2213,7 @@
   'subscribers_who' => 'Subscriptores que',
   'subscription' => 'Suscripcion',
   'subscription.approve' => 'Approve',
-  'subscription.approve.confirm' => 'You are going to confirm/approve the payment for this subscription and make
-      it active.',
+  'subscription.approve.confirm' => 'You are going to confirm/approve the payment for this subscription and make it active.',
   'subscription.approve_pending' => 'Aprobar',
   'subscription.billing_information.subtitle' => 'Enter your billing information here and click next',
   'subscription.billing_information.title' => 'Billing information',
@@ -2414,8 +2221,7 @@
   'subscription.cancel.confirm' => 'A punto de cancelar :number suscripción. Igualmente continuaras suscripto hasta el final de periodo abonado',
   'subscription.cancel_now' => 'Cancelar ahora',
   'subscription.cancel_now.confirm' => 'Está a punto de cancelar :number suscripción antes de su fecha de vencimiento. Seguro?,esta acción no se puede deshacer',
-  'subscription.cancel_now_change_other_plan' => 'Change your mind?
-      Click here to cancel this invoice.',
+  'subscription.cancel_now_change_other_plan' => 'Change your mind? Click here to cancel this invoice.',
   'subscription.cancelled' => 'La suscripción ha sido cancelada OK!',
   'subscription.cancelled_now' => 'Suscripción cancelada OK!',
   'subscription.change_plan' => 'Cambiar Plan',
@@ -2426,19 +2232,14 @@
   'subscription.create' => 'Crear',
   'subscription.create_new_subsctiption' => 'Crear nueva suscripción',
   'subscription.create_new_subsctiption.intro' => 'Vamos a seleccionar el cliente y el plan de abajo para asignar el cliente al plan',
-  'subscription.current_subscription.cancel_at_end_of_period.wording' => 'Actualmente suscripto al plan <strong>:plan</strong> (<strong>:money</strong>).
-      Su actual suscripción finaliza en <strong>:end_at</strong> restan <strong>:remain</strong>',
-  'subscription.current_subscription.recurring.wording' => 'Gracias unirse a nuestro servicio, actualmente está suscrito al plan <strong>:plan</strong> :money/m.<br>
-      Su próxima factura sera generadaa automáticament en <strong>:remain</strong>, en <strong>:next_on</strong>.',
-  'subscription.current_subscription.wording' => 'Thank you for being with us, you are
-      currently subscribed to <strong>:plan</strong> plan.<br>
-      Your next invoice will be billed in <strong>:remain</strong>, on <strong>:next_on</strong>.',
+  'subscription.current_subscription.cancel_at_end_of_period.wording' => 'Actualmente suscripto al plan <strong>:plan</strong> (<strong>:money</strong>). Su actual suscripción finaliza en <strong>:end_at</strong> restan <strong>:remain</strong>',
+  'subscription.current_subscription.recurring.wording' => 'Gracias unirse a nuestro servicio, actualmente está suscrito al plan <strong>:plan</strong> :money/m.<br> Su próxima factura sera generadaa automáticament en <strong>:remain</strong>, en <strong>:next_on</strong>.',
+  'subscription.current_subscription.wording' => 'Thank you for being with us, you are currently subscribed to <strong>:plan</strong> plan.<br> Your next invoice will be billed in <strong>:remain</strong>, on <strong>:next_on</strong>.',
   'subscription.delete' => 'Eliminar',
   'subscription.delete.confirm' => 'Esta a punto de eliminar completamente :number suscripción. Esta accion no podrá deshacer.',
   'subscription.deleted' => 'Suscripcion eliminada',
   'subscription.ended' => 'Terminó',
-  'subscription.ended_intro' => 'La suscripcion al plan <strong>:plan</strong> a finalizado en <strong>:ended_at</strong>.
-    Por favor renueve o elija otro plan.',
+  'subscription.ended_intro' => 'La suscripcion al plan <strong>:plan</strong> a finalizado en <strong>:ended_at</strong>. Por favor renueve o elija otro plan.',
   'subscription.ended_on' => 'Terminó el',
   'subscription.ends_on' => 'Termina en',
   'subscription.from_to_date' => 'De :start a :end',
@@ -2491,17 +2292,14 @@
   'subscription.updated_at' => 'Actualizado el',
   'subscription.wording' => 'Esta característica le permite controlar los detalles de la suscripción de sus clientes. Puede aprobar el pago, habilitar o deshabilitar una suscripción. También puede crear nuevas suscripciones para sus clientes existentes',
   'subscription.your_order' => 'Your order',
-  'subscription.your_order.desc' => 'You’re subscring to plan <strong>:plan</strong>.
-    Below are your order details',
+  'subscription.your_order.desc' => 'You’re subscring to plan <strong>:plan</strong>. Below are your order details',
   'subscription_done.email_subject' => 'Suscripción creada!',
   'subscription_empty_line_1' => 'No se registran suscripciones en ningun plan vigente',
   'subscription_empty_line_1_admin' => 'No se registran suscriptores',
   'subscription_of' => ':name\'s suscripcion',
   'subscriptions' => 'Suscripciones',
   'successful_deliveries' => 'Entregas realizadas con exito',
-  'suscription.order_empty' => 'Choose one of the plans available and your
-    invoice details will be calculated and
-    display here',
+  'suscription.order_empty' => 'Choose one of the plans available and your invoice details will be calculated and display here',
   'system' => 'Sistema',
   'system.renew_free_plan' => 'Can renew free plan',
   'system_compatibility' => 'Compatibilidad del sistema',
@@ -2516,8 +2314,7 @@
   'tax.by_country' => 'Tax by country',
   'tax.country.add' => 'Add',
   'tax.country_required' => 'Select country to add tax',
-  'tax.country_taxes.intro' => 'If you want to set up a different tax
-    rate to a country, specify it in the list below',
+  'tax.country_taxes.intro' => 'If you want to set up a different tax rate to a country, specify it in the list below',
   'tax.default_rate' => 'Default tax rate',
   'tax.default_rate_required' => 'Default rate is required',
   'tax.enable' => 'Enable tax',
@@ -2550,12 +2347,10 @@
   'template.pro_builder' => 'PRO builder',
   'template.select_your_template' => 'Seleccione uno de los diseños de plantilla a continuación',
   'template.set_template_category' => 'Set template category',
-  'template.set_template_category.intro' => 'Choose one or more categories for your template
-    <br>Notice: if your template does not fall upon any category, it will not be visible to users.',
+  'template.set_template_category.intro' => 'Choose one or more categories for your template <br>Notice: if your template does not fall upon any category, it will not be visible to users.',
   'template.thumb.upload' => 'Subir',
   'template.thumb.upload_thumbnail' => 'Subir Miniatura',
-  'template.thumb.upload_thumbnail.intro' => 'Subir la imagen para la miniatura de la plantilla cuando se muestra en la lista o
-      representan de la utilización de la plantilla',
+  'template.thumb.upload_thumbnail.intro' => 'Subir la imagen para la miniatura de la plantilla cuando se muestra en la lista o representan de la utilización de la plantilla',
   'template.thumb.upload_thumbnail_url' => 'Seleccione la url de la miniatura',
   'template.thumb.upload_thumbnail_url.intro' => 'Ingrese el URL de la imagen debajo del cual se usará como plantilla de la miniatura',
   'template.thumb.uploaded' => 'La miniatura de la plantilla se subió con éxito',
@@ -2658,8 +2453,7 @@
   'transactions' => 'Transactions',
   'translate' => 'Traducir',
   'trigger.check' => 'Refresh',
-  'trouble_clicking_reset_password_button' => 'Si tiene problemas para hacer clic en ":actionText" boton, copia y pega la URL a continuación
-      en su navegador web: [:actionUrl](:actionUrl)',
+  'trouble_clicking_reset_password_button' => 'Si tiene problemas para hacer clic en ":actionText" boton, copia y pega la URL a continuación en su navegador web: [:actionUrl](:actionUrl)',
   'try_again' => 'Intentalo otra vez',
   'type' => 'Tipo',
   'type_to_search' => 'Ingresa que buscar',
@@ -2773,8 +2567,7 @@
   'webhook.deleted' => 'Webhook was successfully deleted.',
   'webhook.description' => 'Description',
   'webhook.endpoint' => 'Endpoint',
-  'webhook.endpoint.desc' => 'Enter your endpoint URL to which the system will
-    send a notification when the selected event happens',
+  'webhook.endpoint.desc' => 'Enter your endpoint URL to which the system will send a notification when the selected event happens',
   'webhook.execute_click_callback' => 'Execute click callback',
   'webhook.execute_open_callback' => 'Execute open callback',
   'webhook.sample_request' => 'Sample Request',
@@ -2801,9 +2594,7 @@
   'webhooks.empty' => 'There are no webhooks!',
   'webhooks.manage' => 'Manage',
   'webhooks.summary_desc' => 'Send notifications to your 3rd application',
-  'webhooks.wording' => 'Webhook is a mechanism that allows the
-    system to notify about events or activities related to
-    your marketing campaign (email opens, clicks, unsubscribe…)',
+  'webhooks.wording' => 'Webhook is a mechanism that allows the system to notify about events or activities related to your marketing campaign (email opens, clicks, unsubscribe…)',
   'website' => 'Website',
   'website.add' => 'Add website',
   'website.add_site' => 'Add your website',
@@ -2812,8 +2603,7 @@
   'website.code_copied' => 'Site connection code was copied',
   'website.connect' => 'Connect',
   'website.connect_to_your_website' => 'Connect your website',
-  'website.connect_to_your_website.desc' => 'Connect to your own home or landing page<br>
-    to enable subscription popup forms',
+  'website.connect_to_your_website.desc' => 'Connect to your own home or landing page<br> to enable subscription popup forms',
   'website.connected_form' => 'Forms',
   'website.copy_code' => 'Copy code',
   'website.copy_code.intro' => 'The code below is used to inject form popup to your website. Copy the code and paste into the website\'s HTML source.',
@@ -2823,10 +2613,7 @@
   'website.get_code' => 'Get code',
   'website.get_custom_website_code' => 'Integration code',
   'website.new_added_intro' => '
-      <h4 class="fw-600 fs-3 text-center">Success!</h4>
-      <p class="text-center mb-0">Your website is now connected. You can now add<br>
-      subscription popup forms and enable other features for<br>
-      your site.</p>',
+      <h4 class="fw-600 fs-3 text-center">Success!</h4> <p class="text-center mb-0">Your website is now connected. You can now add<br> subscription popup forms and enable other features for<br> your site.</p>',
   'website.site_is_connected' => 'The [:title] site is connected',
   'website.site_is_connected_success' => 'The [:title] site was connected successfully',
   'website.status.connected' => 'connected',
@@ -2850,30 +2637,14 @@
   'white' => 'Blanco',
   'whitelabel.choose_a_brand_domain' => 'Choose a brand domain',
   'whitelabel.enable' => 'Enable whitelabelling',
-  'whitelabel.enabled.intro' => 'AWS service is being provided to your users
-      transparently under your own brand.
-      When
-      user adds a sending domain, they shall be
-      required to add DNS
-      record of your own
-      brand
-      <strong>:selector</strong>
-      to their DNS
-      management
-      control. No AWS selector or
-      message id shall show up to your users',
-  'whitelabel.enabled.wording' => 'Your AWS sending server is
-      whitelabelled',
+  'whitelabel.enabled.intro' => 'AWS service is being provided to your users transparently under your own brand. When user adds a sending domain, they shall be required to add DNS record of your own brand <strong>:selector</strong> to their DNS management control. No AWS selector or message id shall show up to your users',
+  'whitelabel.enabled.wording' => 'Your AWS sending server is whitelabelled',
   'whitelabel.settings' => 'Settings',
-  'whitelabel.setup.intro' => 'Selector is used in DNS record that user will need to
-      add to your DNS management console',
+  'whitelabel.setup.intro' => 'Selector is used in DNS record that user will need to add to your DNS management console',
   'whitelabel.setup.title' => 'Set up AWS whitelabelling',
   'whitelabel.title' => 'Whitelable AWS so that it serves under your own brand',
   'whitelabel.turn_off' => 'Turn OFF whitelabelling',
-  'whitelabel.wording' => 'When user add a sending domain, they shall be required to add DNS record like amazon.domain.com
-      to their DNS management control. You can replace `amazoneses` with something line awsome.domain.com to make it your
-      own brand
-  ',
+  'whitelabel.wording' => 'When user add a sending domain, they shall be required to add DNS record like amazon.domain.com to their DNS management control. You can replace `amazoneses` with something line awsome.domain.com to make it your own brand ',
   'widget.rss' => 'RSS',
   'widget.rss.change_url' => 'Change',
   'widget.rss.click_start' => 'Click to enter a URL',

@@ -49,11 +49,9 @@
   'access_when_offline' => 'サイトがオフラインのときのアクセス',
   'account' => 'アカウント',
   'account.color_scheme' => 'アカウントの配色を選択してください',
-  'account.color_scheme.into' => '配色でアカウントパネルをカスタマイズします。
-     アカウントをパーソナライズする色を下から1つ選択してください',
+  'account.color_scheme.into' => '配色でアカウントパネルをカスタマイズします。 アカウントをパーソナライズする色を下から1つ選択してください',
   'account.menu_layout' => 'メニューレイアウト',
-  'account.menu_layout.into' => 'Select menu one of menu layouts above you like.
-    Menu layout help you easier to navigate through app pages depending on your prefer style',
+  'account.menu_layout.into' => 'Select menu one of menu layouts above you like. Menu layout help you easier to navigate through app pages depending on your prefer style',
   'account.personality' => 'パーソナリティー（個性）',
   'account.welcome_user' => ':nameさん　おかえりなさい！',
   'action' => 'アクション',
@@ -61,8 +59,7 @@
   'actions' => 'アクション',
   'activated' => '有効',
   'activation_email_resent_content' => '<p>Please click the link in the email we just sent you.</p>',
-  'activation_email_sent_content' => '<p>登録プロセスを完了するには、メールアドレスを確認する必要があります。
-     登録プロセスを完了するには、先ほど送信したメールのリンクをクリックしてください。</p>',
+  'activation_email_sent_content' => '<p>登録プロセスを完了するには、メールアドレスを確認する必要があります。 登録プロセスを完了するには、先ほど送信したメールのリンクをクリックしてください。</p>',
   'activation_email_sent_title' => '登録確認',
   'active' => 'アクティブ',
   'activities' => '活動',
@@ -81,8 +78,7 @@
   'admin' => '管理者',
   'admin.created' => '管理者が正常に作成されました',
   'admin.dashboard.notification_delete_confirm' => '問題を解決し、この通知を抑制しますか？',
-  'admin.dashboard.recent_activity.wording' => 'デフォルトでは、顧客のすべてのアクティビティは調査のためにログに記録されます.
-    完全なリストを表示するには、<ahref =":here">顧客ダッシュボード</a>にアクセスしてください',
+  'admin.dashboard.recent_activity.wording' => 'デフォルトでは、顧客のすべてのアクティビティは調査のためにログに記録されます. 完全なリストを表示するには、<ahref =":here">顧客ダッシュボード</a>にアクセスしてください',
   'admin.dashboard.recent_customers.wording' => '最近の計画パフォーマンスが確認出来ます。 登録ユーザーがあなたのどのサービスプランにどのように加入しているかをご覧ください。 完全なリストを表示するには、<a href=":here">顧客奪取ボード</a> にアクセスしてください',
   'admin.dashboard.recent_subscriptions.wording' => '最近サブスクライブした、またはシステム管理者によって追加されたアクティブユーザー。 完全なリストを表示するには、 <a href=":here"> 定期購読管理ダッシュボード</a> にアクセスしてください',
   'admin.loginas_area' => '<strong>:name</strong>に戻る',
@@ -169,8 +165,7 @@
   'automation.action.condition.cart_buy_item.title' => 'Condition: Buy “:item” item',
   'automation.action.condition.click_link.title' => '条件：リンクをクリックしますか？',
   'automation.action.condition.desc' => '自動化された電子メールまたは定期的な電子メールを設計するか、連絡先に送信します。',
-  'automation.action.condition.intro' => 'ワークフローについて、以下の条件のいずれかを選択してください。 状態を評価します
-         それに応じてワークフローを分岐します。',
+  'automation.action.condition.intro' => 'ワークフローについて、以下の条件のいずれかを選択してください。 状態を評価します それに応じてワークフローを分岐します。',
   'automation.action.condition.read_email.title' => '状態：前のメールを開きますか？',
   'automation.action.condition.select_criterion' => '基準を選択',
   'automation.action.condition.which_email' => 'どのメール',
@@ -180,8 +175,7 @@
   'automation.action.delete.confirm' => 'このアクションを削除するには、下のボタンをクリックしてください。 要素を削除すると、そのすべての子と関連データも削除されることに注意してください。 このアクションは元に戻せません。',
   'automation.action.delete.wording' => 'このアクションを削除すると、そのすべての子も削除されます。 このアクションは元に戻せません',
   'automation.action.deteled' => 'アクションは正常に削除されました',
-  'automation.action.intro' => 'コミュニケーションを合理化し、各顧客のエクスペリエンスをパーソナライズします。 自動化を使用する
-         特定の日付、イベント、または連絡先のアクティビティによってトリガーされたときに送信する1つまたは一連の電子メールを作成します。',
+  'automation.action.intro' => 'コミュニケーションを合理化し、各顧客のエクスペリエンスをパーソナライズします。 自動化を使用する 特定の日付、イベント、または連絡先のアクティビティによってトリガーされたときに送信する1つまたは一連の電子メールを作成します。',
   'automation.action.last_updated' => '最終更新',
   'automation.action.operation' => '操作',
   'automation.action.operation.choose_contact_tags' => 'タグを選択し、Enterキーを押してそれぞれを確認します',
@@ -204,15 +198,13 @@
   'automation.action.save_change' => '変更を保存する',
   'automation.action.send-an-email' => 'メールを送る',
   'automation.action.send-an-email.desc' => '自動化された電子メールまたは定期的な電子メールを設計するか、連絡先に送信します。',
-  'automation.action.send-an-email.intro' => 'ワークフローについて、以下の条件のいずれかを選択してください。 状態を評価します
-         それに応じてワークフローを分岐します。',
+  'automation.action.send-an-email.intro' => 'ワークフローについて、以下の条件のいずれかを選択してください。 状態を評価します それに応じてワークフローを分岐します。',
   'automation.action.set_up_your_condition' => '条件を設定します',
   'automation.action.title' => 'アクション:: title',
   'automation.action.updated' => 'アクションは正常に更新されました。',
   'automation.action.wait' => '待つ',
   'automation.action.wait.desc' => '自動化された電子メールまたは定期的な電子メールを設計するか、連絡先に送信します。',
-  'automation.action.wait.intro' => '自動化ワークフローを設定して、次のアクションに進む前にしばらく待ちます。
-         どのくらい待ちますか、以下から選択してください。',
+  'automation.action.wait.intro' => '自動化ワークフローを設定して、次のアクションに進む前にしばらく待ちます。 どのくらい待ちますか、以下から選択してください。',
   'automation.action.wait.title' => ' :number  :time を待つ',
   'automation.add_an_action' => '自動化のシナリオを追加する',
   'automation.all_activities' => 'すべての活動',
@@ -220,8 +212,7 @@
   'automation.at' => 'で',
   'automation.audience' => 'ユーザー',
   'automation.automation_email' => '自動化メール',
-  'automation.automation_email.intro' => 'キャンペーンを開いた人を見つけるには、
-     キャンペーンに埋め込まれた非表示のWebビーコンがダウンロードされます。',
+  'automation.automation_email.intro' => 'キャンペーンを開いた人を見つけるには、 キャンペーンに埋め込まれた非表示のWebビーコンがダウンロードされます。',
   'automation.automation_name' => '自動化名',
   'automation.automation_trigger' => '自動化トリガー',
   'automation.back_to_automation' => '自動化に戻る',
@@ -243,8 +234,7 @@
   'automation.brief-intro.welcome-new-subscriber' => 'Trigger when new subscriber opts in',
   'automation.brief-intro.woo-abandoned-cart' => 'WooCommerceの放棄されたカートのリマインダー',
   'automation.buy_now' => '今買う',
-  'automation.change_list.confirm' => 'ターゲットリストを変更すると、現在のリスト追跡がすべて消去されます/
-     統計。 つまり、自動化データは新しいリスト用にリセットされます。',
+  'automation.change_list.confirm' => 'ターゲットリストを変更すると、現在のリスト追跡がすべて消去されます/ 統計。 つまり、自動化データは新しいリスト用にリセットされます。',
   'automation.change_mail_list' => 'メールリストの変更',
   'automation.choose_a_product' => '製品を選択してください',
   'automation.choose_an_operation' => '操作を選択してください',
@@ -253,8 +243,7 @@
   'automation.choose_list' => 'メーリングリストを選択してください',
   'automation.choose_list_field' => 'リストフィールドを選択',
   'automation.choose_your_template_layout' => 'キャンペーンテンプレートのレイアウトを選択',
-  'automation.choose_your_template_layout.intro' => '[存在]を選択すると、メールのテンプレートをすばやく作成できます
-         レイアウト/テーマ、またはテンプレートソースファイルからアップロードします。',
+  'automation.choose_your_template_layout.intro' => '[存在]を選択すると、メールのテンプレートをすばやく作成できます レイアウト/テーマ、またはテンプレートソースファイルからアップロードします。',
   'automation.condition.cart_buy_anything' => 'カートで何でも買う',
   'automation.condition.cart_buy_item' => '特定のアイテムを購入する',
   'automation.condition.choose_email' => 'メールを選択',
@@ -273,13 +262,11 @@
   'automation.contact.tag.removed' => '<span class="font-weight-semibold">:tag</span>タグが削除されました',
   'automation.contact.tagged' => '：contact \\のタグが更新されました',
   'automation.contacts' => '連絡先|連絡先',
-  'automation.contacts.copied_to_new_list' => '<span class="font-weight-semibold">:count</span> contacts were copied to
-    `<span class="font-weight-semibold">:list</span>` successfully',
+  'automation.contacts.copied_to_new_list' => '<span class="font-weight-semibold">:count</span> contacts were copied to `<span class="font-weight-semibold">:list</span>` successfully',
   'automation.contacts.copy_to_new_list' => '連絡先をコピーする',
   'automation.contacts.copy_to_new_list.copy' => '作成とコピー',
   'automation.contacts.copy_to_new_list.enter_list_name' => '新しいリスト名',
-  'automation.contacts.copy_to_new_list.intro' => 'Your are about to copy <span class="font-weight-semibold">:count</span>
-    contacts to new mail list. Enter your new mail list name below.',
+  'automation.contacts.copy_to_new_list.intro' => 'Your are about to copy <span class="font-weight-semibold">:count</span> contacts to new mail list. Enter your new mail list name below.',
   'automation.contacts.copying_to_new_list' => '連絡先をコピーしています...お待ちください。',
   'automation.contacts.exported' => '連絡先は正常にエクスポートされました。',
   'automation.contacts.search.placeholder' => '連絡先を検索するために入力してください...',
@@ -315,8 +302,7 @@
   'automation.email.attachment.download' => 'ダウンロード',
   'automation.email.attachment.remove' => '削除する',
   'automation.email.attachment.removed' => '添付ファイルは正常に削除されました',
-  'automation.email.change_template.confirm' => 'テンプレートを変更すると、カスタマイズされた現在のメールコンテンツが削除されます。
-     これは元に戻すことができます。',
+  'automation.email.change_template.confirm' => 'テンプレートを変更すると、カスタマイズされた現在のメールコンテンツが削除されます。 これは元に戻すことができます。',
   'automation.email.clicks' => 'クリック数',
   'automation.email.confirm' => '確認',
   'automation.email.content' => 'メールコンテンツ',
@@ -341,8 +327,7 @@
   'automation.email.set_up.success' => 'メールが正常に設定されました',
   'automation.email.settings' => '設定',
   'automation.email.setup' => 'セットアップ',
-  'automation.email.setup.intro' => '以下にメール情報を記入してください。 それらは適用するために使用されます
-     顧客に送信するすべての電子メールに。',
+  'automation.email.setup.intro' => '以下にメール情報を記入してください。 それらは適用するために使用されます 顧客に送信するすべての電子メールに。',
   'automation.email.subject' => '件名',
   'automation.email.subject.placeholder' => '例えば。 私たちのメールリストへようこそ',
   'automation.email.summary.content' => 'コンテンツ',
@@ -371,17 +356,14 @@
   'automation.insight.intro' => '以下は、キャンペーンのパフォーマンスとユーザーがキャンペーンにどのように反応するかについての洞察です。',
   'automation.insight.percent_tip' => 'この手順を実行した連絡先の割合',
   'automation.intro.api-3-0' => '「 :list 」メーリングリストに適用される、他からのAPIリクエストによってトリガーされる自動メールマーケティングキャンペーン',
-  'automation.intro.monthly-recurring' => 'キャンペーンをスケジュールして、
-       月次ベース、月の特定の日に',
+  'automation.intro.monthly-recurring' => 'キャンペーンをスケジュールして、 月次ベース、月の特定の日に',
   'automation.intro.say-goodbye-subscriber' => '契約者がリストからオプトアウトするたびにトリガーされ、「：list」メールリストに適用される自動メールマーケティングキャンペーン',
   'automation.intro.say-happy-birthday' => '「 :list 」メーリングリストに適用される、加入者の生年月日にトリガーされる自動メールマーケティングキャンペーン',
   'automation.intro.specific-date' => '「 :list 」メーリングリストに適用される、すべての契約者に対して特定の日時にトリガーされる自動メールマーケティングキャンペーン',
   'automation.intro.subscriber-added-date' => '「 :list 」メーリングリストに適用される、加入者の追加日に毎年トリガーされる自動メールマーケティングキャンペーン',
-  'automation.intro.weekly-recurring' => 'キャンペーンを自動的にスケジュールする
-       選択した特定の曜日に、毎週送信します',
+  'automation.intro.weekly-recurring' => 'キャンペーンを自動的にスケジュールする 選択した特定の曜日に、毎週送信します',
   'automation.intro.welcome-new-subscriber' => '「 :list 」メーリングリストに適用される、新規加入者に対してトリガーされる自動Eメールマーケティングキャンペーン',
-  'automation.intro.woo-abandoned-cart' => 'Send your buyer a reminder if they left
-      something in cart',
+  'automation.intro.woo-abandoned-cart' => 'Send your buyer a reminder if they left something in cart',
   'automation.last_activity' => '最後の活動',
   'automation.name_your_automation' => '新しいオートメーションに名前を付けます。 この名前は後で自動化を識別するために使用されます。※わかりやすい名前にしましょう。',
   'automation.no_email' => 'Eメール',
@@ -414,11 +396,9 @@
   'automation.profile.remove_contact.confirm' => 'You are about to remove <span class="font-weight-semibold">:name</span> contact',
   'automation.profile.tag' => 'セーブ',
   'automation.profile.tag_contact' => 'タグの連絡先',
-  'automation.profile.tag_contact.intro' => 'Your are about to tag <span class="font-weight-semibold">:name</span>.
-    Type your tags in the box below, press ENTER to confirm each',
+  'automation.profile.tag_contact.intro' => 'Your are about to tag <span class="font-weight-semibold">:name</span>. Type your tags in the box below, press ENTER to confirm each',
   'automation.profile.tag_contacts' => '連絡先にタグを付ける',
-  'automation.profile.tag_contacts.intro' => '<span class="font-weight-semibold">:count </span>の連絡先にタグを付けようとしています
-     下のボックスにタグを入力し、Enterキーを押してそれぞれを確認します。',
+  'automation.profile.tag_contacts.intro' => '<span class="font-weight-semibold">:count </span>の連絡先にタグを付けようとしています 下のボックスにタグを入力し、Enterキーを押してそれぞれを確認します。',
   'automation.profile_timeline_head' => 'タイムライン',
   'automation.redirect_to_index' => '自動化リストにリダイレクトしています...',
   'automation.remove_this_action' => 'このアクションを削除します',
@@ -430,9 +410,7 @@
   'automation.settings.intro' => '以下は自動化の一般的な情報です。<br> 設定を更新して、[<span class="font-weight-semibold">保存</span>]ボタンをクリックできます。',
   'automation.settings.save' => 'セーブ',
   'automation.started' => '自動化が正常に開始されました',
-  'automation.started.desc' => 'おめでとう！ これで、自動化されたキャンペーンが稼働しています。
-     私たちはあなたの個々の連絡先活動と全体的なキャンペーンのパフォーマンスを追跡します。
-     詳細については、インサイトレポートと統計レポートを確認してください。',
+  'automation.started.desc' => 'おめでとう！ これで、自動化されたキャンペーンが稼働しています。 私たちはあなたの個々の連絡先活動と全体的なキャンペーンのパフォーマンスを追跡します。 詳細については、インサイトレポートと統計レポートを確認してください。',
   'automation.started.title' => '自動化が開始されました',
   'automation.started_at' => '開始::時間',
   'automation.statistics' => '統計学',
@@ -448,11 +426,9 @@
   'automation.switch_automation.confirm' => '自動化に切り替える',
   'automation.tag_those_contacts' => 'それらの連絡先にタグを付ける',
   'automation.template.builder.select' => 'ビルダーを選択',
-  'automation.template.builder.select.intro' => '電子メールの内容は正常に更新されました。
-       以下のビルダーのいずれかを選択して編集します',
+  'automation.template.builder.select.intro' => '電子メールの内容は正常に更新されました。 以下のビルダーのいずれかを選択して編集します',
   'automation.template.email_content' => 'メールコンテンツ',
-  'automation.template.email_content.intro' => 'メールを最初から作成するか、事前に作成されたテンプレート/テーマから始めます。
-         強力で使いやすいHTMLメールビルダーを使用して、コンテンツを希望どおりにカスタマイズします。',
+  'automation.template.email_content.intro' => 'メールを最初から作成するか、事前に作成されたテンプレート/テーマから始めます。 強力で使いやすいHTMLメールビルダーを使用して、コンテンツを希望どおりにカスタマイズします。',
   'automation.template.from_layout' => 'テンプレートレイアウトから',
   'automation.template.from_layout.intro' => '事前に作成したレイアウトに基づいてメールを作成します',
   'automation.template.opening_builder' => 'ビルダーを開く...',
@@ -477,10 +453,8 @@
   'automation.trigger.is_not_setup' => 'トリガーはまだ設定されていません。 このアクションをクリックして、自動化トリガーを設定します',
   'automation.trigger.is_not_setup.title' => '！ トリガーはまだ設定されていません',
   'automation.trigger.monthly-recurring' => '毎月の定期的な',
-  'automation.trigger.monthly-recurring.desc' => 'キャンペーンをスケジュールして、
-       月次ベース、月の特定の日に',
-  'automation.trigger.monthly-recurring.intro' => 'キャンペーンをスケジュールして、
-       月次ベース、月の特定の日に',
+  'automation.trigger.monthly-recurring.desc' => 'キャンペーンをスケジュールして、 月次ベース、月の特定の日に',
+  'automation.trigger.monthly-recurring.intro' => 'キャンペーンをスケジュールして、 月次ベース、月の特定の日に',
   'automation.trigger.no_date_of_birth_field' => '誕生日フィールドが選択されていません！',
   'automation.trigger.save_change' => '変更を保存する',
   'automation.trigger.say-goodbye-subscriber' => '加入者に別れを告げる',
@@ -509,18 +483,14 @@
   'automation.trigger.tree.woo-abandoned-cart' => '放棄されたカートのリマインダー',
   'automation.trigger.updated' => 'トリガーが正常に更新されました。',
   'automation.trigger.weekly-recurring' => '毎週繰り返される',
-  'automation.trigger.weekly-recurring.desc' => 'キャンペーンを自動的にスケジュールする
-       選択した特定の曜日に、毎週送信します',
-  'automation.trigger.weekly-recurring.intro' => 'キャンペーンを自動的にスケジュールする
-       選択した特定の曜日に、毎週送信します',
+  'automation.trigger.weekly-recurring.desc' => 'キャンペーンを自動的にスケジュールする 選択した特定の曜日に、毎週送信します',
+  'automation.trigger.weekly-recurring.intro' => 'キャンペーンを自動的にスケジュールする 選択した特定の曜日に、毎週送信します',
   'automation.trigger.welcome-new-subscriber' => '新規加入者を歓迎します',
   'automation.trigger.welcome-new-subscriber.desc' => '自己紹介| 彼らがあなたの聴衆にサインアップするときに人々にあなたの組織。',
   'automation.trigger.welcome-new-subscriber.intro' => 'ユーザーがリストにサブスクライブしたときにトリガーします。 通常は、ウェルカムメールを送信して、新規購読者に製品やサービスを提供することをお勧めします。',
   'automation.trigger.woo-abandoned-cart' => '放棄されたカートのリマインダー',
   'automation.trigger.woo-abandoned-cart.desc' => 'カートに商品を追加し、購入せずにサイトを離れた人にフォローアップメールを送信する',
-  'automation.trigger.woo-abandoned-cart.download_plugin' => 'If you are not sure
-      what your WordPress endpoint is, please install
-      <a target="_blank" href=":link">WordPress Plugin for Acelle</a> plugin',
+  'automation.trigger.woo-abandoned-cart.download_plugin' => 'If you are not sure what your WordPress endpoint is, please install <a target="_blank" href=":link">WordPress Plugin for Acelle</a> plugin',
   'automation.trigger.woo-abandoned-cart.intro' => 'カートに商品を追加し、チェックアウトの一部を完了した後、購入せずにサイトを離れた人にフォローアップメールを送信します',
   'automation.trigger_now' => 'Trigger Now',
   'automation.trigger_now.confirm' => 'トリガー基準が満たされていない可能性がありますが、この連絡先の自動化を手動でトリガーしようとしています。 よろしいですか？',
@@ -650,8 +620,7 @@
   'campaign.attached_files' => '添付ファイル',
   'campaign.attachment' => 'アタッチメント',
   'campaign.attachment.file_size_is' => 'ファイルサイズ:: size',
-  'campaign.attachment.intro' => '以下のファイルをメールでお送りします。
-         ローカルファイルをアップロードゾーンにドラッグアンドドロップして、キャンペーンの電子メールにファイルを添付します。',
+  'campaign.attachment.intro' => '以下のファイルをメールでお送りします。 ローカルファイルをアップロードゾーンにドラッグアンドドロップして、キャンペーンの電子メールにファイルを添付します。',
   'campaign.change_template' => 'テンプレートの変更',
   'campaign.check_spam_score' => 'スパムスコアを計算する',
   'campaign.choose_your_template_layout' => 'キャンペーンテンプレートのレイアウトを選択',
@@ -664,8 +633,7 @@
   'campaign.email_builder_classic' => 'メールビルダークラシック',
   'campaign.email_builder_pro' => 'メールビルダーPRO',
   'campaign.email_content' => 'メールコンテンツ',
-  'campaign.email_content.intro' => 'メールを最初から作成するか、事前に作成されたテンプレート/テーマから始めます。
-         強力で使いやすいHTMLメールビルダーを使用して、コンテンツを希望どおりにカスタマイズします。',
+  'campaign.email_content.intro' => 'メールを最初から作成するか、事前に作成されたテンプレート/テーマから始めます。 強力で使いやすいHTMLメールビルダーを使用して、コンテンツを希望どおりにカスタマイズします。',
   'campaign.email_content_plain' => 'メールコンテンツ',
   'campaign.email_content_plain.intro' => '下のテキストボックスからメールのプレーンテキストを入力してください。',
   'campaign.failed_delivery_attempt' => '配信の試行に失敗しました',
@@ -678,8 +646,7 @@
   'campaign.overview_statistics' => '統計学',
   'campaign.pending_delivery' => '送信しない',
   'campaign.plain.automatically_extract' => 'HTMLからプレーンコンテンツを自動的に抽出します',
-  'campaign.plain.click_to_custom_html' => 'Plain content is automatically extracted from HTML.
-    Click the button below to switch it off and enter your plain content manually',
+  'campaign.plain.click_to_custom_html' => 'Plain content is automatically extracted from HTML. Click the button below to switch it off and enter your plain content manually',
   'campaign.plain.extract_from_html' => 'HTMLコンテンツから抽出する',
   'campaign.plain.save' => '保存して次へ',
   'campaign.plain.use_custom_plain_content' => 'カスタムプレーンコンテンツを使用する',
@@ -715,8 +682,7 @@
   'campaign.started_ago' => 'Started :time ago',
   'campaign.successfully_delivered' => 'ユニーク送信数',
   'campaign.template.builder.select' => 'ビルダーを選択',
-  'campaign.template.builder.select.intro' => 'キャンペーンの内容が正常に更新されました。
-       以下のビルダーのいずれかを選択して編集します',
+  'campaign.template.builder.select.intro' => 'キャンペーンの内容が正常に更新されました。 以下のビルダーのいずれかを選択して編集します',
   'campaign.template.from_layout' => 'レイアウトドラフトから構築',
   'campaign.template.from_layout.intro' => '事前に作成したレイアウトに基づいてメールを作成します',
   'campaign.template.old_ver_error' => '以前の（古い）バージョンで作成されたキャンペーンは、現在のバージョンのアプリケーションにロードできません。 心配しなくても作成した新しいキャンペーンで正しく機能します。',
@@ -768,8 +734,7 @@
   'cart.list' => 'メールリスト',
   'cart.list.wording' => '購入者の連絡先を自動的に追加するためのリストを選択します',
   'cart.list_updated' => 'リストが更新されました',
-  'cart.send_notification_email_after' => 'Send notification emails 
-      <span class="text-semibold">:time</span> after items is left in cart',
+  'cart.send_notification_email_after' => 'Send notification emails  <span class="text-semibold">:time</span> after items is left in cart',
   'cart.store' => 'メールリスト',
   'cart.store.wording' => 'Acelleに接続するためのWooCommerceストアソースを選択してください',
   'cart.store_updated' => 'ストアソースが更新されました',
@@ -825,24 +790,9 @@
   'condition.custom_wait' => 'カスタム待機',
   'condition.select_woo_item' => 'アイテムを選択',
   'condition.wait.intro' => '
-    <p class="mb-2">
-      例：指定されたメールが開かれていない場合、または
-       最初のチェックでクリックし、待機時間は
-       [<span class="fw-600 wait_day">:days</span>]、Acelleは再確認を試み、
-       次の[<span class="fw-600 wait_day">:days</span>] の間に、ブランチなしで続行します
-    </p>
-
-    <p class="mb-3">
-      つまり、最大[<span class="fw-600 wait_day">:days</span>]を待ちます
-       受信者が開くかクリックするまで。 NOブランチのみを続行します
-       指定されたメールが、[<span class="fw-600 wait_day">:days</span>]日後に開かれていないか、クリックされていない場合
-    </p>
-  ',
+    <p class="mb-2"> 例：指定されたメールが開かれていない場合、または 最初のチェックでクリックし、待機時間は [<span class="fw-600 wait_day">:days</span>]、Acelleは再確認を試み、 次の[<span class="fw-600 wait_day">:days</span>] の間に、ブランチなしで続行します </p> <p class="mb-3"> つまり、最大[<span class="fw-600 wait_day">:days</span>]を待ちます 受信者が開くかクリックするまで。 NOブランチのみを続行します 指定されたメールが、[<span class="fw-600 wait_day">:days</span>]日後に開かれていないか、クリックされていない場合 </p> ',
   'condition.wait.title' => '
-    <p class="mb-2 fw-600">
-      条件が満たされるのを待つ時間を指定します。
-    </p>
-  ',
+    <p class="mb-2 fw-600"> 条件が満たされるのを待つ時間を指定します。 </p> ',
   'condition.wait_amount' => 'Amount',
   'condition.wait_unit' => '時間単位',
   'condition.which_email_read' => 'どのメールサブスクライバーが読み取るか',
@@ -903,9 +853,7 @@
   'created_at' => '作成日',
   'cron_jobs' => 'cronジョブ',
   'cron_jobs_guide' => '
-      システムのcrontabに次の行を挿入します。 <br />
-      以下のcronジョブの実行タイミングをお勧めしますが、必要に応じて変更できます
-    ',
+      システムのcrontabに次の行を挿入します。 <br /> 以下のcronジョブの実行タイミングをお勧めしますが、必要に応じて変更できます ',
   'cron_string.copied' => 'cron文字列がクリップボードにコピーされました',
   'curl_example' => 'CURLの例',
   'currencies' => '通貨',
@@ -1103,9 +1051,7 @@
   'export.whole_list' => 'リスト全体',
   'export_completed' => 'エクスポート完了',
   'export_subscribers' => '購読者のエクスポート',
-  'facebook_oauth.guide' => '<a target="_blank" href="https://developers.facebook.com/apps"class="external">にアクセスします
-     クライアントなどのアプリからクレデンシャルを取得するためのFacebookアプリコンソール</a>
-     IDとクライアントシークレットおよび以下の値を設定します。',
+  'facebook_oauth.guide' => '<a target="_blank" href="https://developers.facebook.com/apps"class="external">にアクセスします クライアントなどのアプリからクレデンシャルを取得するためのFacebookアプリコンソール</a> IDとクライアントシークレットおよび以下の値を設定します。',
   'facebook_oauth.intro' => 'FacebookのOAuth2.0認証システムを使用して、顧客がログインして登録します。',
   'facebook_oauth.uri_guide' => '以下のこれらのURIをコピーして、対応するOAuth設定フィールドに貼り付けます。',
   'failed' => '失敗しました',
@@ -1167,8 +1113,7 @@
   'form.display.element_id' => 'クリック可能な要素のIDを入力します',
   'form.display.element_id.desc' => '指定した要素がクリックされたときにフォームをロードします',
   'form.display.first_visit' => 'ページの最初の訪問',
-  'form.display.first_visit.desc' => 'Webページが表示されたらすぐにフォームをロードします
-     が読み込まれますが、最初のページの訪問のみ',
+  'form.display.first_visit.desc' => 'Webページが表示されたらすぐにフォームをロードします が読み込まれますが、最初のページの訪問のみ',
   'form.display.immediately' => 'すぐに',
   'form.display.immediately.desc' => 'Webページがロードされたらすぐにフォームをロードします',
   'form.display.wait' => '時間が経つと...',
@@ -1202,8 +1147,7 @@
   'form_page.use_outside_url' => 'カスタムURL',
   'form_page.use_outside_url.intro' => '以下のURLにリダイレクトします',
   'form_templates' => 'Form templates',
-  'form_templates.intro' => 'Below are BASE form templates available for all users registered in the applicaiton<br>
-    When it comes to add a form popup, users can create a new form popup from a base one',
+  'form_templates.intro' => 'Below are BASE form templates available for all users registered in the applicaiton<br> When it comes to add a form popup, users can create a new form popup from a base one',
   'form_title' => 'フォームのタイトル',
   'forms' => 'Forms',
   'forms.delete.confirm' => ':numberフォームを削除しようとしています。',
@@ -1230,9 +1174,7 @@
   'go_to_admin_view' => '管理者ビューに移動',
   'go_to_sending_server_page' => '送信サーバー設定ページに移動します',
   'goodbye_email' => 'さようならメール',
-  'google_oauth.guide' => '<a target="_blank" href="https://console.developers.google.com/"class="external">にアクセスします
-     クライアントなどのOAuth2.0クレデンシャルを取得するためのGoogleAPIコンソール</a>
-     IDとクライアントシークレットおよび以下の値を設定します。',
+  'google_oauth.guide' => '<a target="_blank" href="https://console.developers.google.com/"class="external">にアクセスします クライアントなどのOAuth2.0クレデンシャルを取得するためのGoogleAPIコンソール</a> IDとクライアントシークレットおよび以下の値を設定します。',
   'google_oauth.intro' => 'お客様がログインして登録するには、GoogleのOAuth2.0認証システムを使用してください。',
   'google_oauth.uri_guide' => '以下のこれらのURIをコピーして、対応するOAuth設定フィールドに貼り付けます。',
   'greater' => 'より大きい',
@@ -1254,8 +1196,7 @@
   'how_subscribers_matching' => '条件を組み合わせる方法',
   'html_version' => 'HTML',
   'identity.supported' => 'DKIMとSPFがサポートされています',
-  'image.upload_help' => '使用可能なファイルタイプはJPG/GIF/SVGです<br/>
-     現在の最大アップロードファイルサイズは<strongclass="text-bold">:max </strong>です',
+  'image.upload_help' => '使用可能なファイルタイプはJPG/GIF/SVGです<br/> 現在の最大アップロードファイルサイズは<strongclass="text-bold">:max </strong>です',
   'import' => 'インポート',
   'import.notice.over_quota' => '注意：リストの割り当てを超えました。特定のレコードがスキップされました',
   'import_another' => '別のインポート',
@@ -1293,9 +1234,7 @@
   'invoice.payment_is_being_verified' => '支払いは確認中です',
   'invoice.pending' => '支払いは保留中です',
   'invoice.pending.wording' => '
-      <p>保留中のサブスクリプション請求書の料金を支払っています。
-         下のボタンをクリックして支払いに移動します。</p>
-  ',
+      <p>保留中のサブスクリプション請求書の料金を支払っています。 下のボタンをクリックして支払いに移動します。</p> ',
   'invoice.price' => 'Price',
   'invoice.renew_subscription' => 'サブスクリプションを更新する',
   'invoice.status' => '状態',
@@ -1339,17 +1278,11 @@
   'language.discard_change' => '現在のファイルでの変更は破棄されます。',
   'language.load_translate' => 'ロード＆翻訳',
   'language.select_translation_file' => 'ファイルを選択',
-  'language.translate.intro' => '<p> Acelleを使用すると、タイトル、ラベル、ツールチップ、リンク、ボタンなど、Webアプリケーションのすべての領域でユーザーインターフェイス（UI）テキストをカスタマイズできます...元の英語からスペイン語に翻訳したり、これらを変更したりできます 好きなように言います。</p> <p>
-  フレーズは、以下のリストから選択できるさまざまなファイルに編成されています</p>',
+  'language.translate.intro' => '<p> Acelleを使用すると、タイトル、ラベル、ツールチップ、リンク、ボタンなど、Webアプリケーションのすべての領域でユーザーインターフェイス（UI）テキストをカスタマイズできます...元の英語からスペイン語に翻訳したり、これらを変更したりできます 好きなように言います。</p> <p> フレーズは、以下のリストから選択できるさまざまなファイルに編成されています</p>',
   'language.translation' => 'Translation',
   'language.updated' => '言語が正常に更新されました',
   'language.uploaded' => '言語が正常にアップロードされました',
-  'language_upload_guide' => '言語アップロードファイルは、翻訳ファイルを含むzipパッケージである必要があります。<br/>
-       <span class="text-semibold"> messages.php </span> <br/>
-       <span class="text-semibold"> auth.php </span> <br/>
-       <span class="text-semibold"> pagination.php </span> <br/>
-       <span class="text-semibold"> passwords.php </span> <br/>
-       <span class="text-semibold"> validation.php </span>',
+  'language_upload_guide' => '言語アップロードファイルは、翻訳ファイルを含むzipパッケージである必要があります。<br/> <span class="text-semibold"> messages.php </span> <br/> <span class="text-semibold"> auth.php </span> <br/> <span class="text-semibold"> pagination.php </span> <br/> <span class="text-semibold"> passwords.php </span> <br/> <span class="text-semibold"> validation.php </span>',
   'languages' => '言語',
   'languages.deleted' => '1つ以上の言語が正常に削除されました',
   'languages.disabled' => '1つ以上の言語が正常に無効化されました',
@@ -1363,8 +1296,7 @@
   'last_opened' => '最後に開いた',
   'last_x_days' => 'In the last X days',
   'layout' => 'レイアウト',
-  'layout.amazon_ses.tag_not_permit' => 'テンプレートコンテンツはタグを除いてはありません :meta | title | style。
-     それらのタグが存在する場合は削除して、再試行してください。',
+  'layout.amazon_ses.tag_not_permit' => 'テンプレートコンテンツはタグを除いてはありません :meta | title | style。 それらのタグが存在する場合は削除して、再試行してください。',
   'layout.description' => '以下は、アプリケーションで使用されるデフォルトの電子メールテンプレートとページです。 あなたはそれらをあなたが望むようにカスタマイズすることができます。 たとえば、ブランドを反映するためにメールにロゴを追加したい場合があります',
   'layout.updated' => 'レイアウトが正常に更新されました',
   'leave_empty_to_choose_all_list' => '※リスト内のすべての購読登録者を選択するには、このボックスを空のままにします',
@@ -1379,16 +1311,7 @@
   'license.updated' => 'アプリのライセンスが正常に更新されました',
   'license.your_license' => '現在のライセンス',
   'license_guide' => '
-      <p>発行されるライセンスには 2 種類あります</p>
-       <h4>通常ライセンス</h4>
-       <p>
-         エンドユーザーに課金されない単一の最終製品で、すべての機能が利用可能
-       </p>
-       <h4>拡張ライセンス</ h4>
-       <p>
-         エンド ユーザーが課金できる単一の最終製品 (サービスとしてのソフトウェア) ですべての機能が利用可能
-       </p
-  ',
+      <p>発行されるライセンスには 2 種類あります</p> <h4>通常ライセンス</h4> <p> エンドユーザーに課金されない単一の最終製品で、すべての機能が利用可能 </p> <h4>拡張ライセンス</ h4> <p> エンド ユーザーが課金できる単一の最終製品 (サービスとしてのソフトウェア) ですべての機能が利用可能 </p ',
   'license_is_not_valid' => 'ライセンスチェックに失敗しました：ライセンスが無効です。 もう一度やり直してください。',
   'license_optional' => 'ライセンス（購入したコード）',
   'license_tab' => 'ライセンス',
@@ -1396,23 +1319,20 @@
   'links' => 'リンク',
   'list' => 'リスト',
   'list.active_contact.desc' => 'アクティブな連絡先、マーケティングメールを受信する準備ができています',
-  'list.blacklist.desc' => '連絡先は黒く塗られています<br/>
-     表示するには、ここをクリックしてください',
+  'list.blacklist.desc' => '連絡先は黒く塗られています<br/> 表示するには、ここをクリックしてください',
   'list.clone_for.success' => 'リストは正常に複製されました。',
   'list.clone_for_other_users' => '他のユーザーのクローン',
   'list.copied' => 'リストは正常にコピーされました',
   'list.created' => 'リストが正常に作成されました',
   'list.embedded_form.redirect_url' => 'カスタムリダイレクトURL',
   'list.export.cancel' => 'エクスポートジョブをキャンセルしてもよろしいですか？',
-  'list.form.desc' => '必要な連絡先データを収集するためのフォーム
-     あなたの聴衆を増やすために',
+  'list.form.desc' => '必要な連絡先データを収集するためのフォーム あなたの聴衆を増やすために',
   'list.import.cancel' => 'インポートジョブをキャンセルしてもよろしいですか？',
   'list.import.instruction' => 'サーバーの最大アップロードファイルサイズは、<strong class="text-bold">:size</strong></span>に制限されています。入力ファイルがこの制限を超えていないことを確認してください。<br>使用可能なファイルタイプはCSVで、ヘッダー行にはEMAIL、FIRST_NAME、LAST_NAMEなどの列/フィールド名が含まれています... <br>ここからサンプル入力ファイルを<a target="_blank" href=":csv_link"><strong>こちらからダウンロードできます（Sample.csv）</strong></a>',
   'list.import.progress.queued' => 'インポートプロセスが処理されています...',
   'list.import.progress.running' => 'インポート中です...',
   'list.mail_list_count.desc' => '<span class="fw-600">:count</span>メールリストに登録されている連絡先の総数',
-  'list.no_date_or_datetime_field' => '選択したリストには、DATEまたはDATETIMEタイプのカスタムフィールドはありません。
-     メールリストのフィールド設定ページに移動し、生年月日というカスタムフィールドを追加します',
+  'list.no_date_or_datetime_field' => '選択したリストには、DATEまたはDATETIMEタイプのカスタムフィールドはありません。 メールリストのフィールド設定ページに移動し、生年月日というカスタムフィールドを追加します',
   'list.overview_statistics' => '統計学',
   'list.redirect_url.placeholder' => 'デフォルトのサンキューページは空白のままにします',
   'list.select_customer_for_clone_list' => 'クローン：リストリスト',
@@ -1554,9 +1474,7 @@
   'oauth.redirect_uri.copied' => 'リダイレクトURIがクリップボードにコピーされました',
   'oauth.status.active' => '有効',
   'oauth.status.disabled' => '無効',
-  'oauth.wording' => '通常のフォームベースの認証に加えて、システムは
-     OAuthプロバイダーで認証するためのシンプルで便利な方法を提供します。 現在、認証をサポートしています
-     Facebook、Twitter、LinkedIn、Googleで。',
+  'oauth.wording' => '通常のフォームベースの認証に加えて、システムは OAuthプロバイダーで認証するためのシンプルで便利な方法を提供します。 現在、認証をサポートしています Facebook、Twitter、LinkedIn、Googleで。',
   'office_phone' => '会社電話番号',
   'offline' => 'オフライン',
   'ok' => 'OK',
@@ -1580,8 +1498,7 @@
   'operation.choose_field_to_update' => '更新するフィールドを選択',
   'operation.field_value' => 'Value',
   'operation.tag_contact' => 'タグの連絡先',
-  'operation.tag_contact.desc' => 'You are about to tag. Type your tags in the box below, press ENTER to confirm
-      each',
+  'operation.tag_contact.desc' => 'You are about to tag. Type your tags in the box below, press ENTER to confirm each',
   'operation.target_list' => 'ターゲットリスト',
   'operation_not_allowed_in_demo' => 'デモモードでは操作できません',
   'optional' => 'オプション',
@@ -1612,15 +1529,13 @@
   'pay_with' => 'Pay with :method',
   'payment.active' => '有効',
   'payment.agree_service_intro' => '<strong> <i>支払いを続行</i> </strong>ボタンをクリックすると :plan プランの料金を支払い、<i>利用規約</i>と<i>プライバシーに同意します。</i>',
-  'payment.agree_service_intro.term_link' => '<strong><i>支払いを続行</i></strong>のボタンをクリックして
-<a href=":link" class="fw-600"><i>利用規約</i> そして <i>プライバシーポリシー</i></a>に同意するものとします。',
+  'payment.agree_service_intro.term_link' => '<strong><i>支払いを続行</i></strong>のボタンをクリックして <a href=":link" class="fw-600"><i>利用規約</i> そして <i>プライバシーポリシー</i></a>に同意するものとします。',
   'payment.all_available_gateways' => '利用可能なすべての支払いゲートウェイ',
   'payment.all_available_gateways.wording' => '以下は、インストールされたすべての支払いゲートウェイです',
   'payment.cannot_charge' => ':service ：:errorからのエラーによりAcelleは請求書＃#:idを請求できません。',
   'payment.choose_new_payment_method_to_proceed' => 'リースは、支払いを続行するために、以下の新しい支払い方法を選択してください',
   'payment.choose_payment' => 'ご希望のお支払い方法を選択してください',
-  'payment.choose_payment.desc' => 'Acelleは次の支払い方法をサポートしています
-       <br>クレジットカードまたはPayPalの残高がない場合は、オフライン支払いを選択してください',
+  'payment.choose_payment.desc' => 'Acelleは次の支払い方法をサポートしています <br>クレジットカードまたはPayPalの残高がない場合は、オフライン支払いを選択してください',
   'payment.connect' => '接続する',
   'payment.disable' => '無効にする',
   'payment.enable' => '有効にする',
@@ -1656,18 +1571,15 @@
   'plan.description' => '説明',
   'plan.disable_terms_of_service' => '利用規約を無効にする',
   'plan.email_footer' => 'メールフッター',
-  'plan.email_footer.intro' => '自分のブランドを反映するために、すべての送信メールメッセージにフッターを含めます。
-     通常、このオプションは試用期間中に有効にできます',
+  'plan.email_footer.intro' => '自分のブランドを反映するために、すべての送信メールメッセージにフッターを含めます。 通常、このオプションは試用期間中に有効にできます',
   'plan.email_footer_trial_period_only' => '試用期間のみ',
   'plan.email_verification' => 'メールによる確認',
   'plan.email_verification.intro' => 'プランの電子メール検証サーバーのセットアップ',
   'plan.email_verification.use_own' => '独自の電子メール検証サーバーを使用する',
   'plan.email_verification.use_own.intro' => 'お客様は独自の送信サーバーを追加できます',
   'plan.email_verification.use_system' => 'システムの電子メール検証サーバーを使用する',
-  'plan.email_verification.use_system.intro' => 'お客様は、電子メール検証サーバーを追加することはできません。
-     電子メールは、管理者によって追加されたシステムの電子メール検証サーバーを使用して送信されるものとします',
-  'plan.enable_and_visible.confirm' => '選択したプランを有効にしようとしています。 あなたは__したいですか
-     また、サブスクライブするためにユーザーに表示されるようにしますか？',
+  'plan.email_verification.use_system.intro' => 'お客様は、電子メール検証サーバーを追加することはできません。 電子メールは、管理者によって追加されたシステムの電子メール検証サーバーを使用して送信されるものとします',
+  'plan.enable_and_visible.confirm' => '選択したプランを有効にしようとしています。 あなたは__したいですか また、サブスクライブするためにユーザーに表示されるようにしますか？',
   'plan.enabled_email_footer' => 'メールフッターを有効にする',
   'plan.fitness' => 'フィットネス',
   'plan.fitness.less' => 'もっと少なく',
@@ -1683,20 +1595,15 @@
   'plan.hide' => 'このプランを隠す',
   'plan.hide.denied' => 'このプランを隠すことはできません',
   'plan.html_footer' => 'HTMLフッター',
-  'plan.info.subscriber_count' => '現在このプランに登録している<strong>:count </strong>のお客様がいます。
-    詳細を表示するには、<a href=":link"> <strong>こちら</ strong> </a>をクリックしてください。',
+  'plan.info.subscriber_count' => '現在このプランに登録している<strong>:count </strong>のお客様がいます。 詳細を表示するには、<a href=":link"> <strong>こちら</ strong> </a>をクリックしてください。',
   'plan.name' => '名前',
   'plan.new_plan' => '新しいプランを追加する',
   'plan.no_available_plan' => '有効なプランはありません。 サービス管理者に確認してください',
   'plan.own_tracking_domain_required' => 'ユーザーは独自の追跡ドメインを使用する必要があります',
-  'plan.own_tracking_domain_required.help' => 'システムは、マーケティングメールに追加されたすべてのリンクを書き換えます。
-     それを追跡するために。 リンクをクリックすると、ユーザーはアプリケーションにリダイレクトされます（
-     クリックが記録されます）最終的に元のリンクに到達する前に。 システムにはホスティングがありますが
-     リンクの書き換えに使用できるドメインであり、ユーザー自身のドメインで追跡ドメインを「ホワイトラベル」する機能を提供します。',
+  'plan.own_tracking_domain_required.help' => 'システムは、マーケティングメールに追加されたすべてのリンクを書き換えます。 それを追跡するために。 リンクをクリックすると、ユーザーはアプリケーションにリダイレクトされます（ クリックが記録されます）最終的に元のリンクに到達する前に。 システムにはホスティングがありますが リンクの書き換えに使用できるドメインであり、ユーザー自身のドメインで追跡ドメインを「ホワイトラベル」する機能を提供します。',
   'plan.plain_text_footer' => 'プレーンテキストフッター',
   'plan.price' => '価格',
-  'plan.process_limit.intro' => 'システムは、複数のプロセスをフォークして、次の点で複数倍高速に送信することをサポートします
-     メールのスループット。 ただし、トレードオフとして、CPUとメモリを数倍消費します。',
+  'plan.process_limit.intro' => 'システムは、複数のプロセスをフォークして、次の点で複数倍高速に送信することをサポートします メールのスループット。 ただし、トレードオフとして、CPUとメモリを数倍消費します。',
   'plan.quota' => '詳細',
   'plan.quota_time.wording' => ':amount :unitあたり',
   'plan.resource.intro' => 'プランの割り当てを設定して、このプランにサブスクライブしたユーザーが使用できるリソースまたはサービスを制限します',
@@ -1705,9 +1612,7 @@
   'plan.select' => '選択する',
   'plan.sending_credits' => 'クレジットの送信',
   'plan.sending_identify' => '識別情報の送信',
-  'plan.sending_identify.intro' => 'AmazonSES送信承認のIDを確認します。 送信を構成する最初のステップ
-       承認とは、あなたがメールアドレスまたはドメインを所有していることを証明することです。
-       代理人の送信者はメールを送信します',
+  'plan.sending_identify.intro' => 'AmazonSES送信承認のIDを確認します。 送信を構成する最初のステップ 承認とは、あなたがメールアドレスまたはドメインを所有していることを証明することです。 代理人の送信者はメールを送信します',
   'plan.sending_identify.intro.amazon-api' => 'プランは、AmazonSESをプライマリ配信方法として使用するように設定されています。 このプランに加入するユーザーは、FROMメールアドレスとして次のIDを使用する必要があります。 送信サーバーの設定を編集して、IDを追加します',
   'plan.sending_identify.intro.amazon-smtp' => 'プランは、AmazonSESをプライマリ配信方法として使用するように設定されています。 このプランに加入するユーザーは、FROMメールアドレスとして次のIDを使用する必要があります。 送信サーバーの設定を編集して、IDを追加します',
   'plan.sending_identify.intro.elasticemail-api' => 'プランは、Elasticemailを主要な配信方法として使用するように設定されています。 このプランに加入するユーザーは、FROMメールアドレスとして次のIDを使用する必要があります。 送信サーバーの設定を編集して、IDを追加します',
@@ -1747,12 +1652,10 @@
   'plan.sending_servers' => '送信サーバー',
   'plan.sending_servers.add' => '送信サーバーを追加する',
   'plan.sending_servers.add.ok' => 'OK',
-  'plan.sending_servers.add_empty_warning' => 'There is no available sending server for this plan.
-    Click <a target="_blank" href=":link"><strong>here</strong></a> to add one.',
+  'plan.sending_servers.add_empty_warning' => 'There is no available sending server for this plan. Click <a target="_blank" href=":link"><strong>here</strong></a> to add one.',
   'plan.sending_servers.choose' => '選択',
   'plan.sending_servers.fitness.updated' => 'Fitnessesは正常に更新されました。',
-  'plan.sending_servers.list_intro' => '以下は、このプランで使用される送信サーバーです。
-       つまり、このプランに加入しているユーザーから送信されたメールは、これらのサーバーによって配信されます。',
+  'plan.sending_servers.list_intro' => '以下は、このプランで使用される送信サーバーです。 つまり、このプランに加入しているユーザーから送信されたメールは、これらのサーバーによって配信されます。',
   'plan.sending_servers.listing' => '送信サーバーのリスト',
   'plan.sending_servers.own.setting' => 'オプション',
   'plan.sending_servers.own.setting.intro' => '以下は、顧客が独自の送信サーバーを使用する方法を構成するための利用可能なオプションです。',
@@ -1811,13 +1714,9 @@
   'plugin' => 'プラグイン',
   'plugin.back_to_plugins' => 'Back to plugins',
   'plugin.delete_confirmation' => 'Delete confirmation',
-  'plugin.delete_confirmation.wording' => 'Removing the plugin will also remove all its data <br>
-    Are you sure you want to completely remove the plugin?
-  ',
+  'plugin.delete_confirmation.wording' => 'Removing the plugin will also remove all its data <br> Are you sure you want to completely remove the plugin? ',
   'plugin.deleted' => 'プラグインは正常に削除されました',
-  'plugin.deleted.wording' => 'The Paddle plugin and all its data have been removed from the application.
-    <br>You can no longer get them back!
-  ',
+  'plugin.deleted.wording' => 'The Paddle plugin and all its data have been removed from the application. <br>You can no longer get them back! ',
   'plugin.installing' => '<strong>Installing...</strong><p>Your plugin is being uploaded and processed, please wait!</p>',
   'plugin.name' => 'Plugin',
   'plugin.no_plugin' => 'You have no plugin',
@@ -2052,21 +1951,15 @@
   'sending_quota_label' => 'クレジットの送信',
   'sending_serbers.add_domain' => 'ドメインを追加',
   'sending_serbers.add_email_domain' => 'メール/ドメインを追加する',
-  'sending_serbers.aws.allow_verify.intro' => 'また、ユーザーが自分でIDを確認できるようにすることもできます。
-             つまり、ユーザーは自分のメールアドレスまたはドメインを自分のメールアドレスに対して確認するようにリクエストできます
-             AmazonSESアカウント',
+  'sending_serbers.aws.allow_verify.intro' => 'また、ユーザーが自分でIDを確認できるようにすることもできます。 つまり、ユーザーは自分のメールアドレスまたはドメインを自分のメールアドレスに対して確認するようにリクエストできます AmazonSESアカウント',
   'sending_serbers.go_to_amazon_dashboard' => 'Amazonダッシュボードに移動します',
   'sending_serbers.go_to_elasticemail_dashboard' => 'ElasticEmailダッシュボードに移動します',
   'sending_serbers.go_to_mailgun_dashboard' => 'Mailgunダッシュボードに移動します',
   'sending_serbers.go_to_sendgrid_dashboard' => 'Sendgridダッシュボードに移動します',
   'sending_serbers.go_to_sparkpost_dashboard' => 'Sparkpostダッシュボードに移動します',
-  'sending_serbers.php-mail.allow_verify.intro' => 'また、ユーザーが自分でIDを確認できるようにすることもできます。
-       つまり、ユーザーは独自の電子メールアドレスまたはドメインを追加して、アプリケーションに対して検証できます。
-       確認が完了すると、ユーザーは送信時に独自のFROMメールアドレスを使用できます',
+  'sending_serbers.php-mail.allow_verify.intro' => 'また、ユーザーが自分でIDを確認できるようにすることもできます。 つまり、ユーザーは独自の電子メールアドレスまたはドメインを追加して、アプリケーションに対して検証できます。 確認が完了すると、ユーザーは送信時に独自のFROMメールアドレスを使用できます',
   'sending_serbers.remove_email_domain' => '削除',
-  'sending_serbers.sendgrid.allow_verify.intro' => 'また、ユーザーが自分でIDを確認できるようにすることもできます。
-             つまり、ユーザーは自分のメールアドレスまたはドメインを自分のメールアドレスに対して確認するようにリクエストできます
-             Sendgridアカウント',
+  'sending_serbers.sendgrid.allow_verify.intro' => 'また、ユーザーが自分でIDを確認できるようにすることもできます。 つまり、ユーザーは自分のメールアドレスまたはドメインを自分のメールアドレスに対して確認するようにリクエストできます Sendgridアカウント',
   'sending_server' => '送信サーバー',
   'sending_server.action' => 'アクション',
   'sending_server.add_email_domain' => 'メール/ドメインを追加する',
@@ -2076,14 +1969,7 @@
   'sending_server.connect_failed' => 'リモートサービスに接続できませんでした。接続を確認してください。 送信サーバーが無効になっています',
   'sending_server.created' => '送信サーバーが正常に作成されました',
   'sending_server.date_added' => '追加された日付',
-  'sending_server.default_email_verification.content' => '<!DOCTYPE html>
-    <html>
-    <head>
-    </head>
-    <body>
-    <br /><span style="font-size: 24pt;">Verification Center</span><br /><br /><span style="font-size: 14pt;">Dear Mr. or Mrs. {USER_NAME}</span><br /><br /><span style="font-size: 14pt;">Thank you for registering your email</span><br /><br /><span style="font-size: 14pt;">Please click the link below to verify your identity</span><br /><br /><em>Verification link will automatically be inserted to the end of your email content</em><br /><em>You can safely delete this notification line</em>
-    </body>
-    </html>',
+  'sending_server.default_email_verification.content' => '<!DOCTYPE html> <html> <head> </head> <body> <br /><span style="font-size: 24pt;">Verification Center</span><br /><br /><span style="font-size: 14pt;">Dear Mr. or Mrs. {USER_NAME}</span><br /><br /><span style="font-size: 14pt;">Thank you for registering your email</span><br /><br /><span style="font-size: 14pt;">Please click the link below to verify your identity</span><br /><br /><em>Verification link will automatically be inserted to the end of your email content</em><br /><em>You can safely delete this notification line</em> </body> </html>',
   'sending_server.default_email_verification.subject' => 'あなたのメールアドレスを確認してください',
   'sending_server.domain.remove_domain.confirm' => 'リストからドメインを削除しようとしています',
   'sending_server.domain.removed' => 'ドメインは正常に削除されました',
@@ -2133,9 +2019,7 @@
   'sending_server_status_inactive' => '無効',
   'sending_servers' => '送信サーバー',
   'sending_servers.amazon_api_key.intro' => 'Amazon Simple Email Service（Amazon SES）は、デジタルマーケティング担当者やアプリケーション開発者がマーケティング、通知、トランザクションのメールを送信できるように設計されたクラウドベースのメール送信サービスです。 Amazon SESキーペアを取得し、以下のフォームに入力して接続します',
-  'sending_servers.amazon_smtp.intro' => 'Amazon Simple Email Service（Amazon SES）は、設計されたクラウドベースのメール送信サービスです。
-     デジタルマーケターとアプリケーション開発者がマーケティング、通知、およびトランザクションの電子メールを送信するのを支援します。
-     Amazon SMTP設定を取得し、以下のフォームに入力して接続します',
+  'sending_servers.amazon_smtp.intro' => 'Amazon Simple Email Service（Amazon SES）は、設計されたクラウドベースのメール送信サービスです。 デジタルマーケターとアプリケーション開発者がマーケティング、通知、およびトランザクションの電子メールを送信するのを支援します。 Amazon SMTP設定を取得し、以下のフォームに入力して接続します',
   'sending_servers.configuration_settings' => '構成設定',
   'sending_servers.configuration_settings.aws.intro' => 'Simple Email Service（SES）を介してメールを送信するには、Amazon WebServiceアカウントへの接続を設定します。',
   'sending_servers.configuration_settings.elasticemail.intro' => 'メールを送信するには、ElasticEmailアカウントへの接続を設定します。',
@@ -2149,8 +2033,7 @@
   'sending_servers.enabled' => '1つ以上の送信サーバーが正常に有効化されました',
   'sending_servers.fitness' => '確率',
   'sending_servers.fitness.explain' => '電子メールの配信に関しては、使用可能な送信サーバーが複数ある場合、システムはランダムに1つを選択します。 送信サーバーの確率値が高いほど、選択される可能性が高くなります。',
-  'sending_servers.local_identity.intro' => 'ユーザーが使用できる配信ドメインを指定します。 つまり、ユーザーはを指定できます
-       次のドメインのいずれかに一致するFROMメールアドレス',
+  'sending_servers.local_identity.intro' => 'ユーザーが使用できる配信ドメインを指定します。 つまり、ユーザーはを指定できます 次のドメインのいずれかに一致するFROMメールアドレス',
   'sending_servers.mailgun_api_key.intro' => '以下のAPIキーを使用してMailgunに接続しています',
   'sending_servers.mailgun_smtp.intro' => '以下のSMTPを使用してMailgunに接続しています',
   'sending_servers.primary' => 'プライマリ',
@@ -2164,24 +2047,16 @@
   'sending_servers.sendgrid_api_key.intro' => '以下のAPIキーを使用してSendgridに接続しています',
   'sending_servers.sendgrid_smtp.intro' => '以下のSMTPを使用してSendgridに接続しています',
   'sending_servers.sending_identity' => '送信メールIDの追加',
-  'sending_servers.sending_identity.elasticemail.intro' => '次のドメインは、ElasticEmailアカウントに対して検証されました。
-       ユーザーは以下のドメインからのみ送信でき、自分のIDで送信することはできません',
-  'sending_servers.sending_identity.intro' => 'The following domains were verified against your Amazon SES account.
-    Click <a target="_blank" href=":link">here</a> to find more details in your Amazon dashboard. Choose the domain that users are
-    allowed to send on behalf of (FROM address)',
-  'sending_servers.sending_identity.mailgun.intro' => '次のドメインは、Mailgunアカウントに対して確認されました。
-       ユーザーは以下のドメインからのみ送信でき、自分のIDで送信することはできません',
-  'sending_servers.sending_identity.sendgrid.intro' => '次のドメインは、Sendgridアカウントに対して確認されました。
-       ユーザーは以下のドメインからのみ送信でき、自分のIDで送信することはできません',
-  'sending_servers.sending_identity.sparkpost.intro' => '次のドメインは、Sparkpostアカウントに対して検証されました。
-       ユーザーは以下のドメインからのみ送信でき、自分のIDで送信することはできません',
-  'sending_servers.sending_limit.aws.intro' => 'アプリケーションがこの接続を介して送信できる速度を制御します。
-     すべてのAmazonSESアカウントには、独自の送信制限のセットがあります。 AWSの制限の詳細については、こちらをご覧ください',
+  'sending_servers.sending_identity.elasticemail.intro' => '次のドメインは、ElasticEmailアカウントに対して検証されました。 ユーザーは以下のドメインからのみ送信でき、自分のIDで送信することはできません',
+  'sending_servers.sending_identity.intro' => 'The following domains were verified against your Amazon SES account. Click <a target="_blank" href=":link">here</a> to find more details in your Amazon dashboard. Choose the domain that users are allowed to send on behalf of (FROM address)',
+  'sending_servers.sending_identity.mailgun.intro' => '次のドメインは、Mailgunアカウントに対して確認されました。 ユーザーは以下のドメインからのみ送信でき、自分のIDで送信することはできません',
+  'sending_servers.sending_identity.sendgrid.intro' => '次のドメインは、Sendgridアカウントに対して確認されました。 ユーザーは以下のドメインからのみ送信でき、自分のIDで送信することはできません',
+  'sending_servers.sending_identity.sparkpost.intro' => '次のドメインは、Sparkpostアカウントに対して検証されました。 ユーザーは以下のドメインからのみ送信でき、自分のIDで送信することはできません',
+  'sending_servers.sending_limit.aws.intro' => 'アプリケーションがこの接続を介して送信できる速度を制御します。 すべてのAmazonSESアカウントには、独自の送信制限のセットがあります。 AWSの制限の詳細については、こちらをご覧ください',
   'sending_servers.sending_limit.elasticemail.intro' => '速度制限を指定して、電子メールのスループットの観点から、アプリケーションがこの接続を介して送信できる速度を制御します。 SendGridの制限の詳細については、<a href="">こちら</a>をご覧ください。',
   'sending_servers.sending_limit.mailgun.intro' => '速度制限を指定して、メールのスループットの観点から、アプリケーションがこの接続を介して送信できる速度を制御します。 SendGridの制限の詳細については、<a href="">こちら</a>をご覧ください。',
   'sending_servers.sending_limit.phrase' => ':quota_base:quota_unitごとの:quota_valueメール',
-  'sending_servers.sending_limit.sparkpost.intro' => 'Sparkpost speed limit to control how fast your application can send through this connection in
-    terms of email throughput. You can find the details of Sparkpost limits <a href="">here</a>',
+  'sending_servers.sending_limit.sparkpost.intro' => 'Sparkpost speed limit to control how fast your application can send through this connection in terms of email throughput. You can find the details of Sparkpost limits <a href="">here</a>',
   'sending_servers.sendmail.intro' => 'Configure the system to send emails directly through the hosting server\'s <code>sendmail</code> program. Make sure the function is already installed on your hosting server.',
   'sending_servers.set_primary' => 'プライマリを設定',
   'sending_servers.smtp.intro' => '独自のSMTPシステムまたは3番目のサービスプロバイダーからのSMTPサービスを介して電子メールを送信するようにシステムを構成します。',
@@ -2258,16 +2133,13 @@
   'source.not_found' => 'ソースが見つかりません',
   'source.products.manage' => '管理',
   'source.refresh' => 'Refresh',
-  'source.select_source_type.wording' => 'Select one of the following
-      E-commerce belows to connect with:',
+  'source.select_source_type.wording' => 'Select one of the following E-commerce belows to connect with:',
   'source.switch_store' => 'スイッチストア',
   'source.sync' => 'Sync',
   'source.visit_store' => 'ストアにアクセス',
   'source.woo.connect' => 'WooCommerceに接続する',
   'source.woo.connecting' => 'Connecting...',
-  'source.woo.desc' => 'Enter your WordPress Acelle enpoint here to connect to exist WooCommerce stores.
-      If you are not sure what your WordPress endpoint is, please install
-      <a target="_blank" href=":link">WordPress Plugin for Acelle</a> plugin',
+  'source.woo.desc' => 'Enter your WordPress Acelle enpoint here to connect to exist WooCommerce stores. If you are not sure what your WordPress endpoint is, please install <a target="_blank" href=":link">WordPress Plugin for Acelle</a> plugin',
   'source.your_store_synchronized' => 'ストアの商品はAcelleに同期されています',
   'spam-reported' => 'スパムが報告されました',
   'spam_reported' => 'スパムが報告されました',
@@ -2308,8 +2180,7 @@
   'subscriber.blacklisted' => 'メールアドレスはブラックリストに登録されています',
   'subscriber.bulk_delete' => '一括削除',
   'subscriber.bulk_delete.enter_emails' => '削除するメールアドレスをスペースまたは改行で区切って入力します',
-  'subscriber.bulk_delete.enter_emails.confirm' => 'Are you sure you want to delete the
-    following <strong>:count</strong> contact(s) from this mail list?',
+  'subscriber.bulk_delete.enter_emails.confirm' => 'Are you sure you want to delete the following <strong>:count</strong> contact(s) from this mail list?',
   'subscriber.bulk_delete.enter_emails.empty' => '契約者が見つかりません！',
   'subscriber.confirmation_email_sent' => '購読者に送信される確認メール',
   'subscriber.created' => '購読者が正常に作成されました',
@@ -2361,17 +2232,14 @@
   'subscription.create' => '作成する',
   'subscription.create_new_subsctiption' => '新しいサブスクリプションを作成する',
   'subscription.create_new_subsctiption.intro' => '以下で顧客と計画を選択して、顧客を計画に割り当てましょう',
-  'subscription.current_subscription.cancel_at_end_of_period.wording' => '現在、<strong>:plan</strong> プラン (<strong>:money</strong>)に登録しています。
-      あなたのサブスクリプションは、<strong>:remain</strong>, <strong>:end_at</strong>で期限切れになります。',
-  'subscription.current_subscription.recurring.wording' => 'Thank you for being with us, you are currently subscribed to <strong>:plan</strong> plan.<br>
-      Your next invoice will automatically be billed in <strong>:remain</strong>, on <strong>:next_on</strong>.',
+  'subscription.current_subscription.cancel_at_end_of_period.wording' => '現在、<strong>:plan</strong> プラン (<strong>:money</strong>)に登録しています。 あなたのサブスクリプションは、<strong>:remain</strong>, <strong>:end_at</strong>で期限切れになります。',
+  'subscription.current_subscription.recurring.wording' => 'Thank you for being with us, you are currently subscribed to <strong>:plan</strong> plan.<br> Your next invoice will automatically be billed in <strong>:remain</strong>, on <strong>:next_on</strong>.',
   'subscription.current_subscription.wording' => '現在、<strong>:plan</strong>プランにご登録いただきありがとうございます。<br>次の請求書は、<strong>:remain</strong>の<strong>:next_on年に請求されます。</strong>',
   'subscription.delete' => '削除',
   'subscription.delete.confirm' => ' :number サブスクリプションを完全に削除しようとしています。 これは、元に戻すことはできません。',
   'subscription.deleted' => 'サブスクリプションは正常に削除されました',
   'subscription.ended' => '終了しました',
-  'subscription.ended_intro' => 'The subscription to <strong>:plan</strong> plan was ended at <strong>:ended_at</strong>.
-    Please renew or choose an other plan.',
+  'subscription.ended_intro' => 'The subscription to <strong>:plan</strong> plan was ended at <strong>:ended_at</strong>. Please renew or choose an other plan.',
   'subscription.ended_on' => 'で終了',
   'subscription.ends_on' => 'で終わる',
   'subscription.from_to_date' => ' :start から :end まで',
@@ -2479,12 +2347,10 @@
   'template.pro_builder' => 'PROビルダー',
   'template.select_your_template' => '以下のテンプレートレイアウトのいずれかを選択してください',
   'template.set_template_category' => 'テンプレートカテゴリを設定する',
-  'template.set_template_category.intro' => 'Choose one or more categories for your template
-    <br>Notice: if your template does not fall upon any category, it will not be visible to users.',
+  'template.set_template_category.intro' => 'Choose one or more categories for your template <br>Notice: if your template does not fall upon any category, it will not be visible to users.',
   'template.thumb.upload' => 'アップロード',
   'template.thumb.upload_thumbnail' => 'サムネイルをアップロード',
-  'template.thumb.upload_thumbnail.intro' => 'リストに表示されたときにテンプレートサムネイルの画像をアップロードするか、
-     テンプレートの使用を表す',
+  'template.thumb.upload_thumbnail.intro' => 'リストに表示されたときにテンプレートサムネイルの画像をアップロードするか、 テンプレートの使用を表す',
   'template.thumb.upload_thumbnail_url' => 'サムネイルURLを選択',
   'template.thumb.upload_thumbnail_url.intro' => 'テンプレートのサムネイルとして使用される画像のURLを下に入力します',
   'template.thumb.uploaded' => 'テンプレートのサムネイルが正常にアップロードされました',
@@ -2587,8 +2453,7 @@
   'transactions' => '取引履歴',
   'translate' => '翻訳する',
   'trigger.check' => '更新',
-  'trouble_clicking_reset_password_button' => '[:actionText]ボタンをクリックできない場合は、以下のURLをコピーして貼り付けてください
-        Webブラウザに：[:actionUrl]（:actionUrl）',
+  'trouble_clicking_reset_password_button' => '[:actionText]ボタンをクリックできない場合は、以下のURLをコピーして貼り付けてください Webブラウザに：[:actionUrl]（:actionUrl）',
   'try_again' => '再試行',
   'type' => 'タイプ',
   'type_to_search' => '検索するタイプ',
@@ -2635,8 +2500,7 @@
   'upgrade.upgrade_confirm' => 'システムはそれ自体をアップグレードしようとしています。 確認ボタンをクリックして続行してください',
   'upgrade.uploading' => 'Uploading...',
   'upgrade.wording.upgrade' => 'Your are running on version :current, a newer version is available: :new<br>Do you want to proceed with the upgrade?',
-  'upgrade.wording.upload' => '現在、バージョン:currentで実行しています。 アプリケーションをアップグレードするには、<code><a target="_blank" href="https://example.jp"> example.jpから最新のビルドをダウンロードしてください。 </a> </code>の場合、アップグレードパッケージは<code> [acelle source] /upgrade/patch-4.xxb
-in </code>にあり、以下のフォームを使用してアップロードします。',
+  'upgrade.wording.upload' => '現在、バージョン:currentで実行しています。 アプリケーションをアップグレードするには、<code><a target="_blank" href="https://example.jp"> example.jpから最新のビルドをダウンロードしてください。 </a> </code>の場合、アップグレードパッケージは<code> [acelle source] /upgrade/patch-4.xx.bin </code>にあり、以下のフォームを使用してアップロードします。',
   'upgrade_manager' => 'アップグレードマネージャー',
   'upload' => 'アップロード',
   'upload_file' => 'ファイルをアップロード',
@@ -2703,8 +2567,7 @@ in </code>にあり、以下のフォームを使用してアップロードし�
   'webhook.deleted' => 'Webhookは正常に削除されました。',
   'webhook.description' => '説明',
   'webhook.endpoint' => 'エンドポイント',
-  'webhook.endpoint.desc' => 'システムが送信するエンドポイントURLを入力します
-     選択したイベントが発生したときに通知を送信します',
+  'webhook.endpoint.desc' => 'システムが送信するエンドポイントURLを入力します 選択したイベントが発生したときに通知を送信します',
   'webhook.execute_click_callback' => 'クリックコールバックを実行する',
   'webhook.execute_open_callback' => 'オープンコールバックを実行する',
   'webhook.sample_request' => 'サンプルリクエスト',
@@ -2731,9 +2594,7 @@ in </code>にあり、以下のフォームを使用してアップロードし�
   'webhooks.empty' => 'Webhookはありません',
   'webhooks.manage' => '管理',
   'webhooks.summary_desc' => '3番目のアプリケーションに通知を送信します',
-  'webhooks.wording' => 'Webhookは、
-     関連するイベントや活動について通知するシステム
-     あなたのマーケティングキャンペーン（メールが開く、クリックする、購読を解除する…）',
+  'webhooks.wording' => 'Webhookは、 関連するイベントや活動について通知するシステム あなたのマーケティングキャンペーン（メールが開く、クリックする、購読を解除する…）',
   'website' => 'ウエブサイト',
   'website.add' => 'ウェブサイトを追加',
   'website.add_site' => 'ウェブサイトを追加する',
@@ -2742,8 +2603,7 @@ in </code>にあり、以下のフォームを使用してアップロードし�
   'website.code_copied' => 'サイト接続コードがコピーされました',
   'website.connect' => '接続',
   'website.connect_to_your_website' => 'あなたのウェブサイトを接続します',
-  'website.connect_to_your_website.desc' => 'サブスクリプションポップアップフォームを有効にするには<br>
-自分のホームページまたはランディングページに接続する',
+  'website.connect_to_your_website.desc' => 'サブスクリプションポップアップフォームを有効にするには<br>自分のホームページまたはランディングページに接続する',
   'website.connected_form' => 'フォーム',
   'website.copy_code' => 'コードをコピーする',
   'website.copy_code.intro' => '以下のコードは、フォームポップアップをWebサイトに挿入するために使用されます。 コードをコピーして、WebサイトのHTMLソースに貼り付けます。',
@@ -2752,8 +2612,7 @@ in </code>にあり、以下のフォームを使用してアップロードし�
   'website.enter_url' => 'サイトのURLを入力してください',
   'website.get_code' => 'コードを取得',
   'website.get_custom_website_code' => 'インテグレーションコード',
-  'website.new_added_intro' => '
-       <h4 class="fw-600 fs-3 text-center">確認されました！</h4><pclass = "text-centermb-0">これでWebサイトが接続されました。<br> これで、サブスクリプションポップアップフォームを追加して、サイトの他の機能を<br>有効にすることができます。</p> ',
+  'website.new_added_intro' => '<h4 class="fw-600 fs-3 text-center">確認されました！</h4><pclass = "text-centermb-0">これでWebサイトが接続されました。<br> これで、サブスクリプションポップアップフォームを追加して、サイトの他の機能を<br>有効にすることができます。</p> ',
   'website.site_is_connected' => '[:title]サイトが接続されています',
   'website.site_is_connected_success' => '[:title]サイトは正常に接続されました',
   'website.status.connected' => '接続済み',
@@ -2777,30 +2636,14 @@ in </code>にあり、以下のフォームを使用してアップロードし�
   'white' => '白',
   'whitelabel.choose_a_brand_domain' => 'ブランドドメインを選択する',
   'whitelabel.enable' => 'ホワイトラベリングを有効にする',
-  'whitelabel.enabled.intro' => 'AWS service is being provided to your users
-      transparently under your own brand.
-      When
-      user adds a sending domain, they shall be
-      required to add DNS
-      record of your own
-      brand
-      <strong>:selector</strong>
-      to their DNS
-      management
-      control. No AWS selector or
-      message id shall show up to your users',
-  'whitelabel.enabled.wording' => 'Your AWS sending server is
-      whitelabelled',
+  'whitelabel.enabled.intro' => 'AWS service is being provided to your users transparently under your own brand. When user adds a sending domain, they shall be required to add DNS record of your own brand <strong>:selector</strong> to their DNS management control. No AWS selector or message id shall show up to your users',
+  'whitelabel.enabled.wording' => 'Your AWS sending server is whitelabelled',
   'whitelabel.settings' => 'Settings',
-  'whitelabel.setup.intro' => 'Selector is used in DNS record that user will need to
-      add to your DNS management console',
+  'whitelabel.setup.intro' => 'Selector is used in DNS record that user will need to add to your DNS management console',
   'whitelabel.setup.title' => 'AWSホワイトラベリングを設定する',
   'whitelabel.title' => 'Whitelable AWSは、独自のブランドで提供されます',
   'whitelabel.turn_off' => 'ホワイトラベリングをオフにする',
-  'whitelabel.wording' => 'When user add a sending domain, they shall be required to add DNS record like amazon.domain.com
-      to their DNS management control. You can replace `amazoneses` with something line awsome.domain.com to make it your
-      own brand
-  ',
+  'whitelabel.wording' => 'When user add a sending domain, they shall be required to add DNS record like amazon.domain.com to their DNS management control. You can replace `amazoneses` with something line awsome.domain.com to make it your own brand ',
   'widget.rss' => 'RSS',
   'widget.rss.change_url' => '変更',
   'widget.rss.click_start' => 'クリックしてURLを入力',
