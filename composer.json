@@ -51,7 +51,7 @@
         "soundasleep/html2text": "dev-master",
         "sparkpost/sparkpost": "^2.1",
         "swiftmailer/swiftmailer": "~6.0",
-        "symfony/yaml": "^6.1",
+        "symfony/yaml": "^4.4",
         "twig/twig": "^3.0"
     },
     "require-dev": {
