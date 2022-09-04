@@ -447,7 +447,6 @@ class Tool
      */
     public static function cronjobUpdateController($request, $controller)
     {
-
         // Suggestion paths
         $paths = [
             '/usr/local/bin/php',

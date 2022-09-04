@@ -1146,7 +1146,6 @@ class MailList extends Model
 
             // process by batches
             each_batch($results, config('app.import_batch_size'), false, function ($batch) use ($availableFields, &$processed, &$failed, $total, &$overQuotaAttempt, &$message, $progressCallback, $invalidRecordCallback) {
-
                 // authorization
                 if ($this->customer->user->can('addMoreSubscribers', [$this, sizeof($batch)])) {
                     $insertLimit = sizeof($batch);

@@ -922,7 +922,6 @@ class Template extends Model
         $result = [];
 
         if (true) {
-
             // Unsubscribe link
             $result[] = [
                 'type' => 'label',

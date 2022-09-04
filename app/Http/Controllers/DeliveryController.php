@@ -145,8 +145,8 @@ class DeliveryController extends Controller
                     }
                     break;
                 default:
-                // nothing
-                }
+                    // nothing
+            }
         }
 
         header('X-PHP-Response-Code: 200', true, 200);

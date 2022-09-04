@@ -221,7 +221,6 @@ class Email extends Model
      */
     public function trackMessage($response, $subscriber, $server, $msgId, $triggerId = null)
     {
-
         // @todo: customerneedcheck
         $params = array_merge(array(
             'email_id' => $this->id,

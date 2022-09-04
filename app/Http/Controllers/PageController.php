@@ -286,7 +286,6 @@ class PageController extends Controller
 
         if ($request->isMethod('post')) {
             if ($subscriber->getSecurityToken('unsubscribe') == $request->code && $subscriber->status == 'subscribed') {
-
                 // User Tracking Information
                 $trackingInfo = [
                     'message_id' => null,
