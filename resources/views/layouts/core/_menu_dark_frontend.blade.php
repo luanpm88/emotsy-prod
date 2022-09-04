@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-xl nav-menu-dark navbar-dark bg-dark fixed-top navbar-main py-0">
+<nav class="navbar navbar-expand-xl navbar-dark bg-dark fixed-top navbar-main py-0">
     <div class="container-fluid ms-0">
         <a class="navbar-brand d-flex align-items-center me-2" href="{{ action('HomeController@index') }}">
             @if (\Acelle\Model\Setting::get('site_logo_small'))
