@@ -340,7 +340,6 @@ class SubscriberController extends Controller
 
         $rows = [];
         foreach ($subscribers as $subscriber) {
-
             // authorize
             if ($user->can('read', $subscriber)) {
                 // subscriber
