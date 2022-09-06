@@ -818,6 +818,23 @@ function getThemeMode($mode, $auto='light')
     return $themeMode;
 }
 
+function getLogoMode($mode, $scheme, $daylight='light')
+{
+    if ($scheme !== 'white') {
+        return 'light';
+    }
+    
+    if ($mode == 'auto' && ($daylight == 'light' || $daylight == null)) {
+        return 'dark';
+    }
+
+    if ($mode == 'light') {
+        return 'dark';
+    }
+
+    return 'light';
+}
+
 function parseRss($config)
 {
     $rss = [];
@@ -1152,4 +1169,43 @@ function getFullCodeByLanguageCode($languageCode)
     }
 
     return null;
+}
+
+function getSiteLogoUrl($type='light')
+{
+    switch($type) {
+        case 'light':
+            $logo = \Acelle\Model\Setting::get('site_logo_light');
+            break;
+        case 'dark':
+            $logo = \Acelle\Model\Setting::get('site_logo_dark');
+            break;
+        case 'pdf':
+            $logo = \Acelle\Model\Setting::get('site_logo_dark');
+            break;
+    }
+
+    // light is default logo
+    $lightLogo = \Acelle\Model\Setting::get('site_logo_light');
+    
+    if ($logo) {
+        $url = action('SettingController@file', $logo);
+    } elseif ($lightLogo) {
+        $url = action('SettingController@file', $lightLogo);
+    } else {
+        // default logo
+        switch($type) {
+            case 'light':
+                $url = URL::asset('images/logo_light.svg');
+                break;
+            case 'dark':
+                $url = URL::asset('images/logo_dark.svg');
+                break;
+            case 'pdf':
+                $url = URL::asset('images/logo_dark.svg');
+                break;
+        }
+    }
+
+    return $url;
 }

@@ -28,10 +28,12 @@
 	<header class="automation-header">
 		<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
 			<a class="navbar-brand left-logo" href="#">
-				@if (\Acelle\Model\Setting::get('site_logo_small'))
-					<img src="{{ action('SettingController@file', \Acelle\Model\Setting::get('site_logo_small')) }}" alt="">
+				@if (getThemeMode(Auth::user()->customer->theme_mode, request()->session()->get('customer-auto-theme-mode')) == 'light' &&
+					Auth::user()->customer->getColorScheme() == 'white'
+				)
+					<img class="logo" src="{{ getSiteLogoUrl('dark') }}" alt="">
 				@else
-					<img height="22" src="{{ URL::asset('images/logo_light_blue.svg') }}" alt="">
+					<img class="logo" src="{{ getSiteLogoUrl('light') }}" alt="">
 				@endif
 			</a>
 			<div class="d-inline-block d-flex mr-auto align-items-center">

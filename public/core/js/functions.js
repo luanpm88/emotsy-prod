@@ -801,6 +801,8 @@ function autoDetechDarkMode(url) {
             $('body').removeClass('mode-dark');
         }
 
+        detectLogo();
+
         $.ajax({
             url: url,
             method: 'GET',
@@ -861,6 +863,22 @@ function changeThemeMod(mode) {
     if (mode == 'auto') {
         autoDetechDarkMode();
     }
+
+    detectLogo();
+}
+
+function detectLogo() {
+    var mode='light';
+
+    if ($('body').hasClass('theme-white') && $('body').hasClass('mode-light')) {
+        mode = 'dark';
+    }
+
+    if ($('body').hasClass('theme-white') && $('body').hasClass('mode-auto') && !isDarkMode()) {
+        mode = 'dark';
+    }
+
+    $('.logo').attr('src', $('.logo').attr('data-' + mode));
 }
 
 function insertAtCursor(myField, myValue) {

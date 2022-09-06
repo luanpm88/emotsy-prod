@@ -48,36 +48,6 @@
 @endsection
 
 @section('content')
-    {{-- <header>
-		<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark" style="height: 56px;">
-			<a class="navbar-brand left-logo mr-0" href="#">
-				@if (\Acelle\Model\Setting::get('site_logo_small'))
-					<img src="{{ action('SettingController@file', \Acelle\Model\Setting::get('site_logo_small')) }}" alt="">
-				@else
-					<img height="22" src="{{ URL::asset('images/logo_light_blue.svg') }}" alt="">
-				@endif
-			</a>
-			<div class="d-inline-block d-flex mr-auto align-items-center">
-                <a style="" href="javascript:;" onclick="parent.$('body').removeClass('overflow-hidden');parent.$('.full-iframe-popup').fadeOut()" class="action black-back-button mr-3">
-					<i class="material-symbols-rounded">arrow_back</i>
-				</a>
-                <h1 class="">{{ $campaign->name }}</h1>
-				<i class="material-symbols-rounded automation-head-icon ml-2">web</i>
-			</div>
-			<div class="automation-top-menu">
-                <a class="action mr-4" href="{{ action('CampaignController@builderPlainEdit', [
-                    'uid' => $campaign->uid
-                ]) }}">
-                    {{ trans('messages.campaign.plain_text_editor') }}
-                </a>
-				<button class="btn btn-primary" onclick="$('#classic-builder-form').submit()">{{ trans('messages.save') }}</button>
-			</div>
-            <a href="javascript:;" onclick="parent.$('body').removeClass('overflow-hidden');parent.$('.full-iframe-popup').fadeOut()"
-                class="action black-close-button ml-2" style="margin-right: -15px">
-                <i class="material-symbols-rounded">close</i>
-            </a>
-		</nav>
-	</header> --}}
     <form id="classic-builder-form" action="{{ action('CampaignController@builderClassic', $campaign->uid) }}" method="POST" class="form-validate-jqueryz">
         {{ csrf_field() }}
 
