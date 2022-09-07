@@ -58,7 +58,7 @@
                     sidePanel: '#formWidgetPanel',
 
                     filemanager: '{{ URL::asset('filemanager2/dialog.php') }}',
-                    logo: '{{ \Acelle\Model\Setting::get('site_logo_small') ? action('SettingController@file', \Acelle\Model\Setting::get('site_logo_small')) : URL::asset('images/logo_light_blue.svg') }}',
+                    logo: '{{ getSiteLogoUrl('dark') }}',
                     backgrounds: [
                         '{{ url('/images/backgrounds/images1.jpg') }}',
                         '{{ url('/images/backgrounds/images2.jpg') }}',

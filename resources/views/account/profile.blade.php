@@ -211,6 +211,8 @@ delete_outline
                 return (className.match (/(^|\s)theme-\S+/g) || []).join(' ');
             });
             $('body').addClass('theme-' + value);
+
+            detectLogo();
         });
     });
 </script>

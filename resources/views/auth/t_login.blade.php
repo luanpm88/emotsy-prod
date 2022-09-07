@@ -198,11 +198,7 @@ done
                 {{ csrf_field() }}
 
                 <h1 class="text-semibold text-center full-width mb-lvl4" style="margin: 0 0 60px 0">
-                    @if (\Acelle\Model\Setting::get('site_logo_big'))
-                        <img width="240" src="{{ action('SettingController@file', \Acelle\Model\Setting::get('site_logo_big')) }}" alt="">
-                    @else
-                        <img style="margin: 10px 50px;" src="{{ URL::asset('images/logo_big.svg') }}" alt="">
-                    @endif
+                    <img style="margin: 10px 50px;" src="{{ getSiteLogoUrl('light') }}" alt="">
                 </h1>
 
                 <!-- display flash message -->
