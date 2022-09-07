@@ -2096,6 +2096,7 @@
   'setting.recurring_charge_before_days.desc' => 'If your customers\' selected payment gateway supports auto billing and if the customers have previously stored a payment method, a credit or debit card for example, then you can specify a timeframe for the application to automatically charge your customers\' card.',
   'setting.recurring_charge_before_days.title' => 'Renewal invoices billing date',
   'setting.registration_recaptcha.help' => 'Enable captcha for registration to block spammers and bots from accessing the webapp.',
+  'setting.site_online.help' => 'Set the website status to offline. Display the site offline messages.',
   'setting.update.success' => ':name setting was successfully updated.',
   'setting.updated' => 'System settings were successfully updated',
   'setting.value' => 'Value',
@@ -2698,5 +2699,5 @@
   'your_api_token' => 'Your API token',
   'your_current_license' => 'Thank you for purchasing! Below is your license key, also known as Purchase Code. Your license type is',
   'zip_postal_code' => 'Zip / Postal code',
-  'setting.site_online.help' => 'Set the website status to offline. Display the site offline messages.',
+  'read' => 'Read',
 ) ?>

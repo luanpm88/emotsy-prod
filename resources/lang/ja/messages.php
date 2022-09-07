@@ -1779,6 +1779,7 @@
   'rate.send' => 'Send',
   'raw' => '生',
   'raw_feedback_content' => 'コンテンツ',
+  'read' => 'Read',
   'recaptcha' => 'reCaptcha',
   'recent_customers' => '最近のお客様',
   'recent_subscriptions' => '最近のサブスクリプション',
