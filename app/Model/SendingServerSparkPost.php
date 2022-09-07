@@ -144,7 +144,6 @@ class SendingServerSparkPost extends SendingServer
         if ($response->getStatusCode() == 204) {
             MailLog::info("SparkPost webhook {$id} deleted");
         } else {
-            var_dump($response->getStatusCode());
             // throw the exception with body string
             throw new \Exception($response->getBody(true));
         }
