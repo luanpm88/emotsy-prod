@@ -1779,6 +1779,7 @@
   'rate.send' => 'Send',
   'raw' => 'Raw',
   'raw_feedback_content' => 'Raw content',
+  'read' => 'Read',
   'recaptcha' => 'reCaptcha',
   'recent_customers' => 'Recent customers',
   'recent_subscriptions' => 'Recent subscriptions',
