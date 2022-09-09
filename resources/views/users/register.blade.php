@@ -8,9 +8,9 @@
         {{ csrf_field() }}
         <div class="row mc-form">
             <div class="col-md-1"></div>
-            <div class="col-md-3 text-end">
+            <div class="col-md-3 text-center pb-4">
                 <a class="main-logo-big" href="{{ action('HomeController@index') }}">
-                    <img width="100%" src="{{ getSiteLogoUrl('dark') }}" alt="">
+                    <img width="80%" src="{{ getSiteLogoUrl('dark') }}" alt="">
                 </a>
             </div>
             <div class="col-md-6">

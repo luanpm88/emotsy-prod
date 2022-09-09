@@ -6,9 +6,9 @@
 
     <div class="row mt-5">
         <div class="col-md-1"></div>
-        <div class="col-md-3 text-end">
+        <div class="col-md-3 text-center pb-4">
             <a class="main-logo-big" href="{{ action('HomeController@index') }}">
-                <img width="150px" src="{{ getSiteLogoUrl('dark') }}" alt="">
+                <img width="80%" src="{{ getSiteLogoUrl('dark') }}" alt="">
             </a>
         </div>
         <div class="col-md-6">
