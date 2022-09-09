@@ -823,7 +823,7 @@ function getLogoMode($mode, $scheme, $daylight='light')
     if ($scheme !== 'white') {
         return 'light';
     }
-    
+
     if ($mode == 'auto' && ($daylight == 'light' || $daylight == null)) {
         return 'dark';
     }
@@ -1187,7 +1187,7 @@ function getSiteLogoUrl($type='light')
 
     // light is default logo
     $lightLogo = \Acelle\Model\Setting::get('site_logo_light');
-    
+
     if ($logo) {
         $url = action('SettingController@file', $logo);
     } elseif ($lightLogo) {
