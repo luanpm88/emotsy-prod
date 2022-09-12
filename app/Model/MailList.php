@@ -1163,7 +1163,7 @@ class MailList extends Model
                 $tmpTable = table('__tmp_subscribers');
                 // @todo: hard-coded charset and COLLATE
                 $tmpFields = implode(',', array_map(function ($field) {
-                    return "`{$field}` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci";
+                    return "`{$field}` VARCHAR(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci";
                 }, $availableFields));
 
                 // Drop table, create table and create index
