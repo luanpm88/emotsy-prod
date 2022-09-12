@@ -2718,4 +2718,8 @@
   'your_api_token' => 'Your API token',
   'your_current_license' => 'Thank you for purchasing! Below is your license key, also known as Purchase Code. Your license type is',
   'zip_postal_code' => 'Zip / Postal code',
+  'day.choice' => 'day|days',
+  'month.choice' => 'month|months',
+  'year.choice' => 'year|years',
+  'week.choice' => 'week|weeks',
 ) ?>
