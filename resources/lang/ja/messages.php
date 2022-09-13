@@ -2657,6 +2657,7 @@
   'website.status.inactive' => '未接続',
   'website.title.not_found' => 'サイトにTITLEタグがありません',
   'website.untitled' => '無題のウェブサイト',
+  'website.url.placeholder' => 'Eg. https://www.domainname.com',
   'website.view_code' => 'コードを表示',
   'website_url' => 'ウェブサイトのURL',
   'websites' => 'ウェブサイト',

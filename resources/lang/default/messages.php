@@ -292,6 +292,7 @@
   'automation.delete.confirm' => 'Are you sure you want to delete this automation? This action cannot be undone.',
   'automation.delete.wording' => 'Click to completely delete this automation along with its data. This action cannot be undone',
   'automation.delete_automation' => 'Delete',
+  'automation.deleted' => 'Automation was successfully deleted|One or more automations were successfully deleted',
   'automation.design' => 'Design',
   'automation.designer.intro' => 'Automation starts when the following trigger condition is met',
   'automation.designer.last_saved' => 'Last saved: :time',
@@ -2722,5 +2723,5 @@
   'your_api_token' => 'Your API token',
   'your_current_license' => 'Thank you for purchasing! Below is your license key, also known as Purchase Code. Your license type is',
   'zip_postal_code' => 'Zip / Postal code',
-  'automation.deleted' => 'Automation was successfully deleted|One or more automations were successfully deleted',
+  'website.url.placeholder' => 'Eg. https://www.domainname.com',
 ) ?>

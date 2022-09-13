@@ -2659,6 +2659,7 @@
   'website.status.inactive' => 'inaktiv',
   'website.title.not_found' => 'Die Seite hat kein TITLE-Tag',
   'website.untitled' => 'Unbenannte Website',
+  'website.url.placeholder' => 'Eg. https://www.domainname.com',
   'website.view_code' => 'Code anzeigen',
   'website_url' => 'Webseiten-URL',
   'websites' => 'Webseitesn',
