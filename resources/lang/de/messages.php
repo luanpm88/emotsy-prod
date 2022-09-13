@@ -292,6 +292,7 @@
   'automation.delete.confirm' => 'Wollen Sie diese Funktion nutzen? Dieser Schritt kann nicht rückgängig gemacht werden und ist dann vom System gelöscht.',
   'automation.delete.wording' => 'ACHTUNG...Wenn Sie den Button Löschen klicken,wird diese Automatisierung gelöscht. Dies kann nicht rückgängig gemacht werden.',
   'automation.delete_automation' => 'Löschen',
+  'automation.deleted' => 'Automation was successfully deleted|One or more automations were successfully deleted',
   'automation.design' => 'Design',
   'automation.designer.intro' => 'Die Automatisierung beginnt, wenn die folgende Auslösebedingung erfüllt ist',
   'automation.designer.last_saved' => 'Zuletzt gespeichert: :minute Minuten',

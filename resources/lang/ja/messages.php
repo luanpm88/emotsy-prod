@@ -292,6 +292,7 @@
   'automation.delete.confirm' => 'この自動化を削除しようとしています。 これは元に戻すことができます。',
   'automation.delete.wording' => 'この自動化を削除しようとしています。 これは元に戻すことができます。',
   'automation.delete_automation' => '削除',
+  'automation.deleted' => 'Automation was successfully deleted|One or more automations were successfully deleted',
   'automation.design' => '設計',
   'automation.designer.intro' => '以下のトリガー条件が満たされると自動化が開始されます',
   'automation.designer.last_saved' => '最後に保存された:: time',
