@@ -2659,6 +2659,7 @@
   'website.status.inactive' => 'inactive',
   'website.title.not_found' => 'The site dose not have TITLE tag',
   'website.untitled' => 'Untitled website',
+  'website.url.placeholder' => 'Eg. https://www.domainname.com',
   'website.view_code' => 'View code',
   'website_url' => 'Website URL',
   'websites' => 'Websites',
@@ -2723,5 +2724,9 @@
   'your_api_token' => 'Your API token',
   'your_current_license' => 'Thank you for purchasing! Below is your license key, also known as Purchase Code. Your license type is',
   'zip_postal_code' => 'Zip / Postal code',
-  'website.url.placeholder' => 'Eg. https://www.domainname.com',
+  'field.label.required' => 'The label of field #:number is required',
+  'field.tag.required' => 'The tag of field #:number is required',
+  'field.tag.alpha_dash' => 'The tag of field #:number may only contain letters, numbers, and dashes.',
+  'field.option.label.required' => 'Field option label is required',
+  'field.option.value.required' => 'Field option value is required',
 ) ?>

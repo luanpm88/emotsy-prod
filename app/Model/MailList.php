@@ -1918,6 +1918,7 @@ class MailList extends Model
     public function updateOrCreateFieldsFromRequest($request)
     {
         $rules = [];
+        $messages = [];
 
         // Check if filed does not have EMAIL tag
         $conflict_tag = false;
@@ -1929,11 +1930,18 @@ class MailList extends Model
                 $rules['fields.'.$key.'.label'] = 'required';
                 $rules['fields.'.$key.'.tag'] = 'required|alpha_dash';
 
+                $messages['fields.'.$key.'.label.required'] = trans('messages.field.label.required', ['number' => $key]);
+                $messages['fields.'.$key.'.tag.required'] = trans('messages.field.tag.required', ['number' => $key]);
+                $messages['fields.'.$key.'.tag.alpha_dash'] = trans('messages.field.tag.alpha_dash', ['number' => $key]);
+
                 // check field options
                 if (isset($item['options'])) {
                     foreach ($item['options'] as $key2 => $item2) {
                         $rules['fields.'.$key.'.options.'.$key2.'.label'] = 'required';
                         $rules['fields.'.$key.'.options.'.$key2.'.value'] = 'required';
+
+                        $messages['fields.'.$key.'.options.'.$key2.'.label.required'] = trans('messages.field.option.label.required', ['number' => $key]);
+                        $messages['fields.'.$key.'.options.'.$key2.'.value.required'] = trans('messages.field.option.value.required', ['number' => $key]);
                     }
                 }
 
@@ -1949,7 +1957,7 @@ class MailList extends Model
             $rules['conflict_field_tags'] = 'required';
         }
 
-        $validator = \Validator::make($request->all(), $rules);
+        $validator = \Validator::make($request->all(), $rules, $messages);
 
         if ($validator->fails()) {
             return $validator;
