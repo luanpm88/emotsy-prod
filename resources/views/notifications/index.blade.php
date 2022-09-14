@@ -15,9 +15,9 @@
             var element = $(this);
             element.fadeOut(4000);
             $.ajax("{{ url("notifications") }}/" + this.id, {
-                method: 'DELETE',
+                method: 'POST',
                 _method: 'DELETE', // See more at: method_field('DELETE')->toHtml()
-                data: {_token: CSRF_TOKEN}
+                data: {_method: 'DELETE',_token: CSRF_TOKEN}
             }).done(function(data, textStatus, jqXHR) { // jqXHR.status == 200
                 element.stop(); // stop fading, then fade again faster!
                 element.fadeOut(200);

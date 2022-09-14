@@ -155,8 +155,9 @@ delete
                 //
                 $.ajax({
                     url: url,
-                    method: 'DELETE',
+                    method: 'POST',
                     data: {
+                        _method: 'DELETE',
                         _token: CSRF_TOKEN,
                     },
                     statusCode: {
