@@ -48,7 +48,7 @@
                         @if ($server->isExtended())
                             <span class="no-margin stat-num kq_search">{{ $server->getTypeName() }}</span>
                         @else
-                            <span class="no-margin stat-num kq_search">{{ trans('messages.' . $item->type) }}</span>
+                            <span class="no-margin stat-num kq_search">{{ trans('messages.sending_server.type.' . $item->type) }}</span>
                         @endif
                         <br />
                         <span class="text-muted">{{ trans('messages.type') }}</span>
