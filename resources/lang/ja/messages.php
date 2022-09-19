@@ -974,6 +974,7 @@
   'disable_plugins_confirm' => 'リストから：numberプラグインを削除しようとしています。リストから：numberプラグインを無効にしようとしています。',
   'disable_sending_servers_confirm' => 'リストから :number 送信サーバーを無効にしようとしています',
   'display_type' => '画面タイプ',
+  'dns_verification' => 'DNS verification',
   'domain' => 'ドメイン',
   'domain_name' => 'ドメイン名',
   'domains' => '送信ドメイン',
@@ -2491,6 +2492,8 @@
   'tracking_domain' => '追跡ドメイン',
   'tracking_domain.create' => 'トラッキングドメインを作成する',
   'tracking_domain.created' => '送信ドメインが正常に作成されました',
+  'tracking_domain.dns_verification.help' => 'Verify this domain through DNS update. You will need to have
+      access to your DNS control panel',
   'tracking_domain.scheme' => 'スキーム',
   'tracking_domain.show.nginx.description' => 'Since Nginx does not support .htaccess, make sure you set up the following rewrite rules to your Nginx setting',
   'tracking_domain.show.nginx.title' => 'For Nginx server',

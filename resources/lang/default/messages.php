@@ -2773,4 +2773,7 @@
   'your_api_token' => 'Your API token',
   'your_current_license' => 'Thank you for purchasing! Below is your license key, also known as Purchase Code. Your license type is',
   'zip_postal_code' => 'Zip / Postal code',
+  'dns_verification' => 'DNS verification',
+  'tracking_domain.dns_verification.help' => 'Verify this domain through DNS update. You will need to have
+      access to your DNS control panel',
 ) ?>

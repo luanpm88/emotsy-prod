@@ -971,6 +971,7 @@
   'disable_plugins_confirm' => 'Sie sind dabei das :number Plugin zu deaktivieren.',
   'disable_sending_servers_confirm' => 'Sie sind dabei :number Ausgangsserver von der Liste zu deaktivieren.',
   'display_type' => 'Display Typ',
+  'dns_verification' => 'DNS verification',
   'domain' => 'Domain',
   'domain_name' => 'Domain Name',
   'domains' => 'Domains',
@@ -2492,6 +2493,8 @@
   'tracking_domain' => 'Tracking-Domain',
   'tracking_domain.create' => 'Tracking-Domain erstellen',
   'tracking_domain.created' => 'Die sendende Domain wurde erfolgreich erstellt',
+  'tracking_domain.dns_verification.help' => 'Verify this domain through DNS update. You will need to have
+      access to your DNS control panel',
   'tracking_domain.scheme' => 'Planen',
   'tracking_domain.show.nginx.description' => 'Since Nginx does not support .htaccess, make sure you set up the following rewrite rules to your Nginx setting',
   'tracking_domain.show.nginx.title' => 'For Nginx server',
