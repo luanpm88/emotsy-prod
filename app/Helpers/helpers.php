@@ -1173,6 +1173,10 @@ function getFullCodeByLanguageCode($languageCode)
 
 function getSiteLogoUrl($type='light')
 {
+    if (!isInitiated()) {
+        return URL::asset('images/logo_light.svg');
+    }
+
     switch($type) {
         case 'light':
             $logo = \Acelle\Model\Setting::get('site_logo_light');
