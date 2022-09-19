@@ -383,7 +383,10 @@ class Subscription extends Model implements HasQuotaInterface
                     if ($this->canRenewFreePlan()) {
                         $this->renew(); // auto renew free plan
                     } else {
-                        $this->cancelNow();
+                        // Cancel immediately only if allowed due subscription setting is no
+                        if (\Acelle\Model\Setting::get('allowed_due_subscription') == 'no') {
+                            $this->cancelNow();
+                        }
                     }
 
                     return;

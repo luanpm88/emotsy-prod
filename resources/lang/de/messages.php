@@ -1983,6 +1983,8 @@
   'sender.wording' => 'Email App fordert, dass Sie Ihre Identität (die Domänen oder E-Mail-Adressen, von denen Sie E-Mails senden) überprüfen, um zu bestätigen, dass Sie Eigentümer dieser Domänen sind, und um die unbefugte Verwendung zu verhindern',
   'senders.deleted' => 'Absender wurde erfolgreich gelöscht',
   'senders.empty.message' => 'Sie haben noch keinen Absender',
+  'sendgrid-api' => 'Sendgrid API',
+  'sendgrid-smtp' => 'Sendgrid SMTP',
   'sending' => 'Senden',
   'sending_credits_used' => 'Sende Credits',
   'sending_domain' => 'Absender Domain',
@@ -2142,6 +2144,9 @@
   'sendmail_path' => 'sendmail Pfad',
   'sent' => 'Gesendet',
   'setting' => 'Einstellungen',
+  'setting.allowed_due_subscription' => 'Allowed due subscription',
+  'setting.allowed_due_subscription.help' => 'Do not automatically suspend the subscription if the payment is already due.
+    Users can still access all the functionality.',
   'setting.embedded_form_recaptcha.help' => 'Enable captcha for embedded form to block spammers and bots from accessing the webapp.',
   'setting.enable_user_registration.help' => 'Visitor can create new customer account and register for a plan.',
   'setting.facebook_oauth' => 'Facebook OAuth',

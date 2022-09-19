@@ -471,6 +471,11 @@ class Setting extends Model
                 'value' => 'no',
                 'type' => 'text',
             ],
+            'allowed_due_subscription' => [
+                'cat' => 'payment',
+                'value' => 'no',
+                'type' => 'text',
+            ],
             'theme.beta' => [
                 'cat' => 'others',
                 'value' => 'no',

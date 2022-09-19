@@ -1985,6 +1985,8 @@
   'sender.wording' => 'Add your own sending email addresses for your email marketing. All email addresses and domain names are required to be verified for sending emails FROM, also to confirm that you own them, and to prevent unauthorized use.',
   'senders.deleted' => 'Sender was successfully deleted',
   'senders.empty.message' => 'You have no sender yet',
+  'sendgrid-api' => 'Sendgrid API',
+  'sendgrid-smtp' => 'Sendgrid SMTP',
   'sending' => 'Sending',
   'sending_credits_used' => 'Sending credits',
   'sending_domain' => 'Sending domain',
@@ -2144,6 +2146,9 @@
   'sendmail_path' => 'Sendmail path',
   'sent' => 'Sent',
   'setting' => 'Setting',
+  'setting.allowed_due_subscription' => 'Allowed due subscription',
+  'setting.allowed_due_subscription.help' => 'Do not automatically suspend the subscription if the payment is already due.
+    Users can still access all the functionality.',
   'setting.embedded_form_recaptcha.help' => 'Enable captcha for embedded form to block spammers and bots from accessing the webapp.',
   'setting.enable_user_registration.help' => 'Visitor can create new customer account and register for a plan.',
   'setting.facebook_oauth' => 'Facebook OAuth',

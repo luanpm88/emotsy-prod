@@ -1984,6 +1984,8 @@
   'sender.wording' => 'Acelle Mail requiere que verifique sus identidades (los dominios o las direcciones de correo electrónico desde donde envía el correo electrónico) para confirmar que es el propietario y evitar el uso no autorizado.',
   'senders.deleted' => 'Sender was successfully deleted',
   'senders.empty.message' => 'Aún no tienes remitente',
+  'sendgrid-api' => 'Sendgrid API',
+  'sendgrid-smtp' => 'Sendgrid SMTP',
   'sending' => 'Envío',
   'sending_credits_used' => 'Creditos enviados',
   'sending_domain' => 'Dominio de envío',
@@ -2143,6 +2145,9 @@
   'sendmail_path' => 'Ruta sendmail',
   'sent' => 'Enviado',
   'setting' => 'Ajuste',
+  'setting.allowed_due_subscription' => 'Allowed due subscription',
+  'setting.allowed_due_subscription.help' => 'Do not automatically suspend the subscription if the payment is already due.
+    Users can still access all the functionality.',
   'setting.embedded_form_recaptcha.help' => 'Enable captcha for embedded form to block spammers and bots from accessing the webapp.',
   'setting.enable_user_registration.help' => 'Visitor can create new customer account and register for a plan.',
   'setting.facebook_oauth' => 'Facebook OAuth',

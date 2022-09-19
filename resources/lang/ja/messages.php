@@ -1984,6 +1984,8 @@
   'sender.wording' => 'マーケティングメールを送信するには、ID（メールの送信元のドメインまたはメールアドレス）を確認して、それらを所有していることを確認し、不正使用を防止する必要があります。',
   'senders.deleted' => '送信者は正常に削除されました',
   'senders.empty.message' => 'まだ送信者がいません',
+  'sendgrid-api' => 'Sendgrid API',
+  'sendgrid-smtp' => 'Sendgrid SMTP',
   'sending' => '送信',
   'sending_credits_used' => 'クレジットの送信',
   'sending_domain' => '送信ドメイン',
@@ -2143,6 +2145,9 @@
   'sendmail_path' => 'Sendmailパス',
   'sent' => '送信済み',
   'setting' => '設定',
+  'setting.allowed_due_subscription' => 'Allowed due subscription',
+  'setting.allowed_due_subscription.help' => 'Do not automatically suspend the subscription if the payment is already due.
+    Users can still access all the functionality.',
   'setting.embedded_form_recaptcha.help' => 'Enable captcha for embedded form to block spammers and bots from accessing the webapp.',
   'setting.enable_user_registration.help' => 'Visitor can create new customer account and register for a plan.',
   'setting.facebook_oauth' => 'Facebook OAuth',

@@ -972,6 +972,7 @@
   'disable_plugins_confirm' => 'You\'re about to disable :number plugin(s) from the list.',
   'disable_sending_servers_confirm' => 'You\'re about to disable :number sending server(s) from the list.',
   'display_type' => 'Display type',
+  'dns_verification' => 'DNS verification',
   'domain' => 'Domain',
   'domain_name' => 'Domain name',
   'domains' => 'Domains',
@@ -2492,6 +2493,8 @@
   'tracking_domain' => 'Tracking domain',
   'tracking_domain.create' => 'Create Tracking domain',
   'tracking_domain.created' => 'Sending domain was successfully created',
+  'tracking_domain.dns_verification.help' => 'Verify this domain through DNS update. You will need to have
+      access to your DNS control panel',
   'tracking_domain.scheme' => 'Scheme',
   'tracking_domain.show.nginx.description' => 'Since Nginx does not support .htaccess, make sure you set up the following rewrite rules to your Nginx setting',
   'tracking_domain.show.nginx.title' => 'For Nginx server',
@@ -2773,7 +2776,9 @@
   'your_api_token' => 'Your API token',
   'your_current_license' => 'Thank you for purchasing! Below is your license key, also known as Purchase Code. Your license type is',
   'zip_postal_code' => 'Zip / Postal code',
-  'dns_verification' => 'DNS verification',
-  'tracking_domain.dns_verification.help' => 'Verify this domain through DNS update. You will need to have
-      access to your DNS control panel',
+  'setting.allowed_due_subscription' => 'Allowed due subscription',
+  'setting.allowed_due_subscription.help' => 'Do not automatically suspend the subscription if the payment is already due.
+    Users can still access all the functionality.',
+  'sendgrid-api' => 'Sendgrid API',
+  'sendgrid-smtp' => 'Sendgrid SMTP',
 ) ?>
