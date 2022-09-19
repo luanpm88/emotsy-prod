@@ -2495,10 +2495,28 @@
   'track_opens' => '開封を追跡',
   'tracking' => '追跡',
   'tracking_domain' => '追跡ドメイン',
+  'tracking_domain.cname.dns_setup' => 'DNS Setup',
+  'tracking_domain.cname.dns_setup.note1' => 'Tracking domains are used by the application in tracking email opens and link clicks. Once set up, all links in your emails are transformed and wrapped by a tracking domain. It helps improve your email reputation and make it less likely to be treated as spam hence improve your sending performance.',
+  'tracking_domain.cname.dns_setup.note2' => 'You need to add the following CNAME record to your domain DNS to verify your domain as well as to enable open/click tracking through the application.',
+  'tracking_domain.cname.dns_setup.note3' => 'Notice that DNS update may take from 5 minutes to a few hours to propagate',
+  'tracking_domain.cname.dns_setup.title' => 'DNS Setup',
+  'tracking_domain.cname.pending_note' => 'Please update your domain DNS records accordingly to the guideline below. Once you believe you\'re all set up, click the refresh button to check',
+  'tracking_domain.cname.pending_title' => 'Pending verification',
+  'tracking_domain.cname.refresh' => 'Refresh now',
+  'tracking_domain.cname.test.wording' => 'We are taking you to the
+      <a href="http://:domain" target="_blank">http://:domain</a> page.
+      If you see it load the login page of Acelle,
+      then your DNS configuration is good and your tracking domain is ready to go.
+      Otherwise, please double check to make sure that your hosting server is
+      configured correctly so that traffic to
+      <a href="http://:domain" target="_blank">http://:domain</a> are also redirected to Acelle source.
+      In other words, make it an alias URL or your Acelle webapp.',
   'tracking_domain.create' => 'トラッキングドメインを作成する',
   'tracking_domain.created' => '送信ドメインが正常に作成されました',
   'tracking_domain.dns_verification.help' => 'Verify this domain through DNS update. You will need to have
       access to your DNS control panel',
+  'tracking_domain.hostname' => 'Host name',
+  'tracking_domain.record_type' => 'Record type',
   'tracking_domain.scheme' => 'スキーム',
   'tracking_domain.show.nginx.description' => 'Since Nginx does not support .htaccess, make sure you set up the following rewrite rules to your Nginx setting',
   'tracking_domain.show.nginx.title' => 'For Nginx server',
@@ -2513,9 +2531,12 @@
   'tracking_domain.show.verified_title' => '追跡ドメインが確認されました',
   'tracking_domain.status.unverified' => '未確認',
   'tracking_domain.status.verified' => '検証済み',
+  'tracking_domain.test' => 'Test',
+  'tracking_domain.test.proceed' => 'Proceed',
   'tracking_domain.unverified' => '未確認',
   'tracking_domain.validation.error.name' => 'ドメイン名が無効です',
   'tracking_domain.validation.error.path' => 'トラッキングドメインにはパスを含めることはできません（ホスト名のみ）',
+  'tracking_domain.value' => 'Value',
   'tracking_domain.verified' => '検証済み',
   'tracking_domain.verify.failed' => 'トラッキングドメインを確認できません。トラッキングスクリプトが正しく設定されていることを確認してください。',
   'tracking_domain.verify.success' => 'トラッキングドメインが正常に検証されました！',
