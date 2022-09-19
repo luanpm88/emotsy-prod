@@ -560,6 +560,8 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('tracking_domains/listing/{page?}', 'TrackingDomainController@listing');
     Route::get('tracking_domains/delete', 'TrackingDomainController@delete');
     Route::get('tracking_domains/{uid}/verify', 'TrackingDomainController@verify');
+    Route::get('tracking_domains/{uid}/cname', 'TrackingDomainController@showCname');
+    Route::get('tracking_domains/{uid}/verify/cname', 'TrackingDomainController@verifyCname');
     Route::resource('tracking_domains', 'TrackingDomainController');
 
     // Email verification servers
