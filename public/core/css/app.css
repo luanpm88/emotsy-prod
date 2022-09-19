@@ -6180,6 +6180,9 @@ h1, h1 {
     top: 4px;
     /* transform: translateY(19997px); */
 }
+.checkbox-right-switch .styled[type="radio"]:checked ~ .check-symbol:after {
+    top: 6px;
+}
 .styled.check_all ~ .check-symbol {
     margin-right: 14px;
 }

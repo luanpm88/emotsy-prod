@@ -87,7 +87,7 @@ class TrackingDomain extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'scheme'
+        'name', 'scheme', 'verification_method'
     ];
 
     public static function createFromRequest($request)
@@ -118,6 +118,7 @@ class TrackingDomain extends Model
         $attributes = [
             'scheme' => $scheme,
             'name' => "{$scheme}://{$name}",
+            'verification_method' => $request->input('verification_method'),
         ];
 
         $validator = Validator::make($attributes, $rules);
