@@ -126,6 +126,25 @@ class TrackingDomainController extends Controller
         ]);
     }
 
+    public function showCname(Request $request, $id)
+    {
+        $debug = is_null($request->input('tracking_domain_debug')) ? false : true;
+
+        if ($debug) {
+            session()->put('tracking_domain_debug', $debug);
+        } else {
+            session()->forget('tracking_domain_debug', $debug);
+        }
+
+        $domain = TrackingDomain::findByUid($id);
+        $hostname = parse_url(url('/'), PHP_URL_HOST);
+
+        return view('tracking_domains.showCname', [
+            'domain' => $domain,
+            'hostname' => $hostname,
+        ]);
+    }
+
     /**
      * Custom sort items.
      *
@@ -179,6 +198,15 @@ class TrackingDomainController extends Controller
             return response()->json(['success' => false], 200);
         }
     }
+
+    public function verifyCname(Request $request, $uid)
+    {
+        $debug = session()->has('tracking_domain_debug');
+        $domain = TrackingDomain::findByUid($uid);
+        $domain->verifyCname($debug);
+        return redirect()->action('TrackingDomainController@showCname', ['uid' => $uid]);
+    }
+
 
     /**
      * sending domain's records.

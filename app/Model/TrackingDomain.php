@@ -43,6 +43,9 @@ class TrackingDomain extends Model
     public const STATUS_VERIFIED = 'verified';
     public const STATUS_UNVERIFIED = 'unverified';
 
+    public const VERIFICATION_METHOD_HOST = 'host';
+    public const VERIFICATION_METHOD_CNAME = 'cname';
+
     /**
      * Associations.
      *
@@ -253,7 +256,7 @@ class TrackingDomain extends Model
         }
     }
 
-    public function verifyOld($debug = false)
+    public function verifyCname($debug = false)
     {
         try {
             $client = new Client(['verify' => false]);
@@ -290,12 +293,18 @@ class TrackingDomain extends Model
             throw new Exception('Cannot build tracking URL with "'.$url.'", a valid URL is required (with leading http:// or https:// or //');
         }
 
-        // Already a tracking domain
+        // Already a tracking domain's URL
         if (strpos($url, $this->getUrl()) === 0) {
             return $url;
         }
 
-        $encodedUrl = StringHelper::base64UrlEncode($url);
-        return join_url($this->getUrl(), $encodedUrl);
+        if ($this->verification_method == self::VERIFICATION_METHOD_HOST) {
+            $encodedUrl = StringHelper::base64UrlEncode($url);
+            $final = join_url($this->getUrl(), $encodedUrl);
+        } elseif ($this->verification_method == self::VERIFICATION_METHOD_CNAME) {
+
+        }
+
+        return $final;
     }
 }

@@ -2496,10 +2496,28 @@
   'track_opens' => 'Track opens',
   'tracking' => 'Tracking',
   'tracking_domain' => 'Tracking domain',
+  'tracking_domain.cname.dns_setup' => 'DNS Setup',
+  'tracking_domain.cname.dns_setup.note1' => 'Tracking domains are used by the application in tracking email opens and link clicks. Once set up, all links in your emails are transformed and wrapped by a tracking domain. It helps improve your email reputation and make it less likely to be treated as spam hence improve your sending performance.',
+  'tracking_domain.cname.dns_setup.note2' => 'You need to add the following CNAME record to your domain DNS to verify your domain as well as to enable open/click tracking through the application.',
+  'tracking_domain.cname.dns_setup.note3' => 'Notice that DNS update may take from 5 minutes to a few hours to propagate',
+  'tracking_domain.cname.dns_setup.title' => 'DNS Setup',
+  'tracking_domain.cname.pending_note' => 'Please update your domain DNS records accordingly to the guideline below. Once you believe you\'re all set up, click the refresh button to check',
+  'tracking_domain.cname.pending_title' => 'Pending verification',
+  'tracking_domain.cname.refresh' => 'Refresh now',
+  'tracking_domain.cname.test.wording' => 'We are taking you to the
+      <a href="http://:domain" target="_blank">http://:domain</a> page.
+      If you see it load the login page of Acelle,
+      then your DNS configuration is good and your tracking domain is ready to go.
+      Otherwise, please double check to make sure that your hosting server is
+      configured correctly so that traffic to
+      <a href="http://:domain" target="_blank">http://:domain</a> are also redirected to Acelle source.
+      In other words, make it an alias URL or your Acelle webapp.',
   'tracking_domain.create' => 'Create Tracking domain',
   'tracking_domain.created' => 'Sending domain was successfully created',
   'tracking_domain.dns_verification.help' => 'Verify this domain through DNS update. You will need to have
       access to your DNS control panel',
+  'tracking_domain.hostname' => 'Host name',
+  'tracking_domain.record_type' => 'Record type',
   'tracking_domain.scheme' => 'Scheme',
   'tracking_domain.show.nginx.description' => 'Since Nginx does not support .htaccess, make sure you set up the following rewrite rules to your Nginx setting',
   'tracking_domain.show.nginx.title' => 'For Nginx server',
@@ -2514,9 +2532,12 @@
   'tracking_domain.show.verified_title' => 'Tracking domain verified',
   'tracking_domain.status.unverified' => 'unverified',
   'tracking_domain.status.verified' => 'verified',
+  'tracking_domain.test' => 'Test',
+  'tracking_domain.test.proceed' => 'Proceed',
   'tracking_domain.unverified' => 'unverified',
   'tracking_domain.validation.error.name' => 'Invalid domain name',
   'tracking_domain.validation.error.path' => 'Tracking domain should not contain path (hostname only)',
+  'tracking_domain.value' => 'Value',
   'tracking_domain.verified' => 'verified',
   'tracking_domain.verify.failed' => 'Cannot verify tracking domain, make sure you have set up the tracking script correctly!',
   'tracking_domain.verify.success' => 'Tracking domain is successfully verified!',
