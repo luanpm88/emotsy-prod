@@ -1212,6 +1212,7 @@
   'home' => 'Home',
   'home_page' => 'Home page',
   'host' => 'Hostname',
+  'host_redirect_verification' => 'Host redirect verification',
   'hostname' => 'Hostname',
   'hour' => 'hour',
   'hours' => 'hours',
@@ -1301,6 +1302,8 @@
   'language.discard_change' => 'Your change in the current file will be discarded.',
   'language.load_translate' => 'Load & Translate',
   'language.select_translation_file' => 'Select file',
+  'language.status.active' => 'active',
+  'language.status.inactive' => 'inactive',
   'language.translate.intro' => '<p>The application lets you customize the user interface (UI) text in all areas of the web application like titles, labels, tooltips, links, buttons... You can translate it from the original English language to Spanish and/or change these phrases the way you want.</p><p> Phrases are organized in different files which you can choose in the list below </p>',
   'language.translation' => 'Translation',
   'language.updated' => 'Language was successfully updated',
@@ -2516,6 +2519,8 @@
   'tracking_domain.created' => 'Sending domain was successfully created',
   'tracking_domain.dns_verification.help' => 'Verify this domain through DNS update. You will need to have
       access to your DNS control panel',
+  'tracking_domain.host_redirect_verification.help' => 'Verify this domain by uploading PHP script to the related hosting server,
+    which is responsible for redirecting web traffice to the appropriate location',
   'tracking_domain.hostname' => 'Host name',
   'tracking_domain.record_type' => 'Record type',
   'tracking_domain.scheme' => 'Scheme',
@@ -2802,7 +2807,4 @@
   'your_api_token' => 'Your API token',
   'your_current_license' => 'Thank you for purchasing! Below is your license key, also known as Purchase Code. Your license type is',
   'zip_postal_code' => 'Zip / Postal code',
-  'host_redirect_verification' => 'Host redirect verification',
-  'tracking_domain.host_redirect_verification.help' => 'Verify this domain by uploading PHP script to the related hosting server,
-    which is responsible for redirecting web traffice to the appropriate location',
 ) ?>
