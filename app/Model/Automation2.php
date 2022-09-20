@@ -906,7 +906,6 @@ class Automation2 extends Model
         return  $trigger;
     }
 
-    // by Louis
     public function getActions($callback)
     {
         $actions = $this->getElements(true);
@@ -917,7 +916,6 @@ class Automation2 extends Model
         }
     }
 
-    // by Louis
     public function getLeafActions()
     {
         $leaves = [];
