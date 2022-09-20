@@ -47,6 +47,8 @@ class Plan extends Model
     //
     public const UNLIMITED_PLAN_ID = '9999';
 
+    public const UNLIMITED_TIME = 'unlimited';
+
     /**
      * The attributes that are mass assignable.
      *
@@ -730,6 +732,8 @@ class Plan extends Model
             $query = $query->where('plans.admin_id', '=', $request->user()->admin->id);
         }
 
+
+        // Only allow users to change to a plan with the same PERIOD
         if ($request->change_from_uid) {
             $plan = \Acelle\Model\Plan::findByUid($request->change_from_uid);
 
@@ -749,7 +753,7 @@ class Plan extends Model
     public function displayFrequencyTime()
     {
         // unlimited
-        if ($this->isTimeUnlimited()) {
+        if ($this->isUnlimited()) {
             return trans('messages.plan_time_unlimited');
         }
 
@@ -788,16 +792,6 @@ class Plan extends Model
             ['value' => 'hour', 'text' => trans('messages.hour')],
             ['value' => 'day', 'text' => trans('messages.day')],
         ];
-    }
-
-    /**
-     * Check if plan time is unlimited.
-     *
-     * @return bool
-     */
-    public function isTimeUnlimited()
-    {
-        return $this->frequency_unit == 'unlimited';
     }
 
     /**
@@ -1465,5 +1459,10 @@ class Plan extends Model
     public function isCustomTrackingDomainRequired()
     {
         return $this->own_tracking_domain_required;
+    }
+
+    public function isUnlimited()
+    {
+        return $this->frequency_unit == self::UNLIMITED_TIME;
     }
 }

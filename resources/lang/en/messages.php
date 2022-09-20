@@ -972,7 +972,7 @@
   'disable_plugins_confirm' => 'You\'re about to disable :number plugin(s) from the list.',
   'disable_sending_servers_confirm' => 'You\'re about to disable :number sending server(s) from the list.',
   'display_type' => 'Display type',
-  'dns_verification' => 'DNS verification',
+  'dns_verification' => 'DNS/CNAME verification',
   'domain' => 'Domain',
   'domain_name' => 'Domain name',
   'domains' => 'Domains',
