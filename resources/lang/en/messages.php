@@ -2802,4 +2802,7 @@
   'your_api_token' => 'Your API token',
   'your_current_license' => 'Thank you for purchasing! Below is your license key, also known as Purchase Code. Your license type is',
   'zip_postal_code' => 'Zip / Postal code',
+  'host_redirect_verification' => 'Host redirect verification',
+  'tracking_domain.host_redirect_verification.help' => 'Verify this domain by uploading PHP script to the related hosting server,
+    which is responsible for redirecting web traffice to the appropriate location',
 ) ?>
