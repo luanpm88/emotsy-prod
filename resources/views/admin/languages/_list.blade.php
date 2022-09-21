@@ -21,7 +21,7 @@
 				</td>
 				<td class="text-center">
 					<span class="text-muted2 list-status">
-						<span class="label label-flat bg-{{ $language->status }}">{{ trans('messages.language_status_' . $language->status) }}</span>
+						<span class="label label-flat bg-{{ $language->status }}">{{ trans('messages.language.status.' . $language->status) }}</span>
 					</span>	
 				</td>
 				<td class="text-end">																					

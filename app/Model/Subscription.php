@@ -807,6 +807,12 @@ class Subscription extends Model implements HasQuotaInterface
      */
     public function calcChangePlan($plan)
     {
+        if ($this->plan->isUnlimited()) {
+            // temporarily disable this feature, otherwise, the plan's "unlimited" frequency_unit value will
+            // cause code broken
+            throw new Exception('Cannot change to a new plan if the current plan is unlimited');
+        }
+
         if (($this->plan->frequency_unit != $plan->frequency_unit) ||
             ($this->plan->frequency_amount != $plan->frequency_amount) ||
             ($this->plan->currency->code != $plan->currency->code)
@@ -860,9 +866,16 @@ class Subscription extends Model implements HasQuotaInterface
 
     public function getCreditsUsedDuringPlanCycle($name)
     {
-        $interval = "{$this->plan->frequency_amount} {$this->plan->frequency_unit}"; // '1 month' or '1 year' for example
-        $from = Carbon::now()->subtract($interval);
-        return $this->getCreditsUsed($name, $from);
+        // '1 month' or '1 year' for example
+        if ($this->plan->isUnlimited()) {
+            $used = $this->getCreditsUsed($name);
+        } else {
+            $interval = "{$this->plan->frequency_amount} {$this->plan->frequency_unit}";
+            $from = Carbon::now()->subtract($interval);
+            $used = $this->getCreditsUsed($name, $from);
+        }
+
+        return $used;
     }
 
     public function getCreditsLimit($name)
