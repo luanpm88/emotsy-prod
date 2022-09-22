@@ -34,28 +34,7 @@
 				<div class="d-flex align-items-top me-3">
 					<label>
 						<input type="radio" name="verification_method"
-							{{ !$domain->verification_method || $domain->verification_method == Acelle\Model\TrackingDomain::VERIFICATION_METHOD_CNAME ? 'checked' : '' }}
-							value="{{ Acelle\Model\TrackingDomain::VERIFICATION_METHOD_CNAME }}" class="styled">
-					</label>
-				</div>
-				<div style="width:100%">
-					<label>
-						{{ trans('messages.dns_verification') }} 
-						<span class="checkbox-description">
-							{{ trans('messages.tracking_domain.dns_verification.help') }} 
-						</span>
-					   
-				   </label>
-				</div>
-				   
-				
-	   		</div>
-
-			   <div class="d-flex">	
-				<div class="d-flex align-items-top me-3">
-					<label>
-						<input type="radio" name="verification_method"
-							{{ $domain->verification_method == Acelle\Model\TrackingDomain::VERIFICATION_METHOD_HOST ? 'checked' : '' }}
+							{{ !$domain->verification_method || $domain->verification_method == Acelle\Model\TrackingDomain::VERIFICATION_METHOD_HOST ? 'checked' : '' }}
 							value="{{ Acelle\Model\TrackingDomain::VERIFICATION_METHOD_HOST }}" class="styled">
 					</label>
 				</div>
@@ -64,6 +43,26 @@
 						{{ trans('messages.host_redirect_verification') }} 
 						<span class="checkbox-description">
 							{{ trans('messages.tracking_domain.host_redirect_verification.help') }} 
+						</span>
+					   
+				   </label>
+				</div>
+				   
+				
+	   		</div>
+			<div class="d-flex">	
+				<div class="d-flex align-items-top me-3">
+					<label>
+						<input type="radio" name="verification_method"
+							{{ $domain->verification_method == Acelle\Model\TrackingDomain::VERIFICATION_METHOD_CNAME ? 'checked' : '' }}
+							value="{{ Acelle\Model\TrackingDomain::VERIFICATION_METHOD_CNAME }}" class="styled">
+					</label>
+				</div>
+				<div style="width:100%">
+					<label>
+						{{ trans('messages.dns_verification') }} 
+						<span class="checkbox-description">
+							{{ trans('messages.tracking_domain.dns_verification.help') }} 
 						</span>
 					   
 				   </label>
