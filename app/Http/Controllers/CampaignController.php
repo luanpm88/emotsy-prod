@@ -1520,7 +1520,7 @@ class CampaignController extends Controller
         }
 
         // Paging
-        $subscribers = $subscribers->search($request->keyword)->paginate($request->per_page);
+        $subscribers = $subscribers->search($request->keyword)->paginate($request->per_page ? $request->per_page : 50);
 
         // Field information
         $fields = $campaign->defaultMailList->getFields->whereIn('uid', $request->columns);

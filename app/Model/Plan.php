@@ -757,7 +757,10 @@ class Plan extends Model
             return trans('messages.plan_time_unlimited');
         }
 
-        return $this->frequency_amount.' ' . trans('messages.' . \Acelle\Library\Tool::getPluralPrase($this->frequency_unit, $this->frequency_amount));
+        return trans('messages.plan.period', [
+            'amount' => number_with_delimiter($this->frequency_amount),
+            'unit' => trans('messages.' . \Acelle\Library\Tool::getPluralPrase($this->frequency_unit, $this->frequency_amount)),
+        ]);
     }
 
     /**
