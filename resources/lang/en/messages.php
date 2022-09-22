@@ -2561,6 +2561,7 @@
   'tracking_log_status_new' => 'New',
   'tracking_log_status_sent' => 'Sent',
   'tracking_log_status_skipped' => 'Skipped',
+  'tracking_log_status_pending' => 'Pending',
   'tracking_status' => 'Tracking status',
   'transaction.amount' => 'Amount',
   'transaction.method' => 'Method',
