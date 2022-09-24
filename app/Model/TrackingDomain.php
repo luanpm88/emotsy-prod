@@ -300,12 +300,23 @@ class TrackingDomain extends Model
         }
 
         if ($this->verification_method == self::VERIFICATION_METHOD_HOST) {
+            // Replace the default host with the tracking host
+            // For example, transform "http://myapp.com/foo" to "http://tracking.com/aHR0cDovL215YXBwLmNvbS9mb28"
             $encodedUrl = StringHelper::base64UrlEncode($url);
             $final = join_url($this->getUrl(), $encodedUrl);
         } elseif ($this->verification_method == self::VERIFICATION_METHOD_CNAME) {
-
+            // Replace the default host with the tracking host
+            // For example, transform "http://myapp.com/foo" to "http://tracking.com/foo"
+            $default = config('app.url');
+            $default = trim($default, '/'); // make sure there is no trailing slash "/"
+            $final = str_replace($default, $this->getUrl(), $url);
         }
 
         return $final;
+    }
+
+    public function verifyByDns()
+    {
+        return $this->verification_method == self::VERIFICATION_METHOD_CNAME;
     }
 }

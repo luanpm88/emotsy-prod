@@ -739,7 +739,7 @@ class Template extends Model
                 }
 
                 if ($domain) {
-                    return $domain->buildTrackingUrl($urlWithHost, $element);
+                    return $domain->buildTrackingUrl($urlWithHost);
                 } elseif ($withHost) {
                     return $urlWithHost;
                 } else {

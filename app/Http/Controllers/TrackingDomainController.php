@@ -117,8 +117,12 @@ class TrackingDomainController extends Controller
         }
 
         $domain = TrackingDomain::findByUid($id);
-        $hostname = parse_url(url('/'), PHP_URL_HOST);
 
+        if ($domain->verifyByDns()) {
+            return redirect()->action('TrackingDomainController@showCname', [ 'uid' => $domain->uid ]);
+        }
+
+        $hostname = parse_url(url('/'), PHP_URL_HOST);
         return view('tracking_domains.show2', [
             'domain' => $domain,
             'download' => url('tracking-1.0.0.zip'),
