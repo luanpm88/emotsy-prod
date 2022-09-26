@@ -7953,7 +7953,7 @@ label.checker input {
 }
 label.checker input:disabled ~ .checker-symbol::after {
     background-color: #ddd;    
-    border-color: #aaa;    
+    border-color: #ccc;    
 }
 label.checker input:disabled ~ .checker-symbol::before {
     background-color: rgba(29, 195, 141, 0.5);
