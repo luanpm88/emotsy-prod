@@ -1676,7 +1676,7 @@
   'plan.email_footer.intro' => 'Include a footer in every out-going email message to reflect your own brand. Normally, you can enable this option for trial period',
   'plan.email_footer_trial_period_only' => 'For trial period only',
   'plan.email_verification' => 'Email verification',
-  'plan.email_verification.intro' => 'Allow your users to verify every email address of their audience or mail lists. Verification shall be made against a remote or local service configured in Email Verification Servers managment',
+  'plan.email_verification.intro' => 'Allow your users to verify every email address of their audience or mail lists. Verification shall be made against a remote or local service configured in Email Verification Servers management',
   'plan.email_verification.use_own' => 'Use own email verification servers',
   'plan.email_verification.use_own.intro' => 'Users are allowed to add their own verification servers',
   'plan.email_verification.use_system' => 'Use system\'s email verification servers',
