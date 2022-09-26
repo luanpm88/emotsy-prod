@@ -2812,4 +2812,10 @@
   'zip_postal_code' => 'Zip / Postal code',
   'password_confirmation' => 'Confirm new password',
   'timezone' => 'Timezone',
+  'unsubscribe_notification' => 'Send unsubscribe notification to subscribers',
+  'list.unsubscribe_notification.help' => 'Send subscribers a final “Goodbye” email to let them know they have unsubscribed.',
+  'subscribe_confirmation' => 'Send subscription confirmation email (Double Opt-In)',
+  'list.subscribe_confirmation.help' => 'When people subscribe to your list, send them a subscription confirmation email.',
+  'send_welcome_email' => 'Send a final welcome email',
+  'list.send_welcome_email.help' => 'When people opt-in to your list, send them an email welcoming them to your list. The final welcome email can be edited in the List -> Forms / Pages management',
 ) ?>

@@ -7898,3 +7898,51 @@ textarea.form-control {
     height: 35px!important;
     border-radius: 5px!important;
 }
+label.checker {
+    display: inline-block;
+    position: relative;
+    cursor: pointer;
+}
+label.checker .checker-symbol::before {
+    content: '.';
+    width: 35px;
+    height: 19px;
+    display: inline-block;
+    background: transparent;
+    top: 2px;
+    position: absolute;
+    left: -9px;
+    border-radius: 50px;
+    border: solid 1px #aaa;
+    text-indent: -9000px;
+    box-shadow: 1px 1px 1px rgba(0,0,0,0.1);
+    transition: all 0.2s ease-in-out;
+}
+label.checker .checker-symbol::after {
+    content: '.';
+    width: 21px;
+    height: 21px;
+    display: inline-block;
+    background: #fff;
+    top: 1px;
+    position: absolute;
+    left: -9px;
+    border-radius: 100%;
+    border: solid 1px #aaa;
+    text-indent: -9000px;
+    transition: all 0.2s ease-in-out;
+}
+label.checker input:checked ~ .checker-symbol::before {
+    background-color: #2fd9a1;
+    border-color: #2fd9a1;;
+}
+label.checker input:checked ~ .checker-symbol::after {
+    left: 7px;
+}
+label.checker input {
+    width: 0px;
+    height: 0px;
+    background: transparent;
+    border: none;
+    opacity: 0;
+}
