@@ -7901,15 +7901,17 @@ textarea.form-control {
 label.checker {
     display: inline-block;
     position: relative;
+}
+label.checker .checker-symbol {
     cursor: pointer;
 }
 label.checker .checker-symbol::before {
     content: '.';
     width: 35px;
-    height: 19px;
+    height: 15px;
     display: inline-block;
     background: transparent;
-    top: 2px;
+    top: 4px;
     position: absolute;
     left: -9px;
     border-radius: 50px;
@@ -7917,6 +7919,7 @@ label.checker .checker-symbol::before {
     text-indent: -9000px;
     box-shadow: 1px 1px 1px rgba(0,0,0,0.1);
     transition: all 0.2s ease-in-out;
+    cursor: pointer;
 }
 label.checker .checker-symbol::after {
     content: '.';
@@ -7931,6 +7934,8 @@ label.checker .checker-symbol::after {
     border: solid 1px #aaa;
     text-indent: -9000px;
     transition: all 0.2s ease-in-out;
+    box-shadow: 1px 1px 1px rgba(0,0,0,0.1);
+    cursor: pointer;
 }
 label.checker input:checked ~ .checker-symbol::before {
     background-color: #2fd9a1;
@@ -7945,4 +7950,10 @@ label.checker input {
     background: transparent;
     border: none;
     opacity: 0;
+}
+label.checker input:disabled ~ .checker-symbol::after {
+    background-color: #aaa;
+}
+label.checker input:disabled ~ .checker-symbol {
+    cursor: not-allowed;
 }
