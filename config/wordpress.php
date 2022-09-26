@@ -2,8 +2,8 @@
 
 return [
     '1' => [
-        'url' => 'http://wp.vbrand.com',
-        'db_name' => 'wpbrand',
+        'url' => 'http://localhost:3000',
+        'db_name' => 'wordpress',
         'db_prefix' => '',
 
         // 'db_port' => '3306', // same as acelle config
@@ -12,8 +12,8 @@ return [
         // 'db_password' => '', // same as acelle config
     ],
     '2' => [
-        'url' => 'http://wpbrand.com',
-        'db_name' => 'wpbrand',
+        'url' => 'http://localhost:3001',
+        'db_name' => 'wordpress',
         'db_prefix' => '',
 
         // 'db_port' => '3306', // same as acelle config
