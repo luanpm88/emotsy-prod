@@ -2630,7 +2630,7 @@
   'plugin.updated' => 'プラグインは正常に更新されました',
   'plugin.upload.instruction' => 'PCからプラグインパッケージを選択してアップロードします。 通常、これはプラグインのソースファイルとメタ情報を含むZIPアーカイブです。',
   'plugin.version' => 'バージョン',
-  'plugin.wording' => 'Acelle Teamによって開発された多数の素晴らしいプラグインでアプリケーションを強化します。統合がこれまでになく簡単になりました！',
+  'plugin.wording' => 'Automail Teamによって開発された多数の素晴らしいプラグインでアプリケーションを強化します。統合がこれまでになく簡単になりました！',
   'plugin.yes_delete' => 'Yes, Delete plugin!',
   'plugin_status_active' => '有効',
   'plugin_status_inactive' => '無効',
