@@ -1,5 +1,5 @@
 <?php
-    $label = isset($label) ? $label : (Lang::has('messages.'.$name) ? trans('messages.'.$name) : '');
+    $label = isset($label) ? $label : trans('messages.'.$name);
     $var_name = str_replace('[]', '', $name);
     $var_name = str_replace('][', '.', $var_name);
     $var_name = str_replace('[', '.', $var_name);
