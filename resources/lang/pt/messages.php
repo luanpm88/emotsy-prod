@@ -2592,6 +2592,7 @@
   'unsubscribe_goodbye_email' => 'Cancelar a subscrição do Email "Adeus"',
   'unsubscribe_log' => 'Registo de cancelamentos',
   'unsubscribe_log.download' => 'Download',
+  'unsubscribe_notification' => 'Send unsubscribe notification to subscribers',
   'unsubscribe_subscribers_confirm' => 'Está prestes a remover :number subscritor(es) da lista.',
   'unsubscribe_success_page' => 'Página de cancelamento de subscrição',
   'unsubscribe_url_required' => '{UNSUBSCRIBE_URL} tag é necessária',

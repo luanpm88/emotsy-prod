@@ -2593,6 +2593,7 @@
   'unsubscribe_goodbye_email' => 'Verabschiedungs-E-Mail bei Abmeldung',
   'unsubscribe_log' => 'Austragungsprotokoll',
   'unsubscribe_log.download' => 'Download',
+  'unsubscribe_notification' => 'Send unsubscribe notification to subscribers',
   'unsubscribe_subscribers_confirm' => 'Sie sind dabei :number Abonnent(en) von der Liste abzumelden.',
   'unsubscribe_success_page' => 'Erfolgreich abgemeldet Seite',
   'unsubscribe_url_required' => '{UNSUBSCRIBE_URL} Tag ist erforderlich',

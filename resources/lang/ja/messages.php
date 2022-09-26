@@ -2592,6 +2592,7 @@
   'unsubscribe_goodbye_email' => '「さようなら」メールの購読を解除する',
   'unsubscribe_log' => '購読解除ログ',
   'unsubscribe_log.download' => 'ダウンロード',
+  'unsubscribe_notification' => 'Send unsubscribe notification to subscribers',
   'unsubscribe_subscribers_confirm' => 'リストから :number 購読者の購読を解除しようとしています。',
   'unsubscribe_success_page' => '購読ページを解除する',
   'unsubscribe_url_required' => '{UNSUBSCRIBE_URL}タグが必要です',

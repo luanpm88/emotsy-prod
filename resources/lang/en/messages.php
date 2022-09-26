@@ -2593,6 +2593,7 @@
   'unsubscribe_goodbye_email' => 'Unsubscribe "Goodbye" email',
   'unsubscribe_log' => 'Unsubscribe log',
   'unsubscribe_log.download' => 'Download',
+  'unsubscribe_notification' => 'Send unsubscribe notification to subscribers',
   'unsubscribe_subscribers_confirm' => 'You\'re about to unsubscribe :number subscriber(s) from the list.',
   'unsubscribe_success_page' => 'Unsubscribe success page',
   'unsubscribe_url_required' => '{UNSUBSCRIBE_URL} tag is required',

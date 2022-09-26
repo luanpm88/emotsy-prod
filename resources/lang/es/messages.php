@@ -2592,6 +2592,7 @@
   'unsubscribe_goodbye_email' => 'Email de cancelación',
   'unsubscribe_log' => 'Registro de cancelaciones de la subscripción',
   'unsubscribe_log.download' => 'Descargar',
+  'unsubscribe_notification' => 'Send unsubscribe notification to subscribers',
   'unsubscribe_subscribers_confirm' => 'Estás a punto de dar de baja :number subscriptor/es de la lista',
   'unsubscribe_success_page' => 'Pagina de desuscripcion',
   'unsubscribe_url_required' => 'Se requiere la URL de cancelación de la subscripción',
