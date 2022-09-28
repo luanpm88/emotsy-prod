@@ -54,8 +54,8 @@
 
             <div class="d-flex my-4 py-4 align-items-center">
                 <div class="mr-auto pr-4" style="width: 500px">
-                    <h4 class="font-weight-semibold mb-1">{{ trans('messages.store.connected_with_acelle') }}</h4>
-                    <p>{{ trans('messages.store.connected_with_acelle.desc') }}</p>
+                    <h4 class="font-weight-semibold mb-1">{{ trans('messages.store.connected') }}</h4>
+                    <p>{{ trans('messages.store.connected.desc') }}</p>
                 </div>
                 <div class="text-right">
                     <a href="" class="btn btn-secondary">{{ trans('messages.source.refresh') }}</a>
