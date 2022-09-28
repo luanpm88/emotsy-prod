@@ -1,4 +1,6 @@
-@extends('layouts.core.frontend')
+@extends('layouts.core.frontend', [
+	'menu' => 'profile',
+])
 
 @section('title', trans('messages.contact_information'))
 
@@ -18,7 +20,9 @@
 
 @section('content')
 
-    @include("account._menu")
+    @include("account._menu", [
+		'menu' => 'contact',
+	])
 
     <form enctype="multipart/form-data" action="{{ action('AccountController@contact') }}" method="POST" class="form-validate-jqueryz">
         {{ csrf_field() }}

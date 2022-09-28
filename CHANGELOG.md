@@ -1,7 +1,7 @@
 4.0.24 / 2021-09-19
 ==================
 
- * Added: upgrade to Laravel 8
+ * Added: upgrade to Laravel 8.83.24
  * Added: upgrade to Carbon 2
  * Added: more base templates available
  * Added: improved loading performance statistics dashboard

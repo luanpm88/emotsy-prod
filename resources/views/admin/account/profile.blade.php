@@ -1,4 +1,6 @@
-@extends('layouts.core.backend')
+@extends('layouts.core.backend', [
+    'menu' => 'profile',
+])
 
 @section('title', trans('messages.my_profile'))
 
@@ -20,7 +22,9 @@
 
 @section('content')
 
-    @include("admin.account._menu")
+    @include("admin.account._menu", [
+        'menu' => 'profile',
+    ])
 
     <form enctype="multipart/form-data" action="{{ action('Admin\AccountController@profile') }}" method="POST" class="form-validaate-jquery">
         {{ csrf_field() }}
@@ -201,6 +205,8 @@ delete_outline
                     return (className.match (/(^|\s)theme-\S+/g) || []).join(' ');
                 });
                 $('body').addClass('theme-' + value);
+
+                detectLogo();
             });
         });
     </script>

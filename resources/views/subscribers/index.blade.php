@@ -1,4 +1,6 @@
-@extends('layouts.core.frontend')
+@extends('layouts.core.frontend', [
+	'menu' => 'subscriber',
+])
 
 @section('title', $list->name . ": " . trans('messages.subscribers'))
 
@@ -10,7 +12,9 @@
 
 @section('content')
 
-	@include("lists._menu")
+	@include("lists._menu", [
+		'menu' => 'subscriber',
+	])
 
 	<div class="d-flex my-4">
 		<h2 class="text-primary me-auto"><span class="material-symbols-rounded">

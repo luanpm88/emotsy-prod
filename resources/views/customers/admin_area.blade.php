@@ -71,7 +71,7 @@ auto_awesome_mosaic
                         <strong>{{ trans('messages.subscription.next_billing_date') }}</strong>
                     </div>
                     <div class="lastUnit size1of2">
-                        <mc:flag>{{ Auth::user()->customer->formatDateTime($next_billing_date, 'date_full') }}</mc:flag>
+                        <mc:flag>{{ Auth::user()->customer->formatDateTime($next_billing_date, 'datetime_full') }}</mc:flag>
                     </div>
                 </li>
             @endif

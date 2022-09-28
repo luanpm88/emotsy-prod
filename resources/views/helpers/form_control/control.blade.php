@@ -7,6 +7,6 @@
 
     // error
     $error = $errors->has($var_name) ? $errors->first($var_name) : null;
-?>
+    ?>
 
 @include('helpers.form_control.' . $type)

@@ -1,4 +1,6 @@
-@extends('layouts.core.frontend')
+@extends('layouts.core.frontend', [
+	'menu' => 'list',
+])
 
 @section('title', $list->name)
 
@@ -15,7 +17,9 @@
 
 @section('content')
 
-    @include("lists._menu")
+    @include("lists._menu", [
+		'menu' => 'email_verification',
+	])
 
     <div class="row">
         <div class="col-md-8">

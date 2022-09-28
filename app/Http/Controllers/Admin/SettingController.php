@@ -87,7 +87,7 @@ class SettingController extends Controller
 
                 if ($name != '_token' && isset($settings[$name])) {
                     // Upload and save image
-                    if ($name == 'site_logo_small' || $name == 'site_logo_big' || $name == 'site_favicon') {
+                    if ($name == 'site_logo_light' || $name == 'site_logo_dark' || $name == 'site_favicon') {
                         if ($request->hasFile($name) && $request->file($name)->isValid()) {
                             Setting::uploadFile($request->file($name), $name, false);
                         }
@@ -678,7 +678,7 @@ class SettingController extends Controller
             foreach ($request->all() as $name => $value) {
                 if ($name != '_token' && isset($settings[$name])) {
                     // Upload and save image
-                    if ($name == 'site_logo_small' || $name == 'site_logo_big') {
+                    if ($name == 'site_logo_light' || $name == 'site_logo_dark') {
                         if ($request->hasFile($name) && $request->file($name)->isValid()) {
                             Setting::uploadSiteLogo($request->file($name), $name);
                         }
@@ -743,11 +743,13 @@ class SettingController extends Controller
         $rules = [
             'renew_free_plan' => 'required',
             'recurring_charge_before_days' => 'required',
+            'allowed_due_subscription' => 'required',
         ];
         $this->validate($request, $rules);
 
         // Save settings
         Setting::set('renew_free_plan', $request->renew_free_plan);
+        Setting::set('allowed_due_subscription', $request->allowed_due_subscription);
         Setting::set('recurring_charge_before_days', $request->recurring_charge_before_days);
 
 

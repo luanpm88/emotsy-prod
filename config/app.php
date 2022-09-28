@@ -236,6 +236,7 @@ return [
         // More
         Acelle\Providers\MailerServiceProvider::class,
         Acelle\Providers\StorageServiceProvider::class,
+        Acelle\Providers\CheckoutServiceProvider::class,
     ],
 
     /*

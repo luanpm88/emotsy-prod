@@ -51,6 +51,11 @@ class Kernel extends HttpKernel
         ],
     ];
 
+    protected $middlewarePriority = [
+        \Acelle\Http\Middleware\NotInstalled::class,
+        \Illuminate\Auth\Middleware\Authenticate::class,
+    ];
+
     /**
      * The application's route middleware.
      *

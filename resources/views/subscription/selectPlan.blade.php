@@ -12,7 +12,9 @@
 
 @section('menu_right')
     @include('layouts.core._top_activity_log')
-    @include('layouts.core._menu_frontend_user')
+    @include('layouts.core._menu_frontend_user', [
+        'menu' => 'subscription',
+    ])
 @endsection
 
 @section('content')    
@@ -24,7 +26,7 @@
                     @include('elements._notification', [
                         'level' => 'warning',
                         'message' => trans('messages.subscription.ended_intro', [
-                            'ended_at' => Auth::user()->customer->formatDateTime($subscription->ends_at, 'date_full'),
+                            'ended_at' => Auth::user()->customer->formatDateTime($subscription->ends_at, 'datetime_full'),
                             'plan' => $subscription->plan->name,
                         ])
                     ])
@@ -111,7 +113,7 @@
                                                     ]) }}"
                                                     class="mt-3 fw-600 mb-0 text-center">
                                                         {{ trans('messages.plan.has_free', [
-                                                            'time' => $plan->getTrialPeriodTimePhrase(),
+                                                            'num' => $plan->getTrialPeriodTimePhrase(),
                                                         ]) }}
                                                 </p>
                                             @endif

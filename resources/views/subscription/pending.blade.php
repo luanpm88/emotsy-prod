@@ -1,4 +1,6 @@
-@extends('layouts.core.frontend')
+@extends('layouts.core.frontend', [
+	'menu' => 'subscription',
+])
 
 @section('title', trans('messages.subscriptions'))
 
@@ -14,7 +16,7 @@
 @endsection
 
 @section('content')
-    @include("account._menu", ['tab' => 'subscription'])
+    @include("account._menu", ['menu' => 'subscription'])
 
     <div class="row">
         <div class="col-md-6">

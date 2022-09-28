@@ -4,7 +4,6 @@ namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use GuzzleHttp\Client;
-use JsonPath\JsonObject;
 use Validator;
 use ZipArchive;
 use Illuminate\Validation\ValidationException;
@@ -15,6 +14,7 @@ use Acelle\Library\Facades\Hook;
 use Illuminate\Support\Facades\File;
 use Acelle\Library\Traits\HasUid;
 use Exception;
+
 use function Acelle\Helpers\pcopy;
 
 class Plugin extends Model

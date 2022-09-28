@@ -560,6 +560,8 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('tracking_domains/listing/{page?}', 'TrackingDomainController@listing');
     Route::get('tracking_domains/delete', 'TrackingDomainController@delete');
     Route::get('tracking_domains/{uid}/verify', 'TrackingDomainController@verify');
+    Route::get('tracking_domains/{uid}/cname', 'TrackingDomainController@showCname');
+    Route::get('tracking_domains/{uid}/verify/cname', 'TrackingDomainController@verifyCname');
     Route::resource('tracking_domains', 'TrackingDomainController');
 
     // Email verification servers
@@ -672,8 +674,8 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('automation/wizard/trigger', 'Automation2Controller@wizardTrigger');
     Route::match(['get', 'post'], 'automation/wizard/trigger/option', 'Automation2Controller@wizardTriggerOption');
     Route::get('automation/wizard/trigger/option/field-select', 'Automation2Controller@wizardListFieldSelect');
-    Route::patch('automation/disable', 'Automation2Controller@disable');
-    Route::patch('automation/enable', 'Automation2Controller@enable');
+    Route::post('automation/disable', 'Automation2Controller@disable');
+    Route::post('automation/enable', 'Automation2Controller@enable');
     Route::delete('automation/delete', 'Automation2Controller@delete');
     Route::get('automation/listing', 'Automation2Controller@listing');
     Route::get('automation', 'Automation2Controller@index');
@@ -1052,6 +1054,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::resource('admin/currencies', 'CurrencyController');
 
     // Subscription
+    Route::post('admin/subscriptions/{id}/replenish-sending-credits', 'SubscriptionController@replenishSendingCredits');
     Route::post('admin/subscriptions/{id}/approve', 'SubscriptionController@approve');
     // Route::match(['get','post'], 'admin/subscriptions/create', 'SubscriptionController@create');
     // Route::post('admin/subscriptions/{id}/approve-pending', 'SubscriptionController@approvePending');

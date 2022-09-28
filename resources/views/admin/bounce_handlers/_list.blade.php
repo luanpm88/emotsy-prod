@@ -20,7 +20,7 @@
                     <h5 class="m-0 text-bold">
                         <a class="kq_search d-block" href="{{ action('Admin\BounceHandlerController@edit', $item->uid) }}">{{ $item->name }}</a>
                     </h5>
-                    <span class="text-muted">{{ trans('messages.created_at') }}: {{ Auth::user()->admin->formatDateTime($item->created_at, 'date_full') }}</span>
+                    <span class="text-muted">{{ trans('messages.created_at') }}: {{ Auth::user()->admin->formatDateTime($item->created_at, 'datetime_full') }}</span>
                 </td>
                 <td>
                     <span class="no-margin stat-num kq_search">{{ $item->host }}</span>

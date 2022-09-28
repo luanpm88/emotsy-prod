@@ -134,8 +134,7 @@ class SubscriberController extends Controller
     {
         $user = \Auth::guard('api')->user();
 
-        $item = \Acelle\Model\Subscriber::
-            where('uid', '=', $uid)
+        $item = \Acelle\Model\Subscriber::where('uid', '=', $uid)
             ->first();
 
         $list = $item->mailList;
@@ -341,7 +340,6 @@ class SubscriberController extends Controller
 
         $rows = [];
         foreach ($subscribers as $subscriber) {
-
             // authorize
             if ($user->can('read', $subscriber)) {
                 // subscriber

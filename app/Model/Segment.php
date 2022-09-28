@@ -24,10 +24,12 @@ namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use Acelle\Library\Traits\HasUid;
+use Acelle\Library\Traits\HasCache;
 
 class Segment extends Model
 {
     use HasUid;
+    use HasCache;
 
     /**
      * The attributes that are mass assignable.
@@ -447,57 +449,14 @@ class Segment extends Model
     /**
      * Update segment cached data.
      */
-    public function updateCache($key = null)
+    public function getCacheIndex()
     {
         // cache indexes
-        $index = [
-            'SubscriberCount' => function (&$segment) {
-                return $segment->subscribersCount(false);
+        return [
+            'SubscriberCount' => function () {
+                return $this->subscribersCount(false);
             },
         ];
-
-        // retrieve cached data
-        $cache = json_decode($this->cache, true);
-        if (is_null($cache)) {
-            $cache = [];
-        }
-
-        if (is_null($key)) {
-            // update all cache
-            foreach ($index as $key => $callback) {
-                $cache[$key] = $callback($this);
-            }
-        } else {
-            // update specific key
-            $callback = $index[$key];
-            $cache[$key] = $callback($this);
-        }
-
-        // write back to the DB
-        $this->cache = json_encode($cache);
-        $this->save();
-    }
-
-    /**
-     * Retrieve Campaign cached data.
-     *
-     * @return mixed
-     */
-    public function readCache($key, $default = null)
-    {
-        $cache = json_decode($this->cache, true);
-        if (is_null($cache)) {
-            return $default;
-        }
-        if (array_key_exists($key, $cache)) {
-            if (is_null($cache[$key])) {
-                return $default;
-            } else {
-                return $cache[$key];
-            }
-        } else {
-            return $default;
-        }
     }
 
     public function updateConditions($conditions)

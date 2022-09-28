@@ -1,4 +1,6 @@
-@extends('layouts.core.frontend')
+@extends('layouts.core.frontend', [
+	'menu' => 'segment',
+])
 
 @section('title', $list->name . ": " . trans('messages.subscribers'))
 
@@ -10,7 +12,9 @@
 
 @section('content')
 
-	@include("lists._menu")
+	@include("lists._menu", [
+		'menu' => 'segment',
+	])
 
 	<h2 class="text-bold text-primary mb-10"><span class="material-symbols-rounded">
 splitscreen

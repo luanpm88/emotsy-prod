@@ -1,4 +1,6 @@
-@extends('layouts.core.frontend')
+@extends('layouts.core.frontend', [
+    'menu' => 'dashboard',
+])
 
 @section('title', trans('messages.dashboard'))
 
@@ -145,7 +147,7 @@
                             </div>
                             <div class="col-sm-2 col-md-2 text-left">
                                 <h5 class="m-0 text-bold">
-                                    {{ (null !== $item->lastOpen()) ? Auth::user()->customer->formatDateTime($item->lastOpen()->created_at, 'date_full') : "" }}
+                                    {{ (null !== $item->lastOpen()) ? Auth::user()->customer->formatDateTime($item->lastOpen()->created_at, 'datetime_full') : "" }}
                                 </h5>
                                 <span class="text-muted">{{ trans('messages.last_open') }}</span>
                             </div>

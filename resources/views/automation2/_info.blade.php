@@ -56,7 +56,7 @@
             ok: function(dialog) {
                 $.ajax({
                     url: url,
-                    type: 'PATCH',
+                    type: 'POST',
                     globalError: false,
                     data: {
                         _token: CSRF_TOKEN

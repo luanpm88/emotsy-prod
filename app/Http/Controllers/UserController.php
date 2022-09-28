@@ -105,7 +105,6 @@ class UserController extends Controller
 
             // Captcha check
             if (\Acelle\Model\Setting::get('registration_recaptcha') == 'yes') {
-
                 // @hCaptcha
                 if (\Acelle\Model\Setting::getCaptchaProvider() == 'hcaptcha') {
                     $hcaptcha = \Acelle\Hcaptcha\Client::initialize();

@@ -1,4 +1,6 @@
-@extends('layouts.core.frontend')
+@extends('layouts.core.frontend', [
+	'menu' => 'billing',
+])
 
 @section('title', trans('messages.contact_information'))
 
@@ -22,7 +24,9 @@
 
 @section('content')
 
-    @include("account._menu")
+    @include("account._menu", [
+		'menu' => 'billing',
+	])
 
     <div class="row">
         <div class="col-md-6">

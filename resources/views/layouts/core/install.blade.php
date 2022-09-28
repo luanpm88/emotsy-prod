@@ -33,8 +33,8 @@
 					<div class="col-sm-10 col-md-10">
 					
 						<div class="text-center login-header">
-							<a class="main-logo-big d-block" href="{{ action('HomeController@index') }}">
-								<img width="400px" src="{{ URL::asset('images/logo-automail-light.svg') }}" alt="">
+							<a class="main-logo-big mb-2 d-block" href="{{ action('HomeController@index') }}">
+								<img width="400px" src="{{ getSiteLogoUrl('light') }}" alt="">
 							</a>
 						</div>
 

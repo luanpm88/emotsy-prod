@@ -145,12 +145,12 @@ class Setting extends Model
                 'value' => 'Email Marketing, Campaigns, Lists',
                 'type' => 'text',
             ],
-            'site_logo_small' => [
+            'site_logo_light' => [
                 'cat' => 'general',
                 'value' => '',
                 'type' => 'image',
             ],
-            'site_logo_big' => [
+            'site_logo_dark' => [
                 'cat' => 'general',
                 'value' => '',
                 'type' => 'image',
@@ -467,6 +467,11 @@ class Setting extends Model
                 'type' => 'text',
             ],
             'renew_free_plan' => [
+                'cat' => 'payment',
+                'value' => 'no',
+                'type' => 'text',
+            ],
+            'allowed_due_subscription' => [
                 'cat' => 'payment',
                 'value' => 'no',
                 'type' => 'text',

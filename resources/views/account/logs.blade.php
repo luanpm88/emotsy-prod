@@ -1,4 +1,6 @@
-@extends('layouts.core.frontend')
+@extends('layouts.core.frontend', [
+	'menu' => 'profile',
+])
 
 @section('title', trans('messages.logs'))
     
@@ -20,7 +22,9 @@
 
 @section('content')
     
-                @include("account._menu")    
+                @include("account._menu", [
+                    'menu' => 'log',
+                ])    
     
                 <div class="listing-form"
                     data-url="{{ action('AccountController@logsListing') }}"

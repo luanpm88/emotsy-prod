@@ -4,6 +4,7 @@ namespace Acelle\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use Acelle\Http\Controllers\Controller;
+
 use function Acelle\Helpers\generatePublicPath;
 
 class BounceHandlerController extends Controller

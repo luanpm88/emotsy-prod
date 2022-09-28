@@ -40,7 +40,7 @@
                 <td class="text-end">
                     <div class="pull-right">
                         <div class="text-semibold">{{ $notification->created_at->diffForHumans() }}</div>
-                        <span class="text-muted2">{{ Auth::user()->admin->formatDateTime($notification->created_at, 'date_full') }}</span>
+                        <span class="text-muted2">{{ Auth::user()->admin->formatDateTime($notification->created_at, 'datetime_full') }}</span>
                     </div>
                 </td>
             </tr>

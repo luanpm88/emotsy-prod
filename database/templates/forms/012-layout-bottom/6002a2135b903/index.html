@@ -11,6 +11,48 @@
         <!-- Bootstrap core CSS -->
         <link href="css/bootstrap.min.css" rel="stylesheet">
         <link href="css/custom.css" rel="stylesheet">
+
+    <style>
+        @media (min-width: 768px) {
+            .container {
+                max-width: 650px;
+            }
+        }
+        @media (min-width: 992px) {
+            .container {
+                max-width: 760px;
+            }
+        }
+        @media (min-width: 769px) {
+            [data-hide-on="desktop"] {
+                display: none!important;
+            }
+        }
+        @media (max-width: 768px) {
+            [data-hide-on="mobile"] {
+                display: none!important;
+            }
+        }
+        @media (max-width: 768px) {
+            [builder-element=CellContainerElement] {
+                display: block!important;
+            }
+            [builder-element="CellElement"] {
+                width: 100%!important;
+                max-width: none!important;        
+            }
+            [builder-element="CellElement"], [builder-element="BlockElement"] {
+                padding-left: 0px!important;
+                padding-right: 0px!important;
+            }
+        }
+        @media (min-width: 600px) {
+            [builder-element=PricingTableElement] .col-12 {
+                flex-basis: 0;
+                flex-grow: 1;
+            }
+        }
+    </style>
         
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">

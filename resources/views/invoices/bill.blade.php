@@ -28,10 +28,13 @@
                 @endforeach
             </div>
             <hr>
-            @if (isset($bill['fee']))
+            @if ($bill['has_fee'])
                 <div class="bill_item d-flex">
                     <div class="mr-auto">
                         <p class="mb-0 font-weight-semibold">{{ trans('messages.bill.fee') }}</p>
+                        <p>{{ trans('messages.payment_fee.wording', [
+                            'amount' => $bill['fee'],
+                        ]) }}</p>
                     </div>
                     <p class="mb-0 font-weight-semibold fs-6">{{ $bill['fee'] }}</p>
                 </div>

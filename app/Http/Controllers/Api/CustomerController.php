@@ -53,8 +53,10 @@ class CustomerController extends Controller
 
             // Create user account for customer
             $user = new \Acelle\Model\User();
+            $user->fill($request->all());
             $user->email = $request->email;
             $user->activated = true;
+
             // Update password
             if (!empty($request->password)) {
                 $user->password = bcrypt($request->password);
@@ -69,6 +71,7 @@ class CustomerController extends Controller
             if ($customer->save()) {
                 $user->customer_id = $customer->id;
                 $user->save();
+
                 // Upload and save image
                 if ($request->hasFile('image')) {
                     if ($request->file('image')->isValid()) {

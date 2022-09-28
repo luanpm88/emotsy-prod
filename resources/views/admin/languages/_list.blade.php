@@ -12,7 +12,7 @@
 							{{ $language->name }}
 						@endcan
 					</h5>
-					<span class="text-muted">{{ trans('messages.created_at') }}: {{ Auth::user()->admin->formatDateTime($language->created_at, 'date_full') }}</span>
+					<span class="text-muted">{{ trans('messages.created_at') }}: {{ Auth::user()->admin->formatDateTime($language->created_at, 'datetime_full') }}</span>
 				</td>
 				<td>
 					<span class="no-margin stat-num kq_search">{{ $language->code }}</span>
@@ -21,7 +21,7 @@
 				</td>
 				<td class="text-center">
 					<span class="text-muted2 list-status">
-						<span class="label label-flat bg-{{ $language->status }}">{{ trans('messages.language_status_' . $language->status) }}</span>
+						<span class="label label-flat bg-{{ $language->status }}">{{ trans('messages.language.status.' . $language->status) }}</span>
 					</span>	
 				</td>
 				<td class="text-end">																					

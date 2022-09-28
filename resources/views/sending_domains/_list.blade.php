@@ -32,7 +32,7 @@
                             <span>{{ $item->name }}</span>
                         @endif
                     </h5>
-                    <span class="text-muted">{{ trans('messages.created_at') }}: {{ Auth::user()->customer->formatDateTime($item->created_at, 'date_full') }}</span>
+                    <span class="text-muted">{{ trans('messages.created_at') }}: {{ Auth::user()->customer->formatDateTime($item->created_at, 'datetime_full') }}</span>
                 </td>
                 
                 <td class="text-center">

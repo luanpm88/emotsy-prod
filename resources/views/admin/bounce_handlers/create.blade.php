@@ -1,4 +1,6 @@
-@extends('layouts.core.backend')
+@extends('layouts.core.backend', [
+	'menu' => 'bounce',
+])
 
 @section('title', trans('messages.create_bounce_handler'))
 

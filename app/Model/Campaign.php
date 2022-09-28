@@ -32,7 +32,6 @@ use Monolog\Formatter\LineFormatter;
 use Carbon\Carbon;
 use League\Csv\Writer;
 use Acelle\Library\StringHelper;
-use Acelle\Library\Tool;
 use Acelle\Model\Setting;
 use Validator;
 use File;
@@ -43,11 +42,11 @@ use Acelle\Library\Traits\HasTemplate;
 use Acelle\Jobs\LoadCampaign;
 use Acelle\Jobs\ScheduleCampaign;
 use Illuminate\Bus\Batch;
-use Illuminate\Support\Facades\Bus;
 use Acelle\Library\RouletteWheel;
 use Acelle\Library\Traits\TrackJobs;
 use Throwable;
 use Acelle\Library\Traits\HasUid;
+use Acelle\Library\Traits\HasCache;
 use Acelle\Events\CampaignUpdated;
 use Acelle\Jobs\ExecuteCampaignCallback;
 
@@ -56,6 +55,7 @@ class Campaign extends Model
     use HasTemplate;
     use TrackJobs;
     use HasUid;
+    use HasCache;
 
     protected $logger;
 
@@ -1597,103 +1597,50 @@ class Campaign extends Model
         return $this->status == self::STATUS_PAUSED;
     }
 
-    /**
-     * Update Campaign cached data.
-     */
-    public function updateCache($key = null)
+    public function getCacheIndex()
     {
-        // cache indexes
-        $index = [
+        return [
             // @note: SubscriberCount must come first as its value shall be used by the others
-            'ActiveSubscriberCount' => function (&$campaign) {
-                return $campaign->activeSubscribersCount(); // spepcial key that requires true update
+            'ActiveSubscriberCount' => function () {
+                return $this->activeSubscribersCount(); // spepcial key that requires true update
             },
-            'SubscriberCount' => function (&$campaign) {
-                return $campaign->subscribersCount(false); // spepcial key that requires true update
+            'SubscriberCount' => function () {
+                return $this->subscribersCount(false); // spepcial key that requires true update
             },
-            'DeliveredRate' => function (&$campaign) {
-                return $campaign->deliveredRate(true);
+            'DeliveredRate' => function () {
+                return $this->deliveredRate(true);
             },
-            'DeliveredCount' => function (&$campaign) {
-                return $campaign->deliveredCount();
+            'DeliveredCount' => function () {
+                return $this->deliveredCount();
             },
-            'FailedDeliveredRate' => function (&$campaign) {
-                return $campaign->failedRate(true);
+            'FailedDeliveredRate' => function () {
+                return $this->failedRate(true);
             },
-            'FailedDeliveredCount' => function (&$campaign) {
-                return $campaign->failedCount();
+            'FailedDeliveredCount' => function () {
+                return $this->failedCount();
             },
-            'NotDeliveredRate' => function (&$campaign) {
-                return $campaign->notDeliveredRate(true);
+            'NotDeliveredRate' => function () {
+                return $this->notDeliveredRate(true);
             },
-            'NotDeliveredCount' => function (&$campaign) {
-                return $campaign->notDeliveredCount();
+            'NotDeliveredCount' => function () {
+                return $this->notDeliveredCount();
             },
-            'ClickedRate' => function (&$campaign) {
-                return $campaign->clickRate();
+            'ClickedRate' => function () {
+                return $this->clickRate();
             },
-            'UniqOpenRate' => function (&$campaign) {
-                return $campaign->openRate();
+            'UniqOpenRate' => function () {
+                return $this->openRate();
             },
-            'UniqOpenCount' => function (&$campaign) {
-                return $campaign->openUniqCount();
+            'UniqOpenCount' => function () {
+                return $this->openUniqCount();
             },
-            'NotOpenRate' => function (&$campaign) {
-                return $campaign->notOpenRate();
+            'NotOpenRate' => function () {
+                return $this->notOpenRate();
             },
-            'NotOpenCount' => function (&$campaign) {
-                return $campaign->notOpenCount();
+            'NotOpenCount' => function () {
+                return $this->notOpenCount();
             },
         ];
-
-        // retrieve cached data
-        $cache = json_decode($this->cache, true);
-        if (is_null($cache)) {
-            $cache = [];
-        }
-
-        if (is_null($key)) {
-            // update all cache
-            foreach ($index as $key => $callback) {
-                $cache[$key] = $callback($this);
-                if ($key == 'SubscriberCount') {
-                    // SubscriberCount cache must always be updated as its value will be used for the others
-                    $this->cache = json_encode($cache);
-                    $this->save();
-                }
-            }
-        } else {
-            // @deprecated, requires updating the SubscriberCount cache before updating any other one
-            // update specific key
-            $callback = $index[$key];
-            $cache[$key] = $callback($this);
-        }
-
-        // write back to the DB
-        $this->cache = json_encode($cache);
-        $this->save();
-    }
-
-    /**
-     * Retrieve Campaign cached data.
-     *
-     * @return mixed
-     */
-    public function readCache($key, $default = null)
-    {
-        $cache = json_decode($this->cache, true);
-        if (is_null($cache)) {
-            return $default;
-        }
-        if (array_key_exists($key, $cache)) {
-            if (is_null($cache[$key])) {
-                return $default;
-            } else {
-                return $cache[$key];
-            }
-        } else {
-            return $default;
-        }
     }
 
     /**

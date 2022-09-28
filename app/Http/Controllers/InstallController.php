@@ -250,60 +250,19 @@ class InstallController extends Controller
         // connect mysql
         $mysqli = new \mysqli($database['hostname'], $database['username'], $database['password'], $database['database_name'], $database['port']);
 
-        // Check if database is not empty
-        $rules = [];
-        $tables_exist = false;
-        $prefix_check = empty($database['tables_prefix']) ? '' : "  AND table_name LIKE '".$database['tables_prefix']."%'";
-        $result = $mysqli->query("SELECT COUNT(DISTINCT `table_name`) as count FROM `information_schema`.`columns` WHERE `table_schema` = '".$database['database_name']."'");
-        $result = $result->fetch_object();
-        if ($result->count > 0) {
-            $tables_exist = true;
-        }
-
         $request->session()->forget('database_imported');
 
-        $this->validate($request, $rules);
+        // Drop all EXISTING tables
+        $sql = "SHOW TABLE STATUS";
+        $statement = $mysqli->query($sql);
+        while ($result = $statement->fetch_object()) {
+            $tableName = $result->Name;
 
-        // Drop all old table
-        // 1. Get & Drop all table names, try 4 times
-        $table_names = [];
-        $try = 5;
-        while ($try > 0) {
-            // extend query max setting
-            $mysqli->query('FLUSH TABLES;');
-            $mysqli->query('SET group_concat_max_len=9999999;');
-
-            $table_names_query = "SELECT GROUP_CONCAT(table_name)
-                                        AS table_names FROM information_schema.tables
-                                        WHERE table_schema = '".$database['database_name']."'";
-            $result = $mysqli->query($table_names_query);
-            $result = $result->fetch_object();
-            $table_names = array_merge($table_names, explode(",", $result->table_names));
-
-            // drop all tables
+            // drop the table
             $mysqli->query("SET FOREIGN_KEY_CHECKS = 0;");
-            foreach ($table_names as $table_name) {
-                $mysqli->query("DROP TABLE $table_name;");
-            }
+            $mysqli->query("DROP TABLE IF EXISTS {$tableName};");
             $mysqli->query("SET FOREIGN_KEY_CHECKS = 1;");
-
-            $mysqli->query('FLUSH TABLES;');
-
-            $try--;
         }
-
-        // 2. Check if all table are dropped
-        foreach ($table_names as $table_name) {
-            $result = $mysqli->query("SELECT COUNT(*) FROM $table_name LIMIT 1;");
-
-            // Table deleted if result == false
-            if ($result) {
-                $rules["can_not_empty_database"] = "required";
-            }
-        }
-
-        // 3. Validation
-        $this->validate($request, $rules);
 
         $request->session()->put('database_imported', true);
         $next_page = action('InstallController@cronJobs');
@@ -461,21 +420,10 @@ class InstallController extends Controller
         // connect mysql
         $mysqli = new \mysqli($database['hostname'], $database['username'], $database['password'], $database['database_name'], $database['port']);
 
-        // Check if database is not empty
-        $rules = [];
-        $tables_exist = false;
-        $prefix_check = empty($database['tables_prefix']) ? '' : "  AND table_name LIKE '".$database['tables_prefix']."%'";
-        $result = $mysqli->query("SELECT COUNT(DISTINCT `table_name`) as count FROM `information_schema`.`columns` WHERE `table_schema` = '".$database['database_name']."'");
-        $result = $result->fetch_object();
-        if ($result->count > 0) {
-            $tables_exist = true;
-        }
-
         return view('install.database_import', [
             'database' => $database,
             'step' => $this->step($request),
-            'current' => 3,
-            'tables_exist' => $tables_exist,
+            'current' => 3
         ]);
     }
 

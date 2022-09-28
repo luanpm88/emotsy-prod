@@ -23,15 +23,11 @@
 
                     @if ($server->isExtended())
                         <span class="mc-server-avatar shadow-sm rounded server-avatar" style="background: url({{ $server->getIconUrl() }}) top left/36px 36px no-repeat transparent;">
-                            <span class="material-symbols-rounded">
-
-</span>
+                            <span class="material-symbols-rounded"></span>
                         </span>
                     @else
                         <span class="server-avatar shadow-sm rounded server-avatar-{{ $item->type }} mr-0">
-                            <span class="material-symbols-rounded">
-
-</span>
+                            <span class="material-symbols-rounded"></span>
                         </span>
                     @endif
                 </td>
@@ -45,14 +41,14 @@
                             <a class="kq_search d-block" href="{{ action('SendingServerController@edit', ["id" => $item->uid, "type" => $item->type]) }}">{{ $item->name }}</a>
                         </h5>
                     @endif
-                    <span class="text-muted">{{ trans('messages.created_at') }}: {{ Auth::user()->customer->formatDateTime($item->created_at, 'date_full') }}</span>
+                    <span class="text-muted">{{ trans('messages.created_at') }}: {{ Auth::user()->customer->formatDateTime($item->created_at, 'datetime_full') }}</span>
                 </td>
                 <td>
                     <div class="single-stat-box pull-left ml-20">
                         @if ($server->isExtended())
                             <span class="no-margin stat-num kq_search">{{ $server->getTypeName() }}</span>
                         @else
-                            <span class="no-margin stat-num kq_search">{{ trans('messages.' . $item->type) }}</span>
+                            <span class="no-margin stat-num kq_search">{{ trans('messages.sending_server.type.' . $item->type) }}</span>
                         @endif
                         <br />
                         <span class="text-muted">{{ trans('messages.type') }}</span>
@@ -95,13 +91,9 @@
                 <td class="text-end text-nowrap pe-0">
                     @if (Auth::user()->customer->can('update', $item))
                         @if ($server->isExtended())
-                            <a href="{{ $server->getEditUrl() }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" role="button" class="btn btn-secondary btn-icon"><span class="material-symbols-rounded">
-edit
-</span> {{ trans('messages.edit') }}</a>
+                            <a href="{{ $server->getEditUrl() }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" role="button" class="btn btn-secondary btn-icon"><span class="material-symbols-rounded">edit</span> {{ trans('messages.edit') }}</a>
                         @else
-                            <a href="{{ action('SendingServerController@edit', ["id" => $item->uid, "type" => $item->type]) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" role="button" class="btn btn-secondary btn-icon"><span class="material-symbols-rounded">
-edit
-</span> {{ trans('messages.edit') }}</a>
+                            <a href="{{ action('SendingServerController@edit', ["id" => $item->uid, "type" => $item->type]) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" role="button" class="btn btn-secondary btn-icon"><span class="material-symbols-rounded">edit</span> {{ trans('messages.edit') }}</a>
                         @endif
                     @endif
                     @if (Auth::user()->customer->can('delete', $item) || Auth::user()->customer->can('disable', $item) || Auth::user()->customer->can('enable', $item))
@@ -111,27 +103,21 @@ edit
                                 @if (Auth::user()->customer->can('enable', $item))
                                     <li>
                                         <a class="dropdown-item list-action-single" link-confirm="{{ trans('messages.enable_sending_servers_confirm') }}" href="{{ action('SendingServerController@enable', ["uids" => $item->uid]) }}">
-                                            <span class="material-symbols-rounded">
-play_arrow
-</span> {{ trans('messages.enable') }}
+                                            <span class="material-symbols-rounded">play_arrow</span> {{ trans('messages.enable') }}
                                         </a>
                                     </li>
                                 @endif
                                 @if (Auth::user()->customer->can('disable', $item))
                                     <li>
                                         <a class="dropdown-item list-action-single" link-confirm="{{ trans('messages.disable_sending_servers_confirm') }}" href="{{ action('SendingServerController@disable', ["uids" => $item->uid]) }}">
-                                            <span class="material-symbols-rounded">
-hide_source
-</span> {{ trans('messages.disable') }}
+                                            <span class="material-symbols-rounded">hide_source</span> {{ trans('messages.disable') }}
                                         </a>
                                     </li>
                                 @endif
                                 @if (Auth::user()->customer->can('delete', $item))
                                     <li>
                                         <a class="dropdown-item list-action-single" link-confirm="{{ trans('messages.delete_sending_servers_confirm') }}" href="{{ action('SendingServerController@delete', ["uids" => $item->uid]) }}">
-                                            <span class="material-symbols-rounded">
-delete_outline
-</span> {{ trans('messages.delete') }}
+                                            <span class="material-symbols-rounded">delete_outline</span> {{ trans('messages.delete') }}
                                         </a>
                                     </li>
                                 @endif
@@ -146,9 +132,7 @@ delete_outline
     
 @elseif (!empty(request()->keyword) || !empty(request()->filters["type"]))
     <div class="empty-list">
-        <span class="material-symbols-rounded">
-dns
-</span>
+        <span class="material-symbols-rounded">dns</span>
         <span class="line-1">
             {{ trans('messages.no_search_result') }}
         </span>

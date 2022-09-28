@@ -1,4 +1,6 @@
-@extends('layouts.core.frontend')
+@extends('layouts.core.frontend', [
+	'menu' => 'subscriber',
+])
 
 @section('title', $list->name . ": " . trans('messages.export'))
 
@@ -10,7 +12,9 @@
 
 @section('content')
 
-    @include("lists._menu")
+    @include("lists._menu", [
+		'menu' => 'subscriber_export',
+	])
 
     <h2 class="text-primary my-4"><span class="material-symbols-rounded">
 people

@@ -35,14 +35,14 @@ remove_circle_outline
 				</td>
 				<td width="15%">
                     <h5 class="no-margin stat-num">
-                        <span class="kq_search">{{ Auth::user()->admin->formatDateTime($subscription->created_at, 'date_full')}}</span>
+                        <span class="kq_search">{{ Auth::user()->admin->formatDateTime($subscription->created_at, 'datetime_full')}}</span>
                     </h5>
                     <span class="text-muted2">{{ trans('messages.subscribed_on') }}</span>
-                </td>				
+                </td>
 				<td width="15%">
 					@if ($subscription->isEnded())
 						<h5 class="no-margin stat-num">
-								<span class="kq_search">{{ Auth::user()->admin->formatDateTime($subscription->ends_at, 'date_full') }}</span>
+								<span class="kq_search">{{ Auth::user()->admin->formatDateTime($subscription->ends_at, 'datetime_full') }}</span>
 							</h5>
 						<span class="text-muted2">{{ trans('messages.subscription.subscription_ended_at') }}</span>
 					@elseif ($subscription->cancelled())
@@ -67,6 +67,14 @@ remove_circle_outline
 						<span class="text-muted2">{{ trans('messages.subscription.next_billing') }}</span>
 					@endif
 				</td>
+				<td width="15%">
+					@if ($subscription->isActive())
+						<h5 class="no-margin stat-num">
+							<span class="kq_search">{{ number_with_delimiter($subscription->getSendingCreditsRemaining()) }}</span>
+						</h5>
+						<span class="text-muted2">{{ trans('messages.subscription.send_credits_remaining') }}</span>
+					@endif
+                </td>
 				<td class="text-center">
 					@switch($subscription->status)
 						@case(Acelle\Model\Subscription::STATUS_ACTIVE)
@@ -164,6 +172,16 @@ remove_circle_outline
 										</a>
 									</li>
 								@endif
+								@if (\Auth::user()->admin->can('replenishSendingCredits', $subscription))
+									<li>
+										<a
+											class="dropdown-item replenish-sending-credits"
+										  	href="{{ action('Admin\SubscriptionController@replenishSendingCredits', $subscription->uid) }}"
+										>
+											{{ trans('messages.subscription.replenish_sending_credits') }}
+										</a>
+									</li>
+								@endif
 								@if (\Auth::user()->admin->can('invoices', $subscription))
 									<li>
 										<a class="dropdown-item view_invoices"
@@ -199,7 +217,43 @@ remove_circle_outline
 	
 
 	<script>        
+		var SubscriptionsList = {
+			replenishSendingCredits: function(url) {
+				addMaskLoading();
+
+				// copy
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: {
+						_token: CSRF_TOKEN,
+					},
+                    globalError: false
+                }).done(function(response) {
+                    notify({
+                        type: 'success',
+                        message: response.message,
+                    });
+                }).fail(function(jqXHR, textStatus, errorThrown){
+                    new Dialog('alert', {
+                        message: JSON.parse(jqXHR.responseText).message,
+                    });
+                }).always(function() {
+                    SubscriptionsIndex.getList().load();
+
+					removeMaskLoading();
+                });
+			}
+		}
+
         $(function() {
+			$('.replenish-sending-credits').on('click', function(e) {
+				e.preventDefault();
+				var url = $(this).attr('href');
+
+				SubscriptionsList.replenishSendingCredits(url);
+			});
+
             $('.rejectPending').click(function(e) {
                 e.preventDefault();
 

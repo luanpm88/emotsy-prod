@@ -1,15 +1,12 @@
-@extends('layouts.core.frontend')
+@extends('layouts.core.frontend', [
+	'menu' => 'list',
+])
 
 @section('title', $list->name)
 
 @section('head')
-    <link href="{{ URL::asset('core/emoji-picker/css/emoji.css') }}" rel="stylesheet">
-
-    <script type="text/javascript" src="{{ URL::asset('core/emoji-picker/js/config.js') }}"></script>
-    <script type="text/javascript" src="{{ URL::asset('core/emoji-picker/js/util.js') }}"></script>
-    <script type="text/javascript" src="{{ URL::asset('core/emoji-picker/js/jquery.emojiarea.js') }}"></script>
-    <script type="text/javascript" src="{{ URL::asset('core/emoji-picker/js/emoji-picker.js') }}"></script>
-    
+    <link href="{{ URL::asset('core/emojionearea/emojionearea.min.css') }}" rel="stylesheet">
+    <script type="text/javascript" src="{{ URL::asset('core/emojionearea/emojionearea.min.js') }}"></script>
 @endsection
 
 @section('page_header')
@@ -20,7 +17,9 @@
 
 @section('content')
 
-    @include("lists._menu")
+    @include("lists._menu", [
+		'menu' => 'edit',
+	])
 
     <form action="{{ action('MailListController@update', $list->uid) }}" method="POST" class="form-validate-jqueryz">
         {{ csrf_field() }}

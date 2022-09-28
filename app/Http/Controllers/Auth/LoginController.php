@@ -52,7 +52,6 @@ class LoginController extends Controller
         ];
 
         if (Setting::isYes('login_recaptcha') && !Setting::isYes('theme.beta')) {
-
             // @hCaptcha
             if (\Acelle\Model\Setting::getCaptchaProvider() == 'hcaptcha') {
                 $hcaptcha = \Acelle\Hcaptcha\Client::initialize();

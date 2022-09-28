@@ -17,7 +17,7 @@
 					</h5>
 					<span class="text-muted d-block mt-2">
 						{{ trans('messages.created_at') }}:
-						{{ Auth::user()->customer->formatDateTime($product->created_at, 'date_full') }}
+						{{ Auth::user()->customer->formatDateTime($product->created_at, 'datetime_full') }}
 					</span>
 				</td>
 				<td>

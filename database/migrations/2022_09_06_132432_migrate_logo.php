@@ -1,9 +1,10 @@
 <?php
 
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
-class UpdateUserQuota extends Migration
+class MigrateLogo extends Migration
 {
     /**
      * Run the migrations.
@@ -12,10 +13,8 @@ class UpdateUserQuota extends Migration
      */
     public function up()
     {
-        $customers = \Acelle\Model\Customer::all();
-        foreach ($customers as $customer) {
-            $customer->quota = null;
-            $customer->save();
+        if (\Acelle\Model\Setting::get('site_logo_small')) {
+            \Acelle\Model\Setting::set('site_logo_light', \Acelle\Model\Setting::get('site_logo_small'));
         }
     }
 

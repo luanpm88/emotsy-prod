@@ -40,7 +40,7 @@
             <div class="stat-row">
                 <p class="text-muted">{{ trans('messages.last_opened') }}</p>
                 <span class="pull-right num">
-                    {{ $campaign->lastOpen() ? Auth::user()->customer->formatDateTime($campaign->lastOpen()->created_at, 'date_full') : "" }}
+                    {{ $campaign->lastOpen() ? Auth::user()->customer->formatDateTime($campaign->lastOpen()->created_at, 'datetime_full') : "" }}
                 </span>
             </div>
         </div>
@@ -84,7 +84,7 @@ arrow_forward
             <div class="stat-row">
                 <p class="text-muted">{{ trans('messages.last_clicked') }}</p>
                 <span class="pull-right num">
-                    {{ $campaign->lastClick() ? Auth::user()->customer->formatDateTime($campaign->lastClick()->created_at, 'date_full') : "" }}
+                    {{ $campaign->lastClick() ? Auth::user()->customer->formatDateTime($campaign->lastClick()->created_at, 'datetime_full') : "" }}
                 </span>
             </div>
         </div>

@@ -22,7 +22,7 @@
                         {{ $item->name }}
                     </a>
                     <span class="text-muted">{{ trans('messages.created_at') }}
-                        : {{ Auth::user()->customer->formatDateTime($item->created_at, 'date_full') }}</span>
+                        : {{ Auth::user()->customer->formatDateTime($item->created_at, 'datetime_full') }}</span>
                 </td>
                 <td>
                     <div class="single-stat-box pull-left">

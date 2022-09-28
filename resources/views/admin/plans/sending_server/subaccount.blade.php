@@ -1,4 +1,6 @@
-@extends('layouts.core.backend')
+@extends('layouts.core.backend', [
+	'menu' => 'plan',
+])
 
 @section('title', $plan->name)
 
@@ -22,7 +24,9 @@
 
 @section('content')
     
-    @include('admin.plans._menu')
+    @include('admin.plans._menu', [
+        'menu' => 'sending_server',
+    ])
     
     <form action="{{ action('Admin\PlanController@sendingServerSubaccount', $plan->uid) }}" method="POST" class="form-validate-jqueryx">
         {{ csrf_field() }}

@@ -41,7 +41,7 @@
 					<span class="text-muted second-line-mobile">{{ trans('messages.email') }}</span>
 				</td>
 				<td>
-					<span class="no-margin kq_search">{{ Auth::user()->customer->formatDateTime($sender->created_at, 'date_full') }}</span>
+					<span class="no-margin kq_search">{{ Auth::user()->customer->formatDateTime($sender->created_at, 'datetime_full') }}</span>
 					<span class="text-muted second-line-mobile">{{ trans('messages.created_at') }}</span>
 				</td>
 				<td>

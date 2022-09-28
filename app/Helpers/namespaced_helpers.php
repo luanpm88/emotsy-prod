@@ -69,6 +69,11 @@ function getAppSubdirectory()
     // when calling from another file (like filemanager/config/config.php for example)
     // Otherwise, it will always return 'http://localhost' --> without subdirectory
     $path = parse_url(config('app.url'), PHP_URL_PATH);
+
+    if (is_null($path)) {
+        return null;
+    }
+
     $path = trim($path, '/');
     return empty($path) ? null : $path;
 }
@@ -323,4 +328,25 @@ function reset_app_url($force = false)
         $url = url('/');
         write_env('APP_URL', $url);
     }
+}
+
+function file_get_contents_ssl_safe($url)
+{
+    // Check if $url is a URL
+    if (!preg_match('/^https{0,1}:\/\//', $url)) {
+        throw new \Exception('file_get_contents_ssl_safe() requires a URL as input. Received: '.$url);
+    }
+
+    $client = curl_init();
+    curl_setopt_array($client, array(
+        CURLOPT_URL => $url,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_HEADER => false,
+        CURLOPT_SSL_VERIFYPEER => false
+    ));
+
+    $result = curl_exec($client);
+    curl_close($client);
+
+    return $result;
 }

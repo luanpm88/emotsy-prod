@@ -1,4 +1,6 @@
-@extends('layouts.core.backend')
+@extends('layouts.core.backend', [
+    'menu' => 'bounce_log',
+])
 
 @section('title', trans('messages.bounce_log'))
 

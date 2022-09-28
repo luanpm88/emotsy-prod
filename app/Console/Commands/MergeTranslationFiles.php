@@ -3,6 +3,7 @@
 namespace Acelle\Console\Commands;
 
 use Illuminate\Console\Command;
+
 use function Acelle\Helpers\updateTranslationFile;
 
 class MergeTranslationFiles extends Command

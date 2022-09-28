@@ -171,7 +171,6 @@ abstract class Action
         }
 
         try {
-
             // Execute once only
             if (!is_null($this->getLastExecuted())) {
                 throw new Exception("Action already executed");

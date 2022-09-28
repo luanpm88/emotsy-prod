@@ -134,7 +134,7 @@
         display: block!important;
     }
     .leftbar .navbar-brand {
-        margin-top: 20px;
+        margin-top: 10px;
         margin-left: 20px;
         margin-bottom: 15px;
     }
@@ -153,7 +153,7 @@
         font-size: 14px;
     }
     .leftbar .navbar-brand > img {
-        max-width: 132px;
+        max-width: 120px;
     }
     .leftbar .navbar-main .dropdown-toggle::after {
         position: absolute;

@@ -520,7 +520,7 @@ h2 [class^="icon-"] {
     margin: 60px 0;
 }
 .login-header img {
-    max-width: 100%;
+    max-width: 70%;
 }
 .has-feedback label ~ .form-control-feedback.has-label {
     top: 30px;
@@ -2154,7 +2154,7 @@ input.mini-input {
 .navbar-brand > img {
     margin-top: 0px;
     max-height: 53px;
-    max-width: 140px;
+    max-width: 120px;
 }
 .navbar-brand {
     padding: 0;
@@ -2166,8 +2166,6 @@ input.mini-input {
     line-height: 50px;
 }
 .navbar-brand > img {
-    max-height: 53px;
-    max-width: 140px;
     vertical-align: middle;
     display: inline-block;
 }
@@ -6182,6 +6180,9 @@ h1, h1 {
     top: 4px;
     /* transform: translateY(19997px); */
 }
+.checkbox-right-switch .styled[type="radio"]:checked ~ .check-symbol:after {
+    top: 6px;
+}
 .styled.check_all ~ .check-symbol {
     margin-right: 14px;
 }
@@ -7707,21 +7708,6 @@ textarea.form-control {
         flex: 0 0 100%;
     }
 }
-.has-emoji .form-group label ~ .emoji-picker-icon {
-    top: 31px;
-}
-.has-emoji .form-group label ~ .emoji-picker-icon::after {
-    content: 'emoji_emotions';
-    font-family: 'Material icons outlined';
-    right: 0;
-    position: absolute;
-    z-index: 1;
-    font-style: normal;
-    font-size: 22px;
-}
-.has-emoji .form-group label ~ .emoji-picker-icon::before {
-    display: none;
-}
 .tox-form__group input:read-only {
     background-color: #efefef!important;
 }
@@ -7906,4 +7892,73 @@ textarea.form-control {
         padding-left: 20px;
         padding-right: 20px;
     }
+}
+.emojionearea, .emojionearea.form-control {
+    border-width: 2px!important;
+    height: 35px!important;
+    border-radius: 5px!important;
+}
+label.checker {
+    display: inline-block;
+    position: relative;
+}
+label.checker .checker-symbol {
+    cursor: pointer;
+}
+label.checker .checker-symbol::before {
+    content: '.';
+    width: 35px;
+    height: 15px;
+    display: inline-block;
+    background: transparent;
+    top: 4px;
+    position: absolute;
+    left: -9px;
+    border-radius: 50px;
+    border: solid 1px #aaa;
+    text-indent: -9000px;
+    box-shadow: 1px 1px 1px rgba(0,0,0,0.1);
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+}
+label.checker .checker-symbol::after {
+    content: '.';
+    width: 21px;
+    height: 21px;
+    display: inline-block;
+    background: #fff;
+    top: 1px;
+    position: absolute;
+    left: -9px;
+    border-radius: 100%;
+    border: solid 1px #aaa;
+    text-indent: -9000px;
+    transition: all 0.2s ease-in-out;
+    box-shadow: 1px 1px 1px rgba(0,0,0,0.1);
+    cursor: pointer;
+}
+label.checker input:checked ~ .checker-symbol::before {
+    background-color: #2fd9a1;
+    border-color: #2fd9a1;;
+}
+label.checker input:checked ~ .checker-symbol::after {
+    left: 7px;
+}
+label.checker input {
+    width: 0px;
+    height: 0px;
+    background: transparent;
+    border: none;
+    opacity: 0;
+}
+label.checker input:disabled ~ .checker-symbol::after {
+    background-color: #ddd;    
+    border-color: #ccc;    
+}
+label.checker input:disabled ~ .checker-symbol::before {
+    background-color: rgba(29, 195, 141, 0.5);
+    border-color: rgba(29, 195, 141, 0.5);
+}
+label.checker input:disabled ~ .checker-symbol {
+    cursor: not-allowed;
 }

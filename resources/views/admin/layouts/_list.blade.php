@@ -13,7 +13,7 @@
                             {{ trans('messages.' . $item->alias) }}
                         </a>
                     </h5>
-                    <p>{{ $item->group_name }}</p>
+                    <p class="mb-0">{{ $item->group_name }}</p>
                 </td>
                 <td>
                     <div class="single-stat-box pull-left">

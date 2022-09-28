@@ -1,4 +1,6 @@
-@extends('layouts.core.backend')
+@extends('layouts.core.backend', [
+	'menu' => 'sending_server',
+])
 
 @section('title', trans('messages.sending_servers'))
 
@@ -63,9 +65,9 @@ add
                                 </a>
                             </div>
                             <div class="me-auto">
-                                <h4><a href="{{ action('Admin\SendingServerController@create', ["type" => $key]) }}">{{ trans('messages.' . $key) }}</a></h4>
+                                <h4><a href="{{ action('Admin\SendingServerController@create', ["type" => $key]) }}">{{ trans('messages.sending_server.type.' . $key) }}</a></h4>
                                 <p>
-                                    {{ trans('messages.sending_server_intro_' . $key) }}
+                                    {{ trans('messages.sending_server.intro.' . $key) }}
                                 </p>
                             </div>
                             <div>

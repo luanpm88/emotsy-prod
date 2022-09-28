@@ -596,34 +596,6 @@ function strip_tags_only($text, $allowedTags = [])
     return $text;
 }
 
-/**
- * Get controller action name
- **/
-function controllerAction()
-{
-    // GET FROM SCREEN OPTION
-    $controller = explode('\\', request()->route()->getAction()['controller']);
-    return $controller[count($controller)-1];
-}
-
-/**
- * Get controller name
- **/
-function controllerName()
-{
-    $controllerAction = controllerAction();
-    return explode('@', $controllerAction)[0];
-}
-
-/**
- * Get action name
- **/
-function actionName()
-{
-    $controllerAction = controllerAction();
-    return explode('@', $controllerAction)[1];
-}
-
 /*
  *  Iterate through a Eloquent $query using cursor paginate
  *  The $orderBy parameter is critically required for a cursor pagination
@@ -844,6 +816,23 @@ function getThemeMode($mode, $auto='light')
     }
 
     return $themeMode;
+}
+
+function getLogoMode($mode, $scheme, $daylight='light')
+{
+    if ($scheme !== 'white') {
+        return 'light';
+    }
+
+    if ($mode == 'auto' && ($daylight == 'light' || $daylight == null)) {
+        return 'dark';
+    }
+
+    if ($mode == 'light') {
+        return 'dark';
+    }
+
+    return 'light';
 }
 
 function parseRss($config)
@@ -1180,4 +1169,47 @@ function getFullCodeByLanguageCode($languageCode)
     }
 
     return null;
+}
+
+function getSiteLogoUrl($type='light')
+{
+    if (!isInitiated()) {
+        return URL::asset('images/logo_light.svg');
+    }
+
+    switch($type) {
+        case 'light':
+            $logo = \Acelle\Model\Setting::get('site_logo_light');
+            break;
+        case 'dark':
+            $logo = \Acelle\Model\Setting::get('site_logo_dark');
+            break;
+        case 'pdf':
+            $logo = \Acelle\Model\Setting::get('site_logo_dark');
+            break;
+    }
+
+    // light is default logo
+    $lightLogo = \Acelle\Model\Setting::get('site_logo_light');
+
+    if ($logo) {
+        $url = action('SettingController@file', $logo);
+    } elseif ($lightLogo) {
+        $url = action('SettingController@file', $lightLogo);
+    } else {
+        // default logo
+        switch($type) {
+            case 'light':
+                $url = URL::asset('images/logo_light.svg');
+                break;
+            case 'dark':
+                $url = URL::asset('images/logo_dark.svg');
+                break;
+            case 'pdf':
+                $url = URL::asset('images/logo_dark.svg');
+                break;
+        }
+    }
+
+    return $url;
 }

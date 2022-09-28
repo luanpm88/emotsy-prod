@@ -343,7 +343,7 @@ class SendingServer extends Model implements HasQuotaInterface
             self::TYPE_MAILGUN_API => [
                 'cols' => [
                     'api_key' => 'required',
-                    'domain' => 'required',
+                    'domain' => 'required|regex:/^([a-zA-Z0-9][a-zA-Z0-9-_]*\.)*[a-zA-Z0-9]*[a-zA-Z0-9-_]*[[a-zA-Z0-9]+$/',
                     'host' => 'required',
                 ],
                 'settings' => [

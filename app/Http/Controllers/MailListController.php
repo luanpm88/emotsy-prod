@@ -716,9 +716,7 @@ class MailListController extends Controller
             $errs = [];
             foreach ($validator->errors()->toArray() as $key => $error) {
                 $field = $list->getFieldByTag($key);
-                $errs[] = trans('messages.list.field_not_valid', [
-                    'field' => $field->label,
-                ]);
+                $errs[] = $error[0];
             }
 
             if (strpos($url, '?') !== false) {

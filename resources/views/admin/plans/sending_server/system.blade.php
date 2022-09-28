@@ -1,4 +1,6 @@
-@extends('layouts.core.backend')
+@extends('layouts.core.backend', [
+	'menu' => 'plan',
+])
 
 @section('title', $plan->name)
 
@@ -27,7 +29,9 @@
 
 @section('content')
     
-    @include('admin.plans._menu')
+    @include('admin.plans._menu', [
+        'menu' => 'sending_server',
+    ])
     
     <div class="mc-section">
         <div class="announce_box">
@@ -212,7 +216,7 @@ dns
                                     </td>
                                     <td>
                                         <span>
-                                            {{ Auth::user()->admin->formatDateTime($plan->primarySendingServer()->updated_at, 'date_full') }}
+                                            {{ Auth::user()->admin->formatDateTime($plan->primarySendingServer()->updated_at, 'datetime_full') }}
                                         </span>
                                     </td>
                                     <td>

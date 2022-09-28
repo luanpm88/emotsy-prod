@@ -27,6 +27,7 @@ use Illuminate\Support\Facades\Log as LaravelLog; // something wrong, cannot use
 use Illuminate\Support\Facades\File;
 use Acelle\Library\Facades\Hook;
 use Acelle\Model\Language;
+
 use function Acelle\Helpers\updateTranslationFile;
 
 class UpgradeManager
@@ -233,9 +234,7 @@ class UpgradeManager
                     }
                 } else {
                     if ($this->isTranslationFile($target)) {
-                        // Make sure the 'resources/lang/default/' folder is already updated
-                        LaravelLog::info('UPDATE translation file: '.$file);
-                        $this->mergeTranslationFileWithoutOverwritting($target, $source);
+                        // Skipped, translation file shall be handled by Language::dump() later on
                     } else {
                         LaravelLog::info('REPLACE file: '.$file);
                         $this->copy($source, $target);
@@ -504,13 +503,5 @@ class UpgradeManager
     public function isTranslationFile($path) // absolute path
     {
         return in_array($path, $this->allTranslationFiles);
-    }
-
-    /**
-     * Upgrade all existing language packages using the provided file
-     */
-    public function mergeTranslationFileWithoutOverwritting($target, $source)
-    {
-        updateTranslationFile($target, $source, $overwrite = false, $deleteTargetKeys = true, $sort = true);
     }
 }

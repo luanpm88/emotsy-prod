@@ -447,7 +447,6 @@ class Tool
      */
     public static function cronjobUpdateController($request, $controller)
     {
-
         // Suggestion paths
         $paths = [
             '/usr/local/bin/php',
@@ -588,12 +587,12 @@ class Tool
                 <script src='https://www.google.com/recaptcha/api.js?hl=<?php echo language_code() ?>'></script>
                 <div class="g-recaptcha" data-sitekey="6LfyISoTAAAAABJV8zycUZNLgd0sj-sBFjctzXKw"></div>
                 <?php if (isset($errors) && $errors->has('recaptcha_invalid')) {
-            ?>
+                    ?>
                     <span class="help-block text-danger">
                         <strong><?php echo $errors->first('recaptcha_invalid'); ?></strong>
                     </span>
                 <?php
-        } ?>
+                } ?>
             </div>
         <?php
     }
@@ -630,16 +629,6 @@ class Tool
     public static function format_price($price, $format = '{PRICE}')
     {
         return str_replace('{PRICE}', number_with_delimiter($price), $format);
-    }
-
-    /**
-     * Check current view if exist.
-     *
-     * @return bool
-     */
-    public static function currentView()
-    {
-        return \Request::is('admin*') ? 'backend' : 'frontend';
     }
 
     /**

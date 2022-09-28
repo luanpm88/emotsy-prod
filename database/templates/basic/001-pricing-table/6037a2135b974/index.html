@@ -12,10 +12,52 @@
     
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/custom.css" rel="stylesheet">
+
+    <style>
+        @media (min-width: 768px) {
+            .container {
+                max-width: 650px;
+            }
+        }
+        @media (min-width: 992px) {
+            .container {
+                max-width: 760px;
+            }
+        }
+        @media (min-width: 769px) {
+            [data-hide-on="desktop"] {
+                display: none!important;
+            }
+        }
+        @media (max-width: 768px) {
+            [data-hide-on="mobile"] {
+                display: none!important;
+            }
+        }
+        @media (max-width: 767px) {
+            [builder-element=CellContainerElement] {
+                display: block!important;
+            }
+            [builder-element="CellElement"] {
+                width: 100%!important;
+                max-width: none!important;        
+            }
+            [builder-element="CellElement"], [builder-element="BlockElement"] {
+                padding-left: 0px!important;
+                padding-right: 0px!important;
+            }
+        }
+        @media (min-width: 600px) {
+            [builder-element=PricingTableElement] .col-12 {
+                flex-basis: 0;
+                flex-grow: 1;
+            }
+        }
+    </style>
   </head>
   <body class="builderjs-layout">
     
-    <div builder-element="PageElement">
+    <div builder-element="PageElement" style="padding-top:50px;padding-bottom:50px;">
       <div builder-element="BlockElement" style="padding-top:15px;padding-bottom:15px">
             <div class="container">
                 <div builder-element="CellContainerElement" style="
@@ -65,7 +107,7 @@
                         <div builder-element="TextElement" builder-inline-edit="" class="display-4 text-center my-2" style="font-size: 40px;font-weight:400">$0</div>
                         <div builder-element="TextElement" builder-inline-edit="" class="text-center">1 month</div>
                         <div class="text-center my-3 mt-5">
-                            <a builder-element="ButtonElement" builder-inline-edit="" href="" data-style="style_1" class="btn btn-primary" style="width: 80%;background-color: #007c89;">Select</a>
+                            <a builder-element="ButtonElement" builder-inline-edit="" href="" data-style="style_1" class="btn btn-primary" style="width: 80%;background-color: #007c89;color:#ffffff;">Select</a>
                         </div>
                         </div>
                         <div builder-element="PricingItemElement" class="p-3 pb-0 col-12" style="border: solid 1px #ccc;border-left:none;">
@@ -75,7 +117,7 @@
                         <div builder-element="TextElement" builder-inline-edit="" class="display-4 text-center my-2" style="font-size: 40px;;font-weight:400">$28</div>
                         <div builder-element="TextElement" builder-inline-edit="" class="text-center">1 month</div>
                         <div class="text-center my-3 mt-5">
-                            <a builder-element="ButtonElement" builder-inline-edit="" href="" data-style="style_1" class="btn btn-primary" style="width: 80%;background-color: #007c89;">Select</a>
+                            <a builder-element="ButtonElement" builder-inline-edit="" href="" data-style="style_1" class="btn btn-primary" style="width: 80%;background-color: #007c89;color:#ffffff;">Select</a>
                         </div>
                         </div>
                         <div builder-element="PricingItemElement" class="p-3 pb-0 col-12" style="border: solid 1px #ccc;border-left:none;">
@@ -85,7 +127,7 @@
                         <div builder-element="TextElement" builder-inline-edit="" class="display-4 text-center my-2" style="font-size: 40px;;font-weight:400">$50</div>
                         <div builder-element="TextElement" builder-inline-edit="" class="text-center">1 month</div>
                         <div class="text-center my-3 mt-5">
-                            <a builder-element="ButtonElement" builder-inline-edit="" href="" data-style="style_1" class="btn btn-primary" style="width: 80%;background-color: #007c89;">Select</a>
+                            <a builder-element="ButtonElement" builder-inline-edit="" href="" data-style="style_1" class="btn btn-primary" style="width: 80%;background-color: #007c89;color:#ffffff;">Select</a>
                         </div>
                         </div>
                     </div>
@@ -95,20 +137,16 @@
 
       <div builder-element="BlockElement" style="padding-top:15px;padding-bottom:15px">
             <div class="container">
-                <div class="row">
-                    <div class="col-12 col-md-12">
-                    <img builder-element builder-inline-edit class="my-2" src="image/banner_1920_640.png" width="100%" />
-                    <h3 builder-element builder-inline-edit class="mt-2 mb-2">Lorem ipsum dolor</h3>
-                    <p builder-element builder-inline-edit>Vestibulum id convallis ligula. Maecenas tellus erat, porta in augue eget, pretium aliquet neque.
-                    Nunc pulvinar turpis sed pellentesque aliquet. Sed ullamcorper, tellus eu viverra tincidunt,
-                    quam justo pellentesque est, et gravida justo eros vitae turpis.</p>
-                    </div>
-                </div>
+                <img builder-element builder-inline-edit class="my-2" src="image/banner_1920_640.png" width="100%" />
+                <h3 builder-element builder-inline-edit class="mt-2 mb-2">Lorem ipsum dolor</h3>
+                <p builder-element builder-inline-edit>Vestibulum id convallis ligula. Maecenas tellus erat, porta in augue eget, pretium aliquet neque.
+                Nunc pulvinar turpis sed pellentesque aliquet. Sed ullamcorper, tellus eu viverra tincidunt,
+                quam justo pellentesque est, et gravida justo eros vitae turpis.</p>
             </div>
         </div>
 
       <div builder-element="BlockElement" style="padding-top:15px;padding-bottom:15px">
-            <div class="container" style="padding-top:40px;padding-bottom:20px">
+            <div class="container" style="">
                 <div builder-element="IconsContainerElement" class="" style="text-align: center;">
                     <a builder-element="IconLinkElement" href="" class="mr-3 me-3 d-inline-block">
                     <img src="image/facebook.png"
