@@ -1940,7 +1940,7 @@
   'plugin.type.sending_server' => '送信サーバー',
   'plugin.upload.instruction' => 'PCからプラグインパッケージを選択してアップロードします。 通常、これはプラグインのソースファイルとメタ情報を含むZIPアーカイブです。',
   'plugin.version' => 'バージョン',
-  'plugin.wording' => 'Acelle Teamによって開発された多数の素晴らしいプラグインでアプリケーションを強化します。統合がこれまでになく簡単になりました！',
+  'plugin.wording' => 'Automail Teamによって開発された多数の素晴らしいプラグインでアプリケーションを強化します。統合がこれまでになく簡単になりました！',
   'plugin.yes_delete' => 'Yes, Delete plugin!',
   'plugins' => 'プラグイン',
   'plugins.deleted' => '1つ以上のプラグインが正常に削除されました',
