@@ -756,7 +756,7 @@
   'cart.list_updated' => 'The list was updated',
   'cart.send_notification_email_after' => 'Send notification emails  <span class="text-semibold">:time</span> after items is left in cart',
   'cart.store' => 'Mail List',
-  'cart.store.wording' => 'Choose a WooCommerce Store source for connecting to Acelle Mail',
+  'cart.store.wording' => 'Choose a WooCommerce Store source for connecting to Automail',
   'cart.store_updated' => 'Store source was updated',
   'cart.wait' => 'Wait',
   'cart.wait.click_change' => 'Click here to change',
@@ -837,8 +837,8 @@
   'copy_of_plan' => 'Copy of :name',
   'copy_of_template' => 'Copy of :name',
   'copy_plan' => 'Copy plan',
-  'copy_right' => '© 2022. Acelle Email Marketing Application by <a title="Go to Acelle Mail home page." class="xtooltip" href="http://acellemail.com" class="" target="_blank">acellemail.com</a>',
-  'copy_right_light' => '© 2022. <span class="text-white">Acelle Email Marketing Application</span> by <a href="http://acellemail.com" class="text-white" target="_blank">acellemail.com</a>',
+  'copy_right' => '© 2022. Automail Email Marketing Application by <a title="Go to Automail home page." class="xtooltip" href="http://automail.com" class="" target="_blank">automail.com</a>',
+  'copy_right_light' => '© 2022. <span class="text-white">Automail Email Marketing Application</span> by <a href="http://automail.com" class="text-white" target="_blank">automail.com</a>',
   'copy_to' => 'Copy to',
   'count' => 'Count',
   'count_bounced' => ':count bounced',
@@ -1354,8 +1354,16 @@
   'license.updated' => 'App license was successfully updated',
   'license.your_license' => 'Your current license',
   'license_guide' => '
-      <p>When you purchase the application license from Envato website, you are actually purchasing a license to use the product.<br>There are 2 types of license that are issued</p> <h4>Regular License</h4> <p> All features are available, for a single end product which end users are NOT charged for </p> <h4>Extended License</h4> <p> All features are available, for a single end product which end users can be charged for (software as a service)
-      </p> ',
+      <p>Once you purchase Automail, you actually get a license to use the product.<br>There are 2 types of license that are issued</p>
+      <h4>Regular License</h4>
+      <p>
+        All features are available, for a single end product which end users are NOT charged for
+      </p>
+      <h4>Extended License</h4>
+      <p>
+        All features are available, for a single end product which end users can be charged for (software as a service)
+      </p>
+  ',
   'license_is_not_valid' => 'License check failed: License is not valid. Please try again.',
   'license_optional' => 'License (Purchased code)',
   'license_tab' => 'License',
@@ -1508,7 +1516,7 @@
   'my_templates' => 'My templates',
   'name' => 'Name',
   'name_your_campaign' => 'Name your campaign',
-  'need_a_account_create_an_one' => 'Need an Acelle Mail account? <a href=":link" class="text-info">Create an account</a>',
+  'need_a_account_create_an_one' => 'Need an Automail account? <a href=":link" class="text-info">Create an account</a>',
   'new' => 'New',
   'new_password' => 'New password',
   'next' => 'Next',
@@ -2227,6 +2235,10 @@
   'sign_up_form_url' => 'Sign-up form URL',
   'sign_up_thankyou_page' => 'Sign-up "Thank you" page',
   'sign_up_welcome_email' => 'Final "Welcome" email',
+  'sign_up_welcome_email.real' => 'Welcome',
+  'signin_if_has_account' => 'Already have an Automail account? <a href=":link" class="text-info">Log in here</a>',
+  'signing_enabled' => 'Signing enabled',
+  'single_text_row' => 'Single text row',
   'site.menus' => 'Menus',
   'site.template.activate' => 'Activate',
   'site.template_changed' => 'Site template was changed successfully',
@@ -2273,7 +2285,7 @@
   'source.visit_store' => 'Visit store',
   'source.woo.connect' => 'Connect to WooCommerce',
   'source.woo.connecting' => 'Connecting...',
-  'source.woo.desc' => 'Enter your WordPress Acelle enpoint here to connect to exist WooCommerce stores. If you are not sure what your WordPress endpoint is, please install <a target="_blank" href=":link">WordPress Plugin for Acelle</a> plugin',
+  'source.woo.desc' => 'Enter your WordPress Automail enpoint here to connect to exist WooCommerce stores. If you are not sure what your WordPress endpoint is, please install <a target="_blank" href=":link">WordPress Plugin for Automail</a> plugin',
   'source.your_store_synchronized' => 'your store\'s products are being synchronized to the application',
   'spam-reported' => 'Spam reported',
   'spam_reported' => 'Spam reported',
@@ -2664,7 +2676,7 @@
   'upgrade.upgrade_confirm' => 'The system is going to upgrade itself. Please click the confirm button to proceed',
   'upgrade.uploading' => 'Uploading...',
   'upgrade.wording.upgrade' => 'Your are running on version :current, a newer version is available: :new<br>Do you want to proceed with the upgrade?',
-  'upgrade.wording.upload' => 'Your are currently running on version :current. To upgrade your application, please download the latest build from <code><a target="_blank" href="https://codecanyon.net/item/acelle-email-marketing-web-application/17796082">codecanyon.net</a></code>, then you can find the upgrade package located at <code>[acellemail source]/upgrade/patch-4.x.x.bin</code>, upload it using the form below',
+  'upgrade.wording.upload' => 'Your are currently running on version :current. To upgrade your application, please download the latest build from <code><a target="_blank" href="https://automail.jp">automail.jp</a></code>, then you can find the upgrade package located at <code>[automail source]/upgrade/patch-4.x.x.bin</code>, upload it using the form below',
   'upgrade_manager' => 'Upgrade Manager',
   'upload' => 'Upload',
   'upload_file' => 'Choose upload file from your device',
