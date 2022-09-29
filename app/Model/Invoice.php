@@ -307,17 +307,17 @@ class Invoice extends Model
      */
     public function fulfill()
     {
-        // set status as paid
-        $this->setPaid();
+        DB::transaction(function() {
+            // set invoice status as paid
+            $this->setPaid();
 
-        // set transaction as success
-        // Important: according to current design, the rule is: one invoice only has one pending transaction
-        if ($this->getPendingTransaction()) {
+            // set transaction as success
+            // Important: according to current design, the rule is: one invoice only has one pending transaction
             $this->getPendingTransaction()->setSuccess();
-        }
 
-        // invoice after pay actions
-        $this->process();
+            // set subscription status
+            $this->process();
+        });
     }
 
     /**

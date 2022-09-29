@@ -55,6 +55,11 @@ class Subscription extends Model implements HasQuotaInterface
         return $this->belongsTo('\Acelle\Model\Plan');
     }
 
+    public function scopeNewOrActive($query)
+    {
+        return $query->whereIn('status', [ self::STATUS_ACTIVE, self::STATUS_NEW ]);
+    }
+
     /**
      * Get the user that owns the subscription.
      *
@@ -161,20 +166,13 @@ class Subscription extends Model implements HasQuotaInterface
      */
     public function createInitInvoice()
     {
-        //
-        if ($this->getUnpaidInvoice()) {
-            throw new \Exception(trans('messages.error.has_waiting_invoices'));
-        }
-
-        if ($this->plan->hasTrial()) {
-            $endDate = $this->customer->formatDateTime($this->getTrialPeriodEndsAt(Carbon::now()), "datetime_full");
-        } else {
-            $endDate = $this->customer->formatDateTime($this->getPeriodEndsAt(Carbon::now()), "datetime_full");
-        }
 
         // create init invoice
-        return Invoice::createInvoice([
-            'status' => Invoice::TYPE_NEW_SUBSCRIPTION,
+        return Invoice::createInvoice($subscription
+            /*
+            [
+
+            'status' => Invoice::TYPE_NEW_SUBSCRIPTION, // remove, để trong model Invoice luôn
             'title' => trans('messages.invoice.init_subscription'),
             'description' => trans('messages.invoice.init_subscription.desc', [
                 'plan' => $this->plan->name,
@@ -195,6 +193,7 @@ class Subscription extends Model implements HasQuotaInterface
                     'description' => view('plans._bill_desc', ['plan' => $this->plan]),
                 ],
             ]
+            */
         ]);
     }
 
@@ -207,9 +206,14 @@ class Subscription extends Model implements HasQuotaInterface
     {
         //
         if ($this->getUnpaidInvoice()) {
-            throw new \Exception(trans('messages.error.has_waiting_invoices'));
+            throw new \Exception("Hey, có vẻ như hàm này được gọi rồi!");
         }
 
+        if ($this->status != self::STATUS_ACTIVE) {
+            throw new \Exception("Hey, subscription này đâu có active đâu mà đòi renew???");
+        }
+
+        /*
         // create invoice
         $invoice = new Invoice();
         $invoice->status = Invoice::STATUS_NEW;
@@ -221,8 +225,12 @@ class Subscription extends Model implements HasQuotaInterface
         ]);
         $invoice->customer_id = $this->customer->id;
         $invoice->currency_id = $this->plan->currency_id;
+        */
+
+        $invoice = Invoice::createRenewInvoice($subscription);
 
         // default billing info
+        /*
         $billingAddress = $this->customer->getDefaultBillingAddress();
         if ($billingAddress) {
             $invoice->billing_first_name = $billingAddress->first_name;
@@ -232,6 +240,7 @@ class Subscription extends Model implements HasQuotaInterface
             $invoice->billing_phone = $billingAddress->phone;
             $invoice->billing_country_id = $billingAddress->country_id;
         }
+
 
         // save
         $invoice->save();
@@ -252,6 +261,8 @@ class Subscription extends Model implements HasQuotaInterface
             'title' => $this->plan->name,
             'description' => view('plans._bill_desc', ['plan' => $this->plan]),
         ]);
+
+        */
 
         return $invoice;
     }
@@ -912,5 +923,16 @@ class Subscription extends Model implements HasQuotaInterface
     public function getSendingCreditsRemaining()
     {
         return 998000;
+    }
+
+    public static function createNewSubscription($customer, $plan)
+    {
+        $subscription = new self();
+        $subscription->status = self::STATUS_NEW;
+        $subscription->customer_id = $customer->id;
+        $subscription->plan_id = $plan->id;
+        $subscription->save();
+
+        return $subscription;
     }
 }

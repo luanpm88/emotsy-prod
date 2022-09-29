@@ -83,6 +83,20 @@ class Customer extends Model
             ->orderBy('created_at', 'desc');
     }
 
+    // Lấy ra current subscription (new or active)
+    // Không có case 1 customer mà có 2 subscription như vậy (chỉ có 1 hoặc null)
+    public function getNewOrActiveSubscription()
+    {
+        // Theo design thì mỗi customer chỉ có một subscription đang "new" hoặc "active"
+        $subscriptions = $this->subscriptions()->newOrActive();
+
+        if ($subscriptions->count() > 1) {
+            throw new Exception('There are 2 subscriptions of [active, new] status. Please clean up the DB');
+        }
+
+        return $subscriptions->first();
+    }
+
     public function contact()
     {
         return $this->belongsTo('Acelle\Model\Contact');
@@ -1479,22 +1493,14 @@ class Customer extends Model
      */
     public function assignPlan($plan)
     {
-        $subscription = $this->subscription;
-        // create tmp subscription
-        if (!$subscription) {
-            $subscription = new Subscription();
-            $subscription->customer_id = $this->id;
+        if ($this->getNewOrActiveSubscription()) {
+            throw new Exception("This customer already has a new or active subscription");
         }
 
-        // cancel all pending invoices (new)
-        $subscription->invoices()->new()->delete();
-
-        // reset value
-        $subscription->plan_id = $plan->id;
-        $subscription->current_period_ends_at = null;
-        $subscription->ends_at = null;
-        $subscription->started_at = null;
-        $subscription->status = Subscription::STATUS_NEW;
+        DB::transaction(function () {
+            $subscription = Subscription::createNewSubscription($this, $plan);
+            $subscription->createInitInvoice();
+        });
 
         // Important:
         // With current quota tracking design, there is no fixed 'available credits'
@@ -1502,12 +1508,6 @@ class Customer extends Model
         // The application only enforce the quota limits rules: how many credits are allowed during a fixed period of time (month)
         // It is pre-designed for "Buy Credits" feature which will be supported later on
         $subscription->setCredits('send', QuotaManager::QUOTA_UNLIMITED);
-
-        // Actually store
-        $subscription->save();
-
-        // create init invoice
-        $subscription->createInitInvoice();
 
         return $subscription;
     }
