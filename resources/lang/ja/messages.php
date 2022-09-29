@@ -1647,7 +1647,7 @@
   'payment.settings' => '設定',
   'payment.status.active' => '有効',
   'payment.status.inactive' => '無効',
-  'payment_fee.wording' => 'Some cart issuers requires an minimum initial charge of :amount to verify your card, make it ready for payment',
+  'payment_fee.wording' => 'Some cart issuers impose a pre-authorization charge of :amount to verify a card. It is to verify that the card is valid and the bank will allow it to be authorized.',
   'payment_gateways' => '支払いゲートウェイ',
   'payment_method' => '支払方法',
   'permission' => '許可',
