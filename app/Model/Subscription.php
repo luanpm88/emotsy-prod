@@ -239,7 +239,7 @@ class Subscription extends Model implements HasQuotaInterface
     {
         //
         if ($this->getUnpaidInvoice()) {
-            throw new \Exception("Hey, có vẻ như hàm này được gọi rồi!");
+            throw new \Exception("Hey, có vẻ như hàm này được gọi rồi OR customer đang change plan? " . $this->getUnpaidInvoice()->toJson());
         }
 
         if ($this->status != self::STATUS_ACTIVE) {
@@ -279,13 +279,18 @@ class Subscription extends Model implements HasQuotaInterface
      */
     public function createChangePlanInvoice($newPlan)
     {
-        //
-        if ($this->getUnpaidInvoice()) {
-            throw new \Exception("Hey, có vẻ như hàm này được gọi rồi!");
+        // nếu đang có RENEW invoice thì xóa luôn, ưu tiên change plan hơn là renew plan cũ
+        if ($this->getUnpaidInvoice() && $this->getUnpaidInvoice()->type == Invoice::TYPE_RENEW_SUBSCRIPTION) {
+            $this->getUnpaidInvoice()->delete();
         }
 
         if ($this->status != self::STATUS_ACTIVE) {
-            throw new \Exception("Hey, subscription này đâu có active đâu mà đòi renew???");
+            throw new \Exception("Hey, subscription này đâu có active đâu mà đòi change plan???");
+        }
+
+        //
+        if ($this->getUnpaidInvoice()) {
+            throw new \Exception("Hey, có vẻ như đang có 1 UNPAID invoice nào đó đang NEW: " . $this->getUnpaidInvoice()->toJson());
         }
         
         // calculate change plan amout ends at
@@ -583,7 +588,7 @@ class Subscription extends Model implements HasQuotaInterface
         } else {
             $this->current_period_ends_at = $this->getPeriodEndsAt(Carbon::now());
         }
-        
+
         $this->ends_at = null;
         $this->status = self::STATUS_ACTIVE;
         $this->started_at = Carbon::now();
