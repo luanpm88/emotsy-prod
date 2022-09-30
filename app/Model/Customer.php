@@ -1495,7 +1495,11 @@ class Customer extends Model
         $subscription = null;
         DB::transaction(function () use ($customer, $plan, &$subscription) {
             $subscription = Subscription::createNewSubscription($customer, $plan);
-            $subscription->createInitInvoice();
+            if ($plan->hasTrial()) {
+                $subscription->createTrialInvoice();
+            } else {
+                $subscription->createInitInvoice();
+            }
         });
 
         // Important:

@@ -184,7 +184,42 @@ class Subscription extends Model implements HasQuotaInterface
                 new InvoiceItem([
                     'item_id' => $this->id,
                     'item_type' => get_class($this),
-                    'amount' => $this->plan->hasTrial() ? 0 : $this->plan->price,
+                    'amount' => $this->plan->price,
+                    'title' => $this->plan->name,
+                    'description' => view('plans._bill_desc', ['plan' => $this->plan]),
+                ]),
+            ],
+            $metadata = [
+                'subscription_uid' => $this->uid,
+            ]
+        );
+    }
+
+    /**
+     * Create trial invoice.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function createTrialInvoice()
+    {
+        $endDate = $this->customer->formatDateTime($this->getTrialPeriodEndsAt(Carbon::now()), "datetime_full");
+        
+        // create init invoice
+        return Invoice::createInvoice(
+            $type = Invoice::TYPE_NEW_SUBSCRIPTION,
+            $title = trans('messages.invoice.init_subscription'),
+            $description = trans('messages.invoice.init_subscription.desc', [
+                'plan' => $this->plan->name,
+                'date' => $endDate,
+            ]),
+            $customer_id = $this->customer->id,
+            $currency_id = $this->plan->currency_id,
+            $billing_address = $this->customer->getDefaultBillingAddress(),            
+            $invoiceItems = [
+                new InvoiceItem([
+                    'item_id' => $this->id,
+                    'item_type' => get_class($this),
+                    'amount' => 0, // trial => amount = 0
                     'title' => $this->plan->name,
                     'description' => view('plans._bill_desc', ['plan' => $this->plan]),
                 ]),
@@ -548,6 +583,7 @@ class Subscription extends Model implements HasQuotaInterface
         } else {
             $this->current_period_ends_at = $this->getPeriodEndsAt(Carbon::now());
         }
+        
         $this->ends_at = null;
         $this->status = self::STATUS_ACTIVE;
         $this->started_at = Carbon::now();
