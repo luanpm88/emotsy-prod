@@ -2860,4 +2860,34 @@
   'your_api_token' => 'Your API token',
   'your_current_license' => 'Thank you for purchasing! Below is your license key, also known as Purchase Code. Your license type is',
   'zip_postal_code' => 'Zip / Postal code',
+  'transaction.failed' => 'Failed',
+  'transaction.pending' => 'Pending',
+  'transaction.success' => 'Success',
+  'subscription.log.admin_approved' => 'Subscription for <strong>:plan</strong> plan was
+        <strong>approved</strong> by Admin',
+  'subscription.log.admin_cancelled_now' => 'Subscription for <strong>:plan</strong> plan was
+        <strong>ended</strong> by Admin',
+  'subscription.log.admin_plan_assigned' => '<strong>Assigned</strong> to <strong>:plan</strong> plan by Admin',
+  'subscription.log.admin_plan_change_approved' => 'Change to <strong>:plan</strong> plan was <strong>approved</strong> by Admin',
+  'subscription.log.admin_plan_change_rejected' => 'Change to <strong>:plan</strong> plan was <strong>rejected</strong>
+        by Admin. Reason: ":reason"',
+  'subscription.log.admin_renew_approved' => 'Renew <strong>:plan</strong> plan was <strong>approved</strong> by Admin',
+  'subscription.log.admin_renew_rejected' => 'Renew <strong>:plan</strong> plan was <strong>rejected</strong>
+        by Admin. Reason: ":reason"',
+  'subscription.log.cancelled' => 'Subscription for <strong>:plan</strong> plan was <strong>cancelled</strong>',
+  'subscription.log.cancelled_now' => 'Subscription for <strong>:plan</strong> plan was <strong>cancelled now</strong>',
+  'subscription.log.claimed' => 'The payment was <strong>claimed</strong> by customer',
+  'subscription.log.created_at' => 'Created at',
+  'subscription.log.expired' => 'Subscription for <strong>:plan</strong> plan was <strong>expired</strong>',
+  'subscription.log.paid' => 'Paid for <strong>:plan</strong> plan',
+  'subscription.log.plan_change' => 'Changing plan from <strong>:old_plan</strong> to
+        <strong>:plan</strong> (<strong>:price</strong>)',
+  'subscription.log.plan_changed' => 'Changed to
+        <strong>:plan</strong> plan',
+  'subscription.log.renew' => 'Renewing <strong>:plan</strong> plan (<strong>:price</strong>)',
+  'subscription.log.renew_failed' => 'Can not renew <strong>:plan</strong> plan. Error: :error',
+  'subscription.log.renewed' => 'Renewed <strong>:plan</strong> plan (<strong>:price</strong>)',
+  'subscription.log.resumed' => 'Subscription for <strong>:plan</strong> plan was <strong>resumed</strong>',
+  'subscription.log.subscribe' => 'Subscribing to <strong>:plan</strong> plan',
+  'subscription.log.subscribed' => 'Subscribed to <strong>:plan</strong> plan',
 ) ?>
