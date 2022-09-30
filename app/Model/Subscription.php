@@ -246,58 +246,42 @@ class Subscription extends Model implements HasQuotaInterface
     {
         //
         if ($this->getUnpaidInvoice()) {
-            $this->getUnpaidInvoice()->delete();
+            throw new \Exception("Hey, có vẻ như hàm này được gọi rồi!");
         }
 
+        if ($this->status != self::STATUS_ACTIVE) {
+            throw new \Exception("Hey, subscription này đâu có active đâu mà đòi renew???");
+        }
+        
         // calculate change plan amout ends at
         $metadata = $this->calcChangePlan($newPlan);
 
-        // create invoice
-        $invoice = new Invoice();
-        $invoice->status = Invoice::STATUS_NEW;
-        $invoice->type = Invoice::TYPE_CHANGE_PLAN;
-        $invoice->title = trans('messages.invoice.change_plan');
-        $invoice->description = trans('messages.change_plan.desc', [
-            'plan' => $this->plan->name,
-            'newPlan' => $newPlan->name,
-            'date' => $this->customer->formatDateTime(Carbon::parse($metadata['endsAt']), 'datetime_full'),
-        ]);
-        $invoice->customer_id = $this->customer->id;
-        $invoice->currency_id = $this->plan->currency_id;
-
-        // default billing info
-        $billingAddress = $this->customer->getDefaultBillingAddress();
-        if ($billingAddress) {
-            $invoice->billing_first_name = $billingAddress->first_name;
-            $invoice->billing_last_name = $billingAddress->last_name;
-            $invoice->billing_address = $billingAddress->address;
-            $invoice->billing_email = $billingAddress->email;
-            $invoice->billing_phone = $billingAddress->phone;
-            $invoice->billing_country_id = $billingAddress->country_id;
-        }
-
-        // save
-        $invoice->save();
-
-        // add invoice number
-        $invoice->createInvoiceNumber();
-
-        // save data
-        $invoice->updateMetadata([
-            'subscription_uid' => $this->uid,
-            'new_plan_uid' => $newPlan->uid,
-        ]);
-
-        // add item
-        $invoiceItem = $invoice->invoiceItems()->create([
-            'item_id' => $this->id,
-            'item_type' => get_class($this),
-            'amount' => $metadata['amount'],
-            'title' => $newPlan->name,
-            'description' => view('plans._bill_desc', ['plan' => $newPlan]),
-        ]);
-
-        return $invoice;
+        // create init invoice
+        return Invoice::createInvoice(
+            $type = Invoice::TYPE_CHANGE_PLAN,
+            $title = trans('messages.invoice.change_plan'),
+            $description = trans('messages.change_plan.desc', [
+                'plan' => $this->plan->name,
+                'newPlan' => $newPlan->name,
+                'date' => $this->customer->formatDateTime(Carbon::parse($metadata['endsAt']), 'datetime_full'),
+            ]),
+            $customer_id = $this->customer->id,
+            $currency_id = $this->plan->currency_id,
+            $billing_address = $this->customer->getDefaultBillingAddress(),            
+            $invoiceItems = [
+                new InvoiceItem([
+                    'item_id' => $this->id,
+                    'item_type' => get_class($this),
+                    'amount' => $metadata['amount'],
+                    'title' => $newPlan->name,
+                    'description' => view('plans._bill_desc', ['plan' => $newPlan]),
+                ]),
+            ],
+            $metadata = [
+                'subscription_uid' => $this->uid,
+                'new_plan_uid' => $newPlan->uid,
+            ]
+        );
     }
 
     /**

@@ -567,11 +567,6 @@ class Invoice extends Model
         return $this->total() == 0;
     }
 
-    public function confirmWithoutPayment()
-    {
-        $this->fulfill();
-    }
-
     public function cancel()
     {
         $this->cancelProcess();

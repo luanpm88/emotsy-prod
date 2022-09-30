@@ -152,27 +152,6 @@ class SubscriptionController extends Controller
         }
     }
 
-    public function confirmFree(Request $request)
-    {
-        // get invoice
-        $invoice = $request->user()->customer->invoices()->where('uid', '=', $request->invoice_uid)->first();
-
-        if (!$invoice->isFree()) {
-            throw new \Exception('Invoice is not free!');
-        }
-
-        if ($request->payment_method) {
-            $request->user()->customer->updatePaymentMethod([
-                'method' => $request->payment_method,
-            ]);
-        }
-
-        $invoice->confirmWithoutPayment();
-
-        $request->session()->flash('alert-success', trans('messages.invoice.confirmed'));
-        return redirect()->action('SubscriptionController@index');
-    }
-
     public function cancelInvoice(Request $request, $uid)
     {
         $invoice = \Acelle\Model\Invoice::findByUid($uid);
