@@ -298,7 +298,7 @@ class Customer extends Model
      */
     public function activeSubscription()
     {
-        return ($this->subscription && $this->subscription->isActive()) ? $this->subscription : null;
+        return ($this->getNewOrActiveSubscription() && $this->getNewOrActiveSubscription()->isActive()) ? $this->getNewOrActiveSubscription() : null;
     }
 
     public function useOwnSendingServer()
@@ -1472,12 +1472,6 @@ class Customer extends Model
         return $droplist;
     }
 
-
-    public function getCurrentSubscription()
-    {
-        return $this->subscription;
-    }
-
     /**
      * Count customer automation2s.
      *
@@ -1497,8 +1491,10 @@ class Customer extends Model
             throw new Exception("This customer already has a new or active subscription");
         }
 
-        DB::transaction(function () {
-            $subscription = Subscription::createNewSubscription($this, $plan);
+        $customer = $this;
+        $subscription = null;
+        DB::transaction(function () use ($customer, $plan, &$subscription) {
+            $subscription = Subscription::createNewSubscription($customer, $plan);
             $subscription->createInitInvoice();
         });
 
@@ -1517,7 +1513,7 @@ class Customer extends Model
      */
     public function hasSubscriptionNotice()
     {
-        $subscription = $this->subscription;
+        $subscription = $this->getNewOrActiveSubscription();
 
         if (!$subscription) {
             return false;
@@ -1547,7 +1543,7 @@ class Customer extends Model
 
     public function allowUnverifiedFromEmailAddress()
     {
-        $plan = $this->subscription->plan;
+        $plan = $this->getNewOrActiveSubscription()->plan;
 
         if (!$plan) {
             return false;
@@ -1565,7 +1561,7 @@ class Customer extends Model
      */
     public function getCurrentPeriodEndsAt()
     {
-        return ($this->subscription && $this->subscription->isActive()) ? $this->current_period_ends_at : null;
+        return ($this->getNewOrActiveSubscription() && $this->getNewOrActiveSubscription()->isActive()) ? $this->current_period_ends_at : null;
     }
 
     /**
@@ -2009,7 +2005,7 @@ class Customer extends Model
 
     public function isCustomTrackingDomainRequired()
     {
-        $plan = $this->subscription->plan;
+        $plan = $this->getNewOrActiveSubscription()->plan;
 
         if (!$plan) {
             return false;

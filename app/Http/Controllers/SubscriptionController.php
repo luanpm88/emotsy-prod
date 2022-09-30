@@ -20,7 +20,7 @@ class SubscriptionController extends Controller
     {
         // init
         $customer = $request->user()->customer;
-        $subscription = $customer->subscription;
+        $subscription = $customer->getNewOrActiveSubscription();
 
         // 1. HAVE NOT HAD SUBSCRIPTION YET OR SUBSCRIPTION IS ENDED
         if (!$subscription ||
@@ -61,7 +61,7 @@ class SubscriptionController extends Controller
     {
         //
         $customer = $request->user()->customer;
-        $subscription = $customer->subscription;
+        $subscription = $customer->getNewOrActiveSubscription();
 
         return view('subscription.selectPlan', [
             'plans' => Plan::getAvailablePlans(),
@@ -73,7 +73,7 @@ class SubscriptionController extends Controller
     {
         // Get current customer
         $customer = $request->user()->customer;
-        $subscription = $customer->subscription;
+        $subscription = $customer->getNewOrActiveSubscription();
         $plan = Plan::findByUid($request->plan_uid);
 
         // try to save old invoice billing info
@@ -94,7 +94,7 @@ class SubscriptionController extends Controller
         }
 
         // create new subscription
-        $subscription = $customer->subscription;
+        $subscription = $customer->getNewOrActiveSubscription();
         $subscription = $customer->assignPlan($plan);
 
         // create init invoice
@@ -191,7 +191,7 @@ class SubscriptionController extends Controller
     public function checkout(Request $request)
     {
         $customer = $request->user()->customer;
-        $subscription = $customer->subscription;
+        $subscription = $customer->getNewOrActiveSubscription();
         $invoice = $subscription->getUnpaidInvoice();
 
         $request->user()->customer->updatePaymentMethod([
@@ -205,7 +205,7 @@ class SubscriptionController extends Controller
     public function billingInformation(Request $request)
     {
         $customer = $request->user()->customer;
-        $subscription = $customer->subscription;
+        $subscription = $customer->getNewOrActiveSubscription();
         $invoice = $subscription->getUnpaidInvoice();
         $billingAddress = $customer->getDefaultBillingAddress();
 
@@ -249,7 +249,7 @@ class SubscriptionController extends Controller
     public function changePlan(Request $request)
     {
         $customer = $request->user()->customer;
-        $subscription = $customer->subscription;
+        $subscription = $customer->getNewOrActiveSubscription();
         $gateway = $customer->getPreferredPaymentGateway();
         $plans = Plan::getAvailablePlans();
 
@@ -297,7 +297,7 @@ class SubscriptionController extends Controller
         }
 
         $customer = $request->user()->customer;
-        $subscription = $customer->subscription;
+        $subscription = $customer->getNewOrActiveSubscription();
 
         if ($request->user()->customer->can('cancel', $subscription)) {
             $subscription->cancel();
@@ -319,7 +319,7 @@ class SubscriptionController extends Controller
     public function resume(Request $request)
     {
         $customer = $request->user()->customer;
-        $subscription = $customer->subscription;
+        $subscription = $customer->getNewOrActiveSubscription();
 
         if ($request->user()->customer->can('resume', $subscription)) {
             $subscription->resume();
@@ -344,7 +344,7 @@ class SubscriptionController extends Controller
         }
 
         $customer = $request->user()->customer;
-        $subscription = $customer->subscription;
+        $subscription = $customer->getNewOrActiveSubscription();
 
         if ($request->user()->customer->can('cancelNow', $subscription)) {
             $subscription->cancelNow();
@@ -358,7 +358,7 @@ class SubscriptionController extends Controller
     public function orderBox(Request $request)
     {
         $customer = $request->user()->customer;
-        $subscription = $customer->subscription;
+        $subscription = $customer->getNewOrActiveSubscription();
 
         // choose a plan
         if ($request->plan_uid) {

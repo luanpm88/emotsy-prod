@@ -5,6 +5,7 @@ namespace Acelle\Model;
 use Illuminate\Database\Eloquent\Model;
 use Exception;
 use Acelle\Model\Invoice;
+use Acelle\Model\InvoiceItem;
 use Acelle\Library\Traits\HasUid;
 use Acelle\Library\Traits\HasQuota;
 use Acelle\Library\Contracts\HasQuota as HasQuotaInterface;
@@ -166,35 +167,32 @@ class Subscription extends Model implements HasQuotaInterface
      */
     public function createInitInvoice()
     {
-
+        $endDate = $this->customer->formatDateTime($this->getTrialPeriodEndsAt(Carbon::now()), "datetime_full");
+        
         // create init invoice
-        return Invoice::createInvoice($subscription
-            /*
-            [
-
-            'status' => Invoice::TYPE_NEW_SUBSCRIPTION, // remove, để trong model Invoice luôn
-            'title' => trans('messages.invoice.init_subscription'),
-            'description' => trans('messages.invoice.init_subscription.desc', [
+        return Invoice::createInvoice(
+            $type = Invoice::TYPE_NEW_SUBSCRIPTION,
+            $title = trans('messages.invoice.init_subscription'),
+            $description = trans('messages.invoice.init_subscription.desc', [
                 'plan' => $this->plan->name,
                 'date' => $endDate,
             ]),
-            'customer_id' => $this->customer->id,
-            'currency_id' => $this->plan->currency_id,
-            'billingAddress' => $this->customer->getDefaultBillingAddress(),
-            'metadata' => [
-                'subscription_uid' => $this->uid,
-            ],
-            'items' => [
-                [
-                    'id' => $this->id,
-                    'type' => get_class($this),
+            $customer_id = $this->customer->id,
+            $currency_id = $this->plan->currency_id,
+            $billing_address = $this->customer->getDefaultBillingAddress(),            
+            $invoiceItems = [
+                new InvoiceItem([
+                    'item_id' => $this->id,
+                    'item_type' => get_class($this),
                     'amount' => $this->plan->hasTrial() ? 0 : $this->plan->price,
                     'title' => $this->plan->name,
                     'description' => view('plans._bill_desc', ['plan' => $this->plan]),
-                ],
+                ]),
+            ],
+            $metadata = [
+                'subscription_uid' => $this->uid,
             ]
-            */
-        ]);
+        );
     }
 
     /**
@@ -213,58 +211,30 @@ class Subscription extends Model implements HasQuotaInterface
             throw new \Exception("Hey, subscription này đâu có active đâu mà đòi renew???");
         }
 
-        /*
-        // create invoice
-        $invoice = new Invoice();
-        $invoice->status = Invoice::STATUS_NEW;
-        $invoice->type = Invoice::TYPE_RENEW_SUBSCRIPTION;
-        $invoice->title = trans('messages.invoice.renew_subscription');
-        $invoice->description = trans('messages.renew_subscription.desc', [
-            'plan' => $this->plan->name,
-            'date' => $this->customer->formatDateTime($this->nextPeriod(), 'datetime_full'),
-        ]);
-        $invoice->customer_id = $this->customer->id;
-        $invoice->currency_id = $this->plan->currency_id;
-        */
-
-        $invoice = Invoice::createRenewInvoice($subscription);
-
-        // default billing info
-        /*
-        $billingAddress = $this->customer->getDefaultBillingAddress();
-        if ($billingAddress) {
-            $invoice->billing_first_name = $billingAddress->first_name;
-            $invoice->billing_last_name = $billingAddress->last_name;
-            $invoice->billing_address = $billingAddress->address;
-            $invoice->billing_email = $billingAddress->email;
-            $invoice->billing_phone = $billingAddress->phone;
-            $invoice->billing_country_id = $billingAddress->country_id;
-        }
-
-
-        // save
-        $invoice->save();
-
-        // add invoice number
-        $invoice->createInvoiceNumber();
-
-        // data
-        $invoice->updateMetadata([
-            'subscription_uid' => $this->uid,
-        ]);
-
-        // add item
-        $invoiceItem = $invoice->invoiceItems()->create([
-            'item_id' => $this->id,
-            'item_type' => get_class($this),
-            'amount' => $this->plan->price,
-            'title' => $this->plan->name,
-            'description' => view('plans._bill_desc', ['plan' => $this->plan]),
-        ]);
-
-        */
-
-        return $invoice;
+        // create init invoice
+        return Invoice::createInvoice(
+            $type = Invoice::TYPE_RENEW_SUBSCRIPTION,
+            $title = trans('messages.invoice.renew_subscription'),
+            $description = trans('messages.renew_subscription.desc', [
+                'plan' => $this->plan->name,
+                'date' => $this->customer->formatDateTime($this->nextPeriod(), 'datetime_full'),
+            ]),
+            $customer_id = $this->customer->id,
+            $currency_id = $this->plan->currency_id,
+            $billing_address = $this->customer->getDefaultBillingAddress(),            
+            $invoiceItems = [
+                new InvoiceItem([
+                    'item_id' => $this->id,
+                    'item_type' => get_class($this),
+                    'amount' => $this->plan->price,
+                    'title' => $this->plan->name,
+                    'description' => view('plans._bill_desc', ['plan' => $this->plan]),
+                ]),
+            ],
+            $metadata = [
+                'subscription_uid' => $this->uid,
+            ]
+        );
     }
 
     /**

@@ -20,7 +20,7 @@ class Subscription
             return $next($request);
         }
 
-        $subscription = $request->user()->customer->subscription;
+        $subscription = $request->user()->customer->getNewOrActiveSubscription();
 
         // Check if customer dose not have subscription
         if (!$subscription || !$subscription->isActive() || !$subscription->plan->isActive()) {

@@ -31,7 +31,7 @@ class SenderController extends Controller
             return $this->notAuthorized();
         }
 
-        $subscription = $request->user()->customer->subscription;
+        $subscription = $request->user()->customer->getNewOrActiveSubscription();
         $plan = $subscription->plan;
 
         if ($subscription->plan->useOwnSendingServer()) {

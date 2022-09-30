@@ -31,10 +31,10 @@
     <div class="container mt-4 mb-5">
         <div class="row">
             <div class="col-md-8">
-                @if (Auth::user()->customer->subscription && Auth::user()->customer->subscription->getUnpaidInvoice()  && Auth::user()->customer->subscription->getUnpaidInvoice()->lastTransactionIsFailed())
+                @if (Auth::user()->customer->getNewOrActiveSubscription() && Auth::user()->customer->getNewOrActiveSubscription()->getUnpaidInvoice()  && Auth::user()->customer->getNewOrActiveSubscription()->getUnpaidInvoice()->lastTransactionIsFailed())
                     @include('elements._notification', [
                         'level' => 'danger',
-                        'message' => Auth::user()->customer->subscription->getUnpaidInvoice()->lastTransaction()->error
+                        'message' => Auth::user()->customer->getNewOrActiveSubscription()->getUnpaidInvoice()->lastTransaction()->error
                     ])
                 @endif
 
