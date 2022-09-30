@@ -76,39 +76,8 @@ class SubscriptionController extends Controller
         $subscription = $customer->getNewOrActiveSubscription();
         $plan = Plan::findByUid($request->plan_uid);
 
-        // try to save old invoice billing info
-        if ($subscription &&
-            !$subscription->isEnded() &&
-            $subscription->getUnpaidInvoice()
-        ) {
-            $oldInvoice = $subscription->getUnpaidInvoice();
-
-            $oldBillingInfo = [
-                'billing_first_name' => $oldInvoice->billing_first_name,
-                'billing_last_name' => $oldInvoice->billing_last_name,
-                'billing_address' => $oldInvoice->billing_address,
-                'billing_email' => $oldInvoice->billing_email,
-                'billing_phone' => $oldInvoice->billing_phone,
-                'billing_country_id' => $oldInvoice->billing_country_id,
-            ];
-        }
-
-        // create new subscription
-        $subscription = $customer->getNewOrActiveSubscription();
+        // assign plan
         $subscription = $customer->assignPlan($plan);
-
-        // create init invoice
-        if (!$subscription->invoices()->new()->count()) {
-            $invoice = $subscription->createInitInvoice();
-        }
-
-        // copy old billing info
-        if (isset($oldBillingInfo)) {
-            $invoice = $subscription->getUnpaidInvoice();
-
-            $invoice->fill($oldBillingInfo);
-            $invoice->save();
-        }
 
         // Check if subscriotion is new
         return redirect()->action('SubscriptionController@billingInformation');
