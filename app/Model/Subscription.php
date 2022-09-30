@@ -279,11 +279,6 @@ class Subscription extends Model implements HasQuotaInterface
      */
     public function createChangePlanInvoice($newPlan)
     {
-        // nếu đang có RENEW invoice thì xóa luôn, ưu tiên change plan hơn là renew plan cũ
-        if ($this->getUnpaidInvoice() && $this->getUnpaidInvoice()->type == Invoice::TYPE_RENEW_SUBSCRIPTION) {
-            $this->getUnpaidInvoice()->delete();
-        }
-
         if ($this->status != self::STATUS_ACTIVE) {
             throw new \Exception("Hey, subscription này đâu có active đâu mà đòi change plan???");
         }

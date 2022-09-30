@@ -211,6 +211,11 @@ class SubscriptionController extends Controller
             $newPlan = Plan::findByUid($request->plan_uid);
 
             try {
+                // nếu đang có RENEW invoice thì xóa luôn, ưu tiên change plan hơn là renew plan cũ
+                if ($subscription->getUnpaidInvoice() && $subscription->getUnpaidInvoice()->type == Invoice::TYPE_RENEW_SUBSCRIPTION) {
+                    $subscription->getUnpaidInvoice()->delete();
+                }
+
                 // set invoice as pending
                 $changePlanInvoice = $subscription->createChangePlanInvoice($newPlan);
             } catch (\Exception $e) {

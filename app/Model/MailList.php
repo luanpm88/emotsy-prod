@@ -1542,7 +1542,7 @@ class MailList extends Model
                 $server = SendingServer::mapServerType($server);
 
                 // flag the server to use sub-account instead
-                $subscription = $this->getNewOrActiveSubscription();
+                $subscription = $this->customer->getNewOrActiveSubscription();
                 if (!is_null($subscription->sub_account_id)) {
                     $server->setSubAccount($subscription->subAccount);
                 }
@@ -1567,7 +1567,7 @@ class MailList extends Model
         }
 
         $result = [];
-        $subscription = $this->getNewOrActiveSubscription();
+        $subscription = $this->customer->getNewOrActiveSubscription();
 
         // Check the customer has permissions using sending servers and has his own sending servers
         if ($this->customer->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_OWN) {
