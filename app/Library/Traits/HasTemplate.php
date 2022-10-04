@@ -291,8 +291,8 @@ trait HasTemplate
     public function getSubject($subscriber, $msgId)
     {
         $pipeline = new PipelineBuilder();
-        $pipeline->add(new ReplaceBareLineFeed());
         $pipeline->add(new TransformTag($this, $subscriber, $msgId));
+        $pipeline->add(new ReplaceBareLineFeed());
         return $pipeline->build()->process($this->subject);
     }
 
@@ -374,7 +374,7 @@ trait HasTemplate
         return "{$this->uid}-html";
     }
 
-    public function clearCache()
+    public function clearTemplateCache()
     {
         Cache::forget($this->getCachedHtmlId());
     }
@@ -393,6 +393,10 @@ trait HasTemplate
         $pipeline->add(new TransformTag($this, $subscriber, $msgId, $server));
         $pipeline->add(new InjectTrackingPixel($this, $msgId));
         $pipeline->add(new TransformUrl($this->template, $msgId, $this->trackingDomain));
+        $pipeline->add(new ReplaceBareLineFeed());
+
+        // ReplaceBareLineFeed should go into the base HTML content instead
+        // However, we need it here, as the last step, to make sure there is no bare LF produced
 
         // Actually push HTML to pipeline for processing
         $html = $pipeline->build()->process($baseHtml);
@@ -417,7 +421,6 @@ trait HasTemplate
             $pipeline = new PipelineBuilder();
             $pipeline->add(new AddDoctype());
             $pipeline->add(new RemoveTitleTag());
-            $pipeline->add(new ReplaceBareLineFeed());
             $pipeline->add(new AppendHtml($this->getHtmlFooter()));
             $pipeline->add(new ParseRss());
             $pipeline->add(new MakeInlineCss($this->template->findCssFiles()));
@@ -455,8 +458,8 @@ trait HasTemplate
     {
         $plain = $this->plain.$this->getPlainTextFooter();
         $pipeline = new PipelineBuilder();
-        $pipeline->add(new ReplaceBareLineFeed());
         $pipeline->add(new TransformTag($this, $subscriber, $msgId, $server));
+        $pipeline->add(new ReplaceBareLineFeed());
         $plain = $pipeline->build()->process($plain);
 
         return $plain;

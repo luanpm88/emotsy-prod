@@ -28,11 +28,13 @@
 	</script>
 </head>
 <body class="theme-{{ Auth::user()->customer->getColorScheme() }} {{ Auth::user()->customer->getMenuLayout() }}bar
-	{{ Auth::user()->customer->getMenuLayout() }}bar-{{ request()->session()->get('customer-leftbar-state') }}
+	{{ Auth::user()->customer->getMenuLayout() }}bar-{{ request()->session()->get('customer-leftbar-state') }} state-{{ request()->session()->get('customer-leftbar-state') }}
 	fullscreen-search-box
 	mode-{{ getThemeMode(Auth::user()->customer->theme_mode, request()->session()->get('customer-auto-theme-mode'))  }}
 ">
-	@if(config('app.brand'))
+	@if(config('app.cartpaye'))
+		@include('layouts.core._menu_frontend_cartpaye')
+	@elseif(config('app.brand'))
 		@include('layouts.core._menu_frontend_brand')
 	@elseif (!config('app.saas'))
 		@include('layouts.core._menu_single')

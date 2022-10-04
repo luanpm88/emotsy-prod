@@ -1,6 +1,6 @@
 <script>
     @if (
-        is_object(\Auth::user()->customer) &&
+        \Auth::user()->customer &&
         \Auth::user()->customer->getOption("sending_server_option") == \Acelle\Model\Plan::SENDING_SERVER_OPTION_OWN &&
         !\Auth::user()->customer->activeSendingServers()->count()
     )
@@ -13,8 +13,8 @@
         });
     @endif
 
-    @if (is_object(\Auth::user()->customer) &&
-        !is_object(\Auth::user()->customer->subscription)
+    @if (\Auth::user()->customer &&
+        !\Auth::user()->customer->subscription
     )
         notify({
             type: 'warning',

@@ -16,6 +16,7 @@
 				<optgroup label="{{ trans('messages.segment.activities') }}">
 					<option value="last_open_email">{{ trans('messages.segment.last_open_email') }}</option>
 					<option value="last_link_click">{{ trans('messages.segment.last_link_click') }}</option>
+					<option value="created_date">{{ trans('messages.segment.created_date') }}</option>
 				</optgroup>
 			</select>
 		</div>
@@ -24,7 +25,7 @@
 
 	</div>
 	<div class="col-md-1">
-		<a onclick="$(this).parents('.condition-line').remove()" href="#delete" class="btn bg-danger-400"><span class="material-icons-outlined">
+		<a onclick="$(this).parents('.condition-line').remove()" href="#delete" class="btn bg-danger-400"><span class="material-symbols-rounded">
 delete_outline
 </span></a>
 	</div>

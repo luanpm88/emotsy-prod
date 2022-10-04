@@ -15,6 +15,7 @@ class HomeController extends Controller
     public function index(Request $request)
     {
         event(new \Acelle\Events\UserUpdated($request->user()->customer));
+        $currentTimezone = $request->user()->customer->getTimezone();
 
         // Last month
         $customer = $request->user()->customer;
@@ -22,10 +23,15 @@ class HomeController extends Controller
         $sendingCreditsLimit = $customer->activeSubscription()->getCreditsLimit('send');
         $sendingCreditsUsedPercentage = $customer->activeSubscription()->getCreditsUsedPercentageDuringPlanCycle('send');
 
-        return view('dashboard', [
-            'sendingCreditsUsed' => $sendingCreditsUsed,
-            'sendingCreditsUsedPercentage' => $sendingCreditsUsedPercentage,
-            'sendingCreditsLimit' => $sendingCreditsLimit,
-        ]);
+        if (config('app.cartpaye')) {
+            return view('dashboard.cartpaye');
+        } else {
+            return view('dashboard', [
+                'sendingCreditsUsed' => $sendingCreditsUsed,
+                'sendingCreditsUsedPercentage' => $sendingCreditsUsedPercentage,
+                'sendingCreditsLimit' => $sendingCreditsLimit,
+                'currentTimezone' => $currentTimezone
+            ]);
+        }
     }
 }

@@ -1,4 +1,6 @@
-@extends('layouts.core.backend')
+@extends('layouts.core.backend', [
+    'menu' => 'dashboard',
+])
 
 @section('title', trans('messages.dashboard'))
 
@@ -15,13 +17,13 @@
 
     <div class="row mt-5">
         <div class="col-md-6">
-            <h4 class="text-semibold"><span class="material-icons-round me-2">
+            <h4 class="text-semibold"><span class="material-symbols-rounded me-2">
 people_outline
 </span> {{ trans('messages.customers_growth') }}</h4>
             @include('admin.customers._growth_chart')
         </div>
         <div class="col-md-6">
-            <h4 class="text-semibold"><i class="material-icons-outlined me-2">
+            <h4 class="text-semibold"><i class="material-symbols-rounded me-2">
 assignment_turned_in
 </i> {{ trans('messages.plans_chart') }}</h4>
             @include('admin.plans._pie_chart')
@@ -31,7 +33,7 @@ assignment_turned_in
     <div class="row mt-5">
         <div class="col-md-6">
             <h4 class="text-semibold">
-                <span class="material-icons-outlined me-2">
+                <span class="material-symbols-rounded me-2">
 assignment_turned_in
 </span>
                 {{ trans('messages.recent_subscriptions') }}
@@ -53,7 +55,7 @@ assignment_turned_in
                                             </a>
                                         </h6>
                                         <p class="mb-0">
-                                            <i class="material-icons-outlined me-1">
+                                            <i class="material-symbols-rounded me-1">
         person_outline
         </i>
                                             {{ $subscription->customer->user->displayName() }}
@@ -66,17 +68,17 @@ assignment_turned_in
                             <div class="col-sm-4 col-md-4 text-left">
                                 @if ($subscription->isEnded())
                                     <h5 class="no-margin stat-num">
-                                        <span class="kq_search">{{ Auth::user()->admin->formatDateTime($subscription->ends_at, 'date_full') }}</span>
+                                        <span class="kq_search">{{ Auth::user()->admin->formatDateTime($subscription->ends_at, 'datetime_full') }}</span>
                                     </h5>
                                     <span class="text-muted2">{{ trans('messages.subscription.ended_on') }}</span>
                                 @elseif ($subscription->isActive())
                                     <h5 class="no-margin stat-num">
-                                        <span class="kq_search">{{ Auth::user()->admin->formatDateTime($subscription->ends_at, 'date_full') }}</span>
+                                        <span class="kq_search">{{ Auth::user()->admin->formatDateTime($subscription->ends_at, 'datetime_full') }}</span>
                                     </h5>
                                     <span class="text-muted2">{{ trans('messages.subscription.ends_on') }}</span>
                                 @else
                                     <h5 class="no-margin stat-num">
-                                        <span class="kq_search">{{ Auth::user()->admin->formatDateTime($subscription->updated_at, 'date_full') }}</span>
+                                        <span class="kq_search">{{ Auth::user()->admin->formatDateTime($subscription->updated_at, 'datetime_full') }}</span>
                                     </h5>
                                     <span class="text-muted2">{{ trans('messages.subscription.updated_at') }}</span>
                                 @endif
@@ -97,7 +99,7 @@ assignment_turned_in
         </div>
         <div class="col-md-6">
             <h4 class="text-semibold">
-                <span class="material-icons-round me-2">
+                <span class="material-symbols-rounded me-2">
 people_outline
 </span>
                 {{ trans('messages.recent_customers') }}
@@ -127,7 +129,7 @@ people_outline
                             </div>
                             <div class="col-sm-4 col-md-4 text-end">
                                 <h6 class="no-margin text-semibold small">
-                                    {{ Auth::user()->admin->formatDateTime($customer->created_at, 'date_full') }}
+                                    {{ Auth::user()->admin->formatDateTime($customer->created_at, 'datetime_full') }}
                                 </h6>
                                 <span class="">{{ trans('messages.created_at') }}</span>
                             </div>
@@ -143,7 +145,7 @@ people_outline
     </div>
 
     <h4 class="text-semibold mt-5">
-        <span class="material-icons-outlined me-2">
+        <span class="material-symbols-rounded me-2">
 restore
 </span>
         {{ trans('messages.activities') }}
@@ -151,7 +153,7 @@ restore
     <p style="margin-bottom: 30px" class="link-inline">{!! trans('messages.admin.dashboard.recent_activity.wording', [ 'here' => action('Admin\CustomerController@index') ]) !!}</p>
     @if (\Auth::user()->admin->getLogs()->count() == 0)
         <div class="empty-list">
-            <span class="material-icons-outlined me-2">
+            <span class="material-symbols-rounded me-2">
 history_toggle_off
 </span>
             <span class="line-1">
@@ -175,11 +177,11 @@ history_toggle_off
                                     <div class="d-flex align-items-center pt-1">
                                         <label class="panel-title text-semibold my-0 fw-600">{{ $log->customer->user->displayName() }}</label>
                                         <div class="d-flex align-items-center ms-auto text-muted">
-                                            <span style="font-size: 18px" class="material-icons-outlined ms-auto me-2">
+                                            <span style="font-size: 18px" class="material-symbols-rounded ms-auto me-2">
                                                 history
                                             </span>
                                             <div class="">
-                                                <span class="heading-text"><i class="icon-history position-left text-success"></i> {{ Tool::dateTime($log->created_at)->diffForHumans() }}</span>
+                                                <span class="heading-text"><i class="icon-history position-left text-success"></i> {{ $log->created_at->timezone($currentTimezone)->diffForHumans() }}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -195,7 +197,7 @@ history_toggle_off
     @endif
 
     <div class="sub-section mb-4 mt-5" style="margin-top: 60px">
-        <h4 class="text-semibold mt-5"><span class="material-icons-outlined me-2">
+        <h4 class="text-semibold mt-5"><span class="material-symbols-rounded me-2">
             running_with_errors
             </span> {{ trans('messages.resources_statistics') }}</h4>
         <p>{{ trans('messages.resources_statistics_intro') }}</p>
@@ -204,7 +206,7 @@ history_toggle_off
                 <ul class="dotted-list topborder section">
                     <li>
                         <div class="unit size1of2">
-                            <strong><span class="material-icons-round me-2">
+                            <strong><span class="material-symbols-rounded me-2">
 people_outline
 </span> {{ trans('messages.customers') }}</strong>
                         </div>
@@ -214,7 +216,7 @@ people_outline
                     </li>
                     <li class="selfclear">
                         <div class="unit size1of2">
-                            <strong><span class="material-icons-outlined me-2">
+                            <strong><span class="material-symbols-rounded me-2">
 assignment_turned_in
 </span> {{ trans('messages.subscriptions') }}</strong>
                         </div>
@@ -224,7 +226,7 @@ assignment_turned_in
                     </li>
                     <li class="selfclear">
                         <div class="unit size1of2">
-                            <strong><i class="material-icons-outlined me-2">
+                            <strong><i class="material-symbols-rounded me-2">
 assignment_turned_in
 </i> {{ trans('messages.plans') }}</strong>
                         </div>
@@ -234,7 +236,7 @@ assignment_turned_in
                     </li>
                     <li>
                         <div class="unit size1of2">
-                            <strong><span class="material-icons-outlined me-2">
+                            <strong><span class="material-symbols-rounded me-2">
 contact_mail
 </span> {{ trans('messages.lists') }}</strong>
                         </div>
@@ -244,7 +246,7 @@ contact_mail
                     </li>
                     <li>
                         <div class="unit size1of2">
-                            <strong><span class="material-icons-round me-2">
+                            <strong><span class="material-symbols-rounded me-2">
 people_outline
 </span> {{ trans('messages.subscribers') }}</strong>
                         </div>
@@ -258,7 +260,7 @@ people_outline
                 <ul class="dotted-list topborder section">
                     <li>
                         <div class="unit size1of2">
-                            <strong><span class="material-icons-outlined me-2">
+                            <strong><span class="material-symbols-rounded me-2">
 manage_accounts
 </span> {{ trans('messages.admins') }}</strong>
                         </div>
@@ -268,7 +270,7 @@ manage_accounts
                     </li>
                     <li class="selfclear">
                         <div class="unit size1of2">
-                            <strong><span class="material-icons-outlined me-2">
+                            <strong><span class="material-symbols-rounded me-2">
 people
 </span> {{ trans('messages.admin_groups') }}</strong>
                         </div>
@@ -278,7 +280,7 @@ people
                     </li>
                     <li class="selfclear">
                         <div class="unit size1of2">
-                            <strong><span class="material-icons-outlined me-2">
+                            <strong><span class="material-symbols-rounded me-2">
 dns
 </span> {{ trans('messages.sending_servers') }}</strong>
                         </div>
@@ -288,7 +290,7 @@ dns
                     </li>
                     <li>
                         <div class="unit size1of2">
-                            <strong><span class="material-icons-outlined me-2">
+                            <strong><span class="material-symbols-rounded me-2">
 public
 </span> {{ trans('messages.sending_domains') }}</strong>
                         </div>
@@ -298,7 +300,7 @@ public
                     </li>
                     <li>
                         <div class="unit size1of2">
-                            <strong><span class="material-icons-outlined me-2">
+                            <strong><span class="material-symbols-rounded me-2">
 forward_to_inbox
 </span> {{ trans('messages.campaigns') }}</strong>
                         </div>
@@ -308,7 +310,7 @@ forward_to_inbox
                     </li>
                     <li>
                         <div class="unit size1of2">
-                            <strong><span class="material-icons-outlined me-2">
+                            <strong><span class="material-symbols-rounded me-2">
 schedule
 </span> {{ trans('messages.automations') }}</strong>
                         </div>

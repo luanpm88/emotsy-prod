@@ -1,4 +1,6 @@
-@extends('layouts.core.frontend')
+@extends('layouts.core.frontend', [
+    'menu' => 'campaign',
+])
 
 @section('title', $campaign->name)
 
@@ -10,7 +12,9 @@
 
 @section('content')
                 
-    @include("campaigns._menu")
+    @include("campaigns._menu", [
+        'menu' => 'links',
+    ])
 
     <h3 class="mt-10"><span class="text-teal text-semibold">{{ count($campaign->getLinks()) }}</span> {{ trans('messages.links') }}</h3>
     
@@ -38,7 +42,7 @@
     </table>
     <br />
     <div class="text-end">
-        <a href="{{ action('CampaignController@clickLog', $campaign->uid) }}" class="btn btn-info bg-teal-600">{{ trans('messages.click_log') }} <span class="material-icons-round">
+        <a href="{{ action('CampaignController@clickLog', $campaign->uid) }}" class="btn btn-info bg-teal-600">{{ trans('messages.click_log') }} <span class="material-symbols-rounded">
 arrow_forward
 </span></a>
     </div>

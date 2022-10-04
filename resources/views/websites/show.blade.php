@@ -1,4 +1,6 @@
-@extends('layouts.core.frontend')
+@extends('layouts.core.frontend', [
+	'menu' => 'website',
+])
 
 @section('title', trans('messages.campaigns'))
 
@@ -85,7 +87,7 @@
                 'uids' => [$website->uid],
             ]) }}"
                 role="button" class="btn btn-secondary disconnect-site">
-                <span class="material-icons-outlined me-1">
+                <span class="material-symbols-rounded me-1">
                     pause_circle
                     </span> {{ trans('messages.website.disconnect') }}
             </a>
@@ -93,7 +95,7 @@
         @if (Auth::user()->customer->can('connect', $website))
             <a href="{{ action('WebsiteController@connect', $website->uid) }}"
                 role="button" class="btn btn-primary connect-site">
-                <span class="material-icons-outlined me-1">
+                <span class="material-symbols-rounded me-1">
                     pause_circle
                     </span> {{ trans('messages.website.check_connection') }}
             </a>

@@ -19,7 +19,7 @@
 		@foreach ($senders as $key => $sender)
 			<tr>
 				<td width="1%">
-					<div class="checkbox inline">
+					<div class="checkbox inline me-1">
 						<label>
 							<input type="checkbox" class="node styled"
 								name="uids[]"
@@ -41,7 +41,7 @@
 					<span class="text-muted second-line-mobile">{{ trans('messages.email') }}</span>
 				</td>
 				<td>
-					<span class="no-margin kq_search">{{ Auth::user()->customer->formatDateTime($sender->created_at, 'date_full') }}</span>
+					<span class="no-margin kq_search">{{ Auth::user()->customer->formatDateTime($sender->created_at, 'datetime_full') }}</span>
 					<span class="text-muted second-line-mobile">{{ trans('messages.created_at') }}</span>
 				</td>
 				<td>
@@ -65,7 +65,7 @@
 									<a class="dropdown-item list-action-single" link-confirm="{{ trans('messages.sender.delete.confirm') }}"
 										href="{{ action('SenderController@delete', ["uids" => $sender->uid]) }}"
 									>
-										<span class="material-icons-outlined">
+										<span class="material-symbols-rounded">
 delete_outline
 </span> {{ trans('messages.delete') }}
 									</a>
@@ -81,7 +81,7 @@ delete_outline
 	
 @elseif (!empty(request()->keyword) || !empty(request()->filters["campaign_uid"]))
 	<div class="empty-list">
-		<span class="material-icons-outlined">
+		<span class="material-symbols-rounded">
 people_alt
 </span>
 		<span class="line-1">
@@ -90,7 +90,7 @@ people_alt
 	</div>
 @else
 	<div class="empty-list">
-		<span class="material-icons-outlined">
+		<span class="material-symbols-rounded">
 people_alt
 </span>
 		<span class="line-1">

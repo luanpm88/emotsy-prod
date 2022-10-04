@@ -37,7 +37,7 @@
                 </td>
                 <td>
                     <div class="single-stat-box pull-left ml-20">
-                        <span class="no-margin stat-num kq_search">{{ Auth::user()->admin->formatDateTime($account->created_at, 'date_full') }}</span>
+                        <span class="no-margin stat-num kq_search">{{ Auth::user()->admin->formatDateTime($account->created_at, 'datetime_full') }}</span>
                         <br />
                         <span class="text-muted">{{ trans('messages.created_at') }}</span>
                     </div>
@@ -61,7 +61,7 @@
     
 @elseif (!empty(request()->keyword) || !empty(request()->filters["type"]))
     <div class="empty-list">
-        <span class="material-icons-outlined">
+        <span class="material-symbols-rounded">
 approval
 </span>
         <span class="line-1">
@@ -70,7 +70,7 @@ approval
     </div>
 @else
     <div class="empty-list">
-        <span class="material-icons-outlined">
+        <span class="material-symbols-rounded">
 approval
 </span>
         <span class="line-1">

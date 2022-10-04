@@ -24,10 +24,12 @@ namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use Acelle\Library\Traits\HasUid;
+use Acelle\Library\Traits\HasCache;
 
 class Segment extends Model
 {
     use HasUid;
+    use HasCache;
 
     /**
      * The attributes that are mass assignable.
@@ -153,6 +155,20 @@ class Segment extends Model
     }
 
     /**
+     * Get created date operators.
+     *
+     * @return options
+     */
+    public static function createdDateOperators()
+    {
+        return [
+            ['text' => trans('messages.greater_than'), 'value' => 'created_date_greater'],
+            ['text' => trans('messages.less_than'), 'value' => 'created_date_less'],
+            ['text' => trans('messages.last_x_days'), 'value' => 'created_date_last_x_days'],
+        ];
+    }
+
+    /**
      * Get verification operators.
      *
      * @return options
@@ -233,7 +249,7 @@ class Segment extends Model
                         $cond = 'LOWER(sf'.$number.'.value) LIKE '.db_quote('%'.$keyword.'%');
                         break;
                     case 'not_contains':
-                        $cond = 'LOWER(sf'.$number.'.value) NOT LIKE '.db_quote('%'.$keyword.'%');
+                        $cond = '(LOWER(sf'.$number.'.value) NOT LIKE '.db_quote('%'.$keyword.'%').' OR sf'.$number.'.value IS NULL)';
                         break;
                     case 'starts':
                         $cond = 'LOWER(sf'.$number.'.value) LIKE '.db_quote('%'.$keyword.'%');
@@ -316,6 +332,18 @@ class Segment extends Model
                     case 'last_link_click_greater_than_days':
                         // IMPORTANT: LEFT JOIN HERE
                         $conditions[] = sprintf('(%s IN (SELECT s.id FROM %s s LEFT JOIN %s l ON s.id = l.subscriber_id LEFT JOIN %s o ON l.message_id = o.message_id WHERE DATEDIFF(now(), o.created_at) > %s OR o.created_at IS NULL))', table('subscribers.id'), table('subscribers'), table('tracking_logs'), table('click_logs'), db_quote($keyword));
+                        break;
+                    case 'created_date_greater':
+                        $ts = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $condition->value, "UTC")->timestamp;
+                        $conditions[] = '(UNIX_TIMESTAMP('.\DB::getTablePrefix().'subscribers.created_at) > '.$ts.')';
+                        break;
+                    case 'created_date_less':
+                        $ts = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $condition->value, "UTC")->timestamp;
+                        $conditions[] = '(UNIX_TIMESTAMP('.\DB::getTablePrefix().'subscribers.created_at) < '.$ts.')';
+                        break;
+                    case 'created_date_last_x_days':
+                        $ts = \Carbon\Carbon::now()->subDays($condition->value)->timestamp;
+                        $conditions[] = '(UNIX_TIMESTAMP('.\DB::getTablePrefix().'subscribers.created_at) >= '.$ts.')';
                         break;
                     default:
                         throw new \Exception("Unknown segment condition type (operator): ".$condition->operator);
@@ -421,56 +449,42 @@ class Segment extends Model
     /**
      * Update segment cached data.
      */
-    public function updateCache($key = null)
+    public function getCacheIndex()
     {
         // cache indexes
-        $index = [
-            'SubscriberCount' => function (&$segment) {
-                return $segment->subscribersCount(false);
+        return [
+            'SubscriberCount' => function () {
+                return $this->subscribersCount(false);
             },
         ];
-
-        // retrieve cached data
-        $cache = json_decode($this->cache, true);
-        if (is_null($cache)) {
-            $cache = [];
-        }
-
-        if (is_null($key)) {
-            // update all cache
-            foreach ($index as $key => $callback) {
-                $cache[$key] = $callback($this);
-            }
-        } else {
-            // update specific key
-            $callback = $index[$key];
-            $cache[$key] = $callback($this);
-        }
-
-        // write back to the DB
-        $this->cache = json_encode($cache);
-        $this->save();
     }
 
-    /**
-     * Retrieve Campaign cached data.
-     *
-     * @return mixed
-     */
-    public function readCache($key, $default = null)
+    public function updateConditions($conditions)
     {
-        $cache = json_decode($this->cache, true);
-        if (is_null($cache)) {
-            return $default;
+        if ($this->id) {
+            $this->segmentConditions()->delete();
         }
-        if (array_key_exists($key, $cache)) {
-            if (is_null($cache[$key])) {
-                return $default;
-            } else {
-                return $cache[$key];
+        foreach ($conditions as $key => $param) {
+            $condition = new \Acelle\Model\SegmentCondition();
+            $condition->fill($param);
+
+            if (strpos($condition->operator, 'created_date') === 0 && $condition->operator !== 'created_date_last_x_days') {
+                $zone = $this->mailList->customer->getTimezone();
+                $date = \Carbon\Carbon::createFromFormat('Y-m-d, H:i', $condition->value, $zone);
+                $date->setTimezone('UTC');
+
+                $condition->value = $date->toDateTimeString();
             }
-        } else {
-            return $default;
+
+            $condition->segment_id = $this->id;
+            $field = \Acelle\Model\Field::findByUid($param['field_id']);
+            if ($field) {
+                $condition->field_id = $field->id;
+            } else {
+                $condition->field_id = null;
+            }
+
+            $condition->save();
         }
     }
 }

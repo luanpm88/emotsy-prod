@@ -1,4 +1,6 @@
-@extends('layouts.core.backend')
+@extends('layouts.core.backend', [
+    'menu' => 'payment',
+])
 
 @section('title', trans('messages.payment_gateways'))
 
@@ -9,7 +11,9 @@
             <li class="breadcrumb-item"><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
         </ul>
         <h1>
-            <span class="text-semibold"><i class="icon-credit-card2"></i> {{ trans('messages.payment_gateways') }}</span>
+            <span class="text-semibold"><span class="material-symbols-rounded">
+payments
+</span> {{ trans('messages.payment_gateways') }}</span>
         </h1>
     </div>
 
@@ -88,6 +92,17 @@
                             'help_class' => 'setting',
                             'options' => ['no', 'yes'],
                             'rules' => ['renew_free_plan' => 'required'],
+                        ])
+                    </div>
+                    <div class="form-group checkbox-right-switch">
+                        @include('helpers.form_control', [
+                            'type' => 'checkbox',
+                            'name' => 'allowed_due_subscription',
+                            'value' => \Acelle\Model\Setting::get('allowed_due_subscription'),
+                            'label' => trans('messages.setting.allowed_due_subscription'),
+                            'help_class' => 'setting',
+                            'options' => ['no', 'yes'],
+                            'rules' => ['allowed_due_subscription' => 'required'],
                         ])
                     </div>
                 </div>

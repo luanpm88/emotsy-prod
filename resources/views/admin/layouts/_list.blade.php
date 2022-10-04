@@ -5,7 +5,7 @@
         @foreach ($items as $key => $item)
             <tr>
                 <td width="1%">
-                    <i class="material-icons-outlined fs-3 me-2 text-muted">{{ $item->type == 'page' ? "web" : "email" }}</i>
+                    <i class="material-symbols-rounded fs-3 me-2 text-muted">{{ $item->type == 'page' ? "web" : "email" }}</i>
                 </td>
                 <td>
                     <h5 class="m-0 text-bold">
@@ -13,7 +13,7 @@
                             {{ trans('messages.' . $item->alias) }}
                         </a>
                     </h5>
-                    <p>{{ $item->group_name }}</p>
+                    <p class="mb-0">{{ $item->group_name }}</p>
                 </td>
                 <td>
                     <div class="single-stat-box pull-left">
@@ -31,7 +31,7 @@
                 </td>
                 <td class="text-end">
                     @can('update', $item)
-                        <a href="{{ action('Admin\LayoutController@edit', $item->uid) }}" role="button" class="btn btn-secondary btn-icon"> <span class="material-icons-outlined">
+                        <a href="{{ action('Admin\LayoutController@edit', $item->uid) }}" role="button" class="btn btn-secondary btn-icon"> <span class="material-symbols-rounded">
 edit
 </span> {{ trans('messages.edit') }}</a>
                     @endcan

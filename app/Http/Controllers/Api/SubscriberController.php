@@ -4,7 +4,6 @@ namespace Acelle\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use Acelle\Http\Controllers\Controller;
-use Acelle\Library\Log as MailLog;
 use Illuminate\Support\Facades\Log;
 use Acelle\Events\MailListSubscription;
 use Acelle\Model\Setting;
@@ -32,12 +31,12 @@ class SubscriberController extends Controller
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
 
         // authorize
-        if (!is_object($list)) {
+        if (!$list) {
             return \Response::json(array('message' => trans('List not found')), 400);
         }
         // authorize
         if (!$user->can('read', $list)) {
-            return \Response::json(array('message' => 'Unauthorized'), 401);
+            return \Response::json(array('message' => 'You\'re not authorized to access this resources'), 401);
         }
         if (isset($request->per_page)) {
             $per_page = $request->per_page;
@@ -86,8 +85,12 @@ class SubscriberController extends Controller
             $list = MailList::findByUid($request->list_uid);
 
             // authorize
-            if (!is_object($list)) {
+            if (!$list) {
                 return \Response::json(array('message' => trans('List not found')), 400);
+            }
+
+            if (!$user->can('update', [ $list, $more = 1 ])) {
+                return response()->json(['message' => 'Unauthorized!'], 401);
             }
 
             if (!$user->can('addMoreSubscribers', [ $list, $more = 1 ])) {
@@ -131,14 +134,13 @@ class SubscriberController extends Controller
     {
         $user = \Auth::guard('api')->user();
 
-        $item = \Acelle\Model\Subscriber::
-            where('uid', '=', $uid)
+        $item = \Acelle\Model\Subscriber::where('uid', '=', $uid)
             ->first();
 
         $list = $item->mailList;
 
         // check if item exists
-        if (!is_object($item)) {
+        if (!$item) {
             return \Response::json(array('message' => 'Subscriber not found'), 404);
         }
 
@@ -176,13 +178,13 @@ class SubscriberController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function subscribe($uid)
+    public function subscribe($list_uid, $uid)
     {
         $user = \Auth::guard('api')->user();
         $subscriber = \Acelle\Model\Subscriber::findByUid($uid);
 
         // check if item exists
-        if (!is_object($subscriber)) {
+        if (!$subscriber) {
             return \Response::json(array('status' => 0, 'message' => 'Subscriber not found'), 404);
         }
 
@@ -228,13 +230,13 @@ class SubscriberController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function unsubscribe($uid)
+    public function unsubscribe($list_uid, $uid)
     {
         $user = \Auth::guard('api')->user();
         $subscriber = \Acelle\Model\Subscriber::findByUid($uid);
 
         // check if item exists
-        if (!is_object($subscriber)) {
+        if (!$subscriber) {
             return \Response::json(array('status' => 0, 'message' => 'Subscriber not found'), 404);
         }
 
@@ -287,14 +289,14 @@ class SubscriberController extends Controller
         $subscriber = \Acelle\Model\Subscriber::findByUid($uid);
 
         // check if item exists
-        if (!is_object($subscriber)) {
+        if (!$subscriber) {
             return \Response::json(array('status' => 0, 'message' => 'Subscriber not found'), 404);
         }
 
         $list = $subscriber->mailList;
 
         // check if item exists
-        if (!is_object($subscriber)) {
+        if (!$subscriber) {
             return \Response::json(array('status' => 0, 'message' => 'Subscriber not found'), 404);
         }
 
@@ -338,7 +340,6 @@ class SubscriberController extends Controller
 
         $rows = [];
         foreach ($subscribers as $subscriber) {
-
             // authorize
             if ($user->can('read', $subscriber)) {
                 // subscriber

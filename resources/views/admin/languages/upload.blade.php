@@ -1,4 +1,6 @@
-@extends('layouts.core.backend')
+@extends('layouts.core.backend', [
+    'menu' => 'language',
+])
 
 @section('title', trans('messages.upload_template'))
 
@@ -10,7 +12,7 @@
 					<li class="breadcrumb-item"><a href="{{ action("Admin\TemplateController@index") }}">{{ trans('messages.language') }}</a></li>
 				</ul>
 				<h1>
-					<span class="text-semibold"><span class="material-icons-outlined">
+					<span class="text-semibold"><span class="material-symbols-rounded">
 file_upload
 </span> {{ trans('messages.upload_language') }}</span>
 				</h1>				

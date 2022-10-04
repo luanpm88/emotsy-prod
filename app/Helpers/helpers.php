@@ -148,6 +148,23 @@ function array_unique_by($array, $callback)
     return array_values($result);
 }
 
+function get_localization_config($name, $locale)
+{
+    $defaultConfig = config('localization')['*'];
+
+    if (array_key_exists($locale, config('localization'))) {
+        $config = config('localization')[$locale];
+    }
+
+    if (isset($config) && array_key_exists($name, $config) && array_key_exists($name, $defaultConfig)) {
+        return $config[$name];
+    } elseif (array_key_exists($name, $defaultConfig)) {
+        return $defaultConfig[$name];
+    } else {
+        throw new \Exception('Localization config for "'.$name.'" does not exist');
+    }
+}
+
 function get_datetime_format($name, $locale)
 {
     $defaultConfig = config('localization')['*'];
@@ -204,39 +221,6 @@ function exec_enabled()
     }
 }
 
-function reset_app_url($force = false)
-{ // replace if already exists
-    // update .env file, set app_url to current host url
-
-    // get .env file path
-    $path = base_path('.env');
-    $raw = preg_split('/[\r\n]+/', file_get_contents($path));
-
-    // read from .env, load into $settings as [ key1 => value1, key2 => value2, etc. ]
-    $settings = [];
-    foreach ($raw as $e) {
-        preg_match('/^(?<key>[A-Z0-9_]+)=(?<value>.*)/', $e, $matched);
-
-        if (array_key_exists('key', $matched) && array_key_exists('value', $matched)) {
-            $settings[$matched['key']] = $matched['value'];
-        }
-    }
-
-    // add APP_URL setting if not exists
-    if (!array_key_exists('APP_URL', $settings)) {
-        $settings['APP_URL'] = url('/');
-    } elseif ($force) {
-        $settings['APP_URL'] = url('/');
-    }
-
-    // Write back to .env file
-    $file = fopen($path, 'w');
-    foreach ($settings as $key => $value) {
-        fwrite($file, "{$key}=$value\n");
-    }
-    fclose($file);
-}
-
 /**
  * Run artisan migrate.
  *
@@ -271,7 +255,7 @@ function language_code()
         $language_code = $_COOKIE['last_language_code'];
     } elseif (app()->getLocale()) {
         $language_code = app()->getLocale();
-    } elseif (is_object($default_language)) {
+    } elseif ($default_language) {
         $language_code = $default_language->code;
     } else {
         $language_code = 'en';
@@ -309,13 +293,32 @@ function number_to_percentage($number, $precision = 2)
  *
  * @return string
  */
-function number_with_delimiter($number, $precision = 0, $seperator = ',')
+function number_with_delimiter($number, $precision = null, $seperator = null, $locale = null)
 {
     if (!is_numeric($number)) {
         return $number;
     }
 
-    return number_format($number, $precision, '.', $seperator);
+    if (is_null($locale)) {
+        $locale = config('app.locale');
+    }
+
+    // Trick!
+    if (floor($number) == $number && is_null($precision)) {
+        $precision = 0;
+    }
+
+    if (is_null($precision)) {
+        $precision = get_localization_config('number_precision', $locale);
+    }
+
+    $decimal = get_localization_config('number_decimal_separator', $locale);
+
+    if (is_null($seperator)) {
+        $seperator = get_localization_config('number_thousands_separator', $locale);
+    }
+
+    return number_format($number, $precision, $decimal, $seperator);
 }
 
 /**
@@ -464,31 +467,14 @@ function doublequote($str)
  *
  * @return string
  */
-function format_number($number)
-{
-    if (is_numeric($number) && floor($number) != $number) {
-        return number_format($number, 2, trans('messages.dec_point'), trans('messages.thousands_sep'));
-    } elseif (is_numeric($number)) {
-        return number_format($number, 0, trans('messages.dec_point'), trans('messages.thousands_sep'));
-    } else {
-        return $number;
-    }
-}
-/**
- * Format price.
- *
- * @param string
- *
- * @return string
- */
 function format_price($price, $format = '{PRICE}', $html=false)
 {
     if ($html) {
-        $html = str_replace('{PRICE}', ' <span class="p-amount">' . format_number($price) . '</span> ', $format);
-        // $html = str_replace(format_number($price), ' <span class="p-amount">' . format_number($price) . '</span> ', $html);
+        $html = str_replace('{PRICE}', ' <span class="p-amount">' . number_with_delimiter($price) . '</span> ', $format);
+        // $html = str_replace(number_with_delimiter($price), ' <span class="p-amount">' . number_with_delimiter($price) . '</span> ', $html);
         return $html;
     } else {
-        return str_replace('{PRICE}', format_number($price), $format);
+        return str_replace('{PRICE}', number_with_delimiter($price), $format);
     }
 }
 
@@ -610,34 +596,6 @@ function strip_tags_only($text, $allowedTags = [])
     return $text;
 }
 
-/**
- * Get controller action name
- **/
-function controllerAction()
-{
-    // GET FROM SCREEN OPTION
-    $controller = explode('\\', request()->route()->getAction()['controller']);
-    return $controller[count($controller)-1];
-}
-
-/**
- * Get controller name
- **/
-function controllerName()
-{
-    $controllerAction = controllerAction();
-    return explode('@', $controllerAction)[0];
-}
-
-/**
- * Get action name
- **/
-function actionName()
-{
-    $controllerAction = controllerAction();
-    return explode('@', $controllerAction)[1];
-}
-
 /*
  *  Iterate through a Eloquent $query using cursor paginate
  *  The $orderBy parameter is critically required for a cursor pagination
@@ -677,27 +635,6 @@ function makeInlineCss($html, array $cssFiles)
     }
 
     return $htmldoc->getHTML();
-}
-
-function putPermanentEnv($arr = [])
-{
-    $path = app()->environmentFilePath();
-    $config = file_get_contents($path);
-
-    foreach ($arr as $key => $value) {
-        $config = preg_replace(
-            "/^{$key}\=.*/m",
-            "{$key}='{$value}'",
-            $config
-        );
-
-        // if not exist
-        if (strpos($config, $key) === false) {
-            $config = $config . "\n" . $key . '=' . $value;
-        }
-    }
-
-    file_put_contents($path, $config);
 }
 
 //resize and crop image by center
@@ -827,6 +764,28 @@ function filterSearchArray($items, $keyword)
     return $results;
 }
 
+function getPeriodEndsAt($startDate, $amount, $unit)
+{
+    switch ($unit) {
+        case 'month':
+            $endsAt = $startDate->addMonthsNoOverflow($amount);
+            break;
+        case 'day':
+            $endsAt = $startDate->addDay($amount);
+            break;
+        case 'week':
+            $endsAt = $startDate->addWeek($amount);
+            break;
+        case 'year':
+            $endsAt = $startDate->addYearsNoOverflow($amount);
+            break;
+        default:
+            throw new \Exception('Invalid time period unit: ' . $unit);
+    }
+
+    return $endsAt;
+}
+
 function getThemeColor($theme = false)
 {
     $colors = [
@@ -857,6 +816,23 @@ function getThemeMode($mode, $auto='light')
     }
 
     return $themeMode;
+}
+
+function getLogoMode($mode, $scheme, $daylight='light')
+{
+    if ($scheme !== 'white') {
+        return 'light';
+    }
+
+    if ($mode == 'auto' && ($daylight == 'light' || $daylight == null)) {
+        return 'dark';
+    }
+
+    if ($mode == 'light') {
+        return 'dark';
+    }
+
+    return 'light';
 }
 
 function parseRss($config)
@@ -963,4 +939,277 @@ function rssTags()
             '@item_image_url',
         ],
     ];
+}
+
+function getFullCodeByLanguageCode($languageCode)
+{
+    $locales = array(
+        'af-ZA',
+        'am-ET',
+        'ar-AE',
+        'ar-BH',
+        'ar-DZ',
+        'ar-EG',
+        'ar-IQ',
+        'ar-JO',
+        'ar-KW',
+        'ar-LB',
+        'ar-LY',
+        'ar-MA',
+        'arn-CL',
+        'ar-OM',
+        'ar-QA',
+        'ar-SA',
+        'ar-SY',
+        'ar-TN',
+        'ar-YE',
+        'as-IN',
+        'az-Cyrl-AZ',
+        'az-Latn-AZ',
+        'ba-RU',
+        'be-BY',
+        'bg-BG',
+        'bn-BD',
+        'bn-IN',
+        'bo-CN',
+        'br-FR',
+        'bs-Cyrl-BA',
+        'bs-Latn-BA',
+        'ca-ES',
+        'co-FR',
+        'cs-CZ',
+        'cy-GB',
+        'da-DK',
+        'de-AT',
+        'de-CH',
+        'de-DE',
+        'de-LI',
+        'de-LU',
+        'dsb-DE',
+        'dv-MV',
+        'el-GR',
+        'en-US',
+        'en-029',
+        'en-AU',
+        'en-BZ',
+        'en-CA',
+        'en-GB',
+        'en-IE',
+        'en-IN',
+        'en-JM',
+        'en-MY',
+        'en-NZ',
+        'en-PH',
+        'en-SG',
+        'en-TT',
+        'en-ZA',
+        'en-ZW',
+        'es-AR',
+        'es-BO',
+        'es-CL',
+        'es-CO',
+        'es-CR',
+        'es-DO',
+        'es-EC',
+        'es-ES',
+        'es-GT',
+        'es-HN',
+        'es-MX',
+        'es-NI',
+        'es-PA',
+        'es-PE',
+        'es-PR',
+        'es-PY',
+        'es-SV',
+        'es-US',
+        'es-UY',
+        'es-VE',
+        'et-EE',
+        'eu-ES',
+        'fa-IR',
+        'fi-FI',
+        'fil-PH',
+        'fo-FO',
+        'fr-BE',
+        'fr-CA',
+        'fr-CH',
+        'fr-FR',
+        'fr-LU',
+        'fr-MC',
+        'fy-NL',
+        'ga-IE',
+        'gd-GB',
+        'gl-ES',
+        'gsw-FR',
+        'gu-IN',
+        'ha-Latn-NG',
+        'he-IL',
+        'hi-IN',
+        'hr-BA',
+        'hr-HR',
+        'hsb-DE',
+        'hu-HU',
+        'hy-AM',
+        'id-ID',
+        'ig-NG',
+        'ii-CN',
+        'is-IS',
+        'it-CH',
+        'it-IT',
+        'iu-Cans-CA',
+        'iu-Latn-CA',
+        'ja-JP',
+        'ka-GE',
+        'kk-KZ',
+        'kl-GL',
+        'km-KH',
+        'kn-IN',
+        'kok-IN',
+        'ko-KR',
+        'ky-KG',
+        'lb-LU',
+        'lo-LA',
+        'lt-LT',
+        'lv-LV',
+        'mi-NZ',
+        'mk-MK',
+        'ml-IN',
+        'mn-MN',
+        'mn-Mong-CN',
+        'moh-CA',
+        'mr-IN',
+        'ms-BN',
+        'ms-MY',
+        'mt-MT',
+        'nb-NO',
+        'ne-NP',
+        'nl-BE',
+        'nl-NL',
+        'nn-NO',
+        'nso-ZA',
+        'oc-FR',
+        'or-IN',
+        'pa-IN',
+        'pl-PL',
+        'prs-AF',
+        'ps-AF',
+        'pt-BR',
+        'pt-PT',
+        'qut-GT',
+        'quz-BO',
+        'quz-EC',
+        'quz-PE',
+        'rm-CH',
+        'ro-RO',
+        'ru-RU',
+        'rw-RW',
+        'sah-RU',
+        'sa-IN',
+        'se-FI',
+        'se-NO',
+        'se-SE',
+        'si-LK',
+        'sk-SK',
+        'sl-SI',
+        'sma-NO',
+        'sma-SE',
+        'smj-NO',
+        'smj-SE',
+        'smn-FI',
+        'sms-FI',
+        'sq-AL',
+        'sr-Cyrl-BA',
+        'sr-Cyrl-CS',
+        'sr-Cyrl-ME',
+        'sr-Cyrl-RS',
+        'sr-Latn-BA',
+        'sr-Latn-CS',
+        'sr-Latn-ME',
+        'sr-Latn-RS',
+        'sv-FI',
+        'sv-SE',
+        'sw-KE',
+        'syr-SY',
+        'ta-IN',
+        'te-IN',
+        'tg-Cyrl-TJ',
+        'th-TH',
+        'tk-TM',
+        'tn-ZA',
+        'tr-TR',
+        'tt-RU',
+        'tzm-Latn-DZ',
+        'ug-CN',
+        'uk-UA',
+        'ur-PK',
+        'uz-Cyrl-UZ',
+        'uz-Latn-UZ',
+        'vi-VN',
+        'wo-SN',
+        'xh-ZA',
+        'yo-NG',
+        'zh-CN',
+        'zh-HK',
+        'zh-MO',
+        'zh-SG',
+        'zh-TW',
+        'zu-ZA',
+    );
+
+    foreach ($locales as $locale) {
+        if ($languageCode . '-' . strtoupper($languageCode) === $locale) {
+            return $locale;
+        }
+    }
+
+    foreach ($locales as $locale) {
+        if (strpos($locale, $languageCode) === 0) {
+            return $locale;
+        }
+    }
+
+    return null;
+}
+
+function getSiteLogoUrl($type='light')
+{
+    if (!isInitiated()) {
+        return URL::asset('images/logo_light.svg');
+    }
+
+    switch($type) {
+        case 'light':
+            $logo = \Acelle\Model\Setting::get('site_logo_light');
+            break;
+        case 'dark':
+            $logo = \Acelle\Model\Setting::get('site_logo_dark');
+            break;
+        case 'pdf':
+            $logo = \Acelle\Model\Setting::get('site_logo_dark');
+            break;
+    }
+
+    // light is default logo
+    $lightLogo = \Acelle\Model\Setting::get('site_logo_light');
+
+    if ($logo) {
+        $url = action('SettingController@file', $logo);
+    } elseif ($lightLogo) {
+        $url = action('SettingController@file', $lightLogo);
+    } else {
+        // default logo
+        switch($type) {
+            case 'light':
+                $url = URL::asset('images/logo_light.svg');
+                break;
+            case 'dark':
+                $url = URL::asset('images/logo_dark.svg');
+                break;
+            case 'pdf':
+                $url = URL::asset('images/logo_dark.svg');
+                break;
+        }
+    }
+
+    return $url;
 }

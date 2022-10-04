@@ -1,4 +1,6 @@
-@extends('layouts.core.frontend')
+@extends('layouts.core.frontend', [
+	'menu' => 'list',
+])
 
 @section('title', $list->name . ": " . trans('messages.update_page', ['name' => trans('messages.' . $layout->alias)]))
 
@@ -15,7 +17,9 @@
 
 @section('content')
 
-				@include("lists._menu")
+				@include("lists._menu", [
+					'menu' => 'page',
+				])
 
                 <h2 class="my-4">{{ trans('messages.' . $layout->alias) }}</h2>
 
@@ -36,7 +40,7 @@
 										name="use_outside_url"
 										value="1" class="styled" /><rtitle> {{ trans('messages.form_page.use_outside_url') }}</rtitle>
 									<div class="desc text-normal mb-10">
-										{{ trans('messages.form_page.use_outside_url.intro') }}
+										{!! trans('messages.form_page.use_outside_url.intro') !!}
 									</div>
 								</label>
 								<div class="radio_more_box">
@@ -70,7 +74,7 @@
 									
 									<hr />
 									<div class="">
-										<a page-url="{{ action('PageController@preview', ['list_uid' => $list->uid, 'alias' => $layout->alias]) }}" class="btn btn-info me-1 preview-page-button" data-toggle="modal" data-target="#preview_page"><span class="material-icons-outlined">
+										<a page-url="{{ action('PageController@preview', ['list_uid' => $list->uid, 'alias' => $layout->alias]) }}" class="btn btn-info me-1 preview-page-button" data-toggle="modal" data-target="#preview_page"><span class="material-symbols-rounded">
 visibility
 </span> {{ trans('messages.preview') }}</a>
 										<button type="submit" class="btn btn-secondary me-2"><i class="icon-check"></i> {{ trans('messages.save_change') }}</button>
@@ -84,7 +88,7 @@ visibility
 						<hr />
 						<div class="d-flex">
 							<a page-url="{{ action('PageController@preview', ['list_uid' => $list->uid, 'alias' => $layout->alias]) }}"
-								class="btn btn-info me-2 preview-page-button" data-toggle="modal" data-target="#preview_page"><span class="material-icons-outlined">
+								class="btn btn-info me-2 preview-page-button" data-toggle="modal" data-target="#preview_page"><span class="material-symbols-rounded">
 visibility
 </span> {{ trans('messages.preview') }}</a>
 
@@ -96,7 +100,7 @@ visibility
 								link-method="POST"
 								link-confirm="{{ trans('messages.page.restore.confirm') }}"
 								class="btn btn-danger ms-auto">
-								<span class="material-icons-outlined">
+								<span class="material-symbols-rounded">
 									restart_alt
 								</span> {{ trans('messages.page.reset_default') }}</a>
 						</div>
@@ -122,7 +126,7 @@ visibility
 									<div class="modal-content">
 										<div class="modal-header">
 											<h5 class="modal-title">
-												<span class="material-icons-outlined me-1">
+												<span class="material-symbols-rounded me-1">
 visibility
 </span> {{ trans('messages.' . $layout->alias) }}
 											</h5>

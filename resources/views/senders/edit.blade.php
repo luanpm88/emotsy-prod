@@ -1,4 +1,6 @@
-@extends('layouts.core.frontend')
+@extends('layouts.core.frontend', [
+    'menu' => 'sender',
+])
 
 @section('title', $sender->name)
     
@@ -18,9 +20,11 @@
 @endsection
 
 @section('content')
-    @include('senders._menu')
+    @include('senders._menu', [
+        'menu' => 'sender',
+    ])
     <h2>
-        <span class="text-semibold"><span class="material-icons-round">
+        <span class="text-semibold"><span class="material-symbols-rounded">
                             person_outline
                             </span> {{ $sender->name }}</span>
     </h2>

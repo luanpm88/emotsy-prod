@@ -1,4 +1,6 @@
-@extends('layouts.core.frontend')
+@extends('layouts.core.frontend', [
+	'menu' => 'list',
+])
 
 @section('title', trans('messages.create_list'))
 
@@ -9,7 +11,7 @@
 			<li class="breadcrumb-item"><a href="{{ action("MailListController@index") }}">{{ trans('messages.lists') }}</a></li>
 		</ul>
 		<h1>
-			<span class="text-semibold"><span class="material-icons-round">
+			<span class="text-semibold"><span class="material-symbols-rounded">
 add
 </span> {{ trans('messages.create_list') }}</span>
 		</h1>

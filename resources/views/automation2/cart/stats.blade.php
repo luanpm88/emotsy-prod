@@ -16,7 +16,7 @@
     <div class="">
         <div class="email-row d-flex align-items-center">
             <div class="mr-3 d-flex align-items-center">
-                <span class="material-icons-outlined">
+                <span class="material-symbols-rounded">
                     pause_circle
                 </span>
             </div>

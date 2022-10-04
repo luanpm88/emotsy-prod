@@ -29,7 +29,7 @@
                             <tr>
                                 <td>
                                     <span class="no-margin kq_search">
-                                        {{ Auth::user()->customer->formatDateTime($log->created_at, 'date_full') }}
+                                        {{ Auth::user()->customer->formatDateTime($log->created_at, 'datetime_full') }}
                                     </span>
                                 </td>
                                 <td>
@@ -60,7 +60,7 @@
                             <tr>
                                 <td>
                                     <span class="no-margin kq_search">
-                                        {{ Auth::user()->customer->formatDateTime($transaction->created_at, 'date_full') }}
+                                        {{ Auth::user()->customer->formatDateTime($transaction->created_at, 'datetime_full') }}
                                     </span>
                                 </td> 
                                 <td>
@@ -76,8 +76,12 @@
                                     </span>
                                 </td> 
                                 <td>
-                                    <span class="no-margin kq_search">
-                                        {!! trans('messages.transaction.method.' . $transaction->method) !!}
+                                    <span class="no-margin kq_search" style="text-transform: capitalize;">
+                                        @if (Lang::has('messages.transaction.method.' . $transaction->method))
+                                            {{ trans('messages.transaction.method.' . $transaction->method) }}
+                                        @else
+                                            {{ $transaction->method }}
+                                        @endif
                                     </span>
                                 </td> 
                                 <td>
@@ -113,14 +117,14 @@
                             <tr>
                                 <td>
                                     <span class="no-margin kq_search">
-                                        {{ Auth::user()->customer->formatDateTime($invoice->created_at, 'date_full') }}
+                                        {{ Auth::user()->customer->formatDateTime($invoice->created_at, 'datetime_full') }}
                                     </span>
                                 </td>
                                 <td>
                                     <span class="no-margin kq_search font-weight-semibold">
                                         {!! $billInfo['title'] !!}
                                     </span>
-                                    <div class="text-muted small">
+                                    <div class="text-muted">
                                         {!! $billInfo['description'] !!}
                                     </div>
                                 </td>
@@ -141,7 +145,7 @@
                                         <a class="btn btn-secondary text-nowrap" target="_blank" href="{{ action('InvoiceController@download', [
                                             'uid' => $invoice->uid,
                                         ]) }}">
-                                            <i class="material-icons-outlined me-1">download</i>{{ trans('messages.download') }}
+                                            <i class="material-symbols-rounded me-1">download</i>{{ trans('messages.download') }}
                                         </a>
                                     @endif
                                 </td>

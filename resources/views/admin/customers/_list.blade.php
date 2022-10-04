@@ -14,12 +14,12 @@
                     <span class="text-muted kq_search">{{ $item->user->email }}</span><br>
                     <span class="text-muted kq_search">{{ trans('messages.customer.bounce_feedback_rate') }} <span title="{{ trans('messages.customer.bounce_feedback_rate_desc') }}" class="xtooltip">{{ number_to_percentage($item->readCache('Bounce/FeedbackRate') ?? 0) }}</span></span>
                     <br />
-                    <span class="text-muted2">{{ trans('messages.created_at') }}: {{ Auth::user()->admin->formatDateTime($item->created_at, 'date_full') }}</span>
+                    <span class="text-muted2">{{ trans('messages.created_at') }}: {{ Auth::user()->admin->formatDateTime($item->created_at, 'datetime_full') }}</span>
                 </td>
                 <td>
                     @if ($item->currentPlanName())
                         <h5 class="no-margin stat-num">
-                            <span><i class="material-icons-outlined">
+                            <span><i class="material-symbols-rounded">
 assignment_turned_in
 </i> {{ $item->currentPlanName() }}</span>
                         </h5>
@@ -32,7 +32,7 @@ assignment_turned_in
                     @if ($item->activeSubscription())
                         <div class="d-flex">
                             <div class="single-stat-box pull-left me-5">
-                                <span class="no-margin text-primary stat-num">{{ format_number($item->activeSubscription()->getCreditsUsedPercentageDuringPlanCycle('send')*100) }}%</span>
+                                <span class="no-margin text-primary stat-num">{{ number_with_delimiter($item->activeSubscription()->getCreditsUsedPercentageDuringPlanCycle('send')*100) }}%</span>
                                 <div class="progress progress-xxs">
                                     <div class="progress-bar progress-bar-info" style="width: {{ $item->activeSubscription()->getCreditsUsedPercentageDuringPlanCycle('send')*100 }}%">
                                     </div>
@@ -63,14 +63,14 @@ assignment_turned_in
                     @can('loginAs', $item)
                         <a href="{{ action('Admin\CustomerController@loginAs', $item->uid) }}" data-popup="tooltip"
                             title="{{ trans('messages.login_as_this_customer') }}" role="button"
-                            class="btn btn-primary btn-icon"><span class="material-icons-outlined">
+                            class="btn btn-primary btn-icon"><span class="material-symbols-rounded">
 login
 </span></a>
                     @endcan
                     @can('update', $item)
                         <a href="{{ action('Admin\CustomerController@edit', $item->uid) }}"
                             data-popup="tooltip" title="{{ trans('messages.edit') }}"
-                            role="button" class="btn btn-secondary btn-icon"><span class="material-icons-outlined">
+                            role="button" class="btn btn-secondary btn-icon"><span class="material-symbols-rounded">
 edit
 </span></a>
                     @endcan
@@ -90,7 +90,7 @@ edit
                                             ]) }}"
                                             class="dropdown-item assign_plan_button"
                                         >
-                                            <i class="material-icons-outlined">
+                                            <i class="material-symbols-rounded">
 assignment_turned_in
 </i>
                                              {{ trans('messages.customer.assign_plan') }}
@@ -100,7 +100,7 @@ assignment_turned_in
                                 @can('enable', $item)
                                     <li>
                                         <a class="dropdown-item list-action-single" link-confirm="{{ trans('messages.enable_customers_confirm') }}" href="{{ action('Admin\CustomerController@enable', ["uids" => $item->uid]) }}">
-                                            <span class="material-icons-outlined">
+                                            <span class="material-symbols-rounded">
 play_arrow
 </span> {{ trans('messages.enable') }}
                                         </a>
@@ -109,7 +109,7 @@ play_arrow
                                 @can('disable', $item)
                                     <li>
                                         <a class="dropdown-item list-action-single" link-confirm="{{ trans('messages.disable_customers_confirm') }}" href="{{ action('Admin\CustomerController@disable', ["uids" => $item->uid]) }}">
-                                            <span class="material-icons-outlined">
+                                            <span class="material-symbols-rounded">
 hide_source
 </span> {{ trans('messages.disable') }}
                                         </a>
@@ -118,7 +118,7 @@ hide_source
                                 @can('read', $item)
                                     <li>
                                         <a class="dropdown-item" href="{{ action('Admin\CustomerController@subscriptions', $item->uid) }}">
-                                            <span class="material-icons-outlined">
+                                            <span class="material-symbols-rounded">
 assignment_turned_in
 </span> {{ trans('messages.subscriptions') }}
                                         </a>
@@ -126,7 +126,7 @@ assignment_turned_in
                                 @endcan
                                 <li>
                                     <a class="dropdown-item list-action-single" link-confirm="{{ trans('messages.delete_users_confirm') }}" href="{{ action('Admin\CustomerController@delete', ['uids' => $item->uid]) }}">
-                                        <span class="material-icons-outlined">
+                                        <span class="material-symbols-rounded">
 delete_outline
 </span> {{ trans('messages.delete') }}
                                     </a>
@@ -159,7 +159,7 @@ delete_outline
 
 @elseif (!empty(request()->keyword))
     <div class="empty-list">
-        <span class="material-icons-round">
+        <span class="material-symbols-rounded">
 people_outline
 </span>
         <span class="line-1">
@@ -168,7 +168,7 @@ people_outline
     </div>
 @else
     <div class="empty-list">
-        <span class="material-icons-round">
+        <span class="material-symbols-rounded">
 people_outline
 </span>
         <span class="line-1">

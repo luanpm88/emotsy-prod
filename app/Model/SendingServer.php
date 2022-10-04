@@ -23,7 +23,6 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
-use Acelle\Library\Log as MailLog;
 use Acelle\Library\IdentityStore;
 use Acelle\Library\ExtendedSwiftMessage;
 use Carbon\Carbon;
@@ -187,7 +186,7 @@ class SendingServer extends Model implements HasQuotaInterface
      */
     public function getVerp($recipient)
     {
-        if (is_object($this->bounceHandler)) {
+        if ($this->bounceHandler) {
             $validator = \Validator::make(
                 ['email' => $this->bounceHandler->username],
                 ['email' => 'required|email']
@@ -344,7 +343,7 @@ class SendingServer extends Model implements HasQuotaInterface
             self::TYPE_MAILGUN_API => [
                 'cols' => [
                     'api_key' => 'required',
-                    'domain' => 'required',
+                    'domain' => 'required|regex:/^([a-zA-Z0-9][a-zA-Z0-9-_]*\.)*[a-zA-Z0-9]*[a-zA-Z0-9-_]*[[a-zA-Z0-9]+$/',
                     'host' => 'required',
                 ],
                 'settings' => [
@@ -853,7 +852,6 @@ class SendingServer extends Model implements HasQuotaInterface
          *     + subject
          *     + plain
          */
-        MailLog::info(sprintf('Sending test email to %s for sending server `%s`', $params['to_email'], $this->name));
         $message = new ExtendedSwiftMessage();
         $msgId = StringHelper::generateMessageId(StringHelper::getDomainFromEmail($params['from_email']));
         $message->setId($msgId);
@@ -1018,8 +1016,8 @@ class SendingServer extends Model implements HasQuotaInterface
     {
         $options = [];
         $current = trans('messages.sending_servers.sending_limit.phrase', [
-            'quota_value' => \Acelle\Library\Tool::format_number($this->quota_value),
-            'quota_base' => \Acelle\Library\Tool::format_number($this->quota_base),
+            'quota_value' => number_with_delimiter($this->quota_value, $precision = 0),
+            'quota_base' => number_with_delimiter($this->quota_base, $precision = 0),
             'quota_unit' => $this->quota_unit,
         ]);
         if ($this->quota_value == -1) {
@@ -1029,8 +1027,8 @@ class SendingServer extends Model implements HasQuotaInterface
         $exist = false;
         foreach (self::sendingLimitValues() as $key => $data) {
             $wording = trans('messages.sending_servers.sending_limit.phrase', [
-                'quota_value' => \Acelle\Library\Tool::format_number($data['quota_value']),
-                'quota_base' => \Acelle\Library\Tool::format_number($data['quota_base']),
+                'quota_value' => number_with_delimiter($data['quota_value'], $precision = 0),
+                'quota_base' => number_with_delimiter($data['quota_base'], $precision = 0),
                 'quota_unit' => $data['quota_unit'],
             ]);
 

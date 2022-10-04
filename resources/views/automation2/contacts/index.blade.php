@@ -7,7 +7,7 @@ full-height
 @section('content')
                     
     @include('automation2._tabs_timeline', [
-        'tab' => 'statistics'
+        'tab' => 'audience'
     ])
 
     <div class="contacts-stats-boxes d-flex align-items-center" style="pointer-events: none;">
@@ -97,7 +97,7 @@ full-height
     </div>
 
     <div class="input-with-icon mb-4">
-        <i class="material-icons-outlined">search</i>
+        <i class="material-symbols-rounded">search</i>
         <input class="form-control mt-3" name="contact_keyword" placeholder='{{ trans('messages.automation.contacts.search.placeholder') }}' />
     </div>
         

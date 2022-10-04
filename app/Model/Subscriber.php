@@ -113,6 +113,16 @@ class Subscriber extends Model
         return $query->where('subscribers.verification_status', self::VERIFICATION_STATUS_DELIVERABLE);
     }
 
+    public function scopeDeliverableOrNotVerified($query)
+    {
+        return $query->whereRaw(sprintf(
+            "(%s = '%s' OR %s IS NULL)",
+            table('subscribers.verification_status'),
+            self::VERIFICATION_STATUS_DELIVERABLE,
+            table('subscribers.verification_status')
+        ));
+    }
+
     public function scopeUndeliverable($query)
     {
         return $query->where('subscribers.verification_status', self::VERIFICATION_STATUS_UNDELIVERABLE);
@@ -223,9 +233,9 @@ class Subscriber extends Model
 
         foreach ($params as $tag => $value) {
             $field = $this->mailList->getFieldByTag(str_replace('[]', '', $tag));
-            if (is_object($field)) {
+            if ($field) {
                 $fv = SubscriberField::where('subscriber_id', '=', $this->id)->where('field_id', '=', $field->id)->first();
-                if (!is_object($fv)) {
+                if (!$fv) {
                     $fv = new SubscriberField();
                     $fv->subscriber_id = $this->id;
                     $fv->field_id = $field->id;
@@ -404,7 +414,7 @@ class Subscriber extends Model
         $fv = $this->subscriberFields->filter(function ($r, $key) use ($field) {
             return $r->field_id == $field->id;
         })->first();
-        if (is_object($fv)) {
+        if ($fv) {
             return $fv->value;
         } else {
             return '';
@@ -420,7 +430,7 @@ class Subscriber extends Model
     {
         $fv = SubscriberField::leftJoin('fields', 'fields.id', '=', 'subscriber_fields.field_id')
             ->where('subscriber_id', '=', $this->id)->where('fields.tag', '=', $tag)->first();
-        if (is_object($fv)) {
+        if ($fv) {
             return $fv->value;
         } else {
             return '';
@@ -435,7 +445,7 @@ class Subscriber extends Model
     public function setField($field, $value)
     {
         $fv = SubscriberField::where('subscriber_id', '=', $this->id)->where('field_id', '=', $field->id)->first();
-        if (!is_object($fv)) {
+        if (!$fv) {
             $fv = new SubscriberField();
             $fv->field_id = $field->id;
             $fv->subscriber_id = $this->id;
@@ -634,6 +644,17 @@ class Subscriber extends Model
         $this->last_verification_at = Carbon::now();
         $this->last_verification_by = $verifier->name;
         $this->last_verification_result = (string)$response->getBody();
+        $this->save();
+        return $this;
+    }
+
+    public function setVerificationStatus($status)
+    {
+        // note: status must be one of the pre-defined list: see related constants
+        $this->verification_status = $status;
+        $this->last_verification_at = Carbon::now();
+        $this->last_verification_by = 'ADMIN';
+        $this->last_verification_result = 'Manually set';
         $this->save();
         return $this;
     }

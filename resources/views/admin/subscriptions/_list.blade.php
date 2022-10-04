@@ -7,17 +7,17 @@
 				<td width="1%">
 					@switch($subscription->status)
 						@case(Acelle\Model\Subscription::STATUS_ACTIVE)
-							<i class="material-icons-outlined fs-4 me-2 text-success">
+							<i class="material-symbols-rounded fs-4 me-2 text-success">
 settings_backup_restore
 							</i>
 							@break
 						@case(Acelle\Model\Subscription::STATUS_NEW)
-							<i class="material-icons-outlined fs-4 me-2 text-warning">
+							<i class="material-symbols-rounded fs-4 me-2 text-warning">
 								add_circle_outline
 							</i>
 							@break
 						@default
-							<i class="material-icons-outlined fs-4 me-2 text-muted">
+							<i class="material-symbols-rounded fs-4 me-2 text-muted">
 remove_circle_outline
 							</i>
 					@endswitch
@@ -35,20 +35,20 @@ remove_circle_outline
 				</td>
 				<td width="15%">
                     <h5 class="no-margin stat-num">
-                        <span class="kq_search">{{ Auth::user()->admin->formatDateTime($subscription->created_at, 'date_full')}}</span>
+                        <span class="kq_search">{{ Auth::user()->admin->formatDateTime($subscription->created_at, 'datetime_full')}}</span>
                     </h5>
                     <span class="text-muted2">{{ trans('messages.subscribed_on') }}</span>
-                </td>				
+                </td>
 				<td width="15%">
 					@if ($subscription->isEnded())
 						<h5 class="no-margin stat-num">
-								<span class="kq_search">{{ Auth::user()->admin->formatDateTime($subscription->ends_at, 'date_full') }}</span>
+								<span class="kq_search">{{ Auth::user()->admin->formatDateTime($subscription->ends_at, 'datetime_full') }}</span>
 							</h5>
 						<span class="text-muted2">{{ trans('messages.subscription.subscription_ended_at') }}</span>
 					@elseif ($subscription->cancelled())
 						<h5 class="no-margin stat-num">
 							@if ($subscription->current_period_ends_at)
-								<span class="kq_search">{{ Acelle\Library\Tool::dateTime($subscription->current_period_ends_at)->diffForHumans() }}</span>
+								<span class="kq_search">{{ $subscription->current_period_ends_at->timezone($currentTimezone)->diffForHumans() }}</span>
 							@else
 								<span class="kq_search">--</span>
 							@endif
@@ -58,7 +58,7 @@ remove_circle_outline
 						<h5 class="no-margin stat-num">
 							<span class="kq_search">
 								@if ($subscription->current_period_ends_at)
-									{{ Acelle\Library\Tool::dateTime($subscription->current_period_ends_at)->diffForHumans() }}
+									{{ $subscription->current_period_ends_at->timezone($currentTimezone)->diffForHumans() }}
 								@else
 									--
 								@endif									
@@ -67,6 +67,14 @@ remove_circle_outline
 						<span class="text-muted2">{{ trans('messages.subscription.next_billing') }}</span>
 					@endif
 				</td>
+				<td width="15%">
+					@if ($subscription->isActive())
+						<h5 class="no-margin stat-num">
+							<span class="kq_search">{{ number_with_delimiter($subscription->getSendingCreditsRemaining()) }}</span>
+						</h5>
+						<span class="text-muted2">{{ trans('messages.subscription.send_credits_remaining') }}</span>
+					@endif
+                </td>
 				<td class="text-center">
 					@switch($subscription->status)
 						@case(Acelle\Model\Subscription::STATUS_ACTIVE)
@@ -164,6 +172,16 @@ remove_circle_outline
 										</a>
 									</li>
 								@endif
+								@if (\Auth::user()->admin->can('replenishSendingCredits', $subscription))
+									<li>
+										<a
+											class="dropdown-item replenish-sending-credits"
+										  	href="{{ action('Admin\SubscriptionController@replenishSendingCredits', $subscription->uid) }}"
+										>
+											{{ trans('messages.subscription.replenish_sending_credits') }}
+										</a>
+									</li>
+								@endif
 								@if (\Auth::user()->admin->can('invoices', $subscription))
 									<li>
 										<a class="dropdown-item view_invoices"
@@ -199,7 +217,43 @@ remove_circle_outline
 	
 
 	<script>        
+		var SubscriptionsList = {
+			replenishSendingCredits: function(url) {
+				addMaskLoading();
+
+				// copy
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: {
+						_token: CSRF_TOKEN,
+					},
+                    globalError: false
+                }).done(function(response) {
+                    notify({
+                        type: 'success',
+                        message: response.message,
+                    });
+                }).fail(function(jqXHR, textStatus, errorThrown){
+                    new Dialog('alert', {
+                        message: JSON.parse(jqXHR.responseText).message,
+                    });
+                }).always(function() {
+                    SubscriptionsIndex.getList().load();
+
+					removeMaskLoading();
+                });
+			}
+		}
+
         $(function() {
+			$('.replenish-sending-credits').on('click', function(e) {
+				e.preventDefault();
+				var url = $(this).attr('href');
+
+				SubscriptionsList.replenishSendingCredits(url);
+			});
+
             $('.rejectPending').click(function(e) {
                 e.preventDefault();
 
@@ -219,7 +273,7 @@ remove_circle_outline
 
 @elseif (!empty(request()->keyword) || !empty(request()->filters))
 	<div class="empty-list">
-		<span class="material-icons-outlined">
+		<span class="material-symbols-rounded">
 assignment_turned_in
 </span>
 		<span class="line-1">
@@ -228,7 +282,7 @@ assignment_turned_in
 	</div>
 @else
 	<div class="empty-list">
-		<span class="material-icons-outlined">
+		<span class="material-symbols-rounded">
 assignment_turned_in
 </span>
 		<span class="line-1">

@@ -20,7 +20,7 @@
         <a onclick="popupwindow('{{ action('Automation2Controller@templatePreview', [
                             'uid' => $automation->uid,
                             'email_uid' => $email->uid,
-                        ]) }}', `{{ $automation->name }}`, 800, 800)"
+                        ]) }}', `{{ $automation->name }}`, 800)"
                         href="javascript:;"
                         class="btn btn-default"
                     >
@@ -43,7 +43,7 @@
                 'uid' => $automation->uid,
                 'email_uid' => $email->uid,
             ]) }}" data-confirm="{{ trans('messages.automation.action.delete.confirm') }}" class="btn btn-secondary email-action-delete">
-                <span class="material-icons-outlined">
+                <span class="material-symbols-rounded">
 delete
 </span> {{ trans('messages.automation.remove_this_action') }}
             </a>

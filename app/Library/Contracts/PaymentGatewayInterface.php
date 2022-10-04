@@ -11,6 +11,7 @@ interface PaymentGatewayInterface
     public function getName(): string;
     public function getType(): string;
     public function getDescription(): string;
+    public function getShortDescription(): string;
     public function isActive(): bool;
     public function getSettingsUrl(): string;
     public function getCheckoutUrl(Invoice $invoice): string;
@@ -23,4 +24,5 @@ interface PaymentGatewayInterface
 
     //
     public function allowManualReviewingOfTransaction(): bool;
+    public function getMinimumChargeAmount($currency);
 }

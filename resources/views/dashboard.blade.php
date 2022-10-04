@@ -1,4 +1,6 @@
-@extends('layouts.core.frontend')
+@extends('layouts.core.frontend', [
+    'menu' => 'dashboard',
+])
 
 @section('title', trans('messages.dashboard'))
 
@@ -12,7 +14,7 @@
     <p>{!! trans('messages.frontend_dashboard_welcome') !!}</p>
 
     <h3 class="mt-5 mb-3">
-        <span class="material-icons-outlined me-2">
+        <span class="material-symbols-rounded me-2">
             donut_large
         </span>
         {{ trans("messages.used_quota") }}
@@ -24,7 +26,7 @@
                 <div class="d-flex mb-2">
                     <label class="fw-600 me-auto">{{ trans('messages.sending_quota') }}</label>
                     <div class="pull-right text-semibold">
-                        <span class="text-muted">{{ number_with_delimiter($sendingCreditsUsed) }}/{{ ($sendingCreditsLimit == -1) ? '∞' : \Acelle\Library\Tool::format_number($sendingCreditsLimit) }}</span>
+                        <span class="text-muted">{{ number_with_delimiter($sendingCreditsUsed) }}/{{ ($sendingCreditsLimit == -1) ? '∞' : number_with_delimiter($sendingCreditsLimit) }}</span>
                         &nbsp;&nbsp;&nbsp;<span>{{ number_to_percentage($sendingCreditsUsedPercentage) }}</span>
                     </div>
                 </div>
@@ -40,7 +42,7 @@
                 <div class="d-flex mb-2">
                     <label class="fw-600 me-auto">{{ trans('messages.list') }}</label>
                     <div class="pull-right  text-semibold">
-                        <span class="text-muted">{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->listsCount()) }}/{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->maxLists()) }}</span>
+                        <span class="text-muted">{{ number_with_delimiter(Auth::user()->customer->listsCount()) }}/{{ number_with_delimiter(Auth::user()->customer->maxLists()) }}</span>
                         &nbsp;&nbsp;&nbsp;<span>{{ Auth::user()->customer->displayListsUsage() }}</span>
                     </div>
                 </div>
@@ -55,7 +57,7 @@
                 <div class="d-flex mb-2">
                     <label class="fw-600 me-auto">{{ trans('messages.campaign') }}</label>
                     <div class="pull-right  text-semibold">
-                        <span class="text-muted">{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->campaignsCount()) }}/{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->maxCampaigns()) }}</span>
+                        <span class="text-muted">{{ number_with_delimiter(Auth::user()->customer->campaignsCount()) }}/{{ number_with_delimiter(Auth::user()->customer->maxCampaigns()) }}</span>
                         &nbsp;&nbsp;&nbsp;<span>{{ Auth::user()->customer->displayCampaignsUsage() }}</span>
                     </div>
                 </div>
@@ -70,7 +72,7 @@
                 <div class="d-flex mb-2">
                     <label class="fw-600 me-auto">{{ trans('messages.subscriber') }}</label>
                     <div class="pull-right  text-semibold">
-                        <span class="text-muted">{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->readCache('SubscriberCount', 0)) }}/{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->maxSubscribers()) }}</span>
+                        <span class="text-muted">{{ number_with_delimiter(Auth::user()->customer->readCache('SubscriberCount', 0)) }}/{{ number_with_delimiter(Auth::user()->customer->maxSubscribers()) }}</span>
                         &nbsp;&nbsp;&nbsp;<span>{{ Auth::user()->customer->displaySubscribersUsage() }}</span>
                     </div>
                 </div>
@@ -88,7 +90,7 @@
 
 
     @if (isSiteDemo())
-    <h3 class="mt-5 mb-3"><span class="material-icons-outlined me-2">
+    <h3 class="mt-5 mb-3"><span class="material-symbols-rounded me-2">
         star_half
         </span> {{ trans('messages.top_5') }}
     </h3>
@@ -145,7 +147,7 @@
                             </div>
                             <div class="col-sm-2 col-md-2 text-left">
                                 <h5 class="m-0 text-bold">
-                                    {{ (null !== $item->lastOpen()) ? Auth::user()->customer->formatDateTime($item->lastOpen()->created_at, 'date_full') : "" }}
+                                    {{ (null !== $item->lastOpen()) ? Auth::user()->customer->formatDateTime($item->lastOpen()->created_at, 'datetime_full') : "" }}
                                 </h5>
                                 <span class="text-muted">{{ trans('messages.last_open') }}</span>
                             </div>
@@ -155,7 +157,7 @@
                 @empty
                     <li class="empty-li pt-0">
                         <div class="empty-list mt-0">
-                            <span class="material-icons-outlined">
+                            <span class="material-symbols-rounded">
                                 auto_awesome
                             </span>
                             <span class="line-1">
@@ -209,7 +211,7 @@
                 @empty
                     <li class="empty-li pt-0">
                         <div class="empty-list mt-0">
-                            <span class="material-icons-outlined">
+                            <span class="material-symbols-rounded">
                                 auto_awesome
                             </span>
                             <span class="line-1">
@@ -257,7 +259,7 @@
                 @empty
                     <li class="empty-li pt-0">
                         <div class="empty-list mt-0">
-                            <span class="material-icons-outlined">
+                            <span class="material-symbols-rounded">
                                 auto_awesome
                             </span>
                             <span class="line-1">
@@ -271,13 +273,14 @@
     </div>
     @endif
 
-    <h3 class="mt-5 mb-3"><span class="material-icons-outlined me-2">
-        group_work
-    </span> {{ trans('messages.activity_log') }}</h3>
+    <h3 class="mt-5 mb-3"><span class="material-symbols-rounded me-2">
+        web_stories
+        </span>
+         {{ trans('messages.activity_log') }}</h3>
 
     @if (Auth::user()->customer->logs()->count() == 0)
         <div class="empty-list">
-            <span class="material-icons-outlined">
+            <span class="material-symbols-rounded">
                 auto_awesome
             </span>
             <span class="line-1">
@@ -301,11 +304,11 @@
                                     <div class="d-flex align-items-center pt-1">
                                         <label class="panel-title text-semibold my-0 fw-600">{{ $log->customer->user->displayName() }}</label>
                                         <div class="d-flex align-items-center ms-auto text-muted">
-                                            <span style="font-size: 18px" class="material-icons-outlined ms-auto me-2">
+                                            <span style="font-size: 18px" class="material-symbols-rounded ms-auto me-2">
                                                 history
                                             </span>
                                             <div class="">
-                                                <span class="heading-text"><i class="icon-history position-left text-success"></i> {{ Tool::dateTime($log->created_at)->diffForHumans() }}</span>
+                                                <span class="heading-text"><i class="icon-history position-left text-success"></i> {{ $log->created_at->timezone($currentTimezone)->diffForHumans() }}</span>
                                             </div>
                                         </div>
                                     </div>

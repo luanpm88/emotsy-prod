@@ -29,7 +29,7 @@
                             <tr>
                                 <td>
                                     <span class="no-margin kq_search">
-                                        {{ Auth::user()->admin->formatDateTime($log->created_at, 'date_full') }}
+                                        {{ Auth::user()->admin->formatDateTime($log->created_at, 'datetime_full') }}
                                     </span>
                                 </td>
                                 <td>
@@ -60,7 +60,7 @@
                             <tr>
                                 <td>
                                     <span class="no-margin kq_search">
-                                        {{ Auth::user()->admin->formatDateTime($transaction->created_at, 'date_full') }}
+                                        {{ Auth::user()->admin->formatDateTime($transaction->created_at, 'datetime_full') }}
                                     </span>
                                 </td> 
                                 <td>
@@ -113,14 +113,14 @@
                             <tr>
                                 <td>
                                     <span class="no-margin kq_search">
-                                        {{ Auth::user()->admin->formatDateTime($invoice->created_at, 'date_full') }}
+                                        {{ Auth::user()->admin->formatDateTime($invoice->created_at, 'datetime_full') }}
                                     </span>
                                 </td>
                                 <td>
                                     <span class="no-margin kq_search font-weight-semibold">
                                         {!! $billInfo['title'] !!}
                                     </span>
-                                    <div class="text-muted small">
+                                    <div class="text-muted">
                                         {!! $billInfo['description'] !!}
                                     </div>
                                 </td>
@@ -141,7 +141,7 @@
                                         <a class="btn btn-secondary text-nowrap" target="_blank" href="{{ action('Admin\InvoiceController@download', [
                                             'uid' => $invoice->uid,
                                         ]) }}">
-                                            <i class="material-icons-outlined me-1">download</i>{{ trans('messages.download') }}
+                                            <i class="material-symbols-rounded me-1">download</i>{{ trans('messages.download') }}
                                         </a>
                                     @endif
                                 </td>

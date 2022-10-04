@@ -1,4 +1,6 @@
-@extends('layouts.core.backend')
+@extends('layouts.core.backend', [
+	'menu' => 'plan',
+])
 
 @section('title', $plan->name)
 
@@ -26,7 +28,9 @@
 
 @section('content')
     
-    @include('admin.plans._menu')
+    @include('admin.plans._menu', [
+        'menu' => 'sending_server',
+    ])
     
     <form action="{{ action('Admin\PlanController@sendingServerOwn', $plan->uid) }}" method="POST" class="form-validate-jqueryx">
         {{ csrf_field() }}
@@ -35,7 +39,7 @@
             <div class="announce_box">
                 <div class="row flex-center">
                     <div class="col-md-8">
-                        <span class="material-icons-round announce_box-icon">
+                        <span class="material-symbols-rounded announce_box-icon">
 person_outline
 </span>
                         <label>{{ trans('messages.plan_option.delivery_setting') }}</label>

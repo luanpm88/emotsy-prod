@@ -1,4 +1,6 @@
-@extends('layouts.core.backend')
+@extends('layouts.core.backend', [
+    'menu' => 'auth',
+])
 
 @section('title', trans('messages.plugins'))
 
@@ -9,7 +11,7 @@
 			<li class="breadcrumb-item"><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
 		</ul>
 		<h1>
-			<span class="text-semibold"><span class="material-icons-outlined">
+			<span class="text-semibold"><span class="material-symbols-rounded">
                 admin_panel_settings
                 </span> {{ trans('messages.oauth') }}</span>
 		</h1>
@@ -47,7 +49,7 @@
 					</td>
 					<td class="text-end">
 						<a href="{{ action('Admin\AuthController@googleOAuth') }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" role="button" class="btn btn-light btn-icon text-nowrap">
-							<span class="material-icons-outlined">
+							<span class="material-symbols-rounded">
 							settings
 							</span> {{ trans('messages.settings') }}
 						</a>
@@ -75,7 +77,7 @@
 					</td>
 					<td class="text-end">
 						<a href="{{ action('Admin\AuthController@facebookOAuth') }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" role="button" class="btn btn-light btn-icon text-nowrap">
-							<span class="material-icons-outlined">
+							<span class="material-symbols-rounded">
 							settings
 							</span> {{ trans('messages.settings') }}
 						</a>

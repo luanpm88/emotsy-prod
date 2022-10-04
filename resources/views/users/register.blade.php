@@ -7,17 +7,13 @@
     <form enctype="multipart/form-data" action="{{ action('UserController@register') }}" method="POST" class="form-validate-jqueryz subscription-form">
         {{ csrf_field() }}
         <div class="row mc-form">
-            <div class="col-md-2"></div>
-            <div class="col-md-2 text-end mt-60">
+            <div class="col-md-1"></div>
+            <div class="col-md-3 text-center pb-4">
                 <a class="main-logo-big" href="{{ action('HomeController@index') }}">
-                    @if (\Acelle\Model\Setting::get('site_logo_big'))
-                        <img width="150px" src="{{ action('SettingController@file', \Acelle\Model\Setting::get('site_logo_big')) }}" alt="">
-                    @else
-                        <img width="150px" src="{{ URL::asset('images/logo_square.png') }}" alt="">
-                    @endif
+                    <img width="80%" src="{{ getSiteLogoUrl('dark') }}" alt="">
                 </a>
             </div>
-            <div class="col-md-5">
+            <div class="col-md-6">
                 
                 <h1 class="mb-20">{{ trans('messages.create_your_account') }}</h1>
                 <p>{!! trans('messages.register.intro', [
@@ -77,10 +73,15 @@
                     <div class="row">
                         <div class="col-md-3"></div>
                         <div class="col-md-6">
-                            @if ($errors->has('recaptcha_invalid'))
-                                <div class="text-danger text-center">{{ $errors->first('recaptcha_invalid') }}</div>
+                            <!-- hCaptcha -->
+                            @if (\Acelle\Model\Setting::getCaptchaProvider() == 'hcaptcha')
+                                @php
+                                    $hcaptcha = \Acelle\Hcaptcha\Client::initialize();
+                                @endphp
+                                {!! $hcaptcha->renderFormHtml($errors) !!}
+                            @else
+                                {!! Acelle\Library\Tool::showReCaptcha($errors) !!}
                             @endif
-                            {!! Acelle\Library\Tool::showReCaptcha() !!}
                         </div>
                     </div>
                 @endif

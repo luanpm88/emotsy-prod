@@ -79,7 +79,7 @@
 
             @include('helpers.form_control', [
                 'type' => 'checkbox2',
-                'label' => trans('messages.allow_verify_domain_against_acelle'),
+                'label' => trans('messages.allow_verify_domain_against_system'),
                 'name' => 'options[allow_verify_domain_against_acelle]',
                 'value' => $server->getOption('allow_verify_domain_against_acelle'),
                 'help_class' => 'sending_server',

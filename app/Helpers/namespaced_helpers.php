@@ -69,6 +69,11 @@ function getAppSubdirectory()
     // when calling from another file (like filemanager/config/config.php for example)
     // Otherwise, it will always return 'http://localhost' --> without subdirectory
     $path = parse_url(config('app.url'), PHP_URL_PATH);
+
+    if (is_null($path)) {
+        return null;
+    }
+
     $path = trim($path, '/');
     return empty($path) ? null : $path;
 }
@@ -92,7 +97,7 @@ function getAppHost()
     return $appHost;
 }
 
-function updateTranslationFile($targetFile, $sourceFile, $overwriteTargetPhrases = false, $sort = false)
+function updateTranslationFile($targetFile, $sourceFile, $overwriteTargetPhrases = false, $deleteTargetKeys = true, $sort = false)
 {
     $source = include $sourceFile;
     $target = include $targetFile;
@@ -105,11 +110,13 @@ function updateTranslationFile($targetFile, $sourceFile, $overwriteTargetPhrases
         $merged = $target + $source;
     }
 
-    // Find keys in $target that are that not available in $source
-    $diff = array_diff_key($target, $source);
+    if ($deleteTargetKeys) {
+        // Find keys in $target that are that not available in $source
+        $diff = array_diff_key($target, $source);
 
-    // Delete those keys in the final result
-    $merged = array_diff_key($merged, $diff);
+        // Delete those keys in the final result
+        $merged = array_diff_key($merged, $diff);
+    }
 
     if ($sort) {
         ksort($merged);
@@ -227,9 +234,7 @@ function saasToSingleMode()
 {
     // set env mode
     echo "1. Set APP_SAAS=false in .env file...";
-    putPermanentEnv([
-        'APP_SAAS' => 'false',
-    ]);
+    write_env('APP_SAAS', 'false');
 
     // remove all subscriptions
     echo "\n2. Remove all subscriptions...";
@@ -272,4 +277,76 @@ function isValidPublicHostnameOrIpAddress($host)
     } else {
         return false;
     }
+}
+
+function write_env($key, $value)
+{
+    // Important: make sure all variables are already loaded before retrieving $_ENV
+    \Artisan::call('config:cache');
+
+    // Get current env
+    $outputs = $_ENV;
+
+    // Set the value
+    $outputs[$key] = $value;
+
+    // Prepare for writing back to file
+    array_walk($outputs, function (&$v, $k) {
+        // Escape double quote
+        $cleaned = addcslashes($v, '"');
+
+        // Quote if there is at least one space or # or any suspected char!
+        if (preg_match('/[\s\#!\$]/', $cleaned)) {
+            $cleaned = "\"$cleaned\"";
+        }
+
+        $v = "$k=$cleaned";
+    });
+
+    $outputs = array_values($outputs);
+    $outputs = implode("\n", $outputs);
+
+    // Actually write to file .env
+    file_put_contents(app()->environmentFilePath(), $outputs);
+
+    // Important, make the new environment var available
+    // Otherwise, this method may failed if called twice (in a loop for example) in the same process
+    \Artisan::call('config:cache');
+}
+
+function write_envs($params)
+{
+    foreach ($params as $key => $value) {
+        write_env($key, $value);
+    }
+}
+
+function reset_app_url($force = false)
+{
+    $envs = getenv();
+    if (!array_key_exists('APP_URL', $envs) || $force) {
+        $url = url('/');
+        write_env('APP_URL', $url);
+    }
+}
+
+function file_get_contents_ssl_safe($url)
+{
+    // Check if $url is a URL
+    if (!preg_match('/^https{0,1}:\/\//', $url)) {
+        throw new \Exception('file_get_contents_ssl_safe() requires a URL as input. Received: '.$url);
+    }
+
+    $client = curl_init();
+    curl_setopt_array($client, array(
+        CURLOPT_URL => $url,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_HEADER => false,
+        CURLOPT_SSL_VERIFYPEER => false
+    ));
+
+    $result = curl_exec($client);
+    curl_close($client);
+
+    return $result;
 }

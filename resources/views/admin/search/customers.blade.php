@@ -5,13 +5,13 @@
         <div class="d-flex">
             <div class="me-auto">
                 <label class="fw-600">
-                    <span class="material-icons-outlined me-1">
+                    <span class="material-symbols-rounded me-1">
                         people 
                         </span> {{ trans('messages.customers') }}
                 </label>
             </div>
             <div>
-                {{ $customers->count() }} / {{ format_number($customers->total()) }} · 
+                {{ $customers->count() }} / {{ number_with_delimiter($customers->total(), $precision = 0) }} ·
                 {{ trans('messages.search.view_all') }}
             </div>
         </div>

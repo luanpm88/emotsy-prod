@@ -2,7 +2,7 @@
     <div class="payment-box">
         <div class="header py-4 d-flex align-items-center">
             <div class="d-flex align-items-center">
-                <i class="material-icons-outlined me-2 bg-{{ request()->user()->customer->getPreferredPaymentGateway()->getType() }}">
+                <i class="material-symbols-rounded me-2 bg-{{ request()->user()->customer->getPreferredPaymentGateway()->getType() }}">
                     
                 </i>
                 <span class="font-weight-semibold">{{ request()->user()->customer->getPreferredPaymentGateway()->getName() }}</span>
@@ -16,7 +16,7 @@
         <div class="body">
             <div class="bill_info">
                 <div class="line d-flex my-2">
-                    {{ trans('messages.'.request()->user()->customer->getPreferredPaymentGateway()->getType().'.user.description') }}
+                    {{ request()->user()->customer->getPreferredPaymentGateway()->getShortDescription() }}
                 </div>
             </div>
         </div>

@@ -1,4 +1,6 @@
-@extends('layouts.core.frontend')
+@extends('layouts.core.frontend', [
+	'menu' => 'sending_domain',
+])
 
 @section('title', trans('messages.create_sending_domain'))
 
@@ -19,10 +21,12 @@
 
 @section('content')
     
-    @include('senders._menu')
+    @include('senders._menu', [
+        'menu' => 'sending_domain',
+    ])
     
     <h2>
-        <span class="text-semibold"><span class="material-icons-round">
+        <span class="text-semibold"><span class="material-symbols-rounded">
 add
 </span> {{ trans('messages.create_sending_domain') }}</span>
     </h1>

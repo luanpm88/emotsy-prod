@@ -40,12 +40,12 @@
             <div class="stat-row">
                 <p class="text-muted">{{ trans('messages.last_opened') }}</p>
                 <span class="pull-right num">
-                    {{ is_object($campaign->lastOpen()) ? Auth::user()->customer->formatDateTime($campaign->lastOpen()->created_at, 'date_full') : "" }}
+                    {{ $campaign->lastOpen() ? Auth::user()->customer->formatDateTime($campaign->lastOpen()->created_at, 'datetime_full') : "" }}
                 </span>
             </div>
         </div>
         <div class="text-end">
-            <a href="{{ action('CampaignController@openLog', $campaign->uid) }}" class="btn btn-info bg-teal-600">{{ trans('messages.open_log') }} <span class="material-icons-round">
+            <a href="{{ action('CampaignController@openLog', $campaign->uid) }}" class="btn btn-info bg-teal-600">{{ trans('messages.open_log') }} <span class="material-symbols-rounded">
 arrow_forward
 </span></a>
         </div>
@@ -84,12 +84,12 @@ arrow_forward
             <div class="stat-row">
                 <p class="text-muted">{{ trans('messages.last_clicked') }}</p>
                 <span class="pull-right num">
-                    {{ is_object($campaign->lastClick()) ? Auth::user()->customer->formatDateTime($campaign->lastClick()->created_at, 'date_full') : "" }}
+                    {{ $campaign->lastClick() ? Auth::user()->customer->formatDateTime($campaign->lastClick()->created_at, 'datetime_full') : "" }}
                 </span>
             </div>
         </div>
         <div class="text-end">
-            <a href="{{ action('CampaignController@clickLog', $campaign->uid) }}" class="btn btn-info bg-teal-600">{{ trans('messages.click_log') }} <span class="material-icons-round">
+            <a href="{{ action('CampaignController@clickLog', $campaign->uid) }}" class="btn btn-info bg-teal-600">{{ trans('messages.click_log') }} <span class="material-symbols-rounded">
 arrow_forward
 </span></a>
         </div>

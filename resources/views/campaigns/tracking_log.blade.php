@@ -1,4 +1,6 @@
-@extends('layouts.core.frontend')
+@extends('layouts.core.frontend', [
+    'menu' => 'campaign',
+])
 
 @section('title', $campaign->name)
 
@@ -10,7 +12,9 @@
 
 @section('content')
 
-@include("campaigns._menu")
+@include("campaigns._menu", [
+    'menu' => 'tracking_log',
+])
 
 <h2 class="text-semibold text-primary">{{ trans('messages.tracking_log') }}</h2>
 
@@ -29,14 +33,14 @@
                             </select>
                             <input type="hidden" name="sort_direction" value="desc" />
 <button type="button" class="btn btn-light sort-direction" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
-                                <span class="material-icons-outlined desc">
+                                <span class="material-symbols-rounded desc">
 sort
 </span>
                             </button>
                         </span>
                         <span class="text-nowrap">
                             <input type="text" name="keyword" class="form-control search" value="{{ request()->keyword }}" placeholder="{{ trans('messages.type_to_search') }}" />
-                            <span class="material-icons-round">
+                            <span class="material-symbols-rounded">
 search
 </span>
                         </span>

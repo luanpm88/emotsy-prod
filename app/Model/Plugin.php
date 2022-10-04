@@ -4,7 +4,6 @@ namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use GuzzleHttp\Client;
-use JsonPath\JsonObject;
 use Validator;
 use ZipArchive;
 use Illuminate\Validation\ValidationException;
@@ -15,6 +14,8 @@ use Acelle\Library\Facades\Hook;
 use Illuminate\Support\Facades\File;
 use Acelle\Library\Traits\HasUid;
 use Exception;
+
+use function Acelle\Helpers\pcopy;
 
 class Plugin extends Model
 {
@@ -574,9 +575,14 @@ class Plugin extends Model
         $plugin->description = array_key_exists('description', $composer) ? $composer['description'] : null;
         $plugin->version = array_key_exists('version', $composer) ? $composer['version'] : '0.0.0';
         $plugin->status = self::STATUS_INACTIVE;
-
         $plugin->save();
 
+        // Important: publish language files after installing a plugin
+        // Remember to load the plugin first, make sure its service provider runs first
+        $plugin->load($withServiceProvider = true);
+        Language::dump();
+
+        // Return it
         return $plugin;
     }
 
@@ -628,5 +634,100 @@ class Plugin extends Model
         } else {
             File::deleteDirectory($file);
         }
+    }
+
+    public static function init($plugin)
+    {
+        $validator = Validator::make(['plugin' => $plugin], [
+            'plugin' => [
+                'required',
+                'regex:/^[0-9a-z_]+\/[0-9a-z_]+$/',
+                function ($attribute, $value, $fail) {
+                    //
+                },
+            ],
+        ]);
+
+        if ($validator->fails()) {
+            throw new Exception("Plugin name must be in the \"author/name\" format.\nOnly alphanumeric lowercase characters and underscores are accepted for author and name.\nFor example: awesomelab/my_plugin123");
+        }
+
+        list($author, $name) = explode('/', $plugin);
+
+        $rules = [
+            'min:3',
+            'max:32',
+            'regex:/^[a-z0-9]/',
+            'regex:/[a-z0-9]$/',
+            function ($attribute, $value, $fail) {
+                if (preg_match('/__/', $value)) {
+                    $fail("Invalid :attribute ':input', must not contain double underscores '__'");
+                }
+            }
+        ];
+
+        $messages = [
+            'author.min' => 'Author name must be at least 3 characters in length',
+            'name.min' => 'Plugin name must be at least 3 characters in length',
+            'author.max' => 'Author name is too long',
+            'name.max' => 'Plugin name is too long',
+            'author.regex' => 'Author name ":input" is invalid. Name must start and end with a lowercase character.',
+            'name.regex' => 'Plugin name ":input" is invalid. Name must start and end with a lowercase character.',
+        ];
+
+        $validator = Validator::make(
+            ['author' => $author, 'name' => $name],
+            ['author' => $rules, 'name' => $rules],
+            $messages
+        );
+
+        if ($validator->fails()) {
+            // throw the first error
+            throw new Exception($validator->errors()->first());
+        }
+
+        // OK, make the plugin
+        // Copy from template
+        $templatePath = database_path('plugins/awesome/hello');
+        $pluginPath = storage_path("app/plugins/{$plugin}");
+
+        // Clone the template plugin
+        pcopy($templatePath, $pluginPath);
+
+        // Replace the templates with actual plugin names
+        $loader = new \Twig\Loader\FilesystemLoader($pluginPath);
+        $twig = new \Twig\Environment($loader);
+
+        $params = [
+            'plugin' => $plugin,
+            'name' => $name,
+            'author' => $author,
+            'name_class' => self::makeClassNameFromString($name),
+            'author_class' => self::makeClassNameFromString($author),
+        ];
+
+        // Files to replace
+        $files = [
+            'composer.json',
+            'routes.php',
+            'build.sh',
+            'src/ServiceProvider.php',
+            'src/Controllers/DashboardController.php',
+            'resources/views/index.blade.php'
+        ];
+
+        foreach ($files as $file) {
+            $fcontent = $fcontent = $twig->render($file, $params);
+            file_put_contents(join_paths($pluginPath, $file), $fcontent);
+        }
+
+        // Register the plugin with Acelle (add a record to plugins DB table)
+        self::installFromDir($plugin);
+    }
+
+    public static function makeClassNameFromString($name)
+    {
+        // Change "my_1st_plugin" to "My1StPlugin"
+        return implode('', explode(' ', ucwords(preg_replace('/(?<=[0-9])(?=[a-z])|_/', ' ', $name))));
     }
 }

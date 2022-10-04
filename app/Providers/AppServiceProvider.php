@@ -118,6 +118,14 @@ class AppServiceProvider extends ServiceProvider
                 "master_translation_file" => resource_path('lang/default/validation.php'),
             ];
         });
+
+        // default captcha method
+        Hook::register('captcha_method', function () {
+            return [
+                "id" => 'recaptcha',
+                "title" => trans('messages.recaptcha'),
+            ];
+        });
     }
 
     private function loadPlugins()
@@ -195,27 +203,5 @@ class AppServiceProvider extends ServiceProvider
         // [Illuminate\Database\QueryException]
         // SQLSTATE[42000]: Syntax error or access violation: 1071 Specified key was too long; max key length is 767 bytes
         Schema::defaultStringLength(191);
-
-        if (!\App::runningInConsole()) {
-            // This is just a trick for getting Controller name in view
-            // See https://stackoverflow.com/questions/29549660/get-laravel-5-controller-name-in-view
-            // @todo: fix this anti-pattern
-            app('view')->composer('*', function ($view) {
-                $route = app('request')->route();
-                if (is_null($route)) {
-                    return;
-                }
-
-                $action = app('request')->route()->getAction();
-
-                if (!array_key_exists('controller', $action)) {
-                    return;
-                }
-
-                $controller = class_basename($action['controller']);
-                list($controller, $action) = explode('@', $controller);
-                $view->with(compact('controller', 'action'));
-            });
-        }
     }
 }

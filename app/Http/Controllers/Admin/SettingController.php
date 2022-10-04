@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Session;
 use Acelle\Helpers\LicenseHelper;
 use App;
 use Acelle\Library\Downloader;
+use Acelle\Library\Notification\SystemUrl;
 
 class SettingController extends Controller
 {
@@ -59,7 +60,7 @@ class SettingController extends Controller
         // validate and save posted data
         if ($request->isMethod('post')) {
             // Prenvent save from demo mod
-            if ($this->isDemoMode()) {
+            if (config('app.demo')) {
                 return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
             }
 
@@ -86,7 +87,7 @@ class SettingController extends Controller
 
                 if ($name != '_token' && isset($settings[$name])) {
                     // Upload and save image
-                    if ($name == 'site_logo_small' || $name == 'site_logo_big' || $name == 'site_favicon') {
+                    if ($name == 'site_logo_light' || $name == 'site_logo_dark' || $name == 'site_favicon') {
                         if ($request->hasFile($name) && $request->file($name)->isValid()) {
                             Setting::uploadFile($request->file($name), $name, false);
                         }
@@ -106,6 +107,7 @@ class SettingController extends Controller
 
         return view('admin.settings.general', [
             'settings' => $settings,
+            'action' => 'general',
         ]);
     }
 
@@ -133,7 +135,7 @@ class SettingController extends Controller
         // validate and save posted data
         if ($request->isMethod('post')) {
             // Prenvent save from demo mod
-            if ($this->isDemoMode()) {
+            if (config('app.demo')) {
                 return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
             }
 
@@ -194,6 +196,7 @@ class SettingController extends Controller
             'matched' => ($cached == $current),
             'current' => $current,
             'cached' => $cached,
+            'action' => 'urls'
         ]);
     }
 
@@ -213,6 +216,8 @@ class SettingController extends Controller
             $next = action('Admin\SettingController@cronjob').'#result_box';
             return redirect()->away($next);
         }
+
+        $respone['action'] = 'cronjob';
 
         return view('admin.settings.cronjob', $respone);
     }
@@ -265,7 +270,7 @@ class SettingController extends Controller
         // validate and save posted data
         if ($request->isMethod('post')) {
             // Prenvent save from demo mod
-            if ($this->isDemoMode()) {
+            if (config('app.demo')) {
                 return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
             }
 
@@ -317,6 +322,7 @@ class SettingController extends Controller
         return view('admin.settings.mailer', [
             'rules' => $rules,
             'env' => $mailSettings,
+            'action' => 'mailer',
         ]);
     }
 
@@ -334,7 +340,7 @@ class SettingController extends Controller
         // validate and save posted data
         if ($request->isMethod('post')) {
             // Prenvent save from demo mod
-            if ($this->isDemoMode()) {
+            if (config('app.demo')) {
                 return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
             }
 
@@ -369,7 +375,7 @@ class SettingController extends Controller
     public function updateUrls(Request $request)
     {
         // capture the current url, write to .env
-        reset_app_url(true); // force update
+        \Acelle\Helpers\reset_app_url(true); // force update
 
         // @todo cannot use the artisan_config_cache() helper, cannot even call Artisan::call('config:cache') directly
         // \Artisan::call('config:cache');
@@ -393,6 +399,9 @@ class SettingController extends Controller
             'code' => 'SECURE_CODE', ))
         );
         Setting::set('url_web_view', action('CampaignController@webView', ['message_id' => 'MESSAGE_ID']));
+
+        // Check again to clean up notification
+        SystemUrl::check();
 
         // Redirect to my lists page
         $request->session()->flash('alert-success', trans('messages.setting.updated'));
@@ -457,7 +466,7 @@ class SettingController extends Controller
         // validate and save posted data
         if ($request->isMethod('post')) {
             // Prenvent save from demo mod
-            if ($this->isDemoMode()) {
+            if (config('app.demo')) {
                 return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
             }
 
@@ -485,6 +494,7 @@ class SettingController extends Controller
             'settings' => $settings,
             'current_license' => Setting::get('license'),
             'license_error' => isset($license_error) ? $license_error : '',
+            'action' => 'license'
         ]);
     }
 
@@ -507,6 +517,7 @@ class SettingController extends Controller
             'any' => 'any',
             'manager' => $manager,
             'phpversion' => version_compare(PHP_VERSION, config('custom.php_recommended'), '>='),
+            'action' => 'upgrade',
         ]);
     }
 
@@ -656,7 +667,7 @@ class SettingController extends Controller
         // validate and save posted data
         if ($request->isMethod('post')) {
             // Prenvent save from demo mod
-            if ($this->isDemoMode()) {
+            if (config('app.demo')) {
                 return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
             }
 
@@ -667,7 +678,7 @@ class SettingController extends Controller
             foreach ($request->all() as $name => $value) {
                 if ($name != '_token' && isset($settings[$name])) {
                     // Upload and save image
-                    if ($name == 'site_logo_small' || $name == 'site_logo_big') {
+                    if ($name == 'site_logo_light' || $name == 'site_logo_dark') {
                         if ($request->hasFile($name) && $request->file($name)->isValid()) {
                             Setting::uploadSiteLogo($request->file($name), $name);
                         }
@@ -701,7 +712,7 @@ class SettingController extends Controller
             return $this->notAuthorized();
         }
 
-        if ($this->isDemoMode()) {
+        if (config('app.demo')) {
             return $this->notAuthorized();
         }
 
@@ -725,18 +736,20 @@ class SettingController extends Controller
         // Setting::updateAll();
         $settings = Setting::getAll();
 
-        if ($this->isDemoMode()) {
+        if (config('app.demo')) {
             return $this->notAuthorized();
         }
 
         $rules = [
             'renew_free_plan' => 'required',
             'recurring_charge_before_days' => 'required',
+            'allowed_due_subscription' => 'required',
         ];
         $this->validate($request, $rules);
 
         // Save settings
         Setting::set('renew_free_plan', $request->renew_free_plan);
+        Setting::set('allowed_due_subscription', $request->allowed_due_subscription);
         Setting::set('recurring_charge_before_days', $request->recurring_charge_before_days);
 
 
@@ -802,5 +815,18 @@ class SettingController extends Controller
 
         // GET ONLY
         return view('admin.settings.upgradeFromUrl');
+    }
+
+    public function licenseRemove()
+    {
+        try {
+            Setting::updateLicense(null);
+
+            return redirect()->action('Admin\SettingController@license')
+                ->with('alert-success', trans('messages.license.removed'));
+        } catch (\Exception $ex) {
+            return redirect()->action('Admin\SettingController@license')
+                ->with('alert-error', $ex->getMessage());
+        }
     }
 }

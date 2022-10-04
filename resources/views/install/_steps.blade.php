@@ -3,7 +3,7 @@
 						<a href="{{ action("InstallController@systemCompatibility") }}"
 							class="rounded-top rounded-3-top"
 						>
-							<span class="material-icons-outlined">
+							<span class="material-symbols-rounded me-1">
 dns
 </span> {{ trans('messages.system_compatibility') }}
 						</a>
@@ -12,7 +12,7 @@ dns
 						<a href="{{ action("InstallController@siteInfo") }}"
 							class="rounded-top rounded-3-top"
 						>
-							<span class="material-icons-outlined">
+							<span class="material-symbols-rounded me-1">
 settings
 </span> {{ trans('messages.configuration') }}
 						</a>
@@ -21,7 +21,7 @@ settings
 						<a href="{{ action("InstallController@database") }}"
 							class="rounded-top rounded-3-top"
 						>
-							<span class="material-icons-outlined">
+							<span class="material-symbols-rounded me-1">
 dns
 </span> {{ trans('messages.database') }}
 						</a>
@@ -30,7 +30,7 @@ dns
 						<a href="{{ action("InstallController@cronJobs") }}"
 							class="rounded-top rounded-3-top"
 						>
-							<span class="material-icons-outlined">
+							<span class="material-symbols-rounded me-1">
 alarm
 </span> {{ trans('messages.background_job') }}
 						</a>
@@ -39,7 +39,7 @@ alarm
 						class="rounded-top rounded-3-top"	
 					>
 						<a href="{{ action("InstallController@finish") }}">
-							<span class="material-icons-outlined">
+							<span class="material-symbols-rounded me-1">
 task_alt
 </span> {{ trans('messages.finish') }}
 						</a>

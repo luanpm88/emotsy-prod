@@ -1,4 +1,6 @@
-@extends('layouts.core.backend')
+@extends('layouts.core.backend', [
+    'menu' => 'setting',
+])
 
 @section('title', trans('messages.upgrade.title.upgrade'))
 
@@ -9,7 +11,9 @@
             <li class="breadcrumb-item"><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
         </ul>
         <h1>
-            <img src="{{ url('images/upgrade.svg') }}" width="33px" class="me-2" /> {{ trans('messages.upgrade.title.upgrade') }}</span>
+            <span class="material-symbols-rounded">
+                cloud_download
+                </span> {{ trans('messages.upgrade.title.upgrade') }}</span>
         </h1>
     </div>
 

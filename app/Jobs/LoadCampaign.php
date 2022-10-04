@@ -52,7 +52,7 @@ class LoadCampaign implements ShouldQueue
         }
 
         // Clear any HTML cache
-        $this->campaign->clearCache();
+        $this->campaign->clearTemplateCache();
 
         // Last chance for campaign to setup
         // @todo Find a better place for the following method, afterSave for example

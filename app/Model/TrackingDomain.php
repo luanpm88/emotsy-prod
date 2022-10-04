@@ -32,6 +32,8 @@ use Acelle\Library\Traits\HasUid;
 use Validator;
 use Exception;
 use Acelle\Library\StringHelper;
+use Illuminate\Support\Facades\Log;
+
 use function Acelle\Helpers\getAppHost;
 
 class TrackingDomain extends Model
@@ -40,6 +42,9 @@ class TrackingDomain extends Model
 
     public const STATUS_VERIFIED = 'verified';
     public const STATUS_UNVERIFIED = 'unverified';
+
+    public const VERIFICATION_METHOD_HOST = 'host';
+    public const VERIFICATION_METHOD_CNAME = 'cname';
 
     /**
      * Associations.
@@ -82,7 +87,7 @@ class TrackingDomain extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'scheme'
+        'name', 'scheme', 'verification_method'
     ];
 
     public static function createFromRequest($request)
@@ -113,6 +118,7 @@ class TrackingDomain extends Model
         $attributes = [
             'scheme' => $scheme,
             'name' => "{$scheme}://{$name}",
+            'verification_method' => $request->input('verification_method'),
         ];
 
         $validator = Validator::make($attributes, $rules);
@@ -225,20 +231,33 @@ class TrackingDomain extends Model
         try {
             $url = $this->getUrl();
             $verifyUrl = "$url/ok";
-            $result = file_get_contents($verifyUrl);
+
+            $client = curl_init();
+            curl_setopt_array($client, array(
+                CURLOPT_URL => $verifyUrl,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_HEADER => false,
+                CURLOPT_SSL_VERIFYPEER => false
+            ));
+
+            $result = curl_exec($client);
+            curl_close($client);
+
             if ($result == 'ok') {
                 $this->setVerified();
                 $this->save();
                 return true;
             } else {
+                Log::warning(sprintf('Failed verifying tracking domain %s. Error: %s', $url, $result));
                 return false;
             }
         } catch (\Exception $ex) {
+            Log::warning(sprintf('Error verifying tracking domain %s. Error: %s', $url, $ex->getMessage()));
             return false;
         }
     }
 
-    public function verifyOld($debug = false)
+    public function verifyCname($debug = false)
     {
         try {
             $client = new Client(['verify' => false]);
@@ -275,12 +294,29 @@ class TrackingDomain extends Model
             throw new Exception('Cannot build tracking URL with "'.$url.'", a valid URL is required (with leading http:// or https:// or //');
         }
 
-        // Already a tracking domain
+        // Already a tracking domain's URL
         if (strpos($url, $this->getUrl()) === 0) {
             return $url;
         }
 
-        $encodedUrl = StringHelper::base64UrlEncode($url);
-        return join_url($this->getUrl(), $encodedUrl);
+        if ($this->verification_method == self::VERIFICATION_METHOD_HOST) {
+            // Replace the default host with the tracking host
+            // For example, transform "http://myapp.com/foo" to "http://tracking.com/aHR0cDovL215YXBwLmNvbS9mb28"
+            $encodedUrl = StringHelper::base64UrlEncode($url);
+            $final = join_url($this->getUrl(), $encodedUrl);
+        } elseif ($this->verification_method == self::VERIFICATION_METHOD_CNAME) {
+            // Replace the default host with the tracking host
+            // For example, transform "http://myapp.com/foo" to "http://tracking.com/foo"
+            $default = config('app.url');
+            $default = trim($default, '/'); // make sure there is no trailing slash "/"
+            $final = str_replace($default, $this->getUrl(), $url);
+        }
+
+        return $final;
+    }
+
+    public function verifyByDns()
+    {
+        return $this->verification_method == self::VERIFICATION_METHOD_CNAME;
     }
 }

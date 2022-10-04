@@ -84,6 +84,6 @@ class Contact extends Model
      */
     public function countryName()
     {
-        return is_object($this->country) ? $this->country->name : '';
+        return $this->country ? $this->country->name : '';
     }
 }

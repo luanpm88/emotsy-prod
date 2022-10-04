@@ -22,7 +22,6 @@
 
 namespace Acelle\Model;
 
-use Acelle\Library\Log as MailLog;
 use Smtpapi\Header;
 
 class SendingServerSendGridSmtp extends SendingServerSendGrid
@@ -58,6 +57,7 @@ class SendingServerSendGridSmtp extends SendingServerSendGrid
         $transport = new \Swift_SmtpTransport($this->host, (int) $this->smtp_port, $this->smtp_protocol);
         $transport->setUsername($username);
         $transport->setPassword($password);
+        $transport->setStreamOptions(array('ssl' => array('allow_self_signed' => true, 'verify_peer' => false, 'verify_peer_name' => false)));
 
         // Create the Mailer using your created Transport
         $mailer = new \Swift_Mailer($transport);
@@ -66,8 +66,6 @@ class SendingServerSendGridSmtp extends SendingServerSendGrid
         $sent = $mailer->send($message);
 
         if ($sent) {
-            MailLog::info('Sent!');
-
             $result = array(
                 'runtime_message_id' => $msgId,
                 'status' => self::DELIVERY_STATUS_SENT,

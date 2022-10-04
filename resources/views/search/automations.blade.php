@@ -5,13 +5,13 @@
         <div class="d-flex">
             <div class="me-auto">
                 <label class="fw-600">
-                    <span class="material-icons-outlined me-1">
+                    <span class="material-symbols-rounded me-1">
                         account_tree 
                         </span> {{ trans('messages.automations') }}
                 </label>
             </div>
             <div>
-                {{ $automations->count() }} / {{ format_number($automations->total()) }} · {{ trans('messages.search.view_all') }}
+                {{ $automations->count() }} / {{ number_with_delimiter($automations->total(), $precision = 0) }} · {{ trans('messages.search.view_all') }}
             </div>
         </div>
     </a>

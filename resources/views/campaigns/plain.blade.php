@@ -1,4 +1,6 @@
-@extends('layouts.core.frontend')
+@extends('layouts.core.frontend', [
+    'menu' => 'campaign',
+])
 
 @section('title', trans('messages.campaigns') . " - " . trans('messages.template'))
 	
@@ -15,7 +17,7 @@
 			<li class="breadcrumb-item"><a href="{{ action("CampaignController@index") }}">{{ trans('messages.campaigns') }}</a></li>
 		</ul>
 		<h1>
-			<span class="text-semibold"><span class="material-icons-outlined me-2">
+			<span class="text-semibold"><span class="material-symbols-rounded me-2">
 forward_to_inbox
 </span> {{ $campaign->name }}</span>
 		</h1>

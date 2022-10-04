@@ -28,7 +28,7 @@
                     <span class="text-muted second-line-mobile">{{ trans('messages.sending_server') }}</span>
                 </td>
                 <td>
-                    <span class="no-margin kq_search">{{ Auth::user()->admin->formatDateTime($item->created_at, 'date_full') }}</span>
+                    <span class="no-margin kq_search">{{ Auth::user()->admin->formatDateTime($item->created_at, 'datetime_full') }}</span>
                     <span class="text-muted second-line-mobile">{{ trans('messages.created_at') }}</span>
                 </td>
             </tr>
@@ -38,7 +38,7 @@
     
 @elseif (!empty(request()->keyword) || !empty(request()->filters["campaign_uid"]))
     <div class="empty-list">
-        <span class="material-icons-outlined">
+        <span class="material-symbols-rounded">
 auto_awesome
 </span>
         <span class="line-1">
@@ -47,7 +47,7 @@ auto_awesome
     </div>
 @else					
     <div class="empty-list">
-        <span class="material-icons-outlined">
+        <span class="material-symbols-rounded">
 auto_awesome
 </span>
         <span class="line-1">

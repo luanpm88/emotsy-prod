@@ -20,7 +20,7 @@
             ->values()->all()
         );
     }
-?>
+    ?>
 <div {!! $paramsString ?? '' !!} title="Debug: {{ isset($debugg) ? $debug : '[ empty ]' }}" class="alert alert-{{ $level }} shadow-sm" style="display: flex; flex-direction: row; align-items: center; cursor: pointer">
     <div>
         @isset($title)

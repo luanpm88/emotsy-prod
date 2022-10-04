@@ -1,4 +1,6 @@
-@extends('layouts.core.backend')
+@extends('layouts.core.backend', [
+    'menu' => 'blacklist',
+])
 
 @section('title', trans('messages.blacklist.import'))
 
@@ -10,7 +12,7 @@
             <li class="breadcrumb-item"><a href="{{ action("Admin\BlacklistController@index") }}">{{ trans('messages.blacklist') }}</a></li>
         </ul>
         <h1>
-            <span class="text-semibold"><span class="material-icons-outlined">
+            <span class="text-semibold"><span class="material-symbols-rounded">
 file_upload
 </span> {{ trans('messages.blacklist.import') }}</span>
         </h1>

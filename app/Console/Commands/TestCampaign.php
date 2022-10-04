@@ -3,7 +3,6 @@
 namespace Acelle\Console\Commands;
 
 use Illuminate\Console\Command;
-use Acelle\Library\Log;
 use Acelle\Library\StringHelper;
 use Acelle\Library\ExtendedSwiftMessage;
 use Acelle\Model\Campaign;
@@ -67,8 +66,8 @@ class TestCampaign extends Command
 
         // Create a message
         $message = new ExtendedSwiftMessage('Wonderful Subject');
-        $message->setFrom(array('' => 'Asish'));
-        $message->setTo(array('' => 'Louis'));
+        $message->setFrom(array('' => 'Awsome Sender'));
+        $message->setTo(array('' => 'Awsome Recipient'));
         $message->setBody('Here is the message itself');
 
         // Send the message

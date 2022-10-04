@@ -22,8 +22,6 @@
 
 namespace Acelle\Model;
 
-use Acelle\Library\Log as MailLog;
-
 class SendingServerSparkPostApi extends SendingServerSparkPost
 {
     protected $table = 'sending_servers';
@@ -41,7 +39,6 @@ class SendingServerSparkPostApi extends SendingServerSparkPost
 
         if ($response->getStatusCode() == 200) {
             $body = $response->getBody();
-            MailLog::info('Sent!');
 
             return array(
                 'status' => self::DELIVERY_STATUS_SENT,

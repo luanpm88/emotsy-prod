@@ -1334,6 +1334,3 @@ a:hover label {
 .switch-automation .select2-container .select2-selection--single .select2-selection__rendered {
   color: transparent;
 }
-.has-emoji .form-group label ~ .emoji-picker-icon {
-  top: 35px;
-}

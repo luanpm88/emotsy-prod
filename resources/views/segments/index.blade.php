@@ -1,4 +1,6 @@
-@extends('layouts.core.frontend')
+@extends('layouts.core.frontend', [
+	'menu' => 'segment',
+])
 
 @section('title', $list->name . ": " . trans('messages.segments'))
 
@@ -10,9 +12,11 @@
 
 @section('content')
 
-	@include("lists._menu")
+	@include("lists._menu", [
+		'menu' => 'segment',
+	])
 
-	<h2 class="text-primary my-4"><span class="material-icons-outlined">
+	<h2 class="text-primary my-4"><span class="material-symbols-rounded">
 splitscreen
 </span> {{ trans('messages.segments') }}</h2>
 	<div id="SegmentsIndexContainer" class="listing-form"
@@ -35,7 +39,7 @@ splitscreen
 							<ul class="dropdown-menu">
 								<li>
 									<a class="dropdown-item" link-confirm="{{ trans('messages.delete_segments_confirm') }}" href="{{ action('SegmentController@delete', $list->uid) }}">
-										<span class="material-icons-outlined">
+										<span class="material-symbols-rounded">
 delete_outline
 </span> {{ trans('messages.delete') }}
 									</a>
@@ -51,14 +55,14 @@ delete_outline
 							</select>
 							<input type="hidden" name="sort_direction" value="desc" />
 <button type="button" class="btn btn-xs sort-direction" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
-								<span class="material-icons-outlined desc">
+								<span class="material-symbols-rounded desc">
 sort
 </span>
 							</button>
 						</span>
 						<span class="text-nowrap">
 							<input type="text" name="keyword" class="form-control search" value="{{ request()->keyword }}" placeholder="{{ trans('messages.type_to_search') }}" />
-							<span class="material-icons-round">
+							<span class="material-symbols-rounded">
 search
 </span>
 						</span>
@@ -67,7 +71,7 @@ search
 			</div>
 			<div class="text-end">
 				<a href="{{ action("SegmentController@create", $list->uid) }}" role="button" class="btn btn-secondary">
-					<span class="material-icons-round">
+					<span class="material-symbols-rounded">
 add
 </span> {{ trans('messages.create_segment') }}
 				</a>

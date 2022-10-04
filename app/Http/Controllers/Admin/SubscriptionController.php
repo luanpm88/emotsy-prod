@@ -56,6 +56,8 @@ class SubscriptionController extends Controller
             return $this->notAuthorized();
         }
 
+        $currentTimezone = $request->user()->admin->getTimezone();
+
         // If admin can view all subscriptions of their customer
         if (!$request->user()->admin->can('readAll', new Subscription())) {
             $request->merge(array("customer_admin_id" => $request->user()->admin->id));
@@ -81,6 +83,7 @@ class SubscriptionController extends Controller
 
         return view('admin.subscriptions._list', [
             'subscriptions' => $subscriptions,
+            'currentTimezone' => $currentTimezone
         ]);
     }
 
@@ -271,5 +274,29 @@ class SubscriptionController extends Controller
         }
 
         echo trans('messages.subscription.deleted');
+    }
+
+    public function replenishSendingCredits(Request $request, $id)
+    {
+        $subscription = Subscription::findByUid($request->id);
+
+        // authorize
+        if (!$request->user()->admin->can('replenishSendingCredits', $subscription)) {
+            return $this->notAuthorized();
+        }
+
+        if (false) {
+            // success
+            return response()->json([
+                'status' => 'success',
+                'message' => trans('messages.subscription.replenish_sending_credits.success'),
+            ]);
+        } else {
+            // error
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Error from the server...',
+            ], 500);
+        }
     }
 }

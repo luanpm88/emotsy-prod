@@ -170,7 +170,7 @@
                             </label> 
                             <div class="ml-auto" `+(!t.show || showed || t.template === false ? 'style="display:none"' : '')+`>
                                 <a href="javascript:;" class="setting-button" data-class="`+key+`">
-                                    <span class="material-icons-outlined">settings</span>
+                                    <span class="material-symbols-rounded">settings</span>
                                 </a>
                             </div>              
                         </div>

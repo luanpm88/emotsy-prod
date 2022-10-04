@@ -1,4 +1,6 @@
-@extends('layouts.core.frontend')
+@extends('layouts.core.frontend', [
+    'menu' => 'campaign',
+])
 
 @section('title', trans('messages.campaigns') . " - " . trans('messages.template'))
 	
@@ -15,7 +17,7 @@
 			<li class="breadcrumb-item"><a href="{{ action("CampaignController@index") }}">{{ trans('messages.campaigns') }}</a></li>
 		</ul>
 		<h1>
-			<span class="text-semibold"><span class="material-icons-outlined me-2">
+			<span class="text-semibold"><span class="material-symbols-rounded me-2">
 forward_to_inbox
 </span> {{ $campaign->name }}</span>
 		</h1>
@@ -34,10 +36,10 @@ forward_to_inbox
                 
             <ul class="hover-list">
                 <li class="template-start" data-url="{{ action('CampaignController@templateLayout', $campaign->uid) }}">
-                    <img width="35px" class="icon-img d-inline-block me-3" src="{{ url('images/icons/plus.svg') }}" />
+                    <img width="35px" class="icon-img d-inline-block me-4" src="{{ url('images/icons/plus.svg') }}" />
                     <div class="list-body">
                         <h4>{{ trans('messages.campaign.template.from_layout') }}</h4>
-                        <p>{{ trans('messages.campaign.template.from_layout.intro') }}</p>
+                        <p class="text-muted">{{ trans('messages.campaign.template.from_layout.intro') }}</p>
                     </div>
                     <div class="list-action">
                         <button
@@ -48,10 +50,10 @@ forward_to_inbox
                     </div>
                 </li>
                 <li class="template-start" data-url="{{ action('CampaignController@templateUpload', $campaign->uid) }}">
-                    <img width="35px" class="icon-img d-inline-block me-3" src="{{ url('images/icons/upload.svg') }}" />
+                    <img width="35px" class="icon-img d-inline-block me-4" src="{{ url('images/icons/upload.svg') }}" />
                     <div class="list-body">
                         <h4>{{ trans('messages.campaign.template.upload') }}</h4>
-                        <p>{{ trans('messages.campaign.template.upload.intro') }}</p>
+                        <p class="text-muted">{{ trans('messages.campaign.template.upload.intro') }}</p>
                     </div>
                     <div class="list-action">
                         <button

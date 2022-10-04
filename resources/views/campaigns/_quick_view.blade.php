@@ -13,11 +13,11 @@
         </div>
         <div class="mb-10">
             <span class="text-bold text-muted">{{ trans('messages.run_at') }}:</span>
-            <span>{{ isset($campaign->run_at) ? Auth::user()->customer->formatDateTime($campaign->run_at, 'date_full') : "" }}</span>
+            <span>{{ isset($campaign->run_at) ? Auth::user()->customer->formatDateTime($campaign->run_at, 'datetime_full') : "" }}</span>
         </div>
 		<div class="mb-10">
             <span class="text-bold text-muted">{{ trans('messages.delivery_at') }}:</span>
-            <span>{{ isset($campaign->delivery_at) ? Auth::user()->customer->formatDateTime($campaign->delivery_at, 'date_full') : "" }}</span>
+            <span>{{ isset($campaign->delivery_at) ? Auth::user()->customer->formatDateTime($campaign->delivery_at, 'datetime_full') : "" }}</span>
         </div>
     </div>
 </div>

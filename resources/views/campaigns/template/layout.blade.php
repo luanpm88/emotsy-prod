@@ -1,7 +1,7 @@
 @extends('layouts.popup.large')
 
 @section('title')
-    <i class="material-icons-outlined alert-icon mr-2">backup_table</i>
+    <i class="material-symbols-rounded alert-icon mr-2">backup_table</i>
     {{ trans("messages.template") }}
 @endsection
 
@@ -32,7 +32,7 @@
 												<input type="hidden" name="category_uid" value="{{ request()->category_uid }}" />
 												<input type="hidden" name="from" value="{{ request()->from }}" />
 												<input type="text" name="keyword" class="form-control search" value="{{ request()->keyword }}" placeholder="{{ trans('messages.type_to_search') }}" />
-												<span class="material-icons-round">
+												<span class="material-symbols-rounded">
 search
 </span>
 											</span>

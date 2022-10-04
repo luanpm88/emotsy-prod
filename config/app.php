@@ -158,6 +158,17 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | CartPayee mode
+    |--------------------------------------------------------------------------
+    |
+    | If the application is in DEMO mode
+    |
+    */
+
+    'cartpaye' => env('APP_CARTPAYE', false),
+
+    /*
+    |--------------------------------------------------------------------------
     | Autoloaded Service Providers
     |--------------------------------------------------------------------------
     |
@@ -225,6 +236,7 @@ return [
         // More
         Acelle\Providers\MailerServiceProvider::class,
         Acelle\Providers\StorageServiceProvider::class,
+        Acelle\Providers\CheckoutServiceProvider::class,
     ],
 
     /*

@@ -11,7 +11,7 @@
 		<div class="ms-auto">
 			<div class="btn-group" style="margin-top: -4px;">
 				<button role="button" class="btn btn-light px-3 py-2 fw-600" data-bs-toggle="dropdown">
-					{{ trans('messages.change_list') }} <span class="material-icons-outlined ms-2">
+					{{ trans('messages.change_list') }} <span class="material-symbols-rounded ms-2">
 						double_arrow
 						</span>
 				</button>

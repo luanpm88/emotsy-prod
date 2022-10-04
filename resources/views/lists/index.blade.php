@@ -1,4 +1,6 @@
-@extends('layouts.core.frontend')
+@extends('layouts.core.frontend', [
+	'menu' => 'list',
+])
 
 @section('title', trans('messages.my_lists'))
 
@@ -9,7 +11,7 @@
 			<li class="breadcrumb-item"><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
 		</ul>
 		<h1>
-			<span class="text-semibold"><span class="material-icons-round">
+			<span class="text-semibold"><span class="material-symbols-rounded">
                 format_list_bulleted
                 </span> {{ trans('messages.my_lists') }}</span>
 		</h1>
@@ -43,7 +45,7 @@
                                         link-method="POST"
                                         href="{{ action('MailListController@delete') }}"
                                     >
-                                        <span class="material-icons-outlined">
+                                        <span class="material-symbols-rounded">
 delete_outline
 </span> {{ trans('messages.delete') }}</a>
                                 </li>
@@ -58,14 +60,14 @@ delete_outline
 
                             <input type="hidden" name="sort_direction" value="desc" />
                             <button type="button" class="btn btn-light sort-direction" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
-                                <span class="material-icons-outlined">
+                                <span class="material-symbols-rounded">
                                     sort
                                 </span>
                             </button>
                         </span>
                         <span class="text-nowrap">
                             <input type="text" name="keyword" class="form-control search" value="{{ request()->keyword }}" placeholder="{{ trans('messages.type_to_search') }}" />
-                            <span class="material-icons-round">
+                            <span class="material-symbols-rounded">
 search
 </span>
                         </span>
@@ -74,7 +76,7 @@ search
             </div>
             <div class="text-end">
                 <a href="{{ action("MailListController@create") }}" role="button" class="btn btn-secondary">
-                    <span class="material-icons-round">
+                    <span class="material-symbols-rounded">
                         add
                     </span> {{ trans('messages.create_list') }}
                 </a>

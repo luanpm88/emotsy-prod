@@ -33,7 +33,7 @@ class Subscription extends Model implements HasQuotaInterface
      * @var array
      */
     protected $dates = [
-        'trial_ends_at', 'ends_at', 'current_period_ends_at',
+        'ends_at', 'current_period_ends_at',
         'created_at', 'updated_at', 'started_at', 'last_period_ends_at'
     ];
 
@@ -166,39 +166,36 @@ class Subscription extends Model implements HasQuotaInterface
             throw new \Exception(trans('messages.error.has_waiting_invoices'));
         }
 
-        // create invoice
-        $invoice = new Invoice();
-        $invoice->status = Invoice::STATUS_NEW;
-        $invoice->type = Invoice::TYPE_NEW_SUBSCRIPTION;
-        $invoice->title = trans('messages.invoice.init_subscription');
-        $invoice->description = trans('messages.invoice.init_subscription.desc', [
-            'plan' => $this->plan->name,
-            'date' => $this->customer->formatDateTime($this->getPeriodEndsAt(Carbon::now()), 'date_full'),
+        if ($this->plan->hasTrial()) {
+            $endDate = $this->customer->formatDateTime($this->getTrialPeriodEndsAt(Carbon::now()), "datetime_full");
+        } else {
+            $endDate = $this->customer->formatDateTime($this->getPeriodEndsAt(Carbon::now()), "datetime_full");
+        }
+
+        // create init invoice
+        return Invoice::createInvoice([
+            'status' => Invoice::TYPE_NEW_SUBSCRIPTION,
+            'title' => trans('messages.invoice.init_subscription'),
+            'description' => trans('messages.invoice.init_subscription.desc', [
+                'plan' => $this->plan->name,
+                'date' => $endDate,
+            ]),
+            'customer_id' => $this->customer->id,
+            'currency_id' => $this->plan->currency_id,
+            'billingAddress' => $this->customer->getDefaultBillingAddress(),
+            'metadata' => [
+                'subscription_uid' => $this->uid,
+            ],
+            'items' => [
+                [
+                    'id' => $this->id,
+                    'type' => get_class($this),
+                    'amount' => $this->plan->hasTrial() ? 0 : $this->plan->price,
+                    'title' => $this->plan->name,
+                    'description' => view('plans._bill_desc', ['plan' => $this->plan]),
+                ],
+            ]
         ]);
-        $invoice->customer_id = $this->customer->id;
-        $invoice->currency_id = $this->plan->currency_id;
-
-        // save
-        $invoice->save();
-
-        // add invoice number
-        $invoice->createInvoiceNumber();
-
-        // data
-        $invoice->updateMetadata([
-            'subscription_uid' => $this->uid,
-        ]);
-
-        // add item
-        $invoiceItem = $invoice->invoiceItems()->create([
-            'item_id' => $this->id,
-            'item_type' => get_class($this),
-            'amount' => $this->plan->price,
-            'title' => $this->plan->name,
-            'description' => view('plans._bill_desc', ['plan' => $this->plan]),
-        ]);
-
-        return $invoice;
     }
 
     /**
@@ -220,7 +217,7 @@ class Subscription extends Model implements HasQuotaInterface
         $invoice->title = trans('messages.invoice.renew_subscription');
         $invoice->description = trans('messages.renew_subscription.desc', [
             'plan' => $this->plan->name,
-            'date' => $this->customer->formatDateTime($this->nextPeriod(), 'date_full'),
+            'date' => $this->customer->formatDateTime($this->nextPeriod(), 'datetime_full'),
         ]);
         $invoice->customer_id = $this->customer->id;
         $invoice->currency_id = $this->plan->currency_id;
@@ -282,7 +279,7 @@ class Subscription extends Model implements HasQuotaInterface
         $invoice->description = trans('messages.change_plan.desc', [
             'plan' => $this->plan->name,
             'newPlan' => $newPlan->name,
-            'date' => $this->customer->formatDateTime(Carbon::parse($metadata['endsAt']), 'date_full'),
+            'date' => $this->customer->formatDateTime(Carbon::parse($metadata['endsAt']), 'datetime_full'),
         ]);
         $invoice->customer_id = $this->customer->id;
         $invoice->currency_id = $this->plan->currency_id;
@@ -357,28 +354,18 @@ class Subscription extends Model implements HasQuotaInterface
      */
     public function getPeriodEndsAt($startDate)
     {
-        // dose not support recurring, update ends at column
-        $interval = $this->plan->frequency_unit;
-        $intervalCount = $this->plan->frequency_amount;
+        return getPeriodEndsAt($startDate, $this->plan->frequency_amount, $this->plan->frequency_unit);
+    }
 
-        switch ($interval) {
-            case 'month':
-                $endsAt = $startDate->addMonthsNoOverflow($intervalCount);
-                break;
-            case 'day':
-                $endsAt = $startDate->addDay($intervalCount);
-                break;
-            case 'week':
-                $endsAt = $startDate->addWeek($intervalCount);
-                break;
-            case 'year':
-                $endsAt = $startDate->addYearsNoOverflow($intervalCount);
-                break;
-            default:
-                $endsAt = null;
-        }
-
-        return $endsAt;
+    /**
+     * Get trial period by start date.
+     *
+     * @param  date  $date
+     * @return date
+     */
+    public function getTrialPeriodEndsAt($startDate)
+    {
+        return getPeriodEndsAt($startDate, $this->plan->trial_amount, $this->plan->trial_unit);
     }
 
     // 1 End luôn subscription nếu đã hết hạn
@@ -393,7 +380,15 @@ class Subscription extends Model implements HasQuotaInterface
             case self::STATUS_ACTIVE:
                 // check expired
                 if ($this->isExpired()) {
-                    $this->cancelNow();
+                    if ($this->canRenewFreePlan()) {
+                        $this->renew(); // auto renew free plan
+                    } else {
+                        // Cancel immediately only if allowed due subscription setting is no
+                        if (\Acelle\Model\Setting::get('allowed_due_subscription') == 'no') {
+                            $this->cancelNow();
+                        }
+                    }
+
                     return;
                 }
 
@@ -582,7 +577,12 @@ class Subscription extends Model implements HasQuotaInterface
             throw new \Exception("Only new subscription can be activated, double check your code to make sure you call activate() on a new subscription");
         }
 
-        $this->current_period_ends_at = $this->getPeriodEndsAt(Carbon::now());
+        if ($this->plan->hasTrial()) {
+            $this->current_period_ends_at = $this->getTrialPeriodEndsAt(Carbon::now());
+            $this->trial_ends_at = $this->getTrialPeriodEndsAt(Carbon::now());
+        } else {
+            $this->current_period_ends_at = $this->getPeriodEndsAt(Carbon::now());
+        }
         $this->ends_at = null;
         $this->status = self::STATUS_ACTIVE;
         $this->started_at = Carbon::now();
@@ -646,7 +646,11 @@ class Subscription extends Model implements HasQuotaInterface
      */
     public function isExpired()
     {
-        return isset($this->ends_at) && Carbon::now()->endOfDay() > $this->ends_at;
+        // Get the current datetime
+        $now = Carbon::now();
+
+        // Check if $now is Greater or Equal to...
+        return $now->gte($this->current_period_ends_at);
     }
 
     /**
@@ -753,6 +757,9 @@ class Subscription extends Model implements HasQuotaInterface
             $this->ends_at = $this->current_period_ends_at;
         }
 
+        // trial_ends_at should be set back to null
+        $this->trial_ends_at = null;
+
         $this->save();
 
         // logs
@@ -784,8 +791,13 @@ class Subscription extends Model implements HasQuotaInterface
     public function canRenewPlan()
     {
         return ($this->plan->price > 0 ||
-            (Setting::isYes('renew_free_plan') && $this->plan->price == 0)
+            (Setting::isYes('renew_free_plan') && $this->plan->isFree())
         );
+    }
+
+    public function canRenewFreePlan()
+    {
+        return Setting::isYes('renew_free_plan') && $this->plan->isFree();
     }
 
     /**
@@ -795,6 +807,12 @@ class Subscription extends Model implements HasQuotaInterface
      */
     public function calcChangePlan($plan)
     {
+        if ($this->plan->isUnlimited()) {
+            // temporarily disable this feature, otherwise, the plan's "unlimited" frequency_unit value will
+            // cause code broken
+            throw new Exception('Cannot change to a new plan if the current plan is unlimited');
+        }
+
         if (($this->plan->frequency_unit != $plan->frequency_unit) ||
             ($this->plan->frequency_amount != $plan->frequency_amount) ||
             ($this->plan->currency->code != $plan->currency->code)
@@ -848,9 +866,16 @@ class Subscription extends Model implements HasQuotaInterface
 
     public function getCreditsUsedDuringPlanCycle($name)
     {
-        $interval = "{$this->plan->frequency_amount} {$this->plan->frequency_unit}"; // '1 month' or '1 year' for example
-        $from = Carbon::now()->subtract($interval);
-        return $this->getCreditsUsed($name, $from);
+        // '1 month' or '1 year' for example
+        if ($this->plan->isUnlimited()) {
+            $used = $this->getCreditsUsed($name);
+        } else {
+            $interval = "{$this->plan->frequency_amount} {$this->plan->frequency_unit}";
+            $from = Carbon::now()->subtract($interval);
+            $used = $this->getCreditsUsed($name, $from);
+        }
+
+        return $used;
     }
 
     public function getCreditsLimit($name)
@@ -866,6 +891,13 @@ class Subscription extends Model implements HasQuotaInterface
     {
         $creditsUsed = $this->getCreditsUsedDuringPlanCycle($name);
         $creditsLimit = $this->plan->getOption('email_max');
+
+        // if = -1 (default:unlimited) return 0
+        // if = 0 return 0
+        if (!$creditsLimit || $creditsLimit == -1) {
+            return 0;
+        }
+
         $percentage = ($creditsLimit == QuotaManager::QUOTA_UNLIMITED) ? 0 : $creditsUsed / $creditsLimit;
 
         return $percentage;
@@ -875,5 +907,10 @@ class Subscription extends Model implements HasQuotaInterface
     public function getQuotaSettings($name): ?array
     {
         return $this->plan->getQuotaSettings($name);
+    }
+
+    public function getSendingCreditsRemaining()
+    {
+        return 998000;
     }
 }

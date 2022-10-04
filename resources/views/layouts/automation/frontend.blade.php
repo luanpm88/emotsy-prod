@@ -28,20 +28,22 @@
 	<header class="automation-header">
 		<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
 			<a class="navbar-brand left-logo" href="#">
-				@if (\Acelle\Model\Setting::get('site_logo_small'))
-					<img src="{{ action('SettingController@file', \Acelle\Model\Setting::get('site_logo_small')) }}" alt="">
+				@if (getThemeMode(Auth::user()->customer->theme_mode, request()->session()->get('customer-auto-theme-mode')) == 'light' &&
+					Auth::user()->customer->getColorScheme() == 'white'
+				)
+					<img class="logo" src="{{ getSiteLogoUrl('dark') }}" alt="">
 				@else
-					<img height="22" src="{{ URL::asset('images/logo-automail-light.svg') }}" alt="">
+					<img class="logo" src="{{ getSiteLogoUrl('light') }}" alt="">
 				@endif
 			</a>
 			<div class="d-inline-block d-flex mr-auto align-items-center">
 				<h1 class="">{{ $automation->name }}</h1>
-				<i class="material-icons-outlined automation-head-icon ml-2">alarm</i>
+				<i class="material-symbols-rounded automation-head-icon ml-2">alarm</i>
 			</div>
 			<div class="automation-top-menu">
 				{{-- <span class="mr-3 last_save_time"><i>{{ trans('messages.automation.designer.last_saved', ['time' => $automation->updated_at->diffForHumans()]) }}</i></span> --}}
 				<a href="{{ action('Automation2Controller@index') }}" class="action">
-					<i class="material-icons-outlined me-2">arrow_back</i>
+					<i class="material-symbols-rounded me-2">arrow_back</i>
 					{{ trans('messages.automation.go_back') }}
 				</a>
 
@@ -53,7 +55,7 @@
 					</select>
 
 					<a href="javascript:'" class="action">
-						<i class="material-icons-outlined me-2">
+						<i class="material-symbols-rounded me-2">
 	horizontal_split
 	</i>
 						{{ trans('messages.automation.switch_automation') }}
@@ -70,32 +72,32 @@
 							<div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
 								@can("admin_access", Auth::user())
 									<a class="dropdown-item d-flex align-items-center" href="{{ action("Admin\HomeController@index") }}">
-										<i class="material-icons-outlined me-2">double_arrow</i>
+										<i class="material-symbols-rounded me-2">double_arrow</i>
 										{{ trans('messages.admin_view') }}
 									</a>
 									<div class="dropdown-divider"></div>
 								@endif
 								<a class="dropdown-item d-flex align-items-center quota-view" href="{{ action("AccountController@quotaLog2") }}">
-									<i class="material-icons-outlined me-2">multiline_chart</i>
+									<i class="material-symbols-rounded me-2">multiline_chart</i>
 									<span class="">{{ trans('messages.used_quota') }}</span>
 								</a>
 								<a class="dropdown-item d-flex align-items-center" href="{{ action('SubscriptionController@index') }}">
-									<i class="material-icons-outlined me-2">redeem</i>
+									<i class="material-symbols-rounded me-2">redeem</i>
 									<span>{{ trans('messages.subscriptions') }}</span>
 								</a>
 								<a class="dropdown-item d-flex align-items-center" href="{{ action("AccountController@profile") }}">
-									<i class="material-icons-outlined me-2">account_circle</i>
+									<i class="material-symbols-rounded me-2">account_circle</i>
 									<span>{{ trans('messages.account') }}</span>
 								</a>
 								@if (Auth::user()->customer->canUseApi())
 									<a href="{{ action("AccountController@api") }}" class="dropdown-item d-flex align-items-center">
-										<i class="material-icons-outlined me-2">code</i>
+										<i class="material-symbols-rounded me-2">code</i>
 										<span>{{ trans('messages.campaign_api') }}</span>
 									</a>
 								@endif
 								<div class="dropdown-divider"></div>
 								<a class="dropdown-item d-flex align-items-center" href="{{ url("/logout") }}">
-									<i class="material-icons-outlined me-2">power_settings_new</i>
+									<i class="material-symbols-rounded me-2">power_settings_new</i>
 									<span>{{ trans('messages.logout') }}</span>
 								</a>
 							</div>

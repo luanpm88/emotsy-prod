@@ -38,6 +38,7 @@
                 strict: true,
                 showHelp: false,
                 showInlineToolbar: false,
+                emailMode: true,
                 lang: {!! json_encode(language()->getBuilderLang()) !!},
                 url: '{{ action('CampaignController@templateContent', $campaign->uid) }}',
                 backCallback: function() {
@@ -56,7 +57,7 @@
                 root: '{{ URL::asset('builder') }}/',
                 templates: templates,
                 filemanager: '{{ URL::asset('filemanager2/dialog.php') }}',
-                logo: '{{ \Acelle\Model\Setting::get('site_logo_small') ? action('SettingController@file', \Acelle\Model\Setting::get('site_logo_small')) : URL::asset('images/logo-automail-light.svg') }}',
+                logo: '{{ getSiteLogoUrl('dark') }}',
                 backgrounds: [
                     '{{ url('/images/backgrounds/images1.jpg') }}',
                     '{{ url('/images/backgrounds/images2.jpg') }}',
@@ -76,24 +77,8 @@
                 loaded: function() {
                     var thisEditor = this;
 
-                    // product widgets
-                    this.addContentWidget(new ProductListWidget(), 0, '{{ trans('builder.widget.e_commerce') }}');
-                    this.addContentWidget(new ProductWidget(), 0, '{{ trans('builder.widget.e_commerce') }}');
-
-                    // Rss widget
-                    this.addWidget(new RssWidget(), 'content', 3);
-
                     // add custom css
                     this.addCustomCss('{{ url('/core/css/builder-edit.css') }}');
-
-                    // load widgets from theme.js
-                    if (typeof(WidgetManager) !== 'undefined') {
-                        var widgets = WidgetManager.init();
-
-                        widgets.forEach(function(widget) {
-                            thisEditor.addContentWidget(widget, 0, '{{ trans('builder.widget.template_content') }}');
-                        });
-                    }
                 },
                 customInlineEdit: function(container) {
                     thisEditor = this;
@@ -173,6 +158,21 @@
                       }
                   }
                 }
+            });
+
+            // product widgets
+            editor.addWidget(new ProductListWidget(), {
+                index: 0,
+                group: '{{ trans('builder.widget.e_commerce') }}',
+            });
+            editor.addWidget(new ProductWidget(), {
+                index: 0,
+                group: '{{ trans('builder.widget.e_commerce') }}',
+            });
+
+            // Rss widget
+            editor.addWidget(new RssWidget(), {
+                index: 3
             });
           
             editor.init();

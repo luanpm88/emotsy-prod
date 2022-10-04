@@ -471,7 +471,7 @@ class EmailVerificationServer extends Model implements HasQuotaInterface
         if (is_null($this->logger)) {
             $formatter = new LineFormatter("[%datetime%] %channel%.%level_name%: %message%\n");
             $logfile = storage_path('logs/' . php_sapi_name() . "/everification-{$this->uid}-{$this->type}.log");
-            $stream = new RotatingFileHandler($logfile, 0, env('LOG_LEVEL'));
+            $stream = new RotatingFileHandler($logfile, 0, 'debug');
             $stream->setFormatter($formatter);
             $pid = getmypid();
             $logger = new Logger($pid);

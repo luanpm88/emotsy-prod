@@ -250,60 +250,19 @@ class InstallController extends Controller
         // connect mysql
         $mysqli = new \mysqli($database['hostname'], $database['username'], $database['password'], $database['database_name'], $database['port']);
 
-        // Check if database is not empty
-        $rules = [];
-        $tables_exist = false;
-        $prefix_check = empty($database['tables_prefix']) ? '' : "  AND table_name LIKE '".$database['tables_prefix']."%'";
-        $result = $mysqli->query("SELECT COUNT(DISTINCT `table_name`) as count FROM `information_schema`.`columns` WHERE `table_schema` = '".$database['database_name']."'");
-        $result = $result->fetch_object();
-        if ($result->count > 0) {
-            $tables_exist = true;
-        }
-
         $request->session()->forget('database_imported');
 
-        $this->validate($request, $rules);
+        // Drop all EXISTING tables
+        $sql = "SHOW TABLE STATUS";
+        $statement = $mysqli->query($sql);
+        while ($result = $statement->fetch_object()) {
+            $tableName = $result->Name;
 
-        // Drop all old table
-        // 1. Get & Drop all table names, try 4 times
-        $table_names = [];
-        $try = 5;
-        while ($try > 0) {
-            // extend query max setting
-            $mysqli->query('FLUSH TABLES;');
-            $mysqli->query('SET group_concat_max_len=9999999;');
-
-            $table_names_query = "SELECT GROUP_CONCAT(table_name)
-                                        AS table_names FROM information_schema.tables
-                                        WHERE table_schema = '".$database['database_name']."'";
-            $result = $mysqli->query($table_names_query);
-            $result = $result->fetch_object();
-            $table_names = array_merge($table_names, explode(",", $result->table_names));
-
-            // drop all tables
+            // drop the table
             $mysqli->query("SET FOREIGN_KEY_CHECKS = 0;");
-            foreach ($table_names as $table_name) {
-                $mysqli->query("DROP TABLE $table_name;");
-            }
+            $mysqli->query("DROP TABLE IF EXISTS {$tableName};");
             $mysqli->query("SET FOREIGN_KEY_CHECKS = 1;");
-
-            $mysqli->query('FLUSH TABLES;');
-
-            $try--;
         }
-
-        // 2. Check if all table are dropped
-        foreach ($table_names as $table_name) {
-            $result = $mysqli->query("SELECT COUNT(*) FROM $table_name LIMIT 1;");
-
-            // Table deleted if result == false
-            if ($result) {
-                $rules["can_not_empty_database"] = "required";
-            }
-        }
-
-        // 3. Validation
-        $this->validate($request, $rules);
 
         $request->session()->put('database_imported', true);
         $next_page = action('InstallController@cronJobs');
@@ -461,21 +420,10 @@ class InstallController extends Controller
         // connect mysql
         $mysqli = new \mysqli($database['hostname'], $database['username'], $database['password'], $database['database_name'], $database['port']);
 
-        // Check if database is not empty
-        $rules = [];
-        $tables_exist = false;
-        $prefix_check = empty($database['tables_prefix']) ? '' : "  AND table_name LIKE '".$database['tables_prefix']."%'";
-        $result = $mysqli->query("SELECT COUNT(DISTINCT `table_name`) as count FROM `information_schema`.`columns` WHERE `table_schema` = '".$database['database_name']."'");
-        $result = $result->fetch_object();
-        if ($result->count > 0) {
-            $tables_exist = true;
-        }
-
         return view('install.database_import', [
             'database' => $database,
             'step' => $this->step($request),
-            'current' => 3,
-            'tables_exist' => $tables_exist,
+            'current' => 3
         ]);
     }
 
@@ -525,101 +473,93 @@ class InstallController extends Controller
         return [
             [
                 'type' => 'requirement',
-                'name' => 'PHP version',
+                'name' => 'PHP',
                 'check' => version_compare(PHP_VERSION, config('custom.php'), '>='),
-                'note' => 'PHP '.config('custom.php').' or higher is required.',
+                'note' => trans('messages.install.error.php', ['version' => config('custom.php')]),
             ],
             [
                 'type' => 'requirement',
-                'name' => 'Mysqli Extension',
+                'name' => 'MySQLi',
                 'check' => function_exists('mysqli_connect'),
-                'note' => 'Mysqli Extension is required.',
+                'note' => trans('messages.install.error.extension', ['name' => 'MySQLi']),
             ],
             [
                 'type' => 'requirement',
-                'name' => 'OpenSSL Extension',
+                'name' => 'OpenSSL',
                 'check' => extension_loaded('openssl'),
-                'note' => 'OpenSSL PHP Extension is required.',
+                'note' => trans('messages.install.error.extension', ['name' => 'OpenSSL']),
             ],
-            //[
-            //    'type' => 'requirement',
-            //    'name' => 'GMP Extension',
-            //    'check' => extension_loaded('gmp'),
-            //    'note' => 'GMP Extension is required.',
-            //],
             [
                 'type' => 'requirement',
-                'name' => 'Mbstring PHP Extension',
+                'name' => 'Multibyte String',
                 'check' => extension_loaded('mbstring'),
-                'note' => 'Mbstring PHP Extension is required.',
+                'note' => trans('messages.install.error.extension', ['name' => 'Multibyte String']),
             ],
             [
                 'type' => 'requirement',
-                'name' => 'PDO PHP extension',
+                'name' => 'PHP PDO',
                 'check' => extension_loaded('pdo'),
-                'note' => 'PDO PHP extension is required.',
+                'note' => trans('messages.install.error.extension', ['name' => 'PHP PDO']),
             ],
             [
                 'type' => 'requirement',
-                'name' => 'Tokenizer PHP Extension',
+                'name' => 'Tokenizer',
                 'check' => extension_loaded('tokenizer'),
-                'note' => 'Tokenizer PHP Extension is required.',
+                'note' => trans('messages.install.error.extension', ['name' => 'Tokenizer']),
             ],
             [
                 'type' => 'requirement',
-                'name' => 'PHP Zip Archive',
+                'name' => 'PHP ZIP',
                 'check' => class_exists('ZipArchive', false),
-                'note' => 'PHP Zip Archive is required.',
+                'note' => trans('messages.install.error.extension', ['name' => 'PHP ZIP']),
             ],
             [
                 'type' => 'requirement',
-                'name' => 'IMAP Extension',
+                'name' => 'IMAP',
                 'check' => extension_loaded('imap'),
-                'note' => 'PHP IMAP Extension is required.',
+                'note' => trans('messages.install.error.extension', ['name' => 'IMAP']),
             ],
             [
                 'type' => 'requirement',
-                'name' => 'SQLite3 Extension',
+                'name' => 'SQLite3',
                 'check' => class_exists('SQLite3'),
-                'note' => 'PHP SQLite3 Extension is required.',
+                'note' => trans('messages.install.error.extension', ['name' => 'SQLite3']),
             ],
             [
                 'type' => 'requirement',
-                'name' => 'PHP GD Library',
+                'name' => 'PHP GD',
                 'check' => (extension_loaded('gd') && function_exists('gd_info')),
-                'note' => 'PHP GD Library is required.',
+                'note' => trans('messages.install.error.extension', ['name' => 'PHP GD']),
             ],
             [
                 'type' => 'requirement',
-                'name' => 'PHP Fileinfo extension',
+                'name' => 'PHP FileInfo',
                 'check' => extension_loaded('fileinfo'),
-                'note' => 'PHP Fileinfo extension is required.',
+                'note' => trans('messages.install.error.extension', ['name' => 'PHP FileInfo']),
             ],
             [
                 'type' => 'requirement',
-                'name' => 'PHP CURL extension',
+                'name' => 'PHP Curl',
                 'check' => extension_loaded('curl'),
-                'note' => 'PHP CURL extension is required.',
+                'note' => trans('messages.install.error.extension', ['name' => 'PHP Curl']),
             ],
             [
                 'type' => 'requirement',
-                'name' => 'PHP XML extension',
+                'name' => 'PHP XML',
                 'check' => extension_loaded('xml'),
-                'note' => 'PHP XML extension is required.',
+                'note' => trans('messages.install.error.extension', ['name' => 'PHP XML']),
             ],
-            /*
             [
                 'type' => 'requirement',
                 'name' => 'proc_close()',
                 'check' => func_enabled('proc_close'),
-                'note' => 'proc_close() must be enabled.',
+                'note' => trans('messages.install.error.function', ['name' => 'proc_close()']),
             ],
-            */
             [
                 'type' => 'requirement',
                 'name' => 'escapeshellarg()',
                 'check' => func_enabled('escapeshellarg'),
-                'note' => 'escapeshellarg() must be enabled.',
+                'note' => trans('messages.install.error.function', ['name' => 'escapeshellarg()']),
             ],
             [
                 'type' => 'permission',
@@ -627,31 +567,31 @@ class InstallController extends Controller
                 'check' => file_exists(base_path('/storage/app')) &&
                     is_dir(base_path('/storage/app')) &&
                     (is_writable(base_path('/storage/app'))),
-                'note' => 'The directory must be writable by the web server.',
+                'note' => trans('messages.install.notice.writable'),
             ],
             [
                 'type' => 'permission',
                 'name' => base_path('storage/framework'),
                 'check' => file_exists(base_path('/storage/framework')) && is_dir(base_path('/storage/framework')) && (is_writable(base_path('/storage/framework'))),
-                'note' => 'The directory must be writable by the web server.',
+                'note' => tRans('messages.install.notice.writable'),
             ],
             [
                 'type' => 'permission',
                 'name' => base_path('storage/logs'),
                 'check' => file_exists(base_path('/storage/logs')) && is_dir(base_path('/storage/logs')) && (is_writable(base_path('/storage/logs'))),
-                'note' => 'The directory must be writable by the web server.',
+                'note' => tRans('messages.install.notice.writable'),
             ],
             [
                 'type' => 'permission',
                 'name' => base_path('storage/job'),
                 'check' => file_exists(base_path('/storage/job')) && is_dir(base_path('/storage/job')) && (is_writable(base_path('/storage/job'))),
-                'note' => 'The directory must be writable by the web server.',
+                'note' => tRans('messages.install.notice.writable'),
             ],
             [
                 'type' => 'permission',
                 'name' => base_path('bootstrap/cache'),
                 'check' => file_exists(base_path('/bootstrap/cache')) && is_dir(base_path('/bootstrap/cache')) && (is_writable(base_path('/bootstrap/cache'))),
-                'note' => 'The directory must be writable by the web server.',
+                'note' => tRans('messages.install.notice.writable'),
             ],
         ];
     }
@@ -720,7 +660,7 @@ class InstallController extends Controller
         $smtp = $request->session()->get('site_info');
         $smtp = !empty($smtp) ? $smtp : [];
 
-        putPermanentEnv([
+        \Acelle\Helpers\write_envs([
             'APP_URL' => url('/'),
             'DB_HOST' => (isset($database['hostname']) ? $database['hostname'] : ''),
             'DB_DATABASE' => (isset($database['database_name']) ? $database['database_name'] : ''),

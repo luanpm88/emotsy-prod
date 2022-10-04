@@ -10,9 +10,51 @@
 
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/custom.css" rel="stylesheet">
+
+    <style>
+        @media (min-width: 768px) {
+            .container {
+                max-width: 650px;
+            }
+        }
+        @media (min-width: 992px) {
+            .container {
+                max-width: 760px;
+            }
+        }
+        @media (min-width: 769px) {
+            [data-hide-on="desktop"] {
+                display: none!important;
+            }
+        }
+        @media (max-width: 768px) {
+            [data-hide-on="mobile"] {
+                display: none!important;
+            }
+        }
+        @media (max-width: 768px) {
+            [builder-element=CellContainerElement] {
+                display: block!important;
+            }
+            [builder-element="CellElement"] {
+                width: 100%!important;
+                max-width: none!important;        
+            }
+            [builder-element="CellElement"], [builder-element="BlockElement"] {
+                padding-left: 0px!important;
+                padding-right: 0px!important;
+            }
+        }
+        @media (min-width: 600px) {
+            [builder-element=PricingTableElement] .col-12 {
+                flex-basis: 0;
+                flex-grow: 1;
+            }
+        }
+    </style>
   </head>
   <body class="builderjs-layout">    
-    <div builder-element="PageElement">
+    <div builder-element="PageElement" style="padding-top:50px;padding-bottom:50px;">
       <div builder-element="BlockElement" style="padding-top:15px;padding-bottom:15px">
             <div class="container">
                 <div builder-element="CellContainerElement" style="
@@ -109,21 +151,21 @@
         </div>
 
       <div builder-element="BlockElement" style="padding-top:15px;padding-bottom:15px">
-            <div class="container" style="padding-top:40px;padding-bottom:20px">
+            <div class="container" style="">
                 <div builder-element="IconsContainerElement" class="" style="text-align: center;">
-                    <a builder-element="IconLinkElement" href="" class="mr-3 me-3">
+                    <a builder-element="IconLinkElement" href="" class="mr-3 me-3 d-inline-block">
                     <img src="image/facebook.png"
                         style="width:40px;height:40px;border-radius: 100%;background-color: #fff;" />
                     </a>
-                    <a builder-element="IconLinkElement" builder-element href="" class="mr-3 me-3">
+                    <a builder-element="IconLinkElement" builder-element href="" class="mr-3 me-3 d-inline-block">
                     <img src="image/twitter.png"
                         style="width:40px;height:40px;border-radius: 100%;background-color: #fff;" />
                     </a>
-                    <a builder-element="IconLinkElement" builder-element href="" class="mr-3 me-3">
+                    <a builder-element="IconLinkElement" builder-element href="" class="mr-3 me-3 d-inline-block">
                     <img src="image/instagram.png"
                         style="width:40px;height:40px;border-radius: 100%;background-color: #fff;" />
                     </a>
-                    <a builder-element="IconLinkElement" builder-element href="" class="mr-3 me-3">
+                    <a builder-element="IconLinkElement" builder-element href="" class="mr-3 me-3 d-inline-block">
                         <img src="image/google-plus.png"
                             style="width:40px;height:40px;border-radius: 100%;background-color: #fff;" />
                     </a>
@@ -136,7 +178,7 @@
                 <div class="text-muted">
 
                     <div builder-element="TextElement">
-                        <p class="m-0" style="text-align: center;padding-bottom:5px;">Copyright &copy; 2021. All rights reserved.</p>
+                        <p class="m-0" style="text-align: center;padding-bottom:5px;">Copyright &copy; 2022. All rights reserved.</p>
                         <p class="m-0" style="text-align: center;padding-bottom:5px;">You can <a builder-element href="{UPDATE_PROFILE_URL}">update your preferences</a> or <a builder-element href="{UNSUBSCRIBE_URL}">unsubscribe from this list</a>.</p>
                     </div>
                     

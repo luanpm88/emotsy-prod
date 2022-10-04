@@ -1,4 +1,6 @@
-@extends('layouts.core.backend')
+@extends('layouts.core.backend', [
+    'menu' => 'profile',
+])
 
 @section('title', trans('messages.my_profile'))
 
@@ -10,7 +12,7 @@
             <li class="breadcrumb-item active">{{ trans('messages.profile') }}</li>
         </ul>
         <h1>
-            <span class="text-semibold"><span class="material-icons-round">
+            <span class="text-semibold"><span class="material-symbols-rounded">
                             person_outline
                             </span> {{ $user->displayName() }}</span>
         </h1>
@@ -20,7 +22,9 @@
 
 @section('content')
 
-    @include("admin.account._menu")
+    @include("admin.account._menu", [
+        'menu' => 'profile',
+    ])
 
     <form enctype="multipart/form-data" action="{{ action('Admin\AccountController@profile') }}" method="POST" class="form-validaate-jquery">
         {{ csrf_field() }}
@@ -41,10 +45,10 @@
                             <h5 class="media-heading text-semibold mt-2">{{ trans('messages.upload_your_photo') }}</h5>
                             <p class="mb-0">{{ trans('messages.photo_at_least', ["size" => "300px x 300px"]) }}</p>
                             <p>{!! trans('messages.image.upload_help', [ 'max' => \Acelle\Library\Tool::maxFileUploadInBytes()]) !!}</p>
-                            <a href="#upload" onclick="$('input[name=image]').trigger('click')" class="btn btn-primary me-1"><span class="material-icons-outlined">
+                            <a href="#upload" onclick="$('input[name=image]').trigger('click')" class="btn btn-primary me-1"><span class="material-symbols-rounded">
 file_download
 </span> {{ trans('messages.upload') }}</a>
-                            <a href="#remove" class="btn btn-secondary remove-profile-image"><span class="material-icons-outlined">
+                            <a href="#remove" class="btn btn-secondary remove-profile-image"><span class="material-symbols-rounded">
 delete_outline
 </span> {{ trans('messages.remove') }}</a>
                         </div>
@@ -143,37 +147,37 @@ delete_outline
                 var text = $(this).html();
                 if (text == '{{ trans('messages.default') }}') {
                     if($(this).find("i").length == 0) {
-                        $(this).prepend("<i class='material-icons-round text-teal-600 theme-option me-2'>padding</i>");
+                        $(this).prepend("<i class='material-symbols-rounded text-teal-600 theme-option me-2'>padding</i>");
                     }
                 }
                 if (text == '{{ trans('messages.blue') }}') {
                     if($(this).find("i").length == 0) {
-                        $(this).prepend("<i class='material-icons-round text-blue theme-option me-2'>padding</i>");
+                        $(this).prepend("<i class='material-symbols-rounded text-blue theme-option me-2'>padding</i>");
                     }
                 }
                 if (text == '{{ trans('messages.green') }}') {
                     if($(this).find("i").length == 0) {
-                        $(this).prepend("<i class='material-icons-round text-green theme-option me-2'>padding</i>");
+                        $(this).prepend("<i class='material-symbols-rounded text-green theme-option me-2'>padding</i>");
                     }
                 }
                 if (text == '{{ trans('messages.brown') }}') {
                     if($(this).find("i").length == 0) {
-                        $(this).prepend("<i class='material-icons-round text-brown theme-option me-2'>padding</i>");
+                        $(this).prepend("<i class='material-symbols-rounded text-brown theme-option me-2'>padding</i>");
                     }
                 }
                 if (text == '{{ trans('messages.pink') }}') {
                     if($(this).find("i").length == 0) {
-                        $(this).prepend("<i class='material-icons-round text-pink theme-option me-2'>padding</i>");
+                        $(this).prepend("<i class='material-symbols-rounded text-pink theme-option me-2'>padding</i>");
                     }
                 }
                 if (text == '{{ trans('messages.grey') }}') {
                     if($(this).find("i").length == 0) {
-                        $(this).prepend("<i class='material-icons-round text-grey theme-option me-2'>padding</i>");
+                        $(this).prepend("<i class='material-symbols-rounded text-grey theme-option me-2'>padding</i>");
                     }
                 }
                 if (text == '{{ trans('messages.white') }}') {
                     if($(this).find("i").length == 0) {
-                        $(this).prepend("<i class='material-icons-round text-white theme-option me-2'>padding</i>");
+                        $(this).prepend("<i class='material-symbols-rounded text-white theme-option me-2'>padding</i>");
                     }
                 }
             });
@@ -201,6 +205,8 @@ delete_outline
                     return (className.match (/(^|\s)theme-\S+/g) || []).join(' ');
                 });
                 $('body').addClass('theme-' + value);
+
+                detectLogo();
             });
         });
     </script>

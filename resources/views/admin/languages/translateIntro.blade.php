@@ -1,4 +1,6 @@
-@extends('layouts.core.backend')
+@extends('layouts.core.backend', [
+    'menu' => 'language',
+])
 
 @section('title', $language->name)
 
@@ -9,7 +11,7 @@
             <li class="breadcrumb-item"><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
         </ul>
         <h1>
-            <span class="text-semibold"><i class="material-icons-outlined">translate</i> {{ $language->name }}</span>
+            <span class="text-semibold"><i class="material-symbols-rounded">translate</i> {{ $language->name }}</span>
         </h1>
     </div>
                 

@@ -1,4 +1,6 @@
-@extends('layouts.core.frontend')
+@extends('layouts.core.frontend', [
+    'menu' => 'automation',
+])
 
 @section('title', trans('messages.Automations'))
 
@@ -16,7 +18,7 @@
             <li class="breadcrumb-item"><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
         </ul>
         <h1>
-            <span><span class="material-icons-round">
+            <span><span class="material-symbols-rounded">
                 format_list_bulleted
                 </span> {{ trans('messages.Automations') }}</span>
         </h1>				
@@ -50,23 +52,23 @@
                         <ul class="dropdown-menu">
                             <li>
                                 <a class="dropdown-item"
-                                    link-method="PATCH"
+                                    link-method="POST"
                                     link-confirm="{{ trans('messages.enable_automations_confirm') }}"
                                     href="{{ action('Automation2Controller@enable') }}"
                                 >
-                                    <span class="material-icons-outlined me-2">
+                                    <span class="material-symbols-rounded me-2">
 play_arrow
 </span> {{ trans('messages.enable') }}
                                 </a>
                             </li>
                             <li>
-                                <a class="dropdown-item" link-method="PATCH" link-confirm="{{ trans('messages.disable_automations_confirm') }}" href="{{ action('Automation2Controller@disable') }}">
-                                    <span class="material-icons-outlined me-2">
+                                <a class="dropdown-item" link-method="POST" link-confirm="{{ trans('messages.disable_automations_confirm') }}" href="{{ action('Automation2Controller@disable') }}">
+                                    <span class="material-symbols-rounded me-2">
 hide_source
 </span> {{ trans('messages.disable') }}</a></li>
                             <li>
                                 <a class="dropdown-item" link-method='delete' link-confirm="{{ trans('messages.delete_automations_confirm') }}" href="{{ action('Automation2Controller@delete') }}">
-                                <span class="material-icons-outlined me-2">
+                                <span class="material-symbols-rounded me-2">
 delete_outline
 </span> {{ trans('messages.delete') }}</a>
                             </li>
@@ -80,14 +82,14 @@ delete_outline
                         </select>										
                         <input type="hidden" name="sort_direction" value="desc" />
 <button type="button" class="btn btn-xs sort-direction" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
-                            <span class="material-icons-outlined desc">
+                            <span class="material-symbols-rounded desc">
 sort
 </span>
                         </button>
                     </span>
                     <span class="text-nowrap">
                         <input type="text" name="keyword" class="form-control search" value="{{ request()->keyword }}" placeholder="{{ trans('messages.type_to_search') }}" />
-                        <span class="material-icons-round">
+                        <span class="material-symbols-rounded">
 search
 </span>
                     </span>
@@ -95,7 +97,7 @@ search
             </div>
             <div class="text-end">
                 <a href="{{ action("Automation2Controller@wizard") }}" role="button" class="btn btn-secondary create-automation2">
-                    <span class="material-icons-round">
+                    <span class="material-symbols-rounded">
 add
 </span> {{ trans('messages.automation.create') }}
                 </a>

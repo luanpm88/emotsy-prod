@@ -22,7 +22,6 @@
 
 namespace Acelle\Model;
 
-use Acelle\Library\Log as MailLog;
 use Acelle\Library\StringHelper;
 use SendGrid\Mail;
 
@@ -48,8 +47,6 @@ class SendingServerSendGridApi extends SendingServerSendGrid
 
         # if response from SendGrid is 200, 202, 2xx
         if (preg_match('/^2../i', $statusCode)) {
-            MailLog::info('Sent!');
-
             $result = array(
                 // @deprecated
                 // 'runtime_message_id' => StringHelper::cleanupMessageId($this->getMessageId($response->headers())),

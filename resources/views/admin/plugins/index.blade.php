@@ -1,4 +1,6 @@
-@extends('layouts.core.backend')
+@extends('layouts.core.backend', [
+    'menu' => 'plugin',
+])
 
 @section('title', trans('messages.plugins'))
 
@@ -9,7 +11,7 @@
 			<li class="breadcrumb-item"><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
 		</ul>
 		<h1>
-			<span class="text-semibold"><span class="material-icons-round">
+			<span class="text-semibold"><span class="material-symbols-rounded">
                 format_list_bulleted
                 </span> {{ trans('messages.plugins') }}</span>
 		</h1>
@@ -34,20 +36,20 @@
 								{{ trans('messages.actions') }} <span class="number"></span><span class="caret"></span>
 							</button>
 							<ul class="dropdown-menu">
-								<li><a class="dropdown-item" link-confirm="{{ trans('messages.enable_plugins_confirm') }}" href="{{ action('Admin\PluginController@enable') }}"><span class="material-icons-outlined">
+								<li><a class="dropdown-item" link-confirm="{{ trans('messages.enable_plugins_confirm') }}" href="{{ action('Admin\PluginController@enable') }}"><span class="material-symbols-rounded">
 play_arrow
 </span> {{ trans('messages.enable') }}</a></li>
-								<li><a class="dropdown-item" link-confirm="{{ trans('messages.disable_plugins_confirm') }}" href="{{ action('Admin\PluginController@disable') }}"><span class="material-icons-outlined">
+								<li><a class="dropdown-item" link-confirm="{{ trans('messages.disable_plugins_confirm') }}" href="{{ action('Admin\PluginController@disable') }}"><span class="material-symbols-rounded">
 hide_source
 </span> {{ trans('messages.disable') }}</a></li>
-								<li><a class="dropdown-item" link-confirm="{{ trans('messages.delete_plugins_confirm') }}" href="{{ action('Admin\PluginController@delete') }}"><span class="material-icons-outlined">
+								<li><a class="dropdown-item" link-confirm="{{ trans('messages.delete_plugins_confirm') }}" href="{{ action('Admin\PluginController@delete') }}"><span class="material-symbols-rounded">
 delete_outline
 </span> {{ trans('messages.delete') }}</a></li>
 							</ul>
 						</div>
 						<span class="text-nowrap">
 							<input type="text" name="keyword" class="form-control search" value="{{ request()->keyword }}" placeholder="{{ trans('messages.type_to_search') }}" />
-							<span class="material-icons-round">
+							<span class="material-symbols-rounded">
 search
 </span>
 						</span>
@@ -56,7 +58,7 @@ search
 			</div>
 			<div class="text-end">
 				<a href="{{ action("Admin\PluginController@install") }}" role="button" class="btn btn-secondary">
-					<span class="material-icons-round">
+					<span class="material-symbols-rounded">
 add
 </span> {{ trans('messages.install_plugin') }}
 				</a>

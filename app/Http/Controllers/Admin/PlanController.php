@@ -55,60 +55,6 @@ class PlanController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create(Request $request)
-    {
-        $plan = new Plan([
-            'price' => 0,
-            'frequency_amount' => 1,
-            'frequency_unit' => 'month'
-        ]);
-
-        // authorize
-        if (\Gate::denies('create', $plan)) {
-            return $this->notAuthorized();
-        }
-
-        if (!empty($request->old())) {
-            $plan->fill($request->old());
-        }
-
-        // For options
-        if (isset($request->old()['options'])) {
-            $plan->options = json_encode($request->old()['options']);
-        }
-        $options = $plan->getOptions();
-
-        // Sending servers
-        if (isset($request->old()['sending_servers'])) {
-            $plan->plansSendingServers = collect([]);
-            foreach ($request->old()['sending_servers'] as $key => $param) {
-                if ($param['check']) {
-                    $server = \Acelle\Model\SendingServer::findByUid($key);
-                    $row = new \Acelle\Model\PlansSendingServer();
-                    $row->plan_id = $plan->id;
-                    $row->sending_server_id = $server->id;
-                    $row->fitness = $param['fitness'];
-                    $plan->plansSendingServers->push($row);
-                }
-            }
-        }
-
-        // Email verification servers
-        if (isset($request->old()['email_verification_servers'])) {
-            $plan->fillPlansEmailVerificationServers($request->old()['email_verification_servers']);
-        }
-
-        return view('admin.plans.create', [
-            'plan' => $plan,
-            'options' => $options
-        ]);
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param \Illuminate\Http\Request $request

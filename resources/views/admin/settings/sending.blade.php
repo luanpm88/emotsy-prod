@@ -1,4 +1,6 @@
-@extends('layouts.core.backend')
+@extends('layouts.core.backend', [
+    'menu' => 'setting',
+])
 
 @section('title', trans('messages.settings'))
 
@@ -9,7 +11,7 @@
 					<li class="breadcrumb-item"><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
 				</ul>
 				<h1>
-					<span class="text-gear"><span class="material-icons-outlined">
+					<span class="text-gear"><span class="material-symbols-rounded">
 email
 </span> {{ trans('messages.settings') }}</span>
 				</h1>

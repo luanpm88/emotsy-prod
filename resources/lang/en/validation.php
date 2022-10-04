@@ -100,6 +100,10 @@
   'confirmed' => 'The :attribute confirmation does not match.',
   'custom' => 
   array (
+    'domain' => 
+    array (
+      'regex' => 'The :attribute must be a valid domain or host name. For example: mydomain.com or mail.mydomain.com',
+    ),
     'miss_main_field_tag' => 
     array (
       'required' => 'Missing EMAIL field tag',
@@ -159,6 +163,10 @@
     'recaptcha_invalid' => 
     array (
       'required' => 'Invalid reCAPTCHA check.',
+    ),
+    'captcha_invalid' => 
+    array (
+      'required' => 'Invalid CAPTCHA check.',
     ),
     'payment_method_not_valid' => 
     array (

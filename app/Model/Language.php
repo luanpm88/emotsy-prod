@@ -396,7 +396,7 @@ class Language extends Model
             list($originFile, $langFile) = $this->createTranslationFile($source);
 
             if (realpath($originFile) != realpath($langFile)) {
-                \Acelle\Helpers\updateTranslationFile($langFile, $originFile, $overwrite = false, $sort = true);
+                \Acelle\Helpers\updateTranslationFile($langFile, $originFile, $overwrite = false, $deleteTargetKeys = true, $sort = true);
             }
         }
     }

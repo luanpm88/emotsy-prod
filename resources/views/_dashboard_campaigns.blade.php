@@ -1,5 +1,5 @@
 <h3 class="mt-5 mb-3">
-    <span class="material-icons-outlined me-2">
+    <span class="material-symbols-rounded me-2">
         history_toggle_off
         </span>
     {{ trans('messages.recently_sent_campaigns') }}
@@ -7,7 +7,7 @@
 
 @if (Auth::user()->customer->sentCampaigns()->count() == 0)
     <div class="empty-list">
-        <span class="material-icons-outlined">
+        <span class="material-symbols-rounded">
             auto_awesome
         </span>
         <span class="line-1">

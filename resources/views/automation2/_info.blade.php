@@ -32,7 +32,7 @@
     </p>
     <div>
         <a href="javascript:;" class="btn btn-info text-nowrap d-flex align-items-center" onclick="sidebar.load('{{ action('Automation2Controller@settings', $automation->uid) }}')">
-            <i class="material-icons-outlined me-2">auto_graph</i> {{ trans('messages.automation.settings') }}
+            <i class="material-symbols-rounded me-2">auto_graph</i> {{ trans('messages.automation.settings') }}
         </a>
     </div>         
 </div>
@@ -56,7 +56,7 @@
             ok: function(dialog) {
                 $.ajax({
                     url: url,
-                    type: 'PATCH',
+                    type: 'POST',
                     globalError: false,
                     data: {
                         _token: CSRF_TOKEN

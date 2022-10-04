@@ -1,4 +1,6 @@
-@extends('layouts.core.backend')
+@extends('layouts.core.backend', [
+	'menu' => 'sub_account',
+])
 
 @section('title', trans('messages.sub_accounts'))
 
@@ -9,7 +11,7 @@
             <li class="breadcrumb-item"><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
         </ul>
         <h1>
-            <span class="text-semibold"><span class="material-icons-round">
+            <span class="text-semibold"><span class="material-symbols-rounded">
                 format_list_bulleted
                 </span> {{ trans('messages.sub_accounts') }}</span>
         </h1>
@@ -38,7 +40,7 @@
                             </select>
                             <input type="hidden" name="sort_direction" value="desc" />
 <button type="button" class="btn btn-light sort-direction" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
-                                <span class="material-icons-outlined desc">
+                                <span class="material-symbols-rounded desc">
 sort
 </span>
                             </button>
@@ -54,7 +56,7 @@ sort
                         </span>
                         <span class="text-nowrap">
                             <input type="text" name="keyword" class="form-control search" value="{{ request()->keyword }}" placeholder="{{ trans('messages.type_to_search') }}" />
-                            <span class="material-icons-round">
+                            <span class="material-symbols-rounded">
 search
 </span>
                         </span>

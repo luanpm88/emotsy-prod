@@ -8,7 +8,9 @@
 
 @section('menu_right')
     @include('layouts.core._top_activity_log')
-    @include('layouts.core._menu_frontend_user')
+    @include('layouts.core._menu_frontend_user', [
+        'menu' => 'subscription',
+    ])
 @endsection
 
 @section('content')
@@ -31,7 +33,7 @@
                                 <p class="m-0 text-muted">{{ trans('messages.subscription.billing_information.subtitle') }}</p>
                             </div>
                             <div class="ms-auto">
-                                <span class="material-icons-outlined fs-4 text-success">
+                                <span class="material-symbols-rounded fs-4 text-success">
                                     task_alt
                                     </span>
                             </div>

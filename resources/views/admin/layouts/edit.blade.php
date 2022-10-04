@@ -12,8 +12,8 @@
 @section('menu_title')
     <li class="d-flex align-items-center">
         <div class="d-inline-block d-flex mr-auto align-items-center ml-1 lvl-1">
-            <h4 class="my-0 me-2 menu-title">{{ $layout->subject }}</h4>
-            <i class="material-icons-outlined">web</i>
+            <h4 class="my-0 me-2 menu-title text-white">{{ $layout->subject }}</h4>
+            <i class="material-symbols-rounded">web</i>
         </div>
     </li>
 @endsection
@@ -22,7 +22,7 @@
     <li class="nav-item d-flex align-items-center">
         <a  href="{{ action('Admin\LayoutController@index') }}"
             class="nav-link py-3 lvl-1 d-flex align-items-center">
-            <i class="material-icons-outlined me-2">arrow_back</i>
+            <i class="material-symbols-rounded me-2">arrow_back</i>
             <span>{{ trans('messages.go_back') }}</span>
         </a>
     </li>
@@ -32,7 +32,7 @@
     <li>
         <a href="{{ action('Admin\LayoutController@index') }}"
             class="nav-link close-button action black-close-button">
-            <i class="material-icons-outlined">close</i>
+            <i class="material-symbols-rounded">close</i>
         </a>
     </li>
 @endsection
@@ -170,6 +170,22 @@
                 },
                 success: function (response) {
                     window.location = response.url
+                }
+            });
+        });
+    </script>
+
+    <script>
+        $(function() {
+            // Click to insert tag
+            $(document).on("click", ".insert_tag_button", function() {
+                var tag = $(this).attr("data-tag-name");
+
+                if($('textarea[name="html"]').length || $('textarea[name="content"]').length) {
+                    tinymce.activeEditor.execCommand('mceInsertContent', false, tag);
+                } else {
+                    speechSynthesis;
+                    $('textarea[name="plain"]').val($('textarea[name="plain"]').val()+tag);
                 }
             });
         });

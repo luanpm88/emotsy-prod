@@ -6,6 +6,10 @@
             return getI18n('block');
         }
 
+        unselectCallback() {
+            this.obj.find('*').removeClass('rss-selected');
+        }
+
         getOptions() {
             var _this = this;
 
@@ -67,8 +71,24 @@
             // click outside item
             element.obj.find('[rss-item]').unbind('click');
             element.obj.find('[rss-item]').on('click', function(e) {
-                var rssItem = element.rssItemFactory($(this));
-                element.selectItem(rssItem);
+                var item = $(this);
+
+                
+                if(typeof(currentEditor.selected.rssItemFactory) !== 'undefined') {
+                    var rssItem = element.rssItemFactory(item);
+                    element.selectItem(rssItem);
+                // rss element not selected then select
+                } else {
+                    var t = $(this).closest('[builder-element="RssElement"]');
+                    var e = currentEditor.elementFactory(t);
+                    currentEditor.select(e);
+                    currentEditor.handleSelect(function() {
+                        setTimeout(function() {
+                            var rssItem = e.rssItemFactory(item);
+                            e.selectItem(rssItem);
+                        },200);
+                    });
+                }
             } )
 
             // click no item
@@ -152,17 +172,23 @@
             var _this = this;
 
             _this.setContent(`
-                <div class="container py-3" style="position:relative">
-                    <div class="rss-placeholder">
-                        <img src="{{ url('images/rss-placeholder.svg') }}" width="100%" />
+                <div class="rss-placeholder" style="text-align: center; display: flex; background-color: #666; padding: 40px 50px; color: #fff; border-radius: 5px;align-items:center;">
+                    <div style="margin-right: 50px;">
+                        <svg width="100px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 492 492"><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><circle cx="73.73" cy="418.3" r="69.7" style="fill:#fa9826"/><path d="M0,162.66v93C136,255.63,236.38,356,236.38,492h93C329.34,308,184,162.66,0,162.66Z" style="fill:#ef8114"/><path d="M8,0V92.94C224,92.94,399.06,268,399.06,492H492C492,220,272,0,8,0Z" style="fill:#ef8114"/><circle cx="73.73" cy="418.3" r="69.7" style="fill:#fa9826"/><path d="M0,162.66v93c120,0,221.8,90,234.67,206A469.17,469.17,0,0,0,322.92,426C294.17,275.78,160,162.66,0,162.66Z" style="fill:#fa9826"/><path d="M456.17,306.85C383.62,126.62,208,0,8,0V92.94c176,0,331.84,122.31,376.88,290.93C414.8,359.66,439.89,337.16,456.17,306.85Z" style="fill:#fa9826"/><path d="M73.73,348.58A69.66,69.66,0,0,0,30.94,473.25c37.74-13.59,75.72-33,112.35-58A69.67,69.67,0,0,0,73.73,348.58Z" style="fill:#fa9826"/><path d="M0,162.66v93c88,0,161.7,45.19,202.41,112.62,7.92-7.08,15.41-14.4,23.07-22C240.66,331,254.29,314.1,267.26,298,208.18,215.43,112,162.66,0,162.66Z" style="fill:#fa9826"/><path d="M8,0V92.94c120,0,232.25,57.19,304.75,146.48,18.19-29.88,33.06-57.24,43.82-87.6C267.8,60.24,144,0,8,0Z" style="fill:#fa9826"/><path d="M106.51,356.78a69.64,69.64,0,0,0-92.13,98C49.63,431.7,81,398.18,106.51,356.78Z" style="fill:#f9bd28"/><path d="M163.34,205C115.8,177.74,64,162.66,0,162.66v93c54.87.5,96,16.86,134.24,41.46A511.12,511.12,0,0,0,163.34,205Z" style="fill:#f9bd28"/><path d="M8,92.94c56,0,117.5,14.64,169.4,39.76,1.13-14.74.84-30.22.84-45.4,0-19.19.53-38-1.26-56.5C123.89,10.93,64,0,8,0Z" style="fill:#f9bd28"/></g></g></svg>
+                    </div>
+                    <div style="text-align: left;">
+                        <h4>RSS Feeds</h4>
+                        <p style="margin-bottom:0;font-size:14px">RSS stands for Really Simple Syndication, and it offers an easy way to<br />
+                        stay up to date on new content from websites you care about<br />
+                        Click to set up your RSS content</p>
                     </div>
                 </div>
             `);
 
-            _this.obj.find('img')[0].onload = function() {
-                currentEditor.select(_this);
-                currentEditor.handleSelect();
-            };
+            // _this.obj.find('img')[0].onload = function() {
+            //     currentEditor.select(_this);
+            //     currentEditor.handleSelect();
+            // };
         }
 
         loadRss(callback) {

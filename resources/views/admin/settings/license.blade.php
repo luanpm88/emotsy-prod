@@ -1,4 +1,6 @@
-@extends('layouts.core.backend')
+@extends('layouts.core.backend', [
+    'menu' => 'setting',
+])
 
 @section('title', trans('messages.license'))
 
@@ -9,7 +11,7 @@
             <li class="breadcrumb-item"><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
         </ul>
         <h1>
-            <span class="text-gear"><span class="material-icons-outlined">
+            <span class="text-gear"><span class="material-symbols-rounded">
 vpn_key
 </span> {{ trans('messages.license') }}</span>
         </h1>
@@ -40,9 +42,16 @@ vpn_key
 							<div class="sub-section">
 								<h3>{{ trans('messages.license.your_license') }}</h3>
 								<p>{{ trans('messages.your_current_license') }} <strong>{{ trans('messages.license_label_' . \Acelle\Model\Setting::get('license_type')) }}</strong></p>
-								<h4>
-									{{ $current_license }}
-								</h4>
+								<div class="d-flex align-items-center">
+									<h4 class="mb-0">
+										{{ $current_license }}
+									</h4>
+									<a href="{{ action('Admin\SettingController@licenseRemove') }}" class="btn btn-default ms-4" link-confirm="{{ trans('messages.license.remove.confirm') }}" link-method="POST">
+										<i class="material-symbols-rounded">delete</i>
+										{{ trans('messages.license.remove') }}
+									</a>
+								</div>
+									
 							</div>
                         @else
 							<div class="sub-section">

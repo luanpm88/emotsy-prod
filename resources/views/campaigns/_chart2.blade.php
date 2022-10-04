@@ -60,7 +60,7 @@
                 <span class="text-semibold">
                     {{ trans('messages.campaign.started_ago', [
                         'time' => $campaign->run_at ? $campaign->run_at->diffForHumans() : '',
-                    ]) }} <strong> · </strong> {{ Auth::user()->customer->formatDateTime($campaign->run_at, 'date_full') }}
+                    ]) }} <strong> · </strong> {{ Auth::user()->customer->formatDateTime($campaign->run_at, 'datetime_full') }}
                 </span>
             </p>
             <h2 class="mt-4 mb-2">100% delivered to active contacts</h2>

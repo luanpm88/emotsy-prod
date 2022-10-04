@@ -1,4 +1,6 @@
-@extends('layouts.core.frontend')
+@extends('layouts.core.frontend', [
+    'menu' => 'source',
+])
 
 @section('title', trans('messages.stores_connections'))
 
@@ -25,7 +27,7 @@
                     </p>
                     <div class="text-muted">
                         {{ trans('messages.source.connected_on', [
-                            'date' => Auth::user()->customer->formatDateTime($source->created_at, 'date_full'),
+                            'date' => Auth::user()->customer->formatDateTime($source->created_at, 'datetime_full'),
                         ]) }}
                         |
                         <a href="">{{ trans('messages.source.visit_store') }}</a>
@@ -52,8 +54,8 @@
 
             <div class="d-flex my-4 py-4 align-items-center">
                 <div class="mr-auto pr-4" style="width: 500px">
-                    <h4 class="font-weight-semibold mb-1">{{ trans('messages.store.connected_with_acelle') }}</h4>
-                    <p>{{ trans('messages.store.connected_with_acelle.desc') }}</p>
+                    <h4 class="font-weight-semibold mb-1">{{ trans('messages.store.connected') }}</h4>
+                    <p>{{ trans('messages.store.connected.desc') }}</p>
                 </div>
                 <div class="text-right">
                     <a href="" class="btn btn-secondary">{{ trans('messages.source.refresh') }}</a>
@@ -63,13 +65,13 @@
             <div class="source-stats">
                 <div class="source-desc-line pt-4 mb-4 d-flex">
                     <div class="mr-4">
-                        <span class="material-icons-outlined" style="font-size:24px">
+                        <span class="material-symbols-rounded" style="font-size:24px">
                             inventory_2
                             </span>
                     </div>
                     <div class="desc">
                         <h5 class="mt-0 mb-1 text-primary">{!! trans('messages.source.have_products', [
-                            'count' => format_number($source->productsCount()),
+                            'count' => number_with_delimiter($source->productsCount(), $precision = 0),
                         ]) !!}</h5>
                         <div class="">{{ trans('messages.source.your_store_synchronized') }}</div>
                     </div>
@@ -82,7 +84,7 @@
                 <div class="source-desc-line pt-4 my-4 d-flex" style="justify-content: space-between">
                     <div class="d-flex">
                         <div class="mr-4">
-                            <span class="material-icons-outlined" style="font-size:24px">
+                            <span class="material-symbols-rounded" style="font-size:24px">
                                 fact_check
                                 </span>
                         </div>
@@ -120,7 +122,7 @@
                 @if ($automation->getAbandonedCartEmail()->isSetup())
                     <div class="source-desc-line pt-4 my-4 d-flex">
                         <div class="mr-4">
-                            <span class="material-icons-outlined" style="font-size:24px">
+                            <span class="material-symbols-rounded" style="font-size:24px">
                                 mark_email_unread
                                 </span>
                         </div>
@@ -151,7 +153,7 @@
                 @else
                     <div class="source-desc-line pt-4 my-4 d-flex">
                         <div class="mr-4">
-                            <span class="material-icons-outlined" style="font-size:24px">
+                            <span class="material-symbols-rounded" style="font-size:24px">
                                 mark_email_unread
                                 </span>
                         </div>

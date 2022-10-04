@@ -1,7 +1,7 @@
 @extends('layouts.popup.medium')
 
 @section('title')
-    <i class="material-icons-outlined alert-icon mr-2">backup_table</i>
+    <i class="material-symbols-rounded alert-icon mr-2">backup_table</i>
     {{ trans("messages.template") }}
 @endsection
 
@@ -10,7 +10,7 @@
         <div class="col-md-12">
             <h4 class="">{{ trans('messages.campaign.upload_custom_template') }}</h4>
                 
-            @include('campaigns.template._tabs')
+            @include('campaigns.template._tabs', ['templateUpload' => true])
             
             <p>{!! trans('messages.template.upload.instruction', ["link" => url('/download/Sample-Template.zip') ]) !!}</p>
 
@@ -22,6 +22,7 @@
                 {{ csrf_field() }}
 
                 <input type="hidden" name="name" value="{{ $campaign->name }}" />
+                <input type="hidden" name="type" value="{{ Acelle\Model\Template::TYPE_EMAIL }}" />
 
                 @include('helpers.form_control', ['required' => true, 'type' => 'file', 'label' => trans('messages.upload_file'), 'name' => 'file'])
 				

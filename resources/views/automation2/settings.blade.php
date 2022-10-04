@@ -25,7 +25,7 @@
                 'name' => 'mail_list_uid',
                 'type' => 'select',
                 'label' => trans('messages.automation.change_mail_list'),
-                'value' => (is_object($automation->mailList) ? $automation->mailList->uid : ''),
+                'value' => ($automation->mailList ? $automation->mailList->uid : ''),
                 'options' => Auth::user()->customer->readCache('MailListSelectOptions', []),
                 'rules' => $automation->rules(),
             ])
@@ -62,7 +62,7 @@
                 data-confirm="{{ trans('messages.automation.delete.confirm') }}"
                 class="btn btn-secondary automation-delete"
             >
-                <span class="material-icons-outlined">
+                <span class="material-symbols-rounded">
 delete
 </span> {{ trans('messages.automation.delete_automation') }}
             </a>
@@ -155,8 +155,9 @@ delete
                 //
                 $.ajax({
                     url: url,
-                    method: 'DELETE',
+                    method: 'POST',
                     data: {
+                        _method: 'DELETE',
                         _token: CSRF_TOKEN,
                     },
                     statusCode: {

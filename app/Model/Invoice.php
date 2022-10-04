@@ -9,6 +9,7 @@ use Acelle\Model\Transaction;
 use Acelle\Library\Traits\HasUid;
 use Dompdf\Dompdf;
 use Acelle\Library\StringHelper;
+
 use function Acelle\Helpers\getAppHost;
 
 class Invoice extends Model
@@ -186,7 +187,7 @@ class Invoice extends Model
             $total += $item->total();
         }
 
-        return $total;
+        return $total + $this->fee;
     }
 
     /**
@@ -400,7 +401,7 @@ class Invoice extends Model
             case self::TYPE_RENEW_SUBSCRIPTION:
                 $subscription = Subscription::findByUid($this->getMetadata()['subscription_uid']);
                 $chargeInfo = trans('messages.bill.charge_before', [
-                    'date' => $this->customer->formatDateTime($subscription->current_period_ends_at, 'date_full'),
+                    'date' => $this->customer->formatDateTime($subscription->current_period_ends_at, 'datetime_full'),
                 ]);
                 $plan = $subscription->plan;
                 break;
@@ -427,7 +428,7 @@ class Invoice extends Model
                     'description' => $item->description,
                     'price' => format_price($item->amount, $item->invoice->currency->format),
                     'tax' => format_price($item->getTax(), $item->invoice->currency->format),
-                    'tax_p' => format_number($item->getTaxPercent()),
+                    'tax_p' => number_with_delimiter($item->getTaxPercent()),
                     'discount' => format_price($item->discount, $item->invoice->currency->format),
                     'sub_total' => format_price($item->subTotal(), $item->invoice->currency->format),
                 ];
@@ -441,6 +442,8 @@ class Invoice extends Model
             'due_date' => $this->created_at,
             'type' => $this->type,
             'plan' => $plan,
+            'has_fee' => $this->fee ? $this->fee > 0 : false,
+            'fee' => $this->fee ? format_price($this->fee, $this->currency->format) : null,
             'billing_first_name' => $this->billing_first_name,
             'billing_last_name' => $this->billing_last_name,
             'billing_address' => $this->billing_address,
@@ -623,6 +626,53 @@ class Invoice extends Model
         return $this->billing_first_name . ' ' . $this->billing_last_name;
     }
 
+    public static function createInvoice($options)
+    {
+        // create invoice
+        $invoice = new self();
+        $invoice->status = self::STATUS_NEW;
+        $invoice->type = $options['status'];
+
+
+        $invoice->title = $options['title'];
+        $invoice->description = $options['description'];
+        $invoice->customer_id = $options['customer_id'];
+        $invoice->currency_id = $options['currency_id'];
+
+        // default billing info
+        // $billingAddress = $this->customer->getDefaultBillingAddress();
+        if ($options['billingAddress']) {
+            $invoice->billing_first_name = $options['billingAddress']->first_name;
+            $invoice->billing_last_name = $options['billingAddress']->last_name;
+            $invoice->billing_address = $options['billingAddress']->address;
+            $invoice->billing_email = $options['billingAddress']->email;
+            $invoice->billing_phone = $options['billingAddress']->phone;
+            $invoice->billing_country_id = $options['billingAddress']->country_id;
+        }
+
+        // save
+        $invoice->save();
+
+        // add invoice number
+        $invoice->createInvoiceNumber();
+
+        // data
+        $invoice->updateMetadata($options['metadata']);
+
+        // add item
+        foreach ($options['items'] as $item) {
+            $invoiceItem = $invoice->invoiceItems()->create([
+                'item_id' => $item['id'],
+                'item_type' => $item['type'],
+                'amount' => $item['amount'],
+                'title' => $item['title'],
+                'description' => $item['description'],
+            ]);
+        }
+
+        return $invoice;
+    }
+
     public function hasBillingInformation()
     {
         if (empty($this->billing_first_name) ||
@@ -665,8 +715,8 @@ class Invoice extends Model
             ['tag' => '{EMAIL}', 'value' => $bill['billing_email']],
             ['tag' => '{PHONE}', 'value' => $bill['billing_phone']],
             ['tag' => '{INVOICE_NUMBER}', 'value' => $this->number],
-            ['tag' => '{CURRENT_DATETIME}', 'value' => $this->customer->formatCurrentDateTime('date_full')],
-            ['tag' => '{INVOICE_DUE_DATE}', 'value' => $this->customer->formatDateTime($bill['due_date'], 'date_full')],
+            ['tag' => '{CURRENT_DATETIME}', 'value' => $this->customer->formatCurrentDateTime('datetime_full')],
+            ['tag' => '{INVOICE_DUE_DATE}', 'value' => $this->customer->formatDateTime($bill['due_date'], 'datetime_full')],
             ['tag' => '{ITEMS}', 'value' => view('invoices._template_items', [
                 'bill' => $bill,
                 'invoice' => $this,
@@ -763,5 +813,13 @@ class Invoice extends Model
 
         // update current number
         \Acelle\Model\Setting::set('invoice.current', ($currentNumber + 1));
+    }
+
+    public function updatePaymentServiceFee($gateway)
+    {
+        if ($this->subTotal() == 0) {
+            $this->fee = $gateway->getMinimumChargeAmount($this->currency->code);
+            $this->save();
+        }
     }
 }

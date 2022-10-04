@@ -17,7 +17,7 @@
 		@foreach ($blacklists as $key => $blacklist)
 			<tr>
 				<td width="1%">
-					<div class="checkbox inline">
+					<div class="checkbox inline me-1">
 						<label>
 							<input type="checkbox" class="node styled"
 								name="uids[]"
@@ -31,7 +31,7 @@
 					<span class="text-muted second-line-mobile">{{ trans('messages.email') }}</span>
 				</td>
 				<td>
-					<span class="no-margin kq_search">{{ Auth::user()->customer->formatDateTime($blacklist->created_at, 'date_full') }}</span>
+					<span class="no-margin kq_search">{{ Auth::user()->customer->formatDateTime($blacklist->created_at, 'datetime_full') }}</span>
 					<span class="text-muted second-line-mobile">{{ trans('messages.created_at') }}</span>
 				</td>
 				<td class="text-end">
@@ -53,7 +53,7 @@
 	
 @elseif (!empty(request()->keyword) || !empty(request()->filters["campaign_uid"]))
 	<div class="empty-list">
-		<span class="material-icons-outlined">
+		<span class="material-symbols-rounded">
 block
 </span>
 		<span class="line-1">
@@ -62,7 +62,7 @@ block
 	</div>
 @else
 	<div class="empty-list">
-		<span class="material-icons-outlined">
+		<span class="material-symbols-rounded">
 block
 </span>
 		<span class="line-1">

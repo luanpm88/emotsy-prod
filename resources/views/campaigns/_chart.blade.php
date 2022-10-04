@@ -1,4 +1,4 @@
-<h4 class="mt-4 mb-3"><i class="icon-stats-dots"></i> {{ trans('messages.statistics') }}</h4>
+<h4 class="mt-4 mb-3">{{ trans('messages.statistics') }}</h4>
 <p class="mb-3">{!! trans('messages.campaign_table_chart_intro') !!}</p>
 
 <div class="row">
@@ -26,7 +26,7 @@
                     'delivered' => $campaign->deliveredCount(),
                 ]) }}
             </span><span class="px-2"> · </span>
-            <a class="text-warning" href="{{ action('CampaignController@openLog', $campaign->uid) }}"><span class="material-icons-outlined">
+            <a class="text-warning" href="{{ action('CampaignController@openLog', $campaign->uid) }}"><span class="material-symbols-rounded">
 arrow_forward
 </span> {{ trans('messages.view_log') }}</a>
         </div>
@@ -40,7 +40,7 @@ arrow_forward
                     'total' => $campaign->readCache('SubscriberCount', 0),
                 ]) }}
             </span><span class="px-2"> · </span>
-            <a class="text-warning" href="{{ action('CampaignController@subscribers', ['uid' => $campaign->uid, 'open' => 'not_opened']) }}"><span class="material-icons-outlined">
+            <a class="text-warning" href="{{ action('CampaignController@subscribers', ['uid' => $campaign->uid, 'open' => 'not_opened']) }}"><span class="material-symbols-rounded">
 arrow_forward
 </span> {{ trans('messages.view_log') }}</a>
         </div>
@@ -54,7 +54,7 @@ arrow_forward
                     'total' => $campaign->openUniqCount()
                 ]) }}
             </span><span class="px-2"> · </span>
-            <a class="text-warning" href="{{ action('CampaignController@clickLog', $campaign->uid) }}"><span class="material-icons-outlined">
+            <a class="text-warning" href="{{ action('CampaignController@clickLog', $campaign->uid) }}"><span class="material-symbols-rounded">
 arrow_forward
 </span> {{ trans('messages.view_log') }}</a>
         </div>
@@ -67,7 +67,7 @@ arrow_forward
                     'count' => $campaign->unsubscribeCount()
                 ]) }}
             </span><span class="px-2"> · </span>
-            <a class="text-warning" href="{{ action('CampaignController@unsubscribeLog', $campaign->uid) }}"><span class="material-icons-outlined">
+            <a class="text-warning" href="{{ action('CampaignController@unsubscribeLog', $campaign->uid) }}"><span class="material-symbols-rounded">
 arrow_forward
 </span> {{ trans('messages.view_log') }}</a>
         </div>
@@ -80,7 +80,7 @@ arrow_forward
                     'count' => $campaign->bounceCount()
                 ]) }}
             </span><span class="px-2"> · </span>
-            <a class="text-warning" href="{{ action('CampaignController@bounceLog', $campaign->uid) }}"><span class="material-icons-outlined">
+            <a class="text-warning" href="{{ action('CampaignController@bounceLog', $campaign->uid) }}"><span class="material-symbols-rounded">
 arrow_forward
 </span> {{ trans('messages.view_log') }}</a>
         </div>
@@ -93,7 +93,7 @@ arrow_forward
                     'count' => $campaign->feedbackCount()
                 ]) }}
             </span><span class="px-2"> · </span>
-            <a class="text-warning" href="{{ action('CampaignController@feedbackLog', $campaign->uid) }}"><span class="material-icons-outlined">
+            <a class="text-warning" href="{{ action('CampaignController@feedbackLog', $campaign->uid) }}"><span class="material-symbols-rounded">
 arrow_forward
 </span> {{ trans('messages.view_log') }}</a>
         </div>

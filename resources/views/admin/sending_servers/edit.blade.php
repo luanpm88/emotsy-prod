@@ -1,4 +1,6 @@
-@extends('layouts.core.backend')
+@extends('layouts.core.backend', [
+	'menu' => 'sending_server',
+])
 
 @section('title', $server->name)
 
@@ -23,7 +25,7 @@
         </ul>
         <h1>
             <div class="d-flex align-items-center">
-                <span class="text-semibold me-3"><span class="material-icons-outlined">
+                <span class="text-semibold me-3"><span class="material-symbols-rounded">
     edit
     </span>
                     {{ $server->name }}

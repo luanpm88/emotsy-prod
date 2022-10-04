@@ -17,7 +17,7 @@
     
 @else
     <div class="empty-list">
-        <i class="material-icons-outlined">featured_play_list</i>
+        <i class="material-symbols-rounded">featured_play_list</i>
         <span class="line-1">
             {{ trans('messages.automation.email.empty_template_list') }}
         </span>

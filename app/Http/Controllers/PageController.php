@@ -128,7 +128,7 @@ class PageController extends Controller
         $page = \Acelle\Model\Page::findPage($list, $layout);
 
         // Language
-        if (is_object($list->customer) && is_object($list->customer->language)) {
+        if ($list->customer && $list->customer->language) {
             \App::setLocale($list->customer->language->code);
             \Carbon\Carbon::setLocale($list->customer->language->code);
         }
@@ -199,7 +199,7 @@ class PageController extends Controller
         $subscriber = \Acelle\Model\Subscriber::findByUid($request->subscriber_uid);
 
         // Language
-        if (is_object($list->customer) && is_object($list->customer->language)) {
+        if ($list->customer && $list->customer->language) {
             \App::setLocale($list->customer->language->code);
             \Carbon\Carbon::setLocale($list->customer->language->code);
         }
@@ -233,7 +233,7 @@ class PageController extends Controller
         $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
 
         // Language
-        if (is_object($list->customer) && is_object($list->customer->language)) {
+        if ($list->customer && $list->customer->language) {
             \App::setLocale($list->customer->language->code);
             \Carbon\Carbon::setLocale($list->customer->language->code);
         }
@@ -277,7 +277,7 @@ class PageController extends Controller
         $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
 
         // Language
-        if (is_object($list->customer) && is_object($list->customer->language)) {
+        if ($list->customer && $list->customer->language) {
             \App::setLocale($list->customer->language->code);
             \Carbon\Carbon::setLocale($list->customer->language->code);
         }
@@ -286,7 +286,6 @@ class PageController extends Controller
 
         if ($request->isMethod('post')) {
             if ($subscriber->getSecurityToken('unsubscribe') == $request->code && $subscriber->status == 'subscribed') {
-
                 // User Tracking Information
                 $trackingInfo = [
                     'message_id' => null,
@@ -327,7 +326,7 @@ class PageController extends Controller
         $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
 
         // Language
-        if (is_object($list->customer) && is_object($list->customer->language)) {
+        if ($list->customer && $list->customer->language) {
             \App::setLocale($list->customer->language->code);
             \Carbon\Carbon::setLocale($list->customer->language->code);
         }
@@ -362,7 +361,7 @@ class PageController extends Controller
         $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
 
         // Language
-        if (is_object($list->customer) && is_object($list->customer->language)) {
+        if ($list->customer && $list->customer->language) {
             \App::setLocale($list->customer->language->code);
             \Carbon\Carbon::setLocale($list->customer->language->code);
         }
@@ -429,7 +428,7 @@ class PageController extends Controller
         $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
 
         // Language
-        if (is_object($list->customer) && is_object($list->customer->language)) {
+        if ($list->customer && $list->customer->language) {
             \App::setLocale($list->customer->language->code);
             \Carbon\Carbon::setLocale($list->customer->language->code);
         }
@@ -464,7 +463,7 @@ class PageController extends Controller
         $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
 
         // Language
-        if (is_object($list->customer) && is_object($list->customer->language)) {
+        if ($list->customer && $list->customer->language) {
             \App::setLocale($list->customer->language->code);
             \Carbon\Carbon::setLocale($list->customer->language->code);
         }

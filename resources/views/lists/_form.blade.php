@@ -105,11 +105,11 @@
     <h2 class="text-semibold">{{ trans('messages.settings') }}</h2>
     <h3 class="text-semibold">{{ trans('messages.subscription') }}</h3>
     <div class="row">
-        <div class="col-md-6 hide">
+        {{-- <div class="col-md-6 hide">
             @include('helpers.form_control', ['type' => 'text', 'name' => 'email_subscribe', 'value' => $list->email_subscribe, 'help_class' => 'list', 'rules' => Acelle\Model\MailList::$rules])
             @include('helpers.form_control', ['type' => 'text', 'name' => 'email_unsubscribe', 'value' => $list->email_unsubscribe, 'help_class' => 'list', 'rules' => Acelle\Model\MailList::$rules])
             <br />
-        </div>
+        </div> --}}
         <div class="col-md-6">
             <div class="form-group checkbox-right-switch">
                 @if ($allowedSingleOptin)
@@ -186,7 +186,7 @@
                                 'class' => 'numeric',
                                 'name' => 'sending_servers[' . $server->uid . '][fitness]',
                                 'label' => '',
-                                'value' => (is_object($list->mailListsSendingServers()->where('sending_server_id', $server->id)->first()) ? $list->mailListsSendingServers()->where('sending_server_id', $server->id)->first()->fitness : "100"),
+                                'value' => ($list->mailListsSendingServers()->where('sending_server_id', $server->id)->first() ? $list->mailListsSendingServers()->where('sending_server_id', $server->id)->first()->fitness : "100"),
                                 'help_class' => 'list',
                                 'rules' => Acelle\Model\MailList::$rules
                             ])
@@ -232,15 +232,6 @@
     });
 
     $(function() {
-        // Initializes and creates emoji set from sprite sheet
-        window.emojiPicker = new EmojiPicker({
-          emojiable_selector: '[data-emojiable=true]',
-          assetsPath: 'http://onesignal.github.io/emoji-picker/lib/img/',
-          popupButtonClasses: 'fa fa-smile-o'
-        });
-        // Finds all elements with `emojiable_selector` and converts them to rich emoji input fields
-        // You may want to delay this step if you have dynamically created input fields that appear later in the loading process
-        // It can be called as many times as necessary; previously converted input fields will not be converted again
-        window.emojiPicker.discover();
+        $('.has-emoji input[type=text]').emojioneArea();
     });
 </script>

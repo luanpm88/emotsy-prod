@@ -1,4 +1,6 @@
-@extends('layouts.core.frontend')
+@extends('layouts.core.frontend', [
+    'menu' => false,
+])
 
 @section('title', trans('messages.stores_connections'))
 
@@ -25,7 +27,7 @@
                     </p>
                     <div class="text-muted">
                         {{ trans('messages.source.connected_on', [
-                            'date' => Auth::user()->customer->formatDateTime($source->created_at, 'date_full'),
+                            'date' => Auth::user()->customer->formatDateTime($source->created_at, 'datetime_full'),
                         ]) }}
                         |
                         <a href="">{{ trans('messages.source.visit_store') }}</a>
@@ -52,8 +54,8 @@
 
             <div class="d-flex my-4 py-4 align-items-center">
                 <div class="mr-auto pr-4" style="width: 500px">
-                    <h4 class="font-weight-semibold mb-1">{{ trans('messages.store.connected_with_acelle') }}</h4>
-                    <p>{{ trans('messages.store.connected_with_acelle.desc') }}</p>
+                    <h4 class="font-weight-semibold mb-1">{{ trans('messages.store.connected') }}</h4>
+                    <p>{{ trans('messages.store.connected.desc') }}</p>
                 </div>
                 <div class="text-right">
                     <a href="" class="btn btn-secondary">{{ trans('messages.source.refresh') }}</a>
@@ -67,7 +69,7 @@
                     </div>
                     <div class="desc">
                         <h5 class="mt-0 mb-1 text-primary">{!! trans('messages.source.have_products', [
-                            'count' => format_number($source->productsCount()),
+                            'count' => number_with_delimiter($source->productsCount(), $precision = 0),
                         ]) !!}</h5>
                         <div class="">{{ trans('messages.source.your_store_synchronized') }}</div>
                     </div>

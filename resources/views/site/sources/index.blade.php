@@ -1,4 +1,6 @@
-@extends('layouts.core.frontend')
+@extends('layouts.core.frontend', [
+    'menu' => false,
+])
 
 @section('title', trans('messages.stores_connections'))
 
@@ -8,7 +10,7 @@
 			<li class="breadcrumb-item"><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
 		</ul>
 		<h1>
-			<span class="text-semibold"><span class="material-icons-round">
+			<span class="text-semibold"><span class="material-symbols-rounded">
                 format_list_bulleted
                 </span> {{ trans('messages.stores_connections') }}</span>
 		</h1>
@@ -30,14 +32,14 @@
                         </select>
                         <input type="hidden" name="sort_direction" value="desc" />
 <button type="button" class="btn btn-xs sort-direction" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
-                            <span class="material-icons-outlined desc">
+                            <span class="material-symbols-rounded desc">
 sort
 </span>
                         </button>
                     </span>
                     <span class="text-nowrap">
                         <input type="text" name="keyword" class="form-control search" value="{{ request()->keyword }}" placeholder="{{ trans('messages.type_to_search') }}" />
-                        <span class="material-icons-round">
+                        <span class="material-symbols-rounded">
 search
 </span>
                     </span>
@@ -45,7 +47,7 @@ search
             </div>
             <div class="text-end">
                 <a href="{{ action("Site\SourceController@create") }}" role="button" class="btn btn-secondary m-icon">
-                    <span class="material-icons-outlined">add</span> {{ trans('messages.source.add_new') }}
+                    <span class="material-symbols-rounded">add</span> {{ trans('messages.source.add_new') }}
                 </a>
             </div>
         </div>

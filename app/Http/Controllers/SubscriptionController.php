@@ -7,10 +7,12 @@ use Illuminate\Support\Facades\Log as LaravelLog;
 use Acelle\Model\Subscription;
 use Acelle\Model\Setting;
 use Acelle\Model\Plan;
+use Acelle\Model\Invoice;
 use Acelle\Cashier\Cashier;
 use Acelle\Cashier\Services\StripeGatewayService;
 use Carbon\Carbon;
 use Acelle\Model\SubscriptionLog;
+use Acelle\Library\Facades\Billing;
 
 class SubscriptionController extends Controller
 {
@@ -32,7 +34,7 @@ class SubscriptionController extends Controller
         //    2 Sinh ra RENEW invoice
         //    3 Xử lý thanh toán
         $subscription->check();
-        $subscription->processRenewInvoice();
+        // $subscription->processRenewInvoice();
 
         // 2. IF PLAN NOT ACTIVE
         if (!$subscription->plan->isActive()) {
@@ -388,9 +390,18 @@ class SubscriptionController extends Controller
             ]);
         }
 
-        // choose a plan
+        // already has subscription
         elseif ($subscription) {
             $invoice = $subscription->getUnpaidInvoice();
+
+            // gateway fee
+            if ($request->payment_method) {
+                $gateway = Billing::getGateway($request->payment_method);
+
+                // update invoice fee if trial and gatewaye need minimal fee for auto billing
+                $invoice->updatePaymentServiceFee($gateway);
+            }
+
 
             return view('subscription.orderBox', [
                 'subscription' => $subscription,

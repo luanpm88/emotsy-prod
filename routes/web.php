@@ -28,14 +28,6 @@ Route::group(['middleware' => ['installed']], function () {
     Route::get('install/finish', 'InstallController@finish');
 });
 
-// Google OAuth 2.0
-Route::get('/auth/google/redirect', 'AuthController@googleRedirect');
-Route::get('/auth/google/callback', 'AuthController@googleCallback');
-
-// Facebook OAuth 2.0
-Route::get('/auth/facebook/redirect', 'AuthController@facebookRedirect');
-Route::get('/auth/facebook/callback', 'AuthController@facebookCallback');
-
 /*
  * The following routes
  * + customer_files
@@ -110,6 +102,13 @@ Route::get('/terms-of-service', 'Controller@termsOfService');
 Route::group(['middleware' => ['not_installed', 'not_logged_in']], function () {
     // Helper method to generate other routes for authentication
     Auth::routes();
+    // Google OAuth 2.0
+    Route::get('/auth/google/redirect', 'AuthController@googleRedirect');
+    Route::get('/auth/google/callback', 'AuthController@googleCallback');
+
+    // Facebook OAuth 2.0
+    Route::get('/auth/facebook/redirect', 'AuthController@facebookRedirect');
+    Route::get('/auth/facebook/callback', 'AuthController@facebookCallback');
 
     Route::get('/login/token/{token}', 'Controller@tokenLogin');
 
@@ -561,6 +560,8 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('tracking_domains/listing/{page?}', 'TrackingDomainController@listing');
     Route::get('tracking_domains/delete', 'TrackingDomainController@delete');
     Route::get('tracking_domains/{uid}/verify', 'TrackingDomainController@verify');
+    Route::get('tracking_domains/{uid}/cname', 'TrackingDomainController@showCname');
+    Route::get('tracking_domains/{uid}/verify/cname', 'TrackingDomainController@verifyCname');
     Route::resource('tracking_domains', 'TrackingDomainController');
 
     // Email verification servers
@@ -673,12 +674,14 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('automation/wizard/trigger', 'Automation2Controller@wizardTrigger');
     Route::match(['get', 'post'], 'automation/wizard/trigger/option', 'Automation2Controller@wizardTriggerOption');
     Route::get('automation/wizard/trigger/option/field-select', 'Automation2Controller@wizardListFieldSelect');
-    Route::patch('automation/disable', 'Automation2Controller@disable');
-    Route::patch('automation/enable', 'Automation2Controller@enable');
+    Route::post('automation/disable', 'Automation2Controller@disable');
+    Route::post('automation/enable', 'Automation2Controller@enable');
     Route::delete('automation/delete', 'Automation2Controller@delete');
     Route::get('automation/listing', 'Automation2Controller@listing');
     Route::get('automation', 'Automation2Controller@index');
     Route::get('automation/{uid}/debug', 'Automation2Controller@debug');
+    Route::get('trigger/{id}', 'AutoTrigger@show');
+    Route::get('trigger/{id}/check', 'AutoTrigger@check');
     Route::get('automation/{automation}/{subscriber}/trigger', 'Automation2Controller@triggerNow');
     Route::get('automation/{automation}/run', 'Automation2Controller@run');
 
@@ -715,12 +718,13 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('site/categories', 'Site\CategoryController@index');
 
     // Site - Product
-    Route::post('site/profucts/{id}/delete', 'Site\ProductController@delete');
+    Route::post('site/products/{id}/delete', 'Site\ProductController@delete');
     Route::match(['get', 'post'], 'site/products/{id}/edit', 'Site\ProductController@edit');
     Route::match(['get', 'post'], 'site/products/add', 'Site\ProductController@add');
-    Route::post('site/profucts/{id}/activate', 'Site\TemplateController@activate');
+    Route::post('site/products/{id}/activate', 'Site\TemplateController@activate');
     Route::get('site/products/listing', 'Site\ProductController@listing');
     Route::get('site/products', 'Site\ProductController@index');
+    Route::get('site/products-2', 'Site\ProductController@index2');
 
     // Site - Template
     Route::post('site/templates/{id}/activate', 'Site\TemplateController@activate');
@@ -778,6 +782,11 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::get('admin/users/sort', 'UserController@sort');
     Route::get('admin/users/delete', 'UserController@delete');
     Route::resource('admin/users', 'UserController');
+
+    // Form Template
+    Route::get('admin/templates/forms/{uid}/preview', 'FormTemplateController@preview');
+    Route::get('admin/templates/forms/list', 'FormTemplateController@listing');
+    Route::get('admin/templates/forms', 'FormTemplateController@index');
 
     // Template
     Route::post('admin/templates/{uid}/export', 'TemplateController@export');
@@ -870,6 +879,8 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::resource('admin/languages', 'LanguageController');
 
     // Settings
+    Route::post('admin/settings/license/remove', 'SettingController@licenseRemove');
+
     Route::post('admin/settings/payment', 'SettingController@payment');
     Route::post('admin/settings/advanced/{name}/update', 'SettingController@advancedUpdate');
     Route::get('admin/settings/advanced', 'SettingController@advanced');
@@ -1043,6 +1054,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::resource('admin/currencies', 'CurrencyController');
 
     // Subscription
+    Route::post('admin/subscriptions/{id}/replenish-sending-credits', 'SubscriptionController@replenishSendingCredits');
     Route::post('admin/subscriptions/{id}/approve', 'SubscriptionController@approve');
     // Route::match(['get','post'], 'admin/subscriptions/create', 'SubscriptionController@create');
     // Route::post('admin/subscriptions/{id}/approve-pending', 'SubscriptionController@approvePending');
@@ -1086,7 +1098,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::match(['get', 'post'], 'admin/plugins/install', 'PluginController@install');
     Route::get('admin/plugins/listing/{page?}', 'PluginController@listing');
     Route::get('admin/plugins/sort', 'PluginController@sort');
-    Route::get('admin/plugins/delete', 'PluginController@delete');
+    Route::match(['get', 'post'], 'admin/plugins/{uid}/delete', 'PluginController@delete');
     Route::get('admin/plugins/disable', 'PluginController@disable');
     Route::get('admin/plugins/enable', 'PluginController@enable');
     Route::resource('admin/plugins', 'PluginController');

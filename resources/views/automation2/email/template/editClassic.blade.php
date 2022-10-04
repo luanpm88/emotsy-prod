@@ -12,8 +12,8 @@
 @section('menu_title')
     <li class="d-flex align-items-center">
         <div class="d-inline-block d-flex mr-auto align-items-center ml-1 lvl-1">
-            <h4 class="my-0 me-2 menu-title">{{ $automation->name }}</h4>
-            <i class="material-icons-outlined">alarm</i>
+            <h4 class="my-0 me-2 menu-title text-white">{{ $automation->name }}</h4>
+            <i class="material-symbols-rounded">alarm</i>
         </div>
     </li>
 @endsection
@@ -22,7 +22,7 @@
     <li class="nav-item d-flex align-items-center">
         <a  href="javascript:;"
             class="nav-link py-3 lvl-1 close-button">
-            <i class="material-icons-outlined me-2">arrow_back</i>
+            <i class="material-symbols-rounded me-2">arrow_back</i>
             <span>{{ trans('messages.go_back') }}</span>
         </a>
     </li>
@@ -41,7 +41,7 @@
     <li>
         <a href="javascript;"
             class="nav-link close-button action black-close-button">
-            <i class="material-icons-outlined">close</i>
+            <i class="material-symbols-rounded">close</i>
         </a>
     </li>
 @endsection

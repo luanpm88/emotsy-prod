@@ -4,7 +4,7 @@
     <a class="mb-4 d-flex align-items-center back-to-automation" href="javascript:;"
         onclick="timelinePopup.load('{{ action('Automation2Controller@cartStats', $automation->uid) }}')"
     >
-        <span class="material-icons-outlined me-2">
+        <span class="material-symbols-rounded me-2">
             arrow_back
             </span>
         <span>{{ trans('messages.automation.back_to_overview') }}</span>
@@ -39,8 +39,8 @@
             <div class="c-content" style="width:100%">
                 <div class="top-info d-flex mb-2">
                     <div class="customer">
-                        <div class="font-weight-semibold">Louis Louis</div>
-                        <div><a href="lousi@email.com">lousi@email.com</a></div>
+                        <div class="font-weight-semibold">Awsome User</div>
+                        <div><a href="user@example.com">user@example.com</a></div>
                     </div>
                     <div class="total ml-auto">
                         <div class="font-weight-bold">$44</div>
@@ -89,8 +89,8 @@
             <div class="c-content" style="width:100%">
                 <div class="top-info d-flex mb-2">
                     <div class="customer">
-                        <div class="font-weight-semibold">Louis Louis</div>
-                        <div><a href="lousi@email.com">lousi@email.com</a></div>
+                        <div class="font-weight-semibold">Awsome User</div>
+                        <div><a href="user@example.com">user@example.com</a></div>
                     </div>
                     <div class="total ml-auto">
                         <div class="font-weight-bold">$44</div>

@@ -12,8 +12,8 @@
 @section('menu_title')
     <li class="d-flex align-items-center">
         <div class="d-inline-block d-flex mr-auto align-items-center ml-1">
-            <h4 class="my-0 me-2 menu-title">{{ $campaign->name }}</h4>
-            <i class="material-icons-outlined">alarm</i>
+            <h4 class="my-0 me-2 menu-title text-white">{{ $campaign->name }}</h4>
+            <i class="material-symbols-rounded">alarm</i>
         </div>
     </li>
 @endsection
@@ -23,7 +23,7 @@
         <a  href="javascript:;"
             onclick="parent.$('body').removeClass('overflow-hidden');parent.$('.full-iframe-popup').fadeOut()"
             class="nav-link py-3 lvl-1 d-flex align-items-center">
-            <i class="material-icons-outlined me-2">arrow_back</i>
+            <i class="material-symbols-rounded me-2">arrow_back</i>
             <span>{{ trans('messages.go_back') }}</span>
         </a>
     </li>
@@ -42,42 +42,12 @@
         <a href="javascript:;"
             onclick="parent.$('body').removeClass('overflow-hidden');parent.$('.full-iframe-popup').fadeOut()"
             class="nav-link close-button action black-close-button">
-            <i class="material-icons-outlined">close</i>
+            <i class="material-symbols-rounded">close</i>
         </a>
     </li>
 @endsection
 
 @section('content')
-    {{-- <header>
-		<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark" style="height: 56px;">
-			<a class="navbar-brand left-logo mr-0" href="#">
-				@if (\Acelle\Model\Setting::get('site_logo_small'))
-					<img src="{{ action('SettingController@file', \Acelle\Model\Setting::get('site_logo_small')) }}" alt="">
-				@else
-					<img height="22" src="{{ URL::asset('images/logo-automail-light.svg') }}" alt="">
-				@endif
-			</a>
-			<div class="d-inline-block d-flex mr-auto align-items-center">
-                <a style="" href="javascript:;" onclick="parent.$('body').removeClass('overflow-hidden');parent.$('.full-iframe-popup').fadeOut()" class="action black-back-button mr-3">
-					<i class="material-icons-outlined">arrow_back</i>
-				</a>
-                <h1 class="">{{ $campaign->name }}</h1>
-				<i class="material-icons-outlined automation-head-icon ml-2">web</i>
-			</div>
-			<div class="automation-top-menu">
-                <a class="action mr-4" href="{{ action('CampaignController@builderPlainEdit', [
-                    'uid' => $campaign->uid
-                ]) }}">
-                    {{ trans('messages.campaign.plain_text_editor') }}
-                </a>
-				<button class="btn btn-primary" onclick="$('#classic-builder-form').submit()">{{ trans('messages.save') }}</button>
-			</div>
-            <a href="javascript:;" onclick="parent.$('body').removeClass('overflow-hidden');parent.$('.full-iframe-popup').fadeOut()"
-                class="action black-close-button ml-2" style="margin-right: -15px">
-                <i class="material-icons-outlined">close</i>
-            </a>
-		</nav>
-	</header> --}}
     <form id="classic-builder-form" action="{{ action('CampaignController@builderClassic', $campaign->uid) }}" method="POST" class="form-validate-jqueryz">
         {{ csrf_field() }}
 

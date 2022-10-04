@@ -9,7 +9,6 @@ use ZipArchive;
 use KubAT\PhpSimple\HtmlDomParser;
 use Acelle\Library\Tool;
 use Acelle\Library\StringHelper;
-use Acelle\Library\Log as MailLog;
 use Acelle\Model\Setting;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
@@ -222,7 +221,6 @@ class Email extends Model
      */
     public function trackMessage($response, $subscriber, $server, $msgId, $triggerId = null)
     {
-
         // @todo: customerneedcheck
         $params = array_merge(array(
             'email_id' => $this->id,
@@ -263,7 +261,7 @@ class Email extends Model
         // Tacking domain
         if (isset($params['custom_tracking_domain']) && $params['custom_tracking_domain'] && isset($params['tracking_domain_uid'])) {
             $tracking_domain = \Acelle\Model\TrackingDomain::findByUid($params['tracking_domain_uid']);
-            if (is_object($tracking_domain)) {
+            if ($tracking_domain) {
                 $this->tracking_domain_id = $tracking_domain->id;
             } else {
                 $this->tracking_domain_id = null;

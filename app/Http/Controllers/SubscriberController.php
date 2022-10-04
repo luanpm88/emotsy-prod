@@ -3,7 +3,6 @@
 namespace Acelle\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Acelle\Library\Log as MailLog;
 use Acelle\Model\EmailVerificationServer;
 use Acelle\Model\MailList;
 use Acelle\Model\Segment;
@@ -60,7 +59,7 @@ class SubscriberController extends Controller
         // $total = distinctCount($subscribers);
         $total = $subscribers->count();
         $subscribers->with(['mailList', 'subscriberFields']);
-        $subscribers = $subscribers->paginate($request->per_page);
+        $subscribers = $subscribers->paginate($request->per_page ? $request->per_page : 50);
 
         $fields = $list->getFields->whereIn('uid', $request->columns);
 
@@ -314,7 +313,7 @@ class SubscriberController extends Controller
             if (\Gate::allows('subscribe', $subscriber)) {
                 $subscriber->subscribe([
                     'message_id' => null,
-                    'user_agent' => $_SERVER['HTTP_USER_AGENT'],
+                    'user_agent' => array_key_exists('HTTP_USER_AGENT', $_SERVER) ? $_SERVER['HTTP_USER_AGENT'] : '#unknown',
                 ]);
 
                 // update MailList cache
@@ -355,7 +354,7 @@ class SubscriberController extends Controller
             if (\Gate::allows('unsubscribe', $subscriber)) {
                 $subscriber->unsubscribe([
                     'message_id' => null,
-                    'user_agent' => $_SERVER['HTTP_USER_AGENT'],
+                    'user_agent' => array_key_exists('HTTP_USER_AGENT', $_SERVER) ? $_SERVER['HTTP_USER_AGENT'] : '#unknown',
                 ]);
 
                 // Log
@@ -718,7 +717,6 @@ class SubscriberController extends Controller
 
             return redirect()->action('SubscriberController@edit', ['list_uid' => $request->list_uid, 'uid' => $subscriber->uid]);
         } catch (\Exception $e) {
-            MailLog::error(sprintf("Something went wrong while verifying %s (%s). Error message: %s", $subscriber->email, $subscriber->id, $e->getMessage()));
             return view('somethingWentWrong', ['message' => sprintf("Something went wrong while verifying %s (%s). Error message: %s", $subscriber->email, $subscriber->id, $e->getMessage())]);
         }
     }
@@ -732,15 +730,12 @@ class SubscriberController extends Controller
         $subscriber = Subscriber::findByUid($request->uid);
 
         try {
-            MailLog::info(sprintf("Cleaning up verification data for %s (%s)", $subscriber->email, $subscriber->id));
             $subscriber->resetVerification();
             // success message
             $request->session()->flash('alert-success', trans('messages.verification.reset'));
 
-            MailLog::info(sprintf("Finish cleaning up verification data for %s (%s)", $subscriber->email, $subscriber->id));
             return redirect()->action('SubscriberController@edit', ['list_uid' => $request->list_uid, 'uid' => $subscriber->uid]);
         } catch (\Exception $e) {
-            MailLog::error(sprintf("Something went wrong while cleaning up verification data for %s (%s). Error message: %s", $subscriber->email, $subscriber->id, $e->getMessage()));
             return view('somethingWentWrong', ['message' => sprintf("Something went wrong while cleaning up verification data for %s (%s). Error message: %s", $subscriber->email, $subscriber->id, $e->getMessage())]);
         }
     }

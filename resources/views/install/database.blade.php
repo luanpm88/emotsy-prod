@@ -4,7 +4,7 @@
 
 @section('content')
 
-<h3 class="text-primary"><span class="material-icons-outlined">
+<h3 class="text-primary"><span class="material-symbols-rounded">
 dns
 </span> {{ trans('messages.database_configuration') }}</h3>
 
@@ -84,9 +84,19 @@ dns
     </div>
     <hr >
     <div class="text-end">                                    
-        <button type="submit" class="btn btn-primary">{!! trans('messages.save') !!} <span class="material-icons-round">
+        <button type="submit" class="btn btn-primary save-button">{!! trans('messages.save') !!} <span class="material-symbols-rounded">
 east
 </span></button>
     </div>
 </form>
+
+<script>
+
+    $(function() {
+        $('.save-button').on('click', function() {
+            addButtonMask($(this));
+        });
+    });
+
+</script>
 @endsection

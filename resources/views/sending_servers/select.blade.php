@@ -1,4 +1,6 @@
-@extends('layouts.core.frontend')
+@extends('layouts.core.frontend', [
+	'menu' => 'sending_server',
+])
 
 @section('title', trans('messages.sending_servers'))
 
@@ -10,7 +12,7 @@
         </ul>
 
         <h1>
-            <span class="text-semibold"><span class="material-icons-outlined">
+            <span class="text-semibold"><span class="material-symbols-rounded">
 add
 </span> {{ trans('messages.select_sending_servers_type') }}</span>
         </h1>
@@ -27,7 +29,7 @@ add
                         <a href="{{ $server['create_url'] }}" class="btn btn-secondary">{{ trans('messages.choose') }}</a>
                         <a href="{{ $server['create_url'] }}">
                             <span class="mc-server-avatar shadow-sm rounded server-avatar" style="background: url({{ $server['icon_url']  }}) top left/36px 36px no-repeat transparent;">
-                                <span class="material-icons-outlined">
+                                <span class="material-symbols-rounded">
 
 </span>
                             </span>
@@ -47,14 +49,14 @@ add
                         <a href="{{ action('SendingServerController@create', ["type" => $key]) }}" class="btn btn-secondary">{{ trans('messages.choose') }}</a>
                         <a href="{{ action('SendingServerController@create', ["type" => $key]) }}">
                             <span class="mc-server-avatar shadow-sm rounded server-avatar server-avatar-{{ $key }}">
-                                <span class="material-icons-outlined">
+                                <span class="material-symbols-rounded">
 
 </span>
                             </span>
                         </a>
                         <h4><a href="{{ action('SendingServerController@create', ["type" => $key]) }}">{{ trans('messages.' . $key) }}</a></h4>
                         <p>
-                            {{ trans('messages.sending_server_intro_' . $key) }}
+                            {{ trans('messages.sending_server.intro.' . $key) }}
                         </p>
                     </li>
                 @endforeach

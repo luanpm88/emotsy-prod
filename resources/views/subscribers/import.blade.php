@@ -1,4 +1,6 @@
-@extends('layouts.core.frontend')
+@extends('layouts.core.frontend', [
+	'menu' => 'subscriber',
+])
 
 @section('title', $list->name . ": " . trans('messages.import'))
 
@@ -10,9 +12,11 @@
 
 @section('content')
 
-    @include("lists._menu")
+    @include("lists._menu", [
+		'menu' => 'subscriber_import',
+	])
 
-    <h2 class="text-primary my-4"><span class="material-icons-outlined">
+    <h2 class="text-primary my-4"><span class="material-symbols-rounded">
 people
 </span> {{ trans('messages.import_subscribers') }}</h2>
 
@@ -95,11 +99,11 @@ people
                 <div class="form-group finish hide">
                     <div class="text-left">
                     	<a id="downloadLog" target="_blank" href="#" role="button" class="btn btn-secondary">
-                                <span class="material-icons-outlined">
+                                <span class="material-symbols-rounded">
 file_download
 </span> {{ trans('messages.download_import_log') }}
                         </a>
-                        <a href="#retry" class="btn btn-link me-2 retry"><span class="material-icons-outlined">
+                        <a href="#retry" class="btn btn-link me-2 retry"><span class="material-symbols-rounded">
 restart_alt
 </span> {{ trans('messages.import_another') }}</a>
                     </div>

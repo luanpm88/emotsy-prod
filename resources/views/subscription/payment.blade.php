@@ -15,20 +15,29 @@
         <li class="nav-item d-flex align-items-center">
             <a  href="{{ action('SubscriptionController@index') }}"
                 class="nav-link py-3 lvl-1">
-                <i class="material-icons-outlined me-2">arrow_back</i>
+                <i class="material-symbols-rounded me-2">arrow_back</i>
                 <span>{{ trans('messages.go_back') }}</span>
             </a>
         </li>
     @endif
 
     @include('layouts.core._top_activity_log')
-    @include('layouts.core._menu_frontend_user')
+    @include('layouts.core._menu_frontend_user', [
+        'menu' => 'subscription',
+    ])
 @endsection
 
 @section('content')
     <div class="container mt-4 mb-5">
         <div class="row">
             <div class="col-md-8">
+                @if (Auth::user()->customer->subscription && Auth::user()->customer->subscription->getUnpaidInvoice()  && Auth::user()->customer->subscription->getUnpaidInvoice()->lastTransactionIsFailed())
+                    @include('elements._notification', [
+                        'level' => 'danger',
+                        'message' => Auth::user()->customer->subscription->getUnpaidInvoice()->lastTransaction()->error
+                    ])
+                @endif
+
                 @include('subscription._selectPlan')
 
                 @include('subscription._billingInformation')
@@ -81,7 +90,9 @@
                                                     </div>
                                                     <div class="mr-auto pr-4">
                                                         <h5 class="font-weight-semibold mb-1">{{ $gateway->getName() }}</h5>
-                                                        <p class="mb-0">{{ trans('messages.'.$gateway->getType().'.user.description') }}</p>
+                                                        <p class="mb-0">
+                                                            {{ $gateway->getShortDescription() }}
+                                                        </p>
                                                     </div>    
                                                 </div>           
                                             </div>

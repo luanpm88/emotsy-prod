@@ -140,20 +140,6 @@ class Tool
     }
 
     /**
-     * Format display datetime.
-     *
-     * @var string
-     */
-    public static function dateTime($datetime)
-    {
-        $timezone = self::currentTimezone();
-        $result = $datetime;
-        $result = $result->timezone($timezone);
-
-        return $result;
-    }
-
-    /**
      * Change singular to plural.
      *
      * @param       string
@@ -176,34 +162,6 @@ class Tool
         }
 
         return $phrase;
-    }
-
-    /**
-     * Get system time conversion.
-     *
-     * @param       string
-     *
-     * @return string
-     */
-    public static function systemTime($time)
-    {
-        return $time->setTimezone(config('app.timezone'));
-    }
-
-    /**
-     * Get system time conversion.
-     *
-     * @param       string
-     *
-     * @return string
-     */
-    public static function systemTimeFromString($string)
-    {
-        $timezone = self::currentTimezone();
-        $time = \Carbon\Carbon::createFromFormat('Y-m-d H:i', $string, $timezone);
-        $time = self::systemTime($time);
-
-        return $time;
     }
 
     /**
@@ -489,22 +447,25 @@ class Tool
      */
     public static function cronjobUpdateController($request, $controller)
     {
-
         // Suggestion paths
         $paths = [
             '/usr/local/bin/php',
             '/usr/bin/php',
             '/bin/php',
             '/usr/bin/php7',
-            '/usr/bin/php7.0',
-            '/usr/bin/php70',
-            '/usr/bin/php7.1',
-            '/usr/bin/php71',
-            '/usr/bin/php56',
-            '/usr/bin/php5.6',
-            '/opt/plesk/php/5.6/bin/php',
-            '/opt/plesk/php/7.0/bin/php',
-            '/opt/plesk/php/7.1/bin/php',
+            '/usr/bin/php7.3',
+            '/usr/bin/php7.4',
+            '/usr/bin/php73',
+            '/usr/bin/php74',
+            '/usr/bin/php8',
+            '/usr/bin/php8.0',
+            '/usr/bin/php8.1',
+            '/usr/bin/php80',
+            '/usr/bin/php81',
+            '/opt/plesk/php/7.3/bin/php',
+            '/opt/plesk/php/7.4/bin/php',
+            '/opt/plesk/php/8.0/bin/php',
+            '/opt/plesk/php/8.1/bin/php',
         ];
 
         // try to detect system's PHP CLI
@@ -591,7 +552,7 @@ class Tool
 
             // Update .env
             if (in_array($queue_driver, ['database', 'async']) && config('queue.default') != $queue_driver) {
-                \Acelle\Model\Setting::setEnv('QUEUE_DRIVER', $queue_driver);
+                \Acelle\Helpers\write_env('QUEUE_DRIVER', $queue_driver);
             }
 
             if ($request->queue_driver == 'async') {
@@ -626,12 +587,12 @@ class Tool
                 <script src='https://www.google.com/recaptcha/api.js?hl=<?php echo language_code() ?>'></script>
                 <div class="g-recaptcha" data-sitekey="6LfyISoTAAAAABJV8zycUZNLgd0sj-sBFjctzXKw"></div>
                 <?php if (isset($errors) && $errors->has('recaptcha_invalid')) {
-            ?>
+                    ?>
                     <span class="help-block text-danger">
                         <strong><?php echo $errors->first('recaptcha_invalid'); ?></strong>
                     </span>
                 <?php
-        } ?>
+                } ?>
             </div>
         <?php
     }
@@ -667,53 +628,7 @@ class Tool
      */
     public static function format_price($price, $format = '{PRICE}')
     {
-        return str_replace('{PRICE}', self::format_number($price), $format);
-    }
-
-    /**
-     * Format price.
-     *
-     * @param string
-     *
-     * @return string
-     */
-    public static function format_number($number)
-    {
-        if (is_numeric($number) && floor($number) != $number) {
-            return number_format($number, 2, trans('messages.dec_point'), trans('messages.thousands_sep'));
-        } elseif (is_numeric($number)) {
-            return number_format($number, 0, trans('messages.dec_point'), trans('messages.thousands_sep'));
-        } else {
-            return $number;
-        }
-    }
-
-    /**
-     * Check current view if exist.
-     *
-     * @return bool
-     */
-    public static function currentView()
-    {
-        return \Request::is('admin*') ? 'backend' : 'frontend';
-    }
-
-    /**
-     * Get current timezone.
-     *
-     * @var string
-     */
-    public static function currentTimezone()
-    {
-        if (self::currentView() == 'frontend') {
-            $timezone = is_object(\Auth::user()) && is_object(\Auth::user()->customer) ? \Auth::user()->customer->timezone : '+00:00';
-        } elseif (self::currentView() == 'backend') {
-            $timezone = is_object(\Auth::user()) && is_object(\Auth::user()->admin) ? \Auth::user()->admin->timezone : '+00:00';
-        } else {
-            $timezone = '+00:00';
-        }
-
-        return $timezone;
+        return str_replace('{PRICE}', number_with_delimiter($price), $format);
     }
 
     /**

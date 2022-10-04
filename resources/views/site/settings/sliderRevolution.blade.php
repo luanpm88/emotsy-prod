@@ -1,4 +1,6 @@
-@extends('layouts.core.frontend')
+@extends('layouts.core.frontend', [
+    'menu' => false,
+])
 
 @section('title', trans('messages.create_admin'))
 
@@ -21,7 +23,7 @@
     </div>
 
     <h1>
-        <span><span class="material-icons-round">
+        <span><span class="material-symbols-rounded">
             format_list_bulleted
             </span> {{ trans('messages.brand.sliders') }}</span>
     </h1>	

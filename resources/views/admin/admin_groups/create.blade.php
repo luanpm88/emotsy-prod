@@ -1,4 +1,6 @@
-@extends('layouts.core.backend')
+@extends('layouts.core.backend', [
+	'menu' => 'admin_group',
+])
 
 @section('title', trans('messages.create_admin_group'))
 
@@ -10,7 +12,7 @@
 			<li class="breadcrumb-item"><a href="{{ action("Admin\AdminGroupController@index") }}">{{ trans('messages.admin_groups') }}</a></li>
 		</ul>
 		<h1>
-			<span class="text-semibold"><span class="material-icons-round">
+			<span class="text-semibold"><span class="material-symbols-rounded">
 add
 </span> {{ trans('messages.create_admin_group') }}</span>
 		</h1>
@@ -24,8 +26,8 @@ add
 		{{ csrf_field() }}
 
 		@include("admin.admin_groups._form")
-		<hr />
-		<div class="text-left">
+
+		<div class="text-left mt-4">
 			<button class="btn btn-secondary me-2"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
 			<a href="{{ action('Admin\AdminGroupController@index') }}" class="btn btn-link"><i class="icon-cross2"></i> {{ trans('messages.cancel') }}</a>
 		</div>

@@ -4,7 +4,7 @@
     <a class="mb-4 d-flex align-items-center back-to-automation" href="javascript:;"
         onclick="timelinePopup.load('{{ action('Automation2Controller@cartStats', $automation->uid) }}')"
     >
-        <span class="material-icons-outlined me-2">
+        <span class="material-symbols-rounded me-2">
             arrow_back
             </span>
         <span>{{ trans('messages.automation.back_to_overview') }}</span>
@@ -36,7 +36,7 @@
                 <div class="info">
                     <div>1 x This is an awesome book</div>
                     <div>Price: <strong>$22</strong> · <a href="">View item in Woo</a></div>
-                    <div>Sent to: <strong class="font-weight-semibold"> Louis Pham  </strong>· <a href="">louis@email.com</a></div>
+                    <div>Sent to: <strong class="font-weight-semibold"> Awesome User  </strong>· <a href="">user@example.com</a></div>
                 </div>
                 <div class="status ml-auto">
                     <div>10 minutes ago</div>
@@ -51,7 +51,7 @@
                 <div class="info">
                     <div>1 x This is an awesome book</div>
                     <div>Price: <strong>$22</strong> · <a href="">View item in Woo</a></div>
-                    <div>Sent to: <strong class="font-weight-semibold"> Louis Pham  </strong>· <a href="">louis@email.com</a></div>
+                    <div>Sent to: <strong class="font-weight-semibold"> Awesome User  </strong>· <a href="">user@example.com</a></div>
                 </div>
                 <div class="status ml-auto">
                     <div>10 minutes ago</div>
@@ -66,7 +66,7 @@
                 <div class="info">
                     <div>1 x This is an awesome book</div>
                     <div>Price: <strong>$22</strong> · <a href="">View item in Woo</a></div>
-                    <div>Sent to: <strong class="font-weight-semibold"> Louis Pham  </strong>· <a href="">louis@email.com</a></div>
+                    <div>Sent to: <strong class="font-weight-semibold"> Awesome User  </strong>· <a href="">user@example.com</a></div>
                 </div>
                 <div class="status ml-auto">
                     <div>10 minutes ago</div>
@@ -81,7 +81,7 @@
                 <div class="info">
                     <div>1 x This is an awesome book</div>
                     <div>Price: <strong>$22</strong> · <a href="">View item in Woo</a></div>
-                    <div>Sent to: <strong class="font-weight-semibold"> Louis Pham  </strong>· <a href="">louis@email.com</a></div>
+                    <div>Sent to: <strong class="font-weight-semibold"> Awesome User  </strong>· <a href="">user@example.com</a></div>
                 </div>
                 <div class="status ml-auto">
                     <div>10 minutes ago</div>
@@ -96,7 +96,7 @@
                 <div class="info">
                     <div>1 x This is an awesome book</div>
                     <div>Price: <strong>$22</strong> · <a href="">View item in Woo</a></div>
-                    <div>Sent to: <strong class="font-weight-semibold"> Louis Pham  </strong>· <a href="">louis@email.com</a></div>
+                    <div>Sent to: <strong class="font-weight-semibold"> Awesome User  </strong>· <a href="">user@example.com</a></div>
                 </div>
                 <div class="status ml-auto">
                     <div>10 minutes ago</div>
@@ -111,7 +111,7 @@
                 <div class="info">
                     <div>1 x This is an awesome book</div>
                     <div>Price: <strong>$22</strong> · <a href="">View item in Woo</a></div>
-                    <div>Sent to: <strong class="font-weight-semibold"> Louis Pham  </strong>· <a href="">louis@email.com</a></div>
+                    <div>Sent to: <strong class="font-weight-semibold"> Awesome User  </strong>· <a href="">user@example.com</a></div>
                 </div>
                 <div class="status ml-auto">
                     <div>10 minutes ago</div>

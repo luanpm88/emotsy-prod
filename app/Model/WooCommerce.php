@@ -39,7 +39,7 @@ class WooCommerce extends Source
                     ],
                 ]);
             } catch (\Exception $e) {
-                $validator->errors()->add('connect_url', trans('messages.can_not_connect_acelle_sync', ['error' => $e->getMessage()]));
+                $validator->errors()->add('connect_url', trans('messages.woo.cannot_connect', ['error' => $e->getMessage()]));
                 return;
             }
 

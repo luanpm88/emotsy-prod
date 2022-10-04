@@ -13,6 +13,11 @@ class ProductController extends Controller
         return view('site.products.index');
     }
 
+    public function index2(Request $request)
+    {
+        return view('site.products.index2');
+    }
+
     public function listing(Request $request)
     {
         $wordpress = new \Acelle\Library\WordpressManager();

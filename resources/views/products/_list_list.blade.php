@@ -17,7 +17,7 @@
 					</h5>
 					<span class="text-muted d-block mt-2">
 						{{ trans('messages.created_at') }}:
-						{{ Auth::user()->customer->formatDateTime($product->created_at, 'date_full') }}
+						{{ Auth::user()->customer->formatDateTime($product->created_at, 'datetime_full') }}
 					</span>
 				</td>
 				<td>
@@ -30,7 +30,7 @@
 					<a href="{{ action('SourceController@sync', $product->uid) }}"
 						link-method="POST"
 						role="button" class="btn btn-secondary m-icon pl-3">
-						<span class="material-icons-outlined me-2">
+						<span class="material-symbols-rounded me-2">
 							link
 							</span>{{ trans('messages.view') }}</a>
 					<div class="btn-group">
@@ -42,7 +42,7 @@
 									link-confirm="{{ trans('messages.source.delete.confirm') }}"
 									link-method="POST"
 									href="{{ action('SourceController@delete', ['uids' => $product->uid]) }}">
-									<span class="material-icons-outlined">
+									<span class="material-symbols-rounded">
 delete_outline
 </span> {{ trans('messages.delete') }}
 								</a>
@@ -57,7 +57,7 @@ delete_outline
 		
 @elseif (!empty(request()->keyword))
 	<div class="empty-list">
-		<span class="material-icons-outlined">
+		<span class="material-symbols-rounded">
 			category
 			</span>
 		<span class="line-1">
@@ -66,7 +66,7 @@ delete_outline
 	</div>
 @else
 	<div class="empty-list">
-		<span class="material-icons-outlined">
+		<span class="material-symbols-rounded">
 			category
 			</span>
 		<span class="line-1 text-muted">

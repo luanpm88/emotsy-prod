@@ -1,4 +1,6 @@
-@extends('layouts.core.backend')
+@extends('layouts.core.backend', [
+	'menu' => 'bounce',
+])
 
 @section('title', $server->name)
 	
@@ -10,7 +12,7 @@
 					<li class="breadcrumb-item"><a href="{{ action("Admin\BounceHandlerController@index") }}">{{ trans('messages.bounce_handlers') }}</a></li>
 				</ul>
 				<h1>
-					<span class="text-semibold"><span class="material-icons-outlined">
+					<span class="text-semibold"><span class="material-symbols-rounded">
 edit
 </span> {{ $server->name }}</span>
 				</h1>

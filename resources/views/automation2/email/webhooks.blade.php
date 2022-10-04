@@ -9,7 +9,7 @@
         <p>{{ trans('messages.webhooks.wording') }}</p>
         <div class="ms-4">
             <a href="javascript:;" class="btn btn-secondary add_webhooks_but text-nowrap">
-                <i class="material-icons-outlined">add</i>
+                <i class="material-symbols-rounded">add</i>
                 {{ trans('messages.webhooks.add') }}
             </a>
         </div>

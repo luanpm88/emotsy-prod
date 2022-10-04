@@ -39,6 +39,7 @@ use Acelle\Library\Facades\Billing;
 use Acelle\Library\AutoBillingData;
 use File;
 use Acelle\Library\Traits\TrackJobs;
+use Acelle\Library\Traits\HasCache;
 use Acelle\Jobs\ImportBlacklistJob;
 use Acelle\Library\Traits\HasUid;
 use Acelle\Library\QuotaManager;
@@ -47,6 +48,7 @@ class Customer extends Model
 {
     use TrackJobs;
     use HasUid;
+    use HasCache;
 
     protected $quotaTracker;
 
@@ -282,7 +284,7 @@ class Customer extends Model
      */
     public function activeSubscription()
     {
-        return (is_object($this->subscription) && $this->subscription->isActive()) ? $this->subscription : null;
+        return ($this->subscription && $this->subscription->isActive()) ? $this->subscription : null;
     }
 
     public function useOwnSendingServer()
@@ -674,7 +676,7 @@ class Customer extends Model
      */
     public function getLanguageCode()
     {
-        return is_object($this->language) ? $this->language->code : null;
+        return $this->language ? $this->language->code : null;
     }
 
     /**
@@ -685,7 +687,7 @@ class Customer extends Model
     public function getLanguageCodeFull()
     {
         $region_code = $this->language->region_code ? strtoupper($this->language->region_code) : strtoupper($this->language->code);
-        return is_object($this->language) ? ($this->language->code.'-'.$region_code) : null;
+        return $this->language ? ($this->language->code.'-'.$region_code) : null;
     }
 
     /**
@@ -786,88 +788,39 @@ class Customer extends Model
     /**
      * Update Campaign cached data.
      */
-    public function updateCache($key = null)
+    public function getCacheIndex()
     {
         // cache indexes
-        $index = [
+        return [
             // @note: SubscriberCount must come first as its value shall be used by the others
-            'SubscriberCount' => function (&$customer) {
-                return $customer->subscribersCount(false);
+            'SubscriberCount' => function () {
+                return $this->subscribersCount(false);
             },
-            'SubscriberUsage' => function (&$customer) {
-                return $customer->subscribersUsage(true);
+            'SubscriberUsage' => function () {
+                return $this->subscribersUsage(true);
             },
-            'SubscribedCount' => function (&$customer) {
-                return $customer->getSubscriberCountByStatus(Subscriber::STATUS_SUBSCRIBED);
+            'SubscribedCount' => function () {
+                return $this->getSubscriberCountByStatus(Subscriber::STATUS_SUBSCRIBED);
             },
-            'UnsubscribedCount' => function (&$customer) {
-                return $customer->getSubscriberCountByStatus(Subscriber::STATUS_UNSUBSCRIBED);
+            'UnsubscribedCount' => function () {
+                return $this->getSubscriberCountByStatus(Subscriber::STATUS_UNSUBSCRIBED);
             },
-            'UnconfirmedCount' => function (&$customer) {
-                return $customer->getSubscriberCountByStatus(Subscriber::STATUS_UNCONFIRMED);
+            'UnconfirmedCount' => function () {
+                return $this->getSubscriberCountByStatus(Subscriber::STATUS_UNCONFIRMED);
             },
-            'BlacklistedCount' => function (&$customer) {
-                return $customer->getSubscriberCountByStatus(Subscriber::STATUS_BLACKLISTED);
+            'BlacklistedCount' => function () {
+                return $this->getSubscriberCountByStatus(Subscriber::STATUS_BLACKLISTED);
             },
-            'SpamReportedCount' => function (&$customer) {
-                return $customer->getSubscriberCountByStatus(Subscriber::STATUS_SPAM_REPORTED);
+            'SpamReportedCount' => function () {
+                return $this->getSubscriberCountByStatus(Subscriber::STATUS_SPAM_REPORTED);
             },
-            'MailListSelectOptions' => function (&$customer) {
-                return $customer->getMailListSelectOptions([], true);
+            'MailListSelectOptions' => function () {
+                return $this->getMailListSelectOptions([], true);
             },
-            'Bounce/FeedbackRate' => function (&$customer) {
-                return $customer->getBounceFeedbackRate();
+            'Bounce/FeedbackRate' => function () {
+                return $this->getBounceFeedbackRate();
             },
-
         ];
-
-        // retrieve cached data
-        $cache = json_decode($this->cache, true);
-        if (empty($cache)) {
-            $cache = [];
-        }
-
-        if (is_null($key)) {
-            // update all cache
-            foreach ($index as $key => $callback) {
-                $cache[$key] = $callback($this);
-                if ($key == 'SubscriberCount') {
-                    // SubscriberCount cache must always be updated as its value will be used for the others
-                    $this->cache = json_encode($cache);
-                    $this->save();
-                }
-            }
-        } else {
-            // update specific key
-            $callback = $index[$key];
-            $cache[$key] = $callback($this);
-        }
-
-        // write back to the DB
-        $this->cache = json_encode($cache);
-        $this->save();
-    }
-
-    /**
-     * Retrieve Campaign cached data.
-     *
-     * @return mixed
-     */
-    public function readCache($key, $default = null)
-    {
-        $cache = json_decode($this->cache, true);
-        if (is_null($cache)) {
-            return $default;
-        }
-        if (array_key_exists($key, $cache)) {
-            if (is_null($cache[$key])) {
-                return $default;
-            } else {
-                return $cache[$key];
-            }
-        } else {
-            return $default;
-        }
     }
 
     public function getBounceFeedbackRate()
@@ -1129,7 +1082,7 @@ class Customer extends Model
      */
     public function hasAdminAccount()
     {
-        return is_object($this->user) && is_object($this->user->admin);
+        return $this->user && $this->user->admin;
     }
 
     /**
@@ -1159,7 +1112,7 @@ class Customer extends Model
      */
     public function currentPlanName()
     {
-        return is_object($this->activeSubscription()) ?
+        return $this->activeSubscription() ?
             $this->activeSubscription()->plan->name :
             ''
         ;
@@ -1224,7 +1177,7 @@ class Customer extends Model
      */
     public function getContact()
     {
-        if (is_object($this->contact)) {
+        if ($this->contact) {
             $contact = $this->contact;
         } else {
             $contact = new \Acelle\Model\Contact([
@@ -1382,7 +1335,7 @@ class Customer extends Model
      */
     public function getOptions()
     {
-        if (is_object($this->activeSubscription())) {
+        if ($this->activeSubscription()) {
             // Find plan
             return $this->activeSubscription()->plan->getOptions();
         } else {
@@ -1600,7 +1553,7 @@ class Customer extends Model
             return false;
         }
 
-        if ($plan->useSystemSendingServer() && is_object($plan->primarySendingServer())) {
+        if ($plan->useSystemSendingServer() && $plan->primarySendingServer()) {
             return $plan->primarySendingServer()->allowUnverifiedFromEmailAddress();
         }
 
@@ -1612,7 +1565,7 @@ class Customer extends Model
      */
     public function getCurrentPeriodEndsAt()
     {
-        return (is_object($this->subscription) && $this->subscription->isActive()) ? $this->current_period_ends_at : null;
+        return ($this->subscription && $this->subscription->isActive()) ? $this->current_period_ends_at : null;
     }
 
     /**
