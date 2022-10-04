@@ -167,6 +167,16 @@ return [
 
     'cartpaye' => env('APP_CARTPAYE', false),
 
+     /*
+    |--------------------------------------------------------------------------
+    | reCaptcha keys
+    |--------------------------------------------------------------------------
+    |
+    */
+
+    'recaptcha_sitekey' => env('RECAPTCHA_SITEKEY', '6LfyISoTAAAAABJV8zycUZNLgd0sj-sBFjctzXKw'),
+    'recaptcha_secret' => env('RECAPTCHA_SECRET', '6LfyISoTAAAAAC0hJ916unwi0m_B0p7fAvCRK4Kp'),
+
     /*
     |--------------------------------------------------------------------------
     | Autoloaded Service Providers
