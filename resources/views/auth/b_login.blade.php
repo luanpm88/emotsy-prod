@@ -54,18 +54,27 @@
                 </div>
 
                 <div class="col-sm-6 text-end text-semibold fw-600">
-                    <a href="{{ url('/password/reset') }}">{{ trans("messages.forgot_password") }}</a>
+                  <font size="-3"><a href="{{ url('/password/reset') }}">{{ trans("messages.forgot_password") }}</a></font>
                 </div>
             </div>
         </div>
 
         @if (\Acelle\Model\Setting::get('login_recaptcha') == 'yes')
-            {!! \Acelle\Library\Tool::showReCaptcha($errors) !!}
+
+            <!-- hCaptcha -->
+            @if (\Acelle\Model\Setting::getCaptchaProvider() == 'hcaptcha')
+                @php
+                    $hcaptcha = \Acelle\Hcaptcha\Client::initialize();
+                @endphp
+                {!! $hcaptcha->renderFormHtml($errors) !!}
+            @else
+                {!! \Acelle\Library\Tool::showReCaptcha($errors) !!}
+            @endif
         @endif
 
         <button type="submit" class="btn rounded-2 btn-primary d-block login-button py-2 fw-600"
             style="width:100%;text-transform:uppercase"
-        ><span class="me-2">{{ trans("messages.login") }}</span> <span class="material-icons-round">
+        ><span class="me-2">{{ trans("messages.login") }}</span> <span class="material-symbols-rounded">
             login
             </span></button>
             
@@ -77,9 +86,11 @@
                 <div class="socialite_buttons">
                     @if (\Acelle\Model\Setting::get('oauth.google_enabled') == 'yes')
                         <div class="text-center mt-2">
-                            <a href="{{ action('AuthController@googleRedirect') }}" class="btn btn-light d-flex align-items-center rounded-3 py-2" style="width:100%">
+                            <a href="{{ action('AuthController@googleRedirect', [
+                                'language_code' => language_code(),
+                            ]) }}" class="btn btn-light d-flex align-items-center rounded-3 py-2" style="width:100%">
                                 <img width="25px" src="{{ url('images/google-login.svg') }}" />
-                                <span class="ms-3 display-6 text-center" style="font-size:15px;width:80%">Continue with Google</span>
+                                <span class="ms-3 display-6 text-center" style="font-size:15px;width:80%">{{ trans('messages.continue_with_google') }}</span>
                             </a>
                         </div>
                     @endif
@@ -88,7 +99,7 @@
                         <div class="text-center mt-2">
                             <a href="{{ action('AuthController@facebookRedirect') }}" class="btn btn-light d-flex align-items-center rounded-3 py-2" style="width:100%">
                                 <img width="25px" src="{{ url('images/icons/facebook-logo.svg') }}" />
-                                <span class="ms-3 display-6 text-center" style="font-size:15px;width:80%">Continue with Facebook</span>
+                                <span class="ms-3 display-6 text-center" style="font-size:15px;width:80%">{{ trans('messages.continue_with_facebook') }}</span>
                             </a>
                         </div>
                     @endif
