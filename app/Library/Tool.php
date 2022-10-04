@@ -585,7 +585,7 @@ class Tool
         ?>
             <div class="recaptcha-box">
                 <script src='https://www.google.com/recaptcha/api.js?hl=<?php echo language_code() ?>'></script>
-                <div class="g-recaptcha" data-sitekey="6LfyISoTAAAAABJV8zycUZNLgd0sj-sBFjctzXKw"></div>
+                <div class="g-recaptcha" data-sitekey="<?php echo config('app.recaptcha_sitekey') ?>"></div>
                 <?php if (isset($errors) && $errors->has('recaptcha_invalid')) {
                     ?>
                     <span class="help-block text-danger">
@@ -611,7 +611,7 @@ class Tool
         // Check recaptch
         $client = new \GuzzleHttp\Client(['verify' => false]);
         $res = $client->post('https://www.google.com/recaptcha/api/siteverify', ['verify' => false, 'form_params' => [
-            'secret' => '6LfyISoTAAAAAC0hJ916unwi0m_B0p7fAvCRK4Kp',
+            'secret' => config('app.recaptcha_secret'),
             'remoteip' => $request->ip(),
             'response' => $request->all()['g-recaptcha-response'],
         ]]);
