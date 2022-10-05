@@ -1044,6 +1044,7 @@
   'email_verification_servers.enabled' => '1つ以上の電子メール検証サーバーが正常に有効化されました',
   'emails' => 'メール',
   'emails.link_empty' => 'メールにはリンクがありません',
+  'emails_quota' => 'Sending credits',
   'embedded_form.list_not_exsit' => 'リストが存在しません',
   'embedded_form_code.copied' => '埋め込まれたコードがコピーされました',
   'embedded_form_recaptcha' => 'Embedded form captcha',
