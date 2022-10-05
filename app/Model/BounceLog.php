@@ -30,6 +30,7 @@ class BounceLog extends Model
 {
     public const HARD = 'hard';
     public const SOFT = 'soft';
+    public const UNKNOWN = 'unknown';
 
     /**
      * Associations.
@@ -168,6 +169,11 @@ class BounceLog extends Model
         $query = $query->orderBy($request->sort_order, $request->sort_direction);
 
         return $query;
+    }
+
+    public function isHard()
+    {
+        return $this->bounce_type == self::HARD;
     }
 
     /**
