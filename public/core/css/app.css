@@ -7962,3 +7962,12 @@ label.checker input:disabled ~ .checker-symbol::before {
 label.checker input:disabled ~ .checker-symbol {
     cursor: not-allowed;
 }
+.checkbox-label {
+    cursor: pointer;
+}
+.checkbox-label.readonly {
+    opacity: 0.6;
+}
+.checkbox-label.readonly, .checkbox-label.readonly * {
+    pointer-events: none;
+}

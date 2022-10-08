@@ -1564,6 +1564,12 @@ class SendingServer extends Model implements HasQuotaInterface
             $server->feedback_loop_handler_id = null;
         }
 
+        // default options
+        if ($server->type == self::TYPE_SENDGRID_API || $server->type == self::TYPE_SENDGRID_SMTP) {
+            $server->setOption('allow_verify_domain_against_acelle', 'yes');
+        }
+
+        // save
         $server->save();
 
         return [ $validator, $server ];
