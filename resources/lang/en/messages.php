@@ -2884,4 +2884,5 @@
   'elasticemail-smtp' => 'Elastic Email SMTP',
   'sparkpost-api' => 'Sparkpost API',
   'sparkpost-smtp' => 'Sparkpost SMTP',
+  'region_code' => 'Region code',
 ) ?>
