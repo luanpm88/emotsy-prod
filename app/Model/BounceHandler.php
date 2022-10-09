@@ -94,7 +94,6 @@ class BounceHandler extends DeliveryHandler
             } else {
                 $this->logger()->info('Do nothing with soft bounce');
             }
-
         } catch (\Exception $ex) {
             $this->logger()->info('Failed. '.$ex->getMessage());
         }
