@@ -1568,6 +1568,10 @@ class SendingServer extends Model implements HasQuotaInterface
         if ($server->type == self::TYPE_SENDGRID_API || $server->type == self::TYPE_SENDGRID_SMTP) {
             $server->setOption('allow_verify_domain_against_acelle', 'yes');
         }
+        
+        if ($server->type == self::TYPE_AMAZON_API || $server->type == self::TYPE_AMAZON_SMTP) {
+            $server->setOption('allow_verify_domain_remotely', 'yes');
+        }
 
         // save
         $server->save();

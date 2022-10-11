@@ -2885,4 +2885,6 @@
   'sparkpost-api' => 'Sparkpost API',
   'sparkpost-smtp' => 'Sparkpost SMTP',
   'region_code' => 'Region code',
+  'amazon-api' => 'Amazon API',
+  'amazon-smtp' => 'Amazon SMTP',
 ) ?>
