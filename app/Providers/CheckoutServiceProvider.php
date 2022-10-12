@@ -24,6 +24,8 @@ class CheckoutServiceProvider extends ServiceProvider implements DeferrableProvi
     public function boot()
     {
         // Register built-in services
+        // Notice that the closure passed to the register() method is not actually executed during boot
+        // It is to improve performance and to avoid executing DB queries in service providers
         Billing::register(OfflinePaymentGateway::TYPE, function() {
             $paymentInstruction = Setting::get('cashier.offline.payment_instruction');
             $service = new OfflinePaymentGateway($paymentInstruction);
