@@ -122,6 +122,13 @@ quiz
 					
 										removeMaskLoading();
 									},
+									fail: function(response) {
+										new Dialog('alert', {
+											message: response.responseText,
+										});
+					
+										removeMaskLoading();
+									},
 									data: {
 										_token: CSRF_TOKEN
 									}

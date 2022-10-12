@@ -117,7 +117,11 @@ function initJs(container)
     });
 
     // styled checkbox
-    container.find('.styled, .switchery, [name=color_scheme]').after('<span class="check-symbol"></span>');
+    container.find('.styled, .switchery, [name=color_scheme]').each(function() {
+        if (!$(this).next('.check-symbol').length) {
+            $(this).after('<span class="check-symbol"></span>');
+        }
+    });
 
     // showAjaxDetailBox
     showAjaxDetailBox(container.find('.ajax-detail-box'));

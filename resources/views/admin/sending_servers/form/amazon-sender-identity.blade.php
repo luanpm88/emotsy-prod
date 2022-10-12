@@ -81,14 +81,25 @@
                 {{ trans('messages.sending_serbers.aws.allow_verify.intro') }}
             </p>
 
-            @include('helpers.form_control', [
-                'type' => 'checkbox2',
-                'label' => trans('messages.allow_verify_domain_against_aws'),
-                'name' => 'options[allow_verify_domain_remotely]',
-                'value' => $server->getOption('allow_verify_domain_remotely'),
-                'help_class' => 'sending_server',
-                'options' => ['no', 'yes'],
-            ])
+            <div>
+                <span class="form-label d-flex align-items-center">
+                    <label class="checkbox-label readonly">
+                        <input type="hidden" name="options[allow_verify_domain_remotely]" value="no" />
+                        <input                           
+                            type="checkbox"
+                            class="styled me-2"
+                            name="options[allow_verify_domain_remotely]"
+                            {{ $server->getOption('allow_verify_domain_remotely') == 'yes' ? 'checked' : '' }}
+                            value="yes"
+                            readonly
+                        >
+                        <span class="check-symbol"></span>
+                        <span class="ms-1">
+                            {{ trans('messages.allow_verify_domain_against_aws') }}
+                        </span>
+                    </label>
+                </span>
+            </div>
 
             @include('helpers.form_control', [
                 'type' => 'checkbox2',

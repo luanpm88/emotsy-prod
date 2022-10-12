@@ -1,4 +1,21 @@
-4.0.24 / 2021-09-19
+4.0.24-p412 / 2022-10-04
+==================
+
+ * Added: more email and form templates added
+ * Added: security fixes for popup forms
+ * Added: support trial period for plans
+ * Added: updated GeoIP dataset's source
+ * Added: more PRO builder widgets
+ * Added: tracking domain now supports DNS verification
+ * Added: support both "light" and "dark" logos
+ * Fixed: Acelle emails are now fully compatible with Outlook 2016 or higher
+ * Fixed: more compatible with ModSecurity
+ * Fixed: SSL issues with non-secured environments
+ * Fixed: translation issues in admin dashboard
+ * Fixed: make sending processes less likely to be terminated by the OS
+ * Fixed: numbers are not correctly formatted accordingly to user's preference
+
+4.0.24 / 2022-09-19
 ==================
 
  * Added: upgrade to Laravel 8.83.24
@@ -26,7 +43,7 @@
  * Changed: default editor (classic) for uploaded templates
  * Changed: allow admins to modify base templates
 
-4.0.23 / 2021-03-17
+4.0.23 / 2022-03-17
 ==================
 
  * Added: plugin mechanism 1.0 is now available, embracing plugin development
@@ -48,7 +65,7 @@
  * Fixed: email builder not working well with SVG
  * Fixed: better compatibility with older versions of Thunderbird
 
-4.0.22 / 2021-02-11
+4.0.22 / 2022-02-11
 ==================
 
  * Added: tracking domain support

@@ -1045,6 +1045,7 @@
   'email_verification_servers.enabled' => 'Uno o mas servidores de verificacion ha sido habilitado',
   'emails' => 'Emails',
   'emails.link_empty' => 'The email dose not have links!',
+  'emails_quota' => 'Sending credits',
   'embedded_form.list_not_exsit' => 'La lista no existe',
   'embedded_form_code.copied' => 'Embedded code was copied',
   'embedded_form_recaptcha' => 'Embedded form captcha',

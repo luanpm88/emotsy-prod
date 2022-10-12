@@ -42,12 +42,13 @@ class BounceHandler extends DeliveryHandler
     public function processMessage($mbox, $msgNo)
     {
         try {
-            $header = imap_headerinfo($mbox, $msgNo);
+            $info = imap_headerinfo($mbox, $msgNo);
+            $header = imap_fetchheader($mbox, $msgNo);
             $body = imap_body($mbox, $msgNo, FT_PEEK);
 
             /* The following check is now deprecated
              * and will be removed
-                 $bouncedAddress = $this->getBouncedAddress($header->toaddress);
+                 $bouncedAddress = $this->getBouncedAddress($info->toaddress);
                  print_r($bouncedAddress . "\n");
                  if (empty($bouncedAddress)) {
                      throw new \Exception("not a bounce message");
@@ -70,21 +71,29 @@ class BounceHandler extends DeliveryHandler
                 return;
             }
 
+            list($code, $type) = $this->getBounceCodeAndType($header.PHP_EOL.$body);
+
             // record a bounce log, one message may have more than one
             $bounceLog = new BounceLog();
             $bounceLog->message_id = $msgId;
             $bounceLog->runtime_message_id = $msgId;
-            $bounceLog->bounce_type = 'unknown'; // @TODO fill in the NULL value here
-            $bounceLog->raw = imap_fetchheader($mbox, $msgNo).PHP_EOL.$body;
+            $bounceLog->bounce_type = $type; // soft | hard | unknown
+            $bounceLog->status_code = $code; // 511, 550, 555... (hard) or 4xx (soft)
+            $bounceLog->raw = $header.PHP_EOL.$body;
             $bounceLog->save();
 
             // just delete the bounce notification email
             imap_delete($mbox, $msgNo);
 
             $this->logger()->info('Done: bounce recorded for message '.$msgId);
-            $this->logger()->info('Adding email to blacklist...');
-            $trackingLog->subscriber->sendToBlacklist($bounceLog->raw);
-            $this->logger()->info('Added');
+
+            if ($bounceLog->isHard()) {
+                $this->logger()->info('Adding email to blacklist...');
+                $trackingLog->subscriber->sendToBlacklist($bounceLog->raw);
+                $this->logger()->info('Added');
+            } else {
+                $this->logger()->info('Do nothing with soft bounce');
+            }
         } catch (\Exception $ex) {
             $this->logger()->info('Failed. '.$ex->getMessage());
         }
@@ -103,6 +112,29 @@ class BounceHandler extends DeliveryHandler
         } else {
             return str_replace('=', '@', $matched[0]);
         }
+    }
+
+    public function getBounceCodeAndType($content)
+    {
+        preg_match('/(?<=Status:)\s*[^\s]*/', $content, $matched);
+        if (sizeof($matched) == 0) {
+            return [null, BounceLog::UNKNOWN];
+        }
+
+        // Get something like "5.1.1" or "511", then convert it to "511"
+        $code = preg_replace('/[^\d]/', '', trim($matched[0]));
+        if (empty($code)) {
+            return [null, BounceLog::UNKNOWN];
+        }
+
+        // If "5xx" then HARD, else "4xx" then SOFT
+        if ($code[0] === '5') {
+            $type = BounceLog::HARD;
+        } else {
+            $type = BounceLog::SOFT;
+        }
+
+        return [$code, $type];
     }
 
     /**
