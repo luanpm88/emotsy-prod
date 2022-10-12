@@ -165,7 +165,7 @@ class Subscription extends Model implements HasQuotaInterface
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function createInitInvoice()
+    public function createInitInvoiceWithoutTrial()
     {
         $endDate = $this->customer->formatDateTime($this->getTrialPeriodEndsAt(Carbon::now()), "datetime_full");
         
@@ -200,7 +200,7 @@ class Subscription extends Model implements HasQuotaInterface
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function createTrialInvoice()
+    public function createInitInvoiceWithTrial()
     {
         $endDate = $this->customer->formatDateTime($this->getTrialPeriodEndsAt(Carbon::now()), "datetime_full");
         
