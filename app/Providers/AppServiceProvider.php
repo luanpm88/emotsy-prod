@@ -11,7 +11,6 @@ use Acelle\Model\Setting;
 use Acelle\Library\HookManager;
 use Acelle\Model\Plugin;
 use Acelle\Model\Notification;
-use Acelle\Library\BillingManager;
 use Acelle\Library\Facades\Hook;
 
 class AppServiceProvider extends ServiceProvider
@@ -47,10 +46,6 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->singleton(HookManager::class, function ($app) {
             return new HookManager();
-        });
-
-        $this->app->singleton(BillingManager::class, function ($app) {
-            return new BillingManager();
         });
 
         Hook::register('add_translation_file', function () {
