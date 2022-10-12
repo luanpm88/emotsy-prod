@@ -14,6 +14,7 @@ use Acelle\Library\Facades\Hook;
 use Illuminate\Support\Facades\File;
 use Acelle\Library\Traits\HasUid;
 use Exception;
+use DirectoryIterator;
 
 use function Acelle\Helpers\pcopy;
 
@@ -451,49 +452,17 @@ class Plugin extends Model
 
     public function getStoragePath($subpath = null, $absolute = true)
     {
-        if (is_null($this->name)) {
-            throw new \Exception("Plugin name is null");
-        }
-
-        if (preg_match('/^[a-z0-9\-]+\/[a-z0-9\-]+$/', $this->name) == 0) {
-            throw new \Exception("Plugin name must match 'author/name' pattern. Only lowercase letters, numbers and/or dash (-) are allowed for 'author' and 'name'");
-        }
-
-        $base = join_paths(self::STORAGE_PATH, $this->name);
-
-        if ($absolute) {
-            $base = storage_path($base);
-        }
-
-        $path = join_paths($base, $subpath);
-        return $path;
+        return self::getStoragePathByName($this->name, $subpath, $absolute);
     }
 
     public function getComposerJsonFilePath()
     {
-        return $this->getStoragePath('composer.json');
+        return self::getComposerJsonFilePathByName($this->name);
     }
 
     public function getComposerJson()
     {
-        $pluginDir = $this->getStoragePath();
-        if (!file_exists($pluginDir)) {
-            throw new \Exception("Plugin folder '{$pluginDir}' missing");
-        }
-
-        $composerFile = $this->getComposerJsonFilePath();
-
-        if (!file_exists($composerFile)) {
-            throw new \Exception("Cannot find {$composerFile} in plugin folder. Invalid plugin?");
-        }
-
-        try {
-            $composerJson = json_decode(file_get_contents($composerFile), true);
-        } catch (\Exception $ex) {
-            throw new \Exception("Cannot parse {$composerFile}"); // for easy debugging
-        }
-
-        return $composerJson;
+        return self::getComposerJsonByName($this->name);
     }
 
     public static function autoload($includeInactivePlugin = false)
@@ -518,43 +487,7 @@ class Plugin extends Model
 
     public function load($boot = true)
     {
-        $composerJson = $this->getComposerJson($this->name);
-
-        if (!array_key_exists('autoload', $composerJson)) {
-            throw new \Exception("Cannot boot plugin '{$this->name}'. No 'autoload' found in composer.json");
-        }
-
-        if (!array_key_exists('psr-4', $composerJson['autoload'])) {
-            throw new \Exception("Cannot boot plugin '{$this->name}'. No 'autoload.psr4' found in composer.json");
-        }
-
-        $loader = new ClassLoader();
-
-        $psr4 = $composerJson['autoload']['psr-4'];
-        foreach ($psr4 as $prefix => $path) {
-            $realpath = $this->getStoragePath($path);
-            $loader->addPsr4($prefix, $realpath);
-        }
-
-        $loader->register();
-
-        if (!$boot) {
-            return;
-        }
-
-        // Load and boot ServiceProvider
-        $serviceProviders = [];
-        if (
-            array_key_exists('extra', $composerJson) &&
-            array_key_exists('laravel', $composerJson['extra']) &&
-            array_key_exists('providers', $composerJson['extra']['laravel'])) {
-            $serviceProviders = $composerJson['extra']['laravel']['providers'];
-        }
-
-        // Register service, bootstraping
-        foreach ($serviceProviders as $service) {
-            App::register($service);
-        }
+        self::loadPluginByName($this->name, $boot);
     }
 
     public static function installFromDir($name)
@@ -729,5 +662,114 @@ class Plugin extends Model
     {
         // Change "my_1st_plugin" to "My1StPlugin"
         return implode('', explode(' ', ucwords(preg_replace('/(?<=[0-9])(?=[a-z])|_/', ' ', $name))));
+    }
+
+    // This is the alternative to the static::autoload() function
+    // Instead of reading the DB to iterate through the plugins, this function iterate through the plugins directory
+    // to avoid making DB queries which is not recommended in service provider
+    public static function autoloadWithoutDbQuery()
+    {
+        $vendors = new DirectoryIterator(storage_path(self::STORAGE_PATH));
+        foreach ($vendors as $vendor) {
+            if ($vendor->isDot() || !$vendor->isDir()) {
+                continue;
+            }
+
+            $plugins = new DirectoryIterator($vendor->getPathname());
+            foreach ($plugins as $plugin) {
+                if (!$plugin->isDot() && $plugin->isDir()) {
+                    $pluginName = "{$vendor->getBasename()}/{$plugin->getBasename()}";
+                    self::loadPluginByName($pluginName);
+                }
+            }
+        }
+    }
+
+    public static function getStoragePathByName($name, $subpath = null, $absolute = true)
+    {
+        if (is_null($name)) {
+            throw new \Exception("Plugin name is null");
+        }
+
+        if (preg_match('/^[a-z0-9\-]+\/[a-z0-9\-]+$/', $name) == 0) {
+            throw new \Exception("Plugin name must match 'author/name' pattern. Only lowercase letters, numbers and/or dash (-) are allowed for 'author' and 'name'");
+        }
+
+        $base = join_paths(self::STORAGE_PATH, $name);
+
+        if ($absolute) {
+            $base = storage_path($base);
+        }
+
+        $path = join_paths($base, $subpath);
+        return $path;
+    }
+
+    public static function getComposerJsonFilePathByName($name)
+    {
+        return self::getStoragePathByName($name, 'composer.json');
+    }
+
+    public static function getComposerJsonByName($name)
+    {
+        $pluginDir = self::getStoragePathByName($name);
+        if (!file_exists($pluginDir)) {
+            throw new \Exception("Plugin folder '{$pluginDir}' missing");
+        }
+
+        $composerFile = self::getComposerJsonFilePathByName($name);
+
+        if (!file_exists($composerFile)) {
+            throw new \Exception("Cannot find {$composerFile} in plugin folder. Invalid plugin?");
+        }
+
+        try {
+            $composerJson = json_decode(file_get_contents($composerFile), true);
+        } catch (\Exception $ex) {
+            throw new \Exception("Cannot parse {$composerFile}"); // for easy debugging
+        }
+
+        return $composerJson;
+    }
+
+    public static function loadPluginByName($name, $boot = true)
+    {
+        $composerJson = self::getComposerJsonByName($name);
+
+        if (!array_key_exists('autoload', $composerJson)) {
+            throw new \Exception("Cannot boot plugin '{$name}'. No 'autoload' found in composer.json");
+        }
+
+        if (!array_key_exists('psr-4', $composerJson['autoload'])) {
+            throw new \Exception("Cannot boot plugin '{$name}'. No 'autoload.psr4' found in composer.json");
+        }
+
+        $loader = new ClassLoader();
+
+        $psr4 = $composerJson['autoload']['psr-4'];
+        foreach ($psr4 as $prefix => $path) {
+            $realpath = self::getStoragePathByName($name, $path);
+            $loader->addPsr4($prefix, $realpath);
+        }
+
+        $loader->register();
+
+        if (!$boot) {
+            return;
+        }
+
+        // Load and boot ServiceProvider
+        $serviceProviders = [];
+        if (
+            array_key_exists('extra', $composerJson) &&
+            array_key_exists('laravel', $composerJson['extra']) &&
+            array_key_exists('providers', $composerJson['extra']['laravel'])) {
+            $serviceProviders = $composerJson['extra']['laravel']['providers'];
+        }
+
+        // Register service, bootstraping
+        foreach ($serviceProviders as $service) {
+            App::register($service);
+        }
     }
 }

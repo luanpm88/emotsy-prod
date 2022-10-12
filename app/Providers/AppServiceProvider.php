@@ -125,16 +125,7 @@ class AppServiceProvider extends ServiceProvider
 
     private function loadPlugins()
     {
-        try {
-            Plugin::autoload();
-            Notification::cleanupDuplicateNotifications('Plugin Error');
-        } catch (\Exception $ex) {
-            // Just in case
-            Notification::warning([
-                'message' => 'Cannot load Acelle plugins. Error: '.htmlspecialchars($ex->getMessage()),
-                'title' => 'Plugin Error',
-            ]);
-        }
+        Plugin::autoloadWithoutDbQuery();
     }
 
     // @deprecated
