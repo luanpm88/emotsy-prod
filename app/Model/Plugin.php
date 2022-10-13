@@ -3,18 +3,18 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
-use GuzzleHttp\Client;
-use Validator;
-use ZipArchive;
 use Illuminate\Validation\ValidationException;
-use Acelle\Library\Tool;
-use Composer\Autoload\ClassLoader;
-use App;
-use Acelle\Library\Facades\Hook;
 use Illuminate\Support\Facades\File;
 use Acelle\Library\Traits\HasUid;
+use Acelle\Library\Tool;
+use Acelle\Library\Facades\Hook;
+use Composer\Autoload\ClassLoader;
+use GuzzleHttp\Client;
+use App;
 use Exception;
 use DirectoryIterator;
+use Validator;
+use ZipArchive;
 
 use function Acelle\Helpers\pcopy;
 
@@ -26,6 +26,8 @@ class Plugin extends Model
     public const STATUS_INACTIVE = 'inactive';
 
     public const STORAGE_PATH = 'app/plugins'; // do not use this constant, use getStoragePath instead
+
+    public const INDEX_FILE = 'app/plugins/index.json';
 
     protected $fillable = ['name', 'title', 'description', 'version'];
     protected $requiredKeys = [
@@ -118,6 +120,10 @@ class Plugin extends Model
     {
         $this->status = self::STATUS_INACTIVE;
         $this->save();
+        self::updatePluginMasterFile($this->name, [
+            'status' => $this->status,
+            'error' => null, // clean up error
+        ]);
     }
 
     /**
@@ -180,18 +186,6 @@ class Plugin extends Model
         $pluginsVendorPath = $pluginsPath . '/' . $pluginVendor;
         $pluginsSourcePath = $pluginsVendorPath . '/' . $pluginName;
 
-        // create folders
-        $paths = [
-            $pluginsPath,
-            $pluginsVendorPath,
-            $pluginsSourcePath,
-        ];
-        foreach ($paths as $path) {
-            if (!file_exists($path)) {
-                mkdir($path, 0777, true);
-            }
-        }
-
         // check if overwrite plugin
         if ($request->overwrite) {
             $config['overwrite'] = true;
@@ -199,6 +193,19 @@ class Plugin extends Model
 
         // throw exception if any required key is missing
         self::validateMetaData($config);
+
+        // create folders
+        $paths = [
+            $pluginsPath,
+            $pluginsVendorPath,
+            $pluginsSourcePath,
+        ];
+
+        foreach ($paths as $path) {
+            if (!file_exists($path)) {
+                mkdir($path, 0777, true);
+            }
+        }
 
         // move from tmp to storage/app/plugins
         Tool::xdelete($pluginsSourcePath);
@@ -208,112 +215,6 @@ class Plugin extends Model
         Tool::xcopy($tmp_path, $pluginsSourcePath);
         Tool::xdelete($tmp_path);
         return $config['name'];
-    }
-
-    /**
-     * Upload a template.
-     */
-    public static function uploadAndSave($request)
-    {
-        $pluginsPath = storage_path('app/plugins');
-
-        $rules = array(
-            'file' => 'required|mimetypes:application/zip,application/octet-stream,application/x-zip-compressed,multipart/x-zip',
-        );
-
-        $validator = Validator::make($request->all(), $rules, [
-            'file.mimetypes' => 'Input must be a valid .zip file',
-        ]);
-
-        if ($validator->fails()) {
-            throw new ValidationException($validator);
-        }
-
-        // move file to temp place
-        $tmp_path = storage_path('tmp/uploaded_plugin_'.time());
-        $file_name = $request->file('file')->getClientOriginalName();
-        $request->file('file')->move($tmp_path, $file_name);
-        $tmp_zip = join_paths($tmp_path, $file_name);
-
-        // read zip file check if zip archive invalid
-        $zip = new ZipArchive();
-        if ($zip->open($tmp_zip, ZipArchive::CREATE) !== true) {
-            $validator->errors()->add('file', 'Cannot open plugin package');
-            throw new ValidationException($validator);
-        }
-
-        // unzip template archive and remove zip file
-        $zip->extractTo($tmp_path);
-        $zip->close();
-        unlink($tmp_zip);
-
-        // read plugin file
-        if (!is_file($configFile = $tmp_path.'/composer.json')) {
-            throw new \Exception('Invalid plugin package. No meta data found');
-        }
-
-        try {
-            $config = json_decode(file_get_contents($configFile), true);
-        } catch (\Exception $ex) {
-            throw new \Exception('Invalid plugin package. Cannot parse meta data');
-        }
-
-        $names = explode('/', $config['name']);
-        // check valid plugin name
-        if (count($names) != 2) {
-            throw new \Exception('Invalid plugin package. No meta data found');
-        }
-        $pluginVendor = $names[0];
-        $pluginName = $names[1];
-
-        // chek if plugin exist
-        $pluginsVendorPath = $pluginsPath . '/' . $pluginVendor;
-        $pluginsSourcePath = $pluginsVendorPath . '/' . $pluginName;
-
-        // create folders
-        $paths = [
-            $pluginsPath,
-            $pluginsVendorPath,
-            $pluginsSourcePath,
-        ];
-        foreach ($paths as $path) {
-            if (!file_exists($path)) {
-                mkdir($path, 0777, true);
-            }
-        }
-
-        // check if overwrite plugin
-        if ($request->overwrite) {
-            $config['overwrite'] = true;
-        }
-
-        // throw exception if any required key is missing
-        self::validateMetaData($config);
-
-        // new plugin
-        $plugin = self::where('name', '=', $config['name'])->first();
-        // ->where('type', '=', $config['type'])
-        if (!$plugin) {
-            $plugin = new \Acelle\Model\Plugin();
-            $plugin->status = \Acelle\Model\Plugin::STATUS_ACTIVE;
-        }
-        $plugin->name = $config['name'];
-        $plugin->title = $config['title'];
-        $plugin->description = (array_key_exists('description', $config)) ? $config['description'] : null;
-        $plugin->version = $config['version'];
-
-        // remove tmp folder
-        // exec("rm -r {$tmp_path}");
-        Tool::xdelete($pluginsSourcePath);
-        if (!file_exists($pluginsSourcePath)) {
-            mkdir($pluginsSourcePath, 0777, true);
-        }
-        Tool::xcopy($tmp_path, $pluginsSourcePath);
-        Tool::xdelete($tmp_path);
-
-        $plugin->save();
-
-        return $plugin;
     }
 
     /**
@@ -393,7 +294,10 @@ class Plugin extends Model
         $requiredVersion = $config['app_version'];
         $checked = version_compare($currentVersion, $requiredVersion, '>=');
         if (!$checked) {
-            throw new \Exception("The uploaded plugin requires Acelle platform version {$requiredVersion} or higher. The current version is {$currentVersion}");
+            throw new \Exception(trans('messages.plugin.error.version', [
+                'current' => $currentVersion,
+                'required' => $requiredVersion
+            ]));
         }
 
         // // Check license type
@@ -439,8 +343,15 @@ class Plugin extends Model
         $hookName = 'activate_plugin_'.$this->name;
         Hook::execute($hookName);
 
+        $config = $this->getComposerJson();
+        self::validateMetaData($config);
+
         $this->status = self::STATUS_ACTIVE;
         $this->save();
+        self::updatePluginMasterFile($this->name, [
+            'status' => $this->status,
+            'error' => null, // clean up error
+        ]);
     }
 
     public function reset()
@@ -448,6 +359,10 @@ class Plugin extends Model
         $this->status = self::STATUS_INACTIVE;
         $this->data = null;
         $this->save();
+        self::updatePluginMasterFile($this->name, [
+            'status' => $this->status,
+            'error' => null,
+        ]);
     }
 
     public function getStoragePath($subpath = null, $absolute = true)
@@ -509,6 +424,7 @@ class Plugin extends Model
         $plugin->version = array_key_exists('version', $composer) ? $composer['version'] : '0.0.0';
         $plugin->status = self::STATUS_INACTIVE;
         $plugin->save();
+        self::updatePluginMasterFile($plugin->name, ['status' => $plugin->status]);
 
         // Important: publish language files after installing a plugin
         // Remember to load the plugin first, make sure its service provider runs first
@@ -547,11 +463,11 @@ class Plugin extends Model
 
     public function deleteAndCleanup()
     {
-        Hook::execute('delete_plugin_'.$this->name);
-
+        $name = $this->name;
+        Hook::execute('delete_plugin_'.$name);
         $this->deletePluginDirectory();
-
-        return $this->delete();
+        $this->delete();
+        self::updatePluginMasterFile($name, null);
     }
 
     public function deletePluginDirectory()
@@ -665,23 +581,41 @@ class Plugin extends Model
     }
 
     // This is the alternative to the static::autoload() function
-    // Instead of reading the DB to iterate through the plugins, this function iterate through the plugins directory
-    // to avoid making DB queries which is not recommended in service provider
+    // Instead querying the DB, this function reads the list of plugins from master file
+    // It is to avoid making DB queries which is not recommended in service provider
     public static function autoloadWithoutDbQuery()
     {
-        $vendors = new DirectoryIterator(storage_path(self::STORAGE_PATH));
-        foreach ($vendors as $vendor) {
-            if ($vendor->isDot() || !$vendor->isDir()) {
-                continue;
+        // File storing plugin index (meta data)
+        $index = self::getPluginMasterFile();
+
+        // Get json data from file
+        if (!file_exists($index)) {
+            return;
+        }
+
+        $plugins = json_decode(file_get_contents($index), true);
+
+        foreach($plugins as $name => $attributes) {
+            $status = $attributes['status'];
+
+            // Currently, we need to load all plugins
+            // In order to use its routes
+            if ($status == self::STATUS_ACTIVE || self::STATUS_INACTIVE) {
+                try {
+                    self::loadPluginByName($name);
+                } catch(\Throwable $t) {
+                    // Important: this block cannot catch exception in plugin's service provider itself
+                    // It is because the service is registered at this time with App::register(...)
+                    // but shall be executed later on, not immediately
+                    self::updatePluginMasterFile($name, [
+                        'error' => $t->getMessage()
+                    ]);
+                }
+
+            } else {
+                // echo "Skipped $name\n";
             }
 
-            $plugins = new DirectoryIterator($vendor->getPathname());
-            foreach ($plugins as $plugin) {
-                if (!$plugin->isDot() && $plugin->isDir()) {
-                    $pluginName = "{$vendor->getBasename()}/{$plugin->getBasename()}";
-                    self::loadPluginByName($pluginName);
-                }
-            }
         }
     }
 
@@ -770,6 +704,93 @@ class Plugin extends Model
         // Register service, bootstraping
         foreach ($serviceProviders as $service) {
             App::register($service);
+        }
+    }
+
+    // Use a master file to manage a list of plugins
+    // This file stores plugin status information, for example
+    //     [
+    //         'awesometeam/sample': { 'status' : 'active' },
+    //         'others/myplugin': { 'status' : 'inactive' }
+    //     ]
+    //
+    // Currently, only 'status' is required in this master file
+    //
+    public static function updatePluginMasterFile($name, $params)
+    {
+        // File storing plugin index (meta data)
+        $index = self::getPluginMasterFile();
+
+        // Get json data from file
+        if (!file_exists($index)) {
+            $data = [];
+        } else {
+            $data = json_decode(file_get_contents($index), true);
+        }
+
+        if (is_null($params)) {
+            // null means: delete plugin from index
+            unset($data[$name]);
+        } else {
+            $plugininfo = array_key_exists($name, $data) ? $data[$name] : [];
+            $plugininfo = array_merge($plugininfo, $params);
+            $plugininfo = array_filter($plugininfo); // filter out null keys
+            $data[$name] = $plugininfo;
+
+            // Currently, only 'status' is required in this master file
+            if (!array_key_exists('status', $data[$name])) {
+                throw new \Exception('Plugin\'s "status" attribute is required in plugin master file');
+            }
+        }
+
+        // Write back to file
+        file_put_contents($index, json_encode($data));
+    }
+
+    public static function resetPluginMasterFile()
+    {
+        $index = self::getPluginMasterFile();
+
+        if (file_exists($index)) {
+            File::delete($index);
+        }
+
+        foreach(self::all() as $plugin) {
+            self::updatePluginMasterFile($plugin->name, [
+                'status' => $plugin->status,
+                'error' => null, // drop error
+            ]);
+        }
+    }
+
+    public static function getPluginMasterFile()
+    {
+        return storage_path(self::INDEX_FILE);
+    }
+
+    public function getPluginInfo($key)
+    {
+        return self::getPluginInfoByName($this->name, $key);
+    }
+
+    public static function getPluginInfoByName($name, $key)
+    {
+        // File storing plugin index (meta data)
+        $index = self::getPluginMasterFile();
+
+        // Get json data from file
+        if (!file_exists($index)) {
+            $data = [];
+        } else {
+            $data = json_decode(file_get_contents($index), true);
+        }
+
+        $plugininfo = array_key_exists($name, $data) ? $data[$name] : [];
+
+        if ($key) {
+            return array_key_exists($key, $plugininfo) ? $plugininfo[$key] : null;
+        } else {
+            return $plugininfo;
         }
     }
 }

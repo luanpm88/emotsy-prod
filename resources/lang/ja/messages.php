@@ -1818,6 +1818,7 @@
   'plugin.delete_confirmation.wording' => 'Removing the plugin will also remove all its data <br> Are you sure you want to completely remove the plugin? ',
   'plugin.deleted' => 'プラグインは正常に削除されました',
   'plugin.deleted.wording' => 'The Paddle plugin and all its data have been removed from the application. <br>You can no longer get them back! ',
+  'plugin.error.version' => 'The plugin requires platform version :required or higher. The current version is :current',
   'plugin.installing' => '<strong>Installing...</strong><p>Your plugin is being uploaded and processed, please wait!</p>',
   'plugin.name' => 'Plugin',
   'plugin.no_plugin' => 'You have no plugin',

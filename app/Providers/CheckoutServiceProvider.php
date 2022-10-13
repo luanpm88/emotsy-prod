@@ -26,20 +26,20 @@ class CheckoutServiceProvider extends ServiceProvider implements DeferrableProvi
         // Register built-in services
         // Notice that the closure passed to the register() method is not actually executed during boot
         // It is to improve performance and to avoid executing DB queries in service providers
-        Billing::register(OfflinePaymentGateway::TYPE, function() {
+        Billing::register(OfflinePaymentGateway::TYPE, function () {
             $paymentInstruction = Setting::get('cashier.offline.payment_instruction');
             $service = new OfflinePaymentGateway($paymentInstruction);
             return $service;
         });
 
-        Billing::register(StripePaymentGateway::TYPE, function() {
+        Billing::register(StripePaymentGateway::TYPE, function () {
             $publishableKey = Setting::get('cashier.stripe.publishable_key');
             $secretKey = Setting::get('cashier.stripe.secret_key');
             $service = new StripePaymentGateway($publishableKey, $secretKey);
             return $service;
         });
 
-        Billing::register(BraintreePaymentGateway::TYPE, function() {
+        Billing::register(BraintreePaymentGateway::TYPE, function () {
             $environment = Setting::get('cashier.braintree.environment');
             $merchantId = Setting::get('cashier.braintree.merchant_id');
             $publicKey = Setting::get('cashier.braintree.public_key');
@@ -48,7 +48,7 @@ class CheckoutServiceProvider extends ServiceProvider implements DeferrableProvi
             return $service;
         });
 
-        Billing::register(CoinpaymentsPaymentGateway::TYPE, function() {
+        Billing::register(CoinpaymentsPaymentGateway::TYPE, function () {
             $merchantId = Setting::get('cashier.coinpayments.merchant_id');
             $publicKey = Setting::get('cashier.coinpayments.public_key');
             $privateKey = Setting::get('cashier.coinpayments.private_key');
@@ -58,14 +58,14 @@ class CheckoutServiceProvider extends ServiceProvider implements DeferrableProvi
             return $service;
         });
 
-        Billing::register(PaystackPaymentGateway::TYPE, function() {
+        Billing::register(PaystackPaymentGateway::TYPE, function () {
             $publicKey = Setting::get('cashier.paystack.public_key');
             $secretKey = Setting::get('cashier.paystack.secret_key');
             $service = new PaystackPaymentGateway($publicKey, $secretKey);
             return $service;
         });
 
-        Billing::register(PaypalPaymentGateway::TYPE, function() {
+        Billing::register(PaypalPaymentGateway::TYPE, function () {
             $environment = Setting::get('cashier.paypal.environment');
             $clientId = Setting::get('cashier.paypal.client_id');
             $secret = Setting::get('cashier.paypal.secret');
@@ -73,7 +73,7 @@ class CheckoutServiceProvider extends ServiceProvider implements DeferrableProvi
             return $service;
         });
 
-        Billing::register(RazorpayPaymentGateway::TYPE, function() {
+        Billing::register(RazorpayPaymentGateway::TYPE, function () {
             $keyId = Setting::get('cashier.razorpay.key_id');
             $keySecret = Setting::get('cashier.razorpay.key_secret');
             $service = new RazorpayPaymentGateway($keyId, $keySecret);

@@ -34,7 +34,7 @@ class AppServiceProvider extends ServiceProvider
 
         // Load application's plugins
         // Disabled plugin may also register hooks
-        $this->loadPlugins();
+        Plugin::autoloadWithoutDbQuery();
     }
 
     /**
@@ -121,11 +121,6 @@ class AppServiceProvider extends ServiceProvider
                 "title" => trans('messages.recaptcha'),
             ];
         });
-    }
-
-    private function loadPlugins()
-    {
-        Plugin::autoloadWithoutDbQuery();
     }
 
     // @deprecated
