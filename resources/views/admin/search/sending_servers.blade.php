@@ -50,7 +50,7 @@
                         @if ($server->isExtended())
                             <span class="">{{ $server->getTypeName() }}</span>
                         @else
-                            <span class="">{{ trans('messages.' . $item->type) }}</span>
+                            <span class="">{{ trans('messages.sending_server.type.' . $item->type) }}</span>
                         @endif
                     </p>
                 </div>
