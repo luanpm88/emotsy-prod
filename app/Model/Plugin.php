@@ -595,7 +595,7 @@ class Plugin extends Model
 
         $plugins = json_decode(file_get_contents($index), true);
 
-        foreach($plugins as $name => $attributes) {
+        foreach ($plugins as $name => $attributes) {
             $status = $attributes['status'];
 
             // Currently, we need to load all plugins
@@ -611,11 +611,9 @@ class Plugin extends Model
                         'error' => $t->getMessage()
                     ]);
                 }
-
             } else {
                 // echo "Skipped $name\n";
             }
-
         }
     }
 
@@ -755,7 +753,7 @@ class Plugin extends Model
             File::delete($index);
         }
 
-        foreach(self::all() as $plugin) {
+        foreach (self::all() as $plugin) {
             self::updatePluginMasterFile($plugin->name, [
                 'status' => $plugin->status,
                 'error' => null, // drop error
