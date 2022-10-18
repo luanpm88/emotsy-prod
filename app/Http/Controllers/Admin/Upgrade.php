@@ -10,6 +10,7 @@ use Acelle\Model\Setting;
 use Acelle\Model\Job;
 use Acelle\Model\FailedJob;
 use Acelle\Model\JobMonitor;
+use Acelle\Model\Plugin;
 use Artisan;
 use Illuminate\Support\Facades\Session;
 use Cache;
@@ -50,10 +51,15 @@ class Upgrade extends Controller
         Artisan::call('queue:restart');
 
         // Reset GEODB
-        Setting::set('geoip.sqlite.dbname', 'storage/app/GeoLite2-City.mmdb');
-        Setting::set('geoip.sqlite.source_url', 'https://acellemail.s3.amazonaws.com/GeoLite2-City.mmdb');
-        Setting::set('geoip.sqlite.source_hash', 'b95ecaff82017c4f52577196c41db946');
-        Setting::set('geoip.enabled', 'no');
+        if (Setting::get('geoip.sqlite.dbname') != 'storage/app/GeoLite2-City.mmdb') {
+            Setting::set('geoip.sqlite.dbname', 'storage/app/GeoLite2-City.mmdb');
+            Setting::set('geoip.sqlite.source_url', 'https://acellemail.s3.amazonaws.com/GeoLite2-City.mmdb');
+            Setting::set('geoip.sqlite.source_hash', 'b95ecaff82017c4f52577196c41db946');
+            Setting::set('geoip.enabled', 'no');
+        }
+
+        // New way to load plugins: initialize the plugin index file
+        Plugin::resetPluginMasterFile();
 
         // Merge .env.example to .env
         $manager = new UpgradeManager();

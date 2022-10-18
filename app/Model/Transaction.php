@@ -103,7 +103,7 @@ class Transaction extends Model
      */
     public function check()
     {
-        if (!Billing::isGatewayTypeRegistered($this->method)) {
+        if (!Billing::isGatewayRegistered($this->method)) {
             $this->invoice->payFailed(sprintf('Cannot verify this traction because it was previously processed by gateway type %s but the gateway is no longer available', $this->method));
         }
 
