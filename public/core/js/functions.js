@@ -320,12 +320,12 @@ function initMainMenu()
     var leftbarAdjust = function() {
         $('.leftbar .navbar-main').css('margin-top', '0px');
 
-        if ($(window).width() < 1500) {
+        if ($(window).width() < 1300) {
             $('.leftbar').removeClass('leftbar-open');
             $('.leftbar').addClass('leftbar-closed');
         }
 
-        if ($(window).width() >= 1500 && ($('body').hasClass('state-open') || $('body').hasClass('state-'))) {
+        if ($(window).width() >= 1300 && ($('body').hasClass('state-open') || $('body').hasClass('state-'))) {
             $('.leftbar').addClass('leftbar-open');
             $('.leftbar').removeClass('leftbar-closed');
         }
