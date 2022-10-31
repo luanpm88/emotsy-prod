@@ -133,7 +133,7 @@
 							<tr>
 								<td class="title" style="padding-left:0;padding-right:0;">
 									<span class="default-app-logo">
-										<img width="200px" class="logo" src="{{ getSiteLogoUrl('pdf') }}" alt="">
+										<img width="200px" class="logo" src="{{ getSiteLogoUrl('dark') }}" alt="">
 									</span>
 								</td>
 
