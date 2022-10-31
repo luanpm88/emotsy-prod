@@ -2,7 +2,7 @@
     "name": "{{ plugin }}",
     "title": "Just to say hello world",
     "version": "1.0.0",
-    "app_version": "4.0.0",
+    "app_version": "4.0.24",
     "description": "A sample plugin namely '{{ name }}' made by '{{ author }}' team",
     "autoload": {
         "psr-4": {
