@@ -1175,12 +1175,21 @@ function getFullCodeByLanguageCode($languageCode)
     return null;
 }
 
-function getSiteLogoUrl($type='light')
+function getDefaultLogoUrl($type)
 {
-    if (!isInitiated()) {
-        return URL::asset('images/logo_light.svg');
+    // default logo
+    switch($type) {
+        case 'light':
+            return URL::asset('images/logo_light.svg');
+        case 'dark':
+            return URL::asset('images/logo_dark.svg');
+        case 'pdf':
+            return URL::asset('images/logo_dark.svg');
     }
+}
 
+function getSiteLogoUrl($type)
+{
     switch($type) {
         case 'light':
             $logo = \Acelle\Model\Setting::get('site_logo_light');
@@ -1193,27 +1202,10 @@ function getSiteLogoUrl($type='light')
             break;
     }
 
-    // light is default logo
-    $lightLogo = \Acelle\Model\Setting::get('site_logo_light');
-
+    // check if user logo setting exists
     if ($logo) {
-        $url = action('SettingController@file', $logo);
-    } elseif ($lightLogo) {
-        $url = action('SettingController@file', $lightLogo);
+        return action('SettingController@file', $logo);
     } else {
-        // default logo
-        switch($type) {
-            case 'light':
-                $url = URL::asset('images/logo_light.svg');
-                break;
-            case 'dark':
-                $url = URL::asset('images/logo_dark.svg');
-                break;
-            case 'pdf':
-                $url = URL::asset('images/logo_dark.svg');
-                break;
-        }
+        return getDefaultLogoUrl($type);
     }
-
-    return $url;
 }

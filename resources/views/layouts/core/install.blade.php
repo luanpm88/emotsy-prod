@@ -34,7 +34,7 @@
 					
 						<div class="text-center login-header">
 							<a class="main-logo-big mb-2 d-block" href="{{ action('HomeController@index') }}">
-								<img width="400px" src="{{ getSiteLogoUrl('light') }}" alt="">
+								<img width="400px" src="{{ getDefaultLogoUrl('light') }}" alt="">
 							</a>
                             
                             <h3 class="text-center text-muted2" style="color: #ccc">{{ trans('messages.installation') }}</h3>
