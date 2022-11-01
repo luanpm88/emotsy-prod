@@ -2877,4 +2877,10 @@
   'your_api_token' => 'Your API token',
   'your_current_license' => 'Thank you for purchasing! Below is your license key, also known as Purchase Code. Your license type is',
   'zip_postal_code' => 'Zip / Postal code',
+  'count_minute' => ':count minute|:count minutes',
+  'count_minutes' => ':count minute|:count minutes',
+  'count_day' => ':count day|:count days',
+  'count_days' => ':count day|:count days',
+  'count_hour' => ':count hour|:count hours',
+  'count_hours' => ':count hour|:count hours',
 ) ?>
