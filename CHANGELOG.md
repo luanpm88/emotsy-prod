@@ -1,3 +1,16 @@
+4.0.24-p415 / 2022-11-02
+==================
+
+ * Fixed: GeoIP issues with certain IP ranges.
+ * Fixed: PHP 8.1 compatibility issue.
+ * Fixed: bounce type not correctly detected.
+ * Fixed: translation missing for public pages.
+ * Fixed: plugins load order.
+ * Fixed: tracking domain script does not work with certain Nginx setup.
+ * Fixed: custom logo is not loaded correctly.
+ * Fixed: MySQL 1071 specified key was too long.
+ * Fixed: downgrade YAML to 4.4 to make it compatible with PHP 7.4.
+
 4.0.24-p412 / 2022-10-04
 ==================
 
