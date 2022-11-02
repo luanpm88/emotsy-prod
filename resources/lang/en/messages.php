@@ -1692,7 +1692,7 @@
   'plan.general.details' => 'Plan Details',
   'plan.general.details.intro' => 'A plan, or service plan, is the group of services and limits that you have agreed to provide to your customer. A plan allows you to centrally plan and standardize your service offerings. Set up your plan details below:',
   'plan.general.overview' => 'Overview',
-  'plan.has_free' => ':num for free',
+  'plan.has_trial' => ':time for free',
   'plan.has_trial_period' => 'Enable trial period',
   'plan.hidden' => 'The plan was hidden successfully',
   'plan.hide' => 'Hide this plan',

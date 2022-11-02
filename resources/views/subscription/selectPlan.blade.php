@@ -112,8 +112,8 @@
                                                         'trial' => true,
                                                     ]) }}"
                                                     class="mt-3 fw-600 mb-0 text-center">
-                                                        {{ trans('messages.plan.has_free', [
-                                                            'num' => $plan->getTrialPeriodTimePhrase(),
+                                                        {{ trans('messages.plan.has_trial', [
+                                                            'time' => $plan->getTrialPeriodTimePhrase(),
                                                         ]) }}
                                                 </p>
                                             @endif
