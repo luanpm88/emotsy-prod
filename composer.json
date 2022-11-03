@@ -11,6 +11,7 @@
         "aws/aws-sdk-php": "^3.19",
         "braintree/braintree_php": "^3.22",
         "coinpaymentsnet/coinpayments-php": "^1.0",
+        "deeplcom/deepl-php": "^1.1",
         "doctrine/dbal": "^2.10",
         "dompdf/dompdf": "^1.1",
         "facade/ignition": "^2.11",

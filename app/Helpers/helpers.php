@@ -29,7 +29,7 @@ use function Acelle\Helpers\xml_to_array;
  */
 function table($name)
 {
-    return \DB::getTablePrefix().$name;
+    return \DB::getTablePrefix() . $name;
 }
 
 /**
@@ -99,8 +99,12 @@ function join_paths()
 {
     $paths = array();
     foreach (func_get_args() as $arg) {
+        if (is_null($arg)) {
+            continue;
+        }
+
         if (preg_match('/http:\/\//i', $arg)) {
-            throw new \Exception('Path contains http://! Use `join_url` instead. Error for '.implode('/', func_get_args()));
+            throw new \Exception('Path contains http://! Use `join_url` instead. Error for ' . implode('/', func_get_args()));
         }
 
         if ($arg !== '') {
@@ -161,7 +165,7 @@ function get_localization_config($name, $locale)
     } elseif (array_key_exists($name, $defaultConfig)) {
         return $defaultConfig[$name];
     } else {
-        throw new \Exception('Localization config for "'.$name.'" does not exist');
+        throw new \Exception('Localization config for "' . $name . '" does not exist');
     }
 }
 
@@ -178,7 +182,7 @@ function get_datetime_format($name, $locale)
     } elseif (array_key_exists($name, $defaultConfig)) {
         return $defaultConfig[$name];
     } else {
-        throw new \Exception('AC: Invalid datetime format type: '.$name.' => make sure the type is available in BOTH local and default (*) settings');
+        throw new \Exception('AC: Invalid datetime format type: ' . $name . ' => make sure the type is available in BOTH local and default (*) settings');
     }
 }
 
@@ -341,9 +345,9 @@ function optimized_paginate($builder, $perPage = 15, $columns = null, $pageName 
     $results = $total ? $builder->forPage($page, $perPage)->get($columns) : collect([]);
 
     return new \Illuminate\Pagination\LengthAwarePaginator($results, $total, $perPage, $page, [
-    'path' => \Illuminate\Pagination\Paginator::resolveCurrentPath(),
-    'pageName' => $pageName,
-  ]);
+        'path' => \Illuminate\Pagination\Paginator::resolveCurrentPath(),
+        'pageName' => $pageName,
+    ]);
 }
 
 /**
@@ -467,7 +471,7 @@ function doublequote($str)
  *
  * @return string
  */
-function format_price($price, $format = '{PRICE}', $html=false)
+function format_price($price, $format = '{PRICE}', $html = false)
 {
     if ($html) {
         $html = str_replace('{PRICE}', ' <span class="p-amount">' . number_with_delimiter($price) . '</span> ', $format);
@@ -491,15 +495,15 @@ function isInitiated()
 function formatSizeUnits($bytes)
 {
     if ($bytes >= 1073741824) {
-        $bytes = number_format($bytes / 1073741824, 2).' GB';
+        $bytes = number_format($bytes / 1073741824, 2) . ' GB';
     } elseif ($bytes >= 1048576) {
-        $bytes = number_format($bytes / 1048576, 2).' MB';
+        $bytes = number_format($bytes / 1048576, 2) . ' MB';
     } elseif ($bytes >= 1024) {
-        $bytes = number_format($bytes / 1024, 2).' KB';
+        $bytes = number_format($bytes / 1024, 2) . ' KB';
     } elseif ($bytes > 1) {
-        $bytes = $bytes.' bytes';
+        $bytes = $bytes . ' bytes';
     } elseif ($bytes == 1) {
-        $bytes = $bytes.' byte';
+        $bytes = $bytes . ' byte';
     } else {
         $bytes = '0 bytes';
     }
@@ -548,7 +552,7 @@ function quoteDotEnvValue($value)
 
     if ($containsSharp) {
         $value = str_replace('"', '\"', $value);
-        $value = '"'.$value.'"';
+        $value = '"' . $value . '"';
     }
 
     return $value;
@@ -618,7 +622,7 @@ function cursorIterate($query, $orderBy, $size, $callback)
  * Convert html to inline.
  *
  * @todo not very OOP here, consider moving this to a Helper instead
-*/
+ */
 function makeInlineCss($html, array $cssFiles)
 {
     // disable warning when parsing html content
@@ -805,7 +809,7 @@ function getThemeColor($theme = false)
     return $colors[$theme];
 }
 
-function getThemeMode($mode, $auto='light')
+function getThemeMode($mode, $auto = 'light')
 {
     $themeMode = $mode;
 
@@ -818,7 +822,7 @@ function getThemeMode($mode, $auto='light')
     return $themeMode;
 }
 
-function getLogoMode($mode, $scheme, $daylight='light')
+function getLogoMode($mode, $scheme, $daylight = 'light')
 {
     if ($scheme !== 'white') {
         return 'light';
@@ -1171,45 +1175,27 @@ function getFullCodeByLanguageCode($languageCode)
     return null;
 }
 
-function getSiteLogoUrl($type='light')
+function getDefaultLogoUrl($type)
 {
-    if (!isInitiated()) {
-        return URL::asset('images/logo_light.svg');
+    if (!in_array($type, ['light', 'dark'])) {
+        throw new \Exception('Logo type must be either "light" or "dark"');
     }
 
-    switch($type) {
-        case 'light':
-            $logo = \Acelle\Model\Setting::get('site_logo_light');
-            break;
-        case 'dark':
-            $logo = \Acelle\Model\Setting::get('site_logo_dark');
-            break;
-        case 'pdf':
-            $logo = \Acelle\Model\Setting::get('site_logo_dark');
-            break;
+    return URL::asset("images/logo_$type.svg");
+}
+
+function getSiteLogoUrl($type)
+{
+    if (!in_array($type, ['light', 'dark'])) {
+        throw new \Exception('Logo type must be either "light" or "dark"');
     }
 
-    // light is default logo
-    $lightLogo = \Acelle\Model\Setting::get('site_logo_light');
+    $logo = \Acelle\Model\Setting::get("site_logo_$type");
 
+    // check if user logo setting exists
     if ($logo) {
-        $url = action('SettingController@file', $logo);
-    } elseif ($lightLogo) {
-        $url = action('SettingController@file', $lightLogo);
+        return action('SettingController@file', $logo);
     } else {
-        // default logo
-        switch($type) {
-            case 'light':
-                $url = URL::asset('images/logo_light.svg');
-                break;
-            case 'dark':
-                $url = URL::asset('images/logo_dark.svg');
-                break;
-            case 'pdf':
-                $url = URL::asset('images/logo_dark.svg');
-                break;
-        }
+        return getDefaultLogoUrl($type);
     }
-
-    return $url;
 }

@@ -11,7 +11,6 @@ use Acelle\Model\Setting;
 use Acelle\Library\HookManager;
 use Acelle\Model\Plugin;
 use Acelle\Model\Notification;
-use Acelle\Library\BillingManager;
 use Acelle\Library\Facades\Hook;
 
 class AppServiceProvider extends ServiceProvider
@@ -35,7 +34,7 @@ class AppServiceProvider extends ServiceProvider
 
         // Load application's plugins
         // Disabled plugin may also register hooks
-        $this->loadPlugins();
+        Plugin::autoloadWithoutDbQuery();
     }
 
     /**
@@ -47,10 +46,6 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->singleton(HookManager::class, function ($app) {
             return new HookManager();
-        });
-
-        $this->app->singleton(BillingManager::class, function ($app) {
-            return new BillingManager();
         });
 
         Hook::register('add_translation_file', function () {
@@ -126,20 +121,6 @@ class AppServiceProvider extends ServiceProvider
                 "title" => trans('messages.recaptcha'),
             ];
         });
-    }
-
-    private function loadPlugins()
-    {
-        try {
-            Plugin::autoload();
-            Notification::cleanupDuplicateNotifications('Plugin Error');
-        } catch (\Exception $ex) {
-            // Just in case
-            Notification::warning([
-                'message' => 'Cannot load Acelle plugins. Error: '.htmlspecialchars($ex->getMessage()),
-                'title' => 'Plugin Error',
-            ]);
-        }
     }
 
     // @deprecated
