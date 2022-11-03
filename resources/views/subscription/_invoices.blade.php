@@ -77,11 +77,7 @@
                                 </td> 
                                 <td>
                                     <span class="no-margin kq_search" style="text-transform: capitalize;">
-                                        @if (Lang::has('messages.transaction.method.' . $transaction->method))
-                                            {{ trans('messages.transaction.method.' . $transaction->method) }}
-                                        @else
-                                            {{ $transaction->method }}
-                                        @endif
+                                        {{ $transaction->method }}
                                     </span>
                                 </td> 
                                 <td>
@@ -110,7 +106,7 @@
                             <th>{{ trans('messages.invoice.status') }}</th>
                             <th>{{ trans('messages.invoice.action') }}</th>
                         </tr>
-                        @forelse ($subscription->invoices()->orderBy('created_at', 'desc')->get() as $key => $invoice)
+                        {{-- @forelse ($subscription->invoices()->orderBy('created_at', 'desc')->get() as $key => $invoice)
                             @php
                                 $billInfo = $invoice->getBillingInfo();
                             @endphp
@@ -156,7 +152,7 @@
                                     {{ trans('messages.subscription.logs.empty') }}
                                 </td>
                             </tr>
-                        @endforelse
+                        @endforelse --}}
                     </table>
                 </div>
             </div>

@@ -56,7 +56,7 @@ class SubscriptionPolicy
         return $can;
     }
 
-    public function cancel(User $user, Subscription $subscription, $role)
+    public function disableRecurring(User $user, Subscription $subscription, $role)
     {
         $can = $subscription->isActive() && $subscription->isRecurring();
         switch ($role) {
@@ -69,9 +69,9 @@ class SubscriptionPolicy
         return $can;
     }
 
-    public function resume(User $user, Subscription $subscription, $role)
+    public function enableRecurring(User $user, Subscription $subscription, $role)
     {
-        $can = $subscription->isActive() && $subscription->cancelled() && !$subscription->isEnded();
+        $can = $subscription->isActive() && !$subscription->isRecurring() && !$subscription->isEnded();
         switch ($role) {
             case 'admin':
                 break;

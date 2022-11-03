@@ -29,16 +29,16 @@ assignment_turned_in
                     @endif
                 </td>
                 <td class="stat-fix-size">
-                    @if ($item->activeSubscription())
+                    @if ($item->getCurrentActiveSubscription())
                         <div class="d-flex">
                             <div class="single-stat-box pull-left me-5">
-                                <span class="no-margin text-primary stat-num">{{ number_with_delimiter($item->activeSubscription()->getCreditsUsedPercentageDuringPlanCycle('send')*100) }}%</span>
+                                <span class="no-margin text-primary stat-num">{{ number_with_delimiter($item->getCurrentActiveSubscription()->getCreditsUsedPercentageDuringPlanCycle('send')*100) }}%</span>
                                 <div class="progress progress-xxs">
-                                    <div class="progress-bar progress-bar-info" style="width: {{ $item->activeSubscription()->getCreditsUsedPercentageDuringPlanCycle('send')*100 }}%">
+                                    <div class="progress-bar progress-bar-info" style="width: {{ $item->getCurrentActiveSubscription()->getCreditsUsedPercentageDuringPlanCycle('send')*100 }}%">
                                     </div>
                                 </div>
                                 <span class="text-muted">
-                                    <strong>{{ number_with_delimiter($item->activeSubscription()->getCreditsUsedDuringPlanCycle('send')) }}/{{ ($item->activeSubscription()->getCreditsLimit('send') == -1) ? '∞' : number_with_delimiter($item->activeSubscription()->getCreditsLimit('send')) }}</strong>
+                                    <strong>{{ number_with_delimiter($item->getCurrentActiveSubscription()->getCreditsUsedDuringPlanCycle('send')) }}/{{ ($item->getCurrentActiveSubscription()->getCreditsLimit('send') == -1) ? '∞' : number_with_delimiter($item->getCurrentActiveSubscription()->getCreditsLimit('send')) }}</strong>
                                     <div class="text-nowrap">{{ trans('messages.sending_credits_used') }}</div>
                                 </span>
                             </div>

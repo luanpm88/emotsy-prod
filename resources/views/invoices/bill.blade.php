@@ -1,6 +1,6 @@
 @if ($bill)
-    <div class="card shadow-sm rounded-3 px-2 py-2">
-        <div class="card-body p-4">
+    {{-- <div class="card shadow-sm rounded-3 px-2 py-2">
+        <div class="card-body p-4"> --}}
             <h2 class="fw-600 mb-1 text-start">
                 {{ $bill['title'] }}
             </h2>
@@ -49,8 +49,9 @@
                     <p class="mb-0 bill-total fs-5 fw-bold">{{ $bill['total'] }}</p>
                 </div>
             </div>
+
             
-            @if ($bill['pending'])
+            {{-- @if ($bill['pending'])
                 <hr>
                 <div class="text-right pe-none">
                     <a href="{{ action('SubscriptionController@payment', [
@@ -84,7 +85,7 @@
                         </a>
                     @endif
                 </div>
-            @endif
-        </div>
-    </div>
+            @endif --}}
+        {{-- </div>
+    </div> --}}
 @endif

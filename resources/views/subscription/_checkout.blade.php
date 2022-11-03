@@ -1,7 +1,6 @@
 @if ($invoice->isNew() && !$invoice->getPendingTransaction())
-    <div class="card shadow-sm border-top-0 rounded-bottom p-2" style="margin-top: -10px;
-    border-radius: 0;">
-        <div class="card-body pe-4 ps-4 pb-4 pt-0">
+    <div class="">
+        <div class="mt-4">
             <div class="alert alert-info bg-no-order tos_link">
                 @if (Acelle\Model\Setting::get('terms_of_service.enabled') == 'no' && Acelle\Model\Setting::get('terms_of_service.content')) 
                     {!! trans('messages.payment.agree_service_intro.term_link', [
@@ -11,7 +10,9 @@
                     {!! trans('messages.payment.agree_service_intro') !!}
                 @endif
             </div>
-            <form id="checkoutForm" class="" action="{{ action('SubscriptionController@checkout') }}"
+            <form id="checkoutForm" class="" action="{{ action('SubscriptionController@checkout', [
+                'invoice_uid' => $invoice->uid,
+            ]) }}"
                 method="POST">
                 {{ csrf_field() }}
 

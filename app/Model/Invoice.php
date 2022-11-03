@@ -355,6 +355,11 @@ class Invoice extends Model
             case self::TYPE_CHANGE_PLAN:
                 $newPlan = \Acelle\Model\Plan::findByUid($data['new_plan_uid']);
                 $subscription->changePlan($newPlan);
+
+                // Xoá NEW renew invoice hiện tại nếu có
+                if ($subscription->getItsOnlyUnpaidRenewInvoice()) {
+                    $subscription->getItsOnlyUnpaidRenewInvoice()->delete();
+                }
                 break;
             default:
                 throw new \Exception('Invoice type is not valid: ' . $this->type);
@@ -482,6 +487,11 @@ class Invoice extends Model
     public function isRenewSubscriptionInvoice()
     {
         return $this->type == self::TYPE_RENEW_SUBSCRIPTION;
+    }
+
+    public function isNewSubscriptionInvoice()
+    {
+        return $this->type == self::TYPE_NEW_SUBSCRIPTION;
     }
 
     /**

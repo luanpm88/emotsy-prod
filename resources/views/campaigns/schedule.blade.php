@@ -84,7 +84,7 @@ forward_to_inbox
                 this.getForm().submit();
             },
 
-            sendNow: function() {
+            scancelNow: function() {
                 this.getForm().find('[name=send_now]').val('yes');
                 this.getForm().submit();
             }
@@ -92,7 +92,7 @@ forward_to_inbox
         
         $(function() {
             $('.send-now').on('click', function() {
-                CampaignSchedule.sendNow();
+                CampaignSchedule.scancelNow();
             });
         });
     </script>

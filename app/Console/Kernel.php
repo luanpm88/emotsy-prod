@@ -11,6 +11,7 @@ use Acelle\Model\Subscription;
 use Acelle\Model\Setting;
 use Laravel\Tinker\Console\TinkerCommand;
 use Exception;
+use Acelle\Library\Facades\SubscriptionFacade;
 
 class Kernel extends ConsoleKernel
 {
@@ -74,10 +75,23 @@ class Kernel extends ConsoleKernel
         // GeoIp database check
         $schedule->command('geoip:check')->everyMinute()->withoutOverlapping(60);
 
-        // Subscription
+        // Subscription: check expiration
         $schedule->call(function () {
-            Subscription::checkAll();
-        })->name('subscription:run')->everyFiveMinutes();
+            SubscriptionFacade::checkExpiration();
+        })->name('subscription:check-expiration')->everyFiveMinutes();
+
+        // Subscription: create renew invoice
+        $schedule->call(function () {
+            SubscriptionFacade::createRenewInvoice();
+        })->name('subscription:create-renew')->everyFiveMinutes();
+        
+        // Subscription: pay renew invoice
+        $schedule->call(function () {
+            $customers = \Acelle\Model\Customer::all();
+            foreach ($customers as $customer) {
+                SubscriptionFacade::checkAndAutoPayRenewInvoiceByCustomer($customer);
+            }
+        })->name('subscription:auto-pay-renew')->everyFiveMinutes();
     }
 
     /**

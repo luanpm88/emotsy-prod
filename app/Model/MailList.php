@@ -1510,7 +1510,7 @@ class MailList extends Model
     public function getCurrentSubscription()
     {
         if (empty($this->currentSubscription)) {
-            $this->currentSubscription = $this->customer->activeSubscription();
+            $this->currentSubscription = $this->customer->getCurrentActiveSubscription();
         }
 
         return $this->currentSubscription;

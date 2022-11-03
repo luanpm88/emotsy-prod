@@ -70,26 +70,15 @@
 
             <div class="sub-section">
                 @if ($subscription->isActive())
-                    @if (!$subscription->cancelled())
-                        {{-- @if (\Auth::user()->customer->supportsAutoBilling())
-                            <p>
-                                {!! trans('messages.subscription.current_subscription.recurring.wording', [
-                                    'plan' => $plan->name,
-                                    'money' => Acelle\Library\Tool::format_price($plan->price, $plan->currency->format),
-                                    'remain' => $subscription->current_period_ends_at->diffForHumans(),
-                                    'next_on' => Auth::user()->customer->formatDateTime($subscription->current_period_ends_at, 'datetime_full')
-                                ]) !!}
-                            </p>
-                        @else --}}
-                            <p>
-                                {!! trans('messages.subscription.current_subscription.wording', [
-                                    'plan' => $plan->name,
-                                    'money' => Acelle\Library\Tool::format_price($plan->price, $plan->currency->format),
-                                    'remain' => $subscription->current_period_ends_at->diffForHumans(),
-                                    'next_on' => Auth::user()->customer->formatDateTime($subscription->current_period_ends_at, 'datetime_full')
-                                ]) !!}
-                            </p>
-                        {{-- @endif --}}
+                    @if ($subscription->isRecurring())
+                        <p>
+                            {!! trans('messages.subscription.current_subscription.wording', [
+                                'plan' => $plan->name,
+                                'money' => Acelle\Library\Tool::format_price($plan->price, $plan->currency->format),
+                                'remain' => $subscription->current_period_ends_at->diffForHumans(),
+                                'next_on' => Auth::user()->customer->formatDateTime($subscription->current_period_ends_at, 'datetime_full')
+                            ]) !!}
+                        </p>
                     @else
                         <p>
                             {!! trans('messages.subscription.current_subscription.cancel_at_end_of_period.wording', [
@@ -101,21 +90,21 @@
                         </p>
                     @endif                        
 
-                    @if (\Auth::user()->customer->can('cancel', $subscription))
-                        <a link-method="POST" link-confirm="{{ trans('messages.subscription.cancel.confirm') }}"
-                            href="{{ action('SubscriptionController@cancel') }}"
+                    @if (\Auth::user()->customer->can('disableRecurring', $subscription))
+                        <a link-method="POST" link-confirm="{{ trans('messages.subscription.disable_recurring.confirm') }}"
+                            href="{{ action('SubscriptionController@disableRecurring') }}"
                             class="btn btn-secondary me-1"
                         >
-                            {{ trans('messages.subscription.cancel') }}
+                            {{ trans('messages.subscription.disable_recurring') }}
                         </a>
                     @endif
 
-                    @if (\Auth::user()->customer->can('resume', $subscription))
-                        <a link-method="POST" link-confirm="{{ trans('messages.subscription.resume.confirm') }}"
-                            href="{{ action('SubscriptionController@resume') }}"
+                    @if (\Auth::user()->customer->can('enableRecurring', $subscription))
+                        <a link-method="POST" link-confirm="{{ trans('messages.subscription.enable_recurring.confirm') }}"
+                            href="{{ action('SubscriptionController@enableRecurring') }}"
                             class="btn btn-secondary me-2"
                         >
-                            {{ trans('messages.subscription.resume') }}
+                            {{ trans('messages.subscription.enable_recurring') }}
                         </a>
                     @endif
 
@@ -153,10 +142,83 @@
             </div>
         </div>
         <div class="col-sm-12 col-md-4 col-lg-4">
-            @include('invoices.bill', [
-                'bill' => $subscription->getUpcomingBillingInfo(),
-                'payButton' => true,
-            ])
+            @if ($subscription->getItsOnlyUnpaidChangePlanInvoice())
+                <div class="card shadow-sm rounded-3 px-2 py-2 mb-4">
+                    
+                    <div class="card-body p-4">
+                        <span class="material-symbols-rounded card-top-left-icon">
+                            currency_exchange
+                        </span>
+                        @include('invoices.bill', [
+                            'bill' => $subscription->getItsOnlyUnpaidChangePlanInvoice()->getBillingInfo(),
+                        ])
+
+                        <hr>
+                        <div class="text-left">
+                            @if ($subscription->getItsOnlyUnpaidChangePlanInvoice()->getPendingTransaction())
+                                <hr>
+                                <div class="text-right pe-none">
+                                    <a href="{{ action('SubscriptionController@payment', [
+                                        'invoice_uid' => $subscription->getItsOnlyUnpaidChangePlanInvoice()->uid,
+                                    ]) }}" class="btn btn-warning button-loading full-width pr-20 pe-none " style="width:100%;pointer-events: auto;opacity:0.9">
+                                        {{ trans('messages.invoice.payment_is_being_verified') }}
+                                        <div class="loader"></div>
+                                    </a>
+                                </div>
+                            @else
+                                <a href="{{ action('SubscriptionController@payment', [
+                                    'invoice_uid' => $subscription->getItsOnlyUnpaidChangePlanInvoice()->uid,
+                                ]) }}" class="btn btn-secondary">
+                                    {{ trans('messages.invoice.pay_now') }}
+                                </a>
+
+                                <a class="btn btn-link" link-method="POST" link-confirm="{{ trans('messages.invoice.cancel.confirm') }}"
+                                    href="{{ action('SubscriptionController@cancelInvoice', [
+                                        'invoice_uid' => $subscription->getItsOnlyUnpaidChangePlanInvoice()->uid,
+                                    ]) }}">
+                                    {{ trans('messages.invoice.cancel') }}
+                                </a>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            @endif
+
+            @if ($subscription->getItsOnlyUnpaidRenewInvoice())
+                <div class="card shadow-sm rounded-3 px-2 py-2">
+                    <div class="card-body p-4">
+                        <span class="material-symbols-rounded card-top-left-icon">
+                            receipt_long
+                        </span>
+                        @include('invoices.bill', [
+                            'bill' => $subscription->getItsOnlyUnpaidRenewInvoice()->getBillingInfo(),
+                        ])
+
+                        @if (\Auth::user()->customer->preferredPaymentGatewayCanAutoCharge())
+                            <hr>
+                            <div class="text-right pe-none">
+                                <a href="{{ action('SubscriptionController@payment', [
+                                    'invoice_uid' => $subscription->getItsOnlyUnpaidRenewInvoice()->uid,
+                                ]) }}" class="btn btn-warning button-loading full-width pr-20 pe-none " style="width:100%;pointer-events: auto;opacity:0.9">
+                                    {!! trans('messages.invoice.auto_pay_before', [
+                                        'date' => Auth::user()->customer->formatDateTime($subscription->current_period_ends_at, 'date_full')
+                                    ]) !!}
+                                    <div class="loader"></div>
+                                </a>
+                            </div>
+                        @else
+                            <hr>
+                            <div class="text-left">
+                                <a href="{{ action('SubscriptionController@payment', [
+                                    'invoice_uid' => $subscription->getItsOnlyUnpaidRenewInvoice()->uid,
+                                ]) }}" class="btn btn-secondary">
+                                    {{ trans('messages.invoice.pay_now') }}
+                                </a>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+            @endif
 
             <div class="mt-4">
                 @include('account._payment_info', [

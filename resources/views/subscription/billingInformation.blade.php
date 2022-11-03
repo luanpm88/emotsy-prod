@@ -133,7 +133,9 @@
 
             getOrderBox: function() {
                 if (this.orderBox == null) {
-                    this.orderBox = new Box($('.order-box'), '{{ action('SubscriptionController@orderBox') }}');
+                    this.orderBox = new Box($('.order-box'), '{{ action('SubscriptionController@orderBox', [
+                        'invoice_uid' => $invoice->uid,
+                    ]) }}');
                 }
                 return this.orderBox;
             }

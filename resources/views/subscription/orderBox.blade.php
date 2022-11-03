@@ -1,11 +1,19 @@
 @if ($bill)
-    @include('invoices.bill', [
-        'bill' => $bill,
-    ])
+    <div class="card shadow-sm rounded-3 px-2 py-2">
+        <div class="card-body p-4">
+            <span class="material-symbols-rounded card-top-left-icon">
+                receipt_long
+            </span>
+            
+            @include('invoices.bill', [
+                'bill' => $bill,
+            ])
 
-    @if (isset($invoice))
-        @include('subscription._checkout')
-    @endif
+            @if (isset($invoice))
+                @include('subscription._checkout')
+            @endif
+        </div>
+    </div>
 @else
     <div class="card shadow-sm rounded-3">
         <div class="card-body p-4">

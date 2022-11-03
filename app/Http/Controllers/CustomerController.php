@@ -47,10 +47,7 @@ class CustomerController extends Controller
 
         $next_billing_date = null;
         if ($subscription) {
-            $next_billing_date = $subscription->ends_at;
-            if ($subscription->isActive()) {
-                $next_billing_date = $subscription->current_period_ends_at;
-            }
+            $next_billing_date = $subscription->current_period_ends_at;
         }
 
         return view('customers.admin_area', [

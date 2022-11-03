@@ -313,7 +313,7 @@ class Admin extends Model
     public function recentSubscriptions($number = 5)
     {
         $query = $this->getAllSubscriptions()
-            ->whereNull('ends_at')->orWhere('ends_at', '>=', \Carbon\Carbon::now())
+            ->whereNull('subscriptions.updated_at')->orWhere('subscriptions.updated_at', '>=', \Carbon\Carbon::now())
             ->orderBy('subscriptions.created_at', 'desc')->limit($number);
 
         return $query->get();

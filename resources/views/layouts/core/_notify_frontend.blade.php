@@ -14,7 +14,7 @@
     @endif
 
     @if (\Auth::user()->customer &&
-        !\Auth::user()->customer->subscription
+        !\Auth::user()->customer->getCurrentActiveSubscription()
     )
         notify({
             type: 'warning',

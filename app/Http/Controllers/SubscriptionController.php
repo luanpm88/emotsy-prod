@@ -13,28 +13,28 @@ use Acelle\Cashier\Services\StripeGatewayService;
 use Carbon\Carbon;
 use Acelle\Model\SubscriptionLog;
 use Acelle\Library\Facades\Billing;
+use Acelle\Library\Facades\SubscriptionFacade;
 
 class SubscriptionController extends Controller
 {
     public function index(Request $request)
     {
+        SubscriptionFacade::checkExpiration();
+        SubscriptionFacade::createRenewInvoice();
+        $customers = \Acelle\Model\Customer::all();
+        foreach ($customers as $customer) {
+            SubscriptionFacade::checkAndAutoPayRenewInvoiceByCustomer($customer);
+        }
+
         // init
         $customer = $request->user()->customer;
         $subscription = $customer->getNewOrActiveSubscription();
 
-        // 1. HAVE NOT HAD SUBSCRIPTION YET OR SUBSCRIPTION IS ENDED
-        if (!$subscription ||
-            $subscription->isEnded()
-        ) {
+        // 1. HAVE NOT HAD NEW/ACTIVE SUBSCRIPTION YET
+        if (!$subscription) {
+            // User chưa có subscription sẽ được chuyển qua chọn plan
             return redirect()->action('SubscriptionController@selectPlan');
         }
-
-        // @todo không để đây, chỉ test thôi, cần move qua cronjob
-        // 1. 1 End luôn subscription nếu đã hết hạn
-        //    2 Sinh ra RENEW invoice
-        //    3 Xử lý thanh toán
-        $subscription->check();
-        // $subscription->processRenewInvoice();
 
         // 2. IF PLAN NOT ACTIVE
         if (!$subscription->plan->isActive()) {
@@ -59,95 +59,38 @@ class SubscriptionController extends Controller
 
     public function selectPlan(Request $request)
     {
-        //
+        // init
         $customer = $request->user()->customer;
         $subscription = $customer->getNewOrActiveSubscription();
 
         return view('subscription.selectPlan', [
             'plans' => Plan::getAvailablePlans(),
             'subscription' => $subscription,
+            'getLastCancelledOrEndedSubscription' => $customer->getLastCancelledOrEndedSubscription(),
         ]);
     }
 
-    public function init(Request $request)
+    public function assignPlan(Request $request)
     {
-        // Get current customer
         $customer = $request->user()->customer;
-        $subscription = $customer->getNewOrActiveSubscription();
         $plan = Plan::findByUid($request->plan_uid);
 
+        // already has subscription
+        if ($customer->getCurrentActiveSubscription()) {
+            throw new \Exception('Customer already has active subscription!');
+        }
+
+        // subscription hiện đang new. Customer muốn thay đổi plan khác?
+        // delete luôn subscription
+        if ($customer->getCurrentNewSubscription()) {
+            $customer->getCurrentNewSubscription()->deleteAndCleanup();
+        }
+
         // assign plan
-        $subscription = $customer->assignPlan($plan);
+        $customer->assignPlan($plan);
 
         // Check if subscriotion is new
         return redirect()->action('SubscriptionController@billingInformation');
-    }
-
-    public function payment(Request $request)
-    {
-        // Get current customer
-        $customer = $request->user()->customer;
-
-        // get invoice
-        $invoice = $customer->invoices()->where('uid', '=', $request->invoice_uid)->first();
-
-        if (!$invoice || !$invoice->isNew()) {
-            return redirect()->action('SubscriptionController@index');
-        }
-
-        if ($invoice->isNew()) {
-            if ($invoice->getPendingTransaction()) {
-                return view('subscription.pending', [
-                    'invoice' => $invoice,
-                ]);
-
-            // go to billing info + payment
-            } else {
-                // no billing information
-                if (!$invoice->hasBillingInformation()) {
-                    return redirect()->action('SubscriptionController@billingInformation');
-                }
-
-                if ($invoice->isFree()) {
-                    return view('subscription.payment', [
-                        'invoice' => $invoice,
-                    ]);
-                } else {
-                    return view('subscription.payment', [
-                        'invoice' => $invoice,
-                    ]);
-                }
-            }
-        }
-    }
-
-    public function cancelInvoice(Request $request, $uid)
-    {
-        $invoice = \Acelle\Model\Invoice::findByUid($uid);
-
-        if (!$request->user()->customer->can('delete', $invoice)) {
-            return $this->notAuthorized();
-        }
-
-        $invoice->cancel();
-
-        // Redirect to my subscription page
-        $request->session()->flash('alert-success', trans('messages.invoice.cancelled'));
-        return redirect()->action('SubscriptionController@index');
-    }
-
-    public function checkout(Request $request)
-    {
-        $customer = $request->user()->customer;
-        $subscription = $customer->getNewOrActiveSubscription();
-        $invoice = $subscription->getUnpaidInvoice();
-
-        $request->user()->customer->updatePaymentMethod([
-            'method' => $request->payment_method,
-        ]);
-
-        // redirect to service checkout
-        return redirect()->away($customer->getPreferredPaymentGateway()->getCheckoutUrl($invoice));
     }
 
     public function billingInformation(Request $request)
@@ -170,7 +113,7 @@ class SubscriptionController extends Controller
                 ], 400);
             }
 
-            // update current billing information
+            // Khúc này customer cập nhật thông tin billing information cho lần tiếp theo
             $customer->updateBillingInformationFromInvoice($invoice);
 
             $request->session()->flash('alert-success', trans('messages.billing_address.updated'));
@@ -187,6 +130,74 @@ class SubscriptionController extends Controller
         ]);
     }
 
+    public function payment(Request $request)
+    {
+        // Get current customer
+        $customer = $request->user()->customer;
+
+        // get unpaid invoice
+        $invoice = $customer->invoices()->unpaid()->where('uid', '=', $request->invoice_uid)->first();
+
+        // no unpaid invoice found
+        if (!$invoice) {
+            throw new \Exception('Can not find unpaid invoice with id:' . $request->invoice_uid);
+        }
+
+        // nếu đang có pending transaction thì luôn show màn hình pending
+        if ($invoice->getPendingTransaction()) {
+            return view('subscription.pending', [
+                'invoice' => $invoice,
+            ]);
+        }
+
+        // luôn luôn require billing information
+        if (!$invoice->hasBillingInformation()) {
+            return redirect()->action('SubscriptionController@billingInformation');
+        }
+
+        return view('subscription.payment', [
+            'invoice' => $invoice,
+        ]);
+    }
+
+    public function checkout(Request $request)
+    {
+        $customer = $request->user()->customer;
+        $invoice = $customer->invoices()->unpaid()->where('uid', '=', $request->invoice_uid)->first();
+
+        // no unpaid invoice found
+        if (!$invoice) {
+            throw new \Exception('Customer subscription does not have any unpaid invoice!');
+        }
+
+        // Luôn đặt payment method mặc định cho customer là lần chọn payment gần nhất
+        $request->user()->customer->updatePaymentMethod([
+            'method' => $request->payment_method,
+        ]);
+
+        // redirect to service checkout
+        return redirect()->away($customer->getPreferredPaymentGateway()->getCheckoutUrl($invoice));
+    }
+
+    public function cancelInvoice(Request $request, $uid)
+    {
+        $invoice = \Acelle\Model\Invoice::findByUid($uid);
+
+        if (!$request->user()->customer->can('delete', $invoice)) {
+            return $this->notAuthorized();
+        }
+
+        $invoice->cancel();
+
+        // Redirect to my subscription page
+        $request->session()->flash('alert-success', trans('messages.invoice.cancelled'));
+        return redirect()->action('SubscriptionController@index');
+    }
+
+    
+
+    
+
     /**
      * Change plan.
      *
@@ -197,7 +208,7 @@ class SubscriptionController extends Controller
     public function changePlan(Request $request)
     {
         $customer = $request->user()->customer;
-        $subscription = $customer->getNewOrActiveSubscription();
+        $subscription = $customer->getCurrentActiveSubscription();
         $gateway = $customer->getPreferredPaymentGateway();
         $plans = Plan::getAvailablePlans();
 
@@ -211,11 +222,6 @@ class SubscriptionController extends Controller
             $newPlan = Plan::findByUid($request->plan_uid);
 
             try {
-                // nếu đang có RENEW invoice thì xóa luôn, ưu tiên change plan hơn là renew plan cũ
-                if ($subscription->getUnpaidInvoice() && $subscription->getUnpaidInvoice()->type == Invoice::TYPE_RENEW_SUBSCRIPTION) {
-                    $subscription->getUnpaidInvoice()->delete();
-                }
-
                 // set invoice as pending
                 $changePlanInvoice = $subscription->createChangePlanInvoice($newPlan);
             } catch (\Exception $e) {
@@ -243,7 +249,7 @@ class SubscriptionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function cancel(Request $request)
+    public function disableRecurring(Request $request)
     {
         if (isSiteDemo()) {
             return response()->json(["message" => trans('messages.operation_not_allowed_in_demo')], 404);
@@ -252,12 +258,12 @@ class SubscriptionController extends Controller
         $customer = $request->user()->customer;
         $subscription = $customer->getNewOrActiveSubscription();
 
-        if ($request->user()->customer->can('cancel', $subscription)) {
-            $subscription->cancel();
+        if ($request->user()->customer->can('disableRecurring', $subscription)) {
+            $subscription->disableRecurring();
         }
 
         // Redirect to my subscription page
-        $request->session()->flash('alert-success', trans('messages.subscription.cancelled'));
+        $request->session()->flash('alert-success', trans('messages.subscription.disabled_recurring'));
         return redirect()->action('SubscriptionController@index');
     }
 
@@ -269,17 +275,17 @@ class SubscriptionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function resume(Request $request)
+    public function enableRecurring(Request $request)
     {
         $customer = $request->user()->customer;
         $subscription = $customer->getNewOrActiveSubscription();
 
-        if ($request->user()->customer->can('resume', $subscription)) {
-            $subscription->resume();
+        if ($request->user()->customer->can('enableRecurring', $subscription)) {
+            $subscription->enableRecurring();
         }
 
         // Redirect to my subscription page
-        $request->session()->flash('alert-success', trans('messages.subscription.resumed'));
+        $request->session()->flash('alert-success', trans('messages.subscription.enabled_recurring'));
         return redirect()->action('SubscriptionController@index');
     }
 
@@ -315,6 +321,7 @@ class SubscriptionController extends Controller
 
         // choose a plan
         if ($request->plan_uid) {
+            dd;
             $plan = Plan::findByUid($request->plan_uid);
 
             return view('subscription.orderBox', [
@@ -345,7 +352,8 @@ class SubscriptionController extends Controller
 
         // already has subscription
         elseif ($subscription) {
-            $invoice = $subscription->getUnpaidInvoice();
+            // get unpaid invoice
+            $invoice = $customer->invoices()->unpaid()->where('uid', '=', $request->invoice_uid)->first();
 
             // gateway fee
             if ($request->payment_method) {

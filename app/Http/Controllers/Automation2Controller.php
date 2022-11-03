@@ -1075,7 +1075,7 @@ class Automation2Controller extends Controller
 
             $this->validate($request, $rules);
 
-            $plan = $request->user()->customer->activeSubscription()->plan;
+            $plan = $request->user()->customer->getCurrentActiveSubscription()->plan;
             if ($plan->getOption('unsubscribe_url_required') == 'yes' && Setting::isYes('campaign.enforce_unsubscribe_url_check')) {
                 if (strpos($request->content, '{UNSUBSCRIBE_URL}') === false) {
                     return response()->json(['message' => trans('messages.template.validation.unsubscribe_url_required')], 400);
@@ -1780,7 +1780,7 @@ class Automation2Controller extends Controller
 
             $this->validate($request, $rules);
 
-            $plan = $request->user()->customer->activeSubscription()->plan;
+            $plan = $request->user()->customer->getCurrentActiveSubscription()->plan;
             if ($plan->getOption('unsubscribe_url_required') == 'yes' && Setting::isYes('campaign.enforce_unsubscribe_url_check')) {
                 if (strpos($request->content, '{UNSUBSCRIBE_URL}') === false) {
                     return response()->json(['message' => trans('messages.template.validation.unsubscribe_url_required')], 400);

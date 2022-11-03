@@ -7971,3 +7971,10 @@ label.checker input:disabled ~ .checker-symbol {
 .checkbox-label.readonly, .checkbox-label.readonly * {
     pointer-events: none;
 }
+.card-top-left-icon {
+    position: absolute;
+    top: -16px;
+    font-size: 30px;
+    left: 0;
+    opacity: 0.8;
+}

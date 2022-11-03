@@ -12,6 +12,7 @@ use Acelle\Library\HookManager;
 use Acelle\Model\Plugin;
 use Acelle\Model\Notification;
 use Acelle\Library\Facades\Hook;
+use Acelle\Library\SubscriptionManager;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -46,6 +47,10 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->singleton(HookManager::class, function ($app) {
             return new HookManager();
+        });
+
+        $this->app->singleton(SubscriptionManager::class, function ($app) {
+            return new SubscriptionManager();
         });
 
         Hook::register('add_translation_file', function () {

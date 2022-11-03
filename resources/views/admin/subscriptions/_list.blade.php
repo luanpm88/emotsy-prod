@@ -42,10 +42,15 @@ remove_circle_outline
 				<td width="15%">
 					@if ($subscription->isEnded())
 						<h5 class="no-margin stat-num">
-								<span class="kq_search">{{ Auth::user()->admin->formatDateTime($subscription->ends_at, 'datetime_full') }}</span>
+								<span class="kq_search">{{ Auth::user()->admin->formatDateTime($subscription->current_period_ends_at, 'datetime_full') }}</span>
 							</h5>
 						<span class="text-muted2">{{ trans('messages.subscription.subscription_ended_at') }}</span>
-					@elseif ($subscription->cancelled())
+					@elseif ($subscription->isCancelled())
+						<h5 class="no-margin stat-num">
+								<span class="kq_search">{{ Auth::user()->admin->formatDateTime($subscription->cancelled_at, 'datetime_full') }}</span>
+							</h5>
+						<span class="text-muted2">{{ trans('messages.subscription.cancelled_at') }}</span>
+					@elseif (!$subscription->isRecurring())
 						<h5 class="no-margin stat-num">
 							@if ($subscription->current_period_ends_at)
 								<span class="kq_search">{{ $subscription->current_period_ends_at->timezone($currentTimezone)->diffForHumans() }}</span>

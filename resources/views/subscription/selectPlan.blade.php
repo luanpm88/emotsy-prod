@@ -22,24 +22,22 @@
         <div class="row">
             <div class="col-md-10">
                 <h2 class="mb-4">{{ trans('messages.subscription.choose_a_plan') }}</h2>
-                @if ($subscription && $subscription->isEnded())
+                @if ($getLastCancelledOrEndedSubscription)
                     @include('elements._notification', [
                         'level' => 'warning',
                         'message' => trans('messages.subscription.ended_intro', [
-                            'ended_at' => Auth::user()->customer->formatDateTime($subscription->ends_at, 'datetime_full'),
-                            'plan' => $subscription->plan->name,
+                            'ended_at' => Auth::user()->customer->formatDateTime($getLastCancelledOrEndedSubscription->current_period_ends_at, 'datetime_full'),
+                            'plan' => $getLastCancelledOrEndedSubscription->plan->name,
                         ])
                     ])
-                    
-                    <p>{{ trans('messages.select_plan.wording') }}</p>
-                @else
-                    @include('elements._notification', [
-                        'level' => 'warning',
-                        'message' => trans('messages.no_plan.title')
-                    ])
-        
-                    <p>{{ trans('messages.select_plan.wording') }}</p>
                 @endif
+
+                @include('elements._notification', [
+                    'level' => 'warning',
+                    'message' => trans('messages.no_plan.title')
+                ])
+    
+                <p>{{ trans('messages.select_plan.wording') }}</p>
                 
                 @if (empty($plans))
                     <div class="row">
@@ -56,12 +54,7 @@
 
                             @foreach ($plans as $key => $plan)
                                 <div
-                                    data-url="{{ action('SubscriptionController@orderBox', [
-                                        'plan_uid' => $plan->uid,
-                                    ]) }}"
-                                    class="new-price-item mb-3 d-inline-block plan-item
-                                        {{ $subscription && $subscription->plan->id == $plan->id ? 'current' : '' }}
-                                    "
+                                    class="new-price-item mb-3 d-inline-block plan-item"
                                     style="width: calc(33% - 20px)">
                                     <div style="height: 100px">
                                         <div class="price">
@@ -94,7 +87,7 @@
                                         <div style="vertical-align:bottom">
                                             <a
                                                 link-method="POST"
-                                                href="{{ action('SubscriptionController@init', [
+                                                href="{{ action('SubscriptionController@assignPlan', [
                                                     'plan_uid' => $plan->uid,
                                                 ]) }}"
                                                 class="btn fw-600 btn-primary rounded-3 d-block py-2 shadow-sm">
@@ -107,9 +100,8 @@
                                             @if ($plan->hasTrial())
                                                 <p
                                                     link-method="POST"
-                                                    href="{{ action('SubscriptionController@init', [
+                                                    href="{{ action('SubscriptionController@assignPlan', [
                                                         'plan_uid' => $plan->uid,
-                                                        'trial' => true,
                                                     ]) }}"
                                                     class="mt-3 fw-600 mb-0 text-center">
                                                         {{ trans('messages.plan.has_trial', [
@@ -131,19 +123,9 @@
 
     <script>
         var SubscriptionSelectPlan = {
-            // orderBox: null,
-
-            // getOrderBox: function() {
-            //     if (this.orderBox == null) {
-            //         this.orderBox = new Box($('.order-box'), '{{ action('SubscriptionController@orderBox') }}');
-            //     }
-            //     return this.orderBox;
-            // }
         }
 
         $(function() {
-            // SubscriptionSelectPlan.getOrderBox().load();
-
             var manager = new GroupManager();
             $('.plan-item').each(function() {
                 manager.add({

@@ -126,7 +126,7 @@ class SubscriptionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function cancel(Request $request)
+    public function disableRecurring(Request $request)
     {
         if (isSiteDemo()) {
             return response()->json(["message" => trans('messages.operation_not_allowed_in_demo')], 404);
@@ -134,11 +134,11 @@ class SubscriptionController extends Controller
 
         $subscription = Subscription::findByUid($request->id);
 
-        if ($request->user()->admin->can('cancel', $subscription)) {
-            $subscription->cancel();
+        if ($request->user()->admin->can('disableRecurring', $subscription)) {
+            $subscription->disableRecurring();
         }
 
-        echo trans('messages.subscription.cancelled');
+        echo trans('messages.subscription.disabled_recurring');
     }
 
     /**
@@ -148,15 +148,15 @@ class SubscriptionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function resume(Request $request)
+    public function enableRecurring(Request $request)
     {
         $subscription = Subscription::findByUid($request->id);
 
-        if ($request->user()->admin->can('resume', $subscription)) {
-            $subscription->resume();
+        if ($request->user()->admin->can('enableRecurring', $subscription)) {
+            $subscription->enableRecurring();
         }
 
-        echo trans('messages.subscription.resumed');
+        echo trans('messages.subscription.enabled_recurring');
     }
 
     /**
@@ -270,7 +270,7 @@ class SubscriptionController extends Controller
         $subscription = Subscription::findByUid($request->id);
 
         if ($request->user()->admin->can('delete', $subscription)) {
-            $subscription->delete();
+            $subscription->deleteAndCleanup();
         }
 
         echo trans('messages.subscription.deleted');

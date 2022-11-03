@@ -71,16 +71,9 @@ class Customer extends Model
         'name', 'timezone', 'language_id', 'color_scheme', 'text_direction', 'menu_layout', 'theme_mode'
     ];
 
-    /**
-     * Associations.
-     *
-     * @var object | collect
-     */
-    public function subscription()
+    public function subscriptions()
     {
-        return $this->hasOne('Acelle\Model\Subscription')
-            ->where('status', '!=', Subscription::STATUS_ENDED)
-            ->orderBy('created_at', 'desc');
+        return $this->hasMany('Acelle\Model\Subscription');
     }
 
     // Lấy ra current subscription (new or active)
@@ -97,14 +90,47 @@ class Customer extends Model
         return $subscriptions->first();
     }
 
+    /**
+     * Lấy current active subscription
+     */
+    public function getCurrentActiveSubscription()
+    {
+        // Theo design thì mỗi customer chỉ có một subscription đang "active"
+        $subscriptions = $this->subscriptions()->active();
+
+        if ($subscriptions->count() > 1) {
+            throw new Exception('There are 2 subscriptions of [active] status. Please clean up the DB');
+        }
+
+        return $subscriptions->first();
+    }
+
+    public function getCurrentNewSubscription()
+    {
+        // Theo design thì mỗi customer chỉ có một subscription đang "active"
+        $subscriptions = $this->subscriptions()->newSub();
+
+        if ($subscriptions->count() > 1) {
+            throw new Exception('There are 2 subscriptions of [new] status. Please clean up the DB');
+        }
+
+        return $subscriptions->first();
+    }
+
+    /**
+     * Lấy current active subscription
+     */
+    public function getLastCancelledOrEndedSubscription()
+    {
+        // Lấy subscription ended gần đây nhất. Null nếu chưa đăng ký bao giờ
+        return $this->subscriptions()->cancelledOrEdned()->orderBy('created_at', 'desc')->first();
+    }
+
+
+
     public function contact()
     {
         return $this->belongsTo('Acelle\Model\Contact');
-    }
-
-    public function subscriptions()
-    {
-        return $this->hasMany('Acelle\Model\Subscription');
     }
 
     public function mailLists()
@@ -293,17 +319,9 @@ class Customer extends Model
         return join_paths($base, $path);
     }
 
-    /**
-     * Get active subscription.
-     */
-    public function activeSubscription()
-    {
-        return ($this->getNewOrActiveSubscription() && $this->getNewOrActiveSubscription()->isActive()) ? $this->getNewOrActiveSubscription() : null;
-    }
-
     public function useOwnSendingServer()
     {
-        $subscription = $this->activeSubscription();
+        $subscription = $this->getCurrentActiveSubscription();
 
         if (is_null($subscription)) {
             return false;
@@ -1126,8 +1144,8 @@ class Customer extends Model
      */
     public function currentPlanName()
     {
-        return $this->activeSubscription() ?
-            $this->activeSubscription()->plan->name :
+        return $this->getCurrentActiveSubscription() ?
+            $this->getCurrentActiveSubscription()->plan->name :
             ''
         ;
     }
@@ -1239,7 +1257,7 @@ class Customer extends Model
         // If customer dont have permission creating sending servers
         } else {
             // Get server from the plan
-            return  $this->activeSubscription()->plan->getEmailVerificationServers();
+            return  $this->getCurrentActiveSubscription()->plan->getEmailVerificationServers();
         }
     }
 
@@ -1349,9 +1367,9 @@ class Customer extends Model
      */
     public function getOptions()
     {
-        if ($this->activeSubscription()) {
+        if ($this->getCurrentActiveSubscription()) {
             // Find plan
-            return $this->activeSubscription()->plan->getOptions();
+            return $this->getCurrentActiveSubscription()->plan->getOptions();
         } else {
             return [];
         }
@@ -1398,7 +1416,7 @@ class Customer extends Model
 
         // own domain
         $domains = $this->sendingDomains()->active();
-        $plan = $this->activeSubscription()->plan;
+        $plan = $this->getCurrentActiveSubscription()->plan;
         if ($plan->useSystemSendingServer()) {
             $server = $plan->primarySendingServer();
             if (!$server->allowOtherSendingDomains()) {
@@ -1532,7 +1550,8 @@ class Customer extends Model
 
     public function isSubscriptionActive()
     {
-        $subscription = $this->activeSubscription();
+        $subscription = $this->getCurrentActiveSubscription();
+
         if (is_null($subscription)) {
             return false;
         }
@@ -1565,7 +1584,12 @@ class Customer extends Model
      */
     public function getCurrentPeriodEndsAt()
     {
-        return ($this->getNewOrActiveSubscription() && $this->getNewOrActiveSubscription()->isActive()) ? $this->current_period_ends_at : null;
+        // Nếu subscription đang không active thì current period ends at xem như = null
+        if ($this->getCurrentActiveSubscription()) {
+            return null;
+        }
+
+        return $this->current_period_ends_at;
     }
 
     /**
@@ -1713,25 +1737,6 @@ class Customer extends Model
         // }
 
         // $data = (object) array_merge((array) $paymentMethod, $data);
-        $this['payment_method'] = json_encode($data);
-
-        $this->save();
-    }
-
-    /**
-     * Update payment method.
-     *
-     * @var object | collect
-     */
-    public function updatePaymentMethodData($data=[])
-    {
-        $paymentMethod = $this->getPaymentMethod();
-
-        if (!isset($paymentMethod)) {
-            $paymentMethod = [];
-        }
-
-        $data = (object) array_merge((array) $paymentMethod, $data);
         $this['payment_method'] = json_encode($data);
 
         $this->save();
@@ -1936,7 +1941,7 @@ class Customer extends Model
 
     public function allowSenderVerification()
     {
-        $subscription = $this->activeSubscription();
+        $subscription = $this->getCurrentActiveSubscription();
 
         if (is_null($subscription)) {
             return false;
