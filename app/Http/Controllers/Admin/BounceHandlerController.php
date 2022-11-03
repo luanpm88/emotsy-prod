@@ -258,7 +258,7 @@ class BounceHandlerController extends Controller
             return response()->json([
                 'status' => 'error', // or success
                 'message' => $e->getMessage()
-            ]);
+            ], 400);
         }
     }
 

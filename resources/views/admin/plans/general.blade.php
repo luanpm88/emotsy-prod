@@ -85,7 +85,7 @@
                                             @if ($server->isExtended())
                                                 {{ $server->getTypeName() }}
                                             @else
-                                                {{ trans('messages.' . $plan->primarySendingServer()->type) }}
+                                                {{ trans('messages.sending_server.type.' . $plan->primarySendingServer()->type) }}
                                             @endif
                                         </a>
                                     @else

@@ -1,8 +1,6 @@
 #!/bin/bash
 
-# Step 1: make sure you are at the correct tag/version
-# Step 2: make sure you run php "composer.phar install" and "composer.phar dump-autoload" without error
-# Step 2: configure the patch.rb file
+# Notice: make sure you are at the correct tag/version
 
 
 if [ -z "$1" ]

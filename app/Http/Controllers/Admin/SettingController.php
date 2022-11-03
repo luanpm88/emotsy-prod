@@ -569,6 +569,7 @@ class SettingController extends Controller
                 'any' => 'any',
                 'manager' => $manager,
                 'failed' => $failed,
+                'action' => 'upgrade',
             ]);
         }
     }
