@@ -3,6 +3,7 @@
 namespace Acelle\Library;
 
 use Acelle\Model\Subscription;
+use Acelle\Library\TransactionVerificationResult;
 
 class SubscriptionManager {
     public function checkExpiration()
@@ -48,6 +49,19 @@ class SubscriptionManager {
         // check if customer can auto charge
         if (!$customer->preferredPaymentGatewayCanAutoCharge()) {
             return;
+        }
+
+        // check if invoice amount is 0
+        if ($unpaidRenewInvoice->total() == 0) {
+            // throw new \Exception("
+            //     Không thể auto pay cho Unpaid RENEW invoice [#$unpaidRenewInvoice->uid] vì invoice->total() = 0.
+            //     Trường hợp auto charge cho renew invoice cho plan free!"
+            // );
+
+            // Trường hợp invoice total = 0 thì pay nothing và set done luôn cho renew invoice
+            $unpaidRenewInvoice->checkout($customer->getPreferredPaymentGateway(), function($invoice) {
+                return new TransactionVerificationResult(TransactionVerificationResult::RESULT_DONE);
+            });
         }
 
         // auto charge

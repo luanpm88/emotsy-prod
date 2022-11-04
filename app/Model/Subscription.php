@@ -393,7 +393,7 @@ class Subscription extends Model implements HasQuotaInterface
             case self::STATUS_ACTIVE:
                 // check expired
                 if ($this->isExpired()) {
-                    if ($this->canRenewFreePlan()) {
+                    if ($this->canAutoRenewFreePlan()) {
                         $this->renew(); // auto renew free plan
                     } else {
                         // Cancel immediately only if allowed due subscription setting is no
@@ -424,32 +424,6 @@ class Subscription extends Model implements HasQuotaInterface
                 // nothing to check
                 break;
         }
-    }
-
-    public function processRenewInvoice()
-    {
-        if (!$this->isActive()) {
-            return;
-        }
-
-        $invoice = $this->getItsOnlyUnpaidRenewInvoice();
-
-        if (!$invoice) {
-            return;
-        }
-
-        // not reach due date
-        if (!$this->reachDueDate()) {
-            return;
-        }
-
-        // check if customer can auto charge
-        if (!$this->customer->preferredPaymentGatewayCanAutoCharge()) {
-            return;
-        }
-
-        // auto charge
-        $this->customer->getPreferredPaymentGateway()->autoCharge($invoice);
     }
 
     public function getDueDate()
@@ -877,7 +851,7 @@ class Subscription extends Model implements HasQuotaInterface
         );
     }
 
-    public function canRenewFreePlan()
+    public function canAutoRenewFreePlan()
     {
         return Setting::isYes('renew_free_plan') && $this->plan->isFree();
     }

@@ -106,7 +106,7 @@
                             <th>{{ trans('messages.invoice.status') }}</th>
                             <th>{{ trans('messages.invoice.action') }}</th>
                         </tr>
-                        {{-- @forelse ($subscription->invoices()->orderBy('created_at', 'desc')->get() as $key => $invoice)
+                        @forelse ($subscription->invoices()->orderBy('created_at', 'desc')->get() as $key => $invoice)
                             @php
                                 $billInfo = $invoice->getBillingInfo();
                             @endphp
@@ -152,7 +152,7 @@
                                     {{ trans('messages.subscription.logs.empty') }}
                                 </td>
                             </tr>
-                        @endforelse --}}
+                        @endforelse
                     </table>
                 </div>
             </div>

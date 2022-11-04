@@ -19,6 +19,7 @@ class SubscriptionController extends Controller
 {
     public function index(Request $request)
     {
+        // cronjob check
         SubscriptionFacade::checkExpiration();
         SubscriptionFacade::createRenewInvoice();
         $customers = \Acelle\Model\Customer::all();
@@ -319,61 +320,21 @@ class SubscriptionController extends Controller
         $customer = $request->user()->customer;
         $subscription = $customer->getNewOrActiveSubscription();
 
-        // choose a plan
-        if ($request->plan_uid) {
-            dd;
-            $plan = Plan::findByUid($request->plan_uid);
+        // get unpaid invoice
+        $invoice = $customer->invoices()->unpaid()->where('uid', '=', $request->invoice_uid)->first();
 
-            return view('subscription.orderBox', [
-                'subscription' => $subscription,
-                'bill' => [
-                    'title' => trans('messages.subscription.your_order'),
-                    'description' => trans('messages.subscription.your_order.desc', [
-                        'plan' => $plan->name,
-                    ]),
-                    'bill' => [
-                        [
-                            'title' => $plan->name,
-                            'description' => view('plans._bill_desc', ['plan' => $plan]),
-                            'price' => format_price($plan->price, $plan->currency->format),
-                            'tax' => format_price($plan->getTax(), $plan->currency->format),
-                            'discount' => format_price(0, $plan->currency->format),
-                        ]
-                    ],
-                    'charge_info' => trans('messages.bill.charge_now'),
-                    'total' => format_price($plan->total(), $plan->currency->format),
-                    'pending' => false,
-                    'invoice_uid' => '',
-                    'type' => \Acelle\Model\Invoice::TYPE_NEW_SUBSCRIPTION,
-                    'plan' => $plan,
-                ],
-            ]);
-        }
+        // gateway fee
+        if ($request->payment_method) {
+            $gateway = Billing::getGateway($request->payment_method);
 
-        // already has subscription
-        elseif ($subscription) {
-            // get unpaid invoice
-            $invoice = $customer->invoices()->unpaid()->where('uid', '=', $request->invoice_uid)->first();
-
-            // gateway fee
-            if ($request->payment_method) {
-                $gateway = Billing::getGateway($request->payment_method);
-
-                // update invoice fee if trial and gatewaye need minimal fee for auto billing
-                $invoice->updatePaymentServiceFee($gateway);
-            }
-
-
-            return view('subscription.orderBox', [
-                'subscription' => $subscription,
-                'bill' => $invoice->getBillingInfo(),
-                'invoice' => $invoice,
-            ]);
+            // update invoice fee if trial and gatewaye need minimal fee for auto billing
+            $invoice->updatePaymentServiceFee($gateway);
         }
 
         return view('subscription.orderBox', [
             'subscription' => $subscription,
-            'bill' => null,
+            'bill' => $invoice->getBillingInfo(),
+            'invoice' => $invoice,
         ]);
     }
 }
