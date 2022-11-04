@@ -276,8 +276,13 @@ class Invoice extends Model
     public function approve()
     {
         // for only new invoice
-        if (!$this->isNew() || !$this->getPendingTransaction()) {
-            throw new \Exception("Trying to approve an invoice that is not NEW or does not have a pending transaction (Invoice ID: {$this->id}, status: {$this->status}");
+        if (!$this->isNew()) {
+            throw new \Exception("Trying to approve an invoice that is not NEW (Invoice ID: {$this->id}, status: {$this->status}");
+        }
+        
+        // for only new invoice
+        if (!$this->getPendingTransaction()) {
+            throw new \Exception("Trying to approve an invoice that does not have a pending transaction (Invoice ID: {$this->id}, status: {$this->status}");
         }
 
         // fulfill invoice
@@ -292,8 +297,13 @@ class Invoice extends Model
     public function reject($error)
     {
         // for only new invoice
-        if (!$this->isNew() || !$this->getPendingTransaction()) {
-            throw new \Exception("Trying to approve an invoice that is not NEW or does not have a pending transaction (Invoice ID: {$this->id}, status: {$this->status}");
+        if (!$this->isNew()) {
+            throw new \Exception("Trying to approve an invoice that is not NEW (Invoice ID: {$this->id}, status: {$this->status}");
+        }
+        
+        // for only new invoice
+        if (!$this->getPendingTransaction()) {
+            throw new \Exception("Trying to approve an invoice that does not have a pending transaction (Invoice ID: {$this->id}, status: {$this->status}");
         }
 
         // fulfill invoice
@@ -585,7 +595,10 @@ class Invoice extends Model
 
     public function cancel()
     {
+        // Tuỳ từng loại invoice mà xử lý trước khi delete invoice
         $this->cancelProcess();
+
+        // Hiện tại cancel đồng nghĩa với xoá luôn invoice đó
         $this->delete();
     }
 
