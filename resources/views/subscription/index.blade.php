@@ -147,7 +147,7 @@
                     
                     <div class="card-body p-4">
                         <span class="material-symbols-rounded card-top-left-icon">
-                            currency_exchange
+                            receipt_long
                         </span>
                         @include('invoices.bill', [
                             'bill' => $subscription->getItsOnlyUnpaidChangePlanInvoice()->getBillingInfo(),

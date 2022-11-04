@@ -351,6 +351,11 @@ class Invoice extends Model
                 break;
             case self::TYPE_RENEW_SUBSCRIPTION:
                 $subscription->renew();
+
+                // Xoá NEW change plan invoice hiện tại nếu có
+                if ($subscription->getItsOnlyUnpaidChangePlanInvoice()) {
+                    $subscription->getItsOnlyUnpaidChangePlanInvoice()->delete();
+                }
                 break;
             case self::TYPE_CHANGE_PLAN:
                 $newPlan = \Acelle\Model\Plan::findByUid($data['new_plan_uid']);
@@ -544,32 +549,33 @@ class Invoice extends Model
     public function checkout($gateway, $payCallback)
     {
         $invoice = $this;
-        // \DB::transaction(function() use ($gateway, $invoice) {
-        $invoice->createPendingTransaction($gateway);
+        \DB::transaction(function() use ($gateway, $invoice, $payCallback) {
+            $invoice->createPendingTransaction($gateway);
 
-        try {
-            $result = $payCallback($invoice);
+            try {
+                $result = $payCallback($invoice);
 
-            if ($result->isDone()) {
-                // Stripe, PayPal, Braintree for example
-                $invoice->fulfill();
-            } elseif ($result->isFailed()) {
-                // Stripe, PayPal, Braintree for example
-                $invoice->payFailed($result->error);
-            } elseif ($result->isStillPending()) {
-                // Coin, offline shouls return this status
-                // Wait more, check again later....
-                // Coinpayment, offline
-            } elseif ($result->isVerificationNotNeeded()) {
-                // IMPORTANT: this special status is used for checking (pending) transaction status only
-                //          **** SERVICES SHOULD NOT RETURN THIS STATUS IN CHECKOUT method ****
-                // Do nothing, just wait for the service to finish it itself (Stripe)
-                // Service should not return this status, it is used for verification only
+                if ($result->isDone()) {
+                    // Stripe, PayPal, Braintree for example
+                    $invoice->fulfill();
+                } elseif ($result->isFailed()) {
+                    // Stripe, PayPal, Braintree for example
+                    $invoice->payFailed($result->error);
+                } elseif ($result->isStillPending()) {
+                    // Coin, offline shouls return this status
+                    // Wait more, check again later....
+                    // Coinpayment, offline
+                } elseif ($result->isVerificationNotNeeded()) {
+                    // IMPORTANT: this special status is used for checking (pending) transaction status only
+                    //          **** SERVICES SHOULD NOT RETURN THIS STATUS IN CHECKOUT method ****
+                    // Do nothing, just wait for the service to finish it itself (Stripe)
+                    // Service should not return this status, it is used for verification only
+                }
+            } catch (\Exception $e) {
+                // pay failed
+                $invoice->payFailed($e->getMessage());
             }
-        } catch (\Exception $e) {
-            // pay failed
-            $invoice->payFailed($e->getMessage());
-        }
+        });
     }
 
     public function isFree()

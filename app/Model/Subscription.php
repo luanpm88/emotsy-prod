@@ -250,8 +250,8 @@ class Subscription extends Model implements HasQuotaInterface
     public function createRenewInvoice()
     {
         //
-        if ($this->getUnpaidInvoice()) {
-            throw new \Exception("Hey, có vẻ như hàm này được gọi rồi OR customer đang change plan? " . $this->getUnpaidInvoice()->toJson());
+        if ($this->getItsOnlyUnpaidRenewInvoice()) {
+            throw new \Exception("Hey, đang có 1 unpaid renew invoice khác. Không thể tạo renew invoice nữa! " . $this->getUnpaidInvoice()->toJson());
         }
 
         if ($this->status != self::STATUS_ACTIVE) {
