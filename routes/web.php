@@ -247,8 +247,8 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
     Route::post('account/subscription/checkout/{invoice_uid}', 'SubscriptionController@checkout');
     Route::post('account/subscription/invoice/{invoice_uid}/cancel', 'SubscriptionController@cancelInvoice');
     Route::post('account/subscription/cancel-now', 'SubscriptionController@cancelNow');
-    Route::post('account/subscription/resume-recurring', 'SubscriptionController@enableRecurring');
-    Route::post('account/subscription/disable-recurring', 'SubscriptionController@disableRecurring');
+    Route::post('account/subscription/recurring/enable', 'SubscriptionController@enableRecurring');
+    Route::post('account/subscription/recurring/disable', 'SubscriptionController@disableRecurring');
     Route::get('account/subscription/payment/{invoice_uid}', 'SubscriptionController@payment');
     Route::post('account/subscription/assign-plan', 'SubscriptionController@assignPlan');
     Route::post('account/subscription/select-plan', 'SubscriptionController@selectPlan');
@@ -1063,8 +1063,8 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::match(['get','post'], 'admin/subscriptions/{id}/reject-pending', 'SubscriptionController@rejectPending');
     Route::get('admin/subscriptions/{id}/invoices', 'SubscriptionController@invoices');
     
-    Route::post('admin/subscriptions/{id}/resume', 'SubscriptionController@resume');
-    Route::post('admin/subscriptions/{id}/cancel', 'SubscriptionController@cancel');
+    Route::post('admin/subscriptions/{id}/recurring/enable', 'SubscriptionController@enableRecurring');
+    Route::post('admin/subscriptions/{id}/recurring/disable', 'SubscriptionController@disableRecurring');
     Route::get('admin/subscriptions/listing/{page?}', 'SubscriptionController@listing');
     Route::get('admin/subscriptions/sort', 'SubscriptionController@sort');
     Route::delete('admin/subscriptions/delete', 'SubscriptionController@delete');

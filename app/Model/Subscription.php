@@ -36,7 +36,7 @@ class Subscription extends Model implements HasQuotaInterface
      */
     protected $dates = [
         'cancelled_at', 'current_period_ends_at',
-        'created_at', 'updated_at', 'started_at', 'last_period_ends_at'
+        'created_at', 'updated_at', 'started_at'
     ];
 
     /**
@@ -346,20 +346,6 @@ class Subscription extends Model implements HasQuotaInterface
     }
 
     /**
-     * Get lastest bill information
-     *
-     * @return void
-     */
-    public function getUpcomingBillingInfo()
-    {
-        if (!$this->getUnpaidInvoice()) {
-            return null;
-        }
-
-        return $this->getUnpaidInvoice()->getBillingInfo();
-    }
-
-    /**
      * Get period by start date.
      *
      * @param  date  $date
@@ -379,51 +365,6 @@ class Subscription extends Model implements HasQuotaInterface
     public function getTrialPeriodEndsAt($startDate)
     {
         return getPeriodEndsAt($startDate, $this->plan->trial_amount, $this->plan->trial_unit);
-    }
-
-    // 1 End luôn subscription nếu đã hết hạn
-    // 2 Sinh ra RENEW invoice
-    // 3 Xử lý thanh toán ==> #todo tach ra thành processInvoices()
-    public function check()
-    {
-        switch ($this->status) {
-            case self::STATUS_NEW:
-                // nothing to check
-                break;
-            case self::STATUS_ACTIVE:
-                // check expired
-                if ($this->isExpired()) {
-                    if ($this->canAutoRenewFreePlan()) {
-                        $this->renew(); // auto renew free plan
-                    } else {
-                        // Cancel immediately only if allowed due subscription setting is no
-                        if (\Acelle\Model\Setting::get('allowed_due_subscription') == 'no') {
-                            $this->cancelNow();
-                        }
-                    }
-
-                    return;
-                }
-
-                // check expiring
-                if ($this->isExpiring() && $this->canRenewPlan() && $this->isRecurring()) {
-                    $pendingInvoice = $this->getUnpaidInvoice();
-
-                    // create renew invoice if no pending invoice
-                    if (!$pendingInvoice) {
-                        $pendingInvoice = $this->createRenewInvoice();
-                    }
-
-                    // check if invoice is change plan -> do nothing
-                    if ($pendingInvoice->isChangePlanInvoice()) {
-                        return;
-                    }
-                }
-                break;
-            case self::STATUS_ENDED:
-                // nothing to check
-                break;
-        }
     }
 
     public function getDueDate()
@@ -462,20 +403,6 @@ class Subscription extends Model implements HasQuotaInterface
             'old_plan' => $this->plan->name,
             'plan' => $newPlan->name,
         ]);
-    }
-
-    /**
-     * Check subscription status.
-     *
-     * @param  Int  $subscriptionId
-     * @return date
-     */
-    public static function checkAll()
-    {
-        $subscriptions = self::whereNull('ends_at')->orWhere('ends_at', '>=', Carbon::now())->get();
-        foreach ($subscriptions as $subscription) {
-            $subscription->check();
-        }
     }
 
     /**

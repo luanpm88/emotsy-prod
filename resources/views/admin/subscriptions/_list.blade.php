@@ -135,16 +135,16 @@ remove_circle_outline
 						<span class="text-muted">|</span>
 					@endif
 					
-					@if (\Auth::user()->admin->can('cancel', $subscription))
-						<a link-method="POST" link-confirm="{{ trans('messages.subscription.cancel.confirm') }}"
-						  href="{{ action('Admin\SubscriptionController@cancel', $subscription->uid) }}" class="btn btn-secondary list-action-single">
-							{{ trans('messages.subscription.cancel') }}
+					@if (\Auth::user()->admin->can('disableRecurring', $subscription))
+						<a link-method="POST" link-confirm="{{ trans('messages.subscription.disable_recurring.confirm') }}"
+						  href="{{ action('Admin\SubscriptionController@disableRecurring', $subscription->uid) }}" class="btn btn-secondary list-action-single">
+							{{ trans('messages.subscription.disable_recurring') }}
 						</a>
 					@endif
-					@if (\Auth::user()->admin->can('resume', $subscription))
-						<a link-method="POST" link-confirm="{{ trans('messages.subscription.resume.confirm') }}"
-						  href="{{ action('Admin\SubscriptionController@resume', $subscription->uid) }}" class="btn btn-secondary list-action-single">
-							{{ trans('messages.subscription.resume') }}
+					@if (\Auth::user()->admin->can('enableRecurring', $subscription))
+						<a link-method="POST" link-confirm="{{ trans('messages.subscription.enable_recurring.confirm') }}"
+						  href="{{ action('Admin\SubscriptionController@enableRecurring', $subscription->uid) }}" class="btn btn-secondary list-action-single">
+							{{ trans('messages.subscription.enable_recurring') }}
 						</a>
 					@endif
 					@if(

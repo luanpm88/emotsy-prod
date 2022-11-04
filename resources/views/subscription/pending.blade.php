@@ -31,7 +31,7 @@
                         receipt_long
                     </span>
                     @include('invoices.bill', [
-                        'invoice' => $invoice,
+                        'bill' => $invoice->getBillingInfo(),
                     ])
                 </div>
             </div>

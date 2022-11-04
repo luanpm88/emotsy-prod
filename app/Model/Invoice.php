@@ -586,20 +586,16 @@ class Invoice extends Model
     public function cancel()
     {
         $this->cancelProcess();
-
-        // delete invoice
         $this->delete();
     }
 
     public function cancelProcess()
     {
         $data = $this->getMetadata();
-        $subscription = Subscription::findByUid($data['subscription_uid']);
 
         switch ($this->type) {
             case self::TYPE_NEW_SUBSCRIPTION:
-
-                $subscription->abortNew();
+                
                 break;
             case self::TYPE_RENEW_SUBSCRIPTION:
                 // do nothing
