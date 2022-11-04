@@ -28,7 +28,7 @@ payments
                 <div class="mc-list-setting mt-5">
                     @foreach ($gateways as $gateway)
                         <div class="list-setting bg-{{ $gateway->getType() }}
-                            {{ $gateway->isActive() && in_array($gateway, $enabledGateways) ? 'current' : '' }}">
+                            {{ $gateway->isActive() && Billing::isPaymentGatewayTypeEnabled($gateway) ? 'current' : '' }}">
                             <div class="list-setting-main" style="width: 50%">
                                 <div class="title">
                                     <label>{{ $gateway->getName() }}</label>
@@ -37,7 +37,7 @@ payments
                             </div>
                             <div class="list-setting-status text-nowrap pl-4">
                                 @if ($gateway->isActive())
-                                    @if (in_array($gateway, $enabledGateways))
+                                    @if (Billing::isPaymentGatewayTypeEnabled($gateway))
                                         <span class="label label-flat bg-active">
                                             {{ trans('messages.payment.active') }}
                                         </span>
@@ -50,7 +50,7 @@ payments
                             </div>
                             <div class="list-setting-actions text-nowrap pl-4">
                                 @if ($gateway->isActive())
-                                    @if (in_array($gateway, $enabledGateways))
+                                    @if (Billing::isPaymentGatewayTypeEnabled($gateway))
                                         <a class="btn btn-secondary ml-5"
                                             link-method="post" href="{{ action('Admin\PaymentController@disable', $gateway->getType()) }}">
                                             {{ trans('messages.payment.disable') }}
