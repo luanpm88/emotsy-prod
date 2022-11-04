@@ -476,7 +476,7 @@ class SettingController extends Controller
                 // Setting::updateLicense($request->license);
 
                 // Automail hard coded
-                $result = Http::get(env('LICENSE_MANAGER_ENDPOINT') . '/wp-json/automailjp/v1/license/check?license=' . $request->license )->json();
+                $result = Http::get(env('LICENSE_MANAGER_ENDPOINT', 'http://license.automail.jp') . '/wp-json/automailjp/v1/license/check?license=' . $request->license )->json();
 
                 // failed
                 if ($result['status'] !== 'success') {
