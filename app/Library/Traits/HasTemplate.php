@@ -391,8 +391,15 @@ trait HasTemplate
         // Bind subscriber/message/server information to email content
         $pipeline = new PipelineBuilder();
         $pipeline->add(new TransformTag($this, $subscriber, $msgId, $server));
-        $pipeline->add(new InjectTrackingPixel($this, $msgId));
-        $pipeline->add(new TransformUrl($this->template, $msgId, $this->trackingDomain));
+
+        if (!$this->isStageExcluded(InjectTrackingPixel::class)) {
+            $pipeline->add(new InjectTrackingPixel($this, $msgId));
+        }
+
+        if (!$this->isStageExcluded(TransformUrl::class)) {
+            $pipeline->add(new TransformUrl($this->template, $msgId, $this->trackingDomain));
+        }
+
         $pipeline->add(new ReplaceBareLineFeed());
 
         // ReplaceBareLineFeed should go into the base HTML content instead

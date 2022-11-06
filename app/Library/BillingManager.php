@@ -66,6 +66,20 @@ class BillingManager
         return $list;
     }
 
+    public function isPaymentGatewayTypeEnabled($gw)
+    {
+        if (!Setting::get('gateways')) {
+            return false;
+        }
+
+        $enabledTypes = json_decode(Setting::get('gateways'));
+        if ($this->isGatewayRegistered($gw->getType()) && in_array($gw->getType(), $enabledTypes)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     /**
      * Enable payment gateway.
      *
@@ -86,7 +100,7 @@ class BillingManager
     public static function disablePaymentGateway($gatewayType)
     {
         $gateways = Setting::get('gateways') ? json_decode(Setting::get('gateways'), true) : [];
-        $gateways = array_diff($gateways, [$gatewayType]);
+        $gateways = array_values(array_diff($gateways, [$gatewayType]));
         Setting::set('gateways', json_encode($gateways));
     }
 

@@ -16,8 +16,9 @@ use Acelle\Jobs\SendMessage;
 use Acelle\Library\Traits\HasTemplate;
 use Acelle\Library\Traits\HasUid;
 use Exception;
+use Acelle\Library\Contracts\HasTemplateInterface;
 
-class Email extends Model
+class Email extends Model implements HasTemplateInterface
 {
     use HasTemplate;
     use HasUid;
@@ -296,5 +297,11 @@ class Email extends Model
         $webhook->email_id = $this->id;
 
         return $webhook;
+    }
+
+    public function isStageExcluded(string $name): bool
+    {
+        // Temporarily
+        return false;
     }
 }

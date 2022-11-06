@@ -304,6 +304,7 @@ return [
         'Yaml' => Symfony\Component\Yaml\Yaml::class,
         'Geoip'=> Lawepham\Geoip\Facades\LaweGeoipFacade::class,
         'Twig' => TwigBridge\Facade\Twig::class,
+        'Billing' => Acelle\Library\Facades\Billing::class,
     ],
 
     /*

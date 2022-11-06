@@ -31,12 +31,9 @@ class Backend
         }
 
         // Language
-        try {
-            if ($user->admin->language) {
-                \App::setLocale($user->admin->language->code);
-                \Carbon\Carbon::setLocale($user->admin->language->code);
-            }
-        } catch (\Exception $e) {
+        if ($user->admin->language) {
+            \App::setLocale($user->admin->language->code);
+            \Carbon\Carbon::setLocale($user->admin->language->code);
         }
 
         return $next($request);

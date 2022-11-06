@@ -49,8 +49,11 @@ use Acelle\Library\Traits\HasUid;
 use Acelle\Library\Traits\HasCache;
 use Acelle\Events\CampaignUpdated;
 use Acelle\Jobs\ExecuteCampaignCallback;
+use Acelle\Library\Contracts\HasTemplateInterface;
+use Acelle\Library\HtmlHandler\InjectTrackingPixel;
+use Acelle\Library\HtmlHandler\TransformUrl;
 
-class Campaign extends Model
+class Campaign extends Model implements HasTemplateInterface
 {
     use HasTemplate;
     use TrackJobs;
@@ -2739,5 +2742,31 @@ class Campaign extends Model
     public function openWebhooks()
     {
         return $this->campaignWebhooks()->open();
+    }
+
+    public function isStageExcluded(string $name): bool
+    {
+        switch ($name) {
+            case InjectTrackingPixel::class:
+                if ($this->track_open) {
+                    return false;
+                } else {
+                    return true;
+                }
+                break;
+
+            case TransformUrl::class:
+                if ($this->track_click) {
+                    return false;
+                } else {
+                    return true;
+                }
+                break;
+
+            default:
+                // do not exclude by default
+                return false;
+                break;
+        }
     }
 }
