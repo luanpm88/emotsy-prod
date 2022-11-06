@@ -2885,4 +2885,8 @@
   'count_days' => ':count day|:count days',
   'count_hour' => ':count hour|:count hours',
   'count_hours' => ':count hour|:count hours',
+  'subscription.cancelled_at' => 'Cancelled at',
+  'invoice.auto_pay_before' => 'Your invoice will be charged by <br> :date',
+  'signing_enabled' => 'Signing enabled',
+  'sending_domain.signing_enabled.help' => 'Sign outgoing emails if the FROM email address matches this domain',
 ) ?>
