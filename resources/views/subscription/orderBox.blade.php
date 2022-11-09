@@ -1,10 +1,6 @@
 @if ($bill)
     <div class="card shadow-sm rounded-3 px-2 py-2">
         <div class="card-body p-4">
-            <span class="material-symbols-rounded card-top-left-icon">
-                receipt_long
-            </span>
-            
             @include('invoices.bill', [
                 'bill' => $bill,
             ])
