@@ -9,6 +9,7 @@ use Acelle\Model\Transaction;
 use Acelle\Library\Traits\HasUid;
 use Dompdf\Dompdf;
 use Acelle\Library\StringHelper;
+use Acelle\Library\Facades\SubscriptionFacade;
 
 use function Acelle\Helpers\getAppHost;
 
@@ -287,6 +288,18 @@ class Invoice extends Model
 
         // fulfill invoice
         $this->fulfill();
+
+        // logging by type
+        switch ($this->type) {
+            case Invoice::TYPE_NEW_SUBSCRIPTION:
+            case Invoice::TYPE_RENEW_SUBSCRIPTION:
+            case Invoice::TYPE_CHANGE_PLAN:
+                $subscription = Subscription::findByUid($this->getMetadata()['subscription_uid']);
+                SubscriptionFacade::log($subscription, SubscriptionLog::TYPE_ADMIN_APPROVE, $this->uid, [
+                    'amount' => $this->formattedTotal(),
+                ]);
+                break;
+        }
     }
 
     /**
@@ -308,6 +321,19 @@ class Invoice extends Model
 
         // fulfill invoice
         $this->payFailed($error);
+
+        // logging by type
+        switch ($this->type) {
+            case Invoice::TYPE_NEW_SUBSCRIPTION:
+            case Invoice::TYPE_RENEW_SUBSCRIPTION:
+            case Invoice::TYPE_CHANGE_PLAN:
+                $subscription = Subscription::findByUid($this->getMetadata()['subscription_uid']);
+                SubscriptionFacade::log($subscription, SubscriptionLog::TYPE_ADMIN_REJECT, $this->uid, [
+                    'amount' => $this->formattedTotal(),
+                    'reason' => $error,
+                ]);
+                break;
+        }
     }
 
     /**
@@ -352,14 +378,13 @@ class Invoice extends Model
      */
     public function process()
     {
-        $data = $this->getMetadata();
-        $subscription = Subscription::findByUid($data['subscription_uid']);
-
         switch ($this->type) {
             case self::TYPE_NEW_SUBSCRIPTION:
+                $subscription = Subscription::findByUid($this->getMetadata()['subscription_uid']);
                 $subscription->activate();
                 break;
             case self::TYPE_RENEW_SUBSCRIPTION:
+                $subscription = Subscription::findByUid($this->getMetadata()['subscription_uid']);
                 $subscription->renew();
 
                 // Xoá NEW change plan invoice hiện tại nếu có
@@ -368,7 +393,8 @@ class Invoice extends Model
                 }
                 break;
             case self::TYPE_CHANGE_PLAN:
-                $newPlan = \Acelle\Model\Plan::findByUid($data['new_plan_uid']);
+                $subscription = Subscription::findByUid($this->getMetadata()['subscription_uid']);
+                $newPlan = \Acelle\Model\Plan::findByUid($this->getMetadata()['new_plan_uid']);
                 $subscription->changePlan($newPlan);
 
                 // Xoá NEW renew invoice hiện tại nếu có
@@ -475,26 +501,6 @@ class Invoice extends Model
     }
 
     /**
-     * Add transactions.
-     *
-     * @return array
-     */
-    public function addLog($type, $data, $transaction_id=null)
-    {
-        $log = new SubscriptionLog();
-        $log->subscription_id = $this->id;
-        $log->type = $type;
-        $log->transaction_id = $transaction_id;
-        $log->save();
-
-        if (isset($data)) {
-            $log->updateData($data);
-        }
-
-        return $log;
-    }
-
-    /**
      * Check is renew subscription invoice.
      *
      * @return boolean
@@ -568,13 +574,49 @@ class Invoice extends Model
                 if ($result->isDone()) {
                     // Stripe, PayPal, Braintree for example
                     $invoice->fulfill();
+
+                    // logging by type
+                    switch ($invoice->type) {
+                        case Invoice::TYPE_NEW_SUBSCRIPTION:
+                        case Invoice::TYPE_RENEW_SUBSCRIPTION:
+                        case Invoice::TYPE_CHANGE_PLAN:
+                            $subscription = Subscription::findByUid($this->getMetadata()['subscription_uid']);
+                            SubscriptionFacade::log($subscription, SubscriptionLog::TYPE_PAY_SUCCESS, $invoice->uid, [
+                                'amount' => $invoice->formattedTotal(),
+                            ]);
+                            break;
+                    }
                 } elseif ($result->isFailed()) {
                     // Stripe, PayPal, Braintree for example
                     $invoice->payFailed($result->error);
+
+                    // logging by type
+                    switch ($invoice->type) {
+                        case Invoice::TYPE_NEW_SUBSCRIPTION:
+                        case Invoice::TYPE_RENEW_SUBSCRIPTION:
+                        case Invoice::TYPE_CHANGE_PLAN:
+                            $subscription = Subscription::findByUid($this->getMetadata()['subscription_uid']);
+                            SubscriptionFacade::log($subscription, SubscriptionLog::TYPE_PAY_FAILED, $invoice->uid, [
+                                'amount' => $invoice->formattedTotal(),
+                                'error' => $result->error,
+                            ]);
+                            break;
+                    }
                 } elseif ($result->isStillPending()) {
                     // Coin, offline shouls return this status
                     // Wait more, check again later....
                     // Coinpayment, offline
+                    // logging by type
+                    switch ($invoice->type) {
+                        case Invoice::TYPE_NEW_SUBSCRIPTION:
+                        case Invoice::TYPE_RENEW_SUBSCRIPTION:
+                        case Invoice::TYPE_CHANGE_PLAN:
+                            $subscription = Subscription::findByUid($this->getMetadata()['subscription_uid']);
+                            SubscriptionFacade::log($subscription, SubscriptionLog::TYPE_PAYMENT_PENDING, $invoice->uid, [
+                                'amount' => $invoice->formattedTotal(),
+                            ]);
+                            break;
+                    }
                 } elseif ($result->isVerificationNotNeeded()) {
                     // IMPORTANT: this special status is used for checking (pending) transaction status only
                     //          **** SERVICES SHOULD NOT RETURN THIS STATUS IN CHECKOUT method ****
@@ -595,11 +637,25 @@ class Invoice extends Model
 
     public function cancel()
     {
-        // Tuỳ từng loại invoice mà xử lý trước khi delete invoice
-        $this->cancelProcess();
+        \DB::transaction(function() {
+            // Log
+            switch ($this->type) {
+                case Invoice::TYPE_NEW_SUBSCRIPTION:
+                case Invoice::TYPE_RENEW_SUBSCRIPTION:
+                case Invoice::TYPE_CHANGE_PLAN:
+                    $subscription = Subscription::findByUid($this->getMetadata()['subscription_uid']);
+                    SubscriptionFacade::log($subscription, SubscriptionLog::TYPE_CANCEL_INVOICE, $this->uid, [
+                        'amount' => $this->formattedTotal(),
+                    ]);
+                    break;
+            }
 
-        // Hiện tại cancel đồng nghĩa với xoá luôn invoice đó
-        $this->delete();
+            // Tuỳ từng loại invoice mà xử lý trước khi delete invoice
+            $this->cancelProcess();
+
+            // Hiện tại cancel đồng nghĩa với xoá luôn invoice đó
+            $this->delete();
+        });
     }
 
     public function cancelProcess()

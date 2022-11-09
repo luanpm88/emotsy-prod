@@ -4,6 +4,7 @@ namespace Acelle\Library;
 
 use Acelle\Model\Subscription;
 use Acelle\Library\TransactionVerificationResult;
+use Acelle\Model\SubscriptionLog;
 
 class SubscriptionManager {
     public function checkExpiration()
@@ -66,5 +67,19 @@ class SubscriptionManager {
 
         // auto charge
         $customer->getPreferredPaymentGateway()->autoCharge($unpaidRenewInvoice);
+    }
+
+    public function log($subscription, $type, $invoice_uid=null, $metadata=[])
+    {
+        $log = $subscription->subscriptionLogs()->create([
+            'type' => $type,
+            'invoice_uid' => $invoice_uid,
+        ]);
+
+        if (isset($metadata)) {
+            $log->updateData($metadata);
+        }
+
+        return $log;
     }
 }

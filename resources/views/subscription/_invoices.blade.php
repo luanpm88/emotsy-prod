@@ -34,7 +34,7 @@
                                 </td>
                                 <td>
                                     <span class="no-margin kq_search">
-                                        {!! trans('messages.subscription.log.' . $log->type, $log->getData()) !!}
+                                        {!! $log->renderLog() !!}
                                     </span>
                                 </td>                                
                             </tr>

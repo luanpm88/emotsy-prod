@@ -40,7 +40,12 @@ remove_circle_outline
                     <span class="text-muted2">{{ trans('messages.subscribed_on') }}</span>
                 </td>
 				<td width="15%">
-					@if ($subscription->isEnded())
+					@if ($subscription->isTerminated())
+						<h5 class="no-margin stat-num">
+								<span class="kq_search">{{ Auth::user()->admin->formatDateTime($subscription->terminated_at, 'datetime_full') }}</span>
+							</h5>
+						<span class="text-muted2">{{ trans('messages.subscription.terminated_at') }}</span>
+					@elseif ($subscription->isEnded())
 						<h5 class="no-margin stat-num">
 								<span class="kq_search">{{ Auth::user()->admin->formatDateTime($subscription->current_period_ends_at, 'datetime_full') }}</span>
 							</h5>
@@ -148,7 +153,7 @@ remove_circle_outline
 						</a>
 					@endif
 					@if(
-						\Auth::user()->admin->can('cancelNow', $subscription) ||
+						\Auth::user()->admin->can('terminate', $subscription) ||
 						\Auth::user()->admin->can('invoices', $subscription) ||
 						\Auth::user()->admin->can('approve', $subscription) ||
 						\Auth::user()->admin->can('delete', $subscription) ||
@@ -195,11 +200,11 @@ remove_circle_outline
 										</a>
 									</li>
 								@endif
-								@if (\Auth::user()->admin->can('cancelNow', $subscription))
+								@if (\Auth::user()->admin->can('terminate', $subscription))
 									<li>
 										<a class="dropdown-item list-action-single" link-method="POST" link-confirm="{{ trans('messages.subscription.cancel_now.confirm') }}"
-										  href="{{ action('Admin\SubscriptionController@cancelNow', $subscription->uid) }}">
-											{{ trans('messages.subscription.cancel_now') }}
+										  href="{{ action('Admin\SubscriptionController@terminate', $subscription->uid) }}">
+											{{ trans('messages.subscription.terminate') }}
 										</a>
 									</li>
 								@endif

@@ -141,7 +141,9 @@ class SubscriptionController extends Controller
 
         // no unpaid invoice found
         if (!$invoice) {
-            throw new \Exception('Can not find unpaid invoice with id:' . $request->invoice_uid);
+            // throw new \Exception('Can not find unpaid invoice with id:' . $request->invoice_uid);
+            // just redirect to index
+            return redirect()->action('SubscriptionController@index');
         }
 
         // nếu đang có pending transaction thì luôn show màn hình pending
@@ -223,17 +225,28 @@ class SubscriptionController extends Controller
             $newPlan = Plan::findByUid($request->plan_uid);
 
             try {
-                // set invoice as pending
-                $changePlanInvoice = $subscription->createChangePlanInvoice($newPlan);
+                $changePlanInvoice = null;
+
+                \DB::transaction(function() use ($subscription, $newPlan, &$changePlanInvoice) {
+                    // set invoice as pending
+                    $changePlanInvoice = $subscription->createChangePlanInvoice($newPlan);
+    
+                    // Log
+                    SubscriptionFacade::log($subscription, SubscriptionLog::TYPE_CHANGE_PLAN_INVOICE, $changePlanInvoice->uid, [
+                        'plan' => $subscription->getPlanName(),
+                        'new_plan' => $newPlan->name,
+                        'amount' => $changePlanInvoice->formattedTotal(),
+                    ]);
+                });
+                
+                // return to subscription
+                return redirect()->action('SubscriptionController@payment', [
+                    'invoice_uid' => $changePlanInvoice->uid,
+                ]);
             } catch (\Exception $e) {
                 $request->session()->flash('alert-error', $e->getMessage());
                 return redirect()->action('SubscriptionController@index');
             }
-
-            // return to subscription
-            return redirect()->action('SubscriptionController@payment', [
-                'invoice_uid' => $changePlanInvoice->uid,
-            ]);
         }
 
         return view('subscription.change_plan', [

@@ -166,7 +166,7 @@ class SubscriptionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function cancelNow(Request $request)
+    public function terminate(Request $request)
     {
         if (isSiteDemo()) {
             return response()->json(["message" => trans('messages.operation_not_allowed_in_demo')], 404);
@@ -174,9 +174,9 @@ class SubscriptionController extends Controller
 
         $subscription = Subscription::findByUid($request->id);
 
-        if ($request->user()->admin->can('cancelNow', $subscription)) {
+        if ($request->user()->admin->can('terminate', $subscription)) {
             try {
-                $subscription->cancelNow();
+                $subscription->terminate();
             } catch (\Exception $ex) {
                 echo json_encode([
                     'status' => 'error',
@@ -186,7 +186,7 @@ class SubscriptionController extends Controller
             }
         }
 
-        echo trans('messages.subscription.cancelled_now');
+        echo trans('messages.subscription.terminated');
     }
 
     /**

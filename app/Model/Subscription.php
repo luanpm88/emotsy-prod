@@ -11,6 +11,7 @@ use Acelle\Library\Traits\HasQuota;
 use Acelle\Library\Contracts\HasQuota as HasQuotaInterface;
 use Acelle\Library\QuotaManager;
 use Carbon\Carbon;
+use Acelle\Library\Facades\SubscriptionFacade;
 
 class Subscription extends Model implements HasQuotaInterface
 {
@@ -21,6 +22,7 @@ class Subscription extends Model implements HasQuotaInterface
     public const STATUS_ACTIVE = 'active';
     public const STATUS_ENDED = 'ended';
     public const STATUS_CANCELLED = 'cancelled';
+    public const STATUS_TERMINATED = 'terminated';
 
     /**
      * The attributes that are not mass assignable.
@@ -36,7 +38,7 @@ class Subscription extends Model implements HasQuotaInterface
      */
     protected $dates = [
         'cancelled_at', 'current_period_ends_at',
-        'created_at', 'updated_at', 'started_at'
+        'created_at', 'updated_at', 'started_at', 'terminated_at'
     ];
 
     /**
@@ -55,6 +57,11 @@ class Subscription extends Model implements HasQuotaInterface
     {
         // @todo dependency injection
         return $this->belongsTo('\Acelle\Model\Plan');
+    }
+
+    public function getPlanName()
+    {
+        return $this->plan->name;
     }
 
     public function scopeNewOrActive($query)
@@ -76,6 +83,11 @@ class Subscription extends Model implements HasQuotaInterface
     {
         // @todo dependency injection
         return $this->belongsTo('\Acelle\Model\Customer');
+    }
+
+    public function getCustomerName()
+    {
+        return $this->customer->user->displayName();
     }
 
     /**
@@ -345,6 +357,13 @@ class Subscription extends Model implements HasQuotaInterface
         $this->save();
     }
 
+    public function setTerminated()
+    {
+        // then set the sub end
+        $this->status = self::STATUS_TERMINATED;
+        $this->save();
+    }
+
     /**
      * Get period by start date.
      *
@@ -397,12 +416,6 @@ class Subscription extends Model implements HasQuotaInterface
         $this->current_period_ends_at = $metadata['endsAt'];
 
         $this->save();
-
-        // logs
-        $this->addLog(SubscriptionLog::TYPE_PLAN_CHANGED, [
-            'old_plan' => $this->plan->name,
-            'plan' => $newPlan->name,
-        ]);
     }
 
     /**
@@ -470,6 +483,11 @@ class Subscription extends Model implements HasQuotaInterface
         return $this->status == self::STATUS_CANCELLED;
     }
 
+    public function isTerminated()
+    {
+        return $this->status == self::STATUS_TERMINATED;
+    }
+
 
     /**
      * Determine if the subscription is pending.
@@ -484,7 +502,6 @@ class Subscription extends Model implements HasQuotaInterface
 
         if ($this->plan->hasTrial()) {
             $this->current_period_ends_at = $this->getTrialPeriodEndsAt(Carbon::now());
-            $this->trial_ends_at = $this->getTrialPeriodEndsAt(Carbon::now());
         } else {
             $this->current_period_ends_at = $this->getPeriodEndsAt(Carbon::now());
         }
@@ -492,12 +509,6 @@ class Subscription extends Model implements HasQuotaInterface
         $this->status = self::STATUS_ACTIVE;
         $this->started_at = Carbon::now();
         $this->save();
-
-        // add log
-        $this->addLog(SubscriptionLog::TYPE_SUBSCRIBED, [
-            'plan' => $this->plan->name,
-            'price' => $this->plan->getFormattedPrice(),
-        ]);
     }
 
     /**
@@ -565,7 +576,10 @@ class Subscription extends Model implements HasQuotaInterface
      */
     public function getLogs()
     {
-        return $this->subscriptionLogs()->orderBy('created_at', 'desc')->get();
+        return $this->subscriptionLogs()
+            ->orderBy('created_at', 'desc')
+            ->orderBy('id', 'desc')
+            ->get();
     }
 
     /**
@@ -620,13 +634,22 @@ class Subscription extends Model implements HasQuotaInterface
             throw new Exception('Subscription is not recurring. No need to disable again.');
         }
 
-        $this->is_recurring = false;
-        $this->save();
+        \DB::transaction(function() {
+            $this->is_recurring = false;
+            $this->save();
 
-        // không curring nữa nên xoá luôn NEW renew invoice hiện tại nếu có
-        if ($this->getItsOnlyUnpaidRenewInvoice()) {
-            $this->getItsOnlyUnpaidRenewInvoice()->delete();
-        }
+            // không curring nữa nên xoá luôn NEW renew invoice hiện tại nếu có
+            if ($this->getItsOnlyUnpaidRenewInvoice()) {
+                $this->getItsOnlyUnpaidRenewInvoice()->delete();
+            }
+            
+            // Log
+            SubscriptionFacade::log($this, SubscriptionLog::TYPE_DISABLE_RECURRING, null, [
+                'plan' => $this->getPlanName(),
+            ]);
+        });
+
+        
     }
 
     /**
@@ -636,16 +659,23 @@ class Subscription extends Model implements HasQuotaInterface
      */
     public function enableRecurring()
     {
-        if ($this->isEnded()) {
-            throw new Exception('Subscription is ended. Can not change ended subscription state!');
-        }
+        \DB::transaction(function() {
+            if ($this->isEnded()) {
+                throw new Exception('Subscription is ended. Can not change ended subscription state!');
+            }
+    
+            if ($this->isRecurring()) {
+                throw new Exception('Subscription is recurring. No need to resume again.');
+            }
+    
+            $this->is_recurring = true;
+            $this->save();
 
-        if ($this->isRecurring()) {
-            throw new Exception('Subscription is recurring. No need to resume again.');
-        }
-
-        $this->is_recurring = true;
-        $this->save();
+            // Log
+            SubscriptionFacade::log($this, SubscriptionLog::TYPE_ENABLE_RECURRING, null, [
+                'plan' => $this->getPlanName(),
+            ]);
+        });
     }
 
     /**
@@ -659,26 +689,60 @@ class Subscription extends Model implements HasQuotaInterface
             throw new Exception('Subscription chỉ bị cancel now khi trạng thái là ACTIVE');
         }
 
-        // Xoá NEW renew invoice hiện tại nếu có
-        if ($this->getItsOnlyUnpaidRenewInvoice()) {
-            $this->getItsOnlyUnpaidRenewInvoice()->delete();
+        \DB::transaction(function() {
+            
+            // Log
+            SubscriptionFacade::log($this, SubscriptionLog::TYPE_CANCEL_SUBSCRIPTION, null, [
+                'plan' => $this->getPlanName(),
+            ]);
+
+            // Xoá NEW renew invoice hiện tại nếu có
+            if ($this->getItsOnlyUnpaidRenewInvoice()) {
+                $this->getItsOnlyUnpaidRenewInvoice()->delete();
+            }
+
+            // Xoá NEW change plan invoice hiện tại nếu có
+            if ($this->getItsOnlyUnpaidChangePlanInvoice()) {
+                $this->getItsOnlyUnpaidChangePlanInvoice()->delete();
+            }
+
+            // set status = ended. Lưu thời điểm bị end lại trong cột cancelled_at
+            $this->setCancelled();
+            $this->cancelled_at = \Carbon\Carbon::now();
+            $this->save();
+        });
+            
+    }
+
+    public function terminate()
+    {
+        if (!$this->isActive()) {
+            throw new Exception('Subscription chỉ bị cancel now khi trạng thái là ACTIVE');
         }
 
-        // Xoá NEW change plan invoice hiện tại nếu có
-        if ($this->getItsOnlyUnpaidChangePlanInvoice()) {
-            $this->getItsOnlyUnpaidChangePlanInvoice()->delete();
-        }
+        \DB::transaction(function() {
+            // Xoá NEW renew invoice hiện tại nếu có
+            if ($this->getItsOnlyUnpaidRenewInvoice()) {
+                $this->getItsOnlyUnpaidRenewInvoice()->delete();
+            }
 
-        // set status = ended. Lưu thời điểm bị end lại trong cột cancelled_at
-        $this->setCancelled();
-        $this->cancelled_at = \Carbon\Carbon::now();
-        $this->save();
+            // Xoá NEW change plan invoice hiện tại nếu có
+            if ($this->getItsOnlyUnpaidChangePlanInvoice()) {
+                $this->getItsOnlyUnpaidChangePlanInvoice()->delete();
+            }
 
-        // add log
-        $this->addLog(SubscriptionLog::TYPE_CANCELLED_NOW, [
-            'plan' => $this->plan->name,
-            'price' => $this->plan->getFormattedPrice(),
-        ]);
+            // set status = ended. Lưu thời điểm bị end lại trong cột cancelled_at
+            $this->setTerminated();
+            $this->terminated_at = \Carbon\Carbon::now();
+            $this->save();
+
+            // Log
+            SubscriptionFacade::log($this, SubscriptionLog::TYPE_TERMINATE, null, [
+                'plan' => $this->getPlanName(),
+                'terminate_at' => $this->terminated_at,
+            ]);
+        });
+            
     }
 
     public function end()
@@ -687,17 +751,25 @@ class Subscription extends Model implements HasQuotaInterface
             throw new Exception('Subscription chỉ end khi trạng thái là ACTIVE');
         }
 
-        // Xoá NEW renew invoice hiện tại nếu có
-        if ($this->getItsOnlyUnpaidRenewInvoice()) {
-            $this->getItsOnlyUnpaidRenewInvoice()->delete();
-        }
+        \DB::transaction(function() {
+            // Xoá NEW renew invoice hiện tại nếu có
+            if ($this->getItsOnlyUnpaidRenewInvoice()) {
+                $this->getItsOnlyUnpaidRenewInvoice()->delete();
+            }
 
-        // Xoá NEW change plan invoice hiện tại nếu có
-        if ($this->getItsOnlyUnpaidChangePlanInvoice()) {
-            $this->getItsOnlyUnpaidChangePlanInvoice()->delete();
-        }
+            // Xoá NEW change plan invoice hiện tại nếu có
+            if ($this->getItsOnlyUnpaidChangePlanInvoice()) {
+                $this->getItsOnlyUnpaidChangePlanInvoice()->delete();
+            }
 
-        $this->setEnded();
+            $this->setEnded();
+
+            // Log
+            SubscriptionFacade::log($this, SubscriptionLog::TYPE_END, null, [
+                'plan' => $this->getPlanName(),
+                'ends_at' => $this->current_period_ends_at,
+            ]);
+        });
     }
 
     public function checkExpiration()
@@ -708,12 +780,6 @@ class Subscription extends Model implements HasQuotaInterface
             \Acelle\Model\Setting::get('allowed_due_subscription') == 'no'
         ) {
             $this->end();
-
-            // add log
-            $this->addLog(SubscriptionLog::TYPE_EXPIRED, [
-                'plan' => $this->plan->name,
-                'date' => $this->current_period_ends_at,
-            ]);
         }
     }
 
@@ -725,8 +791,17 @@ class Subscription extends Model implements HasQuotaInterface
             $this->isRecurring() && // có recurring hàng kỳ
             !$this->getItsOnlyUnpaidRenewInvoice() // chưa có NEW renew invoice nào cả
         ) {
-            // tạo NEW renew invoice cho sub
-            $this->createRenewInvoice();
+            \DB::transaction(function() {
+                // tạo NEW renew invoice cho sub
+                $invoice = $this->createRenewInvoice();
+
+                // Log
+                SubscriptionFacade::log($this, SubscriptionLog::TYPE_RENEW_INVOICE, $invoice->uid, [
+                    'plan' => $this->getPlanName(),
+                    'customer' => $this->getCustomerName(),
+                    'amount' => $invoice->formattedTotal(),
+                ]);
+            });
         }
     }
 
@@ -740,16 +815,7 @@ class Subscription extends Model implements HasQuotaInterface
         // set new current period
         $this->current_period_ends_at = $this->getPeriodEndsAt($this->current_period_ends_at);
 
-        // trial_ends_at should be set back to null
-        $this->trial_ends_at = null;
-
         $this->save();
-
-        // logs
-        $this->addLog(SubscriptionLog::TYPE_RENEWED, [
-            'plan' => $this->plan->name,
-            'price' => $this->plan->getFormattedPrice(),
-        ]);
     }
 
     public function isExpiring()

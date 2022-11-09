@@ -43,6 +43,7 @@ use Acelle\Library\Traits\HasCache;
 use Acelle\Jobs\ImportBlacklistJob;
 use Acelle\Library\Traits\HasUid;
 use Acelle\Library\QuotaManager;
+use Acelle\Library\Facades\SubscriptionFacade;
 
 class Customer extends Model
 {
@@ -1514,10 +1515,17 @@ class Customer extends Model
         DB::transaction(function () use ($customer, $plan, &$subscription) {
             $subscription = Subscription::createNewSubscription($customer, $plan);
             if ($plan->hasTrial()) {
-                $subscription->createInitInvoiceWithTrial();
+                $invoice = $subscription->createInitInvoiceWithTrial();
             } else {
-                $subscription->createInitInvoiceWithoutTrial();
+                $invoice = $subscription->createInitInvoiceWithoutTrial();
             }
+
+            // log
+            SubscriptionFacade::log($subscription, SubscriptionLog::TYPE_SELECT_PLAN, $invoice->uid, [
+                'plan' => $subscription->getPlanName(),
+                'customer' => $subscription->getCustomerName(),
+                'amount' => $invoice->formattedTotal(),
+            ]);
         });
 
         // Important:

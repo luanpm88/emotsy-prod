@@ -1071,7 +1071,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::resource('admin/subscriptions', 'SubscriptionController');
 
     // Email verification servers
-    Route::post('admin/subscriptions/{id}/cancel-now', 'SubscriptionController@cancelNow');
+    Route::post('admin/subscriptions/{id}/terminate', 'SubscriptionController@terminate');
     Route::get('admin/email_verification_servers/options', 'EmailVerificationServerController@options');
     Route::get('admin/email_verification_servers/listing/{page?}', 'EmailVerificationServerController@listing');
     Route::get('admin/email_verification_servers/sort', 'EmailVerificationServerController@sort');
