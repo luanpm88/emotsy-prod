@@ -2922,7 +2922,7 @@
   'subscription.log.admin_approve' => 'Invoice <strong>:invoice</strong> with amount <strong>:amount</strong> is approved by admin',
   'subscription.log.admin_reject' => 'Invoice <strong>:invoice</strong> is rejected by admin with reason: :reason',
   'subscription.log.renew_invoice' => 'Renew invoice <strong>:invoice</strong> with amount <strong>:amount</strong> is automatically created',
-  'subscription.log.change_plan_invoice' => 'Change plan invoice <strong>:invoice</strong> with amount <strong>:amount</strong> is automatically created. Change from <strong>:plan</strong> to <strong>:new_plan</strong>',
+  'subscription.log.change_plan_invoice' => 'Change plan invoice <strong>:invoice</strong> with amount <strong>:amount</strong> is created. Change from <strong>:plan</strong> to <strong>:new_plan</strong>',
   'subscription.log.cancel_invoice' => 'Invoice <strong>:invoice</strong> with amount <strong>:amount</strong> is cancelled',
   'subscription.log.cancel_subscription' => 'Subscription for plan <strong>:plan</strong> is cancelled by user',
   'subscription.log.disable_recurring' => 'Recurring for plan <strong>:plan</strong> is disabled',

@@ -789,6 +789,7 @@ class Subscription extends Model implements HasQuotaInterface
             $this->isExpiring() && // đang hết hạn
             $this->canRenewPlan() && // check the function..
             $this->isRecurring() && // có recurring hàng kỳ
+            !$this->getItsOnlyUnpaidChangePlanInvoice() && // chưa có NEW change plan invoice nào cả
             !$this->getItsOnlyUnpaidRenewInvoice() // chưa có NEW renew invoice nào cả
         ) {
             \DB::transaction(function() {

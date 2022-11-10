@@ -285,21 +285,23 @@ class Invoice extends Model
         if (!$this->getPendingTransaction()) {
             throw new \Exception("Trying to approve an invoice that does not have a pending transaction (Invoice ID: {$this->id}, status: {$this->status}");
         }
+        
+        \DB::transaction(function() {
+            // fulfill invoice
+            $this->fulfill();
 
-        // fulfill invoice
-        $this->fulfill();
-
-        // logging by type
-        switch ($this->type) {
-            case Invoice::TYPE_NEW_SUBSCRIPTION:
-            case Invoice::TYPE_RENEW_SUBSCRIPTION:
-            case Invoice::TYPE_CHANGE_PLAN:
-                $subscription = Subscription::findByUid($this->getMetadata()['subscription_uid']);
-                SubscriptionFacade::log($subscription, SubscriptionLog::TYPE_ADMIN_APPROVE, $this->uid, [
-                    'amount' => $this->formattedTotal(),
-                ]);
-                break;
-        }
+            // logging by type
+            switch ($this->type) {
+                case Invoice::TYPE_NEW_SUBSCRIPTION:
+                case Invoice::TYPE_RENEW_SUBSCRIPTION:
+                case Invoice::TYPE_CHANGE_PLAN:
+                    $subscription = Subscription::findByUid($this->getMetadata()['subscription_uid']);
+                    SubscriptionFacade::log($subscription, SubscriptionLog::TYPE_ADMIN_APPROVE, $this->uid, [
+                        'amount' => $this->formattedTotal(),
+                    ]);
+                    break;
+            }
+        });
     }
 
     /**
@@ -319,21 +321,23 @@ class Invoice extends Model
             throw new \Exception("Trying to approve an invoice that does not have a pending transaction (Invoice ID: {$this->id}, status: {$this->status}");
         }
 
-        // fulfill invoice
-        $this->payFailed($error);
+        \DB::transaction(function() use ($error) {
+            // fulfill invoice
+            $this->payFailed($error);
 
-        // logging by type
-        switch ($this->type) {
-            case Invoice::TYPE_NEW_SUBSCRIPTION:
-            case Invoice::TYPE_RENEW_SUBSCRIPTION:
-            case Invoice::TYPE_CHANGE_PLAN:
-                $subscription = Subscription::findByUid($this->getMetadata()['subscription_uid']);
-                SubscriptionFacade::log($subscription, SubscriptionLog::TYPE_ADMIN_REJECT, $this->uid, [
-                    'amount' => $this->formattedTotal(),
-                    'reason' => $error,
-                ]);
-                break;
-        }
+            // logging by type
+            switch ($this->type) {
+                case Invoice::TYPE_NEW_SUBSCRIPTION:
+                case Invoice::TYPE_RENEW_SUBSCRIPTION:
+                case Invoice::TYPE_CHANGE_PLAN:
+                    $subscription = Subscription::findByUid($this->getMetadata()['subscription_uid']);
+                    SubscriptionFacade::log($subscription, SubscriptionLog::TYPE_ADMIN_REJECT, $this->uid, [
+                        'amount' => $this->formattedTotal(),
+                        'reason' => $error,
+                    ]);
+                    break;
+            }
+        });
     }
 
     /**
@@ -567,6 +571,24 @@ class Invoice extends Model
         $invoice = $this;
         \DB::transaction(function() use ($gateway, $invoice, $payCallback) {
             $invoice->createPendingTransaction($gateway);
+
+            // action by type
+            switch ($invoice->type) {
+                case Invoice::TYPE_RENEW_SUBSCRIPTION:
+                    $subscription = Subscription::findByUid($this->getMetadata()['subscription_uid']);
+                    // Xoá NEW change plan invoice hiện tại nếu có
+                    if ($subscription->getItsOnlyUnpaidChangePlanInvoice()) {
+                        $subscription->getItsOnlyUnpaidChangePlanInvoice()->delete();
+                    }
+                    break;
+                case Invoice::TYPE_CHANGE_PLAN:
+                    $subscription = Subscription::findByUid($this->getMetadata()['subscription_uid']);
+                    // Xoá NEW renew invoice hiện tại nếu có
+                    if ($subscription->getItsOnlyUnpaidRenewInvoice()) {
+                        $subscription->getItsOnlyUnpaidRenewInvoice()->delete();
+                    }
+                    break;
+            }
 
             try {
                 $result = $payCallback($invoice);
