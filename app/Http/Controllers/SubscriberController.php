@@ -83,8 +83,8 @@ class SubscriberController extends Controller
         $subscriber->mail_list_id = $list->id;
 
         // authorize
-        if (\Gate::denies('create', $subscriber)) {
-            return $this->noMoreItem();
+        if (\Gate::denies('read', $list)) {
+            return redirect()->action('MailListController@index');
         }
 
         // Get old post values
