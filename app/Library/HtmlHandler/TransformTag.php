@@ -49,6 +49,7 @@ class TransformTag implements StageInterface
             $tags['WEB_VIEW_URL'] = $sampleLink;
             $tags['SUBSCRIBER_UID'] = '%UID%';
 
+            $tags['LIST_UID'] = '%LIST-UID%';
             $tags['LIST_NAME'] = '%LIST-NAME%';
             $tags['LIST_SUBJECT'] = '%LIST-SUBJECT%';
             $tags['LIST_FROM_NAME'] = '%LIST-FROM-NAME%';
@@ -81,6 +82,7 @@ class TransformTag implements StageInterface
             // Only email is "reserved", overwrite previous $sample
             $tags['SUBSCRIBER_EMAIL'] = is_null($this->subscriber) ? 'email@sample.com' : $this->subscriber->email;
         } else {
+            $tags['LIST_UID'] = $this->subscriber->mailList->uid;
             $tags['LIST_NAME'] = $this->subscriber->mailList->name;
             $tags['LIST_SUBJECT'] = $this->subscriber->mailList->default_subject;
             $tags['LIST_FROM_NAME'] = $this->subscriber->mailList->from_name;
