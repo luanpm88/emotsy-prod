@@ -2445,6 +2445,7 @@
   'subscriptions' => 'Subscriptions',
   'successful_deliveries' => 'Successful deliveries',
   'suscription.order_empty' => 'Choose one of the plans available and your invoice details will be calculated and display here',
+  'switch_view' => 'Switch View',
   'system' => 'System',
   'system.renew_free_plan' => 'Can renew free plan',
   'system_compatibility' => 'System compatibility',

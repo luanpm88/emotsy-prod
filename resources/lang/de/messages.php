@@ -2468,6 +2468,7 @@
   'subscriptions' => 'Abonnements',
   'successful_deliveries' => 'Erfolgreiche Zustellungen',
   'suscription.order_empty' => 'Wählen Sie einen der verfügbaren Pläne und Ihr Rechnungsdetails werden berechnet und hier anzeigen',
+  'switch_view' => 'Switch View',
   'system' => 'System',
   'system.renew_free_plan' => 'Kann den kostenlosen Plan erneuern',
   'system_compatibility' => 'System Kompatibiliät',
