@@ -2465,6 +2465,7 @@
   'subscriptions' => 'サブスクリプション',
   'successful_deliveries' => '成功した送信',
   'suscription.order_empty' => '利用可能なプランの1つを選択すると、請求書の詳細が計算され、ここに表示されます',
+  'switch_view' => 'Switch View',
   'system' => 'システム',
   'system.renew_free_plan' => 'ユーザーが無料プランを更新できるようにする',
   'system_compatibility' => 'システム互換性',

@@ -2468,6 +2468,7 @@
   'subscriptions' => 'Subscritores',
   'successful_deliveries' => 'Entregas bem-sucedidas',
   'suscription.order_empty' => 'Choose one of the plans available and your invoice details will be calculated and display here',
+  'switch_view' => 'Switch View',
   'system' => 'Sistema',
   'system.renew_free_plan' => 'Can renew free plan',
   'system_compatibility' => 'Compatibilidade do sistema',
