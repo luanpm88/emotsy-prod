@@ -189,7 +189,8 @@ class SegmentController extends Controller
         $subscribers = $subscribers->orderBy($request->sort_order, $request->sort_direction)
             ->paginate($request->per_page);
 
-        $fields = $list->getFields->whereIn('uid', explode(',', $request->columns));
+        $fields = $list->getFields->whereIn('uid', $request->columns_);
+
         return view('subscribers._list', [
             'subscribers' => $subscribers,
             'total' => $total,
