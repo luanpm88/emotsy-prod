@@ -63,7 +63,7 @@
                 root: '{{ URL::asset('builder') }}/',
                 templates: templates,
                 filemanager: '{{ URL::asset('filemanager2/dialog.php') }}',
-                logo: '{{ getSiteLogoUrl('dark') }}',
+                logo: '{{ getSiteLogoUrl('light') }}',
                 backgrounds: [
                     '{{ url('/images/backgrounds/images1.jpg') }}',
                     '{{ url('/images/backgrounds/images2.jpg') }}',
