@@ -38,7 +38,7 @@ class Subscription extends Model implements HasQuotaInterface
      */
     protected $dates = [
         'cancelled_at', 'current_period_ends_at',
-        'created_at', 'updated_at', 'started_at', 'terminated_at'
+        'created_at', 'updated_at', 'terminated_at'
     ];
 
     /**
@@ -507,7 +507,6 @@ class Subscription extends Model implements HasQuotaInterface
         }
 
         $this->status = self::STATUS_ACTIVE;
-        $this->started_at = Carbon::now();
         $this->save();
     }
 
