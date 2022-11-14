@@ -679,6 +679,7 @@ class MailList extends Model
         // Fields
         foreach ($this->fields as $field) {
             $new_field = $field->replicate();
+            $new_field->uid = uniqid();
             $new_field->mail_list_id = $copy->id;
             $new_field->save();
 
