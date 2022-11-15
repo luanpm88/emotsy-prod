@@ -63,6 +63,8 @@ class SubscriptionManager {
             $unpaidRenewInvoice->checkout($customer->getPreferredPaymentGateway(), function($invoice) {
                 return new TransactionVerificationResult(TransactionVerificationResult::RESULT_DONE);
             });
+
+            return;
         }
 
         // auto charge

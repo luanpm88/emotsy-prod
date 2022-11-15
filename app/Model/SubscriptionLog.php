@@ -24,6 +24,8 @@ class SubscriptionLog extends Model
     public const TYPE_ENABLE_RECURRING = 'enable_recurring';
     public const TYPE_END = 'end';
     public const TYPE_TERMINATE = 'terminate';
+    // public const TYPE_AUTO_CHARGE_FAILED = 'auto_charge_failed';
+    // public const TYPE_AUTO_CHARGE_SUCCESS = 'auto_charge_success';
 
     /**
      * The attributes that are not mass assignable.
@@ -171,6 +173,19 @@ class SubscriptionLog extends Model
                     'terminate_at' => $data['terminate_at'],
                 ]);
                 break;
+            // case self::TYPE_AUTO_CHARGE_FAILED:
+            //     return trans('messages.subscription.log.auto_charge_failed', [
+            //         'plan' => $data['plan'],
+            //         'invoice' => $this->invoice_uid,
+            //         'error' => $data['error'],
+            //     ]);
+            //     break;
+            // case self::TYPE_AUTO_CHARGE_SUCCESS:
+            //     return trans('messages.subscription.log.auto_charge_success', [
+            //         'plan' => $data['plan'],
+            //         'invoice' => $this->invoice_uid,
+            //     ]);
+            //     break;
             default:
                 throw new \Exception("Log type $this->type is not found!");
         }

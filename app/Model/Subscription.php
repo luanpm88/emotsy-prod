@@ -435,7 +435,8 @@ class Subscription extends Model implements HasQuotaInterface
     public function transactions()
     {
         return \Acelle\Model\Transaction::whereIn('invoice_id', $this->invoices()->select('id'))
-            ->orderBy('created_at', 'desc');
+            ->orderBy('created_at', 'desc')
+            ->orderBy('id', 'desc');
     }
 
     /**

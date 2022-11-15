@@ -2934,4 +2934,6 @@
   'subscription.terminated_at' => 'Terminated at',
   'subscription.status.terminated' => 'Terminated',
   'subscription.terminate' => 'Terminate',
+  'subscription.log.auto_charge_success' => 'Auto charge invoice <strong>:invoice_uid</strong> successfully',
+  'subscription.log.auto_charge_failed' => 'Can not auto charge invoice <strong>:invoice_uid</strong>. Error: :error',
 ) ?>

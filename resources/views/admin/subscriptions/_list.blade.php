@@ -129,7 +129,7 @@ remove_circle_outline
 							</span>
 					@endswitch
                 </td>
-				<td class="text-end">
+				<td class="text-end text-nowrap">
 					@if (\Auth::user()->admin->can('approve', $subscription))
 						<a link-method="POST" link-confirm="{{ trans('messages.subscription.approve.confirm') }}"
 							href="{{ action('Admin\SubscriptionController@approve', $subscription->uid) }}"

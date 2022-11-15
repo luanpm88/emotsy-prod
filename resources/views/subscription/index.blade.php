@@ -201,14 +201,26 @@
                                 </a>
                             </div>
                         @else
-                            <hr>
-                            <div class="text-left">
-                                <a href="{{ action('SubscriptionController@payment', [
-                                    'invoice_uid' => $subscription->getItsOnlyUnpaidRenewInvoice()->uid,
-                                ]) }}" class="btn btn-secondary">
-                                    {{ trans('messages.invoice.pay_now') }}
-                                </a>
-                            </div>
+                            @if (!$subscription->getItsOnlyUnpaidRenewInvoice()->getPendingTransaction())
+                                <hr>
+                                <div class="text-left">
+                                    <a href="{{ action('SubscriptionController@payment', [
+                                        'invoice_uid' => $subscription->getItsOnlyUnpaidRenewInvoice()->uid,
+                                    ]) }}" class="btn btn-secondary">
+                                        {{ trans('messages.invoice.pay_now') }}
+                                    </a>
+                                </div>
+                            @else
+                                <hr>
+                                <div class="text-right pe-none">
+                                    <a href="{{ action('SubscriptionController@payment', [
+                                        'invoice_uid' => $subscription->getItsOnlyUnpaidRenewInvoice()->uid,
+                                    ]) }}" class="btn btn-warning button-loading full-width pr-20 pe-none " style="width:100%;pointer-events: auto;opacity:0.9">
+                                        {{ trans('messages.invoice.payment_is_being_verified') }}
+                                        <div class="loader"></div>
+                                    </a>
+                                </div>
+                            @endif
                         @endif
                     </div>
                 </div>

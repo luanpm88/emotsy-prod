@@ -121,6 +121,7 @@ class Invoice extends Model
     {
         return $this->transactions()
             ->orderBy('created_at', 'desc')
+            ->orderBy('id', 'desc')
             ->first();
     }
 
