@@ -31,7 +31,7 @@ class SenderController extends Controller
             return $this->notAuthorized();
         }
 
-        $subscription = $request->user()->customer->subscription;
+        $subscription = $request->user()->customer->getNewOrActiveSubscription();
         $plan = $subscription->plan;
 
         if ($subscription->plan->useOwnSendingServer()) {
@@ -111,7 +111,7 @@ class SenderController extends Controller
             return $this->notAuthorized();
         }
 
-        $plan = $request->user()->customer->activeSubscription()->plan;
+        $plan = $request->user()->customer->getCurrentActiveSubscription()->plan;
 
         $sender->fill($request->all());
         $sender->customer_id = $request->user()->customer->id;

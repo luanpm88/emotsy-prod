@@ -34,7 +34,7 @@
                                 </td>
                                 <td>
                                     <span class="no-margin kq_search">
-                                        {!! trans('messages.subscription.log.' . $log->type, $log->getData()) !!}
+                                        {!! $log->renderLog() !!}
                                     </span>
                                 </td>                                
                             </tr>
@@ -77,11 +77,7 @@
                                 </td> 
                                 <td>
                                     <span class="no-margin kq_search" style="text-transform: capitalize;">
-                                        @if (Lang::has('messages.transaction.method.' . $transaction->method))
-                                            {{ trans('messages.transaction.method.' . $transaction->method) }}
-                                        @else
-                                            {{ $transaction->method }}
-                                        @endif
+                                        {{ $transaction->method }}
                                     </span>
                                 </td> 
                                 <td>

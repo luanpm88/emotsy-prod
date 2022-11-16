@@ -223,7 +223,7 @@ class CustomerController extends Controller
         }
 
         // Current subscription
-        $subscription = $customer->getCurrentSubscription();
+        $subscription = $customer->getNewOrActiveSubscription();
         if ($subscription) {
             $result['current_subscription'] = [
                 'uid' => $subscription->uid,

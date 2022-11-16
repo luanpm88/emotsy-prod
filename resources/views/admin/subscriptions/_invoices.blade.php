@@ -34,7 +34,7 @@
                                 </td>
                                 <td>
                                     <span class="no-margin kq_search">
-                                        {!! trans('messages.subscription.log.' . $log->type, $log->getData()) !!}
+                                        {!! $log->renderLog() !!}
                                     </span>
                                 </td>                                
                             </tr>
@@ -77,7 +77,7 @@
                                 </td> 
                                 <td>
                                     <span class="no-margin kq_search">
-                                        {!! trans('messages.transaction.method.' . $transaction->method) !!}
+                                        {{ $transaction->method }}
                                     </span>
                                 </td> 
                                 <td>

@@ -239,20 +239,24 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
     Route::get('websites', 'WebsiteController@index');
 
     // New subscription
+    // =================== REVIEWED
     Route::get('account/subscription/select-plan', 'SubscriptionController@selectPlan');
-    Route::get('account/subscription/order-box', 'SubscriptionController@orderBox');
+    Route::get('account/subscription/order-box/{invoice_uid}', 'SubscriptionController@orderBox');
     Route::match(['get', 'post'], 'account/subscription/change-plan', 'SubscriptionController@changePlan');
-    Route::post('account/subscription/resume', 'SubscriptionController@resume');
-    Route::post('account/subscription/cancel', 'SubscriptionController@cancel');
-    Route::post('account/subscription/invoice/{invoice_uid}/confirm-free', 'SubscriptionController@confirmFree');
     Route::match(['get', 'post'], 'account/subscription/billing-information', 'SubscriptionController@billingInformation');
-    Route::post('account/subscription/checkout', 'SubscriptionController@checkout');
-    Route::post('account/subscription/cancel-now', 'SubscriptionController@cancelNow');
+    Route::post('account/subscription/checkout/{invoice_uid}', 'SubscriptionController@checkout');
     Route::post('account/subscription/invoice/{invoice_uid}/cancel', 'SubscriptionController@cancelInvoice');
-    Route::post('account/subscription/invoice/{invoice_uid}/confirm', 'SubscriptionController@confirmFree');
+    Route::post('account/subscription/cancel-now', 'SubscriptionController@cancelNow');
+    Route::post('account/subscription/recurring/enable', 'SubscriptionController@enableRecurring');
+    Route::post('account/subscription/recurring/disable', 'SubscriptionController@disableRecurring');
     Route::get('account/subscription/payment/{invoice_uid}', 'SubscriptionController@payment');
-    Route::post('account/subscription/init', 'SubscriptionController@init');
+    Route::post('account/subscription/assign-plan', 'SubscriptionController@assignPlan');
+    Route::post('account/subscription/select-plan', 'SubscriptionController@selectPlan');
     Route::get('account/subscription', 'SubscriptionController@index');
+
+
+
+
 
     // Customer login back
     Route::get('customers/login-back', 'CustomerController@loginBack');
@@ -1056,22 +1060,18 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     // Subscription
     Route::post('admin/subscriptions/{id}/replenish-sending-credits', 'SubscriptionController@replenishSendingCredits');
     Route::post('admin/subscriptions/{id}/approve', 'SubscriptionController@approve');
-    // Route::match(['get','post'], 'admin/subscriptions/create', 'SubscriptionController@create');
-    // Route::post('admin/subscriptions/{id}/approve-pending', 'SubscriptionController@approvePending');
-    // Route::post('admin/subscriptions/{id}/renew', 'SubscriptionController@renew');
     Route::match(['get','post'], 'admin/subscriptions/{id}/reject-pending', 'SubscriptionController@rejectPending');
     Route::get('admin/subscriptions/{id}/invoices', 'SubscriptionController@invoices');
-    // Route::post('admin/subscriptions/{id}/change-plan', 'SubscriptionController@changePlan');
-    // Route::get('admin/subscriptions/{id}/change-plan', 'SubscriptionController@changePlan');
-    Route::post('admin/subscriptions/{id}/cancel-now', 'SubscriptionController@cancelNow');
-    Route::post('admin/subscriptions/{id}/resume', 'SubscriptionController@resume');
-    Route::post('admin/subscriptions/{id}/cancel', 'SubscriptionController@cancel');
+    
+    Route::post('admin/subscriptions/{id}/recurring/enable', 'SubscriptionController@enableRecurring');
+    Route::post('admin/subscriptions/{id}/recurring/disable', 'SubscriptionController@disableRecurring');
     Route::get('admin/subscriptions/listing/{page?}', 'SubscriptionController@listing');
     Route::get('admin/subscriptions/sort', 'SubscriptionController@sort');
     Route::delete('admin/subscriptions/delete', 'SubscriptionController@delete');
     Route::resource('admin/subscriptions', 'SubscriptionController');
 
     // Email verification servers
+    Route::post('admin/subscriptions/{id}/terminate', 'SubscriptionController@terminate');
     Route::get('admin/email_verification_servers/options', 'EmailVerificationServerController@options');
     Route::get('admin/email_verification_servers/listing/{page?}', 'EmailVerificationServerController@listing');
     Route::get('admin/email_verification_servers/sort', 'EmailVerificationServerController@sort');

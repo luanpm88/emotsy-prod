@@ -40,12 +40,22 @@ remove_circle_outline
                     <span class="text-muted2">{{ trans('messages.subscribed_on') }}</span>
                 </td>
 				<td width="15%">
-					@if ($subscription->isEnded())
+					@if ($subscription->isTerminated())
 						<h5 class="no-margin stat-num">
-								<span class="kq_search">{{ Auth::user()->admin->formatDateTime($subscription->ends_at, 'datetime_full') }}</span>
+								<span class="kq_search">{{ Auth::user()->admin->formatDateTime($subscription->terminated_at, 'datetime_full') }}</span>
+							</h5>
+						<span class="text-muted2">{{ trans('messages.subscription.terminated_at') }}</span>
+					@elseif ($subscription->isEnded())
+						<h5 class="no-margin stat-num">
+								<span class="kq_search">{{ Auth::user()->admin->formatDateTime($subscription->current_period_ends_at, 'datetime_full') }}</span>
 							</h5>
 						<span class="text-muted2">{{ trans('messages.subscription.subscription_ended_at') }}</span>
-					@elseif ($subscription->cancelled())
+					@elseif ($subscription->isCancelled())
+						<h5 class="no-margin stat-num">
+								<span class="kq_search">{{ Auth::user()->admin->formatDateTime($subscription->cancelled_at, 'datetime_full') }}</span>
+							</h5>
+						<span class="text-muted2">{{ trans('messages.subscription.cancelled_at') }}</span>
+					@elseif (!$subscription->isRecurring())
 						<h5 class="no-margin stat-num">
 							@if ($subscription->current_period_ends_at)
 								<span class="kq_search">{{ $subscription->current_period_ends_at->timezone($currentTimezone)->diffForHumans() }}</span>
@@ -119,7 +129,7 @@ remove_circle_outline
 							</span>
 					@endswitch
                 </td>
-				<td class="text-end">
+				<td class="text-end text-nowrap">
 					@if (\Auth::user()->admin->can('approve', $subscription))
 						<a link-method="POST" link-confirm="{{ trans('messages.subscription.approve.confirm') }}"
 							href="{{ action('Admin\SubscriptionController@approve', $subscription->uid) }}"
@@ -130,20 +140,20 @@ remove_circle_outline
 						<span class="text-muted">|</span>
 					@endif
 					
-					@if (\Auth::user()->admin->can('cancel', $subscription))
-						<a link-method="POST" link-confirm="{{ trans('messages.subscription.cancel.confirm') }}"
-						  href="{{ action('Admin\SubscriptionController@cancel', $subscription->uid) }}" class="btn btn-secondary list-action-single">
-							{{ trans('messages.subscription.cancel') }}
+					@if (\Auth::user()->admin->can('disableRecurring', $subscription))
+						<a link-method="POST" link-confirm="{{ trans('messages.subscription.disable_recurring.confirm') }}"
+						  href="{{ action('Admin\SubscriptionController@disableRecurring', $subscription->uid) }}" class="btn btn-secondary list-action-single">
+							{{ trans('messages.subscription.disable_recurring') }}
 						</a>
 					@endif
-					@if (\Auth::user()->admin->can('resume', $subscription))
-						<a link-method="POST" link-confirm="{{ trans('messages.subscription.resume.confirm') }}"
-						  href="{{ action('Admin\SubscriptionController@resume', $subscription->uid) }}" class="btn btn-secondary list-action-single">
-							{{ trans('messages.subscription.resume') }}
+					@if (\Auth::user()->admin->can('enableRecurring', $subscription))
+						<a link-method="POST" link-confirm="{{ trans('messages.subscription.enable_recurring.confirm') }}"
+						  href="{{ action('Admin\SubscriptionController@enableRecurring', $subscription->uid) }}" class="btn btn-secondary list-action-single">
+							{{ trans('messages.subscription.enable_recurring') }}
 						</a>
 					@endif
 					@if(
-						\Auth::user()->admin->can('cancelNow', $subscription) ||
+						\Auth::user()->admin->can('terminate', $subscription) ||
 						\Auth::user()->admin->can('invoices', $subscription) ||
 						\Auth::user()->admin->can('approve', $subscription) ||
 						\Auth::user()->admin->can('delete', $subscription) ||
@@ -190,11 +200,11 @@ remove_circle_outline
 										</a>
 									</li>
 								@endif
-								@if (\Auth::user()->admin->can('cancelNow', $subscription))
+								@if (\Auth::user()->admin->can('terminate', $subscription))
 									<li>
 										<a class="dropdown-item list-action-single" link-method="POST" link-confirm="{{ trans('messages.subscription.cancel_now.confirm') }}"
-										  href="{{ action('Admin\SubscriptionController@cancelNow', $subscription->uid) }}">
-											{{ trans('messages.subscription.cancel_now') }}
+										  href="{{ action('Admin\SubscriptionController@terminate', $subscription->uid) }}">
+											{{ trans('messages.subscription.terminate') }}
 										</a>
 									</li>
 								@endif

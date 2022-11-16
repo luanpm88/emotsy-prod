@@ -58,7 +58,7 @@ class VerifySubscriber extends Base
 
     public function doVerify(Closure $exceptionCallback = null)
     {
-        $subscription = $this->subscriber->mailList->customer->activeSubscription();
+        $subscription = $this->subscriber->mailList->customer->getCurrentActiveSubscription();
 
         if (is_null($subscription)) {
             throw new Exception("User does not have an acive subscription");

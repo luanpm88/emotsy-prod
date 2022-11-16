@@ -39,8 +39,8 @@ class SubscriptionDoneMailer extends Mailable
         return $this->subject(trans('messages.subscription_done.email_subject'))
             ->view('subscription.email.subscription_done_' . \Acelle\Model\Setting::get('system.payment_gateway'))
             ->with([
-                'customerName' => $this->subscription->user->displayName(),
-                'planName' => $this->subscription->plan->name,
+                'customerName' => $this->getNewOrActiveSubscription()->user->displayName(),
+                'planName' => $this->getNewOrActiveSubscription()->plan->name,
                 'link' => action('SubscriptionController@index'),
             ]);
     }

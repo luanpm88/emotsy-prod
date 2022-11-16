@@ -412,7 +412,7 @@ class CampaignController extends Controller
 
             // template extra validation by plan (unsubscribe URL for example)
             // UGLY code here, @todo: find a good place to handle this type of validation
-            $plan = $request->user()->customer->activeSubscription()->plan;
+            $plan = $request->user()->customer->getCurrentActiveSubscription()->plan;
             if ($plan->getOption('unsubscribe_url_required') == 'yes' && Setting::isYes('campaign.enforce_unsubscribe_url_check')) {
                 if (strpos($request->content, '{UNSUBSCRIBE_URL}') === false) {
                     return response()->json(['message' => trans('messages.template.validation.unsubscribe_url_required')], 400);
@@ -639,7 +639,7 @@ class CampaignController extends Controller
         // validate and save posted data
         if ($request->isMethod('post') && $campaign->step() >= 5) {
             // UGLY CODE
-            $plan = $customer->activeSubscription()->plan;
+            $plan = $customer->getCurrentActiveSubscription()->plan;
             if ($plan->getOption('unsubscribe_url_required') == 'yes' && Setting::isYes('campaign.enforce_unsubscribe_url_check')) {
                 if (strpos($campaign->getTemplateContent(), '{UNSUBSCRIBE_URL}') === false) {
                     $request->session()->flash('alert-error', trans('messages.template.validation.unsubscribe_url_required'));
@@ -1939,7 +1939,7 @@ class CampaignController extends Controller
             }
 
             // UGLY CODE here, @todo: find a better place to house this type of validation
-            $plan = $request->user()->customer->activeSubscription()->plan;
+            $plan = $request->user()->customer->getCurrentActiveSubscription()->plan;
             if ($plan->getOption('unsubscribe_url_required') == 'yes' && Setting::isYes('campaign.enforce_unsubscribe_url_check')) {
                 if (strpos($request->html, '{UNSUBSCRIBE_URL}') === false) {
                     return response()->json(['message' => trans('messages.template.validation.unsubscribe_url_required')], 400);

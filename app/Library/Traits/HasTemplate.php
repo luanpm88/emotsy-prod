@@ -309,7 +309,7 @@ trait HasTemplate
             return;
         }
 
-        return ($this->customer->getCurrentSubscription()->plan->getOption('email_footer_enabled') == 'yes') ? true : false;
+        return ($this->customer->getNewOrActiveSubscription()->plan->getOption('email_footer_enabled') == 'yes') ? true : false;
     }
 
     /**
@@ -325,7 +325,7 @@ trait HasTemplate
             return;
         }
 
-        return $this->customer->getCurrentSubscription()->plan->getOption('html_footer');
+        return $this->customer->getNewOrActiveSubscription()->plan->getOption('html_footer');
     }
 
     /**
@@ -485,7 +485,7 @@ trait HasTemplate
             return;
         }
 
-        return $this->customer->getCurrentSubscription()->plan->getOption('plain_text_footer');
+        return $this->customer->getNewOrActiveSubscription()->plan->getOption('plain_text_footer');
     }
 
     /**

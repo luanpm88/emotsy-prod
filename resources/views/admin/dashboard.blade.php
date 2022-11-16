@@ -68,12 +68,12 @@ assignment_turned_in
                             <div class="col-sm-4 col-md-4 text-left">
                                 @if ($subscription->isEnded())
                                     <h5 class="no-margin stat-num">
-                                        <span class="kq_search">{{ Auth::user()->admin->formatDateTime($subscription->ends_at, 'datetime_full') }}</span>
+                                        <span class="kq_search">{{ Auth::user()->admin->formatDateTime($subscription->current_period_ends_at, 'datetime_full') }}</span>
                                     </h5>
                                     <span class="text-muted2">{{ trans('messages.subscription.ended_on') }}</span>
                                 @elseif ($subscription->isActive())
                                     <h5 class="no-margin stat-num">
-                                        <span class="kq_search">{{ Auth::user()->admin->formatDateTime($subscription->ends_at, 'datetime_full') }}</span>
+                                        <span class="kq_search">{{ Auth::user()->admin->formatDateTime($subscription->current_period_ends_at, 'datetime_full') }}</span>
                                     </h5>
                                     <span class="text-muted2">{{ trans('messages.subscription.ends_on') }}</span>
                                 @else

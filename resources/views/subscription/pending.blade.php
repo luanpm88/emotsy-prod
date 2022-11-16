@@ -25,9 +25,13 @@
         </div>
         <div class="col-md-2"></div>
         <div class="col-md-4">
-            @include('invoices.bill', [
-                'bill' => $invoice->getBillingInfo(),
-            ])
+            <div class="card shadow-sm rounded-3 px-2 py-2">
+                <div class="card-body p-4">
+                    @include('invoices.bill', [
+                        'bill' => $invoice->getBillingInfo(),
+                    ])
+                </div>
+            </div>
         </div>
     </div>
 @endsection

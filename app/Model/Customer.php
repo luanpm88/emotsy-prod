@@ -43,6 +43,7 @@ use Acelle\Library\Traits\HasCache;
 use Acelle\Jobs\ImportBlacklistJob;
 use Acelle\Library\Traits\HasUid;
 use Acelle\Library\QuotaManager;
+use Acelle\Library\Facades\SubscriptionFacade;
 
 class Customer extends Model
 {
@@ -71,26 +72,66 @@ class Customer extends Model
         'name', 'timezone', 'language_id', 'color_scheme', 'text_direction', 'menu_layout', 'theme_mode'
     ];
 
-    /**
-     * Associations.
-     *
-     * @var object | collect
-     */
-    public function subscription()
+    public function subscriptions()
     {
-        return $this->hasOne('Acelle\Model\Subscription')
-            ->where('status', '!=', Subscription::STATUS_ENDED)
-            ->orderBy('created_at', 'desc');
+        return $this->hasMany('Acelle\Model\Subscription');
     }
+
+    // Lấy ra current subscription (new or active)
+    // Không có case 1 customer mà có 2 subscription như vậy (chỉ có 1 hoặc null)
+    public function getNewOrActiveSubscription()
+    {
+        // Theo design thì mỗi customer chỉ có một subscription đang "new" hoặc "active"
+        $subscriptions = $this->subscriptions()->newOrActive();
+
+        if ($subscriptions->count() > 1) {
+            throw new Exception('There are 2 subscriptions of [active, new] status. Please clean up the DB');
+        }
+
+        return $subscriptions->first();
+    }
+
+    /**
+     * Lấy current active subscription
+     */
+    public function getCurrentActiveSubscription()
+    {
+        // Theo design thì mỗi customer chỉ có một subscription đang "active"
+        $subscriptions = $this->subscriptions()->active();
+
+        if ($subscriptions->count() > 1) {
+            throw new Exception('There are 2 subscriptions of [active] status. Please clean up the DB');
+        }
+
+        return $subscriptions->first();
+    }
+
+    public function getCurrentNewSubscription()
+    {
+        // Theo design thì mỗi customer chỉ có một subscription đang "active"
+        $subscriptions = $this->subscriptions()->newSub();
+
+        if ($subscriptions->count() > 1) {
+            throw new Exception('There are 2 subscriptions of [new] status. Please clean up the DB');
+        }
+
+        return $subscriptions->first();
+    }
+
+    /**
+     * Lấy current active subscription
+     */
+    public function getLastCancelledOrEndedSubscription()
+    {
+        // Lấy subscription ended gần đây nhất. Null nếu chưa đăng ký bao giờ
+        return $this->subscriptions()->cancelledOrEdned()->orderBy('created_at', 'desc')->first();
+    }
+
+
 
     public function contact()
     {
         return $this->belongsTo('Acelle\Model\Contact');
-    }
-
-    public function subscriptions()
-    {
-        return $this->hasMany('Acelle\Model\Subscription');
     }
 
     public function mailLists()
@@ -279,17 +320,9 @@ class Customer extends Model
         return join_paths($base, $path);
     }
 
-    /**
-     * Get active subscription.
-     */
-    public function activeSubscription()
-    {
-        return ($this->subscription && $this->subscription->isActive()) ? $this->subscription : null;
-    }
-
     public function useOwnSendingServer()
     {
-        $subscription = $this->activeSubscription();
+        $subscription = $this->getCurrentActiveSubscription();
 
         if (is_null($subscription)) {
             return false;
@@ -1112,8 +1145,8 @@ class Customer extends Model
      */
     public function currentPlanName()
     {
-        return $this->activeSubscription() ?
-            $this->activeSubscription()->plan->name :
+        return $this->getCurrentActiveSubscription() ?
+            $this->getCurrentActiveSubscription()->plan->name :
             ''
         ;
     }
@@ -1225,7 +1258,7 @@ class Customer extends Model
         // If customer dont have permission creating sending servers
         } else {
             // Get server from the plan
-            return  $this->activeSubscription()->plan->getEmailVerificationServers();
+            return  $this->getCurrentActiveSubscription()->plan->getEmailVerificationServers();
         }
     }
 
@@ -1335,9 +1368,9 @@ class Customer extends Model
      */
     public function getOptions()
     {
-        if ($this->activeSubscription()) {
+        if ($this->getCurrentActiveSubscription()) {
             // Find plan
-            return $this->activeSubscription()->plan->getOptions();
+            return $this->getCurrentActiveSubscription()->plan->getOptions();
         } else {
             return [];
         }
@@ -1384,7 +1417,7 @@ class Customer extends Model
 
         // own domain
         $domains = $this->sendingDomains()->active();
-        $plan = $this->activeSubscription()->plan;
+        $plan = $this->getCurrentActiveSubscription()->plan;
         if ($plan->useSystemSendingServer()) {
             $server = $plan->primarySendingServer();
             if (!$server->allowOtherSendingDomains()) {
@@ -1458,12 +1491,6 @@ class Customer extends Model
         return $droplist;
     }
 
-
-    public function getCurrentSubscription()
-    {
-        return $this->subscription;
-    }
-
     /**
      * Count customer automation2s.
      *
@@ -1479,22 +1506,27 @@ class Customer extends Model
      */
     public function assignPlan($plan)
     {
-        $subscription = $this->subscription;
-        // create tmp subscription
-        if (!$subscription) {
-            $subscription = new Subscription();
-            $subscription->customer_id = $this->id;
+        if ($this->getNewOrActiveSubscription()) {
+            throw new Exception("This customer already has a new or active subscription");
         }
 
-        // cancel all pending invoices (new)
-        $subscription->invoices()->new()->delete();
+        $customer = $this;
+        $subscription = null;
+        DB::transaction(function () use ($customer, $plan, &$subscription) {
+            $subscription = Subscription::createNewSubscription($customer, $plan);
+            if ($plan->hasTrial()) {
+                $invoice = $subscription->createInitInvoiceWithTrial();
+            } else {
+                $invoice = $subscription->createInitInvoiceWithoutTrial();
+            }
 
-        // reset value
-        $subscription->plan_id = $plan->id;
-        $subscription->current_period_ends_at = null;
-        $subscription->ends_at = null;
-        $subscription->started_at = null;
-        $subscription->status = Subscription::STATUS_NEW;
+            // log
+            SubscriptionFacade::log($subscription, SubscriptionLog::TYPE_SELECT_PLAN, $invoice->uid, [
+                'plan' => $subscription->getPlanName(),
+                'customer' => $subscription->getCustomerName(),
+                'amount' => $invoice->formattedTotal(),
+            ]);
+        });
 
         // Important:
         // With current quota tracking design, there is no fixed 'available credits'
@@ -1502,12 +1534,6 @@ class Customer extends Model
         // The application only enforce the quota limits rules: how many credits are allowed during a fixed period of time (month)
         // It is pre-designed for "Buy Credits" feature which will be supported later on
         $subscription->setCredits('send', QuotaManager::QUOTA_UNLIMITED);
-
-        // Actually store
-        $subscription->save();
-
-        // create init invoice
-        $subscription->createInitInvoice();
 
         return $subscription;
     }
@@ -1517,7 +1543,7 @@ class Customer extends Model
      */
     public function hasSubscriptionNotice()
     {
-        $subscription = $this->subscription;
+        $subscription = $this->getNewOrActiveSubscription();
 
         if (!$subscription) {
             return false;
@@ -1532,7 +1558,8 @@ class Customer extends Model
 
     public function isSubscriptionActive()
     {
-        $subscription = $this->activeSubscription();
+        $subscription = $this->getCurrentActiveSubscription();
+
         if (is_null($subscription)) {
             return false;
         }
@@ -1547,7 +1574,7 @@ class Customer extends Model
 
     public function allowUnverifiedFromEmailAddress()
     {
-        $plan = $this->subscription->plan;
+        $plan = $this->getNewOrActiveSubscription()->plan;
 
         if (!$plan) {
             return false;
@@ -1565,7 +1592,12 @@ class Customer extends Model
      */
     public function getCurrentPeriodEndsAt()
     {
-        return ($this->subscription && $this->subscription->isActive()) ? $this->current_period_ends_at : null;
+        // Nếu subscription đang không active thì current period ends at xem như = null
+        if ($this->getCurrentActiveSubscription()) {
+            return null;
+        }
+
+        return $this->current_period_ends_at;
     }
 
     /**
@@ -1713,25 +1745,6 @@ class Customer extends Model
         // }
 
         // $data = (object) array_merge((array) $paymentMethod, $data);
-        $this['payment_method'] = json_encode($data);
-
-        $this->save();
-    }
-
-    /**
-     * Update payment method.
-     *
-     * @var object | collect
-     */
-    public function updatePaymentMethodData($data=[])
-    {
-        $paymentMethod = $this->getPaymentMethod();
-
-        if (!isset($paymentMethod)) {
-            $paymentMethod = [];
-        }
-
-        $data = (object) array_merge((array) $paymentMethod, $data);
         $this['payment_method'] = json_encode($data);
 
         $this->save();
@@ -1936,7 +1949,7 @@ class Customer extends Model
 
     public function allowSenderVerification()
     {
-        $subscription = $this->activeSubscription();
+        $subscription = $this->getCurrentActiveSubscription();
 
         if (is_null($subscription)) {
             return false;
@@ -2009,7 +2022,7 @@ class Customer extends Model
 
     public function isCustomTrackingDomainRequired()
     {
-        $plan = $this->subscription->plan;
+        $plan = $this->getNewOrActiveSubscription()->plan;
 
         if (!$plan) {
             return false;

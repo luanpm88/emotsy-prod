@@ -51,7 +51,7 @@
                 </i>{{ trans('messages.admin_view') }}</a></li>
                 <li class="divider"></li>
             @endif
-            @if (request()->user()->customer->activeSubscription())
+            @if (request()->user()->customer->getCurrentActiveSubscription())
                 <li class="nav-item">
                     <a href="#" class="dropdown-item top-quota-button d-flex align-items-center" data-url="{{ action("AccountController@quotaLog") }}">
                     <i class="navbar-icon">

@@ -775,7 +775,7 @@ input.error {
     border-color: #c4efab;
     color: #231c15;
 }
-.bg-unverified, .bg-ended, .bg-unknown, .bg-expired, .bg-past, .bg-spam-reported, .bg-not_sent, .bg-canceled, .bg-cancelled, .bg-unactive, .bg-disabled, .bg-unsubscribed, .bg-unconfirmed, .bg-draft, .bg-blacklisted, .bg-done, .bg-bounced {
+.bg-terminated, .bg-unverified, .bg-ended, .bg-unknown, .bg-expired, .bg-past, .bg-spam-reported, .bg-not_sent, .bg-canceled, .bg-cancelled, .bg-unactive, .bg-disabled, .bg-unsubscribed, .bg-unconfirmed, .bg-draft, .bg-blacklisted, .bg-done, .bg-bounced {
     background-color: #777;
     border-color: #777;
     color: #fff;
@@ -7970,4 +7970,11 @@ label.checker input:disabled ~ .checker-symbol {
 }
 .checkbox-label.readonly, .checkbox-label.readonly * {
     pointer-events: none;
+}
+.card-top-left-icon {
+    position: absolute;
+    top: -16px;
+    font-size: 30px;
+    left: 0;
+    opacity: 0.8;
 }

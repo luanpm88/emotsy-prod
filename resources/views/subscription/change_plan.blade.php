@@ -24,9 +24,6 @@
 
                                 @foreach ($plans as $key => $plan)
                                     <div
-                                        data-url="{{ action('SubscriptionController@orderBox', [
-                                            'plan_uid' => $plan->uid,
-                                        ]) }}"
                                         class="new-price-item mb-3 d-inline-block plan-item showed
                                             {{ $subscription->plan->uid == $plan->uid ? 'disabled' : '' }}
                                         "
