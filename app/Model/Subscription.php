@@ -191,7 +191,7 @@ class Subscription extends Model implements HasQuotaInterface
      */
     public function createInitInvoiceWithoutTrial()
     {
-        $endDate = $this->customer->formatDateTime($this->getTrialPeriodEndsAt(Carbon::now()), "datetime_full");
+        $endDate = $this->customer->formatDateTime($this->getPeriodEndsAt(Carbon::now()), "datetime_full");
         
         // create init invoice
         return Invoice::createInvoice(
