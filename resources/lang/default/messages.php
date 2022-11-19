@@ -1,5 +1,4 @@
 <?php return array (
-  'switch_view' => 'Switch View',
   '1st_week' => '1st week',
   '24h_performance' => '24-hour performance',
   '2nd_week' => '2nd week',
@@ -2394,13 +2393,17 @@
   'subscription.ends_on' => 'Ends on',
   'subscription.from_to_date' => 'From :start to :end',
   'subscription.get_started' => 'Get Started',
-  'subscription.log.admin_approved' => 'Subscription for <strong>:plan</strong> plan was <strong>approved</strong> by Admin',
-  'subscription.log.admin_cancelled_now' => 'Subscription for <strong>:plan</strong> plan was <strong>ended</strong> by Admin',
+  'subscription.log.admin_approved' => 'Subscription for <strong>:plan</strong> plan was
+        <strong>approved</strong> by Admin',
+  'subscription.log.admin_cancelled_now' => 'Subscription for <strong>:plan</strong> plan was
+        <strong>ended</strong> by Admin',
   'subscription.log.admin_plan_assigned' => '<strong>Assigned</strong> to <strong>:plan</strong> plan by Admin',
   'subscription.log.admin_plan_change_approved' => 'Change to <strong>:plan</strong> plan was <strong>approved</strong> by Admin',
-  'subscription.log.admin_plan_change_rejected' => 'Change to <strong>:plan</strong> plan was <strong>rejected</strong> by Admin. Reason: ":reason"',
+  'subscription.log.admin_plan_change_rejected' => 'Change to <strong>:plan</strong> plan was <strong>rejected</strong>
+        by Admin. Reason: ":reason"',
   'subscription.log.admin_renew_approved' => 'Renew <strong>:plan</strong> plan was <strong>approved</strong> by Admin',
-  'subscription.log.admin_renew_rejected' => 'Renew <strong>:plan</strong> plan was <strong>rejected</strong> by Admin. Reason: ":reason"',
+  'subscription.log.admin_renew_rejected' => 'Renew <strong>:plan</strong> plan was <strong>rejected</strong>
+        by Admin. Reason: ":reason"',
   'subscription.log.cancelled' => 'Subscription for <strong>:plan</strong> plan was <strong>cancelled</strong>',
   'subscription.log.cancelled_now' => 'Subscription for <strong>:plan</strong> plan was <strong>cancelled now</strong>',
   'subscription.log.claimed' => 'The payment was <strong>claimed</strong> by customer',
@@ -2408,8 +2411,10 @@
   'subscription.log.expired' => 'Subscription for <strong>:plan</strong> plan was <strong>expired</strong>',
   'subscription.log.message' => 'Message',
   'subscription.log.paid' => 'Paid for <strong>:plan</strong> plan',
-  'subscription.log.plan_change' => 'Changing plan from <strong>:old_plan</strong> to <strong>:plan</strong> (<strong>:price</strong>)',
-  'subscription.log.plan_changed' => 'Changed to <strong>:plan</strong> plan',
+  'subscription.log.plan_change' => 'Changing plan from <strong>:old_plan</strong> to
+        <strong>:plan</strong> (<strong>:price</strong>)',
+  'subscription.log.plan_changed' => 'Changed to
+        <strong>:plan</strong> plan',
   'subscription.log.renew' => 'Renewing <strong>:plan</strong> plan (<strong>:price</strong>)',
   'subscription.log.renew_failed' => 'Can not renew <strong>:plan</strong> plan. Error: :error',
   'subscription.log.renewed' => 'Renewed <strong>:plan</strong> plan (<strong>:price</strong>)',
@@ -2470,6 +2475,7 @@
   'subscriptions' => 'Subscriptions',
   'successful_deliveries' => 'Successful deliveries',
   'suscription.order_empty' => 'Choose one of the plans available and your invoice details will be calculated and display here',
+  'switch_view' => 'Switch View',
   'system' => 'System',
   'system.renew_free_plan' => 'Can renew free plan',
   'system_compatibility' => 'System compatibility',
