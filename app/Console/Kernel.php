@@ -84,7 +84,7 @@ class Kernel extends ConsoleKernel
         $schedule->call(function () {
             SubscriptionFacade::createRenewInvoice();
         })->name('subscription:create-renew')->everyFiveMinutes();
-        
+
         // Subscription: pay renew invoice
         $schedule->call(function () {
             $customers = \Acelle\Model\Customer::all();
