@@ -143,8 +143,8 @@
         margin-top: -17px;
     }
     .leftbar .navbar-main .navbar-nav .lvl-1 {
-        padding-top: 11px!important;
-        padding-bottom: 11px!important;
+        padding-top: 10px!important;
+        padding-bottom: 10px!important;
         padding-left: 20px!important;
         padding-right: 20px!important;
         margin-bottom: 1px;
@@ -501,8 +501,8 @@
 }
 .leftbar:not(.leftbar-closed) .navbar-nav > .nav-item .dropdown-menu:not(.top-user-menus) a.dropdown-item {
     padding-left: 22px;
-    padding-top: 12px;
-    padding-bottom: 12px;
+    padding-top: 9px;
+    padding-bottom: 9px;
     font-size: 13px;
 }
 .leftbar:not(.leftbar-closed) .navbar-nav > .nav-item .dropdown-menu:not(.top-user-menus) a.dropdown-item .navbar-icon {
