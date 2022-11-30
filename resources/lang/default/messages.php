@@ -2932,4 +2932,8 @@
   'your_api_token' => 'Your API token',
   'your_current_license' => 'Thank you for purchasing! Below is your license key, also known as Purchase Code. Your license type is',
   'zip_postal_code' => 'Zip / Postal code',
+  'automation.stats.in-queue2' => ':passed passed, :queue in queue',
+  'automation.stats.triggered' => ':count triggered',
+  'automation.stats.sent' => ':count sent',
+  'automation.stats.condition' => 'Yes: :yes, No: :no',
 ) ?>
