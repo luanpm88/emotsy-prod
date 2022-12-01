@@ -2247,7 +2247,6 @@
   'sign_up_form_url' => 'Sign-up form URL',
   'sign_up_thankyou_page' => 'Sign-up "Thank you" page',
   'sign_up_welcome_email' => 'Final "Welcome" email',
-  'signing_enabled' => 'Signing enabled',
   'sign_up_welcome_email.real' => 'Welcome',
   'signin_if_has_account' => 'Already have an Automail account? <a href=":link" class="text-info">Log in here</a>',
   'signing_enabled' => 'Signing enabled',
