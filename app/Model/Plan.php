@@ -889,7 +889,7 @@ class Plan extends Model
 
         // workaround
         if (empty($this->description)) {
-            $this->description = '[ plan description goes here ]';
+            $this->description = '[ プランの説明はこちら ]';
         }
 
         $this->options = json_encode($saveOptions);

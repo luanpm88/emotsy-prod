@@ -33,6 +33,7 @@
                 <div class="text-center">
                     <h2 class="text-semibold mb-1 mt-0">{{ number_to_percentage($activeContactPercent) }}</h2>
                     <div class="text-muted2 text-white">
+                        メールに反応するアクティブな連絡先（開く、クリック）
                         {{ trans('messages.list.active_contact.desc') }}
                     </div>
                 </div>

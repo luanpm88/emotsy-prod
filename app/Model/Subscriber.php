@@ -740,7 +740,7 @@ class Subscriber extends Model
 
     public function getFullName($default = null)
     {
-        $full = trim($this->getValueByTag('FIRST_NAME').' '.$this->getValueByTag('LAST_NAME'));
+        $full = trim($this->getValueByTag('LAST_NAME').' '.$this->getValueByTag('FIRST_NAME'));
         if (empty($full)) {
             return $default;
         } else {

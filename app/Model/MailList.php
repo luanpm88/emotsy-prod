@@ -721,7 +721,7 @@ class MailList extends Model
         $pageSize = 1000;
 
         if (!is_null($progressCallback)) {
-            $progressCallback($processed, $total, $failed, $message = 'Export is in progress...');
+            $progressCallback($processed, $total, $failed, $message = 'エクスポートが進行中です...');
         }
 
         $file = $this->getExportFilePath();
@@ -783,12 +783,12 @@ class MailList extends Model
 
             // Callback
             if (!is_null($progressCallback)) {
-                $progressCallback($processed, $total, $failed = 0, $message = sprintf('Export is in progress, %s / %s records written', $processed, $total));
+                $progressCallback($processed, $total, $failed = 0, $message = sprintf('エクスポートが進行中です, %s / %s records written', $processed, $total));
             }
         });
 
         if (!is_null($progressCallback)) {
-            $progressCallback($processed, $total, $failed = 0, $message = sprintf('Export complete, processed: %s / %s', $processed, $total));
+            $progressCallback($processed, $total, $failed = 0, $message = sprintf('エクスポート完了, 処理済み：%s / %s', $processed, $total));
         }
     }
 
@@ -1607,12 +1607,6 @@ class MailList extends Model
             }
             //} elseif ($subscription->useSubAccount()) {
         //    $result[] = [$subscription->subAccount->sending_server_id, '100'];
-        }
-
-        if (!config('app.saas')) {
-            $result = \Acelle\Model\SendingServer::active()->get()->map(function ($server) {
-                return [$server->id, 100];
-            });
         }
 
         $assoc = [];

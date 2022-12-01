@@ -15,6 +15,7 @@ use Acelle\Helpers\LicenseHelper;
 use App;
 use Acelle\Library\Downloader;
 use Acelle\Library\Notification\SystemUrl;
+use Illuminate\Support\Facades\Http;
 
 class SettingController extends Controller
 {
@@ -472,7 +473,24 @@ class SettingController extends Controller
 
             try {
                 // Update license type
-                Setting::updateLicense($request->license);
+                // Setting::updateLicense($request->license);
+
+                // Automail hard coded
+                $result = Http::get(env('LICENSE_MANAGER_ENDPOINT', 'http://license.automail.jp') . '/wp-json/automailjp/v1/license/check?license=' . $request->license )->json();
+
+                // failed
+                if ($result['status'] !== 'success') {
+                    throw new \Exception('License is not valid. Error: ' . $result['message']);
+                }
+
+                // success: save setting
+                Setting::set('license', $result['license']);
+                Setting::set('license_type', $result['type']);
+
+
+
+
+
 
                 // Save settings
                 foreach ($request->all() as $name => $value) {

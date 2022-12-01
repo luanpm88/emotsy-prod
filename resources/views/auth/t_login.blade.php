@@ -257,9 +257,9 @@ done
                             {{ trans("messages.login") }}
                         </button>
                         <div class="text-center mt-lvl3">
-                            <a class="btn btn-link text-center" href="{{ url('/password/reset') }}">
+                            <font size="-3"><a class="btn btn-link text-center" href="{{ url('/password/reset') }}">
                                 {{ trans("messages.forgot_password") }}
-                            </a>
+                            </a></font>
                             <a href="{{ url('/users/register') }}" class="btn btn-link">Create an account</a>
                         </div>
                     </div>

@@ -1,4 +1,4 @@
 <?php return array (
-  'next' => 'Next &raquo;',
-  'previous' => '&laquo; Previous',
+  'next' => 'ŽŸ‚Ö &raquo;',
+  'previous' => '&laquo; ‘O‚É–ß‚é',
 ) ?>

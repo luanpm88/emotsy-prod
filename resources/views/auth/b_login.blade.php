@@ -54,7 +54,7 @@
                 </div>
 
                 <div class="col-sm-6 text-end text-semibold fw-600">
-                    <a href="{{ url('/password/reset') }}">{{ trans("messages.forgot_password") }}</a>
+                  <font size="-3"><a href="{{ url('/password/reset') }}">{{ trans("messages.forgot_password") }}</a></font>
                 </div>
             </div>
         </div>

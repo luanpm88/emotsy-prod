@@ -1,35 +1,35 @@
 <?php return array (
-  'accepted' => 'The :attribute must be accepted.',
-  'active_url' => 'The :attribute is not a valid URL.',
-  'after' => 'The :attribute must be a date after :date.',
-  'alpha' => 'The :attribute may only contain letters.',
-  'alpha_dash' => 'The :attribute may only contain letters, numbers, and dashes.',
-  'alpha_num' => 'The :attribute may only contain letters and numbers.',
-  'array' => 'The :attribute must be an array.',
+  'accepted' => ':attributeを受け入れる必要があります。',
+  'active_url' => ':attributeは有効なURLではありません。',
+  'after' => ':attributeは、:dateの後の日付である必要があります。',
+  'alpha' => ':attributeには文字のみを含めることができます。',
+  'alpha_dash' => ':attributeには、文字、数字、およびダッシュのみを含めることができます。',
+  'alpha_num' => ':attributeには、文字と数字のみを含めることができます。',
+  'array' => ':attributeは配列である必要があります。',
   'attributes' => 
   array (
     'options' => 
     array (
-      'limit_value' => 'Limit value',
-      'limit_base' => 'Limit base',
-      'limit_unit' => 'Limit time unit',
+      'limit_value' => 'リミット値',
+      'limit_base' => 'リミット制限',
+      'limit_unit' => 'リミット時間制御',
       'api_key' => 'API key',
-      'api_secret_key' => 'API secret key',
-      'username' => 'username',
-      'password' => 'password',
-      'vendor_id' => 'vender ID',
+      'api_secret_key' => 'API セキュリティー key',
+      'username' => 'ユーザ名',
+      'password' => 'パスワード',
+      'vendor_id' => 'ベンダーID',
       'public_key' => 'public key',
       'vendor_auth_code' => 'vendor auth code',
       'merchant_key' => 'Merchant Key',
       'salt' => 'Salt',
       'payu_base_url' => 'PayU Base URL',
-      'field' => 'list field',
-      'days_of_week' => 'days of week',
-      'days_of_month' => 'days of month',
+      'field' => 'リストフィールド',
+      'days_of_week' => '曜日',
+      'days_of_month' => '月日',
     ),
-    'quota_value' => 'Sending limit',
-    'quota_base' => 'Time base',
-    'quota_unit' => 'Time unit',
+    'quota_value' => '送信制限',
+    'quota_base' => '基本時間',
+    'quota_unit' => '時間単位',
     'lists_segments' => 
     array (
       0 => 
@@ -87,73 +87,73 @@
       ),
     ),
   ),
-  'before' => 'The :attribute must be a date before :date.',
+  'before' => ':attributeは、:dateより前の日付である必要があります。',
   'between' => 
   array (
-    'numeric' => 'The :attribute must be between :min and :max.',
-    'file' => 'The :attribute must be between :min and :max kilobytes.',
-    'string' => 'The :attribute must be between :min and :max characters.',
-    'array' => 'The :attribute must have between :min and :max items.',
+    'numeric' => ':attributeは:minと:maxの間にある必要があります。',
+    'file' => ':attributeは:minから:maxキロバイトの間でなければなりません。',
+    'string' => ':attributeは:minから:max文字の間にある必要があります。',
+    'array' => ':attributeには、:minと:maxの項目が必要です。',
   ),
-  'boolean' => 'The :attribute field must be true or false.',
-  'confirmed' => 'The :attribute confirmation does not match.',
+  'boolean' => ':attributeフィールドはtrueまたはfalseである必要があります。',
+  'confirmed' => ':attributeの確認が一致しません。',
   'custom' => 
   array (
     'miss_main_field_tag' => 
     array (
-      'required' => 'Missing EMAIL field tag',
+      'required' => 'EMAILフィールドタグがありません',
     ),
     'conflict_field_tags' => 
     array (
-      'required' => 'The field tags cannot be the same',
+      'required' => 'フィールドタグを同じにすることはできません',
     ),
     'segment_conditions_empty' => 
     array (
-      'required' => 'Conditions list cannot be empty',
+      'required' => '条件リストを空にすることはできません',
     ),
     'mysql_connection' => 
     array (
-      'required' => 'Can\'t connect to MySQL server',
+      'required' => 'MySQLサーバーに接続できません',
     ),
     'database_not_empty' => 
     array (
-      'required' => 'The database is not empty',
+      'required' => 'データベースは空ではありません',
     ),
     'promo_code_not_valid' => 
     array (
-      'required' => 'The promo code is not valid',
+      'required' => 'プロモーションコードが無効です',
     ),
     'smtp_valid' => 
     array (
-      'required' => 'Can\'t connect to SMTP server',
+      'required' => 'SMTPサーバーに接続できません',
     ),
     'yaml_parse_error' => 
     array (
-      'required' => 'Can\'t parse yaml. Please check the syntax',
+      'required' => 'yamlを解析できません。 構文を確認してください',
     ),
     'file_not_found' => 
     array (
-      'required' => 'File not found.',
+      'required' => 'ファイルが見つかりません。',
     ),
     'not_zip_archive' => 
     array (
-      'required' => 'The file is not a zip package.',
+      'required' => 'このファイルはzipパッケージではありません。',
     ),
     'zip_archive_unvalid' => 
     array (
-      'required' => 'Cannot read the package.',
+      'required' => 'パッケージを読み取ることができません。',
     ),
     'custom_criteria_empty' => 
     array (
-      'required' => 'Custom criteria cannot be empty',
+      'required' => 'カスタム基準を空にすることはできません',
     ),
     'php_bin_path_invalid' => 
     array (
-      'required' => 'Invalid PHP executable. Please check again.',
+      'required' => '無効なPHP実行可能ファイル。 再度確認してください。',
     ),
     'can_not_empty_database' => 
     array (
-      'required' => 'Cannot DROP certain tables, please cleanup your database manually and try again.',
+      'required' => '特定のテーブルを削除できません。データベースを手動でクリーンアップして、再試行してください。',
     ),
     'recaptcha_invalid' => 
     array (
@@ -161,78 +161,78 @@
     ),
     'payment_method_not_valid' => 
     array (
-      'required' => 'Something went wrong with payment method setting. Please check again.',
+      'required' => 'お支払い方法の設定に問題がありました。 再度確認してください。',
     ),
     'email_already_subscribed' => 
     array (
-      'required' => 'The email has already been subscribed.',
+      'required' => 'このメールはすでに登録されています。',
     ),
     'mail_list_uid' => 
     array (
-      'required' => 'The Mail List is required.',
+      'required' => 'メールリストが必要です。',
     ),
     'contact' => 
     array (
       'zip' => 
       array (
-        'required' => 'The Zip / Postal code is required.',
+        'required' => '郵便番号（Zip / Postal code）は必須項目です。',
       ),
     ),
   ),
-  'date' => 'The :attribute is not a valid date.',
-  'date_format' => 'The :attribute does not match the format :format.',
-  'different' => 'The :attribute and :other must be different.',
-  'digits' => 'The :attribute must be :digits digits.',
-  'digits_between' => 'The :attribute must be between :min and :max digits.',
-  'distinct' => 'The :attribute field has a duplicate value.',
-  'email' => 'The field must be a valid email address.',
-  'exists' => 'The selected :attribute is invalid.',
-  'filled' => 'The :attribute field is required.',
-  'image' => 'The :attribute must be an image.',
-  'in' => 'The selected :attribute is invalid.',
-  'in_array' => 'The :attribute field does not exist in :other.',
-  'integer' => 'The :attribute must be an integer.',
-  'ip' => 'The :attribute must be a valid IP address.',
-  'json' => 'The :attribute must be a valid JSON string.',
-  'license' => 'The license is not valid.',
+  'date' => ':attributeは有効な日付ではありません。',
+  'date_format' => ':attributeがフォーマット:formatと一致しません。',
+  'different' => ':attributeと:otherは異なっている必要があります。',
+  'digits' => ':attributeは:digitsdigitsである必要があります。',
+  'digits_between' => ':attributeは:minと:maxの数字の間でなければなりません。',
+  'distinct' => ':attributeフィールドの値が重複しています。',
+  'email' => 'このフィールドには、有効なメールアドレスを入力する必要があります。',
+  'exists' => '選択された:attributeは無効です。',
+  'filled' => ':attributeは必須です。',
+  'image' => ':attributeは画像である必要があります。',
+  'in' => '選択された:attributeは無効です。',
+  'in_array' => ':attributeフィールドは:otherには存在しません。',
+  'integer' => ':attributeは整数でなければなりません。',
+  'ip' => ':attributeは有効なIPアドレスである必要があります。',
+  'json' => ':attributeは有効なJSON文字列である必要があります。',
+  'license' => 'ライセンスが無効です。',
   'license_error' => ':error',
   'max' => 
   array (
-    'numeric' => 'The :attribute may not be greater than :max.',
-    'file' => 'The :attribute may not be greater than :max kilobytes.',
-    'string' => 'The :attribute may not be greater than :max characters.',
-    'array' => 'The :attribute may not have more than :max items.',
+    'numeric' => ':attributeは:maxより大きくすることはできません。',
+    'file' => ':attributeは:maxキロバイトを超えることはできません。',
+    'string' => ':attributeは:max文字より大きくすることはできません。',
+    'array' => ':attributeには、:maxを超えるアイテムを含めることはできません。',
   ),
-  'mimes' => 'The :attribute must be a file of type: :values.',
+  'mimes' => ':attributeは、タイプ：:valuesのファイルである必要があります。',
   'min' => 
   array (
-    'numeric' => 'The :attribute must be at least :min.',
-    'file' => 'The :attribute must be at least :min kilobytes.',
-    'string' => 'The :attribute must be at least :min characters.',
-    'array' => 'The :attribute must have at least :min items.',
+    'numeric' => ':attributeは少なくとも:minである必要があります。',
+    'file' => ':attributeは少なくとも:minキロバイトでなければなりません。',
+    'string' => ':attributeは少なくとも:min文字でなければなりません。',
+    'array' => ':attributeには少なくとも:minアイテムが必要です。',
   ),
-  'not_in' => 'The selected :attribute is invalid.',
-  'numeric' => 'The :attribute must be a number.',
-  'present' => 'The :attribute field must be present.',
-  'regex' => 'The :attribute format is invalid.',
-  'required' => 'The :attribute field is required.',
-  'required_if' => 'The :attribute field is required when :other is :value.',
-  'required_unless' => 'The :attribute field is required unless :other is in :values.',
-  'required_with' => 'The :attribute field is required when :values is present.',
-  'required_with_all' => 'The :attribute field is required when :values is present.',
-  'required_without' => 'The :attribute field is required when :values is not present.',
-  'required_without_all' => 'The :attribute field is required when none of :values are present.',
-  'same' => 'The :attribute and :other must match.',
+  'not_in' => '選択した:attributeが無効です。',
+  'numeric' => ':attributeは数値でなければなりません。',
+  'present' => ':attributeフィールドが存在する必要があります。',
+  'regex' => ':attribute形式が無効です。',
+  'required' => ':attributeフィールドは必須です。',
+  'required_if' => ':otherが:valueの場合、:attributeフィールドは必須です。',
+  'required_unless' => ':otherが:valuesにない限り、:attributeフィールドは必須です。',
+  'required_with' => ':valuesが存在する場合、:attributeフィールドは必須です。',
+  'required_with_all' => ':valuesが存在する場合、:attributeフィールドは必須です。',
+  'required_without' => ':valuesが存在しない場合、:attributeフィールドは必須です。',
+  'required_without_all' => ':valuesが存在しない場合、:attributeフィールドは必須です。',
+  'same' => ':attributeと:otherは一致する必要があります。',
   'size' => 
   array (
-    'numeric' => 'The :attribute must be :size.',
-    'file' => 'The :attribute must be :size kilobytes.',
-    'string' => 'The :attribute must be :size characters.',
-    'array' => 'The :attribute must contain :size items.',
+    'numeric' => ':attributeは:sizeでなければなりません。',
+    'file' => ':attributeは:sizeキロバイトでなければなりません。',
+    'string' => ':attributeは:size文字でなければなりません。',
+    'array' => ':attributeには:sizeアイテムが含まれている必要があります。',
   ),
-  'string' => 'The :attribute must be a string.',
-  'substring' => 'The :tag tag was not found in :attribute.',
-  'timezone' => 'The :attribute must be a valid zone.',
-  'unique' => 'The :attribute field has already been taken.',
-  'url' => 'The :attribute format is invalid.',
+  'string' => ':attributeは文字列である必要があります。',
+  'substring' => ':tagタグが:attributeに見つかりませんでした。',
+  'timezone' => ':attributeは有効なゾーンである必要があります。',
+  'unique' => ':attributeフィールドはすでに使用されています。',
+  'url' => ':attribute形式が無効です。',
 ) ?>
