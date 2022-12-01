@@ -1030,6 +1030,12 @@ class MailList extends Model
                 \Acelle\Library\StringHelper::checkAndRemoveUTF8BOM($file);
             }
 
+            // Run this method anyway
+            // to make sure mb_convert_encoding($content, 'UTF-8', 'UTF-8') is always called
+            // which helps resolve the issue of
+            //     "Error executing job. SQLSTATE[HY000]: General error: 1366 Incorrect string value: '\x83??s k...' for column 'company' at row 2562 (SQL: insert into `dlk__tmp_subscribers..."
+            \Acelle\Library\StringHelper::toUTF8($file, 'UTF-8');
+
             // Read CSV files
             $reader = \League\Csv\Reader::createFromPath($file);
             $reader->setHeaderOffset(0);
