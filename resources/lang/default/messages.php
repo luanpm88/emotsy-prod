@@ -2247,7 +2247,6 @@
   'sign_up_form_url' => 'Sign-up form URL',
   'sign_up_thankyou_page' => 'Sign-up "Thank you" page',
   'sign_up_welcome_email' => 'Final "Welcome" email',
-  'signing_enabled' => 'Signing enabled',
   'sign_up_welcome_email.real' => 'Welcome',
   'signin_if_has_account' => 'Already have an Automail account? <a href=":link" class="text-info">Log in here</a>',
   'signing_enabled' => 'Signing enabled',
@@ -2940,4 +2939,8 @@
   'your_api_token' => 'Your API token',
   'your_current_license' => 'Thank you for purchasing! Below is your license key, also known as Purchase Code. Your license type is',
   'zip_postal_code' => 'Zip / Postal code',
+  'sender_verification_email' => 'Sender Verification Email',
+  'sender_verification_email_for_amazon_ses' => 'Sender Verification Email for Amazon SES',
+  'unsubscribe_notification_for_list_owner' => 'Unsubscription notification email (for mail list owner)',
+  'registration_confirmation_email' => 'Registration confirmation email',
 ) ?>
