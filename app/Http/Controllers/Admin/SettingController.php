@@ -473,8 +473,9 @@ class SettingController extends Controller
 
             try {
                 // Update license type
-                // Setting::updateLicense($request->license);
+                Setting::updateLicense($request->license);
 
+                /*
                 // Automail hard coded
                 $result = Http::get(env('LICENSE_MANAGER_ENDPOINT', 'http://license.automail.jp') . '/wp-json/automailjp/v1/license/check?license=' . $request->license )->json();
 
@@ -487,10 +488,7 @@ class SettingController extends Controller
                 Setting::set('license', $result['license']);
                 Setting::set('license_type', $result['type']);
 
-
-
-
-
+                */
 
                 // Save settings
                 foreach ($request->all() as $name => $value) {
