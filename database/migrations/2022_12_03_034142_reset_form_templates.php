@@ -4,7 +4,9 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class InitializeDefaultTemplates extends Migration
+use Acelle\Model\Template;
+
+class ResetFormTemplates extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +15,7 @@ class InitializeDefaultTemplates extends Migration
      */
     public function up()
     {
-        \Acelle\Model\Template::resetDefaultTemplates();
+        Template::resetPopupTemplates();
     }
 
     /**
