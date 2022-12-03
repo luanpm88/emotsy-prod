@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/luanpm88/acelle-cashier.git",
-                "reference": "f003b8fe1373f5e34f224b4dc737b4029fd47c50"
+                "reference": "79d84041c15eda14c3121812c28619b5db299298"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/luanpm88/acelle-cashier/zipball/f003b8fe1373f5e34f224b4dc737b4029fd47c50",
-                "reference": "f003b8fe1373f5e34f224b4dc737b4029fd47c50",
+                "url": "https://api.github.com/repos/luanpm88/acelle-cashier/zipball/79d84041c15eda14c3121812c28619b5db299298",
+                "reference": "79d84041c15eda14c3121812c28619b5db299298",
                 "shasum": ""
             },
             "require": {
@@ -69,7 +69,7 @@
                 "issues": "https://github.com/laravel/cashier/issues",
                 "source": "https://github.com/laravel/cashier"
             },
-            "time": "2022-11-09T15:19:16+00:00"
+            "time": "2022-12-03T14:30:27+00:00"
         },
         {
             "name": "aws/aws-crt-php",
