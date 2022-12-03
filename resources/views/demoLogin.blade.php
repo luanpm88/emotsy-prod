@@ -34,7 +34,7 @@
 					
 						<div class="text-center login-header mt-0">
 							<a class="main-logo-big mb-2 d-block" href="{{ action('HomeController@index') }}">
-								<img width="200px" src="{{ URL::asset('images/logo-dark.svg') }}" alt=""><br>
+								<img width="200px" src="{{ URL::asset('images/logo_dark.svg') }}" alt=""><br>
                                 <img width="150px" src="{{ URL::asset('images/wave.svg') }}" alt="" style="transform: translateX(30px) translateY(-10px)">
 							</a>
 						</div>
