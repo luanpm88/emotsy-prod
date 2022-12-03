@@ -143,7 +143,7 @@
 
 		<!-- Footer -->
 		<div class="footer text-muted">
-			{!! trans('messages.copy_right') !!}
+			{!! trans('messages.brand.copyright', ['app_name' => get_app_name()] ) !!}
 		</div>
 		<!-- /footer -->
 

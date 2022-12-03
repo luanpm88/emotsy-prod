@@ -137,7 +137,7 @@ class Setting extends Model
         return [
             'site_name' => [
                 'cat' => 'general',
-                'value' => 'Email Marketing Application',
+                'value' => env('APP_NAME'),
                 'type' => 'text',
             ],
             'site_keyword' => [
