@@ -1,5 +1,5 @@
 @extends('layouts.core.frontend', [
-	'menu' => 'subscriber',
+	'menu' => 'segment',
 ])
 
 @section('title', trans('messages.list.no_list'))
