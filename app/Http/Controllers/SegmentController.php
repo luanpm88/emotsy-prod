@@ -383,4 +383,9 @@ class SegmentController extends Controller
             'index' => $request->index,
         ]);
     }
+
+    public function noList()
+    {
+        return view('segments.noList');
+    }
 }

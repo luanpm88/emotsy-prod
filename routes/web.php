@@ -334,6 +334,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('lists/{list_uid}/fields/{uid}/delete', 'FieldController@delete');
 
     // Subscriber
+    Route::get('subscribers/no-list', 'SubscriberController@noList');
     Route::match(['get', 'post'], 'lists/{list_uid}/subscribers/assign-values', 'SubscriberController@assignValues');
     Route::match(['get', 'post'], 'lists/{list_uid}/subscribers/bulk-delete', 'SubscriberController@bulkDelete');
 
@@ -370,6 +371,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::post('lists/export/{job_uid}/cancel', 'SubscriberController@cancelExport');
 
     // Segment
+    Route::get('segments/no-list', 'SegmentController@noList');
     Route::get('segments/condition-value-control', 'SegmentController@conditionValueControl');
     Route::get('segments/select_box', 'SegmentController@selectBox');
     Route::get('lists/{list_uid}/segments', 'SegmentController@index');

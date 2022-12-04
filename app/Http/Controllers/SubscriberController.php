@@ -973,4 +973,9 @@ class SubscriberController extends Controller
             'subscribers' => $subscribers,
         ]);
     }
+
+    public function noList()
+    {
+        return view('subscribers.noList');
+    }
 }

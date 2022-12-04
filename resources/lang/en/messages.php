@@ -2942,4 +2942,9 @@
   'your_api_token' => 'Your API token',
   'your_current_license' => 'Thank you for purchasing! Below is your license key, also known as Purchase Code. Your license type is',
   'zip_postal_code' => 'Zip / Postal code',
+  'list.you_have_no_list' => 'You have no list',
+  'subscriber.create_list_to_see' => 'Create your mail lists and see your subscribers here.',
+  'segment.create_list_to_see' => 'Create your mail lists and see your segments here.',
+  'list.go_to_mail_lists' => 'Go to Mail Lists',
+  'list.no_list' => 'No Mail List',
 ) ?>
