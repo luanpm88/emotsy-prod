@@ -14,6 +14,7 @@ use Acelle\Library\QuotaManager;
 use Acelle\Library\Exception\NoCreditsLeft;
 use Acelle\Library\Exception\QuotaExceeded;
 use Exception;
+use Throwable;
 
 class SendMessage implements ShouldQueue
 {
@@ -76,6 +77,7 @@ class SendMessage implements ShouldQueue
     // Use a dedicated method with no dependency for easy testing
     public function send($exceptionCallback = null)
     {
+
         $logger = $this->campaign->logger();
         $email = $this->subscriber->getEmail();
         $subscription = $this->campaign->customer->getCurrentActiveSubscription();
@@ -109,13 +111,18 @@ class SendMessage implements ShouldQueue
 
             // Release the job, have it try again after 60 seconds and (hopefully) the quota limits will be lifted then as time goes by
             $this->release(60);
-        } catch (Exception $ex) {
+        } catch (Throwable $ex) {
             if (!is_null($exceptionCallback)) {
                 $exceptionCallback($ex);
             }
             $message = sprintf("Error sending to [%s]. Error: %s", $email, $ex->getMessage());
             $logger->error($message);
-            throw new Exception($message);
+
+            // There are 2 options here
+            // Option 1: throw an exception and show it to users as the campaign status
+            //     throw new Exception($message);
+            // Option 2: just skip the error, log it and proceed with the next subscriber
+            $this->campaign->trackMessage(['status' => 'failed'], $this->subscriber, $this->server, $msgId, $this->triggerId);
         }
     }
 }
