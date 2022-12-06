@@ -1,3 +1,17 @@
+4.0.24-p429 / 2022-12-06
+==================
+
+ * Fixed: sending performance issue on CentOS
+ * Fixed: MySQL 8x compatibility issues
+ * Fixed: PHP 7.3 compatibility issues
+ * Fixed: PHP 7.2 is no longer supported
+ * Fixed: better branding support, allow default brand in .env file
+ * Fixed: form templates not showing up by default
+ * Fixed: UTF-8 issues with imported data
+ * Fixed: upgrade to the latest Laravel 8 version
+ * Fixed: plan & subscription issues
+ * Fixed: better detection of file encoding
+
 4.0.24-p415 / 2022-11-02
 ==================
 
