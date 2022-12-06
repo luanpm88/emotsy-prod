@@ -91,6 +91,30 @@ class Customer extends Model
         return $subscriptions->first();
     }
 
+    public function getNewSubscription()
+    {
+        // Theo design thì mỗi customer chỉ có một subscription đang "new"
+        $subscriptions = $this->subscriptions()->new();
+
+        if ($subscriptions->count() > 1) {
+            throw new Exception('There are 2 subscriptions of [new] status. Please clean up the DB');
+        }
+
+        return $subscriptions->first();
+    }
+
+    public function getActiveSubscription()
+    {
+        // Theo design thì mỗi customer chỉ có một subscription đang "active"
+        $subscriptions = $this->subscriptions()->active();
+
+        if ($subscriptions->count() > 1) {
+            throw new Exception('There are 2 subscriptions of [active] status. Please clean up the DB');
+        }
+
+        return $subscriptions->first();
+    }
+
     /**
      * Lấy current active subscription
      */

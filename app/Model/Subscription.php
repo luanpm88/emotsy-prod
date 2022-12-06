@@ -64,6 +64,11 @@ class Subscription extends Model implements HasQuotaInterface
         return $this->plan->name;
     }
 
+    public function scopeNew($query)
+    {
+        return $query->whereIn('status', [ self::STATUS_NEW ]);
+    }
+
     public function scopeNewOrActive($query)
     {
         return $query->whereIn('status', [ self::STATUS_ACTIVE, self::STATUS_NEW ]);
