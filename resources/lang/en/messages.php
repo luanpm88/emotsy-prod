@@ -2947,4 +2947,5 @@
   'segment.create_list_to_see' => 'Create your mail lists and see your segments here.',
   'list.go_to_mail_lists' => 'Go to Mail Lists',
   'list.no_list' => 'No Mail List',
+  'subscription.pending' => 'pending...',
 ) ?>

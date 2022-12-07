@@ -36,6 +36,10 @@ class SubscriberController extends Controller
     {
         $list = MailList::findByUid($request->list_uid);
 
+        if (!$list) {
+            return redirect()->action('SubscriberController@noList');
+        }
+
         return view('subscribers.index', [
             'list' => $list
         ]);

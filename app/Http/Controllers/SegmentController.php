@@ -16,6 +16,10 @@ class SegmentController extends Controller
     {
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
 
+        if (!$list) {
+            return redirect()->action('SegmentController@noList');
+        }
+
         return view('segments.index', [
             'list' => $list,
         ]);
