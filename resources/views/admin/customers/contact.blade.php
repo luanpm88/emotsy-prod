@@ -13,7 +13,7 @@
 			<li class="breadcrumb-item active">{{ trans('messages.contact_information') }}</li>
 		</ul>
 		<h1>
-			<span class="text-semibold"><i class="icon-address-book3"></i> {{ $contact->company }} ({{ $contact->name() }})</span>
+			<span class="text-semibold"><i class="icon-address-book3"></i> {{ $contact->company }} ({{ $contact->name($customer->getLanguageCode()) }})</span>
 		</h1>
 	</div>
 
