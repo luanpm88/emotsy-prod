@@ -486,6 +486,11 @@ class Invoice extends Model
             'plan' => $plan,
             'has_fee' => $this->fee ? $this->fee > 0 : false,
             'fee' => $this->fee ? format_price($this->fee, $this->currency->format) : null,
+            'billing_display_name' => (
+                get_localization_config('show_last_name_first', $this->customer->getLanguageCode()) ?
+                    ($this->billing_last_name . ' ' . $this->billing_first_name) :
+                    ($this->billing_first_name . ' ' . $this->billing_last_name)
+            ),
             'billing_first_name' => $this->billing_first_name,
             'billing_last_name' => $this->billing_last_name,
             'billing_address' => $this->billing_address,
