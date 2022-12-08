@@ -49,14 +49,27 @@ delete_outline
 		<div class="sub_section">
 			<h2 class="text-semibold text-primary">{{ trans('messages.basic_information') }}</h2>
 
-			<div class="row">
-				<div class="col-md-6">
-					@include('helpers.form_control', ['type' => 'text', 'name' => 'first_name', 'value' => $admin->user->first_name, 'rules' => $admin->user->rules()])
-				</div>
-				<div class="col-md-6">
-					@include('helpers.form_control', ['type' => 'text', 'name' => 'last_name', 'value' => $admin->user->last_name, 'rules' => $admin->user->rules()])
-				</div>
-			</div>
+            @if (get_localization_config('show_last_name_first', Auth::user()->admin->getLanguageCode()))
+                <div class="row">
+                    <div class="col-md-6">
+                        @include('helpers.form_control', ['type' => 'text', 'name' => 'last_name', 'value' => $admin->user->last_name, 'rules' => $admin->user->rules()])
+                    </div>
+                    <div class="col-md-6">
+                        @include('helpers.form_control', ['type' => 'text', 'name' => 'first_name', 'value' => $admin->user->first_name, 'rules' => $admin->user->rules()])
+                    </div>
+                </div>
+            @else 
+                <div class="row">
+                    <div class="col-md-6">
+                        @include('helpers.form_control', ['type' => 'text', 'name' => 'first_name', 'value' => $admin->user->first_name, 'rules' => $admin->user->rules()])
+                    </div>
+                    <div class="col-md-6">
+                        @include('helpers.form_control', ['type' => 'text', 'name' => 'last_name', 'value' => $admin->user->last_name, 'rules' => $admin->user->rules()])
+                    </div>
+                </div>
+            @endif
+
+   
 
 			@include('helpers.form_control', ['type' => 'select', 'name' => 'timezone', 'value' => $admin->timezone, 'options' => Tool::getTimezoneSelectOptions(), 'include_blank' => trans('messages.choose'), 'rules' => $admin->user->rules()])
 
