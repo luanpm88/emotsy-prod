@@ -47,7 +47,7 @@
                             {{ csrf_field() }}
 
                             <div class="row">
-                                @if (get_localization_config('show_last_name_first', $admin->getLanguageCode()))
+                                @if (get_localization_config('show_last_name_first', Auth()->user()->customer->getLanguageCode()))
                                     <div class="col-md-6">
                                         @include('helpers.form_control', [
                                             'type' => 'text',
