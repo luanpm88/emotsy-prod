@@ -14,6 +14,7 @@ return [
     //    format_datetime(Carbon $datetime, $name, $locale) || locale can be 'en', 'ja', etc.
     //
 
+    // Defaut '*'
     '*' => [
         'date_full' => 'Y-m-d',
         'date_short' => 'Y-m-d',
@@ -22,7 +23,8 @@ return [
         'time_only' => 'H:i',
         'number_precision' => '2',
         'number_decimal_separator' => '.',
-        'number_thousands_separator' => ','
+        'number_thousands_separator' => ',',
+        'show_last_name_first' => false,
     ],
 
     'ja' => [
@@ -31,5 +33,6 @@ return [
         'datetime_full' => 'Y年m月d日 H:i',
         'datetime_short' => 'Y/m/d H:i',
         'time_only' => 'H:i',
+        'show_last_name_first' => true,
     ],
 ];
