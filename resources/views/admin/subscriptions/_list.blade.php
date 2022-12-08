@@ -29,7 +29,7 @@ remove_circle_outline
 						</span>
 					</h5>
 					<div class="text-muted">{!! trans('messages.subscribed_by', [
-						'name' => $subscription->customer->user->displayName(),
+						'name' => $subscription->customer->displayName(),
 						'customer_link' => action('Admin\CustomerController@edit', $subscription->customer->uid)
 					]) !!}</div>
 				</td>

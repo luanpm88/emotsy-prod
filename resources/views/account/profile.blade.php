@@ -19,7 +19,7 @@
         <h1>
             <span class="text-semibold"><span class="material-symbols-rounded">
                             person_outline
-                            </span> {{ $user->displayName() }}</span>
+                            </span> {{ $customer->displayName() }}</span>
         </h1>
     </div>
 
@@ -64,14 +64,25 @@ delete_outline
                 <div class="sub_section">
                     <h3 class="text-semibold text-primary mb-4">{{ trans('messages.basic_information') }}</h3>
 
-                    <div class="row">
-                        <div class="col-md-6">
-                            @include('helpers.form_control', ['type' => 'text', 'name' => 'first_name', 'value' => $user->first_name, 'rules' => $user->rules()])
+                    @if (get_localization_config('show_last_name_first', $customer->getLanguageCode()))
+                        <div class="row">
+                            <div class="col-md-6">
+                                @include('helpers.form_control', ['type' => 'text', 'name' => 'last_name', 'value' => $user->last_name, 'rules' => $user->rules()])
+                            </div>
+                            <div class="col-md-6">
+                                @include('helpers.form_control', ['type' => 'text', 'name' => 'first_name', 'value' => $user->first_name, 'rules' => $user->rules()])
+                            </div>
                         </div>
-                        <div class="col-md-6">
-                            @include('helpers.form_control', ['type' => 'text', 'name' => 'last_name', 'value' => $user->last_name, 'rules' => $user->rules()])
+                    @else 
+                        <div class="row">
+                            <div class="col-md-6">
+                                @include('helpers.form_control', ['type' => 'text', 'name' => 'first_name', 'value' => $user->first_name, 'rules' => $user->rules()])
+                            </div>
+                            <div class="col-md-6">
+                                @include('helpers.form_control', ['type' => 'text', 'name' => 'last_name', 'value' => $user->last_name, 'rules' => $user->rules()])
+                            </div>
                         </div>
-                    </div>
+                    @endif
 
                     @include('helpers.form_control', ['type' => 'select', 'name' => 'timezone', 'value' => $customer->timezone, 'options' => Tool::getTimezoneSelectOptions(), 'include_blank' => trans('messages.choose'), 'rules' => $user->rules()])
 

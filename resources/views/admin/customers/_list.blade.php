@@ -9,7 +9,7 @@
                 </td>
                 <td>
                     <h5 class="m-0 text-bold">
-                        <a class="kq_search d-block" href="{{ action('Admin\CustomerController@edit', $customer->uid) }}">{{ $customer->user->displayName() }}</a>
+                        <a class="kq_search d-block" href="{{ action('Admin\CustomerController@edit', $customer->uid) }}">{{ $customer->displayName() }}</a>
                     </h5>
                     <span class="text-muted kq_search">{{ $customer->user->email }}</span><br>
                     <span class="text-muted kq_search">{{ trans('messages.customer.bounce_feedback_rate') }} <span title="{{ trans('messages.customer.bounce_feedback_rate_desc') }}" class="xtooltip">{{ number_to_percentage($customer->readCache('Bounce/FeedbackRate') ?? 0) }}</span></span>

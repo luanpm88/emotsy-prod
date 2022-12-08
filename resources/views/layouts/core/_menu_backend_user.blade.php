@@ -10,7 +10,7 @@
             max-width: 100%;
             overflow: hidden;
             text-overflow: ellipsis;
-        ">{{ Auth::user()->displayName() }}</span>
+        ">{{ Auth::user()->admin->displayName() }}</span>
     </a>
     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-bottom top-user-menus" aria-labelledby="content-menu">
         <li class="backdrop backdrop-backend p-4 d-flex align-items-center justify-content-center">
@@ -27,7 +27,7 @@
                 </div>
                 <div class="user-menu-titles">
                     <a href="{{ action('Admin\AccountController@profile') }}" class="fs-6 fw-600 d-flex align-items-center">
-                        <span class="me-3">{{ Auth::user()->displayName() }}</span>
+                        <span class="me-3">{{ Auth::user()->admin->displayName() }}</span>
                     </a>
                     <p class="mb-1 small text-muted">{{ Auth::user()->email }}</p>
                     @if (Auth::user()->admin->status) 

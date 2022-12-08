@@ -92,7 +92,7 @@ class Subscription extends Model implements HasQuotaInterface
 
     public function getCustomerName()
     {
-        return $this->customer->user->displayName();
+        return $this->customer->displayName();
     }
 
     /**
@@ -197,7 +197,7 @@ class Subscription extends Model implements HasQuotaInterface
     public function createInitInvoiceWithoutTrial()
     {
         $endDate = $this->customer->formatDateTime($this->getPeriodEndsAt(Carbon::now()), "datetime_full");
-        
+
         // create init invoice
         return Invoice::createInvoice(
             $type = Invoice::TYPE_NEW_SUBSCRIPTION,
@@ -208,7 +208,7 @@ class Subscription extends Model implements HasQuotaInterface
             ]),
             $customer_id = $this->customer->id,
             $currency_id = $this->plan->currency_id,
-            $billing_address = $this->customer->getDefaultBillingAddress(),            
+            $billing_address = $this->customer->getDefaultBillingAddress(),
             $invoiceItems = [
                 new InvoiceItem([
                     'item_id' => $this->id,
@@ -232,7 +232,7 @@ class Subscription extends Model implements HasQuotaInterface
     public function createInitInvoiceWithTrial()
     {
         $endDate = $this->customer->formatDateTime($this->getTrialPeriodEndsAt(Carbon::now()), "datetime_full");
-        
+
         // create init invoice
         return Invoice::createInvoice(
             $type = Invoice::TYPE_NEW_SUBSCRIPTION,
@@ -243,7 +243,7 @@ class Subscription extends Model implements HasQuotaInterface
             ]),
             $customer_id = $this->customer->id,
             $currency_id = $this->plan->currency_id,
-            $billing_address = $this->customer->getDefaultBillingAddress(),            
+            $billing_address = $this->customer->getDefaultBillingAddress(),
             $invoiceItems = [
                 new InvoiceItem([
                     'item_id' => $this->id,
@@ -285,7 +285,7 @@ class Subscription extends Model implements HasQuotaInterface
             ]),
             $customer_id = $this->customer->id,
             $currency_id = $this->plan->currency_id,
-            $billing_address = $this->customer->getDefaultBillingAddress(),            
+            $billing_address = $this->customer->getDefaultBillingAddress(),
             $invoiceItems = [
                 new InvoiceItem([
                     'item_id' => $this->id,
@@ -311,7 +311,7 @@ class Subscription extends Model implements HasQuotaInterface
         if ($this->status != self::STATUS_ACTIVE) {
             throw new \Exception("Hey, subscription này đâu có active đâu mà đòi change plan???");
         }
-        
+
         // calculate change plan amout ends at
         $metadata = $this->calcChangePlan($newPlan);
 
@@ -326,7 +326,7 @@ class Subscription extends Model implements HasQuotaInterface
             ]),
             $customer_id = $this->customer->id,
             $currency_id = $this->plan->currency_id,
-            $billing_address = $this->customer->getDefaultBillingAddress(),            
+            $billing_address = $this->customer->getDefaultBillingAddress(),
             $invoiceItems = [
                 new InvoiceItem([
                     'item_id' => $this->id,
@@ -639,7 +639,7 @@ class Subscription extends Model implements HasQuotaInterface
             throw new Exception('Subscription is not recurring. No need to disable again.');
         }
 
-        \DB::transaction(function() {
+        \DB::transaction(function () {
             $this->is_recurring = false;
             $this->save();
 
@@ -647,14 +647,12 @@ class Subscription extends Model implements HasQuotaInterface
             if ($this->getItsOnlyUnpaidRenewInvoice()) {
                 $this->getItsOnlyUnpaidRenewInvoice()->delete();
             }
-            
+
             // Log
             SubscriptionFacade::log($this, SubscriptionLog::TYPE_DISABLE_RECURRING, null, [
                 'plan' => $this->getPlanName(),
             ]);
         });
-
-        
     }
 
     /**
@@ -664,15 +662,15 @@ class Subscription extends Model implements HasQuotaInterface
      */
     public function enableRecurring()
     {
-        \DB::transaction(function() {
+        \DB::transaction(function () {
             if ($this->isEnded()) {
                 throw new Exception('Subscription is ended. Can not change ended subscription state!');
             }
-    
+
             if ($this->isRecurring()) {
                 throw new Exception('Subscription is recurring. No need to resume again.');
             }
-    
+
             $this->is_recurring = true;
             $this->save();
 
@@ -694,8 +692,7 @@ class Subscription extends Model implements HasQuotaInterface
             throw new Exception('Subscription chỉ bị cancel now khi trạng thái là ACTIVE');
         }
 
-        \DB::transaction(function() {
-            
+        \DB::transaction(function () {
             // Log
             SubscriptionFacade::log($this, SubscriptionLog::TYPE_CANCEL_SUBSCRIPTION, null, [
                 'plan' => $this->getPlanName(),
@@ -716,7 +713,6 @@ class Subscription extends Model implements HasQuotaInterface
             $this->cancelled_at = \Carbon\Carbon::now();
             $this->save();
         });
-            
     }
 
     public function terminate()
@@ -725,7 +721,12 @@ class Subscription extends Model implements HasQuotaInterface
             throw new Exception('Subscription chỉ bị cancel now khi trạng thái là ACTIVE or NEW');
         }
 
-        \DB::transaction(function() {
+        \DB::transaction(function () {
+            // Xoá NEW init invoice hiện tại nếu có
+            if ($this->isNew() && $this->getItsOnlyUnpaidInitInvoice()) {
+                $this->getItsOnlyUnpaidInitInvoice()->delete();
+            }
+
             // Xoá NEW renew invoice hiện tại nếu có
             if ($this->isActive() && $this->getItsOnlyUnpaidRenewInvoice()) {
                 $this->getItsOnlyUnpaidRenewInvoice()->delete();
@@ -747,7 +748,6 @@ class Subscription extends Model implements HasQuotaInterface
                 'terminate_at' => $this->terminated_at,
             ]);
         });
-            
     }
 
     public function end()
@@ -756,7 +756,7 @@ class Subscription extends Model implements HasQuotaInterface
             throw new Exception('Subscription chỉ end khi trạng thái là ACTIVE');
         }
 
-        \DB::transaction(function() {
+        \DB::transaction(function () {
             // Xoá NEW renew invoice hiện tại nếu có
             if ($this->getItsOnlyUnpaidRenewInvoice()) {
                 $this->getItsOnlyUnpaidRenewInvoice()->delete();
@@ -797,7 +797,7 @@ class Subscription extends Model implements HasQuotaInterface
             !$this->getItsOnlyUnpaidChangePlanInvoice() && // chưa có NEW change plan invoice nào cả
             !$this->getItsOnlyUnpaidRenewInvoice() // chưa có NEW renew invoice nào cả
         ) {
-            \DB::transaction(function() {
+            \DB::transaction(function () {
                 // tạo NEW renew invoice cho sub
                 $invoice = $this->createRenewInvoice();
 

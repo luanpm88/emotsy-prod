@@ -547,7 +547,7 @@ class CustomerController extends Controller
                 'status' => 'success',
                 'message' => trans('messages.customer.plan.assigned', [
                     'plan' => $plan->name,
-                    'customer' => $customer->user->displayName(),
+                    'customer' => $customer->displayName(),
                 ]),
             ], 201);
         }

@@ -281,13 +281,13 @@ class Invoice extends Model
         if (!$this->isNew()) {
             throw new \Exception("Trying to approve an invoice that is not NEW (Invoice ID: {$this->id}, status: {$this->status}");
         }
-        
+
         // for only new invoice
         if (!$this->getPendingTransaction()) {
             throw new \Exception("Trying to approve an invoice that does not have a pending transaction (Invoice ID: {$this->id}, status: {$this->status}");
         }
-        
-        \DB::transaction(function() {
+
+        \DB::transaction(function () {
             // fulfill invoice
             $this->fulfill();
 
@@ -316,13 +316,13 @@ class Invoice extends Model
         if (!$this->isNew()) {
             throw new \Exception("Trying to approve an invoice that is not NEW (Invoice ID: {$this->id}, status: {$this->status}");
         }
-        
+
         // for only new invoice
         if (!$this->getPendingTransaction()) {
             throw new \Exception("Trying to approve an invoice that does not have a pending transaction (Invoice ID: {$this->id}, status: {$this->status}");
         }
 
-        \DB::transaction(function() use ($error) {
+        \DB::transaction(function () use ($error) {
             // fulfill invoice
             $this->payFailed($error);
 
@@ -349,7 +349,7 @@ class Invoice extends Model
     public function fulfill()
     {
         $invoice = $this;
-        \DB::transaction(function() use (&$invoice) {
+        \DB::transaction(function () use (&$invoice) {
             // set invoice status as paid
             $invoice->setPaid();
 
@@ -486,6 +486,11 @@ class Invoice extends Model
             'plan' => $plan,
             'has_fee' => $this->fee ? $this->fee > 0 : false,
             'fee' => $this->fee ? format_price($this->fee, $this->currency->format) : null,
+            'billing_display_name' => (
+                get_localization_config('show_last_name_first', $this->customer->getLanguageCode()) ?
+                    ($this->billing_last_name . ' ' . $this->billing_first_name) :
+                    ($this->billing_first_name . ' ' . $this->billing_last_name)
+            ),
             'billing_first_name' => $this->billing_first_name,
             'billing_last_name' => $this->billing_last_name,
             'billing_address' => $this->billing_address,
@@ -560,7 +565,7 @@ class Invoice extends Model
     public function checkout($gateway, $payCallback)
     {
         $invoice = $this;
-        \DB::transaction(function() use ($gateway, $invoice, $payCallback) {
+        \DB::transaction(function () use ($gateway, $invoice, $payCallback) {
             $invoice->createPendingTransaction($gateway);
 
             // action by type
@@ -650,7 +655,7 @@ class Invoice extends Model
 
     public function cancel()
     {
-        \DB::transaction(function() {
+        \DB::transaction(function () {
             // Log
             switch ($this->type) {
                 case Invoice::TYPE_NEW_SUBSCRIPTION:
@@ -677,7 +682,7 @@ class Invoice extends Model
 
         switch ($this->type) {
             case self::TYPE_NEW_SUBSCRIPTION:
-                
+
                 break;
             case self::TYPE_RENEW_SUBSCRIPTION:
                 // do nothing
@@ -713,7 +718,13 @@ class Invoice extends Model
 
     public function getBillingName()
     {
-        return $this->billing_first_name . ' ' . $this->billing_last_name;
+        $lastNameFirst = get_localization_config('show_last_name_first', $this->customer->getLanguageCode());
+
+        if ($lastNameFirst) {
+            return htmlspecialchars(trim($this->billing_last_name . ' ' . $this->billing_first_name));
+        } else {
+            return htmlspecialchars(trim($this->billing_first_name . ' ' . $this->billing_last_name));
+        }
     }
 
     public static function createInvoice($type, $title, $description, $customer_id, $currency_id, $billing_address, $invoiceItems, $metadata)

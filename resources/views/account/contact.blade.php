@@ -12,7 +12,7 @@
             <li class="breadcrumb-item active">{{ trans('messages.contact_information') }}</li>
         </ul>
         <h1>
-            <span class="text-semibold"><i class="icon-address-book3"></i> {{ $customer->user->displayName() }}</span>
+            <span class="text-semibold"><i class="icon-address-book3"></i> {{ $customer->displayName() }}</span>
         </h1>
     </div>
 
@@ -31,15 +31,26 @@
 
         <div class="row">
             <div class="col-md-6">
-
-                <div class="row">
-                    <div class="col-md-6">
-                        @include('helpers.form_control', ['type' => 'text', 'name' => 'first_name', 'value' => $contact->first_name, 'rules' => Acelle\Model\Contact::$rules])
+                @if (get_localization_config('show_last_name_first', Auth::user()->customer->getLanguageCode()))
+                    <div class="row">
+                        <div class="col-md-6">
+                            @include('helpers.form_control', ['type' => 'text', 'name' => 'last_name', 'value' => $contact->last_name, 'rules' => Acelle\Model\Contact::$rules])
+                        </div>
+                        <div class="col-md-6">
+                            @include('helpers.form_control', ['type' => 'text', 'name' => 'first_name', 'value' => $contact->first_name, 'rules' => Acelle\Model\Contact::$rules])
+                        </div>
                     </div>
-                    <div class="col-md-6">
-                        @include('helpers.form_control', ['type' => 'text', 'name' => 'last_name', 'value' => $contact->last_name, 'rules' => Acelle\Model\Contact::$rules])
+                @else 
+                    <div class="row">
+                        <div class="col-md-6">
+                            @include('helpers.form_control', ['type' => 'text', 'name' => 'first_name', 'value' => $contact->first_name, 'rules' => Acelle\Model\Contact::$rules])
+                        </div>
+                        <div class="col-md-6">
+                            @include('helpers.form_control', ['type' => 'text', 'name' => 'last_name', 'value' => $contact->last_name, 'rules' => Acelle\Model\Contact::$rules])
+                        </div>
                     </div>
-                </div>
+                @endif
+                    
 
                 @include('helpers.form_control', ['type' => 'text', 'label' => trans('messages.email_at_work'), 'name' => 'email', 'value' => $contact->email, 'help_class' => 'customer_contact', 'rules' => Acelle\Model\Contact::$rules])
 

@@ -14,12 +14,8 @@
 					<h5 class="media-heading text-semibold">{{ trans('messages.upload_photo') }}</h5>
 					{{ trans('messages.photo_at_least', ["size" => "300px x 300px"]) }}
 					<br /><br />
-					<a href="#upload" onclick="$('input[name=image]').trigger('click')" class="btn btn-primary me-1"><span class="material-symbols-rounded">
-file_download
-</span> {{ trans('messages.upload') }}</a>
-					<a href="#remove" class="btn btn-secondary remove-profile-image"><span class="material-symbols-rounded">
-delete_outline
-</span> {{ trans('messages.remove') }}</a>
+					<a href="#upload" onclick="$('input[name=image]').trigger('click')" class="btn btn-primary me-1"><span class="material-symbols-rounded">file_download</span> {{ trans('messages.upload') }}</a>
+					<a href="#remove" class="btn btn-secondary remove-profile-image"><span class="material-symbols-rounded">delete_outline</span> {{ trans('messages.remove') }}</a>
 				</div>
 			</div>
 		</div>
@@ -49,14 +45,27 @@ delete_outline
 		<div class="sub_section">
 			<h2 class="text-semibold text-primary">{{ trans('messages.basic_information') }}</h2>
 
-			<div class="row">
-				<div class="col-md-6">
-					@include('helpers.form_control', ['type' => 'text', 'name' => 'first_name', 'value' => $admin->user->first_name, 'rules' => $admin->user->rules()])
-				</div>
-				<div class="col-md-6">
-					@include('helpers.form_control', ['type' => 'text', 'name' => 'last_name', 'value' => $admin->user->last_name, 'rules' => $admin->user->rules()])
-				</div>
-			</div>
+            @if (get_localization_config('show_last_name_first', Auth::user()->admin->getLanguageCode()))
+                <div class="row">
+                    <div class="col-md-6">
+                        @include('helpers.form_control', ['type' => 'text', 'name' => 'last_name', 'value' => $admin->user->last_name, 'rules' => $admin->user->rules()])
+                    </div>
+                    <div class="col-md-6">
+                        @include('helpers.form_control', ['type' => 'text', 'name' => 'first_name', 'value' => $admin->user->first_name, 'rules' => $admin->user->rules()])
+                    </div>
+                </div>
+            @else
+                <div class="row">
+                    <div class="col-md-6">
+                        @include('helpers.form_control', ['type' => 'text', 'name' => 'first_name', 'value' => $admin->user->first_name, 'rules' => $admin->user->rules()])
+                    </div>
+                    <div class="col-md-6">
+                        @include('helpers.form_control', ['type' => 'text', 'name' => 'last_name', 'value' => $admin->user->last_name, 'rules' => $admin->user->rules()])
+                    </div>
+                </div>
+            @endif
+
+
 
 			@include('helpers.form_control', ['type' => 'select', 'name' => 'timezone', 'value' => $admin->timezone, 'options' => Tool::getTimezoneSelectOptions(), 'include_blank' => trans('messages.choose'), 'rules' => $admin->user->rules()])
 

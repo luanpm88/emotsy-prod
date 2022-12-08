@@ -1210,7 +1210,8 @@ function getSiteLogoUrl($type)
     }
 }
 
-function get_app_name() {
+function get_app_name()
+{
     $name = \Acelle\Model\Setting::get('site_name') ?: env('APP_NAME');
     return $name;
 }

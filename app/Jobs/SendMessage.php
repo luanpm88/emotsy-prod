@@ -77,7 +77,6 @@ class SendMessage implements ShouldQueue
     // Use a dedicated method with no dependency for easy testing
     public function send($exceptionCallback = null)
     {
-
         $logger = $this->campaign->logger();
         $email = $this->subscriber->getEmail();
         $subscription = $this->campaign->customer->getCurrentActiveSubscription();

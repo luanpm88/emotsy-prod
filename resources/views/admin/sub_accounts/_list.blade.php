@@ -9,7 +9,7 @@
                 </td>
                 <td>
                     <div class="single-stat-box pull-left ml-20">
-                        <span class="no-margin stat-num kq_search">{{ $account->customer->user->displayName() }}</span>
+                        <span class="no-margin stat-num kq_search">{{ $account->customer->displayName() }}</span>
                         <br />
                         <span class="text-muted">{{ trans('messages.customer') }}</span>
                     </div>

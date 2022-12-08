@@ -27,20 +27,41 @@
                     'help_class' => 'profile',
                     'rules' => $user->registerRules()
                 ])
+
+                @if (get_localization_config('show_last_name_first', config('app.locale')))
+
+                    @include('helpers.form_control', [
+                        'type' => 'text',
+                        'name' => 'last_name',
+                        'value' => $user->last_name,
+                        'rules' => $user->registerRules()
+                    ])
+                    
+                    @include('helpers.form_control', [
+                        'type' => 'text',
+                        'name' => 'first_name',
+                        'value' => $user->first_name,
+                        'rules' => $user->registerRules()
+                    ])
+                    
+                    
+                @else 
+                    @include('helpers.form_control', [
+                        'type' => 'text',
+                        'name' => 'first_name',
+                        'value' => $user->first_name,
+                        'rules' => $user->registerRules()
+                    ])
+                    
+                    @include('helpers.form_control', [
+                        'type' => 'text',
+                        'name' => 'last_name',
+                        'value' => $user->last_name,
+                        'rules' => $user->registerRules()
+                    ])
+                @endif
                 
-                @include('helpers.form_control', [
-                    'type' => 'text',
-                    'name' => 'first_name',
-                    'value' => $user->first_name,
-                    'rules' => $user->registerRules()
-                ])
-                
-                @include('helpers.form_control', [
-                    'type' => 'text',
-                    'name' => 'last_name',
-                    'value' => $user->last_name,
-                    'rules' => $user->registerRules()
-                ])
+                    
                 
                 @include('helpers.form_control', [
                     'type' => 'password',

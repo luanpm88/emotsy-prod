@@ -2,7 +2,7 @@
 	'menu' => 'admin',
 ])
 
-@section('title', $admin->user->displayName())
+@section('title', $admin->displayName())
     
 @section('page_header')
     
@@ -15,7 +15,7 @@
         <h1>
             <span class="text-semibold"><span class="material-symbols-rounded">
                             person_outline
-                            </span> {{ $admin->user->displayName() }}</span>
+                            </span> {{ $admin->displayName() }}</span>
         </h1>
     </div>
                 

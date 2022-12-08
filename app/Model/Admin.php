@@ -615,4 +615,15 @@ class Admin extends Model
     {
         return $this->timezone;
     }
+
+    public function displayName()
+    {
+        $lastNameFirst = get_localization_config('show_last_name_first', $this->getLanguageCode());
+
+        if ($lastNameFirst) {
+            return htmlspecialchars(trim($this->user->last_name.' '.$this->user->first_name));
+        } else {
+            return htmlspecialchars(trim($this->user->first_name.' '.$this->user->last_name));
+        }
+    }
 }

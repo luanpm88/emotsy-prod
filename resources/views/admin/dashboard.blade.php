@@ -10,7 +10,7 @@
 @endsection
 
 @section('content')
-    <h1 class="mb-2 mt-4">{{ trans('messages.backend_dashboard_hello', ['name' => Auth::user()->displayName()]) }}</h1>
+    <h1 class="mb-2 mt-4">{{ trans('messages.backend_dashboard_hello', ['name' => Auth::user()->admin->displayName()]) }}</h1>
     <p>{{ trans('messages.backend_dashboard_welcome') }}</p>
 
     @include('admin.notifications._top', ['notifications' => $notifications])
@@ -58,7 +58,7 @@ assignment_turned_in
                                             <i class="material-symbols-rounded me-1">
         person_outline
         </i>
-                                            {{ $subscription->customer->user->displayName() }}
+                                            {{ $subscription->customer->displayName() }}
                                         </p>
                                     </div>
                                 </div>
@@ -117,7 +117,7 @@ people_outline
                                     <div>
                                         <h6 class="mt-0 mb-0 text-semibold">
                                             <a href="{{ action('Admin\CustomerController@edit', $customer->uid) }}">
-                                                {{ $customer->user->displayName() }}
+                                                {{ $customer->displayName() }}
                                             </a>
                                         </h6>
                                         <p class="mb-0 admin-line admin-recent-sencond-line" title="{{ $customer->user->email }}">
@@ -175,7 +175,7 @@ history_toggle_off
                             <div class="card px-0 shadow-sm container-fluid">
                                 <div class="card-body pt-2">
                                     <div class="d-flex align-items-center pt-1">
-                                        <label class="panel-title text-semibold my-0 fw-600">{{ $log->customer->user->displayName() }}</label>
+                                        <label class="panel-title text-semibold my-0 fw-600">{{ $log->customer->displayName() }}</label>
                                         <div class="d-flex align-items-center ms-auto text-muted">
                                             <span style="font-size: 18px" class="material-symbols-rounded ms-auto me-2">
                                                 history

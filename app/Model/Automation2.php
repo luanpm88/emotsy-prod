@@ -437,7 +437,7 @@ class Automation2 extends Model
                         $automation->logger()->info(sprintf('Checking automation "%s"', $automation->name));
                         $automation->check();
                     } else {
-                        $automation->logger()->warning(sprintf('Automation "%s" skipped, user "%s" not on active subscription', $automation->name, $customer->user->displayName()));
+                        $automation->logger()->warning(sprintf('Automation "%s" skipped, user "%s" not on active subscription', $automation->name, $customer->displayName()));
                     }
                 }, $timeout, $timeoutCallback);
             }

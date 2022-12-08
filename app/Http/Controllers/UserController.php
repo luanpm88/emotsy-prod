@@ -129,7 +129,7 @@ class UserController extends Controller
             if (true) {
                 // Send registration confirmation email
                 try {
-                    $user->sendActivationMail($user->displayName());
+                    $user->sendActivationMail($customer->displayName());
                 } catch (\Exception $e) {
                     return view('somethingWentWrong', ['message' => trans('messages.something_went_wrong_with_email_service') . ": " . $e->getMessage()]);
                 }
