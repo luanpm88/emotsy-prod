@@ -98,7 +98,7 @@ class SubscriptionPolicy
 
     public function terminate(User $user, Subscription $subscription, $role)
     {
-        $can = $subscription->isActive();
+        $can = $subscription->isActive() || $subscription->isNew();
 
         switch ($role) {
             case 'admin':

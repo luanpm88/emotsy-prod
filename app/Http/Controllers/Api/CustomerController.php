@@ -318,6 +318,7 @@ class CustomerController extends Controller
     {
         $user = \Auth::guard('api')->user();
         $customer = \Acelle\Model\Customer::findByUid($uid);
+        $offlineGateway = \Acelle\Library\Facades\Billing::getGateway('offline');
 
         // check if item exists
         if (!$customer) {
@@ -340,17 +341,30 @@ class CustomerController extends Controller
         if (!$plan->isActive()) {
             return \Response::json(array('status' => 0, 'message' => 'Plan is not active'), 404);
         }
-
-        $subscription = $customer->assignPlan($plan);
-
-        // * Disable billing information: customer does not need to pay the invoice. Pass by the billing and checkout step
-        // * assignPlan always create a subscription with an unpaid invoice.
-        // * So just fulfill the invoice
-        // * By design: when the subscription invoice is fulfilled, the callback function will be triggered
-        //              to set subscription as active automatically.
+        
+        // check offline gateway if disale billing
         if ($request->disable_billing && $request->disable_billing !== 'false') {
-            $subscription->getUnpaidInvoice()->fulfill();
+            // check if offline payment is not active
+            if (!$offlineGateway->isActive() || !\Acelle\Library\Facades\Billing::isGatewayEnabled($offlineGateway)) {
+                return \Response::json(array('status' => 0, 'message' => 'You need to enable Offline payment in order to disable billing!'), 404);
+            }
         }
+        
+        // rollback if something went wrong
+        \DB::transaction(function() use ($plan, $customer, $request, $offlineGateway) {
+            $subscription = $customer->assignPlan($plan);
+
+            // * Disable billing information: customer does not need to pay the invoice. Pass by the billing and checkout step
+            // * assignPlan always create a subscription with an unpaid invoice.
+            // * So just checkout the invoice with result = success
+            // * By design: when the subscription invoice checkout successfully, the callback function will be triggered
+            //              to set subscription as active automatically.
+            if ($request->disable_billing && $request->disable_billing !== 'false') {
+                $subscription->getItsOnlyUnpaidInitInvoice()->checkout($offlineGateway, function() {
+                    return new \Acelle\Library\TransactionVerificationResult(\Acelle\Library\TransactionVerificationResult::RESULT_DONE);
+                });
+            }
+        });
 
         return \Response::json(array(
             'status' => 1,
