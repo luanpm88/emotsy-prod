@@ -1254,7 +1254,7 @@ class Customer extends Model
      */
     public function displayNameEmailOption()
     {
-        return $this->user->displayName().'|||'.$this->user->email;
+        return $this->displayName().'|||'.$this->user->email;
     }
 
     /**

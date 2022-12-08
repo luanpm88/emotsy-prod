@@ -14,7 +14,7 @@
         <h1>
             <span class="text-semibold"><span class="material-symbols-rounded">
                             person_outline
-                            </span> {{ $user->displayName() }}</span>
+                            </span> {{ $admin->displayName() }}</span>
         </h1>
     </div>
 
