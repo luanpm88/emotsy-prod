@@ -713,7 +713,13 @@ class Invoice extends Model
 
     public function getBillingName()
     {
-        return $this->billing_first_name . ' ' . $this->billing_last_name;
+        $lastNameFirst = get_localization_config('show_last_name_first', $this->customer->getLanguageCode());
+
+        if ($lastNameFirst) {
+            return htmlspecialchars(trim($this->billing_last_name . ' ' . $this->billing_first_name));
+        } else {
+            return htmlspecialchars(trim($this->billing_first_name . ' ' . $this->billing_last_name));
+        }
     }
 
     public static function createInvoice($type, $title, $description, $customer_id, $currency_id, $billing_address, $invoiceItems, $metadata)
