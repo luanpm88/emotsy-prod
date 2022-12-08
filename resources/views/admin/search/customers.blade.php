@@ -26,7 +26,7 @@
                 <div>
                     <div class="d-flex">
                         <label class="fw-600">
-                            {{ $customer->user->displayName() }}
+                            {{ $customer->displayName() }}
                         </label>
                     </div>
                         

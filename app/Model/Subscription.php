@@ -92,7 +92,7 @@ class Subscription extends Model implements HasQuotaInterface
 
     public function getCustomerName()
     {
-        return $this->customer->user->displayName();
+        return $this->customer->displayName();
     }
 
     /**

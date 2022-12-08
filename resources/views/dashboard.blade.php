@@ -302,7 +302,7 @@
                             <div class="card px-0 shadow-sm container-fluid">
                                 <div class="card-body pt-2">
                                     <div class="d-flex align-items-center pt-1">
-                                        <label class="panel-title text-semibold my-0 fw-600">{{ $log->customer->user->displayName() }}</label>
+                                        <label class="panel-title text-semibold my-0 fw-600">{{ $log->customer->displayName() }}</label>
                                         <div class="d-flex align-items-center ms-auto text-muted">
                                             <span style="font-size: 18px" class="material-symbols-rounded ms-auto me-2">
                                                 history

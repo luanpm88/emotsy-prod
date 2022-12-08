@@ -884,7 +884,7 @@ class MailList extends Model
         });
 
         $message->setSubject($template->subject);
-        $message->setTo([ $this->customer->user->email => $this->customer->user->displayName()]);
+        $message->setTo([ $this->customer->user->email => $this->customer->displayName()]);
         $mailer = App::make('xmailer');
         $result = $mailer->sendWithDefaultFromAddress($message);
 
@@ -902,7 +902,7 @@ class MailList extends Model
         $message = new ExtendedSwiftMessage();
         $message->setContentType('text/html; charset=utf-8');
         $message->setEncoder(new \Swift_Mime_ContentEncoder_PlainContentEncoder('8bit'));
-        $message->setTo([ $this->customer->user->email => $this->customer->user->displayName()]);
+        $message->setTo([ $this->customer->user->email => $this->customer->displayName()]);
 
         $template = \Acelle\Model\Layout::where('alias', 'unsubscribe_notification_for_list_owner')->first();
         $htmlContent = $template->content;

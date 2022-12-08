@@ -2054,4 +2054,34 @@ class Customer extends Model
 
         return $plan->isCustomTrackingDomainRequired();
     }
+
+    public function automationTemplates()
+    {
+        $subscription = $this->getCurrentActiveSubscription();
+
+        if (is_null($subscription)) {
+            throw new \Exception('Customer has no subscription!');
+        }
+
+        return $subscription->plan->automationTemplates();
+    }
+
+    public static function scopeByPlan($query, $plan)
+    {
+        $query = $query->whereHas('subscriptions', function ($q) use ($plan) {
+            $q->newOrActive()->where('plan_id', '=', $plan->id);
+        });
+    }
+
+    public function displayName()
+    {
+        $lastNameFirst = get_localization_config('show_last_name_first', $this->getLanguageCode());
+
+        if ($lastNameFirst) {
+            return htmlspecialchars(trim($this->user->last_name.' '.$this->user->first_name));
+        } else {
+            return htmlspecialchars(trim($this->user->first_name.' '.$this->user->last_name));
+        }
+
+    }
 }
