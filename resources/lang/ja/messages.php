@@ -1708,7 +1708,7 @@
   'plan.general.details' => 'プランの詳細',
   'plan.general.details.intro' => 'プランまたはサービスプランは、顧客に提供することに同意したサービスと制限のグループです。 計画を使用すると、提供するサービスを一元的に計画および標準化できます。 以下にプランの詳細を設定します。',
   'plan.general.overview' => '概要',
-  'plan.has_trial' => ':time for free',
+  'plan.has_trial' => ':time 無料期間',
   'plan.has_trial_period' => '試用期間を有効にする',
   'plan.hidden' => 'プランは首尾よく隠されました',
   'plan.hide' => 'このプランを隠す',
