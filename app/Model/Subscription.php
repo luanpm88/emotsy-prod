@@ -721,18 +721,18 @@ class Subscription extends Model implements HasQuotaInterface
 
     public function terminate()
     {
-        if (!$this->isActive()) {
-            throw new Exception('Subscription chỉ bị cancel now khi trạng thái là ACTIVE');
+        if (!$this->isActive() && !$this->isNew()) {
+            throw new Exception('Subscription chỉ bị cancel now khi trạng thái là ACTIVE or NEW');
         }
 
         \DB::transaction(function() {
             // Xoá NEW renew invoice hiện tại nếu có
-            if ($this->getItsOnlyUnpaidRenewInvoice()) {
+            if ($this->isActive() && $this->getItsOnlyUnpaidRenewInvoice()) {
                 $this->getItsOnlyUnpaidRenewInvoice()->delete();
             }
 
             // Xoá NEW change plan invoice hiện tại nếu có
-            if ($this->getItsOnlyUnpaidChangePlanInvoice()) {
+            if ($this->isActive() && $this->getItsOnlyUnpaidChangePlanInvoice()) {
                 $this->getItsOnlyUnpaidChangePlanInvoice()->delete();
             }
 

@@ -345,11 +345,21 @@ class CustomerController extends Controller
 
         // * Disable billing information: customer does not need to pay the invoice. Pass by the billing and checkout step
         // * assignPlan always create a subscription with an unpaid invoice.
-        // * So just fulfill the invoice
-        // * By design: when the subscription invoice is fulfilled, the callback function will be triggered
+        // * So just checkout the invoice with result = success
+        // * By design: when the subscription invoice checkout successfully, the callback function will be triggered
         //              to set subscription as active automatically.
         if ($request->disable_billing && $request->disable_billing !== 'false') {
-            $subscription->getUnpaidInvoice()->fulfill();
+            // the checkout need gateway method. offline payment gateway makes sense for this case
+            $gateway = \Acelle\Library\Facades\Billing::getGateway('offline');
+
+            // check if offline payment is not active
+            if (!$gateway->isActive()) {
+                throw new \Exception('You need to enable Offline payment in order to disable billing!');
+            }
+
+            $subscription->getItsOnlyUnpaidInitInvoice()->checkout($gateway, function() {
+                return new \Acelle\Library\TransactionVerificationResult(\Acelle\Library\TransactionVerificationResult::RESULT_DONE);
+            });
         }
 
         return \Response::json(array(

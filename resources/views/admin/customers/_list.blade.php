@@ -26,10 +26,11 @@ assignment_turned_in
                         <span class="text-muted2">{{ trans('messages.current_plan') }}</span>
                     @elseif ($customer->getNewSubscription())
                         <h5 class="no-margin stat-num">
-                            <span>
-                                <i class="material-symbols-rounded">assignment_turned_in</i>
-                                {{ $customer->getNewSubscription()->getPlanName() }}
-                            </span>
+                            <a href="{{ action('Admin\PlanController@general', $customer->getNewSubscription()->plan->uid) }}">
+                                <span><i class="material-symbols-rounded">
+                                assignment_turned_in
+                                </i> {{ $customer->getNewSubscription()->getPlanName() }}</span>
+                            </a>
                         </h5>
                         <span class="text-muted2">{{ trans('messages.subscription.pending') }}</span>
                     @else
