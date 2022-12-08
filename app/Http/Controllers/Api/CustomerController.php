@@ -342,7 +342,7 @@ class CustomerController extends Controller
             return \Response::json(array('status' => 0, 'message' => 'Plan is not active'), 404);
         }
         
-        // check offline gateway id disale billing
+        // check offline gateway if disale billing
         if ($request->disable_billing && $request->disable_billing !== 'false') {
             // check if offline payment is not active
             if (!$offlineGateway->isActive() || !\Acelle\Library\Facades\Billing::isGatewayEnabled($offlineGateway)) {
