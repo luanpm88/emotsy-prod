@@ -57,24 +57,45 @@
 manage_accounts
 </span> {{ trans('messages.admin_info') }}</h3>
 	<div class="row">
-        <div class="col-md-6">
-            @include('helpers.form_control', [
-                'type' => 'text',
-                'name' => 'first_name',
-                'value' => (isset($site_info["first_name"]) ? $site_info["first_name"] : ""),
-                'help_class' => 'install',
-                'rules' => $rules
-            ])
-        </div>
-        <div class="col-md-6">
-            @include('helpers.form_control', [
-                'type' => 'text',
-                'name' => 'last_name',
-                'value' => (isset($site_info["last_name"]) ? $site_info["last_name"] : ""),
-                'help_class' => 'install',
-                'rules' => $rules
-            ])
-        </div>
+        @if (get_localization_config('show_last_name_first', config('app.locale')))
+            <div class="col-md-6">
+                @include('helpers.form_control', [
+                    'type' => 'text',
+                    'name' => 'last_name',
+                    'value' => (isset($site_info["last_name"]) ? $site_info["last_name"] : ""),
+                    'help_class' => 'install',
+                    'rules' => $rules
+                ])
+            </div>
+            <div class="col-md-6">
+                @include('helpers.form_control', [
+                    'type' => 'text',
+                    'name' => 'first_name',
+                    'value' => (isset($site_info["first_name"]) ? $site_info["first_name"] : ""),
+                    'help_class' => 'install',
+                    'rules' => $rules
+                ])
+            </div>
+        @else 
+            <div class="col-md-6">
+                @include('helpers.form_control', [
+                    'type' => 'text',
+                    'name' => 'first_name',
+                    'value' => (isset($site_info["first_name"]) ? $site_info["first_name"] : ""),
+                    'help_class' => 'install',
+                    'rules' => $rules
+                ])
+            </div>
+            <div class="col-md-6">
+                @include('helpers.form_control', [
+                    'type' => 'text',
+                    'name' => 'last_name',
+                    'value' => (isset($site_info["last_name"]) ? $site_info["last_name"] : ""),
+                    'help_class' => 'install',
+                    'rules' => $rules
+                ])
+            </div>
+        @endif
     </div>
         
     <div class="row">
