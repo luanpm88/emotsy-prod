@@ -1581,7 +1581,7 @@ class SendingServer extends Model implements HasQuotaInterface
 
     public function getTypeName()
     {
-        return trans('messages.' . $this->type);
+        return trans('messages.sending_server.type.' . $this->type);
     }
 
     public function allowOtherSendingDomains()
