@@ -10,7 +10,7 @@
 @endsection
 
 @section('content')
-    <h1 class="mb-2 mt-4">{{ trans('messages.backend_dashboard_hello', ['name' => Auth::user()->displayName()]) }}</h1>
+    <h1 class="mb-2 mt-4">{{ trans('messages.backend_dashboard_hello', ['name' => Auth::user()->admin->displayName()]) }}</h1>
     <p>{{ trans('messages.backend_dashboard_welcome') }}</p>
 
     @include('admin.notifications._top', ['notifications' => $notifications])

@@ -2082,6 +2082,5 @@ class Customer extends Model
         } else {
             return htmlspecialchars(trim($this->user->first_name.' '.$this->user->last_name));
         }
-
     }
 }

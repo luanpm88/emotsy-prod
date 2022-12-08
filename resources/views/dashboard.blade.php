@@ -10,7 +10,7 @@
 @endsection
 
 @section('content')
-    <h2 class="mt-4 pt-2">{!! trans('messages.frontend_dashboard_hello', ['name' => Auth::user()->displayName()]) !!}</h2>
+    <h2 class="mt-4 pt-2">{!! trans('messages.frontend_dashboard_hello', ['name' => Auth::user()->customer->displayName()]) !!}</h2>
     <p>{!! trans('messages.frontend_dashboard_welcome') !!}</p>
 
     <h3 class="mt-5 mb-3">

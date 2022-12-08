@@ -10,7 +10,7 @@
             max-width: 100%;
             overflow: hidden;
             text-overflow: ellipsis;
-        ">{{ Auth::user()->displayName() }}</span>
+        ">{{ Auth::user()->customer->displayName() }}</span>
         @if (Auth::user()->customer->hasSubscriptionNotice())
             <i class="material-symbols-rounded customer-warning-icon text-danger" style="right: 3px!important;
             color: rgb(236, 124, 124)!important;
@@ -34,7 +34,7 @@
                 </div>
                 <div class="user-menu-titles">
                     <a href="{{ action('AccountController@profile') }}" class="fs-6 fw-600 d-flex align-items-center">
-                        <span class="me-3">{{ Auth::user()->displayName() }}</span>
+                        <span class="me-3">{{ Auth::user()->customer->displayName() }}</span>
                     </a>
                     <p class="mb-1 small text-muted">{{ Auth::user()->email }}</p>
                     @if (Auth::user()->customer->status) 
