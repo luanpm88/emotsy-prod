@@ -47,24 +47,46 @@
                             {{ csrf_field() }}
 
                             <div class="row">
-                                <div class="col-md-6">
-                                    @include('helpers.form_control', [
-                                        'type' => 'text',
-                                        'name' => 'billing_first_name',
-                                        'value' => request()->billing_first_name ? request()->billing_first_name : ($invoice->hasBillingInformation() ? $invoice->billing_first_name : ($billingAddress ? $billingAddress->first_name : '')),
-                                        'label' => trans('messages.first_name'),
-                                        'rules' => ['billing_first_name' => 'required'],
-                                    ])
-                                </div>
-                                <div class="col-md-6">
-                                    @include('helpers.form_control', [
-                                        'type' => 'text',
-                                        'name' => 'billing_last_name',
-                                        'value' => request()->billing_last_name ? request()->billing_last_name : ($invoice->hasBillingInformation() ? $invoice->billing_last_name : ($billingAddress ? $billingAddress->last_name : '')),
-                                        'label' => trans('messages.last_name'),
-                                        'rules' => ['billing_last_name' => 'required'],
-                                    ])
-                                </div>
+                                @if (get_localization_config('show_last_name_first', Auth()->user()->customer->getLanguageCode()))
+                                    <div class="col-md-6">
+                                        @include('helpers.form_control', [
+                                            'type' => 'text',
+                                            'name' => 'billing_last_name',
+                                            'value' => request()->billing_last_name ? request()->billing_last_name : ($invoice->hasBillingInformation() ? $invoice->billing_last_name : ($billingAddress ? $billingAddress->last_name : '')),
+                                            'label' => trans('messages.last_name'),
+                                            'rules' => ['billing_last_name' => 'required'],
+                                        ])
+                                    </div>
+                                    <div class="col-md-6">
+                                        @include('helpers.form_control', [
+                                            'type' => 'text',
+                                            'name' => 'billing_first_name',
+                                            'value' => request()->billing_first_name ? request()->billing_first_name : ($invoice->hasBillingInformation() ? $invoice->billing_first_name : ($billingAddress ? $billingAddress->first_name : '')),
+                                            'label' => trans('messages.first_name'),
+                                            'rules' => ['billing_first_name' => 'required'],
+                                        ])
+                                    </div>
+                                @else 
+                                    <div class="col-md-6">
+                                        @include('helpers.form_control', [
+                                            'type' => 'text',
+                                            'name' => 'billing_first_name',
+                                            'value' => request()->billing_first_name ? request()->billing_first_name : ($invoice->hasBillingInformation() ? $invoice->billing_first_name : ($billingAddress ? $billingAddress->first_name : '')),
+                                            'label' => trans('messages.first_name'),
+                                            'rules' => ['billing_first_name' => 'required'],
+                                        ])
+                                    </div>
+                                    <div class="col-md-6">
+                                        @include('helpers.form_control', [
+                                            'type' => 'text',
+                                            'name' => 'billing_last_name',
+                                            'value' => request()->billing_last_name ? request()->billing_last_name : ($invoice->hasBillingInformation() ? $invoice->billing_last_name : ($billingAddress ? $billingAddress->last_name : '')),
+                                            'label' => trans('messages.last_name'),
+                                            'rules' => ['billing_last_name' => 'required'],
+                                        ])
+                                    </div>
+                                @endif
+                                    
                             </div>
 
                             <div class="row">
