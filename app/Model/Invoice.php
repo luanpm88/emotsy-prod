@@ -281,13 +281,13 @@ class Invoice extends Model
         if (!$this->isNew()) {
             throw new \Exception("Trying to approve an invoice that is not NEW (Invoice ID: {$this->id}, status: {$this->status}");
         }
-        
+
         // for only new invoice
         if (!$this->getPendingTransaction()) {
             throw new \Exception("Trying to approve an invoice that does not have a pending transaction (Invoice ID: {$this->id}, status: {$this->status}");
         }
-        
-        \DB::transaction(function() {
+
+        \DB::transaction(function () {
             // fulfill invoice
             $this->fulfill();
 
@@ -316,13 +316,13 @@ class Invoice extends Model
         if (!$this->isNew()) {
             throw new \Exception("Trying to approve an invoice that is not NEW (Invoice ID: {$this->id}, status: {$this->status}");
         }
-        
+
         // for only new invoice
         if (!$this->getPendingTransaction()) {
             throw new \Exception("Trying to approve an invoice that does not have a pending transaction (Invoice ID: {$this->id}, status: {$this->status}");
         }
 
-        \DB::transaction(function() use ($error) {
+        \DB::transaction(function () use ($error) {
             // fulfill invoice
             $this->payFailed($error);
 
@@ -349,7 +349,7 @@ class Invoice extends Model
     public function fulfill()
     {
         $invoice = $this;
-        \DB::transaction(function() use (&$invoice) {
+        \DB::transaction(function () use (&$invoice) {
             // set invoice status as paid
             $invoice->setPaid();
 
@@ -560,7 +560,7 @@ class Invoice extends Model
     public function checkout($gateway, $payCallback)
     {
         $invoice = $this;
-        \DB::transaction(function() use ($gateway, $invoice, $payCallback) {
+        \DB::transaction(function () use ($gateway, $invoice, $payCallback) {
             $invoice->createPendingTransaction($gateway);
 
             // action by type
@@ -650,7 +650,7 @@ class Invoice extends Model
 
     public function cancel()
     {
-        \DB::transaction(function() {
+        \DB::transaction(function () {
             // Log
             switch ($this->type) {
                 case Invoice::TYPE_NEW_SUBSCRIPTION:
@@ -677,7 +677,7 @@ class Invoice extends Model
 
         switch ($this->type) {
             case self::TYPE_NEW_SUBSCRIPTION:
-                
+
                 break;
             case self::TYPE_RENEW_SUBSCRIPTION:
                 // do nothing

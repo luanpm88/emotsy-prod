@@ -197,9 +197,9 @@ class SubscriptionController extends Controller
         return redirect()->action('SubscriptionController@index');
     }
 
-    
 
-    
+
+
 
     /**
      * Change plan.
@@ -227,10 +227,10 @@ class SubscriptionController extends Controller
             try {
                 $changePlanInvoice = null;
 
-                \DB::transaction(function() use ($subscription, $newPlan, &$changePlanInvoice) {
+                \DB::transaction(function () use ($subscription, $newPlan, &$changePlanInvoice) {
                     // set invoice as pending
                     $changePlanInvoice = $subscription->createChangePlanInvoice($newPlan);
-    
+
                     // Log
                     SubscriptionFacade::log($subscription, SubscriptionLog::TYPE_CHANGE_PLAN_INVOICE, $changePlanInvoice->uid, [
                         'plan' => $subscription->getPlanName(),
@@ -238,7 +238,7 @@ class SubscriptionController extends Controller
                         'amount' => $changePlanInvoice->formattedTotal(),
                     ]);
                 });
-                
+
                 // return to subscription
                 return redirect()->action('SubscriptionController@payment', [
                     'invoice_uid' => $changePlanInvoice->uid,
