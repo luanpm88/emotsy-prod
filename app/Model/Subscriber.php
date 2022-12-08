@@ -740,7 +740,15 @@ class Subscriber extends Model
 
     public function getFullName($default = null)
     {
-        $full = trim($this->getValueByTag('LAST_NAME').' '.$this->getValueByTag('FIRST_NAME'));
+        $lastNameFirst = get_localization_config('show_last_name_first', $this->mailList->customer->getLanguageCode());
+
+        if ($lastNameFirst) {
+            $full = trim($this->getValueByTag('LAST_NAME').' '.$this->getValueByTag('FIRST_NAME'));
+        } else {
+            $full = trim($this->getValueByTag('FIRST_NAME').' '.$this->getValueByTag('LAST_NAME'));
+        }
+
+        
         if (empty($full)) {
             return $default;
         } else {
