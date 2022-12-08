@@ -341,7 +341,7 @@ class CustomerController extends Controller
         if (!$plan->isActive()) {
             return \Response::json(array('status' => 0, 'message' => 'Plan is not active'), 404);
         }
-        
+
         // check offline gateway if disale billing
         if ($request->disable_billing && $request->disable_billing !== 'false') {
             // check if offline payment is not active
@@ -349,9 +349,9 @@ class CustomerController extends Controller
                 return \Response::json(array('status' => 0, 'message' => 'You need to enable Offline payment in order to disable billing!'), 404);
             }
         }
-        
+
         // rollback if something went wrong
-        \DB::transaction(function() use ($plan, $customer, $request, $offlineGateway) {
+        \DB::transaction(function () use ($plan, $customer, $request, $offlineGateway) {
             $subscription = $customer->assignPlan($plan);
 
             // * Disable billing information: customer does not need to pay the invoice. Pass by the billing and checkout step
@@ -360,7 +360,7 @@ class CustomerController extends Controller
             // * By design: when the subscription invoice checkout successfully, the callback function will be triggered
             //              to set subscription as active automatically.
             if ($request->disable_billing && $request->disable_billing !== 'false') {
-                $subscription->getItsOnlyUnpaidInitInvoice()->checkout($offlineGateway, function() {
+                $subscription->getItsOnlyUnpaidInitInvoice()->checkout($offlineGateway, function () {
                     return new \Acelle\Library\TransactionVerificationResult(\Acelle\Library\TransactionVerificationResult::RESULT_DONE);
                 });
             }

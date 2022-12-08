@@ -6,7 +6,8 @@ use Acelle\Model\Subscription;
 use Acelle\Library\TransactionVerificationResult;
 use Acelle\Model\SubscriptionLog;
 
-class SubscriptionManager {
+class SubscriptionManager
+{
     public function checkExpiration()
     {
         $subscriptions = Subscription::active()->get();
@@ -60,7 +61,7 @@ class SubscriptionManager {
             // );
 
             // Trường hợp invoice total = 0 thì pay nothing và set done luôn cho renew invoice
-            $unpaidRenewInvoice->checkout($customer->getPreferredPaymentGateway(), function($invoice) {
+            $unpaidRenewInvoice->checkout($customer->getPreferredPaymentGateway(), function ($invoice) {
                 return new TransactionVerificationResult(TransactionVerificationResult::RESULT_DONE);
             });
 
