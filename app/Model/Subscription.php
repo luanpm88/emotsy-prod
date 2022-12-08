@@ -722,6 +722,11 @@ class Subscription extends Model implements HasQuotaInterface
         }
 
         \DB::transaction(function () {
+            // Xoá NEW init invoice hiện tại nếu có
+            if ($this->isNew() && $this->getItsOnlyUnpaidInitInvoice()) {
+                $this->getItsOnlyUnpaidInitInvoice()->delete();
+            }
+
             // Xoá NEW renew invoice hiện tại nếu có
             if ($this->isActive() && $this->getItsOnlyUnpaidRenewInvoice()) {
                 $this->getItsOnlyUnpaidRenewInvoice()->delete();
