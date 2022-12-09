@@ -56,6 +56,11 @@ class Country extends Model
         return $options;
     }
 
+    public static function getJapan()
+    {
+        return self::where('code', '=', 'JP')->first();
+    }
+
     /**
      * Get all countries.
      *

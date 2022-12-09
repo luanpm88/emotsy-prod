@@ -49,6 +49,7 @@ class Contact extends Model
         'first_name' => 'required',
         'last_name' => 'required',
         'address_1' => 'required',
+        'state' => 'required',
         'city' => 'required',
         'zip' => 'required',
         'url' => 'nullable|regex:/^https{0,1}:\/\//',
