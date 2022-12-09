@@ -5,13 +5,19 @@ return [
     // Notice that any format key must  be present in the default '*' section
     // i.e. keys that are available in a specific locale like 'en', 'ja'...
     // but are not available in '*' shall be considered INVALID
-    // Use the following methods to work with datetime
+
+    // Get a localization setting by using the "get_localization_config()" helper
+    // For example:
     //
-    //    Customer::formatDateTime(Carbon $datetime, $name)
+    //     get_localization_config('get_localization_config', 'en')
+
+    // BTW, use the following methods to work with datetime
     //
-    //    or, for pages that are not associated to a customer/user (login, registration, etc.):
+    //     Customer::formatDateTime(Carbon $datetime, $name)
     //
-    //    format_datetime(Carbon $datetime, $name, $locale) || locale can be 'en', 'ja', etc.
+    // or, for pages that are not associated to a customer/user (login, registration, etc.):
+    //
+    //     format_datetime(Carbon $datetime, $name, $locale) || locale can be 'en', 'ja', etc.
     //
 
     // Defaut '*'
@@ -25,8 +31,15 @@ return [
         'number_decimal_separator' => '.',
         'number_thousands_separator' => ',',
         'show_last_name_first' => false,
+        'default_timezone' => env('APP_DEFAULT_TIMEZONE', 'UTC'),
     ],
 
+    // Add localization settings here for a given locale
+    //
+    // Note:
+    // Only add settings that are different than the default ones
+    // as the application will use default values (above) for settings
+    // that are not available in a specific locale.
     'ja' => [
         'date_full' => 'Y年m月d日',
         'date_short' => 'Y/m/d',
