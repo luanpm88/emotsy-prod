@@ -53,13 +53,13 @@ function initialize() {
 	@foreach ($campaign->locations()->get() as $key => $location)
 		@if (!empty($location->latitude) && !empty($location->longitude))
 			infowindows[{{ $key }}] = new google.maps.InfoWindow({
-				content: '<table><tr><td><strong>{{ trans('messages.ip') }}&nbsp;&nbsp;</td><td></strong>{{ $location->ip_address }}</td></tr><tr><td><strong>{{ trans('messages.email') }} &nbsp;&nbsp;</td><td> </strong> {{ $location->email }}</td></tr><tr><td><strong>{{ trans('messages.opened_at') }} &nbsp;&nbsp;</td><td> </strong> {{ Auth::user()->customer->formatDateTime(\Carbon\Carbon::parse($location->open_at),'datetime_full') }}</td><tr><td><strong>{{ trans('messages.area') }}</strong>&nbsp;&nbsp;</td><td>{{ $location->name() }}</td></tr></tr><td/table>'
+				content: '<table><tr><td><strong>{{ trans('messages.ip') }}&nbsp;&nbsp;</td><td></strong>{{ $location->ip_address }}</td></tr><tr><td><strong>{{ trans('messages.email') }} &nbsp;&nbsp;</td><td> </strong> {{ $location->email }}</td></tr><tr><td><strong>{{ trans('messages.opened_at') }} &nbsp;&nbsp;</td><td> </strong> {{ Auth::user()->customer->formatDateTime(\Carbon\Carbon::parse($location->open_at, 'UTC'),'datetime_full') }}</td><tr><td><strong>{{ trans('messages.area') }}</strong>&nbsp;&nbsp;</td><td>{{ $location->name() }}</td></tr></tr><td/table>'
 			});
 			// Add marker
 			markers[{{ $key }}] = new google.maps.Marker({
 				position: new google.maps.LatLng({{ $location->latitude }},{{ $location->longitude }}),
 				map: map,
-				//title: '{{ trans('messages.opened_at') }}: {{ Auth::user()->customer->formatDateTime(\Carbon\Carbon::parse($location->open_at), 'datetime_full') }}<br>{{ $location->name() }}'
+				//title: '{{ trans('messages.opened_at') }}: {{ Auth::user()->customer->formatDateTime(\Carbon\Carbon::parse($location->open_at, 'UTC'), 'datetime_full') }}<br>{{ $location->name() }}'
 			});
 			markers[{{ $key }}].addListener('click', function() {
 				Object.keys(infowindows).forEach(function (key) { 

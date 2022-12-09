@@ -79,7 +79,7 @@
                 class="xtooltip flex-fill"
             >
                 <label class="font-weight-semibold">
-                    {{ \Carbon\Carbon::parse($element['latest_activity'])->diffForHumans() }}
+                    {{ \Carbon\Carbon::parse($element['latest_activity'], 'UTC')->diffForHumans() }}
                 </label>
                 <desc>{{ trans('messages.automation.action.last_updated') }}</desc>
             </a>

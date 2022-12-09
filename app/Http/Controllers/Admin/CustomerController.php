@@ -435,10 +435,10 @@ class CustomerController extends Controller
 
         // columns
         for ($i = 4; $i >= 0; --$i) {
-            $result['columns'][] = \Carbon\Carbon::now()->subMonthsNoOverflow($i)->format('m/Y');
+            $result['columns'][] = \Carbon\Carbon::now('UTC')->subMonthsNoOverflow($i)->format('m/Y');
             $result['data'][] = \Acelle\Model\Customer::customersCountByTime(
-                \Carbon\Carbon::now()->subMonthsNoOverflow($i)->startOfMonth(),
-                \Carbon\Carbon::now()->subMonthsNoOverflow($i)->endOfMonth(),
+                \Carbon\Carbon::now('UTC')->subMonthsNoOverflow($i)->startOfMonth(),
+                \Carbon\Carbon::now('UTC')->subMonthsNoOverflow($i)->endOfMonth(),
                 $request->user()->admin
             );
         }

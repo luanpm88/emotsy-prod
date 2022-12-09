@@ -58,7 +58,7 @@ class CronJob extends Notification
             return false;
         }
 
-        $lastexec = \Carbon\Carbon::createFromTimestamp($timestamp);
+        $lastexec = \Carbon\Carbon::createFromTimestamp($timestamp, 'UTC');
         $checked = new \Carbon\Carbon(sprintf('%s ago', $diff));
 
         return $lastexec->gte($checked);

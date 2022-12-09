@@ -47,7 +47,7 @@
                     </div>
                 </div>
                 <div class="template-thumb-container">
-                    <img class="automation-template-thumb" src="{{ $email->getThumbUrl() }}?v={{ Carbon\Carbon::now() }}"
+                    <img class="automation-template-thumb" src="{{ $email->getThumbUrl() }}?v={{ Carbon\Carbon::now('UTC') }}"
                     />
                     <a
                         onclick="popupwindow('{{ action('Automation2Controller@templatePreview', [

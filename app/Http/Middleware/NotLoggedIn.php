@@ -26,13 +26,11 @@ class NotLoggedIn
         }
 
         // Language
-        try {
-            if ($language_code) {
-                \App::setLocale($language_code);
-                \Carbon\Carbon::setLocale($language_code);
-            }
-        } catch (\Exception $e) {
+        if ($language_code) {
+            \App::setLocale($language_code);
+            \Carbon\Carbon::setLocale($language_code);
         }
+
         return $next($request);
     }
 }

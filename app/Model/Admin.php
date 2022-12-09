@@ -299,7 +299,7 @@ class Admin extends Model
     public function subscriptionNotificationCount()
     {
         $query = $this->getAllSubscriptions()
-            ->where('subscriptions.ends_at', '>=', \Carbon\Carbon::now()->endOfDay())
+            ->where('subscriptions.ends_at', '>=', \Carbon\Carbon::now('UTC')->endOfDay())
             ->count();
 
         return $query == 0 ? '' : $query;
@@ -313,7 +313,7 @@ class Admin extends Model
     public function recentSubscriptions($number = 5)
     {
         $query = $this->getAllSubscriptions()
-            ->whereNull('subscriptions.updated_at')->orWhere('subscriptions.updated_at', '>=', \Carbon\Carbon::now())
+            ->whereNull('subscriptions.updated_at')->orWhere('subscriptions.updated_at', '>=', \Carbon\Carbon::now('UTC'))
             ->orderBy('subscriptions.created_at', 'desc')->limit($number);
 
         return $query->get();

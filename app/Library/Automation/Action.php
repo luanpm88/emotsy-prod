@@ -100,7 +100,7 @@ abstract class Action
 
     public function recordLastExecutedTime()
     {
-        $this->last_executed = Carbon::now()->timestamp;
+        $this->last_executed = Carbon::now('UTC')->timestamp;
     }
 
     public function hasChild($e)

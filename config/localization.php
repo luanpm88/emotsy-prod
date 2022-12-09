@@ -31,7 +31,6 @@ return [
         'number_decimal_separator' => '.',
         'number_thousands_separator' => ',',
         'show_last_name_first' => false,
-        'default_timezone' => env('APP_DEFAULT_TIMEZONE', 'UTC'),
     ],
 
     // Add localization settings here for a given locale

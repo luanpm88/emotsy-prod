@@ -28,6 +28,6 @@ class CronJobExecutedListener
      */
     public function handle(CronJobExecuted $event)
     {
-        Setting::set('cronjob_last_execution', \Carbon\Carbon::now()->timestamp);
+        Setting::set('cronjob_last_execution', \Carbon\Carbon::now('UTC')->timestamp);
     }
 }

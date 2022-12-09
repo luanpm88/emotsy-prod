@@ -584,7 +584,7 @@ class CampaignController extends Controller
         }
 
         // Get the run_at datetime in current customer timezone
-        $runAt = is_null($campaign->run_at) ? Carbon::now() : $campaign->run_at;
+        $runAt = is_null($campaign->run_at) ? Carbon::now($currentTimezone) : $campaign->run_at;
         $runAt->timezone($currentTimezone);
 
         $delivery_date = $runAt->format('Y-m-d');

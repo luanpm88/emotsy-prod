@@ -1148,51 +1148,6 @@ class SendingServer extends Model implements HasQuotaInterface
     }
 
     /**
-     * Get Mailgun domains info.
-     *
-     * @return array
-     */
-    public function getMailgunDomainInfo()
-    {
-        return [
-            [
-                'domain' => 'acellemail.com',
-                'created_at' => \Carbon\Carbon::now()->subDay(2),
-            ],
-            [
-                'domain' => 'bolero.vn',
-                'created_at' => \Carbon\Carbon::now()->subDay(13),
-            ],
-        ];
-    }
-
-    /**
-     * Get local identity info.
-     *
-     * @return array
-     */
-    public function getLocalIdentityInfo()
-    {
-        return [
-            [
-                'type' => 'domain',
-                'name' => 'acellemail.com',
-                'created_at' => \Carbon\Carbon::now()->subDay(2),
-            ],
-            [
-                'type' => 'domain',
-                'name' => 'bolero.vn',
-                'created_at' => \Carbon\Carbon::now()->subDay(13),
-            ],
-            [
-                'type' => 'email',
-                'name' => 'system@acellemail.com',
-                'created_at' => \Carbon\Carbon::now()->subDay(13),
-            ],
-        ];
-    }
-
-    /**
      * Add domain.
      *
      * @return array

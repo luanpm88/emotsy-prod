@@ -38,7 +38,7 @@ class AudienceController extends Controller
 
         // columns
         for ($i = 15; $i >= 0; --$i) {
-            $time = Carbon::now()->timezone($currentTimezone)->subMonths($i);
+            $time = Carbon::now($currentTimezone)->subMonths($i);
             $result['columns'][] = $time->format('y M');
             $times[] = $time;
         }
@@ -46,13 +46,13 @@ class AudienceController extends Controller
         // data
         foreach ($times as $time) {
             $result['total'][] = \Acelle\Model\Customer::subscribersCountByTime(
-                \Carbon\Carbon::now()->subYears(1000),
+                \Carbon\Carbon::now($currentTimezone)->subYears(1000),
                 $time->endOfDay(),
                 $request->user()->customer->id
             );
 
             $result['unsubscribed'][] = \Acelle\Model\Customer::subscribersCountByTime(
-                \Carbon\Carbon::now()->subYears(1000),
+                \Carbon\Carbon::now($currentTimezone)->subYears(1000),
                 $time->endOfDay(),
                 $request->user()->customer->id,
                 null,
