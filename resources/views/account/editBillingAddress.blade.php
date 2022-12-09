@@ -105,19 +105,25 @@
                     // 'readonly' => request()->same_as_contact == 'true',
                 ])
             </div>
-            <div class="col-md-6">
-                @include('helpers.form_control', [
-                    'type' => 'select',
-                    'name' => 'country_id',
-                    'value' => $billingAddress->country_id,
-                    'label' => trans('messages.country'),
-                    'options' => Acelle\Model\Country::getSelectOptions(),
-                    'include_blank' => trans('messages.select_country'),
-                    'help_class' => 'billing_address',
-                    'rules' => ['country_id' => 'required'],
-                    // 'readonly' => request()->same_as_contact == 'true',
-                ])
-            </div>
+
+            @if (config('custom.japan'))
+                <input type="hidden" name="country_id" value="{{ Acelle\Model\Country::getJapan()->id }}" />
+            @else
+                <div class="col-md-6">
+                    @include('helpers.form_control', [
+                        'type' => 'select',
+                        'name' => 'country_id',
+                        'value' => $billingAddress->country_id,
+                        'label' => trans('messages.country'),
+                        'options' => Acelle\Model\Country::getSelectOptions(),
+                        'include_blank' => trans('messages.select_country'),
+                        'help_class' => 'billing_address',
+                        'rules' => ['country_id' => 'required'],
+                        // 'readonly' => request()->same_as_contact == 'true',
+                    ])
+                </div>
+            @endif
+            
         </div>
 
         <div class="mt-4">

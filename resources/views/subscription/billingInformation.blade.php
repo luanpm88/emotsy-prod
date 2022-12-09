@@ -119,17 +119,23 @@
                                         'rules' => ['billing_address' => 'required'],
                                     ])
                                 </div>
-                                <div class="col-md-6">
-                                    @include('helpers.form_control', [
-                                        'type' => 'select',
-                                        'name' => 'billing_country_id',
-                                        'value' => request()->billing_country_id ? request()->billing_country_id : ($invoice->hasBillingInformation() ? $invoice->billing_country_id : ($billingAddress ? $billingAddress->country_id : '')),
-                                        'label' => trans('messages.country'),
-                                        'options' => Acelle\Model\Country::getSelectOptions(),
-                                        'include_blank' => trans('messages.select_country'),
-                                        'rules' => ['billing_country_id' => 'required'],
-                                    ])
-                                </div>
+
+                                @if (config('custom.japan'))
+                                    <input type="hidden" name="billing_country_id" value="{{ Acelle\Model\Country::getJapan()->id }}" />
+                                @else
+                                    <div class="col-md-6">
+                                        @include('helpers.form_control', [
+                                            'type' => 'select',
+                                            'name' => 'billing_country_id',
+                                            'value' => request()->billing_country_id ? request()->billing_country_id : ($invoice->hasBillingInformation() ? $invoice->billing_country_id : ($billingAddress ? $billingAddress->country_id : '')),
+                                            'label' => trans('messages.country'),
+                                            'options' => Acelle\Model\Country::getSelectOptions(),
+                                            'include_blank' => trans('messages.select_country'),
+                                            'rules' => ['billing_country_id' => 'required'],
+                                        ])
+                                    </div>
+                                @endif
+                                
                             </div>
 
                             <div class="mt-2">
