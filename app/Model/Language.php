@@ -559,4 +559,9 @@ class Language extends Model
 
         return $validator;
     }
+
+    public static function getJapan()
+    {
+        return self::where('code','=','ja')->first();
+    }
 }

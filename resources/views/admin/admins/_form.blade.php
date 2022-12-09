@@ -66,10 +66,19 @@
             @endif
 
 
+            @if (config('custom.japan'))
+                <input type="hidden" name="timezone" value="Asia/Tokyo" />
+            @else
+                @include('helpers.form_control', ['type' => 'select', 'name' => 'timezone', 'value' => $admin->timezone, 'options' => Tool::getTimezoneSelectOptions(), 'include_blank' => trans('messages.choose'), 'rules' => $admin->user->rules()])
+            @endif
+			
 
-			@include('helpers.form_control', ['type' => 'select', 'name' => 'timezone', 'value' => $admin->timezone, 'options' => Tool::getTimezoneSelectOptions(), 'include_blank' => trans('messages.choose'), 'rules' => $admin->user->rules()])
-
-			@include('helpers.form_control', ['type' => 'select', 'name' => 'language_id', 'label' => trans('messages.language'), 'value' => $admin->language_id, 'options' => Acelle\Model\Language::getSelectOptions(), 'include_blank' => trans('messages.choose'), 'rules' => $admin->user->rules()])
+            @if (config('custom.japan'))
+                <input type="hidden" name="language_id" value="{{ Acelle\Model\Language::getJapan()->id }}" />
+            @else
+                @include('helpers.form_control', ['type' => 'select', 'name' => 'language_id', 'label' => trans('messages.language'), 'value' => $admin->language_id, 'options' => Acelle\Model\Language::getSelectOptions(), 'include_blank' => trans('messages.choose'), 'rules' => $admin->user->rules()])
+            @endif
+			
 
 			@if (!$admin->hasCustomerAccount())
 				<div class="form-group checkbox-right-switch">

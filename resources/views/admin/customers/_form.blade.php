@@ -59,11 +59,20 @@ delete_outline
                     </div>
                 </div>
             @endif
+            
+            @if (config('custom.japan'))
+                <input type="hidden" name="timezone" value="Asia/Tokyo" />
+            @else
+                @include('helpers.form_control', ['type' => 'select', 'name' => 'timezone', 'value' => $customer->timezone, 'options' => Tool::getTimezoneSelectOptions(), 'include_blank' => trans('messages.choose'), 'rules' => $customer->user->rules()])
+            @endif
+                
 
-
-            @include('helpers.form_control', ['type' => 'select', 'name' => 'timezone', 'value' => $customer->timezone, 'options' => Tool::getTimezoneSelectOptions(), 'include_blank' => trans('messages.choose'), 'rules' => $customer->user->rules()])
-
-            @include('helpers.form_control', ['type' => 'select', 'name' => 'language_id', 'label' => trans('messages.language'), 'value' => $customer->language_id, 'options' => Acelle\Model\Language::getSelectOptions(), 'include_blank' => trans('messages.choose'), 'rules' => $customer->user->rules()])
+            @if (config('custom.japan'))
+                <input type="hidden" name="language_id" value="{{ Acelle\Model\Language::getJapan()->id }}" />
+            @else
+                @include('helpers.form_control', ['type' => 'select', 'name' => 'language_id', 'label' => trans('messages.language'), 'value' => $customer->language_id, 'options' => Acelle\Model\Language::getSelectOptions(), 'include_blank' => trans('messages.choose'), 'rules' => $customer->user->rules()])
+            @endif
+            
 
         </div>
     </div>

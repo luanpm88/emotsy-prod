@@ -34,15 +34,20 @@
 
             </div>
             
-            @include('helpers.form_control', [
-                'type' => 'select',
-                'name' => 'timezone',
-                'value' => \Auth::user()->customer->timezone,
-                'options' => Tool::getTimezoneSelectOptions(),
-                'include_blank' => trans('messages.choose'),
-                'rules' => $automation->rules(),
-                'disabled' => true,
-            ])
+            @if (config('custom.japan'))
+                <input type="hidden" name="timezone" value="Asia/Tokyo" />
+            @else
+                @include('helpers.form_control', [
+                    'type' => 'select',
+                    'name' => 'timezone',
+                    'value' => \Auth::user()->customer->timezone,
+                    'options' => Tool::getTimezoneSelectOptions(),
+                    'include_blank' => trans('messages.choose'),
+                    'rules' => $automation->rules(),
+                    'disabled' => true,
+                ])
+            @endif
+                
         </div>
     </div>
     

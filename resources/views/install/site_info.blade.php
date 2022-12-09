@@ -121,9 +121,14 @@ manage_accounts
     </div>
 			
     <div class="row">
-        <div class="col-md-6">
-			@include('helpers.form_control', ['type' => 'select', 'name' => 'timezone', 'value' => (isset($site_info["timezone"]) ? $site_info["timezone"] : ""), 'options' => Tool::getTimezoneSelectOptions(), 'include_blank' => trans('messages.choose'), 'rules' => $rules])
-        </div>
+        @if (config('custom.japan'))
+            <input type="hidden" name="timezone" value="Asia/Tokyo" />
+        @else
+            <div class="col-md-6">
+                @include('helpers.form_control', ['type' => 'select', 'name' => 'timezone', 'value' => (isset($site_info["timezone"]) ? $site_info["timezone"] : ""), 'options' => Tool::getTimezoneSelectOptions(), 'include_blank' => trans('messages.choose'), 'rules' => $rules])
+            </div>
+        @endif
+            
 		<div class="col-md-6">
 			<div class="form-group checkbox-right-switch">
 				@include('helpers.form_control', [
