@@ -1843,7 +1843,7 @@ class MailList extends Model
                 $fixedValues,
                 [
                     'id BIGINT',
-                    'value VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci'
+                    'value VARCHAR(191) CHARACTER SET utf8 COLLATE utf8_unicode_ci'
                 ],
                 function ($table) {
                     DB::statement(sprintf("UPDATE %s sf INNER JOIN %s t ON sf.id = t.id SET sf.value = t.value", table('subscriber_fields'), table($table)));
