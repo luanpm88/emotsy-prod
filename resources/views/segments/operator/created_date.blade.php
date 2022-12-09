@@ -28,7 +28,7 @@
                 @php
                     if (isset($value) && $condition->operator !== 'created_date_last_x_days') {
                         $zone = Auth::user()->customer->getTimezone();
-                        $date = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $value, 'UTC');
+                        $date = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $value);
                         $date->setTimezone($zone);
                         $value = $date->format('Y-m-d, H:i');
                     }

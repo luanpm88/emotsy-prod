@@ -76,6 +76,9 @@ class CronJob extends Notification
             return '#unknown';
         }
 
+        // Return the datetime object with selected timezone
+        // However, make sure the cronjob_last_execution was previously saved in UTC
+        // As the createFromTimestamp() assumes that the timestamp passed to it is in UTC
         return \Carbon\Carbon::createFromTimestamp($timestamp)->toDateTimeString();
     }
 }

@@ -298,8 +298,9 @@ class Admin extends Model
      */
     public function subscriptionNotificationCount()
     {
+        // Notice that timezone of datetime object passed to ->where() must match Laravel's app.timezone
         $query = $this->getAllSubscriptions()
-            ->where('subscriptions.ends_at', '>=', \Carbon\Carbon::now('UTC')->endOfDay())
+            ->where('subscriptions.ends_at', '>=', \Carbon\Carbon::now()->endOfDay())
             ->count();
 
         return $query == 0 ? '' : $query;
@@ -313,7 +314,7 @@ class Admin extends Model
     public function recentSubscriptions($number = 5)
     {
         $query = $this->getAllSubscriptions()
-            ->whereNull('subscriptions.updated_at')->orWhere('subscriptions.updated_at', '>=', \Carbon\Carbon::now('UTC'))
+            ->whereNull('subscriptions.updated_at')->orWhere('subscriptions.updated_at', '>=', \Carbon\Carbon::now())
             ->orderBy('subscriptions.created_at', 'desc')->limit($number);
 
         return $query->get();

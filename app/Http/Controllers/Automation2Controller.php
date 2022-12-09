@@ -408,8 +408,8 @@ class Automation2Controller extends Controller
             if (isset($options['date'])) {
                 $date = \Carbon\Carbon::createFromFormat('Y-m-d H:i', $options['date'] . ' ' . $options['at'], $customer->timezone);
 
-                $options['date'] = $date->timezone('UTC')->format(config('custom.date_format'));
-                $options['at'] = $date->timezone('UTC')->format(config('custom.time_format'));
+                $options['date'] = $date->format(config('custom.date_format'));
+                $options['at'] = $date->format(config('custom.time_format'));
             }
         }
 

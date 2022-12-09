@@ -663,6 +663,8 @@ class Automation2 extends Model
         $today = Carbon::now($this->customer->timezone)->modify($interval);
         $dobFieldUid = $this->getTriggerAction()->getOptions()['field'];
         $dobFieldId = Field::findByUid($dobFieldUid)->id;
+
+        // TODO: convert to user's timezone first!!!
         $subscribers = $this->subscribersNotTriggeredThisYear()
             ->join('subscriber_fields', 'subscribers.id', 'subscriber_fields.subscriber_id')
             ->where('subscriber_fields.field_id', $dobFieldId)

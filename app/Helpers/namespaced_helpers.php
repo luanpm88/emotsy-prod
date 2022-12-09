@@ -224,7 +224,7 @@ function forceAddCustomerToUnlimitedPlan($customer)
     // Default subscription
     $subscription = new \Acelle\Model\Subscription();
     $subscription->status = \Acelle\Model\Subscription::STATUS_ACTIVE;
-    $subscription->current_period_ends_at = \Carbon\Carbon::now('UTC')->addYears(1000);
+    $subscription->current_period_ends_at = \Carbon\Carbon::now()->addYears(1000);
     $subscription->plan_id = \Acelle\Model\Plan::UNLIMITED_PLAN_ID;
     $subscription->customer_id = $customer->id;
     $subscription->save();

@@ -27,6 +27,7 @@ class Wait extends Action
             return $check;
         }
 
+        // Safe to run in console: convert to UTC
         $now = Carbon::now('UTC');
         $waitDuration = $this->getOption('time');  // 1 hour, 1 day, 2 days
         $parentExecutionTime = Carbon::createFromTimestamp($this->getParent()->getLastExecuted(), 'UTC');

@@ -576,7 +576,7 @@ class CampaignController extends Controller
             } else {
                 $runAtStr = $request->delivery_date.' '.$request->delivery_time;
                 $runAt = Carbon::createFromFormat('Y-m-d H:i', $runAtStr, $currentTimezone);
-                $campaign->run_at = $runAt->timezone('UTC'); // store in UTC
+                $campaign->run_at = $runAt; // store in UTC
             }
 
             $campaign->save();

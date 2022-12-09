@@ -342,7 +342,7 @@ class Segment extends Model
                         $conditions[] = '(UNIX_TIMESTAMP('.\DB::getTablePrefix().'subscribers.created_at) < '.$ts.')';
                         break;
                     case 'created_date_last_x_days':
-                        $ts = \Carbon\Carbon::now()->subDays($condition->value)->timestamp;
+                        $ts = \Carbon\Carbon::now()->subDays($condition->value)->timezone('UTC')->timestamp;
                         $conditions[] = '(UNIX_TIMESTAMP('.\DB::getTablePrefix().'subscribers.created_at) >= '.$ts.')';
                         break;
                     default:

@@ -100,6 +100,7 @@ abstract class Action
 
     public function recordLastExecutedTime()
     {
+        // Correct: for storing a string as datetime, use the conventional UTC timezone
         $this->last_executed = Carbon::now('UTC')->timestamp;
     }
 

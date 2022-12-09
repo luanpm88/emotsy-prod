@@ -197,7 +197,7 @@ class Subscription extends Model implements HasQuotaInterface
      */
     public function createInitInvoiceWithoutTrial()
     {
-        $endDate = $this->customer->formatDateTime($this->getPeriodEndsAt(Carbon::now('UTC')), "datetime_full");
+        $endDate = $this->customer->formatDateTime($this->getPeriodEndsAt(Carbon::now()), "datetime_full");
 
         // create init invoice
         return Invoice::createInvoice(
@@ -232,7 +232,7 @@ class Subscription extends Model implements HasQuotaInterface
      */
     public function createInitInvoiceWithTrial()
     {
-        $endDate = $this->customer->formatDateTime($this->getTrialPeriodEndsAt(Carbon::now('UTC')), "datetime_full");
+        $endDate = $this->customer->formatDateTime($this->getTrialPeriodEndsAt(Carbon::now()), "datetime_full");
 
         // create init invoice
         return Invoice::createInvoice(
@@ -323,7 +323,7 @@ class Subscription extends Model implements HasQuotaInterface
             $description = trans('messages.change_plan.desc', [
                 'plan' => $this->plan->name,
                 'newPlan' => $newPlan->name,
-                'date' => $this->customer->formatDateTime(Carbon::parse($metadata['endsAt'], 'UTC'), 'datetime_full'),
+                'date' => $this->customer->formatDateTime(Carbon::parse($metadata['endsAt']), 'datetime_full'),
             ]),
             $customer_id = $this->customer->id,
             $currency_id = $this->plan->currency_id,
@@ -402,7 +402,7 @@ class Subscription extends Model implements HasQuotaInterface
      */
     public function reachDueDate()
     {
-        return Carbon::now('UTC')->greaterThanOrEqualTo(
+        return Carbon::now()->greaterThanOrEqualTo(
             $this->getDueDate()
         );
     }
@@ -508,9 +508,9 @@ class Subscription extends Model implements HasQuotaInterface
         }
 
         if ($this->plan->hasTrial()) {
-            $this->current_period_ends_at = $this->getTrialPeriodEndsAt(Carbon::now('UTC'));
+            $this->current_period_ends_at = $this->getTrialPeriodEndsAt(Carbon::now());
         } else {
-            $this->current_period_ends_at = $this->getPeriodEndsAt(Carbon::now('UTC'));
+            $this->current_period_ends_at = $this->getPeriodEndsAt(Carbon::now());
         }
 
         $this->status = self::STATUS_ACTIVE;
@@ -569,7 +569,7 @@ class Subscription extends Model implements HasQuotaInterface
     public function isExpired()
     {
         // Get the current datetime
-        $now = Carbon::now('UTC');
+        $now = Carbon::now();
 
         // Check if $now is Greater or Equal to...
         return $now->gte($this->current_period_ends_at);
@@ -711,7 +711,7 @@ class Subscription extends Model implements HasQuotaInterface
 
             // set status = ended. Lưu thời điểm bị end lại trong cột cancelled_at
             $this->setCancelled();
-            $this->cancelled_at = \Carbon\Carbon::now('UTC');
+            $this->cancelled_at = \Carbon\Carbon::now();
             $this->save();
         });
     }
@@ -740,7 +740,7 @@ class Subscription extends Model implements HasQuotaInterface
 
             // set status = ended. Lưu thời điểm bị end lại trong cột cancelled_at
             $this->setTerminated();
-            $this->terminated_at = \Carbon\Carbon::now('UTC');
+            $this->terminated_at = \Carbon\Carbon::now();
             $this->save();
 
             // Log
@@ -832,7 +832,7 @@ class Subscription extends Model implements HasQuotaInterface
         }
 
         // check if recurring accur
-        if (Carbon::now('UTC')->greaterThanOrEqualTo($this->current_period_ends_at->subDays(Setting::get('end_period_last_days')))) {
+        if (Carbon::now()->greaterThanOrEqualTo($this->current_period_ends_at->subDays(Setting::get('end_period_last_days')))) {
             return true;
         }
 
@@ -882,7 +882,7 @@ class Subscription extends Model implements HasQuotaInterface
         // amout per day of current plan
         $currentAmount = $this->plan->price;
         $periodDays = $this->current_period_ends_at->diffInDays($this->periodStartAt()->startOfDay());
-        $remainDays = $this->current_period_ends_at->diffInDays(Carbon::now('UTC')->startOfDay());
+        $remainDays = $this->current_period_ends_at->diffInDays(Carbon::now()->startOfDay());
         $currentPerDayAmount = ($currentAmount/$periodDays);
         $newAmount = ($plan->price/$periodDays)*$remainDays;
         $remainAmount = $currentPerDayAmount*$remainDays;
@@ -927,7 +927,7 @@ class Subscription extends Model implements HasQuotaInterface
             $used = $this->getCreditsUsed($name);
         } else {
             $interval = "{$this->plan->frequency_amount} {$this->plan->frequency_unit}";
-            $from = Carbon::now('UTC')->subtract($interval);
+            $from = Carbon::now()->subtract($interval);
             $used = $this->getCreditsUsed($name, $from);
         }
 

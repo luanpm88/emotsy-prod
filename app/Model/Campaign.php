@@ -328,7 +328,7 @@ class Campaign extends Model implements HasTemplateInterface
     {
         $this->status = self::STATUS_SENDING;
         $this->running_pid = getmypid();
-        $this->delivery_at = Carbon::now('UTC');
+        $this->delivery_at = Carbon::now();
         $this->save();
     }
 
@@ -1242,7 +1242,7 @@ class Campaign extends Model implements HasTemplateInterface
         $copy->status = self::STATUS_NEW;
 
         // Overwrit date/time
-        $now = Carbon::now('UTC');
+        $now = Carbon::now();
         $copy->created_at = $now;
         $copy->updated_at = $now;
 
@@ -1334,7 +1334,7 @@ class Campaign extends Model implements HasTemplateInterface
      */
     public function getDelayInSeconds()
     {
-        $now = Carbon::now('UTC');
+        $now = Carbon::now();
 
         if ($now->gte($this->run_at)) {
             return 0;

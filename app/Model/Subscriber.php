@@ -641,7 +641,7 @@ class Subscriber extends Model
     {
         list($status, $response) = $verifier->verify($this->email);
         $this->verification_status = $status;
-        $this->last_verification_at = Carbon::now('UTC');
+        $this->last_verification_at = Carbon::now();
         $this->last_verification_by = $verifier->name;
         $this->last_verification_result = (string)$response->getBody();
         $this->save();
@@ -652,7 +652,7 @@ class Subscriber extends Model
     {
         // note: status must be one of the pre-defined list: see related constants
         $this->verification_status = $status;
-        $this->last_verification_at = Carbon::now('UTC');
+        $this->last_verification_at = Carbon::now();
         $this->last_verification_by = 'ADMIN';
         $this->last_verification_result = 'Manually set';
         $this->save();

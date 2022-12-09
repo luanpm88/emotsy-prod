@@ -65,7 +65,7 @@
                 </div>
                 <div>
                     <div class="template-thumb-container ml-4">
-                        <img class="automation-template-thumb" src="{{ $campaign->getThumbUrl() }}?v={{ Carbon\Carbon::now('UTC') }}" />
+                        <img class="automation-template-thumb" src="{{ $campaign->getThumbUrl() }}?v={{ Carbon\Carbon::now() }}" />
                         <a
                             onclick="popupwindow('{{ action('CampaignController@preview', $campaign->uid) }}', `{{ $campaign->name }}`, 800)"
                             href="javascript:;"

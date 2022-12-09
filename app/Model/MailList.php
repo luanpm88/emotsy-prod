@@ -652,8 +652,8 @@ class MailList extends Model
         $copy = $this->replicate(['cache']);
         $copy->uid = uniqid();
         $copy->name = $name;
-        $copy->created_at = \Carbon\Carbon::now('UTC');
-        $copy->updated_at = \Carbon\Carbon::now('UTC');
+        $copy->created_at = \Carbon\Carbon::now();
+        $copy->updated_at = \Carbon\Carbon::now();
 
         if ($customer) {
             $copy->customer_id = $customer->id;
@@ -1674,8 +1674,8 @@ class MailList extends Model
     {
         $copy = $this->replicate(['cache']);
         $copy->name = $name;
-        $copy->created_at = \Carbon\Carbon::now('UTC');
-        $copy->updated_at = \Carbon\Carbon::now('UTC');
+        $copy->created_at = \Carbon\Carbon::now();
+        $copy->updated_at = \Carbon\Carbon::now();
 
         if ($customer) {
             $copy->customer_id = $customer->id;
