@@ -1647,7 +1647,6 @@ class Customer extends Model
         // IMPORTANT: datetime string must NOT contain timezone information
         // IMPORTANT: passing [$this->timezone] is critically needed, to make sure this function works in console
         try {
-
             $dt = Carbon::parse($datetime, $this->timezone);
             $dt = $dt->timezone($this->timezone);
         } catch (\Exception $ex) {
