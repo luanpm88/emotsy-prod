@@ -19,5 +19,5 @@ return [
 
     'woo' => false,
 
-    'japan' => false,
+    'japan' => env('APP_JAPAN', true),
 ];
