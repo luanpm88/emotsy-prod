@@ -62,6 +62,7 @@
 
 	<!-- Notification -->
 	@include('layouts.core._notify')
+    @include('layouts.core._notify_backend')
 
 	<!-- Admin area -->
 	@include('layouts.core._loginas_area')

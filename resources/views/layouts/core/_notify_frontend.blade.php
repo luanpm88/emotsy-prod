@@ -1,4 +1,12 @@
 <script>
+    @if (null !== Session::get('orig_admin_id') && Auth::user()->admin)
+        notify({
+            type: 'warning',
+            message: `{!! trans('messages.current_login_as', ["name" => Auth::user()->customer->displayName()]) !!}<br>{!! trans('messages.click_to_return_to_origin_user', ["link" => action("Admin\AdminController@loginBack")]) !!}`,
+            timeout: false,
+        });
+    @endif
+
     @if (
         \Auth::user()->customer &&
         \Auth::user()->customer->getOption("sending_server_option") == \Acelle\Model\Plan::SENDING_SERVER_OPTION_OWN &&

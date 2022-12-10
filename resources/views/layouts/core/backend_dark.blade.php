@@ -21,6 +21,7 @@
 
 	<!-- Notification -->
 	@include('layouts.core._notify')
+    @include('layouts.core._notify_backend')
 
 	<!-- display flash message -->
 	@include('layouts.core._flash')
