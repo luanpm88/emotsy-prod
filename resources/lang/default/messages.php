@@ -843,6 +843,7 @@
   'confirm' => 'Confirm',
   'confirm_password' => 'Confirm password',
   'connections.manage' => 'Manage connections',
+  'contact.tax_number' => 'Tax number',
   'contact_information' => 'Contact information',
   'contacts' => 'Contacts',
   'contains' => 'contains',
@@ -2977,5 +2978,4 @@
   'your_api_token' => 'Your API token',
   'your_current_license' => 'Thank you for purchasing! Below is your license key, also known as Purchase Code. Your license type is',
   'zip_postal_code' => 'Zip / Postal code',
-  'contact.tax_number' => 'Tax number',
 ) ?>
