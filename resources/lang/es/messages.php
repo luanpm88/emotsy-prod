@@ -843,6 +843,7 @@
   'confirm' => 'Confirmar',
   'confirm_password' => 'Confirmar contraseña',
   'connections.manage' => 'Manage connections',
+  'contact.tax_number' => 'Tax number',
   'contact_information' => 'Información del contacto',
   'contacts' => 'contacts',
   'contains' => 'Contiene',

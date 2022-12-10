@@ -566,7 +566,7 @@
   'backend' => 'Admin View',
   'backend_dashboard_hello' => 'Hello, :name!',
   'backend_dashboard_welcome' => 'Welcome back to admin dashboard. Check out these system statistics and notifications from our insight reports.',
-  'backend_scheme' => 'Admin view scheme',
+  'backend_scheme' => 'Default admin view scheme',
   'background' => 'Background',
   'background_job' => 'Background Job',
   'base_template_gallery' => 'Base Template Gallery',
@@ -843,6 +843,7 @@
   'confirm' => 'Confirm',
   'confirm_password' => 'Confirm password',
   'connections.manage' => 'Manage connections',
+  'contact.tax_number' => 'Tax number',
   'contact_information' => 'Contact information',
   'contacts' => 'Contacts',
   'contains' => 'contains',
@@ -2977,5 +2978,4 @@
   'your_api_token' => 'Your API token',
   'your_current_license' => 'Thank you for purchasing! Below is your license key, also known as Purchase Code. Your license type is',
   'zip_postal_code' => 'Zip / Postal code',
-  'contact.tax_number' => 'Tax number',
 ) ?>

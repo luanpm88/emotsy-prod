@@ -842,6 +842,7 @@
   'confirm' => 'Bestätigen',
   'confirm_password' => 'Passwort bestätigen',
   'connections.manage' => 'Verbindungen verwalten',
+  'contact.tax_number' => 'Tax number',
   'contact_information' => 'Kontaktinformationen',
   'contacts' => 'Kontakte',
   'contains' => 'enthält',
