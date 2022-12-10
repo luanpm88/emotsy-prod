@@ -23,7 +23,7 @@
                     <div class="text-muted2 text-white">
                         {!! trans('messages.list.mail_list_count.desc', [
                             'count' => number_with_delimiter($subscribedCount)
-                        ]) !!}                        
+                        ]) !!}
                     </div>
                 </div>
             </div>
@@ -33,7 +33,6 @@
                 <div class="text-center">
                     <h2 class="text-semibold mb-1 mt-0">{{ number_to_percentage($activeContactPercent) }}</h2>
                     <div class="text-muted2 text-white">
-                        メールに反応するアクティブな連絡先（開く、クリック）
                         {{ trans('messages.list.active_contact.desc') }}
                     </div>
                 </div>
