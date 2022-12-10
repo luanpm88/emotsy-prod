@@ -562,6 +562,6 @@ class Language extends Model
 
     public static function getJapan()
     {
-        return self::where('code','=','ja')->first();
+        return self::where('code', '=', 'ja')->first();
     }
 }
