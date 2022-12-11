@@ -137,7 +137,7 @@ class Setting extends Model
         return [
             'site_name' => [
                 'cat' => 'general',
-                'value' => env('APP_NAME'),
+                'value' => config('app.name'),
                 'type' => 'text',
             ],
             'site_keyword' => [

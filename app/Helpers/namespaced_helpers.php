@@ -289,7 +289,8 @@ function write_envs($params)
 
 function reset_app_url($force = false)
 {
-    $envs = getenv();
+    $dotenv = new \Symfony\Component\Dotenv\Dotenv;
+    $envs = $dotenv->parse(file_get_contents(app()->environmentFilePath()), $empty = '');
     if (!array_key_exists('APP_URL', $envs) || $force) {
         $url = url('/');
         write_env('APP_URL', $url);

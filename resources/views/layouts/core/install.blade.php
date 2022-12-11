@@ -67,7 +67,7 @@
 		<!-- Footer -->
 		<div class="small">
 			<div class="footer text-white text-center py-3" style="width: 100%">
-				{!! trans('messages.brand.copyright', ['app_name' => env('APP_NAME')] ) !!}
+				{!! trans('messages.brand.copyright', ['app_name' => config('app.name')] ) !!}
 			</div>
 		</div>
 		<!-- /footer -->

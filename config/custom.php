@@ -17,7 +17,13 @@ return [
     // Minimum supported PHP version
     'php' => '7.3.0',
 
+    // Branding
+    'default_logo_light' => env('APP_DEFAULT_LOGO_LIGHT', 'images/logo_light.svg'),
+    'default_logo_dark' => env('APP_DEFAULT_LOGO_DARK', 'images/logo_dark.svg'),
+
+    // Beta features
     'woo' => false,
 
+    // Special settings
     'japan' => env('APP_JAPAN', true),
 ];

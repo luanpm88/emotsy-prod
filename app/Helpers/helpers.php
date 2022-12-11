@@ -1182,16 +1182,12 @@ function getDefaultLogoUrl($type)
     }
 
     if ($type == 'light') {
-        $logo = env('APP_DEFAULT_LOGO_LIGHT');
+        $logo = config('custom.default_logo_light');
     } elseif ($type == 'dark') {
-        $logo = env('APP_DEFAULT_LOGO_DARK');
+        $logo = config('custom.default_logo_dark');
     }
 
-    if (!empty($logo)) {
-        return URL::asset($logo);
-    } else {
-        return URL::asset("images/logo_$type.svg");
-    }
+    return URL::asset($logo);
 }
 
 function getSiteLogoUrl($type)
@@ -1212,6 +1208,6 @@ function getSiteLogoUrl($type)
 
 function get_app_name()
 {
-    $name = \Acelle\Model\Setting::get('site_name') ?: env('APP_NAME');
+    $name = \Acelle\Model\Setting::get('site_name') ?: config('app.name');
     return $name;
 }
