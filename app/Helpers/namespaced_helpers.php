@@ -230,37 +230,6 @@ function forceAddCustomerToUnlimitedPlan($customer)
     $subscription->save();
 }
 
-function saasToSingleMode()
-{
-    // set env mode
-    echo "1. Set APP_SAAS=false in .env file...";
-    write_env('APP_SAAS', 'false');
-
-    // remove all subscriptions
-    echo "\n2. Remove all subscriptions...";
-    foreach (\Acelle\Model\Subscription::all() as $subscription) {
-        $subscription->delete();
-    }
-
-    // remove all plans
-    echo "\n3. Remove all plans...";
-    foreach (\Acelle\Model\Plan::all() as $plan) {
-        $plan->delete();
-    }
-
-    // check if has unlimited plan
-    echo "\n4. Create unlimited plan...";
-    \Acelle\Model\Plan::createUnlimitedPlan();
-
-    // add all customer to unlimited plan
-    echo "\n5. Add all customers to unlimited plan...";
-    foreach (\Acelle\Model\Customer::all() as $customer) {
-        \Acelle\Helpers\forceAddCustomerToUnlimitedPlan($customer);
-    }
-
-    echo "\n...\ndone!";
-}
-
 function isValidPublicHostnameOrIpAddress($host)
 {
     if ($host == '127.0.0.1' || $host == 'localhost') {

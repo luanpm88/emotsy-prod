@@ -370,7 +370,7 @@ class Language extends Model
             throw new Exception('[master_translation_file] is not available for '.$source['file_name']);
         }
 
-        if (array_key_exists('master_translation_file_by_language', $source) && array_key_exists($this->code, $source['master_translation_file_by_language']) ) {
+        if (array_key_exists('master_translation_file_by_language', $source) && array_key_exists($this->code, $source['master_translation_file_by_language'])) {
             // Check if a master file by language exists, like: { master_translation_file_by_language: { en: '...', ja: '...' } }
             $originFile = $source['master_translation_file_by_language'][$this->code];
         } else {
