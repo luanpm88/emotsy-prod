@@ -549,16 +549,6 @@ class Tool
             }
 
             $request->session()->put('cron_jobs', true);
-
-            // Update .env
-            if (in_array($queue_driver, ['database', 'async']) && config('queue.default') != $queue_driver) {
-                \Acelle\Helpers\write_env('QUEUE_DRIVER', $queue_driver);
-            }
-
-            if ($request->queue_driver == 'async') {
-                return 'done';
-            }
-
             $request->session()->flash('alert-success', trans('messages.setting.updated'));
         }
 
