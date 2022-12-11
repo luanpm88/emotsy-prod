@@ -77,7 +77,7 @@
                     @include('helpers.form_control', [
                         'type' => 'select',
                         'name' => 'timezone',
-                        'value' => $customer->timezone,
+                        'value' => $customer->timezone ?? config('app.timezone'),
                         'options' => Tool::getTimezoneSelectOptions(),
                         'include_blank' => trans('messages.choose'),
                         'rules' => $user->registerRules()

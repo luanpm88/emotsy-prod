@@ -31,7 +31,7 @@ class SearchController extends Controller
                 'url' => action('Admin\SettingController@mailer'),
                 'keywords' => [
                     trans('messages.smtp'),
-                    trans('messages.sendmail'),
+                    trans('messages.system.sendmail'),
                 ],
             ],
             [

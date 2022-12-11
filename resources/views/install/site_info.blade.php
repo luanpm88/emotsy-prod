@@ -125,7 +125,13 @@ manage_accounts
             <input type="hidden" name="timezone" value="Asia/Tokyo" />
         @else
             <div class="col-md-6">
-                @include('helpers.form_control', ['type' => 'select', 'name' => 'timezone', 'value' => (isset($site_info["timezone"]) ? $site_info["timezone"] : ""), 'options' => Tool::getTimezoneSelectOptions(), 'include_blank' => trans('messages.choose'), 'rules' => $rules])
+                @include('helpers.form_control', [
+                    'type' => 'select',
+                    'name' => 'timezone',
+                    'value' => (isset($site_info["timezone"]) ? $site_info["timezone"] : config('app.timezone')),
+                    'options' => Tool::getTimezoneSelectOptions(),
+                    'include_blank' => trans('messages.choose'), 'rules' => $rules
+                ])
             </div>
         @endif
             
@@ -155,7 +161,7 @@ mark_email_read
                 'name' => 'mail_mailer',
 								'label' => trans('messages.mail_mailer'),
                 'value' => (isset($site_info["mail_mailer"]) ? $site_info["mail_mailer"] : ""),
-								'options' => [["value" => "sendmail", "text" => trans('messages.sendmail')],["value" => "smtp", "text" => trans('messages.smtp')]],
+								'options' => [["value" => "sendmail", "text" => trans('messages.system.sendmail')],["value" => "smtp", "text" => trans('messages.smtp')]],
                 'help_class' => 'install',
                 'rules' => $rules
             ])

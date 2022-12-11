@@ -7,7 +7,7 @@
                     'name' => 'env[MAIL_MAILER]',
                     'label' => trans('messages.mail_driver'),
                     'value' => (isset($env["MAIL_MAILER"]) ? $env["MAIL_MAILER"] : ""),
-                    'options' => [["value" => "sendmail", "text" => trans('messages.sendmail')],["value" => "smtp", "text" => trans('messages.smtp')]],
+                    'options' => [["value" => "sendmail", "text" => trans('messages.system.sendmail')],["value" => "smtp", "text" => trans('messages.smtp')]],
                     'help_class' => 'env',
                     'rules' => $rules
                 ])

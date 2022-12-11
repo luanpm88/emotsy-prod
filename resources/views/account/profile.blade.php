@@ -87,7 +87,14 @@ delete_outline
                     @if (config('custom.japan'))
                         <input type="hidden" name="timezone" value="Asia/Tokyo" />
                     @else
-                        @include('helpers.form_control', ['type' => 'select', 'name' => 'timezone', 'value' => $customer->timezone, 'options' => Tool::getTimezoneSelectOptions(), 'include_blank' => trans('messages.choose'), 'rules' => $user->rules()])
+                        @include('helpers.form_control', [
+                            'type' => 'select',
+                            'name' => 'timezone',
+                            'value' => $customer->timezone ?? config('app.timezone'),
+                            'options' => Tool::getTimezoneSelectOptions(),
+                            'include_blank' => trans('messages.choose'),
+                            'rules' => $user->rules()
+                        ])
                     @endif
                     
 

@@ -61,7 +61,7 @@
         @include('helpers.form_control', [
             'type' => 'select',
             'name' => 'timezone',
-            'value' => Auth::user()->customer->timezone,
+            'value' => Auth::user()->customer->timezone ?? config('app.timezone'),
             'options' => Tool::getTimezoneSelectOptions(),
             'include_blank' => trans('messages.choose'),
             'disabled' => true

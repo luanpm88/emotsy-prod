@@ -69,7 +69,14 @@
             @if (config('custom.japan'))
                 <input type="hidden" name="timezone" value="Asia/Tokyo" />
             @else
-                @include('helpers.form_control', ['type' => 'select', 'name' => 'timezone', 'value' => $admin->timezone, 'options' => Tool::getTimezoneSelectOptions(), 'include_blank' => trans('messages.choose'), 'rules' => $admin->user->rules()])
+                @include('helpers.form_control', [
+                    'type' => 'select',
+                    'name' => 'timezone',
+                    'value' => $admin->timezone ?? config('app.timezone'),
+                    'options' => Tool::getTimezoneSelectOptions(),
+                    'include_blank' => trans('messages.choose'),
+                    'rules' => $admin->user->rules()
+                ])
             @endif
 			
 
