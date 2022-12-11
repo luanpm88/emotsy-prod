@@ -250,17 +250,14 @@ function isValidPublicHostnameOrIpAddress($host)
 
 function write_env($key, $value)
 {
-    // Important: make sure all variables are already loaded before retrieving $_ENV
-    \Artisan::call('config:cache');
-
-    // Get current env
-    $outputs = $_ENV;
+    $dotenv = new \Symfony\Component\Dotenv\Dotenv;
+    $envs = $dotenv->parse(file_get_contents(app()->environmentFilePath()), $empty = '');
 
     // Set the value
-    $outputs[$key] = $value;
+    $envs[$key] = $value;
 
     // Prepare for writing back to file
-    array_walk($outputs, function (&$v, $k) {
+    array_walk($envs, function (&$v, $k) {
         // Escape double quote
         $cleaned = addcslashes($v, '"');
 
@@ -272,11 +269,11 @@ function write_env($key, $value)
         $v = "$k=$cleaned";
     });
 
-    $outputs = array_values($outputs);
-    $outputs = implode("\n", $outputs);
+    $envs = array_values($envs);
+    $envs = implode("\n", $envs);
 
     // Actually write to file .env
-    file_put_contents(app()->environmentFilePath(), $outputs);
+    file_put_contents(app()->environmentFilePath(), $envs);
 
     // Important, make the new environment var available
     // Otherwise, this method may failed if called twice (in a loop for example) in the same process
