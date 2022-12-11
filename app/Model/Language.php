@@ -370,14 +370,23 @@ class Language extends Model
             throw new Exception('[master_translation_file] is not available for '.$source['file_name']);
         }
 
-        $originFile = $source['master_translation_file'];
+        if (array_key_exists('master_translation_file_by_language', $source) && array_key_exists($this->code, $source['master_translation_file_by_language']) ) {
+            // Check if a master file by language exists, like: { master_translation_file_by_language: { en: '...', ja: '...' } }
+            $originFile = $source['master_translation_file_by_language'][$this->code];
+        } else {
+            $originFile = $source['master_translation_file'];
+        }
+
+        if ($originFile == false) {
+            throw new Exception(sprintf('%s: master translation file does not exist: "%s". File path returns false! Make sure realpath() returns a valid file path.', $this->name, $source["file_title"]));
+        }
 
         // Other files
         //     + resources / lang / ja / messages.php
         $langFile = join_paths($source['translation_folder'], $this->code, $source['file_name']);
 
         if (!file_exists($originFile)) {
-            throw new Exception('Original translation file does not exist: '.$originFile.'. Make sure it is registered correctly. Or, if it is a local development environment, just make a "default" folder by copying "resources/lang/en" ==> "resources/lang/default": '.$originFile);
+            throw new Exception($this->name.': Master translation file does not exist: "'.$originFile.'". Make sure it is registered correctly');
         }
 
         // If the originFile is also the current language's file
