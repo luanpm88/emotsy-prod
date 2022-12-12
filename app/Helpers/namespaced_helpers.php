@@ -250,7 +250,7 @@ function isValidPublicHostnameOrIpAddress($host)
 
 function write_env($key, $value)
 {
-    $dotenv = new \Symfony\Component\Dotenv\Dotenv;
+    $dotenv = new \Symfony\Component\Dotenv\Dotenv();
     $envs = $dotenv->parse(file_get_contents(app()->environmentFilePath()), $empty = '');
 
     // Set the value
@@ -289,7 +289,7 @@ function write_envs($params)
 
 function reset_app_url($force = false)
 {
-    $dotenv = new \Symfony\Component\Dotenv\Dotenv;
+    $dotenv = new \Symfony\Component\Dotenv\Dotenv();
     $envs = $dotenv->parse(file_get_contents(app()->environmentFilePath()), $empty = '');
     if (!array_key_exists('APP_URL', $envs) || $force) {
         $url = url('/');
