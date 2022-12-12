@@ -810,7 +810,7 @@
   'click_to_return_to_origin_user' => 'Click <a href=":link" class="text-semibold text-white">here</a> to go back to your account',
   'click_to_start_export' => 'Select what do you want to export then click the <strong>Export</strong> button below to start export.',
   'clicked' => 'Clicked',
-  'clicked_emails_rate' => 'Clicked emails rate',
+  'clicked_emails_rate' => 'Unique clicks',
   'clicked_links' => 'Clicked links',
   'clicks' => 'Clicks',
   'close' => 'Close',
