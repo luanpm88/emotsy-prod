@@ -2541,6 +2541,7 @@
   'switch_view' => 'Switch View',
   'system' => 'System',
   'system.renew_free_plan' => 'Kann den kostenlosen Plan erneuern',
+  'system.sendmail' => 'Sendmail',
   'system_compatibility' => 'System Kompatibiliät',
   'system_default' => 'Systemstandard',
   'system_email' => 'System E-Mail',

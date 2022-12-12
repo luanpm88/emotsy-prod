@@ -2540,6 +2540,7 @@
   'switch_view' => 'Switch View',
   'system' => 'Sistema',
   'system.renew_free_plan' => 'Can renew free plan',
+  'system.sendmail' => 'Sendmail',
   'system_compatibility' => 'Compatibilidad del sistema',
   'system_default' => 'Sistema por defecto',
   'system_email' => 'Correo del sistema',
