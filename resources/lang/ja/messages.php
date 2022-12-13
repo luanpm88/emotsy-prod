@@ -2538,6 +2538,7 @@
   'switch_view' => 'Switch View',
   'system' => 'システム',
   'system.renew_free_plan' => 'ユーザーが無料プランを更新できるようにする',
+  'system.sendmail' => 'Sendmail',
   'system_compatibility' => 'システム互換性',
   'system_default' => 'システムのデフォルト',
   'system_email' => 'システムメール',
