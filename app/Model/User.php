@@ -178,6 +178,7 @@ class User extends Authenticatable
             'last_name' => 'required',
             'timezone' => 'required',
             'language_id' => 'required',
+            'image' => 'nullable|image',
         );
 
         if (isset($this->id)) {

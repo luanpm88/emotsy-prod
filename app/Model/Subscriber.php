@@ -166,6 +166,8 @@ class Subscriber extends Model
         $item_id = isset($this->id) ? $this->id : 'NULL';
         $rules['EMAIL'] = $rules['EMAIL'].'|unique:subscribers,email,'.$item_id.',id,mail_list_id,'.$this->mailList->id;
 
+        $rules['image'] = 'nullable|image';
+
         return $rules;
     }
 
