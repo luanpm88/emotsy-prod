@@ -2548,6 +2548,7 @@
   'switch_view' => 'Switch View',
   'system' => 'System',
   'system.renew_free_plan' => 'Can renew free plan',
+  'system.sendmail' => 'Sendmail',
   'system_compatibility' => 'System compatibility',
   'system_default' => 'System default',
   'system_email' => 'System Email',
@@ -2966,5 +2967,4 @@
   'your_api_token' => 'Your API token',
   'your_current_license' => 'Thank you for purchasing! Below is your license key, also known as Purchase Code. Your license type is',
   'zip_postal_code' => 'Zip / Postal code',
-  'system.sendmail' => 'Sendmail',
 ) ?>
