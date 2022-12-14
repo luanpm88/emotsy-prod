@@ -18,6 +18,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Exception;
 use Acelle\Library\UpgradeManager;
+use Acelle\Model\Notification;
 
 class Upgrade extends Controller
 {
@@ -30,7 +31,7 @@ class Upgrade extends Controller
     public function finalize(Request $request)
     {
         Artisan::call('route:clear');
-        Artisan::call('cache:clear');
+        // Artisan::call('cache:clear'); // ==> it will clean up all statistics
         Artisan::call('view:clear');
         Setting::writeDefaultSettings();
         JobMonitor::query()->delete();
@@ -64,6 +65,9 @@ class Upgrade extends Controller
         // Merge .env.example to .env
         $manager = new UpgradeManager();
         $manager->mergeEnv(base_path('.env.example')); // config:cache is already executed in this method
+
+        // Clean up all notifications
+        Notification::truncate();
 
         // Upgrade post-processing
         if ($request->session()->has('upgraded')) {
