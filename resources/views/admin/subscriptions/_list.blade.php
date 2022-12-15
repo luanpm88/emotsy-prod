@@ -7,19 +7,13 @@
 				<td width="1%">
 					@switch($subscription->status)
 						@case(Acelle\Model\Subscription::STATUS_ACTIVE)
-							<i class="material-symbols-rounded fs-4 me-2 text-success">
-settings_backup_restore
-							</i>
+							<i class="material-symbols-rounded fs-4 me-2 text-success">settings_backup_restore</i>
 							@break
 						@case(Acelle\Model\Subscription::STATUS_NEW)
-							<i class="material-symbols-rounded fs-4 me-2 text-warning">
-								add_circle_outline
-							</i>
+							<i class="material-symbols-rounded fs-4 me-2 text-warning">add_circle_outline</i>
 							@break
 						@default
-							<i class="material-symbols-rounded fs-4 me-2 text-muted">
-remove_circle_outline
-							</i>
+							<i class="material-symbols-rounded fs-4 me-2 text-muted">remove_circle_outline</i>
 					@endswitch
 				</td>
 				<td>

@@ -21,9 +21,7 @@
             @include('admin.customers._growth_chart')
         </div>
         <div class="col-md-6">
-            <h4 class="text-semibold"><i class="material-symbols-rounded me-2">
-assignment_turned_in
-</i> {{ trans('messages.plans_chart') }}</h4>
+            <h4 class="text-semibold"><i class="material-symbols-rounded me-2">assignment_turned_in</i> {{ trans('messages.plans_chart') }}</h4>
             @include('admin.plans._pie_chart')
         </div>
     </div>
@@ -51,9 +49,7 @@ assignment_turned_in
                                             </a>
                                         </h6>
                                         <p class="mb-0">
-                                            <i class="material-symbols-rounded me-1">
-        person_outline
-        </i>
+                                            <i class="material-symbols-rounded me-1">person_outline</i>
                                             {{ $subscription->customer->displayName() }}
                                         </p>
                                     </div>
@@ -208,9 +204,7 @@ assignment_turned_in
                     </li>
                     <li class="selfclear">
                         <div class="unit size1of2">
-                            <strong><i class="material-symbols-rounded me-2">
-assignment_turned_in
-</i> {{ trans('messages.plans') }}</strong>
+                            <strong><i class="material-symbols-rounded me-2">assignment_turned_in</i> {{ trans('messages.plans') }}</strong>
                         </div>
                         <div class="lastUnit size1of2">
                             <mc:flag>{{ Auth::user()->admin->getAllPlans()->count() }}</mc:flag>

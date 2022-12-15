@@ -5,9 +5,7 @@
     </div>    
     <div class="header-action">
         <button class="btn btn-secondary d-flex align-items-center back_to_workflow" onclick="sidebar.load(); popup.hide()">
-            <i class="material-symbols-rounded me-2">
-                multiline_chart
-            </i>
+            <i class="material-symbols-rounded me-2">multiline_chart</i>
             {{ trans('messages.automation.back_to_workflow') }}
         </button>
     </div>  
@@ -32,9 +30,7 @@
                 ]) }}')"
             @endif
         >
-            <i class="material-symbols-rounded">
-mark_email_unread
-</i>
+            <i class="material-symbols-rounded">mark_email_unread</i>
             {{ trans('messages.automation.email.content') }}
         </a>
     </li>

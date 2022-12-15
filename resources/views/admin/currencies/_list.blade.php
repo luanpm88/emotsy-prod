@@ -85,9 +85,7 @@
 	
 @elseif (!empty(request()->filters))
 	<div class="empty-list">
-		<i class="material-symbols-rounded">
-assignment_turned_in
-</i>
+		<i class="material-symbols-rounded">assignment_turned_in</i>
 		<span class="line-1">
 			{{ trans('messages.no_search_result') }}
 		</span>

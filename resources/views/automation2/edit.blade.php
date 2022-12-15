@@ -54,9 +54,7 @@
                     </select>
 
                     <a href="javascript:'" class="action">
-                        <i class="material-symbols-rounded me-2">
-                horizontal_split
-                </i>
+                        <i class="material-symbols-rounded me-2">horizontal_split</i>
                         {{ trans('messages.automation.switch_automation') }}
                     </a>
                 </div>

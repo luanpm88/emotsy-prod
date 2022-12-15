@@ -19,17 +19,13 @@
                 <td>
                     @if ($customer->getActiveSubscription())
                         <h5 class="no-margin stat-num">
-                            <span><i class="material-symbols-rounded">
-assignment_turned_in
-</i> {{ $customer->currentPlanName() }}</span>
+                            <span><i class="material-symbols-rounded">assignment_turned_in</i> {{ $customer->currentPlanName() }}</span>
                         </h5>
                         <span class="text-muted2">{{ trans('messages.current_plan') }}</span>
                     @elseif ($customer->getNewSubscription())
                         <h5 class="no-margin stat-num">
                             <a href="{{ action('Admin\PlanController@general', $customer->getNewSubscription()->plan->uid) }}">
-                                <span><i class="material-symbols-rounded">
-                                assignment_turned_in
-                                </i> {{ $customer->getNewSubscription()->getPlanName() }}</span>
+                                <span><i class="material-symbols-rounded">assignment_turned_in</i> {{ $customer->getNewSubscription()->getPlanName() }}</span>
                             </a>
                         </h5>
                         <span class="text-muted2">{{ trans('messages.subscription.pending') }}</span>
@@ -95,9 +91,7 @@ assignment_turned_in
                                             ]) }}"
                                             class="dropdown-item assign_plan_button"
                                         >
-                                            <i class="material-symbols-rounded">
-assignment_turned_in
-</i>
+                                            <i class="material-symbols-rounded">assignment_turned_in</i>
                                              {{ trans('messages.customer.assign_plan') }}
                                         </a>
                                     </li>

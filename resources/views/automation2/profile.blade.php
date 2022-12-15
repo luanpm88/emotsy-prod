@@ -61,9 +61,7 @@
                                 ]) }}" class="btn-group remove-contact-tag" role="group" aria-label="Basic example">
                                     <button role="button" class="btn btn-light btn-tag">{{ $tag }}</button>
                                     <button role="button" class="btn btn-light btn-tag">
-                                        <i class="material-symbols-rounded">
-close
-</i>
+                                        <i class="material-symbols-rounded">close</i>
                                     </button>
                                 </a>
                             @endforeach

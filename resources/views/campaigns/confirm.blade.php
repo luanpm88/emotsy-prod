@@ -39,9 +39,7 @@
 
                         <span class="fs-4 me-4">
                             @if ($score['result'] == true)
-                                <i class="material-symbols-rounded text-success">
-                                    task_alt
-                                </i>
+                                <i class="material-symbols-rounded text-success">task_alt</i>
                             @else
                                 @if (!Acelle\Model\Setting::isYes('spamassassin.required'))
                                     <span class="material-symbols-rounded text-warning">error_outline</span>
@@ -71,9 +69,7 @@
 
                     <span class="fs-4 me-4">
                         @if ($count)
-                            <i class="material-symbols-rounded text-success">
-    task_alt
-                            </i>
+                            <i class="material-symbols-rounded text-success">task_alt</i>
                         @else
                             <span class="material-symbols-rounded text-danger">highlight_off</span>
                         @endif
@@ -90,9 +86,7 @@
 
                 <li class="d-flex align-items-center">
                     <span class="fs-4 me-4">
-                        <i class="material-symbols-rounded text-success">
-                            task_alt
-                        </i>
+                        <i class="material-symbols-rounded text-success">task_alt</i>
                     </span>
                     <div class="me-auto">
                         <h4>{{ trans('messages.email_subject') }}</h4>
@@ -106,9 +100,7 @@
 
                 <li class="d-flex align-items-center">
                     <span class="fs-4 me-4">
-                        <i class="material-symbols-rounded text-success">
-                            task_alt
-                        </i>
+                        <i class="material-symbols-rounded text-success">task_alt</i>
                     </span>
                     <div class="me-auto">
                         <h4>{{ trans('messages.reply_to') }}</h4>
@@ -122,9 +114,7 @@
 
                 <li class="d-flex align-items-center">
                     <span class="fs-4 me-4">
-                        <i class="material-symbols-rounded text-success">
-                            task_alt
-                        </i>
+                        <i class="material-symbols-rounded text-success">task_alt</i>
                     </span>
                     <div class="me-auto">
                         <h4>{{ trans('messages.tracking') }}</h4>
@@ -143,9 +133,7 @@
 
                 <li class="d-flex align-items-center confirm-webhooks-summary">
                     <span class="fs-4 me-4">
-                        <i class="material-symbols-rounded text-success">
-                            task_alt
-                        </i>
+                        <i class="material-symbols-rounded text-success">task_alt</i>
                     </span>
                     <div class="me-auto">
                         <h4>{{ number_with_delimiter($campaign->campaignWebhooks()->count()) }} {{ trans('messages.webhooks') }}</h4>
@@ -174,9 +162,7 @@
                 @if (!$campaign->run_at)
                     <li class="d-flex align-items-center">
                         <span class="fs-4 me-4">
-                            <i class="material-symbols-rounded text-success">
-                                task_alt
-                            </i>
+                            <i class="material-symbols-rounded text-success">task_alt</i>
                         </span>
                         <div class="me-auto">
                             <h4>{{ trans('messages.campaign.run_immediately') }}</h4>
@@ -190,9 +176,7 @@
                 @else
                     <li class="d-flex align-items-center">
                         <span class="fs-4 me-4">
-                            <i class="material-symbols-rounded text-muted2">
-                                alarm
-                            </i>
+                            <i class="material-symbols-rounded text-muted2">alarm</i>
                         </span>
                         <div class="me-auto">
                             <h4>{{ trans('messages.campaign.scheduled_at') }} ({{ $campaign->run_at->diffForHumans() }})</h4>
