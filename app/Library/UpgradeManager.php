@@ -298,7 +298,8 @@ class UpgradeManager
     public function refreshConfig()
     {
         try {
-            \Artisan::call('cache:clear');
+            // DO NOT clear cache here, otherwise, it will wipe out all list statistics
+            \Artisan::call('config:clear');
             \Artisan::call('route:clear');
             \Artisan::call('view:clear');
         } catch (\Exception $e) {

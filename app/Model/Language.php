@@ -506,8 +506,6 @@ class Language extends Model
         // save
         self::yamlToFile($file['path'], $content);
 
-        \Artisan::call('cache:clear');
-
         return [$file, $validator];
     }
 
