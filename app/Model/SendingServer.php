@@ -964,11 +964,11 @@ class SendingServer extends Model implements HasQuotaInterface
             if ($request->plan_uid && in_array($server->id, $existIds)) {
                 $data['items'][] = [
                     'id' => $server->uid,
-                    'text' => $server->name.' ('.trans('messages.sending_server.added').')'.'|||'.trans('messages.'.$server->type),
+                    'text' => $server->name.' ('.trans('messages.sending_server.added').')'.'|||'.trans('messages.sending_server.type.'.$server->type),
                     'disabled' => true,
                 ];
             } else {
-                $type = ($server->mapType()->isExtended()) ? $server->mapType()->getTypeName() : trans('messages.'.$server->type);
+                $type = ($server->mapType()->isExtended()) ? $server->mapType()->getTypeName() : trans('messages.sending_server.type.'.$server->type);
                 $data['items'][] = ['id' => $server->uid, 'text' => $server->name.'|||'.$type ];
             }
         }
