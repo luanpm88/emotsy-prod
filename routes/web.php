@@ -1064,7 +1064,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::post('admin/subscriptions/{id}/approve', 'SubscriptionController@approve');
     Route::match(['get','post'], 'admin/subscriptions/{id}/reject-pending', 'SubscriptionController@rejectPending');
     Route::get('admin/subscriptions/{id}/invoices', 'SubscriptionController@invoices');
-    
+
     Route::post('admin/subscriptions/{id}/recurring/enable', 'SubscriptionController@enableRecurring');
     Route::post('admin/subscriptions/{id}/recurring/disable', 'SubscriptionController@disableRecurring');
     Route::get('admin/subscriptions/listing/{page?}', 'SubscriptionController@listing');
