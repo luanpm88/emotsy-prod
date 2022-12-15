@@ -28,9 +28,7 @@
     <div class="row">
         <div class="col-sm-12 col-md-10 col-lg-10">
             <h1>
-                <span class="text-semibold"><span class="material-symbols-rounded">
-public
-</span> {{ $server->name }}</span>
+                <span class="text-semibold"><span class="material-symbols-rounded">public</span> {{ $server->name }}</span>
             </h1>
             <p>{!! trans('messages.sending_domain.wording') !!}</p>
 

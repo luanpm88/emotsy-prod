@@ -1,14 +1,10 @@
-<h3 class="mt-5 mb-3"><span class="material-symbols-rounded me-2">
-    ads_click
-    </span> {{ trans('messages.top_country_by_clicks') }}</h3>
+<h3 class="mt-5 mb-3"><span class="material-symbols-rounded me-2">ads_click</span> {{ trans('messages.top_country_by_clicks') }}</h3>
 <div class="row">
     <div class="col-md-6">
         @if (!$campaign->clickCount())                        
             <div class="empty-chart-pie">
                 <div class="empty-list">
-                    <span class="material-symbols-rounded">
-auto_awesome
-</span>
+                    <span class="material-symbols-rounded">auto_awesome</span>
                     <span class="line-1">
                         {{ trans('messages.log_empty_line_1') }}
                     </span>
@@ -26,9 +22,7 @@ auto_awesome
                 @endforeach 
             </div>
             <div class="text-end">
-                <a href="{{ action('CampaignController@clickLog', $campaign->uid) }}" class="btn btn-info bg-teal-600">{{ trans('messages.click_log') }} <span class="material-symbols-rounded">
-arrow_forward
-</span></a>
+                <a href="{{ action('CampaignController@clickLog', $campaign->uid) }}" class="btn btn-info bg-teal-600">{{ trans('messages.click_log') }} <span class="material-symbols-rounded">arrow_forward</span></a>
             </div>
         @endif
     </div>
@@ -138,9 +132,7 @@ arrow_forward
         @else
             <div class="empty-chart-pie">
                 <div class="empty-list">
-                    <span class="material-symbols-rounded">
-auto_awesome
-</span>
+                    <span class="material-symbols-rounded">auto_awesome</span>
                     <span class="line-1">
                         {{ trans('messages.log_empty_line_1') }}
                     </span>

@@ -11,9 +11,7 @@
             <li class="breadcrumb-item"><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
         </ul>
         <h1>
-            <span class="text-semibold"><span class="material-symbols-rounded">
-                format_list_bulleted
-                </span> {{ trans('messages.templates') }}</span>
+            <span class="text-semibold"><span class="material-symbols-rounded">format_list_bulleted</span> {{ trans('messages.templates') }}</span>
         </h1>
         <p style="margin-bottom:0">{!! trans('messages.admin.template.list.intro') !!}</p>
     </div>
@@ -43,9 +41,7 @@
                             <ul class="dropdown-menu">
                                 <li>
                                     <a class="dropdown-item" link-confirm="{{ trans('messages.delete_templates_confirm') }}" href="{{ action('Admin\TemplateController@delete') }}">
-                                        <span class="material-symbols-rounded">
-    delete_outline
-    </span> {{ trans('messages.delete') }}
+                                        <span class="material-symbols-rounded">delete_outline</span> {{ trans('messages.delete') }}
                                     </a>
                                 </li>
                             </ul>
@@ -59,9 +55,7 @@
                         </select>                                        
                         <input type="hidden" name="sort_direction" value="desc" />
 <button type="button" class="btn btn-xs sort-direction" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
-                            <span class="material-symbols-rounded desc">
-sort
-</span>
+                            <span class="material-symbols-rounded desc">sort</span>
                         </button>
                     </span>
                     <span class="filter-group">
@@ -79,9 +73,7 @@ sort
                     </span>
                     <span class="text-nowrap">
                         <input type="text" name="keyword" class="form-control search" value="{{ request()->keyword }}" placeholder="{{ trans('messages.type_to_search') }}" />
-                        <span class="material-symbols-rounded">
-search
-</span>
+                        <span class="material-symbols-rounded">search</span>
                     </span>
                 </div>
             </div>
@@ -92,30 +84,22 @@ search
                             <a href="{{ action('Admin\TemplateController@index') }}"
                                 class="btn btn-default view-toogle grid m-icon"
                             >
-                                <span class="material-symbols-rounded">
-                                    grid_view
-                                </span>
+                                <span class="material-symbols-rounded">grid_view</span>
                             </a>
                             <a href="{{ action('Admin\TemplateController@index', ['view' => 'list']) }}"
                                 class="btn btn-default view-toogle list m-icon mr-3"
                             >
-                                <span class="material-symbols-rounded">
-                                    reorder
-                                </span>
+                                <span class="material-symbols-rounded">reorder</span>
                             </a>
                         </div>
                     </div>
     
                     <div>
                         <a href="{{ action('Admin\TemplateController@uploadTemplate') }}" class="btn btn-secondary ml-auto">
-                            <span class="material-symbols-rounded">
-        file_upload
-        </span> {{ trans('messages.upload') }}
+                            <span class="material-symbols-rounded">file_upload</span> {{ trans('messages.upload') }}
                         </a>
                         <a href="{{ action('Admin\TemplateController@builderCreate') }}" class="btn btn-secondary">
-                            <span class="material-symbols-rounded">
-        add
-        </span> {{ trans('messages.create') }}
+                            <span class="material-symbols-rounded">add</span> {{ trans('messages.create') }}
                         </a>
                     </div>
                 </div>

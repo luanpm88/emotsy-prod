@@ -87,17 +87,13 @@
                 'uids' => [$website->uid],
             ]) }}"
                 role="button" class="btn btn-secondary disconnect-site">
-                <span class="material-symbols-rounded me-1">
-                    pause_circle
-                    </span> {{ trans('messages.website.disconnect') }}
+                <span class="material-symbols-rounded me-1">pause_circle</span> {{ trans('messages.website.disconnect') }}
             </a>
         @endif
         @if (Auth::user()->customer->can('connect', $website))
             <a href="{{ action('WebsiteController@connect', $website->uid) }}"
                 role="button" class="btn btn-primary connect-site">
-                <span class="material-symbols-rounded me-1">
-                    pause_circle
-                    </span> {{ trans('messages.website.check_connection') }}
+                <span class="material-symbols-rounded me-1">pause_circle</span> {{ trans('messages.website.check_connection') }}
             </a>
         @endif
     </div>

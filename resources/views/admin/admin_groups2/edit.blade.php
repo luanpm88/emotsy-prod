@@ -12,9 +12,7 @@
             <li class="breadcrumb-item"><a href="{{ action("Admin\AdminGroup2Controller@index") }}">{{ trans('messages.user_groups') }}</a></li>
         </ul>
         <h1>
-            <span class="text-semibold"><span class="material-symbols-rounded">
-edit
-</span> {{ $group->name }}</span>
+            <span class="text-semibold"><span class="material-symbols-rounded">edit</span> {{ $group->name }}</span>
         </h1>
     </div>
 

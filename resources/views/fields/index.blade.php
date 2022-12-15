@@ -23,9 +23,7 @@
 		'menu' => 'field',
 	])
 
-	<h2 class="text-primary my-4"><span class="material-symbols-rounded">
-fact_check
-</span> {{ trans('messages.manage_list_fields') }}</h2>
+	<h2 class="text-primary my-4"><span class="material-symbols-rounded">fact_check</span> {{ trans('messages.manage_list_fields') }}</h2>
 
 	<p>{!! trans('messages.fields_intro') !!}</p>
 
@@ -150,9 +148,7 @@ fact_check
 			<span sample-url="{{ action("FieldController@sample", ['list_uid' => $list->uid, "type" => "checkbox"]) }}" class="btn btn-default btn-xs add-custom-field-button me-2" type_name="checkbox"><i class="material-symbols-rounded">select_check_box</i> {{ trans('messages.checkbox_field') }}</span>
 			<span sample-url="{{ action("FieldController@sample", ['list_uid' => $list->uid, "type" => "radio"]) }}" class="btn btn-default btn-xs add-custom-field-button me-2" type_name="radio"><i class="material-symbols-rounded">check_circle</i> {{ trans('messages.radio_field') }}</span>
 			<span sample-url="{{ action("FieldController@sample", ['list_uid' => $list->uid, "type" => "date"]) }}" class="btn btn-default btn-xs add-custom-field-button me-2" type_name="date"><i class="material-symbols-rounded">calendar_month</i> {{ trans('messages.date_field') }}</span>
-			<span sample-url="{{ action("FieldController@sample", ['list_uid' => $list->uid, "type" => "datetime"]) }}" class="btn btn-default btn-xs add-custom-field-button me-2" type_name="datetime"><span class="material-symbols-rounded">
-alarm
-</span> {{ trans('messages.datetime_field') }}</span>
+			<span sample-url="{{ action("FieldController@sample", ['list_uid' => $list->uid, "type" => "datetime"]) }}" class="btn btn-default btn-xs add-custom-field-button me-2" type_name="datetime"><span class="material-symbols-rounded">alarm</span> {{ trans('messages.datetime_field') }}</span>
 			<span sample-url="{{ action("FieldController@sample", ['list_uid' => $list->uid, "type" => "textarea"]) }}" class="btn btn-default btn-xs add-custom-field-button" type_name="textarea"><i class="material-symbols-rounded">article</i> {{ trans('messages.textarea_field') }}</span>
 		</div>
 

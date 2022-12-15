@@ -5,9 +5,7 @@
         <div class="d-flex">
             <div class="me-auto">
                 <label class="fw-600">
-                    <span class="material-symbols-rounded me-1">
-                        dashboard 
-                        </span> {{ trans('messages.forms') }}
+                    <span class="material-symbols-rounded me-1">dashboard </span> {{ trans('messages.forms') }}
                 </label>
             </div>
             <div>

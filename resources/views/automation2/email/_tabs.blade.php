@@ -19,9 +19,7 @@
             'uid' => $automation->uid,
             'email_uid' => $email->uid,
         ]) }}')">
-            <span class="material-symbols-rounded">
-settings
-</span>
+            <span class="material-symbols-rounded">settings</span>
             {{ trans('messages.automation.email.setup') }}
         </a>
     </li>
@@ -49,9 +47,7 @@ mark_email_unread
                 ]) }}')"
             @endif
         >
-            <span class="material-symbols-rounded">
-                done_all
-</span>
+            <span class="material-symbols-rounded">done_all</span>
             {{ trans('messages.automation.email.confirm') }}
         </a>
     </li>

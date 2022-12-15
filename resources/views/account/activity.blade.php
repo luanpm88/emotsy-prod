@@ -11,9 +11,7 @@
 
 @if (Auth::user()->customer->logs()->count() == 0)
     <div class="empty-list">
-        <span class="material-symbols-rounded">
-            auto_awesome
-        </span>
+        <span class="material-symbols-rounded">auto_awesome</span>
         <span class="line-1">
             {{ trans('messages.no_activity_logs') }}
         </span>
@@ -35,9 +33,7 @@
                                 <div class="d-flex align-items-center pt-1">
                                     <label class="panel-title text-semibold my-0 fw-600">{{ $log->customer->displayName() }}</label>
                                     <div class="d-flex align-items-center ms-auto text-muted small">
-                                        <span class="material-symbols-rounded ms-auto me-1 small">
-                                            history
-                                        </span>
+                                        <span class="material-symbols-rounded ms-auto me-1 small">history</span>
                                         <div class="">
                                             <span class="heading-text"><i class="icon-history position-left text-success"></i> {{ $log->created_at->timezone($currentTimezone)->diffForHumans() }}</span>
                                         </div>

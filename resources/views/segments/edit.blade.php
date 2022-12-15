@@ -23,9 +23,7 @@
 		'menu' => 'segment',
 	])
 	
-	<h2 class="text-semibold text-primary my-4"><span class="material-symbols-rounded">
-edit
-</span> {{ trans('messages.edit_segment') }}</h2>
+	<h2 class="text-semibold text-primary my-4"><span class="material-symbols-rounded">edit</span> {{ trans('messages.edit_segment') }}</h2>
 	
 	<form action="{{ action('SegmentController@update', ['list_uid' => $list->uid, 'uid' => $segment->uid]) }}" method="POST" class="form-validate-jqueryz">
 		{{ csrf_field() }}

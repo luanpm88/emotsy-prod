@@ -12,9 +12,7 @@
             <li class="breadcrumb-item"><a href="{{ action("Admin\PluginController@index") }}">{{ trans('messages.plugins') }}</a></li>
         </ul>
         <h1>
-            <span class="text-semibold"><span class="material-symbols-rounded">
-file_upload
-</span> {{ trans('messages.install_plugin') }}</span>
+            <span class="text-semibold"><span class="material-symbols-rounded">file_upload</span> {{ trans('messages.install_plugin') }}</span>
         </h1>				
     </div>
 

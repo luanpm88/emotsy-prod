@@ -11,9 +11,7 @@
             <li class="breadcrumb-item"><a href="{{ action("SourceController@index") }}">{{ trans('messages.stores_connections') }}</a></li>
 		</ul>
 		<h1>
-			<span class="text-semibold"><span class="material-symbols-rounded">
-add
-</span> {{ trans('messages.source.add_new') }}</span>
+			<span class="text-semibold"><span class="material-symbols-rounded">add</span> {{ trans('messages.source.add_new') }}</span>
 		</h1>
 	</div>
 @endsection

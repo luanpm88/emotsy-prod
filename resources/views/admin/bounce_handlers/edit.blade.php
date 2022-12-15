@@ -12,9 +12,7 @@
 					<li class="breadcrumb-item"><a href="{{ action("Admin\BounceHandlerController@index") }}">{{ trans('messages.bounce_handlers') }}</a></li>
 				</ul>
 				<h1>
-					<span class="text-semibold"><span class="material-symbols-rounded">
-edit
-</span> {{ $server->name }}</span>
+					<span class="text-semibold"><span class="material-symbols-rounded">edit</span> {{ $server->name }}</span>
 				</h1>
 			</div>
 				

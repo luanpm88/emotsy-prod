@@ -1,13 +1,9 @@
-<h3 class=" mt-5"><span class="material-symbols-rounded">
-    signal_cellular_alt
-    </span>
+<h3 class=" mt-5"><span class="material-symbols-rounded">signal_cellular_alt</span>
      {{ trans('messages.list_growth') }}</h3>
 
 @if (Auth::user()->customer->lists()->count() == 0)
     <div class="empty-list">
-        <span class="material-symbols-rounded">
-            signal_cellular_alt
-            </span>
+        <span class="material-symbols-rounded">signal_cellular_alt</span>
             
         <span class="line-1">
             {{ trans('messages.no_saved_lists') }}

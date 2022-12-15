@@ -91,13 +91,9 @@
                 <td class="text-end text-nowrap pe-0">
                     @if (Auth::user()->admin->can('update', $item))
                         @if ($server->isExtended())
-                            <a href="{{ $server->getEditUrl() }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" role="button" class="btn btn-secondary btn-icon"><span class="material-symbols-rounded">
-edit
-</span> {{ trans('messages.edit') }}</a>
+                            <a href="{{ $server->getEditUrl() }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" role="button" class="btn btn-secondary btn-icon"><span class="material-symbols-rounded">edit</span> {{ trans('messages.edit') }}</a>
                         @else
-                            <a href="{{ action('Admin\SendingServerController@edit', ["id" => $item->uid, "type" => $item->type]) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" role="button" class="btn btn-secondary btn-icon"><span class="material-symbols-rounded">
-edit
-</span> {{ trans('messages.edit') }}</a>
+                            <a href="{{ action('Admin\SendingServerController@edit', ["id" => $item->uid, "type" => $item->type]) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" role="button" class="btn btn-secondary btn-icon"><span class="material-symbols-rounded">edit</span> {{ trans('messages.edit') }}</a>
                         @endif
                     @endif
                     @if (Auth::user()->admin->can('delete', $item) || Auth::user()->admin->can('disable', $item) || Auth::user()->admin->can('enable', $item))
@@ -107,27 +103,21 @@ edit
                                 @if (Auth::user()->admin->can('enable', $item))
                                     <li>
                                         <a class="dropdown-item list-action-single" link-confirm="{{ trans('messages.enable_sending_servers_confirm') }}" href="{{ action('Admin\SendingServerController@enable', ["uids" => $item->uid]) }}">
-                                            <span class="material-symbols-rounded">
-play_arrow
-</span> {{ trans('messages.enable') }}
+                                            <span class="material-symbols-rounded">play_arrow</span> {{ trans('messages.enable') }}
                                         </a>
                                     </li>
                                 @endif
                                 @if (Auth::user()->admin->can('disable', $item))
                                     <li>
                                         <a class="dropdown-item list-action-single" link-confirm="{{ trans('messages.disable_sending_servers_confirm') }}" href="{{ action('Admin\SendingServerController@disable', ["uids" => $item->uid]) }}">
-                                            <span class="material-symbols-rounded">
-hide_source
-</span> {{ trans('messages.disable') }}
+                                            <span class="material-symbols-rounded">hide_source</span> {{ trans('messages.disable') }}
                                         </a>
                                     </li>
                                 @endif
                                 @if (Auth::user()->admin->can('delete', $item))
                                     <li>
                                         <a class="dropdown-item list-action-single" link-confirm="{{ trans('messages.delete_sending_servers_confirm') }}" href="{{ action('Admin\SendingServerController@delete', ["uids" => $item->uid]) }}">
-                                            <span class="material-symbols-rounded">
-delete_outline
-</span> {{ trans('messages.delete') }}
+                                            <span class="material-symbols-rounded">delete_outline</span> {{ trans('messages.delete') }}
                                         </a>
                                     </li>
                                 @endif
@@ -142,18 +132,14 @@ delete_outline
     
 @elseif (!empty(request()->keyword) || !empty(request()->filters["type"]))
     <div class="empty-list">
-        <span class="material-symbols-rounded">
-dns
-</span>
+        <span class="material-symbols-rounded">dns</span>
         <span class="line-1">
             {{ trans('messages.no_search_result') }}
         </span>
     </div>
 @else
     <div class="empty-list">
-        <span class="material-symbols-rounded">
-dns
-</span>
+        <span class="material-symbols-rounded">dns</span>
         <span class="line-1">
             {{ trans('messages.sending_server_empty_line_1') }}
         </span>

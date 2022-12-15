@@ -40,9 +40,7 @@
                     @if (\Gate::allows('update', $item))
                         <a href="{{ action('SegmentController@edit', ['list_uid' => $list->uid, "uid" => $item->uid]) }}"
                            role="button" class="btn btn-secondary btn-icon">
-                            <span class="material-symbols-rounded">
-edit
-</span> {{ trans('messages.edit') }}
+                            <span class="material-symbols-rounded">edit</span> {{ trans('messages.edit') }}
                         </a>
                     @endif
                     <div class="btn-group">
@@ -74,18 +72,14 @@ edit
     
 @elseif (!empty(request()->keyword))
     <div class="empty-list">
-        <span class="material-symbols-rounded">
-splitscreen
-</span>
+        <span class="material-symbols-rounded">splitscreen</span>
 		<span class="line-1">
 			{{ trans('messages.no_search_result') }}
 		</span>
     </div>
 @else
     <div class="empty-list">
-        <span class="material-symbols-rounded">
-splitscreen
-</span>
+        <span class="material-symbols-rounded">splitscreen</span>
 		<span class="line-1">
 			{{ trans('messages.segment_empty_line_1') }}
 		</span>

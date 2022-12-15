@@ -102,18 +102,14 @@
     
 @elseif (!empty(request()->keyword) || !empty(request()->filters["type"]))
     <div class="empty-list plugins-list">
-        <span class="material-symbols-rounded">
-            extension
-            </span>
+        <span class="material-symbols-rounded">extension</span>
         <span class="line-1">
             {{ trans('messages.no_search_result') }}
         </span>
     </div>
 @else
     <div class="empty-list plugins-list">
-        <span class="material-symbols-rounded">
-            extension
-            </span>
+        <span class="material-symbols-rounded">extension</span>
             <span class="line-1">
                 <h5 class="mb-2">{{ trans('messages.plugin.no_plugin') }}</h5>
                 <p>{!! trans('messages.plugin.no_plugin.wording') !!}</p>

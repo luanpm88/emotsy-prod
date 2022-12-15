@@ -34,9 +34,7 @@
                 </td>
                 <td class="text-end">
                     @can('update', $item)
-                        <a href="{{ action('Admin\FeedbackLoopHandlerController@edit', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" role="button" class="btn btn-secondary btn-icon"><span class="material-symbols-rounded">
-edit
-</span> {{ trans('messages.edit') }}</a>
+                        <a href="{{ action('Admin\FeedbackLoopHandlerController@edit', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" role="button" class="btn btn-secondary btn-icon"><span class="material-symbols-rounded">edit</span> {{ trans('messages.edit') }}</a>
                     @endcan
                     @if(Auth::user()->admin->can('delete', $item) || Auth::user()->admin->can('test', $item))
                         <div class="btn-group">
@@ -45,18 +43,14 @@ edit
                                 @can('test', $item)
                                     <li>
                                         <a class="dropdown-item list-action-single" href="{{ action('Admin\FeedbackLoopHandlerController@test', $item->uid) }}" link-method="POST" role="button">
-                                            <span class="material-symbols-rounded">
-quiz
-</span> {{ trans('messages.feedback_loop_handler.test') }}
+                                            <span class="material-symbols-rounded">quiz</span> {{ trans('messages.feedback_loop_handler.test') }}
                                         </a>
                                     </li>
                                 @endcan
                                 @can('delete', $item)
                                     <li>
                                         <a class="dropdown-item list-action-single" link-confirm="{{ trans('messages.delete_feedback_loop_handlers_confirm') }}" href="{{ action('Admin\FeedbackLoopHandlerController@delete', ["uids" => $item->uid]) }}">
-                                            <span class="material-symbols-rounded">
-delete_outline
-</span> {{ trans('messages.delete') }}
+                                            <span class="material-symbols-rounded">delete_outline</span> {{ trans('messages.delete') }}
                                         </a>
                                     </li>
                                 @endcan
@@ -71,18 +65,14 @@ delete_outline
     
 @elseif (!empty(request()->keyword) || !empty(request()->filters["type"]))
     <div class="empty-list">
-        <span class="material-symbols-rounded">
-restart_alt
-</span>
+        <span class="material-symbols-rounded">restart_alt</span>
         <span class="line-1">
             {{ trans('messages.no_search_result') }}
         </span>
     </div>
 @else
     <div class="empty-list">
-        <span class="material-symbols-rounded">
-restart_alt
-</span>
+        <span class="material-symbols-rounded">restart_alt</span>
         <span class="line-1">
             {{ trans('messages.feedback_loop_handler_empty_line_1') }}
         </span>

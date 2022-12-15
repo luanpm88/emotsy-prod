@@ -7,9 +7,7 @@
 <form action="{{ action('InstallController@siteInfo') }}" method="POST" class="form-validate-jqueryz">
 	{!! csrf_field() !!}
 	
-	<h3 class="text-primary"><span class="material-symbols-rounded">
-		maps_home_work
-		</span> {{ trans('messages.general') }}</h3>
+	<h3 class="text-primary"><span class="material-symbols-rounded">maps_home_work</span> {{ trans('messages.general') }}</h3>
     <div class="row">
         <div class="col-md-6">
             @include('helpers.form_control', [
@@ -53,9 +51,7 @@
         </div>
     </div>
 	<hr />
-	<h3 class="text-primary"><span class="material-symbols-rounded">
-manage_accounts
-</span> {{ trans('messages.admin_info') }}</h3>
+	<h3 class="text-primary"><span class="material-symbols-rounded">manage_accounts</span> {{ trans('messages.admin_info') }}</h3>
 	<div class="row">
         @if (get_localization_config('show_last_name_first', config('app.locale')))
             <div class="col-md-6">
@@ -151,9 +147,7 @@ manage_accounts
     </div>
 	
 	<hr />
-	<h3 class="text-primary"><span class="material-symbols-rounded">
-mark_email_read
-</span> {{ trans('messages.system_email_configuration') }}</h3>
+	<h3 class="text-primary"><span class="material-symbols-rounded">mark_email_read</span> {{ trans('messages.system_email_configuration') }}</h3>
 	<div class="row">
         <div class="col-md-6">
             @include('helpers.form_control', [
@@ -264,9 +258,7 @@ mark_email_read
 	
 	<hr >
 	<div class="text-end">                                    
-		<button data-wait="{{ trans('messages.button_processing') }}" type="submit" class="btn btn-primary bg-teal save-button">{!! trans('messages.next') !!} <span class="material-symbols-rounded">
-east
-</span></button>
+		<button data-wait="{{ trans('messages.button_processing') }}" type="submit" class="btn btn-primary bg-teal save-button">{!! trans('messages.next') !!} <span class="material-symbols-rounded">east</span></button>
 	</div>
 	
 </form>

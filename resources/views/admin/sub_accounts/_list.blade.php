@@ -61,18 +61,14 @@
     
 @elseif (!empty(request()->keyword) || !empty(request()->filters["type"]))
     <div class="empty-list">
-        <span class="material-symbols-rounded">
-approval
-</span>
+        <span class="material-symbols-rounded">approval</span>
         <span class="line-1">
             {{ trans('messages.no_search_result') }}
         </span>
     </div>
 @else
     <div class="empty-list">
-        <span class="material-symbols-rounded">
-approval
-</span>
+        <span class="material-symbols-rounded">approval</span>
         <span class="line-1">
             {{ trans('messages.sub_account_empty_line_1') }}
         </span>

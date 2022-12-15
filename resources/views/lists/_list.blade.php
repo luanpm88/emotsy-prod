@@ -24,9 +24,7 @@
                     </a>
                     <span class="text-muted">{{ trans('messages.created_at') }}: {{ Auth::user()->customer->formatDateTime($list->created_at, 'datetime_full') }}</span>
                     @if (empty($list->getSendingServers()))
-                        <div class="text-danger"><span class="material-symbols-rounded">
-					error_outline
-					</span> {{ trans('messages.list_has_no_sending_server') }}</div>
+                        <div class="text-danger"><span class="material-symbols-rounded">error_outline</span> {{ trans('messages.list_has_no_sending_server') }}</div>
                     @endif
                 </td>
                 <td class="stat-fix-size-sm">
@@ -59,14 +57,10 @@
                     <div class="d-flex align-items-center text-nowrap justify-content-end" role="group">
                         <a href="{{ action('SubscriberController@create', $list->uid) }}" data-popup="tooltip"
                             title="{{ trans('messages.create_subscriber') }}" role="button" class="btn btn-secondary btn-icon me-1">
-                            <span class="material-symbols-rounded">
-                                person_add
-                            </span>
+                            <span class="material-symbols-rounded">person_add</span>
                         </a>
                         <a href="{{ action('MailListController@overview', $list->uid) }}" role="button" class="btn btn-primary me-1">
-                            <span class="material-symbols-rounded">
-                                multiline_chart
-                            </span> {{ trans('messages.list.overview_statistics') }}
+                            <span class="material-symbols-rounded">multiline_chart</span> {{ trans('messages.list.overview_statistics') }}
                         </a>
                         <div class="btn-group" role="group">
                             <button id="btnGroupDrop1" type="button" class="btn btn-light btn-icon dropdown-toggle ps-2"  data-bs-toggle="dropdown" aria-expanded="false">
@@ -75,66 +69,46 @@
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="btnGroupDrop1">
                                 <li>
                                     <a class="dropdown-item" href="{{ action('SubscriberController@index', $list->uid) }}">
-                                        <span class="material-symbols-rounded me-2">
-                                            people
-                                        </span> {{ trans("messages.subscribers") }}
+                                        <span class="material-symbols-rounded me-2">people</span> {{ trans("messages.subscribers") }}
                                     </a>
                                 </li>
                                 <li>
                                     <a class="dropdown-item" href="{{ action('SegmentController@index', $list->uid) }}">
-                                        <span class="material-symbols-rounded me-2">
-                                            library_add_check
-                                        </span> {{ trans('messages.segments') }}
+                                        <span class="material-symbols-rounded me-2">library_add_check</span> {{ trans('messages.segments') }}
                                     </a>
                                 </li>
                                 <li>
                                     <a class="dropdown-item" href="{{ action('MailListController@embeddedForm', $list->uid) }}">
-                                        <span class="material-symbols-rounded me-2">
-                                            dns
-                                        </span> {{ trans('messages.Embedded_form') }}
+                                        <span class="material-symbols-rounded me-2">dns</span> {{ trans('messages.Embedded_form') }}
                                     </a>
                                 </li>
                                 <li>
                                     <a class="dropdown-item" href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'sign_up_form']) }}">
-                                        <span class="material-symbols-rounded me-2">
-                                            web
-                                        </span> {{ trans('messages.custom_forms_and_emails') }}
+                                        <span class="material-symbols-rounded me-2">web</span> {{ trans('messages.custom_forms_and_emails') }}
                                     </a>
                                 </li>
                                 <li>
                                     <a class="dropdown-item" href="{{ action('FieldController@index', $list->uid) }}">
-                                        <span class="material-symbols-rounded me-2">
-                                            view_day
-                                        </span> {{ trans('messages.manage_list_fields') }}
+                                        <span class="material-symbols-rounded me-2">view_day</span> {{ trans('messages.manage_list_fields') }}
                                     </a>
                                 </li>
                                 <li><a class="dropdown-item" href="{{ action('MailListController@verification', $list->uid) }}">
-                                    <span class="material-symbols-rounded me-2">
-                                        gpp_good
-                                    </span> {{ trans("messages.email_verification") }}</a></li>
+                                    <span class="material-symbols-rounded me-2">gpp_good</span> {{ trans("messages.email_verification") }}</a></li>
                                 <li><a class="dropdown-item" href="{{ action('MailListController@edit', $list->uid) }}">
-                                    <span class="material-symbols-rounded me-2">
-                                        edit
-                                    </span> {{ trans("messages.edit_list") }}</a></li>
+                                    <span class="material-symbols-rounded me-2">edit</span> {{ trans("messages.edit_list") }}</a></li>
                                 @if (\Auth::user()->can('import', $list))
                                     <li><a class="dropdown-item" href="{{ action('SubscriberController@import', $list->uid) }}">
-                                        <span class="material-symbols-rounded me-2">
-                                            drive_folder_upload
-                                        </span> {{ trans('messages.import') }}</a></li>
+                                        <span class="material-symbols-rounded me-2">drive_folder_upload</span> {{ trans('messages.import') }}</a></li>
                                 @endif
                                 @if (\Auth::user()->can('export', $list))
                                     <li><a class="dropdown-item" href="{{ action('SubscriberController@export', $list->uid) }}">
-                                        <span class="material-symbols-rounded me-2">
-                                            downloading
-                                        </span> {{ trans('messages.export') }}</a></li>
+                                        <span class="material-symbols-rounded me-2">downloading</span> {{ trans('messages.export') }}</a></li>
                                 @endif
                                 <li>
                                     <a class="copy-list-button dropdown-item"
                                         href="{{ action('MailListController@copy', ['copy_list_uid' => $list->uid]) }}"
                                     >
-                                        <span class="material-symbols-rounded me-2">
-                                            copy_all
-                                        </span> {{ trans('messages.copy') }}
+                                        <span class="material-symbols-rounded me-2">copy_all</span> {{ trans('messages.copy') }}
                                     </a>
                                 </li>
                                 @if ($settings['list.clone_for_others'])
@@ -143,9 +117,7 @@
                                             href="{{ action('MailListController@cloneForCustomersChoose', $list->uid) }}"
                                             class="clone-for-users"
                                         >
-                                        <span class="material-symbols-rounded me-2">
-                                            control_point_duplicate
-                                        </span> {{ trans('messages.list.clone_for_other_users') }}
+                                        <span class="material-symbols-rounded me-2">control_point_duplicate</span> {{ trans('messages.list.clone_for_other_users') }}
                                         </a>
                                     </li>
                                 @endif
@@ -154,9 +126,7 @@
                                         link-method="POST"
                                         link-confirm-url="{{ action('MailListController@deleteConfirm', ['uids' => $list->uid]) }}"
                                         href="{{ action('MailListController@delete', ['uids' => $list->uid]) }}">
-                                        <span class="material-symbols-rounded me-2">
-                                            delete
-                                        </span> {{ trans('messages.delete') }}
+                                        <span class="material-symbols-rounded me-2">delete</span> {{ trans('messages.delete') }}
                                     </a>
                                 </li>
                             </ul>
@@ -238,18 +208,14 @@
 
 @elseif (!empty(request()->keyword))
     <div class="empty-list">
-        <span class="material-symbols-rounded">
-            auto_awesome
-        </span>
+        <span class="material-symbols-rounded">auto_awesome</span>
         <span class="line-1">
             {{ trans('messages.no_search_result') }}
         </span>
     </div>
 @else
     <div class="empty-list">
-        <span class="material-symbols-rounded">
-            auto_awesome
-        </span>
+        <span class="material-symbols-rounded">auto_awesome</span>
         <span class="line-1">
             {{ trans('messages.list_empty_line_1') }}
         </span>

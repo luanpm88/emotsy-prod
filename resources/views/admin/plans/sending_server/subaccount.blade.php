@@ -35,9 +35,7 @@
             <div class="announce_box">
                 <div class="row flex-center">
                     <div class="col-md-8">
-                        <span class="material-symbols-rounded announce_box-icon">
-subtitles
-</span>
+                        <span class="material-symbols-rounded announce_box-icon">subtitles</span>
                         <label>{{ trans('messages.plan_option.delivery_setting') }}</label>
                         <h4>{{ trans('messages.plan_option.sub_account') }}</h4>
                         <p>{{ trans('messages.plan_option.sub_account.intro') }}</p>

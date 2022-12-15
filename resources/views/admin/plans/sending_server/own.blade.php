@@ -39,9 +39,7 @@
             <div class="announce_box">
                 <div class="row flex-center">
                     <div class="col-md-8">
-                        <span class="material-symbols-rounded announce_box-icon">
-person_outline
-</span>
+                        <span class="material-symbols-rounded announce_box-icon">person_outline</span>
                         <label>{{ trans('messages.plan_option.delivery_setting') }}</label>
                         <h4>{{ trans('messages.plan_option.own_sending_server') }}</h4>
                         <p>{{ trans('messages.plan_option.own_sending_server.intro') }}</p>

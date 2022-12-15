@@ -66,9 +66,7 @@
     </table>
 @else
 <div class="empty-list">
-    <span class="material-symbols-rounded">
-        cable
-</span>
+    <span class="material-symbols-rounded">cable</span>
     <span class="line-1">
         {{ trans('messages.webhooks.empty') }}
     </span>

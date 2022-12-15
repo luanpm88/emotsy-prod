@@ -16,9 +16,7 @@
 		'menu' => 'subscriber_export',
 	])
 
-    <h2 class="text-primary my-4"><span class="material-symbols-rounded">
-people
-</span> {{ trans('messages.export_subscribers') }}</h2>
+    <h2 class="text-primary my-4"><span class="material-symbols-rounded">people</span> {{ trans('messages.export_subscribers') }}</h2>
 
     <div class="row">
         <div class="col-md-8">
@@ -89,13 +87,9 @@ people
                 <div class="form-group finish hide">
                     <div class="text-left">
                         <a id="downloadBtn" target="_blank" href="#" role="button" class="btn btn-secondary success">
-                            <span class="material-symbols-rounded">
-file_download
-</span> {{ trans('messages.download_export') }}
+                            <span class="material-symbols-rounded">file_download</span> {{ trans('messages.download_export') }}
                         </a>
-                        <a href="#retry" class="btn btn-secondary me-1 retry"><span class="material-symbols-rounded">
-restart_alt
-</span> {{ trans('messages.retry') }}</a>
+                        <a href="#retry" class="btn btn-secondary me-1 retry"><span class="material-symbols-rounded">restart_alt</span> {{ trans('messages.retry') }}</a>
                     </div>
                 </div>
             </form>

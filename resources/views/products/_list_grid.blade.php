@@ -37,18 +37,14 @@
 		
 @elseif (!empty(request()->keyword))
 	<div class="empty-list">
-		<span class="material-symbols-rounded">
-			category
-			</span>
+		<span class="material-symbols-rounded">category</span>
 		<span class="line-1">
 			{{ trans('messages.no_search_result') }}
 		</span>
 	</div>
 @else
 	<div class="empty-list">
-		<span class="material-symbols-rounded">
-			category
-			</span>
+		<span class="material-symbols-rounded">category</span>
 		<span class="line-1 text-muted">
 			<p>{!! trans('messages.product.no_product') !!}</p>
 		</span>

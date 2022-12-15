@@ -12,9 +12,7 @@
             <li class="breadcrumb-item"><a href="{{ action("TrackingDomainController@index") }}">{{ trans('messages.tracking_domains') }}</a></li>
         </ul>
         <h2>
-            <span class="text-semibold"><span class="material-symbols-rounded">
-            public
-            </span> {{ $domain->getUrl() }} </span>
+            <span class="text-semibold"><span class="material-symbols-rounded">public</span> {{ $domain->getUrl() }} </span>
             <span class="label label-primary bg-{{ $domain->status }}">
                 {{ trans('messages.tracking_domain.status.' . $domain->status) }}
             </span>

@@ -13,9 +13,7 @@
             <div class="alert alert-warning" style="display: flex; flex-direction: row; align-items: center; justify-content: space-between;">
                 <div style="display: flex; flex-direction: row; align-items: center;">
                     <div style="margin-right:15px">
-                        <span class="material-symbols-rounded">
-error_outline
-</span>
+                        <span class="material-symbols-rounded">error_outline</span>
                     </div>
                     <div style="padding-right: 40px">
                         <h4>{{ trans('messages.sender.status.failed.title') }}</h4>

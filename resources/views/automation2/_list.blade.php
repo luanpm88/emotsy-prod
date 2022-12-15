@@ -82,9 +82,7 @@
                                             link-confirm="{{ trans('messages.enable_automations_confirm') }}"
                                             href="{{ action('Automation2Controller@enable', ["uids" => $automation->uid]) }}"
                                         >
-                                            <span class="material-symbols-rounded me-2">
-play_arrow
-</span> {{ trans('messages.enable') }}
+                                            <span class="material-symbols-rounded me-2">play_arrow</span> {{ trans('messages.enable') }}
                                         </a>
                                     </li>
                                 @endcan
@@ -95,9 +93,7 @@ play_arrow
                                             link-method="POST" link-confirm="{{ trans('messages.disable_automations_confirm') }}"
                                             href="{{ action('Automation2Controller@disable', ["uids" => $automation->uid]) }}"
                                         >
-                                            <span class="material-symbols-rounded me-2">
-hide_source
-</span> {{ trans('messages.disable') }}
+                                            <span class="material-symbols-rounded me-2">hide_source</span> {{ trans('messages.disable') }}
                                         </a>
                                     </li>
                                 @endcan
@@ -109,9 +105,7 @@ hide_source
                                             link-confirm="{{ trans('messages.delete_automations_confirm') }}"
                                             href="{{ action('Automation2Controller@delete', ["uids" => $automation->uid]) }}"
                                         >
-                                            <span class="material-symbols-rounded me-2">
-delete_outline
-</span> {{ trans("messages.delete") }}
+                                            <span class="material-symbols-rounded me-2">delete_outline</span> {{ trans("messages.delete") }}
                                         </a>
                                     </li>
                                 @endif
@@ -126,18 +120,14 @@ delete_outline
     
 @elseif (!empty(request()->keyword))
     <div class="empty-list">
-        <span class="material-symbols-rounded">
-            schedule
-</span>
+        <span class="material-symbols-rounded">schedule</span>
         <span class="line-1">
             {{ trans('messages.no_search_result') }}
         </span>
     </div>
 @else
     <div class="empty-list">
-        <span class="material-symbols-rounded">
-schedule
-</span>
+        <span class="material-symbols-rounded">schedule</span>
         <span class="line-1">
             {{ trans('messages.automation_empty_line_1') }}
         </span>

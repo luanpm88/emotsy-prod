@@ -40,9 +40,7 @@
                     @if (Auth::user()->customer->can('read', $trackingDomain))
                         <a href="{{ action('TrackingDomainController@show', $trackingDomain->uid) }}" data-popup="tooltip"
                             title="{{ trans('messages.tracking_domain.view') }}" role="button" class="btn btn-secondary">
-                            <span class="material-symbols-rounded">
-                                zoom_in
-                                </span> {{ trans('messages.tracking_domain.view') }}
+                            <span class="material-symbols-rounded">zoom_in</span> {{ trans('messages.tracking_domain.view') }}
                         </a>
                     @endif
                     @if (Auth::user()->customer->can('delete', $trackingDomain))
@@ -53,9 +51,7 @@
                                     <a
                                         class="dropdown-item list-action-single"
                                         link-confirm="{{ trans('messages.delete_tracking_domains_confirm') }}" href="{{ action('TrackingDomainController@delete', ["uids" => $trackingDomain->uid]) }}">
-                                        <span class="material-symbols-rounded">
-delete_outline
-</span> {{ trans('messages.delete') }}
+                                        <span class="material-symbols-rounded">delete_outline</span> {{ trans('messages.delete') }}
                                     </a>
                                 </li>
                             </ul>
@@ -71,18 +67,14 @@ delete_outline
     
 @elseif (!empty(request()->keyword))
     <div class="empty-list">
-        <span class="material-symbols-rounded">
-public
-</span>
+        <span class="material-symbols-rounded">public</span>
         <span class="line-1">
             {{ trans('messages.no_search_result') }}
         </span>
     </div>
 @else
     <div class="empty-list">
-        <span class="material-symbols-rounded">
-public
-</span>
+        <span class="material-symbols-rounded">public</span>
         <span class="line-1">
             {{ trans('messages.tracking_domain_empty_line_1') }}
         </span>

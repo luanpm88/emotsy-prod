@@ -66,9 +66,7 @@
         </div>
     </div>
 
-    <h3 class="mt-5 mb-20"><span class="material-symbols-rounded me-2">
-        insights
-        </span> {{ trans('messages.audience.audience_growth.title') }}</h3>
+    <h3 class="mt-5 mb-20"><span class="material-symbols-rounded me-2">insights</span> {{ trans('messages.audience.audience_growth.title') }}</h3>
     <p class="mb-4">{{ trans('messages.audience.audience_growth.desc') }}</p>
     <div class="border shadow-sm rounded">
         <div class="p-3">
@@ -152,9 +150,7 @@
         AudienceGrowthChart.showChart();
     </script>
 
-    <h3 class="mt-5 mb-20"><span class="material-symbols-rounded me-2">
-        open_in_new
-        </span> {{ trans('messages.audience.quick_action') }}</h3>
+    <h3 class="mt-5 mb-20"><span class="material-symbols-rounded me-2">open_in_new</span> {{ trans('messages.audience.quick_action') }}</h3>
     <p class="mb-4">{{ trans('messages.audience.quick_action.desc') }}</p>
 
     <div class="my-4">

@@ -17,9 +17,7 @@
 			<li class="breadcrumb-item"><a href="{{ action("CampaignController@index") }}">{{ trans('messages.campaigns') }}</a></li>
 		</ul>
 		<h1>
-			<span class="text-semibold"><span class="material-symbols-rounded me-2">
-forward_to_inbox
-</span> {{ $campaign->name }}</span>
+			<span class="text-semibold"><span class="material-symbols-rounded me-2">forward_to_inbox</span> {{ $campaign->name }}</span>
 		</h1>
 
 		@include('campaigns._steps', ['current' => 3])

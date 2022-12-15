@@ -17,9 +17,7 @@
             <li class="breadcrumb-item"><a href="{{ action("CampaignController@index") }}">{{ trans('messages.campaigns') }}</a></li>
         </ul>
         <h1>
-            <span class="text-semibold"><span class="material-symbols-rounded me-2">
-forward_to_inbox
-</span> {{ $campaign->name }}</span>
+            <span class="text-semibold"><span class="material-symbols-rounded me-2">forward_to_inbox</span> {{ $campaign->name }}</span>
         </h1>
 
         @include('campaigns._steps', ['current' => 3])
@@ -43,9 +41,7 @@ forward_to_inbox
             @endif
             <li class="plain_text_li {{ ($campaign->type == 'plain-text') ? " active" : "" }}">
                 <a href="#top-justified-divided-tab2" data-toggle="tab">
-                    <span class="material-symbols-rounded">
-auto_awesome
-</span> {{ trans('messages.plain_text_version') }}
+                    <span class="material-symbols-rounded">auto_awesome</span> {{ trans('messages.plain_text_version') }}
                 </a>
             </li>
         </ul>
@@ -80,9 +76,7 @@ auto_awesome
 
         <hr>
         <div class="text-end">
-            <button class="btn btn-secondary">{{ trans('messages.save_and_next') }} <span class="material-symbols-rounded">
-arrow_forward
-</span> </button>
+            <button class="btn btn-secondary">{{ trans('messages.save_and_next') }} <span class="material-symbols-rounded">arrow_forward</span> </button>
         </div>
     <form>
 @endsection

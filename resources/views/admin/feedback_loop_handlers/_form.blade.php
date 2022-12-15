@@ -96,9 +96,7 @@
             data-in-form="true"
             mask-title="{{ trans('messages.feedback_loop_handler.testing_connection') }}"
         >
-            <span class="material-symbols-rounded">
-quiz
-</span> {{ trans('messages.feedback_loop_handler.test') }}
+            <span class="material-symbols-rounded">quiz</span> {{ trans('messages.feedback_loop_handler.test') }}
         </a>
     @endcan
     <button class="btn btn-secondary"><i class="icon-check"></i> {{ trans('messages.save') }}</button>

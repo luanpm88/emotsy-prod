@@ -38,13 +38,9 @@
                 <td class="text-center">
                     <div class="single-stat-box pull-left">
                         @if ($item->isIdentityVerified())
-                            <span class="material-symbols-rounded d-block text-success domain-check-icon">
-                                task_alt
-                            </span>
+                            <span class="material-symbols-rounded d-block text-success domain-check-icon">task_alt</span>
                         @else
-                        <span class="material-symbols-rounded d-block text-danger domain-check-icon">
-                            not_interested
-                            </span>
+                        <span class="material-symbols-rounded d-block text-danger domain-check-icon">not_interested</span>
                         @endif
                         <span class="text-muted">{{ trans("messages.sending_domain.domain_verification") }}</span>
                     </div>
@@ -53,13 +49,9 @@
                 <td class="text-center">
                     <div class="single-stat-box pull-left">
                         @if ($item->isDkimVerified())
-                            <span class="material-symbols-rounded d-block text-success domain-check-icon">
-                                task_alt
-                                </span>
+                            <span class="material-symbols-rounded d-block text-success domain-check-icon">task_alt</span>
                         @else
-                        <span class="material-symbols-rounded d-block text-danger domain-check-icon">
-                            not_interested
-                            </span>
+                        <span class="material-symbols-rounded d-block text-danger domain-check-icon">not_interested</span>
                         @endif
                         <span class="text-muted">{{ trans("messages.sending_domain.dkim_verification") }}</span>
                     </div>
@@ -69,13 +61,9 @@
                     @if ($item->isSpfNeeded())
                         <div class="single-stat-box pull-left">
                             @if ($item->isSpfVerified())
-                                <span class="material-symbols-rounded d-block text-success domain-check-icon">
-                                    task_alt
-                                    </span>
+                                <span class="material-symbols-rounded d-block text-success domain-check-icon">task_alt</span>
                             @else
-                            <span class="material-symbols-rounded d-block text-danger domain-check-icon">
-                                not_interested
-                                </span>
+                            <span class="material-symbols-rounded d-block text-danger domain-check-icon">not_interested</span>
                             @endif
                             <span class="text-muted">{{ trans("messages.sending_domain.spf_verification") }}</span>
                         </div>
@@ -107,9 +95,7 @@
                             <ul class="dropdown-menu dropdown-menu-end">
                                 <li>
                                     <a class="dropdown-item list-action-single" link-confirm="{{ trans('messages.delete_sending_domains_confirm') }}" href="{{ action('SendingDomainController@delete', ["uids" => $item->uid]) }}">
-                                        <span class="material-symbols-rounded">
-delete_outline
-</span> {{ trans('messages.delete') }}
+                                        <span class="material-symbols-rounded">delete_outline</span> {{ trans('messages.delete') }}
                                     </a>
                                 </li>
                             </ul>
@@ -123,18 +109,14 @@ delete_outline
     
 @elseif (!empty(request()->keyword))
     <div class="empty-list">
-        <span class="material-symbols-rounded">
-public
-</span>
+        <span class="material-symbols-rounded">public</span>
         <span class="line-1">
             {{ trans('messages.no_search_result') }}
         </span>
     </div>
 @else
     <div class="empty-list">
-        <span class="material-symbols-rounded">
-public
-</span>
+        <span class="material-symbols-rounded">public</span>
         <span class="line-1">
             {{ trans('messages.sending_domain_empty_line_1') }}
         </span>

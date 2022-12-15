@@ -118,9 +118,7 @@ close
                                     {{ $timeline->activity }}
                                 </action>
                                 <desc class="d-block small text-muted">
-                                    <span class="material-symbols-rounded me-1">
-schedule
-</span> {{ Auth::user()->customer->formatDateTime($timeline->created_at, 'datetime_full') }}
+                                    <span class="material-symbols-rounded me-1">schedule</span> {{ Auth::user()->customer->formatDateTime($timeline->created_at, 'datetime_full') }}
                                 </desc>
                             </div>
                         </div>

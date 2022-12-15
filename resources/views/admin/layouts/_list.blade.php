@@ -31,9 +31,7 @@
                 </td>
                 <td class="text-end">
                     @can('update', $item)
-                        <a href="{{ action('Admin\LayoutController@edit', $item->uid) }}" role="button" class="btn btn-secondary btn-icon"> <span class="material-symbols-rounded">
-edit
-</span> {{ trans('messages.edit') }}</a>
+                        <a href="{{ action('Admin\LayoutController@edit', $item->uid) }}" role="button" class="btn btn-secondary btn-icon"> <span class="material-symbols-rounded">edit</span> {{ trans('messages.edit') }}</a>
                     @endcan
                 </td>
             </tr>

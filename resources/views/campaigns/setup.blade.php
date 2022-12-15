@@ -19,9 +19,7 @@
 			<li class="breadcrumb-item"><a href="{{ action("CampaignController@index") }}">{{ trans('messages.campaigns') }}</a></li>
 		</ul>
 		<h1>
-			<span class="text-semibold"><span class="material-symbols-rounded me-2 me-2">
-forward_to_inbox
-</span> {{ $campaign->name }}</span>
+			<span class="text-semibold"><span class="material-symbols-rounded me-2 me-2">forward_to_inbox</span> {{ $campaign->name }}</span>
 		</h1>
 
 		@include('campaigns._steps', ['current' => 2])
@@ -188,9 +186,7 @@ forward_to_inbox
 		</div>
 		<hr>
 		<div class="text-end {{ Auth::user()->customer->allowUnverifiedFromEmailAddress() ? '' : 'unverified_next_but' }}">
-			<button class="btn btn-secondary">{{ trans('messages.save_and_next') }} <span class="material-symbols-rounded">
-arrow_forward
-</span> </button>
+			<button class="btn btn-secondary">{{ trans('messages.save_and_next') }} <span class="material-symbols-rounded">arrow_forward</span> </button>
 		</div>
 		
 	<form>

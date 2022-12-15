@@ -8,9 +8,7 @@
                         <div class="preview_control">
                             <div style="width: calc(80% - 0px);">
                                 <div class="mb-2">
-                                    <a class="btn btn-light d-block" href="#preview" onclick="popupwindow('{{ action('Admin\TemplateController@preview', $template->uid) }}', `{{ $template->name }}`, 800)"><span class="material-symbols-rounded">
-                                        zoom_in
-                                        </span> {{ trans("messages.preview") }}</a>
+                                    <a class="btn btn-light d-block" href="#preview" onclick="popupwindow('{{ action('Admin\TemplateController@preview', $template->uid) }}', `{{ $template->name }}`, 800)"><span class="material-symbols-rounded">zoom_in</span> {{ trans("messages.preview") }}</a>
                                 </div>
                                 <div>
                                     <div>
@@ -79,16 +77,12 @@
                                                 </li>
                                             @endif
                                             @if (Auth::user()->admin->can('preview', $template))
-                                                <li><a class="dropdown-item" href="#preview" onclick="popupwindow('{{ action('Admin\TemplateController@preview', $template->uid) }}', `{{ $template->name }}`, 800)"><span class="material-symbols-rounded">
-            zoom_in
-            </span> {{ trans("messages.preview") }}</a></li>
+                                                <li><a class="dropdown-item" href="#preview" onclick="popupwindow('{{ action('Admin\TemplateController@preview', $template->uid) }}', `{{ $template->name }}`, 800)"><span class="material-symbols-rounded">zoom_in</span> {{ trans("messages.preview") }}</a></li>
                                             @endif
                                             @if (Auth::user()->admin->can('update', $template))
                                                 <li>
                                                     <a class="dropdown-item upload-thumb-button" href="{{ action('Admin\TemplateController@updateThumb', $template->uid) }}">
-                                                        <span class="material-symbols-rounded">
-            insert_photo
-            </span> {{ trans("messages.template.upload_thumbnail") }}
+                                                        <span class="material-symbols-rounded">insert_photo</span> {{ trans("messages.template.upload_thumbnail") }}
                                                     </a>
                                                 </li>
                                             @endif
@@ -97,9 +91,7 @@
                                                     <a class="dropdown-item template-categories" href="{{ action('Admin\TemplateController@categories', [
                                                         'uid' => $template->uid,
                                                     ]) }}">
-                                                        <span class="material-symbols-rounded">
-            category
-            </span> {{ trans("messages.template.categories") }}
+                                                        <span class="material-symbols-rounded">category</span> {{ trans("messages.template.categories") }}
                                                     </a>
                                                 </li>
                                             @endif
@@ -111,9 +103,7 @@
                                                         class="dropdown-item"
                                                         link-method="POST"
                                                     >
-                                                        <span class="material-symbols-rounded me-2">
-            download
-            </span> {{ trans("messages.template.export") }}
+                                                        <span class="material-symbols-rounded me-2">download</span> {{ trans("messages.template.export") }}
                                                     </a>
                                                 </li>
                                             @endif
@@ -125,9 +115,7 @@
                                                         class="dropdown-item copy-template-button"
                                                         link-method="GET"
                                                     >
-                                                        <span class="material-symbols-rounded me-2">
-            copy_all
-            </span> {{ trans("messages.template.copy") }}
+                                                        <span class="material-symbols-rounded me-2">copy_all</span> {{ trans("messages.template.copy") }}
                                                     </a>
                                                 </li>
                                             @endif
@@ -136,9 +124,7 @@
                                                     class="dropdown-item list-action-single"
                                                     link-confirm="{{ trans('messages.delete_templates_confirm') }}"
                                                     href="{{ action('Admin\TemplateController@delete', ["uids" => $template->uid]) }}">
-                                                    <span class="material-symbols-rounded me-2">
-            delete_outline
-            </span> {{ trans("messages.delete") }}</a></li>
+                                                    <span class="material-symbols-rounded me-2">delete_outline</span> {{ trans("messages.delete") }}</a></li>
                                             @endif
                                         </ul>
                                     </div>
@@ -237,18 +223,14 @@
 
 @elseif (!empty(request()->keyword))
     <div class="empty-list">
-        <span class="material-symbols-rounded">
-auto_awesome_mosaic
-</span>
+        <span class="material-symbols-rounded">auto_awesome_mosaic</span>
         <span class="line-1">
             {{ trans('messages.no_search_result') }}
         </span>
     </div>
 @else
     <div class="empty-list">
-        <span class="material-symbols-rounded">
-auto_awesome_mosaic
-</span>
+        <span class="material-symbols-rounded">auto_awesome_mosaic</span>
         <span class="line-1">
             {{ trans('messages.template_empty_line_1') }}
         </span>

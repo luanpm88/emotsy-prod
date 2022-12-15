@@ -72,16 +72,12 @@ assignment_turned_in
                     @can('loginAs', $customer)
                         <a href="{{ action('Admin\CustomerController@loginAs', $customer->uid) }}" data-popup="tooltip"
                             title="{{ trans('messages.login_as_this_customer') }}" role="button"
-                            class="btn btn-primary btn-icon"><span class="material-symbols-rounded">
-login
-</span></a>
+                            class="btn btn-primary btn-icon"><span class="material-symbols-rounded">login</span></a>
                     @endcan
                     @can('update', $customer)
                         <a href="{{ action('Admin\CustomerController@edit', $customer->uid) }}"
                             data-popup="tooltip" title="{{ trans('messages.edit') }}"
-                            role="button" class="btn btn-secondary btn-icon"><span class="material-symbols-rounded">
-edit
-</span></a>
+                            role="button" class="btn btn-secondary btn-icon"><span class="material-symbols-rounded">edit</span></a>
                     @endcan
                     @if (Auth::user()->can('delete', $customer) ||
                         Auth::user()->can('enable', $customer) ||
@@ -109,35 +105,27 @@ assignment_turned_in
                                 @can('enable', $customer)
                                     <li>
                                         <a class="dropdown-item list-action-single" link-confirm="{{ trans('messages.enable_customers_confirm') }}" href="{{ action('Admin\CustomerController@enable', ["uids" => $customer->uid]) }}">
-                                            <span class="material-symbols-rounded">
-play_arrow
-</span> {{ trans('messages.enable') }}
+                                            <span class="material-symbols-rounded">play_arrow</span> {{ trans('messages.enable') }}
                                         </a>
                                     </li>
                                 @endcan
                                 @can('disable', $customer)
                                     <li>
                                         <a class="dropdown-item list-action-single" link-confirm="{{ trans('messages.disable_customers_confirm') }}" href="{{ action('Admin\CustomerController@disable', ["uids" => $customer->uid]) }}">
-                                            <span class="material-symbols-rounded">
-hide_source
-</span> {{ trans('messages.disable') }}
+                                            <span class="material-symbols-rounded">hide_source</span> {{ trans('messages.disable') }}
                                         </a>
                                     </li>
                                 @endcan
                                 @can('read', $customer)
                                     <li>
                                         <a class="dropdown-item" href="{{ action('Admin\CustomerController@subscriptions', $customer->uid) }}">
-                                            <span class="material-symbols-rounded">
-assignment_turned_in
-</span> {{ trans('messages.subscriptions') }}
+                                            <span class="material-symbols-rounded">assignment_turned_in</span> {{ trans('messages.subscriptions') }}
                                         </a>
                                     </li>
                                 @endcan
                                 <li>
                                     <a class="dropdown-item list-action-single" link-confirm="{{ trans('messages.delete_users_confirm') }}" href="{{ action('Admin\CustomerController@delete', ['uids' => $customer->uid]) }}">
-                                        <span class="material-symbols-rounded">
-delete_outline
-</span> {{ trans('messages.delete') }}
+                                        <span class="material-symbols-rounded">delete_outline</span> {{ trans('messages.delete') }}
                                     </a>
                                 </li>
                             </ul>
@@ -168,18 +156,14 @@ delete_outline
 
 @elseif (!empty(request()->keyword))
     <div class="empty-list">
-        <span class="material-symbols-rounded">
-people_outline
-</span>
+        <span class="material-symbols-rounded">people_outline</span>
         <span class="line-1">
             {{ trans('messages.no_search_result') }}
         </span>
     </div>
 @else
     <div class="empty-list">
-        <span class="material-symbols-rounded">
-people_outline
-</span>
+        <span class="material-symbols-rounded">people_outline</span>
         <span class="line-1">
             {{ trans('messages.customer_empty_line_1') }}
         </span>

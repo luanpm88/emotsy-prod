@@ -14,9 +14,7 @@
     <p>{!! trans('messages.frontend_dashboard_welcome') !!}</p>
 
     <h3 class="mt-5 mb-3">
-        <span class="material-symbols-rounded me-2">
-            donut_large
-        </span>
+        <span class="material-symbols-rounded me-2">donut_large</span>
         {{ trans("messages.used_quota") }}
     </h3>
     <p>{{ trans('messages.dashboard.credit.wording') }}</p>
@@ -90,9 +88,7 @@
 
 
     @if (isSiteDemo())
-    <h3 class="mt-5 mb-3"><span class="material-symbols-rounded me-2">
-        star_half
-        </span> {{ trans('messages.top_5') }}
+    <h3 class="mt-5 mb-3"><span class="material-symbols-rounded me-2">star_half</span> {{ trans('messages.top_5') }}
     </h3>
 
     <ul class="nav nav-tabs nav-underline" id="myTab" role="tablist">
@@ -157,9 +153,7 @@
                 @empty
                     <li class="empty-li pt-0">
                         <div class="empty-list mt-0">
-                            <span class="material-symbols-rounded">
-                                auto_awesome
-                            </span>
+                            <span class="material-symbols-rounded">auto_awesome</span>
                             <span class="line-1">
                                 {{ trans('messages.empty_record_message') }}
                             </span>
@@ -211,9 +205,7 @@
                 @empty
                     <li class="empty-li pt-0">
                         <div class="empty-list mt-0">
-                            <span class="material-symbols-rounded">
-                                auto_awesome
-                            </span>
+                            <span class="material-symbols-rounded">auto_awesome</span>
                             <span class="line-1">
                                 {{ trans('messages.empty_record_message') }}
                             </span>
@@ -259,9 +251,7 @@
                 @empty
                     <li class="empty-li pt-0">
                         <div class="empty-list mt-0">
-                            <span class="material-symbols-rounded">
-                                auto_awesome
-                            </span>
+                            <span class="material-symbols-rounded">auto_awesome</span>
                             <span class="line-1">
                                 {{ trans('messages.empty_record_message') }}
                             </span>
@@ -273,16 +263,12 @@
     </div>
     @endif
 
-    <h3 class="mt-5 mb-3"><span class="material-symbols-rounded me-2">
-        web_stories
-        </span>
+    <h3 class="mt-5 mb-3"><span class="material-symbols-rounded me-2">web_stories</span>
          {{ trans('messages.activity_log') }}</h3>
 
     @if (Auth::user()->customer->logs()->count() == 0)
         <div class="empty-list">
-            <span class="material-symbols-rounded">
-                auto_awesome
-            </span>
+            <span class="material-symbols-rounded">auto_awesome</span>
             <span class="line-1">
                 {{ trans('messages.no_activity_logs') }}
             </span>
@@ -304,9 +290,7 @@
                                     <div class="d-flex align-items-center pt-1">
                                         <label class="panel-title text-semibold my-0 fw-600">{{ $log->customer->displayName() }}</label>
                                         <div class="d-flex align-items-center ms-auto text-muted">
-                                            <span style="font-size: 18px" class="material-symbols-rounded ms-auto me-2">
-                                                history
-                                            </span>
+                                            <span style="font-size: 18px" class="material-symbols-rounded ms-auto me-2">history</span>
                                             <div class="">
                                                 <span class="heading-text"><i class="icon-history position-left text-success"></i> {{ $log->created_at->timezone($currentTimezone)->diffForHumans() }}</span>
                                             </div>

@@ -17,9 +17,7 @@
 
     <div class="row mt-5">
         <div class="col-md-6">
-            <h4 class="text-semibold"><span class="material-symbols-rounded me-2">
-people_outline
-</span> {{ trans('messages.customers_growth') }}</h4>
+            <h4 class="text-semibold"><span class="material-symbols-rounded me-2">people_outline</span> {{ trans('messages.customers_growth') }}</h4>
             @include('admin.customers._growth_chart')
         </div>
         <div class="col-md-6">
@@ -33,9 +31,7 @@ assignment_turned_in
     <div class="row mt-5">
         <div class="col-md-6">
             <h4 class="text-semibold">
-                <span class="material-symbols-rounded me-2">
-assignment_turned_in
-</span>
+                <span class="material-symbols-rounded me-2">assignment_turned_in</span>
                 {{ trans('messages.recent_subscriptions') }}
             </h4>
             <p style="margin-bottom: 30px" class="link-inline">{!! trans('messages.admin.dashboard.recent_subscriptions.wording', [ 'here' => action('Admin\SubscriptionController@index') ]) !!}</p>
@@ -99,9 +95,7 @@ assignment_turned_in
         </div>
         <div class="col-md-6">
             <h4 class="text-semibold">
-                <span class="material-symbols-rounded me-2">
-people_outline
-</span>
+                <span class="material-symbols-rounded me-2">people_outline</span>
                 {{ trans('messages.recent_customers') }}
             </h4>
             <p style="margin-bottom: 30px" class="link-inline">{!! trans('messages.admin.dashboard.recent_customers.wording', [ 'here' => action('Admin\CustomerController@index') ]) !!}</p>
@@ -145,17 +139,13 @@ people_outline
     </div>
 
     <h4 class="text-semibold mt-5">
-        <span class="material-symbols-rounded me-2">
-restore
-</span>
+        <span class="material-symbols-rounded me-2">restore</span>
         {{ trans('messages.activities') }}
     </h4>
     <p style="margin-bottom: 30px" class="link-inline">{!! trans('messages.admin.dashboard.recent_activity.wording', [ 'here' => action('Admin\CustomerController@index') ]) !!}</p>
     @if (\Auth::user()->admin->getLogs()->count() == 0)
         <div class="empty-list">
-            <span class="material-symbols-rounded me-2">
-history_toggle_off
-</span>
+            <span class="material-symbols-rounded me-2">history_toggle_off</span>
             <span class="line-1">
                 {{ trans('messages.no_activity_logs') }}
             </span>
@@ -177,9 +167,7 @@ history_toggle_off
                                     <div class="d-flex align-items-center pt-1">
                                         <label class="panel-title text-semibold my-0 fw-600">{{ $log->customer->displayName() }}</label>
                                         <div class="d-flex align-items-center ms-auto text-muted">
-                                            <span style="font-size: 18px" class="material-symbols-rounded ms-auto me-2">
-                                                history
-                                            </span>
+                                            <span style="font-size: 18px" class="material-symbols-rounded ms-auto me-2">history</span>
                                             <div class="">
                                                 <span class="heading-text"><i class="icon-history position-left text-success"></i> {{ $log->created_at->timezone($currentTimezone)->diffForHumans() }}</span>
                                             </div>
@@ -197,18 +185,14 @@ history_toggle_off
     @endif
 
     <div class="sub-section mb-4 mt-5" style="margin-top: 60px">
-        <h4 class="text-semibold mt-5"><span class="material-symbols-rounded me-2">
-            running_with_errors
-            </span> {{ trans('messages.resources_statistics') }}</h4>
+        <h4 class="text-semibold mt-5"><span class="material-symbols-rounded me-2">running_with_errors</span> {{ trans('messages.resources_statistics') }}</h4>
         <p>{{ trans('messages.resources_statistics_intro') }}</p>
         <div class="row">
             <div class="col-md-6">
                 <ul class="dotted-list topborder section">
                     <li>
                         <div class="unit size1of2">
-                            <strong><span class="material-symbols-rounded me-2">
-people_outline
-</span> {{ trans('messages.customers') }}</strong>
+                            <strong><span class="material-symbols-rounded me-2">people_outline</span> {{ trans('messages.customers') }}</strong>
                         </div>
                         <div class="lastUnit size1of2">
                             <mc:flag>{{ Auth::user()->admin->getAllCustomers()->count() }}</mc:flag>
@@ -216,9 +200,7 @@ people_outline
                     </li>
                     <li class="selfclear">
                         <div class="unit size1of2">
-                            <strong><span class="material-symbols-rounded me-2">
-assignment_turned_in
-</span> {{ trans('messages.subscriptions') }}</strong>
+                            <strong><span class="material-symbols-rounded me-2">assignment_turned_in</span> {{ trans('messages.subscriptions') }}</strong>
                         </div>
                         <div class="lastUnit size1of2">
                             <mc:flag>{{ Auth::user()->admin->getAllSubscriptions()->count() }}</mc:flag>
@@ -236,9 +218,7 @@ assignment_turned_in
                     </li>
                     <li>
                         <div class="unit size1of2">
-                            <strong><span class="material-symbols-rounded me-2">
-contact_mail
-</span> {{ trans('messages.lists') }}</strong>
+                            <strong><span class="material-symbols-rounded me-2">contact_mail</span> {{ trans('messages.lists') }}</strong>
                         </div>
                         <div class="lastUnit size1of2">
                             <mc:flag>{{ Auth::user()->admin->getAllLists()->count() }}</mc:flag>
@@ -246,9 +226,7 @@ contact_mail
                     </li>
                     <li>
                         <div class="unit size1of2">
-                            <strong><span class="material-symbols-rounded me-2">
-people_outline
-</span> {{ trans('messages.subscribers') }}</strong>
+                            <strong><span class="material-symbols-rounded me-2">people_outline</span> {{ trans('messages.subscribers') }}</strong>
                         </div>
                         <div class="lastUnit size1of2">
                             <mc:flag>{{ number_with_delimiter($subscribersCount) }}</mc:flag>
@@ -260,9 +238,7 @@ people_outline
                 <ul class="dotted-list topborder section">
                     <li>
                         <div class="unit size1of2">
-                            <strong><span class="material-symbols-rounded me-2">
-manage_accounts
-</span> {{ trans('messages.admins') }}</strong>
+                            <strong><span class="material-symbols-rounded me-2">manage_accounts</span> {{ trans('messages.admins') }}</strong>
                         </div>
                         <div class="lastUnit size1of2">
                             <mc:flag>{{ Auth::user()->admin->getAllAdmins()->count() }}</mc:flag>
@@ -270,9 +246,7 @@ manage_accounts
                     </li>
                     <li class="selfclear">
                         <div class="unit size1of2">
-                            <strong><span class="material-symbols-rounded me-2">
-people
-</span> {{ trans('messages.admin_groups') }}</strong>
+                            <strong><span class="material-symbols-rounded me-2">people</span> {{ trans('messages.admin_groups') }}</strong>
                         </div>
                         <div class="lastUnit size1of2">
                             <mc:flag>{{ Auth::user()->admin->getAllAdminGroups()->count() }}</mc:flag>
@@ -280,9 +254,7 @@ people
                     </li>
                     <li class="selfclear">
                         <div class="unit size1of2">
-                            <strong><span class="material-symbols-rounded me-2">
-dns
-</span> {{ trans('messages.sending_servers') }}</strong>
+                            <strong><span class="material-symbols-rounded me-2">dns</span> {{ trans('messages.sending_servers') }}</strong>
                         </div>
                         <div class="lastUnit size1of2">
                             <mc:flag>{{ Auth::user()->admin->getAllSendingServers()->count() }}</mc:flag>
@@ -290,9 +262,7 @@ dns
                     </li>
                     <li>
                         <div class="unit size1of2">
-                            <strong><span class="material-symbols-rounded me-2">
-public
-</span> {{ trans('messages.sending_domains') }}</strong>
+                            <strong><span class="material-symbols-rounded me-2">public</span> {{ trans('messages.sending_domains') }}</strong>
                         </div>
                         <div class="lastUnit size1of2">
                             <mc:flag>{{ $sendingDomainsCount }}</mc:flag>
@@ -300,9 +270,7 @@ public
                     </li>
                     <li>
                         <div class="unit size1of2">
-                            <strong><span class="material-symbols-rounded me-2">
-forward_to_inbox
-</span> {{ trans('messages.campaigns') }}</strong>
+                            <strong><span class="material-symbols-rounded me-2">forward_to_inbox</span> {{ trans('messages.campaigns') }}</strong>
                         </div>
                         <div class="lastUnit size1of2">
                             <mc:flag>{{ Auth::user()->admin->getAllCampaigns()->count() }}</mc:flag>
@@ -310,9 +278,7 @@ forward_to_inbox
                     </li>
                     <li>
                         <div class="unit size1of2">
-                            <strong><span class="material-symbols-rounded me-2">
-schedule
-</span> {{ trans('messages.automations') }}</strong>
+                            <strong><span class="material-symbols-rounded me-2">schedule</span> {{ trans('messages.automations') }}</strong>
                         </div>
                         <div class="lastUnit size1of2">
                             <mc:flag>{{ number_with_delimiter($automationsCount) }}</mc:flag>

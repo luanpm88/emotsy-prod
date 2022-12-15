@@ -17,9 +17,7 @@
             <li class="breadcrumb-item active">{{ trans('messages.profile') }}</li>
         </ul>
         <h1>
-            <span class="text-semibold"><span class="material-symbols-rounded">
-                            person_outline
-                            </span> {{ $customer->displayName() }}</span>
+            <span class="text-semibold"><span class="material-symbols-rounded">person_outline</span> {{ $customer->displayName() }}</span>
         </h1>
     </div>
 
@@ -50,12 +48,8 @@
                             <h5 class="media-heading text-semibold mt-2">{{ trans('messages.upload_your_photo') }}</h5>
                             <p class="mb-0">{{ trans('messages.photo_at_least', ["size" => "300px x 300px"]) }}</p>
                             <p>{!! trans('messages.image.upload_help', [ 'max' => \Acelle\Library\Tool::maxFileUploadInBytes()]) !!}</p>
-                            <a href="#upload" onclick="$('input[name=image]').trigger('click')" class="btn btn-primary me-1"><span class="material-symbols-rounded">
-file_download
-</span> {{ trans('messages.upload') }}</a>
-                            <a href="#remove" class="btn btn-secondary remove-profile-image"><span class="material-symbols-rounded">
-delete_outline
-</span> {{ trans('messages.remove') }}</a>
+                            <a href="#upload" onclick="$('input[name=image]').trigger('click')" class="btn btn-primary me-1"><span class="material-symbols-rounded">file_download</span> {{ trans('messages.upload') }}</a>
+                            <a href="#remove" class="btn btn-secondary remove-profile-image"><span class="material-symbols-rounded">delete_outline</span> {{ trans('messages.remove') }}</a>
                         </div>
                     </div>
                 </div>

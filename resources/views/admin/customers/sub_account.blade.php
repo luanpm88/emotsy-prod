@@ -12,9 +12,7 @@
 			<li class="breadcrumb-item active">{{ trans('messages.customer.sub_account') }}</li>
 		</ul>
 		<h1>
-            <span class="text-semibold"><span class="material-symbols-rounded">
-                            person_outline
-                            </span> {{ $customer->displayName() }}</span>
+            <span class="text-semibold"><span class="material-symbols-rounded">person_outline</span> {{ $customer->displayName() }}</span>
         </h1>
 	</div>
 

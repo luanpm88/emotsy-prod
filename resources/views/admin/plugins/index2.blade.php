@@ -14,9 +14,7 @@
 					<h4 class="mb-0 me-3">{{ trans('messages.plugins') }}</h4>
 					<div class="text-muted2 small how-use hide">
 						<a href="javascript:;" class="text-secondary">
-							<span class="material-symbols-rounded">
-								help
-							</span>
+							<span class="material-symbols-rounded">help</span>
 							How to use
 						</a>
 					</div>
@@ -52,9 +50,7 @@
 				</div>
 				<div class="text-end ms-auto">
 					<a href="{{ action("Admin\PluginController@install") }}" role="button" class="btn btn-secondary text-nowarp ms-3">
-						<span class="material-symbols-rounded">
-	add
-	</span> {{ trans('messages.install_plugin') }}
+						<span class="material-symbols-rounded">add</span> {{ trans('messages.install_plugin') }}
 					</a>
 				</div>
 			</div>
@@ -73,12 +69,8 @@
 										{{ trans('messages.actions') }} <span class="number"></span><span class="caret"></span>
 									</button>
 									<ul class="dropdown-menu">
-										<li><a class="dropdown-item" link-confirm="{{ trans('messages.enable_plugins_confirm') }}" href="{{ action('Admin\PluginController@enable') }}"><span class="material-symbols-rounded">
-		play_arrow
-		</span> {{ trans('messages.enable') }}</a></li>
-										<li><a class="dropdown-item" link-confirm="{{ trans('messages.disable_plugins_confirm') }}" href="{{ action('Admin\PluginController@disable') }}"><span class="material-symbols-rounded">
-		hide_source
-		</span> {{ trans('messages.disable') }}</a></li>
+										<li><a class="dropdown-item" link-confirm="{{ trans('messages.enable_plugins_confirm') }}" href="{{ action('Admin\PluginController@enable') }}"><span class="material-symbols-rounded">play_arrow</span> {{ trans('messages.enable') }}</a></li>
+										<li><a class="dropdown-item" link-confirm="{{ trans('messages.disable_plugins_confirm') }}" href="{{ action('Admin\PluginController@disable') }}"><span class="material-symbols-rounded">hide_source</span> {{ trans('messages.disable') }}</a></li>
 										
 									</ul>
 								</div>

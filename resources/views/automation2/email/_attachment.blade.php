@@ -18,9 +18,7 @@
                 @foreach ($email->attachments as $attachment)
                     <li class="flex align-items-center">
                         <div class="icon">
-                            <span class="material-symbols-rounded me-2">
-attach_email
-</span>
+                            <span class="material-symbols-rounded me-2">attach_email</span>
                         </div>
                         <div class="content mr-auto">
                             <label>
@@ -40,9 +38,7 @@ attach_email
                                 class=""
                                 title="{{ trans('messages.automation.email.attachment.download') }}"
                             >
-                                <span class="material-symbols-rounded">
-file_download
-</span>
+                                <span class="material-symbols-rounded">file_download</span>
                             </a>
                             <a                                
                                 href="{{ action('Automation2Controller@emailAttachmentRemove', [
@@ -53,9 +49,7 @@ file_download
                                 class="attachment-remove"
                                 title="{{ trans('messages.automation.email.attachment.remove') }}"
                             >
-                                <span class="material-symbols-rounded">
-delete
-</span>
+                                <span class="material-symbols-rounded">delete</span>
                             </a>
                         </div>
                     </li>

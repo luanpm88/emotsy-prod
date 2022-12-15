@@ -23,9 +23,7 @@
 		'menu' => 'segment_add',
 	])
 	
-	<h2 class="text-semibold text-primary my-4"><span class="material-symbols-rounded">
-add
-</span> {{ trans('messages.create_segment') }}</h2>
+	<h2 class="text-semibold text-primary my-4"><span class="material-symbols-rounded">add</span> {{ trans('messages.create_segment') }}</h2>
 	
 	<form action="{{ action('SegmentController@store', $list->uid) }}" method="POST" class="form-validate-jqueryz">
 		{{ csrf_field() }}

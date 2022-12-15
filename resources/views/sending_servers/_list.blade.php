@@ -139,9 +139,7 @@
     </div>
 @else
     <div class="empty-list">
-        <span class="material-symbols-rounded">
-dns
-</span>
+        <span class="material-symbols-rounded">dns</span>
         <span class="line-1">
             {{ trans('messages.sending_server_empty_line_1') }}
         </span>

@@ -13,9 +13,7 @@
 			<li class="breadcrumb-item active">{{ trans('messages.update') }}</li>
 		</ul>
 		<h1>
-			<span class="text-semibold"><span class="material-symbols-rounded">
-                            person_outline
-                            </span> {{ $customer->displayName() }}</span>
+			<span class="text-semibold"><span class="material-symbols-rounded">person_outline</span> {{ $customer->displayName() }}</span>
 		</h1>
 	</div>
 
@@ -43,9 +41,7 @@
                             </select>
                             <input type="hidden" name="sort_direction" value="desc" />
 <button type="button" class="btn btn-light sort-direction" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
-                                <span class="material-symbols-rounded desc">
-sort
-</span>
+                                <span class="material-symbols-rounded desc">sort</span>
                             </button>
                         </span>
                         <span class="me-2 input-medium">

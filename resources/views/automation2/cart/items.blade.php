@@ -4,9 +4,7 @@
     <a class="mb-4 d-flex align-items-center back-to-automation" href="javascript:;"
         onclick="timelinePopup.load('{{ action('Automation2Controller@cartStats', $automation->uid) }}')"
     >
-        <span class="material-symbols-rounded me-2">
-            arrow_back
-            </span>
+        <span class="material-symbols-rounded me-2">arrow_back</span>
         <span>{{ trans('messages.automation.back_to_overview') }}</span>
     </a>
 

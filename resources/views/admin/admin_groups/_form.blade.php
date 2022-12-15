@@ -7,16 +7,12 @@
 </div>
 
 <div class="">
-    <h2><span class="material-symbols-rounded">
-settings
-</span> {{ trans('messages.admin_group_options') }}</h2>
+    <h2><span class="material-symbols-rounded">settings</span> {{ trans('messages.admin_group_options') }}</h2>
 
     <div class="tabbable">
         <ul class="nav nav-tabs nav-tabs-top nav-underline">
             <li class="nav-item active text-semibold"><a class="nav-link" href="#top-tab1" data-toggle="tab">
-                <span class="material-symbols-rounded">
-person_outline
-</span> {{ trans('messages.permissions') }}</a></li>
+                <span class="material-symbols-rounded">person_outline</span> {{ trans('messages.permissions') }}</a></li>
         </ul>
 
         <div class="tab-content">
@@ -32,9 +28,7 @@ person_outline
                         <div class="row" style="width: 100%">
                             <div class="col-md-3 text-end text-md-left">
                                 <h5 class="text-primary">{{ trans('messages.' . $key) }}
-                                    <span class="material-symbols-rounded text-muted2 ps-4">
-                                        drag_indicator
-                                        </span>
+                                    <span class="material-symbols-rounded text-muted2 ps-4">drag_indicator</span>
                                 </h5>
                             </div>
                             <div class="col-md-9">

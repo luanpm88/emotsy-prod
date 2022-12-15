@@ -283,18 +283,14 @@ remove_circle_outline
 
 @elseif (!empty(request()->keyword) || !empty(request()->filters))
 	<div class="empty-list">
-		<span class="material-symbols-rounded">
-assignment_turned_in
-</span>
+		<span class="material-symbols-rounded">assignment_turned_in</span>
 		<span class="line-1">
 			{{ trans('messages.no_search_result') }}
 		</span>
 	</div>
 @else
 	<div class="empty-list">
-		<span class="material-symbols-rounded">
-assignment_turned_in
-</span>
+		<span class="material-symbols-rounded">assignment_turned_in</span>
 		<span class="line-1">
 			{{ trans('messages.subscription_empty_line_1_admin') }}
 		</span>

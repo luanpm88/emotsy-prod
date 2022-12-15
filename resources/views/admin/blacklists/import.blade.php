@@ -12,9 +12,7 @@
             <li class="breadcrumb-item"><a href="{{ action("Admin\BlacklistController@index") }}">{{ trans('messages.blacklist') }}</a></li>
         </ul>
         <h1>
-            <span class="text-semibold"><span class="material-symbols-rounded">
-file_upload
-</span> {{ trans('messages.blacklist.import') }}</span>
+            <span class="text-semibold"><span class="material-symbols-rounded">file_upload</span> {{ trans('messages.blacklist.import') }}</span>
         </h1>
     </div>
 

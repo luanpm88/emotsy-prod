@@ -5,9 +5,7 @@
         <div class="d-flex">
             <div class="me-auto">
                 <label class="fw-600">
-                    <span class="material-symbols-rounded me-1">
-                        fact_check 
-                        </span> {{ trans('messages.sending_servers') }}
+                    <span class="material-symbols-rounded me-1">fact_check </span> {{ trans('messages.sending_servers') }}
                 </label>
             </div>
             <div>
@@ -30,16 +28,10 @@
                 <div>
                     @if ($server->isExtended())
                         <span class="mc-server-avatar shadow-sm rounded server-avatar" style="background: url({{ $server->getIconUrl() }}) top left/36px 36px no-repeat transparent;">
-                            <span class="material-symbols-rounded">
-
-</span>
-                        </span>
+                            <span class="material-symbols-rounded"></span></span>
                     @else
                         <span class="server-avatar shadow-sm rounded server-avatar-{{ $item->type }} mr-0">
-                            <span class="material-symbols-rounded">
-
-</span>
-                        </span>
+                            <span class="material-symbols-rounded"></span></span>
                     @endif
                 </div>
                 <div>

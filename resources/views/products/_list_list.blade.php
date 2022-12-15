@@ -30,9 +30,7 @@
 					<a href="{{ action('SourceController@sync', $product->uid) }}"
 						link-method="POST"
 						role="button" class="btn btn-secondary m-icon pl-3">
-						<span class="material-symbols-rounded me-2">
-							link
-							</span>{{ trans('messages.view') }}</a>
+						<span class="material-symbols-rounded me-2">link</span>{{ trans('messages.view') }}</a>
 					<div class="btn-group">
 						<button role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"></button>
 						<ul class="dropdown-menu dropdown-menu-end">
@@ -42,9 +40,7 @@
 									link-confirm="{{ trans('messages.source.delete.confirm') }}"
 									link-method="POST"
 									href="{{ action('SourceController@delete', ['uids' => $product->uid]) }}">
-									<span class="material-symbols-rounded">
-delete_outline
-</span> {{ trans('messages.delete') }}
+									<span class="material-symbols-rounded">delete_outline</span> {{ trans('messages.delete') }}
 								</a>
 							</li>
 						</ul>
@@ -57,18 +53,14 @@ delete_outline
 		
 @elseif (!empty(request()->keyword))
 	<div class="empty-list">
-		<span class="material-symbols-rounded">
-			category
-			</span>
+		<span class="material-symbols-rounded">category</span>
 		<span class="line-1">
 			{{ trans('messages.no_search_result') }}
 		</span>
 	</div>
 @else
 	<div class="empty-list">
-		<span class="material-symbols-rounded">
-			category
-			</span>
+		<span class="material-symbols-rounded">category</span>
 		<span class="line-1 text-muted">
 			<p>{!! trans('messages.product.no_product') !!}</p>
 		</span>

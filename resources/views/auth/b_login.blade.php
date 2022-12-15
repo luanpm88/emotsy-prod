@@ -74,9 +74,7 @@
 
         <button type="submit" class="btn rounded-2 btn-primary d-block login-button py-2 fw-600"
             style="width:100%;text-transform:uppercase"
-        ><span class="me-2">{{ trans("messages.login") }}</span> <span class="material-symbols-rounded">
-            login
-            </span></button>
+        ><span class="me-2">{{ trans("messages.login") }}</span> <span class="material-symbols-rounded">login</span></button>
             
 
             @if (

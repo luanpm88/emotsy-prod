@@ -22,9 +22,7 @@
     </div>
 
     <h1>
-        <span><span class="material-symbols-rounded">
-            format_list_bulleted
-            </span> {{ trans('messages.customers') }}</span>
+        <span><span class="material-symbols-rounded">format_list_bulleted</span> {{ trans('messages.customers') }}</span>
     </h1>	
 
 @endsection

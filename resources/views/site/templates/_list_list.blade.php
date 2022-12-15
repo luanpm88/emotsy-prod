@@ -127,18 +127,14 @@
 
 @elseif (!empty(request()->keyword))
     <div class="empty-list">
-        <span class="material-symbols-rounded">
-auto_awesome_mosaic
-</span>
+        <span class="material-symbols-rounded">auto_awesome_mosaic</span>
         <span class="line-1">
             {{ trans('messages.no_search_result') }}
         </span>
     </div>
 @else
     <div class="empty-list">
-        <span class="material-symbols-rounded">
-auto_awesome_mosaic
-</span>
+        <span class="material-symbols-rounded">auto_awesome_mosaic</span>
         <span class="line-1">
             {{ trans('messages.template_empty_line_1') }}
         </span>

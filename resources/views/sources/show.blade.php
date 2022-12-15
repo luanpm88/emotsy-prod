@@ -65,9 +65,7 @@
             <div class="source-stats">
                 <div class="source-desc-line pt-4 mb-4 d-flex">
                     <div class="mr-4">
-                        <span class="material-symbols-rounded" style="font-size:24px">
-                            inventory_2
-                            </span>
+                        <span class="material-symbols-rounded" style="font-size:24px">inventory_2</span>
                     </div>
                     <div class="desc">
                         <h5 class="mt-0 mb-1 text-primary">{!! trans('messages.source.have_products', [
@@ -84,9 +82,7 @@
                 <div class="source-desc-line pt-4 my-4 d-flex" style="justify-content: space-between">
                     <div class="d-flex">
                         <div class="mr-4">
-                            <span class="material-symbols-rounded" style="font-size:24px">
-                                fact_check
-                                </span>
+                            <span class="material-symbols-rounded" style="font-size:24px">fact_check</span>
                         </div>
                         <div class="desc">
                             <h5 class="mt-0 mb-1 text-primary">
@@ -122,9 +118,7 @@
                 @if ($automation->getAbandonedCartEmail()->isSetup())
                     <div class="source-desc-line pt-4 my-4 d-flex">
                         <div class="mr-4">
-                            <span class="material-symbols-rounded" style="font-size:24px">
-                                mark_email_unread
-                                </span>
+                            <span class="material-symbols-rounded" style="font-size:24px">mark_email_unread</span>
                         </div>
                         <div class="desc">
                             <h5 class="mt-0 mb-1 text-primary">{{ trans('messages.source.abandoned_cart_email') }}
@@ -153,9 +147,7 @@
                 @else
                     <div class="source-desc-line pt-4 my-4 d-flex">
                         <div class="mr-4">
-                            <span class="material-symbols-rounded" style="font-size:24px">
-                                mark_email_unread
-                                </span>
+                            <span class="material-symbols-rounded" style="font-size:24px">mark_email_unread</span>
                         </div>
                         <div class="desc">
                             <h5 class="mt-0 mb-1 text-primary">{{ trans('messages.source.abandoned_cart_email') }}</h5>

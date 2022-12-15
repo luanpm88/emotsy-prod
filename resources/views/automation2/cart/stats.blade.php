@@ -16,9 +16,7 @@
     <div class="">
         <div class="email-row d-flex align-items-center">
             <div class="mr-3 d-flex align-items-center">
-                <span class="material-symbols-rounded">
-                    pause_circle
-                </span>
+                <span class="material-symbols-rounded">pause_circle</span>
             </div>
             <div class="content">
                 <div class="mb-1">Email title: <strong class="font-weight-semibold">This is an email Title</strong></div>

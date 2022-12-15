@@ -33,9 +33,7 @@
                                 <p class="m-0 text-muted">{{ trans('messages.subscription.billing_information.subtitle') }}</p>
                             </div>
                             <div class="ms-auto">
-                                <span class="material-symbols-rounded fs-4 text-success">
-                                    task_alt
-                                    </span>
+                                <span class="material-symbols-rounded fs-4 text-success">task_alt</span>
                             </div>
                         </div>
                     </a>

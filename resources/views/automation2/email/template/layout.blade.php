@@ -26,9 +26,7 @@
 					<input type="hidden" name="category_uid" value="{{ request()->category_uid }}" />
 					<input type="hidden" name="from" value="{{ request()->from }}" />
 					<input type="text" name="keyword" class="form-control search" value="{{ request()->keyword }}" placeholder="{{ trans('messages.type_to_search') }}" />
-					<span class="material-symbols-rounded">
-search
-</span>
+					<span class="material-symbols-rounded">search</span>
 				</span>
 			</div>
 			<div class="template-list ajax-list">

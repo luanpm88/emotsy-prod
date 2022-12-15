@@ -5,9 +5,7 @@
         <div class="d-flex">
             <div class="me-auto">
                 <label class="fw-600">
-                    <span class="material-symbols-rounded me-1">
-                        people 
-                        </span> {{ trans('messages.customers') }}
+                    <span class="material-symbols-rounded me-1">people </span> {{ trans('messages.customers') }}
                 </label>
             </div>
             <div>

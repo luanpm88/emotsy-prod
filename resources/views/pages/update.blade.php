@@ -74,9 +74,7 @@
 									
 									<hr />
 									<div class="">
-										<a page-url="{{ action('PageController@preview', ['list_uid' => $list->uid, 'alias' => $layout->alias]) }}" class="btn btn-info me-1 preview-page-button" data-toggle="modal" data-target="#preview_page"><span class="material-symbols-rounded">
-visibility
-</span> {{ trans('messages.preview') }}</a>
+										<a page-url="{{ action('PageController@preview', ['list_uid' => $list->uid, 'alias' => $layout->alias]) }}" class="btn btn-info me-1 preview-page-button" data-toggle="modal" data-target="#preview_page"><span class="material-symbols-rounded">visibility</span> {{ trans('messages.preview') }}</a>
 										<button type="submit" class="btn btn-secondary me-2"><i class="icon-check"></i> {{ trans('messages.save_change') }}</button>
 									</div>
 								</div>
@@ -88,9 +86,7 @@ visibility
 						<hr />
 						<div class="d-flex">
 							<a page-url="{{ action('PageController@preview', ['list_uid' => $list->uid, 'alias' => $layout->alias]) }}"
-								class="btn btn-info me-2 preview-page-button" data-toggle="modal" data-target="#preview_page"><span class="material-symbols-rounded">
-visibility
-</span> {{ trans('messages.preview') }}</a>
+								class="btn btn-info me-2 preview-page-button" data-toggle="modal" data-target="#preview_page"><span class="material-symbols-rounded">visibility</span> {{ trans('messages.preview') }}</a>
 
 							<button type="submit" class="btn btn-secondary me-3"><i class="icon-check"></i> {{ trans('messages.save_change') }}</button>
 							<a href="{{ action('PageController@restoreDefault', [
@@ -100,9 +96,7 @@ visibility
 								link-method="POST"
 								link-confirm="{{ trans('messages.page.restore.confirm') }}"
 								class="btn btn-danger ms-auto">
-								<span class="material-symbols-rounded">
-									restart_alt
-								</span> {{ trans('messages.page.reset_default') }}</a>
+								<span class="material-symbols-rounded">restart_alt</span> {{ trans('messages.page.reset_default') }}</a>
 						</div>
 					@endif
 										
@@ -126,9 +120,7 @@ visibility
 									<div class="modal-content">
 										<div class="modal-header">
 											<h5 class="modal-title">
-												<span class="material-symbols-rounded me-1">
-visibility
-</span> {{ trans('messages.' . $layout->alias) }}
+												<span class="material-symbols-rounded me-1">visibility</span> {{ trans('messages.' . $layout->alias) }}
 											</h5>
 											<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 										</div>

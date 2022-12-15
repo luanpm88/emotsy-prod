@@ -5,56 +5,42 @@
         <ul class="nav nav-tabs nav-tabs-top nav-underline mb-1">
             <li class="nav-item {{ in_array($menu, ['overview']) ? 'active' : '' }}">
                 <a href="{{ action('MailListController@overview', $list->uid) }}" class="nav-link">
-                <span class="material-symbols-rounded">
-auto_graph
-</span> {{ trans('messages.overview') }}
+                <span class="material-symbols-rounded">auto_graph</span> {{ trans('messages.overview') }}
                 </a>
             </li>
             <li class="nav-item {{ in_array($menu, ['edit']) ? 'active' : '' }}">
                 <a class="nav-link level-1" href="{{ action('MailListController@edit', $list->uid) }}">
-                <span class="material-symbols-rounded">
-settings
-</span> {{ trans('messages.list.title.setting') }}
+                <span class="material-symbols-rounded">settings</span> {{ trans('messages.list.title.setting') }}
                 </a>
             </li>
             <li class="nav-item {{ in_array($menu, ['subscriber','subscriber_add','subscriber_import','subscriber_export']) ? 'active' : '' }}">
                 <a href="{{ action("AccountController@contact") }}" class="nav-link dropdown-toggle level-1" data-bs-toggle="dropdown">
-                <span class="material-symbols-rounded">
-people
-</span> {{ trans('messages.subscribers') }}
+                <span class="material-symbols-rounded">people</span> {{ trans('messages.subscribers') }}
                 <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end">
                     <li class="nav-item {{ in_array($menu, ['subscriber']) ? 'active' : '' }}">
                         <a class="dropdown-item" href="{{ action('SubscriberController@index', $list->uid) }}">
-                        <span class="material-symbols-rounded">
-                format_list_bulleted
-                </span> {{ trans('messages.view_all') }}
+                        <span class="material-symbols-rounded">format_list_bulleted</span> {{ trans('messages.view_all') }}
                         </a>
                     </li>
                     <li class="nav-item {{ in_array($menu, ['subscriber_add']) ? 'active' : '' }}">
                         <a class="dropdown-item" href="{{ action('SubscriberController@create', $list->uid) }}">
-                        <span class="material-symbols-rounded">
-add
-</span> {{ trans('messages.add') }}
+                        <span class="material-symbols-rounded">add</span> {{ trans('messages.add') }}
                         </a>
                     </li>
                     <li class="divider"></li>
                     @if (\Auth::user()->can('import', $list))
                     <li class="nav-item {{ in_array($menu, ['subscriber_import']) ? 'active' : '' }}">
                         <a class="dropdown-item" class="dropdown-item" href="{{ action('SubscriberController@import', $list->uid) }}">
-                        <span class="material-symbols-rounded">
-file_upload
-</span> {{ trans('messages.import') }}
+                        <span class="material-symbols-rounded">file_upload</span> {{ trans('messages.import') }}
                         </a>
                     </li>
                     @endif
                     @if (\Auth::user()->can('export', $list))
                     <li class="nav-item {{ in_array($menu, ['subscriber_export']) ? 'active' : '' }}">
                         <a class="dropdown-item" href="{{ action('SubscriberController@export', $list->uid) }}">
-                        <span class="material-symbols-rounded">
-file_download
-</span> {{ trans('messages.export') }}
+                        <span class="material-symbols-rounded">file_download</span> {{ trans('messages.export') }}
                         </a>
                     </li>
                     @endif
@@ -62,47 +48,35 @@ file_download
             </li>
             <li class="nav-item {{ in_array($menu, ['segment','segment_add']) ? 'active' : '' }}">
                 <a href="{{ action("AccountController@contact") }}" class="nav-link level-1 dropdown-toggle" data-bs-toggle="dropdown">
-                <span class="material-symbols-rounded">
-splitscreen
-</span> {{ trans('messages.segments') }}
+                <span class="material-symbols-rounded">splitscreen</span> {{ trans('messages.segments') }}
                 <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end">
                     <li class="nav-item {{ in_array($menu, ['segment']) ? 'active' : '' }}">
                     <a class="dropdown-item" href="{{ action('SegmentController@index', $list->uid) }}">
-                    <span class="material-symbols-rounded">
-                format_list_bulleted
-                </span> {{ trans('messages.view_all') }}
+                    <span class="material-symbols-rounded">format_list_bulleted</span> {{ trans('messages.view_all') }}
                     </a>
                     </li>
                     <li class="nav-item {{ in_array($menu, ['segment_add']) ? 'active' : '' }}">
                     <a class="dropdown-item" href="{{ action('SegmentController@create', $list->uid) }}">
-                    <span class="material-symbols-rounded">
-add
-</span> {{ trans('messages.add') }}
+                    <span class="material-symbols-rounded">add</span> {{ trans('messages.add') }}
                     </a>
                     </li>
                 </ul>
             </li>
             <li class="nav-item {{ in_array($menu, ['embedded','page']) ? 'active' : '' }}">
                 <a href="#menu" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                <span class="material-symbols-rounded">
-web
-</span> {{ trans('messages.custom_forms_and_emails') }}
+                <span class="material-symbols-rounded">web</span> {{ trans('messages.custom_forms_and_emails') }}
                 <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end has-head">
                 <li>
                     <a class="dropdown-item {{ in_array($menu, ['embedded']) ? 'active' : '' }}" href="{{ action('MailListController@embeddedForm', $list->uid) }}">
-                    <span class="material-symbols-rounded">
-dashboard
-</span> {{ trans('messages.Embedded_form') }}
+                    <span class="material-symbols-rounded">dashboard</span> {{ trans('messages.Embedded_form') }}
                     </a>
                 </li>
                 <li class="head">
-                    <span class="material-symbols-rounded me-1">
-                        add_task
-                        </span> {{ trans('messages.subscribe') }}
+                    <span class="material-symbols-rounded me-1">add_task</span> {{ trans('messages.subscribe') }}
                 </li>
                 <li>
                     <a class="dropdown-item {{ in_array(request()->alias, ['sign_up_form']) ? 'active' : '' }}" href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'sign_up_form']) }}">
@@ -130,9 +104,7 @@ dashboard
                     </a>
                 </li>
                 <li class="head">
-                    <span class="material-symbols-rounded me-1">
-                        logout
-                        </span> {{ trans('messages.unsubscribe') }}
+                    <span class="material-symbols-rounded me-1">logout</span> {{ trans('messages.unsubscribe') }}
                     </li>
                 <li>
                     <a class="dropdown-item {{ in_array(request()->alias, ['unsubscribe_form']) ? 'active' : '' }}" href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'unsubscribe_form']) }}">
@@ -150,9 +122,7 @@ dashboard
                     </a>
                 </li>
                     <li class="head">
-                        <span class="material-symbols-rounded me-1">
-                            person_outline
-                            </span> {{ trans('messages.update_profile') }}
+                        <span class="material-symbols-rounded me-1">person_outline</span> {{ trans('messages.update_profile') }}
                 </li>
                 <li>
                     <a class="dropdown-item {{ in_array(request()->alias, ['profile_update_email_sent']) ? 'active' : '' }}" href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'profile_update_email_sent']) }}">
@@ -178,16 +148,12 @@ dashboard
             </li>
             <li class="nav-item {{ in_array($menu, ['field']) ? 'active' : '' }}">
                 <a class="nav-link" href="{{ action('FieldController@index', $list->uid) }}">
-                <span class="material-symbols-rounded">
-fact_check
-</span> {{ trans('messages.manage_list_fields') }}
+                <span class="material-symbols-rounded">fact_check</span> {{ trans('messages.manage_list_fields') }}
                 </a>
             </li>
             <li class="nav-item {{ in_array($menu, ['email_verification']) ? 'active' : '' }}">
                 <a class="nav-link" href="{{ action('MailListController@verification', $list->uid) }}">
-                <span class="material-symbols-rounded">
-mark_email_read
-</span> {{ trans('messages.email_verification') }}
+                <span class="material-symbols-rounded">mark_email_read</span> {{ trans('messages.email_verification') }}
                 </a>
             </li>
         </ul>

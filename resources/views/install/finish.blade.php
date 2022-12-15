@@ -5,9 +5,7 @@
 @section('content')
 
 
-        <h4 class="text-primary fw-600 mb-3"><span class="material-symbols-rounded me-2">
-task_alt
-</span> Congratulations, you've successfully installed the application.</h4>
+        <h4 class="text-primary fw-600 mb-3"><span class="material-symbols-rounded me-2">task_alt</span> Congratulations, you've successfully installed the application.</h4>
             
         Remember that all your configurations were saved in <strong class="text-semibold">[APP_ROOT]/.env</strong> file. You can change it when needed.
         <br /><br />

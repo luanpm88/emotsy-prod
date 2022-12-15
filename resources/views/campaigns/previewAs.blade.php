@@ -11,9 +11,7 @@
                 <div class="filter-box mb-3 mt-2">
                     <span class="text-nowrap">
                         <input type="text" name="keyword" class="form-control search" value="{{ request()->keyword }}" placeholder="{{ trans('messages.type_to_search') }}" />
-                        <span class="material-symbols-rounded">
-            search
-            </span>
+                        <span class="material-symbols-rounded">search</span>
                     </span>
                     <button type="button" class="btn btn-primary ms-2 px-4 search-ok-button">{{ trans('messages.ok') }}</button>
                 </div>

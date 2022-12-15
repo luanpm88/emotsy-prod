@@ -12,9 +12,7 @@
             <li class="breadcrumb-item"><a href="{{ action("CampaignController@index") }}">{{ trans('messages.campaigns') }}</a></li>
         </ul>
         <h1>
-            <span class="text-semibold"><span class="material-symbols-rounded me-2">
-forward_to_inbox
-</span> {{ $campaign->name }}</span>
+            <span class="text-semibold"><span class="material-symbols-rounded me-2">forward_to_inbox</span> {{ $campaign->name }}</span>
         </h1>
 
         @include('campaigns._steps', ['current' => 5])
@@ -46,13 +44,9 @@ forward_to_inbox
                                 </i>
                             @else
                                 @if (!Acelle\Model\Setting::isYes('spamassassin.required'))
-                                    <span class="material-symbols-rounded text-warning">
-                                        error_outline
-                                    </span>
+                                    <span class="material-symbols-rounded text-warning">error_outline</span>
                                 @else
-                                    <span class="material-symbols-rounded text-danger">
-                                        highlight_off
-                                    </span>
+                                    <span class="material-symbols-rounded text-danger">highlight_off</span>
                                 @endif
                             @endif
                            
@@ -81,9 +75,7 @@ forward_to_inbox
     task_alt
                             </i>
                         @else
-                            <span class="material-symbols-rounded text-danger">
-                                highlight_off
-                            </span>
+                            <span class="material-symbols-rounded text-danger">highlight_off</span>
                         @endif
                     </span>
                     <div class="me-auto">
@@ -225,9 +217,7 @@ forward_to_inbox
                             <span
                                 onclick="popupwindow('{{ action('CampaignController@preview', $campaign->uid) }}', `{{ $campaign->name }}`, 800)"
                                 href="#preview" class="btn btn-secondary me-1" data-uid="{{ $campaign->uid }}">
-                                {{ trans('messages.preview') }} <span class="material-symbols-rounded">
-visibility
-</span>
+                                {{ trans('messages.preview') }} <span class="material-symbols-rounded">visibility</span>
                             </span>
                             <button class="btn btn-secondary me-1 send-a-test-email-link" data-uid="{{ $campaign->uid }}">{{ trans('messages.send_a_test_email') }} <i class="icon-envelop3 ml-5"></i> </button>
                             @if (!is_null($score))
@@ -269,16 +259,12 @@ visibility
                             type="button"
                             href="#preview" class="btn btn-default me-1 preview-as-button"
                         >
-                            {{ trans('messages.campaign.preview_as') }} <span class="material-symbols-rounded ms-1">
-                                contact_mail
-</span>
+                            {{ trans('messages.campaign.preview_as') }} <span class="material-symbols-rounded ms-1">contact_mail</span>
                         </button>
                         <span
                             onclick="popupwindow('{{ action('CampaignController@preview', $campaign->uid) }}', `{{ $campaign->name }}`, 800)"
                             href="#preview" class="btn btn-secondary me-1" data-uid="{{ $campaign->uid }}">
-                            {{ trans('messages.preview') }} <span class="material-symbols-rounded">
-visibility
-</span>
+                            {{ trans('messages.preview') }} <span class="material-symbols-rounded">visibility</span>
                         </span>
                         <button class="btn btn-secondary me-1 send-a-test-email-link" data-uid="{{ $campaign->uid }}">{{ trans('messages.send_a_test_email') }} <i class="icon-envelop3 ml-5"></i> </button>
                         <button class="btn btn-primary">{{ trans('messages.send') }} <i class="icon-paperplane ml-5"></i> </button>

@@ -12,9 +12,7 @@
 					<li class="breadcrumb-item"><a href="{{ action("Admin\CustomerController@index") }}">{{ trans('messages.customers') }}</a></li>
 				</ul>
 				<h1>
-					<span class="text-semibold"><span class="material-symbols-rounded">
-add
-</span> {{ trans('messages.create_customer') }}</span>
+					<span class="text-semibold"><span class="material-symbols-rounded">add</span> {{ trans('messages.create_customer') }}</span>
 				</h1>
 			</div>
 
