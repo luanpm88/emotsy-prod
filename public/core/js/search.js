@@ -231,9 +231,7 @@ var TopSearchBar = {
             <div class="empty-result-alert">
                 <div class="py-3 text-center">
                     <span class="line-1 text-muted2 px-4">
-                        <span class="material-icons-outlined mb-2 me-2">
-                            feedback
-                        </span> ` + TopSearchBar.lang.empty_result + `
+                        <span class="material-symbols-outlined mb-2 me-2">feedback</span> ` + TopSearchBar.lang.empty_result + `
                     </span>
                 </div>
             </div>
