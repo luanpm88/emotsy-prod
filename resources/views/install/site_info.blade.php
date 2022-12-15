@@ -161,7 +161,7 @@ mark_email_read
                 'name' => 'mail_mailer',
 								'label' => trans('messages.mail_mailer'),
                 'value' => (isset($site_info["mail_mailer"]) ? $site_info["mail_mailer"] : ""),
-								'options' => [["value" => "sendmail", "text" => trans('messages.system.sendmail')],["value" => "smtp", "text" => trans('messages.smtp')]],
+								'options' => [["value" => "sendmail", "text" => trans('messages.system.sendmail')],["value" => "smtp", "text" => trans('messages.sending_server.type.smtp')]],
                 'help_class' => 'install',
                 'rules' => $rules
             ])
