@@ -797,7 +797,7 @@ class SendingServer extends Model implements HasQuotaInterface
      */
     public function allowCustomReturnPath()
     {
-        return  $this->type == 'smtp' || $this->type == 'sendmail' || $this->type == 'php-mail';
+        return  $this->type == 'smtp' || $this->type == 'sendmail';
     }
 
     /**
@@ -926,11 +926,11 @@ class SendingServer extends Model implements HasQuotaInterface
             if ($request->plan_uid && in_array($server->id, $existIds)) {
                 $data['items'][] = [
                     'id' => $server->uid,
-                    'text' => $server->name.' ('.trans('messages.sending_server.added').')'.'|||'.trans('messages.'.$server->type),
+                    'text' => $server->name.' ('.trans('messages.sending_server.added').')'.'|||'.trans('messages.sending_server.type.'.$server->type),
                     'disabled' => true,
                 ];
             } else {
-                $data['items'][] = ['id' => $server->uid, 'text' => $server->name.'|||'.trans('messages.'.$server->type)];
+                $data['items'][] = ['id' => $server->uid, 'text' => $server->name.'|||'.trans('messages.sending_server.type.'.$server->type)];
             }
         }
 
@@ -1499,7 +1499,7 @@ class SendingServer extends Model implements HasQuotaInterface
 
         // default name
         if (!$server->name) {
-            $server->name = $server->getDefaultName() ?: trans('messages.' . $server->type);
+            $server->name = $server->getDefaultName() ?: trans('messages.sending_server.type.' . $server->type);
         }
 
         // default sever quota

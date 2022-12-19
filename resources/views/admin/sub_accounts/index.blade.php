@@ -46,7 +46,7 @@
                             <select class="select" name="type">
                                 <option value="">{{ trans('messages.all') }}</option>
                                 @foreach (Acelle\Model\SendingServer::getSubAccountTypes() as $key => $type)
-                                    <option value="{{ $type }}">{{ trans('messages.' . $type) }}</option>
+                                    <option value="{{ $type }}">{{ trans('messages.sending_server.type.' . $type) }}</option>
                                 @endforeach
                             </select>
                         </span>

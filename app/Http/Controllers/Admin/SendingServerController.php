@@ -95,7 +95,7 @@ class SendingServerController extends Controller
         $server->quota_unit = 'hour';
         $server->fill($request->old());
 
-        $server->name = trans('messages.' . $request->type);
+        $server->name = trans('messages.sending_server.type.' . $request->type);
 
         // authorize
         if (!$request->user()->admin->can('create', SendingServer::class)) {

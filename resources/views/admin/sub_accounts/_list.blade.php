@@ -18,7 +18,7 @@
                     <div class="single-stat-box pull-left ml-20">
                         <span class="no-margin stat-num kq_search">{{ $account->sendingServer->name }}</span>
                         <br />
-                        <span class="text-muted">{{ trans('messages.' . $account->sendingServer->type) }}</span>
+                        <span class="text-muted">{{ trans('messages.sending_server.type.' . $account->sendingServer->type) }}</span>
                     </div>
                 </td>
                 <td>
