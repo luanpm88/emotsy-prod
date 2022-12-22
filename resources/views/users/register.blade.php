@@ -92,7 +92,7 @@
                         'type' => 'select',
                         'name' => 'language_id',
                         'label' => trans('messages.language'),
-                        'value' => $customer->language_id,
+                        'value' => $customer->language_id ?? \Acelle\Model\Language::getDefaultLanguage()->id,
                         'options' => Acelle\Model\Language::getSelectOptions(),
                         'include_blank' => trans('messages.choose'),
                         'rules' => $user->registerRules()
