@@ -136,6 +136,12 @@ class SendMessage implements ShouldQueue
             if ($this->stopOnError) {
                 throw new Exception($message);
             } else {
+                if (!isset($msgId)) {
+                    // Just in case there is an exception before the execution of "list($message, $msgId) = $this->campaign->prepareEmail..."
+                    // then $msgID is not available
+                    $msgId = null;
+                }
+
                 $this->campaign->trackMessage(['status' => 'failed', 'error' => $ex->getMessage()], $this->subscriber, $this->server, $msgId, $this->triggerId);
             }
         }
