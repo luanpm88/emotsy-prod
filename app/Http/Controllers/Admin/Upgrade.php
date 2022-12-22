@@ -44,7 +44,10 @@ class Upgrade extends Controller
         } catch (Exception $ex) {
             // Index already dropped
         }
-        Cache::flush();
+
+        // Do not clear cache, it will clean up all statistics
+        // Cache::flush();
+
         Language::dump();
         Template::resetDefaultTemplates();
         Template::resetPopupTemplates();
