@@ -91,13 +91,14 @@ class SendMessage implements ShouldQueue
         $email = $this->subscriber->getEmail();
         $subscription = $this->campaign->customer->getCurrentActiveSubscription();
 
-        // Prepare the email message to send
-        list($message, $msgId) = $this->campaign->prepareEmail($this->subscriber, $this->server, $fromCache = true);
-
-        // Actually send!
-        $logger->info(sprintf('Sending to %s [Server "%s"]', $email, $this->server->name));
-
         try {
+            // Prepare the email message to send
+            // In case of an invalid email, an exception will arise at: Swift_Mime_SimpleMessage->setTo(...)
+            list($message, $msgId) = $this->campaign->prepareEmail($this->subscriber, $this->server, $fromCache = true);
+
+            // Start sending
+            $logger->info(sprintf('Sending to %s [Server "%s"]', $email, $this->server->name));
+
             // Count related quota trackers
             // Important: sacrisfy server credits, put quota check for server before that of subscription
             // Otherwise, it may cost 1 subscription's credit (shown to user) every time the job is release back to queue
