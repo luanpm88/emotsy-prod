@@ -35,6 +35,7 @@ class SendMessage implements ShouldQueue
     protected $server;
     protected $campaign;
     protected $triggerId;
+    protected $stopOnError = false;
 
     /**
      * Create a new job instance.
@@ -47,6 +48,15 @@ class SendMessage implements ShouldQueue
         $this->subscriber = $subscriber;
         $this->server = $server;
         $this->triggerId = $triggerId;
+    }
+
+    public function setStopOnError($value)
+    {
+        if (!is_bool($value)) {
+            throw new Exception('Parameter passed to setStopOnError must be bool');
+        }
+
+        $this->stopOnError = $value;
     }
 
     /**
@@ -121,7 +131,12 @@ class SendMessage implements ShouldQueue
             // Option 1: throw an exception and show it to users as the campaign status
             //     throw new Exception($message);
             // Option 2: just skip the error, log it and proceed with the next subscriber
-            $this->campaign->trackMessage(['status' => 'failed'], $this->subscriber, $this->server, $msgId, $this->triggerId);
+
+            if ($this->stopOnError) {
+                throw new Exception($message);
+            } else {
+                $this->campaign->trackMessage(['status' => 'failed', 'error' => $ex->getMessage()], $this->subscriber, $this->server, $msgId, $this->triggerId);
+            }
         }
     }
 }

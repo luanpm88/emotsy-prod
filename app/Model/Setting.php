@@ -582,6 +582,24 @@ class Setting extends Model
                 'value' => '%08d',  // a number of 8 digit, for example: sprintf('%08d', 15) -> 00000015
                 'type' => 'text',
             ],
+            'customer_can_change_language' => [
+                'cat' => 'general',
+                'value' => 'yes',
+                'type' => 'checkbox',
+                'options' => ['no', 'yes'],
+            ],
+            'customer_can_change_personality' => [
+                'cat' => 'general',
+                'value' => 'yes',
+                'type' => 'checkbox',
+                'options' => ['no', 'yes'],
+            ],
+            'campaign.stop_on_error' => [
+                'cat' => 'general',
+                'value' => 'no',
+                'type' => 'checkbox',
+                'options' => ['no', 'yes'],
+            ],
         ];
     }
 

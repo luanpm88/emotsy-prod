@@ -11,6 +11,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Acelle\Model\Campaign;
 use Acelle\Model\Subscriber;
+use Acelle\Model\Setting;
 use Illuminate\Support\Carbon;
 use Acelle\Library\Traits\Trackable;
 
@@ -69,7 +70,10 @@ class LoadCampaign implements ShouldQueue
 
         // Iterate through contacts and launch sending process
         $this->campaign->prepare(function ($campaign, $subscriber, $server) {
-            $this->batch()->add(new SendMessage($campaign, $subscriber, $server));
+            $job = new SendMessage($campaign, $subscriber, $server);
+            $stopOnError = Setting::isYes('campaign.stop_on_error'); // true or false
+            $job->setStopOnError($stopOnError);
+            $this->batch()->add($job);
         }, $loadLimit);
     }
 }
