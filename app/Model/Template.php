@@ -38,7 +38,7 @@ use Exception;
 use Closure;
 use League\Pipeline\PipelineBuilder;
 use Acelle\Library\HtmlHandler\TransformWidgets;
-
+use function Acelle\Helpers\is_valid_url;
 use function Acelle\Helpers\getAppHost;
 
 class Template extends Model
@@ -699,15 +699,8 @@ class Template extends Model
 
         // Replace #1
         $content = StringHelper::transformUrls($html, function ($url, $element) use ($withHost, $domain, $urlTransform) {
-            if (strpos($url, '#') === 0) {
-                return $url;
-            }
-
-            if (strpos($url, 'mailto:') === 0) {
-                return $url;
-            }
-
-            if (strpos($url, 'tel:') === 0) {
+            // Only accept url with http:// or https:// or //
+            if (!is_valid_url($url)) {
                 return $url;
             }
 

@@ -317,3 +317,19 @@ function file_get_contents_ssl_safe($url)
 
     return $result;
 }
+
+function is_valid_url($url)
+{
+    $accepted = [ 'http:', 'https:', '//'];
+
+    // Important: do not use filter_var($url, FILTER_VALIDATE_URL);
+    $valid = false;
+    foreach($accepted as $prefix) {
+        if (strpos($url, $prefix) === 0) {
+            $valid = true;
+            break;
+        }
+    }
+
+    return $valid;
+}
