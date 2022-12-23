@@ -707,6 +707,10 @@ class Template extends Model
                 return $url;
             }
 
+            if (strpos($url, 'tel:') === 0) {
+                return $url;
+            }
+
             if (parse_url($url, PHP_URL_HOST) === false) {
                 // false ==> if url is invalid
                 // null ==> if url does not have host information
