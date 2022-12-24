@@ -38,7 +38,7 @@ use Exception;
 use Closure;
 use League\Pipeline\PipelineBuilder;
 use Acelle\Library\HtmlHandler\TransformWidgets;
-use function Acelle\Helpers\is_valid_url;
+use function Acelle\Helpers\is_non_web_link;
 use function Acelle\Helpers\getAppHost;
 
 class Template extends Model
@@ -697,10 +697,14 @@ class Template extends Model
             throw new Exception('Template does not have a UID, cannot transform content');
         }
 
-        // Replace #1
+        // This is where the transformation takes place
+        // + Transform relative url like /assets/... to absolute one
+        // + Transform to tracking domain
+        //
         $content = StringHelper::transformUrls($html, function ($url, $element) use ($withHost, $domain, $urlTransform) {
-            // Only accept url with http:// or https:// or //
-            if (!is_valid_url($url)) {
+            // If the given URL is a non-web link, like tel:, mailto:, ftp:...
+            // then just skip
+            if (is_non_web_link($url)) {
                 return $url;
             }
 
@@ -767,6 +771,10 @@ class Template extends Model
 
         return $content;
     }
+
+    // Test transformation:
+    // $c=Campaign::findByUid('63856e0f78a75');$t = $c->template;$c->tracking_domain_id = null;$t->content = '<a href="images/relative.svg">Relative Images</a><a href="#">Keep me</a><a href=http://vnexpress.net>Public URL</a><a href="//vnexpress.net">Slash</a>'
+    // $c->getHtmlContent();
 
     public function wooTransform($body)
     {

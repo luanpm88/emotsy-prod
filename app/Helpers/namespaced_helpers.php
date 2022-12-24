@@ -318,18 +318,18 @@ function file_get_contents_ssl_safe($url)
     return $result;
 }
 
-function is_valid_url($url)
+function is_non_web_link($url)
 {
-    $accepted = [ 'http:', 'https:', '//'];
+    $preserved = [ '#', 'mailto:', 'tel:', 'file:', 'ftp:', 'rss:', 'feed:', ':telnet', 'gopher:', 'ssh:', 'nntp:'];
 
     // Important: do not use filter_var($url, FILTER_VALIDATE_URL);
-    $valid = false;
-    foreach($accepted as $prefix) {
+    $matched = false;
+    foreach($preserved as $prefix) {
         if (strpos($url, $prefix) === 0) {
-            $valid = true;
+            $matched = true;
             break;
         }
     }
 
-    return $valid;
+    return $matched;
 }
