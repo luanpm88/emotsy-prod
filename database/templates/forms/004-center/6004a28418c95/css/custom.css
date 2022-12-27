@@ -13,6 +13,9 @@ label.error {
 [builder-element=CellElement] .container {
     padding: 0;
 }
+.social-icon:hover {
+    background-color: rgb(31, 101, 167)!important;
+}
 @media (min-width: 769px) {
     [data-hide-on="desktop"] {
       display: none!important;

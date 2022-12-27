@@ -15,3 +15,6 @@ footer {
 [builder-element=CellElement] .container {
     padding: 0;
 }
+.social-icon:hover {
+    background-color: rgb(31, 101, 167)!important;
+}
