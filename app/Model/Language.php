@@ -126,7 +126,7 @@ class Language extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'code', 'region_code',
+        'name', 'code', 'region_code', 'status'
     ];
 
     /**
