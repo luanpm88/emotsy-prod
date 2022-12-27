@@ -17,6 +17,8 @@ use Acelle\Library\Traits\HasTemplate;
 use Acelle\Library\Traits\HasUid;
 use Exception;
 use Acelle\Library\Contracts\HasTemplateInterface;
+use Acelle\Library\HtmlHandler\InjectTrackingPixel;
+use Acelle\Library\HtmlHandler\TransformUrl;
 
 class Email extends Model implements HasTemplateInterface
 {
@@ -301,7 +303,27 @@ class Email extends Model implements HasTemplateInterface
 
     public function isStageExcluded(string $name): bool
     {
-        // Temporarily
-        return false;
+        switch ($name) {
+            case InjectTrackingPixel::class:
+                if ($this->track_open) {
+                    return false;
+                } else {
+                    return true;
+                }
+                break;
+
+            case TransformUrl::class:
+                if ($this->track_click) {
+                    return false;
+                } else {
+                    return true;
+                }
+                break;
+
+            default:
+                // do not exclude by default
+                return false;
+                break;
+        }
     }
 }
