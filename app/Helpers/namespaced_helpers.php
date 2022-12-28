@@ -324,7 +324,7 @@ function is_non_web_link($url)
 
     // Important: do not use filter_var($url, FILTER_VALIDATE_URL);
     $matched = false;
-    foreach($preserved as $prefix) {
+    foreach ($preserved as $prefix) {
         if (strpos($url, $prefix) === 0) {
             $matched = true;
             break;
