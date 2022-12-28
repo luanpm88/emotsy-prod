@@ -7,4 +7,5 @@
     class="form-control{{ $classes }}  {{ isset($class) ? $class : "" }}"
     {!! isset($default_value) ? 'default-value="'.$default_value.'"' : '' !!}
     {{ isset($readonly) && $readonly ? "readonly=readonly" : "" }}
+    {{ $required ? 'required' : '' }}
 >
