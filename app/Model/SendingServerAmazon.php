@@ -150,6 +150,8 @@ class SendingServerAmazon extends SendingServer implements DomainVerificationInt
      */
     public function setupSns($fromEmailAddress)
     {
+        // See: https://aws.amazon.com/premiumsupport/knowledge-center/ses-bounce-notifications-sns/
+
         if ($this->isSnsSetup) {
             return true;
         }
@@ -171,7 +173,7 @@ class SendingServerAmazon extends SendingServer implements DomainVerificationInt
             ));
         } catch (\Exception $e) {
             $verifyByDomain = true;
-            MailLog::warning("From Email address {$fromEmailAddress} not verified by Amazon SES, using domain instead");
+            MailLog::warning("From Email address {$fromEmailAddress} not verified by Amazon SES, using domain instead...");
         }
 
         if ($verifyByDomain) {
