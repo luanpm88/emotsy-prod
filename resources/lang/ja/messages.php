@@ -573,7 +573,7 @@
   'bill.estimated_total' => 'ご請求合計（税込み）',
   'bill.fee' => 'Payment service fee',
   'bill.remove_payment.confirm' => '現在のお支払い方法を削除しようとしています。これは元に戻すことができます',
-  'bill.subtotal' => 'Sub.Total',
+  'bill.subtotal' => '小計',
   'bill.tax' => '合計',
   'bill.total' => '合計',
   'billing' => '請求する',
