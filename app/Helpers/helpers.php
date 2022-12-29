@@ -844,8 +844,8 @@ function parseRss($config)
     $rss = [];
 
     // Parse RSS content
-    $rssArray = xml_to_array(simplexml_load_string(file_get_contents($config['url']), 'SimpleXMLElement', LIBXML_NOCDATA));
-    $rssFeed = simplexml_load_string(file_get_contents($config['url']), 'SimpleXMLElement', LIBXML_NOCDATA);
+    $rssArray = xml_to_array(simplexml_load_string(\Acelle\Helpers\url_get_contents_ssl_safe($config['url']), 'SimpleXMLElement', LIBXML_NOCDATA));
+    $rssFeed = simplexml_load_string(\Acelle\Helpers\url_get_contents_ssl_safe($config['url']), 'SimpleXMLElement', LIBXML_NOCDATA);
 
     // Take 10 records only
     $records = array_slice($rssArray['rss']['channel']['item'], 0, $config['size']);

@@ -3,6 +3,7 @@
 namespace Acelle\Library;
 
 use Symfony\Component\CssSelector\Exception\ParseException;
+use function Acelle\Helpers\url_get_contents_ssl_safe;
 
 /**
  * Parses a html file and applies all embedded and external stylesheets inline
@@ -200,7 +201,7 @@ class InlineStyleWrapper
                             $href = "{$base}/{$href}";
                         }
 
-                        $ext = @file_get_contents($href);
+                        $ext = @url_get_contents_ssl_safe($href);
 
                         if ($ext) {
                             $removeQueue[] = $child;

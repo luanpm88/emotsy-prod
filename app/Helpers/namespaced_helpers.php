@@ -297,11 +297,11 @@ function reset_app_url($force = false)
     }
 }
 
-function file_get_contents_ssl_safe($url)
+function url_get_contents_ssl_safe($url)
 {
     // Check if $url is a URL
     if (!preg_match('/^https{0,1}:\/\//', $url)) {
-        throw new \Exception('file_get_contents_ssl_safe() requires a URL as input. Received: '.$url);
+        throw new \Exception('url_get_contents_ssl_safe() requires a URL as input. Received: '.$url);
     }
 
     $client = curl_init();

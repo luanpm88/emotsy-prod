@@ -41,6 +41,7 @@ use Acelle\Library\HtmlHandler\TransformWidgets;
 
 use function Acelle\Helpers\is_non_web_link;
 use function Acelle\Helpers\getAppHost;
+use function Acelle\Helpers\url_get_contents_ssl_safe;
 
 class Template extends Model
 {
@@ -1014,7 +1015,7 @@ class Template extends Model
      */
     public function uploadThumbnailUrl($url)
     {
-        $contents = file_get_contents($url);
+        $contents = url_get_contents_ssl_safe($url);
         file_put_contents($this->getStoragePath('thumbnail.png'), $contents);
         // resize
         resize_crop_image(596, 769, $this->getStoragePath('thumbnail.png'), $this->getStoragePath('thumbnail.png'));
