@@ -44,6 +44,11 @@
                 padding-left: 0px!important;
                 padding-right: 0px!important;
             }
+            /* EmailMode */
+            [builder-element=CellContainerElement] tbody, [builder-element=CellContainerElement] tr, [builder-element=CellContainerElement] td {
+                display: block!important;
+                width: 100%;
+            }
         }
         @media (min-width: 600px) {
             [builder-element=PricingTableElement] .col-12 {
@@ -59,35 +64,36 @@
         <table><tr><td width="760">
     <![endif]-->    
     <div builder-element="PageElement" style="padding-top:50px;padding-bottom:50px;">
-      <div builder-element="BlockElement" style="padding-top:15px;padding-bottom:15px">
-            <div class="container">
-                <div builder-element="CellContainerElement" style="
-                    display: flex;
-                    flex-wrap: wrap;
-                " data-layout="5-5">
-                    <div style="
-                        width: 50%;
-                    " builder-element="CellElement">
-                        <div builder-element="BlockElement" style="padding-top:15px;padding-bottom:15px">
-                            <div class="container">
-                                <img builder-element src="image/logo.png" width="200px" />
-                            </div>
-                        </div>
-                    </div>
-                    <div style="
-                        width: 50%;
-                    " builder-element="CellElement">
-                        <div builder-element="BlockElement" style="padding-top:15px;padding-bottom:15px">
-                            <div class="container">
-                                <p builder-element style="text-align: right;margin-bottom:0;">
-                                    <a builder-element href="" style="color: #333;">Open in your browser</a>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
+        <table width="100%" builder-element="BlockElement">
+            <tr><td style="padding-top:15px;padding-bottom:15px">
+                <div class="container">
+                    <table builder-element="CellContainerElement" data-layout="5-5" border="0" cellpadding="0" cellspacing="0" width="100%">
+                        <tr>
+                            <td builder-element="CellElement" valign="top" width="50%" class="responsive-column">
+                                <table width="100%" builder-element="BlockElement">
+                                    <tr><td style="padding-top:15px;padding-bottom:15px">
+                                        <div class="container">
+                                            <img builder-element src="image/logo.png" width="200" />
+                                        </div>
+                                    </td></tr>
+                                </table>
+                            </td>
+                            <td builder-element="CellElement" valign="top" width="50%" class="responsive-column">
+                                <table width="100%" builder-element="BlockElement">
+                                    <tr><td style="padding-top:15px;padding-bottom:15px">
+                                        <div class="container">
+                                            <p builder-element style="text-align:right;margin-bottom:0;">
+                                                <a builder-element href="" style="color: #333;">Open in your browser</a>
+                                            </p>
+                                        </div>
+                                    </td></tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
                 </div>
-            </div>
-        </div>
+            </td></tr>
+        </table>
 
       <div builder-element="BlockElement" style="padding-top:15px;padding-bottom:15px">
         <div class="container">
