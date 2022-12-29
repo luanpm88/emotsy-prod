@@ -7,15 +7,16 @@
 
         <link rel="preconnect" href="https://fonts.googleapis.com"> 
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
-    <link href="https://fonts.googleapis.com/css2?family=Sawarabi%20Gothic&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=M PLUS 1" rel="stylesheet">
         <style>
-            @import url('https://fonts.googleapis.com/css2?family=Sawarabi%20Gothic');
+            @import url('https://fonts.googleapis.com/css2?family=M PLUS 1');
         </style>
 
 		<!-- Invoice styling -->
 		<style>
 			* {
-				font-family: 'Sawarabi Gothic', sans-serif !important;
+				font-family: 'M PLUS 1', sans-serif !important;
+                font-weight: normal!important;
 			}
 			body {
 				text-align: center;
@@ -49,7 +50,6 @@
 				box-shadow: 0 0 10px rgba(0, 0, 0, 0.15); */
 				font-size: 14px;
 				line-height: 20px;
-				font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
 				color: #555;
 			}
 
@@ -145,7 +145,7 @@
 								</td>
 
 								<td style="padding-left:0;padding-right:0;">
-									<p style="font-weight:bold">{{ \Acelle\Model\Setting::get('site_name') }}</p>
+									<p style="font-weight:bold;">{{ \Acelle\Model\Setting::get('site_name') }}</p>
 									<p>{{ \Acelle\Model\Setting::get('site_description') }}</p>
 								</td>
 							</tr>
@@ -153,7 +153,7 @@
 					</td>
 				</tr>
 
-				<tr class="information">
+				<tr class="">
 					<td colspan="2" style="padding-left:0;padding-right:0;">
 						<h2>{{ trans('messages.invoice.header') }}</h2>
 					</td>
