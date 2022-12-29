@@ -3,7 +3,6 @@
 namespace Acelle\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log as LaravelLog;
 use Acelle\Model\Invoice;
 
 class InvoiceController extends Controller
