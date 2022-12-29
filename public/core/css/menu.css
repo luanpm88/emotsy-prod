@@ -2,7 +2,7 @@
     background-color: rgba(0,0,0,0.2);
 }
 .leftbar:not(.leftbar-closed) .navbar-main:not(.navbar-right)  .main-menu ul.dropdown-menu:not(.top-user-menus) .nav-item a.dropdown-item {
-    color: rgba(255,255,255,0.8);    
+    color: rgba(255,255,255,0.55);    
 }
 .leftbar:not(.leftbar-closed) .navbar-main:not(.navbar-right)  .main-menu ul.dropdown-menu:not(.top-user-menus) .nav-item.active a.dropdown-item,
 .leftbar:not(.leftbar-closed) .navbar-main:not(.navbar-right)  .main-menu ul.dropdown-menu:not(.top-user-menus) .nav-item:hover a.dropdown-item,
@@ -134,7 +134,7 @@
         display: block!important;
     }
     .leftbar .navbar-brand {
-        margin-top: 20px;
+        margin-top: 10px;
         margin-left: 20px;
         margin-bottom: 15px;
     }
@@ -143,8 +143,8 @@
         margin-top: -17px;
     }
     .leftbar .navbar-main .navbar-nav .lvl-1 {
-        padding-top: 11px!important;
-        padding-bottom: 11px!important;
+        padding-top: 10px!important;
+        padding-bottom: 10px!important;
         padding-left: 20px!important;
         padding-right: 20px!important;
         margin-bottom: 1px;
@@ -153,7 +153,7 @@
         font-size: 14px;
     }
     .leftbar .navbar-brand > img {
-        max-width: 132px;
+        max-width: 120px;
     }
     .leftbar .navbar-main .dropdown-toggle::after {
         position: absolute;
@@ -501,8 +501,8 @@
 }
 .leftbar:not(.leftbar-closed) .navbar-nav > .nav-item .dropdown-menu:not(.top-user-menus) a.dropdown-item {
     padding-left: 22px;
-    padding-top: 12px;
-    padding-bottom: 12px;
+    padding-top: 9px;
+    padding-bottom: 9px;
     font-size: 13px;
 }
 .leftbar:not(.leftbar-closed) .navbar-nav > .nav-item .dropdown-menu:not(.top-user-menus) a.dropdown-item .navbar-icon {

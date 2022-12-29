@@ -38,9 +38,7 @@
 				@include('helpers.form_control', ['type' => Acelle\Model\Field::getControlNameByType($type),'name' => 'fields[__index__][default_value]', 'label' => '', 'value' => '', 'help_class' => 'field'])
 			</td>
 			<td>
-				<a href="#delete" class="btn bg-danger-400 remove-not-saved-field"><span class="material-symbols-rounded">
-delete_outline
-</span></a>
+				<a href="#delete" class="btn bg-danger-400 remove-not-saved-field"><span class="material-symbols-rounded">delete_outline</span></a>
 			</td>
 		</tr>
 			

@@ -6,7 +6,7 @@
             <tr>
                 <td width="1%">
                     <div class="text-nowrap">
-                        <div class="checkbox inline">
+                        <div class="checkbox inline me-1">
                             <label>
                                 <input type="checkbox" class="node styled"
                                     name="uids[]"
@@ -54,6 +54,11 @@
                         @if (empty($automation->last_error))
                             <span class="label label-flat bg-{{ $automation->status }}">{{ trans('messages.automation.status.' . $automation->status) }}</span>
                         @else
+                            <!--
+                                Automations with .last_error are still of "active" status
+                                As a result, thy will still be executed at the next cronjob check
+                                and the error might be solved then
+                            -->
                             <span class="label xtooltip label-flat bg-error" title="{{ $automation->last_error }}">Error</span>
                             <pre style="display:none">{{ $automation->last_error }}</pre>
                         @endif
@@ -73,13 +78,11 @@
                                     <li>
                                         <a
                                             class="dropdown-item list-action-single"
-                                            link-method="PATCH"
+                                            link-method="POST"
                                             link-confirm="{{ trans('messages.enable_automations_confirm') }}"
                                             href="{{ action('Automation2Controller@enable', ["uids" => $automation->uid]) }}"
                                         >
-                                            <span class="material-symbols-rounded me-2">
-play_arrow
-</span> {{ trans('messages.enable') }}
+                                            <span class="material-symbols-rounded me-2">play_arrow</span> {{ trans('messages.enable') }}
                                         </a>
                                     </li>
                                 @endcan
@@ -87,12 +90,10 @@ play_arrow
                                     <li>
                                         <a
                                             class="dropdown-item list-action-single"
-                                            link-method="PATCH" link-confirm="{{ trans('messages.disable_automations_confirm') }}"
+                                            link-method="POST" link-confirm="{{ trans('messages.disable_automations_confirm') }}"
                                             href="{{ action('Automation2Controller@disable', ["uids" => $automation->uid]) }}"
                                         >
-                                            <span class="material-symbols-rounded me-2">
-hide_source
-</span> {{ trans('messages.disable') }}
+                                            <span class="material-symbols-rounded me-2">hide_source</span> {{ trans('messages.disable') }}
                                         </a>
                                     </li>
                                 @endcan
@@ -104,9 +105,7 @@ hide_source
                                             link-confirm="{{ trans('messages.delete_automations_confirm') }}"
                                             href="{{ action('Automation2Controller@delete', ["uids" => $automation->uid]) }}"
                                         >
-                                            <span class="material-symbols-rounded me-2">
-delete_outline
-</span> {{ trans("messages.delete") }}
+                                            <span class="material-symbols-rounded me-2">delete_outline</span> {{ trans("messages.delete") }}
                                         </a>
                                     </li>
                                 @endif
@@ -121,18 +120,14 @@ delete_outline
     
 @elseif (!empty(request()->keyword))
     <div class="empty-list">
-        <span class="material-symbols-rounded">
-            schedule
-</span>
+        <span class="material-symbols-rounded">schedule</span>
         <span class="line-1">
             {{ trans('messages.no_search_result') }}
         </span>
     </div>
 @else
     <div class="empty-list">
-        <span class="material-symbols-rounded">
-schedule
-</span>
+        <span class="material-symbols-rounded">schedule</span>
         <span class="line-1">
             {{ trans('messages.automation_empty_line_1') }}
         </span>

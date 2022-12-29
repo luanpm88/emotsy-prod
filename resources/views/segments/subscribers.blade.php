@@ -1,4 +1,6 @@
-@extends('layouts.core.frontend')
+@extends('layouts.core.frontend', [
+	'menu' => 'segment',
+])
 
 @section('title', $list->name . ": " . trans('messages.subscribers'))
 
@@ -10,14 +12,12 @@
 
 @section('content')
 
-	@include("lists._menu")
+	@include("lists._menu", [
+		'menu' => 'segment',
+	])
 
-	<h2 class="text-bold text-primary mb-10"><span class="material-symbols-rounded">
-splitscreen
-</span> {{ $segment->name }}</h2>
-	<h3><span class="material-symbols-rounded">
-people
-</span> {{ trans('messages.subscribers') }}</h3>
+	<h2 class="text-bold text-primary mb-10"><span class="material-symbols-rounded">splitscreen</span> {{ $segment->name }}</h2>
+	<h3><span class="material-symbols-rounded">people</span> {{ trans('messages.subscribers') }}</h3>
 
 	<div class="listing-form" id="SegmentsSubscribersContainer"
 		data-url="{{ action('SegmentController@listing_subscribers', ['list_uid' => $list->uid, 'uid' => $segment->uid]) }}"
@@ -34,23 +34,17 @@ people
 							<ul class="dropdown-menu dropdown-menu-end">
 								<li>
 									<a  link-method="POST" link-confirm="{{ trans('messages.subscribe_subscribers_confirm') }}" href="{{ action('SubscriberController@subscribe', $list->uid) }}">
-										<span class="material-symbols-rounded">
-mark_email_read
-</span> {{ trans('messages.subscribe') }}
+										<span class="material-symbols-rounded">mark_email_read</span> {{ trans('messages.subscribe') }}
 									</a>
 								</li>
 								<li>
 									<a link-confirm="{{ trans('messages.unsubscribe_subscribers_confirm') }}" href="{{ action('SubscriberController@unsubscribe', $list->uid) }}">
-										<span class="material-symbols-rounded">
-logout
-</span> {{ trans('messages.unsubscribe') }}
+										<span class="material-symbols-rounded">logout</span> {{ trans('messages.unsubscribe') }}
 									</a>
 								</li>
 								<li>
 									<a link-confirm="{{ trans('messages.delete_subscribers_confirm') }}" href="{{ action('SubscriberController@delete', $list->uid) }}">
-										<span class="material-symbols-rounded">
-delete_outline
-</span> {{ trans('messages.delete') }}
+										<span class="material-symbols-rounded">delete_outline</span> {{ trans('messages.delete') }}
 									</a>
 								</li>
 							</ul>
@@ -69,9 +63,7 @@ delete_outline
 							</select>
 							<input type="hidden" name="sort_direction" value="desc" />
 <button type="button" class="btn btn-xs sort-direction" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
-								<span class="material-symbols-rounded desc">
-sort
-</span>
+								<span class="material-symbols-rounded desc">sort</span>
 							</button>
 						</span>
 						<span class="ms-1">
@@ -128,18 +120,14 @@ sort
 						</div>
 						<span class="text-nowrap">
 							<input type="text" name="keyword" class="form-control search" value="{{ request()->keyword }}" placeholder="{{ trans('messages.type_to_search') }}" />
-							<span class="material-symbols-rounded">
-search
-</span>
+							<span class="material-symbols-rounded">search</span>
 						</span>
 					</div>
 				@endif
 			</div>
 			<div class="text-end">
 				<a href="{{ action("SubscriberController@create", $list->uid) }}" role="button" class="btn btn-secondary">
-					<span class="material-symbols-rounded">
-add
-</span> {{ trans('messages.create_subscriber') }}
+					<span class="material-symbols-rounded">add</span> {{ trans('messages.create_subscriber') }}
 				</a>
 			</div>
 		</div>

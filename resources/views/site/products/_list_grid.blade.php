@@ -4,7 +4,7 @@
 			@php
 				$wooProduct = wc_get_product($product->ID);
 			@endphp
-			<div class="col-md-3 col-sm-6 mb-4">
+			<div class="col-md-2 col-sm-6 mb-4">
 				<div class="card mb-4 shadow-sm">
 					<span class="product-image-box woo-image border-bottom">
 						{!! $wooProduct->get_image() !!}
@@ -28,18 +28,12 @@
 									
 								@endphp
 								<a target="_blank" href="{{ $checkout_url }}" class="btn btn-light m-icon px-2 me-1 text-center copy-product-checkout-url xtooltip" title="Copy checkout URL">
-									<span class="material-symbols-rounded">
-										monetization_on
-										</span></a>
+									<span class="material-symbols-rounded">monetization_on</span></a>
 
 								<a target="_blank" href="{{ get_permalink( $wooProduct->id ) }}" class="btn btn-light m-icon px-2 me-1 text-center copy-product-page-url xtooltip" title="Copy Product Page URL">
-									<span class="material-symbols-rounded">
-										inventory_2
-										</span></a>
+									<span class="material-symbols-rounded">inventory_2</span></a>
 								<a href="{{ action('Site\ProductController@edit', $wooProduct->id) }}" role="button" class="btn btn-secondary px-2">
-									<span class="material-symbols-rounded">
-										edit
-										</span>
+									<span class="material-symbols-rounded">edit</span>
 								</a>
 								
 								<a
@@ -53,9 +47,7 @@
 								</a>
 								<span class="text-muted ml-auto text-primary m-icon d-flex align-items-center">
 									{{-- <img width="20px" class="mr-2 list-source-img" src="{{ url('images/woo_list.png') }}" /> --}}
-									<span class="material-symbols-rounded">
-										qr_code
-										</span>
+									<span class="material-symbols-rounded">qr_code</span>
 								</span>
 							</div>
 						</div>
@@ -97,18 +89,14 @@
 		
 @elseif (!empty(request()->keyword))
 	<div class="empty-list">
-		<span class="material-symbols-rounded">
-			category
-			</span>
+		<span class="material-symbols-rounded">category</span>
 		<span class="line-1">
 			{{ trans('messages.no_search_result') }}
 		</span>
 	</div>
 @else
 	<div class="empty-list">
-		<span class="material-symbols-rounded">
-			category
-			</span>
+		<span class="material-symbols-rounded">category</span>
 		<span class="line-1 text-muted">
 			<p>{!! trans('messages.product.no_product') !!}</p>
 		</span>

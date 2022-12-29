@@ -22,9 +22,7 @@
 	<div class="acelle-top-menu">
         <nav class="navbar fixed-top navbar-light bg-light shadow-sm px-4 py-0">
             <span class="navbar-brand d-flex align-items-center pl-0">
-                <span class="material-symbols-rounded mr-2">
-                    dashboard
-                </span>
+                <span class="material-symbols-rounded mr-2">dashboard</span>
                 <div class="d-flex align-items-center">
                     <div>
                         {{ trans('messages.form.builder') }} -
@@ -39,9 +37,7 @@
             <div class="ms-auto">
                 <button class="me-2 builder-save-button btn btn-secondary" href="{{ action('FormController@index') }}">
                     <div class="d-flex align-items-center">
-                        <span class="material-symbols-rounded me-2">
-                            task_alt
-                            </span>
+                        <span class="material-symbols-rounded me-2">task_alt</span>
                             <span>{{ trans('messages.form.builder.save') }}</span>
                     </div>
                 </button>
@@ -53,9 +49,7 @@
                         'uids' => [$form->uid],
                     ]) }}" class="me-1 builder-publish-button btn btn-default" href="{{ action('FormController@index') }}">
                         <div class="d-flex align-items-center">
-                            <span class="material-symbols-rounded me-2">
-                                task_alt
-                                </span>
+                            <span class="material-symbols-rounded me-2">task_alt</span>
                                 <span>{{ trans('messages.form.publish') }}</span>
                         </div>
                             
@@ -66,9 +60,7 @@
                         'uids' => [$form->uid],
                     ]) }}" class="me-1 builder-unpublish-button btn btn-default" href="{{ action('FormController@index') }}">
                         <div class="d-flex align-items-center">
-                            <span class="material-symbols-rounded me-2">
-                                do_disturb_on
-                                </span>
+                            <span class="material-symbols-rounded me-2">do_disturb_on</span>
                                 <span>{{ trans('messages.form.unpublish') }}</span>
                         </div>
                             
@@ -76,9 +68,7 @@
                 @endif
                 <a href="javascript:;" class="me-2 builder-view-button btn btn-default">
                     <div class="d-flex align-items-center">
-                        <span class="material-symbols-rounded me-2">
-                            featured_video
-                            </span>
+                        <span class="material-symbols-rounded me-2">featured_video</span>
                             <span>{{ trans('messages.form.open_popup') }}</span>
                     </div>
                 </a> 
@@ -88,9 +78,7 @@
             
             <div>
                 
-                <a class="fs-4 builder-exit-button" href="{{ action('FormController@index') }}"><span class="material-symbols-rounded">
-                    close
-                    </span></a>
+                <a class="fs-4 builder-exit-button" href="{{ action('FormController@index') }}"><span class="material-symbols-rounded">close</span></a>
             </div>
             <script>
                 $(function() {
@@ -139,16 +127,12 @@
         <div class="styles-sections">
             <div class="styles-section form-layouts">
                 <a href="javascript:;" class="styles-menu-button styles-toggle px-2 py-1">
-                    <span class="material-symbols-rounded" style="line-height:30px">
-                        dashboard
-                    </span>
+                    <span class="material-symbols-rounded" style="line-height:30px">dashboard</span>
                 </a>
                 <div class="styles-container shadow rounded overflow-hidden p-4">
                     <div class="d-flex align-items-center styles-container-heading shadow">
                         <a role="button" href="javascript:;" class="styles-back px-2 py-1">
-                            <span class="material-symbols-rounded" style="line-height:30px">
-                                keyboard_backspace
-                            </span>
+                            <span class="material-symbols-rounded" style="line-height:30px">keyboard_backspace</span>
                         </a>
                         <h6 class="d-inline ml-2 m-0">{{ trans('messages.form.layouts') }}</h6>
                     </div>  
@@ -167,16 +151,12 @@
             </div>
             <div class="styles-section form-theme">
                 <a href="javascript:;" class="styles-menu-button styles-toggle px-2 py-1">
-                    <span class="material-symbols-rounded" style="line-height:30px">
-                        web
-                    </span>
+                    <span class="material-symbols-rounded" style="line-height:30px">web</span>
                 </a>
                 <div class="styles-container shadow rounded overflow-hidden p-4">    
                     <div class="d-flex align-items-center styles-container-heading shadow-sm">
                         <a role="button" href="javascript:;" class="styles-back px-2 py-1">
-                            <span class="material-symbols-rounded" style="line-height:30px">
-                                keyboard_backspace
-                            </span>
+                            <span class="material-symbols-rounded" style="line-height:30px">keyboard_backspace</span>
                         </a>
                         <h6 class="d-inline ml-2 m-0">{{ trans('messages.form.themes') }}</h6>
                     </div>                    
@@ -196,9 +176,7 @@
             </div>
             <div class="styles-section form-theme">
                 <a href="javascript:;" class="styles-menu-button styles-toggle px-2 py-1">
-                    <span class="material-symbols-rounded" style="line-height:30px">
-                        tune
-                    </span>
+                    <span class="material-symbols-rounded" style="line-height:30px">tune</span>
                 </a>
                 <div class="styles-container shadow rounded overflow-hidden p-4" style="
                     overflow-x:hidden!important; height:auto;
@@ -206,9 +184,7 @@
                 ">    
                     <div class="d-flex align-items-center styles-container-heading shadow-sm">
                         <a role="button" href="javascript:;" class="styles-back px-2 py-1">
-                            <span class="material-symbols-rounded" style="line-height:30px">
-                                keyboard_backspace
-                            </span>
+                            <span class="material-symbols-rounded" style="line-height:30px">keyboard_backspace</span>
                         </a>
                         <h6 class="d-inline ml-2 m-0">{{ trans('messages.form.form_settings') }}</h6>
                     </div>                    
@@ -334,9 +310,7 @@
             </div>
             <div class="styles-section form-theme">
                 <a href="javascript:;" class="styles-menu-button preview-popup px-2 py-1">
-                    <span class="material-symbols-rounded xtooltip" title="{{ trans('messages.preview') }}" style="line-height:30px">
-                        visibility
-                    </span>
+                    <span class="material-symbols-rounded xtooltip" title="{{ trans('messages.preview') }}" style="line-height:30px">visibility</span>
                 </a> 
             </div>
         </div>

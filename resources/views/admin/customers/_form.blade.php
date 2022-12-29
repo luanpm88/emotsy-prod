@@ -14,12 +14,8 @@
                     <h5 class="media-heading text-semibold">{{ trans('messages.upload_photo') }}</h5>
                     {{ trans('messages.photo_at_least', ["size" => "300px x 300px"]) }}
                     <br /><br />
-                    <a href="#upload" onclick="$('input[name=image]').trigger('click')" class="btn btn-primary me-1"><span class="material-symbols-rounded">
-file_download
-</span> {{ trans('messages.upload') }}</a>
-                    <a href="#remove" class="btn btn-secondary remove-profile-image"><span class="material-symbols-rounded">
-delete_outline
-</span> {{ trans('messages.remove') }}</a>
+                    <a href="#upload" onclick="$('input[name=image]').trigger('click')" class="btn btn-primary me-1"><span class="material-symbols-rounded">file_download</span> {{ trans('messages.upload') }}</a>
+                    <a href="#remove" class="btn btn-secondary remove-profile-image"><span class="material-symbols-rounded">delete_outline</span> {{ trans('messages.remove') }}</a>
                 </div>
             </div>
         </div>
@@ -40,18 +36,54 @@ delete_outline
         <div class="sub_section">
             <h2 class="text-semibold text-primary">{{ trans('messages.basic_information') }}</h2>
 
-            <div class="row">
-                <div class="col-md-6">
-                    @include('helpers.form_control', ['type' => 'text', 'name' => 'first_name', 'value' => $customer->user->first_name, 'rules' => $customer->user->rules()])
+            @if (get_localization_config('show_last_name_first', Auth::user()->admin->getLanguageCode()))
+                <div class="row">
+                    <div class="col-md-6">
+                        @include('helpers.form_control', ['type' => 'text', 'name' => 'last_name', 'value' => $customer->user->last_name, 'rules' => $customer->user->rules()])
+                    </div>
+                    <div class="col-md-6">
+                        @include('helpers.form_control', ['type' => 'text', 'name' => 'first_name', 'value' => $customer->user->first_name, 'rules' => $customer->user->rules()])
+                    </div>
                 </div>
-                <div class="col-md-6">
-                    @include('helpers.form_control', ['type' => 'text', 'name' => 'last_name', 'value' => $customer->user->last_name, 'rules' => $customer->user->rules()])
+            @else 
+                <div class="row">
+                    <div class="col-md-6">
+                        @include('helpers.form_control', ['type' => 'text', 'name' => 'first_name', 'value' => $customer->user->first_name, 'rules' => $customer->user->rules()])
+                    </div>
+                    <div class="col-md-6">
+                        @include('helpers.form_control', ['type' => 'text', 'name' => 'last_name', 'value' => $customer->user->last_name, 'rules' => $customer->user->rules()])
+                    </div>
                 </div>
-            </div>
+            @endif
+            
+            @if (config('custom.japan'))
+                <input type="hidden" name="timezone" value="Asia/Tokyo" />
+            @else
+                @include('helpers.form_control', [
+                    'type' => 'select',
+                    'name' => 'timezone',
+                    'value' => $customer->timezone ?? config('app.timezone'),
+                    'options' => Tool::getTimezoneSelectOptions(),
+                    'include_blank' => trans('messages.choose'),
+                    'rules' => $customer->user->rules()
+                ])
+            @endif
+                
 
-            @include('helpers.form_control', ['type' => 'select', 'name' => 'timezone', 'value' => $customer->timezone, 'options' => Tool::getTimezoneSelectOptions(), 'include_blank' => trans('messages.choose'), 'rules' => $customer->user->rules()])
-
-            @include('helpers.form_control', ['type' => 'select', 'name' => 'language_id', 'label' => trans('messages.language'), 'value' => $customer->language_id, 'options' => Acelle\Model\Language::getSelectOptions(), 'include_blank' => trans('messages.choose'), 'rules' => $customer->user->rules()])
+            @if (config('custom.japan'))
+                <input type="hidden" name="language_id" value="{{ Acelle\Model\Language::getJapan()->id }}" />
+            @else
+                @include('helpers.form_control', [
+                    'type' => 'select',
+                    'name' => 'language_id',
+                    'label' => trans('messages.language'),
+                    'value' => $customer->language_id ?? \Acelle\Model\Language::getDefaultLanguage()->id,
+                    'options' => Acelle\Model\Language::getSelectOptions(),
+                    'include_blank' => trans('messages.choose'),
+                    'rules' => $customer->user->rules()
+                ])
+            @endif
+            
 
         </div>
     </div>

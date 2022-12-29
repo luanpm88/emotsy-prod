@@ -22,11 +22,8 @@
 
     <script type="text/javascript" src="{{ URL::asset('core/js/group-manager.js') }}"></script>
 
-    <link href="{{ URL::asset('core/emoji-picker/css/emoji.css') }}" rel="stylesheet">
-    <script type="text/javascript" src="{{ URL::asset('core/emoji-picker/js/config.js') }}"></script>
-    <script type="text/javascript" src="{{ URL::asset('core/emoji-picker/js/util.js') }}"></script>
-    <script type="text/javascript" src="{{ URL::asset('core/emoji-picker/js/jquery.emojiarea.js') }}"></script>
-    <script type="text/javascript" src="{{ URL::asset('core/emoji-picker/js/emoji-picker.js') }}"></script>
+    <link href="{{ URL::asset('core/emojionearea/emojionearea.min.css') }}" rel="stylesheet">
+    <script type="text/javascript" src="{{ URL::asset('core/emojionearea/emojionearea.min.js') }}"></script>
 @endsection
 
 @section('menu_title')
@@ -57,9 +54,7 @@
                     </select>
 
                     <a href="javascript:'" class="action">
-                        <i class="material-symbols-rounded me-2">
-                horizontal_split
-                </i>
+                        <i class="material-symbols-rounded me-2">horizontal_split</i>
                         {{ trans('messages.automation.switch_automation') }}
                     </a>
                 </div>
@@ -137,8 +132,8 @@
                     <ul class="history-list-items">
                         <li>
                             <a href="" class="d-flex align-items-center current">
-                                <i class="material-symbols-rounded me-2">refresh</i>
-                                <span class="content mr-auto">Reset current flow</span>
+                                <i class="material-icons-outlined me-2">更新</i>
+                                <span class="content mr-auto">自動化をリセット</span>
                                 {{-- <time class="mini text-muted">1 minute</time> --}}
                             </a>
                         </li>
@@ -448,7 +443,7 @@
                 e.preventDefault();
 
                 var dialog = new Dialog('alert', {
-                    message: 'Automation is already finallized. Cannot rollback to previous state.',
+                    message: '自動化はすでに完了しています。 以前の状態に戻すことができません。',
                 });
             });
             

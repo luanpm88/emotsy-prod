@@ -1,4 +1,6 @@
-@extends('layouts.core.backend')
+@extends('layouts.core.backend', [
+    'menu' => 'setting',
+])
 
 @section('title', trans('messages.license'))
 
@@ -9,9 +11,7 @@
             <li class="breadcrumb-item"><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
         </ul>
         <h1>
-            <span class="text-gear"><span class="material-symbols-rounded">
-vpn_key
-</span> {{ trans('messages.license') }}</span>
+            <span class="text-gear"><span class="material-symbols-rounded">vpn_key</span> {{ trans('messages.license') }}</span>
         </h1>
     </div>
 

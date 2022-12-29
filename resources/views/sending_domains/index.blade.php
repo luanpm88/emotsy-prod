@@ -1,4 +1,6 @@
-@extends('layouts.core.frontend')
+@extends('layouts.core.frontend', [
+	'menu' => 'sending_domain',
+])
 
 @section('title', trans('messages.sending_domains'))
 
@@ -19,7 +21,9 @@
 
 @section('content')
     
-    @include('senders._menu')
+    @include('senders._menu', [
+        'menu' => 'sending_domain',
+    ])
     
     <h2>
         <span class="text-semibold">{{ trans('messages.domains') }}</span>
@@ -50,9 +54,7 @@
                                 {{ trans('messages.actions') }} <span class="number"></span><span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" link-confirm="{{ trans('messages.delete_sending_domains_confirm') }}" href="{{ action('SendingDomainController@delete') }}"><span class="material-symbols-rounded">
-delete_outline
-</span> {{ trans('messages.delete') }}</a></li>
+                                <li><a class="dropdown-item" link-confirm="{{ trans('messages.delete_sending_domains_confirm') }}" href="{{ action('SendingDomainController@delete') }}"><span class="material-symbols-rounded">delete_outline</span> {{ trans('messages.delete') }}</a></li>
                             </ul>
                         </div>
                         <span class="filter-group">
@@ -64,16 +66,12 @@ delete_outline
                             </select>
                             <input type="hidden" name="sort_direction" value="desc" />
 <button type="button" class="btn btn-light sort-direction" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
-                                <span class="material-symbols-rounded desc">
-sort
-</span>
+                                <span class="material-symbols-rounded desc">sort</span>
                             </button>
                         </span>
                         <span class="text-nowrap">
                             <input type="text" name="keyword" class="form-control search" value="{{ request()->keyword }}" placeholder="{{ trans('messages.type_to_search') }}" />
-                            <span class="material-symbols-rounded">
-search
-</span>
+                            <span class="material-symbols-rounded">search</span>
                         </span>
                     </div>
                 @endif
@@ -81,9 +79,7 @@ search
             @if (Auth::user()->customer->can('create', new Acelle\Model\SendingDomain()))
                 <div class="text-end">
                     <a href="{{ action('SendingDomainController@create') }}" role="button" class="btn btn-secondary">
-                        <span class="material-symbols-rounded">
-add
-</span> {{ trans('messages.create_sending_domain') }}
+                        <span class="material-symbols-rounded">add</span> {{ trans('messages.create_sending_domain') }}
                     </a>
                 </div>
             @endif

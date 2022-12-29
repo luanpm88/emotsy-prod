@@ -31,7 +31,7 @@
 		@endif
 	</script>
 </head>
-<body class="theme-{{ Auth::user()->admin->getColorScheme() }} {{ Auth::user()->admin->getMenuLayout() }}bar
+<body class="{{ isset($body_class) ? $body_class : '' }} theme-{{ Auth::user()->admin->getColorScheme() }} {{ Auth::user()->admin->getMenuLayout() }}bar
 	{{ Auth::user()->admin->getMenuLayout() }}bar-{{ request()->session()->get('admin-leftbar-state') }} state-{{ request()->session()->get('admin-leftbar-state') }}
 	
 	mode-{{ getThemeMode(Auth::user()->admin->theme_mode, request()->session()->get('admin-auto-theme-mode')) }}
@@ -62,6 +62,7 @@
 
 	<!-- Notification -->
 	@include('layouts.core._notify')
+    @include('layouts.core._notify_backend')
 
 	<!-- Admin area -->
 	@include('layouts.core._loginas_area')

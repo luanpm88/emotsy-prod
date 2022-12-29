@@ -1,4 +1,6 @@
-@extends('layouts.core.frontend')
+@extends('layouts.core.frontend', [
+    'menu' => 'campaign',
+])
 
 @section('title', trans('messages.campaigns') . " - " . trans('messages.confirm'))
 
@@ -10,9 +12,7 @@
             <li class="breadcrumb-item"><a href="{{ action("CampaignController@index") }}">{{ trans('messages.campaigns') }}</a></li>
         </ul>
         <h1>
-            <span class="text-semibold"><span class="material-symbols-rounded me-2">
-forward_to_inbox
-</span> {{ $campaign->name }}</span>
+            <span class="text-semibold"><span class="material-symbols-rounded me-2">forward_to_inbox</span> {{ $campaign->name }}</span>
         </h1>
 
         @include('campaigns._steps', ['current' => 5])
@@ -39,18 +39,12 @@ forward_to_inbox
 
                         <span class="fs-4 me-4">
                             @if ($score['result'] == true)
-                                <i class="material-symbols-rounded text-success">
-                                    task_alt
-                                </i>
+                                <i class="material-symbols-rounded text-success">task_alt</i>
                             @else
                                 @if (!Acelle\Model\Setting::isYes('spamassassin.required'))
-                                    <span class="material-symbols-rounded text-warning">
-                                        error_outline
-                                    </span>
+                                    <span class="material-symbols-rounded text-warning">error_outline</span>
                                 @else
-                                    <span class="material-symbols-rounded text-danger">
-                                        highlight_off
-                                    </span>
+                                    <span class="material-symbols-rounded text-danger">highlight_off</span>
                                 @endif
                             @endif
                            
@@ -75,13 +69,9 @@ forward_to_inbox
 
                     <span class="fs-4 me-4">
                         @if ($count)
-                            <i class="material-symbols-rounded text-success">
-    task_alt
-                            </i>
+                            <i class="material-symbols-rounded text-success">task_alt</i>
                         @else
-                            <span class="material-symbols-rounded text-danger">
-                                highlight_off
-                            </span>
+                            <span class="material-symbols-rounded text-danger">highlight_off</span>
                         @endif
                     </span>
                     <div class="me-auto">
@@ -96,9 +86,7 @@ forward_to_inbox
 
                 <li class="d-flex align-items-center">
                     <span class="fs-4 me-4">
-                        <i class="material-symbols-rounded text-success">
-                            task_alt
-                        </i>
+                        <i class="material-symbols-rounded text-success">task_alt</i>
                     </span>
                     <div class="me-auto">
                         <h4>{{ trans('messages.email_subject') }}</h4>
@@ -112,9 +100,7 @@ forward_to_inbox
 
                 <li class="d-flex align-items-center">
                     <span class="fs-4 me-4">
-                        <i class="material-symbols-rounded text-success">
-                            task_alt
-                        </i>
+                        <i class="material-symbols-rounded text-success">task_alt</i>
                     </span>
                     <div class="me-auto">
                         <h4>{{ trans('messages.reply_to') }}</h4>
@@ -128,9 +114,7 @@ forward_to_inbox
 
                 <li class="d-flex align-items-center">
                     <span class="fs-4 me-4">
-                        <i class="material-symbols-rounded text-success">
-                            task_alt
-                        </i>
+                        <i class="material-symbols-rounded text-success">task_alt</i>
                     </span>
                     <div class="me-auto">
                         <h4>{{ trans('messages.tracking') }}</h4>
@@ -149,9 +133,7 @@ forward_to_inbox
 
                 <li class="d-flex align-items-center confirm-webhooks-summary">
                     <span class="fs-4 me-4">
-                        <i class="material-symbols-rounded text-success">
-                            task_alt
-                        </i>
+                        <i class="material-symbols-rounded text-success">task_alt</i>
                     </span>
                     <div class="me-auto">
                         <h4>{{ number_with_delimiter($campaign->campaignWebhooks()->count()) }} {{ trans('messages.webhooks') }}</h4>
@@ -180,9 +162,7 @@ forward_to_inbox
                 @if (!$campaign->run_at)
                     <li class="d-flex align-items-center">
                         <span class="fs-4 me-4">
-                            <i class="material-symbols-rounded text-success">
-                                task_alt
-                            </i>
+                            <i class="material-symbols-rounded text-success">task_alt</i>
                         </span>
                         <div class="me-auto">
                             <h4>{{ trans('messages.campaign.run_immediately') }}</h4>
@@ -196,14 +176,12 @@ forward_to_inbox
                 @else
                     <li class="d-flex align-items-center">
                         <span class="fs-4 me-4">
-                            <i class="material-symbols-rounded text-muted2">
-                                alarm
-                            </i>
+                            <i class="material-symbols-rounded text-muted2">alarm</i>
                         </span>
                         <div class="me-auto">
                             <h4>{{ trans('messages.campaign.scheduled_at') }} ({{ $campaign->run_at->diffForHumans() }})</h4>
                             <p>
-                                {{ isset($campaign->run_at) ? Auth::user()->customer->formatDateTime($campaign->run_at, 'date_full') : "" }}
+                                {{ isset($campaign->run_at) ? Auth::user()->customer->formatDateTime($campaign->run_at, 'datetime_full') : "" }}
                             </p>
                         </div>
 
@@ -223,9 +201,7 @@ forward_to_inbox
                             <span
                                 onclick="popupwindow('{{ action('CampaignController@preview', $campaign->uid) }}', `{{ $campaign->name }}`, 800)"
                                 href="#preview" class="btn btn-secondary me-1" data-uid="{{ $campaign->uid }}">
-                                {{ trans('messages.preview') }} <span class="material-symbols-rounded">
-visibility
-</span>
+                                {{ trans('messages.preview') }} <span class="material-symbols-rounded">visibility</span>
                             </span>
                             <button class="btn btn-secondary me-1 send-a-test-email-link" data-uid="{{ $campaign->uid }}">{{ trans('messages.send_a_test_email') }} <i class="icon-envelop3 ml-5"></i> </button>
                             @if (!is_null($score))
@@ -267,16 +243,12 @@ visibility
                             type="button"
                             href="#preview" class="btn btn-default me-1 preview-as-button"
                         >
-                            {{ trans('messages.campaign.preview_as') }} <span class="material-symbols-rounded ms-1">
-                                contact_mail
-</span>
+                            {{ trans('messages.campaign.preview_as') }} <span class="material-symbols-rounded ms-1">contact_mail</span>
                         </button>
                         <span
                             onclick="popupwindow('{{ action('CampaignController@preview', $campaign->uid) }}', `{{ $campaign->name }}`, 800)"
                             href="#preview" class="btn btn-secondary me-1" data-uid="{{ $campaign->uid }}">
-                            {{ trans('messages.preview') }} <span class="material-symbols-rounded">
-visibility
-</span>
+                            {{ trans('messages.preview') }} <span class="material-symbols-rounded">visibility</span>
                         </span>
                         <button class="btn btn-secondary me-1 send-a-test-email-link" data-uid="{{ $campaign->uid }}">{{ trans('messages.send_a_test_email') }} <i class="icon-envelop3 ml-5"></i> </button>
                         <button class="btn btn-primary">{{ trans('messages.send') }} <i class="icon-paperplane ml-5"></i> </button>

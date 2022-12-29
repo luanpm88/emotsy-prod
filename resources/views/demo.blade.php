@@ -23,7 +23,7 @@
 
 <div class="text-center login-header mt-4" style="margin-bottom: 30px">
     <a class="main-logo-big mb-3 d-block" href="{{ action('HomeController@index') }}">
-        <img width="350px" style="opacity: 0.9" src="{{ URL::asset('images/logo-light.svg') }}" alt="">
+        <img width="350px" style="opacity: 0.9" src="{{ URL::asset('images/logo_light.svg') }}" alt="">
     </a>
     <h3 class="text-center text-muted2 fs-5" style="margin-left: -20px; color:#f2f2f2">{{ trans('messages.demo') }}</h3>
 </div>

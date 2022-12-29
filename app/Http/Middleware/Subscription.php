@@ -20,10 +20,10 @@ class Subscription
             return $next($request);
         }
 
-        $subscription = $request->user()->customer->subscription;
+        $subscription = $request->user()->customer->getNewOrActiveSubscription();
 
         // Check if customer dose not have subscription
-        if (!is_object($subscription) || !$subscription->isActive() || !$subscription->plan->isActive()) {
+        if (!$subscription || !$subscription->isActive() || !$subscription->plan->isActive()) {
             return redirect()->action('SubscriptionController@index');
         }
 

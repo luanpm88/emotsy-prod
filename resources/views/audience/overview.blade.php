@@ -1,4 +1,6 @@
-@extends('layouts.core.frontend')
+@extends('layouts.core.frontend', [
+    'menu' => 'overview',
+])
 
 @section('title', trans('messages.dashboard'))
 
@@ -21,7 +23,7 @@
                     <div class="text-muted2 text-white">
                         {!! trans('messages.list.mail_list_count.desc', [
                             'count' => number_with_delimiter($subscribedCount)
-                        ]) !!}                        
+                        ]) !!}
                     </div>
                 </div>
             </div>
@@ -64,9 +66,7 @@
         </div>
     </div>
 
-    <h3 class="mt-5 mb-20"><span class="material-symbols-rounded me-2">
-        insights
-        </span> {{ trans('messages.audience.audience_growth.title') }}</h3>
+    <h3 class="mt-5 mb-20"><span class="material-symbols-rounded me-2">insights</span> {{ trans('messages.audience.audience_growth.title') }}</h3>
     <p class="mb-4">{{ trans('messages.audience.audience_growth.desc') }}</p>
     <div class="border shadow-sm rounded">
         <div class="p-3">
@@ -150,9 +150,7 @@
         AudienceGrowthChart.showChart();
     </script>
 
-    <h3 class="mt-5 mb-20"><span class="material-symbols-rounded me-2">
-        open_in_new
-        </span> {{ trans('messages.audience.quick_action') }}</h3>
+    <h3 class="mt-5 mb-20"><span class="material-symbols-rounded me-2">open_in_new</span> {{ trans('messages.audience.quick_action') }}</h3>
     <p class="mb-4">{{ trans('messages.audience.quick_action.desc') }}</p>
 
     <div class="my-4">

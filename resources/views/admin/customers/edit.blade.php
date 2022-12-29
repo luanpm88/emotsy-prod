@@ -1,6 +1,8 @@
-@extends('layouts.core.backend')
+@extends('layouts.core.backend', [
+	'menu' => 'customer',
+])
 
-@section('title', $customer->user->displayName())
+@section('title', $customer->displayName())
     
 @section('page_header')
     
@@ -11,9 +13,7 @@
             <li class="breadcrumb-item active">{{ trans('messages.update') }}</li>
         </ul>
         <h1>
-            <span class="text-semibold"><span class="material-symbols-rounded">
-                            person_outline
-                            </span> {{ $customer->user->displayName() }}</span>
+            <span class="text-semibold"><span class="material-symbols-rounded">person_outline</span> {{ $customer->displayName() }}</span>
         </h1>
     </div>
                 

@@ -14,8 +14,7 @@ label.error {
 }
 [builder-element=CellElement] .container {
     padding: 0;
-}
-@media (min-width: 769px) {
+}@media (min-width: 769px) {
     [data-hide-on="desktop"] {
       display: none!important;
     }
@@ -33,7 +32,7 @@ label.error {
         width: 100%!important;
         max-width: none!important;        
     }
-    [builder-element="CellElement"]  [builder-element="BlockElement"] {
+    [builder-element="CellElement"] {
         padding: 0px!important;
     }
 }

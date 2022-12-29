@@ -12,20 +12,26 @@
 		<div class="text-end">
 			@if($valid)
 				<a href="{{ action('InstallController@cronJobs') }}" class="btn btn-secondary">
-					<span class="material-symbols-rounded">
-settings
-</span> {!! trans('messages.change_cronjob_setting') !!}
+					<span class="material-symbols-rounded">settings</span> {!! trans('messages.change_cronjob_setting') !!}
 				</a>
 				<a href="{{ action('InstallController@finishing') }}" class="btn btn-primary">
-					{!! trans('messages.next') !!} <span class="material-symbols-rounded">
-east
-</span>
+					{!! trans('messages.next') !!} <span class="material-symbols-rounded">east</span>
 				</a>				
 			@else
-				<button type="submit" class="btn btn-primary bg-teal">
+				<button type="submit" class="btn btn-primary bg-teal save-button">
 					{!! trans('messages.check_and_save_crontab') !!}
 				</button>
 			@endif
 		</div>
+
+		<script>
+
+			$(function() {
+				$('.save-button').on('click', function() {
+					addButtonMask($(this));
+				});
+			});
+
+		</script>
 	</form>
 @endsection

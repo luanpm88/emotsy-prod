@@ -5,9 +5,7 @@
     </div>    
     <div class="header-action">
         <button class="btn btn-secondary d-flex align-items-center back_to_workflow" onclick="sidebar.load(); popup.hide()">
-            <i class="material-symbols-rounded me-2">
-                multiline_chart
-            </i>
+            <i class="material-symbols-rounded me-2">multiline_chart</i>
             {{ trans('messages.automation.back_to_workflow') }}
         </button>
     </div>  
@@ -19,9 +17,7 @@
             'uid' => $automation->uid,
             'email_uid' => $email->uid,
         ]) }}')">
-            <span class="material-symbols-rounded">
-settings
-</span>
+            <span class="material-symbols-rounded">settings</span>
             {{ trans('messages.automation.email.setup') }}
         </a>
     </li>
@@ -34,9 +30,7 @@ settings
                 ]) }}')"
             @endif
         >
-            <i class="material-symbols-rounded">
-mark_email_unread
-</i>
+            <i class="material-symbols-rounded">mark_email_unread</i>
             {{ trans('messages.automation.email.content') }}
         </a>
     </li>
@@ -49,9 +43,7 @@ mark_email_unread
                 ]) }}')"
             @endif
         >
-            <span class="material-symbols-rounded">
-                done_all
-</span>
+            <span class="material-symbols-rounded">done_all</span>
             {{ trans('messages.automation.email.confirm') }}
         </a>
     </li>

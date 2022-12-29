@@ -520,7 +520,7 @@ h2 [class^="icon-"] {
     margin: 60px 0;
 }
 .login-header img {
-    max-width: 100%;
+    max-width: 70%;
 }
 .has-feedback label ~ .form-control-feedback.has-label {
     top: 30px;
@@ -775,7 +775,7 @@ input.error {
     border-color: #c4efab;
     color: #231c15;
 }
-.bg-unverified, .bg-ended, .bg-unknown, .bg-expired, .bg-past, .bg-spam-reported, .bg-not_sent, .bg-canceled, .bg-cancelled, .bg-unactive, .bg-disabled, .bg-unsubscribed, .bg-unconfirmed, .bg-draft, .bg-blacklisted, .bg-done, .bg-bounced {
+.bg-terminated, .bg-unverified, .bg-ended, .bg-unknown, .bg-expired, .bg-past, .bg-spam-reported, .bg-not_sent, .bg-canceled, .bg-cancelled, .bg-unactive, .bg-disabled, .bg-unsubscribed, .bg-unconfirmed, .bg-draft, .bg-blacklisted, .bg-done, .bg-bounced {
     background-color: #777;
     border-color: #777;
     color: #fff;
@@ -2154,7 +2154,7 @@ input.mini-input {
 .navbar-brand > img {
     margin-top: 0px;
     max-height: 53px;
-    max-width: 140px;
+    max-width: 120px;
 }
 .navbar-brand {
     padding: 0;
@@ -2166,8 +2166,6 @@ input.mini-input {
     line-height: 50px;
 }
 .navbar-brand > img {
-    max-height: 53px;
-    max-width: 140px;
     vertical-align: middle;
     display: inline-block;
 }
@@ -5239,7 +5237,7 @@ stat .stat-head {
 }
 .mc_list .mc-server-avatar, .mc-server-avatar, .server-avatar {
     height: 36px;
-    margin: 8px 18px 8px 8px !important;
+    margin: 8px 18px 8px 3px !important;
     padding: 0;
     width: 36px;
 }
@@ -5347,10 +5345,10 @@ stat .stat-head {
   background: #777;
   border-color: #777;
 }
-.bg-paddle, .bg-paystack, .bg-coinpayments, .bg-stripe, .bg-braintree, .bg-offline, .bg-paypal, .bg-paypal_subscription, .bg-rezorpay {
+.bg-paddle, .bg-flutterwave, .bg-paystack, .bg-coinpayments, .bg-stripe, .bg-braintree, .bg-offline, .bg-paypal, .bg-paypal_subscription, .bg-rezorpay {
   position: relative;
 }
-.bg-paddle::after, .bg-paystack::after, .bg-razorpay::after, .bg-coinpayments::after, .bg-stripe::after, .bg-braintree::after, .bg-offline::after, .bg-paypal::after, .bg-paypal_subscription::after {
+.bg-paddle::after, .bg-flutterwave::after, .bg-paystack::after, .bg-razorpay::after, .bg-coinpayments::after, .bg-stripe::after, .bg-braintree::after, .bg-offline::after, .bg-paypal::after, .bg-paypal_subscription::after {
   content: "";
   background-image: url("../../images/coinpayments-logo.png");
   background-size: 140px auto;
@@ -5392,6 +5390,12 @@ margin-left: -13px;
     margin-top: -14px;
     margin-left: -13px;
 }
+.bg-flutterwave::after {
+    background-image: url(../../images/flutterwave.svg);
+    background-size: 67px;
+    margin-top: -22px;
+    margin-left: 10px;
+  }
 .bg-paypal_subscription::after {
   background-image: url(../../images/paypal-logo.png);
   background-size: 57px;
@@ -5933,7 +5937,7 @@ table.table-log tr th {
   background-repeat: no-repeat;
   background-position: 0px 0;
 }
-.choose-payment-stripe, .choose-payment-paddle, .choose-payment-paypal, .choose-payment-paypal_subscription, .choose-payment-braintree, .choose-payment-paystack, .choose-payment-razorpay {
+.choose-payment-stripe, .choose-payment-flutterwave, .choose-payment-paddle, .choose-payment-paypal, .choose-payment-paypal_subscription, .choose-payment-braintree, .choose-payment-paystack, .choose-payment-razorpay {
   background-image: url(../../images/cards.svg);
   background-size: 238px;
   background-repeat: no-repeat;
@@ -6175,6 +6179,9 @@ h1, h1 {
     left: 3px;
     top: 4px;
     /* transform: translateY(19997px); */
+}
+.checkbox-right-switch .styled[type="radio"]:checked ~ .check-symbol:after {
+    top: 6px;
 }
 .styled.check_all ~ .check-symbol {
     margin-right: 14px;
@@ -7324,8 +7331,8 @@ hr {
     transform: scale(1.3);
 }
 .navbar-icon svg {
-    width: 18px;
-    height: 18px;
+    width: 17px;
+    height: 17px;
 }
 .dropdown-menu .navbar-icon svg, .dropdown-menu .navbar-icon svg * {
     fill: currentColor!important;
@@ -7340,7 +7347,7 @@ hr {
     background: #f6f6f6;
 }
 .default-app-logo svg {
-    height: 16px;
+    height: 27px;
     color: rgba(255,255,255,0.85);
 }
 .default-app-logo svg, .default-app-logo svg * {
@@ -7701,21 +7708,6 @@ textarea.form-control {
         flex: 0 0 100%;
     }
 }
-.has-emoji .form-group label ~ .emoji-picker-icon {
-    top: 31px;
-}
-.has-emoji .form-group label ~ .emoji-picker-icon::after {
-    content: 'emoji_emotions';
-    font-family: 'Material icons outlined';
-    right: 0;
-    position: absolute;
-    z-index: 1;
-    font-style: normal;
-    font-size: 22px;
-}
-.has-emoji .form-group label ~ .emoji-picker-icon::before {
-    display: none;
-}
 .tox-form__group input:read-only {
     background-color: #efefef!important;
 }
@@ -7758,7 +7750,7 @@ textarea.form-control {
     fill: #efc078!important;
 }
 .top-controls-container {
-    padding-top: 17px;
+    padding-top: 8px;
 }
 .but-change-theme-mode .icon-mode {
     display: none;
@@ -7933,4 +7925,218 @@ textarea.form-control {
 }
 .import-mapping .has-error .form-control {
     border: solid 1px #D84315;
+}
+.topfix-header {
+    background: #fff;
+}
+.how-use {
+    display: none;
+}
+.leftbar .topfix-header, .topbar .topfix-header {
+    margin-left: -16px;
+    margin-right: -16px;
+}
+.plugins-list-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-gap: 20px;
+}
+@media (min-width: 1200px) {
+    .topfix-header, .leftbar .topfix-header {
+        margin: -10px -50px 0px -45px;
+    }
+    .topbar .topfix-header {
+        margin: 0px -20px 0px -20px;
+    }
+    .topfix-body {
+        margin: 0 -24px 0px -24px;
+    }
+    .how-use {
+        display: block;
+    }
+}
+@media (max-width: 1200px) {
+    .leftbar .app_search_box .search-control {
+        margin-top: 8px;
+    }
+    .leftbar .top-controls-container {
+        padding-top: 16px;
+    }
+    .plugins-list-container {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+@media (max-width: 800px) {
+    .plugins-list-container {
+        grid-template-columns: 1fr;
+    }
+}
+.topfix-container {
+    padding-left: 44px;
+    padding-right: 44px;
+    box-shadow: 0 .125rem .25rem rgba(0,0,0,.015)!important;
+}
+.has-topfix-header {
+    background-color: #efefef;
+}
+.topfix-search-input {
+    max-width: 400px;
+    background: #f5f5f5;
+    border-width: 0px;
+    box-shadow: inset 0px 1px 1px rgba(0,0,0,0.055);
+    padding-left: 40px;
+    padding-right: 40px;
+}
+.topfix-search-input:focus {
+    outline: none;
+    box-shadow: none;
+    background: #f8f8f8;
+    border-width: 0px;
+    box-shadow: inset 0px 1px 3px rgba(0,0,0,0.035);
+}
+.topfix-search-icon {
+    position: relative;
+}
+.topfix-search-icon-span {
+    position: absolute;
+    left: 10px;
+    font-size: 24px;
+    color: rgba(0,0,0,0.5);
+    top: 5px;
+}
+.topfix-close-icon-span {
+    position: absolute;
+    right: 10px;
+    font-size: 24px;
+    color: rgba(0,0,0,0.5);
+    top: 5px;
+    cursor: pointer;
+}
+.topfix-close-icon-span:hover {
+    color: rgba(0,0,0,0.8);
+}
+.topfix-search-icon:focus ~ span {
+    color: rgba(0,0,0,0.8);
+}
+.topbar .app_search_box .search-control {
+    padding-top: 8px;
+}
+.topbar .top-controls-container {
+    padding-top: 17px;
+}
+.empty-list.plugins-list, body.mode-dark .empty-list.plugins-list {
+    background-color: transparent;
+    border: none;
+}
+.text-nowarp {
+    white-space: nowrap;
+}
+@media (min-width: 1200px) {
+    .user-menu-titles p {
+        max-width: 180px;
+        word-break: break-all;
+    }
+    .user-menu-titles a {
+        max-width: 180px;
+    }
+}
+.link-underline {
+    text-decoration: underline;
+}
+@media (max-width: 1200px) {
+    .leftbar .topfix-container {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+}
+@media (min-width: 1200px) {
+    .topbar .topfix-container {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+}
+.emojionearea, .emojionearea.form-control {
+    border-width: 2px!important;
+    height: 35px!important;
+    border-radius: 5px!important;
+}
+label.checker {
+    display: inline-block;
+    position: relative;
+}
+label.checker .checker-symbol {
+    cursor: pointer;
+}
+label.checker .checker-symbol::before {
+    content: '.';
+    width: 35px;
+    height: 15px;
+    display: inline-block;
+    background: transparent;
+    top: 4px;
+    position: absolute;
+    left: -9px;
+    border-radius: 50px;
+    border: solid 1px #aaa;
+    text-indent: -9000px;
+    box-shadow: 1px 1px 1px rgba(0,0,0,0.1);
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+}
+label.checker .checker-symbol::after {
+    content: '.';
+    width: 21px;
+    height: 21px;
+    display: inline-block;
+    background: #fff;
+    top: 1px;
+    position: absolute;
+    left: -9px;
+    border-radius: 100%;
+    border: solid 1px #aaa;
+    text-indent: -9000px;
+    transition: all 0.2s ease-in-out;
+    box-shadow: 1px 1px 1px rgba(0,0,0,0.1);
+    cursor: pointer;
+}
+label.checker input:checked ~ .checker-symbol::before {
+    background-color: #2fd9a1;
+    border-color: #2fd9a1;;
+}
+label.checker input:checked ~ .checker-symbol::after {
+    left: 7px;
+}
+label.checker input {
+    width: 0px;
+    height: 0px;
+    background: transparent;
+    border: none;
+    opacity: 0;
+}
+label.checker input:disabled ~ .checker-symbol::after {
+    background-color: #ddd;    
+    border-color: #ccc;    
+}
+label.checker input:disabled ~ .checker-symbol::before {
+    background-color: rgba(203, 205, 205, 0.5);
+    border-color: rgba(208, 208, 208, 0.5);
+}
+label.checker input:disabled ~ .checker-symbol {
+    cursor: not-allowed;
+}
+.checkbox-label {
+    cursor: pointer;
+}
+.checkbox-label.readonly {
+    opacity: 0.6;
+}
+.checkbox-label.readonly, .checkbox-label.readonly * {
+    pointer-events: none;
+}
+.card-top-left-icon {
+    position: absolute;
+    top: -16px;
+    font-size: 30px;
+    left: 0;
+    opacity: 0.8;
 }

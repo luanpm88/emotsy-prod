@@ -9,7 +9,7 @@
                 </td>
                 <td>
                     <div class="single-stat-box pull-left ml-20">
-                        <span class="no-margin stat-num kq_search">{{ $account->customer->user->displayName() }}</span>
+                        <span class="no-margin stat-num kq_search">{{ $account->customer->displayName() }}</span>
                         <br />
                         <span class="text-muted">{{ trans('messages.customer') }}</span>
                     </div>
@@ -18,7 +18,7 @@
                     <div class="single-stat-box pull-left ml-20">
                         <span class="no-margin stat-num kq_search">{{ $account->sendingServer->name }}</span>
                         <br />
-                        <span class="text-muted">{{ trans('messages.' . $account->sendingServer->type) }}</span>
+                        <span class="text-muted">{{ trans('messages.sending_server.type.' . $account->sendingServer->type) }}</span>
                     </div>
                 </td>
                 <td>
@@ -37,7 +37,7 @@
                 </td>
                 <td>
                     <div class="single-stat-box pull-left ml-20">
-                        <span class="no-margin stat-num kq_search">{{ Auth::user()->admin->formatDateTime($account->created_at, 'date_full') }}</span>
+                        <span class="no-margin stat-num kq_search">{{ Auth::user()->admin->formatDateTime($account->created_at, 'datetime_full') }}</span>
                         <br />
                         <span class="text-muted">{{ trans('messages.created_at') }}</span>
                     </div>
@@ -61,18 +61,14 @@
     
 @elseif (!empty(request()->keyword) || !empty(request()->filters["type"]))
     <div class="empty-list">
-        <span class="material-symbols-rounded">
-approval
-</span>
+        <span class="material-symbols-rounded">approval</span>
         <span class="line-1">
             {{ trans('messages.no_search_result') }}
         </span>
     </div>
 @else
     <div class="empty-list">
-        <span class="material-symbols-rounded">
-approval
-</span>
+        <span class="material-symbols-rounded">approval</span>
         <span class="line-1">
             {{ trans('messages.sub_account_empty_line_1') }}
         </span>

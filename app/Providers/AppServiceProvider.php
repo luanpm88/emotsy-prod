@@ -11,8 +11,8 @@ use Acelle\Model\Setting;
 use Acelle\Library\HookManager;
 use Acelle\Model\Plugin;
 use Acelle\Model\Notification;
-use Acelle\Library\BillingManager;
 use Acelle\Library\Facades\Hook;
+use Acelle\Library\SubscriptionManager;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -35,7 +35,7 @@ class AppServiceProvider extends ServiceProvider
 
         // Load application's plugins
         // Disabled plugin may also register hooks
-        $this->loadPlugins();
+        Plugin::autoloadWithoutDbQuery();
     }
 
     /**
@@ -49,8 +49,8 @@ class AppServiceProvider extends ServiceProvider
             return new HookManager();
         });
 
-        $this->app->singleton(BillingManager::class, function ($app) {
-            return new BillingManager();
+        $this->app->singleton(SubscriptionManager::class, function ($app) {
+            return new SubscriptionManager();
         });
 
         Hook::register('add_translation_file', function () {
@@ -118,20 +118,14 @@ class AppServiceProvider extends ServiceProvider
                 "master_translation_file" => resource_path('lang/default/validation.php'),
             ];
         });
-    }
 
-    private function loadPlugins()
-    {
-        try {
-            Plugin::autoload();
-            Notification::cleanupDuplicateNotifications('Plugin Error');
-        } catch (\Exception $ex) {
-            // Just in case
-            Notification::warning([
-                'message' => 'Cannot load Acelle plugins. Error: '.htmlspecialchars($ex->getMessage()),
-                'title' => 'Plugin Error',
-            ]);
-        }
+        // default captcha method
+        Hook::register('captcha_method', function () {
+            return [
+                "id" => 'recaptcha',
+                "title" => trans('messages.recaptcha'),
+            ];
+        });
     }
 
     // @deprecated
@@ -195,27 +189,5 @@ class AppServiceProvider extends ServiceProvider
         // [Illuminate\Database\QueryException]
         // SQLSTATE[42000]: Syntax error or access violation: 1071 Specified key was too long; max key length is 767 bytes
         Schema::defaultStringLength(191);
-
-        if (!\App::runningInConsole()) {
-            // This is just a trick for getting Controller name in view
-            // See https://stackoverflow.com/questions/29549660/get-laravel-5-controller-name-in-view
-            // @todo: fix this anti-pattern
-            app('view')->composer('*', function ($view) {
-                $route = app('request')->route();
-                if (is_null($route)) {
-                    return;
-                }
-
-                $action = app('request')->route()->getAction();
-
-                if (!array_key_exists('controller', $action)) {
-                    return;
-                }
-
-                $controller = class_basename($action['controller']);
-                list($controller, $action) = explode('@', $controller);
-                $view->with(compact('controller', 'action'));
-            });
-        }
     }
 }

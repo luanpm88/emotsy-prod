@@ -7,9 +7,7 @@
 <form action="{{ action('InstallController@siteInfo') }}" method="POST" class="form-validate-jqueryz">
 	{!! csrf_field() !!}
 	
-	<h3 class="text-primary"><span class="material-symbols-rounded">
-		maps_home_work
-		</span> {{ trans('messages.general') }}</h3>
+	<h3 class="text-primary"><span class="material-symbols-rounded">maps_home_work</span> {{ trans('messages.general') }}</h3>
     <div class="row">
         <div class="col-md-6">
             @include('helpers.form_control', [
@@ -53,28 +51,47 @@
         </div>
     </div>
 	<hr />
-	<h3 class="text-primary"><span class="material-symbols-rounded">
-manage_accounts
-</span> {{ trans('messages.admin_info') }}</h3>
+	<h3 class="text-primary"><span class="material-symbols-rounded">manage_accounts</span> {{ trans('messages.admin_info') }}</h3>
 	<div class="row">
-        <div class="col-md-6">
-            @include('helpers.form_control', [
-                'type' => 'text',
-                'name' => 'first_name',
-                'value' => (isset($site_info["first_name"]) ? $site_info["first_name"] : ""),
-                'help_class' => 'install',
-                'rules' => $rules
-            ])
-        </div>
-        <div class="col-md-6">
-            @include('helpers.form_control', [
-                'type' => 'text',
-                'name' => 'last_name',
-                'value' => (isset($site_info["last_name"]) ? $site_info["last_name"] : ""),
-                'help_class' => 'install',
-                'rules' => $rules
-            ])
-        </div>
+        @if (get_localization_config('show_last_name_first', config('app.locale')))
+            <div class="col-md-6">
+                @include('helpers.form_control', [
+                    'type' => 'text',
+                    'name' => 'last_name',
+                    'value' => (isset($site_info["last_name"]) ? $site_info["last_name"] : ""),
+                    'help_class' => 'install',
+                    'rules' => $rules
+                ])
+            </div>
+            <div class="col-md-6">
+                @include('helpers.form_control', [
+                    'type' => 'text',
+                    'name' => 'first_name',
+                    'value' => (isset($site_info["first_name"]) ? $site_info["first_name"] : ""),
+                    'help_class' => 'install',
+                    'rules' => $rules
+                ])
+            </div>
+        @else 
+            <div class="col-md-6">
+                @include('helpers.form_control', [
+                    'type' => 'text',
+                    'name' => 'first_name',
+                    'value' => (isset($site_info["first_name"]) ? $site_info["first_name"] : ""),
+                    'help_class' => 'install',
+                    'rules' => $rules
+                ])
+            </div>
+            <div class="col-md-6">
+                @include('helpers.form_control', [
+                    'type' => 'text',
+                    'name' => 'last_name',
+                    'value' => (isset($site_info["last_name"]) ? $site_info["last_name"] : ""),
+                    'help_class' => 'install',
+                    'rules' => $rules
+                ])
+            </div>
+        @endif
     </div>
         
     <div class="row">
@@ -100,9 +117,20 @@ manage_accounts
     </div>
 			
     <div class="row">
-        <div class="col-md-6">
-			@include('helpers.form_control', ['type' => 'select', 'name' => 'timezone', 'value' => (isset($site_info["timezone"]) ? $site_info["timezone"] : ""), 'options' => Tool::getTimezoneSelectOptions(), 'include_blank' => trans('messages.choose'), 'rules' => $rules])
-        </div>
+        @if (config('custom.japan'))
+            <input type="hidden" name="timezone" value="Asia/Tokyo" />
+        @else
+            <div class="col-md-6">
+                @include('helpers.form_control', [
+                    'type' => 'select',
+                    'name' => 'timezone',
+                    'value' => (isset($site_info["timezone"]) ? $site_info["timezone"] : config('app.timezone')),
+                    'options' => Tool::getTimezoneSelectOptions(),
+                    'include_blank' => trans('messages.choose'), 'rules' => $rules
+                ])
+            </div>
+        @endif
+            
 		<div class="col-md-6">
 			<div class="form-group checkbox-right-switch">
 				@include('helpers.form_control', [
@@ -119,9 +147,7 @@ manage_accounts
     </div>
 	
 	<hr />
-	<h3 class="text-primary"><span class="material-symbols-rounded">
-mark_email_read
-</span> {{ trans('messages.system_email_configuration') }}</h3>
+	<h3 class="text-primary"><span class="material-symbols-rounded">mark_email_read</span> {{ trans('messages.system_email_configuration') }}</h3>
 	<div class="row">
         <div class="col-md-6">
             @include('helpers.form_control', [
@@ -129,7 +155,7 @@ mark_email_read
                 'name' => 'mail_mailer',
 								'label' => trans('messages.mail_mailer'),
                 'value' => (isset($site_info["mail_mailer"]) ? $site_info["mail_mailer"] : ""),
-								'options' => [["value" => "sendmail", "text" => trans('messages.sendmail')],["value" => "smtp", "text" => trans('messages.smtp')]],
+								'options' => [["value" => "sendmail", "text" => trans('messages.system.sendmail')],["value" => "smtp", "text" => trans('messages.sending_server.type.smtp')]],
                 'help_class' => 'install',
                 'rules' => $rules
             ])
@@ -232,13 +258,18 @@ mark_email_read
 	
 	<hr >
 	<div class="text-end">                                    
-		<button data-wait="{{ trans('messages.button_processing') }}" type="submit" class="btn btn-primary bg-teal">{!! trans('messages.next') !!} <span class="material-symbols-rounded">
-east
-</span></button>
+		<button data-wait="{{ trans('messages.button_processing') }}" type="submit" class="btn btn-primary bg-teal save-button">{!! trans('messages.next') !!} <span class="material-symbols-rounded">east</span></button>
 	</div>
 	
 </form>
 <script>
+
+	$(function() {
+		$('.save-button').on('click', function() {
+			addButtonMask($(this));
+		});
+	});
+
 	function toogleMailer() {
 		var value = $("select[name='mail_mailer']").val();
 		$('.mailer-setting').hide();

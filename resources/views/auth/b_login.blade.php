@@ -54,20 +54,27 @@
                 </div>
 
                 <div class="col-sm-6 text-end text-semibold fw-600">
-                    <a href="{{ url('/password/reset') }}">{{ trans("messages.forgot_password") }}</a>
+                  <font size="-3"><a href="{{ url('/password/reset') }}">{{ trans("messages.forgot_password") }}</a></font>
                 </div>
             </div>
         </div>
 
         @if (\Acelle\Model\Setting::get('login_recaptcha') == 'yes')
-            {!! \Acelle\Library\Tool::showReCaptcha($errors) !!}
+
+            <!-- hCaptcha -->
+            @if (\Acelle\Model\Setting::getCaptchaProvider() == 'hcaptcha')
+                @php
+                    $hcaptcha = \Acelle\Hcaptcha\Client::initialize();
+                @endphp
+                {!! $hcaptcha->renderFormHtml($errors) !!}
+            @else
+                {!! \Acelle\Library\Tool::showReCaptcha($errors) !!}
+            @endif
         @endif
 
         <button type="submit" class="btn rounded-2 btn-primary d-block login-button py-2 fw-600"
             style="width:100%;text-transform:uppercase"
-        ><span class="me-2">{{ trans("messages.login") }}</span> <span class="material-symbols-rounded">
-            login
-            </span></button>
+        ><span class="me-2">{{ trans("messages.login") }}</span> <span class="material-symbols-rounded">login</span></button>
             
 
             @if (

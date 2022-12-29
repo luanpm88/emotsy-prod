@@ -49,6 +49,7 @@ class Contact extends Model
         'first_name' => 'required',
         'last_name' => 'required',
         'address_1' => 'required',
+        'state' => 'required',
         'city' => 'required',
         'zip' => 'required',
         'url' => 'nullable|regex:/^https{0,1}:\/\//',
@@ -72,8 +73,16 @@ class Contact extends Model
      *
      * @var string
      */
-    public function name()
+    public function name($locale)
     {
+        $lastNameFirst = get_localization_config('show_last_name_first', $locale);
+
+        if ($lastNameFirst) {
+            return htmlspecialchars(trim($this->last_name.' '.$this->first_name));
+        } else {
+            return htmlspecialchars(trim($this->first_name.' '.$this->last_name));
+        }
+
         return $this->first_name.' '.$this->last_name;
     }
 
@@ -84,6 +93,6 @@ class Contact extends Model
      */
     public function countryName()
     {
-        return is_object($this->country) ? $this->country->name : '';
+        return $this->country ? $this->country->name : '';
     }
 }

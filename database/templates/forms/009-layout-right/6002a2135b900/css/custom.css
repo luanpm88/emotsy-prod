@@ -12,8 +12,7 @@ label.error {
 }
 [builder-element=CellElement] .container {
     padding: 0;
-}
-@media (min-width: 769px) {
+}@media (min-width: 769px) {
     [data-hide-on="desktop"] {
       display: none!important;
     }

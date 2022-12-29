@@ -1,4 +1,6 @@
-@extends('layouts.core.backend')
+@extends('layouts.core.backend', [
+    'menu' => 'auth',
+])
 
 @section('title', trans('messages.settings'))
 
@@ -10,9 +12,7 @@
             <li class="breadcrumb-item"><a href="{{ action('Admin\AuthController@index') }}">{{ trans('messages.oauth') }}</a></li>
         </ul>
         <h1>
-            <span class="text-gear"><span class="material-symbols-rounded">
-                admin_panel_settings
-</span> {{ trans('messages.setting.facebook_oauth') }}</span>
+            <span class="text-gear"><span class="material-symbols-rounded">admin_panel_settings</span> {{ trans('messages.setting.facebook_oauth') }}</span>
         </h1>				
     </div>
 

@@ -1,7 +1,6 @@
 @if ($invoice->isNew() && !$invoice->getPendingTransaction())
-    <div class="card shadow-sm border-top-0 rounded-bottom p-2" style="margin-top: -10px;
-    border-radius: 0;">
-        <div class="card-body pe-4 ps-4 pb-4 pt-0">
+    <div class="">
+        <div class="mt-4">
             <div class="alert alert-info bg-no-order tos_link">
                 @if (Acelle\Model\Setting::get('terms_of_service.enabled') == 'no' && Acelle\Model\Setting::get('terms_of_service.content')) 
                     {!! trans('messages.payment.agree_service_intro.term_link', [
@@ -11,37 +10,19 @@
                     {!! trans('messages.payment.agree_service_intro') !!}
                 @endif
             </div>
-            @if (!request()->payment_method && !$invoice->isFree())
-                
-                <form id="checkoutForm" class="" action="{{ $invoice->isFree() ? action('SubscriptionController@confirmFree', [
-                    'invoice_uid' => $invoice->uid
-                ]) : action('SubscriptionController@checkout') }}"
-                    method="POST">
-                    {{ csrf_field() }}
+            <form id="checkoutForm" class="" action="{{ action('SubscriptionController@checkout', [
+                'invoice_uid' => $invoice->uid,
+            ]) }}"
+                method="POST">
+                {{ csrf_field() }}
 
-                    <input type="hidden" name="payment_method" />
+                <input type="hidden" name="payment_method" value="{{ request()->payment_method }}" />
 
-                    <input type="submit" name="new_payment" disabled
-                        class="btn btn-secondary py-2 fs-6 px-4 text-center rounded-3 shadow" style="width:100%"
-                        value="{{ $invoice->isFree() ? trans('messages.subscription.get_started') : trans('messages.subscription.checkout') }}"
-                    >
-                </form>
-            @else
-
-                <form id="checkoutForm" class="" action="{{ $invoice->isFree() ? action('SubscriptionController@confirmFree', [
-                    'invoice_uid' => $invoice->uid
-                ]) : action('SubscriptionController@checkout') }}"
-                    method="POST">
-                    {{ csrf_field() }}
-
-                    <input type="hidden" name="payment_method" value="{{ request()->payment_method }}" />
-
-                    <input type="submit" name="new_payment"
-                        class="btn btn-primary py-2 fs-6 px-4 text-center rounded-3 shadow" style="width:100%"
-                        value="{{ $invoice->isFree() ? trans('messages.subscription.get_started') : trans('messages.subscription.checkout') }}"
-                    >
-                </form>
-            @endif
+                <input type="submit" name="new_payment" {{ !request()->payment_method ? 'disabled' : '' }}
+                    class="btn btn-primary py-2 fs-6 px-4 text-center rounded-3 shadow" style="width:100%"
+                    value="{{ $invoice->isFree() ? trans('messages.subscription.get_started') : trans('messages.subscription.checkout') }}"
+                >
+            </form>
         </div>
     </div>
 

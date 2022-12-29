@@ -1,4 +1,6 @@
-@extends('layouts.core.backend')
+@extends('layouts.core.backend', [
+    'menu' => 'api',
+])
 
 @section('title', trans('messages.api_token'))
 
@@ -15,9 +17,7 @@
             <li class="breadcrumb-item active">{{ trans('messages.api_token') }}</li>
         </ul>
         <h1>
-            <span class="text-semibold"><span class="material-symbols-rounded">
-                            person_outline
-                            </span> {{ Auth::user()->displayName() }}</span>
+            <span class="text-semibold"><span class="material-symbols-rounded">person_outline</span> {{ Auth::user()->admin->displayName() }}</span>
         </h1>
     </div>
 
@@ -25,14 +25,14 @@
 
 @section('content')
 
-    @include("admin.account._menu")
+    @include("admin.account._menu", [
+        'menu' => 'api',
+    ])
 
     <h4 class="text-semibold">{{ trans('messages.api_docs') }}</h4>
 
     <p style="margin-bottom: 30px"><code style="font-size: 18px;">
-        <a target="_blank" href="{{ action("Admin\ApiController@doc") }}">{{ action("Admin\ApiController@doc") }} <span class="material-symbols-rounded">
-link
-</span></a></code></p>
+        <a target="_blank" href="{{ action("Admin\ApiController@doc") }}">{{ action("Admin\ApiController@doc") }} <span class="material-symbols-rounded">link</span></a></code></p>
 
     <h4 class="text-semibold">{{ trans('messages.api_endpoint') }}</h4>
 

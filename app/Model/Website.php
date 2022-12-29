@@ -5,6 +5,7 @@ namespace Acelle\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Acelle\Library\Traits\HasUid;
+use function Acelle\Helpers\url_get_contents_ssl_safe;
 
 class Website extends Model
 {
@@ -64,14 +65,7 @@ class Website extends Model
 
     public static function getTitleFromUrl($url)
     {
-        $arrContextOptions = array(
-            "ssl"=>array(
-                "verify_peer"=>false,
-                "verify_peer_name"=>false,
-            ),
-        );
-
-        $content = file_get_contents($url, false, stream_context_create($arrContextOptions));
+        $content = url_get_contents_ssl_safe($url);
 
         $document = new \DOMDocument();
         $document->encoding = 'utf-8';
@@ -96,14 +90,7 @@ class Website extends Model
 
     public function check()
     {
-        $arrContextOptions = array(
-            "ssl"=>array(
-                "verify_peer"=>false,
-                "verify_peer_name"=>false,
-            ),
-        );
-
-        $content = file_get_contents($this->url, false, stream_context_create($arrContextOptions));
+        $content = url_get_contents_ssl_safe($this->url);
 
         $document = new \DOMDocument();
         $document->encoding = 'utf-8';

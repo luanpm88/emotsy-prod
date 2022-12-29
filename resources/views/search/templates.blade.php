@@ -5,9 +5,7 @@
         <div class="d-flex">
             <div class="me-auto">
                 <label class="fw-600">
-                    <span class="material-symbols-rounded me-1">
-                        web 
-                        </span> {{ trans('messages.templates') }}
+                    <span class="material-symbols-rounded me-1">web </span> {{ trans('messages.templates') }}
                 </label>
             </div>
             <div>
@@ -28,7 +26,7 @@
                         {{ $template->name }}
                     </label>
                     <p class="desc text-muted mt-1 mb-0 text-nowrap">
-                        {{ trans('messages.updated_at') }}: {{ Auth::user()->customer->formatDateTime($template->created_at, 'date_full') }}
+                        {{ trans('messages.updated_at') }}: {{ Auth::user()->customer->formatDateTime($template->created_at, 'datetime_full') }}
                     </p>
                 </div>
             </div>

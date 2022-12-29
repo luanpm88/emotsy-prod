@@ -30,12 +30,6 @@ $.fn.autofill = function(options) {
     // dropdown list
     box.loadingRow = '<li class="loader-box"><a class="loader" href="javascript:;"><div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></a></li>';
     dropboxHtml = '<div class="autofill-dropbox-container autofill-dropbox-container-'+box.id+' hide"><ul class="autofill-dropbox autofill-dropbox-'+box.id+'">' +
-        //'<li><a class="loading" href="javascript:;">'+loadingEffect+'</a></li>' +
-        //'<li><a class="active" href="javascript:;"><label>Lawe Pham</label><span class="text-bold">L</span>awepham@gmail.com</a></li>' +
-        //'<li><a class="" href="javascript:;"><label>Louis Walker</label><span class="text-bold">L</span>ouis@gmail.com</a></li>' +
-        //'<li><a class="" href="javascript:;"><label>Lion Meo</label><span class="text-bold">L</span>ion@yahoo.com</a></li>' +
-        //'<li><a class="" href="javascript:;"><label>****@gmail.com</label></a></li>' +
-        //'<li><a class="" href="javascript:;"><label>****@abc.com</label></a></li>' +
         '</ul></div>';
     box.append(dropboxHtml);
     box.dropbox = box.find('.autofill-dropbox-'+box.id);

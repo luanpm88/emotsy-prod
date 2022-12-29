@@ -32,7 +32,7 @@ class CronJob extends Notification
      */
     public static function check()
     {
-        $title = trans('messages.admin.notification.cronjob_title');
+        $title = 'CronJob';
         self::cleanupDuplicateNotifications($title);
 
         $interval = Setting::get('cronjob_min_interval');
@@ -58,7 +58,7 @@ class CronJob extends Notification
             return false;
         }
 
-        $lastexec = \Carbon\Carbon::createFromTimestamp($timestamp);
+        $lastexec = \Carbon\Carbon::createFromTimestamp($timestamp, 'UTC');
         $checked = new \Carbon\Carbon(sprintf('%s ago', $diff));
 
         return $lastexec->gte($checked);
@@ -76,6 +76,9 @@ class CronJob extends Notification
             return '#unknown';
         }
 
+        // Return the datetime object with selected timezone
+        // However, make sure the cronjob_last_execution was previously saved in UTC
+        // As the createFromTimestamp() assumes that the timestamp passed to it is in UTC
         return \Carbon\Carbon::createFromTimestamp($timestamp)->toDateTimeString();
     }
 }

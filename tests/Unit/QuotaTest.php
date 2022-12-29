@@ -20,6 +20,7 @@ use Acelle\Jobs\VerifySubscriber;
 use Exception;
 use File;
 use Mockery;
+
 use function Acelle\Helpers\withQuota;
 
 class QuotaTest extends TestCase
@@ -485,7 +486,7 @@ class QuotaTest extends TestCase
         $server->setQuotaSettings(0, $unit = 'minute', 1);
 
         // Subscription Quota
-        $campaign->customer->activeSubscription()->plan->shouldReceive('getQuotaSettings')->andReturn([]);
+        $campaign->customer->getCurrentActiveSubscription()->plan->shouldReceive('getQuotaSettings')->andReturn([]);
 
         // SendMessage job
         $sendMsgJob = new SendMessage($campaign, $subscriber, $server);
@@ -504,7 +505,7 @@ class QuotaTest extends TestCase
         $server->setQuotaSettings(1, $unit = 'minute', 1);
 
         // Subscription Quota
-        $campaign->customer->activeSubscription()->plan->shouldReceive('getQuotaSettings')->andReturn([]);
+        $campaign->customer->getCurrentActiveSubscription()->plan->shouldReceive('getQuotaSettings')->andReturn([]);
 
         // SendMessage job
         $sendMsgJob = new SendMessage($campaign, $subscriber, $server);
@@ -523,7 +524,7 @@ class QuotaTest extends TestCase
         $server->setQuotaSettings(1, $unit = 'minute', 1);
 
         // Subscription Quota
-        $campaign->customer->activeSubscription()->plan->shouldReceive('getQuotaSettings')->andReturn([]);
+        $campaign->customer->getCurrentActiveSubscription()->plan->shouldReceive('getQuotaSettings')->andReturn([]);
 
         // SendMessage job
         $sendMsgJob = new SendMessage($campaign, $subscriber, $server);
@@ -550,7 +551,7 @@ class QuotaTest extends TestCase
         $server->setQuotaSettings(9999, $unit = 'minute', 1);
 
         // Subscription Quota
-        $campaign->customer->activeSubscription()->plan->shouldReceive('getQuotaSettings')->andReturn([[
+        $campaign->customer->getCurrentActiveSubscription()->plan->shouldReceive('getQuotaSettings')->andReturn([[
             'name' => "Plan's sending limit",
             'limit' => 1,
             'period_unit' => 'month',
@@ -607,7 +608,7 @@ class QuotaTest extends TestCase
         // Test setup
         list($subscriber, $server) = $this->prepareVerifySubscriberTest();
         $server->setQuotaSettings('verify', 2, $unit = 'minute', 1);
-        $subscription = $subscriber->mailList->customer->activeSubscription();
+        $subscription = $subscriber->mailList->customer->getCurrentActiveSubscription();
         $subscription->plan->shouldReceive('getQuotaSettings')->andReturn([]);
 
         // SendMessage job
@@ -644,7 +645,7 @@ class QuotaTest extends TestCase
         // Test setup
         list($subscriber, $server) = $this->prepareVerifySubscriberTest();
         $server->setQuotaSettings('verify', 9999, $unit = 'minute', 1);
-        $subscription = $subscriber->mailList->customer->activeSubscription();
+        $subscription = $subscriber->mailList->customer->getCurrentActiveSubscription();
         $subscription->plan->shouldReceive('getQuotaSettings')->andReturn([[
             'name' => "Plan's sending limit",
             'limit' => 2,

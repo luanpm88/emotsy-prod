@@ -38,7 +38,10 @@ use Exception;
 use Closure;
 use League\Pipeline\PipelineBuilder;
 use Acelle\Library\HtmlHandler\TransformWidgets;
+
+use function Acelle\Helpers\is_non_web_link;
 use function Acelle\Helpers\getAppHost;
+use function Acelle\Helpers\url_get_contents_ssl_safe;
 
 class Template extends Model
 {
@@ -204,15 +207,6 @@ class Template extends Model
             ['name' => 'CURRENT_YEAR', 'required' => false],
             ['name' => 'CURRENT_MONTH', 'required' => false],
             ['name' => 'CURRENT_DAY', 'required' => false],
-            ['name' => 'CONTACT_NAME', 'required' => false],
-            ['name' => 'CONTACT_COUNTRY', 'required' => false],
-            ['name' => 'CONTACT_STATE', 'required' => false],
-            ['name' => 'CONTACT_CITY', 'required' => false],
-            ['name' => 'CONTACT_ADDRESS_1', 'required' => false],
-            ['name' => 'CONTACT_ADDRESS_2', 'required' => false],
-            ['name' => 'CONTACT_PHONE', 'required' => false],
-            ['name' => 'CONTACT_URL', 'required' => false],
-            ['name' => 'CONTACT_EMAIL', 'required' => false],
             ['name' => 'LIST_NAME', 'required' => false],
             ['name' => 'LIST_SUBJECT', 'required' => false],
             ['name' => 'LIST_FROM_NAME', 'required' => false],
@@ -229,7 +223,7 @@ class Template extends Model
      */
     public function displayCreatorName()
     {
-        return is_object($this->admin) ? $this->admin->user->displayName() : (is_object($this->customer) ? $this->customer->user->displayName() : '');
+        return $this->admin ? $this->admin->displayName() : ($this->customer ? $this->customer->displayName() : '');
     }
 
     /**
@@ -705,13 +699,14 @@ class Template extends Model
             throw new Exception('Template does not have a UID, cannot transform content');
         }
 
-        // Replace #1
+        // This is where the transformation takes place
+        // + Transform relative url like /assets/... to absolute one
+        // + Transform to tracking domain
+        //
         $content = StringHelper::transformUrls($html, function ($url, $element) use ($withHost, $domain, $urlTransform) {
-            if (strpos($url, '#') === 0) {
-                return $url;
-            }
-
-            if (strpos($url, 'mailto:') === 0) {
+            // If the given URL is a non-web link, like tel:, mailto:, ftp:...
+            // then just skip
+            if (is_non_web_link($url)) {
                 return $url;
             }
 
@@ -747,7 +742,7 @@ class Template extends Model
                 }
 
                 if ($domain) {
-                    return $domain->buildTrackingUrl($urlWithHost, $element);
+                    return $domain->buildTrackingUrl($urlWithHost);
                 } elseif ($withHost) {
                     return $urlWithHost;
                 } else {
@@ -778,6 +773,10 @@ class Template extends Model
 
         return $content;
     }
+
+    // Test transformation:
+    // $c=Campaign::findByUid('63856e0f78a75');$t = $c->template;$c->tracking_domain_id = null;$t->content = '<a href="images/relative.svg">Relative Images</a><a href="#">Keep me</a><a href=http://vnexpress.net>Public URL</a><a href="//vnexpress.net">Slash</a>'
+    // $c->getHtmlContent();
 
     public function wooTransform($body)
     {
@@ -888,32 +887,9 @@ class Template extends Model
 
     public function uploadAssetFromUrl($url)
     {
-        // Simply return the image URL
         return $url;
 
-        /* Another way is to fetch and save the image to the local directory
-        // upload file by upload image
-        $filename = uniqid();
-
-        // Storage path of the uploaded asset:
-        // For example: /storage/templates/{type}/{ID}/604ce5e36d0fa
-        $filepath = $this->getStoragePath($filename);
-
-        // Download the file's content
-        $content = file_get_contents($url);
-
-        // Store it:
-        $arrContextOptions=array(
-            "ssl"=>array(
-                "verify_peer"=>false,
-                "verify_peer_name"=>false,
-            ),
-        );
-        file_put_contents($filepath, $content, false, stream_context_create($arrContextOptions));
-        $assetUrl = \Acelle\Helpers\generatePublicPath($filepath);
-
-        return $assetUrl;
-        */
+        /* Another way is to fetch and save the image to the local directory of the template */
     }
 
     /**
@@ -944,7 +920,6 @@ class Template extends Model
         $result = [];
 
         if (true) {
-
             // Unsubscribe link
             $result[] = [
                 'type' => 'label',
@@ -1040,7 +1015,7 @@ class Template extends Model
      */
     public function uploadThumbnailUrl($url)
     {
-        $contents = file_get_contents($url);
+        $contents = url_get_contents_ssl_safe($url);
         file_put_contents($this->getStoragePath('thumbnail.png'), $contents);
         // resize
         resize_crop_image(596, 769, $this->getStoragePath('thumbnail.png'), $this->getStoragePath('thumbnail.png'));

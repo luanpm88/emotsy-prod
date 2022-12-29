@@ -56,6 +56,8 @@ class SubscriptionController extends Controller
             return $this->notAuthorized();
         }
 
+        $currentTimezone = $request->user()->admin->getTimezone();
+
         // If admin can view all subscriptions of their customer
         if (!$request->user()->admin->can('readAll', new Subscription())) {
             $request->merge(array("customer_admin_id" => $request->user()->admin->id));
@@ -81,6 +83,7 @@ class SubscriptionController extends Controller
 
         return view('admin.subscriptions._list', [
             'subscriptions' => $subscriptions,
+            'currentTimezone' => $currentTimezone
         ]);
     }
 
@@ -123,7 +126,7 @@ class SubscriptionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function cancel(Request $request)
+    public function disableRecurring(Request $request)
     {
         if (isSiteDemo()) {
             return response()->json(["message" => trans('messages.operation_not_allowed_in_demo')], 404);
@@ -131,11 +134,11 @@ class SubscriptionController extends Controller
 
         $subscription = Subscription::findByUid($request->id);
 
-        if ($request->user()->admin->can('cancel', $subscription)) {
-            $subscription->cancel();
+        if ($request->user()->admin->can('disableRecurring', $subscription)) {
+            $subscription->disableRecurring();
         }
 
-        echo trans('messages.subscription.cancelled');
+        echo trans('messages.subscription.disabled_recurring');
     }
 
     /**
@@ -145,15 +148,15 @@ class SubscriptionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function resume(Request $request)
+    public function enableRecurring(Request $request)
     {
         $subscription = Subscription::findByUid($request->id);
 
-        if ($request->user()->admin->can('resume', $subscription)) {
-            $subscription->resume();
+        if ($request->user()->admin->can('enableRecurring', $subscription)) {
+            $subscription->enableRecurring();
         }
 
-        echo trans('messages.subscription.resumed');
+        echo trans('messages.subscription.enabled_recurring');
     }
 
     /**
@@ -163,7 +166,7 @@ class SubscriptionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function cancelNow(Request $request)
+    public function terminate(Request $request)
     {
         if (isSiteDemo()) {
             return response()->json(["message" => trans('messages.operation_not_allowed_in_demo')], 404);
@@ -171,9 +174,9 @@ class SubscriptionController extends Controller
 
         $subscription = Subscription::findByUid($request->id);
 
-        if ($request->user()->admin->can('cancelNow', $subscription)) {
+        if ($request->user()->admin->can('terminate', $subscription)) {
             try {
-                $subscription->cancelNow();
+                $subscription->terminate();
             } catch (\Exception $ex) {
                 echo json_encode([
                     'status' => 'error',
@@ -183,7 +186,7 @@ class SubscriptionController extends Controller
             }
         }
 
-        echo trans('messages.subscription.cancelled_now');
+        echo trans('messages.subscription.terminated');
     }
 
     /**
@@ -267,9 +270,33 @@ class SubscriptionController extends Controller
         $subscription = Subscription::findByUid($request->id);
 
         if ($request->user()->admin->can('delete', $subscription)) {
-            $subscription->delete();
+            $subscription->deleteAndCleanup();
         }
 
         echo trans('messages.subscription.deleted');
+    }
+
+    public function replenishSendingCredits(Request $request, $id)
+    {
+        $subscription = Subscription::findByUid($request->id);
+
+        // authorize
+        if (!$request->user()->admin->can('replenishSendingCredits', $subscription)) {
+            return $this->notAuthorized();
+        }
+
+        if (false) {
+            // success
+            return response()->json([
+                'status' => 'success',
+                'message' => trans('messages.subscription.replenish_sending_credits.success'),
+            ]);
+        } else {
+            // error
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Error from the server...',
+            ], 500);
+        }
     }
 }

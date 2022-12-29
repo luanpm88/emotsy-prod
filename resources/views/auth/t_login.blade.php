@@ -127,15 +127,9 @@
                                 <h2>Complete Delivery Tracking</h2>
                                 <h4>Track every single message sent out for your campaign</h4>
                                 <ul>
-                                    <li class="d-flex align-items-center"><span class="material-symbols-rounded mr-2 text-info">
-done
-</span> <span>Track your messages opens & clicks</span></li>
-                                    <li class="d-flex align-items-center"><span class="material-symbols-rounded mr-2 text-info">
-done
-</span> <span>Automatically handle bounce & feedback</span></li>
-                                    <li class="d-flex align-items-center"><span class="material-symbols-rounded mr-2 text-info">
-done
-</span> <span>Measure your campaign performance with insight reports</span></li>
+                                    <li class="d-flex align-items-center"><span class="material-symbols-rounded mr-2 text-info">done</span> <span>Track your messages opens & clicks</span></li>
+                                    <li class="d-flex align-items-center"><span class="material-symbols-rounded mr-2 text-info">done</span> <span>Automatically handle bounce & feedback</span></li>
+                                    <li class="d-flex align-items-center"><span class="material-symbols-rounded mr-2 text-info">done</span> <span>Measure your campaign performance with insight reports</span></li>
                                 </ul>
                             </div>
                         </li>
@@ -148,12 +142,8 @@ done
                                 <h4>Open to full customization and rebranding</h4>
                                 <p>Laravel is an free and open-source PHP framework, designed for the development of robust web applications succeeding the MVC pattern. With PHP/Laravel, code maintenance is easier than ever as your business is growing</p>
                                 <ul>
-                                    <li class="d-flex align-items-center"><span class="material-symbols-rounded mr-2 text-info">
-done
-</span> <span>Coded in PHP 7x and 8x on top of Laravel 8</span></li>
-                                    <li class="d-flex align-items-center"><span class="material-symbols-rounded mr-2 text-info">
-done
-</span> <span>Backed by MySQL 5.x</li>
+                                    <li class="d-flex align-items-center"><span class="material-symbols-rounded mr-2 text-info">done</span> <span>Coded in PHP 7x and 8x on top of Laravel 8</span></li>
+                                    <li class="d-flex align-items-center"><span class="material-symbols-rounded mr-2 text-info">done</span> <span>Backed by MySQL 5.x</li>
                                 </ul>
                             </div>
                         </li>
@@ -165,15 +155,9 @@ done
                                 <h2>Full-featured Automation / Auto-responder</h2>
                                 <h4>Automate your campaign with email workflow editor</h4>
                                 <ul>
-                                    <li class="d-flex align-items-center"><span class="material-symbols-rounded mr-2 text-info">
-done
-</span> <span>Start your email campaigns in response to event triggers</span></li>
-                                    <li class="d-flex align-items-center"><span class="material-symbols-rounded mr-2 text-info">
-done
-</span> <span>Automatically respond to your recipient activities (open/click)</span></li>
-                                    <li class="d-flex align-items-center"><span class="material-symbols-rounded mr-2 text-info">
-done
-</span> <span>Design your marketing with email automation workflow</span></li>
+                                    <li class="d-flex align-items-center"><span class="material-symbols-rounded mr-2 text-info">done</span> <span>Start your email campaigns in response to event triggers</span></li>
+                                    <li class="d-flex align-items-center"><span class="material-symbols-rounded mr-2 text-info">done</span> <span>Automatically respond to your recipient activities (open/click)</span></li>
+                                    <li class="d-flex align-items-center"><span class="material-symbols-rounded mr-2 text-info">done</span> <span>Design your marketing with email automation workflow</span></li>
                                 </ul>
                             </div>
                         </li>
@@ -198,11 +182,7 @@ done
                 {{ csrf_field() }}
 
                 <h1 class="text-semibold text-center full-width mb-lvl4" style="margin: 0 0 60px 0">
-                    @if (\Acelle\Model\Setting::get('site_logo_big'))
-                        <img width="240" src="{{ action('SettingController@file', \Acelle\Model\Setting::get('site_logo_big')) }}" alt="">
-                    @else
-                        <img style="margin: 10px 50px;" src="{{ URL::asset('images/logo_big.svg') }}" alt="">
-                    @endif
+                    <img style="margin: 10px 50px;" src="{{ getSiteLogoUrl('light') }}" alt="">
                 </h1>
 
                 <!-- display flash message -->
@@ -261,9 +241,9 @@ done
                             {{ trans("messages.login") }}
                         </button>
                         <div class="text-center mt-lvl3">
-                            <a class="btn btn-link text-center" href="{{ url('/password/reset') }}">
+                            <font size="-3"><a class="btn btn-link text-center" href="{{ url('/password/reset') }}">
                                 {{ trans("messages.forgot_password") }}
-                            </a>
+                            </a></font>
                             <a href="{{ url('/users/register') }}" class="btn btn-link">Create an account</a>
                         </div>
                     </div>

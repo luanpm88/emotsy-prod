@@ -17,7 +17,6 @@ class SettingController extends Controller
      **/
     public function file(Request $request, $filename)
     {
-        //return \Image::make(Setting::getUploadFilePath($filename))->response();
         $path = Setting::getUploadFilePath($filename);
         $type = mime_content_type($path);
         if ($type == 'image/svg') {

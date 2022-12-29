@@ -52,8 +52,17 @@ class LoginController extends Controller
         ];
 
         if (Setting::isYes('login_recaptcha') && !Setting::isYes('theme.beta')) {
-            if (!\Acelle\Library\Tool::checkReCaptcha($request)) {
-                $rules['recaptcha_invalid'] = 'required';
+            // @hCaptcha
+            if (\Acelle\Model\Setting::getCaptchaProvider() == 'hcaptcha') {
+                $hcaptcha = \Acelle\Hcaptcha\Client::initialize();
+
+                if (!$hcaptcha->check($request)) {
+                    $rules['captcha_invalid'] = 'required';
+                }
+            } else {
+                if (!\Acelle\Library\Tool::checkReCaptcha($request)) {
+                    $rules['recaptcha_invalid'] = 'required';
+                }
             }
         }
 

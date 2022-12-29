@@ -9,6 +9,8 @@ use Acelle\Model\Transaction;
 use Acelle\Library\Traits\HasUid;
 use Dompdf\Dompdf;
 use Acelle\Library\StringHelper;
+use Acelle\Library\Facades\SubscriptionFacade;
+
 use function Acelle\Helpers\getAppHost;
 
 class Invoice extends Model
@@ -119,6 +121,7 @@ class Invoice extends Model
     {
         return $this->transactions()
             ->orderBy('created_at', 'desc')
+            ->orderBy('id', 'desc')
             ->first();
     }
 
@@ -275,12 +278,31 @@ class Invoice extends Model
     public function approve()
     {
         // for only new invoice
-        if (!$this->isNew() || !$this->getPendingTransaction()) {
-            throw new \Exception("Trying to approve an invoice that is not NEW or does not have a pending transaction (Invoice ID: {$this->id}, status: {$this->status}");
+        if (!$this->isNew()) {
+            throw new \Exception("Trying to approve an invoice that is not NEW (Invoice ID: {$this->id}, status: {$this->status}");
         }
 
-        // fulfill invoice
-        $this->fulfill();
+        // for only new invoice
+        if (!$this->getPendingTransaction()) {
+            throw new \Exception("Trying to approve an invoice that does not have a pending transaction (Invoice ID: {$this->id}, status: {$this->status}");
+        }
+
+        \DB::transaction(function () {
+            // fulfill invoice
+            $this->fulfill();
+
+            // logging by type
+            switch ($this->type) {
+                case Invoice::TYPE_NEW_SUBSCRIPTION:
+                case Invoice::TYPE_RENEW_SUBSCRIPTION:
+                case Invoice::TYPE_CHANGE_PLAN:
+                    $subscription = Subscription::findByUid($this->getMetadata()['subscription_uid']);
+                    SubscriptionFacade::log($subscription, SubscriptionLog::TYPE_ADMIN_APPROVE, $this->uid, [
+                        'amount' => $this->formattedTotal(),
+                    ]);
+                    break;
+            }
+        });
     }
 
     /**
@@ -291,12 +313,32 @@ class Invoice extends Model
     public function reject($error)
     {
         // for only new invoice
-        if (!$this->isNew() || !$this->getPendingTransaction()) {
-            throw new \Exception("Trying to approve an invoice that is not NEW or does not have a pending transaction (Invoice ID: {$this->id}, status: {$this->status}");
+        if (!$this->isNew()) {
+            throw new \Exception("Trying to approve an invoice that is not NEW (Invoice ID: {$this->id}, status: {$this->status}");
         }
 
-        // fulfill invoice
-        $this->payFailed($error);
+        // for only new invoice
+        if (!$this->getPendingTransaction()) {
+            throw new \Exception("Trying to approve an invoice that does not have a pending transaction (Invoice ID: {$this->id}, status: {$this->status}");
+        }
+
+        \DB::transaction(function () use ($error) {
+            // fulfill invoice
+            $this->payFailed($error);
+
+            // logging by type
+            switch ($this->type) {
+                case Invoice::TYPE_NEW_SUBSCRIPTION:
+                case Invoice::TYPE_RENEW_SUBSCRIPTION:
+                case Invoice::TYPE_CHANGE_PLAN:
+                    $subscription = Subscription::findByUid($this->getMetadata()['subscription_uid']);
+                    SubscriptionFacade::log($subscription, SubscriptionLog::TYPE_ADMIN_REJECT, $this->uid, [
+                        'amount' => $this->formattedTotal(),
+                        'reason' => $error,
+                    ]);
+                    break;
+            }
+        });
     }
 
     /**
@@ -306,17 +348,18 @@ class Invoice extends Model
      */
     public function fulfill()
     {
-        // set status as paid
-        $this->setPaid();
+        $invoice = $this;
+        \DB::transaction(function () use (&$invoice) {
+            // set invoice status as paid
+            $invoice->setPaid();
 
-        // set transaction as success
-        // Important: according to current design, the rule is: one invoice only has one pending transaction
-        if ($this->getPendingTransaction()) {
-            $this->getPendingTransaction()->setSuccess();
-        }
+            // set transaction as success
+            // Important: according to current design, the rule is: one invoice only has one pending transaction
+            $invoice->getPendingTransaction()->setSuccess();
 
-        // invoice after pay actions
-        $this->process();
+            // set subscription status
+            $invoice->process();
+        });
     }
 
     /**
@@ -340,18 +383,18 @@ class Invoice extends Model
      */
     public function process()
     {
-        $data = $this->getMetadata();
-        $subscription = Subscription::findByUid($data['subscription_uid']);
-
         switch ($this->type) {
             case self::TYPE_NEW_SUBSCRIPTION:
+                $subscription = Subscription::findByUid($this->getMetadata()['subscription_uid']);
                 $subscription->activate();
                 break;
             case self::TYPE_RENEW_SUBSCRIPTION:
+                $subscription = Subscription::findByUid($this->getMetadata()['subscription_uid']);
                 $subscription->renew();
                 break;
             case self::TYPE_CHANGE_PLAN:
-                $newPlan = \Acelle\Model\Plan::findByUid($data['new_plan_uid']);
+                $subscription = Subscription::findByUid($this->getMetadata()['subscription_uid']);
+                $newPlan = \Acelle\Model\Plan::findByUid($this->getMetadata()['new_plan_uid']);
                 $subscription->changePlan($newPlan);
                 break;
             default:
@@ -400,7 +443,7 @@ class Invoice extends Model
             case self::TYPE_RENEW_SUBSCRIPTION:
                 $subscription = Subscription::findByUid($this->getMetadata()['subscription_uid']);
                 $chargeInfo = trans('messages.bill.charge_before', [
-                    'date' => $this->customer->formatDateTime($subscription->current_period_ends_at, 'date_full'),
+                    'date' => $this->customer->formatDateTime($subscription->current_period_ends_at, 'datetime_full'),
                 ]);
                 $plan = $subscription->plan;
                 break;
@@ -441,7 +484,13 @@ class Invoice extends Model
             'due_date' => $this->created_at,
             'type' => $this->type,
             'plan' => $plan,
+            'has_fee' => $this->fee ? $this->fee > 0 : false,
             'fee' => $this->fee ? format_price($this->fee, $this->currency->format) : null,
+            'billing_display_name' => (
+                get_localization_config('show_last_name_first', $this->customer->getLanguageCode()) ?
+                    ($this->billing_last_name . ' ' . $this->billing_first_name) :
+                    ($this->billing_first_name . ' ' . $this->billing_last_name)
+            ),
             'billing_first_name' => $this->billing_first_name,
             'billing_last_name' => $this->billing_last_name,
             'billing_address' => $this->billing_address,
@@ -452,26 +501,6 @@ class Invoice extends Model
     }
 
     /**
-     * Add transactions.
-     *
-     * @return array
-     */
-    public function addLog($type, $data, $transaction_id=null)
-    {
-        $log = new SubscriptionLog();
-        $log->subscription_id = $this->id;
-        $log->type = $type;
-        $log->transaction_id = $transaction_id;
-        $log->save();
-
-        if (isset($data)) {
-            $log->updateData($data);
-        }
-
-        return $log;
-    }
-
-    /**
      * Check is renew subscription invoice.
      *
      * @return boolean
@@ -479,6 +508,11 @@ class Invoice extends Model
     public function isRenewSubscriptionInvoice()
     {
         return $this->type == self::TYPE_RENEW_SUBSCRIPTION;
+    }
+
+    public function isNewSubscriptionInvoice()
+    {
+        return $this->type == self::TYPE_NEW_SUBSCRIPTION;
     }
 
     /**
@@ -531,32 +565,87 @@ class Invoice extends Model
     public function checkout($gateway, $payCallback)
     {
         $invoice = $this;
-        // \DB::transaction(function() use ($gateway, $invoice) {
-        $invoice->createPendingTransaction($gateway);
+        \DB::transaction(function () use ($gateway, $invoice, $payCallback) {
+            $invoice->createPendingTransaction($gateway);
 
-        try {
-            $result = $payCallback($invoice);
-
-            if ($result->isDone()) {
-                // Stripe, PayPal, Braintree for example
-                $invoice->fulfill();
-            } elseif ($result->isFailed()) {
-                // Stripe, PayPal, Braintree for example
-                $invoice->payFailed($result->error);
-            } elseif ($result->isStillPending()) {
-                // Coin, offline shouls return this status
-                // Wait more, check again later....
-                // Coinpayment, offline
-            } elseif ($result->isVerificationNotNeeded()) {
-                // IMPORTANT: this special status is used for checking (pending) transaction status only
-                //          **** SERVICES SHOULD NOT RETURN THIS STATUS IN CHECKOUT method ****
-                // Do nothing, just wait for the service to finish it itself (Stripe)
-                // Service should not return this status, it is used for verification only
+            // action by type
+            switch ($invoice->type) {
+                case Invoice::TYPE_RENEW_SUBSCRIPTION:
+                    $subscription = Subscription::findByUid($this->getMetadata()['subscription_uid']);
+                    // Xoá NEW change plan invoice hiện tại nếu có
+                    if ($subscription->getItsOnlyUnpaidChangePlanInvoice()) {
+                        $subscription->getItsOnlyUnpaidChangePlanInvoice()->delete();
+                    }
+                    break;
+                case Invoice::TYPE_CHANGE_PLAN:
+                    $subscription = Subscription::findByUid($this->getMetadata()['subscription_uid']);
+                    // Xoá NEW renew invoice hiện tại nếu có
+                    if ($subscription->getItsOnlyUnpaidRenewInvoice()) {
+                        $subscription->getItsOnlyUnpaidRenewInvoice()->delete();
+                    }
+                    break;
             }
-        } catch (\Exception $e) {
-            // pay failed
-            $invoice->payFailed($e->getMessage());
-        }
+
+            try {
+                $result = $payCallback($invoice);
+
+                if ($result->isDone()) {
+                    // Stripe, PayPal, Braintree for example
+                    $invoice->fulfill();
+
+                    // logging by type
+                    switch ($invoice->type) {
+                        case Invoice::TYPE_NEW_SUBSCRIPTION:
+                        case Invoice::TYPE_RENEW_SUBSCRIPTION:
+                        case Invoice::TYPE_CHANGE_PLAN:
+                            $subscription = Subscription::findByUid($this->getMetadata()['subscription_uid']);
+                            SubscriptionFacade::log($subscription, SubscriptionLog::TYPE_PAY_SUCCESS, $invoice->uid, [
+                                'amount' => $invoice->formattedTotal(),
+                            ]);
+                            break;
+                    }
+                } elseif ($result->isFailed()) {
+                    // Stripe, PayPal, Braintree for example
+                    $invoice->payFailed($result->error);
+
+                    // logging by type
+                    switch ($invoice->type) {
+                        case Invoice::TYPE_NEW_SUBSCRIPTION:
+                        case Invoice::TYPE_RENEW_SUBSCRIPTION:
+                        case Invoice::TYPE_CHANGE_PLAN:
+                            $subscription = Subscription::findByUid($this->getMetadata()['subscription_uid']);
+                            SubscriptionFacade::log($subscription, SubscriptionLog::TYPE_PAY_FAILED, $invoice->uid, [
+                                'amount' => $invoice->formattedTotal(),
+                                'error' => $result->error,
+                            ]);
+                            break;
+                    }
+                } elseif ($result->isStillPending()) {
+                    // Coin, offline shouls return this status
+                    // Wait more, check again later....
+                    // Coinpayment, offline
+                    // logging by type
+                    switch ($invoice->type) {
+                        case Invoice::TYPE_NEW_SUBSCRIPTION:
+                        case Invoice::TYPE_RENEW_SUBSCRIPTION:
+                        case Invoice::TYPE_CHANGE_PLAN:
+                            $subscription = Subscription::findByUid($this->getMetadata()['subscription_uid']);
+                            SubscriptionFacade::log($subscription, SubscriptionLog::TYPE_PAYMENT_PENDING, $invoice->uid, [
+                                'amount' => $invoice->formattedTotal(),
+                            ]);
+                            break;
+                    }
+                } elseif ($result->isVerificationNotNeeded()) {
+                    // IMPORTANT: this special status is used for checking (pending) transaction status only
+                    //          **** SERVICES SHOULD NOT RETURN THIS STATUS IN CHECKOUT method ****
+                    // Do nothing, just wait for the service to finish it itself (Stripe)
+                    // Service should not return this status, it is used for verification only
+                }
+            } catch (\Exception $e) {
+                // pay failed
+                $invoice->payFailed($e->getMessage());
+            }
+        });
     }
 
     public function isFree()
@@ -564,28 +653,36 @@ class Invoice extends Model
         return $this->total() == 0;
     }
 
-    public function confirmWithoutPayment()
-    {
-        $this->fulfill();
-    }
-
     public function cancel()
     {
-        $this->cancelProcess();
+        \DB::transaction(function () {
+            // Log
+            switch ($this->type) {
+                case Invoice::TYPE_NEW_SUBSCRIPTION:
+                case Invoice::TYPE_RENEW_SUBSCRIPTION:
+                case Invoice::TYPE_CHANGE_PLAN:
+                    $subscription = Subscription::findByUid($this->getMetadata()['subscription_uid']);
+                    SubscriptionFacade::log($subscription, SubscriptionLog::TYPE_CANCEL_INVOICE, $this->uid, [
+                        'amount' => $this->formattedTotal(),
+                    ]);
+                    break;
+            }
 
-        // delete invoice
-        $this->delete();
+            // Tuỳ từng loại invoice mà xử lý trước khi delete invoice
+            $this->cancelProcess();
+
+            // Hiện tại cancel đồng nghĩa với xoá luôn invoice đó
+            $this->delete();
+        });
     }
 
     public function cancelProcess()
     {
         $data = $this->getMetadata();
-        $subscription = Subscription::findByUid($data['subscription_uid']);
 
         switch ($this->type) {
             case self::TYPE_NEW_SUBSCRIPTION:
 
-                $subscription->abortNew();
                 break;
             case self::TYPE_RENEW_SUBSCRIPTION:
                 // do nothing
@@ -621,31 +718,35 @@ class Invoice extends Model
 
     public function getBillingName()
     {
-        return $this->billing_first_name . ' ' . $this->billing_last_name;
+        $lastNameFirst = get_localization_config('show_last_name_first', $this->customer->getLanguageCode());
+
+        if ($lastNameFirst) {
+            return htmlspecialchars(trim($this->billing_last_name . ' ' . $this->billing_first_name));
+        } else {
+            return htmlspecialchars(trim($this->billing_first_name . ' ' . $this->billing_last_name));
+        }
     }
 
-    public static function createInvoice($options)
+    public static function createInvoice($type, $title, $description, $customer_id, $currency_id, $billing_address, $invoiceItems, $metadata)
     {
         // create invoice
         $invoice = new self();
         $invoice->status = self::STATUS_NEW;
-        $invoice->type = $options['status'];
+        $invoice->type = $type;
 
+        $invoice->title = $title;
+        $invoice->description = $description;
+        $invoice->customer_id = $customer_id;
+        $invoice->currency_id = $currency_id;
 
-        $invoice->title = $options['title'];
-        $invoice->description = $options['description'];
-        $invoice->customer_id = $options['customer_id'];
-        $invoice->currency_id = $options['currency_id'];
-
-        // default billing info
-        // $billingAddress = $this->customer->getDefaultBillingAddress();
-        if ($options['billingAddress']) {
-            $invoice->billing_first_name = $options['billingAddress']->first_name;
-            $invoice->billing_last_name = $options['billingAddress']->last_name;
-            $invoice->billing_address = $options['billingAddress']->address;
-            $invoice->billing_email = $options['billingAddress']->email;
-            $invoice->billing_phone = $options['billingAddress']->phone;
-            $invoice->billing_country_id = $options['billingAddress']->country_id;
+        // fill billing information
+        if ($billing_address) {
+            $invoice->billing_first_name = $billing_address->first_name;
+            $invoice->billing_last_name = $billing_address->last_name;
+            $invoice->billing_address = $billing_address->address;
+            $invoice->billing_email = $billing_address->email;
+            $invoice->billing_phone = $billing_address->phone;
+            $invoice->billing_country_id = $billing_address->country_id;
         }
 
         // save
@@ -655,26 +756,15 @@ class Invoice extends Model
         $invoice->createInvoiceNumber();
 
         // data
-        $invoice->updateMetadata($options['metadata']);
+        $invoice->updateMetadata($metadata);
 
         // add item
-        foreach ($options['items'] as $item) {
-            $invoiceItem = $invoice->invoiceItems()->create([
-                'item_id' => $item['id'],
-                'item_type' => $item['type'],
-                'amount' => $item['amount'],
-                'title' => $item['title'],
-                'description' => $item['description'],
-            ]);
+        foreach ($invoiceItems as $invoiceItem) {
+            $invoiceItem->invoice_id = $invoice->id;
+            $invoiceItem->save();
         }
 
         return $invoice;
-    }
-
-    public function updatePaymentServiceFee($gateway)
-    {
-        $this->fee = $gateway->getMinimumChargeAmount($this->currency->code);
-        $this->save();
     }
 
     public function hasBillingInformation()
@@ -719,8 +809,8 @@ class Invoice extends Model
             ['tag' => '{EMAIL}', 'value' => $bill['billing_email']],
             ['tag' => '{PHONE}', 'value' => $bill['billing_phone']],
             ['tag' => '{INVOICE_NUMBER}', 'value' => $this->number],
-            ['tag' => '{CURRENT_DATETIME}', 'value' => $this->customer->formatCurrentDateTime('date_full')],
-            ['tag' => '{INVOICE_DUE_DATE}', 'value' => $this->customer->formatDateTime($bill['due_date'], 'date_full')],
+            ['tag' => '{CURRENT_DATETIME}', 'value' => $this->customer->formatCurrentDateTime('datetime_full')],
+            ['tag' => '{INVOICE_DUE_DATE}', 'value' => $this->customer->formatDateTime($bill['due_date'], 'datetime_full')],
             ['tag' => '{ITEMS}', 'value' => view('invoices._template_items', [
                 'bill' => $bill,
                 'invoice' => $this,
@@ -817,5 +907,13 @@ class Invoice extends Model
 
         // update current number
         \Acelle\Model\Setting::set('invoice.current', ($currentNumber + 1));
+    }
+
+    public function updatePaymentServiceFee($gateway)
+    {
+        if ($this->subTotal() == 0) {
+            $this->fee = $gateway->getMinimumChargeAmount($this->currency->code);
+            $this->save();
+        }
     }
 }

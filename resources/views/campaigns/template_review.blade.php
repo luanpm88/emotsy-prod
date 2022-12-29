@@ -1,4 +1,6 @@
-@extends('layouts.core.frontend')
+@extends('layouts.core.frontend', [
+    'menu' => 'campaign',
+])
 
 @section('title', $campaign->name)
 
@@ -10,7 +12,9 @@
 
 @section('content')
 
-    @include("campaigns._menu")
+    @include("campaigns._menu", [
+        'menu' => 'template',
+    ])
 
     @if (!$campaign->template_id)
         <div class="row">

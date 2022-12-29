@@ -15,9 +15,7 @@
         <div class="d-inline-block d-flex mr-auto align-items-center ml-1">
             <i class="material-symbols-rounded me-2">translate</i>
             <span class="my-0 me-2">{{ trans('messages.language.translation') }}</span>
-            <span class="material-symbols-rounded me-2">
-                navigate_next
-                </span>
+            <span class="material-symbols-rounded me-2">navigate_next</span>
             <span class="my-0 me-3">{{ $language->name }}</span>
         </div>
     </li>

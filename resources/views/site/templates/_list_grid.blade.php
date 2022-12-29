@@ -1,12 +1,12 @@
 @if (count($templates) > 0)
     <div class="row mt-4">
         @foreach ($templates as $key => $template)
-            <div class="col-md-3 col-sm-6 mb-4">
+            <div class="col-md-2 col-sm-6 mb-4">
                 <div class="card mb-4 shadow-sm template-card">
                     <span class="template-image-box2">
                         <img class="card-img-top" src="{{ $template['screenshot'][0] }}" style="height: 100%; width: auto; display: block;">
                         <div class="preview_control">
-                            <div style="width: calc(80% - 20px);">
+                            <div style="width: calc(80% - 0px);">
                                 <div>
                                     <div>
                                         <div>
@@ -129,18 +129,14 @@
 
 @elseif (!empty(request()->keyword))
     <div class="empty-list">
-        <span class="material-symbols-rounded">
-auto_awesome_mosaic
-</span>
+        <span class="material-symbols-rounded">auto_awesome_mosaic</span>
         <span class="line-1">
             {{ trans('messages.no_search_result') }}
         </span>
     </div>
 @else
     <div class="empty-list">
-        <span class="material-symbols-rounded">
-auto_awesome_mosaic
-</span>
+        <span class="material-symbols-rounded">auto_awesome_mosaic</span>
         <span class="line-1">
             {{ trans('messages.template_empty_line_1') }}
         </span>

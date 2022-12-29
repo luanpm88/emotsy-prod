@@ -9,7 +9,7 @@
                 </td>
                 <td>
                     <h5 class="m-0 text-bold">
-                        <a class="kq_search d-block" href="{{ action('Admin\Admin2Controller@edit', $item->uid) }}">{{ $item->user->displayName() }}</a>
+                        <a class="kq_search d-block" href="{{ action('Admin\Admin2Controller@edit', $item->uid) }}">{{ $item->displayName() }}</a>
                     </h5>
                     <span class="text-muted kq_search">{{ $item->user->email }}</span>
                 </td>
@@ -27,7 +27,7 @@
                 </td>
                 <td>
                     <h5 class="no-margin text-bold kq_search">
-                        {{ Auth::user()->admin->formatDateTime($item->created_at, 'date_full') }}
+                        {{ Auth::user()->admin->formatDateTime($item->created_at, 'datetime_full') }}
                     </h5>
                     <span class="text-muted">{{ trans('messages.created_at') }}</span>
                 </td>
@@ -38,14 +38,10 @@
                 </td>
                 <td class="text-end">
                     @can('loginAs', $item)
-                        <a href="{{ action('Admin\Admin2Controller@loginAs', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.login_as_this_admin') }}" role="button" class="btn btn-secondary btn-icon"><span class="material-symbols-rounded">
-login
-</span></a>
+                        <a href="{{ action('Admin\Admin2Controller@loginAs', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.login_as_this_admin') }}" role="button" class="btn btn-secondary btn-icon"><span class="material-symbols-rounded">login</span></a>
                     @endcan
                     @can('update', $item)
-                        <a href="{{ action('Admin\Admin2Controller@edit', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" role="button" class="btn btn-secondary btn-icon"><span class="material-symbols-rounded">
-edit
-</span></a>
+                        <a href="{{ action('Admin\Admin2Controller@edit', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" role="button" class="btn btn-secondary btn-icon"><span class="material-symbols-rounded">edit</span></a>
                     @endcan
                     @if (Auth::user()->can('delete', $item) || Auth::user()->can('enable', $item) || Auth::user()->can('disable', $item) || Auth::user()->can('delete', $item))
                         <div class="btn-group">
@@ -54,27 +50,21 @@ edit
                                 @can('enable', $item)
                                     <li>
                                         <a class="dropdown-item list-action-single" link-confirm="{{ trans('messages.enable_admins_confirm') }}" href="{{ action('Admin\Admin2Controller@enable', ["uids" => $item->uid]) }}">
-                                            <span class="material-symbols-rounded">
-play_arrow
-</span> {{ trans('messages.enable') }}
+                                            <span class="material-symbols-rounded">play_arrow</span> {{ trans('messages.enable') }}
                                         </a>
                                     </li>
                                 @endcan
                                 @can('disable', $item)
                                     <li>
                                         <a class="dropdown-item list-action-single" link-confirm="{{ trans('messages.disable_admins_confirm') }}" href="{{ action('Admin\Admin2Controller@disable', ["uids" => $item->uid]) }}">
-                                            <span class="material-symbols-rounded">
-hide_source
-</span> {{ trans('messages.disable') }}
+                                            <span class="material-symbols-rounded">hide_source</span> {{ trans('messages.disable') }}
                                         </a>
                                     </li>
                                 @endcan
                                 @can('forceDelete', $item)
                                     <li>
                                         <a class="dropdown-item list-action-single" link-confirm="{{ trans('messages.delete_admins_confirm') }}" href="{{ action('Admin\Admin2Controller@delete', ['uids' => $item->uid]) }}">
-                                            <span class="material-symbols-rounded">
-delete_outline
-</span> {{ trans('messages.delete') }}
+                                            <span class="material-symbols-rounded">delete_outline</span> {{ trans('messages.delete') }}
                                         </a>
                                     </li>
                                 @endcan
@@ -89,18 +79,14 @@ delete_outline
     
 @elseif (!empty(request()->filters))
     <div class="empty-list">
-        <span class="material-symbols-rounded">
-people_outline
-</span>
+        <span class="material-symbols-rounded">people_outline</span>
         <span class="line-1">
             {{ trans('messages.no_search_result') }}
         </span>
     </div>
 @else
     <div class="empty-list">
-        <span class="material-symbols-rounded">
-people_outline
-</span>
+        <span class="material-symbols-rounded">people_outline</span>
         <span class="line-1">
             {{ trans('messages.admin_empty_line_1') }}
         </span>

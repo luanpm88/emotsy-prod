@@ -14,9 +14,7 @@
     <label class="dark-mode-select xtooltip" title="{{ trans('messages.theme_mode.auto.intro') }}">
         <input style="display:none" type="radio" name="theme_mode" value="auto" {{ $theme_mode == 'auto' ? 'checked' : '' }} class="styled mr-2"  />
         <div class="theme-mode-icon auto-mode shadow-sm">
-            <span class="material-symbols-rounded">
-                devices
-                </span>
+            <span class="material-symbols-rounded">devices</span>
         </div>
     </label>
 

@@ -12,7 +12,7 @@
 @section('menu_title')
     <li class="d-flex align-items-center">
         <div class="d-inline-block d-flex mr-auto align-items-center ml-1 lvl-1">
-            <h4 class="my-0 me-2 menu-title">{{ $campaign->name }}</h4>
+            <h4 class="my-0 me-2 menu-title text-white">{{ $campaign->name }}</h4>
             <i class="material-symbols-rounded">alarm</i>
         </div>
     </li>
@@ -76,9 +76,7 @@
                             <a href="{{ action('CampaignController@customPlainOn', [
                                 'uid' => $campaign->uid,
                             ]) }}" link-method="POST" class="btn btn-primary">
-                                <span class="material-symbols-rounded me-1">
-                                    dashboard_customize
-                                    </span>
+                                <span class="material-symbols-rounded me-1">dashboard_customize</span>
                                     {{ trans('messages.campaign.plain.use_custom_plain_content') }}
                             </a>
                         </div>
@@ -91,9 +89,7 @@
                             <a href="{{ action('CampaignController@customPlainOff', [
                                 'uid' => $campaign->uid,
                             ]) }}" link-method="POST" class="btn btn-primary">
-                                <span class="material-symbols-rounded me-1">
-                                    post_add
-                                    </span>
+                                <span class="material-symbols-rounded me-1">post_add</span>
                                     {{ trans('messages.campaign.plain.extract_from_html') }}
                             </a>
                         </div>

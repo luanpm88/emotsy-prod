@@ -5,7 +5,7 @@
             <tr>
                 <td width="1%">
                     <div class="text-nowrap">
-                        <div class="checkbox inline">
+                        <div class="checkbox inline me-1">
                             <label>
                                 <input type="checkbox" class="node styled"
                                     name="uids[]"
@@ -127,18 +127,14 @@
 
 @elseif (!empty(request()->keyword))
     <div class="empty-list">
-        <span class="material-symbols-rounded">
-auto_awesome_mosaic
-</span>
+        <span class="material-symbols-rounded">auto_awesome_mosaic</span>
         <span class="line-1">
             {{ trans('messages.no_search_result') }}
         </span>
     </div>
 @else
     <div class="empty-list">
-        <span class="material-symbols-rounded">
-auto_awesome_mosaic
-</span>
+        <span class="material-symbols-rounded">auto_awesome_mosaic</span>
         <span class="line-1">
             {{ trans('messages.template_empty_line_1') }}
         </span>

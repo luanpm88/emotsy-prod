@@ -1,4 +1,6 @@
-@extends('layouts.core.frontend')
+@extends('layouts.core.frontend', [
+	'menu' => 'subscription',
+])
 
 @section('title', trans('messages.subscriptions'))
 
@@ -14,7 +16,7 @@
 @endsection
 
 @section('content')
-    @include("account._menu", ['tab' => 'subscription'])
+    @include("account._menu", ['menu' => 'subscription'])
 
     <div class="row">
         <div class="col-md-6">
@@ -23,9 +25,13 @@
         </div>
         <div class="col-md-2"></div>
         <div class="col-md-4">
-            @include('invoices.bill', [
-                'bill' => $invoice->getBillingInfo(),
-            ])
+            <div class="card shadow-sm rounded-3 px-2 py-2">
+                <div class="card-body p-4">
+                    @include('invoices.bill', [
+                        'bill' => $invoice->getBillingInfo(),
+                    ])
+                </div>
+            </div>
         </div>
     </div>
 @endsection

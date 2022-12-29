@@ -1,4 +1,6 @@
-@extends('layouts.core.frontend')
+@extends('layouts.core.frontend', [
+	'menu' => 'billing',
+])
 
 @section('title', trans('messages.contact_information'))
 
@@ -14,7 +16,7 @@
             <li class="breadcrumb-item active">{{ trans('messages.contact_information') }}</li>
         </ul>
         <h1>
-            <span class="text-semibold"><i class="icon-address-book3"></i> {{ $user->displayName() }}</span>
+            <span class="text-semibold"><i class="icon-address-book3"></i> {{ $customer->displayName() }}</span>
         </h1>
     </div>
 
@@ -22,7 +24,9 @@
 
 @section('content')
 
-    @include("account._menu")
+    @include("account._menu", [
+		'menu' => 'billing',
+	])
 
     <div class="row">
         <div class="col-md-6">
@@ -39,7 +43,11 @@
                     $billingAddress = $customer->getDefaultBillingAddress();
                 @endphp
                 <div>
-                    <h4 class="mb-1 mt-0">{{ $billingAddress->first_name }} {{ $billingAddress->last_name }}</h4>
+                    @if (get_localization_config('show_last_name_first', Auth::user()->customer->getLanguageCode()))
+                        <h4 class="mb-1 mt-0">{{ $billingAddress->last_name }} {{ $billingAddress->first_name }}</h4>
+                    @else 
+                        <h4 class="mb-1 mt-0">{{ $billingAddress->first_name }} {{ $billingAddress->last_name }}</h4>
+                    @endif
                     <div class="">{{ $billingAddress->email }}</div>
                     <div class="">{{ $billingAddress->phone }}</div>
 

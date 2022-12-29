@@ -2,7 +2,7 @@
 
 @section('bar-title')
     {{ trans('messages.account.welcome_user', [
-        'name' => Auth::user()->displayName(),
+        'name' => Auth::user()->customer->displayName(),
     ]) }}
 @endsection
 
@@ -50,6 +50,8 @@
                     return (className.match (/(^|\s)theme-\S+/g) || []).join(' ');
                 });
                 $('body').addClass('theme-' + value);
+
+                detectLogo();
             });
             
             $('#wizardColorScheme').on('submit', function(e) {

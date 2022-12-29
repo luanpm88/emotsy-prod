@@ -16,6 +16,10 @@ class SegmentController extends Controller
     {
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
 
+        if (!$list) {
+            return redirect()->action('SegmentController@noList');
+        }
+
         return view('segments.index', [
             'list' => $list,
         ]);
@@ -189,7 +193,8 @@ class SegmentController extends Controller
         $subscribers = $subscribers->orderBy($request->sort_order, $request->sort_direction)
             ->paginate($request->per_page);
 
-        $fields = $list->getFields->whereIn('uid', explode(',', $request->columns));
+        $fields = $list->getFields->whereIn('uid', $request->columns_);
+
         return view('subscribers._list', [
             'subscribers' => $subscribers,
             'total' => $total,
@@ -381,5 +386,10 @@ class SegmentController extends Controller
             'field' => $field,
             'index' => $request->index,
         ]);
+    }
+
+    public function noList()
+    {
+        return view('segments.noList');
     }
 }

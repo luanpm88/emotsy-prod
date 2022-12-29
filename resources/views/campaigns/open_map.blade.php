@@ -1,4 +1,6 @@
-@extends('layouts.core.frontend')
+@extends('layouts.core.frontend', [
+    'menu' => 'campaign',
+])
 
 @section('title', $campaign->name)
 	
@@ -14,9 +16,11 @@
 
 @section('content')
                 
-            @include("campaigns._menu")
-			
-			<div id="openMap" class="map-container map-marker-simple" style="height:600px"></div>
+    @include("campaigns._menu", [
+		'menu' => 'open_map',
+	])
+
+	<div id="openMap" class="map-container map-marker-simple" style="height:600px"></div>
 
 <script>
 

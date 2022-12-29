@@ -10,12 +10,15 @@ use Acelle\Model\Setting;
 use Acelle\Model\Job;
 use Acelle\Model\FailedJob;
 use Acelle\Model\JobMonitor;
+use Acelle\Model\Plugin;
 use Artisan;
 use Illuminate\Support\Facades\Session;
 use Cache;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Exception;
+use Acelle\Library\UpgradeManager;
+use Acelle\Model\Notification;
 
 class Upgrade extends Controller
 {
@@ -28,7 +31,7 @@ class Upgrade extends Controller
     public function finalize(Request $request)
     {
         Artisan::call('route:clear');
-        Artisan::call('cache:clear');
+        // Artisan::call('cache:clear'); // ==> it will clean up all statistics
         Artisan::call('view:clear');
         Setting::writeDefaultSettings();
         JobMonitor::query()->delete();
@@ -41,7 +44,10 @@ class Upgrade extends Controller
         } catch (Exception $ex) {
             // Index already dropped
         }
-        Cache::flush();
+
+        // Do not clear cache, it will clean up all statistics
+        // Cache::flush();
+
         Language::dump();
         Template::resetDefaultTemplates();
         Template::resetPopupTemplates();
@@ -49,10 +55,22 @@ class Upgrade extends Controller
         Artisan::call('queue:restart');
 
         // Reset GEODB
-        Setting::set('geoip.sqlite.dbname', 'storage/app/GeoLite2-City.mmdb');
-        Setting::set('geoip.sqlite.source_url', 'https://acellemail.s3.amazonaws.com/GeoLite2-City.mmdb');
-        Setting::set('geoip.sqlite.source_hash', 'b95ecaff82017c4f52577196c41db946');
-        Setting::set('geoip.enabled', 'no');
+        if (Setting::get('geoip.sqlite.dbname') != 'storage/app/GeoLite2-City.mmdb') {
+            Setting::set('geoip.sqlite.dbname', 'storage/app/GeoLite2-City.mmdb');
+            Setting::set('geoip.sqlite.source_url', 'https://acellemail.s3.amazonaws.com/GeoLite2-City.mmdb');
+            Setting::set('geoip.sqlite.source_hash', 'b95ecaff82017c4f52577196c41db946');
+            Setting::set('geoip.enabled', 'no');
+        }
+
+        // New way to load plugins: initialize the plugin index file
+        Plugin::resetPluginMasterFile();
+
+        // Merge .env.example to .env
+        $manager = new UpgradeManager();
+        $manager->mergeEnv(base_path('.env.example')); // config:cache is already executed in this method
+
+        // Clean up all notifications
+        Notification::truncate();
 
         // Upgrade post-processing
         if ($request->session()->has('upgraded')) {

@@ -23,7 +23,6 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
-use Acelle\Library\Log as MailLog;
 use Acelle\Library\IdentityStore;
 use Acelle\Library\ExtendedSwiftMessage;
 use Carbon\Carbon;
@@ -187,7 +186,7 @@ class SendingServer extends Model implements HasQuotaInterface
      */
     public function getVerp($recipient)
     {
-        if (is_object($this->bounceHandler)) {
+        if ($this->bounceHandler) {
             $validator = \Validator::make(
                 ['email' => $this->bounceHandler->username],
                 ['email' => 'required|email']
@@ -344,7 +343,7 @@ class SendingServer extends Model implements HasQuotaInterface
             self::TYPE_MAILGUN_API => [
                 'cols' => [
                     'api_key' => 'required',
-                    'domain' => 'required',
+                    'domain' => 'required|regex:/^([a-zA-Z0-9][a-zA-Z0-9-_]*\.)*[a-zA-Z0-9]*[a-zA-Z0-9-_]*[[a-zA-Z0-9]+$/',
                     'host' => 'required',
                 ],
                 'settings' => [
@@ -798,7 +797,7 @@ class SendingServer extends Model implements HasQuotaInterface
      */
     public function allowCustomReturnPath()
     {
-        return  $this->type == 'smtp' || $this->type == 'sendmail' || $this->type == 'php-mail';
+        return  $this->type == 'smtp' || $this->type == 'sendmail';
     }
 
     /**
@@ -853,7 +852,6 @@ class SendingServer extends Model implements HasQuotaInterface
          *     + subject
          *     + plain
          */
-        MailLog::info(sprintf('Sending test email to %s for sending server `%s`', $params['to_email'], $this->name));
         $message = new ExtendedSwiftMessage();
         $msgId = StringHelper::generateMessageId(StringHelper::getDomainFromEmail($params['from_email']));
         $message->setId($msgId);
@@ -928,11 +926,11 @@ class SendingServer extends Model implements HasQuotaInterface
             if ($request->plan_uid && in_array($server->id, $existIds)) {
                 $data['items'][] = [
                     'id' => $server->uid,
-                    'text' => $server->name.' ('.trans('messages.sending_server.added').')'.'|||'.trans('messages.'.$server->type),
+                    'text' => $server->name.' ('.trans('messages.sending_server.added').')'.'|||'.trans('messages.sending_server.type.'.$server->type),
                     'disabled' => true,
                 ];
             } else {
-                $data['items'][] = ['id' => $server->uid, 'text' => $server->name.'|||'.trans('messages.'.$server->type)];
+                $data['items'][] = ['id' => $server->uid, 'text' => $server->name.'|||'.trans('messages.sending_server.type.'.$server->type)];
             }
         }
 
@@ -966,11 +964,11 @@ class SendingServer extends Model implements HasQuotaInterface
             if ($request->plan_uid && in_array($server->id, $existIds)) {
                 $data['items'][] = [
                     'id' => $server->uid,
-                    'text' => $server->name.' ('.trans('messages.sending_server.added').')'.'|||'.trans('messages.'.$server->type),
+                    'text' => $server->name.' ('.trans('messages.sending_server.added').')'.'|||'.trans('messages.sending_server.type.'.$server->type),
                     'disabled' => true,
                 ];
             } else {
-                $type = ($server->mapType()->isExtended()) ? $server->mapType()->getTypeName() : trans('messages.'.$server->type);
+                $type = ($server->mapType()->isExtended()) ? $server->mapType()->getTypeName() : trans('messages.sending_server.type.'.$server->type);
                 $data['items'][] = ['id' => $server->uid, 'text' => $server->name.'|||'.$type ];
             }
         }
@@ -1147,51 +1145,6 @@ class SendingServer extends Model implements HasQuotaInterface
         $options[$name] = $value;
 
         $this->options = json_encode($options);
-    }
-
-    /**
-     * Get Mailgun domains info.
-     *
-     * @return array
-     */
-    public function getMailgunDomainInfo()
-    {
-        return [
-            [
-                'domain' => 'acellemail.com',
-                'created_at' => \Carbon\Carbon::now()->subDay(2),
-            ],
-            [
-                'domain' => 'bolero.vn',
-                'created_at' => \Carbon\Carbon::now()->subDay(13),
-            ],
-        ];
-    }
-
-    /**
-     * Get local identity info.
-     *
-     * @return array
-     */
-    public function getLocalIdentityInfo()
-    {
-        return [
-            [
-                'type' => 'domain',
-                'name' => 'acellemail.com',
-                'created_at' => \Carbon\Carbon::now()->subDay(2),
-            ],
-            [
-                'type' => 'domain',
-                'name' => 'bolero.vn',
-                'created_at' => \Carbon\Carbon::now()->subDay(13),
-            ],
-            [
-                'type' => 'email',
-                'name' => 'system@acellemail.com',
-                'created_at' => \Carbon\Carbon::now()->subDay(13),
-            ],
-        ];
     }
 
     /**
@@ -1546,7 +1499,7 @@ class SendingServer extends Model implements HasQuotaInterface
 
         // default name
         if (!$server->name) {
-            $server->name = $server->getDefaultName() ?: trans('messages.' . $server->type);
+            $server->name = $server->getDefaultName() ?: trans('messages.sending_server.type.' . $server->type);
         }
 
         // default sever quota
@@ -1566,6 +1519,16 @@ class SendingServer extends Model implements HasQuotaInterface
             $server->feedback_loop_handler_id = null;
         }
 
+        // default options
+        if ($server->type == self::TYPE_SENDGRID_API || $server->type == self::TYPE_SENDGRID_SMTP) {
+            $server->setOption('allow_verify_domain_against_acelle', 'yes');
+        }
+
+        if ($server->type == self::TYPE_AMAZON_API || $server->type == self::TYPE_AMAZON_SMTP) {
+            $server->setOption('allow_verify_domain_remotely', 'yes');
+        }
+
+        // save
         $server->save();
 
         return [ $validator, $server ];
@@ -1573,7 +1536,7 @@ class SendingServer extends Model implements HasQuotaInterface
 
     public function getTypeName()
     {
-        return trans('messages.' . $this->type);
+        return trans('messages.sending_server.type.' . $this->type);
     }
 
     public function allowOtherSendingDomains()

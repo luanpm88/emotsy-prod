@@ -3,59 +3,50 @@
 namespace Acelle\Library;
 
 use Exception;
-use Acelle\Library\Contracts\PaymentGatewayInterface;
 use Acelle\Model\Setting;
 
 class BillingManager
 {
     protected $gateways = [];
 
-    public function isGatewayTypeRegistered(string $type): bool
+    public function register($type, $constructor)
     {
-        $registered = false;
-        foreach ($this->gateways as $gw) {
-            if ($gw->getType() == $type) {
-                $registered = true;
-            }
+        if ($this->isGatewayRegistered($type)) {
+            throw new Exception(sprintf('Payment gateway type "%s" is already registered', $type));
         }
 
-        return $registered;
-    }
-
-    public function register(PaymentGatewayInterface $gateway)
-    {
-        if ($this->isGatewayTypeRegistered($gateway->getType())) {
-            throw new Exception(sprintf('Gateways type "%s" is already registered', $gateway->getType()));
-        }
-
-        $this->gateways[] = $gateway;
+        $this->gateways[$type] = $constructor;
     }
 
     public function getGateways(): array
     {
-        return $this->gateways;
+        $list = [];
+        foreach ($this->gateways as $type => $constructor) {
+            $list[] = $this->getGateway($type);
+        }
+
+        return $list;
     }
 
     public function getGateway(string $type)
     {
-        foreach ($this->gateways as $gw) {
-            if ($gw->getType() == $type) {
-                return $gw;
-            }
+        if (!$this->isGatewayRegistered($type)) {
+            throw new Exception(sprintf('Payment gateway type "%s" is not registered', $type));
         }
 
-        return null;
+        $constructor = $this->gateways[$type];
+        $gateway = $constructor();
+
+        if (is_null($gateway)) {
+            throw new Exception("Invalid constructor closure for payment service {$type}");
+        }
+
+        return $gateway;
     }
 
     public function isGatewayRegistered($type)
     {
-        foreach ($this->gateways as $gw) {
-            if ($gw->getType() == $type) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_key_exists($type, $this->gateways);
     }
 
     public function getEnabledPaymentGateways()
@@ -73,6 +64,20 @@ class BillingManager
             }
         }
         return $list;
+    }
+
+    public function isPaymentGatewayTypeEnabled($gw)
+    {
+        if (!Setting::get('gateways')) {
+            return false;
+        }
+
+        $enabledTypes = json_decode(Setting::get('gateways'));
+        if ($this->isGatewayRegistered($gw->getType()) && in_array($gw->getType(), $enabledTypes)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -95,7 +100,7 @@ class BillingManager
     public static function disablePaymentGateway($gatewayType)
     {
         $gateways = Setting::get('gateways') ? json_decode(Setting::get('gateways'), true) : [];
-        $gateways = array_diff($gateways, [$gatewayType]);
+        $gateways = array_values(array_diff($gateways, [$gatewayType]));
         Setting::set('gateways', json_encode($gateways));
     }
 

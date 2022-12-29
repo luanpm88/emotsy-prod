@@ -1,4 +1,6 @@
-@extends('layouts.core.backend')
+@extends('layouts.core.backend', [
+	'menu' => 'plan',
+])
 
 @section('title', $plan->name)
 
@@ -22,7 +24,9 @@
 
 @section('content')
     
-    @include('admin.plans._menu')
+    @include('admin.plans._menu', [
+        'menu' => 'general',
+    ])
 
     <form enctype="multipart/form-data" action="{{ action('Admin\PlanController@save', $plan->uid) }}" method="POST" class="form-validate-jqueryx">
         {{ csrf_field() }}                
@@ -81,7 +85,7 @@
                                             @if ($server->isExtended())
                                                 {{ $server->getTypeName() }}
                                             @else
-                                                {{ trans('messages.' . $plan->primarySendingServer()->type) }}
+                                                {{ trans('messages.sending_server.type.' . $plan->primarySendingServer()->type) }}
                                             @endif
                                         </a>
                                     @else
@@ -135,7 +139,7 @@
                         'label' => trans('messages.plan.currency'),
                         'selected' => [
                             'value' => $plan->currency_id,
-                            'text' => is_object($plan->currency) ? $plan->currency->displayName() : ''
+                            'text' => $plan->currency ? $plan->currency->displayName() : ''
                         ],
                         'help_class' => 'plan',
                         'rules' => $plan->generalRules(),

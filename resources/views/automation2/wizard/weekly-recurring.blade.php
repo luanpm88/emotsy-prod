@@ -55,12 +55,17 @@
         'help_class' => 'trigger'
     ])
 
-    @include('helpers.form_control', [
-        'type' => 'select',
-        'name' => 'timezone',
-        'value' => Auth::user()->customer->timezone,
-        'options' => Tool::getTimezoneSelectOptions(),
-        'include_blank' => trans('messages.choose'),
-        'disabled' => true
-    ])
+    @if (config('custom.japan'))
+        <input type="hidden" name="timezone" value="Asia/Tokyo" />
+    @else
+        @include('helpers.form_control', [
+            'type' => 'select',
+            'name' => 'timezone',
+            'value' => Auth::user()->customer->timezone ?? config('app.timezone'),
+            'options' => Tool::getTimezoneSelectOptions(),
+            'include_blank' => trans('messages.choose'),
+            'disabled' => true
+        ])
+    @endif
+        
 </div>

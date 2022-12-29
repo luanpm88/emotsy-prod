@@ -1,4 +1,6 @@
-@extends('layouts.core.frontend')
+@extends('layouts.core.frontend', [
+	'menu' => 'website_new',
+])
 
 @section('title', trans('messages.campaigns'))
 
@@ -67,7 +69,8 @@
                     'name' => 'url',
                     'value' => $website->url,
                     'label' => trans('messages.website.enter_url'),
-                    'help_class' => 'template',
+                    'help_class' => 'website',
+                    'placeholder' => trans('messages.website.url.placeholder'),
                     'rules' => ['name' => 'required']
                 ])
 

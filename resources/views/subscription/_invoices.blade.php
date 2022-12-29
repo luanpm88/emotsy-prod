@@ -29,12 +29,12 @@
                             <tr>
                                 <td>
                                     <span class="no-margin kq_search">
-                                        {{ Auth::user()->customer->formatDateTime($log->created_at, 'date_full') }}
+                                        {{ Auth::user()->customer->formatDateTime($log->created_at, 'datetime_full') }}
                                     </span>
                                 </td>
                                 <td>
                                     <span class="no-margin kq_search">
-                                        {!! trans('messages.subscription.log.' . $log->type, $log->getData()) !!}
+                                        {!! $log->renderLog() !!}
                                     </span>
                                 </td>                                
                             </tr>
@@ -60,7 +60,7 @@
                             <tr>
                                 <td>
                                     <span class="no-margin kq_search">
-                                        {{ Auth::user()->customer->formatDateTime($transaction->created_at, 'date_full') }}
+                                        {{ Auth::user()->customer->formatDateTime($transaction->created_at, 'datetime_full') }}
                                     </span>
                                 </td> 
                                 <td>
@@ -76,8 +76,8 @@
                                     </span>
                                 </td> 
                                 <td>
-                                    <span class="no-margin kq_search">
-                                        {!! trans('messages.transaction.method.' . $transaction->method) !!}
+                                    <span class="no-margin kq_search" style="text-transform: capitalize;">
+                                        {{ $transaction->method }}
                                     </span>
                                 </td> 
                                 <td>
@@ -113,7 +113,7 @@
                             <tr>
                                 <td>
                                     <span class="no-margin kq_search">
-                                        {{ Auth::user()->customer->formatDateTime($invoice->created_at, 'date_full') }}
+                                        {{ Auth::user()->customer->formatDateTime($invoice->created_at, 'datetime_full') }}
                                     </span>
                                 </td>
                                 <td>

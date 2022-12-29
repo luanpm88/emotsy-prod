@@ -1,4 +1,6 @@
-@extends('layouts.core.backend')
+@extends('layouts.core.backend', [
+	'menu' => 'admin_group',
+])
 
 @section('title', trans('messages.create_admin_group'))
 
@@ -10,9 +12,7 @@
 			<li class="breadcrumb-item"><a href="{{ action("Admin\AdminGroupController@index") }}">{{ trans('messages.admin_groups') }}</a></li>
 		</ul>
 		<h1>
-			<span class="text-semibold"><span class="material-symbols-rounded">
-add
-</span> {{ trans('messages.create_admin_group') }}</span>
+			<span class="text-semibold"><span class="material-symbols-rounded">add</span> {{ trans('messages.create_admin_group') }}</span>
 		</h1>
 	</div>
 

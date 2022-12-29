@@ -239,20 +239,24 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
     Route::get('websites', 'WebsiteController@index');
 
     // New subscription
+    // =================== REVIEWED
     Route::get('account/subscription/select-plan', 'SubscriptionController@selectPlan');
-    Route::get('account/subscription/order-box', 'SubscriptionController@orderBox');
+    Route::get('account/subscription/order-box/{invoice_uid}', 'SubscriptionController@orderBox');
     Route::match(['get', 'post'], 'account/subscription/change-plan', 'SubscriptionController@changePlan');
-    Route::post('account/subscription/resume', 'SubscriptionController@resume');
-    Route::post('account/subscription/cancel', 'SubscriptionController@cancel');
-    Route::post('account/subscription/invoice/{invoice_uid}/confirm-free', 'SubscriptionController@confirmFree');
     Route::match(['get', 'post'], 'account/subscription/billing-information', 'SubscriptionController@billingInformation');
-    Route::post('account/subscription/checkout', 'SubscriptionController@checkout');
-    Route::post('account/subscription/cancel-now', 'SubscriptionController@cancelNow');
+    Route::post('account/subscription/checkout/{invoice_uid}', 'SubscriptionController@checkout');
     Route::post('account/subscription/invoice/{invoice_uid}/cancel', 'SubscriptionController@cancelInvoice');
-    Route::post('account/subscription/invoice/{invoice_uid}/confirm', 'SubscriptionController@confirmFree');
+    Route::post('account/subscription/cancel-now', 'SubscriptionController@cancelNow');
+    Route::post('account/subscription/recurring/enable', 'SubscriptionController@enableRecurring');
+    Route::post('account/subscription/recurring/disable', 'SubscriptionController@disableRecurring');
     Route::get('account/subscription/payment/{invoice_uid}', 'SubscriptionController@payment');
-    Route::post('account/subscription/init', 'SubscriptionController@init');
+    Route::post('account/subscription/assign-plan', 'SubscriptionController@assignPlan');
+    Route::post('account/subscription/select-plan', 'SubscriptionController@selectPlan');
     Route::get('account/subscription', 'SubscriptionController@index');
+
+
+
+
 
     // Customer login back
     Route::get('customers/login-back', 'CustomerController@loginBack');
@@ -335,6 +339,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::post('lists/{list_uid}/subscribers/import2/upload', 'SubscriberController@import2Upload');
     Route::get('lists/{list_uid}/subscribers/import2/wizard', 'SubscriberController@import2Wizard');
     Route::get('lists/{list_uid}/subscribers/import2', 'SubscriberController@import2');
+    Route::get('subscribers/no-list', 'SubscriberController@noList');
     Route::match(['get', 'post'], 'lists/{list_uid}/subscribers/assign-values', 'SubscriberController@assignValues');
     Route::match(['get', 'post'], 'lists/{list_uid}/subscribers/bulk-delete', 'SubscriberController@bulkDelete');
 
@@ -371,6 +376,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::post('lists/export/{job_uid}/cancel', 'SubscriberController@cancelExport');
 
     // Segment
+    Route::get('segments/no-list', 'SegmentController@noList');
     Route::get('segments/condition-value-control', 'SegmentController@conditionValueControl');
     Route::get('segments/select_box', 'SegmentController@selectBox');
     Route::get('lists/{list_uid}/segments', 'SegmentController@index');
@@ -565,6 +571,8 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('tracking_domains/listing/{page?}', 'TrackingDomainController@listing');
     Route::get('tracking_domains/delete', 'TrackingDomainController@delete');
     Route::get('tracking_domains/{uid}/verify', 'TrackingDomainController@verify');
+    Route::get('tracking_domains/{uid}/cname', 'TrackingDomainController@showCname');
+    Route::get('tracking_domains/{uid}/verify/cname', 'TrackingDomainController@verifyCname');
     Route::resource('tracking_domains', 'TrackingDomainController');
 
     // Email verification servers
@@ -677,8 +685,8 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('automation/wizard/trigger', 'Automation2Controller@wizardTrigger');
     Route::match(['get', 'post'], 'automation/wizard/trigger/option', 'Automation2Controller@wizardTriggerOption');
     Route::get('automation/wizard/trigger/option/field-select', 'Automation2Controller@wizardListFieldSelect');
-    Route::patch('automation/disable', 'Automation2Controller@disable');
-    Route::patch('automation/enable', 'Automation2Controller@enable');
+    Route::post('automation/disable', 'Automation2Controller@disable');
+    Route::post('automation/enable', 'Automation2Controller@enable');
     Route::delete('automation/delete', 'Automation2Controller@delete');
     Route::get('automation/listing', 'Automation2Controller@listing');
     Route::get('automation', 'Automation2Controller@index');
@@ -1057,23 +1065,20 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::resource('admin/currencies', 'CurrencyController');
 
     // Subscription
+    Route::post('admin/subscriptions/{id}/replenish-sending-credits', 'SubscriptionController@replenishSendingCredits');
     Route::post('admin/subscriptions/{id}/approve', 'SubscriptionController@approve');
-    // Route::match(['get','post'], 'admin/subscriptions/create', 'SubscriptionController@create');
-    // Route::post('admin/subscriptions/{id}/approve-pending', 'SubscriptionController@approvePending');
-    // Route::post('admin/subscriptions/{id}/renew', 'SubscriptionController@renew');
     Route::match(['get','post'], 'admin/subscriptions/{id}/reject-pending', 'SubscriptionController@rejectPending');
     Route::get('admin/subscriptions/{id}/invoices', 'SubscriptionController@invoices');
-    // Route::post('admin/subscriptions/{id}/change-plan', 'SubscriptionController@changePlan');
-    // Route::get('admin/subscriptions/{id}/change-plan', 'SubscriptionController@changePlan');
-    Route::post('admin/subscriptions/{id}/cancel-now', 'SubscriptionController@cancelNow');
-    Route::post('admin/subscriptions/{id}/resume', 'SubscriptionController@resume');
-    Route::post('admin/subscriptions/{id}/cancel', 'SubscriptionController@cancel');
+
+    Route::post('admin/subscriptions/{id}/recurring/enable', 'SubscriptionController@enableRecurring');
+    Route::post('admin/subscriptions/{id}/recurring/disable', 'SubscriptionController@disableRecurring');
     Route::get('admin/subscriptions/listing/{page?}', 'SubscriptionController@listing');
     Route::get('admin/subscriptions/sort', 'SubscriptionController@sort');
     Route::delete('admin/subscriptions/delete', 'SubscriptionController@delete');
     Route::resource('admin/subscriptions', 'SubscriptionController');
 
     // Email verification servers
+    Route::post('admin/subscriptions/{id}/terminate', 'SubscriptionController@terminate');
     Route::get('admin/email_verification_servers/options', 'EmailVerificationServerController@options');
     Route::get('admin/email_verification_servers/listing/{page?}', 'EmailVerificationServerController@listing');
     Route::get('admin/email_verification_servers/sort', 'EmailVerificationServerController@sort');
@@ -1100,9 +1105,10 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::match(['get', 'post'], 'admin/plugins/install', 'PluginController@install');
     Route::get('admin/plugins/listing/{page?}', 'PluginController@listing');
     Route::get('admin/plugins/sort', 'PluginController@sort');
-    Route::get('admin/plugins/delete', 'PluginController@delete');
+    Route::match(['get', 'post'], 'admin/plugins/{uid}/delete', 'PluginController@delete');
     Route::get('admin/plugins/disable', 'PluginController@disable');
     Route::get('admin/plugins/enable', 'PluginController@enable');
+    Route::get('admin/plugins/reindex', 'PluginController@reindex');
     Route::resource('admin/plugins', 'PluginController');
 
     // GeoIP Management

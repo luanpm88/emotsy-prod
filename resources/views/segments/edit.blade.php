@@ -1,4 +1,6 @@
-@extends('layouts.core.frontend')
+@extends('layouts.core.frontend', [
+	'menu' => 'segment',
+])
 
 @section('title', $list->name . ": " . trans('messages.create_subscriber'))
 
@@ -17,11 +19,11 @@
 
 @section('content')
 	
-	@include("lists._menu")
+	@include("lists._menu", [
+		'menu' => 'segment',
+	])
 	
-	<h2 class="text-semibold text-primary my-4"><span class="material-symbols-rounded">
-edit
-</span> {{ trans('messages.edit_segment') }}</h2>
+	<h2 class="text-semibold text-primary my-4"><span class="material-symbols-rounded">edit</span> {{ trans('messages.edit_segment') }}</h2>
 	
 	<form action="{{ action('SegmentController@update', ['list_uid' => $list->uid, 'uid' => $segment->uid]) }}" method="POST" class="form-validate-jqueryz">
 		{{ csrf_field() }}

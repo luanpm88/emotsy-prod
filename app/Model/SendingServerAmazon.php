@@ -31,6 +31,7 @@ use Acelle\Model\SendingDomain;
 use Aws\Route53\Route53Client;
 use Acelle\Library\Facades\Hook;
 use Exception;
+
 use function Acelle\Helpers\isValidPublicHostnameOrIpAddress;
 
 class SendingServerAmazon extends SendingServer implements DomainVerificationInterface
@@ -149,6 +150,8 @@ class SendingServerAmazon extends SendingServer implements DomainVerificationInt
      */
     public function setupSns($fromEmailAddress)
     {
+        // See: https://aws.amazon.com/premiumsupport/knowledge-center/ses-bounce-notifications-sns/
+
         if ($this->isSnsSetup) {
             return true;
         }
@@ -170,7 +173,7 @@ class SendingServerAmazon extends SendingServer implements DomainVerificationInt
             ));
         } catch (\Exception $e) {
             $verifyByDomain = true;
-            MailLog::warning("From Email address {$fromEmailAddress} not verified by Amazon SES, using domain instead");
+            MailLog::warning("From Email address {$fromEmailAddress} not verified by Amazon SES, using domain instead...");
         }
 
         if ($verifyByDomain) {
@@ -254,14 +257,14 @@ class SendingServerAmazon extends SendingServer implements DomainVerificationInt
         foreach ($domainsByUsers as $domain) {
             if (array_key_exists($domain->name, $identities)) {
                 $identities[$domain->name]['UserId'] = $domain->customer->id;
-                $identities[$domain->name]['UserName'] = $domain->customer->user->displayName();
+                $identities[$domain->name]['UserName'] = $domain->customer->displayName();
             }
         }
 
         foreach ($sendersByUsers as $sender) {
             if (array_key_exists($sender->email, $identities)) {
                 $identities[$sender->email]['UserId'] = $sender->customer->id;
-                $identities[$sender->email]['UserName'] = $sender->customer->user->displayName();
+                $identities[$sender->email]['UserName'] = $sender->customer->displayName();
             }
         }
 

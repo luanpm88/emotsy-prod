@@ -4,7 +4,7 @@
             <tr>
                 <td width="1%">
                     <div class="text-nowrap">
-                        <div class="checkbox inline">
+                        <div class="checkbox inline me-1">
                             <label>
                                 <input type="checkbox" class="node styled"
                                     name="uids[]"
@@ -42,9 +42,7 @@
                 <td class="text-end">
                     <a href="{{ action('WebsiteController@show', $website->uid) }}"
                         role="button" class="btn btn-primary form-popup-preview">
-                        <span class="material-symbols-rounded me-1">
-                            code
-                            </span> {{ trans('messages.website.view_code') }}
+                        <span class="material-symbols-rounded me-1">code</span> {{ trans('messages.website.view_code') }}
                     </a>
 
                     @if (Auth::user()->customer->can('disconnect', $website))
@@ -53,18 +51,14 @@
                         ]) }}"
                             link-method="POST"
                             role="button" class="btn btn-secondary list-action-single">
-                            <span class="material-symbols-rounded me-1">
-                                pause_circle
-                                </span> {{ trans('messages.website.disconnect') }}
+                            <span class="material-symbols-rounded me-1">pause_circle</span> {{ trans('messages.website.disconnect') }}
                         </a>
                     @endif
                     
                     @if (Auth::user()->customer->can('connect', $website))
                         <a href="{{ action('WebsiteController@connect', $website->uid) }}"
                             role="button" class="btn btn-secondary connect-site">
-                            <span class="material-symbols-rounded me-1">
-                                pause_circle
-                                </span> {{ trans('messages.website.check_connection') }}
+                            <span class="material-symbols-rounded me-1">pause_circle</span> {{ trans('messages.website.check_connection') }}
                         </a>
                     @endif
 
@@ -80,9 +74,7 @@
                                         link-method="POST"
                                         link-confirm="{{ trans('messages.websites.delete.confirm') }}"
                                         href="{{ action('WebsiteController@delete', ["uids" => $website->uid]) }}">
-                                        <span class="material-symbols-rounded me-2">
-delete_outline
-</span> {{ trans("messages.delete") }}</a></li>
+                                        <span class="material-symbols-rounded me-2">delete_outline</span> {{ trans("messages.delete") }}</a></li>
                                 @endif
                             </ul>
                         </div>
@@ -163,18 +155,14 @@ delete_outline
     </script>
 @elseif (!empty(request()->keyword))
 	<div class="empty-list">
-		<span class="material-symbols-rounded">
-			auto_awesome
-			</span>
+		<span class="material-symbols-rounded">auto_awesome</span>
 		<span class="line-1">
 			{{ trans('messages.no_search_result') }}
 		</span>
 	</div>
 @else
 	<div class="empty-list">
-		<span class="material-symbols-rounded">
-			auto_awesome
-			</span>
+		<span class="material-symbols-rounded">auto_awesome</span>
 		<span class="line-1">
 			{{ trans('messages.form.empty_list') }}
 		</span>

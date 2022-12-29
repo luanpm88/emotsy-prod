@@ -8,8 +8,9 @@ use Acelle\Library\Traits\HasUid;
 use Acelle\Library\Traits\HasTemplate;
 use Validator;
 use Acelle\Model\Template;
+use Acelle\Library\Contracts\HasTemplateInterface;
 
-class Form extends Model
+class Form extends Model implements HasTemplateInterface
 {
     use HasFactory;
     use HasTemplate;
@@ -26,6 +27,11 @@ class Form extends Model
     public function template()
     {
         return $this->belongsTo('Acelle\Model\Template');
+    }
+
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class);
     }
 
     public static function newDefault($customer)
@@ -215,5 +221,11 @@ class Form extends Model
     public function isPublished()
     {
         return $this->status == self::STATUS_PUBLISHED;
+    }
+
+    public function isStageExcluded(string $name): bool
+    {
+        // Temporarily
+        return false;
     }
 }

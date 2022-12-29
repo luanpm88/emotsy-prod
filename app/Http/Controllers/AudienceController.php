@@ -3,6 +3,7 @@
 namespace Acelle\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class AudienceController extends Controller
 {
@@ -25,6 +26,8 @@ class AudienceController extends Controller
 
     public function growthChart(Request $request)
     {
+        $currentTimezone = $request->user()->customer->getTimezone();
+
         $result = [
             'columns' => [],
             'total' => [],
@@ -35,7 +38,7 @@ class AudienceController extends Controller
 
         // columns
         for ($i = 15; $i >= 0; --$i) {
-            $time = \Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->subMonths($i);
+            $time = Carbon::now($currentTimezone)->subMonths($i);
             $result['columns'][] = $time->format('y M');
             $times[] = $time;
         }
@@ -43,13 +46,13 @@ class AudienceController extends Controller
         // data
         foreach ($times as $time) {
             $result['total'][] = \Acelle\Model\Customer::subscribersCountByTime(
-                \Carbon\Carbon::now()->subYears(1000),
+                \Carbon\Carbon::now($currentTimezone)->subYears(1000),
                 $time->endOfDay(),
                 $request->user()->customer->id
             );
 
             $result['unsubscribed'][] = \Acelle\Model\Customer::subscribersCountByTime(
-                \Carbon\Carbon::now()->subYears(1000),
+                \Carbon\Carbon::now($currentTimezone)->subYears(1000),
                 $time->endOfDay(),
                 $request->user()->customer->id,
                 null,

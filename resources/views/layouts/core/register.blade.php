@@ -40,7 +40,7 @@
 		<!-- Footer -->
 		<div class="d-flex justify-content-center pt-5">
 			<div class="footer text-muted text-center py-3">
-				{!! trans('messages.copy_right') !!}
+				{!! trans('messages.brand.copyright', ['app_name' => get_app_name()] ) !!}
 			</div>
 		</div>
 		<!-- /footer -->

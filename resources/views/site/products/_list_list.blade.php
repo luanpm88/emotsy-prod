@@ -31,9 +31,7 @@
 				</td>
 				<td class="text-end">
 					<a target="_blank" href="{{ get_permalink( $wooProduct->id ) }}" class="btn btn-light m-icon pl-3 copy-product-page-url">
-						<span class="material-symbols-rounded me-2">
-							inventory_2
-							</span>Copy Product Page URL</a>
+						<span class="material-symbols-rounded me-2">inventory_2</span>Copy Product Page URL</a>
 
 					@php
 						$current_product_id = $wooProduct->id;
@@ -45,13 +43,9 @@
 						
 					@endphp
 					<a target="_blank" href="{{ $checkout_url }}" class="btn btn-light m-icon pl-3 copy-product-checkout-url">
-						<span class="material-symbols-rounded me-2">
-							monetization_on
-							</span>Copy checkout URL</a>
+						<span class="material-symbols-rounded me-2">monetization_on</span>Copy checkout URL</a>
 					<a href="{{ action('Site\ProductController@edit', $wooProduct->id) }}" class="btn btn-secondary m-icon pl-3">
-						<span class="material-symbols-rounded me-2">
-							edit
-							</span>{{ trans('messages.edit') }}</a>
+						<span class="material-symbols-rounded me-2">edit</span>{{ trans('messages.edit') }}</a>
 					<div class="btn-group">
 						<button role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"></button>
 						<ul class="dropdown-menu dropdown-menu-end">
@@ -63,9 +57,7 @@
 									]) }}"
 									link-method="POST"
 									href="{{ action('Site\ProductController@delete', $wooProduct->id) }}">
-									<span class="material-symbols-rounded">
-delete_outline
-</span> {{ trans('messages.delete') }}
+									<span class="material-symbols-rounded">delete_outline</span> {{ trans('messages.delete') }}
 								</a>
 							</li>
 						</ul>
@@ -106,18 +98,14 @@ delete_outline
 
 @elseif (!empty(request()->keyword))
 	<div class="empty-list">
-		<span class="material-symbols-rounded">
-			category
-			</span>
+		<span class="material-symbols-rounded">category</span>
 		<span class="line-1">
 			{{ trans('messages.no_search_result') }}
 		</span>
 	</div>
 @else
 	<div class="empty-list">
-		<span class="material-symbols-rounded">
-			category
-			</span>
+		<span class="material-symbols-rounded">category</span>
 		<span class="line-1 text-muted">
 			<p>{!! trans('messages.product.no_product') !!}</p>
 		</span>

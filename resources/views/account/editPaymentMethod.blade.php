@@ -35,7 +35,7 @@
                         </div>
                         <div class="mr-auto pr-4">
                             <h4 class="font-weight-semibold mb-1">{{ $gateway->getName() }}</h4>
-                            <p class="mb-3">{{ trans('messages.'.$gateway->getType().'.user.description') }}</p>
+                            <p class="mb-3">{{ $gateway->getShortDescription() }}</p>
                         </div>                        
                     </div>
                 </div>

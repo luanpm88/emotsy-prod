@@ -1,4 +1,6 @@
-@extends('layouts.core.backend')
+@extends('layouts.core.backend', [
+	'menu' => 'bounce',
+])
 
 @section('title', trans('messages.create_bounce_handler'))
 
@@ -10,9 +12,7 @@
 					<li class="breadcrumb-item"><a href="{{ action("Admin\BounceHandlerController@index") }}">{{ trans('messages.bounce_handlers') }}</a></li>
 				</ul>
 				<h1>
-					<span class="text-semibold"><span class="material-symbols-rounded">
-add
-</span> {{ trans('messages.create_bounce_handler') }}</span>
+					<span class="text-semibold"><span class="material-symbols-rounded">add</span> {{ trans('messages.create_bounce_handler') }}</span>
 				</h1>
 			</div>
 

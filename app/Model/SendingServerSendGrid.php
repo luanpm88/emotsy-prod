@@ -24,10 +24,9 @@ namespace Acelle\Model;
 
 use Acelle\Library\Log as MailLog;
 use Acelle\Library\StringHelper;
-use SendGrid\Mail;
-use SendGrid\Email;
-use SendGrid\Content;
-use SendGrid\Attachment;
+use SendGrid\Mail\Mail;
+use SendGrid\Mail\Content;
+use SendGrid\Mail\Attachment;
 use Acelle\Library\SendingServer\DomainVerificationInterface;
 
 class SendingServerSendGrid extends SendingServer implements DomainVerificationInterface
@@ -158,15 +157,13 @@ class SendingServerSendGrid extends SendingServer implements DomainVerificationI
         // remove null element
         $parts = array_filter($parts);
 
-        $mail = new Mail(
-            new Email($fromName, $fromEmail),
-            $message->getSubject(),
-            new Email($toName, $toEmail),
-            array_shift($parts) // first content only
-        );
+        $mail = new Mail();
+        $mail->setFrom($fromEmail, $fromName);
+        $mail->setSubject($message->getSubject());
+        $mail->addTo($toEmail, $toName);
 
         // set Reply-To header
-        $mail->setReplyTo(['email' => $replyToEmail]);
+        $mail->setReplyTo($replyToEmail);
 
         foreach ($parts as $part) {
             $mail->addContent($part);
@@ -236,7 +233,7 @@ class SendingServerSendGrid extends SendingServer implements DomainVerificationI
         foreach ($addedByUsers as $domain) {
             if (array_key_exists($domain->name, $identities)) {
                 $identities[$domain->name]['UserId'] = $domain->customer->id;
-                $identities[$domain->name]['UserName'] = $domain->customer->user->displayName();
+                $identities[$domain->name]['UserName'] = $domain->customer->displayName();
             }
         }
 

@@ -238,10 +238,17 @@ class DeliveryController extends Controller
 
             $feedbackLog = new FeedbackLog();
             $feedbackLog->runtime_message_id = $responseMessage['mail']['messageId'];
+
+            $trackingLog = TrackingLog::where('runtime_message_id', $feedbackLog->runtime_message_id)->first();
+
+            if (!is_null($trackingLog)) {
+                $feedbackLog->message_id = $trackingLog->message_id;
+            }
+
             try {
                 $feedbackLog->feedback_type = $feedback['complaintFeedbackType'];
             } catch (\Exception $ex) {
-                $feedbackLog->feedback_type = 'unknown';
+                $feedbackLog->feedback_type = 'aws-unknown-feedback-type';
             }
 
             $feedbackLog->raw_feedback_content = $message['Message'];

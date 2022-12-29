@@ -1,4 +1,6 @@
-@extends('layouts.core.backend')
+@extends('layouts.core.backend', [
+    'menu' => 'profile',
+])
 
 @section('title', trans('messages.my_profile'))
 
@@ -10,9 +12,7 @@
             <li class="breadcrumb-item active">{{ trans('messages.profile') }}</li>
         </ul>
         <h1>
-            <span class="text-semibold"><span class="material-symbols-rounded">
-                            person_outline
-                            </span> {{ $user->displayName() }}</span>
+            <span class="text-semibold"><span class="material-symbols-rounded">person_outline</span> {{ $admin->displayName() }}</span>
         </h1>
     </div>
 
@@ -20,7 +20,9 @@
 
 @section('content')
 
-    @include("admin.account._menu")
+    @include("admin.account._menu", [
+        'menu' => 'profile',
+    ])
 
     <form enctype="multipart/form-data" action="{{ action('Admin\AccountController@profile') }}" method="POST" class="form-validaate-jquery">
         {{ csrf_field() }}
@@ -41,12 +43,8 @@
                             <h5 class="media-heading text-semibold mt-2">{{ trans('messages.upload_your_photo') }}</h5>
                             <p class="mb-0">{{ trans('messages.photo_at_least', ["size" => "300px x 300px"]) }}</p>
                             <p>{!! trans('messages.image.upload_help', [ 'max' => \Acelle\Library\Tool::maxFileUploadInBytes()]) !!}</p>
-                            <a href="#upload" onclick="$('input[name=image]').trigger('click')" class="btn btn-primary me-1"><span class="material-symbols-rounded">
-file_download
-</span> {{ trans('messages.upload') }}</a>
-                            <a href="#remove" class="btn btn-secondary remove-profile-image"><span class="material-symbols-rounded">
-delete_outline
-</span> {{ trans('messages.remove') }}</a>
+                            <a href="#upload" onclick="$('input[name=image]').trigger('click')" class="btn btn-primary me-1"><span class="material-symbols-rounded">file_download</span> {{ trans('messages.upload') }}</a>
+                            <a href="#remove" class="btn btn-secondary remove-profile-image"><span class="material-symbols-rounded">delete_outline</span> {{ trans('messages.remove') }}</a>
                         </div>
                     </div>
                 </div>
@@ -55,18 +53,54 @@ delete_outline
                 <div class="sub_section">
                     <h3 class="text-semibold text-primary mb-4">{{ trans('messages.basic_information') }}</h3>
 
-                    <div class="row">
-                        <div class="col-md-6">
-                            @include('helpers.form_control', ['type' => 'text', 'name' => 'first_name', 'value' => $user->first_name, 'rules' => $user->rules()])
+                    @if (get_localization_config('show_last_name_first', $admin->getLanguageCode()))
+                        <div class="row">
+                            <div class="col-md-6">
+                                @include('helpers.form_control', ['type' => 'text', 'name' => 'last_name', 'value' => $user->last_name, 'rules' => $user->rules()])
+                            </div>
+                            <div class="col-md-6">
+                                @include('helpers.form_control', ['type' => 'text', 'name' => 'first_name', 'value' => $user->first_name, 'rules' => $user->rules()])
+                            </div>
                         </div>
-                        <div class="col-md-6">
-                            @include('helpers.form_control', ['type' => 'text', 'name' => 'last_name', 'value' => $user->last_name, 'rules' => $user->rules()])
+                    @else 
+                        <div class="row">
+                            <div class="col-md-6">
+                                @include('helpers.form_control', ['type' => 'text', 'name' => 'first_name', 'value' => $user->first_name, 'rules' => $user->rules()])
+                            </div>
+                            <div class="col-md-6">
+                                @include('helpers.form_control', ['type' => 'text', 'name' => 'last_name', 'value' => $user->last_name, 'rules' => $user->rules()])
+                            </div>
                         </div>
-                    </div>
+                    @endif
 
-                    @include('helpers.form_control', ['type' => 'select', 'name' => 'timezone', 'value' => $admin->timezone, 'options' => Tool::getTimezoneSelectOptions(), 'include_blank' => trans('messages.choose'), 'rules' => $user->rules()])
+                    
+                    @if (config('custom.japan'))
+                        <input type="hidden" name="timezone" value="Asia/Tokyo" />
+                    @else
+                        @include('helpers.form_control', [
+                            'type' => 'select',
+                            'name' => 'timezone',
+                            'value' => $admin->timezone ?? config('app.timezone'),
+                            'options' => Tool::getTimezoneSelectOptions(),
+                            'include_blank' => trans('messages.choose'),
+                            'rules' => $user->rules()
+                        ])
+                    @endif
+                    
 
-                    @include('helpers.form_control', ['type' => 'select', 'name' => 'language_id', 'label' => trans('messages.language'), 'value' => $admin->language_id, 'options' => Acelle\Model\Language::getSelectOptions(), 'include_blank' => trans('messages.choose'), 'rules' => $user->rules()])
+                    @if (config('custom.japan'))
+                        <input type="hidden" name="language_id" value="{{ Acelle\Model\Language::getJapan()->id }}" />
+                    @else
+                        @include('helpers.form_control', [
+                            'type' => 'select',
+                            'name' => 'language_id',
+                            'label' => trans('messages.language'),
+                            'value' => $admin->language_id ?? \Acelle\Model\Language::getDefaultLanguage()->id,
+                            'options' => Acelle\Model\Language::getSelectOptions(),
+                            'include_blank' => trans('messages.choose'),
+                            'rules' => $user->rules()
+                        ])
+                    @endif
 
                     <h3 class="text-semibold text-primary mb-4 mt-5">{{ trans('messages.account.personality') }}</h3>
 
@@ -201,6 +235,8 @@ delete_outline
                     return (className.match (/(^|\s)theme-\S+/g) || []).join(' ');
                 });
                 $('body').addClass('theme-' + value);
+
+                detectLogo();
             });
         });
     </script>

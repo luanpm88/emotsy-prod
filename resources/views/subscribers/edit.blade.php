@@ -1,4 +1,6 @@
-@extends('layouts.core.frontend')
+@extends('layouts.core.frontend', [
+	'menu' => 'subscriber',
+])
 
 @section('title', $list->name . ": " . trans('messages.create_subscriber'))
 
@@ -16,7 +18,9 @@
 @endsection
 
 @section('content')
-    @include("lists._menu")
+    @include("lists._menu", [
+		'menu' => 'subscriber',
+	])
 
     <div class="row mt-4">
         <div class="col-sm-12 col-md-6 col-lg-6">
@@ -37,9 +41,7 @@
                                 ]) }}" class="btn-group remove-contact-tag" role="group" aria-label="Basic example">
                                     <button role="button" class="btn btn-light btn-tag font-weight-semibold">{{ $tag }}</button>
                                     <button role="button" class="btn btn-light btn-tag font-weight-semibold ml-0">
-                                        <i class="material-symbols-rounded">
-close
-</i>
+                                        <i class="material-symbols-rounded">close</i>
                                     </button>
                                 </a>
                             @endforeach
@@ -167,36 +169,28 @@ close
                     <div class="activity d-flex py-3 px-4">
                         <div class="activity-media pr-4 text-center">
                             <time class="d-block text-center mini mb-2">3 days ago</time>
-                            <i class="material-symbols-rounded bg-primary">
-forward_to_inbox
-                            </i>
+                            <i class="material-symbols-rounded bg-primary">forward_to_inbox</i>
                         </div>
                         <div class="small">
                             <action class="d-block font-weight-semibold mb-1">
                                 User Ardella Goldrup receives email entitled "Follow up Email"
                             </action>
                             <desc class="d-block small text-muted">
-                                <i class="material-symbols-rounded me-1">
-schedule
-                                </i> Jan 07th, 2020 09:36
+                                <i class="material-symbols-rounded me-1">schedule</i> Jan 07th, 2020 09:36
                             </desc>
                         </div>
                     </div>
                                         <div class="activity d-flex py-3 px-4">
                         <div class="activity-media pr-4 text-center">
                             <time class="d-block text-center mini mb-2">3 days ago</time>
-                            <i class="material-symbols-rounded bg-primary">
-forward_to_inbox
-                            </i>
+                            <i class="material-symbols-rounded bg-primary">forward_to_inbox</i>
                         </div>
                         <div class="small">
                             <action class="d-block font-weight-semibold mb-1">
                                 User Ardella Goldrup receives email entitled "Welcome to our list"
                             </action>
                             <desc class="d-block small text-muted">
-                                <i class="material-symbols-rounded me-1">
-schedule
-                                </i> Jan 07th, 2020 09:36
+                                <i class="material-symbols-rounded me-1">schedule</i> Jan 07th, 2020 09:36
                             </desc>
                         </div>
                     </div>
@@ -210,9 +204,7 @@ schedule
                                 Wait for 24 hours before proceeding with the next event for user Ardella Goldrup
                             </action>
                             <desc class="d-block small text-muted">
-                                <i class="material-symbols-rounded me-1">
-schedule
-                                </i> Jan 07th, 2020 09:36
+                                <i class="material-symbols-rounded me-1">schedule</i> Jan 07th, 2020 09:36
                             </desc>
                         </div>
                     </div>
@@ -226,27 +218,21 @@ schedule
                                 User Ardella Goldrup reads email entitled "Welcome email"
                             </action>
                             <desc class="d-block small text-muted">
-                                <i class="material-symbols-rounded me-1">
-schedule
-                                </i> Jan 07th, 2020 09:36
+                                <i class="material-symbols-rounded me-1">schedule</i> Jan 07th, 2020 09:36
                             </desc>
                         </div>
                     </div>
                                         <div class="activity d-flex py-3 px-4">
                         <div class="activity-media pr-4 text-center">
                             <time class="d-block text-center mini mb-2">3 days ago</time>
-                            <i class="material-symbols-rounded bg-success">
-merge
-</i>
+                            <i class="material-symbols-rounded bg-success">merge</i>
                         </div>
                         <div class="small">
                             <action class="d-block font-weight-semibold mb-1">
                                 User Ardella Goldrup subscribes to mail list, automation triggered!
                             </action>
                             <desc class="d-block small text-muted">
-                                <i class="material-symbols-rounded me-1">
-schedule
-                                </i> Jan 07th, 2020 09:36
+                                <i class="material-symbols-rounded me-1">schedule</i> Jan 07th, 2020 09:36
                             </desc>
                         </div>
                     </div>

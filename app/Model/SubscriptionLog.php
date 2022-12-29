@@ -10,35 +10,20 @@ class SubscriptionLog extends Model
 {
     use HasUid;
 
-    public const TYPE_SUBSCRIBE = 'subscribe';
-    public const TYPE_SUBSCRIBED = 'subscribed';
-    public const TYPE_PAID = 'paid';
-    public const TYPE_CLAIMED = 'claimed';
-    public const TYPE_UNCLAIMED = 'unclaimed';
-    public const TYPE_STARTED = 'started';
-    public const TYPE_EXPIRED = 'expired';
-    public const TYPE_RENEWED = 'renewed';
-    public const TYPE_RENEW = 'renew';
-    public const TYPE_RENEW_FAILED = 'renew_failed';
-    public const TYPE_PLAN_CHANGE = 'plan_change';
-    public const TYPE_PLAN_CHANGE_CANCELED = 'plan_change_canceled';
-    public const TYPE_PLAN_CHANGED = 'plan_changed';
-    public const TYPE_PLAN_CHANGE_FAILED = 'plan_change_failed';
-    public const TYPE_CANCELLED = 'cancelled';
-    public const TYPE_CANCELLED_NOW = 'cancelled_now';
-    public const TYPE_ADMIN_APPROVED = 'admin_approved';
-    public const TYPE_ADMIN_REJECTED = 'admin_rejected';
-    public const TYPE_ADMIN_RENEW_APPROVED = 'admin_renew_approved';
-    public const TYPE_ADMIN_PLAN_CHANGE_APPROVED = 'admin_plan_change_approved';
-    public const TYPE_ADMIN_RENEW_REJECTED = 'admin_renew_rejected';
-    public const TYPE_ADMIN_PLAN_CHANGE_REJECTED = 'admin_plan_change_rejected';
-    public const TYPE_ADMIN_CANCELLED = 'admin_cancelled';
-    public const TYPE_ADMIN_CANCELLED_NOW = 'admin_cancelled_now';
-    public const TYPE_ADMIN_RESUMED = 'admin_resumed';
-    public const TYPE_ADMIN_PLAN_ASSIGNED = 'admin_plan_assigned';
-    public const TYPE_RESUMED = 'resumed';
-    public const TYPE_ERROR = 'error';
-
+    public const TYPE_SELECT_PLAN = 'select_plan';
+    public const TYPE_PAY_SUCCESS = 'pay_success';
+    public const TYPE_PAY_FAILED = 'pay_failed';
+    public const TYPE_PAYMENT_PENDING = 'payment_pending';
+    public const TYPE_ADMIN_APPROVE = 'admin_approve';
+    public const TYPE_ADMIN_REJECT = 'admin_reject';
+    public const TYPE_RENEW_INVOICE = 'renew_invoice';
+    public const TYPE_CHANGE_PLAN_INVOICE = 'change_plan';
+    public const TYPE_CANCEL_INVOICE = 'cancel_invoice';
+    public const TYPE_CANCEL_SUBSCRIPTION = 'cancel_subscription';
+    public const TYPE_DISABLE_RECURRING = 'disable_recurring';
+    public const TYPE_ENABLE_RECURRING = 'enable_recurring';
+    public const TYPE_END = 'end';
+    public const TYPE_TERMINATE = 'terminate';
 
     /**
      * The attributes that are not mass assignable.
@@ -53,7 +38,7 @@ class SubscriptionLog extends Model
      * @var array
      */
     protected $fillable = [
-        'type'
+        'type', 'invoice_uid'
     ];
 
     /**
@@ -92,5 +77,102 @@ class SubscriptionLog extends Model
         $this->data = json_encode($data);
 
         $this->save();
+    }
+
+    public function renderLog()
+    {
+        $data = $this->getData();
+
+        switch($this->type) {
+            case self::TYPE_SELECT_PLAN:
+                return trans('messages.subscription.log.select_plan', [
+                    'invoice' => $this->invoice_uid,
+                    'plan' => $data['plan'],
+                    'customer' => $data['customer'],
+                    'amount' => $data['amount'],
+                ]);
+                break;
+            case self::TYPE_PAY_SUCCESS:
+                return trans('messages.subscription.log.pay_success', [
+                    'invoice' => $this->invoice_uid,
+                    'amount' => $data['amount'],
+                ]);
+                break;
+            case self::TYPE_PAY_FAILED:
+                return trans('messages.subscription.log.pay_failed', [
+                    'invoice' => $this->invoice_uid,
+                    'amount' => $data['amount'],
+                    'error' => $data['error'],
+                ]);
+                break;
+            case self::TYPE_PAYMENT_PENDING:
+                return trans('messages.subscription.log.payment_pending', [
+                    'invoice' => $this->invoice_uid,
+                    'amount' => $data['amount'],
+                ]);
+                break;
+            case self::TYPE_ADMIN_APPROVE:
+                return trans('messages.subscription.log.admin_approve', [
+                    'invoice' => $this->invoice_uid,
+                    'amount' => $data['amount'],
+                ]);
+                break;
+            case self::TYPE_ADMIN_REJECT:
+                return trans('messages.subscription.log.admin_reject', [
+                    'invoice' => $this->invoice_uid,
+                    'amount' => $data['amount'],
+                    'reason' => $data['reason'],
+                ]);
+                break;
+            case self::TYPE_RENEW_INVOICE:
+                return trans('messages.subscription.log.renew_invoice', [
+                    'invoice' => $this->invoice_uid,
+                    'amount' => $data['amount'],
+                ]);
+                break;
+            case self::TYPE_CHANGE_PLAN_INVOICE:
+                return trans('messages.subscription.log.change_plan_invoice', [
+                    'invoice' => $this->invoice_uid,
+                    'plan' => $data['plan'],
+                    'new_plan' => $data['new_plan'],
+                    'amount' => $data['amount'],
+                ]);
+                break;
+            case self::TYPE_CANCEL_INVOICE:
+                return trans('messages.subscription.log.cancel_invoice', [
+                    'invoice' => $this->invoice_uid,
+                    'amount' => $data['amount'],
+                ]);
+                break;
+            case self::TYPE_CANCEL_SUBSCRIPTION:
+                return trans('messages.subscription.log.cancel_subscription', [
+                    'plan' => $data['plan'],
+                ]);
+                break;
+            case self::TYPE_DISABLE_RECURRING:
+                return trans('messages.subscription.log.disable_recurring', [
+                    'plan' => $data['plan'],
+                ]);
+                break;
+            case self::TYPE_ENABLE_RECURRING:
+                return trans('messages.subscription.log.enable_recurring', [
+                    'plan' => $data['plan'],
+                ]);
+                break;
+            case self::TYPE_END:
+                return trans('messages.subscription.log.end', [
+                    'plan' => $data['plan'],
+                    'ends_at' => $data['ends_at'],
+                ]);
+                break;
+            case self::TYPE_TERMINATE:
+                return trans('messages.subscription.log.terminate', [
+                    'plan' => $data['plan'],
+                    'terminate_at' => $data['terminate_at'],
+                ]);
+                break;
+            default:
+                throw new \Exception("Log type $this->type is not found!");
+        }
     }
 }

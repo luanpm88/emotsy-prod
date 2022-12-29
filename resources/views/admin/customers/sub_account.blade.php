@@ -1,4 +1,6 @@
-@extends('layouts.core.backend')
+@extends('layouts.core.backend', [
+	'menu' => 'customer',
+])
 
 @section('title', trans('messages.contact_information'))
 
@@ -10,9 +12,7 @@
 			<li class="breadcrumb-item active">{{ trans('messages.customer.sub_account') }}</li>
 		</ul>
 		<h1>
-            <span class="text-semibold"><span class="material-symbols-rounded">
-                            person_outline
-                            </span> {{ $customer->user->displayName() }}</span>
+            <span class="text-semibold"><span class="material-symbols-rounded">person_outline</span> {{ $customer->displayName() }}</span>
         </h1>
 	</div>
 

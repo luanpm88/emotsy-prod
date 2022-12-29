@@ -124,7 +124,13 @@ class Automation2Controller extends Controller
 
         // saving
         if ($request->isMethod('post')) {
-            $validator = $automation->createFromArray($request->all());
+            $params = $request->all();
+
+            if (isset($params['options'])) {
+                $params['options'] = $this->prepareOptions($params['options'], $customer);
+            }
+
+            $validator = $automation->createFromArray($params);
 
             // redirect if fails
             if ($validator->fails()) {
@@ -391,9 +397,23 @@ class Automation2Controller extends Controller
             'title' => trans('messages.automation.trigger.title', [
                 'title' => trans('messages.automation.trigger.tree.' . $request->options["key"])
             ]),
-            'options' => $request->options,
+            'options' => $this->prepareOptions($request->options, $request->user()->customer),
             'rules' => $this->triggerRules()[$request->options['key']],
         ]);
+    }
+
+    public function prepareOptions($options, $customer)
+    {
+        if (isset($options['key']) && $options['key'] == 'specific-date') {
+            if (isset($options['date'])) {
+                $date = \Carbon\Carbon::createFromFormat('Y-m-d H:i', $options['date'] . ' ' . $options['at'], $customer->timezone);
+
+                $options['date'] = $date->timezone('UTC')->format(config('custom.date_format'));
+                $options['at'] = $date->timezone('UTC')->format(config('custom.time_format'));
+            }
+        }
+
+        return $options;
     }
 
     /**
@@ -604,7 +624,7 @@ class Automation2Controller extends Controller
                 'title' => trans('messages.automation.trigger.title', [
                     'title' => trans('messages.automation.trigger.tree.' . $request->options["key"])
                 ]),
-                'options' => $request->options,
+                'options' => $this->prepareOptions($request->options, $request->user()->customer),
             ]);
         }
 
@@ -763,7 +783,7 @@ class Automation2Controller extends Controller
             // Tacking domain
             if (isset($params['custom_tracking_domain']) && $params['custom_tracking_domain'] && isset($params['tracking_domain_uid'])) {
                 $tracking_domain = \Acelle\Model\TrackingDomain::findByUid($params['tracking_domain_uid']);
-                if (is_object($tracking_domain)) {
+                if ($tracking_domain) {
                     $this->tracking_domain_id = $tracking_domain->id;
                 } else {
                     $this->tracking_domain_id = null;
@@ -1055,7 +1075,7 @@ class Automation2Controller extends Controller
 
             $this->validate($request, $rules);
 
-            $plan = $request->user()->customer->activeSubscription()->plan;
+            $plan = $request->user()->customer->getCurrentActiveSubscription()->plan;
             if ($plan->getOption('unsubscribe_url_required') == 'yes' && Setting::isYes('campaign.enforce_unsubscribe_url_check')) {
                 if (strpos($request->content, '{UNSUBSCRIBE_URL}') === false) {
                     return response()->json(['message' => trans('messages.template.validation.unsubscribe_url_required')], 400);
@@ -1760,7 +1780,7 @@ class Automation2Controller extends Controller
 
             $this->validate($request, $rules);
 
-            $plan = $request->user()->customer->activeSubscription()->plan;
+            $plan = $request->user()->customer->getCurrentActiveSubscription()->plan;
             if ($plan->getOption('unsubscribe_url_required') == 'yes' && Setting::isYes('campaign.enforce_unsubscribe_url_check')) {
                 if (strpos($request->content, '{UNSUBSCRIBE_URL}') === false) {
                     return response()->json(['message' => trans('messages.template.validation.unsubscribe_url_required')], 400);
@@ -1861,6 +1881,7 @@ class Automation2Controller extends Controller
                 return $this->notAuthorized();
             }
         }
+
         $list = MailList::findByUid($request->list_uid);
 
         return view('automation2.segmentSelect', [

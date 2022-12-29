@@ -24,7 +24,6 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
-use Acelle\Library\Log as MailLog;
 use DB;
 use Acelle\Model\SendingServer;
 use Monolog\Logger;
@@ -33,7 +32,6 @@ use Monolog\Formatter\LineFormatter;
 use Carbon\Carbon;
 use League\Csv\Writer;
 use Acelle\Library\StringHelper;
-use Acelle\Library\Tool;
 use Acelle\Model\Setting;
 use Validator;
 use File;
@@ -44,19 +42,23 @@ use Acelle\Library\Traits\HasTemplate;
 use Acelle\Jobs\LoadCampaign;
 use Acelle\Jobs\ScheduleCampaign;
 use Illuminate\Bus\Batch;
-use Illuminate\Support\Facades\Bus;
 use Acelle\Library\RouletteWheel;
 use Acelle\Library\Traits\TrackJobs;
 use Throwable;
 use Acelle\Library\Traits\HasUid;
+use Acelle\Library\Traits\HasCache;
 use Acelle\Events\CampaignUpdated;
 use Acelle\Jobs\ExecuteCampaignCallback;
+use Acelle\Library\Contracts\HasTemplateInterface;
+use Acelle\Library\HtmlHandler\InjectTrackingPixel;
+use Acelle\Library\HtmlHandler\TransformUrl;
 
-class Campaign extends Model
+class Campaign extends Model implements HasTemplateInterface
 {
     use HasTemplate;
     use TrackJobs;
     use HasUid;
+    use HasCache;
 
     protected $logger;
 
@@ -279,7 +281,7 @@ class Campaign extends Model
                 }
                 $groups[$lists_segment->mail_list_id]['segment_uids'] = [];
             }
-            if (is_object($lists_segment->segment) && !in_array($lists_segment->segment->uid, $groups[$lists_segment->mail_list_id]['segment_uids'])) {
+            if ($lists_segment->segment && !in_array($lists_segment->segment->uid, $groups[$lists_segment->mail_list_id]['segment_uids'])) {
                 $groups[$lists_segment->mail_list_id]['segment_uids'][] = $lists_segment->segment->uid;
             }
         }
@@ -304,13 +306,9 @@ class Campaign extends Model
      */
     public static function resetMaxExecutionTime()
     {
-        try {
-            set_time_limit(0);
-            ini_set('max_execution_time', 0);
-            ini_set('memory_limit', '-1');
-        } catch (\Exception $e) {
-            MailLog::warning('Cannot reset max_execution_time: '.$e->getMessage());
-        }
+        set_time_limit(0);
+        ini_set('max_execution_time', 0);
+        ini_set('memory_limit', '-1');
     }
 
     /**
@@ -459,7 +457,7 @@ class Campaign extends Model
     public static function getSelectOptions($customer = null, $status = null)
     {
         $query = self::getAll();
-        if (is_object($customer)) {
+        if ($customer) {
             $query = $query->where('customer_id', '=', $customer->id);
         }
         if (isset($status)) {
@@ -548,7 +546,7 @@ class Campaign extends Model
         $step = 0;
 
         // Step 1
-        if (is_object($this->defaultMailList)) {
+        if ($this->defaultMailList) {
             $step = 1;
         } else {
             return $step;
@@ -578,7 +576,7 @@ class Campaign extends Model
 
         // Step 5
         // @todo: consider removing this check!
-        if (is_object($this->subscribers([])->limit(1)->first())) {
+        if ($this->subscribers([])->limit(1)->first()) {
             $step = 5;
         } else {
             return $step;
@@ -632,12 +630,12 @@ class Campaign extends Model
                 'name' => $this->name,
         ];
 
-        if (is_object($this->defaultMailList)) {
+        if ($this->defaultMailList) {
             $data['list_id'] = $this->default_mail_list_id;
             $data['list_name'] = $this->defaultMailList->name;
         }
 
-        if (is_object($this->segment)) {
+        if ($this->segment) {
             $data['segment_id'] = $this->segment_id;
             $data['segment_name'] = $this->segment->name;
         }
@@ -986,7 +984,7 @@ class Campaign extends Model
     {
         $last = $this->campaign_track_opens()->orderBy('created_at', 'desc')->first();
 
-        return is_object($last) ? $last->created_at : null;
+        return $last ? $last->created_at : null;
     }
 
     public static function topOpens($number = 5, $customer = null)
@@ -1075,28 +1073,53 @@ class Campaign extends Model
         return $query->take($number);
     }
 
+    public function getTopOpenSubscribersToCsv($file)
+    {
+        $records = $this->getTopOpenSubscribers(null)->get()->toArray(); // null mean all
+        $headers = ['Email', 'ID', 'Count'];
+
+        $csv = Writer::createFromPath($file, 'w+');
+
+        //insert the header
+        $csv->insertOne($headers);
+
+        //insert all the records
+        $csv->insertAll($records);
+    }
+
     /**
      * Campaign top 5 open location.
      *
      * @return datetime
      */
-    public function topLocations($number = 5, $customer = null)
+    public function topLocations($number = 5)
     {
         $records = IpLocation::select('ip_locations.ip_address', 'ip_locations.country_code', 'ip_locations.country_name')
             ->addSelect(DB::raw('count(*) as aggregate'))
             ->join('open_logs', 'open_logs.ip_address', '=', 'ip_locations.ip_address')
             ->join('tracking_logs', 'open_logs.message_id', '=', 'tracking_logs.message_id')
-            ->where('tracking_logs.campaign_id', '=', $this->id);
+            ->where('tracking_logs.campaign_id', '=', $this->id)
+            ->join('campaigns', 'tracking_logs.campaign_id', '=', 'campaigns.id')
+            ->where('campaigns.customer_id', '=', $this->customer->id)
+            ->groupBy('ip_locations.ip_address', 'ip_locations.country_code', 'ip_locations.country_name')
+            ->orderBy('aggregate', 'desc')
+            ->take($number);
 
-        if (isset($customer)) {
-            $records = $records->join('campaigns', 'tracking_logs.campaign_id', '=', 'campaigns.id')
-                ->where('campaigns.customer_id', '=', $customer->id);
-        }
+        return $records;
+    }
 
-        $records = $records->groupBy('ip_locations.ip_address', 'ip_locations.country_code', 'ip_locations.country_name')
-            ->orderBy('aggregate', 'desc');
+    public function topLocationsToCsv($file)
+    {
+        $records = $this->topLocations(null)->get()->toArray(); // null mean all
+        $headers = ['IP Address', 'Country Code', 'Country Name', 'Count'];
 
-        return $records->take($number);
+        $csv = Writer::createFromPath($file, 'w+');
+
+        //insert the header
+        $csv->insertOne($headers);
+
+        //insert all the records
+        $csv->insertAll($records);
     }
 
     /**
@@ -1104,25 +1127,34 @@ class Campaign extends Model
      *
      * @return datetime
      */
-    public function topCountries($number = 5, $customer = null)
+    public function topOpenCountries($number = 5)
     {
-        $records = IpLocation::select('ip_locations.country_name', 'ip_locations.country_code', 'ip_locations.ip_address')
+        $records = IpLocation::select('ip_locations.country_name', 'ip_locations.country_code')
             ->addSelect(DB::raw('count(*) as aggregate'))
             ->join('open_logs', 'open_logs.ip_address', '=', 'ip_locations.ip_address')
             ->join('tracking_logs', 'open_logs.message_id', '=', 'tracking_logs.message_id')
-            ->where('tracking_logs.campaign_id', '=', $this->id);
+            ->where('tracking_logs.campaign_id', '=', $this->id)
+            ->join('campaigns', 'tracking_logs.campaign_id', '=', 'campaigns.id')
+            ->where('campaigns.customer_id', '=', $this->customer->id)
+            ->groupBy('ip_locations.country_name', 'ip_locations.country_code')
+            ->orderBy('aggregate', 'desc')
+            ->take($number);
 
-        if (isset($customer)) {
-            $records = $records
-                ->join('campaigns', 'tracking_logs.campaign_id', '=', 'campaigns.id')
-                ->where('campaigns.customer_id', '=', $customer->id);
-        }
+        return $records;
+    }
 
-        $records = $records
-            ->groupBy('ip_locations.country_name', 'ip_locations.country_code', 'ip_locations.ip_address')
-            ->orderBy('aggregate', 'desc');
+    public function topOpenCountriesToCsv($file)
+    {
+        $records = $this->topOpenCountries(null)->get()->toArray(); // null mean all
+        $headers = ['Country Name', 'Country Code', 'Open Count'];
 
-        return $records->take($number);
+        $csv = Writer::createFromPath($file, 'w+');
+
+        //insert the header
+        $csv->insertOne($headers);
+
+        //insert all the records
+        $csv->insertAll($records);
     }
 
     /**
@@ -1130,23 +1162,34 @@ class Campaign extends Model
      *
      * @return datetime
      */
-    public function topClickCountries($number = 5, $customer = null)
+    public function topClickCountries($number = 5)
     {
-        $records = IpLocation::select('ip_locations.country_name', 'ip_locations.country_code', 'ip_locations.ip_address')
+        $records = IpLocation::select('ip_locations.country_name', 'ip_locations.country_code')
             ->addSelect(DB::raw('count(*) as aggregate'))
             ->join('click_logs', 'click_logs.ip_address', '=', 'ip_locations.ip_address')
             ->join('tracking_logs', 'click_logs.message_id', '=', 'tracking_logs.message_id')
-            ->where('tracking_logs.campaign_id', '=', $this->id);
+            ->join('campaigns', 'tracking_logs.campaign_id', '=', 'campaigns.id')
+            ->where('tracking_logs.campaign_id', '=', $this->id)
+            ->where('campaigns.customer_id', '=', $this->customer->id)
+            ->groupBy('ip_locations.country_name', 'ip_locations.country_code')
+            ->orderBy('aggregate', 'desc')
+            ->take($number);
 
-        if (isset($customer)) {
-            $records = $records->join('campaigns', 'tracking_logs.campaign_id', '=', 'campaigns.id')
-                ->where('campaigns.customer_id', '=', $customer->id);
-        }
+        return $records;
+    }
 
-        $records = $records->groupBy('ip_locations.country_name', 'ip_locations.country_code', 'ip_locations.ip_address')
-            ->orderBy('aggregate', 'desc');
+    public function topClickCountriesToCsv($file)
+    {
+        $records = $this->topClickCountries(null)->get()->toArray(); // null mean all
+        $headers = ['Country Name', 'Country Code', 'Click Count'];
 
-        return $records->take($number);
+        $csv = Writer::createFromPath($file, 'w+');
+
+        //insert the header
+        $csv->insertOne($headers);
+
+        //insert all the records
+        $csv->insertAll($records);
     }
 
     /**
@@ -1257,9 +1300,6 @@ class Campaign extends Model
         $this->updateLinks();
 
         try {
-            MailLog::info('Sending test email for campaign `'.$this->name.'`');
-            MailLog::info('Sending test email to `'.$email.'`');
-
             // @todo: only send a test message when campaign sufficient information is available
 
             // build a temporary subscriber oject used to pass through the sending methods
@@ -1337,7 +1377,6 @@ class Campaign extends Model
     {
         // clean up failed log so that they will be included in resend
         $recipients = $this->trackingLogs()->failed();
-        MailLog::warning('Resend to those who failed to deliver: '.$recipients->count());
         $recipients->delete();
     }
 
@@ -1347,7 +1386,6 @@ class Campaign extends Model
         $recipients = $this->trackingLogs()
                          ->leftJoin('open_logs', 'tracking_logs.message_id', 'open_logs.message_id')
                          ->whereNull('open_logs.id');
-        MailLog::warning('Resend to those who did not open: '.$recipients->count());
         $recipients->delete();
     }
 
@@ -1357,7 +1395,6 @@ class Campaign extends Model
         $recipients = $this->trackingLogs()
                          ->leftJoin('click_logs', 'tracking_logs.message_id', 'click_logs.message_id')
                          ->whereNull('click_logs.id');
-        MailLog::warning('Resend to those who did not click: '.$recipients->count());
         $recipients->delete();
     }
 
@@ -1432,7 +1469,7 @@ class Campaign extends Model
 
                         $lists_segment = new CampaignsListsSegment();
                         $lists_segment->campaign_id = $this->id;
-                        if (is_object($mail_list)) {
+                        if ($mail_list) {
                             $lists_segment->mail_list_id = $mail_list->id;
                         }
                         $lists_segment->segment_id = $segment->id;
@@ -1441,7 +1478,7 @@ class Campaign extends Model
                 } else {
                     $lists_segment = new CampaignsListsSegment();
                     $lists_segment->campaign_id = $this->id;
-                    if (is_object($mail_list)) {
+                    if ($mail_list) {
                         $lists_segment->mail_list_id = $mail_list->id;
                     }
                     $this->listsSegments->push($lists_segment);
@@ -1503,13 +1540,13 @@ class Campaign extends Model
      */
     public function displayRecipients()
     {
-        if (!is_object($this->defaultMailList)) {
+        if (!$this->defaultMailList) {
             return '';
         }
 
         $lines = [];
         foreach ($this->getListsSegmentsGroups() as $lists_segments_group) {
-            if (is_object($lists_segments_group['list'])) {
+            if ($lists_segments_group['list']) {
                 $list_name = $lists_segments_group['list']->name;
 
                 $segment_names = [];
@@ -1563,103 +1600,50 @@ class Campaign extends Model
         return $this->status == self::STATUS_PAUSED;
     }
 
-    /**
-     * Update Campaign cached data.
-     */
-    public function updateCache($key = null)
+    public function getCacheIndex()
     {
-        // cache indexes
-        $index = [
+        return [
             // @note: SubscriberCount must come first as its value shall be used by the others
-            'ActiveSubscriberCount' => function (&$campaign) {
-                return $campaign->activeSubscribersCount(); // spepcial key that requires true update
+            'ActiveSubscriberCount' => function () {
+                return $this->activeSubscribersCount(); // spepcial key that requires true update
             },
-            'SubscriberCount' => function (&$campaign) {
-                return $campaign->subscribersCount(false); // spepcial key that requires true update
+            'SubscriberCount' => function () {
+                return $this->subscribersCount(false); // spepcial key that requires true update
             },
-            'DeliveredRate' => function (&$campaign) {
-                return $campaign->deliveredRate(true);
+            'DeliveredRate' => function () {
+                return $this->deliveredRate(true);
             },
-            'DeliveredCount' => function (&$campaign) {
-                return $campaign->deliveredCount();
+            'DeliveredCount' => function () {
+                return $this->deliveredCount();
             },
-            'FailedDeliveredRate' => function (&$campaign) {
-                return $campaign->failedRate(true);
+            'FailedDeliveredRate' => function () {
+                return $this->failedRate(true);
             },
-            'FailedDeliveredCount' => function (&$campaign) {
-                return $campaign->failedCount();
+            'FailedDeliveredCount' => function () {
+                return $this->failedCount();
             },
-            'NotDeliveredRate' => function (&$campaign) {
-                return $campaign->notDeliveredRate(true);
+            'NotDeliveredRate' => function () {
+                return $this->notDeliveredRate(true);
             },
-            'NotDeliveredCount' => function (&$campaign) {
-                return $campaign->notDeliveredCount();
+            'NotDeliveredCount' => function () {
+                return $this->notDeliveredCount();
             },
-            'ClickedRate' => function (&$campaign) {
-                return $campaign->clickRate();
+            'ClickedRate' => function () {
+                return $this->clickRate();
             },
-            'UniqOpenRate' => function (&$campaign) {
-                return $campaign->openRate();
+            'UniqOpenRate' => function () {
+                return $this->openRate();
             },
-            'UniqOpenCount' => function (&$campaign) {
-                return $campaign->openUniqCount();
+            'UniqOpenCount' => function () {
+                return $this->openUniqCount();
             },
-            'NotOpenRate' => function (&$campaign) {
-                return $campaign->notOpenRate();
+            'NotOpenRate' => function () {
+                return $this->notOpenRate();
             },
-            'NotOpenCount' => function (&$campaign) {
-                return $campaign->notOpenCount();
+            'NotOpenCount' => function () {
+                return $this->notOpenCount();
             },
         ];
-
-        // retrieve cached data
-        $cache = json_decode($this->cache, true);
-        if (is_null($cache)) {
-            $cache = [];
-        }
-
-        if (is_null($key)) {
-            // update all cache
-            foreach ($index as $key => $callback) {
-                $cache[$key] = $callback($this);
-                if ($key == 'SubscriberCount') {
-                    // SubscriberCount cache must always be updated as its value will be used for the others
-                    $this->cache = json_encode($cache);
-                    $this->save();
-                }
-            }
-        } else {
-            // @deprecated, requires updating the SubscriberCount cache before updating any other one
-            // update specific key
-            $callback = $index[$key];
-            $cache[$key] = $callback($this);
-        }
-
-        // write back to the DB
-        $this->cache = json_encode($cache);
-        $this->save();
-    }
-
-    /**
-     * Retrieve Campaign cached data.
-     *
-     * @return mixed
-     */
-    public function readCache($key, $default = null)
-    {
-        $cache = json_decode($this->cache, true);
-        if (is_null($cache)) {
-            return $default;
-        }
-        if (array_key_exists($key, $cache)) {
-            if (is_null($cache[$key])) {
-                return $default;
-            } else {
-                return $cache[$key];
-            }
-        } else {
-            return $default;
-        }
     }
 
     /**
@@ -1695,6 +1679,7 @@ class Campaign extends Model
     public function openUniqHours($start = null, $end = null)
     {
         $query = $this->openLogs()->select('open_logs.created_at');
+        $currentTimezone = $this->customer->getTimezone();
         if (isset($start)) {
             $query = $query->where('open_logs.created_at', '>=', $start);
         }
@@ -1702,8 +1687,8 @@ class Campaign extends Model
             $query = $query->where('open_logs.created_at', '<=', $end);
         }
 
-        return $query->orderBy('open_logs.created_at', 'asc')->get()->groupBy(function ($date) {
-            return \Acelle\Library\Tool::dateTime($date->created_at)->format('H'); // grouping by hours
+        return $query->orderBy('open_logs.created_at', 'asc')->get()->groupBy(function ($date) use ($currentTimezone) {
+            return $date->created_at->timezone($currentTimezone)->format('H'); // grouping by hours
         });
     }
 
@@ -1714,6 +1699,7 @@ class Campaign extends Model
      */
     public function clickHours($start = null, $end = null)
     {
+        $currentTimezone = $this->customer->getTimezone();
         $query = $this->clickLogs()->select('click_logs.created_at', 'tracking_logs.subscriber_id');
 
         if (isset($start)) {
@@ -1723,8 +1709,8 @@ class Campaign extends Model
             $query = $query->where('click_logs.created_at', '<=', $end);
         }
 
-        return $query->orderBy('click_logs.created_at', 'asc')->get()->groupBy(function ($date) {
-            return \Acelle\Library\Tool::dateTime($date->created_at)->format('H'); // grouping by hours
+        return $query->orderBy('click_logs.created_at', 'asc')->get()->groupBy(function ($date) use ($currentTimezone) {
+            return $date->created_at->timezone($currentTimezone)->format('H'); // grouping by hours
         });
     }
     public function fileInfo($filePath)
@@ -1742,7 +1728,7 @@ class Campaign extends Model
         // Tacking domain
         if (isset($params['custom_tracking_domain']) && $params['custom_tracking_domain'] && isset($params['tracking_domain_uid'])) {
             $tracking_domain = \Acelle\Model\TrackingDomain::findByUid($params['tracking_domain_uid']);
-            if (is_object($tracking_domain)) {
+            if ($tracking_domain) {
                 $this->tracking_domain_id = $tracking_domain->id;
             } else {
                 $this->tracking_domain_id = null;
@@ -2396,7 +2382,7 @@ class Campaign extends Model
 
         // Iterate through batches of subscribers, 100 each
         cursorIterate(
-            $query,
+            $this->subscribersToSend(),
             $orderBy = 'subscribers.id',
             $perPage = 100,
             function ($subscribers) use (&$i, &$sendingServersPool, $callback) {
@@ -2415,7 +2401,8 @@ class Campaign extends Model
         // Retrieve subscribers to send!
         $query = $this->subscribers([])
                 ->whereRaw(sprintf(table('subscribers').'.email NOT IN (SELECT email FROM %s t JOIN %s s ON t.subscriber_id = s.id WHERE t.campaign_id = %s)', table('tracking_logs'), table('subscribers'), $this->id))
-                ->subscribed();
+                ->subscribed()
+                ->deliverableOrNotVerified();
 
         return $query;
     }
@@ -2524,7 +2511,7 @@ class Campaign extends Model
 
         $formatter = new LineFormatter("[%datetime%] %channel%.%level_name%: %message%\n");
 
-        $logfile = storage_path(join_paths('logs', php_sapi_name(), '/campaign-'.$this->uid.'.log'));
+        $logfile = $this->getLogFile();
         $stream = new RotatingFileHandler($logfile, 0, Logger::DEBUG);
         $stream->setFormatter($formatter);
 
@@ -2534,6 +2521,12 @@ class Campaign extends Model
         $this->logger = $logger;
 
         return $this->logger;
+    }
+
+    public function getLogFile()
+    {
+        $path = storage_path(join_paths('logs', php_sapi_name(), '/campaign-'.$this->uid.'.log'));
+        return $path;
     }
 
     public function deleteAndCleanup()
@@ -2749,5 +2742,31 @@ class Campaign extends Model
     public function openWebhooks()
     {
         return $this->campaignWebhooks()->open();
+    }
+
+    public function isStageExcluded(string $name): bool
+    {
+        switch ($name) {
+            case InjectTrackingPixel::class:
+                if ($this->track_open) {
+                    return false;
+                } else {
+                    return true;
+                }
+                break;
+
+            case TransformUrl::class:
+                if ($this->track_click) {
+                    return false;
+                } else {
+                    return true;
+                }
+                break;
+
+            default:
+                // do not exclude by default
+                return false;
+                break;
+        }
     }
 }

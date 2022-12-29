@@ -1,4 +1,6 @@
-@extends('layouts.core.frontend')
+@extends('layouts.core.frontend', [
+	'menu' => 'tracking_domain',
+])
 
 @section('title', $domain->name)
 
@@ -10,9 +12,7 @@
             <li class="breadcrumb-item"><a href="{{ action("TrackingDomainController@index") }}">{{ trans('messages.tracking_domains') }}</a></li>
         </ul>
         <h2>
-            <span class="text-semibold"><span class="material-symbols-rounded">
-            public
-            </span> {{ $domain->getUrl() }} </span>
+            <span class="text-semibold"><span class="material-symbols-rounded">public</span> {{ $domain->getUrl() }} </span>
             <span class="label label-primary bg-{{ $domain->status }}">
                 {{ trans('messages.tracking_domain.status.' . $domain->status) }}
             </span>
@@ -40,6 +40,22 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="alert alert-success" style="display: flex; flex-direction: row; align-items: center; justify-content: space-between;">
+                    <div style="display: flex; flex-direction: row; align-items: center;">
+                        <div>
+                            <i class="lnr lnr-checkmark-circle"></i>
+                        </div>
+                        <div style="padding-right: 40px">
+                            <h4>{!! trans('messages.tracking_domain.show.nginx.title') !!}</h4>
+                            <p style="margin-bottom:10px">{!! trans('messages.tracking_domain.show.nginx.description') !!}</p>
+                            <pre style="padding:6px 0;margin:0;font-weight:600">location / {
+    try_files $uri $uri/ /index.php;
+}</pre>
+                        </div>
+                    </div>
+                </div>
+
                 <p>{{ trans('messages.tracking_domain.show.redirect_setup.test') }}</p>
                 <a id="btnTest" href="#" class="btn btn-secondary mr-2" target="_blank">{{ trans('messages.tracking_domain.show.redirect_setup.test_button') }}</a>
             @else

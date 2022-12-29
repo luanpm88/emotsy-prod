@@ -25,7 +25,6 @@ namespace Acelle\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Acelle\Notifications\ResetPassword;
-use Acelle\Library\Log as MailLog;
 use Acelle\Library\ExtendedSwiftMessage;
 use Acelle\Model\Setting;
 use Illuminate\Http\UploadedFile;
@@ -164,8 +163,6 @@ class User extends Authenticatable
         if (array_key_exists('error', $result)) {
             throw new \Exception($result['error']);
         }
-
-        MailLog::info('Sent activation email to '.$this->email);
     }
 
     /**
@@ -181,6 +178,7 @@ class User extends Authenticatable
             'last_name' => 'required',
             'timezone' => 'required',
             'language_id' => 'required',
+            'image' => 'nullable|image',
         );
 
         if (isset($this->id)) {
@@ -265,16 +263,6 @@ class User extends Authenticatable
     }
 
     /**
-     * Display customer name: first_name last_name.
-     *
-     * @var string
-     */
-    public function displayName()
-    {
-        return htmlspecialchars(trim($this->first_name.' '.$this->last_name));
-    }
-
-    /**
      * User activation.
      *
      * @return string
@@ -295,7 +283,7 @@ class User extends Authenticatable
 
         $userActivation = $this->userActivation;
 
-        if (!is_object($userActivation)) {
+        if (!$userActivation) {
             $userActivation = new \Acelle\Model\UserActivation();
             $userActivation->user_id = $this->id;
         }
@@ -340,7 +328,7 @@ class User extends Authenticatable
      */
     public function isAdmin()
     {
-        return is_object($this->admin);
+        return !is_null($this->admin);
     }
 
     /**

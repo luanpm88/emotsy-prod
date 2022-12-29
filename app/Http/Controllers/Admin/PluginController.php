@@ -30,7 +30,7 @@ class PluginController extends Controller
 
         $plugins = \Acelle\Model\Plugin::search($request);
 
-        return view('admin.plugins.index', [
+        return view('admin.plugins.index2', [
             'plugins' => $plugins
         ]);
     }
@@ -56,12 +56,21 @@ class PluginController extends Controller
 
         $plugins = \Acelle\Model\Plugin::search($request)->paginate($request->per_page);
 
+        // Do preliminary check before loading the plugins list
+        // For example, in case any plugin cannot be loaded, record the related error
         $settingUrls = [];
         $blacklist = [];
         foreach ($plugins as $plugin) {
+            // Check if there is any error is recorded by the autoloader
+            $error = $plugin->getPluginInfo('error');
+            if (!is_null($error)) {
+                $blacklist[$plugin->name] = 'CANNOT LOAD PLUGIN. Message: '.$error;
+                continue;
+            }
+
             // Generate setting buttons
             try {
-                $composerJson = $plugin->getComposerJson($plugin->name);
+                $composerJson = $plugin->getComposerJson();
                 if (array_key_exists('extra', $composerJson) && array_key_exists('setting-route', $composerJson['extra'])) {
                     $url = action($composerJson['extra']['setting-route']);
                     $settingUrls[$plugin->name] = $url;
@@ -119,20 +128,44 @@ class PluginController extends Controller
             return response()->json(["message" => trans('messages.operation_not_allowed_in_demo')], 404);
         }
 
-        $items = \Acelle\Model\Plugin::whereIn(
-            'uid',
-            is_array($request->uids) ? $request->uids : explode(',', $request->uids)
-        );
+        $plugin = Plugin::findByUid($request->uid);
 
-        foreach ($items->get() as $item) {
-            // authorize
-            if ($request->user()->admin->can('delete', $item)) {
-                $item->deleteAndCleanup();
-            }
+        if (!$request->user()->admin->can('delete', $plugin)) {
+            return $this->notAuthorized();
         }
 
-        // Redirect to my lists page
-        echo trans('messages.plugins.deleted');
+        if ($request->isMethod('post')) {
+            $pluginName = $plugin->name;
+            $plugin->deleteAndCleanup();
+
+            return view('admin.plugins.deleted', [
+                'pluginName' => $pluginName,
+            ]);
+        }
+
+        return view('admin.plugins.delete', [
+            'plugin' => $plugin,
+        ]);
+
+        // $items = \Acelle\Model\Plugin::whereIn(
+        //     'uid',
+        //     is_array($request->uids) ? $request->uids : explode(',', $request->uids)
+        // );
+
+        // foreach ($items->get() as $item) {
+        //     // authorize
+        //     if ($request->user()->admin->can('delete', $item)) {
+        //         $item->deleteAndCleanup();
+        //     }
+        // }
+
+        // if(!$request->ajax()){
+        //     return redirect()->action('Admin\PluginController@index')
+        //         ->with('alert-success',  trans('messages.plugins.deleted'));
+        // }
+
+        // // Redirect to my lists page
+        // echo trans('messages.plugins.deleted');
     }
 
     /**
@@ -144,7 +177,7 @@ class PluginController extends Controller
      */
     public function disable(Request $request)
     {
-        $items = \Acelle\Model\Plugin::whereIn(
+        $items = Plugin::whereIn(
             'uid',
             is_array($request->uids) ? $request->uids : explode(',', $request->uids)
         );
@@ -154,6 +187,11 @@ class PluginController extends Controller
             if ($request->user()->admin->can('disable', $item)) {
                 $item->disable();
             }
+        }
+
+        if (!$request->ajax()) {
+            return redirect()->back()
+                ->with('alert-success', trans('messages.plugins.disabled'));
         }
 
         // Redirect to my lists page
@@ -169,16 +207,21 @@ class PluginController extends Controller
      */
     public function enable(Request $request)
     {
-        $items = \Acelle\Model\Plugin::whereIn(
+        $plugins = Plugin::whereIn(
             'uid',
             is_array($request->uids) ? $request->uids : explode(',', $request->uids)
         );
 
-        foreach ($items->get() as $item) {
+        foreach ($plugins->get() as $plugin) {
             // authorize
-            if ($request->user()->admin->can('enable', $item)) {
-                $item->activate();
+            if ($request->user()->admin->can('enable', $plugin)) {
+                $plugin->activate();
             }
+        }
+
+        if (!$request->ajax()) {
+            return redirect()->back()
+                ->with('alert-success', trans('messages.plugins.enabled'));
         }
 
         // Redirect to my lists page
@@ -205,5 +248,11 @@ class PluginController extends Controller
             'server' => $plugin,
             'options' => $options,
         ]);
+    }
+
+    public function reindex(Request $request)
+    {
+        Plugin::resetPluginMasterFile();
+        echo "done";
     }
 }

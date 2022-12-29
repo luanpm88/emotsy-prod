@@ -38,7 +38,7 @@
 					<span class="text-muted second-line-mobile">{{ trans('messages.sending_server') }}</span>
 				</td>
 				<td>
-					<span class="no-margin kq_search">{{ Auth::user()->customer->formatDateTime($item->created_at, 'date_full') }}</span>
+					<span class="no-margin kq_search">{{ Auth::user()->customer->formatDateTime($item->created_at, 'datetime_full') }}</span>
 					<span class="text-muted second-line-mobile">{{ trans('messages.created_at') }}</span>
 				</td>
 				@if ($item->trackingLog->campaign->campaignWebhooks()->click()->count())
@@ -84,18 +84,14 @@
 	
 @elseif (!empty(request()->keyword) || !empty(request()->filters["campaign_uid"]))
 	<div class="empty-list">
-		<span class="material-symbols-rounded">
-auto_awesome
-</span>
+		<span class="material-symbols-rounded">auto_awesome</span>
 		<span class="line-1">
 			{{ trans('messages.no_search_result') }}
 		</span>
 	</div>
 @else					
 	<div class="empty-list">
-		<span class="material-symbols-rounded">
-auto_awesome
-</span>
+		<span class="material-symbols-rounded">auto_awesome</span>
 		<span class="line-1">
 			{{ trans('messages.log_empty_line_1') }}
 		</span>

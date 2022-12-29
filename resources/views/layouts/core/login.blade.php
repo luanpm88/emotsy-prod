@@ -27,11 +27,7 @@
 
                             <div class="text-center login-header">
                                 <a class="main-logo-big" href="{{ action('HomeController@index') }}">
-                                    @if (\Acelle\Model\Setting::get('site_logo_big'))
-                                        <img src="{{ action('SettingController@file', \Acelle\Model\Setting::get('site_logo_big')) }}" alt="">
-                                    @else
-                                        <img src="{{ URL::asset('images/logo_big.svg') }}" alt="">
-                                    @endif
+                                    <img src="{{ getSiteLogoUrl('light') }}" alt="">
                                 </a>
                             </div>
 
@@ -70,7 +66,7 @@
             <!-- Footer -->
             <div class="small">
                 <div class="footer text-white text-center py-3" style="width: 100%">
-                    {!! trans('messages.copy_right_light') !!}
+                    {!! trans('messages.brand.copyright', ['app_name' => get_app_name()] ) !!}
                 </div>
             </div>
             <!-- /footer -->

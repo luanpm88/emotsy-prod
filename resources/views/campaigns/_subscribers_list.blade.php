@@ -6,7 +6,7 @@
             <tr>
                 <td width="1%">
                     <div class="text-nowrap">
-                        <div class="checkbox inline">
+                        <div class="checkbox inline me-1">
                             <label>
                                 <input type="checkbox" class="node styled"
                                     name="uids[]"
@@ -43,7 +43,7 @@
 
                 @if (in_array("created_at", is_array(request()->columns) ? request()->columns : []))
                     <td>
-                        <span class="no-margin stat-num">{{ Auth::user()->customer->formatDateTime($subscriber->created_at, 'date_full') }}</span>
+                        <span class="no-margin stat-num">{{ Auth::user()->customer->formatDateTime($subscriber->created_at, 'datetime_full') }}</span>
                         <br>
                         <span class="text-muted2">{{ trans('messages.created_at') }}</span>
                     </td>
@@ -51,14 +51,14 @@
 
                 @if (in_array("updated_at", is_array(request()->columns) ? request()->columns : []))
                     <td>
-                        <span class="no-margin stat-num">{{ Auth::user()->customer->formatDateTime($subscriber->updated_at, 'date_full') }}</span>
+                        <span class="no-margin stat-num">{{ Auth::user()->customer->formatDateTime($subscriber->updated_at, 'datetime_full') }}</span>
                         <br>
                         <span class="text-muted2">{{ trans('messages.updated_at') }}</span>
                     </td>
                 @endif
 
                 <td>
-                    <span class="no-margin stat-num">{{ null !== $subscriber->lastOpenLog($campaign) ? Auth::user()->customer->formatDateTime($subscriber->lastOpenLog($campaign)->created_at, 'date_full') : "--" }}</span>
+                    <span class="no-margin stat-num">{{ null !== $subscriber->lastOpenLog($campaign) ? Auth::user()->customer->formatDateTime($subscriber->lastOpenLog($campaign)->created_at, 'datetime_full') : "--" }}</span>
                     <br>
                     <span class="text-muted2">{{ trans('messages.last_open') }}</span>
                     @if (null !== $subscriber->lastOpenLog($campaign))
@@ -68,7 +68,7 @@
                 </td>
 
                 <td>
-                    <span class="no-margin stat-num">{{ null !== $subscriber->lastClickLog($campaign) ? Auth::user()->customer->formatDateTime($subscriber->lastClickLog($campaign)->created_at, 'date_full') : "--" }}</span>
+                    <span class="no-margin stat-num">{{ null !== $subscriber->lastClickLog($campaign) ? Auth::user()->customer->formatDateTime($subscriber->lastClickLog($campaign)->created_at, 'datetime_full') : "--" }}</span>
                     <br>
                     <span class="text-muted2">{{ trans('messages.last_click') }}</span>
                     @if (null !== $subscriber->lastClickLog($campaign))
@@ -81,9 +81,7 @@
                 <td class="text-end text-nowrap pe-0">
                     @if (\Gate::allows('update', $subscriber))
                     <a href="{{ action('SubscriberController@edit', ['list_uid' => $list->uid, "uid" => $subscriber->uid]) }}" role="button" class="btn btn-secondary btn-icon">
-                        <span class="material-symbols-rounded">
-edit
-</span>
+                        <span class="material-symbols-rounded">edit</span>
                     </a>
 					@endif
 					<div class="btn-group">
@@ -92,14 +90,10 @@ edit
 							@if (\Gate::allows('subscribe', $subscriber))
 								<li><a class="dropdown-item list-action-single"
                                     link-method="POST"
-                                    href="{{ action('SubscriberController@subscribe', ['list_uid' => $list->uid, "uids" => $subscriber->uid]) }}"><span class="material-symbols-rounded">
-mark_email_read
-</span> {{ trans('messages.subscribe') }}</a></li>
+                                    href="{{ action('SubscriberController@subscribe', ['list_uid' => $list->uid, "uids" => $subscriber->uid]) }}"><span class="material-symbols-rounded">mark_email_read</span> {{ trans('messages.subscribe') }}</a></li>
 							@endif
 							@if (\Gate::allows('unsubscribe', $subscriber))
-								<li><a class="dropdown-item list-action-single"  link-method="POST" href="{{ action('SubscriberController@unsubscribe', ['list_uid' => $list->uid, "uids" => $subscriber->uid]) }}"><span class="material-symbols-rounded">
-logout
-</span> {{ trans('messages.unsubscribe') }}</a></li>
+								<li><a class="dropdown-item list-action-single"  link-method="POST" href="{{ action('SubscriberController@unsubscribe', ['list_uid' => $list->uid, "uids" => $subscriber->uid]) }}"><span class="material-symbols-rounded">logout</span> {{ trans('messages.unsubscribe') }}</a></li>
 							@endif
 
 							<li>
@@ -109,9 +103,7 @@ logout
 										'from_uid' => $list->uid,
 										'action' => 'copy',
 									]) }}">
-										<span class="material-symbols-rounded">
-copy_all
-</span> {{ trans('messages.copy_to') }}
+										<span class="material-symbols-rounded">copy_all</span> {{ trans('messages.copy_to') }}
 								</a>
 							</li>
 							<li>
@@ -121,9 +113,7 @@ copy_all
 										'from_uid' => $list->uid,
 										'action' => 'move',
 									]) }}">
-									<span class="material-symbols-rounded">
-exit_to_app
-</span> {{ trans('messages.move_to') }}
+									<span class="material-symbols-rounded">exit_to_app</span> {{ trans('messages.move_to') }}
 								</a>
 							</li>
 							@if (\Gate::allows('update', $subscriber))
@@ -132,16 +122,12 @@ exit_to_app
                                     link-method="POST"
                                     link-confirm="{{ trans('messages.subscribers.resend_confirmation_email.confirm') }}"
                                     href="{{ action('SubscriberController@resendConfirmationEmail', ['list_uid' => $list->uid, "uids" => $subscriber->uid]) }}">
-										<span class="material-symbols-rounded">
-mark_email_read
-</span> {{ trans('messages.subscribers.resend_confirmation_email') }}
+										<span class="material-symbols-rounded">mark_email_read</span> {{ trans('messages.subscribers.resend_confirmation_email') }}
 									</a>
 								</li>
 							@endif
 							@if (\Gate::allows('delete', $subscriber))
-								<li><a class="dropdown-item list-action-single" link-confirm="{{ trans('messages.delete_subscribers_confirm') }}" href="{{ action('SubscriberController@delete', ['list_uid' => $list->uid, "uids" => $subscriber->uid]) }}"><span class="material-symbols-rounded">
-delete_outline
-</span> {{ trans("messages.delete") }}</a></li>
+								<li><a class="dropdown-item list-action-single" link-confirm="{{ trans('messages.delete_subscribers_confirm') }}" href="{{ action('SubscriberController@delete', ['list_uid' => $list->uid, "uids" => $subscriber->uid]) }}"><span class="material-symbols-rounded">delete_outline</span> {{ trans("messages.delete") }}</a></li>
 							@endif	
 						</ul>
 					</div>
@@ -154,18 +140,14 @@ delete_outline
     
 @elseif (!empty(request()->keyword) || !empty(request()->filters))
     <div class="empty-list">
-        <span class="material-symbols-rounded">
-people
-</span>
+        <span class="material-symbols-rounded">people</span>
         <span class="line-1">
             {{ trans('messages.no_search_result') }}
         </span>
     </div>
 @else
     <div class="empty-list">
-        <span class="material-symbols-rounded">
-people
-</span>
+        <span class="material-symbols-rounded">people</span>
         <span class="line-1">
             {{ trans('messages.subscriber_empty_line_1') }}
         </span>

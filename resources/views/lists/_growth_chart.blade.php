@@ -174,9 +174,7 @@
         @else
             <div class="empty-chart-pie">
                 <div class="empty-list">
-                    <span class="material-symbols-rounded">
-auto_awesome
-</span>
+                    <span class="material-symbols-rounded">auto_awesome</span>
                     <span class="line-1">
                         {{ trans('messages.log_empty_line_1') }}
                     </span>

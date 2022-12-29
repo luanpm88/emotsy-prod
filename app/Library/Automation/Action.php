@@ -100,7 +100,8 @@ abstract class Action
 
     public function recordLastExecutedTime()
     {
-        $this->last_executed = Carbon::now()->timestamp;
+        // Correct: for storing a string as datetime, use the conventional UTC timezone
+        $this->last_executed = Carbon::now('UTC')->timestamp;
     }
 
     public function hasChild($e)
@@ -171,7 +172,6 @@ abstract class Action
         }
 
         try {
-
             // Execute once only
             if (!is_null($this->getLastExecuted())) {
                 throw new Exception("Action already executed");

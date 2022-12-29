@@ -132,13 +132,9 @@
 						<table>
 							<tr>
 								<td class="title" style="padding-left:0;padding-right:0;">
-									@if (\Acelle\Model\Setting::get('site_logo_small'))
-                                        <img width="200px" class="logo" src="{{ action('SettingController@file', \Acelle\Model\Setting::get('site_logo_small')) }}" alt="">
-                                    @else
-                                        <span class="default-app-logo">
-                                            <img width="200px" class="logo" src="{{ url('images/logo-pdf.png') }}" alt="">
-                                        </span>
-                                    @endif      
+									<span class="default-app-logo">
+										<img width="200px" class="logo" src="{{ getSiteLogoUrl('dark') }}" alt="">
+									</span>
 								</td>
 
 								<td style="padding-left:0;padding-right:0;">

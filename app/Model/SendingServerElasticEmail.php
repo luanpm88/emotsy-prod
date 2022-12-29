@@ -26,6 +26,8 @@ use Acelle\Library\Log as MailLog;
 use Acelle\Library\StringHelper;
 use CurlFile;
 
+use function Acelle\Helpers\url_get_contents_ssl_safe;
+
 class SendingServerElasticEmail extends SendingServer
 {
     public const WEBHOOK = 'elasticemail';
@@ -138,7 +140,7 @@ class SendingServerElasticEmail extends SendingServer
 
         $uri = self::API_ENDPOINT.'/account/updateadvancedoptions?apikey='.$this->api_key.'&allowCustomHeaders=true';
 
-        $response = file_get_contents($uri);
+        $response = url_get_contents_ssl_safe($uri);
         $responseJson = json_decode($response);
 
         if ($responseJson->success == true) {
@@ -167,7 +169,7 @@ class SendingServerElasticEmail extends SendingServer
         $subscribeUrl = urlencode($this->getSubscribeUrl());
         $endpoint = self::API_ENDPOINT.'/account/addwebhook?apikey='.$this->api_key.'&webNotificationUrl='.$subscribeUrl.'&name='.self::WEBHOOK_NAME.'&notifyOncePerEmail=&notificationForSent=&notificationForOpened=&notificationForClicked=&notificationForUnsubscribed=&notificationForAbuseReport=true&notificationForError=true';
 
-        $response = json_decode(file_get_contents($endpoint), true);
+        $response = json_decode(url_get_contents_ssl_safe($endpoint), true);
 
         if ($response['success'] == true) {
             MailLog::info('webhook set!');
@@ -184,7 +186,7 @@ class SendingServerElasticEmail extends SendingServer
     {
         MailLog::info('Deleting webhooks if any');
         $loadUri = self::API_ENDPOINT.'/account/loadwebhook?apikey='.$this->api_key.'&limit=1000';
-        $webhooks = json_decode(file_get_contents($loadUri), true)['data'];
+        $webhooks = json_decode(url_get_contents_ssl_safe($loadUri), true)['data'];
         MailLog::info(sizeof($webhooks).' webhooks found');
 
         foreach ($webhooks as $webhook) {
@@ -192,7 +194,7 @@ class SendingServerElasticEmail extends SendingServer
             if ($this->isSubscribeUrl($webhook['url']) || $webhook['name'] == self::WEBHOOK_NAME) {
                 MailLog::info('Deleting '.$webhook['url'].' ('.$webhook['name'].')');
                 $deleteUri = $deleteUri = self::API_ENDPOINT.'/account/deletewebhook?apikey='.$this->api_key.'&webhookID='.$webhook['webhookid'];
-                $result = json_decode(file_get_contents($deleteUri), true);
+                $result = json_decode(url_get_contents_ssl_safe($deleteUri), true);
                 if ($result['success'] != true) {
                     MailLog::error('Cannot delete webhook '.$webhook['url'].' ('.$webhook['name'].')');
                     throw new \Exception('Cannot delete webhook '.$webhook['url'].' ('.$webhook['name'].')');
@@ -375,7 +377,7 @@ class SendingServerElasticEmail extends SendingServer
     {
         // Sample result:
         // {"success":true,"data":[{"domain":"marcurselli.com (info@marcurselli.com)","defaultdomain":true,"spf":true,"dkim":true,"mx":true,"dmarc":true,"isrewritedomainvalid":true,"verify":false,"type":0,"trackingstatus":0,"certificatestatus":0,"certificatevalidationerror":null,"trackingtypeuserrequest":null,"verp":true,"custombouncesdomain":"bounces.marcurselli.com","iscustombouncesdomaindefault":true,"ownership":0},{"domain":"acellemail.com","defaultdomain":false,"spf":false,"dkim":false,"mx":true,"dmarc":false,"isrewritedomainvalid":false,"verify":true,"type":0,"trackingstatus":2,"certificatestatus":0,"certificatevalidationerror":null,"trackingtypeuserrequest":null,"verp":true,"custombouncesdomain":null,"iscustombouncesdomaindefault":false,"ownership":0}]}
-        $response = file_get_contents(self::API_ENDPOINT.'/domain/list?apikey='.$this->api_key);
+        $response = url_get_contents_ssl_safe(self::API_ENDPOINT.'/domain/list?apikey='.$this->api_key);
         $json = json_decode($response, true);
         if ($json['success'] == false) {
             throw new \Exception($json['error']);
@@ -407,7 +409,7 @@ class SendingServerElasticEmail extends SendingServer
      */
     public function test()
     {
-        $response = file_get_contents(self::API_ENDPOINT.'/domain/list?apikey='.$this->api_key);
+        $response = url_get_contents_ssl_safe(self::API_ENDPOINT.'/domain/list?apikey='.$this->api_key);
         $json = json_decode($response, true);
         if ($json['success'] == false) {
             throw new \Exception('Failed to connect to ElasticEmail: '.$response);

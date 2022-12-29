@@ -26,7 +26,7 @@
                         <div class="price-table">
                     
                             @foreach ($plans as $plan)
-                                <div class="price-line {{ is_object($customer->subscription) && !$customer->subscription->isEnded() && $customer->subscription->plan->uid == $plan->uid ? 'current' : '' }}">
+                                <div class="price-line {{ $customer->getNewOrActiveSubscription() && !$customer->getNewOrActiveSubscription()->isEnded() && $customer->getNewOrActiveSubscription()->plan->uid == $plan->uid ? 'current' : '' }}">
                                     <div class="price-header">
                                         <lable class="plan-title">{{ $plan->name }}</lable>
                                         <p>{{ $plan->description }}</p>
@@ -39,7 +39,7 @@
                                         </div>
                                         <div>{{ $plan->displayFrequencyTime() }}</div>
                                         
-                                        @if (is_object($customer->subscription) && !$customer->subscription->isEnded() && $customer->subscription->plan->uid == $plan->uid)
+                                        @if ($customer->getNewOrActiveSubscription() && !$customer->getNewOrActiveSubscription()->isEnded() && $customer->getNewOrActiveSubscription()->plan->uid == $plan->uid)
                                             <a
                                                 href="javascript:;"
                                                 class="btn btn-secondary mt-30" disabled>

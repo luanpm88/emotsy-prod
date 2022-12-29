@@ -77,14 +77,25 @@
                 {{ trans('messages.sending_serbers.sendgrid.allow_verify.intro') }}
             </p>
 
-            @include('helpers.form_control', [
-                'type' => 'checkbox2',
-                'label' => trans('messages.allow_verify_domain_against_acelle'),
-                'name' => 'options[allow_verify_domain_against_acelle]',
-                'value' => $server->getOption('allow_verify_domain_against_acelle'),
-                'help_class' => 'sending_server',
-                'options' => ['no', 'yes'],
-            ])
+            <div>
+                <span class="form-label d-flex align-items-center">
+                    <label class="checkbox-label readonly">
+                        <input type="hidden" name="options[allow_verify_domain_against_acelle]" value="no" />
+                        <input                           
+                            type="checkbox"
+                            class="styled me-2"
+                            name="options[allow_verify_domain_against_acelle]"
+                            {{ $server->getOption('allow_verify_domain_against_acelle') == 'yes' ? 'checked' : '' }}
+                            value="yes"
+                            readonly
+                        >
+                        <span class="check-symbol"></span>
+                        <span class="ms-1">
+                            {{ trans('messages.allow_verify_domain_against_system') }}
+                        </span>
+                    </label>
+                </span>
+            </div>
 
             <hr>
             <div class="mt-20">

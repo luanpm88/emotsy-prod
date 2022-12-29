@@ -1,6 +1,6 @@
-@extends('layouts.core.backend')
 
-@section('title', $admin->user->displayName())
+
+@section('title', $admin->displayName())
     
 @section('page_header')
     
@@ -11,9 +11,7 @@
             <li class="breadcrumb-item active">{{ trans('messages.update') }}</li>
         </ul>
         <h1>
-            <span class="text-semibold"><span class="material-symbols-rounded">
-                            person_outline
-                            </span> {{ $admin->user->displayName() }}</span>
+            <span class="text-semibold"><span class="material-symbols-rounded">person_outline</span> {{ $admin->displayName() }}</span>
         </h1>
     </div>
                 

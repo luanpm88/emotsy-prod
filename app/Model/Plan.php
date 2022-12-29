@@ -47,6 +47,8 @@ class Plan extends Model
     //
     public const UNLIMITED_PLAN_ID = '9999';
 
+    public const UNLIMITED_TIME = 'unlimited';
+
     /**
      * The attributes that are mass assignable.
      *
@@ -730,6 +732,8 @@ class Plan extends Model
             $query = $query->where('plans.admin_id', '=', $request->user()->admin->id);
         }
 
+
+        // Only allow users to change to a plan with the same PERIOD
         if ($request->change_from_uid) {
             $plan = \Acelle\Model\Plan::findByUid($request->change_from_uid);
 
@@ -749,11 +753,14 @@ class Plan extends Model
     public function displayFrequencyTime()
     {
         // unlimited
-        if ($this->isTimeUnlimited()) {
+        if ($this->isUnlimited()) {
             return trans('messages.plan_time_unlimited');
         }
 
-        return $this->frequency_amount.' ' . trans('messages.' . \Acelle\Library\Tool::getPluralPrase($this->frequency_unit, $this->frequency_amount));
+        return trans('messages.plan.period', [
+            'amount' => number_with_delimiter($this->frequency_amount),
+            'unit' => trans('messages.' . \Acelle\Library\Tool::getPluralPrase($this->frequency_unit, $this->frequency_amount)),
+        ]);
     }
 
     /**
@@ -788,16 +795,6 @@ class Plan extends Model
             ['value' => 'hour', 'text' => trans('messages.hour')],
             ['value' => 'day', 'text' => trans('messages.day')],
         ];
-    }
-
-    /**
-     * Check if plan time is unlimited.
-     *
-     * @return bool
-     */
-    public function isTimeUnlimited()
-    {
-        return $this->frequency_unit == 'unlimited';
     }
 
     /**
@@ -892,7 +889,7 @@ class Plan extends Model
 
         // workaround
         if (empty($this->description)) {
-            $this->description = '[ plan description goes here ]';
+            $this->description = '[ プランの説明はこちら ]';
         }
 
         $this->options = json_encode($saveOptions);
@@ -1041,7 +1038,7 @@ class Plan extends Model
         $query = $this->plansSendingServers()->where('is_primary', '=', true);
         if (!$query->count()) {
             $first = $this->plansSendingServers()->first();
-            if (is_object($first)) {
+            if ($first) {
                 $first->is_primary = true;
                 $first->save();
             }
@@ -1090,7 +1087,7 @@ class Plan extends Model
 
         $pss = $this->plansSendingServers()->where('is_primary', '=', true)->first();
         // @todo: raise 1 cái exception nếu $pss null, ko return null sẽ gây lỗi tiềm ẩn
-        return is_object($pss) ? $pss->sendingServer->mapType() : null;
+        return $pss ? $pss->sendingServer->mapType() : null;
     }
 
     /**
@@ -1164,7 +1161,7 @@ class Plan extends Model
      */
     public function hasPrimarySendingServer()
     {
-        return is_object($this->primarySendingServer());
+        return !is_null($this->primarySendingServer());
     }
 
     /**
@@ -1465,5 +1462,10 @@ class Plan extends Model
     public function isCustomTrackingDomainRequired()
     {
         return $this->own_tracking_domain_required;
+    }
+
+    public function isUnlimited()
+    {
+        return $this->frequency_unit == self::UNLIMITED_TIME;
     }
 }

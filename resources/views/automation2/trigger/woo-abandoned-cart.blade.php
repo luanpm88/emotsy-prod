@@ -14,9 +14,7 @@
                         $waitTime = $trigger->getOption('wait') ? $trigger->getOption('wait') : '24_hour'
                     @endphp
                     <div class="check-icon mr-4 pt-1">
-                        <span class="material-symbols-rounded text-success">
-                            check_circle
-                        </span>
+                        <span class="material-symbols-rounded text-success">check_circle</span>
                     </div>
                     <div class="setting-content">
                         {!! trans('messages.cart.send_notification_email_after', [
@@ -38,9 +36,7 @@
                             $list = Acelle\Model\MailList::findByUid($trigger->getOption('list_uid'));
                         @endphp
                         <div class="check-icon mr-4 pt-1">
-                            <span class="material-symbols-rounded text-success">
-                                check_circle
-                            </span>
+                            <span class="material-symbols-rounded text-success">check_circle</span>
                         </div>
                         <div class="setting-content">
                             {!! trans('messages.cart.auto_add_buyer_to_list', [
@@ -55,9 +51,7 @@
                         </div>
                     @else
                         <div class="check-icon mr-4 pt-1">
-                            <span class="material-symbols-rounded text-success">
-                                check_circle
-                            </span>
+                            <span class="material-symbols-rounded text-success">check_circle</span>
                         </div>
                         <div class="setting-content">
                             {!! trans('messages.cart.auto_add_buyer_to_list.none') !!}
@@ -72,9 +66,7 @@
                 </div>
                 <div class="d-flex my-2 py-1">
                     <div class="check-icon mr-4 pt-1">
-                        <span class="material-symbols-rounded text-success">
-                            check_circle
-                        </span>
+                        <span class="material-symbols-rounded text-success">check_circle</span>
                     </div>
                     <div class="setting-content">
                         {!! trans('messages.cart.connected_to_store', [
@@ -123,9 +115,7 @@
                 <div class="d-flex align-items-center store-states justify-content-space-between mt-4">
                     <div class="d-flex align-items-center">
                         <span class="store-icon">
-                            {{-- <span class="material-symbols-rounded">
-                                loyalty
-                            </span> --}}
+                            {{-- <span class="material-symbols-rounded">loyalty</span> --}}
                         </span>
                         <div class="">
                             <label class="mb-0 display-1">{{ $shopinfo['products_count'] }}</label>
@@ -134,9 +124,7 @@
                     </div>
                     <div class="d-flex align-items-center store-states">
                         <span class="store-icon">
-                            {{-- <span class="material-symbols-rounded">
-                                assignment
-                            </span> --}}
+                            {{-- <span class="material-symbols-rounded">assignment</span> --}}
                         </span>
                         <div class="">
                             <label class="mb-0 display-1">{{ $shopinfo['orders_count'] }}</label>
@@ -145,9 +133,7 @@
                     </div>
                     <div class="d-flex align-items-center store-states">
                         <span class="store-icon">
-                            {{-- <span class="material-symbols-rounded">
-                                insights
-                            </span> --}}
+                            {{-- <span class="material-symbols-rounded">insights</span> --}}
                         </span>
                         <div class="">
                             <label class="mb-0 display-1">{!! $shopinfo['total_sales'] !!}</label>

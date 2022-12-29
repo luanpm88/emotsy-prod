@@ -60,7 +60,7 @@ class MailListController extends Controller
         $list = new \Acelle\Model\MailList(['all_sending_servers' => true]);
         $list->contact = new \Acelle\Model\Contact();
 
-        if (is_object($customer->contact)) {
+        if ($customer->contact) {
             $list->contact->fill($customer->contact->toArray());
             $list->send_to = $customer->contact->email;
         } else {
@@ -394,7 +394,7 @@ class MailListController extends Controller
     {
         $list = \Acelle\Model\MailList::findByUid($request->uid);
 
-        if (is_object($list)) {
+        if ($list) {
             $list_id = $list->id;
         } else {
             $list_id = null;
@@ -445,7 +445,7 @@ class MailListController extends Controller
         $list = \Acelle\Model\MailList::findByUid($request->uid);
         $customer = $request->user()->customer;
 
-        if (is_object($list)) {
+        if ($list) {
             $list_id = $list->id;
         } else {
             $list_id = null;
@@ -528,7 +528,7 @@ class MailListController extends Controller
     {
         $list = \Acelle\Model\MailList::findByUid($request->uid);
 
-        if (!is_object($list)) {
+        if (!$list) {
             $list = new \Acelle\Model\MailList();
             $list->uid = '000';
             $list->customer_id = $request->user()->customer->id;
@@ -641,7 +641,7 @@ class MailListController extends Controller
         $list = \Acelle\Model\MailList::findByUid($request->uid);
 
         // Check if list does exist
-        if (!is_object($list)) {
+        if (!$list) {
             return view('somethingWentWrong', ['message' => trans('messages.embedded_form.list_not_exsit')]);
         }
 
@@ -665,7 +665,13 @@ class MailListController extends Controller
 
         if (\Acelle\Model\Setting::get('embedded_form_recaptcha') == 'yes') {
             if ($request->hasCaptcha) {
-                $success = \Acelle\Library\Tool::checkReCaptcha($request);
+                // @hCaptcha
+                if (\Acelle\Model\Setting::getCaptchaProvider() == 'hcaptcha') {
+                    $hcaptcha = \Acelle\Hcaptcha\Client::initialize();
+                    $success = $hcaptcha->check($request);
+                } else {
+                    $success = \Acelle\Library\Tool::checkReCaptcha($request);
+                }
             } else {
                 return view('lists.embedded_form_captcha', [
                     'list' => $list,
@@ -676,13 +682,13 @@ class MailListController extends Controller
         }
 
         // Language
-        if (is_object($list->customer) && is_object($list->customer->language)) {
+        if ($list->customer && $list->customer->language) {
             \App::setLocale($list->customer->language->code);
             \Carbon\Carbon::setLocale($list->customer->language->code);
         }
 
         // Check if list does exist
-        if (!is_object($list)) {
+        if (!$list) {
             return view('somethingWentWrong', ['message' => trans('messages.embedded_form.list_not_exsit')]);
         }
 
@@ -710,9 +716,7 @@ class MailListController extends Controller
             $errs = [];
             foreach ($validator->errors()->toArray() as $key => $error) {
                 $field = $list->getFieldByTag($key);
-                $errs[] = trans('messages.list.field_not_valid', [
-                    'field' => $field->label,
-                ]);
+                $errs[] = $error[0];
             }
 
             if (strpos($url, '?') !== false) {
@@ -853,7 +857,7 @@ class MailListController extends Controller
         $list = \Acelle\Model\MailList::findByUid($request->uid);
         $subscriber = $list->subscribers()->where('email', '=', strtolower(trim($request->EMAIL)))->first();
 
-        if (is_object($subscriber) && $subscriber->status == \Acelle\Model\Subscriber::STATUS_SUBSCRIBED) {
+        if ($subscriber && $subscriber->status == \Acelle\Model\Subscriber::STATUS_SUBSCRIBED) {
             $result = trans('messages.email_already_subscribed');
         } else {
             $result = true;
@@ -873,7 +877,7 @@ class MailListController extends Controller
 
         $options = [];
         foreach ($customers->get() as $customer) {
-            $options[] = ['text' => $customer->user->displayName(), 'value' => $customer->uid];
+            $options[] = ['text' => $customer->displayName(), 'value' => $customer->uid];
         }
 
         return view('lists.cloneForCustomersChoose', [

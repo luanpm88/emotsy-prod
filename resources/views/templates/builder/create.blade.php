@@ -1,4 +1,6 @@
-@extends('layouts.core.frontend')
+@extends('layouts.core.frontend', [
+	'menu' => 'template',
+])
 
 @section('title', trans('messages.create_template'))
 
@@ -78,16 +80,12 @@
 												</select>										
 												<input type="hidden" name="sort_direction" value="asc" />
                                                 <button class="btn btn-xs sort-direction" rel="asc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
-													<span class="material-symbols-rounded desc">
-sort
-</span>
+													<span class="material-symbols-rounded desc">sort</span>
 												</button>
 											</span>
 											<span class="text-nowrap">
 												<input type="text" name="keyword" class="form-control search" value="{{ request()->keyword }}" placeholder="{{ trans('messages.type_to_search') }}" />
-												<span class="material-symbols-rounded">
-search
-</span>
+												<span class="material-symbols-rounded">search</span>
 											</span>
 										</div>
 									</div>

@@ -7,33 +7,35 @@ use Illuminate\Support\Facades\Log as LaravelLog;
 use Acelle\Model\Subscription;
 use Acelle\Model\Setting;
 use Acelle\Model\Plan;
+use Acelle\Model\Invoice;
 use Acelle\Cashier\Cashier;
 use Acelle\Cashier\Services\StripeGatewayService;
 use Carbon\Carbon;
 use Acelle\Model\SubscriptionLog;
 use Acelle\Library\Facades\Billing;
+use Acelle\Library\Facades\SubscriptionFacade;
 
 class SubscriptionController extends Controller
 {
     public function index(Request $request)
     {
-        // init
-        $customer = $request->user()->customer;
-        $subscription = $customer->subscription;
-
-        // 1. HAVE NOT HAD SUBSCRIPTION YET OR SUBSCRIPTION IS ENDED
-        if (!$subscription ||
-            $subscription->isEnded()
-        ) {
-            return redirect()->action('SubscriptionController@selectPlan');
+        // cronjob check
+        SubscriptionFacade::checkExpiration();
+        SubscriptionFacade::createRenewInvoice();
+        $customers = \Acelle\Model\Customer::all();
+        foreach ($customers as $customer) {
+            SubscriptionFacade::checkAndAutoPayRenewInvoiceByCustomer($customer);
         }
 
-        // @todo không để đây, chỉ test thôi, cần move qua cronjob
-        // 1. 1 End luôn subscription nếu đã hết hạn
-        //    2 Sinh ra RENEW invoice
-        //    3 Xử lý thanh toán
-        $subscription->check();
-        // $subscription->processRenewInvoice();
+        // init
+        $customer = $request->user()->customer;
+        $subscription = $customer->getNewOrActiveSubscription();
+
+        // 1. HAVE NOT HAD NEW/ACTIVE SUBSCRIPTION YET
+        if (!$subscription) {
+            // User chưa có subscription sẽ được chuyển qua chọn plan
+            return redirect()->action('SubscriptionController@selectPlan');
+        }
 
         // 2. IF PLAN NOT ACTIVE
         if (!$subscription->plan->isActive()) {
@@ -58,59 +60,75 @@ class SubscriptionController extends Controller
 
     public function selectPlan(Request $request)
     {
-        //
+        // init
         $customer = $request->user()->customer;
-        $subscription = $customer->subscription;
+        $subscription = $customer->getNewOrActiveSubscription();
 
         return view('subscription.selectPlan', [
             'plans' => Plan::getAvailablePlans(),
             'subscription' => $subscription,
+            'getLastCancelledOrEndedSubscription' => $customer->getLastCancelledOrEndedSubscription(),
         ]);
     }
 
-    public function init(Request $request)
+    public function assignPlan(Request $request)
     {
-        // Get current customer
         $customer = $request->user()->customer;
-        $subscription = $customer->subscription;
         $plan = Plan::findByUid($request->plan_uid);
 
-        // try to save old invoice billing info
-        if ($subscription &&
-            !$subscription->isEnded() &&
-            $subscription->getUnpaidInvoice()
-        ) {
-            $oldInvoice = $subscription->getUnpaidInvoice();
-
-            $oldBillingInfo = [
-                'billing_first_name' => $oldInvoice->billing_first_name,
-                'billing_last_name' => $oldInvoice->billing_last_name,
-                'billing_address' => $oldInvoice->billing_address,
-                'billing_email' => $oldInvoice->billing_email,
-                'billing_phone' => $oldInvoice->billing_phone,
-                'billing_country_id' => $oldInvoice->billing_country_id,
-            ];
+        // already has subscription
+        if ($customer->getCurrentActiveSubscription()) {
+            throw new \Exception('Customer already has active subscription!');
         }
 
-        // create new subscription
-        $subscription = $customer->subscription;
-        $subscription = $customer->assignPlan($plan);
-
-        // create init invoice
-        if (!$subscription->invoices()->new()->count()) {
-            $invoice = $subscription->createInitInvoice();
+        // subscription hiện đang new. Customer muốn thay đổi plan khác?
+        // delete luôn subscription
+        if ($customer->getCurrentNewSubscription()) {
+            $customer->getCurrentNewSubscription()->deleteAndCleanup();
         }
 
-        // copy old billing info
-        if (isset($oldBillingInfo)) {
-            $invoice = $subscription->getUnpaidInvoice();
-
-            $invoice->fill($oldBillingInfo);
-            $invoice->save();
-        }
+        // assign plan
+        $customer->assignPlan($plan);
 
         // Check if subscriotion is new
         return redirect()->action('SubscriptionController@billingInformation');
+    }
+
+    public function billingInformation(Request $request)
+    {
+        $customer = $request->user()->customer;
+        $subscription = $customer->getNewOrActiveSubscription();
+        $invoice = $subscription->getUnpaidInvoice();
+        $billingAddress = $customer->getDefaultBillingAddress();
+
+        // Save posted data
+        if ($request->isMethod('post')) {
+            $validator = $invoice->updateBillingInformation($request->all());
+
+            // redirect if fails
+            if ($validator->fails()) {
+                return response()->view('subscription.billingInformation', [
+                    'invoice' => $invoice,
+                    'billingAddress' => $billingAddress,
+                    'errors' => $validator->errors(),
+                ], 400);
+            }
+
+            // Khúc này customer cập nhật thông tin billing information cho lần tiếp theo
+            $customer->updateBillingInformationFromInvoice($invoice);
+
+            $request->session()->flash('alert-success', trans('messages.billing_address.updated'));
+
+            // return to subscription
+            return redirect()->action('SubscriptionController@payment', [
+                'invoice_uid' => $invoice->uid,
+            ]);
+        }
+
+        return view('subscription.billingInformation', [
+            'invoice' => $invoice,
+            'billingAddress' => $billingAddress,
+        ]);
     }
 
     public function payment(Request $request)
@@ -118,58 +136,50 @@ class SubscriptionController extends Controller
         // Get current customer
         $customer = $request->user()->customer;
 
-        // get invoice
-        $invoice = $customer->invoices()->where('uid', '=', $request->invoice_uid)->first();
+        // get unpaid invoice
+        $invoice = $customer->invoices()->unpaid()->where('uid', '=', $request->invoice_uid)->first();
 
-        if (!$invoice || !$invoice->isNew()) {
+        // no unpaid invoice found
+        if (!$invoice) {
+            // throw new \Exception('Can not find unpaid invoice with id:' . $request->invoice_uid);
+            // just redirect to index
             return redirect()->action('SubscriptionController@index');
         }
 
-        if ($invoice->isNew()) {
-            if ($invoice->getPendingTransaction()) {
-                return view('subscription.pending', [
-                    'invoice' => $invoice,
-                ]);
-
-            // go to billing info + payment
-            } else {
-                // no billing information
-                if (!$invoice->hasBillingInformation()) {
-                    return redirect()->action('SubscriptionController@billingInformation');
-                }
-
-                if ($invoice->isFree()) {
-                    return view('subscription.payment', [
-                        'invoice' => $invoice,
-                    ]);
-                } else {
-                    return view('subscription.payment', [
-                        'invoice' => $invoice,
-                    ]);
-                }
-            }
-        }
-    }
-
-    public function confirmFree(Request $request)
-    {
-        // get invoice
-        $invoice = $request->user()->customer->invoices()->where('uid', '=', $request->invoice_uid)->first();
-
-        if (!$invoice->isFree()) {
-            throw new \Exception('Invoice is not free!');
-        }
-
-        if ($request->payment_method) {
-            $request->user()->customer->updatePaymentMethod([
-                'method' => $request->payment_method,
+        // nếu đang có pending transaction thì luôn show màn hình pending
+        if ($invoice->getPendingTransaction()) {
+            return view('subscription.pending', [
+                'invoice' => $invoice,
             ]);
         }
 
-        $invoice->confirmWithoutPayment();
+        // luôn luôn require billing information
+        if (!$invoice->hasBillingInformation()) {
+            return redirect()->action('SubscriptionController@billingInformation');
+        }
 
-        $request->session()->flash('alert-success', trans('messages.invoice.confirmed'));
-        return redirect()->action('SubscriptionController@index');
+        return view('subscription.payment', [
+            'invoice' => $invoice,
+        ]);
+    }
+
+    public function checkout(Request $request)
+    {
+        $customer = $request->user()->customer;
+        $invoice = $customer->invoices()->unpaid()->where('uid', '=', $request->invoice_uid)->first();
+
+        // no unpaid invoice found
+        if (!$invoice) {
+            throw new \Exception('Customer subscription does not have any unpaid invoice!');
+        }
+
+        // Luôn đặt payment method mặc định cho customer là lần chọn payment gần nhất
+        $request->user()->customer->updatePaymentMethod([
+            'method' => $request->payment_method,
+        ]);
+
+        // redirect to service checkout
+        return redirect()->away($customer->getPreferredPaymentGateway()->getCheckoutUrl($invoice));
     }
 
     public function cancelInvoice(Request $request, $uid)
@@ -187,56 +197,9 @@ class SubscriptionController extends Controller
         return redirect()->action('SubscriptionController@index');
     }
 
-    public function checkout(Request $request)
-    {
-        $customer = $request->user()->customer;
-        $subscription = $customer->subscription;
-        $invoice = $subscription->getUnpaidInvoice();
 
-        $request->user()->customer->updatePaymentMethod([
-            'method' => $request->payment_method,
-        ]);
 
-        // redirect to service checkout
-        return redirect()->away($customer->getPreferredPaymentGateway()->getCheckoutUrl($invoice));
-    }
 
-    public function billingInformation(Request $request)
-    {
-        $customer = $request->user()->customer;
-        $subscription = $customer->subscription;
-        $invoice = $subscription->getUnpaidInvoice();
-        $billingAddress = $customer->getDefaultBillingAddress();
-
-        // Save posted data
-        if ($request->isMethod('post')) {
-            $validator = $invoice->updateBillingInformation($request->all());
-
-            // redirect if fails
-            if ($validator->fails()) {
-                return response()->view('subscription.billingInformation', [
-                    'invoice' => $invoice,
-                    'billingAddress' => $billingAddress,
-                    'errors' => $validator->errors(),
-                ], 400);
-            }
-
-            // update current billing information
-            $customer->updateBillingInformationFromInvoice($invoice);
-
-            $request->session()->flash('alert-success', trans('messages.billing_address.updated'));
-
-            // return to subscription
-            return redirect()->action('SubscriptionController@payment', [
-                'invoice_uid' => $invoice->uid,
-            ]);
-        }
-
-        return view('subscription.billingInformation', [
-            'invoice' => $invoice,
-            'billingAddress' => $billingAddress,
-        ]);
-    }
 
     /**
      * Change plan.
@@ -248,7 +211,7 @@ class SubscriptionController extends Controller
     public function changePlan(Request $request)
     {
         $customer = $request->user()->customer;
-        $subscription = $customer->subscription;
+        $subscription = $customer->getCurrentActiveSubscription();
         $gateway = $customer->getPreferredPaymentGateway();
         $plans = Plan::getAvailablePlans();
 
@@ -262,17 +225,28 @@ class SubscriptionController extends Controller
             $newPlan = Plan::findByUid($request->plan_uid);
 
             try {
-                // set invoice as pending
-                $changePlanInvoice = $subscription->createChangePlanInvoice($newPlan);
+                $changePlanInvoice = null;
+
+                \DB::transaction(function () use ($subscription, $newPlan, &$changePlanInvoice) {
+                    // set invoice as pending
+                    $changePlanInvoice = $subscription->createChangePlanInvoice($newPlan);
+
+                    // Log
+                    SubscriptionFacade::log($subscription, SubscriptionLog::TYPE_CHANGE_PLAN_INVOICE, $changePlanInvoice->uid, [
+                        'plan' => $subscription->getPlanName(),
+                        'new_plan' => $newPlan->name,
+                        'amount' => $changePlanInvoice->formattedTotal(),
+                    ]);
+                });
+
+                // return to subscription
+                return redirect()->action('SubscriptionController@payment', [
+                    'invoice_uid' => $changePlanInvoice->uid,
+                ]);
             } catch (\Exception $e) {
                 $request->session()->flash('alert-error', $e->getMessage());
                 return redirect()->action('SubscriptionController@index');
             }
-
-            // return to subscription
-            return redirect()->action('SubscriptionController@payment', [
-                'invoice_uid' => $changePlanInvoice->uid,
-            ]);
         }
 
         return view('subscription.change_plan', [
@@ -289,21 +263,21 @@ class SubscriptionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function cancel(Request $request)
+    public function disableRecurring(Request $request)
     {
         if (isSiteDemo()) {
             return response()->json(["message" => trans('messages.operation_not_allowed_in_demo')], 404);
         }
 
         $customer = $request->user()->customer;
-        $subscription = $customer->subscription;
+        $subscription = $customer->getNewOrActiveSubscription();
 
-        if ($request->user()->customer->can('cancel', $subscription)) {
-            $subscription->cancel();
+        if ($request->user()->customer->can('disableRecurring', $subscription)) {
+            $subscription->disableRecurring();
         }
 
         // Redirect to my subscription page
-        $request->session()->flash('alert-success', trans('messages.subscription.cancelled'));
+        $request->session()->flash('alert-success', trans('messages.subscription.disabled_recurring'));
         return redirect()->action('SubscriptionController@index');
     }
 
@@ -315,17 +289,17 @@ class SubscriptionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function resume(Request $request)
+    public function enableRecurring(Request $request)
     {
         $customer = $request->user()->customer;
-        $subscription = $customer->subscription;
+        $subscription = $customer->getNewOrActiveSubscription();
 
-        if ($request->user()->customer->can('resume', $subscription)) {
-            $subscription->resume();
+        if ($request->user()->customer->can('enableRecurring', $subscription)) {
+            $subscription->enableRecurring();
         }
 
         // Redirect to my subscription page
-        $request->session()->flash('alert-success', trans('messages.subscription.resumed'));
+        $request->session()->flash('alert-success', trans('messages.subscription.enabled_recurring'));
         return redirect()->action('SubscriptionController@index');
     }
 
@@ -343,7 +317,7 @@ class SubscriptionController extends Controller
         }
 
         $customer = $request->user()->customer;
-        $subscription = $customer->subscription;
+        $subscription = $customer->getNewOrActiveSubscription();
 
         if ($request->user()->customer->can('cancelNow', $subscription)) {
             $subscription->cancelNow();
@@ -357,60 +331,23 @@ class SubscriptionController extends Controller
     public function orderBox(Request $request)
     {
         $customer = $request->user()->customer;
-        $subscription = $customer->subscription;
+        $subscription = $customer->getNewOrActiveSubscription();
 
-        // choose a plan
-        if ($request->plan_uid) {
-            $plan = Plan::findByUid($request->plan_uid);
+        // get unpaid invoice
+        $invoice = $customer->invoices()->unpaid()->where('uid', '=', $request->invoice_uid)->first();
 
-            return view('subscription.orderBox', [
-                'subscription' => $subscription,
-                'bill' => [
-                    'title' => trans('messages.subscription.your_order'),
-                    'description' => trans('messages.subscription.your_order.desc', [
-                        'plan' => $plan->name,
-                    ]),
-                    'bill' => [
-                        [
-                            'title' => $plan->name,
-                            'description' => view('plans._bill_desc', ['plan' => $plan]),
-                            'price' => format_price($plan->price, $plan->currency->format),
-                            'tax' => format_price($plan->getTax(), $plan->currency->format),
-                            'discount' => format_price(0, $plan->currency->format),
-                        ]
-                    ],
-                    'charge_info' => trans('messages.bill.charge_now'),
-                    'total' => format_price($plan->total(), $plan->currency->format),
-                    'pending' => false,
-                    'invoice_uid' => '',
-                    'type' => \Acelle\Model\Invoice::TYPE_NEW_SUBSCRIPTION,
-                    'plan' => $plan,
-                ],
-            ]);
-        }
+        // gateway fee
+        if ($request->payment_method) {
+            $gateway = Billing::getGateway($request->payment_method);
 
-        // already has subscription
-        elseif ($subscription) {
-            $invoice = $subscription->getUnpaidInvoice();
-
-            // gateway fee
-            if ($request->payment_method) {
-                $gateway = Billing::getGateway($request->payment_method);
-
-                $invoice->updatePaymentServiceFee($gateway);
-            }
-
-
-            return view('subscription.orderBox', [
-                'subscription' => $subscription,
-                'bill' => $invoice->getBillingInfo(),
-                'invoice' => $invoice,
-            ]);
+            // update invoice fee if trial and gatewaye need minimal fee for auto billing
+            $invoice->updatePaymentServiceFee($gateway);
         }
 
         return view('subscription.orderBox', [
             'subscription' => $subscription,
-            'bill' => null,
+            'bill' => $invoice->getBillingInfo(),
+            'invoice' => $invoice,
         ]);
     }
 }

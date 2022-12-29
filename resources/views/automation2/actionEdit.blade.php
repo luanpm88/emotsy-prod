@@ -28,9 +28,7 @@
         </p>
         <div class="mt-3">
             <a href="javascript:;" data-confirm="{{ trans('messages.automation.action.delete.confirm') }}" class="btn btn-secondary action-delete">
-                <span class="material-symbols-rounded">
-delete
-</span> {{ trans('messages.automation.remove_this_action') }}
+                <span class="material-symbols-rounded">delete</span> {{ trans('messages.automation.remove_this_action') }}
             </a>
         </div>
     </div>

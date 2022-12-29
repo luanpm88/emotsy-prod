@@ -16,7 +16,7 @@
                 <td class="text-end">
                     <div class="pull-right">
                         <div class="text-semibold">{{ $item->created_at->diffForHumans() }}</div>
-                        <span class="text-muted2">{{ Auth::user()->customer->formatDateTime($item->created_at, 'date_full') }}</span>
+                        <span class="text-muted2">{{ Auth::user()->customer->formatDateTime($item->created_at, 'datetime_full') }}</span>
                     </div>
                 </td>
             </tr>
@@ -26,18 +26,14 @@
                                 
 @elseif (!empty(request()->keyword) || !empty(request()->filters["type"]))
     <div class="empty-list">
-        <span class="material-symbols-rounded">
-history_toggle_off
-</span>
+        <span class="material-symbols-rounded">history_toggle_off</span>
         <span class="line-1">
             {{ trans('messages.no_search_result') }}
         </span>
     </div>
 @else                    
     <div class="empty-list">
-        <span class="material-symbols-rounded">
-history_toggle_off
-</span>
+        <span class="material-symbols-rounded">history_toggle_off</span>
         <span class="line-1">
             {{ trans('messages.no_action_logs') }}
         </span>

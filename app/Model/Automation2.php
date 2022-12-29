@@ -44,10 +44,12 @@ use DateTimeZone;
 use Exception;
 use Throwable;
 use Acelle\Library\Traits\HasUid;
+use Acelle\Library\Traits\HasCache;
 
 class Automation2 extends Model
 {
     use HasUid;
+    use HasCache;
 
     // Automation status
     public const STATUS_ACTIVE = 'active';
@@ -114,7 +116,7 @@ class Automation2 extends Model
     {
         $thisYear = $this->customer->getCurrentTime()->format('Y');
         $thisId = $this->id;
-        return $this->subscribers()->leftJoin('auto_triggers', function ($join) use ($thisId) {
+        return $this->subscribersToSend()->leftJoin('auto_triggers', function ($join) use ($thisId) {
             $join->on('auto_triggers.subscriber_id', 'subscribers.id');
             $join->where('auto_triggers.automation2_id', $thisId);
         })
@@ -435,7 +437,7 @@ class Automation2 extends Model
                         $automation->logger()->info(sprintf('Checking automation "%s"', $automation->name));
                         $automation->check();
                     } else {
-                        $automation->logger()->warning(sprintf('Automation "%s" skipped, user "%s" not on active subscription', $automation->name, $customer->user->displayName()));
+                        $automation->logger()->warning(sprintf('Automation "%s" skipped, user "%s" not on active subscription', $automation->name, $customer->displayName()));
                     }
                 }, $timeout, $timeoutCallback);
             }
@@ -477,7 +479,10 @@ class Automation2 extends Model
         // @TODO: move to trigger object
         switch ($triggerName) {
             case self::TRIGGER_TYPE_WELCOME_NEW_SUBSCRIBER:
-                /* triggered immediately by MailListSubscription event */
+                /* Triggered immediately by MailListSubscription event
+                 * See TriggerAutomation listener
+                 *
+                 */
                 break;
             case self::TRIGGER_PARTICULAR_DATE:
                 $this->checkForSpecificDatetime();
@@ -539,7 +544,7 @@ class Automation2 extends Model
         // Counting by user timezone
         $startOfDayUtc = $today->startOfDay()->timezone('UTC');
 
-        $subscribers = $this->subscribers()->leftJoin('auto_triggers', function ($join) use ($thisId, $startOfDayUtc) {
+        $subscribers = $this->subscribersToSend()->leftJoin('auto_triggers', function ($join) use ($thisId, $startOfDayUtc) {
             $join->on('auto_triggers.subscriber_id', 'subscribers.id');
             $join->where('auto_triggers.automation2_id', $thisId);
             $join->where('auto_triggers.created_at', '>=', $startOfDayUtc);
@@ -579,7 +584,7 @@ class Automation2 extends Model
         // Counting by user timezone
         $startOfDayUtc = $today->startOfDay()->timezone('UTC');
 
-        $subscribers = $this->subscribers()->leftJoin('auto_triggers', function ($join) use ($thisId, $startOfDayUtc) {
+        $subscribers = $this->subscribersToSend()->leftJoin('auto_triggers', function ($join) use ($thisId, $startOfDayUtc) {
             $join->on('auto_triggers.subscriber_id', 'subscribers.id');
             $join->where('auto_triggers.automation2_id', $thisId);
             $join->where('auto_triggers.created_at', '>=', $startOfDayUtc);
@@ -658,6 +663,8 @@ class Automation2 extends Model
         $today = Carbon::now($this->customer->timezone)->modify($interval);
         $dobFieldUid = $this->getTriggerAction()->getOptions()['field'];
         $dobFieldId = Field::findByUid($dobFieldUid)->id;
+
+        // TODO: convert to user's timezone first!!!
         $subscribers = $this->subscribersNotTriggeredThisYear()
             ->join('subscriber_fields', 'subscribers.id', 'subscriber_fields.subscriber_id')
             ->where('subscriber_fields.field_id', $dobFieldId)
@@ -901,7 +908,6 @@ class Automation2 extends Model
         return  $trigger;
     }
 
-    // by Louis
     public function getActions($callback)
     {
         $actions = $this->getElements(true);
@@ -912,7 +918,6 @@ class Automation2 extends Model
         }
     }
 
-    // by Louis
     public function getLeafActions()
     {
         $leaves = [];
@@ -971,6 +976,11 @@ class Automation2 extends Model
         }
 
         return $query;
+    }
+
+    public function subscribersToSend()
+    {
+        return $this->subscribers()->subscribed()->deliverableOrNotVerified();
     }
 
     public function subscribersByLatestAction($actionId)
@@ -1173,10 +1183,9 @@ class Automation2 extends Model
 
     public function notTriggeredSubscribers()
     {
-        return $this->mailList->activeSubscribers()
-                                      ->leftJoin('auto_triggers', function ($join) {
-                                          $join->on('subscribers.id', '=', 'auto_triggers.subscriber_id')->where('auto_triggers.automation2_id', '=', $this->id);
-                                      })
+        return $this->subscribersToSend()->leftJoin('auto_triggers', function ($join) {
+            $join->on('subscribers.id', '=', 'auto_triggers.subscriber_id')->where('auto_triggers.automation2_id', '=', $this->id);
+        })
                                       ->whereNull('auto_triggers.id')->select('subscribers.*');
     }
 
@@ -1191,63 +1200,15 @@ class Automation2 extends Model
     /**
      * Update Campaign cached data.
      */
-    public function updateCache($key = null)
+    public function getCacheIndex()
     {
         // cache indexes
-        $index = [
+        return [
             // @note: SubscriberCount must come first as its value shall be used by the others
-            'SummaryStats' => function (&$auto) {
-                return $auto->getSummaryStats();
+            'SummaryStats' => function () {
+                return $this->getSummaryStats();
             }
         ];
-
-        // retrieve cached data
-        $cache = json_decode($this->cache, true);
-        if (is_null($cache)) {
-            $cache = [];
-        }
-
-        if (is_null($key)) {
-            // update all cache
-            foreach ($index as $key => $callback) {
-                $cache[$key] = $callback($this);
-                if ($key == 'SubscriberCount') {
-                    // SubscriberCount cache must always be updated as its value will be used for the others
-                    $this->cache = json_encode($cache);
-                    $this->save();
-                }
-            }
-        } else {
-            // update specific key
-            $callback = $index[$key];
-            $cache[$key] = $callback($this);
-        }
-
-        // write back to the DB
-        $this->cache = json_encode($cache);
-        $this->save();
-    }
-
-    /**
-     * Retrieve Campaign cached data.
-     *
-     * @return mixed
-     */
-    public function readCache($key, $default = null)
-    {
-        $cache = json_decode($this->cache, true);
-        if (is_null($cache)) {
-            return $default;
-        }
-        if (array_key_exists($key, $cache)) {
-            if (is_null($cache[$key])) {
-                return $default;
-            } else {
-                return $cache[$key];
-            }
-        } else {
-            return $default;
-        }
     }
 
     public function updateCacheInBackground()

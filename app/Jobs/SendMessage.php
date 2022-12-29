@@ -14,6 +14,7 @@ use Acelle\Library\QuotaManager;
 use Acelle\Library\Exception\NoCreditsLeft;
 use Acelle\Library\Exception\QuotaExceeded;
 use Exception;
+use Throwable;
 
 class SendMessage implements ShouldQueue
 {
@@ -34,6 +35,7 @@ class SendMessage implements ShouldQueue
     protected $server;
     protected $campaign;
     protected $triggerId;
+    protected $stopOnError = false;
 
     /**
      * Create a new job instance.
@@ -46,6 +48,15 @@ class SendMessage implements ShouldQueue
         $this->subscriber = $subscriber;
         $this->server = $server;
         $this->triggerId = $triggerId;
+    }
+
+    public function setStopOnError($value)
+    {
+        if (!is_bool($value)) {
+            throw new Exception('Parameter passed to setStopOnError must be bool');
+        }
+
+        $this->stopOnError = $value;
     }
 
     /**
@@ -78,15 +89,16 @@ class SendMessage implements ShouldQueue
     {
         $logger = $this->campaign->logger();
         $email = $this->subscriber->getEmail();
-        $subscription = $this->campaign->customer->activeSubscription();
-
-        // Prepare the email message to send
-        list($message, $msgId) = $this->campaign->prepareEmail($this->subscriber, $this->server, $fromCache = true);
-
-        // Actually send!
-        $logger->info(sprintf('Sending to %s [Server "%s"]', $email, $this->server->name));
+        $subscription = $this->campaign->customer->getCurrentActiveSubscription();
 
         try {
+            // Prepare the email message to send
+            // In case of an invalid email, an exception will arise at: Swift_Mime_SimpleMessage->setTo(...)
+            list($message, $msgId) = $this->campaign->prepareEmail($this->subscriber, $this->server, $fromCache = true);
+
+            // Start sending
+            $logger->info(sprintf('Sending to %s [Server "%s"]', $email, $this->server->name));
+
             // Count related quota trackers
             // Important: sacrisfy server credits, put quota check for server before that of subscription
             // Otherwise, it may cost 1 subscription's credit (shown to user) every time the job is release back to queue
@@ -109,13 +121,29 @@ class SendMessage implements ShouldQueue
 
             // Release the job, have it try again after 60 seconds and (hopefully) the quota limits will be lifted then as time goes by
             $this->release(60);
-        } catch (Exception $ex) {
+        } catch (Throwable $ex) {
             if (!is_null($exceptionCallback)) {
                 $exceptionCallback($ex);
             }
             $message = sprintf("Error sending to [%s]. Error: %s", $email, $ex->getMessage());
             $logger->error($message);
-            throw new Exception($message);
+
+            // There are 2 options here
+            // Option 1: throw an exception and show it to users as the campaign status
+            //     throw new Exception($message);
+            // Option 2: just skip the error, log it and proceed with the next subscriber
+
+            if ($this->stopOnError) {
+                throw new Exception($message);
+            } else {
+                if (!isset($msgId)) {
+                    // Just in case there is an exception before the execution of "list($message, $msgId) = $this->campaign->prepareEmail..."
+                    // then $msgID is not available
+                    $msgId = null;
+                }
+
+                $this->campaign->trackMessage(['status' => 'failed', 'error' => $ex->getMessage()], $this->subscriber, $this->server, $msgId, $this->triggerId);
+            }
         }
     }
 }

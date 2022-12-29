@@ -8,7 +8,9 @@
 
 @section('menu_right')
     @include('layouts.core._top_activity_log')
-    @include('layouts.core._menu_frontend_user')
+    @include('layouts.core._menu_frontend_user', [
+        'menu' => 'subscription',
+    ])
 @endsection
 
 @section('content')
@@ -31,9 +33,7 @@
                                 <p class="m-0 text-muted">{{ trans('messages.subscription.billing_information.subtitle') }}</p>
                             </div>
                             <div class="ms-auto">
-                                <span class="material-symbols-rounded fs-4 text-success">
-                                    task_alt
-                                    </span>
+                                <span class="material-symbols-rounded fs-4 text-success">task_alt</span>
                             </div>
                         </div>
                     </a>
@@ -45,24 +45,46 @@
                             {{ csrf_field() }}
 
                             <div class="row">
-                                <div class="col-md-6">
-                                    @include('helpers.form_control', [
-                                        'type' => 'text',
-                                        'name' => 'billing_first_name',
-                                        'value' => request()->billing_first_name ? request()->billing_first_name : ($invoice->hasBillingInformation() ? $invoice->billing_first_name : ($billingAddress ? $billingAddress->first_name : '')),
-                                        'label' => trans('messages.first_name'),
-                                        'rules' => ['billing_first_name' => 'required'],
-                                    ])
-                                </div>
-                                <div class="col-md-6">
-                                    @include('helpers.form_control', [
-                                        'type' => 'text',
-                                        'name' => 'billing_last_name',
-                                        'value' => request()->billing_last_name ? request()->billing_last_name : ($invoice->hasBillingInformation() ? $invoice->billing_last_name : ($billingAddress ? $billingAddress->last_name : '')),
-                                        'label' => trans('messages.last_name'),
-                                        'rules' => ['billing_last_name' => 'required'],
-                                    ])
-                                </div>
+                                @if (get_localization_config('show_last_name_first', Auth()->user()->customer->getLanguageCode()))
+                                    <div class="col-md-6">
+                                        @include('helpers.form_control', [
+                                            'type' => 'text',
+                                            'name' => 'billing_last_name',
+                                            'value' => request()->billing_last_name ? request()->billing_last_name : ($invoice->hasBillingInformation() ? $invoice->billing_last_name : ($billingAddress ? $billingAddress->last_name : '')),
+                                            'label' => trans('messages.last_name'),
+                                            'rules' => ['billing_last_name' => 'required'],
+                                        ])
+                                    </div>
+                                    <div class="col-md-6">
+                                        @include('helpers.form_control', [
+                                            'type' => 'text',
+                                            'name' => 'billing_first_name',
+                                            'value' => request()->billing_first_name ? request()->billing_first_name : ($invoice->hasBillingInformation() ? $invoice->billing_first_name : ($billingAddress ? $billingAddress->first_name : '')),
+                                            'label' => trans('messages.first_name'),
+                                            'rules' => ['billing_first_name' => 'required'],
+                                        ])
+                                    </div>
+                                @else 
+                                    <div class="col-md-6">
+                                        @include('helpers.form_control', [
+                                            'type' => 'text',
+                                            'name' => 'billing_first_name',
+                                            'value' => request()->billing_first_name ? request()->billing_first_name : ($invoice->hasBillingInformation() ? $invoice->billing_first_name : ($billingAddress ? $billingAddress->first_name : '')),
+                                            'label' => trans('messages.first_name'),
+                                            'rules' => ['billing_first_name' => 'required'],
+                                        ])
+                                    </div>
+                                    <div class="col-md-6">
+                                        @include('helpers.form_control', [
+                                            'type' => 'text',
+                                            'name' => 'billing_last_name',
+                                            'value' => request()->billing_last_name ? request()->billing_last_name : ($invoice->hasBillingInformation() ? $invoice->billing_last_name : ($billingAddress ? $billingAddress->last_name : '')),
+                                            'label' => trans('messages.last_name'),
+                                            'rules' => ['billing_last_name' => 'required'],
+                                        ])
+                                    </div>
+                                @endif
+                                    
                             </div>
 
                             <div class="row">
@@ -95,17 +117,23 @@
                                         'rules' => ['billing_address' => 'required'],
                                     ])
                                 </div>
-                                <div class="col-md-6">
-                                    @include('helpers.form_control', [
-                                        'type' => 'select',
-                                        'name' => 'billing_country_id',
-                                        'value' => request()->billing_country_id ? request()->billing_country_id : ($invoice->hasBillingInformation() ? $invoice->billing_country_id : ($billingAddress ? $billingAddress->country_id : '')),
-                                        'label' => trans('messages.country'),
-                                        'options' => Acelle\Model\Country::getSelectOptions(),
-                                        'include_blank' => trans('messages.select_country'),
-                                        'rules' => ['billing_country_id' => 'required'],
-                                    ])
-                                </div>
+
+                                @if (config('custom.japan'))
+                                    <input type="hidden" name="billing_country_id" value="{{ Acelle\Model\Country::getJapan()->id }}" />
+                                @else
+                                    <div class="col-md-6">
+                                        @include('helpers.form_control', [
+                                            'type' => 'select',
+                                            'name' => 'billing_country_id',
+                                            'value' => request()->billing_country_id ? request()->billing_country_id : ($invoice->hasBillingInformation() ? $invoice->billing_country_id : ($billingAddress ? $billingAddress->country_id : '')),
+                                            'label' => trans('messages.country'),
+                                            'options' => Acelle\Model\Country::getSelectOptions(),
+                                            'include_blank' => trans('messages.select_country'),
+                                            'rules' => ['billing_country_id' => 'required'],
+                                        ])
+                                    </div>
+                                @endif
+                                
                             </div>
 
                             <div class="mt-2">
@@ -131,7 +159,9 @@
 
             getOrderBox: function() {
                 if (this.orderBox == null) {
-                    this.orderBox = new Box($('.order-box'), '{{ action('SubscriptionController@orderBox') }}');
+                    this.orderBox = new Box($('.order-box'), '{{ action('SubscriptionController@orderBox', [
+                        'invoice_uid' => $invoice->uid,
+                    ]) }}');
                 }
                 return this.orderBox;
             }

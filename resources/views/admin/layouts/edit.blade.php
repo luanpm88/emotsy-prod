@@ -12,7 +12,7 @@
 @section('menu_title')
     <li class="d-flex align-items-center">
         <div class="d-inline-block d-flex mr-auto align-items-center ml-1 lvl-1">
-            <h4 class="my-0 me-2 menu-title">{{ $layout->subject }}</h4>
+            <h4 class="my-0 me-2 menu-title text-white">{{ $layout->subject }}</h4>
             <i class="material-symbols-rounded">web</i>
         </div>
     </li>

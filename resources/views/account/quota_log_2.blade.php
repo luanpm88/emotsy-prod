@@ -8,7 +8,7 @@
 
     <!-- Alert if customer don't have any subscription -->
     @if (\Auth::user()->customer &&
-        !\Auth::user()->customer->activeSubscription())
+        !\Auth::user()->customer->getCurrentActiveSubscription())
         <div class="alert alert-warning mt-20">
             <h4 class="ui-pnotify-title text-nowrap">
             {!! trans('messages.not_have_any_plan_notification', [
@@ -19,7 +19,7 @@
         </div>
     @else
         @php
-            $subscription = \Auth::user()->customer->activeSubscription();
+            $subscription = \Auth::user()->customer->getCurrentActiveSubscription();
         @endphp
         <div class="row quota_box">
             <div class="col-md-12 mb-4">

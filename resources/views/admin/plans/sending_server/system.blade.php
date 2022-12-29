@@ -1,4 +1,6 @@
-@extends('layouts.core.backend')
+@extends('layouts.core.backend', [
+	'menu' => 'plan',
+])
 
 @section('title', $plan->name)
 
@@ -27,15 +29,15 @@
 
 @section('content')
     
-    @include('admin.plans._menu')
+    @include('admin.plans._menu', [
+        'menu' => 'sending_server',
+    ])
     
     <div class="mc-section">
         <div class="announce_box">
             <div class="row flex-center">
                 <div class="col-md-8">
-                    <span class="material-symbols-rounded announce_box-icon">
-corporate_fare
-</span>
+                    <span class="material-symbols-rounded announce_box-icon">corporate_fare</span>
                     <label>{{ trans('messages.plan_option.delivery_setting') }}</label>
                     <h4>{{ trans('messages.plan_option.system_s_sending_server') }}</h4>
                     <p>{{ trans('messages.plan_option.system_s_sending_server.intro') }}</p>
@@ -64,9 +66,7 @@ corporate_fare
         
         @if(!$plan->plansSendingServers()->count())
             <div class="empty-list">
-                <span class="material-symbols-rounded">
-dns
-</span>
+                <span class="material-symbols-rounded">dns</span>
                 <span class="line-1">
                     {{ trans('messages.sending_server_empty_line_1') }}
                 </span>
@@ -82,16 +82,10 @@ dns
                                 @endphp
                                 @if ($server->isExtended())
                                     <span class="mc_list_media mc-server-avatar shadow-sm rounded server-avatar mr-0" style="background: url({{ $server->getIconUrl()  }}) top left/36px 36px no-repeat transparent;">
-                                        <span class="material-symbols-rounded">
-
-</span>
-                                    </span>
+                                        <span class="material-symbols-rounded"></span></span>
                                 @else
                                     <span class="mc_list_media mc-server-avatar shadow-sm rounded server-avatar server-avatar-{{ $planSendingServer->sendingServer->type }} mr-0">
-                                        <span class="material-symbols-rounded">
-
-</span>
-                                    </span>
+                                        <span class="material-symbols-rounded"></span></span>
                                 @endif
                                 <h4>{{ $planSendingServer->sendingServer->name }}
                                     @if ($planSendingServer->isPrimary())
@@ -171,7 +165,7 @@ dns
         });
     </script>
     
-    @if (is_object($plan->primarySendingServer()))
+    @if ($plan->primarySendingServer())
         @php
             $server = $plan->primarySendingServer()->mapType();
         @endphp
@@ -212,7 +206,7 @@ dns
                                     </td>
                                     <td>
                                         <span>
-                                            {{ Auth::user()->admin->formatDateTime($plan->primarySendingServer()->updated_at, 'date_full') }}
+                                            {{ Auth::user()->admin->formatDateTime($plan->primarySendingServer()->updated_at, 'datetime_full') }}
                                         </span>
                                     </td>
                                     <td>

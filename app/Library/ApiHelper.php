@@ -312,7 +312,7 @@ class ApiHelper
 
                 [
                     'method' => 'PATCH',
-                    'uri' => '/api/v1/subscribers/{uid}/subscribe',
+                    'uri' => '/api/v1/lists/{list_uid}/subscribers/{uid}/subscribe',
                     'description' => 'Subscribe a subscriber',
                     'parameters' => [
                         ['name' => '$list_uid', 'description' => 'List\'s uid'],
@@ -320,13 +320,16 @@ class ApiHelper
                     ],
                     'returns' => 'Result messages in json',
                     'example' => 'curl -X PATCH -H "accept:application/json" -G \
-' .str_replace('-ID-', '<redbold>{uid}</redbold>', str_replace('-LIST_ID-', '<redbold>{list_uid}</redbold>', action("Api\SubscriberController@subscribe", ['uid' => '-ID-']))).' \
+' .str_replace('-ID-', '<redbold>{uid}</redbold>', str_replace('-LIST_ID-', '<redbold>{list_uid}</redbold>', action("Api\SubscriberController@subscribe", [
+    'list_uid' => '-LIST_ID-',
+    'uid' => '-ID-',
+]))).' \
 -d api_token=' .\Auth::user()->api_token,
                 ],
 
                 [
                     'method' => 'PATCH',
-                    'uri' => '/api/v1/subscribers/{uid}/unsubscribe',
+                    'uri' => '/api/v1/lists/{list_uid}/subscribers/{uid}/unsubscribe',
                     'description' => 'Unsubscribe a subscriber',
                     'parameters' => [
                         ['name' => '$list_uid', 'description' => 'List\'s uid'],
@@ -334,7 +337,10 @@ class ApiHelper
                     ],
                     'returns' => 'Result messages in json',
                     'example' => 'curl -X PATCH -H "accept:application/json" -G \
-' .str_replace('-ID-', '<redbold>{uid}</redbold>', str_replace('-LIST_ID-', '<redbold>{list_uid}</redbold>', action("Api\SubscriberController@unsubscribe", ['uid' => '-ID-']))).' \
+' .str_replace('-ID-', '<redbold>{uid}</redbold>', str_replace('-LIST_ID-', '<redbold>{list_uid}</redbold>', action("Api\SubscriberController@unsubscribe", [
+    'list_uid' => '-LIST_ID-',
+    'uid' => '-ID-',
+]))).' \
 -d api_token=' .\Auth::user()->api_token,
                 ],
 
@@ -559,6 +565,7 @@ class ApiHelper
                     'parameters' => [
                         ['name' => '$uid', 'description' => 'Customer\'s uid'],
                         ['name' => '$plan_uid', 'description' => 'Plan\'s uid'],
+                        ['name' => '$disable_billing', 'description' => 'Activate the subscription without checking out. Default: false'],
                     ],
                     'returns' => 'Action messages in json',
                     'example' => 'curl -X POST -H "accept:application/json" -G \
@@ -596,6 +603,7 @@ class ApiHelper
                     'parameters' => [
                         ['name' => '$uid', 'description' => 'Customer\'s uid'],
                         ['name' => '$plan_uid', 'description' => 'Plan\'s uid'],
+                        ['name' => '$disable_billing', 'description' => 'Activate the subscription without checking out. Default: false'],
                     ],
                     'returns' => 'Action messages in json',
                     'example' => 'curl -X POST -H "accept:application/json" -G \
@@ -732,7 +740,7 @@ class ApiHelper
                     'example' => 'curl -X POST -H "accept:application/json" -G \
 ' .action("Api\FileController@upload").' \
 -d api_token=' .\Auth::user()->api_token.'  \
--d files=\'[{"url":"http://demo.acellemail.com/images/logo_big.svg","subdirectory":"path/to/file"},{"url":"http://demo.acellemail.com/images/logo_big.svg","subdirectory":"path/to/file2"}]\'',
+-d files=\'[{"url":"http://example.com/images/logo_big.svg","subdirectory":"path/to/file"},{"url":"http://example.com/images/logo_big.svg","subdirectory":"path/to/file2"}]\'',
                 ],
             ],
         ];

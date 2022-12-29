@@ -4,10 +4,10 @@
     @foreach ($account->subscriptions as $subscription)
         <li>
             <i class="icon-quill4 text-danger"></i>
-            <h4 class="text-danger">{{ $subscription->customer->user->displayName() }}</h4>
+            <h4 class="text-danger">{{ $subscription->customer->displayName() }}</h4>
             <p>{{ $subscription->plan_name }} - {{ trans('messages.subscription.from_to_date', [
-                'start' => Auth::user()->admin->formatDateTime($subscription->start_at, 'date_full'),
-                'end' => Auth::user()->admin->formatDateTime($subscription->end_at, 'date_full'),
+                'start' => Auth::user()->admin->formatDateTime($subscription->start_at, 'datetime_full'),
+                'end' => Auth::user()->admin->formatDateTime($subscription->end_at, 'datetime_full'),
             ]) }}</p>
         </li>
     @endforeach

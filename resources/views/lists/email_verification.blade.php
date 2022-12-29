@@ -1,4 +1,6 @@
-@extends('layouts.core.frontend')
+@extends('layouts.core.frontend', [
+	'menu' => 'list',
+])
 
 @section('title', $list->name)
 
@@ -15,7 +17,9 @@
 
 @section('content')
 
-    @include("lists._menu")
+    @include("lists._menu", [
+		'menu' => 'email_verification',
+	])
 
     <div class="row">
         <div class="col-md-8">
@@ -55,9 +59,7 @@
                         <a id="doneBtn" target="_blank" href="#" type="button" class="btn btn-secondary success">
                             {{ trans('messages.label.done') }}
                         </a>
-                        <a id="retryBtn" href="retryBtn" class="btn bg-grey-600 me-2 retry"><span class="material-symbols-rounded">
-restart_alt
-</span> {{ trans('messages.retry') }}</a>
+                        <a id="retryBtn" href="retryBtn" class="btn bg-grey-600 me-2 retry"><span class="material-symbols-rounded">restart_alt</span> {{ trans('messages.retry') }}</a>
                     </div>
                 </div>
             </div>

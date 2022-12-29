@@ -421,19 +421,19 @@ var Dropzone = function (_Emitter) {
         /**
          * The text used before any files are dropped.
          */
-        dictDefaultMessage: "Drop files here to upload",
+        dictDefaultMessage: "ここにファイルをドロップしてアップロードします",
 
         /**
          * The text that replaces the default message text it the browser is not supported.
          */
-        dictFallbackMessage: "Your browser does not support drag'n'drop file uploads.",
+        dictFallbackMessage: "お使いのブラウザは、ドラッグアンドドロップファイルのアップロードをサポートしていません。",
 
         /**
          * The text that will be added before the fallback form.
          * If you provide a  fallback element yourself, or if this option is `null` this will
          * be ignored.
          */
-        dictFallbackText: "Please use the fallback form below to upload your files like in the olden days.",
+        dictFallbackText: "昔のようにファイルをアップロードするには、以下のフォールバックフォームを使用してください。",
 
         /**
          * If the filesize is too big.
@@ -444,7 +444,7 @@ var Dropzone = function (_Emitter) {
         /**
          * If the file doesn't match the file type.
          */
-        dictInvalidFileType: "You can't upload files of this type.",
+        dictInvalidFileType: "このタイプのファイルをアップロードすることはできません。",
 
         /**
          * If the server response was invalid.

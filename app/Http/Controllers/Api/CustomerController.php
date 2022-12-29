@@ -53,8 +53,10 @@ class CustomerController extends Controller
 
             // Create user account for customer
             $user = new \Acelle\Model\User();
+            $user->fill($request->all());
             $user->email = $request->email;
             $user->activated = true;
+
             // Update password
             if (!empty($request->password)) {
                 $user->password = bcrypt($request->password);
@@ -69,6 +71,7 @@ class CustomerController extends Controller
             if ($customer->save()) {
                 $user->customer_id = $customer->id;
                 $user->save();
+
                 // Upload and save image
                 if ($request->hasFile('image')) {
                     if ($request->file('image')->isValid()) {
@@ -107,7 +110,7 @@ class CustomerController extends Controller
         $customer = \Acelle\Model\Customer::findByUid($uid);
 
         // check if item exists
-        if (!is_object($customer)) {
+        if (!$customer) {
             return \Response::json(array('status' => 0, 'message' => 'Customer not found'), 404);
         }
 
@@ -122,7 +125,7 @@ class CustomerController extends Controller
             $user = $customer->user;
             $user->fill($request->all());
 
-            if ($this->isDemoMode()) {
+            if (config('app.demo')) {
                 return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
             }
 
@@ -180,7 +183,7 @@ class CustomerController extends Controller
         $customer = \Acelle\Model\Customer::findByUid($uid);
 
         // check if item exists
-        if (!is_object($customer)) {
+        if (!$customer) {
             return \Response::json(array('message' => 'Customer not found'), 404);
         }
 
@@ -202,7 +205,7 @@ class CustomerController extends Controller
 
         // Customer contact
         $contact = $customer->contact;
-        if (is_object($contact)) {
+        if ($contact) {
             $result['contact'] = [
                 'first_name' => $contact->first_name,
                 'last_name' => $contact->last_name,
@@ -220,8 +223,8 @@ class CustomerController extends Controller
         }
 
         // Current subscription
-        $subscription = $customer->getCurrentSubscription();
-        if (is_object($subscription)) {
+        $subscription = $customer->getNewOrActiveSubscription();
+        if ($subscription) {
             $result['current_subscription'] = [
                 'uid' => $subscription->uid,
                 'plan_name' => $subscription->plan_name,
@@ -252,7 +255,7 @@ class CustomerController extends Controller
         $customer = \Acelle\Model\Customer::findByUid($uid);
 
         // check if item exists
-        if (!is_object($customer)) {
+        if (!$customer) {
             return \Response::json(array('status' => 0, 'message' => 'Customer not found'), 404);
         }
 
@@ -286,7 +289,7 @@ class CustomerController extends Controller
         $customer = \Acelle\Model\Customer::findByUid($uid);
 
         // check if item exists
-        if (!is_object($customer)) {
+        if (!$customer) {
             return \Response::json(array('status' => 0, 'message' => 'Customer not found'), 404);
         }
 
@@ -315,9 +318,10 @@ class CustomerController extends Controller
     {
         $user = \Auth::guard('api')->user();
         $customer = \Acelle\Model\Customer::findByUid($uid);
+        $offlineGateway = \Acelle\Library\Facades\Billing::getGateway('offline');
 
         // check if item exists
-        if (!is_object($customer)) {
+        if (!$customer) {
             return \Response::json(array('status' => 0, 'message' => 'Customer not found'), 404);
         }
 
@@ -329,7 +333,7 @@ class CustomerController extends Controller
         $plan = \Acelle\Model\Plan::findByUid($plan_uid);
 
         // check if item exists
-        if (!is_object($plan)) {
+        if (!$plan) {
             return \Response::json(array('status' => 0, 'message' => 'Can not find plan with id: ' . $plan_uid), 404);
         }
 
@@ -338,11 +342,33 @@ class CustomerController extends Controller
             return \Response::json(array('status' => 0, 'message' => 'Plan is not active'), 404);
         }
 
-        $customer->assignPlan($plan);
+        // check offline gateway if disale billing
+        if ($request->disable_billing && $request->disable_billing !== 'false') {
+            // check if offline payment is not active
+            if (!$offlineGateway->isActive() || !\Acelle\Library\Facades\Billing::isGatewayEnabled($offlineGateway)) {
+                return \Response::json(array('status' => 0, 'message' => 'You need to enable Offline payment in order to disable billing!'), 404);
+            }
+        }
+
+        // rollback if something went wrong
+        \DB::transaction(function () use ($plan, $customer, $request, $offlineGateway) {
+            $subscription = $customer->assignPlan($plan);
+
+            // * Disable billing information: customer does not need to pay the invoice. Pass by the billing and checkout step
+            // * assignPlan always create a subscription with an unpaid invoice.
+            // * So just checkout the invoice with result = success
+            // * By design: when the subscription invoice checkout successfully, the callback function will be triggered
+            //              to set subscription as active automatically.
+            if ($request->disable_billing && $request->disable_billing !== 'false') {
+                $subscription->getItsOnlyUnpaidInitInvoice()->checkout($offlineGateway, function () {
+                    return new \Acelle\Library\TransactionVerificationResult(\Acelle\Library\TransactionVerificationResult::RESULT_DONE);
+                });
+            }
+        });
 
         return \Response::json(array(
             'status' => 1,
-            'message' => 'Assigned '.$customer->user->displayName().' plan to '.$plan->name.' successfully.',
+            'message' => 'Assigned '.$customer->displayName().' plan to '.$plan->name.' successfully.',
             'customer_uid' => $customer->uid,
             'plan_uid' => $plan->uid
         ), 200);

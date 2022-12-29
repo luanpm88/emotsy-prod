@@ -46,7 +46,7 @@
                         'label' => trans('messages.plan.currency'),
                         'selected' => [
                             'value' => $plan->currency_id,
-                            'text' => is_object($plan->currency) ? $plan->currency->displayName() : ''
+                            'text' => $plan->currency ? $plan->currency->displayName() : ''
                         ],
                         'help_class' => 'plan',
                         'rules' => $plan->generalRules(),

@@ -54,6 +54,7 @@
     </div>
 </div>
 
+
 <div class="sub_section">
     <h3 class="text-semibold">
         {{ trans('messages.contact_information') }}
@@ -61,40 +62,43 @@
     </h3>
     <div class="row">
         <div class="col-md-6">
-                @include('helpers.form_control', ['type' => 'text', 'name' => 'contact[company]', 'label' => trans('messages.company_organization'), 'value' => $list->contact->company, 'help_class' => 'list', 'rules' => Acelle\Model\MailList::$rules])
+            @include('helpers.form_control', ['type' => 'text', 'name' => 'contact[company]', 'label' => trans('messages.company_organization'), 'value' => $list->contact->company, 'help_class' => 'list', 'rules' => Acelle\Model\MailList::$rules])
         </div>
+
         <div class="col-md-6">
-                @include('helpers.form_control', ['type' => 'text', 'name' => 'contact[state]', 'label' => trans('messages.state_province_region'), 'value' => $list->contact->state, 'rules' => Acelle\Model\MailList::$rules])
+            @include('helpers.form_control', ['type' => 'text', 'name' => 'contact[phone]', 'label' => trans('messages.phone'), 'value' => $list->contact->phone, 'help_class' => 'list', 'rules' => Acelle\Model\MailList::$rules])
         </div>
-    </div>
-    <div class="row">
+
         <div class="col-md-6">
-            @include('helpers.form_control', ['type' => 'text', 'name' => 'contact[address_1]', 'label' => trans('messages.address_1'), 'value' => $list->contact->address_1, 'help_class' => 'list', 'rules' => Acelle\Model\MailList::$rules])
+            @include('helpers.form_control', ['type' => 'text', 'name' => 'contact[email]', 'label' => trans('messages.email'), 'value' => $list->contact->email, 'help_class' => 'list', 'rules' => Acelle\Model\MailList::$rules])
+        </div>
+
+        <div class="col-md-6">
+            @include('helpers.form_control', ['type' => 'text', 'name' => 'contact[zip]', 'label' => trans('messages.zip_postal_code'), 'value' => $list->contact->zip, 'help_class' => 'list', 'rules' => Acelle\Model\MailList::$rules])
+        </div>
+
+        <div class="col-md-6">
+            @include('helpers.form_control', ['type' => 'text', 'name' => 'contact[state]', 'label' => trans('messages.state_province_region'), 'value' => $list->contact->state, 'rules' => Acelle\Model\MailList::$rules])
         </div>
         <div class="col-md-6">
             @include('helpers.form_control', ['type' => 'text', 'name' => 'contact[city]', 'label' => trans('messages.city'), 'value' => $list->contact->city, 'help_class' => 'list', 'rules' => Acelle\Model\MailList::$rules])
         </div>
-    </div>
-    <div class="row">
+
+        <div class="col-md-6">
+            @include('helpers.form_control', ['type' => 'text', 'name' => 'contact[address_1]', 'label' => trans('messages.address_1'), 'value' => $list->contact->address_1, 'help_class' => 'list', 'rules' => Acelle\Model\MailList::$rules])
+        </div>
         <div class="col-md-6">
             @include('helpers.form_control', ['type' => 'text', 'name' => 'contact[address_2]', 'label' => trans('messages.address_2'), 'value' => $list->contact->address_2, 'help_class' => 'list', 'rules' => Acelle\Model\MailList::$rules])
         </div>
-        <div class="col-md-6">
-            @include('helpers.form_control', ['type' => 'text', 'name' => 'contact[zip]', 'label' => trans('messages.zip_postal_code'), 'value' => $list->contact->zip, 'help_class' => 'list', 'rules' => Acelle\Model\MailList::$rules])
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-6">
-            @include('helpers.form_control', ['type' => 'select', 'name' => 'contact[country_id]', 'label' => trans('messages.country'), 'value' => $list->contact->country_id, 'options' => Acelle\Model\Country::getSelectOptions(), 'include_blank' => trans('messages.choose'), 'rules' => Acelle\Model\MailList::$rules])
-        </div>
-        <div class="col-md-6">
-            @include('helpers.form_control', ['type' => 'text', 'name' => 'contact[phone]', 'label' => trans('messages.phone'), 'value' => $list->contact->phone, 'help_class' => 'list', 'rules' => Acelle\Model\MailList::$rules])
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-6">
-            @include('helpers.form_control', ['type' => 'text', 'name' => 'contact[email]', 'label' => trans('messages.email'), 'value' => $list->contact->email, 'help_class' => 'list', 'rules' => Acelle\Model\MailList::$rules])
-        </div>
+
+        @if (config('custom.japan'))
+            <input type="hidden" name="contact[country_id]" value="{{ Acelle\Model\Country::getJapan()->id }}" />
+        @else
+            <div class="col-md-6">
+                @include('helpers.form_control', ['type' => 'select', 'name' => 'contact[country_id]', 'label' => trans('messages.country'), 'value' => $list->contact->country_id, 'options' => Acelle\Model\Country::getSelectOptions(), 'include_blank' => trans('messages.choose'), 'rules' => Acelle\Model\MailList::$rules])
+            </div>
+        @endif
+
         <div class="col-md-6">
             @include('helpers.form_control', ['type' => 'text', 'name' => 'contact[url]', 'label' => trans('messages.url'), 'label' => trans('messages.home_page'), 'value' => $list->contact->url, 'help_class' => 'list', 'rules' => Acelle\Model\MailList::$rules])
         </div>
@@ -105,11 +109,11 @@
     <h2 class="text-semibold">{{ trans('messages.settings') }}</h2>
     <h3 class="text-semibold">{{ trans('messages.subscription') }}</h3>
     <div class="row">
-        <div class="col-md-6 hide">
+        {{-- <div class="col-md-6 hide">
             @include('helpers.form_control', ['type' => 'text', 'name' => 'email_subscribe', 'value' => $list->email_subscribe, 'help_class' => 'list', 'rules' => Acelle\Model\MailList::$rules])
             @include('helpers.form_control', ['type' => 'text', 'name' => 'email_unsubscribe', 'value' => $list->email_unsubscribe, 'help_class' => 'list', 'rules' => Acelle\Model\MailList::$rules])
             <br />
-        </div>
+        </div> --}}
         <div class="col-md-6">
             <div class="form-group checkbox-right-switch">
                 @if ($allowedSingleOptin)
@@ -186,7 +190,7 @@
                                 'class' => 'numeric',
                                 'name' => 'sending_servers[' . $server->uid . '][fitness]',
                                 'label' => '',
-                                'value' => (is_object($list->mailListsSendingServers()->where('sending_server_id', $server->id)->first()) ? $list->mailListsSendingServers()->where('sending_server_id', $server->id)->first()->fitness : "100"),
+                                'value' => ($list->mailListsSendingServers()->where('sending_server_id', $server->id)->first() ? $list->mailListsSendingServers()->where('sending_server_id', $server->id)->first()->fitness : "100"),
                                 'help_class' => 'list',
                                 'rules' => Acelle\Model\MailList::$rules
                             ])
@@ -232,15 +236,6 @@
     });
 
     $(function() {
-        // Initializes and creates emoji set from sprite sheet
-        window.emojiPicker = new EmojiPicker({
-          emojiable_selector: '[data-emojiable=true]',
-          assetsPath: 'http://onesignal.github.io/emoji-picker/lib/img/',
-          popupButtonClasses: 'fa fa-smile-o'
-        });
-        // Finds all elements with `emojiable_selector` and converts them to rich emoji input fields
-        // You may want to delay this step if you have dynamically created input fields that appear later in the loading process
-        // It can be called as many times as necessary; previously converted input fields will not be converted again
-        window.emojiPicker.discover();
+        $('.has-emoji input[type=text]').emojioneArea();
     });
 </script>

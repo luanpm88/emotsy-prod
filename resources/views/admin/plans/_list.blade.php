@@ -66,9 +66,7 @@
                 </td>
                 <td class="text-end text-nowrap pe-0" width="5%">
                     @can('update', $plan)
-                        <a href="{{ action('Admin\PlanController@general', $plan->uid) }}" role="button" class="btn btn-secondary btn-icon"> <span class="material-symbols-rounded">
-edit
-</span> {{ trans('messages.edit') }}</a>
+                        <a href="{{ action('Admin\PlanController@general', $plan->uid) }}" role="button" class="btn btn-secondary btn-icon"> <span class="material-symbols-rounded">edit</span> {{ trans('messages.edit') }}</a>
                     @endcan
                     @if (\Auth::user()->can('delete', $plan) ||
                          \Auth::user()->can('copy', $plan)
@@ -82,9 +80,7 @@ edit
                                             href="{{ action('Admin\PlanController@copy', ['copy_plan_uid' => $plan->uid]) }}"
                                             class="dropdown-item copy-plan-link" title="{{ trans('messages.copy') }}"
                                         >
-                                            <span class="material-symbols-rounded">
-content_copy
-</span> {{ trans('messages.copy') }}
+                                            <span class="material-symbols-rounded">content_copy</span> {{ trans('messages.copy') }}
                                         </a>
                                     </li>
                                   @endcan
@@ -92,9 +88,7 @@ content_copy
                                     <li>
                                         <a class="dropdown-item list-action-single"
                                             link-confirm-url="{{ action('Admin\PlanController@deleteConfirm', ['uids' => $plan->uid]) }}" href="{{ action('Admin\PlanController@delete', ['uids' => $plan->uid]) }}" title="{{ trans('messages.delete') }}" class="">
-                                            <span class="material-symbols-rounded">
-delete
-</span> {{ trans('messages.delete') }}
+                                            <span class="material-symbols-rounded">delete</span> {{ trans('messages.delete') }}
                                         </a>
                                     </li>
                                 @endcan
@@ -201,18 +195,14 @@ delete
     </script>
 @elseif (!empty(request()->keyword))
     <div class="empty-list">
-        <i class="material-symbols-rounded">
-assignment_turned_in
-</i>
+        <i class="material-symbols-rounded">assignment_turned_in</i>
         <span class="line-1">
             {{ trans('messages.no_search_result') }}
         </span>
     </div>
 @else
     <div class="empty-list">
-        <i class="material-symbols-rounded">
-assignment_turned_in
-</i>
+        <i class="material-symbols-rounded">assignment_turned_in</i>
         <span class="line-1">
             {{ trans('messages.plan_empty_line_1') }}
         </span>

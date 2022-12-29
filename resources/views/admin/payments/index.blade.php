@@ -1,4 +1,6 @@
-@extends('layouts.core.backend')
+@extends('layouts.core.backend', [
+    'menu' => 'payment',
+])
 
 @section('title', trans('messages.payment_gateways'))
 
@@ -9,9 +11,7 @@
             <li class="breadcrumb-item"><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
         </ul>
         <h1>
-            <span class="text-semibold"><span class="material-symbols-rounded">
-payments
-</span> {{ trans('messages.payment_gateways') }}</span>
+            <span class="text-semibold"><span class="material-symbols-rounded">payments</span> {{ trans('messages.payment_gateways') }}</span>
         </h1>
     </div>
 
@@ -26,7 +26,7 @@ payments
                 <div class="mc-list-setting mt-5">
                     @foreach ($gateways as $gateway)
                         <div class="list-setting bg-{{ $gateway->getType() }}
-                            {{ $gateway->isActive() && in_array($gateway, $enabledGateways) ? 'current' : '' }}">
+                            {{ $gateway->isActive() && Billing::isPaymentGatewayTypeEnabled($gateway) ? 'current' : '' }}">
                             <div class="list-setting-main" style="width: 50%">
                                 <div class="title">
                                     <label>{{ $gateway->getName() }}</label>
@@ -35,7 +35,7 @@ payments
                             </div>
                             <div class="list-setting-status text-nowrap pl-4">
                                 @if ($gateway->isActive())
-                                    @if (in_array($gateway, $enabledGateways))
+                                    @if (Billing::isPaymentGatewayTypeEnabled($gateway))
                                         <span class="label label-flat bg-active">
                                             {{ trans('messages.payment.active') }}
                                         </span>
@@ -48,7 +48,7 @@ payments
                             </div>
                             <div class="list-setting-actions text-nowrap pl-4">
                                 @if ($gateway->isActive())
-                                    @if (in_array($gateway, $enabledGateways))
+                                    @if (Billing::isPaymentGatewayTypeEnabled($gateway))
                                         <a class="btn btn-secondary ml-5"
                                             link-method="post" href="{{ action('Admin\PaymentController@disable', $gateway->getType()) }}">
                                             {{ trans('messages.payment.disable') }}
@@ -90,6 +90,17 @@ payments
                             'help_class' => 'setting',
                             'options' => ['no', 'yes'],
                             'rules' => ['renew_free_plan' => 'required'],
+                        ])
+                    </div>
+                    <div class="form-group checkbox-right-switch">
+                        @include('helpers.form_control', [
+                            'type' => 'checkbox',
+                            'name' => 'allowed_due_subscription',
+                            'value' => \Acelle\Model\Setting::get('allowed_due_subscription'),
+                            'label' => trans('messages.setting.allowed_due_subscription'),
+                            'help_class' => 'setting',
+                            'options' => ['no', 'yes'],
+                            'rules' => ['allowed_due_subscription' => 'required'],
                         ])
                     </div>
                 </div>

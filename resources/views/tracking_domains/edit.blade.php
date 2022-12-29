@@ -1,4 +1,6 @@
-@extends('layouts.core.frontend')
+@extends('layouts.core.frontend', [
+	'menu' => 'tracking_domain',
+])
 
 @section('title', $domain->name)
 
@@ -18,9 +20,7 @@
 
 @section('content')
     <h2>
-        <span class="text-semibold"><span class="material-symbols-rounded">
-edit
-</span> {{ $domain->name }}</span>
+        <span class="text-semibold"><span class="material-symbols-rounded">edit</span> {{ $domain->name }}</span>
     </h2>
 
     <div class="row">

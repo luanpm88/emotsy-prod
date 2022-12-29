@@ -1,17 +1,20 @@
 <div class="mb-20">
     <input type="hidden" name="options[type]" value="datetime" />
-
+    
     @php
         $customer = Auth::user()->customer;
-
-        $date = $trigger->getOptionAsDateTime('date');
-        if (!$date) {
+        $date = $trigger->getOption('date') ? \Carbon\Carbon::createFromFormat(config('custom.date_format'), $trigger->getOption('date'), 'UTC')
+            ->timezone(Auth::user()->customer->timezone)
+            ->format('Y-m-d') : '';
+        if (!$date) {            
             $date = $customer->getCurrentTime()->format('Y-m-d');
         }
-
-        $time = $trigger->getOption('at');
+        
+        $time = $trigger->getOption('at') ? \Carbon\Carbon::createFromFormat(config('custom.time_format'), $trigger->getOption('at'), 'UTC')
+            ->timezone(Auth::user()->customer->timezone)
+            ->format('H:i') : '';
         if (!$time) {
-            $time = $customer->getCurrentTime()->format('h:i A');
+            $time = $customer->getCurrentTime()->format('H:i');
         }
     @endphp
 

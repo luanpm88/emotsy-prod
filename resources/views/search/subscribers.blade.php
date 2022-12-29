@@ -3,9 +3,7 @@
         <div class="d-flex">
             <div class="me-auto">
                 <label class="fw-600">
-                    <span class="material-symbols-rounded me-1">
-                        people 
-                        </span> {{ trans('messages.subscribers') }}
+                    <span class="material-symbols-rounded me-1">people </span> {{ trans('messages.subscribers') }}
                 </label>
             </div>
             <div>
@@ -33,9 +31,7 @@
                             @endif
                             <span class="label label-flat label-sm bg-{{ $subscriber->status }}">{{ trans('messages.' . $subscriber->status) }}</span></span>
                         <span class="text-truncate d-block mb-1" style="max-width:300px;overflow:hidden;">
-                            <span class="material-symbols-rounded">
-                                fact_check
-                                </span> <span>{{ $subscriber->mailList->name }}</span>
+                            <span class="material-symbols-rounded">fact_check</span> <span>{{ $subscriber->mailList->name }}</span>
                         </span>
                     </p>
                 </div>

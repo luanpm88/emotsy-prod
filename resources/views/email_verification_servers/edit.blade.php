@@ -1,4 +1,6 @@
-@extends('layouts.core.frontend')
+@extends('layouts.core.frontend', [
+	'menu' => 'email_verification',
+])
 
 @section('title', $server->name)
 
@@ -10,9 +12,7 @@
                     <li class="breadcrumb-item"><a href="{{ action("EmailVerificationServerController@index") }}">{{ trans('messages.email_verification_servers') }}</a></li>
                 </ul>
                 <h1>
-                    <span class="text-semibold"><span class="material-symbols-rounded">
-edit
-</span> {{ $server->name }}</span>
+                    <span class="text-semibold"><span class="material-symbols-rounded">edit</span> {{ $server->name }}</span>
                 </h1>
             </div>
 

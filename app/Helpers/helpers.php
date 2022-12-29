@@ -29,7 +29,7 @@ use function Acelle\Helpers\xml_to_array;
  */
 function table($name)
 {
-    return \DB::getTablePrefix().$name;
+    return \DB::getTablePrefix() . $name;
 }
 
 /**
@@ -99,8 +99,12 @@ function join_paths()
 {
     $paths = array();
     foreach (func_get_args() as $arg) {
+        if (is_null($arg)) {
+            continue;
+        }
+
         if (preg_match('/http:\/\//i', $arg)) {
-            throw new \Exception('Path contains http://! Use `join_url` instead. Error for '.implode('/', func_get_args()));
+            throw new \Exception('Path contains http://! Use `join_url` instead. Error for ' . implode('/', func_get_args()));
         }
 
         if ($arg !== '') {
@@ -161,7 +165,7 @@ function get_localization_config($name, $locale)
     } elseif (array_key_exists($name, $defaultConfig)) {
         return $defaultConfig[$name];
     } else {
-        throw new \Exception('Localization config for "'.$name.'" does not exist');
+        throw new \Exception('Localization config for "' . $name . '" does not exist');
     }
 }
 
@@ -178,7 +182,7 @@ function get_datetime_format($name, $locale)
     } elseif (array_key_exists($name, $defaultConfig)) {
         return $defaultConfig[$name];
     } else {
-        throw new \Exception('AC: Invalid datetime format type: '.$name.' => make sure the type is available in BOTH local and default (*) settings');
+        throw new \Exception('AC: Invalid datetime format type: ' . $name . ' => make sure the type is available in BOTH local and default (*) settings');
     }
 }
 
@@ -221,39 +225,6 @@ function exec_enabled()
     }
 }
 
-function reset_app_url($force = false)
-{ // replace if already exists
-    // update .env file, set app_url to current host url
-
-    // get .env file path
-    $path = base_path('.env');
-    $raw = preg_split('/[\r\n]+/', file_get_contents($path));
-
-    // read from .env, load into $settings as [ key1 => value1, key2 => value2, etc. ]
-    $settings = [];
-    foreach ($raw as $e) {
-        preg_match('/^(?<key>[A-Z0-9_]+)=(?<value>.*)/', $e, $matched);
-
-        if (array_key_exists('key', $matched) && array_key_exists('value', $matched)) {
-            $settings[$matched['key']] = $matched['value'];
-        }
-    }
-
-    // add APP_URL setting if not exists
-    if (!array_key_exists('APP_URL', $settings)) {
-        $settings['APP_URL'] = url('/');
-    } elseif ($force) {
-        $settings['APP_URL'] = url('/');
-    }
-
-    // Write back to .env file
-    $file = fopen($path, 'w');
-    foreach ($settings as $key => $value) {
-        fwrite($file, "{$key}=$value\n");
-    }
-    fclose($file);
-}
-
 /**
  * Run artisan migrate.
  *
@@ -288,7 +259,7 @@ function language_code()
         $language_code = $_COOKIE['last_language_code'];
     } elseif (app()->getLocale()) {
         $language_code = app()->getLocale();
-    } elseif (is_object($default_language)) {
+    } elseif ($default_language) {
         $language_code = $default_language->code;
     } else {
         $language_code = 'en';
@@ -374,9 +345,9 @@ function optimized_paginate($builder, $perPage = 15, $columns = null, $pageName 
     $results = $total ? $builder->forPage($page, $perPage)->get($columns) : collect([]);
 
     return new \Illuminate\Pagination\LengthAwarePaginator($results, $total, $perPage, $page, [
-    'path' => \Illuminate\Pagination\Paginator::resolveCurrentPath(),
-    'pageName' => $pageName,
-  ]);
+        'path' => \Illuminate\Pagination\Paginator::resolveCurrentPath(),
+        'pageName' => $pageName,
+    ]);
 }
 
 /**
@@ -500,7 +471,7 @@ function doublequote($str)
  *
  * @return string
  */
-function format_price($price, $format = '{PRICE}', $html=false)
+function format_price($price, $format = '{PRICE}', $html = false)
 {
     if ($html) {
         $html = str_replace('{PRICE}', ' <span class="p-amount">' . number_with_delimiter($price) . '</span> ', $format);
@@ -524,15 +495,15 @@ function isInitiated()
 function formatSizeUnits($bytes)
 {
     if ($bytes >= 1073741824) {
-        $bytes = number_format($bytes / 1073741824, 2).' GB';
+        $bytes = number_format($bytes / 1073741824, 2) . ' GB';
     } elseif ($bytes >= 1048576) {
-        $bytes = number_format($bytes / 1048576, 2).' MB';
+        $bytes = number_format($bytes / 1048576, 2) . ' MB';
     } elseif ($bytes >= 1024) {
-        $bytes = number_format($bytes / 1024, 2).' KB';
+        $bytes = number_format($bytes / 1024, 2) . ' KB';
     } elseif ($bytes > 1) {
-        $bytes = $bytes.' bytes';
+        $bytes = $bytes . ' bytes';
     } elseif ($bytes == 1) {
-        $bytes = $bytes.' byte';
+        $bytes = $bytes . ' byte';
     } else {
         $bytes = '0 bytes';
     }
@@ -581,7 +552,7 @@ function quoteDotEnvValue($value)
 
     if ($containsSharp) {
         $value = str_replace('"', '\"', $value);
-        $value = '"'.$value.'"';
+        $value = '"' . $value . '"';
     }
 
     return $value;
@@ -629,34 +600,6 @@ function strip_tags_only($text, $allowedTags = [])
     return $text;
 }
 
-/**
- * Get controller action name
- **/
-function controllerAction()
-{
-    // GET FROM SCREEN OPTION
-    $controller = explode('\\', request()->route()->getAction()['controller']);
-    return $controller[count($controller)-1];
-}
-
-/**
- * Get controller name
- **/
-function controllerName()
-{
-    $controllerAction = controllerAction();
-    return explode('@', $controllerAction)[0];
-}
-
-/**
- * Get action name
- **/
-function actionName()
-{
-    $controllerAction = controllerAction();
-    return explode('@', $controllerAction)[1];
-}
-
 /*
  *  Iterate through a Eloquent $query using cursor paginate
  *  The $orderBy parameter is critically required for a cursor pagination
@@ -679,7 +622,7 @@ function cursorIterate($query, $orderBy, $size, $callback)
  * Convert html to inline.
  *
  * @todo not very OOP here, consider moving this to a Helper instead
-*/
+ */
 function makeInlineCss($html, array $cssFiles)
 {
     // disable warning when parsing html content
@@ -696,27 +639,6 @@ function makeInlineCss($html, array $cssFiles)
     }
 
     return $htmldoc->getHTML();
-}
-
-function putPermanentEnv($arr = [])
-{
-    $path = app()->environmentFilePath();
-    $config = file_get_contents($path);
-
-    foreach ($arr as $key => $value) {
-        $config = preg_replace(
-            "/^{$key}\=.*/m",
-            "{$key}='{$value}'",
-            $config
-        );
-
-        // if not exist
-        if (strpos($config, $key) === false) {
-            $config = $config . "\n" . $key . '=' . $value;
-        }
-    }
-
-    file_put_contents($path, $config);
 }
 
 //resize and crop image by center
@@ -887,7 +809,7 @@ function getThemeColor($theme = false)
     return $colors[$theme];
 }
 
-function getThemeMode($mode, $auto='light')
+function getThemeMode($mode, $auto = 'light')
 {
     $themeMode = $mode;
 
@@ -900,13 +822,30 @@ function getThemeMode($mode, $auto='light')
     return $themeMode;
 }
 
+function getLogoMode($mode, $scheme, $daylight = 'light')
+{
+    if ($scheme !== 'white') {
+        return 'light';
+    }
+
+    if ($mode == 'auto' && ($daylight == 'light' || $daylight == null)) {
+        return 'dark';
+    }
+
+    if ($mode == 'light') {
+        return 'dark';
+    }
+
+    return 'light';
+}
+
 function parseRss($config)
 {
     $rss = [];
 
     // Parse RSS content
-    $rssArray = xml_to_array(simplexml_load_string(file_get_contents($config['url']), 'SimpleXMLElement', LIBXML_NOCDATA));
-    $rssFeed = simplexml_load_string(file_get_contents($config['url']), 'SimpleXMLElement', LIBXML_NOCDATA);
+    $rssArray = xml_to_array(simplexml_load_string(\Acelle\Helpers\url_get_contents_ssl_safe($config['url']), 'SimpleXMLElement', LIBXML_NOCDATA));
+    $rssFeed = simplexml_load_string(\Acelle\Helpers\url_get_contents_ssl_safe($config['url']), 'SimpleXMLElement', LIBXML_NOCDATA);
 
     // Take 10 records only
     $records = array_slice($rssArray['rss']['channel']['item'], 0, $config['size']);
@@ -1234,4 +1173,41 @@ function getFullCodeByLanguageCode($languageCode)
     }
 
     return null;
+}
+
+function getDefaultLogoUrl($type)
+{
+    if (!in_array($type, ['light', 'dark'])) {
+        throw new \Exception('Logo type must be either "light" or "dark"');
+    }
+
+    if ($type == 'light') {
+        $logo = config('custom.default_logo_light');
+    } elseif ($type == 'dark') {
+        $logo = config('custom.default_logo_dark');
+    }
+
+    return URL::asset($logo);
+}
+
+function getSiteLogoUrl($type)
+{
+    if (!in_array($type, ['light', 'dark'])) {
+        throw new \Exception('Logo type must be either "light" or "dark"');
+    }
+
+    $logo = \Acelle\Model\Setting::get("site_logo_$type");
+
+    // check if user logo setting exists
+    if ($logo) {
+        return action('SettingController@file', $logo);
+    } else {
+        return getDefaultLogoUrl($type);
+    }
+}
+
+function get_app_name()
+{
+    $name = \Acelle\Model\Setting::get('site_name') ?: config('app.name');
+    return $name;
 }

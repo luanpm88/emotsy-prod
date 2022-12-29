@@ -28,10 +28,12 @@
 	<header class="automation-header">
 		<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
 			<a class="navbar-brand left-logo" href="#">
-				@if (\Acelle\Model\Setting::get('site_logo_small'))
-					<img src="{{ action('SettingController@file', \Acelle\Model\Setting::get('site_logo_small')) }}" alt="">
+				@if (getThemeMode(Auth::user()->customer->theme_mode, request()->session()->get('customer-auto-theme-mode')) == 'light' &&
+					Auth::user()->customer->getColorScheme() == 'white'
+				)
+					<img class="logo" src="{{ getSiteLogoUrl('dark') }}" alt="">
 				@else
-					<img height="22" src="{{ URL::asset('images/logo_light_blue.svg') }}" alt="">
+					<img class="logo" src="{{ getSiteLogoUrl('light') }}" alt="">
 				@endif
 			</a>
 			<div class="d-inline-block d-flex mr-auto align-items-center">
@@ -53,9 +55,7 @@
 					</select>
 
 					<a href="javascript:'" class="action">
-						<i class="material-symbols-rounded me-2">
-	horizontal_split
-	</i>
+						<i class="material-symbols-rounded me-2">horizontal_split</i>
 						{{ trans('messages.automation.switch_automation') }}
 					</a>
 				</div>
@@ -65,7 +65,7 @@
 						<li class="nav-item dropdown">
 							<a class="account-item nav-link dropdown-toggle px-2" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 								<img class="avatar" src="{{ Auth::user()->getProfileImageUrl() }}" alt="">
-								{{ Auth::user()->displayName() }}
+								{{ Auth::user()->customer->displayName() }}
 							</a>
 							<div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
 								@can("admin_access", Auth::user())
@@ -141,7 +141,7 @@
 
 		<!-- Footer -->
 		<div class="footer text-muted">
-			{!! trans('messages.copy_right') !!}
+			{!! trans('messages.brand.copyright', ['app_name' => get_app_name()] ) !!}
 		</div>
 		<!-- /footer -->
 

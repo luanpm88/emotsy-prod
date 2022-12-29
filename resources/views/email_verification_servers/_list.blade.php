@@ -6,7 +6,7 @@
             <tr>
                 <td width="1%">
                     <div class="text-nowrap">
-                        <div class="checkbox inline">
+                        <div class="checkbox inline me-1">
                             <label>
                                 <input type="checkbox" class="node styled"
                                     name="uids[]"
@@ -20,7 +20,7 @@
                     <h5 class="m-0 text-bold">
                         <a class="kq_search d-block" href="{{ action('EmailVerificationServerController@edit', ["email_verification_server" => $server->uid]) }}">{{ $server->name }}</a>
                     </h5>
-                    <span class="text-muted">{{ trans('messages.created_at') }}: {{ Auth::user()->customer->formatDateTime($server->created_at, 'date_full') }}</span>
+                    <span class="text-muted">{{ trans('messages.created_at') }}: {{ Auth::user()->customer->formatDateTime($server->created_at, 'datetime_full') }}</span>
                 </td>
                 <td>
                     <div class="single-stat-box pull-left ml-20">
@@ -43,9 +43,7 @@
                 </td>
                 <td class="text-end text-nowrap pe-0">
                     @if (Auth::user()->customer->can('update', $server))
-                        <a href="{{ action('EmailVerificationServerController@edit', ["email_verification_server" => $server->uid]) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" role="button" class="btn btn-secondary btn-icon"><span class="material-symbols-rounded">
-edit
-</span> {{ trans('messages.edit') }}</a>
+                        <a href="{{ action('EmailVerificationServerController@edit', ["email_verification_server" => $server->uid]) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" role="button" class="btn btn-secondary btn-icon"><span class="material-symbols-rounded">edit</span> {{ trans('messages.edit') }}</a>
                     @endif
                     @if (Auth::user()->customer->can('delete', $server) || Auth::user()->customer->can('disable', $server) || Auth::user()->customer->can('enable', $server))
                         <div class="btn-group">
@@ -54,9 +52,7 @@ edit
                                 @if (Auth::user()->customer->can('enable', $server))
                                     <li>
                                         <a class="dropdown-item list-action-single" link-confirm="{{ trans('messages.enable_email_verification_servers_confirm') }}" href="{{ action('EmailVerificationServerController@enable', ["uids" => $server->uid]) }}">
-                                            <span class="material-symbols-rounded">
-play_arrow
-</span> {{ trans('messages.enable') }}
+                                            <span class="material-symbols-rounded">play_arrow</span> {{ trans('messages.enable') }}
                                         </a>
                                     </li>
                                 @endif
@@ -64,18 +60,14 @@ play_arrow
                                     <li>
                                         <a class="dropdown-item list-action-single" link-confirm="{{ trans('messages.disable_email_verification_servers_confirm') }}"
                                             href="{{ action('EmailVerificationServerController@disable', ["uids" => $server->uid]) }}">
-                                            <span class="material-symbols-rounded">
-hide_source
-</span> {{ trans('messages.disable') }}
+                                            <span class="material-symbols-rounded">hide_source</span> {{ trans('messages.disable') }}
                                         </a>
                                     </li>
                                 @endif
                                 @if (Auth::user()->customer->can('delete', $server))
                                     <li>
                                         <a class="dropdown-item list-action-single" link-confirm="{{ trans('messages.delete_email_verification_servers_confirm') }}" href="{{ action('EmailVerificationServerController@delete', ["uids" => $server->uid]) }}">
-                                            <span class="material-symbols-rounded">
-delete_outline
-</span> {{ trans('messages.delete') }}
+                                            <span class="material-symbols-rounded">delete_outline</span> {{ trans('messages.delete') }}
                                         </a>
                                     </li>
                                 @endif
@@ -92,18 +84,14 @@ delete_outline
     
 @elseif (!empty(request()->keyword) || !empty(request()->filters["type"]))
     <div class="empty-list">
-        <span class="material-symbols-rounded">
-dns
-</span>
+        <span class="material-symbols-rounded">dns</span>
         <span class="line-1">
             {{ trans('messages.no_search_result') }}
         </span>
     </div>
 @else
     <div class="empty-list">
-        <span class="material-symbols-rounded">
-dns
-</span>
+        <span class="material-symbols-rounded">dns</span>
         <span class="line-1">
             {{ trans('messages.email_verification_server_empty_line_1') }}
         </span>

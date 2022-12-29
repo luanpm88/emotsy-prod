@@ -56,7 +56,7 @@ class SubscriptionPolicy
         return $can;
     }
 
-    public function cancel(User $user, Subscription $subscription, $role)
+    public function disableRecurring(User $user, Subscription $subscription, $role)
     {
         $can = $subscription->isActive() && $subscription->isRecurring();
         switch ($role) {
@@ -69,9 +69,9 @@ class SubscriptionPolicy
         return $can;
     }
 
-    public function resume(User $user, Subscription $subscription, $role)
+    public function enableRecurring(User $user, Subscription $subscription, $role)
     {
-        $can = $subscription->isActive() && $subscription->cancelled() && !$subscription->isEnded();
+        $can = $subscription->isActive() && !$subscription->isRecurring() && !$subscription->isEnded();
         switch ($role) {
             case 'admin':
                 break;
@@ -84,7 +84,21 @@ class SubscriptionPolicy
 
     public function cancelNow(User $user, Subscription $subscription, $role)
     {
-        $can = !$subscription->isEnded();
+        $can = $subscription->isActive();
+
+        switch ($role) {
+            case 'admin':
+                break;
+            case 'customer':
+                break;
+        }
+
+        return $can;
+    }
+
+    public function terminate(User $user, Subscription $subscription, $role)
+    {
+        $can = $subscription->isActive() || $subscription->isNew();
 
         switch ($role) {
             case 'admin':
@@ -117,7 +131,7 @@ class SubscriptionPolicy
                 $can = false;
                 break;
             case 'customer':
-                $can = $subscription->isActive();
+                $can = $subscription->isActive() && !$subscription->getItsOnlyUnpaidChangePlanInvoice();
                 break;
         }
 
@@ -143,6 +157,21 @@ class SubscriptionPolicy
     public function delete(User $user, Subscription $subscription, $role)
     {
         $can = $subscription->isEnded();
+
+        switch ($role) {
+            case 'admin':
+                break;
+            case 'customer':
+                $can = false;
+                break;
+        }
+
+        return $can;
+    }
+
+    public function replenishSendingCredits(User $user, Subscription $subscription, $role)
+    {
+        $can = $subscription->isActive();
 
         switch ($role) {
             case 'admin':

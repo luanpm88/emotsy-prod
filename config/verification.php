@@ -19,15 +19,6 @@ return [
             'result_xpath' => '$.result',
             'result_map' => [ 'deliverable' => 'deliverable', 'undeliverable' => 'undeliverable', 'risky' => 'risky', 'unknown' => 'unknown' ]
         ], [
-            'id' => 'thechecker.co',
-            'name' => 'TheChecker CO',
-            'uri' => 'https://api.thechecker.co/v1/verify?email={EMAIL}&api_key={API_KEY}',
-            'request_type' => 'GET',
-            'fields' => [ 'api_key' ],
-            'result_xpath' => '$.result',
-            'result_map' => [ 'deliverable' => 'deliverable', 'undeliverable' => 'undeliverable', 'risky' => 'risky', 'unknown' => 'unknown' ]
-        ],
-        [
             'id' => 'zerobounce.net',
             'name' => 'Zero Bounce',
             'uri' => 'https://api.zerobounce.net/v1/validate?apikey={API_KEY}&email={EMAIL}',
@@ -44,32 +35,6 @@ return [
             'fields' => [ 'api_key' ],
             'result_xpath' => '$.status',
             'result_map' => [ '1' => 'deliverable', '0' => 'undeliverable', '-1' => 'unknown' ]
-        /*
-        ], [
-            'id' => 'proofy.io',
-            'name' => 'proofy.io',
-            'uri' => 'https://api.proofy.io/verifyaddr?aid={USERNAME}&key={API_KEY}&email={EMAIL}',
-            'request_type' => 'GET',
-            'fields' => [ 'username', 'api_key' ],
-            'result_xpath' => '$.mail.statusName',
-            'result_map' => [ 'deliverable' => 'deliverable', 'undeliverable' => 'undeliverable', 'risky' => 'risky' ]
-        */
-        ], [
-            'id' => 'everifier.org',
-            'name' => 'Everifier ORG',
-            'uri' => 'https://api.everifier.org/v1/{API_KEY}/verify/{EMAIL}',
-            'request_type' => 'GET',
-            'fields' => [ 'api_key' ],
-            'result_xpath' => '$.*.status',
-            'result_map' => [ '1' => 'deliverable', '0' => 'undeliverable', '-1' => 'risky' ]
-        ], [
-            'id' => 'verifyre.co',
-            'name' => 'Verifyre CO',
-            'uri' => 'https://www.verifyre.co/app/check?id={USERNAME}&key={API_KEY}&mail={EMAIL}',
-            'request_type' => 'GET',
-            'fields' => [ 'username', 'api_key' ],
-            'result_xpath' => '$.mail.status',
-            'result_map' => [ '1' => 'deliverable', '2' => 'risky', '3' => 'undeliverable' ]
         ], [
             'id' => 'localmail.io',
             'name' => 'Localmail IO',

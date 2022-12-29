@@ -21,28 +21,53 @@
         @endif
 
         <div class="row">
-            <div class="col-md-6">
-                @include('helpers.form_control', [
-                    'type' => 'text',
-                    'name' => 'first_name',
-                    'value' => $billingAddress->first_name,
-                    'label' => trans('messages.first_name'),
-                    'help_class' => 'billing_address',
-                    'rules' => ['first_name' => 'required'],
-                    // 'readonly' => request()->same_as_contact == 'true',
-                ])
-            </div>
-            <div class="col-md-6">
-                @include('helpers.form_control', [
-                    'type' => 'text',
-                    'name' => 'last_name',
-                    'value' => $billingAddress->last_name,
-                    'label' => trans('messages.last_name'),
-                    'help_class' => 'billing_address',
-                    'rules' => ['last_name' => 'required'],
-                    // 'readonly' => request()->same_as_contact == 'true',
-                ])
-            </div>
+            @if (get_localization_config('show_last_name_first', Auth()->user()->customer->getLanguageCode()))
+                <div class="col-md-6">
+                    @include('helpers.form_control', [
+                        'type' => 'text',
+                        'name' => 'last_name',
+                        'value' => $billingAddress->last_name,
+                        'label' => trans('messages.last_name'),
+                        'help_class' => 'billing_address',
+                        'rules' => ['last_name' => 'required'],
+                        // 'readonly' => request()->same_as_contact == 'true',
+                    ])
+                </div>
+                <div class="col-md-6">
+                    @include('helpers.form_control', [
+                        'type' => 'text',
+                        'name' => 'first_name',
+                        'value' => $billingAddress->first_name,
+                        'label' => trans('messages.first_name'),
+                        'help_class' => 'billing_address',
+                        'rules' => ['first_name' => 'required'],
+                        // 'readonly' => request()->same_as_contact == 'true',
+                    ])
+                </div>
+            @else 
+                <div class="col-md-6">
+                    @include('helpers.form_control', [
+                        'type' => 'text',
+                        'name' => 'first_name',
+                        'value' => $billingAddress->first_name,
+                        'label' => trans('messages.first_name'),
+                        'help_class' => 'billing_address',
+                        'rules' => ['first_name' => 'required'],
+                        // 'readonly' => request()->same_as_contact == 'true',
+                    ])
+                </div>
+                <div class="col-md-6">
+                    @include('helpers.form_control', [
+                        'type' => 'text',
+                        'name' => 'last_name',
+                        'value' => $billingAddress->last_name,
+                        'label' => trans('messages.last_name'),
+                        'help_class' => 'billing_address',
+                        'rules' => ['last_name' => 'required'],
+                        // 'readonly' => request()->same_as_contact == 'true',
+                    ])
+                </div>
+            @endif
         </div>
 
         <div class="row">
@@ -80,19 +105,25 @@
                     // 'readonly' => request()->same_as_contact == 'true',
                 ])
             </div>
-            <div class="col-md-6">
-                @include('helpers.form_control', [
-                    'type' => 'select',
-                    'name' => 'country_id',
-                    'value' => $billingAddress->country_id,
-                    'label' => trans('messages.country'),
-                    'options' => Acelle\Model\Country::getSelectOptions(),
-                    'include_blank' => trans('messages.select_country'),
-                    'help_class' => 'billing_address',
-                    'rules' => ['country_id' => 'required'],
-                    // 'readonly' => request()->same_as_contact == 'true',
-                ])
-            </div>
+
+            @if (config('custom.japan'))
+                <input type="hidden" name="country_id" value="{{ Acelle\Model\Country::getJapan()->id }}" />
+            @else
+                <div class="col-md-6">
+                    @include('helpers.form_control', [
+                        'type' => 'select',
+                        'name' => 'country_id',
+                        'value' => $billingAddress->country_id,
+                        'label' => trans('messages.country'),
+                        'options' => Acelle\Model\Country::getSelectOptions(),
+                        'include_blank' => trans('messages.select_country'),
+                        'help_class' => 'billing_address',
+                        'rules' => ['country_id' => 'required'],
+                        // 'readonly' => request()->same_as_contact == 'true',
+                    ])
+                </div>
+            @endif
+            
         </div>
 
         <div class="mt-4">

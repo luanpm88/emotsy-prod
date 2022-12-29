@@ -1,4 +1,6 @@
-@extends('layouts.core.frontend')
+@extends('layouts.core.frontend', [
+	'menu' => 'sending_domain',
+])
 
 @section('title', $server->name)
 
@@ -19,12 +21,12 @@
 
 @section('content')
     
-    @include('senders._menu')
+    @include('senders._menu', [
+        'menu' => 'sending_domain',
+    ])
     
     <h2>
-        <span class="text-semibold"><span class="material-symbols-rounded">
-edit
-</span> {{ $server->name }}</span>
+        <span class="text-semibold"><span class="material-symbols-rounded">edit</span> {{ $server->name }}</span>
     </h2>
 
     <div class="row">

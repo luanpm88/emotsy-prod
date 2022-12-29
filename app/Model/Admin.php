@@ -92,7 +92,7 @@ class Admin extends Model
      */
     public function hasCustomerAccount()
     {
-        return is_object($this->user) && is_object($this->user->customer);
+        return $this->user && $this->user->customer;
     }
 
     /**
@@ -298,6 +298,7 @@ class Admin extends Model
      */
     public function subscriptionNotificationCount()
     {
+        // Notice that timezone of datetime object passed to ->where() must match Laravel's app.timezone
         $query = $this->getAllSubscriptions()
             ->where('subscriptions.ends_at', '>=', \Carbon\Carbon::now()->endOfDay())
             ->count();
@@ -313,7 +314,7 @@ class Admin extends Model
     public function recentSubscriptions($number = 5)
     {
         $query = $this->getAllSubscriptions()
-            ->whereNull('ends_at')->orWhere('ends_at', '>=', \Carbon\Carbon::now())
+            ->whereNull('subscriptions.updated_at')->orWhere('subscriptions.updated_at', '>=', \Carbon\Carbon::now())
             ->orderBy('subscriptions.created_at', 'desc')->limit($number);
 
         return $query->get();
@@ -326,7 +327,7 @@ class Admin extends Model
      */
     public function getLanguageCode()
     {
-        return is_object($this->language) ? $this->language->code : null;
+        return $this->language ? $this->language->code : null;
     }
 
     /**
@@ -337,7 +338,7 @@ class Admin extends Model
     public function getLanguageCodeFull()
     {
         $region_code = $this->language->region_code ? strtoupper($this->language->region_code) : strtoupper($this->language->code);
-        return is_object($this->language) ? ($this->language->code.'-'.$region_code) : null;
+        return $this->language ? ($this->language->code.'-'.$region_code) : null;
     }
 
     /**
@@ -604,5 +605,26 @@ class Admin extends Model
         // See config('localization')['*'] for the full list of available format names
 
         return format_datetime($datetime, $name, $this->getLanguageCode());
+    }
+
+    /**
+     * Get customer timezone.
+     *
+     * @return string
+     */
+    public function getTimezone()
+    {
+        return $this->timezone;
+    }
+
+    public function displayName()
+    {
+        $lastNameFirst = get_localization_config('show_last_name_first', $this->getLanguageCode());
+
+        if ($lastNameFirst) {
+            return htmlspecialchars(trim($this->user->last_name.' '.$this->user->first_name));
+        } else {
+            return htmlspecialchars(trim($this->user->first_name.' '.$this->user->last_name));
+        }
     }
 }

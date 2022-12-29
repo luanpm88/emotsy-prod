@@ -25,7 +25,7 @@
                 'name' => 'mail_list_uid',
                 'type' => 'select',
                 'label' => trans('messages.automation.change_mail_list'),
-                'value' => (is_object($automation->mailList) ? $automation->mailList->uid : ''),
+                'value' => ($automation->mailList ? $automation->mailList->uid : ''),
                 'options' => Auth::user()->customer->readCache('MailListSelectOptions', []),
                 'rules' => $automation->rules(),
             ])
@@ -34,15 +34,20 @@
 
             </div>
             
-            @include('helpers.form_control', [
-                'type' => 'select',
-                'name' => 'timezone',
-                'value' => \Auth::user()->customer->timezone,
-                'options' => Tool::getTimezoneSelectOptions(),
-                'include_blank' => trans('messages.choose'),
-                'rules' => $automation->rules(),
-                'disabled' => true,
-            ])
+            @if (config('custom.japan'))
+                <input type="hidden" name="timezone" value="Asia/Tokyo" />
+            @else
+                @include('helpers.form_control', [
+                    'type' => 'select',
+                    'name' => 'timezone',
+                    'value' => \Auth::user()->customer->timezone ?? config('app.timezone'),
+                    'options' => Tool::getTimezoneSelectOptions(),
+                    'include_blank' => trans('messages.choose'),
+                    'rules' => $automation->rules(),
+                    'disabled' => true,
+                ])
+            @endif
+                
         </div>
     </div>
     
@@ -62,9 +67,7 @@
                 data-confirm="{{ trans('messages.automation.delete.confirm') }}"
                 class="btn btn-secondary automation-delete"
             >
-                <span class="material-symbols-rounded">
-delete
-</span> {{ trans('messages.automation.delete_automation') }}
+                <span class="material-symbols-rounded">delete</span> {{ trans('messages.automation.delete_automation') }}
             </a>
         </div>
     </div>
@@ -155,8 +158,9 @@ delete
                 //
                 $.ajax({
                     url: url,
-                    method: 'DELETE',
+                    method: 'POST',
                     data: {
+                        _method: 'DELETE',
                         _token: CSRF_TOKEN,
                     },
                     statusCode: {

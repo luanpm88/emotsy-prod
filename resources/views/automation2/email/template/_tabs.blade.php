@@ -20,7 +20,7 @@
             ]) }}">{{ trans('messages.my_templates') }}</a>
     </li>
     <li class="nav-item">
-        <a class="choose-template-tab nav-link {{ actionName() == 'templateUpload' ? 'active' : '' }}" href="javascript:;" data-href="{{ action('Automation2Controller@templateUpload', [
+        <a class="choose-template-tab nav-link {{ isset($tab) && $tab == 'upload' ? 'active' : '' }}" href="javascript:;" data-href="{{ action('Automation2Controller@templateUpload', [
             'uid' => $automation->uid,
             'email_uid' => $email->uid,
         ]) }}">{{ trans('messages.upload') }}</a></li>

@@ -3,7 +3,6 @@
 namespace Acelle\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Acelle\Library\Log as MailLog;
 use Acelle\Model\Customer;
 use Acelle\Model\User;
 use Acelle\Library\Facades\Hook;
@@ -106,9 +105,18 @@ class UserController extends Controller
 
             // Captcha check
             if (\Acelle\Model\Setting::get('registration_recaptcha') == 'yes') {
-                $success = \Acelle\Library\Tool::checkReCaptcha($request);
-                if (!$success) {
-                    $rules['recaptcha_invalid'] = 'required';
+                // @hCaptcha
+                if (\Acelle\Model\Setting::getCaptchaProvider() == 'hcaptcha') {
+                    $hcaptcha = \Acelle\Hcaptcha\Client::initialize();
+                    $success = $hcaptcha->check($request);
+                    if (!$success) {
+                        $rules['captcha_invalid'] = 'required';
+                    }
+                } else {
+                    $success = \Acelle\Library\Tool::checkReCaptcha($request);
+                    if (!$success) {
+                        $rules['recaptcha_invalid'] = 'required';
+                    }
                 }
             }
 
@@ -121,7 +129,7 @@ class UserController extends Controller
             if (true) {
                 // Send registration confirmation email
                 try {
-                    $user->sendActivationMail($user->displayName());
+                    $user->sendActivationMail($customer->displayName());
                 } catch (\Exception $e) {
                     return view('somethingWentWrong', ['message' => trans('messages.something_went_wrong_with_email_service') . ": " . $e->getMessage()]);
                 }

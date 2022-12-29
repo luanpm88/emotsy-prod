@@ -18,7 +18,7 @@ class SendingDomainPolicy
                 $can = $user->admin->getPermission('sending_domain_read') != 'no';
                 break;
             case 'customer':
-                $subscription = $user->customer->subscription;
+                $subscription = $user->customer->getNewOrActiveSubscription();
 
                 if ($subscription->plan->useOwnSendingServer()) {
                     $can = true;
@@ -61,7 +61,7 @@ class SendingDomainPolicy
                     || ($ability == 'own' && $user->admin->id == $item->admin_id);
                 break;
             case 'customer':
-                $subscription = $user->customer->subscription;
+                $subscription = $user->customer->getNewOrActiveSubscription();
 
                 if ($subscription->plan->useOwnSendingServer()) {
                     $can = true;
@@ -86,7 +86,7 @@ class SendingDomainPolicy
                     || ($ability == 'own' && $user->admin->id == $item->admin_id);
                 break;
             case 'customer':
-                $subscription = $user->customer->subscription;
+                $subscription = $user->customer->getNewOrActiveSubscription();
 
                 if ($subscription->plan->useOwnSendingServer()) {
                     $can = true;

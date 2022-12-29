@@ -42,12 +42,11 @@ class MailListController extends Controller
     {
         $user = \Auth::guard('api')->user();
 
-        $item = \Acelle\Model\MailList::
-            where('uid', '=', $id)
+        $item = \Acelle\Model\MailList::where('uid', '=', $id)
             ->first();
 
         // check if item exists
-        if (!is_object($item)) {
+        if (!$item) {
             return \Response::json(array('message' => 'Mail list not found'), 404);
         }
 

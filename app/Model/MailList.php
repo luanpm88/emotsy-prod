@@ -34,6 +34,7 @@ use Acelle\Events\MailListUpdated;
 use Acelle\Model\Setting;
 use Acelle\Model\SubscriberFields;
 use Acelle\Library\Traits\QueryHelper;
+use Acelle\Library\Traits\HasCache;
 use Acelle\Events\MailListImported;
 use Acelle\Library\Traits\TrackJobs;
 use DB;
@@ -52,6 +53,7 @@ class MailList extends Model
     use QueryHelper;
     use TrackJobs;
     use HasUid;
+    use HasCache;
 
     public const SOURCE_EMBEDDED_FORM = 'embedded-form';
     public const SOURCE_WEB = 'web';
@@ -304,7 +306,7 @@ class MailList extends Model
                             'mail_list_id' => $this->id,
                             'type' => 'text',
                             'label' => trans('messages.first_name'),
-                            'tag' => \Acelle\Model\Field::formatTag(trans('messages.first_name_tag')),
+                            'tag' => 'FIRST_NAME',
                             'required' => false,
                             'visible' => true,
                         ]);
@@ -313,7 +315,7 @@ class MailList extends Model
                             'mail_list_id' => $this->id,
                             'type' => 'text',
                             'label' => trans('messages.last_name'),
-                            'tag' => \Acelle\Model\Field::formatTag(trans('messages.last_name_tag')),
+                            'tag' => 'LAST_NAME',
                             'required' => false,
                             'visible' => true,
                         ]);
@@ -338,26 +340,6 @@ class MailList extends Model
     {
         // Case insensitive search
         return $this->fields()->where(DB::raw('LOWER(tag)'), '=', strtolower($tag))->first();
-    }
-
-    /**
-     * Get field by tag.
-     *
-     * @return object
-     */
-    public function activeSubscribers()
-    {
-        return $this->subscribers()->where('subscribers.status', 'subscribed');
-    }
-
-    /**
-     * Get field by tag.
-     *
-     * @return object
-     */
-    public function getActiveSubscribers()
-    {
-        return $this->activeSubscribers()->get();
     }
 
     /**
@@ -682,7 +664,7 @@ class MailList extends Model
         // @todo: trigger MailListSubscription event here?
 
         // Contact
-        if (is_object($this->contact)) {
+        if ($this->contact) {
             $new_contact = $this->contact->replicate();
             $new_contact->uid = uniqid();
             $new_contact->save();
@@ -697,6 +679,7 @@ class MailList extends Model
         // Fields
         foreach ($this->fields as $field) {
             $new_field = $field->replicate();
+            $new_field->uid = uniqid();
             $new_field->mail_list_id = $copy->id;
             $new_field->save();
 
@@ -738,7 +721,7 @@ class MailList extends Model
         $pageSize = 1000;
 
         if (!is_null($progressCallback)) {
-            $progressCallback($processed, $total, $failed, $message = 'Export is in progress...');
+            $progressCallback($processed, $total, $failed, $message = 'エクスポートが進行中です...');
         }
 
         $file = $this->getExportFilePath();
@@ -800,12 +783,12 @@ class MailList extends Model
 
             // Callback
             if (!is_null($progressCallback)) {
-                $progressCallback($processed, $total, $failed = 0, $message = sprintf('Export is in progress, %s / %s records written', $processed, $total));
+                $progressCallback($processed, $total, $failed = 0, $message = sprintf('エクスポートが進行中です, %s / %s records written', $processed, $total));
             }
         });
 
         if (!is_null($progressCallback)) {
-            $progressCallback($processed, $total, $failed = 0, $message = sprintf('Export complete, processed: %s / %s', $processed, $total));
+            $progressCallback($processed, $total, $failed = 0, $message = sprintf('エクスポート完了, 処理済み：%s / %s', $processed, $total));
         }
     }
 
@@ -901,7 +884,7 @@ class MailList extends Model
         });
 
         $message->setSubject($template->subject);
-        $message->setTo([ $this->customer->user->email => $this->customer->user->displayName()]);
+        $message->setTo([ $this->customer->user->email => $this->customer->displayName()]);
         $mailer = App::make('xmailer');
         $result = $mailer->sendWithDefaultFromAddress($message);
 
@@ -919,7 +902,7 @@ class MailList extends Model
         $message = new ExtendedSwiftMessage();
         $message->setContentType('text/html; charset=utf-8');
         $message->setEncoder(new \Swift_Mime_ContentEncoder_PlainContentEncoder('8bit'));
-        $message->setTo([ $this->customer->user->email => $this->customer->user->displayName()]);
+        $message->setTo([ $this->customer->user->email => $this->customer->displayName()]);
 
         $template = \Acelle\Model\Layout::where('alias', 'unsubscribe_notification_for_list_owner')->first();
         $htmlContent = $template->content;
@@ -1047,6 +1030,12 @@ class MailList extends Model
                 \Acelle\Library\StringHelper::checkAndRemoveUTF8BOM($file);
             }
 
+            // Run this method anyway
+            // to make sure mb_convert_encoding($content, 'UTF-8', 'UTF-8') is always called
+            // which helps resolve the issue of
+            //     "Error executing job. SQLSTATE[HY000]: General error: 1366 Incorrect string value: '\x83??s k...' for column 'company' at row 2562 (SQL: insert into `dlk__tmp_subscribers..."
+            \Acelle\Library\StringHelper::toUTF8($file, 'UTF-8');
+
             // Read CSV files
             $reader = \League\Csv\Reader::createFromPath($file);
             $reader->setHeaderOffset(0);
@@ -1164,7 +1153,6 @@ class MailList extends Model
 
             // process by batches
             each_batch($results, config('app.import_batch_size'), false, function ($batch) use ($availableFields, &$processed, &$failed, $total, &$overQuotaAttempt, &$message, $progressCallback, $invalidRecordCallback) {
-
                 // authorization
                 if ($this->customer->user->can('addMoreSubscribers', [$this, sizeof($batch)])) {
                     $insertLimit = sizeof($batch);
@@ -1182,7 +1170,7 @@ class MailList extends Model
                 $tmpTable = table('__tmp_subscribers');
                 // @todo: hard-coded charset and COLLATE
                 $tmpFields = implode(',', array_map(function ($field) {
-                    return "`{$field}` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci";
+                    return "`{$field}` VARCHAR(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci";
                 }, $availableFields));
 
                 // Drop table, create table and create index
@@ -1439,103 +1427,54 @@ class MailList extends Model
     /**
      * Update Campaign cached data.
      */
-    public function updateCache($key = null)
+    public function getCacheIndex()
     {
-        // cache indexes
-        $index = [
+        return [
             // @note: SubscriberCount must come first as its value shall be used by the others
-            'SubscriberCount' => function (&$list) {
-                return $list->subscribersCount(false);
+            'SubscriberCount' => function () {
+                return $this->subscribersCount(false);
             },
-            'VerifiedSubscriberCount' => function (&$list) {
-                return $list->subscribers()->verified()->count();
+            'VerifiedSubscriberCount' => function () {
+                return $this->subscribers()->verified()->count();
             },
-            'ClickedRate' => function (&$list) {
-                return $list->clickRate();
+            'ClickedRate' => function () {
+                return $this->clickRate();
             },
-            'UniqOpenRate' => function (&$list) {
-                return $list->openUniqRate();
+            'UniqOpenRate' => function () {
+                return $this->openUniqRate();
             },
-            'SubscribeRate' => function (&$list) {
-                return $list->subscribeRate(true);
+            'SubscribeRate' => function () {
+                return $this->subscribeRate(true);
             },
-            'SubscribeCount' => function (&$list) {
-                return $list->subscribeCount();
+            'SubscribeCount' => function () {
+                return $this->subscribeCount();
             },
-            'UnsubscribeRate' => function (&$list) {
-                return $list->unsubscribeRate(true);
+            'UnsubscribeRate' => function () {
+                return $this->unsubscribeRate(true);
             },
-            'UnsubscribeCount' => function (&$list) {
-                return $list->unsubscribeCount();
+            'UnsubscribeCount' => function () {
+                return $this->unsubscribeCount();
             },
-            'UnconfirmedCount' => function (&$list) {
-                return $list->unconfirmedCount();
+            'UnconfirmedCount' => function () {
+                return $this->unconfirmedCount();
             },
-            'BlacklistedCount' => function (&$list) {
-                return $list->blacklistedCount();
+            'BlacklistedCount' => function () {
+                return $this->blacklistedCount();
             },
-            'SpamReportedCount' => function (&$list) {
-                return $list->spamReportedCount();
+            'SpamReportedCount' => function () {
+                return $this->spamReportedCount();
             },
-            'SegmentSelectOptions' => function (&$list) {
-                return $list->getSegmentSelectOptions(true);
+            'SegmentSelectOptions' => function () {
+                return $this->getSegmentSelectOptions(true);
             },
-            'LongName' => function (&$list) {
-                return $list->longName(true);
+            'LongName' => function () {
+                return $this->longName(true);
             },
-            'VerifiedSubscribersPercentage' => function (&$list) {
-                return $list->getVerifiedSubscribersPercentage(true);
+            'VerifiedSubscribersPercentage' => function () {
+                return $this->getVerifiedSubscribersPercentage(true);
             },
 
         ];
-
-        // retrieve cached data
-        $cache = json_decode($this->cache, true);
-        if (is_null($cache)) {
-            $cache = [];
-        }
-
-        if (is_null($key)) {
-            // update all cache
-            foreach ($index as $key => $callback) {
-                $cache[$key] = $callback($this);
-                if ($key == 'SubscriberCount') {
-                    // SubscriberCount cache must always be updated as its value will be used for the others
-                    $this->cache = json_encode($cache);
-                    $this->save();
-                }
-            }
-        } else {
-            // update specific key
-            $callback = $index[$key];
-            $cache[$key] = $callback($this);
-        }
-
-        // write back to the DB
-        $this->cache = json_encode($cache);
-        $this->save();
-    }
-
-    /**
-     * Retrieve Campaign cached data.
-     *
-     * @return mixed
-     */
-    public function readCache($key, $default = null)
-    {
-        $cache = json_decode($this->cache, true);
-        if (is_null($cache)) {
-            return $default;
-        }
-        if (array_key_exists($key, $cache)) {
-            if (is_null($cache[$key])) {
-                return $default;
-            } else {
-                return $cache[$key];
-            }
-        } else {
-            return $default;
-        }
     }
 
     /**
@@ -1559,6 +1498,11 @@ class MailList extends Model
         $message->setTo(array($subscriber->email, $subscriber->email => $subscriber->getFullName(trans('messages.to_email_name'))));
         $message->addPart($body, 'text/html');
 
+        if (config('app.demo')) {
+            MailLog::info("In DEMO mode, send message '{$title}' to log instead: \n".$message->toString());
+            return;
+        }
+
         try {
             $this->send($message, [
                 'subscriber' => $subscriber,
@@ -1573,7 +1517,7 @@ class MailList extends Model
     public function getCurrentSubscription()
     {
         if (empty($this->currentSubscription)) {
-            $this->currentSubscription = $this->customer->activeSubscription();
+            $this->currentSubscription = $this->customer->getCurrentActiveSubscription();
         }
 
         return $this->currentSubscription;
@@ -1605,7 +1549,7 @@ class MailList extends Model
                 $server = SendingServer::mapServerType($server);
 
                 // flag the server to use sub-account instead
-                $subscription = $this->getCurrentSubscription();
+                $subscription = $this->customer->getNewOrActiveSubscription();
                 if (!is_null($subscription->sub_account_id)) {
                     $server->setSubAccount($subscription->subAccount);
                 }
@@ -1630,7 +1574,7 @@ class MailList extends Model
         }
 
         $result = [];
-        $subscription = $this->getCurrentSubscription();
+        $subscription = $this->customer->getNewOrActiveSubscription();
 
         // Check the customer has permissions using sending servers and has his own sending servers
         if ($this->customer->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_OWN) {
@@ -1645,10 +1589,10 @@ class MailList extends Model
                     return [$server->sending_server_id, $server->fitness];
                 });
             }
-            // If customer dont have permission creating sending servers
+        // If customer dont have permission creating sending servers
         } elseif ($this->customer->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_SYSTEM) {
             // Check if has sending servers for current subscription
-            if (is_object($subscription)) {
+            if ($subscription) {
                 /*
                 if ($subscription->plan->getOption('all_sending_servers') == 'yes') {
                     if (\Acelle\Model\SendingServer::system()->count()) {
@@ -1669,12 +1613,6 @@ class MailList extends Model
             }
             //} elseif ($subscription->useSubAccount()) {
         //    $result[] = [$subscription->subAccount->sending_server_id, '100'];
-        }
-
-        if (!config('app.saas')) {
-            $result = \Acelle\Model\SendingServer::active()->get()->map(function ($server) {
-                return [$server->id, 100];
-            });
         }
 
         $assoc = [];
@@ -1746,7 +1684,7 @@ class MailList extends Model
         $copy->save();
 
         // Contact
-        if (is_object($this->contact)) {
+        if ($this->contact) {
             $new_contact = $this->contact->replicate();
             $new_contact->save();
 
@@ -1794,7 +1732,7 @@ class MailList extends Model
     {
         // Validation
         // It is ok to have subscriber subscribe again without any confusing message
-        //     if (is_object($subscriber) && $subscriber->status == \Acelle\Model\Subscriber::STATUS_SUBSCRIBED) {
+        //     if ($subscriber && $subscriber->status == \Acelle\Model\Subscriber::STATUS_SUBSCRIBED) {
         //        $rules['email_already_subscribed'] = 'required';
         //     }
 
@@ -1828,24 +1766,27 @@ class MailList extends Model
 
         $validator = \Validator::make($request->all(), $rules, $messages);
 
-        if ($validator->fails()) {
-            return [$validator, null];
-        }
-
         // Validated, proceed
         $subscriber = $this->subscribers()->firstOrNew(['email' => strtolower(trim($request->EMAIL))]);
         $subscriber->from = $source;
 
         // Check if subscriber already in blacklist
         if ($subscriber->isListedInBlacklist()) {
-            throw new \Exception(trans('messages.subscriber.blacklisted'));
+            // validate service
+            $validator->after(function ($validator) {
+                $validator->errors()->add('email', trans('messages.subscriber.blacklisted'));
+            });
+        }
+
+        if ($validator->fails()) {
+            return [$validator, null];
         }
 
         if ($source == Subscriber::SUBSCRIPTION_TYPE_ADDED || $source == self::SOURCE_API) {
             $subscriber->status = 'subscribed';
         } elseif ($this->subscribe_confirmation) {
             if ($subscriber->isSubscribed()) {
-                MailLog::info("Subscriber {$subscriber->email} already in the list");
+                //
             } else {
                 $subscriber->status = 'unconfirmed';
             }
@@ -1870,10 +1811,7 @@ class MailList extends Model
             MailListSubscription::dispatch($subscriber);
         }
 
-        MailLog::info("Subscriber {$subscriber->email} is added to list {$this->name} via {$source}");
-
         if ($this->subscribe_confirmation && !$subscriber->isSubscribed() && $source != Subscriber::SUBSCRIPTION_TYPE_ADDED) {
-            MailLog::info("Send subscription confirmation email to {$subscriber->email}, list {$this->name}");
             $this->sendSubscriptionConfirmationEmail($subscriber);
         }
 
@@ -1905,7 +1843,7 @@ class MailList extends Model
                 $fixedValues,
                 [
                     'id BIGINT',
-                    'value VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci'
+                    'value VARCHAR(191) CHARACTER SET utf8 COLLATE utf8_unicode_ci'
                 ],
                 function ($table) {
                     DB::statement(sprintf("UPDATE %s sf INNER JOIN %s t ON sf.id = t.id SET sf.value = t.value", table('subscriber_fields'), table($table)));
@@ -1981,6 +1919,7 @@ class MailList extends Model
     public function updateOrCreateFieldsFromRequest($request)
     {
         $rules = [];
+        $messages = [];
 
         // Check if filed does not have EMAIL tag
         $conflict_tag = false;
@@ -1992,11 +1931,18 @@ class MailList extends Model
                 $rules['fields.'.$key.'.label'] = 'required';
                 $rules['fields.'.$key.'.tag'] = 'required|alpha_dash';
 
+                $messages['fields.'.$key.'.label.required'] = trans('messages.field.label.required', ['number' => $key]);
+                $messages['fields.'.$key.'.tag.required'] = trans('messages.field.tag.required', ['number' => $key]);
+                $messages['fields.'.$key.'.tag.alpha_dash'] = trans('messages.field.tag.alpha_dash', ['number' => $key]);
+
                 // check field options
                 if (isset($item['options'])) {
                     foreach ($item['options'] as $key2 => $item2) {
                         $rules['fields.'.$key.'.options.'.$key2.'.label'] = 'required';
                         $rules['fields.'.$key.'.options.'.$key2.'.value'] = 'required';
+
+                        $messages['fields.'.$key.'.options.'.$key2.'.label.required'] = trans('messages.field.option.label.required', ['number' => $key]);
+                        $messages['fields.'.$key.'.options.'.$key2.'.value.required'] = trans('messages.field.option.value.required', ['number' => $key]);
                     }
                 }
 
@@ -2012,7 +1958,7 @@ class MailList extends Model
             $rules['conflict_field_tags'] = 'required';
         }
 
-        $validator = \Validator::make($request->all(), $rules);
+        $validator = \Validator::make($request->all(), $rules, $messages);
 
         if ($validator->fails()) {
             return $validator;
@@ -2022,7 +1968,7 @@ class MailList extends Model
         $saved_ids = [];
         foreach ($request->fields as $uid => $item) {
             $field = \Acelle\Model\Field::findByUid($item['uid']);
-            if (!is_object($field)) {
+            if (!$field) {
                 $field = new \Acelle\Model\Field();
                 $field->mail_list_id = $this->id;
             }
@@ -2070,7 +2016,7 @@ class MailList extends Model
         if (isset($params['fields'])) {
             foreach ($params['fields'] as $key => $item) {
                 $field = \Acelle\Model\Field::findByUid($item['uid']);
-                if (!is_object($field)) {
+                if (!$field) {
                     $field = new \Acelle\Model\Field();
                     $field->uid = $key;
                 }

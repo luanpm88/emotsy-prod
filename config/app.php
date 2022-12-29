@@ -67,7 +67,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => env('APP_TIMEZONE', 'UTC'),
 
     /*
     |--------------------------------------------------------------------------
@@ -80,7 +80,7 @@ return [
     |
     */
 
-    'locale' => 'en',
+    'locale' => env('APP_LOCALE', 'en'),
 
     /*
     |--------------------------------------------------------------------------
@@ -167,6 +167,16 @@ return [
 
     'cartpaye' => env('APP_CARTPAYE', false),
 
+     /*
+    |--------------------------------------------------------------------------
+    | reCaptcha keys
+    |--------------------------------------------------------------------------
+    |
+    */
+
+    'recaptcha_sitekey' => env('RECAPTCHA_SITEKEY', '6LfyISoTAAAAABJV8zycUZNLgd0sj-sBFjctzXKw'),
+    'recaptcha_secret' => env('RECAPTCHA_SECRET', '6LfyISoTAAAAAC0hJ916unwi0m_B0p7fAvCRK4Kp'),
+
     /*
     |--------------------------------------------------------------------------
     | Autoloaded Service Providers
@@ -236,6 +246,7 @@ return [
         // More
         Acelle\Providers\MailerServiceProvider::class,
         Acelle\Providers\StorageServiceProvider::class,
+        Acelle\Providers\CheckoutServiceProvider::class,
     ],
 
     /*
@@ -293,6 +304,7 @@ return [
         'Yaml' => Symfony\Component\Yaml\Yaml::class,
         'Geoip'=> Lawepham\Geoip\Facades\LaweGeoipFacade::class,
         'Twig' => TwigBridge\Facade\Twig::class,
+        'Billing' => Acelle\Library\Facades\Billing::class,
     ],
 
     /*

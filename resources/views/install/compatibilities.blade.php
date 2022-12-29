@@ -13,13 +13,9 @@
 					@if ($item["type"] == "requirement")
 						<li class="d-flex align-items-center">
 							@if ($item["check"])
-								<span class="material-symbols-rounded fs-3 text-success me-3">
-task_alt
-</span>
+								<span class="material-symbols-rounded fs-3 text-success me-3">task_alt</span>
 							@else
-								<span class="material-symbols-rounded fs-3 text-danger me-3">
-error_outline
-</span>
+								<span class="material-symbols-rounded fs-3 text-danger me-3">error_outline</span>
 							@endif
 							<div class="ml-0">
 								<h5 class="mt-0 mb-1 fw-600">
@@ -45,13 +41,9 @@ error_outline
 					@if ($item["type"] == "permission")
 						<li class="d-flex align-items-center">
 							@if ($item["check"])
-								<span class="material-symbols-rounded fs-3 text-success me-3">
-task_alt
-</span>
+								<span class="material-symbols-rounded fs-3 text-success me-3">task_alt</span>
 							@else
-								<span class="material-symbols-rounded fs-3 text-danger me-3">
-error_outline
-</span>
+								<span class="material-symbols-rounded fs-3 text-danger me-3">error_outline</span>
 							@endif
 							<div class="ml-0">
 								<h5 class="mt-0 mb-1 fw-600">
@@ -70,14 +62,22 @@ error_outline
 	
 	<div class="text-end">                                    
 		@if ($result)
-			<a href="{{ action('InstallController@siteInfo') }}" class="btn btn-primary bg-teal btn-effect">
-				{!! trans('messages.next') !!} <span class="material-symbols-rounded">
-east
-</span></a>
+			<a href="{{ action('InstallController@siteInfo') }}" class="btn btn-primary bg-teal btn-effect save-button">
+				{!! trans('messages.next') !!} <span class="material-symbols-rounded">east</span></a>
 		@else
-			<a href="{{ action('InstallController@systemCompatibility') }}" class="btn btn-primary bg-grey-600">
+			<a href="{{ action('InstallController@systemCompatibility') }}" class="btn btn-primary bg-grey-600 save-button">
 				<i class="icon-reload-alt position-right"></i> {!! trans('messages.try_again') !!}</a>
 		@endif
 	</div>
+
+	<script>
+
+		$(function() {
+			$('.save-button').on('click', function() {
+				addButtonMask($(this));
+			});
+		});
+
+	</script>
 
 @endsection

@@ -1,7 +1,51 @@
-4.0.24 / 2021-09-19
+4.0.24-p430 / 2022-12-08
 ==================
 
- * Added: upgrade to Laravel 8
+ * Fixed: sending performance issue on CentOS
+ * Fixed: MySQL 8x compatibility issues
+ * Fixed: PHP 7.3 compatibility issues
+ * Fixed: PHP 7.2 is no longer supported
+ * Fixed: better branding support, allow default brand in .env file
+ * Fixed: form templates not showing up by default
+ * Fixed: UTF-8 issues with imported data
+ * Fixed: upgrade to the latest Laravel 8 version
+ * Fixed: plan & subscription issues
+ * Fixed: better detection of file encoding
+
+4.0.24-p415 / 2022-11-02
+==================
+
+ * Fixed: GeoIP issues with certain IP ranges.
+ * Fixed: PHP 8.1 compatibility issue.
+ * Fixed: bounce type not correctly detected.
+ * Fixed: translation missing for public pages.
+ * Fixed: plugins load order.
+ * Fixed: tracking domain script does not work with certain Nginx setup.
+ * Fixed: custom logo is not loaded correctly.
+ * Fixed: MySQL 1071 specified key was too long.
+ * Fixed: downgrade YAML to 4.4 to make it compatible with PHP 7.4.
+
+4.0.24-p412 / 2022-10-04
+==================
+
+ * Added: more email and form templates added
+ * Added: security fixes for popup forms
+ * Added: support trial period for plans
+ * Added: updated GeoIP dataset's source
+ * Added: more PRO builder widgets
+ * Added: tracking domain now supports DNS verification
+ * Added: support both "light" and "dark" logos
+ * Fixed: Acelle emails are now fully compatible with Outlook 2016 or higher
+ * Fixed: more compatible with ModSecurity
+ * Fixed: SSL issues with non-secured environments
+ * Fixed: translation issues in admin dashboard
+ * Fixed: make sending processes less likely to be terminated by the OS
+ * Fixed: numbers are not correctly formatted accordingly to user's preference
+
+4.0.24 / 2022-09-19
+==================
+
+ * Added: upgrade to Laravel 8.83.24
  * Added: upgrade to Carbon 2
  * Added: more base templates available
  * Added: improved loading performance statistics dashboard
@@ -26,7 +70,7 @@
  * Changed: default editor (classic) for uploaded templates
  * Changed: allow admins to modify base templates
 
-4.0.23 / 2021-03-17
+4.0.23 / 2022-03-17
 ==================
 
  * Added: plugin mechanism 1.0 is now available, embracing plugin development
@@ -48,7 +92,7 @@
  * Fixed: email builder not working well with SVG
  * Fixed: better compatibility with older versions of Thunderbird
 
-4.0.22 / 2021-02-11
+4.0.22 / 2022-02-11
 ==================
 
  * Added: tracking domain support

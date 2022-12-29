@@ -6,7 +6,7 @@
             <tr>
                 <td width="1%">
                     <div class="text-nowrap">
-                        <div class="checkbox inline">
+                        <div class="checkbox inline me-1">
                             <label>
                                 <input type="checkbox" class="node styled"
                                        name="uids[]"
@@ -22,7 +22,7 @@
                         {{ $item->name }}
                     </a>
                     <span class="text-muted">{{ trans('messages.created_at') }}
-                        : {{ Auth::user()->customer->formatDateTime($item->created_at, 'date_full') }}</span>
+                        : {{ Auth::user()->customer->formatDateTime($item->created_at, 'datetime_full') }}</span>
                 </td>
                 <td>
                     <div class="single-stat-box pull-left">
@@ -40,9 +40,7 @@
                     @if (\Gate::allows('update', $item))
                         <a href="{{ action('SegmentController@edit', ['list_uid' => $list->uid, "uid" => $item->uid]) }}"
                            role="button" class="btn btn-secondary btn-icon">
-                            <span class="material-symbols-rounded">
-edit
-</span> {{ trans('messages.edit') }}
+                            <span class="material-symbols-rounded">edit</span> {{ trans('messages.edit') }}
                         </a>
                     @endif
                     <div class="btn-group">
@@ -74,18 +72,14 @@ edit
     
 @elseif (!empty(request()->keyword))
     <div class="empty-list">
-        <span class="material-symbols-rounded">
-splitscreen
-</span>
+        <span class="material-symbols-rounded">splitscreen</span>
 		<span class="line-1">
 			{{ trans('messages.no_search_result') }}
 		</span>
     </div>
 @else
     <div class="empty-list">
-        <span class="material-symbols-rounded">
-splitscreen
-</span>
+        <span class="material-symbols-rounded">splitscreen</span>
 		<span class="line-1">
 			{{ trans('messages.segment_empty_line_1') }}
 		</span>

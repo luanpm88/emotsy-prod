@@ -1,4 +1,6 @@
-@extends('layouts.core.frontend')
+@extends('layouts.core.frontend', [
+	'menu' => 'template',
+])
 
 @section('title', trans('messages.templates'))
 
@@ -12,9 +14,7 @@
         <div class="d-flex align-items-center">
             <div>
                 <h1 class="d-flex align-items-center">
-                    <span class="material-symbols-rounded me-3">
-                        format_list_bulleted
-                        </span> <span class="text-semibold">{{ trans('messages.templates') }}</span>
+                    <span class="material-symbols-rounded me-3">format_list_bulleted</span> <span class="text-semibold">{{ trans('messages.templates') }}</span>
                 </h1> 
             </div>
             <div class="ms-auto pt-5">                
@@ -24,9 +24,7 @@
                 ]) }}"
                     class="btn btn-light px-3 py-2 fw-600 {{ request()->from != 'gallery' ? 'focus' : '' }}"
                 >
-                    <span class="material-symbols-rounded me-1">
-                        portrait
-                    </span>
+                    <span class="material-symbols-rounded me-1">portrait</span>
                     {{ trans('messages.my_templates') }}
                 </a>
             
@@ -36,9 +34,7 @@
                 ]) }}"
                     class="btn btn-light px-3 py-2 fw-600 {{ request()->from == 'gallery' ? 'focus' : '' }}"
                 >
-                    <span class="material-symbols-rounded me-1">
-                        collections
-                    </span>
+                    <span class="material-symbols-rounded me-1">collections</span>
                     {{ trans('messages.base_template_gallery') }}
                 </a>
             </div>
@@ -70,9 +66,7 @@
                             <ul class="dropdown-menu">
                                 <li>
                                     <a class="dropdown-item" link-confirm="{{ trans('messages.delete_templates_confirm') }}" href="{{ action('TemplateController@delete') }}">
-                                        <span class="material-symbols-rounded">
-    delete_outline
-    </span> {{ trans('messages.delete') }}
+                                        <span class="material-symbols-rounded">delete_outline</span> {{ trans('messages.delete') }}
                                     </a>
                                 </li>
                             </ul>
@@ -85,9 +79,7 @@
                         </select>                                        
                         <input type="hidden" name="sort_direction" value="desc" />
 <button type="button" class="btn btn-xs sort-direction" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
-                            <span class="material-symbols-rounded desc">
-sort
-</span>
+                            <span class="material-symbols-rounded desc">sort</span>
                         </button>
                     </span>
                     @if (request()->from != 'mine')
@@ -105,9 +97,7 @@ sort
                     </span>
                     <span class="text-nowrap">
                         <input type="text" name="keyword" class="form-control search" value="{{ request()->keyword }}" placeholder="{{ trans('messages.type_to_search') }}" />
-                        <span class="material-symbols-rounded">
-search
-</span>
+                        <span class="material-symbols-rounded">search</span>
                     </span>
                 </div>
             </div>
@@ -120,9 +110,7 @@ search
                         ]) }}"
                             class="btn btn-default view-toogle grid m-icon"
                         >
-                            <span class="material-symbols-rounded">
-                                grid_view
-                            </span>
+                            <span class="material-symbols-rounded">grid_view</span>
                         </a>
                         <a href="{{ action('TemplateController@index', [
                             'from' => request()->from ? request()->from : 'mine',
@@ -130,23 +118,17 @@ search
                         ]) }}"
                             class="btn btn-default view-toogle list m-icon mr-3"
                         >
-                            <span class="material-symbols-rounded">
-                                reorder
-                            </span>
+                            <span class="material-symbols-rounded">reorder</span>
                         </a>
                     </div>
                 </div>
 
                 <div>
                     <a href="{{ action('TemplateController@uploadTemplate') }}" class="btn btn-light ml-auto">
-                        <span class="material-symbols-rounded">
-    file_upload
-    </span> {{ trans('messages.upload') }}
+                        <span class="material-symbols-rounded">file_upload</span> {{ trans('messages.upload') }}
                     </a>  
                     <a href="{{ action('TemplateController@builderCreate') }}" class="btn btn-secondary">
-                        <span class="material-symbols-rounded">
-    add
-    </span> {{ trans('messages.create') }}
+                        <span class="material-symbols-rounded">add</span> {{ trans('messages.create') }}
                     </a>
                                       
                 </div>

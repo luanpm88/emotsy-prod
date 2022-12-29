@@ -10,9 +10,7 @@
                 <span onclick="$('input[name=image]').trigger('click')"
                     style="position:absolute;top:39px"
                     class="edit-photo text-center">
-                    <span class="material-symbols-rounded">
-edit
-</span></span>
+                    <span class="material-symbols-rounded">edit</span></span>
                 <input type="file" name="image" id="{{$preview}}" accept="image/*" class="file-styled previewable hide">
                 <input type="hidden" name="_remove_image" value='' />
             </div>

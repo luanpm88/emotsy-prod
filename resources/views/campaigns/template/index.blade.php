@@ -1,4 +1,6 @@
-@extends('layouts.core.frontend')
+@extends('layouts.core.frontend', [
+    'menu' => 'campaign',
+])
 
 @section('title', trans('messages.campaigns') . " - " . trans('messages.template'))
     
@@ -20,9 +22,7 @@
             <li class="breadcrumb-item"><a href="{{ action("CampaignController@index") }}">{{ trans('messages.campaigns') }}</a></li>
         </ul>
         <h1>
-            <span class="text-semibold"><span class="material-symbols-rounded me-2">
-forward_to_inbox
-</span> {{ $campaign->name }}</span>
+            <span class="text-semibold"><span class="material-symbols-rounded me-2">forward_to_inbox</span> {{ $campaign->name }}</span>
         </h1>
 
         @include('campaigns._steps', ['current' => 3])
@@ -42,7 +42,7 @@ forward_to_inbox
                         <div class="main">
                             <label>{{ trans('messages.campaign.html_email') }}</label>
                             <p>{{ trans('messages.campaign.html_email.last_edit', [
-                                'date' => Auth::user()->customer->formatDateTime($campaign->updated_at, 'date_full'),
+                                'date' => Auth::user()->customer->formatDateTime($campaign->updated_at, 'datetime_full'),
                             ]) }}</p>
 
                             <p class="mt-20">
@@ -100,9 +100,7 @@ forward_to_inbox
         
     <hr>
     <a href="{{ action('CampaignController@schedule', ['uid' => $campaign->uid]) }}" class="btn btn-secondary">
-        {{ trans('messages.next') }} <span class="material-symbols-rounded">
-arrow_forward
-</span>
+        {{ trans('messages.next') }} <span class="material-symbols-rounded">arrow_forward</span>
     </a>
         
     <script>

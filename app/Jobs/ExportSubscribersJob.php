@@ -30,7 +30,7 @@ class ExportSubscribersJob extends Base
                 'total' => 0,
                 'processed' => 0,
                 'failed' => 0,
-                'message' => 'Export is being queued for processing...',
+                'message' => 'エクスポートは処理のためにキューに送られています...',
                 'filepath' => $this->mailList->getExportFilePath(),
             ]);
         });

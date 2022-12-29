@@ -5,7 +5,6 @@ namespace Acelle\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use Acelle\Http\Controllers\Controller;
 use Acelle\Model\Plan;
-use Acelle\Cashier\Cashier;
 use Acelle\Library\Facades\Hook;
 
 class CustomerController extends Controller
@@ -214,14 +213,14 @@ class CustomerController extends Controller
         }
 
         // Prenvent save from demo mod
-        if ($this->isDemoMode()) {
+        if (config('app.demo')) {
             return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
         }
 
         // save posted data
         if ($request->isMethod('patch')) {
             // Prenvent save from demo mod
-            if ($this->isDemoMode()) {
+            if (config('app.demo')) {
                 return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
             }
 
@@ -464,7 +463,7 @@ class CustomerController extends Controller
             return $this->notAuthorized();
         }
 
-        if (is_object($customer->contact)) {
+        if ($customer->contact) {
             $contact = $customer->contact;
         } else {
             $contact = new \Acelle\Model\Contact([
@@ -475,7 +474,7 @@ class CustomerController extends Controller
         }
 
         // Create new company if null
-        if (!is_object($contact)) {
+        if (!$contact) {
             $contact = new \Acelle\Model\Contact();
         }
 
@@ -487,10 +486,8 @@ class CustomerController extends Controller
 
             // Save current user info
             if ($contact->save()) {
-                if (is_object($contact)) {
-                    $customer->contact_id = $contact->id;
-                    $customer->save();
-                }
+                $customer->contact_id = $contact->id;
+                $customer->save();
                 $request->session()->flash('alert-success', trans('messages.customer_contact.updated'));
             }
         }
@@ -550,7 +547,7 @@ class CustomerController extends Controller
                 'status' => 'success',
                 'message' => trans('messages.customer.plan.assigned', [
                     'plan' => $plan->name,
-                    'customer' => $customer->user->displayName(),
+                    'customer' => $customer->displayName(),
                 ]),
             ], 201);
         }

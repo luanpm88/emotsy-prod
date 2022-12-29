@@ -22,13 +22,22 @@
     @endif
 
     @include('layouts.core._top_activity_log')
-    @include('layouts.core._menu_frontend_user')
+    @include('layouts.core._menu_frontend_user', [
+        'menu' => 'subscription',
+    ])
 @endsection
 
 @section('content')
     <div class="container mt-4 mb-5">
         <div class="row">
             <div class="col-md-8">
+                @if (Auth::user()->customer->getNewOrActiveSubscription() && Auth::user()->customer->getNewOrActiveSubscription()->getUnpaidInvoice()  && Auth::user()->customer->getNewOrActiveSubscription()->getUnpaidInvoice()->lastTransactionIsFailed())
+                    @include('elements._notification', [
+                        'level' => 'danger',
+                        'message' => Auth::user()->customer->getNewOrActiveSubscription()->getUnpaidInvoice()->lastTransaction()->error
+                    ])
+                @endif
+
                 @include('subscription._selectPlan')
 
                 @include('subscription._billingInformation')
@@ -81,7 +90,9 @@
                                                     </div>
                                                     <div class="mr-auto pr-4">
                                                         <h5 class="font-weight-semibold mb-1">{{ $gateway->getName() }}</h5>
-                                                        <p class="mb-0">{{ trans('messages.'.$gateway->getType().'.user.description') }}</p>
+                                                        <p class="mb-0">
+                                                            {{ $gateway->getShortDescription() }}
+                                                        </p>
                                                     </div>    
                                                 </div>           
                                             </div>
@@ -107,7 +118,9 @@
 
             getOrderBox: function() {
                 if (this.orderBox == null) {
-                    this.orderBox = new Box($('.order-box'), '{{ action('SubscriptionController@orderBox') }}');
+                    this.orderBox = new Box($('.order-box'), '{{ action('SubscriptionController@orderBox', [
+                        'invoice_uid' => $invoice->uid,
+                    ]) }}');
                 }
                 return this.orderBox;
             }

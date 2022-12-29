@@ -1,4 +1,6 @@
-@extends('layouts.core.frontend')
+@extends('layouts.core.frontend', [
+    'menu' => false,
+])
 
 @section('title', trans('messages.subscriptions'))
 
@@ -10,7 +12,7 @@
             <li class="breadcrumb-item active">{{ trans('messages.subscription') }}</li>
         </ul>
         <h1>
-            <span class="text-semibold">{{ Auth::user()->displayName() }}</span>
+            <span class="text-semibold">{{ Auth::user()->customer->displayName() }}</span>
         </h1>
     </div>
 

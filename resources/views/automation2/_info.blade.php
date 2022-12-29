@@ -11,7 +11,7 @@
 <div class="sidebar-header d-flex flex-center mb-2">
     <h5 class="m-0 mr-auto">{{ $automation->name }}</h5>
     <div class="d-flex align-items-center campaign-status-section">
-        <span class="mr-auto small pe-2">{{ trans('messages.automation.status.' . $automation->status) }}</span>
+        <span class="mr-3 small">{{ trans('messages.automation.status.' . $automation->status) }}</span>
         <label>
             @include('helpers.form_control', [
                 'type' => 'checkbox',
@@ -56,7 +56,7 @@
             ok: function(dialog) {
                 $.ajax({
                     url: url,
-                    type: 'PATCH',
+                    type: 'POST',
                     globalError: false,
                     data: {
                         _token: CSRF_TOKEN

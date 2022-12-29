@@ -1,16 +1,14 @@
-@extends('layouts.core.frontend')
+@extends('layouts.core.frontend', [
+    'menu' => 'campaign',
+])
 
 @section('title', trans('messages.campaigns') . " - " . trans('messages.setup'))
 
 @section('head')
 	<script type="text/javascript" src="{{ URL::asset('core/js/group-manager.js') }}"></script>
 
-    <link href="{{ URL::asset('core/emoji-picker/css/emoji.css') }}" rel="stylesheet">
-    <script type="text/javascript" src="{{ URL::asset('core/emoji-picker/js/config.js') }}"></script>
-    <script type="text/javascript" src="{{ URL::asset('core/emoji-picker/js/util.js') }}"></script>
-    <script type="text/javascript" src="{{ URL::asset('core/emoji-picker/js/jquery.emojiarea.js') }}"></script>
-    <script type="text/javascript" src="{{ URL::asset('core/emoji-picker/js/emoji-picker.js') }}"></script>
-    
+    <link href="{{ URL::asset('core/emojionearea/emojionearea.min.css') }}" rel="stylesheet">
+    <script type="text/javascript" src="{{ URL::asset('core/emojionearea/emojionearea.min.js') }}"></script>
 @endsection
 	
 @section('page_header')
@@ -21,9 +19,7 @@
 			<li class="breadcrumb-item"><a href="{{ action("CampaignController@index") }}">{{ trans('messages.campaigns') }}</a></li>
 		</ul>
 		<h1>
-			<span class="text-semibold"><span class="material-symbols-rounded me-2 me-2">
-forward_to_inbox
-</span> {{ $campaign->name }}</span>
+			<span class="text-semibold"><span class="material-symbols-rounded me-2 me-2">forward_to_inbox</span> {{ $campaign->name }}</span>
 		</h1>
 
 		@include('campaigns._steps', ['current' => 2])
@@ -190,9 +186,7 @@ forward_to_inbox
 		</div>
 		<hr>
 		<div class="text-end {{ Auth::user()->customer->allowUnverifiedFromEmailAddress() ? '' : 'unverified_next_but' }}">
-			<button class="btn btn-secondary">{{ trans('messages.save_and_next') }} <span class="material-symbols-rounded">
-arrow_forward
-</span> </button>
+			<button class="btn btn-secondary">{{ trans('messages.save_and_next') }} <span class="material-symbols-rounded">arrow_forward</span> </button>
 		</div>
 		
 	<form>
@@ -361,16 +355,7 @@ arrow_forward
 			});
 
 			$(function() {
-				// Initializes and creates emoji set from sprite sheet
-				window.emojiPicker = new EmojiPicker({
-				emojiable_selector: '[data-emojiable=true]',
-				assetsPath: 'http://onesignal.github.io/emoji-picker/lib/img/',
-				popupButtonClasses: 'fa fa-smile-o'
-				});
-				// Finds all elements with `emojiable_selector` and converts them to rich emoji input fields
-				// You may want to delay this step if you have dynamically created input fields that appear later in the loading process
-				// It can be called as many times as necessary; previously converted input fields will not be converted again
-				window.emojiPicker.discover();
+				$('.has-emoji input[type=text]').emojioneArea();
 			});
 		})
 	</script>

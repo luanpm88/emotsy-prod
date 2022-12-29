@@ -161,7 +161,7 @@ class QuotaManager
         $limits = $this->subject->getQuotaSettings($this->name);
 
         // Check quota allowance
-        $now = Carbon::now();
+        $now = Carbon::now('UTC');
 
         // instantiate the QuotaTracker object
         $tracker = $this->getQuotaTracker();

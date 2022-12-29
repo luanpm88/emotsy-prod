@@ -66,17 +66,6 @@ class AutomationElement
         return;
     }
 
-    public function getOptionAsDateTime($key)
-    {
-        $datetime = $this->getOption($key);
-
-        if ($datetime) {
-            return Carbon::parse($datetime);
-        } else {
-            return null;
-        }
-    }
-
     /**
      * Get value.
      *
@@ -146,19 +135,13 @@ class AutomationElement
     {
         switch ($type) {
             case 'ElementTrigger':
-                return '<span class="material-icons-outlined">
-                alt_route
-                </span>';
+                return '<span class="material-symbols-outlined">alt_route</span>';
                 break;
             case 'ElementAction':
-                return '<span class="material-icons-outlined">
-                        forward_to_inbox
-                    </span>';
+                return '<span class="material-symbols-outlined">forward_to_inbox</span>';
                 break;
             case 'ElementWait':
-                return '<span class="material-icons-outlined">
-                timer
-                </span>';
+                return '<span class="material-symbols-outlined">timer</span>';
                 break;
             case 'ElementCondition':
                 return '<i class="material-icons-outlined bg-warning">call_split</i>';
@@ -179,19 +162,13 @@ class AutomationElement
     {
         switch ($this->get('type')) {
             case 'ElementTrigger':
-                return '<span class="material-icons-outlined">
-                alt_route
-                </span>';
+                return '<span class="material-symbols-outlined">alt_route</span>';
                 break;
             case 'ElementAction':
-                return '<span class="material-icons-outlined">
-                        forward_to_inbox
-                    </span>';
+                return '<span class="material-symbols-outlined">forward_to_inbox</span>';
                 break;
             case 'ElementWait':
-                return '<span class="material-icons-outlined">
-                timer
-                </span>';
+                return '<span class="material-symbols-outlined">timer</span>';
                 break;
             case 'ElementCondition':
                 return '<i class="material-icons-outlined bg-warning">call_split</i>';
