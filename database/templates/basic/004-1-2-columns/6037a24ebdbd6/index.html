@@ -49,6 +49,10 @@
                 display: block!important;
                 width: 100%;
             }
+            [builder-element="CellElement"] td {
+                padding-left: 0px!important;
+                padding-right: 0px!important;
+            }
         }
         @media (min-width: 600px) {
             [builder-element=PricingTableElement] .col-12 {
@@ -118,47 +122,50 @@
             </div>
         </div>
       
-      <div builder-element="BlockElement" style="padding-top:15px;padding-bottom:15px">
-            <div class="container">
-                <div>
-                    <div builder-element="CellContainerElement" style="
-                        display: flex;
-                        flex-wrap: wrap;
-                    " data-layout="5-5">
-                        <div style="
-                            width: 50%;
-                        " builder-element="CellElement">
-
-                            <div builder-element="BlockElement" style="padding-top:15px;padding-bottom:15px;padding-right:15px;">
+      <table width="100%" builder-element="BlockElement">
+            <tr><td style="padding-top:15px;padding-bottom:15px">
+                <div class="container">
+                    <div>
+                        <table width="100%" builder-element="BlockElement">
+                            <tr><td style="padding-top:15px;padding-bottom:15px">
                                 <div class="container">
-                                    <img builder-element builder-inline-edit class="my-2" src="image/1_2_placeholder.png" width="100%" />
-                                    <h3 builder-element builder-inline-edit class="mt-2 mb-2">Lorem ipsum dolor</h3>
-                                    <p builder-element builder-inline-edit>Vestibulum id convallis ligula. Maecenas tellus erat, porta in augue eget, pretium aliquet neque.
-                                    Nunc pulvinar turpis sed pellentesque aliquet. Sed ullamcorper, tellus eu viverra tincidunt,
-                                    quam justo p</p>
+                                    <table builder-element="CellContainerElement" data-layout="5-5" border="0" cellpadding="0" cellspacing="0" width="100%">
+                                        <tr>
+                                            <td builder-element="CellElement" valign="top" width="50%" class="responsive-column">
+                                                <table width="100%" builder-element="BlockElement">
+                                                    <tr><td style="padding-top:15px;padding-bottom:15px;padding-right:15px;">
+                                                        <div class="container">
+                                                            <img builder-element builder-inline-edit class="my-2" src="image/1_2_placeholder.png" width="100%" />
+                                                            <h3 builder-element builder-inline-edit class="mt-2 mb-2">Lorem ipsum dolor</h3>
+                                                            <p builder-element builder-inline-edit>Vestibulum id convallis ligula. Maecenas tellus erat, porta in augue eget, pretium aliquet neque.
+                                                            Nunc pulvinar turpis sed pellentesque aliquet. Sed ullamcorper, tellus eu viverra tincidunt,
+                                                            quam justo p
+                                                        </div>
+                                                    </td></tr>
+                                                </table>
+                                            </td>
+                                            <td builder-element="CellElement" valign="top" width="50%" class="responsive-column">
+                                                <table width="100%" builder-element="BlockElement">
+                                                    <tr><td style="padding-top:15px;padding-bottom:15px;padding-left:15px;">
+                                                        <div class="container">
+                                                            <img builder-element builder-inline-edit class="my-2" src="image/1_2_placeholder.png" width="100%" />
+                                                            <h3 builder-element builder-inline-edit class="mt-2 mb-2">Lorem ipsum dolor</h3>
+                                                            <p builder-element builder-inline-edit>Vestibulum id convallis ligula. Maecenas tellus erat, porta in augue eget, pretium aliquet neque.
+                                                            Nunc pulvinar turpis sed pellentesque aliquet. Sed ullamcorper, tellus eu viverra tincidunt,
+                                                            quam justo p
+                                                        </div>
+                                                    </td></tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </table>
                                 </div>
-                            </div>
-
-                        </div>
-                        <div style="
-                            width: 50%;
-                        " builder-element="CellElement">
-                        
-                            <div builder-element="BlockElement" style="padding-top:15px;padding-bottom:15px;padding-left:15px;">
-                                <div class="container">
-                                    <img builder-element builder-inline-edit class="my-2" src="image/1_2_placeholder.png" width="100%" />
-                                    <h3 builder-element builder-inline-edit class="mt-2 mb-2">Lorem ipsum dolor</h3>
-                                    <p builder-element builder-inline-edit>Vestibulum id convallis ligula. Maecenas tellus erat, porta in augue eget, pretium aliquet neque.
-                                    Nunc pulvinar turpis sed pellentesque aliquet. Sed ullamcorper, tellus eu viverra tincidunt,
-                                    quam justo p</p>
-                                </div>
-                            </div>
-
-                        </div>
+                            </td></tr>
+                        </table>
                     </div>
                 </div>
-            </div>
-        </div>
+            </td></tr>
+        </table>
 
         <div builder-element="BlockElement" style="padding-top:15px;padding-bottom:15px">
             <div class="container" style="">
