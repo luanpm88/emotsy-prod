@@ -1406,6 +1406,7 @@
   'list.from_name.help' => 'Questo &egrave; il destinatario delle vostre e-mail. Utilizzate qualcosa che riconosceranno immediatamente, come il nome della vostra azienda.',
   'list.go_to_mail_lists' => 'Vai alle liste di posta elettronica',
   'list.import.cancel' => 'Siete sicuri di voler annullare il lavoro di importazione?',
+  'list.import.error.header_empty' => 'Header of column #:index is empty',
   'list.import.instruction' => 'La dimensione max dei file caricati dal server &egrave; limitata a <strong class="text-bold">:size</strong></span>. Assicurarsi che il file di input non superi questo limite.<br>Il tipo di file accettabile &egrave; CSV con una riga di intestazione contenente i nomi delle colonne e dei campi, come ad esempio EMAIL, FIRST_NAME, LAST_NAME...<br>&Egrave; possibile scaricare un file di input di esempio <a href=":csv_link"><strong> qui (Sample.csv)</strong></a>',
   'list.import.progress.queued' => 'L\'importazione &egrave; in coda per l\'elaborazione (lavoro inviato)...',
   'list.import.progress.running' => 'L\'importazione &egrave; in corso...',

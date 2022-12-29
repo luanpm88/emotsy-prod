@@ -1405,6 +1405,7 @@
   'list.from_name.help' => 'This is who your emails will come from. Use something they\'ll instantly recognize, like your company name.',
   'list.go_to_mail_lists' => 'Go to Mail Lists',
   'list.import.cancel' => 'Möchten Sie den Importauftrag wirklich abbrechen?',
+  'list.import.error.header_empty' => 'Header of column #:index is empty',
   'list.import.instruction' => 'Die maximale Upload-Dateigröße des Servers ist auf begrenzt <strong class="text-bold">:size</strong></span>. Stellen Sie sicher, dass Ihre Eingabedatei dieses Limit nicht überschreitet.<br>Der zulässige Dateityp ist CSV mit einer Kopfzeile mit Spalten-/Feldnamen wie EMAIL, FIRST_NAME, LAST_NAME...<br>Sie können eine Beispieleingabedatei herunterladen <a target="_blank" href=":csv_link"><strong> hier (Beispiel.csv)</strong></a>',
   'list.import.progress.queued' => 'Importvorgang wird bearbeitet...',
   'list.import.progress.running' => 'Import läuft...',
