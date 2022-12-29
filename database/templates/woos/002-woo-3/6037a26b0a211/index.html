@@ -99,16 +99,18 @@
             </td></tr>
         </table>
 
-      <div builder-element="BlockElement" style="padding-top:15px;padding-bottom:15px">
-        <div class="container">
-          <h3 builder-element builder-inline-edit class="display-4 text-center">Hey, you forgot something</h3>
-          <h5 builder-element builder-inline-edit class="text-center font-weight-normal mt-1 mb-3">
-            It seems you forgot some items great in your cart<br/>
-            Purchase now before they are sold out!<br/>
-            Click the items to go back to our store and review your cart
-          </h5>
-        </div>
-      </div>
+      <table width="100%" builder-element="BlockElement">
+            <tr><td style="padding-top:15px;padding-bottom:15px">
+                <div class="container">
+                    <h3 builder-element builder-inline-edit class="display-4 text-center">Hey, you forgot something</h3>
+                    <h5 builder-element builder-inline-edit class="text-center font-weight-normal mt-1 mb-3">
+                        It seems you forgot some items great in your cart<br/>
+                        Purchase now before they are sold out!<br/>
+                        Click the items to go back to our store and review your cart
+                    </h5>
+                </div>
+            </td></tr>
+        </table>
         <div builder-element="BlockElement" style="padding-top:15px;padding-bottom:15px">
             <div class="container">
                 <div data-items-number="3" builder-element="AbandonedCartElement" data-max-items="3" data-display="3" data-sort-by="created_at-desc" class="product-list-widget">
@@ -219,21 +221,23 @@
             </td></tr>
         </table>
 
-        <footer builder-element="BlockElement" style="padding-top:15px;padding-bottom:15px">
-            <div class="container">
-                <div class="text-muted">
+        <table width="100%" builder-element="BlockElement">
+            <tr><td style="padding-top:15px;padding-bottom:15px">
+                <div class="container">
+                    <div class="text-muted">
 
-                    <div builder-element="TextElement">
-                        <p class="m-0" style="text-align: center;padding-bottom:5px;">Copyright &copy; 2022. All rights reserved.</p>
-                        <p class="m-0" style="text-align: center;padding-bottom:5px;">You can <a builder-element href="{UPDATE_PROFILE_URL}">update your preferences</a> or <a builder-element href="{UNSUBSCRIBE_URL}">unsubscribe from this list</a>.</p>
+                        <div builder-element="TextElement">
+                            <p class="m-0" style="text-align: center;padding-bottom:5px;">Copyright &copy; 2022. All rights reserved.</p>
+                            <p class="m-0" style="text-align: center;padding-bottom:5px;">You can <a builder-element href="{UPDATE_PROFILE_URL}">update your preferences</a> or <a builder-element href="{UNSUBSCRIBE_URL}">unsubscribe from this list</a>.</p>
+                        </div>
+                        
+                        <p builder-element builder-inline-edit style="text-align: center;margin-top: 15px;font-size: 13px;">
+                            <a builder-element href="#" style="color:#555;">Back to top</a>
+                        </p>
                     </div>
-                    
-                    <p builder-element builder-inline-edit style="text-align: center;margin-top: 15px;font-size: 13px;">
-                        <a builder-element href="#" style="color:#555;">Back to top</a>
-                    </p>
                 </div>
-            </div>
-        </footer>
+            </td></tr>
+        </table>
     </div>
     <!--[if mso]>
         </td></tr></table>
