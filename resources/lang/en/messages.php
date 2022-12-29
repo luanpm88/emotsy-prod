@@ -1390,6 +1390,7 @@
   'link' => 'Link',
   'links' => 'Links',
   'list' => 'List',
+  'list.import.error.header_empty' => 'Header of column #:index is empty',
   'list.active_contact.desc' => 'Active contacts, ready to receive marketing emails',
   'list.blacklist.desc' => 'Contacts are blacklished<br/> click here to view',
   'list.clone_for.success' => 'List was successfully cloned.',
