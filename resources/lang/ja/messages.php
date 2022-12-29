@@ -1405,6 +1405,7 @@
   'list.from_name.help' => 'これは、あなたのメールの送信元です。 会社名など、すぐにわかるものを使用してください。',
   'list.go_to_mail_lists' => 'メールリストに移動',
   'list.import.cancel' => 'インポートジョブをキャンセルしてもよろしいですか？',
+  'list.import.error.header_empty' => 'Header of column #:index is empty',
   'list.import.instruction' => 'サーバーの最大アップロードファイルサイズは、<strong class="text-bold">:size</strong></span>に制限されています。入力ファイルがこの制限を超えていないことを確認してください。<br>使用可能なファイルタイプはCSVで、ヘッダー行にはEMAIL、FIRST_NAME、LAST_NAMEなどの列/フィールド名が含まれています... <br>ここからサンプル入力ファイルを<a target="_blank" href=":csv_link"><strong>こちらからダウンロードできます（Sample.csv）</strong></a>',
   'list.import.progress.queued' => 'インポートプロセスが処理されています...',
   'list.import.progress.running' => 'インポート中です...',
@@ -1848,8 +1849,7 @@
   'plans.hide.confirm' => 'プランを非表示に設定してもよろしいですか？ ユーザーにはこのプランは表示されなくなります',
   'plans.send_via.empty' => '送信サーバーが選択されていません',
   'plans.send_via.wording' => 'メール配信に：serverを使用する',
-  'plans.sending_limit.wording' => '以下の構成設定では、メール送信速度に制限を設定できます。例えば、送信速度を <strong>5 分ごとに 2,000 通のメール</strong>に制限するには、<strong>送信制限
- = 2000</strong>、<strong>時間値 = 5 </strong>、そして <strong>時間単位 = 分</strong>',
+  'plans.sending_limit.wording' => '以下の構成設定では、メール送信速度に制限を設定できます。例えば、送信速度を <strong>5 分ごとに 2,000 通のメール</strong>に制限するには、<strong>送信制限= 2000</strong>、<strong>時間値 = 5 </strong>、そして <strong>時間単位 = 分</strong>',
   'plans.subscriber_count' => '：契約者を数える',
   'plans_chart' => '計画チャート',
   'please_enable_php_exec_for_cronjob_check' => '警告 :cron ジョブ設定を検証するには、PHPの `exec`関数を有効にしてください',
