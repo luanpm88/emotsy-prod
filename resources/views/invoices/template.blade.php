@@ -140,13 +140,11 @@
 							<tr>
 								<td class="title" style="padding-left:0;padding-right:0;">
 									<span class="default-app-logo">
-										<img width="200px" class="logo" src="{{ getSiteLogoUrl('dark') }}" alt="">
 									</span>
 								</td>
 
 								<td style="padding-left:0;padding-right:0;">
 									<p style="font-weight:bold;">{{ \Acelle\Model\Setting::get('site_name') }}</p>
-									<p>{{ \Acelle\Model\Setting::get('site_description') }}</p>
 								</td>
 							</tr>
 						</table>
