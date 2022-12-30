@@ -17,6 +17,7 @@
 			* {
 				font-family: 'M PLUS 1', sans-serif !important;
                 font-weight: normal!important;
+                font-style: normal!important;
 			}
 			body {
 				text-align: center;
@@ -34,7 +35,6 @@
 				font-weight: 300;
 				margin-top: 10px;
 				margin-bottom: 20px;
-				font-style: italic;
 				color: #555;
 			}
 
