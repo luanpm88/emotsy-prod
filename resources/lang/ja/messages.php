@@ -1290,7 +1290,7 @@
   'invoice.cancel' => 'Cancel',
   'invoice.cancel.confirm' => 'この請求書をキャンセルしようとしています。これは、元に戻すことはできません！',
   'invoice.cancelled' => '請求書はキャンセルされました',
-  'invoice.change_plan' => 'Change to <strong>:new_plan</strong> plan',
+  'invoice.change_plan' => 'プラン変更',
   'invoice.change_plan.cancel' => '気が変わった？ キャンセルするにはここをクリックしてください',
   'invoice.confirmed' => 'サブスクリプションは正常に更新されました',
   'invoice.created_at' => '作成日',
