@@ -44,7 +44,7 @@
 
     @php
         $customer = Auth::user()->customer;
-        $time = $customer->getCurrentTime()->format('h:i A');
+        $time = $customer->getCurrentTime()->format(config('custom.time_format'));
     @endphp
     
     @include('helpers.form_control', [
