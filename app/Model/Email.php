@@ -326,4 +326,30 @@ class Email extends Model implements HasTemplateInterface
                 break;
         }
     }
+
+    public function copy()
+    {
+        $copy = $this->replicate();
+        $copy->generateUid();
+        $copy->template_id = null;
+        $copy->save();
+
+        // Notice that ->template is still available even if template_id is set to null
+        if ($this->template) {
+            $copy->setTemplate($this->template);
+        }
+
+        return $copy;
+    }
+
+    public static function newDefault()
+    {
+        $email = new self([
+            'sign_dkim' => true,
+            'track_open' => true,
+            'track_click' => true,
+        ]);
+
+        return $email;
+    }
 }
