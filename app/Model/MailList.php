@@ -69,7 +69,7 @@ class MailList extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'default_subject', 'from_email', 'from_name',
+        'name', 'from_email', 'from_name',
         'remind_message', 'send_to', 'email_daily', 'email_subscribe',
         'email_unsubscribe', 'send_welcome_email', 'unsubscribe_notification',
         'subscribe_confirmation', 'all_sending_servers',
@@ -84,7 +84,6 @@ class MailList extends Model
         'name' => 'required',
         'from_email' => 'required|email',
         'from_name' => 'required',
-        'default_subject' => 'required',
         'contact.company' => 'required',
         'contact.address_1' => 'required',
         'contact.country_id' => 'required',

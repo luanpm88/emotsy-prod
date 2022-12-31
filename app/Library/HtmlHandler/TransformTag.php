@@ -51,7 +51,6 @@ class TransformTag implements StageInterface
 
             $tags['LIST_UID'] = '%LIST-UID%';
             $tags['LIST_NAME'] = '%LIST-NAME%';
-            $tags['LIST_SUBJECT'] = '%LIST-SUBJECT%';
             $tags['LIST_FROM_NAME'] = '%LIST-FROM-NAME%';
             $tags['LIST_FROM_EMAIL'] = '%LIST-FROM-EMAIL%';
 
@@ -84,7 +83,6 @@ class TransformTag implements StageInterface
         } else {
             $tags['LIST_UID'] = $this->subscriber->mailList->uid;
             $tags['LIST_NAME'] = $this->subscriber->mailList->name;
-            $tags['LIST_SUBJECT'] = $this->subscriber->mailList->default_subject;
             $tags['LIST_FROM_NAME'] = $this->subscriber->mailList->from_name;
             $tags['LIST_FROM_EMAIL'] = $this->subscriber->mailList->from_email;
 
