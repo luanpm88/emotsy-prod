@@ -27,29 +27,32 @@
                 display: none!important;
             }
         }
-        @media (max-width: 768px) {
+        @media (max-width: 600px) {
             [data-hide-on="mobile"] {
                 display: none!important;
             }
         }
-        @media (max-width: 768px) {
-            [builder-element=CellContainerElement] {
+        @media (max-width: 600px) {
+            [builder-element=CellContainerElement].cell-responsive {
                 display: block!important;
             }
-            [builder-element="CellElement"] {
+            [builder-element=CellContainerElement].cell-responsive [builder-element="CellElement"] {
                 width: 100%!important;
                 max-width: none!important;        
             }
-            [builder-element="CellElement"], [builder-element="BlockElement"] {
+            [builder-element=CellContainerElement].cell-responsive [builder-element="CellElement"],
+            [builder-element=CellContainerElement].cell-responsive [builder-element="BlockElement"] {
                 padding-left: 0px!important;
                 padding-right: 0px!important;
             }
             /* EmailMode */
-            [builder-element=CellContainerElement] tbody, [builder-element=CellContainerElement] tr, [builder-element=CellContainerElement] td {
+            [builder-element=CellContainerElement].cell-responsive tbody,
+            [builder-element=CellContainerElement].cell-responsive tr,
+            [builder-element=CellContainerElement].cell-responsive td {
                 display: block!important;
                 width: 100%;
             }
-            [builder-element="CellElement"] td {
+            [builder-element=CellContainerElement].cell-responsive [builder-element="CellElement"] td {
                 padding-left: 0px!important;
                 padding-right: 0px!important;
             }

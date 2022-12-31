@@ -19,7 +19,7 @@ label.error {
       display: none!important;
     }
 }
-@media (max-width: 768px) {
+@media (max-width: 600px) {
     [data-hide-on="mobile"] {
       display: none!important;
     }
