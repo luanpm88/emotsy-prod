@@ -22,7 +22,7 @@ class MailListController extends Controller
         $user = \Auth::guard('api')->user();
 
         $lists = \Acelle\Model\MailList::getAll()
-            ->select('id', 'uid', 'name', 'default_subject', 'from_email', 'from_name', 'status', 'created_at', 'updated_at')
+            ->select('id', 'uid', 'name', 'from_email', 'from_name', 'status', 'created_at', 'updated_at')
             ->where('customer_id', '=', $user->customer->id)
             ->get();
 
@@ -59,7 +59,6 @@ class MailListController extends Controller
         $list = [
             'uid' => $item->uid,
             'name' => $item->name,
-            'default_subject' => $item->default_subject,
             'from_email' => $item->from_email,
             'from_name' => $item->from_name,
             'remind_message' => $item->remind_message,

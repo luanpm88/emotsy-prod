@@ -42,7 +42,7 @@
 
         $time = $trigger->getOption('at');
         if (!$time) {
-            $time = $customer->getCurrentTime()->format('h:i A');
+            $time = $customer->getCurrentTime()->format(config('custom.time_format'));
         }
     @endphp
     

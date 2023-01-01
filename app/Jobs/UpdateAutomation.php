@@ -30,6 +30,8 @@ class UpdateAutomation extends Base
      */
     public function handle()
     {
-        $this->automation->updateCache();
+        if ($this->automation->mailList()->exists()) {
+            $this->automation->updateCache();
+        }
     }
 }

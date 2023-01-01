@@ -1407,7 +1407,6 @@ class Campaign extends Model implements HasTemplateInterface
     {
         $this->from_name = !empty($this->from_name) ? $this->from_name : $list->from_name;
         $this->from_email = !empty($this->from_email) ? $this->from_email : $list->from_email;
-        $this->subject = !empty($this->subject) ? $this->subject : $list->default_subject;
     }
 
     /**

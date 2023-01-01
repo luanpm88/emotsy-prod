@@ -5,10 +5,19 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 
+        <link rel="preconnect" href="https://fonts.googleapis.com"> 
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
+    <link href="https://fonts.googleapis.com/css2?family=M PLUS 1" rel="stylesheet">
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=M PLUS 1');
+        </style>
+
 		<!-- Invoice styling -->
 		<style>
 			* {
-				font-family: DejaVu Sans, sans-serif !important;
+				font-family: 'M PLUS 1', sans-serif !important;
+                font-weight: normal!important;
+                font-style: normal!important;
 			}
 			body {
 				text-align: center;
@@ -26,7 +35,6 @@
 				font-weight: 300;
 				margin-top: 10px;
 				margin-bottom: 20px;
-				font-style: italic;
 				color: #555;
 			}
 
@@ -42,7 +50,6 @@
 				box-shadow: 0 0 10px rgba(0, 0, 0, 0.15); */
 				font-size: 14px;
 				line-height: 20px;
-				font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
 				color: #555;
 			}
 
@@ -133,20 +140,18 @@
 							<tr>
 								<td class="title" style="padding-left:0;padding-right:0;">
 									<span class="default-app-logo">
-										<img width="200px" class="logo" src="{{ getSiteLogoUrl('dark') }}" alt="">
 									</span>
 								</td>
 
 								<td style="padding-left:0;padding-right:0;">
-									<p style="font-weight:bold">{{ \Acelle\Model\Setting::get('site_name') }}</p>
-									<p>{{ \Acelle\Model\Setting::get('site_description') }}</p>
+									<p style="font-weight:bold;">{{ \Acelle\Model\Setting::get('site_name') }}</p>
 								</td>
 							</tr>
 						</table>
 					</td>
 				</tr>
 
-				<tr class="information">
+				<tr class="">
 					<td colspan="2" style="padding-left:0;padding-right:0;">
 						<h2>{{ trans('messages.invoice.header') }}</h2>
 					</td>

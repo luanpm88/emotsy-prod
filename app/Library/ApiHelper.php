@@ -67,7 +67,6 @@ class ApiHelper
                         ['name' => '$name', 'description' => 'List\'s name'],
                         ['name' => '$from_email', 'description' => 'Default From email address'],
                         ['name' => '$from_name', 'description' => 'Default From name'],
-                        ['name' => '$default_subject', 'description' => 'Default email subject', 'optional' => true],
                         ['name' => 'divider', 'description' => 'Contact information'],
                         ['name' => '$contact[company]', 'description' => 'Name'],
                         ['name' => '$contact[state]', 'description' => 'State / Province / Region'],
@@ -91,7 +90,6 @@ class ApiHelper
 -d name=List+1 \
 -d from_email=admin@abccorp.org \
 -d from_name=ABC+Corp. \
--d default_subject=Welcome+to+ABC+Corp. \
 -d contact[company]=ABC+Corp. \
 -d contact[state]=Armagh \
 -d contact[address_1]=14+Tottenham+Court+Road+London+England \

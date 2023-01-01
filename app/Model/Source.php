@@ -164,7 +164,6 @@ class Source extends Model
         $list->name = trans('messages.source.list.default_name', [
             'source' => $this->getName(),
         ]);
-        $list->default_subject = $this->getName();
         $list->save();
 
         // list assign

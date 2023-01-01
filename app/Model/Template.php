@@ -208,7 +208,6 @@ class Template extends Model
             ['name' => 'CURRENT_MONTH', 'required' => false],
             ['name' => 'CURRENT_DAY', 'required' => false],
             ['name' => 'LIST_NAME', 'required' => false],
-            ['name' => 'LIST_SUBJECT', 'required' => false],
             ['name' => 'LIST_FROM_NAME', 'required' => false],
             ['name' => 'LIST_FROM_EMAIL', 'required' => false],
         ]);
