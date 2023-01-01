@@ -47,6 +47,7 @@ use Acelle\Jobs\ExportSubscribersJob;
 use Acelle\Jobs\VerifyMailListJob;
 use League\Csv\Writer;
 use Acelle\Library\Traits\HasUid;
+use Acelle\Library\MailListFieldMapping;
 
 class MailList extends Model
 {
@@ -1147,37 +1148,6 @@ class MailList extends Model
         }
     }
 
-    public function makeTmpFieldName($fieldId) {
-        return "field_$fieldId";
-    }
-
-    public function createTmpTableFromMapping($map, $autoDetectFields = [])
-    {
-        // create a temporary table containing the input subscribers
-        $tmpTable = table('__tmp_subscribers');
-        $emailFieldId = $this->getEmailField()->id;
-        $emailFieldName = $this->makeTmpFieldName($emailFieldId);
-
-        // @todo: hard-coded charset and COLLATE
-        $tmpFields = array_map(function ($fieldId) {
-            $fieldName = $this->makeTmpFieldName($fieldId);
-            return "`{$fieldName}` VARCHAR(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci";
-        }, $map);
-
-        foreach($autoDetectFields as $field) {
-            $tmpFields[] = "`{$field}` VARCHAR(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci";
-        }
-
-        $tmpFields = implode(',', $tmpFields);
-
-        // Drop table, create table and create index
-        DB::statement("DROP TABLE IF EXISTS {$tmpTable};");
-        DB::statement("CREATE TABLE {$tmpTable}({$tmpFields}) ENGINE=InnoDB;");
-        DB::statement("CREATE INDEX _index_email_{$tmpTable} ON {$tmpTable}(`{$emailFieldName}`);");
-
-        return [$tmpTable, $emailFieldName];
-    }
-
     /**
      * Import subscriber from a CSV file.
      *
@@ -1186,13 +1156,9 @@ class MailList extends Model
      * @return string quoted value
      * @todo: use MySQL escape function to correctly escape string with astrophe
      */
-    public function import($file, $map = [ "First Name" => 5, "LAST_NAME" => 6, "email" => 4, "city" => 163 ], $progressCallback = null, $invalidRecordCallback = null)
+    public function import($file, $mapArray = [ "First Name" => 5, "LAST_NAME" => 6, "email" => 4, "city" => 16 ], $progressCallback = null, $invalidRecordCallback = null)
     {
-        $this->validateFieldsMap($map);
-
-        $autoDetectFields = ['tags'];
-        $selectedHeaders = array_keys($map);                                 // for example [ "First name", "Last name" ];
-        $allHeaders = array_merge($selectedHeaders, $autoDetectFields);      // for example [ "First name", "Last name", "tags" ];
+        $map = MailListFieldMapping::parse($mapArray, $this);
 
         $processed = 0;
         $failed = 0;
@@ -1218,7 +1184,7 @@ class MailList extends Model
 
         try {
             // process by batches
-            each_batch($results, config('app.import_batch_size'), false, function ($batch) use ($map, $autoDetectFields, $selectedHeaders, $allHeaders, &$processed, &$failed, $total, &$overQuotaAttempt, &$message, $progressCallback, $invalidRecordCallback) {
+            each_batch($results, config('app.import_batch_size'), false, function ($batch) use ($map, &$processed, &$failed, $total, &$overQuotaAttempt, &$message, $progressCallback, $invalidRecordCallback) {
 
                 if ($this->customer->user->can('addMoreSubscribers', [$this, sizeof($batch)])) {
                     $insertLimit = sizeof($batch);
@@ -1233,26 +1199,17 @@ class MailList extends Model
                 // }
 
                 // Create a tmp table like: __tmp_subscribers(field_1, field_2, field_3, field_4, tags)
-                list($tmpTable, $emailFieldName) = $this->createTmpTableFromMapping($map, $autoDetectFields);
+                list($tmpTable, $emailFieldName)  = $map->createTmpTableFromMapping();
 
                 // Insert subscriber fields from the batch to the temporary table
                 // extract only fields whose name matches TAG NAME of MailList
-                $data = collect($batch)->map(function ($r) use ($emailFieldName, $allHeaders, $map) {
-                    // Extract the relevant fields, including autodetect fields
-                    $record = array_only($r, $allHeaders);
+                $data = collect($batch)->map(function ($r) use ($emailFieldName, $map) {
+                    $record = $map->updateRecordHeaders($r);
 
-                    // Change field name to match
-                    foreach($map as $header => $fieldId) {
-                        $fieldName = $this->makeTmpFieldName($fieldId);
-                        $record[$fieldName] = $record[$header];
-                        unset($record[$header]);
-                    }
+                    // replace the non-break space (not a normal space) as well as all other spaces
+                    $record[$emailFieldName] = strtolower(preg_replace('/[ \s*]*/', '', trim($record[$emailFieldName])));
 
-                    if (!is_null($record[$emailFieldName])) {
-                        // replace the non-break space (not a normal space) as well as all other spaces
-                        $record[$emailFieldName] = strtolower(preg_replace('/[ \s*]*/', '', trim($record[$emailFieldName])));
-                    }
-
+                    // Process tag values
                     if (array_key_exists('tags', $record) && !empty($record['tags'])) {
                         $record['tags'] = json_encode(array_filter(preg_split('/\s*,\s*/', $record['tags'])));
                     }
@@ -1270,7 +1227,7 @@ class MailList extends Model
                     return $r[$emailFieldName];
                 });
 
-                // validate amd remove invalid records
+                // validate and filter out invalid records
                 $data = array_where($data, function ($record) use (&$failed, $invalidRecordCallback, $emailFieldName) {
                     list($valid, $errors) = $this->validateCsvRecord($record, $emailFieldName);
                     if (!$valid) {
@@ -1302,12 +1259,6 @@ class MailList extends Model
                 // Insert new subscribers from temp table to the main table
                 // Use SUBSTRING(MD5(UUID()), 1, 13) to produce a UNIQUE ID which is similar to the output of PHP uniqid()
                 // @TODO LIMITATION: tags are not updated if subscribers already exist
-                /*
-                DB::statement('INSERT INTO '.table('subscribers').'(uid, mail_list_id, email, status, subscription_type, tags, created_at, updated_at)
-                               SELECT SUBSTRING(MD5(UUID()), 1, 13), ' .$this->id.', uniq.email, '.db_quote(Subscriber::STATUS_SUBSCRIBED).', '.db_quote(Subscriber::SUBSCRIPTION_TYPE_IMPORTED).", uniq.tags, NOW(), NOW()
-                               FROM (SELECT tmp.email, tmp.tags FROM {$tmpTable} tmp LEFT JOIN ".table('subscribers')." main ON (tmp.email = main.email AND main.mail_list_id = {$this->id}) WHERE main.email IS NULL LIMIT {$insertLimit}) uniq");
-                */
-
                 $insertToSubscribersSql = strtr('
                     INSERT INTO %subscribers (uid, mail_list_id, email, status, subscription_type, tags, created_at, updated_at)
                     SELECT SUBSTRING(MD5(UUID()), 1, 13), %list_id, uniq.email, %status, %type, uniq.tags, NOW(), NOW()
@@ -1350,14 +1301,8 @@ class MailList extends Model
                     $this->id
                 ));
 
-                foreach($map as $header => $fieldId) {
-                    $fieldName = $this->makeTmpFieldName($fieldId);
-
-                    /*
-                    $sql = 'INSERT INTO '.table('subscriber_fields')."(subscriber_id, field_id, value, created_at, updated_at)
-                    SELECT t.subscriber_id, f.id, t.`{$field}`, NOW(), NOW()
-                    FROM (SELECT main.id AS subscriber_id, tmp.{$field} FROM ".table('subscribers')." main JOIN {$tmpTable} tmp ON tmp.email = main.email WHERE main.mail_list_id = ".$this->id.') t
-                    JOIN ' .table('fields')." f ON f.tag = '{$field}' AND f.mail_list_id = ".$this->id;*/
+                foreach($map->mapping as $header => $fieldId) {
+                    $fieldName = $map->generateFieldNameFromId($fieldId);
 
                     $insertToSubscriberFieldsSql = strtr('
                         INSERT INTO %subscriber_fields (subscriber_id, field_id, value, created_at, updated_at)
