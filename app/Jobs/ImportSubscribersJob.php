@@ -24,16 +24,18 @@ class ImportSubscribersJob extends Base
     // @todo this should better be a constant
     protected $list;
     protected $file; // Example: /home/acelle/storage/app/tmp/import-000000.csv
+    protected $map;  // { "First Name" => 5, "LAST_NAME" => 6, "email" => 4, "city" => 16 }
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($list, $file)
+    public function __construct($list, $file, $map)
     {
         $this->list = $list;
         $this->file = $file;
+        $this->map = $map;
 
         // Set the initial value for progress check
         $this->afterDispatched(function ($thisJob, $monitor) {
@@ -75,6 +77,7 @@ class ImportSubscribersJob extends Base
         // File path:
         $this->list->import(
             $this->file,
+            $this->map,
             function ($processed, $total, $failed, $message) use ($logger) {
                 $percentage = ($total && $processed) ? (int)($processed*100/$total) : 0;
 

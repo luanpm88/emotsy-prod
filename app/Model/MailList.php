@@ -231,10 +231,10 @@ class MailList extends Model
         return $monitor;
     }
 
-    public function dispatchImportJob($filepath)
+    public function dispatchImportJob($filepath, $map)
     {
         // Example: /home/acelle/storage/app/tmp/import-000000.csv
-        $job = new ImportSubscribersJob($this, $filepath);
+        $job = new ImportSubscribersJob($this, $filepath, $map);
         $monitor = $this->dispatchWithMonitor($job);
         return $monitor;
     }
@@ -297,6 +297,7 @@ class MailList extends Model
                             'type' => 'text',
                             'label' => trans('messages.email'),
                             'tag' => 'EMAIL',
+                            'is_email' => true,
                             'required' => true,
                             'visible' => true,
                         ]);
@@ -327,7 +328,7 @@ class MailList extends Model
      */
     public function getEmailField()
     {
-        return $this->getFieldByTag('EMAIL');
+        return $this->fields()->where('is_email', true)->first();
     }
 
     /**
@@ -1008,7 +1009,7 @@ class MailList extends Model
      *
      * @return array [$headers, $availableFields, $total, $results]
      */
-    private function readCsv($file)
+    public function readCsv($file)
     {
         try {
             // Fix the problem with MAC OS's line endings
@@ -1040,9 +1041,25 @@ class MailList extends Model
             $reader->setHeaderOffset(0);
             // get the headers, using array_filter to strip empty/null header
             // to avoid the error of "InvalidArgumentException: Use a flat array with unique string values in /home/nghi/mailixa/vendor/league/csv/src/Reader.php:305"
+
+            $headers = $reader->getHeader();
+
+            // Make sure the headers are present
+            // In case of duplicate column headers, an exception shall be thrown by League
+            foreach($headers as $index => $header) {
+                if (is_null($header) || empty(trim($header))) {
+                    throw new \Exception(trans('messages.list.import.error.header_empty', ['index' => $index] ));
+                }
+            }
+
+            // Remove leading/trailing spaces in headers, keep letter case
+            $headers = array_map(function($r) { return trim($r); }, $headers);
+
+            /*
             $headers = array_filter(array_map(function ($value) {
                 return strtolower(trim($value));
             }, $reader->getHeader()));
+
 
             // custom fields of the list
             $fields = collect($this->fields)->map(function ($field) {
@@ -1057,13 +1074,15 @@ class MailList extends Model
                 $availableFields[] = 'tags';
             }
             // ==> email, first_name, last_name, tags
+            */
 
             // split the entire list into smaller batches
             $results = $reader->getRecords($headers);
 
-            return [$headers, $availableFields, iterator_count($results), $results];
+            return [$headers, iterator_count($results), $results];
         } catch (\Exception $ex) {
             // @todo: translation here
+            // Common errors that will be catched: duplicate column, empty column
             throw new \Exception('Invalid headers. Original error message is: '.$ex->getMessage());
         }
     }
@@ -1094,16 +1113,69 @@ class MailList extends Model
      *
      * @return bool whether or not the record is valid
      */
-    private function validateCsvRecord($record)
+    private function validateCsvRecord($record, $emailFieldName = 'email')
     {
         //@todo: failed validate should affect the count showing up on the UI (currently, failed is also counted as success)
-        $validator = Validator::make(
-            $record,
-            Subscriber::$rules,
-            ['email' => 'invalid email address']
-        );
+        $rules = [
+            $emailFieldName => ['required', 'email:rfc,filter']
+        ];
+
+        $messages = [
+            $emailFieldName => 'Invalid email address: '.$record[$emailFieldName]
+        ];
+
+        $validator = Validator::make($record, $rules, $messages);
 
         return [$validator->passes(), $validator->errors()->all()];
+    }
+
+    public function validateFieldsMap($map)
+    {
+        // Check if EMAIL (required) is included in the map
+        $fieldIds = array_values($map);
+        $emailFieldId = $this->getEmailField()->id;
+
+        if (!in_array($emailFieldId, $fieldIds)) {
+            throw new Exception(trans('messages.list.import.error.email_missing'));
+        }
+
+        // Check if field id is valid
+        foreach ($map as $header => $fieldId) {
+            if (!Field::where('id', $fieldId)->exists()) {
+                throw new Exception(trans('messages.list.import.error.field_id_invalid', ['id' => $fieldId, 'header' => $header]));
+            }
+        }
+    }
+
+    public function makeTmpFieldName($fieldId) {
+        return "field_$fieldId";
+    }
+
+    public function createTmpTableFromMapping($map, $autoDetectFields = [])
+    {
+        // create a temporary table containing the input subscribers
+        $tmpTable = table('__tmp_subscribers');
+        $emailFieldId = $this->getEmailField()->id;
+        $emailFieldName = $this->makeTmpFieldName($emailFieldId);
+
+        // @todo: hard-coded charset and COLLATE
+        $tmpFields = array_map(function ($fieldId) {
+            $fieldName = $this->makeTmpFieldName($fieldId);
+            return "`{$fieldName}` VARCHAR(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci";
+        }, $map);
+
+        foreach($autoDetectFields as $field) {
+            $tmpFields[] = "`{$field}` VARCHAR(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci";
+        }
+
+        $tmpFields = implode(',', $tmpFields);
+
+        // Drop table, create table and create index
+        DB::statement("DROP TABLE IF EXISTS {$tmpTable};");
+        DB::statement("CREATE TABLE {$tmpTable}({$tmpFields}) ENGINE=InnoDB;");
+        DB::statement("CREATE INDEX _index_email_{$tmpTable} ON {$tmpTable}(`{$emailFieldName}`);");
+
+        return [$tmpTable, $emailFieldName];
     }
 
     /**
@@ -1114,8 +1186,14 @@ class MailList extends Model
      * @return string quoted value
      * @todo: use MySQL escape function to correctly escape string with astrophe
      */
-    public function import($file, $progressCallback = null, $invalidRecordCallback = null)
+    public function import($file, $map = [ "First Name" => 5, "LAST_NAME" => 6, "email" => 4, "city" => 163 ], $progressCallback = null, $invalidRecordCallback = null)
     {
+        $this->validateFieldsMap($map);
+
+        $autoDetectFields = ['tags'];
+        $selectedHeaders = array_keys($map);                                 // for example [ "First name", "Last name" ];
+        $allHeaders = array_merge($selectedHeaders, $autoDetectFields);      // for example [ "First name", "Last name", "tags" ];
+
         $processed = 0;
         $failed = 0;
         $total = 0;
@@ -1128,19 +1206,10 @@ class MailList extends Model
         }
 
         // Read CSV files
-        list($headers, $availableFields, $total, $results) = $this->readCsv($file);
+        list($headers, $total, $results) = $this->readCsv($file);
 
         if (!is_null($progressCallback)) {
             $progressCallback($processed, $total, $failed, $message = 'Validating file headers...');
-        }
-
-        // validate headers, check for required fields
-        // throw an exception in case of error
-        try {
-            $this->validateCsvHeader($availableFields);
-        } catch (Exception $ex) {
-            // Generate a prettier error message which is logged and shown up to admin
-            throw new Exception(sprintf('Import job dispatched by user "%s" failed. Error: %s', $this->customer->user->email, $ex->getMessage()));
         }
 
         if (!is_null($progressCallback)) {
@@ -1148,11 +1217,9 @@ class MailList extends Model
         }
 
         try {
-            // update status, line count
-
             // process by batches
-            each_batch($results, config('app.import_batch_size'), false, function ($batch) use ($availableFields, &$processed, &$failed, $total, &$overQuotaAttempt, &$message, $progressCallback, $invalidRecordCallback) {
-                // authorization
+            each_batch($results, config('app.import_batch_size'), false, function ($batch) use ($map, $autoDetectFields, $selectedHeaders, $allHeaders, &$processed, &$failed, $total, &$overQuotaAttempt, &$message, $progressCallback, $invalidRecordCallback) {
+
                 if ($this->customer->user->can('addMoreSubscribers', [$this, sizeof($batch)])) {
                     $insertLimit = sizeof($batch);
                 } else {
@@ -1165,25 +1232,25 @@ class MailList extends Model
                 //     throw new \Exception(trans('messages.import.notice.over_quota'));
                 // }
 
-                // create a temporary table containing the input subscribers
-                $tmpTable = table('__tmp_subscribers');
-                // @todo: hard-coded charset and COLLATE
-                $tmpFields = implode(',', array_map(function ($field) {
-                    return "`{$field}` VARCHAR(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci";
-                }, $availableFields));
-
-                // Drop table, create table and create index
-                DB::statement("DROP TABLE IF EXISTS {$tmpTable};");
-                DB::statement("CREATE TABLE {$tmpTable}({$tmpFields}) ENGINE=InnoDB;");
-                DB::statement("CREATE INDEX _index_email_{$tmpTable} ON {$tmpTable}(`email`);");
+                // Create a tmp table like: __tmp_subscribers(field_1, field_2, field_3, field_4, tags)
+                list($tmpTable, $emailFieldName) = $this->createTmpTableFromMapping($map, $autoDetectFields);
 
                 // Insert subscriber fields from the batch to the temporary table
                 // extract only fields whose name matches TAG NAME of MailList
-                $data = collect($batch)->map(function ($r) use ($availableFields) {
-                    $record = array_only($r, $availableFields);
-                    if (!is_null($record['email'])) {
+                $data = collect($batch)->map(function ($r) use ($emailFieldName, $allHeaders, $map) {
+                    // Extract the relevant fields, including autodetect fields
+                    $record = array_only($r, $allHeaders);
+
+                    // Change field name to match
+                    foreach($map as $header => $fieldId) {
+                        $fieldName = $this->makeTmpFieldName($fieldId);
+                        $record[$fieldName] = $record[$header];
+                        unset($record[$header]);
+                    }
+
+                    if (!is_null($record[$emailFieldName])) {
                         // replace the non-break space (not a normal space) as well as all other spaces
-                        $record['email'] = strtolower(preg_replace('/[ \s*]*/', '', trim($record['email'])));
+                        $record[$emailFieldName] = strtolower(preg_replace('/[ \s*]*/', '', trim($record[$emailFieldName])));
                     }
 
                     if (array_key_exists('tags', $record) && !empty($record['tags'])) {
@@ -1193,19 +1260,19 @@ class MailList extends Model
                     // In certain cases, a UTF-8 BOM is added to email
                     // For example: "﻿madxperts@gmail.com" (open with Sublime to see the char)
                     // So we need to remove it, at least for email field
-                    $record['email'] = StringHelper::removeUTF8BOM($record['email']);
+                    $record[$emailFieldName] = StringHelper::removeUTF8BOM($record[$emailFieldName]);
 
                     return $record;
                 })->toArray();
 
                 // make the import data table unique by email
-                $data = array_unique_by($data, function ($r) {
-                    return $r['email'];
+                $data = array_unique_by($data, function ($r) use ($emailFieldName) {
+                    return $r[$emailFieldName];
                 });
 
                 // validate amd remove invalid records
-                $data = array_where($data, function ($record) use (&$failed, $invalidRecordCallback) {
-                    list($valid, $errors) = $this->validateCsvRecord($record);
+                $data = array_where($data, function ($record) use (&$failed, $invalidRecordCallback, $emailFieldName) {
+                    list($valid, $errors) = $this->validateCsvRecord($record, $emailFieldName);
                     if (!$valid) {
                         $failed += 1;
                         if (!is_null($invalidRecordCallback)) {
@@ -1218,7 +1285,7 @@ class MailList extends Model
 
                 // INSERT TO tmp TABLE
                 DB::table('__tmp_subscribers')->insert($data);
-                $newRecordCount = DB::select("SELECT COUNT(*) AS count FROM {$tmpTable} tmp LEFT JOIN ".table('subscribers')." main ON (tmp.email = main.email AND main.mail_list_id = {$this->id}) WHERE main.email IS NULL")[0]->count;
+                $newRecordCount = DB::select("SELECT COUNT(*) AS count FROM {$tmpTable} tmp LEFT JOIN ".table('subscribers')." main ON (tmp.{$emailFieldName} = main.email AND main.mail_list_id = {$this->id}) WHERE main.email IS NULL")[0]->count;
 
                 if ($newRecordCount > 0 && $insertLimit == 0) {
                     // Only warning at this time
@@ -1235,35 +1302,90 @@ class MailList extends Model
                 // Insert new subscribers from temp table to the main table
                 // Use SUBSTRING(MD5(UUID()), 1, 13) to produce a UNIQUE ID which is similar to the output of PHP uniqid()
                 // @TODO LIMITATION: tags are not updated if subscribers already exist
+                /*
                 DB::statement('INSERT INTO '.table('subscribers').'(uid, mail_list_id, email, status, subscription_type, tags, created_at, updated_at)
                                SELECT SUBSTRING(MD5(UUID()), 1, 13), ' .$this->id.', uniq.email, '.db_quote(Subscriber::STATUS_SUBSCRIBED).', '.db_quote(Subscriber::SUBSCRIPTION_TYPE_IMPORTED).", uniq.tags, NOW(), NOW()
                                FROM (SELECT tmp.email, tmp.tags FROM {$tmpTable} tmp LEFT JOIN ".table('subscribers')." main ON (tmp.email = main.email AND main.mail_list_id = {$this->id}) WHERE main.email IS NULL LIMIT {$insertLimit}) uniq");
+                */
+
+                $insertToSubscribersSql = strtr('
+                    INSERT INTO %subscribers (uid, mail_list_id, email, status, subscription_type, tags, created_at, updated_at)
+                    SELECT SUBSTRING(MD5(UUID()), 1, 13), %list_id, uniq.email, %status, %type, uniq.tags, NOW(), NOW()
+                    FROM (
+                        SELECT tmp.%email_field AS email, tmp.tags
+                        FROM %tmp tmp
+                        LEFT JOIN %subscribers main ON (tmp.%email_field = main.email AND main.mail_list_id = %list_id)
+                        WHERE main.email IS NULL LIMIT %insert_limit) uniq'
+                    , [
+                        '%subscribers' => table('subscribers'),
+                        '%list_id' => $this->id,
+                        '%status' => db_quote(Subscriber::STATUS_SUBSCRIBED),
+                        '%type' => db_quote(Subscriber::SUBSCRIPTION_TYPE_IMPORTED),
+                        '%tmp' => $tmpTable,
+                        '%insert_limit' => $insertLimit,
+                        '%email_field' => $emailFieldName
+                    ]
+                );
+
+                DB::statement($insertToSubscribersSql);
 
                 // Insert subscribers' custom fields to the fields table
+                // Before inserting, delete records from `subscriber_fields` whose email matches that of the $tmpTable
+                // As a result, any existing attributes of subscribers shall be overwritten
+
                 // OPTION 1: DELETE WHERE IN
                 // DB::statement('DELETE FROM '.table('subscriber_fields').' WHERE subscriber_id IN (SELECT main.id FROM '.table('subscribers')." main JOIN {$tmpTable} tmp ON main.email = tmp.email WHERE mail_list_id = ".$this->id.')');
 
                 // OPTION 2: DELETE JOIN
                 DB::statement(sprintf(
-                    '
-                    DELETE f
+                    'DELETE f
                     FROM %s main
-                    JOIN %s tmp ON main.email = tmp.email
+                    JOIN %s tmp ON main.email = tmp.%s
                     JOIN %s f ON main.id = f.subscriber_id
                     WHERE mail_list_id = %s;',
                     table('subscribers'),
                     $tmpTable,
+                    $emailFieldName,
                     table('subscriber_fields'),
                     $this->id
                 ));
 
-                foreach ($availableFields as $field) {
+                foreach($map as $header => $fieldId) {
+                    $fieldName = $this->makeTmpFieldName($fieldId);
+
+                    /*
                     $sql = 'INSERT INTO '.table('subscriber_fields')."(subscriber_id, field_id, value, created_at, updated_at)
                     SELECT t.subscriber_id, f.id, t.`{$field}`, NOW(), NOW()
                     FROM (SELECT main.id AS subscriber_id, tmp.{$field} FROM ".table('subscribers')." main JOIN {$tmpTable} tmp ON tmp.email = main.email WHERE main.mail_list_id = ".$this->id.') t
-                    JOIN ' .table('fields')." f ON f.tag = '{$field}' AND f.mail_list_id = ".$this->id;
-                    DB::statement($sql);
+                    JOIN ' .table('fields')." f ON f.tag = '{$field}' AND f.mail_list_id = ".$this->id;*/
+
+                    $insertToSubscriberFieldsSql = strtr('
+                        INSERT INTO %subscriber_fields (subscriber_id, field_id, value, created_at, updated_at)
+                        SELECT t.subscriber_id, %fid, t.value, NOW(), NOW()
+                        FROM (
+                            SELECT main.id AS subscriber_id, tmp.`%field_name` AS value
+                            FROM %subscribers main JOIN %tmp tmp ON tmp.`%email_field` = main.email
+                        ) t
+                    ', [
+                        '%subscribers' => table('subscribers'),
+                        '%subscriber_fields' => table('subscriber_fields'),
+                        '%fid' => $fieldId,
+                        '%field_name' => $fieldName,
+                        '%tmp' => $tmpTable,
+                        '%email_field' => $emailFieldName
+                    ]);
+
+                    DB::statement($insertToSubscriberFieldsSql);
                 }
+
+                // Sample:
+                //     INSERT INTO subscribers_fields (subscriber_id, field_id, value, created_at, updated_at)
+                //     SELECT t.subscriber_id, f.id, t."First Name", NOW(), NOW()
+                //     FROM (
+                //              SELECT main.id AS subscriber_id, tmp."First Name"
+                //              FROM subscribers main JOIN __tmp_subscribers tmp ON tmp.email = main.email
+                //              WHERE main.mail_list_id = 1089
+                //     ) t
 
                 // update status, finish one batch
                 $processed += sizeof($batch);

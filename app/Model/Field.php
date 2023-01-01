@@ -35,7 +35,7 @@ class Field extends Model
      * @var array
      */
     protected $fillable = [
-        'mail_list_id', 'type', 'label', 'tag', 'default_value', 'visible', 'required',
+        'mail_list_id', 'type', 'label', 'tag', 'default_value', 'visible', 'required', 'is_email',
     ];
 
     /**
