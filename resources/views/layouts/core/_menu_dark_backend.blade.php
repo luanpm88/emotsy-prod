@@ -3,11 +3,11 @@
         <a class="navbar-brand d-flex align-items-center me-2" href="{{ action('Admin\HomeController@index') }}">
             <img class="logo" src="{{ getSiteLogoUrl('light') }}" alt="">
         </a>
-        <button class="navbar-toggler" role="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample04" aria-controls="navbarsExample04" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" role="button" data-bs-toggle="collapse" data-bs-target="#mainAppNav" aria-controls="mainAppNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
 
-        <div class="collapse navbar-collapse" id="navbarsExample04">
+        <div class="collapse navbar-collapse" id="mainAppNav">
             <ul class="navbar-nav me-auto mb-md-0">
                 <li class="nav-item">
                     @yield('menu_title')
