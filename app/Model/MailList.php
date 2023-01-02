@@ -1156,8 +1156,24 @@ class MailList extends Model
      * @return string quoted value
      * @todo: use MySQL escape function to correctly escape string with astrophe
      */
-    public function import($file, $mapArray = [ "First Name" => 5, "LAST_NAME" => 6, "email" => 4, "city" => 16 ], $progressCallback = null, $invalidRecordCallback = null)
+    public function import($file, $mapArray = null, $progressCallback = null, $invalidRecordCallback = null)
     {
+        /* START trick: auto generate map */
+
+        if (is_null($mapArray)) {
+            list($headers, $total, $results) = $this->readCsv($file);
+            $mapArray = [];
+            foreach ($this->fields as $field) {
+                foreach($headers as $header) {
+                    if (strtolower($field->tag) == strtolower($header)) {
+                        $mapArray[$header] = $field->id;
+                    }
+                }
+            }
+        }
+
+        /* END trick */
+
         $map = MailListFieldMapping::parse($mapArray, $this);
 
         $processed = 0;

@@ -423,7 +423,7 @@ class SubscriberController extends Controller
 
         // Use the default way if there is no other plugin
         Hook::registerIfEmpty('dispatch_list_import_job', function ($list, $filepath) {
-            return $list->dispatchImportJob($filepath);
+            return $list->dispatchImportJob($filepath, $map = null);
         });
 
         // Dispatch the import job
