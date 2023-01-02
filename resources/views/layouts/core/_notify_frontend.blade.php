@@ -22,7 +22,8 @@
     @endif
 
     @if (\Auth::user()->customer &&
-        !\Auth::user()->customer->getCurrentActiveSubscription()
+        !\Auth::user()->customer->getCurrentActiveSubscription() &&
+        !isset($subscriptionPage)
     )
         notify({
             type: 'warning',

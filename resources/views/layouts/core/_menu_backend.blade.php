@@ -9,7 +9,7 @@
                 <img class="logo" src="{{ getSiteLogoUrl('light') }}" data-dark="{{ getSiteLogoUrl('dark') }}" data-light="{{ getSiteLogoUrl('light') }}" />
             @endif
         </a>
-        <button class="navbar-toggler" role="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample04" aria-controls="navbarsExample04" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" role="button" data-bs-toggle="collapse" data-bs-target="#mainAppNav" aria-controls="mainAppNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
 
@@ -17,7 +17,7 @@
             <svg class="SideBurgerIcon-image" viewBox="0 0 50 32"><path d="M49,4H19c-0.6,0-1-0.4-1-1s0.4-1,1-1h30c0.6,0,1,0.4,1,1S49.6,4,49,4z"></path><path d="M49,16H19c-0.6,0-1-0.4-1-1s0.4-1,1-1h30c0.6,0,1,0.4,1,1S49.6,16,49,16z"></path><path d="M49,28H19c-0.6,0-1-0.4-1-1s0.4-1,1-1h30c0.6,0,1,0.4,1,1S49.6,28,49,28z"></path><path d="M8.1,22.8c-0.3,0-0.5-0.1-0.7-0.3L0.7,15l6.7-7.8c0.4-0.4,1-0.5,1.4-0.1c0.4,0.4,0.5,1,0.1,1.4L3.3,15l5.5,6.2   c0.4,0.4,0.3,1-0.1,1.4C8.6,22.7,8.4,22.8,8.1,22.8z"></path></svg>
         </span>
 
-        <div class="collapse navbar-collapse" id="navbarsExample04">
+        <div class="collapse navbar-collapse" id="mainAppNav">
             <ul class="navbar-nav me-auto mb-md-0 main-menu">
                 <li class="nav-item {{ $menu == 'dashboard' ? 'active' : '' }}">
 					<a href="{{ action('Admin\HomeController@index') }}" class="nav-link lvl-1 d-flex align-items-center">
@@ -438,12 +438,18 @@
                 $('.leftbar').removeClass('state-open');
                 $('.leftbar').addClass('state-closed');
 
+                // close menu
+                $('#mainAppNav .lvl-1.show').dropdown('hide');
+
                 MenuFrontend.saveLeftbarState('closed');
             } else {
                 $('.leftbar').removeClass('leftbar-closed');
 
                 $('.leftbar').removeClass('state-closed');
                 $('.leftbar').addClass('state-open');
+
+                // open menu
+                $('#mainAppNav .nav-item.active .lvl-1').dropdown('show');
 
                 MenuFrontend.saveLeftbarState('open');
             }

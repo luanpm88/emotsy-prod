@@ -1,5 +1,6 @@
 @extends('layouts.core.frontend', [
 	'menu' => 'subscription',
+    'subscriptionPage' => true,
 ])
 
 @section('title', trans('messages.subscriptions'))

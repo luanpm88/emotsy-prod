@@ -758,14 +758,12 @@ class SettingController extends Controller
         }
 
         $rules = [
-            'renew_free_plan' => 'required',
             'recurring_charge_before_days' => 'required',
             'allowed_due_subscription' => 'required',
         ];
         $this->validate($request, $rules);
 
         // Save settings
-        Setting::set('renew_free_plan', $request->renew_free_plan);
         Setting::set('allowed_due_subscription', $request->allowed_due_subscription);
         Setting::set('recurring_charge_before_days', $request->recurring_charge_before_days);
 
