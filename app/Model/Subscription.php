@@ -839,20 +839,20 @@ class Subscription extends Model implements HasQuotaInterface
     }
 
     /**
-     * Check if can renew free plan. amount > 0 or == 0 && renew_free_plan setting = true
+     * Check if can renew free plan. amount > 0 or == 0
      *
      * @return void
      */
     public function canRenewPlan()
     {
         return ($this->plan->price > 0 ||
-            (Setting::isYes('renew_free_plan') && $this->plan->isFree())
+            $this->plan->isFree()
         );
     }
 
     public function canAutoRenewFreePlan()
     {
-        return Setting::isYes('renew_free_plan') && $this->plan->isFree();
+        return $this->plan->isFree();
     }
 
     /**

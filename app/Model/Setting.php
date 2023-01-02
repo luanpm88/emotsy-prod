@@ -466,11 +466,6 @@ class Setting extends Model
                 'value' => '7',
                 'type' => 'text',
             ],
-            'renew_free_plan' => [
-                'cat' => 'payment',
-                'value' => 'no',
-                'type' => 'text',
-            ],
             'allowed_due_subscription' => [
                 'cat' => 'payment',
                 'value' => 'no',

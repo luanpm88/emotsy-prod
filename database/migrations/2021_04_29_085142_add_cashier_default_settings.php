@@ -14,7 +14,6 @@ class AddCashierDefaultSettings extends Migration
     public function up()
     {
         \Acelle\Model\Setting::set('recurring_charge_before_days', 2);
-        \Acelle\Model\Setting::set('renew_free_plan', 'yes');
         \Acelle\Model\Setting::set('end_period_last_days', 10);
     }
 
