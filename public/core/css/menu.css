@@ -512,3 +512,10 @@
 .leftbar:not(.leftbar-closed) .main-menu .dropdown-menu {
     box-shadow: inset 0 .5rem 1rem rgba(0,0,0,.08) !important;
 }
+
+.leftbar-closed .navbar-main .navbar-nav .nav-item.active a.nav-link .navbar-icon {
+    opacity: 1;
+}
+.leftbar-closed .navbar-main .navbar-nav .nav-item.active .dropdown-toggle::after {
+    opacity: 1;
+}
