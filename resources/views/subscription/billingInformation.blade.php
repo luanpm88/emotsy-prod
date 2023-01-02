@@ -1,4 +1,6 @@
-@extends('layouts.core.frontend_dark')
+@extends('layouts.core.frontend_dark', [
+    'subscriptionPage' => true,
+])
 
 @section('title', trans('messages.subscriptions'))
 
