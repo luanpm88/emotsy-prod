@@ -30,6 +30,7 @@
                         </a>
                     </li>
                     <li class="divider"></li>
+
                     @if (\Auth::user()->can('import', $list))
                     <li class="nav-item {{ in_array($menu, ['subscriber_import']) ? 'active' : '' }}">
                         <a class="dropdown-item" class="dropdown-item" href="{{ action('SubscriberController@import', $list->uid) }}">
@@ -37,6 +38,7 @@
                         </a>
                     </li>
                     @endif
+
                     @if (\Auth::user()->can('export', $list))
                     <li class="nav-item {{ in_array($menu, ['subscriber_export']) ? 'active' : '' }}">
                         <a class="dropdown-item" href="{{ action('SubscriberController@export', $list->uid) }}">

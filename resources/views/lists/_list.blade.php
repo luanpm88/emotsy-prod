@@ -171,31 +171,6 @@
             });
         });
 
-        // $('.detele-list-button').on('click', function(e) {
-        //     e.preventDefault();
-        //     var url = $(this).attr('href');
-        //     var confirmUrl = $(this).attr('list-delete-confirm');
-
-        //     new Link({
-        //         url: url,
-        //         confirmUrl: confirmUrl,
-        //         method: 'POST',
-        //         data: {
-        //             _token: CSRF_TOKEN,
-        //         },
-        //         done: function(response) {
-        //             notify({
-        //                 type: 'success',
-        //                 message: response,
-        //             });
-
-        //             ListsIndex.getList().load();
-        //         }
-        //     });
-        // });
-
-
-
         $('.copy-list-button').on('click', function(e) {
             e.preventDefault();
             var url = $(this).attr('href');

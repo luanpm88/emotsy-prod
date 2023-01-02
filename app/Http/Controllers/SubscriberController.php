@@ -853,13 +853,21 @@ class SubscriberController extends Controller
         ], 201);
     }
 
-    /**
-     * Bulk remove the specified resource from storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function import2(Request $request)
+    {
+        $customer = $request->user()->customer;
+        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+
+        // authorize
+        if (\Gate::denies('import', $list)) {
+            return $this->notAuthorized();
+        }
+
+        return view('subscribers.import2', [
+            'list' => $list,
+        ]);
+    }
+
     public function bulkDelete(Request $request)
     {
         // init
@@ -895,13 +903,21 @@ class SubscriberController extends Controller
         ]);
     }
 
-    /**
-     * Bulk remove the specified resource from storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function import2Wizard(Request $request)
+    {
+        $customer = $request->user()->customer;
+        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+
+        // authorize
+        if (\Gate::denies('import', $list)) {
+            return $this->notAuthorized();
+        }
+
+        return view('subscribers.import2.upload', [
+            'list' => $list,
+        ]);
+    }
+
     public function bulkDeleteConfirm(Request $request)
     {
         // init
@@ -935,13 +951,81 @@ class SubscriberController extends Controller
         ]);
     }
 
+    public function import2Upload(Request $request)
+    {
+        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+
+        // authorize
+        if (\Gate::denies('import', $list)) {
+            return $this->notAuthorized();
+        }
+
+        // make validator
+        $validator = \Validator::make($request->all(), [
+            'file' => 'required|mimes:csv,txt',
+        ]);
+
+        // redirect if fails
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $validator->errors()->first(),
+            ], 400);
+        }
+
+        $path = $request->file('file')->storeAs(
+            str_replace(storage_path('app'), '', $request->user()->getAssetsPath('tmp')),
+            'import_data.csv'
+        );
+
+        // Redirect to my lists page
+        return response()->json([
+            'status' => 'success',
+            'message' => trans('messages.subscriber.import.csv_uploaded'),
+        ]);
+    }
+
+    public function import2Mapping(Request $request)
+    {
+        $customer = $request->user()->customer;
+        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+
+        // authorize
+        if (\Gate::denies('import', $list)) {
+            return $this->notAuthorized();
+        }
+
+        // @todo get first line and convert to array. File location: $request->user()->getAssetsPath('tmp') . '/import_data.csv',
+        $header = ['Address', 'Forename', 'Lastname'];
+
+        return view('subscribers.import2.mapping', [
+            'list' => $list,
+            'header' => $header,
+        ]);
+    }
+
     /**
-     * Bulk assign values to subscribers.
+     * Import mapping fields.
      *
      * @param \Illuminate\Http\Request $request
      *
      * @return \Illuminate\Http\Response
      */
+    public function import2Run(Request $request)
+    {
+        $customer = $request->user()->customer;
+        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+
+        // authorize
+        if (\Gate::denies('import', $list)) {
+            return $this->notAuthorized();
+        }
+
+        return view('subscribers.import2.run', [
+            'list' => $list,
+        ]);
+    }
+
     public function assignValues(Request $request, $list_uid)
     {
         // init
