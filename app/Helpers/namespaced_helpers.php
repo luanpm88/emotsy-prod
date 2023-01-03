@@ -248,13 +248,26 @@ function isValidPublicHostnameOrIpAddress($host)
     }
 }
 
-function write_env($key, $value)
+function write_env($key, $value, $overwrite = true)
 {
+    // Important, make the new environment var available
+    // Otherwise, this method may failed if called twice (in a loop for example) in the same process
+    \Artisan::call('config:clear');
+
+    // In case config:clear does not work
+    if (file_exists(base_path('bootstrap/cache/config.php'))) {
+        unlink(base_path('bootstrap/cache/config.php'));
+    }
+
     $dotenv = new \Symfony\Component\Dotenv\Dotenv();
     $envs = $dotenv->parse(file_get_contents(app()->environmentFilePath()), $empty = '');
 
-    // Set the value
-    $envs[$key] = $value;
+    // Set the value if overwrite is set to true or the key value is empty
+    if ($overwrite || !array_key_exists($key, $envs)) {
+        $envs[$key] = $value;
+    } else {
+        // respect the current value
+    }
 
     // Prepare for writing back to file
     array_walk($envs, function (&$v, $k) {
@@ -274,10 +287,6 @@ function write_env($key, $value)
 
     // Actually write to file .env
     file_put_contents(app()->environmentFilePath(), $envs);
-
-    // Important, make the new environment var available
-    // Otherwise, this method may failed if called twice (in a loop for example) in the same process
-    \Artisan::call('config:cache');
 }
 
 function write_envs($params)
