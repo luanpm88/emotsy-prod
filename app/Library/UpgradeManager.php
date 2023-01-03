@@ -350,9 +350,6 @@ class UpgradeManager
             $updatevalue = stripslashes(trim(trim($updatevalue), '"'));
             \Acelle\Helpers\write_env($updatekey, $updatevalue, $overwrite = false);
         }
-
-        // Important: make sure no config cache
-        \Artisan::call('config:clear');
     }
 
     /**
