@@ -2,13 +2,13 @@
 <input type="hidden" name="{{ $name }}" value="{{ ($options[0] == false) ? 0 : $options[0] }}" />
 <div class="d-flex">
 	
-		@if (!empty($label)) <div style="width:100%"><label>
+		@if (!empty($label)) <div style="width:100%"><label class="me-5">
 			
 				{!! $label !!}
 			
 
 				@if (isset($help_class) && Lang::has('messages.' . $help_class . '.' . $name . '.help'))
-					<span class="checkbox-description">
+					<span class="checkbox-description mt-1">
 						{!! trans('messages.' . $help_class . '.' . $name . '.help') !!}
 					</span>
 				@endif

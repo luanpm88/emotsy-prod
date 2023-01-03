@@ -237,9 +237,11 @@ class Subscription extends Model implements HasQuotaInterface
         return Invoice::createInvoice(
             $type = Invoice::TYPE_NEW_SUBSCRIPTION,
             $title = trans('messages.invoice.init_subscription'),
-            $description = trans('messages.invoice.init_subscription.desc', [
+            $description = trans('messages.invoice.init_subscription_with_trial.desc', [
                 'plan' => $this->plan->name,
                 'date' => $endDate,
+                'amount' => $this->plan->displayPrice(),
+                'period' => $this->plan->displayFrequencyTime(),
             ]),
             $customer_id = $this->customer->id,
             $currency_id = $this->plan->currency_id,
@@ -255,6 +257,7 @@ class Subscription extends Model implements HasQuotaInterface
             ],
             $metadata = [
                 'subscription_uid' => $this->uid,
+                'trial' => true,
             ]
         );
     }

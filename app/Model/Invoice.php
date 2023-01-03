@@ -911,9 +911,22 @@ class Invoice extends Model
 
     public function updatePaymentServiceFee($gateway)
     {
+        // trường hợp init invoice có free trial và setting không require card thì fee = 0
+        if (\Acelle\Model\Setting::get('not_require_card_for_trial') == 'yes' && $this->isInitInvoiceWithTrial()) {
+            $this->fee = 0;
+            $this->save();
+
+            return;
+        }
+
         if ($this->subTotal() == 0) {
             $this->fee = $gateway->getMinimumChargeAmount($this->currency->code);
             $this->save();
         }
+    }
+
+    public function isInitInvoiceWithTrial()
+    {
+        return $this->type == self::TYPE_NEW_SUBSCRIPTION && $this->getMetadata('trial');
     }
 }

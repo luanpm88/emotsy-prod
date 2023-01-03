@@ -2970,4 +2970,10 @@
   'your_api_token' => 'Your API token',
   'your_current_license' => 'Thank you for purchasing! Below is your license key, also known as Purchase Code. Your license type is',
   'zip_postal_code' => 'Zip / Postal code',
+  'invoice.init_subscription_with_trial.desc' => 'You are subscribing to :plan.
+    Your free trial period will end on :date.
+    After that, we will start charging :amount per :period
+    for your subscription. You can cancel your subscription at any time during the trial period',
+  'setting.not_require_card_for_trial' => 'Do not require user to enter a credit card for trial period',
+  'setting.not_require_card_for_trial.help' => 'When customers subscribe to a plan that has a trial period, by default they need to enter their card information (only payment supports auto-charge) so they will be charged for the next period. Turn this option on for skipping the card information step when subscribing to a plan with a trial period. They will need to enter their card later when reaching the end of the trial period.',
 ) ?>

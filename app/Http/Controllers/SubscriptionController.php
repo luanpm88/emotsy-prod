@@ -178,6 +178,15 @@ class SubscriptionController extends Controller
             'method' => $request->payment_method,
         ]);
 
+        // Bỏ qua việc nhập card information khi subscribe plan with trial
+        if (\Acelle\Model\Setting::get('not_require_card_for_trial') == 'yes' && $invoice->isInitInvoiceWithTrial()) {
+            $invoice->checkout($customer->getPreferredPaymentGateway(), function () {
+                return new \Acelle\Library\TransactionVerificationResult(\Acelle\Library\TransactionVerificationResult::RESULT_DONE);
+            });
+
+            return redirect()->action('SubscriptionController@index');
+        }
+
         // redirect to service checkout
         return redirect()->away($customer->getPreferredPaymentGateway()->getCheckoutUrl($invoice));
     }
@@ -196,10 +205,6 @@ class SubscriptionController extends Controller
         $request->session()->flash('alert-success', trans('messages.invoice.cancelled'));
         return redirect()->action('SubscriptionController@index');
     }
-
-
-
-
 
     /**
      * Change plan.

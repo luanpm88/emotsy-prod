@@ -766,6 +766,7 @@ class SettingController extends Controller
         // Save settings
         Setting::set('allowed_due_subscription', $request->allowed_due_subscription);
         Setting::set('recurring_charge_before_days', $request->recurring_charge_before_days);
+        Setting::set('not_require_card_for_trial', $request->not_require_card_for_trial);
 
 
         // Redirect to my lists page

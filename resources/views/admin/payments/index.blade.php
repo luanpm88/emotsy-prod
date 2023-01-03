@@ -80,7 +80,7 @@
         <form action="{{ action('Admin\SettingController@payment') }}" method="POST" class="form-validate-jqueryz">
             {{ csrf_field() }}
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-8">
                     <div class="form-group checkbox-right-switch">
                         @include('helpers.form_control', [
                             'type' => 'checkbox',
@@ -92,24 +92,43 @@
                             'rules' => ['allowed_due_subscription' => 'required'],
                         ])
                     </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6">
-                    <h3 class="mt-4 mb-3">{{ trans('messages.setting.recurring_charge_before_days.title') }}:</h3>
-                    <p class="text-muted">{{ trans('messages.setting.recurring_charge_before_days.desc') }}
-                    </p>
 
-                    <p>                        
-                        <span class="text-muted">{{ trans('messages.setting.recurring_charge_before_days.before_text') }}</span>
-                        <input id="recurring_charge_before_days" placeholder="" required="" value="{{ \Acelle\Model\Setting::get('recurring_charge_before_days') }}" type="number"
-                            name="recurring_charge_before_days" class="form-control required number numeric"
-                            style="display:inline-block;width:60px;font-weight:bold"
-                        >
-                        <span class="text-muted">{{ trans('messages.setting.recurring_charge_before_days.after_text') }}</span>
-                        
+                    <div class="form-group checkbox-right-switch">
+                        @include('helpers.form_control', [
+                            'type' => 'checkbox',
+                            'name' => 'not_require_card_for_trial',
+                            'value' => \Acelle\Model\Setting::get('not_require_card_for_trial'),
+                            'label' => trans('messages.setting.not_require_card_for_trial'),
+                            'help_class' => 'setting',
+                            'options' => ['no', 'yes'],
+                            'rules' => ['not_require_card_for_trial' => 'required'],
+                        ])
+                    </div>
+                    
+                    <div class="form-group checkbox-right-switch">
+                        <div class="">
+                            <div style="width:100%">
+                                <label class="mb-1">
+                                    {{ trans('messages.setting.recurring_charge_before_days.title') }}:
+                                    <span class="checkbox-description mt-1">
+                                        {{ trans('messages.setting.recurring_charge_before_days.desc') }}
+                                    </span>
+                                </label>
+                            </div>
+                                    
+                            <div class="d-flex align-items-center">
+                                <span class="text-muted me-2">{{ trans('messages.setting.recurring_charge_before_days.before_text') }}</span>
+                                <input id="recurring_charge_before_days" placeholder="" required="" value="{{ \Acelle\Model\Setting::get('recurring_charge_before_days') }}" type="number"
+                                    name="recurring_charge_before_days" class="form-control required number numeric me-2"
+                                    style="display:inline-block;width:60px;font-weight:bold"
+                                >
+                                <span class="text-muted">{{ trans('messages.setting.recurring_charge_before_days.after_text') }}</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
+            <hr>
             <button class="btn btn-secondary">
                 {{ trans('messages.save') }}
             </a>

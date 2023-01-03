@@ -595,6 +595,12 @@ class Setting extends Model
                 'type' => 'checkbox',
                 'options' => ['no', 'yes'],
             ],
+            'not_require_card_for_trial' => [
+                'cat' => 'others',
+                'value' => 'no',
+                'type' => 'checkbox',
+                'options' => ['no', 'yes'],
+            ],
         ];
     }
 
