@@ -1302,6 +1302,10 @@
   'invoice.header' => 'FATTURA',
   'invoice.init_subscription' => 'Il Tuo ordine',
   'invoice.init_subscription.desc' => 'Sei abbonato al piano <strong>:plan</strong>, e la scadenza dell\'abbonamento sar&agrave; il <strong>:date</strong>',
+  'invoice.init_subscription_with_trial.desc' => 'You are subscribing to :plan.
+    Your free trial period will end on :date.
+    After that, we will start charging :amount per :period
+    for your subscription. You can cancel your subscription at any time during the trial period',
   'invoice.items' => 'Articolo/i',
   'invoice.pay_now' => 'Paga adesso',
   'invoice.payment_is_being_verified' => 'Il pagamento &egrave; in corso di verifica',
@@ -2247,6 +2251,8 @@
   'setting.mailer.send_a_test_email' => 'Inviare un\'e-mail di prova',
   'setting.mailer.sending_test_email' => 'Invio di un\'e-mail di prova...',
   'setting.name' => 'Nome',
+  'setting.not_require_card_for_trial' => 'Do not require user to enter a credit card for trial period',
+  'setting.not_require_card_for_trial.help' => 'When customers subscribe to a plan that has a trial period, by default they need to enter their card information (only payment supports auto-charge) so they will be auto-charged for the next period. Turn this option on for skipping the card information step when subscribing to a plan with a trial period. They will need to enter their card later when reaching the end of the trial period.',
   'setting.notification_delete_subscription.help' => 'Inviare e-mail di notifica quando un abbonamento viene cancellato.',
   'setting.notification_delete_subscription_receiver.help' => 'E-mail del destinatario. Gli indirizzi e-mail aggiuntivi devono essere separati da una virgola.',
   'setting.notification_new_customer.help' => 'Invia una o pi&ugrave; e-mail di notifica quando un cliente si &egrave; registrato o &egrave; stato creato dall\'amministratore.',
@@ -2259,7 +2265,6 @@
   'setting.recurring_charge_before_days.help' => 'Il numero di giorni prima della data di scadenza dell\'abbonamento. Il sistema addebiter&agrave; automaticamente l\'abbonamento',
   'setting.recurring_charge_before_days.title' => 'Data di fatturazione delle fatture di rinnovo',
   'setting.registration_recaptcha.help' => 'Abilitare il captcha per la registrazione per bloccare gli spammer e i bot dall\'accesso alla webapp.',
-  'setting.renew_free_plan.help' => 'I clienti che hanno sottoscritto un piano gratuito non possono rinnovarlo. Devono prima passare a un piano non gratuito.',
   'setting.site_online.help' => 'Impostare lo stato del sito web su offline. Visualizzare i messaggi di sito non in linea.',
   'setting.update.success' => ':name &egrave; stato/a aggiornato/a con successo.',
   'setting.updated' => 'Le impostazioni del sistema sono state aggiornate con successo',
@@ -2593,7 +2598,6 @@
   'suscription.order_empty' => 'Scegliete uno dei piani disponibili e i dettagli della fattura verranno calcolati e visualizzati qui.',
   'switch_view' => 'Visualizza Switch',
   'system' => 'Sistema',
-  'system.renew_free_plan' => 'Pu&ograve; rinnovare il piano gratuito',
   'system.sendmail' => 'Sendmail',
   'system_compatibility' => 'Compatibilit&agrave; di sistema',
   'system_default' => 'Sistema predefinito',
