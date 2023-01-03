@@ -578,19 +578,19 @@ class Setting extends Model
                 'type' => 'text',
             ],
             'customer_can_change_language' => [
-                'cat' => 'general',
+                'cat' => 'others',
                 'value' => 'yes',
                 'type' => 'checkbox',
                 'options' => ['no', 'yes'],
             ],
             'customer_can_change_personality' => [
-                'cat' => 'general',
+                'cat' => 'others',
                 'value' => 'yes',
                 'type' => 'checkbox',
                 'options' => ['no', 'yes'],
             ],
             'campaign.stop_on_error' => [
-                'cat' => 'general',
+                'cat' => 'others',
                 'value' => 'no',
                 'type' => 'checkbox',
                 'options' => ['no', 'yes'],
