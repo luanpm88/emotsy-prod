@@ -1301,6 +1301,10 @@
   'invoice.header' => 'RECHNUNG',
   'invoice.init_subscription' => 'Neues Abonnement',
   'invoice.init_subscription.desc' => 'Sie abonnieren den plan <strong>:plan </strong> und Ihr Abo ist am <strong>:date </ strong> fällig',
+  'invoice.init_subscription_with_trial.desc' => 'You are subscribing to :plan.
+    Your free trial period will end on :date.
+    After that, we will start charging :amount per :period
+    for your subscription. You can cancel your subscription at any time during the trial period',
   'invoice.items' => 'Artikel(e)',
   'invoice.pay_now' => 'jetzt Zahlen',
   'invoice.payment_is_being_verified' => 'Zahlung wird überprüft',
@@ -2247,6 +2251,8 @@
   'setting.mailer.send_a_test_email' => 'Senden Sie eine Test-E-Mail',
   'setting.mailer.sending_test_email' => 'Senden Sie eine Test-E-Mail...',
   'setting.name' => 'Name',
+  'setting.not_require_card_for_trial' => 'Do not require user to enter a credit card for trial period',
+  'setting.not_require_card_for_trial.help' => 'When customers subscribe to a plan that has a trial period, by default they need to enter their card information (only payment supports auto-charge) so they will be auto-charged for the next period. Turn this option on for skipping the card information step when subscribing to a plan with a trial period. They will need to enter their card later when reaching the end of the trial period.',
   'setting.notification_delete_subscription.help' => 'Send notification email(s) when a subscription deleted.',
   'setting.notification_delete_subscription_receiver.help' => 'Receiver email(s). Additional email addresses must be separated by a comma.',
   'setting.notification_new_customer.help' => 'Send notification email(s) when a customer registered or created by admin.',
@@ -2261,7 +2267,6 @@
   'setting.recurring_charge_before_days.help' => 'The number of days before the subscription end of period date. System will automatically charge the subscription',
   'setting.recurring_charge_before_days.title' => 'Rechnungsdatum für den Zeitrahmen des Abos.',
   'setting.registration_recaptcha.help' => 'Enable captcha for registration to block spammers and bots from accessing the webapp.',
-  'setting.renew_free_plan.help' => 'Customers who are subscribing to a Free plan can not renew the plan. Need to change to a no-free plan first.',
   'setting.site_online.help' => 'Set the website status to offline. Display the site offline messages.',
   'setting.update.success' => ':name Einstellung wurde erfolgreich aktualisiert.',
   'setting.updated' => 'Die Systemeinstellungen wurden erfolgreich aktualisiert',
@@ -2593,7 +2598,6 @@
   'suscription.order_empty' => 'Wählen Sie einen der verfügbaren Pläne und Ihr Rechnungsdetails werden berechnet und hier anzeigen',
   'switch_view' => 'Switch View',
   'system' => 'System',
-  'system.renew_free_plan' => 'Kann den kostenlosen Plan erneuern',
   'system.sendmail' => 'Sendmail',
   'system_compatibility' => 'System Kompatibiliät',
   'system_default' => 'Systemstandard',

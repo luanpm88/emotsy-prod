@@ -1302,6 +1302,10 @@
   'invoice.header' => 'INVOICE',
   'invoice.init_subscription' => 'New Subscription',
   'invoice.init_subscription.desc' => 'You’re subscring to plan <strong>:plan</strong>, and your subscription will be due on <strong>:date</strong>',
+  'invoice.init_subscription_with_trial.desc' => 'You are subscribing to :plan.
+    Your free trial period will end on :date.
+    After that, we will start charging :amount per :period
+    for your subscription. You can cancel your subscription at any time during the trial period',
   'invoice.items' => 'Item(s)',
   'invoice.pay_now' => 'Pay Now',
   'invoice.payment_is_being_verified' => 'Payment is being verified',
@@ -2248,6 +2252,8 @@
   'setting.mailer.send_a_test_email' => 'Send a test email',
   'setting.mailer.sending_test_email' => 'Sending test email...',
   'setting.name' => 'Nombre',
+  'setting.not_require_card_for_trial' => 'Do not require user to enter a credit card for trial period',
+  'setting.not_require_card_for_trial.help' => 'When customers subscribe to a plan that has a trial period, by default they need to enter their card information (only payment supports auto-charge) so they will be auto-charged for the next period. Turn this option on for skipping the card information step when subscribing to a plan with a trial period. They will need to enter their card later when reaching the end of the trial period.',
   'setting.notification_delete_subscription.help' => 'Send notification email(s) when a subscription deleted.',
   'setting.notification_delete_subscription_receiver.help' => 'Receiver email(s). Additional email addresses must be separated by a comma.',
   'setting.notification_new_customer.help' => 'Send notification email(s) when a customer registered or created by admin.',
@@ -2260,7 +2266,6 @@
   'setting.recurring_charge_before_days.help' => 'The number of days before the subscription end of period date. System will automatically charge the subscription',
   'setting.recurring_charge_before_days.title' => 'Renewal invoices billing date',
   'setting.registration_recaptcha.help' => 'Enable captcha for registration to block spammers and bots from accessing the webapp.',
-  'setting.renew_free_plan.help' => 'Customers who are subscribing to a Free plan can not renew the plan. Need to change to a no-free plan first.',
   'setting.site_online.help' => 'Set the website status to offline. Display the site offline messages.',
   'setting.update.success' => ':name la configuración se actualizó correctamente.',
   'setting.updated' => 'Las opciones del sistema han sido actualizadas',
@@ -2592,7 +2597,6 @@
   'suscription.order_empty' => 'Choose one of the plans available and your invoice details will be calculated and display here',
   'switch_view' => 'Switch View',
   'system' => 'Sistema',
-  'system.renew_free_plan' => 'Can renew free plan',
   'system.sendmail' => 'Sendmail',
   'system_compatibility' => 'Compatibilidad del sistema',
   'system_default' => 'Sistema por defecto',

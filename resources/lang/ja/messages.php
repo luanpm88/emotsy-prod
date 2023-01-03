@@ -1301,6 +1301,10 @@
   'invoice.header' => '請求書',
   'invoice.init_subscription' => '新しいサブスクリプション',
   'invoice.init_subscription.desc' => 'プラン<strong>:plan</strong>にサブスクライブしており、サブスクリプションの期限は<strong>:date</strong>になります。',
+  'invoice.init_subscription_with_trial.desc' => 'You are subscribing to :plan.
+    Your free trial period will end on :date.
+    After that, we will start charging :amount per :period
+    for your subscription. You can cancel your subscription at any time during the trial period',
   'invoice.items' => 'アイテム',
   'invoice.pay_now' => '今すぐ支払う',
   'invoice.payment_is_being_verified' => '支払いは確認中です',
@@ -2246,6 +2250,8 @@
   'setting.mailer.send_a_test_email' => 'テストメールを送信する',
   'setting.mailer.sending_test_email' => 'テストメールを送信しています...',
   'setting.name' => '名前',
+  'setting.not_require_card_for_trial' => 'Do not require user to enter a credit card for trial period',
+  'setting.not_require_card_for_trial.help' => 'When customers subscribe to a plan that has a trial period, by default they need to enter their card information (only payment supports auto-charge) so they will be auto-charged for the next period. Turn this option on for skipping the card information step when subscribing to a plan with a trial period. They will need to enter their card later when reaching the end of the trial period.',
   'setting.notification_delete_subscription.help' => 'サブスクリプションが削除されたときに通知メールを送信します。',
   'setting.notification_delete_subscription_receiver.help' => '受信者の電子メール。 追加の電子メール アドレスはコンマで区切る必要があります。',
   'setting.notification_new_customer.help' => '顧客が管理者によって登録または作成されたときに、通知メールを送信します。',
@@ -2259,7 +2265,6 @@
   'setting.recurring_charge_before_days.help' => 'サブスクリプション期間の終了日までの日数。 システムはサブスクリプションを自動的に請求します',
   'setting.recurring_charge_before_days.title' => '更新請求書の請求日',
   'setting.registration_recaptcha.help' => 'スパムやボットによるウェブアプリへのアクセスをブロックするために、登録時のキャプチャを有効にします。',
-  'setting.renew_free_plan.help' => 'フリープランをご契約のお客様は、プランの更新ができません。まずは無料プランへの変更が必要です。',
   'setting.site_online.help' => 'ウェブサイトのステータスをオフラインにする。サイトオフラインメッセージを表示する。',
   'setting.update.success' => ':名前設定が正常に更新されました。',
   'setting.updated' => 'システム設定が正常に更新されました',
@@ -2591,7 +2596,6 @@
   'suscription.order_empty' => '利用可能なプランの1つを選択すると、請求書の詳細が計算され、ここに表示されます',
   'switch_view' => 'Switch View',
   'system' => 'システム',
-  'system.renew_free_plan' => 'ユーザーが無料プランを更新できるようにする',
   'system.sendmail' => 'Sendmail',
   'system_compatibility' => 'システム互換性',
   'system_default' => 'システムのデフォルト',

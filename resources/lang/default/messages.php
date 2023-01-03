@@ -2262,7 +2262,6 @@
   'setting.recurring_charge_before_days.help' => 'The number of days before the subscription end of period date. System will automatically charge the subscription',
   'setting.recurring_charge_before_days.title' => 'Renewal invoices billing date',
   'setting.registration_recaptcha.help' => 'Enable captcha for registration to block spammers and bots from accessing the webapp.',
-  'setting.renew_free_plan.help' => 'Customers who are subscribing to a Free plan can not renew the plan. Need to change to a no-free plan first.',
   'setting.site_online.help' => 'Set the website status to offline. Display the site offline messages.',
   'setting.update.success' => ':name setting was successfully updated.',
   'setting.updated' => 'System settings were successfully updated',
@@ -2600,7 +2599,6 @@
   'suscription.order_empty' => 'Choose one of the plans available and your invoice details will be calculated and display here',
   'switch_view' => 'Switch View',
   'system' => 'System',
-  'system.renew_free_plan' => 'Can renew free plan',
   'system.sendmail' => 'Sendmail',
   'system_compatibility' => 'System compatibility',
   'system_default' => 'System default',
@@ -3020,4 +3018,10 @@
   'your_api_token' => 'Your API token',
   'your_current_license' => 'Thank you for purchasing! Below is your license key, also known as Purchase Code. Your license type is',
   'zip_postal_code' => 'Zip / Postal code',
+  'invoice.init_subscription_with_trial.desc' => 'You are subscribing to :plan.
+    Your free trial period will end on :date.
+    After that, we will start charging :amount per :period
+    for your subscription. You can cancel your subscription at any time during the trial period',
+  'setting.not_require_card_for_trial' => 'Do not require user to enter a credit card for trial period',
+  'setting.not_require_card_for_trial.help' => 'When customers subscribe to a plan that has a trial period, by default they need to enter their card information (only payment supports auto-charge) so they will be auto-charged for the next period. Turn this option on for skipping the card information step when subscribing to a plan with a trial period. They will need to enter their card later when reaching the end of the trial period.',
 ) ?>
