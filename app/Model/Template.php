@@ -1155,6 +1155,7 @@ class Template extends Model
                 'category' => $categoryWoo,
                 'builder' => true,
             ], [
+                // IMPORTANT: featured templates shall be DROPPED by build.sh script
                 'name' => 'Certified Yoga Therapist',
                 'dir' => database_path('templates/featured/001-yoga/52264e8382883'),
                 'category' => $categoryFeatured,
@@ -1196,6 +1197,12 @@ class Template extends Model
         // Delete existing template and create again with new updates
         foreach ($templates as $meta) {
             if (!File::exists($meta['dir'])) {
+                // Some featured templates shall be dropped in official releases
+                // So, instead of throwing an error:
+                //
+                //     throw new Exception( sprintf('Folder %s does not exist!', $meta['dir']) );
+                //
+                // just skip
                 continue;
             }
 

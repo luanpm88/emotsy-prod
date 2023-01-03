@@ -3,7 +3,7 @@
         <div class="modal-header">
             <a href="javascript:;" class="material-symbols-rounded back">keyboard_backspace</a>
             <h5 class="modal-title text-center" style="width:100%">
-                
+                @yield('bar-title')
             </h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
