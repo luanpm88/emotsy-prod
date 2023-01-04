@@ -335,7 +335,7 @@
                         _this.option.find('.option-update').hide();
 
                         if (_this.optionType == 'exist') {
-                            _this.option.find('.option-done .field_name').html(_this.option.find('.data-associated-to').val());
+                            _this.option.find('.option-done .field_name').html(_this.option.find('.data-associated-to option:selected').html());
                         } else if (_this.optionType == 'create') {
                             _this.option.find('.option-done .field_name').html(_this.option.find('.data-create').val());                            
                             _this.option.find('.option-done .field_type').html(_this.option.find('.data-type').val()); 

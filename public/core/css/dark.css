@@ -844,3 +844,6 @@ body.mode-dark .wizard-steps li .import-tab.current {
 body.mode-dark .wizard-steps li .import-tab {
     color: rgba(255,255,255,0.8);  
 }
+body.mode-dark .popup-wizard .wizard-sidebar, body.mode-dark .popup-wizard .wizard-content {
+    border-color: rgba(255, 255, 255, 0.1);
+}
