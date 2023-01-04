@@ -378,8 +378,7 @@ class SettingController extends Controller
         // capture the current url, write to .env
         \Acelle\Helpers\reset_app_url(true); // force update
 
-        // @todo cannot use the artisan_config_cache() helper, cannot even call Artisan::call('config:cache') directly
-        // \Artisan::call('config:cache');
+        // @todo for some reason the Artisan::call('config:clear') does not work
         if (file_exists(base_path('bootstrap/cache/config.php'))) {
             unlink(base_path('bootstrap/cache/config.php'));
         }

@@ -332,13 +332,7 @@ class UpgradeManager
             return;
         }
 
-        // Important: load all available env variables (in case they are erased by cache:clear)
-        \Artisan::call('config:cache');
-
         $updatedb = file($updatefile);
-
-        $rexp = '/\s*=\s*/';
-        $mainkeys = array_keys($_ENV);
 
         foreach ($updatedb as $updaterecord) {
             if (empty(trim($updaterecord))) {
@@ -350,17 +344,10 @@ class UpgradeManager
                 continue;
             }
 
-            list($updatekey, $updatevalue) = preg_split($rexp, $updaterecord);
-            // echo "Checking $updatekey\n";
-            if (!in_array($updatekey, $mainkeys)) {
-                $updatevalue = stripslashes(trim(trim($updatevalue), '"'));
-                \Acelle\Helpers\write_env($updatekey, $updatevalue);
-            }
+            list($updatekey, $updatevalue) = explode('=', $updaterecord, 2);
+            $updatevalue = stripslashes(trim(trim($updatevalue), '"'));
+            \Acelle\Helpers\write_env($updatekey, $updatevalue, $overwrite = false);
         }
-
-        // Important: cache configs AGAIN to reload the settings from .env
-        \Artisan::call('config:clear');
-        \Artisan::call('config:cache');
     }
 
     /**

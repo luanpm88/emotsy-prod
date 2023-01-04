@@ -248,36 +248,42 @@ function isValidPublicHostnameOrIpAddress($host)
     }
 }
 
-function write_env($key, $value)
+function write_env($key, $value, $overwrite = true)
 {
-    $dotenv = new \Symfony\Component\Dotenv\Dotenv();
-    $envs = $dotenv->parse(file_get_contents(app()->environmentFilePath()), $empty = '');
-
-    // Set the value
-    $envs[$key] = $value;
-
-    // Prepare for writing back to file
-    array_walk($envs, function (&$v, $k) {
-        // Escape double quote
-        $cleaned = addcslashes($v, '"');
-
-        // Quote if there is at least one space or # or any suspected char!
-        if (preg_match('/[\s\#!\$]/', $cleaned)) {
-            $cleaned = "\"$cleaned\"";
-        }
-
-        $v = "$k=$cleaned";
-    });
-
-    $envs = array_values($envs);
-    $envs = implode("\n", $envs);
-
-    // Actually write to file .env
-    file_put_contents(app()->environmentFilePath(), $envs);
-
     // Important, make the new environment var available
     // Otherwise, this method may failed if called twice (in a loop for example) in the same process
-    \Artisan::call('config:cache');
+    \Artisan::call('config:clear');
+
+    // In case config:clear does not work
+    if (file_exists(base_path('bootstrap/cache/config.php'))) {
+        unlink(base_path('bootstrap/cache/config.php'));
+    }
+
+    $envs = load_env_from_file(app()->environmentFilePath());
+
+    // Set the value if overwrite is set to true or the key value is empty
+    if ($overwrite || !array_key_exists($key, $envs) || empty($envs[$key]) ) {
+        // Quote if there is at least one space or # or any suspected char!
+        if (preg_match('/[\s\#!\$]/', $value)) {
+            // Escape single quote
+            $value = addcslashes($value, '"');
+            $value = "\"$value\"";
+        }
+
+        $envs[$key] = $value;
+    } else {
+        return;
+    }
+
+    $out = [];
+    foreach($envs as $k => $v) {
+        $out[] = "$k=$v";
+    }
+
+    $out = implode("\n", $out);
+
+    // Actually write to file .env
+    file_put_contents(app()->environmentFilePath(), $out);
 }
 
 function write_envs($params)
@@ -289,8 +295,7 @@ function write_envs($params)
 
 function reset_app_url($force = false)
 {
-    $dotenv = new \Symfony\Component\Dotenv\Dotenv();
-    $envs = $dotenv->parse(file_get_contents(app()->environmentFilePath()), $empty = '');
+    $envs = load_env_from_file(app()->environmentFilePath());
     if (!array_key_exists('APP_URL', $envs) || $force) {
         $url = url('/');
         write_env('APP_URL', $url);
@@ -332,4 +337,39 @@ function is_non_web_link($url)
     }
 
     return $matched;
+}
+
+// IMPORTANT
+// + This function does not purify values, it will load raw content like: [ DB => "'mydb'", OTHER => '""']
+// + Allow only a-zA-Z_ in key name
+function load_env_from_file($path)
+{
+    $content = file_get_contents($path);
+    $lines = preg_split("/(\r\n|\n|\r)/",$content);
+    $lines = array_where($lines, function ($value, $key) {
+        if (is_null($value)) {
+            return false;
+        }
+
+        if (preg_match('/^[a-zA-Z0-9_]+=/', $value)) {
+            return true;
+        } else {
+            return false;
+        }
+    });
+
+    $output = [];
+    foreach($lines as $line) {
+        list($key, $value) = explode('=', $line, 2);
+
+        if (is_null($value)) {
+            $value = '';
+        } else {
+            $value = trim($value);
+        }
+
+        $output[ $key ] = $value;
+    }
+
+    return $output;
 }
