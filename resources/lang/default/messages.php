@@ -1302,6 +1302,10 @@
   'invoice.header' => 'INVOICE',
   'invoice.init_subscription' => 'Your order',
   'invoice.init_subscription.desc' => 'You’re subscring to plan <strong>:plan</strong>, and your subscription will be due on <strong>:date</strong>',
+  'invoice.init_subscription_with_trial.desc' => 'You are subscribing to :plan.
+    Your free trial period will end on :date.
+    After that, we will start charging :amount per :period
+    for your subscription. You can cancel your subscription at any time during the trial period',
   'invoice.items' => 'Item(s)',
   'invoice.pay_now' => 'Pay Now',
   'invoice.payment_is_being_verified' => 'Payment is being verified',
@@ -2250,6 +2254,8 @@
   'setting.mailer.send_a_test_email' => 'Send a test email',
   'setting.mailer.sending_test_email' => 'Sending test email...',
   'setting.name' => 'Name',
+  'setting.not_require_card_for_trial' => 'Do not require user to enter a credit card for trial period',
+  'setting.not_require_card_for_trial.help' => 'When customers subscribe to a plan that has a trial period, by default they need to enter their card information (only payment supports auto-charge) so they will be auto-charged for the next period. Turn this option on for skipping the card information step when subscribing to a plan with a trial period. They will need to enter their card later when reaching the end of the trial period.',
   'setting.notification_delete_subscription.help' => 'Send notification email(s) when a subscription deleted.',
   'setting.notification_delete_subscription_receiver.help' => 'Receiver email(s). Additional email addresses must be separated by a comma.',
   'setting.notification_new_customer.help' => 'Send notification email(s) when a customer registered or created by admin.',
@@ -3018,10 +3024,5 @@
   'your_api_token' => 'Your API token',
   'your_current_license' => 'Thank you for purchasing! Below is your license key, also known as Purchase Code. Your license type is',
   'zip_postal_code' => 'Zip / Postal code',
-  'invoice.init_subscription_with_trial.desc' => 'You are subscribing to :plan.
-    Your free trial period will end on :date.
-    After that, we will start charging :amount per :period
-    for your subscription. You can cancel your subscription at any time during the trial period',
-  'setting.not_require_card_for_trial' => 'Do not require user to enter a credit card for trial period',
-  'setting.not_require_card_for_trial.help' => 'When customers subscribe to a plan that has a trial period, by default they need to enter their card information (only payment supports auto-charge) so they will be auto-charged for the next period. Turn this option on for skipping the card information step when subscribing to a plan with a trial period. They will need to enter their card later when reaching the end of the trial period.',
+  'list.send_notification_email_error' => 'The application attempted to send an email to :email. However, there was a problem with the SMTP service. Please check your sending server settings. Error from the SMTP service: :error'
 ) ?>

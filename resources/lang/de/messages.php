@@ -1425,6 +1425,7 @@
   'list.remind_message.help' => 'Example: “You are receiving this email because you opted in at our website … ” or “We send special offers to customers who opted in at … ”',
   'list.select_customer_for_clone_list' => 'Klone :list Liste',
   'list.select_customer_for_clone_list.intro' => 'Wählen Sie unten einen oder mehrere Kunden aus und klicken Sie auf die Schaltfläche Start Clone (Klonen starten), um diese Liste zu klonen',
+  'list.send_notification_email_error' => 'The application attempted to send an email to :email. However, there was a problem with the SMTP service. Please check your sending server settings. Error from the SMTP service: :error',
   'list.send_welcome_email.help' => 'When people opt-in to your list, send them an email welcoming them to your list. The final welcome email can be edited in the List -> Forms / Pages management',
   'list.start_clone' => 'Starten Sie Clone',
   'list.subscribe_confirmation.help' => 'When people subscribe to your list, send them a subscription confirmation email.',

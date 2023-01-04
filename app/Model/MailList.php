@@ -1591,7 +1591,8 @@ class MailList extends Model
         } catch (\Exception $ex) {
             $error = $ex->getMessage();
             MailLog::error($error);
-            throw new \Exception($error);
+            $msg = trans('messages.list.send_notification_email_error', [ 'email' => $subscriber->email, 'error' => $error ]);
+            throw new \Exception($msg);
         }
     }
 

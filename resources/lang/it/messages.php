@@ -1426,6 +1426,7 @@
   'list.remind_message.help' => 'Eseampio: “State ricevendo questa e-mail perch&eacute; vi siete iscritti al nostro sito web..." oppure "Inviamo offerte speciali ai clienti che si sono iscritti al sito web...".',
   'list.select_customer_for_clone_list' => 'Clone lista :list',
   'list.select_customer_for_clone_list.intro' => 'Selezionare uno o pi&ugrave; clienti di seguito e fare clic sul pulsante Avvia clonazione per clonare questa lista per',
+  'list.send_notification_email_error' => 'The application attempted to send an email to :email. However, there was a problem with the SMTP service. Please check your sending server settings. Error from the SMTP service: :error',
   'list.send_welcome_email.help' => 'Quando le persone si iscrivono alla vostra lista, inviate loro un\'e-mail di benvenuto. L\'email di benvenuto finale pu&ograve; essere modificata nella gestione Lista -> Moduli / Pagine',
   'list.start_clone' => 'Avvia Clone',
   'list.subscribe_confirmation.help' => 'Quando le persone si iscrivono alla vostra lista, inviate loro un\'e-mail di conferma dell\'iscrizione.',

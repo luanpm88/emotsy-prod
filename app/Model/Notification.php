@@ -138,16 +138,6 @@ class Notification extends Model
     }
 
     /**
-     * Find item by uid.
-     *
-     * @return object
-     */
-    public static function findByUid($uid)
-    {
-        return self::where('uid', '=', $uid)->first();
-    }
-
-    /**
      * Hide item.
      *
      * @return object

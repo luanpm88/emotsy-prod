@@ -1425,6 +1425,7 @@
   'list.remind_message.help' => '例: 「このメールは、当社のウェブサイトでオプトインしたためにお送りしています … 」または「… でオプトインしたお客様に特別オファーをお送りします」',
   'list.select_customer_for_clone_list' => 'クローン：リストリスト',
   'list.select_customer_for_clone_list.intro' => '以下で1人以上の顧客を選択し、[クローンの開始]ボタンをクリックして、このリストのクローンを作成します。',
+  'list.send_notification_email_error' => 'The application attempted to send an email to :email. However, there was a problem with the SMTP service. Please check your sending server settings. Error from the SMTP service: :error',
   'list.send_welcome_email.help' => '人々があなたのリストにオプトインしたら、あなたのリストへの参加を歓迎する電子メールを送ってください。 最終的なウェルカム メールは、リスト -> フォーム / ページ管理で編集できます。',
   'list.start_clone' => 'クローンを開始',
   'list.subscribe_confirmation.help' => '人々があなたのリストに登録したら、登録確認メールを送信します。',
