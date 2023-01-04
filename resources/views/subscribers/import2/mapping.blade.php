@@ -19,7 +19,7 @@
             ]) !!}</p>   
 
             <ul class="import-mapping mb-4">
-                @foreach($header as $key => $column)
+                @foreach($headers as $key => $column)
                     <li class="">
                         <input type="hidden" name="input" value="{{ $column }}" class="field-option-radio" />
 
@@ -38,7 +38,7 @@
                                         <span class="mr-2 text-nowrap">{{ trans('messages.subscriber.import.associate_with') }}</span>
                                         <select class="select" style="max-width: 100px;">
                                             @foreach ($list->fields as $field)
-                                                <option value="{{ $field->tag }}">{{ $field->tag }}</option>
+                                                <option value="{{ $field->id }}">{{ $field->tag }}</option>
                                             @endforeach
                                             <option value="more">{{ trans('messages.subscriber.import.more_options') }}</option>
                                         </select>
@@ -71,7 +71,7 @@
                                                 <select class="select data-associated-to" style="max-width: 100px;">
                                                     <option value="">{{ trans('messages.subscriber.import.select_field') }}</option>
                                                     @foreach ($list->fields as $field)
-                                                        <option value="{{ $field->tag }}">{{ $field->tag }}</option>
+                                                        <option value="{{ $field->id }}">{{ $field->tag }}</option>
                                                     @endforeach
                                                 </select>
                                                 <a href="javascript:;" class="text-nowrap ml-4 done-button" style="text-decoration: underline">
@@ -124,8 +124,8 @@
                 @endforeach
             </ul>
 
-            <a href="{{ action('SubscriberController@import2Run', $list->uid) }}"
-                class="btn btn-mc_primary bg-teal-800 mt-4 start-button"
+            <a id="ImportRunButton" href="javascript:;"
+                class="btn btn-mc_primary bg-teal-800 mt-4"
             >
                 {{ trans('messages.subscriber.import.start') }}
             </a>
@@ -133,13 +133,50 @@
     </div>
 
     <script>
-        $('.wizard-link').click(function(e){
-            e.preventDefault();
+        var SubscribersUploadMapping = {
+            mapping: null,
 
-            var url = $(this).attr('href');
-            wizard.load(url);
+            runUrl: '{{ action('SubscriberController@import2Run', [
+                'list_uid' => $list->uid,
+            ]) }}',
+
+            progressUrl: '{{ action('SubscriberController@import2Run', [
+                'list_uid' => $list->uid,
+            ]) }}',
+
+            run: function() {
+                $.ajax({
+                    url: SubscribersUploadMapping.runUrl,
+                    type: 'POST',
+                    data: {
+                        _token: CSRF_TOKEN,
+                        filepath: '{{ $filepath }}',
+                        mapping: SubscribersUploadMapping.mapping.getData(),
+                    }
+                }).done(function(response) {
+                    wizard.load(response.progressUrl);
+                }).fail(function(jqXHR, textStatus, errorThrown){
+                    // // for debugging
+                    // TemplatesList.getCopyPopup().loadHtml(jqXHR.responseText);
+                }).always(function() {
+                    // TemplatesList.getCopyPopup().unmask();
+                    // removeButtonMask($('#doCopyButton'));
+                });
+            }
+        }
+
+        
+
+        $(function () {
+            SubscribersUploadMapping.mapping = new Mapping('{{ $list->getEmailField()->id }}');
+
+            $('#ImportRunButton').on('click', function(e){
+                e.preventDefault();
+
+                // var url = $(this).attr('href');
+                // wizard.load(url);
+                SubscribersUploadMapping.run();
+            });
         });
-
-        var mapping = new Mapping();
     </script>
 @endsection

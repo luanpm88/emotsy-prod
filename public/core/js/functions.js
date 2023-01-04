@@ -323,11 +323,17 @@ function initMainMenu()
         if ($(window).width() < 1300) {
             $('.leftbar').removeClass('leftbar-open');
             $('.leftbar').addClass('leftbar-closed');
+
+            // close menu
+            $('#mainAppNav .lvl-1.show').dropdown('hide');
         }
 
         if ($(window).width() >= 1300 && ($('body').hasClass('state-open') || $('body').hasClass('state-'))) {
             $('.leftbar').addClass('leftbar-open');
             $('.leftbar').removeClass('leftbar-closed');
+
+            // open menu
+            $('#mainAppNav .nav-item.active .lvl-1').dropdown('show');
         }
     };
     leftbarAdjust();

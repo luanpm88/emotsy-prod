@@ -3025,4 +3025,7 @@
   'your_api_token' => 'Your API token',
   'your_current_license' => 'Thank you for purchasing! Below is your license key, also known as Purchase Code. Your license type is',
   'zip_postal_code' => 'Zip / Postal code',
+  'import.in_progress' => 'Importing is in progress...',
+  'import.in_progress.wording' => 'There is importing progress running in the background. Click the view button below to view the progress.',
+  'import.in_progress.view' => 'View the progress',
 ) ?>

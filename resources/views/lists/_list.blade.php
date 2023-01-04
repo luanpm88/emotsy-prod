@@ -97,7 +97,7 @@
                                 <li><a class="dropdown-item" href="{{ action('MailListController@edit', $list->uid) }}">
                                     <span class="material-symbols-rounded me-2">edit</span> {{ trans("messages.edit_list") }}</a></li>
                                 @if (\Auth::user()->can('import', $list))
-                                    <li><a class="dropdown-item" href="{{ action('SubscriberController@import', $list->uid) }}">
+                                    <li><a class="dropdown-item" href="{{ action('SubscriberController@import2', $list->uid) }}">
                                         <span class="material-symbols-rounded me-2">drive_folder_upload</span> {{ trans('messages.import') }}</a></li>
                                 @endif
                                 @if (\Auth::user()->can('export', $list))

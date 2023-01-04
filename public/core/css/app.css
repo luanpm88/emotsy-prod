@@ -7786,27 +7786,27 @@ textarea.form-control {
 .wizard-steps li {
     list-style: none;
 }
-.wizard-steps li a {
+.wizard-steps li .import-tab {
     display: flex;
     align-items: center;
     padding: 10px 25px;
     color: #333;
 }
-.wizard-steps li a.current {
+.wizard-steps li .import-tab.current {
     background: #f2f2f2;
 }
 .wizard-steps li span {
 }
-.wizard-steps li a label {
+.wizard-steps li .import-tab label {
     margin: 0;
     font-weight: 600;
     font-size: 15px;
 }
-.wizard-steps li a p {
+.wizard-steps li .import-tab p {
     margin: 0;
     font-size: 98%;
 }
-.wizard-steps li a [class^="material-"] {
+.wizard-steps li .import-tab [class^="material-"] {
     font-size: 34px;
     margin-right: 26px;
     color: #777;

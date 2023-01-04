@@ -838,3 +838,9 @@ body.mode-dark.leftbar:not(.leftbar-closed) .navbar-main:not(.navbar-right) .mai
 body.mode-dark.leftbar:not(.leftbar-closed) .navbar-main:not(.navbar-right) .main-menu ul.dropdown-menu:not(.top-user-menus) .nav-item:hover a.dropdown-item .navbar-icon {
     color: rgba(255,255,255,0.8);
 }
+body.mode-dark .wizard-steps li .import-tab.current {
+    background-color: rgba(255,255,255,0.1);
+} 
+body.mode-dark .wizard-steps li .import-tab {
+    color: rgba(255,255,255,0.8);  
+}

@@ -334,7 +334,9 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('lists/{list_uid}/fields/{uid}/delete', 'FieldController@delete');
 
     // Subscriber
-    Route::get('lists/{list_uid}/subscribers/import2/run', 'SubscriberController@import2Run');
+    Route::get('lists/{list_uid}/subscribers/import2/progress/content', 'SubscriberController@import2ProgressContent');
+    Route::get('lists/{list_uid}/subscribers/import2/progress', 'SubscriberController@import2Progress');
+    Route::post('lists/{list_uid}/subscribers/import2/run', 'SubscriberController@import2Run');
     Route::get('lists/{list_uid}/subscribers/import2/mapping', 'SubscriberController@import2Mapping');
     Route::post('lists/{list_uid}/subscribers/import2/upload', 'SubscriberController@import2Upload');
     Route::get('lists/{list_uid}/subscribers/import2/wizard', 'SubscriberController@import2Wizard');

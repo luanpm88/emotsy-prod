@@ -853,21 +853,6 @@ class SubscriberController extends Controller
         ], 201);
     }
 
-    public function import2(Request $request)
-    {
-        $customer = $request->user()->customer;
-        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
-
-        // authorize
-        if (\Gate::denies('import', $list)) {
-            return $this->notAuthorized();
-        }
-
-        return view('subscribers.import2', [
-            'list' => $list,
-        ]);
-    }
-
     public function bulkDelete(Request $request)
     {
         // init
@@ -905,7 +890,6 @@ class SubscriberController extends Controller
 
     public function import2Wizard(Request $request)
     {
-        $customer = $request->user()->customer;
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
 
         // authorize
@@ -951,6 +935,22 @@ class SubscriberController extends Controller
         ]);
     }
 
+    public function import2(Request $request)
+    {
+        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+        $currentJob = $list->importJobs()->first();
+
+        // authorize
+        if (\Gate::denies('import', $list)) {
+            return $this->notAuthorized();
+        }
+
+        return view('subscribers.import2', [
+            'list' => $list,
+            'currentJob' => $currentJob,
+        ]);
+    }
+
     public function import2Upload(Request $request)
     {
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
@@ -973,34 +973,41 @@ class SubscriberController extends Controller
             ], 400);
         }
 
-        $path = $request->file('file')->storeAs(
-            str_replace(storage_path('app'), '', $request->user()->getAssetsPath('tmp')),
-            'import_data.csv'
-        );
+        $filepath = $list->uploadCsv($request->file('file'));
 
         // Redirect to my lists page
         return response()->json([
             'status' => 'success',
             'message' => trans('messages.subscriber.import.csv_uploaded'),
+            'mappingUrl' => action('SubscriberController@import2Mapping', [
+                'list_uid' => $list->uid,
+                'filepath' => $filepath, 
+            ]),
         ]);
     }
 
     public function import2Mapping(Request $request)
     {
-        $customer = $request->user()->customer;
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+        $filepath = $request->filepath;
 
         // authorize
         if (\Gate::denies('import', $list)) {
             return $this->notAuthorized();
         }
 
-        // @todo get first line and convert to array. File location: $request->user()->getAssetsPath('tmp') . '/import_data.csv',
-        $header = ['Address', 'Forename', 'Lastname'];
+        try {
+            list($headers, $total, $results) = $list->readCsv($filepath);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'message' => $e->getMessage(),
+            ], 404);
+        }
 
         return view('subscribers.import2.mapping', [
             'list' => $list,
-            'header' => $header,
+            'headers' => $headers,
+            'filepath' => $filepath,
         ]);
     }
 
@@ -1013,7 +1020,6 @@ class SubscriberController extends Controller
      */
     public function import2Run(Request $request)
     {
-        $customer = $request->user()->customer;
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
 
         // authorize
@@ -1021,8 +1027,58 @@ class SubscriberController extends Controller
             return $this->notAuthorized();
         }
 
-        return view('subscribers.import2.run', [
+        $job = $list->dispatchImportJob($request->filepath, $request->mapping);
+
+        return response()->json([
+            // 'list_uid' => $list->uid,
+            'job_uid' => $job->uid,
+            'progressUrl' => action('SubscriberController@import2Progress', [
+                'list_uid' => $list->uid,
+                'job_uid' => $job->uid,
+            ]),
+            // 'progressCheckUrl' => action('SubscriberController@importProgress', [
+            //     'job_uid' => $job->uid,
+            //     'list_uid' => $list->uid
+            // ]),
+            // 'cancelUrl' => action('SubscriberController@cancelImport', [
+            //     'job_uid' => $job->uid
+            // ]),
+            // 'logDownloadUrl' => action('SubscriberController@downloadImportLog', [
+            //     'job_uid' => $job->uid
+            // ])
+        ]);
+    }
+
+    public function import2Progress(Request $request)
+    {
+        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+
+        // authorize
+        if (\Gate::denies('import', $list)) {
+            return $this->notAuthorized();
+        }
+
+        return view('subscribers.import2.progress', [
             'list' => $list,
+            'job_uid' => $request->job_uid,
+        ]);
+    }
+
+    public function import2ProgressContent(Request $request)
+    {
+        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+        $currentJob = $list->importJobs()->first();
+        $progress = $list->getProgress($currentJob);
+
+        // authorize
+        if (\Gate::denies('import', $list)) {
+            return $this->notAuthorized();
+        }
+
+        return view('subscribers.import2.progressContent', [
+            'list' => $list,
+            'currentJob' => $currentJob,
+            'progress' => $progress,
         ]);
     }
 

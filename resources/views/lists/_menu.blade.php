@@ -33,7 +33,7 @@
 
                     @if (\Auth::user()->can('import', $list))
                     <li class="nav-item {{ in_array($menu, ['subscriber_import']) ? 'active' : '' }}">
-                        <a class="dropdown-item" class="dropdown-item" href="{{ action('SubscriberController@import', $list->uid) }}">
+                        <a class="dropdown-item" class="dropdown-item" href="{{ action('SubscriberController@import2', $list->uid) }}">
                         <span class="material-symbols-rounded">file_upload</span> {{ trans('messages.import') }}
                         </a>
                     </li>

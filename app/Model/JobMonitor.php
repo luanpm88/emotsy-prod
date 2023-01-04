@@ -162,4 +162,14 @@ class JobMonitor extends Model
             $batch->cancel();
         }
     }
+
+    public function isDone()
+    {
+        return $this->status == self::STATUS_DONE;
+    }
+
+    public function isFailed()
+    {
+        return $this->status == self::STATUS_FAILED;
+    }
 }
