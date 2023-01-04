@@ -334,8 +334,6 @@ class UpgradeManager
 
         $updatedb = file($updatefile);
 
-        $rexp = '/\s*=\s*/';
-
         foreach ($updatedb as $updaterecord) {
             if (empty(trim($updaterecord))) {
                 continue;
@@ -346,7 +344,7 @@ class UpgradeManager
                 continue;
             }
 
-            list($updatekey, $updatevalue) = preg_split($rexp, $updaterecord);
+            list($updatekey, $updatevalue) = explode('=', $updaterecord, 2);
             $updatevalue = stripslashes(trim(trim($updatevalue), '"'));
             \Acelle\Helpers\write_env($updatekey, $updatevalue, $overwrite = false);
         }
