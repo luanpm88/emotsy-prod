@@ -15,8 +15,12 @@
     </div>
     <div class="mt-4">
         @if ($progress['percentage'] < 100)
-            <a id="ImportCancelButton" href="javascript:;" class="btn btn-secondary" progress-control="cancel" style="transition:none;">
+            <a id="ImportCancelButton" href="javascript:;" class="btn btn-secondary me-1" progress-control="cancel" style="transition:none;">
                 {{ trans('messages.cancel') }}
+            </a>
+
+            <a href="javascript:;" class="btn btn-default" onclick="window.location.reload()" progress-control="cancel" style="transition:none;">
+                {{ trans('messages.close') }}
             </a>
         @else
             <a id="ImportFinishButton" href="javascript:;" class="btn btn-secondary me-1" progress-control="cancel">

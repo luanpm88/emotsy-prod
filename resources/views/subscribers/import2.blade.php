@@ -12,7 +12,7 @@
 
 	@include("lists._menu")
 
-    @if (!$currentJob->isDone() && !$currentJob->isFailed())
+    @if ($currentJob)
         <div class="row">
             <div class="col-md-6">
                 <h2 class="my-4">
@@ -27,6 +27,8 @@
         </div>
 
         <script>
+            var wizard;
+
             var SubscribersImport = {
                 progessUrl: '{{ action('SubscriberController@import2Progress', [
                     'list_uid' => $list->uid,
@@ -34,8 +36,12 @@
                 ]) }}',
 
                 openProgressPopup: function() {
-                    var popup = new Popup();
-                    popup.load(this.progessUrl);
+                    wizard = new Popup({
+                        onclose: function() {
+                            window.location.reload();
+                        }
+                    });
+                    wizard.load(this.progessUrl);
                 }
             };
 
@@ -69,7 +75,10 @@
                     var url = $(this).attr('href');
 
                     wizard = new Popup({
-                        url: url
+                        url: url,
+                        onclose: function() {
+                            window.location.reload();
+                        }
                     });
                     wizard.load();
                 });
@@ -170,6 +179,18 @@
                         } else {
                         }
                     });
+                }
+
+                save() {
+                    var _this = this;
+
+                    if (_this.validAll()) {
+                        _this.collapseColumnAll();
+
+                        var url = $(this).attr('href');
+                        wizard.load(url);
+                    } else {
+                    }
                 }
 
                 setColumn(selector) {

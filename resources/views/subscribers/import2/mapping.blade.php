@@ -145,6 +145,13 @@
             ]) }}',
 
             run: function() {
+                if (!SubscribersUploadMapping.mapping.validAll()) {
+                    return;
+                }
+
+                // collapse all
+                SubscribersUploadMapping.mapping.collapseColumnAll();
+
                 $.ajax({
                     url: SubscribersUploadMapping.runUrl,
                     type: 'POST',
@@ -173,8 +180,6 @@
             $('#ImportRunButton').on('click', function(e){
                 e.preventDefault();
 
-                // var url = $(this).attr('href');
-                // wizard.load(url);
                 SubscribersUploadMapping.run();
             });
         });
