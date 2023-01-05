@@ -15,13 +15,7 @@
     </div>
     <div class="mt-4">
         @if ($progress['percentage'] < 100)
-            <a id="ImportCancelButton" href="javascript:;" class="btn btn-secondary me-1" progress-control="cancel" style="transition:none;">
-                {{ trans('messages.cancel') }}
-            </a>
-
-            <a href="javascript:;" class="btn btn-default" onclick="window.location.reload()" progress-control="cancel" style="transition:none;">
-                {{ trans('messages.close') }}
-            </a>
+            
         @else
             <a id="ImportFinishButton" href="javascript:;" class="btn btn-secondary me-1" progress-control="cancel">
                 {{ trans('messages.finish') }}
@@ -53,6 +47,12 @@
             setTimeout(function() {
                 SubscribersImportProgress.checkProgress();
             }, 1000);
+
+            $('#ImportCancelButton').show();
+            $('#ImportCloseButton').show();
+        @else
+            $('#ImportCancelButton').hide();
+            $('#ImportCloseButton').hide();
         @endif
     });
 </script>

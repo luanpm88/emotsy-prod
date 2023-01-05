@@ -16,6 +16,16 @@
             <div id="ImportProgressContent">
 
             </div>
+
+            <div>
+                <a id="ImportCancelButton" href="javascript:;" class="btn btn-secondary me-1" progress-control="cancel">
+                    {{ trans('messages.cancel') }}
+                </a>
+    
+                <a id="ImportCloseButton" href="javascript:;" class="btn btn-default" onclick="window.location.reload()" progress-control="close">
+                    {{ trans('messages.close') }}
+                </a>
+            </div>
         </div>
     </div>
 
