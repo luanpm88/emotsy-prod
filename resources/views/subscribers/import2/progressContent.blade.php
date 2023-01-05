@@ -30,15 +30,6 @@
 <script>
     $(function() {
         // cancel import
-        $('#ImportCancelButton').on('mousedown', function() {
-            var cancelConfirm = confirm("{{ trans('messages.list.import.cancel') }}");
-
-            if (cancelConfirm) {
-                SubscribersImportProgress.cancelImport();
-            }
-        });
-
-        // cancel import
         $('#ImportFinishButton').on('click', function() {
             SubscribersImportProgress.cancelImport();
         });
