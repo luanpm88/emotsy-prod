@@ -1,4 +1,6 @@
-@extends('layouts.core.frontend')
+@extends('layouts.core.frontend', [
+	'menu' => 'subscriber',
+])
 
 @section('title', $list->name . ": " . trans('messages.import'))
 
@@ -10,13 +12,20 @@
 
 @section('content')
 
-	@include("lists._menu")
+	@include("lists._menu", [
+		'menu' => 'subscriber_import',
+	])
 
     @if ($currentJob)
         <div class="row">
             <div class="col-md-6">
                 <h2 class="my-4">
-                    {{ trans('messages.import.in_progress') }}
+                    <div class="d-flex align-items-center">
+                        <div class="spinner-border text-success me-3 fw-normal fs-6" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <span>{{ trans('messages.import.in_progress') }}</span>
+                    </div>
                 </h2>
                 <p class="">{!! trans('messages.import.in_progress.wording') !!}</p>
 
