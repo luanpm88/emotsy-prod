@@ -2172,4 +2172,51 @@ class MailList extends Model
         $this->embedded_form_options = json_encode($params);
         $this->save();
     }
+
+    public function generateAutoMapping($headers)
+    {
+
+        $exactMatching = function($text1, $text2) {
+            $matchRegx = '/[^a-zA-Z0-9]/';
+            if (strtolower(trim(preg_replace($matchRegx, ' ', $text1))) == strtolower(trim(preg_replace($matchRegx, ' ', $text2)))) {
+                return true;
+            } else {
+                return false;
+            }
+        };
+
+        $relativeMatching = function($text1, $text2) {
+            $minMatchScore = 62.5;
+            similar_text(strtolower(trim($text1)), strtolower(trim($text2)), $percentage);
+            return $percentage >= $minMatchScore;
+        };
+
+        $automap = [];
+
+        foreach ($this->fields as $field) {
+            // Check for exact matching
+            foreach($headers as $key => $header) {
+                if ($exactMatching($field->tag, $header) || $exactMatching($field->label, $header)) {
+                    $automap[$header] = $field->id;
+                    unset($headers[$key]);
+                    break;
+                }
+            }
+
+            if (in_array($header, $automap)) {
+                continue;
+            }
+
+            // Fall back to relative match
+            foreach($headers as $key => $header) {
+                if ($relativeMatching($field->tag, $header) || $exactMatching($field->label, $header)) {
+                    $automap[$header] = $field->id;
+                    unset($headers[$key]);
+                    break;
+                }
+            }
+        }
+
+        return $automap;
+    }
 }
