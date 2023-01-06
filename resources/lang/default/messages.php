@@ -1262,6 +1262,9 @@
   'identity.supported' => 'DKIM and SPF supported',
   'image.upload_help' => 'Acceptable file type is JPG/GIF/SVG<br/> The current max upload file size is <strong class="text-bold">:max</strong>',
   'import' => 'Import',
+  'import.in_progress' => 'Importing is in progress...',
+  'import.in_progress.view' => 'View the progress',
+  'import.in_progress.wording' => 'There is importing progress running in the background. Click the button below to check the progress.',
   'import.notice.over_quota' => 'Notice: list quota exceeded, certain records were skipped',
   'import_another' => 'Import another',
   'import_completed' => 'Import process finished successfully!<br>Import another file or go to your subscribers list to review the result',
@@ -3025,7 +3028,4 @@
   'your_api_token' => 'Your API token',
   'your_current_license' => 'Thank you for purchasing! Below is your license key, also known as Purchase Code. Your license type is',
   'zip_postal_code' => 'Zip / Postal code',
-  'import.in_progress' => 'Importing is in progress...',
-  'import.in_progress.wording' => 'There is importing progress running in the background. Click the button below to check the progress.',
-  'import.in_progress.view' => 'View the progress',
 ) ?>
