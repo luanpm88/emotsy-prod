@@ -3,6 +3,7 @@
 namespace Acelle\Library;
 
 use Symfony\Component\CssSelector\Exception\ParseException;
+
 use function Acelle\Helpers\url_get_contents_ssl_safe;
 
 /**

@@ -262,7 +262,7 @@ function write_env($key, $value, $overwrite = true)
     $envs = load_env_from_file(app()->environmentFilePath());
 
     // Set the value if overwrite is set to true or the key value is empty
-    if ($overwrite || !array_key_exists($key, $envs) || empty($envs[$key]) ) {
+    if ($overwrite || !array_key_exists($key, $envs) || empty($envs[$key])) {
         // Quote if there is at least one space or # or any suspected char!
         if (preg_match('/[\s\#!\$]/', $value)) {
             // Escape single quote
@@ -276,7 +276,7 @@ function write_env($key, $value, $overwrite = true)
     }
 
     $out = [];
-    foreach($envs as $k => $v) {
+    foreach ($envs as $k => $v) {
         $out[] = "$k=$v";
     }
 
@@ -345,7 +345,7 @@ function is_non_web_link($url)
 function load_env_from_file($path)
 {
     $content = file_get_contents($path);
-    $lines = preg_split("/(\r\n|\n|\r)/",$content);
+    $lines = preg_split("/(\r\n|\n|\r)/", $content);
     $lines = array_where($lines, function ($value, $key) {
         if (is_null($value)) {
             return false;
@@ -359,7 +359,7 @@ function load_env_from_file($path)
     });
 
     $output = [];
-    foreach($lines as $line) {
+    foreach ($lines as $line) {
         list($key, $value) = explode('=', $line, 2);
 
         if (is_null($value)) {

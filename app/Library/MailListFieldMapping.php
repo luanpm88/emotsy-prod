@@ -8,39 +8,39 @@ use DB;
 
 class MailListFieldMapping
 {
-	public $mapping = [];
-	public $list;
+    public $mapping = [];
+    public $list;
 
-	public $preservedFields = ['tags'];
+    public $preservedFields = ['tags'];
 
-	private function __construct($mapping, $list)
+    private function __construct($mapping, $list)
     {
-    	$this->mapping = $mapping;
+        $this->mapping = $mapping;
         $this->list = $list;
     }
 
     public function generateFieldNameFromId(int $id)
     {
-    	return "field_{$id}";
+        return "field_{$id}";
     }
 
     public static function parse(array $mapping, MailList $list)
     {
-    	self::validate($mapping, $list);
+        self::validate($mapping, $list);
 
         $mapObj = new self($mapping, $list);
 
-    	return $mapObj;
+        return $mapObj;
     }
 
     public function getHeaders()
     {
-    	return array_keys($this->mapping);
+        return array_keys($this->mapping);
     }
 
     public static function validate($map, $list)
     {
-    	// Check if EMAIL (required) is included in the map
+        // Check if EMAIL (required) is included in the map
         $fieldIds = array_values($map);
         $emailFieldId = $list->getEmailField()->id;
 
@@ -65,12 +65,12 @@ class MailListFieldMapping
     // i.e. Change header based on mapped field, remove other fields (not in map)
     public function updateRecordHeaders($r)
     {
-    	// Extract the relevant fields, including preserved fields
-    	$selectedFields = array_merge($this->getHeaders(), $this->preservedFields);
+        // Extract the relevant fields, including preserved fields
+        $selectedFields = array_merge($this->getHeaders(), $this->preservedFields);
         $record = array_only($r, $selectedFields);
 
         // Change original header to mapped field name
-        foreach($this->mapping as $header => $fieldId) {
+        foreach ($this->mapping as $header => $fieldId) {
             $fieldName = $this->generateFieldNameFromId($fieldId);
             $record[$fieldName] = $record[$header];
             unset($record[$header]);
@@ -92,7 +92,7 @@ class MailListFieldMapping
             return "`{$fieldName}` VARCHAR(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci";
         }, $this->mapping);
 
-        foreach($this->preservedFields as $field) {
+        foreach ($this->preservedFields as $field) {
             $tmpFields[] = "`{$field}` VARCHAR(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci";
         }
 
