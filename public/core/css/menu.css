@@ -519,3 +519,7 @@
 .leftbar-closed .navbar-main .navbar-nav .nav-item.active .dropdown-toggle::after {
     opacity: 1;
 }
+.leftbar .navbar-main:not(.navbar-right) .main-menu ul.dropdown-menu:not(.top-user-menus) .nav-item a.dropdown-item
+{
+    background-color: transparent!important;
+}
