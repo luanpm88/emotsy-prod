@@ -245,7 +245,7 @@ function copyToClipboard(text, container) {
         $("body").append($temp);
     }
     
-    $temp.val(text).select();
+    $temp.val(text.trim()).select();
     document.execCommand("copy");
     $temp.remove();
 }

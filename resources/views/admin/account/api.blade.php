@@ -54,14 +54,14 @@
     
     <script>
 		$('.api-copy-button').on('click', function() {
-			var code = $('.api-enpoint').html();
+			var code = $('.api-enpoint').html().trim();
 
 			copyToClipboard(code);
 
 			notify('success', '{{ trans('messages.notify.success') }}', '{{ trans('messages.api_endpoint.copied') }}');
 		});
 		$('.api-token-copy-button').on('click', function() {
-			var code = $('.api-token').html();
+			var code = $('.api-token').html().trim();
 
 			copyToClipboard(code);
 
