@@ -81,9 +81,6 @@
         
         <script>
             $(function() {
-                // init
-                SubscribersImport2.init();
-
                 // load upload popup button
                 $('[mapping-action="upload"]').on('click', function() {
                     SubscribersImport2.loadUploadPopup();
@@ -112,13 +109,13 @@
             },
 
             openProgressPopup: function() {
-                wizard = new Popup({
-                    onclose: function() {
-                        window.location.reload();
-                    }
-                });
-                wizard.load(this.progessUrl);
+                this.getPopup().load(this.progessUrl);
             }
         }
+
+        $(function() {
+            // init
+            SubscribersImport2.init();
+        });
     </script>
 @endsection
