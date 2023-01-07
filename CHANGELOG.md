@@ -1,16 +1,28 @@
+4.0.25 / 2023-01-07
+==================
+
+ * Added: Italian language pack is now available by default.
+ * Added: fields mapping web UI for contacts import
+ * Added: automatically create list fields from CSV
+ * Fixed: currency conversion issue with PayPal.
+ * Fixed: comaptibility issue with PHP 8.1.
+ * Fixed: DB connection is reset during upgrade.
+ * Fixed: environment values are incorrectly set after upgrade.
+ * Fixed: autobilling not working well with certain types of credit card.
+
 4.0.24-p430 / 2022-12-08
 ==================
 
- * Fixed: sending performance issue on CentOS
- * Fixed: MySQL 8x compatibility issues
- * Fixed: PHP 7.3 compatibility issues
- * Fixed: PHP 7.2 is no longer supported
- * Fixed: better branding support, allow default brand in .env file
- * Fixed: form templates not showing up by default
- * Fixed: UTF-8 issues with imported data
- * Fixed: upgrade to the latest Laravel 8 version
- * Fixed: plan & subscription issues
- * Fixed: better detection of file encoding
+ * Fixed: sending performance issue on CentOS.
+ * Fixed: MySQL 8x compatibility issues.
+ * Fixed: PHP 7.3 compatibility issues.
+ * Fixed: PHP 7.2 is no longer supported.
+ * Fixed: better branding support, allow default brand in .env file.
+ * Fixed: form templates not showing up by default.
+ * Fixed: UTF-8 issues with imported data.
+ * Fixed: upgrade to the latest Laravel 8 version.
+ * Fixed: plan & subscription issues.
+ * Fixed: better detection of file encoding.
 
 4.0.24-p415 / 2022-11-02
 ==================
