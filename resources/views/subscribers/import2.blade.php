@@ -17,17 +17,33 @@
 	])
 
     @if ($currentJob)
+        @php
+            $progress = $list->getProgress($currentJob);
+        @endphp
+
         <div class="row">
             <div class="col-md-6">
-                <h2 class="my-4">
-                    <div class="d-flex align-items-center">
-                        <div class="spinner-border text-success me-3 fw-normal fs-6" role="status">
-                            <span class="visually-hidden">Loading...</span>
+                @if ($progress['status'] == 'failed')
+                    <h2 class="my-4">
+                        <div class="d-flex align-items-center">
+                            <span class="material-symbols-rounded me-3 text-danger">
+                                error
+                            </span>
+                            <span>{{ trans('messages.import.is_failed') }}</span>
                         </div>
-                        <span>{{ trans('messages.import.in_progress') }}</span>
-                    </div>
-                </h2>
-                <p class="">{!! trans('messages.import.in_progress.wording') !!}</p>
+                    </h2>
+                    <p class="">{!! trans('messages.import.something_went_wrong') !!}</p>
+                @else
+                    <h2 class="my-4">
+                        <div class="d-flex align-items-center">
+                            <div class="spinner-border text-success me-3 fw-normal fs-6" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <span>{{ trans('messages.import.in_progress') }}</span>
+                        </div>
+                    </h2>
+                    <p class="">{!! trans('messages.import.in_progress.wording') !!}</p>
+                @endif
 
                 <a id="ViewImportProgressButton" href="javascript:;" class="btn btn-mc_primary start-import">
                     {{ trans('messages.import.in_progress.view') }}
@@ -36,31 +52,17 @@
         </div>
 
         <script>
-            var wizard;
-
-            var SubscribersImport = {
-                progessUrl: '{{ action('SubscriberController@import2Progress', [
+            $(function() {
+                SubscribersImport2.progessUrl = '{{ action('SubscriberController@import2Progress', [
                     'list_uid' => $list->uid,
                     'job_uid' => $currentJob->uid,
-                ]) }}',
+                ]) }}';
 
-                openProgressPopup: function() {
-                    wizard = new Popup({
-                        onclose: function() {
-                            window.location.reload();
-                        }
-                    });
-                    wizard.load(this.progessUrl);
-                }
-            };
-
-            $(function() {
                 $('#ViewImportProgressButton').on('click', function() {
-                    SubscribersImport.openProgressPopup();
+                    SubscribersImport2.openProgressPopup();
                 });
             });
         </script>
-
     @else
         <div class="row">
             <div class="col-md-6">
@@ -78,23 +80,6 @@
         </div>
         
         <script>
-            var SubscribersImport2 = {
-                popup: null,
-                uploadUrl: '{{ action('SubscriberController@import2Wizard', $list->uid) }}',
-                
-                init: function() {
-                    this.popup = new Popup();
-                },
-
-                getPopup: function() {
-                    return this.popup;
-                },
-
-                loadUploadPopup: function() {
-                    this.getPopup().load(this.uploadUrl);
-                }
-            }
-
             $(function() {
                 // init
                 SubscribersImport2.init();
@@ -106,4 +91,34 @@
             });
         </script>
     @endif
+
+
+    <script>
+        var SubscribersImport2 = {
+            popup: null,
+            uploadUrl: '{{ action('SubscriberController@import2Wizard', $list->uid) }}',
+            progessUrl: null,
+            
+            init: function() {
+                this.popup = new Popup();
+            },
+
+            getPopup: function() {
+                return this.popup;
+            },
+
+            loadUploadPopup: function() {
+                this.getPopup().load(this.uploadUrl);
+            },
+
+            openProgressPopup: function() {
+                wizard = new Popup({
+                    onclose: function() {
+                        window.location.reload();
+                    }
+                });
+                wizard.load(this.progessUrl);
+            }
+        }
+    </script>
 @endsection

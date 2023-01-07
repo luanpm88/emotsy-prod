@@ -21,6 +21,10 @@
                 <a id="ImportCancelButton" href="javascript:;" class="btn btn-secondary me-1" progress-control="cancel">
                     {{ trans('messages.cancel') }}
                 </a>
+
+                <a id="ImportRetryButton" href="javascript:;" class="btn btn-secondary me-1" progress-control="retry">
+                    <span class="material-symbols-rounded">restart_alt</span> {{ trans('messages.import.retry') }}
+                </a>
     
                 <a id="ImportCloseButton" href="javascript:;" class="btn btn-default" onclick="window.location.reload()" progress-control="close">
                     {{ trans('messages.close') }}
@@ -66,6 +70,20 @@
                 }).fail(function(jqXHR, textStatus, errorThrown) {
                 }).always(function() {
                 });
+            },
+
+            retryImport: function() {
+                $.ajax({
+                    url: SubscribersImportProgress.cancelUrl,
+                    type: 'POST',
+                    data: {
+                        _token: CSRF_TOKEN
+                    }
+                }).done(function(response) {
+                    SubscribersImport2.loadUploadPopup();
+                }).fail(function(jqXHR, textStatus, errorThrown) {
+                }).always(function() {
+                });
             }
         };
 
@@ -80,6 +98,11 @@
                 if (cancelConfirm) {
                     SubscribersImportProgress.cancelImport();
                 }
+            });
+
+            // retry import
+            $('#ImportRetryButton').on('mousedown', function() {
+                SubscribersImportProgress.retryImport();
             });
         })
     </script>

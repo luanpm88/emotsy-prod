@@ -3030,4 +3030,7 @@
   'import.create_new_field' => 'Create new list field',
   'import.field_name_empty' => 'New field name is empty',
   'subscriber.import.associate_with_new' => 'Create new field: ',
+  'import.retry' => 'Retry',
+  'import.is_failed' => 'Import failed',
+  'import.something_went_wrong' => 'Something went wrong when importing subscribers! Click the button below to view the progress.',
 ) ?>
