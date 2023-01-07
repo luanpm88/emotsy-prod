@@ -1,6 +1,7 @@
 4.0.25 / 2023-01-07
 ==================
 
+ * Added: Italian language pack is now available by default.
  * Added: fields mapping web UI for contacts import
  * Added: automatically create list fields from CSV
  * Fixed: currency conversion issue with PayPal.
