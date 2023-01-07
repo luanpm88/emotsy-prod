@@ -22,7 +22,7 @@
                     {{ trans('messages.cancel') }}
                 </a>
 
-                <a id="ImportRetryButton" href="javascript:;" class="btn btn-secondary me-1" progress-control="retry">
+                <a id="ImportRetryButton" href="javascript:;" class="btn btn-default me-1" progress-control="retry">
                     <span class="material-symbols-rounded">restart_alt</span> {{ trans('messages.import.retry') }}
                 </a>
     
