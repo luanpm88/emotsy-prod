@@ -659,6 +659,9 @@ class Invoice extends Model
             // Log
             switch ($this->type) {
                 case Invoice::TYPE_NEW_SUBSCRIPTION:
+                    // new subscription thì không xóa invoice
+                    return;
+                    break;
                 case Invoice::TYPE_RENEW_SUBSCRIPTION:
                 case Invoice::TYPE_CHANGE_PLAN:
                     $subscription = Subscription::findByUid($this->getMetadata()['subscription_uid']);
