@@ -453,7 +453,7 @@ h3 {
     align-items: center;
 }
 .filter-box input.search {
-    width: 250px;
+    width: 200px;
     display: inline-block;
     height: 33px;
     margin-left: 0;
@@ -8139,4 +8139,8 @@ label.checker input:disabled ~ .checker-symbol {
     font-size: 30px;
     left: 0;
     opacity: 0.8;
+}
+.top-sticky-content {
+    white-space: nowrap;
+    overflow-x: auto;
 }
