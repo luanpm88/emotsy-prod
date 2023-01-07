@@ -2406,7 +2406,7 @@
   'subscriber.import.data_type' => 'Data type',
   'subscriber.import.field_name' => 'Field name',
   'subscriber.import.mapping' => 'Mapping',
-  'subscriber.import.mapping.intro' => 'Import subscribers by uploading CSV file',
+  'subscriber.import.mapping.intro' => 'Specify where to import the data by mapping the headers in the source file to the list`s fields.',
   'subscriber.import.mapping.wording' => 'Map the columns from your input file to the list fields on the right.
     You can also choose to create a new field automatically if it is not present in your list yet.',
   'subscriber.import.mapping_empty' => 'Please select at least one column for mapping data',
@@ -2416,14 +2416,12 @@
   'subscriber.import.next_mapping' => 'Next',
   'subscriber.import.no_email_field' => 'There is no EMAIL field in mapping selection',
   'subscriber.import.ok_i_done' => 'OK, I\'m done',
-  'subscriber.import.review_go' => 'Review & Go',
-  'subscriber.import.review_go.intro' => 'Import subscribers by uploading CSV file',
+  'subscriber.import.review_go' => 'Progress',
+  'subscriber.import.review_go.intro' => 'Actually load subscribers data from CSV file to the list.',
   'subscriber.import.running.wording' => 'Import is in progress, it may take several minutes or even hours
     depending on your inputs file as well as your server performance.app',
   'subscriber.import.select_field' => 'Choose field',
   'subscriber.import.select_type' => 'Select type',
-  'subscriber.import.skip_field' => 'Skip this field',
-  'subscriber.import.skip_field.intro' => 'Data from this column will be skipped and will not be imported to your list',
   'subscriber.import.something_wrong' => 'Validation was failed. Please check the inputs again',
   'subscriber.import.start' => 'Start Import',
   'subscriber.import.upload.wording' => 'Choose a comma separated values text file (.csv) in
@@ -2431,7 +2429,7 @@
     separates each field of text. Your file MUST include the first column header. Click
     <a href=":link">here</a> to download a sample CSV file.',
   'subscriber.import.upload_csv_file' => 'Upload CSV File',
-  'subscriber.import.upload_csv_file.intro' => 'Import subscribers by uploading CSV file',
+  'subscriber.import.upload_csv_file.intro' => 'A CSV (comma-separated values) file is a text file in which information is separated by commas.',
   'subscriber.invalid' => 'Contact does not exist',
   'subscriber.tag_added' => 'Tag was added successfully',
   'subscriber.unique_values_for_all_the_list' => 'Unique values from a list',

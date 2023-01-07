@@ -575,7 +575,7 @@
                 addMaskLoading();
 
                 $.ajax({
-                    url: SubscribersUploadMapping.runUrl,
+                    url: _this.runUrl,
                     type: 'POST',
                     data: {
                         _token: CSRF_TOKEN,
