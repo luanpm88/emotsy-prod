@@ -1047,14 +1047,16 @@ class MailList extends Model
 
             // Make sure the headers are present
             // In case of duplicate column headers, an exception shall be thrown by League
-            foreach($headers as $index => $header) {
+            foreach ($headers as $index => $header) {
                 if (is_null($header) || empty(trim($header))) {
-                    throw new \Exception(trans('messages.list.import.error.header_empty', ['index' => $index] ));
+                    throw new \Exception(trans('messages.list.import.error.header_empty', ['index' => $index]));
                 }
             }
 
             // Remove leading/trailing spaces in headers, keep letter case
-            $headers = array_map(function($r) { return trim($r); }, $headers);
+            $headers = array_map(function ($r) {
+                return trim($r);
+            }, $headers);
 
             /*
             $headers = array_filter(array_map(function ($value) {
@@ -1164,7 +1166,7 @@ class MailList extends Model
             list($headers, $total, $results) = $this->readCsv($file);
             $mapArray = [];
             foreach ($this->fields as $field) {
-                foreach($headers as $header) {
+                foreach ($headers as $header) {
                     if (strtolower($field->tag) == strtolower($header)) {
                         $mapArray[$header] = $field->id;
                     }
@@ -1201,7 +1203,6 @@ class MailList extends Model
         try {
             // process by batches
             each_batch($results, config('app.import_batch_size'), false, function ($batch) use ($map, &$processed, &$failed, $total, &$overQuotaAttempt, &$message, $progressCallback, $invalidRecordCallback) {
-
                 if ($this->customer->user->can('addMoreSubscribers', [$this, sizeof($batch)])) {
                     $insertLimit = sizeof($batch);
                 } else {
@@ -1275,15 +1276,16 @@ class MailList extends Model
                 // Insert new subscribers from temp table to the main table
                 // Use SUBSTRING(MD5(UUID()), 1, 13) to produce a UNIQUE ID which is similar to the output of PHP uniqid()
                 // @TODO LIMITATION: tags are not updated if subscribers already exist
-                $insertToSubscribersSql = strtr('
+                $insertToSubscribersSql = strtr(
+                    '
                     INSERT INTO %subscribers (uid, mail_list_id, email, status, subscription_type, tags, created_at, updated_at)
                     SELECT SUBSTRING(MD5(UUID()), 1, 13), %list_id, uniq.email, %status, %type, uniq.tags, NOW(), NOW()
                     FROM (
                         SELECT tmp.%email_field AS email, tmp.tags
                         FROM %tmp tmp
                         LEFT JOIN %subscribers main ON (tmp.%email_field = main.email AND main.mail_list_id = %list_id)
-                        WHERE main.email IS NULL LIMIT %insert_limit) uniq'
-                    , [
+                        WHERE main.email IS NULL LIMIT %insert_limit) uniq',
+                    [
                         '%subscribers' => table('subscribers'),
                         '%list_id' => $this->id,
                         '%status' => db_quote(Subscriber::STATUS_SUBSCRIBED),
@@ -1317,7 +1319,7 @@ class MailList extends Model
                     $this->id
                 ));
 
-                foreach($map->mapping as $header => $fieldId) {
+                foreach ($map->mapping as $header => $fieldId) {
                     $fieldName = $map->generateFieldNameFromId($fieldId);
                     $insertToSubscriberFieldsSql = strtr('
                         INSERT INTO %subscriber_fields (subscriber_id, field_id, value, created_at, updated_at)
@@ -2175,8 +2177,7 @@ class MailList extends Model
 
     public function generateAutoMapping($headers)
     {
-
-        $exactMatching = function($text1, $text2) {
+        $exactMatching = function ($text1, $text2) {
             $matchRegx = '/[^a-zA-Z0-9]/';
             if (strtolower(trim(preg_replace($matchRegx, ' ', $text1))) == strtolower(trim(preg_replace($matchRegx, ' ', $text2)))) {
                 return true;
@@ -2185,7 +2186,7 @@ class MailList extends Model
             }
         };
 
-        $relativeMatching = function($text1, $text2) {
+        $relativeMatching = function ($text1, $text2) {
             $minMatchScore = 62.5;
             similar_text(strtolower(trim($text1)), strtolower(trim($text2)), $percentage);
             return $percentage >= $minMatchScore;
@@ -2195,7 +2196,7 @@ class MailList extends Model
 
         foreach ($this->fields as $field) {
             // Check for exact matching
-            foreach($headers as $key => $header) {
+            foreach ($headers as $key => $header) {
                 if ($exactMatching($field->tag, $header) || $exactMatching($field->label, $header)) {
                     $automap[$header] = $field->id;
                     unset($headers[$key]);
@@ -2208,7 +2209,7 @@ class MailList extends Model
             }
 
             // Fall back to relative match
-            foreach($headers as $key => $header) {
+            foreach ($headers as $key => $header) {
                 if ($relativeMatching($field->tag, $header) || $exactMatching($field->label, $header)) {
                     $automap[$header] = $field->id;
                     unset($headers[$key]);

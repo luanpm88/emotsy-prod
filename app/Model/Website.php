@@ -5,6 +5,7 @@ namespace Acelle\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Acelle\Library\Traits\HasUid;
+
 use function Acelle\Helpers\url_get_contents_ssl_safe;
 
 class Website extends Model

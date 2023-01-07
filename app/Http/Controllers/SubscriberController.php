@@ -981,7 +981,7 @@ class SubscriberController extends Controller
             'message' => trans('messages.subscriber.import.csv_uploaded'),
             'mappingUrl' => action('SubscriberController@import2Mapping', [
                 'list_uid' => $list->uid,
-                'filepath' => $filepath, 
+                'filepath' => $filepath,
             ]),
         ]);
     }
