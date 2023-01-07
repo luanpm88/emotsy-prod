@@ -2394,10 +2394,8 @@
   'subscriber.email.fail_to_verify' => 'Cannot verify email address',
   'subscriber.email.invalid' => 'Invalid email address',
   'subscriber.enter_field_value' => 'Enter field value',
-  'subscriber.import.associate_exist' => 'Associate with an existing list field',
   'subscriber.import.associate_exist.intro' => 'Choose an existing field from your list to import. Date type will be
     formatted accordingly to the list field`s type',
-  'subscriber.import.associate_with' => 'Associate with',
   'subscriber.import.create' => 'Create',
   'subscriber.import.create_field.summary' => 'Create new <span class="field_type font-weight-semibold"></span> field, namely
     <span class="field_name font-weight-semibold"></span>.
@@ -2424,8 +2422,6 @@
     depending on your inputs file as well as your server performance.app',
   'subscriber.import.select_field' => 'Choose field',
   'subscriber.import.select_type' => 'Select type',
-  'subscriber.import.selected_field.summary' => 'Selected field: <span class="field_name font-weight-semibold"></span>.
-    <a href="javascript:;" class="change-option">Click here to change</a>',
   'subscriber.import.skip_field' => 'Skip this field',
   'subscriber.import.skip_field.intro' => 'Data from this column will be skipped and will not be imported to your list',
   'subscriber.import.something_wrong' => 'Validation was failed. Please check the inputs again',
@@ -3028,4 +3024,12 @@
   'your_api_token' => 'Your API token',
   'your_current_license' => 'Thank you for purchasing! Below is your license key, also known as Purchase Code. Your license type is',
   'zip_postal_code' => 'Zip / Postal code',
+  'subscriber.import.click_here_to_change' => 'Click here to change',
+  'subscriber.import.associate_with' => 'Associate with',
+  'import.choose_field' => 'Choose a field',
+  'import.field_not_select' => 'You need to select a field to map',
+  'import.associate_with_existing_field' => 'Associate with an existing field',
+  'import.create_new_field' => 'Create new list field',
+  'import.field_name_empty' => 'New field name is empty',
+  'subscriber.import.associate_with_new' => 'Create new field: ',
 ) ?>

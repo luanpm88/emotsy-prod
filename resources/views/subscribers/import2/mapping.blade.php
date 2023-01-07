@@ -18,8 +18,95 @@
                 'link' => url('files/csv_import_example.csv')
             ]) !!}</p>   
 
-            <ul class="import-mapping mb-4">
-                @foreach($headers as $key => $column)
+            <ul class="list-group mb-4">
+                @foreach($headers as $key => $header)
+                    <li mapping-container="{{ $header }}" class="list-group-item">
+                        <div class="d-flex align-items-center">
+                            <label class="checker me-3">
+                                <input id="MappingChecker{{ $key }}" type="checkbox" mapping-control="checker" value="yes" class="styled4">
+                                <span class="checker-symbol"></span>
+                            </label>
+                            <label for="MappingChecker{{ $key }}" class="font-weight-semibold">{{ $header }}</label>
+                            <div class="d-flex ms-auto">
+                                <div mapping-control="short-desc" class="me-2">
+                                    
+                                </div>
+                                <a mapping-control="edit" href="javascript:;">
+                                    <span>
+                                        <span class="material-symbols-rounded">edit</span>
+                                    </span>
+                                </a>
+                            </div>
+                        </div>
+                        <div mapping-control="options" class="border-top bg-light py-3" style="
+                            margin-left: -16px;
+                            margin-right: -16px;
+                            padding-left: 55px;
+                            padding-right: 16px;
+                            margin-bottom: -8px;
+                            margin-top: 8px;
+                        ">
+                            <div mapping-control="option" option-value="exist">
+                                <label class="mb-2">
+                                    <input mapping-control="option-checker" name="option-checker-{{ $key }}" type="radio" value="exist" class="radio me-1" />
+                                    <span class="mr-2 text-nowrap font-weight-semibold">{{ trans('messages.import.associate_with_existing_field') }}</span>
+                                </label>
+                                <div mapping-control="option-detail" class="ps-3 ms-1 mb-4">
+                                    <p class="mb-2">{{ trans('messages.subscriber.import.associate_exist.intro') }}</p>
+                                    <div class="d-flex align-items-center">
+                                        <div class="me-3">
+                                            <select class="select form-control" mapping-control="field-select">
+                                                <option value="">{{ trans('messages.import.choose_field') }}</option>
+                                                @foreach ($list->fields as $field)
+                                                    <option value="{{ $field->id }}">{{ $field->tag }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <a href="javascript:;" class="text-nowrap" mapping-control="save">
+                                            {{ trans('messages.subscriber.import.ok_i_done') }}
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div mapping-control="option" option-value="new">
+                                <label class="mb-2">
+                                    <input mapping-control="option-checker" name="option-checker-{{ $key }}" type="radio" value="new" class="radio me-1" />
+                                    <span class="mr-2 text-nowrap font-weight-semibold">
+                                        {{ trans('messages.import.create_new_field') }}
+                                    </span>
+                                </label>
+                                <div mapping-control="option-detail" class="ps-3 ms-1">
+                                    <p class="text-muted mb-2 option-empty">{{ trans('messages.subscriber.import.create_new_field.intro') }}</p>
+                                    <p class="text-muted mb-2 option-done" style="display: none">
+                                        {!! trans('messages.subscriber.import.create_field.summary') !!}
+                                    </p>
+
+                                    <div class="option-update mb-4">
+                                        <div class="mb-1">{{ trans('messages.subscriber.import.field_name') }}</div>
+                                        <div><input mapping-control="new-field-name" type="text" name="new_field" class="form-control mb-3 data-create" /></div>
+                                        <div class="mb-1">{{ trans('messages.subscriber.import.data_type') }}</div>
+                                        <div class="d-flex align-items-center mb-3">
+                                            <select mapping-control="new-field-type" class="select data-type" style="max-width: 100px;">
+                                                <option value="text">{{ trans('messages.text') }}</option>
+                                                <option value="number">{{ trans('messages.number') }}</option>
+                                                <option value="date">{{ trans('messages.date') }}</option>
+                                                <option value="datetime">{{ trans('messages.datetime') }}</option>
+                                                <option value="textarea">{{ trans('messages.textarea') }}</option>
+                                            </select>
+                                            <a mapping-control="save" href="javascript:;" class="text-nowrap ml-4 done-button" style="text-decoration: underline">
+                                                {{ trans('messages.subscriber.import.ok_i_done') }}
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                            
+
+                    </li>
+                @endforeach
+
+                {{-- @foreach($headers as $key => $column)
                     <li class="">
                         <input type="hidden" name="input" value="{{ $column }}" class="field-option-radio" />
 
@@ -31,7 +118,7 @@
                             </div>
                             <label class="m-0 field-name mr-auto">{{ $column }}</label>
                             <div class="field-actions">
-                                <span class="material-symbols-rounded toogle-icon" style="display: none">keyboard_arrow_up</span>
+                                <span class="material-symbols-rounded toggle-icon" style="display: none">keyboard_arrow_up</span>
 
                                 <div class="quick-info exist" style="display:none">
                                     <div class="d-flex align-items-center">
@@ -121,10 +208,10 @@
                             <button class="btn btn-mc_primary mb-4 field-save-button">{{ trans('messages.save') }}</button>
                         </div>
                     </li>
-                @endforeach
+                @endforeach --}}
             </ul>
 
-            <a id="ImportRunButton" href="javascript:;"
+            <a mapping-control="run" href="javascript:;"
                 class="btn btn-mc_primary bg-teal-800 mt-4"
             >
                 {{ trans('messages.subscriber.import.start') }}
@@ -133,24 +220,359 @@
     </div>
 
     <script>
-        var SubscribersUploadMapping = {
-            mapping: null,
+        var MappingItem = class {
+            constructor(header) {
+                this.header = header;
+                this.option;
+                this.fieldId;
+                this.newFieldName;
+                this.newFieldType;
 
-            runUrl: '{{ action('SubscriberController@import2Run', [
-                'list_uid' => $list->uid,
-            ]) }}',
+                // default option
+                this.updateOption('exist');
 
-            progressUrl: '{{ action('SubscriberController@import2Run', [
-                'list_uid' => $list->uid,
-            ]) }}',
+                // default field id
+                this.updateFieldId(null);
 
-            run: function() {
-                if (!SubscribersUploadMapping.mapping.validAll()) {
+                // hide options box
+                this.hideOptionsBox();
+
+                // events
+                this.applyEvents();
+            }
+
+            getContainer() {
+                return $('[mapping-container="' + this.header + '"]');
+            }
+
+            getOptionBoxes() {
+                return this.getContainer().find('[mapping-control="option"]');
+            }
+
+            getOptionBox(option) {
+                return this.getContainer().find('[option-value="'+option+'"]');
+            }
+
+            getFieldSelect() {
+                return this.getContainer().find('[mapping-control="field-select"]');
+            }
+
+            getChecker() {
+                return this.getContainer().find('[mapping-control="checker"]');
+            }
+
+            getExistSaveButton() {
+                return this.getOptionBox('exist').find('[mapping-control="save"]');
+            }
+
+            getNewSaveButton() {
+                return this.getOptionBox('new').find('[mapping-control="save"]');
+            }
+
+            getNewFieldName() {
+                return this.getOptionBox('new').find('[mapping-control="new-field-name"]');
+            }
+
+            getNewFieldType() {
+                return this.getOptionBox('new').find('[mapping-control="new-field-type"]');
+            }
+
+            getEditLink() {
+                return this.getContainer().find('[mapping-control="edit"]');
+            }
+
+            getOptionsBox() {
+                return this.getContainer().find('[mapping-control="options"]');
+            }
+
+            getShortDesc() {
+                return this.getContainer().find('[mapping-control="short-desc"]');
+            }
+
+            getOptionCheckers() {
+                return this.getContainer().find('[mapping-control="option-checker"]');
+            }
+
+            isChecked() {
+                return this.getChecker().is(':checked');
+            }
+
+            updateOption(option) {
+                this.option = option;
+
+                // check option
+                this.getOptionBox(this.option).find('[mapping-control="option-checker"]').prop('checked', true);
+
+                // show option details
+                this.getOptionBoxes().find('[mapping-control="option-detail"]').hide();
+                this.getOptionBox(this.option).find('[mapping-control="option-detail"]').show();
+            }
+
+            updateFieldId(id) {
+                // set field id
+                this.fieldId = id !== null ? id.toString() : null;
+
+                // set option to exist
+                this.updateOption('exist');
+
+                // field id
+                if (this.fieldId !== null) {
+                    // change select field value
+                    this.getFieldSelect().val(this.fieldId).trigger('change');
+
+                    // update short desc message
+                    this.getShortDesc().html(`
+                        <span>{{ trans('messages.subscriber.import.associate_with') }}</span>
+                        <span mapping-control="selected-field-label" class="font-weight-semibold">
+                            `+ this.getFieldSelect().find('option[value="'+this.fieldId+'"]').html() +`    
+                        </span>
+                    `);
+
+                    // show edit link
+                    this.showEditLink();
+                    
+                    // show short desc line
+                    this.showShortDesc();
+
+                    // turn on checker
+                    this.getChecker().prop('checked', true);
+                } else {
+                    // change select field value
+                    this.getFieldSelect().val('').trigger('change');
+
+                    // clear short desc
+                    this.getShortDesc().html('');
+
+                    // hide edit link
+                    this.hideEditLink();
+
+                    // hide short desc line
+                    this.hideShortDesc();
+
+                    // turn off checker
+                    this.getChecker().prop('checked', false);
+                }
+            }
+
+            uncheck() {
+                this.updateOption('exist');
+                this.updateFieldId(null);
+                this.hideOptionsBox();
+            }
+
+            applyEvents() {
+                var _this = this;
+                
+                // check the checkbox
+                this.getChecker().on('change', function() {
+                    var checked = $(this).is(':checked');
+
+                    // checked
+                    if (checked) {
+                        _this.showOptionsBox();
+
+                    // uncheck
+                    } else {
+                        _this.uncheck();
+                    }
+                });
+
+                // save the field select
+                this.getExistSaveButton().on('click', function() {
+                    _this.saveExistField();
+                });
+
+                // edit details
+                this.getEditLink().on('click', function() {
+                    // show details box
+                    _this.showOptionsBox();
+
+                    // hide edit linke
+                    _this.hideEditLink();
+                });
+
+                // change option
+                this.getOptionCheckers().on('change', function() {
+                    var option = $(this).val();
+
+                    _this.updateOption(option);
+                });
+
+                // save the field select
+                this.getNewSaveButton().on('click', function() {
+                    _this.saveNewField();
+                });
+            }
+
+            saveExistField() {
+                var id = this.getFieldSelect().val();
+
+                if (id == '') {
+                    new Dialog('alert', {
+                        message: '{{ trans('messages.import.field_not_select') }}',
+                    });
+
                     return;
                 }
 
-                // collapse all
-                SubscribersUploadMapping.mapping.collapseColumnAll();
+                // set field id
+                this.updateFieldId(id);
+
+                // hide details box after saved
+                this.hideOptionsBox();
+            }
+
+            saveNewField() {
+                var name = this.getNewFieldName().val();
+                var type = this.getNewFieldType().val();
+
+                if (name == '') {
+                    new Dialog('alert', {
+                        message: '{{ trans('messages.import.field_name_empty') }}',
+                    });
+
+                    return;
+                }
+
+                // set field id
+                this.updateNewField(name, type);
+
+                // hide details box after saved
+                this.hideOptionsBox();
+            }
+
+            updateNewField(name, type) {
+                // set field id
+                this.newFieldName = name;
+                this.newFieldType = type;
+
+                // set option to exist
+                this.updateOption('new');
+
+                // field id
+                if (this.newFieldName) {
+                    // change select field value
+                    this.getNewFieldName().val(this.newFieldName);
+                    this.getNewFieldType().val(this.newFieldType).trigger('change');
+
+                    // update short desc message
+                    this.getShortDesc().html(`
+                        <span>{{ trans('messages.subscriber.import.associate_with_new') }}</span>
+                        <span mapping-control="selected-field-label" class="font-weight-semibold">
+                            `+ this.newFieldName +`    
+                        </span>
+                    `);
+
+                    // show edit link
+                    this.showEditLink();
+                    
+                    // show short desc line
+                    this.showShortDesc();
+
+                    // turn on checker
+                    this.getChecker().prop('checked', true);
+                } else {
+                    // change select field value
+                    this.getNewFieldName().val('');
+                    // this.getNewFieldType().val(this.newFieldType).trigger('change');
+
+                    // clear short desc
+                    this.getShortDesc().html('');
+
+                    // hide edit link
+                    this.hideEditLink();
+
+                    // hide short desc line
+                    this.hideShortDesc();
+
+                    // turn off checker
+                    this.getChecker().prop('checked', false);
+                }
+            }
+
+            hideOptionsBox() {
+                this.getOptionsBox().hide();
+            }
+
+            hideShortDesc() {
+                this.getShortDesc().hide();
+            }
+
+            showShortDesc() {
+                this.getShortDesc().show();
+            }
+
+            showOptionsBox() {
+                this.getOptionsBox().slideDown();
+            }
+
+            hideEditLink() {
+                this.getEditLink().css('visibility', 'hidden');
+            }
+
+            showEditLink() {
+                this.getEditLink().css('visibility', 'visible');
+            }
+        };
+
+        var MappingManager = class {
+            constructor(headers, mapping, runUrl, emailFieldId) {
+                var _this = this;
+
+                _this.items = [];
+                _this.runUrl = runUrl;
+                _this.emailFieldId = emailFieldId;
+
+                // add items by headers
+                headers.forEach(function(header) {
+                    _this.items.push(new MappingItem(header));
+                });
+
+                if (mapping) {
+                    _this.importData(mapping);
+                }
+
+                // run button
+                $('[mapping-control="run"]').on('click', function() {
+                    _this.run();
+                });
+            }
+
+            validate() {
+                var data = this.getData();
+                var fieldIds = this.items.filter(function(i) {return i.option == 'exist' && i.fieldId}).map(function(i) {return i.fieldId});
+                var fieldNames = this.items.filter(function(i) {return i.option == 'new' && i.newFieldName}).map(function(i) {return i.newFieldName});
+                let findDuplicates = arr => arr.filter((item, index) => arr.indexOf(item) != index)
+
+                // at least one email field
+                if (!fieldIds.includes(this.emailFieldId)) {
+                    new Dialog('alert', {
+                        message: '{{ trans('messages.subscriber.import.no_email_field') }}',
+                    });
+                    return false;
+                }
+
+                // more than one field
+                var idDups = findDuplicates(fieldIds);
+                var nameDups = findDuplicates(fieldNames);
+                if (idDups.length || nameDups.length) {
+                    new Dialog('alert', {
+                        message: '{{ trans('messages.subscriber.import.multiple_field_error') }}',
+                    });
+                    return false;
+                }
+                
+                return true;
+            }
+
+            run() {
+                var _this = this;
+                
+                if (!this.validate()) {
+                    return;
+                }
+
+                addMaskLoading();
 
                 $.ajax({
                     url: SubscribersUploadMapping.runUrl,
@@ -158,30 +580,55 @@
                     data: {
                         _token: CSRF_TOKEN,
                         filepath: '{{ $filepath }}',
-                        mapping: SubscribersUploadMapping.mapping.getData(),
+                        mapping: _this.getData(),
                     }
                 }).done(function(response) {
-                    wizard.load(response.progressUrl);
-                }).fail(function(jqXHR, textStatus, errorThrown){
-                    // // for debugging
-                    // TemplatesList.getCopyPopup().loadHtml(jqXHR.responseText);
+                    SubscribersImport2.getPopup().load(response.progressUrl);
+                }).fail(function(jqXHR, textStatus, errorThrown) {
                 }).always(function() {
-                    // TemplatesList.getCopyPopup().unmask();
-                    // removeButtonMask($('#doCopyButton'));
+                    removeMaskLoading();
                 });
             }
+
+            getData() {
+                var data = {};
+                this.items.forEach(function(item) {
+                    if (item.option == 'exist') {
+                        if (item.fieldId) {
+                            data[item.header] = item.fieldId;
+                        }
+                    } else {
+                        if (item.newFieldName && item.newFieldType) {
+                            data[item.header] = {name: item.newFieldName, type: item.newFieldType};
+                        }
+                    }
+                });
+
+                return data;
+            }
+
+            importData(mapping) {
+                this.items.forEach(function(item) {
+                    if (mapping[item.header]) {
+                        item.updateFieldId(mapping[item.header]);
+                    }
+                }); 
+            }
+        };
+
+        var SubscribersImport2Mapping = {
+            mappingManager: null,
         }
 
-        
-
-        $(function () {
-            SubscribersUploadMapping.mapping = new Mapping('{{ $list->getEmailField()->id }}');
-
-            $('#ImportRunButton').on('click', function(e){
-                e.preventDefault();
-
-                SubscribersUploadMapping.run();
-            });
+        $(function() {
+            SubscribersImport2Mapping.mappingManager = new MappingManager(
+                {!! json_encode($headers) !!},
+                {!! json_encode($list->generateAutoMapping($headers)) !!},
+                '{!! action('SubscriberController@import2Run', [
+                    'list_uid' => $list->uid,
+                ]) !!}',
+                '{{ $list->getEmailField()->id }}'
+            );
         });
     </script>
 @endsection

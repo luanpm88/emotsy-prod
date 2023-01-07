@@ -32,8 +32,8 @@
                 </div>
             </form>
 
-            <a href="javascript:;"
-                class="btn btn-mc_primary bg-teal-800 mt-4 mapping-step wizard-link" style="display:none"
+            <a href="javascript:;" mapping-action="mapping"
+                class="btn btn-mc_primary bg-teal-800 mt-4" style="display:none"
             >
                 {{ trans('messages.subscriber.import.next_mapping') }}
             </a>
@@ -41,36 +41,48 @@
     </div>
 
     <script>
-        var SubscribersImport2 = {
+        var SubscribersImport2Upload = {
             mappingUrl: null,
-        }
+            dropZone: null,
 
-        var myDropzone = new Dropzone("#form_{{ $formId }}", {
-            url: "{{ action('SubscriberController@import2Upload', $list->uid) }}",
-            maxFiles: 1,
-            success: function(file, res) {
-                $('.mapping-step').show();
-                // disable dropzone
-                myDropzone.disable();
+            loadMappingPopup: function() {
+                SubscribersImport2.getPopup().load(this.mappingUrl);
+            }
+        };
 
-                SubscribersImport2.mappingUrl = res.mappingUrl;
+        $(function() {
+            SubscribersImport2Upload.dropZone = new Dropzone("#form_{{ $formId }}", {
+                url: "{{ action('SubscriberController@import2Upload', $list->uid) }}",
+                maxFiles: 1,
+                success: function(file, res) {
+                    $('[mapping-action="mapping"]').show();
 
-                // notify
-                notify(res.status, '{{ trans('messages.notify.success') }}', res.message); 
-            },
-            error: function(file, res) {
-                // remove error files
-                myDropzone.removeAllFiles();
+                    // disable dropzone
+                    SubscribersImport2Upload.dropZone.disable();
 
-                // notify
-                notify(res.status, '{{ trans('messages.notify.error') }}', res.message); 
-            },
+                    // update mapping url after uploaded
+                    SubscribersImport2Upload.mappingUrl = res.mappingUrl;
+
+                    // notify
+                    notify(res.status, '{{ trans('messages.notify.success') }}', res.message); 
+                },
+                error: function(file, res) {
+                    // remove error files
+                    myDropzone.removeAllFiles();
+
+                    // notify
+                    notify(res.status, '{{ trans('messages.notify.error') }}', res.message); 
+                },
+            });
+
+            $('[mapping-action="mapping"]').click(function(e){
+                e.preventDefault();
+
+                // load mapping popup
+                SubscribersImport2Upload.loadMappingPopup();
+            });
         });
 
-        $('.wizard-link').click(function(e){
-            e.preventDefault();
-
-            wizard.load(SubscribersImport2.mappingUrl);
-        });
+        
     </script>
 @endsection
