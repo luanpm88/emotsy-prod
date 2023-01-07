@@ -195,6 +195,11 @@ class SubscriptionController extends Controller
     {
         $invoice = \Acelle\Model\Invoice::findByUid($uid);
 
+        // return to select plan if sub is NEW
+        if ($request->user()->customer->getNewSubscription()) {
+            return redirect()->action('SubscriptionController@selectPlan');
+        }
+
         if (!$request->user()->customer->can('delete', $invoice)) {
             return $this->notAuthorized();
         }

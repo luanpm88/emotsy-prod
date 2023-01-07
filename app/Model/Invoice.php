@@ -660,7 +660,7 @@ class Invoice extends Model
             switch ($this->type) {
                 case Invoice::TYPE_NEW_SUBSCRIPTION:
                     // new subscription thì không xóa invoice
-                    return;
+                    throw new \Exception('Sub đang new thì không thể xóa invoice!');
                     break;
                 case Invoice::TYPE_RENEW_SUBSCRIPTION:
                 case Invoice::TYPE_CHANGE_PLAN:
