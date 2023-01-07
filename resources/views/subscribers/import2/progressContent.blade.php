@@ -46,7 +46,7 @@
             $('#ImportRetryButton').hide();
             
         @elseif ($progress['status'] == 'failed')
-            $('#ImportCancelButton').show();
+            $('#ImportCancelButton').hide();
             $('#ImportCloseButton').hide();
             $('#ImportRetryButton').show();
         @else
