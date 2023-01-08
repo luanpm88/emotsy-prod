@@ -3033,4 +3033,5 @@
   'import.retry' => 'Retry',
   'import.is_failed' => 'Import failed',
   'import.something_went_wrong' => 'Something went wrong when importing subscribers! Click the button below to view the progress.',
+  'import.hide' => 'Hide',
 ) ?>

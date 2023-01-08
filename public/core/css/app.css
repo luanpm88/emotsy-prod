@@ -8144,3 +8144,9 @@ label.checker input:disabled ~ .checker-symbol {
     white-space: nowrap;
     overflow-x: auto;
 }
+[mapping-control="option"].current {
+    margin: 10px 10px 10px -10px;
+    padding: 10px;
+    border: dashed 1px rgba(0,0,0,0.3);
+    border-radius: 10px;
+}

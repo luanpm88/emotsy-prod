@@ -27,7 +27,7 @@
                 </a>
     
                 <a id="ImportCloseButton" href="javascript:;" class="btn btn-default" onclick="window.location.reload()" progress-control="close">
-                    {{ trans('messages.close') }}
+                    {{ trans('messages.import.hide') }}
                 </a>
             </div>
         </div>

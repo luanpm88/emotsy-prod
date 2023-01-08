@@ -47,12 +47,12 @@
                             margin-top: 8px;
                         ">
                             <div mapping-control="option" option-value="exist">
-                                <label class="mb-2">
+                                <label class="">
                                     <input mapping-control="option-checker" name="option-checker-{{ $key }}" type="radio" value="exist" class="styled" />
                                     <span class="check-symbol me-1"></span>
                                     <span class="mr-2 text-nowrap font-weight-semibold">{{ trans('messages.import.associate_with_existing_field') }}</span>
                                 </label>
-                                <div mapping-control="option-detail" class="ps-4 ms-1 mb-1">
+                                <div mapping-control="option-detail" class="ps-4 ms-1 mb-1 mt-2">
                                     <p class="mb-2">{{ trans('messages.subscriber.import.associate_exist.intro') }}</p>
                                     <div class="d-flex align-items-center">
                                         <div class="me-3">
@@ -70,24 +70,24 @@
                                 </div>
                             </div>
                             <div mapping-control="option" option-value="new">
-                                <label class="mb-2 mt-3">
+                                <label class="">
                                     <input mapping-control="option-checker" name="option-checker-{{ $key }}" type="radio" value="new" class="styled" />
                                     <span class="check-symbol me-1"></span>
                                     <span class="mr-2 text-nowrap font-weight-semibold">
                                         {{ trans('messages.import.create_new_field') }}
                                     </span>
                                 </label>
-                                <div mapping-control="option-detail" class="ps-4 ms-1">
+                                <div mapping-control="option-detail" class="ps-4 ms-1 mt-2">
                                     <p class="text-muted mb-2 option-empty">{{ trans('messages.subscriber.import.create_new_field.intro') }}</p>
                                     <p class="text-muted mb-2 option-done" style="display: none">
                                         {!! trans('messages.subscriber.import.create_field.summary') !!}
                                     </p>
 
-                                    <div class="option-update mb-4">
+                                    <div class="option-update mb-2">
                                         <div class="mb-1">{{ trans('messages.subscriber.import.field_name') }}</div>
                                         <div><input mapping-control="new-field-name" type="text" name="new_field" class="form-control mb-3 data-create" /></div>
                                         <div class="mb-1">{{ trans('messages.subscriber.import.data_type') }}</div>
-                                        <div class="d-flex align-items-center mb-3">
+                                        <div class="d-flex align-items-center">
                                             <select mapping-control="new-field-type" class="select data-type" style="max-width: 100px;">
                                                 <option value="text">{{ trans('messages.text') }}</option>
                                                 <option value="number">{{ trans('messages.number') }}</option>
@@ -204,6 +204,8 @@
                 // show option details
                 this.getOptionBoxes().find('[mapping-control="option-detail"]').hide();
                 this.getOptionBox(this.option).find('[mapping-control="option-detail"]').show();
+                this.getOptionBoxes().removeClass('current');
+                this.getOptionBox(this.option).addClass('current');
             }
 
             updateFieldId(id) {
