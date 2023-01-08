@@ -39,7 +39,7 @@
                         @if ($current_license)
 							<div class="sub-section">
 								<h3>{{ trans('messages.license.your_license') }}</h3>
-								<p>{{ trans('messages.your_current_license') }} <strong>{{ trans('messages.license_label_' . \Acelle\Model\Setting::get('license_type')) }}</strong></p>
+								<p>{{ trans('messages.your_current_license') }} <strong>{{ trans('messages.license.type.' . \Acelle\Model\Setting::get('license_type')) }}</strong></p>
 								<div class="d-flex align-items-center">
 									<h4 class="mb-0">
 										{{ $current_license }}

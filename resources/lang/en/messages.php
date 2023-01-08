@@ -2996,6 +2996,8 @@
   'woo_item' => 'WooCommerce Item',
   'woo_item.please_select_product' => 'Please choose a product',
   'woo_item.product' => 'Product',
+  'license.type.regular' => 'Regular',
+  'license.type.extended' => 'Extended',
   'woo_items.display_option' => 'Display',
   'woo_items.display_option.1_column' => 'List (1 column)',
   'woo_items.display_option.2_column' => '2 columns',
