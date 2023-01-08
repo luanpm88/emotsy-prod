@@ -315,6 +315,7 @@ class TemplateController extends Controller
         return view('admin.templates.builder.edit', [
             'template' => $template,
             'templates' => $template->getBuilderAdminTemplates(),
+            'admin' => $user->admin,
         ]);
     }
 
