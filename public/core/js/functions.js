@@ -333,7 +333,7 @@ function initMainMenu()
             $('.leftbar').removeClass('leftbar-closed');
 
             // open menu
-            $('#mainAppNav .nav-item.active .lvl-1').dropdown('show');
+            $('#mainAppNav .nav-item.dropdown.active .lvl-1').dropdown('show');
         }
     };
     leftbarAdjust();

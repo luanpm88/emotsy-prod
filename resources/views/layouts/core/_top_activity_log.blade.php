@@ -1,5 +1,5 @@
 <li class="nav-item dropdown">
-	<a href="javascript:;"
+	<a middle-bar-control="element" href="javascript:;"
 		class="nav-link d-flex align-items-center py-3 lvl-1 dropdown-toggle activities-menu-item middle-bar-element"
 		id="content-menu"
 	>
