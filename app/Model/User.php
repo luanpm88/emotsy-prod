@@ -614,8 +614,11 @@ class User extends Authenticatable
         $user->save();
 
         // Save current user info
+        $locale = app()->getLocale();
+        $language = Language::where('code', '=', $locale)->first();
+
         $customer = \Acelle\Model\Customer::newCustomer();
-        $customer->language_id = language()->id;
+        $customer->language_id = $language->id;
         $customer->status = 'active';
         $customer->timezone = date_default_timezone_get();
         $customer->save();
