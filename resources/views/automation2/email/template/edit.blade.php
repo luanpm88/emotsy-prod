@@ -38,7 +38,7 @@
                 showHelp: false,
                 showInlineToolbar: false,
                 emailMode: true,
-                lang: {!! json_encode(language()->getBuilderLang()) !!},
+                lang: {!! json_encode($customer->language->getBuilderLang()) !!},
                 url: '{{ action('Automation2Controller@templateContent', [
                   'uid' => $automation->uid,
                   'email_uid' => $email->uid,
