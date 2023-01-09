@@ -2204,7 +2204,7 @@ class MailList extends Model
                 }
             }
 
-            if (in_array($header, $automap)) {
+            if (in_array($field->id, array_values($automap))) {
                 continue;
             }
 

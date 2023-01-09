@@ -107,7 +107,7 @@
                 showHelp: false,
                 showInlineToolbar: false,
                 emailMode: true,
-                lang: {!! json_encode(language()->getBuilderLang()) !!},
+                lang: {!! json_encode($customer->language->getBuilderLang()) !!},
                 url: '{{ action('TemplateController@builderEditContent', $template->uid) }}',
                 backCallback: function() {
                     if (parent.$('.full-iframe-popup').length) {

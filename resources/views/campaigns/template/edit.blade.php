@@ -39,7 +39,7 @@
                 showHelp: false,
                 showInlineToolbar: false,
                 emailMode: true,
-                lang: {!! json_encode(language()->getBuilderLang()) !!},
+                lang: {!! json_encode($campaign->customer->language->getBuilderLang()) !!},
                 url: '{{ action('CampaignController@templateContent', $campaign->uid) }}',
                 backCallback: function() {
                   parent.$('.full-iframe-popup').fadeOut();

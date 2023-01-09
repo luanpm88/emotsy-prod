@@ -158,6 +158,7 @@ class FormController extends Controller
         return view('forms.builder', [
             'form' => $form,
             'formFields' => $formFields,
+            'customer' => $form->customer,
         ]);
     }
 

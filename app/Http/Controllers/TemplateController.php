@@ -297,7 +297,8 @@ class TemplateController extends Controller
 
         return view('templates.builder.edit', [
             'template' => $template,
-            'templates' => $request->user()->customer->getBuilderTemplates(),
+            'templates' => $user->customer->getBuilderTemplates(),
+            'customer' => $user->customer,
         ]);
     }
 

@@ -40,7 +40,7 @@
                     formFields: formFields,
                     
                     root: '{{ URL::asset('builder') }}/',                
-                    lang: {!! json_encode(language()->getBuilderLang()) !!},
+                    lang: {!! json_encode($customer->language->getBuilderLang()) !!},
                     url: '{{ action('FormController@builderContent', [
                         'uid' => $form->uid,
                     ]) }}',
