@@ -74,7 +74,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div mapping-control="option" option-value="new">
+                            <div mapping-control="option" option-value="new" style="display:none;">
                                 <label class="">
                                     <input mapping-control="option-checker" name="option-checker-{{ $key }}" type="radio" value="new" class="styled" />
                                     <span class="check-symbol me-1"></span>
