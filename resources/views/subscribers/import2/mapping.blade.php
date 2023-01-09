@@ -124,7 +124,8 @@
 
     <script>
         var MappingItem = class {
-            constructor(header) {
+            constructor(manager, header) {
+                this.manager = manager;
                 this.header = header;
                 this.option;
                 this.fieldId;
@@ -205,6 +206,14 @@
 
             isChecked() {
                 return this.getChecker().is(':checked');
+            }
+
+            markAsError() {
+                this.getContainer().addClass('mapping-error');
+            }
+
+            unmarkError() {
+                this.getContainer().removeClass('mapping-error');
             }
 
             updateOption(option) {
@@ -357,6 +366,9 @@
 
                 // hide close link
                 this.hideCloseLink();
+
+                // run validate to mark error
+                this.manager.validate();
             }
 
             saveNewField() {
@@ -379,6 +391,9 @@
 
                 // hide close link
                 this.hideCloseLink();
+
+                // run validate to mark error
+                this.manager.validate();
             }
 
             updateNewField(name, type) {
@@ -528,7 +543,7 @@
 
                 // add items by headers
                 headers.forEach(function(header) {
-                    _this.items.push(new MappingItem(header));
+                    _this.items.push(new MappingItem(_this, header));
                 });
 
                 if (mapping) {
@@ -542,42 +557,64 @@
             }
 
             validate() {
+                var errors = [];
+
                 var fieldIds = this.items
                     .filter(function(i) {return i.option == 'exist' && i.fieldId})
                     .map(function(i) {return i.fieldId});
-                    
+
                 var fieldNames = this.items
                     .filter(function(i) {return i.option == 'new' && i.newFieldName})
                     .map(function(i) {return i.newFieldName});
+
+                // unmark all error
+                this.items.map(function(item) {item.unmarkError();});
 
                 // find dup items
                 let findDuplicates = arr => arr.filter((item, index) => arr.indexOf(item) != index)
 
                 // at least one email field
                 if (!fieldIds.includes(this.emailFieldId)) {
-                    new Dialog('alert', {
-                        message: '{{ trans('messages.subscriber.import.no_email_field') }}',
-                    });
+                    errors.push('{{ trans('messages.subscriber.import.no_email_field') }}');
                     return false;
                 }
 
                 // more than one field
                 var idDups = findDuplicates(fieldIds);
                 var nameDups = findDuplicates(fieldNames);
-                if (idDups.length || nameDups.length) {
-                    new Dialog('alert', {
-                        message: '{{ trans('messages.subscriber.import.multiple_field_error') }}',
+
+                // exist field dup
+                if (idDups.length) {
+                    errors.push('{{ trans('messages.subscriber.import.multiple_field_error') }}');
+
+                    // mark error
+                    this.items.map(function(item) {
+                        if(idDups.includes(item.fieldId)) {
+                            item.markAsError();
+                        }
                     });
-                    return false;
+                }
+
+                // new field dup
+                if (nameDups.length) {
+                    errors.push('{{ trans('messages.subscriber.import.multiple_field_error') }}');
                 }
                 
-                return true;
+                return errors;
             }
 
             run() {
                 var _this = this;
+
+                var errors = this.validate();
                 
-                if (!this.validate()) {
+                if (errors.length) {
+                    var msg = errors.join('<br>');
+
+                    new Dialog('alert', {
+                        message: msg,
+                    });
+
                     return;
                 }
 

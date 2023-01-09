@@ -8150,3 +8150,6 @@ label.checker input:disabled ~ .checker-symbol {
     border: dashed 1px rgba(0,0,0,0.3);
     border-radius: 10px;
 }
+.mapping-error [mapping-control="selected-field-label"] {
+    background-color: rgb(255, 224, 224) !important;
+}
