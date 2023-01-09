@@ -500,6 +500,22 @@
             showCloseLink() {
                 this.getCloseLink().css('display', 'inline-block');
             }
+
+            getData() {
+                if (this.option == 'exist') {
+                    if (this.fieldId) {
+                        return this.fieldId;
+                    } else {
+                        return null;
+                    }
+                } else {
+                    if (this.newFieldName && this.newFieldType) {
+                        return {name: this.newFieldName, type: this.newFieldType};
+                    } else {
+                        return null;
+                    }
+                }
+            }
         };
 
         var MappingManager = class {
@@ -526,9 +542,15 @@
             }
 
             validate() {
-                var data = this.getData();
-                var fieldIds = this.items.filter(function(i) {return i.option == 'exist' && i.fieldId}).map(function(i) {return i.fieldId});
-                var fieldNames = this.items.filter(function(i) {return i.option == 'new' && i.newFieldName}).map(function(i) {return i.newFieldName});
+                var fieldIds = this.items
+                    .filter(function(i) {return i.option == 'exist' && i.fieldId})
+                    .map(function(i) {return i.fieldId});
+                    
+                var fieldNames = this.items
+                    .filter(function(i) {return i.option == 'new' && i.newFieldName})
+                    .map(function(i) {return i.newFieldName});
+
+                // find dup items
                 let findDuplicates = arr => arr.filter((item, index) => arr.indexOf(item) != index)
 
                 // at least one email field
@@ -580,14 +602,8 @@
             getData() {
                 var data = {};
                 this.items.forEach(function(item) {
-                    if (item.option == 'exist') {
-                        if (item.fieldId) {
-                            data[item.header] = item.fieldId;
-                        }
-                    } else {
-                        if (item.newFieldName && item.newFieldType) {
-                            data[item.header] = {name: item.newFieldName, type: item.newFieldType};
-                        }
+                    if (item.hasValue()) {
+                        data[item.header] = item.getData();
                     }
                 });
 
