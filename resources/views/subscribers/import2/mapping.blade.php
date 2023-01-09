@@ -36,6 +36,11 @@
                                         <span class="material-symbols-rounded">edit</span>
                                     </span>
                                 </a>
+                                <a mapping-control="close" href="javascript:;">
+                                    <span>
+                                        <span class="material-symbols-rounded">close</span>
+                                    </span>
+                                </a>
                             </div>
                         </div>
                         <div mapping-control="options" class="border-top bg-light py-3" style="
@@ -50,7 +55,7 @@
                                 <label class="">
                                     <input mapping-control="option-checker" name="option-checker-{{ $key }}" type="radio" value="exist" class="styled" />
                                     <span class="check-symbol me-1"></span>
-                                    <span class="mr-2 text-nowrap font-weight-semibold">{{ trans('messages.import.associate_with_existing_field') }}</span>
+                                    <span class="mr-2 text-nowrap">{{ trans('messages.import.associate_with_existing_field') }}</span>
                                 </label>
                                 <div mapping-control="option-detail" class="ps-4 ms-1 mb-1 mt-2">
                                     <p class="mb-2">{{ trans('messages.subscriber.import.associate_exist.intro') }}</p>
@@ -137,6 +142,9 @@
 
                 // events
                 this.applyEvents();
+
+                // hide close link
+                this.hideCloseLink();
             }
 
             getContainer() {
@@ -177,6 +185,10 @@
 
             getEditLink() {
                 return this.getContainer().find('[mapping-control="edit"]');
+            }
+
+            getCloseLink() {
+                return this.getContainer().find('[mapping-control="close"]');
             }
 
             getOptionsBox() {
@@ -222,9 +234,11 @@
 
                     // update short desc message
                     this.getShortDesc().html(`
-                        <span>{{ trans('messages.subscriber.import.associate_with') }}</span>
-                        <span mapping-control="selected-field-label" class="font-weight-semibold">
-                            `+ this.getFieldSelect().find('option[value="'+this.fieldId+'"]').html() +`    
+                        <span class="d-flex align-items-center">
+                            <span>{{ trans('messages.subscriber.import.associate_with') }}</span>
+                            <span mapping-control="selected-field-label" class="border rounded px-1 mx-2 bg-light" style="font-size: 12px;">
+                                `+ this.getFieldSelect().find('option[value="'+this.fieldId+'"]').html() +`    
+                            </span>
                         </span>
                     `);
 
@@ -238,7 +252,7 @@
                     this.getChecker().prop('checked', true);
                 } else {
                     // change select field value
-                    this.getFieldSelect().val('').trigger('change');
+                    // this.getFieldSelect().val('').trigger('change');
 
                     // clear short desc
                     this.getShortDesc().html('');
@@ -255,9 +269,17 @@
             }
 
             uncheck() {
+                // back to exist option
                 this.updateOption('exist');
+
+                // update fieldId to null
                 this.updateFieldId(null);
+
+                // hide options box
                 this.hideOptionsBox();
+
+                // hide close link
+                this.hideCloseLink();
             }
 
             applyEvents() {
@@ -269,7 +291,11 @@
 
                     // checked
                     if (checked) {
+                        // show options box
                         _this.showOptionsBox();
+
+                        // show close link
+                        _this.showCloseLink();
 
                     // uncheck
                     } else {
@@ -287,8 +313,11 @@
                     // show details box
                     _this.showOptionsBox();
 
-                    // hide edit linke
+                    // hide edit link
                     _this.hideEditLink();
+
+                    // show close link
+                    _this.showCloseLink();
                 });
 
                 // change option
@@ -301,6 +330,11 @@
                 // save the field select
                 this.getNewSaveButton().on('click', function() {
                     _this.saveNewField();
+                });
+
+                // close
+                this.getCloseLink().on('click', function() {
+                    _this.close();
                 });
             }
 
@@ -320,6 +354,9 @@
 
                 // hide details box after saved
                 this.hideOptionsBox();
+
+                // hide close link
+                this.hideCloseLink();
             }
 
             saveNewField() {
@@ -339,6 +376,9 @@
 
                 // hide details box after saved
                 this.hideOptionsBox();
+
+                // hide close link
+                this.hideCloseLink();
             }
 
             updateNewField(name, type) {
@@ -357,9 +397,11 @@
 
                     // update short desc message
                     this.getShortDesc().html(`
-                        <span>{{ trans('messages.subscriber.import.associate_with_new') }}</span>
-                        <span mapping-control="selected-field-label" class="font-weight-semibold">
-                            `+ this.newFieldName +`    
+                        <span class="d-flex align-items-center">
+                            <span>{{ trans('messages.subscriber.import.associate_with_new') }}</span>
+                            <span mapping-control="selected-field-label" class="border rounded px-1 mx-2 bg-light" style="font-size: 12px;">
+                                `+ this.newFieldName +`    
+                            </span>
                         </span>
                     `);
 
@@ -390,6 +432,43 @@
                 }
             }
 
+            hasValue() {
+                if (this.option == 'exist') {
+                    if (this.fieldId) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                } else if (this.option == 'new') {
+                    if (this.newFieldName && this.newFieldType) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                } else {
+                    return false;
+                }
+            }
+
+            close() {
+                // close options box
+                this.hideOptionsBox();
+
+                // uncheck checker
+                if (!this.hasValue()) {
+                    this.getChecker().prop('checked', false);
+                }
+
+                // show edit link
+                if (this.hasValue()) {
+                    // show edit link
+                    this.showEditLink();
+                }
+
+                // hide close link
+                this.hideCloseLink();
+            }
+
             hideOptionsBox() {
                 this.getOptionsBox().hide();
             }
@@ -407,11 +486,19 @@
             }
 
             hideEditLink() {
-                this.getEditLink().css('visibility', 'hidden');
+                this.getEditLink().css('display', 'none');
             }
 
             showEditLink() {
-                this.getEditLink().css('visibility', 'visible');
+                this.getEditLink().css('display', 'inline-block');
+            }
+
+            hideCloseLink() {
+                this.getCloseLink().css('display', 'none');
+            }
+
+            showCloseLink() {
+                this.getCloseLink().css('display', 'inline-block');
             }
         };
 
