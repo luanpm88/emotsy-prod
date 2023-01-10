@@ -653,6 +653,9 @@
                         item.updateFieldId(mapping[item.header]);
                     }
                 }); 
+
+                // run validate to mark error
+                this.validate();
             }
         };
 

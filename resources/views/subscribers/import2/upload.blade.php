@@ -46,7 +46,17 @@
             dropZone: null,
 
             loadMappingPopup: function() {
-                SubscribersImport2.getPopup().load(this.mappingUrl);
+                // SubscribersImport2.getPopup().load(this.mappingUrl);
+                $.ajax({
+                    url: this.mappingUrl,
+                    method: 'GET'
+                }).done(function(response) {
+                    SubscribersImport2.getPopup().loadHtml(response);
+                }).fail(function(res){
+                    notify('error', '{{ trans('messages.notify.error') }}', res.responseJSON.message); 
+                    SubscribersImport2.loadUploadPopup();
+                }).always(function() {
+                });
             }
         };
 
@@ -68,7 +78,7 @@
                 },
                 error: function(file, res) {
                     // remove error files
-                    myDropzone.removeAllFiles();
+                    SubscribersImport2Upload.dropZone.removeAllFiles();
 
                     // notify
                     notify(res.status, '{{ trans('messages.notify.error') }}', res.message); 

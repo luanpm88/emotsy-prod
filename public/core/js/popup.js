@@ -203,7 +203,7 @@ class Popup {
             // _this.unmask();
         }).always(function() {
             // effect
-            // _this.unmask();
+            _this.unmask();
         });
     }
     
