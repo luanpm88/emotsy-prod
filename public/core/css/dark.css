@@ -852,3 +852,6 @@ body.mode-dark .list-group-item {
     background-color: rgba(255,255,255,0.05);
     border-color: rgba(255, 255, 255, 0.1);
 }
+body.mode-dark .mapping-error [mapping-control="selected-field-label"] {
+    background-color: rgba(255, 0, 0, 0.2) !important;
+}
