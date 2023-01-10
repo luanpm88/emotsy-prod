@@ -2394,10 +2394,8 @@
   'subscriber.email.fail_to_verify' => 'Cannot verify email address',
   'subscriber.email.invalid' => 'Invalid email address',
   'subscriber.enter_field_value' => 'Enter field value',
-  'subscriber.import.associate_exist' => 'Associate with an existing list field',
   'subscriber.import.associate_exist.intro' => 'Choose an existing field from your list to import. Date type will be
     formatted accordingly to the list field`s type',
-  'subscriber.import.associate_with' => 'Associate with',
   'subscriber.import.create' => 'Create',
   'subscriber.import.create_field.summary' => 'Create new <span class="field_type font-weight-semibold"></span> field, namely
     <span class="field_name font-weight-semibold"></span>.
@@ -2408,7 +2406,7 @@
   'subscriber.import.data_type' => 'Data type',
   'subscriber.import.field_name' => 'Field name',
   'subscriber.import.mapping' => 'Mapping',
-  'subscriber.import.mapping.intro' => 'Import subscribers by uploading CSV file',
+  'subscriber.import.mapping.intro' => 'Specify where to import the data by mapping the headers in the source file to the list`s fields.',
   'subscriber.import.mapping.wording' => 'Map the columns from your input file to the list fields on the right.
     You can also choose to create a new field automatically if it is not present in your list yet.',
   'subscriber.import.mapping_empty' => 'Please select at least one column for mapping data',
@@ -2418,16 +2416,12 @@
   'subscriber.import.next_mapping' => 'Next',
   'subscriber.import.no_email_field' => 'There is no EMAIL field in mapping selection',
   'subscriber.import.ok_i_done' => 'OK, I\'m done',
-  'subscriber.import.review_go' => 'Review & Go',
-  'subscriber.import.review_go.intro' => 'Import subscribers by uploading CSV file',
+  'subscriber.import.review_go' => 'Progress',
+  'subscriber.import.review_go.intro' => 'Actually load subscribers data from CSV file to the list.',
   'subscriber.import.running.wording' => 'Import is in progress, it may take several minutes or even hours
     depending on your inputs file as well as your server performance.app',
   'subscriber.import.select_field' => 'Choose field',
   'subscriber.import.select_type' => 'Select type',
-  'subscriber.import.selected_field.summary' => 'Selected field: <span class="field_name font-weight-semibold"></span>.
-    <a href="javascript:;" class="change-option">Click here to change</a>',
-  'subscriber.import.skip_field' => 'Skip this field',
-  'subscriber.import.skip_field.intro' => 'Data from this column will be skipped and will not be imported to your list',
   'subscriber.import.something_wrong' => 'Validation was failed. Please check the inputs again',
   'subscriber.import.start' => 'Start Import',
   'subscriber.import.upload.wording' => 'Choose a comma separated values text file (.csv) in
@@ -2435,7 +2429,7 @@
     separates each field of text. Your file MUST include the first column header. Click
     <a href=":link">here</a> to download a sample CSV file.',
   'subscriber.import.upload_csv_file' => 'Upload CSV File',
-  'subscriber.import.upload_csv_file.intro' => 'Import subscribers by uploading CSV file',
+  'subscriber.import.upload_csv_file.intro' => 'A CSV (comma-separated values) file is a text file in which information is separated by commas.',
   'subscriber.invalid' => 'Contact does not exist',
   'subscriber.tag_added' => 'Tag was added successfully',
   'subscriber.unique_values_for_all_the_list' => 'Unique values from a list',
@@ -3002,6 +2996,8 @@
   'woo_item' => 'WooCommerce Item',
   'woo_item.please_select_product' => 'Please choose a product',
   'woo_item.product' => 'Product',
+  'license.type.regular' => 'Regular',
+  'license.type.extended' => 'Extended',
   'woo_items.display_option' => 'Display',
   'woo_items.display_option.1_column' => 'List (1 column)',
   'woo_items.display_option.2_column' => '2 columns',
@@ -3028,4 +3024,16 @@
   'your_api_token' => 'Your API token',
   'your_current_license' => 'Thank you for purchasing! Below is your license key, also known as Purchase Code. Your license type is',
   'zip_postal_code' => 'Zip / Postal code',
+  'subscriber.import.click_here_to_change' => 'Click here to change',
+  'subscriber.import.associate_with' => 'Associate with',
+  'import.choose_field' => 'Choose a field',
+  'import.field_not_select' => 'You need to select a field to map',
+  'import.associate_with_existing_field' => 'Associate with an existing field',
+  'import.create_new_field' => 'Create new list field',
+  'import.field_name_empty' => 'New field name is empty',
+  'subscriber.import.associate_with_new' => 'Create new field: ',
+  'import.retry' => 'Retry',
+  'import.is_failed' => 'Import failed',
+  'import.something_went_wrong' => 'Something went wrong when importing subscribers! Click the button below to view the progress.',
+  'import.hide' => 'Hide',
 ) ?>
