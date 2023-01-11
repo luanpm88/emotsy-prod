@@ -289,6 +289,9 @@
 
                 // hide close link
                 this.hideCloseLink();
+
+                // run validate to mark error
+                this.manager.validate();
             }
 
             applyEvents() {
