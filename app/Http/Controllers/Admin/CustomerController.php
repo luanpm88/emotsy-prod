@@ -557,4 +557,13 @@ class CustomerController extends Controller
             'plans' => $plans,
         ]);
     }
+
+    public function oneClickLogin(Request $request)
+    {
+        $customer = \Acelle\Model\Customer::findByUid($request->uid);
+
+        return view('admin.customers.oneClickLogin', [
+            'url' => $customer->user->generateOneClickLoginUrl(),
+        ]);
+    }
 }

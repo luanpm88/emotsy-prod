@@ -3036,4 +3036,8 @@
   'your_api_token' => 'Your API token',
   'your_current_license' => 'Thank you for purchasing! Below is your license key, also known as Purchase Code. Your license type is',
   'zip_postal_code' => 'Zip / Postal code',
+  'admin.generate_one_click_login' => 'Generate one-click login URL',
+  'admin.one_cick_login' => 'One-click Login',
+  'admin.one_cick_login.copy' => 'Copy to clipboard',
+  'admin.one_cick_login.copied' => 'One-click login URL was copied to clipboard',
 ) ?>

@@ -18,5 +18,10 @@
             <!-- main inner content -->
             @yield('content')
         </div>
+        @hasSection('footer')
+            <div class="modal-footer @yield('class')">
+                @yield('footer')
+            </div>
+        @endif
     </div>
 </div>

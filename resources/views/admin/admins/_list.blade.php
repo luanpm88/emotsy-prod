@@ -70,6 +70,11 @@
                                         </a>
                                     </li>
                                 @endcan
+                                <li>
+                                    <a list-action="one-click-login" class="dropdown-item" href="{{ action('Admin\AdminController@oneClickLogin', $item->uid) }}">
+                                        <span class="material-symbols-rounded">link</span> {{ trans('messages.admin.generate_one_click_login') }}
+                                    </a>
+                                </li>
                                 @can('delete', $item)
                                     <li>
                                         <a class="dropdown-item list-action-single" link-confirm="{{ trans('messages.delete_admins_confirm') }}" href="{{ action('Admin\AdminController@delete', ['uids' => $item->uid]) }}">
@@ -85,6 +90,27 @@
         @endforeach
     </table>
     @include('elements/_per_page_select', ["items" => $admins])
+
+    <script>
+        var AdminAdminsList = {
+            oneClickPopup: null,
+
+            init: function() {
+                this.oneClickPopup = new Popup();
+            }
+        }
+
+        $(function() {
+            AdminAdminsList.init();
+
+            $('[list-action="one-click-login"]').on('click', function(e) {
+                e.preventDefault();
+                var url = $(this).attr('href');
+
+                AdminAdminsList.oneClickPopup.load(url);
+            })
+        })
+    </script>
     
 @elseif (!empty(request()->filters))
     <div class="empty-list">

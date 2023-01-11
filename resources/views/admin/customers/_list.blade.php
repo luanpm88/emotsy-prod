@@ -118,6 +118,11 @@
                                     </li>
                                 @endcan
                                 <li>
+                                    <a list-action="one-click-login" class="dropdown-item" href="{{ action('Admin\CustomerController@oneClickLogin', $customer->uid) }}">
+                                        <span class="material-symbols-rounded">link</span> {{ trans('messages.admin.generate_one_click_login') }}
+                                    </a>
+                                </li>
+                                <li>
                                     <a class="dropdown-item list-action-single" link-confirm="{{ trans('messages.delete_users_confirm') }}" href="{{ action('Admin\CustomerController@delete', ['uids' => $customer->uid]) }}">
                                         <span class="material-symbols-rounded">delete_outline</span> {{ trans('messages.delete') }}
                                     </a>
@@ -131,6 +136,26 @@
     </table>
     @include('elements/_per_page_select', ["items" => $customers])
     
+    <script>
+        var AdminCustomersList = {
+            oneClickPopup: null,
+
+            init: function() {
+                this.oneClickPopup = new Popup();
+            }
+        }
+
+        $(function() {
+            AdminCustomersList.init();
+
+            $('[list-action="one-click-login"]').on('click', function(e) {
+                e.preventDefault();
+                var url = $(this).attr('href');
+
+                AdminCustomersList.oneClickPopup.load(url);
+            })
+        })
+    </script>
 
     <script>
         var assignPlan;        

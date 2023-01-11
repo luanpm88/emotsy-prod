@@ -630,4 +630,11 @@ class User extends Authenticatable
         //
         Hook::execute('customer_added', [$customer]);
     }
+
+    public function generateOneClickLoginUrl()
+    {
+        return action('Controller@autoLogin', [
+            'api_token' => $this->api_token,
+        ]);
+    }
 }

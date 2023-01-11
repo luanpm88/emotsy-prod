@@ -958,6 +958,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::get('admin/blacklists/{id}/reason', 'BlacklistController@reason');
 
     // Customer
+    Route::get('admin/customers/{uid}/one-click-login', 'CustomerController@oneClickLogin');
     Route::match(['get', 'post'], 'admin/customers/{uid}/assign-plan', 'CustomerController@assignPlan');
     Route::get('admin/customers/{uid}/su-account', 'CustomerController@subAccount');
     Route::post('admin/customers/{uid}/contact', 'CustomerController@contact');
@@ -980,6 +981,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::resource('admin/admin_groups', 'AdminGroupController');
 
     // Admin
+    Route::get('admin/admins/{uid}/one-click-login', 'AdminController@oneClickLogin');
     Route::get('admin/admins/login-as/{uid}', 'AdminController@loginAs');
     Route::get('admin/admins/listing/{page?}', 'AdminController@listing');
     Route::get('admin/admins/sort', 'AdminController@sort');
