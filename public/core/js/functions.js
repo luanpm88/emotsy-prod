@@ -703,6 +703,7 @@ function makeList(options) {
         }
 
         data.push({name: '_token', value: CSRF_TOKEN});
+        data.push({name: '_method', value: method});
 
         new Link({
             url: url,
