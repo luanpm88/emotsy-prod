@@ -33,12 +33,12 @@ class Link {
             _this.options.before();
         }
 
-        if (_this.options.method.trim().toUpperCase() == 'DELETE' || _this.options.method.trim().toUpperCase() == 'PATCH') {
-            _this.options.data._method = _this.options.method.trim().toUpperCase();
-            _this.options.method = 'POST';
-        }
-
         if (_this.options.type == 'ajax') {
+            if (_this.options.method.trim().toUpperCase() == 'DELETE' || _this.options.method.trim().toUpperCase() == 'PATCH') {
+                _this.options.data._method = _this.options.method.trim().toUpperCase();
+                _this.options.method = 'POST';
+            }
+
             $.ajax({
                 url: _this.options.url,
                 method: _this.options.method,
