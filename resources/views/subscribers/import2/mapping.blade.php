@@ -26,7 +26,7 @@
                                 <input id="MappingChecker{{ $key }}" type="checkbox" mapping-control="checker" value="yes" class="styled4">
                                 <span class="checker-symbol"></span>
                             </label>
-                            <label for="MappingChecker{{ $key }}" class="font-weight-semibold">{{ $header }}</label>
+                            <label for="MappingChecker{{ $key }}" class="">{{ $header }}</label>
                             <div class="d-flex ms-auto">
                                 <div mapping-control="short-desc" class="me-2">
                                     
