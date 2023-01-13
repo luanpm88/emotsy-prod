@@ -5,9 +5,9 @@
 @section('content')
 
 <form action="{{ action('InstallController@siteInfo') }}" method="POST" class="form-validate-jqueryz">
-	{!! csrf_field() !!}
-	
-	<h3 class="text-primary"><span class="material-symbols-rounded">maps_home_work</span> {{ trans('messages.general') }}</h3>
+    {!! csrf_field() !!}
+
+    <h3 class="text-primary"><span class="material-symbols-rounded">maps_home_work</span> {{ trans('messages.general') }}</h3>
     <div class="row">
         <div class="col-md-6">
             @include('helpers.form_control', [
@@ -17,8 +17,8 @@
                 'help_class' => 'install',
                 'rules' => ["site_name" => "required"]
             ])
-		</div>
-		<div class="col-md-6">
+        </div>
+        <div class="col-md-6">
             @include('helpers.form_control', [
                 'type' => 'text',
                 'name' => 'site_keyword',
@@ -26,14 +26,14 @@
                 'help_class' => 'install',
                 'rules' => ["site_keyword" => "required"]
             ])
-		</div>
-	</div>
-	<div class="row">
-		<div class="col-md-6">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
             @include('helpers.form_control', [
                 'type' => 'text',
                 'name' => 'license',
-				'label' => trans('messages.license_optional'),
+                'label' => trans('messages.license_optional'),
                 'value' => (isset($site_info["license"]) ? $site_info["license"] : ""),
                 'help_class' => 'install',
                 'rules' => []
@@ -50,9 +50,9 @@
             ])
         </div>
     </div>
-	<hr />
-	<h3 class="text-primary"><span class="material-symbols-rounded">manage_accounts</span> {{ trans('messages.admin_info') }}</h3>
-	<div class="row">
+    <hr />
+    <h3 class="text-primary"><span class="material-symbols-rounded">manage_accounts</span> {{ trans('messages.admin_info') }}</h3>
+    <div class="row">
         @if (get_localization_config('show_last_name_first', config('app.locale')))
             <div class="col-md-6">
                 @include('helpers.form_control', [
@@ -109,13 +109,13 @@
                 'type' => 'password',
                 'name' => 'password',
                 'value' => (isset($site_info["password"]) ? $site_info["password"] : ""),
-				'help_class' => 'install',
-				'eye' => true,
+                'help_class' => 'install',
+                'eye' => true,
                 'rules' => $rules
             ])      
         </div>
     </div>
-			
+
     <div class="row">
         @if (config('custom.japan'))
             <input type="hidden" name="timezone" value="Asia/Tokyo" />
@@ -131,156 +131,156 @@
             </div>
         @endif
             
-		<div class="col-md-6">
-			<div class="form-group checkbox-right-switch">
-				@include('helpers.form_control', [
-					'type' => 'checkbox',
-					'name' => 'create_customer_account',
-					'label' => trans('messages.create_customer_account'),
-					'value' => (isset($site_info["create_customer_account"]) ? $site_info["create_customer_account"] : "yes"),
-					'options' => ['no', 'yes'],
-					'help_class' => 'admin',
-					'rules' => $rules
-				])
-			</div>
+        <div class="col-md-6">
+            <div class="form-group checkbox-right-switch">
+                @include('helpers.form_control', [
+                    'type' => 'checkbox',
+                    'name' => 'create_customer_account',
+                    'label' => trans('messages.create_customer_account'),
+                    'value' => (isset($site_info["create_customer_account"]) ? $site_info["create_customer_account"] : "yes"),
+                    'options' => ['no', 'yes'],
+                    'help_class' => 'admin',
+                    'rules' => $rules
+                ])
+            </div>
         </div>
     </div>
-	
-	<hr />
-	<h3 class="text-primary"><span class="material-symbols-rounded">mark_email_read</span> {{ trans('messages.system_email_configuration') }}</h3>
-	<div class="row">
+
+    <hr />
+    <h3 class="text-primary"><span class="material-symbols-rounded">mark_email_read</span> {{ trans('messages.system_email_configuration') }}</h3>
+    <div class="row">
         <div class="col-md-6">
             @include('helpers.form_control', [
                 'type' => 'select',
                 'name' => 'mail_mailer',
-								'label' => trans('messages.mail_mailer'),
+                                'label' => trans('messages.mail_mailer'),
                 'value' => (isset($site_info["mail_mailer"]) ? $site_info["mail_mailer"] : ""),
-								'options' => [["value" => "sendmail", "text" => trans('messages.system.sendmail')],["value" => "smtp", "text" => trans('messages.sending_server.type.smtp')]],
+                                'options' => [["value" => "sendmail", "text" => trans('messages.system.sendmail')],["value" => "smtp", "text" => trans('messages.sending_server.type.smtp')]],
                 'help_class' => 'install',
                 'rules' => $rules
             ])
-				</div>
-	</div>
-		
-	<div class="">
-		<div class="row smtp_box mailer-setting smtp">
-			<div class="col-md-6">
-				@include('helpers.form_control', [
-					'type' => 'text',
-					'name' => 'smtp_hostname',
-					'label' => trans('messages.hostname'),
-					'value' => (isset($site_info["smtp_hostname"]) ? $site_info["smtp_hostname"] : ""),
-					'help_class' => 'install',
-					'rules' => $smtp_rules
-				])
-			</div>
-			<div class="col-md-6">
-				<div class="row">
-					<div class="col-md-6">
-						@include('helpers.form_control', [
-							'type' => 'text',
-							'name' => 'smtp_port',
-							'label' => trans('messages.port'),
-							'value' => (isset($site_info["smtp_port"]) ? $site_info["smtp_port"] : ""),
-							'help_class' => 'install',
-							'rules' => $smtp_rules
-						])
-					</div>
-					<div class="col-md-6">
-						@include('helpers.form_control', [
-							'type' => 'text',
-							'name' => 'smtp_encryption',
-							'label' => trans('messages.encryption'),
-							'value' => (isset($site_info["smtp_encryption"]) ? $site_info["smtp_encryption"] : ""),
-							'help_class' => 'install',
-							'rules' => $smtp_rules
-						])
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="row mailer-setting smtp">
-			<div class="col-md-6">
-				@include('helpers.form_control', [
-					'type' => 'text',
-					'name' => 'smtp_username',
-					'label' => trans('messages.username'),
-					'value' => (isset($site_info["smtp_username"]) ? $site_info["smtp_username"] : ""),
-					'help_class' => 'install',
-					'rules' => $smtp_rules
-				])
-			</div>
-			<div class="col-md-6">
-				@include('helpers.form_control', [
-					'type' => 'password',
-					'name' => 'smtp_password',
-					'label' => trans('messages.password'),
-					'value' => (isset($site_info["smtp_password"]) ? $site_info["smtp_password"] : ""),
-					'help_class' => 'install',
-					'eye' => true,
-					'rules' => $smtp_rules
-				])
-			</div>
-		</div>
-		<div class="row mailer-setting smtp sendmail">
-			<div class="col-md-6">
-				@include('helpers.form_control', [
-					'type' => 'text',
-					'name' => 'mail_from_email',
-					'label' => trans('messages.from_email'),
-					'value' => (isset($site_info["mail_from_email"]) ? $site_info["mail_from_email"] : ""),
-					'help_class' => 'install',
-					'rules' => $smtp_rules
-				])
-			</div>
-			<div class="col-md-6">
-				@include('helpers.form_control', [
-					'type' => 'text',
-					'name' => 'mail_from_name',
-					'label' => trans('messages.from_name'),
-					'value' => (isset($site_info["mail_from_name"]) ? $site_info["mail_from_name"] : ""),
-					'help_class' => 'install',
-					'rules' => $smtp_rules
-				])
-			</div>
-			<div class="col-md-6 mailer-setting sendmail">
-				@include('helpers.form_control', [
-					'type' => 'text',
-					'name' => 'sendmail_path',
-					'label' => trans('messages.sendmail_path'),
-					'value' => (isset($site_info["sendmail_path"]) ? $site_info["sendmail_path"] : "/usr/sbin/sendmail"),
-					'help_class' => 'env',
-					'rules' => ['mailer.sendmail_path' => 'required']
-				])  
-			</div>
-		</div>
-	</div>
-	
-	<hr >
-	<div class="text-end">                                    
-		<button data-wait="{{ trans('messages.button_processing') }}" type="submit" class="btn btn-primary bg-teal save-button">{!! trans('messages.next') !!} <span class="material-symbols-rounded">east</span></button>
-	</div>
-	
+                </div>
+    </div>
+
+    <div class="">
+        <div class="row smtp_box mailer-setting smtp">
+            <div class="col-md-6">
+                @include('helpers.form_control', [
+                    'type' => 'text',
+                    'name' => 'smtp_hostname',
+                    'label' => trans('messages.hostname'),
+                    'value' => (isset($site_info["smtp_hostname"]) ? $site_info["smtp_hostname"] : ""),
+                    'help_class' => 'install',
+                    'rules' => $smtp_rules
+                ])
+            </div>
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-6">
+                        @include('helpers.form_control', [
+                            'type' => 'text',
+                            'name' => 'smtp_port',
+                            'label' => trans('messages.port'),
+                            'value' => (isset($site_info["smtp_port"]) ? $site_info["smtp_port"] : ""),
+                            'help_class' => 'install',
+                            'rules' => $smtp_rules
+                        ])
+                    </div>
+                    <div class="col-md-6">
+                        @include('helpers.form_control', [
+                            'type' => 'text',
+                            'name' => 'smtp_encryption',
+                            'label' => trans('messages.encryption'),
+                            'value' => (isset($site_info["smtp_encryption"]) ? $site_info["smtp_encryption"] : ""),
+                            'help_class' => 'install',
+                            'rules' => $smtp_rules
+                        ])
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mailer-setting smtp">
+            <div class="col-md-6">
+                @include('helpers.form_control', [
+                    'type' => 'text',
+                    'name' => 'smtp_username',
+                    'label' => trans('messages.username'),
+                    'value' => (isset($site_info["smtp_username"]) ? $site_info["smtp_username"] : ""),
+                    'help_class' => 'install',
+                    'rules' => $smtp_rules
+                ])
+            </div>
+            <div class="col-md-6">
+                @include('helpers.form_control', [
+                    'type' => 'password',
+                    'name' => 'smtp_password',
+                    'label' => trans('messages.password'),
+                    'value' => (isset($site_info["smtp_password"]) ? $site_info["smtp_password"] : ""),
+                    'help_class' => 'install',
+                    'eye' => true,
+                    'rules' => $smtp_rules
+                ])
+            </div>
+        </div>
+        <div class="row mailer-setting smtp sendmail">
+            <div class="col-md-6">
+                @include('helpers.form_control', [
+                    'type' => 'text',
+                    'name' => 'mail_from_email',
+                    'label' => trans('messages.from_email'),
+                    'value' => (isset($site_info["mail_from_email"]) ? $site_info["mail_from_email"] : ""),
+                    'help_class' => 'install',
+                    'rules' => $smtp_rules
+                ])
+            </div>
+            <div class="col-md-6">
+                @include('helpers.form_control', [
+                    'type' => 'text',
+                    'name' => 'mail_from_name',
+                    'label' => trans('messages.from_name'),
+                    'value' => (isset($site_info["mail_from_name"]) ? $site_info["mail_from_name"] : ""),
+                    'help_class' => 'install',
+                    'rules' => $smtp_rules
+                ])
+            </div>
+            <div class="col-md-6 mailer-setting sendmail">
+                @include('helpers.form_control', [
+                    'type' => 'text',
+                    'name' => 'sendmail_path',
+                    'label' => trans('messages.sendmail_path'),
+                    'value' => (isset($site_info["sendmail_path"]) ? $site_info["sendmail_path"] : "/usr/sbin/sendmail"),
+                    'help_class' => 'env',
+                    'rules' => ['mailer.sendmail_path' => 'required']
+                ])
+            </div>
+        </div>
+    </div>
+
+    <hr >
+    <div class="text-end">
+        <button data-wait="{{ trans('messages.button_processing') }}" type="submit" class="btn btn-primary bg-teal save-button">{!! trans('messages.next') !!} <span class="material-symbols-rounded">east</span></button>
+    </div>
+
 </form>
 <script>
 
-	$(function() {
-		$('.save-button').on('click', function() {
-			addButtonMask($(this));
-		});
-	});
+    $(function() {
+        $('.save-button').on('click', function() {
+            addButtonMask($(this));
+        });
+    });
 
-	function toogleMailer() {
-		var value = $("select[name='mail_mailer']").val();
-		$('.mailer-setting').hide();
+    function toogleMailer() {
+        var value = $("select[name='mail_mailer']").val();
+        $('.mailer-setting').hide();
         $('.mailer-setting.' + value).show();
-	}
-	$(document).ready(function() {	
-		toogleMailer();
-		$("select[name='mail_mailer']").change(function() {
-			toogleMailer();
-		});
-	});
+    }
+    $(document).ready(function() {
+        toogleMailer();
+        $("select[name='mail_mailer']").change(function() {
+            toogleMailer();
+        });
+    });
 </script>
-	
+
 @endsection
