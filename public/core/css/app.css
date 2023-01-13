@@ -5281,6 +5281,9 @@ stat .stat-head {
 .server-avatar-php-mail {
     background: url(../../images/icons/phpmail.png) top left/36px 36px no-repeat transparent;
 }
+.server-avatar-blastengine-api, .server-avatar-blastengine-smtp {
+    background: url(../../images/icons/blastengine.jpg) top left/36px 36px no-repeat;
+}
 .stat-head.percent-list {
   font-weight: normal;
   font-size: 22px;

@@ -59,6 +59,9 @@ class SendingServer extends Model implements HasQuotaInterface
     public const TYPE_SENDMAIL = 'sendmail';
     public const TYPE_SMTP = 'smtp';
 
+    public const TYPE_BLASTENGINE_API = 'blastengine-api';
+    public const TYPE_BLASTENGINE_SMTP = 'blastengine-smtp';
+
     protected $quotaTracker;
     protected $subAccount;
 
@@ -88,6 +91,9 @@ class SendingServer extends Model implements HasQuotaInterface
         self::TYPE_ELASTICEMAIL_SMTP => 'SendingServerElasticEmailSmtp',
         self::TYPE_SPARKPOST_API => 'SendingServerSparkPostApi',
         self::TYPE_SPARKPOST_SMTP => 'SendingServerSparkPostSmtp',
+
+        self::TYPE_BLASTENGINE_API => 'SendingServerBlastengineApi',
+        self::TYPE_BLASTENGINE_SMTP => 'SendingServerBlastengineSmtp',
     );
 
     /**
@@ -439,6 +445,28 @@ class SendingServer extends Model implements HasQuotaInterface
                     'feedback_loop_handler_id' => '',
                 ],
             ],
+            self::TYPE_BLASTENGINE_SMTP => [
+                'cols' => [
+                    'api_key' => 'required',
+                    'host' => 'required',
+                    'smtp_username' => 'required',
+                    'smtp_password' => 'required',
+                    'smtp_port' => 'required',
+                ],
+                'settings' => [
+                    'name' => 'required',
+                    'default_from_email' => 'email',
+                ],
+            ],
+            self::TYPE_BLASTENGINE_API => [
+                'cols' => [
+                    'api_key' => 'required',
+                ],
+                'settings' => [
+                    'name' => 'required',
+                    'default_from_email' => 'email',
+                ],
+            ],
         ];
     }
 
@@ -569,6 +597,28 @@ class SendingServer extends Model implements HasQuotaInterface
                     'default_from_email' => 'email',
                     'bounce_handler_id' => '',
                     'feedback_loop_handler_id' => '',
+                ],
+            ],
+            self::TYPE_BLASTENGINE_SMTP => [
+                'cols' => [
+                    'api_key' => 'required',
+                    'host' => 'required',
+                    'smtp_username' => 'required',
+                    'smtp_password' => 'required',
+                    'smtp_port' => 'required',
+                ],
+                'settings' => [
+                    'name' => 'required',
+                    'default_from_email' => 'email',
+                ],
+            ],
+            self::TYPE_BLASTENGINE_API => [
+                'cols' => [
+                    'api_key' => 'required',
+                ],
+                'settings' => [
+                    'name' => 'required',
+                    'default_from_email' => 'email',
                 ],
             ],
         ];
