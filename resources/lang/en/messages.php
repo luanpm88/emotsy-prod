@@ -8,6 +8,7 @@
   'API_Documentation' => 'API Documentation',
   'install.congrats' => 'Congratulations, you\'ve successfully installed the application.',
   'install.finish' => 'Now, you can go to your admin Panel at: ',
+  'install.setup_database' => "Set up database",
   'April' => 'April',
   'August' => 'August',
   'Automation' => 'Automation',
