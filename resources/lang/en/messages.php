@@ -6,6 +6,8 @@
   '4th_week' => '4th week',
   '5th_week' => '5th week',
   'API_Documentation' => 'API Documentation',
+  'install.congrats' => 'Congratulations, you\'ve successfully installed the application.',
+  'install.finish' => 'Now, you can go to your admin Panel at: ',
   'April' => 'April',
   'August' => 'August',
   'Automation' => 'Automation',
