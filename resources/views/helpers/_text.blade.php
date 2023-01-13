@@ -15,6 +15,4 @@
             @endif
         @endforeach
     @endif
-
-    {{ $required ? 'required' : '' }}
 >

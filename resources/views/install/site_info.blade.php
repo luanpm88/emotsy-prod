@@ -4,7 +4,7 @@
 
 @section('content')
 
-<form action="{{ action('InstallController@siteInfo') }}" method="POST" class="form-validate-jqueryz">
+<form action="{{ action('InstallController@siteInfo') }}" method="POST">
     {!! csrf_field() !!}
 
     <h3 class="text-primary"><span class="material-symbols-rounded">maps_home_work</span> {{ trans('messages.general') }}</h3>
