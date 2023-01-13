@@ -7,15 +7,15 @@
 <h3 class="text-primary"><span class="material-symbols-rounded">dns</span> {{ trans('messages.database_configuration') }}</h3>
 
 @if (isset($connect_error))
-	<div class="alert alert-danger">
-		{{ $connect_error }}
-	</div>
+    <div class="alert alert-danger">
+        {{ $connect_error }}
+    </div>
 @endif
 
 <form action="{{ action('InstallController@database') }}" method="POST" class="form-validate-jqueryz">
-	{!! csrf_field() !!}
-	
-		<div class="row">
+    {!! csrf_field() !!}
+
+        <div class="row">
         <div class="col-md-6">
             @include('helpers.form_control', [
                 'type' => 'text',
@@ -30,14 +30,14 @@
                 'type' => 'text',
                 'name' => 'port',
                 'value' => (isset($database["port"]) ? $database["port"] : "3306"),
-								'placeholder' => '3306',
+                                'placeholder' => '3306',
                 'help_class' => 'install',
                 'rules' => $rules
             ]) 
         </div>
     </div>
-			
-		<div class="row">
+
+        <div class="row">
         <div class="col-md-6">
             @include('helpers.form_control', [
                 'type' => 'text',
@@ -57,7 +57,7 @@
             ])
         </div>
     </div>
-	
+
     <div class="row">
         <div class="col-md-6">
             @include('helpers.form_control', [
