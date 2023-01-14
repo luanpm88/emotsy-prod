@@ -1,4 +1,4 @@
-@extends('layouts.popup.large')
+@extends('layouts.popup.medium')
 
 @section('bar-title')
     {{ trans('messages.admin.one_cick_login') }}
@@ -14,11 +14,13 @@
 
 @section('content')
     
-    <div id="OneClickLoginContainer" class="d-flex align-items-center justify-content-center">
-        <div class="border rounded me-2 bg-light" style="padding: 6px 8px;">
-            <span>{{ $url }}</span>
+    <div id="OneClickLoginContainer" class="">
+        <div class="border rounded bg-light">
+            <div style="overflow:auto;padding: 6px 8px;">
+                {{ $url }}
+            </div>
         </div>
-        <div>
+        <div class="mt-3">
             <button id="CopyOneClickLoginUrl" class="btn btn-secondary" type="button">
                 <span class="material-symbols-rounded">
                     content_copy
