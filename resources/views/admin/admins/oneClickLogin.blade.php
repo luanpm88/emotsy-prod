@@ -6,6 +6,11 @@
 
 @section('footer')
     <div class="text-end">
+        <button id="CopyOneClickLoginUrl" class="btn btn-secondary me-1" type="button">
+            <span class="material-symbols-rounded">
+                content_copy
+                </span> {{ trans('messages.admin.one_cick_login.copy') }}
+        </button>
         <button class="btn btn-default close" type="button">
             {{ trans('messages.close') }}
         </button>
@@ -19,13 +24,6 @@
             <div style="overflow:auto;padding: 6px 8px;">
                 {{ $url }}
             </div>
-        </div>
-        <div class="mt-3">
-            <button id="CopyOneClickLoginUrl" class="btn btn-secondary" type="button">
-                <span class="material-symbols-rounded">
-                    content_copy
-                    </span> {{ trans('messages.admin.one_cick_login.copy') }}
-            </button>
         </div>
     </div>
 
