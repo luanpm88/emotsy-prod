@@ -858,3 +858,6 @@ body.mode-dark .mapping-error [mapping-control="selected-field-label"] {
 body.mode-dark [mapping-control="option"].current {
     border-color: rgba(255, 255, 255, 0.2);
 }
+body.mode-dark .modal-footer {
+    border-color: rgba(255, 255, 255, 0.2);
+}
