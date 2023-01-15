@@ -120,7 +120,7 @@
                                     'rules' => $plan->validationRules()['options'],
                                 ])
                             </span>
-                            &nbsp;&nbsp;<span class="text-semibold text-italic">{{ trans('messages.' . $key) }}</span>
+                            &nbsp;&nbsp;<span class="text-semibold text-italic">{{ trans('messages.sending_server.type.' . $key) }}</span>
                             
                         </div>
                     @endforeach

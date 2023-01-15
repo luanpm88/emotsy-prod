@@ -55,7 +55,7 @@ class SendingServerController extends Controller
         // exlude customer seding servers
         $request->merge(array("no_customer" => true));
 
-        $items = \Acelle\Model\SendingServer::search($request->keyword)
+        $items = \Acelle\Model\SendingServer::system()->search($request->keyword)
             ->filter($request)
             ->orderBy($request->sort_order, $request->sort_direction ? $request->sort_direction : 'asc')
             ->paginate($request->per_page);
