@@ -489,7 +489,7 @@ class Admin extends Model
      */
     public function getAllSendingServers()
     {
-        $query = \Acelle\Model\SendingServer::getAll();
+        $query = \Acelle\Model\SendingServer::active();
 
         if (!$this->can('readAll', new \Acelle\Model\SendingServer())) {
             $query = $query->where('sending_servers.admin_id', '=', $this->id);

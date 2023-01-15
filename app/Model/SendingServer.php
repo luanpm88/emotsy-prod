@@ -212,16 +212,6 @@ class SendingServer extends Model implements HasQuotaInterface
     }
 
     /**
-     * Get all items.
-     *
-     * @return collect
-     */
-    public static function getAll()
-    {
-        return self::where('status', '=', 'active');
-    }
-
-    /**
      * Associations.
      *
      * @var object | collect
@@ -631,7 +621,7 @@ class SendingServer extends Model implements HasQuotaInterface
      */
     public static function getSelectOptions()
     {
-        $query = self::getAll();
+        $query = self::active();
         $options = $query->orderBy('name')->get()->map(function ($item) {
             return ['value' => $item->uid, 'text' => $item->name];
         });
@@ -958,7 +948,7 @@ class SendingServer extends Model implements HasQuotaInterface
     {
         $data = ['items' => [], 'more' => true];
 
-        $query = self::getAll();
+        $query = self::active();
         if (isset($request->q)) {
             $keyword = $request->q;
             $query = $query->where(function ($q) use ($keyword) {
@@ -996,7 +986,7 @@ class SendingServer extends Model implements HasQuotaInterface
     {
         $data = ['items' => [], 'more' => true];
 
-        $query = self::getAll()->whereNull('customer_id');
+        $query = self::active()->whereNull('customer_id');
         if (isset($request->q)) {
             $keyword = $request->q;
             $query = $query->where(function ($q) use ($keyword) {

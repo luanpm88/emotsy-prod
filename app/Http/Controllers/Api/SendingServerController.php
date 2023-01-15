@@ -26,7 +26,7 @@ class SendingServerController extends Controller
             return \Response::json(array('message' => 'Unauthorized'), 401);
         }
 
-        $servers = \Acelle\Model\SendingServer::getAll()
+        $servers = \Acelle\Model\SendingServer::active()
             ->select('uid', 'name', 'created_at', 'updated_at')
             ->get();
 
