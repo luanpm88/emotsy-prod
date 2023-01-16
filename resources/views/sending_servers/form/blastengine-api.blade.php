@@ -14,6 +14,17 @@
                 <p>{!! trans('messages.sending_servers.blastengine_api_key.intro') !!}</p>
 
                 @include('helpers.form_control', [
+                    'type' => 'text',
+                    'class' => '',
+                    'name' => 'username',
+                    'value' => $server->username,
+                    'help_class' => 'sending_server',
+                    'rules' => $server->getRules(),
+                    'eye' => true,
+                    'disabled' =>($server->id && $errors->isEmpty()),
+                ])
+
+                @include('helpers.form_control', [
                     'type' => 'password',
                     'class' => '',
                     'name' => 'api_key',
