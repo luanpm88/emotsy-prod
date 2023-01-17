@@ -937,4 +937,9 @@ class Invoice extends Model
     {
         return $this->currency->code;
     }
+
+    public function getBillingCountryCode()
+    {
+        return ($this->billingCountry ? $this->billingCountry->code : '');
+    }
 }
