@@ -7,7 +7,7 @@
                     'class' => '',
                     'name' => 'options[' . $field . ']',
                     'value' => isset($options[$field]) ? $options[$field] : '',
-                    'label' => trans('messages.verification_' . $field ),
+                    'label' => trans('messages.verification.' . $field ),
                     'help_class' => 'email_verification_server',
                     'rules' => $server->rules()
                 ])
