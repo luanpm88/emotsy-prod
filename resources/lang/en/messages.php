@@ -2173,6 +2173,7 @@
   'sending_server.domain.removed' => 'Domain was removed successfully',
   'sending_server.domain_email' => 'Domain / Email',
   'sending_server.email_quota' => 'email sent',
+  'verification.api_key' => 'API key',
   'sending_server.emails_quota' => 'emails sent',
   'sending_server.identities_list_failed' => 'Failed to retrieve identities list',
   'sending_server.identity_type.domain' => 'domain',
