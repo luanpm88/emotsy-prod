@@ -2161,6 +2161,7 @@
   'sending_server.aws.access_key_id' => 'AWSシークレット',
   'sending_server.aws.add_domain_redirect_confirm' => '送信ドメインを追加するには、AWSコンソールにログインする必要があります。 続行しますか？',
   'sending_server.aws.secret_key' => 'AWSアクセスキー',
+  'sending_server.blastengine.webhook_guide' => 'In order for Acelle to receive delivery issues notification for bounce, feedback, etc., set up the following URL to your Blastengine webhook settings',
   'sending_server.connect_failed' => 'リモートサービスに接続できませんでした。接続を確認してください。 送信サーバーが無効になっています',
   'sending_server.created' => '送信サーバーが正常に作成されました',
   'sending_server.date_added' => '追加された日付',

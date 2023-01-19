@@ -2162,6 +2162,7 @@
   'sending_server.aws.access_key_id' => 'AWS Access Key ID',
   'sending_server.aws.add_domain_redirect_confirm' => 'Debe iniciar sesión en su consola de AWS para agregar un dominio de envío. Quieres proceder?',
   'sending_server.aws.secret_key' => 'AWS Secret Key',
+  'sending_server.blastengine.webhook_guide' => 'In order for Acelle to receive delivery issues notification for bounce, feedback, etc., set up the following URL to your Blastengine webhook settings',
   'sending_server.connect_failed' => 'No se pudo conectar con el servicio remoto, verifique su conexión. El servidor de envío está DESACTIVADO',
   'sending_server.created' => 'El servidor de envío ha sido creado',
   'sending_server.date_added' => 'Fecha agregada',
