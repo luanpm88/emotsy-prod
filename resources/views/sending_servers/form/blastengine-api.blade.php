@@ -11,6 +11,16 @@
     <div class="mc_section">
         <div class="row">
             <div class="col-md-6">
+                <div class="alert alert-success" style="">
+                    <div style="display: flex; flex-direction: row; align-items: center;">
+                        <div style="">
+                            <h4 class="mb-1">Webhook Setting</h4>
+                            <p>{{ trans('messages.sending_server.blastengine.webhook_guide') }}<br><a target="_blank" href="{{ action('DeliveryController@notify', [ 'stype' => \Acelle\Model\SendingServerBlastengine::WEBHOOK ]) }}">{{ action('DeliveryController@notify', [ 'stype' => \Acelle\Model\SendingServerBlastengine::WEBHOOK ]) }}</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
                 <p>{!! trans('messages.sending_servers.blastengine_api_key.intro') !!}</p>
 
                 @include('helpers.form_control', [

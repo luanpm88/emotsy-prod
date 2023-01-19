@@ -24,6 +24,7 @@ namespace Acelle\Model;
 
 use Acelle\Library\StringHelper;
 use SendGrid\Mail;
+use GuzzleHttp\Client;
 
 class SendingServerBlastengineApi extends SendingServerBlastengine
 {
@@ -70,17 +71,18 @@ class SendingServerBlastengineApi extends SendingServerBlastengine
             ],
             "to" => $toEmail,
             "subject" => $message->getSubject(),
-            "encode" => "ISO-2022-JP",
+            "encode" => "UTF-8",
             "text_part" => $plain,
             "html_part" => $html
         ];
         $data = json_encode($data);
 
         $header = [
-            "Content-Type: application/json",
-            "Authorization: Bearer $token"
+            "Content-Type" => "application/json",
+            "Authorization" => "Bearer {$token}"
         ];
 
+        /*
         $context = [
             "http" => [
                 "method"  => "POST",
@@ -92,9 +94,19 @@ class SendingServerBlastengineApi extends SendingServerBlastengine
                 "verify_peer_name" => false,
             ]
         ];
+        */
 
-        $res = file_get_contents(self::API_URI, false, stream_context_create($context));
-        $resjson = json_decode($res, true);
+        $client = new Client(['verify' => false]);
+        $response = $client->request(
+            'POST',
+            self::API_URI,
+            [ 'headers' => $header, 'body' => $data, 'verify' => false]
+        );
+
+        //$res = file_get_contents(self::API_URI, false, stream_context_create($context));
+        //$resjson = json_decode($res, true);
+
+        $resjson = json_decode($response->getBody(), true);
 
         $deliveryOutput = [
             'runtime_message_id' => $resjson['delivery_id'],

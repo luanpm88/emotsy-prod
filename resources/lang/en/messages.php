@@ -6,6 +6,7 @@
   '4th_week' => '4th week',
   '5th_week' => '5th week',
   'API_Documentation' => 'API Documentation',
+  'sending_server.blastengine.webhook_guide' => 'In order for Acelle to receive delivery issues notification for bounce, feedback, etc., set up the following URL to your Blastengine webhook settings',
   'April' => 'April',
   'August' => 'August',
   'Automation' => 'Automation',

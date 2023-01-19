@@ -138,7 +138,7 @@ class SendingServerBlastengine extends SendingServer implements DomainVerificati
 
             $raw = file_get_contents('php://input');
 
-            $raw = '{"events":[{"event":{"type":"HARDERROR","datetime":"2023-01-19T12:26:10+09:00","detail":{"mailaddress":"louisit343243243234kjsasasdfvn@gmail.com","subject":"Test","error_code":"550","error_message":"宛先のメールアドレスがありません","delivery_id":2}}}]}';
+            // $raw = '{"events":[{"event":{"type":"HARDERROR","datetime":"2023-01-19T12:26:10+09:00","detail":{"mailaddress":"louisit343243243234kjsasasdfvn@gmail.com","subject":"Test","error_code":"550","error_message":"宛先のメールアドレスがありません","delivery_id":2}}}]}';
 
             $logger->info("Received: \n{$raw}");
             $json = json_decode($raw, true);
