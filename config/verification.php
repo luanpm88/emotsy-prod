@@ -107,6 +107,20 @@ return [
                 'fail' => 'undeliverable',
                 'email_disabled' => 'undeliverable',
             ]
+        ], [
+            'id' => 'bouncify.io',
+            'name' => 'Bouncify',
+            'uri' => 'https://api.bouncify.io/v1/verify?apikey={API_KEY}&email={EMAIL}',
+            'request_type' => 'GET',
+            'fields' => [ 'api_key' ],
+            'result_xpath' => '$.result',
+            'result_map' => [
+                'deliverable' => 'deliverable',
+                'unknown' => 'unknown',
+                'accept-all' => 'unknown',
+                'undeliverable' => 'undeliverable',
+            ]
         ]
+
     ]
 ];

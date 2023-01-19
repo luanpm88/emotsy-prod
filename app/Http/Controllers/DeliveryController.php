@@ -16,6 +16,7 @@ use Acelle\Model\SendingServerSendGrid;
 use Acelle\Model\SendingServerElasticEmail;
 use Acelle\Model\SendingServerSparkPost;
 use Acelle\Model\SendingServerPostal;
+use Acelle\Model\SendingServerBlastengine;
 use Acelle\Model\FeedbackLog;
 use Acelle\Model\Blacklist;
 use Illuminate\Validation\Rule;
@@ -54,6 +55,8 @@ class DeliveryController extends Controller
             } elseif ($type == SendingServerSparkPost::WEBHOOK) {
                 MailLog::configure(storage_path().'/logs/handler-sparkpost.log');
                 SendingServerSparkPost::handleNotification($_GET);
+            } elseif ($type == SendingServerBlastengine::WEBHOOK) {
+                SendingServerBlastengine::handleNotification();
             } else {
                 throw new Exception('Unknown notification type');
             }

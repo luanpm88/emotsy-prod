@@ -21,5 +21,9 @@ interface DomainVerificationInterface
     */
     public function verifyDomain($domain): array;
 
+    /*
+     * Return: an array of boolean value indicating whether or not the related check is true or false
+     * Sample: [ bool $identity, bool $dkim, bool $spf, bool $finalStatus ]
+     */
     public function checkDomainVerificationStatus($domain): array;
 }

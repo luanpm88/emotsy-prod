@@ -24,10 +24,12 @@ namespace Acelle\Model;
 
 use Acelle\Library\StringHelper;
 use SendGrid\Mail;
+use GuzzleHttp\Client;
 
 class SendingServerBlastengineApi extends SendingServerBlastengine
 {
     protected $table = 'sending_servers';
+    public const API_URI = 'https://app.engn.jp/api/v1/deliveries/transaction';
 
     /**
      * Send the provided message.
@@ -39,28 +41,78 @@ class SendingServerBlastengineApi extends SendingServerBlastengine
     // Inherit class to implementation of this method
     public function send($message, $params = array())
     {
-        $msgId = $message->getHeaders()->get('X-Acelle-Message-Id')->getFieldBody();
+        $fromEmail = array_keys($message->getFrom())[0];
+        $fromName = (is_null($message->getFrom())) ? null : array_values($message->getFrom())[0];
+        $toEmail = array_keys($message->getTo())[0];
+        $toName = (is_null($message->getTo())) ? null : array_values($message->getTo())[0];
+        $replyToEmail = (is_null($message->getReplyTo())) ? $fromEmail : array_keys($message->getReplyTo())[0];
 
-        $mail = $this->prepareEmail($message);
-        $response = $this->client()->client->mail()->send()->post($mail);
-        $statusCode = $response->statusCode();
+        $html = null;
+        $plain = null;
+        foreach ($message->getChildren() as $part) {
+            $contentType = $part->getContentType();
 
-        # if response from SendGrid is 200, 202, 2xx
-        if (preg_match('/^2../i', $statusCode)) {
-            $result = array(
-                // @deprecated
-                // 'runtime_message_id' => StringHelper::cleanupMessageId($this->getMessageId($response->headers())),
-                'runtime_message_id' => $msgId,
-                'status' => self::DELIVERY_STATUS_SENT,
-            );
-
-            if (!is_null($this->subAccount)) {
-                $result['sub_account_id'] = $this->subAccount->id;
+            if ($contentType == 'text/html') {
+                $html = $part->getBody();
+            } elseif ($contentType == 'text/plain') {
+                $plain = $part->getBody();
             }
-
-            return $result;
-        } else {
-            throw new \Exception("{$statusCode} ".$response->body());
         }
+
+        // トークン生成
+        $str = "{$this->username}{$this->api_key}";
+        $token = base64_encode(strtolower(hash('sha256', $str)));
+
+        // POSTデータ
+        $data = [
+            "from" => [
+                    "email" => $fromEmail,
+                    "name" => $fromName
+            ],
+            "to" => $toEmail,
+            "subject" => $message->getSubject(),
+            "encode" => "UTF-8",
+            "text_part" => $plain,
+            "html_part" => $html
+        ];
+        $data = json_encode($data);
+
+        $header = [
+            "Content-Type" => "application/json",
+            "Authorization" => "Bearer {$token}"
+        ];
+
+        /*
+        $context = [
+            "http" => [
+                "method"  => "POST",
+                "header"  => implode("\r\n", $header),
+                "content" => $data
+            ],
+            "ssl" => [
+                "verify_peer" => false,
+                "verify_peer_name" => false,
+            ]
+        ];
+        */
+
+        $client = new Client(['verify' => false]);
+        $response = $client->request(
+            'POST',
+            self::API_URI,
+            [ 'headers' => $header, 'body' => $data, 'verify' => false]
+        );
+
+        //$res = file_get_contents(self::API_URI, false, stream_context_create($context));
+        //$resjson = json_decode($res, true);
+
+        $resjson = json_decode($response->getBody(), true);
+
+        $deliveryOutput = [
+            'runtime_message_id' => $resjson['delivery_id'],
+            'status' => self::DELIVERY_STATUS_SENT,
+        ];
+
+        return $deliveryOutput;
     }
 }

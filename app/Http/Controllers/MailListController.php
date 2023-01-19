@@ -696,7 +696,7 @@ class MailListController extends Controller
             $url = $request->session()->pull('form_url');
             $errs = [trans("messages.invalid_captcha")];
             return view('lists.embedded_form_captcha_invalid', [
-                'errors' => $errs,
+                'errors' => collect($errs),
                 'list' => $list,
                 'back_link' => $url,
             ]);
@@ -727,7 +727,7 @@ class MailListController extends Controller
 
             // return redirect()->away($url);
             return view('lists.embedded_form_errors', [
-                'errors' => $errs,
+                'errors' => collect($errs),
                 'list' => $list,
                 'back_link' => $url,
             ]);

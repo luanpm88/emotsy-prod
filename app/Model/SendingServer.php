@@ -74,7 +74,7 @@ class SendingServer extends Model implements HasQuotaInterface
     protected $fillable = [
         'name', 'type', 'host', 'aws_access_key_id', 'aws_secret_access_key', 'aws_region', 'domain', 'api_key', 'api_secret_key', 'smtp_username',
         'smtp_password', 'smtp_port', 'smtp_protocol', 'quota_value', 'sendmail_path', 'quota_base', 'quota_unit',
-        'bounce_handler_id', 'feedback_loop_handler_id', 'status', 'default_from_email',
+        'bounce_handler_id', 'feedback_loop_handler_id', 'status', 'default_from_email', 'username'
     ];
 
     // Supported server types
@@ -451,6 +451,7 @@ class SendingServer extends Model implements HasQuotaInterface
             self::TYPE_BLASTENGINE_API => [
                 'cols' => [
                     'api_key' => 'required',
+                    'username' => 'required',
                 ],
                 'settings' => [
                     'name' => 'required',

@@ -932,4 +932,14 @@ class Invoice extends Model
     {
         return $this->type == self::TYPE_NEW_SUBSCRIPTION && $this->getMetadata('trial');
     }
+
+    public function getCurrencyCode()
+    {
+        return $this->currency->code;
+    }
+
+    public function getBillingCountryCode()
+    {
+        return ($this->billingCountry ? $this->billingCountry->code : '');
+    }
 }
