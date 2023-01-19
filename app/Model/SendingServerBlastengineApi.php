@@ -28,6 +28,7 @@ use SendGrid\Mail;
 class SendingServerBlastengineApi extends SendingServerBlastengine
 {
     protected $table = 'sending_servers';
+    public const API_URI = 'https://app.engn.jp/api/v1/deliveries/transaction';
 
     /**
      * Send the provided message.
@@ -57,13 +58,10 @@ class SendingServerBlastengineApi extends SendingServerBlastengine
             }
         }
 
-        $userId = "trialrencontru";
-        $apiKey = $this->api_key;
-
         // トークン生成
-        $str = "{$userId}{$apiKey}";
+        $str = "{$this->username}{$this->api_key}";
         $token = base64_encode(strtolower(hash('sha256', $str)));
-        $url = 'https://app.engn.jp/api/v1/deliveries/transaction';
+
         // POSTデータ
         $data = [
             "from" => [
@@ -95,7 +93,7 @@ class SendingServerBlastengineApi extends SendingServerBlastengine
             ]
         ];
 
-        $res = file_get_contents($url, false, stream_context_create($context));
+        $res = file_get_contents(self::API_URI, false, stream_context_create($context));
         $resjson = json_decode($res, true);
 
         $deliveryOutput = [

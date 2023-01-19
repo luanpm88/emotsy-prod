@@ -42,6 +42,7 @@ class BounceLog extends Model
         return $this->belongsTo('Acelle\Model\TrackingLog', 'message_id', 'message_id');
     }
 
+    // Deprecated, use record() method instead
     public static function createFromRequest($params)
     {
         $rules = [
@@ -85,6 +86,34 @@ class BounceLog extends Model
         $bounceLog->save();
 
         return [$bounceLog, $validator];
+    }
+
+    public static function recordHardBounce($runtimeMessageId, $raw, $logCallback)
+    {
+        $bounceLog = new static();
+        $bounceLog->runtime_message_id = $runtimeMessageId;
+
+        // retrieve the associated tracking log in Acelle
+        $trackingLog = TrackingLog::where('runtime_message_id', $bounceLog->runtime_message_id)->first();
+        if ($trackingLog) {
+            $bounceLog->message_id = $trackingLog->message_id;
+        } else {
+            $logCallback("Cannot find a tracking log record with runtime_message_id of #{$runtimeMessageId}. Record it anyway without runtime_message_id");
+        }
+
+        // SendGrid only notifies in case of HARD bounce
+        $bounceLog->bounce_type = self::HARD;
+        $bounceLog->raw = $raw; // notice that {$raw} might contain more than one events
+        $bounceLog->save();
+
+        // add subscriber's email to blacklist
+        $subscriber = $bounceLog->findSubscriberByRuntimeMessageId();
+        if ($subscriber) {
+            $subscriber->sendToBlacklist($bounceLog->raw);
+            $logCallback("Bounce recorded for runtime_message_id '$bounceLog->runtime_message_id' and {$subscriber->email} is blacklisted!");
+        } else {
+            $logCallback("Bounce recorded for runtime_message_id '$bounceLog->runtime_message_id' although it is not associated with any tracking log.");
+        }
     }
 
     /**
