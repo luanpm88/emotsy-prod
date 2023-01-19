@@ -1,4 +1,4 @@
-4.0.25 / 2023-01-07
+4.0.24-p485 / 2023-01-18
 ==================
 
  * Added: Italian language pack is now available by default.
