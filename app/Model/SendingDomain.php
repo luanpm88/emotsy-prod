@@ -267,47 +267,53 @@ class SendingDomain extends Model
     public function startVerifying()
     {
         if ($this->sendingServer) {
-            // Verify against APP
             $tokens = $this->sendingServer->mapType()->verifyDomain($this->name);
         } else {
             // Below is a 'STANDARD' schema
-            $tokens = [
-                'identity' => [
-                    'type' => 'TXT',
-                    'name' => $this->getFullVerificationHostName(),
-                    'value' => $this->generateIdentityToken(),
-                ],
-
-                'dkim' => [
-                    [
-                        'type' => 'TXT',
-                        'name' => $this->getFullDkimHostName(),
-                        'value' => $this->getDnsDkimConfig(),
-                    ]
-                ],
-
-                'results' => [
-                    'identity' => false,
-                    'dkim' => false,
-                ]
-            ];
-
-            $spfRecord = $this->getSpf();
-
-            if ($spfRecord) {
-                $tokens['spf'] = [
-                    [
-                        'type' => 'TXT',
-                        'name' => $this->getDnsHostName(),
-                        'value' => $this->getSpf(),
-                    ]
-                ];
-
-                $tokens['results']['spf'] = false;
-            }
+            $tokens = $this->generateVerificationTokens();
         }
 
         $this->updateVerificationTokens($tokens);
+    }
+
+    public function generateVerificationTokens()
+    {
+        $tokens = [
+            'identity' => [
+                'type' => 'TXT',
+                'name' => $this->getFullVerificationHostName(),
+                'value' => $this->generateIdentityToken(),
+            ],
+
+            'dkim' => [
+                [
+                    'type' => 'TXT',
+                    'name' => $this->getFullDkimHostName(),
+                    'value' => $this->getDnsDkimConfig(),
+                ]
+            ],
+
+            'results' => [
+                'identity' => false,
+                'dkim' => false,
+            ]
+        ];
+
+        $spfRecord = $this->getSpf();
+
+        if ($spfRecord) {
+            $tokens['spf'] = [
+                [
+                    'type' => 'TXT',
+                    'name' => $this->getDnsHostName(),
+                    'value' => $this->getSpf(),
+                ]
+            ];
+
+            $tokens['results']['spf'] = false;
+        }
+
+        return $tokens;
     }
 
     /**

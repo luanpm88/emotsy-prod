@@ -76,7 +76,7 @@ class SendingServerBlastengine extends SendingServer implements DomainVerificati
      */
     public function allowVerifyingOwnDomains()
     {
-        return false;
+        return true;
     }
 
     /**
