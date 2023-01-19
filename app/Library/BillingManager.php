@@ -8,6 +8,17 @@ use Acelle\Model\Setting;
 class BillingManager
 {
     protected $gateways = [];
+    protected $returnUrl;
+
+    public function __construct($returnUrl)
+    {
+        $this->returnUrl = $returnUrl;
+    }
+
+    public function getReturnUrl()
+    {
+        return $this->returnUrl;
+    }
 
     public function register($type, $constructor)
     {
