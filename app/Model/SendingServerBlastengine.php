@@ -121,7 +121,7 @@ class SendingServerBlastengine extends SendingServer implements DomainVerificati
 
     public function verifyDomain($domain): array
     {
-
+        // Blastengine does not actually verify any domain
     }
 
     public static function handleNotification()
