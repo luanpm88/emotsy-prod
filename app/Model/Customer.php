@@ -36,7 +36,7 @@ use DateTimeZone;
 use Exception;
 use DB;
 use Acelle\Library\Facades\Billing;
-use Acelle\Library\AutoBillingData;
+use Acelle\Cashier\Library\AutoBillingData;
 use File;
 use Acelle\Library\Traits\TrackJobs;
 use Acelle\Library\Traits\HasCache;
