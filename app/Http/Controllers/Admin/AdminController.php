@@ -394,7 +394,7 @@ class AdminController extends Controller
 
         return redirect()->action('Admin\AdminController@index');
     }
-    
+
     public function oneClickLogin(Request $request)
     {
         $admin = \Acelle\Model\Admin::findByUid($request->uid);

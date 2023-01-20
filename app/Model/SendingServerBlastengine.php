@@ -46,7 +46,6 @@ class SendingServerBlastengine extends SendingServer implements DomainVerificati
      */
     public function setupWebhooks()
     {
-
     }
 
     /**
@@ -56,7 +55,6 @@ class SendingServerBlastengine extends SendingServer implements DomainVerificati
      */
     public function syncIdentities()
     {
-
     }
 
     /**
@@ -111,12 +109,10 @@ class SendingServerBlastengine extends SendingServer implements DomainVerificati
 
     public function setupBeforeSend($fromEmailAddress)
     {
-
     }
 
     public function checkDomainVerificationStatus($domain): array
     {
-
     }
 
     public function verifyDomain($domain): array
@@ -147,7 +143,7 @@ class SendingServerBlastengine extends SendingServer implements DomainVerificati
                 throw new Exception('php://input is EMPTY');
             }
 
-            foreach($json['events'] as $event) {
+            foreach ($json['events'] as $event) {
                 $type = $event['event']['type'];
                 $deliveryId = $event['event']['detail']['delivery_id'];
 
@@ -155,18 +151,16 @@ class SendingServerBlastengine extends SendingServer implements DomainVerificati
                 $logger->info("=> TYPE: {$type}, DELIVERY ID: {$deliveryId}");
 
                 if (in_array($type, [self::EVENT_TYPE_HARDERROR, self::EVENT_TYPE_DROP])) {
-                    BounceLog::recordHardBounce($deliveryId, $raw, function($message) use ($logger) {
+                    BounceLog::recordHardBounce($deliveryId, $raw, function ($message) use ($logger) {
                         $logger->info($message);
                     });
                 } else {
                     $logger->info("Thank God, it is not a HARDERROR or DROP event! It is just: {$type}");
                 }
             }
-
         } catch (\Throwable $ex) {
             $logger->warning($ex->getMessage());
         }
-
     }
 
     public static function initLogger()
