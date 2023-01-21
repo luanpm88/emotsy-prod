@@ -6,7 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Contracts\Support\DeferrableProvider;
 use Acelle\Library\BillingManager;
 use Acelle\Library\Facades\Billing;
-use Acelle\Library\Contracts\PaymentGatewayInterface;
+use Acelle\Cashier\Interfaces\PaymentGatewayInterface;
 use Acelle\Cashier\Services\StripePaymentGateway;
 use Acelle\Cashier\Services\OfflinePaymentGateway;
 use Acelle\Cashier\Services\BraintreePaymentGateway;

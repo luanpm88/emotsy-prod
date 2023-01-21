@@ -19,6 +19,10 @@ class Form extends Model implements HasTemplateInterface
     public const STATUS_DRAFT = 'draft';
     public const STATUS_PUBLISHED = 'published';
 
+    protected $fillable = [
+        'mail_list_id', 'name'
+    ];
+
     public function mailList()
     {
         return $this->belongsTo('Acelle\Model\MailList');
@@ -46,6 +50,8 @@ class Form extends Model implements HasTemplateInterface
 
     public function createFromArray($params)
     {
+        $this->fill($params);
+
         $validator = Validator::make($params, [
             'name' => 'required',
             'template_uid' => 'required',

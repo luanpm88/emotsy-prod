@@ -22,8 +22,6 @@
 
 namespace Acelle\Model;
 
-use Acelle\Library\StringHelper;
-use SendGrid\Mail;
 use GuzzleHttp\Client;
 
 class SendingServerBlastengineApi extends SendingServerBlastengine
@@ -31,14 +29,6 @@ class SendingServerBlastengineApi extends SendingServerBlastengine
     protected $table = 'sending_servers';
     public const API_URI = 'https://app.engn.jp/api/v1/deliveries/transaction';
 
-    /**
-     * Send the provided message.
-     *
-     * @return bool
-     *
-     * @param message
-     */
-    // Inherit class to implementation of this method
     public function send($message, $params = array())
     {
         $fromEmail = array_keys($message->getFrom())[0];
@@ -66,8 +56,8 @@ class SendingServerBlastengineApi extends SendingServerBlastengine
         // POSTデータ
         $data = [
             "from" => [
-                    "email" => $fromEmail,
-                    "name" => $fromName
+                "email" => $fromEmail,
+                "name" => $fromName
             ],
             "to" => $toEmail,
             "subject" => $message->getSubject(),
@@ -82,29 +72,12 @@ class SendingServerBlastengineApi extends SendingServerBlastengine
             "Authorization" => "Bearer {$token}"
         ];
 
-        /*
-        $context = [
-            "http" => [
-                "method"  => "POST",
-                "header"  => implode("\r\n", $header),
-                "content" => $data
-            ],
-            "ssl" => [
-                "verify_peer" => false,
-                "verify_peer_name" => false,
-            ]
-        ];
-        */
-
         $client = new Client(['verify' => false]);
         $response = $client->request(
             'POST',
             self::API_URI,
             [ 'headers' => $header, 'body' => $data, 'verify' => false]
         );
-
-        //$res = file_get_contents(self::API_URI, false, stream_context_create($context));
-        //$resjson = json_decode($res, true);
 
         $resjson = json_decode($response->getBody(), true);
 
