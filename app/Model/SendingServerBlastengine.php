@@ -77,6 +77,11 @@ class SendingServerBlastengine extends SendingServer implements DomainVerificati
         return true;
     }
 
+    public function allowOtherSendingDomains()
+    {
+        return true;
+    }
+
     /**
      * Allow user to verify his/her own sending domain against Acelle Mail.
      *
