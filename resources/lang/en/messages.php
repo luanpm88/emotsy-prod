@@ -2501,6 +2501,8 @@
   'subscription.cancel' => 'Cancel',
   'subscription.cancel.confirm' => 'You\'re about to cancel subscription. You\'re still subscribed until the end of period',
   'subscription.cancel_now' => 'Cancel now',
+  'default_from_email' => 'デフォルトのFROMメールアドレス',
+  'default_from_email_address' => ' メール<span class="keyword">送信アドレス</span>',
   'subscription.cancel_now.confirm' => 'You\'re about to cancel subscription before its due date. Are you sure you want to cancel it? This action cannot be undone',
   'subscription.cancel_now_change_other_plan' => 'Change your mind? Click here to cancel this invoice.',
   'subscription.cancelled' => 'The subscription was successfully cancelled',
