@@ -4,7 +4,7 @@ namespace Acelle\Library\Contracts;
 
 use Acelle\Model\Invoice;
 use Acelle\Model\Transaction;
-use Acelle\Library\TransactionVerificationResult;
+use Acelle\Cashier\Library\TransactionVerificationResult;
 
 interface PaymentGatewayInterface
 {

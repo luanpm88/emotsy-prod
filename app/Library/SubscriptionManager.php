@@ -3,7 +3,7 @@
 namespace Acelle\Library;
 
 use Acelle\Model\Subscription;
-use Acelle\Library\TransactionVerificationResult;
+use Acelle\Cashier\Library\TransactionVerificationResult;
 use Acelle\Model\SubscriptionLog;
 
 class SubscriptionManager

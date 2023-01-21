@@ -181,7 +181,7 @@ class SubscriptionController extends Controller
         // Bỏ qua việc nhập card information khi subscribe plan with trial
         if (\Acelle\Model\Setting::get('not_require_card_for_trial') == 'yes' && $invoice->isInitInvoiceWithTrial()) {
             $invoice->checkout($customer->getPreferredPaymentGateway(), function () {
-                return new \Acelle\Library\TransactionVerificationResult(\Acelle\Library\TransactionVerificationResult::RESULT_DONE);
+                return new \Acelle\Cashier\Library\TransactionVerificationResult(\Acelle\Cashier\Library\TransactionVerificationResult::RESULT_DONE);
             });
 
             return redirect()->action('SubscriptionController@index');
