@@ -23,6 +23,7 @@
 namespace Acelle\Model;
 
 use GuzzleHttp\Client;
+use Soundasleep\Html2Text;
 
 class SendingServerBlastengineApi extends SendingServerBlastengine
 {
@@ -47,6 +48,15 @@ class SendingServerBlastengineApi extends SendingServerBlastengine
             } elseif ($contentType == 'text/plain') {
                 $plain = $part->getBody();
             }
+        }
+
+        if (empty($plain)) {
+            $options = array(
+              'ignore_errors' => true,
+            );
+
+            // Plain part is required by Blastengine
+            $plain = Html2Text::convert($html, $options);
         }
 
         // トークン生成
