@@ -100,10 +100,10 @@ class Page extends Model
         // FIELDS
         $fields = view('subscribers._form', array('list' => $this->mailList, 'is_page' => true, 'col' => '12', 'values' => $values, 'email_readonly' => true))->render();
         $this->content = str_replace('{FIELDS}', $fields, $this->content);
-        $this->content = str_replace('{SUBSCRIBE_BUTTON}', '<button class="btn btn-info bg-teal-800" type="submit">'.trans('messages.subscribe').' <span class="material-symbols-round">east</span></button>', $this->content);
+        $this->content = str_replace('{SUBSCRIBE_BUTTON}', '<button class="btn btn-info bg-teal-800" type="submit">'.trans('messages.subscribe').' <span class="material-symbols-rounded">east</span></button>', $this->content);
         $this->content = str_replace('{EMAIL_FIELD}', view('helpers.form_control', ['type' => 'text', 'name' => 'EMAIL', 'label' => trans('messages.email_address'), 'value' => '', 'rules' => $this->mailList->getFieldRules()])->render(), $this->content);
-        $this->content = str_replace('{UNSUBSCRIBE_BUTTON}', '<button class="btn btn-info bg-teal-800" type="submit">'.trans('messages.unsubscribe').' <span class="material-symbols-round">east</span></button>', $this->content);
-        $this->content = str_replace('{UPDATE_PROFILE_BUTTON}', '<button class="btn btn-info bg-teal-800" type="submit">'.trans('messages.update_profile').' <span class="material-symbols-round">east</span></button>', $this->content);
+        $this->content = str_replace('{UNSUBSCRIBE_BUTTON}', '<button class="btn btn-info bg-teal-800" type="submit">'.trans('messages.unsubscribe').' <span class="material-symbols-rounded">east</span></button>', $this->content);
+        $this->content = str_replace('{UPDATE_PROFILE_BUTTON}', '<button class="btn btn-info bg-teal-800" type="submit">'.trans('messages.update_profile').' <span class="material-symbols-rounded">east</span></button>', $this->content);
         $this->content = str_replace('{SUBSCRIBE_URL}', config('app.url').action('PageController@signUpForm', $this->mailList->uid, false), $this->content);
 
         // SUBSCRIBE CONFIRM URL
@@ -156,10 +156,10 @@ class Page extends Model
         $subject = str_replace('{CONTACT_URL}', $this->mailList->contact->url, $subject);
 
         // FIELDS
-        $subject = str_replace('{SUBSCRIBE_BUTTON}', '<button class="btn btn-info bg-teal-800" type="submit">'.trans('messages.subscribe').' <span class="material-symbols-round">east</span></button>', $subject);
+        $subject = str_replace('{SUBSCRIBE_BUTTON}', '<button class="btn btn-info bg-teal-800" type="submit">'.trans('messages.subscribe').' <span class="material-symbols-rounded">east</span></button>', $subject);
         $subject = str_replace('{EMAIL_FIELD}', view('helpers.form_control', ['type' => 'text', 'name' => 'EMAIL', 'label' => trans('messages.email_address'), 'value' => '', 'rules' => $this->mailList->getFieldRules()])->render(), $subject);
-        $subject = str_replace('{UNSUBSCRIBE_BUTTON}', '<button class="btn btn-info bg-teal-800" type="submit">'.trans('messages.unsubscribe').' <span class="material-symbols-round">east</span></button>', $subject);
-        $subject = str_replace('{UPDATE_PROFILE_BUTTON}', '<button class="btn btn-info bg-teal-800" type="submit">'.trans('messages.update_profile').' <span class="material-symbols-round">east</span></button>', $subject);
+        $subject = str_replace('{UNSUBSCRIBE_BUTTON}', '<button class="btn btn-info bg-teal-800" type="submit">'.trans('messages.unsubscribe').' <span class="material-symbols-rounded">east</span></button>', $subject);
+        $subject = str_replace('{UPDATE_PROFILE_BUTTON}', '<button class="btn btn-info bg-teal-800" type="submit">'.trans('messages.update_profile').' <span class="material-symbols-rounded">east</span></button>', $subject);
         $subject = str_replace('{SUBSCRIBE_URL}', config('app.url').action('PageController@signUpForm', $this->mailList->uid, false), $subject);
 
         // SUBSCRIBE CONFIRM URL
