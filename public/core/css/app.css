@@ -6669,7 +6669,7 @@ h3, h4 [class^="material-"] {
     border-bottom: dashed 1px #aaa;
 }
 .inline-form .form-group input {
-    width: 100vh;
+    min-width: 200px;
 }
 .AnyTime-win {
     z-index: 1060;

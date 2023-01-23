@@ -41,8 +41,8 @@
                                                                 'value' => $setting['value']
                                                             ])
                                                         </div>
-                                                        <button type="button" class="btn btn-primary inline-save me-1">{{ trans('messages.save') }}</button>
-                                                        <button type="button" class="btn btn-secondary inline-cancel" data-bs-dismiss="modal">{{ trans('messages.cancel') }}</button>
+                                                        <button type="button" class="btn btn-primary inline-save me-1 text-nowrap">{{ trans('messages.save') }}</button>
+                                                        <button type="button" class="btn btn-secondary inline-cancel text-nowrap" data-bs-dismiss="modal">{{ trans('messages.cancel') }}</button>
                                                     </div>
                                                 </div>
                                             </div>
