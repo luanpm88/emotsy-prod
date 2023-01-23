@@ -403,7 +403,7 @@ class Setting extends Model
             ],
             'send_notification_email_for_list_subscription' => [
                 'cat' => 'others',
-                'value' => null,
+                'value' => 'no',
                 'type' => 'text',
                 'not_required' => true,
             ],
