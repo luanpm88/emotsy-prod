@@ -63,30 +63,46 @@
 </div>
 
 <script>
-    var inlineEditItem = {
-        box: null,
-        url: null,
-
-        init: function(box, url) {
+    var InlineEditItem = class {
+        constructor(box, url) {
             this.box = box;
             this.url = url;
-        },
+        }
 
-        showForm: function() {
+        init() {
+            var _this = this;
+            
+            this.box.find('.inline-save').on('click', function() {
+                _this.save();
+            });
+
+            this.box.find('.inline-form input').keyup(function(e){
+                if(e.keyCode == 13)
+                {
+                    _this.save();
+                }
+            });
+            
+            this.box.find('.inline-cancel').on('click', function() {
+                _this.hide();
+            });
+        }
+
+        showForm() {
             this.box.find('.inline-form').show();
             this.box.find('.inline-value').hide();
-        },
+        }
 
-        hide: function() {
+        hide() {
             this.box.find('.inline-form').hide();
             this.box.find('.inline-value').show();
-        },
+        }
 
-        getValue: function() {
+        getValue() {
             return this.box.find('[name=value]').val().trim();
-        },
+        }
 
-        save: function() {
+        save() {
             var _this = this;
             addButtonMask(this.box.find('.inline-save'));
 
@@ -112,9 +128,9 @@
             }).always(function() {
                 removeButtonMask(_this.box.find('.inline-save'));
             });
-        },
+        }
 
-        updateValue: function() {
+        updateValue() {
             if (this.getValue() == '') {
                 this.box.find('.inline-value').html('<span class="text-danger">NULL</span>');
             } else {
@@ -125,27 +141,16 @@
 
     $(function() {
         $('.inline-value').on('click', function() {
-            inlineEditItem.init(
+            var inlineEditItem = new InlineEditItem(
                 $(this).closest('.c-inline-edit'),
                 $(this).attr('data-url')
             );
+            
+            inlineEditItem.init();
 
             inlineEditItem.showForm();
         });
 
-        $('.inline-save').on('click', function() {
-            inlineEditItem.save();
-        });
-
-        $('.inline-form input').keyup(function(e){
-            if(e.keyCode == 13)
-            {
-                inlineEditItem.save();
-            }
-        });
         
-        $('.inline-cancel').on('click', function() {
-            inlineEditItem.hide();
-        });
     });
 </script>
