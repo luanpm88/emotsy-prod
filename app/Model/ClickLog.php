@@ -45,6 +45,11 @@ class ClickLog extends Model
 
         $messageId = StringHelper::base64UrlDecode($request->message_id);
 
+        if (is_null($messageId)) {
+            // Preview email does not have message ID
+            return [$url, null];
+        }
+
         if (!TrackingLog::where('message_id', $messageId)->exists()) {
             return [$url, null];
         }
