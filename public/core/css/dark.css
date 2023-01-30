@@ -861,3 +861,6 @@ body.mode-dark [mapping-control="option"].current {
 body.mode-dark .modal-footer {
     border-color: rgba(255, 255, 255, 0.2);
 }
+body.mode-dark .remove-field-button {
+    color: rgba(255,255,255,0.8);  
+}
