@@ -18,6 +18,7 @@ use Acelle\Model\Campaign;
 use Acelle\Model\MailList;
 use Acelle\Model\Template;
 use Acelle\Model\TrackingDomain;
+use Acelle\Model\Customer;
 use Mockery;
 use Exception;
 use DOMDocument;
@@ -95,12 +96,12 @@ class HtmlHandlersTest extends TestCase
         $campaign = Mockery::mock(new Campaign(['name' => 'Campaign']));
 
         $pipeline = new PipelineBuilder();
-        $pipeline->add(new InjectTrackingPixel('MSGID'));
+        $pipeline->add(new InjectTrackingPixel($campaign, 'MSGID'));
 
         $html = "<html><body><div>Content main</div></body></html>";
         $out = $pipeline->build()->process($html);
 
-        $this->assertEquals($out, '<!DOCTYPE html><html><body><div>Content main</div><img src="http://localhost/p/TVNHSUQ/open" width="0" height="0" alt="" style="visibility:hidden"></body></html>');
+        $this->assertEquals($out, '<!DOCTYPE html><html><body><div>Content main</div><img alt="This is a tracking pixel" src="http://localhost/p/TVNHSUQ/open" width="0" height="0" style="visibility:hidden"></body></html>');
     }
 
     public function test_make_inline_css()
@@ -144,7 +145,7 @@ class HtmlHandlersTest extends TestCase
         $pipeline->add(new TransformTag($campaign, $subscriber, 'MSGID', $server = null));
         $pipeline->add(new TransformUrl($template, 'MSGID', $trackingDomain = null));
         $pipeline->add(new MakeInlineCss([storage_path('tests/sample.css')]));
-        $pipeline->add(new InjectTrackingPixel('MSGID'));
+        $pipeline->add(new InjectTrackingPixel($campaign, 'MSGID'));
 
         $html = $pipeline->build()->process("<title class='blue'>\nThisis the template title</title><a class=' big blue' href='https://mailchimp.com'></a><div>Campaign: '{CAMPAIGN_NAME}' Subscriber: '{SUBSCRIBER_UID}'</div>");
 
@@ -183,7 +184,7 @@ class HtmlHandlersTest extends TestCase
         $pipeline->add(new TransformTag($campaign, $subscriber, 'MSGID', $server = null));
         $pipeline->add(new TransformUrl($template, 'MSGID', $trackingDomain = null));
         $pipeline->add(new MakeInlineCss([storage_path('tests/sample.css')]));
-        $pipeline->add(new InjectTrackingPixel('MSGID'));
+        $pipeline->add(new InjectTrackingPixel($campaign, 'MSGID'));
 
         $html = $pipeline->build()->process("<a href='image/hehe'>Relative</a><img src='//cdn.fake.com/image/hehe'><a href='/absolute/url'>Absolute</a><a href='//absolute/url'>Two slashes</a><a href='mailto:hello@example.com'>hello@example.com</a><a href='#sectionN'>Scroll to Section N</a>");
 
@@ -200,6 +201,7 @@ class HtmlHandlersTest extends TestCase
         $domain = new TrackingDomain();
         $domain->name = 'track.example.com';
         $domain->scheme = 'https';
+        $domain->verification_method = TrackingDomain::VERIFICATION_METHOD_HOST;
 
         // Template
         $html = "<html><body><a href='/hello/world'></body></html>";
@@ -228,7 +230,7 @@ class HtmlHandlersTest extends TestCase
 
         $pipeline->add(new TransformUrl($template, 'MSGID', $domain));
         $pipeline->add(new MakeInlineCss([storage_path('tests/sample.css')]));
-        $pipeline->add(new InjectTrackingPixel('MSGID'));
+        $pipeline->add(new InjectTrackingPixel($campaign, 'MSGID'));
 
         $html = $pipeline->build()->process("<title class='blue'>\nThisis the template title</title><a class=' big blue' href='https://mailchimp.com'></a><div>Campaign: '{CAMPAIGN_NAME}' Subscriber: '{SUBSCRIBER_UID}'</div>");
 
@@ -262,10 +264,10 @@ class HtmlHandlersTest extends TestCase
         $domain = new TrackingDomain();
         $domain->name = 'track.example.com';
         $domain->scheme = 'https';
+        $domain->verification_method = TrackingDomain::VERIFICATION_METHOD_HOST;
 
-        // Mail list
-        $list = new MailList();
-        $list->generateUid();
+        $customer = Mockery::mock(new Customer());
+        $customer->shouldReceive('getLanguageCode')->andReturn('en');
 
         // Template
         $template = Mockery::mock(new Template(['name' => 'Template']));
@@ -274,6 +276,7 @@ class HtmlHandlersTest extends TestCase
         // List
         $list = Mockery::mock(new MailList());
         $list->generateUid();
+        $list->customer = $customer;
 
         // Campaign
         $campaign = Mockery::mock(new Campaign(['name' => 'Campaign']));
@@ -292,7 +295,7 @@ class HtmlHandlersTest extends TestCase
         $pipeline->add(new AppendHtml('<div>Hello world éèéêôâ</div>'));
         $pipeline->add(new ParseRss());
         $pipeline->add(new TransformTag($campaign, $subscriber, 'MSGID', $server = null));
-        $pipeline->add(new InjectTrackingPixel('MSGID'));
+        $pipeline->add(new InjectTrackingPixel($campaign, 'MSGID'));
         $pipeline->add(new TransformUrl($template, 'MSGID', $domain)); // click url, tracking domain applied
         $pipeline->add(new MakeInlineCss([storage_path('tests/sample.css')]));
 
@@ -330,9 +333,8 @@ class HtmlHandlersTest extends TestCase
 
     public function test_test_campaign_with_special_tags_without_tracking_domain()
     {
-        // Mail list
-        $list = new MailList();
-        $list->generateUid();
+        $customer = Mockery::mock(new Customer());
+        $customer->shouldReceive('getLanguageCode')->andReturn('en');
 
         // Template
         $template = Mockery::mock(new Template(['name' => 'Template']));
@@ -341,6 +343,7 @@ class HtmlHandlersTest extends TestCase
         // List
         $list = Mockery::mock(new MailList());
         $list->generateUid();
+        $list->customer = $customer;
 
         // Campaign
         $campaign = Mockery::mock(new Campaign(['name' => 'Campaign']));
@@ -358,7 +361,7 @@ class HtmlHandlersTest extends TestCase
         $pipeline->add(new AppendHtml('<div>Hello world éèéêôâ</div>'));
         $pipeline->add(new ParseRss());
         $pipeline->add(new TransformTag($campaign, $subscriber, 'MSGID', $server = null));
-        $pipeline->add(new InjectTrackingPixel('MSGID'));
+        $pipeline->add(new InjectTrackingPixel($campaign, 'MSGID'));
         $pipeline->add(new TransformUrl($template, 'MSGID', null)); // click url, tracking domain applied
         $pipeline->add(new MakeInlineCss([storage_path('tests/sample.css')]));
 
