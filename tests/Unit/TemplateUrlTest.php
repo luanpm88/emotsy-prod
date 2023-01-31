@@ -54,6 +54,7 @@ class TemplateUrlTest extends TestCase
         $domain = new TrackingDomain();
         $domain->name = self::TRACKING_DOMAIN;
         $domain->scheme = 'http';
+        $domain->verification_method = TrackingDomain::VERIFICATION_METHOD_HOST;
         return $domain;
     }
 

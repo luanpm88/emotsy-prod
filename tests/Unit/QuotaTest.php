@@ -456,7 +456,7 @@ class QuotaTest extends TestCase
 
         // Customer
         $customer = Mockery::mock(new Customer());
-        $customer->shouldReceive('activeSubscription')->andReturn($subscription);
+        $customer->shouldReceive('getCurrentActiveSubscription')->andReturn($subscription);
 
         // Subscriber type is required as the new SendMessage(Subscriber $sub) has strict type parameter
         $subscriber = Mockery::mock(new Subscriber());
@@ -589,7 +589,7 @@ class QuotaTest extends TestCase
 
         // Customer
         $customer = Mockery::mock(new Customer());
-        $customer->shouldReceive('activeSubscription')->andReturn($subscription);
+        $customer->shouldReceive('getCurrentActiveSubscription')->andReturn($subscription);
 
         // Mail list
         $list = Mockery::mock(new MailList());
