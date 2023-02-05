@@ -401,7 +401,11 @@ class InstallController extends Controller
         \Acelle\Model\Setting::set('mailer.from.address', $site_info['mail_from_email']);
         \Acelle\Model\Setting::set('mailer.sendmail_path', $site_info['sendmail_path']);
 
+        // Generate translation files if not exist
+        // Cashier plugin for example
+        \Acelle\Model\Language::dump();
 
+        // Just finish
         $request->session()->flash('alert-success', trans('messages.install.database_import.success'));
 
         return redirect()->away($next_page);
