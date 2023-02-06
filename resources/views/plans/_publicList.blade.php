@@ -105,7 +105,7 @@
                 {{ trans('messages.allow_create_sending_servers_label') }}
             </th>
             @foreach($plans as $plan)
-                <td class="{{ ($plan->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_OWN ? '' : 'bg-light2') }}">
+                <td class="{{ ($plan->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_OWN ? '' : 'bg-light') }}">
                     <span>{!! $plan->displayAllowCreateSendingServer() !!}</span>
                 </td>
             @endforeach
@@ -115,7 +115,7 @@
                 {{ trans('messages.allow_create_sending_domains_label') }}
             </th>
             @foreach($plans as $plan)
-                <td class="{{ $plan->getOption('create_sending_domains') == 'no' ? 'bg-light2' : '' }}">
+                <td class="{{ $plan->getOption('create_sending_domains') == 'no' ? 'bg-light' : '' }}">
                     <span>{{ $plan->displayAllowCreateSendingDomain() }}</span>
                 </td>
             @endforeach
@@ -125,7 +125,7 @@
                 {{ trans('messages.allow_create_email_verification_servers_label') }}
             </th>
             @foreach($plans as $plan)
-                <td class="{{ $plan->getOption('create_email_verification_servers') == 'no' ? 'bg-light2' : '' }}">
+                <td class="{{ $plan->getOption('create_email_verification_servers') == 'no' ? 'bg-light' : '' }}">
                     <span>{!! $plan->displayAllowCreateEmailVerificationServer() !!}</span>
                 </td>
             @endforeach

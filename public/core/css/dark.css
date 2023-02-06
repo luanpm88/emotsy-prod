@@ -864,3 +864,6 @@ body.mode-dark .modal-footer {
 body.mode-dark .remove-field-button {
     color: rgba(255,255,255,0.8);  
 }
+body.mode-dark .table-bordered>:not(caption)>* {
+    border-color: rgba(255, 255, 255, 0.1);
+}
