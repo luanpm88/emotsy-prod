@@ -14,11 +14,11 @@
                         / {!! $plan->displayFrequencyTime() !!}
                     </p>
                     <p class="mb-0 py-3">
-                        <a
+                        <a 
                             href="{{ action('UserController@register', [
                                 'plan_uid' => $plan->uid,
                             ]) }}"
-                            class="btn fw-600 btn-primary rounded-3 d-block py-2 shadow-sm">
+                            class="btn fw-600 btn-primary rounded-3 d-block py-2 shadow-sm {{ Auth::check() ? 'disabled' : '' }}">
                                 @if ($plan->isFree() || $plan->hasTrial())
                                     {{ trans('messages.plan.select') }}
                                 @else

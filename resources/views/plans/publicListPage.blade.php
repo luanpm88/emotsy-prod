@@ -28,6 +28,39 @@
 			<!-- Main content -->
 			<div class="content-wrapper">
 
+                @if (Auth::check())
+                    <div class="alert alert-warning">
+                        <span>
+                            {{ trans('messages.select_plan.logged_in.logout_current_account', [
+                                'username' => Auth::user()->email,
+                            ]) }}
+                        </span>
+                        <div class="mt-2">
+                            <button data-action="logout"  class="btn btn-secondary">
+                                <i class="icon-switch2"></i> {{ trans('messages.logout') }}
+                            </button>
+                        </div>
+                    </div>
+
+                    <script>
+                        $(function() {
+                            $('[data-action="logout"]').on('click', function(e) {
+                                e.preventDefault();
+
+                                addMaskLoading();
+
+                                $.ajax({
+                                    url: '{{ url("/logout") }}',
+                                    method: 'GET',
+                                    globalError: false
+                                }).always(function() {
+                                    window.location.reload();
+                                });
+                            });
+                        });
+                    </script>
+                @endif
+
                 <div class="text-center my-4 pb-5">
                     <img src="{{ getSiteLogoUrl('dark') }}" alt="" width="300px">
                 </div>

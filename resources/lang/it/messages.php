@@ -2059,6 +2059,7 @@
   'select_list.ok' => 'Vai',
   'select_list_default_intro' => 'Selezionare una lista di posta dalla casella di selezione sottostante per proseguire',
   'select_plan' => 'Selezionare un piano',
+  'select_plan.logged_in.logout_current_account' => 'You are currently logged as :username. Click logout button bellow to logout of current account.',
   'select_plan.wording' => 'Per utilizzare l\'applicazione &egrave; necessario sottoscrivere un piano. Scegliete uno dei piani sottostanti per abbonarvi all\'applicazione:',
   'select_sending_server_with_subaccount' => 'Selezionare il server di invio con il sottoconto',
   'select_sending_servers' => 'Selezionare i server di invio',
