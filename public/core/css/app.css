@@ -8152,3 +8152,6 @@ label.checker input:disabled ~ .checker-symbol {
 .mapping-error [mapping-control="selected-field-label"] {
     background-color: rgb(255, 224, 224) !important;
 }
+.bg-light2 {
+    background-color: rgba(0,0,0,0.2)!important;
+}

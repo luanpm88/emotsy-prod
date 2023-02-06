@@ -134,6 +134,9 @@ Route::group(['middleware' => ['not_installed', 'not_logged_in']], function () {
     // Customer registration
     Route::post('users/register', 'UserController@register');
     Route::get('users/register', 'UserController@register');
+
+    // plan
+    Route::get('plans/list', 'PlanController@publicListPage');
 });
 
 // Without authentication
@@ -1020,6 +1023,8 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::post('admin/account/contact', 'AccountController@contact');
 
     // Plan
+    Route::match(['get', 'post'], 'admin/plans/public-view', 'PlanController@publicView');
+
     Route::match(['get', 'post'], 'admin/plans/{uid}/tos', 'PlanController@tos');
     Route::post('admin/plans/{uid}/visible/on', 'PlanController@visibleOn');
     Route::post('admin/plans/{uid}/visible/off', 'PlanController@visibleOff');

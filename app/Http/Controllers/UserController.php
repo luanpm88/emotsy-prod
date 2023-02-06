@@ -48,6 +48,11 @@ class UserController extends Controller
 
             $request->session()->put('user-activated', trans('messages.user.activated'));
 
+            // assignPlan
+            if ($request->plan_uid) {
+                $userActivation->user->customer->assignPlan(\Acelle\Model\Plan::findByUid($request->plan_uid));
+            }
+
             if (isset($request->redirect)) {
                 return redirect()->away(urldecode($request->redirect));
             } else {
@@ -129,7 +134,7 @@ class UserController extends Controller
             if (true) {
                 // Send registration confirmation email
                 try {
-                    $user->sendActivationMail($customer->displayName());
+                    $user->sendActivationMail($customer->displayName(), $request->plan_uid);
                 } catch (\Exception $e) {
                     return view('somethingWentWrong', ['message' => trans('messages.something_went_wrong_with_email_service') . ": " . $e->getMessage()]);
                 }

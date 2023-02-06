@@ -64,15 +64,15 @@
 					Auth::user()->can("read", new Acelle\Model\Plan())
 					|| Auth::user()->can("read", new Acelle\Model\Currency())
 				)
-					<li class="nav-item dropdown language-switch {{ in_array($menu, ['plan','currency','tax','invoice']) ? 'active' : '' }}">
-						<a role="button" class="nav-link lvl-1 dropdown-toggle d-flex align-items-center {{ request()->session()->get('admin-leftbar-state') != 'closed' && Auth::user()->admin->getMenuLayout() == 'left' && in_array($menu, ['plan','currency','tax','invoice']) ? 'show' : '' }}" data-bs-toggle="dropdown">
+					<li class="nav-item dropdown language-switch {{ in_array($menu, ['plan','currency','tax','invoice','public_view']) ? 'active' : '' }}">
+						<a role="button" class="nav-link lvl-1 dropdown-toggle d-flex align-items-center {{ request()->session()->get('admin-leftbar-state') != 'closed' && Auth::user()->admin->getMenuLayout() == 'left' && in_array($menu, ['plan','currency','tax','invoice','public_view']) ? 'show' : '' }}" data-bs-toggle="dropdown">
 							<i class="navbar-icon">
 								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 106.1 107.7"><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><g id="Layer_2-2" data-name="Layer 2"><g id="Layer_1-2-2" data-name="Layer 1-2"><g id="Layer_2-2-2" data-name="Layer 2-2"><g id="Layer_1-2-2-2" data-name="Layer 1-2-2"><path d="M26.5,107.7A26.6,26.6,0,0,1,0,81.4v-55A26.6,26.6,0,0,1,26.5,0H62.8a3.5,3.5,0,0,1,3.5,3.5A3.5,3.5,0,0,1,62.8,7H26.5A19.5,19.5,0,0,0,7,26.4v55a19.5,19.5,0,0,0,19.5,19.3H76.6A19.5,19.5,0,0,0,96,81.3V55.4a3.5,3.5,0,0,1,7,0V81.3a26.6,26.6,0,0,1-26.4,26.4Z" style="fill:#f2f2f2"/><path d="M51.5,55.3A16.8,16.8,0,1,1,68.3,38.5,16.8,16.8,0,0,1,51.5,55.3Zm0-26.6a9.8,9.8,0,1,0,9.8,9.8A9.8,9.8,0,0,0,51.5,28.7Z" style="fill:#ffadad"/><path d="M77.9,71.7H25.1a3.5,3.5,0,0,1,0-7H77.9a3.5,3.5,0,0,1,0,7Z" style="fill:#f2f2f2"/><path d="M77.9,86H25.1a3.5,3.5,0,1,1,0-7H77.9a3.5,3.5,0,0,1,0,7Z" style="fill:#f2f2f2"/><path d="M97.1,40.9a2,2,0,0,1-1.1-.3l-9.6-5-9.5,5a2.3,2.3,0,0,1-2.5-.2,2.5,2.5,0,0,1-1-2.3l1.8-10.7-7.7-7.5a2.4,2.4,0,0,1-.6-2.4,2.7,2.7,0,0,1,2-1.7l10.6-1.5,4.7-9.7a2.6,2.6,0,0,1,2.2-1.3h0a2.3,2.3,0,0,1,2.1,1.3l4.9,9.7L104,15.8a2.7,2.7,0,0,1,2,1.7,2.4,2.4,0,0,1-.6,2.4l-7.7,7.5,1.8,10.7a2.5,2.5,0,0,1-1,2.3A2.4,2.4,0,0,1,97.1,40.9ZM86.4,30.5a2,2,0,0,1,1.1.3l6.4,3.3L92.7,27a2.6,2.6,0,0,1,.7-2.1l5.1-5-7-1a2.3,2.3,0,0,1-1.8-1.3l-3.3-6.5-3.2,6.5a2.3,2.3,0,0,1-1.8,1.3l-7,1,5.1,5a2.6,2.6,0,0,1,.7,2.1L79,34.1l6.3-3.3A2,2,0,0,1,86.4,30.5Zm-5.3-14Z" style="fill:#f2f2f2"/></g></g></g></g></g></g></svg>
 							</i>
 							<span>{{ trans('messages.plan') }}</span>
 							<span class="caret"></span>
 						</a>
-						<ul class="dropdown-menu {{ request()->session()->get('admin-leftbar-state') != 'closed' && Auth::user()->admin->getMenuLayout() == 'left' && in_array($menu, ['plan','currency','tax','invoice']) ? 'show' : '' }}">
+						<ul class="dropdown-menu {{ request()->session()->get('admin-leftbar-state') != 'closed' && Auth::user()->admin->getMenuLayout() == 'left' && in_array($menu, ['plan','currency','tax','invoice','public_view']) ? 'show' : '' }}">
 							@if (Auth::user()->can("read", new Acelle\Model\Plan()))
 								<li class="nav-item {{ in_array($menu, ['plan']) ? 'active' : '' }}">
 									<a href="{{ action('Admin\PlanController@index') }}" class="dropdown-item d-flex align-items-center">
@@ -105,6 +105,15 @@
 									</i>{{ trans('messages.invoice_template') }}
 								</a>
 							</li>
+                            @if (config("custom.japan"))
+                                <li class="nav-item {{ in_array($menu, ['public_view']) ? 'active' : '' }}">
+                                    <a href="{{ action('Admin\PlanController@publicView') }}" class="dropdown-item d-flex align-items-center">
+                                        <i class="navbar-icon" style="width: 20px;">
+                                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1" x="0px" y="0px" viewBox="0 0 107.6 90.9" style="enable-background:new 0 0 107.6 90.9;" xml:space="preserve"><style type="text/css">.st0{fill:#333333;}</style><g id="Layer_2_1_"><g id="Layer_1-2"><path class="st0" d="M32.7,90.9h-25c-4.2,0-7.7-3.1-7.7-6.8V6.8C0,3.1,3.5,0,7.7,0h76.2c4.2,0,7.7,3.1,7.7,6.8v23.3 c0,1.9-1.6,3.5-3.5,3.5s-3.5-1.6-3.5-3.5V7.2C84.5,7.1,84.2,7,83.9,7H7.7C7.4,7,7.1,7.1,7,7.2v76.6c0.1,0.1,0.4,0.2,0.7,0.2h21.5 v-9.7c0-1.9,1.6-3.5,3.5-3.5s3.5,1.6,3.5,3.5v13.2C36.2,89.3,34.6,90.9,32.7,90.9z"></path><path class="st0" d="M32.7,61.6H3.5C1.6,61.6,0,60,0,58.1s1.6-3.5,3.5-3.5h29.2c1.9,0,3.5,1.6,3.5,3.5S34.6,61.6,32.7,61.6z"></path><path class="st0" d="M88.1,33.6H3.5C1.6,33.6,0,32,0,30.1s1.6-3.5,3.5-3.5h84.6c1.9,0,3.5,1.6,3.5,3.5S90,33.6,88.1,33.6z"></path><path class="st0" d="M72,22.2c-3.6,0-6.5-2.8-6.5-6.3c0-3.5,2.9-6.3,6.5-6.3s6.5,2.8,6.5,6.3C78.5,19.4,75.6,22.2,72,22.2z M72,15.2c-0.2,0-0.5,0.3-0.5,0.7c0,0.4,0.3,0.7,0.5,0.7s0.5-0.3,0.5-0.7C72.5,15.5,72.2,15.2,72,15.2z"></path><path class="st0" d="M57,19.4H18.9c-1.9,0-3.5-1.6-3.5-3.5s1.6-3.5,3.5-3.5H57c1.9,0,3.5,1.6,3.5,3.5S58.9,19.4,57,19.4z"></path><path class="st0" d="M55.5,47.9H18.9c-1.9,0-3.5-1.6-3.5-3.5s1.6-3.5,3.5-3.5h36.6c1.9,0,3.5,1.6,3.5,3.5S57.4,47.9,55.5,47.9z"></path><path class="st0" d="M32.7,77.7H18.9c-1.9,0-3.5-1.6-3.5-3.5s1.6-3.5,3.5-3.5h13.8c1.9,0,3.5,1.6,3.5,3.5S34.6,77.7,32.7,77.7z"></path><path class="st0" d="M63,84.7c-1,0-1.9-0.4-2.6-1.2l-19-21.8c-1.3-1.5-1.1-3.7,0.3-4.9c1.5-1.3,3.7-1.1,4.9,0.3l16.7,19.2 l38.5-32.2c1.5-1.2,3.7-1,4.9,0.4c1.2,1.5,1,3.7-0.4,4.9L65.2,83.9C64.6,84.4,63.8,84.7,63,84.7z"></path></g></g></svg>
+                                        </i>{{ trans('messages.plan.public_view') }}
+                                    </a>
+                                </li>
+                            @endif
 						</ul>
 					</li>
 				@endif

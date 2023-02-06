@@ -2501,6 +2501,8 @@
   'subscription.cancel' => 'Cancel',
   'subscription.cancel.confirm' => 'You\'re about to cancel subscription. You\'re still subscribed until the end of period',
   'subscription.cancel_now' => 'Cancel now',
+  'default_from_email' => 'デフォルトのFROMメールアドレス',
+  'default_from_email_address' => ' メール<span class="keyword">送信アドレス</span>',
   'subscription.cancel_now.confirm' => 'You\'re about to cancel subscription before its due date. Are you sure you want to cancel it? This action cannot be undone',
   'subscription.cancel_now_change_other_plan' => 'Change your mind? Click here to cancel this invoice.',
   'subscription.cancelled' => 'The subscription was successfully cancelled',
@@ -3057,4 +3059,8 @@
   'your_api_token' => 'Your API token',
   'your_current_license' => 'Thank you for purchasing! Below is your license key, also known as Purchase Code. Your license type is',
   'zip_postal_code' => 'Zip / Postal code',
+  'plan.public_view' => 'Public list view',
+  'plan.public_view.title' => 'List of plans',
+  'plan.public_view.desc' => 'Below is the public list of plans that show to customers so they can select a plan',
+  'plan.view_public_page' => 'View public page',
 ) ?>

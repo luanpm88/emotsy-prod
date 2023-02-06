@@ -6,6 +6,9 @@
     
     <form enctype="multipart/form-data" action="{{ action('UserController@register') }}" method="POST" class="form-validate-jqueryz subscription-form">
         {{ csrf_field() }}
+
+        <input type="hidden" name="plan_uid" value="{{ request()->plan_uid }}" />
+
         <div class="row mc-form">
             <div class="col-md-1"></div>
             <div class="col-md-3 text-center pb-4">

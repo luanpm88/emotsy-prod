@@ -670,7 +670,7 @@ class Plan extends Model
         if ($this->getOption('max_file_size_upload') == -1) {
             return trans('messages.unlimited');
         } else {
-            return $this->getOption('max_file_size_upload');
+            return number_with_delimiter($this->getOption('max_file_size_upload'));
         }
     }
 

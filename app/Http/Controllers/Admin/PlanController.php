@@ -1008,4 +1008,18 @@ class PlanController extends Controller
             'message' => trans('messages.plan.hidden'),
         ], 201);
     }
+
+    public function publicView(Request $request)
+    {
+        // authorize
+        if (\Gate::denies('read', new Plan())) {
+            return $this->notAuthorized();
+        }
+
+        $plans = Plan::getAvailablePlans();
+
+        return view('admin.plans.publicView', [
+            'plans' => $plans,
+        ]);
+    }
 }
