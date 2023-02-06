@@ -9,8 +9,8 @@
                 <td>
                     <h3 class="mb-1 font-weight-semibold">{{ $plan->name }}</h3>
                     <p class="mb-2">{{ $plan->description }}</p>
-                    <p class="mb-2 font-weight-semibold">
-                        {{ \Acelle\Library\Tool::format_price($plan->price, $plan->currency->format) }}
+                    <p class="mb-2 font-weight-semibold fs-6">
+                        <span class="fs-3">{{ \Acelle\Library\Tool::format_price($plan->price, $plan->currency->format) }}</span>
                         / {!! $plan->displayFrequencyTime() !!}
                     </p>
                     <p class="mb-0 py-3">

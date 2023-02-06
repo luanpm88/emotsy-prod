@@ -61,7 +61,7 @@
                     </script>
                 @endif
 
-                <div class="text-center my-4 pb-5">
+                <div class="text-center my-4 pt-4 pb-5">
                     <img src="{{ getSiteLogoUrl('dark') }}" alt="" width="300px">
                 </div>
 
