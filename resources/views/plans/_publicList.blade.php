@@ -1,5 +1,5 @@
 <div>
-    <table class="table table-bordered box-shadow-sm rounded">
+    <table class="table table-bordered box-shadow-sm rounded bg-white">
         <tr>
             <th width="250px" class="bg-light" style="vertical-align:middle;align-items:center">
                 {{ trans('messages.plan_name') }}
