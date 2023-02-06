@@ -3063,5 +3063,5 @@
   'your_api_token' => 'Your API token',
   'your_current_license' => 'Thank you for purchasing! Below is your license key, also known as Purchase Code. Your license type is',
   'zip_postal_code' => 'Zip / Postal code',
-  'select_plan.logged_in.logout_current_account' => 'You are currently logged as :username. Click logout button bellow to logout of current account.',
+  'select_plan.logged_in.logout_current_account' => 'You are currently logged in as luanpm88@gmail.com. Click the button below to log out of your current account.',
 ) ?>
