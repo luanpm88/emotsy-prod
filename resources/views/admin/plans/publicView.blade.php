@@ -1,5 +1,5 @@
 @extends('layouts.core.backend', [
-	'menu' => 'plan',
+	'menu' => 'public_view',
 ])
 
 @section('title', trans('messages.plans'))
