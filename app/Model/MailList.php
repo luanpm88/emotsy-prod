@@ -1160,7 +1160,7 @@ class MailList extends Model
      */
     public function import($file, $mapArray = null, $progressCallback = null, $invalidRecordCallback = null)
     {
-        /* START trick: auto generate map */
+        /* START trick: auto generate map if there is no map passed to the function */
 
         if (is_null($mapArray)) {
             list($headers, $total, $results) = $this->readCsv($file);
