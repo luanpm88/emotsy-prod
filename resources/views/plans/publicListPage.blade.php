@@ -28,19 +28,19 @@
 
 			<!-- Main content -->
 			<div class="content-wrapper">
-                
-                <div class="text-center my-4 pb-5">
-                    <img src="{{ getSiteLogoUrl('dark') }}" alt="" width="300px">
+                <div class="px-4">
+                    <div class="text-center mb-5 pb-4 border-bottom">
+                        <img src="{{ getSiteLogoUrl('dark') }}" alt="" width="200px">
+                    </div>
+
+                    {{-- <h1>{{ \Acelle\Model\Setting::get('site_name') }}</h1>
+                    <p>{{ \Acelle\Model\Setting::get('site_description') }}</p> --}}
+
+                    <!-- main inner content -->
+                    @include('plans.publicView.' . $style, [
+                        'plans' => $plans,
+                    ])
                 </div>
-
-                {{-- <h1>{{ \Acelle\Model\Setting::get('site_name') }}</h1>
-                <p>{{ \Acelle\Model\Setting::get('site_description') }}</p> --}}
-
-				<!-- main inner content -->
-				@include('plans.publicView.' . $style, [
-                    'plans' => $plans,
-                ])
-
 			</div>
 			<!-- /main content -->
 
