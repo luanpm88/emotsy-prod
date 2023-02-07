@@ -722,7 +722,7 @@ class MailList extends Model
         $pageSize = 1000;
 
         if (!is_null($progressCallback)) {
-            $progressCallback($processed, $total, $failed, $message = 'エクスポートが進行中です...');
+            $progressCallback($processed, $total, $failed, $message = trans('messages.list.export.in_progress.msg'));
         }
 
         $file = $this->getExportFilePath();

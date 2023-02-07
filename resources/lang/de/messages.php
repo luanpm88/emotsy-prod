@@ -1431,6 +1431,7 @@
   'list.embedded_form.redirect_url' => 'Benutzerdefinierte Weiterleitungs-URL',
   'list.error.cannot_send_notification_email' => 'The application attempted to send an email entitled ":title" to :email. However, there was a problem with the SMTP service. Please check your sending server settings. Error from the SMTP service: :error',
   'list.export.cancel' => 'Möchten Sie den Exportauftrag wirklich abbrechen?',
+  'list.export.in_progress.msg' => 'Export is in progress...',
   'list.form.desc' => 'Formulare zum Sammeln der von Ihnen benötigten Kontaktdaten um Ihr Publikum zu vergrößern',
   'list.from_email.help' => 'This is the address people will reply to.',
   'list.from_name.help' => 'This is who your emails will come from. Use something they\'ll instantly recognize, like your company name.',

@@ -1432,6 +1432,7 @@
   'list.embedded_form.redirect_url' => 'URL di reindirizzamento personalizzato',
   'list.error.cannot_send_notification_email' => 'The application attempted to send an email entitled ":title" to :email. However, there was a problem with the SMTP service. Please check your sending server settings. Error from the SMTP service: :error',
   'list.export.cancel' => 'Siete sicuri di voler annullare il lavoro di esportazione?',
+  'list.export.in_progress.msg' => 'Export is in progress...',
   'list.form.desc' => 'Moduli per raccogliere i dati di contatto necessari a far crescere il vostro pubblico',
   'list.from_email.help' => 'Questo &egrave; l\'indirizzo a cui le persone risponderanno.',
   'list.from_name.help' => 'Questo &egrave; il destinatario delle vostre e-mail. Utilizzate qualcosa che riconosceranno immediatamente, come il nome della vostra azienda.',

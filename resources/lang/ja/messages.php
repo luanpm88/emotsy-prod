@@ -1432,6 +1432,7 @@
   'list.embedded_form.redirect_url' => 'カスタムリダイレクトURL',
   'list.error.cannot_send_notification_email' => 'The application attempted to send an email entitled ":title" to :email. However, there was a problem with the SMTP service. Please check your sending server settings. Error from the SMTP service: :error',
   'list.export.cancel' => 'エクスポートジョブをキャンセルしてもよろしいですか？',
+  'list.export.in_progress.msg' => 'エクスポートが進行中です...',
   'list.form.desc' => '必要な連絡先データを収集するためのフォーム あなたの聴衆を増やすために',
   'list.from_email.help' => 'これは、返信するアドレスです。',
   'list.from_name.help' => 'これは、あなたのメールの送信元です。 会社名など、すぐにわかるものを使用してください。',
