@@ -259,7 +259,7 @@
                 </a>
                     
                 <p class="mt-5">
-                    {{ trans('messages.sending_serbers.php-mail.allow_verify.intro') }}                    
+                    {{ trans('messages.sending_serbers.smtp.allow_verify.intro') }}
                 </p>
                     
                 @include('helpers.form_control', [

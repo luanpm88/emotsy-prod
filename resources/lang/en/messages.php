@@ -2165,6 +2165,7 @@
   'sending_serbers.go_to_sparkpost_dashboard' => 'Go to Sparkpost dashboard',
   'sending_serbers.remove_email_domain' => 'Delete',
   'sending_serbers.sendgrid.allow_verify.intro' => 'You can also allow your users to verify an identity on their own. That is, user can request to verify their own email address or domain against your Sendgrid account',
+  'sending_serbers.smtp.allow_verify.intro' => 'You can enable the options below to allow your users to verify and use their own sending identities and/or domains.',
   'sending_server' => 'Sending server',
   'sending_server.action' => 'Action',
   'sending_server.add_email_domain' => 'Add email/domain',
