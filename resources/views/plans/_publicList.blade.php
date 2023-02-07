@@ -86,7 +86,7 @@
             </th>
             @foreach($plans as $plan)
                 <td>
-                    <span>{{ $plan->displayMaxSizeUploadTotal() }}</span>
+                    <span>{{ $plan->displayMaxSizeUploadTotal() }} MB</span>
                 </td>
             @endforeach
         </tr>
@@ -96,7 +96,7 @@
             </th>
             @foreach($plans as $plan)
                 <td>
-                    <span>{{ $plan->displayFileSizeUpload() }}</span>
+                    <span>{{ $plan->displayFileSizeUpload() }} MB</span>
                 </td>
             @endforeach
         </tr>
