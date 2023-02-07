@@ -57,7 +57,7 @@
             </th>
             @foreach($plans as $plan)
                 <td>
-                    <span>{{ $plan->displayTotalQuota() }}</span>
+                    <span>{!! $plan->displayTotalQuota() !!}</span>
                 </td>
             @endforeach
         </tr>
@@ -67,7 +67,7 @@
             </th>
             @foreach($plans as $plan)
                 <td>
-                    <span>{{ $plan->displayMaxList() }}</span>
+                    <span>{!! $plan->displayMaxList() !!}</span>
                 </td>
             @endforeach
         </tr>
@@ -77,7 +77,7 @@
             </th>
             @foreach($plans as $plan)
                 <td>
-                    <span>{{ $plan->displayMaxSubscriber() }}</span>
+                    <span>{!! $plan->displayMaxSubscriber() !!}</span>
                 </td>
             @endforeach
         </tr>
@@ -87,7 +87,7 @@
             </th>
             @foreach($plans as $plan)
                 <td>
-                    <span>{{ $plan->displayMaxCampaign() }}</span>
+                    <span>{!! $plan->displayMaxCampaign() !!}</span>
                 </td>
             @endforeach
         </tr>
@@ -97,7 +97,7 @@
             </th>
             @foreach($plans as $plan)
                 <td>
-                    <span>{{ $plan->displayMaxSizeUploadTotal() }} MB</span>
+                    <span>{!! $plan->displayMaxSizeUploadTotal() !!} MB</span>
                 </td>
             @endforeach
         </tr>
@@ -107,7 +107,7 @@
             </th>
             @foreach($plans as $plan)
                 <td>
-                    <span>{{ $plan->displayFileSizeUpload() }} MB</span>
+                    <span>{!! $plan->displayFileSizeUpload() !!} MB</span>
                 </td>
             @endforeach
         </tr>
@@ -127,7 +127,7 @@
             </th>
             @foreach($plans as $plan)
                 <td class="{{ $plan->getOption('create_sending_domains') == 'no' ? 'bg-light' : '' }}">
-                    <span>{{ $plan->displayAllowCreateSendingDomain() }}</span>
+                    <span>{!! $plan->displayAllowCreateSendingDomain() !!}</span>
                 </td>
             @endforeach
         </tr>
