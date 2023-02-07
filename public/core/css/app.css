@@ -8155,3 +8155,9 @@ label.checker input:disabled ~ .checker-symbol {
 .bg-light2 {
     background-color: rgba(0,0,0,0.05)!important;
 }
+.price-list-col-1 {
+    max-width: 600px;
+}
+.price-list-col-2 {
+    max-width: 1000px;
+}

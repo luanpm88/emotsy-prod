@@ -22,9 +22,11 @@ class PlanController extends Controller
     public function publicListPage(Request $request)
     {
         $plans = Plan::getAvailablePlans();
+        $style = $request->style ?? 'default';
 
         return view('plans.publicListPage', [
             'plans' => $plans,
+            'style' => $style,
         ]);
     }
 }

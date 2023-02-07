@@ -23,18 +23,7 @@
 
 @section('content')
 
-    <div class="row mb-4">
-        <div class="col-md-8"><p class="mb-0">{{ trans('messages.plan.public_view.desc') }}</p></div>
-        <div class="col-md-4">
-            <div class="text-end">
-                <a target="_blank" href="{{ action("PlanController@publicListPage") }}" role="button" class="btn btn-primary modal-action">
-                    <span class="material-symbols-rounded">open_in_new</span> {{ trans('messages.plan.view_public_page') }}
-                </a>
-            </div>
-        </div>
-    </div>
-
-    @include('plans._publicList', [
+    @include('admin.plans.publicView.' . $style, [
         'plans' => $plans,
     ])
 

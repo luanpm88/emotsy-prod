@@ -1018,8 +1018,11 @@ class PlanController extends Controller
 
         $plans = Plan::getAvailablePlans();
 
+        $style = $request->style ?? 'default';
+
         return view('admin.plans.publicView', [
             'plans' => $plans,
+            'style' => $style,
         ]);
     }
 }

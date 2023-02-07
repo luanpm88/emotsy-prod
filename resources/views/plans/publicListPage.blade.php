@@ -7,7 +7,7 @@
     @include('layouts.core._script_vars')
 </head>
 
-<body class="" style="background-color:#eee">
+<body class="" style="">
     
 
 	<!-- Page header -->
@@ -29,7 +29,7 @@
 			<!-- Main content -->
 			<div class="content-wrapper">
                 
-                <div class="text-center my-4 pt-4 pb-5">
+                <div class="text-center my-4 pb-5">
                     <img src="{{ getSiteLogoUrl('dark') }}" alt="" width="300px">
                 </div>
 
@@ -37,7 +37,7 @@
                 <p>{{ \Acelle\Model\Setting::get('site_description') }}</p> --}}
 
 				<!-- main inner content -->
-				@include('plans._publicList', [
+				@include('plans.publicView.' . $style, [
                     'plans' => $plans,
                 ])
 

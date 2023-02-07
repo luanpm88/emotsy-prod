@@ -1,8 +1,23 @@
+<style>
+    .price-list .btn-primary {
+        border-radius: 100px!important;
+        background-color: #fae150!important;
+        border: solid 1px #555;
+        color: #555;
+    }
+    .price-list .btn-primary:hover {
+        background-color: #faea90!important;
+    }
+    .price-list td, .price-list th {
+        padding: 10px 20px!important;
+    }
+</style>
+
 <div>
-    <table class="table table-bordered box-shadow-sm rounded bg-white">
-        <tr>
-            <th width="{{ round(50/(count($plans)+1)) }}%" class="bg-light text-center" style="vertical-align:middle;align-items:center">
-                {{ trans('messages.plan_name') }}
+    <table class="table table-bordered box-shadow-sm rounded bg-white price-list price-list-col-{{ count($plans) }}">
+        <tr style="border-bottom:none!important;">
+            <th rowspan="2" width="{{ round(50/(count($plans)+1)) }}%" class="text-center" style="vertical-align:middle;align-items:center">
+                {{ trans('messages.plan') }}
             </th>
 
             @foreach($plans as $plan)
@@ -12,11 +27,7 @@
                 </td>
             @endforeach
         </tr>
-        <tr>
-            <th width="{{ round(50/(count($plans)+1)) }}%" class="bg-light text-center" style="vertical-align:middle;align-items:center">
-                {{ trans('messages.price') }}
-            </th>
-
+        <tr style="border:none!important;">
             @foreach($plans as $plan)
                 <td width="{{ round(100/(count($plans)+1)) }}%">
                     <p class="mb-1 mt-2 font-weight-semibold fs-6 text-center">
@@ -56,13 +67,13 @@
                 {{ trans('messages.sending_quota_label') }}
             </th>
             @foreach($plans as $plan)
-                <td>
+                <td class="bg-light">
                     <span>{!! $plan->displayTotalQuota() !!}</span>
                 </td>
             @endforeach
         </tr>
         <tr>
-            <th class="fw-normal bg-light text-center">
+            <th class="fw-normal text-center">
                 {{ trans('messages.max_lists_label') }}
             </th>
             @foreach($plans as $plan)
@@ -76,13 +87,13 @@
                 {{ trans('messages.max_subscribers_label') }}
             </th>
             @foreach($plans as $plan)
-                <td>
+                <td class="bg-light">
                     <span>{!! $plan->displayMaxSubscriber() !!}</span>
                 </td>
             @endforeach
         </tr>
         <tr>
-            <th class="fw-normal bg-light text-center">
+            <th class="fw-normal text-center">
                 {{ trans('messages.max_campaigns_label') }}
             </th>
             @foreach($plans as $plan)
@@ -93,21 +104,21 @@
         </tr>
         <tr>
             <th class="fw-normal bg-light text-center">
-                {{ trans('messages.max_size_upload_total_label') }}
+                {{ trans('messages.max_size_upload_total_label') }} (MB)
             </th>
             @foreach($plans as $plan)
-                <td>
-                    <span>{!! $plan->displayMaxSizeUploadTotal() !!} MB</span>
+                <td class="bg-light">
+                    <span>{!! $plan->displayMaxSizeUploadTotal() !!}</span>
                 </td>
             @endforeach
         </tr>
         <tr>
-            <th class="fw-normal bg-light text-center">
-                {{ trans('messages.max_file_size_upload_label') }}
+            <th class="fw-normal text-center">
+                {{ trans('messages.max_file_size_upload_label') }} (MB)
             </th>
             @foreach($plans as $plan)
                 <td>
-                    <span>{!! $plan->displayFileSizeUpload() !!} MB</span>
+                    <span>{!! $plan->displayFileSizeUpload() !!}</span>
                 </td>
             @endforeach
         </tr>
@@ -116,13 +127,13 @@
                 {{ trans('messages.allow_create_sending_servers_label') }}
             </th>
             @foreach($plans as $plan)
-                <td class="{{ ($plan->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_OWN ? '' : 'bg-light') }}">
+                <td class="bg-light {{ ($plan->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_OWN ? '' : 'bg-light') }}">
                     <span>{!! $plan->displayAllowCreateSendingServer() !!}</span>
                 </td>
             @endforeach
         </tr>
         <tr>
-            <th class="fw-normal bg-light text-center">
+            <th class="fw-normal text-center">
                 {{ trans('messages.allow_create_sending_domains_label') }}
             </th>
             @foreach($plans as $plan)
@@ -136,7 +147,7 @@
                 {{ trans('messages.allow_create_email_verification_servers_label') }}
             </th>
             @foreach($plans as $plan)
-                <td class="{{ $plan->getOption('create_email_verification_servers') == 'no' ? 'bg-light' : '' }}">
+                <td class="bg-light {{ $plan->getOption('create_email_verification_servers') == 'no' ? 'bg-light' : '' }}">
                     <span>{!! $plan->displayAllowCreateEmailVerificationServer() !!}</span>
                 </td>
             @endforeach
