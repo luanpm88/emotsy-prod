@@ -421,6 +421,7 @@ class Campaign extends Model implements HasTemplateInterface
         'track_click', 'sign_dkim', 'track_fbl',
         'html', 'plain', 'template_source',
         'tracking_domain_id', 'use_default_sending_server_from_email',
+        'skip_failed_message'
     ];
 
     /**

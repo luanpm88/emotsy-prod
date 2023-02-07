@@ -715,6 +715,8 @@
   'campaign.send_now' => '今すぐ送信',
   'campaign.send_without_score_passed.warning' => 'メッセージはSpamScoreテストに合格しません。とにかく続行してもよろしいですか？',
   'campaign.sign_dkim.help' => '送信ドメイン (存在する場合) でEメールに署名し、Eメールが実際にあなたから送信されていることを受信メールサーバーに伝えます。 これは、メールの信頼性を確立し、配信率を向上させるのに役立ちます。',
+  'campaign.skip_failed_message.help' => '失敗したメッセージをスキップして残りのメッセージを続行するには、このオプションを有効にします。
+    キャンペーン全体を停止する代わりに。',
   'campaign.spam_score' => 'スパムスコア',
   'campaign.started_ago' => '開始 :time 前',
   'campaign.subject.help' => 'メール マーケティングに関して言えば、内容を売り込むのではなく、内容を伝える最高の件名です。',
@@ -2341,6 +2343,7 @@
   'site_offline_message' => 'オフラインメッセージ',
   'site_online' => 'オンラインステータス',
   'sites_management' => 'サイト管理',
+  'skip_failed_message' => '失敗したメッセージをスキップ',
   'smtp' => 'SMTP',
   'smtp_password' => 'SMTPパスワード',
   'smtp_port' => 'SMTP Port [465(SSLを利用しない場合は 587)]',

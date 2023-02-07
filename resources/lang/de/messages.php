@@ -714,6 +714,8 @@
   'campaign.send_now' => 'Send now',
   'campaign.send_without_score_passed.warning' => 'Ihre Nachricht besteht den SpamScore-Test nicht. Möchten Sie trotzdem fortfahren?',
   'campaign.sign_dkim.help' => 'Sign your email with your sending domain (if any), telling receiving email servers that your email is actually coming from you. This is to help establish the authenticity of your email, improving delivery rate.',
+  'campaign.skip_failed_message.help' => 'Enable this option to skip failed message and continue with the remaining
+    instead of stopping the whole campaign.',
   'campaign.spam_score' => 'Spam Score',
   'campaign.started_ago' => 'Startet :time',
   'campaign.subject.help' => 'When it comes to email marketing, the best subject lines tell what\'s inside instead of sell what\'s inside.',
@@ -2343,6 +2345,7 @@
   'site_offline_message' => 'Offline-Nachrichten',
   'site_online' => 'Online status',
   'sites_management' => 'Sites management',
+  'skip_failed_message' => 'Skip failed messages',
   'smtp' => 'SMTP',
   'smtp_password' => 'SMTP Password',
   'smtp_port' => 'SMTP Port',

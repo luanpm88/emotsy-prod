@@ -145,6 +145,16 @@
 						'help_class' => 'campaign',
 						'rules' => $rules
 					])
+
+                    @include('helpers.form_control', [
+                        'type' => 'checkbox',
+                        'name' => 'skip_failed_message',
+                        'label' => trans('messages.skip_failed_message'),
+                        'value' => $campaign->skip_failed_message,
+                        'options' => [false,true],
+                        'help_class' => 'campaign',
+                        'rules' => $rules
+                    ])
 					
 					<div class="select-tracking-domain">
 						@include('helpers.form_control', [

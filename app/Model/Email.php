@@ -35,7 +35,7 @@ class Email extends Model implements HasTemplateInterface
      * @var array
      */
     protected $fillable = [
-        'subject', 'from_email', 'from_name', 'reply_to', 'sign_dkim', 'track_open', 'track_click', 'action_id',
+        'subject', 'from_email', 'from_name', 'reply_to', 'sign_dkim', 'track_open', 'track_click', 'action_id', 'skip_failed_message',
     ];
 
     // Cached HTML content

@@ -125,6 +125,16 @@
                         ])
                     </div>
 
+                    @include('helpers.form_control', [
+                        'type' => 'checkbox3',
+                        'name' => 'skip_failed_message',
+                        'label' => trans('messages.skip_failed_message'),
+                        'value' => $email->skip_failed_message,
+                        'options' => [false,true],
+                        'help_class' => 'campaign',
+                        'rules' => $email->rules()
+                    ])
+
                     @if ($email->template)
 						<div class="webhooks-management">
 							<div class="d-flex align-items-center mb-2">

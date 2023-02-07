@@ -715,6 +715,8 @@
   'campaign.send_now' => 'Invia adesso',
   'campaign.send_without_score_passed.warning' => 'Il tuo messaggio non supera il test SpamScore, sei sicuro di voler procedere comunque?',
   'campaign.sign_dkim.help' => 'Firmate le vostre e-mail con il vostro dominio di invio (se presente), indicando ai server di posta elettronica riceventi che la vostra e-mail proviene effettivamente da voi. Questo aiuta a stabilire l\'autenticità dell\'e-mail, migliorando il tasso di consegna.',
+  'campaign.skip_failed_message.help' => 'Enable this option to skip failed message and continue with the remaining
+    instead of stopping the whole campaign.',
   'campaign.spam_score' => 'Punteggio Spam',
   'campaign.started_ago' => 'Avviato :time fa',
   'campaign.subject.help' => 'Quando si tratta di email marketing, le migliori righe di oggetto raccontano cosa c\'&egrave; dentro invece di vendere cosa c\'&egrave; dentro.',
@@ -2341,6 +2343,7 @@
   'site_offline_message' => 'Messaggio non in linea',
   'site_online' => 'Status Online',
   'sites_management' => 'Gestione dei siti',
+  'skip_failed_message' => 'Skip failed messages',
   'smtp' => 'SMTP',
   'smtp_password' => 'SMTP Password',
   'smtp_port' => 'SMTP Porta',
