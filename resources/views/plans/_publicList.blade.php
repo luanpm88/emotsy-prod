@@ -1,12 +1,12 @@
 <div>
     <table class="table table-bordered box-shadow-sm rounded bg-white">
         <tr>
-            <th width="250px" class="bg-light" style="vertical-align:middle;align-items:center">
+            <th width="{{ round(50/(count($plans)+1)) }}%" class="bg-light" style="vertical-align:middle;align-items:center">
                 {{ trans('messages.plan_name') }}
             </th>
 
             @foreach($plans as $plan)
-                <td>
+                <td width="{{ round(100/(count($plans)+1)) }}%">
                     <h3 class="mb-1 font-weight-semibold">{{ $plan->name }}</h3>
                     <p class="mb-2">{{ $plan->description }}</p>
                     <p class="mb-2 font-weight-semibold fs-6">
