@@ -156,8 +156,12 @@
                             ]) }}
                         </span>
                         <div class="mt-2">
-                            <button data-action="logout"  class="btn btn-secondary">
+                            <button data-action="logout"  class="btn btn-secondary me-1">
                                 <i class="icon-switch2"></i> {{ trans('messages.logout') }}
+                            </button>
+
+                            <button type="button"  class="btn btn-default" onclick="$('#loginWatningModal').modal('hide')">
+                                <i class="icon-switch2"></i> {{ trans('messages.close') }}
                             </button>
                         </div>
                     </div>
