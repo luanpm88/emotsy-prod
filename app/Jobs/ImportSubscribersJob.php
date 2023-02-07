@@ -44,7 +44,7 @@ class ImportSubscribersJob extends Base
                 'total' => 0,
                 'processed' => 0,
                 'failed' => 0,
-                'message' => 'Import is being queued for processing...',
+                'message' => trans('messages.list.import.queued.msg'),
                 'logfile' => null,
             ]);
         });
