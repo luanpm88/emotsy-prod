@@ -786,7 +786,6 @@ class MailList extends Model
             if (!is_null($progressCallback)) {
                 $progressCallback($processed, $total, $failed = 0, $message = trans('messages.list.export.in_progress.report', ['processed' => $processed, 'total' => $total]));
             }
-            sleep(2);
         });
 
         if (!is_null($progressCallback)) {
@@ -1187,12 +1186,13 @@ class MailList extends Model
         $overQuotaAttempt = false;
 
         if (!is_null($progressCallback)) {
-            $progressCallback($processed, $total, $failed, $message = 'Import is starting...');
+            $progressCallback($processed, $total, $failed, $message = trans('messages.list.import.starting'));
         }
 
         // Read CSV files
         list($headers, $total, $results) = $this->readCsv($file);
 
+        /*
         if (!is_null($progressCallback)) {
             $progressCallback($processed, $total, $failed, $message = 'Validating file headers...');
         }
@@ -1200,6 +1200,7 @@ class MailList extends Model
         if (!is_null($progressCallback)) {
             $progressCallback($processed, $total, $failed, $message = 'Loading records from file...');
         }
+        */
 
         try {
             // process by batches

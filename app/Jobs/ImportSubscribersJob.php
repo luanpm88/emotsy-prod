@@ -57,6 +57,9 @@ class ImportSubscribersJob extends Base
      */
     public function handle()
     {
+        \App::setLocale($this->list->customer->language->code);
+        \Carbon\Carbon::setLocale($this->list->customer->language->code);
+
         // Use a logger to log failed
         $formatter = new LineFormatter("[%datetime%] %channel%.%level_name%: %message%\n");
         $logfile = $this->file.".log";
