@@ -62,12 +62,30 @@
                     <hr>
 
                     <div>
-                        <p class="mb-2">{{ trans('messages.sending_quota_label') }}: {!! $plan->displayTotalQuota() !!}</p>
-                        <p class="mb-2">{{ trans('messages.max_lists_label') }}: {!! $plan->displayMaxList() !!}</p>
-                        <p class="mb-2">{{ trans('messages.max_subscribers_label') }}: {!! $plan->displayMaxSubscriber() !!}</p>
-                        <p class="mb-2">{{ trans('messages.max_campaigns_label') }}: {!! $plan->displayMaxCampaign() !!}</p>
-                        <p class="mb-2">{{ trans('messages.max_size_upload_total_label') }} (MB): {!! $plan->displayMaxSizeUploadTotal() !!}</p>
-                        <p class="mb-2">{{ trans('messages.max_file_size_upload_label') }} {MB}: {!! $plan->displayFileSizeUpload() !!}</p>
+                        <div class="mb-2 d-flex align-items-center">
+                            <span class="badge bg-light text-secondary me-auto">{{ trans('messages.sending_quota_label') }}</span>
+                            <span>{!! $plan->displayTotalQuota() !!}</span>
+                        </div>
+                        <div class="mb-2 d-flex align-items-center">
+                            <span class="badge bg-light text-secondary me-auto">{{ trans('messages.max_lists_label') }}</span>
+                            <span>{!! $plan->displayMaxList() !!}</span>
+                        </div>
+                        <div class="mb-2 d-flex align-items-center">
+                            <span class="badge bg-light text-secondary me-auto">{{ trans('messages.max_subscribers_label') }}</span>
+                            <span>{!! $plan->displayTotalQuota() !!}</span>
+                        </div>
+                        <div class="mb-2 d-flex align-items-center">
+                            <span class="badge bg-light text-secondary me-auto">{{ trans('messages.max_campaigns_label') }}</span>
+                            <span>{!! $plan->displayMaxCampaign() !!}</span>
+                        </div>
+                        <div class="mb-2 d-flex align-items-center">
+                            <span class="badge bg-light text-secondary me-auto">{{ trans('messages.max_size_upload_total_label') }}</span>
+                            <span>{!! $plan->displayMaxSizeUploadTotal() !!}</span>
+                        </div>
+                        <div class="mb-2 d-flex align-items-center">
+                            <span class="badge bg-light text-secondary me-auto">{{ trans('messages.max_file_size_upload_label') }}</span>
+                            <span>{!! $plan->displayFileSizeUpload() !!}</span>
+                        </div>
                     </div>
                 </div>
             @endforeach
