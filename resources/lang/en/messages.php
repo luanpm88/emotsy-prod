@@ -417,6 +417,7 @@
   'automation.profile_timeline_head' => 'Timeline',
   'automation.redirect_to_index' => 'Redirecting to automation list...',
   'automation.remove_this_action' => 'Remove this Action',
+  'automation.rollback.warning' => 'Automation is already finallized. Cannot rollback to previous state.',
   'automation.segment' => 'Segment',
   'automation.segment.all_list' => 'A whole list',
   'automation.select_automation_template' => 'Select automation template',

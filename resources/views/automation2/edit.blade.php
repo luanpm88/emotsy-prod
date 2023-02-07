@@ -443,7 +443,7 @@
                 e.preventDefault();
 
                 var dialog = new Dialog('alert', {
-                    message: '自動化はすでに完了しています。 以前の状態に戻すことができません。',
+                    message: '{{ trans('messages.automation.rollback.warning') }}',
                 });
             });
             
