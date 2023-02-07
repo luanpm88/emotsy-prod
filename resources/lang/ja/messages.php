@@ -1444,6 +1444,7 @@
   'list.import.instruction' => 'サーバーの最大アップロードファイルサイズは、<strong class="text-bold">:size</strong></span>に制限されています。入力ファイルがこの制限を超えていないことを確認してください。<br>使用可能なファイルタイプはCSVで、ヘッダー行にはEMAIL、FIRST_NAME、LAST_NAMEなどの列/フィールド名が含まれています... <br>ここからサンプル入力ファイルを<a target="_blank" href=":csv_link"><strong>こちらからダウンロードできます（Sample.csv）</strong></a>',
   'list.import.progress.queued' => 'インポートプロセスが処理されています...',
   'list.import.progress.running' => 'インポート中です...',
+  'list.import.queued.msg' => 'Import is being queued for processing...',
   'list.mail_list_count.desc' => '<span class="fw-600">:count</span>メールリストに登録されている連絡先の総数',
   'list.name.help' => 'これは購読者に表示されるので、適切なものにしてください。</span><br> <span>良い例: 「Acme Company Newsletter」</span><br> <span>悪い例: 「Cust_11_01_2007」</span>',
   'list.no_date_or_datetime_field' => '選択したリストには、DATEまたはDATETIMEタイプのカスタムフィールドはありません。 メールリストのフィールド設定ページに移動し、生年月日というカスタムフィールドを追加します',

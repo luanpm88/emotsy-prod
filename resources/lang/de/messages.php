@@ -1443,6 +1443,7 @@
   'list.import.instruction' => 'Die maximale Upload-Dateigröße des Servers ist auf begrenzt <strong class="text-bold">:size</strong></span>. Stellen Sie sicher, dass Ihre Eingabedatei dieses Limit nicht überschreitet.<br>Der zulässige Dateityp ist CSV mit einer Kopfzeile mit Spalten-/Feldnamen wie EMAIL, FIRST_NAME, LAST_NAME...<br>Sie können eine Beispieleingabedatei herunterladen <a target="_blank" href=":csv_link"><strong> hier (Beispiel.csv)</strong></a>',
   'list.import.progress.queued' => 'Importvorgang wird bearbeitet...',
   'list.import.progress.running' => 'Import läuft...',
+  'list.import.queued.msg' => 'Import is being queued for processing...',
   'list.mail_list_count.desc' => 'Gesamtzahl der <span class="fw-600">:count</spam> Maillisten abonnierten Kontakte',
   'list.name.help' => '<span>Your subscribers will see this, so make it something appropriate.</span><br> <span>Good example: “Acme Company Newsletter”</span><br> <span>Bad example: “Cust_11_01_2007”</span>',
   'list.no_date_or_datetime_field' => 'Die ausgewählte Liste enthält kein benutzerdefiniertes Feld vom Typ DATE oder DATETIME. Gehen Sie zur Einstellungsseite für die Felder Ihrer Mailliste und fügen Sie ein benutzerdefiniertes Feld für das Geburtsdatum hinzu',

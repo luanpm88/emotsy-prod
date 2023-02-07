@@ -1444,6 +1444,7 @@
   'list.import.instruction' => 'La dimensione max dei file caricati dal server &egrave; limitata a <strong class="text-bold">:size</strong></span>. Assicurarsi che il file di input non superi questo limite.<br>Il tipo di file accettabile &egrave; CSV con una riga di intestazione contenente i nomi delle colonne e dei campi, come ad esempio EMAIL, FIRST_NAME, LAST_NAME...<br>&Egrave; possibile scaricare un file di input di esempio <a href=":csv_link"><strong> qui (Sample.csv)</strong></a>',
   'list.import.progress.queued' => 'L\'importazione &egrave; in coda per l\'elaborazione (lavoro inviato)...',
   'list.import.progress.running' => 'L\'importazione &egrave; in corso...',
+  'list.import.queued.msg' => 'Import is being queued for processing...',
   'list.mail_list_count.desc' => 'Totale contatti<br>iscritti alle liste di posta <span class="fw-600">:count</span>',
   'list.name.help' => '<span>I vostri abbonati lo vedranno, quindi fate in modo che sia qualcosa di appropriato.</span><br> <span>Un buon esempio: “Newsletter della Azienda Acme”</span><br> <span>Un cattivo esempio: “Cust_11_01_2007”</span>',
   'list.no_date_or_datetime_field' => 'La lista selezionata non ha alcun campo personalizzato di tipo DATE o DATETIME. Andate alla pagina di impostazione dei campi della vostra lista di posta e aggiungete un campo personalizzato di tipo Data di nascita.',

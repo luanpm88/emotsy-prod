@@ -1444,6 +1444,7 @@
   'list.import.instruction' => 'Server\'s max upload file size is limited to <strong class="text-bold">:size</strong></span>. Make sure your input file does not exceed this limit.<br>Acceptable file type is CSV with a header row containing the column / field names like EMAIL, FIRST_NAME, LAST_NAME...<br>You can download a sample input file <a href=":csv_link"><strong> here (Sample.csv)</strong></a>',
   'list.import.progress.queued' => 'Import is being queued for processing (job dispatched)...',
   'list.import.progress.running' => 'Importing is in progress...',
+  'list.import.queued.msg' => 'Import is being queued for processing...',
   'list.mail_list_count.desc' => 'Total contacts<br>subscribed to <span class="fw-600">:count</span> mail lists',
   'list.name.help' => '<span>Your subscribers will see this, so make it something appropriate.</span><br> <span>Good example: “Acme Company Newsletter”</span><br> <span>Bad example: “Cust_11_01_2007”</span>',
   'list.no_date_or_datetime_field' => 'The selected list does not have any custom field of DATE or DATETIME type. Go to your mail list\'s fields setting page and add a custom field of Date of Birth',

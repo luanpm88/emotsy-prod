@@ -1437,6 +1437,7 @@
   'list.from_email.help' => 'This is the address people will reply to.',
   'list.from_name.help' => 'This is who your emails will come from. Use something they\'ll instantly recognize, like your company name.',
   'list.go_to_mail_lists' => 'Go to Mail Lists',
+  'list.import.queued.msg' => 'Import is being queued for processing...',
   'list.import.cancel' => 'Are you sure you want to cancel the import job?',
   'list.import.error.header_empty' => 'Header of column #:index is empty',
   'list.import.errors.email_missing' => 'There is no email field in fields map',
