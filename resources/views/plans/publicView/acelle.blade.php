@@ -18,7 +18,7 @@
                         <label class="plan-title fs-5 fw-600 mt-0">{{ $plan->name }}</label>
                     </div>
 
-                    <div style="height: 130px">
+                    <div style="height: 150px">
                         <p class="mt-4">{{ $plan->description }}</p>
                     </div>
 

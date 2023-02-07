@@ -29,8 +29,8 @@
 			<!-- Main content -->
 			<div class="content-wrapper">
                 <div class="px-4">
-                    <div class="text-center mb-5 pb-4 border-bottom">
-                        <img src="{{ getSiteLogoUrl('dark') }}" alt="" width="200px">
+                    <div class="text-start mb-5 pb-4 border-bottom">
+                        <img src="{{ getSiteLogoUrl('dark') }}" alt="" height="50px">
                     </div>
 
                     {{-- <h1>{{ \Acelle\Model\Setting::get('site_name') }}</h1>
