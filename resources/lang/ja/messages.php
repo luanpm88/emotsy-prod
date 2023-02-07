@@ -969,7 +969,6 @@
   'default' => 'デフォルト',
   'default_email_subject' => 'メールサブジェクト名',
   'default_from_email' => 'デフォルトのFROMメールアドレス',
-  'default_from_email_address' => ' メール<span class="keyword">送信アドレス</span>',
   'default_from_name' => 'メール <span class="keyword">送信者名</span>',
   'default_from_your_contact_information' => 'デフォルトの連絡先情報 - <a href=":link">編集</a>',
   'default_language' => 'デフォルトの言語',

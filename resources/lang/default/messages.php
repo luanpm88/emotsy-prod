@@ -715,6 +715,8 @@
   'campaign.send_now' => 'Send now',
   'campaign.send_without_score_passed.warning' => 'Your message does not pass SpamScore test, are you sure you want to proceed anyway?',
   'campaign.sign_dkim.help' => 'Sign your email with your sending domain (if any), telling receiving email servers that your email is actually coming from you. This is to help establish the authenticity of your email, improving delivery rate.',
+  'campaign.skip_failed_message.help' => 'Enable this option to skip failed message and continue with the remaining
+    instead of stopping the whole campaign.',
   'campaign.spam_score' => 'Spam Score',
   'campaign.started_ago' => 'Started :time ago',
   'campaign.subject.help' => 'When it comes to email marketing, the best subject lines tell what\'s inside instead of sell what\'s inside.',
@@ -966,8 +968,7 @@
   'days_of_week' => 'Days of week',
   'default' => 'Default',
   'default_email_subject' => 'Default email subject',
-  'default_from_email' => 'デフォルトのFROMメールアドレス',
-  'default_from_email_address' => ' メール<span class="keyword">送信アドレス</span>',
+  'default_from_email' => 'Default FROM email',
   'default_from_name' => 'Default <span class="keyword">From name</span>',
   'default_from_your_contact_information' => 'Default from your contact information - <a href=":link">Edit</a>',
   'default_language' => 'Default language',
@@ -2344,6 +2345,7 @@
   'site_offline_message' => 'Offline message',
   'site_online' => 'Online status',
   'sites_management' => 'Sites management',
+  'skip_failed_message' => 'Skip failed messages',
   'smtp' => 'SMTP',
   'smtp_password' => 'SMTP Password',
   'smtp_port' => 'SMTP Port',
@@ -3065,7 +3067,4 @@
   'your_api_token' => 'Your API token',
   'your_current_license' => 'Thank you for purchasing! Below is your license key, also known as Purchase Code. Your license type is',
   'zip_postal_code' => 'Zip / Postal code',
-  'skip_failed_message' => 'Skip failed messages',
-  'campaign.skip_failed_message.help' => 'Enable this option to skip failed message and continue with the remaining
-    instead of stopping the whole campaign.',
 ) ?>
