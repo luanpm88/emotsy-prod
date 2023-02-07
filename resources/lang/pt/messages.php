@@ -2061,7 +2061,8 @@
   'select_list.ok' => 'Go',
   'select_list_default_intro' => 'Select a mail list from select box below to continue',
   'select_plan' => 'Selecione o plano',
-  'select_plan.logged_in.logout_current_account' => 'You have currently logged in as :username. Click the button below to log out of your current account.',
+  'select_plan.logged_in.logout_current_account' => 'You`re currently logged in as :username, please logout or use a different browser to register as a new user
+',
   'select_plan.wording' => 'You need to subscribe to a plan in order to experience the application. Choose one of plans below to subcribe for using the app:',
   'select_sending_server_with_subaccount' => 'Select sending server with subaccount',
   'select_sending_servers' => 'Select sending servers',
