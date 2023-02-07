@@ -1,7 +1,7 @@
 <div>
     <table class="table table-bordered box-shadow-sm rounded bg-white">
         <tr>
-            <th width="{{ round(50/(count($plans)+1)) }}%" class="bg-light" style="vertical-align:middle;align-items:center">
+            <th width="{{ round(50/(count($plans)+1)) }}%" class="bg-light text-center" style="vertical-align:middle;align-items:center">
                 {{ trans('messages.plan_name') }}
             </th>
 
@@ -41,7 +41,7 @@
             @endforeach
         </tr>
         <tr>
-            <th class="fw-normal bg-light">
+            <th class="fw-normal bg-light text-center">
                 {{ trans('messages.sending_quota_label') }}
             </th>
             @foreach($plans as $plan)
@@ -51,7 +51,7 @@
             @endforeach
         </tr>
         <tr>
-            <th class="fw-normal bg-light">
+            <th class="fw-normal bg-light text-center">
                 {{ trans('messages.max_lists_label') }}
             </th>
             @foreach($plans as $plan)
@@ -61,7 +61,7 @@
             @endforeach
         </tr>
         <tr>
-            <th class="fw-normal bg-light">
+            <th class="fw-normal bg-light text-center">
                 {{ trans('messages.max_subscribers_label') }}
             </th>
             @foreach($plans as $plan)
@@ -71,7 +71,7 @@
             @endforeach
         </tr>
         <tr>
-            <th class="fw-normal bg-light">
+            <th class="fw-normal bg-light text-center">
                 {{ trans('messages.max_campaigns_label') }}
             </th>
             @foreach($plans as $plan)
@@ -81,7 +81,7 @@
             @endforeach
         </tr>
         <tr>
-            <th class="fw-normal bg-light">
+            <th class="fw-normal bg-light text-center">
                 {{ trans('messages.max_size_upload_total_label') }}
             </th>
             @foreach($plans as $plan)
@@ -91,7 +91,7 @@
             @endforeach
         </tr>
         <tr>
-            <th class="fw-normal bg-light">
+            <th class="fw-normal bg-light text-center">
                 {{ trans('messages.max_file_size_upload_label') }}
             </th>
             @foreach($plans as $plan)
@@ -101,7 +101,7 @@
             @endforeach
         </tr>
         <tr>
-            <th class="fw-normal bg-light">
+            <th class="fw-normal bg-light text-center">
                 {{ trans('messages.allow_create_sending_servers_label') }}
             </th>
             @foreach($plans as $plan)
@@ -111,7 +111,7 @@
             @endforeach
         </tr>
         <tr>
-            <th class="fw-normal bg-light">
+            <th class="fw-normal bg-light text-center">
                 {{ trans('messages.allow_create_sending_domains_label') }}
             </th>
             @foreach($plans as $plan)
@@ -121,7 +121,7 @@
             @endforeach
         </tr>
         <tr>
-            <th class="fw-normal bg-light">
+            <th class="fw-normal bg-light text-center">
                 {{ trans('messages.allow_create_email_verification_servers_label') }}
             </th>
             @foreach($plans as $plan)
