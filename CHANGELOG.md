@@ -1,4 +1,4 @@
-4.0.24-p492 / 2023-02-02
+4.0.24-p497 / 2023-02-02
 ==================
 
  * Added: Italian language pack is now available by default.
