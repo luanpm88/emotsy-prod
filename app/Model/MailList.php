@@ -784,12 +784,13 @@ class MailList extends Model
 
             // Callback
             if (!is_null($progressCallback)) {
-                $progressCallback($processed, $total, $failed = 0, $message = sprintf('エクスポートが進行中です, %s / %s records written', $processed, $total));
+                $progressCallback($processed, $total, $failed = 0, $message = trans('messages.list.export.in_progress.report', ['processed' => $processed, 'total' => $total]));
             }
+            sleep(2);
         });
 
         if (!is_null($progressCallback)) {
-            $progressCallback($processed, $total, $failed = 0, $message = sprintf('エクスポート完了, 処理済み：%s / %s', $processed, $total));
+            $progressCallback($processed, $total, $failed = 0, $message = trans('messages.list.export.complete.report', ['processed' => $processed, 'total' => $total]));
         }
     }
 
