@@ -2061,7 +2061,7 @@
   'select_list.ok' => 'Weiter',
   'select_list_default_intro' => 'Wählen Sie eine E-Mail-Liste aus dem Auswahlfeld unten aus, um fortzufahren',
   'select_plan' => 'Paket auswählen',
-  'select_plan.logged_in.logout_current_account' => 'You`re currently logged in as :username, please logout or use a different browser to register as a new user
+  'select_plan.logged_in.logout_current_account' => 'You\'re currently logged in as :username, please logout or use a different browser to register as a new user
 ',
   'select_plan.wording' => 'Sie müssen einen Plan abonnieren, um die Anwendung zu testen. Wählen Sie einen der folgenden Pläne, um die App zu abonnieren:',
   'select_sending_server_with_subaccount' => 'Wähle Versandserver mit Sub-Account',

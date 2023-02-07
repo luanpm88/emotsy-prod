@@ -9,16 +9,27 @@
                 <td width="{{ round(100/(count($plans)+1)) }}%">
                     <h3 class="mb-1 font-weight-semibold">{{ $plan->name }}</h3>
                     <p class="mb-2">{{ $plan->description }}</p>
-                    <p class="mb-2 font-weight-semibold fs-6">
+                </td>
+            @endforeach
+        </tr>
+        <tr>
+            <th width="{{ round(50/(count($plans)+1)) }}%" class="bg-light text-center" style="vertical-align:middle;align-items:center">
+                {{ trans('messages.price') }}
+            </th>
+
+            @foreach($plans as $plan)
+                <td width="{{ round(100/(count($plans)+1)) }}%">
+                    <p class="mb-1 mt-2 font-weight-semibold fs-6 text-center">
                         <span class="fs-3">{{ \Acelle\Library\Tool::format_price($plan->price, $plan->currency->format) }}</span>
                         / {!! $plan->displayFrequencyTime() !!}
                     </p>
                     <p class="mb-0 py-3">
                         <a 
+                            {!! Auth::check() ? 'data-action="login-warning"' : '' !!}
                             href="{{ action('UserController@register', [
                                 'plan_uid' => $plan->uid,
                             ]) }}"
-                            class="btn fw-600 btn-primary rounded-3 d-block py-2 shadow-sm {{ Auth::check() ? 'disabled' : '' }}">
+                            class="btn fw-600 btn-primary rounded-3 d-block py-2 shadow-sm">
                                 @if ($plan->isFree() || $plan->hasTrial())
                                     {{ trans('messages.plan.select') }}
                                 @else
@@ -132,3 +143,56 @@
         </tr>
     </table>
 </div>  
+
+@if (Auth::check())
+    <div class="modal" id="loginWatningModal" tabindex="-1">
+        <div class="modal-dialog shadow modal-default">
+            <div class="modal-content">
+                <div class="modal-body @yield('class')">
+                    <div class="">
+                        <span>
+                            {{ trans('messages.select_plan.logged_in.logout_current_account', [
+                                'username' => Auth::user()->email,
+                            ]) }}
+                        </span>
+                        <div class="mt-2">
+                            <button data-action="logout"  class="btn btn-secondary">
+                                <i class="icon-switch2"></i> {{ trans('messages.logout') }}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
+    <script>
+        $(function() {
+            $('[data-action="logout"]').on('click', function(e) {
+                e.preventDefault();
+
+                addMaskLoading();
+
+                $.ajax({
+                    url: '{{ url("/logout") }}',
+                    method: 'GET',
+                    globalError: false
+                }).always(function() {
+                    window.location.reload();
+                });
+            });
+        });
+    </script>
+
+    <script>
+        $(function() {
+            $('[data-action="login-warning"]').on('click', function(e) {
+                e.preventDefault();
+
+                $('#loginWatningModal').modal('show');
+            });
+        });
+    </script>
+@endif
+
