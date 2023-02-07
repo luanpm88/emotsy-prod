@@ -132,8 +132,8 @@
                     <ul class="history-list-items">
                         <li>
                             <a href="" class="d-flex align-items-center current">
-                                <i class="material-icons-outlined me-2">更新</i>
-                                <span class="content mr-auto">自動化をリセット</span>
+                                <i class="material-symbols-rounded me-2">refresh</i>
+                                <span class="content mr-auto">Reset current flow</span>
                                 {{-- <time class="mini text-muted">1 minute</time> --}}
                             </a>
                         </li>
