@@ -80,14 +80,16 @@
 					])
 				</div>
 
-				@include('helpers.form_control', ['type' => 'checkbox2',
-					'name' => 'use_default_sending_server_from_email',
-					'label' => trans('messages.use_sending_server_default_value'),
-					'value' => $campaign->use_default_sending_server_from_email,
-					'rules' => $rules,
-					'help_class' => 'campaign',
-					'options' => ['0','1'],
-				])
+                <div class="hide">
+                    @include('helpers.form_control', ['type' => 'checkbox2',
+                        'name' => 'use_default_sending_server_from_email',
+                        'label' => trans('messages.use_sending_server_default_value'),
+                        'value' => $campaign->use_default_sending_server_from_email,
+                        'rules' => $rules,
+                        'help_class' => 'campaign',
+                        'options' => ['0','1'],
+                    ])
+                </div>
 												
 				@include('helpers.form_control', [
                     'type' => 'autofill',
