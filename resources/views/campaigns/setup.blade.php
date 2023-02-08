@@ -145,18 +145,8 @@
 						'help_class' => 'campaign',
 						'rules' => $rules
 					])
-
-                    @include('helpers.form_control', [
-                        'type' => 'checkbox',
-                        'name' => 'skip_failed_message',
-                        'label' => trans('messages.skip_failed_message'),
-                        'value' => $campaign->skip_failed_message,
-                        'options' => [false,true],
-                        'help_class' => 'campaign',
-                        'rules' => $rules
-                    ])
 					
-					<div class="select-tracking-domain">
+					<div class="select-tracking-domain mb-4">
 						@include('helpers.form_control', [
 							'type' => 'select',
 							'name' => 'tracking_domain_uid',
@@ -168,6 +158,16 @@
 							'rules' => $rules
 						])
 					</div>
+
+                    @include('helpers.form_control', [
+                        'type' => 'checkbox',
+                        'name' => 'skip_failed_message',
+                        'label' => trans('messages.skip_failed_message'),
+                        'value' => $campaign->skip_failed_message,
+                        'options' => [false,true],
+                        'help_class' => 'campaign',
+                        'rules' => $rules
+                    ])
 												
 					@if ($campaign->type == 'plain-text')
 						<div class="alert alert-warning">

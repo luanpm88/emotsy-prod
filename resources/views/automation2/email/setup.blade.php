@@ -112,7 +112,7 @@
                         'rules' => $email->rules()
                     ])
 
-                    <div class="select-tracking-domain">
+                    <div class="select-tracking-domain mb-4">
                         @include('helpers.form_control', [
                             'type' => 'select',
                             'name' => 'tracking_domain_uid',
