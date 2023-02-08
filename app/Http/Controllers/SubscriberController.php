@@ -1011,6 +1011,22 @@ class SubscriberController extends Controller
         ]);
     }
 
+    public function import2Validate(Request $request)
+    {
+        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+
+        try {
+            \Acelle\Library\MailListFieldMapping::parse($request->mapping, $list);
+            return response()->json([
+                'message' => 'success',
+            ], 200);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'message' => $e->getMessage(),
+            ], 401);
+        }
+    }
+
     /**
      * Import mapping fields.
      *
