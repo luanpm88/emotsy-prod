@@ -743,6 +743,10 @@ body.mode-dark .bg-light {
 body.mode-dark .label.bg-light {
     color: rgba(255,255,255,0.6)!important;
 }
+body.mode-dark .new-price-item {
+    background: rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.9);
+}
 body.mode-dark .new-price-item.showed {
     background: rgba(255,255,255,0.1);
     border: solid 1px rgba(255,255,255,0.1);
