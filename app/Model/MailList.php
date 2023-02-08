@@ -722,7 +722,7 @@ class MailList extends Model
         $pageSize = 1000;
 
         if (!is_null($progressCallback)) {
-            $progressCallback($processed, $total, $failed, $message = 'エクスポートが進行中です...');
+            $progressCallback($processed, $total, $failed, $message = trans('messages.list.export.in_progress.msg'));
         }
 
         $file = $this->getExportFilePath();
@@ -784,12 +784,12 @@ class MailList extends Model
 
             // Callback
             if (!is_null($progressCallback)) {
-                $progressCallback($processed, $total, $failed = 0, $message = sprintf('エクスポートが進行中です, %s / %s records written', $processed, $total));
+                $progressCallback($processed, $total, $failed = 0, $message = trans('messages.list.export.in_progress.report', ['processed' => $processed, 'total' => $total]));
             }
         });
 
         if (!is_null($progressCallback)) {
-            $progressCallback($processed, $total, $failed = 0, $message = sprintf('エクスポート完了, 処理済み：%s / %s', $processed, $total));
+            $progressCallback($processed, $total, $failed = 0, $message = trans('messages.list.export.complete.report', ['processed' => $processed, 'total' => $total]));
         }
     }
 
@@ -1160,7 +1160,7 @@ class MailList extends Model
      */
     public function import($file, $mapArray = null, $progressCallback = null, $invalidRecordCallback = null)
     {
-        /* START trick: auto generate map */
+        /* START trick: auto generate map if there is no map passed to the function */
 
         if (is_null($mapArray)) {
             list($headers, $total, $results) = $this->readCsv($file);
@@ -1186,12 +1186,13 @@ class MailList extends Model
         $overQuotaAttempt = false;
 
         if (!is_null($progressCallback)) {
-            $progressCallback($processed, $total, $failed, $message = 'Import is starting...');
+            $progressCallback($processed, $total, $failed, $message = trans('messages.list.import.starting'));
         }
 
         // Read CSV files
         list($headers, $total, $results) = $this->readCsv($file);
 
+        /*
         if (!is_null($progressCallback)) {
             $progressCallback($processed, $total, $failed, $message = 'Validating file headers...');
         }
@@ -1199,6 +1200,7 @@ class MailList extends Model
         if (!is_null($progressCallback)) {
             $progressCallback($processed, $total, $failed, $message = 'Loading records from file...');
         }
+        */
 
         try {
             // process by batches

@@ -30,7 +30,7 @@ class ExportSubscribersJob extends Base
                 'total' => 0,
                 'processed' => 0,
                 'failed' => 0,
-                'message' => 'エクスポートは処理のためにキューに送られています...',
+                'message' => trans('messages.list.export.queued.msg'),
                 'filepath' => $this->mailList->getExportFilePath(),
             ]);
         });
@@ -43,6 +43,9 @@ class ExportSubscribersJob extends Base
      */
     public function handle()
     {
+        \App::setLocale($this->mailList->customer->language->code);
+        \Carbon\Carbon::setLocale($this->mailList->customer->language->code);
+
         $this->mailList->export(function ($processed, $total, $failed, $message) {
             $percentage = ($total && $processed) ? (int)($processed*100/$total) : 0;
 
