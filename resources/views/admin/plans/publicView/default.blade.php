@@ -7,6 +7,7 @@
                     {{ trans('messages.plan.default_style') }}
                 </button>
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                  <li><a class="dropdown-item active" href="javascript:;">{{ trans('messages.plan.default_style') }}</a></li>
                   <li><a class="dropdown-item" href="{{ action('Admin\PlanController@publicView', ['style' => 'acelle']) }}">{{ trans('messages.plan.style_1') }}</a></li>
                   <li><a class="dropdown-item" href="{{ action('Admin\PlanController@publicView', ['style' => 'mailchimp']) }}">{{ trans('messages.plan.style_2') }}</a></li>
                   <li><a class="dropdown-item" href="{{ action('Admin\PlanController@publicView', ['style' => 'zapier']) }}">{{ trans('messages.plan.style_3') }}</a></li>

@@ -10,6 +10,7 @@
                   <li><a class="dropdown-item" href="{{ action('Admin\PlanController@publicView') }}">{{ trans('messages.plan.default_style') }}</a></li>
                   <li><a class="dropdown-item" href="{{ action('Admin\PlanController@publicView', ['style' => 'acelle']) }}">{{ trans('messages.plan.style_1') }}</a></li>
                   <li><a class="dropdown-item" href="{{ action('Admin\PlanController@publicView', ['style' => 'mailchimp']) }}">{{ trans('messages.plan.style_2') }}</a></li>
+                  <li><a class="dropdown-item active" href="javascript:;">{{ trans('messages.plan.style_3') }}</a></li>
                 </ul>
             </div>
             <a target="_blank" href="{{ action("PlanController@publicListPage", ['style' => 'zapier']) }}" role="button" class="btn btn-primary modal-action">
