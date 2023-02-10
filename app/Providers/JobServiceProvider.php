@@ -22,6 +22,7 @@ class JobServiceProvider extends ServiceProvider
         // Initialize the MailLog which writes logs to mail.log
         $this->initMailLog();
 
+        // 'before' event is triggered for both standalone jobs and batch jobs
         Queue::before(function (JobProcessing $event) {
             $job = $this->getJobObject($event);
             if (property_exists($job, 'monitor')) {
@@ -31,6 +32,7 @@ class JobServiceProvider extends ServiceProvider
             }
         });
 
+        // 'after' event is triggered for standalone jobs only, NOT batch jobs
         Queue::after(function (JobProcessed $event) {
             $job = $this->getJobObject($event);
             if (property_exists($job, 'monitor')) {
@@ -41,6 +43,7 @@ class JobServiceProvider extends ServiceProvider
             }
         });
 
+        // 'failing' event is triggered for standalone jobs only, NOT batch jobs
         Queue::failing(function (JobFailed $event) {
             $job = $this->getJobObject($event);
             if (property_exists($job, 'monitor')) {

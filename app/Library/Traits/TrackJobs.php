@@ -36,6 +36,7 @@ trait TrackJobs
         ];
 
         // Destroy closure attributes which cannot be serialized
+        // Otherwise Laravel will throw an exception when dispatching
         $job->eventAfterDispatched = null; // Destroy the closure
 
         // Actually dispatch
@@ -80,6 +81,7 @@ trait TrackJobs
         ];
 
         // Destroy closure attributes which cannot be serialized
+        // Otherwise Laravel will throw an exception when dispatching
         $job->eventAfterDispatched = null; // Destroy the closure
         $job->eventAfterFinished = null;
 
