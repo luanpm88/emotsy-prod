@@ -1410,6 +1410,8 @@
   'license.removed' => 'Die Lizenz wurde erfolgreich entfernt!',
   'license.type.extended' => 'Extended',
   'license.type.regular' => 'Regular',
+  'license.type.saas' => 'SaaS',
+  'license.type.single' => 'Single',
   'license.updated' => 'App-Lizenz wurde erfolgreich aktualisiert',
   'license.your_license' => 'Ihre aktuelle Lizenz',
   'license_guide' => ' <p>Wenn Sie Jiffydesk Mail von der Envato-Website kaufen, erwerben Sie tatsächlich eine Lizenz zur Nutzung des Produkts.<br>Es gibt 2 Arten von Lizenzen, die ausgegeben werden</p> <h4>Reguläre Lizenz</h4> <p> Alle Funktionen stehen zur Verfügung, für ein einziges Endprodukt, für das der Endnutzer NICHT bezahlen muss </p> <h4>Erweiterte Lizenz</h4> <p> Alle Funktionen stehen zur Verfügung, für ein einziges Endprodukt, für welches der Endnutzer bezahlt werden kann (Software als Service) </p> ',

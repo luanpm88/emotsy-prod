@@ -1411,6 +1411,8 @@
   'license.removed' => 'The license was sucessfully removed!',
   'license.type.extended' => 'Extended',
   'license.type.regular' => 'Regular',
+  'license.type.saas' => 'SaaS',
+  'license.type.single' => 'Single',
   'license.updated' => 'Licença de aplicação foi atualizada com sucesso',
   'license.your_license' => 'A sua licença atual',
   'license_guide' => ' <p>Quando compra  o ApplicaTion no site Envato, está a comprar uma licença para usar o produto.<br>Existe 2 tipos de licença:</p> <h4>Licença regular</h4> <p> Todos os recursos estão disponíveis, para um único produto final onde os utilizadores finais NÃO são cobrados. </p> <h4>Licença Pro</h4> <p> Todos os recursos estão disponíveis, para um único produto final onde os utilizadores finais podem ser cobrados (software como serviço) </p> ',

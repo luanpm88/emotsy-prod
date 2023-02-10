@@ -1411,6 +1411,8 @@
   'license.removed' => 'The license was sucessfully removed!',
   'license.type.extended' => 'Extended',
   'license.type.regular' => 'Regular',
+  'license.type.saas' => 'SaaS',
+  'license.type.single' => 'Single',
   'license.updated' => 'La licencia de la aplicación se actualizó correctamente',
   'license.your_license' => 'Su licencia actual',
   'license_guide' => ' <p>Cuando compra The appLication desde el sitio web de Envato, en realidad está comprando una licencia para usar el producto. <br> Se emiten 2 tipos de licencia</p> <h4>Licencia Regular</h4> <p> Todas las funciones están disponibles para un solo producto final por el que NO se cobra a los usuarios finales </p> <h4>Licencia Extendida</h4> <p> Todas las funciones están disponibles para un solo producto final por el que se puede cobrar a los usuarios finales (brindando el servicio) </p> ',

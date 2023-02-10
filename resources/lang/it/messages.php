@@ -1411,6 +1411,8 @@
   'license.removed' => 'La licenza &egrave; stata rimossa con successo!',
   'license.type.extended' => 'Extended',
   'license.type.regular' => 'Regular',
+  'license.type.saas' => 'SaaS',
+  'license.type.single' => 'Single',
   'license.updated' => 'La licenza dell\'app &egrave; stata aggiornata con successo',
   'license.your_license' => 'La vostra licenza attuale',
   'license_guide' => ' <p>Quando acquistate la licenza dell\'applicazione dal sito web di Envato, state effettivamente acquistando una licenza per l\'utilizzo del prodotto.<br>Ci sono 2 tipi di licenza che vengono rilasciate</p> <h4>Licenza Regolare</h4> <p> Tutte le funzionalit&agrave; sono disponibili, per un singolo prodotto finale per il quale gli utenti finali NON vengono addebitati </p> <h4>Licenza Estesa</h4> <p> Tutte le funzionalit&agrave; sono disponibili, per un singolo prodotto finale per il quale gli utenti finali possono essere addebitati (software come servizio) </p> ',

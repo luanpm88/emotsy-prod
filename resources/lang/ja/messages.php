@@ -1411,6 +1411,8 @@
   'license.removed' => 'The license was sucessfully removed!',
   'license.type.extended' => 'Extended',
   'license.type.regular' => 'Regular',
+  'license.type.saas' => 'SaaS',
+  'license.type.single' => 'Single',
   'license.updated' => 'アプリのライセンスが正常に更新されました',
   'license.your_license' => '現在のライセンス',
   'license_guide' => ' <p>発行されるライセンスには 2 種類あります</p> <h4>通常ライセンス</h4> <p> エンドユーザーに課金されない単一の最終製品で、すべての機能が利用可能 </p> <h4>拡張ライセンス</ h4> <p> エンド ユーザーが課金できる単一の最終製品 (サービスとしてのソフトウェア) ですべての機能が利用可能 </p ',

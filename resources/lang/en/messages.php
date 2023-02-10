@@ -1411,6 +1411,8 @@
   'license.removed' => 'The license was sucessfully removed!',
   'license.type.extended' => 'Extended',
   'license.type.regular' => 'Regular',
+  'license.type.saas' => 'SaaS',
+  'license.type.single' => 'Single',
   'license.updated' => 'App license was successfully updated',
   'license.your_license' => 'Your current license',
   'license_guide' => ' <p>When you purchase the application license from Envato website, you are actually purchasing a license to use the product.<br>There are 2 types of license that are issued</p> <h4>Regular License</h4> <p> All features are available, for a single end product which end users are NOT charged for </p> <h4>Extended License</h4> <p> All features are available, for a single end product which end users can be charged for (software as a service) </p> ',
@@ -3079,6 +3081,4 @@
   'your_api_token' => 'Your API token',
   'your_current_license' => 'Thank you for purchasing! Below is your license key, also known as Purchase Code. Your license type is',
   'zip_postal_code' => 'Zip / Postal code',
-  'license.type.single' => 'Single',
-  'license.type.saas' => 'SaaS',
 ) ?>
