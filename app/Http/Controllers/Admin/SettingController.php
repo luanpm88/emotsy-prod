@@ -471,23 +471,23 @@ class SettingController extends Controller
             }
 
             try {
-                // Update license type
-                Setting::updateLicense($request->license);
 
-                /*
-                // Automail hard coded
-                $result = Http::get(env('LICENSE_MANAGER_ENDPOINT', 'http://license.automail.jp') . '/wp-json/automailjp/v1/license/check?license=' . $request->license )->json();
+                if (config('custom.japan')) {
+                    $endpoint = join_url(config('custom.license_validation_endpoint'), '/wp-json/automailjp/v1/license/check?license=' . $request->license);
+                    $result = Http::get($endpoint)->json();
 
-                // failed
-                if ($result['status'] !== 'success') {
-                    throw new \Exception('License is not valid. Error: ' . $result['message']);
+                    // failed
+                    if ($result['status'] !== 'success') {
+                        throw new \Exception('License is not valid. Error: ' . $result['message']);
+                    }
+
+                    // success: save setting
+                    Setting::set('license', $result['license']);
+                    Setting::set('license_type', $result['type']);
+                } else {
+                    // Update license type
+                    Setting::updateLicense($request->license);
                 }
-
-                // success: save setting
-                Setting::set('license', $result['license']);
-                Setting::set('license_type', $result['type']);
-
-                */
 
                 // Save settings
                 foreach ($request->all() as $name => $value) {
