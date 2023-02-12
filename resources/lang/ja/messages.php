@@ -2175,7 +2175,7 @@
   'sending_serbers.go_to_sparkpost_dashboard' => 'Sparkpostダッシュボードに移動します',
   'sending_serbers.remove_email_domain' => '削除',
   'sending_serbers.sendgrid.allow_verify.intro' => 'また、ユーザーが自分でIDを確認できるようにすることもできます。 つまり、ユーザーは自分のメールアドレスまたはドメインを自分のメールアドレスに対して確認するようにリクエストできます Sendgridアカウント',
-  'sending_serbers.smtp.allow_verify.intro' => 'You can enable the options below to allow your users to verify and use their own sending identities and/or domains.',
+  'sending_serbers.smtp.allow_verify.intro' => '以下のオプションを有効にして、ユーザーが自分の送信 ID やドメインを確認して使用できるようにすることができます。',
   'sending_server' => '送信サーバー',
   'sending_server.action' => 'アクション',
   'sending_server.add_email_domain' => 'メール/ドメインを追加する',
