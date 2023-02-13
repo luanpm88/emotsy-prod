@@ -71,7 +71,9 @@ class LoadCampaign implements ShouldQueue
         // Iterate through contacts and launch sending process
         $this->campaign->prepare(function ($campaign, $subscriber, $server) {
             $job = new SendMessage($campaign, $subscriber, $server);
-            $stopOnError = Setting::isYes('campaign.stop_on_error'); // true or false
+
+            $stopOnError = $this->campaign->stopOnError();
+            // $stopOnError = Setting::isYes('campaign.stop_on_error'); // true or false
             $job->setStopOnError($stopOnError);
             $this->batch()->add($job);
         }, $loadLimit);
