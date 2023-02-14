@@ -2552,6 +2552,7 @@
   'subscription.ended_intro' => '<strong>:plan</strong> プランのサブスクリプションは <strong>:ended_at</strong> に終了しました。 更新するか、別のプランを選択してください。',
   'subscription.ended_on' => 'で終了',
   'subscription.ends_on' => 'で終わる',
+  'subscription.error.plan-not-active' => 'The plan <strong>:name</strong> you subscribed to is currently not active. Please check with your system administrator',
   'subscription.from_to_date' => ' :start から :end まで',
   'subscription.get_started' => '始めましょう',
   'subscription.log.admin_approve' => 'Invoice <strong>:invoice</strong> with amount <strong>:amount</strong> is approved by admin',

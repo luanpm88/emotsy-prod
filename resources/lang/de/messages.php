@@ -2557,6 +2557,7 @@
   'subscription.ended_intro' => 'Das Abo für <strong>:plan </strong> Plan, wurde am <strong>:ended_at </strong> beendet. Bitte verlängern Sie das Abo oder wählen Sie einen anderen Plan aus.',
   'subscription.ended_on' => 'Beendet',
   'subscription.ends_on' => 'Beendet',
+  'subscription.error.plan-not-active' => 'The plan <strong>:name</strong> you subscribed to is currently not active. Please check with your system administrator',
   'subscription.from_to_date' => 'von :start bis :end',
   'subscription.get_started' => 'Loslegen',
   'subscription.log.admin_approve' => 'Invoice <strong>:invoice</strong> with amount <strong>:amount</strong> is approved by admin',
