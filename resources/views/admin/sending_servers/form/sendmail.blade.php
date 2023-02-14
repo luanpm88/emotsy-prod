@@ -154,9 +154,9 @@
                             <tr>
                                 <td>{{ trans('messages.domain') }}</td>
                                 <td>{{ trans('messages.status') }}</td>
-                                <td align="center" class="xtooltip" title="Set whether or not this identity is available for all users">Available for All</td>
-                                <td>Added By</td>
-                                <td>Action</td>
+                                <td align="center" class="xtooltip" title="{{ trans('messages.sending_server.identity.available_for_all.desc') }}">{{ trans('messages.sending_server.identity.available_for_all') }}</td>
+                                <td>{{ trans('messages.sending_server.identity.added_by') }}</td>
+                                <td>{{ trans('messages.sending_server.identity.action') }}</td>
                             </tr>
                         </thead>
                         <tbody>

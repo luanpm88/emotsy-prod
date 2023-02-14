@@ -50,7 +50,7 @@
                                                 <a
                                                     data-confirm="{{ trans('messages.customer.assign_plan.confirm', [
                                                         'plan' => $plan->name,
-                                                        'customer' => $customer->uid,
+                                                        'customer' => $customer->displayName(),
                                                     ]) }}"
                                                     href="{{ action('Admin\CustomerController@assignPlan', [
                                                         "uid" => $customer->uid,

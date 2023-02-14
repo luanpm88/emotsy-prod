@@ -80,14 +80,16 @@
 					])
 				</div>
 
-				@include('helpers.form_control', ['type' => 'checkbox2',
-					'name' => 'use_default_sending_server_from_email',
-					'label' => trans('messages.use_sending_server_default_value'),
-					'value' => $campaign->use_default_sending_server_from_email,
-					'rules' => $rules,
-					'help_class' => 'campaign',
-					'options' => ['0','1'],
-				])
+                <div class="hide">
+                    @include('helpers.form_control', ['type' => 'checkbox2',
+                        'name' => 'use_default_sending_server_from_email',
+                        'label' => trans('messages.use_sending_server_default_value'),
+                        'value' => $campaign->use_default_sending_server_from_email,
+                        'rules' => $rules,
+                        'help_class' => 'campaign',
+                        'options' => ['0','1'],
+                    ])
+                </div>
 												
 				@include('helpers.form_control', [
                     'type' => 'autofill',
@@ -145,18 +147,8 @@
 						'help_class' => 'campaign',
 						'rules' => $rules
 					])
-
-                    @include('helpers.form_control', [
-                        'type' => 'checkbox',
-                        'name' => 'skip_failed_message',
-                        'label' => trans('messages.skip_failed_message'),
-                        'value' => $campaign->skip_failed_message,
-                        'options' => [false,true],
-                        'help_class' => 'campaign',
-                        'rules' => $rules
-                    ])
 					
-					<div class="select-tracking-domain">
+					<div class="select-tracking-domain mb-4">
 						@include('helpers.form_control', [
 							'type' => 'select',
 							'name' => 'tracking_domain_uid',
@@ -168,6 +160,16 @@
 							'rules' => $rules
 						])
 					</div>
+
+                    @include('helpers.form_control', [
+                        'type' => 'checkbox',
+                        'name' => 'skip_failed_message',
+                        'label' => trans('messages.skip_failed_message'),
+                        'value' => $campaign->skip_failed_message,
+                        'options' => [false,true],
+                        'help_class' => 'campaign',
+                        'rules' => $rules
+                    ])
 												
 					@if ($campaign->type == 'plain-text')
 						<div class="alert alert-warning">

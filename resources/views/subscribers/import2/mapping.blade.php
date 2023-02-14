@@ -287,6 +287,9 @@
                 // hide options box
                 this.hideOptionsBox();
 
+                // show run button
+                this.manager.showRunButton();
+
                 // hide close link
                 this.hideCloseLink();
 
@@ -306,6 +309,9 @@
                         // show options box
                         _this.showOptionsBox();
 
+                        // hide run button
+                        _this.manager.hideRunButton();
+
                         // show close link
                         _this.showCloseLink();
 
@@ -324,6 +330,9 @@
                 this.getEditLink().on('click', function() {
                     // show details box
                     _this.showOptionsBox();
+
+                    // hide run button
+                    _this.manager.hideRunButton();
 
                     // hide edit link
                     _this.hideEditLink();
@@ -367,9 +376,12 @@
                 // hide details box after saved
                 this.hideOptionsBox();
 
+                // show run button
+                this.manager.showRunButton();
+
                 // hide close link
                 this.hideCloseLink();
-
+console.log('validate');
                 // run validate to mark error
                 this.manager.validate();
             }
@@ -391,6 +403,9 @@
 
                 // hide details box after saved
                 this.hideOptionsBox();
+
+                // show run button
+                this.manager.showRunButton();
 
                 // hide close link
                 this.hideCloseLink();
@@ -472,6 +487,9 @@
                 // close options box
                 this.hideOptionsBox();
 
+                // show run button
+                this.manager.showRunButton();
+
                 // uncheck checker
                 if (!this.hasValue()) {
                     this.getChecker().prop('checked', false);
@@ -537,12 +555,13 @@
         };
 
         var MappingManager = class {
-            constructor(headers, mapping, runUrl, emailFieldId) {
+            constructor(headers, mapping, runUrl, emailFieldId, validateUrl) {
                 var _this = this;
 
                 _this.items = [];
                 _this.runUrl = runUrl;
                 _this.emailFieldId = emailFieldId;
+                _this.validateUrl = validateUrl;
 
                 // add items by headers
                 headers.forEach(function(header) {
@@ -554,9 +573,21 @@
                 }
 
                 // run button
-                $('[mapping-control="run"]').on('click', function() {
+                _this.getRunButton().on('click', function() {
                     _this.run();
                 });
+            }
+            
+            getRunButton() {
+                return $('[mapping-control="run"]');
+            }
+
+            hideRunButton() {
+                this.getRunButton().hide();
+            }
+
+            showRunButton() {
+                this.getRunButton().show();
             }
 
             validate() {
@@ -579,7 +610,6 @@
                 // at least one email field
                 if (!fieldIds.includes(this.emailFieldId)) {
                     errors.push('{{ trans('messages.subscriber.import.no_email_field') }}');
-                    return false;
                 }
 
                 // more than one field
@@ -606,10 +636,32 @@
                 return errors;
             }
 
+            remoteValidate(success, failed) {
+                addMaskLoading();
+
+                $.ajax({
+                    url: this.validateUrl,
+                    type: 'POST',
+                    dataType: "json",
+                    globalError: false,
+                    data: {
+                        _token: CSRF_TOKEN,
+                        mapping: this.getData(),
+                    }
+                }).done(function(response) {
+                    success();
+                }).fail(function(response) {
+                    failed(JSON.parse(response.responseText).message);
+                }).always(function() {
+                    removeMaskLoading();
+                });
+            }
+
             run() {
                 var _this = this;
 
                 var errors = this.validate();
+                console.log(errors);
                 
                 if (errors.length) {
                     var msg = errors.join('<br>');
@@ -621,22 +673,35 @@
                     return;
                 }
 
-                addMaskLoading();
-
-                $.ajax({
-                    url: _this.runUrl,
-                    type: 'POST',
-                    data: {
-                        _token: CSRF_TOKEN,
-                        filepath: '{{ $filepath }}',
-                        mapping: _this.getData(),
+                this.remoteValidate(
+                    // success
+                    function() {
+                        addMaskLoading();
+                        
+                        $.ajax({
+                            url: _this.runUrl,
+                            type: 'POST',
+                            data: {
+                                _token: CSRF_TOKEN,
+                                filepath: '{{ $filepath }}',
+                                mapping: _this.getData(),
+                            }
+                        }).done(function(response) {
+                            SubscribersImport2.getPopup().load(response.progressUrl);
+                        }).fail(function(jqXHR, textStatus, errorThrown) {
+                        }).always(function() {
+                            removeMaskLoading();
+                        });
+                    },
+                    //failed
+                    function(error) {
+                        new Dialog('alert', {
+                            message: error,
+                        });
                     }
-                }).done(function(response) {
-                    SubscribersImport2.getPopup().load(response.progressUrl);
-                }).fail(function(jqXHR, textStatus, errorThrown) {
-                }).always(function() {
-                    removeMaskLoading();
-                });
+                );
+
+                    
             }
 
             getData() {
@@ -673,7 +738,10 @@
                 '{!! action('SubscriberController@import2Run', [
                     'list_uid' => $list->uid,
                 ]) !!}',
-                '{{ $list->getEmailField()->id }}'
+                '{{ $list->getEmailField()->id }}',
+                '{!! action('SubscriberController@import2Validate', [
+                    'list_uid' => $list->uid,
+                ]) !!}'
             );
         });
     </script>

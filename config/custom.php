@@ -26,4 +26,7 @@ return [
 
     // Special settings
     'japan' => env('APP_JAPAN', true),
+
+    // License validation endpoint
+    'license_validation_endpoint' => env('LICENSE_VALIDATION_ENDPOINT')
 ];

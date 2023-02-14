@@ -5513,7 +5513,7 @@ margin-left: -13px;
   border-top: solid 1px #aaa;
 }
 .price-header {
-  height: 200px;
+  min-height: 300px;
 }
 .price-item {
 }

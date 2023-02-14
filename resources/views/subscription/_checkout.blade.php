@@ -1,7 +1,7 @@
 @if ($invoice->isNew() && !$invoice->getPendingTransaction())
     <div class="">
         <div class="mt-4">
-            <div class="alert alert-info bg-no-order tos_link">
+            <div class="alert alert-info bg-no-order tos_link mb-0">
                 @if (Acelle\Model\Setting::get('terms_of_service.enabled') == 'no' && Acelle\Model\Setting::get('terms_of_service.content')) 
                     {!! trans('messages.payment.agree_service_intro.term_link', [
                         'link' => 'asas',
@@ -10,19 +10,22 @@
                     {!! trans('messages.payment.agree_service_intro') !!}
                 @endif
             </div>
-            <form id="checkoutForm" class="" action="{{ action('SubscriptionController@checkout', [
-                'invoice_uid' => $invoice->uid,
-            ]) }}"
-                method="POST">
-                {{ csrf_field() }}
 
-                <input type="hidden" name="payment_method" value="{{ request()->payment_method }}" />
+            @if (request()->payment_method)
+                <form id="checkoutForm" class="mt-4" action="{{ action('SubscriptionController@checkout', [
+                    'invoice_uid' => $invoice->uid,
+                ]) }}"
+                    method="POST">
+                    {{ csrf_field() }}
 
-                <input type="submit" name="new_payment" {{ !request()->payment_method ? 'disabled' : '' }}
-                    class="btn btn-primary py-2 fs-6 px-4 text-center rounded-3 shadow" style="width:100%"
-                    value="{{ $invoice->isFree() ? trans('messages.subscription.get_started') : trans('messages.subscription.checkout') }}"
-                >
-            </form>
+                    <input type="hidden" name="payment_method" value="{{ request()->payment_method }}" />
+
+                    <input type="submit" name="new_payment"
+                        class="btn btn-primary py-2 fs-6 px-4 text-center rounded-3 shadow" style="width:100%"
+                        value="{{ $invoice->isFree() ? trans('messages.subscription.get_started') : trans('messages.subscription.checkout') }}"
+                    >
+                </form>
+            @endif
         </div>
     </div>
 

@@ -1,25 +1,3 @@
-<style>
-    .new-price-item {
-        background-color: #fff;
-        border: solid 1px #ddd;
-        border-radius: 0;
-        filter: grayscale(0)!important;
-    }
-    .new-price-item .time-box {
-        background-color: #fff;
-        border: solid 1px #ddd;
-        border-radius: 0;
-    }
-    .new-price-item .btn-primary {
-        border-radius: 0;
-        font-size: 18px;
-        background-color: #3e458d!important;
-    }
-    .new-price-item .btn-primary:hover {
-        background-color: #4951a3!important;
-    }
-</style>
-
 <div>
     <div class="new-price-box" style="margin-right: -30px">
         <div class="d-flex">
@@ -28,24 +6,23 @@
                 <div
                     class="new-price-item mb-3 d-inline-block plan-item"
                     style="width: calc(33% - 20px)">
-                    
-                    <div style="height: 40px">
-                        <label class="plan-title fs-4 fw-600 mt-0">{{ $plan->name }}</label>
-                    </div>
-
-                    <div style="min-height: 130px">
-                        <p class="mt-2">{{ $plan->description }}</p>
-                    </div>
-
-                    <div style="height: 100px" class="mb-2">
+                    <div style="height: 100px">
                         <div class="price">
                             {!! format_price($plan->price, $plan->currency->format, true) !!}
                             <span class="p-currency-code">{{ $plan->currency->code }}</span>
                         </div>
                         <p><span class="material-symbols-rounded text-muted2">restore</span> {{ $plan->displayFrequencyTime() }}</p>
                     </div>
+                    <hr class="mb-2" style="width: 40px">
+                    <div style="height: 40px">
+                        <label class="plan-title fs-5 fw-600 mt-0">{{ $plan->name }}</label>
+                    </div>
 
-                    <span class="time-box d-block text-center small py-2 fw-600 mb-3">
+                    <div style="height: 150px">
+                        <p class="mt-4">{{ $plan->description }}</p>
+                    </div>
+
+                    <span class="time-box d-block text-center small py-2 fw-600 mb-4">
                         <div class="mb-1">
                             <span>{{ $plan->displayTotalQuota() }} {{ trans('messages.sending_total_quota_label') }}</span>
                         </div>
@@ -61,7 +38,7 @@
                                 href="{{ action('UserController@register', [
                                     'plan_uid' => $plan->uid,
                                 ]) }}"
-                                class="btn fw-600 btn-primary d-block py-2 shadow-sm">
+                                class="btn fw-600 btn-primary rounded-3 d-block py-2 shadow-sm">
                                     @if ($plan->isFree() || $plan->hasTrial())
                                         {{ trans('messages.plan.select') }}
                                     @else

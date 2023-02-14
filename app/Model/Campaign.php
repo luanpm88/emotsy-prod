@@ -2769,4 +2769,9 @@ class Campaign extends Model implements HasTemplateInterface
                 break;
         }
     }
+
+    public function stopOnError()
+    {
+        return $this->skip_failed_message == false;
+    }
 }
