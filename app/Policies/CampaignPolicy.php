@@ -46,19 +46,34 @@ class CampaignPolicy
     public function delete(User $user, Campaign $item)
     {
         $customer = $user->customer;
-        return $item->customer_id == $customer->id && in_array($item->status, ['new', 'ready', 'paused', 'done', 'sending', 'error']);
+        return $item->customer_id == $customer->id && in_array($item->status, [
+            Campaign::STATUS_NEW,
+            Campaign::STATUS_QUEUING,
+            Campaign::STATUS_QUEUED,
+            Campaign::STATUS_ERROR,
+            Campaign::STATUS_PAUSED,
+            Campaign::STATUS_DONE,
+            Campaign::STATUS_SENDING,
+        ]);
     }
 
     public function pause(User $user, Campaign $item)
     {
         $customer = $user->customer;
-        return $item->customer_id == $customer->id && in_array($item->status, ['queuing', 'queued', 'sending', 'ready']);
+        return $item->customer_id == $customer->id && in_array($item->status, [
+            Campaign::STATUS_QUEUING,
+            Campaign::STATUS_QUEUED,
+            Campaign::STATUS_SENDING,
+        ]);
     }
 
     public function restart(User $user, Campaign $item)
     {
         $customer = $user->customer;
-        return $item->customer_id == $customer->id && in_array($item->status, ['paused', 'error']);
+        return $item->customer_id == $customer->id && in_array($item->status, [
+            Campaign::STATUS_PAUSED,
+            Campaign::STATUS_ERROR,
+        ]);
     }
 
     public function sort(User $user, Campaign $item)
