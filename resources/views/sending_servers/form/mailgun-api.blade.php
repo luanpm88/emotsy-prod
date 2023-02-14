@@ -37,8 +37,9 @@
                 @include('helpers.form_control', [
                     'type' => 'select',
                     'class' => '',
-                    'name' => 'host',
-                    'value' => $server->host,
+                    'label' => trans('messages.maillgun.api_region'),
+                    'name' => 'aws_region',
+                    'value' => $server->aws_region,
                     'help_class' => 'sending_server',
                     'options' => Acelle\Model\SendingServer::mailgunRegionSelectOptions(),
                     'rules' => $server->getRules(),
