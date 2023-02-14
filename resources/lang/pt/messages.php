@@ -2557,6 +2557,7 @@
   'subscription.ended_intro' => 'The subscription to <strong>:plan</strong> plan was ended at <strong>:ended_at</strong>. Please renew or choose an other plan.',
   'subscription.ended_on' => 'Ended on',
   'subscription.ends_on' => 'Ends on',
+  'subscription.error.plan-not-active' => 'The plan <strong>:name</strong> you subscribed to is currently not active. Please check with your system administrator',
   'subscription.from_to_date' => 'From :start to :end',
   'subscription.get_started' => 'Get Started',
   'subscription.log.admin_approve' => 'Invoice <strong>:invoice</strong> with amount <strong>:amount</strong> is approved by admin',

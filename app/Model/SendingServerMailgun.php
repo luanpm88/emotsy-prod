@@ -48,7 +48,7 @@ class SendingServerMailgun extends SendingServer
     public function client()
     {
         if (!$this->client) {
-            $this->client = Mailgun::create($this->api_key, $this->host);
+            $this->client = Mailgun::create($this->api_key, $this->aws_region);
         }
 
         return $this->client;
