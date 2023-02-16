@@ -408,9 +408,6 @@ class InstallController extends Controller
         $next_page = action('InstallController@finish');
         AppNotification::cleanup();
 
-        // Generate translation files if not exist (again!)
-        // Cashier plugin for example
-        \Acelle\Model\Language::dump();
         return redirect()->away($next_page);
     }
 
@@ -426,6 +423,12 @@ class InstallController extends Controller
         $file = fopen($file_path, 'w') or die('Unable to open file!');
         fwrite($file, '');
         fclose($file);
+
+        // Generate translation files if not exist (again!)
+        // Cashier plugin for example
+        // Notice that the following should be executed after the installed file is avaialble
+        // Otherwise, the service provider of Cashier will not trigger
+        \Acelle\Model\Language::dump();
 
         return view('install.finish', [
             'step' => $this->step($request),
