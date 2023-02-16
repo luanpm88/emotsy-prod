@@ -11,21 +11,26 @@
             @foreach ($settings as $name => $setting)
                 @if (isset($setting['cat']) && $setting['cat'] == 'general')
                     <div class="col-md-6">
-                        @if ($setting['type'] == 'checkbox')
-                            <div class="form-group checkbox-right-switch">
-                        @endif
-                            @include('helpers.form_control', [
-                                'type' => $setting['type'],
-                                'class' => (isset($setting['class']) ? $setting['class'] : "" ),
-                                'name' => $name,
-                                'value' => ($setting['type'] == 'image' ? (!empty($setting['value']) ? action('SettingController@file', $setting['value']) : '') : $setting['value']),
-                                'label' => trans('messages.' . $name),
-                                'help_class' => 'setting',
-                                'options' => (isset($setting['options']) ? $setting['options'] : "" ),
-                                'rules' => Acelle\Model\Setting::rules(),
-                            ])
-                        @if ($setting['type'] == 'checkbox')
-                            </div>
+
+                        @if (in_array($name, ['site_logo_light','site_logo_dark']))
+                            @include('admin.settings.general.' . $name)
+                        @else
+                            @if ($setting['type'] == 'checkbox')
+                                <div class="form-group checkbox-right-switch">
+                            @endif
+                                @include('helpers.form_control', [
+                                    'type' => $setting['type'],
+                                    'class' => (isset($setting['class']) ? $setting['class'] : "" ),
+                                    'name' => $name,
+                                    'value' => ($setting['type'] == 'image' ? (!empty($setting['value']) ? action('SettingController@file', $setting['value']) : '') : $setting['value']),
+                                    'label' => trans('messages.' . $name),
+                                    'help_class' => 'setting',
+                                    'options' => (isset($setting['options']) ? $setting['options'] : "" ),
+                                    'rules' => Acelle\Model\Setting::rules(),
+                                ])
+                            @if ($setting['type'] == 'checkbox')
+                                </div>
+                            @endif
                         @endif
                     </div>
                     @if ($count%2 == 1)
