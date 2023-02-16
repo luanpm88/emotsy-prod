@@ -509,6 +509,13 @@ class Language extends Model
         return [$file, $validator];
     }
 
+    // Throw exception
+    public static function getFirstLanguageByCode($code)
+    {
+        $lang = self::where('code', $code)->first();
+        return $lang;
+    }
+
     public function findFileById($id)
     {
         if (!isset($this->getAllLanguageFiles()[$id])) {

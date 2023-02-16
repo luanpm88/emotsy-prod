@@ -2481,7 +2481,7 @@
   'subscriber.import.review_go' => 'Progress',
   'subscriber.import.review_go.intro' => 'Actually load subscribers data from CSV file to the list.',
   'subscriber.import.running.wording' => 'Import is in progress, it may take several minutes or even hours
-    depending on your inputs file as well as your server performance.app',
+    depending on your inputs file as well as your server performance.',
   'subscriber.import.select_field' => 'Choose field',
   'subscriber.import.select_type' => 'Select type',
   'subscriber.import.something_wrong' => 'Validation was failed. Please check the inputs again',

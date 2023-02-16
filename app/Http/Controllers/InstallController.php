@@ -313,6 +313,10 @@ class InstallController extends Controller
             );"
         );
 
+        // Create admin with appropriate locale / language_id
+        $locale = \App::getLocale();
+        $language = \Acelle\Model\Language::getFirstLanguageByCode($locale);
+
         $mysqli->query('DELETE FROM `'.$database['tables_prefix'].'admins` WHERE 1');
         $mysqli->query(
             'INSERT INTO `'.$database['tables_prefix']."admins`
@@ -337,7 +341,7 @@ class InstallController extends Controller
                 NULL,
                 NULL,
                 1,
-                1,
+                '.$language->id.',
                 '".$site_info['timezone']."',
                 'active',
                 NULL,
@@ -449,6 +453,10 @@ class InstallController extends Controller
     {
         $next_page = action('InstallController@finish');
         AppNotification::cleanup();
+
+        // Generate translation files if not exist (again!)
+        // Cashier plugin for example
+        \Acelle\Model\Language::dump();
         return redirect()->away($next_page);
     }
 
