@@ -278,84 +278,38 @@ class InstallController extends Controller
         $mysqli = new \mysqli($database['hostname'], $database['username'], $database['password'], $database['database_name'], $database['port']);
 
         // default date
-        $date = '2017-01-01 00:00:00';
+        $date = '2023-01-01 00:00:00';
 
         // Insert default superuser
-        $mysqli->query('DELETE FROM `'.$database['tables_prefix'].'users` WHERE 1');
-        $mysqli->query(
-            'INSERT INTO `'.$database['tables_prefix']."users`
-            (
-                `id`,
-                `uid`,
-                `api_token`,
-                `email`,
-                `first_name`,
-                `last_name`,
-                `password`,
-                `remember_token`,
-                `status`,
-                `created_at`,
-                `updated_at`,
-                `activated`) VALUES
-            (
-                1,
-                '" .uniqid()."',
-                '".str_random(60)."',
-                '".$site_info['email']."',
-                '".$site_info['first_name']."',
-                '".$site_info['last_name']."',
-                '".bcrypt($site_info['password'])."',
-                '',
-                'active',
-                '".$date."',
-                '".$date."',
-                1
-            );"
-        );
+        $mysqli->query(sprintf('DELETE FROM %s WHERE 1', table('users')));
+
+        $user = new \Acelle\Model\User();
+        $user->api_token = str_random(60);
+        $user->email = $site_info['email'];
+        $user->first_name = $site_info['first_name'];
+        $user->last_name = $site_info['last_name'];
+        $user->password = bcrypt($site_info['password']);
+        $user->status = 'active';
+        $user->activated = 1;
+        $user->save();
 
         // Create admin with appropriate locale / language_id
+        $mysqli->query(sprintf('DELETE FROM %s WHERE 1', table('admins')));
+
         $locale = \App::getLocale();
         $language = \Acelle\Model\Language::getFirstLanguageByCode($locale);
 
-        $mysqli->query('DELETE FROM `'.$database['tables_prefix'].'admins` WHERE 1');
-        $mysqli->query(
-            'INSERT INTO `'.$database['tables_prefix']."admins`
-            (
-                `id`,
-                `uid`,
-                `user_id`,
-                `creator_id`,
-                `contact_id`,
-                `admin_group_id`,
-                `language_id`,
-                `timezone`,
-                `status`,
-                `color_scheme`,
-                `menu_layout`,
-                `created_at`,
-                `updated_at`) VALUES
-            (
-                1,
-                '" .uniqid()."',
-                1,
-                NULL,
-                NULL,
-                1,
-                '.$language->id.',
-                '".$site_info['timezone']."',
-                'active',
-                NULL,
-                '".\Acelle\Model\Setting::get('layout.menu_bar')."',
-                '".$date."',
-                '".$date."'
-            );"
-        );
+        $admin = new \Acelle\Model\Admin();
+        $admin->user_id = 1;
+        $admin->admin_group_id = 1;
+        $admin->language_id = $language->id;
+        $admin->timezone = config('app.timezone');
+        $admin->status = 'active';
+        $admin->menu_layout = \Acelle\Model\Setting::get('layout.menu_bar');
+        $admin->save();
 
         if ($site_info['create_customer_account'] == 'yes') {
-            $mysqli->query('DELETE FROM `'.$database['tables_prefix'].'customers` WHERE 1');
-            // Subscribe to default plan
-            $admin = \Acelle\Model\Admin::find(1);
-            $user = \Acelle\Model\User::find(1);
+            $mysqli->query(sprintf('DELETE FROM %s WHERE 1', table('customers')));
             $customer = $admin->createCustomerAccount();
             $user->customer_id = $customer->id;
             $user->save();
