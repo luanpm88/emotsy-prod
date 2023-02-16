@@ -7,11 +7,13 @@
             <input value="" type="file" name="site_logo_dark" class="form-control file-styled-primary">
         </div>
         <div class="col-md-3">
-            <div class="p-3 box-shadow-sm rounded" style="background-color: #f6f6f6;">
-                @if (isset($setting['value']))
+            
+            @if (isset($setting['value']))
+                <div class="p-3 box-shadow-sm rounded" style="background-color: #f6f6f6;">
                     <img width="100%" src="{{ action('SettingController@file', $setting['value']) }}" />
-                @endif
-            </div>
+                </div>
+            @endif
+            
         </div>
     </div>
 </div>
