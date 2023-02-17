@@ -3,7 +3,7 @@
 namespace Acelle\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Acelle\Model\Segment;
+use Acelle\Model\Field;
 
 class SegmentController extends Controller
 {
@@ -380,6 +380,7 @@ class SegmentController extends Controller
     {
         $field = \Acelle\Model\Field::findByUid($request->field_uid);
 
+        // legacy code
         return view('segments._condition_value_control', [
             'operator' => $request->operator,
             'field_uid' => $request->field_uid,

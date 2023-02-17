@@ -43,8 +43,19 @@
 												</div>
 											</div>
 											<div class="col-md-7 operator_value_col" data-url="{{ action('SegmentController@conditionValueControl') }}">
-												@include('segments._condition_value_control', [
-													'field' => $field,
+												@php
+                                                    $cField = (
+                                                                $condition->field_id ?
+                                                                    (
+                                                                        Acelle\Model\Field::findByUid($condition->field_id) ??
+                                                                            (Acelle\Model\Field::find($condition->field_id) ?? NULL)
+                                                                    )
+                                                                    : NULL
+                                                    );
+                                                @endphp
+                                    
+                                                @include('segments._condition_value_control', [
+													'field' => $cField,
 													'field_uid' => $condition->field_id,
 													'operator' => $condition->operator,
 													'index' => $condition->uid,
