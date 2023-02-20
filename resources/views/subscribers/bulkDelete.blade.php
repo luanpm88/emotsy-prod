@@ -11,7 +11,6 @@
 
         @include('helpers.form_control', [
             'type' => 'textarea',
-            'class' => 'bulk-delete',
             'name' => 'emails',
             'label' => '',
             'value' => request()->emails,

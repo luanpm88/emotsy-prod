@@ -8,7 +8,9 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body @yield('class')">
-            <h4 class="fw-600 mb-3 pb-1">@yield('title')</h4>
+            @hasSection('title')
+                <h4 class="fw-600 mb-3 pb-1">@yield('title')</h4>
+            @endif
 
             <!-- display flash message -->
             @include('common.errors')
