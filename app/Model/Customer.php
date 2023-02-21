@@ -2084,4 +2084,12 @@ class Customer extends Model
             return htmlspecialchars(trim($this->user->first_name.' '.$this->user->last_name));
         }
     }
+
+    public function newDefaultCampaign()
+    {
+        $campaign = Campaign::newDefault();
+        $campaign->customer_id = $this->id;
+
+        return $campaign;
+    }
 }

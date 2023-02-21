@@ -2774,4 +2774,28 @@ class Campaign extends Model implements HasTemplateInterface
     {
         return $this->skip_failed_message == false;
     }
+
+    public static function newDefault()
+    {
+        $campaign = new self([
+            'track_open' => true,
+            'track_click' => true,
+            'sign_dkim' => true,
+        ]);
+
+        $campaign->name = trans('messages.untitled');
+        $campaign->status = Campaign::STATUS_NEW;
+
+        return $campaign;
+    }
+
+    public function saveFromArray($params)
+    {
+        // type     
+        if (isset($params['type'])) {
+            $this->type = $params['type'];
+        }
+
+        $this->save();
+    }
 }

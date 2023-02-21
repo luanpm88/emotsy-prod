@@ -67,23 +67,16 @@ class CampaignController extends Controller
      */
     public function create(Request $request)
     {
-        $customer = $request->user()->customer;
-        $campaign = new Campaign([
-            'track_open' => true,
-            'track_click' => true,
-            'sign_dkim' => true,
-        ]);
+        $campaign = $request->user()->customer->newDefaultCampaign();
 
         // authorize
         if (\Gate::denies('create', $campaign)) {
             return $this->noMoreItem();
         }
 
-        $campaign->name = trans('messages.untitled');
-        $campaign->customer_id = $customer->id;
-        $campaign->status = Campaign::STATUS_NEW;
-        $campaign->type = $request->type;
-        $campaign->save();
+        $campaign->saveFromArray([
+            'type' => $request->type,
+        ]);
 
         return redirect()->action('CampaignController@recipients', ['uid' => $campaign->uid]);
     }
