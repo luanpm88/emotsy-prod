@@ -340,7 +340,7 @@ class SendingServer extends Model implements HasQuotaInterface
                 'cols' => [
                     'api_key' => 'required',
                     'domain' => 'required|regex:/^([a-zA-Z0-9][a-zA-Z0-9-_]*\.)*[a-zA-Z0-9]*[a-zA-Z0-9-_]*[[a-zA-Z0-9]+$/',
-                    'host' => 'required',
+                    'aws_region' => 'required',
                 ],
                 'settings' => [
                     'name' => 'required',
@@ -718,7 +718,7 @@ class SendingServer extends Model implements HasQuotaInterface
         $validator->after(function ($validator) {
             try {
                 $this->test();
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
                 $validator->errors()->add('connection', $e->getMessage());
             }
         });

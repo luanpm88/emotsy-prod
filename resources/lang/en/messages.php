@@ -2128,6 +2128,7 @@
   'senders.deleted' => 'Sender was successfully deleted',
   'senders.empty.message' => 'You have no sender yet',
   'sending' => 'Sending',
+  'sending_server.mailgun.error.host.required' => 'API region is required',
   'sending_credits_used' => 'Sending credits',
   'sending_domain' => 'Sending domain',
   'sending_domain.created' => 'Sending domain was successfully created',
