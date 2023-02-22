@@ -14,6 +14,11 @@ class SegmentController extends Controller
      */
     public function index(Request $request)
     {
+        // authorize
+        if (\Gate::denies('list', new \Acelle\Model\Segment())) {
+            return $this->notAuthorized();
+        }
+
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
 
         if (!$list) {
@@ -32,6 +37,11 @@ class SegmentController extends Controller
      */
     public function listing(Request $request)
     {
+        // authorize
+        if (\Gate::denies('list', new \Acelle\Model\Segment())) {
+            return $this->notAuthorized();
+        }
+        
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
         $segments = \Acelle\Model\Segment::search($request)->paginate($request->per_page);
 

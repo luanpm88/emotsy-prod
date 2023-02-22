@@ -26,6 +26,11 @@ class Automation2Controller extends Controller
      */
     public function index(Request $request)
     {
+        // authorize
+        if (\Gate::denies('list', new Automation2())) {
+            return $this->notAuthorized();
+        }
+
         return view('automation2.index');
     }
 
@@ -36,6 +41,11 @@ class Automation2Controller extends Controller
      */
     public function listing(Request $request)
     {
+        // authorize
+        if (\Gate::denies('list', new Automation2())) {
+            return $this->notAuthorized();
+        }
+        
         $automations = $request->user()->customer->automation2s()
             ->search($request->keyword)
             ->orderBy($request->sort_order, $request->sort_direction)

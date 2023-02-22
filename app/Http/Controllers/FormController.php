@@ -11,12 +11,22 @@ class FormController extends Controller
 {
     public function index(Request $request)
     {
+        // authorize
+        if (\Gate::denies('list', new Form())) {
+            return $this->notAuthorized();
+        }
+        
         return view('forms.index');
     }
 
     public function create(Request $request)
     {
         $form = Form::newDefault($request->user()->customer);
+
+        // authorize
+        if (\Gate::denies('create', $form)) {
+            return $this->notAuthorized();
+        }
 
         if ($request->isMethod('post')) {
             $validator = $form->createFromArray($request->all());
@@ -44,6 +54,11 @@ class FormController extends Controller
 
     public function templates(Request $request)
     {
+        // authorize
+        if (\Gate::denies('create', new Form())) {
+            return $this->notAuthorized();
+        }
+        
         $templates = Template::popup()->shared()
             ->search($request->keyword)
             ->orderBy($request->sort_order, $request->sort_direction)
@@ -56,6 +71,11 @@ class FormController extends Controller
 
     public function list(Request $request)
     {
+        // authorize
+        if (\Gate::denies('list', new Form())) {
+            return $this->notAuthorized();
+        }
+
         // sort, pagination
         $forms = $request->user()->customer->forms()->search($request->keyword)
             ->filter($request->all())
@@ -217,6 +237,11 @@ class FormController extends Controller
     {
         $form = Form::findByUid($request->uid);
 
+        // authorize
+        if (\Gate::denies('update', $form)) {
+            return $this->notAuthorized();
+        }
+
         try {
             $form->saveSettingsFromArray($request->all());
 
@@ -233,6 +258,11 @@ class FormController extends Controller
     public function connect(Request $request)
     {
         $form = Form::findByUid($request->uid);
+
+        // authorize
+        if (\Gate::denies('update', $form)) {
+            return $this->notAuthorized();
+        }
 
         if ($request->isMethod('post')) {
             // make validator
@@ -371,6 +401,11 @@ class FormController extends Controller
     {
         $form = Form::findByUid($request->uid);
         $template = Template::findByUid($request->template_uid);
+
+        // authorize
+        if (\Gate::denies('update', $form)) {
+            return $this->notAuthorized();
+        }
 
         $form->changeTemplate($template);
 

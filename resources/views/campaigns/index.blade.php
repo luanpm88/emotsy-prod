@@ -74,9 +74,11 @@
                 @endif
             </div>
             <div class="text-end">
-                <a href="{{ action('CampaignController@selectType') }}" role="button" class="btn btn-secondary">
-                    <span class="material-symbols-rounded">add</span> {{ trans('messages.create_campaign') }}
-                </a>
+                @if (Auth::user()->customer->can('create', new Acelle\Model\Campaign()))
+                    <a href="{{ action('CampaignController@selectType') }}" role="button" class="btn btn-secondary">
+                        <span class="material-symbols-rounded">add</span> {{ trans('messages.create_campaign') }}
+                    </a>
+                @endif
             </div>
         </div>
 

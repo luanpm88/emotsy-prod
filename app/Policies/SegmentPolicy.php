@@ -10,8 +10,21 @@ class SegmentPolicy
 {
     use HandlesAuthorization;
 
+    public function list(User $user, Segment $item)
+    {
+        if (config('limit.list.segment') === false) {
+            return false;
+        }
+
+        return true;
+    }
+
     public function create(User $user, Segment $item)
     {
+        if (config('limit.list.segment') === false) {
+            return false;
+        }
+
         $customer = $user->customer;
         $max_per_list = $customer->getOption('segment_per_list_max');
 
@@ -22,18 +35,30 @@ class SegmentPolicy
 
     public function update(User $user, Segment $item)
     {
+        if (config('limit.list.segment') === false) {
+            return false;
+        }
+
         $customer = $user->customer;
         return $item->mailList->customer_id == $customer->id;
     }
 
     public function delete(User $user, Segment $item)
     {
+        if (config('limit.list.segment') === false) {
+            return false;
+        }
+
         $customer = $user->customer;
         return $item->mailList->customer_id == $customer->id;
     }
 
     public function export(User $user, Segment $item)
     {
+        if (config('limit.list.segment') === false) {
+            return false;
+        }
+
         $customer = $user->customer;
         return $item->mailList->customer_id == $customer->id;
     }

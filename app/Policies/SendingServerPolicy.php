@@ -43,12 +43,24 @@ class SendingServerPolicy
         switch ($role) {
             case 'admin':
                 $can = $user->admin->getPermission('sending_server_create') == 'yes';
+
+                // config/limit.php
+                $limit = config('limit.sending_server.limit');
+                $sendingServerCount = SendingServer::system()->count();
+                $can = $can && ($sendingServerCount < $limit);
+
                 break;
             case 'customer':
                 $max = $user->customer->getOption('sending_servers_max');
                 $can = $user->customer->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_OWN
                     && ($user->customer->sendingServersCount() < $max || $max == -1);
                 $can = $can && (!isset($item->type) || $user->customer->isAllowCreateSendingServerType($item->type));
+
+                // config/limit.php
+                $limit = config('limit.sending_server.limit');
+                $sendingServerCount = $user->customer->sendingServers()->count();
+                $can = $can && ($sendingServerCount < $limit);
+
                 break;
         }
 

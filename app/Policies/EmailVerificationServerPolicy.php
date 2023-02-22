@@ -21,6 +21,10 @@ class EmailVerificationServerPolicy
                 break;
         }
 
+        // config/limit.php
+        $enabled = config('limit.email_verfication_server.disable') === false;
+        $can = $can && $enabled;
+
         return $can;
     }
 
@@ -34,6 +38,10 @@ class EmailVerificationServerPolicy
                 $can = false;
                 break;
         }
+
+        // config/limit.php
+        $enabled = config('limit.email_verfication_server.disable') === false;
+        $can = $can && $enabled;
 
         return $can;
     }
@@ -51,6 +59,10 @@ class EmailVerificationServerPolicy
                 break;
         }
 
+        // config/limit.php
+        $enabled = config('limit.email_verfication_server.disable') === false;
+        $can = $can && $enabled;
+
         return $can;
     }
 
@@ -66,6 +78,10 @@ class EmailVerificationServerPolicy
                 $can = $user->customer->getOption('create_email_verification_servers') == 'yes' && $user->customer->id == $server->customer_id;
                 break;
         }
+
+        // config/limit.php
+        $enabled = config('limit.email_verfication_server.disable') === false;
+        $can = $can && $enabled;
 
         return $can;
     }
@@ -84,6 +100,10 @@ class EmailVerificationServerPolicy
                 break;
         }
 
+        // config/limit.php
+        $enabled = config('limit.email_verfication_server.disable') === false;
+        $can = $can && $enabled;
+
         return $can;
     }
 
@@ -101,6 +121,10 @@ class EmailVerificationServerPolicy
                 break;
         }
 
+        // config/limit.php
+        $enabled = config('limit.email_verfication_server.disable') === false;
+        $can = $can && $enabled;
+
         return $can && $server->status != EmailVerificationServer::STATUS_INACTIVE;
     }
 
@@ -117,6 +141,10 @@ class EmailVerificationServerPolicy
                     && $user->customer->id == $server->customer_id;
                 break;
         }
+
+        // config/limit.php
+        $enabled = config('limit.email_verfication_server.disable') === false;
+        $can = $can && $enabled;
 
         return $can && $server->status != EmailVerificationServer::STATUS_ACTIVE;
     }
