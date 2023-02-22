@@ -10,7 +10,7 @@ class FormPolicy
 {
     use HandlesAuthorization;
 
-    public function list(User $user, Form $form)
+    public function list(User $user)
     {
         if (config('limit.form.disable') === true) {
             return false;

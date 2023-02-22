@@ -12,7 +12,7 @@ class FormController extends Controller
     public function index(Request $request)
     {
         // authorize
-        if (\Gate::denies('list', new Form())) {
+        if (\Gate::denies('list', Form::class)) {
             return $this->notAuthorized();
         }
         
@@ -72,7 +72,7 @@ class FormController extends Controller
     public function list(Request $request)
     {
         // authorize
-        if (\Gate::denies('list', new Form())) {
+        if (\Gate::denies('list', Form::class)) {
             return $this->notAuthorized();
         }
 

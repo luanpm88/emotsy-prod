@@ -10,7 +10,7 @@ class SegmentPolicy
 {
     use HandlesAuthorization;
 
-    public function list(User $user, Segment $item)
+    public function list(User $user)
     {
         if (config('limit.list.segment') === false) {
             return false;

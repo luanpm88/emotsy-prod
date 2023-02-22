@@ -10,7 +10,7 @@ class Automation2Policy
 {
     use HandlesAuthorization;
 
-    public function list(User $user, Automation2 $automation)
+    public function list(User $user)
     {
         if (config('limit.automation.disable') === true) {
             return false;

@@ -15,7 +15,7 @@ class SegmentController extends Controller
     public function index(Request $request)
     {
         // authorize
-        if (\Gate::denies('list', new \Acelle\Model\Segment())) {
+        if (\Gate::denies('list', \Acelle\Model\Segment::class)) {
             return $this->notAuthorized();
         }
 
@@ -38,7 +38,7 @@ class SegmentController extends Controller
     public function listing(Request $request)
     {
         // authorize
-        if (\Gate::denies('list', new \Acelle\Model\Segment())) {
+        if (\Gate::denies('list', \Acelle\Model\Segment::class)) {
             return $this->notAuthorized();
         }
         
