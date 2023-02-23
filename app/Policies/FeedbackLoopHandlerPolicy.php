@@ -15,6 +15,10 @@ class FeedbackLoopHandlerPolicy
         $ability = $user->admin->getPermission('fbl_handler_read');
         $can = $ability == 'all'
                 || ($ability == 'own' && $user->admin->id == $item->admin_id);
+        
+        // config/limit.php
+        $enabled = config('limit.feedback_loop_handler.disable') === false;
+        $can = $can && $enabled;
 
         return $can;
     }
@@ -23,12 +27,20 @@ class FeedbackLoopHandlerPolicy
     {
         $can = $user->admin->getPermission('fbl_handler_read') == 'all';
 
+        // config/limit.php
+        $enabled = config('limit.feedback_loop_handler.disable') === false;
+        $can = $can && $enabled;
+
         return $can;
     }
 
     public function create(User $user, FeedbackLoopHandler $item)
     {
         $can = $user->admin->getPermission('fbl_handler_create') == 'yes';
+
+        // config/limit.php
+        $enabled = config('limit.feedback_loop_handler.disable') === false;
+        $can = $can && $enabled;
 
         return $can;
     }
@@ -39,6 +51,10 @@ class FeedbackLoopHandlerPolicy
         $can = $ability == 'all'
                 || ($ability == 'own' && $user->admin->id == $item->admin_id);
 
+        // config/limit.php
+        $enabled = config('limit.feedback_loop_handler.disable') === false;
+        $can = $can && $enabled;
+
         return $can;
     }
 
@@ -48,11 +64,21 @@ class FeedbackLoopHandlerPolicy
         $can = $ability == 'all'
                 || ($ability == 'own' && $user->admin->id == $item->admin_id);
 
+        // config/limit.php
+        $enabled = config('limit.feedback_loop_handler.disable') === false;
+        $can = $can && $enabled;
+
         return $can;
     }
 
     public function test(User $user, FeedbackLoopHandler $item)
     {
-        return $this->update($user, $item) || !isset($item->id);
+        $can = $this->update($user, $item) || !isset($item->id);
+
+        // config/limit.php
+        $enabled = config('limit.feedback_loop_handler.disable') === false;
+        $can = $can && $enabled;
+
+        return $can;
     }
 }

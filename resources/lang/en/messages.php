@@ -3114,4 +3114,7 @@
   'your_api_token' => 'Your API token',
   'your_current_license' => 'Thank you for purchasing! Below is your license key, also known as Purchase Code. Your license type is',
   'zip_postal_code' => 'Zip / Postal code',
+  'campaign.created' => 'A new campaign was added!',
+  'campaign.updated' => 'A new campaign was updated!',
+  'campaign.resumed' => 'A new campaign was resumed!',
 ) ?>

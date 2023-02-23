@@ -21,6 +21,10 @@ class PlanController extends Controller
 
     public function publicListPage(Request $request)
     {
+        if (config('limit.plan.disable_public_page') === true) {
+            abort(404);
+        }
+
         $plans = Plan::getAvailablePlans();
         $style = $request->style ?? 'default';
 

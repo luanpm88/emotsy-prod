@@ -16,6 +16,10 @@ class BounceHandlerPolicy
         $can = $ability == 'all'
                 || ($ability == 'own' && $user->admin->id == $item->admin_id);
 
+        // config/limit.php
+        $enabled = config('limit.bounce_handler.disable') === false;
+        $can = $can && $enabled;
+
         return $can;
     }
 
@@ -23,12 +27,20 @@ class BounceHandlerPolicy
     {
         $can = $user->admin->getPermission('bounce_handler_read') == 'all';
 
+        // config/limit.php
+        $enabled = config('limit.bounce_handler.disable') === false;
+        $can = $can && $enabled;
+
         return $can;
     }
 
     public function create(User $user, BounceHandler $item)
     {
         $can = $user->admin->getPermission('bounce_handler_create') == 'yes';
+
+        // config/limit.php
+        $enabled = config('limit.bounce_handler.disable') === false;
+        $can = $can && $enabled;
 
         return $can;
     }
@@ -39,6 +51,10 @@ class BounceHandlerPolicy
         $can = $ability == 'all'
                 || ($ability == 'own' && $user->admin->id == $item->admin_id);
 
+        // config/limit.php
+        $enabled = config('limit.bounce_handler.disable') === false;
+        $can = $can && $enabled;
+
         return $can;
     }
 
@@ -48,11 +64,21 @@ class BounceHandlerPolicy
         $can = $ability == 'all'
                 || ($ability == 'own' && $user->admin->id == $item->admin_id);
 
+        // config/limit.php
+        $enabled = config('limit.bounce_handler.disable') === false;
+        $can = $can && $enabled;
+
         return $can;
     }
 
     public function test(User $user, BounceHandler $item)
     {
-        return $this->update($user, $item) || !isset($item->id);
+        $can = $this->update($user, $item) || !isset($item->id);
+
+        // config/limit.php
+        $enabled = config('limit.bounce_handler.disable') === false;
+        $can = $can && $enabled;
+
+        return $can;
     }
 }

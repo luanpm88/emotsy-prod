@@ -35,14 +35,16 @@
                         <span>{{ trans('messages.campaigns') }}</span>
                     </a>
                 </li>
-                <li class="nav-item {{ $menu == 'automation' ? 'active' : '' }}">
-                    <a href="{{ action('Automation2Controller@index') }}" title="{{ trans('messages.automations') }}" class="leftbar-tooltip nav-link d-flex align-items-center py-3 lvl-1">
-                        <i class="navbar-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 86.4 86.6"><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><g id="Layer_2-2" data-name="Layer 2"><g id="Layer_1-2-2" data-name="Layer 1-2"><path d="M38.4,57.1a3.2,3.2,0,0,1-2.3-.8L21.7,43.8a3.5,3.5,0,1,1,4.6-5.3L38.4,49,60.1,30.5a3.4,3.4,0,0,1,4.9.4,3.5,3.5,0,0,1-.3,4.9l-24,20.5A3.4,3.4,0,0,1,38.4,57.1Z" style="fill:aqua"/><path d="M43.2,86.6H42.1A42.6,42.6,0,0,1,11.9,73.1a43,43,0,0,1,1.6-61,43,43,0,0,1,61,1.6,43,43,0,0,1-1.6,61A42.8,42.8,0,0,1,43.2,86.6Zm0-79.4A36.2,36.2,0,0,0,7,42.4H7A36.2,36.2,0,0,0,42.3,79.6,36.2,36.2,0,0,0,69.5,18.5,36.5,36.5,0,0,0,44.1,7.2ZM3.5,42.3Z" style="fill:#f2f2f2"/><path d="M8.7,27.2a3.2,3.2,0,0,1-1.9-.5A14.5,14.5,0,0,1,11.6.3,14.4,14.4,0,0,1,26.3,5.9a3.6,3.6,0,0,1-.7,4.9,3.5,3.5,0,0,1-4.9-.8,8.6,8.6,0,0,0-2-1.8A7.5,7.5,0,0,0,8.4,10.4a7.5,7.5,0,0,0,2.2,10.4,3.4,3.4,0,0,1,1,4.8A3.3,3.3,0,0,1,8.7,27.2Z" style="fill:#f2f2f2"/><path d="M77.7,27.2a3.3,3.3,0,0,1-2.9-1.5,3.5,3.5,0,0,1,1-4.9,7.4,7.4,0,0,0,3.3-6.3,7.8,7.8,0,0,0-2.3-5.2,7.4,7.4,0,0,0-5.3-2.1,8.2,8.2,0,0,0-6,2.9,3.5,3.5,0,1,1-5.4-4.4A15.1,15.1,0,0,1,71.5.2,14.5,14.5,0,0,1,86.1,14.4a14.4,14.4,0,0,1-6.5,12.3A3.4,3.4,0,0,1,77.7,27.2Z" style="fill:#f2f2f2"/></g></g></g></g></svg>
-                        </i>
-                        <span>{{ trans('messages.automations') }}</span>
-                    </a>
-                </li>
+                @if (Auth::user()->customer->can("list", new Acelle\Model\Automation2()))
+                    <li class="nav-item {{ $menu == 'automation' ? 'active' : '' }}">
+                        <a href="{{ action('Automation2Controller@index') }}" title="{{ trans('messages.automations') }}" class="leftbar-tooltip nav-link d-flex align-items-center py-3 lvl-1">
+                            <i class="navbar-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 86.4 86.6"><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><g id="Layer_2-2" data-name="Layer 2"><g id="Layer_1-2-2" data-name="Layer 1-2"><path d="M38.4,57.1a3.2,3.2,0,0,1-2.3-.8L21.7,43.8a3.5,3.5,0,1,1,4.6-5.3L38.4,49,60.1,30.5a3.4,3.4,0,0,1,4.9.4,3.5,3.5,0,0,1-.3,4.9l-24,20.5A3.4,3.4,0,0,1,38.4,57.1Z" style="fill:aqua"/><path d="M43.2,86.6H42.1A42.6,42.6,0,0,1,11.9,73.1a43,43,0,0,1,1.6-61,43,43,0,0,1,61,1.6,43,43,0,0,1-1.6,61A42.8,42.8,0,0,1,43.2,86.6Zm0-79.4A36.2,36.2,0,0,0,7,42.4H7A36.2,36.2,0,0,0,42.3,79.6,36.2,36.2,0,0,0,69.5,18.5,36.5,36.5,0,0,0,44.1,7.2ZM3.5,42.3Z" style="fill:#f2f2f2"/><path d="M8.7,27.2a3.2,3.2,0,0,1-1.9-.5A14.5,14.5,0,0,1,11.6.3,14.4,14.4,0,0,1,26.3,5.9a3.6,3.6,0,0,1-.7,4.9,3.5,3.5,0,0,1-4.9-.8,8.6,8.6,0,0,0-2-1.8A7.5,7.5,0,0,0,8.4,10.4a7.5,7.5,0,0,0,2.2,10.4,3.4,3.4,0,0,1,1,4.8A3.3,3.3,0,0,1,8.7,27.2Z" style="fill:#f2f2f2"/><path d="M77.7,27.2a3.3,3.3,0,0,1-2.9-1.5,3.5,3.5,0,0,1,1-4.9,7.4,7.4,0,0,0,3.3-6.3,7.8,7.8,0,0,0-2.3-5.2,7.4,7.4,0,0,0-5.3-2.1,8.2,8.2,0,0,0-6,2.9,3.5,3.5,0,1,1-5.4-4.4A15.1,15.1,0,0,1,71.5.2,14.5,14.5,0,0,1,86.1,14.4a14.4,14.4,0,0,1-6.5,12.3A3.4,3.4,0,0,1,77.7,27.2Z" style="fill:#f2f2f2"/></g></g></g></g></svg>
+                            </i>
+                            <span>{{ trans('messages.automations') }}</span>
+                        </a>
+                    </li>
+                @endif
                 <li class="nav-item dropdown {{ in_array($menu, ['overview','list','subscriber','segment','form']) ? 'active' : '' }}">
                     <a href=""
                         title="{{ trans('messages.lists') }}"
@@ -82,16 +84,18 @@
                                     <span>{{ trans('messages.contacts') }}</span>
                                 </a>
                             </li>
-                            <li class="nav-item {{ $menu == 'segment' ? 'active' : '' }}">
-                                <a class="dropdown-item d-flex align-items-center" href="{{ action('SegmentController@index', [
-                                    'list_uid' => Auth::user()->customer->mailLists()->first() ? Auth::user()->customer->mailLists()->first()->uid : null,
-                                ]) }}">
-                                    <i class="navbar-icon" style="">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 97 87.5"><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><path d="M34.6,33H7.1A7.1,7.1,0,0,1,0,25.9V7.1A7.1,7.1,0,0,1,7.1,0H34.6a7.1,7.1,0,0,1,7.1,7.1V25.9A7.1,7.1,0,0,1,34.6,33ZM7.1,7H7V25.9c0,.1,0,.1.1.1H34.6c.1,0,.1,0,.1-.1V7.1H7.1Z" style="fill:#333"/><path d="M33.9,87.5H8.4A8.1,8.1,0,0,1,.3,79.4V46.1A8.1,8.1,0,0,1,8.4,38H33.9A8.1,8.1,0,0,1,42,46.1V79.4A8.1,8.1,0,0,1,33.9,87.5ZM8.4,45a1.1,1.1,0,0,0-1.1,1.1V79.4a1.1,1.1,0,0,0,1.1,1.1H33.9A1.1,1.1,0,0,0,35,79.4V46.1A1.1,1.1,0,0,0,33.9,45Z" style="fill:#333"/><path d="M86.5,87.5h-29A10.5,10.5,0,0,1,47,77V11A10.5,10.5,0,0,1,57.5.5h29A10.5,10.5,0,0,1,97,11V77A10.5,10.5,0,0,1,86.5,87.5Zm-29-80A3.5,3.5,0,0,0,54,11V77a3.5,3.5,0,0,0,3.5,3.5h29A3.5,3.5,0,0,0,90,77V11a3.5,3.5,0,0,0-3.5-3.5Z" style="fill:#333"/><rect x="13.4" y="50.8" width="15.2" height="24.5" rx="4.1" style="fill:#333"/><path d="M93.5,56h-13A3.5,3.5,0,0,1,77,52.5v-17A3.5,3.5,0,0,1,80.5,32h13A3.5,3.5,0,0,1,97,35.5v17A3.5,3.5,0,0,1,93.5,56ZM84,49h6V39H84Z" style="fill:#333"/></g></g></svg>
-                                    </i>
-                                    <span>{{ trans('messages.segments') }}</span>
-                                </a>
-                            </li>
+                            @if (Auth::user()->customer->can("list", new Acelle\Model\Segment()))
+                                <li class="nav-item {{ $menu == 'segment' ? 'active' : '' }}">
+                                    <a class="dropdown-item d-flex align-items-center" href="{{ action('SegmentController@index', [
+                                        'list_uid' => Auth::user()->customer->mailLists()->first() ? Auth::user()->customer->mailLists()->first()->uid : null,
+                                    ]) }}">
+                                        <i class="navbar-icon" style="">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 97 87.5"><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><path d="M34.6,33H7.1A7.1,7.1,0,0,1,0,25.9V7.1A7.1,7.1,0,0,1,7.1,0H34.6a7.1,7.1,0,0,1,7.1,7.1V25.9A7.1,7.1,0,0,1,34.6,33ZM7.1,7H7V25.9c0,.1,0,.1.1.1H34.6c.1,0,.1,0,.1-.1V7.1H7.1Z" style="fill:#333"/><path d="M33.9,87.5H8.4A8.1,8.1,0,0,1,.3,79.4V46.1A8.1,8.1,0,0,1,8.4,38H33.9A8.1,8.1,0,0,1,42,46.1V79.4A8.1,8.1,0,0,1,33.9,87.5ZM8.4,45a1.1,1.1,0,0,0-1.1,1.1V79.4a1.1,1.1,0,0,0,1.1,1.1H33.9A1.1,1.1,0,0,0,35,79.4V46.1A1.1,1.1,0,0,0,33.9,45Z" style="fill:#333"/><path d="M86.5,87.5h-29A10.5,10.5,0,0,1,47,77V11A10.5,10.5,0,0,1,57.5.5h29A10.5,10.5,0,0,1,97,11V77A10.5,10.5,0,0,1,86.5,87.5Zm-29-80A3.5,3.5,0,0,0,54,11V77a3.5,3.5,0,0,0,3.5,3.5h29A3.5,3.5,0,0,0,90,77V11a3.5,3.5,0,0,0-3.5-3.5Z" style="fill:#333"/><rect x="13.4" y="50.8" width="15.2" height="24.5" rx="4.1" style="fill:#333"/><path d="M93.5,56h-13A3.5,3.5,0,0,1,77,52.5v-17A3.5,3.5,0,0,1,80.5,32h13A3.5,3.5,0,0,1,97,35.5v17A3.5,3.5,0,0,1,93.5,56ZM84,49h6V39H84Z" style="fill:#333"/></g></g></svg>
+                                        </i>
+                                        <span>{{ trans('messages.segments') }}</span>
+                                    </a>
+                                </li>
+                            @endif
                         @else
                             <li class="nav-item {{ $menu == 'subscriber' ? 'active' : '' }}">
                                 <a class="dropdown-item d-flex align-items-center" href="{{ action('SubscriberController@noList') }}">
@@ -101,23 +105,27 @@
                                     <span>{{ trans('messages.contacts') }}</span>
                                 </a>
                             </li>
-                            <li class="nav-item {{ $menu == 'segment' ? 'active' : '' }}">
-                                <a class="dropdown-item d-flex align-items-center" href="{{ action('SegmentController@noList') }}">
+                            @if (Auth::user()->customer->can("list", new Acelle\Model\Segment()))
+                                <li class="nav-item {{ $menu == 'segment' ? 'active' : '' }}">
+                                    <a class="dropdown-item d-flex align-items-center" href="{{ action('SegmentController@noList') }}">
+                                        <i class="navbar-icon" style="">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 97 87.5"><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><path d="M34.6,33H7.1A7.1,7.1,0,0,1,0,25.9V7.1A7.1,7.1,0,0,1,7.1,0H34.6a7.1,7.1,0,0,1,7.1,7.1V25.9A7.1,7.1,0,0,1,34.6,33ZM7.1,7H7V25.9c0,.1,0,.1.1.1H34.6c.1,0,.1,0,.1-.1V7.1H7.1Z" style="fill:#333"/><path d="M33.9,87.5H8.4A8.1,8.1,0,0,1,.3,79.4V46.1A8.1,8.1,0,0,1,8.4,38H33.9A8.1,8.1,0,0,1,42,46.1V79.4A8.1,8.1,0,0,1,33.9,87.5ZM8.4,45a1.1,1.1,0,0,0-1.1,1.1V79.4a1.1,1.1,0,0,0,1.1,1.1H33.9A1.1,1.1,0,0,0,35,79.4V46.1A1.1,1.1,0,0,0,33.9,45Z" style="fill:#333"/><path d="M86.5,87.5h-29A10.5,10.5,0,0,1,47,77V11A10.5,10.5,0,0,1,57.5.5h29A10.5,10.5,0,0,1,97,11V77A10.5,10.5,0,0,1,86.5,87.5Zm-29-80A3.5,3.5,0,0,0,54,11V77a3.5,3.5,0,0,0,3.5,3.5h29A3.5,3.5,0,0,0,90,77V11a3.5,3.5,0,0,0-3.5-3.5Z" style="fill:#333"/><rect x="13.4" y="50.8" width="15.2" height="24.5" rx="4.1" style="fill:#333"/><path d="M93.5,56h-13A3.5,3.5,0,0,1,77,52.5v-17A3.5,3.5,0,0,1,80.5,32h13A3.5,3.5,0,0,1,97,35.5v17A3.5,3.5,0,0,1,93.5,56ZM84,49h6V39H84Z" style="fill:#333"/></g></g></svg>
+                                        </i>
+                                        <span>{{ trans('messages.segments') }}</span>
+                                    </a>
+                                </li>
+                            @endif
+                        @endif
+                        @if (Auth::user()->customer->can("list", new Acelle\Model\Form()))
+                            <li class="nav-item {{ $menu == 'form' ? 'active' : '' }}">
+                                <a class="dropdown-item d-flex align-items-center" href="{{ action('FormController@index') }}">
                                     <i class="navbar-icon" style="">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 97 87.5"><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><path d="M34.6,33H7.1A7.1,7.1,0,0,1,0,25.9V7.1A7.1,7.1,0,0,1,7.1,0H34.6a7.1,7.1,0,0,1,7.1,7.1V25.9A7.1,7.1,0,0,1,34.6,33ZM7.1,7H7V25.9c0,.1,0,.1.1.1H34.6c.1,0,.1,0,.1-.1V7.1H7.1Z" style="fill:#333"/><path d="M33.9,87.5H8.4A8.1,8.1,0,0,1,.3,79.4V46.1A8.1,8.1,0,0,1,8.4,38H33.9A8.1,8.1,0,0,1,42,46.1V79.4A8.1,8.1,0,0,1,33.9,87.5ZM8.4,45a1.1,1.1,0,0,0-1.1,1.1V79.4a1.1,1.1,0,0,0,1.1,1.1H33.9A1.1,1.1,0,0,0,35,79.4V46.1A1.1,1.1,0,0,0,33.9,45Z" style="fill:#333"/><path d="M86.5,87.5h-29A10.5,10.5,0,0,1,47,77V11A10.5,10.5,0,0,1,57.5.5h29A10.5,10.5,0,0,1,97,11V77A10.5,10.5,0,0,1,86.5,87.5Zm-29-80A3.5,3.5,0,0,0,54,11V77a3.5,3.5,0,0,0,3.5,3.5h29A3.5,3.5,0,0,0,90,77V11a3.5,3.5,0,0,0-3.5-3.5Z" style="fill:#333"/><rect x="13.4" y="50.8" width="15.2" height="24.5" rx="4.1" style="fill:#333"/><path d="M93.5,56h-13A3.5,3.5,0,0,1,77,52.5v-17A3.5,3.5,0,0,1,80.5,32h13A3.5,3.5,0,0,1,97,35.5v17A3.5,3.5,0,0,1,93.5,56ZM84,49h6V39H84Z" style="fill:#333"/></g></g></svg>
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 90 84.5"><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><path d="M3.5,77.3A3.6,3.6,0,0,1,0,74.1V11.5A11.7,11.7,0,0,1,12,0H78A11.7,11.7,0,0,1,90,11.5v7.8a3.5,3.5,0,0,1-7,0V11.5A4.7,4.7,0,0,0,78,7H12a4.7,4.7,0,0,0-5,4.5v62a3.4,3.4,0,0,1-3.2,3.8Z" style="fill:#333"/><path d="M72.9,51.6h-56a3.5,3.5,0,0,1-3.5-3.5V30a3.5,3.5,0,0,1,3.5-3.5h56A3.5,3.5,0,0,1,76.4,30V48.1A3.5,3.5,0,0,1,72.9,51.6Zm-52.5-7h49V33.5h-49Z" style="fill:#333"/><path d="M29.7,84.5a12.9,12.9,0,0,1,0-25.8,12.9,12.9,0,0,1,0,25.8Zm0-18.8a5.8,5.8,0,0,0-5.6,5.9,5.6,5.6,0,1,0,11.2,0A5.8,5.8,0,0,0,29.7,65.7Z" style="fill:#333"/><path d="M72.6,83.5H55.1A3.5,3.5,0,0,1,51.6,80V62.2a3.5,3.5,0,0,1,3.5-3.5H72.6a3.5,3.5,0,0,1,3.5,3.5V80A3.5,3.5,0,0,1,72.6,83.5Zm-14-7H69.1V65.7H58.6Z" style="fill:#333"/><path d="M45,21.5H16.4a3.5,3.5,0,1,1,0-7H45a3.5,3.5,0,0,1,0,7Z" style="fill:#333"/></g></g></svg>
                                     </i>
-                                    <span>{{ trans('messages.segments') }}</span>
+                                    <span>{{ trans('messages.forms') }}</span>
                                 </a>
                             </li>
                         @endif
-                        <li class="nav-item {{ $menu == 'form' ? 'active' : '' }}">
-                            <a class="dropdown-item d-flex align-items-center" href="{{ action('FormController@index') }}">
-                                <i class="navbar-icon" style="">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 90 84.5"><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><path d="M3.5,77.3A3.6,3.6,0,0,1,0,74.1V11.5A11.7,11.7,0,0,1,12,0H78A11.7,11.7,0,0,1,90,11.5v7.8a3.5,3.5,0,0,1-7,0V11.5A4.7,4.7,0,0,0,78,7H12a4.7,4.7,0,0,0-5,4.5v62a3.4,3.4,0,0,1-3.2,3.8Z" style="fill:#333"/><path d="M72.9,51.6h-56a3.5,3.5,0,0,1-3.5-3.5V30a3.5,3.5,0,0,1,3.5-3.5h56A3.5,3.5,0,0,1,76.4,30V48.1A3.5,3.5,0,0,1,72.9,51.6Zm-52.5-7h49V33.5h-49Z" style="fill:#333"/><path d="M29.7,84.5a12.9,12.9,0,0,1,0-25.8,12.9,12.9,0,0,1,0,25.8Zm0-18.8a5.8,5.8,0,0,0-5.6,5.9,5.6,5.6,0,1,0,11.2,0A5.8,5.8,0,0,0,29.7,65.7Z" style="fill:#333"/><path d="M72.6,83.5H55.1A3.5,3.5,0,0,1,51.6,80V62.2a3.5,3.5,0,0,1,3.5-3.5H72.6a3.5,3.5,0,0,1,3.5,3.5V80A3.5,3.5,0,0,1,72.6,83.5Zm-14-7H69.1V65.7H58.6Z" style="fill:#333"/><path d="M45,21.5H16.4a3.5,3.5,0,1,1,0-7H45a3.5,3.5,0,0,1,0,7Z" style="fill:#333"/></g></g></svg>
-                                </i>
-                                <span>{{ trans('messages.forms') }}</span>
-                            </a>
-                        </li>
                     </ul>
                 </li>
                 <li class="nav-item {{ $menu == 'template' ? 'active' : '' }}">
@@ -224,36 +232,38 @@
                         </ul>
                     </li>
                 @endif
-
-                <li class="nav-item dropdown {{ in_array($menu, ['website','website_new']) ? 'active' : '' }}">
-                    <a href=""
-                        class="leftbar-tooltip nav-link d-flex align-items-center py-3 lvl-1 dropdown-toggle {{ request()->session()->get('customer-leftbar-state') != 'closed' && Auth::user()->customer->getMenuLayout() == 'left' && in_array($menu, ['website','website_new']) ? 'show' : '' }}"
-                        data-bs-toggle="dropdown"
-                    >
-                        <i class="navbar-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 87.5 87.5"><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><path d="M44.5,87.5H13.4A13.4,13.4,0,0,1,0,74.1V13.4A13.4,13.4,0,0,1,13.4,0H24.5A3.5,3.5,0,0,1,28,3.5,3.5,3.5,0,0,1,24.5,7H13.4A6.4,6.4,0,0,0,7,13.4V74.1a6.4,6.4,0,0,0,6.4,6.4H44.5a3.5,3.5,0,0,1,0,7Z" style="fill:#f2f2f2"/><path d="M84,87.5H66.5a3.5,3.5,0,0,1,0-7h14V13.4A6.4,6.4,0,0,0,74.1,7H42a3.5,3.5,0,0,1-3.5-3.5A3.5,3.5,0,0,1,42,0H74.1A13.4,13.4,0,0,1,87.5,13.4V84A3.5,3.5,0,0,1,84,87.5Z" style="fill:#f2f2f2"/><path d="M66.5,87.5A3.5,3.5,0,0,1,63,84V49H22.8a3.6,3.6,0,0,1-3.6-3.5v-21A3.6,3.6,0,0,1,22.8,21H38.5V3.5a3.5,3.5,0,0,1,7,0v21A3.5,3.5,0,0,1,42,28H26.2V42H66.5A3.5,3.5,0,0,1,70,45.5V84A3.5,3.5,0,0,1,66.5,87.5Z" style="fill:#f2f2f2"/><path d="M36.5,76A10.5,10.5,0,1,1,47,65.5,10.5,10.5,0,0,1,36.5,76Zm0-14A3.5,3.5,0,1,0,40,65.5,3.5,3.5,0,0,0,36.5,62Z" style="fill:#ffd500"/></g></g></svg>
-                        </i>
-                        <span>{{ trans('messages.intergration') }}</span>
-                    </a>
-                    <ul class="dropdown-menu {{ request()->session()->get('customer-leftbar-state') != 'closed' && Auth::user()->customer->getMenuLayout() == 'left' && in_array($menu, ['website','website_new']) ? 'show' : '' }}" aria-labelledby="audience-menu">
-                        <li class="nav-item {{ $menu == 'website_new' ? 'active' : '' }}">
-                            <a class="dropdown-item d-flex align-items-center" href="{{ action('WebsiteController@create') }}">
-                                <i class="navbar-icon" style="">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 97.7 97"><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><path d="M48.5,97A48.5,48.5,0,1,1,97,48.5a47.8,47.8,0,0,1-.9,9.2A3.4,3.4,0,0,1,92,60.4a3.5,3.5,0,0,1-2.7-4.1,40.4,40.4,0,0,0,.7-7.8A41.5,41.5,0,1,0,48.5,90a39.3,39.3,0,0,0,6.9-.6,3.5,3.5,0,0,1,4,2.9,3.4,3.4,0,0,1-2.8,4A43.6,43.6,0,0,1,48.5,97Z" style="fill:#333"/><path d="M89,52.5H7a3.5,3.5,0,0,1,0-7H89a3.5,3.5,0,0,1,0,7Z" style="fill:#333"/><path d="M25,52.5a3.5,3.5,0,0,1-3.5-3.4,51.1,51.1,0,0,1,23.6-45,3.4,3.4,0,0,1,4.8,1,3.4,3.4,0,0,1-1,4.8,44.2,44.2,0,0,0-20.4,39,3.5,3.5,0,0,1-3.4,3.6Z" style="fill:#333"/><path d="M72.6,51.5h-.1a3.6,3.6,0,0,1-3.4-3.6c.2-4.2-.1-9.9-3.7-18A45,45,0,0,0,48.7,10.4a3.4,3.4,0,0,1-1-4.8,3.4,3.4,0,0,1,4.8-1.1A52,52,0,0,1,71.8,27.1c4.2,9.5,4.5,16.5,4.3,21A3.5,3.5,0,0,1,72.6,51.5Z" style="fill:#333"/><path d="M79.2,95.7a3.5,3.5,0,0,1-3.5-3.5v-30a3.5,3.5,0,0,1,3.5-3.5,3.5,3.5,0,0,1,3.5,3.5v30A3.4,3.4,0,0,1,79.2,95.7Z" style="fill:#333"/><path d="M94.2,80.7h-30a3.5,3.5,0,0,1-3.5-3.5,3.5,3.5,0,0,1,3.5-3.5h30a3.5,3.5,0,0,1,3.5,3.5A3.4,3.4,0,0,1,94.2,80.7Z" style="fill:#333"/><path d="M49,52.5A3.5,3.5,0,0,1,45.5,49V7a3.5,3.5,0,0,1,7,0V49A3.5,3.5,0,0,1,49,52.5Z" style="fill:#333"/></g></g></svg>
-                                </i>
-                                <span>{{ trans('messages.website.add_site') }}</span>
-                            </a>
-                        </li>
-                        <li class="nav-item {{ $menu == 'website' ? 'active' : '' }}" rel1="WebsiteController/show">
-                            <a class="dropdown-item d-flex align-items-center" href="{{ action('WebsiteController@index') }}">
-                                <i class="navbar-icon" style="">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 94.8 89.5"><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><path d="M69.2,89.5H15.1A15.1,15.1,0,0,1,0,74.5V20.3a15.1,15.1,0,0,1,15.1-15H41.6a3.5,3.5,0,0,1,0,7H15.1a8,8,0,0,0-8.1,8V74.5a8,8,0,0,0,8.1,8H69.2a8,8,0,0,0,8-8V47.9a3.5,3.5,0,1,1,7,0V74.5A15,15,0,0,1,69.2,89.5Z" style="fill:#333"/><path d="M67,43A21.5,21.5,0,1,1,88.4,21.5,21.5,21.5,0,0,1,67,43ZM67,7A14.5,14.5,0,1,0,81.4,21.5,14.5,14.5,0,0,0,67,7Z" style="fill:#333"/><path d="M29.4,46.1A12.5,12.5,0,1,1,41.9,33.6,12.5,12.5,0,0,1,29.4,46.1Zm0-17.9a5.5,5.5,0,1,0,5.5,5.4A5.5,5.5,0,0,0,29.4,28.2Z" style="fill:#333"/><path d="M45.3,78.9A12.5,12.5,0,1,1,57.8,66.4,12.5,12.5,0,0,1,45.3,78.9Zm0-18a5.5,5.5,0,0,0-5.5,5.5,5.5,5.5,0,0,0,11,0A5.5,5.5,0,0,0,45.3,60.9Z" style="fill:#333"/><path d="M40.5,33.4a3.5,3.5,0,0,1-.7-6.9l9.5-2.1a3.6,3.6,0,0,1,4.2,2.7,3.4,3.4,0,0,1-2.7,4.1l-9.5,2.2Z" style="fill:#333"/><path d="M52.2,60.9a2.7,2.7,0,0,1-1.3-.2,3.5,3.5,0,0,1-2-4.5l7.4-19.1a3.5,3.5,0,0,1,4.5-2,3.6,3.6,0,0,1,2,4.6l-7.4,19A3.3,3.3,0,0,1,52.2,60.9Z" style="fill:#333"/><path d="M66.9,31.6A10.6,10.6,0,1,1,77.5,21,10.6,10.6,0,0,1,66.9,31.6Zm0-13.2A2.6,2.6,0,0,0,64.3,21a2.6,2.6,0,1,0,5.2,0A2.6,2.6,0,0,0,66.9,18.4Z" style="fill:#333"/><path d="M91.3,78.9a3.5,3.5,0,0,1-3.5-3.5V60.6a3.5,3.5,0,0,1,7,0V75.4A3.5,3.5,0,0,1,91.3,78.9Z" style="fill:#333"/></g></g></svg>
-                                </i>
-                                <span>{{ trans('messages.connections.manage') }}</span>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
+                
+                @if (Auth::user()->customer->can("list", Acelle\Model\Website::class))
+                    <li class="nav-item dropdown {{ in_array($menu, ['website','website_new']) ? 'active' : '' }}">
+                        <a href=""
+                            class="leftbar-tooltip nav-link d-flex align-items-center py-3 lvl-1 dropdown-toggle {{ request()->session()->get('customer-leftbar-state') != 'closed' && Auth::user()->customer->getMenuLayout() == 'left' && in_array($menu, ['website','website_new']) ? 'show' : '' }}"
+                            data-bs-toggle="dropdown"
+                        >
+                            <i class="navbar-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 87.5 87.5"><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><path d="M44.5,87.5H13.4A13.4,13.4,0,0,1,0,74.1V13.4A13.4,13.4,0,0,1,13.4,0H24.5A3.5,3.5,0,0,1,28,3.5,3.5,3.5,0,0,1,24.5,7H13.4A6.4,6.4,0,0,0,7,13.4V74.1a6.4,6.4,0,0,0,6.4,6.4H44.5a3.5,3.5,0,0,1,0,7Z" style="fill:#f2f2f2"/><path d="M84,87.5H66.5a3.5,3.5,0,0,1,0-7h14V13.4A6.4,6.4,0,0,0,74.1,7H42a3.5,3.5,0,0,1-3.5-3.5A3.5,3.5,0,0,1,42,0H74.1A13.4,13.4,0,0,1,87.5,13.4V84A3.5,3.5,0,0,1,84,87.5Z" style="fill:#f2f2f2"/><path d="M66.5,87.5A3.5,3.5,0,0,1,63,84V49H22.8a3.6,3.6,0,0,1-3.6-3.5v-21A3.6,3.6,0,0,1,22.8,21H38.5V3.5a3.5,3.5,0,0,1,7,0v21A3.5,3.5,0,0,1,42,28H26.2V42H66.5A3.5,3.5,0,0,1,70,45.5V84A3.5,3.5,0,0,1,66.5,87.5Z" style="fill:#f2f2f2"/><path d="M36.5,76A10.5,10.5,0,1,1,47,65.5,10.5,10.5,0,0,1,36.5,76Zm0-14A3.5,3.5,0,1,0,40,65.5,3.5,3.5,0,0,0,36.5,62Z" style="fill:#ffd500"/></g></g></svg>
+                            </i>
+                            <span>{{ trans('messages.intergration') }}</span>
+                        </a>
+                        <ul class="dropdown-menu {{ request()->session()->get('customer-leftbar-state') != 'closed' && Auth::user()->customer->getMenuLayout() == 'left' && in_array($menu, ['website','website_new']) ? 'show' : '' }}" aria-labelledby="audience-menu">
+                            <li class="nav-item {{ $menu == 'website_new' ? 'active' : '' }}">
+                                <a class="dropdown-item d-flex align-items-center" href="{{ action('WebsiteController@create') }}">
+                                    <i class="navbar-icon" style="">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 97.7 97"><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><path d="M48.5,97A48.5,48.5,0,1,1,97,48.5a47.8,47.8,0,0,1-.9,9.2A3.4,3.4,0,0,1,92,60.4a3.5,3.5,0,0,1-2.7-4.1,40.4,40.4,0,0,0,.7-7.8A41.5,41.5,0,1,0,48.5,90a39.3,39.3,0,0,0,6.9-.6,3.5,3.5,0,0,1,4,2.9,3.4,3.4,0,0,1-2.8,4A43.6,43.6,0,0,1,48.5,97Z" style="fill:#333"/><path d="M89,52.5H7a3.5,3.5,0,0,1,0-7H89a3.5,3.5,0,0,1,0,7Z" style="fill:#333"/><path d="M25,52.5a3.5,3.5,0,0,1-3.5-3.4,51.1,51.1,0,0,1,23.6-45,3.4,3.4,0,0,1,4.8,1,3.4,3.4,0,0,1-1,4.8,44.2,44.2,0,0,0-20.4,39,3.5,3.5,0,0,1-3.4,3.6Z" style="fill:#333"/><path d="M72.6,51.5h-.1a3.6,3.6,0,0,1-3.4-3.6c.2-4.2-.1-9.9-3.7-18A45,45,0,0,0,48.7,10.4a3.4,3.4,0,0,1-1-4.8,3.4,3.4,0,0,1,4.8-1.1A52,52,0,0,1,71.8,27.1c4.2,9.5,4.5,16.5,4.3,21A3.5,3.5,0,0,1,72.6,51.5Z" style="fill:#333"/><path d="M79.2,95.7a3.5,3.5,0,0,1-3.5-3.5v-30a3.5,3.5,0,0,1,3.5-3.5,3.5,3.5,0,0,1,3.5,3.5v30A3.4,3.4,0,0,1,79.2,95.7Z" style="fill:#333"/><path d="M94.2,80.7h-30a3.5,3.5,0,0,1-3.5-3.5,3.5,3.5,0,0,1,3.5-3.5h30a3.5,3.5,0,0,1,3.5,3.5A3.4,3.4,0,0,1,94.2,80.7Z" style="fill:#333"/><path d="M49,52.5A3.5,3.5,0,0,1,45.5,49V7a3.5,3.5,0,0,1,7,0V49A3.5,3.5,0,0,1,49,52.5Z" style="fill:#333"/></g></g></svg>
+                                    </i>
+                                    <span>{{ trans('messages.website.add_site') }}</span>
+                                </a>
+                            </li>
+                            <li class="nav-item {{ $menu == 'website' ? 'active' : '' }}" rel1="WebsiteController/show">
+                                <a class="dropdown-item d-flex align-items-center" href="{{ action('WebsiteController@index') }}">
+                                    <i class="navbar-icon" style="">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 94.8 89.5"><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><path d="M69.2,89.5H15.1A15.1,15.1,0,0,1,0,74.5V20.3a15.1,15.1,0,0,1,15.1-15H41.6a3.5,3.5,0,0,1,0,7H15.1a8,8,0,0,0-8.1,8V74.5a8,8,0,0,0,8.1,8H69.2a8,8,0,0,0,8-8V47.9a3.5,3.5,0,1,1,7,0V74.5A15,15,0,0,1,69.2,89.5Z" style="fill:#333"/><path d="M67,43A21.5,21.5,0,1,1,88.4,21.5,21.5,21.5,0,0,1,67,43ZM67,7A14.5,14.5,0,1,0,81.4,21.5,14.5,14.5,0,0,0,67,7Z" style="fill:#333"/><path d="M29.4,46.1A12.5,12.5,0,1,1,41.9,33.6,12.5,12.5,0,0,1,29.4,46.1Zm0-17.9a5.5,5.5,0,1,0,5.5,5.4A5.5,5.5,0,0,0,29.4,28.2Z" style="fill:#333"/><path d="M45.3,78.9A12.5,12.5,0,1,1,57.8,66.4,12.5,12.5,0,0,1,45.3,78.9Zm0-18a5.5,5.5,0,0,0-5.5,5.5,5.5,5.5,0,0,0,11,0A5.5,5.5,0,0,0,45.3,60.9Z" style="fill:#333"/><path d="M40.5,33.4a3.5,3.5,0,0,1-.7-6.9l9.5-2.1a3.6,3.6,0,0,1,4.2,2.7,3.4,3.4,0,0,1-2.7,4.1l-9.5,2.2Z" style="fill:#333"/><path d="M52.2,60.9a2.7,2.7,0,0,1-1.3-.2,3.5,3.5,0,0,1-2-4.5l7.4-19.1a3.5,3.5,0,0,1,4.5-2,3.6,3.6,0,0,1,2,4.6l-7.4,19A3.3,3.3,0,0,1,52.2,60.9Z" style="fill:#333"/><path d="M66.9,31.6A10.6,10.6,0,1,1,77.5,21,10.6,10.6,0,0,1,66.9,31.6Zm0-13.2A2.6,2.6,0,0,0,64.3,21a2.6,2.6,0,1,0,5.2,0A2.6,2.6,0,0,0,66.9,18.4Z" style="fill:#333"/><path d="M91.3,78.9a3.5,3.5,0,0,1-3.5-3.5V60.6a3.5,3.5,0,0,1,7,0V75.4A3.5,3.5,0,0,1,91.3,78.9Z" style="fill:#333"/></g></g></svg>
+                                    </i>
+                                    <span>{{ trans('messages.connections.manage') }}</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                @endif
 
                 @if (Auth::user()->customer->canUseApi())
                     <li class="nav-item {{ $menu == 'api' ? 'active' : '' }}">

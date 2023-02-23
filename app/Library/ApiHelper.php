@@ -179,6 +179,38 @@ class ApiHelper
                 ],
 
                 [
+                    'method' => 'POST',
+                    'uri' => '/api/v1/campaigns',
+                    'description' => 'Add new campaign',
+                    'parameters' => [
+                        ['name' => '$list_uid', 'description' => 'List\'s uid'],
+                        ['name' => '$name', 'description' => 'New campaign name'],
+                        ['name' => '$subject', 'description' => 'Email subject'],
+                        ['name' => '$from_email', 'description' => 'From email'],
+                        ['name' => '$from_name', 'description' => 'From name'],
+                        ['name' => '$reply_to', 'description' => 'Reply-to email'],
+                        ['name' => '$track_open', 'description' => 'Track open (true|false)', 'optional' => true, 'default' => 'true'],
+                        ['name' => '$track_click', 'description' => 'Track click (true|false)', 'optional' => true, 'default' => 'true'],
+                        ['name' => '$sign_dkim', 'description' => 'Sign dkim (true|false)', 'optional' => true, 'default' => 'true'],
+                        ['name' => '$skip_failed_messages', 'description' => 'Track open (true|false)', 'optional' => true, 'default' => 'false'],
+                    ],
+                    'returns' => 'New campaign\'s information in json',
+                    'example' => 'curl -X POST -H "accept:application/json" -G \
+' .str_replace('-ID-', '<redbold>{uid}</redbold>', action("Api\CampaignController@store")).' \
+-d api_token=' .\Auth::user()->api_token. ' \
+-d mail_list_uid=<redbold>{list_uid}</redbold> \
+-d name=MyCampaign \
+-d subject=HelloWorld \
+-d from_email=noreply@gmail.com \
+-d from_name=NoReply \
+-d reply_to=noreply@gmail.com \
+-d track_open=true \
+-d track_click=true \
+-d sign_dkim=false \
+-d skip_failed_messages=false',
+                ],
+
+                [
                     'method' => 'GET',
                     'uri' => '/api/v1/campaigns/{uid}',
                     'description' => 'Get information about a specific campaign',
@@ -190,6 +222,42 @@ class ApiHelper
                 ],
 
                 [
+                    'method' => 'PATCH',
+                    'uri' => '/api/v1/campaigns/{uid}',
+                    'description' => 'Update campaign',
+                    'parameters' => [
+                        ['name' => '$list_uid', 'description' => 'List\'s uid'],
+                        ['name' => '$name', 'description' => 'Campaign name'],
+                        ['name' => '$subject', 'description' => 'Email subject'],
+                        ['name' => '$from_email', 'description' => 'From email'],
+                        ['name' => '$from_name', 'description' => 'From name'],
+                        ['name' => '$reply_to', 'description' => 'Reply-to email'],
+                        ['name' => '$track_open', 'description' => 'Track open (true|false)', 'optional' => true, 'default' => 'true'],
+                        ['name' => '$track_click', 'description' => 'Track click (true|false)', 'optional' => true, 'default' => 'true'],
+                        ['name' => '$sign_dkim', 'description' => 'Sign dkim (true|false)', 'optional' => true, 'default' => 'true'],
+                        ['name' => '$skip_failed_messages', 'description' => 'Track open (true|false)', 'optional' => true, 'default' => 'false'],
+                    ],
+                    'returns' => 'New campaign\'s information in json',
+                    'example' => 'curl -X PATCH -H "accept:application/json" -G \
+' .str_replace('-ID-', '<redbold>{uid}</redbold>', action("Api\CampaignController@update", ['campaign' => '-ID-'])).' \
+-d api_token=' .\Auth::user()->api_token. ' \
+-d name=MyCampaign2 \
+-d subject=HelloWorld2 \
+-d sign_dkim=true',
+                ],
+
+                [
+                    'method' => 'POST',
+                    'uri' => '/api/v1/campaigns/{uid}/run',
+                    'description' => 'Run a specific campaign',
+                    'parameters' => [],
+                    'returns' => 'Action messages in json',
+                    'example' => 'curl -X POST -H "accept:application/json" -G \
+' .str_replace('-ID-', '<redbold>{uid}</redbold>', action("Api\CampaignController@run", '-ID-')).' \
+-d api_token=' .\Auth::user()->api_token,
+                ],
+
+                [
                     'method' => 'POST',
                     'uri' => '/api/v1/campaigns/{uid}/pause',
                     'description' => 'Pause a specific campaign',
@@ -197,6 +265,30 @@ class ApiHelper
                     'returns' => 'Action messages in json',
                     'example' => 'curl -X POST -H "accept:application/json" -G \
 ' .str_replace('-ID-', '<redbold>{uid}</redbold>', action("Api\CampaignController@pause", '-ID-')).' \
+-d api_token=' .\Auth::user()->api_token,
+                ],
+
+                [
+                    'method' => 'POST',
+                    'uri' => '/api/v1/campaigns/{uid}/resume',
+                    'description' => 'Resume a specific campaign',
+                    'parameters' => [],
+                    'returns' => 'Action messages in json',
+                    'example' => 'curl -X POST -H "accept:application/json" -G \
+' .str_replace('-ID-', '<redbold>{uid}</redbold>', action("Api\CampaignController@resume", '-ID-')).' \
+-d api_token=' .\Auth::user()->api_token,
+                ],
+
+                [
+                    'method' => 'DELETE',
+                    'uri' => '/api/v1/campaigns/{uid}',
+                    'description' => 'Delete a campaign',
+                    'parameters' => [
+                        ['name' => '$uid', 'description' => 'Campaign\'s uid'],
+                    ],
+                    'returns' => 'Result messages in json',
+                    'example' => 'curl -X DELETE -H "accept:application/json" -G \
+' .str_replace('-ID-', '<redbold>{uid}</redbold>', str_replace('-LIST_ID-', '<redbold>{list_uid}</redbold>', action("Api\CampaignController@delete", ['uid' => '-ID-']))).' \
 -d api_token=' .\Auth::user()->api_token,
                 ],
             ],

@@ -21,7 +21,14 @@ class MailListPolicy
         $customer = $user->customer;
         $max = $customer->getOption('list_max');
 
-        return $max > $customer->lists()->count() || $max == -1;
+        $can = $max > $customer->lists()->count() || $max == -1;
+
+        // config/limit.php
+        $limit = config('limit.list.limit');
+        $listsCount = $user->customer->listsCount();
+        $can = $can && ($listsCount < $limit);
+
+        return $can;
     }
 
     public function update(User $user, MailList $item)

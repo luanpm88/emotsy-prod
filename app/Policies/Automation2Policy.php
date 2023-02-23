@@ -10,27 +10,50 @@ class Automation2Policy
 {
     use HandlesAuthorization;
 
+    public function list(User $user)
+    {
+        if (config('limit.automation.disable') === true) {
+            return false;
+        }
+
+        return true;
+    }
+
     public function create(User $user, Automation2 $automation)
     {
         $customer = $user->customer;
         $max = $customer->getOption('automation_max');
 
-        return $max > $customer->automationsCount() || $max == -1;
+        $can = $max > $customer->automationsCount() || $max == -1;
+
+        return $can;
     }
 
     public function view(User $user, Automation2 $automation)
     {
+        if (config('limit.automation.disable') === true) {
+            return false;
+        }
+
         return $automation->customer_id == $user->customer->id;
     }
 
     public function update(User $user, Automation2 $automation)
     {
+        if (config('limit.automation.disable') === true) {
+            return false;
+        }
+
         return $automation->customer_id == $user->customer->id;
     }
 
 
     public function enable(User $user, Automation2 $automation)
     {
+        if (config('limit.automation.disable') === true) {
+            return false;
+        }
+
         return $automation->customer_id == $user->customer->id &&
             in_array($automation->status, [
                 Automation2::STATUS_INACTIVE
@@ -39,6 +62,10 @@ class Automation2Policy
 
     public function disable(User $user, Automation2 $automation)
     {
+        if (config('limit.automation.disable') === true) {
+            return false;
+        }
+
         return $automation->customer_id == $user->customer->id &&
             in_array($automation->status, [
                 Automation2::STATUS_ACTIVE
@@ -47,6 +74,10 @@ class Automation2Policy
 
     public function delete(User $user, Automation2 $automation)
     {
+        if (config('limit.automation.disable') === true) {
+            return false;
+        }
+        
         return $automation->customer_id == $user->customer->id &&
             in_array($automation->status, [
                 Automation2::STATUS_ACTIVE,

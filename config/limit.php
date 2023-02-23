@@ -6,7 +6,7 @@ return [
         'limit' => 3, 
 
         // If this option is true, then do not show the related menu item. Also, do not allow direct access via web URL
-        'disalbe_public_page' => true,
+        'disable_public_page' => true,
     ],
 
     'sending_server' => [
@@ -30,7 +30,7 @@ return [
 
     'list' => [
         'limit' => 1,
-        'segment' => false,
+        'segment' => true,
     ],
 
     'form' => [ 'disable' => true ],
