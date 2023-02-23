@@ -2783,6 +2783,7 @@ class Campaign extends Model implements HasTemplateInterface
             'sign_dkim' => true,
         ]);
 
+        $campaign->type = self::TYPE_REGULAR;
         $campaign->name = trans('messages.untitled');
         $campaign->status = Campaign::STATUS_NEW;
 
@@ -2791,9 +2792,29 @@ class Campaign extends Model implements HasTemplateInterface
 
     public function saveFromArray($params)
     {
+        // filter var
+        if (isset($params['track_open'])) {
+            $params['track_open'] = filter_var($params['track_open'], FILTER_VALIDATE_BOOLEAN);
+        }
+
+        if (isset($params['track_click'])) {
+            $params['track_click'] = filter_var($params['track_click'], FILTER_VALIDATE_BOOLEAN);
+        }
+
+        if (isset($params['sign_dkim'])) {
+            $params['sign_dkim'] = filter_var($params['sign_dkim'], FILTER_VALIDATE_BOOLEAN);
+        }
+
+        $this->fill($params);
+
         // type     
         if (isset($params['type'])) {
             $this->type = $params['type'];
+        }
+
+        // default mail list id
+        if (isset($params['mail_list_uid'])) {
+            $this->default_mail_list_id = \Acelle\Model\MailList::findByUid($params['mail_list_uid'])->id;
         }
 
         $this->save();

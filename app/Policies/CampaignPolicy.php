@@ -74,6 +74,14 @@ class CampaignPolicy
         ]);
     }
 
+    public function run(User $user, Campaign $item)
+    {
+        $customer = $user->customer;
+        return $item->customer_id == $customer->id && in_array($item->status, [
+            Campaign::STATUS_NEW,
+        ]);
+    }
+
     public function restart(User $user, Campaign $item)
     {
         $customer = $user->customer;
