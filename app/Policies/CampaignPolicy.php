@@ -25,8 +25,13 @@ class CampaignPolicy
 
         // config/limit.php
         $limit = config('limit.campaign.limit');
-        $campaignsCount = $user->customer->campaignsCount();
-        $can = $can && ($campaignsCount < $limit);
+        if (!is_null( $limit)) {
+            $campaignsCount = $user->customer->campaignsCount();
+            $can = $can && ($campaignsCount < $limit);
+        } else {
+            // ignore limit because it is null
+        }
+        
 
         return $can;
     }

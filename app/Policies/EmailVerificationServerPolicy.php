@@ -12,6 +12,11 @@ class EmailVerificationServerPolicy
 
     public function read(User $user, EmailVerificationServer $server, $role)
     {
+        // config/limit.php
+        if (config('limit.email_verfication_server.disable') === true) {
+            return false;
+        }
+
         switch ($role) {
             case 'admin':
                 $can = $user->admin->getPermission('email_verification_server_read') != 'no';
@@ -21,15 +26,16 @@ class EmailVerificationServerPolicy
                 break;
         }
 
-        // config/limit.php
-        $enabled = config('limit.email_verfication_server.disable') === false;
-        $can = $can && $enabled;
-
         return $can;
     }
 
     public function readAll(User $user, EmailVerificationServer $server, $role)
     {
+        // config/limit.php
+        if (config('limit.email_verfication_server.disable') === true) {
+            return false;
+        }
+
         switch ($role) {
             case 'admin':
                 $can = $user->admin->getPermission('email_verification_server_read') == 'all';
@@ -39,15 +45,16 @@ class EmailVerificationServerPolicy
                 break;
         }
 
-        // config/limit.php
-        $enabled = config('limit.email_verfication_server.disable') === false;
-        $can = $can && $enabled;
-
         return $can;
     }
 
     public function create(User $user, EmailVerificationServer $server, $role)
     {
+        // config/limit.php
+        if (config('limit.email_verfication_server.disable') === true) {
+            return false;
+        }
+
         switch ($role) {
             case 'admin':
                 $can = $user->admin->getPermission('email_verification_server_create') == 'yes';
@@ -59,15 +66,16 @@ class EmailVerificationServerPolicy
                 break;
         }
 
-        // config/limit.php
-        $enabled = config('limit.email_verfication_server.disable') === false;
-        $can = $can && $enabled;
-
         return $can;
     }
 
     public function update(User $user, EmailVerificationServer $server, $role)
     {
+        // config/limit.php
+        if (config('limit.email_verfication_server.disable') === true) {
+            return false;
+        }
+
         switch ($role) {
             case 'admin':
                 $ability = $user->admin->getPermission('email_verification_server_update');
@@ -79,15 +87,16 @@ class EmailVerificationServerPolicy
                 break;
         }
 
-        // config/limit.php
-        $enabled = config('limit.email_verfication_server.disable') === false;
-        $can = $can && $enabled;
-
         return $can;
     }
 
     public function delete(User $user, EmailVerificationServer $server, $role)
     {
+        // config/limit.php
+        if (config('limit.email_verfication_server.disable') === true) {
+            return false;
+        }
+
         switch ($role) {
             case 'admin':
                 $ability = $user->admin->getPermission('email_verification_server_delete');
@@ -100,15 +109,16 @@ class EmailVerificationServerPolicy
                 break;
         }
 
-        // config/limit.php
-        $enabled = config('limit.email_verfication_server.disable') === false;
-        $can = $can && $enabled;
-
         return $can;
     }
 
     public function disable(User $user, EmailVerificationServer $server, $role)
     {
+        // config/limit.php
+        if (config('limit.email_verfication_server.disable') === true) {
+            return false;
+        }
+
         switch ($role) {
             case 'admin':
                 $ability = $user->admin->getPermission('email_verification_server_update');
@@ -120,16 +130,17 @@ class EmailVerificationServerPolicy
                     && $user->customer->id == $server->customer_id;
                 break;
         }
-
-        // config/limit.php
-        $enabled = config('limit.email_verfication_server.disable') === false;
-        $can = $can && $enabled;
 
         return $can && $server->status != EmailVerificationServer::STATUS_INACTIVE;
     }
 
     public function enable(User $user, EmailVerificationServer $server, $role)
     {
+        // config/limit.php
+        if (config('limit.email_verfication_server.disable') === true) {
+            return false;
+        }
+
         switch ($role) {
             case 'admin':
                 $ability = $user->admin->getPermission('email_verification_server_update');
@@ -141,10 +152,6 @@ class EmailVerificationServerPolicy
                     && $user->customer->id == $server->customer_id;
                 break;
         }
-
-        // config/limit.php
-        $enabled = config('limit.email_verfication_server.disable') === false;
-        $can = $can && $enabled;
 
         return $can && $server->status != EmailVerificationServer::STATUS_ACTIVE;
     }
