@@ -25,8 +25,12 @@ class MailListPolicy
 
         // config/limit.php
         $limit = config('limit.list.limit');
-        $listsCount = $user->customer->listsCount();
-        $can = $can && ($listsCount < $limit);
+        if (!is_null( $limit)) {
+            $listsCount = $user->customer->listsCount();
+            $can = $can && ($listsCount < $limit);
+        } else {
+            // ignore limit because it is null
+        }
 
         return $can;
     }

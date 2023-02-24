@@ -46,8 +46,12 @@ class SendingServerPolicy
 
                 // config/limit.php
                 $limit = config('limit.sending_server.limit');
-                $sendingServerCount = SendingServer::system()->count();
-                $can = $can && ($sendingServerCount < $limit);
+                if (!is_null( $limit)) {
+                    $sendingServerCount = SendingServer::system()->count();
+                    $can = $can && ($sendingServerCount < $limit);
+                } else {
+                    // ignore limit because it is null
+                }                    
 
                 break;
             case 'customer':
@@ -58,8 +62,12 @@ class SendingServerPolicy
 
                 // config/limit.php
                 $limit = config('limit.sending_server.limit');
-                $sendingServerCount = $user->customer->sendingServers()->count();
-                $can = $can && ($sendingServerCount < $limit);
+                if (!is_null( $limit)) {
+                    $sendingServerCount = $user->customer->sendingServers()->count();
+                    $can = $can && ($sendingServerCount < $limit);
+                } else {
+                    // ignore limit because it is null
+                }
 
                 break;
         }
