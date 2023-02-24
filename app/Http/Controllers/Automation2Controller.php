@@ -1014,9 +1014,9 @@ class Automation2Controller extends Controller
         if ($request->from == 'mine') {
             $templates = $request->user()->customer->templates()->email();
         } elseif ($request->from == 'gallery') {
-            $templates = Template::shared()->email();
+            $templates = Template::shared()->notPreserved()->email();
         } else {
-            $templates = Template::shared()->email()
+            $templates = Template::shared()->notPreserved()->email()
                 ->orWhere('customer_id', '=', $request->user()->customer->id);
         }
 

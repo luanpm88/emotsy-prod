@@ -958,7 +958,9 @@ class Template extends Model
         $result = [];
 
         // Gallery
-        $templates = self::shared()->email()
+        $templates = self::shared()
+            ->notPreserved()
+            ->email()
             ->get();
 
         foreach ($templates as $template) {

@@ -59,7 +59,7 @@ class FormController extends Controller
             return $this->notAuthorized();
         }
         
-        $templates = Template::popup()->shared()
+        $templates = Template::popup()->notPreserved()->shared()
             ->search($request->keyword)
             ->orderBy($request->sort_order, $request->sort_direction)
             ->paginate(8);
@@ -125,7 +125,7 @@ class FormController extends Controller
             return $this->notAuthorized();
         }
 
-        $templates = Template::popup()->shared()->get();
+        $templates = Template::popup()->shared()->notPreserved()->get();
 
         return view('forms.build', [
             'form' => $form,
