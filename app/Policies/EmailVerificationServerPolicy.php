@@ -13,7 +13,7 @@ class EmailVerificationServerPolicy
     public function read(User $user, EmailVerificationServer $server, $role)
     {
         // config/limit.php
-        if (config('limit.email_verfication_server.disable') === true) {
+        if (app_profile('email_verfication_server.disable') === true) {
             return false;
         }
 
@@ -32,7 +32,7 @@ class EmailVerificationServerPolicy
     public function readAll(User $user, EmailVerificationServer $server, $role)
     {
         // config/limit.php
-        if (config('limit.email_verfication_server.disable') === true) {
+        if (app_profile('email_verfication_server.disable') === true) {
             return false;
         }
 
@@ -51,7 +51,7 @@ class EmailVerificationServerPolicy
     public function create(User $user, EmailVerificationServer $server, $role)
     {
         // config/limit.php
-        if (config('limit.email_verfication_server.disable') === true) {
+        if (app_profile('email_verfication_server.disable') === true) {
             return false;
         }
 
@@ -72,7 +72,7 @@ class EmailVerificationServerPolicy
     public function update(User $user, EmailVerificationServer $server, $role)
     {
         // config/limit.php
-        if (config('limit.email_verfication_server.disable') === true) {
+        if (app_profile('email_verfication_server.disable') === true) {
             return false;
         }
 
@@ -93,7 +93,7 @@ class EmailVerificationServerPolicy
     public function delete(User $user, EmailVerificationServer $server, $role)
     {
         // config/limit.php
-        if (config('limit.email_verfication_server.disable') === true) {
+        if (app_profile('email_verfication_server.disable') === true) {
             return false;
         }
 
@@ -115,7 +115,7 @@ class EmailVerificationServerPolicy
     public function disable(User $user, EmailVerificationServer $server, $role)
     {
         // config/limit.php
-        if (config('limit.email_verfication_server.disable') === true) {
+        if (app_profile('email_verfication_server.disable') === true) {
             return false;
         }
 
@@ -137,7 +137,7 @@ class EmailVerificationServerPolicy
     public function enable(User $user, EmailVerificationServer $server, $role)
     {
         // config/limit.php
-        if (config('limit.email_verfication_server.disable') === true) {
+        if (app_profile('email_verfication_server.disable') === true) {
             return false;
         }
 

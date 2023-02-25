@@ -13,7 +13,7 @@ class BounceHandlerPolicy
     public function read(User $user, BounceHandler $item)
     {
         // config/limit.php
-        if (config('limit.bounce_handler.disable') === true) {
+        if (app_profile('bounce_handler.disable') === true) {
             return false;
         }
 
@@ -27,7 +27,7 @@ class BounceHandlerPolicy
     public function readAll(User $user, BounceHandler $item)
     {
         // config/limit.php
-        if (config('limit.bounce_handler.disable') === true) {
+        if (app_profile('bounce_handler.disable') === true) {
             return false;
         }
 
@@ -39,7 +39,7 @@ class BounceHandlerPolicy
     public function create(User $user, BounceHandler $item)
     {
         // config/limit.php
-        if (config('limit.bounce_handler.disable') === true) {
+        if (app_profile('bounce_handler.disable') === true) {
             return false;
         }
 
@@ -51,7 +51,7 @@ class BounceHandlerPolicy
     public function update(User $user, BounceHandler $item)
     {
         // config/limit.php
-        if (config('limit.bounce_handler.disable') === true) {
+        if (app_profile('bounce_handler.disable') === true) {
             return false;
         }
 
@@ -65,7 +65,7 @@ class BounceHandlerPolicy
     public function delete(User $user, BounceHandler $item)
     {
         // config/limit.php
-        if (config('limit.bounce_handler.disable') === true) {
+        if (app_profile('bounce_handler.disable') === true) {
             return false;
         }
 
@@ -79,7 +79,7 @@ class BounceHandlerPolicy
     public function test(User $user, BounceHandler $item)
     {
         // config/limit.php
-        if (config('limit.bounce_handler.disable') === true) {
+        if (app_profile('bounce_handler.disable') === true) {
             return false;
         }
 

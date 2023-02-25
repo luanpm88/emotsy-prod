@@ -106,7 +106,7 @@
 								</a>
 							</li>
                             @if (config("custom.japan"))
-                                @if (config('limit.plan.disable_public_page') === false)
+                                @if (app_profile('plan.disable_public_page') === false)
                                     <li class="nav-item {{ in_array($menu, ['public_view']) ? 'active' : '' }}">
                                         <a href="{{ action('Admin\PlanController@publicView') }}" class="dropdown-item d-flex align-items-center">
                                             <i class="navbar-icon" style="width: 20px;">

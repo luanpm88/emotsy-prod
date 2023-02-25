@@ -12,7 +12,7 @@ class FormPolicy
 
     public function list(User $user)
     {
-        if (config('limit.form.disable') === true) {
+        if (app_profile('form.disable') === true) {
             return false;
         }
 
@@ -21,7 +21,7 @@ class FormPolicy
 
     public function create(User $user)
     {
-        if (config('limit.form.disable') === true) {
+        if (app_profile('form.disable') === true) {
             return false;
         }
 
@@ -30,7 +30,7 @@ class FormPolicy
 
     public function read(User $user, Form $form)
     {
-        if (config('limit.form.disable') === true) {
+        if (app_profile('form.disable') === true) {
             return false;
         }
 
@@ -39,7 +39,7 @@ class FormPolicy
 
     public function update(User $user, Form $form)
     {
-        if (config('limit.form.disable') === true) {
+        if (app_profile('form.disable') === true) {
             return false;
         }
 
@@ -48,7 +48,7 @@ class FormPolicy
 
     public function delete(User $user, Form $form)
     {
-        if (config('limit.form.disable') === true) {
+        if (app_profile('form.disable') === true) {
             return false;
         }
 
@@ -57,7 +57,7 @@ class FormPolicy
 
     public function publish(User $user, Form $form)
     {
-        if (config('limit.form.disable') === true) {
+        if (app_profile('form.disable') === true) {
             return false;
         }
 
@@ -66,10 +66,10 @@ class FormPolicy
 
     public function unpublish(User $user, Form $form)
     {
-        if (config('limit.form.disable') === true) {
+        if (app_profile('form.disable') === true) {
             return false;
         }
-        
+
         return $user->customer->id == $form->customer_id && $form->status == Form::STATUS_PUBLISHED;
     }
 }

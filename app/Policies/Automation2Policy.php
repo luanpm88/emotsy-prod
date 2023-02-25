@@ -12,7 +12,7 @@ class Automation2Policy
 
     public function list(User $user)
     {
-        if (config('limit.automation.disable') === true) {
+        if (app_profile('automation.disable') === true) {
             return false;
         }
 
@@ -31,7 +31,7 @@ class Automation2Policy
 
     public function view(User $user, Automation2 $automation)
     {
-        if (config('limit.automation.disable') === true) {
+        if (app_profile('automation.disable') === true) {
             return false;
         }
 
@@ -40,7 +40,7 @@ class Automation2Policy
 
     public function update(User $user, Automation2 $automation)
     {
-        if (config('limit.automation.disable') === true) {
+        if (app_profile('automation.disable') === true) {
             return false;
         }
 
@@ -50,7 +50,7 @@ class Automation2Policy
 
     public function enable(User $user, Automation2 $automation)
     {
-        if (config('limit.automation.disable') === true) {
+        if (app_profile('automation.disable') === true) {
             return false;
         }
 
@@ -62,7 +62,7 @@ class Automation2Policy
 
     public function disable(User $user, Automation2 $automation)
     {
-        if (config('limit.automation.disable') === true) {
+        if (app_profile('automation.disable') === true) {
             return false;
         }
 
@@ -74,10 +74,10 @@ class Automation2Policy
 
     public function delete(User $user, Automation2 $automation)
     {
-        if (config('limit.automation.disable') === true) {
+        if (app_profile('automation.disable') === true) {
             return false;
         }
-        
+
         return $automation->customer_id == $user->customer->id &&
             in_array($automation->status, [
                 Automation2::STATUS_ACTIVE,

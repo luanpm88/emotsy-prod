@@ -21,7 +21,7 @@ class PlanController extends Controller
 
     public function publicListPage(Request $request)
     {
-        if (config('limit.plan.disable_public_page') === true) {
+        if (app_profile('plan.disable_public_page') === true) {
             abort(404);
         }
 

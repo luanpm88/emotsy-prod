@@ -24,14 +24,13 @@ class CampaignPolicy
         $can = $max > $user->customer->campaigns()->count() || $max == -1;
 
         // config/limit.php
-        $limit = config('limit.campaign.limit');
+        $limit = app_profile('campaign.limit');
         if (!is_null( $limit)) {
             $campaignsCount = $user->customer->campaignsCount();
             $can = $can && ($campaignsCount < $limit);
         } else {
             // ignore limit because it is null
         }
-        
 
         return $can;
     }

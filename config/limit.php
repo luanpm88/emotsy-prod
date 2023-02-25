@@ -30,7 +30,7 @@ return [
 
     'list' => [
         'limit' => 1,
-        'segment' => true,
+        'disable_segment' => true,
     ],
 
     'form' => [ 'disable' => true ],

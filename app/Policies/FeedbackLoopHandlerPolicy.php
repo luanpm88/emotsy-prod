@@ -13,7 +13,7 @@ class FeedbackLoopHandlerPolicy
     public function read(User $user, FeedbackLoopHandler $item)
     {
         // config/limit.php
-        if (config('limit.feedback_loop_handler.disable') === true) {
+        if (app_profile('feedback_loop_handler.disable') === true) {
             return false;
         }
 
@@ -27,7 +27,7 @@ class FeedbackLoopHandlerPolicy
     public function readAll(User $user, FeedbackLoopHandler $item)
     {
         // config/limit.php
-        if (config('limit.feedback_loop_handler.disable') === true) {
+        if (app_profile('feedback_loop_handler.disable') === true) {
             return false;
         }
 
@@ -39,7 +39,7 @@ class FeedbackLoopHandlerPolicy
     public function create(User $user, FeedbackLoopHandler $item)
     {
         // config/limit.php
-        if (config('limit.feedback_loop_handler.disable') === true) {
+        if (app_profile('feedback_loop_handler.disable') === true) {
             return false;
         }
 
@@ -51,7 +51,7 @@ class FeedbackLoopHandlerPolicy
     public function update(User $user, FeedbackLoopHandler $item)
     {
         // config/limit.php
-        if (config('limit.feedback_loop_handler.disable') === true) {
+        if (app_profile('feedback_loop_handler.disable') === true) {
             return false;
         }
 
@@ -65,7 +65,7 @@ class FeedbackLoopHandlerPolicy
     public function delete(User $user, FeedbackLoopHandler $item)
     {
         // config/limit.php
-        if (config('limit.feedback_loop_handler.disable') === true) {
+        if (app_profile('feedback_loop_handler.disable') === true) {
             return false;
         }
 
@@ -79,7 +79,7 @@ class FeedbackLoopHandlerPolicy
     public function test(User $user, FeedbackLoopHandler $item)
     {
         // config/limit.php
-        if (config('limit.feedback_loop_handler.disable') === true) {
+        if (app_profile('feedback_loop_handler.disable') === true) {
             return false;
         }
 
