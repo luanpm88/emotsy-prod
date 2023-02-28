@@ -66,7 +66,7 @@
                     }
                 },
                 ajax: {
-                    url: url,
+                    url: 'aaa',
                     dataType: 'json',
                     delay: 250,
 
