@@ -167,16 +167,6 @@
                 }
             });
 
-            // product widgets
-            editor.addWidget(new ProductListWidget(), {
-                index: 0,
-                group: '{{ trans('builder.widget.e_commerce') }}',
-            });
-            editor.addWidget(new ProductWidget(), {
-                index: 0,
-                group: '{{ trans('builder.widget.e_commerce') }}',
-            });
-
             // Rss widget
             editor.addWidget(new RssWidget(), {
                 index: 3
