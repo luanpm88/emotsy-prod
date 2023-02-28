@@ -3117,4 +3117,5 @@
   'your_api_token' => 'Your API token',
   'your_current_license' => 'Thank you for purchasing! Below is your license key, also known as Purchase Code. Your license type is',
   'zip_postal_code' => 'Zip / Postal code',
+  'product.no_product_available' => 'There is no product available',
 ) ?>
