@@ -1352,8 +1352,8 @@ class Automation2 extends Model
             $this->createTrigger($params)
         ];
         $this->data = json_encode($data);
-        $this->updateCache();
         $this->save();
+        $this->updateCache();
 
         return $validator;
     }
