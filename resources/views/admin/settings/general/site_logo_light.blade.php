@@ -10,7 +10,7 @@
             
             @if (isset($setting['value']))
                 <div class="p-3 box-shadow-sm rounded" style="background-color: #333;">
-                    <img width="100%" src="{{ action('SettingController@file', $setting['value']) }}" />
+                    <img width="100%" src="{{ getSiteLogoUrl('light') }}" />
                 </div>
             @endif
             
