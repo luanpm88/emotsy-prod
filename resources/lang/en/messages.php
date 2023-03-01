@@ -507,7 +507,7 @@
   'automation.trigger.tree.specific-date' => 'Autostart on a scheduled date/time',
   'automation.trigger.tree.subscriber-added-date' => 'Trigger on contacts\' subscribe date',
   'automation.trigger.tree.weekly-recurring' => 'Weekly recurring',
-  'automation.trigger.tree.welcome-new-subscriber' => 'xxNew contact subscribes to mail listaaa',
+  'automation.trigger.tree.welcome-new-subscriber' => 'New contact subscribes to mail list',
   'automation.trigger.tree.woo-abandoned-cart' => 'Abandoned Cart Reminder',
   'automation.trigger.updated' => 'Trigger was successfully updated.',
   'automation.trigger.weekly-recurring' => 'Weekly recurring',
