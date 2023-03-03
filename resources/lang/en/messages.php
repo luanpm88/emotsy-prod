@@ -3126,4 +3126,5 @@
   'campaign.last_7_days' => 'Last 7 days',
   'campaign.last_month' => 'Last month',
   'performance.period' => 'Period',
+  'campaign.performance_chart.info' => 'Below are the details of subscriber activity (opens and clicks) measured for this campaign recently.',
 ) ?>

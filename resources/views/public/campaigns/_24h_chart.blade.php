@@ -21,7 +21,7 @@
     </div>
     
 </div>
-<p class="mb-4">{{ trans('messages.campaign_24h_intro') }}</p>
+<p class="mb-4">{{ trans('messages.campaign.performance_chart.info') }}</p>
 <div class="border shadow-sm rounded">
     <div class="p-3">
         <div id="Campaigns24hChart"
