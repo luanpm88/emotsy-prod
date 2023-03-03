@@ -3120,9 +3120,10 @@
   'product.no_product_available' => 'There is no product available',
   'inactive' => 'Inactive',
   'campaign.public_report' => 'Public Report',
-  'campaign.last_performance' => 'performance',
+  'campaign.last_performance' => 'Performance',
   'campaign.24_hour' => '24 hour',
   'campaign.last_3_days' => 'Last 3 days',
   'campaign.last_7_days' => 'Last 7 days',
   'campaign.last_month' => 'Last month',
+  'performance.period' => 'Period',
 ) ?>
