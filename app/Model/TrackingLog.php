@@ -82,8 +82,6 @@ class TrackingLog extends Model
      */
     public static function filter($request)
     {
-        $user = $request->user();
-        $customer = $user->customer;
         $query = self::select('tracking_logs.*');
         $query = $query->leftJoin('subscribers', 'subscribers.id', '=', 'tracking_logs.subscriber_id');
         $query = $query->leftJoin('campaigns', 'campaigns.id', '=', 'tracking_logs.campaign_id');

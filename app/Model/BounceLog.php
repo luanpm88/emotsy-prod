@@ -148,8 +148,6 @@ class BounceLog extends Model
      */
     public static function filter($request)
     {
-        $user = $request->user();
-        $customer = $user->customer;
         $query = self::select('bounce_logs.*');
         $query = $query->leftJoin('tracking_logs', 'bounce_logs.message_id', '=', 'tracking_logs.message_id');
         $query = $query->leftJoin('subscribers', 'subscribers.id', '=', 'tracking_logs.subscriber_id');
