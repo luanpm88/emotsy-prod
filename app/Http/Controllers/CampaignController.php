@@ -772,26 +772,97 @@ class CampaignController extends Controller
             'clicked' => [],
         ];
 
-        $hours = [];
+        // 24h collection
+        if ($request->period == '24h') {
+            $hours = [];
 
-        // columns
-        for ($i = 23; $i >= 0; --$i) {
-            $time = Carbon::now()->timezone($currentTimezone)->subHours($i);
-            $result['columns'][] = $time->format('h') . ':00 ' . $time->format('A');
-            $hours[] = $time->format('H');
+            // columns
+            for ($i = 23; $i >= 0; --$i) {
+                $time = Carbon::now()->timezone($currentTimezone)->subHours($i);
+                $result['columns'][] = $time->format('h') . ':00 ' . $time->format('A');
+                $hours[] = $time->format('H');
+            }
+
+            $openData24h = $campaign->openUniqHours(Carbon::now('UTC')->subHours(24), Carbon::now('UTC'));
+            $clickData24h = $campaign->clickHours(Carbon::now('UTC')->subHours(24), Carbon::now('UTC'));
+
+            // data
+            foreach ($hours as $hour) {
+                $num = isset($openData24h[$hour]) ? count($openData24h[$hour]) : 0;
+                $result['opened'][] = $num;
+
+                $num = isset($clickData24h[$hour]) ? count($clickData24h[$hour]) : 0;
+                $result['clicked'][] = $num;
+            }
         }
 
-        // 24h collection
-        $openData24h = $campaign->openUniqHours(Carbon::now()->timezone($currentTimezone)->subHours(24), Carbon::now()->timezone($currentTimezone));
-        $clickData24h = $campaign->clickHours(Carbon::now()->timezone($currentTimezone)->subHours(24), Carbon::now()->timezone($currentTimezone));
+        elseif ($request->period == '3_days') {
+            $days = [];
 
-        // data
-        foreach ($hours as $hour) {
-            $num = isset($openData24h[$hour]) ? count($openData24h[$hour]) : 0;
-            $result['opened'][] = $num;
+            // columns
+            for ($i = 2; $i >= 0; --$i) {
+                $time = Carbon::now()->timezone($currentTimezone)->subDays($i);
+                $result['columns'][] = $time->format('m-d');
+                $days[] = $time->format('Y-m-d');
+            }
 
-            $num = isset($clickData24h[$hour]) ? count($clickData24h[$hour]) : 0;
-            $result['clicked'][] = $num;
+            $openData = $campaign->openUniqDays(Carbon::now('UTC')->subDays(3), Carbon::now('UTC')->endOfDay());
+            $clickData = $campaign->clickDays(Carbon::now('UTC')->subDays(3), Carbon::now('UTC')->endOfDay());
+
+            // data
+            foreach ($days as $day) {
+                $num = isset($openData[$day]) ? count($openData[$day]) : 0;
+                $result['opened'][] = $num;
+
+                $num = isset($clickData[$day]) ? count($clickData[$day]) : 0;
+                $result['clicked'][] = $num;
+            }
+        }
+
+        elseif ($request->period == '7_days') {
+            $days = [];
+
+            // columns
+            for ($i = 6; $i >= 0; --$i) {
+                $time = Carbon::now()->timezone($currentTimezone)->subDays($i);
+                $result['columns'][] = $time->format('m-d');
+                $days[] = $time->format('Y-m-d');
+            }
+
+            $openData = $campaign->openUniqDays(Carbon::now('UTC')->subDays(7), Carbon::now('UTC')->endOfDay());
+            $clickData = $campaign->clickDays(Carbon::now('UTC')->subDays(7), Carbon::now('UTC')->endOfDay());
+
+            // data
+            foreach ($days as $day) {
+                $num = isset($openData[$day]) ? count($openData[$day]) : 0;
+                $result['opened'][] = $num;
+
+                $num = isset($clickData[$day]) ? count($clickData[$day]) : 0;
+                $result['clicked'][] = $num;
+            }
+        }
+
+        elseif ($request->period == 'last_month') {
+            $days = [];
+
+            // columns
+            for ($i = Carbon::now('UTC')->subMonths(1)->diff(Carbon::now('UTC'))->days-1; $i >= 0; --$i) {
+                $time = Carbon::now()->timezone($currentTimezone)->subDays($i);
+                $result['columns'][] = $time->format('m-d');
+                $days[] = $time->format('Y-m-d');
+            }
+
+            $openData = $campaign->openUniqDays(Carbon::now('UTC')->subMonths(1), Carbon::now('UTC')->endOfDay());
+            $clickData = $campaign->clickDays(Carbon::now('UTC')->subMonths(1), Carbon::now('UTC')->endOfDay());
+
+            // data
+            foreach ($days as $day) {
+                $num = isset($openData[$day]) ? count($openData[$day]) : 0;
+                $result['opened'][] = $num;
+
+                $num = isset($clickData[$day]) ? count($clickData[$day]) : 0;
+                $result['clicked'][] = $num;
+            }
         }
 
         return response()->json($result);
