@@ -1973,6 +1973,7 @@
   'product.delete.confirm' => 'Sie sind dabei, das Produkt <span class="fw-600">:name</span> zu löschen',
   'product.deleted' => 'Das Produkt wurde erfolgreich gelöscht',
   'product.no_product' => '<span class="fw-600 mb-2 d-block">Sie haben noch kein Produkt</span> Stellen Sie eine Verbindung zu Ihrer E-Commerce-Plattform oder Ihrem Geschäft her, um Produkte und Kontakte zu synchronisieren <br> Verwalten Sie Ihr Publikum an einem zentralen Ort',
+  'product.no_product_available' => 'There is no product available',
   'product.select_categories' => 'Produktkategorien auswählen',
   'product.sku' => 'Artikelnummer',
   'product.title' => 'Titel',
