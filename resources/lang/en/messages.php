@@ -1975,6 +1975,7 @@
   'product.delete.confirm' => 'You\'re about to delete the product <span class="fw-600">:name</span>',
   'product.deleted' => 'The product was deleted successfully',
   'product.no_product' => '<span class="fw-600 mb-2 d-block">You do not have any product yet</span> Connect to your e-commerce platform or store to synchronize products and contacts <br> Manage your audience in one centralized place',
+  'product.no_product_available' => 'There is no product available',
   'product.select_categories' => 'Select product categories',
   'product.sku' => 'SKU',
   'product.title' => 'Title',
@@ -3117,5 +3118,4 @@
   'your_api_token' => 'Your API token',
   'your_current_license' => 'Thank you for purchasing! Below is your license key, also known as Purchase Code. Your license type is',
   'zip_postal_code' => 'Zip / Postal code',
-  'product.no_product_available' => 'There is no product available',
 ) ?>

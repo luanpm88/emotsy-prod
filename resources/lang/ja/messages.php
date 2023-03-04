@@ -1970,6 +1970,7 @@
   'product.delete.confirm' => '<spanclass="fw-600">:name </span>を削除しようとしています',
   'product.deleted' => '正常に削除されました',
   'product.no_product' => '<span class="fw-600 mb-2 d-block">まだ商品がありません</span> eコマースプラットフォームまたはストアに接続して、商品と連絡先を同期します<br>1か所でオーディエンスを管理します',
+  'product.no_product_available' => 'There is no product available',
   'product.select_categories' => 'カテゴリを選択',
   'product.sku' => 'SKU',
   'product.title' => 'Title',
