@@ -321,7 +321,9 @@
                 $('.leftbar').addClass('state-open');
 
                 // open menu
-                $('#mainAppNav .nav-item.active .lvl-1').dropdown('show');
+                if ($('#mainAppNav .nav-item.active .lvl-1').closest('.dropdown').length) {
+                    $('#mainAppNav .nav-item.active .lvl-1').dropdown('show');
+                }
 
                 MenuFrontend.saveLeftbarState('open');
             }

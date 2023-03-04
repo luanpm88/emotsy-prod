@@ -1,5 +1,27 @@
-<h3 class="mt-5 mb-20"><span class="material-symbols-rounded me-2">schedule</span> {{ trans('messages.24h_performance') }}</h3>
-<p class="mb-4">{{ trans('messages.campaign_24h_intro') }}</p>
+<div class="mt-5 mb-20">
+    <div class="d-flex align-items-center">
+        <div class="me-2">
+            <h3><span class="material-symbols-rounded me-2">schedule</span></h3>
+        </div>
+        <div>
+            <h3>{{ trans('messages.campaign.last_performance') }}</h3>
+        </div>
+        <div class="ms-auto">
+            <div class="d-flex align-items-center">
+                <span class="me-3">{{ trans('messages.performance.period') }}</span>
+                <select id="PerformancePeriod" class="select select-control" name="last_performance_time">
+                    <option value="24h">{{ trans('messages.campaign.24_hour') }}</option>
+                    <option value="3_days">{{ trans('messages.campaign.last_3_days') }}</option>
+                    <option value="7_days">{{ trans('messages.campaign.last_7_days') }}</option>
+                    <option value="last_month">{{ trans('messages.campaign.last_month') }}</option>
+                </select>
+            </div>
+        </div>
+        
+    </div>
+    
+</div>
+<p class="mb-4">{{ trans('messages.campaign.performance_chart.info') }}</p>
 <div class="border shadow-sm rounded">
     <div class="p-3">
         <div id="Campaigns24hChart"
@@ -12,14 +34,22 @@
 <script>
     var Campaigns24hChart = {
         url: '{{ action('CampaignController@chart24h', $campaign->uid) }}',
+
         getChart: function() {
             return $('#Campaigns24hChart');
+        },
+
+        getTimePeriod: function() {
+            return $('[name="last_performance_time"]').val();
         },
 
         showChart: function() {
             $.ajax({
                 method: "GET",
                 url: this.url,
+                data: {
+                    period: this.getTimePeriod()
+                }
             })
             .done(function( response ) {
                 Campaigns24hChart.renderChart( response );
@@ -79,5 +109,16 @@
         }
     }
 
-    Campaigns24hChart.showChart();
+    $(function() {
+        $('#PerformancePeriod').select2({
+            dropdownAutoWidth : true,
+            width: 'auto'
+        })
+
+        Campaigns24hChart.showChart();
+
+        $('[name="last_performance_time"]').on('change', function() {
+            Campaigns24hChart.showChart();
+        });
+    })
 </script>
