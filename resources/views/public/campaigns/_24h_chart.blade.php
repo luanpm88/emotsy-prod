@@ -14,6 +14,7 @@
                     <option value="3_days">{{ trans('messages.campaign.last_3_days') }}</option>
                     <option value="7_days">{{ trans('messages.campaign.last_7_days') }}</option>
                     <option value="last_month">{{ trans('messages.campaign.last_month') }}</option>
+                    <option value="last_year">{{ trans('messages.campaign.last_year') }}</option>
                 </select>
             </div>
         </div>
