@@ -4,6 +4,7 @@ namespace Acelle\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Acelle\Model\Notification as AppNotification;
+use Illuminate\Support\Facades\Http;
 
 class InstallController extends Controller
 {
@@ -133,10 +134,24 @@ class InstallController extends Controller
 
             // Check license
             if (!empty($request->license)) {
-                try {
-                    $site_info["license_type"] = \Acelle\Helpers\LicenseHelper::getLicenseType($request->license);
-                } catch (\Exception $ex) {
-                    $this->validate($request, ['license' => 'license_error:' . $ex->getMessage()]);
+                if (config('custom.japan')) {
+                    $endpoint = join_url(config('custom.license_validation_endpoint'), '/wp-json/automailjp/v1/license/check?license=' . $request->license);
+                    $result = Http::get($endpoint)->json();
+
+                    // failed
+                    if ($result['status'] !== 'success') {
+                        $this->validate($request, ['license' => 'license_error:'.$result['message']]);
+                    }
+
+                    // success: save setting
+                    $site_info["license"] = $result['license'];
+                    $site_info["license_type"] = $result['type'];
+                } else {
+                    try {
+                        $site_info["license_type"] = \Acelle\Helpers\LicenseHelper::getLicenseType($request->license);
+                    } catch (\Exception $ex) {
+                        $this->validate($request, ['license' => 'license_error:' . $ex->getMessage()]);
+                    }
                 }
             } else {
                 $site_info["license_type"] = '';

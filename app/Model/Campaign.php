@@ -2774,4 +2774,309 @@ class Campaign extends Model implements HasTemplateInterface
     {
         return $this->skip_failed_message == false;
     }
+
+    public static function newDefault()
+    {
+        $campaign = new self([
+            'track_open' => true,
+            'track_click' => true,
+            'sign_dkim' => true,
+        ]);
+
+        $campaign->type = self::TYPE_REGULAR;
+        $campaign->name = trans('messages.untitled');
+        $campaign->status = Campaign::STATUS_NEW;
+
+        return $campaign;
+    }
+
+    public function saveFromArray($params)
+    {
+        // filter var
+        if (isset($params['track_open'])) {
+            $params['track_open'] = filter_var($params['track_open'], FILTER_VALIDATE_BOOLEAN);
+        }
+
+        if (isset($params['track_click'])) {
+            $params['track_click'] = filter_var($params['track_click'], FILTER_VALIDATE_BOOLEAN);
+        }
+
+        if (isset($params['sign_dkim'])) {
+            $params['sign_dkim'] = filter_var($params['sign_dkim'], FILTER_VALIDATE_BOOLEAN);
+        }
+
+        $this->fill($params);
+
+        // type     
+        if (isset($params['type'])) {
+            $this->type = $params['type'];
+        }
+
+        // default mail list id
+        if (isset($params['mail_list_uid'])) {
+            $this->default_mail_list_id = \Acelle\Model\MailList::findByUid($params['mail_list_uid'])->id;
+        }
+
+        $this->save();
+    }
+
+    public function makeSampleData($params = [])
+    {
+        $this->cleanSampleData();
+
+        $default = [
+            'unconfirmed' => 0.08,
+            'delivery_failed' => 0.1, // against all deivered emails
+            'open' => 0.45, // against delivery_success
+            'click' => 0.85, // against open
+            'unsubscribe' => 0.2, // against open
+            'bounce' => 0.05,
+            'feedback' => 0.05
+        ];
+
+        $subscribers = $this->subscribersToSend()->get();
+
+        if (count($subscribers) == 0) {
+            throw new Exception('Campaign has ZERO subscribers');
+        }
+
+        echo "Subscriber count: ".count($subscribers)."\n";
+
+        $params = array_merge($default, $params);
+
+        // Tracking log
+        foreach ($subscribers as $subscriber) {
+            // Pick up an available sending server
+            // Throw exception in case no server available
+            $server = $this->pickSendingServer($this);
+            $msgId = StringHelper::generateMessageId(StringHelper::getDomainFromEmail($this->from_email));
+
+            $sent = [
+                'status' => 'sent',
+                'runtime_message_id' => $msgId
+            ];
+
+            $this->trackMessage($sent, $subscriber, $server, $msgId);
+
+            // additional log
+        }
+
+        echo "All tracking log count: ". $this->trackingLogs()->count()."\n";
+        // Failed tracking log
+        $failureCount = round($params['delivery_failed'] * $this->trackingLogs()->count());
+
+        if ($failureCount == 0) {
+            throw new Exception("failureCount must be larger than 0.");
+        }
+
+        $allLogs = $this->trackingLogs()->get()->map(function ($e) {
+            return $e->id;
+        })->toArray();
+
+        $failedLogs = array_values(array_intersect_key($allLogs, array_flip($this->arrayRandFixed($allLogs, $failureCount))));
+        echo "Failed log count: ".$this->trackingLogs()->whereIn('id', $failedLogs)->count()."\n";
+        $this->trackingLogs()->whereIn('id', $failedLogs)->update([
+            'status' => 'failed',
+            'error' => 'RFC8343: mailbox does not exist',
+        ]);
+
+        // Open log
+        $sentCount = $this->trackingLogs()->where('status', 'sent')->count();
+        $openCount = round($params['open'] * $sentCount);
+        $sentLogs = $this->trackingLogs()->where('status', 'sent')
+                         ->select('tracking_logs.id')
+                         ->get()->map(function ($e) {
+                             return $e->id;
+                         })->toArray();
+        $openLogs = array_values(array_intersect_key($sentLogs, array_flip($this->arrayRandFixed($sentLogs, $openCount))));
+        echo "Open log count: ".$openCount."\n";
+        foreach ($this->trackingLogs()->whereIn('id', $openLogs)->get() as $r) {
+            $log = new \Acelle\Model\OpenLog();
+            $log->message_id = $r->message_id;
+            $location = \Acelle\Model\IpLocation::add(StringHelper::getRandomUSIpAddresses());
+            $log->ip_address = $location->ip_address;
+            $log->user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36';
+            $log->save();
+        }
+
+        // Open log
+        $clickCount = round($params['click'] * $openCount);
+
+        $openLogs = $this->trackingLogs()
+                         ->join('open_logs', 'tracking_logs.message_id', '=', 'open_logs.message_id')
+                         ->select('tracking_logs.id')
+                         ->get()->map(function ($e) {
+                             return $e->id;
+                         })->toArray();
+        $clickLogs = array_values(array_intersect_key($openLogs, array_flip($this->arrayRandFixed($openLogs, $clickCount))));
+        echo "Click log count: ".$this->trackingLogs()->whereIn('id', $clickLogs)->count()."\n";
+        foreach ($this->trackingLogs()->whereIn('id', $clickLogs)->get() as $r) {
+            $log = new \Acelle\Model\ClickLog();
+            $log->message_id = $r->message_id;
+            $location = \Acelle\Model\IpLocation::add(StringHelper::getRandomUSIpAddresses());
+            $log->ip_address = $location->ip_address;
+            $log->user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36';
+            $log->url = 'https://app.clickfunnels.com/signupflow';
+            $result = $log->save();
+        }
+
+        // Unsubscribe log
+        $unsubscribeCount = round($params['unsubscribe'] * $openCount);
+        $unsubscribeLogs = array_values(array_intersect_key($openLogs, array_flip($this->arrayRandFixed($openLogs, $unsubscribeCount))));
+        echo "Unsubscribe log count: ".$unsubscribeCount."\n";
+        foreach ($this->trackingLogs()->whereIn('id', $unsubscribeLogs)->get() as $r) {
+            // Unsubscribe log
+            $log = new \Acelle\Model\UnsubscribeLog();
+            $log->message_id = $r->message_id;
+            $log->subscriber_id = $r->subscriber_id;
+            $location = \Acelle\Model\IpLocation::add(StringHelper::getRandomUSIpAddresses());
+            $log->ip_address = $location->ip_address;
+            $log->user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36';
+            $log->save();
+        }
+
+
+        // Bounce log
+        $bounceCount = round($params['bounce'] * $sentCount);
+        $bounceLogs = array_values(array_intersect_key($sentLogs, array_flip($this->arrayRandFixed($sentLogs, $bounceCount))));
+        echo "Bounce log count: ".$bounceCount."\n";
+        foreach ($this->trackingLogs()->whereIn('id', $bounceLogs)->get() as $r) {
+            // Unsubscribe log
+            $bounceLog = new BounceLog();
+            $bounceLog->runtime_message_id = $r->message_id;
+            $bounceLog->message_id = $r->message_id;
+            // SendGrid only notifies in case of HARD bounce
+            $bounceLog->bounce_type = BounceLog::HARD;
+            $bounceLog->raw = 'RFC308433: mailbox is no longer valid or blocked';
+            $bounceLog->save();
+
+            // add subscriber's email to blacklist
+            $subscriber = $bounceLog->findSubscriberByRuntimeMessageId();
+            $subscriber->sendToBlacklist($bounceLog->raw);
+        }
+
+        // Bounce log
+        $feedbackCount = round($params['feedback'] * $sentCount);
+        $feedbackLogs = array_values(array_intersect_key($sentLogs, array_flip($this->arrayRandFixed($sentLogs, $feedbackCount))));
+        echo "Feedback log count: ".$feedbackCount."\n";
+        foreach ($this->trackingLogs()->whereIn('id', $feedbackLogs)->get() as $r) {
+            // Unsubscribe log
+            $feedback = new FeedbackLog();
+            $feedback->runtime_message_id = $r->message_id;
+            $feedback->message_id = $r->message_id;
+            $feedback->feedback_type = 'spam';
+            $feedback->raw_feedback_content = 'RFC308433: mailbox is no longer valid or blocked';
+            $feedback->save();
+
+            // add subscriber's email to blacklist
+            $subscriber = $feedback->findSubscriberByRuntimeMessageId();
+            $subscriber->markAsSpamReported($feedback->raw);
+        }
+
+        // Adjust date/time
+        $sample = [
+            'subscriber_first_created' => '6 months ago',
+            'subscriber_last_created' => '2 day ago',
+            'first_open' => '24 hours ago',
+            'last_open' => '2 minutes ago',
+        ];
+
+        foreach ($sample as $key => $value) {
+            $sample[$key] = new Carbon($value);
+        }
+
+        DB::update(sprintf(
+            'UPDATE %s SET created_at = TIMESTAMPADD(SECOND, FLOOR(RAND() * TIMESTAMPDIFF(SECOND, \'%s\', \'%s\')), \'%s\')',
+            table('subscribers'),
+            $sample['subscriber_first_created'],
+            $sample['subscriber_last_created'],
+            $sample['subscriber_first_created']
+        ));
+
+        DB::update(sprintf(
+            'UPDATE %s SET created_at = TIMESTAMPADD(SECOND, FLOOR(RAND() * TIMESTAMPDIFF(SECOND, \'%s\', \'%s\')), \'%s\')',
+            table('open_logs'),
+            $sample['first_open'],
+            $sample['last_open'],
+            $sample['first_open']
+        ));
+
+        DB::update(sprintf(
+            'UPDATE %s SET created_at = TIMESTAMPADD(SECOND, FLOOR(RAND() * TIMESTAMPDIFF(SECOND, \'%s\', \'%s\')), \'%s\')',
+            table('click_logs'),
+            $sample['first_open'],
+            $sample['last_open'],
+            $sample['first_open']
+        ));
+
+        DB::update(sprintf(
+            'UPDATE %s SET created_at = TIMESTAMPADD(SECOND, FLOOR(RAND() * TIMESTAMPDIFF(SECOND, \'%s\', \'%s\')), \'%s\')',
+            table('bounce_logs'),
+            $sample['first_open'],
+            $sample['last_open'],
+            $sample['first_open']
+        ));
+
+        DB::update(sprintf(
+            'UPDATE %s SET created_at = TIMESTAMPADD(SECOND, FLOOR(RAND() * TIMESTAMPDIFF(SECOND, \'%s\', \'%s\')), \'%s\')',
+            table('feedback_logs'),
+            $sample['first_open'],
+            $sample['last_open'],
+            $sample['first_open']
+        ));
+
+        DB::update(sprintf(
+            'UPDATE %s SET created_at = TIMESTAMPADD(SECOND, FLOOR(RAND() * TIMESTAMPDIFF(SECOND, \'%s\', \'%s\')), \'%s\')',
+            table('unsubscribe_logs'),
+            $sample['first_open'],
+            $sample['last_open'],
+            $sample['first_open']
+        ));
+
+        // Finalize
+        $this->updateCache();
+        $this->setDone();
+        $this->save();
+    }
+
+    public function cleanSampleData()
+    {
+        $this->defaultMailList->subscribers()->update(['status' => 'subscribed']);
+        Blacklist::query()->delete();
+        $this->trackingLogs()->delete();
+    }
+
+    public function openUniqDays($start = null, $end = null)
+    {
+        $query = $this->openLogs()->select('open_logs.created_at');
+        $currentTimezone = $this->customer->getTimezone();
+
+        if (isset($start)) {
+            $query = $query->where('open_logs.created_at', '>=', $start);
+        }
+        if (isset($end)) {
+            $query = $query->where('open_logs.created_at', '<=', $end);
+        }
+
+        return $query->orderBy('open_logs.created_at', 'asc')->get()->groupBy(function ($date) use ($currentTimezone) {
+            return $date->created_at->timezone($currentTimezone)->format('Y-m-d'); // grouping by hours
+        });
+    }
+
+    public function clickDays($start = null, $end = null)
+    {
+        $currentTimezone = $this->customer->getTimezone();
+        $query = $this->clickLogs()->select('click_logs.created_at', 'tracking_logs.subscriber_id');
+
+        if (isset($start)) {
+            $query = $query->where('click_logs.created_at', '>=', $start);
+        }
+        if (isset($end)) {
+            $query = $query->where('click_logs.created_at', '<=', $end);
+        }
+
+        return $query->orderBy('click_logs.created_at', 'asc')->get()->groupBy(function ($date) use ($currentTimezone) {
+            return $date->created_at->timezone($currentTimezone)->format('Y-m-d'); // grouping by hours
+        });
+    }
 }

@@ -156,7 +156,7 @@ class SubscriptionPolicy
 
     public function delete(User $user, Subscription $subscription, $role)
     {
-        $can = $subscription->isEnded();
+        $can = $subscription->isEnded() || $subscription->isTerminated();
 
         switch ($role) {
             case 'admin':

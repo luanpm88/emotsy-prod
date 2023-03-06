@@ -72,11 +72,13 @@
                                         <span class="material-symbols-rounded me-2">people</span> {{ trans("messages.subscribers") }}
                                     </a>
                                 </li>
-                                <li>
-                                    <a class="dropdown-item" href="{{ action('SegmentController@index', $list->uid) }}">
-                                        <span class="material-symbols-rounded me-2">library_add_check</span> {{ trans('messages.segments') }}
-                                    </a>
-                                </li>
+                                @if (Auth::user()->customer->can("list", new Acelle\Model\Segment()))
+                                    <li>
+                                        <a class="dropdown-item" href="{{ action('SegmentController@index', $list->uid) }}">
+                                            <span class="material-symbols-rounded me-2">library_add_check</span> {{ trans('messages.segments') }}
+                                        </a>
+                                    </li>
+                                @endif
                                 <li>
                                     <a class="dropdown-item" href="{{ action('MailListController@embeddedForm', $list->uid) }}">
                                         <span class="material-symbols-rounded me-2">dns</span> {{ trans('messages.Embedded_form') }}

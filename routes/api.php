@@ -30,7 +30,10 @@ Route::group(['namespace' => 'Api', 'prefix' => 'v1', 'middleware' => 'auth:api'
     Route::resource('lists', 'MailListController');
 
     // Campaign
+    Route::delete('campaigns/{uid}', 'CampaignController@delete');
     Route::post('campaigns/{uid}/pause', 'CampaignController@pause');
+    Route::post('campaigns/{uid}/run', 'CampaignController@run');
+    Route::post('campaigns/{uid}/resume', 'CampaignController@resume');
     Route::resource('campaigns', 'CampaignController');
 
     // Subscriber

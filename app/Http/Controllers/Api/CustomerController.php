@@ -13,9 +13,7 @@ class CustomerController extends Controller
 {
     public function index()
     {
-        $user = \Auth::guard('api')->user();
-
-        $customers = \Acelle\Model\MailList::getAll()
+        $customers = \Acelle\Model\Customer::getAll()
             ->get();
 
         return \Response::json($customers, 200);

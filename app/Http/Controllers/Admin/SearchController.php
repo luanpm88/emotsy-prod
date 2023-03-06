@@ -338,6 +338,7 @@ class SearchController extends Controller
         $count = 5;
 
         $templates = \Acelle\Model\Template::shared()
+            ->notPreserved()
             ->email()
             ->search($request->keyword)
             ->orderBy('templates.name', 'asc')

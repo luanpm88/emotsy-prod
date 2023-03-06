@@ -116,14 +116,12 @@ class Automation2 extends Model
     {
         $thisYear = $this->customer->getCurrentTime()->format('Y');
         $thisId = $this->id;
-        return $this->subscribersToSend()->leftJoin('auto_triggers', function ($join) use ($thisId) {
-            $join->on('auto_triggers.subscriber_id', 'subscribers.id');
-            $join->where('auto_triggers.automation2_id', $thisId);
-        })
-                                   ->where(function ($query) use ($thisYear) {
-                                       $query->whereNull('auto_triggers.id')
-                                             ->orWhereRaw(sprintf('year(%s) < %s', table('auto_triggers.created_at'), $thisYear));
-                                   });
+        return $this->subscribersToSend()->whereNotIn('subscribers.id', function ($query) use ($thisYear) {
+           $query->select('subscriber_id')
+                 ->from('auto_triggers')
+                 ->where('automation2_id', $this->id)
+                 ->whereRaw(sprintf('year(%s) = %s', table('auto_triggers.created_at'), $thisYear));
+       });
     }
 
     /**
@@ -1355,6 +1353,7 @@ class Automation2 extends Model
         ];
         $this->data = json_encode($data);
         $this->save();
+        $this->updateCache();
 
         return $validator;
     }

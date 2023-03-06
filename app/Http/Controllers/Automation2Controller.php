@@ -26,6 +26,11 @@ class Automation2Controller extends Controller
      */
     public function index(Request $request)
     {
+        // authorize
+        if (\Gate::denies('list', Automation2::class)) {
+            return $this->notAuthorized();
+        }
+
         return view('automation2.index');
     }
 
@@ -36,6 +41,11 @@ class Automation2Controller extends Controller
      */
     public function listing(Request $request)
     {
+        // authorize
+        if (\Gate::denies('list', Automation2::class)) {
+            return $this->notAuthorized();
+        }
+        
         $automations = $request->user()->customer->automation2s()
             ->search($request->keyword)
             ->orderBy($request->sort_order, $request->sort_direction)
@@ -1004,9 +1014,9 @@ class Automation2Controller extends Controller
         if ($request->from == 'mine') {
             $templates = $request->user()->customer->templates()->email();
         } elseif ($request->from == 'gallery') {
-            $templates = Template::shared()->email();
+            $templates = Template::shared()->notPreserved()->email();
         } else {
-            $templates = Template::shared()->email()
+            $templates = Template::shared()->notPreserved()->email()
                 ->orWhere('customer_id', '=', $request->user()->customer->id);
         }
 

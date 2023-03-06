@@ -18,7 +18,7 @@
 
         <div class="form-group login-email-input has-feedback has-feedback-left{{ $errors->has('email') ? ' has-error' : '' }}">
             <input id="email" type="email" class="form-control" name="email" placeholder="{{ trans("messages.email") }}"
-	 value="{{ old('email') ? old('email') : (isset(\Acelle\Model\User::getAuthenticateFromFile()['email']) ? \Acelle\Model\User::getAuthenticateFromFile()['email'] : "") }}"
+	 value="{{ old('email') ? old('email') : demo_auth()['email'] }}"
             >
             <div class="form-control-feedback">
 	<i class="icon-envelop5 text-muted"></i>
@@ -32,7 +32,7 @@
 
         <div class="form-group login-password-input has-feedback has-feedback-left{{ $errors->has('password') ? ' has-error' : '' }}">
             <input id="password" type="password" class="form-control" name="password" placeholder="{{ trans("messages.password") }}"
-	value="{{ isset(\Acelle\Model\User::getAuthenticateFromFile()['password']) ? \Acelle\Model\User::getAuthenticateFromFile()['password'] : "" }}"
+	value="{{ demo_auth()['password'] }}"
             >
             <div class="form-control-feedback">
 	<i class="icon-lock2 text-muted"></i>

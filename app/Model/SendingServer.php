@@ -340,7 +340,7 @@ class SendingServer extends Model implements HasQuotaInterface
                 'cols' => [
                     'api_key' => 'required',
                     'domain' => 'required|regex:/^([a-zA-Z0-9][a-zA-Z0-9-_]*\.)*[a-zA-Z0-9]*[a-zA-Z0-9-_]*[[a-zA-Z0-9]+$/',
-                    'host' => 'required',
+                    'aws_region' => 'required',
                 ],
                 'settings' => [
                     'name' => 'required',
@@ -717,8 +717,10 @@ class SendingServer extends Model implements HasQuotaInterface
         // test amazon api connection
         $validator->after(function ($validator) {
             try {
-                $this->test();
-            } catch (\Exception $e) {
+                if (!config('app.demo')) {
+                    $this->test();
+                }
+            } catch (\Throwable $e) {
                 $validator->errors()->add('connection', $e->getMessage());
             }
         });
@@ -858,7 +860,7 @@ class SendingServer extends Model implements HasQuotaInterface
      */
     public function scopeSystem($query)
     {
-        return $query->active()->whereNull('customer_id');
+        return $query->whereNull('customer_id');
     }
 
     /**

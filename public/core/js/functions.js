@@ -325,7 +325,7 @@ function initMainMenu()
             $('.leftbar').addClass('leftbar-closed');
 
             // close menu
-            $('#mainAppNav .lvl-1.show').dropdown('hide');
+            $('.leftbar #mainAppNav .lvl-1.show').dropdown('hide');
         }
 
         if ($(window).width() >= 1300 && ($('body').hasClass('state-open') || $('body').hasClass('state-'))) {
@@ -333,7 +333,7 @@ function initMainMenu()
             $('.leftbar').removeClass('leftbar-closed');
 
             // open menu
-            $('#mainAppNav .nav-item.dropdown.active .lvl-1').dropdown('show');
+            $('.leftbar #mainAppNav .nav-item.dropdown.active .lvl-1').dropdown('show');
         }
     };
     leftbarAdjust();

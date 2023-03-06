@@ -111,15 +111,15 @@ class Template extends Model
     // Templates that are not associated to any email or campaign
     public function scopeNotPreserved($query)
     {
-        $query->whereNotIn('id', function ($q) {
+        $query->whereNotIn('templates.id', function ($q) {
             $q->select('template_id')->from('emails')->whereNotNull('template_id');
         });
 
-        $query->whereNotIn('id', function ($q) {
+        $query->whereNotIn('templates.id', function ($q) {
             $q->select('template_id')->from('campaigns')->whereNotNull('template_id');
         });
 
-        $query->whereNotIn('id', function ($q) {
+        $query->whereNotIn('templates.id', function ($q) {
             $q->select('template_id')->from('forms')->whereNotNull('template_id');
         });
     }
@@ -958,7 +958,9 @@ class Template extends Model
         $result = [];
 
         // Gallery
-        $templates = self::shared()->email()
+        $templates = self::shared()
+            ->notPreserved()
+            ->email()
             ->get();
 
         foreach ($templates as $template) {

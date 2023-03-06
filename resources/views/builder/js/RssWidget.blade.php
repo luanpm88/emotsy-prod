@@ -6,6 +6,8 @@
         }
 
         init() {
+            var _this = this;
+
             // default button html
             this.setButtonHtml(`
                 <div class="_1content widget-text">
@@ -34,6 +36,22 @@
 
             // default dragging html
             this.setDraggingHtml(this.getButtonHtml());
+
+            // before save events: remove placeholder before save
+            currentEditor.addBeforeSaveEvent(function() {
+                // find placeholder
+                if (!_this.getPlaceholder().length) {
+                    return;
+                }
+
+                // find closest block element
+                var blockElement = _this.getPlaceholder().closest('[builder-element="BlockElement"]');
+                blockElement.remove();
+            });
+        }
+
+        getPlaceholder() {
+            return this.getElement().find('[f-role="placeholder"]');
         }
 
         getElement() {

@@ -41,6 +41,7 @@ class FormTemplateController extends Controller
         $view = $request->view ? $request->view : 'grid';
 
         $templates = Template::shared()
+            ->notPreserved()
             ->popup()
             ->categoryUid($request->category_uid)
             ->search($request->keyword)

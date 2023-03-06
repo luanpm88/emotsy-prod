@@ -12,16 +12,27 @@ class CampaignPolicy
 
     public function read(User $user, Campaign $item)
     {
-        $customer = $user->customer;
-        return $item->customer_id == $customer->id;
+        $can = $item->customer_id == $user->customer->id;
+
+        return $can;
     }
 
     public function create(User $user, Campaign $item)
     {
-        $customer = $user->customer;
-        $max = $customer->getOption('campaign_max');
+        $max = $user->customer->getOption('campaign_max');
 
-        return $max > $customer->campaigns()->count() || $max == -1;
+        $can = $max > $user->customer->campaigns()->count() || $max == -1;
+
+        // config/limit.php
+        $limit = app_profile('campaign.limit');
+        if (!is_null( $limit)) {
+            $campaignsCount = $user->customer->campaignsCount();
+            $can = $can && ($campaignsCount < $limit);
+        } else {
+            // ignore limit because it is null
+        }
+
+        return $can;
     }
 
     public function overview(User $user, Campaign $item)
@@ -64,6 +75,14 @@ class CampaignPolicy
             Campaign::STATUS_QUEUING,
             Campaign::STATUS_QUEUED,
             Campaign::STATUS_SENDING,
+        ]);
+    }
+
+    public function run(User $user, Campaign $item)
+    {
+        $customer = $user->customer;
+        return $item->customer_id == $customer->id && in_array($item->status, [
+            Campaign::STATUS_NEW,
         ]);
     }
 

@@ -1921,9 +1921,12 @@ class Customer extends Model
         $result = [];
 
         // Gallery
-        $templates = \Acelle\Model\Template::where('customer_id', '=', null)
-            ->orWhere('customer_id', '=', $this->id)
+        $templates = \Acelle\Model\Template::where('customer_id', '=', $this->id)
+            ->orWhere(function ($query) {
+                $query->notPreserved();
+            })
             ->orderBy('customer_id')
+            ->notPreserved()
             ->get();
 
         foreach ($templates as $template) {
@@ -2083,5 +2086,13 @@ class Customer extends Model
         } else {
             return htmlspecialchars(trim($this->user->first_name.' '.$this->user->last_name));
         }
+    }
+
+    public function newDefaultCampaign()
+    {
+        $campaign = Campaign::newDefault();
+        $campaign->customer_id = $this->id;
+
+        return $campaign;
     }
 }

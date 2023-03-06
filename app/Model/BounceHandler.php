@@ -116,7 +116,12 @@ class BounceHandler extends DeliveryHandler
 
     public function getBounceCodeAndType($content)
     {
-        preg_match('/(?<=Status:)\s*[^\s]*/', $content, $matched);
+        // @important:
+        // The /m modifier is important. It allows the ^ and $ to match
+        // at the start/end of lines, not just the entire string.
+        // Also, the ^ in ^Status is important, to avoid matching a "status" word in a paragraph
+        //
+        preg_match('/(?<=^Status:)\s*[^\s]*/m', $content, $matched);
         if (sizeof($matched) == 0) {
             return [null, BounceLog::UNKNOWN];
         }
