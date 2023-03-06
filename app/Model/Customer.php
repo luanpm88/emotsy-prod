@@ -1921,9 +1921,12 @@ class Customer extends Model
         $result = [];
 
         // Gallery
-        $templates = \Acelle\Model\Template::where('customer_id', '=', null)
-            ->orWhere('customer_id', '=', $this->id)
+        $templates = \Acelle\Model\Template::where('customer_id', '=', $this->id)
+            ->orWhere(function ($query) {
+                $query->notPreserved();
+            })
             ->orderBy('customer_id')
+            ->notPreserved()
             ->get();
 
         foreach ($templates as $template) {
