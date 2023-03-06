@@ -3128,4 +3128,15 @@
   'your_current_license' => 'Thank you for purchasing! Below is your license key, also known as Purchase Code. Your license type is',
   'zip_postal_code' => 'Zip / Postal code',
   'campaign.last_year' => 'Last Year',
+  'preheader' => 'Preheader',
+  'preheader.intro' => 'Email preheader text is a single line of text that appears after the subiect line in an email inbox. Email preheaders give a short summary of the contents of an email, and may appear differently on
+        mobile and web email clients. Adding a descriptive preheader might increase open rates.',
+  'preheader.add' => 'Add Preheader',
+  'preheader.save' => 'save',
+  'preheader.edit' => 'Edit',
+  'preheader.remove' => 'Remove',
+  'preheader.updated' => 'Campaign preheader was updated',
+  'preheader.removed' => 'Campaign preheader was removed',
+  'preheader.remove.confirm' => 'You are about to remove the preheader. This is can not be undone.',
+  'preheader.close' => 'Close',
 ) ?>

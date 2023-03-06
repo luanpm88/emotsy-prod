@@ -3365,7 +3365,7 @@ p.link-inline a {
     border-color: #FFF3E0;
 }
 .automation-template-thumb {
-    width: 190px !important;
+    width: 160px !important;
     height: auto !important;
     box-shadow: 0px 0px 22px rgba(0,0,0,0.2);
     border: solid 1px #ddd;
@@ -6599,7 +6599,7 @@ h5 {
     left: 10px;
     color: #555;
 }
-.has-error input {
+.has-error input, .has-error textarea {
     border-color: #b00020;
 }
 .form-group .radio .desc, .form-group .radio_box .desc {

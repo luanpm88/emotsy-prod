@@ -3113,4 +3113,16 @@ class Campaign extends Model implements HasTemplateInterface
             return $date->created_at->timezone($currentTimezone)->format('Y-m'); // grouping by months
         });
     }
+
+    public function setPreheader($preheader)
+    {
+        $this->preheader = $preheader;
+        $this->save();
+    }
+
+    public function removePreheader()
+    {
+        $this->preheader = null;
+        $this->save();
+    }
 }

@@ -352,4 +352,16 @@ class Email extends Model implements HasTemplateInterface
 
         return $email;
     }
+
+    public function setPreheader($preheader)
+    {
+        $this->preheader = $preheader;
+        $this->save();
+    }
+
+    public function removePreheader()
+    {
+        $this->preheader = null;
+        $this->save();
+    }
 }

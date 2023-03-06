@@ -2465,4 +2465,72 @@ class CampaignController extends Controller
             'campaign' => $campaign,
         ]);
     }
+
+    public function preheader(Request $request)
+    {
+        $campaign = Campaign::findByUid($request->uid);
+
+        // authorize
+        if (\Gate::denies('update', $campaign)) {
+            return $this->notAuthorized();
+        }
+
+        return view('campaigns.preheader', [
+            'campaign' => $campaign,
+        ]);
+    }
+    
+    public function preheaderAdd(Request $request)
+    {
+        $campaign = Campaign::findByUid($request->uid);
+
+        // authorize
+        if (\Gate::denies('update', $campaign)) {
+            return $this->notAuthorized();
+        }
+
+        // Save posted data
+        if ($request->isMethod('post')) {
+            $validator = \Validator::make($request->all(), [
+                'preheader' => 'required',
+            ]);
+
+            // redirect if fails
+            if ($validator->fails()) {
+                return response()->view('campaigns.preheaderAdd', [
+                    'campaign' => $campaign,
+                    'errors' => $validator->errors(),
+                ], 400);
+            }
+
+            // update preheader
+            $campaign->setPreheader($request->preheader);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => trans('messages.preheader.updated'),
+            ]);
+        }
+
+        return view('campaigns.preheaderAdd', [
+            'campaign' => $campaign,
+        ]);
+    }
+
+    public function preheaderRemove(Request $request)
+    {
+        $campaign = Campaign::findByUid($request->uid);
+
+        // authorize
+        if (\Gate::denies('update', $campaign)) {
+            return $this->notAuthorized();
+        }
+
+        $campaign->removePreheader();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => trans('messages.preheader.removed'),
+        ]);
+    }
 }
