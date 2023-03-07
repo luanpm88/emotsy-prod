@@ -2807,7 +2807,7 @@ class Campaign extends Model implements HasTemplateInterface
 
         $this->fill($params);
 
-        // type     
+        // type
         if (isset($params['type'])) {
             $this->type = $params['type'];
         }

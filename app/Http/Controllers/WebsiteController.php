@@ -55,7 +55,7 @@ class WebsiteController extends Controller
         if (\Gate::denies('list', Website::class)) {
             return $this->notAuthorized();
         }
-        
+
         // sort, pagination
         $websites = $request->user()->customer->websites()->search($request->keyword)
             ->orderBy($request->sort_order, $request->sort_direction)

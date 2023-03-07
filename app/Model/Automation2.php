@@ -117,11 +117,11 @@ class Automation2 extends Model
         $thisYear = $this->customer->getCurrentTime()->format('Y');
         $thisId = $this->id;
         return $this->subscribersToSend()->whereNotIn('subscribers.id', function ($query) use ($thisYear) {
-           $query->select('subscriber_id')
-                 ->from('auto_triggers')
-                 ->where('automation2_id', $this->id)
-                 ->whereRaw(sprintf('year(%s) = %s', table('auto_triggers.created_at'), $thisYear));
-       });
+            $query->select('subscriber_id')
+                  ->from('auto_triggers')
+                  ->where('automation2_id', $this->id)
+                  ->whereRaw(sprintf('year(%s) = %s', table('auto_triggers.created_at'), $thisYear));
+        });
     }
 
     /**

@@ -29,7 +29,7 @@ class MailListPolicy
 
         // config/limit.php
         $limit = app_profile('list.limit');
-        if (!is_null( $limit)) {
+        if (!is_null($limit)) {
             $listsCount = $user->customer->listsCount();
             $can = $can && ($listsCount < $limit);
         } else {

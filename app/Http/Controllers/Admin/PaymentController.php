@@ -25,7 +25,7 @@ class PaymentController extends Controller
         $gateways = Billing::getGateways();
 
         if (!config('app.demo')) {
-            $gateways = array_filter($gateways, function($gateway) {
+            $gateways = array_filter($gateways, function ($gateway) {
                 return $gateway->getType() != 'coinpayments';
             });
         }
