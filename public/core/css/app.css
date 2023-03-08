@@ -2683,16 +2683,25 @@ canvas[data-zr-dom-id='_zrender_hover_'] {
   position: relative;
   background: #d2e3f2;
 }
+.select-template-layout.selected {
+    border: solid 3px #166dba;
+}
 .select-template-layout.selected:before {
     content: 'check';
     font-family: 'Material icons outlined';
     right: 0;
+    top: 0px;
     position: absolute;
     color: #fff;
     background: #166dba;
     border-radius: 0 0 0 100px;
     padding: 0px 0px 6px 11px;
     z-index: 1;
+    font-size: 24px;
+    width: 30px;
+    height: 30px;
+    line-height: 20px;
+    text-indent: -3px;
 }
 .nav-tabs > li:first-child {
   padding-left: 0;
