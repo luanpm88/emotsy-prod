@@ -89,7 +89,7 @@ class CampaignController extends Controller
             'clicked' => [],
         ];
 
-        
+
 
         // 24h collection
         if ($request->period == '24h') {
@@ -113,9 +113,7 @@ class CampaignController extends Controller
                 $num = isset($clickData24h[$hour]) ? count($clickData24h[$hour]) : 0;
                 $result['clicked'][] = $num;
             }
-        }
-
-        elseif ($request->period == '3_days') {
+        } elseif ($request->period == '3_days') {
             $days = [];
 
             // columns
@@ -136,9 +134,7 @@ class CampaignController extends Controller
                 $num = isset($clickData[$day]) ? count($clickData[$day]) : 0;
                 $result['clicked'][] = $num;
             }
-        }
-
-        elseif ($request->period == '7_days') {
+        } elseif ($request->period == '7_days') {
             $days = [];
 
             // columns
@@ -159,9 +155,7 @@ class CampaignController extends Controller
                 $num = isset($clickData[$day]) ? count($clickData[$day]) : 0;
                 $result['clicked'][] = $num;
             }
-        }
-
-        elseif ($request->period == 'last_month') {
+        } elseif ($request->period == 'last_month') {
             $days = [];
 
             // columns
@@ -182,9 +176,7 @@ class CampaignController extends Controller
                 $num = isset($clickData[$day]) ? count($clickData[$day]) : 0;
                 $result['clicked'][] = $num;
             }
-        }
-
-        elseif ($request->period == 'last_year') {
+        } elseif ($request->period == 'last_year') {
             $months = [];
 
             // columns
@@ -206,7 +198,7 @@ class CampaignController extends Controller
                 $result['clicked'][] = $num;
             }
         }
-        
+
 
         return response()->json($result);
     }

@@ -45,7 +45,7 @@ class Automation2Controller extends Controller
         if (\Gate::denies('list', Automation2::class)) {
             return $this->notAuthorized();
         }
-        
+
         $automations = $request->user()->customer->automation2s()
             ->search($request->keyword)
             ->orderBy($request->sort_order, $request->sort_direction)
@@ -2683,7 +2683,7 @@ class Automation2Controller extends Controller
             'email' => $email,
         ]);
     }
-    
+
     public function emailPreheaderAdd(Request $request, $uid, $email_uid)
     {
         // init automation

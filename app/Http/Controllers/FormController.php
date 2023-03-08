@@ -15,7 +15,7 @@ class FormController extends Controller
         if (\Gate::denies('list', Form::class)) {
             return $this->notAuthorized();
         }
-        
+
         return view('forms.index');
     }
 
@@ -58,7 +58,7 @@ class FormController extends Controller
         if (\Gate::denies('create', new Form())) {
             return $this->notAuthorized();
         }
-        
+
         $templates = Template::popup()->notPreserved()->shared()
             ->search($request->keyword)
             ->orderBy($request->sort_order, $request->sort_direction)

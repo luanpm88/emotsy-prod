@@ -46,7 +46,7 @@ class SendingServerPolicy
 
                 // config/limit.php
                 $limit = app_profile('sending_server.limit');
-                if (!is_null( $limit)) {
+                if (!is_null($limit)) {
                     $sendingServerCount = SendingServer::system()->count();
                     $can = $can && ($sendingServerCount < $limit);
                 } else {
@@ -67,15 +67,15 @@ class SendingServerPolicy
                     $notReachMax = $user->customer->sendingServersCount() < $max;
                     $can = $isUnlimited || $notReachMax; // check max campaigns: unlimited or is not reach max
 
-                    // check if user can create server type
-                    // $can = $can && $user->customer->isAllowCreateSendingServerType($item->type);
+                // check if user can create server type
+                // $can = $can && $user->customer->isAllowCreateSendingServerType($item->type);
                 } else {
                     // use system server than do not check max
                 }
 
                 // config/limit.php
                 $limit = app_profile('sending_server.limit');
-                if (!is_null( $limit)) {
+                if (!is_null($limit)) {
                     $sendingServerCount = $user->customer->sendingServers()->count();
                     $can = $can && ($sendingServerCount < $limit);
                 } else {

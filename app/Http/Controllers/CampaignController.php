@@ -794,9 +794,7 @@ class CampaignController extends Controller
                 $num = isset($clickData24h[$hour]) ? count($clickData24h[$hour]) : 0;
                 $result['clicked'][] = $num;
             }
-        }
-
-        elseif ($request->period == '3_days') {
+        } elseif ($request->period == '3_days') {
             $days = [];
 
             // columns
@@ -817,9 +815,7 @@ class CampaignController extends Controller
                 $num = isset($clickData[$day]) ? count($clickData[$day]) : 0;
                 $result['clicked'][] = $num;
             }
-        }
-
-        elseif ($request->period == '7_days') {
+        } elseif ($request->period == '7_days') {
             $days = [];
 
             // columns
@@ -840,9 +836,7 @@ class CampaignController extends Controller
                 $num = isset($clickData[$day]) ? count($clickData[$day]) : 0;
                 $result['clicked'][] = $num;
             }
-        }
-
-        elseif ($request->period == 'last_month') {
+        } elseif ($request->period == 'last_month') {
             $days = [];
 
             // columns
@@ -2479,7 +2473,7 @@ class CampaignController extends Controller
             'campaign' => $campaign,
         ]);
     }
-    
+
     public function preheaderAdd(Request $request)
     {
         $campaign = Campaign::findByUid($request->uid);
