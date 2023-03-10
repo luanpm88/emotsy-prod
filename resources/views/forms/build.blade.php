@@ -480,11 +480,15 @@
                 // save current form container
                 _this.getEditor().cleanUpContent();
 
+                _this.getEditor().unselect();
+                _this.getEditor().hideControls();
+
                 _this.getEditor().loadUrl(_this.getEditor().url, function() {
                     if (typeof(callback) != 'undefined') {
                         callback();
                     }
                     _this.getEditor().adjustIframeSize();
+                    console.log('aaa');
                 });
             },
 
