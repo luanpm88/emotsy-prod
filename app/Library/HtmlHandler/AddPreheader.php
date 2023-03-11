@@ -16,6 +16,10 @@ class AddPreheader implements StageInterface
 
     public function __invoke($html)
     {
+        if (empty($this->preheader)) {
+            return $html;
+        }
+
         return StringHelper::updateHtml($html, function ($dom) {
             $body = $dom->getElementsByTagName('body')->item(0);
             $e = $dom->createElement('div', $this->preheader);

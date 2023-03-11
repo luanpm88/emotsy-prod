@@ -18,6 +18,7 @@ use Acelle\Library\HtmlHandler\TransformUrl;
 use Acelle\Library\HtmlHandler\TransformWidgets;
 use Acelle\Library\HtmlHandler\AddDoctype;
 use Acelle\Library\HtmlHandler\RemoveTitleTag;
+use Acelle\Library\HtmlHandler\AddPreheader;
 use Acelle\Library\Lockable;
 use File;
 use Cache;
@@ -427,6 +428,7 @@ trait HasTemplate
         if (!$fromCache || $updateCacheFlag) {
             $pipeline = new PipelineBuilder();
             $pipeline->add(new AddDoctype());
+            $pipeline->add(new AddPreheader($this->preheader));
             $pipeline->add(new RemoveTitleTag());
             $pipeline->add(new AppendHtml($this->getHtmlFooter()));
             $pipeline->add(new ParseRss());
