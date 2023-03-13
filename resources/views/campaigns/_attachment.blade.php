@@ -4,38 +4,37 @@
   </form>
 </div>
 <div class="attachments_pnl">
-  <h3 class='mt-5'>{{ trans('messages.campaign.attached_files') }}<br/></h3>
-
-  @if (!empty($campaign->getAttachments()))
-    <ul class="ps-0">
-      @foreach ($campaign->getAttachments() as $k=>$filename)
-        @php
-          $fileszie = formatSizeUnits(filesize($campaign->getAttachmentPath($filename)));
-        @endphp
-        <li class="d-flex align-items-canter py-2 border-top">
-          <div class="d-flex align-items-center mr-auto">
-            <span class="material-symbols-rounded fs-4 text-muted me-3 d-block">attach_email</span>
-            <span><name class="d-block">{{ $filename }}</name><size class="text-muted">{{ trans('messages.campaign.attachment.file_size_is', ['size' => $fileszie]) }}</size></span> 
-          </div>
-          <div class="text-nowrap">
-            <a title="" class="tip-right" href="{{ action('CampaignController@downloadAttachment', [
-              'uid' => $campaign->uid,
-              'name' => $filename,
-            ]) }}">
-              {{ trans('messages.download') }}
-            </a>
-            |
-            <a href="{{ action('CampaignController@removeAttachment', [
-              'uid' => $campaign->uid,
-              'name' => $filename,
-            ]) }}" class="remove-attachment">
-              {{ trans('messages.remove') }}
-            </a>
-          </div>
-        </li>
-      @endforeach
-    </ul>
-  @endif
+    @if (!empty($campaign->getAttachments()))
+        <h4 class='mt-3'>{{ trans('messages.campaign.attached_files') }}<br/></h3>
+        <ul class="ps-0">
+            @foreach ($campaign->getAttachments() as $k=>$filename)
+                @php
+                $fileszie = formatSizeUnits(filesize($campaign->getAttachmentPath($filename)));
+                @endphp
+                <li class="d-flex align-items-canter py-2 border-top">
+                    <div class="d-flex align-items-center mr-auto">
+                        <span class="material-symbols-rounded fs-4 text-muted me-3 d-block">attach_email</span>
+                        <span><name class="d-block">{{ $filename }}</name><size class="text-muted">{{ trans('messages.campaign.attachment.file_size_is', ['size' => $fileszie]) }}</size></span> 
+                    </div>
+                    <div class="text-nowrap">
+                        <a title="" class="tip-right" href="{{ action('CampaignController@downloadAttachment', [
+                        'uid' => $campaign->uid,
+                        'name' => $filename,
+                        ]) }}">
+                        {{ trans('messages.download') }}
+                        </a>
+                        |
+                        <a href="{{ action('CampaignController@removeAttachment', [
+                        'uid' => $campaign->uid,
+                        'name' => $filename,
+                        ]) }}" class="remove-attachment">
+                        {{ trans('messages.remove') }}
+                        </a>
+                    </div>
+                </li>
+            @endforeach
+        </ul>
+    @endif
 </div>
 
 <script>

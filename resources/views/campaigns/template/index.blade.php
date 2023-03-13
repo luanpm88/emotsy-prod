@@ -32,7 +32,7 @@
 
 @section('content')
     <div class="row">
-        <div class="col-md-8 mb-0">
+        <div class="col-md-10 mb-0">
             <h2 class="mt-0 mb-3">{{ trans('messages.campaign.content_management') }}</h2>
             <div class="sub-section d-flex">
                 <div class=" mr-auto pr-2">                    
@@ -94,7 +94,7 @@
                 @include('campaigns._attachment')
             </div>
             
-            
+            @include('campaigns._preheader')
         </div>
     </div>
         

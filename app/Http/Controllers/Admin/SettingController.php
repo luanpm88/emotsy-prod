@@ -471,7 +471,6 @@ class SettingController extends Controller
             }
 
             try {
-
                 if (config('custom.japan')) {
                     $endpoint = join_url(config('custom.license_validation_endpoint'), '/wp-json/automailjp/v1/license/check?license=' . $request->license);
                     $result = Http::get($endpoint)->json();

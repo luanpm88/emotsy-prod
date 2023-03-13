@@ -41,7 +41,7 @@ class SegmentController extends Controller
         if (\Gate::denies('list', \Acelle\Model\Segment::class)) {
             return $this->notAuthorized();
         }
-        
+
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
         $segments = \Acelle\Model\Segment::search($request)->paginate($request->per_page);
 

@@ -89,7 +89,7 @@ class CampaignController extends Controller
             'clicked' => [],
         ];
 
-        
+
 
         // 24h collection
         if ($request->period == '24h') {
@@ -113,9 +113,7 @@ class CampaignController extends Controller
                 $num = isset($clickData24h[$hour]) ? count($clickData24h[$hour]) : 0;
                 $result['clicked'][] = $num;
             }
-        }
-
-        elseif ($request->period == '3_days') {
+        } elseif ($request->period == '3_days') {
             $days = [];
 
             // columns
@@ -136,9 +134,7 @@ class CampaignController extends Controller
                 $num = isset($clickData[$day]) ? count($clickData[$day]) : 0;
                 $result['clicked'][] = $num;
             }
-        }
-
-        elseif ($request->period == '7_days') {
+        } elseif ($request->period == '7_days') {
             $days = [];
 
             // columns
@@ -159,9 +155,7 @@ class CampaignController extends Controller
                 $num = isset($clickData[$day]) ? count($clickData[$day]) : 0;
                 $result['clicked'][] = $num;
             }
-        }
-
-        elseif ($request->period == 'last_month') {
+        } elseif ($request->period == 'last_month') {
             $days = [];
 
             // columns
@@ -182,8 +176,29 @@ class CampaignController extends Controller
                 $num = isset($clickData[$day]) ? count($clickData[$day]) : 0;
                 $result['clicked'][] = $num;
             }
+        } elseif ($request->period == 'last_year') {
+            $months = [];
+
+            // columns
+            for ($i = Carbon::now('UTC')->subYears(1)->diffInMonths(Carbon::now('UTC'))-1; $i >= 0; --$i) {
+                $time = Carbon::now()->timezone($currentTimezone)->subMonths($i);
+                $result['columns'][] = $time->format('Y, M');
+                $months[] = $time->format('Y-m');
+            }
+
+            $openData = $campaign->openUniqMonths(Carbon::now('UTC')->subYears(1), Carbon::now('UTC')->endOfDay());
+            $clickData = $campaign->clickMonths(Carbon::now('UTC')->subYears(1), Carbon::now('UTC')->endOfDay());
+
+            // data
+            foreach ($months as $month) {
+                $num = isset($openData[$month]) ? count($openData[$month]) : 0;
+                $result['opened'][] = $num;
+
+                $num = isset($clickData[$month]) ? count($clickData[$month]) : 0;
+                $result['clicked'][] = $num;
+            }
         }
-        
+
 
         return response()->json($result);
     }

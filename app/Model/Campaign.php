@@ -2807,7 +2807,7 @@ class Campaign extends Model implements HasTemplateInterface
 
         $this->fill($params);
 
-        // type     
+        // type
         if (isset($params['type'])) {
             $this->type = $params['type'];
         }
@@ -3078,5 +3078,51 @@ class Campaign extends Model implements HasTemplateInterface
         return $query->orderBy('click_logs.created_at', 'asc')->get()->groupBy(function ($date) use ($currentTimezone) {
             return $date->created_at->timezone($currentTimezone)->format('Y-m-d'); // grouping by hours
         });
+    }
+
+    public function openUniqMonths($start = null, $end = null)
+    {
+        $query = $this->openLogs()->select('open_logs.created_at');
+        $currentTimezone = $this->customer->getTimezone();
+
+        if (isset($start)) {
+            $query = $query->where('open_logs.created_at', '>=', $start);
+        }
+        if (isset($end)) {
+            $query = $query->where('open_logs.created_at', '<=', $end);
+        }
+
+        return $query->orderBy('open_logs.created_at', 'asc')->get()->groupBy(function ($date) use ($currentTimezone) {
+            return $date->created_at->timezone($currentTimezone)->format('Y-m'); // grouping by months
+        });
+    }
+
+    public function clickMonths($start = null, $end = null)
+    {
+        $currentTimezone = $this->customer->getTimezone();
+        $query = $this->clickLogs()->select('click_logs.created_at', 'tracking_logs.subscriber_id');
+
+        if (isset($start)) {
+            $query = $query->where('click_logs.created_at', '>=', $start);
+        }
+        if (isset($end)) {
+            $query = $query->where('click_logs.created_at', '<=', $end);
+        }
+
+        return $query->orderBy('click_logs.created_at', 'asc')->get()->groupBy(function ($date) use ($currentTimezone) {
+            return $date->created_at->timezone($currentTimezone)->format('Y-m'); // grouping by months
+        });
+    }
+
+    public function setPreheader($preheader)
+    {
+        $this->preheader = $preheader;
+        $this->save();
+    }
+
+    public function removePreheader()
+    {
+        $this->preheader = null;
+        $this->save();
     }
 }

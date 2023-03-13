@@ -45,7 +45,7 @@ class Automation2Controller extends Controller
         if (\Gate::denies('list', Automation2::class)) {
             return $this->notAuthorized();
         }
-        
+
         $automations = $request->user()->customer->automation2s()
             ->search($request->keyword)
             ->orderBy($request->sort_order, $request->sort_direction)
@@ -2664,6 +2664,83 @@ class Automation2Controller extends Controller
         return view('automation2.email.webhooksTest', [
             'webhook' => $webhook,
             'result' => $result,
+        ]);
+    }
+
+    public function emailPreheader(Request $request, $uid, $email_uid)
+    {
+        // init automation
+        $automation = Automation2::findByUid($uid);
+        $email = Email::findByUid($email_uid);
+
+        // authorize
+        if (\Gate::denies('update', $automation)) {
+            return $this->notAuthorized();
+        }
+
+        return view('automation2.email.preheader', [
+            'automation' => $automation,
+            'email' => $email,
+        ]);
+    }
+
+    public function emailPreheaderAdd(Request $request, $uid, $email_uid)
+    {
+        // init automation
+        $automation = Automation2::findByUid($uid);
+        $email = Email::findByUid($email_uid);
+
+        // authorize
+        if (\Gate::denies('update', $automation)) {
+            return $this->notAuthorized();
+        }
+
+        // Save posted data
+        if ($request->isMethod('post')) {
+            $validator = \Validator::make($request->all(), [
+                'preheader' => 'required',
+            ]);
+
+            // redirect if fails
+            if ($validator->fails()) {
+                return response()->view('automation2.email.preheaderAdd', [
+                    'automation' => $automation,
+                    'email' => $email,
+                    'errors' => $validator->errors(),
+                ], 400);
+            }
+
+            // update preheader
+            $email->setPreheader($request->preheader);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => trans('messages.preheader.updated'),
+            ]);
+        }
+
+        return view('automation2.email.preheaderAdd', [
+            'automation' => $automation,
+            'email' => $email,
+        ]);
+    }
+
+    public function emailPreheaderRemove(Request $request, $uid, $email_uid)
+    {
+        // init automation
+        $automation = Automation2::findByUid($uid);
+        $email = Email::findByUid($email_uid);
+
+        // authorize
+        if (\Gate::denies('update', $automation)) {
+            return $this->notAuthorized();
+        }
+
+        $email->removePreheader();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => trans('messages.preheader.removed'),
         ]);
     }
 }

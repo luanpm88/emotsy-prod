@@ -30,7 +30,7 @@ class PlanPolicy
 
         // config/limit.php
         $limit = app_profile('plan.limit');
-        if (!is_null( $limit)) {
+        if (!is_null($limit)) {
             $planCount = Plan::count();
             $can = $can && ($planCount < $limit);
         } else {
