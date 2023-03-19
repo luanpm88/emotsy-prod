@@ -8170,6 +8170,11 @@ label.checker input:disabled ~ .checker-symbol {
 .price-list-col-2 {
     max-width: 900px;
 }
-.chatgpt-action-dropdown {
-    
+.chatgpt-button {
+    filter: grayscale(0.5);
+    transition: filter 0.2s ease-in-out;
+}
+.chatgpt-button:hover {
+    filter: grayscale(0);
+    box-shadow: 1px 1px 5px rgba(0,0,0,0.1);;
 }
