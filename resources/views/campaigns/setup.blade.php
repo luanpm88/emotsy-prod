@@ -42,7 +42,9 @@
 				])
 				
                 @if (Acelle\Model\Plugin::isInstalled('acelle/chatgpt'))
-                    @include('chat._chatgpt_email_subject')
+                    @include('chat._chatgpt_email_subject', [
+                        'subject' => $campaign->subject,
+                    ])
                 @else
                     <div class="has-emoji">
                         @include('helpers.form_control', ['type' => 'text',

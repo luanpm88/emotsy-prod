@@ -166,6 +166,9 @@
 
                 _this.openChatGPTPopup();
                 _this.askQuestionForSubject(question)
+
+                // hide dropdown
+                _this.closeActionList();
             });
 
             // ask custom action
@@ -179,6 +182,9 @@
 
                     // focus
                     _this.chatBox.getChatInput().focus();
+
+                    // hide dropdown
+                    _this.closeActionList();
                 }
             });
         }
