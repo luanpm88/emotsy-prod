@@ -15,18 +15,24 @@
     
         <div class="row">
             <div class="col-md-6">          
-                <div class="has-emoji">                                  
-                    @include('helpers.form_control', ['type' => 'text',
-                        'name' => 'subject',
-                        'label' => trans('messages.email_subject'),
-                        'value' => $email->subject,
-                        'rules' => $email->rules(),
-                        'help_class' => 'email',
-                        'placeholder' => trans('messages.automation.email.subject.placeholder'), 
-                        'attributes' => [
-                            'data-emojiable' => 'true',
-                        ]
-                    ])
+                <div class="has-emoji">      
+                    @if (Acelle\Model\Plugin::isInstalled('acelle/chatgpt'))
+                        @include('chat._chatgpt_email_subject', [
+                            'subject' => $email->subject,
+                        ])
+                    @else                            
+                        @include('helpers.form_control', ['type' => 'text',
+                            'name' => 'subject',
+                            'label' => trans('messages.email_subject'),
+                            'value' => $email->subject,
+                            'rules' => $email->rules(),
+                            'help_class' => 'email',
+                            'placeholder' => trans('messages.automation.email.subject.placeholder'), 
+                            'attributes' => [
+                                'data-emojiable' => 'true',
+                            ]
+                        ])
+                    @endif
                 </div>
 
                 @include('helpers.form_control', ['type' => 'text',
