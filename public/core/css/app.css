@@ -4356,7 +4356,7 @@ pagination {
     margin-top: 5px;
     display: block;
 }
-.has-error input[type=text] {
+.has-error input[type=text], .has-error  .emojionearea.form-control {
     border-color: #b00020;
 }
 .nav-item.disabled {
@@ -8169,4 +8169,7 @@ label.checker input:disabled ~ .checker-symbol {
 }
 .price-list-col-2 {
     max-width: 900px;
+}
+.chatgpt-action-dropdown {
+    
 }

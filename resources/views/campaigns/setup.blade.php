@@ -41,18 +41,22 @@
 					'help_class' => 'campaign'
 				])
 				
-				<div class="has-emoji">
-					@include('helpers.form_control', ['type' => 'text',
-						'name' => 'subject',
-						'label' => trans('messages.email_subject'),
-						'value' => $campaign->subject,
-						'rules' => $rules,
-						'help_class' => 'campaign',
-						'attributes' => [
-							'data-emojiable' => 'true',
-						]
-					])
-				</div>
+                @if (Acelle\Model\Plugin::isInstalled('acelle/chatgpt'))
+                    @include('campaigns._chatgpt_email_subject')
+                @else
+                    <div class="has-emoji">
+                        @include('helpers.form_control', ['type' => 'text',
+                            'name' => 'subject',
+                            'label' => trans('messages.email_subject'),
+                            'value' => $campaign->subject,
+                            'rules' => $rules,
+                            'help_class' => 'campaign',
+                            'attributes' => [
+                                'data-emojiable' => 'true',
+                            ]
+                        ])
+                    </div>
+                @endif
 												
 				@include('helpers.form_control', ['type' => 'text',
 					'name' => 'from_name',

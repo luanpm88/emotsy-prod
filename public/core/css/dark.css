@@ -874,3 +874,9 @@ body.mode-dark .table-bordered>:not(caption)>* {
 body.mode-dark .has-error textarea {
     border-color: #b00020!important;
 }
+body.mode-dark .chatgpt-action-dropdown {
+    background-color: rgba(20, 32, 40, 1)!important;
+}
+body.mode-dark .chatgpt-action-dropdown a {
+    color: #fff;;
+}

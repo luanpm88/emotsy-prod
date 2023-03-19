@@ -816,6 +816,9 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
 
     // Invoice
     Route::get('invoices/{uid}/download', 'InvoiceController@download');
+
+    // Chat
+    Route::post('chat', 'ChatController@chat');
 });
 
 // ADMIN AREA

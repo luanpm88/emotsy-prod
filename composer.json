@@ -38,6 +38,7 @@
         "mailgun/mailgun-php": "^3.5",
         "mews/purifier": "^3.2",
         "nyholm/psr7": "^1.4",
+        "orhanerday/open-ai": "^4.7",
         "paypal/paypal-checkout-sdk": "1.0.1",
         "php-http/client-common": "~2.3",
         "php-http/curl-client": "~2.0",
