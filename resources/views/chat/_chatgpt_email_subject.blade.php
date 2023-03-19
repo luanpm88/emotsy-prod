@@ -198,11 +198,7 @@
         openChatGPTPopup() {
             this.getChatPopup().modal('show');
 
-            if (typeof(this.popupShowed) == 'undefined') {
-                $('.modal-backdrop').last().css('z-index', 1060);
-            }
-
-            this.popupShowed = true;
+            fixPopupLayers();
         }
 
         closeChatGPTPopup() {
@@ -220,7 +216,7 @@
 
             //
             $('body').append(`
-                <div chat-control="popup" class="modal" style="z-index: 1070;">
+                <div chat-control="popup" class="modal">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div style="

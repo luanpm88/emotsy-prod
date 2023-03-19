@@ -162,6 +162,8 @@ class Dialog {
     
     show() {
         this.modal.show();
+
+        fixPopupLayers();
     }
     
     hide() {

@@ -910,3 +910,22 @@ function insertAtCursor(myField, myValue) {
         myField.value += myValue;
     }
 }
+
+function fixPopupLayers()
+{
+    var initZIndex = 1050;
+
+    $('.modal-backdrop:visible').each(function(index) {
+        var zIndex = initZIndex + (index*10);
+
+        $(this).css('z-index', zIndex);
+    });
+
+    var initZIndex = 1060;
+
+    $('.modal:visible').each(function(index) {
+        var zIndex = initZIndex + (index*10);
+
+        $(this).css('z-index', zIndex);
+    });
+}
