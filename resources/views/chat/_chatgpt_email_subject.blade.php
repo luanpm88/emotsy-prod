@@ -215,6 +215,7 @@
             this.messages = [];
 
             //
+            $('[chat-control="popup"]').remove();
             $('body').append(`
                 <div chat-control="popup" class="modal">
                     <div class="modal-dialog">
