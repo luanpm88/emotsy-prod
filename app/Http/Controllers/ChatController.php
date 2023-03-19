@@ -20,10 +20,9 @@ class ChatController extends Controller
                 $messages[] = $result['choices'][0]['message'];
             }
         } catch (\Throwable $e) {
-            $messages[] = [
-                "role" => 'error',
-                "content" => $e->getMessage(),
-            ];
+            return response()->json([
+                "error" => $e->getMessage(),
+            ], 500);
         }
         
 

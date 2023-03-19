@@ -115,7 +115,7 @@
                     </ul>
                 </div>
 
-                <div class="px-4 py-2 bg-light">
+                <div class="px-4 py-3 bg-light border-top">
                     <div class="d-flex">
                         <div style="width:100%;">
                             <input chat-control="input" placeholder="{{ trans('messages.chat.enter_your_question_here') }}" type="text" class="border rounded px-3 py-2 form-control"
@@ -364,6 +364,7 @@
             $.ajax({
                 url : _this.chatUrl,
                 type: "POST",
+                globalError: false,
                 data: {
                     _token: CSRF_TOKEN,
                     messages: _this.messages,
@@ -379,11 +380,14 @@
                 if (typeof(callback) !== 'undefined') {
                     callback();
                 }
-            }).fail(function(jqXHR, textStatus, errorThrown) {
+            }).fail(function(res) {
                 _this.renderChatBox();
 
                 // show error
-                _this.showErrorMessage(errorThrown);
+                _this.appendErrorMessage(JSON.parse(res.responseText).error);
+
+                // scroll
+                _this.scrollToBottom();
 
                 //
                 _this.setSendDone();
@@ -491,7 +495,7 @@
                     <div class="d-flex">
                         <div class="me-3">
                             <div class="d-flex align-items-center bg-danger" style="font-size:16px;border-radius: 100%;width:32px;height:32px;justify-content:center;">
-                                <span class="material-symbols-rounded">sms_failed</span>
+                                <span class="material-symbols-rounded text-white">sms_failed</span>
                             </div>
                         </div>
                         <div class="pt-1">
