@@ -3153,4 +3153,5 @@
   'your_api_token' => 'Your API token',
   'your_current_license' => 'Thank you for purchasing! Below is your license key, also known as Purchase Code. Your license type is',
   'zip_postal_code' => 'Zip / Postal code',
+  'customer.already_new_active_sub' => 'This customer already has a new or active subscription. Let\'s try to cancel the current subscription first.',
 ) ?>

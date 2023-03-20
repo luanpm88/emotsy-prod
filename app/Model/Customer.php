@@ -1531,7 +1531,7 @@ class Customer extends Model
     public function assignPlan($plan)
     {
         if ($this->getNewOrActiveSubscription()) {
-            throw new Exception("This customer already has a new or active subscription");
+            throw new Exception(trans('messages.customer.already_new_active_sub'));
         }
 
         $customer = $this;

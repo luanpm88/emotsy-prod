@@ -109,12 +109,12 @@
                             });
                             
                             // if in customer list page
-                            if (CustomersIndex) {
+                            if (typeof(CustomersIndex) != 'undefined') {
                                 CustomersIndex.getList().load();
                             }
 
                             // if in customer subscriptions page
-                            if (SubscriptionsIndex) {
+                            if (typeof(SubscriptionsIndex) != 'undefined') {
                                 SubscriptionsIndex.getList().load();
                             }
 
