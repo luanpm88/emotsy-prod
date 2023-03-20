@@ -42,26 +42,25 @@
 </style>
 
 
-<div class="form-group control-text {{ $errors->has('subject') ? 'has-error' : '' }}">
+<div class="form-group control-text {{ $errors->has($name) ? 'has-error' : '' }}">
     <label>
         {{ trans('messages.email_subject') }} <span class="text-danger">*</span>
     </label>
     <div class="d-flex">
         <div class=""style="width:100%">
             <div class="">
-                
 
                 <input
                     chat-control="subject"
-                    value="{{ $subject }}"
+                    value="{{ $value }}"
                     type="text"
-                    name="subject"
+                    name="{{ $name }}"
                     class="form-control required"
                 />
 
-                @if ($errors->has('subject'))
+                @if ($errors->has($name))
                     <span class="help-block">
-                        {{ $errors->first('subject') }}
+                        {{ $errors->first($name) }}
                     </span>
                 @endif
             </div>
