@@ -1532,4 +1532,21 @@ class Automation2 extends Model
 
         return $result;
     }
+
+    public function deleteAndCleanup()
+    {
+        // clone email if exist
+        $this->getActions(function ($action) {
+            $options = $action->getOptions();
+            if (isset($options['email_uid'])) {
+                $originalEmail = Email::findByUid($options['email_uid']);
+
+                if ($originalEmail) {
+                    $originalEmail->deleteAndCleanup();
+                }
+            }
+        });
+
+        $this->delete();
+    }
 }

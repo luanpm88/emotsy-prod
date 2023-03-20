@@ -1384,7 +1384,7 @@ class Automation2Controller extends Controller
         foreach ($automations->get() as $automation) {
             // authorize
             if (\Gate::allows('delete', $automation)) {
-                $automation->delete();
+                $automation->deleteAndCleanup();
             }
         }
 
