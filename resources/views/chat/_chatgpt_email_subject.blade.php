@@ -406,7 +406,7 @@
                 _this.renderChatBox();
 
                 // show error
-                _this.appendErrorMessage(JSON.parse(res.responseText).error);
+                _this.appendErrorMessage(res.responseText);
 
                 // scroll
                 _this.scrollToBottom();
