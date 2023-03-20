@@ -89,6 +89,7 @@
                         $.ajax({
                             url: url,
                             method: 'POST',
+                            globalError: false,
                             data: {
                                 _token: CSRF_TOKEN,
                                 gateway: button.closest('.submit-box').find('[name=gateway]').val(),
@@ -98,20 +99,36 @@
                                 400: function (res) {
                                     alert('Something went wrong!');
                                 }
-                            },
-                            success: function (response) {
-                                // notify
-                                notify({
-        type: 'success',
-        title: '{!! trans('messages.notify.success') !!}',
-        message: response.message
-    });
-                                
-                                CustomersIndex.getList().load();
-
-                                // hide modal
-                                assignPlan.hide();
                             }
+                        }).done(function(response) {
+                            // notify
+                            notify({
+                                type: 'success',
+                                title: '{!! trans('messages.notify.success') !!}',
+                                message: response.message
+                            });
+                            
+                            // if in customer list page
+                            if (CustomersIndex) {
+                                CustomersIndex.getList().load();
+                            }
+
+                            // if in customer subscriptions page
+                            if (SubscriptionsIndex) {
+                                SubscriptionsIndex.getList().load();
+                            }
+
+                            // hide modal
+                            assignPlan.hide();
+                        }).fail(function(response) {
+                            // notify
+                            new Dialog('alert', {
+                                title: '{!! trans('messages.notify.error') !!}',
+                                message: response.responseJSON.message
+                            });
+
+                            // hide modal
+                            assignPlan.hide();
                         });
                     },
                 });
