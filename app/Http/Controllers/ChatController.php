@@ -13,7 +13,6 @@ class ChatController extends Controller
         $messages = $request->messages;
 
         try {
-            ss;
             // try to get response message
             $result = $chatgpt->chat($messages);
 
