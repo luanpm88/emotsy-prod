@@ -47,7 +47,7 @@
         {{ trans('messages.email_subject') }} <span class="text-danger">*</span>
     </label>
     <div class="d-flex">
-        <div class="has-emoji"style="width:100%">
+        <div class=""style="width:100%">
             <div class="">
                 
 
@@ -57,7 +57,6 @@
                     type="text"
                     name="subject"
                     class="form-control required"
-                    data-emojiable="true"
                 />
 
                 @if ($errors->has('subject'))
