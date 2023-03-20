@@ -137,6 +137,8 @@
         }
 
         setEmailSubjectValue(text) {
+            text = text.trim();
+
             this.getEmailSubjectInput().val(text);
             this.subjectEmojioneArea[0].emojioneArea.setText(text);
         }
@@ -510,11 +512,11 @@
             let match;
 
             while (match = regex.exec(text)) {
-                result.push(match[1]);
+                result.push(match[1].trim());
             }
 
             if (result.length == 0 && message.split(" ").length < 20) {
-                result.push(message);
+                result.push(message.trim());
             }
 
             return result;
