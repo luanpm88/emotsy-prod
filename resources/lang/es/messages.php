@@ -952,6 +952,7 @@
   'customer' => 'Cliente',
   'customer.admin_area' => 'Area Administracion',
   'customer.all_plan' => 'All plans',
+  'customer.already_new_active_sub' => 'This customer already has a new or active subscription. Let\'s try to cancel the current subscription first.',
   'customer.assign_plan' => 'Asignar Plan',
   'customer.assign_plan.confirm' => ' Está a punto de asignar el plan <strong>:plan</strong> a <strong>:customer</strong>. Esto cancelará la suscripción actual del cliente si existe. Esto se puede deshacer. ',
   'customer.back_to_admin' => 'Volver a la admin',

@@ -951,6 +951,7 @@
   'customer' => 'Kunden',
   'customer.admin_area' => 'Admin-Bereich',
   'customer.all_plan' => 'All plans',
+  'customer.already_new_active_sub' => 'This customer already has a new or active subscription. Let\'s try to cancel the current subscription first.',
   'customer.assign_plan' => 'Plan zuordnen',
   'customer.assign_plan.confirm' => 'Sie haben den Plan <strong>:plan </strong> für den Kunden <strong>:customer </strong> zuweisen. Dadurch wird das aktuelle Abo des Kunden gekündigt, sofern es vorhanden ist. Dies kann rückgängig gemacht werden. ',
   'customer.back_to_admin' => 'Zurück zum Admin',

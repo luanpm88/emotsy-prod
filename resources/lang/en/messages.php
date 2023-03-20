@@ -952,6 +952,7 @@
   'customer' => 'Customer',
   'customer.admin_area' => 'Admin Area',
   'customer.all_plan' => 'All plans',
+  'customer.already_new_active_sub' => 'This customer already has a new or active subscription. Let\'s try to cancel the current subscription first.',
   'customer.assign_plan' => 'Assign plan',
   'customer.assign_plan.confirm' => 'You\'re about to assign <strong>:plan</strong> plan to <strong>:customer</strong>. This will cancel customer\'s current subscription if it exists. This can be undone. ',
   'customer.back_to_admin' => 'Back to Admin',
@@ -3153,5 +3154,4 @@
   'your_api_token' => 'Your API token',
   'your_current_license' => 'Thank you for purchasing! Below is your license key, also known as Purchase Code. Your license type is',
   'zip_postal_code' => 'Zip / Postal code',
-  'customer.already_new_active_sub' => 'This customer already has a new or active subscription. Let\'s try to cancel the current subscription first.',
 ) ?>

@@ -952,6 +952,7 @@
   'customer' => 'お客様',
   'customer.admin_area' => '管理エリア',
   'customer.all_plan' => 'All plans',
+  'customer.already_new_active_sub' => 'This customer already has a new or active subscription. Let\'s try to cancel the current subscription first.',
   'customer.assign_plan' => 'プランを割り当てる',
   'customer.assign_plan.confirm' => '<strong>:plan </strong>プランを<strong>:customer </strong>に割り当てようとしています。これにより、お客様の現在のサブスクリプションが存在する場合はキャンセルされます。 これは元に戻すことができます。',
   'customer.back_to_admin' => '管理者モードへ戻る',

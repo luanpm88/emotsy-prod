@@ -41,7 +41,7 @@
 					'help_class' => 'campaign'
 				])
 				
-                @if (Acelle\Model\Plugin::isInstalled('acelle/chatgpt'))
+                @if (Acelle\Model\Plugin::isInstalled('acelle/chatgpt') && Acelle\Model\Plugin::getByName('acelle/chatgpt')->isActive())
                     @include('chat._chatgpt_email_subject', [
                         'subject' => $campaign->subject,
                     ])
