@@ -47,7 +47,7 @@
         {{ trans('messages.email_subject') }} <span class="text-danger">*</span>
     </label>
     <div class="d-flex">
-        <div class="has-emojix"style="width:100%">
+        <div class="has-emoji"style="width:100%">
             <div class="">
                 
 
@@ -57,7 +57,7 @@
                     type="text"
                     name="subject"
                     class="form-control required"
-                    {{-- data-emojiable="true" --}}
+                    data-emojiable="true"
                 />
 
                 @if ($errors->has('subject'))
@@ -105,6 +105,9 @@
 
             // events
             this.events();
+
+            // emoji
+            this.subjectEmojioneArea = this.getEmailSubjectInput().emojioneArea();
         }
 
         getActionList() {
@@ -133,6 +136,11 @@
 
         getEmailSubject() {
             return this.getEmailSubjectInput().val().trim();
+        }
+
+        setEmailSubjectValue(text) {
+            this.getEmailSubjectInput().val(text);
+            this.subjectEmojioneArea[0].emojioneArea.setText(text);
         }
 
         events() {
@@ -481,7 +489,7 @@
                     // event
                     control.on('click', function() {
                         CampaignsChatEmailSubject.chatUI.closeChatGPTPopup();
-                    CampaignsChatEmailSubject.chatUI.getEmailSubjectInput().val(answer);
+                    CampaignsChatEmailSubject.chatUI.setEmailSubjectValue(answer);
 
                     notify('success', '{{ trans('messages.notify.success') }}', '{{ trans('messages.chat.sujbect.inserted') }}' + ': "' + answer + '"');
                     });
