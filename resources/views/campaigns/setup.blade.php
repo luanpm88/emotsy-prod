@@ -28,7 +28,7 @@
 @endsection
 
 @section('content')
-	<form action="{{ action('CampaignController@setup', $campaign->uid) }}" method="POST" class="form-validate-jqueryz">
+	<form id="campaignSetup" action="{{ action('CampaignController@setup', $campaign->uid) }}" method="POST" class="form-validate-jqueryz">
 		{{ csrf_field() }}
 		
 		<div class="row">
@@ -292,7 +292,7 @@
 			CampaignsSetupNextButton.check();
 
 			// manage webhooks button click
-			$('.manage_webhooks_but').on('click', function(e) {
+			$('#campaignSetup').on('click', '.manage_webhooks_but', function(e) {
 				e.preventDefault();
 
 				CampaignsSetup.getWebhooksPopup().load();

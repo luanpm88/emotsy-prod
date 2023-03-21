@@ -212,7 +212,7 @@
 
             $(function() {
                 // manage webhooks button click
-                $('.manage_webhooks_but').on('click', function(e) {
+                $('#emailSetup').on('click', '.manage_webhooks_but', function(e) {
                     e.preventDefault();
 
                     EmailSetup.getWebhooksPopup().load();
