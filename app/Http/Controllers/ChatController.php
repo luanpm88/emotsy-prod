@@ -14,18 +14,13 @@ class ChatController extends Controller
 
         try {
             // try to get response message
-            $result = $chatgpt->chat($messages);
+            $newMessage = $chatgpt->ask($messages);
+            return response()->json($newMessage);
 
-            if(count($result['choices'])) {
-                $messages[] = $result['choices'][0]['message'];
-            }
         } catch (\Throwable $e) {
             return response()->json([
                 "error" => $e->getMessage(),
             ], 500);
         }
-        
-
-        return response()->json($messages);
     }
 }

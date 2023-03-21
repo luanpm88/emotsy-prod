@@ -400,7 +400,7 @@
                     messages: _this.messages,
                 },
             }).done(function(result, textStatus, jqXHR) {
-                _this.setMessages(result);
+                _this.addMessage(result);
                 _this.renderChatBox();
 
                 //
@@ -589,7 +589,7 @@
         }
 
         addUserMessage(content) {
-            this.messages.push({
+            this.addMessage({
                 role: "user",
                 content: content,
             });
@@ -599,7 +599,7 @@
         }
 
         addChatGPTMessage(content) {
-            this.messages.push({
+            this.addMessage({
                 role: "assistant",
                 content: content,
             });
@@ -608,8 +608,8 @@
             this.renderChatBox();
         }
 
-        setMessages(messages) {
-            this.messages = messages;
+        addMessage(message) {
+            this.messages.push(message);
         }
 
         clearInput() {
