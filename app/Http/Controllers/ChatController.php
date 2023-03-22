@@ -12,6 +12,9 @@ class ChatController extends Controller
         $chatgpt = Chatgpt::initialize();
         $messages = $request->messages;
 
+        // reduce messages length
+        $messages = array_slice($messages, -2, 2);
+
         try {
             // try to get response message
             $newMessage = $chatgpt->ask($messages);
