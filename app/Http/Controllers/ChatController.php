@@ -13,7 +13,7 @@ class ChatController extends Controller
         $messages = $request->messages;
 
         // reduce messages length
-        $messages = array_slice($messages, -3, 3);
+        $messages = array_slice($messages, -2, 2);
 
         try {
             // try to get response message
