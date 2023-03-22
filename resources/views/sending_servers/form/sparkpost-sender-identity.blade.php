@@ -43,17 +43,17 @@
                                     <td align="center"><span class="xtooltip" title="This domain is private and is available for the owner user only">Private</span></td>
                                 @elseif ($attributes['VerificationStatus'] == 'Success')
                                     <td align="center">
-                                        <label>
-                                            @if (checkEmail($domain))
-                                                <input type="checkbox" name="options[emails][]" value="{{ $domain }}" class="switchery"
-                                                    {{ $attributes['Selected'] ? " checked" : "" }}
-                                                />
-                                            @else
-                                                <input type="checkbox" name="options[domains][]" value="{{ $domain }}" class="switchery"
-                                                    {{ $attributes['Selected'] ? " checked" : "" }}
-                                                />
-                                            @endif
-                                        </label>
+                                        @if (checkEmail($domain))
+                                            <label class="checker">
+                                                <input {{ $attributes['Selected'] ? " checked" : "" }} type="checkbox" name="options[emails][]" value="{{ $domain }}" class="styled4">
+                                                <span class="checker-symbol"></span>
+                                            </label>
+                                        @else
+                                            <label class="checker">
+                                                <input {{ $attributes['Selected'] ? " checked" : "" }} type="checkbox" name="options[domains][]" value="{{ $domain }}" class="styled4">
+                                                <span class="checker-symbol"></span>
+                                            </label>
+                                        @endif
                                     </td>
                                 @else
                                     <td align="center"></td>
