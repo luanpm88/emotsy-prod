@@ -15,6 +15,12 @@ class ChatController extends Controller
         // reduce messages length
         $messages = array_slice($messages, -2, 2);
 
+        // slice long messages
+        $messages = array_map(function($message) {
+            $message['content'] = substr($message['content'], 0, 300);
+            return $message;
+        }, $messages);
+
         try {
             // try to get response message
             $newMessage = $chatgpt->ask($messages);

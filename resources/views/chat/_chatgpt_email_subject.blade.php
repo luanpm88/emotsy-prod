@@ -172,6 +172,9 @@
                     return;
                 }
 
+                // clear chat box
+                _this.chatBox.clear();
+
                 _this.openChatGPTPopup();
                 _this.askQuestionForSubject(question)
 
@@ -181,6 +184,9 @@
 
             // ask custom action
             this.getCustomAskActions().on('click', function() {
+                // clear chat box
+                _this.chatBox.clear();
+
                 _this.openChatGPTPopup();
                 if (!_this.chatBox.messages.length) {
                     var hello = '{{ trans('messages.chat.custom_question.default_message') }}';
@@ -320,6 +326,11 @@
         disableSendButton() {
             this.getSendButton().prop('disabled', true);
             this.getSendButton().addClass('disabled');
+        }
+
+        clear() {
+            this.messages = [];
+            this.renderChatBox();
         }
 
         enableSendButton() {
