@@ -23,10 +23,10 @@
                 <!-- Main content -->
                 <div class="content-wrapper" style="padding-left:20px;padding-right:20px;">
                     <div class="row">
-                        <div class="col-sm-2 col-md-4">
+                        <div class="col-sm-2 col-md-3 col-lg-4">
 
                         </div>
-                        <div class="col-sm-8 col-md-4">
+                        <div class="col-sm-8 col-md-6 col-lg-4">
 
                             <div class="text-center login-header">
                                 <a class="main-logo-big" href="{{ action('HomeController@index') }}">
