@@ -449,6 +449,9 @@
         }
 
         appendUserMessage(message) {
+            // filter user message
+            message = this.filterUserMessage(message);
+
             // append message to list
             this.getMessagesList().append(`
                 <li class="px-4 py-3 border-bottom bg-white" style="list-style:none;">
@@ -552,6 +555,12 @@
                     </div>
                 </li>
             `)
+        }
+
+        filterUserMessage(message) {
+            message = message.replace(', quote it by a pair of #','');
+
+            return message;
         }
 
         sendUserMessage(content) {
