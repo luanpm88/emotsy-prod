@@ -74,13 +74,13 @@
     <div chat-control="actions" class="position-relative" style="font-family:'Inconsolata';display:none;">
         <div class="chatgpt-action-list d-inline-block mt-1" style="position:absolute;z-index:1;right:0">
             <div class="list-group bg-white shadow chatgpt-action-dropdown">
-                <a chat-control="ask" data-question="{{ trans('messages.chat.ask_for_grammatical_correctness') }}" href="javascript:;" class="list-group-item pe-4">
+                <a chat-control="ask" data-question="{{ trans('messages.chat.ask_for_grammatical_correctness') }}" data-show="{{ trans('messages.chat.ask_for_grammatical_correctness.show') }}" href="javascript:;" class="list-group-item pe-4">
                     {{ trans('messages.chat.check_grammatical_correctness') }}
                 </a>
-                <a chat-control="ask" data-question="{{ trans('messages.chat.ask_for_more_formal') }}" href="javascript:;" class="list-group-item pe-4">
+                <a chat-control="ask" data-question="{{ trans('messages.chat.ask_for_more_formal') }}" data-show="{{ trans('messages.chat.ask_for_more_formal.show') }}" href="javascript:;" class="list-group-item pe-4">
                     {{ trans('messages.chat.suggest_more_formal') }}
                 </a>
-                <a chat-control="ask" data-question="{{ trans('messages.chat.ask_for_more_unformal') }}" href="javascript:;" class="list-group-item pe-4">
+                <a chat-control="ask" data-question="{{ trans('messages.chat.ask_for_more_unformal') }}" data-show="{{ trans('messages.chat.ask_for_more_unformal.show') }}" href="javascript:;" class="list-group-item pe-4">
                     {{ trans('messages.chat.suggest_more_unformal') }}
                 </a>
                 <a chat-control="custom-ask" href="javascript:;" class="list-group-item pe-4">
@@ -164,6 +164,7 @@
             // ask action
             this.getAskActions().on('click', function() {
                 var question = $(this).attr('data-question');
+                var questionShow = $(this).attr('data-show');
 
                 if (_this.getEmailSubject() == '') {
                     new Dialog('alert', {
@@ -176,7 +177,7 @@
                 _this.chatBox.clear();
 
                 _this.openChatGPTPopup();
-                _this.askQuestionForSubject(question)
+                _this.askQuestionForSubject(question, questionShow);
 
                 // hide dropdown
                 _this.closeActionList();
@@ -225,8 +226,11 @@
             this.getChatPopup().modal('hide');
         }
 
-        askQuestionForSubject(question) {
-            this.chatBox.sendUserMessage(question.replace(':subject', this.getEmailSubject()));
+        askQuestionForSubject(question, questionShow) {
+            question = question.replace(':subject', this.getEmailSubject());
+            questionShow = questionShow.replace(':subject', this.getEmailSubject());
+
+            this.chatBox.sendUserMessage(question, questionShow);
         }
     }
 
@@ -388,16 +392,25 @@
             this.getMessagesList().html('');
 
             this.messages.forEach(function(message, index) {
+                var content;
+
+                // check if message has show value
+                if (typeof(message.show) !== 'undefined') {
+                    content = message.show;
+                } else {
+                    content = message.content;
+                }
+
                 if (message.role == 'assistant') {
-                    _this.appendChatGPTMessage(message.content);
+                    _this.appendChatGPTMessage(content);
                 }
 
                 else if (message.role == 'user') {
-                    _this.appendUserMessage(message.content);
+                    _this.appendUserMessage(content);
                 }
 
                 else if (message.role == 'error') {
-                    _this.appendErrorMessage(message.content);
+                    _this.appendErrorMessage(content);
                 }
             });
 
@@ -410,13 +423,21 @@
 
             this.setSending();
 
+            // filter messages for chatGPT before send
+            var sendMessages = this.messages.map(function(message) {
+                return {
+                    role: message.role,
+                    content: message.content
+                }
+            });
+
             $.ajax({
                 url : _this.chatUrl,
                 type: "POST",
                 globalError: false,
                 data: {
                     _token: CSRF_TOKEN,
-                    messages: _this.messages,
+                    messages: sendMessages,
                 },
             }).done(function(result, textStatus, jqXHR) {
                 _this.addMessage(result);
@@ -558,15 +579,13 @@
         }
 
         filterUserMessage(message) {
-            message = message.replace(', quote it by a pair of #','');
-
             return message;
         }
 
-        sendUserMessage(content) {
+        sendUserMessage(content, contentShow) {
             var _this = this;
 
-            this.addUserMessage(content);
+            this.addUserMessage(content, contentShow);
             this.chat(function() {
                 _this.clearInput();
                 _this.getChatInput().focus();
@@ -611,11 +630,17 @@
             }
         }
 
-        addUserMessage(content) {
-            this.addMessage({
+        addUserMessage(content, contentShow) {
+            var message = {
                 role: "user",
                 content: content,
-            });
+            };
+
+            if (typeof(contentShow) !== 'undefined') {
+                message.show = contentShow;
+            }
+
+            this.addMessage(message);
 
             // render chat box
             this.renderChatBox();
