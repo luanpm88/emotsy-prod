@@ -8177,3 +8177,10 @@ label.checker input:disabled ~ .checker-symbol {
     filter: grayscale(0);
     box-shadow: 1px 1px 5px rgba(0,0,0,0.1);;
 }
+[chat-control="insert"] {
+    background: #efefef;
+    border-radius: 50px;
+}
+[chat-control="insert"]:hover {
+    background: #f5f5f5;
+}
