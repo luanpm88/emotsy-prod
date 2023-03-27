@@ -241,6 +241,8 @@
             });
             $('body').addClass('theme-' + value);
 
+            includeCss('{{ URL::asset('core/css/theme') }}/' + value + '.css');
+
             detectLogo();
         });
     });

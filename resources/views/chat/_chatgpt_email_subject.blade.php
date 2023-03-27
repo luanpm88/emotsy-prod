@@ -172,6 +172,9 @@
                     return;
                 }
 
+                // clear chat box
+                _this.chatBox.clear();
+
                 _this.openChatGPTPopup();
                 _this.askQuestionForSubject(question)
 
@@ -181,6 +184,9 @@
 
             // ask custom action
             this.getCustomAskActions().on('click', function() {
+                // clear chat box
+                _this.chatBox.clear();
+
                 _this.openChatGPTPopup();
                 if (!_this.chatBox.messages.length) {
                     var hello = '{{ trans('messages.chat.custom_question.default_message') }}';
@@ -220,7 +226,7 @@
         }
 
         askQuestionForSubject(question) {
-            this.chatBox.sendUserMessage(question + ': "' + this.getEmailSubject() + '"');
+            this.chatBox.sendUserMessage(question.replace(':subject', this.getEmailSubject()));
         }
     }
 
@@ -322,6 +328,11 @@
             this.getSendButton().addClass('disabled');
         }
 
+        clear() {
+            this.messages = [];
+            this.renderChatBox();
+        }
+
         enableSendButton() {
             this.getSendButton().prop('disabled', false);
             this.getSendButton().removeClass('disabled');
@@ -362,6 +373,14 @@
                     return false;
                 }
             });
+
+            // insert action
+            this.getMessagesList().on('click', '[chat-control="insert"]', function() {
+                var answer = $(this).attr('data-value');
+                CampaignsChatEmailSubject.chatUI.closeChatGPTPopup();
+                CampaignsChatEmailSubject.chatUI.setEmailSubjectValue(answer);
+                notify('success', '{{ trans('messages.notify.success') }}', '{{ trans('messages.chat.sujbect.inserted') }}' + ': "' + answer + '"');
+            });
         }
 
         renderChatBox() {
@@ -370,7 +389,7 @@
 
             this.messages.forEach(function(message, index) {
                 if (message.role == 'assistant') {
-                    _this.appendChatGPTMessage(message.content, (index != 0));
+                    _this.appendChatGPTMessage(message.content);
                 }
 
                 else if (message.role == 'user') {
@@ -449,10 +468,15 @@
             `)
         }
 
-        appendChatGPTMessage(message, showControl) {
-            if (typeof(showControl) == 'undefined') {
-                var showControl = true;
-            }
+        filterGPTMessage(message) {
+            message = this.addInsertActionLinks(message);
+
+            return message;
+        }
+
+        appendChatGPTMessage(message) {
+            // filter message; add control
+            message = this.filterGPTMessage(message);
 
             // append message to list
             var element = $(`
@@ -470,33 +494,6 @@
                     </div>
                 </li>
             `);
-
-            if (showControl) {
-                // find answers inside message
-                var answers = this.findAnswerInsideMessage(message);
-
-                // insert to message
-                answers.forEach(function(answer) {
-                    var control = $(`
-                        <button chat-control="insert" type="button" class="btn btn-light px-3 py-1 mt-3 border small" style="border-radius:20px;">
-                            <div class="d-flex text-start">
-                                <span class="material-symbols-rounded me-2">library_add</span>
-                                <span>{{ trans('messages.chat.insert_answer') }} "`+answer+`"</span>
-                            </div>
-                        </button>
-                    `);
-
-                    // event
-                    control.on('click', function() {
-                        CampaignsChatEmailSubject.chatUI.closeChatGPTPopup();
-                    CampaignsChatEmailSubject.chatUI.setEmailSubjectValue(answer);
-
-                    notify('success', '{{ trans('messages.notify.success') }}', '{{ trans('messages.chat.sujbect.inserted') }}' + ': "' + answer + '"');
-                    });
-
-                    element.find('[chat-control="message-action"]').append(control);
-                });
-            }
             
             // append element
             this.getMessagesList().append(element);
@@ -505,21 +502,38 @@
             initJs(element);
         }
 
-        findAnswerInsideMessage(message) {
+        addInsertActionLinks(message) {
+            console.log(message);
+            // find answers
             const text = message;
-            const regex = /"([^"]*)"/g;
-            const result = [];
+            const regex = /#([^#]+)\#/g;
+            const answers = [];
             let match;
 
+            // inside ##
             while (match = regex.exec(text)) {
-                result.push(match[1].trim());
+                answers.push(match[1]);
             }
 
-            if (result.length == 0 && message.split(" ").length < 20) {
-                result.push(message.trim());
-            }
+            // // if empty get all response
+            // if (answers.length == 0 && message.split(" ").length < 20) {
+            //     answers.push(message.trim());
+            // }
 
-            return result;
+            console.log(answers);
+
+            // replace links
+            answers.forEach(function(answer) {
+                message = message.replace('#'+answer+'#', `
+                    <a title="{{ trans('messages.chat.insert_answer') }} `+answer+`" chat-control="insert" data-value="`+answer+`" href="javascript:;"
+                        class="xtooltip"
+                    >
+                        `+answer.trim()+` <span class="material-symbols-rounded me-0">library_add_check</span>
+                    </a>
+                `);
+            });
+
+            return message;
         }
 
         appendErrorMessage(message) {

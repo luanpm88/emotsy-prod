@@ -880,3 +880,10 @@ body.mode-dark .chatgpt-action-dropdown {
 body.mode-dark .chatgpt-action-dropdown a {
     color: #fff;;
 }
+body.mode-dark [chat-control="insert"] {
+    color: rgba(255,255,255,0.8);  
+    background-color: rgba(255,255,255,0.05);
+}
+body.mode-dark [chat-control="insert"]:hover {
+    background-color: rgba(255,255,255,0.1);
+}

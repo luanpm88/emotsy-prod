@@ -4,8 +4,11 @@
         @include('layouts.core._head')
 
         @include('layouts.core._script_vars')
+
+        <!-- Theme -->
+    <link rel="stylesheet" type="text/css" href="{{ URL::asset('core/css/theme/'.Acelle\Model\Setting::get('frontend_scheme').'.css') }}">
     </head>
-    <body class="bg-slate-800">
+    <body class="bg-slate-800 theme-{{ Acelle\Model\Setting::get('frontend_scheme') }}">
         <!-- Page container -->
         <div class="page-container login-container">
             @if (\Auth::check())
@@ -18,12 +21,12 @@
             <div class="page-content">
 
                 <!-- Main content -->
-                <div class="content-wrapper">
+                <div class="content-wrapper" style="padding-left:20px;padding-right:20px;">
                     <div class="row">
-                        <div class="col-sm-2 col-md-4">
+                        <div class="col-sm-2 col-md-3 col-lg-4">
 
                         </div>
-                        <div class="col-sm-8 col-md-4">
+                        <div class="col-sm-8 col-md-6 col-lg-4">
 
                             <div class="text-center login-header">
                                 <a class="main-logo-big" href="{{ action('HomeController@index') }}">

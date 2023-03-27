@@ -30,6 +30,9 @@
 			var ECHARTS_THEME = '{{ Auth::user()->admin->theme_mode == 'dark' ? 'dark' : null }}';
 		@endif
 	</script>
+
+    <!-- Theme -->
+    <link rel="stylesheet" type="text/css" href="{{ URL::asset('core/css/theme/'.Auth::user()->admin->getColorScheme().'.css') }}">
 </head>
 <body class="{{ isset($body_class) ? $body_class : '' }} theme-{{ Auth::user()->admin->getColorScheme() }} {{ Auth::user()->admin->getMenuLayout() }}bar
 	{{ Auth::user()->admin->getMenuLayout() }}bar-{{ request()->session()->get('admin-leftbar-state') }} state-{{ request()->session()->get('admin-leftbar-state') }}

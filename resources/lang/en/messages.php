@@ -811,9 +811,9 @@
   'change_payment_method' => 'Change payment method',
   'change_plan.desc' => 'You’re changing from <strong>:plan</strong> plan to <strong>:newPlan</strong> plan. Next end period date is <strong>:date</strong>',
   'change_sort_direction' => 'Change sort direction',
-  'chat.ask_for_grammatical_correctness' => 'Check the grammatical correctness of this email subject and give a correct one',
-  'chat.ask_for_more_formal' => 'Suggest an example of a more formal email subject than this one',
-  'chat.ask_for_more_unformal' => 'Suggest an example of a more unformal email subject than this one',
+  'chat.ask_for_grammatical_correctness' => 'Please check the grammar & spelling of this email subject ":subject". If it is not correct, give me ONE corrected subject, quote it by a pair of #',
+  'chat.ask_for_more_formal' => 'Please suggest a more formal version of this email subject ":subject", quote it by a PAIR of #',
+  'chat.ask_for_more_unformal' => 'Please suggest a more informal version of this email subject ":subject", quote it by a PAIR of #',
   'chat.check_grammatical_correctness' => 'Check the grammatical correctness',
   'chat.copy_answer' => 'Copy the answer: ',
   'chat.custom_question' => 'Custom question to ChatGPT',
@@ -3154,4 +3154,5 @@
   'your_api_token' => 'Your API token',
   'your_current_license' => 'Thank you for purchasing! Below is your license key, also known as Purchase Code. Your license type is',
   'zip_postal_code' => 'Zip / Postal code',
+  'campaign.sent_to' => 'Sent to :count recipient(s)',
 ) ?>
