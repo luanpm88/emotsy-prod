@@ -12,7 +12,7 @@
                 @if (isset($setting['cat']) && $setting['cat'] == 'general')
                     <div class="col-md-6">
 
-                        @if (in_array($name, ['site_logo_light','site_logo_dark']))
+                        @if (in_array($name, ['site_logo_light','site_logo_dark','site_favicon']))
                             @include('admin.settings.general.' . $name)
                         @else
                             @if ($setting['type'] == 'checkbox')
