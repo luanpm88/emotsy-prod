@@ -3158,4 +3158,6 @@
   'your_current_license' => 'Thank you for purchasing! Below is your license key, also known as Purchase Code. Your license type is',
   'zip_postal_code' => 'Zip / Postal code',
   'campaign.sent_to' => 'Sent to :count recipient(s)',
+  'system.sendmail.warning' => 'Are you sure Sendmail is set up appropriately on the hosting server?',
+  'system.sendmail.warning.desc' => 'Sendmail is a mail transfer agent (MTA) that is installed on the hosting server. Sending via Sendmail is free and easy. However, make sure you configure your Sendmail program correctly (sending domain & IP address, SMTP standards, etc.); otherwise, outgoing emails might end up in recpients\' Spam folder or are even dropped by recipients\' mail server. If you are not sure, you can simply switch to SMTP, i.e. sending through an SMTP service instead.',
 ) ?>
