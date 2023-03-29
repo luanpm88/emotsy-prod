@@ -1,4 +1,4 @@
-<div class="form-group control-text {{ $errors->has($name) ? 'has-error' : '' }}">
+<div id="ChatEmailSubjectControl" class="form-group control-text {{ $errors->has($name) ? 'has-error' : '' }}">
     <label>
         {{ trans('messages.email_subject') }} <span class="text-danger">*</span>
     </label>
@@ -30,13 +30,25 @@
     <div chat-control="actions" class="position-relative" style="font-family:'Inconsolata';display:none;">
         <div class="chatgpt-action-list d-inline-block mt-1" style="position:absolute;z-index:1;right:0">
             <div class="list-group bg-white shadow chatgpt-action-dropdown">
-                <a chat-control="ask" data-question="{{ trans('messages.chat.ask_for_grammatical_correctness') }}" data-show="{{ trans('messages.chat.ask_for_grammatical_correctness.show') }}" href="javascript:;" class="list-group-item pe-4">
+                <a chat-control="ask"
+                    data-question="{{ trans('messages.chat.email_subject.ask_for_grammatical_correctness') }}"
+                    data-show="{{ trans('messages.chat.email_subject.ask_for_grammatical_correctness.show') }}"
+                    href="javascript:;" class="list-group-item pe-4"
+                >
                     {{ trans('messages.chat.check_grammatical_correctness') }}
                 </a>
-                <a chat-control="ask" data-question="{{ trans('messages.chat.ask_for_more_formal') }}" data-show="{{ trans('messages.chat.ask_for_more_formal.show') }}" href="javascript:;" class="list-group-item pe-4">
+                <a chat-control="ask"
+                    data-question="{{ trans('messages.chat.email_subject.ask_for_more_formal') }}"
+                    data-show="{{ trans('messages.chat.email_subject.ask_for_more_formal.show') }}"
+                    href="javascript:;" class="list-group-item pe-4"
+                >
                     {{ trans('messages.chat.suggest_more_formal') }}
                 </a>
-                <a chat-control="ask" data-question="{{ trans('messages.chat.ask_for_more_unformal') }}" data-show="{{ trans('messages.chat.ask_for_more_unformal.show') }}" href="javascript:;" class="list-group-item pe-4">
+                <a chat-control="ask"
+                    data-question="{{ trans('messages.chat.email_subject.ask_for_more_unformal') }}"
+                    data-show="{{ trans('messages.chat.email_subject.ask_for_more_unformal.show') }}"
+                    href="javascript:;" class="list-group-item pe-4"
+                >
                     {{ trans('messages.chat.suggest_more_unformal') }}
                 </a>
                 <a chat-control="custom-ask" href="javascript:;" class="list-group-item pe-4">
@@ -50,14 +62,158 @@
 @include('chat._script')
 
 <script>
+    var ChatUI = class {
+        constructor(container, chatBox) {
+            this.container = container;
+            this.chatBox = chatBox;
+
+            // close action list
+            if (this.isActionListOpen()) {
+                this.closeActionList();
+            }
+
+            // events
+            this.events();
+        }
+
+        getActionList() {
+            return this.container.find('[chat-control="actions"]');
+        }
+
+        getActionButton() {
+            return this.container.find('[chat-control="actions-button"]');
+        }
+
+        getAskActions() {
+            return this.container.find('[chat-control="ask"]');
+        }
+
+        getCustomAskActions() {
+            return this.container.find('[chat-control="custom-ask"]');
+        }
+
+        getInput() {
+            return this.container.find('[chat-control="input-control"]');
+        }
+
+        getInputValue() {
+            return this.getInput().val().trim();
+        }
+
+        setInputValue(text) {
+            text = text.trim();
+
+            this.getInput().val(text).change();
+        }
+
+        events() {
+            var _this = this;
+
+            // click action button
+            this.getActionButton().on('click', function() {
+                if (!_this.isActionListOpen()) {
+                    _this.openActionList();
+                }
+            });
+
+            // click outside to hide action list
+            $(document).on('click', function(e) {
+                if (!$(e.target).closest('[chat-control="actions"], [chat-control="actions-button"]').length) {
+                    // Clicked outside the box; hide it
+                    _this.closeActionList();
+                }
+            });
+
+            // insert action
+            this.chatBox.getMessagesList().on('click', '[chat-control="insert"]', function() {
+                var answer = $(this).attr('data-value');
+                _this.closeChatGPTPopup();
+                _this.setInputValue(answer);
+                notify('success', '{{ trans('messages.notify.success') }}', '{{ trans('messages.chat.sujbect.inserted') }}' + ': "' + answer + '"');
+            });
+
+            // ask action
+            this.getAskActions().on('click', function() {
+                var question = $(this).attr('data-question');
+                var questionShow = $(this).attr('data-show');
+
+                if (_this.getInputValue() == '') {
+                    new Dialog('alert', {
+                        message: '{{ trans('messages.chat.email_subject_empty') }}',
+                    });
+                    return;
+                }
+
+                // clear chat box
+                _this.chatBox.clear();
+
+                _this.openChatGPTPopup();
+                _this.askQuestionForSubject(question, questionShow);
+
+                // hide dropdown
+                _this.closeActionList();
+            });
+
+            // ask custom action
+            this.getCustomAskActions().on('click', function() {
+                // clear chat box
+                _this.chatBox.clear();
+
+                _this.openChatGPTPopup();
+                if (!_this.chatBox.messages.length) {
+                    var hello = '{{ trans('messages.chat.custom_question.default_message') }}';
+
+                    // add hello message
+                    _this.chatBox.addChatGPTMessage(hello);
+
+                    // focus
+                    _this.chatBox.getChatInput().focus();
+
+                    // hide dropdown
+                    _this.closeActionList();
+                }
+            });
+        }
+
+        closeActionList() {
+            this.getActionList().hide();
+        }
+
+        openActionList() {
+            this.getActionList().show();
+        }
+
+        isActionListOpen() {
+            this.getActionList().is(':visible');
+        }
+
+        openChatGPTPopup() {
+            this.chatBox.getChatPopup().modal('show');
+
+            fixPopupLayers();
+        }
+
+        closeChatGPTPopup() {
+            this.chatBox.getChatPopup().modal('hide');
+        }
+
+        askQuestionForSubject(question, questionShow) {
+            question = question.replace(':subject', this.getInputValue());
+            questionShow = questionShow.replace(':subject', this.getInputValue());
+
+            this.chatBox.sendUserMessage(question, questionShow);
+        }
+    }
+
     var ChatEmailSubject = {
 
     }
 
     $(function() {
-        ChatEmailSubject.chatUI = new ChatUI(new ChatBox());
+        ChatEmailSubject.chatUI = new ChatUI($('#ChatEmailSubjectControl'), new ChatBox());
 
         // emoji
-        $('[chat-control="input-control"]').emojioneArea();
+        $('#ChatEmailSubjectControl [chat-control="input-control"]').emojioneArea();
     });
+
 </script>

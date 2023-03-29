@@ -39,163 +39,20 @@
         opacity: 0.5;
       }
     }
-    </style>
+</style>
 
 <script>
-    var ChatUI = class {
-        constructor(chatBox) {
-            this.chatBox = chatBox;
-
-            // close action list
-            if (this.isActionListOpen()) {
-                this.closeActionList();
-            }
-
-            // events
-            this.events();
-        }
-
-        getActionList() {
-            return $('[chat-control="actions"]');
-        }
-
-        getActionButton() {
-            return $('[chat-control="actions-button"]');
-        }
-
-        getChatPopup() {
-            return $('[chat-control="popup"]');
-        }
-
-        getAskActions() {
-            return $('[chat-control="ask"]');
-        }
-
-        getCustomAskActions() {
-            return $('[chat-control="custom-ask"]');
-        }
-
-        getInput() {
-            return $('[chat-control="input-control"]');
-        }
-
-        getInputValue() {
-            return this.getInput().val().trim();
-        }
-
-        setInputValue(text) {
-            text = text.trim();
-
-            this.getInput().val(text).change();
-        }
-
-        events() {
-            var _this = this;
-
-            // click action button
-            this.getActionButton().on('click', function() {
-                if (!_this.isActionListOpen()) {
-                    _this.openActionList();
-                }
-            });
-
-            // click outside to hide action list
-            $(document).on('click', function(e) {
-                if (!$(e.target).closest('[chat-control="actions"], [chat-control="actions-button"]').length) {
-                    // Clicked outside the box; hide it
-                    _this.closeActionList();
-                }
-            });
-
-            // insert action
-            this.chatBox.getMessagesList().on('click', '[chat-control="insert"]', function() {
-                var answer = $(this).attr('data-value');
-                _this.closeChatGPTPopup();
-                _this.setInputValue(answer);
-                notify('success', '{{ trans('messages.notify.success') }}', '{{ trans('messages.chat.sujbect.inserted') }}' + ': "' + answer + '"');
-            });
-
-            // ask action
-            this.getAskActions().on('click', function() {
-                var question = $(this).attr('data-question');
-                var questionShow = $(this).attr('data-show');
-
-                if (_this.getInputValue() == '') {
-                    new Dialog('alert', {
-                        message: '{{ trans('messages.chat.email_subject_empty') }}',
-                    });
-                    return;
-                }
-
-                // clear chat box
-                _this.chatBox.clear();
-
-                _this.openChatGPTPopup();
-                _this.askQuestionForSubject(question, questionShow);
-
-                // hide dropdown
-                _this.closeActionList();
-            });
-
-            // ask custom action
-            this.getCustomAskActions().on('click', function() {
-                // clear chat box
-                _this.chatBox.clear();
-
-                _this.openChatGPTPopup();
-                if (!_this.chatBox.messages.length) {
-                    var hello = '{{ trans('messages.chat.custom_question.default_message') }}';
-
-                    // add hello message
-                    _this.chatBox.addChatGPTMessage(hello);
-
-                    // focus
-                    _this.chatBox.getChatInput().focus();
-
-                    // hide dropdown
-                    _this.closeActionList();
-                }
-            });
-        }
-
-        closeActionList() {
-            this.getActionList().hide();
-        }
-
-        openActionList() {
-            this.getActionList().show();
-        }
-
-        isActionListOpen() {
-            this.getActionList().is(':visible');
-        }
-
-        openChatGPTPopup() {
-            this.getChatPopup().modal('show');
-
-            fixPopupLayers();
-        }
-
-        closeChatGPTPopup() {
-            this.getChatPopup().modal('hide');
-        }
-
-        askQuestionForSubject(question, questionShow) {
-            question = question.replace(':subject', this.getInputValue());
-            questionShow = questionShow.replace(':subject', this.getInputValue());
-
-            this.chatBox.sendUserMessage(question, questionShow);
-        }
-    }
-
     var ChatBox = class {
         constructor() {
             this.messages = [];
+            this.id = Math.random().toString(16).slice(2);
+
+            console.log(this.id);
 
             //
-            $('[chat-control="popup"]').remove();
+            $('#' + this.id + '[chat-control="popup"]').remove();
             $('body').append(`
-                <div chat-control="popup" class="modal">
+                <div id="`+this.id+`" chat-control="popup" class="modal">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div style="
@@ -265,16 +122,20 @@
             this.applyEvents();
         }
 
+        getChatPopup() {
+            return $('#'+this.id+'[chat-control="popup"]');
+        }
+
         getMessagesList() {
-            return $('[chat-control="messages"]');
+            return this.getChatPopup().find('[chat-control="messages"]');
         }
 
         getChatInput() {
-            return $('[chat-control="input"]');
+            return this.getChatPopup().find('[chat-control="input"]');
         }
 
         getSendButton() {
-            return $('[chat-control="send"]');
+            return this.getChatPopup().find('[chat-control="send"]');
         }
 
         getInputContent() {
@@ -490,7 +351,7 @@
             //     answers.push(message.trim());
             // }
 
-            console.log(answers);
+            // console.log(answers);
 
             // replace links
             answers.forEach(function(answer) {
