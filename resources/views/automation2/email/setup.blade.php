@@ -17,7 +17,7 @@
             <div class="col-md-6">          
                      
                 @if (Acelle\Model\Plugin::isInstalled('acelle/chatgpt') && Acelle\Model\Plugin::getByName('acelle/chatgpt')->isActive())
-                    @include('chat._chatgpt_email_subject', [
+                    @include('chat._email_subject', [
                         'name' => 'subject',
                         'value' => $email->subject,
                     ])
