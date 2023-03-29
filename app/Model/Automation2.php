@@ -731,14 +731,14 @@ class Automation2 extends Model
 
         $trigger = $this->getTriggerAction();
         $now = $this->customer->getCurrentTime();
-        $eventDate = $this->customer->parseDateTime(sprintf('%s %s', $trigger->getOption('date'), $trigger->getOption('at')));
+        $eventDate = $this->customer->parseDateTimeFromUtcString(sprintf('%s %s', $trigger->getOption('date'), $trigger->getOption('at')));
 
         // Condition same date but after the specified time
         $format = 'Y-m-d';
         $checked = $now->gte($eventDate) && $now->format($format) == $eventDate->format($format);
 
         if (!$checked) {
-            $this->logger()->info(sprintf("It is now ({$now->toString('Y-m-d H:M:S')}) NOT the right date/time ({$eventDate->toString('Y-m-d H:M:S')}) for triggering "));
+            $this->logger()->info(sprintf("It is now %s, the scheduled time is: %s, i.e. %s.", $now->format('Y-m-d G:i:s P'), $eventDate->format('Y-m-d G:i:s P'), $eventDate->diffForHumans()));
             return;
         }
 
@@ -762,8 +762,8 @@ class Automation2 extends Model
         if (getenv('LOGFILE') != false) {
             $stream = new RotatingFileHandler(getenv('LOGFILE'), 0, Logger::DEBUG);
         } else {
-            $logfile = storage_path('logs/' . php_sapi_name() . '/automation-'.$this->uid.'.log');
-            $stream = new RotatingFileHandler($logfile, 0, Logger::WARNING);
+            $logfile = $this->getLogFile();
+            $stream = new RotatingFileHandler($logfile, 0, Logger::INFO);
         }
 
         $stream->setFormatter($formatter);
@@ -773,6 +773,11 @@ class Automation2 extends Model
         $logger->pushHandler($stream);
 
         return $logger;
+    }
+
+    public function getLogFile()
+    {
+        return storage_path('logs/' . php_sapi_name() . '/automation-'.$this->uid.'.log');
     }
 
     public function timelinesBy($subscriber)
