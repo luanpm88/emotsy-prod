@@ -42,8 +42,9 @@
 				])
 				
                 @if (Acelle\Model\Plugin::isInstalled('acelle/chatgpt') && Acelle\Model\Plugin::getByName('acelle/chatgpt')->isActive())
-                    @include('chat._chatgpt_email_subject', [
+                    @include('chat._email_subject', [
                         'name' => 'subject',
+                        'label' => trans('messages.email_subject'),
                         'value' => $campaign->subject,
                     ])
                 @else

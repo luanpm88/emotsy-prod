@@ -104,23 +104,15 @@
                     </div>
                         
                     <h2>{{ trans('messages.plan.general.details') }}</h2>
-                    
-                    @include('helpers.form_control', [
-                        'type' => 'text',
+
+                    @include('chat._plan_name', [
                         'name' => 'plan[general][name]',
-                        'label' => trans('messages.plan.name'),
                         'value' => $plan->name,
-                        'help_class' => 'plan',
-                        'rules' => $plan->generalRules()
                     ])
 
-                    @include('helpers.form_control', [
-                        'type' => 'text',
+                    @include('chat._plan_description', [
                         'name' => 'plan[general][description]',
-                        'label' => trans('messages.plan.description'),
                         'value' => $plan->description,
-                        'help_class' => 'plan',
-                        'rules' => $plan->generalRules(),
                     ])
                     
                     @include('helpers.form_control', [
