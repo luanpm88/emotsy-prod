@@ -1660,6 +1660,14 @@ class Customer extends Model
         return $dt;
     }
 
+    // Take a string, assume it is in UTC, convert it to the current user's timezone
+    public function parseDateTimeFromUtcString($datetime)
+    {
+        $dt = Carbon::parse($datetime, 'UTC');
+        $dt = $dt->timezone($this->timezone);
+        return $dt;
+    }
+
     public function formatCurrentDateTime($name)
     {
         return $this->formatDateTime($this->getCurrentTime(), $name);
