@@ -121,7 +121,7 @@
                 var answer = $(this).attr('data-value');
                 _this.closeChatGPTPopup();
                 _this.setInputValue(answer);
-                notify('success', '{{ trans('messages.notify.success') }}', '{{ trans('messages.chat.sujbect.inserted') }}' + ': "' + answer + '"');
+                notify('success', '{{ trans('messages.notify.success') }}', '{{ trans('messages.chat.email_preheader.inserted') }}' + ': "' + answer + '"');
             });
 
             // ask action

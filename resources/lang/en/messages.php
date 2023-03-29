@@ -828,7 +828,7 @@
   'chat.suggest_more_formal' => 'Suggest a more formal subject',
   'chat.suggest_more_unformal' => 'Suggest a more unformal subject',
   'chat.sujbect.copied' => 'Email subject copied: ',
-  'chat.sujbect.inserted' => 'Email subject updated: ',
+  'chat.sujbect.inserted' => 'Email subject was updated',
   'check_and_save_crontab' => 'Check & Save',
   'check_entry_try_again' => 'Something went wrong! Please check your entry and try again.',
   'checkbox' => 'Checkbox',
@@ -3181,4 +3181,7 @@
   'chat.email_preheader.ask_for_more_unformal' => 'Please suggest a more informal version of this email preheader ":preheader", quote it by a pair of #',
   'chat.email_preheader.ask_for_more_unformal.show' => 'Please suggest a more informal version of this email preheader ":preheader"',
   'chat.email_preheader.empty' => 'Let\'s enter the email preheader first',
+  'chat.plan_name.inserted' => 'Plan name was updated',
+  'chat.plan_description.inserted' => 'Plan description was updated',
+  'chat.email_preheader.inserted' => 'Email preheader was updated',
 ) ?>
