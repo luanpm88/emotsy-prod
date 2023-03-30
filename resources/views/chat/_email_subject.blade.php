@@ -62,156 +62,161 @@
 @include('chat._script')
 
 <script>
-    var ChatUI = class {
-        constructor(container, chatBox) {
-            this.container = container;
-            this.chatBox = chatBox;
+    
 
-            // close action list
-            if (this.isActionListOpen()) {
-                this.closeActionList();
+    var ChatEmailSubject = {
+        ChatUI: class {
+            constructor(container, chatBox) {
+                this.container = container;
+                this.chatBox = chatBox;
+
+                // close action list
+                if (this.isActionListOpen()) {
+                    this.closeActionList();
+                }
+
+                // events
+                this.events();
             }
 
-            // events
-            this.events();
-        }
+            getActionList() {
+                return this.container.find('[chat-control="actions"]');
+            }
 
-        getActionList() {
-            return this.container.find('[chat-control="actions"]');
-        }
+            getActionButton() {
+                return this.container.find('[chat-control="actions-button"]');
+            }
 
-        getActionButton() {
-            return this.container.find('[chat-control="actions-button"]');
-        }
+            getAskActions() {
+                return this.container.find('[chat-control="ask"]');
+            }
 
-        getAskActions() {
-            return this.container.find('[chat-control="ask"]');
-        }
+            getCustomAskActions() {
+                return this.container.find('[chat-control="custom-ask"]');
+            }
 
-        getCustomAskActions() {
-            return this.container.find('[chat-control="custom-ask"]');
-        }
+            getInput() {
+                return this.container.find('[chat-control="input-control"]');
+            }
 
-        getInput() {
-            return this.container.find('[chat-control="input-control"]');
-        }
+            getInputValue() {
+                return this.getInput().val().trim();
+            }
 
-        getInputValue() {
-            return this.getInput().val().trim();
-        }
+            setInputValue(text) {
+                text = text.trim();
 
-        setInputValue(text) {
-            text = text.trim();
+                this.getInput().val(text).change();
+            }
 
-            this.getInput().val(text).change();
-        }
+            events() {
+                var _this = this;
 
-        events() {
-            var _this = this;
+                // click action button
+                this.getActionButton().on('click', function() {
+                    if (!_this.isActionListOpen()) {
+                        _this.openActionList();
+                    }
+                });
 
-            // click action button
-            this.getActionButton().on('click', function() {
-                if (!_this.isActionListOpen()) {
-                    _this.openActionList();
-                }
-            });
+                // click outside to hide action list
+                $(document).on('click', function(e) {
+                    if (!$(e.target).closest('[chat-control="actions"], [chat-control="actions-button"]').length) {
+                        // Clicked outside the box; hide it
+                        _this.closeActionList();
+                    }
+                });
 
-            // click outside to hide action list
-            $(document).on('click', function(e) {
-                if (!$(e.target).closest('[chat-control="actions"], [chat-control="actions-button"]').length) {
-                    // Clicked outside the box; hide it
-                    _this.closeActionList();
-                }
-            });
+                // insert action
+                this.chatBox.getMessagesList().on('click', '[chat-control="insert"]', function() {
+                    var answer = $(this).attr('data-value');
+                    _this.closeChatGPTPopup();
+                    _this.setInputValue(answer);
+                    notify('success', '{{ trans('messages.notify.success') }}', '{{ trans('messages.chat.sujbect.inserted') }}' + ': "' + answer + '"');
+                });
 
-            // insert action
-            this.chatBox.getMessagesList().on('click', '[chat-control="insert"]', function() {
-                var answer = $(this).attr('data-value');
-                _this.closeChatGPTPopup();
-                _this.setInputValue(answer);
-                notify('success', '{{ trans('messages.notify.success') }}', '{{ trans('messages.chat.sujbect.inserted') }}' + ': "' + answer + '"');
-            });
+                // ask action
+                this.getAskActions().on('click', function() {
+                    var question = $(this).attr('data-question');
+                    var questionShow = $(this).attr('data-show');
 
-            // ask action
-            this.getAskActions().on('click', function() {
-                var question = $(this).attr('data-question');
-                var questionShow = $(this).attr('data-show');
+                    if (_this.getInputValue() == '') {
+                        new Dialog('alert', {
+                            message: '{{ trans('messages.chat.email_subject_empty') }}',
+                        });
+                        return;
+                    }
 
-                if (_this.getInputValue() == '') {
-                    new Dialog('alert', {
-                        message: '{{ trans('messages.chat.email_subject_empty') }}',
-                    });
-                    return;
-                }
+                    // clear chat box
+                    _this.chatBox.clear();
 
-                // clear chat box
-                _this.chatBox.clear();
-
-                _this.openChatGPTPopup();
-                _this.askQuestionForSubject(question, questionShow);
-
-                // hide dropdown
-                _this.closeActionList();
-            });
-
-            // ask custom action
-            this.getCustomAskActions().on('click', function() {
-                // clear chat box
-                _this.chatBox.clear();
-
-                _this.openChatGPTPopup();
-                if (!_this.chatBox.messages.length) {
-                    var hello = '{{ trans('messages.chat.custom_question.default_message') }}';
-
-                    // add hello message
-                    _this.chatBox.addChatGPTMessage(hello);
-
-                    // focus
-                    _this.chatBox.getChatInput().focus();
+                    _this.openChatGPTPopup();
+                    _this.askQuestionForSubject(question, questionShow);
 
                     // hide dropdown
                     _this.closeActionList();
-                }
-            });
+                });
+
+                // ask custom action
+                this.getCustomAskActions().on('click', function() {
+                    // clear chat box
+                    _this.chatBox.clear();
+
+                    _this.openChatGPTPopup();
+                    if (!_this.chatBox.messages.length) {
+                        var hello = '{{ trans('messages.chat.custom_question.default_message') }}';
+
+                        // add hello message
+                        _this.chatBox.addChatGPTMessage(hello);
+
+                        // focus
+                        _this.chatBox.getChatInput().focus();
+
+                        // hide dropdown
+                        _this.closeActionList();
+                    }
+                });
+            }
+
+            closeActionList() {
+                this.getActionList().hide();
+            }
+
+            openActionList() {
+                this.getActionList().show();
+            }
+
+            isActionListOpen() {
+                this.getActionList().is(':visible');
+            }
+
+            openChatGPTPopup() {
+                this.chatBox.getChatPopup().modal('show');
+
+                fixPopupLayers();
+            }
+
+            closeChatGPTPopup() {
+                this.chatBox.getChatPopup().modal('hide');
+            }
+
+            askQuestionForSubject(question, questionShow) {
+                question = question.replace(':subject', this.getInputValue());
+                questionShow = questionShow.replace(':subject', this.getInputValue());
+
+                this.chatBox.sendUserMessage(question, questionShow);
+            }
+        },
+
+        init: function() {
+            this.chatUI = new this.ChatUI($('#ChatEmailSubjectControl'), new ChatBox('{{ action('ChatController@chat') }}'));
         }
 
-        closeActionList() {
-            this.getActionList().hide();
-        }
-
-        openActionList() {
-            this.getActionList().show();
-        }
-
-        isActionListOpen() {
-            this.getActionList().is(':visible');
-        }
-
-        openChatGPTPopup() {
-            this.chatBox.getChatPopup().modal('show');
-
-            fixPopupLayers();
-        }
-
-        closeChatGPTPopup() {
-            this.chatBox.getChatPopup().modal('hide');
-        }
-
-        askQuestionForSubject(question, questionShow) {
-            question = question.replace(':subject', this.getInputValue());
-            questionShow = questionShow.replace(':subject', this.getInputValue());
-
-            this.chatBox.sendUserMessage(question, questionShow);
-        }
-    }
-
-    var ChatEmailSubject = {
-
-    }
+    };
 
     $(function() {
-        ChatEmailSubject.chatUI = new ChatUI($('#ChatEmailSubjectControl'), new ChatBox('{{ action('ChatController@chat') }}'));
-
+        ChatEmailSubject.init();
+        
         // emoji
         $('#ChatEmailSubjectControl [chat-control="input-control"]').emojioneArea();
     });
