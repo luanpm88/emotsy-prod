@@ -217,7 +217,7 @@
     }
 
     $(function() {
-        ChatPlanName.chatUI = new ChatUI($('#ChatPlanNameControl'), new ChatBox());
+        ChatPlanName.chatUI = new ChatUI($('#ChatPlanNameControl'), new ChatBox('{{ action('Admin\ChatController@chat') }}'));
     });
 
 </script>

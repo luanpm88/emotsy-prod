@@ -1193,4 +1193,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::match(['get', 'post'], 'admin/auth/facebook-oauth', 'AuthController@facebookOAuth');
     Route::match(['get', 'post'], 'admin/auth/google-oauth', 'AuthController@googleOAuth');
     Route::match(['get', 'post'], 'admin/auth', 'AuthController@index');
+
+    // Chat
+    Route::post('admin/chat', 'ChatController@chat');
 });

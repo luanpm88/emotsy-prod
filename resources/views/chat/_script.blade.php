@@ -43,11 +43,12 @@
 
 <script>
     var ChatBox = class {
-        constructor() {
+        constructor(chatUrl) {
             this.messages = [];
             this.id = Math.random().toString(16).slice(2);
 
-            console.log(this.id);
+            // 
+            this.chatUrl = chatUrl;
 
             //
             $('#' + this.id + '[chat-control="popup"]').remove();
@@ -56,7 +57,7 @@
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div style="
-                                background-image: url(http://acelle.com/images/ai-bg.svg);
+                                background-image: url('{{ url('/images/ai-bg.svg') }}');
                                 background-repeat: no-repeat;
                                 background-position: center -105px;
                                 background-size: 100%;
@@ -102,9 +103,6 @@
                     </div>
                 </div>
             `);
-
-            // 
-            this.chatUrl = '{{ action('ChatController@chat') }}';
             
             // render
             this.renderChatBox();
