@@ -3184,4 +3184,11 @@
   'your_api_token' => 'Your API token',
   'your_current_license' => 'Thank you for purchasing! Below is your license key, also known as Purchase Code. Your license type is',
   'zip_postal_code' => 'Zip / Postal code',
+  'automation.condition.remove.choose_which_keep' => 'You are about to remove a conditional node from the automation. Do you want to move the YES or NO branch up, or just delete all of its children?',
+  'automation.condition.remove.keep_yes' => 'Move YES branch up',
+  'automation.condition.remove.keep_no' => 'Move NO branch up',
+  'automation.condition.remove.delete_all_children' => 'Delete all children nodes',
+  'automation.condition.remove.keep_yes.confirm' => 'You are about to remove the Condition node and move its YES branch up. This can not be undone.',
+  'automation.condition.remove.keep_no.confirm' => 'You are about to remove the Condition node and move its NO branch up. This can not be undone.',
+  'automation.condition.remove.delete_all_children.confirm' => 'You are about to remove the Condition node and remove all its children nodes too. This can not be undone.',
 ) ?>
