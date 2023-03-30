@@ -69,7 +69,7 @@
 @include('chat._script')
 
 <script>
-    var ChatUI = class {
+    var ChatUI2 = class {
         constructor(container, chatBox) {
             this.container = container;
             this.chatBox = chatBox;
@@ -136,7 +136,7 @@
                 var answer = $(this).attr('data-value');
                 _this.closeChatGPTPopup();
                 _this.setInputValue(answer);
-                notify('success', '{{ trans('messages.notify.success') }}', '{{ trans('messages.chat.sujbect.inserted') }}' + ': "' + answer + '"');
+                notify('success', '{{ trans('messages.notify.success') }}', '{{ trans('messages.chat.plan_description.inserted') }}' + ': "' + answer + '"');
             });
 
             // ask action
@@ -217,7 +217,7 @@
     }
 
     $(function() {
-        ChatPlanDescription.chatUI = new ChatUI($('#ChatPlanDescriptionControl'), new ChatBox());
+        ChatPlanDescription.chatUI = new ChatUI2($('#ChatPlanDescriptionControl'), new ChatBox());
     });
 
 </script>
