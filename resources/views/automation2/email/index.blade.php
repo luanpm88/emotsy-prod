@@ -85,7 +85,7 @@
                     },
                     success: function (response) {
                         // remove current node
-                        tree.getSelected().remove();
+                        tree.getSelected().detach();
                         
                         // save tree
                         saveData(function() {                            

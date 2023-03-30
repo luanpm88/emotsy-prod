@@ -70,7 +70,7 @@
             message: confirm,
             ok: function(dialog) {
                 // remove current node
-                tree.getSelected().remove();
+                tree.getSelected().detach();
                 
                 // save tree
                 saveData(function() {

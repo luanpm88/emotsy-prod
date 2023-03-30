@@ -600,6 +600,39 @@ class AutomationElement {
         this.clear();
     }
 
+    detach() {
+        //  if given element is a condition one, then remove completely, also remove its children (a limitation)
+        if (this.isCondition()) {
+            return this.remove();
+        }
+
+        // Otherwise (not a condition element), retain its children
+        var orphan = this.child;
+
+        if (this.parent != null) {
+            if (this.parent.isCondition()) {
+                if (this.parent.childYes && this.parent.childYes.getId() == this.getId()) {
+                    this.parent.childYes = null; // very important, to remove node from tree
+                    if (orphan != null) {
+                        this.parent.appendYes(orphan);
+                    }
+                } else {
+                    this.parent.childNo = null; // very important, to remove node from tree
+                    if (orphan != null) {
+                        this.parent.appendNo(orphan);
+                    }
+                }
+            } else {
+                this.parent.child = null; // very important, to remove node from tree
+                if (orphan != null) {
+                    this.parent.append(orphan);
+                }
+            }
+        }
+
+        this.clear();
+    }
+
     drawNotice(id, left, top, container) {
         var g = document.createElementNS("http://www.w3.org/2000/svg", "g");
         var circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");

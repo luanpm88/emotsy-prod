@@ -59,11 +59,11 @@
             saveData(function() {
                 // notify
                 notify({
-    type: 'success',
-    title: '{!! trans('messages.notify.success') !!}',
-    message: response.message
-});
-                
+                    type: 'success',
+                    title: '{!! trans('messages.notify.success') !!}',
+                    message: response.message
+                });
+
                 // reload sidebar
                 sidebar.load();
             });
@@ -78,7 +78,7 @@
             message: confirm,
             ok: function(dialog) {
                 // remove current node
-                tree.getSelected().remove();
+                tree.getSelected().detach();
                 
                 // save tree
                 saveData(function() {
