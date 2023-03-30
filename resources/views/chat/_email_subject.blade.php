@@ -210,7 +210,7 @@
     }
 
     $(function() {
-        ChatEmailSubject.chatUI = new ChatUI($('#ChatEmailSubjectControl'), new ChatBox());
+        ChatEmailSubject.chatUI = new ChatUI($('#ChatEmailSubjectControl'), new ChatBox('{{ action('ChatController@chat') }}'));
 
         // emoji
         $('#ChatEmailSubjectControl [chat-control="input-control"]').emojioneArea();

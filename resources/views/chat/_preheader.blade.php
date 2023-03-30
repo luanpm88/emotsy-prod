@@ -202,7 +202,7 @@
     }
 
     $(function() {
-        ChatPreheader.chatUI = new ChatUI($('#ChatPreheaderControl'), new ChatBox());
+        ChatPreheader.chatUI = new ChatUI($('#ChatPreheaderControl'), new ChatBox('{{ action('ChatController@chat') }}'));
     });
 
 </script>
