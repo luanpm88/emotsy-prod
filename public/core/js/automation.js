@@ -631,6 +631,7 @@ class AutomationElement {
             orphan = nodeToPromote;
         }
 
+        // remove and promote orphan
         return this.remove(orphan);
     }
 
