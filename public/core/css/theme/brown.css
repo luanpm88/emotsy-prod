@@ -77,3 +77,13 @@ body.mode-dark.theme-brown a:not(.btn, .dropdown-item, .nav-link) {
 body.mode-dark.theme-brown a:not(.btn, .dropdown-item, .nav-link):hover {
     color: #ffd9ba;
 }
+.theme-brown .switchery[type="checkbox"]:checked ~ .check-symbol:before,
+.theme-brown .styled[type="checkbox"]:checked ~ .check-symbol:before,
+.theme-brown .styled[type="radio"]:checked ~ .check-symbol:before {
+    background-color: #bf6823;
+    border-color: #bf6823;
+}
+.theme-brown.bg-slate-800 {
+    background-color: #2b2b2b;
+    border-color: #2b2b2b;
+}

@@ -65,11 +65,11 @@ body.mode-dark.theme-white.leftbar .leftbar-hide-menu {
 }
 
 .theme-white.login-page {
-    background-color: rgb(240, 241, 245);
+    background-color: rgb(239, 240, 245);
     color: #333;
 }
 .theme-white.login-page .panel-body {
-    box-shadow: 1px 1px 5px rgba(0,0,0,0.1)!important;
+    box-shadow: 1px 1px 5px rgba(0,0,0,0.05)!important;
     border: solid 1px #aaa;
 }
 .theme-white.login-page .text-white {

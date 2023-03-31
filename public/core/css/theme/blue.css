@@ -14,21 +14,21 @@
     border-color: #00698f;
 }
 .theme-blue .btn-primary:hover {
-    background-color: #0a5e7c;
-    border-color: #0a5e7c;
+    background-color: #247593;
+    border-color: #247593;
 }
 .theme-blue a:not(.btn, .dropdown-item, .nav-link) {
-    color: #0a5e7c;
+    color: #247593;
 }
 .theme-blue a:not(.btn, .dropdown-item, .nav-link):hover {
     color: #0076a1;
 }
 .theme-blue .progress-bar-info {
-    background-color: #0a5e7c;
+    background-color: #247593;
 }
 .theme-blue .page-item.active .page-link {
     background-color: #d4edf7;
-    border-color:#0a5e7c;
+    border-color:#247593;
 }
 .theme-blue .dropdown-menu li:hover > a {
     background-color: #d7ecf3;
@@ -50,7 +50,7 @@
     background: #c5dae2 !important;
 }
 .theme-blue .progress-bar {
-    background-color: #0a5e7c;
+    background-color: #247593;
 }
 .theme-blue .nav-tabs > li.active > a.nav-link,
 .theme-blue .nav-tabs > li > a.nav-link.active,
@@ -76,4 +76,14 @@ body.mode-dark.theme-blue a:not(.btn, .dropdown-item, .nav-link) {
 }
 body.mode-dark.theme-blue a:not(.btn, .dropdown-item, .nav-link):hover {
     color: #badeff;
+}
+.theme-blue .switchery[type="checkbox"]:checked ~ .check-symbol:before,
+.theme-blue .styled[type="checkbox"]:checked ~ .check-symbol:before,
+.theme-blue .styled[type="radio"]:checked ~ .check-symbol:before {
+    background-color: #247593;
+    border-color: #247593;
+}
+.theme-blue.bg-slate-800 {
+    background-color: #2b2b2b;
+    border-color: #2b2b2b;
 }
