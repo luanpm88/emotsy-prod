@@ -183,7 +183,7 @@
   'automation.action.condition.which_link' => 'Which Link subscriber clicks',
   'automation.action.contacts_count' => ':count contact|:count contacts',
   'automation.action.contacts_intro' => 'There are <span class="font-weight-semibold">:count</span> contacts who involved in action `<span class="font-weight-semibold">:name</span>`',
-  'automation.action.delete.confirm' => 'Delete this action will also delete all its children. This action cannot be undone',
+  'automation.action.delete.confirm' => 'You are about to delete this action. This action cannot be undone',
   'automation.action.delete.wording' => 'Click the button below to remove this action. Notice that deleting an element will also delete all its children as well as associated data. This action cannot be undone.',
   'automation.action.deteled' => 'Action was successfully removed',
   'automation.action.intro' => 'Streamline your communication and personalize each customer\'s experience. Use automation to create an email or series of emails that send when triggered by specific date, event or contact\'s activities.',
