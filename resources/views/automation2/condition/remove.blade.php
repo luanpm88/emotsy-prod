@@ -62,7 +62,7 @@
                     message: '{{ trans('messages.automation.condition.remove.delete_all_children.confirm') }}',
                     ok: function(dialog) {
                         // remove current node
-                        tree.getSelected().detachAndPromoteNoBranch();
+                        tree.getSelected().remove();
 
                         // hide popup
                         AutomationActionEdit.deleteConditionPopup.hide();
