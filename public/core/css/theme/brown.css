@@ -18,17 +18,17 @@
     border-color: #6b3a11;
 }
 .theme-brown a:not(.btn, .dropdown-item, .nav-link) {
-    color: #64350f;
+    color: #bf6823;
 }
 .theme-brown a:not(.btn, .dropdown-item, .nav-link):hover {
     color: #a55717;
 }
 .theme-brown .progress-bar-info {
-    background-color: #64350f;
+    background-color: #bf6823;
 }
 .theme-brown .page-item.active .page-link {
     background-color: #dbcbc0;
-    border-color:#64350f;
+    border-color:#bf6823;
 }
 .theme-brown .dropdown-menu li:hover > a {
     background-color: #ecdfd7;

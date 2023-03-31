@@ -1625,7 +1625,7 @@
   'my_templates' => 'My templates',
   'name' => 'Name',
   'name_your_campaign' => 'Name your campaign',
-  'need_a_account_create_an_one' => 'Need an account? <a href=":link" class="text-info">Create an account</a>',
+  'need_a_account_create_an_one' => 'Need an account? <a href=":link">Create an account</a>',
   'new' => 'New',
   'new_password' => 'New password',
   'next' => 'Next',

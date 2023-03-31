@@ -64,24 +64,14 @@ body.mode-dark.theme-white.leftbar .leftbar-hide-menu {
     color: rgba(0,0,0,1)!important;
 }
 
-.text-default.theme-option {
-    color: rgba(0, 25, 39, 0.75);
+.theme-white.login-page {
+    background-color: rgb(240, 241, 245);
+    color: #333;
 }
-.text-blue.theme-option {
-    color: rgba(15, 36, 95, 0.8);
+.theme-white.login-page .panel-body {
+    box-shadow: 1px 1px 5px rgba(0,0,0,0.1)!important;
+    border: solid 1px #aaa;
 }
-.text-green.theme-option {
-    color: rgba(0, 71, 30, 0.8);
-}
-.text-brown.theme-option {
-    color: rgba(73, 39, 11, 0.8);
-}
-.text-pink.theme-option {
-    color: rgba(122, 41, 98, 0.8);
-}
-.text-grey.theme-option {
-    color: rgba(126, 126, 126, 0.8);
-}
-.text-white.theme-option {
-    color: rgba(230, 230, 230, 0.8)!important;
+.theme-white.login-page .text-white {
+    color: #333!important;
 }

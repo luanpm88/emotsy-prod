@@ -8,7 +8,7 @@
         <!-- Theme -->
     <link rel="stylesheet" type="text/css" href="{{ URL::asset('core/css/theme/'.Acelle\Model\Setting::get('frontend_scheme').'.css') }}">
     </head>
-    <body class="bg-slate-800 theme-{{ Acelle\Model\Setting::get('frontend_scheme') }}">
+    <body class="bg-slate-800 theme-{{ Acelle\Model\Setting::get('frontend_scheme') }} login-page">
         <!-- Page container -->
         <div class="page-container login-container">
             @if (\Auth::check())
@@ -30,7 +30,7 @@
 
                             <div class="text-center login-header">
                                 <a class="main-logo-big" href="{{ action('HomeController@index') }}">
-                                    <img src="{{ getSiteLogoUrl('light') }}" alt="">
+                                    <img src="{{ in_array(Acelle\Model\Setting::get('frontend_scheme'), ['supermail','white']) ? getSiteLogoUrl('dark') : getSiteLogoUrl('light') }}" alt="">
                                 </a>
                             </div>
 
