@@ -386,6 +386,7 @@ class Template extends Model
 
         $validator = Validator::make($request->all(), $rules, [
             'file.mimetypes' => 'Input must be a valid .zip file',
+            'uploaded' => trans('messages.template.validation.uploaded', ['size' => ini_get('upload_max_filesize')]),
         ]);
 
         if ($validator->fails()) {
