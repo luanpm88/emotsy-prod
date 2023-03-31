@@ -86,7 +86,7 @@
                                     <div class="px-4 py-3 bg-light border-top">
                                         <div class="d-flex">
                                             <div style="width:100%;">
-                                                <input chat-control="input" placeholder="{{ trans('messages.chat.enter_your_question_here') }}" type="text" class="border rounded px-3 py-2 form-control"
+                                                <input chat-control="input" placeholder="{{ trans('chatgpt::messages.chat.enter_your_question_here') }}" type="text" class="border rounded px-3 py-2 form-control"
                                                     style="width:100%;height:41px;" />
                                             </div>
                                             <div class="ms-1">
@@ -354,7 +354,7 @@
             // replace links
             answers.forEach(function(answer) {
                 message = message.replace('#'+answer+'#', `
-                    <a title="{{ trans('messages.chat.insert_answer') }} `+answer+`" chat-control="insert" data-value="`+answer+`" href="javascript:;"
+                    <a title="{{ trans('chatgpt::messages.chat.insert_answer') }} `+answer+`" chat-control="insert" data-value="`+answer+`" href="javascript:;"
                         class="xtooltip"
                     >
                         `+answer.trim()+` <span class="material-symbols-rounded me-0">library_add_check</span>
