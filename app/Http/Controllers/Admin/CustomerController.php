@@ -541,7 +541,14 @@ class CustomerController extends Controller
         if ($request->isMethod('post')) {
             $plan = Plan::findByUid($request->plan_uid);
 
-            $customer->assignPlan($plan);
+            try {
+                $customer->assignPlan($plan);
+            } catch (\Throwable $e) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => $e->getMessage(),
+                ], 500);
+            }
 
             return response()->json([
                 'status' => 'success',

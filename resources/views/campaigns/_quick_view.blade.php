@@ -1,6 +1,16 @@
 <div class="row">
     <div class="col-md-6 campaigns-summary">
-		<h5 class="mt-10 text-semibold">{!! trans('messages.send_to', [ 'count' => '<span class="text-bold badge badge-info bg-info-800 badge-big">' . $campaign->readCache("SubscriberCount", 0) . '</span>' ]) !!}</h5>
+		<h5 class="mt-10 text-semibold">
+            @if ($campaign->isDone())
+                {!! trans('messages.campaign.sent_to', [
+                    'count' => '<span class="text-bold badge badge-info bg-info-800 badge-big">' . $campaign->readCache("SubscriberCount", 0) . '</span>'
+                ]) !!}
+            @else
+                {!! trans('messages.send_to', [
+                    'count' => '<span class="text-bold badge badge-info bg-info-800 badge-big">' . $campaign->readCache("SubscriberCount", 0) . '</span>'
+                ]) !!}
+            @endif
+        </h5>
         <div class="mb-10">
             <span class="text-bold text-muted">{{ trans('messages.from') }}:</span>
             <span>{!! $campaign->displayRecipients() !!}</span>

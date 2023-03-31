@@ -584,20 +584,55 @@ class AutomationElement {
         }
     }
 
-    remove() {
+    // How to use remove/detach functions
+    //
+    // .remove(null)                   public: delete node and all its children
+    // .detach(null)                   public: delete node, keep its children, called by client on a non-condition node
+    // .detachAndPromoteYesBranch()    public: called by client on a condition node
+    // .detachAndPromoteNoBranch()     public: called by client on a condition node
+    //
+    // .remove(yes/no/child)           private: means deleting the node and promote its child
+    // .detach( this.childYes )        private: called by detachAndPromoteYesBranch()
+    // .detach( this.childNo )         private: called by detachAndPromoteNoBranch()
+    //
+    remove(nodeToPromote = null) {
         if (this.parent != null) {
             if (this.parent.isCondition()) {
                 if (this.parent.childYes && this.parent.childYes.getId() == this.getId()) {
-                    this.parent.childYes = null;
+                    this.parent.childYes = null; // very important, to remove node from tree
+                    if (nodeToPromote != null) {
+                        this.parent.appendYes(nodeToPromote);
+                    }
                 } else {
-                    this.parent.childNo = null;
+                    this.parent.childNo = null; // very important, to remove node from tree
+                    if (nodeToPromote != null) {
+                        this.parent.appendNo(nodeToPromote);
+                    }
                 }
             } else {
-                this.parent.child = null;
-            }    
+                this.parent.child = null; // very important, to remove node from tree
+                if (nodeToPromote != null) {
+                    this.parent.append(nodeToPromote);
+                }
+            }
         }
 
         this.clear();
+    }
+
+    detach(nodeToPromote = null) {
+        // Otherwise (not a condition element), retain its children
+        var orphan;
+
+        // orphan is the child, or Yes child, or No child of the current node
+        if (!this.isCondition()) {
+            orphan = this.child;
+        } else {
+            orphan = nodeToPromote;
+        }
+
+        // remove and promote orphan
+        return this.remove(orphan);
     }
 
     drawNotice(id, left, top, container) {
@@ -890,6 +925,16 @@ class ElementCondition extends AutomationElement {
         this.shrink = false;
         this.shift = 0;
         this.expand = 0;
+    }
+
+    detachAndPromoteYesBranch()
+    {
+        this.detach(this.childYes);
+    }
+
+    detachAndPromoteNoBranch()
+    {
+        this.detach(this.childNo);
     }
 
     isCondition() {

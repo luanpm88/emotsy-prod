@@ -15,19 +15,27 @@
     
         <div class="row">
             <div class="col-md-6">          
-                <div class="has-emoji">                                  
-                    @include('helpers.form_control', ['type' => 'text',
+                     
+                @if (Acelle\Model\Plugin::isInstalled('acelle/chatgpt') && Acelle\Model\Plugin::getByName('acelle/chatgpt')->isActive())
+                    @include('chat._email_subject', [
                         'name' => 'subject',
-                        'label' => trans('messages.email_subject'),
                         'value' => $email->subject,
-                        'rules' => $email->rules(),
-                        'help_class' => 'email',
-                        'placeholder' => trans('messages.automation.email.subject.placeholder'), 
-                        'attributes' => [
-                            'data-emojiable' => 'true',
-                        ]
                     ])
-                </div>
+                @else             
+                    <div class="has-emoji">                
+                        @include('helpers.form_control', ['type' => 'text',
+                            'name' => 'subject',
+                            'label' => trans('messages.email_subject'),
+                            'value' => $email->subject,
+                            'rules' => $email->rules(),
+                            'help_class' => 'email',
+                            'placeholder' => trans('messages.automation.email.subject.placeholder'), 
+                            'attributes' => [
+                                'data-emojiable' => 'true',
+                            ]
+                        ])
+                    </div>
+                @endif
 
                 @include('helpers.form_control', ['type' => 'text',
                     'name' => 'from_name',
@@ -204,7 +212,7 @@
 
             $(function() {
                 // manage webhooks button click
-                $('.manage_webhooks_but').on('click', function(e) {
+                $('#emailSetup').on('click', '.manage_webhooks_but', function(e) {
                     e.preventDefault();
 
                     EmailSetup.getWebhooksPopup().load();

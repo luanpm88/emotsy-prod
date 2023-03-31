@@ -13,8 +13,8 @@ class FixFieldUid extends Migration
      */
     public function up()
     {
-        foreach(Acelle\Model\Field::all() as $field) {
-            foreach(Acelle\Model\Field::where('id', '!=', $field->id)->where('uid', '=', $field->uid)->get() as $field2) {
+        foreach (Acelle\Model\Field::all() as $field) {
+            foreach (Acelle\Model\Field::where('id', '!=', $field->id)->where('uid', '=', $field->uid)->get() as $field2) {
                 $field2->uid = uniqid();
                 $field2->save();
             }

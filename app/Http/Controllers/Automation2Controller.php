@@ -1384,7 +1384,7 @@ class Automation2Controller extends Controller
         foreach ($automations->get() as $automation) {
             // authorize
             if (\Gate::allows('delete', $automation)) {
-                $automation->delete();
+                $automation->deleteAndCleanup();
             }
         }
 
@@ -2741,6 +2741,21 @@ class Automation2Controller extends Controller
         return response()->json([
             'status' => 'success',
             'message' => trans('messages.preheader.removed'),
+        ]);
+    }
+
+    public function conditionRemove(Request $request, $uid)
+    {
+        // init automation
+        $automation = Automation2::findByUid($uid);
+
+        // authorize
+        if (\Gate::denies('update', $automation)) {
+            return $this->notAuthorized();
+        }
+
+        return view('automation2.condition.remove', [
+            'automation' => $automation,
         ]);
     }
 }

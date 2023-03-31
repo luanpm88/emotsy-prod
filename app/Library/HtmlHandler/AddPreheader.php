@@ -26,7 +26,7 @@ class AddPreheader implements StageInterface
             $e->setAttribute('style', 'display:none;font-size:1px;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden');
 
             if ($body->hasChildNodes()) {
-                $body->insertBefore($e,$body->firstChild);
+                $body->insertBefore($e, $body->firstChild);
             } else {
                 $body->appendChild($e);
             }

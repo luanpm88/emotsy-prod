@@ -14,7 +14,12 @@
         <p>{{ trans('messages.preheader.intro') }}</p>
 
         <div class="form-group control-textarea {{ $errors->has('preheader') ? ' has-error' : '' }}">
-            <textarea type="text" name="preheader" rows="5" class="form-control required">{{ $email->preheader }}</textarea>
+
+            @include('chat._preheader', [
+                'name' => 'preheader',
+                'value' => $email->preheader,
+            ])
+
         </div>
 
         <div class="mt-4 text-center">

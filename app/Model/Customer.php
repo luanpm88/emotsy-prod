@@ -1531,7 +1531,7 @@ class Customer extends Model
     public function assignPlan($plan)
     {
         if ($this->getNewOrActiveSubscription()) {
-            throw new Exception("This customer already has a new or active subscription");
+            throw new Exception(trans('messages.customer.already_new_active_sub'));
         }
 
         $customer = $this;
@@ -1657,6 +1657,14 @@ class Customer extends Model
                 throw $ex;
             }
         }
+        return $dt;
+    }
+
+    // Take a string, assume it is in UTC, convert it to the current user's timezone
+    public function parseDateTimeFromUtcString($datetime)
+    {
+        $dt = Carbon::parse($datetime, 'UTC');
+        $dt = $dt->timezone($this->timezone);
         return $dt;
     }
 

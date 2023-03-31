@@ -28,7 +28,7 @@
 @endsection
 
 @section('content')
-	<form action="{{ action('CampaignController@setup', $campaign->uid) }}" method="POST" class="form-validate-jqueryz">
+	<form id="campaignSetup" action="{{ action('CampaignController@setup', $campaign->uid) }}" method="POST" class="form-validate-jqueryz">
 		{{ csrf_field() }}
 		
 		<div class="row">
@@ -41,18 +41,26 @@
 					'help_class' => 'campaign'
 				])
 				
-				<div class="has-emoji">
-					@include('helpers.form_control', ['type' => 'text',
-						'name' => 'subject',
-						'label' => trans('messages.email_subject'),
-						'value' => $campaign->subject,
-						'rules' => $rules,
-						'help_class' => 'campaign',
-						'attributes' => [
-							'data-emojiable' => 'true',
-						]
-					])
-				</div>
+                @if (Acelle\Model\Plugin::isInstalled('acelle/chatgpt') && Acelle\Model\Plugin::getByName('acelle/chatgpt')->isActive())
+                    @include('chat._email_subject', [
+                        'name' => 'subject',
+                        'label' => trans('messages.email_subject'),
+                        'value' => $campaign->subject,
+                    ])
+                @else
+                    <div class="has-emoji">
+                        @include('helpers.form_control', ['type' => 'text',
+                            'name' => 'subject',
+                            'label' => trans('messages.email_subject'),
+                            'value' => $campaign->subject,
+                            'rules' => $rules,
+                            'help_class' => 'campaign',
+                            'attributes' => [
+                                'data-emojiable' => 'true',
+                            ]
+                        ])
+                    </div>
+                @endif
 												
 				@include('helpers.form_control', ['type' => 'text',
 					'name' => 'from_name',
@@ -285,7 +293,7 @@
 			CampaignsSetupNextButton.check();
 
 			// manage webhooks button click
-			$('.manage_webhooks_but').on('click', function(e) {
+			$('#campaignSetup').on('click', '.manage_webhooks_but', function(e) {
 				e.preventDefault();
 
 				CampaignsSetup.getWebhooksPopup().load();

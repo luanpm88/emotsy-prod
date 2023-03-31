@@ -890,8 +890,8 @@ textarea.plain_text_content {
     font-size: 14px;
 }
 .bg-slate-800 {
-    background-color: #37474F;
-    border-color: #37474F;
+    background-color: #2b3e47;
+    border-color: #2b3e47;
 }
 ul.modern-listing {
     padding-left: 0;
@@ -2815,7 +2815,6 @@ p.link-inline a {
   margin-top: 6px;
 }
 .hover-list li .list-body {
-  padding-right: 100px;
   width: 100%;
 }
 .hover-list li .list-body h4 {
@@ -4356,7 +4355,7 @@ pagination {
     margin-top: 5px;
     display: block;
 }
-.has-error input[type=text] {
+.has-error input[type=text], .has-error  .emojionearea.form-control {
     border-color: #b00020;
 }
 .nav-item.disabled {
@@ -7955,7 +7954,7 @@ textarea.form-control {
 }
 @media (min-width: 1200px) {
     .topfix-header, .leftbar .topfix-header {
-        margin: -10px -50px 0px -45px;
+        margin: -10px -50px 0px -46px;
     }
     .topbar .topfix-header {
         margin: 0px -20px 0px -20px;
@@ -8169,4 +8168,22 @@ label.checker input:disabled ~ .checker-symbol {
 }
 .price-list-col-2 {
     max-width: 900px;
+}
+.chatgpt-button {
+    filter: grayscale(0.5);
+    transition: filter 0.2s ease-in-out;
+}
+.chatgpt-button:hover {
+    filter: grayscale(0);
+    box-shadow: 1px 1px 5px rgba(0,0,0,0.1);;
+}
+[chat-control="insert"] {
+    background: #efefef;
+    border-radius: 50px;
+    padding-left: 5px;
+    padding-right: 2px;
+    margin-right: 7px;
+}
+[chat-control="insert"]:hover {
+    background: #f5f5f5;
 }

@@ -54,6 +54,8 @@ class Popup {
     
     show() {
         this.modal.show();
+
+        fixPopupLayers();
     }
     
     hide() {
