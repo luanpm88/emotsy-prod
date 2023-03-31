@@ -2819,6 +2819,7 @@
   'template.upload.warning' => 'アップロードされたテンプレートは、ドラッグアンドドロップビルダーではうまく機能しない場合があります。 互換性と効率を最適化するために、利用可能なすばらしいテンプレートの1つに基づいて新しいテンプレートを作成することを常にお勧めします',
   'template.upload_thumbnail' => 'サムネイルを変更する',
   'template.uploaded' => 'テンプレートが正常にアップロードされました',
+  'template.validation.mimetypes' => 'Please upload a valid .zip file',
   'template.validation.unsubscribe_url_required' => '{UNSUBSCRIBE_URL} タグがメールコンテンツに含まれている必要があります',
   'template.validation.uploaded' => 'The file you try to upload exceed the server\'s max_upload_filesize of :size',
   'template_empty_line_1' => 'テンプレートがありません',

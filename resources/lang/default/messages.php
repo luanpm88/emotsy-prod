@@ -2831,6 +2831,7 @@
   'template.upload.warning' => 'Uploaded templates may not work well with the drag & drop builder. It is always recommended that you create a new template based on one of the awesome templates available, for optimized compatibility and efficiency',
   'template.upload_thumbnail' => 'Change thumbnail',
   'template.uploaded' => 'Template was successfully uploaded',
+  'template.validation.mimetypes' => 'Please upload a valid .zip file',
   'template.validation.unsubscribe_url_required' => '{UNSUBSCRIBE_URL} tag must be present in your email content',
   'template.validation.uploaded' => 'The file you try to upload exceed the server\'s max_upload_filesize of :size',
   'template_empty_line_1' => 'You have no template',

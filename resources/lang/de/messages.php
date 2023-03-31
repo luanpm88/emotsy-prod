@@ -2824,6 +2824,7 @@
   'template.upload.warning' => 'Hochgeladene Vorlagen funktionieren möglicherweise nicht gut mit dem Drag & Drop-Builder. Es wird immer empfohlen, eine neue Vorlage basierend auf einer der verfügbaren großartigen Vorlagen zu erstellen, um die Kompatibilität und Effizienz zu optimieren',
   'template.upload_thumbnail' => 'Miniaturbild ändern',
   'template.uploaded' => 'Vorlage wurde erfolgreich hochgeladen',
+  'template.validation.mimetypes' => 'Please upload a valid .zip file',
   'template.validation.unsubscribe_url_required' => 'Das Tag {UNSUBSCRIBE_URL} muss in Ihrem E-Mail-Inhalt vorhanden sein',
   'template.validation.uploaded' => 'The file you try to upload exceed the server\'s max_upload_filesize of :size',
   'template_empty_line_1' => 'Sie haben keine gespeicherten Vorlagen',

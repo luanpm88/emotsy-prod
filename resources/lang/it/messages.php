@@ -2824,6 +2824,7 @@
   'template.upload.warning' => 'I modelli caricati potrebbero non funzionare bene con il costruttore drag & drop. Si consiglia sempre di creare un nuovo modello basato su uno dei fantastici modelli disponibili, per ottimizzare la compatibilit&agrave; e l\'efficienza.',
   'template.upload_thumbnail' => 'Modifica miniatura',
   'template.uploaded' => 'Il modello &egrave; stato caricato con successo',
+  'template.validation.mimetypes' => 'Please upload a valid .zip file',
   'template.validation.unsubscribe_url_required' => '{UNSUBSCRIBE_URL} Il tag deve essere presente nel contenuto dell\'email',
   'template.validation.uploaded' => 'The file you try to upload exceed the server\'s max_upload_filesize of :size',
   'template_empty_line_1' => 'Non avete nessun modello',
