@@ -2743,4 +2743,19 @@ class Automation2Controller extends Controller
             'message' => trans('messages.preheader.removed'),
         ]);
     }
+
+    public function conditionRemove(Request $request, $uid)
+    {
+        // init automation
+        $automation = Automation2::findByUid($uid);
+
+        // authorize
+        if (\Gate::denies('update', $automation)) {
+            return $this->notAuthorized();
+        }
+
+        return view('automation2.condition.remove', [
+            'automation' => $automation,
+        ]);
+    }
 }
