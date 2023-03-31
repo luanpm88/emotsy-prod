@@ -630,7 +630,8 @@ class AutomationElement {
         } else {
             if (nodeToPromote == null) {
                 orphan = null;
-            } else if (nodeToPromote.getId() != this.childYes.getId() && nodeToPromote.getId() != this.childNo.getId()) {
+            } else if (
+                (this.childYes && nodeToPromote.getId() != this.childYes.getId()) && (this.childNo && nodeToPromote.getId() != this.childNo.getId())) {
                 alert('nodeToPromote must be either Yes or No child of the condition');
                 return null;
             }
