@@ -2833,6 +2833,7 @@
   'template.uploaded' => 'Template was successfully uploaded',
   'template.validation.unsubscribe_url_required' => '{UNSUBSCRIBE_URL} tag must be present in your email content',
   'template.validation.uploaded' => 'The file you try to upload exceed the server\'s max_upload_filesize of :size',
+  'template.validation.mimetypes' => 'Please upload a valid .zip file',
   'template_empty_line_1' => 'You have no template',
   'template_gallery' => 'Template Gallery',
   'template_name' => 'Template name',
