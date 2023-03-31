@@ -18,8 +18,7 @@
                     message: '{{ trans('messages.automation.condition.remove.keep_yes.confirm') }}',
                     ok: function(dialog) {
                         // remove current node
-                        // tree.getSelected().detach();
-                        alert('#MoveYesBranchUp - find me in source code');
+                        tree.getSelected().detachAndPromoteYesBranch();
 
                         // hide popup
                         AutomationActionEdit.deleteConditionPopup.hide();
@@ -41,8 +40,7 @@
                     message: '{{ trans('messages.automation.condition.remove.keep_no.confirm') }}',
                     ok: function(dialog) {
                         // remove current node
-                        // tree.getSelected().detach();
-                        alert('#MoveNoBranchUp - find me in source code');
+                        tree.getSelected().detachAndPromoteNoBranch();
 
                         // hide popup
                         AutomationActionEdit.deleteConditionPopup.hide();
@@ -64,8 +62,7 @@
                     message: '{{ trans('messages.automation.condition.remove.delete_all_children.confirm') }}',
                     ok: function(dialog) {
                         // remove current node
-                        // tree.getSelected().detach();
-                        alert('#DeleteAllChildren - find me in source code');
+                        tree.getSelected().detachAndPromoteNoBranch();
 
                         // hide popup
                         AutomationActionEdit.deleteConditionPopup.hide();
