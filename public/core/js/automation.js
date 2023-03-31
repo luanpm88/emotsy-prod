@@ -628,18 +628,10 @@ class AutomationElement {
         if (!this.isCondition()) {
             orphan = this.child;
         } else {
-            if (nodeToPromote == null) {
-                orphan = null;
-            } else if (
-                (this.childYes && nodeToPromote.getId() != this.childYes.getId()) && (this.childNo && nodeToPromote.getId() != this.childNo.getId())) {
-                alert('nodeToPromote must be either Yes or No child of the condition');
-                return null;
-            }
-
-            // Now orphan is either Yes or No branch
             orphan = nodeToPromote;
         }
 
+        // remove and promote orphan
         return this.remove(orphan);
     }
 

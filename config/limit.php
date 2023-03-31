@@ -3,14 +3,14 @@
 return [
     'plan' => [
         // Do not show "New Plan" if there are already 3 plans
-        'limit' => 3, 
+        'limit' => 3,
 
         // If this option is true, then do not show the related menu item. Also, do not allow direct access via web URL
         'disable_public_page' => true,
     ],
 
     'sending_server' => [
-        // Do not show "New Sending server" if there is already one sending server 
+        // Do not show "New Sending server" if there is already one sending server
         'limit' => 1
     ],
 
@@ -21,7 +21,7 @@ return [
     'feedback_loop_handler' => [
         'disable' => true
     ],
-    'email_verfication_server' => [ 
+    'email_verfication_server' => [
         'disable' => true
     ],
     'campaign' => [ 'limit' => 1 ],

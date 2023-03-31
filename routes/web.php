@@ -468,9 +468,9 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('templates/rss/parse', 'TemplateController@parseRss');
 
     // Campaign
-    Route::post( 'campaigns/{uid}/preheader/remove', 'CampaignController@preheaderRemove');
+    Route::post('campaigns/{uid}/preheader/remove', 'CampaignController@preheaderRemove');
     Route::match(['get', 'post'], 'campaigns/{uid}/preheader/add', 'CampaignController@preheaderAdd');
-    Route::get( 'campaigns/{uid}/preheader', 'CampaignController@preheader');
+    Route::get('campaigns/{uid}/preheader', 'CampaignController@preheader');
 
     Route::post('campaigns/webhooks/{webhook_uid}/test/{message_id}', 'CampaignController@webhooksTestMessage');
     Route::get('campaigns/{uid}/click-log/{message_id}/execute', 'CampaignController@clickLogExecute');
@@ -654,9 +654,9 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
 
     Route::get('automation/{uid}/condition/remove', 'Automation2Controller@conditionRemove');
 
-    Route::post( 'automation/{uid}/template/{email_uid}/preheader/remove', 'Automation2Controller@emailPreheaderRemove');
+    Route::post('automation/{uid}/template/{email_uid}/preheader/remove', 'Automation2Controller@emailPreheaderRemove');
     Route::match(['get', 'post'], 'automation/{uid}/template/{email_uid}/preheader/add', 'Automation2Controller@emailPreheaderAdd');
-    Route::get( 'automation/{uid}/template/{email_uid}/preheader', 'Automation2Controller@emailPreheader');
+    Route::get('automation/{uid}/template/{email_uid}/preheader', 'Automation2Controller@emailPreheader');
 
     Route::match(['get', 'post'], 'automation/condition/wait/custom', 'Automation2Controller@conditionWaitCustom');
     Route::match(['get', 'post'], 'automation/{email_uid}/send-test-email', 'Automation2Controller@sendTestEmail');

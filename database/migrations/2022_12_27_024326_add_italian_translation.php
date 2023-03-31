@@ -17,9 +17,9 @@ class AddItalianTranslation extends Migration
     {
         Language::create([
             'name' => 'Italian',
-	    'code' => 'it',
-	    'region_code' => 'it',
-	    'status' => 'active',
+        'code' => 'it',
+        'region_code' => 'it',
+        'status' => 'active',
         ]);
     }
 

@@ -17,7 +17,7 @@ class ChatController extends Controller
         $messages = array_slice($messages, -2, 2);
 
         // slice long messages
-        $messages = array_map(function($message) {
+        $messages = array_map(function ($message) {
             $message['content'] = substr($message['content'], 0, 300);
             return $message;
         }, $messages);
@@ -26,7 +26,6 @@ class ChatController extends Controller
             // try to get response message
             $newMessage = $chatgpt->ask($messages);
             return response()->json($newMessage);
-
         } catch (\Throwable $e) {
             return response()->json([
                 "error" => $e->getMessage(),
