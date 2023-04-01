@@ -130,7 +130,6 @@
     -webkit-backdrop-filter: blur(8px);
 }
 .content-left.content-form-mode {
-    padding: 70px 0 0 0;
     background: transparent;
     width: 100%;
     border: none;
@@ -176,7 +175,7 @@
 .content-left.content-form-mode iframe#builder_iframe {
     border-radius: 0px;
 }
-.content-left .content-background .popup-close-button {
+.content-left .popup-close-button {
     content: "close";
     font-family: 'Material Icons Round' !important;
     z-index: 10;
@@ -204,6 +203,7 @@
     margin: auto;
     width: 650px;
     position: relative;
+    box-shadow: none;
 }
 .browser-frame {
     width: 100%;
