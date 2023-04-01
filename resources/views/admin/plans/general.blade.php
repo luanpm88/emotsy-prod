@@ -105,15 +105,35 @@
                         
                     <h2>{{ trans('messages.plan.general.details') }}</h2>
 
-                    @include('chat._plan_name', [
-                        'name' => 'plan[general][name]',
-                        'value' => $plan->name,
-                    ])
+                    @if (Acelle\Model\Plugin::isInstalled('acelle/chatgpt') && Acelle\Model\Plugin::getByName('acelle/chatgpt')->isActive())
+                        @include('chat._plan_name', [
+                            'name' => 'plan[general][name]',
+                            'value' => $plan->name,
+                        ])
 
-                    @include('chat._plan_description', [
-                        'name' => 'plan[general][description]',
-                        'value' => $plan->description,
-                    ])
+                        @include('chat._plan_description', [
+                            'name' => 'plan[general][description]',
+                            'value' => $plan->description,
+                        ])
+                    @else             
+                        @include('helpers.form_control', [
+                            'type' => 'text',
+                            'name' => 'plan[general][name]',
+                            'label' => trans('messages.plan.name'),
+                            'value' => $plan->name,
+                            'help_class' => 'plan',
+                            'rules' => $plan->generalRules()
+                        ])
+
+                        @include('helpers.form_control', [
+                            'type' => 'text',
+                            'name' => 'plan[general][description]',
+                            'label' => trans('messages.plan.description'),
+                            'value' => $plan->description,
+                            'help_class' => 'plan',
+                            'rules' => $plan->generalRules(),
+                        ])
+                    @endif
                     
                     @include('helpers.form_control', [
                         'class' => 'numeric',
