@@ -9,13 +9,17 @@
         {{ csrf_field() }}
         
         <p>{{ trans('messages.preheader.intro') }}</p>
-
-        <div class="form-group control-textarea {{ $errors->has('preheader') ? ' has-error' : '' }}">
-            @include('chat._preheader', [
-                'name' => 'preheader',
-                'value' => $campaign->preheader,
-            ])
-        </div>
+        
+            <div class="form-group control-textarea {{ $errors->has('preheader') ? ' has-error' : '' }}">
+                @if (Acelle\Model\Plugin::isInstalled('acelle/chatgpt') && Acelle\Model\Plugin::getByName('acelle/chatgpt')->isActive())
+                    @include('chat._preheader', [
+                        'name' => 'preheader',
+                        'value' => $campaign->preheader,
+                    ])
+                @else
+                    <textarea type="text" name="preheader" rows="5" class="form-control required">{{ $campaign->preheader }}</textarea>
+                @endif
+            </div>
 
         <div class="mt-4 text-center">
             <button type="submit" class="btn btn-secondary me-1">{{ trans('messages.preheader.save') }}</button>

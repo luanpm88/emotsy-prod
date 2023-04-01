@@ -14,11 +14,15 @@
         <p>{{ trans('messages.preheader.intro') }}</p>
 
         <div class="form-group control-textarea {{ $errors->has('preheader') ? ' has-error' : '' }}">
-
-            @include('chat._preheader', [
-                'name' => 'preheader',
-                'value' => $email->preheader,
-            ])
+            @if (Acelle\Model\Plugin::isInstalled('acelle/chatgpt') && Acelle\Model\Plugin::getByName('acelle/chatgpt')->isActive())
+                @include('chat._preheader', [
+                    'name' => 'preheader',
+                    'value' => $email->preheader,
+                ])
+            @else
+                <textarea type="text" name="preheader" rows="5" class="form-control required">{{ $email->preheader }}</textarea>
+            @endif
+            
 
         </div>
 
