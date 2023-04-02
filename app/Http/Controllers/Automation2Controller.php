@@ -2758,4 +2758,45 @@ class Automation2Controller extends Controller
             'automation' => $automation,
         ]);
     }
+
+    public function copy(Request $request, $uid)
+    {
+        // init automation
+        $automation = Automation2::findByUid($uid);
+        $newAutomation = new Automation2();
+
+        // init data
+        $newAutomation->name = trans('messages.automation.copy_name', [
+            'from' => $automation->name,
+        ]);
+        $newAutomation->mailList = $automation->mailList;
+
+        // authorize
+        if (\Gate::denies('create', $automation)) {
+            return $this->notAuthorized();
+        }
+
+        if ($request->isMethod('post')) {
+            $validator = $newAutomation->copyFrom($automation, $request->all());
+
+            // redirect if fails
+            if ($validator->fails()) {
+                return response()->view('automation2.copy', [
+                    'automation' => $automation,
+                    'newAutomation' => $newAutomation,
+                    'errors' => $validator->errors(),
+                ], 400);
+            }
+
+            return response()->json([
+                'status' => 'success',
+                'message' => trans('messages.automation.duplicated'),
+            ]);
+        }
+
+        return view('automation2.copy', [
+            'automation' => $automation,
+            'newAutomation' => $newAutomation,
+        ]);
+    }
 }

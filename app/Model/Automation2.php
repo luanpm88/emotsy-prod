@@ -1554,4 +1554,64 @@ class Automation2 extends Model
 
         $this->delete();
     }
+
+    public function duplicate()
+    {
+        $newAutomation = new self();
+        $newAutomation->newDefault();
+
+        // Get attrinutes from template
+        $newAutomation->customer_id = $this->customer_id;
+        $newAutomation->name = $this->name;
+        $newAutomation->mail_list_id = $this->mail_list_id;
+        $newAutomation->time_zone = $this->time_zone;
+        $newAutomation->data = $this->data;
+        $newAutomation->segment_id = $this->segment_id;
+        $newAutomation->status = self::STATUS_INACTIVE;
+
+        $newAutomation->save();
+
+        // clone email if exist
+        $newAutomation->getActions(function ($action) use ($newAutomation) {
+            $options = $action->getOptions();
+            if (isset($options['email_uid'])) {
+                $originalEmail = Email::findByUid($options['email_uid']);
+                $newEmail = $originalEmail->copy();
+
+                // fill list attributes to email
+                $newEmail->automation2_id = $newAutomation->id;
+                $newEmail->customer_id = $newAutomation->customer_id;
+                $newEmail->save();
+
+                // trick to change email
+                // $action->setOption('email_uid', $newEmail->uid);
+                $newAutomation->data = str_replace($options['email_uid'], $newEmail->uid, $newAutomation->data);
+                $newAutomation->save();
+            }
+        });
+
+        return $newAutomation;
+    }
+
+    public function copyFrom($automation, $params) {
+        $validator = \Validator::make($params, [
+            'name' => 'required',
+            'mail_list_uid' => 'required',
+        ]);
+
+        // redirect if fails
+        if ($validator->fails()) {
+            return $validator;
+        }
+
+        // duplicate
+        $newAutomation = $automation->duplicate();
+
+        // custom data
+        $newAutomation->name = $params['name'];
+        $newAutomation->mail_list_id = MailList::findByUid($params['mail_list_uid'])->id;
+        $newAutomation->save();
+
+        return $validator;
+    }   
 }

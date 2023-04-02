@@ -651,7 +651,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::post('notifications/{id}/hide', 'NotificationController@hide');
 
     // Automation2
-
+    Route::match(['get', 'post'], 'automation/{uid}/copy', 'Automation2Controller@copy');
     Route::get('automation/{uid}/condition/remove', 'Automation2Controller@conditionRemove');
 
     Route::post('automation/{uid}/template/{email_uid}/preheader/remove', 'Automation2Controller@emailPreheaderRemove');

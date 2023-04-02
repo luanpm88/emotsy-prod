@@ -24,7 +24,7 @@
             @include('helpers.form_control', [
                 'name' => 'mail_list_uid',
                 'type' => 'select',
-                'label' => trans('messages.automation.change_mail_list'),
+                'label' => trans('messages.automation.choose_list'),
                 'value' => ($automation->mailList ? $automation->mailList->uid : ''),
                 'options' => Auth::user()->customer->readCache('MailListSelectOptions', []),
                 'rules' => $automation->rules(),
