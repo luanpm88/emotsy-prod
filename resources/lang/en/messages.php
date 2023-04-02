@@ -3158,4 +3158,5 @@
   'automation.copy.wording' => 'Modify the name and list of the duplicated automation',
   'automation.copy_name' => ':from (copy)',
   'automation.name' => 'Automation name',
+  'automation.duplicated' => 'New automation has been created: :name',
 ) ?>

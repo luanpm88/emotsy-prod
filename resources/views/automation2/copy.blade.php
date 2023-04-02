@@ -16,23 +16,39 @@
 
         <p class="">{{ trans('messages.automation.copy.wording') }}</p>
 
-        @include('helpers.form_control', [
-            'type' => 'text',
-            'label' => trans('messages.automation.name'),
-            'name' => 'name',
-            'value' => $newAutomation->name,
-            'help_class' => 'list',
-            'rules' => ['name' => 'required'],
-        ])
+        <div class="form-group {{ $errors->has('name') ? 'has-error' : '' }}">
+            <label>
+                {{ trans('messages.automation.name') }}
+            </label>
+            <div>
+                <input value="{{ $newAutomation->name }}"
+                    type="text"
+                    name="name" class="form-control">
+            </div>
+            @if ($errors->has('name'))
+                <div class="help-block">
+                    {{ $errors->first('name') }}
+                </div>
+            @endif
+        </div>
 
-        @include('helpers.form_control', [
-            'name' => 'mail_list_uid',
-            'type' => 'select',
-            'label' => trans('messages.list'),
-            'value' => $newAutomation->mailList->uid,
-            'options' => Auth::user()->customer->readCache('MailListSelectOptions', []),
-            'rules' => ['mail_list_uid' => 'required'],
-        ])
+        <div class="form-group {{ $errors->has('mail_list_uid') ? 'has-error' : '' }}">
+            <label>
+                {{ trans('messages.list') }}
+            </label>
+            <div>
+                <select name="mail_list_uid" class="select">
+                    @foreach (Auth::user()->customer->readCache('MailListSelectOptions', []) as $option)
+                        <option {{ $newAutomation->mailList->uid == $option['value'] ? 'selected' : '' }} value="{{ $option['value'] }}">{{ $option['text'] }}</option>
+                    @endforeach
+                </select>
+            </div>
+            @if ($errors->has('mail_list_uid'))
+                <div class="help-block">
+                    {{ $errors->first('mail_list_uid') }}
+                </div>
+            @endif
+        </div>
 
         <div class="mt-4 text-center">
             <button id="copyAutomationButton" type="submit" class="btn btn-secondary me-1">{{ trans('messages.automation.duplicate') }}</button>
@@ -56,7 +72,7 @@
                 }).done(function(response) {
                     notify({
                         type: 'success',
-                        message: response,
+                        message: response.message,
                     });
 
                     Automation2List.copyPopup.hide();
