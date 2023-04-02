@@ -105,7 +105,7 @@
                                             href="{{ action('Automation2Controller@copy', $automation->uid) }}"
                                         >
                                             <span class="material-symbols-rounded me-2">content_copy</span>
-                                            {{ trans('messages.automation.duplicate') }}
+                                            {{ trans('messages.automation.copy') }}
                                         </a>
                                     </li>
                                 @endcan

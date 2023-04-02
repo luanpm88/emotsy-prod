@@ -2790,7 +2790,7 @@ class Automation2Controller extends Controller
 
             return response()->json([
                 'status' => 'success',
-                'message' => trans('messages.automation.duplicated', [
+                'message' => trans('messages.automation.copied', [
                     'name' => $newAutomation->name,
                 ]),
             ]);

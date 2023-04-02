@@ -51,7 +51,7 @@
         </div>
 
         <div class="mt-4 text-center">
-            <button id="copyAutomationButton" type="submit" class="btn btn-secondary me-1">{{ trans('messages.automation.duplicate') }}</button>
+            <button id="copyAutomationButton" type="submit" class="btn btn-secondary me-1">{{ trans('messages.save') }}</button>
             <button type="button" class="btn btn-link fw-600" data-bs-dismiss="modal">{{ trans('messages.cancel') }}</button>
         </div>
     </form>
