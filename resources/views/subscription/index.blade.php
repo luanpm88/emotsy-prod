@@ -153,7 +153,6 @@
                         <hr>
                         <div class="text-left">
                             @if ($subscription->getItsOnlyUnpaidChangePlanInvoice()->getPendingTransaction())
-                                <hr>
                                 <div class="text-right pe-none">
                                     <a href="{{ action('SubscriptionController@payment', [
                                         'invoice_uid' => $subscription->getItsOnlyUnpaidChangePlanInvoice()->uid,
