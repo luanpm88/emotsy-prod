@@ -8,11 +8,11 @@ class UrlAutoFill {
         _this.isLink = function() {
             var link = $('.tox-form .tox-selectfield').length;
 
-            if (link) {
-                $('.tox-form__group:first-child input').eq(0).prop('readonly', false);
-            } else {
-                $('.tox-form__group:first-child input').eq(0).prop('readonly', true);
-            }
+            // if (link) {
+            //     $('.tox-form__group:first-child input').eq(0).prop('readonly', false);
+            // } else {
+            //     $('.tox-form__group:first-child input').eq(0).prop('readonly', true);
+            // }
 
             return link;
         }
