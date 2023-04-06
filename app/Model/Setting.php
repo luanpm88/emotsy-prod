@@ -74,7 +74,7 @@ class Setting extends Model
      */
     public static function isYes($key)
     {
-        return self::get($key) == 'yes';
+        return strtolower(self::get($key)) == 'yes';
     }
 
     /**
