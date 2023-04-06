@@ -47,7 +47,7 @@ class TriggerAutomationForImportedContacts
                 continue;
             }
 
-            $auto->triggerImportedContacts();
+            $auto->triggerImportedContacts($event->importBatchId);
         };
     }
 }

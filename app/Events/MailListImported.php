@@ -19,15 +19,17 @@ class MailListImported
     use SerializesModels;
 
     public $list;
+    public $importBatchId;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct(MailList $list)
+    public function __construct(MailList $list, $importBatchId)
     {
         $this->list = $list;
+        $this->importBatchId = $importBatchId;
     }
 
     /**
