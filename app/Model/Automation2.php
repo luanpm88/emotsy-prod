@@ -700,10 +700,10 @@ class Automation2 extends Model
     /**
      * Check for list-subscription events.
      */
-    public function triggerImportedContacts()
+    public function triggerImportedContacts($importBatchId)
     {
-        $this->logger()->info(sprintf('Start triggering imported contacts'));
-        $subscribers = $this->notTriggeredSubscribers()->where('subscribers.subscription_type', '=', Subscriber::SUBSCRIPTION_TYPE_IMPORTED)->get();
+        $this->logger()->info(sprintf('Start triggering imported contacts for batch ID: '.$importBatchId));
+        $subscribers = $this->notTriggeredSubscribers()->where('import_batch_id', $importBatchId)->get();
         $total = count($subscribers);
         $this->logger()->info(sprintf('Triggering %s imported contacts', $total));
 
