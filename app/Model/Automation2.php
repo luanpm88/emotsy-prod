@@ -1593,7 +1593,8 @@ class Automation2 extends Model
         return $newAutomation;
     }
 
-    public function copyFrom($automation, $params) {
+    public function copyFrom($automation, $params)
+    {
         $validator = \Validator::make($params, [
             'name' => 'required',
             'mail_list_uid' => 'required',
@@ -1613,5 +1614,5 @@ class Automation2 extends Model
         $newAutomation->save();
 
         return $validator;
-    }   
+    }
 }
