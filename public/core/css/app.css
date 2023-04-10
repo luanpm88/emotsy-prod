@@ -7064,7 +7064,7 @@ a.trigger-woo-abandoned-cart:hover {
     color: #222;
 }
 hr {
-    background-color: rgba(0,0,0,.125);
+    border-color: rgba(0,0,0,.125);
     opacity: 1;
 }
 .top-notification-icon svg {
