@@ -488,7 +488,7 @@ class MailListController extends Controller
             }
 
             if ($customer->readCache('UnsubscribedCount', 0)) {
-                $result['data'][] = ['value' => $customer->readCache('UnsubscribeCount', 0), 'name' => trans('messages.unsubscribed')];
+                $result['data'][] = ['value' => $customer->readCache('UnsubscribedCount', 0), 'name' => trans('messages.unsubscribed')];
             }
 
             if ($customer->readCache('UnconfirmedCount', 0)) {
