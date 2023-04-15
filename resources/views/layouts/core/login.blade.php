@@ -13,7 +13,7 @@
         <div class="page-container login-container">
             @if (\Auth::check())
                 <div class="text-end">
-                    <a href="{{ url("/logout") }}"  class='text-white ml-20'><i class="icon-switch2"></i> {{ trans('messages.logout') }}</a>
+                    <a href="{{ url("/logout") }}"  class='text-white ml-4'><i class="icon-switch2"></i> {{ trans('messages.logout') }}</a>
                 </div>
             @endif
 

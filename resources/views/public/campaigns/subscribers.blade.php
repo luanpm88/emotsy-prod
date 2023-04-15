@@ -169,7 +169,7 @@
                             </li>
                         </ul>
                     </div>
-                    <span class="filter-group ml-20">
+                    <span class="filter-group ml-4">
                         <span class="title text-semibold text-muted">{{ trans('messages.subscribers_who') }}</span>
                         <select class="select me-3" name="open">
                             <option value="">-- {{ trans('messages.open') }} --</option>
