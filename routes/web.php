@@ -1199,4 +1199,10 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
 
     // Chat
     Route::post('admin/chat', 'ChatController@chat');
+
+    // Page templates
+    Route::resource('pagetemplates', 'PagetemplateController');
+
+    
+
 });
