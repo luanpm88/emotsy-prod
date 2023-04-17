@@ -78,10 +78,12 @@ body.mode-dark.theme-green a:not(.btn, .dropdown-item, .nav-link):hover {
     color: #baffea;
 }
 .theme-green .switchery[type="checkbox"]:checked ~ .check-symbol:before,
-.theme-green .styled[type="checkbox"]:checked ~ .check-symbol:before,
-.theme-green .styled[type="radio"]:checked ~ .check-symbol:before {
+.theme-green .styled[type="checkbox"]:checked ~ .check-symbol:before {
     background-color: #20874c;
     border-color: #20874c;
+}
+.theme-green .styled[type="radio"]:checked ~ .check-symbol:after {
+    background-color: #20874c;
 }
 .theme-green.bg-slate-800 {
     background-color: #3b3938;

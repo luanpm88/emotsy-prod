@@ -78,10 +78,12 @@ body.mode-dark.theme-pink a:not(.btn, .dropdown-item, .nav-link):hover {
     color: #e47ebb;
 }
 .theme-pink .switchery[type="checkbox"]:checked ~ .check-symbol:before,
-.theme-pink .styled[type="checkbox"]:checked ~ .check-symbol:before,
-.theme-pink .styled[type="radio"]:checked ~ .check-symbol:before {
+.theme-pink .styled[type="checkbox"]:checked ~ .check-symbol:before {
     background-color: #be4c89;
     border-color: #be4c89;
+}
+.theme-pink .styled[type="radio"]:checked ~ .check-symbol:after {
+    background-color: #be4c89;
 }
 .theme-pink.bg-slate-800 {
     background-color: #3b3938;
