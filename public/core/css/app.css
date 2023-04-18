@@ -6174,10 +6174,8 @@ h1, h1 {
     border-radius: 100%;
 }
 .styled[type="radio"]:checked ~ .check-symbol:before {
-    content: "";
     background-color: #fff;
     border: 1px solid #aaa;
-    top: 4px;
 }
 .styled[type="radio"]:checked ~ .check-symbol:after {
     content: "";
