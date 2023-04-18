@@ -3158,4 +3158,7 @@
   'your_api_token' => 'Your API token',
   'your_current_license' => 'Thank you for purchasing! Below is your license key, also known as Purchase Code. Your license type is',
   'zip_postal_code' => 'Zip / Postal code',
+  'export.encoding' => 'Encoding',
+  'export.encoding.utf8' => 'UTF-8',
+  'export.encoding.japanese_iso' => 'Japanese ISO',
 ) ?>

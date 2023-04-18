@@ -55,6 +55,31 @@
                             </div>
                         </div>                        
                     </div>
+                    @if (config('custom.japan'))
+                        <div class="my-4">
+                            <div class="form-group">
+                                <label class="fw-semibold">
+                                    {{ trans('messages.export.encoding') }}
+                                </label>
+                                
+                                <div>
+                                    <label class="main-control">
+                                        <input type="radio"
+                                            checked
+                                            name="encoding"
+                                            value="utf8" class="styled" /> <rtitle class="ms-2">{{ trans('messages.export.encoding.utf8') }}</rtitle>
+                                    </label>
+                                </div>
+                                <div>
+                                    <label class="main-control">
+                                        <input type="radio"
+                                            name="encoding"
+                                            value="japanese-iso" class="styled me-2" /> <rtitle class="ms-2">{{ trans('messages.export.encoding.japanese_iso') }}</rtitle>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
                     <div class="text-left">
                         <button class="btn btn-secondary me-2"><i class="icon-check"></i> {{ trans('messages.export') }}</button>
                     </div>
@@ -204,6 +229,11 @@
                 if (which == 'segment') {
                     data.segment_uid = $('[name=segment_uid]').val();
                 }
+
+                @if (config('custom.japan'))
+                    // encoding
+                    data.encoding = $('[name=encoding]:checked').val();
+                @endif
 
                 AcelleExport.showProgressBar();
                 AcelleExport.updateProgressBar(0, "{{ trans('messages.starting') }}");
