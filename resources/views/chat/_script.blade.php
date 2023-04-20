@@ -241,7 +241,7 @@
                 type: "POST",
                 globalError: false,
                 data: {
-                    _token: CSRF_TOKEN,
+                    _token: '{{ csrf_token() }}',
                     messages: sendMessages,
                 },
             }).done(function(result, textStatus, jqXHR) {
@@ -353,6 +353,7 @@
 
             // replace links
             answers.forEach(function(answer) {
+                answer = answer.replace('"', '\"');
                 message = message.replace('#'+answer+'#', `
                     <a title="{{ trans('chatgpt::messages.chat.insert_answer') }} `+answer+`" chat-control="insert" data-value="`+answer+`" href="javascript:;"
                         class="xtooltip"

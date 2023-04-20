@@ -592,4 +592,9 @@ class TemplateController extends Controller
     {
         return parseRss($request->config);
     }
+
+    public function chat()
+    {
+        return view('templates.chat');
+    }
 }

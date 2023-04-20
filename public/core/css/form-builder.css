@@ -334,3 +334,12 @@ a.link-dark:hover {
 .undo-redo {
     left: 45px;
 }
+.chat-dropdown.dropdown {
+    position: absolute;
+    z-index: 100000;
+    top: 0;
+    bottom: 0;
+}
+.chat-dropdown .dropdown-menu.show {
+    display: block!important;
+}

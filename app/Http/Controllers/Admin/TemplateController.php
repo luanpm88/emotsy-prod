@@ -609,4 +609,9 @@ class TemplateController extends Controller
             'template' => $template,
         ]);
     }
+
+    public function chat()
+    {
+        return view('admin.templates.chat');
+    }
 }

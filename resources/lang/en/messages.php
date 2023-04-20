@@ -1142,6 +1142,9 @@
   'error.has_waiting_invoices' => 'Subscription has waiting invoices!',
   'export' => 'Export',
   'export.choose_segment' => 'Choose segment',
+  'export.encoding' => 'Encoding',
+  'export.encoding.japanese_iso' => 'Japanese ISO',
+  'export.encoding.utf8' => 'UTF-8',
   'export.whole_list' => 'Whole list',
   'export_completed' => 'Export process finished successfully. Click the download button to get the output file',
   'export_subscribers' => 'Export subscribers',
@@ -3158,7 +3161,4 @@
   'your_api_token' => 'Your API token',
   'your_current_license' => 'Thank you for purchasing! Below is your license key, also known as Purchase Code. Your license type is',
   'zip_postal_code' => 'Zip / Postal code',
-  'export.encoding' => 'Encoding',
-  'export.encoding.utf8' => 'UTF-8',
-  'export.encoding.japanese_iso' => 'Japanese ISO',
 ) ?>
