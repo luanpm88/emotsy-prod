@@ -114,6 +114,32 @@
                 @endforeach
             </ul>
 
+            @if (config('custom.japan'))
+                <div class="my-4">
+                    <div class="form-group">
+                        <label class="fw-semibold">
+                            {{ trans('messages.export.encoding') }}
+                        </label>
+                        
+                        <div>
+                            <label class="main-control">
+                                <input type="radio"
+                                    checked
+                                    name="encoding"
+                                    value="utf8" class="styled" /> <rtitle class="ms-2">{{ trans('messages.export.encoding.utf8') }}</rtitle>
+                            </label>
+                        </div>
+                        <div>
+                            <label class="main-control">
+                                <input type="radio"
+                                    name="encoding"
+                                    value="japanese-iso" class="styled me-2" /> <rtitle class="ms-2">{{ trans('messages.export.encoding.japanese_iso') }}</rtitle>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            @endif
+
             <a mapping-control="run" href="javascript:;"
                 class="btn btn-mc_primary bg-teal-800 mt-4"
             >
@@ -685,6 +711,10 @@ console.log('validate');
                                 _token: CSRF_TOKEN,
                                 filepath: '{{ $filepath }}',
                                 mapping: _this.getData(),
+                                @if (config('custom.japan'))
+                                    // encoding
+                                    encoding: $('[name=encoding]:checked').val(),
+                                @endif
                             }
                         }).done(function(response) {
                             SubscribersImport2.getPopup().load(response.progressUrl);
