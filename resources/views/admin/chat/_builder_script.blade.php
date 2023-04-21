@@ -38,7 +38,7 @@
             toogleChatButton() {
                 var _this = this;
 
-                if (editor.selected && ['LABEL','P','A','BUTTON','SPAN','H1','H2','H3','H4','H5','H6'].includes(editor.selected.obj.prop('tagName')) && !_this.getFrame().is(':visible')) {
+                if (editor.selected && ['STRONG','LABEL','P','A','BUTTON','SPAN','H1','H2','H3','H4','H5','H6'].includes(editor.selected.obj.prop('tagName')) && !_this.getFrame().is(':visible')) {
                     _this.showChatButton();
                     _this.setChatButtonPosition();
                 } else {
