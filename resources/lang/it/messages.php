@@ -1143,7 +1143,7 @@
   'export' => 'Export',
   'export.choose_segment' => 'Scegliere il segmento',
   'export.encoding' => 'Encoding',
-  'export.encoding.japanese_iso' => 'Japanese ISO',
+  'export.encoding.japanese_iso' => 'Japanese (Shift-JIS)',
   'export.encoding.utf8' => 'UTF-8',
   'export.whole_list' => 'Lista completa',
   'export_completed' => 'Il processo di esportazione &egrave; terminato con successo. Fare clic sul pulsante di download per ottenere il file di output',

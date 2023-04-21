@@ -1143,7 +1143,7 @@
   'export' => 'エクスポート',
   'export.choose_segment' => 'セグメントを選択',
   'export.encoding' => 'Encoding',
-  'export.encoding.japanese_iso' => 'Japanese ISO',
+  'export.encoding.japanese_iso' => 'Japanese (Shift-JIS)',
   'export.encoding.utf8' => 'UTF-8',
   'export.whole_list' => 'リスト全体',
   'export_completed' => 'エクスポート完了',
