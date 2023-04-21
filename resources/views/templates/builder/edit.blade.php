@@ -25,6 +25,7 @@
 
     @if (Acelle\Model\Plugin::isInstalled('acelle/chatgpt') && Acelle\Model\Plugin::getByName('acelle/chatgpt')->isActive())
         <!-- ChatGPT -->
+        <link href="{{ URL::asset('core/css/builder-chat.css') }}" rel="stylesheet" type="text/css">
         @include('chat._builder_script')
     @endif
 
