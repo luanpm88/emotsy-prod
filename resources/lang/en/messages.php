@@ -3160,5 +3160,5 @@
   'zip_postal_code' => 'Zip / Postal code',
   'export.encoding' => 'Encoding',
   'export.encoding.utf8' => 'UTF-8',
-  'export.encoding.japanese_iso' => 'Japanese ISO',
+  'export.encoding.japanese_iso' => 'Japanese (Shift-JIS)',
 ) ?>
