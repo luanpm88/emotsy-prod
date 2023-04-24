@@ -1677,8 +1677,7 @@ class Customer extends Model
     {
         // $name is a format name like: date_full | date_short
         // See config('localization')['*'] for the full list of available format names
-
-        return format_datetime($datetime, $name, $this->getLanguageCode());
+        return format_datetime($datetime->timezone($this->getTimezone()), $name, $this->getLanguageCode());
     }
 
     /**
