@@ -439,13 +439,13 @@ class Setting extends Model
             ],
             'geoip.sqlite.source_url' => [
                 'cat' => 'others',
-                'value' => 'https://acellemail.s3.amazonaws.com/GeoLite2-City.mmdb',
+                'value' => 'https://acellemail.s3.amazonaws.com/GeoLite2-City_20230404.mmdb',
                 'type' => 'text',
                 'not_required' => true,
             ],
             'geoip.sqlite.source_hash' => [
                 'cat' => 'others',
-                'value' => 'b95ecaff82017c4f52577196c41db946',
+                'value' => '1b6368f0e80b1be2dd5be3606d25ac16',
                 'type' => 'text',
                 'not_required' => true,
             ],
