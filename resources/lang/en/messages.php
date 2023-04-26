@@ -3162,4 +3162,5 @@
   'your_current_license' => 'Thank you for purchasing! Below is your license key, also known as Purchase Code. Your license type is',
   'zip_postal_code' => 'Zip / Postal code',
   'automation.email.is_not_setup.click_below' => 'Email is not set up. Click on the button below to set up your email',
+  'automation.email.error.not_set_up' => 'Email is not set up',
 ) ?>
