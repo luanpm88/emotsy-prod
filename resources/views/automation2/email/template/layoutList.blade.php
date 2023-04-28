@@ -60,6 +60,9 @@
             });
             builderSelectPopup.load();
 
+            // reload sidebar
+            sidebar.load();
+
             // notify
             notify({
     type: 'success',

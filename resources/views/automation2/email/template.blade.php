@@ -142,6 +142,9 @@
                                 // reload
                                 popup.load();
 
+                                // reload sidebar
+                                sidebar.load();
+
                                 // notify
                                 notify(response.status, '{{ trans('messages.notify.success') }}', response.message);
                             });

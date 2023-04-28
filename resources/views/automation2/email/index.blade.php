@@ -18,15 +18,17 @@
             >
                 {{ trans('messages.automation.email.settings') }}
             </span>
-            <a onclick="popupwindow('{{ action('Automation2Controller@templatePreview', [
-                                'uid' => $automation->uid,
-                                'email_uid' => $email->uid,
-                            ]) }}', `{{ $automation->name }}`, 800)"
-                            href="javascript:;"
-                            class="btn btn-default"
-                        >
-                            {{ trans('messages.automation.template.preview') }}
-                        </a>
+            @if ($email->hasTemplate())
+                <a onclick="popupwindow('{{ action('Automation2Controller@templatePreview', [
+                                    'uid' => $automation->uid,
+                                    'email_uid' => $email->uid,
+                                ]) }}', `{{ $automation->name }}`, 800)"
+                                href="javascript:;"
+                                class="btn btn-default"
+                            >
+                                {{ trans('messages.automation.template.preview') }}
+                            </a>
+            @endif
         </div>
         
     <form>
