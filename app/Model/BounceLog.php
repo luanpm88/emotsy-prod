@@ -28,6 +28,8 @@ use Validator;
 
 class BounceLog extends Model
 {
+    // Bounce types might have other values like: Permanent, Transient...
+    // See: https://docs.aws.amazon.com/ses/latest/dg/notification-contents.html#bounce-types
     public const HARD = 'hard';
     public const SOFT = 'soft';
     public const UNKNOWN = 'unknown';
