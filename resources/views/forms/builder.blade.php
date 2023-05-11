@@ -24,6 +24,12 @@
 
         <script type="text/javascript" src="{{ URL::asset('core/js/group-manager.js') }}"></script>
 
+        @if (Acelle\Model\Plugin::isInstalled('acelle/chatgpt') && Acelle\Model\Plugin::getByName('acelle/chatgpt')->isActive())
+            <!-- ChatGPT -->
+            <link href="{{ URL::asset('core/css/builder-chat.css') }}" rel="stylesheet" type="text/css">
+        @include('chat._builder_script')
+        @endif
+
         @include('helpers._builder_form')
 
         <script>
@@ -123,6 +129,11 @@
                         if (!$("#builder_iframe").contents().find("[builder-element=PageElement]").length) {
                             $('#nav-profile-tab').remove();
                         }
+
+                        @if (Acelle\Model\Plugin::isInstalled('acelle/chatgpt') && Acelle\Model\Plugin::getByName('acelle/chatgpt')->isActive())
+                            // chatGPT plugin
+                            TemplateBuilderEdit.chatUI.init();
+                        @endif
                     }
                 });
             

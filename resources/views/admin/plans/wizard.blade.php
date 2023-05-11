@@ -15,12 +15,12 @@
             
                     <p>{{ trans('messages.plan.general.details.intro') }}</p>
                         
-                    @include('chat._plan_name', [
+                    @include('admin.chat._plan_name', [
                         'name' => 'plan[general][name]',
                         'value' => $plan->name,
                     ])
 
-                    @include('chat._plan_description', [
+                    @include('admin.chat._plan_description', [
                         'name' => 'plan[general][description]',
                         'value' => $plan->description,
                     ])

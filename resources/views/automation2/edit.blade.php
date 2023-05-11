@@ -509,6 +509,12 @@
                     // Open trigger types select list
                     EditAction(url);
                 } else {
+                    var type = $(this).attr('data-type');
+                    var url = '{{ action('Automation2Controller@email', $automation->uid) }}?email_uid=' + e.getOptions().email_uid;
+                    
+                    // Open trigger types select list
+                    EditAction(url);
+                    
                     // show select trigger confirm box
                     EmailSetup(e.getId());
                 }

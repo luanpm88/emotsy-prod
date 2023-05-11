@@ -23,6 +23,13 @@
     <link href="{{ URL::asset('core/css/UrlAutoFill.css') }}" rel="stylesheet" type="text/css">
     <script src="{{ URL::asset('core/js/UrlAutoFill.js') }}"></script>
 
+    
+    @if (Acelle\Model\Plugin::isInstalled('acelle/chatgpt') && Acelle\Model\Plugin::getByName('acelle/chatgpt')->isActive())
+        <!-- ChatGPT -->
+        <link href="{{ URL::asset('core/css/builder-chat.css') }}" rel="stylesheet" type="text/css">
+        @include('admin.chat._builder_script')
+    @endif
+
     @if ($template->theme)
         @include('builder.themes.' . $template->theme)
     @endif
@@ -164,6 +171,11 @@
 
                     // add custom css
                     this.addCustomCss('{{ url('/core/css/builder-edit.css') }}');
+
+                    @if (Acelle\Model\Plugin::isInstalled('acelle/chatgpt') && Acelle\Model\Plugin::getByName('acelle/chatgpt')->isActive())
+                        // chatGPT plugin
+                        TemplateBuilderEdit.chatUI.init();
+                    @endif
                 }
             });
 

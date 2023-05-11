@@ -53,3 +53,14 @@
 <script type="text/javascript" src="{{ URL::asset('core/js/search.js') }}"></script>
 
 <script type="text/javascript" src="{{ URL::asset('core/js/app.js') }}"></script>
+
+<script>
+    $(function() {
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            }
+        });
+    });
+        
+</script>

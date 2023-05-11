@@ -436,6 +436,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::post('lists/{list_uid}/pages/{alias}/preview', 'PageController@preview');
 
     // Template
+    Route::get('templates/chat', 'TemplateController@chat');
     Route::post('templates/{uid}/export', 'TemplateController@export');
     Route::match(['get','post'], 'templates/{uid}/change-name', 'TemplateController@changeName');
     Route::match(['get','post'], 'templates/{uid}/categories', 'TemplateController@categories');
@@ -855,6 +856,8 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::get('admin/templates/forms', 'FormTemplateController@index');
 
     // Template
+    Route::get('admin/templates/chat', 'TemplateController@chat');
+
     Route::post('admin/templates/{uid}/export', 'TemplateController@export');
     Route::match(['get','post'], 'admin/templates/{uid}/change-name', 'TemplateController@changeName');
     Route::match(['get','post'], 'admin/templates/{uid}/categories', 'TemplateController@categories');
@@ -1199,12 +1202,4 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
 
     // Chat
     Route::post('admin/chat', 'ChatController@chat');
-
-    
-
-    
-
 });
-
-// Page templates
-Route::resource('pagetemplates', 'PagetemplateController');

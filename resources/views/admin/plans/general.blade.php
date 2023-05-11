@@ -106,12 +106,12 @@
                     <h2>{{ trans('messages.plan.general.details') }}</h2>
 
                     @if (Acelle\Model\Plugin::isInstalled('acelle/chatgpt') && Acelle\Model\Plugin::getByName('acelle/chatgpt')->isActive())
-                        @include('chat._plan_name', [
+                        @include('admin.chat._plan_name', [
                             'name' => 'plan[general][name]',
                             'value' => $plan->name,
                         ])
 
-                        @include('chat._plan_description', [
+                        @include('admin.chat._plan_description', [
                             'name' => 'plan[general][description]',
                             'value' => $plan->description,
                         ])
