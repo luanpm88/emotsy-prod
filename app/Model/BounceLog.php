@@ -53,7 +53,7 @@ class BounceLog extends Model
         ];
 
         $messages = [
-            'type.in' => 'Allowed values for type is sent | bounced | reported | failed'
+            'type.in' => 'Allowed values for type include: sent | bounced | reported | failed'
         ];
 
         $validator = Validator::make($params, $rules, $messages);
