@@ -7,12 +7,12 @@
 @section('content')
     
     <!-- Dropzone -->
-	<script type="text/javascript" src="{{ URL::asset('core/dropzone/dropzone.js') }}"></script>
-	<link href="{{ URL::asset('core/dropzone/dropzone.css') }}" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="{{ URL::asset('core/dropzone/dropzone.js') }}"></script>
+    <link href="{{ URL::asset('core/dropzone/dropzone.css') }}" rel="stylesheet" type="text/css">
 
     @include('helpers._dropzone_lang')
 
-	<div class="popup-wizard">
+    <div class="popup-wizard">
 
         @include('subscribers.import2._sidebar', ['step' => 'upload'])
         
