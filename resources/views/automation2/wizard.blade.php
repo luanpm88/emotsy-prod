@@ -1,7 +1,7 @@
 @extends('layouts.popup.small')
 
 @section('content')
-	<div class="row">
+    <div class="row">
         <div class="col-md-12">
             <form id="automationCreate" action="{{ action("Automation2Controller@wizard") }}" method="POST" class="form-validate-jqueryz">
                 {{ csrf_field() }}            
