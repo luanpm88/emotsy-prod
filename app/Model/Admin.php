@@ -248,7 +248,7 @@ class Admin extends Model
      */
     public function getAllCustomers()
     {
-        $query = \Acelle\Model\Customer::getAll();
+        $query = \Acelle\Model\Customer::select('customers.*');
 
         if (!$this->user->can('readAll', new \Acelle\Model\Customer())) {
             $query = $query->where('customers.admin_id', '=', $this->id);
@@ -473,7 +473,7 @@ class Admin extends Model
      */
     public function getAllAdminGroups()
     {
-        $query = \Acelle\Model\AdminGroup::getAll();
+        $query = \Acelle\Model\AdminGroup::select('*');
 
         if (!$this->can('readAll', new \Acelle\Model\AdminGroup())) {
             $query = $query->where('admin_groups.creator_id', '=', $this->user_id);

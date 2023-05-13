@@ -356,16 +356,6 @@ class Customer extends Model
     }
 
     /**
-     * Get all items.
-     *
-     * @return collect
-     */
-    public static function getAll()
-    {
-        return self::select('customers.*');
-    }
-
-    /**
      * Items per page.
      *
      * @var array
@@ -756,7 +746,7 @@ class Customer extends Model
     {
         $data = ['items' => [], 'more' => true];
 
-        $query = \Acelle\Model\Customer::getAll()->leftJoin('users', 'users.customer_id', '=', 'customers.id');
+        $query = self::select('customers.*')->leftJoin('users', 'users.customer_id', '=', 'customers.id');
         if (isset($request->q)) {
             $keyword = $request->q;
             $query = $query->where(function ($q) use ($keyword) {
