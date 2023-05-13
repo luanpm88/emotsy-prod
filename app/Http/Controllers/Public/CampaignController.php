@@ -22,10 +22,6 @@ class CampaignController extends Controller
     public function __construct()
     {
         parent::__construct();
-
-        if (!config('custom.japan')) {
-            abort(404);
-        }
     }
 
     /**

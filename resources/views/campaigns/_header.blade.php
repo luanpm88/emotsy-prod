@@ -13,12 +13,10 @@
             </h1>
         </div>
         <div class="ms-auto">
-            @if (config('custom.japan'))
-                <a target="_blank" href="{{ action('Public\CampaignController@overview', $campaign->uid) }}" class="btn btn-default">
-                    <span class="material-symbols-rounded me-1">public</span>
-                    {{ trans('messages.campaign.public_report') }}
-                </a>
-            @endif
+            <a target="_blank" href="{{ action('Public\CampaignController@overview', $campaign->uid) }}" class="btn btn-default">
+                <span class="material-symbols-rounded me-1">public</span>
+                {{ trans('messages.campaign.public_report') }}
+            </a>
         </div>
     </div>
         
