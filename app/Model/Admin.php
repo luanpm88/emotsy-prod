@@ -248,7 +248,7 @@ class Admin extends Model
      */
     public function getAllCustomers()
     {
-        $query = \Acelle\Model\Customer::getAll();
+        $query = \Acelle\Model\Customer::select('customers.*');
 
         if (!$this->user->can('readAll', new \Acelle\Model\Customer())) {
             $query = $query->where('customers.admin_id', '=', $this->id);
