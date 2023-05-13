@@ -16,16 +16,6 @@ class AdminGroup extends Model
     ];
 
     /**
-     * Get all items.
-     *
-     * @return collect
-     */
-    public static function getAll()
-    {
-        return self::select('*');
-    }
-
-    /**
      * Items per page.
      *
      * @var array
@@ -125,7 +115,7 @@ class AdminGroup extends Model
      */
     public static function getSelectOptions($admin = null)
     {
-        $query = self::getAll();
+        $query = self::select('*');
 
         if ($admin && !$admin->can('readAll', new self())) {
             $query = $query->where('admin_groups.creator_id', '=', $admin->user_id);
