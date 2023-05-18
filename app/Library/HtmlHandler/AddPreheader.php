@@ -26,6 +26,7 @@ class AddPreheader implements StageInterface
 
             // Convert preheader to PLAIN
             $plain = Html2Text::convert($this->preheader, [ 'ignore_errors' => true ]);
+            $plain = htmlentities($plain);
 
             $e = $dom->createElement('div', $plain);
             $e->setAttribute('style', 'display:none;font-size:1px;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden');
