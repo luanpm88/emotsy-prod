@@ -96,17 +96,27 @@
 			
 
 			@if (!$admin->hasCustomerAccount())
-				<div class="form-group checkbox-right-switch">
-					@include('helpers.form_control', [
-						'type' => 'checkbox',
-						'name' => 'create_customer_account',
-						'label' => trans('messages.create_customer_account'),
-						'value' => 'no',
-						'options' => ['no', 'yes'],
-						'help_class' => 'admin',
-						'rules' => $admin->user->rules()
-					])
-				</div>
+                <div class="form-group">
+                    <div class="d-flex" style="width:100%">
+                        <div class="me-5">
+                            <label class="text-semibold">
+                                {{ trans('messages.create_customer_account') }}
+                            </label>
+                            <p class="checkbox-description mt-1 mb-0">
+                                {{ trans('messages.admin.create_customer_account.help') }}
+                            </p>
+                        </div>
+                            
+                        <div class="d-flex align-items-top">
+                            @include('helpers.switch', [
+                                'name' => 'create_customer_account',
+                                'option' => 'yes',
+                                'unchecked_option' => 'no',
+                                'value' => 'yes',
+                            ])
+                        </div>
+                    </div>
+                </div>
 			@endif
 		</div>
 	</div>

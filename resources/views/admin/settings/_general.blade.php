@@ -16,8 +16,28 @@
                             @include('admin.settings.general.' . $name)
                         @else
                             @if ($setting['type'] == 'checkbox')
-                                <div class="form-group checkbox-right-switch">
-                            @endif
+                                <div class="form-group">
+                                    <div class="d-flex" style="width:100%">
+                                        <div class="me-5">
+                                            <label class="text-semibold">
+                                                {{ trans('messages.' . $name) }}
+                                            </label>
+                                            <p class="checkbox-description mt-1 mb-0">
+                                                {{ trans('messages.setting.' . $name . '.help') }}
+                                            </p>
+                                        </div>
+                                            
+                                        <div class="d-flex align-items-top">
+                                            @include('helpers.switch', [
+                                                'name' => $name,
+                                                'option' => $setting['options'][1],
+                                                'unchecked_option' => (($setting['options'][0] == false) ? 0 : $setting['options'][0]),
+                                                'value' => $setting['value'],
+                                            ])
+                                        </div>
+                                    </div>
+                                </div>
+                            @else
                                 @include('helpers.form_control', [
                                     'type' => $setting['type'],
                                     'class' => (isset($setting['class']) ? $setting['class'] : "" ),
@@ -28,8 +48,6 @@
                                     'options' => (isset($setting['options']) ? $setting['options'] : "" ),
                                     'rules' => Acelle\Model\Setting::rules(),
                                 ])
-                            @if ($setting['type'] == 'checkbox')
-                                </div>
                             @endif
                         @endif
                     </div>
