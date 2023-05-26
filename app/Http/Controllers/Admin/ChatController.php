@@ -14,11 +14,11 @@ class ChatController extends Controller
         $messages = $request->messages;
 
         // reduce messages length
-        $messages = array_slice($messages, -2, 2);
+        $messages = array_slice($messages, -1, 1);
 
         // slice long messages
         $messages = array_map(function ($message) {
-            $message['content'] = substr($message['content'], 0, 300);
+            $message['content'] = substr($message['content'], 0, 180);
             return $message;
         }, $messages);
 
