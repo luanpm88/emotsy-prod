@@ -30,7 +30,7 @@
                     builder-element="RssElement"
                     builder-draggable
                     data-preview="no"
-                    data-config='`+config+`'
+                    data-config="`+config+`"
                 ></div>
             `);
 
