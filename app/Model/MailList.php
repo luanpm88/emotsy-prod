@@ -212,6 +212,9 @@ class MailList extends Model
         // Example of outcome: /home/acelle/storage/app/tmp/import-000000.csv
         $filepath = $this->getImportFilePath($filename);
 
+        // Make sure file is accessible
+        chmod($filepath,0775);
+
         return $filepath;
     }
 
