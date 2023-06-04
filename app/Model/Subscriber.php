@@ -1176,4 +1176,49 @@ class Subscriber extends Model
             ['value' => self::VERIFICATION_STATUS_UNVERIFIED, 'text' => trans('messages.email_verification_result_unverified')],
         ];
     }
+
+    public static function getByListsAndSegments(...$segmentsOrLists)
+    {
+        if (empty($segmentsOrLists)) {
+            // this is a trick for returning an empty builder
+            return static::limit(0);
+        }
+
+        $query = static::select('subscribers.*');
+
+        // Get subscriber from mailist and segment
+        $conditions = [];
+        foreach ($segmentsOrLists as $listOrSegment) {
+            if ($listOrSegment instanceof Segment) {
+                // Segment
+                $conds = $listOrSegment->getSubscribersConditions();
+                if (!empty($conds['joins'])) {
+                    foreach ($conds['joins'] as $joining) {
+                        $query = $query->leftJoin($joining['table'], function ($join) use ($joining) {
+                            $join->on($joining['ons'][0][0], '=', $joining['ons'][0][1]);
+                            if (isset($joining['ons'][1])) {
+                                $join->on($joining['ons'][1][0], '=', $joining['ons'][1][1]);
+                            }
+                        });
+                    }
+                }
+
+                // IMPORTANT: segment condition does not include list_id constraints, so we have to add it to make sure only the segment's list is considered
+                $conds['conditions'] = '('.table('subscribers.mail_list_id').' = '.$listOrSegment->mail_list_id.' AND ('.$conds['conditions'].'))';
+                $conditions[] = $conds['conditions'];
+            } elseif ($listOrSegment instanceof MailList) {
+                // Entire list
+                $listId = $listOrSegment->id;
+                $conditions[] = '('.table('subscribers.mail_list_id').' = '.$listId.')';
+            } else {
+                throw new Exception('Object must be Segment or MailList');
+            }
+        }
+
+        if (!empty($conditions)) {
+            $query = $query->whereRaw('('.implode(' OR ', $conditions).')');
+        }
+
+        return $query;
+    }
 }

@@ -38,7 +38,6 @@ class TriggerAutomation
 
         foreach ($automations as $auto) {
             if (is_null($auto->getAutoTriggerFor($event->subscriber))) {
-
                 $segments = $auto->getSegments();
 
                 // If there is no segment condition, trigger the contact

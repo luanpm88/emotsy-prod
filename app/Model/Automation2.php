@@ -965,10 +965,12 @@ class Automation2 extends Model
     // if $actionId is provided, get only subscribers who have been triggered and have gone through the action
     public function subscribers($actionId = null)
     {
-        if ($this->segment()->exists()) {
-            $query = $this->segment->subscribers();
+        $segments = $this->getSegments();
+
+        if ($segments->isEmpty()) {
+            $query = $this->mailList->subscribers();
         } else {
-            $query = $this->mailList->subscribers()->select('subscribers.*');
+            $query = Subscriber::getByListsAndSegments(...$segments);
         }
 
         if (!is_null($actionId)) {

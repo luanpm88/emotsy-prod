@@ -2414,45 +2414,17 @@ class Campaign extends Model implements HasTemplateInterface
      */
     public function subscribers($params = [])
     {
-        if ($this->listsSegments->isEmpty()) {
-            // this is a trick for returning an empty builder
-            return Subscriber::limit(0);
-        }
-
-        $query = Subscriber::select('subscribers.*');
-
         // Get subscriber from mailist and segment
-        $conditions = [];
+        $listsAndSegments = [];
         foreach ($this->listsSegments as $lists_segment) {
             if (!empty($lists_segment->segment_id)) {
-                // Segment
-                $conds = $lists_segment->segment->getSubscribersConditions();
-                if (!empty($conds['joins'])) {
-                    foreach ($conds['joins'] as $joining) {
-                        $query = $query->leftJoin($joining['table'], function ($join) use ($joining) {
-                            $join->on($joining['ons'][0][0], '=', $joining['ons'][0][1]);
-                            if (isset($joining['ons'][1])) {
-                                $join->on($joining['ons'][1][0], '=', $joining['ons'][1][1]);
-                            }
-                        });
-                    }
-                }
-                // WHERE...
-                if (!empty($conds['conditions'])) {
-                    // IMPORTANT: segment condition does not include list_id constraints
-                    $conds['conditions'] = '('.table('subscribers.mail_list_id').' = '.$lists_segment->mail_list_id.' AND ('.$conds['conditions'].'))';
-
-                    $conditions[] = $conds['conditions'];
-                }
+                $listsAndSegments[] = $lists_segment->segment;
             } else {
-                // Entire list
-                $conditions[] = '('.table('subscribers.mail_list_id').' = '.$lists_segment->mail_list_id.')';
+                $listsAndSegments[] = $lists_segment->mailList;
             }
         }
 
-        if (!empty($conditions)) {
-            $query = $query->whereRaw('('.implode(' OR ', $conditions).')');
-        }
+        $query = Subscriber::getByListsAndSegments(...$listsAndSegments);
 
         // Filters
         $filters = isset($params['filters']) ? $params['filters'] : null;

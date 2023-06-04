@@ -213,7 +213,7 @@ class MailList extends Model
         $filepath = $this->getImportFilePath($filename);
 
         // Make sure file is accessible
-        chmod($filepath,0775);
+        chmod($filepath, 0775);
 
         return $filepath;
     }
