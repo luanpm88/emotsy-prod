@@ -413,6 +413,13 @@ class Segment extends Model
         return $query;
     }
 
+    public function isSubscriberIncluded($subscriber)
+    {
+        return $this->subscribers()
+                    ->where('uid', $subscriber->uid)
+                    ->exists();
+    }
+
     /**
      * Add customer action log.
      */
