@@ -1,9 +1,5 @@
 @extends('layouts.popup.small')
 
-@section('title')
-    {{ trans('messages.plan.sending_limit') }}
-@endsection
-
 @section('content')
     <form id="billingCycleForm" action="{{ action('Admin\PlanController@billingCycle', ['uid' => $plan->uid]) }}" method="POST">
         {{ csrf_field() }}

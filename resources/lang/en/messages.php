@@ -1878,7 +1878,7 @@
   'plan.sending_identify.intro.smtp' => 'Below are <span class="xtooltip" title=\'A sending domain is a domain that is used to indicate who an email is from via the "From:" header\'>sending domains</span> that users who subscribe to this plan can use to send email on behalf of. You can also edit your sending server setting to allow users to add and verify their own sending domains',
   'plan.sending_identify.intro.sparkpost-api' => 'Your plan is setup to use Sparkpost as primary delivery method. Users who subscribe to this plan must use the following identities as their FROM email address. Edit your sending server setting to add more identities',
   'plan.sending_identify.intro.sparkpost-smtp' => 'Your plan is setup to use Sparkpost as primary delivery method. Users who subscribe to this plan must use the following identities as their FROM email address. Edit your sending server setting to add more identities',
-  'plan.sending_limit' => 'Sending credis',
+  'plan.sending_limit' => 'Sending credit',
   'plan.sending_limit.100000_per_day' => '100,000 emails per day',
   'plan.sending_limit.10000_per_day' => '10,000 emails per day',
   'plan.sending_limit.10000_per_hour' => '10,000 emails per hour',
