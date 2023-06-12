@@ -69,7 +69,10 @@ Route::get('/p/assets/{path}', [ function ($token) {
 
     if (\File::exists($absPath)) {
         $mime_type = \Acelle\Library\File::getFileType($absPath);
-        return response()->file($absPath, array('Content-Type' => $mime_type));
+        return response()->file($absPath, array(
+            'Content-Type' => $mime_type,
+            'Content-Length' => filesize($absPath),
+        ));
     } else {
         abort(404);
     }
@@ -82,7 +85,10 @@ Route::get('assets/{dirname}/{basename}', [ function ($dirname, $basename) {
 
     if (\File::exists($absPath)) {
         $mimetype = \Acelle\Library\File::getFileType($absPath);
-        return response()->file($absPath, array('Content-Type' => $mimetype));
+        return response()->file($absPath, array(
+            'Content-Type' => $mimetype,
+            'Content-Length' => filesize($absPath),
+        ));
     } else {
         abort(404);
     }
