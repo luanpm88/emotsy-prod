@@ -95,7 +95,7 @@
                       inline: true,
                       menubar: false,
                       valid_elements : '*[*],meta[*]',
-                      valid_children: '+h1[div],+h2[div],+h3[div],+h4[div],+h5[div],+h6[div],+a[div]',
+                      valid_children: '+p[ol],+p[ul],+h1[div],+h2[div],+h3[div],+h4[div],+h5[div],+h6[div],+a[div],*[*]',
                       force_br_newlines : false,
                       force_p_newlines : false,
                       forced_root_block : '',
