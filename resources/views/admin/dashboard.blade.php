@@ -10,6 +10,10 @@
 @endsection
 
 @section('content')
+    @if (config('custom.japan') && !empty(trans('messages.dashboard.notice')))
+        <h1>{!! trans('messages.dashboard.notice') !!}</h1>
+    @endif
+
     <h1 class="mb-2 mt-4">{{ trans('messages.backend_dashboard_hello', ['name' => Auth::user()->admin->displayName()]) }}</h1>
     <p>{{ trans('messages.backend_dashboard_welcome') }}</p>
 
