@@ -977,6 +977,7 @@
   'customers_growth' => '顧客の成長',
   'dashboard' => 'ダッシュボード',
   'dashboard.credit.wording' => '以下は、契約プランの使用状況です。',
+  'dashboard.notice' => '',
   'data' => 'データ',
   'database' => 'データベース',
   'database_configuration' => 'データベース構成',
