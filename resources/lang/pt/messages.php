@@ -977,6 +977,7 @@
   'customers_growth' => 'Crescimento de clientes',
   'dashboard' => 'Painel de Control',
   'dashboard.credit.wording' => 'Below is the summary of how you spend your credits',
+  'dashboard.notice' => '',
   'data' => 'Data',
   'database' => 'Base de dados',
   'database_configuration' => 'Configuração da base de dados',

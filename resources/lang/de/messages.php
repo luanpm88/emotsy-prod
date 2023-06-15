@@ -976,6 +976,7 @@
   'customers_growth' => 'Kundenwachstum',
   'dashboard' => 'Dashboard',
   'dashboard.credit.wording' => 'Nachfolgend finden Sie eine Zusammenfassung, wie Sie Ihre Zahlung ausgeben',
+  'dashboard.notice' => '',
   'data' => 'Daten',
   'database' => 'Datenbank',
   'database_configuration' => 'Datenbankkonfiguration',

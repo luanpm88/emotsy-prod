@@ -977,6 +977,7 @@
   'customers_growth' => 'Incremento dei clienti',
   'dashboard' => 'Dashboard',
   'dashboard.credit.wording' => 'Di seguito &egrave; riportato il riepilogo di come si spendono i crediti',
+  'dashboard.notice' => '',
   'data' => 'Dati',
   'database' => 'Database',
   'database_configuration' => 'Configurazione Database',
