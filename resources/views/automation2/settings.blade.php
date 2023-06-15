@@ -11,24 +11,31 @@
     
     <div class="row mb-3">
         <div class="col-md-8">
-            @include('helpers.form_control', [
-                'type' => 'text',
-                'class' => '',
-                'label' => trans('messages.automation.automation_name'),
-                'name' => 'name',
-                'value' => $automation->name,
-                'help_class' => 'automation',
-                'rules' => $automation->rules(),
-            ])
-            
-            @include('helpers.form_control', [
-                'name' => 'mail_list_uid',
-                'type' => 'select',
-                'label' => trans('messages.automation.choose_list'),
-                'value' => ($automation->mailList ? $automation->mailList->uid : ''),
-                'options' => Auth::user()->customer->readCache('MailListSelectOptions', []),
-                'rules' => $automation->rules(),
-            ])
+            <div class="mb-3 {{ $errors->has('name') ? 'has-error' : '' }}">
+                <label class="form-label">{{ trans('messages.automation.automation_name') }}</label>
+                <input type="text" name="name" value="{{ $automation->name }}" class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}" />
+                @if ($errors->has('name'))
+                    <span class="help-block">
+                        {{ $errors->first('name') }}
+                    </span>
+                @endif
+            </div>
+
+            <div class="mb-3 {{ $errors->has('mail_list_uid') ? 'has-error' : '' }}">
+                <label class="form-label">{{ trans('messages.automation.choose_list') }}</label>
+                <select class="form-select select" name="mail_list_uid">
+                    @foreach(Auth::user()->customer->readCache('MailListSelectOptions', []) as $option)
+                        <option {{ $automation->mailList->uid == $option['value'] ? 'selected' : '' }} value="{{ $option['value'] }}">
+                            {{ $option['text'] }}
+                        </option> 
+                    @endforeach
+                </select>
+                @if ($errors->has('mail_list_uid'))
+                    <span class="help-block">
+                        {{ $errors->first('mail_list_uid') }}
+                    </span>
+                @endif
+            </div>
 
             <div class="automation-segment">
 
@@ -37,15 +44,22 @@
             @if (config('custom.japan'))
                 <input type="hidden" name="timezone" value="Asia/Tokyo" />
             @else
-                @include('helpers.form_control', [
-                    'type' => 'select',
-                    'name' => 'timezone',
-                    'value' => \Auth::user()->customer->timezone ?? config('app.timezone'),
-                    'options' => Tool::getTimezoneSelectOptions(),
-                    'include_blank' => trans('messages.choose'),
-                    'rules' => $automation->rules(),
-                    'disabled' => true,
-                ])
+                <div class="mb-3 {{ $errors->has('timezone') ? 'has-error' : '' }}">
+                    <label class="form-label">{{ trans('messages.automation.choose_list') }}</label>
+                    <select disabled class="form-select select disabled" name="timezone">
+                        <option>{{ trans('messages.choose') }}</option>
+                        @foreach(Tool::getTimezoneSelectOptions() as $option)
+                            <option {{ (\Auth::user()->customer->timezone ?? config('app.timezone')) == $option['value'] ? 'selected' : '' }} value="{{ $option['value'] }}">
+                                {{ $option['text'] }}
+                            </option> 
+                        @endforeach
+                    </select>
+                    @if ($errors->has('timezone'))
+                        <span class="help-block">
+                            {{ $errors->first('timezone') }}
+                        </span>
+                    @endif
+                </div>
             @endif
                 
         </div>
@@ -143,6 +157,7 @@
             url: url,
             method: 'POST',
             data: form.serialize(),
+            globalError: false,
             statusCode: {
                 // validate error
                 400: function (res) {
