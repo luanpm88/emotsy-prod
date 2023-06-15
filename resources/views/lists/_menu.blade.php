@@ -48,24 +48,26 @@
                     @endif
                 </ul>
             </li>
-            <li class="nav-item {{ in_array($menu, ['segment','segment_add']) ? 'active' : '' }}">
-                <a href="{{ action("AccountController@contact") }}" class="nav-link level-1 dropdown-toggle" data-bs-toggle="dropdown">
-                <span class="material-symbols-rounded">splitscreen</span> {{ trans('messages.segments') }}
-                <span class="caret"></span>
-                </a>
-                <ul class="dropdown-menu dropdown-menu-end">
-                    <li class="nav-item {{ in_array($menu, ['segment']) ? 'active' : '' }}">
-                    <a class="dropdown-item" href="{{ action('SegmentController@index', $list->uid) }}">
-                    <span class="material-symbols-rounded">format_list_bulleted</span> {{ trans('messages.view_all') }}
+            @if (Auth::user()->customer->can("list", new Acelle\Model\Segment()))
+                <li class="nav-item {{ in_array($menu, ['segment','segment_add']) ? 'active' : '' }}">
+                    <a href="{{ action("AccountController@contact") }}" class="nav-link level-1 dropdown-toggle" data-bs-toggle="dropdown">
+                    <span class="material-symbols-rounded">splitscreen</span> {{ trans('messages.segments') }}
+                    <span class="caret"></span>
                     </a>
-                    </li>
-                    <li class="nav-item {{ in_array($menu, ['segment_add']) ? 'active' : '' }}">
-                    <a class="dropdown-item" href="{{ action('SegmentController@create', $list->uid) }}">
-                    <span class="material-symbols-rounded">add</span> {{ trans('messages.add') }}
-                    </a>
-                    </li>
-                </ul>
-            </li>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li class="nav-item {{ in_array($menu, ['segment']) ? 'active' : '' }}">
+                        <a class="dropdown-item" href="{{ action('SegmentController@index', $list->uid) }}">
+                        <span class="material-symbols-rounded">format_list_bulleted</span> {{ trans('messages.view_all') }}
+                        </a>
+                        </li>
+                        <li class="nav-item {{ in_array($menu, ['segment_add']) ? 'active' : '' }}">
+                        <a class="dropdown-item" href="{{ action('SegmentController@create', $list->uid) }}">
+                        <span class="material-symbols-rounded">add</span> {{ trans('messages.add') }}
+                        </a>
+                        </li>
+                    </ul>
+                </li>
+            @endif
             <li class="nav-item {{ in_array($menu, ['embedded','page']) ? 'active' : '' }}">
                 <a href="#menu" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
                 <span class="material-symbols-rounded">web</span> {{ trans('messages.custom_forms_and_emails') }}

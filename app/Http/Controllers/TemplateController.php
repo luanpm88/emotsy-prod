@@ -31,9 +31,9 @@ class TemplateController extends Controller
     public function listing(Request $request)
     {
         if ($request->from == 'mine') {
-            $templates = $request->user()->customer->templates()->email();
+            $templates = $request->user()->customer->templates()->notPreserved()->email();
         } elseif ($request->from == 'gallery') {
-            $templates = Template::shared()->email();
+            $templates = Template::shared()->notPreserved()->email();
         }
 
         // view
@@ -420,7 +420,7 @@ class TemplateController extends Controller
         $category = \Acelle\Model\TemplateCategory::findByUid($request->category_uid);
 
         // sort, pagination
-        $templates = $category->templates()->shared()->email()->search($request->keyword)
+        $templates = $category->templates()->shared()->notPreserved()->email()->search($request->keyword)
             ->orderBy($request->sort_order, $request->sort_direction)
             ->paginate($request->per_page);
 
@@ -591,5 +591,10 @@ class TemplateController extends Controller
     public function parseRss(Request $request)
     {
         return parseRss($request->config);
+    }
+
+    public function chat()
+    {
+        return view('templates.chat');
     }
 }

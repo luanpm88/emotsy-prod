@@ -28,6 +28,15 @@ class PlanPolicy
     {
         $can = $user->admin->getPermission('plan_create') == 'yes';
 
+        // config/limit.php
+        $limit = app_profile('plan.limit');
+        if (!is_null($limit)) {
+            $planCount = Plan::count();
+            $can = $can && ($planCount < $limit);
+        } else {
+            // ignore limit because it is null
+        }
+
         return $can;
     }
 

@@ -23,6 +23,16 @@ class ServiceProvider extends Base
         // Register translation file
         $this->loadTranslationsFrom(storage_path('app/data/plugins/{{ author }}/{{ name }}/lang/'), '{{ name }}');
 
+        // Publish plugin assets, remember to tag them with 'plugin' tag
+        // Acelle shall execute the following command after installing any plugin:
+        //
+        //     php artisan vendor:publish --tag=plugin --force
+        //
+        $this->publishes([
+            // any
+        ], 'plugin');
+
+
         // Register the translation file against Acelle translation management
         Hook::register('add_translation_file', function() {
             return [

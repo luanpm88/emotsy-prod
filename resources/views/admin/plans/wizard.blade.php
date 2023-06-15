@@ -15,13 +15,14 @@
             
                     <p>{{ trans('messages.plan.general.details.intro') }}</p>
                         
-                    @include('helpers.form_control', [
-                        'type' => 'text',
+                    @include('admin.chat._plan_name', [
                         'name' => 'plan[general][name]',
-                        'label' => trans('messages.plan.name'),
                         'value' => $plan->name,
-                        'help_class' => 'plan',
-                        'rules' => $plan->generalRules()
+                    ])
+
+                    @include('admin.chat._plan_description', [
+                        'name' => 'plan[general][description]',
+                        'value' => $plan->description,
                     ])
                     
                     @include('helpers.form_control', [

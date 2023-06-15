@@ -1196,6 +1196,21 @@ function getSiteLogoUrl($type)
     }
 }
 
+function app_profile($key)
+{
+    $profile = config('custom.app_profile');
+    if (is_null($profile)) {
+        return null;
+    }
+
+    $configFile = config_path("{$profile}.php");
+    if (!\File::exists($configFile)) {
+        throw new \Exception("Profile file does not exists: {$configFile}");
+    }
+
+    return config("{$profile}.{$key}");
+}
+
 function get_app_name()
 {
     $name = \Acelle\Model\Setting::get('site_name') ?: config('app.name');

@@ -467,7 +467,7 @@ class SendingServerController extends Controller
             $server->quota_value = '1000';
             $server->quota_base = '1';
             $server->quota_unit = 'hour';
-            $server->setOption('sending_limit', '1000_per_hour');
+            $server->setOption('sending_limit', 'unlimited');
         }
 
         // save posted data

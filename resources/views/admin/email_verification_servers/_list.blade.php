@@ -23,14 +23,14 @@
                     <span class="text-muted">{{ trans('messages.created_at') }}: {{ Auth::user()->admin->formatDateTime($server->created_at, 'datetime_full') }}</span>
                 </td>
                 <td>
-                    <div class="single-stat-box pull-left ml-20">
+                    <div class="single-stat-box pull-left ml-4">
                         <span class="no-margin stat-num kq_search">{{ $server->getTypeName() }}</span>
                         <br />
                         <span class="text-muted">{{ trans('messages.email_verification_server_type') }}</span>
                     </div>
                 </td>
                 <td>
-                    <div class="single-stat-box pull-left ml-20">
+                    <div class="single-stat-box pull-left ml-4">
                         <span class="text-muted"><strong>{{ trans('messages.email_verification_server.credits_usage', ['count' => number_with_delimiter($server->getCreditsUsed('verify')) ]) }}</strong></span>
                         <br />
                         <span class="text-muted2">{{ trans('messages.sending_server.speed', ['limit' => $server->getSpeedLimitString()]) }}</span>

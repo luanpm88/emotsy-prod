@@ -81,6 +81,10 @@
     </div>
 @elseif (strpos($operator, 'created_date') !== false)
     @include('segments.operator.created_date')
+@elseif ($field && in_array($field->type, [Acelle\Model\Field::TYPE_DATE]))
+    @include('segments.conditions.date')
+@elseif ($field && in_array($field->type, [Acelle\Model\Field::TYPE_DATETIME]))
+    @include('segments.conditions.datetime')
 @else
     <div class="row">
         <div class="col-md-6 operator-col">

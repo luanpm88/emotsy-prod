@@ -67,9 +67,11 @@
                 @endif
             </div>
             <div class="text-end">
-                <a href="{{ action("MailListController@create") }}" role="button" class="btn btn-secondary">
-                    <span class="material-symbols-rounded">add</span> {{ trans('messages.create_list') }}
-                </a>
+                @if (Auth::user()->customer->can('create', new Acelle\Model\MailList()))
+                    <a href="{{ action("MailListController@create") }}" role="button" class="btn btn-secondary">
+                        <span class="material-symbols-rounded">add</span> {{ trans('messages.create_list') }}
+                    </a>
+                @endif
             </div>
         </div>
 

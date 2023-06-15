@@ -44,12 +44,24 @@
             </div>
         </li>
         @if (config('app.saas'))
-            @can("admin_access", Auth::user())
-                <li class="border-bottom"><a href="{{ action("Admin\HomeController@index") }}" class="dropdown-item d-flex align-items-center">
-                <i class="navbar-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1" x="0px" y="0px" viewBox="0 0 93.8 89" style="enable-background:new 0 0 93.8 89;" xml:space="preserve"><style type="text/css">.st0{fill:#333333;}</style><g id="Layer_2_1_"><g id="Layer_1-2"><path class="st0" d="M59.2,89H18.4C8.3,89,0,79.6,0,68.1V20.8C0,9.3,8.3,0,18.4,0h40.8c9.4,0,17.3,8,18.3,18.7l-7,0.6 C69.9,12.3,65,7,59.2,7H18.4C12.1,7,7,13.2,7,20.8v47.3C7,75.8,12.1,82,18.4,82h40.8c5.8,0,10.7-5.3,11.3-12.4l7,0.6 C76.5,80.9,68.7,89,59.2,89z"/><rect x="40.6" y="41" class="st0" width="24.1" height="7"/><polygon class="st0" points="58.8,64.7 93.8,44.5 58.8,24.2 "/></g></g></svg>
-                </i>{{ trans('messages.admin_view') }}</a></li>
+            @if (isSiteDemo()) 
+                <li>
+                    <a href="{{ action("Controller@demo") }}" class="dropdown-item d-flex align-items-center border-bottom">
+                        <i class="navbar-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1" x="0px" y="0px" viewBox="0 0 93.8 89" style="enable-background:new 0 0 93.8 89;" xml:space="preserve"><style type="text/css">.st0{fill:#333333;}</style><g id="Layer_2_1_"><g id="Layer_1-2"><path class="st0" d="M59.2,89H18.4C8.3,89,0,79.6,0,68.1V20.8C0,9.3,8.3,0,18.4,0h40.8c9.4,0,17.3,8,18.3,18.7l-7,0.6 C69.9,12.3,65,7,59.2,7H18.4C12.1,7,7,13.2,7,20.8v47.3C7,75.8,12.1,82,18.4,82h40.8c5.8,0,10.7-5.3,11.3-12.4l7,0.6 C76.5,80.9,68.7,89,59.2,89z"/><rect x="40.6" y="41" class="st0" width="24.1" height="7"/><polygon class="st0" points="58.8,64.7 93.8,44.5 58.8,24.2 "/></g></g></svg>
+                        </i>{{ trans('messages.switch_view') }}
+                    </a>
+                </li>
                 <li class="divider"></li>
+            @else
+                @can("admin_access", Auth::user())
+                    <li class="border-bottom"><a href="{{ action("Admin\HomeController@index") }}" class="dropdown-item d-flex align-items-center">
+                        <i class="navbar-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1" x="0px" y="0px" viewBox="0 0 93.8 89" style="enable-background:new 0 0 93.8 89;" xml:space="preserve"><style type="text/css">.st0{fill:#333333;}</style><g id="Layer_2_1_"><g id="Layer_1-2"><path class="st0" d="M59.2,89H18.4C8.3,89,0,79.6,0,68.1V20.8C0,9.3,8.3,0,18.4,0h40.8c9.4,0,17.3,8,18.3,18.7l-7,0.6 C69.9,12.3,65,7,59.2,7H18.4C12.1,7,7,13.2,7,20.8v47.3C7,75.8,12.1,82,18.4,82h40.8c5.8,0,10.7-5.3,11.3-12.4l7,0.6 C76.5,80.9,68.7,89,59.2,89z"/><rect x="40.6" y="41" class="st0" width="24.1" height="7"/><polygon class="st0" points="58.8,64.7 93.8,44.5 58.8,24.2 "/></g></g></svg>
+                        </i>{{ trans('messages.admin_view') }}</a>
+                    </li>
+                    <li class="divider"></li>
+                @endif
             @endif
             @if (request()->user()->customer->getCurrentActiveSubscription())
                 <li class="nav-item">
@@ -63,16 +75,19 @@
             @endif
             <li class="nav-item {{ $menu == 'subscription' ? 'active' : '' }}">
                 <a href="{{ action('SubscriptionController@index') }}" class="dropdown-item d-flex align-items-center">
-                <i class="navbar-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1" x="0px" y="0px" viewBox="0 0 92 94.2" style="enable-background:new 0 0 92 94.2;" xml:space="preserve"><style type="text/css">.st0{fill:#333333;}</style><g id="Layer_2_1_"><g id="Layer_1-2"><path class="st0" d="M46.1,94.2c-12.3,0-24.6-4.8-33.8-14.3c-1.3-1.4-1.3-3.6,0.1-4.9c1.4-1.3,3.6-1.3,4.9,0.1 C32.7,90.9,58,91.3,73.9,76c5.6-5.4,9.5-12.3,11.2-20c0.4-1.9,2.3-3.1,4.2-2.6c1.9,0.4,3.1,2.3,2.6,4.2c-2,9-6.6,17.1-13.2,23.5 C69.6,89.8,57.8,94.2,46.1,94.2z"/><polygon class="st0" points="4.1,89.6 3.5,56.8 32.2,72.6 "/><path class="st0" d="M3.5,40.9c-0.3,0-0.5,0-0.8-0.1c-1.9-0.4-3.1-2.3-2.6-4.2C5,15.1,23.9,0,46,0c0.1,0,0.1,0,0.2,0 C58.8,0,71,5.2,79.7,14.3c1.3,1.4,1.3,3.6-0.1,4.9c-1.4,1.3-3.6,1.3-4.9-0.1C67.3,11.4,56.9,7,46.2,7c-0.1,0-0.1,0-0.2,0 C27.2,7,11.1,19.8,6.9,38.2C6.5,39.8,5.1,40.9,3.5,40.9z"/><polygon class="st0" points="59.8,21.6 88.5,37.4 87.9,4.6 "/><path class="st0" d="M43.3,69.9V64c-3.4,0-6.8-0.9-9.8-2.6l1.7-5.6c2.8,1.6,6,2.5,9.3,2.6c3.8,0,6.4-1.9,6.4-4.7s-2.1-4.5-6.6-6.1 C38,45.3,34,42.4,34,36.9s3.6-9.1,9.6-10.2v-5.9h4.9v5.6c2.9,0,5.7,0.7,8.3,2l-1.6,5.5c-2.5-1.4-5.3-2.1-8.2-2.1 c-4.2,0-5.7,2.2-5.7,4.2s2.2,3.9,7.3,5.9c6.7,2.5,9.7,5.8,9.7,11.1s-3.5,9.6-10.1,10.7v6.2H43.3z"/></g></g></svg>
-                </i>{{ trans('messages.subscriptions') }}
-                    <span class="position-relative" style="width:100%">
-                        @if (Auth::user()->customer->hasSubscriptionNotice())
-                            <i class="material-symbols-rounded subscription-warning-icon text-danger" style="font-size: inherit;
-                                position: absolute;
-                                right: 0;
-                                top: 0;margin-top: -10px">info</i>
-                        @endif
+                    <i class="navbar-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1" x="0px" y="0px" viewBox="0 0 92 94.2" style="enable-background:new 0 0 92 94.2;" xml:space="preserve"><style type="text/css">.st0{fill:#333333;}</style><g id="Layer_2_1_"><g id="Layer_1-2"><path class="st0" d="M46.1,94.2c-12.3,0-24.6-4.8-33.8-14.3c-1.3-1.4-1.3-3.6,0.1-4.9c1.4-1.3,3.6-1.3,4.9,0.1 C32.7,90.9,58,91.3,73.9,76c5.6-5.4,9.5-12.3,11.2-20c0.4-1.9,2.3-3.1,4.2-2.6c1.9,0.4,3.1,2.3,2.6,4.2c-2,9-6.6,17.1-13.2,23.5 C69.6,89.8,57.8,94.2,46.1,94.2z"/><polygon class="st0" points="4.1,89.6 3.5,56.8 32.2,72.6 "/><path class="st0" d="M3.5,40.9c-0.3,0-0.5,0-0.8-0.1c-1.9-0.4-3.1-2.3-2.6-4.2C5,15.1,23.9,0,46,0c0.1,0,0.1,0,0.2,0 C58.8,0,71,5.2,79.7,14.3c1.3,1.4,1.3,3.6-0.1,4.9c-1.4,1.3-3.6,1.3-4.9-0.1C67.3,11.4,56.9,7,46.2,7c-0.1,0-0.1,0-0.2,0 C27.2,7,11.1,19.8,6.9,38.2C6.5,39.8,5.1,40.9,3.5,40.9z"/><polygon class="st0" points="59.8,21.6 88.5,37.4 87.9,4.6 "/><path class="st0" d="M43.3,69.9V64c-3.4,0-6.8-0.9-9.8-2.6l1.7-5.6c2.8,1.6,6,2.5,9.3,2.6c3.8,0,6.4-1.9,6.4-4.7s-2.1-4.5-6.6-6.1 C38,45.3,34,42.4,34,36.9s3.6-9.1,9.6-10.2v-5.9h4.9v5.6c2.9,0,5.7,0.7,8.3,2l-1.6,5.5c-2.5-1.4-5.3-2.1-8.2-2.1 c-4.2,0-5.7,2.2-5.7,4.2s2.2,3.9,7.3,5.9c6.7,2.5,9.7,5.8,9.7,11.1s-3.5,9.6-10.1,10.7v6.2H43.3z"/></g></g></svg>
+                    </i>
+                    <span class="">{{ trans('messages.subscriptions') }}</span>
+                    <span class="position-relative ms-auto">
+                        <span class="position-absolute" style="width:100%">
+                            @if (Auth::user()->customer->hasSubscriptionNotice())
+                                <i class="material-symbols-rounded subscription-warning-icon text-danger" style="font-size: inherit;
+                                    position: absolute;
+                                    right: 0;
+                                    top: 0;margin-top: -10px">info</i>
+                            @endif
+                        </span>
                     </span>
                 </a>
             </li>
@@ -92,7 +107,7 @@
         @if (!config('app.saas'))
             <li class="nav-item border-top {{ $menu == 'log' ? 'active' : '' }}"><a href="{{ action("AccountController@logs") }}" class="dropdown-item d-flex align-items-center">
                 <i class="navbar-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 109.3 94.4"><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><g id="Layer_2-2" data-name="Layer 2"><g id="Layer_1-2-2" data-name="Layer 1-2"><g id="Layer_2-2-2" data-name="Layer 2-2"><g id="Layer_1-2-2-2" data-name="Layer 1-2-2"><path d="M62.2,94.4a45.3,45.3,0,0,1-5.2-.3,48.1,48.1,0,0,1-18.1-5.8,3.5,3.5,0,0,1-1.3-4.8h0A3.2,3.2,0,0,1,42,82.1h.3A40.2,40.2,0,1,0,22.2,42.8a3.6,3.6,0,0,1-3.9,3.1A3.5,3.5,0,0,1,15.2,42h0a47.2,47.2,0,1,1,47,52.4Z" style="fill:#333"/><polygon points="38.6 33.3 24.8 69.9 0 39.7 38.6 33.3" style="fill:#333"/><path d="M84.2,63.8a3.3,3.3,0,0,1-1.7-.4L60.4,51.2a3.5,3.5,0,0,1-1.8-3.1V29a3.5,3.5,0,1,1,7,0V46.1L85.9,57.3A3.5,3.5,0,0,1,87.3,62,3.5,3.5,0,0,1,84.2,63.8Z" style="fill:#333"/></g></g></g></g></g></g></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 109.3 94.4"><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><g id="Layer_2-2" data-name="Layer 2"><g id="Layer_1-2-2" data-name="Layer 1-2"><g id="Layer_2-2-2" data-name="Layer 2-2"><g id="Layer_1-2-2-2" data-name="Layer 1-2-2"><path d="M62.2,94.4a45.3,45.3,0,0,1-5.2-.3,48.1,48.1,0,0,1-18.1-5.8,3.5,3.5,0,0,1-1.3-4.8h0A3.2,3.2,0,0,1,42,82.1h.3A40.2,40.2,0,1,0,22.2,42.8a3.6,3.6,0,0,1-3.9,3.1A3.5,3.5,0,0,1,15.2,42h0a47.2,47.2,0,1,1,47,52.4Z" style="fill:#333"/><polygon points="38.6 33.3 24.8 69.9 0 39.7 38.6 33.3" style="fill:#333"/><path class="color-badge" d="M84.2,63.8a3.3,3.3,0,0,1-1.7-.4L60.4,51.2a3.5,3.5,0,0,1-1.8-3.1V29a3.5,3.5,0,1,1,7,0V46.1L85.9,57.3A3.5,3.5,0,0,1,87.3,62,3.5,3.5,0,0,1,84.2,63.8Z" style="fill:#333"/></g></g></g></g></g></g></svg>
                 </i>{{ trans('messages.activities') }}
             
             </a></li>

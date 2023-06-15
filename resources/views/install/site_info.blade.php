@@ -243,6 +243,18 @@
                     'rules' => $smtp_rules
                 ])
             </div>
+
+            <div class="mailer-setting sendmail">
+                <div class="alert alert-warning" style="display: flex; flex-direction: row; align-items: center; justify-content: space-between;">
+                    <div style="display: flex; flex-direction: row; align-items: center;">
+                        <div style="padding-right: 40px">
+                            <h4>{{ trans('messages.system.sendmail.warning') }}</h4>
+                            <p>{{ trans('messages.system.sendmail.warning.desc') }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="col-md-6 mailer-setting sendmail">
                 @include('helpers.form_control', [
                     'type' => 'text',

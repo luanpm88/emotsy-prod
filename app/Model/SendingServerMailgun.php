@@ -214,4 +214,9 @@ class SendingServerMailgun extends SendingServer
     {
         $this->setupWebhooks();
     }
+
+    public function getCustomValidationError()
+    {
+        return ['aws_region.required' => trans('messages.sending_server.mailgun.error.host.required')];
+    }
 }

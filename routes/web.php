@@ -69,7 +69,10 @@ Route::get('/p/assets/{path}', [ function ($token) {
 
     if (\File::exists($absPath)) {
         $mime_type = \Acelle\Library\File::getFileType($absPath);
-        return response()->file($absPath, array('Content-Type' => $mime_type));
+        return response()->file($absPath, array(
+            'Content-Type' => $mime_type,
+            'Content-Length' => filesize($absPath),
+        ));
     } else {
         abort(404);
     }
@@ -82,7 +85,10 @@ Route::get('assets/{dirname}/{basename}', [ function ($dirname, $basename) {
 
     if (\File::exists($absPath)) {
         $mimetype = \Acelle\Library\File::getFileType($absPath);
-        return response()->file($absPath, array('Content-Type' => $mimetype));
+        return response()->file($absPath, array(
+            'Content-Type' => $mimetype,
+            'Content-Length' => filesize($absPath),
+        ));
     } else {
         abort(404);
     }
@@ -137,6 +143,39 @@ Route::group(['middleware' => ['not_installed', 'not_logged_in']], function () {
 
     // plan
     Route::get('plans/list/{style?}', 'PlanController@publicListPage');
+
+    // public campaign report
+    Route::get('pub/campaigns/job/{uid}/download', 'Public\CampaignController@download');
+    Route::get('pub/campaigns/{uid}/tracking-log/download', 'Public\CampaignController@trackingLogDownload');
+    Route::get('pub/campaigns/job/{uid}/progress', 'Public\CampaignController@trackingLogExportProgress');
+    Route::get('pub/campaigns/{uid}/tracking-log/download', 'Public\CampaignController@trackingLogDownload');
+    Route::get('pub/campaigns/{uid}/overview', 'Public\CampaignController@overview');
+    Route::get('pub/campaigns/{uid}/subscribers', 'Public\CampaignController@subscribers');
+    Route::get('pub/campaigns/{uid}/subscribers/listing', 'Public\CampaignController@subscribersListing');
+    Route::get('pub/campaigns/{uid}/open-map', 'Public\CampaignController@openMap');
+    Route::get('pub/campaigns/{uid}/tracking-log', 'Public\CampaignController@trackingLog');
+    Route::get('pub/campaigns/{uid}/tracking-log/listing', 'Public\CampaignController@trackingLogListing');
+    Route::get('pub/campaigns/{uid}/bounce-log', 'Public\CampaignController@bounceLog');
+    Route::get('pub/campaigns/{uid}/bounce-log/listing', 'Public\CampaignController@bounceLogListing');
+    Route::get('pub/campaigns/{uid}/feedback-log', 'Public\CampaignController@feedbackLog');
+    Route::get('pub/campaigns/{uid}/feedback-log/listing', 'Public\CampaignController@feedbackLogListing');
+    Route::get('pub/campaigns/{uid}/open-log', 'Public\CampaignController@openLog');
+    Route::get('pub/campaigns/{uid}/open-log/listing', 'Public\CampaignController@openLogListing');
+    Route::get('pub/campaigns/{uid}/click-log', 'Public\CampaignController@clickLog');
+    Route::get('pub/campaigns/{uid}/click-log/listing', 'Public\CampaignController@clickLogListing');
+    Route::get('pub/campaigns/{uid}/unsubscribe-log', 'Public\CampaignController@unsubscribeLog');
+    Route::get('pub/campaigns/{uid}/unsubscribe-log/listing', 'Public\CampaignController@unsubscribeLogListing');
+
+    Route::get('pub/campaigns/quick-view', 'Public\CampaignController@quickView');
+    Route::get('pub/campaigns/{uid}/chart24h', 'Public\CampaignController@chart24h');
+    Route::get('pub/campaigns/{uid}/chart', 'Public\CampaignController@chart');
+    Route::get('pub/campaigns/{uid}/chart/countries/open', 'Public\CampaignController@chartCountry');
+    Route::get('pub/campaigns/{uid}/chart/countries/click', 'Public\CampaignController@chartClickCountry');
+    Route::get('pub/campaigns/{uid}/overview', 'Public\CampaignController@overview');
+    Route::get('pub/campaigns/{uid}/links', 'Public\CampaignController@links');
+
+    Route::get('pub/campaigns/{uid}/preview/content/{subscriber_uid?}', 'Public\CampaignController@previewContent');
+    Route::get('pub/campaigns/{uid}/preview', 'Public\CampaignController@preview');
 });
 
 // Without authentication
@@ -403,6 +442,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::post('lists/{list_uid}/pages/{alias}/preview', 'PageController@preview');
 
     // Template
+    Route::get('templates/chat', 'TemplateController@chat');
     Route::post('templates/{uid}/export', 'TemplateController@export');
     Route::match(['get','post'], 'templates/{uid}/change-name', 'TemplateController@changeName');
     Route::match(['get','post'], 'templates/{uid}/categories', 'TemplateController@categories');
@@ -435,6 +475,10 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('templates/rss/parse', 'TemplateController@parseRss');
 
     // Campaign
+    Route::post('campaigns/{uid}/preheader/remove', 'CampaignController@preheaderRemove');
+    Route::match(['get', 'post'], 'campaigns/{uid}/preheader/add', 'CampaignController@preheaderAdd');
+    Route::get('campaigns/{uid}/preheader', 'CampaignController@preheader');
+
     Route::post('campaigns/webhooks/{webhook_uid}/test/{message_id}', 'CampaignController@webhooksTestMessage');
     Route::get('campaigns/{uid}/click-log/{message_id}/execute', 'CampaignController@clickLogExecute');
     Route::get('campaigns/{uid}/open-log/{message_id}/execute', 'CampaignController@openLogExecute');
@@ -485,6 +529,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::match(['get', 'post'], 'campaigns/send-test-email', 'CampaignController@sendTestEmail');
     Route::get('campaigns/delete/confirm', 'CampaignController@deleteConfirm');
     Route::match(['get', 'post'], 'campaigns/copy', 'CampaignController@copy');
+
     Route::get('campaigns/{uid}/subscribers', 'CampaignController@subscribers');
     Route::get('campaigns/{uid}/subscribers/listing', 'CampaignController@subscribersListing');
     Route::get('campaigns/{uid}/open-map', 'CampaignController@openMap');
@@ -508,6 +553,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('campaigns/{uid}/chart/countries/click', 'CampaignController@chartClickCountry');
     Route::get('campaigns/{uid}/overview', 'CampaignController@overview');
     Route::get('campaigns/{uid}/links', 'CampaignController@links');
+
     Route::get('campaigns/listing/{page?}', 'CampaignController@listing');
     Route::get('campaigns/{uid}/recipients', 'CampaignController@recipients');
     Route::post('campaigns/{uid}/recipients', 'CampaignController@recipients');
@@ -612,6 +658,13 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::post('notifications/{id}/hide', 'NotificationController@hide');
 
     // Automation2
+    Route::match(['get', 'post'], 'automation/{uid}/copy', 'Automation2Controller@copy');
+    Route::get('automation/{uid}/condition/remove', 'Automation2Controller@conditionRemove');
+
+    Route::post('automation/{uid}/template/{email_uid}/preheader/remove', 'Automation2Controller@emailPreheaderRemove');
+    Route::match(['get', 'post'], 'automation/{uid}/template/{email_uid}/preheader/add', 'Automation2Controller@emailPreheaderAdd');
+    Route::get('automation/{uid}/template/{email_uid}/preheader', 'Automation2Controller@emailPreheader');
+
     Route::match(['get', 'post'], 'automation/condition/wait/custom', 'Automation2Controller@conditionWaitCustom');
     Route::match(['get', 'post'], 'automation/{email_uid}/send-test-email', 'Automation2Controller@sendTestEmail');
     Route::get('automation/{uid}/cart/items', 'Automation2Controller@cartItems');
@@ -773,6 +826,9 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
 
     // Invoice
     Route::get('invoices/{uid}/download', 'InvoiceController@download');
+
+    // Chat
+    Route::post('chat', 'ChatController@chat');
 });
 
 // ADMIN AREA
@@ -806,6 +862,8 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::get('admin/templates/forms', 'FormTemplateController@index');
 
     // Template
+    Route::get('admin/templates/chat', 'TemplateController@chat');
+
     Route::post('admin/templates/{uid}/export', 'TemplateController@export');
     Route::match(['get','post'], 'admin/templates/{uid}/change-name', 'TemplateController@changeName');
     Route::match(['get','post'], 'admin/templates/{uid}/categories', 'TemplateController@categories');
@@ -1147,4 +1205,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::match(['get', 'post'], 'admin/auth/facebook-oauth', 'AuthController@facebookOAuth');
     Route::match(['get', 'post'], 'admin/auth/google-oauth', 'AuthController@googleOAuth');
     Route::match(['get', 'post'], 'admin/auth', 'AuthController@index');
+
+    // Chat
+    Route::post('admin/chat', 'ChatController@chat');
 });

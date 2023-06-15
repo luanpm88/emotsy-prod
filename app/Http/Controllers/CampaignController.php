@@ -67,23 +67,16 @@ class CampaignController extends Controller
      */
     public function create(Request $request)
     {
-        $customer = $request->user()->customer;
-        $campaign = new Campaign([
-            'track_open' => true,
-            'track_click' => true,
-            'sign_dkim' => true,
-        ]);
+        $campaign = $request->user()->customer->newDefaultCampaign();
 
         // authorize
         if (\Gate::denies('create', $campaign)) {
             return $this->noMoreItem();
         }
 
-        $campaign->name = trans('messages.untitled');
-        $campaign->customer_id = $customer->id;
-        $campaign->status = Campaign::STATUS_NEW;
-        $campaign->type = $request->type;
-        $campaign->save();
+        $campaign->saveFromArray([
+            'type' => $request->type,
+        ]);
 
         return redirect()->action('CampaignController@recipients', ['uid' => $campaign->uid]);
     }
@@ -342,9 +335,9 @@ class CampaignController extends Controller
         if ($request->from == 'mine') {
             $templates = $request->user()->customer->templates()->email();
         } elseif ($request->from == 'gallery') {
-            $templates = Template::shared()->email();
+            $templates = Template::shared()->notPreserved()->email();
         } else {
-            $templates = Template::shared()->email()
+            $templates = Template::shared()->notPreserved()->email()
                 ->orWhere('customer_id', '=', $request->user()->customer->id);
         }
 
@@ -574,7 +567,7 @@ class CampaignController extends Controller
                 $campaign->run_at = null;
             } else {
                 $runAtStr = $request->delivery_date.' '.$request->delivery_time;
-                $runAt = Carbon::createFromFormat('Y-m-d H:i', $runAtStr, $currentTimezone);
+                $runAt = Carbon::createFromFormat('Y-m-d H:i', $runAtStr, $currentTimezone)->timezone('UTC');
                 $campaign->run_at = $runAt; // store in UTC
             }
 
@@ -779,26 +772,91 @@ class CampaignController extends Controller
             'clicked' => [],
         ];
 
-        $hours = [];
-
-        // columns
-        for ($i = 23; $i >= 0; --$i) {
-            $time = Carbon::now()->timezone($currentTimezone)->subHours($i);
-            $result['columns'][] = $time->format('h') . ':00 ' . $time->format('A');
-            $hours[] = $time->format('H');
-        }
-
         // 24h collection
-        $openData24h = $campaign->openUniqHours(Carbon::now()->timezone($currentTimezone)->subHours(24), Carbon::now()->timezone($currentTimezone));
-        $clickData24h = $campaign->clickHours(Carbon::now()->timezone($currentTimezone)->subHours(24), Carbon::now()->timezone($currentTimezone));
+        if ($request->period == '24h') {
+            $hours = [];
 
-        // data
-        foreach ($hours as $hour) {
-            $num = isset($openData24h[$hour]) ? count($openData24h[$hour]) : 0;
-            $result['opened'][] = $num;
+            // columns
+            for ($i = 23; $i >= 0; --$i) {
+                $time = Carbon::now()->timezone($currentTimezone)->subHours($i);
+                $result['columns'][] = $time->format('h') . ':00 ' . $time->format('A');
+                $hours[] = $time->format('H');
+            }
 
-            $num = isset($clickData24h[$hour]) ? count($clickData24h[$hour]) : 0;
-            $result['clicked'][] = $num;
+            $openData24h = $campaign->openUniqHours(Carbon::now('UTC')->subHours(24), Carbon::now('UTC'));
+            $clickData24h = $campaign->clickHours(Carbon::now('UTC')->subHours(24), Carbon::now('UTC'));
+
+            // data
+            foreach ($hours as $hour) {
+                $num = isset($openData24h[$hour]) ? count($openData24h[$hour]) : 0;
+                $result['opened'][] = $num;
+
+                $num = isset($clickData24h[$hour]) ? count($clickData24h[$hour]) : 0;
+                $result['clicked'][] = $num;
+            }
+        } elseif ($request->period == '3_days') {
+            $days = [];
+
+            // columns
+            for ($i = 2; $i >= 0; --$i) {
+                $time = Carbon::now()->timezone($currentTimezone)->subDays($i);
+                $result['columns'][] = $time->format('m-d');
+                $days[] = $time->format('Y-m-d');
+            }
+
+            $openData = $campaign->openUniqDays(Carbon::now('UTC')->subDays(3), Carbon::now('UTC')->endOfDay());
+            $clickData = $campaign->clickDays(Carbon::now('UTC')->subDays(3), Carbon::now('UTC')->endOfDay());
+
+            // data
+            foreach ($days as $day) {
+                $num = isset($openData[$day]) ? count($openData[$day]) : 0;
+                $result['opened'][] = $num;
+
+                $num = isset($clickData[$day]) ? count($clickData[$day]) : 0;
+                $result['clicked'][] = $num;
+            }
+        } elseif ($request->period == '7_days') {
+            $days = [];
+
+            // columns
+            for ($i = 6; $i >= 0; --$i) {
+                $time = Carbon::now()->timezone($currentTimezone)->subDays($i);
+                $result['columns'][] = $time->format('m-d');
+                $days[] = $time->format('Y-m-d');
+            }
+
+            $openData = $campaign->openUniqDays(Carbon::now('UTC')->subDays(7), Carbon::now('UTC')->endOfDay());
+            $clickData = $campaign->clickDays(Carbon::now('UTC')->subDays(7), Carbon::now('UTC')->endOfDay());
+
+            // data
+            foreach ($days as $day) {
+                $num = isset($openData[$day]) ? count($openData[$day]) : 0;
+                $result['opened'][] = $num;
+
+                $num = isset($clickData[$day]) ? count($clickData[$day]) : 0;
+                $result['clicked'][] = $num;
+            }
+        } elseif ($request->period == 'last_month') {
+            $days = [];
+
+            // columns
+            for ($i = Carbon::now('UTC')->subMonths(1)->diff(Carbon::now('UTC'))->days-1; $i >= 0; --$i) {
+                $time = Carbon::now()->timezone($currentTimezone)->subDays($i);
+                $result['columns'][] = $time->format('m-d');
+                $days[] = $time->format('Y-m-d');
+            }
+
+            $openData = $campaign->openUniqDays(Carbon::now('UTC')->subMonths(1), Carbon::now('UTC')->endOfDay());
+            $clickData = $campaign->clickDays(Carbon::now('UTC')->subMonths(1), Carbon::now('UTC')->endOfDay());
+
+            // data
+            foreach ($days as $day) {
+                $num = isset($openData[$day]) ? count($openData[$day]) : 0;
+                $result['opened'][] = $num;
+
+                $num = isset($clickData[$day]) ? count($clickData[$day]) : 0;
+                $result['clicked'][] = $num;
+            }
         }
 
         return response()->json($result);
@@ -2399,6 +2457,74 @@ class CampaignController extends Controller
 
         return view('campaigns.openLogExecute', [
             'campaign' => $campaign,
+        ]);
+    }
+
+    public function preheader(Request $request)
+    {
+        $campaign = Campaign::findByUid($request->uid);
+
+        // authorize
+        if (\Gate::denies('update', $campaign)) {
+            return $this->notAuthorized();
+        }
+
+        return view('campaigns.preheader', [
+            'campaign' => $campaign,
+        ]);
+    }
+
+    public function preheaderAdd(Request $request)
+    {
+        $campaign = Campaign::findByUid($request->uid);
+
+        // authorize
+        if (\Gate::denies('update', $campaign)) {
+            return $this->notAuthorized();
+        }
+
+        // Save posted data
+        if ($request->isMethod('post')) {
+            $validator = \Validator::make($request->all(), [
+                'preheader' => 'required',
+            ]);
+
+            // redirect if fails
+            if ($validator->fails()) {
+                return response()->view('campaigns.preheaderAdd', [
+                    'campaign' => $campaign,
+                    'errors' => $validator->errors(),
+                ], 400);
+            }
+
+            // update preheader
+            $campaign->setPreheader($request->preheader);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => trans('messages.preheader.updated'),
+            ]);
+        }
+
+        return view('campaigns.preheaderAdd', [
+            'campaign' => $campaign,
+        ]);
+    }
+
+    public function preheaderRemove(Request $request)
+    {
+        $campaign = Campaign::findByUid($request->uid);
+
+        // authorize
+        if (\Gate::denies('update', $campaign)) {
+            return $this->notAuthorized();
+        }
+
+        $campaign->removePreheader();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => trans('messages.preheader.removed'),
         ]);
     }
 }

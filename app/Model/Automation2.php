@@ -116,14 +116,12 @@ class Automation2 extends Model
     {
         $thisYear = $this->customer->getCurrentTime()->format('Y');
         $thisId = $this->id;
-        return $this->subscribersToSend()->leftJoin('auto_triggers', function ($join) use ($thisId) {
-            $join->on('auto_triggers.subscriber_id', 'subscribers.id');
-            $join->where('auto_triggers.automation2_id', $thisId);
-        })
-                                   ->where(function ($query) use ($thisYear) {
-                                       $query->whereNull('auto_triggers.id')
-                                             ->orWhereRaw(sprintf('year(%s) < %s', table('auto_triggers.created_at'), $thisYear));
-                                   });
+        return $this->subscribersToSend()->whereNotIn('subscribers.id', function ($query) use ($thisYear) {
+            $query->select('subscriber_id')
+                  ->from('auto_triggers')
+                  ->where('automation2_id', $this->id)
+                  ->whereRaw(sprintf('year(%s) = %s', table('auto_triggers.created_at'), $thisYear));
+        });
     }
 
     /**
@@ -458,7 +456,7 @@ class Automation2 extends Model
             $this->logger()->warning(sprintf('Error while executing automation "%s". %s', $this->name, $ex->getMessage()));
         } finally {
             // Update the updated_at field
-            $this->touch();
+            // $this->touch();
         }
     }
 
@@ -702,10 +700,10 @@ class Automation2 extends Model
     /**
      * Check for list-subscription events.
      */
-    public function triggerImportedContacts()
+    public function triggerImportedContacts($importBatchId)
     {
-        $this->logger()->info(sprintf('Start triggering imported contacts'));
-        $subscribers = $this->notTriggeredSubscribers()->where('subscribers.subscription_type', '=', Subscriber::SUBSCRIPTION_TYPE_IMPORTED)->get();
+        $this->logger()->info(sprintf('Start triggering imported contacts for batch ID: '.$importBatchId));
+        $subscribers = $this->notTriggeredSubscribers()->where('import_batch_id', $importBatchId)->get();
         $total = count($subscribers);
         $this->logger()->info(sprintf('Triggering %s imported contacts', $total));
 
@@ -733,14 +731,14 @@ class Automation2 extends Model
 
         $trigger = $this->getTriggerAction();
         $now = $this->customer->getCurrentTime();
-        $eventDate = $this->customer->parseDateTime(sprintf('%s %s', $trigger->getOption('date'), $trigger->getOption('at')));
+        $eventDate = $this->customer->parseDateTimeFromUtcString(sprintf('%s %s', $trigger->getOption('date'), $trigger->getOption('at')));
 
         // Condition same date but after the specified time
         $format = 'Y-m-d';
         $checked = $now->gte($eventDate) && $now->format($format) == $eventDate->format($format);
 
         if (!$checked) {
-            $this->logger()->info(sprintf("It is now ({$now->toString('Y-m-d H:M:S')}) NOT the right date/time ({$eventDate->toString('Y-m-d H:M:S')}) for triggering "));
+            $this->logger()->info(sprintf("It is now %s, the scheduled time is: %s, i.e. %s.", $now->format('Y-m-d G:i:s P'), $eventDate->format('Y-m-d G:i:s P'), $eventDate->diffForHumans()));
             return;
         }
 
@@ -764,8 +762,8 @@ class Automation2 extends Model
         if (getenv('LOGFILE') != false) {
             $stream = new RotatingFileHandler(getenv('LOGFILE'), 0, Logger::DEBUG);
         } else {
-            $logfile = storage_path('logs/' . php_sapi_name() . '/automation-'.$this->uid.'.log');
-            $stream = new RotatingFileHandler($logfile, 0, Logger::WARNING);
+            $logfile = $this->getLogFile();
+            $stream = new RotatingFileHandler($logfile, 0, Logger::INFO);
         }
 
         $stream->setFormatter($formatter);
@@ -775,6 +773,11 @@ class Automation2 extends Model
         $logger->pushHandler($stream);
 
         return $logger;
+    }
+
+    public function getLogFile()
+    {
+        return storage_path('logs/' . php_sapi_name() . '/automation-'.$this->uid.'.log');
     }
 
     public function timelinesBy($subscriber)
@@ -962,10 +965,12 @@ class Automation2 extends Model
     // if $actionId is provided, get only subscribers who have been triggered and have gone through the action
     public function subscribers($actionId = null)
     {
-        if ($this->segment()->exists()) {
-            $query = $this->segment->subscribers();
+        $segments = $this->getSegments();
+
+        if ($segments->isEmpty()) {
+            $query = $this->mailList->subscribers();
         } else {
-            $query = $this->mailList->subscribers()->select('subscribers.*');
+            $query = Subscriber::getByListsAndSegments(...$segments);
         }
 
         if (!is_null($actionId)) {
@@ -1355,6 +1360,7 @@ class Automation2 extends Model
         ];
         $this->data = json_encode($data);
         $this->save();
+        $this->updateCache();
 
         return $validator;
     }
@@ -1532,5 +1538,83 @@ class Automation2 extends Model
         $result[] = ['text' => trans('messages.wait.custom'), 'value' => 'custom'];
 
         return $result;
+    }
+
+    public function deleteAndCleanup()
+    {
+        // clone email if exist
+        $this->getActions(function ($action) {
+            $options = $action->getOptions();
+            if (isset($options['email_uid'])) {
+                $originalEmail = Email::findByUid($options['email_uid']);
+
+                if ($originalEmail) {
+                    $originalEmail->deleteAndCleanup();
+                }
+            }
+        });
+
+        $this->delete();
+    }
+
+    public function duplicate()
+    {
+        $newAutomation = new self();
+        $newAutomation->newDefault();
+
+        // Get attrinutes from template
+        $newAutomation->customer_id = $this->customer_id;
+        $newAutomation->name = $this->name;
+        $newAutomation->mail_list_id = $this->mail_list_id;
+        $newAutomation->time_zone = $this->time_zone;
+        $newAutomation->data = $this->data;
+        $newAutomation->segment_id = $this->segment_id;
+        $newAutomation->status = self::STATUS_INACTIVE;
+
+        $newAutomation->save();
+
+        // clone email if exist
+        $newAutomation->getActions(function ($action) use ($newAutomation) {
+            $options = $action->getOptions();
+            if (isset($options['email_uid'])) {
+                $originalEmail = Email::findByUid($options['email_uid']);
+                $newEmail = $originalEmail->copy();
+
+                // fill list attributes to email
+                $newEmail->automation2_id = $newAutomation->id;
+                $newEmail->customer_id = $newAutomation->customer_id;
+                $newEmail->save();
+
+                // trick to change email
+                // $action->setOption('email_uid', $newEmail->uid);
+                $newAutomation->data = str_replace($options['email_uid'], $newEmail->uid, $newAutomation->data);
+                $newAutomation->save();
+            }
+        });
+
+        return $newAutomation;
+    }
+
+    public function copyFrom($automation, $params)
+    {
+        $validator = \Validator::make($params, [
+            'name' => 'required',
+            'mail_list_uid' => 'required',
+        ]);
+
+        // redirect if fails
+        if ($validator->fails()) {
+            return $validator;
+        }
+
+        // duplicate
+        $newAutomation = $automation->duplicate();
+
+        // custom data
+        $newAutomation->name = $params['name'];
+        $newAutomation->mail_list_id = MailList::findByUid($params['mail_list_uid'])->id;
+        $newAutomation->save();
+
+        return $validator;
     }
 }

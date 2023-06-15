@@ -10,7 +10,7 @@
 
         // load js
         FormPopupContent.loadJs([
-            '{{ URL::asset('core/js/jquery-3.6.0.min.js') }}',
+            '{{ URL::asset('core/js/jquery-3.6.4.min.js') }}',
             '{{ URL::asset('core/validate/jquery.validate.min.js') }}',
             '{{ action('Controller@jquery_validate_locale') }}',
             '{{ URL::asset('core/datetime/anytime.min.js') }}',

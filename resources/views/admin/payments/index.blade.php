@@ -81,28 +81,48 @@
             {{ csrf_field() }}
             <div class="row">
                 <div class="col-md-8">
-                    <div class="form-group checkbox-right-switch">
-                        @include('helpers.form_control', [
-                            'type' => 'checkbox',
-                            'name' => 'allowed_due_subscription',
-                            'value' => \Acelle\Model\Setting::get('allowed_due_subscription'),
-                            'label' => trans('messages.setting.allowed_due_subscription'),
-                            'help_class' => 'setting',
-                            'options' => ['no', 'yes'],
-                            'rules' => ['allowed_due_subscription' => 'required'],
-                        ])
+                    <div class="form-group">
+                        <div class="d-flex" style="width:100%">
+                            <div class="me-5">
+                                <label class="text-semibold">
+                                    {{ trans('messages.setting.allowed_due_subscription') }}
+                                </label>
+                                <p class="checkbox-description mt-1 mb-0">
+                                    {{ trans('messages.setting.allowed_due_subscription.help') }}
+                                </p>
+                            </div>
+                                
+                            <div class="d-flex align-items-top">
+                                @include('helpers.switch', [
+                                    'name' => 'allowed_due_subscription',
+                                    'option' => 'yes',
+                                    'unchecked_option' => 'no',
+                                    'value' => \Acelle\Model\Setting::get('allowed_due_subscription'),
+                                ])
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="form-group checkbox-right-switch">
-                        @include('helpers.form_control', [
-                            'type' => 'checkbox',
-                            'name' => 'not_require_card_for_trial',
-                            'value' => \Acelle\Model\Setting::get('not_require_card_for_trial'),
-                            'label' => trans('messages.setting.not_require_card_for_trial'),
-                            'help_class' => 'setting',
-                            'options' => ['no', 'yes'],
-                            'rules' => ['not_require_card_for_trial' => 'required'],
-                        ])
+                    <div class="form-group">
+                        <div class="d-flex" style="width:100%">
+                            <div class="me-5">
+                                <label class="text-semibold">
+                                    {{ trans('messages.setting.not_require_card_for_trial') }}
+                                </label>
+                                <p class="checkbox-description mt-1 mb-0">
+                                    {{ trans('messages.setting.not_require_card_for_trial.help') }}
+                                </p>
+                            </div>
+                                
+                            <div class="d-flex align-items-top">
+                                @include('helpers.switch', [
+                                    'name' => 'not_require_card_for_trial',
+                                    'option' => 'yes',
+                                    'unchecked_option' => 'no',
+                                    'value' => \Acelle\Model\Setting::get('not_require_card_for_trial'),
+                                ])
+                            </div>
+                        </div>
                     </div>
                     
                     <div class="form-group checkbox-right-switch">

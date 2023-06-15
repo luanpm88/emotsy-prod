@@ -3,6 +3,9 @@ body {
     line-height: 1.8;
     font-family: Roboto, Arial, Helvetica, Verdana;
 }
+table p {
+    line-height: 1.8;
+}
 a {
     color: #136bf5;
 }

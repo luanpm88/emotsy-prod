@@ -3,6 +3,7 @@
 namespace Acelle\Http\Controllers\Api;
 
 use Acelle\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 
 /**
  * /api/v1/campaigns - API controller for managing campaigns.
@@ -26,6 +27,69 @@ class CampaignController extends Controller
             ->get();
 
         return \Response::json($lists, 200);
+    }
+
+    public function store(Request $request)
+    {
+        $user = \Auth::guard('api')->user();
+        $campaign = $user->customer->newDefaultCampaign();
+
+        // authorize
+        if (!$user->can('create', $campaign)) {
+            return \Response::json(array('status' => 0, 'message' => 'Unauthorized'), 403);
+        }
+
+        // validator
+        $validator = \Validator::make($request->all(), [
+            'name' => 'required',
+            'subject' => 'required',
+            'from_email' => 'required|email',
+            'from_name' => 'required',
+            'reply_to' => 'required|email',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->messages(), 403);
+        }
+
+        // save from array
+        $campaign->saveFromArray($request->all());
+
+        // success
+        return \Response::json(array(
+            'status' => 1,
+            'message' => trans('messages.campaign.created'),
+            'attributes' => $campaign->getAttributes(),
+        ), 200);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $user = \Auth::guard('api')->user();
+        $campaign = \Acelle\Model\Campaign::findByUid($id);
+
+        // authorize
+        if (!$user->can('update', $campaign)) {
+            return \Response::json(array('status' => 0, 'message' => 'Unauthorized'), 403);
+        }
+
+        // validator
+        $validator = \Validator::make($request->all(), [
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->messages(), 403);
+        }
+
+        // save from array
+        $campaign->saveFromArray($request->all());
+
+        // success
+        return \Response::json(array(
+            'status' => 1,
+            'message' => trans('messages.campaign.updated'),
+            'attributes' => $campaign->getAttributes(),
+        ), 200);
     }
 
     /**
@@ -143,5 +207,101 @@ class CampaignController extends Controller
             'status' => 'success',
             'message' => 'The campaign was paused',
             'campaign' => $campaign], 200);
+    }
+
+    public function run($id)
+    {
+        $user = \Auth::guard('api')->user();
+        $campaign = \Acelle\Model\Campaign::findByUid($id);
+
+        // check if item exists
+        if (!$campaign) {
+            return \Response::json(array('message' => 'Campaign not found'), 404);
+        }
+
+        // authorize
+        if (!$user->can('run', $campaign)) {
+            return \Response::json(array('message' => 'Unauthorized'), 401);
+        }
+
+        // @todo
+        $campaign->launch();
+
+        // statistics
+        $campaign = [
+            'uid' => $campaign->uid,
+            'name' => $campaign->name,
+            'list' => ($campaign->mailList ? $campaign->mailList->name : ''),
+            'segment' => ($campaign->segment ? $campaign->segment->name : ''),
+            'from_email' => $campaign->from_email,
+            'from_name' => $campaign->from_name,
+            'remind_message' => $campaign->remind_message,
+            'status' => $campaign->status,
+            'created_at' => $campaign->created_at,
+            'updated_at' => $campaign->updated_at,
+        ];
+
+        return \Response::json([
+            'status' => 'success',
+            'message' => 'The campaign was launched',
+            'campaign' => $campaign], 200);
+    }
+
+    public function resume($id)
+    {
+        $user = \Auth::guard('api')->user();
+        $campaign = \Acelle\Model\Campaign::findByUid($id);
+
+        // check if item exists
+        if (!$campaign) {
+            return \Response::json(array('message' => 'Campaign not found'), 404);
+        }
+
+        // authorize
+        if (!$user->can('restart', $campaign)) {
+            return \Response::json(array('message' => 'Unauthorized'), 401);
+        }
+
+        // @todo
+        $campaign->resume();
+
+        // statistics
+        $campaign = [
+            'uid' => $campaign->uid,
+            'name' => $campaign->name,
+            'list' => ($campaign->mailList ? $campaign->mailList->name : ''),
+            'segment' => ($campaign->segment ? $campaign->segment->name : ''),
+            'from_email' => $campaign->from_email,
+            'from_name' => $campaign->from_name,
+            'remind_message' => $campaign->remind_message,
+            'status' => $campaign->status,
+            'created_at' => $campaign->created_at,
+            'updated_at' => $campaign->updated_at,
+        ];
+
+        return \Response::json([
+            'status' => 'success',
+            'message' => 'The campaign was resumed',
+            'campaign' => $campaign], 200);
+    }
+
+    public function delete($uid)
+    {
+        $user = \Auth::guard('api')->user();
+        $campaign = \Acelle\Model\Campaign::findByUid($uid);
+
+        // check if item exists
+        if (!$campaign) {
+            return \Response::json(array('status' => 0, 'message' => 'Campaign list not found'), 404);
+        }
+
+        // authorize
+        if (!$user->can('delete', $campaign)) {
+            return \Response::json(array('status' => 0, 'message' => 'Unauthorized'), 401);
+        }
+
+        $campaign->deleteAndCleanup();
+
+        return \Response::json(array('status' => 1, 'message' => 'Deleted'), 200);
     }
 }

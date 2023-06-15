@@ -35,7 +35,7 @@
                             </a>
                             <span class="text-muted">{{ trans("messages." . Acelle\Library\Tool::getPluralPrase('subscriber', $list->readCache('SubscriberCount', 0))) }}</span>
                         </div>
-                        <div class="single-stat-box pull-left ml-20">
+                        <div class="single-stat-box pull-left ml-4">
                             <span class="no-margin text-primary stat-num">{{ number_to_percentage($list->openUniqRate()) }}</span>
                             <div class="progress progress-xxs">
                                 <div class="progress-bar progress-bar-info" style="width: {{ $list->readCache('UniqOpenRate', 0)*100 }}%">
@@ -43,7 +43,7 @@
                             </div>
                             <span class="text-muted small">{{ trans('messages.open_rate') }}</span>
                         </div>
-                        <div class="single-stat-box pull-left ml-20">
+                        <div class="single-stat-box pull-left ml-4">
                             <span class="no-margin text-primary stat-num">{{ number_to_percentage($list->readCache('ClickedRate', 0)) }}</span>
                             <div class="progress progress-xxs">
                                 <div class="progress-bar progress-bar-info" style="width: {{ $list->readCache('ClickedRate', 0)*100 }}%">
@@ -72,11 +72,13 @@
                                         <span class="material-symbols-rounded me-2">people</span> {{ trans("messages.subscribers") }}
                                     </a>
                                 </li>
-                                <li>
-                                    <a class="dropdown-item" href="{{ action('SegmentController@index', $list->uid) }}">
-                                        <span class="material-symbols-rounded me-2">library_add_check</span> {{ trans('messages.segments') }}
-                                    </a>
-                                </li>
+                                @if (Auth::user()->customer->can("list", new Acelle\Model\Segment()))
+                                    <li>
+                                        <a class="dropdown-item" href="{{ action('SegmentController@index', $list->uid) }}">
+                                            <span class="material-symbols-rounded me-2">library_add_check</span> {{ trans('messages.segments') }}
+                                        </a>
+                                    </li>
+                                @endif
                                 <li>
                                     <a class="dropdown-item" href="{{ action('MailListController@embeddedForm', $list->uid) }}">
                                         <span class="material-symbols-rounded me-2">dns</span> {{ trans('messages.Embedded_form') }}

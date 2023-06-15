@@ -8,35 +8,35 @@
                     <img width="50" class="rounded-circle me-2" src="{{ $account->customer->user->getProfileImageUrl() }}" alt="">
                 </td>
                 <td>
-                    <div class="single-stat-box pull-left ml-20">
+                    <div class="single-stat-box pull-left ml-4">
                         <span class="no-margin stat-num kq_search">{{ $account->customer->displayName() }}</span>
                         <br />
                         <span class="text-muted">{{ trans('messages.customer') }}</span>
                     </div>
                 </td>
                 <td>
-                    <div class="single-stat-box pull-left ml-20">
+                    <div class="single-stat-box pull-left ml-4">
                         <span class="no-margin stat-num kq_search">{{ $account->sendingServer->name }}</span>
                         <br />
                         <span class="text-muted">{{ trans('messages.sending_server.type.' . $account->sendingServer->type) }}</span>
                     </div>
                 </td>
                 <td>
-                    <div class="single-stat-box pull-left ml-20">
+                    <div class="single-stat-box pull-left ml-4">
                         <span class="no-margin stat-num kq_search">{{ $account->username }}</span>
                         <br />
                         <span class="text-muted">{{ trans('messages.name') }}</span>
                     </div>
                 </td>
                 <td>
-                    <div class="single-stat-box pull-left ml-20">
+                    <div class="single-stat-box pull-left ml-4">
                         <span class="no-margin stat-num kq_search">{{ $account->getSecuredApiKey() }}</span>
                         <br />
                         <span class="text-muted">{{ trans('messages.sub_account.api_key') }}</span>
                     </div>
                 </td>
                 <td>
-                    <div class="single-stat-box pull-left ml-20">
+                    <div class="single-stat-box pull-left ml-4">
                         <span class="no-margin stat-num kq_search">{{ Auth::user()->admin->formatDateTime($account->created_at, 'datetime_full') }}</span>
                         <br />
                         <span class="text-muted">{{ trans('messages.created_at') }}</span>

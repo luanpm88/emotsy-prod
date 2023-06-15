@@ -1,5 +1,5 @@
 @if ($automations->count() > 0)
-    <table class="table table-box pml-table mt-2"
+    <table id="Automation2ListTable" class="table table-box pml-table mt-2"
         current-page="{{ empty(request()->page) ? 1 : empty(request()->page) }}"
     >
         @foreach ($automations as $key => $automation)
@@ -97,6 +97,18 @@
                                         </a>
                                     </li>
                                 @endcan
+                                @can('create', $automation)
+                                    <li>
+                                        <a
+                                            list-action="copy"
+                                            class="dropdown-item"
+                                            href="{{ action('Automation2Controller@copy', $automation->uid) }}"
+                                        >
+                                            <span class="material-symbols-rounded me-2">content_copy</span>
+                                            {{ trans('messages.automation.copy') }}
+                                        </a>
+                                    </li>
+                                @endcan
                                 @if (\Gate::allows('delete', $automation))
                                     <li>
                                         <a  
@@ -117,6 +129,28 @@
         @endforeach
     </table>
     @include('elements/_per_page_select', ["items" => $automations])
+
+    <script>
+        var Automation2List = {
+            showCopyPopup: function(copyUrl) {
+                this.copyPopup = new Popup({
+                    url: copyUrl,
+                });
+
+                this.copyPopup.load();
+            }
+        }
+
+        $(function() {
+            $('#Automation2ListTable [list-action="copy"]').on('click', function(e) {
+                e.preventDefault();
+
+                var copyUrl = $(this).attr('href');
+
+                Automation2List.showCopyPopup(copyUrl);
+            });
+        });
+    </script>
     
 @elseif (!empty(request()->keyword))
     <div class="empty-list">

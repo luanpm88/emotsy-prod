@@ -3,7 +3,7 @@
 namespace Acelle\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Acelle\Model\Segment;
+use Acelle\Model\Field;
 
 class SegmentController extends Controller
 {
@@ -14,6 +14,11 @@ class SegmentController extends Controller
      */
     public function index(Request $request)
     {
+        // authorize
+        if (\Gate::denies('list', \Acelle\Model\Segment::class)) {
+            return $this->notAuthorized();
+        }
+
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
 
         if (!$list) {
@@ -32,6 +37,11 @@ class SegmentController extends Controller
      */
     public function listing(Request $request)
     {
+        // authorize
+        if (\Gate::denies('list', \Acelle\Model\Segment::class)) {
+            return $this->notAuthorized();
+        }
+
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
         $segments = \Acelle\Model\Segment::search($request)->paginate($request->per_page);
 
@@ -380,6 +390,7 @@ class SegmentController extends Controller
     {
         $field = \Acelle\Model\Field::findByUid($request->field_uid);
 
+        // legacy code
         return view('segments._condition_value_control', [
             'operator' => $request->operator,
             'field_uid' => $request->field_uid,

@@ -39,6 +39,7 @@ class TemplateController extends Controller
         $view = $request->view ? $request->view : 'grid';
 
         $templates = Template::shared()
+            ->notPreserved()
             ->email()
             ->categoryUid($request->category_uid)
             ->search($request->keyword)
@@ -389,7 +390,7 @@ class TemplateController extends Controller
         }
 
         // Gallery
-        $templates = Template::where('customer_id', '=', null);
+        $templates = Template::shared()->notPreserved();
 
         // validate and save posted data
         if ($request->isMethod('post')) {
@@ -607,5 +608,10 @@ class TemplateController extends Controller
         return view('admin.templates.changeName', [
             'template' => $template,
         ]);
+    }
+
+    public function chat()
+    {
+        return view('admin.templates.chat');
     }
 }

@@ -6,7 +6,6 @@ use Acelle\Events\MailListSubscription;
 use Acelle\Events\MailListUnsubscription;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
-use Acelle\Library\Log as MailLog;
 
 use Acelle\Model\Automation2;
 
@@ -30,7 +29,6 @@ class TriggerAutomation
      */
     public function handleMailListSubscription(MailListSubscription $event)
     {
-        MailLog::info('[MailListSubscription::TriggerAutomation] triggered');
         $automations = $event->subscriber->mailList->automations;
         $automations = $automations->filter(function ($auto, $key) {
             return $auto->isActive() && (
@@ -40,7 +38,25 @@ class TriggerAutomation
 
         foreach ($automations as $auto) {
             if (is_null($auto->getAutoTriggerFor($event->subscriber))) {
-                $auto->initTrigger($event->subscriber);
+                $segments = $auto->getSegments();
+
+                // If there is no segment condition, trigger the contact
+                if ($segments->isEmpty()) {
+                    $auto->initTrigger($event->subscriber);
+                    return;
+                }
+
+                $matched = false;
+                foreach ($segments as $segment) {
+                    if ($segment->isSubscriberIncluded($event->subscriber)) {
+                        $matched = true;
+                        break;
+                    }
+                }
+
+                if ($matched) {
+                    $auto->initTrigger($event->subscriber);
+                }
             }
         }
     }
@@ -53,7 +69,6 @@ class TriggerAutomation
      */
     public function handleMailListUnsubscription(MailListUnsubscription $event)
     {
-        MailLog::info('[MailListUnsubscription::TriggerAutomation] triggered');
         $automations = $event->subscriber->mailList->automations;
         $automations = $automations->filter(function ($auto, $key) {
             return $auto->isActive() && (

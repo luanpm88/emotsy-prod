@@ -28,6 +28,8 @@ use Validator;
 
 class BounceLog extends Model
 {
+    // Bounce types might have other values like: Permanent, Transient...
+    // See: https://docs.aws.amazon.com/ses/latest/dg/notification-contents.html#bounce-types
     public const HARD = 'hard';
     public const SOFT = 'soft';
     public const UNKNOWN = 'unknown';
@@ -51,7 +53,7 @@ class BounceLog extends Model
         ];
 
         $messages = [
-            'type.in' => 'Allowed values for type is sent | bounced | reported | failed'
+            'type.in' => 'Allowed values for type include: sent | bounced | reported | failed'
         ];
 
         $validator = Validator::make($params, $rules, $messages);
@@ -148,8 +150,6 @@ class BounceLog extends Model
      */
     public static function filter($request)
     {
-        $user = $request->user();
-        $customer = $user->customer;
         $query = self::select('bounce_logs.*');
         $query = $query->leftJoin('tracking_logs', 'bounce_logs.message_id', '=', 'tracking_logs.message_id');
         $query = $query->leftJoin('subscribers', 'subscribers.id', '=', 'tracking_logs.subscriber_id');

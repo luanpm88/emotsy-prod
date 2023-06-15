@@ -29,6 +29,9 @@ class Field extends Model
 {
     use HasUid;
 
+    public const TYPE_DATE='date';
+    public const TYPE_DATETIME='datetime';
+
     /**
      * The attributes that are mass assignable.
      *

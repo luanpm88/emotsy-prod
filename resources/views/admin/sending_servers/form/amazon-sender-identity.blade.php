@@ -43,16 +43,14 @@
                                 @elseif ($attributes['VerificationStatus'] == 'Success')
                                     <td align="center">
                                         @if (checkEmail($domain))
-                                            <label>
-                                                <input type="checkbox" name="options[emails][]" value="{{ $domain }}" class="switchery"
-                                                    {{ $attributes['Selected'] ? " checked" : "" }}
-                                                />
+                                            <label class="checker">
+                                                <input {{ $attributes['Selected'] ? " checked" : "" }} type="checkbox" name="options[emails][]" value="{{ $domain }}" class="styled4">
+                                                <span class="checker-symbol"></span>
                                             </label>
                                         @else
-                                            <label>
-                                                <input type="checkbox" name="options[domains][]" value="{{ $domain }}" class="switchery"
-                                                    {{ $attributes['Selected'] ? " checked" : "" }}
-                                                />
+                                            <label class="checker">
+                                                <input {{ $attributes['Selected'] ? " checked" : "" }} type="checkbox" name="options[domains][]" value="{{ $domain }}" class="styled4">
+                                                <span class="checker-symbol"></span>
                                             </label>
                                         @endif
                                     </td>

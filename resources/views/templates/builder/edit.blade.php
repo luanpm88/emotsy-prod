@@ -23,6 +23,12 @@
     <link href="{{ URL::asset('core/css/UrlAutoFill.css') }}" rel="stylesheet" type="text/css">
     <script src="{{ URL::asset('core/js/UrlAutoFill.js') }}"></script>
 
+    @if (Acelle\Model\Plugin::isInstalled('acelle/chatgpt') && Acelle\Model\Plugin::getByName('acelle/chatgpt')->isActive())
+        <!-- ChatGPT -->
+        <link href="{{ URL::asset('core/css/builder-chat.css') }}" rel="stylesheet" type="text/css">
+        @include('chat._builder_script')
+    @endif
+
     <script>
         (function($){
             $.fn.serializeObject = function(){
@@ -162,7 +168,7 @@
                       typeahead_urls: false,
                       remove_script_host : false,
                       valid_elements : '*[*],meta[*]',
-                      valid_children: '+h1[div],+h2[div],+h3[div],+h4[div],+h5[div],+h6[div],+a[div]',
+                      valid_children: '+p[ol],+p[ul],+h1[div],+h2[div],+h3[div],+h4[div],+h5[div],+h6[div],+a[div],*[*]',
                       plugins: 'image link lists autolink',
                       font_formats: "Andale Mono=andale mono,times; Arial=arial,helvetica,sans-serif; Arial Black=arial black,avant garde; Book Antiqua=book antiqua,palatino; Comic Sans MS=comic sans ms,sans-serif; Courier New=courier new,courier; Georgia=georgia,palatino; Helvetica=helvetica; Impact=impact,chicago; MS Mincho=ms mincho; MS PMincho=ms pmincho; Oswald=oswald; Symbol=symbol; Tahoma=tahoma,arial,helvetica,sans-serif; Terminal=terminal,monaco; Times New Roman=times new roman,times; Trebuchet MS=trebuchet ms,geneva; Verdana=verdana,geneva; Webdings=webdings; Wingdings=wingdings,zapf dingbats",
                       //toolbar: 'undo redo | bold italic underline | fontselect fontsizeselect | forecolor backcolor | alignleft aligncenter alignright alignfull | numlist bullist outdent indent',
@@ -231,6 +237,11 @@
 
                     // add custom css
                     this.addCustomCss('{{ url('/core/css/builder-edit.css') }}');
+
+                    @if (Acelle\Model\Plugin::isInstalled('acelle/chatgpt') && Acelle\Model\Plugin::getByName('acelle/chatgpt')->isActive())
+                        // chatGPT plugin
+                        TemplateBuilderEdit.chatUI.init();
+                    @endif
                 }
             });
 

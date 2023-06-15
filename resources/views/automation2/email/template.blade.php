@@ -68,6 +68,8 @@
                     
                 @include('automation2.email._attachment')
             </div>
+
+            @include('automation2.email._preheader')
                 
             <div class="text-end mt-5">
                 <a href="javascript:;" onclick="sidebar.load(); popup.hide()" class="btn btn-inline-secondary mr-1">
@@ -139,6 +141,9 @@
                             saveData(function() {
                                 // reload
                                 popup.load();
+
+                                // reload sidebar
+                                sidebar.load();
 
                                 // notify
                                 notify(response.status, '{{ trans('messages.notify.success') }}', response.message);

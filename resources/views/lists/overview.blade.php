@@ -1,5 +1,5 @@
 @extends('layouts.core.frontend', [
-	'menu' => 'list',
+    'menu' => 'list',
 ])
 
 @section('title', $list->name . " - " . number_with_delimiter($list->readCache('SubscriberCount')) . " " . trans('messages.subscribers'))
@@ -18,8 +18,8 @@
 @section('content')
 
     @include("lists._menu", [
-		'menu' => 'overview',
-	])
+        'menu' => 'overview',
+    ])
 
     <h2 class="text-primary my-4">{{ trans('messages.list_performance') }}</h2>
 

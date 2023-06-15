@@ -44,7 +44,7 @@
                     <span class="text-muted">{{ trans('messages.created_at') }}: {{ Auth::user()->admin->formatDateTime($item->created_at, 'datetime_full') }}</span>
                 </td>
                 <td>
-                    <div class="single-stat-box pull-left ml-20">
+                    <div class="single-stat-box pull-left ml-4">
                         @if ($server->isExtended())
                             <span class="no-margin stat-num kq_search">{{ $server->getTypeName() }}</span>
                         @else
@@ -57,19 +57,19 @@
                 </td>
                 <td>
                     @if (!empty($item->host))
-                        <div class="single-stat-box pull-left ml-20">
+                        <div class="single-stat-box pull-left ml-4">
                             <span title="{{ $item->host }}" class="no-margin stat-num kq_search domain-truncate">{{ $item->host }}</span>
                             <br />
                             <span class="text-muted">{{ trans('messages.host') }}</span>
                         </div>
                     @elseif (!empty($item->aws_region))
-                        <div class="single-stat-box pull-left ml-20">
+                        <div class="single-stat-box pull-left ml-4">
                             <span title="{{ $item->aws_region }}" class="no-margin stat-num kq_search domain-truncate">{{ $item->aws_region }}</span>
                             <br />
                             <span class="text-muted">{{ trans('messages.aws_region') }}</span>
                         </div>
                     @elseif (!empty($item->domain))
-                        <div class="single-stat-box pull-left ml-20">
+                        <div class="single-stat-box pull-left ml-4">
                             <span title="{{ $item->domain }}" class="no-margin stat-num kq_search domain-truncate">{{ $item->domain }}</span>
                             <br />
                             <span class="text-muted">{{ trans('messages.domain') }}</span>
@@ -77,7 +77,7 @@
                     @endif
                 </td>
                 <td>
-                    <div class="single-stat-box pull-left ml-20">
+                    <div class="single-stat-box pull-left ml-4">
                         <span class="text-muted"><strong>{{ number_with_delimiter($item->getCreditsUsed('send')) }}</strong> {{ trans('messages.sending_server.email_sent') }}</span>
                         <br />
                         <span class="text-muted2">{{ trans('messages.sending_server.speed', ['limit' => $item->displayQuota()]) }}</span>

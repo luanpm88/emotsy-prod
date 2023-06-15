@@ -22,8 +22,16 @@ class PaymentController extends Controller
      */
     public function index(Request $request, MessageBag $message_bag)
     {
+        $gateways = Billing::getGateways();
+
+        if (!config('app.demo')) {
+            $gateways = array_filter($gateways, function ($gateway) {
+                return $gateway->getType() != 'coinpayments';
+            });
+        }
+
         return view('admin.payments.index', [
-            'gateways' => Billing::getGateways(),
+            'gateways' => $gateways,
         ]);
     }
 

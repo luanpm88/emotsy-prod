@@ -356,16 +356,6 @@ class Customer extends Model
     }
 
     /**
-     * Get all items.
-     *
-     * @return collect
-     */
-    public static function getAll()
-    {
-        return self::select('customers.*');
-    }
-
-    /**
      * Items per page.
      *
      * @var array
@@ -756,7 +746,7 @@ class Customer extends Model
     {
         $data = ['items' => [], 'more' => true];
 
-        $query = \Acelle\Model\Customer::getAll()->leftJoin('users', 'users.customer_id', '=', 'customers.id');
+        $query = self::select('customers.*')->leftJoin('users', 'users.customer_id', '=', 'customers.id');
         if (isset($request->q)) {
             $keyword = $request->q;
             $query = $query->where(function ($q) use ($keyword) {
@@ -1531,7 +1521,7 @@ class Customer extends Model
     public function assignPlan($plan)
     {
         if ($this->getNewOrActiveSubscription()) {
-            throw new Exception("This customer already has a new or active subscription");
+            throw new Exception(trans('messages.customer.already_new_active_sub'));
         }
 
         $customer = $this;
@@ -1660,6 +1650,14 @@ class Customer extends Model
         return $dt;
     }
 
+    // Take a string, assume it is in UTC, convert it to the current user's timezone
+    public function parseDateTimeFromUtcString($datetime)
+    {
+        $dt = Carbon::parse($datetime, 'UTC');
+        $dt = $dt->timezone($this->timezone);
+        return $dt;
+    }
+
     public function formatCurrentDateTime($name)
     {
         return $this->formatDateTime($this->getCurrentTime(), $name);
@@ -1669,8 +1667,7 @@ class Customer extends Model
     {
         // $name is a format name like: date_full | date_short
         // See config('localization')['*'] for the full list of available format names
-
-        return format_datetime($datetime, $name, $this->getLanguageCode());
+        return format_datetime($datetime->timezone($this->getTimezone()), $name, $this->getLanguageCode());
     }
 
     /**
@@ -1921,9 +1918,12 @@ class Customer extends Model
         $result = [];
 
         // Gallery
-        $templates = \Acelle\Model\Template::where('customer_id', '=', null)
-            ->orWhere('customer_id', '=', $this->id)
+        $templates = \Acelle\Model\Template::where('customer_id', '=', $this->id)
+            ->orWhere(function ($query) {
+                $query->notPreserved();
+            })
             ->orderBy('customer_id')
+            ->notPreserved()
             ->get();
 
         foreach ($templates as $template) {
@@ -2083,5 +2083,13 @@ class Customer extends Model
         } else {
             return htmlspecialchars(trim($this->user->first_name.' '.$this->user->last_name));
         }
+    }
+
+    public function newDefaultCampaign()
+    {
+        $campaign = Campaign::newDefault();
+        $campaign->customer_id = $this->id;
+
+        return $campaign;
     }
 }

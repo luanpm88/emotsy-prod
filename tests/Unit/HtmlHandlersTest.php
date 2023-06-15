@@ -13,6 +13,7 @@ use Acelle\Library\HtmlHandler\MakeInlineCss;
 use Acelle\Library\HtmlHandler\TransformUrl;
 use Acelle\Library\HtmlHandler\AddDoctype;
 use Acelle\Library\HtmlHandler\RemoveTitleTag;
+use Acelle\Library\HtmlHandler\AddPreheader;
 use Acelle\Model\Subscriber;
 use Acelle\Model\Campaign;
 use Acelle\Model\MailList;
@@ -63,6 +64,18 @@ class HtmlHandlersTest extends TestCase
         $out = $pipeline->build()->process($html);
 
         $this->assertEquals($out, '<!DOCTYPE html><html><body><div>Content main</div><a>click me</a><p>read me</p></body></html>');
+    }
+
+    public function test_add_preheader()
+    {
+        $preheader = 'Hello world';
+        $pipeline = new PipelineBuilder();
+        $pipeline->add(new AddPreheader('Hello world'));
+
+        $html = "<html><body><div>Content main</div></body></html>";
+        $out = $pipeline->build()->process($html);
+
+        $this->assertEquals($out, "<!DOCTYPE html><html><body><div style=\"display:none;font-size:1px;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden\">{$preheader}</div><div>Content main</div></body></html>");
     }
 
     public function test_transform_tag()

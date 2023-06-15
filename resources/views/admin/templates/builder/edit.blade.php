@@ -23,6 +23,13 @@
     <link href="{{ URL::asset('core/css/UrlAutoFill.css') }}" rel="stylesheet" type="text/css">
     <script src="{{ URL::asset('core/js/UrlAutoFill.js') }}"></script>
 
+    
+    @if (Acelle\Model\Plugin::isInstalled('acelle/chatgpt') && Acelle\Model\Plugin::getByName('acelle/chatgpt')->isActive())
+        <!-- ChatGPT -->
+        <link href="{{ URL::asset('core/css/builder-chat.css') }}" rel="stylesheet" type="text/css">
+        @include('admin.chat._builder_script')
+    @endif
+
     @if ($template->theme)
         @include('builder.themes.' . $template->theme)
     @endif
@@ -88,7 +95,7 @@
                       inline: true,
                       menubar: false,
                       valid_elements : '*[*],meta[*]',
-                      valid_children: '+h1[div],+h2[div],+h3[div],+h4[div],+h5[div],+h6[div],+a[div]',
+                      valid_children: '+p[ol],+p[ul],+h1[div],+h2[div],+h3[div],+h4[div],+h5[div],+h6[div],+a[div],*[*]',
                       force_br_newlines : false,
                       force_p_newlines : false,
                       forced_root_block : '',
@@ -164,17 +171,12 @@
 
                     // add custom css
                     this.addCustomCss('{{ url('/core/css/builder-edit.css') }}');
-                }
-            });
 
-            // product widgets
-            editor.addWidget(new ProductListWidget(), {
-                index: 0,
-                group: '{{ trans('builder.widget.e_commerce') }}',
-            });
-            editor.addWidget(new ProductWidget(), {
-                index: 0,
-                group: '{{ trans('builder.widget.e_commerce') }}',
+                    @if (Acelle\Model\Plugin::isInstalled('acelle/chatgpt') && Acelle\Model\Plugin::getByName('acelle/chatgpt')->isActive())
+                        // chatGPT plugin
+                        TemplateBuilderEdit.chatUI.init();
+                    @endif
+                }
             });
 
             // Rss widget

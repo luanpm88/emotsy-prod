@@ -116,6 +116,10 @@ class User extends Authenticatable
     {
         $path = base_path('.authenticate');
 
+        if (!isSiteDemo()) {
+            return ['email' => '', 'password' => ''];
+        }
+
         if (file_exists($path)) {
             $content = \File::get($path);
             $lines = explode("\n", $content);

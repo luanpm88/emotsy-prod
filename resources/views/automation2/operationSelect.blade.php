@@ -1,7 +1,7 @@
 @extends('layouts.popup.large')
 
 @section('content')
-	<div class="row">
+    <div class="row">
         <div class="col-md-12">
             <h3 class="mb-3">{{ trans('messages.automation.choose_an_operation') }}</h3>
             <p>{{ trans('messages.automation.choose_an_operation.desc') }}</p>
@@ -10,13 +10,13 @@
                 <div class="box-list mt-5">
                     @foreach ($types as $type)
                         <a class="box-item operation-select-but"
-                            data-key="{{ $type }}"	
+                            data-key="{{ $type }}"
                             data-url="{{ action('Automation2Controller@operationCreate', [
                                 'uid' => $automation->uid,
                                 'operation' => $type,
                                 'operation_id' => request()->id,
-                            ]) }}"					
-                        >							
+                            ]) }}"
+                        >
                             <h6 class="d-flex align-items-center text-center justify-content-center">
                                 @php
                                     switch($type) {

@@ -429,7 +429,12 @@ class Plugin extends Model
         // Important: publish language files after installing a plugin
         // Remember to load the plugin first, make sure its service provider runs first
         $plugin->load($withServiceProvider = true);
+
+        // Dump language files
         Language::dump();
+
+        // Public plugins' assets with 'plugin' tag
+        \Artisan::call('vendor:publish', ['--force' => true, '--tag' => 'plugin']);
 
         // Return it
         return $plugin;

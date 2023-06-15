@@ -212,6 +212,9 @@ class MailList extends Model
         // Example of outcome: /home/acelle/storage/app/tmp/import-000000.csv
         $filepath = $this->getImportFilePath($filename);
 
+        // Make sure file is accessible
+        chmod($filepath, 0775);
+
         return $filepath;
     }
 
@@ -1275,13 +1278,16 @@ class MailList extends Model
                 // using transaction to only commit at the end of the batch execution
                 DB::beginTransaction();
 
+                // Generate a batch id
+                $importBatchId = uniqid();
+
                 // Insert new subscribers from temp table to the main table
                 // Use SUBSTRING(MD5(UUID()), 1, 13) to produce a UNIQUE ID which is similar to the output of PHP uniqid()
                 // @TODO LIMITATION: tags are not updated if subscribers already exist
                 $insertToSubscribersSql = strtr(
                     '
-                    INSERT INTO %subscribers (uid, mail_list_id, email, status, subscription_type, tags, created_at, updated_at)
-                    SELECT SUBSTRING(MD5(UUID()), 1, 13), %list_id, uniq.email, %status, %type, uniq.tags, NOW(), NOW()
+                    INSERT INTO %subscribers (uid, mail_list_id, email, status, subscription_type, tags, import_batch_id, created_at, updated_at)
+                    SELECT SUBSTRING(MD5(UUID()), 1, 13), %list_id, uniq.email, %status, %type, uniq.tags, \'%import_batch_id\', NOW(), NOW()
                     FROM (
                         SELECT tmp.%email_field AS email, tmp.tags
                         FROM %tmp tmp
@@ -1292,6 +1298,7 @@ class MailList extends Model
                         '%list_id' => $this->id,
                         '%status' => db_quote(Subscriber::STATUS_SUBSCRIBED),
                         '%type' => db_quote(Subscriber::SUBSCRIPTION_TYPE_IMPORTED),
+                        '%import_batch_id' => $importBatchId,
                         '%tmp' => $tmpTable,
                         '%insert_limit' => $insertLimit,
                         '%email_field' => $emailFieldName
@@ -1369,8 +1376,8 @@ class MailList extends Model
                 // blacklist new emails (if any)
                 Blacklist::doBlacklist($this->customer);
 
-                // Trigger
-                MailListImported::dispatch($this);
+                // Event MailListImported($list)
+                MailListImported::dispatch($this, $importBatchId);
             });
 
             if (!is_null($progressCallback)) {

@@ -111,15 +111,15 @@ class Template extends Model
     // Templates that are not associated to any email or campaign
     public function scopeNotPreserved($query)
     {
-        $query->whereNotIn('id', function ($q) {
+        $query->whereNotIn('templates.id', function ($q) {
             $q->select('template_id')->from('emails')->whereNotNull('template_id');
         });
 
-        $query->whereNotIn('id', function ($q) {
+        $query->whereNotIn('templates.id', function ($q) {
             $q->select('template_id')->from('campaigns')->whereNotNull('template_id');
         });
 
-        $query->whereNotIn('id', function ($q) {
+        $query->whereNotIn('templates.id', function ($q) {
             $q->select('template_id')->from('forms')->whereNotNull('template_id');
         });
     }
@@ -385,7 +385,8 @@ class Template extends Model
         );
 
         $validator = Validator::make($request->all(), $rules, [
-            'file.mimetypes' => 'Input must be a valid .zip file',
+            'file.mimetypes' => trans('messages.template.validation.mimetypes'),
+            'uploaded' => trans('messages.template.validation.uploaded', ['size' => ini_get('upload_max_filesize')]),
         ]);
 
         if ($validator->fails()) {
@@ -958,7 +959,9 @@ class Template extends Model
         $result = [];
 
         // Gallery
-        $templates = self::shared()->email()
+        $templates = self::shared()
+            ->notPreserved()
+            ->email()
             ->get();
 
         foreach ($templates as $template) {
@@ -1187,8 +1190,14 @@ class Template extends Model
                 'dir' => database_path('templates/featured/005-blue/5d7b526bbfd4c'),
                 'category' => $categoryFeatured,
                 'builder' => true,
+            ], [
                 'name' => 'News Digest',
-                'dir' => database_path('templates/featured/000-04-rss-feed/6037a2356820zs'),
+                'dir' => database_path('templates/featured/000-04-rss-feed/6037a2356821'),
+                'category' => $categoryFeatured,
+                'builder' => true,
+            ], [
+                'name' => 'Linkedin Inspiration',
+                'dir' => database_path('templates/featured/006-linkedin/5d7b526bbfd7c'),
                 'category' => $categoryFeatured,
                 'builder' => true,
             ],

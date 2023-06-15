@@ -1,7 +1,6 @@
 @extends('layouts.core.page')
 
 @section('title', trans('messages.error'))
-	
 
 
 @section('content')

@@ -456,7 +456,7 @@ class Plan extends Model
             'campaign_max' => '-1',
             'automation_max' => '-1',
             'billing_cycle' => 'monthly',
-            'sending_limit' => '1000_per_hour',
+            'sending_limit' => 'unlimited',
             'sending_quota' => '-1',
             'sending_quota_time' => '-1',
             'sending_quota_time_unit' => 'day',

@@ -18,10 +18,25 @@ class MailListPolicy
 
     public function create(User $user)
     {
+        // init
         $customer = $user->customer;
         $max = $customer->getOption('list_max');
+        $isUnlimited = $max == -1; // -1 means unlimited
+        $notReachMax = $max > $customer->lists()->count();
 
-        return $max > $customer->lists()->count() || $max == -1;
+        // check max lists: unlimited or is not reach max
+        $can = $isUnlimited || $notReachMax;
+
+        // config/limit.php
+        $limit = app_profile('list.limit');
+        if (!is_null($limit)) {
+            $listsCount = $user->customer->listsCount();
+            $can = $can && ($listsCount < $limit);
+        } else {
+            // ignore limit because it is null
+        }
+
+        return $can;
     }
 
     public function update(User $user, MailList $item)

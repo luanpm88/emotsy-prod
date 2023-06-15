@@ -32,7 +32,7 @@ class Send extends Action
         */
 
         if ($this->options['init'] == 'false' || $this->options['init'] == false) {
-            throw new Exception("Email not set up yet");
+            throw new Exception(trans('messages.automation.email.error.not_set_up'));
         }
 
         $email = $this->getEmail();

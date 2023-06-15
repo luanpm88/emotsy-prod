@@ -1,3 +1,21 @@
+4.0.25-p516 / 2023-04-06
+==================
+
+ * Added: OpenAI framework support
+ * Added: allow users to delete a node in the middle of the automation workflow
+ * Added: support duplicate automation
+ * Added: allow user to easily enter custom URL for image widget
+ * Added: new PRO builder with more widgets
+ * Added: custom preheader for emails
+ * Added: more base email & form templates
+ * Added: support new GeoIP database, for more correct location detection
+ * Added: better auto mapping support for CSV import 
+ * Fixed: bounce handler does not work with certain types of bounced messages
+ * Fixed: timezone issue with automation triggers
+ * Fixed: certain Japanese characters do not show up correctly
+ * Fixed: better support for legacy versions of Outlook
+ * Fixed: better handle large attachments
+
 4.0.24-p497 / 2023-02-02
 ==================
 

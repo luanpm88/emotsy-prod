@@ -57,8 +57,16 @@
                 placeholder: 'Select product',
                 allowClear: false,
                 width: 'resolve',
+                language: {
+                    noResults: function() {
+                        return "{{ trans('messages.product.no_product_available') }}";
+                    },
+                    errorLoading: function() {
+                        return "{{ trans('messages.product.no_product_available') }}";
+                    }
+                },
                 ajax: {
-                    url: url,
+                    url: 'aaa',
                     dataType: 'json',
                     delay: 250,
 

@@ -141,6 +141,18 @@ class Segment extends Model
         ];
     }
 
+    public static function dateOperators()
+    {
+        return [
+            ['text' => trans('messages.operator.later'), 'value' => 'greater'],
+            ['text' => trans('messages.operator.earlier'), 'value' => 'less'],
+            ['text' => trans('messages.operator.is'), 'value' => 'equal'],
+            ['text' => trans('messages.operator.is_not'), 'value' => 'not_equal'],
+            ['text' => trans('messages.blank'), 'value' => 'blank'],
+            ['text' => trans('messages.not_blank'), 'value' => 'not_blank'],
+        ];
+    }
+
     /**
      * Get verification operators.
      *
@@ -252,10 +264,10 @@ class Segment extends Model
                         $cond = '(LOWER(sf'.$number.'.value) NOT LIKE '.db_quote('%'.$keyword.'%').' OR sf'.$number.'.value IS NULL)';
                         break;
                     case 'starts':
-                        $cond = 'LOWER(sf'.$number.'.value) LIKE '.db_quote('%'.$keyword.'%');
+                        $cond = 'LOWER(sf'.$number.'.value) LIKE '.db_quote($keyword.'%');
                         break;
                     case 'ends':
-                        $cond = 'LOWER(sf'.$number.'.value) LIKE '.db_quote('%'.$keyword.'%');
+                        $cond = 'LOWER(sf'.$number.'.value) LIKE '.db_quote('%'.$keyword);
                         break;
                     case 'greater':
                         if ($type == 'number') {
@@ -399,6 +411,13 @@ class Segment extends Model
         // var_dump($query->toSql());die();
 
         return $query;
+    }
+
+    public function isSubscriberIncluded($subscriber)
+    {
+        return $this->subscribers()
+                    ->where('uid', $subscriber->uid)
+                    ->exists();
     }
 
     /**

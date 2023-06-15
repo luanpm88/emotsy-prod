@@ -10,11 +10,21 @@ class WebsiteController extends Controller
 {
     public function index(Request $request)
     {
+        // authorize
+        if (\Gate::denies('list', Website::class)) {
+            return $this->notAuthorized();
+        }
+
         return view('websites.index');
     }
 
     public function create(Request $request)
     {
+        // authorize
+        if (\Gate::denies('create', Website::class)) {
+            return $this->notAuthorized();
+        }
+
         $website = Website::newDefault($request->user()->customer);
 
         if ($request->isMethod('post')) {
@@ -41,6 +51,11 @@ class WebsiteController extends Controller
 
     public function list(Request $request)
     {
+        // authorize
+        if (\Gate::denies('list', Website::class)) {
+            return $this->notAuthorized();
+        }
+
         // sort, pagination
         $websites = $request->user()->customer->websites()->search($request->keyword)
             ->orderBy($request->sort_order, $request->sort_direction)
