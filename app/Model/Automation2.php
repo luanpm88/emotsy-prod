@@ -170,6 +170,7 @@ class Automation2 extends Model
     {
         return [
             'name' => 'required',
+            'mail_list_uid' => 'required',
         ];
     }
 
