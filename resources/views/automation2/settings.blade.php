@@ -72,18 +72,61 @@
         </div>
     </div>
 </div>
+
+<script>
+    $(function() {
+        // List segment select box
+        var listSegmentSelectBox = new ListSegmentSelectBox();
+    });
+
+    var ListSegmentSelectBox = class {
+        constructor() {
+            this.url = '{{ action('Automation2Controller@segmentSelect', [
+                'uid' => $automation->uid,
+            ]) }}';
+            this.listUid = '{{ $automation->mailList->uid }}';
+            this.box = new Box($('.automation-segment'));
+
+            // first load
+            this.load();
+
+            // events
+            this.events();
+        }
+
+        getListSelecBox() {
+            return document.querySelector('[name=mail_list_uid]');
+        }
+
+        events() {
+            var _this = this;
+
+            $(this.getListSelecBox()).on('change', (e) => {
+                _this.listUid = _this.getListSelecBox().value;
+
+                // load
+                _this.load();
+            });
+        }
+
+        load() {
+            var _this = this;
+
+            $.ajax({
+                url : this.url,
+                type: "GET",
+                data: {
+                    list_uid: this.listUid,
+                }
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+            }).done(function(res) {
+                _this.box.loadHtml(res);
+            });
+        }
+    }
+</script>
     
 <script>
-    // automation segment
-    var automationSegment = new Box($('.automation-segment'));
-    $('[name=mail_list_uid]').change(function(e) {
-        var url = '{{ action('Automation2Controller@segmentSelect') }}?uid={{ $automation->uid }}&list_uid=' + $(this).val();
-
-        automationSegment.load(url);
-    });
-    $('[name=mail_list_uid]').change();
-
-
     // set automation name
     setAutomationName('{{ $automation->name }}');
 
