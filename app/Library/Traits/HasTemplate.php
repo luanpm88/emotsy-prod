@@ -19,6 +19,7 @@ use Acelle\Library\HtmlHandler\TransformWidgets;
 use Acelle\Library\HtmlHandler\AddDoctype;
 use Acelle\Library\HtmlHandler\RemoveTitleTag;
 use Acelle\Library\HtmlHandler\AddPreheader;
+use Acelle\Library\HtmlHandler\GenerateSpintax;
 use Acelle\Library\Lockable;
 use File;
 use Cache;
@@ -289,10 +290,18 @@ trait HasTemplate
      *
      * @return string
      */
-    public function getSubject($subscriber, $msgId)
+    public function getSubject($subscriber = null, $msgId = null)
     {
         $pipeline = new PipelineBuilder();
-        $pipeline->add(new TransformTag($this, $subscriber, $msgId));
+
+        if (!is_null($subscriber)) {
+            if (is_null($msgId)) {
+                throw new Exception('MessageID must not be null');
+            }
+            $pipeline->add(new TransformTag($this, $subscriber, $msgId));
+        }
+
+        $pipeline->add(new GenerateSpintax());
         $pipeline->add(new ReplaceBareLineFeed());
         return $pipeline->build()->process($this->subject);
     }
@@ -401,6 +410,7 @@ trait HasTemplate
             $pipeline->add(new TransformUrl($this->template, $msgId, $this->trackingDomain));
         }
 
+        $pipeline->add(new GenerateSpintax());
         $pipeline->add(new ReplaceBareLineFeed());
 
         // ReplaceBareLineFeed should go into the base HTML content instead
@@ -463,11 +473,19 @@ trait HasTemplate
      *
      * @return string
      */
-    public function getPlainContent($subscriber, $msgId, $server = null)
+    public function getPlainContent($subscriber = null, $msgId = null, $server = null)
     {
         $plain = $this->plain.$this->getPlainTextFooter();
         $pipeline = new PipelineBuilder();
-        $pipeline->add(new TransformTag($this, $subscriber, $msgId, $server));
+
+        if (!is_null($subscriber)) {
+            if (is_null($msgId)) {
+                throw new Exception('MessageID must not be null');
+            }
+            $pipeline->add(new TransformTag($this, $subscriber, $msgId, $server));
+        }
+
+        $pipeline->add(new GenerateSpintax());
         $pipeline->add(new ReplaceBareLineFeed());
         $plain = $pipeline->build()->process($plain);
 
