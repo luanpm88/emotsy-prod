@@ -1,3 +1,18 @@
+4.0.25-p526 / 2023-06-19
+==================
+
+ * Added: Spintax support for PRO builder
+ * Added: improved email content for a better SpamAssassin score
+ * Added: better Outlook compatibility
+ * Added: improved import/export performance
+ * Added: improved auto mapping correctness for CSV importing
+ * Fixed: automatically clean up preheader
+ * Fixed: sending domain not correctly signed
+ * Fixed: image rendering issue with certain browsers
+ * Fixed: ModSecurity issue is now less likely to occur
+ * Fixed: campaign scheduling issue with certain timezones
+
+
 4.0.25-p516 / 2023-04-06
 ==================
 
