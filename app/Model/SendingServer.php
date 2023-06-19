@@ -1570,6 +1570,11 @@ class SendingServer extends Model implements HasQuotaInterface
             $server->setOption('allow_verify_domain_remotely', 'yes');
         }
 
+        if ($server->type == self::TYPE_SENDMAIL || $server->type == self::TYPE_SMTP) {
+            $server->setOption('allow_unverified_from_email', 'yes');
+            $server->setOption('allow_verify_domain_against_acelle', 'yes');
+        }
+
         // save
         $server->save();
 
