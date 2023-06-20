@@ -9,6 +9,7 @@
         "acelle/cashier": "dev-master",
         "aws/aws-php-sns-message-validator": "^1.1",
         "aws/aws-sdk-php": "^3.19",
+        "bjoernffm/spintax": "^1.0",
         "braintree/braintree_php": "^3.22",
         "coinpaymentsnet/coinpayments-php": "^1.0",
         "deeplcom/deepl-php": "^1.1",

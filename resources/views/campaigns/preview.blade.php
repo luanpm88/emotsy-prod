@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>{{ $campaign->subject }}</title>
+    <title>{{ $campaign->getSubject() }}</title>
 
     <style>
         @if ($campaign->type != 'plain-text')
@@ -76,7 +76,7 @@
     @if ($campaign->type != 'plain-text')
         <div id="plain" class="tabcontent"  style="padding: 10px">
     @endif
-        {!! $campaign->plain !!}
+        {!! $campaign->getPlainContent() !!}
     @if ($campaign->type != 'plain-text')
         </div>
     @endif
