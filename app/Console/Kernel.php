@@ -92,6 +92,13 @@ class Kernel extends ConsoleKernel
                 SubscriptionFacade::checkAndAutoPayRenewInvoiceByCustomer($customer);
             }
         })->name('subscription:auto-pay-renew')->everyFiveMinutes();
+
+        // Check for scheduled campaign to execute
+        $schedule->call(function () {
+            foreach(Campaign::scheduled()->get() as $campaign) {
+                $campaign->schedule();
+            }
+        })->name('check_and_execute_scheduled_campaigns')->everyMinute();
     }
 
     /**
