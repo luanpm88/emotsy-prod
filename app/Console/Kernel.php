@@ -22,17 +22,7 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        // Commands\Inspire::class,
-        /* no longer needed as of Laravel 5.5
-        Commands\TestCampaign::class,
-        Commands\UpgradeTranslation::class,
-        Commands\RunHandler::class,
-        Commands\ImportList::class,
-        Commands\VerifySender::class,
-        Commands\SystemCleanup::class,
-        Commands\GeoIpCheck::class,
-        TinkerCommand::class,
-        */
+
     ];
 
     /**
