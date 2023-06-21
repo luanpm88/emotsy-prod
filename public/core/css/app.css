@@ -781,7 +781,7 @@ input.error {
     color: #fff;
 }
 
-.bg-new {
+.bg-new, .bg-scheduled {
     background-color: #fdc8c1;
     border-color: #fdc8c1;
     color: #000;

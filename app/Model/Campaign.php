@@ -52,6 +52,7 @@ use Acelle\Jobs\ExecuteCampaignCallback;
 use Acelle\Library\Contracts\HasTemplateInterface;
 use Acelle\Library\HtmlHandler\InjectTrackingPixel;
 use Acelle\Library\HtmlHandler\TransformUrl;
+use Acelle\Library\Lockable;
 
 class Campaign extends Model implements HasTemplateInterface
 {
@@ -70,6 +71,7 @@ class Campaign extends Model implements HasTemplateInterface
     public const STATUS_ERROR = 'error';
     public const STATUS_DONE = 'done';
     public const STATUS_PAUSED = 'paused';
+    public const STATUS_SCHEDULED = 'scheduled';
 
     // Campaign types
     public const TYPE_REGULAR = 'regular';
@@ -602,6 +604,11 @@ class Campaign extends Model implements HasTemplateInterface
         if (!empty(trim($request->statuses))) {
             $query = $query->whereIn('status', explode(',', $request->statuses));
         }
+    }
+
+    public function scopeScheduled($query)
+    {
+        return $query->where('status', self::STATUS_SCHEDULED);
     }
 
     /**
@@ -2501,6 +2508,15 @@ class Campaign extends Model implements HasTemplateInterface
         return $path;
     }
 
+    public function scheduleDiffForHumans()
+    {
+        if ($this->run_at) {
+            return $this->run_at->timezone($this->customer->timezone)->diffForHumans();
+        } else {
+            return null;
+        }
+    }
+
     public function deleteAndCleanup()
     {
         if ($this->template) {
@@ -2530,23 +2546,43 @@ class Campaign extends Model implements HasTemplateInterface
         }
     }
 
+    // This method called when user clicks CONFIRM button on the web UI
+    // This method is also called by a cronjob which periodically check for campaigns to run
+    // Its name is confusing, consider plitting into 2 separate functions: schedule() and execute()
     public function schedule()
     {
+        $now = Carbon::now();
+
+        if (!is_null($this->run_at) && $this->run_at->gte($now)) {
+            $this->setScheduled();
+
+            $scheduledAt = $this->run_at->timezone($this->customer->timezone);
+            $this->logger()->warning(sprintf('Campaign is scheduled at %s (%s)', $scheduledAt->format('Y-m-d H:m'), $scheduledAt->diffForHumans()));
+            return;
+        }
+
         // Delete previous ScheduleCampaign jobs
         $this->cancelAndDeleteJobs(ScheduleCampaign::class);
 
         // Schedule Job initialize
-        $scheduler = (new ScheduleCampaign($this))->delay($this->run_at);
+        $job = (new ScheduleCampaign($this));
 
         // Dispatch using the method provided by TrackJobs
         // to also generate job-monitor record
-        $this->dispatchWithMonitor($scheduler);
+        $this->dispatchWithMonitor($job);
 
         // After this job is dispatched successfully, set status to "queuing"
         // Notice the different between the two statuses
         // + Queuing: waiting until campaign is ready to run
         // + Queued: ready to run
         $this->setQueuing();
+    }
+
+    public function setScheduled()
+    {
+        $this->status = self::STATUS_SCHEDULED;
+        $this->save();
+        return $this;
     }
 
     public function resume()
@@ -3096,5 +3132,24 @@ class Campaign extends Model implements HasTemplateInterface
     {
         $this->preheader = null;
         $this->save();
+    }
+
+    public static function checkAndExecuteScheduledCampaigns()
+    {
+        $lockFile = storage_path('tmp/check-and-execute-scheduled-campaign');
+        $lock = new Lockable($lockFile);
+        $timeout = 5; // seconds
+        $timeoutCallback = function () {
+            // pass this ot the getExclusiveLock method
+            // to have it silently quit, without throwing an exception
+            $this->logger()->info('LOCK timeout, another process is executing the Campaign::checkAndExecuteScheduledCampaigns() method');
+            return;
+        };
+
+        $lock->getExclusiveLock(function ($f) {
+            foreach(static::scheduled()->get() as $campaign) {
+                $campaign->schedule();
+            }
+        }, $timeout, $timeoutCallback);
     }
 }
