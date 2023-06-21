@@ -9,6 +9,7 @@ use Acelle\Model\Notification;
 use Acelle\Cashier\Cashier;
 use Acelle\Model\Subscription;
 use Acelle\Model\Setting;
+use Acelle\Model\Campaign;
 use Laravel\Tinker\Console\TinkerCommand;
 use Exception;
 use Acelle\Library\Facades\SubscriptionFacade;
