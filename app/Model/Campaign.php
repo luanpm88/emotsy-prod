@@ -3133,7 +3133,6 @@ class Campaign extends Model implements HasTemplateInterface
 
     public static function checkAndExecuteScheduledCampaigns()
     {
-
         $lockFile = storage_path('tmp/check-and-execute-scheduled-campaign');
         $lock = new Lockable($lockFile);
         $timeout = 5; // seconds
@@ -3144,7 +3143,7 @@ class Campaign extends Model implements HasTemplateInterface
         };
 
         $lock->getExclusiveLock(function ($f) {
-            foreach(static::scheduled()->get() as $campaign) {
+            foreach (static::scheduled()->get() as $campaign) {
                 $campaign->execute();
             }
         }, $timeout, $timeoutCallback);
