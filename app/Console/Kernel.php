@@ -96,9 +96,7 @@ class Kernel extends ConsoleKernel
 
         // Check for scheduled campaign to execute
         $schedule->call(function () {
-            foreach(Campaign::scheduled()->get() as $campaign) {
-                $campaign->schedule();
-            }
+            Campaign::checkAndExecuteScheduledCampaigns();
         })->name('check_and_execute_scheduled_campaigns')->everyMinute();
     }
 
