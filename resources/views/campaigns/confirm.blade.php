@@ -179,9 +179,9 @@
                             <i class="material-symbols-rounded text-muted2">alarm</i>
                         </span>
                         <div class="me-auto">
-                            <h4>{{ trans('messages.campaign.scheduled_at') }} ({{ $campaign->run_at->diffForHumans() }})</h4>
+                            <h4>{{ trans('messages.campaign.scheduled_at') }} ({{ $campaign->scheduleDiffForHumans() }})</h4>
                             <p>
-                                {{ isset($campaign->run_at) ? Auth::user()->customer->formatDateTime($campaign->run_at, 'datetime_full') : "" }}
+                                {{ isset($campaign->run_at) ? Auth::user()->customer->formatDateTime($campaign->run_at, 'datetime_full_with_timezone') : "" }}
                             </p>
                         </div>
 

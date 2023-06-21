@@ -38,7 +38,7 @@ class CampaignPolicy
     public function overview(User $user, Campaign $item)
     {
         $customer = $user->customer;
-        return $item->customer_id == $customer->id && $item->status != 'new';
+        return $item->customer_id == $customer->id;
     }
 
     public function update(User $user, Campaign $item)
@@ -51,6 +51,7 @@ class CampaignPolicy
                 Campaign::STATUS_QUEUED,
                 Campaign::STATUS_ERROR,
                 Campaign::STATUS_PAUSED,
+                Campaign::STATUS_SCHEDULED,
             ]));
     }
 
@@ -65,6 +66,7 @@ class CampaignPolicy
             Campaign::STATUS_PAUSED,
             Campaign::STATUS_DONE,
             Campaign::STATUS_SENDING,
+            Campaign::STATUS_SCHEDULED,
         ]);
     }
 
@@ -75,6 +77,7 @@ class CampaignPolicy
             Campaign::STATUS_QUEUING,
             Campaign::STATUS_QUEUED,
             Campaign::STATUS_SENDING,
+            Campaign::STATUS_SCHEDULED,
         ]);
     }
 
@@ -92,6 +95,7 @@ class CampaignPolicy
         return $item->customer_id == $customer->id && in_array($item->status, [
             Campaign::STATUS_PAUSED,
             Campaign::STATUS_ERROR,
+            Campaign::STATUS_SCHEDULED,
         ]);
     }
 
@@ -135,6 +139,7 @@ class CampaignPolicy
             Campaign::STATUS_ERROR,
             Campaign::STATUS_PAUSED,
             Campaign::STATUS_DONE,
+            Campaign::STATUS_SCHEDULED,
         ]);
     }
 }

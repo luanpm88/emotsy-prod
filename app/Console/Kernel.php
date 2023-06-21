@@ -9,6 +9,7 @@ use Acelle\Model\Notification;
 use Acelle\Cashier\Cashier;
 use Acelle\Model\Subscription;
 use Acelle\Model\Setting;
+use Acelle\Model\Campaign;
 use Laravel\Tinker\Console\TinkerCommand;
 use Exception;
 use Acelle\Library\Facades\SubscriptionFacade;
@@ -92,6 +93,11 @@ class Kernel extends ConsoleKernel
                 SubscriptionFacade::checkAndAutoPayRenewInvoiceByCustomer($customer);
             }
         })->name('subscription:auto-pay-renew')->everyFiveMinutes();
+
+        // Check for scheduled campaign to execute
+        $schedule->call(function () {
+            Campaign::checkAndExecuteScheduledCampaigns();
+        })->name('check_and_execute_scheduled_campaigns')->everyMinute();
     }
 
     /**
