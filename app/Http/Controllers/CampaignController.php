@@ -565,13 +565,14 @@ class CampaignController extends Controller
         if ($request->isMethod('post')) {
             if ($request->send_now == 'yes') {
                 $campaign->run_at = null;
+                $campaign->save();
             } else {
                 $runAtStr = $request->delivery_date.' '.$request->delivery_time;
                 $runAt = Carbon::createFromFormat('Y-m-d H:i', $runAtStr, $currentTimezone)->timezone('UTC');
                 $campaign->run_at = $runAt; // store in UTC
+                $campaign->setScheduled(); // also save
             }
 
-            $campaign->save();
             return redirect()->action('CampaignController@confirm', ['uid' => $campaign->uid]);
         }
 
@@ -644,7 +645,7 @@ class CampaignController extends Controller
 
             // Save campaign
             // @todo: check campaign status before requeuing. Otherwise, several jobs shall be created and campaign will get sent several times
-            $campaign->schedule();
+            $campaign->execute();
 
             // Log
             $campaign->log('started', $customer);

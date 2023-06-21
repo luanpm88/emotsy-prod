@@ -1375,7 +1375,7 @@ class Campaign extends Model implements HasTemplateInterface
         }
 
         // and queue again
-        $this->schedule();
+        $this->execute();
     }
 
     /**
@@ -2548,14 +2548,11 @@ class Campaign extends Model implements HasTemplateInterface
 
     // This method called when user clicks CONFIRM button on the web UI
     // This method is also called by a cronjob which periodically check for campaigns to run
-    // Its name is confusing, consider plitting into 2 separate functions: schedule() and execute()
-    public function schedule()
+    public function execute()
     {
         $now = Carbon::now();
 
         if (!is_null($this->run_at) && $this->run_at->gte($now)) {
-            $this->setScheduled();
-
             $scheduledAt = $this->run_at->timezone($this->customer->timezone);
             $this->logger()->warning(sprintf('Campaign is scheduled at %s (%s)', $scheduledAt->format('Y-m-d H:m'), $scheduledAt->diffForHumans()));
             return;
@@ -2587,7 +2584,7 @@ class Campaign extends Model implements HasTemplateInterface
 
     public function resume()
     {
-        $this->schedule();
+        $this->execute();
     }
 
     // Should be called by ScheduleCampaign
@@ -3136,19 +3133,19 @@ class Campaign extends Model implements HasTemplateInterface
 
     public static function checkAndExecuteScheduledCampaigns()
     {
+
         $lockFile = storage_path('tmp/check-and-execute-scheduled-campaign');
         $lock = new Lockable($lockFile);
         $timeout = 5; // seconds
         $timeoutCallback = function () {
             // pass this ot the getExclusiveLock method
             // to have it silently quit, without throwing an exception
-            $this->logger()->info('LOCK timeout, another process is executing the Campaign::checkAndExecuteScheduledCampaigns() method');
             return;
         };
 
         $lock->getExclusiveLock(function ($f) {
             foreach(static::scheduled()->get() as $campaign) {
-                $campaign->schedule();
+                $campaign->execute();
             }
         }, $timeout, $timeoutCallback);
     }
