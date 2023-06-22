@@ -625,11 +625,21 @@ class SettingController extends Controller
         }
 
         try {
-            list($supported, $supportedUntil) = LicenseHelper::isSupported();
-            if (!$supported) {
-                $request->session()->flash('alert-error', sprintf('Your Acelle Mail SUPPORT was already expired on <strong>%s</strong>. Please <a style="text-decoration:underline;font-style: normal;" target="_blank" href="%s">renew</a> it first before proceeding with our LIVE upgrade service.', $supportedUntil->toFormattedDateString(), 'https://codecanyon.net/item/acelle-email-marketing-web-application/17796082'));
+            if (config('custom.japan')) {
+                $endpoint = join_url(config('custom.license_validation_endpoint'), '/wp-json/automailjp/v1/license/check?license=' . Setting::get('license'));
+                $result = Http::get($endpoint)->json();
 
-                return redirect()->action('Admin\SettingController@upgrade');
+                // failed
+                if ($result['status'] !== 'success') {
+                    throw new \Exception('License is not valid. Error: ' . $result['message']);
+                }
+            } else {
+                list($supported, $supportedUntil) = LicenseHelper::isSupported();
+                if (!$supported) {
+                    $request->session()->flash('alert-error', sprintf('Your Acelle Mail SUPPORT was already expired on <strong>%s</strong>. Please <a style="text-decoration:underline;font-style: normal;" target="_blank" href="%s">renew</a> it first before proceeding with our LIVE upgrade service.', $supportedUntil->toFormattedDateString(), 'https://codecanyon.net/item/acelle-email-marketing-web-application/17796082'));
+
+                    return redirect()->action('Admin\SettingController@upgrade');
+                }
             }
         } catch (\Exception $ex) {
             $request->session()->flash('alert-error', $ex->getMessage());
