@@ -1993,6 +1993,27 @@ class Customer extends Model
         }
     }
 
+    public function allowVerifyingOwnDomains()
+    {
+        $subscription = $this->getCurrentActiveSubscription();
+
+        if (is_null($subscription)) {
+            return false;
+        }
+
+        $plan = $subscription->plan;
+        if ($plan->useSystemSendingServer()) {
+            $server = $plan->primarySendingServer();
+            if ($server && ($server->allowVerifyingOwnDomains() || $server->allowVerifyingOwnDomainsRemotely())) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return true;
+        }
+    }
+
     public function getConnectedWebsiteSelectOptions($long=true)
     {
         $query = $this->websites()->connected();
