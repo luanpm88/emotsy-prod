@@ -1983,7 +1983,7 @@ class Customer extends Model
         $plan = $subscription->plan;
         if ($plan->useSystemSendingServer()) {
             $server = $plan->primarySendingServer();
-            if ($server && ($server->allowVerifyingOwnEmailsRemotely() || $server->allowVerifyingOwnDomains())) {
+            if ($server && ($server->allowVerifyingOwnEmailsRemotely() || $server->allowVerifyingOwnEmails())) {
                 return true;
             } else {
                 return false;
