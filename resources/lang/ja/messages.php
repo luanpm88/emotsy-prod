@@ -786,6 +786,7 @@
   'campaign_status_queued' => '待機中',
   'campaign_status_queuing' => '待機中',
   'campaign_status_ready' => '準備完了',
+  'campaign_status_scheduled' => 'Scheduled',
   'campaign_status_sending' => '送信',
   'campaign_table_chart_intro' => 'キャンペーンの主要なEメールマーケティング指標は、以下の表やグラフに視覚化されています。 これらの指標を見て、メールマーケティングキャンペーンの全体的な送信結果を評価できます。<br>※ユニークとは：クリックをしたユーザー数',
   'campaigns' => 'キャンペーン',

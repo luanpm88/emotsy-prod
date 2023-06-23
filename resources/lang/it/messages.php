@@ -786,6 +786,7 @@
   'campaign_status_queued' => 'In coda',
   'campaign_status_queuing' => 'Accodamento',
   'campaign_status_ready' => 'Pronto',
+  'campaign_status_scheduled' => 'Scheduled',
   'campaign_status_sending' => 'Inviare',
   'campaign_table_chart_intro' => 'Le principali metriche di email marketing della vostra campagna sono visualizzate nelle tabelle/grafici sottostanti.<br>Potete osservare queste metriche per valutare il successo complessivo delle vostre campagne di email marketing.',
   'campaigns' => 'Campagne',

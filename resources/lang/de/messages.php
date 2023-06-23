@@ -785,6 +785,7 @@
   'campaign_status_queued' => 'In Warteschlange',
   'campaign_status_queuing' => 'Warteschlangen',
   'campaign_status_ready' => 'Fertig',
+  'campaign_status_scheduled' => 'Scheduled',
   'campaign_status_sending' => 'Senden',
   'campaign_table_chart_intro' => 'Die wichtigsten E-Mail-Marketing Metriken Ihrer Kampagne werden in den folgenden Tabellen / Diagrammen angezeigt. Sehen Sie sich diese Metriken an, um den Gesamterfolg Ihrer E-Mail-Marketing Kampagnen zu beurteilen.',
   'campaigns' => 'Kampagnen',

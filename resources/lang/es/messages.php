@@ -786,6 +786,7 @@
   'campaign_status_queued' => 'Queued',
   'campaign_status_queuing' => 'Queuing',
   'campaign_status_ready' => 'Ready',
+  'campaign_status_scheduled' => 'Scheduled',
   'campaign_status_sending' => 'Enviando',
   'campaign_table_chart_intro' => 'Las métricas clave de marketing por correo electrónico de su campaña se visualizan en las tablas / gráficos a continuación. Puede consultar esas métricas para evaluar el éxito general de sus campañas de marketing por correo electrónico.',
   'campaigns' => 'Campañas',
