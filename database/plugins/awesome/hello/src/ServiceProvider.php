@@ -8,11 +8,11 @@ use Acelle\Library\Facades\Hook;
 class ServiceProvider extends Base
 {
     /**
-     * Bootstrap the application events.
+     * Register the service provider.
      *
      * @return void
      */
-    public function boot()
+    public function register()
     {
         // Register views path
         $this->loadViewsFrom(__DIR__.'/../resources/views', '{{ name }}');
@@ -20,8 +20,27 @@ class ServiceProvider extends Base
         // Register routes file
         $this->loadRoutesFrom(__DIR__.'/../routes.php');
 
-        // Register translation file
-        $this->loadTranslationsFrom(storage_path('app/data/plugins/{{ author }}/{{ name }}/lang/'), '{{ name }}');
+        // Register translation folder for Laravel to load from
+        // Important: the translation folder's path must be different from the master translation folder's one, notice the "/data/" part in the path
+        $translationFolder = storage_path('app/data/plugins/{{ author }}/{{ name }}/lang/');
+
+        // A plugin can register its translation folder like this:
+        //
+        //     $this->loadTranslationsFrom($translationFolder, '{{ name }}');
+        //
+        // However, in this sample plugin, just register it to the 'add_translation_file' hook to as follows
+        // By registering the hook, the translation shall be managed by the hosting application (create instances for languages, register translation folder with Laravel...)
+        Hook::register('add_translation_file', function() use ($translationFolder) {
+            return [
+                "id" => '#{{ plugin }}_translation_file',
+                "plugin_name" => "{{ plugin }}",
+                "file_title" => "Translation for {{ plugin }} plugin",
+                "translation_folder" => $translationFolder,
+                "translation_prefix" => "{{ name }}",
+                "file_name" => "messages.php",
+                "master_translation_file" => realpath(__DIR__.'/../resources/lang/en/messages.php'),
+            ];
+        });
 
         // Publish plugin assets, remember to tag them with 'plugin' tag
         // Acelle shall execute the following command after installing any plugin:
@@ -31,27 +50,15 @@ class ServiceProvider extends Base
         $this->publishes([
             // any
         ], 'plugin');
-
-
-        // Register the translation file against Acelle translation management
-        Hook::register('add_translation_file', function() {
-            return [
-                "id" => '#{{ plugin }}_translation_file',
-                "plugin_name" => "{{ plugin }}",
-                "file_title" => "Translation for {{ plugin }} plugin",
-                "translation_folder" => storage_path('app/data/plugins/{{ author }}/{{ name }}/lang/'),
-                "file_name" => "messages.php",
-                "master_translation_file" => realpath(__DIR__.'/../resources/lang/en/messages.php'),
-            ];
-        });
     }
 
     /**
-     * Register the service provider.
+     * Bootstrap the application events.
      *
      * @return void
      */
-    public function register()
+    public function boot()
     {
+
     }
 }

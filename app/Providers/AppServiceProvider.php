@@ -36,6 +36,15 @@ class AppServiceProvider extends ServiceProvider
         // Load application's plugins
         // Disabled plugin may also register hooks
         Plugin::autoloadWithoutDbQuery();
+
+        // Register plugins' registered translation folders
+        foreach (Hook::execute('add_translation_file') as $source) {
+            if (array_key_exists('translation_prefix', $source)) {
+                $prefix = $source['translation_prefix'];
+                $folder = $source['translation_folder'];
+                $this->loadTranslationsFrom($folder, $prefix);
+            }
+        }
     }
 
     /**
