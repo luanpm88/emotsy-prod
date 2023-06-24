@@ -14,6 +14,10 @@ class ServiceProvider extends Base
      */
     public function register()
     {
+        // Define the constants to use in the plugin source (optional)
+        define('{{ NAME }}_PLUGIN_FULL_NAME', '{{ plugin }}');
+        define('{{ NAME }}_PLUGIN_SHORT_NAME', '{{ name }}');
+
         // Register views path
         $this->loadViewsFrom(__DIR__.'/../resources/views', '{{ name }}');
 

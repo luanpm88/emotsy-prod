@@ -558,6 +558,7 @@ class Plugin extends Model
             'author' => $author,
             'name_class' => self::makeClassNameFromString($name),
             'author_class' => self::makeClassNameFromString($author),
+            'NAME' => strtoupper($name), // uppercase name
         ];
 
         // Files to replace
