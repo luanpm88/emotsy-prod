@@ -26,7 +26,7 @@ class Identity extends Base
 
     public function validate($data)
     {
-        $requiredKeys = [ 'Name', 'VerificationStatus', 'UserId', 'UserName' ];
+        $requiredKeys = [ 'Name', 'VerificationStatus' ];
 
         foreach($requiredKeys as $key) {
             if (!array_key_exists($key, $data)) {

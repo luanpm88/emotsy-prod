@@ -4,41 +4,43 @@ namespace Acelle\Library\JsonModel;
 
 use Exception;
 
-class IdentityList extends Base
+// Do not extend base
+class IdentityList
 {
-    protected $data;
+    public $data = [];
 
-    protected $schema = [
-    	// Identity Object
-    	'domain1.com' => [
-    		'Name' => 'domain1.com',
-			'VerificationStatus' => true,
-			'UserId' => 1769,
-			'UserName' => 'Napoléon Bonaparte'
-		],
-
-		// Identity Object
-		'domain2.com' => [
-			'Name' => 'domain2.com',
-			'VerificationStatus' => false,
-			'UserId' => 1810,
-			'UserName' => 'Frédéric Chopin'
-		]
-    ];
-
-    function __construct($data)
+    function __construct()
     {
-        // Throw an exception if failing
-        $this->validate($data);
-
-        // OK
-        $this->data = $data;
+    	// Nothing here
     }
 
-    public function validate($data)
+    public function addIdentity(Identity $record)
     {
-        if (gettype($data) != 'array') {
-        	throw new Exception('Invalid data type');
-        }
+    	$name = $record->get('Name');
+    	$this->data[$name] = $record;
+    }
+
+    public function getIdentityByName($name) : ?Identity
+    {
+    	if (!array_key_exists($name, $this->data)) {
+    		return null;
+    	}
+
+    	return $this->data[$name];
+    }
+
+    public function getAllNames()
+    {
+    	return array_keys($this->data);
+    }
+
+    public function get()
+    {
+    	$json = [];
+    	foreach($this->data as $key => $identity) {
+    		$json[$key] = $identity->get();
+    	}
+
+    	return $json;
     }
 }

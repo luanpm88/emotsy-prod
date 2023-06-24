@@ -6,8 +6,17 @@ class Base
 {
 	protected $data;
 
-	public function get()
+	public function get($key = null)
     {
-    	return $this->data;
+    	if (is_null($key)) {
+    		return $this->data;
+    	} else {
+    		return $this->data[$key];
+    	}
+    }
+
+    public function set($key, $value)
+    {
+    	$this->data[$key] = $value;
     }
 }
