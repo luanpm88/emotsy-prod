@@ -18,12 +18,7 @@ class ServiceProvider extends Base
         define('{{ NAME }}_PLUGIN_FULL_NAME', '{{ plugin }}');
         define('{{ NAME }}_PLUGIN_SHORT_NAME', '{{ name }}');
 
-        // Register views path
-        $this->loadViewsFrom(__DIR__.'/../resources/views', '{{ name }}');
-
-        // Register routes file
-        $this->loadRoutesFrom(__DIR__.'/../routes.php');
-
+        // IMPORTANT: the following must be in register() method
         // Register translation folder for Laravel to load from
         // Important: the translation folder's path must be different from the master translation folder's one, notice the "/data/" part in the path
         $translationFolder = storage_path('app/data/plugins/{{ author }}/{{ name }}/lang/');
@@ -45,15 +40,6 @@ class ServiceProvider extends Base
                 "master_translation_file" => realpath(__DIR__.'/../resources/lang/en/messages.php'),
             ];
         });
-
-        // Publish plugin assets, remember to tag them with 'plugin' tag
-        // Acelle shall execute the following command after installing any plugin:
-        //
-        //     php artisan vendor:publish --tag=plugin --force
-        //
-        $this->publishes([
-            // any
-        ], 'plugin');
     }
 
     /**
@@ -63,6 +49,19 @@ class ServiceProvider extends Base
      */
     public function boot()
     {
+        // Register views path
+        $this->loadViewsFrom(__DIR__.'/../resources/views', '{{ name }}');
 
+        // Register routes file
+        $this->loadRoutesFrom(__DIR__.'/../routes.php');
+
+        // Publish plugin assets, remember to tag them with 'plugin' tag
+        // Acelle shall execute the following command after installing any plugin:
+        //
+        //     php artisan vendor:publish --tag=plugin --force
+        //
+        $this->publishes([
+            // any
+        ], 'plugin');
     }
 }
