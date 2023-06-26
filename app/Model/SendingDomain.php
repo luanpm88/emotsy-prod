@@ -323,16 +323,21 @@ class SendingDomain extends Model
     {
         $tokens = $this->getVerificationTokens();
 
+
         if ($this->sendingServer) {
+            // Case: associated with a sending server
             // Verify Host, DKIM and SPF
             $server = $this->sendingServer->mapType();
             list($identity, $dkim, $spf, $finalStatus) = $server->checkDomainVerificationStatus($this);
 
             $tokens['results']['identity'] = $identity;
             $tokens['results']['dkim'] = $dkim;
-            $tokens['results']['spf'] = $spf;
+            if (!is_null($spf)) {
+                $tokens['results']['spf'] = $spf;
+            }
             $this->status = $finalStatus ? self::STATUS_ACTIVE : self::STATUS_INACTIVE;
         } else {
+            // Case: standalone
             $tokens['results']['identity'] = $this->verifyIdentity();
             $tokens['results']['dkim'] = $this->verifyDkim();
 
@@ -527,7 +532,10 @@ class SendingDomain extends Model
     public function isSpfNeeded()
     {
         $tokens = $this->getVerificationTokens();
-        return array_key_exists('spf', $tokens['results']);
+        $spf = $tokens['spf'] ?? null;
+
+        // 'spf' key must be present and not empty (null nor empty '')
+        return !empty($spf);
     }
 
     public function isSpfVerified()
