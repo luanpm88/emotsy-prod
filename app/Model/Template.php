@@ -38,6 +38,8 @@ use Exception;
 use Closure;
 use League\Pipeline\PipelineBuilder;
 use Acelle\Library\HtmlHandler\TransformWidgets;
+use Acelle\Library\HtmlHandler\DecodeHtmlSpecialChars;
+use Acelle\Library\HtmlHandler\GenerateSpintax;
 
 use function Acelle\Helpers\is_non_web_link;
 use function Acelle\Helpers\getAppHost;
@@ -1372,6 +1374,8 @@ class Template extends Model
         // Bind subscriber/message/server information to email content
         $pipeline = new PipelineBuilder();
         $pipeline->add(new TransformWidgets());
+        $pipeline->add(new DecodeHtmlSpecialChars());
+        $pipeline->add(new GenerateSpintax());
 
         // Actually push HTML to pipeline for processing
         $html = $pipeline->build()->process($this->content);

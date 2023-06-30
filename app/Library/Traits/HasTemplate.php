@@ -20,6 +20,7 @@ use Acelle\Library\HtmlHandler\AddDoctype;
 use Acelle\Library\HtmlHandler\RemoveTitleTag;
 use Acelle\Library\HtmlHandler\AddPreheader;
 use Acelle\Library\HtmlHandler\GenerateSpintax;
+use Acelle\Library\HtmlHandler\DecodeHtmlSpecialChars;
 use Acelle\Library\Lockable;
 use File;
 use Cache;
@@ -301,6 +302,7 @@ trait HasTemplate
             $pipeline->add(new TransformTag($this, $subscriber, $msgId));
         }
 
+        $pipeline->add(new DecodeHtmlSpecialChars());
         $pipeline->add(new GenerateSpintax());
         $pipeline->add(new ReplaceBareLineFeed());
         return $pipeline->build()->process($this->subject);
@@ -410,6 +412,7 @@ trait HasTemplate
             $pipeline->add(new TransformUrl($this->template, $msgId, $this->trackingDomain));
         }
 
+        $pipeline->add(new DecodeHtmlSpecialChars());
         $pipeline->add(new GenerateSpintax());
         $pipeline->add(new ReplaceBareLineFeed());
 
@@ -485,6 +488,7 @@ trait HasTemplate
             $pipeline->add(new TransformTag($this, $subscriber, $msgId, $server));
         }
 
+        $pipeline->add(new DecodeHtmlSpecialChars());
         $pipeline->add(new GenerateSpintax());
         $pipeline->add(new ReplaceBareLineFeed());
         $plain = $pipeline->build()->process($plain);

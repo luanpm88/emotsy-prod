@@ -462,7 +462,10 @@ class StringHelper
 
     public static function saveHTMLWithUTF8AndDoctype($document)
     {
-        $output = (rawurldecode($document->saveHTML($document->documentElement)));
+        // Do not use "htmlspecialchars_decode()" here, which transforms "&gt;" to ">"
+        // as it will crash with PHP's DOMDocument
+        // Use it as an explicit & final step before rendering HTML content
+        $output = rawurldecode($document->saveHTML($document->documentElement));
         $output = '<!DOCTYPE html>'.$output; // saveHTML(params) removes DOCTYPE
         return $output;
     }

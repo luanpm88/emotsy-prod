@@ -10,12 +10,12 @@ class Identity extends Base
 
     protected $schema = [
         'Name' => 'domain.name',
-		'VerificationStatus' => true,
-		'UserId' => 1769,
-		'UserName' => 'Napoléon Bonaparte',
+        'VerificationStatus' => true,
+        'UserId' => 1769,
+        'UserName' => 'Napoléon Bonaparte',
     ];
 
-    function __construct($data)
+    public function __construct($data)
     {
         // Throw an exception if failing
         $this->validate($data);
@@ -28,7 +28,7 @@ class Identity extends Base
     {
         $requiredKeys = [ 'Name', 'VerificationStatus' ];
 
-        foreach($requiredKeys as $key) {
+        foreach ($requiredKeys as $key) {
             if (!array_key_exists($key, $data)) {
                 throw new Exception(sprintf('Invalid JSON structure: key "%s" missing', $key));
             }

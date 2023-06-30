@@ -4,19 +4,19 @@ namespace Acelle\Library\JsonModel;
 
 class Base
 {
-	protected $data;
+    protected $data;
 
-	public function get($key = null)
+    public function get($key = null)
     {
-    	if (is_null($key)) {
-    		return $this->data;
-    	} else {
-    		return $this->data[$key];
-    	}
+        if (is_null($key)) {
+            return $this->data;
+        } else {
+            return $this->data[$key];
+        }
     }
 
     public function set($key, $value)
     {
-    	$this->data[$key] = $value;
+        $this->data[$key] = $value;
     }
 }

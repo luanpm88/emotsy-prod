@@ -34,7 +34,7 @@ class DomainVerification extends Base
         ],
     ];
 
-    function __construct($data)
+    public function __construct($data)
     {
         // Throw an exception if failing
         $this->validate($data);
@@ -47,7 +47,7 @@ class DomainVerification extends Base
     {
         $requiredKeys = [ 'identity', 'dkim', 'results' ];
 
-        foreach($requiredKeys as $key) {
+        foreach ($requiredKeys as $key) {
             if (!array_key_exists($key, $data)) {
                 throw new Exception(sprintf('Invalid JSON structure: key "%s" missing', $key));
             }

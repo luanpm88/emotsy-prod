@@ -26,7 +26,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class FeedbackLog extends Model
 {
-    const FEEDBACK_TYPE_ABUSE = 'abuse';
+    public const FEEDBACK_TYPE_ABUSE = 'abuse';
     /**
      * Associations.
      *
