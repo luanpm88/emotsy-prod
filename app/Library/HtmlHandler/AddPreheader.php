@@ -12,7 +12,10 @@ class AddPreheader implements StageInterface
 
     public function __construct($preheader)
     {
-        $this->preheader = trim($preheader);
+        if (!is_null($preheader)) {
+            // trim() does not work with null param
+            $this->preheader = trim($preheader);
+        }
     }
 
     public function __invoke($html)
