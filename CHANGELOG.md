@@ -1,4 +1,4 @@
-4.0.25-p531 / 2023-07-02
+4.0.25-p532 / 2023-07-02
 ==================
 
  * Added: Spintax support for PRO builder
