@@ -148,6 +148,20 @@ class CampaignController extends Controller
     public function recipients(Request $request)
     {
         $campaign = Campaign::findByUid($request->uid);
+        $customer = $request->user()->customer;
+
+        // If the mail list dropdown is not populated
+        // Then it is very likely a problem with the cronjob
+        // Show this warning to user
+        $lastExecutedTimeUtc = \Carbon\Carbon::createFromTimestamp(Setting::get('cronjob_last_execution') ?? 0);
+        $lastExecutedTime = $lastExecutedTimeUtc->timezone($customer->getTimezone());
+        if (empty($customer->readCache('MailListSelectOptions'))) {
+            // If there is no data populated, then it is very likely that cronjob has not been set up correctly
+            // Pass the last executed time to the view to show up with the warning
+            $cronjobWarning = $lastExecutedTime;
+        } else {
+            $cronjobWarning = null;
+        }
 
         // authorize
         if (\Gate::denies('update', $campaign)) {
@@ -180,6 +194,7 @@ class CampaignController extends Controller
         return view('campaigns.recipients', [
             'campaign' => $campaign,
             'rules' => $rules,
+            'cronjobWarning' => $cronjobWarning,
         ]);
     }
 
