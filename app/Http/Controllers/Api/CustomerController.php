@@ -404,4 +404,30 @@ class CustomerController extends Controller
             'url' => action('Controller@tokenLogin', ['token' => $user->one_time_api_token]),
         ), JSON_UNESCAPED_SLASHES);
     }
+
+    public function destroy($uid)
+    {
+        $user = \Auth::guard('api')->user();
+
+        $customer = \Acelle\Model\Customer::findByUid($uid);
+
+        // check if item exists
+        if (!$customer) {
+            return \Response::json(array('status' => 0, 'message' => 'Customer not found'), 404);
+        }
+
+        // authorize
+        if (!$user->can('delete', $customer)) {
+            return \Response::json(array('status' => 0, 'message' => 'Unauthorized'), 401);
+        }
+        
+        $uid = $customer->uid;
+        $customer->deleteAccount();
+
+        return \Response::json(array(
+            'status' => 1,
+            'message' => trans('messages.customers.deleted'),
+            'customer_uid' => $uid
+        ), 200);
+    }
 }

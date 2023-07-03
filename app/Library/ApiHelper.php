@@ -662,6 +662,19 @@ class ApiHelper
 ' .str_replace('-plan_uid-', '<redbold>{plan_uid}</redbold>', str_replace('-uid-', '<redbold>{uid}</redbold>', action("Api\CustomerController@assignPlan", ['uid' => '-uid-', 'plan_uid' => '-plan_uid-']))).' \
 -d api_token=' .\Auth::user()->api_token,
                 ],
+
+                [
+                    'method' => 'DELETE',
+                    'uri' => '/api/v1/customers/{uid}',
+                    'description' => 'Delete a Customer',
+                    'parameters' => [
+                        ['name' => '$uid', 'description' => 'Customer\'s uid'],
+                    ],
+                    'returns' => 'Action messages in json',
+                    'example' => 'curl -X DELETE -H "accept:application/json" -G \
+' .str_replace('-plan_uid-', '<redbold>{plan_uid}</redbold>', str_replace('-uid-', '<redbold>{uid}</redbold>', action("Api\CustomerController@destroy", ['customer' => '-uid-']))).' \
+-d api_token=' .\Auth::user()->api_token,
+                ],
             ],
         ];
 
