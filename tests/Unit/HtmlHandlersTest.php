@@ -322,7 +322,10 @@ class HtmlHandlersTest extends TestCase
         $url = $a->getAttribute('href');
 
         // At first, URL is a tracking URL
+        // Original: http://localhost/p/aHR0cHM6Ly9tYWlsY2hpbXAuY29t/click/TVNHSUQ
+        // Important: assume it is http://localhost
         $encoded = "aHR0cDovL2xvY2FsaG9zdC9wL2FIUjBjSE02THk5dFlXbHNZMmhwYlhBdVkyOXQvY2xpY2svVFZOSFNVUQ";
+
         $this->assertEquals($url, "{$domain->scheme}://{$domain->name}/{$encoded}");
 
         // When decoded, it is a click trackable link
