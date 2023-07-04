@@ -22,7 +22,7 @@
         var interval;
         var checkProgress = function() {
             $.ajax({
-                url: "{{ action('Public\CampaignController@trackingLogExportProgress', [ 'uid' => $job->uid] ) }}"
+                url: "{{ action('Pub\CampaignController@trackingLogExportProgress', [ 'uid' => $job->uid] ) }}"
             }).done(function( data, textStatus, jqXHR ) {
                 if (data.status == 'done') {
                     $("#progress").html(data.progress * 100 + "%");

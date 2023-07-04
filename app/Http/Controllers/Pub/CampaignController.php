@@ -1,6 +1,6 @@
 <?php
 
-namespace Acelle\Http\Controllers\Public;
+namespace Acelle\Http\Controllers\Pub;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log as LaravelLog;
@@ -476,7 +476,7 @@ class CampaignController extends Controller
         $progress = $job->getJsonData();
         $progress['status'] = $job->status;
         $progress['error'] = $job->error;
-        $progress['download'] = action('Public\CampaignController@download', ['uid' => $job->uid]);
+        $progress['download'] = action('Pub\CampaignController@download', ['uid' => $job->uid]);
 
         return response()->json($progress);
     }

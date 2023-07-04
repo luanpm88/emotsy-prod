@@ -43,7 +43,7 @@
 				</td>
 				@if ($item->trackingLog->campaign->campaignWebhooks()->click()->count())
                     <td class="text-end">
-                        <a href="{{ action('Public\CampaignController@clickLogExecute', [
+                        <a href="{{ action('Pub\CampaignController@clickLogExecute', [
                             'uid' => $item->trackingLog->campaign->uid,
                             'message_id' => $item->message_id,
                         ]) }}" class="btn btn-light click_log_detail">

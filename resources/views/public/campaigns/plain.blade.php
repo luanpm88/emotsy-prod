@@ -14,7 +14,7 @@
 	<div class="page-title">
 		<ul class="breadcrumb breadcrumb-caret position-right">
 			<li class="breadcrumb-item"><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
-			<li class="breadcrumb-item"><a href="{{ action("Public\CampaignController@index") }}">{{ trans('messages.campaigns') }}</a></li>
+			<li class="breadcrumb-item"><a href="{{ action("Pub\CampaignController@index") }}">{{ trans('messages.campaigns') }}</a></li>
 		</ul>
 		<h1>
 			<span class="text-semibold"><span class="material-symbols-rounded me-2">forward_to_inbox</span> {{ $campaign->name }}</span>
@@ -32,7 +32,7 @@
             <h3>{{ trans('messages.campaign.email_content_plain') }}</h3>                
             <p>{{ trans('messages.campaign.email_content_plain.intro') }}</p>
                 
-            <form action="{{ action('Public\CampaignController@plain', $campaign->uid) }}" method="POST">
+            <form action="{{ action('Pub\CampaignController@plain', $campaign->uid) }}" method="POST">
                 {{ csrf_field() }}
 
                 @include('helpers.form_control', [

@@ -69,7 +69,7 @@
         </div>
 
         <div id="html" class="tabcontent" style="display: block">
-            <iframe class="email_preview_frame" src="{{ action('Public\CampaignController@previewContent', $campaign->uid) }}"></iframe>
+            <iframe class="email_preview_frame" src="{{ action('Pub\CampaignController@previewContent', $campaign->uid) }}"></iframe>
         </div>
     @endif
 

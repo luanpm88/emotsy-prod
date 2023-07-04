@@ -145,37 +145,37 @@ Route::group(['middleware' => ['not_installed', 'not_logged_in']], function () {
     Route::get('plans/list/{style?}', 'PlanController@publicListPage');
 
     // public campaign report
-    Route::get('pub/campaigns/job/{uid}/download', 'Public\CampaignController@download');
-    Route::get('pub/campaigns/{uid}/tracking-log/download', 'Public\CampaignController@trackingLogDownload');
-    Route::get('pub/campaigns/job/{uid}/progress', 'Public\CampaignController@trackingLogExportProgress');
-    Route::get('pub/campaigns/{uid}/tracking-log/download', 'Public\CampaignController@trackingLogDownload');
-    Route::get('pub/campaigns/{uid}/overview', 'Public\CampaignController@overview');
-    Route::get('pub/campaigns/{uid}/subscribers', 'Public\CampaignController@subscribers');
-    Route::get('pub/campaigns/{uid}/subscribers/listing', 'Public\CampaignController@subscribersListing');
-    Route::get('pub/campaigns/{uid}/open-map', 'Public\CampaignController@openMap');
-    Route::get('pub/campaigns/{uid}/tracking-log', 'Public\CampaignController@trackingLog');
-    Route::get('pub/campaigns/{uid}/tracking-log/listing', 'Public\CampaignController@trackingLogListing');
-    Route::get('pub/campaigns/{uid}/bounce-log', 'Public\CampaignController@bounceLog');
-    Route::get('pub/campaigns/{uid}/bounce-log/listing', 'Public\CampaignController@bounceLogListing');
-    Route::get('pub/campaigns/{uid}/feedback-log', 'Public\CampaignController@feedbackLog');
-    Route::get('pub/campaigns/{uid}/feedback-log/listing', 'Public\CampaignController@feedbackLogListing');
-    Route::get('pub/campaigns/{uid}/open-log', 'Public\CampaignController@openLog');
-    Route::get('pub/campaigns/{uid}/open-log/listing', 'Public\CampaignController@openLogListing');
-    Route::get('pub/campaigns/{uid}/click-log', 'Public\CampaignController@clickLog');
-    Route::get('pub/campaigns/{uid}/click-log/listing', 'Public\CampaignController@clickLogListing');
-    Route::get('pub/campaigns/{uid}/unsubscribe-log', 'Public\CampaignController@unsubscribeLog');
-    Route::get('pub/campaigns/{uid}/unsubscribe-log/listing', 'Public\CampaignController@unsubscribeLogListing');
+    Route::get('pub/campaigns/job/{uid}/download', 'Pub\CampaignController@download');
+    Route::get('pub/campaigns/{uid}/tracking-log/download', 'Pub\CampaignController@trackingLogDownload');
+    Route::get('pub/campaigns/job/{uid}/progress', 'Pub\CampaignController@trackingLogExportProgress');
+    Route::get('pub/campaigns/{uid}/tracking-log/download', 'Pub\CampaignController@trackingLogDownload');
+    Route::get('pub/campaigns/{uid}/overview', 'Pub\CampaignController@overview');
+    Route::get('pub/campaigns/{uid}/subscribers', 'Pub\CampaignController@subscribers');
+    Route::get('pub/campaigns/{uid}/subscribers/listing', 'Pub\CampaignController@subscribersListing');
+    Route::get('pub/campaigns/{uid}/open-map', 'Pub\CampaignController@openMap');
+    Route::get('pub/campaigns/{uid}/tracking-log', 'Pub\CampaignController@trackingLog');
+    Route::get('pub/campaigns/{uid}/tracking-log/listing', 'Pub\CampaignController@trackingLogListing');
+    Route::get('pub/campaigns/{uid}/bounce-log', 'Pub\CampaignController@bounceLog');
+    Route::get('pub/campaigns/{uid}/bounce-log/listing', 'Pub\CampaignController@bounceLogListing');
+    Route::get('pub/campaigns/{uid}/feedback-log', 'Pub\CampaignController@feedbackLog');
+    Route::get('pub/campaigns/{uid}/feedback-log/listing', 'Pub\CampaignController@feedbackLogListing');
+    Route::get('pub/campaigns/{uid}/open-log', 'Pub\CampaignController@openLog');
+    Route::get('pub/campaigns/{uid}/open-log/listing', 'Pub\CampaignController@openLogListing');
+    Route::get('pub/campaigns/{uid}/click-log', 'Pub\CampaignController@clickLog');
+    Route::get('pub/campaigns/{uid}/click-log/listing', 'Pub\CampaignController@clickLogListing');
+    Route::get('pub/campaigns/{uid}/unsubscribe-log', 'Pub\CampaignController@unsubscribeLog');
+    Route::get('pub/campaigns/{uid}/unsubscribe-log/listing', 'Pub\CampaignController@unsubscribeLogListing');
 
-    Route::get('pub/campaigns/quick-view', 'Public\CampaignController@quickView');
-    Route::get('pub/campaigns/{uid}/chart24h', 'Public\CampaignController@chart24h');
-    Route::get('pub/campaigns/{uid}/chart', 'Public\CampaignController@chart');
-    Route::get('pub/campaigns/{uid}/chart/countries/open', 'Public\CampaignController@chartCountry');
-    Route::get('pub/campaigns/{uid}/chart/countries/click', 'Public\CampaignController@chartClickCountry');
-    Route::get('pub/campaigns/{uid}/overview', 'Public\CampaignController@overview');
-    Route::get('pub/campaigns/{uid}/links', 'Public\CampaignController@links');
+    Route::get('pub/campaigns/quick-view', 'Pub\CampaignController@quickView');
+    Route::get('pub/campaigns/{uid}/chart24h', 'Pub\CampaignController@chart24h');
+    Route::get('pub/campaigns/{uid}/chart', 'Pub\CampaignController@chart');
+    Route::get('pub/campaigns/{uid}/chart/countries/open', 'Pub\CampaignController@chartCountry');
+    Route::get('pub/campaigns/{uid}/chart/countries/click', 'Pub\CampaignController@chartClickCountry');
+    Route::get('pub/campaigns/{uid}/overview', 'Pub\CampaignController@overview');
+    Route::get('pub/campaigns/{uid}/links', 'Pub\CampaignController@links');
 
-    Route::get('pub/campaigns/{uid}/preview/content/{subscriber_uid?}', 'Public\CampaignController@previewContent');
-    Route::get('pub/campaigns/{uid}/preview', 'Public\CampaignController@preview');
+    Route::get('pub/campaigns/{uid}/preview/content/{subscriber_uid?}', 'Pub\CampaignController@previewContent');
+    Route::get('pub/campaigns/{uid}/preview', 'Pub\CampaignController@preview');
 });
 
 // Without authentication

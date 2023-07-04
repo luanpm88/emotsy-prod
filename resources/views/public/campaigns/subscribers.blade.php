@@ -54,7 +54,7 @@
 </div>
 
 <div class="listing-form"
-        data-url="{{ action('Public\CampaignController@subscribersListing', $campaign->uid) }}"
+        data-url="{{ action('Pub\CampaignController@subscribersListing', $campaign->uid) }}"
         per-page="{{ Acelle\Model\Subscriber::$itemsPerPage }}"
     >
     <div class="d-flex top-list-controls top-sticky-content">
@@ -216,7 +216,7 @@
     var SubscribersIndex = {
         getList: function() {
             return makeList({
-                url: '{{ action('Public\CampaignController@subscribersListing', $campaign->uid) }}',
+                url: '{{ action('Pub\CampaignController@subscribersListing', $campaign->uid) }}',
                 container: $('.listing-form'),
                 content: $('.pml-table-container')
             });
