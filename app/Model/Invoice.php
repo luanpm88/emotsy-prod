@@ -952,8 +952,11 @@ class Invoice extends Model
             case Invoice::TYPE_CHANGE_PLAN:
                 $subscription = Subscription::findByUid($this->getMetadata()['subscription_uid']);
                 $invoiceItem = $this->invoiceItems()->first(); // subscription general plan always has 1 invoice item (design)
-                $invoiceItem->amount = $subscription->plan->price;
-                $invoiceItem->save();
+                if ($invoiceItem->amount != $subscription->plan->price) {
+                    $invoiceItem->amount = $subscription->plan->price;
+                    $invoiceItem->save();
+                }
+                
                 break;
         }
     }
