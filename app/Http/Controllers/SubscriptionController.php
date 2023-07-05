@@ -139,6 +139,9 @@ class SubscriptionController extends Controller
         // get unpaid invoice
         $invoice = $customer->invoices()->unpaid()->where('uid', '=', $request->invoice_uid)->first();
 
+        // always update invoice price fron plan
+        $invoice->refreshPrice();
+
         // no unpaid invoice found
         if (!$invoice) {
             // throw new \Exception('Can not find unpaid invoice with id:' . $request->invoice_uid);
@@ -172,6 +175,9 @@ class SubscriptionController extends Controller
         if (!$invoice) {
             throw new \Exception('Customer subscription does not have any unpaid invoice!');
         }
+
+        // always update invoice price fron plan
+        $invoice->refreshPrice();
 
         // Luôn đặt payment method mặc định cho customer là lần chọn payment gần nhất
         $request->user()->customer->updatePaymentMethod([

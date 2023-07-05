@@ -942,4 +942,19 @@ class Invoice extends Model
     {
         return ($this->billingCountry ? $this->billingCountry->code : '');
     }
+
+    public function refreshPrice()
+    {
+        // logging by type
+        switch ($this->type) {
+            case Invoice::TYPE_NEW_SUBSCRIPTION:
+            case Invoice::TYPE_RENEW_SUBSCRIPTION:
+            case Invoice::TYPE_CHANGE_PLAN:
+                $subscription = Subscription::findByUid($this->getMetadata()['subscription_uid']);
+                $invoiceItem = $this->invoiceItems()->first();
+                $invoiceItem->amount = $subscription->plan->price;
+                $invoiceItem->save();
+                break;
+        }
+    }
 }
