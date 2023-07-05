@@ -101,6 +101,9 @@ class SubscriptionController extends Controller
         $invoice = $subscription->getUnpaidInvoice();
         $billingAddress = $customer->getDefaultBillingAddress();
 
+        // always update invoice price fron plan
+        $invoice->refreshPrice();
+
         // Save posted data
         if ($request->isMethod('post')) {
             $validator = $invoice->updateBillingInformation($request->all());
