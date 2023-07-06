@@ -9,6 +9,7 @@ class GenerateSpintax implements StageInterface
 {
     public function __invoke($html)
     {
-        return Parser::replicate($html, []);
+        return $html;
+        //return Parser::replicate($html, []);
     }
 }
