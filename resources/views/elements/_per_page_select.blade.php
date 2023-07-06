@@ -2,7 +2,7 @@
     <div class="num_per_page mr-auto my-0">
         <select class="select" name="per_page">
             @php
-                $perPages = [2,8,10,15,25,50,100];
+                $perPages = [2,8,10,12,15,25,50,100];
 
                 if (isset($custom_per_pages)) {
                     $perPages = $custom_per_pages;
