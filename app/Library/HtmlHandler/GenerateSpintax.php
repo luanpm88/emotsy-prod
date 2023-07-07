@@ -25,7 +25,7 @@ class GenerateSpintax implements StageInterface
                 $transformed = Parser::replicate($text, []);
 
                 // Actually replace in the HTML content
-                $html = str_replace($text, $transformed, $html);
+                $html = str_replace(">{$text}<", ">{$transformed}<", $html);
             }
         }
 
