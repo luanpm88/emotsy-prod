@@ -45,6 +45,9 @@ class TransformUrl implements StageInterface
                 return $url;
             }
 
+            // Make trackable links like. For example:
+            // StringHelper::makeTrackableLink('http://google.com', 'MSGID')
+            // ==> https://localhost/p/aHR0cDovL2dvb2dsZS5jb20/click/TVNHSUQ
             return StringHelper::makeTrackableLink($url, $this->msgId);
         };
 

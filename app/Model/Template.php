@@ -725,9 +725,17 @@ class Template extends Model
             if (!is_null(parse_url($url, PHP_URL_HOST))) {
                 // url is with a host like "http://" or "//"
                 if (!is_null($urlTransform)) {
+                    // Make trackable links like. For example:
+                    // StringHelper::makeTrackableLink('http://google.com', 'MSGID')
+                    // ==> https://localhost/p/aHR0cDovL2dvb2dsZS5jb20/click/TVNHSUQ
                     $url = $urlTransform($url, $element);
                 }
 
+                // The next step is to transform it again to a tracking URL like
+                // If tracking domain is of type HOST
+                // ==> https://tracking.com/aHR0cHM6Ly9sb2NhbGhvc3QvcC9hSFIwY0RvdkwyZHZiMmRzWlM1amIyMC9jbGljay9UVk5IU1VR
+                // Or, if tracking domain is of type DNS
+                // ==> https://tracking.com/p/aHR0cDovL2dvb2dsZS5jb20/click/TVNHSUQ
                 if ($domain) {
                     $url = $domain->buildTrackingUrl($url);
                 }

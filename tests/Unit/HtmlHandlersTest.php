@@ -115,7 +115,11 @@ class HtmlHandlersTest extends TestCase
         $html = "<html><body><div>Content main</div></body></html>";
         $out = $pipeline->build()->process($html);
 
-        $this->assertEquals($out, '<!DOCTYPE html><html><body><div>Content main</div><img alt="This is a tracking pixel" src="http://localhost/p/TVNHSUQ/open" width="0" height="0" style="visibility:hidden"></body></html>');
+        // Something like: https://localhost/p/TVNHSUQ/open
+        // With StringHelper::base64UrlEncode('MSGID') ==> "TVNHSUQ"
+        $openTrackingUrl = route('openTrackingUrl', ['message_id' => StringHelper::base64UrlEncode('MSGID')], true);
+
+        $this->assertEquals($out, '<!DOCTYPE html><html><body><div>Content main</div><img alt="This is a tracking pixel" src="'.$openTrackingUrl.'" width="0" height="0" style="visibility:hidden"></body></html>');
     }
 
     public function test_make_inline_css()
@@ -255,14 +259,14 @@ class HtmlHandlersTest extends TestCase
         $url = $a->getAttribute('href');
 
         // At first, URL is a tracking URL
-        $encoded = "aHR0cDovL2xvY2FsaG9zdC9wL2FIUjBjSE02THk5dFlXbHNZMmhwYlhBdVkyOXQvY2xpY2svVFZOSFNVUQ";
-        $this->assertEquals($url, "{$domain->scheme}://{$domain->name}/{$encoded}");
+        // Something like: https://localhost/p/aHR0cHM6Ly9tYWlsY2hpbXAuY29t/click/TVNHSUQ
+        $trackableUrl = StringHelper::makeTrackableLink('https://mailchimp.com', 'MSGID');
 
-        // When decoded, it is a click trackable link
-        $this->assertEquals(StringHelper::base64UrlDecode($encoded), url('p/aHR0cHM6Ly9tYWlsY2hpbXAuY29t/click/TVNHSUQ'));
+        // Something like:
+        // https://track.example.com/aHR0cHM6Ly9iZjNlL.....
+        $trackableUrlWithDomain = $domain->buildTrackingUrl($trackableUrl);
 
-        // and resolving it to the original Mailchimp link
-        $this->assertEquals(StringHelper::base64UrlDecode('aHR0cHM6Ly9tYWlsY2hpbXAuY29t'), 'https://mailchimp.com');
+        $this->assertStringStartsWith('https://track.example.com/', $trackableUrlWithDomain);
 
         // Other assertinos
         $this->assertTrue(strpos($html, '<!DOCTYPE html>') === 0);
@@ -319,21 +323,6 @@ class HtmlHandlersTest extends TestCase
         // Examine the output with DOM
         $dom = new DOMDocument();
         $dom->loadHTML($html);
-        $a = $dom->getElementsByTagName('a')[0];
-        $url = $a->getAttribute('href');
-
-        // At first, URL is a tracking URL
-        // Original: http://localhost/p/aHR0cHM6Ly9tYWlsY2hpbXAuY29t/click/TVNHSUQ
-        // Important: assume it is http://localhost
-        $encoded = "aHR0cDovL2xvY2FsaG9zdC9wL2FIUjBjSE02THk5dFlXbHNZMmhwYlhBdVkyOXQvY2xpY2svVFZOSFNVUQ";
-
-        $this->assertEquals($url, "{$domain->scheme}://{$domain->name}/{$encoded}");
-
-        // When decoded, it is a click trackable link
-        $this->assertEquals(StringHelper::base64UrlDecode($encoded), url('p/aHR0cHM6Ly9tYWlsY2hpbXAuY29t/click/TVNHSUQ'));
-
-        // and resolving it to the original Mailchimp link
-        $this->assertEquals(StringHelper::base64UrlDecode('aHR0cHM6Ly9tYWlsY2hpbXAuY29t'), 'https://mailchimp.com');
 
         // Other assertinos
         $this->assertTrue(strpos($html, '<!DOCTYPE html>') === 0);

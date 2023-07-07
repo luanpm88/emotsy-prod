@@ -19,7 +19,6 @@ class TemplateUrlTest extends TestCase
     public const EMPTY = '';
     public const SHARP = '#';
 
-    public const HOST = 'http://localhost/';
     public const TRACKING_DOMAIN = 'track.example.com';
     public const TRACKING_HOST = 'http://track.example.com/';
 
@@ -127,10 +126,10 @@ class TemplateUrlTest extends TestCase
 
         // Transformed
         $this->assertMatchesRegularExpression('/^http.*\/assets\/.*sample.png$/', $out['relative']);
-        $this->assertTrue(strpos($out['relative'], self::HOST) === 0); // contains "http:://localhost..."
+        $this->assertTrue(strpos($out['relative'], url('/')) === 0); // contains "http:://localhost..."
 
         // Unchanged
-        $this->assertEquals($out['absolute'], join_url(self::HOST, self::ABSOLUTE));
+        $this->assertEquals($out['absolute'], join_url(url('/'), self::ABSOLUTE));
         $this->assertEquals($out['public'], self::PUBLIC); // unchanged
         $this->assertEquals($out['cdn'], self::CDN); // unchanged
         $this->assertEquals($out['empty'], self::EMPTY); // unchanged
@@ -156,7 +155,7 @@ class TemplateUrlTest extends TestCase
 
         // Transformed
         // $this->assertMatchesRegularExpression( '/^http.*\/assets\/.*sample.png$/', $out['relative']);
-        $this->assertTrue(strpos($out['relative'], self::HOST) === 0); // contains "http:://localhost..."
+        $this->assertTrue(strpos($out['relative'], url('/')) === 0); // contains "http:://localhost..."
 
         // Unchanged
         $this->assertEquals($out['public'], self::PUBLIC); // unchanged
@@ -175,12 +174,12 @@ class TemplateUrlTest extends TestCase
         // Transformed
         $this->assertMatchesRegularExpression('/^http.*'.$domain->name.'\/[^\/]+$/', $out['relative']);
         $this->assertTrue(strpos($out['relative'], $domain->getUrl()) === 0);
-        $this->assertEquals($out['absolute'], join_url($domain->getUrl(), StringHelper::base64UrlEncode(join_url(self::HOST, self::ABSOLUTE))));
+        $this->assertEquals($out['absolute'], join_url($domain->getUrl(), StringHelper::base64UrlEncode(join_url(url('/'), self::ABSOLUTE))));
         $this->assertEquals($out['public'], join_url($domain->getUrl(), StringHelper::base64UrlEncode(self::PUBLIC)));
         $this->assertEquals($out['cdn'], join_url($domain->getUrl(), StringHelper::base64UrlEncode(self::CDN)));
 
         // Unchanged
-        // $this->assertEquals( $out['absolute'], join_url(self::HOST, self::ABSOLUTE) );
+        // $this->assertEquals( $out['absolute'], join_url(url('/'), self::ABSOLUTE) );
         // $this->assertEquals( $out['public'], self::PUBLIC ); // unchanged
         // $this->assertEquals( $out['cdn'], self::CDN ); // unchanged
 
