@@ -14,6 +14,7 @@ use Acelle\Library\HtmlHandler\TransformUrl;
 use Acelle\Library\HtmlHandler\AddDoctype;
 use Acelle\Library\HtmlHandler\RemoveTitleTag;
 use Acelle\Library\HtmlHandler\AddPreheader;
+use Acelle\Library\HtmlHandler\GenerateSpintax;
 use Acelle\Model\Subscriber;
 use Acelle\Model\Campaign;
 use Acelle\Model\MailList;
@@ -432,5 +433,20 @@ class HtmlHandlersTest extends TestCase
         sleep(2);
         $cachedHtml = $campaign->getHtmlContent($subscriber = null, $messageId = null, $server = null, $fromCache = true);
         $this->assertEquals($cachedHtml, $html);
+    }
+
+    public function test_spintax_parser_just_works_and_does_not_break_css()
+    {
+        $pipeline = new PipelineBuilder();
+        $pipeline->add(new GenerateSpintax());
+
+        // HTML with CSS
+        $html = '<style>div > p {color:red}</style><p>{Hi|Hello} everyone</p>';
+
+        // Transformed HTML with CSS retained
+        $transformedHtml = $pipeline->build()->process($html);
+
+        // Output
+        $this->assertTrue( $transformedHtml == '<style>div > p {color:red}</style><p>Hello everyone</p>' || $transformedHtml = '<style>div > p {color:red}</style><p>Hi everyone</p>' );
     }
 }
