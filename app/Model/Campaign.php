@@ -3137,7 +3137,7 @@ class Campaign extends Model implements HasTemplateInterface
         $lock = new Lockable($lockFile);
         $timeout = 5; // seconds
         $timeoutCallback = function () {
-            // pass this ot the getExclusiveLock method
+            // pass this to the getExclusiveLock method
             // to have it silently quit, without throwing an exception
             return;
         };

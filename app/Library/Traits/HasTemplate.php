@@ -20,7 +20,9 @@ use Acelle\Library\HtmlHandler\AddDoctype;
 use Acelle\Library\HtmlHandler\RemoveTitleTag;
 use Acelle\Library\HtmlHandler\AddPreheader;
 use Acelle\Library\HtmlHandler\GenerateSpintax;
+use Acelle\Library\HtmlHandler\GenerateSpintaxForPlainText;
 use Acelle\Library\HtmlHandler\DecodeHtmlSpecialChars;
+use Acelle\Library\HtmlHandler\InjectMessageIdToBody;
 use Acelle\Library\Lockable;
 use File;
 use Cache;
@@ -303,7 +305,7 @@ trait HasTemplate
         }
 
         $pipeline->add(new DecodeHtmlSpecialChars());
-        $pipeline->add(new GenerateSpintax());
+        $pipeline->add(new GenerateSpintaxForPlainText());
         $pipeline->add(new ReplaceBareLineFeed());
         return $pipeline->build()->process($this->subject);
     }
@@ -408,6 +410,8 @@ trait HasTemplate
             $pipeline->add(new InjectTrackingPixel($this, $msgId));
         }
 
+        $pipeline->add(new InjectMessageIdToBody($msgId));
+
         if (!$this->isStageExcluded(TransformUrl::class)) {
             $pipeline->add(new TransformUrl($this->template, $msgId, $this->trackingDomain));
         }
@@ -489,7 +493,7 @@ trait HasTemplate
         }
 
         $pipeline->add(new DecodeHtmlSpecialChars());
-        $pipeline->add(new GenerateSpintax());
+        $pipeline->add(new GenerateSpintaxForPlainText());
         $pipeline->add(new ReplaceBareLineFeed());
         $plain = $pipeline->build()->process($plain);
 

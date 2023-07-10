@@ -181,6 +181,20 @@ class DeliveryHandler extends Model
         return;
     }
 
+    public function getAcxMessageId()
+    {
+        preg_match('/(?<=X-Acelle-Message-Id:)\s{0,1}<{0,1}(?<id>[a-zA-Z0-9-\.]+[a-zA-Z0-9-]+@[a-zA-Z0-9\.\-]+[a-zA-Z0-9]+)/', $message, $matched);
+
+        return $matched['id'] ?? null;
+    }
+
+    public function getClientMessageId()
+    {
+        preg_match('/(?<=X-Client-Message-Id:)\s{0,1}<{0,1}(?<id>[a-zA-Z0-9-\.]+[a-zA-Z0-9-]+@[a-zA-Z0-9\.\-]+[a-zA-Z0-9]+)/', $message, $matched);
+
+        return $matched['id'] ?? null;
+    }
+
     /**
      * Process bounced / feedback loop messages.
      *

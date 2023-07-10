@@ -15,6 +15,7 @@ use Acelle\Library\HtmlHandler\AddDoctype;
 use Acelle\Library\HtmlHandler\RemoveTitleTag;
 use Acelle\Library\HtmlHandler\AddPreheader;
 use Acelle\Library\HtmlHandler\GenerateSpintax;
+use Acelle\Library\HtmlHandler\InjectMessageIdToBody;
 use Acelle\Model\Subscriber;
 use Acelle\Model\Campaign;
 use Acelle\Model\MailList;
@@ -437,5 +438,25 @@ class HtmlHandlersTest extends TestCase
 
         // Output
         $this->assertTrue( $transformedHtml == '<style>div > p {color:red}</style><p>Hello everyone</p>' || $transformedHtml = '<style>div > p {color:red}</style><p>Hi everyone</p>' );
+    }
+
+    public function test_inject_message_id_to_body()
+    {
+        $pipeline = new PipelineBuilder();
+        $pipeline->add(new InjectMessageIdToBody('MSGID'));
+
+        // HTML with CSS
+        $html = '<body>Hello</body>';
+
+        // Transformed HTML with CSS retained
+        $transformedHtml = $pipeline->build()->process($html);
+
+        $imgUrl = asset('/images/transparent.gif');
+
+        // Output
+        $this->assertEquals(
+            $transformedHtml,
+            '<!DOCTYPE html><html><body>Hello<img src="'.$imgUrl.'" data="X-Client-Message-Id: MSGID" alt="X-Client-Message-Id: MSGID" width="0" height="0" style="visibility:hidden"></body></html>'
+        );
     }
 }
