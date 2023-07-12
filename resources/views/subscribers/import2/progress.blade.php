@@ -17,7 +17,10 @@
                         </div>
                         <div style="padding-right: 40px;">
                             <h4 style="padding-bottom:5px">{{ trans('messages.cronjob.warning.title') }}</h4>
-                            <p style="padding-bottom:5px">{{ trans('messages.cronjob.warning.list.description', ['last_executed_time' => $cronjobWarning->toString()]) }}.</p>
+                            <p style="padding-bottom:5px">{{ trans('messages.cronjob.warning.list.description', [
+                                'last_executed_time' => $cronjobWarning->toString(),
+                                'last_executed_time_readable' => $cronjobWarning->diffForHumans()
+                            ]) }}.</p>
                         </div>
                     </div>
 
