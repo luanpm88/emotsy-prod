@@ -117,7 +117,8 @@ return [
             'result_map' => [
                 'deliverable' => 'deliverable',
                 'unknown' => 'unknown',
-                'accept-all' => 'unknown',
+                'accept-all' => 'unknown', // Acelle-All means the domain's email addresses cannot be verified.
+                'accept all' => 'unknown', // Acelle-All means the domain's email addresses cannot be verified.
                 'undeliverable' => 'undeliverable',
             ]
         ], [
