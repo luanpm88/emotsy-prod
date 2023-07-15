@@ -410,14 +410,14 @@ class HtmlHandlersTest extends TestCase
         $html = $campaign->getHtmlContent();
         $cachedHtml = $campaign->getHtmlContent($subscriber = null, $messageId = null, $server = null, $fromCache = true, $seconds = 1);
 
-        $this->assertEquals($html, '<!DOCTYPE html><html><body><p>Original</p></body></html>');
+        $this->assertEquals($html, '<!DOCTYPE html><html><body><p>Original</p><img src="'.asset('/images/transparent.gif').'" data="X-Client-Message-Id: [ null ]" alt="X-Client-Message-Id: [ null ]" width="0" height="0" style="visibility:hidden"></body></html>');
         $this->assertEquals($html, $cachedHtml);
 
         $campaign->template->content = 'Updated';
         $html = $campaign->getHtmlContent();
         $cachedHtml = $campaign->getHtmlContent($subscriber = null, $messageId = null, $server = null, $fromCache = true, $seconds = 1);
-        $this->assertEquals($html, '<!DOCTYPE html><html><body><p>Updated</p></body></html>');
-        $this->assertEquals($cachedHtml, '<!DOCTYPE html><html><body><p>Original</p></body></html>');
+        $this->assertEquals($html, '<!DOCTYPE html><html><body><p>Updated</p><img src="'.asset('/images/transparent.gif').'" data="X-Client-Message-Id: [ null ]" alt="X-Client-Message-Id: [ null ]" width="0" height="0" style="visibility:hidden"></body></html>');
+        $this->assertEquals($cachedHtml, '<!DOCTYPE html><html><body><p>Original</p><img src="'.asset('/images/transparent.gif').'" data="X-Client-Message-Id: [ null ]" alt="X-Client-Message-Id: [ null ]" width="0" height="0" style="visibility:hidden"></body></html>');
 
         // wait 2 seconds for cache to expire
         sleep(2);
