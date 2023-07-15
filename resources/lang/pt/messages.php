@@ -2169,6 +2169,7 @@
   'send_to' => 'Para',
   'send_welcome_email' => 'Send a final welcome email',
   'sender.available.intro' => 'Below are sending identities that you can use for your marketing email. Use an email address or any email address that matches the domains from the list below as your FROM email address in your campaign setup.',
+  'sender.button.refresh_now' => 'Refresh',
   'sender.create' => 'New sender',
   'sender.delete' => 'Delete',
   'sender.delete.confirm' => 'You\'re about to delete sender from the list.',

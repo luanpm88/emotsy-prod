@@ -2168,6 +2168,7 @@
   'send_to' => 'Enviar a',
   'send_welcome_email' => 'Send a final welcome email',
   'sender.available.intro' => 'A continuación se envían las identidades que puede utilizar para su correo electrónico de marketing. Use una dirección de correo electrónico o cualquier dirección de correo electrónico que coincida con los dominios de la lista a continuación como su dirección REMITENTE en la configuración de su campaña.',
+  'sender.button.refresh_now' => 'Refresh',
   'sender.create' => 'Nuevo remitente',
   'sender.delete' => 'Eliminar',
   'sender.delete.confirm' => 'Estás a punto de eliminar el remitente de la lista.',

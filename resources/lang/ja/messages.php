@@ -2163,6 +2163,7 @@
   'send_to' => '送信先 :count 受信者',
   'send_welcome_email' => '最後のウェルカム メールを送信する',
   'sender.available.intro' => '以下は、マーケティングメールに使用できるメールIDのアドレスです。 キャンペーン設定のFROMメールアドレスとして、以下のリストのドメインに一致するメールアドレスまたは任意のメールアドレスを使用してください。',
+  'sender.button.refresh_now' => 'Refresh',
   'sender.create' => '新しい送信アドレス追加',
   'sender.delete' => '削除',
   'sender.delete.confirm' => 'リストから送信者を削除しようとしています.',

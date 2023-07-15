@@ -2167,6 +2167,7 @@
   'send_to' => 'Invia a :count destinatari',
   'send_welcome_email' => 'Inviare un\'e-mail di benvenuto finale',
   'sender.available.intro' => 'Di seguito sono riportate le identit&agrave; di invio disponibili per gli utenti che sottoscrivono questo piano. Gli utenti possono utilizzare un indirizzo e-mail che corrisponde all\'elenco sottostante come indirizzo FROM EMAIL nella configurazione della campagna.',
+  'sender.button.refresh_now' => 'Refresh',
   'sender.create' => 'Nuovo Mittente',
   'sender.delete' => 'Elimina',
   'sender.delete.confirm' => 'Si sta per eliminare il mittente dalla lista.',

@@ -2167,6 +2167,7 @@
   'send_to' => 'Senden an',
   'send_welcome_email' => 'Send a final welcome email',
   'sender.available.intro' => 'Nachfolgend finden Sie Informationen zum Senden von Identitäten, die Sie für Ihre Marketing-E-Mail verwenden können. Verwenden Sie eine E-Mail-Adresse oder eine beliebige E-Mail-Adresse, die den Domains aus der folgenden Liste entspricht und als FROM-E-Mail-Adresse in Ihrem Kampagnen-Setup entspricht.',
+  'sender.button.refresh_now' => 'Refresh',
   'sender.create' => 'Neuer Absender',
   'sender.delete' => 'Löschen',
   'sender.delete.confirm' => 'Sie löschen gerade den Absender aus der Liste',

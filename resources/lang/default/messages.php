@@ -2170,6 +2170,7 @@
   'send_to' => 'Send to :count recipient(s)',
   'send_welcome_email' => 'Send a final welcome email',
   'sender.available.intro' => 'Below are sending identities available for users subscribing to this plan. Users can use an email address that matches the list below as FROM EMAIL address in campaign setup.',
+  'sender.button.refresh_now' => 'Refresh',
   'sender.create' => 'New sender',
   'sender.delete' => 'Delete',
   'sender.delete.confirm' => 'You\'re about to delete sender from the list.',
