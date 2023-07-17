@@ -2533,19 +2533,6 @@ class Campaign extends Model implements HasTemplateInterface
         return $this->status == self::STATUS_ERROR;
     }
 
-    public function cancelAndDeleteJobs($jobType = null)
-    {
-        $query = $this->jobMonitors();
-
-        if (!is_null($jobType)) {
-            $query = $query->byJobType($jobType);
-        }
-
-        foreach ($query->get() as $job) {
-            $job->cancel();
-        }
-    }
-
     // This method called when user clicks CONFIRM button on the web UI
     // This method is also called by a cronjob which periodically check for campaigns to run
     public function execute()
