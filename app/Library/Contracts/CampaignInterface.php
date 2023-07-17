@@ -12,17 +12,17 @@ interface CampaignInterface
 
 	// Set status
 	public function setDone();
+	public function setQueuing();
 	public function setQueued();
 	public function setSending();
-	public function setQueuing();
-	public function setPaused();
 	public function setScheduled();
+	public function setPaused();
 	public function setError($error = null);
 
 	// Check status
+	public function isQueued();
 	public function isSending();
 	public function isDone();
-	public function isQueued();
 	public function isPaused();
 	public function isError();
 
