@@ -454,7 +454,7 @@ trait HasTemplate
             // $pipeline->add(new TransformTag($this, $subscriber, $msgId, $server));
             // $pipeline->add(new InjectTrackingPixel($this, $msgId));
             // $pipeline->add(new TransformUrl($this->template, $msgId, $this->trackingDomain));
-            // $html = $this->wooTransform($html);
+            // $html = $this->template->wooTransform($html);
             $html = $pipeline->build()->process($this->getTemplateContent());
         }
 
