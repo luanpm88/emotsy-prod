@@ -972,7 +972,7 @@ class Automation2 extends Model
         $segments = $this->getSegments();
 
         if ($segments->isEmpty()) {
-            $query = $this->mailList->subscribers();
+            $query = $this->mailList->subscribers()->select('subscribers.*');
         } else {
             $query = Subscriber::getByListsAndSegments(...$segments);
         }
@@ -1297,18 +1297,12 @@ class Automation2 extends Model
     {
         $thisId = $this->id;
         return $this->subscribers()
-                ->select('subscribers.*', 'auto_triggers.id as auto_trigger_id', 'auto_triggers.created_at as triggered_at')
                 ->leftJoin('auto_triggers', function ($join) use ($thisId) {
                     $join->on('auto_triggers.subscriber_id', 'subscribers.id');
                     $join->where('auto_triggers.automation2_id', $thisId);
-                });
-
-                /* It is a bug of Laravel itself that addSelect does not work properly, it make the object null
-                 *
-                 * ->addSelect('auto_triggers.id as auto_trigger_id')
-                 * ->addSelect('auto_triggers.created_at as triggered_at');
-                 *
-                 */
+                })
+                ->addSelect('auto_triggers.id as auto_trigger_id')
+                ->addSelect('auto_triggers.created_at as triggered_at');
     }
 
     public function getAutoTriggerFor($subscriber)
