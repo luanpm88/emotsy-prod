@@ -615,8 +615,10 @@ class Automation2 extends Model
         $dobFieldUid = $this->getTriggerAction()->getOptions()['field'];
         $dobFieldId = Field::findByUid($dobFieldUid)->id;
         $query = $this->subscribers()
-            ->join('subscriber_fields', 'subscribers.id', 'subscriber_fields.subscriber_id')
-            ->where('subscriber_fields.field_id', $dobFieldId)
+            ->leftJoin('subscriber_fields', function ($join) use ($dobFieldId) {
+                $join->on('subscribers.id', '=', 'subscriber_fields.subscriber_id');
+                $join->on('subscriber_fields.field_id', DB::raw($dobFieldId));
+            })
             /*
             ->whereIn(DB::raw(sprintf('SUBSTRING(%s, 1, 10)', table('subscriber_fields.value'))), [
                 $today->format('Y-m-d'),
@@ -625,6 +627,7 @@ class Automation2 extends Model
                 $today->format('m-d-Y'),
             ])
             */
+
             ->addSelect('auto_triggers.created_at AS trigger_at')
             ->addSelect('auto_triggers.id AS auto_trigger_id')
             ->addSelect('subscriber_fields.value as dob')
