@@ -168,10 +168,10 @@ full-height
                 success: function (response) {
                     // notify
                     notify({
-    type: 'success',
-    title: '{!! trans('messages.notify.success') !!}',
-    message: response.message
-});
+                        type: 'success',
+                        title: '{!! trans('messages.notify.success') !!}',
+                        message: response.message
+                    });
 
                     // remove effects
                     removeMaskLoading();
