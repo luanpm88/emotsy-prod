@@ -1467,7 +1467,10 @@ class Automation2Controller extends Controller
                                   ->addSelect('subscribers.created_at')
                                   ->addSelect('auto_triggers.updated_at')
                                   ->orderBy($sortBy, $sortOrder);
+
+        // setPath() is required, otherwise, it may produce http link even in https
         $contacts = $subscribers->paginate($request->per_page);
+        $contacts->setPath(action('Automation2Controller@contactsList', [ 'uid' => $automation->uid ]));
 
         return view('automation2.contacts.list', [
             'automation' => $automation,
