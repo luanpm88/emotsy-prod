@@ -16,6 +16,7 @@ use Acelle\Jobs\RunCampaign;
 use Illuminate\Bus\Batch;
 use Acelle\Events\CampaignUpdated;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Throwable;
 
 class BaseCampaign extends Model
 {
