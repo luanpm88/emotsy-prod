@@ -15,12 +15,14 @@ use Acelle\Jobs\LoadCampaign;
 use Acelle\Jobs\ScheduleCampaign;
 use Illuminate\Bus\Batch;
 use Acelle\Events\CampaignUpdated;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class BaseCampaign extends Model
 {
 	use TrackJobs;
     use HasUid;
     use HasCache;
+    use HasFactory;
 
     protected $logger;
 
@@ -194,7 +196,7 @@ class BaseCampaign extends Model
         $this->dispatchWithBatchMonitor(
             $campaignLoader,
             function ($batch) {
-                // THEN callback
+                // THEN callback of a batch
                 //
                 // Important:
                 // Notice that if user manually cancels a batch, it still reaches trigger "then" callback!!!!
