@@ -12,7 +12,7 @@ use Monolog\Logger;
 use Monolog\Handler\RotatingFileHandler;
 use Monolog\Formatter\LineFormatter;
 use Acelle\Jobs\LoadCampaign;
-use Acelle\Jobs\ScheduleCampaign;
+use Acelle\Jobs\RunCampaign;
 use Illuminate\Bus\Batch;
 use Acelle\Events\CampaignUpdated;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -150,11 +150,11 @@ class BaseCampaign extends Model
             return;
         }
 
-        // Delete previous ScheduleCampaign jobs
-        $this->cancelAndDeleteJobs(ScheduleCampaign::class);
+        // Delete previous RunCampaign jobs
+        $this->cancelAndDeleteJobs(RunCampaign::class);
 
         // Schedule Job initialize
-        $job = (new ScheduleCampaign($this));
+        $job = (new RunCampaign($this));
 
         // Dispatch using the method provided by TrackJobs
         // to also generate job-monitor record
@@ -179,7 +179,7 @@ class BaseCampaign extends Model
         $this->execute();
     }
 
-    // Should be called by ScheduleCampaign
+    // Should be called by RunCampaign
     public function launch()
     {
         // Pause any previous batch no matter what status it is

@@ -12,7 +12,7 @@ use Acelle\Model\Campaign;
 use Illuminate\Support\Carbon;
 use Acelle\Library\Traits\Trackable;
 
-class ScheduleCampaign implements ShouldQueue
+class RunCampaign implements ShouldQueue
 {
     use Trackable;
     use Dispatchable;
