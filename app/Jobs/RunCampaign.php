@@ -8,9 +8,8 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Acelle\Model\Campaign;
-use Illuminate\Support\Carbon;
 use Acelle\Library\Traits\Trackable;
+use Acelle\Library\Contracts\CampaignInterface;
 
 class RunCampaign implements ShouldQueue
 {
@@ -20,7 +19,7 @@ class RunCampaign implements ShouldQueue
     use Queueable;
     use SerializesModels;
 
-    protected $campaign;
+    protected CampaignInterface $campaign;
 
     public $timeout = 300;
     public $failOnTimeout = true;
@@ -32,7 +31,7 @@ class RunCampaign implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(Campaign $campaign)
+    public function __construct(CampaignInterface $campaign)
     {
         $this->campaign = $campaign;
     }
