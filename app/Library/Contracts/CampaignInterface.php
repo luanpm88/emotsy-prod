@@ -2,13 +2,17 @@
 
 namespace Acelle\Library\Contracts;
 
+use Closure;
+
 interface CampaignInterface
 {
 	// Operation
-	public function run();
 	public function execute();
+	public function run();
 	public function pause();
 	public function resume();
+
+	public function loadDeliveryJobs(Closure $callback, int $loadLimit = null);
 
 	// Set status
 	public function setDone();

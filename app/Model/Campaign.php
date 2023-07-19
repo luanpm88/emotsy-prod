@@ -43,6 +43,8 @@ use Acelle\Library\HtmlHandler\InjectTrackingPixel;
 use Acelle\Library\HtmlHandler\TransformUrl;
 use Acelle\Library\BaseCampaign;
 use Acelle\Library\Contracts\CampaignInterface;
+use Acelle\Jobs\SendMessage;
+use Closure;
 
 class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInterface
 {
@@ -2111,7 +2113,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
     /**
      * Start the campaign. called by daemon job
      */
-    public function prepare($callback, $loadLimit = null)
+    public function loadDeliveryJobs(Closure $callback, $loadLimit = null)
     {
         // Available sending servers
         $sendingServersPool = $this->defaultMailList->getSendingServers();
@@ -2133,6 +2135,13 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
         // Reset max_execution_time so that command can run for a long time without being terminated
         self::resetMaxExecutionTime();
 
+        // Clear any HTML cache
+        $this->clearTemplateCache();
+
+        // Last chance for campaign to setup
+        // @todo Find a better place for the following method, afterSave for example
+        $this->updateLinks();
+
         // Query subscribers
         // IMPORTANT: this method is called by LoadCampaign job which create a SendMessage job for each subscribers
         // then add to the batch
@@ -2145,7 +2154,12 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
                 $serverId = RouletteWheel::take($sendingServersPool);
                 $server = SendingServer::find($serverId)->mapType();
 
-                $callback($this, $subscriber, $server);
+                // Dispatch delivery job and return it to the LoadCampaign to monitor
+                $job = new SendMessage($this, $subscriber, $server);
+                $stopOnError = $this->stopOnError();
+                // $stopOnError = Setting::isYes('campaign.stop_on_error'); // true or false
+                $job->setStopOnError($stopOnError);
+                $callback($job);
             }
 
             // Important

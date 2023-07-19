@@ -9,11 +9,9 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Acelle\Model\Campaign;
-use Acelle\Model\Subscriber;
-use Acelle\Model\Setting;
-use Illuminate\Support\Carbon;
+use Acelle\Library\Contracts\CampaignInterface;
 use Acelle\Library\Traits\Trackable;
+use Closure;
 
 class LoadCampaign implements ShouldQueue
 {
@@ -29,14 +27,14 @@ class LoadCampaign implements ShouldQueue
     public $tries = 1;
     public $maxExceptions = 1;
 
-    protected $campaign;
+    protected CampaignInterface $campaign;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(Campaign $campaign)
+    public function __construct(CampaignInterface $campaign)
     {
         $this->campaign = $campaign;
     }
@@ -52,13 +50,6 @@ class LoadCampaign implements ShouldQueue
             return;
         }
 
-        // Clear any HTML cache
-        $this->campaign->clearTemplateCache();
-
-        // Last chance for campaign to setup
-        // @todo Find a better place for the following method, afterSave for example
-        $this->campaign->updateLinks();
-
         // Update status
         $this->campaign->setSending();
 
@@ -69,12 +60,7 @@ class LoadCampaign implements ShouldQueue
         $this->campaign->logger()->info(sprintf('Loading contacts to shoot (up to %s)', $loadLimit));
 
         // Iterate through contacts and launch sending process
-        $this->campaign->prepare(function ($campaign, $subscriber, $server) {
-            $job = new SendMessage($campaign, $subscriber, $server);
-
-            $stopOnError = $this->campaign->stopOnError();
-            // $stopOnError = Setting::isYes('campaign.stop_on_error'); // true or false
-            $job->setStopOnError($stopOnError);
+        $this->campaign->loadDeliveryJobs(function ($job) {
             $this->batch()->add($job);
         }, $loadLimit);
     }
