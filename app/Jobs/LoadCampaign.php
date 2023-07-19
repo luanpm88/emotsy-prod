@@ -60,8 +60,8 @@ class LoadCampaign implements ShouldQueue
         $this->campaign->logger()->info(sprintf('Loading contacts to shoot (up to %s)', $loadLimit));
 
         // Iterate through contacts and launch sending process
-        $this->campaign->loadDeliveryJobs(function ($job) {
-            $this->batch()->add($job);
+        $this->campaign->loadDeliveryJobs(function (ShouldQueue $deliveryJob) {
+            $this->batch()->add($deliveryJob);
         }, $loadLimit);
     }
 }

@@ -2113,7 +2113,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
     /**
      * Start the campaign. called by daemon job
      */
-    public function loadDeliveryJobs(Closure $callback, $loadLimit = null)
+    public function loadDeliveryJobs(Closure $callback, int $loadLimit = null)
     {
         // Available sending servers
         $sendingServersPool = $this->defaultMailList->getSendingServers();
