@@ -181,7 +181,7 @@ class BaseCampaign extends Model
     }
 
     // Should be called by RunCampaign
-    public function launch()
+    public function run()
     {
         // Pause any previous batch no matter what status it is
         // Notice that batches without a job_monitor will not be retrieved
@@ -208,11 +208,11 @@ class BaseCampaign extends Model
                 if (!$this->refresh()->isPaused()) {
                     $count = $this->subscribersToSend()->count();
                     if ($count > 0) {
-                        // Launch over and over again until there is no subscribers left to send
+                        // Run over and over again until there is no subscribers left to send
                         // Because each LoadCampaign jobs only load a fixed number of subscribers
                         $this->updateCache();
-                        $this->logger()->warning('Launch another batch of '.$count);
-                        $this->launch();
+                        $this->logger()->warning('Load another batch of '.$count);
+                        $this->run();
                     } else {
                         $this->logger()->warning('No contact left, campaign finishes successfully!');
                         $this->setDone();

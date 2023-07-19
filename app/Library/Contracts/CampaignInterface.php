@@ -5,7 +5,7 @@ namespace Acelle\Library\Contracts;
 interface CampaignInterface
 {
 	// Operation
-	public function launch();
+	public function run();
 	public function execute();
 	public function pause();
 	public function resume();
