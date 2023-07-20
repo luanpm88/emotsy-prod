@@ -2182,6 +2182,15 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
         );
     }
 
+    // @important
+    // This method retrieve subscribers that are not associated with the campaign in the tracking_logs table, i.e. not sent
+    // However, how about pending SendMessage job? i.e. executing this method again in parallel will cause duplicate SendMessage jobs
+    // intended for the same subscribers.
+    //
+    // Luckily, this method is called by the LoadCampaign job in a batch only!
+    // It means: + Only one LoadCampaign job is alive at a given time
+    //           + All the SendMessage jobs must be done before dispatching the next LoadCampaign job (the "then" event of Batch)
+    //           + It guarantees that this method is not called the second time before all SendMessage jobs are already done.
     public function subscribersToSend()
     {
         // Retrieve subscribers to send!
