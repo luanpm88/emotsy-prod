@@ -437,7 +437,7 @@ class HtmlHandlersTest extends TestCase
         $transformedHtml = $pipeline->build()->process($html);
 
         // Output
-        $this->assertTrue( $transformedHtml == '<style>div > p {color:red}</style><p>Hello everyone</p>' || $transformedHtml = '<style>div > p {color:red}</style><p>Hi everyone</p>' );
+        $this->assertTrue($transformedHtml == '<style>div > p {color:red}</style><p>Hello everyone</p>' || $transformedHtml = '<style>div > p {color:red}</style><p>Hi everyone</p>');
     }
 
     public function test_inject_message_id_to_body()

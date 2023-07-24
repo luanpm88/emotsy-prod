@@ -9,12 +9,12 @@ use Acelle\Library\Lockable;
 //                  c2 shall take v seconds to time out (with the "No exception" message;
 test('Exclusive lock just works', function () {
     $file = '/tmp/gaugau';
-    $task = function() {
+    $task = function () {
         sleep(1);
         // Just do nothing here
     };
     $waitTimeout = 2;
-    $waitTimeoutCallback = function() {
+    $waitTimeoutCallback = function () {
         // Do not throw an excpetion if a waitTimeoutCallback is present
         echo "No exception\n";
     };
