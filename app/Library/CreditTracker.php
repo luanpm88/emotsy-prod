@@ -65,4 +65,13 @@ class CreditTracker
 	{
 		file_put_contents($this->filepath, (string)$amount);
 	}
+
+	public function rollback()
+	{
+		$remainingCredits = $this->getCredits();
+		$remainingCredits += 1;
+		$remainingCredits = "{$remainingCredits}"; // cast to string
+
+		file_put_contents($this->filepath, $remainingCredits);
+	}
 }

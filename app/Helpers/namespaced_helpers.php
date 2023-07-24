@@ -373,3 +373,60 @@ function load_env_from_file($path)
 
     return $output;
 }
+
+/*
+ * Execute a task and count credits
+ * Roll back credits if failure
+ * @important: only rollback credits count. Do not rollback rate count because
+ *             even a failed operation attempt is counted
+ * Parameter 1: \Acelle\Library\RateTracker[]
+ * Parameter 2: \Acelle\Library\CreditTracker[]
+ */
+function execute_with_limits(
+    array $rateTrackers = [],
+    array $creditTrackers = [],
+    Closure $task = null)
+{
+
+    // Might throw \Acelle\Library\Exception\RateLimitExceeded
+    foreach($rateTrackers as $rateTracker) {
+        $rateTracker->count();
+    }
+
+    // Might throw \Acelle\Library\Exception\OutOfCredits
+    $creditCounted = [];
+
+    try {
+        foreach($creditTrackers as $creditTracker) {
+            $creditTracker->count();
+            $creditCounted[] = $creditTracker;
+        }
+    } catch (\Acelle\Library\Exception\OutOfCredits $exception) {
+        // Rollback 1: when OutOfCredits
+        // @important: rate is counted even for a failed operation attempt
+        // So there is no need to roll it back (that's why the rollback() method is @deprecated)
+        // However, credits must be rolled back before exit
+        foreach($creditCounted as $creditTracker) {
+            $creditTracker->rollback();
+        }
+
+        throw $exception;
+    }
+
+
+    try {
+        if (!is_null($task)) {
+            $task();
+        }
+    } catch (\Throwable $exception) {
+        // Rollback 2: when task error
+        // @important: rate is counted even for a failed operation attempt
+        // So there is no need to roll it back (that's why the rollback() method is @deprecated)
+        // However, credits must be rolled back before exit
+        foreach($creditCounted as $creditTracker) {
+            $creditTracker->rollback();
+        }
+
+        throw $exception;
+    }
+}

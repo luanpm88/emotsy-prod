@@ -69,6 +69,7 @@ class RateTracker
     }
 
     // Reverse of count()
+    // @deprecated: rollback is not needed as even a failed operation is also counted in rate limits
     public function rollback()
     {
         $lock = new Lockable($this->filepath);
