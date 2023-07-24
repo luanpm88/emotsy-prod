@@ -10,7 +10,7 @@ use Acelle\Library\Contracts\HasQuota as HasQuotaInterface;
 use Acelle\Library\Exception\NoCreditsLeft;
 
 /* QuotaManager takes care of credits related stuffs
- * While its component QuotaTracker takes care of quota (limits) related stuffs
+ * While its component RateTracker takes care of quota (limits) related stuffs
  */
 
 class QuotaManager
@@ -20,7 +20,7 @@ class QuotaManager
 
     protected $subject;
     protected $name;
-    protected $quotaTracker;
+    protected $rateTracker;
 
     protected $quotaExceededCallback;
 
@@ -67,13 +67,13 @@ class QuotaManager
         }
     }
 
-    public function getQuotaTracker()
+    public function getRateTracker()
     {
-        if (is_null($this->quotaTracker)) {
-            $this->quotaTracker = new QuotaTracker($this->getCreditsLogFile());
+        if (is_null($this->rateTracker)) {
+            $this->rateTracker = new RateTracker($this->getCreditsLogFile());
         }
 
-        return $this->quotaTracker;
+        return $this->rateTracker;
     }
 
     public function getCreditsStorageJson()
@@ -151,7 +151,7 @@ class QuotaManager
 
     public function getCreditsUsed(Carbon $from = null, Carbon $to = null)
     {
-        return $this->getQuotaTracker()->getCreditsUsed($from, $to);
+        return $this->getRateTracker()->getCreditsUsed($from, $to);
     }
 
     public function count(?bool $countCredits = true)
@@ -163,8 +163,8 @@ class QuotaManager
         // Check quota allowance
         $now = Carbon::now('UTC');
 
-        // instantiate the QuotaTracker object
-        $tracker = $this->getQuotaTracker();
+        // instantiate the RateTracker object
+        $tracker = $this->getRateTracker();
 
         if (!is_null($this->quotaExceededCallback)) {
             $tracker->whenQuotaExceeded($this->quotaExceededCallback);

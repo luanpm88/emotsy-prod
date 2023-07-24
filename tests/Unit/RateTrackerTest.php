@@ -1,10 +1,10 @@
 <?php
 
-use Acelle\Library\QuotaTracker;
+use Acelle\Library\RateTracker;
 use Carbon\Carbon;
 
 test('Rollback just works', function () {
-    $tracker = new QuotaTracker('/tmp/'.uniqid());
+    $tracker = new RateTracker('/tmp/'.uniqid());
 
 	$now = Carbon::now();
 	$oneMinuteAgo = $now->clone()->add('1 minute ago');

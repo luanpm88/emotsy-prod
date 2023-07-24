@@ -22,7 +22,7 @@ use Closure;
  *
  */
 
-class QuotaTracker
+class RateTracker
 {
     protected $filepath;
     protected $mode = 'minute'; // hour, day, month, year

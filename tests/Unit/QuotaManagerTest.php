@@ -3,8 +3,6 @@
 namespace Tests\Unit;
 
 use Tests\TestCase;
-
-use Acelle\Library\QuotaTracker;
 use Acelle\Model\SendingServer;
 use Acelle\Model\Subscription;
 use Acelle\Model\EmailVerificationServer;
