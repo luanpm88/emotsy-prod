@@ -5,7 +5,7 @@ namespace Acelle\Jobs;
 use Illuminate\Bus\Batchable;
 use Acelle\Library\QuotaManager;
 use Acelle\Library\Exception\NoCreditsLeft;
-use Acelle\Library\Exception\QuotaExceeded;
+use Acelle\Library\Exception\RateLimitExceeded;
 use Acelle\Library\Exception\VerificationTakesLongerThanNormal;
 use Exception;
 use Closure;
@@ -75,7 +75,7 @@ class VerifySubscriber extends Base
             // Just ignore and return
             // Warn user that there are certain subscribers that are skipped
             return;
-        } catch (QuotaExceeded $ex) {
+        } catch (RateLimitExceeded $ex) {
             if (!is_null($exceptionCallback)) {
                 $exceptionCallback($ex);
             }

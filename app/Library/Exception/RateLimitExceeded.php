@@ -4,7 +4,7 @@ namespace Acelle\Library\Exception;
 
 use Exception;
 
-class QuotaExceeded extends Exception
+class RateLimitExceeded extends Exception
 {
     // nothing here
 }

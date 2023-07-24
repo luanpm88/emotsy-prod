@@ -22,7 +22,7 @@ class QuotaManager
     protected $name;
     protected $rateTracker;
 
-    protected $quotaExceededCallback;
+    protected $rateLimitExceededCallback;
 
     public function __construct(HasQuotaInterface $subject, string $name)
     {
@@ -30,9 +30,9 @@ class QuotaManager
         $this->name = $name;
     }
 
-    public function whenQuotaExceeded(Closure $callback)
+    public function whenRateLimitExceeded(Closure $callback)
     {
-        $this->quotaExceededCallback = $callback;
+        $this->rateLimitExceededCallback = $callback;
         return $this;
     }
 
@@ -166,8 +166,8 @@ class QuotaManager
         // instantiate the RateTracker object
         $tracker = $this->getRateTracker();
 
-        if (!is_null($this->quotaExceededCallback)) {
-            $tracker->whenQuotaExceeded($this->quotaExceededCallback);
+        if (!is_null($this->rateLimitExceededCallback)) {
+            $tracker->whenRateLimitExceeded($this->rateLimitExceededCallback);
         }
 
         // Count quota use

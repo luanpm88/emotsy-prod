@@ -12,7 +12,7 @@ use Illuminate\Queue\SerializesModels;
 use Acelle\Model\Subscriber;
 use Acelle\Library\QuotaManager;
 use Acelle\Library\Exception\NoCreditsLeft;
-use Acelle\Library\Exception\QuotaExceeded;
+use Acelle\Library\Exception\RateLimitExceeded;
 use Exception;
 use Throwable;
 
@@ -112,7 +112,7 @@ class SendMessage implements ShouldQueue
             // Log successful shot
             $this->campaign->trackMessage($sent, $this->subscriber, $this->server, $msgId, $this->triggerId);
             $logger->info(sprintf('Sent to %s [Server "%s"]', $email, $this->server->name));
-        } catch (QuotaExceeded $ex) {
+        } catch (RateLimitExceeded $ex) {
             if (!is_null($exceptionCallback)) {
                 $exceptionCallback($ex);
             }

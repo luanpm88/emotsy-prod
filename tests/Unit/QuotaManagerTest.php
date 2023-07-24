@@ -11,7 +11,7 @@ use Acelle\Model\Customer;
 use Acelle\Model\Campaign;
 use Acelle\Model\MailList;
 use Acelle\Library\QuotaManager;
-use Acelle\Library\Exception\QuotaExceeded;
+use Acelle\Library\Exception\RateLimitExceeded;
 use Acelle\Library\Exception\NoCreditsLeft;
 use Acelle\Jobs\SendMessage;
 use Acelle\Jobs\VerifySubscriber;
@@ -103,11 +103,11 @@ class QuotaManagerTest extends TestCase
 
         //$this->expectException(Exception::class);
 
-        $quota = QuotaManager::with($server, 'send')->whenQuotaExceeded(function ($limit, $creditsUsed, $time) use (&$results) {
+        $quota = QuotaManager::with($server, 'send')->whenRateLimitExceeded(function ($limit, $creditsUsed, $time) use (&$results) {
             $results = [ $limit, $creditsUsed, $time ];
         });
 
-        $this->expectException(QuotaExceeded::class);
+        $this->expectException(RateLimitExceeded::class);
 
         try {
             for ($i = 1; $i <= $use; $i++) {
@@ -295,7 +295,7 @@ class QuotaManagerTest extends TestCase
         $server = $this->initServer();
         $server->setCredits('send', $credits = 10000);
         $server->setQuotaSettings($limitsPerMinute = 0, $unit = 'minute', 1);
-        $this->expectException(QuotaExceeded::class);
+        $this->expectException(RateLimitExceeded::class);
         QuotaManager::with($server, 'send')->count();
     }
 
@@ -320,7 +320,7 @@ class QuotaManagerTest extends TestCase
         // Max allowed + 1
         $use  = 11;
 
-        $this->expectException(QuotaExceeded::class);
+        $this->expectException(RateLimitExceeded::class);
 
         try {
             for ($i = 1; $i <= $use; $i++) {
@@ -492,7 +492,7 @@ class QuotaManagerTest extends TestCase
             $outcome = $exception;
         });
 
-        $this->assertInstanceOf(QuotaExceeded::class, $outcome);
+        $this->assertInstanceOf(RateLimitExceeded::class, $outcome);
     }
 
     public function test_send_message_job_with_quota_not_exceeded()
@@ -538,7 +538,7 @@ class QuotaManagerTest extends TestCase
         });
 
         // Second, quota exceeded
-        $this->assertInstanceOf(QuotaExceeded::class, $outcome);
+        $this->assertInstanceOf(RateLimitExceeded::class, $outcome);
     }
 
     public function test_send_message_job_with_quota_exceeded_and_not_exceeded_subscription()
@@ -570,7 +570,7 @@ class QuotaManagerTest extends TestCase
         });
 
         // Second, quota exceeded
-        $this->assertInstanceOf(QuotaExceeded::class, $second);
+        $this->assertInstanceOf(RateLimitExceeded::class, $second);
     }
 
     private function prepareVerifySubscriberTest()
@@ -631,7 +631,7 @@ class QuotaManagerTest extends TestCase
         });
 
         // Second, quota exceeded
-        $this->assertInstanceOf(QuotaExceeded::class, $outcome);
+        $this->assertInstanceOf(RateLimitExceeded::class, $outcome);
         $this->assertEquals($server->getCreditsUsed('verify'), 2);
 
         // IMPORTANT: sacrisfy one credit here, since 'subscription.verify' is validate first (and pass) ==> so used credits is 3
@@ -673,7 +673,7 @@ class QuotaManagerTest extends TestCase
         });
 
         // Second, quota exceeded
-        $this->assertInstanceOf(QuotaExceeded::class, $outcome);
+        $this->assertInstanceOf(RateLimitExceeded::class, $outcome);
         $this->assertEquals($server->getCreditsUsed('verify'), 2);
         $this->assertEquals($subscription->getCreditsUsed('verify'), 2);
     }

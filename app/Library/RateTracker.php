@@ -5,7 +5,7 @@ namespace Acelle\Library;
 use File;
 use Carbon\Carbon;
 use Exception;
-use Acelle\Library\Exception\QuotaExceeded;
+use Acelle\Library\Exception\RateLimitExceeded;
 use Closure;
 
 /*
@@ -35,7 +35,7 @@ class RateTracker
         'year' => 'Y00000000',
     ];
 
-    protected $quotaExceededCallback;
+    protected $rateLimitExceededCallback;
 
     public function __construct(string $filepath)
     {
@@ -43,9 +43,9 @@ class RateTracker
         $this->createStorageFile();
     }
 
-    public function whenQuotaExceeded(Closure $callback)
+    public function whenRateLimitExceeded(Closure $callback)
     {
-        $this->quotaExceededCallback = $callback;
+        $this->rateLimitExceededCallback = $callback;
         return $this;
     }
 
@@ -120,11 +120,11 @@ class RateTracker
             $creditsUsed = $this->getCreditsUsed($fromDatetime, $now, $fopen);
 
             if ($creditsUsed >= $limit['limit']) {
-                if (!is_null($this->quotaExceededCallback)) {
-                    $quotaExceededCallback = $this->quotaExceededCallback;
-                    $quotaExceededCallback($limit, $creditsUsed, $now);
+                if (!is_null($this->rateLimitExceededCallback)) {
+                    $rateLimitExceededCallback = $this->rateLimitExceededCallback;
+                    $rateLimitExceededCallback($limit, $creditsUsed, $now);
                 }
-                throw new QuotaExceeded(sprintf("%s exceeded! %s/%s used", $limit['name'], $creditsUsed, $limit['limit']));
+                throw new RateLimitExceeded(sprintf("%s exceeded! %s/%s used", $limit['name'], $creditsUsed, $limit['limit']));
             }
         }
     }
