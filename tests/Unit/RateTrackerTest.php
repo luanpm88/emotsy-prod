@@ -4,7 +4,8 @@ use Acelle\Library\RateTracker;
 use Carbon\Carbon;
 
 test('Rollback just works', function () {
-    $tracker = new RateTracker('/tmp/'.uniqid());
+	$file = '/tmp/test-rate-'.uniqid();
+    $tracker = new RateTracker($file);
 
 	$now = Carbon::now();
 	$oneMinuteAgo = $now->clone()->add('1 minute ago');
