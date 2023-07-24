@@ -23,7 +23,7 @@ use Mockery;
 
 use function Acelle\Helpers\withQuota;
 
-class QuotaTest extends TestCase
+class QuotaManagerTest extends TestCase
 {
     public function initServer()
     {

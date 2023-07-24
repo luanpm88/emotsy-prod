@@ -8,6 +8,20 @@ use Exception;
 use Acelle\Library\Exception\QuotaExceeded;
 use Closure;
 
+/*
+ * Log every credit used to a log file, group by $mode, which could be 'minute' (default), hour, day, month...
+ * For example, a log file grouped by minute may look like this ( lines of YYYYMMDDHHMM:COUNT format)
+ *
+ * 202307230913:1200
+ * 202307230914:1250
+ * 202307230914:1052
+ * 202307230930:1178
+ *
+ * Group by 'minute' supports minute granularity limits (emails per 1 minute)
+ * Group by 'hour' supports hour granularity limits (emails per 1 hour), but does not support minute (lower than 1 hour) granularity limits
+ *
+ */
+
 class QuotaTracker
 {
     protected $filepath;
@@ -51,6 +65,25 @@ class QuotaTracker
 
             // Record credits use
             $this->record($now, $fopen);
+        }, $timeout = 15);
+    }
+
+    // Reverse of count()
+    public function rollback()
+    {
+        $lock = new Lockable($this->filepath);
+        $lock->getExclusiveLock(function ($fopen) {
+            list($lastBlock, $count) = $this->parseLastRecord($fopen);
+            if (is_null($lastBlock)) {
+                throw new Exception('Cannot rollback! There is no previous count (in case files are cleaned up while SendMessage is in progress');
+            }
+
+            if ($count == 1) {
+                $this->removeLastRecord($fopen);
+            } else {
+                $record = $this->buildRecord($lastBlock, $count - 1);
+                $this->updateRecord($record, $fopen);
+            }
         }, $timeout = 15);
     }
 
@@ -98,6 +131,7 @@ class QuotaTracker
 
     private function record(Carbon $now, $fopen)
     {
+        // Make something like: 202307231527
         $currentBlock = $this->makeBlock($now); // create block for the current date/time
         list($lastBlock, $count) = $this->parseLastRecord($fopen);
 
@@ -114,15 +148,18 @@ class QuotaTracker
     private function parseLastRecord($fopen)
     {
         $lastRecord = $this->getLastRecord($fopen);
+
+        // Return something like: ['202307230913', 120]
         return $this->parseBlock($lastRecord);
     }
 
     private function parseBlock(string $record)
     {
         if (empty($record)) {
-            return null;
+            return [$lastBlock = null, $count = null];
         }
 
+        // Return something like: ['202307230913', 120]
         return explode($this->seperator, $record);
     }
 
@@ -139,6 +176,7 @@ class QuotaTracker
         return $now->format($format);
     }
 
+    // Return string like: 202307230913:120
     private function getLastRecord($fopen)
     {
         // Find offline
@@ -181,7 +219,10 @@ class QuotaTracker
 
     public function updateRecord(string $record, $fopen)
     {
+        // Move cursor to the end of file
         fseek($fopen, 0, SEEK_END);
+
+        // Returns the current position of the file read/write pointer
         $offset = ftell($fopen) - 1; // Offset values from: -1, 0, 1, 2...
 
         if ($offset < 0) {
@@ -217,9 +258,8 @@ class QuotaTracker
         fwrite($fopen, $record);
     }
 
-    public function truncate()
+    public function removeLastRecord($fopen)
     {
-        $fopen = fopen($this->filepath, 'r+');
         fseek($fopen, 0, SEEK_END);
         $offset = ftell($fopen) - 1; // Offset values from: -1, 0, 1, 2...
 
@@ -227,16 +267,28 @@ class QuotaTracker
             return; // File empty
         }
 
+        fseek($fopen, $offset--); //seek to the end of the line
+
+        // Ignore consecutive empty newlines
+        $char = fgetc($fopen);
+        while ($offset >= 0 && ($char === "\n")) {
+            fseek($fopen, $offset--);
+            $char = fgetc($fopen);
+        }
+
+        if ($offset < 0) {
+            fseek($fopen, 0); // either a leading newline or leading newline + 1char, overwrite leading "\nX" if any
+        }
+
         fseek($fopen, $offset); //seek to the end of the line
         $char = fgetc($fopen);
-        while ($offset > 0 && ($char === "\n")) {
+        while ($offset >= 0 && $char != "\n") {
             $offset -= 1;
             fseek($fopen, $offset);
             $char = fgetc($fopen);
         }
 
         ftruncate($fopen, ++$offset);
-        fclose($fopen);
     }
 
     public function addRecord(string $record, $fopen)
@@ -292,7 +344,7 @@ class QuotaTracker
                 throw new Exception("Invalid block {$record}");
             }
 
-            if ($block > $fromDatetimeStr && $block <= $toDatetimeStr) {
+            if ($block >= $fromDatetimeStr && $block <= $toDatetimeStr) {
                 $records[] = [$block, $count];
             }
         }
@@ -315,5 +367,10 @@ class QuotaTracker
 
         $total = array_sum($counts);
         return $total;
+    }
+
+    public function getLockFilePath()
+    {
+        return $this->filepath;
     }
 }
