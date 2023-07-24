@@ -7,16 +7,13 @@ use Exception;
 use Acelle\Model\Invoice;
 use Acelle\Model\InvoiceItem;
 use Acelle\Library\Traits\HasUid;
-use Acelle\Library\Traits\HasQuota;
-use Acelle\Library\Contracts\HasQuota as HasQuotaInterface;
-use Acelle\Library\QuotaManager;
+use Acelle\Library\RateLimit;
 use Carbon\Carbon;
 use Acelle\Library\Facades\SubscriptionFacade;
 
-class Subscription extends Model implements HasQuotaInterface
+class Subscription extends Model
 {
     use HasUid;
-    use HasQuota;
 
     public const STATUS_NEW = 'new';
     public const STATUS_ACTIVE = 'active';
@@ -956,15 +953,9 @@ class Subscription extends Model implements HasQuotaInterface
             return 0;
         }
 
-        $percentage = ($creditsLimit == QuotaManager::QUOTA_UNLIMITED) ? 0 : $creditsUsed / $creditsLimit;
+        $percentage = ($creditsLimit == RateLimit::UNLIMITED) ? 0 : $creditsUsed / $creditsLimit;
 
         return $percentage;
-    }
-
-    /***   IMPLEMENTATION OF HasQuotaInterface ***/
-    public function getQuotaSettings($name): ?array
-    {
-        return $this->plan->getQuotaSettings($name);
     }
 
     public function getSendingCreditsRemaining()

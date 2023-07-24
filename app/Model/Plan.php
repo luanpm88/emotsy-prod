@@ -29,7 +29,7 @@ use Acelle\Model\Subscription;
 use Acelle\Cashier\Cashier;
 use Acelle\Model\SendingServer;
 use Acelle\Library\Traits\HasUid;
-use Acelle\Library\QuotaManager;
+use Acelle\Library\RateLimit;
 
 class Plan extends Model
 {
@@ -1326,36 +1326,25 @@ class Plan extends Model
         return $this->price;
     }
 
-    public function getQuotaSettings($name): ?array
+    public function getSendEmailRateLimits()
     {
-        $quota = [];
+        $limits = [];
         $options = $this->getOptions();
 
-        // Take limits from sending credits
-        $sendingCredits = $options['email_max'];
-        if ($sendingCredits != QuotaManager::QUOTA_UNLIMITED) {
-            $quota[] = [
-                'name' => "Plan's sending limit",
-                'period_unit' => $this->frequency_unit,
-                'period_value' => $this->frequency_amount,
-                'limit' => $sendingCredits
-            ];
-        }
-
         $timeValue = $options['sending_quota_time'];
-        if ($timeValue != QuotaManager::QUOTA_UNLIMITED) {
+        if ($timeValue != RateLimit::UNLIMITED) {
             $timeUnit = $options['sending_quota_time_unit'];
             $limit = $options['sending_quota'];
 
-            $quota[] = [
-                'name' => "Sending limit of {$limit} per {$timeValue} {$timeUnit}",
-                'period_unit' => $timeUnit,
-                'period_value' => $timeValue,
-                'limit' => $limit,
-            ];
+            $limits[] = new RateLimit(
+                $limit,
+                $timeValue,
+                $timeUnit,
+                $description = "Sending limit of {$limit} per {$timeValue} {$timeUnit}"
+            );
         }
 
-        return $quota;
+        return $limits;
     }
 
     public function updateTos($params)
@@ -1373,7 +1362,6 @@ class Plan extends Model
             return $validator;
         }
 
-        //
         \Acelle\Model\Setting::set('terms_of_service.enabled', $params['terms_of_service']['enabled']);
         \Acelle\Model\Setting::set('terms_of_service.content', $params['terms_of_service']['content']);
 

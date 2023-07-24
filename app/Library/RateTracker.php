@@ -35,33 +35,23 @@ class RateTracker
         'year' => 'Y00000000',
     ];
 
-    protected $rateLimitExceededCallback;
+    protected $limits;
 
-    public function __construct(string $filepath)
+    public function __construct(string $filepath, $limits = []) // RateLimit class
     {
         $this->filepath = $filepath;
+        $this->limits = $limits;
         $this->createStorageFile();
     }
 
-    public function whenRateLimitExceeded(Closure $callback)
-    {
-        $this->rateLimitExceededCallback = $callback;
-        return $this;
-    }
-
-    public function count(Carbon $now = null, array $limits = [], Closure $callback = null)
+    public function count(Carbon $now = null)
     {
         $lock = new Lockable($this->filepath);
-        $lock->getExclusiveLock(function ($fopen) use ($now, $limits, $callback) {
+        $lock->getExclusiveLock(function ($fopen) use ($now) {
             $now = $now ?: Carbon::now('UTC');
 
             // Throw an exception if test fails (quota exceeded)
-            $this->test($now, $limits, $fopen);
-
-            // Execute callback beore writing
-            if (!is_null($callback)) {
-                $callback();
-            }
+            $this->test($now, $fopen);
 
             // Record credits use
             $this->record($now, $fopen);
@@ -95,7 +85,7 @@ class RateTracker
         }
     }
 
-    private function test(Carbon $now, array $limits, $fopen)
+    private function test(Carbon $now, $fopen)
     {
         // [
         //     [
@@ -114,18 +104,14 @@ class RateTracker
         // ]
         //
 
-        foreach ($limits as $limit) {
-            $period = sprintf("%s %s", $limit['period_value'], $limit['period_unit']);
+        foreach ($this->limits as $limit) {
+            $period = sprintf("%s %s", $limit->getPeriodValue(), $limit->getPeriodUnit());
             $fromDatetime = $now->copy()->subtract($period);
 
             $creditsUsed = $this->getCreditsUsed($fromDatetime, $now, $fopen);
 
-            if ($creditsUsed >= $limit['limit']) {
-                if (!is_null($this->rateLimitExceededCallback)) {
-                    $rateLimitExceededCallback = $this->rateLimitExceededCallback;
-                    $rateLimitExceededCallback($limit, $creditsUsed, $now);
-                }
-                throw new RateLimitExceeded(sprintf("%s exceeded! %s/%s used", $limit['name'], $creditsUsed, $limit['limit']));
+            if ($creditsUsed >= $limit->getAmount()) {
+                throw new RateLimitExceeded(sprintf("%s exceeded! %s/%s used", $limit->getDescription(), $creditsUsed, $limit->getAmount()));
             }
         }
     }
@@ -373,5 +359,10 @@ class RateTracker
     public function getLockFilePath()
     {
         return $this->filepath;
+    }
+
+    public function getRateLimits()
+    {
+        return $this->limits;
     }
 }

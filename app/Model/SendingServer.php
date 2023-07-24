@@ -29,16 +29,12 @@ use Carbon\Carbon;
 use Acelle\Library\StringHelper;
 use Acelle\Library\Notification\BackendError as BackendErrorNotification;
 use Acelle\Library\Facades\Hook;
-use Acelle\Library\Traits\HasUid;
-use Acelle\Library\Traits\HasQuota;
-use Acelle\Library\Contracts\HasQuota as HasQuotaInterface;
-use Acelle\Library\QuotaManager;
+use Acelle\Library\RateLimit;
 use Exception;
 
-class SendingServer extends Model implements HasQuotaInterface
+class SendingServer extends Model
 {
     use HasUid;
-    use HasQuota;
 
     public const DELIVERY_STATUS_SENT = 'sent';
     public const DELIVERY_STATUS_FAILED = 'failed';
@@ -1603,7 +1599,7 @@ class SendingServer extends Model implements HasQuotaInterface
     {
         $quota = [];
 
-        if ($this->quota_value != QuotaManager::QUOTA_UNLIMITED) {
+        if ($this->quota_value != RateLimit::UNLIMITED) {
             $quota[] = [
                 'name' => "Server's sending limit of {$this->quota_value} per {$this->quota_base} {$this->quota_unit}",
                 'period_unit' => $this->quota_unit,

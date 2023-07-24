@@ -7,19 +7,16 @@ use GuzzleHttp\Client;
 use JsonPath\JsonObject;
 use Acelle\Library\Log as MailLog;
 use Acelle\Library\Traits\HasUid;
-use Acelle\Library\Traits\HasQuota;
-use Acelle\Library\Contracts\HasQuota as HasQuotaInterface;
 use Exception;
-use Acelle\Library\QuotaManager;
+use Acelle\Library\RateLimit;
 use Monolog\Logger;
 use Monolog\Handler\RotatingFileHandler;
 use Monolog\Formatter\LineFormatter;
 use Acelle\Library\Everification\Emailable;
 
-class EmailVerificationServer extends Model implements HasQuotaInterface
+class EmailVerificationServer extends Model
 {
     use HasUid;
-    use HasQuota;
 
     // set the table name
     protected $table = 'email_verification_servers';
@@ -443,7 +440,7 @@ class EmailVerificationServer extends Model implements HasQuotaInterface
         $quota = [];
         $options = $this->getOptions();
 
-        if ($options['limit_value'] != QuotaManager::QUOTA_UNLIMITED) {
+        if ($options['limit_value'] != RateLimit::UNLIMITED) {
             $quota[] = [
                 'name' => "Verification credits limit of {$options['limit_value']} per {$options['limit_base']} {$options['limit_unit']}",
                 'period_unit' => $options['limit_unit'],
@@ -454,7 +451,7 @@ class EmailVerificationServer extends Model implements HasQuotaInterface
 
         // Take limits from sending credits
         $credits = '????';
-        if (false && $credits != QuotaManager::QUOTA_UNLIMITED) {
+        if (false && $credits != RateLimit::UNLIMITED) {
             $quota[] = [
                 'name' => "Plan's verification limit",
                 'period_unit' => '?',
