@@ -14,18 +14,19 @@ class CreditTracker
 	public const UNLIMITED = -1;
 
 	// Using CreditTracker::load('file') makes more sense than
-	public static function load($filepath, bool $createFileIfNotExists = false)
+	public static function load($filepath, bool $createFileIfNotExists = false, int $default = self::UNLIMITED)
 	{
-		$tracker = new self($filepath, $createFileIfNotExists);
+		$tracker = new self($filepath, $createFileIfNotExists, $default);
 		return $tracker;
 	}
 
-	private function __construct($filepath, bool $createFileIfNotExists)
+	private function __construct($filepath, bool $createFileIfNotExists, int $default)
 	{
-		$this->filepath = $filepath;
+        $this->filepath = $filepath;
 
-		if ($createFileIfNotExists && !file_exists($this->filepath)) {
+        if ($createFileIfNotExists && !file_exists($this->filepath)) {
 			$this->createFile();
+			$this->setCredits($default);
 		}
 	}
 
