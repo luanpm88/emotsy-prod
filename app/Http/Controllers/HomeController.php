@@ -19,9 +19,9 @@ class HomeController extends Controller
 
         // Last month
         $customer = $request->user()->customer;
-        $sendingCreditsUsed = $customer->getCurrentActiveSubscription()->getCreditsUsedDuringPlanCycle('send'); // all time sending credits used
+        $sendingCreditsUsed = $customer->getCurrentActiveSubscription()->getRemainingEmailCredits(); // all time sending credits used
         $sendingCreditsLimit = $customer->getCurrentActiveSubscription()->getCreditsLimit('send');
-        $sendingCreditsUsedPercentage = $customer->getCurrentActiveSubscription()->getCreditsUsedPercentageDuringPlanCycle('send');
+        $sendingCreditsUsedPercentage = $customer->getCurrentActiveSubscription()->getRemainingEmailCreditsPercentage();
 
         if (config('app.cartpaye')) {
             return view('dashboard.cartpaye');

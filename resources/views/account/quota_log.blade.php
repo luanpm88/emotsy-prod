@@ -27,12 +27,12 @@
                     <div class="d-flex align-items-center">
                         <h5 class="text-semibold mb-1 me-auto">{{ trans('messages.sending_quota') }}</h5>
                         <div class="pull-right text-primary text-semibold">
-                            <span class="text-muted">{{ number_with_delimiter($subscription->getCreditsUsedDuringPlanCycle('send')) }}/{{ ($subscription->getCreditsLimit('send') == -1) ? '∞' : number_with_delimiter($subscription->getCreditsLimit('send')) }}</span>
-                            &nbsp;&nbsp;&nbsp;{{ number_to_percentage($subscription->getCreditsUsedPercentageDuringPlanCycle('send')) }}
+                            <span class="text-muted">{{ number_with_delimiter($subscription->getRemainingEmailCredits()) }}/{{ ($subscription->getCreditsLimit('send') == -1) ? '∞' : number_with_delimiter($subscription->getCreditsLimit('send')) }}</span>
+                            &nbsp;&nbsp;&nbsp;{{ number_to_percentage($subscription->getRemainingEmailCreditsPercentage()) }}
                         </div>
                     </div>
                     <div class="progress progress-xxs">
-                        <div class="progress-bar bg-warning" style="width: {{ $subscription->getCreditsUsedPercentageDuringPlanCycle('send') * 100 }}%">
+                        <div class="progress-bar bg-warning" style="width: {{ $subscription->getRemainingEmailCreditsPercentage() * 100 }}%">
                         </div>
                     </div>
                 </div>

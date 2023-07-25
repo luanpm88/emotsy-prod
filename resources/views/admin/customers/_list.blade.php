@@ -37,7 +37,7 @@
                     @if ($customer->getCurrentActiveSubscription())
                         <div class="d-flex">
                             <div class="single-stat-box pull-left me-5">
-                                <span class="no-margin text-primary stat-num">{{ number_with_delimiter($customer->getCurrentActiveSubscription()->getCreditsUsedPercentageDuringPlanCycle('send')*100) }}%</span>
+                                <span class="no-margin text-primary stat-num">{{ number_with_delimiter($customer->getCurrentActiveSubscription()->getRemainingEmailCreditsPercentage()*100) }}%</span>
                                 <div class="progress progress-xxs">
                                     <div class="progress-bar progress-bar-info" style="width: {{ $customer->getCurrentActiveSubscription()->getCreditsUsedPercentageDuringPlanCycle('send')*100 }}%">
                                     </div>

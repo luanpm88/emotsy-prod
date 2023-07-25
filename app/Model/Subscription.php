@@ -920,18 +920,9 @@ class Subscription extends Model
         $this->cancelNow();
     }
 
-    public function getCreditsUsedDuringPlanCycle($name)
+    public function getRemainingEmailCredits()
     {
-        // '1 month' or '1 year' for example
-        if ($this->plan->isUnlimited()) {
-            $used = $this->getCreditsUsed($name);
-        } else {
-            $interval = "{$this->plan->frequency_amount} {$this->plan->frequency_unit}";
-            $from = Carbon::now()->subtract($interval);
-            $used = $this->getCreditsUsed($name, $from);
-        }
-
-        return $used;
+        return $this->getSendEmailCreditTracker()->getCredits();
     }
 
     public function getCreditsLimit($name)
@@ -943,9 +934,9 @@ class Subscription extends Model
         return $this->plan->getOption('email_max');
     }
 
-    public function getCreditsUsedPercentageDuringPlanCycle($name)
+    public function getRemainingEmailCreditsPercentage()
     {
-        $creditsUsed = $this->getCreditsUsedDuringPlanCycle($name);
+        $creditsUsed = $this->getRemainingEmailCredits();
         $creditsLimit = $this->plan->getOption('email_max');
 
         // if = -1 (default:unlimited) return 0
@@ -971,6 +962,9 @@ class Subscription extends Model
         $subscription->customer_id = $customer->id;
         $subscription->plan_id = $plan->id;
         $subscription->save();
+
+        $emailCredits = (int)$plan->getOption('email_max');
+        $subscription->getSendEmailCreditTracker()->setCredits($emailCredits);
 
         return $subscription;
     }
