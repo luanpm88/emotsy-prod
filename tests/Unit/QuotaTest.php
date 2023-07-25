@@ -25,7 +25,7 @@ use Carbon\Carbon;
 
 use function Acelle\Helpers\withQuota;
 
-class QuotaManagerTest extends TestCase
+class QuotaTest extends TestCase
 {
     public function initServer()
     {
