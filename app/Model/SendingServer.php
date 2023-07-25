@@ -1595,7 +1595,6 @@ class SendingServer extends Model
         $this->quota_value = $value;
     }
 
-    /*** IMPLEMENTATION OF HasQuotaInterface ***/
     public function getRateLimits()
     {
         $limits = [];

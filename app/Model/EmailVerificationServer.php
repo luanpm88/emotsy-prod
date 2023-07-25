@@ -430,7 +430,6 @@ class EmailVerificationServer extends Model
         $this->options = json_encode($options);
     }
 
-    /***   IMPLEMENTATION OF HasQuotaInterface ***/
     public function getRateTracker()
     {
         // always 'verify'
