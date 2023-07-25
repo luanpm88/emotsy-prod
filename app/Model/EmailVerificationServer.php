@@ -8,11 +8,12 @@ use JsonPath\JsonObject;
 use Acelle\Library\Log as MailLog;
 use Acelle\Library\Traits\HasUid;
 use Exception;
-use Acelle\Library\RateLimit;
 use Monolog\Logger;
 use Monolog\Handler\RotatingFileHandler;
 use Monolog\Formatter\LineFormatter;
 use Acelle\Library\Everification\Emailable;
+use Acelle\Library\RateTracker;
+use Acelle\Library\RateLimit;
 
 class EmailVerificationServer extends Model
 {
@@ -419,13 +420,9 @@ class EmailVerificationServer extends Model
         }
     }
 
-    public function setQuotaSettings(string $name, int $value, string $periodUnit, int $periodValue)
+    // For testing, do not save!
+    public function setLimit(int $value, int $periodValue, string $periodUnit)
     {
-        // $name is always 'verify'
-        if ($name != 'verify') {
-            throw "Invalid quota name for email verification server";
-        }
-
         $options = $this->getOptions();
         $options['limit_base'] = $periodValue;
         $options['limit_unit'] = $periodUnit;
@@ -434,33 +431,25 @@ class EmailVerificationServer extends Model
     }
 
     /***   IMPLEMENTATION OF HasQuotaInterface ***/
-    public function getQuotaSettings($name): ?array
+    public function getRateTracker()
     {
         // always 'verify'
-        $quota = [];
         $options = $this->getOptions();
 
+        $limits = [];
         if ($options['limit_value'] != RateLimit::UNLIMITED) {
-            $quota[] = [
-                'name' => "Verification credits limit of {$options['limit_value']} per {$options['limit_base']} {$options['limit_unit']}",
-                'period_unit' => $options['limit_unit'],
-                'period_value' => $options['limit_base'],
-                'limit' => $options['limit_value'],
-            ];
+            $limits[] = new RateLimit(
+                $options['limit_value'],
+                $options['limit_base'],
+                $options['limit_unit'],
+                "Verification credits limit of {$options['limit_value']} per {$options['limit_base']} {$options['limit_unit']}",
+            );
         }
 
-        // Take limits from sending credits
-        $credits = '????';
-        if (false && $credits != RateLimit::UNLIMITED) {
-            $quota[] = [
-                'name' => "Plan's verification limit",
-                'period_unit' => '?',
-                'period_value' => '?',
-                'limit' => $redits
-            ];
-        }
+        $file = storage_path('app/quota/verification-server-verify-email-rate-tracking-log-'.$this->uid);
+        $tracker = new RateTracker($file, $limits);
 
-        return $quota;
+        return $tracker;
     }
 
     public function logger()

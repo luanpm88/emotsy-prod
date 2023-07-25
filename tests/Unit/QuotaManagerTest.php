@@ -45,6 +45,8 @@ class QuotaManagerTest extends TestCase
     {
         $server = new EmailVerificationServer();
         $server->generateUid();
+        $server = Mockery::mock($server);
+        $server->shouldReceive('verify')->andReturn(null);
         return $server;
     }
 
@@ -184,49 +186,27 @@ class QuotaManagerTest extends TestCase
         $this->assertEquals(OutOfCredits::class, get_class($outcome));
     }
 
-    private function prepareVerifySubscriberTest()
+    public function test_email_verification_server_job_server_rate_limit_exceeded()
     {
         // Server
         $server = $this->initEmailVerificationServer();
-
-        // Subscription
         $subscription = $this->initSubscription();
-        $plan = Mockery::mock('plan');
-
-        // Assign the mocked plan
-        $subscription->plan = $plan;
-
-        // Customer
-        $customer = Mockery::mock(new Customer());
-        $customer->shouldReceive('getCurrentActiveSubscription')->andReturn($subscription);
-
-        // Mail list
-        $list = Mockery::mock(new MailList());
-        $list->customer = $customer;
-
-        // Subscriber type is required as the new SendMessage(Subscriber $sub) has strict type parameter
         $subscriber = Mockery::mock(new Subscriber());
-        $subscriber->mailList = $list;
         $subscriber->shouldReceive('verify')->andReturn(null);
 
-        return [$subscriber, $server];
-    }
-
-    public function xtest_email_verification_server_job_server_quota_exceeded()
-    {
-        // Test setup
-        list($subscriber, $server) = $this->prepareVerifySubscriberTest();
-        $server->setQuotaSettings('verify', 2, $unit = 'minute', 1);
-        $subscription = $subscriber->mailList->customer->getCurrentActiveSubscription();
-        $subscription->plan->shouldReceive('getQuotaSettings')->andReturn([]);
+        $server->setLimit($limit = 2, $unitValue = 1, $unit = 'minute');
 
         // SendMessage job
-        $verifyJob = new VerifySubscriber($subscriber, $server);
+        $verifyJob = new VerifySubscriber($subscriber, $server, $subscription);
 
         // First shot
         $verifyJob->doVerify(function ($exception) use (&$outcome) {
             $outcome = $exception;
         });
+
+        // Just fine
+        $this->assertNull($outcome);
+        $this->assertEquals($server->getRateTracker()->getCreditsUsed(), 1);
 
         // Second shot
         $verifyJob->doVerify(function ($exception) use (&$outcome) {
@@ -235,57 +215,16 @@ class QuotaManagerTest extends TestCase
 
         // Just fine
         $this->assertNull($outcome);
+        $this->assertEquals($server->getRateTracker()->getCreditsUsed(), 2);
 
-        // Second short
+        // Third short
         $verifyJob->doVerify(function ($exception) use (&$outcome) {
             $outcome = $exception;
         });
 
         // Second, quota exceeded
-        $this->assertInstanceOf(RateLimitExceeded::class, $outcome);
-        $this->assertEquals($server->getCreditsUsed('verify'), 2);
-
-        // IMPORTANT: sacrisfy one credit here, since 'subscription.verify' is validate first (and pass) ==> so used credits is 3
-        $this->assertEquals($subscription->getCreditsUsed('verify'), 3);
+        $this->assertEquals(RateLimitExceeded::class, get_class($outcome));
+        $this->assertEquals($server->getRateTracker()->getCreditsUsed(), 2);
     }
 
-    public function xtest_email_verification_server_job_plan_quota_exceeded()
-    {
-        // Test setup
-        list($subscriber, $server) = $this->prepareVerifySubscriberTest();
-        $server->setQuotaSettings('verify', 9999, $unit = 'minute', 1);
-        $subscription = $subscriber->mailList->customer->getCurrentActiveSubscription();
-        $subscription->plan->shouldReceive('getQuotaSettings')->andReturn([[
-            'name' => "Plan's sending limit",
-            'limit' => 2,
-            'period_unit' => 'hour',
-            'period_value' => 1,
-        ]]);
-
-        // SendMessage job
-        $verifyJob = new VerifySubscriber($subscriber, $server);
-
-        // First shot
-        $verifyJob->doVerify(function ($exception) use (&$outcome) {
-            $outcome = $exception;
-        });
-
-        // Second shot
-        $verifyJob->doVerify(function ($exception) use (&$outcome) {
-            $outcome = $exception;
-        });
-
-        // Just fine
-        $this->assertNull($outcome);
-
-        // Second short
-        $verifyJob->doVerify(function ($exception) use (&$outcome) {
-            $outcome = $exception;
-        });
-
-        // Second, quota exceeded
-        $this->assertInstanceOf(RateLimitExceeded::class, $outcome);
-        $this->assertEquals($server->getCreditsUsed('verify'), 2);
-        $this->assertEquals($subscription->getCreditsUsed('verify'), 2);
-    }
 }

@@ -9,6 +9,7 @@ use Acelle\Library\Exception\RateLimitExceeded;
 use Acelle\Library\Exception\VerificationTakesLongerThanNormal;
 use Exception;
 use Closure;
+use function Acelle\Helpers\execute_with_limits;
 
 class VerifySubscriber extends Base
 {
@@ -20,16 +21,22 @@ class VerifySubscriber extends Base
 
     protected $server;
     protected $subscriber;
+    protected $subscription;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($subscriber, $server)
+    public function __construct($subscriber, $server, $subscription)
     {
+        if (is_null($subscription)) {
+            throw new Exception("User does not have an acive subscription");
+        }
+
         $this->subscriber = $subscriber;
         $this->server = $server;
+        $this->subscription = $subscription;
     }
 
     /**
@@ -58,33 +65,35 @@ class VerifySubscriber extends Base
 
     public function doVerify(Closure $exceptionCallback = null)
     {
-        $subscription = $this->subscriber->mailList->customer->getCurrentActiveSubscription();
-
-        if (is_null($subscription)) {
-            throw new Exception("User does not have an acive subscription");
-        }
-
         try {
             // Count related quota trackers
-            QuotaManager::with($subscription, 'verify')->enforce();
-            QuotaManager::with($this->server, 'verify')->enforce();
+            $rateTrackers = [
+                $this->server->getRateTracker()
+            ];
 
-            // Actually verify
-            $this->subscriber->verify($this->server);
+            // Credit limit tracker
+            $creditTrackers = [
+                $this->subscription->getVerifyEmailCreditTracker()
+            ];
+
+            execute_with_limits($rateTrackers, $creditTrackers, function() {
+                $this->subscriber->verify($this->server);
+            });
         } catch (VerificationTakesLongerThanNormal $ex) {
             // Just ignore and return
             // Warn user that there are certain subscribers that are skipped
+            // @important: silently quit leaving subscribers not verified
             return;
         } catch (RateLimitExceeded $ex) {
             if (!is_null($exceptionCallback)) {
-                $exceptionCallback($ex);
+                return $exceptionCallback($ex);
             }
 
             // Release the job, have it try again after 60 seconds and (hopefully) the quota limits will be lifted then as time goes by
             $this->release(60);
         } catch (Exception $ex) {
             if (!is_null($exceptionCallback)) {
-                $exceptionCallback($ex);
+                return $exceptionCallback($ex);
             }
 
             throw $ex;

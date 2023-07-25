@@ -994,4 +994,10 @@ class Subscription extends Model
         $file = storage_path('app/quota/subscription-send-email-credits-'.$this->uid);
         return CreditTracker::load($file, $createFileIfNotExist);
     }
+
+    public function getVerifyEmailCreditTracker($createFileIfNotExist = false)
+    {
+        // Temporarily not supported
+        return null;
+    }
 }

@@ -383,9 +383,12 @@ function load_env_from_file($path)
  */
 function execute_with_limits(array $rateTrackers, array $creditTrackers, Closure $task = null)
 {
+    // Remove null tracker from array
+    $rateTrackers = array_values(array_filter($rateTrackers));
+    $creditTrackers = array_values(array_filter($creditTrackers));
+
     // Check credits first, because credits can be rolled back
     // Check rate after that
-
     $creditCounted = [];
     try {
         foreach($creditTrackers as $creditTracker) {
