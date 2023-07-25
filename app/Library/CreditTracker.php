@@ -3,6 +3,7 @@
 namespace Acelle\Library;
 
 use Acelle\Library\Exception\OutOfCredits;
+use Exception;
 
 class CreditTracker
 {
@@ -10,6 +11,7 @@ class CreditTracker
 	protected $limit;
 
 	public const ZERO = 0;
+	public const UNLIMITED = -1;
 
 	// Using CreditTracker::load('file') makes more sense than
 	public static function load($filepath, bool $createFileIfNotExists = false)
@@ -43,7 +45,7 @@ class CreditTracker
 		return (int)$credits;
 	}
 
-	public function test()
+	private function test()
 	{
 		if ($this->getCredits() == self::ZERO) {
 			throw new OutOfCredits('Credits exceeded');
@@ -52,6 +54,10 @@ class CreditTracker
 
 	public function count()
 	{
+		if ($this->limit == static::UNLIMITED) {
+			return;
+		}
+
 		$this->test();
 
 		$remainingCredits = $this->getCredits();
@@ -63,6 +69,14 @@ class CreditTracker
 
 	public function setCredits($amount)
 	{
+		if (!is_int($amount)) {
+			throw new Exception('Invalid value for CreditTracker credits. Try using "(int)$credit": '.$amount);
+		}
+
+		if ($amount < self::UNLIMITED) {
+			throw new Exception('Invalid value for CreditTracker credits (Integer >= -1): '.$amount);
+		}
+
 		file_put_contents($this->filepath, (string)$amount);
 		return $this;
 	}

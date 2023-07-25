@@ -1547,7 +1547,7 @@ class Customer extends Model
         // As a result, the setCredits() method takes QUOTA_UNLIMITED value as default, meaning no credits check
         // The application only enforce the quota limits rules: how many credits are allowed during a fixed period of time (month)
         // It is pre-designed for "Buy Credits" feature which will be supported later on
-        $subscription->setCredits('send', RateLimit::UNLIMITED);
+        $subscription->getSendEmailCreditTracker()->setCredits(-1);
 
         return $subscription;
     }

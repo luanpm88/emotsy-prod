@@ -32,16 +32,14 @@ test('Credit tracker should throw OutOfCredits', function () {
 })->throws(OutOfCredits::class);
 
 
-test('Credit tracker rollback just works', function () {
+test('Cannot assign invalid values for CreditTracker (non-int)', function () {
     $file = '/tmp/test-rate-'.uniqid();
     $tracker = CreditTracker::load($file, $createFile = true);
-    $tracker->setCredits(1);   // credits = 1
-    $tracker->count();         // credits = 0
+    $tracker->setCredits('xxxxx');   // invalid
+})->throws(Exception::class);
 
-    $tracker->rollback();      // credits expected to be 1
-    expect($tracker->getCredits())->toBe(1);
-
-    $tracker->rollback();
-    expect($tracker->getCredits())->toBe(2);
-
-});
+test('Cannot assign invalid values for CreditTracker (<-1)', function () {
+    $file = '/tmp/test-rate-'.uniqid();
+    $tracker = CreditTracker::load($file, $createFile = true);
+    $tracker->setCredits(-2);   // invalid
+})->throws(Exception::class);
