@@ -7,9 +7,10 @@ use Exception;
 use Acelle\Model\Invoice;
 use Acelle\Model\InvoiceItem;
 use Acelle\Library\Traits\HasUid;
-use Acelle\Library\RateLimit;
 use Carbon\Carbon;
 use Acelle\Library\Facades\SubscriptionFacade;
+use Acelle\Library\CreditTracker;
+use Acelle\Library\RateLimit;
 
 class Subscription extends Model
 {
@@ -978,5 +979,19 @@ class Subscription extends Model
     {
         $this->invoices()->delete();
         $this->delete();
+    }
+
+    public function getSendEmailRateTracker()
+    {
+        // Get the limits from plan
+        $file = storage_path('app/quota/subscription-send-email-rate-tracking-log-'.$this->uid);
+        $tracker = new RateTracker($file, $this->plan->getSendEmailRateLimits());
+        return $tracker;
+    }
+
+    public function getSendEmailCreditTracker($createFileIfNotExist = false)
+    {
+        $file = storage_path('app/quota/subscription-send-email-credits-'.$this->uid);
+        return CreditTracker::load($file, $createFileIfNotExist);
     }
 }

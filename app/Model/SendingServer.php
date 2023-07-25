@@ -31,6 +31,7 @@ use Acelle\Library\Notification\BackendError as BackendErrorNotification;
 use Acelle\Library\Facades\Hook;
 use Acelle\Library\RateLimit;
 use Exception;
+use Acelle\Library\Traits\HasUid;
 
 class SendingServer extends Model
 {
@@ -1595,19 +1596,26 @@ class SendingServer extends Model
     }
 
     /*** IMPLEMENTATION OF HasQuotaInterface ***/
-    public function getQuotaSettings($name): ?array
+    public function getRateLimits()
     {
-        $quota = [];
+        $limits = [];
 
         if ($this->quota_value != RateLimit::UNLIMITED) {
-            $quota[] = [
-                'name' => "Server's sending limit of {$this->quota_value} per {$this->quota_base} {$this->quota_unit}",
-                'period_unit' => $this->quota_unit,
-                'period_value' => $this->quota_base,
-                'limit' => $this->quota_value,
-            ];
+            $limits[] = new RateLimit(
+                $this->quota_value,
+                $this->quota_base,
+                $this->quota_unit,
+                "Server's sending limit of {$this->quota_value} per {$this->quota_base} {$this->quota_unit}"
+            );
         }
 
-        return $quota;
+        return $limits;
+    }
+
+    public function getRateLimitTracker()
+    {
+        $file = storage_path('app/quota/server-send-email-rate-tracking-log-'.$this->uid);
+        $tracker = new RateTracker($file, $this->getRateLimits());
+        return $tracker;
     }
 }

@@ -43,8 +43,6 @@ use Acelle\Library\Traits\HasCache;
 use Acelle\Jobs\ImportBlacklistJob;
 use Acelle\Library\Traits\HasUid;
 use Acelle\Library\RateTracker;
-use Acelle\Library\CreditTracker;
-use Acelle\Library\RateLimit;
 use Acelle\Library\Facades\SubscriptionFacade;
 
 class Customer extends Model
@@ -2114,27 +2112,5 @@ class Customer extends Model
         $campaign->customer_id = $this->id;
 
         return $campaign;
-    }
-
-    public function getSendEmailRateTracker()
-    {
-        $subscription = $this->getActiveSubscription();
-        if (is_null($subscription)) {
-            return;
-        }
-
-        // Get the limits from plan
-        $plan = $subscription->plan;
-        $file = storage_path('app/quota/customer-send-email-log-'.$this->uid);
-
-        $tracker = new RateTracker($file, $plan->getSendEmailRateLimits());
-
-        return $tracker;
-    }
-
-    public function getSendEmailCreditTracker($createFileIfNotExist = false)
-    {
-        $file = storage_path('app/quota/customer-send-email-credits-'.$this->uid);
-        return CreditTracker::load($file, $createFileIfNotExist);
     }
 }

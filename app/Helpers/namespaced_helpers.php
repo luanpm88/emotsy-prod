@@ -381,22 +381,15 @@ function load_env_from_file($path)
  * Parameter 1: \Acelle\Library\RateTracker[]
  * Parameter 2: \Acelle\Library\CreditTracker[]
  */
-function execute_with_limits(
-    array $rateTrackers = [],
-    array $creditTrackers = [],
-    Closure $task = null)
+function execute_with_limits(array $rateTrackers, array $creditTrackers, Closure $task = null)
 {
+    // Check credits first, because credits can be rolled back
+    // Check rate after that
 
-    // Might throw \Acelle\Library\Exception\RateLimitExceeded
-    foreach($rateTrackers as $rateTracker) {
-        $rateTracker->count();
-    }
-
-    // Might throw \Acelle\Library\Exception\OutOfCredits
     $creditCounted = [];
-
     try {
         foreach($creditTrackers as $creditTracker) {
+            // Might throw \Acelle\Library\Exception\OutOfCredits
             $creditTracker->count();
             $creditCounted[] = $creditTracker;
         }
@@ -412,11 +405,32 @@ function execute_with_limits(
         throw $exception;
     }
 
+    try {
+        // Might throw \Acelle\Library\Exception\RateLimitExceeded
+        foreach($rateTrackers as $rateTracker) {
+            $rateTracker->count();
+        }
+    } catch (\Acelle\Library\Exception\RateLimitExceeded $exception) {
+        // Rollback 1: when OutOfCredits
+        // @important: rate is counted even for a failed operation attempt
+        // So there is no need to roll it back (that's why the rollback() method is @deprecated)
+        // However, credits must be rolled back before exit
+        foreach($creditCounted as $creditTracker) {
+            $creditTracker->rollback();
+        }
+
+        throw $exception;
+    }
 
     try {
-        if (!is_null($task)) {
-            $task();
+
+        // Return null if task is null, i.e. count credits but do not actually do anything
+        if (is_null($task)) {
+            return;
         }
+
+        // Execute task
+        $task();
     } catch (\Throwable $exception) {
         // Rollback 2: when task error
         // @important: rate is counted even for a failed operation attempt

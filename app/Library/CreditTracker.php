@@ -64,6 +64,7 @@ class CreditTracker
 	public function setCredits($amount)
 	{
 		file_put_contents($this->filepath, (string)$amount);
+		return $this;
 	}
 
 	public function rollback()
