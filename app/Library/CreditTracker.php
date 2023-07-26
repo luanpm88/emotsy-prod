@@ -3,12 +3,12 @@
 namespace Acelle\Library;
 
 use Acelle\Library\Exception\OutOfCredits;
+use Acelle\Library\Lockable;
 use Exception;
 
 class CreditTracker
 {
 	protected $filepath;
-	protected $limit;
 
 	public const ZERO = 0;
 	public const UNLIMITED = -1;
@@ -55,17 +55,15 @@ class CreditTracker
 
 	public function count()
 	{
-		if ($this->limit == static::UNLIMITED) {
-			return;
-		}
+		Lockable::withExclusiveLock($this->filepath, function() {
+			$this->test();
 
-		$this->test();
+			$remainingCredits = $this->getRemainingCredits();
+			$remainingCredits -= 1;
+			$remainingCredits = "{$remainingCredits}"; // cast to string
 
-		$remainingCredits = $this->getRemainingCredits();
-		$remainingCredits -= 1;
-		$remainingCredits = "{$remainingCredits}"; // cast to string
-
-		file_put_contents($this->filepath, $remainingCredits);
+			file_put_contents($this->filepath, $remainingCredits);
+		});
 	}
 
 	public function setCredits($amount)
