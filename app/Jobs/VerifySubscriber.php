@@ -3,7 +3,6 @@
 namespace Acelle\Jobs;
 
 use Illuminate\Bus\Batchable;
-use Acelle\Library\QuotaManager;
 use Acelle\Library\Exception\NoCreditsLeft;
 use Acelle\Library\Exception\RateLimitExceeded;
 use Acelle\Library\Exception\VerificationTakesLongerThanNormal;

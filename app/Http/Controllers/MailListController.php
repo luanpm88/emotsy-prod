@@ -787,9 +787,10 @@ class MailListController extends Controller
         // Get list & server
         $list = MailList::findByUid($request->uid);
         $server = EmailVerificationServer::findByUid($request->email_verification_server_id);
+        $customer = $request->user()->customer;
 
         // Dispatch
-        $job = $list->dispatchVerificationJob($server);
+        $job = $list->dispatchVerificationJob($server, $customer->getActiveSubscription());
 
         // Return
         return response()->json([

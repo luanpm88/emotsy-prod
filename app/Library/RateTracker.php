@@ -66,7 +66,7 @@ class RateTracker
         $lock->getExclusiveLock(function ($fopen) {
             list($lastBlock, $count) = $this->parseLastRecord($fopen);
             if (is_null($lastBlock)) {
-                throw new Exception('Cannot rollback! There is no previous count (in case files are cleaned up while SendMessage is in progress');
+                throw new Exception('Cannot rollback! There is no previous count (hey, what if file was cleaned up while SendMessage is in progress');
             }
 
             if ($count == 1) {
@@ -87,23 +87,6 @@ class RateTracker
 
     private function test(Carbon $now, $fopen)
     {
-        // [
-        //     [
-        //         'name' => 'Emails per minute',
-        //         'period_unit' => 'minute'
-        //         'period_value' => '1'
-        //         'limit' => 10,
-        //     ], [
-        //         'name' => 'Emails per 12 hours',
-        //         'period_unit' => 'hour',
-        //         'period_value' => '12',
-        //         'limit' => 2000
-        //     ], [
-        //         ....
-        //     ]
-        // ]
-        //
-
         foreach ($this->limits as $limit) {
             $period = sprintf("%s %s", $limit->getPeriodValue(), $limit->getPeriodUnit());
             $fromDatetime = $now->copy()->subtract($period);

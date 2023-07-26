@@ -218,13 +218,13 @@ class MailList extends Model
         return $filepath;
     }
 
-    public function dispatchVerificationJob($server)
+    public function dispatchVerificationJob($server, $subscription)
     {
         if (is_null($server)) {
             throw new Exception('Cannot start job: empty verification server');
         }
 
-        $job = new VerifyMailListJob($this, $server);
+        $job = new VerifyMailListJob($this, $server, $subscription);
         $monitor = $this->dispatchWithBatchMonitor(
             $job,
             $then = null,
