@@ -7,18 +7,18 @@ test('Credit tracker just works', function () {
     $file = '/tmp/test-rate-'.uniqid();
     $tracker = CreditTracker::load($file, $createFile = true);
 
-    expect($tracker->getCredits())->toBe(CreditTracker::UNLIMITED);
+    expect($tracker->getRemainingCredits())->toBe(CreditTracker::UNLIMITED);
 
     $tracker->setCredits(2);
-    expect($tracker->getCredits())->toBe(2);
+    expect($tracker->getRemainingCredits())->toBe(2);
 
     // Count to deduct credit
     $tracker->count();
-    expect($tracker->getCredits())->toBe(1);
+    expect($tracker->getRemainingCredits())->toBe(1);
 
     // Count to deduct credit
     $tracker->count();
-    expect($tracker->getCredits())->toBe(0);
+    expect($tracker->getRemainingCredits())->toBe(0);
 });
 
 test('Credit tracker should throw OutOfCredits', function () {

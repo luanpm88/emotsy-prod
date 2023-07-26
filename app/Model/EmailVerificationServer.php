@@ -451,6 +451,12 @@ class EmailVerificationServer extends Model
         return $tracker;
     }
 
+    public function getCreditTracker()
+    {
+        $file = storage_path('app/quota/verification-server-credits-'.$this->uid);
+        return CreditTracker::load($file, $createFile = true);
+    }
+
     public function logger()
     {
         if (is_null($this->logger)) {
@@ -467,5 +473,10 @@ class EmailVerificationServer extends Model
         }
 
         return $this->logger;
+    }
+
+    public function getCreditsUsed()
+    {
+        return $this->getRateTracker()->getCreditsUsed();
     }
 }

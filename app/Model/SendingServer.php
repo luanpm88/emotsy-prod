@@ -30,6 +30,7 @@ use Acelle\Library\StringHelper;
 use Acelle\Library\Notification\BackendError as BackendErrorNotification;
 use Acelle\Library\Facades\Hook;
 use Acelle\Library\RateLimit;
+use Acelle\Library\RateTracker;
 use Exception;
 use Acelle\Library\Traits\HasUid;
 
@@ -1616,5 +1617,10 @@ class SendingServer extends Model
         $file = storage_path('app/quota/server-send-email-rate-tracking-log-'.$this->uid);
         $tracker = new RateTracker($file, $this->getRateLimits());
         return $tracker;
+    }
+
+    public function getCreditsUsed()
+    {
+        return $this->getRateLimitTracker()->getCreditsUsed();
     }
 }

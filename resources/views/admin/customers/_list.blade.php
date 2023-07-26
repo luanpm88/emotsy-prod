@@ -39,11 +39,11 @@
                             <div class="single-stat-box pull-left me-5">
                                 <span class="no-margin text-primary stat-num">{{ number_with_delimiter($customer->getCurrentActiveSubscription()->getRemainingEmailCreditsPercentage()*100) }}%</span>
                                 <div class="progress progress-xxs">
-                                    <div class="progress-bar progress-bar-info" style="width: {{ $customer->getCurrentActiveSubscription()->getCreditsUsedPercentageDuringPlanCycle('send')*100 }}%">
+                                    <div class="progress-bar progress-bar-info" style="width: {{ $customer->getCurrentActiveSubscription()->getRemainingEmailCreditsPercentage()*100 }}%">
                                     </div>
                                 </div>
                                 <span class="text-muted">
-                                    <strong>{{ number_with_delimiter($customer->getCurrentActiveSubscription()->getCreditsUsedDuringPlanCycle('send')) }}/{{ ($customer->getCurrentActiveSubscription()->getCreditsLimit('send') == -1) ? '∞' : number_with_delimiter($customer->getCurrentActiveSubscription()->getCreditsLimit('send')) }}</strong>
+                                    <strong>{{ number_with_delimiter($customer->getCurrentActiveSubscription()->getRemainingEmailCredits()) }}/{{ ($customer->getCurrentActiveSubscription()->getCreditsLimit('send') == -1) ? '∞' : number_with_delimiter($customer->getCurrentActiveSubscription()->getCreditsLimit('send')) }}</strong>
                                     <div class="text-nowrap">{{ trans('messages.sending_credits_used') }}</div>
                                 </span>
                             </div>

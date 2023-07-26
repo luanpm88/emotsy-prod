@@ -922,7 +922,7 @@ class Subscription extends Model
 
     public function getRemainingEmailCredits()
     {
-        return $this->getSendEmailCreditTracker()->getCredits();
+        return $this->getSendEmailCreditTracker()->getRemainingCredits();
     }
 
     public function getCreditsLimit($name)

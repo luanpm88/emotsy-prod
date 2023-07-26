@@ -36,7 +36,7 @@ class CreditTracker
 		fclose($file);
 	}
 
-	public function getCredits()
+	public function getRemainingCredits()
 	{
 		$credits = file_get_contents($this->filepath);
 		if (empty(trim($credits))) {
@@ -48,7 +48,7 @@ class CreditTracker
 
 	private function test()
 	{
-		if ($this->getCredits() == self::ZERO) {
+		if ($this->getRemainingCredits() == self::ZERO) {
 			throw new OutOfCredits('Credits exceeded');
 		}
 	}
@@ -61,7 +61,7 @@ class CreditTracker
 
 		$this->test();
 
-		$remainingCredits = $this->getCredits();
+		$remainingCredits = $this->getRemainingCredits();
 		$remainingCredits -= 1;
 		$remainingCredits = "{$remainingCredits}"; // cast to string
 
@@ -84,7 +84,7 @@ class CreditTracker
 
 	public function rollback()
 	{
-		$remainingCredits = $this->getCredits();
+		$remainingCredits = $this->getRemainingCredits();
 		$remainingCredits += 1;
 		$remainingCredits = "{$remainingCredits}"; // cast to string
 

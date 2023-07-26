@@ -19,22 +19,22 @@ test('CreditLimit just works', function () {
 
     // First execution OK
     $task();
-    expect($creditTracker1->getCredits())->toBe(4);
-    expect($creditTracker2->getCredits())->toBe(1);
+    expect($creditTracker1->getRemainingCredits())->toBe(4);
+    expect($creditTracker2->getRemainingCredits())->toBe(1);
 
     // Second execution OK
     $task();
-    expect($creditTracker1->getCredits())->toBe(3);
-    expect($creditTracker2->getCredits())->toBe(0);
+    expect($creditTracker1->getRemainingCredits())->toBe(3);
+    expect($creditTracker2->getRemainingCredits())->toBe(0);
 
     // Second execution results in exception
     expect($task)->toThrow(OutOfCredits::class);
 
     // Rollback tracker 1
-    expect($creditTracker1->getCredits())->toBe(3);
+    expect($creditTracker1->getRemainingCredits())->toBe(3);
 
     // Tracker 2 still 0
-    expect($creditTracker2->getCredits())->toBe(0);
+    expect($creditTracker2->getRemainingCredits())->toBe(0);
 });
 
 test('CreditLimit just works with task exception', function () {
@@ -55,8 +55,8 @@ test('CreditLimit just works with task exception', function () {
     expect($task)->toThrow(\Exception::class);
 
     // Rollback tracker 1
-    expect($creditTracker1->getCredits())->toBe(100);
+    expect($creditTracker1->getRemainingCredits())->toBe(100);
 
     // Rollback tracker 2
-    expect($creditTracker2->getCredits())->toBe(100);
+    expect($creditTracker2->getRemainingCredits())->toBe(100);
 });
