@@ -20,7 +20,7 @@ class GenerateSpintax implements StageInterface
         preg_match_all($htmlTextRegexp, $html, $matches);
 
         // Check every value
-        foreach($matches[0] as $text) {
+        foreach ($matches[0] as $text) {
             if ($this->containsSpintaxPattern($text)) {
                 $transformed = Parser::replicate($text, []);
 

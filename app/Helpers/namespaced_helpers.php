@@ -391,7 +391,7 @@ function execute_with_limits(array $rateTrackers, array $creditTrackers, Closure
     // Check rate after that
     $creditCounted = [];
     try {
-        foreach($creditTrackers as $creditTracker) {
+        foreach ($creditTrackers as $creditTracker) {
             // Might throw \Acelle\Library\Exception\OutOfCredits
             $creditTracker->count();
             $creditCounted[] = $creditTracker;
@@ -401,7 +401,7 @@ function execute_with_limits(array $rateTrackers, array $creditTrackers, Closure
         // @important: rate is counted even for a failed operation attempt
         // So there is no need to roll it back (that's why the rollback() method is @deprecated)
         // However, credits must be rolled back before exit
-        foreach($creditCounted as $creditTracker) {
+        foreach ($creditCounted as $creditTracker) {
             $creditTracker->rollback();
         }
 
@@ -410,7 +410,7 @@ function execute_with_limits(array $rateTrackers, array $creditTrackers, Closure
 
     try {
         // Might throw \Acelle\Library\Exception\RateLimitExceeded
-        foreach($rateTrackers as $rateTracker) {
+        foreach ($rateTrackers as $rateTracker) {
             $rateTracker->count();
         }
     } catch (\Acelle\Library\Exception\RateLimitExceeded $exception) {
@@ -418,7 +418,7 @@ function execute_with_limits(array $rateTrackers, array $creditTrackers, Closure
         // @important: rate is counted even for a failed operation attempt
         // So there is no need to roll it back (that's why the rollback() method is @deprecated)
         // However, credits must be rolled back before exit
-        foreach($creditCounted as $creditTracker) {
+        foreach ($creditCounted as $creditTracker) {
             $creditTracker->rollback();
         }
 
@@ -426,7 +426,6 @@ function execute_with_limits(array $rateTrackers, array $creditTrackers, Closure
     }
 
     try {
-
         // Return null if task is null, i.e. count credits but do not actually do anything
         if (is_null($task)) {
             return;
@@ -439,7 +438,7 @@ function execute_with_limits(array $rateTrackers, array $creditTrackers, Closure
         // @important: rate is counted even for a failed operation attempt
         // So there is no need to roll it back (that's why the rollback() method is @deprecated)
         // However, credits must be rolled back before exit
-        foreach($creditCounted as $creditTracker) {
+        foreach ($creditCounted as $creditTracker) {
             $creditTracker->rollback();
         }
 

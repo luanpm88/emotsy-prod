@@ -420,7 +420,7 @@ class CustomerController extends Controller
         if (!$user->can('delete', $customer)) {
             return \Response::json(array('status' => 0, 'message' => 'Unauthorized'), 401);
         }
-        
+
         $uid = $customer->uid;
         $customer->deleteAccount();
 

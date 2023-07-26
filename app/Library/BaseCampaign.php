@@ -20,7 +20,7 @@ use Throwable;
 
 class BaseCampaign extends Model
 {
-	use TrackJobs;
+    use TrackJobs;
     use HasUid;
     use HasCache;
     use HasFactory;

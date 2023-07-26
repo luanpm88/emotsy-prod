@@ -224,5 +224,4 @@ class QuotaTest extends TestCase
         $this->assertEquals(RateLimitExceeded::class, get_class($outcome));
         $this->assertEquals($server->getRateTracker()->getCreditsUsed(), 2);
     }
-
 }

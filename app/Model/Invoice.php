@@ -948,7 +948,7 @@ class Invoice extends Model
         if ($this->isPaid()) {
             throw new \Exception("Can not change paid invoice price!");
         }
-        
+
         // logging by type
         switch ($this->type) {
             case Invoice::TYPE_NEW_SUBSCRIPTION:

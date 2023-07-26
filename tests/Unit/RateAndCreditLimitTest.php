@@ -3,6 +3,7 @@
 use Acelle\Library\RateTracker;
 use Acelle\Library\CreditTracker;
 use Acelle\Library\Exception\OutOfCredits;
+
 use function Acelle\Helpers\execute_with_limits;
 
 test('CreditLimit just works', function () {
@@ -15,7 +16,7 @@ test('CreditLimit just works', function () {
     $creditTracker2->setCredits(2);
 
     // Execute 1st time -> ok
-    $task = fn() => execute_with_limits([  ], [ $creditTracker1, $creditTracker2 ]);
+    $task = fn () => execute_with_limits([  ], [ $creditTracker1, $creditTracker2 ]);
 
     // First execution OK
     $task();
@@ -47,8 +48,8 @@ test('CreditLimit just works with task exception', function () {
     $creditTracker2->setCredits(100);
 
     // Task
-    $task = fn() => execute_with_limits([  ], [ $creditTracker1, $creditTracker2 ], function() {
-    	throw new \Exception();
+    $task = fn () => execute_with_limits([  ], [ $creditTracker1, $creditTracker2 ], function () {
+        throw new \Exception();
     });
 
     // Second execution results in exception

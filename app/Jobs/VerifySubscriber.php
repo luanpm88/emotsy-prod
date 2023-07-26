@@ -8,6 +8,7 @@ use Acelle\Library\Exception\RateLimitExceeded;
 use Acelle\Library\Exception\VerificationTakesLongerThanNormal;
 use Exception;
 use Closure;
+
 use function Acelle\Helpers\execute_with_limits;
 
 class VerifySubscriber extends Base
@@ -75,7 +76,7 @@ class VerifySubscriber extends Base
                 $this->subscription->getVerifyEmailCreditTracker()
             ];
 
-            execute_with_limits($rateTrackers, $creditTrackers, function() {
+            execute_with_limits($rateTrackers, $creditTrackers, function () {
                 $this->subscriber->verify($this->server);
             });
         } catch (VerificationTakesLongerThanNormal $ex) {

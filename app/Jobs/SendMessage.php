@@ -17,6 +17,7 @@ use Acelle\Library\Exception\RateLimitExceeded;
 use Acelle\Library\Exception\OutOfCredits;
 use Exception;
 use Throwable;
+
 use function Acelle\Helpers\execute_with_limits;
 
 class SendMessage implements ShouldQueue
@@ -118,7 +119,7 @@ class SendMessage implements ShouldQueue
                 $this->subscription->getSendEmailCreditTracker(),
             ];
 
-            execute_with_limits($rateTrackers, $creditTrackers, function() use ($message, $logger, $msgId, $email) {
+            execute_with_limits($rateTrackers, $creditTrackers, function () use ($message, $logger, $msgId, $email) {
                 // Actually send (or throw an exception)
                 $sent = $this->server->send($message);
 
@@ -136,7 +137,6 @@ class SendMessage implements ShouldQueue
             // Release the job, have it try again after 60 seconds
             // and (hopefully) the quota limits will be lifted then as time goes by
             $this->release(60);
-
         } catch (OutOfCredits | Throwable $ex) {
             // Also catch the OutOfCredits error
             if (!is_null($exceptionCallback)) {
@@ -152,7 +152,7 @@ class SendMessage implements ShouldQueue
             // Option 2: just skip the error, log it and proceed with the next subscriber
 
             if ($this->stopOnError) {
-                throw new $ex;
+                throw new $ex();
             } else {
                 if (!isset($msgId)) {
                     // Just in case there is an exception before the execution of "list($message, $msgId) = $this->campaign->prepareEmail..."
