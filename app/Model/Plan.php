@@ -172,7 +172,7 @@ class Plan extends Model
         }
 
         // exist
-        if ($this->billing_cycle == 'other') {
+        if ($this->getOption('billing_cycle') == 'other') {
             $wording = trans('messages.plan.billing_cycle.phrase', [
                 'frequency_amount' => number_with_delimiter($this->getFrequencyAmount()),
                 'frequency_unit' => $this->getFrequencyUnit(),

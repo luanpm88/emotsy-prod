@@ -367,6 +367,7 @@ class PlanGeneral extends Plan implements PlanInterface
             'plain_text_footer' => '',
             'payment_gateway' => '',
             'bounce_rate_theshold' => '',
+            'billing_cycle' => 'monthly',
         ]);
 
         // Sending server types
@@ -742,7 +743,7 @@ class PlanGeneral extends Plan implements PlanInterface
         }
 
         // billing cycle
-        $billingCycle = $this->billing_cycle;
+        $billingCycle = $this->getOption('billing_cycle');
         if ($billingCycle && isset($billingCycle) && $billingCycle != 'custom' && $billingCycle != 'other') {
             $limits = self::billingCycleValues()[$billingCycle];
             $this->frequency_amount = $limits['frequency_amount'];
@@ -1133,7 +1134,6 @@ class PlanGeneral extends Plan implements PlanInterface
         $plan->id = self::UNLIMITED_PLAN_ID;
         $plan->name = 'Unlimited';
         $plan->price = 0;
-        $plan->billing_cycle = 'other';
         $plan->frequency_amount = 1000;
         $plan->frequency_unit = 'year';
         $plan->options = json_encode([
@@ -1185,6 +1185,7 @@ class PlanGeneral extends Plan implements PlanInterface
             "html_footer" => "",
             "plain_text_footer" => "",
             "payment_gateway" => "",
+            "billing_cycle" => "other",
         ]);
         $plan->status = 'active';
         $plan->save();
