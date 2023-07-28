@@ -67,14 +67,14 @@ class Invoice extends Model
     public function scopePending($query)
     {
         $query->whereHas('transactions', function ($q) {
-            $q->where('status', Transaction::STATUS_PENDING);
+            $q->pending();
         });
     }
 
     public function scopeNotPending($query)
     {
         $query->orWhereDoesntHave('transactions', function ($q) {
-            $q->where('status', Transaction::STATUS_PENDING);
+            $q->pending();
         });
     }
 

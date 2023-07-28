@@ -100,4 +100,9 @@ class Transaction extends Model
     {
         return $this->allow_manual_review;
     }
+
+    public static function scopePending($query)
+    {
+        $query = $query->where('status', Transaction::STATUS_PENDING);
+    }
 }

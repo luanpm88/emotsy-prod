@@ -34,6 +34,8 @@ class Plan extends Model
     public const STATUS_INACTIVE = 'inactive';
     public const STATUS_ACTIVE = 'active';
 
+    public const UNLIMITED_TIME = 'unlimited';
+
     /**
      * The attributes that are mass assignable.
      *
@@ -415,5 +417,10 @@ class Plan extends Model
     public function getTrialUnit()
     {
         return $this->trial_amount;
+    }
+
+    public function isUnlimited()
+    {
+        return $this->frequency_unit == self::UNLIMITED_TIME;
     }
 }

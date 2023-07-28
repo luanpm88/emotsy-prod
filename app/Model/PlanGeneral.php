@@ -42,8 +42,6 @@ class PlanGeneral extends Plan implements PlanInterface
     //
     public const UNLIMITED_PLAN_ID = '9999';
 
-    public const UNLIMITED_TIME = 'unlimited';
-
     // General plans
     public static function scopeGeneral($query)
     {
@@ -1195,11 +1193,6 @@ class PlanGeneral extends Plan implements PlanInterface
     public function isCustomTrackingDomainRequired()
     {
         return $this->own_tracking_domain_required;
-    }
-
-    public function isUnlimited()
-    {
-        return $this->frequency_unit == self::UNLIMITED_TIME;
     }
 
     /**
