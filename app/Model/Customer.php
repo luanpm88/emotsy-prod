@@ -1068,10 +1068,9 @@ class Customer extends Model
 
     public function createNewSubscriptionWithInitInvoice($plan)
     {
-        $customer = $this;
         $subscription = null;
-        DB::transaction(function () use ($customer, $plan, &$subscription) {
-            $subscription = Subscription::createNewSubscription($customer, $plan);
+        DB::transaction(function () use ($plan, &$subscription) {
+            $subscription = Subscription::createNewSubscription($this, $plan);
             if ($plan->hasTrial()) {
                 $invoice = $subscription->createInitInvoiceWithTrial();
             } else {

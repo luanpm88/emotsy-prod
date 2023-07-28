@@ -451,17 +451,16 @@ class Invoice extends Model
      */
     public function paySuccess()
     {
-        $invoice = $this;
-        \DB::transaction(function () use (&$invoice) {
+        \DB::transaction(function () {
             // set invoice status as paid
-            $invoice->setPaid();
+            $this->setPaid();
 
             // set transaction as success
             // Important: according to current design, the rule is: one invoice only has one pending transaction
-            $invoice->getPendingTransaction()->setSuccess();
+            $this->getPendingTransaction()->setSuccess();
 
             // set subscription status
-            $invoice->process();
+            $this->process();
         });
     }
 
@@ -627,19 +626,18 @@ class Invoice extends Model
      */
     public function checkout($gateway, $payCallback)
     {
-        $invoice = $this;
-        \DB::transaction(function () use ($gateway, $invoice, $payCallback) {
-            $invoice->createPendingTransaction($gateway);
+        \DB::transaction(function () use ($gateway, $payCallback) {
+            $this->createPendingTransaction($gateway);
 
             try {
-                $result = $payCallback($invoice);
+                $result = $payCallback($this);
 
                 if ($result->isDone()) {
                     // Stripe, PayPal, Braintree for example
-                    $invoice->paySuccess();
+                    $this->paySuccess();
                 } elseif ($result->isFailed()) {
                     // Stripe, PayPal, Braintree for example
-                    $invoice->payFailed($result->error);
+                    $this->payFailed($result->error);
                 } elseif ($result->isStillPending()) {
                     // Coin, offline shouls return this status
                     // Wait more, check again later....
@@ -653,7 +651,7 @@ class Invoice extends Model
                 }
             } catch (\Throwable $e) {
                 // pay failed
-                $invoice->payFailed($e->getMessage());
+                $this->payFailed($e->getMessage());
 
                 // event after paying failed
                 $this->checkoutAfterPayFailed($result->error);

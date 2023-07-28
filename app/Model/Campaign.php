@@ -2282,10 +2282,9 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
         }
 
         // validate service
-        $campaign = $this;
-        $validator->after(function ($validator) use ($campaign, $email) {
+        $validator->after(function ($validator) use ($email) {
             try {
-                $result = $campaign->sendTestEmail($email);
+                $result = $this->sendTestEmail($email);
 
                 if ($result['status'] == 'error') {
                     $validator->errors()->add('email', 'Can not send test email. Error: ' . $result['message']);
