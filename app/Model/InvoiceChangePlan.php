@@ -29,6 +29,18 @@ class InvoiceChangePlan extends Invoice
         $newPlan = \Acelle\Model\PlanGeneral::findByUid($this->getMetadata()['new_plan_uid']);
         $subscription->changePlan($newPlan);
 
+        // Different types of PLAN have different business here after payment for CHANGE PLANCE is successful
+        // Let's add a process() method for Plan* too
+        //
+        // For example: PlanGeneral
+        //     - refill sending credits
+        //
+        // For example: PlanSender
+        //     - send an email to Admin? "Hey, your client has just successfully paid for SenderID CHANGE, from ID_OLD to ID_NEW, process it...."
+        //
+        // Others...
+        //
+
         // Logging
         SubscriptionFacade::log($subscription, SubscriptionLog::TYPE_PAY_SUCCESS, $this->uid, [
             'amount' => $this->formattedTotal(),
