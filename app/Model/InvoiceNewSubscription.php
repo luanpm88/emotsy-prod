@@ -23,7 +23,22 @@ class InvoiceNewSubscription extends Invoice
         // activate sub
         $subscription->activate();
 
-        // Logging
+
+        // Different types of PLAN have different business here after payment for NEW SUBSCRIPTION is successful
+        // Let's add a process() method for Plan* too
+        //
+        // For example: PlanGeneral
+        //     - update expired date
+        //     - set default sending credits
+        //
+        // For example: PlanSender
+        //     - update expired date
+        //     - send an email to Admin? "Hey, one of your client has just successfully paid for SenderID, please manually buy it from Twilio...."
+        //
+        // Others...
+        //
+
+        // @todo: move the log below to the paySuccess() method
         SubscriptionFacade::log($subscription, SubscriptionLog::TYPE_PAY_SUCCESS, $this->uid, [
             'amount' => $this->formattedTotal(),
         ]);
