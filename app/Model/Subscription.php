@@ -632,7 +632,7 @@ class Subscription extends Model
             throw new \Exception('Somehow sub has more than one unpaid renew invoice!');
         }
 
-        return $query->first();
+        return $query->first() ? $query->first()->mapType() : $query->first();
     }
 
     /**
