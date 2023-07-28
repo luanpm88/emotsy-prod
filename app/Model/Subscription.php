@@ -983,7 +983,7 @@ class Subscription extends Model
         return $tracker;
     }
 
-    public function getSendEmailCreditTracker($createFileIfNotExist = false)
+    public function getSendEmailCreditTracker($createFileIfNotExist = true)
     {
         $file = storage_path('app/quota/subscription-send-email-credits-'.$this->uid);
         return CreditTracker::load($file, $createFileIfNotExist);
