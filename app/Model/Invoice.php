@@ -479,7 +479,7 @@ class Invoice extends Model
         ]));
 
         // event after paying failed
-        $this->checkoutAfterPayFailed($result->error);
+        $this->checkoutAfterPayFailed($error);
     }
 
     /**

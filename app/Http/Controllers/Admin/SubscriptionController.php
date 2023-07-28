@@ -240,7 +240,6 @@ class SubscriptionController extends Controller
 
                 return response()->view('admin.subscriptions.rejectPending', [
                     'subscription' => $subscription,
-                    'gateway' => $gateway,
                     'errors' => $validator->errors(),
                 ], 400);
             }
