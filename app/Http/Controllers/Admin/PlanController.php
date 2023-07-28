@@ -20,12 +20,12 @@ class PlanController extends Controller
     public function index(Request $request)
     {
         // authorize
-        if (\Gate::denies('read', new Plan())) {
+        if (\Gate::denies('read', new PlanGeneral())) {
             return $this->notAuthorized();
         }
 
         // If admin can view all sending domains
-        if (!$request->user()->admin->can("readAll", new Plan())) {
+        if (!$request->user()->admin->can("readAll", new PlanGeneral())) {
             $request->merge(array("admin_id" => $request->user()->admin->id));
         }
 
@@ -1012,7 +1012,7 @@ class PlanController extends Controller
     public function publicView(Request $request)
     {
         // authorize
-        if (\Gate::denies('read', new Plan())) {
+        if (\Gate::denies('read', new PlanGeneral())) {
             return $this->notAuthorized();
         }
 
