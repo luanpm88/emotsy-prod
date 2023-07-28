@@ -1610,7 +1610,7 @@ class MailList extends Model
     public function getCurrentSubscription()
     {
         if (empty($this->currentSubscription)) {
-            $this->currentSubscription = $this->customer->getCurrentActiveSubscription();
+            $this->currentSubscription = $this->customer->getCurrentActiveGeneralSubscription();
         }
 
         return $this->currentSubscription;
@@ -1642,7 +1642,7 @@ class MailList extends Model
                 $server = SendingServer::mapServerType($server);
 
                 // flag the server to use sub-account instead
-                $subscription = $this->customer->getNewOrActiveSubscription();
+                $subscription = $this->customer->getNewOrActiveGeneralSubscription();
                 if (!is_null($subscription->sub_account_id)) {
                     $server->setSubAccount($subscription->subAccount);
                 }
@@ -1667,10 +1667,10 @@ class MailList extends Model
         }
 
         $result = [];
-        $subscription = $this->customer->getNewOrActiveSubscription();
+        $subscription = $this->customer->getNewOrActiveGeneralSubscription();
 
         // Check the customer has permissions using sending servers and has his own sending servers
-        if ($this->customer->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_OWN) {
+        if ($this->customer->getOption('sending_server_option') == \Acelle\Model\PlanGeneral::SENDING_SERVER_OPTION_OWN) {
             if ($this->all_sending_servers) {
                 if ($this->customer->activeSendingServers()->count()) {
                     $result = $this->customer->activeSendingServers()->get()->map(function ($server) {
@@ -1683,11 +1683,11 @@ class MailList extends Model
                 });
             }
         // If customer dont have permission creating sending servers
-        } elseif ($this->customer->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_SYSTEM) {
+        } elseif ($this->customer->getOption('sending_server_option') == \Acelle\Model\PlanGeneral::SENDING_SERVER_OPTION_SYSTEM) {
             // Check if has sending servers for current subscription
             if ($subscription) {
                 /*
-                if ($subscription->plan->getOption('all_sending_servers') == 'yes') {
+                if ($subscription->planGeneral->getOption('all_sending_servers') == 'yes') {
                     if (\Acelle\Model\SendingServer::system()->count()) {
                         $result = \Acelle\Model\SendingServer::system()->get()->map(function ($server) {
                             return [$server->id, '100'];
@@ -1700,7 +1700,7 @@ class MailList extends Model
                 }
                 */
 
-                $result = $subscription->plan->activeSendingServers->map(function ($server) {
+                $result = $subscription->planGeneral->activeSendingServers->map(function ($server) {
                     return [$server->sending_server_id, $server->fitness];
                 });
             }

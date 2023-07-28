@@ -61,7 +61,7 @@
 				@endif
 
 				@if (
-					Auth::user()->can("read", new Acelle\Model\Plan())
+					Auth::user()->can("read", Acelle\Model\PlanGeneral::newGeneral())
 					|| Auth::user()->can("read", new Acelle\Model\Currency())
 				)
 					<li class="nav-item dropdown {{ in_array($menu, ['plan','currency','tax','invoice','public_view']) ? 'active' : '' }}">
@@ -73,7 +73,7 @@
 							<span class="caret"></span>
 						</a>
 						<ul class="dropdown-menu {{ request()->session()->get('admin-leftbar-state') != 'closed' && Auth::user()->admin->getMenuLayout() == 'left' && in_array($menu, ['plan','currency','tax','invoice','public_view']) ? 'show' : '' }}">
-							@if (Auth::user()->can("read", new Acelle\Model\Plan()))
+							@if (Auth::user()->can("read", Acelle\Model\PlanGeneral::newGeneral()))
 								<li class="nav-item {{ in_array($menu, ['plan']) ? 'active' : '' }}">
 									<a href="{{ action('Admin\PlanController@index') }}" class="dropdown-item d-flex align-items-center">
 									<i class="navbar-icon" style="width: 20px;">

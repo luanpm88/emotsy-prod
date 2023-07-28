@@ -24,7 +24,7 @@ class SendingDomainController extends Controller
         }
 
         $request->merge(array("customer_id" => $request->user()->customer->id));
-        $plan = $request->user()->customer->getCurrentActiveSubscription()->plan;
+        $plan = $request->user()->customer->getCurrentActiveGeneralSubscription()->planGeneral;
 
         if ($plan->useSystemSendingServer()) {
             $server = $plan->primarySendingServer();
@@ -54,7 +54,7 @@ class SendingDomainController extends Controller
 
         $domains = $customer->sendingDomains();
 
-        $plan = $customer->getCurrentActiveSubscription()->plan;
+        $plan = $customer->getCurrentActiveGeneralSubscription()->planGeneral;
         if ($plan->useSystemSendingServer()) {
             $server = $plan->primarySendingServer();
             if (!$server->allowOtherSendingDomains()) {
@@ -117,7 +117,7 @@ class SendingDomainController extends Controller
         $domain = $customer->sendingDomains()->make();
 
         // Determine if app-based domain or server-based domain
-        $plan = $customer->getCurrentActiveSubscription()->plan;
+        $plan = $customer->getCurrentActiveGeneralSubscription()->planGeneral;
         if ($plan->useSystemSendingServer()) {
             $server = $plan->primarySendingServer();
         } else {

@@ -5,7 +5,7 @@ namespace Acelle\Policies;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Acelle\Model\User;
 use Acelle\Model\SendingDomain;
-use Acelle\Model\Plan;
+use Acelle\Model\PlanGeneral;
 
 class SendingDomainPolicy
 {
@@ -18,12 +18,12 @@ class SendingDomainPolicy
                 $can = $user->admin->getPermission('sending_domain_read') != 'no';
                 break;
             case 'customer':
-                $subscription = $user->customer->getNewOrActiveSubscription();
+                $subscription = $user->customer->getNewOrActiveGeneralSubscription();
 
-                if ($subscription->plan->useOwnSendingServer()) {
+                if ($subscription->planGeneral->useOwnSendingServer()) {
                     $can = true;
                 } else {
-                    $server = $subscription->plan->primarySendingServer();
+                    $server = $subscription->planGeneral->primarySendingServer();
                     $can = $server->allowVerifyingOwnDomains() || $server->allowVerifyingOwnDomainsRemotely();
                 }
 
@@ -61,12 +61,12 @@ class SendingDomainPolicy
                     || ($ability == 'own' && $user->admin->id == $item->admin_id);
                 break;
             case 'customer':
-                $subscription = $user->customer->getNewOrActiveSubscription();
+                $subscription = $user->customer->getNewOrActiveGeneralSubscription();
 
-                if ($subscription->plan->useOwnSendingServer()) {
+                if ($subscription->planGeneral->useOwnSendingServer()) {
                     $can = true;
                 } else {
-                    $server = $subscription->plan->primarySendingServer();
+                    $server = $subscription->planGeneral->primarySendingServer();
                     $can = $server->allowVerifyingOwnDomains();
                 }
 
@@ -86,12 +86,12 @@ class SendingDomainPolicy
                     || ($ability == 'own' && $user->admin->id == $item->admin_id);
                 break;
             case 'customer':
-                $subscription = $user->customer->getNewOrActiveSubscription();
+                $subscription = $user->customer->getNewOrActiveGeneralSubscription();
 
-                if ($subscription->plan->useOwnSendingServer()) {
+                if ($subscription->planGeneral->useOwnSendingServer()) {
                     $can = true;
                 } else {
-                    $server = $subscription->plan->primarySendingServer();
+                    $server = $subscription->planGeneral->primarySendingServer();
                     $can = $server->allowVerifyingOwnDomains() || $server->allowVerifyingOwnDomainsRemotely();
                 }
 

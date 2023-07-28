@@ -446,7 +446,7 @@ class Admin extends Model
      */
     public function getAllPlans()
     {
-        return \Acelle\Model\Plan::active();
+        return \Acelle\Model\PlanGeneral::active();
     }
 
     /**

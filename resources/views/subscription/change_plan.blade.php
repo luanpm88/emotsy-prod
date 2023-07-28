@@ -25,7 +25,7 @@
                                 @foreach ($plans as $key => $plan)
                                     <div
                                         class="new-price-item mb-3 d-inline-block plan-item showed
-                                            {{ $subscription->plan->uid == $plan->uid ? 'disabled' : '' }}
+                                            {{ $subscription->planGeneral->uid == $plan->uid ? 'disabled' : '' }}
                                         "
                                         style="width: calc(20% - 20px)">
                                         <div style="height: 100px">
@@ -53,7 +53,7 @@
                                             </div>
                                         </span>
 
-                                        @if ($subscription->plan->uid == $plan->uid)
+                                        @if ($subscription->planGeneral->uid == $plan->uid)
                                             <a
                                                 href="javascript:;"
                                                 class="btn btn-secondary rounded-3 d-block mt-4 shadow-sm" disabled>

@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 
 use Acelle\Http\Requests;
 use Acelle\Http\Controllers\Controller;
-use Acelle\Model\Plan;
+use Acelle\Model\PlanGeneral;
 use Acelle\Model\Setting;
 use Acelle\Model\SendingServer;
 
@@ -29,7 +29,7 @@ class PlanController extends Controller
             $request->merge(array("admin_id" => $request->user()->admin->id));
         }
 
-        $plans = \Acelle\Model\Plan::search($request->keyword)
+        $plans = \Acelle\Model\PlanGeneral::search($request->keyword)
             ->filter($request);
 
         return view('admin.plans.index', [
@@ -44,7 +44,7 @@ class PlanController extends Controller
      */
     public function listing(Request $request)
     {
-        $plans = \Acelle\Model\Plan::search($request->keyword)
+        $plans = \Acelle\Model\PlanGeneral::search($request->keyword)
             ->filter($request)
             ->orderBy($request->sort_order, $request->sort_direction ? $request->sort_direction : 'asc')
             ->paginate($request->per_page);
@@ -131,7 +131,7 @@ class PlanController extends Controller
      */
     public function edit(Request $request, $id)
     {
-        $plan = Plan::findByUid($id);
+        $plan = PlanGeneral::findByUid($id);
         // authorize
         if (\Gate::denies('update', $plan)) {
             return $this->notAuthorized();
@@ -183,7 +183,7 @@ class PlanController extends Controller
     public function save(Request $request, $uid)
     {
         // Get current user
-        $plan = Plan::findByUid($uid);
+        $plan = PlanGeneral::findByUid($uid);
 
         // authorize
         if (\Gate::denies('update', $plan)) {
@@ -217,7 +217,7 @@ class PlanController extends Controller
      */
     public function delete(Request $request)
     {
-        $items = Plan::whereIn(
+        $items = PlanGeneral::whereIn(
             'uid',
             is_array($request->uids) ? $request->uids : explode(',', $request->uids)
         );
@@ -258,7 +258,7 @@ class PlanController extends Controller
      */
     public function select2(Request $request)
     {
-        echo Plan::select2($request);
+        echo PlanGeneral::select2($request);
     }
 
     /**
@@ -270,7 +270,7 @@ class PlanController extends Controller
      */
     public function deleteConfirm(Request $request)
     {
-        $plans = Plan::whereIn(
+        $plans = PlanGeneral::whereIn(
             'uid',
             is_array($request->uids) ? $request->uids : explode(',', $request->uids)
         );
@@ -292,7 +292,7 @@ class PlanController extends Controller
         $admin = $request->user()->admin;
 
         // authorize
-        if (\Gate::denies('read', new Plan())) {
+        if (\Gate::denies('read', new PlanGeneral())) {
             return $this->notAuthorized();
         }
 
@@ -302,7 +302,7 @@ class PlanController extends Controller
         ];
 
         $datas = [];
-        foreach (Plan::active()->get() as $plan) {
+        foreach (PlanGeneral::active()->get() as $plan) {
             $count = $admin->getAllSubscriptionsByPlan($plan)->count();
             // create data
             if ($count) {
@@ -321,7 +321,7 @@ class PlanController extends Controller
 
     public function copy(Request $request)
     {
-        $plan = Plan::findByUid($request->copy_plan_uid);
+        $plan = PlanGeneral::findByUid($request->copy_plan_uid);
 
         // authorize
         if (\Gate::denies('copy', $plan)) {
@@ -360,18 +360,18 @@ class PlanController extends Controller
      */
     public function sendingServer(Request $request, $uid)
     {
-        $plan = Plan::findByUid($uid);
+        $plan = PlanGeneral::findByUid($uid);
 
         // authorize
         if (\Gate::denies('update', $plan)) {
             return $this->notAuthorized();
         }
 
-        if ($plan->getOption('sending_server_option') == Plan::SENDING_SERVER_OPTION_SYSTEM) {
+        if ($plan->getOption('sending_server_option') == PlanGeneral::SENDING_SERVER_OPTION_SYSTEM) {
             return redirect()->action('Admin\PlanController@sendingServers', $plan->uid);
-        } elseif ($plan->getOption('sending_server_option') == Plan::SENDING_SERVER_OPTION_OWN) {
+        } elseif ($plan->getOption('sending_server_option') == PlanGeneral::SENDING_SERVER_OPTION_OWN) {
             return redirect()->action('Admin\PlanController@sendingServerOwn', $plan->uid);
-        } elseif ($plan->getOption('sending_server_option') == Plan::SENDING_SERVER_OPTION_SUBACCOUNT) {
+        } elseif ($plan->getOption('sending_server_option') == PlanGeneral::SENDING_SERVER_OPTION_SUBACCOUNT) {
             return redirect()->action('Admin\PlanController@sendingServerSubaccount', $plan->uid);
         }
     }
@@ -385,7 +385,7 @@ class PlanController extends Controller
      */
     public function sendingServerSubaccount(Request $request, $uid)
     {
-        $plan = Plan::findByUid($uid);
+        $plan = PlanGeneral::findByUid($uid);
 
         // authorize
         if (\Gate::denies('update', $plan)) {
@@ -415,7 +415,7 @@ class PlanController extends Controller
      */
     public function sendingServerOwn(Request $request, $uid)
     {
-        $plan = Plan::findByUid($uid);
+        $plan = PlanGeneral::findByUid($uid);
 
         // authorize
         if (\Gate::denies('update', $plan)) {
@@ -445,7 +445,7 @@ class PlanController extends Controller
      */
     public function emailVerification(Request $request, $uid)
     {
-        $plan = Plan::findByUid($uid);
+        $plan = PlanGeneral::findByUid($uid);
 
         // authorize
         if (\Gate::denies('update', $plan)) {
@@ -469,7 +469,7 @@ class PlanController extends Controller
      */
     public function sendingServers(Request $request, $uid)
     {
-        $plan = Plan::findByUid($uid);
+        $plan = PlanGeneral::findByUid($uid);
 
         // authorize
         if (\Gate::denies('update', $plan)) {
@@ -490,7 +490,7 @@ class PlanController extends Controller
      */
     public function addSendingServer(Request $request, $uid)
     {
-        $plan = Plan::findByUid($uid);
+        $plan = PlanGeneral::findByUid($uid);
 
         // authorize
         if (\Gate::denies('update', $plan)) {
@@ -532,7 +532,7 @@ class PlanController extends Controller
      */
     public function removeSendingServer(Request $request, $uid)
     {
-        $plan = Plan::findByUid($uid);
+        $plan = PlanGeneral::findByUid($uid);
 
         // authorize
         if (\Gate::denies('update', $plan)) {
@@ -558,7 +558,7 @@ class PlanController extends Controller
      */
     public function setPrimarySendingServer(Request $request, $uid)
     {
-        $plan = Plan::findByUid($uid);
+        $plan = PlanGeneral::findByUid($uid);
 
         // authorize
         if (\Gate::denies('update', $plan)) {
@@ -584,7 +584,7 @@ class PlanController extends Controller
      */
     public function fitness(Request $request, $uid)
     {
-        $plan = Plan::findByUid($uid);
+        $plan = PlanGeneral::findByUid($uid);
 
         // authorize
         if (\Gate::denies('update', $plan)) {
@@ -617,7 +617,7 @@ class PlanController extends Controller
      */
     public function general(Request $request, $uid)
     {
-        $plan = Plan::findByUid($uid);
+        $plan = PlanGeneral::findByUid($uid);
 
         // authorize
         if (\Gate::denies('update', $plan)) {
@@ -642,7 +642,7 @@ class PlanController extends Controller
      */
     public function quota(Request $request, $uid)
     {
-        $plan = Plan::findByUid($uid);
+        $plan = PlanGeneral::findByUid($uid);
 
         // authorize
         if (\Gate::denies('update', $plan)) {
@@ -668,7 +668,7 @@ class PlanController extends Controller
      */
     public function security(Request $request, $uid)
     {
-        $plan = Plan::findByUid($uid);
+        $plan = PlanGeneral::findByUid($uid);
 
         // authorize
         if (\Gate::denies('update', $plan)) {
@@ -693,7 +693,7 @@ class PlanController extends Controller
      */
     public function payment(Request $request, $uid)
     {
-        $plan = Plan::findByUid($uid);
+        $plan = PlanGeneral::findByUid($uid);
 
         // authorize
         if (\Gate::denies('update', $plan)) {
@@ -718,7 +718,7 @@ class PlanController extends Controller
      */
     public function emailFooter(Request $request, $uid)
     {
-        $plan = Plan::findByUid($uid);
+        $plan = PlanGeneral::findByUid($uid);
 
         // authorize
         if (\Gate::denies('update', $plan)) {
@@ -735,7 +735,7 @@ class PlanController extends Controller
 
     public function tos(Request $request)
     {
-        $plan = Plan::findByUid($request->uid);
+        $plan = PlanGeneral::findByUid($request->uid);
 
         // authorize
         if (\Gate::denies('update', $plan)) {
@@ -773,7 +773,7 @@ class PlanController extends Controller
         if (!$request->uid) {
             $plan = new Plan();
         } else {
-            $plan = Plan::findByUid($request->uid);
+            $plan = PlanGeneral::findByUid($request->uid);
         }
 
         // save posted data
@@ -802,7 +802,7 @@ class PlanController extends Controller
             $plan = new Plan();
             $plan->uid = '00';
         } else {
-            $plan = Plan::findByUid($request->uid);
+            $plan = PlanGeneral::findByUid($request->uid);
         }
 
         // save posted data
@@ -842,9 +842,9 @@ class PlanController extends Controller
     public function wizard(Request $request)
     {
         if (!$request->uid) {
-            $plan = Plan::newDefaultPlan();
+            $plan = PlanGeneral::newDefaultPlan();
         } else {
-            $plan = Plan::findByUid($request->uid);
+            $plan = PlanGeneral::findByUid($request->uid);
         }
 
         // fill all
@@ -883,7 +883,7 @@ class PlanController extends Controller
      */
     public function wizardSendingServer(Request $request)
     {
-        $plan = Plan::findByUid($request->uid);
+        $plan = PlanGeneral::findByUid($request->uid);
         // fill all
         $plan->fillAll($request);
 
@@ -920,7 +920,7 @@ class PlanController extends Controller
      */
     public function sendingServerOption(Request $request, $uid)
     {
-        $plan = Plan::findByUid($uid);
+        $plan = PlanGeneral::findByUid($uid);
 
         // authorize
         if (\Gate::denies('update', $plan)) {
@@ -952,7 +952,7 @@ class PlanController extends Controller
      */
     public function visibleOn(Request $request, $uid)
     {
-        $plan = Plan::findByUid($uid);
+        $plan = PlanGeneral::findByUid($uid);
 
         // authorize
         if (\Gate::denies('visibleOn', $plan)) {
@@ -985,7 +985,7 @@ class PlanController extends Controller
      */
     public function visibleOff(Request $request, $uid)
     {
-        $plan = Plan::findByUid($uid);
+        $plan = PlanGeneral::findByUid($uid);
 
         // authorize
         if (\Gate::denies('visibleOff', $plan)) {
@@ -1016,7 +1016,7 @@ class PlanController extends Controller
             return $this->notAuthorized();
         }
 
-        $plans = Plan::getAvailablePlans();
+        $plans = PlanGeneral::getAvailableGeneralPlans();
 
         $style = $request->style ?? 'default';
 

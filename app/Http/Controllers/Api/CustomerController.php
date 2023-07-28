@@ -221,7 +221,7 @@ class CustomerController extends Controller
         }
 
         // Current subscription
-        $subscription = $customer->getNewOrActiveSubscription();
+        $subscription = $customer->getNewOrActiveGeneralSubscription();
         if ($subscription) {
             $result['current_subscription'] = [
                 'uid' => $subscription->uid,
@@ -328,7 +328,7 @@ class CustomerController extends Controller
             return \Response::json(array('status' => 0, 'message' => 'Unauthorized'), 401);
         }
 
-        $plan = \Acelle\Model\Plan::findByUid($plan_uid);
+        $plan = \Acelle\Model\PlanGeneral::findByUid($plan_uid);
 
         // check if item exists
         if (!$plan) {
@@ -350,7 +350,7 @@ class CustomerController extends Controller
 
         // rollback if something went wrong
         \DB::transaction(function () use ($plan, $customer, $request, $offlineGateway) {
-            $subscription = $customer->assignPlan($plan);
+            $subscription = $customer->assignGeneralPlan($plan);
 
             // * Disable billing information: customer does not need to pay the invoice. Pass by the billing and checkout step
             // * assignPlan always create a subscription with an unpaid invoice.

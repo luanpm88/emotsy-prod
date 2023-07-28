@@ -28,7 +28,7 @@ class SubscriptionManager
 
     public function checkAndAutoPayRenewInvoiceByCustomer($customer)
     {
-        $subscription = $customer->getCurrentActiveSubscription();
+        $subscription = $customer->getCurrentActiveGeneralSubscription();
 
         if (!$subscription) {
             // do nothing

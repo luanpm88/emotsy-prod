@@ -17,7 +17,7 @@
                     <strong>{{ trans('messages.plan_name') }}</strong>
                 </div>
                 <div class="lastUnit size1of2">
-                    <mc:flag><strong>{{ $subscription->plan->name }}</strong></mc:flag>
+                    <mc:flag><strong>{{ $subscription->planGeneral->name }}</strong></mc:flag>
                 </div>
             </li>
             <li>

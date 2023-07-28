@@ -30,7 +30,7 @@
     <div class="listing-form"
         sort-url="{{ action('Admin\PlanController@sort') }}"
         data-url="{{ action('Admin\PlanController@listing') }}"
-        per-page="{{ Acelle\Model\Plan::$itemsPerPage }}"
+        per-page="{{ Acelle\Model\PlanGeneral::$itemsPerPage }}"
     >
         <div class="d-flex top-list-controls top-sticky-content">
             <div class="me-auto">

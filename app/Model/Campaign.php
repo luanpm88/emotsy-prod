@@ -2155,7 +2155,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
                 $server = SendingServer::find($serverId)->mapType();
 
                 // Dispatch delivery job and return it to the LoadCampaign to monitor
-                $job = new SendMessage($this, $subscriber, $server, $this->customer->getActiveSubscription());
+                $job = new SendMessage($this, $subscriber, $server, $this->customer->getActiveGeneralSubscription());
                 $stopOnError = $this->stopOnError();
                 // $stopOnError = Setting::isYes('campaign.stop_on_error'); // true or false
                 $job->setStopOnError($stopOnError);

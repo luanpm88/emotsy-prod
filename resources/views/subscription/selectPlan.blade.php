@@ -24,12 +24,12 @@
         <div class="row">
             <div class="col-md-10">
                 <h2 class="mb-4">{{ trans('messages.subscription.choose_a_plan') }}</h2>
-                @if ($getLastCancelledOrEndedSubscription)
+                @if ($getLastCancelledOrEndedGeneralSubscription)
                     @include('elements._notification', [
                         'level' => 'warning',
                         'message' => trans('messages.subscription.ended_intro', [
-                            'ended_at' => Auth::user()->customer->formatDateTime($getLastCancelledOrEndedSubscription->current_period_ends_at, 'datetime_full'),
-                            'plan' => $getLastCancelledOrEndedSubscription->plan->name,
+                            'ended_at' => Auth::user()->customer->formatDateTime($getLastCancelledOrEndedGeneralSubscription->current_period_ends_at, 'datetime_full'),
+                            'plan' => $getLastCancelledOrEndedGeneralSubscription->planGeneral->name,
                         ])
                     ])
                 @endif

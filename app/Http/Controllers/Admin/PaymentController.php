@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Acelle\Http\Requests;
 use Acelle\Http\Controllers\Controller;
 use Acelle\Model\Setting;
-use Acelle\Model\Plan;
+use Acelle\Model\PlanGeneral;
 use Illuminate\Support\MessageBag;
 use Acelle\Cashier\Cashier;
 use Acelle\Model\Subscription;

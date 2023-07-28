@@ -195,7 +195,7 @@ class Email extends Model implements HasTemplateInterface
             $this,
             $subscriber,
             $server,
-            $this->automation->customer->getActiveSubscription(),
+            $this->automation->customer->getActiveGeneralSubscription(),
             $triggerId
         ));
     }

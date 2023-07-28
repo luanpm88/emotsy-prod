@@ -39,7 +39,7 @@
                         'name' => 'plan[options][sending_quota_time_unit]',
                         'value' => $plan->getOption('sending_quota_time_unit'),
                         'label' => trans('messages.quota_time_unit'),
-                        'options' => Acelle\Model\Plan::quotaTimeUnitOptions(),
+                        'options' => Acelle\Model\PlanGeneral::quotaTimeUnitOptions(),
                         'help_class' => 'plan',
                         'rules' => $plan->rules()
                     ])

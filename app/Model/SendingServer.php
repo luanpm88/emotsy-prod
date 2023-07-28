@@ -959,7 +959,7 @@ class SendingServer extends Model
 
         // plan
         if ($request->plan_uid) {
-            $plan = \Acelle\Model\Plan::findByUid($request->plan_uid);
+            $plan = \Acelle\Model\PlanGeneral::findByUid($request->plan_uid);
             $existIds = $plan->plansSendingServers()->pluck('sending_server_id')->toArray();
         }
 
@@ -997,7 +997,7 @@ class SendingServer extends Model
 
         // plan
         if ($request->plan_uid) {
-            $plan = \Acelle\Model\Plan::findByUid($request->plan_uid);
+            $plan = \Acelle\Model\PlanGeneral::findByUid($request->plan_uid);
             $existIds = $plan->plansSendingServers()->pluck('sending_server_id')->toArray();
         }
 

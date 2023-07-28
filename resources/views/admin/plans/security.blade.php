@@ -49,7 +49,7 @@
                                     'name' => 'plan[options][max_process]',
                                     'value' => $plan->getOption('max_process'),
                                     'label' => trans('messages.max_number_of_processes'),
-                                    'options' => \Acelle\Model\Plan::multiProcessSelectOptions(),
+                                    'options' => \Acelle\Model\PlanGeneral::multiProcessSelectOptions(),
                                     'help_class' => 'plan',
                                     'rules' => $plan->validationRules()['general'],
                                 ])
@@ -64,7 +64,7 @@
                         'name' => 'plan[options][bounce_rate_theshold]',
                         'value' => $plan->getOption('bounce_rate_theshold'),
                         'label' => trans('messages.bounce_rate_theshold.set_a_limit'),
-                        'options' => \Acelle\Model\Plan::bounceRateThesholdOptions(),
+                        'options' => \Acelle\Model\PlanGeneral::bounceRateThesholdOptions(),
                         'help_class' => 'plan',
                         'rules' => $plan->validationRules()['general'],
                     ])

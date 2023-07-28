@@ -24,25 +24,16 @@ namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
-use Acelle\Cashier\Cashier;
 use Acelle\Model\Subscription;
-use Acelle\Model\SendingDomain;
 use Acelle\Model\Source;
-use Acelle\Model\WooCommerce;
-use Acelle\Model\Lazada;
-use Acelle\Model\MailList;
-use DateTime;
-use DateTimeZone;
 use Exception;
 use DB;
 use Acelle\Library\Facades\Billing;
 use Acelle\Cashier\Library\AutoBillingData;
-use File;
 use Acelle\Library\Traits\TrackJobs;
 use Acelle\Library\Traits\HasCache;
 use Acelle\Jobs\ImportBlacklistJob;
 use Acelle\Library\Traits\HasUid;
-use Acelle\Library\RateTracker;
 use Acelle\Library\Facades\SubscriptionFacade;
 
 class Customer extends Model
@@ -77,12 +68,17 @@ class Customer extends Model
         return $this->hasMany('Acelle\Model\Subscription');
     }
 
+    public function generalSubscriptions()
+    {
+        return $this->subscriptions()->general();
+    }
+
     // Lấy ra current subscription (new or active)
     // Không có case 1 customer mà có 2 subscription như vậy (chỉ có 1 hoặc null)
-    public function getNewOrActiveSubscription()
+    public function getNewOrActiveGeneralSubscription()
     {
         // Theo design thì mỗi customer chỉ có một subscription đang "new" hoặc "active"
-        $subscriptions = $this->subscriptions()->newOrActive();
+        $subscriptions = $this->generalSubscriptions()->newOrActive();
 
         if ($subscriptions->count() > 1) {
             throw new Exception('There are 2 subscriptions of [active, new] status. Please clean up the DB');
@@ -91,10 +87,10 @@ class Customer extends Model
         return $subscriptions->first();
     }
 
-    public function getNewSubscription()
+    public function getNewGeneralSubscription()
     {
         // Theo design thì mỗi customer chỉ có một subscription đang "new"
-        $subscriptions = $this->subscriptions()->new();
+        $subscriptions = $this->generalSubscriptions()->new();
 
         if ($subscriptions->count() > 1) {
             throw new Exception('There are 2 subscriptions of [new] status. Please clean up the DB');
@@ -103,10 +99,10 @@ class Customer extends Model
         return $subscriptions->first();
     }
 
-    public function getActiveSubscription()
+    public function getActiveGeneralSubscription()
     {
         // Theo design thì mỗi customer chỉ có một subscription đang "active"
-        $subscriptions = $this->subscriptions()->active();
+        $subscriptions = $this->generalSubscriptions()->active();
 
         if ($subscriptions->count() > 1) {
             throw new Exception('There are 2 subscriptions of [active] status. Please clean up the DB');
@@ -118,10 +114,10 @@ class Customer extends Model
     /**
      * Lấy current active subscription
      */
-    public function getCurrentActiveSubscription()
+    public function getCurrentActiveGeneralSubscription()
     {
         // Theo design thì mỗi customer chỉ có một subscription đang "active"
-        $subscriptions = $this->subscriptions()->active();
+        $subscriptions = $this->generalSubscriptions()->active();
 
         if ($subscriptions->count() > 1) {
             throw new Exception('There are 2 subscriptions of [active] status. Please clean up the DB');
@@ -130,10 +126,10 @@ class Customer extends Model
         return $subscriptions->first();
     }
 
-    public function getCurrentNewSubscription()
+    public function getCurrentNewGeneralSubscription()
     {
         // Theo design thì mỗi customer chỉ có một subscription đang "active"
-        $subscriptions = $this->subscriptions()->newSub();
+        $subscriptions = $this->generalSubscriptions()->newSub();
 
         if ($subscriptions->count() > 1) {
             throw new Exception('There are 2 subscriptions of [new] status. Please clean up the DB');
@@ -145,10 +141,10 @@ class Customer extends Model
     /**
      * Lấy current active subscription
      */
-    public function getLastCancelledOrEndedSubscription()
+    public function getLastCancelledOrEndedGeneralSubscription()
     {
         // Lấy subscription ended gần đây nhất. Null nếu chưa đăng ký bao giờ
-        return $this->subscriptions()->cancelledOrEdned()->orderBy('created_at', 'desc')->first();
+        return $this->generalSubscriptions()->cancelledOrEdned()->orderBy('created_at', 'desc')->first();
     }
 
 
@@ -346,13 +342,13 @@ class Customer extends Model
 
     public function useOwnSendingServer()
     {
-        $subscription = $this->getCurrentActiveSubscription();
+        $subscription = $this->getCurrentActiveGeneralSubscription();
 
         if (is_null($subscription)) {
             return false;
         }
 
-        return $subscription->plan->useOwnSendingServer();
+        return $subscription->planGeneral->useOwnSendingServer();
     }
 
     /**
@@ -1070,6 +1066,29 @@ class Customer extends Model
         return $this->automation2sCount();
     }
 
+    public function createNewSubscriptionWithInitInvoice($plan)
+    {
+        $customer = $this;
+        $subscription = null;
+        DB::transaction(function () use ($customer, $plan, &$subscription) {
+            $subscription = Subscription::createNewSubscription($customer, $plan);
+            if ($plan->hasTrial()) {
+                $invoice = $subscription->createInitInvoiceWithTrial();
+            } else {
+                $invoice = $subscription->createInitInvoiceWithoutTrial();
+            }
+
+            // log
+            SubscriptionFacade::log($subscription, SubscriptionLog::TYPE_SELECT_PLAN, $invoice->uid, [
+                'plan' => $subscription->getPlanName(),
+                'customer' => $subscription->getCustomerName(),
+                'amount' => $invoice->formattedTotal(),
+            ]);
+        });
+
+        return $subscription;
+    }
+
     /**
      * Get max automation count.
      *
@@ -1159,8 +1178,8 @@ class Customer extends Model
      */
     public function currentPlanName()
     {
-        return $this->getCurrentActiveSubscription() ?
-            $this->getCurrentActiveSubscription()->plan->name :
+        return $this->getCurrentActiveGeneralSubscription() ?
+            $this->getCurrentActiveGeneralSubscription()->planGeneral->name :
             ''
         ;
     }
@@ -1272,7 +1291,7 @@ class Customer extends Model
         // If customer dont have permission creating sending servers
         } else {
             // Get server from the plan
-            return  $this->getCurrentActiveSubscription()->plan->getEmailVerificationServers();
+            return  $this->getCurrentActiveGeneralSubscription()->planGeneral->getEmailVerificationServers();
         }
     }
 
@@ -1382,9 +1401,9 @@ class Customer extends Model
      */
     public function getOptions()
     {
-        if ($this->getCurrentActiveSubscription()) {
+        if ($this->getCurrentActiveGeneralSubscription()) {
             // Find plan
-            return $this->getCurrentActiveSubscription()->plan->getOptions();
+            return $this->getCurrentActiveGeneralSubscription()->planGeneral->getOptions();
         } else {
             return [];
         }
@@ -1431,7 +1450,7 @@ class Customer extends Model
 
         // own domain
         $domains = $this->sendingDomains()->active();
-        $plan = $this->getCurrentActiveSubscription()->plan;
+        $plan = $this->getCurrentActiveGeneralSubscription()->planGeneral;
         if ($plan->useSystemSendingServer()) {
             $server = $plan->primarySendingServer();
             if (!$server->allowOtherSendingDomains()) {
@@ -1518,28 +1537,24 @@ class Customer extends Model
     /**
      * Assign plan to customer.
      */
-    public function assignPlan($plan)
+    public function assignGeneralPlan($plan)
     {
-        if ($this->getNewOrActiveSubscription()) {
-            throw new Exception(trans('messages.customer.already_new_active_sub'));
+        // init
+        $subscription = null;
+
+        // before assigment
+        if ($this->getNewOrActiveGeneralSubscription()) {
+            throw new \Exception(trans('messages.customer.already_new_active_sub'));
         }
 
-        $customer = $this;
-        $subscription = null;
-        DB::transaction(function () use ($customer, $plan, &$subscription) {
-            $subscription = Subscription::createNewSubscription($customer, $plan);
-            if ($plan->hasTrial()) {
-                $invoice = $subscription->createInitInvoiceWithTrial();
-            } else {
-                $invoice = $subscription->createInitInvoiceWithoutTrial();
-            }
+        // Put in transaction. Make sure senderID always with subscription
+        \DB::transaction(function () use (&$subscription, $plan) {
+            // allways create init subscription with init invoice (by design)
+            $subscription = $this->createNewSubscriptionWithInitInvoice($plan);
 
-            // log
-            SubscriptionFacade::log($subscription, SubscriptionLog::TYPE_SELECT_PLAN, $invoice->uid, [
-                'plan' => $subscription->getPlanName(),
-                'customer' => $subscription->getCustomerName(),
-                'amount' => $invoice->formattedTotal(),
-            ]);
+            // after assign
+            $emailCredits = (int)$plan->getOption('email_max');
+            $subscription->getSendEmailCreditTracker()->setCredits($emailCredits);
         });
 
         return $subscription;
@@ -1550,7 +1565,7 @@ class Customer extends Model
      */
     public function hasSubscriptionNotice()
     {
-        $subscription = $this->getNewOrActiveSubscription();
+        $subscription = $this->getNewOrActiveGeneralSubscription();
 
         if (!$subscription) {
             return false;
@@ -1565,7 +1580,7 @@ class Customer extends Model
 
     public function isSubscriptionActive()
     {
-        $subscription = $this->getCurrentActiveSubscription();
+        $subscription = $this->getCurrentActiveGeneralSubscription();
 
         if (is_null($subscription)) {
             return false;
@@ -1581,7 +1596,7 @@ class Customer extends Model
 
     public function allowUnverifiedFromEmailAddress()
     {
-        $plan = $this->getNewOrActiveSubscription()->plan;
+        $plan = $this->getNewOrActiveGeneralSubscription()->planGeneral;
 
         if (!$plan) {
             return false;
@@ -1600,7 +1615,7 @@ class Customer extends Model
     public function getCurrentPeriodEndsAt()
     {
         // Nếu subscription đang không active thì current period ends at xem như = null
-        if ($this->getCurrentActiveSubscription()) {
+        if ($this->getCurrentActiveGeneralSubscription()) {
             return null;
         }
 
@@ -1967,13 +1982,13 @@ class Customer extends Model
 
     public function allowSenderVerification()
     {
-        $subscription = $this->getCurrentActiveSubscription();
+        $subscription = $this->getCurrentActiveGeneralSubscription();
 
         if (is_null($subscription)) {
             return false;
         }
 
-        $plan = $subscription->plan;
+        $plan = $subscription->planGeneral;
         if ($plan->useSystemSendingServer()) {
             $server = $plan->primarySendingServer();
             if ($server && ($server->allowVerifyingOwnEmailsRemotely() || $server->allowVerifyingOwnEmails())) {
@@ -1988,13 +2003,13 @@ class Customer extends Model
 
     public function allowVerifyingOwnDomains()
     {
-        $subscription = $this->getCurrentActiveSubscription();
+        $subscription = $this->getCurrentActiveGeneralSubscription();
 
         if (is_null($subscription)) {
             return false;
         }
 
-        $plan = $subscription->plan;
+        $plan = $subscription->planGeneral;
         if ($plan->useSystemSendingServer()) {
             $server = $plan->primarySendingServer();
             if ($server && ($server->allowVerifyingOwnDomains() || $server->allowVerifyingOwnDomainsRemotely())) {
@@ -2061,7 +2076,7 @@ class Customer extends Model
 
     public function isCustomTrackingDomainRequired()
     {
-        $plan = $this->getNewOrActiveSubscription()->plan;
+        $plan = $this->getNewOrActiveGeneralSubscription()->planGeneral;
 
         if (!$plan) {
             return false;
@@ -2072,13 +2087,13 @@ class Customer extends Model
 
     public function automationTemplates()
     {
-        $subscription = $this->getCurrentActiveSubscription();
+        $subscription = $this->getCurrentActiveGeneralSubscription();
 
         if (is_null($subscription)) {
             throw new \Exception('Customer has no subscription!');
         }
 
-        return $subscription->plan->automationTemplates();
+        return $subscription->planGeneral->automationTemplates();
     }
 
     public static function scopeByPlan($query, $plan)

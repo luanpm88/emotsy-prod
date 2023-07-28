@@ -63,7 +63,7 @@
                     <li class="divider"></li>
                 @endif
             @endif
-            @if (request()->user()->customer->getCurrentActiveSubscription())
+            @if (request()->user()->customer->getCurrentActiveGeneralSubscription())
                 <li class="nav-item">
                     <a href="#" class="dropdown-item top-quota-button d-flex align-items-center" data-url="{{ action("AccountController@quotaLog") }}">
                     <i class="navbar-icon">

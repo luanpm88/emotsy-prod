@@ -19,7 +19,7 @@
 				<td>
 					<h5 class="m-0 text-bold">
 						<span class="kq_search d-block" href="#">
-							{{ $subscription->plan->name }}
+							{{ $subscription->planGeneral->name }}
 						</span>
 					</h5>
 					<div class="text-muted">{!! trans('messages.subscribed_by', [

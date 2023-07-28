@@ -13,7 +13,7 @@
 @endsection
 
 @section('menu_right')
-    @if ($invoice->type !== \Acelle\Model\Invoice::TYPE_NEW_SUBSCRIPTION)
+    @if ($invoice->type !== \Acelle\Model\InvoiceNewSubscription::TYPE_NEW_SUBSCRIPTION)
         <li class="nav-item d-flex align-items-center">
             <a  href="{{ action('SubscriptionController@index') }}"
                 class="nav-link py-3 lvl-1">
@@ -33,10 +33,10 @@
     <div class="container mt-4 mb-5">
         <div class="row">
             <div class="col-md-8">
-                @if (Auth::user()->customer->getNewOrActiveSubscription() && Auth::user()->customer->getNewOrActiveSubscription()->getUnpaidInvoice()  && Auth::user()->customer->getNewOrActiveSubscription()->getUnpaidInvoice()->lastTransactionIsFailed())
+                @if (Auth::user()->customer->getNewOrActiveGeneralSubscription() && Auth::user()->customer->getNewOrActiveGeneralSubscription()->getUnpaidInvoice()  && Auth::user()->customer->getNewOrActiveGeneralSubscription()->getUnpaidInvoice()->lastTransactionIsFailed())
                     @include('elements._notification', [
                         'level' => 'danger',
-                        'message' => Auth::user()->customer->getNewOrActiveSubscription()->getUnpaidInvoice()->lastTransaction()->error
+                        'message' => Auth::user()->customer->getNewOrActiveGeneralSubscription()->getUnpaidInvoice()->lastTransaction()->error
                     ])
                 @endif
 

@@ -17,15 +17,15 @@
                     <span class="text-muted2">{{ trans('messages.created_at') }}: {{ Auth::user()->admin->formatDateTime($customer->created_at, 'datetime_full') }}</span>
                 </td>
                 <td>
-                    @if ($customer->getActiveSubscription())
+                    @if ($customer->getActiveGeneralSubscription())
                         <h5 class="no-margin stat-num">
                             <span><i class="material-symbols-rounded">assignment_turned_in</i> {{ $customer->currentPlanName() }}</span>
                         </h5>
                         <span class="text-muted2">{{ trans('messages.current_plan') }}</span>
-                    @elseif ($customer->getNewSubscription())
+                    @elseif ($customer->getNewGeneralSubscription())
                         <h5 class="no-margin stat-num">
-                            <a href="{{ action('Admin\PlanController@general', $customer->getNewSubscription()->plan->uid) }}">
-                                <span><i class="material-symbols-rounded">assignment_turned_in</i> {{ $customer->getNewSubscription()->getPlanName() }}</span>
+                            <a href="{{ action('Admin\PlanController@general', $customer->getNewGeneralSubscription()->planGeneral->uid) }}">
+                                <span><i class="material-symbols-rounded">assignment_turned_in</i> {{ $customer->getNewGeneralSubscription()->getPlanName() }}</span>
                             </a>
                         </h5>
                         <span class="text-muted2">{{ trans('messages.subscription.pending') }}</span>
@@ -34,16 +34,16 @@
                     @endif
                 </td>
                 <td class="stat-fix-size">
-                    @if ($customer->getCurrentActiveSubscription())
+                    @if ($customer->getCurrentActiveGeneralSubscription())
                         <div class="d-flex">
                             <div class="single-stat-box pull-left me-5">
-                                <span class="no-margin text-primary stat-num">{{ number_with_delimiter($customer->getCurrentActiveSubscription()->getRemainingEmailCreditsPercentage()*100) }}%</span>
+                                <span class="no-margin text-primary stat-num">{{ number_with_delimiter($customer->getCurrentActiveGeneralSubscription()->getRemainingEmailCreditsPercentage()*100) }}%</span>
                                 <div class="progress progress-xxs">
-                                    <div class="progress-bar progress-bar-info" style="width: {{ $customer->getCurrentActiveSubscription()->getRemainingEmailCreditsPercentage()*100 }}%">
+                                    <div class="progress-bar progress-bar-info" style="width: {{ $customer->getCurrentActiveGeneralSubscription()->getRemainingEmailCreditsPercentage()*100 }}%">
                                     </div>
                                 </div>
                                 <span class="text-muted">
-                                    <strong>{{ number_with_delimiter($customer->getCurrentActiveSubscription()->getRemainingEmailCredits()) }}/{{ ($customer->getCurrentActiveSubscription()->getCreditsLimit('send') == -1) ? '∞' : number_with_delimiter($customer->getCurrentActiveSubscription()->getCreditsLimit('send')) }}</strong>
+                                    <strong>{{ number_with_delimiter($customer->getCurrentActiveGeneralSubscription()->getRemainingEmailCredits()) }}/{{ ($customer->getCurrentActiveGeneralSubscription()->getCreditsLimit('send') == -1) ? '∞' : number_with_delimiter($customer->getCurrentActiveGeneralSubscription()->getCreditsLimit('send')) }}</strong>
                                     <div class="text-nowrap">{{ trans('messages.sending_credits_used') }}</div>
                                 </span>
                             </div>

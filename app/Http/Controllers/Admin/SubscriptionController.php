@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Log as LaravelLog;
 use Acelle\Cashier\Cashier;
 use Acelle\Model\Subscription;
 use Acelle\Model\SubscriptionLog;
-use Acelle\Model\Plan;
+use Acelle\Model\PlanGeneral;
 use Acelle\Model\Customer;
 
 class SubscriptionController extends Controller
@@ -35,7 +35,7 @@ class SubscriptionController extends Controller
 
         $plan = null;
         if ($request->plan_uid) {
-            $plan = Plan::findByUid($request->plan_uid);
+            $plan = PlanGeneral::findByUid($request->plan_uid);
         }
 
         return view('admin.subscriptions.index', [
@@ -71,7 +71,7 @@ class SubscriptionController extends Controller
         }
 
         if (isset($request->plan_uid)) {
-            $plan = Plan::findByUid($request->plan_uid);
+            $plan = PlanGeneral::findByUid($request->plan_uid);
             $subscriptions = $subscriptions->where('plan_id', $plan->id);
         }
 

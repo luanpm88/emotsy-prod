@@ -20,20 +20,20 @@ class Subscription
             return $next($request);
         }
 
-        $subscription = $request->user()->customer->getNewOrActiveSubscription();
+        $subscription = $request->user()->customer->getNewOrActiveGeneralSubscription();
 
         // Check if customer dose not have subscription
-        if (!$subscription || !$subscription->isActive() || !$subscription->plan->isActive()) {
+        if (!$subscription || !$subscription->isActive() || !$subscription->planGeneral->isActive()) {
             return redirect()->action('SubscriptionController@index');
         }
 
         // If sending server not available
 
-        if ($subscription->plan->useSystemSendingServer()) {
-            $server = $subscription->plan->primarySendingServer();
+        if ($subscription->planGeneral->useSystemSendingServer()) {
+            $server = $subscription->planGeneral->primarySendingServer();
             if (is_null($server)) {
                 if (config('app.saas')) {
-                    return response()->view('errors.general', [ 'message' => __('messages.plan.sending_server.no_sending_server_error', ['plan' => $subscription->plan->name]) ]);
+                    return response()->view('errors.general', [ 'message' => __('messages.plan.sending_server.no_sending_server_error', ['plan' => $subscription->planGeneral->name]) ]);
                 } else {
                     return response()->view('errors.general', [ 'message' => __('messages.standard.no_sending_server_error') ]);
                 }

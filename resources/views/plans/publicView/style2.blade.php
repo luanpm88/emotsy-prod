@@ -127,7 +127,7 @@
                 {{ trans('messages.allow_create_sending_servers_label') }}
             </th>
             @foreach($plans as $plan)
-                <td class="bg-light {{ ($plan->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_OWN ? '' : 'bg-light') }}">
+                <td class="bg-light {{ ($plan->getOption('sending_server_option') == \Acelle\Model\PlanGeneral::SENDING_SERVER_OPTION_OWN ? '' : 'bg-light') }}">
                     <span>{!! $plan->displayAllowCreateSendingServer() !!}</span>
                 </td>
             @endforeach

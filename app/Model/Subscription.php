@@ -11,6 +11,7 @@ use Carbon\Carbon;
 use Acelle\Library\Facades\SubscriptionFacade;
 use Acelle\Library\CreditTracker;
 use Acelle\Library\RateLimit;
+use Illuminate\Database\Eloquent\Builder;
 
 class Subscription extends Model
 {
@@ -55,6 +56,13 @@ class Subscription extends Model
     {
         // @todo dependency injection
         return $this->belongsTo('\Acelle\Model\Plan');
+    }
+
+    public function planGeneral()
+    {
+        // @todo dependency injection
+        return $this->belongsTo('\Acelle\Model\PlanGeneral', 'plan_id')
+            ->where('type', \Acelle\Model\PlanGeneral::TYPE_GENERAL);
     }
 
     public function getPlanName()
@@ -117,9 +125,11 @@ class Subscription extends Model
      */
     public function getUnpaidInvoice()
     {
-        return $this->invoices()
+        $invoice = $this->invoices()
             ->unpaid()
             ->first();
+
+        return $invoice ? $invoice->mapType() : $invoice;
     }
 
     public function scopeActive($query)
@@ -197,8 +207,8 @@ class Subscription extends Model
         $endDate = $this->customer->formatDateTime($this->getPeriodEndsAt(Carbon::now()), "datetime_full");
 
         // create init invoice
-        return Invoice::createInvoice(
-            $type = Invoice::TYPE_NEW_SUBSCRIPTION,
+        return \Acelle\Model\InvoiceNewSubscription::createInvoice(
+            $type = \Acelle\Model\InvoiceNewSubscription::TYPE_NEW_SUBSCRIPTION,
             $title = trans('messages.invoice.init_subscription'),
             $description = trans('messages.invoice.init_subscription.desc', [
                 'plan' => $this->plan->name,
@@ -211,7 +221,7 @@ class Subscription extends Model
                 new InvoiceItem([
                     'item_id' => $this->id,
                     'item_type' => get_class($this),
-                    'amount' => $this->plan->price,
+                    'amount' => $this->plan->getPrice(),
                     'title' => $this->plan->name,
                     'description' => view('plans._bill_desc', ['plan' => $this->plan]),
                 ]),
@@ -232,25 +242,25 @@ class Subscription extends Model
         $endDate = $this->customer->formatDateTime($this->getTrialPeriodEndsAt(Carbon::now()), "datetime_full");
 
         // create init invoice
-        return Invoice::createInvoice(
-            $type = Invoice::TYPE_NEW_SUBSCRIPTION,
+        return \Acelle\Model\InvoiceNewSubscription::createInvoice(
+            $type = \Acelle\Model\InvoiceNewSubscription::TYPE_NEW_SUBSCRIPTION,
             $title = trans('messages.invoice.init_subscription'),
             $description = trans('messages.invoice.init_subscription_with_trial.desc', [
-                'plan' => $this->plan->name,
+                'plan' => $this->planGeneral->name,
                 'date' => $endDate,
-                'amount' => $this->plan->displayPrice(),
-                'period' => $this->plan->displayFrequencyTime(),
+                'amount' => $this->planGeneral->getFormattedPrice(),
+                'period' => $this->planGeneral->displayFrequencyTime(),
             ]),
             $customer_id = $this->customer->id,
-            $currency_id = $this->plan->currency_id,
+            $currency_id = $this->planGeneral->currency_id,
             $billing_address = $this->customer->getDefaultBillingAddress(),
             $invoiceItems = [
                 new InvoiceItem([
                     'item_id' => $this->id,
                     'item_type' => get_class($this),
                     'amount' => 0, // trial => amount = 0
-                    'title' => $this->plan->name,
-                    'description' => view('plans._bill_desc', ['plan' => $this->plan]),
+                    'title' => $this->planGeneral->name,
+                    'description' => view('plans._bill_desc', ['plan' => $this->planGeneral]),
                 ]),
             ],
             $metadata = [
@@ -277,8 +287,8 @@ class Subscription extends Model
         }
 
         // create init invoice
-        return Invoice::createInvoice(
-            $type = Invoice::TYPE_RENEW_SUBSCRIPTION,
+        return \Acelle\Model\InvoiceRenewSubscription::createInvoice(
+            $type = \Acelle\Model\InvoiceRenewSubscription::TYPE_RENEW_SUBSCRIPTION,
             $title = trans('messages.invoice.renew_subscription'),
             $description = trans('messages.renew_subscription.desc', [
                 'plan' => $this->plan->name,
@@ -291,7 +301,7 @@ class Subscription extends Model
                 new InvoiceItem([
                     'item_id' => $this->id,
                     'item_type' => get_class($this),
-                    'amount' => $this->plan->price,
+                    'amount' => $this->plan->getPrice(),
                     'title' => $this->plan->name,
                     'description' => view('plans._bill_desc', ['plan' => $this->plan]),
                 ]),
@@ -317,16 +327,16 @@ class Subscription extends Model
         $metadata = $this->calcChangePlan($newPlan);
 
         // create init invoice
-        return Invoice::createInvoice(
-            $type = Invoice::TYPE_CHANGE_PLAN,
+        return \Acelle\Model\InvoiceChangePlan::createInvoice(
+            $type = \Acelle\Model\InvoiceChangePlan::TYPE_CHANGE_PLAN,
             $title = trans('messages.invoice.change_plan'),
             $description = trans('messages.change_plan.desc', [
-                'plan' => $this->plan->name,
+                'plan' => $this->planGeneral->name,
                 'newPlan' => $newPlan->name,
                 'date' => $this->customer->formatDateTime(Carbon::parse($metadata['endsAt']), 'datetime_full'),
             ]),
             $customer_id = $this->customer->id,
-            $currency_id = $this->plan->currency_id,
+            $currency_id = $this->planGeneral->currency_id,
             $billing_address = $this->customer->getDefaultBillingAddress(),
             $invoiceItems = [
                 new InvoiceItem([
@@ -931,13 +941,13 @@ class Subscription extends Model
             throw new Exception("`{$name}` credis limit is not available");
         }
 
-        return $this->plan->getOption('email_max');
+        return $this->planGeneral->getOption('email_max');
     }
 
     public function getRemainingEmailCreditsPercentage()
     {
         $creditsUsed = $this->getRemainingEmailCredits();
-        $creditsLimit = $this->plan->getOption('email_max');
+        $creditsLimit = $this->planGeneral->getOption('email_max');
 
         // if = -1 (default:unlimited) return 0
         // if = 0 return 0
@@ -963,8 +973,8 @@ class Subscription extends Model
         $subscription->plan_id = $plan->id;
         $subscription->save();
 
-        $emailCredits = (int)$plan->getOption('email_max');
-        $subscription->getSendEmailCreditTracker()->setCredits($emailCredits);
+        // $emailCredits = (int)$plan->getOption('email_max');
+        // $subscription->getSendEmailCreditTracker()->setCredits($emailCredits);
 
         return $subscription;
     }
@@ -975,11 +985,18 @@ class Subscription extends Model
         $this->delete();
     }
 
+    public static function scopeGeneral($query)
+    {
+        $query = $query->whereHas('planGeneral', function (Builder $query) {
+            $query->general();
+        })->get();
+    }
+
     public function getSendEmailRateTracker()
     {
         // Get the limits from plan
         $file = storage_path('app/quota/subscription-send-email-rate-tracking-log-'.$this->uid);
-        $tracker = new RateTracker($file, $this->plan->getSendEmailRateLimits());
+        $tracker = new RateTracker($file, $this->planGeneral->getSendEmailRateLimits());
         return $tracker;
     }
 

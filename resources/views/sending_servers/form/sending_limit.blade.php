@@ -35,7 +35,7 @@
                         'name' => 'quota_unit',
                         'value' => $server->quota_unit,
                         'label' => trans('messages.quota_time_unit'),
-                        'options' => Acelle\Model\Plan::quotaTimeUnitOptions(),
+                        'options' => Acelle\Model\PlanGeneral::quotaTimeUnitOptions(),
                         'include_blank' => trans('messages.choose'),
                         'help_class' => 'sending_server',
                     ])
