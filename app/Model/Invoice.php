@@ -644,7 +644,7 @@ class Invoice extends Model
                 } elseif ($result->isFailed()) {
                     // Payment failed as reported by Stripe
                     $this->payFailed($result->error);
-                } elseif ($result->isStillPending()) {
+                } elseif ($result->isPending()) {
                     // Coin, offline shouls return this status
                     // Wait more, check again later....
                     // Coinpayment, offline

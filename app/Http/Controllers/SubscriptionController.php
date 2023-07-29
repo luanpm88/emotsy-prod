@@ -195,7 +195,7 @@ class SubscriptionController extends Controller
             $invoice->getPlan()->hasTrial()
         ) {
             $invoice->checkout($customer->getPreferredPaymentGateway(), function () {
-                return new \Acelle\Cashier\Library\TransactionVerificationResult(\Acelle\Cashier\Library\TransactionVerificationResult::RESULT_DONE);
+                return new \Acelle\Library\TransactionResult(\Acelle\Library\TransactionResult::RESULT_DONE);
             });
 
             return redirect()->action('SubscriptionController@index');

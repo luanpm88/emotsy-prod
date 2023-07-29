@@ -3,7 +3,7 @@
 namespace Acelle\Library;
 
 use Acelle\Model\Subscription;
-use Acelle\Cashier\Library\TransactionVerificationResult;
+use Acelle\Library\TransactionResult;
 use Acelle\Model\SubscriptionLog;
 
 class SubscriptionManager
@@ -62,7 +62,7 @@ class SubscriptionManager
 
             // Trường hợp invoice total = 0 thì pay nothing và set done luôn cho renew invoice
             $unpaidRenewInvoice->checkout($customer->getPreferredPaymentGateway(), function ($invoice) {
-                return new TransactionVerificationResult(TransactionVerificationResult::RESULT_DONE);
+                return new TransactionResult(TransactionResult::RESULT_DONE);
             });
 
             return;

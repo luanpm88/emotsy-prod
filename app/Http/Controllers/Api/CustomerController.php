@@ -359,7 +359,7 @@ class CustomerController extends Controller
             //              to set subscription as active automatically.
             if ($request->disable_billing && $request->disable_billing !== 'false') {
                 $subscription->getItsOnlyUnpaidInitInvoice()->checkout($offlineGateway, function () {
-                    return new \Acelle\Cashier\Library\TransactionVerificationResult(\Acelle\Cashier\Library\TransactionVerificationResult::RESULT_DONE);
+                    return new \Acelle\Library\TransactionResult(\Acelle\Library\TransactionResult::RESULT_DONE);
                 });
             }
         });
