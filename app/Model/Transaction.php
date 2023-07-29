@@ -59,43 +59,6 @@ class Transaction extends Model
         $this->save();
     }
 
-    /**
-     * Get metadata.
-     *
-     * @var object | collect
-     */
-    public function getMetadata($name=null)
-    {
-        if (!$this['metadata']) {
-            return json_decode('{}', true);
-        }
-
-        $data = json_decode($this['metadata'], true);
-
-        if ($name != null) {
-            if (isset($data[$name])) {
-                return $data[$name];
-            } else {
-                return null;
-            }
-        } else {
-            return $data;
-        }
-    }
-
-    /**
-     * Get metadata.
-     *
-     * @var object | collect
-     */
-    public function updateMetadata($data)
-    {
-        $metadata = (object) array_merge((array) $this->getMetadata(), $data);
-        $this['metadata'] = json_encode($metadata);
-
-        $this->save();
-    }
-
     public function allowManualReview()
     {
         return $this->allow_manual_review;
