@@ -396,7 +396,9 @@ class Plan extends Model
 
     public function getTrialPeriodTimePhrase()
     {
-        return $this->trial_amount . ' ' . trans_choice('messages.' . $this->getTrialUnit() . '.choice', $this->getTrialAmount());
+        return trans_choice('messages.' . $this->getTrialUnit() . '.choice', $this->getTrialAmount(), [
+            'amount' => $this->trial_amount,
+        ]);
     }
 
     public function getFrequencyAmount()
@@ -411,12 +413,12 @@ class Plan extends Model
 
     public function getTrialAmount()
     {
-        return $this->trial_unit;
+        return $this->trial_amount;
     }
 
     public function getTrialUnit()
     {
-        return $this->trial_amount;
+        return $this->trial_unit;
     }
 
     public function isUnlimited()

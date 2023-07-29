@@ -993,7 +993,7 @@
   'datetime' => 'Datetime',
   'datetime_field' => 'Datetime',
   'day' => 'day',
-  'day.choice' => 'day|days',
+  'day.choice' => ':amount day|:amount days',
   'day_of_week.0' => 'Sun',
   'day_of_week.1' => 'Mon',
   'day_of_week.2' => 'Tue',
