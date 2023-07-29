@@ -4,6 +4,7 @@ namespace Acelle\Model;
 
 use Acelle\Model\Invoice;
 use Acelle\Library\Facades\SubscriptionFacade;
+use Exception;
 
 class InvoiceNewSubscription extends Invoice
 {
