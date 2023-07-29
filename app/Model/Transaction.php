@@ -95,6 +95,7 @@ class Transaction extends Model
         $this->save();
     }
 
+    // Transaction that needs admin review
     public function allowManualReview()
     {
         return $this->allow_manual_review;
