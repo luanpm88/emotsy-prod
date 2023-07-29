@@ -37,21 +37,9 @@ class InvoiceNewSubscription extends Invoice
 
                 break;
 
-            case PlanSender::class:
-
-                // Buy sender number for example
-
-            case PlanNumber::class:
-
-                // Buy number for example
-
-            case PlanOthers::class:
-
-                // Do something
-
             default:
 
-                throw new Exception('Unknown plan type');
+                throw new \Exception('Unknown plan type');
 
                 break;
         }
