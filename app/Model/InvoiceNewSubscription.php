@@ -48,7 +48,7 @@ class InvoiceNewSubscription extends Invoice
 
         // @todo: move the log below to the paySuccess() method
         SubscriptionFacade::log($subscription, SubscriptionLog::TYPE_PAY_SUCCESS, $this->uid, [
-            'amount' => $this->formattedTotal(),
+            'amount' => $this->total(),
         ]);
     }
 
@@ -70,7 +70,7 @@ class InvoiceNewSubscription extends Invoice
     {
         $subscription = Subscription::findByUid($this->getMetadata()['subscription_uid']);
         SubscriptionFacade::log($subscription, SubscriptionLog::TYPE_PAY_FAILED, $this->uid, [
-            'amount' => $this->formattedTotal(),
+            'amount' => $this->total(),
             'error' => $error,
         ]);
     }
@@ -85,7 +85,7 @@ class InvoiceNewSubscription extends Invoice
         // logging by type
         $subscription = Subscription::findByUid($this->getMetadata()['subscription_uid']);
         SubscriptionFacade::log($subscription, SubscriptionLog::TYPE_ADMIN_APPROVE, $this->uid, [
-            'amount' => $this->formattedTotal(),
+            'amount' => $this->total(),
         ]);
     }
 
@@ -94,7 +94,7 @@ class InvoiceNewSubscription extends Invoice
         // logging by type
         $subscription = Subscription::findByUid($this->getMetadata()['subscription_uid']);
         SubscriptionFacade::log($subscription, SubscriptionLog::TYPE_ADMIN_REJECT, $this->uid, [
-            'amount' => $this->formattedTotal(),
+            'amount' => $this->total(),
             'reason' => $error,
         ]);
     }

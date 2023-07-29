@@ -233,16 +233,6 @@ class Invoice extends Model
     }
 
     /**
-     * formatted Total.
-     *
-     * @return void
-     */
-    public function formattedTotal()
-    {
-        return format_price($this->total(), $this->currency->format);
-    }
-
-    /**
      * Get metadata.
      *
      * @var object | collect
@@ -401,7 +391,7 @@ class Invoice extends Model
     //             case Invoice::TYPE_TOP_UP:
     //                 $subscription = Subscription::findByUid($this->getMetadata()['subscription_uid']);
     //                 SubscriptionFacade::log($subscription, SubscriptionLog::TYPE_ADMIN_APPROVE, $this->uid, [
-    //                     'amount' => $this->formattedTotal(),
+    //                     'amount' => $this->total(),
     //                 ]);
     //                 break;
     //         }
@@ -436,7 +426,7 @@ class Invoice extends Model
     //             case InvoiceChangePlan::TYPE_CHANGE_PLAN:
     //                 $subscription = Subscription::findByUid($this->getMetadata()['subscription_uid']);
     //                 SubscriptionFacade::log($subscription, SubscriptionLog::TYPE_ADMIN_REJECT, $this->uid, [
-    //                     'amount' => $this->formattedTotal(),
+    //                     'amount' => $this->total(),
     //                     'reason' => $error,
     //                 ]);
     //                 break;

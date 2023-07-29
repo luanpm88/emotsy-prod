@@ -1081,7 +1081,7 @@ class Customer extends Model
             SubscriptionFacade::log($subscription, SubscriptionLog::TYPE_SELECT_PLAN, $invoice->uid, [
                 'plan' => $subscription->getPlanName(),
                 'customer' => $subscription->getCustomerName(),
-                'amount' => $invoice->formattedTotal(),
+                'amount' => $invoice->total(),
             ]);
         });
 

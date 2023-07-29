@@ -259,7 +259,7 @@ class SubscriptionController extends Controller
                     SubscriptionFacade::log($subscription, SubscriptionLog::TYPE_CHANGE_PLAN_INVOICE, $changePlanInvoice->uid, [
                         'plan' => $subscription->getPlanName(),
                         'new_plan' => $newPlan->name,
-                        'amount' => $changePlanInvoice->formattedTotal(),
+                        'amount' => $changePlanInvoice->total(),
                     ]);
                 });
 

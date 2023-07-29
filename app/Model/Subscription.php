@@ -815,7 +815,7 @@ class Subscription extends Model
                 SubscriptionFacade::log($this, SubscriptionLog::TYPE_RENEW_INVOICE, $invoice->uid, [
                     'plan' => $this->getPlanName(),
                     'customer' => $this->getCustomerName(),
-                    'amount' => $invoice->formattedTotal(),
+                    'amount' => $invoice->total(),
                 ]);
             });
         }

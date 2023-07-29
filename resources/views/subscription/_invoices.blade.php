@@ -72,7 +72,7 @@
                                 </td> 
                                 <td>
                                     <span class="no-margin kq_search">
-                                    {!! $transaction->invoice->formattedTotal() !!}
+                                    {!! $transaction->invoice->total() !!}
                                     </span>
                                 </td> 
                                 <td>
