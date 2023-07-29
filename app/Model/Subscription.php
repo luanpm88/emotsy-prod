@@ -172,7 +172,7 @@ class Subscription extends Model
             throw new \Exception('New Subscription must have only one unpaid TYPE_NEW_SUBSCRIPTION invoice!');
         }
 
-        return $query->first() ? $query->first()->mapType() : $query->first();
+        return $query->first()->mapType();
     }
 
     /**
