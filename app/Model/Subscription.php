@@ -1006,4 +1006,10 @@ class Subscription extends Model
         // Temporarily not supported
         return null;
     }
+
+    public function setDefaultEmailCredits()
+    {
+        $defaultCredits = (int)$this->planGeneral->getOption('email_max');
+        $this->getSendEmailCreditTracker()->setCredits($defaultCredits);
+    }
 }
