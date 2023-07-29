@@ -3,7 +3,6 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
-use Acelle\Library\Facades\Billing;
 use Acelle\Library\Traits\HasUid;
 
 class Transaction extends Model
@@ -59,6 +58,7 @@ class Transaction extends Model
         $this->save();
     }
 
+    // Transaction that needs admin review
     public function allowManualReview()
     {
         return $this->allow_manual_review;

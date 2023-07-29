@@ -633,39 +633,29 @@ class Invoice extends Model
 
         \DB::transaction(function () use ($gateway, $executePayment) {
             try {
-
                 $result = $executePayment($this);
 
                 if ($result->isDone()) {
-
                     // @todo Log something here: payment already done
                     // So, if an error occurs, it is likely due to following code
 
                     // Stripe, PayPal, Braintree for example
                     $this->paySuccess();
-
                 } elseif ($result->isFailed()) {
-
                     // Payment failed as reported by Stripe
                     $this->payFailed($result->error);
-
                 } elseif ($result->isStillPending()) {
-
                     // Coin, offline shouls return this status
                     // Wait more, check again later....
                     // Coinpayment, offline
                     // logging by type
-
                 } elseif ($result->isVerificationNotNeeded()) {
-
                     // IMPORTANT: this special status is used for checking (pending) transaction status only
                     //          **** SERVICES SHOULD NOT RETURN THIS STATUS IN CHECKOUT method ****
                     // Do nothing, just wait for the service to finish it itself (Stripe)
                     // Service should not return this status, it is used for verification only
-
                 }
             } catch (\Throwable $e) {
-
                 // Payment failed, due to an unknown error
                 $this->payFailed($e->getMessage());
             }
