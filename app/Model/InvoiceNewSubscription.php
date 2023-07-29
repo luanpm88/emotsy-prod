@@ -23,20 +23,40 @@ class InvoiceNewSubscription extends Invoice
         // activate sub
         $subscription->activate();
 
+        // Tạm thời chỗ này phải if/else vì
+        // chưa sử dụng class kế thừa cho subscription (VD: SubscriptionSender, SubscriptionGeneral, SubscriptionNumber...)
+        // mà tất cả các loại plan trên đều dùng 1 class Subscription như nhau
+        switch (get_class($this->subscription->plan->mapType())) {
 
-        // Different types of PLAN have different business here after payment for NEW SUBSCRIPTION is successful
-        // Let's add a process() method for Plan* too
-        //
-        // For example: PlanGeneral
-        //     - update expired date
-        //     - set default sending credits
-        //
-        // For example: PlanSender
-        //     - update expired date
-        //     - send an email to Admin? "Hey, one of your client has just successfully paid for SenderID, please manually buy it from Twilio...."
-        //
-        // Others...
-        //
+            case PlanGeneral::class:
+
+                // Set số lượng email max cho subscription
+                // Hiện giờ code bên dưới đang error do $this->subscription đang null
+                // ==> FIX bằng cách thêm field tường minh cho invoices table
+                $this->subscription->setDefaultEmailCredits();
+
+                break;
+
+            case PlanSender::class:
+
+                // Buy sender number for example
+
+            case PlanNumber::class:
+
+                // Buy number for example
+
+            case PlanOthers::class:
+
+                // Do something
+
+            default:
+
+                throw new Exception('Unknown plan type');
+
+                break;
+        }
+
+        return;
 
         // @todo: move the log below to the paySuccess() method
         SubscriptionFacade::log($subscription, SubscriptionLog::TYPE_PAY_SUCCESS, $this->uid, [
