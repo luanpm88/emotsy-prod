@@ -26,14 +26,14 @@ class InvoiceNewSubscription extends Invoice
         // Tạm thời chỗ này phải if/else vì
         // chưa sử dụng class kế thừa cho subscription (VD: SubscriptionSender, SubscriptionGeneral, SubscriptionNumber...)
         // mà tất cả các loại plan trên đều dùng 1 class Subscription như nhau
-        switch (get_class($this->subscription->plan->mapType())) {
+        switch (get_class($subscription->plan->mapType())) {
 
             case PlanGeneral::class:
 
                 // Set số lượng email max cho subscription
                 // Hiện giờ code bên dưới đang error do $this->subscription đang null
                 // ==> FIX bằng cách thêm field tường minh cho invoices table
-                $this->subscription->setDefaultEmailCredits();
+                $subscription->setDefaultEmailCredits();
 
                 break;
 
