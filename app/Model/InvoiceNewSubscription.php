@@ -28,7 +28,6 @@ class InvoiceNewSubscription extends Invoice
         // chưa sử dụng class kế thừa cho subscription (VD: SubscriptionSender, SubscriptionGeneral, SubscriptionNumber...)
         // mà tất cả các loại plan trên đều dùng 1 class Subscription như nhau
         switch (get_class($subscription->plan->mapType())) {
-
             case PlanGeneral::class:
 
                 // Set số lượng email max cho subscription

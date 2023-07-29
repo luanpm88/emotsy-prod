@@ -3,7 +3,6 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
-use Acelle\Library\Facades\Billing;
 use Acelle\Library\Traits\HasUid;
 
 class Transaction extends Model

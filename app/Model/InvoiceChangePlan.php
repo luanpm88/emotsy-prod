@@ -24,7 +24,7 @@ class InvoiceChangePlan extends Invoice
         if ($subscription->getItsOnlyUnpaidRenewInvoice()) {
             $subscription->getItsOnlyUnpaidRenewInvoice()->delete();
         }
-        
+
         // change plan
         $newPlan = \Acelle\Model\PlanGeneral::findByUid($this->getMetadata()['new_plan_uid']);
         $subscription->changePlan($newPlan);
