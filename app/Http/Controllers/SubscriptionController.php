@@ -14,6 +14,7 @@ use Carbon\Carbon;
 use Acelle\Model\SubscriptionLog;
 use Acelle\Library\Facades\Billing;
 use Acelle\Library\Facades\SubscriptionFacade;
+use Acelle\Model\InvoiceNewSubscription;
 
 class SubscriptionController extends Controller
 {
@@ -172,7 +173,7 @@ class SubscriptionController extends Controller
     public function checkout(Request $request)
     {
         $customer = $request->user()->customer;
-        $invoice = $customer->invoices()->unpaid()->where('uid', '=', $request->invoice_uid)->first();
+        $invoice = $customer->invoices()->unpaid()->where('uid', '=', $request->invoice_uid)->first()->mapType();
 
         // no unpaid invoice found
         if (!$invoice) {
@@ -188,7 +189,11 @@ class SubscriptionController extends Controller
         ]);
 
         // Bỏ qua việc nhập card information khi subscribe plan with trial
-        if (\Acelle\Model\Setting::get('not_require_card_for_trial') == 'yes' && $invoice->isInitInvoiceWithTrial()) {
+        if (
+            \Acelle\Model\Setting::get('not_require_card_for_trial') == 'yes' &&
+            $invoice->type == InvoiceNewSubscription::TYPE_NEW_SUBSCRIPTION &&
+            $invoice->getPlan()->hasTrial()
+        ) {
             $invoice->checkout($customer->getPreferredPaymentGateway(), function () {
                 return new \Acelle\Cashier\Library\TransactionVerificationResult(\Acelle\Cashier\Library\TransactionVerificationResult::RESULT_DONE);
             });

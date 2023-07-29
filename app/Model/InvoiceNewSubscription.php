@@ -108,9 +108,25 @@ class InvoiceNewSubscription extends Invoice
 
         $subscription = Subscription::findByUid($this->getMetadata()['subscription_uid']);
         $invoiceItem = $this->invoiceItems()->first(); // subscription general plan always has 1 invoice item (design)
-        if ($invoiceItem->amount != $subscription->planGeneral->getPrice()) {
+
+        // if has trial => set price = 0
+        if ($subscription->planGeneral->hasTrial() && $invoiceItem->amount != 0) {
+            $invoiceItem->amount = 0;
+            $invoiceItem->save();
+        }
+
+        // if not trial and price updated 
+        elseif (!$subscription->planGeneral->hasTrial() && $invoiceItem->amount != $subscription->planGeneral->getPrice()) {
             $invoiceItem->amount = $subscription->planGeneral->getPrice();
             $invoiceItem->save();
         }
+    }
+
+    public function getSubscription() {
+        return Subscription::findByUid($this->getMetadata()['subscription_uid']);
+    }
+
+    public function getPlan() {
+        return $this->getSubscription()->planGeneral;
     }
 }

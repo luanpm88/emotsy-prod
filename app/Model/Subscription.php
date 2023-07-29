@@ -265,7 +265,6 @@ class Subscription extends Model
             ],
             $metadata = [
                 'subscription_uid' => $this->uid,
-                'trial' => true,
             ]
         );
     }
