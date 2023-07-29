@@ -1737,6 +1737,8 @@ class Customer extends Model
      */
     public function getPreferredPaymentGateway()
     {
+        // Value of "payment_method" was every time user chooses a payment method in the web UI
+        // See SubscriptionController@checkout() function where it is set
         if (!$this['payment_method']) {
             return null;
         }

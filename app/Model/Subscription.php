@@ -960,11 +960,6 @@ class Subscription extends Model
         return $percentage;
     }
 
-    public function getSendingCreditsRemaining()
-    {
-        return 998000;
-    }
-
     public static function createNewSubscription($customer, $plan)
     {
         $subscription = new self();
