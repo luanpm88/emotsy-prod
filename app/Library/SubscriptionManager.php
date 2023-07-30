@@ -8,9 +8,7 @@ use Acelle\Model\SubscriptionLog;
 
 class SubscriptionManager
 {
-    // Scan ACTIVE subscriptions and
-    // - Create renew invoice OR
-    // - End it
+    // Look for expired subscriptions and end it
     public function endExpiredSubscriptions()
     {
         $subscriptions = Subscription::active()->get();
@@ -20,6 +18,7 @@ class SubscriptionManager
         }
     }
 
+    // Look for expiring subscription and generate renew invoices
     public function createRenewInvoices()
     {
         $subscriptions = Subscription::active()->get();
@@ -29,6 +28,7 @@ class SubscriptionManager
         }
     }
 
+    // Auto pay renew invoices
     public function autoChargeRenewInvoices()
     {
         $renewInvoices = \Acelle\Model\InvoiceRenewSubscription::renew()->unpaid()->get();
@@ -43,11 +43,6 @@ class SubscriptionManager
                 continue;
             }
 
-            // check if customer can auto charge
-            if (!$customer->preferredPaymentGatewayCanAutoCharge()) {
-                continue;
-            }
-
             // check if invoice amount is 0
             if ($invoice->total() == 0) {
                 // Trường hợp invoice total = 0 thì pay nothing và set done luôn cho renew invoice
@@ -55,6 +50,11 @@ class SubscriptionManager
                     return new TransactionResult(TransactionResult::RESULT_DONE);
                 });
 
+                continue;
+            }
+
+            // check if customer can auto charge
+            if (!$customer->preferredPaymentGatewayCanAutoCharge()) {
                 continue;
             }
 
