@@ -41,7 +41,7 @@
                         @include('elements._notification', [
                             'level' => 'warning',
                             'message' => trans('messages.have_new_renew_invoice.auto', [
-                                'date' => Auth::user()->customer->formatDateTime($subscription->getDueDate(), 'datetime_full'),
+                                'date' => Auth::user()->customer->formatDateTime($subscription->getAutoBillingDate(), 'datetime_full'),
                             ])
                         ])
 

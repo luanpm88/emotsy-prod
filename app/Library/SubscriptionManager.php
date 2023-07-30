@@ -38,7 +38,7 @@ class SubscriptionManager
             $customer = $subscription->customer;
 
             // not reach due date
-            if (!$subscription->reachDueDate()) {
+            if (!$subscription->isBillingPeriod()) {
                 // do nothing
                 continue;
             }

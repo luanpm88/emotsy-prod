@@ -466,6 +466,11 @@ class Setting extends Model
                 'value' => '7',
                 'type' => 'text',
             ],
+            'subscription.auto_billing_period' => [
+                'cat' => 'payment',
+                'value' => '3',
+                'type' => 'text',
+            ],
             'allowed_due_subscription' => [
                 'cat' => 'payment',
                 'value' => 'no',

@@ -401,7 +401,7 @@ class Subscription extends Model
         return getPeriodEndsAt($startDate, $this->plan->trial_amount, $this->plan->trial_unit);
     }
 
-    public function getDueDate()
+    public function getAutoBillingDate()
     {
         return $this->current_period_ends_at->subDays(\Acelle\Model\Setting::get('subscription.auto_billing_period'));
     }
@@ -409,10 +409,10 @@ class Subscription extends Model
     /**
      * reach due date.
      */
-    public function reachDueDate()
+    public function isBillingPeriod()
     {
         return Carbon::now()->greaterThanOrEqualTo(
-            $this->getDueDate()
+            $this->getAutoBillingDate()
         );
     }
 
