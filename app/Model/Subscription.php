@@ -167,8 +167,8 @@ class Subscription extends Model
             ->newSubscription()
             ->unpaid();
 
-        // more than on invoice
-        if ($query->count() != 1) {
+        // new sub luôn phải có duy nhất 1 invoice
+        if ($query->count() > 1) {
             throw new \Exception('New Subscription must have only one unpaid TYPE_NEW_SUBSCRIPTION invoice!');
         }
 
