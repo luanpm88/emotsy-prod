@@ -300,11 +300,6 @@ class Invoice extends Model
         $this->save();
     }
 
-    public function approveAfter()
-    {
-        throw new \Exception('Need sub classes implement this function! Not call directly from this parent class!');
-    }
-
     /**
      * Approve invoice.
      *
@@ -325,15 +320,7 @@ class Invoice extends Model
         \DB::transaction(function () {
             // fulfill invoice
             $this->paySuccess();
-
-            // after approve
-            $this->approveAfter();
         });
-    }
-
-    public function rejectAfter($error)
-    {
-        throw new \Exception('Need sub classes implement this function! Not call directly from this parent class!');
     }
 
     /**
@@ -356,9 +343,6 @@ class Invoice extends Model
         \DB::transaction(function () use ($error) {
             // fulfill invoice
             $this->payFailed($error);
-
-            // after reject
-            $this->rejectAfter($error);
         });
     }
 
@@ -589,22 +573,7 @@ class Invoice extends Model
         ]);
     }
 
-    public function checkoutBeforePay()
-    {
-        throw new \Exception('Need sub classes implement this function! Not call directly from this parent class!');
-    }
-
-    public function checkoutAfterPaySuccess()
-    {
-        throw new \Exception('Need sub classes implement this function! Not call directly from this parent class!');
-    }
-
     public function checkoutAfterPayFailed($error)
-    {
-        throw new \Exception('Need sub classes implement this function! Not call directly from this parent class!');
-    }
-
-    public function checkoutAfterPayStillPending()
     {
         throw new \Exception('Need sub classes implement this function! Not call directly from this parent class!');
     }

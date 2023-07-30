@@ -79,25 +79,6 @@ class InvoiceRenewSubscription extends Invoice
         ]);
     }
 
-    public function approveAfter()
-    {
-        // logging by type
-        $subscription = Subscription::findByUid($this->getMetadata()['subscription_uid']);
-        SubscriptionFacade::log($subscription, SubscriptionLog::TYPE_ADMIN_APPROVE, $this->uid, [
-            'amount' => $this->total(),
-        ]);
-    }
-
-    public function rejectAfter($error)
-    {
-        // logging by type
-        $subscription = Subscription::findByUid($this->getMetadata()['subscription_uid']);
-        SubscriptionFacade::log($subscription, SubscriptionLog::TYPE_ADMIN_REJECT, $this->uid, [
-            'amount' => $this->total(),
-            'reason' => $error,
-        ]);
-    }
-
     public function refreshPrice()
     {
         if ($this->isPaid()) {
