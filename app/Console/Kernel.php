@@ -68,21 +68,10 @@ class Kernel extends ConsoleKernel
 
         // Subscription: check expiration
         $schedule->call(function () {
-            SubscriptionFacade::checkExpiration();
-        })->name('subscription:check-expiration')->everyFiveMinutes();
-
-        // Subscription: create renew invoice
-        $schedule->call(function () {
-            SubscriptionFacade::createRenewInvoice();
-        })->name('subscription:create-renew')->everyFiveMinutes();
-
-        // Subscription: pay renew invoice
-        $schedule->call(function () {
-            $customers = \Acelle\Model\Customer::all();
-            foreach ($customers as $customer) {
-                SubscriptionFacade::checkAndAutoPayRenewInvoiceByCustomer($customer);
-            }
-        })->name('subscription:auto-pay-renew')->everyFiveMinutes();
+            SubscriptionFacade::endExpiredSubscriptions();
+            SubscriptionFacade::createRenewInvoices();
+            SubscriptionFacade::autoChargeRenewInvoices();
+        })->name('subscription:monitor')->everyFiveMinutes();
 
         // Check for scheduled campaign to execute
         $schedule->call(function () {
