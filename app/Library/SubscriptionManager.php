@@ -8,16 +8,19 @@ use Acelle\Model\SubscriptionLog;
 
 class SubscriptionManager
 {
-    public function checkExpiration()
+    // Scan ACTIVE subscriptions and
+    // - Create renew invoice OR
+    // - End it
+    public function endExpiredSubscriptions()
     {
         $subscriptions = Subscription::active()->get();
 
         foreach ($subscriptions as $subscription) {
-            $subscription->checkExpiration();
+            $subscription->endIfExpired();
         }
     }
 
-    public function createRenewInvoice()
+    public function createRenewInvoices()
     {
         $subscriptions = Subscription::active()->get();
 
@@ -26,50 +29,39 @@ class SubscriptionManager
         }
     }
 
-    public function checkAndAutoPayRenewInvoiceByCustomer($customer)
+    public function autoChargeRenewInvoices()
     {
-        $subscription = $customer->getCurrentActiveGeneralSubscription();
+        $renewInvoices = \Acelle\Model\InvoiceRenewSubscription::unpaid()->get();
 
-        if (!$subscription) {
-            // do nothing
-            return;
+        foreach ($renewInvoices as $invoice) {
+            $subscription = $invoice->subscription;
+            $customer = $subscription->customer;
+
+            // not reach due date
+            if (!$subscription->reachDueDate()) {
+                // do nothing
+                continue;
+            }
+
+            // check if customer can auto charge
+            if (!$customer->preferredPaymentGatewayCanAutoCharge()) {
+                continue;
+            }
+
+            // check if invoice amount is 0
+            if ($invoice->total() == 0) {
+                // Trường hợp invoice total = 0 thì pay nothing và set done luôn cho renew invoice
+                $invoice->checkout($customer->getPreferredPaymentGateway(), function ($invoice) {
+                    return new TransactionVerificationResult(TransactionVerificationResult::RESULT_DONE);
+                });
+
+                continue;
+            }
+
+            // auto charge
+            $customer->getPreferredPaymentGateway()->autoCharge($invoice);
         }
 
-        $unpaidRenewInvoice = $subscription->getItsOnlyUnpaidRenewInvoice();
-
-        if (!$unpaidRenewInvoice) {
-            // do nothing
-            return;
-        }
-
-        // not reach due date
-        if (!$subscription->reachDueDate()) {
-            // do nothing
-            return;
-        }
-
-        // check if customer can auto charge
-        if (!$customer->preferredPaymentGatewayCanAutoCharge()) {
-            return;
-        }
-
-        // check if invoice amount is 0
-        if ($unpaidRenewInvoice->total() == 0) {
-            // throw new \Exception("
-            //     Không thể auto pay cho Unpaid RENEW invoice [#$unpaidRenewInvoice->uid] vì invoice->total() = 0.
-            //     Trường hợp auto charge cho renew invoice cho plan free!"
-            // );
-
-            // Trường hợp invoice total = 0 thì pay nothing và set done luôn cho renew invoice
-            $unpaidRenewInvoice->checkout($customer->getPreferredPaymentGateway(), function ($invoice) {
-                return new TransactionVerificationResult(TransactionVerificationResult::RESULT_DONE);
-            });
-
-            return;
-        }
-
-        // auto charge
-        $customer->getPreferredPaymentGateway()->autoCharge($unpaidRenewInvoice);
     }
 
     public function log($subscription, $type, $invoice_uid=null, $metadata=[])

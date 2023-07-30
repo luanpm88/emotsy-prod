@@ -20,13 +20,10 @@ class SubscriptionController extends Controller
 {
     public function index(Request $request)
     {
-        // cronjob check
-        SubscriptionFacade::checkExpiration();
-        SubscriptionFacade::createRenewInvoice();
-        $customers = \Acelle\Model\Customer::all();
-        foreach ($customers as $customer) {
-            SubscriptionFacade::checkAndAutoPayRenewInvoiceByCustomer($customer);
-        }
+        // Trick here: these tasks are supposed to be executed in the background only
+        SubscriptionFacade::endExpiredSubscriptions();
+        SubscriptionFacade::createRenewInvoices();
+        SubscriptionFacade::autoChargeRenewInvoices();
 
         // init
         $customer = $request->user()->customer;
