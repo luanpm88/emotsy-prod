@@ -776,7 +776,6 @@ class SettingController extends Controller
         Setting::set('subscription.auto_billing_period', $request->auto_billing_period);
         Setting::set('not_require_card_for_trial', $request->not_require_card_for_trial);
 
-
         // Redirect to my lists page
         $request->session()->flash('alert-success', trans('messages.setting.updated'));
 

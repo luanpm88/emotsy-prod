@@ -1523,7 +1523,7 @@ class Customer extends Model
         // Put in transaction. Make sure senderID always with subscription
         $subscription = \DB::transaction(function () use ($plan) {
             // allways create init subscription with init invoice (by design)
-            $subscription = Subscription::createNewSubscription($this, $plan);
+            $subscription = Subscription::createNewGeneralSubscription($this, $plan);
 
             if ($plan->hasTrial()) {
                 $invoice = $subscription->createInitInvoiceWithTrial();
@@ -1531,9 +1531,9 @@ class Customer extends Model
                 $invoice = $subscription->createInitInvoiceWithoutTrial();
             }
 
-            // after assign
-            $emailCredits = (int)$plan->getOption('email_max');
-            $subscription->getSendEmailCreditTracker()->setCredits($emailCredits);
+            // Assign sending credits
+            // Notice that the following method is available for a SubscriptionGeneralPlan only
+            $subscription->setDefaultEmailCredits();
 
             // log
             SubscriptionFacade::log($subscription, SubscriptionLog::TYPE_SELECT_PLAN, $invoice->uid, [
