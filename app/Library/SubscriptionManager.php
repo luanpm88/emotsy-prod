@@ -31,10 +31,10 @@ class SubscriptionManager
 
     public function autoChargeRenewInvoices()
     {
-        $renewInvoices = \Acelle\Model\InvoiceRenewSubscription::unpaid()->get();
+        $renewInvoices = \Acelle\Model\InvoiceRenewSubscription::renew()->unpaid()->get();
 
         foreach ($renewInvoices as $invoice) {
-            $subscription = $invoice->subscription;
+            $subscription = $invoice->getSubscription();
             $customer = $subscription->customer;
 
             // not reach due date

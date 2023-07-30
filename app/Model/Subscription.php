@@ -787,7 +787,7 @@ class Subscription extends Model
         });
     }
 
-    public function checkExpiration()
+    public function endIfExpired()
     {
         if ($this->isActive() &&
             $this->isExpired() &&
