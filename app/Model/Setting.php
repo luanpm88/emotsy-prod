@@ -461,7 +461,7 @@ class Setting extends Model
                 'type' => 'text',
                 'not_required' => true,
             ],
-            'end_period_last_days' => [
+            'subscription.expiring_period' => [
                 'cat' => 'payment',
                 'value' => '7',
                 'type' => 'text',

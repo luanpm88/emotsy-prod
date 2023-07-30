@@ -766,14 +766,14 @@ class SettingController extends Controller
         }
 
         $rules = [
-            'recurring_charge_before_days' => 'required',
+            'auto_billing_period' => 'required',
             'allowed_due_subscription' => 'required',
         ];
         $this->validate($request, $rules);
 
         // Save settings
         Setting::set('allowed_due_subscription', $request->allowed_due_subscription);
-        Setting::set('recurring_charge_before_days', $request->recurring_charge_before_days);
+        Setting::set('subscription.auto_billing_period', $request->auto_billing_period);
         Setting::set('not_require_card_for_trial', $request->not_require_card_for_trial);
 
 

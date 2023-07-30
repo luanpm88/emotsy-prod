@@ -19,9 +19,9 @@ class Subscription extends Model
 
     public const STATUS_NEW = 'new';
     public const STATUS_ACTIVE = 'active';
-    public const STATUS_ENDED = 'ended';
-    public const STATUS_CANCELLED = 'cancelled';
-    public const STATUS_TERMINATED = 'terminated';
+    public const STATUS_ENDED = 'ended';           //
+    public const STATUS_CANCELLED = 'cancelled';   // Customer chooses "End now"
+    public const STATUS_TERMINATED = 'terminated'; // Admin terminates a subscription
 
     /**
      * The attributes that are not mass assignable.
@@ -403,7 +403,7 @@ class Subscription extends Model
 
     public function getDueDate()
     {
-        return $this->current_period_ends_at->subDays(\Acelle\Model\Setting::get('recurring_charge_before_days'));
+        return $this->current_period_ends_at->subDays(\Acelle\Model\Setting::get('subscription.auto_billing_period'));
     }
 
     /**
@@ -804,7 +804,7 @@ class Subscription extends Model
             $this->isExpiring() && // đang hết hạn
             $this->canRenewPlan() && // check the function..
             $this->isRecurring() && // có recurring hàng kỳ
-            !$this->getItsOnlyUnpaidChangePlanInvoice() && // chưa có NEW change plan invoice nào cả
+            // !$this->getItsOnlyUnpaidChangePlanInvoice() && // chưa có NEW change plan invoice nào cả, nhưng nếu có thì show 2 invoice ra luôn cũng dc
             !$this->getItsOnlyUnpaidRenewInvoice() // chưa có NEW renew invoice nào cả
         ) {
             \DB::transaction(function () {
@@ -841,7 +841,7 @@ class Subscription extends Model
         }
 
         // check if recurring accur
-        if (Carbon::now()->greaterThanOrEqualTo($this->current_period_ends_at->subDays(Setting::get('end_period_last_days')))) {
+        if (Carbon::now()->greaterThanOrEqualTo($this->current_period_ends_at->subDays(Setting::get('subscription.expiring_period')))) {
             return true;
         }
 
