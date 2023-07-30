@@ -1066,28 +1066,6 @@ class Customer extends Model
         return $this->automation2sCount();
     }
 
-    public function createNewSubscriptionWithInitInvoice($plan)
-    {
-        $subscription = null;
-        DB::transaction(function () use ($plan, &$subscription) {
-            $subscription = Subscription::createNewSubscription($this, $plan);
-            if ($plan->hasTrial()) {
-                $invoice = $subscription->createInitInvoiceWithTrial();
-            } else {
-                $invoice = $subscription->createInitInvoiceWithoutTrial();
-            }
-
-            // log
-            SubscriptionFacade::log($subscription, SubscriptionLog::TYPE_SELECT_PLAN, $invoice->uid, [
-                'plan' => $subscription->getPlanName(),
-                'customer' => $subscription->getCustomerName(),
-                'amount' => $invoice->total(),
-            ]);
-        });
-
-        return $subscription;
-    }
-
     /**
      * Get max automation count.
      *
@@ -1538,22 +1516,33 @@ class Customer extends Model
      */
     public function assignGeneralPlan($plan)
     {
-        // init
-        $subscription = null;
-
-        // before assigment
         if ($this->getNewOrActiveGeneralSubscription()) {
             throw new \Exception(trans('messages.customer.already_new_active_sub'));
         }
 
         // Put in transaction. Make sure senderID always with subscription
-        \DB::transaction(function () use (&$subscription, $plan) {
+        $subscription = \DB::transaction(function () use (&$subscription, $plan) {
             // allways create init subscription with init invoice (by design)
-            $subscription = $this->createNewSubscriptionWithInitInvoice($plan);
+            $subscription = Subscription::createNewSubscription($this, $plan);
+
+            if ($plan->hasTrial()) {
+                $invoice = $subscription->createInitInvoiceWithTrial();
+            } else {
+                $invoice = $subscription->createInitInvoiceWithoutTrial();
+            }
+
+            // log
+            SubscriptionFacade::log($subscription, SubscriptionLog::TYPE_SELECT_PLAN, $invoice->uid, [
+                'plan' => $subscription->getPlanName(),
+                'customer' => $subscription->getCustomerName(),
+                'amount' => $invoice->total(),
+            ]);
 
             // after assign
             $emailCredits = (int)$plan->getOption('email_max');
             $subscription->getSendEmailCreditTracker()->setCredits($emailCredits);
+
+            return $subscription;
         });
 
         return $subscription;
