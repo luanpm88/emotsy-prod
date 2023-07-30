@@ -939,18 +939,6 @@ class Invoice extends Model
         return $query->first();
     }
 
-    public function getPaymentMethod()
-    {
-        $lastTransaction = $this->lastTransaction();
-
-        // no payment method if it does not have any transaction
-        if (!$lastTransaction) {
-            return null;
-        }
-
-        return $lastTransaction->method;
-    }
-
     public function getTransactions()
     {
         return $this->transactions()
