@@ -1531,16 +1531,16 @@ class Customer extends Model
                 $invoice = $subscription->createInitInvoiceWithoutTrial();
             }
 
+            // after assign
+            $emailCredits = (int)$plan->getOption('email_max');
+            $subscription->getSendEmailCreditTracker()->setCredits($emailCredits);
+
             // log
             SubscriptionFacade::log($subscription, SubscriptionLog::TYPE_SELECT_PLAN, $invoice->uid, [
                 'plan' => $subscription->getPlanName(),
                 'customer' => $subscription->getCustomerName(),
                 'amount' => $invoice->total(),
             ]);
-
-            // after assign
-            $emailCredits = (int)$plan->getOption('email_max');
-            $subscription->getSendEmailCreditTracker()->setCredits($emailCredits);
 
             return $subscription;
         });
