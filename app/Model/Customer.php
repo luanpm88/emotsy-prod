@@ -29,7 +29,7 @@ use Acelle\Model\Source;
 use Exception;
 use DB;
 use Acelle\Library\Facades\Billing;
-use Acelle\Cashier\Library\AutoBillingData;
+use Acelle\Library\AutoBillingData;
 use Acelle\Library\Traits\TrackJobs;
 use Acelle\Library\Traits\HasCache;
 use Acelle\Jobs\ImportBlacklistJob;
