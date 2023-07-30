@@ -1521,7 +1521,7 @@ class Customer extends Model
         }
 
         // Put in transaction. Make sure senderID always with subscription
-        $subscription = \DB::transaction(function () use (&$subscription, $plan) {
+        $subscription = \DB::transaction(function () use ($plan) {
             // allways create init subscription with init invoice (by design)
             $subscription = Subscription::createNewSubscription($this, $plan);
 
