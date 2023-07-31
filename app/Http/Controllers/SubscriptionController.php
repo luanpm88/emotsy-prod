@@ -88,12 +88,11 @@ class SubscriptionController extends Controller
     public function billingInformation(Request $request)
     {
         $customer = $request->user()->customer;
-        $subscription = $customer->getNewOrActiveGeneralSubscription();
-        $invoice = $subscription->getUnpaidInvoice();
+        $invoice = $customer->invoices()->unpaid()->where('uid', '=', $request->invoice_uid)->first();
         $billingAddress = $customer->getDefaultBillingAddress();
 
         // always update invoice price fron plan
-        $invoice->refreshPrice();
+        $invoice->mapType()->refreshPrice();
 
         // Save posted data
         if ($request->isMethod('post')) {
