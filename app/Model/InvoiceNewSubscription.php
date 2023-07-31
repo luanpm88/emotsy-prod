@@ -95,18 +95,20 @@ class InvoiceNewSubscription extends Invoice
             $invoiceItem->save();
         }
 
-        // if not trial and price updated 
+        // if not trial and price updated
         elseif (!$subscription->planGeneral->hasTrial() && $invoiceItem->amount != $subscription->planGeneral->getPrice()) {
             $invoiceItem->amount = $subscription->planGeneral->getPrice();
             $invoiceItem->save();
         }
     }
 
-    public function getSubscription() {
+    public function getSubscription()
+    {
         return Subscription::findByUid($this->getMetadata()['subscription_uid']);
     }
 
-    public function getPlan() {
+    public function getPlan()
+    {
         return $this->getSubscription()->planGeneral;
     }
 }

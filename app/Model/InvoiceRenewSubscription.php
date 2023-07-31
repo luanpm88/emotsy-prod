@@ -93,7 +93,8 @@ class InvoiceRenewSubscription extends Invoice
         }
     }
 
-    public function getSubscription() {
+    public function getSubscription()
+    {
         return Subscription::findByUid($this->getMetadata()['subscription_uid']);
     }
 }

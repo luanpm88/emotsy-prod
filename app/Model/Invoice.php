@@ -80,24 +80,24 @@ class Invoice extends Model
 
     public function scopeChangePlan($query)
     {
-        $query->where('type', \Acelle\Model\InvoiceChangePlan::TYPE_CHANGE_PLAN);
+        $query->where('type', InvoiceChangePlan::TYPE_CHANGE_PLAN);
     }
 
     public function scopeNewSubscription($query)
     {
         $query->whereIn('type', [
-            \Acelle\Model\InvoiceNewSubscription::TYPE_NEW_SUBSCRIPTION,
+            InvoiceNewSubscription::TYPE_NEW_SUBSCRIPTION,
         ]);
     }
 
     public function scopeRenew($query)
     {
-        $query->where('type', \Acelle\Model\InvoiceRenewSubscription::TYPE_RENEW_SUBSCRIPTION);
+        $query->where('type', InvoiceRenewSubscription::TYPE_RENEW_SUBSCRIPTION);
     }
 
     public function scopeTopUp($query)
     {
-        $query->where('type', \Acelle\Model\InvoiceTopUp::TYPE_TOP_UP);
+        $query->where('type', InvoiceTopUp::TYPE_TOP_UP);
     }
 
     /**
@@ -143,7 +143,7 @@ class Invoice extends Model
     public function getPendingTransaction()
     {
         $query = $this->transactions()
-            ->where('status', \Acelle\Model\Transaction::STATUS_PENDING)
+            ->where('status', Transaction::STATUS_PENDING)
             ->orderBy('created_at', 'desc');
 
         // invoice only has one pending transaction
@@ -535,7 +535,7 @@ class Invoice extends Model
             'billing_first_name' => $this->billing_first_name,
             'billing_last_name' => $this->billing_last_name,
             'billing_address' => $this->billing_address,
-            'billing_country' => $this->billing_country_id ? \Acelle\Model\Country::find($this->billing_country_id)->name : '',
+            'billing_country' => $this->billing_country_id ? Country::find($this->billing_country_id)->name : '',
             'billing_email' => $this->billing_email,
             'billing_phone' => $this->billing_phone,
         ];
@@ -700,10 +700,10 @@ class Invoice extends Model
     public function getTaxPercent()
     {
         if ($this->billing_country_id) {
-            $country = \Acelle\Model\Country::find($this->billing_country_id);
-            $tax = \Acelle\Model\Setting::getTaxByCountry($country);
+            $country = Country::find($this->billing_country_id);
+            $tax = Setting::getTaxByCountry($country);
         } else {
-            $tax = \Acelle\Model\Setting::getTaxByCountry(null);
+            $tax = Setting::getTaxByCountry(null);
         }
 
         return $tax;
@@ -770,8 +770,8 @@ class Invoice extends Model
 
     public static function getTemplateContent()
     {
-        if (\Acelle\Model\Setting::get('invoice.custom_template')) {
-            return \Acelle\Model\Setting::get('invoice.custom_template');
+        if (Setting::get('invoice.custom_template')) {
+            return Setting::get('invoice.custom_template');
         } else {
             return view('invoices.template');
         }
@@ -784,10 +784,10 @@ class Invoice extends Model
 
         // transalte tags
         $values = [
-            ['tag' => '{COMPANY_NAME}', 'value' => \Acelle\Model\Setting::get('company_name')],
-            ['tag' => '{COMPANY_ADDRESS}', 'value' => \Acelle\Model\Setting::get('company_address')],
-            ['tag' => '{COMPANY_EMAIL}', 'value' => \Acelle\Model\Setting::get('company_email')],
-            ['tag' => '{COMPANY_PHONE}', 'value' => \Acelle\Model\Setting::get('company_phone')],
+            ['tag' => '{COMPANY_NAME}', 'value' => Setting::get('company_name')],
+            ['tag' => '{COMPANY_ADDRESS}', 'value' => Setting::get('company_address')],
+            ['tag' => '{COMPANY_EMAIL}', 'value' => Setting::get('company_email')],
+            ['tag' => '{COMPANY_PHONE}', 'value' => Setting::get('company_phone')],
             ['tag' => '{FIRST_NAME}', 'value' => $bill['billing_first_name']],
             ['tag' => '{LAST_NAME}', 'value' => $bill['billing_last_name']],
             ['tag' => '{ADDRESS}', 'value' => $bill['billing_address']],
@@ -882,23 +882,23 @@ class Invoice extends Model
 
     public function createInvoiceNumber()
     {
-        if (\Acelle\Model\Setting::get('invoice.current')) {
-            $currentNumber = intval(\Acelle\Model\Setting::get('invoice.current'));
+        if (Setting::get('invoice.current')) {
+            $currentNumber = intval(Setting::get('invoice.current'));
         } else {
             $currentNumber = 1;
         }
 
-        $this->number = sprintf(\Acelle\Model\Setting::get('invoice.format'), $currentNumber);
+        $this->number = sprintf(Setting::get('invoice.format'), $currentNumber);
         $this->save();
 
         // update current number
-        \Acelle\Model\Setting::set('invoice.current', ($currentNumber + 1));
+        Setting::set('invoice.current', ($currentNumber + 1));
     }
 
     public function updatePaymentServiceFee($gateway)
     {
         // trường hợp init invoice có free trial và setting không require card thì fee = 0
-        if (\Acelle\Model\Setting::get('not_require_card_for_trial') == 'yes' && $this->isInitInvoiceWithTrial()) {
+        if (Setting::get('not_require_card_for_trial') == 'yes' && $this->isInitInvoiceWithTrial()) {
             $this->fee = 0;
             $this->save();
 
@@ -913,7 +913,7 @@ class Invoice extends Model
 
     public function isInitInvoiceWithTrial()
     {
-        return $this->type == \Acelle\Model\InvoiceNewSubscription::TYPE_NEW_SUBSCRIPTION && $this->getMetadata('trial');
+        return $this->type == InvoiceNewSubscription::TYPE_NEW_SUBSCRIPTION && $this->getMetadata('trial');
     }
 
     public function getCurrencyCode()
@@ -929,7 +929,7 @@ class Invoice extends Model
     public function getItsOnlySuccessTransaction()
     {
         $query = $this->transactions()
-            ->where('status', \Acelle\Model\Transaction::STATUS_PENDING)
+            ->where('status', Transaction::STATUS_PENDING)
             ->orderBy('created_at', 'desc');
 
         if ($query->count()) {
@@ -949,10 +949,10 @@ class Invoice extends Model
     public static function getInvoiceTypeSelectOptions()
     {
         return [
-            ['text' => trans('messages.invoice.type.' . \Acelle\Model\InvoiceTopUp::TYPE_TOP_UP), 'value' => \Acelle\Model\InvoiceTopUp::TYPE_TOP_UP],
-            ['text' => trans('messages.invoice.type.' . \Acelle\Model\InvoiceNewSubscription::TYPE_NEW_SUBSCRIPTION), 'value' => \Acelle\Model\InvoiceNewSubscription::TYPE_NEW_SUBSCRIPTION],
-            ['text' => trans('messages.invoice.type.' . \Acelle\Model\InvoiceRenewSubscription::TYPE_RENEW_SUBSCRIPTION), 'value' => \Acelle\Model\InvoiceRenewSubscription::TYPE_RENEW_SUBSCRIPTION],
-            ['text' => trans('messages.invoice.type.' . \Acelle\Model\InvoiceChangePlan::TYPE_CHANGE_PLAN), 'value' => \Acelle\Model\InvoiceChangePlan::TYPE_CHANGE_PLAN],
+            ['text' => trans('messages.invoice.type.' . InvoiceTopUp::TYPE_TOP_UP), 'value' => InvoiceTopUp::TYPE_TOP_UP],
+            ['text' => trans('messages.invoice.type.' . InvoiceNewSubscription::TYPE_NEW_SUBSCRIPTION), 'value' => InvoiceNewSubscription::TYPE_NEW_SUBSCRIPTION],
+            ['text' => trans('messages.invoice.type.' . InvoiceRenewSubscription::TYPE_RENEW_SUBSCRIPTION), 'value' => InvoiceRenewSubscription::TYPE_RENEW_SUBSCRIPTION],
+            ['text' => trans('messages.invoice.type.' . InvoiceChangePlan::TYPE_CHANGE_PLAN), 'value' => InvoiceChangePlan::TYPE_CHANGE_PLAN],
         ];
     }
 
@@ -965,17 +965,17 @@ class Invoice extends Model
     {
         //
         switch ($this->type) {
-            case \Acelle\Model\InvoiceNewSubscription::TYPE_NEW_SUBSCRIPTION:
-                return \Acelle\Model\InvoiceNewSubscription::find($this->id);
+            case InvoiceNewSubscription::TYPE_NEW_SUBSCRIPTION:
+                return InvoiceNewSubscription::find($this->id);
                 break;
-            case \Acelle\Model\InvoiceRenewSubscription::TYPE_RENEW_SUBSCRIPTION:
-                return \Acelle\Model\InvoiceRenewSubscription::find($this->id);
+            case InvoiceRenewSubscription::TYPE_RENEW_SUBSCRIPTION:
+                return InvoiceRenewSubscription::find($this->id);
                 break;
-            case \Acelle\Model\InvoiceChangePlan::TYPE_CHANGE_PLAN:
-                return \Acelle\Model\InvoiceChangePlan::find($this->id);
+            case InvoiceChangePlan::TYPE_CHANGE_PLAN:
+                return InvoiceChangePlan::find($this->id);
                 break;
-            case \Acelle\Model\InvoiceTopUp::TYPE_TOP_UP:
-                return \Acelle\Model\InvoiceTopUp::find($this->id);
+            case InvoiceTopUp::TYPE_TOP_UP:
+                return InvoiceTopUp::find($this->id);
                 break;
             default:
                 throw new \Exception("Invoice type #{$this->type} not found!");
