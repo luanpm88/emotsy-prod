@@ -202,7 +202,7 @@ class Subscription extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function createInitInvoiceWithoutTrial()
+    public function createNewSubscriptionInvoiceWithoutTrial()
     {
         $endDate = $this->customer->formatDateTime($this->getPeriodEndsAt(Carbon::now()), "datetime_full");
 
@@ -241,7 +241,7 @@ class Subscription extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function createInitInvoiceWithTrial()
+    public function createNewSubscriptionInvoiceWithTrial()
     {
         $endDate = $this->customer->formatDateTime($this->getTrialPeriodEndsAt(Carbon::now()), "datetime_full");
 

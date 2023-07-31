@@ -1526,9 +1526,9 @@ class Customer extends Model
             $subscription = Subscription::createNewGeneralSubscription($this, $plan);
 
             if ($plan->hasTrial()) {
-                $invoice = $subscription->createInitInvoiceWithTrial();
+                $invoice = $subscription->createNewSubscriptionInvoiceWithTrial();
             } else {
-                $invoice = $subscription->createInitInvoiceWithoutTrial();
+                $invoice = $subscription->createNewSubscriptionInvoiceWithoutTrial();
             }
 
             // Assign sending credits
@@ -1546,6 +1546,11 @@ class Customer extends Model
         });
 
         return $subscription;
+    }
+
+    public function assignSenderIdPlan()
+    {
+
     }
 
     /**
