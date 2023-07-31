@@ -11,6 +11,11 @@ class InvoiceRenewSubscription extends Invoice
 
     public const TYPE_RENEW_SUBSCRIPTION = 'renew_subscription';
 
+    public function subscription()
+    {
+        return $this->belongsTo('Acelle\Model\Subscription');
+    }
+
     /**
      * Process invoice.
      *
@@ -18,15 +23,13 @@ class InvoiceRenewSubscription extends Invoice
      */
     public function process()
     {
-        $subscription = Subscription::findByUid($this->getMetadata()['subscription_uid']);
-
         // Xoá NEW change plan invoice hiện tại nếu có
-        if ($subscription->getItsOnlyUnpaidChangePlanInvoice()) {
-            $subscription->getItsOnlyUnpaidChangePlanInvoice()->delete();
+        if ($this->subscription->getItsOnlyUnpaidChangePlanInvoice()) {
+            $this->subscription->getItsOnlyUnpaidChangePlanInvoice()->delete();
         }
 
         /// renew
-        $subscription->renew();
+        $this->subscription->renew();
 
         // Different types of PLAN have different business here after payment for RENEW SUBSCRIPTION is successful
         // Let's add a process() method for Plan* too
@@ -41,7 +44,7 @@ class InvoiceRenewSubscription extends Invoice
         //
 
         // Logging
-        SubscriptionFacade::log($subscription, SubscriptionLog::TYPE_PAY_SUCCESS, $this->uid, [
+        SubscriptionFacade::log($this->subscription, SubscriptionLog::TYPE_PAY_SUCCESS, $this->uid, [
             'amount' => $this->total(),
         ]);
     }
@@ -53,19 +56,17 @@ class InvoiceRenewSubscription extends Invoice
      */
     public function getBillingInfo()
     {
-        $subscription = Subscription::findByUid($this->getMetadata()['subscription_uid']);
         $chargeInfo = trans('messages.bill.charge_before', [
-            'date' => $this->customer->formatDateTime($subscription->current_period_ends_at, 'datetime_full'),
+            'date' => $this->customer->formatDateTime($this->subscription->current_period_ends_at, 'datetime_full'),
         ]);
-        $plan = $subscription->planGeneral;
+        $plan = $this->subscription->planGeneral;
 
         return $this->getBillingInfoBase($chargeInfo, $plan);
     }
 
     public function checkoutAfterPayFailed($error)
     {
-        $subscription = Subscription::findByUid($this->getMetadata()['subscription_uid']);
-        SubscriptionFacade::log($subscription, SubscriptionLog::TYPE_PAY_FAILED, $this->uid, [
+        SubscriptionFacade::log($this->subscription, SubscriptionLog::TYPE_PAY_FAILED, $this->uid, [
             'amount' => $this->total(),
             'error' => $error,
         ]);
@@ -73,8 +74,7 @@ class InvoiceRenewSubscription extends Invoice
 
     public function beforeCancel()
     {
-        $subscription = Subscription::findByUid($this->getMetadata()['subscription_uid']);
-        SubscriptionFacade::log($subscription, SubscriptionLog::TYPE_CANCEL_INVOICE, $this->uid, [
+        SubscriptionFacade::log($this->subscription, SubscriptionLog::TYPE_CANCEL_INVOICE, $this->uid, [
             'amount' => $this->total(),
         ]);
     }
@@ -85,15 +85,10 @@ class InvoiceRenewSubscription extends Invoice
             throw new \Exception("Can not change paid invoice price!");
         }
 
-        $subscription = Subscription::findByUid($this->getMetadata()['subscription_uid']);
         $invoiceItem = $this->invoiceItems()->first(); // subscription general plan always has 1 invoice item (design)
-        if ($invoiceItem->amount != $subscription->planGeneral->getPrice()) {
-            $invoiceItem->amount = $subscription->planGeneral->getPrice();
+        if ($invoiceItem->amount != $this->subscription->planGeneral->getPrice()) {
+            $invoiceItem->amount = $this->subscription->planGeneral->getPrice();
             $invoiceItem->save();
         }
-    }
-
-    public function getSubscription() {
-        return Subscription::findByUid($this->getMetadata()['subscription_uid']);
     }
 }

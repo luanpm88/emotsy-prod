@@ -233,53 +233,6 @@ class Invoice extends Model
     }
 
     /**
-     * Get metadata.
-     *
-     * @var object | collect
-     */
-    public function getMetadata($name=null)
-    {
-        if (!$this['metadata']) {
-            return json_decode('{}', true);
-        }
-
-        $data = json_decode($this['metadata'], true);
-
-        if ($name != null) {
-            if (isset($data[$name])) {
-                return $data[$name];
-            } else {
-                return null;
-            }
-        } else {
-            return $data;
-        }
-    }
-
-    /**
-     * Get metadata.
-     *
-     * @var object | collect
-     */
-    public function updateMetadata($data)
-    {
-        $metadata = (object) array_merge((array) $this->getMetadata(), $data);
-        $this['metadata'] = json_encode($metadata);
-
-        $this->save();
-    }
-
-    // /**
-    //  * Get type.
-    //  *
-    //  * @return void
-    //  */
-    // public function getType()
-    // {
-    //     return $this->invoiceItems()->first()->item_type;
-    // }
-
-    /**
      * Check new.
      *
      * @return void
@@ -345,78 +298,6 @@ class Invoice extends Model
             $this->payFailed($error);
         });
     }
-
-    // /**
-    //  * Approve invoice.
-    //  *
-    //  * @return void
-    //  */
-    // public function approve()
-    // {
-    //     // for only new invoice
-    //     if (!$this->isNew()) {
-    //         throw new \Exception("Trying to approve an invoice that is not NEW (Invoice ID: {$this->id}, status: {$this->status}");
-    //     }
-
-    //     // for only new invoice
-    //     if (!$this->getPendingTransaction()) {
-    //         throw new \Exception("Trying to approve an invoice that does not have a pending transaction (Invoice ID: {$this->id}, status: {$this->status}");
-    //     }
-
-    //     \DB::transaction(function () {
-    //         // fulfill invoice
-    //         $this->paySuccess();
-
-    //         // logging by type
-    //         switch ($this->type) {
-    //             case InvoiceNewSubscription::TYPE_NEW_SUBSCRIPTION:
-    //             case InvoiceRenewSubscription::TYPE_RENEW_SUBSCRIPTION:
-    //             case InvoiceChangePlan::TYPE_CHANGE_PLAN:
-    //             case Invoice::TYPE_TOP_UP:
-    //                 $subscription = Subscription::findByUid($this->getMetadata()['subscription_uid']);
-    //                 SubscriptionFacade::log($subscription, SubscriptionLog::TYPE_ADMIN_APPROVE, $this->uid, [
-    //                     'amount' => $this->total(),
-    //                 ]);
-    //                 break;
-    //         }
-    //     });
-    // }
-
-    // /**
-    //  * Reject invoice.
-    //  *
-    //  * @return void
-    //  */
-    // public function reject($error)
-    // {
-    //     // for only new invoice
-    //     if (!$this->isNew()) {
-    //         throw new \Exception("Trying to approve an invoice that is not NEW (Invoice ID: {$this->id}, status: {$this->status}");
-    //     }
-
-    //     // for only new invoice
-    //     if (!$this->getPendingTransaction()) {
-    //         throw new \Exception("Trying to approve an invoice that does not have a pending transaction (Invoice ID: {$this->id}, status: {$this->status}");
-    //     }
-
-    //     \DB::transaction(function () use ($error) {
-    //         // fulfill invoice
-    //         $this->payFailed($error);
-
-    //         // logging by type
-    //         switch ($this->type) {
-    //             case InvoiceNewSubscription::TYPE_NEW_SUBSCRIPTION:
-    //             case InvoiceRenewSubscription::TYPE_RENEW_SUBSCRIPTION:
-    //             case InvoiceChangePlan::TYPE_CHANGE_PLAN:
-    //                 $subscription = Subscription::findByUid($this->getMetadata()['subscription_uid']);
-    //                 SubscriptionFacade::log($subscription, SubscriptionLog::TYPE_ADMIN_REJECT, $this->uid, [
-    //                     'amount' => $this->total(),
-    //                     'reason' => $error,
-    //                 ]);
-    //                 break;
-    //         }
-    //     });
-    // }
 
     /**
      * Pay invoice.
@@ -709,7 +590,7 @@ class Invoice extends Model
         return $tax;
     }
 
-    public static function createInvoice($type, $title, $description, $customer_id, $currency_id, $billing_address, $invoiceItems, $metadata)
+    public static function createInvoice($type, $title, $description, $customer_id, $currency_id, $billing_address, $invoiceItems)
     {
         // create invoice
         $invoice = new self();
@@ -736,9 +617,6 @@ class Invoice extends Model
 
         // add invoice number
         $invoice->createInvoiceNumber();
-
-        // data
-        $invoice->updateMetadata($metadata);
 
         // add item
         foreach ($invoiceItems as $invoiceItem) {
@@ -898,7 +776,10 @@ class Invoice extends Model
     public function updatePaymentServiceFee($gateway)
     {
         // trường hợp init invoice có free trial và setting không require card thì fee = 0
-        if (\Acelle\Model\Setting::get('not_require_card_for_trial') == 'yes' && $this->isInitInvoiceWithTrial()) {
+        if (\Acelle\Model\Setting::get('not_require_card_for_trial') == 'yes' &&
+            $this->type == \Acelle\Model\InvoiceNewSubscription::TYPE_NEW_SUBSCRIPTION &&
+            $this->mapType()->subscription->plan->hasTrial()
+        ) {
             $this->fee = 0;
             $this->save();
 
@@ -909,11 +790,6 @@ class Invoice extends Model
             $this->fee = $gateway->getMinimumChargeAmount($this->currency->code);
             $this->save();
         }
-    }
-
-    public function isInitInvoiceWithTrial()
-    {
-        return $this->type == \Acelle\Model\InvoiceNewSubscription::TYPE_NEW_SUBSCRIPTION && $this->getMetadata('trial');
     }
 
     public function getCurrencyCode()

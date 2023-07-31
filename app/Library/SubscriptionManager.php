@@ -34,7 +34,7 @@ class SubscriptionManager
         $renewInvoices = \Acelle\Model\InvoiceRenewSubscription::renew()->unpaid()->get();
 
         foreach ($renewInvoices as $invoice) {
-            $subscription = $invoice->getSubscription();
+            $subscription = $invoice->mapType()->subscription;
             $customer = $subscription->customer;
 
             // not reach due date

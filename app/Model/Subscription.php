@@ -207,7 +207,7 @@ class Subscription extends Model
         $endDate = $this->customer->formatDateTime($this->getPeriodEndsAt(Carbon::now()), "datetime_full");
 
         // create init invoice
-        return \Acelle\Model\InvoiceNewSubscription::createInvoice(
+        $invoice = \Acelle\Model\InvoiceNewSubscription::createInvoice(
             $type = \Acelle\Model\InvoiceNewSubscription::TYPE_NEW_SUBSCRIPTION,
             $title = trans('messages.invoice.init_subscription'),
             $description = trans('messages.invoice.init_subscription.desc', [
@@ -226,10 +226,14 @@ class Subscription extends Model
                     'description' => view('plans._bill_desc', ['plan' => $this->plan]),
                 ]),
             ],
-            $metadata = [
-                'subscription_uid' => $this->uid,
-            ]
         );
+
+        // save subscription to invoice
+        $invoice->subscription_id = $this->id;
+        $invoice->save();
+
+        // return
+        return $invoice;
     }
 
     /**
@@ -242,7 +246,7 @@ class Subscription extends Model
         $endDate = $this->customer->formatDateTime($this->getTrialPeriodEndsAt(Carbon::now()), "datetime_full");
 
         // create init invoice
-        return \Acelle\Model\InvoiceNewSubscription::createInvoice(
+        $invoice = \Acelle\Model\InvoiceNewSubscription::createInvoice(
             $type = \Acelle\Model\InvoiceNewSubscription::TYPE_NEW_SUBSCRIPTION,
             $title = trans('messages.invoice.init_subscription'),
             $description = trans('messages.invoice.init_subscription_with_trial.desc', [
@@ -263,10 +267,14 @@ class Subscription extends Model
                     'description' => view('plans._bill_desc', ['plan' => $this->planGeneral]),
                 ]),
             ],
-            $metadata = [
-                'subscription_uid' => $this->uid,
-            ]
         );
+
+        // save subscription to invoice
+        $invoice->subscription_id = $this->id;
+        $invoice->save();
+
+        // return
+        return $invoice;
     }
 
     /**
@@ -286,7 +294,7 @@ class Subscription extends Model
         }
 
         // create init invoice
-        return \Acelle\Model\InvoiceRenewSubscription::createInvoice(
+        $invoice = \Acelle\Model\InvoiceRenewSubscription::createInvoice(
             $type = \Acelle\Model\InvoiceRenewSubscription::TYPE_RENEW_SUBSCRIPTION,
             $title = trans('messages.invoice.renew_subscription'),
             $description = trans('messages.renew_subscription.desc', [
@@ -305,10 +313,14 @@ class Subscription extends Model
                     'description' => view('plans._bill_desc', ['plan' => $this->plan]),
                 ]),
             ],
-            $metadata = [
-                'subscription_uid' => $this->uid,
-            ]
         );
+
+        // save subscription to invoice
+        $invoice->subscription_id = $this->id;
+        $invoice->save();
+
+        // return
+        return $invoice;
     }
 
     /**
@@ -326,7 +338,7 @@ class Subscription extends Model
         $metadata = $this->calcChangePlan($newPlan);
 
         // create init invoice
-        return \Acelle\Model\InvoiceChangePlan::createInvoice(
+        $invoice = \Acelle\Model\InvoiceChangePlan::createInvoice(
             $type = \Acelle\Model\InvoiceChangePlan::TYPE_CHANGE_PLAN,
             $title = trans('messages.invoice.change_plan'),
             $description = trans('messages.change_plan.desc', [
@@ -346,11 +358,15 @@ class Subscription extends Model
                     'description' => view('plans._bill_desc', ['plan' => $newPlan]),
                 ]),
             ],
-            $metadata = [
-                'subscription_uid' => $this->uid,
-                'new_plan_uid' => $newPlan->uid,
-            ]
         );
+
+        // save subscription to invoice
+        $invoice->subscription_id = $this->id;
+        $invoice->new_plan_id = $newPlan->id;
+        $invoice->save();
+
+        // return
+        return $invoice;
     }
 
     /**

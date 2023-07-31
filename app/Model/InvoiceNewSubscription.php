@@ -12,6 +12,11 @@ class InvoiceNewSubscription extends Invoice
 
     public const TYPE_NEW_SUBSCRIPTION = 'new_subscription';
 
+    public function subscription()
+    {
+        return $this->belongsTo('Acelle\Model\Subscription');
+    }
+
     /**
      * Process invoice.
      *
@@ -19,21 +24,19 @@ class InvoiceNewSubscription extends Invoice
      */
     public function process()
     {
-        $subscription = Subscription::findByUid($this->getMetadata()['subscription_uid']);
-
         // activate sub
-        $subscription->activate();
+        $this->subscription->activate();
 
         // Tạm thời chỗ này phải if/else vì
         // chưa sử dụng class kế thừa cho subscription (VD: SubscriptionSender, SubscriptionGeneral, SubscriptionNumber...)
         // mà tất cả các loại plan trên đều dùng 1 class Subscription như nhau
-        switch (get_class($subscription->plan->mapType())) {
+        switch (get_class($this->subscription->plan->mapType())) {
             case PlanGeneral::class:
 
                 // Set số lượng email max cho subscription
                 // Hiện giờ code bên dưới đang error do $this->subscription đang null
                 // ==> FIX bằng cách thêm field tường minh cho invoices table
-                $subscription->setDefaultEmailCredits();
+                $this->subscription->setDefaultEmailCredits();
 
                 break;
 
@@ -46,8 +49,10 @@ class InvoiceNewSubscription extends Invoice
 
         return;
 
-        // @todo: move the log below to the paySuccess() method
-        SubscriptionFacade::log($subscription, SubscriptionLog::TYPE_PAY_SUCCESS, $this->uid, [
+        // @todo: move the log below to the paySuccess() method.
+        // Nên để ở đây vì paySuccess là hàm chung cho invoice
+        // Vì dụ: invoice ở đầy có thể là InvoiceTopUp => không liên quan đến subscription
+        SubscriptionFacade::log($this->subscription, SubscriptionLog::TYPE_PAY_SUCCESS, $this->uid, [
             'amount' => $this->total(),
         ]);
     }
@@ -59,17 +64,15 @@ class InvoiceNewSubscription extends Invoice
      */
     public function getBillingInfo()
     {
-        $subscription = Subscription::findByUid($this->getMetadata()['subscription_uid']);
         $chargeInfo = trans('messages.bill.charge_now');
-        $plan = $subscription->planGeneral;
+        $plan = $this->subscription->planGeneral;
 
         return $this->getBillingInfoBase($chargeInfo, $plan);
     }
 
     public function checkoutAfterPayFailed($error)
     {
-        $subscription = Subscription::findByUid($this->getMetadata()['subscription_uid']);
-        SubscriptionFacade::log($subscription, SubscriptionLog::TYPE_PAY_FAILED, $this->uid, [
+        SubscriptionFacade::log($this->subscription, SubscriptionLog::TYPE_PAY_FAILED, $this->uid, [
             'amount' => $this->total(),
             'error' => $error,
         ]);
@@ -86,27 +89,22 @@ class InvoiceNewSubscription extends Invoice
             throw new \Exception("Can not change paid invoice price!");
         }
 
-        $subscription = Subscription::findByUid($this->getMetadata()['subscription_uid']);
         $invoiceItem = $this->invoiceItems()->first(); // subscription general plan always has 1 invoice item (design)
 
         // if has trial => set price = 0
-        if ($subscription->planGeneral->hasTrial() && $invoiceItem->amount != 0) {
+        if ($this->subscription->planGeneral->hasTrial() && $invoiceItem->amount != 0) {
             $invoiceItem->amount = 0;
             $invoiceItem->save();
         }
 
         // if not trial and price updated 
-        elseif (!$subscription->planGeneral->hasTrial() && $invoiceItem->amount != $subscription->planGeneral->getPrice()) {
-            $invoiceItem->amount = $subscription->planGeneral->getPrice();
+        elseif (!$this->subscription->planGeneral->hasTrial() && $invoiceItem->amount != $this->subscription->planGeneral->getPrice()) {
+            $invoiceItem->amount = $this->subscription->planGeneral->getPrice();
             $invoiceItem->save();
         }
     }
 
-    public function getSubscription() {
-        return Subscription::findByUid($this->getMetadata()['subscription_uid']);
-    }
-
     public function getPlan() {
-        return $this->getSubscription()->planGeneral;
+        return $this->subscription->planGeneral;
     }
 }
