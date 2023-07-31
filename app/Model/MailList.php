@@ -831,10 +831,9 @@ class MailList extends Model
         }
 
         MailLog::info('Sending subscription confirmation email to '.$subscriber->email);
-        $list = $this;
 
         $layout = \Acelle\Model\Layout::where('alias', 'sign_up_confirmation_email')->first();
-        $send_page = \Acelle\Model\Page::findPage($list, $layout);
+        $send_page = \Acelle\Model\Page::findPage($this, $layout);
         $send_page->renderContent(null, $subscriber);
         $this->sendMail($subscriber, $send_page, $send_page->getTransformedSubject($subscriber));
         MailLog::info('Sent subscription confirmation email to '.$subscriber->email);
