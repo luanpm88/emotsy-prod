@@ -61,7 +61,6 @@ class SubscriptionManager
             // auto charge
             $customer->getPreferredPaymentGateway()->autoCharge($invoice);
         }
-
     }
 
     public function log($subscription, $type, $invoice_uid=null, $metadata=[])
