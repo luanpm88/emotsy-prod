@@ -199,6 +199,14 @@
                                     <div class="loader"></div>
                                 </a>
                             </div>
+                            <hr>
+                            <div class="text-left mt-2 text-center">
+                                <a href="{{ action('SubscriptionController@payment', [
+                                    'invoice_uid' => $subscription->getItsOnlyUnpaidRenewInvoice()->uid,
+                                ]) }}" class="">
+                                    {{ trans('messages.invoice.or_you_can_manually_pay') }}
+                                </a>
+                            </div>
                         @else
                             @if (!$subscription->getItsOnlyUnpaidRenewInvoice()->getPendingTransaction())
                                 <hr>

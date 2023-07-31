@@ -3,14 +3,7 @@
 namespace Acelle\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log as LaravelLog;
-use Acelle\Model\Subscription;
-use Acelle\Model\Setting;
 use Acelle\Model\PlanGeneral;
-use Acelle\Model\Invoice;
-use Acelle\Cashier\Cashier;
-use Acelle\Cashier\Services\StripeGatewayService;
-use Carbon\Carbon;
 use Acelle\Model\SubscriptionLog;
 use Acelle\Library\Facades\Billing;
 use Acelle\Library\Facades\SubscriptionFacade;
