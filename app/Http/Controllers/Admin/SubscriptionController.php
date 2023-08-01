@@ -95,6 +95,7 @@ class SubscriptionController extends Controller
     public function approve(Request $request, $id)
     {
         $subscription = Subscription::findByUid($request->id);
+        $invoice = $subscription->getUnpaidInvoice();
 
         // authorize
         if (!$request->user()->admin->can('approve', $subscription)) {
@@ -102,14 +103,12 @@ class SubscriptionController extends Controller
         }
 
         try {
-            $invoice = $subscription->getUnpaidInvoice();
-
             // approve last new invoice ~ pay last invoice
             $invoice->approve();
 
             // log
             SubscriptionFacade::log($subscription, SubscriptionLog::TYPE_ADMIN_APPROVE, $invoice->uid, [
-                'amount' => format_price($invoice->amount, $invoice->currency->format),
+                'amount' => format_price($invoice->total(), $invoice->currency->format),
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -220,6 +219,7 @@ class SubscriptionController extends Controller
     public function rejectPending(Request $request, $id)
     {
         $subscription = Subscription::findByUid($request->id);
+        $invoice = $subscription->getUnpaidInvoice();
 
         // authorize
         if (!$request->user()->admin->can('rejectPending', $subscription)) {
@@ -239,14 +239,12 @@ class SubscriptionController extends Controller
 
             // try reject
             try {
-                $invoice = $subscription->getUnpaidInvoice();
-
                 // approve last new invoice ~ pay last invoice
                 $invoice->reject($request->reason);
 
                 // log
                 SubscriptionFacade::log($subscription, SubscriptionLog::TYPE_ADMIN_REJECT, $invoice->uid, [
-                    'amount' => format_price($invoice->amount, $invoice->currency->format),
+                    'amount' => format_price($invoice->total(), $invoice->currency->format),
                     'reason' => $request->reason,
                 ]);
             } catch (\Exception $ex) {
