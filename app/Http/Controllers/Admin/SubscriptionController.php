@@ -61,7 +61,7 @@ class SubscriptionController extends Controller
             $request->merge(array("customer_admin_id" => $request->user()->admin->id));
         }
 
-        $subscriptions = Subscription::select('subscriptions.*');
+        $subscriptions = Subscription::general();
 
         if (isset($request->customer_uid)) {
             $customer = Customer::findByUid($request->customer_uid);
