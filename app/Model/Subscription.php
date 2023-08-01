@@ -127,6 +127,7 @@ class Subscription extends Model
     {
         $invoice = $this->invoices()
             ->unpaid()
+            ->orderBy('created_at', 'desc')
             ->first();
 
         return $invoice ? $invoice->mapType() : $invoice;

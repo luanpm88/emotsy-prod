@@ -329,7 +329,6 @@ class Invoice extends Model
         $this->getPendingTransaction()->setFailed(trans('messages.payment.cannot_charge', [
             'id' => $this->uid,
             'error' => $error,
-            'service' => $this->getPendingTransaction()->method,
         ]));
 
         // event after paying failed

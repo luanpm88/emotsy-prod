@@ -4,14 +4,12 @@ namespace Acelle\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 
-use Acelle\Http\Requests;
 use Acelle\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Log as LaravelLog;
-use Acelle\Cashier\Cashier;
 use Acelle\Model\Subscription;
 use Acelle\Model\SubscriptionLog;
 use Acelle\Model\PlanGeneral;
 use Acelle\Model\Customer;
+use Acelle\Library\Facades\SubscriptionFacade;
 
 class SubscriptionController extends Controller
 {
@@ -104,8 +102,15 @@ class SubscriptionController extends Controller
         }
 
         try {
+            $invoice = $subscription->getUnpaidInvoice();
+
             // approve last new invoice ~ pay last invoice
-            $subscription->getUnpaidInvoice()->approve();
+            $invoice->approve();
+
+            // log
+            SubscriptionFacade::log($subscription, SubscriptionLog::TYPE_ADMIN_APPROVE, $invoice->uid, [
+                'amount' => format_price($invoice->amount, $invoice->currency->format),
+            ]);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
@@ -234,7 +239,16 @@ class SubscriptionController extends Controller
 
             // try reject
             try {
-                $subscription->getUnpaidInvoice()->reject($request->reason);
+                $invoice = $subscription->getUnpaidInvoice();
+
+                // approve last new invoice ~ pay last invoice
+                $invoice->reject($request->reason);
+
+                // log
+                SubscriptionFacade::log($subscription, SubscriptionLog::TYPE_ADMIN_REJECT, $invoice->uid, [
+                    'amount' => format_price($invoice->amount, $invoice->currency->format),
+                    'reason' => $request->reason,
+                ]);
             } catch (\Exception $ex) {
                 $validator->errors()->add('reason', $ex->getMessage());
 

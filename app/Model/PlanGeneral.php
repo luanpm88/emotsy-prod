@@ -253,6 +253,8 @@ class PlanGeneral extends Plan implements PlanInterface
      */
     public static function scopeSearch($query, $keyword)
     {
+        $query = $query->general();
+
         // Keyword
         if (!empty(trim($keyword))) {
             foreach (explode(' ', trim($keyword)) as $keyword) {

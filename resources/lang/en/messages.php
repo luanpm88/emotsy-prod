@@ -1769,7 +1769,7 @@
     you agree to our <a href=":link" class="fw-600"><i>Term of Use</i> and <i>Privacy Policy</i></a>.',
   'payment.all_available_gateways' => 'All available payment gateways',
   'payment.all_available_gateways.wording' => 'Connect with your preferred payment gateways to receive payments by your users<br>Your users can pay by cash, Debit/Credit cards, PayPal, etc.',
-  'payment.cannot_charge' => 'We cannot charge the invoice #:id. Error from :service: :error',
+  'payment.cannot_charge' => 'We cannot charge the invoice #:id. Error: :error',
   'payment.choose_new_payment_method_to_proceed' => 'Please choose a new payment method below to  proceed with the payment',
   'payment.choose_payment' => 'Choose your preferred payment methods',
   'payment.choose_payment.desc' => 'We supports the following payment methods <br>Choose offline payment if you do not have a credit card or PayPal balance  ',
