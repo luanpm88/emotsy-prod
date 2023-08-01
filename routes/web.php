@@ -285,7 +285,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
     Route::get('account/subscription/select-plan', 'SubscriptionController@selectPlan');
     Route::get('account/subscription/order-box/{invoice_uid}', 'SubscriptionController@orderBox');
     Route::match(['get', 'post'], 'account/subscription/change-plan', 'SubscriptionController@changePlan');
-    Route::match(['get', 'post'], 'account/subscription/billing-information', 'SubscriptionController@billingInformation');
+    Route::match(['get', 'post'], 'account/subscription/{invoice_uid}/billing-information', 'SubscriptionController@billingInformation');
     Route::post('account/subscription/checkout/{invoice_uid}', 'SubscriptionController@checkout');
     Route::post('account/subscription/invoice/{invoice_uid}/cancel', 'SubscriptionController@cancelInvoice');
     Route::post('account/subscription/cancel-now', 'SubscriptionController@cancelNow');

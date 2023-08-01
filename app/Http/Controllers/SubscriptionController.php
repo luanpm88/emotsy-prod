@@ -79,10 +79,12 @@ class SubscriptionController extends Controller
         }
 
         // assign plan
-        $customer->assignGeneralPlan($plan);
+        $subscription = $customer->assignGeneralPlan($plan);
 
         // Check if subscriotion is new
-        return redirect()->action('SubscriptionController@billingInformation');
+        return redirect()->action('SubscriptionController@billingInformation', [
+            'invoice_uid' => $subscription->getItsOnlyUnpaidInitInvoice()->uid,
+        ]);
     }
 
     public function billingInformation(Request $request)
@@ -151,7 +153,9 @@ class SubscriptionController extends Controller
 
         // luôn luôn require billing information
         if (!$invoice->hasBillingInformation()) {
-            return redirect()->action('SubscriptionController@billingInformation');
+            return redirect()->action('SubscriptionController@billingInformation', [
+                'invoice_uid' => $invoice->uid,
+            ]);
         }
 
         return view('subscription.payment', [
