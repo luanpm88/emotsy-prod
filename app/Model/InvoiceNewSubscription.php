@@ -47,8 +47,6 @@ class InvoiceNewSubscription extends Invoice
                 break;
         }
 
-        return;
-
         // @todo: move the log below to the paySuccess() method.
         // Nên để ở đây vì paySuccess là hàm chung cho invoice
         // Vì dụ: invoice ở đầy có thể là InvoiceTopUp => không liên quan đến subscription
