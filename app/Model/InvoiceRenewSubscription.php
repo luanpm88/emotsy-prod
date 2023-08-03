@@ -31,17 +31,21 @@ class InvoiceRenewSubscription extends Invoice
         /// renew
         $this->subscription->renew();
 
-        // Different types of PLAN have different business here after payment for RENEW SUBSCRIPTION is successful
-        // Let's add a process() method for Plan* too
-        //
-        // For example: PlanGeneral
-        //     - refill default sending credits
-        //
-        // For example: PlanSender
-        //     - send an email to Admin? "Hey, one of your client has just successfully paid for SenderID RENEW, please manually RENEW it on Twilio...."
-        //
-        // Others...
-        //
+        // Handle business for different types of plan
+        switch (get_class($this->subscription->plan->mapType())) {
+            case PlanGeneral::class:
+
+                // Refill sending credits
+                $this->subscription->setDefaultEmailCredits();
+
+                break;
+
+            default:
+
+                throw new \Exception('Unknown plan type');
+
+                break;
+        }
 
         // Logging
         SubscriptionFacade::log($this->subscription, SubscriptionLog::TYPE_PAY_SUCCESS, $this->uid, [

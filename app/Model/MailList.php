@@ -1606,15 +1606,6 @@ class MailList extends Model
         }
     }
 
-    public function getCurrentSubscription()
-    {
-        if (empty($this->currentSubscription)) {
-            $this->currentSubscription = $this->customer->getCurrentActiveGeneralSubscription();
-        }
-
-        return $this->currentSubscription;
-    }
-
     /**
      * Pick one sending server associated to the Mail List.
      *
