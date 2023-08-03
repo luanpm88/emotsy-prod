@@ -1149,19 +1149,6 @@ class Customer extends Model
     }
 
     /**
-     * Check if customer is disabled.
-     *
-     * @return bool
-     */
-    public function currentPlanName()
-    {
-        return $this->getCurrentActiveGeneralSubscription() ?
-            $this->getCurrentActiveGeneralSubscription()->planGeneral->name :
-            ''
-        ;
-    }
-
-    /**
      * Get total file size usage.
      *
      * @return number
