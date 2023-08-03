@@ -1660,7 +1660,7 @@ class MailList extends Model
         $subscription = $this->customer->getNewOrActiveGeneralSubscription();
 
         // Check the customer has permissions using sending servers and has his own sending servers
-        if ($this->customer->getOption('sending_server_option') == \Acelle\Model\PlanGeneral::SENDING_SERVER_OPTION_OWN) {
+        if ($this->customer->useOwnSendingServer()) {
             if ($this->all_sending_servers) {
                 if ($this->customer->activeSendingServers()->count()) {
                     $result = $this->customer->activeSendingServers()->get()->map(function ($server) {

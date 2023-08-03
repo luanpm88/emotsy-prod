@@ -9,7 +9,7 @@
 
     @if (
         \Auth::user()->customer &&
-        \Auth::user()->customer->getOption("sending_server_option") == \Acelle\Model\PlanGeneral::SENDING_SERVER_OPTION_OWN &&
+        \Auth::user()->customer->useOwnSendingServer() &&
         !\Auth::user()->customer->activeSendingServers()->count()
     )
         notify({

@@ -377,11 +377,6 @@ class Admin extends Model
         $user->customer_id = $customer->id;
         $user->save();
 
-        // assign unlimited plan id saas == false
-        if (!config('app.saas')) {
-            \Acelle\Helpers\saasToSingleMode();
-        }
-
         return $customer;
     }
 
