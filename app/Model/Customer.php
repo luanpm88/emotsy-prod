@@ -99,18 +99,6 @@ class Customer extends Model
         return $subscriptions->first();
     }
 
-    public function getActiveGeneralSubscription()
-    {
-        // Theo design thì mỗi customer chỉ có một subscription đang "active"
-        $subscriptions = $this->generalSubscriptions()->active();
-
-        if ($subscriptions->count() > 1) {
-            throw new Exception('There are 2 subscriptions of [active] status. Please clean up the DB');
-        }
-
-        return $subscriptions->first();
-    }
-
     /**
      * Lấy current active subscription
      */

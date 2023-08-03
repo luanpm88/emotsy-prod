@@ -17,7 +17,7 @@
                     <span class="text-muted2">{{ trans('messages.created_at') }}: {{ Auth::user()->admin->formatDateTime($customer->created_at, 'datetime_full') }}</span>
                 </td>
                 <td>
-                    @if ($customer->getActiveGeneralSubscription())
+                    @if ($customer->getCurrentActiveGeneralSubscription())
                         <h5 class="no-margin stat-num">
                             <span><i class="material-symbols-rounded">assignment_turned_in</i> {{ $customer->currentPlanName() }}</span>
                         </h5>
