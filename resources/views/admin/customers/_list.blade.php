@@ -19,7 +19,7 @@
                 <td>
                     @if ($customer->getCurrentActiveGeneralSubscription())
                         <h5 class="no-margin stat-num">
-                            <span><i class="material-symbols-rounded">assignment_turned_in</i> {{ $customer->getActiveGeneralSubscription()->planGeneral->name }}</span>
+                            <span><i class="material-symbols-rounded">assignment_turned_in</i> {{ $customer->getCurrentActiveGeneralSubscription()->planGeneral->name }}</span>
                         </h5>
                         <span class="text-muted2">{{ trans('messages.current_plan') }}</span>
                     @elseif ($customer->getNewGeneralSubscription())
