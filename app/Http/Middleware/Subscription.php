@@ -32,11 +32,7 @@ class Subscription
         if ($subscription->planGeneral->useSystemSendingServer()) {
             $server = $subscription->planGeneral->primarySendingServer();
             if (is_null($server)) {
-                if (config('app.saas')) {
-                    return response()->view('errors.general', [ 'message' => __('messages.plan.sending_server.no_sending_server_error', ['plan' => $subscription->planGeneral->name]) ]);
-                } else {
-                    return response()->view('errors.general', [ 'message' => __('messages.standard.no_sending_server_error') ]);
-                }
+                return response()->view('errors.general', [ 'message' => __('messages.plan.sending_server.no_sending_server_error', ['plan' => $subscription->planGeneral->name]) ]);
             }
         }
 
