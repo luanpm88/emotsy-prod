@@ -75,7 +75,7 @@ class Customer extends Model
 
     public function getNewGeneralSubscription()
     {
-        // Theo design thì mỗi customer chỉ có một subscription đang "new"
+        // ONLY one new subscription allowed
         $subscriptions = $this->generalSubscriptions()->new();
 
         if ($subscriptions->count() > 1) {
@@ -85,16 +85,11 @@ class Customer extends Model
         return $subscriptions->first();
     }
 
-    /**
-     * Lấy current active subscription
-     */
     public function getLastCancelledOrEndedGeneralSubscription()
     {
         // Lấy subscription ended gần đây nhất. Null nếu chưa đăng ký bao giờ
         return $this->generalSubscriptions()->cancelledOrEdned()->orderBy('created_at', 'desc')->first();
     }
-
-
 
     public function contact()
     {
@@ -1341,45 +1336,6 @@ class Customer extends Model
      *
      * @return array
      */
-    public function getVerifiedIdentities()
-    {
-        $list = [];
-
-        // own emails
-        if ($this->allowSenderVerification()) {
-            $senders = $this->senders()->verified()->get();
-            foreach ($senders as $sender) {
-                $list[] = $sender->name.' <'.$sender->email.'>';
-            }
-        }
-
-        // own domain
-        $domains = $this->sendingDomains()->active();
-        $plan = $this->getCurrentActiveGeneralSubscription()->planGeneral;
-        if ($plan->useSystemSendingServer()) {
-            $server = $plan->primarySendingServer();
-            if (!$server->allowOtherSendingDomains()) {
-                $domains->bySendingServer($server);
-            }
-        }
-
-        foreach ($domains->get() as $domain) {
-            $list[] = $domain->name;
-        }
-
-        // plan sending server emails if system sending servers
-        if ($plan->useSystemSendingServer()) {
-            $list = array_merge($plan->getVerifiedIdentities(), $list);
-        }
-
-        return array_values(array_unique($list));
-    }
-
-    /**
-     * Get all verified identities.
-     *
-     * @return array
-     */
     public function verifiedIdentitiesDroplist($keyword = null)
     {
         $droplist = [];
@@ -1437,66 +1393,6 @@ class Customer extends Model
     public function automation2sCount()
     {
         return $this->automation2s()->count();
-    }
-
-    /**
-     * Assign plan to customer.
-     */
-    public function assignGeneralPlan($plan)
-    {
-        if ($this->getNewOrActiveGeneralSubscription()) {
-            throw new \Exception(trans('messages.customer.already_new_active_sub'));
-        }
-
-        // Put in transaction. Make sure senderID always with subscription
-        $subscription = \DB::transaction(function () use ($plan) {
-            // allways create init subscription with init invoice (by design)
-            $subscription = Subscription::createNewGeneralSubscription($this, $plan);
-
-            if ($plan->hasTrial()) {
-                $invoice = $subscription->createNewSubscriptionInvoiceWithTrial();
-            } else {
-                $invoice = $subscription->createNewSubscriptionInvoiceWithoutTrial();
-            }
-
-            // Assign sending credits
-            // Notice that the following method is available for a SubscriptionGeneralPlan only
-            $subscription->setDefaultEmailCredits();
-
-            // log
-            SubscriptionFacade::log($subscription, SubscriptionLog::TYPE_SELECT_PLAN, $invoice->uid, [
-                'plan' => $subscription->getPlanName(),
-                'customer' => $subscription->getCustomerName(),
-                'amount' => $invoice->total(),
-            ]);
-
-            return $subscription;
-        });
-
-        return $subscription;
-    }
-
-    public function assignSenderIdPlan()
-    {
-
-    }
-
-    /**
-     * Check customer if has notice.
-     */
-    public function hasSubscriptionNotice()
-    {
-        $subscription = $this->getNewOrActiveGeneralSubscription();
-
-        if (!$subscription) {
-            return false;
-        }
-
-        if ($subscription->getUnpaidInvoice()) {
-            return true;
-        }
-
-        return false;
     }
 
     public function getLockPath($path)
@@ -2052,4 +1948,89 @@ class Customer extends Model
         return $subscriptions->first();
     }
 
+    public function getVerifiedIdentities()
+    {
+        $list = [];
+
+        // own emails
+        if ($this->allowSenderVerification()) {
+            $senders = $this->senders()->verified()->get();
+            foreach ($senders as $sender) {
+                $list[] = $sender->name.' <'.$sender->email.'>';
+            }
+        }
+
+        // own domain
+        $domains = $this->sendingDomains()->active();
+        $plan = $this->getCurrentActiveGeneralSubscription()->planGeneral;
+        if ($plan->useSystemSendingServer()) {
+            $server = $plan->primarySendingServer();
+            if (!$server->allowOtherSendingDomains()) {
+                $domains->bySendingServer($server);
+            }
+        }
+
+        foreach ($domains->get() as $domain) {
+            $list[] = $domain->name;
+        }
+
+        // plan sending server emails if system sending servers
+        if ($plan->useSystemSendingServer()) {
+            $list = array_merge($plan->getVerifiedIdentities(), $list);
+        }
+
+        return array_values(array_unique($list));
+    }
+
+    public function assignGeneralPlan($plan)
+    {
+        if ($this->getNewOrActiveGeneralSubscription()) {
+            throw new \Exception(trans('messages.customer.already_new_active_sub'));
+        }
+
+        // Put in transaction. Make sure senderID always with subscription
+        $subscription = \DB::transaction(function () use ($plan) {
+            // allways create init subscription with init invoice (by design)
+            $subscription = Subscription::createNewGeneralSubscription($this, $plan);
+
+            if ($plan->hasTrial()) {
+                $invoice = $subscription->createNewSubscriptionInvoiceWithTrial();
+            } else {
+                $invoice = $subscription->createNewSubscriptionInvoiceWithoutTrial();
+            }
+
+            // Assign sending credits
+            // Notice that the following method is available for a SubscriptionGeneralPlan only
+            $subscription->setDefaultEmailCredits();
+
+            // log
+            SubscriptionFacade::log($subscription, SubscriptionLog::TYPE_SELECT_PLAN, $invoice->uid, [
+                'plan' => $subscription->getPlanName(),
+                'customer' => $subscription->getCustomerName(),
+                'amount' => $invoice->total(),
+            ]);
+
+            return $subscription;
+        });
+
+        return $subscription;
+    }
+
+    /**
+     * Check customer if has notice.
+     */
+    public function hasSubscriptionNotice()
+    {
+        $subscription = $this->getNewOrActiveGeneralSubscription();
+
+        if (!$subscription) {
+            return false;
+        }
+
+        if ($subscription->getUnpaidInvoice()) {
+            return true;
+        }
+
+        return false;
+    }
 }
