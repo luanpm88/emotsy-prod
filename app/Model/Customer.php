@@ -1546,17 +1546,6 @@ class Customer extends Model
         return false;
     }
 
-    public function isSubscriptionActive()
-    {
-        $subscription = $this->getCurrentActiveGeneralSubscription();
-
-        if (is_null($subscription)) {
-            return false;
-        }
-
-        return $subscription->isActive();
-    }
-
     public function getLockPath($path)
     {
         return $this->user->getLockPath($path);
@@ -1575,19 +1564,6 @@ class Customer extends Model
         }
 
         return true;
-    }
-
-    /**
-     * Get current period ends at.
-     */
-    public function getCurrentPeriodEndsAt()
-    {
-        // Nếu subscription đang không active thì current period ends at xem như = null
-        if ($this->getCurrentActiveGeneralSubscription()) {
-            return null;
-        }
-
-        return $this->current_period_ends_at;
     }
 
     /**

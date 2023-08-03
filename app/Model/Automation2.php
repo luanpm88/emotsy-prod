@@ -432,7 +432,7 @@ class Automation2 extends Model
                 };
 
                 $lock->getExclusiveLock(function ($f) use ($customer, $automation) {
-                    if ($customer->isSubscriptionActive()) {
+                    if ($customer->getCurrentActiveGeneralSubscription()) {
                         $automation->logger()->info(sprintf('Checking automation "%s"', $automation->name));
                         $automation->check();
                     } else {

@@ -197,7 +197,6 @@ class CustomerController extends Controller
             'last_name' => $user->last_name,
             'timezone' => $customer->timezone,
             'status' => $customer->status,
-            'current_period_ends_at' => $customer->getCurrentPeriodEndsAt(),
         ];
 
         // Customer contact
