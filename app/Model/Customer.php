@@ -1347,30 +1347,24 @@ class Customer extends Model
     }
 
     /**
-     * Get customer options.
-     *
-     * @return string
-     */
-    public function getOptions()
-    {
-        if ($this->getCurrentActiveGeneralSubscription()) {
-            // Find plan
-            return $this->getCurrentActiveGeneralSubscription()->planGeneral->getOptions();
-        } else {
-            return [];
-        }
-    }
-
-    /**
      * Get customer option.
      *
      * @return string
      */
     public function getOption($name)
     {
-        $options = $this->getOptions();
-        // @todo: chỗ này cần raise 1 cái exception chứ ko phải là trả về rỗng (trả vể rỗng để "dìm" lỗi đi à?)
-        return isset($options[$name]) ? $options[$name] : null;
+        $subscription = $this->getCurrentActiveGeneralSubscription();
+        if (is_null($subscription)) {
+            throw new Exception('This method can be called ONLY when customer has an active subscription');
+        }
+
+        $options = $subscription->planGeneral->getOptions();
+
+        if (!isset($options[$name])) {
+            throw new Exception("Option [{$name}] not available");
+        }
+
+        return  $options[$name];
     }
 
     /**
