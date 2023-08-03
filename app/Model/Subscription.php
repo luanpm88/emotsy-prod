@@ -80,11 +80,6 @@ class Subscription extends Model
         return $query->whereIn('status', [ self::STATUS_ACTIVE, self::STATUS_NEW ]);
     }
 
-    public function scopeNewSub($query)
-    {
-        return $query->whereIn('status', [ self::STATUS_ACTIVE, self::STATUS_NEW ]);
-    }
-
     /**
      * Get the user that owns the subscription.
      *
@@ -1000,7 +995,7 @@ class Subscription extends Model
     {
         $query = $query->whereHas('planGeneral', function (Builder $query) {
             $query->general();
-        })->get();
+        });
     }
 
     public function getSendEmailRateTracker()

@@ -73,51 +73,10 @@ class Customer extends Model
         return $this->subscriptions()->general();
     }
 
-    // Lấy ra current subscription (new or active)
-    // Không có case 1 customer mà có 2 subscription như vậy (chỉ có 1 hoặc null)
-    public function getNewOrActiveGeneralSubscription()
-    {
-        // Theo design thì mỗi customer chỉ có một subscription đang "new" hoặc "active"
-        $subscriptions = $this->generalSubscriptions()->newOrActive();
-
-        if ($subscriptions->count() > 1) {
-            throw new Exception('There are 2 subscriptions of [active, new] status. Please clean up the DB');
-        }
-
-        return $subscriptions->first();
-    }
-
     public function getNewGeneralSubscription()
     {
         // Theo design thì mỗi customer chỉ có một subscription đang "new"
         $subscriptions = $this->generalSubscriptions()->new();
-
-        if ($subscriptions->count() > 1) {
-            throw new Exception('There are 2 subscriptions of [new] status. Please clean up the DB');
-        }
-
-        return $subscriptions->first();
-    }
-
-    /**
-     * Lấy current active subscription
-     */
-    public function getCurrentActiveGeneralSubscription()
-    {
-        // Theo design thì mỗi customer chỉ có một subscription đang "active"
-        $subscriptions = $this->generalSubscriptions()->active();
-
-        if ($subscriptions->count() > 1) {
-            throw new Exception('There are 2 subscriptions of [active] status. Please clean up the DB');
-        }
-
-        return $subscriptions->first();
-    }
-
-    public function getCurrentNewGeneralSubscription()
-    {
-        // Theo design thì mỗi customer chỉ có một subscription đang "active"
-        $subscriptions = $this->generalSubscriptions()->newSub();
 
         if ($subscriptions->count() > 1) {
             throw new Exception('There are 2 subscriptions of [new] status. Please clean up the DB');
@@ -2014,28 +1973,6 @@ class Customer extends Model
         return $product;
     }
 
-    public function isCustomTrackingDomainRequired()
-    {
-        $plan = $this->getNewOrActiveGeneralSubscription()->planGeneral;
-
-        if (!$plan) {
-            return false;
-        }
-
-        return $plan->isCustomTrackingDomainRequired();
-    }
-
-    public function automationTemplates()
-    {
-        $subscription = $this->getCurrentActiveGeneralSubscription();
-
-        if (is_null($subscription)) {
-            throw new \Exception('Customer has no subscription!');
-        }
-
-        return $subscription->planGeneral->automationTemplates();
-    }
-
     public static function scopeByPlan($query, $plan)
     {
         $query = $query->whereHas('subscriptions', function ($q) use ($plan) {
@@ -2061,4 +1998,58 @@ class Customer extends Model
 
         return $campaign;
     }
+
+
+    /*
+     *
+     * FUNCTIONS THAT ARE DEPENDENT ON PLAN/SUBSCRIPTIONS
+     *
+     */
+
+    public function getCurrentActiveGeneralSubscription()
+    {
+        // Theo design thì mỗi customer chỉ có một subscription đang "active"
+        $subscriptions = $this->generalSubscriptions()->active();
+
+        if ($subscriptions->count() > 1) {
+            throw new Exception('There are 2 subscriptions of [active] status. Please clean up the DB');
+        }
+
+        return $subscriptions->first();
+    }
+
+    public function automationTemplates()
+    {
+        $subscription = $this->getCurrentActiveGeneralSubscription();
+
+        if (is_null($subscription)) {
+            throw new \Exception('Customer has no subscription!');
+        }
+
+        return $subscription->planGeneral->automationTemplates();
+    }
+
+    public function isCustomTrackingDomainRequired()
+    {
+        $plan = $this->getNewOrActiveGeneralSubscription()->planGeneral;
+
+        if (!$plan) {
+            return false;
+        }
+
+        return $plan->isCustomTrackingDomainRequired();
+    }
+
+    // Customer has only ONE general subscription which is NEW or ACTIVE
+    public function getNewOrActiveGeneralSubscription()
+    {
+        $subscriptions = $this->generalSubscriptions()->newOrActive();
+
+        if ($subscriptions->count() > 1) {
+            throw new Exception('There are 2 subscriptions of [active, new] status. Please clean up the DB');
+        }
+
+        return $subscriptions->first();
+    }
+
 }
