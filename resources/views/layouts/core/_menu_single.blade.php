@@ -136,7 +136,7 @@
                                     </i> {{ trans('messages.tracking_domains') }}
                                 </a>
                             </li>
-                            @if (Auth::user()->customer->Auth::user()->customer->showEmailVerificationServerMenu())
+                            @if (Auth::user()->customer->showEmailVerificationServerMenu())
                                 <li class="nav-item {{ in_array($menu, ['email_verification']) ? 'active' : '' }}">
                                     <a href="{{ action('EmailVerificationServerController@index') }}" class="dropdown-item d-flex align-items-center">
                                     <i class="navbar-icon" style="width:20px">
