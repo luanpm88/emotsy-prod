@@ -36,6 +36,18 @@ class Kernel extends ConsoleKernel
             return;
         }
 
+        // Make sure CLI process is NOT executed as root
+        Notification::recordIfFails(function() {
+            if (!exec_enabled()) {
+                throw new Exception('The exec() function is missing or disabled on the hosting server');
+            }
+
+            if (exec('whoami') == 'root') {
+                throw new Exception("Cronjob process is executed by 'root' which might cause permission issues. Make sure the cronjob process owner is the same as the acellemail/ folder's owner");
+            }
+
+        }, 'CronJob issue');
+
         $schedule->call(function () {
             event(new \Acelle\Events\CronJobExecuted());
         })->name('cronjob_event:log')->everyMinute();
