@@ -182,7 +182,7 @@
                 {{ csrf_field() }}
 
                 <h1 class="text-semibold text-center full-width mb-lvl4" style="margin: 0 0 60px 0">
-                    <img style="margin: 10px 50px;" src="{{ getSiteLogoUrl('light') }}" alt="">
+                    <img style="margin: 10px 50px;max-height:150px;" width="200px" src="{{ getSiteLogoUrl('light') }}" alt="">
                 </h1>
 
                 <!-- display flash message -->

@@ -772,22 +772,17 @@ class Invoice extends Model
         Setting::set('invoice.current', ($currentNumber + 1));
     }
 
+    public function setFee($amount)
+    {
+        $this->fee = $amount;
+        $this->save();
+    }
+
     public function updatePaymentServiceFee($gateway)
     {
-        // trường hợp init invoice có free trial và setting không require card thì fee = 0
-        if (\Acelle\Model\Setting::get('not_require_card_for_trial') == 'yes' &&
-            $this->type == \Acelle\Model\InvoiceNewSubscription::TYPE_NEW_SUBSCRIPTION &&
-            $this->mapType()->subscription->plan->hasTrial()
-        ) {
-            $this->fee = 0;
-            $this->save();
-
-            return;
-        }
-
+        // Nếu subTotal của invoice = 0 thì lấy cái minimum amount từ service. Ví dụ Stripe cần 1 số tiền tối thiểu để lưa card
         if ($this->subTotal() == 0) {
-            $this->fee = $gateway->getMinimumChargeAmount($this->currency->code);
-            $this->save();
+            $this->setFee($gateway->getMinimumChargeAmount($this->currency->code));
         }
     }
 

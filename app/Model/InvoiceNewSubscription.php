@@ -106,4 +106,19 @@ class InvoiceNewSubscription extends Invoice
     {
         return $this->subscription->planGeneral;
     }
+
+    public function updatePaymentServiceFee($gateway)
+    {
+        // trường hợp init invoice có free trial và setting không require card thì fee = 0. Overide cái điều kiện khác.
+        if (\Acelle\Model\Setting::get('not_require_card_for_trial') == 'yes' &&
+            $this->getPlan()->hasTrial()
+        ) {
+            $this->setFee(0);
+
+            return;
+        }
+
+        // Mặc định
+        return parent::updatePaymentServiceFee($gateway);
+    }
 }
