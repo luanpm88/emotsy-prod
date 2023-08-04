@@ -94,7 +94,7 @@ class SubscriptionController extends Controller
         $invoice = $customer->invoices()->unpaid()->where('uid', '=', $request->invoice_uid)->first();
         $billingAddress = $customer->getDefaultBillingAddress();
 
-        // always update invoice price fron plan
+        // always update invoice price from plan
         $invoice->mapType()->refreshPrice();
 
         // Save posted data
@@ -135,7 +135,7 @@ class SubscriptionController extends Controller
         // get unpaid invoice
         $invoice = $customer->invoices()->unpaid()->where('uid', '=', $request->invoice_uid)->first();
 
-        // always update invoice price fron plan
+        // always update invoice price from plan
         $invoice->mapType()->refreshPrice();
 
         // no unpaid invoice found
@@ -174,7 +174,7 @@ class SubscriptionController extends Controller
             throw new \Exception('Customer subscription does not have any unpaid invoice!');
         }
 
-        // always update invoice price fron plan
+        // always update invoice price from plan
         $invoice->mapType()->refreshPrice();
 
         // Luôn đặt payment method mặc định cho customer là lần chọn payment gần nhất
@@ -186,6 +186,7 @@ class SubscriptionController extends Controller
         if (
             \Acelle\Model\Setting::get('not_require_card_for_trial') == 'yes' &&
             $invoice->type == InvoiceNewSubscription::TYPE_NEW_SUBSCRIPTION &&
+            in_array($customer->getPreferredPaymentGateway()->getType(), ['stripe', 'braintree', 'paystack']) && // @todo moving this to interface
             $invoice->getPlan()->hasTrial()
         ) {
             $invoice->checkout($customer->getPreferredPaymentGateway(), function () {
@@ -349,10 +350,9 @@ class SubscriptionController extends Controller
     public function orderBox(Request $request)
     {
         $customer = $request->user()->customer;
-        $subscription = $customer->getNewOrActiveGeneralSubscription();
 
         // get unpaid invoice
-        $invoice = $customer->invoices()->unpaid()->where('uid', '=', $request->invoice_uid)->first();
+        $invoice = $customer->invoices()->unpaid()->where('uid', '=', $request->invoice_uid)->first()->mapType();
 
         // gateway fee
         if ($request->payment_method) {
@@ -363,7 +363,7 @@ class SubscriptionController extends Controller
         }
 
         return view('subscription.orderBox', [
-            'subscription' => $subscription,
+            'subscription' => $invoice->subscription,
             'bill' => $invoice->mapType()->getBillingInfo(),
             'invoice' => $invoice,
         ]);
