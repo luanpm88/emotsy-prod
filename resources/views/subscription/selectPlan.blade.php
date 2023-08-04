@@ -52,12 +52,12 @@
                     </div>
                 @else
                     <div class="new-price-box" style="margin-right: -30px">
-                        <div class="d-flex">
+                        <div class="row" style="padding-left:20px;padding-right:20px;">
 
                             @foreach ($plans as $key => $plan)
                                 <div
-                                    class="new-price-item mb-3 d-inline-block plan-item"
-                                    style="width: calc(33% - 20px)">
+                                    class="new-price-item mb-3 d-inline-block plan-item select-plan-item"
+                                    style="">
                                     <div style="height: 100px">
                                         <div class="price">
                                             {!! format_price($plan->price, $plan->currency->format, true) !!}
