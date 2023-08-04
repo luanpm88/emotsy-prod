@@ -74,7 +74,7 @@ class SubscriptionController extends Controller
 
         // subscription hiện đang new. Customer muốn thay đổi plan khác?
         // delete luôn subscription
-        $current = $customer->subscriptions()->general()->newOrActive()->get();
+        $current = $customer->subscriptions()->general()->newOrActive()->first();
         if ($current) {
             $current->deleteAndCleanup();
         }

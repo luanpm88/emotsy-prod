@@ -1328,6 +1328,11 @@ class Customer extends Model
      */
     public function canUseApi()
     {
+        if (!$this->getCurrentActiveGeneralSubscription()) {
+            // default not use api
+            return false;
+        }
+
         return $this->getOption('api_access') == 'yes';
     }
 
@@ -2032,5 +2037,15 @@ class Customer extends Model
         }
 
         return false;
+    }
+
+    public function showEmailVerificationServerMenu() {
+        if (!$this->getCurrentActiveGeneralSubscription()) {
+            // default not show the menu
+            return false;
+        }
+
+        // depend on option from active susbcription plan
+        return $this->getOption('create_email_verification_servers') == 'yes';
     }
 }
