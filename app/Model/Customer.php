@@ -2039,7 +2039,8 @@ class Customer extends Model
         return false;
     }
 
-    public function showEmailVerificationServerMenu() {
+    public function showEmailVerificationServerMenu()
+    {
         if (!$this->getCurrentActiveGeneralSubscription()) {
             // default not show the menu
             return false;
