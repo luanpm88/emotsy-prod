@@ -772,11 +772,17 @@ class Invoice extends Model
         Setting::set('invoice.current', ($currentNumber + 1));
     }
 
+    public function setFee($amount)
+    {
+        $this->fee = $amount;
+        $this->save();
+    }
+
     public function updatePaymentServiceFee($gateway)
     {
+        // Nếu subTotal của invoice = 0 thì lấy cái minimum amount từ service. Ví dụ Stripe cần 1 số tiền tối thiểu để lưa card
         if ($this->subTotal() == 0) {
-            $this->fee = $gateway->getMinimumChargeAmount($this->currency->code);
-            $this->save();
+            $this->setFee($gateway->getMinimumChargeAmount($this->currency->code));
         }
     }
 

@@ -185,7 +185,7 @@ class SubscriptionController extends Controller
         // Bỏ qua việc nhập card information khi subscribe plan with trial
         if (
             \Acelle\Model\Setting::get('not_require_card_for_trial') == 'yes' &&
-            $invoice->type == InvoiceNewSubscription::TYPE_NEW_SUBSCRIPTION &&
+            $invoice->type == InvoiceNewSubscription::TYPE_NEW_SUBSCRIPTION && // chỉ có newSub invoice mới bỏ qua trial
             in_array($customer->getPreferredPaymentGateway()->getType(), ['stripe', 'braintree', 'paystack']) && // @todo moving this to interface
             $invoice->getPlan()->hasTrial()
         ) {
