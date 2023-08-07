@@ -15,6 +15,7 @@ use Acelle\Model\Subscriber;
 use Acelle\Model\Setting;
 use Illuminate\Support\Facades\Storage;
 use Acelle\Model\TemplateCategory;
+use Acelle\Jobs\ForceTriggerAutomation;
 use Exception;
 
 class Automation2Controller extends Controller
@@ -2807,7 +2808,7 @@ class Automation2Controller extends Controller
 
     public function triggerAll($uid)
     {
-        // init automation
+        // Instantiate automation and dispatch the job
         $automation = Automation2::findByUid($uid);
 
         // authorize
@@ -2816,7 +2817,7 @@ class Automation2Controller extends Controller
         }
 
         try {
-            $automation->triggerAll();
+            ForceTriggerAutomation::dispatch($automation);
 
             return response()->json([
                 'message' => trans('messages.automation.trigger_all.success'),

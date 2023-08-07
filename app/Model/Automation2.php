@@ -748,6 +748,12 @@ class Automation2 extends Model
 
         $this->logger()->info(sprintf('NEW > It is %s hours due! triggering!', $now->diffInHours($eventDate)));
 
+        $this->forceTrigger();
+    }
+
+    // Trigger all contacts that are not yet triggered
+    public function forceTrigger()
+    {
         $notTriggered = $this->notTriggeredSubscribers()->get();
         $total = $notTriggered->count();
         $i = 0;
