@@ -8,9 +8,6 @@ class TransactionResult
     public const RESULT_FAILED = 'failed';
     public const RESULT_PENDING = 'pending';
 
-    // For Stripe / PayPal / Braintree only when the service will start and finish the transaction immediately
-    public const RESULT_VERIFICATION_NOT_NEEDED = 'not-needed';
-
     public $result;
     public $error;
 
@@ -37,10 +34,5 @@ class TransactionResult
         // Normally for services that immediately returns a result already
         //
         return $this->result == self::RESULT_PENDING;
-    }
-
-    public function isVerificationNotNeeded()
-    {
-        return $this->result = self::RESULT_VERIFICATION_NOT_NEEDED;
     }
 }

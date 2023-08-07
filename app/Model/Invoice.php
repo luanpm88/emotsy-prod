@@ -11,6 +11,8 @@ use Dompdf\Dompdf;
 use Acelle\Library\StringHelper;
 use Acelle\Library\Facades\SubscriptionFacade;
 use Exception;
+use Closure;
+use Acelle\Library\Contracts\PaymentGatewayInterface;
 
 use function Acelle\Helpers\getAppHost;
 
@@ -463,17 +465,25 @@ class Invoice extends Model
      *
      * @return array
      */
-    public function checkout($gateway, $executePayment)
+    public function checkout(PaymentGatewayInterface $gateway, Closure $executePayment)
     {
-        // Create pending transaction, do not include it in a DB::transaction
-        // as it is a separate process with separate outcome
-        // So there is a case when there is a pending trasaction for an invoice (not done or error)
-        $this->createPendingTransaction($gateway);
-
         \DB::transaction(function () use ($gateway, $executePayment) {
+            // Create pending transaction, do not include it in a DB::transaction
+            // The pending transaction will turn into FAILED or DONE
+            // It only keeps pending for Offline payment
+            $this->createPendingTransaction($gateway);
+
             try {
                 $result = $executePayment($this);
+            } catch (\Throwable $e) {
+                // Payment failed, due to an unknown error
+                $this->payFailed("PAYMENT FAILED: ".$e->getMessage());
 
+                // Immediately return
+                return;
+            }
+
+            try {
                 if ($result->isDone()) {
                     // @todo Log something here: payment already done
                     // So, if an error occurs, it is likely due to following code
@@ -488,15 +498,10 @@ class Invoice extends Model
                     // Wait more, check again later....
                     // Coinpayment, offline
                     // logging by type
-                } elseif ($result->isVerificationNotNeeded()) {
-                    // IMPORTANT: this special status is used for checking (pending) transaction status only
-                    //          **** SERVICES SHOULD NOT RETURN THIS STATUS IN CHECKOUT method ****
-                    // Do nothing, just wait for the service to finish it itself (Stripe)
-                    // Service should not return this status, it is used for verification only
                 }
             } catch (\Throwable $e) {
                 // Payment failed, due to an unknown error
-                $this->payFailed($e->getMessage());
+                $this->payFailed("Payment done, but something went wrong after that: ".$e->getMessage());
             }
         });
     }
