@@ -2816,7 +2816,7 @@ class Automation2Controller extends Controller
         }
 
         try {
-            // $automation->triggerAll();
+            $automation->triggerAll();
 
             return response()->json([
                 'message' => trans('messages.automation.trigger_all.success'),

@@ -124,13 +124,15 @@ full-height
                 new Dialog('confirm', {
                     message: '{{ trans('messages.automation.trigger_all.confirm') }}',
                     ok: function() {
+                        addMaskLoading();
                         $.ajax({
                             method: 'POST',
                             url: url,
                             data: {
                                 _token: CSRF_TOKEN
                             },
-                            type: 'json'
+                            type: 'json',
+                            globalError: false,
                         })
                         .done(function( response ) {
                             //
@@ -138,12 +140,16 @@ full-height
 
                             // reload list
                             listContact.load();
+
+                            removeMaskLoading();
                         })
                         .fail(function( response ) {
                             new Dialog('alert', {
                                 title: '{{ trans('messages.notify.error') }}',
                                 message: response.responseText,
                             });
+
+                            removeMaskLoading();
                         });
                     }
                 });
