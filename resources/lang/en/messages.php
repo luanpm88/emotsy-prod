@@ -3174,4 +3174,7 @@
   'your_current_license' => 'Thank you for purchasing! Below is your license key, also known as Purchase Code. Your license type is',
   'zip_postal_code' => 'Zip / Postal code',
   'invoice.or_you_can_manually_pay' => 'or you can manually pay it now',
+  'automation.trigger_all' => 'Trigger All',
+  'automation.trigger_all.confirm' => 'Are you sure you want to manually trigger the automation for all pending contacts, bypassing all trigger conditions?',
+  'automation.trigger_all.success'  => 'Operation executed successfully. Please wait for a while and refresh the list',
 ) ?>

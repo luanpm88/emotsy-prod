@@ -2804,4 +2804,27 @@ class Automation2Controller extends Controller
             'newAutomation' => $newAutomation,
         ]);
     }
+
+    public function triggerAll($uid)
+    {
+        // init automation
+        $automation = Automation2::findByUid($uid);
+
+        // authorize
+        if (\Gate::denies('update', $automation)) {
+            return $this->notAuthorized();
+        }
+
+        try {
+            // $automation->triggerAll();
+
+            return response()->json([
+                'message' => trans('messages.automation.trigger_all.success'),
+            ]);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
 }
