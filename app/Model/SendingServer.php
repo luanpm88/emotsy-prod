@@ -284,7 +284,7 @@ class SendingServer extends Model
      */
     public static function types()
     {
-        return [
+        $types = [
             self::TYPE_AMAZON_SMTP => [
                 'cols' => [
                     'host' => 'required',
@@ -457,6 +457,14 @@ class SendingServer extends Model
                 ],
             ],
         ];
+
+        // In case only one type of sending server is allowed
+        $allowedTypes = app_profile('sending_server.only');
+        if ($allowedTypes) {
+            $types = array_filter($types, fn ($type) => in_array($type, $allowedTypes), ARRAY_FILTER_USE_KEY);
+        }
+
+        return $types;
     }
 
     /**
