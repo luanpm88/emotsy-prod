@@ -366,6 +366,12 @@ class Customer extends Model
         return $query->count();
     }
 
+    public function getCurrentActiveSubscription()
+    {
+        // Keep this function alias to support plugins
+        return $this->getCurrentActiveGeneralSubscription();
+    }
+
     /**
      * Get max list quota.
      *
