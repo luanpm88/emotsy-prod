@@ -15,19 +15,9 @@
                         'contact_uid' => $contact->uid,
                     ]) }}')" class="font-weight-semibold d-block">
                         @if(isSiteDemo())
-                            <a
-                                image-popup="link"
-                                href="https://i.pravatar.cc/300"
-                            >
-                                <img src="https://i.pravatar.cc/300" />
-                            </a>
+                            <img src="https://i.pravatar.cc/300" />
                         @else
-                            <a
-                                image-popup="link"
-                                href="{{ action('SubscriberController@avatarOrigin',  $contact->uid) }}"
-                            >
-                                <img src="{{ action('SubscriberController@avatar',  $contact->uid) }}" />
-                            </a>
+                            <img src="{{ action('SubscriberController@avatar',  $contact->uid) }}" />
                         @endif
                     </a>
                 </div>
