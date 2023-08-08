@@ -63,7 +63,6 @@ class PlanGeneral extends Plan implements PlanInterface
     protected $fillable = [
         'name',
         'description',
-        'billing_cycle',
         'frequency_amount',
         'frequency_unit',
         'price',
@@ -1057,7 +1056,6 @@ class PlanGeneral extends Plan implements PlanInterface
     {
         $plan = new self([
             'price' => 0,
-            'billing_cycle' => 'monthly',
             'frequency_amount' => 1,
             'frequency_unit' => 'month',
             'trial_amount' => '0',
@@ -1066,6 +1064,7 @@ class PlanGeneral extends Plan implements PlanInterface
         ]);
 
         $plan->status = self::STATUS_INACTIVE;
+        $plan->type = self::TYPE_GENERAL;
 
         return $plan;
     }

@@ -44,7 +44,6 @@ class Plan extends Model
     protected $fillable = [
         'name',
         'description',
-        'billing_cycle',
         'frequency_amount',
         'frequency_unit',
         'price',
@@ -90,7 +89,6 @@ class Plan extends Model
         $rules = array(
             'name' => 'required',
             'currency_id' => 'required',
-            'billing_cycle' => 'required',
             'frequency_amount' => 'required|min:1',
             'frequency_unit' => 'required',
             'price' => 'required|min:0',
