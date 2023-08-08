@@ -609,6 +609,7 @@ label.switchery-double.checkbox-switchery {
     border-radius: 100%;
     padding: 18px 20px;
     border: solid 1.5px #ddd;
+    display: inline-block;
 }
 .profile .media img {
     width: 90px;
