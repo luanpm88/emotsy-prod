@@ -396,7 +396,7 @@ class SubscriptionController extends Controller
             ]);
         }
 
-        // 
+        //
         if ($result->isDone()) {
             return redirect()->action('SubscriptionController@index');
         } else {
@@ -406,7 +406,5 @@ class SubscriptionController extends Controller
                 'invoice_uid' => $invoice->uid,
             ]);
         }
-
-        
     }
 }
