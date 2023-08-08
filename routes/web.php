@@ -130,6 +130,7 @@ Route::group(['middleware' => ['not_installed', 'not_logged_in']], function () {
 
     //Subscriber avatar
     Route::get('assets/images/avatar/subscriber-{uid?}.jpg', 'SubscriberController@avatar');
+    Route::get('assets/images/avatar/subscribe-origin-{uid?}.jpg', 'SubscriberController@avatarOrigin');
 
     // User resend activation email
     Route::get('users/resend-activation-email', 'UserController@resendActivationEmail');

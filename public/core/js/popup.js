@@ -31,7 +31,7 @@ class Popup {
         }
         
         this.modal = new bootstrap.Modal(document.getElementById(this.id), {
-            backdrop: 'static'
+            backdrop: this.options.backdrop ?? 'static'
         });
 
         this.popup[0].addEventListener('hidden.bs.modal', function (event) {

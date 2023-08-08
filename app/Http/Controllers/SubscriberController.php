@@ -757,10 +757,29 @@ class SubscriberController extends Controller
         } else {
             $subscriber = new \Acelle\Model\Subscriber();
         }
-        if (!empty($subscriber->imagePath())) {
-            $img = \Image::make($subscriber->imagePath());
+
+        if (is_file($subscriber->getImagePath())) {
+            $img = \Image::make($subscriber->getImagePath());
         } else {
             $img = \Image::make(public_path('images/subscriber-icon.jpg'));
+        }
+
+        return $img->response();
+    }
+
+    public function avatarOrigin(Request $request)
+    {
+        // Get current customer
+        $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
+        
+        if (is_file($subscriber->getImageOriginPath())) {
+            $img = \Image::make($subscriber->getImageOriginPath());
+        } else {
+            if (is_file($subscriber->getImagePath())) {
+                $img = \Image::make($subscriber->getImagePath());
+            } else {
+                $img = \Image::make(public_path('images/subscriber-icon.jpg'));
+            }
         }
 
         return $img->response();

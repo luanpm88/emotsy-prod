@@ -51,6 +51,7 @@
 <script type="text/javascript" src="{{ URL::asset('core/js/dialog.js') }}"></script>
 <script type="text/javascript" src="{{ URL::asset('core/js/iframe_modal.js') }}"></script>
 <script type="text/javascript" src="{{ URL::asset('core/js/search.js') }}"></script>
+<script type="text/javascript" src="{{ URL::asset('core/js/image_popup.js') }}"></script>
 
 <script type="text/javascript" src="{{ URL::asset('core/js/app.js') }}"></script>
 

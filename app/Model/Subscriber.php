@@ -673,6 +673,24 @@ class Subscriber extends Model
         $this->save();
     }
 
+    public function getImagePath()
+    {
+        $path = storage_path('app/subscriber/');
+
+        // create if not exist
+        if (!file_exists($path)) {
+            mkdir($path, 0777, true);
+        }
+
+        // 
+        return join_paths($path, $this->uid.'.jpg');
+    }
+
+    public function getImageOriginPath()
+    {
+        return $this->getImagePath() . '.origin.jpg';
+    }
+
     /**
      * Upload and resize avatar.
      *
@@ -682,37 +700,25 @@ class Subscriber extends Model
      */
     public function uploadImage($file)
     {
-        $path = 'app/subscriber/';
-        $upload_path = storage_path($path);
+        $path = $this->getImagePath();
+        $originPath = $this->getImageOriginPath();
 
-        if (!file_exists($upload_path)) {
-            mkdir($upload_path, 0777, true);
-        }
+        // File name: avatar
+        $filename = basename($originPath);
 
-        $filename = $this->uid.'.jpg';
+        // The base dir: /storage/app/users/000000/home/
+        $dirname = dirname($originPath);
 
         // save to server
-        $file->move($upload_path, $filename);
+        $file->move($dirname, $filename);
 
         // create thumbnails
-        $img = \Image::make($upload_path.$filename);
-        $img->fit(120, 120)->save($upload_path.$filename);
+        $img = \Image::make($originPath);
 
-        return $path.$filename;
-    }
+        // default size overwrite
+        $img->fit(120, 120)->save($path);
 
-    /**
-     * Get image thumb path.
-     *
-     * @return string
-     */
-    public function imagePath()
-    {
-        if (!empty($this->uid) && is_file(storage_path('app/subscriber/'.$this->uid).'.jpg')) {
-            return storage_path('app/subscriber/'.$this->uid).'.jpg';
-        } else {
-            return '';
-        }
+        return $path;
     }
 
     /**
