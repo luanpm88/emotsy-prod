@@ -37,7 +37,6 @@ interface PaymentGatewayInterface
 
     // In certain cases, users will need to update their payment information (credit card numbers, etc.)
     public function getAutoBillingDataUpdateUrl(): string;
-    public function verify(Transaction $transaction): TransactionResult;
 
     //
     public function allowManualReviewingOfTransaction(): bool;
