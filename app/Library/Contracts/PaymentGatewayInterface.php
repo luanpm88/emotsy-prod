@@ -2,9 +2,9 @@
 
 namespace Acelle\Library\Contracts;
 
+use Acelle\Library\TransactionResult;
 use Acelle\Model\Invoice;
 use Acelle\Model\Transaction;
-use Acelle\Library\TransactionResult;
 
 interface PaymentGatewayInterface
 {
@@ -41,4 +41,7 @@ interface PaymentGatewayInterface
     //
     public function allowManualReviewingOfTransaction(): bool;
     public function getMinimumChargeAmount($currency);
+
+    // verify pending transaction
+    public function verify(Transaction $transaction): TransactionResult;
 }
