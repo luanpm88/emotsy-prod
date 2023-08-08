@@ -282,6 +282,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
 
     // New subscription
     // =================== REVIEWED
+    Route::post('account/subscription/verify-transaction/{invoice_uid}', 'SubscriptionController@verifyPendingTransaction');
     Route::get('account/subscription/select-plan', 'SubscriptionController@selectPlan');
     Route::get('account/subscription/order-box/{invoice_uid}', 'SubscriptionController@orderBox');
     Route::match(['get', 'post'], 'account/subscription/change-plan', 'SubscriptionController@changePlan');

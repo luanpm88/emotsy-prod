@@ -8,6 +8,7 @@ use Acelle\Model\SubscriptionLog;
 use Acelle\Library\Facades\Billing;
 use Acelle\Library\Facades\SubscriptionFacade;
 use Acelle\Model\InvoiceNewSubscription;
+use Acelle\Model\Transaction;
 
 class SubscriptionController extends Controller
 {
@@ -149,6 +150,7 @@ class SubscriptionController extends Controller
         if ($invoice->getPendingTransaction()) {
             return view('subscription.pending', [
                 'invoice' => $invoice,
+                'transaction' => $invoice->getPendingTransaction(),
             ]);
         }
 
@@ -367,5 +369,44 @@ class SubscriptionController extends Controller
             'bill' => $invoice->mapType()->getBillingInfo(),
             'invoice' => $invoice,
         ]);
+    }
+
+    public function verifyPendingTransaction(Request $request, $invoice_uid)
+    {
+        $invoice = \Acelle\Model\Invoice::findByUid($invoice_uid);
+        $transaction = $invoice->getPendingTransaction();
+        $gateway = Billing::getGateway($transaction->method);
+
+        // không có pending transaction
+        if (!$transaction) {
+            throw new \Exception('Invoice này không có pending transaction! kiểm tra lại UI xem có trường hợp nào không có pending transaction mà qua đây không?');
+        }
+
+        // gateway verify transaction from invoice
+        try {
+            // get transaction result from service
+            $result = $gateway->verify($transaction);
+
+            // handle transaction result
+            $invoice->handleTransactionResult($result);
+        } catch (\Throwable $e) {
+            $request->session()->flash('alert-error', $e->getMessage());
+            return redirect()->action('SubscriptionController@payment', [
+                'invoice_uid' => $invoice->uid,
+            ]);
+        }
+
+        // 
+        if ($result->isDone()) {
+            return redirect()->action('SubscriptionController@index');
+        } else {
+            $request->session()->flash('alert-info', trans('messages.subscription.payment_status.refreshed'));
+
+            return redirect()->action('SubscriptionController@payment', [
+                'invoice_uid' => $invoice->uid,
+            ]);
+        }
+
+        
     }
 }

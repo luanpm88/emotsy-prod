@@ -3177,4 +3177,9 @@
   'automation.trigger_all' => 'Trigger All',
   'automation.trigger_all.confirm' => 'Are you sure you want to manually trigger the automation for all pending contacts, bypassing all trigger conditions?',
   'automation.trigger_all.success'  => 'Operation executed successfully. Please wait for a while and refresh the list',
+  'subscription.verify_transaction' => 'Refresh transaction status',
+  'subscription.payment_status.refreshed' => 'The payment is currently being processed. Please wait and check again later.',
+  'alert.info' => 'Announcement',
+  'alert.error' => 'Error',
+  'alert.warning' => 'Warning',
 ) ?>

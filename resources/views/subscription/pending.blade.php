@@ -23,6 +23,15 @@
         <div class="col-md-6">
             <h2>{!! trans('messages.invoice.pending') !!}</h2>  
             <p> {!! trans('messages.invoice.pending.wording') !!}</p>
+
+            <div class="mt-4">
+                <a onclick="addButtonMask($(this))" link-method="POST" href="{{ action('SubscriptionController@verifyPendingTransaction', [
+                    'invoice_uid' => $invoice->uid,
+                ]) }}" class="btn btn-secondary">
+                    <span class="material-symbols-rounded me-1">restart_alt</span>
+                    {{ trans('messages.subscription.verify_transaction') }}
+                </a>
+            </div>
         </div>
         <div class="col-md-2"></div>
         <div class="col-md-4">

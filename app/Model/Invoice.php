@@ -483,26 +483,8 @@ class Invoice extends Model
                 return;
             }
 
-            try {
-                if ($result->isDone()) {
-                    // @todo Log something here: payment already done
-                    // So, if an error occurs, it is likely due to following code
-
-                    // Stripe, PayPal, Braintree for example
-                    $this->paySuccess();
-                } elseif ($result->isFailed()) {
-                    // Payment failed as reported by Stripe
-                    $this->payFailed($result->error);
-                } elseif ($result->isPending()) {
-                    // Coin, offline shouls return this status
-                    // Wait more, check again later....
-                    // Coinpayment, offline
-                    // logging by type
-                }
-            } catch (\Throwable $e) {
-                // Payment failed, due to an unknown error
-                $this->payFailed("Payment done, but something went wrong after that: ".$e->getMessage());
-            }
+            // invoice handle result
+            $this->handleTransactionResult($result);
         });
     }
 
@@ -854,6 +836,30 @@ class Invoice extends Model
                 break;
             default:
                 throw new \Exception("Invoice type #{$this->type} not found!");
+        }
+    }
+
+    public function handleTransactionResult($result)
+    {
+        try {
+            if ($result->isDone()) {
+                // @todo Log something here: payment already done
+                // So, if an error occurs, it is likely due to following code
+
+                // Stripe, PayPal, Braintree for example
+                $this->paySuccess();
+            } elseif ($result->isFailed()) {
+                // Payment failed as reported by Stripe
+                $this->payFailed($result->error);
+            } elseif ($result->isPending()) {
+                // Coin, offline shouls return this status
+                // Wait more, check again later....
+                // Coinpayment, offline
+                // logging by type
+            }
+        } catch (\Throwable $e) {
+            // Payment failed, due to an unknown error
+            $this->payFailed("Payment done, but something went wrong after that: ".$e->getMessage());
         }
     }
 }
