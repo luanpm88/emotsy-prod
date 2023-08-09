@@ -21,7 +21,10 @@
     <div class="alert alert-info">
         <span class="text-semibold">{{ trans('messages.notification.note') }} </span> {{ trans('messages.notification.sending_servers') }}
     </div>
-    <p>{{ trans('messages.sending_server.wording') }}</p>
+
+    @if (is_null(app_profile('sending_server.only')))
+        <p>{{ trans('messages.sending_server.wording') }}</p>
+    @endif
 
 
     <div class="listing-form"
