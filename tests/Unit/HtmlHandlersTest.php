@@ -53,7 +53,8 @@ class HtmlHandlersTest extends TestCase
         $html = "Hello\nWorld\nFrom\r\nLaravel\n";
         $out = $pipeline->build()->process($html);
 
-        $this->assertEquals($out, "Hello\r\nWorld\r\nFrom\r\nLaravel");
+        // Notice that message should end with an "\r\n" character as suggested by RFC2822
+        $this->assertEquals($out, "Hello\r\nWorld\r\nFrom\r\nLaravel\r\n");
     }
 
     public function test_append_html()
@@ -410,14 +411,17 @@ class HtmlHandlersTest extends TestCase
         $html = $campaign->getHtmlContent();
         $cachedHtml = $campaign->getHtmlContent($subscriber = null, $messageId = null, $server = null, $fromCache = true, $seconds = 1);
 
-        $this->assertEquals($html, '<!DOCTYPE html><html><body><p>Original</p><img src="'.asset('/images/transparent.gif').'" data="X-Client-Message-Id: [ null ]" alt="X-Client-Message-Id: [ null ]" width="0" height="0" style="visibility:hidden"></body></html>');
+        // Notice that message should end with an "\r\n" character as suggested by RFC2822
+        $this->assertEquals($html, '<!DOCTYPE html><html><body><p>Original</p><img src="'.asset('/images/transparent.gif').'" data="X-Client-Message-Id: [ null ]" alt="X-Client-Message-Id: [ null ]" width="0" height="0" style="visibility:hidden"></body></html>'."\r\n");
         $this->assertEquals($html, $cachedHtml);
 
         $campaign->template->content = 'Updated';
         $html = $campaign->getHtmlContent();
         $cachedHtml = $campaign->getHtmlContent($subscriber = null, $messageId = null, $server = null, $fromCache = true, $seconds = 1);
-        $this->assertEquals($html, '<!DOCTYPE html><html><body><p>Updated</p><img src="'.asset('/images/transparent.gif').'" data="X-Client-Message-Id: [ null ]" alt="X-Client-Message-Id: [ null ]" width="0" height="0" style="visibility:hidden"></body></html>');
-        $this->assertEquals($cachedHtml, '<!DOCTYPE html><html><body><p>Original</p><img src="'.asset('/images/transparent.gif').'" data="X-Client-Message-Id: [ null ]" alt="X-Client-Message-Id: [ null ]" width="0" height="0" style="visibility:hidden"></body></html>');
+
+        // Notice that message should end with an "\r\n" character as suggested by RFC2822
+        $this->assertEquals($html, '<!DOCTYPE html><html><body><p>Updated</p><img src="'.asset('/images/transparent.gif').'" data="X-Client-Message-Id: [ null ]" alt="X-Client-Message-Id: [ null ]" width="0" height="0" style="visibility:hidden"></body></html>'."\r\n");
+        $this->assertEquals($cachedHtml, '<!DOCTYPE html><html><body><p>Original</p><img src="'.asset('/images/transparent.gif').'" data="X-Client-Message-Id: [ null ]" alt="X-Client-Message-Id: [ null ]" width="0" height="0" style="visibility:hidden"></body></html>'."\r\n");
 
         // wait 2 seconds for cache to expire
         sleep(2);
