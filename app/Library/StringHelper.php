@@ -238,7 +238,7 @@ class StringHelper
 
     public static function replaceBareLineFeed($content)
     {
-        return trim(preg_replace("/(?<=[^\r])\n/", "\r\n", $content));
+        return preg_replace("/(?<=[^\r])\n/", "\r\n", $content);
     }
 
     public static function getRandomUSIpAddresses()
