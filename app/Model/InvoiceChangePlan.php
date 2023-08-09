@@ -36,17 +36,21 @@ class InvoiceChangePlan extends Invoice
         // change plan
         $this->subscription->changePlan($this->newPlan);
 
-        // Different types of PLAN have different business here after payment for CHANGE PLANCE is successful
-        // Let's add a process() method for Plan* too
-        //
-        // For example: PlanGeneral
-        //     - refill sending credits
-        //
-        // For example: PlanSender
-        //     - send an email to Admin? "Hey, your client has just successfully paid for SenderID CHANGE, from ID_OLD to ID_NEW, process it...."
-        //
-        // Others...
-        //
+        // Handle business for different types of plan
+        switch (get_class($this->subscription->plan->mapType())) {
+            case PlanGeneral::class:
+
+                // ....
+                // ....
+
+                break;
+
+            default:
+
+                throw new \Exception('Unknown plan type');
+
+                break;
+        }
 
         // Logging
         SubscriptionFacade::log($this->subscription, SubscriptionLog::TYPE_PAY_SUCCESS, $this->uid, [

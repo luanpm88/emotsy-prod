@@ -63,7 +63,7 @@ class InvoiceRenewSubscription extends Invoice
         $chargeInfo = trans('messages.bill.charge_before', [
             'date' => $this->customer->formatDateTime($this->subscription->current_period_ends_at, 'datetime_full'),
         ]);
-        $plan = $this->subscription->planGeneral;
+        $plan = $this->subscription->plan;
 
         return $this->getBillingInfoBase($chargeInfo, $plan);
     }
@@ -89,9 +89,9 @@ class InvoiceRenewSubscription extends Invoice
             throw new \Exception("Can not change paid invoice price!");
         }
 
-        $invoiceItem = $this->invoiceItems()->first(); // subscription general plan always has 1 invoice item (design)
-        if ($invoiceItem->amount != $this->subscription->planGeneral->getPrice()) {
-            $invoiceItem->amount = $this->subscription->planGeneral->getPrice();
+        $invoiceItem = $this->invoiceItems()->first(); // subscription plan always has 1 invoice item (design)
+        if ($invoiceItem->amount != $this->subscription->plan->getPrice()) {
+            $invoiceItem->amount = $this->subscription->plan->getPrice();
             $invoiceItem->save();
         }
     }

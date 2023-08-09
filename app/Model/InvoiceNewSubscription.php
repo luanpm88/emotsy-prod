@@ -30,7 +30,7 @@ class InvoiceNewSubscription extends Invoice
         // Tạm thời chỗ này phải if/else vì
         // chưa sử dụng class kế thừa cho subscription (VD: SubscriptionSender, SubscriptionGeneral, SubscriptionNumber...)
         // mà tất cả các loại plan trên đều dùng 1 class Subscription như nhau
-        switch (get_class($this->subscription->plan->mapType())) {
+        switch (get_class($this->getPlan()->mapType())) {
             case PlanGeneral::class:
 
                 // Set số lượng email max cho subscription
@@ -63,7 +63,7 @@ class InvoiceNewSubscription extends Invoice
     public function getBillingInfo()
     {
         $chargeInfo = trans('messages.bill.charge_now');
-        $plan = $this->subscription->planGeneral;
+        $plan = $this->getPlan();
 
         return $this->getBillingInfoBase($chargeInfo, $plan);
     }
@@ -87,24 +87,24 @@ class InvoiceNewSubscription extends Invoice
             throw new \Exception("Can not change paid invoice price!");
         }
 
-        $invoiceItem = $this->invoiceItems()->first(); // subscription general plan always has 1 invoice item (design)
+        $invoiceItem = $this->invoiceItems()->first(); // subscription plan always has 1 invoice item (design)
 
         // if has trial => set price = 0
-        if ($this->subscription->planGeneral->hasTrial() && $invoiceItem->amount != 0) {
+        if ($this->getPlan()->hasTrial() && $invoiceItem->amount != 0) {
             $invoiceItem->amount = 0;
             $invoiceItem->save();
         }
 
         // if not trial and price updated
-        elseif (!$this->subscription->planGeneral->hasTrial() && $invoiceItem->amount != $this->subscription->planGeneral->getPrice()) {
-            $invoiceItem->amount = $this->subscription->planGeneral->getPrice();
+        elseif (!$this->getPlan()->hasTrial() && $invoiceItem->amount != $this->getPlan()->getPrice()) {
+            $invoiceItem->amount = $this->getPlan()->getPrice();
             $invoiceItem->save();
         }
     }
 
     public function getPlan()
     {
-        return $this->subscription->planGeneral;
+        return $this->subscription->plan;
     }
 
     public function updatePaymentServiceFee($gateway)
