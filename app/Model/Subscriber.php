@@ -715,6 +715,12 @@ class Subscriber extends Model
         // create thumbnails
         $img = \Image::make($originPath);
 
+        // resize image
+        $img->resize(500, 500, function ($constraint) {
+            $constraint->aspectRatio();
+            $constraint->upsize();
+        })->save($originPath);
+
         // default size overwrite
         $img->fit(120, 120)->save($path);
 

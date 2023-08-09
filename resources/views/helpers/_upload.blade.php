@@ -3,7 +3,7 @@
         <h3 class="text-semibold text-primary">{{ trans('messages.profile_photo') }}</h3>
         <div class="media profile-image d-flex">
             <div class="preview me-4 position-relative" id="{{$dragId}}">
-                <a href="{{ $src }}" image-popup="link" class="upload-media-container radius-0 pre-upload-photo">
+                <a href="{{ $srcOrigin ?? $src }}" image-popup="link" class="upload-media-container radius-0 pre-upload-photo">
                     <img preview-for="image" empty-src="{{ URL::asset('images/placeholder.jpg') }}" src="{{ $src }}" class="rounded-circle" alt="">
                 </a>
                 <span onclick="$('input[name=image]').trigger('click')"
