@@ -682,7 +682,7 @@ class Subscriber extends Model
             mkdir($path, 0777, true);
         }
 
-        // 
+        //
         return join_paths($path, $this->uid.'.jpg');
     }
 

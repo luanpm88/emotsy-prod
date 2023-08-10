@@ -771,7 +771,7 @@ class SubscriberController extends Controller
     {
         // Get current customer
         $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
-        
+
         if (is_file($subscriber->getImageOriginPath())) {
             $img = \Image::make($subscriber->getImageOriginPath());
         } else {
