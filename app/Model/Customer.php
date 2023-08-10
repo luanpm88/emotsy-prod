@@ -1282,27 +1282,6 @@ class Customer extends Model
     }
 
     /**
-     * Get customer option.
-     *
-     * @return string
-     */
-    public function getOption($name)
-    {
-        $subscription = $this->getCurrentActiveGeneralSubscription();
-        if (is_null($subscription)) {
-            throw new Exception('This method can be called ONLY when customer has an active subscription');
-        }
-
-        $options = $subscription->planGeneral->getOptions();
-
-        if (!isset($options[$name])) {
-            throw new Exception("Option [{$name}] not available");
-        }
-
-        return  $options[$name];
-    }
-
-    /**
      * Check if customer has api access.
      *
      * @return bool
@@ -1988,9 +1967,6 @@ class Customer extends Model
     {
         $subscription = $this->getNewOrActiveGeneralSubscription();
 
-        if (!$subscription) {
-            return false;
-        }
 
         if ($subscription->getUnpaidInvoice()) {
             return true;
