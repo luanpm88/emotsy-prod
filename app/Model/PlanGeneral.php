@@ -1185,7 +1185,6 @@ class PlanGeneral extends Plan implements PlanInterface
             "email_footer_trial_period_only" => "no",
             "html_footer" => "",
             "plain_text_footer" => "",
-            "payment_gateway" => "",
             "billing_cycle" => "other",
         ]);
         $plan->status = 'active';
