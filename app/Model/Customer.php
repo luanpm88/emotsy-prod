@@ -362,21 +362,6 @@ class Customer extends Model
     }
 
     /**
-     * Get max list quota.
-     *
-     * @return number
-     */
-    public function maxLists()
-    {
-        $count = $this->getCurrentActiveGeneralSubscription()->planGeneral->getOption('list_max');
-        if ($count == -1) {
-            return '∞';
-        } else {
-            return $count;
-        }
-    }
-
-    /**
      * Count customer lists.
      *
      * @return number
@@ -393,10 +378,10 @@ class Customer extends Model
      */
     public function listsUsage()
     {
-        $max = $this->maxLists();
+        $max = $this->getCurrentActiveGeneralSubscription()->planGeneral->getOption('list_max');
         $count = $this->listsCount();
 
-        if ($max == '∞') {
+        if ($max == '∞' || $max == -1) {
             return 0;
         }
 
@@ -418,7 +403,8 @@ class Customer extends Model
      */
     public function displayListsUsage()
     {
-        if ($this->maxLists() == '∞') {
+        $max = $this->getCurrentActiveGeneralSubscription()->planGeneral->getOption('list_max');
+        if ($max == '∞' || $max == '-1' ) {
             return trans('messages.unlimited');
         }
 

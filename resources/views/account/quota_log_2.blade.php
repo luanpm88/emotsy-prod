@@ -38,7 +38,7 @@
             <div class="col-md-12 mb-4">
                 <div class="content-group-sm">
                     <div class="pull-right text-primary text-semibold">
-                        <span class="text-muted">{{ number_with_delimiter(Auth::user()->customer->listsCount()) }}/{{ number_with_delimiter(Auth::user()->customer->maxLists()) }}</span>
+                        <span class="text-muted">{{ number_with_delimiter(Auth::user()->customer->listsCount()) }}/{{ number_with_delimiter(Auth::user()->customer->getCurrentActiveGeneralSubscription()->planGeneral->getOption('list_max')) }}</span>
                         &nbsp;&nbsp;&nbsp;{{ Auth::user()->customer->displayListsUsage() }}
                     </div>
                     <label class="text-semibold">{{ trans('messages.list') }}</label>

@@ -42,7 +42,7 @@
                     <div class="d-flex align-items-center">
                         <h5 class="text-semibold mb-1 me-auto">{{ trans('messages.list') }}</h5>
                         <div class="pull-right text-primary text-semibold">
-                            <span class="text-muted">{{ number_with_delimiter(Auth::user()->customer->listsCount()) }}/{{ number_with_delimiter(Auth::user()->customer->maxLists()) }}</span>
+                            <span class="text-muted">{{ number_with_delimiter(Auth::user()->customer->listsCount()) }}/{{ number_with_delimiter(Auth::user()->customer->getCurrentActiveGeneralSubscription()->planGeneral->getOption('list_max')) }}</span>
                             &nbsp;&nbsp;&nbsp;{{ Auth::user()->customer->displayListsUsage() }}
                         </div>
                     </div>
