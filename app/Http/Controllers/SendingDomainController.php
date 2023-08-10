@@ -5,8 +5,6 @@ namespace Acelle\Http\Controllers;
 use Illuminate\Http\Request;
 use Acelle\Http\Controllers\Controller;
 use Acelle\Model\SendingDomain;
-use Acelle\Model\SendingServer;
-use Acelle\Model\Setting;
 use Acelle\Library\Facades\Hook;
 use Gate;
 
@@ -24,13 +22,19 @@ class SendingDomainController extends Controller
         }
 
         $request->merge(array("customer_id" => $request->user()->customer->id));
-        $plan = $request->user()->customer->getCurrentActiveGeneralSubscription()->planGeneral;
 
-        if ($plan->useSystemSendingServer()) {
-            $server = $plan->primarySendingServer();
+        if (config('app.saas')) {
+            $plan = $request->user()->customer->getCurrentActiveGeneralSubscription()->planGeneral;
+
+            if ($plan->useSystemSendingServer()) {
+                $server = $plan->primarySendingServer();
+            } else {
+                $server = null;
+            }
         } else {
-            $server = null;
+            $server = get_tmp_primary_server();
         }
+
 
         $items = SendingDomain::search($request, $server);
 
