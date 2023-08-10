@@ -1227,4 +1227,10 @@ class PlanGeneral extends Plan implements PlanInterface
 
         return $options;
     }
+
+    public function useOwnEmailVerificationServer()
+    {
+        // depend on option from active susbcription plan
+        return $this->getOption('create_email_verification_servers') == 'yes';
+    }
 }
