@@ -423,4 +423,18 @@ class Plan extends Model
     {
         return $this->frequency_unit == self::UNLIMITED_TIME;
     }
+
+    public function allowSenderVerification()
+    {
+        if ($this->useSystemSendingServer()) {
+            $server = $this->primarySendingServer();
+            if ($server && ($server->allowVerifyingOwnEmailsRemotely() || $server->allowVerifyingOwnEmails())) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return true;
+        }
+    }
 }

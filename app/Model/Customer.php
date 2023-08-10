@@ -1775,27 +1775,6 @@ class Customer extends Model
         return ($this->menu_layout == 'left' ? 'left' : 'top');
     }
 
-    public function allowSenderVerification()
-    {
-        $subscription = $this->getCurrentActiveGeneralSubscription();
-
-        if (is_null($subscription)) {
-            return false;
-        }
-
-        $plan = $subscription->planGeneral;
-        if ($plan->useSystemSendingServer()) {
-            $server = $plan->primarySendingServer();
-            if ($server && ($server->allowVerifyingOwnEmailsRemotely() || $server->allowVerifyingOwnEmails())) {
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            return true;
-        }
-    }
-
     public function allowVerifyingOwnDomains()
     {
         $subscription = $this->getCurrentActiveGeneralSubscription();
@@ -1953,7 +1932,7 @@ class Customer extends Model
         $list = [];
 
         // own emails
-        if ($this->allowSenderVerification()) {
+        if ($this->getCurrentActiveGeneralSubscription()->planGeneral->allowSenderVerification()) {
             $senders = $this->senders()->verified()->get();
             foreach ($senders as $sender) {
                 $list[] = $sender->name.' <'.$sender->email.'>';

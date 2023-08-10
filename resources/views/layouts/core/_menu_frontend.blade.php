@@ -201,7 +201,7 @@
                                 </li>
                             @endif
 
-                            @if (Auth::user()->customer->allowSenderVerification())
+                            @if (Auth::user()->customer->getCurrentActiveGeneralSubscription()->planGeneral->allowSenderVerification())
                                 <li class="nav-item {{ $menu == 'sender' ? 'active' : '' }}">
                                     <a href="{{ action('SenderController@index') }}" class="dropdown-item d-flex align-items-center">
                                     <i class="navbar-icon" style="width:20	px">
