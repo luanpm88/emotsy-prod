@@ -1196,7 +1196,7 @@ class Customer extends Model
     public function getEmailVerificationServers()
     {
         // Check the customer has permissions using email verification servers and has his own email verification servers
-        if ($this->getOption('create_email_verification_servers') == 'yes') {
+        if ($this->useOwnEmailVerificationServer()) {
             return $this->activeEmailVerificationServers()->get()->map(function ($server) {
                 return $server;
             });
@@ -2045,8 +2045,10 @@ class Customer extends Model
         return false;
     }
 
-    public function showEmailVerificationServerMenu()
+    public function useOwnEmailVerificationServer()
     {
+
+
         if (!$this->getCurrentActiveGeneralSubscription()) {
             // default not show the menu
             return false;

@@ -22,7 +22,7 @@ class EmailVerificationServerPolicy
                 $can = $user->admin->getPermission('email_verification_server_read') != 'no';
                 break;
             case 'customer':
-                $can = $user->customer->getOption('create_email_verification_servers') == 'yes';
+                $can = $user->customer->useOwnEmailVerificationServer();
                 break;
         }
 
@@ -61,7 +61,7 @@ class EmailVerificationServerPolicy
                 break;
             case 'customer':
                 $max = $user->customer->getOption('email_verification_servers_max');
-                $can = $user->customer->getOption('create_email_verification_servers') == 'yes'
+                $can = $user->customer->useOwnEmailVerificationServer()
                     && ($user->customer->emailVerificationServersCount() < $max || $max == -1);
                 break;
         }
@@ -83,7 +83,7 @@ class EmailVerificationServerPolicy
                     || ($ability == 'own' && $user->admin->id == $server->admin_id);
                 break;
             case 'customer':
-                $can = $user->customer->getOption('create_email_verification_servers') == 'yes' && $user->customer->id == $server->customer_id;
+                $can = $user->customer->useOwnEmailVerificationServer() && $user->customer->id == $server->customer_id;
                 break;
         }
 
@@ -104,7 +104,7 @@ class EmailVerificationServerPolicy
                     || ($ability == 'own' && $user->admin->id == $server->admin_id);
                 break;
             case 'customer':
-                $can = $user->customer->getOption('create_email_verification_servers') == 'yes'
+                $can = $user->customer->useOwnEmailVerificationServer()
                     && $user->customer->id == $server->customer_id;
                 break;
         }
@@ -126,7 +126,7 @@ class EmailVerificationServerPolicy
                     || ($ability == 'own' && $user->admin->id == $server->admin_id);
                 break;
             case 'customer':
-                $can = $user->customer->getOption('create_email_verification_servers') == 'yes'
+                $can = $user->customer->useOwnEmailVerificationServer()
                     && $user->customer->id == $server->customer_id;
                 break;
         }
@@ -148,7 +148,7 @@ class EmailVerificationServerPolicy
                     || ($ability == 'own' && $user->admin->id == $server->admin_id);
                 break;
             case 'customer':
-                $can = $user->customer->getOption('create_email_verification_servers') == 'yes'
+                $can = $user->customer->useOwnEmailVerificationServer()
                     && $user->customer->id == $server->customer_id;
                 break;
         }
