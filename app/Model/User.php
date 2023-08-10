@@ -467,8 +467,8 @@ class User extends Authenticatable
         // So, there is no chance to apply quota here
         if ($this->customer) {
             // Limited by plan
-            $maxSizeTotal = $this->customer->getOption("max_size_upload_total") > 0 ? $this->customer->getOption("max_size_upload_total") : 2048;
-            $maxSizeUpload = $this->customer->getOption("max_file_size_upload") > 0 ? $this->customer->getOption("max_file_size_upload") : 2048;
+            $maxSizeTotal = $this->customer->getCurrentActiveGeneralSubscription()->planGeneral->getOption("max_size_upload_total") > 0 ? $this->customer->getCurrentActiveGeneralSubscription()->planGeneral->getOption("max_size_upload_total") : 2048;
+            $maxSizeUpload = $this->customer->getCurrentActiveGeneralSubscription()->planGeneral->getOption("max_file_size_upload") > 0 ? $this->customer->getCurrentActiveGeneralSubscription()->planGeneral->getOption("max_file_size_upload") : 2048;
         } else {
             // Virtually unlimited
             $maxSizeTotal = 2048;

@@ -988,8 +988,8 @@ class MailList extends Model
      */
     public function getRemainingAddSubscribersQuota()
     {
-        $max = $this->customer->getOption('subscriber_max');
-        $maxPerList = $this->customer->getOption('subscriber_per_list_max');
+        $max = $this->customer->getCurrentActiveGeneralSubscription()->planGeneral->getOption('subscriber_max');
+        $maxPerList = $this->customer->getCurrentActiveGeneralSubscription()->planGeneral->getOption('subscriber_per_list_max');
 
         $remainingForList = $maxPerList - $this->refresh()->subscribers->count();
         $remaining = $max - $this->refresh()->customer->subscribersCount(); // no cache

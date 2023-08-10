@@ -368,7 +368,7 @@ class Customer extends Model
      */
     public function maxLists()
     {
-        $count = $this->getOption('list_max');
+        $count = $this->getCurrentActiveGeneralSubscription()->planGeneral->getOption('list_max');
         if ($count == -1) {
             return '∞';
         } else {
@@ -432,7 +432,7 @@ class Customer extends Model
      */
     public function maxCampaigns()
     {
-        $count = $this->getOption('campaign_max');
+        $count = $this->getCurrentActiveGeneralSubscription()->planGeneral->getOption('campaign_max');
         if ($count == -1) {
             return '∞';
         } else {
@@ -494,7 +494,7 @@ class Customer extends Model
      */
     public function maxSubscribers()
     {
-        $count = $this->getOption('subscriber_max');
+        $count = $this->getCurrentActiveGeneralSubscription()->planGeneral->getOption('subscriber_max');
         if ($count == -1) {
             return '∞';
         } else {
@@ -563,7 +563,7 @@ class Customer extends Model
      */
     public function maxQuota()
     {
-        $quota = $this->getOption('sending_quota');
+        $quota = $this->getCurrentActiveGeneralSubscription()->planGeneral->getOption('sending_quota');
         if ($quota == '-1') {
             return '∞';
         } else {
@@ -578,7 +578,7 @@ class Customer extends Model
      */
     public function allSendingServer()
     {
-        $check = $this->getOption('all_sending_servers');
+        $check = $this->getCurrentActiveGeneralSubscription()->planGeneral->getOption('all_sending_servers');
 
         return $check == 'yes';
     }
@@ -844,7 +844,7 @@ class Customer extends Model
      */
     public function maxSendingServers()
     {
-        $count = $this->getOption('sending_servers_max');
+        $count = $this->getCurrentActiveGeneralSubscription()->planGeneral->getOption('sending_servers_max');
         if ($count == -1) {
             return '∞';
         } else {
@@ -859,7 +859,7 @@ class Customer extends Model
      */
     public function maxEmailVerificationServers()
     {
-        $count = $this->getOption('email_verification_servers_max');
+        $count = $this->getCurrentActiveGeneralSubscription()->planGeneral->getOption('email_verification_servers_max');
         if ($count == -1) {
             return '∞';
         } else {
@@ -948,7 +948,7 @@ class Customer extends Model
      */
     public function maxSendingDomains()
     {
-        $count = $this->getOption('sending_domains_max');
+        $count = $this->getCurrentActiveGeneralSubscription()->planGeneral->getOption('sending_domains_max');
         if ($count == -1) {
             return '∞';
         } else {
@@ -1010,7 +1010,7 @@ class Customer extends Model
      */
     public function maxAutomations()
     {
-        $count = $this->getOption('automation_max');
+        $count = $this->getCurrentActiveGeneralSubscription()->planGeneral->getOption('automation_max');
         if ($count == -1) {
             return '∞';
         } else {
@@ -1102,7 +1102,7 @@ class Customer extends Model
      */
     public function maxTotalUploadSize()
     {
-        $count = $this->getOption('max_size_upload_total');
+        $count = $this->getCurrentActiveGeneralSubscription()->planGeneral->getOption('max_size_upload_total');
         if ($count == -1) {
             return '∞';
         } else {
@@ -1267,8 +1267,8 @@ class Customer extends Model
      */
     public function isAllowCreateSendingServerType($type)
     {
-        $customerTypes = $this->getOption('sending_server_types');
-        if ($this->getOption('all_sending_server_types') == 'yes' ||
+        $customerTypes = $this->getCurrentActiveGeneralSubscription()->planGeneral->getOption('sending_server_types');
+        if ($this->getCurrentActiveGeneralSubscription()->planGeneral->getOption('all_sending_server_types') == 'yes' ||
             (isset($customerTypes[$type]) && $customerTypes[$type] == 'yes')
         ) {
             return true;
@@ -1328,7 +1328,7 @@ class Customer extends Model
             return false;
         }
 
-        return $this->getOption('api_access') == 'yes';
+        return $this->getCurrentActiveGeneralSubscription()->planGeneral->getOption('api_access') == 'yes';
     }
 
     /**

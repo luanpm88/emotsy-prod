@@ -423,7 +423,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
     public function unsubscribe_url_valid()
     {
         if ($this->type != 'plain-text' &&
-           $this->customer->getOption('unsubscribe_url_required') == 'yes' &&
+           $this->customer->getCurrentActiveGeneralSubscription()->planGeneral->getOption('unsubscribe_url_required') == 'yes' &&
             strpos($this->getTemplateContent(), '{UNSUBSCRIBE_URL}') == false
         ) {
             return false;

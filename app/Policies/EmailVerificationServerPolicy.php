@@ -60,7 +60,7 @@ class EmailVerificationServerPolicy
                 $can = $user->admin->getPermission('email_verification_server_create') == 'yes';
                 break;
             case 'customer':
-                $max = $user->customer->getOption('email_verification_servers_max');
+                $max = $user->customer->getCurrentActiveGeneralSubscription()->planGeneral->getOption('email_verification_servers_max');
                 $can = $user->customer->getCurrentActiveGeneralSubscription()->planGeneral->useOwnEmailVerificationServer()
                     && ($user->customer->emailVerificationServersCount() < $max || $max == -1);
                 break;

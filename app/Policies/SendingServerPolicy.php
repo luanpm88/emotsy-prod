@@ -62,7 +62,7 @@ class SendingServerPolicy
                 //
                 if ($useOwnServer) {
                     // check max campaigns
-                    $max = $user->customer->getOption('sending_servers_max');
+                    $max = $user->customer->getCurrentActiveGeneralSubscription()->planGeneral->getOption('sending_servers_max');
                     $isUnlimited = $max == -1; // -1 means unlimited
                     $notReachMax = $user->customer->sendingServersCount() < $max;
                     $can = $isUnlimited || $notReachMax; // check max campaigns: unlimited or is not reach max
