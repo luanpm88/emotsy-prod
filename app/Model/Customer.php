@@ -372,61 +372,6 @@ class Customer extends Model
     }
 
     /**
-     * Calculate list usage.
-     *
-     * @return number
-     */
-    public function listsUsage()
-    {
-        $max = $this->getCurrentActiveGeneralSubscription()->planGeneral->getOption('list_max');
-        $count = $this->listsCount();
-
-        if ($max == '∞' || $max == -1) {
-            return 0;
-        }
-
-        if ($max == 0) {
-            return 0;
-        }
-
-        if ($count > $max) {
-            return 100;
-        }
-
-        return round((($count / $max) * 100), 2);
-    }
-
-    /**
-     * Display calculate list usage.
-     *
-     * @return number
-     */
-    public function displayListsUsage()
-    {
-        $max = $this->getCurrentActiveGeneralSubscription()->planGeneral->getOption('list_max');
-        if ($max == '∞' || $max == '-1' ) {
-            return trans('messages.unlimited');
-        }
-
-        return $this->listsUsage().'%';
-    }
-
-    /**
-     * Get campaigns quota.
-     *
-     * @return number
-     */
-    public function maxCampaigns()
-    {
-        $count = $this->getCurrentActiveGeneralSubscription()->planGeneral->getOption('campaign_max');
-        if ($count == -1) {
-            return '∞';
-        } else {
-            return $count;
-        }
-    }
-
-    /**
      * Count customer's campaigns.
      *
      * @return number
@@ -436,28 +381,6 @@ class Customer extends Model
         return $this->campaigns()->count();
     }
 
-    /**
-     * Calculate campaign usage.
-     *
-     * @return number
-     */
-    public function campaignsUsage()
-    {
-        $max = $this->maxCampaigns();
-        $count = $this->campaignsCount();
-
-        if ($max == '∞') {
-            return 0;
-        }
-        if ($max == 0) {
-            return 0;
-        }
-        if ($count > $max) {
-            return 100;
-        }
-
-        return round((($count / $max) * 100), 2);
-    }
 
     /**
      * Get subscriber quota.
@@ -466,7 +389,7 @@ class Customer extends Model
      */
     public function maxSubscribers()
     {
-        $count = $this->getCurrentActiveGeneralSubscription()->planGeneral->getOption('subscriber_max');
+        $count = get_tmp_quota($this, 'subscriber_max');
         if ($count == -1) {
             return '∞';
         } else {
@@ -535,24 +458,12 @@ class Customer extends Model
      */
     public function maxQuota()
     {
-        $quota = $this->getCurrentActiveGeneralSubscription()->planGeneral->getOption('sending_quota');
+        $quota = get_tmp_quota($this, 'sending_quota');
         if ($quota == '-1') {
             return '∞';
         } else {
             return $quota;
         }
-    }
-
-    /**
-     * Check if customer has access to ALL sending servers.
-     *
-     * @return bool
-     */
-    public function allSendingServer()
-    {
-        $check = $this->getCurrentActiveGeneralSubscription()->planGeneral->getOption('all_sending_servers');
-
-        return $check == 'yes';
     }
 
     /**
@@ -816,7 +727,7 @@ class Customer extends Model
      */
     public function maxSendingServers()
     {
-        $count = $this->getCurrentActiveGeneralSubscription()->planGeneral->getOption('sending_servers_max');
+        $count = get_tmp_quota($this, 'sending_servers_max');
         if ($count == -1) {
             return '∞';
         } else {
@@ -831,7 +742,7 @@ class Customer extends Model
      */
     public function maxEmailVerificationServers()
     {
-        $count = $this->getCurrentActiveGeneralSubscription()->planGeneral->getOption('email_verification_servers_max');
+        $count = get_tmp_quota($this, 'email_verification_servers_max');
         if ($count == -1) {
             return '∞';
         } else {
@@ -920,7 +831,7 @@ class Customer extends Model
      */
     public function maxSendingDomains()
     {
-        $count = $this->getCurrentActiveGeneralSubscription()->planGeneral->getOption('sending_domains_max');
+        $count = get_tmp_quota($this, 'sending_domains_max');
         if ($count == -1) {
             return '∞';
         } else {
@@ -982,7 +893,7 @@ class Customer extends Model
      */
     public function maxAutomations()
     {
-        $count = $this->getCurrentActiveGeneralSubscription()->planGeneral->getOption('automation_max');
+        $count = get_tmp_quota($this, 'automation_max');
         if ($count == -1) {
             return '∞';
         } else {
@@ -1074,7 +985,7 @@ class Customer extends Model
      */
     public function maxTotalUploadSize()
     {
-        $count = $this->getCurrentActiveGeneralSubscription()->planGeneral->getOption('max_size_upload_total');
+        $count = get_tmp_quota($this, 'max_size_upload_total');
         if ($count == -1) {
             return '∞';
         } else {
@@ -1156,8 +1067,11 @@ class Customer extends Model
      */
     public function getEmailVerificationServers()
     {
-        // Check the customer has permissions using email verification servers and has his own email verification servers
-        if ($this->getCurrentActiveGeneralSubscription()->planGeneral->useOwnEmailVerificationServer()) {
+        if (!config('app.saas')) {
+            return EmailVerificationServer::getAllAdminActive()->get()->map(function ($server) {
+                return $server;
+            });
+        } elseif ($this->getCurrentActiveGeneralSubscription()->planGeneral->useOwnEmailVerificationServer()) {
             return $this->activeEmailVerificationServers()->get()->map(function ($server) {
                 return $server;
             });
@@ -1239,8 +1153,8 @@ class Customer extends Model
      */
     public function isAllowCreateSendingServerType($type)
     {
-        $customerTypes = $this->getCurrentActiveGeneralSubscription()->planGeneral->getOption('sending_server_types');
-        if ($this->getCurrentActiveGeneralSubscription()->planGeneral->getOption('all_sending_server_types') == 'yes' ||
+        $customerTypes = get_tmp_quota($this, 'sending_server_types');
+        if (get_tmp_quota($this, 'all_sending_server_types') == 'yes' ||
             (isset($customerTypes[$type]) && $customerTypes[$type] == 'yes')
         ) {
             return true;
@@ -1279,7 +1193,7 @@ class Customer extends Model
             return false;
         }
 
-        return $this->getCurrentActiveGeneralSubscription()->planGeneral->getOption('api_access') == 'yes';
+        return get_tmp_quota($this, 'api_access') == 'yes';
     }
 
     /**
