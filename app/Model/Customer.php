@@ -863,20 +863,6 @@ class Customer extends Model
     }
 
     /**
-     * Calculate subscibers usage.
-     *
-     * @return number
-     */
-    public function displaySendingDomainsUsage()
-    {
-        if ($this->maxSendingDomains() == '∞') {
-            return trans('messages.unlimited');
-        }
-
-        return $this->sendingDomainsUsage().'%';
-    }
-
-    /**
      * Count customer automations.
      *
      * @return number
@@ -884,58 +870,6 @@ class Customer extends Model
     public function automationsCount()
     {
         return $this->automation2sCount();
-    }
-
-    /**
-     * Get max automation count.
-     *
-     * @var int
-     */
-    public function maxAutomations()
-    {
-        $count = get_tmp_quota($this, 'automation_max');
-        if ($count == -1) {
-            return '∞';
-        } else {
-            return $count;
-        }
-    }
-
-    /**
-     * Calculate subscibers usage.
-     *
-     * @return number
-     */
-    public function automationsUsage()
-    {
-        $max = $this->maxAutomations();
-        $count = $this->automation2sCount();
-
-        if ($max == '∞') {
-            return 0;
-        }
-        if ($max == 0) {
-            return 0;
-        }
-        if ($count > $max) {
-            return 100;
-        }
-
-        return round((($count / $max) * 100), 2);
-    }
-
-    /**
-     * Calculate subscibers usage.
-     *
-     * @return number
-     */
-    public function displayAutomationsUsage()
-    {
-        if ($this->maxAutomations() == '∞') {
-            return trans('messages.unlimited');
-        }
-
-        return $this->automationsUsage().'%';
     }
 
     /**
