@@ -342,7 +342,6 @@ class PlanGeneral extends Plan implements PlanInterface
             'sending_quota_time' => '-1',
             'sending_quota_time_unit' => 'day',
             'max_process' => '1',
-            'all_sending_servers' => 'yes',
             'max_size_upload_total' => '500',
             'max_file_size_upload' => '5',
             'unsubscribe_url_required' => 'no',
@@ -1113,74 +1112,6 @@ class PlanGeneral extends Plan implements PlanInterface
         \Acelle\Model\Setting::set('terms_of_service.content', $params['terms_of_service']['content']);
 
         return $validator;
-    }
-
-    public static function getUnlimitedPlan()
-    {
-        return self::find(self::UNLIMITED_PLAN_ID);
-    }
-
-    public static function createUnlimitedPlan()
-    {
-        $plan = new self();
-        $plan->currency_id = \Acelle\Model\Currency::first()->id;
-        $plan->id = self::UNLIMITED_PLAN_ID;
-        $plan->name = 'Unlimited';
-        $plan->price = 0;
-        $plan->frequency_amount = 1000;
-        $plan->frequency_unit = 'year';
-        $plan->options = json_encode([
-            "email_max" => "-1",
-            "list_max" => "-1",
-            "subscriber_max" => "-1",
-            "subscriber_per_list_max" => "-1",
-            "segment_per_list_max" => "-1",
-            "campaign_max" => "-1",
-            "automation_max" => "-1",
-            "sending_limit" => "1000_per_hour",
-            "sending_quota" => 1000,
-            "sending_quota_time" => 1,
-            "sending_quota_time_unit" => "hour",
-            "max_process" => "1",
-            "all_sending_servers" => "yes",
-            "max_size_upload_total" => "5000000000",
-            "max_file_size_upload" => "50000000",
-            "unsubscribe_url_required" => "yes",
-            "access_when_offline" => "no",
-            "create_sending_domains" => "yes",
-            "sending_servers_max" => "-1",
-            "sending_domains_max" => "-1",
-            "all_email_verification_servers" => "yes",
-            "create_email_verification_servers" => "no",
-            "email_verification_servers_max" => "-1",
-            "list_import" => "yes",
-            "list_export" => "yes",
-            "all_sending_server_types" => "yes",
-            "sending_server_types" => [
-                "amazon-smtp" => "yes",
-                "amazon-api" => "yes",
-                "sendgrid-smtp" => "yes",
-                "sendgrid-api" => "yes",
-                "mailgun-api" => "yes",
-                "mailgun-smtp" => "yes",
-                "elasticemail-api" => "yes",
-                "elasticemail-smtp" => "yes",
-                "sparkpost-api" => "yes",
-                "sparkpost-smtp" => "yes",
-                "smtp" => "yes",
-                "sendmail" => "yes",
-            ],
-            "sending_server_option" => "system",
-            "sending_server_subaccount_uid" => null,
-            "api_access" => "yes",
-            "email_footer_enabled" => "no",
-            "email_footer_trial_period_only" => "no",
-            "html_footer" => "",
-            "plain_text_footer" => "",
-            "billing_cycle" => "other",
-        ]);
-        $plan->status = 'active';
-        $plan->save();
     }
 
     public function isCustomTrackingDomainRequired()

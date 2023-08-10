@@ -1674,20 +1674,6 @@ class MailList extends Model
             $subscription = $this->customer->getNewOrActiveGeneralSubscription();
             // Check if has sending servers for current subscription
             if ($subscription) {
-                /*
-                if ($subscription->planGeneral->getOption('all_sending_servers') == 'yes') {
-                    if (\Acelle\Model\SendingServer::system()->count()) {
-                        $result = \Acelle\Model\SendingServer::system()->get()->map(function ($server) {
-                            return [$server->id, '100'];
-                        });
-                    }
-                } elseif ($subscription->activeSubscriptionsSendingServers()->count()) {
-                    $result = $subscription->activeSubscriptionsSendingServers()->get()->map(function ($server) {
-                        return [$server->sending_server_id, $server->fitness];
-                    });
-                }
-                */
-
                 $result = $subscription->planGeneral->activeSendingServers->map(function ($server) {
                     return [$server->sending_server_id, $server->fitness];
                 });

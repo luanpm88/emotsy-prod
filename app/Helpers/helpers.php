@@ -1245,7 +1245,6 @@ function get_tmp_quota($customer, $name)
         "sending_quota_time" => 1,
         "sending_quota_time_unit" => "hour",
         "max_process" => "1",
-        "all_sending_servers" => "yes",
         "max_size_upload_total" => "5000000000",
         "max_file_size_upload" => "50000000",
         "unsubscribe_url_required" => "yes",
