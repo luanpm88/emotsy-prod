@@ -460,20 +460,6 @@ class Customer extends Model
     }
 
     /**
-     * Calculate campaign usage.
-     *
-     * @return number
-     */
-    public function displayCampaignsUsage()
-    {
-        if ($this->maxCampaigns() == '∞') {
-            return trans('messages.unlimited');
-        }
-
-        return $this->campaignsUsage().'%';
-    }
-
-    /**
      * Get subscriber quota.
      *
      * @return number
@@ -1972,12 +1958,15 @@ class Customer extends Model
      */
     public function hasSubscriptionNotice()
     {
-
         if (!config('app.saas')) {
             return false;
         }
 
         $subscription = $this->getNewOrActiveGeneralSubscription();
+
+        if (is_null($subscription)) {
+            return false;
+        }
 
 
         if ($subscription->getUnpaidInvoice()) {

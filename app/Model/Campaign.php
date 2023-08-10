@@ -423,7 +423,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
     public function unsubscribe_url_valid()
     {
         if ($this->type != 'plain-text' &&
-           $this->customer->getCurrentActiveGeneralSubscription()->planGeneral->getOption('unsubscribe_url_required') == 'yes' &&
+           get_tmp_quota($this->customer, 'unsubscribe_url_required') == 'yes' &&
             strpos($this->getTemplateContent(), '{UNSUBSCRIBE_URL}') == false
         ) {
             return false;
@@ -2155,7 +2155,14 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
                 $server = SendingServer::find($serverId)->mapType();
 
                 // Dispatch delivery job and return it to the LoadCampaign to monitor
-                $job = new SendMessage($this, $subscriber, $server, $this->customer->getCurrentActiveGeneralSubscription());
+
+                if (config('app.saas')) {
+                    $subscription = $this->customer->getCurrentActiveGeneralSubscription();
+                } else {
+                    $subscription = null;
+                }
+
+                $job = new SendMessage($this, $subscriber, $server, $subscription);
                 $stopOnError = $this->stopOnError();
                 // $stopOnError = Setting::isYes('campaign.stop_on_error'); // true or false
                 $job->setStopOnError($stopOnError);

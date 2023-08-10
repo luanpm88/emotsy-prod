@@ -47,7 +47,7 @@ class SendMessage implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(Campaign $campaign, Subscriber $subscriber, SendingServer $server, Subscription $subscription, $triggerId = null)
+    public function __construct(Campaign $campaign, Subscriber $subscriber, SendingServer $server, Subscription $subscription = null, $triggerId = null)
     {
         $this->campaign = $campaign;
         $this->subscriber = $subscriber;
@@ -111,13 +111,14 @@ class SendMessage implements ShouldQueue
             // 2. Subscription (plan) sending speed limits with 1 or more limits.
             $rateTrackers = [
                 $this->server->getRateLimitTracker(),
-                $this->subscription->getSendEmailRateTracker(),
             ];
 
-            // Credit limit tracker
-            $creditTrackers = [
-                $this->subscription->getSendEmailCreditTracker(),
-            ];
+            $creditTrackers = [];
+
+            if (!is_null($this->subscription)) {
+                $rateTrackers[] = $this->subscription->getSendEmailRateTracker();
+                $creditTrackers[] = $this->subscription->getSendEmailCreditTracker();
+            }
 
             execute_with_limits($rateTrackers, $creditTrackers, function () use ($message, $logger, $msgId, $email) {
                 // Actually send (or throw an exception)
