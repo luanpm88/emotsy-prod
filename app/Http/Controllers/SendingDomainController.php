@@ -58,13 +58,17 @@ class SendingDomainController extends Controller
 
         $domains = $customer->sendingDomains();
 
-        $plan = $customer->getCurrentActiveGeneralSubscription()->planGeneral;
-        if ($plan->useSystemSendingServer()) {
-            $server = $plan->primarySendingServer();
-            if (!$server->allowOtherSendingDomains()) {
-                // Do not filter, just flag as incompatible
-                // $domains->bySendingServer($server);
+        if (config('app.saas')) {
+            $plan = $customer->getCurrentActiveGeneralSubscription()->planGeneral;
+            if ($plan->useSystemSendingServer()) {
+                $server = $plan->primarySendingServer();
+                if (!$server->allowOtherSendingDomains()) {
+                    // Do not filter, just flag as incompatible
+                    // $domains->bySendingServer($server);
+                }
             }
+        } else {
+            $server == get_tmp_primary_server();
         }
 
         $items = $domains->search($request->keyword)->orderBy($request->sort_order, $request->sort_direction)->paginate(25);
