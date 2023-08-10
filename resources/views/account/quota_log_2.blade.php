@@ -103,7 +103,7 @@
                 </div>
             </div>
 
-            @if (Auth::user()->customer->useOwnSendingServer())
+            @if (Auth::user()->customer->getCurrentActiveGeneralSubscription()->planGeneral->useOwnSendingServer())
                 <div class="col-md-12 mb-4">
                     <div class="content-group-sm">
                         <div class="pull-right text-primary text-semibold">

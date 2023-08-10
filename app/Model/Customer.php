@@ -282,17 +282,6 @@ class Customer extends Model
         return join_paths($base, $path);
     }
 
-    public function useOwnSendingServer()
-    {
-        $subscription = $this->getCurrentActiveGeneralSubscription();
-
-        if (is_null($subscription)) {
-            return false;
-        }
-
-        return $subscription->planGeneral->useOwnSendingServer();
-    }
-
     /**
      * Items per page.
      *

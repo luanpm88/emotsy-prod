@@ -17,7 +17,7 @@ class SendingServerPolicy
                 $can = $user->admin->getPermission('sending_server_read') != 'no';
                 break;
             case 'customer':
-                $can = $user->customer->useOwnSendingServer();
+                $can = $user->customer->getCurrentActiveGeneralSubscription()->planGeneral->useOwnSendingServer();
                 break;
         }
 
@@ -57,7 +57,7 @@ class SendingServerPolicy
             case 'customer':
                 // init
                 $can = true;
-                $useOwnServer = $user->customer->useOwnSendingServer();
+                $useOwnServer = $user->customer->getCurrentActiveGeneralSubscription()->planGeneral->useOwnSendingServer();
 
                 //
                 if ($useOwnServer) {
@@ -97,7 +97,7 @@ class SendingServerPolicy
                     || ($ability == 'own' && $user->admin->id == $item->admin_id);
                 break;
             case 'customer':
-                $can = $user->customer->useOwnSendingServer()
+                $can = $user->customer->getCurrentActiveGeneralSubscription()->planGeneral->useOwnSendingServer()
                         && $user->customer->id == $item->customer_id;
                 break;
         }
@@ -114,7 +114,7 @@ class SendingServerPolicy
                     || ($ability == 'own' && $user->admin->id == $item->admin_id);
                 break;
             case 'customer':
-                $can = $user->customer->useOwnSendingServer()
+                $can = $user->customer->getCurrentActiveGeneralSubscription()->planGeneral->useOwnSendingServer()
                     && $user->customer->id == $item->customer_id;
                 break;
         }
@@ -131,7 +131,7 @@ class SendingServerPolicy
                     || ($ability == 'own' && $user->admin->id == $item->admin_id);
                 break;
             case 'customer':
-                $can = $user->customer->useOwnSendingServer()
+                $can = $user->customer->getCurrentActiveGeneralSubscription()->planGeneral->useOwnSendingServer()
                     && $user->customer->id == $item->customer_id;
                 break;
         }
@@ -148,7 +148,7 @@ class SendingServerPolicy
                     || ($ability == 'own' && $user->admin->id == $item->admin_id);
                 break;
             case 'customer':
-                $can = $user->customer->useOwnSendingServer()
+                $can = $user->customer->getCurrentActiveGeneralSubscription()->planGeneral->useOwnSendingServer()
                     && $user->customer->id == $item->customer_id;
                 break;
         }

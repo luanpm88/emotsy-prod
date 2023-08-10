@@ -115,7 +115,7 @@
                 </div>
             </div>
 
-            @if (Auth::user()->customer->useOwnSendingServer())
+            @if (Auth::user()->customer->getCurrentActiveGeneralSubscription()->planGeneral->useOwnSendingServer())
                 <div class="col-md-12">
                     <div class="content-group-sm mt-4">
                         <div class="d-flex align-items-center">

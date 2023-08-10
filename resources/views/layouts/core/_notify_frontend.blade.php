@@ -9,7 +9,7 @@
 
     @if (
         \Auth::user()->customer &&
-        \Auth::user()->customer->useOwnSendingServer() &&
+        \Auth::user()->customer->getCurrentActiveGeneralSubscription()->planGeneral->useOwnSendingServer() &&
         !\Auth::user()->customer->activeSendingServers()->count()
     )
         notify({

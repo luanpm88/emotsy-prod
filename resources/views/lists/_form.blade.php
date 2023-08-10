@@ -122,7 +122,7 @@
 </div>
 
 
-@if (Auth::user()->customer->useOwnSendingServer())
+@if (Auth::user()->customer->getCurrentActiveGeneralSubscription()->planGeneral->useOwnSendingServer())
     <div class="sub_section">
         <h3 class="text-semibold">{{ trans('messages.sending_servers') }}</h3>
         <div class="row mb-20 form-groups-bottom-0">
