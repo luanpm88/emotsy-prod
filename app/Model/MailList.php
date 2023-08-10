@@ -1630,12 +1630,6 @@ class MailList extends Model
                 MailLog::info(sprintf('Initialize delivery server `%s` (ID: %s)', $server->name, $id));
 
                 $server = SendingServer::mapServerType($server);
-
-                // flag the server to use sub-account instead
-                $subscription = $this->customer->getNewOrActiveGeneralSubscription();
-                if (!is_null($subscription->sub_account_id)) {
-                    $server->setSubAccount($subscription->subAccount);
-                }
                 self::$serverPools[$id] = $server;
             }
 
@@ -1657,10 +1651,13 @@ class MailList extends Model
         }
 
         $result = [];
-        $subscription = $this->customer->getNewOrActiveGeneralSubscription();
 
         // Check the customer has permissions using sending servers and has his own sending servers
-        if ($this->customer->getCurrentActiveGeneralSubscription()->planGeneral->useOwnSendingServer()) {
+        if (!config('app.saas')) {
+            $result = [
+                [ get_tmp_primary_server()->id, '100' ],
+            ];
+        } elseif ($this->customer->getCurrentActiveGeneralSubscription()->planGeneral->useOwnSendingServer()) {
             if ($this->all_sending_servers) {
                 if ($this->customer->activeSendingServers()->count()) {
                     $result = $this->customer->activeSendingServers()->get()->map(function ($server) {
@@ -1674,6 +1671,7 @@ class MailList extends Model
             }
         // If customer dont have permission creating sending servers
         } else {
+            $subscription = $this->customer->getNewOrActiveGeneralSubscription();
             // Check if has sending servers for current subscription
             if ($subscription) {
                 /*

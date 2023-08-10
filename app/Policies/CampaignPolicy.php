@@ -19,7 +19,7 @@ class CampaignPolicy
 
     public function create(User $user, Campaign $item)
     {
-        $max = $user->customer->getCurrentActiveGeneralSubscription()->planGeneral->getOption('campaign_max');
+        $max = get_tmp_quota($user->customer, 'campaign_max');
 
         $can = $max > $user->customer->campaigns()->count() || $max == -1;
 

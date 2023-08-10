@@ -20,7 +20,7 @@ class MailListPolicy
     {
         // init
         $customer = $user->customer;
-        $max = $customer->getCurrentActiveGeneralSubscription()->planGeneral->getOption('list_max');
+        $max = get_tmp_quota($customer, 'list_max');
         $isUnlimited = $max == -1; // -1 means unlimited
         $notReachMax = $max > $customer->lists()->count();
 
@@ -53,8 +53,8 @@ class MailListPolicy
 
     public function addMoreSubscribers(User $user, MailList $mailList, $numberOfSubscribers = 1)
     {
-        $max = $user->customer->getCurrentActiveGeneralSubscription()->planGeneral->getOption('subscriber_max');
-        $maxPerList = $user->customer->getCurrentActiveGeneralSubscription()->planGeneral->getOption('subscriber_per_list_max');
+        $max = get_tmp_quota($user->customer, 'subscriber_max');
+        $maxPerList = get_tmp_quota($user->customer, 'subscriber_per_list_max');
         return $user->customer->id == $mailList->customer_id &&
             ($max >= $user->customer->subscribersCount() + $numberOfSubscribers || $max == -1) &&
             ($maxPerList >= $mailList->subscribersCount() + $numberOfSubscribers || $maxPerList == -1);
@@ -63,7 +63,7 @@ class MailListPolicy
     public function import(User $user, MailList $item)
     {
         $customer = $user->customer;
-        $can = $customer->getCurrentActiveGeneralSubscription()->planGeneral->getOption('list_import');
+        $can = get_tmp_quota($customer, 'list_import');
 
         return ($can == 'yes' && $item->customer_id == $customer->id);
     }
@@ -71,7 +71,7 @@ class MailListPolicy
     public function export(User $user, MailList $item)
     {
         $customer = $user->customer;
-        $can = $customer->getCurrentActiveGeneralSubscription()->planGeneral->getOption('list_export');
+        $can = get_tmp_quota($customer, 'list_export');
 
         return ($can == 'yes' && $item->customer_id == $customer->id);
     }

@@ -12,6 +12,10 @@ class SendingServerPolicy
 
     public function read(User $user, SendingServer $item, $role)
     {
+        if (!config('app.saas')) {
+            return false;
+        }
+
         switch ($role) {
             case 'admin':
                 $can = $user->admin->getPermission('sending_server_read') != 'no';
@@ -26,6 +30,10 @@ class SendingServerPolicy
 
     public function readAll(User $user, SendingServer $item, $role)
     {
+        if (!config('app.saas')) {
+            return false;
+        }
+
         switch ($role) {
             case 'admin':
                 $can = $user->admin->getPermission('sending_server_read') == 'all';
@@ -40,6 +48,10 @@ class SendingServerPolicy
 
     public function create(User $user, $role)
     {
+        if (!config('app.saas')) {
+            return false;
+        }
+
         switch ($role) {
             case 'admin':
                 $can = $user->admin->getPermission('sending_server_create') == 'yes';
@@ -62,7 +74,7 @@ class SendingServerPolicy
                 //
                 if ($useOwnServer) {
                     // check max campaigns
-                    $max = $user->customer->getCurrentActiveGeneralSubscription()->planGeneral->getOption('sending_servers_max');
+                    $max = get_tmp_quota($user->customer, 'sending_servers_max');
                     $isUnlimited = $max == -1; // -1 means unlimited
                     $notReachMax = $user->customer->sendingServersCount() < $max;
                     $can = $isUnlimited || $notReachMax; // check max campaigns: unlimited or is not reach max
@@ -90,6 +102,10 @@ class SendingServerPolicy
 
     public function update(User $user, SendingServer $item, $role)
     {
+        if (!config('app.saas')) {
+            return false;
+        }
+
         switch ($role) {
             case 'admin':
                 $ability = $user->admin->getPermission('sending_server_update');
@@ -107,6 +123,10 @@ class SendingServerPolicy
 
     public function delete(User $user, SendingServer $item, $role)
     {
+        if (!config('app.saas')) {
+            return false;
+        }
+
         switch ($role) {
             case 'admin':
                 $ability = $user->admin->getPermission('sending_server_delete');
@@ -124,6 +144,10 @@ class SendingServerPolicy
 
     public function disable(User $user, SendingServer $item, $role)
     {
+        if (!config('app.saas')) {
+            return false;
+        }
+
         switch ($role) {
             case 'admin':
                 $ability = $user->admin->getPermission('sending_server_update');
@@ -141,6 +165,10 @@ class SendingServerPolicy
 
     public function enable(User $user, SendingServer $item, $role)
     {
+        if (!config('app.saas')) {
+            return false;
+        }
+
         switch ($role) {
             case 'admin':
                 $ability = $user->admin->getPermission('sending_server_update');

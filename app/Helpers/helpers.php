@@ -1216,3 +1216,57 @@ function get_app_name()
     $name = \Acelle\Model\Setting::get('site_name') ?: config('app.name');
     return $name;
 }
+
+function get_tmp_primary_server()
+{
+    if (config('app.saas')) {
+        throw new \Exception('Use in single mode only');
+    }
+
+    if (\Acelle\Model\SendingServer::active()->count()) {
+        return \Acelle\Model\SendingServer::active()->first()->mapType();
+    } else {
+        return null;
+    }
+}
+
+function get_tmp_quota($customer, $name)
+{
+    $single = [
+        "email_max" => "-1",
+        "list_max" => "-1",
+        "subscriber_max" => "-1",
+        "subscriber_per_list_max" => "-1",
+        "segment_per_list_max" => "-1",
+        "campaign_max" => "-1",
+        "automation_max" => "-1",
+        "sending_limit" => "1000_per_hour",
+        "sending_quota" => 1000,
+        "sending_quota_time" => 1,
+        "sending_quota_time_unit" => "hour",
+        "max_process" => "1",
+        "all_sending_servers" => "yes",
+        "max_size_upload_total" => "5000000000",
+        "max_file_size_upload" => "50000000",
+        "unsubscribe_url_required" => "yes",
+        "access_when_offline" => "no",
+        "sending_servers_max" => "-1",
+        "sending_domains_max" => "-1",
+        "all_email_verification_servers" => "yes",
+        "email_verification_servers_max" => "-1",
+        "list_import" => "yes",
+        "list_export" => "yes",
+        "all_sending_server_types" => "yes",
+        "api_access" => "yes",
+    ];
+
+    if (config('app.saas')) {
+        return $customer->getCurrentActiveGeneralSubscription()->planGeneral->getOption($name);
+    } else {
+        if (!array_key_exists($name, $single)) {
+            throw new \Exception("Key '{$name}' not listed");
+        }
+
+        return $single[$name];
+    }
+}

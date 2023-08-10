@@ -1367,17 +1367,14 @@ class Customer extends Model
 
     public function allowUnverifiedFromEmailAddress()
     {
-        $plan = $this->getNewOrActiveGeneralSubscription()->planGeneral;
-
-        if (!$plan) {
-            return false;
+        if (!config('app.saas')) {
+            $server = get_tmp_primary_server();
+        } else {
+            $plan = $this->getNewOrActiveGeneralSubscription()->planGeneral;
+            $server = $plan->primarySendingServer();
         }
 
-        if ($plan->useSystemSendingServer() && $plan->primarySendingServer()) {
-            return $plan->primarySendingServer()->allowUnverifiedFromEmailAddress();
-        }
-
-        return true;
+        return $server->allowUnverifiedFromEmailAddress();
     }
 
     /**
@@ -1871,6 +1868,10 @@ class Customer extends Model
 
     public function isCustomTrackingDomainRequired()
     {
+        if (!config('app.saas')) {
+            return false;
+        }
+
         $plan = $this->getNewOrActiveGeneralSubscription()->planGeneral;
 
         if (!$plan) {
@@ -1892,12 +1893,13 @@ class Customer extends Model
         return $subscriptions->first();
     }
 
+    // MISS FIRST primary sending server's identities here
     public function getVerifiedIdentities()
     {
         $list = [];
 
         // own emails
-        if ($this->getCurrentActiveGeneralSubscription()->planGeneral->allowSenderVerification()) {
+        if (!config('app.saas') || $this->getCurrentActiveGeneralSubscription()->planGeneral->allowSenderVerification()) {
             $senders = $this->senders()->verified()->get();
             foreach ($senders as $sender) {
                 $list[] = $sender->name.' <'.$sender->email.'>';
@@ -1906,11 +1908,14 @@ class Customer extends Model
 
         // own domain
         $domains = $this->sendingDomains()->active();
-        $plan = $this->getCurrentActiveGeneralSubscription()->planGeneral;
-        if ($plan->useSystemSendingServer()) {
-            $server = $plan->primarySendingServer();
-            if (!$server->allowOtherSendingDomains()) {
-                $domains->bySendingServer($server);
+
+        if (config('app.saas')) {
+            $plan = $this->getCurrentActiveGeneralSubscription()->planGeneral;
+            if ($plan->useSystemSendingServer()) {
+                $server = $plan->primarySendingServer();
+                if (!$server->allowOtherSendingDomains()) {
+                    $domains->bySendingServer($server);
+                }
             }
         }
 
@@ -1918,9 +1923,11 @@ class Customer extends Model
             $list[] = $domain->name;
         }
 
-        // plan sending server emails if system sending servers
-        if ($plan->useSystemSendingServer()) {
-            $list = array_merge($plan->getVerifiedIdentities(), $list);
+        if (config('app.saas')) {
+            // plan sending server emails if system sending servers
+            if ($plan->useSystemSendingServer()) {
+                $list = array_merge($plan->getVerifiedIdentities(), $list);
+            }
         }
 
         return array_values(array_unique($list));
@@ -1965,6 +1972,11 @@ class Customer extends Model
      */
     public function hasSubscriptionNotice()
     {
+
+        if (!config('app.saas')) {
+            return false;
+        }
+
         $subscription = $this->getNewOrActiveGeneralSubscription();
 
 

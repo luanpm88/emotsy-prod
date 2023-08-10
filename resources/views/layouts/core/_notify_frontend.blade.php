@@ -9,6 +9,8 @@
 
     @if (
         \Auth::user()->customer &&
+        config('app.saas') &&
+        \Auth::user()->customer->getCurrentActiveGeneralSubscription() &&
         \Auth::user()->customer->getCurrentActiveGeneralSubscription()->planGeneral->useOwnSendingServer() &&
         !\Auth::user()->customer->activeSendingServers()->count()
     )
@@ -22,6 +24,7 @@
     @endif
 
     @if (\Auth::user()->customer &&
+        config('app.saas') &&
         !\Auth::user()->customer->getCurrentActiveGeneralSubscription() &&
         !isset($subscriptionPage)
     )

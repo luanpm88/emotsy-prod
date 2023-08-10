@@ -647,8 +647,7 @@ class CampaignController extends Controller
         // validate and save posted data
         if ($request->isMethod('post') && $campaign->step() >= 5) {
             // UGLY CODE
-            $plan = $customer->getCurrentActiveGeneralSubscription()->planGeneral;
-            if ($plan->getOption('unsubscribe_url_required') == 'yes' && Setting::isYes('campaign.enforce_unsubscribe_url_check')) {
+            if (get_tmp_quota($customer, 'unsubscribe_url_required') == 'yes' && Setting::isYes('campaign.enforce_unsubscribe_url_check')) {
                 if (strpos($campaign->getTemplateContent(), '{UNSUBSCRIBE_URL}') === false) {
                     $request->session()->flash('alert-error', trans('messages.template.validation.unsubscribe_url_required'));
                     return view('campaigns.confirm', [

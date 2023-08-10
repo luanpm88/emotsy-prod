@@ -41,6 +41,7 @@ class EmailVerificationServerPolicy
                 $can = $user->admin->getPermission('email_verification_server_read') == 'all';
                 break;
             case 'customer':
+                // in non-saas mode, there is no such case
                 $can = false;
                 break;
         }
@@ -60,7 +61,8 @@ class EmailVerificationServerPolicy
                 $can = $user->admin->getPermission('email_verification_server_create') == 'yes';
                 break;
             case 'customer':
-                $max = $user->customer->getCurrentActiveGeneralSubscription()->planGeneral->getOption('email_verification_servers_max');
+                // in non-saas mode, there is no such case
+                $max = get_tmp_quota($user->customer, 'email_verification_servers_max');
                 $can = $user->customer->getCurrentActiveGeneralSubscription()->planGeneral->useOwnEmailVerificationServer()
                     && ($user->customer->emailVerificationServersCount() < $max || $max == -1);
                 break;

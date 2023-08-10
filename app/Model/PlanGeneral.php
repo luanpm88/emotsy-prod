@@ -865,14 +865,6 @@ class PlanGeneral extends Plan implements PlanInterface
      **/
     public function primarySendingServer()
     {
-        if (!config('app.saas')) {
-            if (\Acelle\Model\SendingServer::active()->count()) {
-                return \Acelle\Model\SendingServer::active()->first()->mapType();
-            } else {
-                return null;
-            }
-        }
-
         if (!$this->useSystemSendingServer()) {
             throw new \Exception('ACELLE ERROR: 120000700392');
         }

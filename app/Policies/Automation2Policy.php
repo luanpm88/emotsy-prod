@@ -22,7 +22,7 @@ class Automation2Policy
     public function create(User $user, Automation2 $automation)
     {
         $customer = $user->customer;
-        $max = $customer->getCurrentActiveGeneralSubscription()->planGeneral->getOption('automation_max');
+        $max = get_tmp_quota($customer, 'automation_max');
 
         $can = $max > $customer->automationsCount() || $max == -1;
 
