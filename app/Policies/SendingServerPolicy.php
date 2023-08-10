@@ -54,6 +54,7 @@ class SendingServerPolicy
 
         switch ($role) {
             case 'admin':
+                // non-SAAS mode fall upon here
                 $can = $user->admin->getPermission('sending_server_create') == 'yes';
 
                 // config/limit.php
@@ -108,6 +109,7 @@ class SendingServerPolicy
 
         switch ($role) {
             case 'admin':
+                // non-SAAS mode fall upon here
                 $ability = $user->admin->getPermission('sending_server_update');
                 $can = $ability == 'all'
                     || ($ability == 'own' && $user->admin->id == $item->admin_id);
@@ -129,6 +131,7 @@ class SendingServerPolicy
 
         switch ($role) {
             case 'admin':
+                // non-SAAS mode fall upon here
                 $ability = $user->admin->getPermission('sending_server_delete');
                 $can = $ability == 'all'
                     || ($ability == 'own' && $user->admin->id == $item->admin_id);
@@ -150,6 +153,7 @@ class SendingServerPolicy
 
         switch ($role) {
             case 'admin':
+                // non-SAAS mode fall upon here
                 $ability = $user->admin->getPermission('sending_server_update');
                 $can = $ability == 'all'
                     || ($ability == 'own' && $user->admin->id == $item->admin_id);
@@ -171,6 +175,7 @@ class SendingServerPolicy
 
         switch ($role) {
             case 'admin':
+                // non-SAAS mode fall upon here
                 $ability = $user->admin->getPermission('sending_server_update');
                 $can = $ability == 'all'
                     || ($ability == 'own' && $user->admin->id == $item->admin_id);

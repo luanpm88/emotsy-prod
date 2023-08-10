@@ -1639,22 +1639,22 @@ class Customer extends Model
 
     public function allowVerifyingOwnDomains()
     {
-        $subscription = $this->getCurrentActiveGeneralSubscription();
-
-        if (is_null($subscription)) {
-            return false;
-        }
-
-        $plan = $subscription->planGeneral;
-        if ($plan->useSystemSendingServer()) {
-            $server = $plan->primarySendingServer();
-            if ($server && ($server->allowVerifyingOwnDomains() || $server->allowVerifyingOwnDomainsRemotely())) {
-                return true;
+        if (config('app.saas')) {
+            $subscription = $this->getCurrentActiveGeneralSubscription();
+            $plan = $subscription->planGeneral;
+            if ($plan->useSystemSendingServer()) {
+                $server = $plan->primarySendingServer();
             } else {
-                return false;
+                return true;
             }
         } else {
+            $server = get_tmp_primary_server();
+        }
+
+        if ($server && ($server->allowVerifyingOwnDomains() || $server->allowVerifyingOwnDomainsRemotely())) {
             return true;
+        } else {
+            return false;
         }
     }
 
@@ -1753,17 +1753,6 @@ class Customer extends Model
         }
 
         return $subscriptions->first();
-    }
-
-    public function automationTemplates()
-    {
-        $subscription = $this->getCurrentActiveGeneralSubscription();
-
-        if (is_null($subscription)) {
-            throw new \Exception('Customer has no subscription!');
-        }
-
-        return $subscription->planGeneral->automationTemplates();
     }
 
     public function isCustomTrackingDomainRequired()
