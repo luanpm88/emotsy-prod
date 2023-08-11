@@ -432,10 +432,7 @@ class Automation2 extends Model
                 };
 
                 $lock->getExclusiveLock(function ($f) use ($customer, $automation) {
-                    if (!config('app.saas')) {
-                        $automation->logger()->info(sprintf('Checking automation "%s"', $automation->name));
-                        $automation->check();
-                    } elseif ($customer->getCurrentActiveGeneralSubscription()) {
+                    if (!config('app.saas') || $customer->getCurrentActiveGeneralSubscription()) {
                         $automation->logger()->info(sprintf('Checking automation "%s"', $automation->name));
                         $automation->check();
                     } else {

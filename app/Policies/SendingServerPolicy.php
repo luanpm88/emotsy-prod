@@ -12,12 +12,13 @@ class SendingServerPolicy
 
     public function read(User $user, SendingServer $item, $role)
     {
+        // @important: in case of non-saas mode, it falls upon admin case
         switch ($role) {
             case 'admin':
                 $can = $user->admin->getPermission('sending_server_read') != 'no';
                 break;
             case 'customer':
-                $can = $user->customer->getCurrentActiveGeneralSubscription()->planGeneral->useOwnSendingServer();
+                $can = $user->customer->getCurrentActiveGeneralSubscription()->planGeneral->useOwnSendingServer(); // non-saas safe
                 break;
         }
 
@@ -58,9 +59,8 @@ class SendingServerPolicy
             case 'customer':
                 // init
                 $can = true;
-                $useOwnServer = $user->customer->getCurrentActiveGeneralSubscription()->planGeneral->useOwnSendingServer();
+                $useOwnServer = $user->customer->getCurrentActiveGeneralSubscription()->planGeneral->useOwnSendingServer(); // non-saas safe
 
-                //
                 if ($useOwnServer) {
                     // check max campaigns
                     $max = get_tmp_quota($user->customer, 'sending_servers_max');
@@ -99,8 +99,7 @@ class SendingServerPolicy
                     || ($ability == 'own' && $user->admin->id == $item->admin_id);
                 break;
             case 'customer':
-                $can = $user->customer->getCurrentActiveGeneralSubscription()->planGeneral->useOwnSendingServer()
-                        && $user->customer->id == $item->customer_id;
+                $can = $user->customer->getCurrentActiveGeneralSubscription()->planGeneral->useOwnSendingServer() && $user->customer->id == $item->customer_id; // non-saas safe
                 break;
         }
 
@@ -117,8 +116,7 @@ class SendingServerPolicy
                     || ($ability == 'own' && $user->admin->id == $item->admin_id);
                 break;
             case 'customer':
-                $can = $user->customer->getCurrentActiveGeneralSubscription()->planGeneral->useOwnSendingServer()
-                    && $user->customer->id == $item->customer_id;
+                $can = $user->customer->getCurrentActiveGeneralSubscription()->planGeneral->useOwnSendingServer() && $user->customer->id == $item->customer_id; // non-saas safe
                 break;
         }
 
@@ -135,8 +133,7 @@ class SendingServerPolicy
                     || ($ability == 'own' && $user->admin->id == $item->admin_id);
                 break;
             case 'customer':
-                $can = $user->customer->getCurrentActiveGeneralSubscription()->planGeneral->useOwnSendingServer()
-                    && $user->customer->id == $item->customer_id;
+                $can = $user->customer->getCurrentActiveGeneralSubscription()->planGeneral->useOwnSendingServer() && $user->customer->id == $item->customer_id;// non-saas safe
                 break;
         }
 
@@ -153,8 +150,7 @@ class SendingServerPolicy
                     || ($ability == 'own' && $user->admin->id == $item->admin_id);
                 break;
             case 'customer':
-                $can = $user->customer->getCurrentActiveGeneralSubscription()->planGeneral->useOwnSendingServer()
-                    && $user->customer->id == $item->customer_id;
+                $can = $user->customer->getCurrentActiveGeneralSubscription()->planGeneral->useOwnSendingServer() && $user->customer->id == $item->customer_id; // non-saas safe
                 break;
         }
 

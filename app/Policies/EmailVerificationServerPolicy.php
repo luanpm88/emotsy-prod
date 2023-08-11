@@ -10,6 +10,7 @@ class EmailVerificationServerPolicy
 {
     use HandlesAuthorization;
 
+    // @important: in case of non-saas, it falls upon admin case
     public function read(User $user, EmailVerificationServer $server, $role)
     {
         // config/limit.php
@@ -22,7 +23,7 @@ class EmailVerificationServerPolicy
                 $can = $user->admin->getPermission('email_verification_server_read') != 'no';
                 break;
             case 'customer':
-                $can = $user->customer->getCurrentActiveGeneralSubscription()->planGeneral->useOwnEmailVerificationServer();
+                $can = $user->customer->getCurrentActiveGeneralSubscription()->planGeneral->useOwnEmailVerificationServer(); // non-saas safe
                 break;
         }
 
@@ -85,7 +86,7 @@ class EmailVerificationServerPolicy
                     || ($ability == 'own' && $user->admin->id == $server->admin_id);
                 break;
             case 'customer':
-                $can = $user->customer->getCurrentActiveGeneralSubscription()->planGeneral->useOwnEmailVerificationServer() && $user->customer->id == $server->customer_id;
+                $can = $user->customer->getCurrentActiveGeneralSubscription()->planGeneral->useOwnEmailVerificationServer() && $user->customer->id == $server->customer_id; // non-saas safe
                 break;
         }
 
