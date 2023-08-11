@@ -1646,6 +1646,7 @@
   'name' => 'リスト名',
   'name_your_campaign' => 'キャンペーンに名前を付ける',
   'need_a_account_create_an_one' => 'Appアカウントが必要ですか？ <a href=":link" class="text-info">アカウントを作成する</a>',
+  'login.create_an_account' => 'アカウントを作成する',
   'new' => '新着',
   'new_password' => '新しいパスワード',
   'next' => '次へ',

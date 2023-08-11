@@ -1649,6 +1649,7 @@
   'name' => 'Name',
   'name_your_campaign' => 'Name your campaign',
   'need_a_account_create_an_one' => 'Need an account? <a href=":link">Create an account</a>',
+  'login.create_an_account' => 'Create an account',
   'new' => 'New',
   'new_password' => 'New password',
   'next' => 'Next',

@@ -244,7 +244,9 @@
                             <font size="-3"><a class="btn btn-link text-center" href="{{ url('/password/reset') }}">
                                 {{ trans("messages.forgot_password") }}
                             </a></font>
-                            <a href="{{ url('/users/register') }}" class="btn btn-link">Create an account</a>
+                            @if (config('app.saas') && \Acelle\Model\Setting::get('enable_user_registration') == 'yes')
+                                <a href="{{ url('/users/register') }}" class="btn btn-link">{{ trans('messages.login.create_an_account') }}</a>
+                            @endif
                         </div>
                     </div>
                 </div>

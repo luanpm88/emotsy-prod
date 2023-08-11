@@ -105,11 +105,10 @@
             @endif
     </div>
 
-    @if (\Acelle\Model\Setting::get('enable_user_registration') == 'yes')
+    <!-- only allow registration in SAAS mode -->
+    @if (config('app.saas') && \Acelle\Model\Setting::get('enable_user_registration') == 'yes')
         <div class="text-center mt-4 text-white small">
-            {!! trans('messages.need_a_account_create_an_one', [
-	'link' => action('UserController@register')
-            ]) !!}
+            {!! trans('messages.need_a_account_create_an_one', [ 'link' => action('UserController@register') ]) !!}
         </div>
     @endif
 
