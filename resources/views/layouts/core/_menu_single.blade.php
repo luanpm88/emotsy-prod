@@ -121,6 +121,7 @@
                                     </i> {{ trans('messages.sending_domains') }}
                                 </a>
                             </li>
+                            <!--
                             <li class="nav-item {{ in_array($menu, ['sender']) ? 'active' : '' }}">
                                 <a href="{{ action('SenderController@index') }}" class="dropdown-item d-flex align-items-center">
                                 <i class="navbar-icon" style="width:20	px">
@@ -128,6 +129,7 @@
                                     </i> {{ trans('messages.verified_senders') }}
                                 </a>
                             </li>
+                            -->
                             <li class="nav-item {{ in_array($menu, ['tracking_domain']) ? 'active' : '' }}">
                                 <a href="{{ action('TrackingDomainController@index') }}" class="dropdown-item d-flex align-items-center">
                                 <i class="navbar-icon" style="width:20px">

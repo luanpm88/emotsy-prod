@@ -13,18 +13,22 @@ class SendingDomainPolicy
 
     public function read(User $user, SendingDomain $item, $role)
     {
+        if (!config('app.saas')) {
+            // Any domain just works, do not need to check the primary server settings
+            return true;
+        }
+
         switch ($role) {
             case 'admin':
                 $can = $user->admin->getPermission('sending_domain_read') != 'no';
                 break;
             case 'customer':
                 $subscription = $user->customer->getNewOrActiveGeneralSubscription();
-
                 if ($subscription->planGeneral->useOwnSendingServer()) {
-                    $can = true;
+                    return true;
                 } else {
                     $server = $subscription->planGeneral->primarySendingServer();
-                    $can = $server->allowVerifyingOwnDomains() || $server->allowVerifyingOwnDomainsRemotely();
+                    return $server->allowVerifyingOwnDomains() || $server->allowVerifyingOwnDomainsRemotely();
                 }
 
                 break;
@@ -35,6 +39,11 @@ class SendingDomainPolicy
 
     public function readAll(User $user, SendingDomain $item, $role)
     {
+        if (!config('app.saas')) {
+            // Any domain just works, do not need to check the primary server settings
+            return true;
+        }
+
         switch ($role) {
             case 'admin':
                 $can = $user->admin->getPermission('sending_domain_read') == 'all';
@@ -54,6 +63,11 @@ class SendingDomainPolicy
 
     public function update(User $user, SendingDomain $item, $role)
     {
+        if (!config('app.saas')) {
+            // Any domain just works, do not need to check the primary server settings
+            return true;
+        }
+
         switch ($role) {
             case 'admin':
                 $ability = $user->admin->getPermission('sending_domain_update');
@@ -79,6 +93,11 @@ class SendingDomainPolicy
 
     public function delete(User $user, SendingDomain $item, $role)
     {
+        if (!config('app.saas')) {
+            // Any domain just works, do not need to check the primary server settings
+            return true;
+        }
+
         switch ($role) {
             case 'admin':
                 $ability = $user->admin->getPermission('sending_domain_delete');

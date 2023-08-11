@@ -25,16 +25,10 @@ class SendingDomainController extends Controller
 
         if (config('app.saas')) {
             $plan = $request->user()->customer->getCurrentActiveGeneralSubscription()->planGeneral;
-
-            if ($plan->useSystemSendingServer()) {
-                $server = $plan->primarySendingServer();
-            } else {
-                $server = null;
-            }
+            $server = $plan->useSystemSendingServer() ? $plan->primarySendingServer() : null;
         } else {
             $server = get_tmp_primary_server();
         }
-
 
         $items = SendingDomain::search($request, $server);
 
@@ -68,7 +62,7 @@ class SendingDomainController extends Controller
                 }
             }
         } else {
-            $server == get_tmp_primary_server();
+            $server = get_tmp_primary_server();
         }
 
         $items = $domains->search($request->keyword)->orderBy($request->sort_order, $request->sort_direction)->paginate(25);
@@ -125,12 +119,13 @@ class SendingDomainController extends Controller
         $domain = $customer->sendingDomains()->make();
 
         // Determine if app-based domain or server-based domain
-        $plan = $customer->getCurrentActiveGeneralSubscription()->planGeneral;
-        if ($plan->useSystemSendingServer()) {
-            $server = $plan->primarySendingServer();
+        if (!config('app.saas')) {
+            $server = get_tmp_primary_server();
         } else {
-            $server = null;
+            $plan = $customer->getCurrentActiveGeneralSubscription()->planGeneral;
+            $server = $plan->useSystemSendingServer() ? $plan->primarySendingServer() : null;
         }
+
 
         if ($server && $server->allowVerifyingOwnDomainsRemotely()) {
             list($validator, $domain) = $domain->createFromArray($request->all(), $server); // server based domain
