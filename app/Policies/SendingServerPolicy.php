@@ -12,10 +12,6 @@ class SendingServerPolicy
 
     public function read(User $user, SendingServer $item, $role)
     {
-        if (!config('app.saas')) {
-            return false;
-        }
-
         switch ($role) {
             case 'admin':
                 $can = $user->admin->getPermission('sending_server_read') != 'no';
@@ -30,10 +26,6 @@ class SendingServerPolicy
 
     public function readAll(User $user, SendingServer $item, $role)
     {
-        if (!config('app.saas')) {
-            return false;
-        }
-
         switch ($role) {
             case 'admin':
                 $can = $user->admin->getPermission('sending_server_read') == 'all';
@@ -48,10 +40,6 @@ class SendingServerPolicy
 
     public function create(User $user, $role)
     {
-        if (!config('app.saas')) {
-            return false;
-        }
-
         switch ($role) {
             case 'admin':
                 // non-SAAS mode fall upon here
@@ -103,10 +91,6 @@ class SendingServerPolicy
 
     public function update(User $user, SendingServer $item, $role)
     {
-        if (!config('app.saas')) {
-            return false;
-        }
-
         switch ($role) {
             case 'admin':
                 // non-SAAS mode fall upon here
@@ -125,10 +109,6 @@ class SendingServerPolicy
 
     public function delete(User $user, SendingServer $item, $role)
     {
-        if (!config('app.saas')) {
-            return false;
-        }
-
         switch ($role) {
             case 'admin':
                 // non-SAAS mode fall upon here
@@ -147,10 +127,6 @@ class SendingServerPolicy
 
     public function disable(User $user, SendingServer $item, $role)
     {
-        if (!config('app.saas')) {
-            return false;
-        }
-
         switch ($role) {
             case 'admin':
                 // non-SAAS mode fall upon here
@@ -169,10 +145,6 @@ class SendingServerPolicy
 
     public function enable(User $user, SendingServer $item, $role)
     {
-        if (!config('app.saas')) {
-            return false;
-        }
-
         switch ($role) {
             case 'admin':
                 // non-SAAS mode fall upon here
