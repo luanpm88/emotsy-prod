@@ -184,6 +184,9 @@ class AppServiceProvider extends ServiceProvider
         }
 
         if ($isSecure) {
+            // To deal with Ajax pagination link issue (always use HTTP)
+            $this->app['request']->server->set('HTTPS','on');
+
             URL::forceScheme('https');
         }
 
