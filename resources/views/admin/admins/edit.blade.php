@@ -21,12 +21,12 @@
 
 @section('content')
     
-                <form enctype="multipart/form-data" action="{{ action('Admin\AdminController@update', $admin->uid) }}" method="POST" class="form-validate-jquery">
-                    {{ csrf_field() }}
-                    <input type="hidden" name="_method" value="PATCH">
-                    
-                    @include('admin.admins._form')
-                    
-                <form>
+    <form enctype="multipart/form-data" action="{{ action('Admin\AdminController@update', $admin->uid) }}" method="POST" class="form-validate-jquery">
+        {{ csrf_field() }}
+        <input type="hidden" name="_method" value="PATCH">
+
+        @include('admin.admins._form')
+
+    <form>
     
 @endsection
