@@ -121,8 +121,8 @@
     </div>
 </div>
 
-
-@if (Auth::user()->customer->getCurrentActiveGeneralSubscription()->planGeneral->useOwnSendingServer())
+<!-- the following are settings for users' own sending servers, not system ones, so disabled in NON-SAAS mode -->
+@if (config('app.saas') && Auth::user()->customer->getCurrentActiveGeneralSubscription()->planGeneral->useOwnSendingServer())
     <div class="sub_section">
         <h3 class="text-semibold">{{ trans('messages.sending_servers') }}</h3>
         <div class="row mb-20 form-groups-bottom-0">

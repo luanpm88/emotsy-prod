@@ -50,6 +50,7 @@ class Frontend
         }
 
         // Wordpress db by user
+        /*
         if (isset($user) && isset($user->customer)) {
             config([
                 'database.connections.wordpress.database' => config('wordpress.'.$user->customer->id.'.db_name'),
@@ -81,6 +82,7 @@ class Frontend
                 ]);
             }
         }
+        */
 
         return $next($request);
     }

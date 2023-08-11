@@ -1679,7 +1679,11 @@ class Customer extends Model
 
     public function getCurrentActiveGeneralSubscription()
     {
-        // Theo design thì mỗi customer chỉ có một subscription đang "active"
+        if (!config('app.saas')) {
+            throw new Exception('Operation not allowed in NON-SAAS mode');
+        }
+
+        // only ONE
         $subscriptions = $this->generalSubscriptions()->active();
 
         if ($subscriptions->count() > 1) {

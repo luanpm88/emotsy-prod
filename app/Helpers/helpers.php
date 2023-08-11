@@ -1243,7 +1243,7 @@ function get_tmp_quota($customer, $name)
         "max_process" => "1",
         "max_size_upload_total" => "5000000000",
         "max_file_size_upload" => "50000000",
-        "unsubscribe_url_required" => "yes",
+        "unsubscribe_url_required" => "no",
         "access_when_offline" => "no",
         "sending_servers_max" => "-1",
         "sending_domains_max" => "-1",

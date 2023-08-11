@@ -418,9 +418,7 @@ class CampaignController extends Controller
             $this->validate($request, $rules);
 
             // template extra validation by plan (unsubscribe URL for example)
-            // UGLY code here, @todo: find a good place to handle this type of validation
-            $plan = $request->user()->customer->getCurrentActiveGeneralSubscription()->planGeneral;
-            if ($plan->getOption('unsubscribe_url_required') == 'yes' && Setting::isYes('campaign.enforce_unsubscribe_url_check')) {
+            if (get_tmp_quota($request->user()->customer, 'unsubscribe_url_required') == 'yes' && Setting::isYes('campaign.enforce_unsubscribe_url_check')) {
                 if (strpos($request->content, '{UNSUBSCRIBE_URL}') === false) {
                     return response()->json(['message' => trans('messages.template.validation.unsubscribe_url_required')], 400);
                 }
@@ -2010,9 +2008,7 @@ class CampaignController extends Controller
                 return response()->json($validator->errors(), 400);
             }
 
-            // UGLY CODE here, @todo: find a better place to house this type of validation
-            $plan = $request->user()->customer->getCurrentActiveGeneralSubscription()->planGeneral;
-            if ($plan->getOption('unsubscribe_url_required') == 'yes' && Setting::isYes('campaign.enforce_unsubscribe_url_check')) {
+            if (get_tmp_quota($request->user()->customer, 'unsubscribe_url_required') == 'yes' && Setting::isYes('campaign.enforce_unsubscribe_url_check')) {
                 if (strpos($request->html, '{UNSUBSCRIBE_URL}') === false) {
                     return response()->json(['message' => trans('messages.template.validation.unsubscribe_url_required')], 400);
                 }

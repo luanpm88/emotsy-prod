@@ -72,9 +72,13 @@ class VerifySubscriber extends Base
             ];
 
             // Credit limit tracker
-            $creditTrackers = [
-                $this->subscription->getVerifyEmailCreditTracker()
-            ];
+            if (is_null($this->subscription)) {
+                $creditTrackers = [];
+            } else {
+                $creditTrackers = [
+                    $this->subscription->getVerifyEmailCreditTracker()
+                ];
+            }
 
             execute_with_limits($rateTrackers, $creditTrackers, function () {
                 $this->subscriber->verify($this->server);

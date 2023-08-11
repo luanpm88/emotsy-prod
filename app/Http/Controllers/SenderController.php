@@ -111,6 +111,7 @@ class SenderController extends Controller
             return $this->notAuthorized();
         }
 
+        // Sender is temporaily disabled in Single mode, so the following code is safe
         $plan = $request->user()->customer->getCurrentActiveGeneralSubscription()->planGeneral;
 
         $sender->fill($request->all());

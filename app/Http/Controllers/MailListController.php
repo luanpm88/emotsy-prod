@@ -790,7 +790,13 @@ class MailListController extends Controller
         $customer = $request->user()->customer;
 
         // Dispatch
-        $job = $list->dispatchVerificationJob($server, $customer->getCurrentActiveGeneralSubscription());
+        if (config('app.saas')) {
+            $subscription = $customer->getCurrentActiveGeneralSubscription();
+        } else {
+            $subscription = null;
+        }
+
+        $job = $list->dispatchVerificationJob($server, $subscription);
 
         // Return
         return response()->json([
