@@ -1576,6 +1576,7 @@
   'log.subscriber.updated' => 'The subscriber "<a href=":link">:email</a>" belonging to the list "<a href=":list_link">:list_name</a>" was updated!',
   'log_empty_line_1' => 'Bisher gibt es keine Protokolle',
   'login' => 'Einloggen',
+  'login.create_an_account' => 'Create an account',
   'login.email' => 'Email',
   'login.password' => 'Passwort',
   'login.please_wait' => 'Einloggen, bitte wartemt...',

@@ -1577,6 +1577,7 @@
   'log.subscriber.updated' => 'L\'abbonato "<a href=":link">:email</a>" appartenente alla lista "<a href=":list_link">:list_name</a>" &egrave; stato aggiornato!',
   'log_empty_line_1' => 'Non ci sono ancora log (Registri)',
   'login' => 'Log In (Accedi)',
+  'login.create_an_account' => 'Create an account',
   'login.email' => 'Email',
   'login.password' => 'Password',
   'login.please_wait' => 'Accesso, attendere prego...',

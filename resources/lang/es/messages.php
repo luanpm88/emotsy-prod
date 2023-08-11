@@ -1577,6 +1577,7 @@
   'log.subscriber.updated' => 'The subscriber "<a href=":link">:email</a>" belonging to the list "<a href=":list_link">:list_name</a>" was updated!',
   'log_empty_line_1' => 'No hay ningún registro todavia',
   'login' => 'Iniciar sesión',
+  'login.create_an_account' => 'Create an account',
   'login.email' => 'Email',
   'login.password' => 'Contraseña',
   'login.please_wait' => 'Logging in, please wait...',
