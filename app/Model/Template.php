@@ -55,6 +55,8 @@ class Template extends Model
     public const TYPE_EMAIL = 'email';
     public const TYPE_POPUP = 'popup';
 
+    public const IS_PRIVATE = true;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -110,7 +112,18 @@ class Template extends Model
         }
     }
 
+    /**
+     * Search.
+     *
+     * @return collect
+     */
+    public function scopeNotPrivate($query)
+    {
+        return $query->where('is_private', !self::IS_PRIVATE);
+    }
+
     // Templates that are not associated to any email or campaign
+    // @TODO: drop this scope in the future, use notPrivate() scope instead
     public function scopeNotPreserved($query)
     {
         $query->whereNotIn('templates.id', function ($q) {
@@ -308,6 +321,16 @@ class Template extends Model
         }
 
         // return
+        return $copy;
+    }
+
+    // Private means a template that is associated to a campaign, email or form
+    public function copyAsPrivate($attributes)
+    {
+        $copy = $this->copy($attributes);
+        $copy->is_private = true;
+        $copy->save();
+
         return $copy;
     }
 
