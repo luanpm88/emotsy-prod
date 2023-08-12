@@ -1253,6 +1253,8 @@ function get_tmp_quota($customer, $name)
         "list_export" => "yes",
         "all_sending_server_types" => "yes",
         "api_access" => "yes",
+        "plain_text_footer" => "no",
+        "html_footer" => "",
     ];
 
     if (config('app.saas')) {
