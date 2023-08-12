@@ -1258,7 +1258,7 @@ function get_tmp_quota($customer, $name)
     ];
 
     if (config('app.saas')) {
-        return $customer->getCurrentActiveGeneralSubscription()->planGeneral->getOption($name);
+        return $customer->getNewOrActiveGeneralSubscription()->planGeneral->getOption($name);
     } else {
         if (!array_key_exists($name, $single)) {
             throw new \Exception("Key '{$name}' not listed");
