@@ -27,7 +27,7 @@
                     'url' => action('SenderController@dropbox'),
                     'empty' => trans('messages.sender.dropbox.empty'),
                     'error' => trans('messages.sender.dropbox.error', [
-                        'sender_link' => action('SenderController@index'),
+                        'sender_link' => action('SendingDomainController@index'),
                     ]),
                     'header' => trans('messages.verified_senders'),
                 ])

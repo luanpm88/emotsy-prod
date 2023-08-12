@@ -82,7 +82,7 @@
 						'url' => action('SenderController@dropbox'),
 						'empty' => trans('messages.sender.dropbox.empty'),
 						'error' => trans('messages.sender.dropbox.error.' . Auth::user()->customer->allowUnverifiedFromEmailAddress(), [
-							'sender_link' => action('SenderController@index'),
+							'sender_link' => action('SendingDomainController@index'),
 						]),
 						'header' => trans('messages.verified_senders'),
 					])
@@ -110,7 +110,7 @@
                     'help_class' => 'campaign',
                     'empty' => trans('messages.sender.dropbox.empty'),
                     'error' => trans('messages.sender.dropbox.reply.error.' . Auth::user()->customer->allowUnverifiedFromEmailAddress(), [
-                        'sender_link' => action('SenderController@index'),
+                        'sender_link' => action('SendingDomainController@index'),
                     ]),
                     'header' => trans('messages.verified_senders'),
                 ])
