@@ -791,7 +791,7 @@ class MailListController extends Controller
 
         // Dispatch
         if (config('app.saas')) {
-            $subscription = $customer->getCurrentActiveGeneralSubscription();
+            $subscription = $customer->getCurrentActiveGeneralSubscription(); // saas safe
         } else {
             $subscription = null;
         }

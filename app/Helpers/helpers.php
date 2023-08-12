@@ -1220,7 +1220,7 @@ function get_app_name()
 function get_tmp_primary_server()
 {
     if (config('app.saas')) {
-        throw new \Exception('Use in single mode only');
+        throw new \Exception('Use in non-SAAS mode only');
     }
 
     if (\Acelle\Model\SendingServer::active()->count()) {
@@ -1232,7 +1232,7 @@ function get_tmp_primary_server()
 
 function get_tmp_quota($customer, $name)
 {
-    $single = [
+    $settings = [
         "email_max" => "-1",
         "list_max" => "-1",
         "subscriber_max" => "-1",
@@ -1260,10 +1260,10 @@ function get_tmp_quota($customer, $name)
     if (config('app.saas')) {
         return $customer->getNewOrActiveGeneralSubscription()->planGeneral->getOption($name);
     } else {
-        if (!array_key_exists($name, $single)) {
+        if (!array_key_exists($name, $settings)) {
             throw new \Exception("Key '{$name}' not listed");
         }
 
-        return $single[$name];
+        return $settings[$name];
     }
 }

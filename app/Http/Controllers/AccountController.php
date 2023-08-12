@@ -149,7 +149,7 @@ class AccountController extends Controller
     {
         $customer = $request->user()->customer;
         if (config('app.saas')) {
-            $subscription = $customer->getCurrentActiveGeneralSubscription();
+            $subscription = $customer->getCurrentActiveGeneralSubscription(); // saas safe
 
             $remainingEmailCredits = $subscription->getRemainingEmailCredits();
             $emailCredits = $subscription->getCreditsLimit('send');
