@@ -2,7 +2,7 @@
 	'menu' => 'funnel',
 ])
 
-@section('title', trans('store.sms_funnel'))
+@section('title', trans('store.funnel'))
 
 @section('page_header')
 
@@ -25,7 +25,7 @@
     <div class="row">
         <div class="col-md-6 col-12">
             <form id="sendingserverCreate"  method="POST"  enctype="multipart/form-data" action="{{ action('Store\FunnelController@update',[
-                        'funnel' => $smsFunnel,
+                        'funnel' => $funnel,
                         'page' => request()->page
                     ]) }}" method="POST">
                 {{ csrf_field() }} 
