@@ -12,7 +12,7 @@
 		</ul>
 		<h1>
 			<span class="text-semibold"><span class="material-symbols-rounded">format_list_bulleted</span>
-                {{ trans('store.sms_categories') }}
+                {{ trans('store.sms_categories') }} 
             </span>
 		</h1>
 	</div>
