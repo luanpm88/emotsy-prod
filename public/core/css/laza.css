@@ -681,7 +681,9 @@ span.lada-edit-color{
 
 @media (min-width: 1200px) {
     .leftbar .page-container {
-        padding-left: 255px !important;
+        /*
+            padding-left: 255px !important;
+        */
     }
 }
 
