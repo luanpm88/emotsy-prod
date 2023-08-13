@@ -31,7 +31,7 @@
                 {{ csrf_field() }} 
                 @method('PUT')        
                 
-                @include('funnels._form',[ 'title' => 'Update Template']) 
+                @include('store.funnels._form',[ 'title' => 'Update Template']) 
                 
                 <div class="col-12 mt-2 my-3 ">
                     <button type="submit" class="btn btn-primary mr-1 mb-1 waves-effect waves-float waves-light">

@@ -268,7 +268,7 @@ class CategoryController extends Controller
     public function delete(Request $request)
     {
         // find and delete record
-        $smsFunnel = SmsFunnel::find($request->id);
+        $smsFunnel = Funnel::find($request->id);
 
         // delete record
         $smsFunnel->delete();
@@ -287,7 +287,7 @@ class CategoryController extends Controller
      */
     public function destroy(Request $request, $id)
     {
-        $smsFunnel = SmsFunnel::findOrFail($id)->first();
+        $smsFunnel = Funnel::findOrFail($id)->first();
         $smsFunnel->delete();
         return redirect()->action('Store\CategoryController@index', [
             'page'      =>  $request->page,
@@ -299,7 +299,7 @@ class CategoryController extends Controller
      */
     public function updateStatus(Request $request)
     {
-        $smsFunnel = SmsFunnel::find($request->id);
+        $smsFunnel = Funnel::find($request->id);
         $smsFunnel->status = $request->status;
         $smsFunnel->save();
         return response()->json(['success'=> trans('store.categories.status.updatesuccess')]);

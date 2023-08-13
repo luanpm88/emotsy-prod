@@ -25,7 +25,7 @@
         <div class="row">
             <div class="col-md-8">
                 
-                @include('funnels._form',[ 'title' => 'Create Functional']) 
+                @include('store.funnels._form',[ 'title' => 'Create Functional']) 
 
                 <div class="mt-4">
                     <button type="submit" class="btn btn-primary">{{ trans('messages.save') }}</button>

@@ -30,6 +30,6 @@ class CreateFunnelsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('sms_funnels');
+        Schema::dropIfExists('funnels');
     }
 }

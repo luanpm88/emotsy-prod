@@ -4,7 +4,7 @@ namespace Acelle\Http\Controllers\Store;
 
 use Acelle\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Acelle\Model\SmsFunnel;
+use Acelle\Model\Funnel;
 
 class FunnelController extends Controller
 {
@@ -21,12 +21,12 @@ class FunnelController extends Controller
         $view       =   $request->view ?? '' ;
 
         // Get sending servers
-        $smsFunnels = SmsFunnel::search($keyword)
+        $smsFunnels = Funnel::search($keyword)
             ->paginate($perPage);
 
-        return view('funnels.index', [
+        return view('store.funnels.index', [
             'smsFunnels'    => $smsFunnels,
-            'statuslist'    => SmsFunnel::select('status')->distinct()->get(),
+            'statuslist'    => Funnel::select('status')->distinct()->get(),
             'keyword'       => $keyword,
             'view'          => $view,
             'perPage'       => $perPage,
@@ -42,7 +42,7 @@ class FunnelController extends Controller
         $view       =   $request->view ?? 'list' ;
 
         // Get sending servers
-        $smsFunnels = SmsFunnel::search($keyword);
+        $smsFunnels = Funnel::search($keyword);
 
         // filter by status
         if ($status!='all') {
@@ -55,7 +55,7 @@ class FunnelController extends Controller
         if ($request->sort) {
             $smsFunnels->orderBy($request->sort['by'], $request->sort['direction']);
         }
-        return view('funnels.'.$view, [
+        return view('store.funnels.'.$view, [
             'smsFunnels'   => $smsFunnels->paginate($perPage),
             'keyword'     => $keyword,
             'perPage'     => $perPage,
@@ -67,7 +67,7 @@ class FunnelController extends Controller
     public function deleteSelected(Request $request)
     {
         // find and delete record
-        $smsFunnels = SmsFunnel::whereIn('id', $request->ids)->get(); // collection map filter
+        $smsFunnels = Funnel::whereIn('id', $request->ids)->get(); // collection map filter
         foreach ($smsFunnels as $smsFunnel) {
             $smsFunnel->delete();
         }
@@ -88,18 +88,18 @@ class FunnelController extends Controller
     public function create(Request $request)
     {
         // init
-        $smsFunnel = new SmsFunnel();
+        $smsFunnel = new Funnel();
 
-        return view('funnels.create', [
+        return view('store.funnels.create', [
             'smsFunnel' => $smsFunnel,
-            'tags' => SmsFunnel::getTags(),
+            'tags' => Funnel::getTags(),
         ]);
     }
 
     public function store(Request $request)
     {
         // init
-        $smsFunnel = new SmsFunnel();
+        $smsFunnel = new Funnel();
 
         // set active
         $smsFunnel->status = 'Active';
@@ -109,9 +109,9 @@ class FunnelController extends Controller
 
         // if error
         if ($validator->fails()) {
-            return response()->view('funnels.create', [
+            return response()->view('store.funnels.create', [
                 'smsFunnel' => $smsFunnel,
-                'tags' => SmsFunnel::getTags(),
+                'tags' => Funnel::getTags(),
                 'errors' => $validator->errors(),
             ], 400);
         }
@@ -132,11 +132,11 @@ class FunnelController extends Controller
 
      public function edit(Request $request, $id)
      {
-         $smsFunnel = SmsFunnel::find($id);
+         $smsFunnel = Funnel::find($id);
 
-         return view('funnels.edit', [
+         return view('store.funnels.edit', [
             'smsFunnel'    =>  $smsFunnel,
-            'tags' => SmsFunnel::getTags(),
+            'tags' => Funnel::getTags(),
          ]);
      }
 
@@ -146,7 +146,7 @@ class FunnelController extends Controller
 
     public function getmessage(Request $request)
     {
-        $smsFunnel = SmsFunnel::find($request->id);
+        $smsFunnel = Funnel::find($request->id);
         return response()->json([
             'status' => 'success',
             'message' =>  $smsFunnel->message,
@@ -164,16 +164,16 @@ class FunnelController extends Controller
     public function update(Request $request, $id)
     {
         // init
-        $smsFunnel = SmsFunnel::find($id);
+        $smsFunnel = Funnel::find($id);
 
         // Try to save
         $validator = $smsFunnel->saveFromParams($request->all());
 
         // errors
         if ($validator->fails()) {
-            return response()->view('funnels.edit', [
+            return response()->view('store.funnels.edit', [
                 'smsFunnel' => $smsFunnel,
-                'tags' => SmsFunnel::getTags(),
+                'tags' => Funnel::getTags(),
                 'errors' => $validator->errors(),
             ], 400);
         }
@@ -200,7 +200,7 @@ class FunnelController extends Controller
         if ($solu == 'activemany') {
             if ($request->ids) {
                 try {
-                    SmsFunnel::whereIn("id", $request->ids)
+                    Funnel::whereIn("id", $request->ids)
                         ->update([
                             'status' => 'Active',
                         ]);
@@ -213,7 +213,7 @@ class FunnelController extends Controller
         if ($solu == 'delmany') {
             if ($request->ids) {
                 try {
-                    SmsFunnel::destroy($request->ids);
+                    Funnel::destroy($request->ids);
                     $mesenger   =   " Delete sucessful";
                 } catch(\Exception $e) {
                     report($e);
@@ -234,8 +234,8 @@ class FunnelController extends Controller
      */
     public function show(request $request, $id)
     {
-        $smsFunnel = SmsFunnel::find($id);
-        return view('funnels.show', [
+        $smsFunnel = Funnel::find($id);
+        return view('store.funnels.show', [
             'smsFunnel'    =>  $smsFunnel,
             'page'      =>  $request->page
         ]);
@@ -252,7 +252,7 @@ class FunnelController extends Controller
     public function delete(Request $request)
     {
         // find and delete record
-        $smsFunnel = SmsFunnel::find($request->id);
+        $smsFunnel = Funnel::find($request->id);
 
         // delete record
         $smsFunnel->delete();
@@ -272,7 +272,7 @@ class FunnelController extends Controller
      */
     public function destroy(Request $request, $id)
     {
-        $smsFunnel = SmsFunnel::findOrFail($id)->first();
+        $smsFunnel = Funnel::findOrFail($id)->first();
         $smsFunnel->delete();
         return redirect()->action('Sms\FunnelController@index', [
             'page'      =>  $request->page,
@@ -284,7 +284,7 @@ class FunnelController extends Controller
      */
     public function updateStatus(Request $request)
     {
-        $smsFunnel = SmsFunnel::find($request->id);
+        $smsFunnel = Funnel::find($request->id);
         $smsFunnel->status = $request->status;
         $smsFunnel->save();
         return response()->json(['success'=> trans('store.sms_functional.status.updatesuccess')]);
