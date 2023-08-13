@@ -1,5 +1,5 @@
 @extends('layouts.core.frontend', [
-	'menu' => 'product',
+	'menu' => 'products',
 ])
 
 @section('title', trans('store.product'))

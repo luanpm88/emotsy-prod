@@ -182,5 +182,7 @@
      * media
      */
     'media' => 'Media',
+
+    'store' => 'Store',
     
 );  

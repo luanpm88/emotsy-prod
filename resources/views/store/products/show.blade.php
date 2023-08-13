@@ -1,5 +1,5 @@
 @extends('layouts.core.frontend', [
-	'menu' => 'sms_tracking_log',
+	'menu' => 'products',
 ])
 
 @section('title', trans('store.sms_sending_servers'))
