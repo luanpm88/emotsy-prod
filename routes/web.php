@@ -833,6 +833,62 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
 
     // Chat
     Route::post('chat', 'ChatController@chat');
+
+    // Products
+    Route::get('store/products/attributes', 'Store\ProductController@attributes');  
+    Route::get('store/products/list', 'Store\ProductController@list');   
+    Route::DELETE('store/products/delete-selected', 'Store\ProductController@deleteSelected');
+    Route::DELETE('store/products/delete', 'Store\ProductController@delete');    
+    Route::PATCH('store/products', 'Store\ProductController@updateStatus');
+    Route::PUT('store/products', 'Store\ProductController@multiltask'); 
+    Route::post('store/products/search', 'Store\ProductController@search');
+    Route::get('store/products/search', 'Store\ProductController@search'); 
+    Route::resource('/store/products', 'Store\ProductController'); 
+
+    // Orders
+    Route::get('store/orders/list', 'Store\OrdersController@list');  
+    Route::resource('store/orders', 'Store\OrdersController');
+
+    /**
+     * attributess - đặc tính sản phẩm
+     */
+    Route::get('store/attributes/list', 'Store\AttributeController@list');
+    Route::DELETE('store/attributes/delete-selected', 'Store\AttributeController@deleteSelected');
+    Route::PUT('store/attributes/chagse-status', 'Store\AttributeController@statusChangeSelected');
+    Route::DELETE('sms/attributes/delete', 'Store\AttributeController@delete');    
+    Route::PATCH('store/attributes', 'Store\AttributeController@updateStatus');
+    Route::PUT('store/attributes', 'Store\AttributeController@multiltask'); 
+    Route::resource('store/attributes', 'Store\AttributeController');
+
+    /**
+     * categories
+     */
+    
+    Route::get('store/categories/get-attributes', 'Store\CategoryController@get_attrible_catid');
+    Route::get('store/categories/collection', 'Store\CategoryController@collection');
+    Route::get('store/categories/list', 'Store\CategoryController@list');
+    Route::DELETE('store/categories/delete-selected', 'Store\CategoryController@deleteSelected');
+    Route::PUT('store/categories/chagse-status', 'Store\CategoryController@statusChangeSelected');    
+    Route::DELETE('sms/categories/delete', 'Store\CategoryController@delete');    
+    Route::PATCH('store/categories', 'Store\CategoryController@updateStatus');
+    Route::PUT('store/categories', 'Store\CategoryController@multiltask');  
+    Route::resource('store/categories', 'Store\CategoryController');
+
+    // Sms funnel
+
+    Route::get('funnel/list', 'Store\FunnelController@list');   
+    Route::DELETE('funnel/delete-selected', 'Store\FunnelController@deleteSelected');
+    Route::DELETE('sms/funnel/delete', 'Store\FunnelController@delete');    
+    Route::PATCH('funnel', 'Store\FunnelController@updateStatus');
+    Route::PUT('funnel', 'Store\FunnelController@multiltask'); 
+    Route::post('funnel/search', 'Store\FunnelController@search');
+    Route::get('funnel/search', 'Store\FunnelController@search');
+    Route::post('funnel/getmessage', 'Store\FunnelController@getmessage'); 
+    Route::resource('funnel', 'Store\FunnelController');
+
+    // Media
+    Route::resource('store/media', 'Store\MediaController');
+
 });
 
 // ADMIN AREA

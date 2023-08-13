@@ -192,6 +192,11 @@ class Admin extends Model
      */
     public function getColorScheme()
     {
+        // Store mode support only sms theme
+        if (config('app.store')) {
+            return 'store';
+        }
+
         if (!empty($this->color_scheme)) {
             return $this->color_scheme;
         } else {
