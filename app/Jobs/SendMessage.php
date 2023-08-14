@@ -153,7 +153,7 @@ class SendMessage implements ShouldQueue
             // Option 2: just skip the error, log it and proceed with the next subscriber
 
             if ($this->stopOnError) {
-                throw new $ex();
+                throw $ex;
             } else {
                 if (!isset($msgId)) {
                     // Just in case there is an exception before the execution of "list($message, $msgId) = $this->campaign->prepareEmail..."
