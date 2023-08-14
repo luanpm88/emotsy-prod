@@ -6,7 +6,7 @@ use Illuminate\Database\Seeder;
 use DB;
 use Illuminate\Support\Facades\Storage;
 
-class OrdersSeeder extends Seeder
+class OrderSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -18,7 +18,7 @@ class OrdersSeeder extends Seeder
         // delete all records
         DB::table('orders')->delete();
         
-        $products = \Acelle\Model\Orders::ALL()->get();
+        $products = \Acelle\Model\Order::all();
         foreach($products as $product){ 
             
             $status = [

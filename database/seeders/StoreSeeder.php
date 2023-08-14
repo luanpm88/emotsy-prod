@@ -16,8 +16,8 @@ class StoreSeeder extends Seeder
         $this->call([
             CategoryAttributeSeeder::class,
             ProductSeeder::class,
-            SmsFunnelSeeder::class,
-            OrdersSeeder::class,
+            // FunnelSeeder::class,
+            OrderSeeder::class,
         ]);
     }
 }

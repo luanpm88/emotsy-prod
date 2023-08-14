@@ -363,15 +363,6 @@ body, html {
     padding-right: revert;
     right: 5px;
 }
-ul.dropdown-menu li > a{
-    color: #4f5669 !important;
-    word-wrap: normal;
-    font-size: 14px;
-    height: 32px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
 .next-btn.next-btn-primary:link{
     color: #fff;
     font-size: 14px;
