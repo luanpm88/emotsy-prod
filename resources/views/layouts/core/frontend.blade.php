@@ -37,6 +37,8 @@
 ">
 	@if(config('app.cartpaye'))
 		@include('layouts.core._menu_frontend_cartpaye')
+    @elseif(config('app.store'))
+		@include('layouts.core._menu_frontend_store')
 	@elseif(config('app.brand'))
 		@include('layouts.core._menu_frontend_brand')
 	@elseif (!config('app.saas'))
@@ -51,6 +53,10 @@
 
 	<main class="container page-container px-3">
 		@include('layouts.core._headbar_frontend')
+
+        @if (config('app.store'))
+            @include('layouts.core._topbar_frontend')
+        @endif
 		
 		@yield('page_header')
 
