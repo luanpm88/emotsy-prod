@@ -1127,6 +1127,10 @@ class Customer extends Model
      */
     public function canUseApi()
     {
+        if (!config('app.saas')) {
+            return true;
+        }
+
         if (!$this->getCurrentActiveGeneralSubscription()) {
             // default not use api
             return false;
