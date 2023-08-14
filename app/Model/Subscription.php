@@ -1021,7 +1021,9 @@ class Subscription extends Model
 
     public function setDefaultEmailCredits()
     {
-        $defaultCredits = (int)$this->planGeneral->getOption('email_max');
+        // @important: temporarily set default credits to UNLIMITED
+        // $defaultCredits = (int)$this->planGeneral->getOption('email_max');
+        $defaultCredits = CreditTracker::UNLIMITED;
         $this->getSendEmailCreditTracker()->setCredits($defaultCredits);
     }
 }

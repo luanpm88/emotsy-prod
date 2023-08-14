@@ -117,7 +117,9 @@ class SendMessage implements ShouldQueue
 
             if (!is_null($this->subscription)) {
                 $rateTrackers[] = $this->subscription->getSendEmailRateTracker();
-                $creditTrackers[] = $this->subscription->getSendEmailCreditTracker();
+
+                // @important: right now, do not care about CREDIT
+                // $creditTrackers[] = $this->subscription->getSendEmailCreditTracker();
             }
 
             execute_with_limits($rateTrackers, $creditTrackers, function () use ($message, $logger, $msgId, $email) {
