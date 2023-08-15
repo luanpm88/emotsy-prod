@@ -24,12 +24,12 @@
         <div class="row">
             <div class="col-md-10">
                 <h2 class="mb-4">{{ trans('messages.subscription.choose_a_plan') }}</h2>
-                @if ($getLastCancelledOrEndedSubscription)
+                @if ($getLastCancelledOrEndedGeneralSubscription)
                     @include('elements._notification', [
                         'level' => 'warning',
                         'message' => trans('messages.subscription.ended_intro', [
-                            'ended_at' => Auth::user()->customer->formatDateTime($getLastCancelledOrEndedSubscription->current_period_ends_at, 'datetime_full'),
-                            'plan' => $getLastCancelledOrEndedSubscription->plan->name,
+                            'ended_at' => Auth::user()->customer->formatDateTime($getLastCancelledOrEndedGeneralSubscription->current_period_ends_at, 'datetime_full'),
+                            'plan' => $getLastCancelledOrEndedGeneralSubscription->planGeneral->name,
                         ])
                     ])
                 @endif
@@ -52,12 +52,12 @@
                     </div>
                 @else
                     <div class="new-price-box" style="margin-right: -30px">
-                        <div class="d-flex">
+                        <div class="row" style="padding-left:20px;padding-right:20px;">
 
                             @foreach ($plans as $key => $plan)
                                 <div
-                                    class="new-price-item mb-3 d-inline-block plan-item"
-                                    style="width: calc(33% - 20px)">
+                                    class="new-price-item mb-3 d-inline-block plan-item select-plan-item"
+                                    style="">
                                     <div style="height: 100px">
                                         <div class="price">
                                             {!! format_price($plan->price, $plan->currency->format, true) !!}

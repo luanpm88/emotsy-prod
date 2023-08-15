@@ -197,8 +197,6 @@ class CustomerController extends Controller
             'last_name' => $user->last_name,
             'timezone' => $customer->timezone,
             'status' => $customer->status,
-            'options' => $customer->getOptions(),
-            'current_period_ends_at' => $customer->getCurrentPeriodEndsAt(),
         ];
 
         // Customer contact
@@ -221,7 +219,7 @@ class CustomerController extends Controller
         }
 
         // Current subscription
-        $subscription = $customer->getNewOrActiveSubscription();
+        $subscription = $customer->getNewOrActiveGeneralSubscription();
         if ($subscription) {
             $result['current_subscription'] = [
                 'uid' => $subscription->uid,
@@ -328,7 +326,7 @@ class CustomerController extends Controller
             return \Response::json(array('status' => 0, 'message' => 'Unauthorized'), 401);
         }
 
-        $plan = \Acelle\Model\Plan::findByUid($plan_uid);
+        $plan = \Acelle\Model\PlanGeneral::findByUid($plan_uid);
 
         // check if item exists
         if (!$plan) {
@@ -350,7 +348,7 @@ class CustomerController extends Controller
 
         // rollback if something went wrong
         \DB::transaction(function () use ($plan, $customer, $request, $offlineGateway) {
-            $subscription = $customer->assignPlan($plan);
+            $subscription = $customer->assignGeneralPlan($plan);
 
             // * Disable billing information: customer does not need to pay the invoice. Pass by the billing and checkout step
             // * assignPlan always create a subscription with an unpaid invoice.
@@ -359,7 +357,7 @@ class CustomerController extends Controller
             //              to set subscription as active automatically.
             if ($request->disable_billing && $request->disable_billing !== 'false') {
                 $subscription->getItsOnlyUnpaidInitInvoice()->checkout($offlineGateway, function () {
-                    return new \Acelle\Cashier\Library\TransactionVerificationResult(\Acelle\Cashier\Library\TransactionVerificationResult::RESULT_DONE);
+                    return new \Acelle\Library\TransactionResult(\Acelle\Library\TransactionResult::RESULT_DONE);
                 });
             }
         });
@@ -403,5 +401,31 @@ class CustomerController extends Controller
             'token' => $user->one_time_api_token,
             'url' => action('Controller@tokenLogin', ['token' => $user->one_time_api_token]),
         ), JSON_UNESCAPED_SLASHES);
+    }
+
+    public function destroy($uid)
+    {
+        $user = \Auth::guard('api')->user();
+
+        $customer = \Acelle\Model\Customer::findByUid($uid);
+
+        // check if item exists
+        if (!$customer) {
+            return \Response::json(array('status' => 0, 'message' => 'Customer not found'), 404);
+        }
+
+        // authorize
+        if (!$user->can('delete', $customer)) {
+            return \Response::json(array('status' => 0, 'message' => 'Unauthorized'), 401);
+        }
+
+        $uid = $customer->uid;
+        $customer->deleteAccount();
+
+        return \Response::json(array(
+            'status' => 1,
+            'message' => trans('messages.customers.deleted'),
+            'customer_uid' => $uid
+        ), 200);
     }
 }

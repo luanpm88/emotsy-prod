@@ -24,25 +24,16 @@ namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
-use Acelle\Cashier\Cashier;
 use Acelle\Model\Subscription;
-use Acelle\Model\SendingDomain;
 use Acelle\Model\Source;
-use Acelle\Model\WooCommerce;
-use Acelle\Model\Lazada;
-use Acelle\Model\MailList;
-use DateTime;
-use DateTimeZone;
 use Exception;
 use DB;
 use Acelle\Library\Facades\Billing;
-use Acelle\Cashier\Library\AutoBillingData;
-use File;
+use Acelle\Library\AutoBillingData;
 use Acelle\Library\Traits\TrackJobs;
 use Acelle\Library\Traits\HasCache;
 use Acelle\Jobs\ImportBlacklistJob;
 use Acelle\Library\Traits\HasUid;
-use Acelle\Library\QuotaManager;
 use Acelle\Library\Facades\SubscriptionFacade;
 
 class Customer extends Model
@@ -77,24 +68,15 @@ class Customer extends Model
         return $this->hasMany('Acelle\Model\Subscription');
     }
 
-    // Lấy ra current subscription (new or active)
-    // Không có case 1 customer mà có 2 subscription như vậy (chỉ có 1 hoặc null)
-    public function getNewOrActiveSubscription()
+    public function generalSubscriptions()
     {
-        // Theo design thì mỗi customer chỉ có một subscription đang "new" hoặc "active"
-        $subscriptions = $this->subscriptions()->newOrActive();
-
-        if ($subscriptions->count() > 1) {
-            throw new Exception('There are 2 subscriptions of [active, new] status. Please clean up the DB');
-        }
-
-        return $subscriptions->first();
+        return $this->subscriptions()->general();
     }
 
-    public function getNewSubscription()
+    public function getNewGeneralSubscription()
     {
-        // Theo design thì mỗi customer chỉ có một subscription đang "new"
-        $subscriptions = $this->subscriptions()->new();
+        // ONLY one new subscription allowed
+        $subscriptions = $this->generalSubscriptions()->new();
 
         if ($subscriptions->count() > 1) {
             throw new Exception('There are 2 subscriptions of [new] status. Please clean up the DB');
@@ -103,55 +85,11 @@ class Customer extends Model
         return $subscriptions->first();
     }
 
-    public function getActiveSubscription()
-    {
-        // Theo design thì mỗi customer chỉ có một subscription đang "active"
-        $subscriptions = $this->subscriptions()->active();
-
-        if ($subscriptions->count() > 1) {
-            throw new Exception('There are 2 subscriptions of [active] status. Please clean up the DB');
-        }
-
-        return $subscriptions->first();
-    }
-
-    /**
-     * Lấy current active subscription
-     */
-    public function getCurrentActiveSubscription()
-    {
-        // Theo design thì mỗi customer chỉ có một subscription đang "active"
-        $subscriptions = $this->subscriptions()->active();
-
-        if ($subscriptions->count() > 1) {
-            throw new Exception('There are 2 subscriptions of [active] status. Please clean up the DB');
-        }
-
-        return $subscriptions->first();
-    }
-
-    public function getCurrentNewSubscription()
-    {
-        // Theo design thì mỗi customer chỉ có một subscription đang "active"
-        $subscriptions = $this->subscriptions()->newSub();
-
-        if ($subscriptions->count() > 1) {
-            throw new Exception('There are 2 subscriptions of [new] status. Please clean up the DB');
-        }
-
-        return $subscriptions->first();
-    }
-
-    /**
-     * Lấy current active subscription
-     */
-    public function getLastCancelledOrEndedSubscription()
+    public function getLastCancelledOrEndedGeneralSubscription()
     {
         // Lấy subscription ended gần đây nhất. Null nếu chưa đăng ký bao giờ
-        return $this->subscriptions()->cancelledOrEdned()->orderBy('created_at', 'desc')->first();
+        return $this->generalSubscriptions()->cancelledOrEdned()->orderBy('created_at', 'desc')->first();
     }
-
-
 
     public function contact()
     {
@@ -344,17 +282,6 @@ class Customer extends Model
         return join_paths($base, $path);
     }
 
-    public function useOwnSendingServer()
-    {
-        $subscription = $this->getCurrentActiveSubscription();
-
-        if (is_null($subscription)) {
-            return false;
-        }
-
-        return $subscription->plan->useOwnSendingServer();
-    }
-
     /**
      * Items per page.
      *
@@ -428,19 +355,10 @@ class Customer extends Model
         return $query->count();
     }
 
-    /**
-     * Get max list quota.
-     *
-     * @return number
-     */
-    public function maxLists()
+    public function getCurrentActiveSubscription()
     {
-        $count = $this->getOption('list_max');
-        if ($count == -1) {
-            return '∞';
-        } else {
-            return $count;
-        }
+        // Keep this function alias to support plugins
+        return $this->getCurrentActiveGeneralSubscription();
     }
 
     /**
@@ -454,60 +372,6 @@ class Customer extends Model
     }
 
     /**
-     * Calculate list usage.
-     *
-     * @return number
-     */
-    public function listsUsage()
-    {
-        $max = $this->maxLists();
-        $count = $this->listsCount();
-
-        if ($max == '∞') {
-            return 0;
-        }
-
-        if ($max == 0) {
-            return 0;
-        }
-
-        if ($count > $max) {
-            return 100;
-        }
-
-        return round((($count / $max) * 100), 2);
-    }
-
-    /**
-     * Display calculate list usage.
-     *
-     * @return number
-     */
-    public function displayListsUsage()
-    {
-        if ($this->maxLists() == '∞') {
-            return trans('messages.unlimited');
-        }
-
-        return $this->listsUsage().'%';
-    }
-
-    /**
-     * Get campaigns quota.
-     *
-     * @return number
-     */
-    public function maxCampaigns()
-    {
-        $count = $this->getOption('campaign_max');
-        if ($count == -1) {
-            return '∞';
-        } else {
-            return $count;
-        }
-    }
-
-    /**
      * Count customer's campaigns.
      *
      * @return number
@@ -517,42 +381,6 @@ class Customer extends Model
         return $this->campaigns()->count();
     }
 
-    /**
-     * Calculate campaign usage.
-     *
-     * @return number
-     */
-    public function campaignsUsage()
-    {
-        $max = $this->maxCampaigns();
-        $count = $this->campaignsCount();
-
-        if ($max == '∞') {
-            return 0;
-        }
-        if ($max == 0) {
-            return 0;
-        }
-        if ($count > $max) {
-            return 100;
-        }
-
-        return round((($count / $max) * 100), 2);
-    }
-
-    /**
-     * Calculate campaign usage.
-     *
-     * @return number
-     */
-    public function displayCampaignsUsage()
-    {
-        if ($this->maxCampaigns() == '∞') {
-            return trans('messages.unlimited');
-        }
-
-        return $this->campaignsUsage().'%';
-    }
 
     /**
      * Get subscriber quota.
@@ -561,7 +389,7 @@ class Customer extends Model
      */
     public function maxSubscribers()
     {
-        $count = $this->getOption('subscriber_max');
+        $count = get_tmp_quota($this, 'subscriber_max');
         if ($count == -1) {
             return '∞';
         } else {
@@ -630,24 +458,12 @@ class Customer extends Model
      */
     public function maxQuota()
     {
-        $quota = $this->getOption('sending_quota');
+        $quota = get_tmp_quota($this, 'sending_quota');
         if ($quota == '-1') {
             return '∞';
         } else {
             return $quota;
         }
-    }
-
-    /**
-     * Check if customer has access to ALL sending servers.
-     *
-     * @return bool
-     */
-    public function allSendingServer()
-    {
-        $check = $this->getOption('all_sending_servers');
-
-        return $check == 'yes';
     }
 
     /**
@@ -657,6 +473,11 @@ class Customer extends Model
      */
     public function getColorScheme()
     {
+        // Store mode support only sms theme
+        if (config('app.store')) {
+            return 'store';
+        }
+
         if (!empty($this->color_scheme)) {
             return $this->color_scheme;
         } else {
@@ -911,7 +732,7 @@ class Customer extends Model
      */
     public function maxSendingServers()
     {
-        $count = $this->getOption('sending_servers_max');
+        $count = get_tmp_quota($this, 'sending_servers_max');
         if ($count == -1) {
             return '∞';
         } else {
@@ -926,7 +747,7 @@ class Customer extends Model
      */
     public function maxEmailVerificationServers()
     {
-        $count = $this->getOption('email_verification_servers_max');
+        $count = get_tmp_quota($this, 'email_verification_servers_max');
         if ($count == -1) {
             return '∞';
         } else {
@@ -1015,7 +836,7 @@ class Customer extends Model
      */
     public function maxSendingDomains()
     {
-        $count = $this->getOption('sending_domains_max');
+        $count = get_tmp_quota($this, 'sending_domains_max');
         if ($count == -1) {
             return '∞';
         } else {
@@ -1047,20 +868,6 @@ class Customer extends Model
     }
 
     /**
-     * Calculate subscibers usage.
-     *
-     * @return number
-     */
-    public function displaySendingDomainsUsage()
-    {
-        if ($this->maxSendingDomains() == '∞') {
-            return trans('messages.unlimited');
-        }
-
-        return $this->sendingDomainsUsage().'%';
-    }
-
-    /**
      * Count customer automations.
      *
      * @return number
@@ -1068,58 +875,6 @@ class Customer extends Model
     public function automationsCount()
     {
         return $this->automation2sCount();
-    }
-
-    /**
-     * Get max automation count.
-     *
-     * @var int
-     */
-    public function maxAutomations()
-    {
-        $count = $this->getOption('automation_max');
-        if ($count == -1) {
-            return '∞';
-        } else {
-            return $count;
-        }
-    }
-
-    /**
-     * Calculate subscibers usage.
-     *
-     * @return number
-     */
-    public function automationsUsage()
-    {
-        $max = $this->maxAutomations();
-        $count = $this->automation2sCount();
-
-        if ($max == '∞') {
-            return 0;
-        }
-        if ($max == 0) {
-            return 0;
-        }
-        if ($count > $max) {
-            return 100;
-        }
-
-        return round((($count / $max) * 100), 2);
-    }
-
-    /**
-     * Calculate subscibers usage.
-     *
-     * @return number
-     */
-    public function displayAutomationsUsage()
-    {
-        if ($this->maxAutomations() == '∞') {
-            return trans('messages.unlimited');
-        }
-
-        return $this->automationsUsage().'%';
     }
 
     /**
@@ -1153,19 +908,6 @@ class Customer extends Model
     }
 
     /**
-     * Check if customer is disabled.
-     *
-     * @return bool
-     */
-    public function currentPlanName()
-    {
-        return $this->getCurrentActiveSubscription() ?
-            $this->getCurrentActiveSubscription()->plan->name :
-            ''
-        ;
-    }
-
-    /**
      * Get total file size usage.
      *
      * @return number
@@ -1182,7 +924,7 @@ class Customer extends Model
      */
     public function maxTotalUploadSize()
     {
-        $count = $this->getOption('max_size_upload_total');
+        $count = get_tmp_quota($this, 'max_size_upload_total');
         if ($count == -1) {
             return '∞';
         } else {
@@ -1264,15 +1006,18 @@ class Customer extends Model
      */
     public function getEmailVerificationServers()
     {
-        // Check the customer has permissions using email verification servers and has his own email verification servers
-        if ($this->getOption('create_email_verification_servers') == 'yes') {
+        if (!config('app.saas')) {
+            return EmailVerificationServer::getAllAdminActive()->get()->map(function ($server) {
+                return $server;
+            });
+        } elseif ($this->getCurrentActiveGeneralSubscription()->planGeneral->useOwnEmailVerificationServer()) {
             return $this->activeEmailVerificationServers()->get()->map(function ($server) {
                 return $server;
             });
         // If customer dont have permission creating sending servers
         } else {
             // Get server from the plan
-            return  $this->getCurrentActiveSubscription()->plan->getEmailVerificationServers();
+            return  $this->getCurrentActiveGeneralSubscription()->planGeneral->getEmailVerificationServers();
         }
     }
 
@@ -1347,8 +1092,8 @@ class Customer extends Model
      */
     public function isAllowCreateSendingServerType($type)
     {
-        $customerTypes = $this->getOption('sending_server_types');
-        if ($this->getOption('all_sending_server_types') == 'yes' ||
+        $customerTypes = get_tmp_quota($this, 'sending_server_types');
+        if (get_tmp_quota($this, 'all_sending_server_types') == 'yes' ||
             (isset($customerTypes[$type]) && $customerTypes[$type] == 'yes')
         ) {
             return true;
@@ -1376,79 +1121,13 @@ class Customer extends Model
     }
 
     /**
-     * Get customer options.
-     *
-     * @return string
-     */
-    public function getOptions()
-    {
-        if ($this->getCurrentActiveSubscription()) {
-            // Find plan
-            return $this->getCurrentActiveSubscription()->plan->getOptions();
-        } else {
-            return [];
-        }
-    }
-
-    /**
-     * Get customer option.
-     *
-     * @return string
-     */
-    public function getOption($name)
-    {
-        $options = $this->getOptions();
-        // @todo: chỗ này cần raise 1 cái exception chứ ko phải là trả về rỗng (trả vể rỗng để "dìm" lỗi đi à?)
-        return isset($options[$name]) ? $options[$name] : null;
-    }
-
-    /**
      * Check if customer has api access.
      *
      * @return bool
      */
     public function canUseApi()
     {
-        return $this->getOption('api_access') == 'yes';
-    }
-
-    /**
-     * Get all verified identities.
-     *
-     * @return array
-     */
-    public function getVerifiedIdentities()
-    {
-        $list = [];
-
-        // own emails
-        if ($this->allowSenderVerification()) {
-            $senders = $this->senders()->verified()->get();
-            foreach ($senders as $sender) {
-                $list[] = $sender->name.' <'.$sender->email.'>';
-            }
-        }
-
-        // own domain
-        $domains = $this->sendingDomains()->active();
-        $plan = $this->getCurrentActiveSubscription()->plan;
-        if ($plan->useSystemSendingServer()) {
-            $server = $plan->primarySendingServer();
-            if (!$server->allowOtherSendingDomains()) {
-                $domains->bySendingServer($server);
-            }
-        }
-
-        foreach ($domains->get() as $domain) {
-            $list[] = $domain->name;
-        }
-
-        // plan sending server emails if system sending servers
-        if ($plan->useSystemSendingServer()) {
-            $list = array_merge($plan->getVerifiedIdentities(), $list);
-        }
-
-        return array_values(array_unique($list));
+        return get_tmp_quota($this, 'api_access') == 'yes';
     }
 
     /**
@@ -1515,72 +1194,6 @@ class Customer extends Model
         return $this->automation2s()->count();
     }
 
-    /**
-     * Assign plan to customer.
-     */
-    public function assignPlan($plan)
-    {
-        if ($this->getNewOrActiveSubscription()) {
-            throw new Exception(trans('messages.customer.already_new_active_sub'));
-        }
-
-        $customer = $this;
-        $subscription = null;
-        DB::transaction(function () use ($customer, $plan, &$subscription) {
-            $subscription = Subscription::createNewSubscription($customer, $plan);
-            if ($plan->hasTrial()) {
-                $invoice = $subscription->createInitInvoiceWithTrial();
-            } else {
-                $invoice = $subscription->createInitInvoiceWithoutTrial();
-            }
-
-            // log
-            SubscriptionFacade::log($subscription, SubscriptionLog::TYPE_SELECT_PLAN, $invoice->uid, [
-                'plan' => $subscription->getPlanName(),
-                'customer' => $subscription->getCustomerName(),
-                'amount' => $invoice->formattedTotal(),
-            ]);
-        });
-
-        // Important:
-        // With current quota tracking design, there is no fixed 'available credits'
-        // As a result, the setCredits() method takes QUOTA_UNLIMITED value as default, meaning no credits check
-        // The application only enforce the quota limits rules: how many credits are allowed during a fixed period of time (month)
-        // It is pre-designed for "Buy Credits" feature which will be supported later on
-        $subscription->setCredits('send', QuotaManager::QUOTA_UNLIMITED);
-
-        return $subscription;
-    }
-
-    /**
-     * Check customer if has notice.
-     */
-    public function hasSubscriptionNotice()
-    {
-        $subscription = $this->getNewOrActiveSubscription();
-
-        if (!$subscription) {
-            return false;
-        }
-
-        if ($subscription->getUnpaidInvoice()) {
-            return true;
-        }
-
-        return false;
-    }
-
-    public function isSubscriptionActive()
-    {
-        $subscription = $this->getCurrentActiveSubscription();
-
-        if (is_null($subscription)) {
-            return false;
-        }
-
-        return $subscription->isActive();
-    }
-
     public function getLockPath($path)
     {
         return $this->user->getLockPath($path);
@@ -1588,30 +1201,18 @@ class Customer extends Model
 
     public function allowUnverifiedFromEmailAddress()
     {
-        $plan = $this->getNewOrActiveSubscription()->plan;
+        $server = null;
+        if (!config('app.saas')) {
+            $server = get_tmp_primary_server();
+        } else {
+            $plan = $this->getNewOrActiveGeneralSubscription()->planGeneral;
 
-        if (!$plan) {
-            return false;
+            if ($plan->useSystemSendingServer()) {
+                $server = $plan->primarySendingServer();
+            }
         }
 
-        if ($plan->useSystemSendingServer() && $plan->primarySendingServer()) {
-            return $plan->primarySendingServer()->allowUnverifiedFromEmailAddress();
-        }
-
-        return true;
-    }
-
-    /**
-     * Get current period ends at.
-     */
-    public function getCurrentPeriodEndsAt()
-    {
-        // Nếu subscription đang không active thì current period ends at xem như = null
-        if ($this->getCurrentActiveSubscription()) {
-            return null;
-        }
-
-        return $this->current_period_ends_at;
+        return (is_null($server)) ? true : $server->allowUnverifiedFromEmailAddress();
     }
 
     /**
@@ -1730,6 +1331,8 @@ class Customer extends Model
      */
     public function getPreferredPaymentGateway()
     {
+        // Value of "payment_method" was every time user chooses a payment method in the web UI
+        // See SubscriptionController@checkout() function where it is set
         if (!$this['payment_method']) {
             return null;
         }
@@ -1972,24 +1575,24 @@ class Customer extends Model
         return ($this->menu_layout == 'left' ? 'left' : 'top');
     }
 
-    public function allowSenderVerification()
+    public function allowVerifyingOwnDomains()
     {
-        $subscription = $this->getCurrentActiveSubscription();
-
-        if (is_null($subscription)) {
-            return false;
-        }
-
-        $plan = $subscription->plan;
-        if ($plan->useSystemSendingServer()) {
-            $server = $plan->primarySendingServer();
-            if ($server && ($server->allowVerifyingOwnEmailsRemotely() || $server->allowVerifyingOwnDomains())) {
-                return true;
+        if (config('app.saas')) {
+            $subscription = $this->getCurrentActiveGeneralSubscription();
+            $plan = $subscription->planGeneral;
+            if ($plan->useSystemSendingServer()) {
+                $server = $plan->primarySendingServer();
             } else {
-                return false;
+                return true;
             }
         } else {
+            $server = get_tmp_primary_server();
+        }
+
+        if ($server && ($server->allowVerifyingOwnDomains() || $server->allowVerifyingOwnDomainsRemotely())) {
             return true;
+        } else {
+            return false;
         }
     }
 
@@ -2045,28 +1648,6 @@ class Customer extends Model
         return $product;
     }
 
-    public function isCustomTrackingDomainRequired()
-    {
-        $plan = $this->getNewOrActiveSubscription()->plan;
-
-        if (!$plan) {
-            return false;
-        }
-
-        return $plan->isCustomTrackingDomainRequired();
-    }
-
-    public function automationTemplates()
-    {
-        $subscription = $this->getCurrentActiveSubscription();
-
-        if (is_null($subscription)) {
-            throw new \Exception('Customer has no subscription!');
-        }
-
-        return $subscription->plan->automationTemplates();
-    }
-
     public static function scopeByPlan($query, $plan)
     {
         $query = $query->whereHas('subscriptions', function ($q) use ($plan) {
@@ -2091,5 +1672,152 @@ class Customer extends Model
         $campaign->customer_id = $this->id;
 
         return $campaign;
+    }
+
+
+    /*
+     *
+     * FUNCTIONS THAT ARE DEPENDENT ON PLAN/SUBSCRIPTIONS
+     *
+     */
+
+    public function getCurrentActiveGeneralSubscription()
+    {
+        if (!config('app.saas')) {
+            throw new Exception('Operation not allowed in NON-SAAS mode');
+        }
+
+        // only ONE
+        $subscriptions = $this->generalSubscriptions()->active();
+
+        if ($subscriptions->count() > 1) {
+            throw new Exception('There are 2 subscriptions of [active] status. Please clean up the DB');
+        }
+
+        return $subscriptions->first();
+    }
+
+    public function isCustomTrackingDomainRequired()
+    {
+        if (!config('app.saas')) {
+            return false;
+        }
+
+        $plan = $this->getNewOrActiveGeneralSubscription()->planGeneral;
+
+        if (!$plan) {
+            return false;
+        }
+
+        return $plan->isCustomTrackingDomainRequired();
+    }
+
+    // Customer has only ONE general subscription which is NEW or ACTIVE
+    public function getNewOrActiveGeneralSubscription()
+    {
+        $subscriptions = $this->generalSubscriptions()->newOrActive();
+
+        if ($subscriptions->count() > 1) {
+            throw new Exception('There are 2 subscriptions of [active, new] status. Please clean up the DB');
+        }
+
+        return $subscriptions->first();
+    }
+
+    // MISS FIRST primary sending server's identities here
+    public function getVerifiedIdentities()
+    {
+        $list = [];
+
+        // own emails
+        if (!config('app.saas') || $this->getCurrentActiveGeneralSubscription()->planGeneral->allowSenderVerification()) {
+            $senders = $this->senders()->verified()->get();
+            foreach ($senders as $sender) {
+                $list[] = $sender->name.' <'.$sender->email.'>';
+            }
+        }
+
+        // own domain
+        $domains = $this->sendingDomains()->active();
+
+        if (config('app.saas')) {
+            $plan = $this->getCurrentActiveGeneralSubscription()->planGeneral;
+            if ($plan->useSystemSendingServer()) {
+                $server = $plan->primarySendingServer();
+                if (!$server->allowOtherSendingDomains()) {
+                    $domains->bySendingServer($server);
+                }
+            }
+        }
+
+        foreach ($domains->get() as $domain) {
+            $list[] = $domain->name;
+        }
+
+        if (config('app.saas')) {
+            // plan sending server emails if system sending servers
+            if ($plan->useSystemSendingServer()) {
+                $list = array_merge($plan->getVerifiedIdentities(), $list);
+            }
+        }
+
+        return array_values(array_unique($list));
+    }
+
+    public function assignGeneralPlan($plan)
+    {
+        if ($this->getNewOrActiveGeneralSubscription()) {
+            throw new \Exception(trans('messages.customer.already_new_active_sub'));
+        }
+
+        // Put in transaction. Make sure senderID always with subscription
+        $subscription = \DB::transaction(function () use ($plan) {
+            // allways create init subscription with init invoice (by design)
+            $subscription = Subscription::createNewGeneralSubscription($this, $plan);
+
+            if ($plan->hasTrial()) {
+                $invoice = $subscription->createNewSubscriptionInvoiceWithTrial();
+            } else {
+                $invoice = $subscription->createNewSubscriptionInvoiceWithoutTrial();
+            }
+
+            // Assign sending credits
+            // Notice that the following method is available for a SubscriptionGeneralPlan only
+            $subscription->setDefaultEmailCredits();
+
+            // log
+            SubscriptionFacade::log($subscription, SubscriptionLog::TYPE_SELECT_PLAN, $invoice->uid, [
+                'plan' => $subscription->getPlanName(),
+                'customer' => $subscription->getCustomerName(),
+                'amount' => $invoice->total(),
+            ]);
+
+            return $subscription;
+        });
+
+        return $subscription;
+    }
+
+    /**
+     * Check customer if has notice.
+     */
+    public function hasSubscriptionNotice()
+    {
+        if (!config('app.saas')) {
+            return false;
+        }
+
+        $subscription = $this->getNewOrActiveGeneralSubscription();
+
+        if (is_null($subscription)) {
+            return false;
+        }
+
+
+        if ($subscription->getUnpaidInvoice()) {
+            return true;
+        }
+
+        return false;
     }
 }

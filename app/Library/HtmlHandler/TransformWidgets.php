@@ -25,8 +25,7 @@ class TransformWidgets implements StageInterface
 
     public function transformProductListWidget($html)
     {
-        $_this = $this;
-        return StringHelper::updateHtml($html, function ($dom) use ($_this) {
+        return StringHelper::updateHtml($html, function ($dom) {
             $finder = new \DOMXPath($dom);
             $classname="product-list-widget";
             $nodes = $finder->query("//*[contains(concat(' ', normalize-space(@class), ' '), ' $classname ')]");
@@ -41,7 +40,7 @@ class TransformWidgets implements StageInterface
                 ]);
 
                 if ($pList != null) {
-                    $_this->update_html($dom, $pList, $pHtml);
+                    $this->update_html($dom, $pList, $pHtml);
                 }
             }
         });
@@ -49,14 +48,13 @@ class TransformWidgets implements StageInterface
 
     public function transformProductWidget($html)
     {
-        $_this = $this;
-        return StringHelper::updateHtml($html, function ($dom) use ($_this) {
+        return StringHelper::updateHtml($html, function ($dom) {
             $finder = new \DOMXPath($dom);
             $classname="product-widget";
             $nodes = $finder->query("//*[contains(concat(' ', normalize-space(@class), ' '), ' $classname ')]");
 
             foreach ($nodes as $node) {
-                $html = $_this->get_inner_html($node);
+                $html = $this->get_inner_html($node);
 
                 if ($node->getAttribute('data-id')) {
                     $html = Product::generateWidgetProductHtmlContent([
@@ -64,9 +62,9 @@ class TransformWidgets implements StageInterface
                         'content' => $html,
                     ]);
 
-                    $_this->update_html($dom, $node, $html);
+                    $this->update_html($dom, $node, $html);
                 } else {
-                    $_this->update_html($dom, $node, '<div class="alert alert-warning text-center">'.trans('messages.template.no_product_selected').'</div>');
+                    $this->update_html($dom, $node, '<div class="alert alert-warning text-center">'.trans('messages.template.no_product_selected').'</div>');
                 }
             }
         });
@@ -74,8 +72,7 @@ class TransformWidgets implements StageInterface
 
     public function transformRssWidget($html)
     {
-        $_this = $this;
-        return StringHelper::updateHtml($html, function ($dom) use ($_this) {
+        return StringHelper::updateHtml($html, function ($dom) {
             $finder = new \DOMXPath($dom);
             $classname="rss-widget";
             $nodes = $finder->query("//*[contains(concat(' ', normalize-space(@class), ' '), ' $classname ')]");
@@ -93,9 +90,9 @@ class TransformWidgets implements StageInterface
                     }
 
                     $html = parseRss($config);
-                    $_this->update_html($dom, $node, $html);
+                    $this->update_html($dom, $node, $html);
                 } catch (\Exception $e) {
-                    $_this->update_html($dom, $node, '<div class="alert alert-warning text-center">'.$e->getMessage().'</div>');
+                    $this->update_html($dom, $node, '<div class="alert alert-warning text-center">'.$e->getMessage().'</div>');
                 }
             }
         });

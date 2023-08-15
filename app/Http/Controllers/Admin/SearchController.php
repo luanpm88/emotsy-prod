@@ -354,7 +354,7 @@ class SearchController extends Controller
     {
         $count = 5;
 
-        $plans = \Acelle\Model\Plan::search($request->keyword)
+        $plans = \Acelle\Model\PlanGeneral::search($request->keyword)
             ->paginate($count);
 
         return view('admin.search.plans', [

@@ -5,8 +5,6 @@ namespace Acelle\Http\Controllers;
 use Illuminate\Http\Request;
 use Acelle\Http\Controllers\Controller;
 use Acelle\Model\SendingDomain;
-use Acelle\Model\SendingServer;
-use Acelle\Model\Setting;
 use Acelle\Library\Facades\Hook;
 use Gate;
 
@@ -24,12 +22,12 @@ class SendingDomainController extends Controller
         }
 
         $request->merge(array("customer_id" => $request->user()->customer->id));
-        $plan = $request->user()->customer->getCurrentActiveSubscription()->plan;
 
-        if ($plan->useSystemSendingServer()) {
-            $server = $plan->primarySendingServer();
+        if (config('app.saas')) {
+            $plan = $request->user()->customer->getCurrentActiveGeneralSubscription()->planGeneral;
+            $server = $plan->useSystemSendingServer() ? $plan->primarySendingServer() : null;
         } else {
-            $server = null;
+            $server = get_tmp_primary_server();
         }
 
         $items = SendingDomain::search($request, $server);
@@ -54,13 +52,17 @@ class SendingDomainController extends Controller
 
         $domains = $customer->sendingDomains();
 
-        $plan = $customer->getCurrentActiveSubscription()->plan;
-        if ($plan->useSystemSendingServer()) {
-            $server = $plan->primarySendingServer();
-            if (!$server->allowOtherSendingDomains()) {
-                // Do not filter, just flag as incompatible
-                // $domains->bySendingServer($server);
+        if (config('app.saas')) {
+            $plan = $customer->getCurrentActiveGeneralSubscription()->planGeneral;
+            if ($plan->useSystemSendingServer()) {
+                $server = $plan->primarySendingServer();
+                if (!$server->allowOtherSendingDomains()) {
+                    // Do not filter, just flag as incompatible
+                    // $domains->bySendingServer($server);
+                }
             }
+        } else {
+            $server = get_tmp_primary_server();
         }
 
         $items = $domains->search($request->keyword)->orderBy($request->sort_order, $request->sort_direction)->paginate(25);
@@ -117,12 +119,13 @@ class SendingDomainController extends Controller
         $domain = $customer->sendingDomains()->make();
 
         // Determine if app-based domain or server-based domain
-        $plan = $customer->getCurrentActiveSubscription()->plan;
-        if ($plan->useSystemSendingServer()) {
-            $server = $plan->primarySendingServer();
+        if (!config('app.saas')) {
+            $server = get_tmp_primary_server();
         } else {
-            $server = null;
+            $plan = $customer->getCurrentActiveGeneralSubscription()->planGeneral;
+            $server = $plan->useSystemSendingServer() ? $plan->primarySendingServer() : null;
         }
+
 
         if ($server && $server->allowVerifyingOwnDomainsRemotely()) {
             list($validator, $domain) = $domain->createFromArray($request->all(), $server); // server based domain

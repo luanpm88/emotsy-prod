@@ -218,13 +218,13 @@ class MailList extends Model
         return $filepath;
     }
 
-    public function dispatchVerificationJob($server)
+    public function dispatchVerificationJob($server, $subscription)
     {
         if (is_null($server)) {
             throw new Exception('Cannot start job: empty verification server');
         }
 
-        $job = new VerifyMailListJob($this, $server);
+        $job = new VerifyMailListJob($this, $server, $subscription);
         $monitor = $this->dispatchWithBatchMonitor(
             $job,
             $then = null,
@@ -831,10 +831,9 @@ class MailList extends Model
         }
 
         MailLog::info('Sending subscription confirmation email to '.$subscriber->email);
-        $list = $this;
 
         $layout = \Acelle\Model\Layout::where('alias', 'sign_up_confirmation_email')->first();
-        $send_page = \Acelle\Model\Page::findPage($list, $layout);
+        $send_page = \Acelle\Model\Page::findPage($this, $layout);
         $send_page->renderContent(null, $subscriber);
         $this->sendMail($subscriber, $send_page, $send_page->getTransformedSubject($subscriber));
         MailLog::info('Sent subscription confirmation email to '.$subscriber->email);
@@ -989,8 +988,8 @@ class MailList extends Model
      */
     public function getRemainingAddSubscribersQuota()
     {
-        $max = $this->customer->getOption('subscriber_max');
-        $maxPerList = $this->customer->getOption('subscriber_per_list_max');
+        $max = get_tmp_quota($this->customer, 'subscriber_max');
+        $maxPerList = get_tmp_quota($this->customer, 'subscriber_per_list_max');
 
         $remainingForList = $maxPerList - $this->refresh()->subscribers->count();
         $remaining = $max - $this->refresh()->customer->subscribersCount(); // no cache
@@ -1607,15 +1606,6 @@ class MailList extends Model
         }
     }
 
-    public function getCurrentSubscription()
-    {
-        if (empty($this->currentSubscription)) {
-            $this->currentSubscription = $this->customer->getCurrentActiveSubscription();
-        }
-
-        return $this->currentSubscription;
-    }
-
     /**
      * Pick one sending server associated to the Mail List.
      *
@@ -1640,12 +1630,6 @@ class MailList extends Model
                 MailLog::info(sprintf('Initialize delivery server `%s` (ID: %s)', $server->name, $id));
 
                 $server = SendingServer::mapServerType($server);
-
-                // flag the server to use sub-account instead
-                $subscription = $this->customer->getNewOrActiveSubscription();
-                if (!is_null($subscription->sub_account_id)) {
-                    $server->setSubAccount($subscription->subAccount);
-                }
                 self::$serverPools[$id] = $server;
             }
 
@@ -1667,10 +1651,13 @@ class MailList extends Model
         }
 
         $result = [];
-        $subscription = $this->customer->getNewOrActiveSubscription();
 
         // Check the customer has permissions using sending servers and has his own sending servers
-        if ($this->customer->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_OWN) {
+        if (!config('app.saas')) {
+            $result = [
+                [ get_tmp_primary_server()->id, '100' ],
+            ];
+        } elseif ($this->customer->getCurrentActiveGeneralSubscription()->planGeneral->useOwnSendingServer()) {
             if ($this->all_sending_servers) {
                 if ($this->customer->activeSendingServers()->count()) {
                     $result = $this->customer->activeSendingServers()->get()->map(function ($server) {
@@ -1683,24 +1670,11 @@ class MailList extends Model
                 });
             }
         // If customer dont have permission creating sending servers
-        } elseif ($this->customer->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_SYSTEM) {
+        } else {
+            $subscription = $this->customer->getNewOrActiveGeneralSubscription();
             // Check if has sending servers for current subscription
             if ($subscription) {
-                /*
-                if ($subscription->plan->getOption('all_sending_servers') == 'yes') {
-                    if (\Acelle\Model\SendingServer::system()->count()) {
-                        $result = \Acelle\Model\SendingServer::system()->get()->map(function ($server) {
-                            return [$server->id, '100'];
-                        });
-                    }
-                } elseif ($subscription->activeSubscriptionsSendingServers()->count()) {
-                    $result = $subscription->activeSubscriptionsSendingServers()->get()->map(function ($server) {
-                        return [$server->sending_server_id, $server->fitness];
-                    });
-                }
-                */
-
-                $result = $subscription->plan->activeSendingServers->map(function ($server) {
+                $result = $subscription->planGeneral->activeSendingServers->map(function ($server) {
                     return [$server->sending_server_id, $server->fitness];
                 });
             }

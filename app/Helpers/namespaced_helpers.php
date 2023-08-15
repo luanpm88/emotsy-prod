@@ -5,7 +5,6 @@ namespace Acelle\Helpers;
 use Acelle\Library\StringHelper;
 use Exception;
 use File;
-use Acelle\Library\Contracts\HasQuota as HasQuotaInterface;
 use Closure;
 use Carbon\Carbon;
 use SimpleXMLElement;
@@ -225,7 +224,7 @@ function forceAddCustomerToUnlimitedPlan($customer)
     $subscription = new \Acelle\Model\Subscription();
     $subscription->status = \Acelle\Model\Subscription::STATUS_ACTIVE;
     $subscription->current_period_ends_at = \Carbon\Carbon::now()->addYears(1000);
-    $subscription->plan_id = \Acelle\Model\Plan::UNLIMITED_PLAN_ID;
+    $subscription->plan_id = \Acelle\Model\PlanGeneral::UNLIMITED_PLAN_ID;
     $subscription->customer_id = $customer->id;
     $subscription->save();
 }
@@ -372,4 +371,77 @@ function load_env_from_file($path)
     }
 
     return $output;
+}
+
+/*
+ * Execute a task and count credits
+ * Roll back credits if failure
+ * @important: only rollback credits count. Do not rollback rate count because
+ *             even a failed operation attempt is counted
+ * Parameter 1: \Acelle\Library\RateTracker[]
+ * Parameter 2: \Acelle\Library\CreditTracker[]
+ */
+function execute_with_limits(array $rateTrackers, array $creditTrackers, Closure $task = null)
+{
+    // Remove null tracker from array
+    $rateTrackers = array_values(array_filter($rateTrackers));
+    $creditTrackers = array_values(array_filter($creditTrackers));
+
+    // Check credits first, because credits can be rolled back
+    // Check rate after that
+    $creditCounted = [];
+    try {
+        foreach ($creditTrackers as $creditTracker) {
+            // Might throw \Acelle\Library\Exception\OutOfCredits
+            $creditTracker->count();
+            $creditCounted[] = $creditTracker;
+        }
+    } catch (\Acelle\Library\Exception\OutOfCredits $exception) {
+        // Rollback 1: when OutOfCredits
+        // @important: rate is counted even for a failed operation attempt
+        // So there is no need to roll it back (that's why the rollback() method is @deprecated)
+        // However, credits must be rolled back before exit
+        foreach ($creditCounted as $creditTracker) {
+            $creditTracker->rollback();
+        }
+
+        throw $exception;
+    }
+
+    try {
+        // Might throw \Acelle\Library\Exception\RateLimitExceeded
+        foreach ($rateTrackers as $rateTracker) {
+            $rateTracker->count();
+        }
+    } catch (\Acelle\Library\Exception\RateLimitExceeded $exception) {
+        // Rollback 1: when OutOfCredits
+        // @important: rate is counted even for a failed operation attempt
+        // So there is no need to roll it back (that's why the rollback() method is @deprecated)
+        // However, credits must be rolled back before exit
+        foreach ($creditCounted as $creditTracker) {
+            $creditTracker->rollback();
+        }
+
+        throw $exception;
+    }
+
+    try {
+        // Return null if task is null, i.e. count credits but do not actually do anything
+        if (is_null($task)) {
+            return;
+        }
+
+        // Execute task
+        $task();
+    } catch (\Throwable $exception) {
+        // Rollback 2: when task error
+        // @important: rate is counted even for a failed operation attempt
+        // So there is no need to roll it back (that's why the rollback() method is @deprecated)
+        // However, credits must be rolled back before exit
+        foreach ($creditCounted as $creditTracker) {
+            $creditTracker->rollback();
+        }
+
+        throw $exception;
+    }
 }

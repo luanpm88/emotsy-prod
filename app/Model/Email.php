@@ -191,10 +191,17 @@ class Email extends Model implements HasTemplateInterface
     {
         $server = $subscriber->mailList->pickSendingServer();
 
+        if (config('app.saas')) {
+            $subscription = $this->automation->customer->getCurrentActiveGeneralSubscription();
+        } else {
+            $subscription = null;
+        }
+
         dispatch(new SendMessage(
             $this,
             $subscriber,
             $server,
+            $subscription,
             $triggerId
         ));
     }

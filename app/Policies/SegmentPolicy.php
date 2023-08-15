@@ -26,7 +26,7 @@ class SegmentPolicy
         }
 
         $customer = $user->customer;
-        $max_per_list = $customer->getOption('segment_per_list_max');
+        $max_per_list = get_tmp_quota($customer, 'segment_per_list_max');
 
         return $customer->id == $item->mailList->customer_id
                 && ($max_per_list > $item->mailList->segments()->count()

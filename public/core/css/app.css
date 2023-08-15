@@ -781,7 +781,7 @@ input.error {
     color: #fff;
 }
 
-.bg-new {
+.bg-new, .bg-scheduled {
     background-color: #fdc8c1;
     border-color: #fdc8c1;
     color: #000;
@@ -8184,4 +8184,17 @@ label.checker input:disabled ~ .checker-symbol {
 }
 [chat-control="insert"]:hover {
     background: #f5f5f5;
+}
+.select-plan-item {
+    width: calc(25% - 20px);
+}
+@media (max-width: 1200px) {
+    .select-plan-item {
+        width: calc(33.3% - 20px);
+    }
+}
+@media (max-width: 890px) {
+    .select-plan-item {
+        width: calc(50% - 20px);
+    }
 }

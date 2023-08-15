@@ -4,14 +4,12 @@ namespace Acelle\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 
-use Acelle\Http\Requests;
 use Acelle\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Log as LaravelLog;
-use Acelle\Cashier\Cashier;
 use Acelle\Model\Subscription;
 use Acelle\Model\SubscriptionLog;
-use Acelle\Model\Plan;
+use Acelle\Model\PlanGeneral;
 use Acelle\Model\Customer;
+use Acelle\Library\Facades\SubscriptionFacade;
 
 class SubscriptionController extends Controller
 {
@@ -35,7 +33,7 @@ class SubscriptionController extends Controller
 
         $plan = null;
         if ($request->plan_uid) {
-            $plan = Plan::findByUid($request->plan_uid);
+            $plan = PlanGeneral::findByUid($request->plan_uid);
         }
 
         return view('admin.subscriptions.index', [
@@ -63,7 +61,7 @@ class SubscriptionController extends Controller
             $request->merge(array("customer_admin_id" => $request->user()->admin->id));
         }
 
-        $subscriptions = Subscription::select('subscriptions.*');
+        $subscriptions = Subscription::general();
 
         if (isset($request->customer_uid)) {
             $customer = Customer::findByUid($request->customer_uid);
@@ -71,7 +69,7 @@ class SubscriptionController extends Controller
         }
 
         if (isset($request->plan_uid)) {
-            $plan = Plan::findByUid($request->plan_uid);
+            $plan = PlanGeneral::findByUid($request->plan_uid);
             $subscriptions = $subscriptions->where('plan_id', $plan->id);
         }
 
@@ -97,6 +95,7 @@ class SubscriptionController extends Controller
     public function approve(Request $request, $id)
     {
         $subscription = Subscription::findByUid($request->id);
+        $invoice = $subscription->getUnpaidInvoice();
 
         // authorize
         if (!$request->user()->admin->can('approve', $subscription)) {
@@ -105,7 +104,12 @@ class SubscriptionController extends Controller
 
         try {
             // approve last new invoice ~ pay last invoice
-            $subscription->getUnpaidInvoice()->approve();
+            $invoice->approve();
+
+            // log
+            SubscriptionFacade::log($subscription, SubscriptionLog::TYPE_ADMIN_APPROVE, $invoice->uid, [
+                'amount' => format_price($invoice->total(), $invoice->currency->format),
+            ]);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
@@ -215,6 +219,7 @@ class SubscriptionController extends Controller
     public function rejectPending(Request $request, $id)
     {
         $subscription = Subscription::findByUid($request->id);
+        $invoice = $subscription->getUnpaidInvoice();
 
         // authorize
         if (!$request->user()->admin->can('rejectPending', $subscription)) {
@@ -234,13 +239,19 @@ class SubscriptionController extends Controller
 
             // try reject
             try {
-                $subscription->getUnpaidInvoice()->reject($request->reason);
+                // approve last new invoice ~ pay last invoice
+                $invoice->reject($request->reason);
+
+                // log
+                SubscriptionFacade::log($subscription, SubscriptionLog::TYPE_ADMIN_REJECT, $invoice->uid, [
+                    'amount' => format_price($invoice->total(), $invoice->currency->format),
+                    'reason' => $request->reason,
+                ]);
             } catch (\Exception $ex) {
                 $validator->errors()->add('reason', $ex->getMessage());
 
                 return response()->view('admin.subscriptions.rejectPending', [
                     'subscription' => $subscription,
-                    'gateway' => $gateway,
                     'errors' => $validator->errors(),
                 ], 400);
             }

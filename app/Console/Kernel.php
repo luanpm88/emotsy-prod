@@ -9,6 +9,7 @@ use Acelle\Model\Notification;
 use Acelle\Cashier\Cashier;
 use Acelle\Model\Subscription;
 use Acelle\Model\Setting;
+use Acelle\Model\Campaign;
 use Laravel\Tinker\Console\TinkerCommand;
 use Exception;
 use Acelle\Library\Facades\SubscriptionFacade;
@@ -21,17 +22,7 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        // Commands\Inspire::class,
-        /* no longer needed as of Laravel 5.5
-        Commands\TestCampaign::class,
-        Commands\UpgradeTranslation::class,
-        Commands\RunHandler::class,
-        Commands\ImportList::class,
-        Commands\VerifySender::class,
-        Commands\SystemCleanup::class,
-        Commands\GeoIpCheck::class,
-        TinkerCommand::class,
-        */
+
     ];
 
     /**
@@ -44,6 +35,17 @@ class Kernel extends ConsoleKernel
         if (!isInitiated()) {
             return;
         }
+
+        // Make sure CLI process is NOT executed as root
+        Notification::recordIfFails(function () {
+            if (!exec_enabled()) {
+                throw new Exception('The exec() function is missing or disabled on the hosting server');
+            }
+
+            if (exec('whoami') == 'root') {
+                throw new Exception("Cronjob process is executed by 'root' which might cause permission issues. Make sure the cronjob process owner is the same as the acellemail/ folder's owner");
+            }
+        }, 'CronJob issue');
 
         $schedule->call(function () {
             event(new \Acelle\Events\CronJobExecuted());
@@ -77,21 +79,15 @@ class Kernel extends ConsoleKernel
 
         // Subscription: check expiration
         $schedule->call(function () {
-            SubscriptionFacade::checkExpiration();
-        })->name('subscription:check-expiration')->everyFiveMinutes();
+            SubscriptionFacade::endExpiredSubscriptions();
+            SubscriptionFacade::createRenewInvoices();
+            SubscriptionFacade::autoChargeRenewInvoices();
+        })->name('subscription:monitor')->everyFiveMinutes();
 
-        // Subscription: create renew invoice
+        // Check for scheduled campaign to execute
         $schedule->call(function () {
-            SubscriptionFacade::createRenewInvoice();
-        })->name('subscription:create-renew')->everyFiveMinutes();
-
-        // Subscription: pay renew invoice
-        $schedule->call(function () {
-            $customers = \Acelle\Model\Customer::all();
-            foreach ($customers as $customer) {
-                SubscriptionFacade::checkAndAutoPayRenewInvoiceByCustomer($customer);
-            }
-        })->name('subscription:auto-pay-renew')->everyFiveMinutes();
+            Campaign::checkAndExecuteScheduledCampaigns();
+        })->name('check_and_execute_scheduled_campaigns')->everyMinute();
     }
 
     /**

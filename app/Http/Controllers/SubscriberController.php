@@ -8,7 +8,9 @@ use Acelle\Model\MailList;
 use Acelle\Model\Segment;
 use Acelle\Model\Subscriber;
 use Acelle\Model\JobMonitor;
+use Acelle\Model\Setting;
 use Acelle\Library\Facades\Hook;
+use Carbon\Carbon;
 
 class SubscriberController extends Controller
 {
@@ -755,10 +757,29 @@ class SubscriberController extends Controller
         } else {
             $subscriber = new \Acelle\Model\Subscriber();
         }
-        if (!empty($subscriber->imagePath())) {
-            $img = \Image::make($subscriber->imagePath());
+
+        if (is_file($subscriber->getImagePath())) {
+            $img = \Image::make($subscriber->getImagePath());
         } else {
             $img = \Image::make(public_path('images/subscriber-icon.jpg'));
+        }
+
+        return $img->response();
+    }
+
+    public function avatarOrigin(Request $request)
+    {
+        // Get current customer
+        $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
+
+        if (is_file($subscriber->getImageOriginPath())) {
+            $img = \Image::make($subscriber->getImageOriginPath());
+        } else {
+            if (is_file($subscriber->getImagePath())) {
+                $img = \Image::make($subscriber->getImagePath());
+            } else {
+                $img = \Image::make(public_path('images/subscriber-icon.jpg'));
+            }
         }
 
         return $img->response();
@@ -1068,15 +1089,34 @@ class SubscriberController extends Controller
     public function import2Progress(Request $request)
     {
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+        $customer = \Auth::user()->customer;
 
         // authorize
         if (\Gate::denies('import', $list)) {
             return $this->notAuthorized();
         }
 
+        // If the mail list dropdown is not populated
+        // Then it is very likely a problem with the cronjob
+        // Show this warning to user
+        $lastExecutedTimeUtc = Carbon::createFromTimestamp(Setting::get('cronjob_last_execution') ?? 0);
+        $now = Carbon::now();
+        $lastExecutedTimeDiffInMinutes = $now->diffInMinutes($lastExecutedTimeUtc);
+        $threshold = 20; // 15 minutes
+
+        if ($lastExecutedTimeDiffInMinutes > $threshold) {
+            $lastExecutedTime = $lastExecutedTimeUtc->timezone($customer->getTimezone());
+            // If there is no data populated, then it is very likely that cronjob has not been set up correctly
+            // Pass the last executed time to the view to show up with the warning
+            $cronjobWarning = $lastExecutedTime;
+        } else {
+            $cronjobWarning = null;
+        }
+
         return view('subscribers.import2.progress', [
             'list' => $list,
             'job_uid' => $request->job_uid,
+            'cronjobWarning' => $cronjobWarning,
         ]);
     }
 

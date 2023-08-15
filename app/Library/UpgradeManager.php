@@ -28,8 +28,6 @@ use Illuminate\Support\Facades\File;
 use Acelle\Library\Facades\Hook;
 use Acelle\Model\Language;
 
-use function Acelle\Helpers\updateTranslationFile;
-
 class UpgradeManager
 {
     protected $source;

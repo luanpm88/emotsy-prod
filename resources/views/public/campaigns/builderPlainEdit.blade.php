@@ -28,7 +28,7 @@
         </a>
     </li>
     <li class="nav-item d-flex align-items-center">
-        <a href="{{ action('Public\CampaignController@builderClassic', [
+        <a href="{{ action('Pub\CampaignController@builderClassic', [
             'uid' => $campaign->uid
         ]) }}"
             class="nav-link py-3 lvl-1">
@@ -50,7 +50,7 @@
 @endsection
 
 @section('content')
-    <form style="" id="classic-builder-form" action="{{ action('Public\CampaignController@builderPlainEdit', $campaign->uid) }}" method="POST" class="form-validate-jqueryz">
+    <form style="" id="classic-builder-form" action="{{ action('Pub\CampaignController@builderPlainEdit', $campaign->uid) }}" method="POST" class="form-validate-jqueryz">
         {{ csrf_field() }}
 
         <div class="row mr-0 ml-0 form-groups-bottom-0">
@@ -73,7 +73,7 @@
                             {{ trans('messages.campaign.plain.click_to_custom_html') }}
                         </p>
                         <div class="mb-4">
-                            <a href="{{ action('Public\CampaignController@customPlainOn', [
+                            <a href="{{ action('Pub\CampaignController@customPlainOn', [
                                 'uid' => $campaign->uid,
                             ]) }}" link-method="POST" class="btn btn-primary">
                                 <span class="material-symbols-rounded me-1">dashboard_customize</span>
@@ -86,7 +86,7 @@
                             {{ trans('messages.campaign.plain.automatically_extract') }}
                         </p>
                         <div class="mb-4">
-                            <a href="{{ action('Public\CampaignController@customPlainOff', [
+                            <a href="{{ action('Pub\CampaignController@customPlainOff', [
                                 'uid' => $campaign->uid,
                             ]) }}" link-method="POST" class="btn btn-primary">
                                 <span class="material-symbols-rounded me-1">post_add</span>

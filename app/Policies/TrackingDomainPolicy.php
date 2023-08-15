@@ -5,7 +5,7 @@ namespace Acelle\Policies;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Acelle\Model\User;
 use Acelle\Model\TrackingDomain;
-use Acelle\Model\Plan;
+use Acelle\Model\PlanGeneral;
 
 class TrackingDomainPolicy
 {

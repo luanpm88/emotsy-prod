@@ -13,7 +13,6 @@ class SubscriptionLog extends Model
     public const TYPE_SELECT_PLAN = 'select_plan';
     public const TYPE_PAY_SUCCESS = 'pay_success';
     public const TYPE_PAY_FAILED = 'pay_failed';
-    public const TYPE_PAYMENT_PENDING = 'payment_pending';
     public const TYPE_ADMIN_APPROVE = 'admin_approve';
     public const TYPE_ADMIN_REJECT = 'admin_reject';
     public const TYPE_RENEW_INVOICE = 'renew_invoice';
@@ -103,12 +102,6 @@ class SubscriptionLog extends Model
                     'invoice' => $this->invoice_uid,
                     'amount' => $data['amount'],
                     'error' => $data['error'],
-                ]);
-                break;
-            case self::TYPE_PAYMENT_PENDING:
-                return trans('messages.subscription.log.payment_pending', [
-                    'invoice' => $this->invoice_uid,
-                    'amount' => $data['amount'],
                 ]);
                 break;
             case self::TYPE_ADMIN_APPROVE:

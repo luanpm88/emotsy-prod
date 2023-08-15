@@ -25,6 +25,7 @@ return [
         'date_full' => 'Y-m-d',
         'date_short' => 'Y-m-d',
         'datetime_full' => 'Y-m-d H:i',
+        'datetime_full_with_timezone' => 'Y-m-d H:i e',
         'datetime_short' => 'Y-m-d H:i',
         'time_only' => 'H:i',
         'number_precision' => '2',

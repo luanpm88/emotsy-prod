@@ -39,6 +39,7 @@ class TemplateController extends Controller
         $view = $request->view ? $request->view : 'grid';
 
         $templates = Template::shared()
+            ->notPrivate()
             ->notPreserved()
             ->email()
             ->categoryUid($request->category_uid)

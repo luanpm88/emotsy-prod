@@ -89,6 +89,11 @@ full-height
                                 'action_id' => request()->action_id,
                             ]) }}"
                         >{{ trans('messages.automation.tag_those_contacts') }}</a>
+                        <a data-action="trigger-all" class="dropdown-item"
+                            href="{{ action('Automation2Controller@triggerAll', [
+                                'uid' => $automation->uid,
+                            ]) }}"
+                        >{{ trans('messages.automation.trigger_all') }}</a>
                     </div>
                     </div>
                 </div>
@@ -102,6 +107,55 @@ full-height
     </div>
         
     <div class="contacts_list ajax-list"></div>
+
+    <script>
+        $(function() {
+            // click on trigger all button
+            document.querySelector('[data-action="trigger-all"]').addEventListener('click', (e) => {
+                e.preventDefault();
+
+                var url = document.querySelector('[data-action="trigger-all"]').getAttribute('href');
+                AutomationContacts.triggerAll(url);
+            })
+        });
+
+        var AutomationContacts = {
+            triggerAll: function(url) {
+                new Dialog('confirm', {
+                    message: '{{ trans('messages.automation.trigger_all.confirm') }}',
+                    ok: function() {
+                        addMaskLoading();
+                        $.ajax({
+                            method: 'POST',
+                            url: url,
+                            data: {
+                                _token: CSRF_TOKEN
+                            },
+                            type: 'json',
+                            globalError: false,
+                        })
+                        .done(function( response ) {
+                            //
+                            notify('success', '{{ trans('messages.notify.success') }}', response.message);
+
+                            // reload list
+                            listContact.load();
+
+                            removeMaskLoading();
+                        })
+                        .fail(function( response ) {
+                            new Dialog('alert', {
+                                title: '{{ trans('messages.notify.error') }}',
+                                message: response.responseText,
+                            });
+
+                            removeMaskLoading();
+                        });
+                    }
+                });
+            }
+        }
+    </script>
         
     <script>
         var listContact = makeList({
@@ -168,10 +222,10 @@ full-height
                 success: function (response) {
                     // notify
                     notify({
-    type: 'success',
-    title: '{!! trans('messages.notify.success') !!}',
-    message: response.message
-});
+                        type: 'success',
+                        title: '{!! trans('messages.notify.success') !!}',
+                        message: response.message
+                    });
 
                     // remove effects
                     removeMaskLoading();

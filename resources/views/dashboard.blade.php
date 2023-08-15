@@ -43,12 +43,12 @@
                 <div class="d-flex mb-2">
                     <label class="fw-600 me-auto">{{ trans('messages.list') }}</label>
                     <div class="pull-right  text-semibold">
-                        <span class="text-muted">{{ number_with_delimiter(Auth::user()->customer->listsCount()) }}/{{ number_with_delimiter(Auth::user()->customer->maxLists()) }}</span>
-                        &nbsp;&nbsp;&nbsp;<span>{{ Auth::user()->customer->displayListsUsage() }}</span>
+                        <span class="text-muted">{{ number_with_delimiter($listsCount) }}/{{ $maxLists == -1 ? '∞' : number_with_delimiter($maxLists) }}</span>
+                        &nbsp;&nbsp;&nbsp;<span>{{ number_to_percentage($listsUsed) }}</span>
                     </div>
                 </div>
                 <div class="progress progress-sm" style="height: 12px;">
-                    <div class="progress-bar progress-bar-striped bg-{{ Auth::user()->customer->listsUsage() >= 80 ? 'danger' : 'primary' }}" style="width: {{ Auth::user()->customer->listsUsage() }}%">
+                    <div class="progress-bar progress-bar-striped bg-{{ $listsUsed >= 0.8 ? 'danger' : 'primary' }}" style="width: {{ 100*$listsUsed }}%">
                     </div>
                 </div>
             </div>
@@ -58,12 +58,12 @@
                 <div class="d-flex mb-2">
                     <label class="fw-600 me-auto">{{ trans('messages.campaign') }}</label>
                     <div class="pull-right  text-semibold">
-                        <span class="text-muted">{{ number_with_delimiter(Auth::user()->customer->campaignsCount()) }}/{{ number_with_delimiter(Auth::user()->customer->maxCampaigns()) }}</span>
-                        &nbsp;&nbsp;&nbsp;<span>{{ Auth::user()->customer->displayCampaignsUsage() }}</span>
+                        <span class="text-muted">{{ number_with_delimiter($campaignsCount) }}/{{ $maxCampaigns == -1 ? '∞' : number_with_delimiter($maxCampaigns) }}</span>
+                        &nbsp;&nbsp;&nbsp;<span>{{ number_to_percentage($campaignsUsed) }}</span>
                     </div>
                 </div>
                 <div class="progress progress-sm" style="height: 12px;">
-                    <div class="progress-bar progress-bar-striped bg-{{ Auth::user()->customer->campaignsUsage() >= 80 ? 'danger' : 'primary' }}" style="width: {{ Auth::user()->customer->campaignsUsage() }}%">
+                    <div class="progress-bar progress-bar-striped bg-{{ $campaignsUsed >= 0.8 ? 'danger' : 'primary' }}" style="width: {{ 100*$campaignsUsed }}%">
                     </div>
                 </div>
             </div>
@@ -73,12 +73,12 @@
                 <div class="d-flex mb-2">
                     <label class="fw-600 me-auto">{{ trans('messages.subscriber') }}</label>
                     <div class="pull-right  text-semibold">
-                        <span class="text-muted">{{ number_with_delimiter(Auth::user()->customer->readCache('SubscriberCount', 0)) }}/{{ number_with_delimiter(Auth::user()->customer->maxSubscribers()) }}</span>
-                        &nbsp;&nbsp;&nbsp;<span>{{ Auth::user()->customer->displaySubscribersUsage() }}</span>
+                        <span class="text-muted">{{ number_with_delimiter($subscribersCount) }}/{{ ($maxSubscribers == -1) ? '∞' : number_with_delimiter($maxSubscribers) }}</span>
+                        &nbsp;&nbsp;&nbsp;<span>{{ number_to_percentage($subscribersUsed) }}</span>
                     </div>
                 </div>
                 <div class="progress progress-sm" style="height: 12px;">
-                    <div class="progress-bar progress-bar-striped bg-{{ Auth::user()->customer->subscribersUsage() >= 80 ? 'danger' : 'primary' }}" style="width: {{ Auth::user()->customer->readCache('SubscriberUsage', 0) }}%">
+                    <div class="progress-bar progress-bar-striped bg-{{ $subscribersUsed >= 0.8 ? 'danger' : 'primary' }}" style="width: {{ $subscribersUsed*100 }}%">
                     </div>
                 </div>
             </div>

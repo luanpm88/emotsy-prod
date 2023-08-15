@@ -7,19 +7,17 @@ use GuzzleHttp\Client;
 use JsonPath\JsonObject;
 use Acelle\Library\Log as MailLog;
 use Acelle\Library\Traits\HasUid;
-use Acelle\Library\Traits\HasQuota;
-use Acelle\Library\Contracts\HasQuota as HasQuotaInterface;
 use Exception;
-use Acelle\Library\QuotaManager;
 use Monolog\Logger;
 use Monolog\Handler\RotatingFileHandler;
 use Monolog\Formatter\LineFormatter;
 use Acelle\Library\Everification\Emailable;
+use Acelle\Library\RateTracker;
+use Acelle\Library\RateLimit;
 
-class EmailVerificationServer extends Model implements HasQuotaInterface
+class EmailVerificationServer extends Model
 {
     use HasUid;
-    use HasQuota;
 
     // set the table name
     protected $table = 'email_verification_servers';
@@ -422,13 +420,9 @@ class EmailVerificationServer extends Model implements HasQuotaInterface
         }
     }
 
-    public function setQuotaSettings(string $name, int $value, string $periodUnit, int $periodValue)
+    // For testing, do not save!
+    public function setLimit(int $value, int $periodValue, string $periodUnit)
     {
-        // $name is always 'verify'
-        if ($name != 'verify') {
-            throw "Invalid quota name for email verification server";
-        }
-
         $options = $this->getOptions();
         $options['limit_base'] = $periodValue;
         $options['limit_unit'] = $periodUnit;
@@ -436,34 +430,31 @@ class EmailVerificationServer extends Model implements HasQuotaInterface
         $this->options = json_encode($options);
     }
 
-    /***   IMPLEMENTATION OF HasQuotaInterface ***/
-    public function getQuotaSettings($name): ?array
+    public function getRateTracker()
     {
         // always 'verify'
-        $quota = [];
         $options = $this->getOptions();
 
-        if ($options['limit_value'] != QuotaManager::QUOTA_UNLIMITED) {
-            $quota[] = [
-                'name' => "Verification credits limit of {$options['limit_value']} per {$options['limit_base']} {$options['limit_unit']}",
-                'period_unit' => $options['limit_unit'],
-                'period_value' => $options['limit_base'],
-                'limit' => $options['limit_value'],
-            ];
+        $limits = [];
+        if ($options['limit_value'] != RateLimit::UNLIMITED) {
+            $limits[] = new RateLimit(
+                $options['limit_value'],
+                $options['limit_base'],
+                $options['limit_unit'],
+                "Verification credits limit of {$options['limit_value']} per {$options['limit_base']} {$options['limit_unit']}",
+            );
         }
 
-        // Take limits from sending credits
-        $credits = '????';
-        if (false && $credits != QuotaManager::QUOTA_UNLIMITED) {
-            $quota[] = [
-                'name' => "Plan's verification limit",
-                'period_unit' => '?',
-                'period_value' => '?',
-                'limit' => $redits
-            ];
-        }
+        $file = storage_path('app/quota/verification-server-verify-email-rate-tracking-log-'.$this->uid);
+        $tracker = new RateTracker($file, $limits);
 
-        return $quota;
+        return $tracker;
+    }
+
+    public function getCreditTracker()
+    {
+        $file = storage_path('app/quota/verification-server-credits-'.$this->uid);
+        return CreditTracker::load($file, $createFile = true);
     }
 
     public function logger()
@@ -482,5 +473,10 @@ class EmailVerificationServer extends Model implements HasQuotaInterface
         }
 
         return $this->logger;
+    }
+
+    public function getCreditsUsed()
+    {
+        return $this->getRateTracker()->getCreditsUsed();
     }
 }

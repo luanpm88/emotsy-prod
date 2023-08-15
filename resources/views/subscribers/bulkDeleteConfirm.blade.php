@@ -13,7 +13,11 @@
                 @foreach($subscribers as $subscriber)
                     <li class="d-flex align-items-center">
                         <input type='hidden' name="uids[]" value="{{ $subscriber->uid }}" />
-                        <img class="avatar" src="{{ (isSiteDemo() ? 'https://i.pravatar.cc/300?v=' . $key : action('SubscriberController@avatar',  $subscriber->uid)) }}" />
+                        <a
+                            image-popup="link"
+                            href="{{ (isSiteDemo() ? 'https://i.pravatar.cc/300?v=' . $key : action('SubscriberController@avatarOrigin',  $subscriber->uid)) }}">
+                                <img class="avatar" src="{{ (isSiteDemo() ? 'https://i.pravatar.cc/300?v=' . $key : action('SubscriberController@avatar',  $subscriber->uid)) }}" />
+                        </a>
                         <div>
                             <label>{{ $subscriber->email }}</label>
                             <p>{{ $subscriber->getFullName() }}</p>

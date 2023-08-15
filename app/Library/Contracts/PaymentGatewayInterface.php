@@ -2,9 +2,9 @@
 
 namespace Acelle\Library\Contracts;
 
+use Acelle\Library\TransactionResult;
 use Acelle\Model\Invoice;
 use Acelle\Model\Transaction;
-use Acelle\Cashier\Library\TransactionVerificationResult;
 
 interface PaymentGatewayInterface
 {
@@ -37,9 +37,11 @@ interface PaymentGatewayInterface
 
     // In certain cases, users will need to update their payment information (credit card numbers, etc.)
     public function getAutoBillingDataUpdateUrl(): string;
-    public function verify(Transaction $transaction): TransactionVerificationResult;
 
     //
     public function allowManualReviewingOfTransaction(): bool;
     public function getMinimumChargeAmount($currency);
+
+    // verify pending transaction
+    public function verify(Transaction $transaction): TransactionResult;
 }

@@ -29,7 +29,7 @@
         </div>
     </div>
 
-    @if ($invoice->type == \Acelle\Model\Invoice::TYPE_CHANGE_PLAN)
+    @if ($invoice->type == \Acelle\Model\InvoiceChangePlan::TYPE_CHANGE_PLAN)
         <div class="text-center mt-4">
             <a class="btn btn-link text-center rounded-3"
                 style="width:100%"

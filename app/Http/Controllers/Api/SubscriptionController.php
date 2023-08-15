@@ -42,7 +42,7 @@ class SubscriptionController extends Controller
     {
         $user = \Auth::guard('api')->user();
         $customer = \Acelle\Model\Customer::findByUid($request->customer_uid);
-        $plan = \Acelle\Model\Plan::findByUid($request->plan_uid);
+        $plan = \Acelle\Model\PlanGeneral::findByUid($request->plan_uid);
 
         // check if customer exists
         if (!$customer) {
@@ -64,7 +64,7 @@ class SubscriptionController extends Controller
             return \Response::json(array('status' => 0, 'message' => 'Plan is not active'), 404);
         }
 
-        $subscription = $customer->assignPlan($plan);
+        $subscription = $customer->assignGeneralPlan($plan);
 
         // * Disable billing information: customer does not need to pay the invoice. Pass by the billing and checkout step
         // * assignPlan always create a subscription with an unpaid invoice.

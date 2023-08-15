@@ -26,7 +26,7 @@ class PlanController extends Controller
             return \Response::json(array('message' => 'Unauthorized'), 401);
         }
 
-        $rows = \Acelle\Model\Plan::limit(100)->get();
+        $rows = \Acelle\Model\PlanGeneral::limit(100)->get();
 
         $plans = $rows->map(function ($plan) {
             return [
@@ -93,7 +93,7 @@ class PlanController extends Controller
             }
 
             $plan->admin_id = $user->admin->id;
-            $plan->status = \Acelle\Model\Plan::STATUS_INACTIVE;
+            $plan->status = \Acelle\Model\PlanGeneral::STATUS_INACTIVE;
             $plan->save();
 
             // check status

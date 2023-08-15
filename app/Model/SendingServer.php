@@ -29,16 +29,14 @@ use Carbon\Carbon;
 use Acelle\Library\StringHelper;
 use Acelle\Library\Notification\BackendError as BackendErrorNotification;
 use Acelle\Library\Facades\Hook;
-use Acelle\Library\Traits\HasUid;
-use Acelle\Library\Traits\HasQuota;
-use Acelle\Library\Contracts\HasQuota as HasQuotaInterface;
-use Acelle\Library\QuotaManager;
+use Acelle\Library\RateLimit;
+use Acelle\Library\RateTracker;
 use Exception;
+use Acelle\Library\Traits\HasUid;
 
-class SendingServer extends Model implements HasQuotaInterface
+class SendingServer extends Model
 {
     use HasUid;
-    use HasQuota;
 
     public const DELIVERY_STATUS_SENT = 'sent';
     public const DELIVERY_STATUS_FAILED = 'failed';
@@ -286,7 +284,7 @@ class SendingServer extends Model implements HasQuotaInterface
      */
     public static function types()
     {
-        return [
+        $types = [
             self::TYPE_AMAZON_SMTP => [
                 'cols' => [
                     'host' => 'required',
@@ -459,6 +457,14 @@ class SendingServer extends Model implements HasQuotaInterface
                 ],
             ],
         ];
+
+        // In case only one type of sending server is allowed
+        $allowedTypes = app_profile('sending_server.only');
+        if ($allowedTypes) {
+            $types = array_filter($types, fn ($type) => in_array($type, $allowedTypes), ARRAY_FILTER_USE_KEY);
+        }
+
+        return $types;
     }
 
     /**
@@ -961,7 +967,7 @@ class SendingServer extends Model implements HasQuotaInterface
 
         // plan
         if ($request->plan_uid) {
-            $plan = \Acelle\Model\Plan::findByUid($request->plan_uid);
+            $plan = \Acelle\Model\PlanGeneral::findByUid($request->plan_uid);
             $existIds = $plan->plansSendingServers()->pluck('sending_server_id')->toArray();
         }
 
@@ -999,7 +1005,7 @@ class SendingServer extends Model implements HasQuotaInterface
 
         // plan
         if ($request->plan_uid) {
-            $plan = \Acelle\Model\Plan::findByUid($request->plan_uid);
+            $plan = \Acelle\Model\PlanGeneral::findByUid($request->plan_uid);
             $existIds = $plan->plansSendingServers()->pluck('sending_server_id')->toArray();
         }
 
@@ -1323,7 +1329,6 @@ class SendingServer extends Model implements HasQuotaInterface
      */
     public function allowUnverifiedFromEmailAddress()
     {
-        return true;
         $options = json_decode($this->options, true);
 
         if (is_null($options)) {
@@ -1571,6 +1576,11 @@ class SendingServer extends Model implements HasQuotaInterface
             $server->setOption('allow_verify_domain_remotely', 'yes');
         }
 
+        if ($server->type == self::TYPE_SENDMAIL || $server->type == self::TYPE_SMTP) {
+            $server->setOption('allow_unverified_from_email', 'yes');
+            $server->setOption('allow_verify_domain_against_acelle', 'yes');
+        }
+
         // save
         $server->save();
 
@@ -1594,20 +1604,31 @@ class SendingServer extends Model implements HasQuotaInterface
         $this->quota_value = $value;
     }
 
-    /*** IMPLEMENTATION OF HasQuotaInterface ***/
-    public function getQuotaSettings($name): ?array
+    public function getRateLimits()
     {
-        $quota = [];
+        $limits = [];
 
-        if ($this->quota_value != QuotaManager::QUOTA_UNLIMITED) {
-            $quota[] = [
-                'name' => "Server's sending limit of {$this->quota_value} per {$this->quota_base} {$this->quota_unit}",
-                'period_unit' => $this->quota_unit,
-                'period_value' => $this->quota_base,
-                'limit' => $this->quota_value,
-            ];
+        if ($this->quota_value != RateLimit::UNLIMITED) {
+            $limits[] = new RateLimit(
+                $this->quota_value,
+                $this->quota_base,
+                $this->quota_unit,
+                "Server's sending limit of {$this->quota_value} per {$this->quota_base} {$this->quota_unit}"
+            );
         }
 
-        return $quota;
+        return $limits;
+    }
+
+    public function getRateLimitTracker()
+    {
+        $file = storage_path('app/quota/server-send-email-rate-tracking-log-'.$this->uid);
+        $tracker = new RateTracker($file, $this->getRateLimits());
+        return $tracker;
+    }
+
+    public function getCreditsUsed()
+    {
+        return $this->getRateLimitTracker()->getCreditsUsed();
     }
 }

@@ -15,6 +15,7 @@ use Acelle\Model\Subscriber;
 use Acelle\Model\Setting;
 use Illuminate\Support\Facades\Storage;
 use Acelle\Model\TemplateCategory;
+use Acelle\Jobs\ForceTriggerAutomation;
 use Exception;
 
 class Automation2Controller extends Controller
@@ -1085,8 +1086,7 @@ class Automation2Controller extends Controller
 
             $this->validate($request, $rules);
 
-            $plan = $request->user()->customer->getCurrentActiveSubscription()->plan;
-            if ($plan->getOption('unsubscribe_url_required') == 'yes' && Setting::isYes('campaign.enforce_unsubscribe_url_check')) {
+            if (get_tmp_quota($request->user()->customer, 'unsubscribe_url_required') == 'yes' && Setting::isYes('campaign.enforce_unsubscribe_url_check')) {
                 if (strpos($request->content, '{UNSUBSCRIBE_URL}') === false) {
                     return response()->json(['message' => trans('messages.template.validation.unsubscribe_url_required')], 400);
                 }
@@ -1467,7 +1467,10 @@ class Automation2Controller extends Controller
                                   ->addSelect('subscribers.created_at')
                                   ->addSelect('auto_triggers.updated_at')
                                   ->orderBy($sortBy, $sortOrder);
+
+        // setPath() is required, otherwise, it may produce http link even in https
         $contacts = $subscribers->paginate($request->per_page);
+        $contacts->setPath(action('Automation2Controller@contactsList', [ 'uid' => $automation->uid ]));
 
         return view('automation2.contacts.list', [
             'automation' => $automation,
@@ -1791,8 +1794,7 @@ class Automation2Controller extends Controller
 
             $this->validate($request, $rules);
 
-            $plan = $request->user()->customer->getCurrentActiveSubscription()->plan;
-            if ($plan->getOption('unsubscribe_url_required') == 'yes' && Setting::isYes('campaign.enforce_unsubscribe_url_check')) {
+            if (get_tmp_quota($request->user()->customer, 'unsubscribe_url_required') == 'yes' && Setting::isYes('campaign.enforce_unsubscribe_url_check')) {
                 if (strpos($request->content, '{UNSUBSCRIBE_URL}') === false) {
                     return response()->json(['message' => trans('messages.template.validation.unsubscribe_url_required')], 400);
                 }
@@ -2800,5 +2802,28 @@ class Automation2Controller extends Controller
             'automation' => $automation,
             'newAutomation' => $newAutomation,
         ]);
+    }
+
+    public function triggerAll($uid)
+    {
+        // Instantiate automation and dispatch the job
+        $automation = Automation2::findByUid($uid);
+
+        // authorize
+        if (\Gate::denies('update', $automation)) {
+            return $this->notAuthorized();
+        }
+
+        try {
+            ForceTriggerAutomation::dispatch($automation);
+
+            return response()->json([
+                'message' => trans('messages.automation.trigger_all.success'),
+            ]);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 }

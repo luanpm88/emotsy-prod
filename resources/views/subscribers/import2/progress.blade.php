@@ -9,9 +9,24 @@
         @include('subscribers.import2._sidebar', ['step' => 'review'])
         
         <div class="wizard-content">
-            <p>{!! trans('messages.subscriber.import.running.wording', [
-                'link' => url('files/csv_import_example.csv')
-            ]) !!}</p>   
+            @if ($cronjobWarning)
+                <div class="alert alert-danger" style="display: flex; flex-direction: row; align-items: center; justify-content: space-between;">
+                    <div style="display: flex; flex-direction: row; align-items: center;">
+                        <div style="margin-right:15px">
+                            <i class="lnr lnr-circle-minus"></i>
+                        </div>
+                        <div style="padding-right: 40px;">
+                            <h4 style="padding-bottom:5px">{{ trans('messages.cronjob.warning.title') }}</h4>
+                            <p style="padding-bottom:5px">{{ trans('messages.cronjob.warning.list.description', [
+                                'last_executed_time' => $cronjobWarning->toString(),
+                                'last_executed_time_readable' => $cronjobWarning->diffForHumans()
+                            ]) }}.</p>
+                        </div>
+                    </div>
+
+                </div>
+            @endif
+            <p>{!! trans('messages.subscriber.import.running.wording') !!}</p>
 
             <div id="ImportProgressContent">
 

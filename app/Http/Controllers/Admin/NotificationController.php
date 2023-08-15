@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 
 use Acelle\Http\Requests;
 use Acelle\Http\Controllers\Controller;
-use Acelle\Model\Plan;
+use Acelle\Model\PlanGeneral;
 use Acelle\Model\Setting;
 use Acelle\Model\SendingServer;
 use Acelle\Model\Notification;

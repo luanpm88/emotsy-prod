@@ -72,7 +72,7 @@
                                 </td> 
                                 <td>
                                     <span class="no-margin kq_search">
-                                    {!! $transaction->invoice->formattedTotal() !!}
+                                    {!! $transaction->invoice->total() !!}
                                     </span>
                                 </td> 
                                 <td>
@@ -108,7 +108,7 @@
                         </tr>
                         @forelse ($subscription->invoices()->orderBy('created_at', 'desc')->get() as $key => $invoice)
                             @php
-                                $billInfo = $invoice->getBillingInfo();
+                                $billInfo = $invoice->mapType()->getBillingInfo();
                             @endphp
                             <tr>
                                 <td>

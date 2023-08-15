@@ -23,12 +23,8 @@
 
 namespace Acelle\Model;
 
-use Illuminate\Database\Eloquent\Model;
 use DB;
 use Acelle\Model\SendingServer;
-use Monolog\Logger;
-use Monolog\Handler\RotatingFileHandler;
-use Monolog\Formatter\LineFormatter;
 use Carbon\Carbon;
 use League\Csv\Writer;
 use Acelle\Library\StringHelper;
@@ -39,37 +35,20 @@ use ZipArchive;
 use KubAT\PhpSimple\HtmlDomParser;
 use Exception;
 use Acelle\Library\Traits\HasTemplate;
-use Acelle\Jobs\LoadCampaign;
-use Acelle\Jobs\ScheduleCampaign;
-use Illuminate\Bus\Batch;
 use Acelle\Library\RouletteWheel;
-use Acelle\Library\Traits\TrackJobs;
 use Throwable;
-use Acelle\Library\Traits\HasUid;
-use Acelle\Library\Traits\HasCache;
-use Acelle\Events\CampaignUpdated;
 use Acelle\Jobs\ExecuteCampaignCallback;
 use Acelle\Library\Contracts\HasTemplateInterface;
 use Acelle\Library\HtmlHandler\InjectTrackingPixel;
 use Acelle\Library\HtmlHandler\TransformUrl;
+use Acelle\Library\BaseCampaign;
+use Acelle\Library\Contracts\CampaignInterface;
+use Acelle\Jobs\SendMessage;
+use Closure;
 
-class Campaign extends Model implements HasTemplateInterface
+class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInterface
 {
     use HasTemplate;
-    use TrackJobs;
-    use HasUid;
-    use HasCache;
-
-    protected $logger;
-
-    // Campaign status
-    public const STATUS_NEW = 'new';
-    public const STATUS_QUEUING = 'queuing'; // equiv. to 'queue'
-    public const STATUS_QUEUED = 'queued'; // equiv. to 'queue'
-    public const STATUS_SENDING = 'sending';
-    public const STATUS_ERROR = 'error';
-    public const STATUS_DONE = 'done';
-    public const STATUS_PAUSED = 'paused';
 
     // Campaign types
     public const TYPE_REGULAR = 'regular';
@@ -155,14 +134,6 @@ class Campaign extends Model implements HasTemplateInterface
         }
 
         return $rules;
-    }
-
-    /**
-     * Get the customer.
-     */
-    public function customer()
-    {
-        return $this->belongsTo('Acelle\Model\Customer');
     }
 
     /**
@@ -312,82 +283,6 @@ class Campaign extends Model implements HasTemplateInterface
     }
 
     /**
-     * Mark the campaign as 'done' or 'sent'.
-     */
-    public function setDone()
-    {
-        $this->status = self::STATUS_DONE;
-        $this->last_error = null;
-        $this->save();
-    }
-
-    /**
-     * Mark the campaign as 'sending'.
-     */
-    public function setSending()
-    {
-        $this->status = self::STATUS_SENDING;
-        $this->running_pid = getmypid();
-        $this->delivery_at = Carbon::now();
-        $this->save();
-    }
-
-    /**
-     * Check if the campaign is in the "SENDING" status;.
-     */
-    public function isSending()
-    {
-        return $this->status == self::STATUS_SENDING;
-    }
-
-    /**
-     * Check if the campaign is in the "DONE" status;.
-     */
-    public function isDone()
-    {
-        return $this->status == self::STATUS_DONE;
-    }
-
-    /**
-     * Check if the campaign is ready to start.
-     */
-    public function isQueued()
-    {
-        return $this->status == self::STATUS_QUEUED;
-    }
-
-    /**
-     * Mark the campaign as 'ready' (which is equiv. to 'queued').
-     */
-    public function setQueued()
-    {
-        $this->status = self::STATUS_QUEUED;
-        $this->save();
-        return $this;
-    }
-
-    /**
-     * Mark the campaign as 'ready' (which is equiv. to 'queued').
-     */
-    public function setQueuing()
-    {
-        $this->status = self::STATUS_QUEUING;
-        $this->save();
-        return $this;
-    }
-
-    /**
-     * Mark the campaign as 'done' or 'sent'.
-     */
-    public function setError($error = null)
-    {
-        $this->status = self::STATUS_ERROR;
-        $this->last_error = $error;
-        $this->save();
-        return $this;
-    }
-
-    /**
      * Log delivery message, used for later tracking.
      */
     public function trackMessage($response, $subscriber, $server, $msgId)
@@ -528,7 +423,7 @@ class Campaign extends Model implements HasTemplateInterface
     public function unsubscribe_url_valid()
     {
         if ($this->type != 'plain-text' &&
-           $this->customer->getOption('unsubscribe_url_required') == 'yes' &&
+           get_tmp_quota($this->customer, 'unsubscribe_url_required') == 'yes' &&
             strpos($this->getTemplateContent(), '{UNSUBSCRIBE_URL}') == false
         ) {
             return false;
@@ -603,6 +498,8 @@ class Campaign extends Model implements HasTemplateInterface
             $query = $query->whereIn('status', explode(',', $request->statuses));
         }
     }
+
+
 
     /**
      * Search items.
@@ -1368,7 +1265,7 @@ class Campaign extends Model implements HasTemplateInterface
         }
 
         // and queue again
-        $this->schedule();
+        $this->execute();
     }
 
     /**
@@ -1566,38 +1463,6 @@ class Campaign extends Model implements HasTemplateInterface
         }
 
         return implode(' | ', $lines);
-    }
-
-    /**
-     * Pause campaign.
-     *
-     * @return bool
-     */
-    public function pause()
-    {
-        $this->cancelAndDeleteJobs();
-        $this->setPaused();
-
-        // Update status
-        event(new CampaignUpdated($this));
-    }
-
-    private function setPaused()
-    {
-        // set campaign status
-        $this->status = self::STATUS_PAUSED;
-        $this->save();
-        return $this;
-    }
-
-    /**
-     * Check if campaign is paused.
-     *
-     * @return bool
-     */
-    public function isPaused()
-    {
-        return $this->status == self::STATUS_PAUSED;
     }
 
     public function getCacheIndex()
@@ -2165,97 +2030,6 @@ class Campaign extends Model implements HasTemplateInterface
         }
     }
 
-    public function wooTransform($body)
-    {
-        // find all links from contents
-        $document = HtmlDomParser::str_get_html($body);
-
-        // Woo Items List
-        foreach ($document->find('[builder-element=ProductListElement]') as $element) {
-            $max = $element->getAttribute('data-max-items');
-            $display = $element->getAttribute('data-display');
-            $sort = $element->getAttribute('data-sort-by');
-
-            $request = request();
-            $request->merge(['per_page' => $max]);
-            $request->merge(['sort_by' => $sort]);
-
-            $items = Product::search($request)->paginate($request->per_page)
-                ->map(function ($product, $key) {
-                    return [
-                        'id' => $product->uid,
-                        'name' => $product->title,
-                        'price' => $product->price,
-                        'image' => $product->getImageUrl(),
-                        'description' => substr(strip_tags($product->description), 0, 100),
-                        'link' => action('ProductController@index'),
-                    ];
-                })->toArray();
-            $itemsHtml = [];
-            foreach ($items as $item) {
-                // $element->find('.woo-items')[0]->innertext = 'dddddd';
-                $itemsHtml[] = '
-                    <div class="woo-col-item mb-4 mt-4 col-md-' . (12/$display) . '">
-                        <div class="">
-                            <div class="img-col mb-3">
-                                <div class="d-flex align-items-center justify-content-center" style="height: 200px;">
-                                    <a style="width:100%" href="'.$item["link"].'" class="mr-4"><img width="100%" src="'.($item["image"] ? $item["image"] : url('images/cart_item.svg')).'" style="max-height:200px;max-width:100%;" /></a>
-                                </div>
-                            </div>
-                            <div class="">
-                                <p class="font-weight-normal product-name mb-1">
-                                    <a style="color: #333;" href="'.$item["link"].'" class="mr-4">'.$item["name"].'</a>
-                                </p>
-                                <p class=" product-description">'.$item["description"].'</p>
-                                <p><strong>'.$item["price"].'</strong></p>
-                                <a href="'.$item["link"].'" style="background-color: #9b5c8f;
-    border-color: #9b5c8f;" class="btn btn-primary text-white">
-                                    ' . trans('messages.automation.view_more') . '
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                ';
-            }
-
-            $element->find('.products')[0]->innertext = implode('', $itemsHtml);
-        }
-
-        // Woo Single Item
-        foreach ($document->find('[builder-element=ProductElement]') as $element) {
-            $productId = $element->getAttribute('product-id');
-
-            if ($productId) {
-                $product = Product::findByUid($productId);
-
-                $item = [
-                    'id' => $product->uid,
-                    'name' => $product->title,
-                    'price' => $product->price,
-                    'image' => $product->getImageUrl(),
-                    'description' => substr(strip_tags($product->description), 0, 100),
-                    'link' => action('ProductController@index'),
-                ];
-                // $element->find('.product-name', 0)->innertext = $item["name"];
-                // $element->find('.product-description', 0)->innertext = $item["description"];
-                // $element->find('.product-link', 0)->href = $item["link"];
-                // $element->find('.product-price', 0)->innertext = $item["price"];
-                $element->find('.product-link img', 0)->src = $item["image"];
-                $html = $element->innertext;
-                $html = str_replace('*|PRODUCT_NAME|*', $item["name"], $html);
-                $html = str_replace('*|PRODUCT_DESCRIPTION|*', $item["description"], $html);
-                $html = str_replace('*|PRODUCT_URL|*', $item["link"], $html);
-                $html = str_replace('*|PRODUCT_PRICE|*', $item["price"], $html);
-                // $html = str_replace('*|PRODUCT_QUANTITY|*', $item["quantity"], $html);
-                $element->innertext = $html;
-            }
-        }
-
-        $body = $document;
-
-        return $body;
-    }
-
     public function getDeliveryReport()
     {
         /****
@@ -2339,7 +2113,7 @@ class Campaign extends Model implements HasTemplateInterface
     /**
      * Start the campaign. called by daemon job
      */
-    public function prepare($callback, $loadLimit = null)
+    public function loadDeliveryJobs(Closure $callback, int $loadLimit = null)
     {
         // Available sending servers
         $sendingServersPool = $this->defaultMailList->getSendingServers();
@@ -2361,6 +2135,13 @@ class Campaign extends Model implements HasTemplateInterface
         // Reset max_execution_time so that command can run for a long time without being terminated
         self::resetMaxExecutionTime();
 
+        // Clear any HTML cache
+        $this->clearTemplateCache();
+
+        // Last chance for campaign to setup
+        // @todo Find a better place for the following method, afterSave for example
+        $this->updateLinks();
+
         // Query subscribers
         // IMPORTANT: this method is called by LoadCampaign job which create a SendMessage job for each subscribers
         // then add to the batch
@@ -2373,7 +2154,19 @@ class Campaign extends Model implements HasTemplateInterface
                 $serverId = RouletteWheel::take($sendingServersPool);
                 $server = SendingServer::find($serverId)->mapType();
 
-                $callback($this, $subscriber, $server);
+                // Dispatch delivery job and return it to the LoadCampaign to monitor
+
+                if (config('app.saas')) {
+                    $subscription = $this->customer->getCurrentActiveGeneralSubscription();
+                } else {
+                    $subscription = null;
+                }
+
+                $job = new SendMessage($this, $subscriber, $server, $subscription);
+                $stopOnError = $this->stopOnError();
+                // $stopOnError = Setting::isYes('campaign.stop_on_error'); // true or false
+                $job->setStopOnError($stopOnError);
+                $callback($job);
             }
 
             // Important
@@ -2396,6 +2189,15 @@ class Campaign extends Model implements HasTemplateInterface
         );
     }
 
+    // @important
+    // This method retrieve subscribers that are not associated with the campaign in the tracking_logs table, i.e. not sent
+    // However, how about pending SendMessage job? i.e. executing this method again in parallel will cause duplicate SendMessage jobs
+    // intended for the same subscribers.
+    //
+    // Luckily, this method is called by the LoadCampaign job in a batch only!
+    // It means: + Only one LoadCampaign job is alive at a given time
+    //           + All the SendMessage jobs must be done before dispatching the next LoadCampaign job (the "then" event of Batch)
+    //           + It guarantees that this method is not called the second time before all SendMessage jobs are already done.
     public function subscribersToSend()
     {
         // Retrieve subscribers to send!
@@ -2475,178 +2277,6 @@ class Campaign extends Model implements HasTemplateInterface
         return $this->defaultMailList->pickSendingServer();
     }
 
-    public function logger()
-    {
-        if (!is_null($this->logger)) {
-            return $this->logger;
-        }
-
-        $formatter = new LineFormatter("[%datetime%] %channel%.%level_name%: %message%\n");
-
-        $logfile = $this->getLogFile();
-        $stream = new RotatingFileHandler($logfile, 0, Logger::DEBUG);
-        $stream->setFormatter($formatter);
-
-        $pid = getmypid();
-        $logger = new Logger($pid);
-        $logger->pushHandler($stream);
-        $this->logger = $logger;
-
-        return $this->logger;
-    }
-
-    public function getLogFile()
-    {
-        $path = storage_path(join_paths('logs', php_sapi_name(), '/campaign-'.$this->uid.'.log'));
-        return $path;
-    }
-
-    public function deleteAndCleanup()
-    {
-        if ($this->template) {
-            $this->template->deleteAndCleanup();
-        }
-
-        $this->cancelAndDeleteJobs();
-
-        $this->delete();
-    }
-
-    public function isError()
-    {
-        return $this->status == self::STATUS_ERROR;
-    }
-
-    public function cancelAndDeleteJobs($jobType = null)
-    {
-        $query = $this->jobMonitors();
-
-        if (!is_null($jobType)) {
-            $query = $query->byJobType($jobType);
-        }
-
-        foreach ($query->get() as $job) {
-            $job->cancel();
-        }
-    }
-
-    public function schedule()
-    {
-        // Delete previous ScheduleCampaign jobs
-        $this->cancelAndDeleteJobs(ScheduleCampaign::class);
-
-        // Schedule Job initialize
-        $scheduler = (new ScheduleCampaign($this))->delay($this->run_at);
-
-        // Dispatch using the method provided by TrackJobs
-        // to also generate job-monitor record
-        $this->dispatchWithMonitor($scheduler);
-
-        // After this job is dispatched successfully, set status to "queuing"
-        // Notice the different between the two statuses
-        // + Queuing: waiting until campaign is ready to run
-        // + Queued: ready to run
-        $this->setQueuing();
-    }
-
-    public function resume()
-    {
-        $this->schedule();
-    }
-
-    // Should be called by ScheduleCampaign
-    public function launch()
-    {
-        // Pause any previous batch no matter what status it is
-        // Notice that batches without a job_monitor will not be retrieved
-        $jobs = $this->jobMonitors()->byJobType(LoadCampaign::class)->get();
-        foreach ($jobs as $job) {
-            $job->cancelWithoutDeleteBatch();
-        }
-
-        // Campaign loader job
-        $campaignLoader = new LoadCampaign($this);
-
-        // Dispatch it with a batch monitor
-        $this->dispatchWithBatchMonitor(
-            $campaignLoader,
-            function ($batch) {
-                // THEN callback
-                //
-                // Important:
-                // Notice that if user manually cancels a batch, it still reaches trigger "then" callback!!!!
-                // Only when an exception is thrown, no "then" trigger
-                // @Update: the above statement is longer true! Cancelling a batch DOES NOT trigger "THEN" callback
-                //
-                // IMPORTANT: refresh() is required!
-                if (!$this->refresh()->isPaused()) {
-                    $count = $this->subscribersToSend()->count();
-                    if ($count > 0) {
-                        // Launch over and over again until there is no subscribers left to send
-                        // Because each LoadCampaign jobs only load a fixed number of subscribers
-                        $this->updateCache();
-                        $this->logger()->warning('Launch another batch of '.$count);
-                        $this->launch();
-                    } else {
-                        $this->logger()->warning('No contact left, campaign finishes successfully!');
-                        $this->setDone();
-                    }
-                } else {
-                    // do nothing, as campaign is already PAUSED by user (not by an exception)
-                    $this->logger()->warning('Campaign is paused by user');
-                }
-            },
-            function (Batch $batch, Throwable $e) {
-                // CATCH callback
-                $errorMsg = "Campaign stopped. ".$e->getMessage()."\n".$e->getTraceAsString();
-                $this->logger()->info($errorMsg);
-                $this->setError($errorMsg);
-            },
-            function () {
-                // FINALLY callback
-                $this->logger()->info('Finally!');
-                $this->updateCache();
-            }
-        );
-
-        // SET QUEUED
-        $this->setQueued();
-
-        /**** MORE NOTES ****/
-        //
-        // Important: in case one of the batch's jobs hits an error
-        // the batch is automatically set to cancelled and, therefore, all remaining jobs will just finish (return)
-        // resulting in the "finally" event to be triggered
-        // So, do not update satus here, otherwise it will overwrite any status logged by "catch" event
-        // Notice that: if a batch fails (automatically canceled due to one failed job)
-        // then, after all jobs finishes (return), [failed job] = [pending job] = 1
-        // +------------+--------------+-------------+---------------------------------------------------------------------------------+-------------+
-        // | total_jobs | pending_jobs | failed_jobs | failed_job_ids                                                                  | finished_at |
-        // +------------+--------------+-------------+---------------------------------------------------------------------------------+-------------+
-        // |          7 |            0 |           0 | []                                                                              |  1624848887 | success
-        // |          7 |            1 |           1 | ["302130fd-ba78-4a37-8a3b-2304cc3f3455"]                                        |  1624849156 | failed
-        // |          7 |            2 |           2 | ["6a17f9bf-96d4-48e5-86a0-73e7bac07e74","7e1b3b3d-a5f4-45b4-be1e-ba5f1cc2e3f3"] |  1624849222 | (*)
-        // |          7 |            3 |           2 | ["6a17f9bf-96d4-48e5-86a0-73e7bac07e74","7e1b3b3d-a5f4-45b4-be1e-ba5f1cc2e3f3"] |  1624849222 | (**)
-        // |          7 |            2 |           0 | []                                                                              |        NULL | (***)
-        // +------------+--------------+-------------+---------------------------------------------------------------------------------+-------------+
-        //
-        // (*) There is no batch cancelation check in every job
-        // as a result, remaining jobs still execute even after the batch is automatically cancelled (due to one failed job)
-        // resulting in 2 (or more) failed / pending jobs
-        //
-        // (**) 2 jobs already failed, there is 1 remaining job to finish (so 3 pending jobs)
-        // That is, pending_jobs = failed jobs + remaining jobs
-        //
-        // (***) If certain jobs are deleted from queue or terminated during action (without failing or finishing)
-        // Then the campaign batch does not reach "then" status
-        // Then proceed with pause and send again
-    }
-
-    public function extractErrorMessage()
-    {
-        return explode("\n", $this->last_error)[0];
-    }
-
     public function doSendTestEmail($email)
     {
         $validator = \Validator::make(['email' => $email], [
@@ -2659,10 +2289,9 @@ class Campaign extends Model implements HasTemplateInterface
         }
 
         // validate service
-        $campaign = $this;
-        $validator->after(function ($validator) use ($campaign, $email) {
+        $validator->after(function ($validator) use ($email) {
             try {
-                $result = $campaign->sendTestEmail($email);
+                $result = $this->sendTestEmail($email);
 
                 if ($result['status'] == 'error') {
                     $validator->errors()->add('email', 'Can not send test email. Error: ' . $result['message']);

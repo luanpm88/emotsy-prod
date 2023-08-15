@@ -25,7 +25,7 @@
     @if(Session::has('alert-' . $msg))
         <!-- Form Error List -->
         <div class="alert alert-{{ $class }} alert-noborder alert-dismissible">
-            <strong>{{ trans('messages.' . $msg) }}</strong>
+            <strong>{{ trans('messages.alert.' . $msg) }}</strong>
 
             <br>
 

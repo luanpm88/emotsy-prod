@@ -56,9 +56,12 @@
                     </div>
                     <div class="d-flex align-items-top">
                         <div>
-                            @include('helpers._upload',['src' => (isSiteDemo() ? 'https://i.pravatar.cc/300' : action('SubscriberController@avatar',  $subscriber->uid)), 'dragId' => 'upload-avatar', 'preview' => 'image'])
-                            
-                            
+                            @include('helpers._upload',[
+                                'src' => (isSiteDemo() ? 'https://i.pravatar.cc/300' : action('SubscriberController@avatar',  $subscriber->uid)),
+                                'srcOrigin' => (isSiteDemo() ? 'https://i.pravatar.cc/300' : action('SubscriberController@avatarOrigin',  $subscriber->uid)),
+                                'dragId' => 'upload-avatar',
+                                'preview' => 'image'
+                            ])
                         </div>
                         <div class="mt-20">
                             <div class="dropdown">

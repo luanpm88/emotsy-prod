@@ -31,10 +31,10 @@ class SenderController extends Controller
             return $this->notAuthorized();
         }
 
-        $subscription = $request->user()->customer->getNewOrActiveSubscription();
-        $plan = $subscription->plan;
+        $subscription = $request->user()->customer->getNewOrActiveGeneralSubscription();
+        $plan = $subscription->planGeneral;
 
-        if ($subscription->plan->useOwnSendingServer()) {
+        if ($subscription->planGeneral->useOwnSendingServer()) {
             $email = true;
             $domain = true;
         } else {
@@ -45,7 +45,7 @@ class SenderController extends Controller
 
         if (!$email && !$domain) {
             return view('senders.available', [
-                'identities' => $subscription->plan->getVerifiedIdentities(),
+                'identities' => $subscription->planGeneral->getVerifiedIdentities(),
             ]);
         }
 
@@ -111,7 +111,8 @@ class SenderController extends Controller
             return $this->notAuthorized();
         }
 
-        $plan = $request->user()->customer->getCurrentActiveSubscription()->plan;
+        // Sender is temporaily disabled in Single mode, so the following code is safe
+        $plan = $request->user()->customer->getCurrentActiveGeneralSubscription()->planGeneral;
 
         $sender->fill($request->all());
         $sender->customer_id = $request->user()->customer->id;

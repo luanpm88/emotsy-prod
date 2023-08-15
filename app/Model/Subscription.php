@@ -7,22 +7,22 @@ use Exception;
 use Acelle\Model\Invoice;
 use Acelle\Model\InvoiceItem;
 use Acelle\Library\Traits\HasUid;
-use Acelle\Library\Traits\HasQuota;
-use Acelle\Library\Contracts\HasQuota as HasQuotaInterface;
-use Acelle\Library\QuotaManager;
 use Carbon\Carbon;
 use Acelle\Library\Facades\SubscriptionFacade;
+use Acelle\Library\CreditTracker;
+use Acelle\Library\RateTracker;
+use Acelle\Library\RateLimit;
+use Illuminate\Database\Eloquent\Builder;
 
-class Subscription extends Model implements HasQuotaInterface
+class Subscription extends Model
 {
     use HasUid;
-    use HasQuota;
 
     public const STATUS_NEW = 'new';
     public const STATUS_ACTIVE = 'active';
-    public const STATUS_ENDED = 'ended';
-    public const STATUS_CANCELLED = 'cancelled';
-    public const STATUS_TERMINATED = 'terminated';
+    public const STATUS_ENDED = 'ended';           //
+    public const STATUS_CANCELLED = 'cancelled';   // Customer chooses "End now"
+    public const STATUS_TERMINATED = 'terminated'; // Admin terminates a subscription
 
     /**
      * The attributes that are not mass assignable.
@@ -59,6 +59,13 @@ class Subscription extends Model implements HasQuotaInterface
         return $this->belongsTo('\Acelle\Model\Plan');
     }
 
+    public function planGeneral()
+    {
+        // @todo dependency injection
+        return $this->belongsTo('\Acelle\Model\PlanGeneral', 'plan_id')
+            ->where('type', \Acelle\Model\PlanGeneral::TYPE_GENERAL);
+    }
+
     public function getPlanName()
     {
         return $this->plan->name;
@@ -70,11 +77,6 @@ class Subscription extends Model implements HasQuotaInterface
     }
 
     public function scopeNewOrActive($query)
-    {
-        return $query->whereIn('status', [ self::STATUS_ACTIVE, self::STATUS_NEW ]);
-    }
-
-    public function scopeNewSub($query)
     {
         return $query->whereIn('status', [ self::STATUS_ACTIVE, self::STATUS_NEW ]);
     }
@@ -119,9 +121,12 @@ class Subscription extends Model implements HasQuotaInterface
      */
     public function getUnpaidInvoice()
     {
-        return $this->invoices()
+        $invoice = $this->invoices()
             ->unpaid()
+            ->orderBy('created_at', 'desc')
             ->first();
+
+        return $invoice ? $invoice->mapType() : $invoice;
     }
 
     public function scopeActive($query)
@@ -159,12 +164,12 @@ class Subscription extends Model implements HasQuotaInterface
             ->newSubscription()
             ->unpaid();
 
-        // more than on invoice
-        if ($query->count() != 1) {
+        // new sub luôn phải có duy nhất 1 invoice
+        if ($query->count() > 1) {
             throw new \Exception('New Subscription must have only one unpaid TYPE_NEW_SUBSCRIPTION invoice!');
         }
 
-        return $query->first();
+        return $query->first()->mapType();
     }
 
     /**
@@ -186,7 +191,7 @@ class Subscription extends Model implements HasQuotaInterface
             throw new \Exception('Somehow sub has more than one unpaid change plan invoice!');
         }
 
-        return $query->first();
+        return $query->first() ? $query->first()->mapType() : $query->first();
     }
 
     /**
@@ -194,13 +199,13 @@ class Subscription extends Model implements HasQuotaInterface
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function createInitInvoiceWithoutTrial()
+    public function createNewSubscriptionInvoiceWithoutTrial()
     {
         $endDate = $this->customer->formatDateTime($this->getPeriodEndsAt(Carbon::now()), "datetime_full");
 
         // create init invoice
-        return Invoice::createInvoice(
-            $type = Invoice::TYPE_NEW_SUBSCRIPTION,
+        $invoice = \Acelle\Model\InvoiceNewSubscription::createInvoice(
+            $type = \Acelle\Model\InvoiceNewSubscription::TYPE_NEW_SUBSCRIPTION,
             $title = trans('messages.invoice.init_subscription'),
             $description = trans('messages.invoice.init_subscription.desc', [
                 'plan' => $this->plan->name,
@@ -213,15 +218,19 @@ class Subscription extends Model implements HasQuotaInterface
                 new InvoiceItem([
                     'item_id' => $this->id,
                     'item_type' => get_class($this),
-                    'amount' => $this->plan->price,
+                    'amount' => $this->plan->getPrice(),
                     'title' => $this->plan->name,
                     'description' => view('plans._bill_desc', ['plan' => $this->plan]),
                 ]),
             ],
-            $metadata = [
-                'subscription_uid' => $this->uid,
-            ]
         );
+
+        // save subscription to invoice
+        $invoice->subscription_id = $this->id;
+        $invoice->save();
+
+        // return
+        return $invoice;
     }
 
     /**
@@ -229,37 +238,40 @@ class Subscription extends Model implements HasQuotaInterface
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function createInitInvoiceWithTrial()
+    public function createNewSubscriptionInvoiceWithTrial()
     {
         $endDate = $this->customer->formatDateTime($this->getTrialPeriodEndsAt(Carbon::now()), "datetime_full");
 
         // create init invoice
-        return Invoice::createInvoice(
-            $type = Invoice::TYPE_NEW_SUBSCRIPTION,
+        $invoice = \Acelle\Model\InvoiceNewSubscription::createInvoice(
+            $type = \Acelle\Model\InvoiceNewSubscription::TYPE_NEW_SUBSCRIPTION,
             $title = trans('messages.invoice.init_subscription'),
             $description = trans('messages.invoice.init_subscription_with_trial.desc', [
-                'plan' => $this->plan->name,
+                'plan' => $this->planGeneral->name,
                 'date' => $endDate,
-                'amount' => $this->plan->displayPrice(),
-                'period' => $this->plan->displayFrequencyTime(),
+                'amount' => $this->planGeneral->getFormattedPrice(),
+                'period' => $this->planGeneral->displayFrequencyTime(),
             ]),
             $customer_id = $this->customer->id,
-            $currency_id = $this->plan->currency_id,
+            $currency_id = $this->planGeneral->currency_id,
             $billing_address = $this->customer->getDefaultBillingAddress(),
             $invoiceItems = [
                 new InvoiceItem([
                     'item_id' => $this->id,
                     'item_type' => get_class($this),
                     'amount' => 0, // trial => amount = 0
-                    'title' => $this->plan->name,
-                    'description' => view('plans._bill_desc', ['plan' => $this->plan]),
+                    'title' => $this->planGeneral->name,
+                    'description' => view('plans._bill_desc', ['plan' => $this->planGeneral]),
                 ]),
             ],
-            $metadata = [
-                'subscription_uid' => $this->uid,
-                'trial' => true,
-            ]
         );
+
+        // save subscription to invoice
+        $invoice->subscription_id = $this->id;
+        $invoice->save();
+
+        // return
+        return $invoice;
     }
 
     /**
@@ -279,8 +291,8 @@ class Subscription extends Model implements HasQuotaInterface
         }
 
         // create init invoice
-        return Invoice::createInvoice(
-            $type = Invoice::TYPE_RENEW_SUBSCRIPTION,
+        $invoice = \Acelle\Model\InvoiceRenewSubscription::createInvoice(
+            $type = \Acelle\Model\InvoiceRenewSubscription::TYPE_RENEW_SUBSCRIPTION,
             $title = trans('messages.invoice.renew_subscription'),
             $description = trans('messages.renew_subscription.desc', [
                 'plan' => $this->plan->name,
@@ -293,15 +305,19 @@ class Subscription extends Model implements HasQuotaInterface
                 new InvoiceItem([
                     'item_id' => $this->id,
                     'item_type' => get_class($this),
-                    'amount' => $this->plan->price,
+                    'amount' => $this->plan->getPrice(),
                     'title' => $this->plan->name,
                     'description' => view('plans._bill_desc', ['plan' => $this->plan]),
                 ]),
             ],
-            $metadata = [
-                'subscription_uid' => $this->uid,
-            ]
         );
+
+        // save subscription to invoice
+        $invoice->subscription_id = $this->id;
+        $invoice->save();
+
+        // return
+        return $invoice;
     }
 
     /**
@@ -319,16 +335,16 @@ class Subscription extends Model implements HasQuotaInterface
         $metadata = $this->calcChangePlan($newPlan);
 
         // create init invoice
-        return Invoice::createInvoice(
-            $type = Invoice::TYPE_CHANGE_PLAN,
+        $invoice = \Acelle\Model\InvoiceChangePlan::createInvoice(
+            $type = \Acelle\Model\InvoiceChangePlan::TYPE_CHANGE_PLAN,
             $title = trans('messages.invoice.change_plan'),
             $description = trans('messages.change_plan.desc', [
-                'plan' => $this->plan->name,
+                'plan' => $this->planGeneral->name,
                 'newPlan' => $newPlan->name,
                 'date' => $this->customer->formatDateTime(Carbon::parse($metadata['endsAt']), 'datetime_full'),
             ]),
             $customer_id = $this->customer->id,
-            $currency_id = $this->plan->currency_id,
+            $currency_id = $this->planGeneral->currency_id,
             $billing_address = $this->customer->getDefaultBillingAddress(),
             $invoiceItems = [
                 new InvoiceItem([
@@ -339,11 +355,15 @@ class Subscription extends Model implements HasQuotaInterface
                     'description' => view('plans._bill_desc', ['plan' => $newPlan]),
                 ]),
             ],
-            $metadata = [
-                'subscription_uid' => $this->uid,
-                'new_plan_uid' => $newPlan->uid,
-            ]
         );
+
+        // save subscription to invoice
+        $invoice->subscription_id = $this->id;
+        $invoice->new_plan_id = $newPlan->id;
+        $invoice->save();
+
+        // return
+        return $invoice;
     }
 
     /**
@@ -394,18 +414,18 @@ class Subscription extends Model implements HasQuotaInterface
         return getPeriodEndsAt($startDate, $this->plan->trial_amount, $this->plan->trial_unit);
     }
 
-    public function getDueDate()
+    public function getAutoBillingDate()
     {
-        return $this->current_period_ends_at->subDays(\Acelle\Model\Setting::get('recurring_charge_before_days'));
+        return $this->current_period_ends_at->subDays(\Acelle\Model\Setting::get('subscription.auto_billing_period'));
     }
 
     /**
      * reach due date.
      */
-    public function reachDueDate()
+    public function isBillingPeriod()
     {
         return Carbon::now()->greaterThanOrEqualTo(
-            $this->getDueDate()
+            $this->getAutoBillingDate()
         );
     }
 
@@ -624,7 +644,7 @@ class Subscription extends Model implements HasQuotaInterface
             throw new \Exception('Somehow sub has more than one unpaid renew invoice!');
         }
 
-        return $query->first();
+        return $query->first() ? $query->first()->mapType() : $query->first();
     }
 
     /**
@@ -780,7 +800,7 @@ class Subscription extends Model implements HasQuotaInterface
         });
     }
 
-    public function checkExpiration()
+    public function endIfExpired()
     {
         if ($this->isActive() &&
             $this->isExpired() &&
@@ -797,7 +817,7 @@ class Subscription extends Model implements HasQuotaInterface
             $this->isExpiring() && // đang hết hạn
             $this->canRenewPlan() && // check the function..
             $this->isRecurring() && // có recurring hàng kỳ
-            !$this->getItsOnlyUnpaidChangePlanInvoice() && // chưa có NEW change plan invoice nào cả
+            // !$this->getItsOnlyUnpaidChangePlanInvoice() && // chưa có NEW change plan invoice nào cả, nhưng nếu có thì show 2 invoice ra luôn cũng dc
             !$this->getItsOnlyUnpaidRenewInvoice() // chưa có NEW renew invoice nào cả
         ) {
             \DB::transaction(function () {
@@ -808,7 +828,7 @@ class Subscription extends Model implements HasQuotaInterface
                 SubscriptionFacade::log($this, SubscriptionLog::TYPE_RENEW_INVOICE, $invoice->uid, [
                     'plan' => $this->getPlanName(),
                     'customer' => $this->getCustomerName(),
-                    'amount' => $invoice->formattedTotal(),
+                    'amount' => $invoice->total(),
                 ]);
             });
         }
@@ -834,7 +854,7 @@ class Subscription extends Model implements HasQuotaInterface
         }
 
         // check if recurring accur
-        if (Carbon::now()->greaterThanOrEqualTo($this->current_period_ends_at->subDays(Setting::get('end_period_last_days')))) {
+        if (Carbon::now()->greaterThanOrEqualTo($this->current_period_ends_at->subDays(Setting::get('subscription.expiring_period')))) {
             return true;
         }
 
@@ -922,18 +942,9 @@ class Subscription extends Model implements HasQuotaInterface
         $this->cancelNow();
     }
 
-    public function getCreditsUsedDuringPlanCycle($name)
+    public function getRemainingEmailCredits()
     {
-        // '1 month' or '1 year' for example
-        if ($this->plan->isUnlimited()) {
-            $used = $this->getCreditsUsed($name);
-        } else {
-            $interval = "{$this->plan->frequency_amount} {$this->plan->frequency_unit}";
-            $from = Carbon::now()->subtract($interval);
-            $used = $this->getCreditsUsed($name, $from);
-        }
-
-        return $used;
+        return $this->getSendEmailCreditTracker()->getRemainingCredits();
     }
 
     public function getCreditsLimit($name)
@@ -942,13 +953,13 @@ class Subscription extends Model implements HasQuotaInterface
             throw new Exception("`{$name}` credis limit is not available");
         }
 
-        return $this->plan->getOption('email_max');
+        return $this->planGeneral->getOption('email_max');
     }
 
-    public function getCreditsUsedPercentageDuringPlanCycle($name)
+    public function getRemainingEmailCreditsPercentage()
     {
-        $creditsUsed = $this->getCreditsUsedDuringPlanCycle($name);
-        $creditsLimit = $this->plan->getOption('email_max');
+        $creditsUsed = $this->getRemainingEmailCredits();
+        $creditsLimit = $this->planGeneral->getOption('email_max');
 
         // if = -1 (default:unlimited) return 0
         // if = 0 return 0
@@ -956,29 +967,21 @@ class Subscription extends Model implements HasQuotaInterface
             return 0;
         }
 
-        $percentage = ($creditsLimit == QuotaManager::QUOTA_UNLIMITED) ? 0 : $creditsUsed / $creditsLimit;
+        $percentage = ($creditsLimit == RateLimit::UNLIMITED) ? 0 : $creditsUsed / $creditsLimit;
 
         return $percentage;
     }
 
-    /***   IMPLEMENTATION OF HasQuotaInterface ***/
-    public function getQuotaSettings($name): ?array
-    {
-        return $this->plan->getQuotaSettings($name);
-    }
-
-    public function getSendingCreditsRemaining()
-    {
-        return 998000;
-    }
-
-    public static function createNewSubscription($customer, $plan)
+    public static function createNewGeneralSubscription($customer, $plan)
     {
         $subscription = new self();
         $subscription->status = self::STATUS_NEW;
         $subscription->customer_id = $customer->id;
         $subscription->plan_id = $plan->id;
         $subscription->save();
+
+        // $emailCredits = (int)$plan->getOption('email_max');
+        // $subscription->getSendEmailCreditTracker()->setCredits($emailCredits);
 
         return $subscription;
     }
@@ -987,5 +990,40 @@ class Subscription extends Model implements HasQuotaInterface
     {
         $this->invoices()->delete();
         $this->delete();
+    }
+
+    public static function scopeGeneral($query)
+    {
+        $query = $query->whereHas('planGeneral', function (Builder $query) {
+            $query->general();
+        });
+    }
+
+    public function getSendEmailRateTracker()
+    {
+        // Get the limits from plan
+        $file = storage_path('app/quota/subscription-send-email-rate-tracking-log-'.$this->uid);
+        $tracker = new RateTracker($file, $this->planGeneral->getSendEmailRateLimits());
+        return $tracker;
+    }
+
+    public function getSendEmailCreditTracker($createFileIfNotExist = true)
+    {
+        $file = storage_path('app/quota/subscription-send-email-credits-'.$this->uid);
+        return CreditTracker::load($file, $createFileIfNotExist);
+    }
+
+    public function getVerifyEmailCreditTracker($createFileIfNotExist = false)
+    {
+        // Temporarily not supported
+        return null;
+    }
+
+    public function setDefaultEmailCredits()
+    {
+        // @important: temporarily set default credits to UNLIMITED
+        // $defaultCredits = (int)$this->planGeneral->getOption('email_max');
+        $defaultCredits = CreditTracker::UNLIMITED;
+        $this->getSendEmailCreditTracker()->setCredits($defaultCredits);
     }
 }

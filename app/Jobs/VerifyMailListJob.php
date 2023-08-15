@@ -16,16 +16,18 @@ class VerifyMailListJob extends Base
 
     protected $mailList;
     protected $server;
+    protected $subscription;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($mailList, $server)
+    public function __construct($mailList, $server, $subscription)
     {
         $this->mailList = $mailList;
         $this->server = $server;
+        $this->subscription = $subscription;
 
         $this->afterDispatched(function ($thisJob, $monitor) {
             $monitor->setJsonData([
@@ -68,7 +70,7 @@ class VerifyMailListJob extends Base
         // Add job to batch
         cursorIterate($query, 'subscribers.id', $size = 1000, function ($subscribers, $page) {
             foreach ($subscribers as $subscriber) {
-                $this->batch()->add(new VerifySubscriber($subscriber, $this->server));
+                $this->batch()->add(new VerifySubscriber($subscriber, $this->server, $this->subscription));
             }
         });
     }

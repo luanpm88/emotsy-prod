@@ -225,7 +225,7 @@ class CampaignController extends Controller
         }
 
         // @todo
-        $campaign->launch();
+        $campaign->execute();
 
         // statistics
         $campaign = [

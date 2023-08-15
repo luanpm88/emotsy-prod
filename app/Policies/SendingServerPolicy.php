@@ -12,12 +12,13 @@ class SendingServerPolicy
 
     public function read(User $user, SendingServer $item, $role)
     {
+        // @important: in case of non-saas mode, it falls upon admin case
         switch ($role) {
             case 'admin':
                 $can = $user->admin->getPermission('sending_server_read') != 'no';
                 break;
             case 'customer':
-                $can = $user->customer->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_OWN;
+                $can = $user->customer->getCurrentActiveGeneralSubscription()->planGeneral->useOwnSendingServer(); // non-saas safe
                 break;
         }
 
@@ -42,6 +43,7 @@ class SendingServerPolicy
     {
         switch ($role) {
             case 'admin':
+                // non-SAAS mode fall upon here
                 $can = $user->admin->getPermission('sending_server_create') == 'yes';
 
                 // config/limit.php
@@ -57,12 +59,11 @@ class SendingServerPolicy
             case 'customer':
                 // init
                 $can = true;
-                $useOwnServer = $user->customer->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_OWN;
+                $useOwnServer = $user->customer->getCurrentActiveGeneralSubscription()->planGeneral->useOwnSendingServer(); // non-saas safe
 
-                //
                 if ($useOwnServer) {
                     // check max campaigns
-                    $max = $user->customer->getOption('sending_servers_max');
+                    $max = get_tmp_quota($user->customer, 'sending_servers_max');
                     $isUnlimited = $max == -1; // -1 means unlimited
                     $notReachMax = $user->customer->sendingServersCount() < $max;
                     $can = $isUnlimited || $notReachMax; // check max campaigns: unlimited or is not reach max
@@ -92,13 +93,13 @@ class SendingServerPolicy
     {
         switch ($role) {
             case 'admin':
+                // non-SAAS mode fall upon here
                 $ability = $user->admin->getPermission('sending_server_update');
                 $can = $ability == 'all'
                     || ($ability == 'own' && $user->admin->id == $item->admin_id);
                 break;
             case 'customer':
-                $can = $user->customer->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_OWN
-                        && $user->customer->id == $item->customer_id;
+                $can = $user->customer->getCurrentActiveGeneralSubscription()->planGeneral->useOwnSendingServer() && $user->customer->id == $item->customer_id; // non-saas safe
                 break;
         }
 
@@ -109,13 +110,13 @@ class SendingServerPolicy
     {
         switch ($role) {
             case 'admin':
+                // non-SAAS mode fall upon here
                 $ability = $user->admin->getPermission('sending_server_delete');
                 $can = $ability == 'all'
                     || ($ability == 'own' && $user->admin->id == $item->admin_id);
                 break;
             case 'customer':
-                $can = $user->customer->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_OWN
-                    && $user->customer->id == $item->customer_id;
+                $can = $user->customer->getCurrentActiveGeneralSubscription()->planGeneral->useOwnSendingServer() && $user->customer->id == $item->customer_id; // non-saas safe
                 break;
         }
 
@@ -126,13 +127,13 @@ class SendingServerPolicy
     {
         switch ($role) {
             case 'admin':
+                // non-SAAS mode fall upon here
                 $ability = $user->admin->getPermission('sending_server_update');
                 $can = $ability == 'all'
                     || ($ability == 'own' && $user->admin->id == $item->admin_id);
                 break;
             case 'customer':
-                $can = $user->customer->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_OWN
-                    && $user->customer->id == $item->customer_id;
+                $can = $user->customer->getCurrentActiveGeneralSubscription()->planGeneral->useOwnSendingServer() && $user->customer->id == $item->customer_id;// non-saas safe
                 break;
         }
 
@@ -143,13 +144,13 @@ class SendingServerPolicy
     {
         switch ($role) {
             case 'admin':
+                // non-SAAS mode fall upon here
                 $ability = $user->admin->getPermission('sending_server_update');
                 $can = $ability == 'all'
                     || ($ability == 'own' && $user->admin->id == $item->admin_id);
                 break;
             case 'customer':
-                $can = $user->customer->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_OWN
-                    && $user->customer->id == $item->customer_id;
+                $can = $user->customer->getCurrentActiveGeneralSubscription()->planGeneral->useOwnSendingServer() && $user->customer->id == $item->customer_id; // non-saas safe
                 break;
         }
 

@@ -3,7 +3,7 @@
 namespace Acelle\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Acelle\Model\Plan;
+use Acelle\Model\PlanGeneral;
 
 class PlanController extends Controller
 {
@@ -16,7 +16,7 @@ class PlanController extends Controller
      */
     public function select2(Request $request)
     {
-        echo \Acelle\Model\Plan::select2($request);
+        echo \Acelle\Model\PlanGeneral::select2($request);
     }
 
     public function publicListPage(Request $request)
@@ -25,7 +25,7 @@ class PlanController extends Controller
             abort(404);
         }
 
-        $plans = Plan::getAvailablePlans();
+        $plans = PlanGeneral::getAvailableGeneralPlans();
         $style = $request->style ?? 'default';
 
         return view('plans.publicListPage', [

@@ -19,7 +19,7 @@
 				<td>
 					<h5 class="m-0 text-bold">
 						<span class="kq_search d-block" href="#">
-							{{ $subscription->plan->name }}
+							{{ $subscription->planGeneral->name }}
 						</span>
 					</h5>
 					<div class="text-muted">{!! trans('messages.subscribed_by', [
@@ -74,7 +74,7 @@
 				<td width="15%">
 					@if ($subscription->isActive())
 						<h5 class="no-margin stat-num">
-							<span class="kq_search">{{ number_with_delimiter($subscription->getSendingCreditsRemaining()) }}</span>
+							<span class="kq_search">{{ number_with_delimiter($subscription->getRemainingEmailCredits()) }}</span>
 						</h5>
 						<span class="text-muted2">{{ trans('messages.subscription.send_credits_remaining') }}</span>
 					@endif

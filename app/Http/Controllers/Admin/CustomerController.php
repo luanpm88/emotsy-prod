@@ -4,7 +4,7 @@ namespace Acelle\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use Acelle\Http\Controllers\Controller;
-use Acelle\Model\Plan;
+use Acelle\Model\PlanGeneral;
 use Acelle\Library\Facades\Hook;
 
 class CustomerController extends Controller
@@ -530,7 +530,7 @@ class CustomerController extends Controller
     public function assignPlan(Request $request, $uid)
     {
         $customer = \Acelle\Model\Customer::findByUid($uid);
-        $plans = Plan::active()->get();
+        $plans = PlanGeneral::active()->get();
 
         // authorize
         if (\Gate::denies('assignPlan', $customer)) {
@@ -539,10 +539,10 @@ class CustomerController extends Controller
 
         // save posted data
         if ($request->isMethod('post')) {
-            $plan = Plan::findByUid($request->plan_uid);
+            $plan = PlanGeneral::findByUid($request->plan_uid);
 
             try {
-                $customer->assignPlan($plan);
+                $customer->assignGeneralPlan($plan);
             } catch (\Throwable $e) {
                 return response()->json([
                     'status' => 'error',

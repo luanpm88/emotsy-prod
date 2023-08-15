@@ -40,7 +40,7 @@
                         </div>
                     </td>
                     <td class="text-nowrap text-end">
-                        <a href="{{ action('Public\CampaignController@webhooksTestMessage', [
+                        <a href="{{ action('Pub\CampaignController@webhooksTestMessage', [
                             'webhook_uid' => $webhook->uid,
                             'message_id' => request()->message_id,
                         ]) }}" class="btn btn-light test-webhook">
@@ -59,7 +59,7 @@
 			getAddPopup: function() {
 				if (this.addPopup == null) {
 					this.addPopup = new Popup({
-						url: '{{ action('Public\CampaignController@webhooksAdd', [
+						url: '{{ action('Pub\CampaignController@webhooksAdd', [
 							'uid' => $campaign->uid,
 						]) }}'
 					});

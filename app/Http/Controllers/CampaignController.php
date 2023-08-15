@@ -148,6 +148,20 @@ class CampaignController extends Controller
     public function recipients(Request $request)
     {
         $campaign = Campaign::findByUid($request->uid);
+        $customer = $request->user()->customer;
+
+        // If the mail list dropdown is not populated
+        // Then it is very likely a problem with the cronjob
+        // Show this warning to user
+        $lastExecutedTimeUtc = \Carbon\Carbon::createFromTimestamp(Setting::get('cronjob_last_execution') ?? 0);
+        $lastExecutedTime = $lastExecutedTimeUtc->timezone($customer->getTimezone());
+        if (empty($customer->readCache('MailListSelectOptions'))) {
+            // If there is no data populated, then it is very likely that cronjob has not been set up correctly
+            // Pass the last executed time to the view to show up with the warning
+            $cronjobWarning = $lastExecutedTime;
+        } else {
+            $cronjobWarning = null;
+        }
 
         // authorize
         if (\Gate::denies('update', $campaign)) {
@@ -180,6 +194,7 @@ class CampaignController extends Controller
         return view('campaigns.recipients', [
             'campaign' => $campaign,
             'rules' => $rules,
+            'cronjobWarning' => $cronjobWarning,
         ]);
     }
 
@@ -403,9 +418,7 @@ class CampaignController extends Controller
             $this->validate($request, $rules);
 
             // template extra validation by plan (unsubscribe URL for example)
-            // UGLY code here, @todo: find a good place to handle this type of validation
-            $plan = $request->user()->customer->getCurrentActiveSubscription()->plan;
-            if ($plan->getOption('unsubscribe_url_required') == 'yes' && Setting::isYes('campaign.enforce_unsubscribe_url_check')) {
+            if (get_tmp_quota($request->user()->customer, 'unsubscribe_url_required') == 'yes' && Setting::isYes('campaign.enforce_unsubscribe_url_check')) {
                 if (strpos($request->content, '{UNSUBSCRIBE_URL}') === false) {
                     return response()->json(['message' => trans('messages.template.validation.unsubscribe_url_required')], 400);
                 }
@@ -565,13 +578,14 @@ class CampaignController extends Controller
         if ($request->isMethod('post')) {
             if ($request->send_now == 'yes') {
                 $campaign->run_at = null;
+                $campaign->save();
             } else {
                 $runAtStr = $request->delivery_date.' '.$request->delivery_time;
                 $runAt = Carbon::createFromFormat('Y-m-d H:i', $runAtStr, $currentTimezone)->timezone('UTC');
                 $campaign->run_at = $runAt; // store in UTC
+                $campaign->setScheduled(); // also save
             }
 
-            $campaign->save();
             return redirect()->action('CampaignController@confirm', ['uid' => $campaign->uid]);
         }
 
@@ -631,8 +645,7 @@ class CampaignController extends Controller
         // validate and save posted data
         if ($request->isMethod('post') && $campaign->step() >= 5) {
             // UGLY CODE
-            $plan = $customer->getCurrentActiveSubscription()->plan;
-            if ($plan->getOption('unsubscribe_url_required') == 'yes' && Setting::isYes('campaign.enforce_unsubscribe_url_check')) {
+            if (get_tmp_quota($customer, 'unsubscribe_url_required') == 'yes' && Setting::isYes('campaign.enforce_unsubscribe_url_check')) {
                 if (strpos($campaign->getTemplateContent(), '{UNSUBSCRIBE_URL}') === false) {
                     $request->session()->flash('alert-error', trans('messages.template.validation.unsubscribe_url_required'));
                     return view('campaigns.confirm', [
@@ -644,7 +657,7 @@ class CampaignController extends Controller
 
             // Save campaign
             // @todo: check campaign status before requeuing. Otherwise, several jobs shall be created and campaign will get sent several times
-            $campaign->schedule();
+            $campaign->execute();
 
             // Log
             $campaign->log('started', $customer);
@@ -1995,9 +2008,7 @@ class CampaignController extends Controller
                 return response()->json($validator->errors(), 400);
             }
 
-            // UGLY CODE here, @todo: find a better place to house this type of validation
-            $plan = $request->user()->customer->getCurrentActiveSubscription()->plan;
-            if ($plan->getOption('unsubscribe_url_required') == 'yes' && Setting::isYes('campaign.enforce_unsubscribe_url_check')) {
+            if (get_tmp_quota($request->user()->customer, 'unsubscribe_url_required') == 'yes' && Setting::isYes('campaign.enforce_unsubscribe_url_check')) {
                 if (strpos($request->html, '{UNSUBSCRIBE_URL}') === false) {
                     return response()->json(['message' => trans('messages.template.validation.unsubscribe_url_required')], 400);
                 }

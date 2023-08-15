@@ -5,7 +5,7 @@ namespace Acelle\Policies;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Acelle\Model\User;
 use Acelle\Model\SendingDomain;
-use Acelle\Model\Plan;
+use Acelle\Model\PlanGeneral;
 
 class SendingDomainPolicy
 {
@@ -13,18 +13,22 @@ class SendingDomainPolicy
 
     public function read(User $user, SendingDomain $item, $role)
     {
+        if (!config('app.saas')) {
+            // Any domain just works, do not need to check the primary server settings
+            return true;
+        }
+
         switch ($role) {
             case 'admin':
                 $can = $user->admin->getPermission('sending_domain_read') != 'no';
                 break;
             case 'customer':
-                $subscription = $user->customer->getNewOrActiveSubscription();
-
-                if ($subscription->plan->useOwnSendingServer()) {
-                    $can = true;
+                $subscription = $user->customer->getNewOrActiveGeneralSubscription();
+                if ($subscription->planGeneral->useOwnSendingServer()) {
+                    return true;
                 } else {
-                    $server = $subscription->plan->primarySendingServer();
-                    $can = $server->allowVerifyingOwnDomains() || $server->allowVerifyingOwnDomainsRemotely();
+                    $server = $subscription->planGeneral->primarySendingServer();
+                    return $server->allowVerifyingOwnDomains() || $server->allowVerifyingOwnDomainsRemotely();
                 }
 
                 break;
@@ -35,6 +39,11 @@ class SendingDomainPolicy
 
     public function readAll(User $user, SendingDomain $item, $role)
     {
+        if (!config('app.saas')) {
+            // Any domain just works, do not need to check the primary server settings
+            return true;
+        }
+
         switch ($role) {
             case 'admin':
                 $can = $user->admin->getPermission('sending_domain_read') == 'all';
@@ -54,6 +63,11 @@ class SendingDomainPolicy
 
     public function update(User $user, SendingDomain $item, $role)
     {
+        if (!config('app.saas')) {
+            // Any domain just works, do not need to check the primary server settings
+            return true;
+        }
+
         switch ($role) {
             case 'admin':
                 $ability = $user->admin->getPermission('sending_domain_update');
@@ -61,12 +75,12 @@ class SendingDomainPolicy
                     || ($ability == 'own' && $user->admin->id == $item->admin_id);
                 break;
             case 'customer':
-                $subscription = $user->customer->getNewOrActiveSubscription();
+                $subscription = $user->customer->getNewOrActiveGeneralSubscription();
 
-                if ($subscription->plan->useOwnSendingServer()) {
+                if ($subscription->planGeneral->useOwnSendingServer()) {
                     $can = true;
                 } else {
-                    $server = $subscription->plan->primarySendingServer();
+                    $server = $subscription->planGeneral->primarySendingServer();
                     $can = $server->allowVerifyingOwnDomains();
                 }
 
@@ -79,6 +93,11 @@ class SendingDomainPolicy
 
     public function delete(User $user, SendingDomain $item, $role)
     {
+        if (!config('app.saas')) {
+            // Any domain just works, do not need to check the primary server settings
+            return true;
+        }
+
         switch ($role) {
             case 'admin':
                 $ability = $user->admin->getPermission('sending_domain_delete');
@@ -86,12 +105,12 @@ class SendingDomainPolicy
                     || ($ability == 'own' && $user->admin->id == $item->admin_id);
                 break;
             case 'customer':
-                $subscription = $user->customer->getNewOrActiveSubscription();
+                $subscription = $user->customer->getNewOrActiveGeneralSubscription();
 
-                if ($subscription->plan->useOwnSendingServer()) {
+                if ($subscription->planGeneral->useOwnSendingServer()) {
                     $can = true;
                 } else {
-                    $server = $subscription->plan->primarySendingServer();
+                    $server = $subscription->planGeneral->primarySendingServer();
                     $can = $server->allowVerifyingOwnDomains() || $server->allowVerifyingOwnDomainsRemotely();
                 }
 

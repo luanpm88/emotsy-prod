@@ -30,7 +30,7 @@
     <div class="listing-form"
         sort-url="{{ action('Admin\PlanController@sort') }}"
         data-url="{{ action('Admin\PlanController@listing') }}"
-        per-page="{{ Acelle\Model\Plan::$itemsPerPage }}"
+        per-page="{{ Acelle\Model\PlanGeneral::$itemsPerPage }}"
     >
         <div class="d-flex top-list-controls top-sticky-content">
             <div class="me-auto">
@@ -54,7 +54,7 @@
                     </div>
                 @endif
             </div>
-            @can('create', new Acelle\Model\Plan())
+            @can('create', new Acelle\Model\PlanGeneral())
                 <div class="text-end">
                     <a href="{{ action("Admin\PlanController@wizard") }}" role="button" class="btn btn-secondary modal-action">
                         <span class="material-symbols-rounded">add</span> {{ trans('messages.create_plan') }}

@@ -127,4 +127,17 @@ trait TrackJobs
         // Return
         return $monitor;
     }
+
+    public function cancelAndDeleteJobs($jobType = null)
+    {
+        $query = $this->jobMonitors();
+
+        if (!is_null($jobType)) {
+            $query = $query->byJobType($jobType);
+        }
+
+        foreach ($query->get() as $job) {
+            $job->cancel();
+        }
+    }
 }

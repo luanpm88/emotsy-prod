@@ -182,7 +182,7 @@
                 {{ csrf_field() }}
 
                 <h1 class="text-semibold text-center full-width mb-lvl4" style="margin: 0 0 60px 0">
-                    <img style="margin: 10px 50px;" src="{{ getSiteLogoUrl('light') }}" alt="">
+                    <img style="margin: 10px 50px;max-height:150px;" width="200px" src="{{ getSiteLogoUrl('light') }}" alt="">
                 </h1>
 
                 <!-- display flash message -->
@@ -244,7 +244,9 @@
                             <font size="-3"><a class="btn btn-link text-center" href="{{ url('/password/reset') }}">
                                 {{ trans("messages.forgot_password") }}
                             </a></font>
-                            <a href="{{ url('/users/register') }}" class="btn btn-link">Create an account</a>
+                            @if (config('app.saas') && \Acelle\Model\Setting::get('enable_user_registration') == 'yes')
+                                <a href="{{ url('/users/register') }}" class="btn btn-link">{{ trans('messages.login.create_an_account') }}</a>
+                            @endif
                         </div>
                     </div>
                 </div>

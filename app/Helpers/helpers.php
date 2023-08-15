@@ -1216,3 +1216,58 @@ function get_app_name()
     $name = \Acelle\Model\Setting::get('site_name') ?: config('app.name');
     return $name;
 }
+
+function get_tmp_primary_server()
+{
+    if (config('app.saas')) {
+        throw new \Exception('Use in non-SAAS mode only');
+    }
+
+    if (\Acelle\Model\SendingServer::active()->count()) {
+        return \Acelle\Model\SendingServer::active()->first()->mapType();
+    } else {
+        return null;
+    }
+}
+
+function get_tmp_quota($customer, $name)
+{
+    // PART 1: PLAN & MISC SETTINGS
+    $settings = [
+        "email_max" => "-1",
+        "list_max" => "-1",
+        "subscriber_max" => "-1",
+        "subscriber_per_list_max" => "-1",
+        "segment_per_list_max" => "-1",
+        "campaign_max" => "-1",
+        "automation_max" => "-1",
+        "max_process" => "1",
+        "max_size_upload_total" => "5000000000",
+        "max_file_size_upload" => "50000000",
+        "unsubscribe_url_required" => "no",
+        "access_when_offline" => "no",
+        "sending_servers_max" => "-1",
+        "sending_domains_max" => "-1",
+        "all_email_verification_servers" => "yes",
+        "email_verification_servers_max" => "-1",
+        "list_import" => "yes",
+        "list_export" => "yes",
+        "all_sending_server_types" => "yes",
+        "api_access" => "yes",
+        "plain_text_footer" => "no",
+        "html_footer" => "",
+    ];
+
+    // PART 2: Other settings related to sending server
+    // + allow unverified email address, allowed email verificaiton, allow remote email verification, etc.
+
+    if (config('app.saas')) {
+        return $customer->getNewOrActiveGeneralSubscription()->planGeneral->getOption($name);
+    } else {
+        if (!array_key_exists($name, $settings)) {
+            throw new \Exception("Key '{$name}' not listed");
+        }
+
+        return $settings[$name];
+    }
+}

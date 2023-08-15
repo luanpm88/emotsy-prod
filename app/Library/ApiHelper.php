@@ -527,7 +527,7 @@ class ApiHelper
                                 <li><span class="text-semibold">list_export</span>: '.trans('messages.can_export_list').' (yes|no)</li>
                                 <li><span class="text-semibold">all_sending_server_types</span>: '.trans('messages.allow_adding_all_sending_server_types').' (yes|no)</li>
                                 <li><span class="text-semibold">sending_server_types</span>: (array)</li>
-                                <li><span class="text-semibold">sending_server_option</span>: ('.\Acelle\Model\Plan::SENDING_SERVER_OPTION_SYSTEM.'|'.\Acelle\Model\Plan::SENDING_SERVER_OPTION_OWN.'|'.\Acelle\Model\Plan::SENDING_SERVER_OPTION_SUBACCOUNT.')</li>
+                                <li><span class="text-semibold">sending_server_option</span>: ('.\Acelle\Model\PlanGeneral::SENDING_SERVER_OPTION_SYSTEM.'|'.\Acelle\Model\PlanGeneral::SENDING_SERVER_OPTION_OWN.'|'.\Acelle\Model\PlanGeneral::SENDING_SERVER_OPTION_SUBACCOUNT.')</li>
                                 <li><span class="text-semibold">sending_server_subaccount_uid</span></li>
                             </ul>
                         ', 'optional' => true],
@@ -542,7 +542,7 @@ class ApiHelper
 -d frequency_unit=month \
 -d price=20 \
 -d color=red \
--d options[sending_server_option]=' .\Acelle\Model\Plan::SENDING_SERVER_OPTION_OWN.' \
+-d options[sending_server_option]=' .\Acelle\Model\PlanGeneral::SENDING_SERVER_OPTION_OWN.' \
 -d options[email_max]=10000',
                 ],
             ],
@@ -660,6 +660,19 @@ class ApiHelper
                     'returns' => 'Action messages in json',
                     'example' => 'curl -X POST -H "accept:application/json" -G \
 ' .str_replace('-plan_uid-', '<redbold>{plan_uid}</redbold>', str_replace('-uid-', '<redbold>{uid}</redbold>', action("Api\CustomerController@assignPlan", ['uid' => '-uid-', 'plan_uid' => '-plan_uid-']))).' \
+-d api_token=' .\Auth::user()->api_token,
+                ],
+
+                [
+                    'method' => 'DELETE',
+                    'uri' => '/api/v1/customers/{uid}',
+                    'description' => 'Delete a Customer',
+                    'parameters' => [
+                        ['name' => '$uid', 'description' => 'Customer\'s uid'],
+                    ],
+                    'returns' => 'Action messages in json',
+                    'example' => 'curl -X DELETE -H "accept:application/json" -G \
+' .str_replace('-plan_uid-', '<redbold>{plan_uid}</redbold>', str_replace('-uid-', '<redbold>{uid}</redbold>', action("Api\CustomerController@destroy", ['customer' => '-uid-']))).' \
 -d api_token=' .\Auth::user()->api_token,
                 ],
             ],

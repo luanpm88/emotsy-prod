@@ -76,7 +76,7 @@
                         </div>
                         <div class="width1of4 stats-box">
                             <h3>
-                                @if ($plan->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_SYSTEM)
+                                @if ($plan->getOption('sending_server_option') == \Acelle\Model\PlanGeneral::SENDING_SERVER_OPTION_SYSTEM)
                                     @if ($plan->primarySendingServer())
                                         <a href="{{ action('Admin\PlanController@sendingServers', $plan->uid) }}">
                                             @php

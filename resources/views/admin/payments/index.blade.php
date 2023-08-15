@@ -138,8 +138,8 @@
                                     
                             <div class="d-flex align-items-center">
                                 <span class="text-muted me-2">{{ trans('messages.setting.recurring_charge_before_days.before_text') }}</span>
-                                <input id="recurring_charge_before_days" placeholder="" required="" value="{{ \Acelle\Model\Setting::get('recurring_charge_before_days') }}" type="number"
-                                    name="recurring_charge_before_days" class="form-control required number numeric me-2"
+                                <input id="auto_billing_period" placeholder="" required="" value="{{ \Acelle\Model\Setting::get('subscription.auto_billing_period') }}" type="number"
+                                    name="auto_billing_period" class="form-control required number numeric me-2"
                                     style="display:inline-block;width:60px;font-weight:bold"
                                 >
                                 <span class="text-muted">{{ trans('messages.setting.recurring_charge_before_days.after_text') }}</span>

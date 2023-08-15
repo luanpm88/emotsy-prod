@@ -41,7 +41,7 @@
                         @include('elements._notification', [
                             'level' => 'warning',
                             'message' => trans('messages.have_new_renew_invoice.auto', [
-                                'date' => Auth::user()->customer->formatDateTime($subscription->getDueDate(), 'datetime_full'),
+                                'date' => Auth::user()->customer->formatDateTime($subscription->getAutoBillingDate(), 'datetime_full'),
                             ])
                         ])
 
@@ -197,6 +197,14 @@
                                         'date' => Auth::user()->customer->formatDateTime($subscription->current_period_ends_at, 'date_full')
                                     ]) !!}
                                     <div class="loader"></div>
+                                </a>
+                            </div>
+                            <hr>
+                            <div class="text-left mt-2 text-center">
+                                <a href="{{ action('SubscriptionController@payment', [
+                                    'invoice_uid' => $subscription->getItsOnlyUnpaidRenewInvoice()->uid,
+                                ]) }}" class="">
+                                    {{ trans('messages.invoice.or_you_can_manually_pay') }}
                                 </a>
                             </div>
                         @else

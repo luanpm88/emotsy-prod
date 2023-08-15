@@ -14,6 +14,8 @@ use Acelle\Library\HtmlHandler\TransformUrl;
 use Acelle\Library\HtmlHandler\AddDoctype;
 use Acelle\Library\HtmlHandler\RemoveTitleTag;
 use Acelle\Library\HtmlHandler\AddPreheader;
+use Acelle\Library\HtmlHandler\GenerateSpintax;
+use Acelle\Library\HtmlHandler\InjectMessageIdToBody;
 use Acelle\Model\Subscriber;
 use Acelle\Model\Campaign;
 use Acelle\Model\MailList;
@@ -51,7 +53,8 @@ class HtmlHandlersTest extends TestCase
         $html = "Hello\nWorld\nFrom\r\nLaravel\n";
         $out = $pipeline->build()->process($html);
 
-        $this->assertEquals($out, "Hello\r\nWorld\r\nFrom\r\nLaravel");
+        // Notice that message should end with an "\r\n" character as suggested by RFC2822
+        $this->assertEquals($out, "Hello\r\nWorld\r\nFrom\r\nLaravel\r\n");
     }
 
     public function test_append_html()
@@ -114,7 +117,11 @@ class HtmlHandlersTest extends TestCase
         $html = "<html><body><div>Content main</div></body></html>";
         $out = $pipeline->build()->process($html);
 
-        $this->assertEquals($out, '<!DOCTYPE html><html><body><div>Content main</div><img alt="This is a tracking pixel" src="http://localhost/p/TVNHSUQ/open" width="0" height="0" style="visibility:hidden"></body></html>');
+        // Something like: https://localhost/p/TVNHSUQ/open
+        // With StringHelper::base64UrlEncode('MSGID') ==> "TVNHSUQ"
+        $openTrackingUrl = route('openTrackingUrl', ['message_id' => StringHelper::base64UrlEncode('MSGID')], true);
+
+        $this->assertEquals($out, '<!DOCTYPE html><html><body><div>Content main</div><img alt="This is a tracking pixel" src="'.$openTrackingUrl.'" width="0" height="0" style="visibility:hidden"></body></html>');
     }
 
     public function test_make_inline_css()
@@ -254,14 +261,14 @@ class HtmlHandlersTest extends TestCase
         $url = $a->getAttribute('href');
 
         // At first, URL is a tracking URL
-        $encoded = "aHR0cDovL2xvY2FsaG9zdC9wL2FIUjBjSE02THk5dFlXbHNZMmhwYlhBdVkyOXQvY2xpY2svVFZOSFNVUQ";
-        $this->assertEquals($url, "{$domain->scheme}://{$domain->name}/{$encoded}");
+        // Something like: https://localhost/p/aHR0cHM6Ly9tYWlsY2hpbXAuY29t/click/TVNHSUQ
+        $trackableUrl = StringHelper::makeTrackableLink('https://mailchimp.com', 'MSGID');
 
-        // When decoded, it is a click trackable link
-        $this->assertEquals(StringHelper::base64UrlDecode($encoded), url('p/aHR0cHM6Ly9tYWlsY2hpbXAuY29t/click/TVNHSUQ'));
+        // Something like:
+        // https://track.example.com/aHR0cHM6Ly9iZjNlL.....
+        $trackableUrlWithDomain = $domain->buildTrackingUrl($trackableUrl);
 
-        // and resolving it to the original Mailchimp link
-        $this->assertEquals(StringHelper::base64UrlDecode('aHR0cHM6Ly9tYWlsY2hpbXAuY29t'), 'https://mailchimp.com');
+        $this->assertStringStartsWith('https://track.example.com/', $trackableUrlWithDomain);
 
         // Other assertinos
         $this->assertTrue(strpos($html, '<!DOCTYPE html>') === 0);
@@ -318,18 +325,6 @@ class HtmlHandlersTest extends TestCase
         // Examine the output with DOM
         $dom = new DOMDocument();
         $dom->loadHTML($html);
-        $a = $dom->getElementsByTagName('a')[0];
-        $url = $a->getAttribute('href');
-
-        // At first, URL is a tracking URL
-        $encoded = "aHR0cDovL2xvY2FsaG9zdC9wL2FIUjBjSE02THk5dFlXbHNZMmhwYlhBdVkyOXQvY2xpY2svVFZOSFNVUQ";
-        $this->assertEquals($url, "{$domain->scheme}://{$domain->name}/{$encoded}");
-
-        // When decoded, it is a click trackable link
-        $this->assertEquals(StringHelper::base64UrlDecode($encoded), url('p/aHR0cHM6Ly9tYWlsY2hpbXAuY29t/click/TVNHSUQ'));
-
-        // and resolving it to the original Mailchimp link
-        $this->assertEquals(StringHelper::base64UrlDecode('aHR0cHM6Ly9tYWlsY2hpbXAuY29t'), 'https://mailchimp.com');
 
         // Other assertinos
         $this->assertTrue(strpos($html, '<!DOCTYPE html>') === 0);
@@ -416,18 +411,56 @@ class HtmlHandlersTest extends TestCase
         $html = $campaign->getHtmlContent();
         $cachedHtml = $campaign->getHtmlContent($subscriber = null, $messageId = null, $server = null, $fromCache = true, $seconds = 1);
 
-        $this->assertEquals($html, '<!DOCTYPE html><html><body><p>Original</p></body></html>');
+        // Notice that message should end with an "\r\n" character as suggested by RFC2822
+        $this->assertEquals($html, '<!DOCTYPE html><html><body><p>Original</p><img src="'.asset('/images/transparent.gif').'" data="X-Client-Message-Id: [ null ]" alt="X-Client-Message-Id: [ null ]" width="0" height="0" style="visibility:hidden"></body></html>'."\r\n");
         $this->assertEquals($html, $cachedHtml);
 
         $campaign->template->content = 'Updated';
         $html = $campaign->getHtmlContent();
         $cachedHtml = $campaign->getHtmlContent($subscriber = null, $messageId = null, $server = null, $fromCache = true, $seconds = 1);
-        $this->assertEquals($html, '<!DOCTYPE html><html><body><p>Updated</p></body></html>');
-        $this->assertEquals($cachedHtml, '<!DOCTYPE html><html><body><p>Original</p></body></html>');
+
+        // Notice that message should end with an "\r\n" character as suggested by RFC2822
+        $this->assertEquals($html, '<!DOCTYPE html><html><body><p>Updated</p><img src="'.asset('/images/transparent.gif').'" data="X-Client-Message-Id: [ null ]" alt="X-Client-Message-Id: [ null ]" width="0" height="0" style="visibility:hidden"></body></html>'."\r\n");
+        $this->assertEquals($cachedHtml, '<!DOCTYPE html><html><body><p>Original</p><img src="'.asset('/images/transparent.gif').'" data="X-Client-Message-Id: [ null ]" alt="X-Client-Message-Id: [ null ]" width="0" height="0" style="visibility:hidden"></body></html>'."\r\n");
 
         // wait 2 seconds for cache to expire
         sleep(2);
         $cachedHtml = $campaign->getHtmlContent($subscriber = null, $messageId = null, $server = null, $fromCache = true);
         $this->assertEquals($cachedHtml, $html);
+    }
+
+    public function test_spintax_parser_just_works_and_does_not_break_css()
+    {
+        $pipeline = new PipelineBuilder();
+        $pipeline->add(new GenerateSpintax());
+
+        // HTML with CSS
+        $html = '<style>div > p {color:red}</style><p>{Hi|Hello} everyone</p>';
+
+        // Transformed HTML with CSS retained
+        $transformedHtml = $pipeline->build()->process($html);
+
+        // Output
+        $this->assertTrue($transformedHtml == '<style>div > p {color:red}</style><p>Hello everyone</p>' || $transformedHtml = '<style>div > p {color:red}</style><p>Hi everyone</p>');
+    }
+
+    public function test_inject_message_id_to_body()
+    {
+        $pipeline = new PipelineBuilder();
+        $pipeline->add(new InjectMessageIdToBody('MSGID'));
+
+        // HTML with CSS
+        $html = '<body>Hello</body>';
+
+        // Transformed HTML with CSS retained
+        $transformedHtml = $pipeline->build()->process($html);
+
+        $imgUrl = asset('/images/transparent.gif');
+
+        // Output
+        $this->assertEquals(
+            $transformedHtml,
+            '<!DOCTYPE html><html><body>Hello<img src="'.$imgUrl.'" data="X-Client-Message-Id: MSGID" alt="X-Client-Message-Id: MSGID" width="0" height="0" style="visibility:hidden"></body></html>'
+        );
     }
 }

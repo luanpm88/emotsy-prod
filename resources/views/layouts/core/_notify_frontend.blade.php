@@ -9,7 +9,9 @@
 
     @if (
         \Auth::user()->customer &&
-        \Auth::user()->customer->getOption("sending_server_option") == \Acelle\Model\Plan::SENDING_SERVER_OPTION_OWN &&
+        config('app.saas') &&
+        \Auth::user()->customer->getCurrentActiveGeneralSubscription() &&
+        \Auth::user()->customer->getCurrentActiveGeneralSubscription()->planGeneral->useOwnSendingServer() &&
         !\Auth::user()->customer->activeSendingServers()->count()
     )
         notify({
@@ -22,7 +24,8 @@
     @endif
 
     @if (\Auth::user()->customer &&
-        !\Auth::user()->customer->getCurrentActiveSubscription() &&
+        config('app.saas') &&
+        !\Auth::user()->customer->getCurrentActiveGeneralSubscription() &&
         !isset($subscriptionPage)
     )
         notify({

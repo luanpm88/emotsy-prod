@@ -50,7 +50,7 @@ class UserController extends Controller
 
             // assignPlan
             if ($request->plan_uid) {
-                $userActivation->user->customer->assignPlan(\Acelle\Model\Plan::findByUid($request->plan_uid));
+                $userActivation->user->customer->assignGeneralPlan(\Acelle\Model\PlanGeneral::findByUid($request->plan_uid));
             }
 
             if (isset($request->redirect)) {

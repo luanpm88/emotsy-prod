@@ -238,7 +238,7 @@ class StringHelper
 
     public static function replaceBareLineFeed($content)
     {
-        return trim(preg_replace("/(?<=[^\r])\n/", "\r\n", $content));
+        return preg_replace("/(?<=[^\r])\n/", "\r\n", $content);
     }
 
     public static function getRandomUSIpAddresses()
@@ -462,7 +462,10 @@ class StringHelper
 
     public static function saveHTMLWithUTF8AndDoctype($document)
     {
-        $output = htmlspecialchars_decode(rawurldecode($document->saveHTML($document->documentElement)));
+        // Do not use "htmlspecialchars_decode()" here, which transforms "&gt;" to ">"
+        // as it will crash with PHP's DOMDocument
+        // Use it as an explicit & final step before rendering HTML content
+        $output = rawurldecode($document->saveHTML($document->documentElement));
         $output = '<!DOCTYPE html>'.$output; // saveHTML(params) removes DOCTYPE
         return $output;
     }

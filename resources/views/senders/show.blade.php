@@ -33,7 +33,7 @@
                                 <h4 class="mb-1">{{ trans('messages.sender.status_info.pending') }}</h4>
                                 <p>{{ trans('messages.sender.status_info.pending.note') }}</p>
                             </div>
-                            <button type="submit" class="btn btn-secondary text-nowrap">Refresh now!</button>
+                            <button type="submit" class="btn btn-secondary text-nowrap">{{ trans('messages.sender.button.refresh_now') }}</button>
                         </div>
                     </div>
                 </form>

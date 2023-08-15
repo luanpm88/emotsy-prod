@@ -125,6 +125,11 @@ function initJs(container)
 
     // showAjaxDetailBox
     showAjaxDetailBox(container.find('.ajax-detail-box'));
+
+    // image popup
+    container[0].querySelectorAll('[image-popup="link"]').forEach(link => {
+        new ImagePopup(link, link.getAttribute('image-url'));
+    });
 }
 
 function openMiddleBar() {
@@ -197,7 +202,7 @@ function initSelect2Ajax(select) {
 }
 
 // Preview upload image
-function previewImageBrowse(input, img) {
+function previewImageBrowse(input, img, callback) {
     if (input.files && input.files[0]) {
         var reader = new FileReader();
         reader.onload = function (e) {
@@ -225,6 +230,11 @@ function previewImageBrowse(input, img) {
             var mtop = -Math.abs(cal_height - box_height)/2;
             img.css("margin-left", mtop+"px");
             img.css("margin-top", mleft+"px");
+
+            //
+            if (typeof(callback) !== 'undefined') {
+                callback();
+            }
         };
         reader.readAsDataURL(input.files[0]);
     }

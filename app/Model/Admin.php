@@ -192,6 +192,11 @@ class Admin extends Model
      */
     public function getColorScheme()
     {
+        // Store mode support only sms theme
+        if (config('app.store')) {
+            return 'store';
+        }
+
         if (!empty($this->color_scheme)) {
             return $this->color_scheme;
         } else {
@@ -377,11 +382,6 @@ class Admin extends Model
         $user->customer_id = $customer->id;
         $user->save();
 
-        // assign unlimited plan id saas == false
-        if (!config('app.saas')) {
-            \Acelle\Helpers\saasToSingleMode();
-        }
-
         return $customer;
     }
 
@@ -446,7 +446,7 @@ class Admin extends Model
      */
     public function getAllPlans()
     {
-        return \Acelle\Model\Plan::active();
+        return \Acelle\Model\PlanGeneral::active();
     }
 
     /**

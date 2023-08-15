@@ -13,6 +13,7 @@ class VerifyCsrfToken extends Middleware
      */
     protected $except = [
         'webhooks/*',
+        'plugins/webhooks/*',
         'delivery/*',
         'api/*',
         '*/embedded-form-*',

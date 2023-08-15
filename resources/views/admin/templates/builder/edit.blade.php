@@ -152,19 +152,6 @@
 
                       container.removeClass('builder-class-tinymce');
                   }
-
-                  // fixing td tinymce
-                  if (container.is('td')) {
-                      if (!container.find('.tinymce-td-fix').length) {
-                          var span = $('<div class="tinymce-td-fix builder-class-tinymce">');
-                          span.html(container.html());
-
-                          container.html('');
-                          container.append(span);
-
-                          span.click();
-                      }
-                  }
                 },
                 loaded: function() {
                     var thisEditor = this;

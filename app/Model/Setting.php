@@ -55,6 +55,10 @@ class Setting extends Model
      */
     public static function get($name, $defaultValue=null)
     {
+        if (config('app.sms') && in_array($name, ['frontend_scheme','backend_scheme'])) {
+            return 'sms';
+        }
+        
         $setting = self::where('name', $name)->first();
 
         if ($setting) {
@@ -461,9 +465,14 @@ class Setting extends Model
                 'type' => 'text',
                 'not_required' => true,
             ],
-            'end_period_last_days' => [
+            'subscription.expiring_period' => [
                 'cat' => 'payment',
                 'value' => '7',
+                'type' => 'text',
+            ],
+            'subscription.auto_billing_period' => [
+                'cat' => 'payment',
+                'value' => '3',
                 'type' => 'text',
             ],
             'allowed_due_subscription' => [

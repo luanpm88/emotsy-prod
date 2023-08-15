@@ -19,7 +19,9 @@
 				<td>
 					<div class="d-flex align-items-center">
 						<div class="subscriber-avatar mt-1">
-							<a href="{{ action('SubscriberController@edit', ['list_uid' => $list->uid ,'uid' => $item->uid]) }}">
+							<a
+                                image-popup="link"
+                                href="{{ (isSiteDemo() ? 'https://i.pravatar.cc/300?v=' . $key : action('SubscriberController@avatarOrigin',  $item->uid)) }}">
 								<img src="{{ (isSiteDemo() ? 'https://i.pravatar.cc/300?v=' . $key : action('SubscriberController@avatar',  $item->uid)) }}" />
 							</a>
 						</div>

@@ -147,7 +147,67 @@ class AccountController extends Controller
      */
     public function quotaLog(Request $request)
     {
-        return view('account.quota_log');
+        $customer = $request->user()->customer;
+        if (config('app.saas')) {
+            $subscription = $customer->getCurrentActiveGeneralSubscription(); // saas safe
+
+            $remainingEmailCredits = $subscription->getRemainingEmailCredits();
+            $emailCredits = $subscription->getCreditsLimit('send');
+            $remainingEmailCreditsPercentage = $subscription->getRemainingEmailCreditsPercentage();
+        } else {
+            $remainingEmailCredits = -1;
+            $emailCredits = -1;
+            $remainingEmailCreditsPercentage = -1;
+        }
+
+        $maxLists = get_tmp_quota($customer, 'list_max');
+        $maxCampaigns = get_tmp_quota($customer, 'campaign_max');
+        $maxSubscribers = get_tmp_quota($customer, 'subscriber_max');
+        $maxAutomations = get_tmp_quota($customer, 'automation_max');
+        $maxUpload = get_tmp_quota($customer, 'max_size_upload_total');
+        $maxDomains = get_tmp_quota($customer, 'sending_domains_max');
+
+        $listsCount = $customer->listsCount();
+        $listsUsed = ($maxLists == -1) ? 0 : $listsCount / $maxLists;
+
+        $campaignsCount = $customer->campaignsCount();
+        $campaignsUsed = ($maxCampaigns == -1) ? 0 : $campaignsCount / $maxCampaigns;
+
+        $subscribersCount = $customer->readCache('SubscriberCount', 0);
+        $subscribersUsed = ($maxSubscribers == -1) ? 0 : $subscribersCount / $maxSubscribers;
+
+        $automationsCount = $customer->automationsCount();
+        $automationsUsed = ($maxAutomations == -1) ? 0 : $automationsCount / $maxAutomations;
+
+        $uploadCount = $customer->totalUploadSize();
+        $uploadUsed = ($maxUpload == -1) ? 0 : $uploadCount / $maxUpload;
+
+        $domainsCount = $customer->sendingDomainsCount();
+        $domainsUsed = ($maxDomains == -1) ? 0 : $domainsCount / $maxDomains;
+
+        return view('account.quota_log', [
+            'remainingEmailCredits' => $remainingEmailCredits,
+            'emailCredits' => $emailCredits,
+            'remainingEmailCreditsPercentage' => $remainingEmailCreditsPercentage,
+            'maxLists' => $maxLists,
+            'listsCount' => $listsCount,
+            'listsUsed' => $listsUsed,
+            'maxCampaigns' => $maxCampaigns,
+            'campaignsCount' => $campaignsCount,
+            'campaignsUsed' => $campaignsUsed,
+            'maxSubscribers' => $maxSubscribers,
+            'subscribersCount' => $subscribersCount,
+            'subscribersUsed' => $subscribersUsed,
+            'maxAutomations' => $maxAutomations,
+            'automationsCount' => $automationsCount,
+            'automationsUsed' => $automationsUsed,
+            'maxUpload' => $maxUpload,
+            'uploadCount' => $uploadCount,
+            'uploadUsed' => $uploadUsed,
+            'maxDomains' => $maxDomains,
+            'domainsCount' => $domainsCount,
+            'domainsUsed' => $domainsUsed,
+        ]);
     }
 
     /**
@@ -155,7 +215,67 @@ class AccountController extends Controller
      */
     public function quotaLog2(Request $request)
     {
-        return view('account.quota_log_2');
+        $customer = $request->user()->customer;
+        if (config('app.saas')) {
+            $subscription = $customer->getCurrentActiveGeneralSubscription();
+
+            $remainingEmailCredits = $subscription->getRemainingEmailCredits();
+            $emailCredits = $subscription->getCreditsLimit('send');
+            $remainingEmailCreditsPercentage = $subscription->getRemainingEmailCreditsPercentage();
+        } else {
+            $remainingEmailCredits = -1;
+            $emailCredits = -1;
+            $remainingEmailCreditsPercentage = -1;
+        }
+
+        $maxLists = get_tmp_quota($customer, 'list_max');
+        $maxCampaigns = get_tmp_quota($customer, 'campaign_max');
+        $maxSubscribers = get_tmp_quota($customer, 'subscriber_max');
+        $maxAutomations = get_tmp_quota($customer, 'automation_max');
+        $maxUpload = get_tmp_quota($customer, 'max_size_upload_total');
+        $maxDomains = get_tmp_quota($customer, 'sending_domains_max');
+
+        $listsCount = $customer->listsCount();
+        $listsUsed = ($maxLists == -1) ? 0 : $listsCount / $maxLists;
+
+        $campaignsCount = $customer->campaignsCount();
+        $campaignsUsed = ($maxCampaigns == -1) ? 0 : $campaignsCount / $maxCampaigns;
+
+        $subscribersCount = $customer->readCache('SubscriberCount', 0);
+        $subscribersUsed = ($maxSubscribers == -1) ? 0 : $subscribersCount / $maxSubscribers;
+
+        $automationsCount = $customer->automationsCount();
+        $automationsUsed = ($maxAutomations == -1) ? 0 : $automationsCount / $maxAutomations;
+
+        $uploadCount = $customer->totalUploadSize();
+        $uploadUsed = ($maxUpload == -1) ? 0 : $uploadCount / $maxUpload;
+
+        $domainsCount = $customer->sendingDomainsCount();
+        $domainsUsed = ($maxDomains == -1) ? 0 : $domainsCount / $maxDomains;
+
+        return view('account.quota_log_2', [
+            'remainingEmailCredits' => $remainingEmailCredits,
+            'emailCredits' => $emailCredits,
+            'remainingEmailCreditsPercentage' => $remainingEmailCreditsPercentage,
+            'maxLists' => $maxLists,
+            'listsCount' => $listsCount,
+            'listsUsed' => $listsUsed,
+            'maxCampaigns' => $maxCampaigns,
+            'campaignsCount' => $campaignsCount,
+            'campaignsUsed' => $campaignsUsed,
+            'maxSubscribers' => $maxSubscribers,
+            'subscribersCount' => $subscribersCount,
+            'subscribersUsed' => $subscribersUsed,
+            'maxAutomations' => $maxAutomations,
+            'automationsCount' => $automationsCount,
+            'automationsUsed' => $automationsUsed,
+            'maxUpload' => $maxUpload,
+            'uploadCount' => $uploadCount,
+            'uploadUsed' => $uploadUsed,
+            'maxDomains' => $maxDomains,
+            'domainsCount' => $domainsCount,
+            'domainsUsed' => $domainsUsed,
+        ]);
     }
 
     /**

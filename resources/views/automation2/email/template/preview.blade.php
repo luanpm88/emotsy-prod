@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>{{ $automation->subject }}</title>
+    <title>{{ $email->getSubject() }}</title>
 
     <style>
 
@@ -77,7 +77,7 @@
 
         <div id="plain" class="tabcontent" style="padding: 10px">
 
-        {!! $email->plain !!}
+        {!! $email->getPlainContent() !!}
 
         </div>
 

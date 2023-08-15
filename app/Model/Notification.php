@@ -24,6 +24,7 @@ namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use Acelle\Library\Traits\HasUid;
+use Closure;
 
 class Notification extends Model
 {
@@ -130,6 +131,14 @@ class Notification extends Model
     }
 
     /**
+     * Clean up notifications of the same type / title as the called class.
+     */
+    public static function clearByTitle($title)
+    {
+        static::cleanupDuplicateNotifications($title);
+    }
+
+    /**
      * Clean up all notifications.
      */
     public static function cleanup()
@@ -186,5 +195,31 @@ class Notification extends Model
         $query = $query->orderBy($request->sort_order, $request->sort_direction);
 
         return $query;
+    }
+
+    public static function record($title, $message, $level = self::LEVEL_WARNING)
+    {
+        $attributes = [
+            'level' => $level,
+            'title' => $title,
+            'message' => $message
+        ];
+
+        return static::add($attributes, $cleanup = true); // clean up all notificatio of the same title
+    }
+
+    public static function recordIfFails(Closure $closure, string $title, Closure $exceptionCallback = null, $moreMessage = '')
+    {
+        try {
+            static::clearByTitle($title);
+            $closure();
+        } catch (\Throwable $t) {
+            $message = $moreMessage.$t->getMessage();
+            static::record($title, $message, static::LEVEL_ERROR);
+
+            if ($exceptionCallback) {
+                $exceptionCallback($t);
+            }
+        }
     }
 }

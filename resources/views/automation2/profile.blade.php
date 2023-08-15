@@ -39,13 +39,20 @@
             
             <div class="profile d-flex">
                 <div class="media mr-4">
-                    <!--<i class="lnr lnr-user"></i>-->
-                    @if ($contact->avatar)
-                        <img src="{{ action('SubscriberController@avatar',  $contact->uid) }}" />
-                    @elseif(isSiteDemo())
-                        <img src="https://i.pravatar.cc/300" />
+                    @if(isSiteDemo())
+                        <a
+                            image-popup="link"
+                            href="https://i.pravatar.cc/300"
+                        >
+                            <img src="https://i.pravatar.cc/300" />
+                        </a>
                     @else
-                        <i style="opacity: 0.7" class="lnr lnr-user bg-{{ rand_item(['info', 'success', 'secondary', 'primary', 'danger', 'warning']) }}"></i>
+                        <a
+                            image-popup="link"
+                            href="{{ action('SubscriberController@avatarOrigin',  $contact->uid) }}"
+                        >
+                            <img src="{{ action('SubscriberController@avatar',  $contact->uid) }}" />
+                        </a>
                     @endif
                 </div>
                 <div class="account">

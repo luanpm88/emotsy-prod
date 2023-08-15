@@ -26,6 +26,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class FeedbackLog extends Model
 {
+    public const FEEDBACK_TYPE_ABUSE = 'abuse';
     /**
      * Associations.
      *
@@ -96,6 +97,33 @@ class FeedbackLog extends Model
             return $trackingLog->subscriber;
         } else {
             return;
+        }
+    }
+
+    public static function recordFeedback($runtimeMessageId, $raw, $logCallback)
+    {
+        $feedbackLog = new static();
+        $feedbackLog->runtime_message_id = $runtimeMessageId;
+
+        // retrieve the associated tracking log in Acelle
+        $trackingLog = TrackingLog::where('runtime_message_id', $feedbackLog->runtime_message_id)->first();
+        if ($trackingLog) {
+            $feedbackLog->message_id = $trackingLog->message_id;
+        } else {
+            $logCallback("Cannot find a tracking log record with runtime_message_id of #{$runtimeMessageId}. Record it anyway without runtime_message_id");
+        }
+
+        $feedbackLog->feedback_type = self::FEEDBACK_TYPE_ABUSE;
+        $feedbackLog->raw_feedback_content = $raw; // notice that {$raw} might contain more than one events
+        $feedbackLog->save();
+
+        // add subscriber's email to blacklist
+        $subscriber = $feedbackLog->findSubscriberByRuntimeMessageId();
+        if ($subscriber) {
+            $subscriber->sendToBlacklist($feedbackLog->raw);
+            $logCallback("Feedback recorded for runtime_message_id '$feedbackLog->runtime_message_id' and {$subscriber->email} is blacklisted!");
+        } else {
+            $logCallback("Feedback recorded for runtime_message_id '$feedbackLog->runtime_message_id' although it is not associated with any tracking log.");
         }
     }
 

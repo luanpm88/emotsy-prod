@@ -130,6 +130,7 @@ Route::group(['middleware' => ['not_installed', 'not_logged_in']], function () {
 
     //Subscriber avatar
     Route::get('assets/images/avatar/subscriber-{uid?}.jpg', 'SubscriberController@avatar');
+    Route::get('assets/images/avatar/subscribe-origin-{uid?}.jpg', 'SubscriberController@avatarOrigin');
 
     // User resend activation email
     Route::get('users/resend-activation-email', 'UserController@resendActivationEmail');
@@ -145,37 +146,37 @@ Route::group(['middleware' => ['not_installed', 'not_logged_in']], function () {
     Route::get('plans/list/{style?}', 'PlanController@publicListPage');
 
     // public campaign report
-    Route::get('pub/campaigns/job/{uid}/download', 'Public\CampaignController@download');
-    Route::get('pub/campaigns/{uid}/tracking-log/download', 'Public\CampaignController@trackingLogDownload');
-    Route::get('pub/campaigns/job/{uid}/progress', 'Public\CampaignController@trackingLogExportProgress');
-    Route::get('pub/campaigns/{uid}/tracking-log/download', 'Public\CampaignController@trackingLogDownload');
-    Route::get('pub/campaigns/{uid}/overview', 'Public\CampaignController@overview');
-    Route::get('pub/campaigns/{uid}/subscribers', 'Public\CampaignController@subscribers');
-    Route::get('pub/campaigns/{uid}/subscribers/listing', 'Public\CampaignController@subscribersListing');
-    Route::get('pub/campaigns/{uid}/open-map', 'Public\CampaignController@openMap');
-    Route::get('pub/campaigns/{uid}/tracking-log', 'Public\CampaignController@trackingLog');
-    Route::get('pub/campaigns/{uid}/tracking-log/listing', 'Public\CampaignController@trackingLogListing');
-    Route::get('pub/campaigns/{uid}/bounce-log', 'Public\CampaignController@bounceLog');
-    Route::get('pub/campaigns/{uid}/bounce-log/listing', 'Public\CampaignController@bounceLogListing');
-    Route::get('pub/campaigns/{uid}/feedback-log', 'Public\CampaignController@feedbackLog');
-    Route::get('pub/campaigns/{uid}/feedback-log/listing', 'Public\CampaignController@feedbackLogListing');
-    Route::get('pub/campaigns/{uid}/open-log', 'Public\CampaignController@openLog');
-    Route::get('pub/campaigns/{uid}/open-log/listing', 'Public\CampaignController@openLogListing');
-    Route::get('pub/campaigns/{uid}/click-log', 'Public\CampaignController@clickLog');
-    Route::get('pub/campaigns/{uid}/click-log/listing', 'Public\CampaignController@clickLogListing');
-    Route::get('pub/campaigns/{uid}/unsubscribe-log', 'Public\CampaignController@unsubscribeLog');
-    Route::get('pub/campaigns/{uid}/unsubscribe-log/listing', 'Public\CampaignController@unsubscribeLogListing');
+    Route::get('pub/campaigns/job/{uid}/download', 'Pub\CampaignController@download');
+    Route::get('pub/campaigns/{uid}/tracking-log/download', 'Pub\CampaignController@trackingLogDownload');
+    Route::get('pub/campaigns/job/{uid}/progress', 'Pub\CampaignController@trackingLogExportProgress');
+    Route::get('pub/campaigns/{uid}/tracking-log/download', 'Pub\CampaignController@trackingLogDownload');
+    Route::get('pub/campaigns/{uid}/overview', 'Pub\CampaignController@overview');
+    Route::get('pub/campaigns/{uid}/subscribers', 'Pub\CampaignController@subscribers');
+    Route::get('pub/campaigns/{uid}/subscribers/listing', 'Pub\CampaignController@subscribersListing');
+    Route::get('pub/campaigns/{uid}/open-map', 'Pub\CampaignController@openMap');
+    Route::get('pub/campaigns/{uid}/tracking-log', 'Pub\CampaignController@trackingLog');
+    Route::get('pub/campaigns/{uid}/tracking-log/listing', 'Pub\CampaignController@trackingLogListing');
+    Route::get('pub/campaigns/{uid}/bounce-log', 'Pub\CampaignController@bounceLog');
+    Route::get('pub/campaigns/{uid}/bounce-log/listing', 'Pub\CampaignController@bounceLogListing');
+    Route::get('pub/campaigns/{uid}/feedback-log', 'Pub\CampaignController@feedbackLog');
+    Route::get('pub/campaigns/{uid}/feedback-log/listing', 'Pub\CampaignController@feedbackLogListing');
+    Route::get('pub/campaigns/{uid}/open-log', 'Pub\CampaignController@openLog');
+    Route::get('pub/campaigns/{uid}/open-log/listing', 'Pub\CampaignController@openLogListing');
+    Route::get('pub/campaigns/{uid}/click-log', 'Pub\CampaignController@clickLog');
+    Route::get('pub/campaigns/{uid}/click-log/listing', 'Pub\CampaignController@clickLogListing');
+    Route::get('pub/campaigns/{uid}/unsubscribe-log', 'Pub\CampaignController@unsubscribeLog');
+    Route::get('pub/campaigns/{uid}/unsubscribe-log/listing', 'Pub\CampaignController@unsubscribeLogListing');
 
-    Route::get('pub/campaigns/quick-view', 'Public\CampaignController@quickView');
-    Route::get('pub/campaigns/{uid}/chart24h', 'Public\CampaignController@chart24h');
-    Route::get('pub/campaigns/{uid}/chart', 'Public\CampaignController@chart');
-    Route::get('pub/campaigns/{uid}/chart/countries/open', 'Public\CampaignController@chartCountry');
-    Route::get('pub/campaigns/{uid}/chart/countries/click', 'Public\CampaignController@chartClickCountry');
-    Route::get('pub/campaigns/{uid}/overview', 'Public\CampaignController@overview');
-    Route::get('pub/campaigns/{uid}/links', 'Public\CampaignController@links');
+    Route::get('pub/campaigns/quick-view', 'Pub\CampaignController@quickView');
+    Route::get('pub/campaigns/{uid}/chart24h', 'Pub\CampaignController@chart24h');
+    Route::get('pub/campaigns/{uid}/chart', 'Pub\CampaignController@chart');
+    Route::get('pub/campaigns/{uid}/chart/countries/open', 'Pub\CampaignController@chartCountry');
+    Route::get('pub/campaigns/{uid}/chart/countries/click', 'Pub\CampaignController@chartClickCountry');
+    Route::get('pub/campaigns/{uid}/overview', 'Pub\CampaignController@overview');
+    Route::get('pub/campaigns/{uid}/links', 'Pub\CampaignController@links');
 
-    Route::get('pub/campaigns/{uid}/preview/content/{subscriber_uid?}', 'Public\CampaignController@previewContent');
-    Route::get('pub/campaigns/{uid}/preview', 'Public\CampaignController@preview');
+    Route::get('pub/campaigns/{uid}/preview/content/{subscriber_uid?}', 'Pub\CampaignController@previewContent');
+    Route::get('pub/campaigns/{uid}/preview', 'Pub\CampaignController@preview');
 });
 
 // Without authentication
@@ -282,10 +283,11 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
 
     // New subscription
     // =================== REVIEWED
+    Route::post('account/subscription/verify-transaction/{invoice_uid}', 'SubscriptionController@verifyPendingTransaction');
     Route::get('account/subscription/select-plan', 'SubscriptionController@selectPlan');
     Route::get('account/subscription/order-box/{invoice_uid}', 'SubscriptionController@orderBox');
     Route::match(['get', 'post'], 'account/subscription/change-plan', 'SubscriptionController@changePlan');
-    Route::match(['get', 'post'], 'account/subscription/billing-information', 'SubscriptionController@billingInformation');
+    Route::match(['get', 'post'], 'account/subscription/{invoice_uid}/billing-information', 'SubscriptionController@billingInformation');
     Route::post('account/subscription/checkout/{invoice_uid}', 'SubscriptionController@checkout');
     Route::post('account/subscription/invoice/{invoice_uid}/cancel', 'SubscriptionController@cancelInvoice');
     Route::post('account/subscription/cancel-now', 'SubscriptionController@cancelNow');
@@ -658,6 +660,8 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::post('notifications/{id}/hide', 'NotificationController@hide');
 
     // Automation2
+    Route::post('automation/{uid}/trigger-all', 'Automation2Controller@triggerAll');
+
     Route::match(['get', 'post'], 'automation/{uid}/copy', 'Automation2Controller@copy');
     Route::get('automation/{uid}/condition/remove', 'Automation2Controller@conditionRemove');
 
@@ -829,6 +833,62 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
 
     // Chat
     Route::post('chat', 'ChatController@chat');
+
+    // Products
+    Route::get('store/products/attributes', 'Store\ProductController@attributes');  
+    Route::get('store/products/list', 'Store\ProductController@list');   
+    Route::DELETE('store/products/delete-selected', 'Store\ProductController@deleteSelected');
+    Route::DELETE('store/products/delete', 'Store\ProductController@delete');    
+    Route::PATCH('store/products', 'Store\ProductController@updateStatus');
+    Route::PUT('store/products', 'Store\ProductController@multiltask'); 
+    Route::post('store/products/search', 'Store\ProductController@search');
+    Route::get('store/products/search', 'Store\ProductController@search'); 
+    Route::resource('/store/products', 'Store\ProductController'); 
+
+    // Orders
+    Route::get('store/orders/list', 'Store\OrdersController@list');  
+    Route::resource('store/orders', 'Store\OrdersController');
+
+    /**
+     * attributess - đặc tính sản phẩm
+     */
+    Route::get('store/attributes/list', 'Store\AttributeController@list');
+    Route::DELETE('store/attributes/delete-selected', 'Store\AttributeController@deleteSelected');
+    Route::PUT('store/attributes/chagse-status', 'Store\AttributeController@statusChangeSelected');
+    Route::DELETE('sms/attributes/delete', 'Store\AttributeController@delete');    
+    Route::PATCH('store/attributes', 'Store\AttributeController@updateStatus');
+    Route::PUT('store/attributes', 'Store\AttributeController@multiltask'); 
+    Route::resource('store/attributes', 'Store\AttributeController');
+
+    /**
+     * categories
+     */
+    
+    Route::get('store/categories/get-attributes', 'Store\CategoryController@get_attrible_catid');
+    Route::get('store/categories/collection', 'Store\CategoryController@collection');
+    Route::get('store/categories/list', 'Store\CategoryController@list');
+    Route::DELETE('store/categories/delete-selected', 'Store\CategoryController@deleteSelected');
+    Route::PUT('store/categories/chagse-status', 'Store\CategoryController@statusChangeSelected');    
+    Route::DELETE('sms/categories/delete', 'Store\CategoryController@delete');    
+    Route::PATCH('store/categories', 'Store\CategoryController@updateStatus');
+    Route::PUT('store/categories', 'Store\CategoryController@multiltask');  
+    Route::resource('store/categories', 'Store\CategoryController');
+
+    // Sms funnel
+
+    Route::get('funnel/list', 'Store\FunnelController@list');   
+    Route::DELETE('funnel/delete-selected', 'Store\FunnelController@deleteSelected');
+    Route::DELETE('sms/funnel/delete', 'Store\FunnelController@delete');    
+    Route::PATCH('funnel', 'Store\FunnelController@updateStatus');
+    Route::PUT('funnel', 'Store\FunnelController@multiltask'); 
+    Route::post('funnel/search', 'Store\FunnelController@search');
+    Route::get('funnel/search', 'Store\FunnelController@search');
+    Route::post('funnel/getmessage', 'Store\FunnelController@getmessage'); 
+    Route::resource('funnel', 'Store\FunnelController');
+
+    // Media
+    Route::resource('store/media', 'Store\MediaController');
+
 });
 
 // ADMIN AREA

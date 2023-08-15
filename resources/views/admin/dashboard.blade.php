@@ -49,7 +49,7 @@
                                     <div>
                                         <h6 class="mt-0 mb-0 text-semibold">
                                             <a href="{{ action('Admin\CustomerController@subscriptions', $subscription->customer->uid) }}">
-                                                {{ $subscription->plan->name }}
+                                                {{ $subscription->planGeneral->name }}
                                             </a>
                                         </h6>
                                         <p class="mb-0">

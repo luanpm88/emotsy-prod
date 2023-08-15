@@ -19,6 +19,10 @@ use Acelle\Library\HtmlHandler\TransformWidgets;
 use Acelle\Library\HtmlHandler\AddDoctype;
 use Acelle\Library\HtmlHandler\RemoveTitleTag;
 use Acelle\Library\HtmlHandler\AddPreheader;
+use Acelle\Library\HtmlHandler\GenerateSpintax;
+use Acelle\Library\HtmlHandler\GenerateSpintaxForPlainText;
+use Acelle\Library\HtmlHandler\DecodeHtmlSpecialChars;
+use Acelle\Library\HtmlHandler\InjectMessageIdToBody;
 use Acelle\Library\Lockable;
 use File;
 use Cache;
@@ -39,7 +43,7 @@ trait HasTemplate
      */
     public function setTemplate($template, $name=null)
     {
-        $campaignTemplate = $template->copy([
+        $campaignTemplate = $template->copyAsPrivate([
             'name' => $name ? $name : trans('messages.campaign.template_name', ['name' => $this->name]),
             'customer_id' => $this->customer_id,
         ]);
@@ -289,10 +293,19 @@ trait HasTemplate
      *
      * @return string
      */
-    public function getSubject($subscriber, $msgId)
+    public function getSubject($subscriber = null, $msgId = null)
     {
         $pipeline = new PipelineBuilder();
-        $pipeline->add(new TransformTag($this, $subscriber, $msgId));
+
+        if (!is_null($subscriber)) {
+            if (is_null($msgId)) {
+                throw new Exception('MessageID must not be null');
+            }
+            $pipeline->add(new TransformTag($this, $subscriber, $msgId));
+        }
+
+        $pipeline->add(new DecodeHtmlSpecialChars());
+        $pipeline->add(new GenerateSpintaxForPlainText());
         $pipeline->add(new ReplaceBareLineFeed());
         return $pipeline->build()->process($this->subject);
     }
@@ -310,7 +323,7 @@ trait HasTemplate
             return;
         }
 
-        return ($this->customer->getNewOrActiveSubscription()->plan->getOption('email_footer_enabled') == 'yes') ? true : false;
+        return (get_tmp_quota($this->customer, 'email_footer_enabled') == 'yes') ? true : false;
     }
 
     /**
@@ -326,7 +339,7 @@ trait HasTemplate
             return;
         }
 
-        return $this->customer->getNewOrActiveSubscription()->plan->getOption('html_footer');
+        return get_tmp_quota($this->customer, 'html_footer');
     }
 
     /**
@@ -397,10 +410,14 @@ trait HasTemplate
             $pipeline->add(new InjectTrackingPixel($this, $msgId));
         }
 
+        $pipeline->add(new InjectMessageIdToBody($msgId));
+
         if (!$this->isStageExcluded(TransformUrl::class)) {
             $pipeline->add(new TransformUrl($this->template, $msgId, $this->trackingDomain));
         }
 
+        $pipeline->add(new DecodeHtmlSpecialChars());
+        $pipeline->add(new GenerateSpintax());
         $pipeline->add(new ReplaceBareLineFeed());
 
         // ReplaceBareLineFeed should go into the base HTML content instead
@@ -437,7 +454,7 @@ trait HasTemplate
             // $pipeline->add(new TransformTag($this, $subscriber, $msgId, $server));
             // $pipeline->add(new InjectTrackingPixel($this, $msgId));
             // $pipeline->add(new TransformUrl($this->template, $msgId, $this->trackingDomain));
-            // $html = $this->wooTransform($html);
+            // $html = $this->template->wooTransform($html);
             $html = $pipeline->build()->process($this->getTemplateContent());
         }
 
@@ -463,11 +480,20 @@ trait HasTemplate
      *
      * @return string
      */
-    public function getPlainContent($subscriber, $msgId, $server = null)
+    public function getPlainContent($subscriber = null, $msgId = null, $server = null)
     {
         $plain = $this->plain.$this->getPlainTextFooter();
         $pipeline = new PipelineBuilder();
-        $pipeline->add(new TransformTag($this, $subscriber, $msgId, $server));
+
+        if (!is_null($subscriber)) {
+            if (is_null($msgId)) {
+                throw new Exception('MessageID must not be null');
+            }
+            $pipeline->add(new TransformTag($this, $subscriber, $msgId, $server));
+        }
+
+        $pipeline->add(new DecodeHtmlSpecialChars());
+        $pipeline->add(new GenerateSpintaxForPlainText());
         $pipeline->add(new ReplaceBareLineFeed());
         $plain = $pipeline->build()->process($plain);
 
@@ -487,7 +513,7 @@ trait HasTemplate
             return;
         }
 
-        return $this->customer->getNewOrActiveSubscription()->plan->getOption('plain_text_footer');
+        return get_tmp_quota($this->customer, 'plain_text_footer');
     }
 
     /**
