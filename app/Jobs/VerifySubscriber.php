@@ -30,10 +30,6 @@ class VerifySubscriber extends Base
      */
     public function __construct($subscriber, $server, $subscription)
     {
-        if (is_null($subscription)) {
-            throw new Exception("User does not have an acive subscription");
-        }
-
         $this->subscriber = $subscriber;
         $this->server = $server;
         $this->subscription = $subscription;
