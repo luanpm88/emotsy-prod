@@ -58,7 +58,7 @@ class Setting extends Model
         if (config('app.sms') && in_array($name, ['frontend_scheme','backend_scheme'])) {
             return 'sms';
         }
-        
+
         $setting = self::where('name', $name)->first();
 
         if ($setting) {

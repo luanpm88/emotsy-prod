@@ -46,7 +46,7 @@ class ProductController extends Controller
         }
         /*
         if($filters!=''){
-             $products->whereIn( 'type', $filters ); 
+             $products->whereIn( 'type', $filters );
         }
         */
         if ($request->sort) {

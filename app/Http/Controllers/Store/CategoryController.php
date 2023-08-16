@@ -140,7 +140,7 @@ class CategoryController extends Controller
             'category' =>  $category,
             'parents' => Category::where('parent_id', null)
                                         ->whereNotIn('id', [ $id ])
-                                        ->get() 
+                                        ->get()
          ]);
      }
 
