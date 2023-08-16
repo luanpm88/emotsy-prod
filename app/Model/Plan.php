@@ -155,6 +155,12 @@ class Plan extends Model
         ];
     }
 
+    // For compatibility with anothe plugin
+    public static function getAvailablePlans()
+    {
+        return self::active()->available()->get();
+    }
+
     /**
      * Get billing recurs select options.
      *
