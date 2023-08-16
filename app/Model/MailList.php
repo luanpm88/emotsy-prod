@@ -1654,9 +1654,12 @@ class MailList extends Model
 
         // Check the customer has permissions using sending servers and has his own sending servers
         if (!config('app.saas')) {
-            $result = [
-                [ get_tmp_primary_server()->id, '100' ],
-            ];
+            $server = get_tmp_primary_server();
+            if ($server) {
+                $result = [
+                    [ get_tmp_primary_server()->id, '100' ],
+                ];
+            }
         } elseif ($this->customer->getCurrentActiveGeneralSubscription()->planGeneral->useOwnSendingServer()) {
             if ($this->all_sending_servers) {
                 if ($this->customer->activeSendingServers()->count()) {
