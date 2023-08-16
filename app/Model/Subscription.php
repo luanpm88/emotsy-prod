@@ -10,6 +10,7 @@ use Acelle\Library\Traits\HasUid;
 use Carbon\Carbon;
 use Acelle\Library\Facades\SubscriptionFacade;
 use Acelle\Library\CreditTracker;
+use Acelle\Library\RateTracker;
 use Acelle\Library\RateLimit;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -1020,7 +1021,9 @@ class Subscription extends Model
 
     public function setDefaultEmailCredits()
     {
-        $defaultCredits = (int)$this->planGeneral->getOption('email_max');
+        // @important: temporarily set default credits to UNLIMITED
+        // $defaultCredits = (int)$this->planGeneral->getOption('email_max');
+        $defaultCredits = CreditTracker::UNLIMITED;
         $this->getSendEmailCreditTracker()->setCredits($defaultCredits);
     }
 }

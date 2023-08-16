@@ -1127,11 +1127,6 @@ class Customer extends Model
      */
     public function canUseApi()
     {
-        if (!$this->getCurrentActiveGeneralSubscription()) {
-            // default not use api
-            return false;
-        }
-
         return get_tmp_quota($this, 'api_access') == 'yes';
     }
 
@@ -1206,14 +1201,18 @@ class Customer extends Model
 
     public function allowUnverifiedFromEmailAddress()
     {
+        $server = null;
         if (!config('app.saas')) {
             $server = get_tmp_primary_server();
         } else {
             $plan = $this->getNewOrActiveGeneralSubscription()->planGeneral;
-            $server = $plan->primarySendingServer();
+
+            if ($plan->useSystemSendingServer()) {
+                $server = $plan->primarySendingServer();
+            }
         }
 
-        return $server->allowUnverifiedFromEmailAddress();
+        return (is_null($server)) ? true : $server->allowUnverifiedFromEmailAddress();
     }
 
     /**

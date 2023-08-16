@@ -43,7 +43,7 @@
                                     </div>
                                 </div>
                                 <span class="text-muted">
-                                    <strong>{{ number_with_delimiter($customer->getCurrentActiveGeneralSubscription()->getRemainingEmailCredits()) }}/{{ ($customer->getCurrentActiveGeneralSubscription()->getCreditsLimit('send') == -1) ? '∞' : number_with_delimiter($customer->getCurrentActiveGeneralSubscription()->getCreditsLimit('send')) }}</strong>
+                                    <strong>{{ number_with_delimiter($customer->getCurrentActiveGeneralSubscription()->getSendEmailRateTracker()->getCreditsUsed()) }}/{{ ($customer->getCurrentActiveGeneralSubscription()->getCreditsLimit('send') == -1) ? '∞' : number_with_delimiter($customer->getCurrentActiveGeneralSubscription()->getCreditsLimit('send')) }}</strong>
                                     <div class="text-nowrap">{{ trans('messages.sending_credits_used') }}</div>
                                 </span>
                             </div>

@@ -1232,6 +1232,7 @@ function get_tmp_primary_server()
 
 function get_tmp_quota($customer, $name)
 {
+    // PART 1: PLAN & MISC SETTINGS
     $settings = [
         "email_max" => "-1",
         "list_max" => "-1",
@@ -1256,6 +1257,9 @@ function get_tmp_quota($customer, $name)
         "plain_text_footer" => "no",
         "html_footer" => "",
     ];
+
+    // PART 2: Other settings related to sending server
+    // + allow unverified email address, allowed email verificaiton, allow remote email verification, etc.
 
     if (config('app.saas')) {
         return $customer->getNewOrActiveGeneralSubscription()->planGeneral->getOption($name);
