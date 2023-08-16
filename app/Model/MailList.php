@@ -1657,7 +1657,7 @@ class MailList extends Model
             $server = get_tmp_primary_server();
             if ($server) {
                 $result = [
-                    [ get_tmp_primary_server()->id, '100' ],
+                    [ $server->id, '100' ],
                 ];
             }
         } elseif ($this->customer->getCurrentActiveGeneralSubscription()->planGeneral->useOwnSendingServer()) {

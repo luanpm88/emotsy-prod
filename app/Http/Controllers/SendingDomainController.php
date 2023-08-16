@@ -21,20 +21,7 @@ class SendingDomainController extends Controller
             return $this->notAuthorized();
         }
 
-        $request->merge(array("customer_id" => $request->user()->customer->id));
-
-        if (config('app.saas')) {
-            $plan = $request->user()->customer->getCurrentActiveGeneralSubscription()->planGeneral;
-            $server = $plan->useSystemSendingServer() ? $plan->primarySendingServer() : null;
-        } else {
-            $server = get_tmp_primary_server();
-        }
-
-        $items = SendingDomain::search($request, $server);
-
-        return view('sending_domains.index', [
-            'items' => $items,
-        ]);
+        return view('sending_domains.index');
     }
 
     /**
