@@ -382,7 +382,7 @@ class Invoice extends Model
      *
      * @return void
      */
-    public function getBillingInfoBase($chargeInfo, $plan=null)
+    public function getBillingInfoBase($chargeInfo, $plan = null)
     {
         return  [
             'title' => $this->title,

@@ -63,7 +63,7 @@ class FileController extends Controller
             // Get file name
             $urlArr = explode('/', $fileUrl);
             $ct = count($urlArr);
-            $name = $urlArr[$ct-1];
+            $name = $urlArr[$ct - 1];
 
             // Update drestination path + file name
             $destinationPath = $path . $name;

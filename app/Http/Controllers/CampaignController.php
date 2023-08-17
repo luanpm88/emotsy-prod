@@ -854,7 +854,7 @@ class CampaignController extends Controller
             $days = [];
 
             // columns
-            for ($i = $nowInUserTimezone->subMonths(1)->diff(Carbon::now())->days-1; $i >= 0; --$i) {
+            for ($i = $nowInUserTimezone->subMonths(1)->diff(Carbon::now())->days - 1; $i >= 0; --$i) {
                 $time = $nowInUserTimezone->subDays($i);
                 $result['columns'][] = $time->format('m-d');
                 $days[] = $time->format('Y-m-d');

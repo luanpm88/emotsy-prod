@@ -68,8 +68,8 @@ class SendingServerPolicy
                     $notReachMax = $user->customer->sendingServersCount() < $max;
                     $can = $isUnlimited || $notReachMax; // check max campaigns: unlimited or is not reach max
 
-                // check if user can create server type
-                // $can = $can && $user->customer->isAllowCreateSendingServerType($item->type);
+                    // check if user can create server type
+                    // $can = $can && $user->customer->isAllowCreateSendingServerType($item->type);
                 } else {
                     // use system server than do not check max
                 }

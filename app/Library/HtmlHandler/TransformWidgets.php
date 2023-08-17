@@ -27,7 +27,7 @@ class TransformWidgets implements StageInterface
     {
         return StringHelper::updateHtml($html, function ($dom) {
             $finder = new \DOMXPath($dom);
-            $classname="product-list-widget";
+            $classname = "product-list-widget";
             $nodes = $finder->query("//*[contains(concat(' ', normalize-space(@class), ' '), ' $classname ')]");
 
             foreach ($nodes as $node) {
@@ -50,7 +50,7 @@ class TransformWidgets implements StageInterface
     {
         return StringHelper::updateHtml($html, function ($dom) {
             $finder = new \DOMXPath($dom);
-            $classname="product-widget";
+            $classname = "product-widget";
             $nodes = $finder->query("//*[contains(concat(' ', normalize-space(@class), ' '), ' $classname ')]");
 
             foreach ($nodes as $node) {
@@ -74,7 +74,7 @@ class TransformWidgets implements StageInterface
     {
         return StringHelper::updateHtml($html, function ($dom) {
             $finder = new \DOMXPath($dom);
-            $classname="rss-widget";
+            $classname = "rss-widget";
             $nodes = $finder->query("//*[contains(concat(' ', normalize-space(@class), ' '), ' $classname ')]");
 
             foreach ($nodes as $node) {
@@ -100,7 +100,7 @@ class TransformWidgets implements StageInterface
 
     public function get_inner_html($node)
     {
-        $innerHTML= '';
+        $innerHTML = '';
         $children = $node->childNodes;
         foreach ($children as $child) {
             $innerHTML .= $child->ownerDocument->saveXML($child);

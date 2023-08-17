@@ -41,7 +41,7 @@ class ProductController extends Controller
         $products = Product::search($keyword);
 
         // filter by status
-        if ($status!='all') {
+        if ($status != 'all') {
             $products->where('status', 'like', $status);
         }
         /*
@@ -276,7 +276,7 @@ class ProductController extends Controller
         $product = Product::find($request->id);
         $product->status = $request->status;
         $product->save();
-        return response()->json(['success'=> trans('store.product.status.updatesuccess')]);
+        return response()->json(['success' => trans('store.product.status.updatesuccess')]);
     }
 
     public function attributes(Request $request)

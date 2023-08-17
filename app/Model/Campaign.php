@@ -112,7 +112,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
     /**
      * Get campaign validation rules.
      */
-    public function rules($request=null)
+    public function rules($request = null)
     {
         $rules = array(
             'name' => 'required',

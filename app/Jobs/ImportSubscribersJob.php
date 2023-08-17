@@ -82,7 +82,7 @@ class ImportSubscribersJob extends Base
             $this->file,
             $this->map,
             function ($processed, $total, $failed, $message) use ($logger) {
-                $percentage = ($total && $processed) ? (int)($processed*100/$total) : 0;
+                $percentage = ($total && $processed) ? (int)($processed * 100 / $total) : 0;
 
                 $this->monitor->updateJsonData([
                     'percentage' => $percentage,

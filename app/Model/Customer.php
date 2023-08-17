@@ -334,7 +334,7 @@ class Customer extends Model
      *
      * @return number
      */
-    public static function subscribersCountByTime($begin, $end, $customer_id = null, $list_id = null, $status=null)
+    public static function subscribersCountByTime($begin, $end, $customer_id = null, $list_id = null, $status = null)
     {
         $query = \Acelle\Model\Subscriber::leftJoin('mail_lists', 'mail_lists.id', '=', 'subscribers.mail_list_id')
                                 ->leftJoin('customers', 'customers.id', '=', 'mail_lists.customer_id');
@@ -1014,7 +1014,7 @@ class Customer extends Model
             return $this->activeEmailVerificationServers()->get()->map(function ($server) {
                 return $server;
             });
-        // If customer dont have permission creating sending servers
+            // If customer dont have permission creating sending servers
         } else {
             // Get server from the plan
             return  $this->getCurrentActiveGeneralSubscription()->planGeneral->getEmailVerificationServers();
@@ -1303,7 +1303,7 @@ class Customer extends Model
      *
      * @return object
      */
-    public function getSelectOptions($type=null)
+    public function getSelectOptions($type = null)
     {
         $query = $this->sources();
 
@@ -1353,7 +1353,7 @@ class Customer extends Model
      *
      * @var object | collect
      */
-    public function updatePaymentMethod($data=[])
+    public function updatePaymentMethod($data = [])
     {
         // $paymentMethod = $this->getPaymentMethod();
 
@@ -1588,7 +1588,7 @@ class Customer extends Model
         }
     }
 
-    public function getConnectedWebsiteSelectOptions($long=true)
+    public function getConnectedWebsiteSelectOptions($long = true)
     {
         $query = $this->websites()->connected();
 

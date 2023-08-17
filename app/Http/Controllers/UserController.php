@@ -141,7 +141,7 @@ class UserController extends Controller
 
                 return view('users.register_confirmation_notice');
 
-            // no email verification
+                // no email verification
             } else {
                 $user->setActivated();
                 return redirect()->route('login');

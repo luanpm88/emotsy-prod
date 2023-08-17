@@ -42,7 +42,7 @@ class Transaction extends Model
     /**
      * Set failed.
      */
-    public function setFailed($error=null)
+    public function setFailed($error = null)
     {
         $this->status = self::STATUS_FAILED;
         $this->error = $error;

@@ -61,10 +61,10 @@ class Lazada extends Source
         ]);
 
         $perPage = 12;
-        $pages = ceil($total/$perPage);
+        $pages = ceil($total / $perPage);
         $imported = 0;
-        for ($i=0; $i < $pages; $i++) {
-            $products = $this->service()->getProducts(['offset' => $i*$perPage, 'limit' => $perPage])['data']['products'];
+        for ($i = 0; $i < $pages; $i++) {
+            $products = $this->service()->getProducts(['offset' => $i * $perPage, 'limit' => $perPage])['data']['products'];
             foreach ($products as $key => $product) {
                 // try {
                 // find exist product

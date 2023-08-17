@@ -107,7 +107,7 @@ class Email extends Model implements HasTemplateInterface
      *
      * @return array
      */
-    public function rules($request=null)
+    public function rules($request = null)
     {
         $rules = [
             'subject' => 'required',

@@ -235,7 +235,7 @@ class PluginController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function options(Request $request, $uid=null)
+    public function options(Request $request, $uid = null)
     {
         if ($uid) {
             $plugin = \Acelle\Model\Plugin::findByUid($uid);

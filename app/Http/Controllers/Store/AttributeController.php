@@ -46,7 +46,7 @@ class AttributeController extends Controller
         $attributes = Attribute::search($keyword);
 
         // filter by status
-        if ($status!='all') {
+        if ($status != 'all') {
             $attributes->where('status', 'like', $status);
         }
         if ($request->filters) {
@@ -129,14 +129,14 @@ class AttributeController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-     public function edit(Request $request, $id)
-     {
-         $SmsAttribute = Attribute::find($id);
-         return view('store.attributes.edit', [
-            'attribute' => $SmsAttribute,
-            'categories' => Category::all(),
-         ]);
-     }
+    public function edit(Request $request, $id)
+    {
+        $SmsAttribute = Attribute::find($id);
+        return view('store.attributes.edit', [
+           'attribute' => $SmsAttribute,
+           'categories' => Category::all(),
+        ]);
+    }
 
     /**
      * Get message content for create sms campaign
@@ -151,13 +151,13 @@ class AttributeController extends Controller
         ]);
     }
 
-     /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+    /**
+    * Update the specified resource in storage.
+    *
+    * @param  \Illuminate\Http\Request  $request
+    * @param  int  $id
+    * @return \Illuminate\Http\Response
+    */
 
     public function update(Request $request, $id)
     {
@@ -283,6 +283,6 @@ class AttributeController extends Controller
         $smsFunnel = Funnel::find($request->id);
         $smsFunnel->status = $request->status;
         $smsFunnel->save();
-        return response()->json(['success'=> trans('store.sms_attributes.status.updatesuccess')]);
+        return response()->json(['success' => trans('store.sms_attributes.status.updatesuccess')]);
     }
 }

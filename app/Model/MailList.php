@@ -1672,7 +1672,7 @@ class MailList extends Model
                     return [$server->sending_server_id, $server->fitness];
                 });
             }
-        // If customer dont have permission creating sending servers
+            // If customer dont have permission creating sending servers
         } else {
             $subscription = $this->customer->getNewOrActiveGeneralSubscription();
             // Check if has sending servers for current subscription
@@ -1682,7 +1682,7 @@ class MailList extends Model
                 });
             }
             //} elseif ($subscription->useSubAccount()) {
-        //    $result[] = [$subscription->subAccount->sending_server_id, '100'];
+            //    $result[] = [$subscription->subAccount->sending_server_id, '100'];
         }
 
         $assoc = [];

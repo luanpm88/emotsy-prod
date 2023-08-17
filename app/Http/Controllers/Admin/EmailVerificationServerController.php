@@ -292,7 +292,7 @@ class EmailVerificationServerController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function options(Request $request, $uid=null)
+    public function options(Request $request, $uid = null)
     {
         if ($uid) {
             $server = \Acelle\Model\EmailVerificationServer::findByUid($uid);
