@@ -541,7 +541,7 @@ class Automation2 extends Model
 
         // Only trigger once a day
         // Counting by user timezone
-        $startOfDayUtc = $today->startOfDay()->timezone('UTC');
+        $startOfDayUtc = $today->startOfDay()->timezone(config('app.timezone'));
 
         $subscribers = $this->subscribersToSend()->leftJoin('auto_triggers', function ($join) use ($thisId, $startOfDayUtc) {
             $join->on('auto_triggers.subscriber_id', 'subscribers.id');
@@ -581,7 +581,7 @@ class Automation2 extends Model
 
         // Only trigger once a day
         // Counting by user timezone
-        $startOfDayUtc = $today->startOfDay()->timezone('UTC');
+        $startOfDayUtc = $today->startOfDay()->timezone(config('app.timezone'));
 
         $subscribers = $this->subscribersToSend()->leftJoin('auto_triggers', function ($join) use ($thisId, $startOfDayUtc) {
             $join->on('auto_triggers.subscriber_id', 'subscribers.id');
@@ -735,7 +735,7 @@ class Automation2 extends Model
 
         $trigger = $this->getTriggerAction();
         $now = $this->customer->getCurrentTime();
-        $eventDate = $this->customer->parseDateTimeFromUtcString(sprintf('%s %s', $trigger->getOption('date'), $trigger->getOption('at')));
+        $eventDate = Carbon::parse(sprintf('%s %s', $trigger->getOption('date'), $trigger->getOption('at')))->timezone($this->customer->timezone);
 
         // Condition same date but after the specified time
         $format = 'Y-m-d';

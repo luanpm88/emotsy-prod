@@ -67,9 +67,9 @@ class Evaluate extends Action
 
         // In case condition is not met,
         // double check for wait time before proceeding
-        $now = Carbon::now('UTC');
+        $now = Carbon::now();
         $waitDuration = $this->getOption('wait');  // 1 hour, 1 day, 2 days
-        $parentExecutionTime = Carbon::createFromTimestamp($this->getParent()->getLastExecuted(), 'UTC');
+        $parentExecutionTime = Carbon::createFromTimestamp($this->getParent()->getLastExecuted());
         $due = $parentExecutionTime->modify($waitDuration);
 
         $check = $now->gte($due);

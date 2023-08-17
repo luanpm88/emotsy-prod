@@ -195,20 +195,6 @@ function format_datetime(?\Carbon\Carbon $datetime, $name, $locale)
 }
 
 /**
- * Get UTC offset of a particular time zone.
- *
- * @param string timezone
- *
- * @return string UTC offset (+02:00 for example)
- */
-function utc_offset($timezone)
-{
-    $offset = \Carbon\Carbon::now($timezone)->offsetHours - \Carbon\Carbon::now('UTC')->offsetHours;
-
-    return sprintf("%+'03d:00", $offset);
-}
-
-/**
  * Check if exec() function is available.
  *
  * @return bool

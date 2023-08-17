@@ -48,7 +48,7 @@ class RateTracker
     {
         $lock = new Lockable($this->filepath);
         $lock->getExclusiveLock(function ($fopen) use ($now) {
-            $now = $now ?: Carbon::now('UTC');
+            $now = $now ?: Carbon::now();
 
             // Throw an exception if test fails (quota exceeded)
             $this->test($now, $fopen);
@@ -141,7 +141,7 @@ class RateTracker
     // Convert the provided datetime $now to a string
     public function makeBlock($now)
     {
-        $now = $now ?: Carbon::now('UTC');
+        $now = $now ?: Carbon::now();
         $format = $this->blockFormat[$this->mode];
         return $now->format($format);
     }
@@ -284,8 +284,8 @@ class RateTracker
 
     public function getRecords(Carbon $fromDatetime = null, Carbon $toDatetime = null, $fopen = null)
     {
-        $fromDatetime = $fromDatetime ?: Carbon::createFromTimestamp(0, 'UTC'); // Create the earliest date of 1970-01-01
-        $toDatetime = $toDatetime ?: Carbon::now('UTC'); // Current date
+        $fromDatetime = $fromDatetime ?: Carbon::createFromTimestamp(0); // Create the earliest date of 1970-01-01
+        $toDatetime = $toDatetime ?: Carbon::now(); // Current date
 
         $fromDatetimeStr = $this->makeBlock($fromDatetime);
         $toDatetimeStr = $this->makeBlock($toDatetime);
