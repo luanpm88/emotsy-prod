@@ -313,7 +313,7 @@ return [
         'Image' => Intervention\Image\Facades\Image::class,
         'Tool' => Acelle\Library\Tool::class,
         'Yaml' => Symfony\Component\Yaml\Yaml::class,
-        'Geoip'=> Lawepham\Geoip\Facades\LaweGeoipFacade::class,
+        'Geoip' => Lawepham\Geoip\Facades\LaweGeoipFacade::class,
         'Twig' => TwigBridge\Facade\Twig::class,
         'Billing' => Acelle\Library\Facades\Billing::class,
     ],

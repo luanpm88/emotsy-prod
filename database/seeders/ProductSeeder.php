@@ -16,12 +16,12 @@ class ProductSeeder extends Seeder
     public function run()
     {
         // delete all records
-        DB::table('products')->delete(); 
-        $user  = \Acelle\Model\User::find( 1 )->first();
+        DB::table('products')->delete();
+        $user  = \Acelle\Model\User::find(1)->first();
         $uid = $user->uid;
-        $customer_id =  $user->customer_id; 
-        $price  = [ 5000, 4600, 50000, 137000, 500, 67000]; 
-        
+        $customer_id =  $user->customer_id;
+        $price  = [ 5000, 4600, 50000, 137000, 500, 67000];
+
         $file = [
             'product-1.png', 'product-2.png', 'product-3.png', 'product-4.png', 'product-5.jpg', 'product-6.jpg'
         ];
@@ -35,7 +35,7 @@ class ProductSeeder extends Seeder
             \Acelle\Model\Product::STATUS_DRAPP,
             \Acelle\Model\Product::STATUS_WARNING,
             \Acelle\Model\Product::STATUS_REMOVE,
-        ]; 
+        ];
 
         $curency = ['đ','$'];
 
@@ -44,7 +44,7 @@ class ProductSeeder extends Seeder
             ['cuốn', '20 cuốn/ thùng'],
             ['cuộn', '30 cuộn / thùng'],
             ['Gói', '30 gói / thùng'],
-        ]; 
+        ];
 
         $name = [
             'Mật ong rừng Phú Quốc',
@@ -52,7 +52,7 @@ class ProductSeeder extends Seeder
             'Phòng tậm Gym Fitnes Happy',
             'Bệnh viện quốc tế Sangri-la',
             'Lẩu dựng bò tơ củ chi',
-            'Sashimi korea one', 
+            'Sashimi korea one',
             'Bột sắn dẫy',
             'giầy thể thao thời trang',
             'dụng cụ thể thao'
@@ -69,13 +69,13 @@ class ProductSeeder extends Seeder
             'làm content là một công việc cực kỳ vất vả và mất công sức, hãy thiết kế cho tôi một công cụ để giảm tải nghen bạn.',
             'Chat GPT và Bing Chat đều là 2 AI hiện đang làm tốt nhất những công việc tạo nội dung cho bạn, hãy tận dụng tiệt để những gì mà công nghệ mang lại cho bạn nghen, chúng thật tuyệt vời đóa bạn',
         ];
-         
+
         $meta = [
             'Chúng tôi là meta của sản phẩm này',
             'sản phẩm này có meta chính là tôi đó bạn, chúc mừng bạn đã thành công'
         ];
 
-        for($i=0; $i<10;$i++){  
+        for($i = 0; $i < 10;$i++) {
             $unitpack = $unit_pack[array_rand($unit_pack)];
             $unit = $unitpack[0];
             $pack = $unitpack[1];
@@ -83,25 +83,25 @@ class ProductSeeder extends Seeder
             DB::table('products')->insert([
                 [
                     'uid' => $uid,
-                    'customer_id' => $customer_id,   
-                    'name' =>  $name[array_rand($name)],   
-                    'description' => $description[array_rand($description)],   
-                    'content' => $content[array_rand($content)],   
-                    'price' => $price[array_rand($price)],    
-                    'meta' => $meta[array_rand($meta)],  
-                    'stock' => $stock[array_rand($stock)], 
-                    'unit' => $unit, 
+                    'customer_id' => $customer_id,
+                    'name' =>  $name[array_rand($name)],
+                    'description' => $description[array_rand($description)],
+                    'content' => $content[array_rand($content)],
+                    'price' => $price[array_rand($price)],
+                    'meta' => $meta[array_rand($meta)],
+                    'stock' => $stock[array_rand($stock)],
+                    'unit' => $unit,
                     'pack' => $pack,
-                    'curency'=> $curency[array_rand($curency)], 
-                    //'file'=> $filename, 
-                    'status' => $status[array_rand($status)], 
-                ] 
-            ]); 
+                    'curency' => $curency[array_rand($curency)],
+                    //'file'=> $filename,
+                    'status' => $status[array_rand($status)],
+                ]
+            ]);
             //$url = "https://brandviet.vn/wp-content/uploads/2023/07/".$filename;
             //$contents = file_get_contents($url);
             //$name = substr($url, strrpos($url, '/') + 1);
             //Storage::put('public/products/'.$filename, $contents);
         }
-          
+
     }
 }
