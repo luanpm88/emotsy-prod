@@ -2062,18 +2062,17 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
                 WHEN `%unsubscribe_logs`.`id` IS NOT NULL THEN '%unsubscribed'
             ELSE
                 CASE `%tracking_logs`.`status`
-                    WHEN '%sent'            THEN '%sent'
-                    WHEN '%failed'          THEN '%failed'
+                    WHEN '%sent' THEN '%sent'
+                    WHEN '%failed' THEN '%failed'
                 ELSE
                     CASE `%subscribers`.`status`
                         WHEN '%subscribed' THEN
                             CASE COALESCE(`%subscribers`.`verification_status`, '-1')
-                            WHEN '-1'           THEN '%new'
-                            WHEN '%deliverable' THEN '%new'
-                            ELSE                     '%skipped'
+                                WHEN '-1' THEN '%new'
+                                WHEN '%deliverable' THEN '%new'
+                            ELSE '%skipped'
                             END
-                        ELSE
-                            '%skipped'
+                        ELSE '%skipped'
                     END
                 END
             END
