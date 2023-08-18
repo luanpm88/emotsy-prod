@@ -36,6 +36,7 @@
 <link rel="stylesheet" type="text/css" href="{{ URL::asset('core/css/dark.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ URL::asset('core/css/menu.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ URL::asset('core/css/app.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ URL::asset('core/css/responsive.css') }}">
 
 <!-- Custom css -->
 <link rel="stylesheet" type="text/css" href="{{ URL::asset('custom.css') }}">

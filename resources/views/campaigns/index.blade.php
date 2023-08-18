@@ -66,7 +66,7 @@
                                 <span class="material-symbols-rounded desc">sort</span>
                             </button>
                         </span>
-                        <span class="text-nowrap">
+                        <span class="text-nowrap search-container">
                             <input type="text" name="keyword" class="form-control search" value="{{ request()->keyword }}" value="{{ request()->keyword }}" placeholder="{{ trans('messages.type_to_search') }}" />
                             <span class="material-symbols-rounded">search</span>
                         </span>
