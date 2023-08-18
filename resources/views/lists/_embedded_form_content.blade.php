@@ -63,6 +63,7 @@
 
         @if ($list->getEmbeddedFormOption('javascript') == 'yes')
             <script type="text/javascript" src="{{ URL::asset('core/js/jquery-3.6.4.min.js') }}"></script>
+            <script type="text/javascript" src="{{ URL::asset('core/js/jquery-migrate-3.4.1.min.js') }}"></script>
             <script type="text/javascript" src="{{ URL::asset('core/validate/jquery.validate.min.js') }}"></script>
             <script type="text/javascript" src="{{ URL::asset('core/datetime/anytime.min.js') }}"></script>
             <script type="text/javascript" src="{{ URL::asset('core/datetime/moment.min.js') }}"></script>
