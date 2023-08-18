@@ -2912,6 +2912,7 @@
   'tracking_log_status_pending' => '保留中',
   'tracking_log_status_sent' => '送信済み',
   'tracking_log_status_skipped' => 'Skipped',
+  'tracking_log_status_unsubscribed' => 'Unsubscribed',
   'tracking_status' => 'ステータスの追跡',
   'transaction.amount' => '価格',
   'transaction.failed' => '失敗',

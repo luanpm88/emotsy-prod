@@ -2921,6 +2921,7 @@
   'tracking_log_status_pending' => 'In attesa',
   'tracking_log_status_sent' => 'Inviato',
   'tracking_log_status_skipped' => 'Saltato',
+  'tracking_log_status_unsubscribed' => 'Unsubscribed',
   'tracking_status' => 'Status di monitoraggio',
   'transaction.amount' => 'Importo',
   'transaction.failed' => 'Fallito',

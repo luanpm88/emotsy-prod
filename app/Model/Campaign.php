@@ -2052,18 +2052,20 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
                 $join->on('tracking_logs.subscriber_id', 'subscribers.id');
             }
         )->leftJoin('bounce_logs', 'tracking_logs.message_id', 'bounce_logs.message_id')
-         ->leftJoin('feedback_logs', 'tracking_logs.message_id', 'feedback_logs.message_id');
+         ->leftJoin('feedback_logs', 'tracking_logs.message_id', 'feedback_logs.message_id')
+         ->leftJoin('unsubscribe_logs', 'tracking_logs.message_id', 'unsubscribe_logs.message_id');
 
         $query->select(DB::raw(strtr("
-            CASE WHEN `%bounce_logs`.`id` IS NOT NULL THEN '%bounced'
+            CASE
+                WHEN `%bounce_logs`.`id` IS NOT NULL THEN '%bounced'
+                WHEN `%feedback_logs`.`id` IS NOT NULL THEN '%feedback'
+                WHEN `%unsubscribe_logs`.`id` IS NOT NULL THEN '%unsubscribed'
             ELSE
-                CASE WHEN `%feedback_logs`.`id` IS NOT NULL THEN '%feedback'
-                ELSE
-                    CASE `%tracking_logs`.`status`
+                CASE `%tracking_logs`.`status`
                     WHEN '%sent'            THEN '%sent'
                     WHEN '%failed'          THEN '%failed'
-                    ELSE
-                        CASE `%subscribers`.`status`
+                ELSE
+                    CASE `%subscribers`.`status`
                         WHEN '%subscribed' THEN
                             CASE COALESCE(`%subscribers`.`verification_status`, '-1')
                             WHEN '-1'           THEN '%new'
@@ -2072,7 +2074,6 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
                             END
                         ELSE
                             '%skipped'
-                        END
                     END
                 END
             END
@@ -2085,11 +2086,13 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
             '%bounced' => self::DELIVERY_STATUS_BOUNCED,
             '%feedback' => self::DELIVERY_STATUS_FEEDBACK,
             '%subscribed' => Subscriber::STATUS_SUBSCRIBED,
+            '%unsubscribed' => Subscriber::STATUS_UNSUBSCRIBED,
             '%deliverable' => Subscriber::VERIFICATION_STATUS_DELIVERABLE,
             '%tracking_logs' => table('tracking_logs'),
             '%subscribers' => table('subscribers'),
             '%bounce_logs' => table('bounce_logs'),
-            '%feedback_logs' => table('feedback_logs')
+            '%feedback_logs' => table('feedback_logs'),
+            '%unsubscribe_logs' => table('unsubscribe_logs')
         ])));
 
         return $query;

@@ -2923,6 +2923,7 @@
   'tracking_log_status_pending' => 'Pending',
   'tracking_log_status_sent' => 'Gesendet',
   'tracking_log_status_skipped' => 'Übersprungen',
+  'tracking_log_status_unsubscribed' => 'Unsubscribed',
   'tracking_status' => 'Tracking Status',
   'transaction.amount' => 'Betrag',
   'transaction.failed' => 'Failed',
