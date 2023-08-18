@@ -106,7 +106,7 @@ class Form extends Model implements HasTemplateInterface
         $this->save();
     }
 
-    public function getMetadata($name=null)
+    public function getMetadata($name = null)
     {
         if (!$this['metadata']) {
             return json_decode('{}', true);
@@ -192,7 +192,7 @@ class Form extends Model implements HasTemplateInterface
         return $result;
     }
 
-    public function renderedContent($content=null)
+    public function renderedContent($content = null)
     {
         if (!$content) {
             $content = $this->template->content;

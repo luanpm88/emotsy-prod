@@ -14,55 +14,55 @@ class AddFieldsToProdutcsTable extends Migration
     public function up()
     {
         $myTable    = 'products';
-        $column     =   'category_id'; 
-        if (!Schema::hasColumn($myTable, $column)){
-            Schema::table($myTable, function (Blueprint $table) use ($column) { 
-                $table->bigInteger($column)->unsigned()->nullable();  
+        $column     =   'category_id';
+        if (!Schema::hasColumn($myTable, $column)) {
+            Schema::table($myTable, function (Blueprint $table) use ($column) {
+                $table->bigInteger($column)->unsigned()->nullable();
                 $table->foreign($column)->references('id')->on('categories')->onDelete('set null');
             });
         }
         $column     =   'unit';
-        if (!Schema::hasColumn($myTable, $column)){
+        if (!Schema::hasColumn($myTable, $column)) {
             Schema::table($myTable, function (Blueprint $table) use ($column) {
-                $table->text($column)->nullable(); 
+                $table->text($column)->nullable();
             });
         }
-        $column     =   'stock'; 
-        if (!Schema::hasColumn($myTable, $column)){
+        $column     =   'stock';
+        if (!Schema::hasColumn($myTable, $column)) {
             Schema::table($myTable, function (Blueprint $table) use ($column) {
-                $table->integer($column)->nullable(); 
+                $table->integer($column)->nullable();
             });
         }
-        $column     =   'name'; 
-        if (!Schema::hasColumn($myTable, $column)){
+        $column     =   'name';
+        if (!Schema::hasColumn($myTable, $column)) {
             Schema::table($myTable, function (Blueprint $table) use ($column) {
-                $table->string($column)->nullable(); 
+                $table->string($column)->nullable();
             });
         }
-        $column     =   'curency'; 
-        if (!Schema::hasColumn($myTable, $column)){
+        $column     =   'curency';
+        if (!Schema::hasColumn($myTable, $column)) {
             Schema::table($myTable, function (Blueprint $table) use ($column) {
-                $table->string($column)->nullable(); 
+                $table->string($column)->nullable();
             });
         }
-        $column     =   'file'; 
-        if (!Schema::hasColumn($myTable, $column)){
+        $column     =   'file';
+        if (!Schema::hasColumn($myTable, $column)) {
             Schema::table($myTable, function (Blueprint $table) use ($column) {
-                $table->text($column)->nullable(); 
+                $table->text($column)->nullable();
             });
         }
-        $column     =   'pack'; 
-        if (!Schema::hasColumn($myTable, $column)){
+        $column     =   'pack';
+        if (!Schema::hasColumn($myTable, $column)) {
             Schema::table($myTable, function (Blueprint $table) use ($column) {
-                $table->string($column)->nullable(); 
+                $table->string($column)->nullable();
             });
         }
-        $column     =   'status'; 
-        if (!Schema::hasColumn($myTable, $column)){
+        $column     =   'status';
+        if (!Schema::hasColumn($myTable, $column)) {
             Schema::table($myTable, function (Blueprint $table) use ($column) {
-                $table->string($column)->nullable(); 
+                $table->string($column)->nullable();
             });
-        } 
+        }
     }
 
     /**
@@ -76,22 +76,23 @@ class AddFieldsToProdutcsTable extends Migration
         $columns    = [
             'pack',  'unit' , 'stock', 'curency', 'file', 'status', 'name'
         ];
-        foreach($columns as $column){
-            $this->myDropColumnIfExists( $myTable, $column);
+        foreach($columns as $column) {
+            $this->myDropColumnIfExists($myTable, $column);
         }
 
         //-- remove when has relation
         $column = 'category_id';
-        Schema::table($myTable, function (Blueprint $table) use ($column) { 
-            $table->dropForeign([$column]);  
+        Schema::table($myTable, function (Blueprint $table) use ($column) {
+            $table->dropForeign([$column]);
         });
-        $this->myDropColumnIfExists( $myTable, $column );
+        $this->myDropColumnIfExists($myTable, $column);
 
     }
     // - checck exist column
-    public function myDropColumnIfExists($myTable, $column){
-        if (Schema::hasColumn($myTable, $column)){
-            Schema::table($myTable, function (Blueprint $table) use ($column){
+    public function myDropColumnIfExists($myTable, $column)
+    {
+        if (Schema::hasColumn($myTable, $column)) {
+            Schema::table($myTable, function (Blueprint $table) use ($column) {
                 $table->dropColumn($column); //drop it
             });
         }

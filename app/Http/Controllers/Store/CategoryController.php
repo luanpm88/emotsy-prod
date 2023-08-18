@@ -45,7 +45,7 @@ class CategoryController extends Controller
         $categorys = Category::search($keyword);
 
         // filter by status
-        if ($status!='all') {
+        if ($status != 'all') {
             $categorys->where('status', 'like', $status);
         }
         if ($request->filters) {
@@ -133,16 +133,16 @@ class CategoryController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-     public function edit(Request $request, $id)
-     {
-         $category = Category::find($id);
-         return view('store.categories.edit', [
-            'category' =>  $category,
-            'parents' => Category::where('parent_id', null)
-                                        ->whereNotIn('id', [ $id ])
-                                        ->get() 
-         ]);
-     }
+    public function edit(Request $request, $id)
+    {
+        $category = Category::find($id);
+        return view('store.categories.edit', [
+           'category' =>  $category,
+           'parents' => Category::where('parent_id', null)
+                                       ->whereNotIn('id', [ $id ])
+                                       ->get()
+        ]);
+    }
 
     /**
      * Get message content for create sms campaign
@@ -157,13 +157,13 @@ class CategoryController extends Controller
         ]);
     }
 
-     /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+    /**
+    * Update the specified resource in storage.
+    *
+    * @param  \Illuminate\Http\Request  $request
+    * @param  int  $id
+    * @return \Illuminate\Http\Response
+    */
 
     public function update(Request $request, $id)
     {
@@ -302,6 +302,6 @@ class CategoryController extends Controller
         $smsFunnel = Funnel::find($request->id);
         $smsFunnel->status = $request->status;
         $smsFunnel->save();
-        return response()->json(['success'=> trans('store.categories.status.updatesuccess')]);
+        return response()->json(['success' => trans('store.categories.status.updatesuccess')]);
     }
 }

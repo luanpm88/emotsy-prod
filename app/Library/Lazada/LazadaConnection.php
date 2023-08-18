@@ -23,9 +23,9 @@ class LazadaConnection
     public $appSecret;
     public $service;
     public $data;
-    public $endpoint="https://api.lazada.vn/rest";
+    public $endpoint = "https://api.lazada.vn/rest";
 
-    public function __construct($appKey=false, $appSecret=false, $data=[])
+    public function __construct($appKey = false, $appSecret = false, $data = [])
     {
         $this->appKey = config('lazada.key');
         $this->appSecret = config('lazada.secret');
@@ -71,7 +71,7 @@ class LazadaConnection
         $this->data = json_decode($res, true);
     }
 
-    public function makeRequest($url, $params, $method='GET')
+    public function makeRequest($url, $params, $method = 'GET')
     {
         $this->service = new LazopClient("https://api.lazada.vn/rest", $this->appKey, $this->appSecret);
 
@@ -88,7 +88,7 @@ class LazadaConnection
         }
     }
 
-    public function getProducts($options=[])
+    public function getProducts($options = [])
     {
         return $this->makeRequest('/products/get', $options);
     }

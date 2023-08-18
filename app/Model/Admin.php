@@ -400,7 +400,7 @@ class Admin extends Model
      *
      * @return bool
      */
-    public function can($action, $item=null)
+    public function can($action, $item = null)
     {
         if ($item) {
             return $this->user->can($action, [$item, 'admin']);

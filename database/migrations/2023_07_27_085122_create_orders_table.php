@@ -14,7 +14,7 @@ class CreateOrdersTable extends Migration
     public function up()
     {
         Schema::create('orders', function (Blueprint $table) {
-            $table->increments('id'); 
+            $table->increments('id');
             $table->string('uid')->nullable();
             $table->integer('customer_id')->nullable();
             $table->integer('source_id')->nullable();
@@ -26,7 +26,7 @@ class CreateOrdersTable extends Migration
             $table->string('status')->nullable();
             $table->string('source_item_id')->nullable();
             $table->string('file')->nullable();
-            
+
             $table->integer('amount')->nullable();
             $table->integer('tax')->nullable();
             $table->integer('move')->nullable();

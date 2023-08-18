@@ -53,12 +53,12 @@ class Setting extends Model
      *
      * @return object
      */
-    public static function get($name, $defaultValue=null)
+    public static function get($name, $defaultValue = null)
     {
         if (config('app.sms') && in_array($name, ['frontend_scheme','backend_scheme'])) {
             return 'sms';
         }
-        
+
         $setting = self::where('name', $name)->first();
 
         if ($setting) {
@@ -780,7 +780,7 @@ class Setting extends Model
         self::set('tax', json_encode($settings));
     }
 
-    public static function getTaxByCountry($country=null)
+    public static function getTaxByCountry($country = null)
     {
         if (self::getTaxSettings()['enabled'] !== 'yes') {
             return 0;

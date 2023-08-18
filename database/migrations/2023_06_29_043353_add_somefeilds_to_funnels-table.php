@@ -8,16 +8,16 @@ class AddSomefeildsToFunnelsTable extends Migration
 {
     /**
      * Run the migrations.
-     * 
+     *
      * @return void
      */
     public function up()
     {
-        if (!Schema::hasColumn('funnels', 'file')){
+        if (!Schema::hasColumn('funnels', 'file')) {
             Schema::table('funnels', function (Blueprint $table) {
                 $table->string('file')->nullable();
             });
-        } 
+        }
     }
 
     /**
@@ -29,13 +29,13 @@ class AddSomefeildsToFunnelsTable extends Migration
     {
         $this->myDropColumnIfExists();
     }
-    
-    function myDropColumnIfExists()
+
+    public function myDropColumnIfExists()
     {
         $column = 'file';
         $myTable = 'funnels';
-        if (Schema::hasColumn($myTable, $column)){
-            Schema::table($myTable, function (Blueprint $table) use($column){
+        if (Schema::hasColumn($myTable, $column)) {
+            Schema::table($myTable, function (Blueprint $table) use ($column) {
                 $table->dropColumn('file');
             });
         }

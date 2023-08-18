@@ -58,7 +58,7 @@ class CronJob extends Notification
             return false;
         }
 
-        $lastexec = \Carbon\Carbon::createFromTimestamp($timestamp, 'UTC');
+        $lastexec = \Carbon\Carbon::createFromTimestamp($timestamp);
         $checked = new \Carbon\Carbon(sprintf('%s ago', $diff));
 
         return $lastexec->gte($checked);
@@ -77,8 +77,6 @@ class CronJob extends Notification
         }
 
         // Return the datetime object with selected timezone
-        // However, make sure the cronjob_last_execution was previously saved in UTC
-        // As the createFromTimestamp() assumes that the timestamp passed to it is in UTC
         return \Carbon\Carbon::createFromTimestamp($timestamp)->toDateTimeString();
     }
 }

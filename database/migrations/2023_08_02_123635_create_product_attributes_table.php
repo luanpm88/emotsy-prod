@@ -13,8 +13,7 @@ class CreateProductAttributesTable extends Migration
      */
     public function up()
     {
-        if (!Schema::hasTable('product_attributes'))
-        {
+        if (!Schema::hasTable('product_attributes')) {
             Schema::create('product_attributes', function (Blueprint $table) {
                 $table->id();
                 $table->uuid('uid')->nullable();

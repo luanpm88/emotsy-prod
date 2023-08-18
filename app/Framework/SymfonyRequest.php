@@ -12,7 +12,7 @@ class SymfonyRequest extends BaseRequest
      *
      * @return static
      */
-    public static function createFromGlobals($uri=null)
+    public static function createFromGlobals($uri = null)
     {
         // With the php's bug #66606, the php's built-in web server
         // stores the Content-Type and Content-Length header values in

@@ -841,7 +841,7 @@ class Template extends Model
             foreach ($items as $item) {
                 // $element->find('.woo-items')[0]->innertext = 'dddddd';
                 $itemsHtml[] = '
-                    <div class="woo-col-item mb-4 mt-4 col-md-' . (12/$display) . '">
+                    <div class="woo-col-item mb-4 mt-4 col-md-' . (12 / $display) . '">
                         <div class="">
                             <div class="img-col mb-3">
                                 <div class="d-flex align-items-center justify-content-center" style="height: 200px;">

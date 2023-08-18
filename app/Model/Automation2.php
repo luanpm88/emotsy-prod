@@ -314,7 +314,7 @@ class Automation2 extends Model
     /**
      * Get delay options.
      */
-    public static function getDelayOptions($moreOptions=[])
+    public static function getDelayOptions($moreOptions = [])
     {
         return array_merge($moreOptions, [
             ['text' => trans_choice('messages.automation.delay.minute', 1), 'value' => '1 minute'],
@@ -541,7 +541,7 @@ class Automation2 extends Model
 
         // Only trigger once a day
         // Counting by user timezone
-        $startOfDayUtc = $today->startOfDay()->timezone('UTC');
+        $startOfDayUtc = $today->startOfDay()->timezone(config('app.timezone'));
 
         $subscribers = $this->subscribersToSend()->leftJoin('auto_triggers', function ($join) use ($thisId, $startOfDayUtc) {
             $join->on('auto_triggers.subscriber_id', 'subscribers.id');
@@ -581,7 +581,7 @@ class Automation2 extends Model
 
         // Only trigger once a day
         // Counting by user timezone
-        $startOfDayUtc = $today->startOfDay()->timezone('UTC');
+        $startOfDayUtc = $today->startOfDay()->timezone(config('app.timezone'));
 
         $subscribers = $this->subscribersToSend()->leftJoin('auto_triggers', function ($join) use ($thisId, $startOfDayUtc) {
             $join->on('auto_triggers.subscriber_id', 'subscribers.id');
@@ -735,7 +735,7 @@ class Automation2 extends Model
 
         $trigger = $this->getTriggerAction();
         $now = $this->customer->getCurrentTime();
-        $eventDate = $this->customer->parseDateTimeFromUtcString(sprintf('%s %s', $trigger->getOption('date'), $trigger->getOption('at')));
+        $eventDate = Carbon::parse(sprintf('%s %s', $trigger->getOption('date'), $trigger->getOption('at')))->timezone($this->customer->timezone);
 
         // Condition same date but after the specified time
         $format = 'Y-m-d';
@@ -1247,7 +1247,7 @@ class Automation2 extends Model
      *
      * @return array
      */
-    public static function waitTimeUnitOptions($moreOptions=[])
+    public static function waitTimeUnitOptions($moreOptions = [])
     {
         return array_merge($moreOptions, [
             ['value' => 'day', 'text' => trans('messages.day')],
@@ -1262,7 +1262,7 @@ class Automation2 extends Model
      *
      * @return array
      */
-    public static function cartWaitTimeUnitOptions($moreOptions=[])
+    public static function cartWaitTimeUnitOptions($moreOptions = [])
     {
         return array_merge($moreOptions, [
             ['value' => 'minute', 'text' => trans('messages.minute')],
@@ -1337,7 +1337,7 @@ class Automation2 extends Model
         return $types;
     }
 
-    public function newDefault($fields=[])
+    public function newDefault($fields = [])
     {
         if (!isset($fields['name'])) {
             $this->name = trans('messages.automation.untitled');
@@ -1524,7 +1524,7 @@ class Automation2 extends Model
         throw new Exception("Invalid trigger type: ".$type);
     }
 
-    public static function getConditionWaitOptions($custom=null)
+    public static function getConditionWaitOptions($custom = null)
     {
         $result = [
             ['text' => trans_choice('messages.count_hour', 12), 'value' => '12 hours'],

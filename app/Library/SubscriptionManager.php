@@ -63,7 +63,7 @@ class SubscriptionManager
         }
     }
 
-    public function log($subscription, $type, $invoice_uid=null, $metadata=[])
+    public function log($subscription, $type, $invoice_uid = null, $metadata = [])
     {
         $log = $subscription->subscriptionLogs()->create([
             'type' => $type,

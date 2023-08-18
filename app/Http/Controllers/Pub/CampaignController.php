@@ -155,7 +155,7 @@ class CampaignController extends Controller
             $days = [];
 
             // columns
-            for ($i = Carbon::now('UTC')->subMonths(1)->diff(Carbon::now('UTC'))->days-1; $i >= 0; --$i) {
+            for ($i = Carbon::now('UTC')->subMonths(1)->diff(Carbon::now('UTC'))->days - 1; $i >= 0; --$i) {
                 $time = Carbon::now()->timezone($currentTimezone)->subDays($i);
                 $result['columns'][] = $time->format('m-d');
                 $days[] = $time->format('Y-m-d');
@@ -176,7 +176,7 @@ class CampaignController extends Controller
             $months = [];
 
             // columns
-            for ($i = Carbon::now('UTC')->subYears(1)->diffInMonths(Carbon::now('UTC'))-1; $i >= 0; --$i) {
+            for ($i = Carbon::now('UTC')->subYears(1)->diffInMonths(Carbon::now('UTC')) - 1; $i >= 0; --$i) {
                 $time = Carbon::now()->timezone($currentTimezone)->subMonths($i);
                 $result['columns'][] = $time->format('Y, M');
                 $months[] = $time->format('Y-m');

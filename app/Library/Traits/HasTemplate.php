@@ -41,7 +41,7 @@ trait HasTemplate
     /**
      * Get template.
      */
-    public function setTemplate($template, $name=null)
+    public function setTemplate($template, $name = null)
     {
         $campaignTemplate = $template->copyAsPrivate([
             'name' => $name ? $name : trans('messages.campaign.template_name', ['name' => $this->name]),

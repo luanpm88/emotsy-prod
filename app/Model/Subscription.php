@@ -615,7 +615,7 @@ class Subscription extends Model
      *
      * @return array
      */
-    public function addLog($type, $data, $transaction_id=null)
+    public function addLog($type, $data, $transaction_id = null)
     {
         $log = new SubscriptionLog();
         $log->subscription_id = $this->id;
@@ -905,15 +905,15 @@ class Subscription extends Model
         $currentAmount = $this->plan->price;
         $periodDays = $this->current_period_ends_at->diffInDays($this->periodStartAt()->startOfDay());
         $remainDays = $this->current_period_ends_at->diffInDays(Carbon::now()->startOfDay());
-        $currentPerDayAmount = ($currentAmount/$periodDays);
-        $newAmount = ($plan->price/$periodDays)*$remainDays;
-        $remainAmount = $currentPerDayAmount*$remainDays;
+        $currentPerDayAmount = ($currentAmount / $periodDays);
+        $newAmount = ($plan->price / $periodDays) * $remainDays;
+        $remainAmount = $currentPerDayAmount * $remainDays;
 
         $amount = $newAmount - $remainAmount;
 
         // if amount < 0
         if ($amount < 0) {
-            $days = (int) ceil(-($amount/$currentPerDayAmount));
+            $days = (int) ceil(-($amount / $currentPerDayAmount));
             $amount = 0;
             $newEndsAt->addDays($days);
 

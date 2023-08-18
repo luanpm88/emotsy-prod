@@ -34,5 +34,5 @@ class CreateAttributesTable extends Migration
         Schema::dropIfExists('attributes');
     }
 
-    
+
 }

@@ -9,7 +9,7 @@ trait QueryHelper
     public function scopePerPage($query, $size, $callback)
     {
         $count = $query->count();
-        $pages = (int)ceil($query->count()/$size);
+        $pages = (int)ceil($query->count() / $size);
         for ($i = 0; $i < $pages; $i += 1) {
             $offset = $size * $i;
             $callback($query->limit($size)->offset($offset));

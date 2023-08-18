@@ -18,7 +18,7 @@ class FunnelSeeder extends Seeder
         // delete all records
         DB::table('funnels')->delete();
         $file = [
-            'funnel-1.jpg', 'funnel-2.jpg', 'funnel-3.jpg', 'funnel-4.jpg', 'funnel-5.jpg' 
+            'funnel-1.jpg', 'funnel-2.jpg', 'funnel-3.jpg', 'funnel-4.jpg', 'funnel-5.jpg'
         ];
         $name = [
             'Thời trang',
@@ -41,9 +41,9 @@ class FunnelSeeder extends Seeder
             'Sale off trung thu dành cho các bé nghen, không phải dành cho người lớn đâu',
             'Black friday giảm tất cả các mặt hằng thưa đại chúng, hay nhanh chân nhanh tay nghen, cấm chen lấn sô đẩy',
             'Happy new year chúc mừng năm mới với nhiều thành công mới hon cho công cuộc phát triêrn của bạn',
-        ];        
+        ];
         $status = ['active','inactive'];
-        for($i=0; $i<10;$i++){  
+        for($i = 0; $i < 10;$i++) {
             $filename = $file[array_rand($file)];
             DB::table('funnels')->insert([
                 [
@@ -51,15 +51,15 @@ class FunnelSeeder extends Seeder
                     'name'      => $name[array_rand($name)],
                     'message'   => $message[array_rand($message)],
                     'file'      => $filename,
-                    'status'    => $status[array_rand($status)],            
-                ] 
-            ]);  
+                    'status'    => $status[array_rand($status)],
+                ]
+            ]);
             $url = "https://brandviet.vn/wp-content/uploads/2023/07/".$filename;
             $contents = file_get_contents($url);
             //$name = substr($url, strrpos($url, '/') + 1);
             Storage::put('public/funnels/'.$filename, $contents);
-            
+
         }
-        
+
     }
 }

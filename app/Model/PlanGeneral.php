@@ -269,7 +269,7 @@ class PlanGeneral extends Plan implements PlanInterface
         $options = [
             ['value' => '', 'text' => trans('messages.none')],
         ];
-        for ($i=1; $i <= 100; $i++) {
+        for ($i = 1; $i <= 100; $i++) {
             $options[] = ['value' => $i, 'text' => $i . '%'];
         }
 

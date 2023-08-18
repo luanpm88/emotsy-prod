@@ -52,7 +52,7 @@ class InvoiceItem extends Model
     {
         $tax = $this->getTaxPercent();
 
-        return ($this->subTotal() * ($tax/100));
+        return ($this->subTotal() * ($tax / 100));
     }
 
     public function subTotal()

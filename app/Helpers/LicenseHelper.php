@@ -107,8 +107,7 @@ class LicenseHelper
             throw new \Exception('Invalid license key. Please go to Settings > License dashboard and enter a valid license key to register your installation');
         }
 
-        // Assume that the value is in UTC
-        $supportedUntil = Carbon::parse($result['data']['supported_until'], 'UTC');
+        $supportedUntil = Carbon::parse($result['data']['supported_until']);
         $supported = $result['data']['supported'];
 
         return [

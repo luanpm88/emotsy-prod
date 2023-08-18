@@ -7,7 +7,7 @@ use Acelle\Library\Traits\HasUid;
 
 class WpPost extends Model
 {
-    protected $connection= 'wordpress';
+    protected $connection = 'wordpress';
 
     public static function scopeProducts($query)
     {

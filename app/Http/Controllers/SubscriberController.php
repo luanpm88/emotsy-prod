@@ -405,7 +405,7 @@ class SubscriberController extends Controller
                 'logDownloadUrl' => action('SubscriberController@downloadImportLog', ['job_uid' => $currentJob->uid]),
                 'importNotifications' => $importNotifications,
             ]);
-        // GET, do not have any job
+            // GET, do not have any job
         } else {
             return view('subscribers.import', [
                 'list' => $list,
@@ -541,7 +541,7 @@ class SubscriberController extends Controller
                 'cancelUrl' => action('SubscriberController@cancelExport', ['job_uid' => $currentJob->uid]),
                 'downloadUrl' => action('SubscriberController@downloadExportedFile', ['job_uid' => $currentJob->uid]),
             ]);
-        // GET, do not have any job
+            // GET, do not have any job
         } else {
             return view('subscribers.export', [
                 'list' => $list

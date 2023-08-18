@@ -45,7 +45,7 @@ class FunnelController extends Controller
         $smsFunnels = Funnel::search($keyword);
 
         // filter by status
-        if ($status!='all') {
+        if ($status != 'all') {
             $smsFunnels->where('status', 'like', $status);
         }
         if ($request->filters) {
@@ -130,15 +130,15 @@ class FunnelController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-     public function edit(Request $request, $id)
-     {
-         $smsFunnel = Funnel::find($id);
+    public function edit(Request $request, $id)
+    {
+        $smsFunnel = Funnel::find($id);
 
-         return view('store.funnels.edit', [
-            'smsFunnel'    =>  $smsFunnel,
-            'tags' => Funnel::getTags(),
-         ]);
-     }
+        return view('store.funnels.edit', [
+           'smsFunnel'    =>  $smsFunnel,
+           'tags' => Funnel::getTags(),
+        ]);
+    }
 
     /**
      * Get message content for create sms campaign
@@ -153,13 +153,13 @@ class FunnelController extends Controller
         ]);
     }
 
-     /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+    /**
+    * Update the specified resource in storage.
+    *
+    * @param  \Illuminate\Http\Request  $request
+    * @param  int  $id
+    * @return \Illuminate\Http\Response
+    */
 
     public function update(Request $request, $id)
     {
@@ -287,6 +287,6 @@ class FunnelController extends Controller
         $smsFunnel = Funnel::find($request->id);
         $smsFunnel->status = $request->status;
         $smsFunnel->save();
-        return response()->json(['success'=> trans('store.sms_functional.status.updatesuccess')]);
+        return response()->json(['success' => trans('store.sms_functional.status.updatesuccess')]);
     }
 }

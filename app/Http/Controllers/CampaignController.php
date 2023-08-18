@@ -581,9 +581,9 @@ class CampaignController extends Controller
                 $campaign->save();
             } else {
                 $runAtStr = $request->delivery_date.' '.$request->delivery_time;
-                $runAt = Carbon::createFromFormat('Y-m-d H:i', $runAtStr, $currentTimezone)->timezone('UTC');
-                $campaign->run_at = $runAt; // store in UTC
-                $campaign->setScheduled(); // also save
+                $runAt = Carbon::createFromFormat('Y-m-d H:i', $runAtStr, $currentTimezone)->timezone(config('app.timezone'));
+                $campaign->run_at = $runAt;
+                $campaign->setScheduled();
             }
 
             return redirect()->action('CampaignController@confirm', ['uid' => $campaign->uid]);
@@ -772,6 +772,7 @@ class CampaignController extends Controller
     public function chart24h(Request $request)
     {
         $currentTimezone = $request->user()->customer->getTimezone();
+        $nowInUserTimezone = Carbon::now($currentTimezone);
         $campaign = Campaign::findByUid($request->uid);
 
         // authorize
@@ -791,13 +792,13 @@ class CampaignController extends Controller
 
             // columns
             for ($i = 23; $i >= 0; --$i) {
-                $time = Carbon::now()->timezone($currentTimezone)->subHours($i);
+                $time = $nowInUserTimezone->subHours($i);
                 $result['columns'][] = $time->format('h') . ':00 ' . $time->format('A');
                 $hours[] = $time->format('H');
             }
 
-            $openData24h = $campaign->openUniqHours(Carbon::now('UTC')->subHours(24), Carbon::now('UTC'));
-            $clickData24h = $campaign->clickHours(Carbon::now('UTC')->subHours(24), Carbon::now('UTC'));
+            $openData24h = $campaign->openUniqHours($nowInUserTimezone->subHours(24), $nowInUserTimezone);
+            $clickData24h = $campaign->clickHours($nowInUserTimezone->subHours(24), $nowInUserTimezone);
 
             // data
             foreach ($hours as $hour) {
@@ -812,13 +813,13 @@ class CampaignController extends Controller
 
             // columns
             for ($i = 2; $i >= 0; --$i) {
-                $time = Carbon::now()->timezone($currentTimezone)->subDays($i);
+                $time = $nowInUserTimezone->subDays($i);
                 $result['columns'][] = $time->format('m-d');
                 $days[] = $time->format('Y-m-d');
             }
 
-            $openData = $campaign->openUniqDays(Carbon::now('UTC')->subDays(3), Carbon::now('UTC')->endOfDay());
-            $clickData = $campaign->clickDays(Carbon::now('UTC')->subDays(3), Carbon::now('UTC')->endOfDay());
+            $openData = $campaign->openUniqDays($nowInUserTimezone->subDays(3), $nowInUserTimezone->endOfDay());
+            $clickData = $campaign->clickDays($nowInUserTimezone->subDays(3), $nowInUserTimezone->endOfDay());
 
             // data
             foreach ($days as $day) {
@@ -833,13 +834,13 @@ class CampaignController extends Controller
 
             // columns
             for ($i = 6; $i >= 0; --$i) {
-                $time = Carbon::now()->timezone($currentTimezone)->subDays($i);
+                $time = $nowInUserTimezone->subDays($i);
                 $result['columns'][] = $time->format('m-d');
                 $days[] = $time->format('Y-m-d');
             }
 
-            $openData = $campaign->openUniqDays(Carbon::now('UTC')->subDays(7), Carbon::now('UTC')->endOfDay());
-            $clickData = $campaign->clickDays(Carbon::now('UTC')->subDays(7), Carbon::now('UTC')->endOfDay());
+            $openData = $campaign->openUniqDays($nowInUserTimezone->subDays(7), $nowInUserTimezone->endOfDay());
+            $clickData = $campaign->clickDays($nowInUserTimezone->subDays(7), $nowInUserTimezone->endOfDay());
 
             // data
             foreach ($days as $day) {
@@ -853,14 +854,14 @@ class CampaignController extends Controller
             $days = [];
 
             // columns
-            for ($i = Carbon::now('UTC')->subMonths(1)->diff(Carbon::now('UTC'))->days-1; $i >= 0; --$i) {
-                $time = Carbon::now()->timezone($currentTimezone)->subDays($i);
+            for ($i = $nowInUserTimezone->subMonths(1)->diff(Carbon::now())->days - 1; $i >= 0; --$i) {
+                $time = $nowInUserTimezone->subDays($i);
                 $result['columns'][] = $time->format('m-d');
                 $days[] = $time->format('Y-m-d');
             }
 
-            $openData = $campaign->openUniqDays(Carbon::now('UTC')->subMonths(1), Carbon::now('UTC')->endOfDay());
-            $clickData = $campaign->clickDays(Carbon::now('UTC')->subMonths(1), Carbon::now('UTC')->endOfDay());
+            $openData = $campaign->openUniqDays($nowInUserTimezone->subMonths(1), $nowInUserTimezone->endOfDay());
+            $clickData = $campaign->clickDays($nowInUserTimezone->subMonths(1), $nowInUserTimezone->endOfDay());
 
             // data
             foreach ($days as $day) {

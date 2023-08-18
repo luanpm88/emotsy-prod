@@ -3,14 +3,14 @@
     
     @php
         $customer = Auth::user()->customer;
-        $date = $trigger->getOption('date') ? \Carbon\Carbon::createFromFormat(config('custom.date_format'), $trigger->getOption('date'), 'UTC')
+        $date = $trigger->getOption('date') ? \Carbon\Carbon::createFromFormat(config('custom.date_format'), $trigger->getOption('date'))
             ->timezone(Auth::user()->customer->timezone)
             ->format('Y-m-d') : '';
         if (!$date) {            
             $date = $customer->getCurrentTime()->format('Y-m-d');
         }
         
-        $time = $trigger->getOption('at') ? \Carbon\Carbon::createFromFormat(config('custom.time_format'), $trigger->getOption('at'), 'UTC')
+        $time = $trigger->getOption('at') ? \Carbon\Carbon::createFromFormat(config('custom.time_format'), $trigger->getOption('at'))
             ->timezone(Auth::user()->customer->timezone)
             ->format('H:i') : '';
         if (!$time) {

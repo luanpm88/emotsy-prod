@@ -32,4 +32,7 @@ return [
 
     // If "APP_PROFILE=" (empty), then make it return null too
     'app_profile' => env('APP_PROFILE', null) ?: null,
+
+    // Dry run mode, do not actually send anything
+    'dryrun' => env('APP_DRYRUN', false),
 ];

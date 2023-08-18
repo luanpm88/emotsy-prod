@@ -50,7 +50,7 @@ class OrdersController extends Controller
         $orders = Order::search($keyword);
 
         // filter by status
-        if ($status!='all') {
+        if ($status != 'all') {
             $orders->where('status', 'like', $status);
         }
         /*
@@ -148,7 +148,7 @@ class OrdersController extends Controller
 
             // set active
             $order->status = Order::STATUS_ACTIVE;
-        // set Uidv
+            // set Uidv
         } else {
             // set active
             $order->status = Order::STATUS_ACTIVE;
@@ -182,19 +182,19 @@ class OrdersController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-     public function edit(Request $request, $id)
-     {
-         $order = Order::find($id);
-         $categories = Category::whereNull('parent_id')
-                        ->orWhere(function ($query) {
-                            $query->whereIn('id', Category::select('id')->whereNotIn('parent_id', Category::select('id')->distinct()));
-                        })->get();
-         return view('store.orders.edit', [
-            'product'    =>  $order,
-            'categories' => $categories,
-            'tags' => Order::getTags(),
-         ]);
-     }
+    public function edit(Request $request, $id)
+    {
+        $order = Order::find($id);
+        $categories = Category::whereNull('parent_id')
+                       ->orWhere(function ($query) {
+                           $query->whereIn('id', Category::select('id')->whereNotIn('parent_id', Category::select('id')->distinct()));
+                       })->get();
+        return view('store.orders.edit', [
+           'product'    =>  $order,
+           'categories' => $categories,
+           'tags' => Order::getTags(),
+        ]);
+    }
 
     /**
      * Get message content for create sms campaign
@@ -209,13 +209,13 @@ class OrdersController extends Controller
         ]);
     }
 
-     /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+    /**
+    * Update the specified resource in storage.
+    *
+    * @param  \Illuminate\Http\Request  $request
+    * @param  int  $id
+    * @return \Illuminate\Http\Response
+    */
 
     public function update(Request $request, $id)
     {
@@ -351,6 +351,6 @@ class OrdersController extends Controller
         $order = Order::find($request->id);
         $order->status = $request->status;
         $order->save();
-        return response()->json(['success'=> trans('store.orders.status.updatesuccess')]);
+        return response()->json(['success' => trans('store.orders.status.updatesuccess')]);
     }
 }

@@ -2928,6 +2928,7 @@
   'tracking_log_status_pending' => 'Pending',
   'tracking_log_status_sent' => 'Sent',
   'tracking_log_status_skipped' => 'Skipped',
+  'tracking_log_status_unsubscribed' => 'Unsubscribed',
   'tracking_status' => 'Tracking status',
   'transaction.amount' => 'Amount',
   'transaction.failed' => 'Failed',

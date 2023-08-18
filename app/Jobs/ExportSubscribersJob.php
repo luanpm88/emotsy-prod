@@ -47,7 +47,7 @@ class ExportSubscribersJob extends Base
         \Carbon\Carbon::setLocale($this->mailList->customer->language->code);
 
         $this->mailList->export(function ($processed, $total, $failed, $message) {
-            $percentage = ($total && $processed) ? (int)($processed*100/$total) : 0;
+            $percentage = ($total && $processed) ? (int)($processed * 100 / $total) : 0;
 
             if ($total === 0) {
                 $percentage = 100;
