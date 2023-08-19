@@ -10,6 +10,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Acelle\Model\Campaign;
+use Acelle\Model\Email;
 use Acelle\Model\Subscriber;
 use Acelle\Model\SendingServer;
 use Acelle\Model\Subscription;
@@ -47,7 +48,7 @@ class SendMessage implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(Campaign $campaign, Subscriber $subscriber, SendingServer $server, Subscription $subscription = null, $triggerId = null)
+    public function __construct($campaign, Subscriber $subscriber, SendingServer $server, Subscription $subscription = null, $triggerId = null)
     {
         $this->campaign = $campaign;
         $this->subscriber = $subscriber;
