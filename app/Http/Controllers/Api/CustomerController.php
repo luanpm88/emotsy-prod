@@ -5,6 +5,8 @@ namespace Acelle\Http\Controllers\Api;
 use Illuminate\Http\Request;
 use Acelle\Http\Controllers\Controller;
 use Acelle\Model\Customer;
+use Acelle\Library\Facades\SubscriptionFacade;
+use Acelle\Model\SubscriptionLog;
 
 /**
  * /api/v1/customers - API controller for managing customers.
@@ -427,5 +429,71 @@ class CustomerController extends Controller
             'message' => trans('messages.customers.deleted'),
             'customer_uid' => $uid
         ), 200);
+    }
+
+    public function changePlan(Request $request, $uid, $plan_uid)
+    {
+        $user = \Auth::guard('api')->user();
+        $customer = \Acelle\Model\Customer::findByUid($uid);
+
+        // check if item exists
+        if (!$customer) {
+            return \Response::json(array('status' => 0, 'message' => 'Customer not found'), 404);
+        }
+
+        // authorize
+        if (!$user->can('changePlan', $customer)) {
+            return \Response::json(array('status' => 0, 'message' => 'Unauthorized'), 401);
+        }
+
+        $plan = \Acelle\Model\PlanGeneral::findByUid($plan_uid);
+
+        // check if item exists
+        if (!$plan) {
+            return \Response::json(array('status' => 0, 'message' => 'Can not find plan with id: ' . $plan_uid), 404);
+        }
+
+        // check if item active
+        if (!$plan->isActive()) {
+            return \Response::json(array('status' => 0, 'message' => 'Plan is not active'), 404);
+        }
+
+        // get current active subscription
+        $subscription = $customer->getCurrentActiveGeneralSubscription();
+
+        if (!$subscription) {
+            return \Response::json(array('status' => 0, 'message' => 'The customer does not have a current active subscription.'), 404);
+        }
+
+        // Đã có change plan invoice thì xóa nó luôn, change plan khác
+        if ($subscription->getItsOnlyUnpaidChangePlanInvoice()) {
+            $subscription->getItsOnlyUnpaidChangePlanInvoice()->delete();
+        }
+
+        try {
+            $changePlanInvoice = null;
+
+            \DB::transaction(function () use ($subscription, $plan, &$changePlanInvoice) {
+                // set invoice as pending
+                $changePlanInvoice = $subscription->createChangePlanInvoice($plan);
+
+                // Log
+                SubscriptionFacade::log($subscription, SubscriptionLog::TYPE_CHANGE_PLAN_INVOICE, $changePlanInvoice->uid, [
+                    'plan' => $subscription->getPlanName(),
+                    'new_plan' => $plan->name,
+                    'amount' => $changePlanInvoice->total(),
+                ]);
+            });
+
+            // return to subscription
+            return \Response::json(array(
+                'status' => 1,
+                'message' => 'Change '.$customer->displayName().' plan to '.$plan->name.' successfully.',
+                'customer_uid' => $customer->uid,
+                'plan_uid' => $plan->uid
+            ), 200);
+        } catch (\Throwable $e) {
+            return \Response::json(array('status' => 0, 'message' => $e->getMessage()), 500);
+        }
     }
 }

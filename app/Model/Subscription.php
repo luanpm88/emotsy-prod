@@ -891,6 +891,10 @@ class Subscription extends Model
             throw new Exception('Cannot change to a new plan if the current plan is unlimited');
         }
 
+        if ($this->plan->id == $plan->id) {
+            throw new Exception('The new plan is the same as current plan!');
+        }
+
         if (($this->plan->frequency_unit != $plan->frequency_unit) ||
             ($this->plan->frequency_amount != $plan->frequency_amount) ||
             ($this->plan->currency->code != $plan->currency->code)
