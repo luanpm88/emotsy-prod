@@ -331,6 +331,11 @@ class Subscription extends Model
             throw new \Exception("Hey, subscription này đâu có active đâu mà đòi change plan???");
         }
 
+        // already has change plan invoice
+        if ($this->getItsOnlyUnpaidChangePlanInvoice()) {
+            throw new \Exception("Hey, subscription này đã có unpaid change plan invoice rồi???");
+        }
+
         // calculate change plan amout ends at
         $metadata = $this->calcChangePlan($newPlan);
 
