@@ -583,7 +583,16 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('campaigns/{uid}/run', 'CampaignController@run');
     Route::get('campaigns/{uid}/update-stats', 'CampaignController@updateStats');
 
+    //
     Route::get('users/login-back', 'UserController@loginBack');
+
+    // User
+    Route::get('account/users/listing/{page?}', 'UserController@listing');
+    Route::get('account/users/sort', 'UserController@sort');
+    Route::get('account/users/delete', 'UserController@delete');
+    Route::get('account/users/disable', 'UserController@disable');
+    Route::get('account/users/enable', 'UserController@enable');
+    Route::resource('account/users', 'UserController');
 
     // Sending servers
     Route::get('sending_servers/{uid}/senders/dropbox', 'SendingServerController@fromDropbox');

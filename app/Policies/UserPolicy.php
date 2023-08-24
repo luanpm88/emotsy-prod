@@ -35,22 +35,68 @@ class UserPolicy
         return $user->id == $item->id;
     }
 
-    public function update(User $user, User $item)
+    public function update(User $user, User $item, $role='admin')
     {
-        $ability = $user->admin->getPermission('user_update');
-        $can = $ability == 'all'
-                || ($ability == 'own' && $user->id == $item->id);
-
+        // @important: in case of non-saas mode, it falls upon admin case
+        switch ($role) {
+            case 'admin':
+                $ability = $user->admin->getPermission('user_update');
+                $can = $ability == 'all'
+                        || ($ability == 'own' && $user->id == $item->id);
+                break;
+            case 'customer':
+                $can = $user->id != $item->id;
+                break;
+        }
         return $can;
     }
 
-    public function delete(User $user, User $item)
+    public function disable(User $user, User $item, $role='admin')
     {
-        $ability = $user->admin->getPermission('user_delete');
-        $can = $ability == 'all'
-                || ($ability == 'own' && $user->id == $item->id);
-        $can = $can && $user->id != $item->id;
+        // @important: in case of non-saas mode, it falls upon admin case
+        switch ($role) {
+            case 'admin':
+                $ability = $user->admin->getPermission('user_update');
+                $can = $ability == 'all'
+                        || ($ability == 'own' && $user->id == $item->id);
+                break;
+            case 'customer':
+                $can = $user->id != $item->id && $item->isActivated();
+                break;
+        }
+        return $can;
+    }
 
+    public function enable(User $user, User $item, $role='admin')
+    {
+        // @important: in case of non-saas mode, it falls upon admin case
+        switch ($role) {
+            case 'admin':
+                $ability = $user->admin->getPermission('user_update');
+                $can = $ability == 'all'
+                        || ($ability == 'own' && $user->id == $item->id);
+                break;
+            case 'customer':
+                $can = $user->id != $item->id && !$item->isActivated();
+                break;
+        }
+        return $can;
+    }
+
+    public function delete(User $user, User $item, $role='admin')
+    {
+        // @important: in case of non-saas mode, it falls upon admin case
+        switch ($role) {
+            case 'admin':
+                $ability = $user->admin->getPermission('user_delete');
+                $can = $ability == 'all'
+                        || ($ability == 'own' && $user->id == $item->id);
+                $can = $can && $user->id != $item->id;
+                break;
+            case 'customer':
+                $can = $user->id != $item->id;
+                break;
+        }
         return $can;
     }
 
