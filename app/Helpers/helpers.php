@@ -3,6 +3,7 @@
 use function Acelle\Helpers\xml_to_array;
 
 /**
+ *
  * Globally available helper methods.
  *
  * LICENSE: This product includes software developed at
@@ -18,6 +19,7 @@ use function Acelle\Helpers\xml_to_array;
  * @version    1.0
  *
  * @link       http://acellemail.com
+ *
  */
 
 /**
@@ -65,6 +67,7 @@ function db_quote($value)
  * @param int batch size
  * @param bool whether or not to skip the first header line
  * @param callback function
+ *
  */
 function each_batch($array, $batchSize, $skipHeader, $callback)
 {
