@@ -54,6 +54,9 @@
                 }).done(function(response) {
                     PlansCustomBillingCycle.getSelectContainer().html(response);
 
+                    // events
+                    PlansCustomBillingCycle.events();
+
                     initJs(PlansCustomBillingCycle.getSelectContainer());
 
                     PlansCustomBillingCycle.getPopup().hide();

@@ -11,8 +11,8 @@
                 }
 
             @endphp
-            <tr>
-                <td width="1%">
+            <tr class="position-relative">
+                <td width="1%" class="list-check-col">
                     <div class="text-nowrap">
                         <div class="checkbox inline me-1">
                             <label>
