@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Acelle\Http\Controllers\Controller;
 use Acelle\Model\SendingServer;
 use Acelle\Library\Facades\Hook;
+use Acelle\Model\SendingDomain;
 
 class SendingServerController extends Controller
 {
@@ -602,9 +603,11 @@ class SendingServerController extends Controller
                                 ->withInput();
                 }
             } else {
+
+
                 // validation
                 $validator = \Validator::make($request->all(), [
-                    'domain' => 'required|regex:/^(?:[-A-Za-z0-9]+\.)+[A-Za-z]{2,6}$/i',
+                    'domain' => 'required|regex:'.SendingDomain::VALIDATION_REGEXP,
                 ]);
 
                 if (in_array(strtolower($request->domain), $server->getVerifiedIdentities())) {

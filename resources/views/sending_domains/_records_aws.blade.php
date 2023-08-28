@@ -9,8 +9,8 @@
     </thead>
     <tbody class="bg-white">
         @if (!is_null($identity))
-            <tr>
-                <td width="1%">
+            <tr class="position-relative">
+                <td width="1%" class="list-check-col">
                     <span class="text-muted2 list-status pull-left">
                         <span class="label label-flat bg-ended square-tag">{{ $identity['type'] }}</span>
                     </span>

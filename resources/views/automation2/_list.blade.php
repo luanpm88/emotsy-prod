@@ -3,8 +3,8 @@
         current-page="{{ empty(request()->page) ? 1 : empty(request()->page) }}"
     >
         @foreach ($automations as $key => $automation)
-            <tr>
-                <td width="1%">
+            <tr class="position-relative">
+                <td width="1%" class="list-check-col">
                     <div class="text-nowrap">
                         <div class="checkbox inline me-1">
                             <label>

@@ -3,8 +3,8 @@
         current-page="{{ empty(request()->page) ? 1 : empty(request()->page) }}"
     >
         @foreach ($customers as $key => $customer)
-            <tr>
-                <td width="1%">
+            <tr class="position-relative">
+                <td width="1%" class="list-check-col">
                     <img width="50" class="rounded-circle me-2" src="{{ $customer->user->getProfileImageUrl() }}" alt="">
                 </td>
                 <td>

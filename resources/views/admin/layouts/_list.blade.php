@@ -3,8 +3,8 @@
         current-page="{{ empty(request()->page) ? 1 : empty(request()->page) }}"
     >
         @foreach ($items as $key => $item)
-            <tr>
-                <td width="1%">
+            <tr class="position-relative">
+                <td width="1%" class="list-check-col">
                     <i class="material-symbols-rounded fs-3 me-2 text-muted">{{ $item->type == 'page' ? "web" : "email" }}</i>
                 </td>
                 <td>

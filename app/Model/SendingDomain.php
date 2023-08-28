@@ -38,6 +38,7 @@ class SendingDomain extends Model
 
     public const STATUS_ACTIVE = 'active';
     public const STATUS_INACTIVE = 'inactive';
+    public const VALIDATION_REGEXP = '/^([a-z0-9A-Z]+(-[a-z0-9A-Z]+)*\.)+[a-zA-Z]{2,}$/';
 
     // The following global app settings are used by domain
     // + spf_host
@@ -117,7 +118,7 @@ class SendingDomain extends Model
     public static function rules()
     {
         return [
-            'name' => 'required|regex:/^([a-z0-9A-Z]+(-[a-z0-9A-Z]+)*\.)+[a-zA-Z]{2,}$/',
+            'name' => 'required|regex:'.self::VALIDATION_REGEXP,
         ];
     }
 

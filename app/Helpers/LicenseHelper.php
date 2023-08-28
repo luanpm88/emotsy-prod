@@ -73,20 +73,6 @@ class LicenseHelper
     }
 
     /**
-     * Check is valid extend license.
-     *
-     * @return bool
-     */
-    public static function isExtended($code = null)
-    {
-        if (is_null($code)) {
-            return \Acelle\Model\Setting::get('license_type') == self::TYPE_EXTENDED;
-        } else {
-            return self::isValid($code) && self::getLicenseType($code) == self::TYPE_EXTENDED;
-        }
-    }
-
-    /**
      * Check if supported.
      *
      * @return bool
