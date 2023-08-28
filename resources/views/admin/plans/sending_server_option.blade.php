@@ -43,7 +43,7 @@
                     </label>
                 </div>
                 <hr>
-                <div class="radio_box" data-popup='tooltip' title="">
+                <div class="radio_box pe-none" style="opacity: 0.6;" data-popup='tooltip' title="">
                     <label class="main-control">
                         <div class="">
                             <input {{ ($plan->getOption('sending_server_option') == \Acelle\Model\PlanGeneral::SENDING_SERVER_OPTION_SUBACCOUNT ? 'checked' : '') }} type="radio"
