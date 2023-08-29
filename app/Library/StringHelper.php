@@ -161,6 +161,11 @@ class StringHelper
      */
     public static function detectEncoding($file, $max = 100)
     {
+        // @important: sometimes PHP fails to correctly detect UTF-8 encoding (it returns ISO-8859-1 for a UTF-8 file!)
+        // So, for safety, we simply return false here
+        return false;
+
+        // legacy code:
         $file = fopen($file, 'r');
 
         $sample = '';
@@ -171,7 +176,7 @@ class StringHelper
         }
         fclose($file);
 
-        return mb_detect_encoding($sample, 'UTF-8, ISO-8859-1', true);
+        return mb_detect_encoding($sample, ['UTF-8', 'ISO-8859-1'], true);
     }
 
     /**
