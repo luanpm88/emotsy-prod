@@ -25,7 +25,6 @@ namespace Acelle\Model;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
-use Acelle\Library\Log as MailLog;
 use Acelle\Library\RouletteWheel;
 use Acelle\Library\StringHelper;
 use Acelle\Library\ExtendedSwiftMessage;
@@ -810,33 +809,26 @@ class MailList extends Model
     public function sendSubscriptionConfirmationEmail($subscriber)
     {
         if ($subscriber->isListedInBlacklist()) {
-            MailLog::info($subscriber->email.' is already blacklisted.');
             throw new \Exception(trans('messages.subscriber.blacklisted'));
         }
 
         if (Setting::isYes('verify_subscriber_email')) {
-            MailLog::info('Verifying subscriber email: '.$subscriber->email);
             // @important: the user must have its own verification server, this will not work for system verification server (even if the user has access to)
             $verifier = $this->customer->getEmailVerificationServers()->first();
 
             if (is_null($verifier)) {
-                MailLog::info(sprintf('Contact %s (%s) tries to subscribe to list %s (%s) but there is no verification service available', $subscriber->email, $subscriber->uid, $this->name, $this->uid));
                 throw new \Exception(trans('messages.subscriber.email.fail_to_verify'));
             }
 
             if (!$subscriber->verify($verifier)->isDeliverable()) {
-                MailLog::info(sprintf('Contact %s (%s) tries to subscribe to list %s (%s) but email address is invalid', $subscriber->email, $subscriber->uid, $this->name, $this->uid));
                 throw new \Exception(trans('messages.subscriber.email.invalid'));
             }
         }
-
-        MailLog::info('Sending subscription confirmation email to '.$subscriber->email);
 
         $layout = \Acelle\Model\Layout::where('alias', 'sign_up_confirmation_email')->first();
         $send_page = \Acelle\Model\Page::findPage($this, $layout);
         $send_page->renderContent(null, $subscriber);
         $this->sendMail($subscriber, $send_page, $send_page->getTransformedSubject($subscriber));
-        MailLog::info('Sent subscription confirmation email to '.$subscriber->email);
     }
 
     /**
@@ -918,7 +910,6 @@ class MailList extends Model
         $message->addPart($htmlContent, 'text/html');
 
         $mailer = App::make('xmailer');
-        MailLog::info('Sending unsubscription notification to list owner: '.$this->customer->user->email);
         $result = $mailer->sendWithDefaultFromAddress($message);
 
         if (array_key_exists('error', $result)) {
@@ -1021,23 +1012,23 @@ class MailList extends Model
             }
 
             // return false or an encoding name
-            $encoding = \Acelle\Library\StringHelper::detectEncoding($file);
+            $encoding = StringHelper::detectEncoding($file);
 
             if ($encoding == false) {
-                MailLog::warning("Cannot detect file's encoding: {$file}");
+                // Cannot detect file's encoding
             } elseif ($encoding != 'UTF-8') {
-                MailLog::warning("Convert from {$encoding} to UTF-8");
-                \Acelle\Library\StringHelper::toUTF8($file, $encoding);
+                // Convert from {$encoding} to UTF-8";
+                StringHelper::toUTF8($file, $encoding);
             } else {
-                MailLog::info('File encoding is UTF-8');
-                \Acelle\Library\StringHelper::checkAndRemoveUTF8BOM($file);
+                // File encoding is UTF-8
+                StringHelper::checkAndRemoveUTF8BOM($file);
             }
 
             // Run this method anyway
             // to make sure mb_convert_encoding($content, 'UTF-8', 'UTF-8') is always called
             // which helps resolve the issue of
             //     "Error executing job. SQLSTATE[HY000]: General error: 1366 Incorrect string value: '\x83??s k...' for column 'company' at row 2562 (SQL: insert into `dlk__tmp_subscribers..."
-            \Acelle\Library\StringHelper::toUTF8($file, 'UTF-8');
+            StringHelper::toUTF8($file, 'UTF-8');
 
             // Read CSV files
             $reader = \League\Csv\Reader::createFromPath($file);
@@ -1590,7 +1581,6 @@ class MailList extends Model
         $message->addPart($body, 'text/html');
 
         if (config('app.demo')) {
-            MailLog::info("In DEMO mode, send message '{$title}' to log instead: \n".$message->toString());
             return;
         }
 
@@ -1600,7 +1590,6 @@ class MailList extends Model
             ]);
         } catch (\Exception $ex) {
             $error = $ex->getMessage();
-            MailLog::error($error);
             $msg = trans('messages.list.error.cannot_send_notification_email', [ 'title' => $message->getSubject(), 'email' => $subscriber->email, 'error' => $error ]);
             throw new \Exception($msg);
         }
@@ -1627,13 +1616,9 @@ class MailList extends Model
             $id = RouletteWheel::take($selection);
             if (empty(self::$serverPools[$id])) {
                 $server = SendingServer::find($id);
-                MailLog::info(sprintf('Initialize delivery server `%s` (ID: %s)', $server->name, $id));
-
                 $server = SendingServer::mapServerType($server);
                 self::$serverPools[$id] = $server;
             }
-
-            MailLog::info(sprintf('Pick up delivery server `%s` (ID: %s)', self::$serverPools[$id]->name, $id));
 
             return self::$serverPools[$id];
         }
