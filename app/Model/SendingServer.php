@@ -1631,4 +1631,12 @@ class SendingServer extends Model
     {
         return $this->getRateLimitTracker()->getCreditsUsed();
     }
+
+    public function dryrun($message)
+    {
+        $output = '/tmp/dryrun';
+        $lineSeparator = PHP_EOL.'*********************************************'.PHP_EOL;
+        file_put_contents($output, $message->toString().$lineSeparator , FILE_APPEND | LOCK_EX);
+        return [ 'status' => self::DELIVERY_STATUS_SENT ];
+    }
 }
