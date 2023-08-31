@@ -981,7 +981,7 @@ class Subscription extends Model
         return $percentage;
     }
 
-    public static function createNewGeneralSubscription($customer, $plan)
+    public static function createNewSubscription($customer, $plan)
     {
         $subscription = new self();
         $subscription->status = self::STATUS_NEW;
