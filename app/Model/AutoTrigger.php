@@ -176,17 +176,23 @@ class AutoTrigger extends Model
 
     // Get actions in the RIGHT order and with the right branch
     // Use this method instead of #getActions which is for loading the first Trigger only
-    public function traverseExecutedPath($callback)
+    public function traverseExecutedPathWithLastPendingAction($callback)
     {
         // Starting point
         $action = $this->getTrigger();
 
         do {
-            if (is_null($action->getLastExecuted())) {
+            if (is_null($action->getLastExecuted()) && !$action->isDelayAction()) {
                 break;
             }
 
             $callback($action);
+
+            if (is_null($action->getLastExecuted()) && $action->isDelayAction()) {
+                // stop if hitting a "delay" action that is not executed
+                break;
+            }
+
             $action = $this->getNextAction($action);
         } while (!is_null($action));
     }
@@ -194,7 +200,7 @@ class AutoTrigger extends Model
     public function getExecutedActions()
     {
         $list = [];
-        $this->traverseExecutedPath(function ($action) use (&$list) {
+        $this->traverseExecutedPathWithLastPendingAction(function ($action) use (&$list) {
             $list[] = $action;
         });
 

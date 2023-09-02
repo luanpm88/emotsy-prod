@@ -5,6 +5,7 @@ namespace Acelle\Library\Automation;
 use Acelle\Model\Email;
 use Acelle\Model\EmailLink;
 use Illuminate\Support\Carbon;
+use Exception;
 
 class Evaluate extends Action
 {
@@ -147,13 +148,26 @@ class Evaluate extends Action
         }
     }
 
-    public function getProgressDescription()
+    public function getProgressDescription($timezone = null, $locale = null)
     {
         if (is_null($this->getLastExecuted())) {
+            $timezone = $timezone ?? config('app.timezone');
+            $locale = $locale ?? config('app.locale');
+
+            $now = Carbon::now();
+            $waitDuration = $this->getOption('wait');  // 1 hour, 1 day, 2 days
+            $parentExecutionTime = Carbon::createFromTimestamp($this->getParent()->getLastExecuted());
+            $due = $parentExecutionTime->modify($waitDuration)->timezone($timezone);
+            $until = format_datetime($due, 'datetime_short', $locale);
+
             if ($this->getOption('type') == 'open') {
-                return "* Check if email is opened";
+                return trans('messages.automation.action.condition.open_status_description', [ 'wait' => $waitDuration, 'until' => $until, 'diff' => $due->diffForHumans() ]);
+            } elseif ($this->getOption('type') == 'click') {
+                return trans('messages.automation.action.condition.click_status_description', [ 'wait' => $waitDuration, 'until' => $until, 'diff' => $due->diffForHumans() ]);
+            } elseif ($this->getOption('type') == 'reply') {
+                return trans('messages.automation.action.condition.reply_status_description', [ 'wait' => $waitDuration, 'until' => $until, 'diff' => $due->diffForHumans() ]);
             } else {
-                return "* Check if link is clicked";
+                throw new Exception('Invalid condition type: '.$this->getOption('type'));
             }
         }
 
@@ -218,5 +232,10 @@ class Evaluate extends Action
     public function getEvaluationResult()
     {
         return $this->evaluationResult;
+    }
+
+    public function isDelayAction()
+    {
+        return true;
     }
 }
