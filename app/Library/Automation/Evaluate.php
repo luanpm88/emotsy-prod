@@ -142,9 +142,17 @@ class Evaluate extends Action
         }
 
         if ($this->getOption('type') == 'open') {
-            return sprintf('Tracking: waiting for user %s to READ email entitled "%s"', $nameOrEmail, $email->subject);
-        } else {
-            return sprintf('Tracking: waiting for user %s to CLICK link "%s"', $nameOrEmail, $link->link);
+            if ($this->evaluationResult == 'true') {
+                return trans('messages.automation.timeline.open', [ 'user' => $nameOrEmail, 'email' => $email->subject ]);
+            } else {
+                return trans('messages.automation.timeline.not_open', [ 'user' => $nameOrEmail, 'email' => $email->subject ]);
+            }
+        } elseif ($this->getOption('type') == 'click') {
+            if ($this->evaluationResult == 'true') {
+                return trans('messages.automation.timeline.click', [ 'user' => $nameOrEmail, 'url' => $link->link ]);
+            } else {
+                return trans('messages.automation.timeline.not_click', [ 'user' => $nameOrEmail, 'url' => $link->link ]);
+            }
         }
     }
 

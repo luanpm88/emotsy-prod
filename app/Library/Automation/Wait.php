@@ -49,7 +49,7 @@ class Wait extends Action
     {
         $nameOrEmail = $this->autoTrigger->subscriber->getFullNameOrEmail();
 
-        return sprintf('Wait for 24 hours before proceeding with the next event for user %s', $nameOrEmail);
+        return trans('messages.automation.action.wait.executed_description', [ 'wait' => $this->getOption('time') ]);
     }
 
     public function getProgressDescription($timezone = null, $locale = null)
