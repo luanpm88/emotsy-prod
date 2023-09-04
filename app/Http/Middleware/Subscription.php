@@ -20,6 +20,9 @@ class Subscription
             return $next($request);
         }
 
+        // init
+        $activeSubscription = $request->user()->customer->getCurrentActiveSubscription(); // get current active subscription
+
         // Các trường hợp xảy ra:
         // 1. Chưa có subscription (ko có record subscription trong DB)
         //     null
@@ -30,10 +33,6 @@ class Subscription
         // 3. Có subscription new
         // 4. Có subscription new và đang pending for approval
         // 5. Có active subscription
-
-
-        // get current active subscription
-        $activeSubscription = $request->user()->customer->getCurrentActiveSubscription();
 
         // Case 1, 2, 3, 4: Chưa có current active subscription thì trả về subscription steps. Ở đây tiếp tục xử lý các bước dự vào từng case
         if (!$activeSubscription) {
