@@ -136,15 +136,15 @@ class SubscriptionController extends Controller
         // get unpaid invoice
         $invoice = $customer->invoices()->unpaid()->where('uid', '=', $request->invoice_uid)->first();
 
-        // always update invoice price from plan
-        $invoice->mapType()->refreshPrice();
-
         // no unpaid invoice found
         if (!$invoice) {
             // throw new \Exception('Can not find unpaid invoice with id:' . $request->invoice_uid);
             // just redirect to index
             return redirect()->action('SubscriptionController@index');
         }
+
+        // always update invoice price from plan
+        $invoice->mapType()->refreshPrice();
 
         // nếu đang có pending transaction thì luôn show màn hình pending
         if ($invoice->getPendingTransaction()) {
