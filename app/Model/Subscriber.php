@@ -1233,4 +1233,9 @@ class Subscriber extends Model
 
         return $query;
     }
+
+    public static function scopeByEmail($query, $email)
+    {
+        $query = $query->where('email', $email);
+    }
 }
