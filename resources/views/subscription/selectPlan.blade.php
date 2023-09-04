@@ -13,13 +13,10 @@
 @endsection
 
 @section('menu_right')
-    <li class="nav-item d-flex align-items-center">
-        <a href="{{ url("/logout") }}" class="nav-link d-flex align-items-center">
-            <i class="navbar-icon me-1">
-                <span class="material-symbols-rounded">power_settings_new</span>
-            </i>{{ trans('messages.logout') }}
-        </a>
-    </li>
+    @include('layouts.core._top_activity_log')
+    @include('layouts.core._menu_frontend_user', [
+        'menu' => 'subscription',
+    ])
 @endsection
 
 @section('content')    

@@ -1,5 +1,5 @@
-@extends('layouts.core.frontend', [
-	'menu' => 'profile',
+@extends('layouts.core.frontend_no_subscription', [
+	'menu' => 'log',
 ])
 
 @section('title', trans('messages.logs'))
