@@ -34,7 +34,7 @@
                         <span class="material-symbols-rounded">restore</span> {{ trans('messages.logs') }}
                     </a>
                 </li>
-                @if (Auth::user()->customer->canUseApi())
+                @if (Auth::user()->customer->getCurrentActiveSubscription() && Auth::user()->customer->canUseApi())
                     <li class="nav-item {{ $menu == 'api' ? 'active' : '' }}">
                         <a href="{{ action("AccountController@api") }}" class="nav-link">
                             <span class="material-symbols-rounded">vpn_key</span> {{ trans('messages.api_token') }}
