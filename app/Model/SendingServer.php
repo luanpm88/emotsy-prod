@@ -1636,7 +1636,7 @@ class SendingServer extends Model
     {
         $output = '/tmp/dryrun';
         $lineSeparator = PHP_EOL.'*********************************************'.PHP_EOL;
-        file_put_contents($output, $message->toString().$lineSeparator , FILE_APPEND | LOCK_EX);
+        file_put_contents($output, $message->toString().$lineSeparator, FILE_APPEND | LOCK_EX);
         return [ 'status' => self::DELIVERY_STATUS_SENT ];
     }
 }
