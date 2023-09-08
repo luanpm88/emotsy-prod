@@ -493,9 +493,9 @@ class CustomerController extends Controller
                         return new TransactionResult(TransactionResult::RESULT_DONE);
                     });
 
-                    $message = 'Plan changed.';
+                    $message = 'Plan changed';
                 } else {
-                    $message = "Change plan invoice created. User might need to proceed with logging to the client area, then go to the Profile > Subscription dashboard to pay the invoice.";
+                    $message = "Change plan invoice created. User might need to proceed with logging to the client area, then go to the Profile > Subscription dashboard to pay the invoice";
                 }
             });
 
