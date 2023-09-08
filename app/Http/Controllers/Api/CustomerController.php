@@ -7,6 +7,7 @@ use Acelle\Http\Controllers\Controller;
 use Acelle\Model\Customer;
 use Acelle\Library\Facades\SubscriptionFacade;
 use Acelle\Model\SubscriptionLog;
+use Acelle\Library\TransactionResult;
 
 /**
  * /api/v1/customers - API controller for managing customers.
@@ -472,10 +473,12 @@ class CustomerController extends Controller
 
         try {
             $changePlanInvoice = null;
+            $message = null;
 
-            \DB::transaction(function () use ($subscription, $plan, &$changePlanInvoice) {
-                // set invoice as pending
+            \DB::transaction(function () use ($customer, $subscription, $plan, &$changePlanInvoice, &$message) {
+                // tạo change plan invoice
                 $changePlanInvoice = $subscription->createChangePlanInvoice($plan);
+                $changePlanInvoice = $changePlanInvoice->mapType();
 
                 // Log
                 SubscriptionFacade::log($subscription, SubscriptionLog::TYPE_CHANGE_PLAN_INVOICE, $changePlanInvoice->uid, [
@@ -483,12 +486,23 @@ class CustomerController extends Controller
                     'new_plan' => $plan->name,
                     'amount' => $changePlanInvoice->total(),
                 ]);
+
+                // Trường hợp invoice total = 0 thì pay nothing và set done luôn cho change plan invoice
+                if ($changePlanInvoice->total() == 0) {
+                    $changePlanInvoice->checkout($customer->getPreferredPaymentGateway(), function ($invoice) {
+                        return new TransactionResult(TransactionResult::RESULT_DONE);
+                    });
+
+                    $message = 'Plan changed.';
+                } else {
+                    $message = "Change plan invoice created. User might need to proceed with logging to the client area, then go to the Profile > Subscription dashboard to pay the invoice.";
+                }
             });
 
             // return to subscription
             return \Response::json(array(
                 'status' => 1,
-                'message' => 'Change '.$customer->displayName().' plan to '.$plan->name.' successfully.',
+                'message' => $message,
                 'customer_uid' => $customer->uid,
                 'plan_uid' => $plan->uid
             ), 200);
