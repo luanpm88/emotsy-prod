@@ -19,10 +19,6 @@
 @endsection
 
 @section('content')
-    <h2>
-        <span class="text-semibold">{{ trans('messages.role.information') }}</span>
-    </h2>
-
     <form action="{{ action('Admin\RoleController@store') }}" method="POST" class="form-validate-jqueryz">
         @csrf
 
