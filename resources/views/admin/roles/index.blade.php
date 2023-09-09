@@ -1,4 +1,4 @@
-@extends('layouts.core.frontend', [
+@extends('layouts.core.backend', [
 	'menu' => 'role',
 ])
 
