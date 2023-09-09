@@ -3227,4 +3227,5 @@
   'user.role' => 'Role',
   'user.select_role' => 'Select user role',
   'account.chatgpt' => 'ChatGPT',
+  'campaign.approve' => 'Approve',
 ) ?>

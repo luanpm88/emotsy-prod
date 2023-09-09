@@ -109,6 +109,11 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
         return $this->belongsTo('Acelle\Model\TrackingDomain', 'tracking_domain_id');
     }
 
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class);
+    }
+
     /**
      * Get campaign validation rules.
      */
@@ -496,6 +501,12 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
         // Status
         if (!empty(trim($request->statuses))) {
             $query = $query->whereIn('status', explode(',', $request->statuses));
+        }
+
+        // customer
+        if ($request->customer_uid) {
+            $customer = Customer::findByUid($request->customer_uid);
+            $query = $query->where('customer_id', $customer->id);
         }
     }
 

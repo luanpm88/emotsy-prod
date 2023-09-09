@@ -1287,4 +1287,9 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::get('admin/roles/list', 'RoleController@list');
     Route::resource('admin/roles', 'RoleController');
     Route::post('admin/roles/{uid}/update', 'RoleController@update');
+
+    // Campaign
+    Route::post('admin/campaigns/{uid}/approve', 'CampaignController@approve');
+    Route::get('admin/campaigns/listing/{page?}', 'CampaignController@listing');
+    Route::resource('admin/campaigns', 'CampaignController');
 });
