@@ -274,6 +274,68 @@ class SubscriberController extends Controller
     }
 
     /**
+     * Unsubscribe a subscriber.
+     *
+     * PATCH /api/v1/lists/{list_id}/subscribers/{id}/unsubscribe
+     *
+     * @param string $list_id List's id
+     * @param string $id      Subsciber's id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function unsubscribeEmail($list_uid, $email)
+    {
+        $email = strtolower(trim($email));
+
+        // check valid email address
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            return \Response::json(array('status' => 0, 'message' => 'Email is not valid'), 400);
+        }
+
+        $user = \Auth::guard('api')->user();
+        $list = \Acelle\Model\MailList::findByUid($list_uid);
+        $subscribers = $list->subscribers()->byEmail($email);
+
+        // check if item exists
+        if (!$subscribers->count()) {
+            return \Response::json(array('status' => 0, 'message' => 'Subscriber not found'), 404);
+        }
+
+        // User Tracking Information
+        $trackingInfo = [
+            'message_id' => null,
+            'user_agent' => $_SERVER['HTTP_USER_AGENT'],
+        ];
+
+        // GeoIP information
+        $location = IpLocation::add($_SERVER['REMOTE_ADDR']);
+        if (!is_null($location)) {
+            $trackingInfo['ip_address'] = $location->ip_address;
+        }
+
+        //
+        foreach ($subscribers as $subscriber) {
+            // check if item unsubscribed
+            if ($subscriber->status == 'unsubscribed') {
+                continue;
+            }
+
+            // authorize
+            if (!$user->can('unsubscribe', $subscriber)) {
+                continue;
+            }
+
+            // Actually Unsubscribe with tracking information
+            $subscriber->unsubscribe($trackingInfo);
+
+            // Log
+            $subscriber->log('unsubscribed', $user->customer);
+        }
+
+        return \Response::json(array('status' => 1, 'message' => "{$email} was unsubscribed"), 200);
+    }
+
+    /**
      * Delete a subscriber.
      *
      * DELETE /api/v1/lists/{list_id}/subscribers/{id}/delete

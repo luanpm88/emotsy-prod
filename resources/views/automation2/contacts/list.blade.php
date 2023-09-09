@@ -42,7 +42,19 @@
                         @endif
 
                         @foreach ($points as $action)
-                            <span class="xtooltip round-action-point action-{{ $action->getType() }}" title="{{ $action->getProgressDescription(). sprintf(' (%s)', $action->getLastExecutedHumanReadable()) }}">
+                            @php
+                                if ($action->getLastExecuted()) {
+                                    $executedAt = $action->getLastExecutedCarbon($customer->timezone);
+                                    $notes = sprintf(', %s (%s)',
+                                        $executedAt->diffForHumans(),
+                                        $customer->formatDatetime($executedAt, 'datetime_full'),
+                                        $customer->timezone,
+                                    );
+                                } else {
+                                    $notes = '';
+                                }
+                            @endphp
+                            <span class="xtooltip round-action-point action-{{ $action->getType() }}" title="{{ $action->getProgressDescription($customer->timezone, $customer->getLanguageCode()) }} {{ $notes }}">
                             </span>
                         @endforeach
                     @endif

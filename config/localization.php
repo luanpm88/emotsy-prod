@@ -24,6 +24,7 @@ return [
     '*' => [
         'date_full' => 'Y-m-d',
         'date_short' => 'Y-m-d',
+        'date_without_year' => 'M-j', // Apr-11
         'datetime_full' => 'Y-m-d H:i',
         'datetime_full_with_timezone' => 'Y-m-d H:i e',
         'datetime_short' => 'Y-m-d H:i',

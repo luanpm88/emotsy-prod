@@ -1475,6 +1475,7 @@ class Automation2Controller extends Controller
         return view('automation2.contacts.list', [
             'automation' => $automation,
             'contacts' => $contacts,
+            'customer' => $automation->customer,
         ]);
     }
 

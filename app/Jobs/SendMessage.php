@@ -126,7 +126,7 @@ class SendMessage implements ShouldQueue
             execute_with_limits($rateTrackers, $creditTrackers, function () use ($message, $logger, $msgId, $email) {
                 // Actually send (or throw an exception)
                 if (config('custom.dryrun')) {
-                    $sent = [ 'status' => SendingServer::DELIVERY_STATUS_SENT ];
+                    $sent = $this->server->dryrun($message);
                 } else {
                     $sent = $this->server->send($message);
                 }

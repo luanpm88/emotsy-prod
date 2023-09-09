@@ -1,4 +1,4 @@
-@extends('layouts.core.frontend', [
+@extends('layouts.core.frontend_no_subscription', [
 	'menu' => 'billing',
 ])
 

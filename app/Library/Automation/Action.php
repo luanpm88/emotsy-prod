@@ -73,6 +73,11 @@ abstract class Action
         return $this->last_executed;
     }
 
+    public function getLastExecutedCarbon()
+    {
+        return Carbon::createFromTimestamp($this->last_executed);
+    }
+
     public function getOptions()
     {
         return $this->options;
@@ -209,5 +214,12 @@ abstract class Action
 
             throw new Exception($msg);
         }
+    }
+
+    public function isDelayAction()
+    {
+        // Whether or not this action type can delay the workflow
+        // Only return true in case of CONDITION and WAIT
+        return false;
     }
 }

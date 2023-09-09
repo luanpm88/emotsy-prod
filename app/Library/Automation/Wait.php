@@ -27,7 +27,7 @@ class Wait extends Action
             return $check;
         }
 
-        // Safe to run in console
+        // Wait for a specified time, counted from the parent's execution time
         $now = Carbon::now();
         $waitDuration = $this->getOption('time');  // 1 hour, 1 day, 2 days
         $parentExecutionTime = Carbon::createFromTimestamp($this->getParent()->getLastExecuted());
@@ -49,15 +49,43 @@ class Wait extends Action
     {
         $nameOrEmail = $this->autoTrigger->subscriber->getFullNameOrEmail();
 
-        return sprintf('Wait for 24 hours before proceeding with the next event for user %s', $nameOrEmail);
+        return trans('messages.automation.action.wait.executed_description', [ 'wait' => $this->getOption('time') ]);
     }
 
-    public function getProgressDescription()
+    public function getProgressDescription($timezone = null, $locale = null)
     {
         if (is_null($this->getLastExecuted())) {
-            return '* Wait';
-        }
+            $timezone = $timezone ?? config('app.timezone');
+            $locale = $locale ?? config('app.locale');
 
-        return 'Hold on for '.$this->getOption('time');
+            $now = Carbon::now();
+            $waitDuration = $this->getOption('time');  // 1 hour, 1 day, 2 days
+            $parentExecutionTime = Carbon::createFromTimestamp($this->getParent()->getLastExecuted());
+            $due = $parentExecutionTime->modify($waitDuration)->timezone($timezone);
+
+            $until = format_datetime($due, 'datetime_short', $locale);
+
+            if ($now->gte($due)) {
+                // Something went wrong, it should've executed already
+                return trans('messages.automation.action.wait.status_description_expired', [
+                    'wait' => $this->getOption('time'),
+                    'until' => $until,
+                    'diff' => $due->diffForHumans()
+                ]);
+            } else {
+                return trans('messages.automation.action.wait.status_description', [
+                    'wait' => $this->getOption('time'),
+                    'until' => $until,
+                    'diff' => $due->diffForHumans()
+                ]);
+            }
+        } else {
+            return 'Delayed '.$this->getOption('time');
+        }
+    }
+
+    public function isDelayAction()
+    {
+        return true;
     }
 }

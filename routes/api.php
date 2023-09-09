@@ -37,6 +37,7 @@ Route::group(['namespace' => 'Api', 'prefix' => 'v1', 'middleware' => 'auth:api'
     Route::resource('campaigns', 'CampaignController');
 
     // Subscriber
+    Route::patch('lists/{list_uid}/subscribers/email/{email}/unsubscribe', 'SubscriberController@unsubscribeEmail');
     Route::post('subscribers/{uid}/add-tag', 'SubscriberController@addTag');
     Route::get('subscribers/email/{email}', 'SubscriberController@showByEmail');
     Route::patch('lists/{list_uid}/subscribers/{uid}/subscribe', 'SubscriberController@subscribe');

@@ -64,7 +64,7 @@
                     </div>
                     
                     @include('helpers.form_control', [
-                        'class' => 'setting-editor',
+                        'class' => 'editor-email-footer',
                         'type' => 'textarea',
                         'name' => 'plan[options][html_footer]',
                         'label' => trans('messages.plan.html_footer'),
@@ -163,6 +163,37 @@
                 modal.find('.modal-footer .link-confirm-button').attr("onclick", "$('#planSendingServerSetting').submit()");
                 
                 modal.modal("show");
+            });
+
+            //
+            tinymce.init({
+                selector: '.editor-email-footer',
+                height: 500,
+                convert_urls: false,
+                remove_script_host: false,
+                forced_root_block: "",
+                skin: "oxide",
+                branding: false,
+                elementpath: false,
+                statusbar: false,
+                valid_elements : '*[*],meta[*]',
+                valid_children: '+p[ol],+p[ul],+h1[div],+h2[div],+h3[div],+h4[div],+h5[div],+h6[div],+a[div],*[*]',
+                extended_valid_elements : "meta[*]",
+                valid_children : "+body[meta],+div[h2|span|meta|object],+object[param|embed]",
+                plugins: [
+                'table advlist autolink lists link image charmap print preview anchor directionality',
+                'searchreplace visualblocks code fullscreen',
+                'insertdatetime media paste code'
+                ],
+                toolbar: 'insertfile undo redo | fontselect | fontsizeselect | styleselect | bold italic | forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image media | ltr rtl',
+                content_css: [
+                // APP_URL.replace('/index.php','')+'/core/css/all.css',
+                ],
+                body_class : "list-page bg-slate-800",
+
+                external_filemanager_path:APP_URL.replace('/index.php','')+"/filemanager2/",
+                filemanager_title:"Responsive Filemanager" ,
+                external_plugins: { "filemanager" : APP_URL.replace('/index.php','')+"/filemanager2/plugin.min.js"}
             });
         });
     </script>
