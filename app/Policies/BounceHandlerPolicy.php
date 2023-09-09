@@ -21,7 +21,7 @@ class BounceHandlerPolicy
         $can = $ability == 'all'
                 || ($ability == 'own' && $user->admin->id == $item->admin_id);
 
-        return $can;
+        return $can && !$user->isReadOnly();
     }
 
     public function readAll(User $user, BounceHandler $item)
@@ -33,7 +33,7 @@ class BounceHandlerPolicy
 
         $can = $user->admin->getPermission('bounce_handler_read') == 'all';
 
-        return $can;
+        return $can && !$user->isReadOnly();
     }
 
     public function create(User $user, BounceHandler $item)
@@ -45,7 +45,7 @@ class BounceHandlerPolicy
 
         $can = $user->admin->getPermission('bounce_handler_create') == 'yes';
 
-        return $can;
+        return $can && !$user->isReadOnly();
     }
 
     public function update(User $user, BounceHandler $item)
@@ -59,7 +59,7 @@ class BounceHandlerPolicy
         $can = $ability == 'all'
                 || ($ability == 'own' && $user->admin->id == $item->admin_id);
 
-        return $can;
+        return $can && !$user->isReadOnly();
     }
 
     public function delete(User $user, BounceHandler $item)
@@ -73,7 +73,7 @@ class BounceHandlerPolicy
         $can = $ability == 'all'
                 || ($ability == 'own' && $user->admin->id == $item->admin_id);
 
-        return $can;
+        return $can && !$user->isReadOnly();
     }
 
     public function test(User $user, BounceHandler $item)
@@ -85,6 +85,6 @@ class BounceHandlerPolicy
 
         $can = $this->update($user, $item) || !isset($item->id);
 
-        return $can;
+        return $can && !$user->isReadOnly();
     }
 }

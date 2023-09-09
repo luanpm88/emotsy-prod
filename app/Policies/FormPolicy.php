@@ -25,7 +25,7 @@ class FormPolicy
             return false;
         }
 
-        return true;
+        return true && !$user->isReadOnly();
     }
 
     public function read(User $user, Form $form)
@@ -43,7 +43,7 @@ class FormPolicy
             return false;
         }
 
-        return $user->customer->id == $form->customer_id;
+        return $user->customer->id == $form->customer_id && !$user->isReadOnly();
     }
 
     public function delete(User $user, Form $form)
@@ -52,7 +52,7 @@ class FormPolicy
             return false;
         }
 
-        return $user->customer->id == $form->customer_id;
+        return $user->customer->id == $form->customer_id && !$user->isReadOnly();
     }
 
     public function publish(User $user, Form $form)
@@ -61,7 +61,7 @@ class FormPolicy
             return false;
         }
 
-        return $user->customer->id == $form->customer_id && $form->status == Form::STATUS_DRAFT;
+        return $user->customer->id == $form->customer_id && $form->status == Form::STATUS_DRAFT && !$user->isReadOnly();
     }
 
     public function unpublish(User $user, Form $form)
@@ -70,6 +70,6 @@ class FormPolicy
             return false;
         }
 
-        return $user->customer->id == $form->customer_id && $form->status == Form::STATUS_PUBLISHED;
+        return $user->customer->id == $form->customer_id && $form->status == Form::STATUS_PUBLISHED && !$user->isReadOnly();
     }
 }

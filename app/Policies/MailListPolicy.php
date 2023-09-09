@@ -35,20 +35,20 @@ class MailListPolicy
         } else {
             // ignore limit because it is null
         }
-
+        
         return $can;
     }
 
     public function update(User $user, MailList $item)
     {
         $customer = $user->customer;
-        return $item->customer_id == $customer->id;
+        return $item->customer_id == $customer->id && !$user->isReadOnly();
     }
 
     public function delete(User $user, MailList $item)
     {
         $customer = $user->customer;
-        return $item->customer_id == $customer->id;
+        return $item->customer_id == $customer->id && !$user->isReadOnly();
     }
 
     public function addMoreSubscribers(User $user, MailList $mailList, $numberOfSubscribers = 1)
@@ -57,7 +57,7 @@ class MailListPolicy
         $maxPerList = get_tmp_quota($user->customer, 'subscriber_per_list_max');
         return $user->customer->id == $mailList->customer_id &&
             ($max >= $user->customer->subscribersCount() + $numberOfSubscribers || $max == -1) &&
-            ($maxPerList >= $mailList->subscribersCount() + $numberOfSubscribers || $maxPerList == -1);
+            ($maxPerList >= $mailList->subscribersCount() + $numberOfSubscribers || $maxPerList == -1) && !$user->isReadOnly();
     }
 
     public function import(User $user, MailList $item)
@@ -65,7 +65,7 @@ class MailListPolicy
         $customer = $user->customer;
         $can = get_tmp_quota($customer, 'list_import');
 
-        return ($can == 'yes' && $item->customer_id == $customer->id);
+        return ($can == 'yes' && $item->customer_id == $customer->id) && !$user->isReadOnly();
     }
 
     public function export(User $user, MailList $item)
@@ -73,6 +73,6 @@ class MailListPolicy
         $customer = $user->customer;
         $can = get_tmp_quota($customer, 'list_export');
 
-        return ($can == 'yes' && $item->customer_id == $customer->id);
+        return ($can == 'yes' && $item->customer_id == $customer->id) && !$user->isReadOnly();
     }
 }

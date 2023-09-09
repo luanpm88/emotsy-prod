@@ -20,6 +20,12 @@
 					<span class="text-muted">{{ trans('messages.created_at') }}</span>
 				</td>
                 <td>
+					<h5 class="m-0 fw-semibold">
+                        {{ trans('messages.role.' . $user->role) }}
+                    </h5>
+					<span class="text-muted">{{ trans('messages.user.permission') }}</span>
+				</td>
+                <td>
                     @if ($user->isActivated())
                         <span class="text-muted2 list-status pull-left">
                             <span class="label label-flat bg-activated">{{ trans('messages.user.status.activated') }}</span>
@@ -31,10 +37,11 @@
                     @endif
                 </td>
                 <td class="text-end">
-                    <a href="{{ action('UserController@edit', $user->uid) }}"
-                        data-popup="tooltip" title="{{ trans('messages.edit') }}"
-                        role="button" class="btn btn-secondary btn-icon"><span class="material-symbols-rounded">edit</span></a>
-
+                    @if(Auth::user()->customer->can('update', $user))
+                        <a href="{{ action('UserController@edit', $user->uid) }}"
+                            data-popup="tooltip" title="{{ trans('messages.edit') }}"
+                            role="button" class="btn btn-secondary btn-icon"><span class="material-symbols-rounded">edit</span></a>
+                    @endif
                     @if (
                         Auth::user()->customer->can('enable', $user) ||
                         Auth::user()->customer->can('disable', $user) ||

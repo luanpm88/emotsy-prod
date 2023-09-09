@@ -43,13 +43,13 @@
                     </span>
                 </div>
 			</div>
-			@can('create', new Acelle\Model\Customer())
+			@if(Auth::user()->customer->can('create', new Acelle\Model\User()))
 				<div class="text-end">
 					<a href="{{ action("UserController@create") }}" role="button" class="btn btn-secondary">
 						<span class="material-symbols-rounded">add</span> {{ trans('messages.user.add_new') }}
 					</a>
 				</div>
-			@endcan
+			@endif
 		</div>
 		
 		<div id="UserListContent">

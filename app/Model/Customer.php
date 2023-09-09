@@ -961,7 +961,7 @@ class Customer extends Model
      */
     public function can($action, $item)
     {
-        return $this->user->can($action, [$item, 'customer']);
+        return \Auth::user()->can($action, [$item, 'customer']);
     }
 
     /**

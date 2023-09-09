@@ -3195,4 +3195,7 @@
   'user.enable.confirm' => 'You are about to enable the user.',
   'user.disable.confirm' => 'You are about to disable the user.',
   'user.delete.confirm' => 'You are about to delete the user. This cannot be undone.',
+  'user.permission' => 'Permission',
+  'role.full-access' => 'Full access',
+  'role.read-only' => 'Read-only',
 ) ?>

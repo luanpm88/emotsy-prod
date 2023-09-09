@@ -12,6 +12,6 @@ class ContactPolicy
 
     public function update(User $user, Contact $item)
     {
-        return !isset($item->id) || $user->contact_id == $item->id;
+        return !isset($item->id) || $user->contact_id == $item->id && !$user->isReadOnly();
     }
 }

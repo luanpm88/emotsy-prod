@@ -26,7 +26,7 @@ class Automation2Policy
 
         $can = $max > $customer->automationsCount() || $max == -1;
 
-        return $can;
+        return $can && !$user->isReadOnly();
     }
 
     public function view(User $user, Automation2 $automation)
@@ -44,7 +44,7 @@ class Automation2Policy
             return false;
         }
 
-        return $automation->customer_id == $user->customer->id;
+        return $automation->customer_id == $user->customer->id && !$user->isReadOnly();
     }
 
 
@@ -57,7 +57,7 @@ class Automation2Policy
         return $automation->customer_id == $user->customer->id &&
             in_array($automation->status, [
                 Automation2::STATUS_INACTIVE
-            ]);
+            ]) && !$user->isReadOnly();
     }
 
     public function disable(User $user, Automation2 $automation)
@@ -69,7 +69,7 @@ class Automation2Policy
         return $automation->customer_id == $user->customer->id &&
             in_array($automation->status, [
                 Automation2::STATUS_ACTIVE
-            ]);
+            ]) && !$user->isReadOnly();
     }
 
     public function delete(User $user, Automation2 $automation)
@@ -82,6 +82,6 @@ class Automation2Policy
             in_array($automation->status, [
                 Automation2::STATUS_ACTIVE,
                 Automation2::STATUS_INACTIVE
-            ]);
+            ]) && !$user->isReadOnly();
     }
 }

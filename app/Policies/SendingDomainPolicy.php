@@ -58,7 +58,7 @@ class SendingDomainPolicy
 
     public function create(User $user)
     {
-        return true;
+        return true && !$user->isReadOnly();
     }
 
     public function update(User $user, SendingDomain $item, $role)
@@ -84,7 +84,7 @@ class SendingDomainPolicy
                     $can = $server->allowVerifyingOwnDomains();
                 }
 
-                $can = $can && $user->customer->id == $item->customer_id;
+                $can = $can && $user->customer->id == $item->customer_id && !$user->isReadOnly();
                 break;
         }
 
@@ -114,7 +114,7 @@ class SendingDomainPolicy
                     $can = $server->allowVerifyingOwnDomains() || $server->allowVerifyingOwnDomainsRemotely();
                 }
 
-                $can = $can && $user->customer->id == $item->customer_id;
+                $can = $can && $user->customer->id == $item->customer_id && !$user->isReadOnly();
                 break;
         }
 

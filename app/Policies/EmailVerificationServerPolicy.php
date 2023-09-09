@@ -65,7 +65,7 @@ class EmailVerificationServerPolicy
                 // in non-saas mode, there is no such case
                 $max = get_tmp_quota($user->customer, 'email_verification_servers_max');
                 $can = $user->customer->getCurrentActiveGeneralSubscription()->planGeneral->useOwnEmailVerificationServer()
-                    && ($user->customer->emailVerificationServersCount() < $max || $max == -1);
+                    && ($user->customer->emailVerificationServersCount() < $max || $max == -1) && !$user->isReadOnly();
                 break;
         }
 
@@ -86,7 +86,7 @@ class EmailVerificationServerPolicy
                     || ($ability == 'own' && $user->admin->id == $server->admin_id);
                 break;
             case 'customer':
-                $can = $user->customer->getCurrentActiveGeneralSubscription()->planGeneral->useOwnEmailVerificationServer() && $user->customer->id == $server->customer_id; // non-saas safe
+                $can = $user->customer->getCurrentActiveGeneralSubscription()->planGeneral->useOwnEmailVerificationServer() && $user->customer->id == $server->customer_id && !$user->isReadOnly();
                 break;
         }
 
@@ -108,7 +108,7 @@ class EmailVerificationServerPolicy
                 break;
             case 'customer':
                 $can = $user->customer->getCurrentActiveGeneralSubscription()->planGeneral->useOwnEmailVerificationServer()
-                    && $user->customer->id == $server->customer_id;
+                    && $user->customer->id == $server->customer_id && !$user->isReadOnly();
                 break;
         }
 
@@ -130,7 +130,7 @@ class EmailVerificationServerPolicy
                 break;
             case 'customer':
                 $can = $user->customer->getCurrentActiveGeneralSubscription()->planGeneral->useOwnEmailVerificationServer()
-                    && $user->customer->id == $server->customer_id;
+                    && $user->customer->id == $server->customer_id && !$user->isReadOnly();
                 break;
         }
 
@@ -152,7 +152,7 @@ class EmailVerificationServerPolicy
                 break;
             case 'customer':
                 $can = $user->customer->getCurrentActiveGeneralSubscription()->planGeneral->useOwnEmailVerificationServer()
-                    && $user->customer->id == $server->customer_id;
+                    && $user->customer->id == $server->customer_id && !$user->isReadOnly();
                 break;
         }
 

@@ -19,7 +19,7 @@ class InvoicePolicy
                 $can = $invoice->isNew();
                 break;
             case 'customer':
-                $can = $invoice->isNew() && $invoice->customer_id == $user->customer->id;
+                $can = $invoice->isNew() && $invoice->customer_id == $user->customer->id && !$user->isReadOnly();
                 break;
         }
 

@@ -62,13 +62,17 @@ class User extends Authenticatable
     public const STATUS_ACTIVE = 'active';
     public const STATUS_INACTIVE = 'inactive';
 
+    // Role
+    public const ROLE_FULL_ACCESS = 'full-access';
+    public const ROLE_READ_ONLY = 'read-only';
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'email', 'first_name', 'last_name'
+        'email', 'first_name', 'last_name', 'role'
     ];
 
     /**
@@ -741,5 +745,10 @@ class User extends Authenticatable
     {
         $this->activated = 0;
         $this->save();
+    }
+
+    public function isReadOnly()
+    {
+        return $this->role == self::ROLE_READ_ONLY;
     }
 }

@@ -23,9 +23,18 @@ class UserPolicy
         return $can;
     }
 
-    public function create(User $user)
+    public function create(User $user, User $item, $role='admin')
     {
-        $can = $user->admin->getPermission('user_create') == 'yes';
+        // @important: in case of non-saas mode, it falls upon admin case
+        switch ($role) {
+            case 'admin':
+                $can = $user->admin->getPermission('user_create') == 'yes';
+                break;
+            case 'customer':
+                $can = $user->id != $item->id && !$user->isReadOnly();
+                break;
+        }
+        
 
         return $can;
     }
@@ -45,7 +54,7 @@ class UserPolicy
                         || ($ability == 'own' && $user->id == $item->id);
                 break;
             case 'customer':
-                $can = $user->id != $item->id;
+                $can = $user->id != $item->id && !$user->isReadOnly();
                 break;
         }
         return $can;
@@ -61,7 +70,7 @@ class UserPolicy
                         || ($ability == 'own' && $user->id == $item->id);
                 break;
             case 'customer':
-                $can = $user->id != $item->id && $item->isActivated();
+                $can = $user->id != $item->id && $item->isActivated() && !$user->isReadOnly();
                 break;
         }
         return $can;
@@ -77,7 +86,7 @@ class UserPolicy
                         || ($ability == 'own' && $user->id == $item->id);
                 break;
             case 'customer':
-                $can = $user->id != $item->id && !$item->isActivated();
+                $can = $user->id != $item->id && !$item->isActivated() && !$user->isReadOnly();
                 break;
         }
         return $can;
@@ -91,10 +100,10 @@ class UserPolicy
                 $ability = $user->admin->getPermission('user_delete');
                 $can = $ability == 'all'
                         || ($ability == 'own' && $user->id == $item->id);
-                $can = $can && $user->id != $item->id;
+                $can = $can && $user->id != $item->id && !$user->isReadOnly();
                 break;
             case 'customer':
-                $can = $user->id != $item->id;
+                $can = $user->id != $item->id && !$user->isReadOnly();
                 break;
         }
         return $can;

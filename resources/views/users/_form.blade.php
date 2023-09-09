@@ -24,7 +24,7 @@
         <div class="sub_section">
             <h2 class="text-semibold text-primary">{{ trans('messages.user.information') }}</h2>
 
-            @if (get_localization_config('show_last_name_first', Auth::user()->admin->getLanguageCode()))
+            @if (get_localization_config('show_last_name_first', Auth::user()->customer->getLanguageCode()))
                 <div class="row">
                     <div class="col-md-6">
                         @include('helpers.form_control', [
@@ -84,6 +84,14 @@
                 'name' => 'password_confirmation',
                 'rules' => $user->rules()
             ])
+
+            <div class="mb-3">
+                <label for="" class="form-label">{{ trans('messages.user.permission') }}</label>
+                <select name="role" class="form-select">
+                    <option {{ $user->role == Acelle\Model\User::ROLE_FULL_ACCESS ? 'selected' : '' }} value="{{ Acelle\Model\User::ROLE_FULL_ACCESS }}">{{ trans('messages.role.full-access') }}</option>
+                    <option {{ $user->role == Acelle\Model\User::ROLE_READ_ONLY ? 'selected' : '' }} value="{{ Acelle\Model\User::ROLE_READ_ONLY }}">{{ trans('messages.role.read-only') }}</option>
+                  </select>
+            </div>
         </div>
     </div>
 

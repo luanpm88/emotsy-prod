@@ -25,7 +25,7 @@ class WebsitePolicy
             return false;
         }
 
-        return true;
+        return true && !$user->isReadOnly();
     }
 
     public function read(User $user, Website $website)
@@ -34,7 +34,7 @@ class WebsitePolicy
             return false;
         }
 
-        return $user->customer->id == $website->customer_id;
+        return $user->customer->id == $website->customer_id && !$user->isReadOnly();
     }
 
     public function update(User $user, Website $website)
@@ -43,7 +43,7 @@ class WebsitePolicy
             return false;
         }
 
-        return $user->customer->id == $website->customer_id;
+        return $user->customer->id == $website->customer_id && !$user->isReadOnly();
     }
 
     public function delete(User $user, Website $website)
@@ -52,7 +52,7 @@ class WebsitePolicy
             return false;
         }
 
-        return $user->customer->id == $website->customer_id;
+        return $user->customer->id == $website->customer_id && !$user->isReadOnly();
     }
 
     public function connect(User $user, Website $website)
@@ -61,7 +61,7 @@ class WebsitePolicy
             return false;
         }
 
-        return $user->customer->id == $website->customer_id && $website->status == Website::STATUS_INACTIVE;
+        return $user->customer->id == $website->customer_id && $website->status == Website::STATUS_INACTIVE && !$user->isReadOnly();
     }
 
     public function disconnect(User $user, Website $website)
@@ -70,6 +70,6 @@ class WebsitePolicy
             return false;
         }
 
-        return $user->customer->id == $website->customer_id && $website->status == Website::STATUS_CONNECTED;
+        return $user->customer->id == $website->customer_id && $website->status == Website::STATUS_CONNECTED && !$user->isReadOnly();
     }
 }

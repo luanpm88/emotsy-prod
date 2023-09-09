@@ -27,16 +27,16 @@ class SenderPolicy
 
     public function update(User $user, Sender $sender)
     {
-        return $user->customer->id == $sender->customer_id;
+        return $user->customer->id == $sender->customer_id && !$user->isReadOnly();
     }
 
     public function delete(User $user, Sender $sender)
     {
-        return $user->customer->id == $sender->customer_id;
+        return $user->customer->id == $sender->customer_id && !$user->isReadOnly();
     }
 
     public function verify(User $user, Sender $sender)
     {
-        return $user->customer->id == $sender->customer_id;
+        return $user->customer->id == $sender->customer_id && !$user->isReadOnly();
     }
 }
