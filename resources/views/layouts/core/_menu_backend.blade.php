@@ -29,15 +29,15 @@
 				</li>
 
 				@if (Auth::user()->can("read", new Acelle\Model\Customer()))
-					<li class="nav-item dropdown {{ in_array($menu, ['customer','subscription']) ? 'active' : '' }}">
-						<a role="button" class="nav-link lvl-1 dropdown-toggle d-flex align-items-center {{ request()->session()->get('admin-leftbar-state') != 'closed' && Auth::user()->admin->getMenuLayout() == 'left' && in_array($menu, ['customer','subscription']) ? 'show' : '' }}" data-bs-toggle="dropdown">
+					<li class="nav-item dropdown {{ in_array($menu, ['customer','subscription','role']) ? 'active' : '' }}">
+						<a role="button" class="nav-link lvl-1 dropdown-toggle d-flex align-items-center {{ request()->session()->get('admin-leftbar-state') != 'closed' && Auth::user()->admin->getMenuLayout() == 'left' && in_array($menu, ['customer','subscription','role']) ? 'show' : '' }}" data-bs-toggle="dropdown">
 							<i class="navbar-icon">
 								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 92 103"><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><g id="Layer_2-2" data-name="Layer 2"><g id="Layer_1-2-2" data-name="Layer 1-2"><path d="M46,51.6A25.8,25.8,0,1,1,71.8,25.8,25.9,25.9,0,0,1,46,51.6ZM46,7A18.8,18.8,0,1,0,64.8,25.8,18.8,18.8,0,0,0,46,7Z" style="fill:#f2f2f2"/><path d="M88.5,103A3.5,3.5,0,0,1,85,99.5a39,39,0,0,0-78,0A3.5,3.5,0,0,1,3.5,103,3.5,3.5,0,0,1,0,99.5a46,46,0,0,1,92,0A3.5,3.5,0,0,1,88.5,103Z" style="fill:#f2f2f2"/><path d="M19.5,103H3.5a3.5,3.5,0,0,1,0-7h16a3.5,3.5,0,0,1,0,7Z" style="fill:#f2f2f2"/><path d="M88.5,103H36.9a3.5,3.5,0,0,1,0-7H88.5a3.5,3.5,0,0,1,0,7Z" style="fill:#f2f2f2"/><path d="M46,39c-3.3,0-6.4-1.6-7.7-4a3.6,3.6,0,0,1,1.4-4.8,3.5,3.5,0,0,1,4.7,1.4A3.5,3.5,0,0,0,46,32a3,3,0,0,0,1.6-.5,3.4,3.4,0,0,1,4.5-1.6,3.4,3.4,0,0,1,1.8,4.6C52.6,37.6,48.9,39,46,39Zm-1.5-7.4Z" style="fill:lime"/></g></g></g></g></svg>
 							</i>
 							<span>{{ trans('messages.customer') }}</span>
 							<span class="caret"></span>
 						</a>
-						<ul class="dropdown-menu {{ request()->session()->get('admin-leftbar-state') != 'closed' && Auth::user()->admin->getMenuLayout() == 'left' && in_array($menu, ['customer','subscription']) ? 'show' : '' }}">
+						<ul class="dropdown-menu {{ request()->session()->get('admin-leftbar-state') != 'closed' && Auth::user()->admin->getMenuLayout() == 'left' && in_array($menu, ['customer','subscription','role']) ? 'show' : '' }}">
 							@if (Auth::user()->can("read", new Acelle\Model\Customer()))
 								<li class="nav-item {{ $menu == 'customer' ? 'active' : '' }}">
 									<a href="{{ action('Admin\CustomerController@index') }}" class="dropdown-item d-flex align-items-center">
@@ -54,6 +54,14 @@
 										<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1" x="0px" y="0px" viewBox="0 0 92 94.2" style="enable-background:new 0 0 92 94.2;" xml:space="preserve"><style type="text/css">.st0{fill:#333333;}</style><g id="Layer_2_1_"><g id="Layer_1-2"><path class="st0" d="M46.1,94.2c-12.3,0-24.6-4.8-33.8-14.3c-1.3-1.4-1.3-3.6,0.1-4.9c1.4-1.3,3.6-1.3,4.9,0.1 C32.7,90.9,58,91.3,73.9,76c5.6-5.4,9.5-12.3,11.2-20c0.4-1.9,2.3-3.1,4.2-2.6c1.9,0.4,3.1,2.3,2.6,4.2c-2,9-6.6,17.1-13.2,23.5 C69.6,89.8,57.8,94.2,46.1,94.2z"/><polygon class="st0" points="4.1,89.6 3.5,56.8 32.2,72.6 "/><path class="st0" d="M3.5,40.9c-0.3,0-0.5,0-0.8-0.1c-1.9-0.4-3.1-2.3-2.6-4.2C5,15.1,23.9,0,46,0c0.1,0,0.1,0,0.2,0 C58.8,0,71,5.2,79.7,14.3c1.3,1.4,1.3,3.6-0.1,4.9c-1.4,1.3-3.6,1.3-4.9-0.1C67.3,11.4,56.9,7,46.2,7c-0.1,0-0.1,0-0.2,0 C27.2,7,11.1,19.8,6.9,38.2C6.5,39.8,5.1,40.9,3.5,40.9z"/><polygon class="st0" points="59.8,21.6 88.5,37.4 87.9,4.6 "/><path class="st0" d="M43.3,69.9V64c-3.4,0-6.8-0.9-9.8-2.6l1.7-5.6c2.8,1.6,6,2.5,9.3,2.6c3.8,0,6.4-1.9,6.4-4.7s-2.1-4.5-6.6-6.1 C38,45.3,34,42.4,34,36.9s3.6-9.1,9.6-10.2v-5.9h4.9v5.6c2.9,0,5.7,0.7,8.3,2l-1.6,5.5c-2.5-1.4-5.3-2.1-8.2-2.1 c-4.2,0-5.7,2.2-5.7,4.2s2.2,3.9,7.3,5.9c6.7,2.5,9.7,5.8,9.7,11.1s-3.5,9.6-10.1,10.7v6.2H43.3z"/></g></g></svg>
 									</i>
 									<span>{{ trans('messages.subscriptions') }}</span>
+								</a>
+							</li>
+                            <li class="nav-item {{ $menu == 'role' ? 'active' : '' }}">
+								<a href="{{ action('Admin\RoleController@index') }}" class="dropdown-item d-flex align-items-center">
+									<i class="navbar-icon">
+										<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1" x="0px" y="0px" viewBox="0 0 92 94.2" style="enable-background:new 0 0 92 94.2;" xml:space="preserve"><style type="text/css">.st0{fill:#333333;}</style><g id="Layer_2_1_"><g id="Layer_1-2"><path class="st0" d="M46.1,94.2c-12.3,0-24.6-4.8-33.8-14.3c-1.3-1.4-1.3-3.6,0.1-4.9c1.4-1.3,3.6-1.3,4.9,0.1 C32.7,90.9,58,91.3,73.9,76c5.6-5.4,9.5-12.3,11.2-20c0.4-1.9,2.3-3.1,4.2-2.6c1.9,0.4,3.1,2.3,2.6,4.2c-2,9-6.6,17.1-13.2,23.5 C69.6,89.8,57.8,94.2,46.1,94.2z"/><polygon class="st0" points="4.1,89.6 3.5,56.8 32.2,72.6 "/><path class="st0" d="M3.5,40.9c-0.3,0-0.5,0-0.8-0.1c-1.9-0.4-3.1-2.3-2.6-4.2C5,15.1,23.9,0,46,0c0.1,0,0.1,0,0.2,0 C58.8,0,71,5.2,79.7,14.3c1.3,1.4,1.3,3.6-0.1,4.9c-1.4,1.3-3.6,1.3-4.9-0.1C67.3,11.4,56.9,7,46.2,7c-0.1,0-0.1,0-0.2,0 C27.2,7,11.1,19.8,6.9,38.2C6.5,39.8,5.1,40.9,3.5,40.9z"/><polygon class="st0" points="59.8,21.6 88.5,37.4 87.9,4.6 "/><path class="st0" d="M43.3,69.9V64c-3.4,0-6.8-0.9-9.8-2.6l1.7-5.6c2.8,1.6,6,2.5,9.3,2.6c3.8,0,6.4-1.9,6.4-4.7s-2.1-4.5-6.6-6.1 C38,45.3,34,42.4,34,36.9s3.6-9.1,9.6-10.2v-5.9h4.9v5.6c2.9,0,5.7,0.7,8.3,2l-1.6,5.5c-2.5-1.4-5.3-2.1-8.2-2.1 c-4.2,0-5.7,2.2-5.7,4.2s2.2,3.9,7.3,5.9c6.7,2.5,9.7,5.8,9.7,11.1s-3.5,9.6-10.1,10.7v6.2H43.3z"/></g></g></svg>
+									</i>
+									<span>{{ trans('messages.roles') }}</span>
 								</a>
 							</li>
 						</ul>

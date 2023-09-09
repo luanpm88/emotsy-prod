@@ -1,0 +1,113 @@
+<?php
+
+namespace Acelle\Model;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Acelle\Library\Traits\HasUid;
+use Acelle\Model\RolePermission;
+
+class Role extends Model
+{
+    use HasFactory;
+    use HasUid;
+
+    // statuses
+    public const STATUS_INACTIVE = 'inactive';
+    public const STATUS_ACTIVE = 'active';
+
+    public function rolePermissions()
+    {
+        return $this->hasMany(RolePermission::class);
+    }
+
+    public static function scopeSearch($query, $keyword)
+    {
+        // Keyword
+        if (!empty(trim($keyword))) {
+            foreach (explode(' ', trim($keyword)) as $keyword) {
+                $query = $query->where(function ($q) use ($keyword) {
+                    $q->orwhere('roles.name', 'like', '%'.$keyword.'%');
+                });
+            }
+        }
+    }
+
+    public static function newDefault()
+    {
+        $role = new self();
+        $role->status = self::STATUS_ACTIVE;
+
+        return $role;
+    }
+
+    public function fillAttributes($params)
+    {
+        $this->name = $params['name'] ?? null;
+    }
+
+    public function saveFromArray($params)
+    {
+        $this->fillAttributes($params);
+
+        // make validator
+        $validator = \Validator::make($params, [
+            'name' => 'required|unique:roles,name,'.$this->id,
+        ]);
+
+        // redirect if fails
+        if ($validator->fails()) {
+            return $validator->errors();
+        }
+
+        //
+        $this->save();
+
+        // update permissions from array
+        $this->updatePermissions($params['permissions'] ?? []);
+
+        return $validator->errors();
+    }
+
+    public function updatePermissions($permissions)
+    {
+        // remove all current permissions
+        $this->rolePermissions()->delete();
+
+        // save all
+        foreach ($permissions as $permission) {
+            $rolePermission = new RolePermission();
+            $rolePermission->role_id = $this->id;
+            $rolePermission->permission = $permission;
+            $rolePermission->save();
+        }
+    }
+
+    public function disable()
+    {
+        $this->status = self::STATUS_INACTIVE;
+        $this->save();
+    }
+
+    public function enable()
+    {
+        $this->status = self::STATUS_ACTIVE;
+        $this->save();
+    }
+
+    public static function scopeActive($query)
+    {
+        $query = $query->where('roles.status', '=', self::STATUS_ACTIVE);
+    }
+
+    public function isActive()
+    {
+        return $this->status == self::STATUS_ACTIVE;
+    }
+
+    public function hasPermission($permission)
+    {
+        return $this->rolePermissions()->where('permission', $permission)
+            ->exists();
+    }
+}

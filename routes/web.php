@@ -1277,4 +1277,12 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
 
     // Chat
     Route::post('admin/chat', 'ChatController@chat');
+
+    // Role
+    Route::post('admin/roles/delete', 'RoleController@delete');
+    Route::post('admin/roles/disable', 'RoleController@disable');
+    Route::post('admin/roles/enable', 'RoleController@enable');
+    Route::get('admin/roles/list', 'RoleController@list');
+    Route::resource('admin/roles', 'RoleController');
+    Route::post('admin/roles/{uid}/update', 'RoleController@update');
 });
