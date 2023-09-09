@@ -86,11 +86,13 @@
             ])
 
             <div class="mb-3">
-                <label for="" class="form-label">{{ trans('messages.user.permission') }}</label>
-                <select name="role" class="form-select">
-                    <option {{ $user->role == Acelle\Model\User::ROLE_FULL_ACCESS ? 'selected' : '' }} value="{{ Acelle\Model\User::ROLE_FULL_ACCESS }}">{{ trans('messages.role.full-access') }}</option>
-                    <option {{ $user->role == Acelle\Model\User::ROLE_READ_ONLY ? 'selected' : '' }} value="{{ Acelle\Model\User::ROLE_READ_ONLY }}">{{ trans('messages.role.read-only') }}</option>
-                  </select>
+                <label for="" class="form-label">{{ trans('messages.user.role') }}</label>
+                <select name="role_uid" class="form-select {{ $errors->has('role_uid') ? 'is-invalid' : '' }}">
+                    <option value="">{{ trans('messages.user.select_role') }}</option>
+                    @foreach (Acelle\Model\Role::active()->get() as $role)
+                        <option {{ $user->getRole() && $role->id == $user->getRole()->id ? 'selected' : '' }} value="{{ $role->uid }}">{{ $role->name }}</option>
+                    @endforeach
+                </select>
             </div>
         </div>
     </div>

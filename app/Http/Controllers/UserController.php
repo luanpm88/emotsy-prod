@@ -255,7 +255,7 @@ class UserController extends Controller
 
         // redirect if fails
         if (!$result) {
-            return response()->view('users.create', [
+            return response()->view('users.edit', [
                 'user' => $user,
                 'errors' => $errors,
             ], 400);

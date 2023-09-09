@@ -54,7 +54,7 @@ class UserPolicy
                         || ($ability == 'own' && $user->id == $item->id);
                 break;
             case 'customer':
-                $can = $user->id != $item->id && !$user->isReadOnly();
+                $can = !$user->isReadOnly();
                 break;
         }
         return $can;

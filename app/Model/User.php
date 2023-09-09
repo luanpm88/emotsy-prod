@@ -34,6 +34,8 @@ use File;
 use Acelle\Library\Tool;
 use Acelle\Library\Traits\HasUid;
 use Acelle\Library\Facades\Hook;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class User extends Authenticatable
 {
@@ -72,7 +74,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'email', 'first_name', 'last_name', 'role'
+        'email', 'first_name', 'last_name'
     ];
 
     /**
@@ -97,6 +99,16 @@ class User extends Authenticatable
     public function admin()
     {
         return $this->hasOne('Acelle\Model\Admin');
+    }
+
+    public function roles(): BelongsToMany
+    {
+        return $this->belongsToMany(Role::class, 'user_role');
+    }
+
+    public function getRole()
+    {
+        return $this->roles()->first();
     }
 
     public function createUserDirectories()
@@ -688,6 +700,11 @@ class User extends Authenticatable
         return $user;
     }
 
+    public function fillAttributes($params)
+    {
+        $this->fill($params);
+    }
+
     public function saveFromRequest($request)
     {
         $rules = array(
@@ -695,6 +712,7 @@ class User extends Authenticatable
             'first_name' => 'required',
             'last_name' => 'required',
             'image' => 'nullable|image',
+            'role_uid' => 'required',
         );
 
         if (isset($this->id)) {
@@ -703,7 +721,7 @@ class User extends Authenticatable
             $rules['password'] = 'required|confirmed|min:5|max:255';
         }
 
-        $this->fill($request->all());
+        $this->fillAttributes($request->all());
 
         $validator = \Validator::make($request->all(), $rules);
 
@@ -732,6 +750,11 @@ class User extends Authenticatable
             $this->removeProfileImage();
         }
 
+        // update user role
+        if ($request->role_uid) {
+            $this->setRole(Role::findByUid($request->role_uid));
+        }
+
         return [true, $validator->errors()];
     }
 
@@ -750,5 +773,22 @@ class User extends Authenticatable
     public function isReadOnly()
     {
         return $this->role == self::ROLE_READ_ONLY;
+    }
+
+    public function setRole($role)
+    {
+        // for now, one user only has one role
+        // the same role, do nothing
+        if ($this->getRole() && $this->getRole()->id == $role->id) {
+            return;
+        }
+
+        // remove current role if it exists
+        if ($this->getRole()) {
+            $this->getRole()->delete();
+        }
+
+        // set new role
+        $this->roles()->save($role);
     }
 }

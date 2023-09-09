@@ -2,7 +2,7 @@
 	'menu' => 'user',
 ])
 
-@section('title', trans('messages.create_customer'))
+@section('title', $user->displayName(get_localization_config('show_last_name_first', Auth::user()->customer->getLanguageCode())))
 	
 @section('page_header')
     <div class="page-title">
@@ -11,7 +11,7 @@
             <li class="breadcrumb-item"><a href="{{ action("UserController@index") }}">{{ trans('messages.users') }}</a></li>
         </ul>
         <h1>
-            <span class="text-semibold"><span class="material-symbols-rounded">add</span> {{ $user->displayName(get_localization_config('show_last_name_first', Auth::user()->customer->getLanguageCode())) }}</span>
+            <span class="text-semibold"><span class="material-symbols-rounded">edit</span> {{ $user->displayName(get_localization_config('show_last_name_first', Auth::user()->customer->getLanguageCode())) }}</span>
         </h1>
     </div>
 @endsection

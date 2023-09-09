@@ -13,6 +13,19 @@
                     </p>
                 </td>
 
+                <td style="width:30%">
+                    <div class="px-md-4">
+                        <div class="mb-1">
+                            @forelse ($role->rolePermissions as $rolePermission)
+                                <span class="badge bg-secondary">{{ $rolePermission->permission }}</span>
+                            @empty
+                                --
+                            @endforelse
+                        </div>
+                        <span class="text-muted">{{ trans("messages.permissions") }}</span>
+                    </div>
+                </td>
+
                 <td>
                     <div class="single-stat-box pull-left">
                         <span class="no-margin stat-num">{{ $role->updated_at->diffForHumans() }}</span>

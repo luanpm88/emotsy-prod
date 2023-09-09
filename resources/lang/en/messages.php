@@ -3224,4 +3224,6 @@
   'role.name' => 'Role name',
   'permission.account' => 'Account',
   'permission.system' => 'System',
+  'user.role' => 'Role',
+  'user.select_role' => 'Select user role',
 ) ?>

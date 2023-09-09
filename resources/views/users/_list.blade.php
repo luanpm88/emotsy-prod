@@ -21,9 +21,9 @@
 				</td>
                 <td>
 					<h5 class="m-0 fw-semibold">
-                        {{ trans('messages.role.' . $user->role) }}
+                        {{ $user->getRole() ? $user->getRole()->name : '--' }}
                     </h5>
-					<span class="text-muted">{{ trans('messages.user.permission') }}</span>
+					<span class="text-muted">{{ trans('messages.user.role') }}</span>
 				</td>
                 <td>
                     @if ($user->isActivated())
