@@ -898,6 +898,8 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     // Media
     Route::resource('store/media', 'Store\MediaController');
 
+    // Account ChatGPT
+    Route::match(['get', 'post'], 'chat-gpt', 'ChatgptController@settings');
 });
 
 // ADMIN AREA

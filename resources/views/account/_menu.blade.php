@@ -46,6 +46,11 @@
                         </a>
                     </li>
                 @endif
+                <li class="nav-item {{ $menu == 'chatgpt' ? 'active' : '' }}">
+                    <a href="{{ action("ChatgptController@settings") }}" class="nav-link">
+                        <span class="material-symbols-rounded">restore</span> {{ trans('messages.account.chatgpt') }}
+                    </a>
+                </li>
             </ul>
         </div>
     </div>

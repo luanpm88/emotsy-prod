@@ -1820,4 +1820,15 @@ class Customer extends Model
         $user->customer_id = $this->id;
         return $user;
     }
+
+    public function saveChatgptApiKey($key)
+    {
+        $this->openai_api_key = $key;
+        $this->save();
+    }
+
+    public function getChatgptApiKey()
+    {
+        return $this->openai_api_key;
+    }
 }

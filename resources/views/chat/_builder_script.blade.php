@@ -90,29 +90,29 @@
                         <div class="dropdown-menu" aria-labelledby="dropdownChatButton">
                             <a class="dropdown-item" href="javascript:;"
                                 chat-control="ask"
-                                data-question="{{ trans('chatgpt::messages.chat.builder.ask_for_grammatical_correctness') }}"
-                                data-show="{{ trans('chatgpt::messages.chat.builder.ask_for_grammatical_correctness.show') }}"
+                                data-question="{{ trans('chatgpt.chat.builder.ask_for_grammatical_correctness') }}"
+                                data-show="{{ trans('chatgpt.chat.builder.ask_for_grammatical_correctness.show') }}"
                             >
-                                {{ trans('chatgpt::messages.chat.check_grammatical_correctness') }}
+                                {{ trans('chatgpt.chat.check_grammatical_correctness') }}
                             </a>
                             <a class="dropdown-item" href="javascript:;"
                                 chat-control="ask"
-                                data-question="{{ trans('chatgpt::messages.chat.builder.ask_for_more_formal') }}"
-                                data-show="{{ trans('chatgpt::messages.chat.builder.ask_for_more_formal.show') }}"
+                                data-question="{{ trans('chatgpt.chat.builder.ask_for_more_formal') }}"
+                                data-show="{{ trans('chatgpt.chat.builder.ask_for_more_formal.show') }}"
                             >
-                                {{ trans('chatgpt::messages.chat.suggest_more_formal') }}
+                                {{ trans('chatgpt.chat.suggest_more_formal') }}
                             </a>
                             <a class="dropdown-item" href="javascript:;"
                                 chat-control="ask"
-                                data-question="{{ trans('chatgpt::messages.chat.builder.ask_for_more_informal') }}"
-                                data-show="{{ trans('chatgpt::messages.chat.builder.ask_for_more_informal.show') }}"
+                                data-question="{{ trans('chatgpt.chat.builder.ask_for_more_informal') }}"
+                                data-show="{{ trans('chatgpt.chat.builder.ask_for_more_informal.show') }}"
                             >
-                                {{ trans('chatgpt::messages.chat.suggest_more_informal') }}
+                                {{ trans('chatgpt.chat.suggest_more_informal') }}
                             </a>
                             <a class="dropdown-item" href="javascript:;"
                                 chat-control="custom-ask"
                             >
-                                {{ trans('chatgpt::messages.chat.custom_question') }}</a>
+                                {{ trans('chatgpt.chat.custom_question') }}</a>
                         </div>
                     </div>
                 `);

@@ -36,7 +36,7 @@
             this.chatBox.clear();
 
             // send hello message
-            var hello = '{{ trans('chatgpt::messages.chat.custom_question.default_message') }}';
+            var hello = '{{ trans('chatgpt.chat.custom_question.default_message') }}';
             this.chatBox.addChatGPTMessage(hello);
         }
     }

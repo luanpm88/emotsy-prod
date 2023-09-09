@@ -3,13 +3,13 @@
 namespace Acelle\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Acelle\Chatgpt\Chatgpt;
+use Acelle\Library\Chatgpt;
 
 class ChatController extends Controller
 {
     public function chat(Request $request)
     {
-        $chatgpt = Chatgpt::initialize();
+        $chatgpt = Chatgpt::initialize($request->user()->customer->getChatgptApiKey());
         $messages = $request->messages;
 
         // reduce messages length
