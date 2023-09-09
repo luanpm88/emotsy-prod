@@ -10,7 +10,7 @@ class ChatgptController extends BaseController
 {
     public function settings(Request $request)
     {
-        $chatgpt = Chatgpt::initialize();
+        $chatgpt = Chatgpt::initialize($request->user()->customer);
 
         if ($request->isMethod('post')) {
             // demo mode
