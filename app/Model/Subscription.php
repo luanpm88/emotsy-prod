@@ -967,7 +967,9 @@ class Subscription extends Model
 
     public function getRemainingEmailCreditsPercentage()
     {
-        $creditsUsed = $this->getRemainingEmailCredits();
+        // Temporarily use the RateTracker to get credits used as CreditTracker is not yet supported
+        // Future: $creditsUsed = $this->getRemainingEmailCredits();
+        $creditsUsed = $this->getSendEmailRateTracker()->getCreditsUsed();
         $creditsLimit = $this->planGeneral->getOption('email_max');
 
         // if = -1 (default:unlimited) return 0
