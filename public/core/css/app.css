@@ -760,7 +760,7 @@ input.error {
 }
 .table-sub .label {
 }
-.bg-rejected, .label-failed, .bg-renew_pending, .bg-submitted_for_settlement, .bg-authorized, .bg-pending, .label-pending, .bg-waiting, .bg-ready, .bg-finished, .bg-pending_active {
+.bg-wait_for_approval, .bg-rejected, .label-failed, .bg-renew_pending, .bg-submitted_for_settlement, .bg-authorized, .bg-pending, .label-pending, .bg-waiting, .bg-ready, .bg-finished, .bg-pending_active {
     background-color: #ffd7d4!important;
     border-color: #f7c9c6;
     color: #231c15;

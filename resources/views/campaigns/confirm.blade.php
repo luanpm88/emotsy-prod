@@ -208,7 +208,7 @@
                                 <span onclick="$('#spam_score_confirm_model').modal('show')" class="btn btn-primary">{{ trans('messages.send') }} <i class="icon-paperplane ml-5"></i> </span>
                                 <button style="display: none" class="btn btn-primary send-campaign-button">{{ trans('messages.send') }} <i class="icon-paperplane ml-5"></i> </button>
                             @else
-                                <button class="btn btn-primary send-campaign-button">{{ trans('messages.send') }} <i class="icon-paperplane ml-5"></i> </button>
+                                <button class="btn btn-primary send-campaign-button">{{ trans('messages.campaign.request_approval_send') }} <i class="icon-paperplane ml-5"></i> </button>
                             @endif
                         </div>
 
@@ -251,7 +251,7 @@
                             {{ trans('messages.preview') }} <span class="material-symbols-rounded">visibility</span>
                         </span>
                         <button class="btn btn-secondary me-1 send-a-test-email-link" data-uid="{{ $campaign->uid }}">{{ trans('messages.send_a_test_email') }} <i class="icon-envelop3 ml-5"></i> </button>
-                        <button class="btn btn-primary">{{ trans('messages.send') }} <i class="icon-paperplane ml-5"></i> </button>
+                        <button class="btn btn-primary">{{ trans('messages.campaign.request_approval_send') }} <i class="icon-paperplane ml-5"></i> </button>
                     </div>
                 @endif
 

@@ -76,10 +76,16 @@
 					<td></td>
 				@endif
 				<td width="15%" class="text-center">
-					<span class="text-muted2 list-status pull-left" title='{{ $campaign->isError() ? $campaign->extractErrorMessage() : '' }}' data-popup='tooltip'>
-						<span class="label label-flat bg-{{ $campaign->status }}">{{ trans('messages.campaign_status_' . $campaign->status) }}</span>
-					</span>
-					<pre style="display:none">{{ $campaign->last_error }}</pre>
+                    @if ($campaign->isRejected())
+                        <span class="text-muted2 list-status pull-left xtooltip" title="{{ $campaign->reject_reason }}" data-popup='tooltip'>
+                            <span class="label label-flat bg-{{ $campaign->status }}">{{ trans('messages.campaign_status_' . $campaign->status) }}</span>
+                        </span>
+                    @else
+                        <span class="text-muted2 list-status pull-left" title='{{ $campaign->isError() ? $campaign->extractErrorMessage() : '' }}' data-popup='tooltip'>
+                            <span class="label label-flat bg-{{ $campaign->status }}">{{ trans('messages.campaign_status_' . $campaign->status) }}</span>
+                        </span>
+                        <pre style="display:none">{{ $campaign->last_error }}</pre>
+                    @endif
 				</td>
 				<td class="text-end text-nowrap pe-0">
 					<div class="d-flex align-items-center text-nowrap justify-content-end">

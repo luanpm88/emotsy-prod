@@ -38,7 +38,19 @@ class CampaignPolicy
     public function overview(User $user, Campaign $item)
     {
         $customer = $user->customer;
-        return $item->customer_id == $customer->id && !$user->isReadOnly();
+        return $item->customer_id == $customer->id && !$user->isReadOnly() && !$item->isWaitForApproval();
+    }
+
+    public function approve(User $user, Campaign $item)
+    {
+        $admin = $user->admin;
+        return $admin && $item->isWaitForApproval();
+    }
+
+    public function reject(User $user, Campaign $item)
+    {
+        $admin = $user->admin;
+        return $admin && $item->isWaitForApproval();
     }
 
     public function update(User $user, Campaign $item)
@@ -47,6 +59,7 @@ class CampaignPolicy
         return $item->customer_id == $customer->id
             && (in_array($item->status, [
                 Campaign::STATUS_NEW,
+                Campaign::STATUS_REJECTED,
                 Campaign::STATUS_QUEUING,
                 Campaign::STATUS_QUEUED,
                 Campaign::STATUS_ERROR,
@@ -60,6 +73,7 @@ class CampaignPolicy
         $customer = $user->customer;
         return $item->customer_id == $customer->id && in_array($item->status, [
             Campaign::STATUS_NEW,
+            Campaign::STATUS_REJECTED,
             Campaign::STATUS_QUEUING,
             Campaign::STATUS_QUEUED,
             Campaign::STATUS_ERROR,
@@ -86,6 +100,7 @@ class CampaignPolicy
         $customer = $user->customer;
         return $item->customer_id == $customer->id && in_array($item->status, [
             Campaign::STATUS_NEW,
+            Campaign::STATUS_REJECTED,
         ]) && !$user->isReadOnly();
     }
 

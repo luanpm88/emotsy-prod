@@ -17,7 +17,7 @@
 					</div>
 				</td>
 				<td>
-					<a class="kq_search fw-600 d-block list-title" href="{{ action('Admin\CampaignController@show', $campaign->uid) }}">
+					<a class="kq_search fw-600 d-block list-title" href="{{ action('Admin\CampaignController@edit', $campaign->uid) }}">
 						{{ $campaign->name }}
 					</a>
 					<span class="text-muted">{{ trans('messages.' . $campaign->type) }}</span>
@@ -32,9 +32,9 @@
 
 					@if ($campaign->status != 'new' && isset($campaign->run_at))
 						<span class="text-muted2 d-block xtooltip" title="{{ $campaign->scheduleDiffForHumans() }}">{{ trans('messages.run_at') }}: <span class="material-symbols-rounded">alarm</span>
-							 {{ isset($campaign->run_at) ? Auth::user()->admin->formatDateTime($campaign->run_at, 'datetime_full') : "" }}</span>
+							 {{ isset($campaign->run_at) ? $campaign->customer->formatDateTime($campaign->run_at, 'datetime_full') : "" }}</span>
 					@else
-						<span class="text-muted2 d-block">{{ trans('messages.updated_at') }}: {{ Auth::user()->admin->formatDateTime($campaign->created_at, 'datetime_full') }}</span>
+						<span class="text-muted2 d-block">{{ trans('messages.updated_at') }}: {{ $campaign->customer->formatDateTime($campaign->created_at, 'datetime_full') }}</span>
 					@endif
 				</td>
                 <td>
@@ -82,18 +82,36 @@
 					<td></td>
 				@endif
 				<td width="15%" class="text-center">
-					<span class="text-muted2 list-status pull-left" title='{{ $campaign->isError() ? $campaign->extractErrorMessage() : '' }}' data-popup='tooltip'>
-						<span class="label label-flat bg-{{ $campaign->status }}">{{ trans('messages.campaign_status_' . $campaign->status) }}</span>
-					</span>
-					<pre style="display:none">{{ $campaign->last_error }}</pre>
+					@if ($campaign->isRejected())
+                        <span class="text-muted2 list-status pull-left xtooltip" title="{{ $campaign->reject_reason }}" data-popup='tooltip'>
+                            <span class="label label-flat bg-{{ $campaign->status }}">{{ trans('messages.campaign_status_' . $campaign->status) }}</span>
+                        </span>
+                    @else
+                        <span class="text-muted2 list-status pull-left" title='{{ $campaign->isError() ? $campaign->extractErrorMessage() : '' }}' data-popup='tooltip'>
+                            <span class="label label-flat bg-{{ $campaign->status }}">{{ trans('messages.campaign_status_' . $campaign->status) }}</span>
+                        </span>
+                        <pre style="display:none">{{ $campaign->last_error }}</pre>
+                    @endif
 				</td>
 				<td class="text-end text-nowrap pe-0">
 					<div class="d-flex align-items-center text-nowrap justify-content-end">
-						<a href="{{ action('Admin\CampaignController@approve', $campaign->uid) }}" data-popup="tooltip"
-                            title="{{ trans('messages.overview') }}" role="button"
-                            class="btn btn-primary btn-icon ms-1"
-                        >
-                            <i class="icon-stats-growth"></i> {{ trans('messages.campaign.approve') }}</a>
+                        @if (\Gate::allows('approve', $campaign))
+                            <a href="{{ action('Admin\CampaignController@approve', $campaign->uid) }}" data-popup="tooltip"
+                                title="{{ trans('messages.campaign.approve') }}" role="button"
+                                link-method="POST"
+                                link-confirm="{{ trans('messages.campaign.approve.confirm') }}"
+                                class="btn btn-primary btn-icon ms-1 list-action-single"
+                            >
+                                <i class="icon-stats-growth"></i> {{ trans('messages.campaign.approve') }}
+                            </a>
+                        @endif
+                        @if (\Gate::allows('reject', $campaign))
+                            <a href="{{ action('Admin\CampaignController@reject', $campaign->uid) }}" list-control="reject"
+                                class="btn btn-warning btn-icon ms-1"
+                            >
+                                <i class="icon-stats-growth"></i> {{ trans('messages.campaign.reject') }}
+                            </a>
+                        @endif
 					</div>
 				</td>
 			</tr>
@@ -168,6 +186,15 @@
 			
 			CampaignsSendTestEmailPopup.load(url);
 		});
+
+        $('[list-control="reject"]').click(function(e) {
+            e.preventDefault();
+
+            var src = $(this).attr('href');
+            
+            rejectPendingSub = new Popup();
+            rejectPendingSub.load(src);
+        });
 	</script>
 @elseif (!empty(request()->keyword))
 	<div class="empty-list">
