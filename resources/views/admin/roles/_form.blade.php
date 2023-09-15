@@ -25,18 +25,6 @@
                 </div>
             @endforeach
         </div>
-        <div class="sub_section">
-
-            <h5>{{ trans('messages.permission.system') }}</h5>
-            @foreach (config('permissions.system') as $permission)
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" name="permissions[]" value="{{ $permission }}" id="{{ $permission }}" {{ $role->hasPermission($permission) ? 'checked' : '' }}>
-                    <label class="form-check-label" for="{{ $permission }}">
-                    {{ $permission }}
-                    </label>
-                </div>
-            @endforeach
-		</div>
 		<div class="text-left">
 			<button class="btn btn-primary me-1"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
 			<a href="{{ action("Admin\RoleController@index") }}" class="btn btn-secondary"><i class="icon-cross"></i> {{ trans('messages.cancel') }}</a>
