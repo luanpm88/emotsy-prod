@@ -31,7 +31,9 @@ class UserPolicy
                 $can = $user->admin->getPermission('user_create') == 'yes';
                 break;
             case 'customer':
-                $can = $user->id != $item->id && !$user->isReadOnly();
+                $can = $user->id != $item->id;
+                // RBAC check
+                $can = $can && !$user->hasPermission('user.readonly');
                 break;
         }
         
@@ -54,7 +56,8 @@ class UserPolicy
                         || ($ability == 'own' && $user->id == $item->id);
                 break;
             case 'customer':
-                $can = !$user->isReadOnly();
+                // RBAC check
+                $can = !$user->hasPermission('user.readonly');
                 break;
         }
         return $can;
@@ -70,7 +73,9 @@ class UserPolicy
                         || ($ability == 'own' && $user->id == $item->id);
                 break;
             case 'customer':
-                $can = $user->id != $item->id && $item->isActivated() && !$user->isReadOnly();
+                $can = $user->id != $item->id && $item->isActivated();
+                // RBAC check
+                $can = $can && !$user->hasPermission('user.readonly');
                 break;
         }
         return $can;
@@ -86,7 +91,9 @@ class UserPolicy
                         || ($ability == 'own' && $user->id == $item->id);
                 break;
             case 'customer':
-                $can = $user->id != $item->id && !$item->isActivated() && !$user->isReadOnly();
+                $can = $user->id != $item->id && !$item->isActivated();
+                // RBAC check
+                $can = $can && !$user->hasPermission('user.readonly');
                 break;
         }
         return $can;
@@ -100,10 +107,12 @@ class UserPolicy
                 $ability = $user->admin->getPermission('user_delete');
                 $can = $ability == 'all'
                         || ($ability == 'own' && $user->id == $item->id);
-                $can = $can && $user->id != $item->id && !$user->isReadOnly();
+                $can = $can && $user->id != $item->id;
                 break;
             case 'customer':
-                $can = $user->id != $item->id && !$user->isReadOnly();
+                $can = $user->id != $item->id;
+                // RBAC check
+                $can = $can && !$user->hasPermission('user.readonly');
                 break;
         }
         return $can;

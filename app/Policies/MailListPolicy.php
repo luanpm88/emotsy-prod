@@ -36,28 +36,46 @@ class MailListPolicy
             // ignore limit because it is null
         }
         
+        // RBAC check
+        $can = $can && !$user->hasPermission('list.readonly');
+
         return $can;
     }
 
     public function update(User $user, MailList $item)
     {
         $customer = $user->customer;
-        return $item->customer_id == $customer->id && !$user->isReadOnly();
+        $can = $item->customer_id == $customer->id;
+
+        // RBAC check
+        $can = $can && !$user->hasPermission('list.readonly');
+
+        return $can;
     }
 
     public function delete(User $user, MailList $item)
     {
         $customer = $user->customer;
-        return $item->customer_id == $customer->id && !$user->isReadOnly();
+        $can = $item->customer_id == $customer->id;
+
+        // RBAC check
+        $can = $can && !$user->hasPermission('list.readonly');
+
+        return $can;
     }
 
     public function addMoreSubscribers(User $user, MailList $mailList, $numberOfSubscribers = 1)
     {
         $max = get_tmp_quota($user->customer, 'subscriber_max');
         $maxPerList = get_tmp_quota($user->customer, 'subscriber_per_list_max');
-        return $user->customer->id == $mailList->customer_id &&
+        $can = $user->customer->id == $mailList->customer_id &&
             ($max >= $user->customer->subscribersCount() + $numberOfSubscribers || $max == -1) &&
-            ($maxPerList >= $mailList->subscribersCount() + $numberOfSubscribers || $maxPerList == -1) && !$user->isReadOnly();
+            ($maxPerList >= $mailList->subscribersCount() + $numberOfSubscribers || $maxPerList == -1);
+
+        // RBAC check
+        $can = $can && !$user->hasPermission('list.readonly');
+
+        return $can;
     }
 
     public function import(User $user, MailList $item)
@@ -65,7 +83,12 @@ class MailListPolicy
         $customer = $user->customer;
         $can = get_tmp_quota($customer, 'list_import');
 
-        return ($can == 'yes' && $item->customer_id == $customer->id) && !$user->isReadOnly();
+        $can = ($can == 'yes' && $item->customer_id == $customer->id);
+
+        // RBAC check
+        $can = $can && !$user->hasPermission('list.readonly');
+
+        return $can;
     }
 
     public function export(User $user, MailList $item)
@@ -73,6 +96,11 @@ class MailListPolicy
         $customer = $user->customer;
         $can = get_tmp_quota($customer, 'list_export');
 
-        return ($can == 'yes' && $item->customer_id == $customer->id) && !$user->isReadOnly();
+        $can = ($can == 'yes' && $item->customer_id == $customer->id);
+
+        // RBAC check
+        $can = $can && !$user->hasPermission('list.readonly');
+
+        return $can;
     }
 }

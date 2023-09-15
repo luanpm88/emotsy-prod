@@ -32,7 +32,10 @@ class CampaignPolicy
             // ignore limit because it is null
         }
 
-        return $can && !$user->isReadOnly();
+        // RBAC check
+        $can = $can && !$user->hasPermission('campaign.readonly');
+
+        return $can;
     }
 
     public function overview(User $user, Campaign $item)
@@ -56,7 +59,7 @@ class CampaignPolicy
     public function update(User $user, Campaign $item)
     {
         $customer = $user->customer;
-        return $item->customer_id == $customer->id
+        $can = $item->customer_id == $customer->id
             && (in_array($item->status, [
                 Campaign::STATUS_NEW,
                 Campaign::STATUS_REJECTED,
@@ -65,13 +68,18 @@ class CampaignPolicy
                 Campaign::STATUS_ERROR,
                 Campaign::STATUS_PAUSED,
                 Campaign::STATUS_SCHEDULED,
-            ])) && !$user->isReadOnly();
+            ]));
+
+        // RBAC check
+        $can = $can && !$user->hasPermission('campaign.readonly');
+
+        return $can;
     }
 
     public function delete(User $user, Campaign $item)
     {
         $customer = $user->customer;
-        return $item->customer_id == $customer->id && in_array($item->status, [
+        $can = $item->customer_id == $customer->id && in_array($item->status, [
             Campaign::STATUS_NEW,
             Campaign::STATUS_REJECTED,
             Campaign::STATUS_QUEUING,
@@ -81,37 +89,57 @@ class CampaignPolicy
             Campaign::STATUS_DONE,
             Campaign::STATUS_SENDING,
             Campaign::STATUS_SCHEDULED,
-        ]) && !$user->isReadOnly();
+        ]);
+
+        // RBAC check
+        $can = $can && !$user->hasPermission('campaign.readonly');
+
+        return $can;
     }
 
     public function pause(User $user, Campaign $item)
     {
         $customer = $user->customer;
-        return $item->customer_id == $customer->id && in_array($item->status, [
+        $can = $item->customer_id == $customer->id && in_array($item->status, [
             Campaign::STATUS_QUEUING,
             Campaign::STATUS_QUEUED,
             Campaign::STATUS_SENDING,
             Campaign::STATUS_SCHEDULED,
-        ]) && !$user->isReadOnly();
+        ]);
+
+        // RBAC check
+        $can = $can && !$user->hasPermission('campaign.readonly');
+
+        return $can;
     }
 
     public function run(User $user, Campaign $item)
     {
         $customer = $user->customer;
-        return $item->customer_id == $customer->id && in_array($item->status, [
+        $can = $item->customer_id == $customer->id && in_array($item->status, [
             Campaign::STATUS_NEW,
             Campaign::STATUS_REJECTED,
-        ]) && !$user->isReadOnly();
+        ]);
+
+        // RBAC check
+        $can = $can && !$user->hasPermission('campaign.readonly');
+
+        return $can;
     }
 
     public function restart(User $user, Campaign $item)
     {
         $customer = $user->customer;
-        return $item->customer_id == $customer->id && in_array($item->status, [
+        $can = $item->customer_id == $customer->id && in_array($item->status, [
             Campaign::STATUS_PAUSED,
             Campaign::STATUS_ERROR,
             Campaign::STATUS_SCHEDULED,
-        ]) && !$user->isReadOnly();
+        ]);
+
+        // RBAC check
+        $can = $can && !$user->hasPermission('campaign.readonly');
+
+        return $can;
     }
 
     public function sort(User $user, Campaign $item)
@@ -123,7 +151,12 @@ class CampaignPolicy
     public function copy(User $user, Campaign $item)
     {
         $customer = $user->customer;
-        return $item->customer_id == $customer->id && !$user->isReadOnly();
+        $can = $item->customer_id == $customer->id;
+
+        // RBAC check
+        $can = $can && !$user->hasPermission('campaign.readonly');
+
+        return $can;
     }
 
     public function preview(User $user, Campaign $item)
@@ -141,13 +174,18 @@ class CampaignPolicy
     public function resend(User $user, Campaign $item)
     {
         $customer = $user->customer;
-        return $item->customer_id == $customer->id && ($item->isDone() || $item->isPaused()) && !$user->isReadOnly();
+        $can = $item->customer_id == $customer->id && ($item->isDone() || $item->isPaused());
+
+        // RBAC check
+        $can = $can && !$user->hasPermission('campaign.readonly');
+
+        return $can;
     }
 
     public function send_test_email(User $user, Campaign $item)
     {
         $customer = $user->customer;
-        return $item->customer_id == $customer->id && in_array($item->status, [
+        $can = $item->customer_id == $customer->id && in_array($item->status, [
             Campaign::STATUS_QUEUING,
             Campaign::STATUS_QUEUED,
             Campaign::STATUS_SENDING,
@@ -155,6 +193,11 @@ class CampaignPolicy
             Campaign::STATUS_PAUSED,
             Campaign::STATUS_DONE,
             Campaign::STATUS_SCHEDULED,
-        ]) && !$user->isReadOnly();
+        ]);
+
+        // RBAC check
+        $can = $can && !$user->hasPermission('campaign.readonly');
+
+        return $can;
     }
 }
