@@ -19,30 +19,30 @@ class SubscriberPolicy
     public function create(User $user)
     {
         // constraints are checked in MailListPolicy
-        return true;
+        return true && !$user->isReadOnly();
     }
 
     public function update(User $user, Subscriber $item)
     {
         $customer = $user->customer;
-        return $item->mailList->customer_id == $customer->id;
+        return $item->mailList->customer_id == $customer->id && !$user->isReadOnly();
     }
 
     public function delete(User $user, Subscriber $item)
     {
         $customer = $user->customer;
-        return $item->mailList->customer_id == $customer->id;
+        return $item->mailList->customer_id == $customer->id && !$user->isReadOnly();
     }
 
     public function subscribe(User $user, Subscriber $subscriber)
     {
         $customer = $user->customer;
-        return $subscriber->mailList->customer_id == $customer->id;
+        return $subscriber->mailList->customer_id == $customer->id && !$user->isReadOnly();
     }
 
     public function unsubscribe(User $user, Subscriber $item)
     {
         $customer = $user->customer;
-        return $item->mailList->customer_id == $customer->id;
+        return $item->mailList->customer_id == $customer->id && !$user->isReadOnly();
     }
 }

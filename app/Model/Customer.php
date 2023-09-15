@@ -213,6 +213,11 @@ class Customer extends Model
         return $this->hasMany('Acelle\Model\Website');
     }
 
+    public function users()
+    {
+        return $this->hasmany('Acelle\Model\User');
+    }
+
     /**
      * Get user sources.
      */
@@ -956,7 +961,7 @@ class Customer extends Model
      */
     public function can($action, $item)
     {
-        return $this->user->can($action, [$item, 'customer']);
+        return \Auth::user()->can($action, [$item, 'customer']);
     }
 
     /**
@@ -1651,11 +1656,7 @@ class Customer extends Model
     {
         $lastNameFirst = get_localization_config('show_last_name_first', $this->getLanguageCode());
 
-        if ($lastNameFirst) {
-            return htmlspecialchars(trim($this->user->last_name.' '.$this->user->first_name));
-        } else {
-            return htmlspecialchars(trim($this->user->first_name.' '.$this->user->last_name));
-        }
+        return $this->user->displayName($lastNameFirst);
     }
 
     public function newDefaultCampaign()
@@ -1811,5 +1812,23 @@ class Customer extends Model
         }
 
         return false;
+    }
+
+    public function newUser()
+    {
+        $user = User::newDefault();
+        $user->customer_id = $this->id;
+        return $user;
+    }
+
+    public function saveChatgptApiKey($key)
+    {
+        $this->openai_api_key = $key;
+        $this->save();
+    }
+
+    public function getChatgptApiKey()
+    {
+        return $this->openai_api_key;
     }
 }

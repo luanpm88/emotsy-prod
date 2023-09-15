@@ -24,7 +24,7 @@ class CustomerPolicy
         return $can;
     }
 
-    public function create(User $user, Customer $item)
+    public function create(User $user, Customer $item, $role='admin')
     {
         $can = $user->admin->getPermission('customer_create') == 'yes';
 

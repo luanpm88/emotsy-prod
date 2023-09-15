@@ -583,7 +583,16 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('campaigns/{uid}/run', 'CampaignController@run');
     Route::get('campaigns/{uid}/update-stats', 'CampaignController@updateStats');
 
+    //
     Route::get('users/login-back', 'UserController@loginBack');
+
+    // User
+    Route::get('account/users/listing/{page?}', 'UserController@listing');
+    Route::get('account/users/sort', 'UserController@sort');
+    Route::get('account/users/delete', 'UserController@delete');
+    Route::get('account/users/disable', 'UserController@disable');
+    Route::get('account/users/enable', 'UserController@enable');
+    Route::resource('account/users', 'UserController');
 
     // Sending servers
     Route::get('sending_servers/{uid}/senders/dropbox', 'SendingServerController@fromDropbox');
@@ -889,6 +898,8 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     // Media
     Route::resource('store/media', 'Store\MediaController');
 
+    // Account ChatGPT
+    Route::match(['get', 'post'], 'chat-gpt', 'ChatgptController@settings');
 });
 
 // ADMIN AREA
@@ -1268,4 +1279,122 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
 
     // Chat
     Route::post('admin/chat', 'ChatController@chat');
+
+    // Role
+    Route::post('admin/roles/delete', 'RoleController@delete');
+    Route::post('admin/roles/disable', 'RoleController@disable');
+    Route::post('admin/roles/enable', 'RoleController@enable');
+    Route::get('admin/roles/list', 'RoleController@list');
+    Route::resource('admin/roles', 'RoleController');
+    Route::post('admin/roles/{uid}/update', 'RoleController@update');
+
+    // Campaign
+    Route::post('admin/campaigns/{uid}/preheader/remove', 'CampaignController@preheaderRemove');
+    Route::match(['get', 'post'], 'admin/campaigns/{uid}/preheader/add', 'CampaignController@preheaderAdd');
+    Route::get('admin/campaigns/{uid}/preheader', 'CampaignController@preheader');
+
+    Route::post('admin/campaigns/webhooks/{webhook_uid}/test/{message_id}', 'CampaignController@webhooksTestMessage');
+    Route::get('admin/campaigns/{uid}/click-log/{message_id}/execute', 'CampaignController@clickLogExecute');
+    Route::get('admin/campaigns/{uid}/open-log/{message_id}/execute', 'CampaignController@openLogExecute');
+    Route::match(['get', 'post'], 'admin/campaigns/webhooks/{webhook_uid}/test', 'CampaignController@webhooksTest');
+    Route::get('admin/campaigns/webhooks/{webhook_uid}/sample/request', 'CampaignController@webhooksSampleRequest');
+    Route::post('admin/campaigns/webhooks/{webhook_uid}/delete', 'CampaignController@webhooksDelete');
+    Route::match(['get', 'post'], 'admin/campaigns/webhooks/{webhook_uid}/edit', 'CampaignController@webhooksEdit');
+    Route::get('admin/campaigns/{uid}/webhooks/list', 'CampaignController@webhooksList');
+    Route::get('admin/campaigns/{uid}/webhooks/link-select', 'CampaignController@webhooksLinkSelect');
+    Route::match(['get', 'post'], 'admin/campaigns/{uid}/webhooks/add', 'CampaignController@webhooksAdd');
+    Route::get('admin/campaigns/{uid}/webhooks', 'CampaignController@webhooks');
+
+    Route::get('admin/campaigns/{uid}/preview-as/list', 'CampaignController@previewAsList');
+    Route::get('admin/campaigns/{uid}/preview-as', 'CampaignController@previewAs');
+
+    Route::post('admin/campaigns/{uid}/custom-plain/off', 'CampaignController@customPlainOff');
+    Route::post('admin/campaigns/{uid}/custom-plain/on', 'CampaignController@customPlainOn');
+    Route::post('admin/campaigns/{uid}/remove-attachment', 'CampaignController@removeAttachment');
+    Route::get('admin/campaigns/{uid}/download-attachment', 'CampaignController@downloadAttachment');
+    Route::post('admin/campaigns/{uid}/upload-attachment', 'CampaignController@uploadAttachment');
+    Route::get('admin/campaigns/{uid}/template/builder-select', 'CampaignController@templateBuilderSelect');
+
+    Route::match(['get', 'post'], 'admin/campaigns/{uid}/template/builder-plain', 'CampaignController@builderPlainEdit');
+    Route::match(['get', 'post'], 'admin/campaigns/{uid}/template/builder-classic', 'CampaignController@builderClassic');
+    Route::match(['get', 'post'], 'admin/campaigns/{uid}/plain', 'CampaignController@plain');
+    Route::get('admin/campaigns/{uid}/template/change/{template_uid}', 'CampaignController@templateChangeTemplate');
+
+    Route::get('admin/campaigns/{uid}/template/content', 'CampaignController@templateContent');
+    Route::match(['get', 'post'], 'admin/campaigns/{uid}/template/edit', 'CampaignController@templateEdit');
+    Route::match(['get', 'post'], 'admin/campaigns/{uid}/template/upload', 'CampaignController@templateUpload');
+    Route::get('admin/campaigns/{uid}/template/layout/list', 'CampaignController@templateLayoutList');
+    Route::match(['get', 'post'], 'admin/campaigns/{uid}/template/layout', 'CampaignController@templateLayout');
+    Route::get('admin/campaigns/{uid}/template/create', 'CampaignController@templateCreate');
+
+    Route::get('admin/campaigns/{uid}/spam-score', 'CampaignController@spamScore');
+    Route::get('admin/campaigns/{from_uid}/copy-move-from/{action}', 'CampaignController@copyMoveForm');
+    Route::match(['get', 'post'], 'admin/campaigns/{uid}/resend', 'CampaignController@resend');
+    Route::get('admin/campaigns/{uid}/tracking-log/download', 'CampaignController@trackingLogDownload');
+    Route::get('admin/campaigns/job/{uid}/progress', 'CampaignController@trackingLogExportProgress');
+    Route::get('admin/campaigns/job/{uid}/download', 'CampaignController@download');
+
+    Route::get('admin/campaigns/{uid}/template/review-iframe', 'CampaignController@templateReviewIframe');
+    Route::get('admin/campaigns/{uid}/template/review', 'CampaignController@templateReview');
+    Route::get('admin/campaigns/select-type', 'CampaignController@selectType');
+    Route::get('admin/campaigns/{uid}/list-segment-form', 'CampaignController@listSegmentForm');
+    Route::get('admin/campaigns/{uid}/preview/content/{subscriber_uid?}', 'CampaignController@previewContent');
+    Route::get('admin/campaigns/{uid}/preview', 'CampaignController@preview');
+    Route::match(['get', 'post'], 'admin/campaigns/send-test-email', 'CampaignController@sendTestEmail');
+    Route::get('admin/campaigns/delete/confirm', 'CampaignController@deleteConfirm');
+    Route::match(['get', 'post'], 'admin/campaigns/copy', 'CampaignController@copy');
+
+    Route::get('admin/campaigns/{uid}/subscribers', 'CampaignController@subscribers');
+    Route::get('admin/campaigns/{uid}/subscribers/listing', 'CampaignController@subscribersListing');
+    Route::get('admin/campaigns/{uid}/open-map', 'CampaignController@openMap');
+    Route::get('admin/campaigns/{uid}/tracking-log', 'CampaignController@trackingLog');
+    Route::get('admin/campaigns/{uid}/tracking-log/listing', 'CampaignController@trackingLogListing');
+    Route::get('admin/campaigns/{uid}/bounce-log', 'CampaignController@bounceLog');
+    Route::get('admin/campaigns/{uid}/bounce-log/listing', 'CampaignController@bounceLogListing');
+    Route::get('admin/campaigns/{uid}/feedback-log', 'CampaignController@feedbackLog');
+    Route::get('admin/campaigns/{uid}/feedback-log/listing', 'CampaignController@feedbackLogListing');
+    Route::get('admin/campaigns/{uid}/open-log', 'CampaignController@openLog');
+    Route::get('admin/campaigns/{uid}/open-log/listing', 'CampaignController@openLogListing');
+    Route::get('admin/campaigns/{uid}/click-log', 'CampaignController@clickLog');
+    Route::get('admin/campaigns/{uid}/click-log/listing', 'CampaignController@clickLogListing');
+    Route::get('admin/campaigns/{uid}/unsubscribe-log', 'CampaignController@unsubscribeLog');
+    Route::get('admin/campaigns/{uid}/unsubscribe-log/listing', 'CampaignController@unsubscribeLogListing');
+
+    Route::get('admin/campaigns/quick-view', 'CampaignController@quickView');
+    Route::get('admin/campaigns/{uid}/chart24h', 'CampaignController@chart24h');
+    Route::get('admin/campaigns/{uid}/chart', 'CampaignController@chart');
+    Route::get('admin/campaigns/{uid}/chart/countries/open', 'CampaignController@chartCountry');
+    Route::get('admin/campaigns/{uid}/chart/countries/click', 'CampaignController@chartClickCountry');
+    Route::get('admin/campaigns/{uid}/overview', 'CampaignController@overview');
+    Route::get('admin/campaigns/{uid}/links', 'CampaignController@links');
+
+    Route::get('admin/campaigns/{uid}/recipients', 'CampaignController@recipients');
+    Route::post('admin/campaigns/{uid}/recipients', 'CampaignController@recipients');
+    Route::get('admin/campaigns/{uid}/setup', 'CampaignController@setup');
+    Route::post('admin/campaigns/{uid}/setup', 'CampaignController@setup');
+    Route::get('admin/campaigns/{uid}/template', 'CampaignController@template');
+    Route::post('admin/campaigns/{uid}/template', 'CampaignController@template');
+    Route::get('admin/campaigns/{uid}/template/select', 'CampaignController@templateSelect');
+    Route::get('admin/campaigns/{uid}/template/choose/{template_uid}', 'CampaignController@templateChoose');
+    Route::get('admin/campaigns/{uid}/template/preview', 'CampaignController@templatePreview');
+    Route::get('admin/campaigns/{uid}/template/iframe', 'CampaignController@templateIframe');
+    Route::get('admin/campaigns/{uid}/template/build/{style}', 'CampaignController@templateBuild');
+    Route::get('admin/campaigns/{uid}/template/rebuild', 'CampaignController@templateRebuild');
+    Route::get('admin/campaigns/{uid}/schedule', 'CampaignController@schedule');
+    Route::post('admin/campaigns/{uid}/schedule', 'CampaignController@schedule');
+    Route::get('admin/campaigns/{uid}/confirm', 'CampaignController@confirm');
+    Route::post('admin/campaigns/{uid}/confirm', 'CampaignController@confirm');
+    Route::post('admin/campaigns/delete', 'CampaignController@delete');
+    Route::get('admin/campaigns/select2', 'CampaignController@select2');
+    Route::post('admin/campaigns/pause', 'CampaignController@pause');
+    Route::post('admin/campaigns/restart', 'CampaignController@restart');
+    Route::get('admin/campaigns/{uid}/edit', 'CampaignController@edit');
+    Route::patch('admin/campaigns/{uid}/update', 'CampaignController@update');
+    Route::get('admin/campaigns/{uid}/run', 'CampaignController@run');
+    Route::get('admin/campaigns/{uid}/update-stats', 'CampaignController@updateStats');
+
+    Route::match(['get','post'], 'admin/campaigns/{uid}/reject', 'CampaignController@reject');
+    Route::post('admin/campaigns/{uid}/approve', 'CampaignController@approve');
+    Route::get('admin/campaigns/listing/{page?}', 'CampaignController@listing');
+    Route::resource('admin/campaigns', 'CampaignController');
 });

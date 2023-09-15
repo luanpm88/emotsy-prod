@@ -657,7 +657,10 @@ class CampaignController extends Controller
 
             // Save campaign
             // @todo: check campaign status before requeuing. Otherwise, several jobs shall be created and campaign will get sent several times
-            $campaign->execute();
+            // $campaign->execute(); // @emotsy comment this
+
+            // @emotsy set status to wait for approval
+            $campaign->setWaitForApproval();
 
             // Log
             $campaign->log('started', $customer);

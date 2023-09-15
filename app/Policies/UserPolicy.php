@@ -23,9 +23,18 @@ class UserPolicy
         return $can;
     }
 
-    public function create(User $user)
+    public function create(User $user, User $item, $role='admin')
     {
-        $can = $user->admin->getPermission('user_create') == 'yes';
+        // @important: in case of non-saas mode, it falls upon admin case
+        switch ($role) {
+            case 'admin':
+                $can = $user->admin->getPermission('user_create') == 'yes';
+                break;
+            case 'customer':
+                $can = $user->id != $item->id && !$user->isReadOnly();
+                break;
+        }
+        
 
         return $can;
     }
@@ -35,22 +44,68 @@ class UserPolicy
         return $user->id == $item->id;
     }
 
-    public function update(User $user, User $item)
+    public function update(User $user, User $item, $role='admin')
     {
-        $ability = $user->admin->getPermission('user_update');
-        $can = $ability == 'all'
-                || ($ability == 'own' && $user->id == $item->id);
-
+        // @important: in case of non-saas mode, it falls upon admin case
+        switch ($role) {
+            case 'admin':
+                $ability = $user->admin->getPermission('user_update');
+                $can = $ability == 'all'
+                        || ($ability == 'own' && $user->id == $item->id);
+                break;
+            case 'customer':
+                $can = !$user->isReadOnly();
+                break;
+        }
         return $can;
     }
 
-    public function delete(User $user, User $item)
+    public function disable(User $user, User $item, $role='admin')
     {
-        $ability = $user->admin->getPermission('user_delete');
-        $can = $ability == 'all'
-                || ($ability == 'own' && $user->id == $item->id);
-        $can = $can && $user->id != $item->id;
+        // @important: in case of non-saas mode, it falls upon admin case
+        switch ($role) {
+            case 'admin':
+                $ability = $user->admin->getPermission('user_update');
+                $can = $ability == 'all'
+                        || ($ability == 'own' && $user->id == $item->id);
+                break;
+            case 'customer':
+                $can = $user->id != $item->id && $item->isActivated() && !$user->isReadOnly();
+                break;
+        }
+        return $can;
+    }
 
+    public function enable(User $user, User $item, $role='admin')
+    {
+        // @important: in case of non-saas mode, it falls upon admin case
+        switch ($role) {
+            case 'admin':
+                $ability = $user->admin->getPermission('user_update');
+                $can = $ability == 'all'
+                        || ($ability == 'own' && $user->id == $item->id);
+                break;
+            case 'customer':
+                $can = $user->id != $item->id && !$item->isActivated() && !$user->isReadOnly();
+                break;
+        }
+        return $can;
+    }
+
+    public function delete(User $user, User $item, $role='admin')
+    {
+        // @important: in case of non-saas mode, it falls upon admin case
+        switch ($role) {
+            case 'admin':
+                $ability = $user->admin->getPermission('user_delete');
+                $can = $ability == 'all'
+                        || ($ability == 'own' && $user->id == $item->id);
+                $can = $can && $user->id != $item->id && !$user->isReadOnly();
+                break;
+            case 'customer':
+                $can = $user->id != $item->id && !$user->isReadOnly();
+                break;
+        }
         return $can;
     }
 

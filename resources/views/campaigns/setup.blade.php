@@ -41,7 +41,7 @@
 					'help_class' => 'campaign'
 				])
 				
-                @if (Acelle\Model\Plugin::isInstalled('acelle/chatgpt') && Acelle\Model\Plugin::getByName('acelle/chatgpt')->isActive())
+                @if (Auth::user()->customer->getChatgptApiKey())
                     @include('chat._email_subject', [
                         'name' => 'subject',
                         'label' => trans('messages.email_subject'),

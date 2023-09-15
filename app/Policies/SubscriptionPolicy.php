@@ -63,6 +63,7 @@ class SubscriptionPolicy
             case 'admin':
                 break;
             case 'customer':
+                $can = $can && !$user->isReadOnly();
                 break;
         }
 
@@ -76,6 +77,7 @@ class SubscriptionPolicy
             case 'admin':
                 break;
             case 'customer':
+                $can = $can && !$user->isReadOnly();
                 break;
         }
 
@@ -104,6 +106,7 @@ class SubscriptionPolicy
             case 'admin':
                 break;
             case 'customer':
+                $can = $can && !$user->isReadOnly();
                 break;
         }
 
@@ -132,6 +135,7 @@ class SubscriptionPolicy
                 break;
             case 'customer':
                 $can = $subscription->isActive() && !$subscription->getItsOnlyUnpaidChangePlanInvoice();
+                $can = $can && !$user->isReadOnly();
                 break;
         }
 

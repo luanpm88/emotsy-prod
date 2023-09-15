@@ -34,6 +34,8 @@ use File;
 use Acelle\Library\Tool;
 use Acelle\Library\Traits\HasUid;
 use Acelle\Library\Facades\Hook;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class User extends Authenticatable
 {
@@ -58,6 +60,13 @@ class User extends Authenticatable
     public const ASSETS_THUMB_DIR = 'home/thumbs';
     public const PROFILE_IMAGE_PATH = 'home/avatar';
     public const PROFILE_THUMB_PATH = 'home/avatar-thumb';
+
+    public const STATUS_ACTIVE = 'active';
+    public const STATUS_INACTIVE = 'inactive';
+
+    // Role
+    public const ROLE_FULL_ACCESS = 'full-access';
+    public const ROLE_READ_ONLY = 'read-only';
 
     /**
      * The attributes that are mass assignable.
@@ -90,6 +99,16 @@ class User extends Authenticatable
     public function admin()
     {
         return $this->hasOne('Acelle\Model\Admin');
+    }
+
+    public function roles(): BelongsToMany
+    {
+        return $this->belongsToMany(Role::class, 'user_role');
+    }
+
+    public function getRole()
+    {
+        return $this->roles()->first();
     }
 
     public function createUserDirectories()
@@ -640,5 +659,136 @@ class User extends Authenticatable
         return action('Controller@autoLogin', [
             'api_token' => $this->api_token,
         ]);
+    }
+
+    public static function scopeSearch($query, $keyword)
+    {
+        $query = $query->select('users.*');
+
+        // Keyword
+        if (!empty(trim($keyword))) {
+            foreach (explode(' ', trim($keyword)) as $keyword) {
+                $query = $query->where(function ($q) use ($keyword) {
+                    $q->orwhere('users.first_name', 'like', '%'.$keyword.'%')
+                        ->orWhere('users.last_name', 'like', '%'.$keyword.'%')
+                        ->orWhere('users.email', 'like', '%'.$keyword.'%');
+                });
+            }
+        }
+    }
+
+    public function displayName($lastNameFirst)
+    {
+        if ($lastNameFirst) {
+            return htmlspecialchars(trim($this->last_name.' '.$this->first_name));
+        } else {
+            return htmlspecialchars(trim($this->first_name.' '.$this->last_name));
+        }
+    }
+
+    public function isActivated()
+    {
+        return $this->activated;
+    }
+
+    public static function newDefault()
+    {
+        $user = new self();
+        $user->activated = true;
+        $user->status = self::STATUS_ACTIVE;
+
+        return $user;
+    }
+
+    public function fillAttributes($params)
+    {
+        $this->fill($params);
+    }
+
+    public function saveFromRequest($request)
+    {
+        $rules = array(
+            'email' => 'required|email|unique:users,email,'.$this->id.',id',
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'image' => 'nullable|image',
+            'role_uid' => 'required',
+        );
+
+        if (isset($this->id)) {
+            $rules['password'] = 'nullable|confirmed|min:5|max:255';
+        } else {
+            $rules['password'] = 'required|confirmed|min:5|max:255';
+        }
+
+        $this->fillAttributes($request->all());
+
+        $validator = \Validator::make($request->all(), $rules);
+
+        if ($validator->fails()) {
+            return [false, $validator->errors()];
+        }
+
+        // Update password
+        if (!empty($request->password)) {
+            $this->password = bcrypt($request->password);
+        }
+
+        // save
+        $this->save();
+
+        // Upload and save image
+        if ($request->hasFile('image')) {
+            if ($request->file('image')->isValid()) {
+                // Remove old images
+                $this->uploadProfileImage($request->file('image'));
+            }
+        }
+
+        // Remove image
+        if ($request->_remove_image == 'true') {
+            $this->removeProfileImage();
+        }
+
+        // update user role
+        if ($request->role_uid) {
+            $this->setRole(Role::findByUid($request->role_uid));
+        }
+
+        return [true, $validator->errors()];
+    }
+
+    public function enable()
+    {
+        $this->activated = 1;
+        $this->save();
+    }
+
+    public function disable()
+    {
+        $this->activated = 0;
+        $this->save();
+    }
+
+    public function isReadOnly()
+    {
+        return $this->role == self::ROLE_READ_ONLY;
+    }
+
+    public function setRole($role)
+    {
+        // for now, one user only has one role
+        // the same role, do nothing
+        if ($this->getRole() && $this->getRole()->id == $role->id) {
+            return;
+        }
+
+        // remove current role if it exists
+        if ($this->getRole()) {
+            $this->getRole()->delete();
+        }
+
+        // set new role
+        $this->roles()->save($role);
     }
 }

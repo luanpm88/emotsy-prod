@@ -37,6 +37,10 @@ class BaseCampaign extends Model
     public const STATUS_PAUSED = 'paused';
     public const STATUS_SCHEDULED = 'scheduled';
 
+    //
+    public const STATUS_WAIT_FOR_APPROVAL = 'wait_for_approval';
+    public const STATUS_REJECTED = 'rejected';
+
     /**
      * Associations
      */
@@ -95,6 +99,12 @@ class BaseCampaign extends Model
         $this->status = self::STATUS_QUEUING;
         $this->save();
         return $this;
+    }
+
+    public function setWaitForApproval()
+    {
+        $this->status = self::STATUS_WAIT_FOR_APPROVAL;
+        $this->save();
     }
 
     public function setError($error = null)
@@ -328,5 +338,27 @@ class BaseCampaign extends Model
     public function isPaused()
     {
         return $this->status == self::STATUS_PAUSED;
+    }
+
+    public function isWaitForApproval()
+    {
+        return $this->status == self::STATUS_WAIT_FOR_APPROVAL;
+    }
+
+    public function approve()
+    {
+        return $this->status == self::STATUS_WAIT_FOR_APPROVAL;
+    }
+
+    public function reject($reason)
+    {
+        $this->status = self::STATUS_REJECTED;
+        $this->reject_reason = $reason;
+        $this->save();
+    }
+
+    public function isRejected()
+    {
+        return $this->status == self::STATUS_REJECTED;
     }
 }

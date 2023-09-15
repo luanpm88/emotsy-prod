@@ -3,7 +3,7 @@
 namespace Acelle\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
-use Acelle\Chatgpt\Chatgpt;
+use Acelle\Library\Chatgpt;
 use Acelle\Http\Controllers\Controller;
 
 class ChatController extends Controller

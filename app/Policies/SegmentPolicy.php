@@ -30,7 +30,7 @@ class SegmentPolicy
 
         return $customer->id == $item->mailList->customer_id
                 && ($max_per_list > $item->mailList->segments()->count()
-                || $max_per_list == -1);
+                || $max_per_list == -1) && !$user->isReadOnly();
     }
 
     public function update(User $user, Segment $item)
@@ -40,7 +40,7 @@ class SegmentPolicy
         }
 
         $customer = $user->customer;
-        return $item->mailList->customer_id == $customer->id;
+        return $item->mailList->customer_id == $customer->id && !$user->isReadOnly();
     }
 
     public function delete(User $user, Segment $item)
@@ -50,7 +50,7 @@ class SegmentPolicy
         }
 
         $customer = $user->customer;
-        return $item->mailList->customer_id == $customer->id;
+        return $item->mailList->customer_id == $customer->id && !$user->isReadOnly();
     }
 
     public function export(User $user, Segment $item)

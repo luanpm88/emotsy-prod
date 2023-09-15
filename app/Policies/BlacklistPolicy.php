@@ -48,7 +48,7 @@ class BlacklistPolicy
                 $can = $ability == 'yes';
                 break;
             case 'customer':
-                $can = true;
+                $can = true && !$user->isReadOnly();
                 break;
         }
 
@@ -63,7 +63,7 @@ class BlacklistPolicy
                 $can = $ability == 'yes';
                 break;
             case 'customer':
-                $can = true;
+                $can = true && !$user->isReadOnly();
                 break;
         }
 
@@ -78,7 +78,7 @@ class BlacklistPolicy
                 $can = $ability == 'yes';
                 break;
             case 'customer':
-                $can = true;
+                $can = true && !$user->isReadOnly();
                 break;
         }
 
@@ -93,7 +93,7 @@ class BlacklistPolicy
                 $can = $ability == 'yes';
                 break;
             case 'customer':
-                $can = $user->customer->id == $blacklist->customer_id;
+                $can = $user->customer->id == $blacklist->customer_id && !$user->isReadOnly();
                 break;
         }
 
@@ -108,7 +108,7 @@ class BlacklistPolicy
                 $can = $ability == 'yes';
                 break;
             case 'customer':
-                $can = $user->customer->id == $blacklist->customer_id;
+                $can = $user->customer->id == $blacklist->customer_id && !$user->isReadOnly();
                 break;
         }
 

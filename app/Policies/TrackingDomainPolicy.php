@@ -18,16 +18,16 @@ class TrackingDomainPolicy
 
     public function create(User $user)
     {
-        return true;
+        return true && !$user->isReadOnly();
     }
 
     public function update(User $user, TrackingDomain $item, $role)
     {
-        return $user->customer->id == $item->customer_id;
+        return $user->customer->id == $item->customer_id && !$user->isReadOnly();
     }
 
     public function delete(User $user, TrackingDomain $item, $role)
     {
-        return $user->customer->id == $item->customer_id;
+        return $user->customer->id == $item->customer_id && !$user->isReadOnly();
     }
 }

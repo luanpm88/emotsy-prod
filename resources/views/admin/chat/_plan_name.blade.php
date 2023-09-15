@@ -38,28 +38,28 @@
         <div class="chatgpt-action-list d-inline-block mt-1" style="position:absolute;z-index:1;right:0">
             <div class="list-group bg-white shadow chatgpt-action-dropdown">
                 <a chat-control="ask"
-                    data-question="{{ trans('chatgpt::messages.chat.plan_name.ask_for_grammatical_correctness') }}"
-                    data-show="{{ trans('chatgpt::messages.chat.plan_name.ask_for_grammatical_correctness.show') }}"
+                    data-question="{{ trans('chatgpt.chat.plan_name.ask_for_grammatical_correctness') }}"
+                    data-show="{{ trans('chatgpt.chat.plan_name.ask_for_grammatical_correctness.show') }}"
                     href="javascript:;" class="list-group-item pe-4"
                 >
-                    {{ trans('chatgpt::messages.chat.check_grammatical_correctness') }}
+                    {{ trans('chatgpt.chat.check_grammatical_correctness') }}
                 </a>
                 <a chat-control="ask"
-                    data-question="{{ trans('chatgpt::messages.chat.plan_name.ask_for_more_formal') }}"
-                    data-show="{{ trans('chatgpt::messages.chat.plan_name.ask_for_more_formal.show') }}"
+                    data-question="{{ trans('chatgpt.chat.plan_name.ask_for_more_formal') }}"
+                    data-show="{{ trans('chatgpt.chat.plan_name.ask_for_more_formal.show') }}"
                     href="javascript:;" class="list-group-item pe-4"
                 >
-                    {{ trans('chatgpt::messages.chat.suggest_more_formal') }}
+                    {{ trans('chatgpt.chat.suggest_more_formal') }}
                 </a>
                 <a chat-control="ask"
-                    data-question="{{ trans('chatgpt::messages.chat.plan_name.ask_for_more_informal') }}"
-                    data-show="{{ trans('chatgpt::messages.chat.plan_name.ask_for_more_informal.show') }}"
+                    data-question="{{ trans('chatgpt.chat.plan_name.ask_for_more_informal') }}"
+                    data-show="{{ trans('chatgpt.chat.plan_name.ask_for_more_informal.show') }}"
                     href="javascript:;" class="list-group-item pe-4"
                 >
-                    {{ trans('chatgpt::messages.chat.suggest_more_informal') }}
+                    {{ trans('chatgpt.chat.suggest_more_informal') }}
                 </a>
                 <a chat-control="custom-ask" href="javascript:;" class="list-group-item pe-4">
-                    {{ trans('chatgpt::messages.chat.custom_question') }}
+                    {{ trans('chatgpt.chat.custom_question') }}
                 </a>
             </div>
         </div>
@@ -139,7 +139,7 @@
                     var answer = $(this).attr('data-value');
                     _this.closeChatGPTPopup();
                     _this.setInputValue(answer);
-                    notify('success', '{{ trans('messages.notify.success') }}', '{{ trans('chatgpt::messages.chat.plan_name.inserted') }}' + ': "' + answer + '"');
+                    notify('success', '{{ trans('messages.notify.success') }}', '{{ trans('chatgpt.chat.plan_name.inserted') }}' + ': "' + answer + '"');
                 });
 
                 // ask action
@@ -149,7 +149,7 @@
 
                     if (_this.getInputValue() == '') {
                         new Dialog('alert', {
-                            message: '{{ trans('chatgpt::messages.chat.plan_name.empty') }}',
+                            message: '{{ trans('chatgpt.chat.plan_name.empty') }}',
                         });
                         return;
                     }
@@ -171,7 +171,7 @@
 
                     _this.openChatGPTPopup();
                     if (!_this.chatBox.messages.length) {
-                        var hello = '{{ trans('chatgpt::messages.chat.custom_question.default_message') }}';
+                        var hello = '{{ trans('chatgpt.chat.custom_question.default_message') }}';
 
                         // add hello message
                         _this.chatBox.addChatGPTMessage(hello);

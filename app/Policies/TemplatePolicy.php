@@ -31,7 +31,7 @@ class TemplatePolicy
                 $can = $user->admin->getPermission('template_create') == 'yes';
                 break;
             case 'customer':
-                $can = true;
+                $can = true && !$user->isReadOnly();
                 break;
         }
 
@@ -63,7 +63,7 @@ class TemplatePolicy
                     || ($ability == 'own');
                 break;
             case 'customer':
-                $can = $user->customer->id == $item->customer_id;
+                $can = $user->customer->id == $item->customer_id && !$user->isReadOnly();
                 break;
         }
 
@@ -95,7 +95,7 @@ class TemplatePolicy
                     || ($ability == 'own');
                 break;
             case 'customer':
-                $can = $user->customer->id == $item->customer_id;
+                $can = $user->customer->id == $item->customer_id && !$user->isReadOnly();
                 break;
         }
 
@@ -128,6 +128,7 @@ class TemplatePolicy
                 break;
             case 'customer':
                 $can = $user->customer->id == $item->customer_id || !isset($item->customer_id);
+                $can = $can && !$user->isReadOnly();
                 break;
         }
 
