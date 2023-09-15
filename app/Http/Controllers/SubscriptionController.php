@@ -375,12 +375,19 @@ class SubscriptionController extends Controller
     {
         $invoice = \Acelle\Model\Invoice::findByUid($invoice_uid);
         $transaction = $invoice->getPendingTransaction();
-        $gateway = Billing::getGateway($transaction->method);
+
+        // invoice đã paid thì trả về subscription page.
+        if ($invoice->isPaid()) {
+            return redirect()->action('SubscriptionController@index');
+        }
 
         // không có pending transaction
         if (!$transaction) {
             throw new \Exception('Invoice này không có pending transaction! kiểm tra lại UI xem có trường hợp nào không có pending transaction mà qua đây không?');
         }
+
+        // get gateway
+        $gateway = Billing::getGateway($transaction->method);
 
         // gateway verify transaction from invoice
         try {
