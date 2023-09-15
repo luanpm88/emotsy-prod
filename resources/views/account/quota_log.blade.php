@@ -12,12 +12,12 @@
                 <div class="d-flex align-items-center">
                     <h5 class="text-semibold mb-1 me-auto">{{ trans('messages.sending_quota') }}</h5>
                     <div class="pull-right text-primary text-semibold">
-                        <span class="text-muted">{{ number_with_delimiter($remainingEmailCredits) }}/{{ ($emailCredits == -1) ? '∞' : number_with_delimiter($emailCredits) }}</span>
-                        &nbsp;&nbsp;&nbsp;{{ number_to_percentage($remainingEmailCreditsPercentage) }}
+                        <span class="text-muted">{{ number_with_delimiter($sendingCreditsUsed) }}/{{ ($sendingCreditsLimit == -1) ? '∞' : number_with_delimiter($sendingCreditsLimit) }}</span>
+                        &nbsp;&nbsp;&nbsp;{{ number_to_percentage($sendingCreditsUsedPercentage) }}
                     </div>
                 </div>
                 <div class="progress progress-xxs">
-                    <div class="progress-bar bg-warning" style="width: {{ $remainingEmailCreditsPercentage * 100 }}%">
+                    <div class="progress-bar bg-warning" style="width: {{ $sendingCreditsUsedPercentage*100  }}%">
                     </div>
                 </div>
             </div>

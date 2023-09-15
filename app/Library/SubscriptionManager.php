@@ -43,7 +43,15 @@ class SubscriptionManager
                 continue;
             }
 
-            // check if invoice amount is 0
+            // check if customer can auto charge
+            if (!$customer->preferredPaymentGatewayCanAutoCharge()) {
+                continue;
+            }
+
+            /**
+             *  What if $customer->getPreferredPaymentGateway() is null?
+             *  So, simply do not support bypass ZERO invoice
+             *
             if ($invoice->total() == 0) {
                 // Trường hợp invoice total = 0 thì pay nothing và set done luôn cho renew invoice
                 $invoice->checkout($customer->getPreferredPaymentGateway(), function ($invoice) {
@@ -52,11 +60,7 @@ class SubscriptionManager
 
                 continue;
             }
-
-            // check if customer can auto charge
-            if (!$customer->preferredPaymentGatewayCanAutoCharge()) {
-                continue;
-            }
+            */
 
             // auto charge
             $customer->getPreferredPaymentGateway()->autoCharge($invoice);

@@ -150,10 +150,9 @@ class AccountController extends Controller
         $customer = $request->user()->customer;
         if (config('app.saas')) {
             $subscription = $customer->getCurrentActiveGeneralSubscription(); // saas safe
-
-            $remainingEmailCredits = $subscription->getRemainingEmailCredits();
-            $emailCredits = $subscription->getCreditsLimit('send');
-            $remainingEmailCreditsPercentage = $subscription->getRemainingEmailCreditsPercentage();
+            $sendingCreditsUsed = $subscription->getSendEmailRateTracker()->getCreditsUsed(); // all time sending credits used
+            $sendingCreditsLimit = $subscription->getCreditsLimit('send');
+            $sendingCreditsUsedPercentage = $subscription->getRemainingEmailCreditsPercentage();
         } else {
             $remainingEmailCredits = -1;
             $emailCredits = -1;
@@ -186,9 +185,9 @@ class AccountController extends Controller
         $domainsUsed = ($maxDomains == -1) ? 0 : $domainsCount / $maxDomains;
 
         return view('account.quota_log', [
-            'remainingEmailCredits' => $remainingEmailCredits,
-            'emailCredits' => $emailCredits,
-            'remainingEmailCreditsPercentage' => $remainingEmailCreditsPercentage,
+            'sendingCreditsUsed' => $sendingCreditsUsed,
+            'sendingCreditsLimit' => $sendingCreditsLimit,
+            'sendingCreditsUsedPercentage' => $sendingCreditsUsedPercentage,
             'maxLists' => $maxLists,
             'listsCount' => $listsCount,
             'listsUsed' => $listsUsed,
@@ -217,11 +216,10 @@ class AccountController extends Controller
     {
         $customer = $request->user()->customer;
         if (config('app.saas')) {
-            $subscription = $customer->getCurrentActiveGeneralSubscription();
-
-            $remainingEmailCredits = $subscription->getRemainingEmailCredits();
-            $emailCredits = $subscription->getCreditsLimit('send');
-            $remainingEmailCreditsPercentage = $subscription->getRemainingEmailCreditsPercentage();
+            $subscription = $customer->getCurrentActiveGeneralSubscription(); // saas safe
+            $sendingCreditsUsed = $subscription->getSendEmailRateTracker()->getCreditsUsed(); // all time sending credits used
+            $sendingCreditsLimit = $subscription->getCreditsLimit('send');
+            $sendingCreditsUsedPercentage = $subscription->getRemainingEmailCreditsPercentage();
         } else {
             $remainingEmailCredits = -1;
             $emailCredits = -1;
@@ -254,9 +252,9 @@ class AccountController extends Controller
         $domainsUsed = ($maxDomains == -1) ? 0 : $domainsCount / $maxDomains;
 
         return view('account.quota_log_2', [
-            'remainingEmailCredits' => $remainingEmailCredits,
-            'emailCredits' => $emailCredits,
-            'remainingEmailCreditsPercentage' => $remainingEmailCreditsPercentage,
+            'sendingCreditsUsed' => $sendingCreditsUsed,
+            'sendingCreditsLimit' => $sendingCreditsLimit,
+            'sendingCreditsUsedPercentage' => $sendingCreditsUsedPercentage,
             'maxLists' => $maxLists,
             'listsCount' => $listsCount,
             'listsUsed' => $listsUsed,
