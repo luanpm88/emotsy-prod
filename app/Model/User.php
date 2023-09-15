@@ -34,7 +34,6 @@ use File;
 use Acelle\Library\Tool;
 use Acelle\Library\Traits\HasUid;
 use Acelle\Library\Facades\Hook;
-use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class User extends Authenticatable
@@ -108,6 +107,10 @@ class User extends Authenticatable
 
     public function getRole()
     {
+        if ($this->roles()->count() > 1) {
+            throw new \Exception('User can not have more than one role!');
+        }
+
         return $this->roles()->first();
     }
 
@@ -770,9 +773,10 @@ class User extends Authenticatable
         $this->save();
     }
 
+    // @todo remove this later
     public function isReadOnly()
     {
-        return $this->role == self::ROLE_READ_ONLY;
+        return false;
     }
 
     public function setRole($role)
@@ -790,5 +794,15 @@ class User extends Authenticatable
 
         // set new role
         $this->roles()->save($role);
+    }
+
+    public function hasPermission($permission)
+    {
+        // default is access all if has not role
+        if (!$this->getRole()) {
+            return false;
+        }
+        
+        return $this->getRole()->hasPermission($permission);
     }
 }
