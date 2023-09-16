@@ -56,6 +56,16 @@
                     @endif
                 </td>
                 <td>
+                    <div class="stat-num">
+                        <a href="{{ action('Admin\UserController@index', [
+                            'customer_uid' => $customer->uid,
+                        ]) }}">
+                            <span>{{ $customer->users()->count() }}</span>
+                        </a>
+                    </div>
+                    <span class="text-muted2">{{ trans('messages.customer.users') }}</span>
+                </td>
+                <td>
                     <span class="text-muted2 list-status pull-left">
                         <span class="label label-flat bg-{{ $customer->status }}">{{ trans('messages.user_status_' . $customer->status) }}</span>
                     </span>

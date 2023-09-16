@@ -3241,4 +3241,5 @@
   'account.email' => 'Email',
   'account.photo' => 'Photo',
   'account.information' => 'Information',
+  'customer.users' => 'Users',
 ) ?>
