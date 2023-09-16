@@ -35,6 +35,7 @@ use Acelle\Library\Traits\HasCache;
 use Acelle\Jobs\ImportBlacklistJob;
 use Acelle\Library\Traits\HasUid;
 use Acelle\Library\Facades\SubscriptionFacade;
+use Acelle\Library\Facades\Hook;
 
 class Customer extends Model
 {
@@ -1633,6 +1634,7 @@ class Customer extends Model
     {
         $customer = new self();
         $customer->menu_layout = \Acelle\Model\Setting::get('layout.menu_bar');
+        $customer->status = self::STATUS_ACTIVE;
 
         return $customer;
     }
@@ -1650,13 +1652,6 @@ class Customer extends Model
         $query = $query->whereHas('subscriptions', function ($q) use ($plan) {
             $q->newOrActive()->where('plan_id', '=', $plan->id);
         });
-    }
-
-    public function displayName()
-    {
-        $lastNameFirst = get_localization_config('show_last_name_first', $this->getLanguageCode());
-
-        return $this->user->displayName($lastNameFirst);
     }
 
     public function newDefaultCampaign()
@@ -1830,5 +1825,38 @@ class Customer extends Model
     public function getChatgptApiKey()
     {
         return $this->openai_api_key;
+    }
+
+    public function saveFromRequest($request)
+    {
+        // Save current user info
+        $this->admin_id = $request->user()->admin->id;
+        $this->fill($request->all());
+
+        // validation
+        $validator = \Validator::make($request->all(), [
+            'name' => 'required',
+            'timezone' => 'required',
+            'language_id' => 'required',
+        ]);
+
+        // errors
+        if ($validator->fails()) {
+            return $validator->errors();
+        }
+
+        // save
+        $this->save();
+
+        // Execute registered hooks
+        Hook::execute('customer_added', [$this]);
+
+        // return
+        return $validator->errors();
+    }
+
+    public function getName()
+    {
+        return $this->name;
     }
 }

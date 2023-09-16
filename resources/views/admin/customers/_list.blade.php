@@ -4,14 +4,10 @@
     >
         @foreach ($customers as $key => $customer)
             <tr class="position-relative">
-                <td width="1%" class="list-check-col">
-                    <img width="50" class="rounded-circle me-2" src="{{ $customer->user->getProfileImageUrl() }}" alt="">
-                </td>
                 <td>
                     <h5 class="m-0 text-bold">
-                        <a class="kq_search d-block" href="{{ action('Admin\CustomerController@edit', $customer->uid) }}">{{ $customer->displayName() }}</a>
+                        <a class="kq_search d-block" href="{{ action('Admin\CustomerController@edit', $customer->uid) }}">{{ $customer->getName() }}</a>
                     </h5>
-                    <span class="text-muted kq_search">{{ $customer->user->email }}</span><br>
                     <span class="text-muted kq_search">{{ trans('messages.customer.bounce_feedback_rate') }} <span title="{{ trans('messages.customer.bounce_feedback_rate_desc') }}" class="xtooltip">{{ number_to_percentage($customer->readCache('Bounce/FeedbackRate') ?? 0) }}</span></span>
                     <br />
                     <span class="text-muted2">{{ trans('messages.created_at') }}: {{ Auth::user()->admin->formatDateTime($customer->created_at, 'datetime_full') }}</span>
@@ -65,11 +61,6 @@
                     </span>
                 </td>
                 <td class="text-end">
-                    @can('loginAs', $customer)
-                        <a href="{{ action('Admin\CustomerController@loginAs', $customer->uid) }}" data-popup="tooltip"
-                            title="{{ trans('messages.login_as_this_customer') }}" role="button"
-                            class="btn btn-primary btn-icon"><span class="material-symbols-rounded">login</span></a>
-                    @endcan
                     @can('update', $customer)
                         <a href="{{ action('Admin\CustomerController@edit', $customer->uid) }}"
                             data-popup="tooltip" title="{{ trans('messages.edit') }}"

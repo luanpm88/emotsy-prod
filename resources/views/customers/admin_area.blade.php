@@ -6,9 +6,9 @@
 
 @section('content')
 
-    <p class="alert alert-info">{!! trans('messages.current_login_as', ["name" => Auth::user()->customer->displayName()]) !!}</p>
+    <p class="alert alert-info">{!! trans('messages.current_login_as', ["name" => Auth::user()->customer->getName()]) !!}</p>
 
-    <h5 class="mt-0 mb-10"><span class="material-symbols-rounded">auto_awesome_mosaic</span> {{ trans('messages.subscription_of', ['name' => Auth::user()->customer->displayName()]) }}</h5>
+    <h5 class="mt-0 mb-10"><span class="material-symbols-rounded">auto_awesome_mosaic</span> {{ trans('messages.subscription_of', ['name' => Auth::user()->customer->getName()]) }}</h5>
     
     @if (isset($subscription))
         <ul class="dotted-list topborder section">

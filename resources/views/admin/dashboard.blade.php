@@ -54,7 +54,7 @@
                                         </h6>
                                         <p class="mb-0">
                                             <i class="material-symbols-rounded me-1">person_outline</i>
-                                            {{ $subscription->customer->displayName() }}
+                                            {{ $subscription->customer->getName() }}
                                         </p>
                                     </div>
                                 </div>
@@ -105,18 +105,12 @@
                         <div class="row">
                             <div class="col-sm-8 col-md-8">
                                 <div class="d-flex">
-                                    <div class="me-3">
-                                        <img width="40" class="rounded-circle shadow-sm me-2 pull-left" src="{{ $customer->user->getProfileImageUrl() }}" alt="">
-                                    </div>
                                     <div>
                                         <h6 class="mt-0 mb-0 text-semibold">
                                             <a href="{{ action('Admin\CustomerController@edit', $customer->uid) }}">
-                                                {{ $customer->displayName() }}
+                                                {{ $customer->getName() }}
                                             </a>
                                         </h6>
-                                        <p class="mb-0 admin-line admin-recent-sencond-line" title="{{ $customer->user->email }}">
-                                            {{ $customer->user->email }}
-                                        </p>
                                     </div>
                                 </div>
                                 
@@ -165,7 +159,7 @@
                             <div class="card px-0 shadow-sm container-fluid">
                                 <div class="card-body pt-2">
                                     <div class="d-flex align-items-center pt-1">
-                                        <label class="panel-title text-semibold my-0 fw-600">{{ $log->customer->displayName() }}</label>
+                                        <label class="panel-title text-semibold my-0 fw-600">{{ $log->customer->getName() }}</label>
                                         <div class="d-flex align-items-center ms-auto text-muted">
                                             <span style="font-size: 18px" class="material-symbols-rounded ms-auto me-2">history</span>
                                             <div class="">

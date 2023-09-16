@@ -3,12 +3,19 @@
         <li class="nav-item 
         {{ request()->route()->getActionName() == 'Acelle\Http\Controllers\Admin\CustomerController@edit' ? 'active' : '' }}
         text-semibold"><a class="nav-link" href="{{ action('Admin\CustomerController@edit', $customer->uid) }}">
-            <span class="material-symbols-rounded">person_outline</span> {{ trans('messages.profile') }}</a>
+            <span class="material-symbols-rounded">home</span> {{ trans('messages.profile') }}</a>
         </li>
         <li class="nav-item 
         {{ request()->route()->getActionName() == 'Acelle\Http\Controllers\Admin\CustomerController@contact' ? 'active' : '' }}
         text-semibold"><a class="nav-link" href="{{ action('Admin\CustomerController@contact', $customer->uid) }}">
             <span class="material-symbols-rounded">maps_home_work</span> {{ trans('messages.contact_information') }}</a>
+        </li>
+        <li class="nav-item 
+        {{ request()->route()->getActionName() == 'Acelle\Http\Controllers\Admin\UserController@index' ? 'active' : '' }}
+        text-semibold"><a class="nav-link" href="{{ action('Admin\UserController@index', [
+            'customer_uid' => $customer->uid,
+        ]) }}">
+            <span class="material-symbols-rounded">group</span> {{ trans('messages.users') }}</a>
         </li>
         <li class="nav-item 
         {{ request()->route()->getActionName() == 'Acelle\Http\Controllers\Admin\CustomerController@subscriptions' ? 'active' : '' }}

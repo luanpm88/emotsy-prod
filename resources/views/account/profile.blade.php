@@ -17,7 +17,7 @@
             <li class="breadcrumb-item active">{{ trans('messages.profile') }}</li>
         </ul>
         <h1>
-            <span class="text-semibold"><span class="material-symbols-rounded">person_outline</span> {{ $customer->displayName() }}</span>
+            <span class="text-semibold"><span class="material-symbols-rounded">domain</span> {{ $customer->getName() }}</span>
         </h1>
     </div>
 
@@ -153,18 +153,6 @@
                             ])
                         </div>
                     </div>
-
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="sub_section">
-                    <h3 class="text-semibold text-primary mb-4">{{ trans('messages.account') }}</h3>
-
-                    @include('helpers.form_control', ['type' => 'text', 'name' => 'email', 'value' => $customer->user->email, 'help_class' => 'profile', 'rules' => $user->rules()])
-
-                    @include('helpers.form_control', ['type' => 'password', 'label'=> trans('messages.new_password'), 'name' => 'password', 'rules' => $user->rules()])
-
-                    @include('helpers.form_control', ['type' => 'password', 'name' => 'password_confirmation', 'rules' => $user->rules()])
 
                 </div>
             </div>

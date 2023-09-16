@@ -39,7 +39,7 @@
 				</td>
                 <td>
                     <h5 class="m-0 text-bold">
-						{{ $campaign->customer->displayName() }}
+						{{ $campaign->customer->getName() }}
 					</h5>
 					<span class="text-muted">{{ trans('messages.customer') }}</span>
 				</td>

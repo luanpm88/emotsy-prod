@@ -21,7 +21,7 @@ class CustomerController extends Controller
             return redirect()->action('Admin\HomeController@index');
         }
 
-        $id = \Session::pull('orig_customer_id');
+        $id = \Session::pull('orig_user_uid');
         $orig_user = \Acelle\Model\User::findByUid($id);
 
         \Auth::login($orig_user);
@@ -38,7 +38,7 @@ class CustomerController extends Controller
      */
     public function adminArea(Request $request)
     {
-        $id = \Session::get('orig_customer_id');
+        $id = \Session::get('orig_user_uid');
         $orig_user = \Acelle\Model\User::findByUid($id);
 
         // Get current subscription

@@ -54,13 +54,6 @@ class CustomerPolicy
         return $can;
     }
 
-    public function loginAs(User $user, Customer $item)
-    {
-        $ability = $user->admin->getPermission('customer_login_as');
-        $can = $item->id != $user->customer_id && ($ability == 'all');
-        return $can;
-    }
-
     public function disable(User $user, Customer $item)
     {
         $ability = $user->admin->getPermission('customer_update');
