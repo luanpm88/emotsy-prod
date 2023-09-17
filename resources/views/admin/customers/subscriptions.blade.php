@@ -20,7 +20,9 @@
 @endsection
 
 @section('content')
-	@include('admin.customers._tabs')
+	@include('admin.customers._tabs', [
+        'menu' => 'subscriptions',
+    ])
 
     <div class="listing-form"
         sort-url="{{ action('Admin\SubscriptionController@sort') }}"

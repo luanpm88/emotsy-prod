@@ -12,7 +12,7 @@
             <li class="breadcrumb-item active">{{ trans('messages.contact_information') }}</li>
         </ul>
         <h1>
-            <span class="text-semibold"><span class="material-symbols-rounded">domain</span>  {{ $customer->getName() }}</span>
+            <span class="text-semibold"><span class="material-symbols-rounded">domain</span> {{ $customer->getName() }}</span>
         </h1>
     </div>
 

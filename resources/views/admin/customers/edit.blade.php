@@ -20,7 +20,9 @@
 @endsection
 
 @section('content')
-    @include('admin.customers._tabs')
+    @include('admin.customers._tabs', [
+        'menu' => 'profile',
+    ])
 
     <form enctype="multipart/form-data" action="{{ action('Admin\CustomerController@update', $customer->uid) }}" method="POST" class="form-validate-jquery">
         {{ csrf_field() }}

@@ -19,7 +19,9 @@
 @endsection
 
 @section('content')
-    @include('admin.customers._tabs')
+    @include('admin.customers._tabs', [
+        'menu' => 'users',
+    ])
 
     <form enctype="multipart/form-data" action="{{ action('Admin\UserController@update', [
         'customer_uid' => $customer->uid,

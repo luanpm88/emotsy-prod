@@ -20,7 +20,10 @@
 
 @section('content')
 
-	@include('admin.customers._tabs')
+	@include('admin.customers._tabs', [
+        'menu' => 'sub_account',
+    ])
+
     <div class="sub-section">
         <h3 class="text-semibold">{{ trans('messages.customer.sub_account.title') }}</h3>
 

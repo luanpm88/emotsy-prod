@@ -16,7 +16,9 @@
 @endsection
 
 @section('content')				
-    @include('admin.customers._tabs')
+    @include('admin.customers._tabs', [
+        'menu' => 'users',
+    ])
 
 	<div class="UserListContainer"
 		per-page="15"					
