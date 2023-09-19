@@ -33,7 +33,7 @@
         {{ csrf_field() }}
 
         <div class="row">
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <div class="sub_section">
                     <h3 class="text-semibold text-primary mb-4">{{ trans('messages.profile_photo') }}</h3>
                     <div class="media profile-image">
@@ -54,7 +54,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-5">
+            <div class="col-md-6">
                 <div class="sub_section">
                     <h3 class="text-semibold text-primary mb-4">{{ trans('messages.account.information') }}</h3>
 
