@@ -3237,7 +3237,7 @@
   'campaign.reject.success' => 'The campaign was rejected.',
   'campaign.reject.leave_note' => 'Leave a note to your customer regarding the reason the campaign is rejected',
   'campaign.request_approval_send' => 'Request Approval & Send',
-  'account.name' => 'Name',
+  'account.name' => 'Account/Oganization Name',
   'account.email' => 'Email',
   'account.photo' => 'Photo',
   'account.information' => 'Information',
