@@ -969,7 +969,7 @@
   'custom_css' => 'Custom CSS',
   'custom_forms_and_emails' => 'Forms / Pages',
   'custom_pages' => 'Custom page',
-  'custom_script' => 'Copy and paste your custom scripts in the box below. It will be included in every page',
+  'custom_script' => 'Copy and paste your custom scripts in the box below. It will be included in every page. For example, you can include your Google Analysis code here to track your website statistics.',
   'custom_tracking_domain' => 'Custom Tracking Domain',
   'customer' => 'Customer',
   'customer.admin_area' => 'Admin Area',
