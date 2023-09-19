@@ -60,9 +60,10 @@
 
                     <div class="form-group">
                         <label for="">{{ trans('messages.account.name') }}</label>
-                        <input type="text" name="name" value="{{ $customer->name }}" class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}" />
+                        <input type="text" name="name" value="{{ $customer->name }}"
+                            {{ Auth::user()->can('updateProfile', $customer) ? '' : 'disabled' }} class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}" />
                     </div>
-                    
+
                     @if (config('custom.japan'))
                         <input type="hidden" name="timezone" value="Asia/Tokyo" />
                     @else
@@ -72,7 +73,8 @@
                             'value' => $customer->timezone ?? config('app.timezone'),
                             'options' => Tool::getTimezoneSelectOptions(),
                             'include_blank' => trans('messages.choose'),
-                            'rules' => $user->rules()
+                            'rules' => $user->rules(),
+                            'disabled' => !Auth::user()->can('updateProfile', $customer),
                         ])
                     @endif
                     
@@ -87,7 +89,8 @@
                             'value' => $customer->language_id ?? \Acelle\Model\Language::getDefaultLanguage()->id,
                             'options' => Acelle\Model\Language::getSelectOptions(),
                             'include_blank' => trans('messages.choose'),
-                            'rules' => $user->rules()
+                            'rules' => $user->rules(),
+                            'disabled' => !Auth::user()->can('updateProfile', $customer),
                         ])
                     @endif
                 </div>
