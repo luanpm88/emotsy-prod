@@ -2,6 +2,7 @@
 
 return [
     'account' => [
+        'account.all',
         'campaign.all',
         'campaign.read',
         'list.all',
@@ -10,6 +11,5 @@ return [
         'automation.read',
         'user.all',
         'user.read',
-        'account.all',
     ],
 ];

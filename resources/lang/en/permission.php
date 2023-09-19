@@ -16,5 +16,5 @@
     'account.user.read.title' => 'User.Read',
     'account.user.read.desc' => 'User can read all information about users but cannot create or edit',
     'account.account.all.title' => 'Account.All',
-    'account.account.all.desc' => 'The user can manage his/her account information',
+    'account.account.all.desc' => 'The user can have full access to the account',
 );
