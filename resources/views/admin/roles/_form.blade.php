@@ -27,7 +27,7 @@
             
             <h5>{{ trans('messages.permission.account') }}</h5>
             @foreach (config('permissions.account') as $permission)
-                <div class="">
+                <div class="ps-2">
                     <label class="form-check-label d-flex py-3 border-bottom" for="{{ $permission }}">
                         <span class="me-3">
                             <label class="checker">
