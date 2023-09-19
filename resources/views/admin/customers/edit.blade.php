@@ -27,8 +27,16 @@
     <form enctype="multipart/form-data" action="{{ action('Admin\CustomerController@update', $customer->uid) }}" method="POST" class="form-validate-jquery">
         {{ csrf_field() }}
         <input type="hidden" name="_method" value="PATCH">
+
+        <div class="row">
+            <div class="col-md-6">
+                @include('admin.customers._form')
+            </div>
+        </div>		
         
-        @include('admin.customers._form')
-        
+        <hr>
+        <div class="text-left">
+            <button class="btn btn-secondary"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
+        </div>
     <form>
 @endsection
