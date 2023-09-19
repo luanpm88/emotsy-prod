@@ -6,6 +6,7 @@
                     <a class="kq_search fs-6 d-block mb-1 fw-600" href="{{ action('Admin\RoleController@edit', $role->uid) }}">
                         {{ $role->name }}
                     </a>
+                    <p class="mb-1">{{ $role->description }}</p>
                     <p class="mb-0">
                         <span class="text-muted">{{ trans('messages.created_at') }}:
                             {{ Auth::user()->admin->formatDateTime($role->created_at, 'datetime_full') }}
@@ -16,11 +17,9 @@
                 <td style="width:30%">
                     <div class="px-md-4">
                         <div class="mb-1">
-                            @forelse ($role->rolePermissions as $rolePermission)
-                                <span class="badge bg-secondary">{{ $rolePermission->permission }}</span>
-                            @empty
-                                --
-                            @endforelse
+                            <a class="" href="{{ action('Admin\RoleController@edit', $role->uid) }}">
+                                <span class="badge bg-secondary">{{ $role->rolePermissions()->count() }}</span>
+                            </a>
                         </div>
                         <span class="text-muted">{{ trans("messages.permissions") }}</span>
                     </div>
