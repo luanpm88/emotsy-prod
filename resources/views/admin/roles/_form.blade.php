@@ -10,6 +10,16 @@
                     </span>
                 @endif
             </div>
+
+            <div class="form-group {{ $errors->has('description') ? ' has-error' : '' }}">
+                <label class="form-label">{{ trans('messages.role.description') }} <span class="text-danger">*</span></label>
+                <textarea type="text" name="description" class="form-control">{{ $role->description }}</textarea>
+                @if ($errors->has('description'))
+                    <span class="help-block">
+                        {{ $errors->first('description') }}
+                    </span>
+                @endif
+            </div>
 		</div>
 
         <h3>{{ trans('messages.permissions') }}</h3>
@@ -17,10 +27,18 @@
             
             <h5>{{ trans('messages.permission.account') }}</h5>
             @foreach (config('permissions.account') as $permission)
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" name="permissions[]" value="{{ $permission }}" id="{{ $permission }}" {{ $role->hasPermission($permission) ? 'checked' : '' }}>
-                    <label class="form-check-label" for="{{ $permission }}">
-                    {{ $permission }}
+                <div class="">
+                    <label class="form-check-label d-flex py-3 border-bottom" for="{{ $permission }}">
+                        <span class="me-3">
+                            <label class="checker">
+                                <input type="checkbox" name="permissions[]" value="{{ $permission }}" class="styled4" id="{{ $permission }}" {{ $role->hasPermission($permission) ? 'checked' : '' }}>
+                                <span class="checker-symbol"></span>
+                            </label>
+                        </span>
+                        <span>
+                            <span class="d-block fw-semibold">{{ trans('permission.account.' . $permission . '.title') }}</span>
+                            <span class="d-block">{{ trans('permission.account.' . $permission . '.desc') }}</span>
+                        </span>
                     </label>
                 </div>
             @endforeach

@@ -3242,4 +3242,5 @@
   'account.photo' => 'Photo',
   'account.information' => 'Information',
   'customer.users' => 'Users',
+  'role.description' => 'Description',
 ) ?>

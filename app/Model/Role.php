@@ -44,6 +44,7 @@ class Role extends Model
     public function fillAttributes($params)
     {
         $this->name = $params['name'] ?? null;
+        $this->description = $params['description'] ?? null;
     }
 
     public function saveFromArray($params)
