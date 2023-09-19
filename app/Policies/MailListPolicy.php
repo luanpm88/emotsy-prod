@@ -37,9 +37,13 @@ class MailListPolicy
         }
         
         // RBAC check
-        $can = $can && !$user->hasPermission('list.readonly');
+        if ($user->hasPermission('list.all')) {
+            $permission = true; 
+        } else {
+            $permission = false;    
+        }
 
-        return $can;
+        return $can && $permission;
     }
 
     public function update(User $user, MailList $item)
@@ -48,9 +52,13 @@ class MailListPolicy
         $can = $item->customer_id == $customer->id;
 
         // RBAC check
-        $can = $can && !$user->hasPermission('list.readonly');
+        if ($user->hasPermission('list.all')) {
+            $permission = true; 
+        } else {
+            $permission = false;    
+        }
 
-        return $can;
+        return $can && $permission;
     }
 
     public function delete(User $user, MailList $item)
@@ -59,9 +67,13 @@ class MailListPolicy
         $can = $item->customer_id == $customer->id;
 
         // RBAC check
-        $can = $can && !$user->hasPermission('list.readonly');
+        if ($user->hasPermission('list.all')) {
+            $permission = true;
+        } else {
+            $permission = false;    
+        }
 
-        return $can;
+        return $can && $permission;
     }
 
     public function addMoreSubscribers(User $user, MailList $mailList, $numberOfSubscribers = 1)
@@ -73,9 +85,13 @@ class MailListPolicy
             ($maxPerList >= $mailList->subscribersCount() + $numberOfSubscribers || $maxPerList == -1);
 
         // RBAC check
-        $can = $can && !$user->hasPermission('list.readonly');
+        if ($user->hasPermission('list.all')) {
+            $permission = true;   
+        } else {
+            $permission = false;    
+        }
 
-        return $can;
+        return $can && $permission;
     }
 
     public function import(User $user, MailList $item)
@@ -86,9 +102,13 @@ class MailListPolicy
         $can = ($can == 'yes' && $item->customer_id == $customer->id);
 
         // RBAC check
-        $can = $can && !$user->hasPermission('list.readonly');
+        if ($user->hasPermission('list.all')) {
+            $permission = true;   
+        } else {
+            $permission = false;    
+        }
 
-        return $can;
+        return $can && $permission;
     }
 
     public function export(User $user, MailList $item)
@@ -99,8 +119,14 @@ class MailListPolicy
         $can = ($can == 'yes' && $item->customer_id == $customer->id);
 
         // RBAC check
-        $can = $can && !$user->hasPermission('list.readonly');
+        if ($user->hasPermission('list.all')) {
+            $permission = true;  
+        } elseif ($user->hasPermission('list.read')) {
+            $permission = true;    
+        } else {
+            $permission = false;    
+        }
 
-        return $can;
+        return $can && $permission;
     }
 }

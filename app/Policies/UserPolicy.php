@@ -32,8 +32,16 @@ class UserPolicy
                 break;
             case 'customer':
                 $can = $user->id != $item->id;
+                
                 // RBAC check
-                $can = $can && !$user->hasPermission('user.readonly');
+                if ($user->hasPermission('user.all')) {
+                    $permission = true;   
+                } else {
+                    $permission = false;    
+                }
+
+                $can = $can && $permission;
+
                 break;
         }
         
@@ -57,7 +65,13 @@ class UserPolicy
                 break;
             case 'customer':
                 // RBAC check
-                $can = !$user->hasPermission('user.readonly');
+                if ($user->hasPermission('user.all')) {
+                    $permission = true;   
+                } else {
+                    $permission = false;    
+                }
+
+                $can = $permission;
                 break;
         }
         return $can;
@@ -74,8 +88,16 @@ class UserPolicy
                 break;
             case 'customer':
                 $can = $user->id != $item->id && $item->isActivated();
+                
                 // RBAC check
-                $can = $can && !$user->hasPermission('user.readonly');
+                if ($user->hasPermission('user.all')) {
+                    $permission = true;   
+                } else {
+                    $permission = false;    
+                }
+
+                $can = $can && $permission;
+
                 break;
         }
         return $can;
@@ -92,8 +114,16 @@ class UserPolicy
                 break;
             case 'customer':
                 $can = $user->id != $item->id && !$item->isActivated();
+
                 // RBAC check
-                $can = $can && !$user->hasPermission('user.readonly');
+                if ($user->hasPermission('user.all')) {
+                    $permission = true;   
+                } else {
+                    $permission = false;    
+                }
+
+                $can = $can && $permission;
+
                 break;
         }
         return $can;
@@ -111,8 +141,16 @@ class UserPolicy
                 break;
             case 'customer':
                 $can = $user->id != $item->id;
+                
                 // RBAC check
-                $can = $can && !$user->hasPermission('user.readonly');
+                if ($user->hasPermission('user.all')) {
+                    $permission = true;   
+                } else {
+                    $permission = false;    
+                }
+
+                $can = $can && $permission;
+                
                 break;
         }
         return $can;
@@ -151,6 +189,16 @@ class UserPolicy
                 break;
             case 'customer':
                 $can = $user->id != $item->id;
+
+                // RBAC check
+                if ($user->hasPermission('user.all')) {
+                    $permission = true;   
+                } else {
+                    $permission = false;    
+                }
+
+                $can = $can && $permission;
+
                 break;
         }
         return $can;
