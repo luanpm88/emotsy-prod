@@ -56,27 +56,12 @@
             </div>
             <div class="col-md-5">
                 <div class="sub_section">
-                    <h3 class="text-semibold text-primary mb-4">{{ trans('messages.basic_information') }}</h3>
+                    <h3 class="text-semibold text-primary mb-4">{{ trans('messages.account.information') }}</h3>
 
-                    @if (get_localization_config('show_last_name_first', $customer->getLanguageCode()))
-                        <div class="row">
-                            <div class="col-md-6">
-                                @include('helpers.form_control', ['type' => 'text', 'name' => 'last_name', 'value' => $user->last_name, 'rules' => $user->rules()])
-                            </div>
-                            <div class="col-md-6">
-                                @include('helpers.form_control', ['type' => 'text', 'name' => 'first_name', 'value' => $user->first_name, 'rules' => $user->rules()])
-                            </div>
-                        </div>
-                    @else 
-                        <div class="row">
-                            <div class="col-md-6">
-                                @include('helpers.form_control', ['type' => 'text', 'name' => 'first_name', 'value' => $user->first_name, 'rules' => $user->rules()])
-                            </div>
-                            <div class="col-md-6">
-                                @include('helpers.form_control', ['type' => 'text', 'name' => 'last_name', 'value' => $user->last_name, 'rules' => $user->rules()])
-                            </div>
-                        </div>
-                    @endif
+                    <div class="form-group">
+                        <label for="">{{ trans('messages.account.name') }}</label>
+                        <input type="text" name="name" value="{{ $customer->name }}" class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}" />
+                    </div>
                     
                     @if (config('custom.japan'))
                         <input type="hidden" name="timezone" value="Asia/Tokyo" />
@@ -105,6 +90,35 @@
                             'rules' => $user->rules()
                         ])
                     @endif
+                </div>
+                <div class="sub_section">
+                    <h3 class="text-semibold text-primary mb-4">{{ trans('messages.basic_information') }}</h3>
+
+                    @if (get_localization_config('show_last_name_first', $customer->getLanguageCode()))
+                        <div class="row">
+                            <div class="col-md-6">
+                                @include('helpers.form_control', ['type' => 'text', 'name' => 'last_name', 'value' => $user->last_name, 'rules' => $user->rules()])
+                            </div>
+                            <div class="col-md-6">
+                                @include('helpers.form_control', ['type' => 'text', 'name' => 'first_name', 'value' => $user->first_name, 'rules' => $user->rules()])
+                            </div>
+                        </div>
+                    @else 
+                        <div class="row">
+                            <div class="col-md-6">
+                                @include('helpers.form_control', ['type' => 'text', 'name' => 'first_name', 'value' => $user->first_name, 'rules' => $user->rules()])
+                            </div>
+                            <div class="col-md-6">
+                                @include('helpers.form_control', ['type' => 'text', 'name' => 'last_name', 'value' => $user->last_name, 'rules' => $user->rules()])
+                            </div>
+                        </div>
+                    @endif
+
+                    @include('helpers.form_control', ['type' => 'text', 'name' => 'email', 'value' => $customer->user->email, 'help_class' => 'profile', 'rules' => $user->rules()])
+
+                    @include('helpers.form_control', ['type' => 'password', 'label'=> trans('messages.new_password'), 'name' => 'password', 'rules' => $user->rules()])
+
+                    @include('helpers.form_control', ['type' => 'password', 'name' => 'password_confirmation', 'rules' => $user->rules()])
 
                     <h3 class="text-semibold text-primary mb-4 mt-5">{{ trans('messages.account.personality') }}</h3>
 
