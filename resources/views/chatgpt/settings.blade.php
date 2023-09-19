@@ -11,7 +11,7 @@
             <li class="breadcrumb-item"><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
         </ul>
         <h1>
-            <span class="text-semibold"><i class="icon-address-book3"></i> {{ $customer->displayName() }}</span>
+            <span class="text-semibold"><i class="icon-address-book3"></i> {{ $customer->getName() }}</span>
         </h1>
     </div>
 

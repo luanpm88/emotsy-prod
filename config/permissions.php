@@ -3,12 +3,13 @@
 return [
     'account' => [
         'campaign.all',
-        'campaign.readonly',
+        'campaign.read',
         'list.all',
-        'list.readonly',
+        'list.read',
         'automation.all',
-        'automation.readonly',
+        'automation.read',
         'user.all',
-        'user.readonly',
+        'user.read',
+        'account.all',
     ],
 ];

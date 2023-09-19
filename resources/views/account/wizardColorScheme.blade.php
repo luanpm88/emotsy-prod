@@ -2,7 +2,7 @@
 
 @section('bar-title')
     {{ trans('messages.account.welcome_user', [
-        'name' => Auth::user()->customer->displayName(),
+        'name' => Auth::user()->customer->getName(),
     ]) }}
 @endsection
 

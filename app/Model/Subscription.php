@@ -94,7 +94,7 @@ class Subscription extends Model
 
     public function getCustomerName()
     {
-        return $this->customer->displayName();
+        return $this->customer->getName();
     }
 
     /**

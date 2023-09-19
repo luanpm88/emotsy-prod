@@ -12,7 +12,7 @@
 			<li class="breadcrumb-item active">{{ trans('messages.customer.sub_account') }}</li>
 		</ul>
 		<h1>
-            <span class="text-semibold"><span class="material-symbols-rounded">person_outline</span> {{ $customer->displayName() }}</span>
+            <span class="text-semibold"><span class="material-symbols-rounded">person_outline</span> {{ $customer->getName() }}</span>
         </h1>
 	</div>
 
@@ -20,7 +20,10 @@
 
 @section('content')
 
-	@include('admin.customers._tabs')
+	@include('admin.customers._tabs', [
+        'menu' => 'sub_account',
+    ])
+
     <div class="sub-section">
         <h3 class="text-semibold">{{ trans('messages.customer.sub_account.title') }}</h3>
 

@@ -588,7 +588,6 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
 
     // User
     Route::get('account/users/listing/{page?}', 'UserController@listing');
-    Route::get('account/users/sort', 'UserController@sort');
     Route::get('account/users/delete', 'UserController@delete');
     Route::get('account/users/disable', 'UserController@disable');
     Route::get('account/users/enable', 'UserController@enable');
@@ -921,11 +920,13 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::get('admin/notifications', 'NotificationController@index');
 
     // User
-    Route::get('admin/users/switch/{uid}', 'UserController@switch_user');
-    Route::get('admin/users/listing/{page?}', 'UserController@listing');
-    Route::get('admin/users/sort', 'UserController@sort');
-    Route::get('admin/users/delete', 'UserController@delete');
-    Route::resource('admin/users', 'UserController');
+
+    Route::get('admin/customers/{customer_uid}/users/login-as/{uid}', 'UserController@loginAs');
+    Route::get('admin/customers/{customer_uid}/users/listing/{page?}', 'UserController@listing');
+    Route::get('admin/customers/{customer_uid}/users/delete', 'UserController@delete');
+    Route::get('admin/customers/{customer_uid}/users/disable', 'UserController@disable');
+    Route::get('admin/customers/{customer_uid}/users/enable', 'UserController@enable');
+    Route::resource('admin/customers/{customer_uid}/users', 'UserController');
 
     // Form Template
     Route::get('admin/templates/forms/{uid}/preview', 'FormTemplateController@preview');
@@ -1099,7 +1100,6 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::get('admin/customers/growthChart', 'CustomerController@growthChart');
     Route::get('admin/customers/{id}/subscriptions', 'CustomerController@subscriptions');
     Route::get('admin/customers/select2', 'CustomerController@select2');
-    Route::get('admin/customers/login-as/{uid}', 'CustomerController@loginAs');
     Route::get('admin/customers/listing/{page?}', 'CustomerController@listing');
     Route::get('admin/customers/sort', 'CustomerController@sort');
     Route::get('admin/customers/delete', 'CustomerController@delete');

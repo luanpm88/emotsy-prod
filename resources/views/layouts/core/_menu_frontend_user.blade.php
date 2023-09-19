@@ -10,7 +10,7 @@
             max-width: 100%;
             overflow: hidden;
             text-overflow: ellipsis;
-        ">{{ Auth::user()->customer->displayName() }}</span>
+        ">{{ Auth::user()->displayName(get_localization_config('show_last_name_first', Auth::user()->customer->getLanguageCode())) }}</span>
         @if (Auth::user()->customer->hasSubscriptionNotice())
             <i class="material-symbols-rounded customer-warning-icon text-danger" style="right: 3px!important;
             color: rgb(236, 124, 124)!important;
@@ -34,9 +34,15 @@
                 </div>
                 <div class="user-menu-titles">
                     <a href="{{ action('AccountController@profile') }}" class="fs-6 fw-600 d-flex align-items-center">
-                        <span class="me-3">{{ Auth::user()->customer->displayName() }}</span>
+                        <span class="me-3">{{ Auth::user()->displayName(get_localization_config('show_last_name_first', Auth::user()->customer->getLanguageCode())) }}</span>
                     </a>
-                    <p class="mb-1 small text-muted">{{ Auth::user()->email }}</p>
+                    <p class="mb-0 small text-muted">{{ Auth::user()->email }}</p>
+                    <p class="mb-2 small text-muted">
+                        <span class="material-symbols-rounded">
+                            domain
+                        </span>
+                        {{ Auth::user()->customer->getName() }}
+                    </p>
                     @if (Auth::user()->customer->status) 
                         <span class="label label-flat bg-{{ Auth::user()->customer->status }}">{{ trans('messages.' . Auth::user()->customer->status) }}</span>
                     @endif

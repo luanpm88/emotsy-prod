@@ -6,24 +6,23 @@
 	
 @section('page_header')
 	
-			<div class="page-title">
-				<ul class="breadcrumb breadcrumb-caret position-right">
-					<li class="breadcrumb-item"><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
-					<li class="breadcrumb-item"><a href="{{ action("Admin\CustomerController@index") }}">{{ trans('messages.customers') }}</a></li>
-				</ul>
-				<h1>
-					<span class="text-semibold"><span class="material-symbols-rounded">add</span> {{ trans('messages.create_customer') }}</span>
-				</h1>
-			</div>
+    <div class="page-title">
+        <ul class="breadcrumb breadcrumb-caret position-right">
+            <li class="breadcrumb-item"><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ action("Admin\CustomerController@index") }}">{{ trans('messages.customers') }}</a></li>
+        </ul>
+        <h1>
+            <span class="text-semibold"><span class="material-symbols-rounded">add</span> {{ trans('messages.create_customer') }}</span>
+        </h1>
+    </div>
 
 @endsection
 
 @section('content')
-          <form enctype="multipart/form-data" action="{{ action('Admin\CustomerController@store') }}" method="POST" class="form-validate-jqueryz">
-					{{ csrf_field() }}
+    <form enctype="multipart/form-data" action="{{ action('Admin\CustomerController@store') }}" method="POST" class="form-validate-jqueryz">
+        {{ csrf_field() }}
 					
-					@include('admin.customers._form')			
+        @include('admin.customers._form')			
 					
-				<form>
-				
+    <form>	
 @endsection

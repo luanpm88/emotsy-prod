@@ -65,7 +65,7 @@
 						<li class="nav-item dropdown">
 							<a class="account-item nav-link dropdown-toggle px-2" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 								<img class="avatar" src="{{ Auth::user()->getProfileImageUrl() }}" alt="">
-								{{ Auth::user()->customer->displayName() }}
+								{{ Auth::user()->customer->getName() }}
 							</a>
 							<div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
 								@can("admin_access", Auth::user())

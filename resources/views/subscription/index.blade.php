@@ -16,7 +16,7 @@
             <li class="breadcrumb-item active">{{ trans('messages.subscription') }}</li>
         </ul>
         <h1>
-            <span class="text-semibold">{{ Auth::user()->customer->displayName() }}</span>
+            <span class="text-semibold">{{ Auth::user()->customer->getName() }}</span>
         </h1>
     </div>
 

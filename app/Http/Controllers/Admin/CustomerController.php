@@ -5,7 +5,6 @@ namespace Acelle\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use Acelle\Http\Controllers\Controller;
 use Acelle\Model\PlanGeneral;
-use Acelle\Library\Facades\Hook;
 
 class CustomerController extends Controller
 {
@@ -69,12 +68,6 @@ class CustomerController extends Controller
     public function create(Request $request)
     {
         $customer = \Acelle\Model\Customer::newCustomer();
-        $customer->status = 'active';
-        $customer->uid = '0';
-
-        if (!empty($request->old())) {
-            $customer->fill($request->old());
-        }
 
         // User info
         $customer->user = new \Acelle\Model\User();
@@ -100,58 +93,24 @@ class CustomerController extends Controller
     public function store(Request $request)
     {
         // Get current user
-        $current_user = $request->user();
         $customer = \Acelle\Model\Customer::newCustomer();
-        $contact = new \Acelle\Model\Contact();
 
         // authorize
         if (\Gate::denies('create', $customer)) {
             return $this->notAuthorized();
         }
 
-        // save posted data
-        if ($request->isMethod('post')) {
-            $user = new \Acelle\Model\User();
-            $user->fill($request->all());
-            $user->activated = true;
+        $errors = $customer->saveFromRequest($request);
 
-            $this->validate($request, $user->rules());
-
-            // Update password
-            if (!empty($request->password)) {
-                $user->password = bcrypt($request->password);
-            }
-            $user->save();
-
-            // Save current user info
-            $customer->admin_id = $request->user()->admin->id;
-            $customer->fill($request->all());
-            $customer->status = 'active';
-
-            if ($customer->save()) {
-                $user->customer_id = $customer->id;
-                $user->save();
-                // Upload and save image
-                if ($request->hasFile('image')) {
-                    if ($request->file('image')->isValid()) {
-                        // Remove old images
-                        $user->uploadProfileImage($request->file('image'));
-                    }
-                }
-
-                // Remove image
-                if ($request->_remove_image == 'true') {
-                    $user->removeProfileImage();
-                }
-
-                // Execute registered hooks
-                Hook::execute('customer_added', [$customer]);
-
-                $request->session()->flash('alert-success', trans('messages.customer.created'));
-
-                return redirect()->action('Admin\CustomerController@index');
-            }
+        if (!$errors->isEmpty()) {
+            return view('admin.customers.create', [
+                'customer' => $customer,
+                'errors' => $errors,
+            ]);
         }
+
+        return redirect()->action('Admin\CustomerController@index')
+            ->with('alert-success', trans('messages.customer.created'));
     }
 
     /**
@@ -203,60 +162,25 @@ class CustomerController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // Get current user
-        $current_user = $request->user();
-        $customer = \Acelle\Model\Customer::findByUid($id);
-
-        // authorize
-        if (\Gate::denies('update', $customer)) {
-            return $this->notAuthorized();
-        }
-
         // Prenvent save from demo mod
         if (config('app.demo')) {
             return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
         }
 
-        // save posted data
-        if ($request->isMethod('patch')) {
-            // Prenvent save from demo mod
-            if (config('app.demo')) {
-                return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
-            }
+        // Get current user
+        $customer = \Acelle\Model\Customer::findByUid($id);
 
-            $user = $customer->user;
-            $user->fill($request->all());
+        $errors = $customer->saveFromRequest($request);
 
-            $this->validate($request, $user->rules());
-
-            // Update password
-            if (!empty($request->password)) {
-                $user->password = bcrypt($request->password);
-            }
-            $user->save();
-
-            // Save current user info
-            $customer->fill($request->all());
-            $customer->save();
-
-            // Upload and save image
-            if ($request->hasFile('image')) {
-                if ($request->file('image')->isValid()) {
-                    // Remove old images
-                    $user->uploadProfileImage($request->file('image'));
-                }
-            }
-
-            // Remove image
-            if ($request->_remove_image == 'true') {
-                $user->removeProfileImage();
-            }
-
-            if ($customer->save()) {
-                $request->session()->flash('alert-success', trans('messages.customer.updated'));
-                return redirect()->action('Admin\CustomerController@index');
-            }
+        if (!$errors->isEmpty()) {
+            return view('admin.customers.create', [
+                'customer' => $customer,
+                'errors' => $errors,
+            ]);
         }
+
+        return redirect()->action('Admin\CustomerController@index')
+            ->with('alert-success', trans('messages.customer.updated'));
     }
 
     /**
@@ -361,7 +285,7 @@ class CustomerController extends Controller
 
         $orig_id = $request->user()->uid;
         \Auth::login($customer->user);
-        \Session::put('orig_customer_id', $orig_id);
+        \Session::put('orig_user_uid', $orig_id);
         return redirect()->action('HomeController@index');
     }
 
@@ -374,12 +298,12 @@ class CustomerController extends Controller
      */
     public function loginBack(Request $request)
     {
-        $id = \Session::pull('orig_customer_id');
+        $id = \Session::pull('orig_user_uid');
         $orig_user = \Acelle\Model\Customer::findByUid($id);
 
         \Auth::login($orig_user);
 
-        return redirect()->action('Admin\UserController@index');
+        return redirect()->action('Admin\CustomerController@index');
     }
 
     /**
@@ -554,7 +478,7 @@ class CustomerController extends Controller
                 'status' => 'success',
                 'message' => trans('messages.customer.plan.assigned', [
                     'plan' => $plan->name,
-                    'customer' => $customer->displayName(),
+                    'customer' => $customer->getName(),
                 ]),
             ], 201);
         }

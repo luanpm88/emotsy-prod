@@ -2,7 +2,7 @@
 	'menu' => 'customer',
 ])
 
-@section('title', $customer->displayName())
+@section('title', $customer->getName())
     
 @section('page_header')
     
@@ -13,14 +13,16 @@
             <li class="breadcrumb-item active">{{ trans('messages.update') }}</li>
         </ul>
         <h1>
-            <span class="text-semibold"><span class="material-symbols-rounded">person_outline</span> {{ $customer->displayName() }}</span>
+            <span class="text-semibold"><span class="material-symbols-rounded">person_outline</span> {{ $customer->getName() }}</span>
         </h1>
     </div>
                 
 @endsection
 
 @section('content')
-    @include('admin.customers._tabs')
+    @include('admin.customers._tabs', [
+        'menu' => 'profile',
+    ])
 
     <form enctype="multipart/form-data" action="{{ action('Admin\CustomerController@update', $customer->uid) }}" method="POST" class="form-validate-jquery">
         {{ csrf_field() }}

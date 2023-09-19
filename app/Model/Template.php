@@ -237,7 +237,7 @@ class Template extends Model
      */
     public function displayCreatorName()
     {
-        return $this->admin ? $this->admin->displayName() : ($this->customer ? $this->customer->displayName() : '');
+        return $this->admin ? $this->admin->displayName() : ($this->customer ? $this->customer->getName() : '');
     }
 
     /**

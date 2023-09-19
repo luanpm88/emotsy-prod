@@ -28,12 +28,20 @@ class UserPolicy
         // @important: in case of non-saas mode, it falls upon admin case
         switch ($role) {
             case 'admin':
-                $can = $user->admin->getPermission('user_create') == 'yes';
+                $can = true;
                 break;
             case 'customer':
                 $can = $user->id != $item->id;
+                
                 // RBAC check
-                $can = $can && !$user->hasPermission('user.readonly');
+                if ($user->hasPermission('user.all')) {
+                    $permission = true;   
+                } else {
+                    $permission = false;    
+                }
+
+                $can = $can && $permission;
+
                 break;
         }
         
@@ -51,13 +59,19 @@ class UserPolicy
         // @important: in case of non-saas mode, it falls upon admin case
         switch ($role) {
             case 'admin':
-                $ability = $user->admin->getPermission('user_update');
+                $ability = 'all';
                 $can = $ability == 'all'
                         || ($ability == 'own' && $user->id == $item->id);
                 break;
             case 'customer':
                 // RBAC check
-                $can = !$user->hasPermission('user.readonly');
+                if ($user->hasPermission('user.all')) {
+                    $permission = true;   
+                } else {
+                    $permission = false;    
+                }
+
+                $can = $permission;
                 break;
         }
         return $can;
@@ -68,14 +82,22 @@ class UserPolicy
         // @important: in case of non-saas mode, it falls upon admin case
         switch ($role) {
             case 'admin':
-                $ability = $user->admin->getPermission('user_update');
+                $ability = 'all';
                 $can = $ability == 'all'
                         || ($ability == 'own' && $user->id == $item->id);
                 break;
             case 'customer':
                 $can = $user->id != $item->id && $item->isActivated();
+                
                 // RBAC check
-                $can = $can && !$user->hasPermission('user.readonly');
+                if ($user->hasPermission('user.all')) {
+                    $permission = true;   
+                } else {
+                    $permission = false;    
+                }
+
+                $can = $can && $permission;
+
                 break;
         }
         return $can;
@@ -86,14 +108,22 @@ class UserPolicy
         // @important: in case of non-saas mode, it falls upon admin case
         switch ($role) {
             case 'admin':
-                $ability = $user->admin->getPermission('user_update');
+                $ability = 'all';
                 $can = $ability == 'all'
                         || ($ability == 'own' && $user->id == $item->id);
                 break;
             case 'customer':
                 $can = $user->id != $item->id && !$item->isActivated();
+
                 // RBAC check
-                $can = $can && !$user->hasPermission('user.readonly');
+                if ($user->hasPermission('user.all')) {
+                    $permission = true;   
+                } else {
+                    $permission = false;    
+                }
+
+                $can = $can && $permission;
+
                 break;
         }
         return $can;
@@ -104,15 +134,23 @@ class UserPolicy
         // @important: in case of non-saas mode, it falls upon admin case
         switch ($role) {
             case 'admin':
-                $ability = $user->admin->getPermission('user_delete');
+                $ability = 'all';
                 $can = $ability == 'all'
                         || ($ability == 'own' && $user->id == $item->id);
                 $can = $can && $user->id != $item->id;
                 break;
             case 'customer':
                 $can = $user->id != $item->id;
+                
                 // RBAC check
-                $can = $can && !$user->hasPermission('user.readonly');
+                if ($user->hasPermission('user.all')) {
+                    $permission = true;   
+                } else {
+                    $permission = false;    
+                }
+
+                $can = $can && $permission;
+                
                 break;
         }
         return $can;
@@ -138,6 +176,31 @@ class UserPolicy
         $ability = $user->admin->getPermission('user_update');
         $can = $ability == 'all';
 
+        return $can;
+    }
+
+    public function loginAs(User $user, User $item, $role='admin')
+    {
+        // @important: in case of non-saas mode, it falls upon admin case
+        switch ($role) {
+            case 'admin':
+                $ability = $user->admin->getPermission('customer_login_as');
+                $can = $item->id != $user->customer_id && ($ability == 'all');
+                break;
+            case 'customer':
+                $can = $user->id != $item->id;
+
+                // RBAC check
+                if ($user->hasPermission('user.all')) {
+                    $permission = true;   
+                } else {
+                    $permission = false;    
+                }
+
+                $can = $can && $permission;
+
+                break;
+        }
         return $can;
     }
 }

@@ -33,27 +33,60 @@ class CampaignPolicy
         }
 
         // RBAC check
-        $can = $can && !$user->hasPermission('campaign.readonly');
+        if ($user->hasPermission('campaign.all')) {
+            $permission = true;    
+        } else {
+            $permission = false;    
+        }
 
-        return $can;
+        return $can && $permission;
     }
 
     public function overview(User $user, Campaign $item)
     {
         $customer = $user->customer;
-        return $item->customer_id == $customer->id && !$user->isReadOnly() && !$item->isWaitForApproval();
+        $can = $item->customer_id == $customer->id && !$user->isReadOnly() && !$item->isWaitForApproval();
+
+        // RBAC check
+        if ($user->hasPermission('campaign.all')) {
+            $permission = true;  
+        } elseif ($user->hasPermission('campaign.read')) {
+            $permission = true;    
+        } else {
+            $permission = false;    
+        }
+
+        return $can && $permission;
     }
 
     public function approve(User $user, Campaign $item)
     {
         $admin = $user->admin;
-        return $admin && $item->isWaitForApproval();
+        $can = $admin && $item->isWaitForApproval();
+
+        // RBAC check
+        if ($user->hasPermission('campaign.all')) {
+            $permission = true;
+        } else {
+            $permission = false;    
+        }
+
+        return $can && $permission;
     }
 
     public function reject(User $user, Campaign $item)
     {
         $admin = $user->admin;
-        return $admin && $item->isWaitForApproval();
+        $can = $admin && $item->isWaitForApproval();
+
+        // RBAC check
+        if ($user->hasPermission('campaign.all')) {
+            $permission = true;
+        } else {
+            $permission = false;    
+        }
+
+        return $can && $permission;
     }
 
     public function update(User $user, Campaign $item)
@@ -71,9 +104,13 @@ class CampaignPolicy
             ]));
 
         // RBAC check
-        $can = $can && !$user->hasPermission('campaign.readonly');
+        if ($user->hasPermission('campaign.all')) {
+            $permission = true;  
+        } else {
+            $permission = false;    
+        }
 
-        return $can;
+        return $can && $permission;
     }
 
     public function delete(User $user, Campaign $item)
@@ -92,9 +129,13 @@ class CampaignPolicy
         ]);
 
         // RBAC check
-        $can = $can && !$user->hasPermission('campaign.readonly');
+        if ($user->hasPermission('campaign.all')) {
+            $permission = true;  
+        } else {
+            $permission = false;    
+        }
 
-        return $can;
+        return $can && $permission;
     }
 
     public function pause(User $user, Campaign $item)
@@ -108,9 +149,13 @@ class CampaignPolicy
         ]);
 
         // RBAC check
-        $can = $can && !$user->hasPermission('campaign.readonly');
+        if ($user->hasPermission('campaign.all')) {
+            $permission = true;  
+        } else {
+            $permission = false;    
+        }
 
-        return $can;
+        return $can && $permission;
     }
 
     public function run(User $user, Campaign $item)
@@ -122,9 +167,13 @@ class CampaignPolicy
         ]);
 
         // RBAC check
-        $can = $can && !$user->hasPermission('campaign.readonly');
+        if ($user->hasPermission('campaign.all')) {
+            $permission = true;  
+        } else {
+            $permission = false;    
+        }
 
-        return $can;
+        return $can && $permission;
     }
 
     public function restart(User $user, Campaign $item)
@@ -137,9 +186,13 @@ class CampaignPolicy
         ]);
 
         // RBAC check
-        $can = $can && !$user->hasPermission('campaign.readonly');
+        if ($user->hasPermission('campaign.all')) {
+            $permission = true;  
+        } else {
+            $permission = false;    
+        }
 
-        return $can;
+        return $can && $permission;
     }
 
     public function sort(User $user, Campaign $item)
@@ -154,21 +207,47 @@ class CampaignPolicy
         $can = $item->customer_id == $customer->id;
 
         // RBAC check
-        $can = $can && !$user->hasPermission('campaign.readonly');
+        if ($user->hasPermission('campaign.all')) {
+            $permission = true;  
+        } else {
+            $permission = false;    
+        }
 
-        return $can;
+        return $can && $permission;
     }
 
     public function preview(User $user, Campaign $item)
     {
         $customer = $user->customer;
-        return $item->customer_id == $customer->id;
+        $can = $item->customer_id == $customer->id;
+
+        // RBAC check
+        if ($user->hasPermission('campaign.all')) {
+            $permission = true;  
+        } elseif ($user->hasPermission('campaign.read')) {
+            $permission = true;    
+        } else {
+            $permission = false;    
+        }
+
+        return $can && $permission;
     }
 
     public function image(User $user, Campaign $item)
     {
         $customer = $user->customer;
-        return $item->customer_id == $customer->id;
+        $can = $item->customer_id == $customer->id;
+
+        // RBAC check
+        if ($user->hasPermission('campaign.all')) {
+            $permission = true;  
+        } elseif ($user->hasPermission('campaign.read')) {
+            $permission = true;    
+        } else {
+            $permission = false;    
+        }
+
+        return $can && $permission;
     }
 
     public function resend(User $user, Campaign $item)
@@ -177,9 +256,13 @@ class CampaignPolicy
         $can = $item->customer_id == $customer->id && ($item->isDone() || $item->isPaused());
 
         // RBAC check
-        $can = $can && !$user->hasPermission('campaign.readonly');
+        if ($user->hasPermission('campaign.all')) {
+            $permission = true;
+        } else {
+            $permission = false;    
+        }
 
-        return $can;
+        return $can && $permission;
     }
 
     public function send_test_email(User $user, Campaign $item)
@@ -196,8 +279,12 @@ class CampaignPolicy
         ]);
 
         // RBAC check
-        $can = $can && !$user->hasPermission('campaign.readonly');
+        if ($user->hasPermission('campaign.all')) {
+            $permission = true;   
+        } else {
+            $permission = false;    
+        }
 
-        return $can;
+        return $can && $permission;
     }
 }

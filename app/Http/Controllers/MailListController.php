@@ -63,8 +63,6 @@ class MailListController extends Controller
         if ($customer->contact) {
             $list->contact->fill($customer->contact->toArray());
             $list->send_to = $customer->contact->email;
-        } else {
-            $list->send_to = $customer->user->email;
         }
 
         // default values
@@ -884,7 +882,7 @@ class MailListController extends Controller
 
         $options = [];
         foreach ($customers->get() as $customer) {
-            $options[] = ['text' => $customer->displayName(), 'value' => $customer->uid];
+            $options[] = ['text' => $customer->getName(), 'value' => $customer->uid];
         }
 
         return view('lists.cloneForCustomersChoose', [
