@@ -39,6 +39,11 @@ class RoleController extends Controller
     {
         $role = Role::newDefault();
 
+        // authorize
+        if (\Gate::denies('create', $role)) {
+            return $this->notAuthorized();
+        }
+
         return view('admin.roles.create', [
             'role' => $role,
         ]);
@@ -53,6 +58,11 @@ class RoleController extends Controller
     public function store(Request $request)
     {
         $role = Role::newDefault();
+
+        // authorize
+        if (\Gate::denies('create', $role)) {
+            return $this->notAuthorized();
+        }
 
         $errors = $role->saveFromArray($request->all());
 
@@ -94,6 +104,11 @@ class RoleController extends Controller
     {
         $role = Role::findByUid($uid);
 
+        // authorize
+        if (\Gate::denies('update', $role)) {
+            return $this->notAuthorized();
+        }
+
         $errors = $role->saveFromArray($request->all());
 
         // redirect if fails
@@ -125,8 +140,11 @@ class RoleController extends Controller
         $total = $roles->count();
         $deleted = 0;
         foreach ($roles->get() as $role) {
-            $role->delete();
-            $deleted += 1;
+            // authorize
+            if (\Gate::allows('delete', $role)) {
+                $role->delete();
+                $deleted += 1;
+            }
         }
 
         return response()->json([
@@ -144,8 +162,11 @@ class RoleController extends Controller
         $total = $roles->count();
         $done = 0;
         foreach ($roles->get() as $role) {
-            $role->enable();
-            $done += 1;
+            // authorize
+            if (\Gate::allows('enable', $role)) {
+                $role->enable();
+                $done += 1;
+            }
         }
 
         return response()->json([
@@ -164,8 +185,12 @@ class RoleController extends Controller
         $total = $roles->count();
         $done = 0;
         foreach ($roles->get() as $role) {
-            $role->disable();
-            $done += 1;
+            // authorize
+            if (\Gate::allows('disable', $role)) {
+                $role->disable();
+                $done += 1;
+            }
+            
         }
 
         return response()->json([

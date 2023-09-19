@@ -45,35 +45,48 @@
                             title="{{ trans('messages.edit') }}" role="button"
                             class="btn btn-secondary btn-icon me-1"
                         >
-                            <i class="icon-stats-growth"></i> {{ trans('messages.edit') }}</a>
-                        <button role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"></button>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            @if (!$role->isActive())
-                                <li><a
-                                    class="dropdown-item list-action-single"
-                                    link-method="POST"
-                                    href="{{ action('Admin\RoleController@enable', [
-                                        'uids' => [$role->uid],
-                                    ]) }}">
-                                    <span class="material-symbols-rounded me-2">task_alt</span> {{ trans("messages.enable") }}</a>
-                                </li>
-                            @else
-                                <li><a
-                                    class="dropdown-item list-action-single"
-                                    link-method="POST"
-                                    href="{{ action('Admin\RoleController@disable', [
-                                        'uids' => [$role->uid],
-                                    ]) }}">
-                                    <span class="material-symbols-rounded me-2">do_disturb_on</span> {{ trans("messages.disable") }}</a>
-                                </li>
-                            @endif
-                            <li><a
-                                class="dropdown-item list-action-single"
-                                link-method="POST"
-                                link-confirm="{{ trans('messages.role.delete.confirm') }}"
-                                href="{{ action('Admin\RoleController@delete', ["uids" => [$role->uid]]) }}">
-                                <span class="material-symbols-rounded me-2">delete_outline</span> {{ trans("messages.delete") }}</a></li>
-                        </ul>
+                            <i class="icon-stats-growth"></i> {{ trans('messages.edit') }}
+                        </a>
+                        
+                        @if (
+                            Auth::user()->can('enable', $role) ||
+                            Auth::user()->can('disable', $role) ||
+                            Auth::user()->can('delete', $role)
+                        )
+                            <button role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"></button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                @if (Auth::user()->can('enable', $role))
+                                    <li><a
+                                        class="dropdown-item list-action-single"
+                                        link-method="POST"
+                                        href="{{ action('Admin\RoleController@enable', [
+                                            'uids' => [$role->uid],
+                                        ]) }}">
+                                        <span class="material-symbols-rounded me-2">task_alt</span> {{ trans("messages.enable") }}</a>
+                                    </li>
+                                @endif
+
+                                @if (Auth::user()->can('disable', $role))
+                                    <li><a
+                                        class="dropdown-item list-action-single"
+                                        link-method="POST"
+                                        href="{{ action('Admin\RoleController@disable', [
+                                            'uids' => [$role->uid],
+                                        ]) }}">
+                                        <span class="material-symbols-rounded me-2">do_disturb_on</span> {{ trans("messages.disable") }}</a>
+                                    </li>
+                                @endif
+                                
+                                @if (Auth::user()->can('delete', $role))
+                                    <li><a
+                                        class="dropdown-item list-action-single"
+                                        link-method="POST"
+                                        link-confirm="{{ trans('messages.role.delete.confirm') }}"
+                                        href="{{ action('Admin\RoleController@delete', ["uids" => [$role->uid]]) }}">
+                                        <span class="material-symbols-rounded me-2">delete_outline</span> {{ trans("messages.delete") }}</a></li>
+                                @endif
+                            </ul>
+                        @endif
                     </div>
                 </td>
             </tr>
