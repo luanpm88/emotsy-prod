@@ -1827,18 +1827,31 @@ class Customer extends Model
         return $this->openai_api_key;
     }
 
-    public function saveFromRequest($request)
+    public function validateFromRequest($request)
     {
-        // Save current user info
-        $this->admin_id = $request->user()->admin->id;
-        $this->fill($request->all());
-
         // validation
         $validator = \Validator::make($request->all(), [
             'name' => 'required',
             'timezone' => 'required',
             'language_id' => 'required',
         ]);
+
+        // errors
+        if ($validator->fails()) {
+            return $validator;
+        }
+
+        return $validator;
+    }
+
+    public function saveFromRequest($request)
+    {
+        // Save current user info
+        $this->admin_id = $request->user()->admin->id;
+        $this->fill($request->all());
+
+        //
+        $validator = $this->validateFromRequest($request);
 
         // errors
         if ($validator->fails()) {

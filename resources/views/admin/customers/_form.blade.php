@@ -1,5 +1,5 @@
 <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-12">
         <div class="sub_section">
             <h3 class="text-semibold text-primary mb-4">{{ trans('messages.account.information') }}</h3>
 
@@ -38,10 +38,6 @@
 
         </div>
     </div>
-</div>
-<hr>
-<div class="text-left">
-    <button class="btn btn-secondary"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
 </div>
 
 <script>

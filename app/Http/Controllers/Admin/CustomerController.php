@@ -68,10 +68,7 @@ class CustomerController extends Controller
     public function create(Request $request)
     {
         $customer = \Acelle\Model\Customer::newCustomer();
-
-        // User info
-        $customer->user = new \Acelle\Model\User();
-        $customer->user->fill($request->old());
+        $user = $customer->newUser();
 
         // authorize
         if (\Gate::denies('create', $customer)) {
@@ -80,6 +77,7 @@ class CustomerController extends Controller
 
         return view('admin.customers.create', [
             'customer' => $customer,
+            'user' => $user,
         ]);
     }
 
@@ -94,17 +92,33 @@ class CustomerController extends Controller
     {
         // Get current user
         $customer = \Acelle\Model\Customer::newCustomer();
+        $user = $customer->newUser();
 
         // authorize
         if (\Gate::denies('create', $customer)) {
             return $this->notAuthorized();
         }
 
-        $errors = $customer->saveFromRequest($request);
+        $validator = $customer->validateFromRequest($request);
+
+        if (!$validator->errors()->isEmpty()) {
+            return view('admin.customers.create', [
+                'customer' => $customer,
+                'user' => $user,
+                'errors' => $validator->errors(),
+            ]);
+        }
+
+        // 
+        $customer->saveFromRequest($request);
+        $user->customer_id = $customer->id;
+
+        list($result, $errors) = $user->saveFromRequest($request);
 
         if (!$errors->isEmpty()) {
             return view('admin.customers.create', [
                 'customer' => $customer,
+                'user' => $user,
                 'errors' => $errors,
             ]);
         }

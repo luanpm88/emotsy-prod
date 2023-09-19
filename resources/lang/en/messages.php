@@ -3243,4 +3243,5 @@
   'account.information' => 'Information',
   'customer.users' => 'Users',
   'role.description' => 'Description',
+  'account.default_user' => 'Default User',
 ) ?>
