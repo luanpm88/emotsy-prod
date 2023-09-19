@@ -31,9 +31,18 @@ class CustomerPolicy
         return $can;
     }
 
-    public function profile(User $user, Customer $customer)
+    public function updateProfile(User $user, Customer $customer)
     {
-        return $user->customer_id == $customer->id;
+        $can = $user->customer_id == $customer->id;
+
+        // RBAC check
+        if ($user->hasPermission('account.all')) {
+            $permission = true;   
+        } else {
+            $permission = false;    
+        }
+
+        return $can && $permission;
     }
 
     public function update(User $user, Customer $item)

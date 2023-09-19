@@ -22,11 +22,6 @@ class AccountController extends Controller
         $customer = $user->customer;
         $customer->getColorScheme();
 
-        // Authorize
-        if (!$request->user()->customer->can('profile', $customer)) {
-            return $this->notAuthorized();
-        }
-
         // Save posted data
         if ($request->isMethod('post')) {
             $this->validate($request, $user->rules());
@@ -40,24 +35,27 @@ class AccountController extends Controller
 
             $user->save();
 
-            // Save current user info
-            $customer->fill($request->all());
+            // Authorize
+            if ($request->user()->customer->can('updateProfile', $customer)) {
+                // Save current user info
+                $customer->fill($request->all());
 
-            // Upload and save image
-            if ($request->hasFile('image')) {
-                if ($request->file('image')->isValid()) {
-                    // Remove old images
-                    $user->uploadProfileImage($request->file('image'));
+                // Upload and save image
+                if ($request->hasFile('image')) {
+                    if ($request->file('image')->isValid()) {
+                        // Remove old images
+                        $user->uploadProfileImage($request->file('image'));
+                    }
                 }
-            }
 
-            // Remove image
-            if ($request->_remove_image == 'true') {
-                $user->removeProfileImage();
-            }
+                // Remove image
+                if ($request->_remove_image == 'true') {
+                    $user->removeProfileImage();
+                }
 
-            if ($customer->save()) {
-                $request->session()->flash('alert-success', trans('messages.profile.updated'));
+                if ($customer->save()) {
+                    $request->session()->flash('alert-success', trans('messages.profile.updated'));
+                }
             }
 
             return redirect()->action('AccountController@profile');
