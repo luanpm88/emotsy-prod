@@ -3244,4 +3244,5 @@
   'customer.users' => 'Users',
   'role.description' => 'Description',
   'account.default_user' => 'Default User',
+  'user.does_not_have_role.error' => 'You do not have any role. Please contact the account administrator to request access.',
 ) ?>

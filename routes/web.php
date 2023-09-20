@@ -123,6 +123,7 @@ Route::group(['middleware' => ['not_installed', 'not_logged_in']], function () {
     Route::get('/disabled', 'Controller@userDisabled');
     Route::get('/offline', 'Controller@offline');
     Route::get('/not-authorized', 'Controller@notAuthorized');
+    Route::get('/user-does-not-have-role', 'Controller@userDoesNotHaveRole');
     Route::get('/demo', 'Controller@demo');
     Route::get('/demo/go/{view}', 'Controller@demoGo');
     Route::get('/autologin/{api_token}', 'Controller@autoLogin');
@@ -327,7 +328,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
     Route::match(['get', 'post'], 'account/billing/edit', 'AccountController@editBillingAddress');
 });
 
-Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscription']], function () {
+Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscription', 'authorize']], function () {
     // Search
     Route::get('/search/websites', 'SearchController@websites');
     Route::get('/search/forms', 'SearchController@forms');
