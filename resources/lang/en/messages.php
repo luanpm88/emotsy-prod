@@ -3244,4 +3244,7 @@
   'customer.users' => 'Users',
   'role.description' => 'Description',
   'account.default_user' => 'Default User',
+  'campaign.preview_approve' => 'Preview & Approve',
+  'campaign.preview.desktop' => 'Desktop',
+  'campaign.preview.mobile' => 'Mobile',
 ) ?>

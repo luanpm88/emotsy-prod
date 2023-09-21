@@ -59,19 +59,28 @@ class CampaignPolicy
         return $can && $permission;
     }
 
-    public function approve(User $user, Campaign $item)
+    public function approve(User $user, Campaign $item, $role='admin')
     {
-        $admin = $user->admin;
-        $can = $admin && $item->isWaitForApproval();
+        switch ($role) {
+            case 'admin':
+                $admin = $user->admin;
+                $can = $admin && $item->isWaitForApproval();
+                break;
+            case 'customer':
+                $can =  $item->isWaitForApproval();
 
-        // RBAC check
-        if ($user->hasPermission('campaign.all')) {
-            $permission = true;
-        } else {
-            $permission = false;    
+                // RBAC check
+                if ($user->hasPermission('campaign.all')) {
+                    $permission = true;
+                } else {
+                    $permission = false;    
+                }
+
+                $can = $can && $permission;
+                break;
         }
 
-        return $can && $permission;
+        return $can;
     }
 
     public function reject(User $user, Campaign $item)

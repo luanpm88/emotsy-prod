@@ -657,10 +657,13 @@ class CampaignController extends Controller
 
             // Save campaign
             // @todo: check campaign status before requeuing. Otherwise, several jobs shall be created and campaign will get sent several times
-            // $campaign->execute(); // @emotsy comment this
-
-            // @emotsy set status to wait for approval
-            $campaign->setWaitForApproval();
+            
+            if ($request->user()->hasPermission('campaign.all')) {
+                $campaign->execute(); // @emotsy comment this
+            } else {
+                // @emotsy set status to wait for approval
+                $campaign->setWaitForApproval();
+            }
 
             // Log
             $campaign->log('started', $customer);
@@ -2540,6 +2543,70 @@ class CampaignController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => trans('messages.preheader.removed'),
+        ]);
+    }
+
+    public function approvePreview(Request $request)
+    {
+        $campaign = Campaign::findByUid($request->uid);
+
+        try {
+            $score = $campaign->score();
+        } catch (\Exception $e) {
+            $score = null;
+        }
+
+        return view('campaigns.approvePreview', [
+            'campaign' => $campaign,
+            'score' => $score,
+        ]);
+    }
+
+    public function approve(Request $request, $uid)
+    {
+        $campaign = Campaign::findByUid($uid);
+
+        // approve
+        $campaign->execute();
+        
+        if($request->ajax()) {
+            return response()->json([
+                'status' => 'success',
+                'message' => trans('messages.campaign.approved'),
+            ]);
+        } else {
+            return redirect()->action('CampaignController@index');
+        }
+        
+    }
+
+    public function reject(Request $request, $uid)
+    {
+        $campaign = Campaign::findByUid($uid);
+
+        if ($request->isMethod('post')) {
+            $validator = \Validator::make($request->all(), ['reason' => 'required']);
+
+            // redirect if fails
+            if ($validator->fails()) {
+                return response()->view('campaigns.reject', [
+                    'campaign' => $campaign,
+                    'errors' => $validator->errors(),
+                ], 400);
+            }
+
+            // try reject
+            $campaign->reject($request->reason);
+
+            // success
+            return response()->json([
+                'status' => 'success',
+                'message' => trans('messages.campaign.reject.success'),
+            ]);
+        }
+
+        return view('campaigns.reject', [
+            'campaign' => $campaign,
         ]);
     }
 }
