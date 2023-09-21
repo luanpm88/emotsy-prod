@@ -1,6 +1,8 @@
 <?php return array (
     'account.campaign.all.title' => 'Campaign.All',
     'account.campaign.all.desc' => 'The user can perform any action on campaigns',
+    'account.campaign.approve.title' => 'Campaign.Approve',
+    'account.campaign.approve.desc' => 'Users with this permission can approve campaigns that are waiting for approval. Users who have this permission do not need approval for their campaigns.',
     'account.campaign.read.title' => 'Campaign.Read',
     'account.campaign.read.desc' => 'User can read all information about campaigns but cannot create or edit',
     'account.list.all.title' => 'List.All',

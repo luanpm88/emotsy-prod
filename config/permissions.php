@@ -4,6 +4,7 @@ return [
     'account' => [
         'account.all',
         'campaign.all',
+        'campaign.approve',
         'campaign.read',
         'list.all',
         'list.read',

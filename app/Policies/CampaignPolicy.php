@@ -70,7 +70,7 @@ class CampaignPolicy
                 $can =  $item->isWaitForApproval();
 
                 // RBAC check
-                if ($user->hasPermission('campaign.all')) {
+                if ($user->hasPermission('campaign.approve')) {
                     $permission = true;
                 } else {
                     $permission = false;    
@@ -89,7 +89,7 @@ class CampaignPolicy
         $can = $admin && $item->isWaitForApproval();
 
         // RBAC check
-        if ($user->hasPermission('campaign.all')) {
+        if ($user->hasPermission('campaign.approve')) {
             $permission = true;
         } else {
             $permission = false;    

@@ -54,6 +54,22 @@ class CampaignController extends Controller
         ]);
     }
 
+    public function approvePreview(Request $request)
+    {
+        $campaign = Campaign::findByUid($request->uid);
+
+        try {
+            $score = $campaign->score();
+        } catch (\Exception $e) {
+            $score = null;
+        }
+
+    return view('admin.campaigns.approvePreview', [
+            'campaign' => $campaign,
+            'score' => $score,
+        ]);
+    }
+
     public function approve(Request $request, $uid)
     {
         $campaign = Campaign::findByUid($uid);

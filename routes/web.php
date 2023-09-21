@@ -1399,6 +1399,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
 
     Route::match(['get','post'], 'admin/campaigns/{uid}/reject', 'CampaignController@reject');
     Route::post('admin/campaigns/{uid}/approve', 'CampaignController@approve');
+    Route::get('admin/campaigns/{uid}/approve', 'CampaignController@approvePreview');
     Route::get('admin/campaigns/listing/{page?}', 'CampaignController@listing');
     Route::resource('admin/campaigns', 'CampaignController');
 });

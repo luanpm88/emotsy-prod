@@ -36,7 +36,7 @@
                 statusCode: {
                     // validate error
                     400: function (res) {
-                        rejectPendingSub.loadHtml(res.responseText);
+                        CampaignReject.getPopup().loadHtml(res.responseText);
                     }
                 },
                 success: function (response) {
@@ -55,6 +55,9 @@
                     } else {
                         CampaignsIndex.getList().load();
                     }
+
+                    // hide preview popup
+                    CampaignApproval.getPopup().hide();
                 }
             });
         });

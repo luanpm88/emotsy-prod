@@ -95,30 +95,59 @@
 				</td>
 				<td class="text-end text-nowrap pe-0">
 					<div class="d-flex align-items-center text-nowrap justify-content-end">
-                        @if (\Gate::allows('approve', $campaign))
-                            <a href="{{ action('Admin\CampaignController@approve', $campaign->uid) }}" data-popup="tooltip"
-                                title="{{ trans('messages.campaign.approve') }}" role="button"
-                                link-method="POST"
-                                link-confirm="{{ trans('messages.campaign.approve.confirm') }}"
-                                class="btn btn-primary btn-icon ms-1 list-action-single"
-                            >
-                                <i class="icon-stats-growth"></i> {{ trans('messages.campaign.approve') }}
+                        @if (Auth::user()->admin->can('approve', $campaign))
+							<a list-action="approve" href="{{ action('Admin\CampaignController@approvePreview', $campaign->uid) }}" role="button"
+								class="btn btn-primary btn-icon ms-1">
+                                <span class="material-symbols-rounded">task_alt</span>
+                                {{ trans('messages.campaign.preview_approve') }}
                             </a>
-                        @endif
-                        @if (\Gate::allows('reject', $campaign))
-                            <a href="{{ action('Admin\CampaignController@reject', $campaign->uid) }}" list-control="reject"
-                                class="btn btn-warning btn-icon ms-1"
-                            >
-                                <i class="icon-stats-growth"></i> {{ trans('messages.campaign.reject') }}
-                            </a>
-                        @endif
+						@endif
 					</div>
 				</td>
 			</tr>
 		@endforeach
 	</table>
 	@include('elements/_per_page_select', ["items" => $campaigns])
-	
+    
+    <script>
+        $(function() {
+            CampaignApproval.init();
+        });
+
+        var CampaignApproval = function() {
+            var popup;
+            var approveButtons;
+
+            var handleApproveButton = function() {
+                approveButtons.forEach(button => {
+                    button.addEventListener("click", function(e) {
+                        e.preventDefault();
+                        var url = button.getAttribute("href");
+
+                        load(url);
+                    });
+                });
+            };
+
+            var load = function(url) {
+                popup.load(url);
+            };
+
+            return {
+                init: function() {
+                    popup = new Popup();
+                    approveButtons = document.querySelectorAll('[list-action="approve"]');
+
+                    //
+                    handleApproveButton();
+                },
+
+                getPopup: function() {
+                    return popup;
+                },
+            };
+        }();
+    </script>
 
 	<script>
 		var CampaignsList = {
