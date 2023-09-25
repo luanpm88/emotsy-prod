@@ -321,7 +321,8 @@ class Customer extends Model
     public static function scopeSearch($query, $keyword)
     {
         $query = $query->select('customers.*')
-            ->leftJoin('users', 'users.customer_id', '=', 'customers.id');
+            ->leftJoin('users', 'users.customer_id', '=', 'customers.id')
+            ->distinct();
 
         // Keyword
         if (!empty(trim($keyword))) {
