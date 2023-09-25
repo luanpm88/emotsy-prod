@@ -39,11 +39,6 @@ class RoleController extends Controller
     {
         $role = Role::newDefault();
 
-        // authorize
-        if (\Gate::denies('create', $role)) {
-            return $this->notAuthorized();
-        }
-
         return view('admin.roles.create', [
             'role' => $role,
         ]);

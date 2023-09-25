@@ -10,6 +10,13 @@ class RolePolicy
 {
     use HandlesAuthorization;
 
+    public function create(User $user)
+    {
+        $can = true;
+
+        return $can;
+    }
+
     public function update(User $user, Role $role)
     {
         $can = !$role->default;
