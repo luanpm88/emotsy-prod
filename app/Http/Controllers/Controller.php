@@ -39,6 +39,11 @@ class Controller extends BaseController
 
         return response()->view('notAuthorized')->setStatusCode(403);
     }
+    
+    public function userDoesNotHaveRole()
+    {
+        return response()->view('userDoesNotHaveRole')->setStatusCode(403);
+    }
 
     /**
      * Check if the user cannot create more item.

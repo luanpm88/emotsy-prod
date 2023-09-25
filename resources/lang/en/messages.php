@@ -3247,4 +3247,5 @@
   'campaign.preview_approve' => 'Preview & Approve',
   'campaign.preview.desktop' => 'Desktop',
   'campaign.preview.mobile' => 'Mobile',
+  'user.does_not_have_role.error' => 'You do not have any role. Please contact the account administrator to request access.',
 ) ?>

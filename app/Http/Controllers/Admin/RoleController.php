@@ -53,7 +53,7 @@ class RoleController extends Controller
     public function store(Request $request)
     {
         $role = Role::newDefault();
-
+        
         $errors = $role->saveFromArray($request->all());
 
         // redirect if fails
