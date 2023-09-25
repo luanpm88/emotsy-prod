@@ -59,11 +59,6 @@ class RoleController extends Controller
     {
         $role = Role::newDefault();
 
-        // authorize
-        if (\Gate::denies('create', $role)) {
-            return $this->notAuthorized();
-        }
-
         $errors = $role->saveFromArray($request->all());
 
         // redirect if fails
