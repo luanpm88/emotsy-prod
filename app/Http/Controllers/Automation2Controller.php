@@ -1314,6 +1314,14 @@ class Automation2Controller extends Controller
      */
     public function enable(Request $request)
     {
+        // Japan + not license
+        if(config('custom.japan') && !\Acelle\Model\Setting::get('license')) {
+            return response()->json([
+                'status' => 'error',
+                'message' => trans('messages.license.required'),
+            ], 400);
+        }
+        
         $automations = Automation2::whereIn(
             'uid',
             is_array($request->uids) ? $request->uids : explode(',', $request->uids)
