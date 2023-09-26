@@ -130,8 +130,9 @@
                 ])
             </div>
         @endif
-            
-        <div class="col-md-6">
+        
+        
+        <div class="col-md-6" @if (!config('app.saas')) style="display:none;" @endif>
             <div class="form-group checkbox-right-switch">
                 @include('helpers.form_control', [
                     'type' => 'checkbox',
