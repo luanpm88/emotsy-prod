@@ -104,16 +104,21 @@
                                                 <span class="material-symbols-rounded me-2">restart_alt</span> {{ trans("messages.campaign.resend") }}</a></li>
                                         @else
                                             <li>
-                                                <a license-required class="dropdown-item resend-campaign"
+                                                <a class="dropdown-item resend-campaign"
                                                 href="{{ action('CampaignController@resend', ["uid" => $campaign->uid]) }}">
                                                 <span class="material-symbols-rounded me-2">restart_alt</span> {{ trans("messages.campaign.resend") }}</a></li>
                                         @endif
 									@endif
 									@if (\Gate::allows('send_test_email', $campaign))
-										<li><a class="dropdown-item send-a-test-email-link" href="{{ action('CampaignController@sendTestEmail', [
-											'uid' => $campaign->uid,
-										]) }}">
-											<span class="material-symbols-rounded me-2">forward_to_inbox</span> {{ trans("messages.send_a_test_email") }}</a></li>
+                                        @if(config('custom.japan') && !Acelle\Model\Setting::get('license'))
+                                            <li><a license-required class="dropdown-item" href="">
+                                                <span class="material-symbols-rounded me-2">forward_to_inbox</span> {{ trans("messages.send_a_test_email") }}</a></li>
+                                        @else
+                                            <li><a class="dropdown-item send-a-test-email-link" href="{{ action('CampaignController@sendTestEmail', [
+                                                'uid' => $campaign->uid,
+                                            ]) }}">
+                                                <span class="material-symbols-rounded me-2">forward_to_inbox</span> {{ trans("messages.send_a_test_email") }}</a></li>
+                                        @endif
 									@endif
 									@if (\Gate::allows('pause', $campaign))
 										<li><a class="dropdown-item list-action-single"
