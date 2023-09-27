@@ -70,19 +70,15 @@
             @endif
                 
 
-            @if (config('custom.japan'))
-                <input type="hidden" name="language_id" value="{{ Acelle\Model\Language::getJapan()->id }}" />
-            @else
-                @include('helpers.form_control', [
-                    'type' => 'select',
-                    'name' => 'language_id',
-                    'label' => trans('messages.language'),
-                    'value' => $customer->language_id ?? \Acelle\Model\Language::getDefaultLanguage()->id,
-                    'options' => Acelle\Model\Language::getSelectOptions(),
-                    'include_blank' => trans('messages.choose'),
-                    'rules' => $customer->user->rules()
-                ])
-            @endif
+            @include('helpers.form_control', [
+                'type' => 'select',
+                'name' => 'language_id',
+                'label' => trans('messages.language'),
+                'value' => $customer->language_id ?? \Acelle\Model\Language::getDefaultLanguage()->id,
+                'options' => Acelle\Model\Language::getSelectOptions(),
+                'include_blank' => trans('messages.choose'),
+                'rules' => $customer->user->rules()
+            ])
             
 
         </div>
