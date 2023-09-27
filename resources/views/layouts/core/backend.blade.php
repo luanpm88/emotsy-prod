@@ -43,7 +43,7 @@
 	@if (config('app.saas'))
 		@include('layouts.core._menu_backend')
 	@else
-		@include('layouts.core._menu_single')
+		@include('layouts.core._menu_frontend_single')
 	@endif
 
 	@include('layouts.core._middle_bar')

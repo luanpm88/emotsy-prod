@@ -42,9 +42,9 @@
 	@elseif(config('app.brand'))
 		@include('layouts.core._menu_frontend_brand')
 	@elseif (!config('app.saas'))
-		@include('layouts.core._menu_single')
+		@include('layouts.core._menu_frontend_single')
 	@else
-		@include('layouts.core._menu_frontend')
+		@include('layouts.core._menu_frontend_saas')
 	@endif
 
 	
