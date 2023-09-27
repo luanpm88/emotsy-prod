@@ -3195,4 +3195,8 @@
   'your_current_license' => 'Thank you for purchasing! Below is your license key, also known as Purchase Code. Your license type is',
   'zip_postal_code' => 'Zip / Postal code',
   'license.required' => 'Please add a valid license for your application to use this feature',
+  'campaign.send_now.title' => 'Send immediately',
+  'campaign.send_now.desc' => 'Launch the campaign immediately upon completing its setup.',
+  'campaign.send_later.title' => 'Send later',
+  'campaign.send_later.desc' => 'Specify the date and time for the campaign to commence sending emails.',
 ) ?>
