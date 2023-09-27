@@ -112,16 +112,26 @@
 								<button id="btnGroupDrop1" role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"></button>
 								<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="btnGroupDrop1">
 									@if (\Gate::allows('resend', $campaign))
-										<li>
-											<a class="dropdown-item resend-campaign"
-											href="{{ action('CampaignController@resend', ["uid" => $campaign->uid]) }}">
-											<span class="material-symbols-rounded me-2">restart_alt</span> {{ trans("messages.campaign.resend") }}</a></li>
+                                        @if(config('custom.japan') && !Acelle\Model\Setting::get('license'))
+                                            <li><a license-required class="dropdown-item" href="">
+                                                <span class="material-symbols-rounded me-2">restart_alt</span> {{ trans("messages.campaign.resend") }}</a></li>
+                                        @else
+                                            <li>
+                                                <a class="dropdown-item resend-campaign"
+                                                href="{{ action('CampaignController@resend', ["uid" => $campaign->uid]) }}">
+                                                <span class="material-symbols-rounded me-2">restart_alt</span> {{ trans("messages.campaign.resend") }}</a></li>
+                                        @endif
 									@endif
 									@if (\Gate::allows('send_test_email', $campaign))
-										<li><a class="dropdown-item send-a-test-email-link" href="{{ action('CampaignController@sendTestEmail', [
-											'uid' => $campaign->uid,
-										]) }}">
-											<span class="material-symbols-rounded me-2">forward_to_inbox</span> {{ trans("messages.send_a_test_email") }}</a></li>
+                                        @if(config('custom.japan') && !Acelle\Model\Setting::get('license'))
+                                            <li><a license-required class="dropdown-item" href="">
+                                                <span class="material-symbols-rounded me-2">forward_to_inbox</span> {{ trans("messages.send_a_test_email") }}</a></li>
+                                        @else
+                                            <li><a class="dropdown-item send-a-test-email-link" href="{{ action('CampaignController@sendTestEmail', [
+                                                'uid' => $campaign->uid,
+                                            ]) }}">
+                                                <span class="material-symbols-rounded me-2">forward_to_inbox</span> {{ trans("messages.send_a_test_email") }}</a></li>
+                                        @endif
 									@endif
 									@if (\Gate::allows('pause', $campaign))
 										<li><a class="dropdown-item list-action-single"
@@ -131,10 +141,15 @@
 											<span class="material-symbols-rounded me-2">motion_photos_pause</span>{{ trans("messages.pause") }}</a></li>
 									@endif
 									@if (\Gate::allows('restart', $campaign))
-										<li><a class="dropdown-item list-action-single"
-											link-method="POST"
-											link-confirm="{{ trans('messages.restart_campaigns_confirm', ['number' => '1']) }}" href="{{ action('CampaignController@restart', ["uids" => $campaign->uid]) }}">
-											<span class="material-symbols-rounded me-2">restore</span> {{ trans("messages.restart") }}</a></li>
+                                        @if(config('custom.japan') && !Acelle\Model\Setting::get('license'))
+                                            <li><a license-required class="dropdown-item" href="">
+                                                <span class="material-symbols-rounded me-2">restore</span> {{ trans("messages.restart") }}</a></li>
+                                        @else
+                                            <li><a class="dropdown-item list-action-single"
+                                                link-method="POST"
+                                                link-confirm="{{ trans('messages.restart_campaigns_confirm', ['number' => '1']) }}" href="{{ action('CampaignController@restart', ["uids" => $campaign->uid]) }}">
+                                                <span class="material-symbols-rounded me-2">restore</span> {{ trans("messages.restart") }}</a></li>
+                                        @endif
 									@endif
 									@if (\Gate::allows('copy', $campaign))
 										<li>

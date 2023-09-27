@@ -130,6 +130,19 @@ function initJs(container)
     container[0].querySelectorAll('[image-popup="link"]').forEach(link => {
         new ImagePopup(link, link.getAttribute('image-url'));
     });
+
+    // license required helper
+    container.find('[license-required]').on('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        $(this).unbind();
+
+        new Dialog('alert', {
+            title: LANG_ERROR,
+            message: LANG_LICENSE_REQUIRED
+        });
+    })
 }
 
 function openMiddleBar() {

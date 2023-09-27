@@ -644,6 +644,14 @@ class CampaignController extends Controller
 
         // validate and save posted data
         if ($request->isMethod('post') && $campaign->step() >= 5) {
+            // Japan + not license
+            if(config('custom.japan') && !\Acelle\Model\Setting::get('license')) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => trans('messages.license.required'),
+                ], 400);
+            }
+
             // UGLY CODE
             if (get_tmp_quota($customer, 'unsubscribe_url_required') == 'yes' && Setting::isYes('campaign.enforce_unsubscribe_url_check')) {
                 if (strpos($campaign->getTemplateContent(), '{UNSUBSCRIBE_URL}') === false) {
@@ -1511,6 +1519,14 @@ class CampaignController extends Controller
 
         $items = Campaign::whereIn('uid', $request->uids);
 
+        // Japan + not license
+        if(config('custom.japan') && !\Acelle\Model\Setting::get('license')) {
+            return response()->json([
+                'status' => 'error',
+                'message' => trans('messages.license.required'),
+            ], 400);
+        }
+
         foreach ($items->get() as $item) {
             if (\Gate::allows('restart', $item)) {
                 $item->resume();
@@ -1711,6 +1727,14 @@ class CampaignController extends Controller
         $campaign = Campaign::findByUid($request->uid);
 
         if ($request->isMethod('post')) {
+            // Japan + not license
+            if(config('custom.japan') && !\Acelle\Model\Setting::get('license')) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => trans('messages.license.required'),
+                ], 400);
+            }
+
             $validator = \Validator::make($request->all(), [
                 'email' => 'required|email',
             ]);
@@ -1942,6 +1966,14 @@ class CampaignController extends Controller
 
         // do resend with option: $request->option : not_receive|not_open|not_click
         if ($request->isMethod('post')) {
+            // Japan + not license
+            if(config('custom.japan') && !\Acelle\Model\Setting::get('license')) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => trans('messages.license.required'),
+                ], 400);
+            }
+
             // authorize
             if (\Gate::allows('resend', $campaign)) {
                 $campaign->resend($request->option);

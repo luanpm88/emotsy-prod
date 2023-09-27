@@ -969,7 +969,7 @@
   'custom_css' => 'Custom CSS',
   'custom_forms_and_emails' => 'Forms / Pages',
   'custom_pages' => 'Custom page',
-  'custom_script' => 'Copy and paste your custom scripts in the box below. It will be included in every page',
+  'custom_script' => 'Copy and paste your custom scripts in the box below. It will be included in every page. For example, you can include your Google Analysis code here to track your website statistics.',
   'custom_tracking_domain' => 'Custom Tracking Domain',
   'customer' => 'Customer',
   'customer.admin_area' => 'Admin Area',
@@ -3248,4 +3248,9 @@
   'campaign.preview.desktop' => 'Desktop',
   'campaign.preview.mobile' => 'Mobile',
   'user.does_not_have_role.error' => 'You do not have any role. Please contact the account administrator to request access.',
+  'license.required' => 'Please add a valid license for your application to use this feature',
+  'campaign.send_now.title' => 'Send immediately',
+  'campaign.send_now.desc' => 'Launch the campaign immediately upon completing its setup.',
+  'campaign.send_later.title' => 'Send at a specified date and time',
+  'campaign.send_later.desc' => 'Specify the date and time for the campaign to commence sending emails.',
 ) ?>

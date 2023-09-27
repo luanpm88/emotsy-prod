@@ -20,4 +20,5 @@
 		'notice': '{{ trans('messages.notify.notice') }}'
 	};
 	var LOADING_WAIT = '{{ trans('messages.loading_wait') }}';
+    var LANG_LICENSE_REQUIRED = '{{ trans('messages.license.required') }}';
 </script>

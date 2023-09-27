@@ -92,8 +92,20 @@ class SubscriptionController extends Controller
     public function billingInformation(Request $request)
     {
         $customer = $request->user()->customer;
-        $invoice = $customer->invoices()->unpaid()->where('uid', '=', $request->invoice_uid)->first();
+        $invoice = $customer->invoices()->where('uid', '=', $request->invoice_uid)->first();
         $billingAddress = $customer->getDefaultBillingAddress();
+
+        // can not found the invoice
+        if (!$invoice) {
+            throw new \Exception("The invoice with ID [{$request->invoice_uid}] does not exist!");
+        }
+
+        // can not found the invoice
+        if ($invoice->isPaid()) {
+            // throw new \Exception("The invoice with ID [{$request->invoice_uid}] is paid!");
+            return redirect()->action('SubscriptionController@index')
+                ->with('alert-warning', "The invoice with ID [{$request->invoice_uid}] is paid!");
+        }   
 
         // always update invoice price from plan
         $invoice->mapType()->refreshPrice();
@@ -133,8 +145,20 @@ class SubscriptionController extends Controller
         // Get current customer
         $customer = $request->user()->customer;
 
-        // get unpaid invoice
-        $invoice = $customer->invoices()->unpaid()->where('uid', '=', $request->invoice_uid)->first();
+        // get invoice
+        $invoice = $customer->invoices()->where('uid', '=', $request->invoice_uid)->first();
+
+        // can not found the invoice
+        if (!$invoice) {
+            throw new \Exception("The invoice with ID [{$request->invoice_uid}] does not exist!");
+        }
+
+        // can not found the invoice
+        if ($invoice->isPaid()) {
+            // throw new \Exception("The invoice with ID [{$request->invoice_uid}] is paid!");
+            return redirect()->action('SubscriptionController@index')
+                ->with('alert-warning', "The invoice with ID [{$request->invoice_uid}] is paid!");
+        }   
 
         // no unpaid invoice found
         if (!$invoice) {
@@ -169,12 +193,19 @@ class SubscriptionController extends Controller
     public function checkout(Request $request)
     {
         $customer = $request->user()->customer;
-        $invoice = $customer->invoices()->unpaid()->where('uid', '=', $request->invoice_uid)->first()->mapType();
+        $invoice = $customer->invoices()->where('uid', '=', $request->invoice_uid)->first()->mapType();
 
-        // no unpaid invoice found
+        // can not found the invoice
         if (!$invoice) {
-            throw new \Exception('Customer subscription does not have any unpaid invoice!');
+            throw new \Exception("The invoice with ID [{$request->invoice_uid}] does not exist!");
         }
+
+        // can not found the invoice
+        if ($invoice->isPaid()) {
+            // throw new \Exception("The invoice with ID [{$request->invoice_uid}] is paid!");
+            return redirect()->action('SubscriptionController@index')
+                ->with('alert-warning', "The invoice with ID [{$request->invoice_uid}] is paid!");
+        }   
 
         // always update invoice price from plan
         $invoice->mapType()->refreshPrice();

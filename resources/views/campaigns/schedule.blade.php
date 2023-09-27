@@ -30,40 +30,71 @@
 @section('content')
     <form id="CampaignScheduleForm" action="{{ action('CampaignController@schedule', $campaign->uid) }}" method="POST" class="form-validate-jqueryz">
         {{ csrf_field() }}
-        
+
         <input type="hidden" name="send_now" value="no" />
-        <div class="row">
-            <div class="col-md-3 list_select_box" target-box="segments-select-box" segments-url="{{ action('SegmentController@selectBox') }}">
-                @include('helpers.form_control', ['type' => 'date',
-                    'class' => '_from_now',
-                    'name' => 'delivery_date',
-                    'label' => trans('messages.delivery_date'),
-                    'value' => $delivery_date,
-                    'rules' => $rules,
-                    'help_class' => 'campaign'
-                ])
-            </div>
-            <div class="col-md-3 segments-select-box">
-                @include('helpers.form_control', ['type' => 'time',
-                    'name' => 'delivery_time',
-                    'label' => trans('messages.delivery_time'),
-                    'value' => $delivery_time,
-                    'rules' => $rules,
-                    'help_class' => 'campaign'
-                ])
-            </div>
-        </div>
-        
-        <hr>
-        <div class="text-end">
-            <button class="btn btn-secondary me-1">
-                <span class="material-symbols-rounded me-1">alarm</span>
-                    {{ trans('messages.campaign.schedule') }} 
-            </button>
-            <button type="button" class="btn btn-primary send-now">
-                <span class="material-symbols-rounded me-1">done_all</span>
-                {{ trans('messages.campaign.send_now') }}
-            </button>
+
+        <div class="form-group control-radio">
+            <div class="radio_box" data-popup="tooltip" title="">
+                <label class="main-control">
+                    <input {{ !$campaign->run_at ? 'checked' : '' }} type="radio" name="plan[options][create_email_verification_servers]" value="no" class="styled"><span class="check-symbol"></span>
+                    <rtitle>{{ trans('messages.campaign.send_now.title') }}</rtitle>
+                    <div class="desc text-normal mb-10">
+                        {{ trans('messages.campaign.send_now.desc') }}
+                    </div>
+                </label>
+                <div class="radio_more_box" style="display: none;">
+                    <div class="desc text-normal mb-10 pl-0">
+                        <div class="">
+                            <button type="button" class="btn btn-secondary send-now">
+                                {{ trans('messages.save_and_next') }}
+                                <span class="material-symbols-rounded">arrow_forward</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>   
+            <hr>
+            <div class="radio_box" data-popup="tooltip" title="">
+                <label class="main-control">
+                    <input {{ $campaign->run_at ? 'checked' : '' }} type="radio" name="plan[options][create_email_verification_servers]" value="yes" class="styled"><span class="check-symbol"></span>
+                        <rtitle>{{ trans('messages.campaign.send_later.title') }}</rtitle>
+                        <div class="desc text-normal mb-10">
+                            {{ trans('messages.campaign.send_later.desc') }}
+                        </div>
+                </label>
+                <div class="radio_more_box">
+                    <div class="row">
+                        <div class="col-md-3 list_select_box" target-box="segments-select-box" segments-url="{{ action('SegmentController@selectBox') }}">
+                            @include('helpers.form_control', ['type' => 'date',
+                                'class' => '_from_now',
+                                'name' => 'delivery_date',
+                                'label' => trans('messages.delivery_date'),
+                                'value' => $delivery_date,
+                                'rules' => $rules,
+                                'help_class' => 'campaign'
+                            ])
+                        </div>
+                        <div class="col-md-3 segments-select-box">
+                            @include('helpers.form_control', ['type' => 'time',
+                                'name' => 'delivery_time',
+                                'label' => trans('messages.delivery_time'),
+                                'value' => $delivery_time,
+                                'rules' => $rules,
+                                'help_class' => 'campaign'
+                            ])
+                        </div>
+                    </div>
+                    
+                    <div class="">
+                        <button class="btn btn-secondary me-1">
+                            <span class="material-symbols-rounded me-1">alarm</span>
+                            {{ trans('messages.save_and_next') }}
+                                <span class="material-symbols-rounded">arrow_forward</span>
+                        </button>
+                    </div>
+                    
+                </div>
+            </div>              
         </div>
     <form>
 

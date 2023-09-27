@@ -203,15 +203,15 @@
                                 href="#preview" class="btn btn-secondary me-1" data-uid="{{ $campaign->uid }}">
                                 {{ trans('messages.preview') }} <span class="material-symbols-rounded">visibility</span>
                             </span>
-                            <button class="btn btn-secondary me-1 send-a-test-email-link" data-uid="{{ $campaign->uid }}">{{ trans('messages.send_a_test_email') }} <i class="icon-envelop3 ml-5"></i> </button>
+                            <button @if(config('custom.japan') && !Acelle\Model\Setting::get('license')) license-required @endif class="btn btn-secondary me-1 send-a-test-email-link" data-uid="{{ $campaign->uid }}">{{ trans('messages.send_a_test_email') }} <i class="icon-envelop3 ml-5"></i> </button>
                             @if (!is_null($score))
-                                <span onclick="$('#spam_score_confirm_model').modal('show')" class="btn btn-primary">{{ trans('messages.send') }} <i class="icon-paperplane ml-5"></i> </span>
-                                <button style="display: none" class="btn btn-primary send-campaign-button">{{ trans('messages.send') }} <i class="icon-paperplane ml-5"></i> </button>
+                                <span @if(config('custom.japan') && !Acelle\Model\Setting::get('license')) license-required @endif onclick="$('#spam_score_confirm_model').modal('show')" class="btn btn-primary">{{ trans('messages.send') }} <i class="icon-paperplane ml-5"></i> </span>
+                                <button @if(config('custom.japan') && !Acelle\Model\Setting::get('license')) license-required @endif style="display: none" class="btn btn-primary send-campaign-button">{{ trans('messages.send') }} <i class="icon-paperplane ml-5"></i> </button>
                             @else
                                 @if (Auth::user()->customer->can('approve', $campaign))
-                                    <button class="btn btn-primary send-campaign-button">{{ trans('messages.send') }} <i class="icon-paperplane ml-5"></i> </button>
+                                    <button @if(config('custom.japan') && !Acelle\Model\Setting::get('license')) license-required @endif class="btn btn-primary send-campaign-button">{{ trans('messages.send') }} <i class="icon-paperplane ml-5"></i> </button>
                                 @else
-                                    <button class="btn btn-primary send-campaign-button">{{ trans('messages.campaign.request_approval_send') }} <i class="icon-paperplane ml-5"></i> </button>
+                                    <button @if(config('custom.japan') && !Acelle\Model\Setting::get('license')) license-required @endif class="btn btn-primary send-campaign-button">{{ trans('messages.campaign.request_approval_send') }} <i class="icon-paperplane ml-5"></i> </button>
                                 @endif
                             @endif
                         </div>
@@ -256,9 +256,9 @@
                         </span>
                         <button class="btn btn-secondary me-1 send-a-test-email-link" data-uid="{{ $campaign->uid }}">{{ trans('messages.send_a_test_email') }} <i class="icon-envelop3 ml-5"></i> </button>
                         @if (Auth::user()->customer->can('approve', $campaign))
-                            <button class="btn btn-primary send-campaign-button">{{ trans('messages.send') }} <i class="icon-paperplane ml-5"></i> </button>
+                            <button @if(config('custom.japan') && !Acelle\Model\Setting::get('license')) license-required @endif class="btn btn-primary send-campaign-button">{{ trans('messages.send') }} <i class="icon-paperplane ml-5"></i> </button>
                         @else
-                            <button class="btn btn-primary send-campaign-button">{{ trans('messages.campaign.request_approval_send') }} <i class="icon-paperplane ml-5"></i> </button>
+                            <button @if(config('custom.japan') && !Acelle\Model\Setting::get('license')) license-required @endif class="btn btn-primary send-campaign-button">{{ trans('messages.campaign.request_approval_send') }} <i class="icon-paperplane ml-5"></i> </button>
                         @endif
                     </div>
                 @endif

@@ -13,16 +13,31 @@
     <div class="d-flex align-items-center campaign-status-section">
         <span class="mr-3 small">{{ trans('messages.automation.status.' . $automation->status) }}</span>
         <label>
-            @include('helpers.form_control', [
-                'type' => 'checkbox',
-                'name' => 'automation_status',
-                'label' => '',
-                'class' => 'automation_status styled3',
-                'value' => ($automation->status == \Acelle\Model\Automation2::STATUS_ACTIVE ? true : false),
-                'options' => [false,true],
-                'help_class' => '',
-                'rules' => []
-            ])
+            @if(config('custom.japan') && !Acelle\Model\Setting::get('license'))
+                <span license-required>
+                    @include('helpers.form_control', [
+                        'type' => 'checkbox',
+                        'name' => '',
+                        'label' => '',
+                        'class' => 'automation_status styled3',
+                        'value' => ($automation->status == \Acelle\Model\Automation2::STATUS_ACTIVE ? true : false),
+                        'options' => [false,true],
+                        'help_class' => '',
+                        'rules' => []
+                    ])
+                </span>
+            @else
+                @include('helpers.form_control', [
+                    'type' => 'checkbox',
+                    'name' => 'automation_status',
+                    'label' => '',
+                    'class' => 'automation_status styled3',
+                    'value' => ($automation->status == \Acelle\Model\Automation2::STATUS_ACTIVE ? true : false),
+                    'options' => [false,true],
+                    'help_class' => '',
+                    'rules' => []
+                ])
+            @endif
         </label>
     </div>
 </div>
