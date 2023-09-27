@@ -97,7 +97,8 @@ class SubscriptionController extends Controller
 
         // can not found the invoice
         if (!$invoice) {
-            throw new \Exception("The invoice with ID [{$request->invoice_uid}] does not exist!");
+            return redirect()->action('SubscriptionController@index')
+                ->with('alert-warning', "The invoice with ID [{$request->invoice_uid}] does not exist!");
         }
 
         // can not found the invoice
@@ -150,7 +151,9 @@ class SubscriptionController extends Controller
 
         // can not found the invoice
         if (!$invoice) {
-            throw new \Exception("The invoice with ID [{$request->invoice_uid}] does not exist!");
+            // throw new \Exception("The invoice with ID [{$request->invoice_uid}] does not exist!");
+            return redirect()->action('SubscriptionController@index')
+                ->with('alert-warning', "The invoice with ID [{$request->invoice_uid}] does not exist!");
         }
 
         // can not found the invoice
@@ -197,7 +200,8 @@ class SubscriptionController extends Controller
 
         // can not found the invoice
         if (!$invoice) {
-            throw new \Exception("The invoice with ID [{$request->invoice_uid}] does not exist!");
+            return redirect()->action('SubscriptionController@index')
+                ->with('alert-warning', "The invoice with ID [{$request->invoice_uid}] does not exist!");
         }
 
         // can not found the invoice
