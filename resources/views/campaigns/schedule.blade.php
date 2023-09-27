@@ -36,6 +36,26 @@
         <div class="form-group control-radio">
             <div class="radio_box" data-popup="tooltip" title="">
                 <label class="main-control">
+                    <input {{ !$campaign->run_at ? 'checked' : '' }} type="radio" name="plan[options][create_email_verification_servers]" value="no" class="styled"><span class="check-symbol"></span>
+                    <rtitle>{{ trans('messages.campaign.send_now.title') }}</rtitle>
+                    <div class="desc text-normal mb-10">
+                        {{ trans('messages.campaign.send_now.desc') }}
+                    </div>
+                </label>
+                <div class="radio_more_box" style="display: none;">
+                    <div class="desc text-normal mb-10 pl-0">
+                        <div class="">
+                            <button type="button" class="btn btn-secondary send-now">
+                                {{ trans('messages.save_and_next') }}
+                                <span class="material-symbols-rounded">arrow_forward</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>   
+            <hr>
+            <div class="radio_box" data-popup="tooltip" title="">
+                <label class="main-control">
                     <input {{ $campaign->run_at ? 'checked' : '' }} type="radio" name="plan[options][create_email_verification_servers]" value="yes" class="styled"><span class="check-symbol"></span>
                         <rtitle>{{ trans('messages.campaign.send_later.title') }}</rtitle>
                         <div class="desc text-normal mb-10">
@@ -74,27 +94,7 @@
                     </div>
                     
                 </div>
-            </div>
-            <hr>
-            <div class="radio_box" data-popup="tooltip" title="">
-                <label class="main-control">
-                    <input {{ !$campaign->run_at ? 'checked' : '' }} type="radio" name="plan[options][create_email_verification_servers]" value="no" class="styled"><span class="check-symbol"></span>
-                    <rtitle>{{ trans('messages.campaign.send_now.title') }}</rtitle>
-                    <div class="desc text-normal mb-10">
-                        {{ trans('messages.campaign.send_now.desc') }}
-                    </div>
-                </label>
-                <div class="radio_more_box" style="display: none;">
-                    <div class="desc text-normal mb-10 pl-0">
-                        <div class="">
-                            <button type="button" class="btn btn-secondary send-now">
-                                {{ trans('messages.save_and_next') }}
-                                <span class="material-symbols-rounded">arrow_forward</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>                        
+            </div>              
         </div>
     <form>
 

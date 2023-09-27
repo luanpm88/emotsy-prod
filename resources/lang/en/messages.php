@@ -3197,6 +3197,6 @@
   'license.required' => 'Please add a valid license for your application to use this feature',
   'campaign.send_now.title' => 'Send immediately',
   'campaign.send_now.desc' => 'Launch the campaign immediately upon completing its setup.',
-  'campaign.send_later.title' => 'Send later',
+  'campaign.send_later.title' => 'Send at a specified date and time',
   'campaign.send_later.desc' => 'Specify the date and time for the campaign to commence sending emails.',
 ) ?>
