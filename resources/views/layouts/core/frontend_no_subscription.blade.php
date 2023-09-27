@@ -35,9 +35,11 @@
 	fullscreen-search-box
 	mode-{{ getThemeMode(Auth::user()->customer->theme_mode, request()->session()->get('customer-auto-theme-mode'))  }}
 ">
-    @if (!Auth::user()->customer->getCurrentActiveSubscription())
-        @php $menu = $menu ?? false @endphp
+    @php $menu = $menu ?? false @endphp
 
+    @if (!config('app.saas'))
+        @include('layouts.core._menu_single')
+    @elseif (!Auth::user()->customer->getCurrentActiveSubscription())
         <nav class="navbar navbar-expand-xl navbar-dark fixed-top navbar-main frontend py-0">
             <div class="container-fluid ms-0">
                 <a class="navbar-brand d-flex align-items-center me-2" href="{{ action('HomeController@index') }}">
@@ -128,8 +130,8 @@
             </div>
         </nav>
     @else
-		@include('layouts.core._menu_frontend')
-	@endif
+        @include('layouts.core._menu_single')
+    @endif
 
     <script>
         var MenuFrontend = {
