@@ -56,14 +56,21 @@
         
         <hr>
         <div class="text-end">
-            <button class="btn btn-secondary me-1">
+            <button @if(config('custom.japan') && !Acelle\Model\Setting::get('license')) license-required @endif class="btn btn-secondary me-1">
                 <span class="material-symbols-rounded me-1">alarm</span>
                     {{ trans('messages.campaign.schedule') }} 
             </button>
-            <button type="button" class="btn btn-primary send-now">
-                <span class="material-symbols-rounded me-1">done_all</span>
-                {{ trans('messages.campaign.send_now') }}
-            </button>
+            @if(config('custom.japan') && !Acelle\Model\Setting::get('license'))
+                <button license-required type="button" class="btn btn-primary">
+                    <span class="material-symbols-rounded me-1">done_all</span>
+                    {{ trans('messages.campaign.send_now') }}
+                </button>
+            @else
+                <button type="button" class="btn btn-primary send-now">
+                    <span class="material-symbols-rounded me-1">done_all</span>
+                    {{ trans('messages.campaign.send_now') }}
+                </button>
+            @endif
         </div>
     <form>
 
