@@ -130,7 +130,7 @@
             </div>
         </nav>
     @else
-        @include('layouts.core._menu_single')
+        @include('layouts.core._menu_frontend')
     @endif
 
     <script>
