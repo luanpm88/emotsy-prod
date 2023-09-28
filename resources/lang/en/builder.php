@@ -584,4 +584,13 @@
   'youtube.width' => 'Width',
   'youtube_video' => 'YouTube Video',
   'youtube_video.add_button' => 'Click here to add YouTube video',
+  'upload' => 'Upload',
+  'widget.audio.upload_your_audio' => 'There is no audio file!',
+  'widget.audio' => 'Audio',
+  'page' => 'Pagex',
+  'cell.responsive' => 'Responsive on mobile',
+  'cell.responsive.wording' => 'Make all cells full-width when on mobile (or window width <= 600px). This may not work on some email clients (e.g. old outlook,...)',
+  'control.image.fix_width' => 'Fixed',
+  'no_background_image.click_to_choose' => 'Click here to choose an image as the element background',
+  'no_background_image' => 'No Background',
 ) ?>
