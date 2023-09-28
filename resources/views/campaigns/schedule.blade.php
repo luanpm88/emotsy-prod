@@ -45,10 +45,17 @@
                 <div class="radio_more_box" style="display: none;">
                     <div class="desc text-normal mb-10 pl-0">
                         <div class="">
-                            <button type="button" class="btn btn-secondary send-now">
-                                {{ trans('messages.save_and_next') }}
-                                <span class="material-symbols-rounded">arrow_forward</span>
-                            </button>
+                            @if(config('custom.japan') && !Acelle\Model\Setting::get('license'))
+                                <button license-required type="button" class="btn btn-secondary">
+                                    {{ trans('messages.save_and_next') }}
+                                    <span class="material-symbols-rounded">arrow_forward</span>
+                                </button>
+                            @else
+                                <button type="button" class="btn btn-secondary send-now">
+                                    {{ trans('messages.save_and_next') }}
+                                    <span class="material-symbols-rounded">arrow_forward</span>
+                                </button>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -86,7 +93,7 @@
                     </div>
                     
                     <div class="">
-                        <button class="btn btn-secondary me-1">
+                        <button @if(config('custom.japan') && !Acelle\Model\Setting::get('license')) license-required @endif class="btn btn-secondary me-1">
                             <span class="material-symbols-rounded me-1">alarm</span>
                             {{ trans('messages.save_and_next') }}
                                 <span class="material-symbols-rounded">arrow_forward</span>
