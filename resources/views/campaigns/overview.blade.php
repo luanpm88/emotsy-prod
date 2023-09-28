@@ -27,12 +27,6 @@
 
     @include("campaigns._chart")
 
-    @if (config('custom.woo'))
-
-        @include("campaigns._chart2")
-
-    @endif
-
     @include("campaigns._open_click_rate")
 
     @include("campaigns._count_boxes")
