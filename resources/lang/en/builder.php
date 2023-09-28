@@ -587,7 +587,7 @@
   'upload' => 'Upload',
   'widget.audio.upload_your_audio' => 'There is no audio file!',
   'widget.audio' => 'Audio',
-  'page' => 'Pagex',
+  'page' => 'Page',
   'cell.responsive' => 'Responsive on mobile',
   'cell.responsive.wording' => 'Make all cells full-width when on mobile (or window width <= 600px). This may not work on some email clients (e.g. old outlook,...)',
   'control.image.fix_width' => 'Fixed',
