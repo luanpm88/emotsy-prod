@@ -327,6 +327,7 @@ class ApiHelper
                         ['name' => '$list_uid', 'description' => 'List\'s uid'],
                         ['name' => '$EMAIL', 'description' => 'Subscriber\'s email'],
                         ['name' => '$tag', 'description' => 'Subscriber\'s tags, seperated by a comma (,).', 'optional' => true],
+                        ['name' => '$status', 'description' => 'Subscriber\'s status: subscribed | unsubscribed | unconfirmed', 'optional' => true],
                         ['name' => '$[OTHER_FIELDS...]', 'description' => 'All subscriber\'s other fields: FIRST_NAME (?), LAST_NAME (?),... (depending on the list fields configuration)', 'optional' => true],
                     ],
                     'returns' => 'Creation messages in json',
@@ -337,7 +338,8 @@ class ApiHelper
 -d EMAIL=test@gmail.com \
 -d tag=foo,bar,tag+with+space, \
 -d FIRST_NAME=Marine \
--d LAST_NAME=Joze',
+-d LAST_NAME=Joze \
+-d status=subscribed',
                 ],
 
                 [
@@ -370,7 +372,8 @@ class ApiHelper
 -d EMAIL=test@gmail.com \
 -d tag=foo,bar,tag+with+space, \
 -d FIRST_NAME=Marine \
--d LAST_NAME=Joze',
+-d LAST_NAME=Joze \
+-d status=unsubscribed',
                 ],
 
                 [

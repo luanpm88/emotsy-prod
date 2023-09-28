@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Acelle\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Log;
 use Acelle\Events\MailListSubscription;
-use Acelle\Model\Setting;
+use Acelle\Model\Subscriber;
 use Acelle\Model\MailList;
 use Acelle\Model\IpLocation;
 
@@ -97,6 +97,17 @@ class SubscriberController extends Controller
                 return response()->json(['message' => 'List quota exceeded'], 403);
             }
 
+            // status is invalid
+            if ($request->has('status')) {
+                if (!in_array($request->status, [
+                    Subscriber::STATUS_SUBSCRIBED,
+                    Subscriber::STATUS_UNSUBSCRIBED,
+                    Subscriber::STATUS_UNCONFIRMED,
+                ])) {
+                    return response()->json(['message' => 'Subscriber status is not valid, allowed values are: subscribed, unsubscribed, unconfirmed'], 403);
+                }
+            }
+
             // Validate & and create subscriber
             // Throw ValidationError exception in case of failure
             list($validator, $subscriber) = $list->subscribe($request, MailList::SOURCE_API);
@@ -108,6 +119,12 @@ class SubscriberController extends Controller
             // update tags
             if ($request->tag) {
                 $subscriber->updateTags(explode(',', $request->tag));
+            }
+
+            // update status \ overides default one
+            if ($request->has('status')) {
+                $subscriber->status = $request->status;
+                $subscriber->save();
             }
 
             return \Response::json(array(
@@ -446,33 +463,47 @@ class SubscriberController extends Controller
             return \Response::json(array('message' => 'Unauthorized'), 401);
         }
 
-        // validate and save posted data
-        if ($request->isMethod('patch')) {
-            $validator = \Validator::make($request->all(), $subscriber->getRules());
-            if ($validator->fails()) {
-                return response()->json($validator->messages(), 403);
+        // status is invalid
+        if ($request->has('status')) {
+            if (!in_array($request->status, [
+                Subscriber::STATUS_SUBSCRIBED,
+                Subscriber::STATUS_UNSUBSCRIBED,
+                Subscriber::STATUS_UNCONFIRMED,
+            ])) {
+                return response()->json(['message' => 'Subscriber status is not valid, allowed values are: subscribed, unsubscribed, unconfirmed'], 403);
             }
-
-            // Update field
-            $subscriber->updateFields($request->all());
-
-            // update tags
-            if ($request->tag) {
-                $subscriber->updateTags(explode(',', $request->tag));
-            }
-
-            // Log
-            $subscriber->log('updated', $customer);
-
-            // update MailList cache
-            event(new \Acelle\Events\MailListUpdated($subscriber->mailList));
-
-            return \Response::json(array(
-                'status' => 1,
-                'message' => trans('messages.subscriber.updated'),
-                'subscriber_uid' => $subscriber->uid,
-            ), 200);
         }
+
+        $validator = \Validator::make($request->all(), $subscriber->mailList->getFieldRules());
+        if ($validator->fails()) {
+            return response()->json($validator->messages(), 403);
+        }
+
+        // Update field
+        $subscriber->updateFields($request->all());
+
+        // update tags
+        if ($request->tag) {
+            $subscriber->updateTags(explode(',', $request->tag));
+        }
+
+        // update status \ overides default one
+        if ($request->has('status')) {
+            $subscriber->status = $request->status;
+            $subscriber->save();
+        }
+
+        // Log
+        $subscriber->log('updated', $customer);
+
+        // update MailList cache
+        event(new \Acelle\Events\MailListUpdated($subscriber->mailList));
+
+        return \Response::json(array(
+            'status' => 1,
+            'message' => trans('messages.subscriber.updated'),
+            'subscriber_uid' => $subscriber->uid,
+        ), 200);
     }
 
     /**
