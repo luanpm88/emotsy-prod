@@ -3200,4 +3200,8 @@
   'campaign.send_now.desc' => 'Launch the campaign immediately upon completing its setup.',
   'campaign.send_later.title' => 'Send at a specified date and time',
   'campaign.send_later.desc' => 'Specify the date and time for the campaign to commence sending emails.',
+  'embedded_form.enable_term' => 'Enable terms & conditions',
+  'embedded_form.enable_term.example' => 'By checking this box, I acknowledge that I have read and understood the
+    <a href="" target="_blank">Terms and Conditions</a> governing this subscription service and agree to be bound by them.',
+  'embedded_form.source_code' => 'Source code',
 ) ?>

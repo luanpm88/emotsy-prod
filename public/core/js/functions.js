@@ -127,7 +127,7 @@ function initJs(container)
     showAjaxDetailBox(container.find('.ajax-detail-box'));
 
     // image popup
-    container[0].querySelectorAll('[image-popup="link"]').forEach(link => {
+    container.find('[image-popup="link"]').each(function(link) {
         new ImagePopup(link, link.getAttribute('image-url'));
     });
 

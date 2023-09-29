@@ -108,3 +108,12 @@ body {
     direction: unset !important;
     text-align:right;
 }
+#acm_term-error {
+    position: absolute;
+    top: -16px;
+    width: 100%;
+    left: 0;
+}
+[name=acm_term].error {
+    border-color: red;
+}
