@@ -251,7 +251,7 @@
                             {{ trans('messages.preview') }} <span class="material-symbols-rounded">visibility</span>
                         </span>
                         <button @if(config('custom.japan') && !Acelle\Model\Setting::get('license')) license-required @endif class="btn btn-secondary me-1 send-a-test-email-link" data-uid="{{ $campaign->uid }}">{{ trans('messages.send_a_test_email') }} <i class="icon-envelop3 ml-5"></i> </button>
-                        <button @if(config('custom.japan') && !Acelle\Model\Setting::get('license')) license-required @endif class="btn btn-primary">{{ trans('messages.send') }} <i class="icon-paperplane ml-5"></i> </button>
+                        <button @if(config('custom.japan') && !Acelle\Model\Setting::get('license')) license-required @endif class="btn btn-primary">{{ trans('messages.campaign.all_done') }} <i class="icon-paperplane ml-5"></i> </button>
                     </div>
                 @endif
 

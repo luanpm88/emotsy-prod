@@ -676,6 +676,7 @@
   'brand.sliders' => 'Sliders',
   'brand.store' => 'Store',
   'brown' => 'Brown',
+  'campaign.all_done' => 'Done',
   'build_template' => 'Build template',
   'builder' => 'Builder',
   'builder.both' => 'Both',
