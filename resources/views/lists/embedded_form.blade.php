@@ -160,7 +160,7 @@
                         <h4 class="text-semibold me-auto">{{ trans('messages.Copy_paste_onto_your_site') }}</h4>
                         <div>
                             <a href="javascript:;" onclick="copyToClipboard(htmlDecode($('.main-code').html()));
-                            notify('success', '{{ trans('messages.notify.success') }}', '{{ trans('messages.embedded_form_code.copied') }}');" class="btn btn-sm btn-primary copy-clipboard">
+                            notify('success', '{{ trans('messages.notify.success') }}', '{{ trans('messages.embedded_form_code.copied') }}');" class="btn btn-primary copy-clipboard">
                                 <span class="material-symbols-rounded">content_copy</span> {{ trans('messages.copy') }}</a>
                         </div>
                     </div>
