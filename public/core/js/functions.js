@@ -128,7 +128,7 @@ function initJs(container)
 
     // image popup
     container.find('[image-popup="link"]').each(function(link) {
-        new ImagePopup(link, link.getAttribute('image-url'));
+        new ImagePopup($(this)[0], $(this).attr('image-url'));
     });
 
     // license required helper
