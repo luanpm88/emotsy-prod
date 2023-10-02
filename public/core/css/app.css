@@ -4423,6 +4423,7 @@ pagination {
     border-top-width: 1px;
     border-bottom-width: 1px;
     display: block;
+    min-width: 230px;
   }
   /* ------------------------------------------------------------------------------
   *
@@ -4468,9 +4469,11 @@ pagination {
   }
   .picker__select--month {
     width: 35%;
+    min-width: 86px;
   }
   .picker__select--year {
     width: 22.5%;
+    min-width: 62px;
   }
   .picker__nav--prev,
   .picker__nav--next {

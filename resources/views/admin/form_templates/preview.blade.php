@@ -120,7 +120,10 @@
             // pick a date
             if ($(".date-control").length) {
                 $('.date-control').pickadate({
-                    format: 'yyyy-mm-dd'
+                    format: 'yyyy-mm-dd',
+                    selectMonths: true,
+                    selectYears: 60,
+                    max: true
                 });
             }
 

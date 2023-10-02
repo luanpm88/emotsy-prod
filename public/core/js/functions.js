@@ -22,7 +22,10 @@ function initJs(container)
     if (container.find(".pickadate-control").length) {
         pickadateMask2(container.find('.pickadate-control'));
         container.find('.pickadate-control').pickadate({
-            format: 'yyyy-mm-dd'
+            format: 'yyyy-mm-dd',
+            selectMonths: true,
+            selectYears: 60,
+            max: true
         });
     }
 
