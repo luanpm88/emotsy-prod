@@ -3209,4 +3209,8 @@
   'embedded_form.enable_term.example' => 'By checking this box, I acknowledge that I have read and understood the
     <a href="" target="_blank">Terms and Conditions</a> governing this subscription service and agree to be bound by them.',
   'embedded_form.source_code' => 'Source code',
+  'copy_subscriber' => 'Copy subscriber(s)',
+  'move_subscriber' => 'Move subscriber(s)',
+  'subscribers_copy_message' => 'You\'re about to copy <span class="text-bold text-primary">:number</span> subscriber(s)',
+  'subscribers_move_message' => 'You\'re about to move <span class="text-bold text-primary">:number</span> subscriber(s)',
 ) ?>
