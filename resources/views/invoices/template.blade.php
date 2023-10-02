@@ -6,19 +6,41 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 
         <link rel="preconnect" href="https://fonts.googleapis.com"> 
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
-    <link href="https://fonts.googleapis.com/css2?family=M PLUS 1" rel="stylesheet">
-        <style>
-            @import url('https://fonts.googleapis.com/css2?family=M PLUS 1');
-        </style>
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
+		
+		@if (Auth()->user()->customer->getLanguageCode() == 'ja') 
+			<link href="https://fonts.googleapis.com/css2?family=M PLUS 1" rel="stylesheet">
+			<style>
+				@import url('https://fonts.googleapis.com/css2?family=M PLUS 1');
+			</style>
 
-		<!-- Invoice styling -->
+			<!-- Invoice styling -->
+			<style>
+				* {
+					font-family: 'M PLUS 1', sans-serif !important;
+					font-weight: normal!important;
+					font-style: normal!important;
+				}
+			</style>
+		@else
+			<link href="https://fonts.googleapis.com/css2?family=Noto+Sans" rel="stylesheet">
+			<style>
+				@import url('https://fonts.googleapis.com/css2?family=Noto+Sans');
+			</style>
+
+			<!-- Invoice styling -->
+			<style>
+				* {
+					font-family: 'Noto Sans', sans-serif !important;
+					font-weight: normal!important;
+					font-style: normal!important;
+				}
+			</style>
+		@endif
+
 		<style>
-			* {
-				font-family: 'M PLUS 1', sans-serif !important;
-                font-weight: normal!important;
-                font-style: normal!important;
-			}
+
+
 			body {
 				text-align: center;
 				color: #777;
