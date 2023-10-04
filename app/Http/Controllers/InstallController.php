@@ -285,8 +285,8 @@ class InstallController extends Controller
         // Run migrate
         artisan_migrate();
 
-        // import database with prefix
-        $this->importDatabase($database);
+        // import database via seeder
+        \Artisan::call('db:seed', ['--class' => 'DatabaseInit']);
 
         // get database connection
         $database = $request->session()->get('database');
@@ -661,28 +661,6 @@ class InstallController extends Controller
             'MAIL_FROM_ADDRESS' => (isset($smtp['mail_from_email']) ? $smtp['mail_from_email'] : ''),
             'MAIL_FROM_NAME' => (isset($smtp['mail_from_name']) ? $smtp['mail_from_name'] : ''),
         ]);
-    }
-
-    public function importDatabase($database)
-    {
-        // read and replace prefix
-        $file_path = database_path('install/database_init.sql');
-        $file = fopen($file_path, 'r') or die('Unable to open file!');
-        $sql = fread($file, filesize($file_path));
-        $sql = str_replace('<<prefix>>', $database['tables_prefix'], $sql);
-        fclose($file);
-
-        // write file
-        $file_path = storage_path('app/database_import.sql');
-        $file = fopen($file_path, 'w') or die('Unable to open file!');
-        fwrite($file, $sql);
-        fclose($file);
-
-        // import sql
-        $file_path = storage_path('app/database_import.sql');
-        $command = 'mysql --host='.$database['hostname'].' --user='.$database['username'].' --password='.$database['password'].' --port='.$database['port'].' --database='.$database['database_name'].' < '.$file_path;
-
-        return $this->importSql($database, $file_path);
     }
 
     public function importSql($database, $file_path)
