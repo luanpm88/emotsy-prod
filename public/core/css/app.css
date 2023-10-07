@@ -8206,3 +8206,39 @@ label.checker input:disabled ~ .checker-symbol {
         width: calc(50% - 20px);
     }
 }
+
+.input-group-text {
+    height: 35px;
+    padding: .3rem 0.75rem;
+}
+
+.ab-subjects:not(.ab-subjects-no-split) .input-group .emojionearea {
+    border-radius: 0 5px 5px 0!important;
+}
+.ab-subjects-input {
+    width: calc(100% - 42px);
+}
+.ab-subjects {
+    margin-left:-15px;
+    margin-right:-15px;
+    padding: 15px;
+}
+.ab-subjects.ab-subjects-no-split {
+    margin-left:0;
+    margin-right:0;
+    padding: 0;
+    background-color: transparent!important;
+    border:none!important;
+}
+.ab-subjects.ab-subjects-no-split .ab-subjects-input {
+    width: 100%!important;
+}
+.ab-subjects.ab-subjects-no-split .ab-subjects-label {
+    display: none;
+}
+.ab-subjects.ab-subjects-no-split .ab-subjects-b-line {
+    display: none;
+}
+.ab-subjects.ab-subjects-no-split .ab-subjects-intro {
+    display: none;
+}

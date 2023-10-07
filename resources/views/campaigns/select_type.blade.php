@@ -40,15 +40,15 @@
             @endforeach
 
             <li class="py-3">
-                <a href="{{ action("ABCampaignController@create") }}" class="btn btn-primary">{{ trans('messages.choose') }}</a>
+                <a link-method="POST" href="{{ action("CampaignABController@create") }}" class="btn btn-primary">{{ trans('messages.choose') }}</a>
                 <div class="d-flex pe-4">
-                    <a href="{{ action("ABCampaignController@create") }}">
+                    <a href="{{ action("CampaignABController@create") }}">
                         <span class="pt-1 d-block">
                             <img width="40px" class="icon-img d-inline-block me-4" src="{{ url('images/icons/ab-test.svg') }}" />
                         </span>
                     </a>
                     <div>
-                        <h4 class="mb-1"><a href="{{ action("ABCampaignController@create") }}">{{ trans('messages.campaign.ab.title') }}</a></h4>
+                        <h4 class="mb-1"><a href="{{ action("CampaignABController@create") }}">{{ trans('messages.campaign.ab.title') }}</a></h4>
                         <p>
                             {{ trans('messages.campaign.ab.intro') }}
                         </p>

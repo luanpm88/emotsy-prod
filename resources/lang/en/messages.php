@@ -3213,4 +3213,17 @@
     receive version A and the other half will receive version B. The winning version
     will be determined by the highest open or click rate and will be sent to the remaining recipients.',
   'campaign.design' => 'Design',
+  'campaign.ab.email_subject.wording' => 'Write subject lines that clearly describe your content and test only one variable per A/B test. For example, try testing whether changing your subject line length or phrasing it as a question improves your results.',
+  'campaign.ab.welcome.title' => 'Welcome to A/B test campaigns',
+  'campaign.ab.welcome.content' => '<p>Choose a variable to test. Half of the test
+    group will receive version A and the other half will receive version B.
+    The winning version will be determined by the highest open or click rate
+    and will be sent to the remaining recipients.</p>
+    <p>To have significant test results, we recommend including at least
+    5,000 recipients in each test group whom you have contacted previously.</p>',
+  'campaign.ab.variables' => 'A/B Variables',
+  'campaign.ab.split_subject.wording' => 'Bust inferent subject lines to improve your email open rates.',
+  'campaign.ab.subject_lines' => 'Split subjects',
+  'campaign.ab.split_email_content.wording' => 'Test two different templates to improve your click rates.',
+  'campaign.ab.split_email_content' => 'Split email templates',
 ) ?>

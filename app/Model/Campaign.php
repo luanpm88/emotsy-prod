@@ -53,6 +53,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
     // Campaign types
     public const TYPE_REGULAR = 'regular';
     public const TYPE_PLAIN_TEXT = 'plain-text';
+    public const TYPE_AB_TEST = 'ab-test';
 
     // 4 types of delivery status for a given contact
     public const DELIVERY_STATUS_FAILED = 'failed';
@@ -131,6 +132,15 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
         // tracking domain
         if (isset($request) && $request->custom_tracking_domain) {
             $rules['tracking_domain_uid'] = 'required';
+        }
+
+        // ab test rule
+        if ($this->isABTest()) {
+            if (isset($request)) {
+                if (!$request->ab_split_subject && !$request->ab_split_content) {
+                    $rules['ab_variables_not_selected'] = 'required';
+                }
+            }
         }
 
         return $rules;
@@ -316,7 +326,8 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
         'track_click', 'sign_dkim', 'track_fbl',
         'html', 'plain', 'template_source',
         'tracking_domain_id', 'use_default_sending_server_from_email',
-        'skip_failed_message'
+        'skip_failed_message',
+        'subject_b', 'ab_split_subject', 'ab_split_content'
     ];
 
     /**
@@ -2727,5 +2738,10 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
     {
         $this->preheader = null;
         $this->save();
+    }
+
+    public function isABTest()
+    {
+        return $this->type == self::TYPE_AB_TEST;
     }
 }

@@ -42,7 +42,7 @@
 		<h1 class="mb-4">{{ trans('messages.setup') }}</h1>
 		
 		<div class="row">
-			<div class="col-md-6 list_select_box" target-box="segments-select-box" segments-url="{{ action('SegmentController@selectBox') }}">
+			<div class="col-md-7 list_select_box" target-box="segments-select-box" segments-url="{{ action('SegmentController@selectBox') }}">
 				@include('helpers.form_control', ['type' => 'text',
 					'name' => 'name',
 					'label' => trans('messages.name_your_campaign'),
@@ -51,26 +51,32 @@
 					'help_class' => 'campaign'
 				])
 				
-                @if (Acelle\Model\Plugin::isInstalled('acelle/chatgpt') && Acelle\Model\Plugin::getByName('acelle/chatgpt')->isActive())
-                    @include('chat._email_subject', [
-                        'name' => 'subject',
-                        'label' => trans('messages.email_subject'),
-                        'value' => $campaign->subject,
-                    ])
-                @else
-                    <div class="has-emoji">
-                        @include('helpers.form_control', ['type' => 'text',
-                            'name' => 'subject',
-                            'label' => trans('messages.email_subject'),
-                            'value' => $campaign->subject,
-                            'rules' => $rules,
-                            'help_class' => 'campaign',
-                            'attributes' => [
-                                'data-emojiable' => 'true',
-                            ]
-                        ])
-                    </div>
-                @endif
+				@if ($campaign->isABTest())
+					@include('campaigns.ab._welcome')
+					@include('campaigns.ab._variables')
+					@include('campaigns.ab._email_subject')
+				@else
+					@if (Acelle\Model\Plugin::isInstalled('acelle/chatgpt') && Acelle\Model\Plugin::getByName('acelle/chatgpt')->isActive())
+						@include('chat._email_subject', [
+							'name' => 'subject',
+							'label' => trans('messages._email_subject'),
+							'value' => $campaign->subject,
+						])
+					@else
+						<div class="has-emoji">
+							@include('helpers.form_control', ['type' => 'text',
+								'name' => 'subject',
+								'label' => trans('messages.email_subject'),
+								'value' => $campaign->subject,
+								'rules' => $rules,
+								'help_class' => 'campaign',
+								'attributes' => [
+									'data-emojiable' => 'true',
+								]
+							])
+						</div>
+					@endif
+				@endif
 												
 				@include('helpers.form_control', ['type' => 'text',
 					'name' => 'from_name',
@@ -126,7 +132,7 @@
                 ])
 				
 			</div>
-			<div class="col-md-6 segments-select-box">
+			<div class="col-md-5 segments-select-box">
 				<div class="form-group checkbox-right-switch">
 					@if ($campaign->type != 'plain-text')
 						@include('helpers.form_control', ['type' => 'checkbox',

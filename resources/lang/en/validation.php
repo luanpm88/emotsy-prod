@@ -187,6 +187,10 @@
         'required' => 'The Zip / Postal code is required.',
       ),
     ),
+    'ab_variables_not_selected' => 
+    array (
+      'required' => 'In an A/B test campaign, you need to divide the email subject lines, email content, or both.',
+    ),
   ),
   'date' => 'The :attribute is not a valid date.',
   'date_format' => 'The :attribute does not match the format :format.',

@@ -230,6 +230,8 @@ class CampaignController extends Controller
 
             // Check validation
             $this->validate($request, $campaign->rules($request));
+
+            // success
             $campaign->save();
 
             // Log
