@@ -3226,4 +3226,5 @@
   'campaign.ab.subject_lines' => 'Split subjects',
   'campaign.ab.split_email_content.wording' => 'Test two different templates to improve your click rates.',
   'campaign.ab.split_email_content' => 'Split email templates',
+  'campaign.tracking_settings' => 'Tracking settings',
 ) ?>

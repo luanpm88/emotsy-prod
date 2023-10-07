@@ -133,6 +133,7 @@
 				
 			</div>
 			<div class="col-md-5 segments-select-box">
+				<h3 class="mb-4">{{ trans('messages.campaign.tracking_settings') }}</h3>
 				<div class="form-group checkbox-right-switch">
 					@if ($campaign->type != 'plain-text')
 						@include('helpers.form_control', ['type' => 'checkbox',
