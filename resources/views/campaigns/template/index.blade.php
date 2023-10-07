@@ -19,7 +19,7 @@
     <div class="topfix-header bg-light">
         <div class="topfix-container border-bottom d-flex align-items-center shadow-sm py-3 mb-4">
             <div class="topfix-search text-center" style="width: 100%">
-                <div class="page-title">
+                <div class="page-title pt-0">
                     <ul class="breadcrumb breadcrumb-caret position-right">
                         <li class="breadcrumb-item"><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
                         <li class="breadcrumb-item"><a href="{{ action("CampaignController@index") }}">{{ trans('messages.campaigns') }}</a></li>
