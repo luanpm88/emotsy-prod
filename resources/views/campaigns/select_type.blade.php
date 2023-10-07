@@ -10,58 +10,64 @@
         <li class="breadcrumb-item"><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
         <li class="breadcrumb-item"><a href="{{ action("CampaignController@index") }}">{{ trans('messages.campaigns') }}</a></li>
     </ul>
-    <h1>
-        <span class="text-semibold"><span class="material-symbols-rounded">schedule</span> {{ trans('messages.select_campaign_type') }}</span>
-    </h1>
 </div>
 @endsection
 
 @section('content')
 <div class="row">
+    <div class="col-md-2"></div>
     <div class="col-md-8">
-        <ul class="modern-listing big-icon no-top-border-list mt-0">
+        <h2 class="text-center mb-2">
+            <span class="text-semibold">
+                {{ trans('messages.select_campaign_type') }}
+            </span>
+        </h2>
+        <p class="text-center mb-4 pb-2 px-5">{{ trans('messages.campaign.select_type.wording') }}</p>
+        <ul class="modern-listsing big-icon mt-0 pb-4 px-0 border-top">
             @foreach (Acelle\Model\Campaign::types() as $key => $type)
-                <li class="py-3">
-                    <a href="{{ action("CampaignController@create", ["type" => $key]) }}" class="btn btn-primary">{{ trans('messages.choose') }}</a>
-                    <div class="d-flex pe-4">
-                        <a href="{{ action("CampaignController@create", ["type" => $key]) }}">
-                            <span class="pt-1 d-block">
-                                <img width="40px" class="icon-img d-inline-block me-4" src="{{ url('images/icons/'.$key.'.svg') }}" />
-                            </span>
-                        </a>
+                <li class="d-flex align-items-center py-4 border-bottom box-shadow-sm">
+                    <a href="{{ action("CampaignController@create", ["type" => $key]) }}">
+                        <span class="d-block">
+                            <img width="45px" class="icon-img d-inline-block me-4" src="{{ url('images/icons/'.$key.'.svg') }}" />
+                        </span>
+                    </a>
+                    <div class="d-flex pe-5 ps-2">
                         <div>
                             <h4 class="mb-1"><a href="{{ action("CampaignController@create", ["type" => $key]) }}">{{ trans('messages.' . $key) }}</a></h4>
-                            <p>
+                            <p class="mb-0">
                                 {{ trans('messages.campaign_intro_' . $key) }}
                             </p>
                         </div>
                     </div>
+                    <div class="ms-auto">
+                        <a href="{{ action("CampaignController@create", ["type" => $key]) }}" class="btn btn-primary">{{ trans('messages.choose') }}</a>
+                    </div>
                 </li>
             @endforeach
 
-            <li class="py-3">
-                <a link-method="POST" href="{{ action("CampaignABController@create") }}" class="btn btn-primary">{{ trans('messages.choose') }}</a>
-                <div class="d-flex pe-4">
-                    <a href="{{ action("CampaignABController@create") }}">
-                        <span class="pt-1 d-block">
-                            <img width="40px" class="icon-img d-inline-block me-4" src="{{ url('images/icons/ab-test.svg') }}" />
-                        </span>
-                    </a>
+            <li class="d-flex align-items-center pt-4 box-shadow-sm">
+                <a href="{{ action("CampaignABController@create") }}">
+                    <span class="d-block">
+                        <img width="45px" class="icon-img d-inline-block me-4" src="{{ url('images/icons/ab-test.svg') }}" />
+                    </span>
+                </a>
+                <div class="d-flex pe-5 ps-2">
                     <div>
-                        <h4 class="mb-1"><a href="{{ action("CampaignABController@create") }}">{{ trans('messages.campaign.ab.title') }}</a></h4>
-                        <p>
+                        <h4 class="mb-1"><a href="{{ action("CampaignABController@create") }}">{{ trans('messages.campaign.type.ab-test') }}</a></h4>
+                        <p class="mb-0">
                             {{ trans('messages.campaign.ab.intro') }}
                         </p>
                     </div>
                 </div>
-                    
+                <div class="ms-auto">
+                    <a link-method="POST" href="{{ action("CampaignABController@create") }}" class="btn btn-primary">{{ trans('messages.choose') }}</a>
+                </div>
             </li>
 
         </ul>
-        <hr>
-        <div class="">
-            <a href="{{ action('CampaignController@index') }}" role="button" class="btn btn-secondary">
-                <i class="icon-cross2"></i> {{ trans('messages.cancel') }}
+        <div class="mt-4">
+            <a href="{{ action('CampaignController@index') }}" role="button" class="btn btn-light">
+                <i class="icon-cross2"></i> {{ trans('messages.return_back') }}
             </a>
         </div>
     </div>

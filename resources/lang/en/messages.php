@@ -796,7 +796,7 @@
   'campaign_clicks' => 'Campaign clicks',
   'campaign_default_list_help' => 'A default list is required if you select more than one list. The campaign will use the default list information to translate TAGS found in email content.',
   'campaign_empty_line_1' => 'You have no campaign',
-  'campaign_intro_plain-text' => 'Send a plain-text email without link tracking, images, or HTML.',
+  'campaign_intro_plain-text' => 'Deliver an email in plain text format, excluding link tracking, images, or HTML.',
   'campaign_intro_regular' => 'Campaign with HTML email content as well as images, links. This is the most common type.',
   'campaign_open_click_rate_intro' => 'Open rate is a measure that tells you how many delivered emails were opened by subscribers.Click rate is a measure of how many people clicked on one of the links in your email campaign.',
   'campaign_opens' => 'Campaign opens',
@@ -3225,4 +3225,5 @@
   'campaign.ab.split_email_content.wording' => 'Optimize your click rates by testing out two different email templates.',
   'campaign.ab.split_email_content' => 'Split email templates',
   'campaign.tracking_settings' => 'Tracking settings',
+  'campaign.select_type.wording' => 'When setting up an email campaign, you\'ll need to choose from three main types: general, plain text, and A/B test campaigns. Each type serves different purposes, so let\'s take a closer look at what they entail and when to use them.',
 ) ?>
