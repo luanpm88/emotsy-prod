@@ -67,6 +67,11 @@ class Website extends Model
     public static function getTitleFromUrl($url)
     {
         $content = url_get_contents_ssl_safe($url);
+        $emptyTitle = 'N/A';
+        if (empty($content)) {
+            // empty
+            return $emptyTitle;
+        }
 
         $document = new \DOMDocument();
         $document->encoding = 'utf-8';
@@ -78,7 +83,7 @@ class Website extends Model
             throw new \Exception(trans('messages.website.title.not_found'));
         }
 
-        return $tags[0]->textContent;
+        return $tags[0]->textContent ?: $emptyTitle;
     }
 
     public function scopeSearch($query, $keyword)
