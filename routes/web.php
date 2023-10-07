@@ -889,6 +889,9 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     // Media
     Route::resource('store/media', 'Store\MediaController');
 
+    // ABCampaign
+    Route::post('campaigns-ab/create', 'ABCampaignController@create');
+
 });
 
 // ADMIN AREA

@@ -3208,4 +3208,8 @@
   'your_api_token' => 'Your API token',
   'your_current_license' => 'Thank you for purchasing! Below is your license key, also known as Purchase Code. Your license type is',
   'zip_postal_code' => 'Zip / Postal code',
+  'campaign.ab.title' => 'A/B Test',
+  'campaign.ab.intro' => 'Choose a variable to test. Half of the test group will
+    receive version A and the other half will receive version B. The winning version
+    will be determined by the highest open or click rate and will be sent to the remaining recipients.',
 ) ?>

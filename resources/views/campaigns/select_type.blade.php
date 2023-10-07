@@ -21,9 +21,8 @@
     <div class="col-md-8">
         <ul class="modern-listing big-icon no-top-border-list mt-0">
             @foreach (Acelle\Model\Campaign::types() as $key => $type)
-
-                <li>
-                    <a href="{{ action("CampaignController@create", ["type" => $key]) }}" class="btn btn-secondary">{{ trans('messages.choose') }}</a>
+                <li class="py-3">
+                    <a href="{{ action("CampaignController@create", ["type" => $key]) }}" class="btn btn-primary">{{ trans('messages.choose') }}</a>
                     <div class="d-flex pe-4">
                         <a href="{{ action("CampaignController@create", ["type" => $key]) }}">
                             <span class="pt-1 d-block">
@@ -41,12 +40,29 @@
                             </p>
                         </div>
                     </div>
-                        
                 </li>
-
             @endforeach
 
+            <li class="py-3">
+                <a href="{{ action("ABCampaignController@create") }}" class="btn btn-primary">{{ trans('messages.choose') }}</a>
+                <div class="d-flex pe-4">
+                    <a href="{{ action("ABCampaignController@create") }}">
+                        <span class="pt-1 d-block">
+                            <img width="40px" class="icon-img d-inline-block me-4" src="{{ url('images/icons/ab_test.svg') }}" />
+                        </span>
+                    </a>
+                    <div>
+                        <h4 class="mb-1"><a href="{{ action("ABCampaignController@create") }}">{{ trans('messages.campaign.ab.title') }}</a></h4>
+                        <p>
+                            {{ trans('messages.campaign.ab.intro') }}
+                        </p>
+                    </div>
+                </div>
+                    
+            </li>
+
         </ul>
+        <hr>
         <div class="">
             <a href="{{ action('CampaignController@index') }}" role="button" class="btn btn-secondary">
                 <i class="icon-cross2"></i> {{ trans('messages.cancel') }}
