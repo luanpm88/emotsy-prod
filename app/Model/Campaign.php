@@ -137,8 +137,14 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
         // ab test rule
         if ($this->isABTest()) {
             if (isset($request)) {
+                // AB campaign should split either subjet or content
                 if (!$request->ab_split_subject && !$request->ab_split_content) {
                     $rules['ab_variables_not_selected'] = 'required';
+                }
+
+                // split subject require subject b
+                if ($request->ab_split_subject && !$request->subject_b) {
+                    $rules['subject_b'] = 'required';
                 }
             }
         }

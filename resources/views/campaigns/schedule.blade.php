@@ -22,11 +22,12 @@
                         <li class="breadcrumb-item"><a href="{{ action("CampaignController@index") }}">{{ trans('messages.campaigns') }}</a></li>
                     </ul>
                 </div>
-                <h3 class="mb-0 mb-3">
+                <h3 class="mb-0 mb-3 d-flex align-items-center justify-content-center">
                     <span class="text-semibold">
                         <img width="25px" class="icon-img d-inline-block me-2" src="{{ url('images/icons/'.$campaign->type.'.svg') }}" />
                         <span>{{ $campaign->name }}</span>
                     </span>
+                    <span class="text-center text-muted badge badge-info ms-2">{{ trans('messages.campaign.type.' . $campaign->type) }}</span>
                 </h3>
                 @include('campaigns._steps', ['current' => 4])
             </div>

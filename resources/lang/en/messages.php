@@ -3208,23 +3208,21 @@
   'your_api_token' => 'Your API token',
   'your_current_license' => 'Thank you for purchasing! Below is your license key, also known as Purchase Code. Your license type is',
   'zip_postal_code' => 'Zip / Postal code',
-  'campaign.ab.title' => 'A/B Test',
-  'campaign.ab.intro' => 'Choose a variable to test. Half of the test group will
-    receive version A and the other half will receive version B. The winning version
-    will be determined by the highest open or click rate and will be sent to the remaining recipients.',
-  'campaign.design' => 'Design',
-  'campaign.ab.email_subject.wording' => 'Write subject lines that clearly describe your content and test only one variable per A/B test. For example, try testing whether changing your subject line length or phrasing it as a question improves your results.',
-  'campaign.ab.welcome.title' => 'Welcome to A/B test campaigns',
-  'campaign.ab.welcome.content' => '<p>Choose a variable to test. Half of the test
-    group will receive version A and the other half will receive version B.
-    The winning version will be determined by the highest open or click rate
-    and will be sent to the remaining recipients.</p>
-    <p>To have significant test results, we recommend including at least
-    5,000 recipients in each test group whom you have contacted previously.</p>',
+  'campaign.type.ab-test' => 'A/B Test',
+  'campaign.type.plain-text' => 'Plain text',
+  'campaign.type.general' => 'General',
+  'campaign.ab.intro' => 'Select a variable for experimentation. Split your test group into two equal parts, with one receiving version A and the other receiving version B. The version that achieves the highest open or click rate will be chosen as the winner and sent to the remaining recipients.',
+  'campaign.ab.email_subject.wording' => 'Craft subject lines that provide a clear description of your content and focus on testing only one variable in each A/B test. For instance, you can experiment with variations such as subject line length or framing it as a question to assess their impact on your results.',
+  'campaign.ab.welcome.title' => 'Get ready to explore A/B testing campaigns.',
+  'campaign.ab.welcome.content' => '<p class="mb-2">To achieve statistically significant test results,
+    it\'s advisable to have a minimum of 5,000 recipients in each test group, all of
+    whom you\'ve previously contacted.</p>
+    <p>Begin by selecting a variable to test, then split your audience in half, sending version
+    A to one half and version B to the other. The winning version, based on the highest open or click rate, will be rolled out to the remaining recipients.</p>',
   'campaign.ab.variables' => 'A/B Variables',
-  'campaign.ab.split_subject.wording' => 'Bust inferent subject lines to improve your email open rates.',
+  'campaign.ab.split_subject.wording' => 'Unravel the secrets of compelling subject lines for higher email open rates.',
   'campaign.ab.subject_lines' => 'Split subjects',
-  'campaign.ab.split_email_content.wording' => 'Test two different templates to improve your click rates.',
+  'campaign.ab.split_email_content.wording' => 'Optimize your click rates by testing out two different email templates.',
   'campaign.ab.split_email_content' => 'Split email templates',
   'campaign.tracking_settings' => 'Tracking settings',
 ) ?>
