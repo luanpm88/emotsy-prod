@@ -16,16 +16,24 @@
 
 @section('page_header')
     
-    <div class="page-title">
-        <ul class="breadcrumb breadcrumb-caret position-right">
-            <li class="breadcrumb-item"><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
-            <li class="breadcrumb-item"><a href="{{ action("CampaignController@index") }}">{{ trans('messages.campaigns') }}</a></li>
-        </ul>
-        <h1>
-            <span class="text-semibold"><span class="material-symbols-rounded me-2">forward_to_inbox</span> {{ $campaign->name }}</span>
-        </h1>
-
-        @include('campaigns._steps', ['current' => 3])
+    <div class="topfix-header bg-light">
+        <div class="topfix-container border-bottom d-flex align-items-center shadow-sm py-3 mb-4">
+            <div class="topfix-search text-center" style="width: 100%">
+                <div class="page-title">
+                    <ul class="breadcrumb breadcrumb-caret position-right">
+                        <li class="breadcrumb-item"><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+                        <li class="breadcrumb-item"><a href="{{ action("CampaignController@index") }}">{{ trans('messages.campaigns') }}</a></li>
+                    </ul>
+                </div>
+                <h3 class="mb-0 mb-3">
+                    <span class="text-semibold">
+                        <img width="25px" class="icon-img d-inline-block me-2" src="{{ url('images/icons/'.$campaign->type.'.svg') }}" />
+                        <span>{{ $campaign->name }}</span>
+                    </span>
+                </h3>
+                @include('campaigns._steps', ['current' => 3])
+            </div>
+        </div>
     </div>
 
 @endsection
@@ -33,7 +41,7 @@
 @section('content')
     <div class="row">
         <div class="col-md-10 mb-0">
-            <h2 class="mt-0 mb-3">{{ trans('messages.campaign.content_management') }}</h2>
+            <h1 class="mt-0 mb-3">{{ trans('messages.campaign.content_management') }}</h1>
             <div class="sub-section d-flex">
                 <div class=" mr-auto pr-2">                    
                     <p>{{ trans('messages.campaign.email_content.intro') }}</p>

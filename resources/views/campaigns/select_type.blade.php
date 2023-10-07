@@ -26,11 +26,7 @@
                     <div class="d-flex pe-4">
                         <a href="{{ action("CampaignController@create", ["type" => $key]) }}">
                             <span class="pt-1 d-block">
-                                @if ($key == 'regular')
-                                    <img width="40px" class="icon-img d-inline-block me-4" src="{{ url('images/icons/regular.svg') }}" />
-                                @elseif ($key == 'plain-text')
-                                    <img width="40px" class="icon-img d-inline-block me-4" src="{{ url('images/icons/plain.svg') }}" />
-                                @endif
+                                <img width="40px" class="icon-img d-inline-block me-4" src="{{ url('images/icons/'.$key.'.svg') }}" />
                             </span>
                         </a>
                         <div>
@@ -48,7 +44,7 @@
                 <div class="d-flex pe-4">
                     <a href="{{ action("ABCampaignController@create") }}">
                         <span class="pt-1 d-block">
-                            <img width="40px" class="icon-img d-inline-block me-4" src="{{ url('images/icons/ab_test.svg') }}" />
+                            <img width="40px" class="icon-img d-inline-block me-4" src="{{ url('images/icons/ab-test.svg') }}" />
                         </span>
                     </a>
                     <div>

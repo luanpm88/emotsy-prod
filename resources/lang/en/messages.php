@@ -3212,4 +3212,5 @@
   'campaign.ab.intro' => 'Choose a variable to test. Half of the test group will
     receive version A and the other half will receive version B. The winning version
     will be determined by the highest open or click rate and will be sent to the remaining recipients.',
+  'campaign.design' => 'Design',
 ) ?>
