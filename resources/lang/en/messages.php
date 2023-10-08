@@ -3243,4 +3243,9 @@
   'campaign.ab.split.how_long_run.intro' => 'Determine the test duration; the winning version will be sent once the test concludes.',
   'campaign.ab.recommendded_recipients' => 'We recommend a minimum of 5,000 recipients.',
   'campaign.ab.winning_version.none.intro' => 'With this configuration, there won\'t be a winning version. The entire campaign will be sent all at once, with each version going to half of your selected recipients',
+  'campaign.ab.test_group_size' => 'Test Group Size',
+  'campaign.ab.choose_winning_version' => 'Choosing the Winning Version',
+  'campaign.ab.duration_test' => 'Duration of the Test',
+  'campaign.ab.duration_test.value' => ':value :unit',
+  'interval.hour' => ':count hour|:count hours',
 ) ?>

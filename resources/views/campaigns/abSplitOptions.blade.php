@@ -52,6 +52,14 @@
         </div>
 
         <div class="mb-5">
+            @if ($reciepientsCount < 5000)
+                <div class="d-flex justify-content-center mb-4">
+                    <div class="alert alert-info alert-center pe-4">
+                        <p>{{ trans('messages.campaign.ab.recommendded_recipients') }}</p>
+                    </div>
+                </div>
+            @endif
+
             <div split-control="container" class="position-relative">
                 <div class="d-flex border" style="width:100%;">
                     <div split-control="a-box" style="width:25%;" class="border-end">
@@ -102,16 +110,6 @@
             <div ab-control="winning-none" class="my-4">
                 <p>{{ trans('messages.campaign.ab.winning_version.none.intro') }}</p>
             </div>
-    
-
-            @if ($reciepientsCount < 5000)
-                <div class="d-flex justify-content-center mt-4">
-                    <div class="alert alert-info alert-center pe-4">
-                        <p>{{ trans('messages.campaign.ab.recommendded_recipients') }}</p>
-                    </div>
-                </div>
-            @endif
-
         </div>
         
         <div ab-control="winning-option">

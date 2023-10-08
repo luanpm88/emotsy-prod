@@ -2585,7 +2585,20 @@ class CampaignController extends Controller
 
         // Save posted data
         if ($request->isMethod('post')) {
-            
+            // validate
+            $errors = $campaign->saveABSplitOptions($request->all());
+
+            // error
+            if (!$errors->isEmpty()) {
+                return response()->view('campaigns.abSplitOptions', [
+                    'campaign' => $campaign,
+                    'reciepientsCount' => $campaign->subscribersCount(),
+                    'errors' => $errors,
+                ], 400);
+            }
+
+            // success
+            return redirect()->action('CampaignController@schedule', ['uid' => $campaign->uid]);
         }
 
         return view('campaigns.abSplitOptions', [

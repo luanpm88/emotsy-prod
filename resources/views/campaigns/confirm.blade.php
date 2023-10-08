@@ -43,7 +43,7 @@
             <ul class="modern-listing">
                 @if (!is_null($score))
 
-                    <li class="d-flex align-items-center">
+                    <li class="d-flex">
                         <!-- {{ $count = $campaign->subscribersCount() }} -->
 
                         <span class="fs-4 me-4">
@@ -69,10 +69,12 @@
                             </p> 
                         </div>
 
-                        <a href="{{ action('CampaignController@recipients', $campaign->uid) }}" class="btn btn-secondary">{{ trans('messages.edit') }}</a>
+                        <div>
+                            <a href="{{ action('CampaignController@recipients', $campaign->uid) }}" class="btn btn-secondary">{{ trans('messages.edit') }}</a>
+                        </div>
                     </li>
                 @endif
-                <li class="d-flex align-items-center">
+                <li class="d-flex">
                     
                     <!-- {{ $count = $campaign->subscribersCount() }} -->
 
@@ -90,10 +92,12 @@
                         </p>
                     </div>
 
-                    <a href="{{ action('CampaignController@recipients', $campaign->uid) }}" class="btn btn-secondary">{{ trans('messages.edit') }}</a>
+                    <div>
+                        <a href="{{ action('CampaignController@recipients', $campaign->uid) }}" class="btn btn-secondary">{{ trans('messages.edit') }}</a>
+                    </div>
                 </li>
 
-                <li class="d-flex align-items-center">
+                <li class="d-flex">
                     <span class="fs-4 me-4">
                         <i class="material-symbols-rounded text-success">task_alt</i>
                     </span>
@@ -104,10 +108,12 @@
                         </p>    
                     </div>
 
-                    <a href="{{ action('CampaignController@recipients', $campaign->uid) }}" class="btn btn-secondary">{{ trans('messages.edit') }}</a>
+                    <div>
+                        <a href="{{ action('CampaignController@recipients', $campaign->uid) }}" class="btn btn-secondary">{{ trans('messages.edit') }}</a>
+                    </div>
                 </li>
 
-                <li class="d-flex align-items-center">
+                <li class="d-flex">
                     <span class="fs-4 me-4">
                         <i class="material-symbols-rounded text-success">task_alt</i>
                     </span>
@@ -118,10 +124,16 @@
                         </p>   
                     </div>
 
-                    <a href="{{ action('CampaignController@setup', $campaign->uid) }}" class="btn btn-secondary">{{ trans('messages.edit') }}</a>
+                    <div>
+                        <a href="{{ action('CampaignController@setup', $campaign->uid) }}" class="btn btn-secondary">{{ trans('messages.edit') }}</a>
+                    </div>
                 </li>
 
-                <li class="d-flex align-items-center">
+                @if ($campaign->isABTest())
+                    @include('campaigns.ab._confirm')
+                @endif
+
+                <li class="d-flex">
                     <span class="fs-4 me-4">
                         <i class="material-symbols-rounded text-success">task_alt</i>
                     </span>
@@ -137,7 +149,9 @@
                         </p>
                     </div>
 
-                    <a href="{{ action('CampaignController@setup', $campaign->uid) }}" class="btn btn-secondary">{{ trans('messages.edit') }}</a>
+                    <div>
+                        <a href="{{ action('CampaignController@setup', $campaign->uid) }}" class="btn btn-secondary">{{ trans('messages.edit') }}</a>
+                    </div>
                 </li>
 
                 <li class="d-flex align-items-center confirm-webhooks-summary">
@@ -154,7 +168,9 @@
                         </p>
                     </div>
 
-                    <a href="javascript:;" class="btn btn-secondary manage_webhooks_but">{{ trans('messages.webhooks.manage') }}</a>
+                    <div>
+                        <a href="javascript:;" class="btn btn-secondary manage_webhooks_but">{{ trans('messages.webhooks.manage') }}</a>
+                    </div>
 
                     <script>
                         $(function() {
@@ -169,7 +185,7 @@
                 </li>
 
                 @if (!$campaign->run_at)
-                    <li class="d-flex align-items-center">
+                    <li class="d-flex">
                         <span class="fs-4 me-4">
                             <i class="material-symbols-rounded text-success">task_alt</i>
                         </span>
@@ -183,7 +199,7 @@
                         <a href="{{ action('CampaignController@setup', $campaign->uid) }}" class="btn btn-secondary">{{ trans('messages.edit') }}</a>
                     </li>
                 @else
-                    <li class="d-flex align-items-center">
+                    <li class="d-flex">
                         <span class="fs-4 me-4">
                             <i class="material-symbols-rounded text-muted2">alarm</i>
                         </span>
@@ -194,7 +210,9 @@
                             </p>
                         </div>
 
-                        <a href="{{ action('CampaignController@setup', $campaign->uid) }}" class="btn btn-secondary">{{ trans('messages.edit') }}</a>
+                        <div>
+                            <a href="{{ action('CampaignController@setup', $campaign->uid) }}" class="btn btn-secondary">{{ trans('messages.edit') }}</a>
+                        </div>
                     </li>
                 @endif
             </ul>

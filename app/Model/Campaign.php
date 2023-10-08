@@ -2757,4 +2757,42 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
     {
         return $this->type == self::TYPE_AB_TEST;
     }
+
+    public function saveABSplitOptions($params)
+    {
+        $rules = [
+            'ab_winning_percent' => 'required',
+            'ab_winning_metric' => 'required',
+        ];
+
+        // 
+        if ($params['ab_winning_percent'] > 0) {
+            $rules = array_merge($rules, [
+                'ab_test_duration_value' => 'required',
+                'ab_test_duration_unit' => 'required',
+            ]);
+        }
+
+        // validate
+        $validator = \Validator::make($params, $rules);
+
+        // failed
+        if ($validator->fails()) {
+            return $validator->errors();
+        }
+
+        //
+        $this->ab_winning_percent = $params['ab_winning_percent'];
+        $this->ab_winning_metric = $params['ab_winning_metric'];
+        $this->ab_test_duration_value = $params['ab_test_duration_value'] ?? 1;
+        $this->ab_test_duration_unit = $params['ab_test_duration_unit'] ?? 'hour';
+        $this->save();
+
+        return $validator->errors();
+    }
+
+    public function getABpercent()
+    {
+        return (100 - $this->ab_winning_percent)/2;
+    }
 }
