@@ -33,7 +33,7 @@
                     </a>
                     <div class="d-flex pe-5 ps-2">
                         <div>
-                            <h4 class="mb-1"><a href="{{ action("CampaignController@create", ["type" => $key]) }}">{{ trans('messages.' . $key) }}</a></h4>
+                            <h4 class="mb-1"><a href="{{ action("CampaignController@create", ["type" => $key]) }}">{{ trans('messages.campaign.type.' . $key) }}</a></h4>
                             <p class="mb-0">
                                 {{ trans('messages.campaign_intro_' . $key) }}
                             </p>
@@ -44,26 +44,6 @@
                     </div>
                 </li>
             @endforeach
-
-            <li class="d-flex align-items-center pt-4 box-shadow-sm">
-                <a href="{{ action("CampaignABController@create") }}">
-                    <span class="d-block">
-                        <img width="45px" class="icon-img d-inline-block me-4" src="{{ url('images/icons/ab-test.svg') }}" />
-                    </span>
-                </a>
-                <div class="d-flex pe-5 ps-2">
-                    <div>
-                        <h4 class="mb-1"><a href="{{ action("CampaignABController@create") }}">{{ trans('messages.campaign.type.ab-test') }}</a></h4>
-                        <p class="mb-0">
-                            {{ trans('messages.campaign.ab.intro') }}
-                        </p>
-                    </div>
-                </div>
-                <div class="ms-auto">
-                    <a link-method="POST" href="{{ action("CampaignABController@create") }}" class="btn btn-primary">{{ trans('messages.choose') }}</a>
-                </div>
-            </li>
-
         </ul>
         <div class="mt-4">
             <a href="{{ action('CampaignController@index') }}" role="button" class="btn btn-light">

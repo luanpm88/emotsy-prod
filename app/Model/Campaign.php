@@ -473,9 +473,13 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
             return $step;
         }
 
-        // Step 3
+        // Step 3: has template
         if (($this->template || $this->type == 'plain-text') && !empty($this->plain)) {
-            $step = 3;
+            // if ($this->isABTest() && $this->template_b) {
+                $step = 3;
+            // } else {
+            //     return $step;
+            // }
         } else {
             return $step;
         }
@@ -1136,6 +1140,9 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
             ],
             'plain-text' => [
                 'icon' => 'wysiwyg',
+            ],
+            'ab-test' => [
+                'icon' => '',
             ],
         ];
     }

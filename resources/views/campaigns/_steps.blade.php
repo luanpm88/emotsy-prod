@@ -16,6 +16,14 @@
             <span class="material-symbols-rounded">auto_awesome_mosaic</span> {{ trans('messages.template') }}
         </a>
     </li>
+    @if ($campaign->isABTest())
+        <li class="nav-item {{ $campaign->step() > 2 ? "" : "disabled" }}">
+            <span class="material-symbols-rounded mx-3 text-muted2" style="font-size:11px;">arrow_forward_ios</span>
+            <a class="nav-link pb-1 fs-7 bg-transparent {{ $current == 'ab' ? "active" : "" }} me-0" href="{{ action('CampaignController@abSplitOptions', $campaign->uid) }}">
+                <span class="material-symbols-rounded">splitscreen_right</span> {{ trans('messages.campaign.ab.split_options') }}
+            </a>
+        </li>
+    @endif
     <li class="nav-item {{ $campaign->step() > 2 ? "" : "disabled" }}">
         <span class="material-symbols-rounded mx-3 text-muted2" style="font-size:11px;">arrow_forward_ios</span>
         <a class="nav-link pb-1 fs-7 bg-transparent {{ $current == 4 ? "active" : "" }} me-0" href="{{ action('CampaignController@schedule', $campaign->uid) }}">

@@ -2573,4 +2573,24 @@ class CampaignController extends Controller
             'message' => trans('messages.preheader.removed'),
         ]);
     }
+
+    public function abSplitOptions(Request $request)
+    {
+        $campaign = Campaign::findByUid($request->uid);
+
+        // authorize
+        if (\Gate::denies('update', $campaign)) {
+            return $this->notAuthorized();
+        }
+
+        // Save posted data
+        if ($request->isMethod('post')) {
+            
+        }
+
+        return view('campaigns.abSplitOptions', [
+            'campaign' => $campaign,
+            'reciepientsCount' => $campaign->subscribersCount(),
+        ]);
+    }
 }

@@ -42,7 +42,12 @@
 @section('content')
     <div class="row">
         <div class="col-md-10 mb-0">
-            <h1 class="mt-0 mb-3">{{ trans('messages.campaign.content_management') }}</h1>
+            @if ($campaign->isABTest())
+                @include('campaigns.ab._template_variations')
+            @endif
+            
+            <h3 class="mt-4">{{ trans('messages.campaign.email_content') }}</h3>  
+
             <div class="sub-section d-flex">
                 <div class=" mr-auto pr-2">                    
                     <p>{{ trans('messages.campaign.email_content.intro') }}</p>
