@@ -1,5 +1,8 @@
 <div class="form-group">
     <label for=""><strong>{{ trans('messages.campaign.ab.variables') }}</strong></label>
+    @if ($errors->has('ab_variables_not_selected'))
+        <p class="text-danger small mb-2">{{ $errors->first('ab_variables_not_selected') }}</p>
+    @endif
     <div>
         <div class="d-flex ps-2 ms-1">
             <div class="pt-1">
@@ -30,8 +33,4 @@
             </div>
         </div>
     </div>
-
-    @if ($errors->has('ab_variables'))
-        <div class="alert alert-danger">asdasd</div>
-    @endif
 </div>

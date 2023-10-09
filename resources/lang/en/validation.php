@@ -189,7 +189,7 @@
     ),
     'ab_variables_not_selected' => 
     array (
-      'required' => 'In an A/B test campaign, you need to divide the email subject lines, email content, or both.',
+      'required' => 'In an A/B test campaign, you need to split the email subjects, email templates, or both.',
     ),
   ),
   'date' => 'The :attribute is not a valid date.',
