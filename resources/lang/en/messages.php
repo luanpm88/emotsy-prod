@@ -3248,4 +3248,5 @@
   'campaign.ab.duration_test' => 'Duration of the Test',
   'campaign.ab.duration_test.value' => ':value :unit',
   'interval.hour' => ':count hour|:count hours',
+  'campaign.ab.template.not_setup_yet' => 'Not setup yet',
 ) ?>

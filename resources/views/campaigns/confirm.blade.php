@@ -97,21 +97,26 @@
                     </div>
                 </li>
 
-                <li class="d-flex">
-                    <span class="fs-4 me-4">
-                        <i class="material-symbols-rounded text-success">task_alt</i>
-                    </span>
-                    <div class="me-auto">
-                        <h4>{{ trans('messages.email_subject') }}</h4>
-                        <p>
-                            {{ $campaign->subject }}
-                        </p>    
-                    </div>
+                @if ($campaign->isABTest())
+                    @include('campaigns.ab._confirm_subject')
+                @else
+                    <li class="d-flex">
+                        <span class="fs-4 me-4">
+                            <i class="material-symbols-rounded text-success">task_alt</i>
+                        </span>
+                        <div class="me-auto">
+                            <h4>{{ trans('messages.email_subject') }}</h4>
 
-                    <div>
-                        <a href="{{ action('CampaignController@recipients', $campaign->uid) }}" class="btn btn-secondary">{{ trans('messages.edit') }}</a>
-                    </div>
-                </li>
+                            <p>
+                                {{ $campaign->subject }}
+                            </p>
+                        </div>
+
+                        <div>
+                            <a href="{{ action('CampaignController@recipients', $campaign->uid) }}" class="btn btn-secondary">{{ trans('messages.edit') }}</a>
+                        </div>
+                    </li>
+                @endif
 
                 <li class="d-flex">
                     <span class="fs-4 me-4">
@@ -130,7 +135,8 @@
                 </li>
 
                 @if ($campaign->isABTest())
-                    @include('campaigns.ab._confirm')
+                    @include('campaigns.ab._confirm_template')
+                    @include('campaigns.ab._confirm_split_options')
                 @endif
 
                 <li class="d-flex">
