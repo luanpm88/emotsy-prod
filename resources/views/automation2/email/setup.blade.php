@@ -152,7 +152,7 @@
 							<div class="d-flex">
 								<p>{{ trans('messages.webhooks.wording') }}</p>
 								<div class="ms-4">
-									<a href="javascript:;" class="btn btn-secondary manage_webhooks_but">
+									<a href="javascript:;" class="btn btn-default manage_webhooks_but">
 										{{ trans('messages.webhooks.manage') }}
 									</a>
 								</div>

@@ -23,7 +23,7 @@
                             onclick="popupwindow('{{ action('CampaignController@preview', $campaign->uid) }}', `{{ $campaign->name }}`, 800)"
                             href="javascript:;"
                             data-action="template-variation-box" for="template_variation_a" class="d-inline-block template-variation border p-3 rounded me-4 text-dark bg-white">
-                            <div class="mb-3">
+                            <div class="mb-2">
                                 <span class="ms-1 fw-semibold">{{ trans('messages.campaign.ab.version_a') }}</span>
                             </div>
                             <div>
@@ -42,7 +42,7 @@
                             onclick="popupwindow('{{ action('CampaignController@preview', $campaign->uid) }}', `{{ $campaign->name }}`, 800)"
                             href="javascript:;"
                             data-action="template-variation-box" for="template_variation_b" class="d-inline-block template-variation border p-3 rounded text-dark bg-white">
-                            <div class="mb-3">
+                            <div class="mb-2">
                                 <span class="ms-1 fw-semibold">{{ trans('messages.campaign.ab.version_b') }}</span>
                             </div>
                             <div>

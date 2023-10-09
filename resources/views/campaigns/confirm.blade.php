@@ -160,7 +160,7 @@
                     </div>
                 </li>
 
-                <li class="d-flex align-items-center confirm-webhooks-summary">
+                <li class="d-flex confirm-webhooks-summary">
                     <span class="fs-4 me-4">
                         <i class="material-symbols-rounded text-success">task_alt</i>
                     </span>
@@ -175,7 +175,7 @@
                     </div>
 
                     <div>
-                        <a href="javascript:;" class="btn btn-secondary manage_webhooks_but">{{ trans('messages.webhooks.manage') }}</a>
+                        <a href="javascript:;" class="btn btn-default manage_webhooks_but">{{ trans('messages.webhooks.manage') }}</a>
                     </div>
 
                     <script>
