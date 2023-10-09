@@ -7,7 +7,7 @@
             <div class="d-flex align-items-center">
                 <h4 class="me-auto">{{ trans('messages.email_subject') }}</h4>
                 <div>
-                    <a href="{{ action('CampaignController@recipients', $campaign->uid) }}" class="btn btn-secondary">{{ trans('messages.edit') }}</a>
+                    <a href="{{ action('CampaignController@recipients', $campaign->uid) }}" class="btn btn-default">{{ trans('messages.campaign.back_to_step') }}</a>
                 </div>
             </div>
         </div>

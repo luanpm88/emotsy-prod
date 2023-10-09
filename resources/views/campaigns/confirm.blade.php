@@ -70,7 +70,7 @@
                         </div>
 
                         <div>
-                            <a href="{{ action('CampaignController@recipients', $campaign->uid) }}" class="btn btn-secondary">{{ trans('messages.edit') }}</a>
+                            <a href="{{ action('CampaignController@recipients', $campaign->uid) }}" class="btn btn-default">{{ trans('messages.campaign.back_to_step') }}</a>
                         </div>
                     </li>
                 @endif
@@ -93,7 +93,7 @@
                     </div>
 
                     <div>
-                        <a href="{{ action('CampaignController@recipients', $campaign->uid) }}" class="btn btn-secondary">{{ trans('messages.edit') }}</a>
+                        <a href="{{ action('CampaignController@recipients', $campaign->uid) }}" class="btn btn-default">{{ trans('messages.campaign.back_to_step') }}</a>
                     </div>
                 </li>
 
@@ -113,7 +113,7 @@
                         </div>
 
                         <div>
-                            <a href="{{ action('CampaignController@recipients', $campaign->uid) }}" class="btn btn-secondary">{{ trans('messages.edit') }}</a>
+                            <a href="{{ action('CampaignController@recipients', $campaign->uid) }}" class="btn btn-default">{{ trans('messages.campaign.back_to_step') }}</a>
                         </div>
                     </li>
                 @endif
@@ -130,7 +130,7 @@
                     </div>
 
                     <div>
-                        <a href="{{ action('CampaignController@setup', $campaign->uid) }}" class="btn btn-secondary">{{ trans('messages.edit') }}</a>
+                        <a href="{{ action('CampaignController@setup', $campaign->uid) }}" class="btn btn-default">{{ trans('messages.campaign.back_to_step') }}</a>
                     </div>
                 </li>
 
@@ -156,7 +156,7 @@
                     </div>
 
                     <div>
-                        <a href="{{ action('CampaignController@setup', $campaign->uid) }}" class="btn btn-secondary">{{ trans('messages.edit') }}</a>
+                        <a href="{{ action('CampaignController@setup', $campaign->uid) }}" class="btn btn-default">{{ trans('messages.campaign.back_to_step') }}</a>
                     </div>
                 </li>
 
@@ -202,7 +202,7 @@
                             </p>
                         </div>
 
-                        <a href="{{ action('CampaignController@setup', $campaign->uid) }}" class="btn btn-secondary">{{ trans('messages.edit') }}</a>
+                        <a href="{{ action('CampaignController@setup', $campaign->uid) }}" class="btn btn-default">{{ trans('messages.campaign.back_to_step') }}</a>
                     </li>
                 @else
                     <li class="d-flex">
@@ -217,7 +217,7 @@
                         </div>
 
                         <div>
-                            <a href="{{ action('CampaignController@setup', $campaign->uid) }}" class="btn btn-secondary">{{ trans('messages.edit') }}</a>
+                            <a href="{{ action('CampaignController@setup', $campaign->uid) }}" class="btn btn-default">{{ trans('messages.campaign.back_to_step') }}</a>
                         </div>
                     </li>
                 @endif
