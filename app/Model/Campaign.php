@@ -2795,4 +2795,19 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
     {
         return (100 - $this->ab_winning_percent)/2;
     }
+
+    public function abGetVersionABPercent()
+    {
+        return (100 - $this->ab_winning_percent)/2;
+    }
+
+    public function abGetApproxRecipientsABVersion()
+    {
+        return $this->subscribersCount()*($this->abGetVersionABPercent()/100);
+    }
+
+    public function abGetApproxRecipientsWinningVersion()
+    {
+        return $this->ab_winning_percent*($this->abGetVersionABPercent()/100);
+    }
 }

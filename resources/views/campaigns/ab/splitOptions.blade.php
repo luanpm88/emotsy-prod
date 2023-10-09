@@ -54,7 +54,7 @@
         <div class="mb-5">
             @if ($reciepientsCount < 5000)
                 <div class="d-flex justify-content-center mb-4">
-                    <div class="alert alert-info alert-center pe-4">
+                    <div class="alert alert-info bg-white alert-center pe-4 border text-dark">
                         <p>{{ trans('messages.campaign.ab.recommendded_recipients') }}</p>
                     </div>
                 </div>
@@ -62,7 +62,7 @@
 
             <div split-control="container" class="position-relative">
                 <div class="d-flex border" style="width:100%;">
-                    <div split-control="a-box" style="width:25%;" class="border-end">
+                    <div split-control="a-box" style="width:25%;" class="border-end bg-gradient bg-info bg-opacity-10">
                         <div class="text-center p-3">
                             <div class="text-truncate">
                                 <strong>{{ trans('messages.campaign.ab.version_a') }}</strong>
@@ -75,7 +75,7 @@
                             </div>
                         </div>
                     </div>
-                    <div split-control="b-box" style="width:25%;" class="border-end">
+                    <div split-control="b-box" style="width:25%;" class="border-end bg-gradient bg-info bg-opacity-10">
                         <div class="text-center p-3">
                             <div class="text-truncate">
                                 <strong>{{ trans('messages.campaign.ab.version_b') }}</strong>
@@ -91,7 +91,7 @@
                     <div split-control="anchor" style="position: absolute;left:calc(50% - 16px);top:calc(50% - 15px);">
                         <svg style="width:30px;" xmlns="http://www.w3.org/2000/svg" id="Layer_2" viewBox="0 0 223.5 223.5"><g id="Layer_1-2"><circle cx="111.75" cy="111.75" r="111.75" style="fill:#231f20; stroke-width:0px;"/><rect x="86.17" y="105.75" width="51.16" height="12" rx="6" ry="6" style="fill:#fff; stroke-width:0px;"/><path d="m91.15,144.46l-51.13-29.53c-2.45-1.42-2.45-4.96,0-6.37l51.13-29.53c2.45-1.42,5.52.35,5.52,3.19v59.05c0,2.83-3.07,4.6-5.52,3.19Z" style="fill:#fff; stroke-width:0px;"/><path d="m132.35,144.46l51.13-29.53c2.45-1.42,2.45-4.96,0-6.37l-51.13-29.53c-2.45-1.42-5.52.35-5.52,3.19v59.05c0,2.83,3.07,4.6,5.52,3.19Z" style="fill:#fff; stroke-width:0px;"/></g></svg>
                     </div>
-                    <div split-control="winning-box" style="width:50%;">
+                    <div split-control="winning-box" style="width:50%;" class="bg-gradient bg-success bg-opacity-10">
                         <div class="text-center p-3">
                             <div class="text-truncate">
                                 <strong>{{ trans('messages.campaign.ab.version_winning') }}</strong>
@@ -108,7 +108,7 @@
             </div>
 
             <div ab-control="winning-none" class="my-4">
-                <p>{{ trans('messages.campaign.ab.winning_version.none.intro') }}</p>
+                <p class="mt-3 alert alert-info bg-light text-dark rounded">{{ trans('messages.campaign.ab.winning_version.none.intro') }}</p>
             </div>
         </div>
         
@@ -277,13 +277,13 @@
             isOutOfRange(move) {
                 var winningPercent = this.calcWinningPercentByMove(move);
 
-                return winningPercent <= 80 && winningPercent >= 5;
+                return winningPercent <= 90 && winningPercent >= 3;
             }
 
             atRightSide(move) {
                 var winningPercent = this.calcWinningPercentByMove(move);
 
-                return winningPercent < 5;
+                return winningPercent < 3;
             }
 
             resizeBoxes(move) {

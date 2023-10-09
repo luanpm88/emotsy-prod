@@ -1,4 +1,4 @@
-<div class="mt-5 mb-20">
+<div class="">
     <div class="d-flex align-items-center">
         <div class="me-2">
             <h3><span class="material-symbols-rounded me-2">schedule</span></h3>

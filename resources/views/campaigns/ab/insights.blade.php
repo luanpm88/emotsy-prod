@@ -53,47 +53,51 @@
                     <p>{{ trans('messages.campaign.ab.insights.split_options.title') }}</p>
                     <div split-control="container" class="position-relative">
                         <div class="d-flex border" style="width:100%;">
-                            <div split-control="a-box" style="width:25%;" class="border-end">
+                            <div split-control="a-box" style="width:{{ $campaign->abGetVersionABPercent() }}%;" class="border-end bg-gradient bg-info bg-opacity-10">
                                 <div class="text-center p-3">
                                     <div class="text-truncate">
                                         <strong>{{ trans('messages.campaign.ab.version_a') }}</strong>
                                     </div>
                                     <div class="py-3 text-truncate">
-                                        <strong class="fw-semibold fs-6"><span split-control="value-a">25</span>%</strong>
+                                        <strong class="fw-semibold fs-6"><span split-control="value-a">{{ $campaign->abGetVersionABPercent() }}</span>%</strong>
                                     </div>
                                     <div class="text-truncate">
-                                        (~<span split-control="aprox-b">{{ number_format(round($campaign->subscribersCount()/4)) }}</span> {{ trans('messages.recipients') }})
+                                        (~<span split-control="aprox-b">{{ number_format(round($campaign->abGetApproxRecipientsABVersion())) }}</span> {{ trans('messages.recipients') }})
                                     </div>
                                 </div>
                             </div>
-                            <div style="width:25%;" class="border-end">
+                            <div style="width:{{ $campaign->abGetVersionABPercent() }}%;" class="{{ $campaign->ab_winning_percent > 0 ? 'border-end' : '' }} bg-gradient  bg-info bg-opacity-10">
                                 <div class="text-center p-3">
                                     <div class="text-truncate">
                                         <strong>{{ trans('messages.campaign.ab.version_b') }}</strong>
                                     </div>
                                     <div class="py-3 text-truncate">
-                                        <strong class="fw-semibold fs-6"><span split-control="value-b">25</span>%</strong>
+                                        <strong class="fw-semibold fs-6"><span split-control="value-b">{{ $campaign->abGetVersionABPercent() }}</span>%</strong>
                                     </div>
                                     <div class="text-truncate">
-                                        (~<span split-control="aprox-b">{{ number_format(round($campaign->subscribersCount()/4)) }}</span> {{ trans('messages.recipients') }})
+                                        (~<span split-control="aprox-b">{{ number_format(round($campaign->abGetApproxRecipientsABVersion())) }}</span> {{ trans('messages.recipients') }})
                                     </div>
                                 </div>
                             </div>
-                            <div split-control="winning-box" style="width:50%;">
+                            <div split-control="winning-box" style="width:{{ $campaign->ab_winning_percent }}%;" class="bg-gradient bg-success bg-opacity-10">
                                 <div class="text-center p-3">
                                     <div class="text-truncate">
                                         <strong>{{ trans('messages.campaign.ab.version_winning') }}</strong>
                                     </div>
                                     <div class="py-3 text-truncate">
-                                        <strong class="fw-semibold fs-6"><span split-control="value-winning">50</span>%</strong>
+                                        <strong class="fw-semibold fs-6"><span split-control="value-winning">{{ $campaign->ab_winning_percent }}</span>%</strong>
                                     </div>
                                     <div class="text-truncate">
-                                        (~<span split-control="aprox-b">{{ number_format(round($campaign->subscribersCount()/2)) }}</span> {{ trans('messages.recipients') }})
+                                        (~<span split-control="aprox-b">{{ number_format(round($campaign->abGetApproxRecipientsWinningVersion())) }}</span> {{ trans('messages.recipients') }})
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+
+                    @if ($campaign->ab_winning_percent == 0)
+                        <p class="mt-3 alert alert-info bg-light text-dark rounded">{{ trans('messages.campaign.ab.winning_version.none.intro') }}</p>
+                    @endif
                 </div>
             @endif
         </div>
@@ -274,7 +278,7 @@
         </div>
 
 
-        <div class="row">
+        <div class="row mt-5">
             <div class="col-md-6">
                 @include('campaigns.ab._open_performance_chart')
             </div>
