@@ -3261,4 +3261,6 @@
   'campaign.ab.open_performance.intro' => 'Below are the details of subscriber open performance between A and B test versions.',
   'campaign.ab.click_performance' => 'Click performance',
   'campaign.ab.click_performance.intro' => 'Below are the details of subscriber click performance between A and B test versions.',
+  'campaign.ab.template.copy_from_b' => 'Copy from B version',
+  'campaign.ab.template.copy_from_a' => 'Copy from A version',
 ) ?>

@@ -8243,7 +8243,7 @@ label.checker input:disabled ~ .checker-symbol {
     display: none;
 }
 .template-variation {
-    width: 160px;
+    width: 180px;
     cursor: pointer;
     transition: all 0.2s ease-in-out;
 }

@@ -1,37 +1,50 @@
 <h3 class="mt-0">{{ trans('messages.campaign.ab.template_variations') }}</h3>
 
-<div class="mb-4">
-    <a href="" data-action="template-variation-box" for="template_variation_a" class="d-inline-block template-variation border p-3 rounded current me-4 text-dark">
-        <div class="mb-3">
-            <span><input checked id="template_variation_a" type="radio" name="template_variation" value="a" class="styled"></span>
-            <span class="ms-1 fw-semibold">{{ trans('messages.campaign.ab.version_a') }}</span>
-        </div>
-        <div>
-            <div class="border thumb-container">
-                @if ($campaign->template)
-                    <img style="width:100%;" class="template-variation-thumb" src="{{ $campaign->getThumbUrl() }}?v={{ Carbon\Carbon::now() }}" />
-                @else
-                    <img style="width:100%;" class="template-variation-thumb" src="{{ url('images/icons/template-none.svg') }}" />
-                @endif
+<div class="mb-4 d-flex">
+    <div class="me-4">
+        <a href="" data-action="template-variation-box" for="template_variation_a" class="d-block template-variation border p-2 rounded current text-dark">
+            <div class="mb-3">
+                <span><input checked id="template_variation_a" type="radio" name="template_variation" value="a" class="styled"></span>
+                <span class="ms-1 fw-semibold">{{ trans('messages.campaign.ab.version_a') }}</span>
             </div>
-        </div>
-    </a>
-
-    <a href="" data-action="template-variation-box" for="template_variation_b" class="d-inline-block template-variation border p-3 rounded text-dark">
-        <div class="mb-3">
-            <span><input id="template_variation_b" type="radio" name="template_variation" value="a" class="styled"></span>
-            <span class="ms-1 fw-semibold">{{ trans('messages.campaign.ab.version_b') }}</span>
-        </div>
-        <div>
-            <div class="border thumb-container">
-                @if ($campaign->template_b)
-                    <img style="width:100%;" class="template-variation-thumb" src="{{ $campaign->getThumbUrl() }}?v={{ Carbon\Carbon::now() }}" />
-                @else
-                    <img style="width:100%;" class="template-variation-thumb" src="{{ url('images/icons/template-none.svg') }}" />
-                @endif
+            <div>
+                <div class="border thumb-container">
+                    @if ($campaign->template)
+                        <img style="width:100%;" class="template-variation-thumb" src="{{ $campaign->getThumbUrl() }}?v={{ Carbon\Carbon::now() }}" />
+                    @else
+                        <img style="width:100%;" class="template-variation-thumb" src="{{ url('images/icons/template-none.svg') }}" />
+                    @endif
+                </div>
             </div>
-        </div>
-    </a>
+        </a>
+        @if ($campaign->template_b)
+            <div class="my-2 text-center">
+                <a href="" class="btn btn-default">{{ trans('messages.campaign.ab.template.copy_from_b') }}</a>
+            </div>
+        @endif
+    </div>
+    <div>
+        <a href="" data-action="template-variation-box" for="template_variation_b" class="d-block template-variation border p-2 rounded text-dark">
+            <div class="mb-3">
+                <span><input id="template_variation_b" type="radio" name="template_variation" value="a" class="styled"></span>
+                <span class="ms-1 fw-semibold">{{ trans('messages.campaign.ab.version_b') }}</span>
+            </div>
+            <div>
+                <div class="border thumb-container">
+                    @if ($campaign->template_b)
+                        <img style="width:100%;" class="template-variation-thumb" src="{{ $campaign->getThumbUrl() }}?v={{ Carbon\Carbon::now() }}" />
+                    @else
+                        <img style="width:100%;" class="template-variation-thumb" src="{{ url('images/icons/template-none.svg') }}" />
+                    @endif
+                </div>
+            </div>
+        </a>
+        @if ($campaign->template)
+            <div class="my-2 text-center">
+                <a href="" class="btn btn-default">{{ trans('messages.campaign.ab.template.copy_from_a') }}</a>
+            </div>
+        @endif
+    </div>
 </div>
 
 <hr>
