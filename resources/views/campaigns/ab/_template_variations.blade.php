@@ -1,10 +1,12 @@
-<h3 class="mt-0">{{ trans('messages.campaign.ab.template_variations') }}</h3>
+<h3 class="mt-0 mb-3">{{ trans('messages.campaign.ab.template_variations') }}</h3>
+
+<p>{{ trans('messages.campaign.ab.slit_templates.intro') }}</p>
 
 <div class="mb-4 d-flex">
-    <div class="me-4">
+    <div class="me-4 template-variation {{ request()->version_b ? '' : 'current' }}">
         <a href="{{ action('CampaignController@template', [
             'uid' => $campaign->uid,
-        ]) }}" data-action="template-variation-box" for="template_variation_a" class="d-block template-variation border p-2 rounded {{ request()->version_b ? '' : 'current' }} text-dark">
+        ]) }}" data-action="template-variation-box" for="template_variation_a" class="thumb d-block border p-2 rounded text-dark">
             <div class="mb-2">
                 <div class="d-flex align-items-center">
                     <span class="fw-semibold">{{ trans('messages.campaign.ab.version_a') }}</span>
@@ -26,16 +28,16 @@
             </div>
         </a>
         @if ($campaign->template_b)
-            <div class="my-2 text-center">
+            <div class="my-2 text-center version-action">
                 <a href="" class="btn btn-default">{{ trans('messages.campaign.ab.template.copy_from_b') }}</a>
             </div>
         @endif
     </div>
-    <div>
+    <div class="template-variation {{ request()->version_b ? 'current' : '' }}">
         <a href="{{ action('CampaignController@template', [
             'uid' => $campaign->uid,
             'version_b' => true,
-        ]) }}" data-action="template-variation-box" for="template_variation_b" class="d-block template-variation border p-2 rounded {{ request()->version_b ? 'current' : '' }} text-dark">
+        ]) }}" data-action="template-variation-box" for="template_variation_b" class="thumb d-block border p-2 rounded text-dark">
             <div class="mb-2">
                 <div class="d-flex align-items-center">
                     <span class="fw-semibold">{{ trans('messages.campaign.ab.version_b') }}</span>
@@ -57,7 +59,7 @@
             </div>
         </a>
         @if ($campaign->template)
-            <div class="my-2 text-center">
+            <div class="my-2 text-center version-action">
                 <a href="" class="btn btn-default">{{ trans('messages.campaign.ab.template.copy_from_a') }}</a>
             </div>
         @endif

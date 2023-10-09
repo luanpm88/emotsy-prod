@@ -8239,12 +8239,15 @@ label.checker input:disabled ~ .checker-symbol {
 .ab-subjects.ab-subjects-no-split .ab-subjects-intro {
     display: none;
 }
-.template-variation {
-    opacity: 0.8;
+.template-variation .thumb {
+    opacity: 0.5;
+    transform: scale(0.95);
+    transition: all 0.2s ease-in-out;
 }
-.template-variation:hover, .template-variation.current {
+.template-variation:hover .thumb, .template-variation.current .thumb {
     opacity: 1;
-    box-shadow: 1px 1px 5px rgba(0,0,0,0.1);
+    box-shadow: 1px 1px 4px rgba(0,0,0,0.05);
+    transform: none;
 }
 .template-variation:not(.current) .check-mark {
     visibility: hidden;
@@ -8257,17 +8260,23 @@ label.checker input:disabled ~ .checker-symbol {
 .template-variation .thumb-container {
     background-color: #fff;
 }
+.template-variation .version-action {
+    display: none;
+}
+.template-variation.current .version-action {
+    display: block;
+}
 body.mode-dark .template-variation .thumb-container {
     background-color: rgba(247, 255, 251, 1);
 }
-.template-variation:hover {
+.template-variation:hover .thumb {
     border-color: rgb(25, 135, 84);
 }
-.template-variation.current {
+.template-variation.current .thumb {
     border-color: rgb(25, 135, 84)!important;
     background-color: rgb(247, 255, 251);
 }
-body.mode-dark .template-variation.current {
+body.mode-dark .template-variation.current .thumb {
     border-color: rgb(25, 135, 84)!important;
     background-color: rgba(247, 255, 251, 0.1);
 }

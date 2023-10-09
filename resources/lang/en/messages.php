@@ -3261,6 +3261,7 @@
   'campaign.ab.open_performance.intro' => 'Below are the details of subscriber open performance between A and B test versions.',
   'campaign.ab.click_performance' => 'Click performance',
   'campaign.ab.click_performance.intro' => 'Below are the details of subscriber click performance between A and B test versions.',
-  'campaign.ab.template.copy_from_b' => 'Copy from B version',
-  'campaign.ab.template.copy_from_a' => 'Copy from A version',
+  'campaign.ab.template.copy_from_b' => 'Copy from version A',
+  'campaign.ab.template.copy_from_a' => 'Copy from version B',
+  'campaign.ab.slit_templates.intro' => 'To conduct a more effective A/B test, split the email content into two versions and meticulously set them up with distinct design styles, allowing us to gather valuable insights. Select one of the template versions below to set it up.',
 ) ?>
