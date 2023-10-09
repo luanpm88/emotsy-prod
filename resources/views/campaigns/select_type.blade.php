@@ -23,7 +23,7 @@
             </span>
         </h2>
         <p class="text-center mb-4 pb-2 px-5">{{ trans('messages.campaign.select_type.wording') }}</p>
-        <ul class="modern-listsing big-icon mt-0 pb-4 px-0 border-top">
+        <ul class="modern-listsing big-icon mt-0 pb-2 px-0 border-top">
             @foreach (Acelle\Model\Campaign::types() as $key => $type)
                 <li class="d-flex py-4 border-bottom box-shadow-sm">
                     <a href="{{ action("CampaignController@create", ["type" => $key]) }}">
@@ -50,9 +50,11 @@
                 </li>
             @endforeach
         </ul>
-        <div class="mt-4">
+        <div class="text-center">
             <a href="{{ action('CampaignController@index') }}" role="button" class="btn btn-light">
-                <i class="icon-cross2"></i> {{ trans('messages.return_back') }}
+                <span class="material-symbols-rounded me-1">
+                    west
+                </span> {{ trans('messages.return_back') }}
             </a>
         </div>
     </div>
