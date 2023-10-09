@@ -10,6 +10,10 @@
         'menu' => 'links',
     ])
 
+    @if ($campaign->isABTest())
+        @include('campaigns.ab._insights_version_tabs')
+    @endif
+
 @endsection
 
 @section('content')

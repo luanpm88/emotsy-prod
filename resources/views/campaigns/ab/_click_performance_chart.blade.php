@@ -86,7 +86,7 @@
                     },
                     series: [
                         {
-                            name: '{{ trans('messages.clicked') }}',
+                            name: '{{ trans('messages.campaign.ab.version_a') }}',
                             type: 'line',
                             itemStyle: {
                                 color: '#5cb2b2'
@@ -94,7 +94,7 @@
                             data: data.clicked
                         },
                         {
-                            name: '{{ trans('messages.clicked') }}',
+                            name: '{{ trans('messages.campaign.ab.version_b') }}',
                             type: 'line',
                             itemStyle: {
                                 color: '#b26e59'
