@@ -202,7 +202,9 @@
                             </p>
                         </div>
 
-                        <a href="{{ action('CampaignController@setup', $campaign->uid) }}" class="btn btn-default">{{ trans('messages.campaign.back_to_step') }}</a>
+                        <div>
+                            <a href="{{ action('CampaignController@setup', $campaign->uid) }}" class="btn btn-default">{{ trans('messages.campaign.back_to_step') }}</a>
+                        </div>
                     </li>
                 @else
                     <li class="d-flex">

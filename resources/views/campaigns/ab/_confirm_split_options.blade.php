@@ -14,7 +14,7 @@
         <div class="mt-3 border p-3 bg-light">
             <div class="">
                 <div class="d-flex mb-2">
-                    <div class="me-3">
+                    <div class="me-2">
                         <strong>{{ trans('messages.campaign.ab.test_group_size') }}:</strong>
                     </div>
                     <div>
@@ -24,7 +24,7 @@
                             (~<span split-control="aprox-b">{{ number_format(round($campaign->subscribersCount()*($campaign->getABpercent()/100))) }}</span> {{ trans('messages.recipients') }})
                         </p>
                         <p>
-                            {{ trans('messages.campaign.ab.version_a') }}:
+                            {{ trans('messages.campaign.ab.version_b') }}:
                             <strong>{{ $campaign->getABpercent() }}%</strong>
                             (~<span split-control="aprox-b">{{ number_format(round($campaign->subscribersCount()*($campaign->getABpercent()/100))) }}</span> {{ trans('messages.recipients') }})
                         </p>
@@ -36,7 +36,7 @@
                     </div>
                 </div>
                 <div class="d-flex mb-2">
-                    <div class="me-3">
+                    <div class="me-2">
                         <strong>{{ trans('messages.campaign.ab.choose_winning_version') }}:</strong>
                     </div>
                     <div>
@@ -50,7 +50,7 @@
                     </div>
                 </div>
                 <div class="d-flex mb-2">
-                    <div class="me-3">
+                    <div class="me-2">
                         <strong>{{ trans('messages.campaign.ab.duration_test') }}:</strong>
                     </div>
                     <div>
