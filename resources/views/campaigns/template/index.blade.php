@@ -113,9 +113,9 @@
     </div>
         
     <hr>
-    <a href="{{ action('CampaignController@schedule', ['uid' => $campaign->uid]) }}" class="btn btn-secondary">
-        {{ trans('messages.next') }} <span class="material-symbols-rounded">arrow_forward</span>
-    </a>
+    <div class="text-center">
+        <a href="{{ action('CampaignController@schedule', ['uid' => $campaign->uid]) }}" class="btn btn-primary px-4 py-2" style="border-radius:100px;">{{ trans('messages.next') }} <span class="material-symbols-rounded">arrow_forward</span> </a>
+    </div>
         
     <script>
         var templatePopup = new Popup();        

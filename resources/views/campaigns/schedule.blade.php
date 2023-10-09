@@ -57,12 +57,12 @@
                     <div class="desc text-normal mb-10 pl-0">
                         <div class="">
                             @if(config('custom.japan') && !Acelle\Model\Setting::get('license'))
-                                <button license-required type="button" class="btn btn-secondary">
+                                <button license-required type="button" class="btn btn-primary px-4 py-2 send-now" style="border-radius:100px;">
                                     {{ trans('messages.save_and_next') }}
                                     <span class="material-symbols-rounded">arrow_forward</span>
                                 </button>
                             @else
-                                <button type="button" class="btn btn-secondary send-now">
+                                <button type="button" class="btn btn-primary px-4 py-2 send-now" style="border-radius:100px;">
                                     {{ trans('messages.save_and_next') }}
                                     <span class="material-symbols-rounded">arrow_forward</span>
                                 </button>
@@ -104,7 +104,7 @@
                     </div>
                     
                     <div class="">
-                        <button @if(config('custom.japan') && !Acelle\Model\Setting::get('license')) license-required @endif class="btn btn-secondary me-1">
+                        <button @if(config('custom.japan') && !Acelle\Model\Setting::get('license')) license-required @endif class="btn btn-primary px-4 py-2 me-1" style="border-radius:100px;">
                             <span class="material-symbols-rounded me-1">alarm</span>
                             {{ trans('messages.save_and_next') }}
                                 <span class="material-symbols-rounded">arrow_forward</span>

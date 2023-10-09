@@ -8,7 +8,7 @@
     <div class="d-flex">
         <p>{{ trans('messages.webhooks.wording') }}</p>
         <div class="ms-4">
-            <a href="javascript:;" class="btn btn-secondary add_webhooks_but text-nowrap">
+            <a href="javascript:;" class="btn btn-default add_webhooks_but text-nowrap">
                 <i class="material-symbols-rounded">add</i>
                 {{ trans('messages.webhooks.add') }}
             </a>
