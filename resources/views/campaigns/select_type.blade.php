@@ -40,7 +40,12 @@
                         </div>
                     </div>
                     <div class="ms-auto">
-                        <a href="{{ action("CampaignController@create", ["type" => $key]) }}" class="btn btn-primary">{{ trans('messages.choose') }}</a>
+                        <a href="{{ action("CampaignController@create", ["type" => $key]) }}" class="btn btn-primary px-3 text-nowrap" style="border-radius:100px;">
+                            {{ trans('messages.choose') }}
+                            <span class="material-symbols-rounded ms-1">
+                                east
+                            </span>
+                        </a>
                     </div>
                 </li>
             @endforeach
