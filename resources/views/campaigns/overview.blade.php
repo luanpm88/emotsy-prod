@@ -11,15 +11,13 @@
 
 @section('page_header')
 
-    @include("campaigns._header")
+    @include("campaigns._header", [
+        'menu' => 'overview',
+    ])
 
 @endsection
 
 @section('content')
-
-    @include("campaigns._menu", [
-        'menu' => 'overview',
-    ])
 
     @include("campaigns._info")
 

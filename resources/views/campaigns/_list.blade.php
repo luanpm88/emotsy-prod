@@ -92,7 +92,7 @@
 								title="{{ trans('messages.overview') }}" role="button"
 								class="btn btn-primary btn-icon ms-1"
 							>
-								<i class="icon-stats-growth"></i> {{ trans('messages.campaign.overview_statistics') }}</a>
+								<span class="material-symbols-rounded">troubleshoot</span>  {{ trans('messages.campaign.overview_statistics') }}</a>
 						@endif
 						@if (\Gate::allows('delete', $campaign) || \Gate::allows('pause', $campaign) || \Gate::allows('restart', $campaign))
 							<div class="btn-group ms-1" role="group">

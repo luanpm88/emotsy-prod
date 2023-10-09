@@ -6,15 +6,13 @@
 
 @section('page_header')
     
-    @include("campaigns._header")
+    @include("campaigns._header", [
+        'menu' => 'links',
+    ])
 
 @endsection
 
 @section('content')
-                
-    @include("campaigns._menu", [
-        'menu' => 'links',
-    ])
 
     <h3 class="mt-10"><span class="text-teal text-semibold">{{ count($campaign->getLinks()) }}</span> {{ trans('messages.links') }}</h3>
     

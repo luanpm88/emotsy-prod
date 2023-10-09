@@ -10,15 +10,13 @@
 
 @section('page_header')
 	
-			@include("campaigns._header")
+	@include("campaigns._header", [
+		'menu' => 'open_map',
+	])
 
 @endsection
 
 @section('content')
-                
-    @include("campaigns._menu", [
-		'menu' => 'open_map',
-	])
 
 	<div id="openMap" class="map-container map-marker-simple" style="height:600px"></div>
 

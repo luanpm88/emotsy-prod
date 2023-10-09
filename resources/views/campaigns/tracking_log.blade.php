@@ -6,15 +6,13 @@
 
 @section('page_header')
 
-    @include("campaigns._header")
+    @include("campaigns._header", [
+        'menu' => 'tracking_log',
+    ])
 
 @endsection
 
 @section('content')
-
-@include("campaigns._menu", [
-    'menu' => 'tracking_log',
-])
 
 <h2 class="text-semibold text-primary">{{ trans('messages.tracking_log') }}</h2>
 
