@@ -8243,6 +8243,16 @@ label.checker input:disabled ~ .checker-symbol {
     display: none;
 }
 .template-variation {
+    opacity: 0.8;
+}
+.template-variation:hover, .template-variation.current {
+    opacity: 1;
+    box-shadow: 1px 1px 5px rgba(0,0,0,0.1);
+}
+.template-variation:not(.current) .check-mark {
+    visibility: hidden;
+}
+.template-variation {
     width: 180px;
     cursor: pointer;
     transition: all 0.2s ease-in-out;

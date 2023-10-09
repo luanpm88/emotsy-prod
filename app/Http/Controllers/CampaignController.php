@@ -271,7 +271,7 @@ class CampaignController extends Controller
 
         // check if campagin does not have template
         if (!$campaign->template) {
-            return redirect()->action('CampaignController@templateCreate', ['uid' => $campaign->uid]);
+            return redirect()->action('CampaignController@templateCreate', ['uid' => $campaign->uid, 'version_b' => $request->version_b]);
         }
 
         return view('campaigns.template.index', [

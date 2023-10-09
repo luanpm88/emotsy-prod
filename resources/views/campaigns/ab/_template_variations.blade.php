@@ -2,10 +2,18 @@
 
 <div class="mb-4 d-flex">
     <div class="me-4">
-        <a href="" data-action="template-variation-box" for="template_variation_a" class="d-block template-variation border p-2 rounded current text-dark">
-            <div class="mb-3">
-                <span><input checked id="template_variation_a" type="radio" name="template_variation" value="a" class="styled"></span>
-                <span class="ms-1 fw-semibold">{{ trans('messages.campaign.ab.version_a') }}</span>
+        <a href="{{ action('CampaignController@template', [
+            'uid' => $campaign->uid,
+        ]) }}" data-action="template-variation-box" for="template_variation_a" class="d-block template-variation border p-2 rounded {{ request()->version_b ? '' : 'current' }} text-dark">
+            <div class="mb-2">
+                <div class="d-flex align-items-center">
+                    <span class="fw-semibold">{{ trans('messages.campaign.ab.version_a') }}</span>
+                    <span class="ms-auto check-mark">
+                        <span class="material-symbols-rounded text-success" style="transform:scale(2)">
+                            task_alt
+                        </span>
+                    </span>
+                </div>
             </div>
             <div>
                 <div class="border thumb-container">
@@ -24,10 +32,19 @@
         @endif
     </div>
     <div>
-        <a href="" data-action="template-variation-box" for="template_variation_b" class="d-block template-variation border p-2 rounded text-dark">
-            <div class="mb-3">
-                <span><input id="template_variation_b" type="radio" name="template_variation" value="a" class="styled"></span>
-                <span class="ms-1 fw-semibold">{{ trans('messages.campaign.ab.version_b') }}</span>
+        <a href="{{ action('CampaignController@template', [
+            'uid' => $campaign->uid,
+            'version_b' => true,
+        ]) }}" data-action="template-variation-box" for="template_variation_b" class="d-block template-variation border p-2 rounded {{ request()->version_b ? 'current' : '' }} text-dark">
+            <div class="mb-2">
+                <div class="d-flex align-items-center">
+                    <span class="fw-semibold">{{ trans('messages.campaign.ab.version_b') }}</span>
+                    <span class="ms-auto check-mark">
+                        <span class="material-symbols-rounded text-success" style="transform:scale(2)">
+                            task_alt
+                        </span>
+                    </span>
+                </div>
             </div>
             <div>
                 <div class="border thumb-container">
