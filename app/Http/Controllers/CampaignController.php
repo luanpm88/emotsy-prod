@@ -886,6 +886,220 @@ class CampaignController extends Controller
         return response()->json($result);
     }
 
+    public function abOpenChart24h(Request $request)
+    {
+        $currentTimezone = $request->user()->customer->getTimezone();
+        $nowInUserTimezone = Carbon::now($currentTimezone);
+        $campaign = Campaign::findByUid($request->uid);
+
+        // authorize
+        if (\Gate::denies('read', $campaign)) {
+            return $this->notAuthorized();
+        }
+
+        $result = [
+            'columns' => [],
+            'opened' => [],
+            'clicked' => [],
+        ];
+
+        // 24h collection
+        if ($request->period == '24h') {
+            $hours = [];
+
+            // columns
+            for ($i = 23; $i >= 0; --$i) {
+                $time = $nowInUserTimezone->copy()->subHours($i);
+                $result['columns'][] = $time->format('h') . ':00 ' . $time->format('A');
+                $hours[] = $time->format('H');
+            }
+
+            $openData24h = $campaign->openUniqHours($nowInUserTimezone->copy()->subHours(24), $nowInUserTimezone);
+            $clickData24h = $campaign->clickHours($nowInUserTimezone->copy()->subHours(24), $nowInUserTimezone);
+
+            // data
+            foreach ($hours as $hour) {
+                $num = isset($openData24h[$hour]) ? count($openData24h[$hour]) : 0;
+                $result['opened'][] = $num;
+
+                $num = isset($clickData24h[$hour]) ? count($clickData24h[$hour]) : 0;
+                $result['clicked'][] = $num;
+            }
+        } elseif ($request->period == '3_days') {
+            $days = [];
+
+            // columns
+            for ($i = 2; $i >= 0; --$i) {
+                $time = $nowInUserTimezone->copy()->subDays($i);
+                $result['columns'][] = $time->format('m-d');
+                $days[] = $time->format('Y-m-d');
+            }
+
+            $openData = $campaign->openUniqDays($nowInUserTimezone->copy()->subDays(3), $nowInUserTimezone->endOfDay());
+            $clickData = $campaign->clickDays($nowInUserTimezone->copy()->subDays(3), $nowInUserTimezone->endOfDay());
+
+            // data
+            foreach ($days as $day) {
+                $num = isset($openData[$day]) ? count($openData[$day]) : 0;
+                $result['opened'][] = $num;
+
+                $num = isset($clickData[$day]) ? count($clickData[$day]) : 0;
+                $result['clicked'][] = $num;
+            }
+        } elseif ($request->period == '7_days') {
+            $days = [];
+
+            // columns
+            for ($i = 6; $i >= 0; --$i) {
+                $time = $nowInUserTimezone->copy()->subDays($i);
+                $result['columns'][] = $time->format('m-d');
+                $days[] = $time->format('Y-m-d');
+            }
+
+            $openData = $campaign->openUniqDays($nowInUserTimezone->copy()->subDays(7), $nowInUserTimezone->endOfDay());
+            $clickData = $campaign->clickDays($nowInUserTimezone->copy()->subDays(7), $nowInUserTimezone->endOfDay());
+
+            // data
+            foreach ($days as $day) {
+                $num = isset($openData[$day]) ? count($openData[$day]) : 0;
+                $result['opened'][] = $num;
+
+                $num = isset($clickData[$day]) ? count($clickData[$day]) : 0;
+                $result['clicked'][] = $num;
+            }
+        } elseif ($request->period == 'last_month') {
+            $days = [];
+
+            // columns
+            for ($i = $nowInUserTimezone->copy()->subMonths(1)->diff(Carbon::now())->days - 1; $i >= 0; --$i) {
+                $time = $nowInUserTimezone->copy()->subDays($i);
+                $result['columns'][] = $time->format('m-d');
+                $days[] = $time->format('Y-m-d');
+            }
+
+            $openData = $campaign->openUniqDays($nowInUserTimezone->copy()->subMonths(1), $nowInUserTimezone->endOfDay());
+            $clickData = $campaign->clickDays($nowInUserTimezone->copy()->subMonths(1), $nowInUserTimezone->endOfDay());
+
+            // data
+            foreach ($days as $day) {
+                $num = isset($openData[$day]) ? count($openData[$day]) : 0;
+                $result['opened'][] = $num;
+
+                $num = isset($clickData[$day]) ? count($clickData[$day]) : 0;
+                $result['clicked'][] = $num;
+            }
+        }
+
+        return response()->json($result);
+    }
+
+    public function abClickChart24h(Request $request)
+    {
+        $currentTimezone = $request->user()->customer->getTimezone();
+        $nowInUserTimezone = Carbon::now($currentTimezone);
+        $campaign = Campaign::findByUid($request->uid);
+
+        // authorize
+        if (\Gate::denies('read', $campaign)) {
+            return $this->notAuthorized();
+        }
+
+        $result = [
+            'columns' => [],
+            'opened' => [],
+            'clicked' => [],
+        ];
+
+        // 24h collection
+        if ($request->period == '24h') {
+            $hours = [];
+
+            // columns
+            for ($i = 23; $i >= 0; --$i) {
+                $time = $nowInUserTimezone->copy()->subHours($i);
+                $result['columns'][] = $time->format('h') . ':00 ' . $time->format('A');
+                $hours[] = $time->format('H');
+            }
+
+            $openData24h = $campaign->openUniqHours($nowInUserTimezone->copy()->subHours(24), $nowInUserTimezone);
+            $clickData24h = $campaign->clickHours($nowInUserTimezone->copy()->subHours(24), $nowInUserTimezone);
+
+            // data
+            foreach ($hours as $hour) {
+                $num = isset($openData24h[$hour]) ? count($openData24h[$hour]) : 0;
+                $result['opened'][] = $num;
+
+                $num = isset($clickData24h[$hour]) ? count($clickData24h[$hour]) : 0;
+                $result['clicked'][] = $num;
+            }
+        } elseif ($request->period == '3_days') {
+            $days = [];
+
+            // columns
+            for ($i = 2; $i >= 0; --$i) {
+                $time = $nowInUserTimezone->copy()->subDays($i);
+                $result['columns'][] = $time->format('m-d');
+                $days[] = $time->format('Y-m-d');
+            }
+
+            $openData = $campaign->openUniqDays($nowInUserTimezone->copy()->subDays(3), $nowInUserTimezone->endOfDay());
+            $clickData = $campaign->clickDays($nowInUserTimezone->copy()->subDays(3), $nowInUserTimezone->endOfDay());
+
+            // data
+            foreach ($days as $day) {
+                $num = isset($openData[$day]) ? count($openData[$day]) : 0;
+                $result['opened'][] = $num;
+
+                $num = isset($clickData[$day]) ? count($clickData[$day]) : 0;
+                $result['clicked'][] = $num;
+            }
+        } elseif ($request->period == '7_days') {
+            $days = [];
+
+            // columns
+            for ($i = 6; $i >= 0; --$i) {
+                $time = $nowInUserTimezone->copy()->subDays($i);
+                $result['columns'][] = $time->format('m-d');
+                $days[] = $time->format('Y-m-d');
+            }
+
+            $openData = $campaign->openUniqDays($nowInUserTimezone->copy()->subDays(7), $nowInUserTimezone->endOfDay());
+            $clickData = $campaign->clickDays($nowInUserTimezone->copy()->subDays(7), $nowInUserTimezone->endOfDay());
+
+            // data
+            foreach ($days as $day) {
+                $num = isset($openData[$day]) ? count($openData[$day]) : 0;
+                $result['opened'][] = $num;
+
+                $num = isset($clickData[$day]) ? count($clickData[$day]) : 0;
+                $result['clicked'][] = $num;
+            }
+        } elseif ($request->period == 'last_month') {
+            $days = [];
+
+            // columns
+            for ($i = $nowInUserTimezone->copy()->subMonths(1)->diff(Carbon::now())->days - 1; $i >= 0; --$i) {
+                $time = $nowInUserTimezone->copy()->subDays($i);
+                $result['columns'][] = $time->format('m-d');
+                $days[] = $time->format('Y-m-d');
+            }
+
+            $openData = $campaign->openUniqDays($nowInUserTimezone->copy()->subMonths(1), $nowInUserTimezone->endOfDay());
+            $clickData = $campaign->clickDays($nowInUserTimezone->copy()->subMonths(1), $nowInUserTimezone->endOfDay());
+
+            // data
+            foreach ($days as $day) {
+                $num = isset($openData[$day]) ? count($openData[$day]) : 0;
+                $result['opened'][] = $num;
+
+                $num = isset($clickData[$day]) ? count($clickData[$day]) : 0;
+                $result['clicked'][] = $num;
+            }
+        }
+
+        return response()->json($result);
+    }
+
     /**
      * Chart.
      *
@@ -2601,9 +2815,23 @@ class CampaignController extends Controller
             return redirect()->action('CampaignController@schedule', ['uid' => $campaign->uid]);
         }
 
-        return view('campaigns.abSplitOptions', [
+        return view('campaigns.ab.splitOptions', [
             'campaign' => $campaign,
             'reciepientsCount' => $campaign->subscribersCount(),
+        ]);
+    }
+
+    public function abTestInsights(Request $request)
+    {
+        $campaign = Campaign::findByUid($request->uid);
+
+        // authorize
+        if (\Gate::denies('read', $campaign)) {
+            return $this->notAuthorized();
+        }
+
+        return view('campaigns.ab.insights', [
+            'campaign' => $campaign,
         ]);
     }
 }

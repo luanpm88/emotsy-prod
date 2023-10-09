@@ -477,6 +477,8 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('templates/rss/parse', 'TemplateController@parseRss');
 
     // Campaign
+    Route::get('campaigns/{uid}/ab/click/chart24h', 'CampaignController@abClickChart24h');
+    Route::get('campaigns/{uid}/ab/open/chart24h', 'CampaignController@abOpenChart24h');
     Route::get('campaigns/{uid}/ab/insights', 'CampaignController@abTestInsights');
     Route::match(['get','post'], 'campaigns/{uid}/ab/split-options', 'CampaignController@abSplitOptions');
     Route::post('campaigns/{uid}/preheader/remove', 'CampaignController@preheaderRemove');
