@@ -8299,4 +8299,5 @@ body.mode-dark [split-control="b-box"].border-end {
 }
 .confirm-campaign-box .material-symbols-rounded {
     margin-top: -13px;
+    transform: translateY(3%) scale(1.2);
 }

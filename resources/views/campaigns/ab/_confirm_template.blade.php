@@ -39,8 +39,15 @@
                     </div>
                     <div>
                         <a 
-                            onclick="popupwindow('{{ action('CampaignController@preview', $campaign->uid) }}', `{{ $campaign->name }}`, 800)"
-                            href="javascript:;"
+                            @if (!$campaign->template_b)
+                                href="{{ action('CampaignController@template', [
+                                    'uid' => $campaign->uid,
+                                    'version_b' => true,
+                                ]) }}"
+                            @else
+                                onclick="popupwindow('{{ action('CampaignController@preview', $campaign->uid) }}', `{{ $campaign->name }}`, 800)"
+                                href="javascript:;"
+                            @endif
                             data-action="template-variation-box" for="template_variation_b" class="d-inline-block template-variation border p-3 rounded text-dark bg-white">
                             <div class="mb-2">
                                 <span class="ms-1 fw-semibold">{{ trans('messages.campaign.ab.version_b') }}</span>
@@ -56,7 +63,7 @@
                             </div>
                         </a>
                         @if (!$campaign->template_b)
-                            <span class="text-danger mt-2 d-block">
+                            <span class="text-danger mt-2 d-block text-center">
                                 <span class="material-symbols-rounded text-warning me-1">error_outline</span>
                                 {{ trans('messages.campaign.ab.template.not_setup_yet') }}
                             </span>
