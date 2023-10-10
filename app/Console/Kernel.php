@@ -93,15 +93,16 @@ class Kernel extends ConsoleKernel
         $schedule->call(function () {
             Notification::recordIfFails(
                 function() {
-                    if (!LicenseHelper::hasActiveLicense()) {
-                        throw new Exception('No valid license found');
+                    $license = LicenseHelper::getCurrentLicense();
+
+                    if (is_null($license)) {
+                        throw new Exception('NO LICENSE FOUND. Please register your application with a valid purchase code (go to Admin area\'s Settings > License dashboard).');
                     }
 
                     LicenseHelper::refreshLicense();
                 },
                 $title = 'License verification',
                 $exceptionCallback = null,
-                $message = 'Something went wrong verifying license: '
             );
         })->name('verify_license')->everyMinute();
     }

@@ -70,12 +70,10 @@ class LicenseHelper
             $response = $ex->getResponse();
             throw new Exception('Invalid license: '.$response->getBody()->getContents());
         }
-
     }
 
     public static function updateLicense($licenseCode)
     {
-
         $license = self::getLicense($licenseCode);
         Setting::set('license', $license['purchase_code']);
         Setting::set('license_type', $license['licence']);
