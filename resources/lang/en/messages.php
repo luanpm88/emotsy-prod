@@ -3205,6 +3205,8 @@
   'you_are_not_activated' => 'Your account hasn\'t been activated. Please check your inbox for confirmation email or resend it again.',
   'your_account_is_disabled' => 'Your account is disabled. Please contact the provider for more information.',
   'your_api_token' => 'Your API token',
-  'your_current_license' => 'Thank you for purchasing! Below is your license key, also known as Purchase Code. Your license type is',
+  'your_current_license' => 'The current application is registered with the key below, also known as Purchase Code. License type is: ',
   'zip_postal_code' => 'Zip / Postal code',
+  'support.expired.description' => 'To continue receiving our support, please consider extending your support entitlement',
+  'support.expired.note' => 'Support expired'
 ) ?>

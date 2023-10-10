@@ -37,21 +37,19 @@ class LicenseHelper
      */
     public static function getLicense($license)
     {
-        // Throw an exception if failed
-        if (config('custom.japan')) {
-            $endpoint = join_url(config('custom.license_validation_endpoint'), '/wp-json/automailjp/v1/license/check?license=' . Setting::get('license'));
-            $result = Http::get($endpoint)->json();
+        $client = new Client(['verify' => false]);
 
-            // failed
-            if ($result['status'] !== 'success') {
-                throw new \Exception('License is not valid. Error: ' . $result['message']);
-            }
+        try {
+            // Throw an exception if failed
+            if (config('custom.japan')) {
+                $endpoint = join_url(config('custom.license_validation_endpoint'), '/wp-json/automailjp/v1/license/check?license=' . $license);
+                $result = Http::get($endpoint)->json();
 
-            return $result;
-        } else {
-            $client = new Client(['verify' => false]);
+                return $result;
 
-            try {
+                $response = $client->request('get', $endpoint);
+            } else {
+
                 $response = $client->request(
                     'post',
                     'http://127.0.0.1:8000',
@@ -67,20 +65,23 @@ class LicenseHelper
                         'verify' => false
                     ]
                 );
-
-                $responseBody = $response->getBody();
-                $responseJson = json_decode($responseBody, true);
-                return $responseJson;
-            } catch(\GuzzleHttp\Exception\ClientException $ex) { // 400 error
-                $response = $ex->getResponse();
-                throw new Exception('Invalid license: '.$response->getBody()->getContents());
             }
+
+            $responseBody = $response->getBody();
+            $responseJson = json_decode($responseBody, true);
+            return $responseJson;
+        } catch(\GuzzleHttp\Exception\ClientException $ex) { // 400 error
+            $response = $ex->getResponse();
+            throw new Exception('Invalid license: '.$response->getBody()->getContents());
         }
+
     }
 
     public static function updateLicense($license)
     {
+
         $license = self::getLicense($license);
+
         Setting::set('license', $license['purchase_code']);
         Setting::set('license_type', $license['licence']);
         Setting::set('license_status', $license['status']);

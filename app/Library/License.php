@@ -22,8 +22,13 @@ class License
 
 	public function isActive()
 	{
-		return $this->status == self::STATUS_ACTIVE;
+            return $this->status == self::STATUS_ACTIVE;
 	}
+
+        public function isExpired()
+        {
+            return $this->status == self::STATUS_EXPIRED;
+        }
 
 	public function getLicenseNumber()
 	{

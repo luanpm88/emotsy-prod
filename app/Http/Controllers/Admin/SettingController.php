@@ -448,6 +448,11 @@ class SettingController extends Controller
      */
     public function license(Request $request)
     {
+        if ($request->input('refresh')) {
+            LicenseHelper::refreshLicense();
+            return 'done';
+        }
+
         if ($request->user()->admin->getPermission('setting_general') != 'yes') {
             return $this->notAuthorized();
         }
