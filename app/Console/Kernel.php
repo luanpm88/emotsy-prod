@@ -104,7 +104,7 @@ class Kernel extends ConsoleKernel
                 $title = 'License verification',
                 $exceptionCallback = null,
             );
-        })->name('verify_license')->everyMinute();
+        })->name('verify_license')->weekly();
     }
 
     /**
