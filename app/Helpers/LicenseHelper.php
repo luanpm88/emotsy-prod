@@ -43,10 +43,6 @@ class LicenseHelper
             // Throw an exception if failed
             if (config('custom.japan')) {
                 $endpoint = join_url(config('custom.license_validation_endpoint'), '/wp-json/automailjp/v1/license/check?license=' . $license);
-                $result = Http::get($endpoint)->json();
-
-                return $result;
-
                 $response = $client->request('get', $endpoint);
             } else {
 
@@ -77,11 +73,10 @@ class LicenseHelper
 
     }
 
-    public static function updateLicense($license)
+    public static function updateLicense($licenseCode)
     {
 
-        $license = self::getLicense($license);
-
+        $license = self::getLicense($licenseCode);
         Setting::set('license', $license['purchase_code']);
         Setting::set('license_type', $license['licence']);
         Setting::set('license_status', $license['status']);
