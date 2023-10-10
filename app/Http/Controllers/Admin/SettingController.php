@@ -15,7 +15,6 @@ use Acelle\Helpers\LicenseHelper;
 use App;
 use Acelle\Library\Downloader;
 use Acelle\Library\Notification\SystemUrl;
-use Illuminate\Support\Facades\Http;
 
 class SettingController extends Controller
 {
@@ -585,16 +584,8 @@ class SettingController extends Controller
      */
     public function uploadApplicationPatch(Request $request)
     {
-        if (empty(Setting::get('license'))) {
+        if (!\Acelle\Helpers\LicenseHelper::hasActiveLicense()) {
             $request->session()->flash('alert-error', 'Please <a style="text-decoration:underline;font-style: normal;" href="'.url('admin/settings/license').'">register</a> your installation with a valid purchase code first before upgrading.');
-
-            return redirect()->action('Admin\SettingController@upgrade');
-        }
-
-        try {
-
-        } catch (\Exception $ex) {
-            $request->session()->flash('alert-error', $ex->getMessage());
 
             return redirect()->action('Admin\SettingController@upgrade');
         }

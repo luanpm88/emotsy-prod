@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Exception;
 use GuzzleHttp\Client;
 use Acelle\Library\License;
+use Illuminate\Support\Facades\Http;
 
 class LicenseHelper
 {
@@ -106,5 +107,25 @@ class LicenseHelper
             Setting::get('license_status'),
             Setting::get('license_supported_until'),
         );
+    }
+
+    public static function hasActiveLicense()
+    {
+        $license = self::getCurrentLicense();
+
+        if (is_null($license)) {
+            return false;
+        }
+
+        return $license->isActive();
+    }
+
+    public static function refreshLicense()
+    {
+        $license = self::getCurrentLicense();
+
+        if ($license) {
+            self::updateLicense($license->getLicenseNumber());
+        }
     }
 }

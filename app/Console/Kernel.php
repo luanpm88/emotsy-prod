@@ -13,6 +13,7 @@ use Acelle\Model\Campaign;
 use Laravel\Tinker\Console\TinkerCommand;
 use Exception;
 use Acelle\Library\Facades\SubscriptionFacade;
+use Acelle\Helpers\LicenseHelper;
 
 class Kernel extends ConsoleKernel
 {
@@ -88,6 +89,21 @@ class Kernel extends ConsoleKernel
         $schedule->call(function () {
             Campaign::checkAndExecuteScheduledCampaigns();
         })->name('check_and_execute_scheduled_campaigns')->everyMinute();
+
+        $schedule->call(function () {
+            Notification::recordIfFails(
+                function() {
+                    if (!LicenseHelper::hasActiveLicense()) {
+                        throw new Exception('No valid license found');
+                    }
+
+                    LicenseHelper::refreshLicense();
+                },
+                $title = 'License verification',
+                $exceptionCallback = null,
+                $message = 'Something went wrong verifying license: '
+            );
+        })->name('verify_license')->everyMinute();
     }
 
     /**
