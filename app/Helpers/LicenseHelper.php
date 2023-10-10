@@ -58,6 +58,7 @@ class LicenseHelper
                             'purchase-code' => $license,
                             'item-id' => '17796082', // @todo hard-coded here
                             'secret' => session('secret'),
+                            'version' => app_version(),
                         ],
                         'verify' => false
                     ]
