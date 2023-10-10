@@ -45,9 +45,18 @@
 
                         @if ($license)
                             @php
+                            	$customer = Auth::user()->customer;
+
                                 if ($license->isActive()) {
                                     $style = 'alert-success';
-                                    $title = '';
+                                    $spportedUntil = $license->getSupportedUntil();
+
+                                    if ($spportedUntil) {
+                                    	$title = sprintf('ACTIVE | supported until %s (%s)', $customer->formatDateTime($license->getSupportedUntil(), 'date_short'), $license->getSupportedUntil()->diffForHumans());
+                                    } else {
+                                    	$title = '';
+                                    }
+
                                 } elseif ($license->isExpired()) {
                                     $style = 'alert-danger';
                                     $title = trans('messages.support.expired.description');

@@ -7,7 +7,6 @@ use Carbon\Carbon;
 use Exception;
 use GuzzleHttp\Client;
 use Acelle\Library\License;
-use Illuminate\Support\Facades\Http;
 
 class LicenseHelper
 {

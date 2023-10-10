@@ -1,6 +1,7 @@
 <?php
 
 namespace Acelle\Library;
+use Carbon\Carbon;
 
 class License
 {
@@ -16,7 +17,7 @@ class License
 	{
 		$this->license = $license;
 		$this->type = $type;
-		$this->supportedUntil = $supportedUntil;
+		$this->supportedUntil = Carbon::parse($supportedUntil);
 		$this->status = $status;
 	}
 
@@ -32,11 +33,16 @@ class License
 
 	public function getLicenseNumber()
 	{
-		return $this->license;
+            return $this->license;
 	}
 
 	public function getType()
 	{
-		return $this->type;
+            return $this->type;
 	}
+
+        public function getSupportedUntil()
+        {
+            return $this->supportedUntil;
+        }
 }
