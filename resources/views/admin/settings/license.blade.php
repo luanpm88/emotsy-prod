@@ -46,20 +46,22 @@
                         @if ($license)
                             @php
                             	$customer = Auth::user()->customer;
+                            	$spportedUntil = $license->getSupportedUntil();
 
                                 if ($license->isActive()) {
                                     $style = 'alert-success';
-                                    $spportedUntil = $license->getSupportedUntil();
-
                                     if ($spportedUntil) {
-                                    	$title = sprintf('ACTIVE | supported until %s (%s)', $customer->formatDateTime($license->getSupportedUntil(), 'date_short'), $license->getSupportedUntil()->diffForHumans());
+                                    	$title = sprintf('ACTIVE | supported until %s (%s)', $customer->formatDateTime($spportedUntil, 'date_short'), $spportedUntil->diffForHumans());
                                     } else {
                                     	$title = '';
                                     }
 
                                 } elseif ($license->isExpired()) {
                                     $style = 'alert-danger';
-                                    $title = trans('messages.support.expired.description');
+                                    $title = trans('messages.support.expired.explanation', [
+                                    	'expr' =>  $customer->formatDateTime($spportedUntil, 'date_short'),
+                                    	'diffs' => $spportedUntil->diffForHumans()]
+                                    );
                                 }
                             @endphp
 
@@ -68,7 +70,7 @@
                                 <p>{{ trans('messages.your_current_license') }} <strong>{{ $license->getType() }}</strong></p>
                                 <div class="alert {{ $style }}" style="display: flex; flex-direction: row; align-items: center;">
                                     <div  title='{{$title}}' class="xtooltip" style="display: flex; flex-direction: row; align-items: center;">
-                                        <p style="padding-left: 10px;padding-right: 40px">{{ $license->getLicenseNumber() }}{!! $license->isExpired() ? ' | <strong>'.trans('messages.support.expired.note').'</strong>' : '' !!}</p>
+                                        <p style="padding-left: 10px;padding-right: 40px">{{ $license->getLicenseNumber() }}{!! $license->isExpired() ? ' | <strong style="text-decoration: underline;">'.trans('messages.support.expired.note').'</strong>' : '' !!}</p>
                                     </div>
 
                                     <a style="margin-left: auto" class="btn btn-secondary" href="{{ action('Admin\SettingController@licenseRemove') }}" link-confirm="{{ trans('messages.license.remove.confirm') }}" link-method="POST">

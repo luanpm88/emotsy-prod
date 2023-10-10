@@ -2767,7 +2767,7 @@
   'subscription_of' => ':name\'s suscripcion',
   'subscriptions' => 'Suscripciones',
   'successful_deliveries' => 'Entregas realizadas con exito',
-  'support.expired.description' => 'To continue receiving our support, please consider extending your support entitlement',
+  'support.expired.explanation' => 'Your support entitlement was expired on :expr (:diffs). To continue receiving our support, please consider extending your support entitlement.',
   'support.expired.note' => 'Support expired',
   'suscription.order_empty' => 'Choose one of the plans available and your invoice details will be calculated and display here',
   'switch_view' => 'Switch View',

@@ -2758,7 +2758,7 @@
   'subscription_of' => ':name 様の購読内容は以下となります。',
   'subscriptions' => 'サブスクリプション',
   'successful_deliveries' => '成功した送信',
-  'support.expired.description' => 'To continue receiving our support, please consider extending your support entitlement',
+  'support.expired.explanation' => 'Your support entitlement was expired on :expr (:diffs). To continue receiving our support, please consider extending your support entitlement.',
   'support.expired.note' => 'Support expired',
   'suscription.order_empty' => '利用可能なプランの1つを選択すると、請求書の詳細が計算され、ここに表示されます',
   'switch_view' => 'ビュー切替え',

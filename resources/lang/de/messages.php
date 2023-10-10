@@ -2768,7 +2768,7 @@
   'subscription_of' => ':name Abonnement',
   'subscriptions' => 'Abonnements',
   'successful_deliveries' => 'Erfolgreiche Zustellungen',
-  'support.expired.description' => 'To continue receiving our support, please consider extending your support entitlement',
+  'support.expired.explanation' => 'Your support entitlement was expired on :expr (:diffs). To continue receiving our support, please consider extending your support entitlement.',
   'support.expired.note' => 'Support expired',
   'suscription.order_empty' => 'Wählen Sie einen der verfügbaren Pläne und Ihr Rechnungsdetails werden berechnet und hier anzeigen',
   'switch_view' => 'Switch View',
