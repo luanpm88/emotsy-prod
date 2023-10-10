@@ -44,10 +44,12 @@ class LicenseHelper
                 $endpoint = join_url(config('custom.license_validation_endpoint'), '/wp-json/automailjp/v1/license/check?license=' . $license);
                 $response = $client->request('get', $endpoint);
             } else {
+                // $endpoint = config('custom.license_verification_endpoint');
+                $endpoint = 'http://verify.acellemail.com'; // Backward compatibility
 
                 $response = $client->request(
                     'post',
-                    'http://127.0.0.1:8000',
+                    $endpoint,
                     [
                         'headers' => [
                             'User-Agent' => md5($license),
