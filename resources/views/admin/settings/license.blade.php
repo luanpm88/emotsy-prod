@@ -34,68 +34,62 @@
 				@endif
 
 
-                @foreach ($settings as $name => $setting)
-                    @if (array_key_exists('cat', $setting) && $setting['cat'] == 'license')
-                        @if ($current_license)
-							<div class="sub-section">
-								<h3>{{ trans('messages.license.your_license') }}</h3>
-								<p>{{ trans('messages.your_current_license') }} <strong>{{ trans('messages.license.type.' . \Acelle\Model\Setting::get('license_type')) }}</strong></p>
-								<div class="d-flex align-items-center">
-									<h4 class="mb-0">
-										{{ $current_license }}
-									</h4>
-									<a href="{{ action('Admin\SettingController@licenseRemove') }}" class="btn btn-default ms-4" link-confirm="{{ trans('messages.license.remove.confirm') }}" link-method="POST">
-										<i class="material-symbols-rounded">delete</i>
-										{{ trans('messages.license.remove') }}
-									</a>
-								</div>
-									
-							</div>
-                        @else
-							<div class="sub-section">
-								<h3>{{ trans('messages.license.your_license') }}</h3>
-								<p> {{ trans('messages.license.no_license') }} </p>
-							</div>
-						@endif
-
-						<div class="sub-section">
-							<h3>{{ trans('messages.license.license_types') }}</h3>
-							{!! trans('messages.license_guide') !!}
+                @if ($license)
+					<div class="sub-section">
+						<h3>{{ trans('messages.license.your_license') }}</h3>
+						<p>{{ trans('messages.your_current_license') }} <strong>{{ $license->getType() }}</strong></p>
+						<div class="d-flex align-items-center">
+							<h4 class="mb-0">
+								{{ $license->getLicenseNumber() }}
+							</h4>
+							<a href="{{ action('Admin\SettingController@licenseRemove') }}" class="btn btn-default ms-4" link-confirm="{{ trans('messages.license.remove.confirm') }}" link-method="POST">
+								<i class="material-symbols-rounded">delete</i>
+								{{ trans('messages.license.remove') }}
+							</a>
 						</div>
 
-						<div class="sub-section">
-							@if (!$current_license)
-								<h3>{{ trans('messages.verify_license') }}</h3>
-							@else
-								<h3>{{ trans('messages.change_license') }}</h3>
-							@endif
-							<div class="row license-line">
-								<div class="col-md-6">
-									@include('helpers.form_control', [
-										'type' => $setting['type'],
-										'class' => (isset($setting['class']) ? $setting['class'] : "" ),
-										'name' => $name,
-										'value' => (request()->license ? request()->license : ''),
-										'label' => trans('messages.enter_license_and_click_verify'),
-										'help_class' => 'setting',
-										'options' => (isset($setting['options']) ? $setting['options'] : "" ),
-										'rules' => Acelle\Model\Setting::rules(),
-									])
-								</div>
-								<div class="col-md-6">
-									<br />
-									<div class="text-left">
-										@if ($current_license)
-											<button class="btn btn-secondary"><i class="icon-check"></i> {{ trans('messages.change_license') }}</button>
-										@else
-											<button class="btn btn-secondary"><i class="icon-check"></i> {{ trans('messages.verify_license') }}</button>
-										@endif
-									</div>
-								</div>
+					</div>
+                @else
+					<div class="sub-section">
+						<h3>{{ trans('messages.license.your_license') }}</h3>
+						<p> {{ trans('messages.license.no_license') }} </p>
+					</div>
+				@endif
+
+				<div class="sub-section">
+					<h3>{{ trans('messages.license.license_types') }}</h3>
+					{!! trans('messages.license_guide') !!}
+				</div>
+
+				<div class="sub-section">
+					@if (!$license)
+						<h3>{{ trans('messages.verify_license') }}</h3>
+					@else
+						<h3>{{ trans('messages.change_license') }}</h3>
+					@endif
+					<div class="row license-line">
+						<div class="col-md-6">
+							@include('helpers.form_control', [
+								'type' => 'text',
+								'name' => 'license',
+								'value' => (request()->license ? request()->license : ''),
+								'label' => trans('messages.enter_license_and_click_verify'),
+								'help_class' => 'setting',
+								'rules' => Acelle\Model\Setting::rules(),
+							])
+						</div>
+						<div class="col-md-6">
+							<br />
+							<div class="text-left">
+								@if ($license)
+									<button class="btn btn-secondary"><i class="icon-check"></i> {{ trans('messages.change_license') }}</button>
+								@else
+									<button class="btn btn-secondary"><i class="icon-check"></i> {{ trans('messages.verify_license') }}</button>
+								@endif
 							</div>
 						</div>
-                    @endif
-                @endforeach
+					</div>
+				</div>
             </div>
         </div>
 

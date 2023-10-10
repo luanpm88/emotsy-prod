@@ -2480,7 +2480,6 @@
   'smtp_username' => 'SMTP Username',
   'something_went_wrong' => 'Something went wrong',
   'something_went_wrong_with_email_service' => 'Cannot send notification email. If you are the administrator, log in to admin area, then go to Setting > All Settings > System Email to check if system email is correctly set up',
-  'something_wrong_with_license_check' => ':error',
   'sort_by' => 'Sort by',
   'source' => 'Source',
   'source.abandoned_cart_email' => 'Abandoned Cart Email',
