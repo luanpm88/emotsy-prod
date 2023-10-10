@@ -2775,6 +2775,8 @@
   'subscription_of' => ':name\'s subscription',
   'subscriptions' => 'Subscriptions',
   'successful_deliveries' => 'Successful deliveries',
+  'support.expired.description' => 'To continue receiving our support, please consider extending your support entitlement',
+  'support.expired.note' => 'Support expired',
   'suscription.order_empty' => 'Choose one of the plans available and your invoice details will be calculated and display here',
   'switch_view' => 'Switch View',
   'system' => 'System',
@@ -3207,6 +3209,4 @@
   'your_api_token' => 'Your API token',
   'your_current_license' => 'The current application is registered with the key below, also known as Purchase Code. License type is: ',
   'zip_postal_code' => 'Zip / Postal code',
-  'support.expired.description' => 'To continue receiving our support, please consider extending your support entitlement',
-  'support.expired.note' => 'Support expired'
 ) ?>
