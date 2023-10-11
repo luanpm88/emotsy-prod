@@ -46,7 +46,7 @@
                         @if ($license)
                             @php
                             	$admin = Auth::user()->admin;
-                            	$spportedUntil = $license->getSupportedUntil();
+                            	$spportedUntil = $license->getSupportedUntil($admin->getTimezone());
 
                             	if (config('custom.japan')) {
                             		$entitlementLink = '#';

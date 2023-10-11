@@ -1321,7 +1321,7 @@ class Automation2Controller extends Controller
                 'message' => trans('messages.license.required'),
             ], 400);
         }
-        
+
         $automations = Automation2::whereIn(
             'uid',
             is_array($request->uids) ? $request->uids : explode(',', $request->uids)

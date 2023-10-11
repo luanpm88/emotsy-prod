@@ -106,7 +106,7 @@ class SubscriptionController extends Controller
             // throw new \Exception("The invoice with ID [{$request->invoice_uid}] is paid!");
             return redirect()->action('SubscriptionController@index')
                 ->with('alert-warning', "The invoice with ID [{$request->invoice_uid}] is paid!");
-        }   
+        }
 
         // always update invoice price from plan
         $invoice->mapType()->refreshPrice();
@@ -161,7 +161,7 @@ class SubscriptionController extends Controller
             // throw new \Exception("The invoice with ID [{$request->invoice_uid}] is paid!");
             return redirect()->action('SubscriptionController@index')
                 ->with('alert-warning', "The invoice with ID [{$request->invoice_uid}] is paid!");
-        }   
+        }
 
         // no unpaid invoice found
         if (!$invoice) {
@@ -209,7 +209,7 @@ class SubscriptionController extends Controller
             // throw new \Exception("The invoice with ID [{$request->invoice_uid}] is paid!");
             return redirect()->action('SubscriptionController@index')
                 ->with('alert-warning', "The invoice with ID [{$request->invoice_uid}] is paid!");
-        }   
+        }
 
         // always update invoice price from plan
         $invoice->mapType()->refreshPrice();
