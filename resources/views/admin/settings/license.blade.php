@@ -45,13 +45,13 @@
 
                         @if ($license)
                             @php
-                            	$customer = Auth::user()->customer;
+                            	$admin = Auth::user()->admin;
                             	$spportedUntil = $license->getSupportedUntil();
 
                                 if ($license->isActive()) {
                                     $style = 'alert-success';
                                     if ($spportedUntil) {
-                                    	$title = sprintf('ACTIVE | supported until %s (%s)', $customer->formatDateTime($spportedUntil, 'date_short'), $spportedUntil->diffForHumans());
+                                    	$title = sprintf('ACTIVE | supported until %s (%s)', $admin->formatDateTime($spportedUntil, 'date_short'), $spportedUntil->diffForHumans());
                                     } else {
                                     	$title = '';
                                     }
@@ -59,9 +59,13 @@
                                 } elseif ($license->isExpired()) {
                                     $style = 'alert-danger';
                                     $title = trans('messages.support.expired.explanation', [
-                                    	'expr' =>  $customer->formatDateTime($spportedUntil, 'date_short'),
+                                    	'expr' =>  $admin->formatDateTime($spportedUntil, 'date_short'),
                                     	'diffs' => $spportedUntil->diffForHumans()]
                                     );
+                                } else {
+                                	// Legacy case, backward compatibility
+                                    $style = 'alert-danger';
+                                    $title = '';
                                 }
                             @endphp
 
