@@ -72,6 +72,35 @@
                             'message' => 'You are running on PHP version '.PHP_VERSION.' which is too old. Please upgrade to PHP '.config('custom.php_recommended').' or higher in order to proceed with application upgrade'
                         ])
                     @else
+                        @if ($license && $license->isExpired())
+                            @php
+                                $admin = Auth::user()->admin;
+                                $spportedUntil = $license->getSupportedUntil();
+
+                                if (config('custom.japan')) {
+                                    $entitlementLink = '#';
+                                } else {
+                                    $entitlementLink = 'https://codecanyon.net/item/acelle-email-marketing-web-application/17796082';
+                                }
+
+                                $style = 'alert-danger';
+                                $title = trans('messages.support.expired.explanation', [
+                                    'expr' =>  $admin->formatDateTime($spportedUntil, 'date_short'),
+                                    'diffs' => $spportedUntil->diffForHumans()]
+                                );
+                            @endphp
+
+                            <div class="sub-section">
+                                <h3>{{ trans('messages.license.your_license') }}</h3>
+                                <p>{{ $title }}</p>
+                                <div class="alert {{ $style }}" style="display: flex; flex-direction: row; align-items: center;">
+                                    <div style="display: flex; flex-direction: row; align-items: center;">
+                                        <p style="padding-left: 5px;padding-right: 40px">{{ $license->getLicenseNumber() }}{!! $license->isExpired() ? ' | <a href="'.$entitlementLink.'"><strong style="text-decoration: underline;">'.trans('messages.support.expired.note').'</strong></a>' : '' !!}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+
                         <h3>{{ trans('messages.upgrade.title.current') }}</h3>
                         <p>{!! trans('messages.upgrade.wording.upload', [ 'current' => "<code>{$manager->getCurrentVersion()}</code>" ]) !!}</p>
                         <p>{{ trans('messages.upgrade.notice') }}</p>

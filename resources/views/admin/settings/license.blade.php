@@ -48,6 +48,13 @@
                             	$admin = Auth::user()->admin;
                             	$spportedUntil = $license->getSupportedUntil();
 
+                            	if (config('custom.japan')) {
+                            		$entitlementLink = '#';
+                            	} else {
+                            		$entitlementLink = 'https://codecanyon.net/item/acelle-email-marketing-web-application/17796082';
+                            	}
+
+
                                 if ($license->isActive()) {
                                     $style = 'alert-success';
                                     if ($spportedUntil) {
@@ -74,7 +81,7 @@
                                 <p>{{ trans('messages.your_current_license') }} <strong>{{ $license->getType() }}</strong></p>
                                 <div class="alert {{ $style }}" style="display: flex; flex-direction: row; align-items: center;">
                                     <div  title='{{$title}}' class="xtooltip" style="display: flex; flex-direction: row; align-items: center;">
-                                        <p style="padding-left: 10px;padding-right: 40px">{{ $license->getLicenseNumber() }}{!! $license->isExpired() ? ' | <strong style="text-decoration: underline;">'.trans('messages.support.expired.note').'</strong>' : '' !!}</p>
+                                        <p style="padding-left: 5px;padding-right: 40px">{{ $license->getLicenseNumber() }}{!! $license->isExpired() ? ' | <a href="'.$entitlementLink.'"><strong style="text-decoration: underline;">'.trans('messages.support.expired.note').'</strong></a>' : '' !!}</p>
                                     </div>
 
                                     <a style="margin-left: auto" class="btn btn-secondary" href="{{ action('Admin\SettingController@licenseRemove') }}" link-confirm="{{ trans('messages.license.remove.confirm') }}" link-method="POST">

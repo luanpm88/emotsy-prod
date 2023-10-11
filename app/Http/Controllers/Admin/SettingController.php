@@ -499,6 +499,7 @@ class SettingController extends Controller
         $manager = new UpgradeManager();
 
         return view('admin.settings.upgrade', [
+            'license' => LicenseHelper::getCurrentLicense(),
             'any' => 'any',
             'manager' => $manager,
             'phpversion' => version_compare(PHP_VERSION, config('custom.php_recommended'), '>='),
@@ -589,7 +590,7 @@ class SettingController extends Controller
      */
     public function uploadApplicationPatch(Request $request)
     {
-        if (!\Acelle\Helpers\LicenseHelper::hasActiveLicense()) {
+        if (is_null(\Acelle\Helpers\LicenseHelper::getCurrentLicense())) {
             $request->session()->flash('alert-error', 'Please <a style="text-decoration:underline;font-style: normal;" href="'.url('admin/settings/license').'">register</a> your installation with a valid purchase code first before upgrading.');
 
             return redirect()->action('Admin\SettingController@upgrade');
