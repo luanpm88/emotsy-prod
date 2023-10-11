@@ -81,6 +81,7 @@ class LicenseHelper
         Setting::set('license_type', $license['licence']);
         Setting::set('license_status', $license['status']);
         Setting::set('license_supported_until', $license['supported_until']);
+        Setting::set('license_buyer', $license['buyer']);
     }
 
     public static function removeLicense()
@@ -89,6 +90,7 @@ class LicenseHelper
         Setting::set('license_type', '');
         Setting::set('license_status', '');
         Setting::set('license_supported_until', '');
+        Setting::set('license_buyer', '');
     }
 
     public static function getCurrentLicense()
@@ -102,6 +104,7 @@ class LicenseHelper
             Setting::get('license_type'),
             Setting::get('license_status'),
             Setting::get('license_supported_until'),
+            Setting::get('license_buyer'),
         );
     }
 

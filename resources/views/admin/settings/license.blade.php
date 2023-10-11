@@ -77,7 +77,7 @@
                             @endphp
 
                             <div class="sub-section">
-                                <h3>{{ trans('messages.license.your_license') }}</h3>
+                                <h3 title="{{ $license->getBuyer() ?? '...' }}">{{ trans('messages.license.your_license') }}</h3>
                                 <p>{{ trans('messages.your_current_license') }} <strong>{{ $license->getType() }}</strong></p>
                                 <div class="alert {{ $style }}" style="display: flex; flex-direction: row; align-items: center;">
                                     <div  title='{{$title}}' class="xtooltip" style="display: flex; flex-direction: row; align-items: center;">

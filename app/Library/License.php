@@ -9,16 +9,18 @@ class License
 	protected $type;
 	protected $supportedUntil;
 	protected $status;
+	protected $buyer;
 
 	public const STATUS_ACTIVE = 'active';
 	public const STATUS_EXPIRED = 'expired';
 
-	function __construct($license, $type, $status, $supportedUntil)
+	function __construct($license, $type, $status, $supportedUntil, $buyer = null)
 	{
 		$this->license = $license;
 		$this->type = $type;
 		$this->supportedUntil = Carbon::parse($supportedUntil);
 		$this->status = $status;
+		$this->buyer = $buyer;
 	}
 
 	public function isActive()
@@ -41,8 +43,13 @@ class License
             return $this->type;
 	}
 
-        public function getSupportedUntil()
-        {
-            return $this->supportedUntil;
-        }
+    public function getSupportedUntil()
+    {
+        return $this->supportedUntil;
+    }
+
+    public function getBuyer()
+    {
+    	return $this->buyer;
+    }
 }
