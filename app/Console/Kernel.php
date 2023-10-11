@@ -104,7 +104,7 @@ class Kernel extends ConsoleKernel
                 $title = 'License verification',
                 $exceptionCallback = null,
             );
-        })->name('verify_license')->weekly();
+        })->name('verify_license')->weeklyOn(rand(1,6), '10:'.rand(10,59)); // randomly from Mon to Sat, at 10:10 - 10:59
     }
 
     /**
