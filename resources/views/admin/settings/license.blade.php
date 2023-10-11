@@ -45,32 +45,32 @@
 
                         @if ($license)
                             @php
-                            	$admin = Auth::user()->admin;
-                            	$spportedUntil = $license->getSupportedUntil($admin->getTimezone());
+                                $admin = Auth::user()->admin;
+                                $spportedUntil = $license->getSupportedUntil($admin->getTimezone());
 
-                            	if (config('custom.japan')) {
-                            		$entitlementLink = '#';
-                            	} else {
-                            		$entitlementLink = 'https://codecanyon.net/item/acelle-email-marketing-web-application/17796082';
-                            	}
+                                if (config('custom.japan')) {
+                                    $entitlementLink = '#';
+                                } else {
+                                    $entitlementLink = 'https://codecanyon.net/item/acelle-email-marketing-web-application/17796082';
+                                }
 
 
                                 if ($license->isActive()) {
                                     $style = 'alert-success';
                                     if ($spportedUntil) {
-                                    	$title = sprintf('ACTIVE | supported until %s (%s)', $admin->formatDateTime($spportedUntil, 'date_short'), $spportedUntil->diffForHumans());
+                                        $title = sprintf('ACTIVE | supported until %s (%s)', $admin->formatDateTime($spportedUntil, 'date_short'), $spportedUntil->diffForHumans());
                                     } else {
-                                    	$title = '';
+                                        $title = '';
                                     }
 
                                 } elseif ($license->isExpired()) {
                                     $style = 'alert-danger';
                                     $title = trans('messages.support.expired.explanation', [
-                                    	'expr' =>  $admin->formatDateTime($spportedUntil, 'date_short'),
-                                    	'diffs' => $spportedUntil->diffForHumans()]
+                                        'expr' =>  $admin->formatDateTime($spportedUntil, 'datetime_full_with_timezone'),
+                                        'diffs' => $spportedUntil->diffForHumans()]
                                     );
                                 } else {
-                                	// Legacy case, backward compatibility
+                                    // Legacy case, backward compatibility
                                     $style = 'alert-danger';
                                     $title = '';
                                 }

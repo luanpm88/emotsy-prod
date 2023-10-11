@@ -26,7 +26,7 @@ return [
         'date_short' => 'Y-m-d',
         'date_without_year' => 'M-j', // Apr-11
         'datetime_full' => 'Y-m-d H:i',
-        'datetime_full_with_timezone' => 'Y-m-d H:i e',
+        'datetime_full_with_timezone' => 'Y-m-d H:i T',
         'datetime_short' => 'Y-m-d H:i',
         'time_only' => 'H:i',
         'number_precision' => '2',

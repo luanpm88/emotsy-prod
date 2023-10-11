@@ -85,7 +85,7 @@
 
                                 $style = 'alert-danger';
                                 $title = trans('messages.support.expired.explanation', [
-                                    'expr' =>  $admin->formatDateTime($spportedUntil, 'date_short'),
+                                    'expr' =>  $admin->formatDateTime($spportedUntil, 'datetime_full_with_timezone'),
                                     'diffs' => $spportedUntil->diffForHumans()]
                                 );
                             @endphp
