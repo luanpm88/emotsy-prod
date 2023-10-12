@@ -14,16 +14,16 @@ class DatabaseInit extends Seeder
     public function run()
     {
         // languages
-        // $this->insertLanguages();
+        $this->insertLanguages();
 
         // // layouts
-        // $this->insertLayouts();
+        $this->insertLayouts();
 
         // // countries
-        // $this->insertCountries();
+        $this->insertCountries();
 
         // // admin_groups
-        // $this->insertAdminGroups();
+        $this->insertAdminGroups();
 
         // plans
         $this->insertPlans();
