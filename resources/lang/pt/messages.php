@@ -1472,6 +1472,7 @@
   'less' => 'menor do que',
   'less_than' => 'less than',
   'license' => 'Licença (Código de compra)',
+  'license.error.no_license' => 'NO LICENSE FOUND. Please register your application with a valid purchase code (go to Admin area, Settings > License dashboard).',
   'license.license_types' => 'Tipo de licença',
   'license.no_license' => 'Licença inválida. Compre uma licença e insira-a no formulário abaixo para continuar a utilizar o serviço',
   'license.remove' => 'Remove',

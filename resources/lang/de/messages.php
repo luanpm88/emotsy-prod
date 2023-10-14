@@ -1471,6 +1471,7 @@
   'less' => 'kleiner als',
   'less_than' => 'Weniger als (Tage)',
   'license' => 'Lizenz  (Bestellcode)',
+  'license.error.no_license' => 'NO LICENSE FOUND. Please register your application with a valid purchase code (go to Admin area, Settings > License dashboard).',
   'license.license_types' => 'Lizenz Typen',
   'license.no_license' => 'Sie haben keine gültige Lizenz eingegeben. Bitte erwerben Sie eine Lizenz und geben Sie sie in das untenstehende Formular ein, um das Produkt weiter zu verwenden',
   'license.remove' => 'Entfernen',
