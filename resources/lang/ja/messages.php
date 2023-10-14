@@ -1469,6 +1469,7 @@
   'less' => '未満',
   'less_than' => 'less than',
   'license' => 'ライセンス（購入したコード）',
+  'license.error.invalid' => 'Invalid license',
   'license.error.no_license' => 'NO LICENSE FOUND. Please register your application with a valid purchase code (go to Admin area, Settings > License dashboard).',
   'license.license_types' => 'ライセンスの種類',
   'license.no_license' => 'まだ有効なライセンスを入力していません。 ライセンスを購入し、以下のフォームに入力して、製品を引き続き使用してください',

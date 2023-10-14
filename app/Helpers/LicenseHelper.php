@@ -70,7 +70,12 @@ class LicenseHelper
             return $responseJson;
         } catch(\GuzzleHttp\Exception\ClientException $ex) { // 400 error
             $response = $ex->getResponse();
-            throw new Exception('Invalid license: '.$response->getBody()->getContents());
+
+            if (config('custom.japan')) {
+                throw new Exception(trans('messages.license.error.invalid').': '.$license);
+            } else {
+                throw new Exception('Invalid license: '.$response->getBody()->getContents());
+            }
         }
     }
 
