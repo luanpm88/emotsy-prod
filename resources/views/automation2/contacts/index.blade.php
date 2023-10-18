@@ -71,12 +71,14 @@ full-height
                         {{ trans('messages.automation.action') }}
                     </button>
                     <div class="dropdown-menu dropdown-menu-end" aria-labelledby="btnGroupDrop1">
-                        <a class="dropdown-item list-export-contacts"
-                            href="{{ action('Automation2Controller@exportContacts', [
-                                'uid' => $automation->uid,
-                                'action_id' => request()->action_id,
-                            ]) }}"
-                        >{{ trans('messages.automation.export_this_list') }}</a>
+                        @if (config('app.demo'))
+                            <a class="dropdown-item list-export-contacts"
+                                href="{{ action('Automation2Controller@exportContacts', [
+                                    'uid' => $automation->uid,
+                                    'action_id' => request()->action_id,
+                                ]) }}"
+                            >{{ trans('messages.automation.export_this_list') }}</a>
+                        @endif
                         <a class="dropdown-item list-copy-contacts-new-list"
                             href="{{ action('Automation2Controller@copyToNewList', [
                                 'uid' => $automation->uid,
