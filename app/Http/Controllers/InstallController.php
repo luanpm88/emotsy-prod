@@ -134,28 +134,24 @@ class InstallController extends Controller
 
             // Check license
             if (!empty($request->license)) {
-                if (config('custom.japan')) {
-                    $endpoint = join_url(config('custom.license_validation_endpoint'), '/wp-json/automailjp/v1/license/check?license=' . $request->license);
-                    $result = Http::get($endpoint)->json();
+                try {
+                    $license = \Acelle\Helpers\LicenseHelper::getLicense($site_info["license"]);
+                    $site_info["license"] = $license['purchase_code'];
+                    $site_info["license_type"] = $license['licence'];
+                    $site_info["license_status"] = $license['status'];
+                    $site_info["license_supported_until"] = $license['supported_until'];
+                } catch (\Exception $ex) {
+                    $error = \Illuminate\Validation\ValidationException::withMessages([
+                       'license' => $ex->getMessage(),
+                    ]);
 
-                    // failed
-                    if ($result['status'] !== 'success') {
-                        $this->validate($request, ['license' => 'license_error:'.$result['message']]);
-                    }
-
-                    // success: save setting
-                    $site_info["license"] = $result['license'];
-                    $site_info["license_type"] = $result['type'];
-                } else {
-                    try {
-                        $site_info["license_type"] = \Acelle\Helpers\LicenseHelper::getLicenseType($request->license);
-                    } catch (\Exception $ex) {
-                        $this->validate($request, ['license' => 'license_error:' . $ex->getMessage()]);
-                    }
+                    throw $error;
                 }
             } else {
-                $site_info["license_type"] = '';
                 $site_info["license"] = '';
+                $site_info["license_type"] = '';
+                $site_info["license_status"] = '';
+                $site_info["license_supported_until"] = '';
             }
 
             // Check SMTP connection

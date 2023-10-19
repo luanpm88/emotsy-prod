@@ -360,7 +360,7 @@ class TemplateController extends Controller
             return $this->notAuthorized();
         }
 
-        if ($request->assetType == 'upload') {
+        if ($request->assetType == 'upload' || $request->assetType == 'audio') {
             $assetUrl = $template->uploadAsset($request->file('file'));
         } elseif ($request->assetType == 'url') {
             $assetUrl = $template->uploadAssetFromUrl($request->url);

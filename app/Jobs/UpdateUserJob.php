@@ -20,6 +20,8 @@ class UpdateUserJob extends Base
      */
     public function handle()
     {
-        $this->customer->updateCache();
+        if (!is_null($this->customer->getCurrentActiveGeneralSubscription())) {
+            $this->customer->updateCache();
+        }
     }
 }

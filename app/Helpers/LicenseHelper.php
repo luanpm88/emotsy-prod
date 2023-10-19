@@ -4,6 +4,9 @@ namespace Acelle\Helpers;
 
 use Acelle\Model\Setting;
 use Carbon\Carbon;
+use Exception;
+use GuzzleHttp\Client;
+use Acelle\Library\License;
 
 class LicenseHelper
 {
@@ -11,106 +14,122 @@ class LicenseHelper
     public const TYPE_REGULAR = 'regular';
     public const TYPE_EXTENDED = 'extended';
 
+    public const STATUS_VALID = 'valid';
+    public const STATUS_EXPIRED = 'expired';
+
     /**
-     * Get license type: normal / extended.
+     * Get license information
      *
-     * @var string
+     * [
+     *    "id" => 20656,
+     *    "item_number" => [EVT ITEM ID GOES HERE],
+     *    "purchase_code" => "test-only",
+     *    "purchase_date" => [some date],
+     *    "buyer" => [buyer name],
+     *    "licence" => "Regular License",
+     *    "supported_until" => "Mon Oct 10 2033 02:39:47 GMT+0000",
+     *    "created_at" => "Tue Oct 10 2023 02:17:44 GMT+0000",
+     *    "status" => "active",
+     *  ]
+     *
+     *
      */
     public static function getLicense($license)
     {
-        $ch = curl_init();
+        $client = new Client(['verify' => false]);
 
-        curl_setopt($ch, CURLOPT_URL, 'http://verify.acellemail.com/'); // @todo hard-coded here
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_TIMEOUT_MS, 100000);
-        curl_setopt(
-            $ch,
-            CURLOPT_POSTFIELDS,
-            htmlspecialchars_decode(
-                http_build_query(array(
-                'purchase-code' => $license,
-                'item-id' => '17796082', // @todo hard-coded here
-                'secret' => session('secret'),
-            ))
-            )
+        try {
+            // Throw an exception if failed
+            if (config('custom.japan')) {
+                $endpoint = join_url(config('custom.license_validation_endpoint'), '/wp-json/automailjp/v1/license/check?license=' . $license);
+                $response = $client->request('get', $endpoint);
+            } else {
+                // $endpoint = config('custom.license_verification_endpoint');
+                $endpoint = 'http://verify.acellemail.com'; // Backward compatibility
+
+                $response = $client->request(
+                    'post',
+                    $endpoint,
+                    [
+                        'headers' => [
+                            'User-Agent' => md5($license),
+                        ],
+                        'form_params' => [
+                            'purchase-code' => $license,
+                            'item-id' => '17796082', // @todo hard-coded here
+                            'secret' => session('secret'),
+                            'version' => app_version(),
+                        ],
+                        'verify' => false
+                    ]
+                );
+            }
+
+            $responseBody = $response->getBody();
+            $responseJson = json_decode($responseBody, true);
+            return $responseJson;
+        } catch(\GuzzleHttp\Exception\ClientException $ex) { // 400 error
+            $response = $ex->getResponse();
+
+            if (config('custom.japan')) {
+                throw new Exception(trans('messages.license.error.invalid').': '.$license);
+            } else {
+                throw new Exception('Invalid license: '.$response->getBody()->getContents());
+            }
+        }
+    }
+
+    public static function updateLicense($licenseCode)
+    {
+        $license = self::getLicense($licenseCode);
+        Setting::set('license', $license['purchase_code']);
+        Setting::set('license_type', $license['licence']);
+        Setting::set('license_status', $license['status']);
+        Setting::set('license_supported_until', $license['supported_until']);
+        Setting::set('license_buyer', $license['buyer']);
+    }
+
+    public static function removeLicense()
+    {
+        Setting::set('license', '');
+        Setting::set('license_type', '');
+        Setting::set('license_status', '');
+        Setting::set('license_supported_until', '');
+        Setting::set('license_buyer', '');
+    }
+
+    public static function getCurrentLicense()
+    {
+        if (empty(Setting::get('license'))) {
+            return null;
+        }
+
+        return new license(
+            Setting::get('license'),
+            Setting::get('license_type'),
+            Setting::get('license_status'),
+            Setting::get('license_supported_until'),
+            Setting::get('license_buyer'),
         );
-        curl_setopt($ch, CURLOPT_USERAGENT, md5($license));
-
-        // receive server response ...
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-        $server_output = curl_exec($ch);
-
-        // Get error
-        $curl_errno = curl_errno($ch);
-        $curl_error = curl_error($ch);
-        curl_close($ch);
-
-        if ($curl_errno > 0) {
-            // Uncatchable error
-            throw new \Exception($curl_error);
-        } else {
-            return json_decode($server_output, true);
-        }
     }
 
-    /**
-     * Get license type: normal / extended.
-     *
-     * @var string
-     */
-    public static function getLicenseType($license)
+    public static function hasActiveLicense()
     {
-        $result = self::getLicense($license);
+        $license = self::getCurrentLicense();
 
-        # return '' if not valid
-        if ($result['status'] != 'valid') {
-            // License is not valid
-            throw new \Exception(trans('messages.license_is_not_valid'));
+        if (is_null($license)) {
+            return false;
         }
 
-        return $result['data']['verify-purchase']['licence'] == 'Regular License' ? self::TYPE_REGULAR : self::TYPE_EXTENDED;
+        return $license->isActive();
     }
 
-    /**
-     * Check if supported.
-     *
-     * @return bool
-     */
-    public static function isSupported($code = null)
+    public static function refreshLicense()
     {
-        if (is_null($code)) {
-            $code = Setting::get('license');
+        $license = self::getCurrentLicense();
+
+        if ($license) {
+            self::updateLicense($license->getLicenseNumber());
         }
-
-        if (empty($code)) {
-            throw new \Exception('No purchase code available for your installation');
-        }
-
-        $result = self::getLicense($code);
-
-        if (array_key_exists('status', $result) && $result['status'] == 'invalid') {
-            throw new \Exception('Invalid license key. Please go to Settings > License dashboard and enter a valid license key to register your installation');
-        }
-
-        $supportedUntil = Carbon::parse($result['data']['supported_until']);
-        $supported = $result['data']['supported'];
-
-        return [
-            $supported,
-            $supportedUntil,
-        ];
-    }
-
-    /**
-     * Check license is valid.
-     *
-     * @return bool
-     */
-    public static function isValid($license)
-    {
-        $result = self::getLicense($license);
-
-        return $result['status'] == 'valid';
     }
 }

@@ -171,7 +171,19 @@ class Setting extends Model
                 'not_required' => true,
             ],
             'license_type' => [
-                'cat' => 'system',
+                'cat' => 'license',
+                'value' => '',
+                'type' => 'text',
+                'not_required' => true,
+            ],
+            'license_status' => [
+                'cat' => 'license',
+                'value' => '',
+                'type' => 'text',
+                'not_required' => true,
+            ],
+            'license_supported_until' => [
+                'cat' => 'license',
                 'value' => '',
                 'type' => 'text',
                 'not_required' => true,
@@ -643,23 +655,6 @@ class Setting extends Model
             ['value' => 'pro', 'text' => trans('messages.builder.pro')],
             ['value' => 'classic', 'text' => trans('messages.builder.classic')],
         ];
-    }
-
-    /**
-     * Update license type.
-     *
-     * @return array
-     */
-    public static function updateLicense($license)
-    {
-        if (empty($license)) {
-            self::set('license', '');
-            self::set('license_type', '');
-        } else {
-            $license_type = \Acelle\Helpers\LicenseHelper::getLicenseType($license);
-            self::set('license', $license);
-            self::set('license_type', $license_type);
-        }
     }
 
     /**
