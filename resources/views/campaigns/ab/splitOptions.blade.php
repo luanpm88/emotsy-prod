@@ -6,6 +6,10 @@
 
 @section('head')
     <script type="text/javascript" src="{{ URL::asset('core/js/group-manager.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('core/datetime/anytime.min.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('core/datetime/moment.min.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('core/datetime/pickadate/picker.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('core/datetime/pickadate/picker.date.js') }}"></script>
 @endsection
 
 @section('page_header')
@@ -135,8 +139,60 @@
                     </div>
                 </div>
             </div>
+
+            <h4 class="mb-4">{{ trans('messages.schedule') }}</h4>
+
+            <div id="CampaignScheduleForm">
+                {{ csrf_field() }}
+
+                <div class="form-group control-radio">
+                    <div class="radio_box" data-popup="tooltip" title="">
+                        <label class="main-control">
+                            <input {{ !$campaign->run_at ? 'checked' : '' }} type="radio" name="send_now" value="yes" class="styled"><span class="check-symbol"></span>
+                            <rtitle style="font-size:initial">{{ trans('messages.campaign.send_now.title') }}</rtitle>
+                            <div class="desc text-normal mb-10">
+                                {{ trans('messages.campaign.send_now.desc') }}
+                            </div>
+                        </label>
+                    </div>   
+                    <hr>
+                    <div class="radio_box" data-popup="tooltip" title="">
+                        <label class="main-control">
+                            <input {{ $campaign->run_at ? 'checked' : '' }} type="radio" name="send_now" value="no" class="styled"><span class="check-symbol"></span>
+                                <rtitle style="font-size:initial">{{ trans('messages.campaign.send_later.title') }}</rtitle>
+                                <div class="desc text-normal mb-10">
+                                    {{ trans('messages.campaign.send_later.desc') }}
+                                </div>
+                        </label>
+                        <div class="radio_more_box form-group-mb-0">
+                            <div class="row">
+                                <div class="col-md-3 list_select_box" target-box="segments-select-box" segments-url="{{ action('SegmentController@selectBox') }}">
+                                    @include('helpers.form_control', ['type' => 'date',
+                                        'class' => '_from_now',
+                                        'name' => 'delivery_date',
+                                        'label' => trans('messages.delivery_date'),
+                                        'value' => $delivery_date,
+                                        'rules' => ['delivery_date' => 'required',],
+                                        'help_class' => 'campaign'
+                                    ])
+                                </div>
+                                <div class="col-md-3 segments-select-box">
+                                    @include('helpers.form_control', ['type' => 'time',
+                                        'name' => 'delivery_time',
+                                        'label' => trans('messages.delivery_time'),
+                                        'value' => $delivery_time,
+                                        'rules' => ['delivery_time' => 'required',],
+                                        'help_class' => 'campaign'
+                                    ])
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>              
+                </div>
+            <div>
             
-            <div class="row mb-5">
+            <div class="row mb-5 mt-4 pt-3">
                 <div class="col-md-8">
                     <h4 class="">{{ trans('messages.campaign.ab.split.how_long_run') }}</h4>
 
@@ -166,6 +222,12 @@
                             </select>
                         </div>
                         <span>(s)</span>
+                        <div class="ms-4">
+                            (<span data-control="winning-send-at-box">{!! trans('messages.campaign.ab.winning_send_at', [
+                                'date' => Auth()->user()->customer->formatDateTime(Carbon\Carbon::now()->addDays(1), 'date_short'),
+                                'time' => Auth()->user()->customer->formatDateTime(Carbon\Carbon::now()->addDays(1), 'time_only'),
+                            ]) !!}</span>)
+                        </div>
                     </div>
                 </div>
             </div>  
@@ -180,7 +242,8 @@
 
     <script>
         var abSplitManager;
-        var abSplitOptions
+        var abSplitOptions;
+        var winningSendAt;
 
         $(function() {
             // split manager
@@ -192,7 +255,70 @@
                 winningBoxOption: document.querySelector('[ab-control="winning-option"]'),
                 winningBoxNone: document.querySelector('[ab-control="winning-none"]'),
             });
+
+            // winning send at box
+            winningSendAt = new WinningSendAt({
+                box: document.querySelector('[data-control="winning-send-at-box"]'),
+                url: '{{ action('CampaignController@abWinningSendAt', $campaign->uid) }}',
+            });
         });
+
+        var WinningSendAt = class {
+            constructor(options) {
+                var _this = this;
+                this.box = options.box;
+                this.url = options.url;
+
+                //
+                this.load();
+
+                //
+                this.getSendNowInputs().on('change', function() {
+                    _this.load();
+                });
+                this.getDeliveryDateInput().on('change', function() {
+                    _this.load();
+                });
+                this.getDeliveryTimeInput().on('change', function() {
+                    _this.load();
+                });
+                $('[name="ab_test_duration_value"], [name="ab_test_duration_unit"]').on('change', function() {
+                    _this.load();
+                });
+            }
+
+            getSendNowInputs() {
+                return $('[name="send_now"]');
+            }
+
+            getSendNow() {
+                return $('[name="send_now"]:checked').val();
+            }
+
+            getDeliveryDateInput() {
+                return $('[name="delivery_date"]');
+            }
+
+            getDeliveryTimeInput() {
+                return $('[name="delivery_time"]');
+            }
+
+            load() {
+                var _this = this;
+                $.ajax({
+                    url: this.url,
+                    data: {
+                        send_now: this.getSendNow(),
+                        delivery_date: this.getDeliveryDateInput().val(),
+                        delivery_time: this.getDeliveryTimeInput().val(),
+                        ab_value: $('[name="ab_test_duration_value"]').val(),
+                        ab_unit: $('[name="ab_test_duration_unit"]').val(),
+                    }
+                }).done(function(response) {
+                    _this.box.innerHTML = (response);
+                });
+            }
+        };
             
         var ABSplitManager = class {
             constructor(options) {

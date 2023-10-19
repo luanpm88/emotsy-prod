@@ -24,12 +24,14 @@
             </a>
         </li>
     @endif
-    <li class="nav-item {{ $campaign->step() > 2 ? "" : "disabled" }}">
-        <span class="material-symbols-rounded mx-3 text-muted2" style="font-size:11px;">arrow_forward_ios</span>
-        <a class="nav-link pb-1 fs-7 bg-transparent {{ $current == 4 ? "active" : "" }} me-0" href="{{ action('CampaignController@schedule', $campaign->uid) }}">
-            <span class="material-symbols-rounded">schedule</span> {{ trans('messages.schedule') }}
-        </a>
-    </li>
+    @if (!$campaign->isABTest())
+        <li class="nav-item {{ $campaign->step() > 2 ? "" : "disabled" }}">
+            <span class="material-symbols-rounded mx-3 text-muted2" style="font-size:11px;">arrow_forward_ios</span>
+            <a class="nav-link pb-1 fs-7 bg-transparent {{ $current == 4 ? "active" : "" }} me-0" href="{{ action('CampaignController@schedule', $campaign->uid) }}">
+                <span class="material-symbols-rounded">schedule</span> {{ trans('messages.schedule') }}
+            </a>
+        </li>
+    @endif
     <li class="nav-item {{ $campaign->step() > 3 ? "" : "disabled" }} me-0">
         <span class="material-symbols-rounded mx-3 text-muted2" style="font-size:11px;">arrow_forward_ios</span>
         <a class="nav-link pb-1 fs-7 bg-transparent {{ $current == 5 ? "active" : "" }}" href="{{ action('CampaignController@confirm', $campaign->uid) }}">

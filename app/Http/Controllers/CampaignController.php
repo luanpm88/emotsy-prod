@@ -2791,14 +2791,26 @@ class CampaignController extends Controller
     public function abSplitOptions(Request $request)
     {
         $campaign = Campaign::findByUid($request->uid);
+        $currentTimezone = $campaign->customer->getTimezone();
 
         // authorize
         if (\Gate::denies('update', $campaign)) {
             return $this->notAuthorized();
         }
 
-        // Save posted data
+        // validate and save posted data
         if ($request->isMethod('post')) {
+            // schedule
+            if ($request->send_now == 'yes') {
+                $campaign->run_at = null;
+                $campaign->save();
+            } else {
+                $runAtStr = $request->delivery_date.' '.$request->delivery_time;
+                $runAt = Carbon::createFromFormat('Y-m-d H:i', $runAtStr, $currentTimezone)->timezone(config('app.timezone'));
+                $campaign->run_at = $runAt;
+                $campaign->setScheduled();
+            }
+
             // validate
             $errors = $campaign->saveABSplitOptions($request->all());
 
@@ -2812,12 +2824,21 @@ class CampaignController extends Controller
             }
 
             // success
-            return redirect()->action('CampaignController@schedule', ['uid' => $campaign->uid]);
+            return redirect()->action('CampaignController@confirm', ['uid' => $campaign->uid]);
         }
+
+        // Get the run_at datetime in current customer timezone
+        $runAt = is_null($campaign->run_at) ? Carbon::now($currentTimezone) : $campaign->run_at;
+        $runAt->timezone($currentTimezone);
+
+        $delivery_date = $runAt->format('Y-m-d');
+        $delivery_time = $runAt->format('H:i');
 
         return view('campaigns.ab.splitOptions', [
             'campaign' => $campaign,
             'reciepientsCount' => $campaign->subscribersCount(),
+            'delivery_date' => $delivery_date,
+            'delivery_time' => $delivery_time,
         ]);
     }
 
@@ -2832,6 +2853,49 @@ class CampaignController extends Controller
 
         return view('campaigns.ab.insights', [
             'campaign' => $campaign,
+        ]);
+    }
+
+    public function abWinningSendAt(Request $request)
+    {
+        $campaign = Campaign::findByUid($request->uid);
+        $currentTimezone = $campaign->customer->getTimezone();
+
+        // schedule
+        if ($request->send_now == 'yes') {
+            // Get the run_at datetime in current customer timezone
+            $runAt = Carbon::now($currentTimezone);
+            $runAt->timezone($currentTimezone);
+        } else {
+            $runAtStr = $request->delivery_date.' '.$request->delivery_time;
+            $runAt = Carbon::createFromFormat('Y-m-d H:i', $runAtStr, $currentTimezone)->timezone(config('app.timezone'));
+            $runAt->timezone($currentTimezone);
+        }
+
+        
+        switch ($request->ab_unit) {
+            case 'hour':
+                $sendAt = $runAt->addHour($request->ab_value);
+                break;
+            case 'month':
+                $sendAt = $runAt->addMonth($request->ab_value);
+                break;
+            case 'day':
+                $sendAt = $runAt->addDay($request->ab_value);
+                break;
+            case 'week':
+                $sendAt = $runAt->addWeek($request->ab_value);
+                break;
+            case 'year':
+                $sendAt = $runAt->addYearsNoOverflow($request->ab_value);
+                break;
+            default:
+                throw new \Exception('Invalid time period unit: ' . $unit);
+        }
+
+        return trans('messages.campaign.ab.winning_send_at', [
+            'date' => Auth()->user()->customer->formatDateTime($sendAt, 'date_short'),
+            'time' => Auth()->user()->customer->formatDateTime($sendAt, 'time_only'),
         ]);
     }
 }
