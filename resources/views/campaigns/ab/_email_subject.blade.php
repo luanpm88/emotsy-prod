@@ -50,6 +50,7 @@
         aBVariableControl = new ABVariableControl({
             subjectsBox: document.querySelector('[ab-control="ab-subjects"]'),
             splitSubjectChecker: document.querySelector('[ab-control="split-subject-checker"]'),
+            splitContentChecker: document.querySelector('[ab-control="split-content-checker"]'),
         });
     });
 
@@ -61,8 +62,44 @@
 
             // events
             this.getSplitSubjectChecker().addEventListener('change', (e) => {
+                
+                // 
+                if (this.isSplitSubjectChecked()) {
+                    this.turnSplitContentCheckerOff();
+                } else {
+                    this.turnSplitContentCheckerOn();
+                }
+
                 this.toggleSplitSubjectOrNot();
             });
+
+            this.getSplitContentChecker().addEventListener('change', (e) => {
+                // 
+                if (this.isSplitContentChecked()) {
+                    this.turnSplitSubjectCheckerOff();
+                } else {
+                    this.turnSplitSubjectCheckerOn();
+                }
+
+                //
+                this.toggleSplitSubjectOrNot();
+            });
+        }
+
+        turnSplitContentCheckerOff() {
+            this.getSplitContentChecker().checked = false;
+        }
+
+        turnSplitContentCheckerOn() {
+            this.getSplitContentChecker().checked = true;
+        }
+
+        turnSplitSubjectCheckerOff() {
+            this.getSplitSubjectChecker().checked = false;
+        }
+
+        turnSplitSubjectCheckerOn() {
+            this.getSplitSubjectChecker().checked = true;
         }
         
         hideMutipleSubjects() {
@@ -85,12 +122,20 @@
             return this.getSplitSubjectChecker().checked;
         }
 
+        isSplitContentChecked() {
+            return this.getSplitContentChecker().checked;
+        }
+
         getSubjectBox() {
             return this.options.subjectsBox;
         }
 
         getSplitSubjectChecker() {
             return this.options.splitSubjectChecker;
+        }
+
+        getSplitContentChecker() {
+            return this.options.splitContentChecker;
         }
     }
 </script>

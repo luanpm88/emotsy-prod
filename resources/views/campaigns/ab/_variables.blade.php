@@ -22,7 +22,7 @@
             <div class="pt-1">
                 <label class="checker">
                     <input type="hidden" name="ab_split_content" value="0">
-                    <input {{ $campaign->ab_split_content ? 'checked' : '' }} type="checkbox" name="ab_split_content" value="1"
+                    <input ab-control="split-content-checker" {{ $campaign->ab_split_content ? 'checked' : '' }} type="checkbox" name="ab_split_content" value="1"
                         class="styled4">
                     <span class="checker-symbol"></span>
                 </label>
