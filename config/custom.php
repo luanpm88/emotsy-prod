@@ -25,7 +25,7 @@ return [
     'woo' => false,
 
     // Special settings
-    'japan' => env('APP_JAPAN', true),
+    'japan' => env('APP_JAPAN', false),
 
     // License validation endpoint
     'license_validation_endpoint' => env('LICENSE_VALIDATION_ENDPOINT'),
