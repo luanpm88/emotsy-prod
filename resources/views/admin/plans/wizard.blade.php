@@ -216,6 +216,17 @@
         getSelector: function() {
             return $('#billingCycleSelectContainer select');
         },
+
+        events: function() {
+            var _this = this;
+            this.getSelector().on('change', function() {
+                var value = $(this).val();
+    
+                if (value == 'custom') {
+                    _this.getPopup().load();
+                }
+            });
+        }
     }
 </script>
 

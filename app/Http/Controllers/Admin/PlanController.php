@@ -65,7 +65,7 @@ class PlanController extends Controller
     {
         // Get current user
         $user = $request->user();
-        $plan = new Plan();
+        $plan = new PlanGeneral();
 
         // authorize
         if (\Gate::denies('create', $plan)) {
@@ -771,7 +771,7 @@ class PlanController extends Controller
     public function sendingLimit(Request $request)
     {
         if (!$request->uid) {
-            $plan = new Plan();
+            $plan = new PlanGeneral();
         } else {
             $plan = PlanGeneral::findByUid($request->uid);
         }
@@ -799,7 +799,7 @@ class PlanController extends Controller
     public function billingCycle(Request $request)
     {
         if (!$request->uid || $request->uid == '00') {
-            $plan = new Plan();
+            $plan = new PlanGeneral();
             $plan->uid = '00';
         } else {
             $plan = PlanGeneral::findByUid($request->uid);
