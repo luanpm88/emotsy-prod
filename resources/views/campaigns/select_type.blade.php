@@ -10,46 +10,51 @@
         <li class="breadcrumb-item"><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
         <li class="breadcrumb-item"><a href="{{ action("CampaignController@index") }}">{{ trans('messages.campaigns') }}</a></li>
     </ul>
-    <h1>
-        <span class="text-semibold"><span class="material-symbols-rounded">schedule</span> {{ trans('messages.select_campaign_type') }}</span>
-    </h1>
 </div>
 @endsection
 
 @section('content')
 <div class="row">
+    <div class="col-md-2"></div>
     <div class="col-md-8">
-        <ul class="modern-listing big-icon no-top-border-list mt-0">
+        <h2 class="text-center mb-2">
+            <span class="text-semibold">
+                {{ trans('messages.select_campaign_type') }}
+            </span>
+        </h2>
+        <p class="text-center mb-4 pb-2 px-5">{{ trans('messages.campaign.select_type.wording') }}</p>
+        <ul class="modern-listsing big-icon mt-0 pb-2 px-0 border-top">
             @foreach (Acelle\Model\Campaign::types() as $key => $type)
-
-                <li>
-                    <a href="{{ action("CampaignController@create", ["type" => $key]) }}" class="btn btn-secondary">{{ trans('messages.choose') }}</a>
-                    <div class="d-flex pe-4">
-                        <a href="{{ action("CampaignController@create", ["type" => $key]) }}">
-                            <span class="pt-1 d-block">
-                                @if ($key == 'regular')
-                                    <img width="40px" class="icon-img d-inline-block me-4" src="{{ url('images/icons/regular.svg') }}" />
-                                @elseif ($key == 'plain-text')
-                                    <img width="40px" class="icon-img d-inline-block me-4" src="{{ url('images/icons/plain.svg') }}" />
-                                @endif
-                            </span>
-                        </a>
+                <li class="d-flex py-4 border-bottom box-shadow-sm">
+                    <a href="{{ action("CampaignController@create", ["type" => $key]) }}">
+                        <span class="d-block pt-1">
+                            <img width="45px" class="icon-img d-inline-block me-4" src="{{ url('images/icons/'.$key.'.svg') }}" />
+                        </span>
+                    </a>
+                    <div class="d-flex pe-5 ps-2">
                         <div>
-                            <h4 class="mb-1"><a href="{{ action("CampaignController@create", ["type" => $key]) }}">{{ trans('messages.' . $key) }}</a></h4>
-                            <p>
+                            <h4 class="mb-1"><a href="{{ action("CampaignController@create", ["type" => $key]) }}">{{ trans('messages.campaign.type.' . $key) }}</a></h4>
+                            <p class="mb-0">
                                 {{ trans('messages.campaign_intro_' . $key) }}
                             </p>
                         </div>
                     </div>
-                        
+                    <div class="ms-auto">
+                        <a href="{{ action("CampaignController@create", ["type" => $key]) }}" class="btn btn-primary px-3 text-nowrap" style="border-radius:100px;">
+                            {{ trans('messages.choose') }}
+                            <span class="material-symbols-rounded ms-1">
+                                east
+                            </span>
+                        </a>
+                    </div>
                 </li>
-
             @endforeach
-
         </ul>
-        <div class="">
-            <a href="{{ action('CampaignController@index') }}" role="button" class="btn btn-secondary">
-                <i class="icon-cross2"></i> {{ trans('messages.cancel') }}
+        <div class="text-center">
+            <a href="{{ action('CampaignController@index') }}" role="button" class="btn btn-light">
+                <span class="material-symbols-rounded me-1">
+                    west
+                </span> {{ trans('messages.return_back') }}
             </a>
         </div>
     </div>

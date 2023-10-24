@@ -53,6 +53,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
     // Campaign types
     public const TYPE_REGULAR = 'regular';
     public const TYPE_PLAIN_TEXT = 'plain-text';
+    public const TYPE_AB_TEST = 'ab-test';
 
     // 4 types of delivery status for a given contact
     public const DELIVERY_STATUS_FAILED = 'failed';
@@ -136,6 +137,21 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
         // tracking domain
         if (isset($request) && $request->custom_tracking_domain) {
             $rules['tracking_domain_uid'] = 'required';
+        }
+
+        // ab test rule
+        if ($this->isABTest()) {
+            if (isset($request)) {
+                // AB campaign should split either subjet or content
+                if (!$request->ab_split_subject && !$request->ab_split_content) {
+                    $rules['ab_variables_not_selected'] = 'required';
+                }
+
+                // split subject require subject b
+                if ($request->ab_split_subject && !$request->subject_b) {
+                    $rules['subject_b'] = 'required';
+                }
+            }
         }
 
         return $rules;
@@ -321,7 +337,8 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
         'track_click', 'sign_dkim', 'track_fbl',
         'html', 'plain', 'template_source',
         'tracking_domain_id', 'use_default_sending_server_from_email',
-        'skip_failed_message'
+        'skip_failed_message',
+        'subject_b', 'ab_split_subject', 'ab_split_content'
     ];
 
     /**
@@ -461,9 +478,13 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
             return $step;
         }
 
-        // Step 3
+        // Step 3: has template
         if (($this->template || $this->type == 'plain-text') && !empty($this->plain)) {
-            $step = 3;
+            // if ($this->isABTest() && $this->template_b) {
+                $step = 3;
+            // } else {
+            //     return $step;
+            // }
         } else {
             return $step;
         }
@@ -1130,6 +1151,9 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
             ],
             'plain-text' => [
                 'icon' => 'wysiwyg',
+            ],
+            'ab-test' => [
+                'icon' => '',
             ],
         ];
     }
@@ -2738,5 +2762,63 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
     {
         $this->preheader = null;
         $this->save();
+    }
+
+    public function isABTest()
+    {
+        return $this->type == self::TYPE_AB_TEST;
+    }
+
+    public function saveABSplitOptions($params)
+    {
+        $rules = [
+            'ab_winning_percent' => 'required',
+            'ab_winning_metric' => 'required',
+        ];
+
+        // 
+        if ($params['ab_winning_percent'] > 0) {
+            $rules = array_merge($rules, [
+                'ab_test_duration_value' => 'required',
+                'ab_test_duration_unit' => 'required',
+            ]);
+        }
+
+        // validate
+        $validator = \Validator::make($params, $rules);
+
+        // failed
+        if ($validator->fails()) {
+            return $validator->errors();
+        }
+
+        //
+        $this->ab_winning_percent = $params['ab_winning_percent'];
+        $this->ab_winning_metric = $params['ab_winning_metric'];
+        $this->ab_test_duration_value = $params['ab_test_duration_value'] ?? 1;
+        $this->ab_test_duration_unit = $params['ab_test_duration_unit'] ?? 'hour';
+        $this->save();
+
+        return $validator->errors();
+    }
+
+    public function getABpercent()
+    {
+        return (100 - $this->ab_winning_percent)/2;
+    }
+
+    public function abGetVersionABPercent()
+    {
+        return (100 - $this->ab_winning_percent)/2;
+    }
+
+    public function abGetApproxRecipientsABVersion()
+    {
+        return $this->subscribersCount()*($this->abGetVersionABPercent()/100);
+    }
+
+    public function abGetApproxRecipientsWinningVersion()
+    {
+        return $this->subscribersCount()*($this->ab_winning_percent/100);
     }
 }

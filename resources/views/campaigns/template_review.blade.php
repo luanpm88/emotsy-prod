@@ -6,15 +6,13 @@
 
 @section('page_header')
 
-    @include("campaigns._header")
+    @include("campaigns._header", [
+        'menu' => 'template',
+    ])
 
 @endsection
 
 @section('content')
-
-    @include("campaigns._menu", [
-        'menu' => 'template',
-    ])
 
     @if (!$campaign->template_id)
         <div class="row">

@@ -21,7 +21,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4 list_select_box"
+        <div class="col-md-4 list_select_box form-group-mb-0"
             target-box="segments-select-box"
             segments-url="{{ action('SegmentController@selectBox') }}"
         >

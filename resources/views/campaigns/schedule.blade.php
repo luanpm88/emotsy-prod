@@ -13,21 +13,32 @@
 
 @section('page_header')
 
-    <div class="page-title">
-        <ul class="breadcrumb breadcrumb-caret position-right">
-            <li class="breadcrumb-item"><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
-            <li class="breadcrumb-item"><a href="{{ action("CampaignController@index") }}">{{ trans('messages.campaigns') }}</a></li>
-        </ul>
-        <h1>
-            <span class="text-semibold"><span class="material-symbols-rounded me-2">forward_to_inbox</span> {{ $campaign->name }}</span>
-        </h1>
-
-        @include('campaigns._steps', ['current' => 4])
+    <div class="topfix-header bg-light">
+        <div class="topfix-container border-bottom d-flex align-items-center shadow-sm py-3 mb-4">
+            <div class="topfix-search text-center" style="width: 100%">
+                <div class="page-title pt-0">
+                    <ul class="breadcrumb breadcrumb-caret position-right">
+                        <li class="breadcrumb-item"><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+                        <li class="breadcrumb-item"><a href="{{ action("CampaignController@index") }}">{{ trans('messages.campaigns') }}</a></li>
+                    </ul>
+                </div>
+                <h3 class="mb-0 mb-3 d-flex align-items-center justify-content-center">
+                    <span class="text-semibold">
+                        <img width="25px" class="icon-img d-inline-block me-2" src="{{ url('images/icons/'.$campaign->type.'.svg') }}" />
+                        <span>{{ $campaign->name }}</span>
+                    </span>
+                    <span class="text-center text-muted badge badge-info ms-2">{{ trans('messages.campaign.type.' . $campaign->type) }}</span>
+                </h3>
+                @include('campaigns._steps', ['current' => 4])
+            </div>
+        </div>
     </div>
 
 @endsection
 
 @section('content')
+    <h1 class="mb-4">{{ trans('messages.schedule') }}</h1>
+
     <form id="CampaignScheduleForm" action="{{ action('CampaignController@schedule', $campaign->uid) }}" method="POST" class="form-validate-jqueryz">
         {{ csrf_field() }}
 
@@ -46,12 +57,12 @@
                     <div class="desc text-normal mb-10 pl-0">
                         <div class="">
                             @if(config('custom.japan') && !Acelle\Model\Setting::get('license'))
-                                <button license-required type="button" class="btn btn-secondary">
+                                <button license-required type="button" class="btn btn-primary px-4 py-2 send-now" style="border-radius:100px;">
                                     {{ trans('messages.save_and_next') }}
                                     <span class="material-symbols-rounded">arrow_forward</span>
                                 </button>
                             @else
-                                <button type="button" class="btn btn-secondary send-now">
+                                <button type="button" class="btn btn-primary px-4 py-2 send-now" style="border-radius:100px;">
                                     {{ trans('messages.save_and_next') }}
                                     <span class="material-symbols-rounded">arrow_forward</span>
                                 </button>
@@ -93,7 +104,7 @@
                     </div>
                     
                     <div class="">
-                        <button @if(config('custom.japan') && !Acelle\Model\Setting::get('license')) license-required @endif class="btn btn-secondary me-1">
+                        <button @if(config('custom.japan') && !Acelle\Model\Setting::get('license')) license-required @endif class="btn btn-primary px-4 py-2 me-1" style="border-radius:100px;">
                             <span class="material-symbols-rounded me-1">alarm</span>
                             {{ trans('messages.save_and_next') }}
                                 <span class="material-symbols-rounded">arrow_forward</span>

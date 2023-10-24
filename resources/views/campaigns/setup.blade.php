@@ -13,16 +13,25 @@
 	
 @section('page_header')
 	
-	<div class="page-title">
-		<ul class="breadcrumb breadcrumb-caret position-right">
-			<li class="breadcrumb-item"><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
-			<li class="breadcrumb-item"><a href="{{ action("CampaignController@index") }}">{{ trans('messages.campaigns') }}</a></li>
-		</ul>
-		<h1>
-			<span class="text-semibold"><span class="material-symbols-rounded me-2 me-2">forward_to_inbox</span> {{ $campaign->name }}</span>
-		</h1>
-
-		@include('campaigns._steps', ['current' => 2])
+	<div class="topfix-header bg-light">
+		<div class="topfix-container border-bottom d-flex align-items-center shadow-sm py-3 mb-4">
+			<div class="topfix-search text-center" style="width: 100%">
+				<div class="page-title pt-0">
+					<ul class="breadcrumb breadcrumb-caret position-right">
+						<li class="breadcrumb-item"><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+						<li class="breadcrumb-item"><a href="{{ action("CampaignController@index") }}">{{ trans('messages.campaigns') }}</a></li>
+					</ul>
+				</div>
+				<h3 class="mb-0 mb-3 d-flex align-items-center justify-content-center">
+                    <span class="text-semibold">
+                        <img width="25px" class="icon-img d-inline-block me-2" src="{{ url('images/icons/'.$campaign->type.'.svg') }}" />
+                        <span>{{ $campaign->name }}</span>
+                    </span>
+                    <span class="text-center text-muted badge badge-info ms-2">{{ trans('messages.campaign.type.' . $campaign->type) }}</span>
+                </h3>
+				@include('campaigns._steps', ['current' => 2])
+			</div>
+		</div>
 	</div>
 
 @endsection
@@ -30,9 +39,11 @@
 @section('content')
 	<form id="campaignSetup" action="{{ action('CampaignController@setup', $campaign->uid) }}" method="POST" class="form-validate-jqueryz">
 		{{ csrf_field() }}
+
+		<h1 class="mb-4">{{ trans('messages.setup') }}</h1>
 		
 		<div class="row">
-			<div class="col-md-6 list_select_box" target-box="segments-select-box" segments-url="{{ action('SegmentController@selectBox') }}">
+			<div class="col-md-7 list_select_box" target-box="segments-select-box" segments-url="{{ action('SegmentController@selectBox') }}">
 				@include('helpers.form_control', ['type' => 'text',
 					'name' => 'name',
 					'label' => trans('messages.name_your_campaign'),
@@ -41,26 +52,32 @@
 					'help_class' => 'campaign'
 				])
 				
-                @if (Auth::user()->customer->getChatgptApiKey())
-                    @include('chat._email_subject', [
-                        'name' => 'subject',
-                        'label' => trans('messages.email_subject'),
-                        'value' => $campaign->subject,
-                    ])
-                @else
-                    <div class="has-emoji">
-                        @include('helpers.form_control', ['type' => 'text',
-                            'name' => 'subject',
-                            'label' => trans('messages.email_subject'),
-                            'value' => $campaign->subject,
-                            'rules' => $rules,
-                            'help_class' => 'campaign',
-                            'attributes' => [
-                                'data-emojiable' => 'true',
-                            ]
-                        ])
-                    </div>
-                @endif
+				@if ($campaign->isABTest())
+					@include('campaigns.ab._welcome')
+					@include('campaigns.ab._variables')
+					@include('campaigns.ab._email_subject')
+				@else
+					@if (Acelle\Model\Plugin::isInstalled('acelle/chatgpt') && Acelle\Model\Plugin::getByName('acelle/chatgpt')->isActive())
+						@include('chat._email_subject', [
+							'name' => 'subject',
+							'label' => trans('messages._email_subject'),
+							'value' => $campaign->subject,
+						])
+					@else
+						<div class="has-emoji">
+							@include('helpers.form_control', ['type' => 'text',
+								'name' => 'subject',
+								'label' => trans('messages.email_subject'),
+								'value' => $campaign->subject,
+								'rules' => $rules,
+								'help_class' => 'campaign',
+								'attributes' => [
+									'data-emojiable' => 'true',
+								]
+							])
+						</div>
+					@endif
+				@endif
 												
 				@include('helpers.form_control', ['type' => 'text',
 					'name' => 'from_name',
@@ -116,7 +133,8 @@
                 ])
 				
 			</div>
-			<div class="col-md-6 segments-select-box">
+			<div class="col-md-5 segments-select-box">
+				<h3 class="mb-4">{{ trans('messages.campaign.tracking_settings') }}</h3>
 				<div class="form-group checkbox-right-switch">
 					@if ($campaign->type != 'plain-text')
 						@include('helpers.form_control', ['type' => 'checkbox',
@@ -194,7 +212,7 @@
 							<div class="d-flex">
 								<p>{{ trans('messages.webhooks.wording') }}</p>
 								<div class="ms-4">
-									<a href="javascript:;" class="btn btn-secondary manage_webhooks_but">
+									<a href="javascript:;" class="btn btn-default manage_webhooks_but">
 										{{ trans('messages.webhooks.manage') }}
 									</a>
 								</div>
@@ -205,8 +223,8 @@
 			</div>
 		</div>
 		<hr>
-		<div class="text-end {{ Auth::user()->customer->allowUnverifiedFromEmailAddress() ? '' : 'unverified_next_but' }}">
-			<button class="btn btn-secondary">{{ trans('messages.save_and_next') }} <span class="material-symbols-rounded">arrow_forward</span> </button>
+		<div class="text-center {{ Auth::user()->customer->allowUnverifiedFromEmailAddress() ? '' : 'unverified_next_but' }}">
+			<button class="btn btn-primary px-4 py-2" style="border-radius:100px;">{{ trans('messages.save_and_next') }} <span class="material-symbols-rounded">arrow_forward</span> </button>
 		</div>
 		
 	<form>

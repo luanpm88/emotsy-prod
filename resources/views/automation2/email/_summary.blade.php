@@ -124,7 +124,7 @@
             </a>
         </div>
     </li>
-    <li class="d-flex align-items-center confirm-webhooks-summary">
+    <li class="d-flex confirm-webhooks-summary">
         <div class="list-media mr-4">
             <i class="material-symbols-rounded text-muted">cable</i>
         </div>

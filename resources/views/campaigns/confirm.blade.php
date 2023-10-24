@@ -6,17 +6,26 @@
 
 @section('page_header')
 
-    <div class="page-title">
-        <ul class="breadcrumb breadcrumb-caret position-right">
-            <li class="breadcrumb-item"><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
-            <li class="breadcrumb-item"><a href="{{ action("CampaignController@index") }}">{{ trans('messages.campaigns') }}</a></li>
-        </ul>
-        <h1>
-            <span class="text-semibold"><span class="material-symbols-rounded me-2">forward_to_inbox</span> {{ $campaign->name }}</span>
-        </h1>
-
-        @include('campaigns._steps', ['current' => 5])
+<div class="topfix-header bg-light">
+    <div class="topfix-container border-bottom d-flex align-items-center shadow-sm py-3 mb-4">
+        <div class="topfix-search text-center" style="width: 100%">
+            <div class="page-title pt-0">
+                <ul class="breadcrumb breadcrumb-caret position-right">
+                    <li class="breadcrumb-item"><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+                    <li class="breadcrumb-item"><a href="{{ action("CampaignController@index") }}">{{ trans('messages.campaigns') }}</a></li>
+                </ul>
+            </div>
+            <h3 class="mb-0 mb-3 d-flex align-items-center justify-content-center">
+                <span class="text-semibold">
+                    <img width="25px" class="icon-img d-inline-block me-2" src="{{ url('images/icons/'.$campaign->type.'.svg') }}" />
+                    <span>{{ $campaign->name }}</span>
+                </span>
+                <span class="text-center text-muted badge badge-info ms-2">{{ trans('messages.campaign.type.' . $campaign->type) }}</span>
+            </h3>
+            @include('campaigns._steps', ['current' => 5])
+        </div>
     </div>
+</div>
 
 @endsection
 
@@ -34,7 +43,7 @@
             <ul class="modern-listing">
                 @if (!is_null($score))
 
-                    <li class="d-flex align-items-center">
+                    <li class="d-flex">
                         <!-- {{ $count = $campaign->subscribersCount() }} -->
 
                         <span class="fs-4 me-4">
@@ -60,10 +69,12 @@
                             </p> 
                         </div>
 
-                        <a href="{{ action('CampaignController@recipients', $campaign->uid) }}" class="btn btn-secondary">{{ trans('messages.edit') }}</a>
+                        <div>
+                            <a href="{{ action('CampaignController@recipients', $campaign->uid) }}" class="btn btn-default">{{ trans('messages.campaign.back_to_step') }}</a>
+                        </div>
                     </li>
                 @endif
-                <li class="d-flex align-items-center">
+                <li class="d-flex">
                     
                     <!-- {{ $count = $campaign->subscribersCount() }} -->
 
@@ -81,24 +92,33 @@
                         </p>
                     </div>
 
-                    <a href="{{ action('CampaignController@recipients', $campaign->uid) }}" class="btn btn-secondary">{{ trans('messages.edit') }}</a>
-                </li>
-
-                <li class="d-flex align-items-center">
-                    <span class="fs-4 me-4">
-                        <i class="material-symbols-rounded text-success">task_alt</i>
-                    </span>
-                    <div class="me-auto">
-                        <h4>{{ trans('messages.email_subject') }}</h4>
-                        <p>
-                            {{ $campaign->subject }}
-                        </p>    
+                    <div>
+                        <a href="{{ action('CampaignController@recipients', $campaign->uid) }}" class="btn btn-default">{{ trans('messages.campaign.back_to_step') }}</a>
                     </div>
-
-                    <a href="{{ action('CampaignController@recipients', $campaign->uid) }}" class="btn btn-secondary">{{ trans('messages.edit') }}</a>
                 </li>
 
-                <li class="d-flex align-items-center">
+                @if ($campaign->isABTest())
+                    @include('campaigns.ab._confirm_subject')
+                @else
+                    <li class="d-flex">
+                        <span class="fs-4 me-4">
+                            <i class="material-symbols-rounded text-success">task_alt</i>
+                        </span>
+                        <div class="me-auto">
+                            <h4>{{ trans('messages.email_subject') }}</h4>
+
+                            <p>
+                                {{ $campaign->subject }}
+                            </p>
+                        </div>
+
+                        <div>
+                            <a href="{{ action('CampaignController@recipients', $campaign->uid) }}" class="btn btn-default">{{ trans('messages.campaign.back_to_step') }}</a>
+                        </div>
+                    </li>
+                @endif
+
+                <li class="d-flex">
                     <span class="fs-4 me-4">
                         <i class="material-symbols-rounded text-success">task_alt</i>
                     </span>
@@ -109,10 +129,17 @@
                         </p>   
                     </div>
 
-                    <a href="{{ action('CampaignController@setup', $campaign->uid) }}" class="btn btn-secondary">{{ trans('messages.edit') }}</a>
+                    <div>
+                        <a href="{{ action('CampaignController@setup', $campaign->uid) }}" class="btn btn-default">{{ trans('messages.campaign.back_to_step') }}</a>
+                    </div>
                 </li>
 
-                <li class="d-flex align-items-center">
+                @if ($campaign->isABTest())
+                    @include('campaigns.ab._confirm_template')
+                    @include('campaigns.ab._confirm_split_options')
+                @endif
+
+                <li class="d-flex">
                     <span class="fs-4 me-4">
                         <i class="material-symbols-rounded text-success">task_alt</i>
                     </span>
@@ -128,10 +155,12 @@
                         </p>
                     </div>
 
-                    <a href="{{ action('CampaignController@setup', $campaign->uid) }}" class="btn btn-secondary">{{ trans('messages.edit') }}</a>
+                    <div>
+                        <a href="{{ action('CampaignController@setup', $campaign->uid) }}" class="btn btn-default">{{ trans('messages.campaign.back_to_step') }}</a>
+                    </div>
                 </li>
 
-                <li class="d-flex align-items-center confirm-webhooks-summary">
+                <li class="d-flex confirm-webhooks-summary">
                     <span class="fs-4 me-4">
                         <i class="material-symbols-rounded text-success">task_alt</i>
                     </span>
@@ -145,7 +174,9 @@
                         </p>
                     </div>
 
-                    <a href="javascript:;" class="btn btn-secondary manage_webhooks_but">{{ trans('messages.webhooks.manage') }}</a>
+                    <div>
+                        <a href="javascript:;" class="btn btn-default manage_webhooks_but">{{ trans('messages.webhooks.manage') }}</a>
+                    </div>
 
                     <script>
                         $(function() {
@@ -160,7 +191,7 @@
                 </li>
 
                 @if (!$campaign->run_at)
-                    <li class="d-flex align-items-center">
+                    <li class="d-flex">
                         <span class="fs-4 me-4">
                             <i class="material-symbols-rounded text-success">task_alt</i>
                         </span>
@@ -171,10 +202,12 @@
                             </p>
                         </div>
 
-                        <a href="{{ action('CampaignController@setup', $campaign->uid) }}" class="btn btn-secondary">{{ trans('messages.edit') }}</a>
+                        <div>
+                            <a href="{{ action('CampaignController@setup', $campaign->uid) }}" class="btn btn-default">{{ trans('messages.campaign.back_to_step') }}</a>
+                        </div>
                     </li>
                 @else
-                    <li class="d-flex align-items-center">
+                    <li class="d-flex">
                         <span class="fs-4 me-4">
                             <i class="material-symbols-rounded text-muted2">alarm</i>
                         </span>
@@ -185,7 +218,9 @@
                             </p>
                         </div>
 
-                        <a href="{{ action('CampaignController@setup', $campaign->uid) }}" class="btn btn-secondary">{{ trans('messages.edit') }}</a>
+                        <div>
+                            <a href="{{ action('CampaignController@setup', $campaign->uid) }}" class="btn btn-default">{{ trans('messages.campaign.back_to_step') }}</a>
+                        </div>
                     </li>
                 @endif
             </ul>

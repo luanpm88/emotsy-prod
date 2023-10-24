@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 455 565.5">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #fff;
+      }
+
+      .cls-1, .cls-2, .cls-3 {
+        stroke-linecap: round;
+        stroke-width: 30px;
+      }
+
+      .cls-1, .cls-2, .cls-3, .cls-4 {
+        stroke-miterlimit: 10;
+      }
+
+      .cls-1, .cls-4 {
+        stroke: gray;
+      }
+
+      .cls-2 {
+        fill: #0071bc;
+        stroke: #00b6bc;
+      }
+
+      .cls-3 {
+        fill: none;
+        stroke: #bc6b00;
+      }
+
+      .cls-4 {
+        fill: gray;
+        font-family: ArialRoundedMTBold, 'Arial Rounded MT Bold';
+        font-size: 239.57px;
+      }
+    </style>
+  </defs>
+  <g id="Layer_1-2" data-name="Layer 1">
+    <g>
+      <rect class="cls-1" x="163" y="204.5" width="277" height="346" rx="45.68" ry="45.68"/>
+      <text class="cls-4" transform="translate(225.51 436.73)"><tspan x="0" y="0">B</tspan></text>
+      <rect class="cls-1" x="15" y="15" width="277" height="346" rx="45.68" ry="45.68"/>
+      <text class="cls-4" transform="translate(59.97 253.91)"><tspan x="0" y="0">A</tspan></text>
+      <line class="cls-2" x1="110" y1="304.44" x2="181" y2="304.44"/>
+      <line class="cls-3" x1="271" y1="494.44" x2="342" y2="494.44"/>
+    </g>
+  </g>
+</svg>

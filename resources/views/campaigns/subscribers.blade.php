@@ -6,15 +6,13 @@
 
 @section('page_header')
 
-    @include("campaigns._header")
+    @include("campaigns._header", [
+        'menu' => 'subscribers',
+    ])
 
 @endsection
 
 @section('content')
-
-@include("campaigns._menu", [
-    'menu' => 'subscribers',
-])
 
 <h2 class="text-semibold text-primary">{{ trans('messages.subscribers') }}</h2>
 

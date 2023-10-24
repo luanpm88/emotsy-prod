@@ -207,9 +207,6 @@ a {
     background-color: #4ab8e3;
     border-color: #4ab8e3;
 }
-.bg-info {
-    background-color: #00acb8!important;
-}
 .caret:after {
     font-size: 18px;
     font-weight: normal;
@@ -8209,4 +8206,102 @@ label.checker input:disabled ~ .checker-symbol {
     .select-plan-item {
         width: calc(50% - 20px);
     }
+}
+
+.input-group-text {
+    height: 35px;
+    padding: .3rem 0.75rem;
+}
+
+.ab-subjects:not(.ab-subjects-no-split) .input-group .emojionearea {
+    border-radius: 0 5px 5px 0!important;
+}
+.ab-subjects-input {
+    width: calc(100% - 42px);
+}
+.ab-subjects {
+    margin-left:-15px;
+    margin-right:-15px;
+    padding: 15px;
+}
+.ab-subjects.ab-subjects-no-split {
+    margin-left:0;
+    margin-right:0;
+    padding: 0;
+    background-color: transparent!important;
+    border:none!important;
+}
+.ab-subjects.ab-subjects-no-split .ab-subjects-input {
+    width: 100%!important;
+}
+.ab-subjects.ab-subjects-no-split .ab-subjects-label {
+    display: none;
+}
+.ab-subjects.ab-subjects-no-split .ab-subjects-b-line {
+    display: none;
+}
+.ab-subjects.ab-subjects-no-split .ab-subjects-intro {
+    display: none;
+}
+.template-variation .thumb {
+    opacity: 0.5;
+    transform: scale(0.95);
+    transition: all 0.2s ease-in-out;
+}
+.template-variation:hover .thumb, .template-variation.current .thumb {
+    opacity: 1;
+    box-shadow: 1px 1px 4px rgba(0,0,0,0.05);
+    transform: none;
+}
+.template-variation:not(.current) .check-mark {
+    visibility: hidden;
+}
+.template-variation {
+    width: 180px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+.template-variation .thumb-container {
+    background-color: #fff;
+}
+.template-variation .version-action {
+    display: none;
+}
+.template-variation.current .version-action {
+    display: block;
+}
+body.mode-dark .template-variation .thumb-container {
+    background-color: rgba(247, 255, 251, 1);
+}
+.template-variation:hover .thumb {
+    border-color: rgb(25, 135, 84);
+}
+.template-variation.current .thumb {
+    border-color: rgb(25, 135, 84)!important;
+    background-color: rgb(247, 255, 251);
+}
+body.mode-dark .template-variation.current .thumb {
+    border-color: rgb(25, 135, 84)!important;
+    background-color: rgba(247, 255, 251, 0.1);
+}
+[split-control="b-box"] {
+    border-width: 3px!important;
+    border-color: #333!important;
+}
+[split-control="anchor"] {
+    cursor: move;
+}
+body.mode-dark [split-control="anchor"] svg circle {
+    fill: #00BCD4!important;
+}
+body.mode-dark [split-control="b-box"].border-end {
+    border-color: #00BCD4!important;
+}
+
+.alert.alert-center {
+    border-radius: 100px!important;
+}
+.confirm-campaign-box .material-symbols-rounded {
+    margin-top: -13px;
+    transform: translateY(3%) scale(1.2);
 }

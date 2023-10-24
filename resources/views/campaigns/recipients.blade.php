@@ -10,17 +10,26 @@
 
 @section('page_header')
 
-    <div class="page-title">
-        <ul class="breadcrumb breadcrumb-caret position-right">
-            <li class="breadcrumb-item"><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
-            <li class="breadcrumb-item"><a href="{{ action("CampaignController@index") }}">{{ trans('messages.campaigns') }}</a></li>
-        </ul>
-        <h1>
-            <span class="text-semibold"><span class="material-symbols-rounded me-2">forward_to_inbox</span> {{ $campaign->name }}</span>
-        </h1>
-
-        @include('campaigns._steps', ['current' => 1])
-    </div>
+	<div class="topfix-header bg-light">
+		<div class="topfix-container border-bottom d-flex align-items-center shadow-sm py-3 mb-4">
+			<div class="topfix-search text-center" style="width: 100%">
+                <div class="page-title pt-0">
+                    <ul class="breadcrumb breadcrumb-caret position-right">
+                        <li class="breadcrumb-item"><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+                        <li class="breadcrumb-item"><a href="{{ action("CampaignController@index") }}">{{ trans('messages.campaigns') }}</a></li>
+                    </ul>
+                </div>
+                <h3 class="mb-0 mb-3 d-flex align-items-center justify-content-center">
+                    <span class="text-semibold">
+                        <img width="25px" class="icon-img d-inline-block me-2" src="{{ url('images/icons/'.$campaign->type.'.svg') }}" />
+                        <span>{{ $campaign->name }}</span>
+                    </span>
+                    <span class="text-center text-muted badge badge-info ms-2">{{ trans('messages.campaign.type.' . $campaign->type) }}</span>
+                </h3>
+				@include('campaigns._steps', ['current' => 1])
+			</div>
+		</div>
+	</div>
 
 @endsection
 
@@ -28,10 +37,12 @@
     <form action="{{ action('CampaignController@recipients', $campaign->uid) }}" method="POST" class="form-validate-jqueryz recipients-form">
         {{ csrf_field() }}
 
-        <h4 class="mb-20 mt-0">
-            {{ trans('messages.choose_lists_segments_for_the_campaign') }}
-        </h4>
+        <h1 class="mb-4">{{ trans('messages.recipients') }}</h1>
 
+        <p class="mt-0">
+            {{ trans('messages.choose_lists_segments_for_the_campaign') }}
+        </p>
+<hr>
         @if ($cronjobWarning)
             <div class="alert alert-danger" style="display: flex; flex-direction: row; align-items: center; justify-content: space-between;">
                 <div style="display: flex; flex-direction: row; align-items: center;">
@@ -62,18 +73,17 @@
                     <?php $num++ ?>
                 @endforeach
             </div>
-            <br />
             <a
                 sample-url="{{ action('CampaignController@listSegmentForm', $campaign->uid) }}"
-                href="#add_condition" class="btn btn-secondary add-form">
+                href="#add_condition" class="btn btn-default add-form">
                 <span class="material-symbols-rounded">add</span> {{ trans('messages.add_list_segment') }}
             </a>
         </div>
 
         <hr>
 
-        <div class="text-end">
-            <button class="btn btn-secondary">{{ trans('messages.save_and_next') }} <span class="material-symbols-rounded">arrow_forward</span> </button>
+        <div class="text-center">
+            <button class="btn btn-primary px-4 py-2" style="border-radius:100px;">{{ trans('messages.save_and_next') }} <span class="material-symbols-rounded">arrow_forward</span> </button>
         </div>
     <form>
 
