@@ -41,7 +41,7 @@ class LicenseHelper
         try {
             // Throw an exception if failed
             if (config('custom.japan')) {
-                $endpoint = join_url(config('custom.license_validation_endpoint'), '/wp-json/automailjp/v1/license/check?license=' . $license);
+                $endpoint = join_url(config('custom.license_verification_endpoint'), '/wp-json/automailjp/v1/license/check?license=' . $license);
                 $response = $client->request('get', $endpoint);
             } else {
                 // $endpoint = config('custom.license_verification_endpoint');

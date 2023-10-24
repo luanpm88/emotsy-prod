@@ -1477,7 +1477,7 @@
   'license.license_types' => 'License types',
   'license.no_license' => 'You do not enter a valid license yet. Please purchase a license and enter it in the form below to continue using the product',
   'license.remove' => 'Remove',
-  'license.remove.confirm' => 'You`re about to remove current lincense! This can not be undone.',
+  'license.remove.confirm' => 'A license is required to legally register your installation. Are you sure you want to remove the current license?',
   'license.removed' => 'The license was sucessfully removed!',
   'license.required' => 'Please add a valid license for your application to use this feature',
   'license.type.extended' => 'Extended',
