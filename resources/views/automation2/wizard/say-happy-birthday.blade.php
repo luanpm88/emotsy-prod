@@ -17,7 +17,7 @@
             'type' => 'time2',
             'name' => 'options[at]',
             'label' => trans('messages.automation.at'),
-            'value' => '10:00 AM',
+            'value' => '10:00',
             'help_class' => 'trigger'
         ])
     </div>
