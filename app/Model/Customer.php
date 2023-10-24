@@ -1662,6 +1662,7 @@ class Customer extends Model
     {
         $campaign = Campaign::newDefault();
         $campaign->customer_id = $this->id;
+        $campaign->ab_split_subject = false;
 
         return $campaign;
     }
