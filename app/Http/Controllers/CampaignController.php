@@ -806,13 +806,13 @@ class CampaignController extends Controller
 
             // columns
             for ($i = 23; $i >= 0; --$i) {
-                $time = $nowInUserTimezone->subHours($i);
+                $time = $nowInUserTimezone->copy()->subHours($i);
                 $result['columns'][] = $time->format('h') . ':00 ' . $time->format('A');
                 $hours[] = $time->format('H');
             }
 
-            $openData24h = $campaign->openUniqHours($nowInUserTimezone->subHours(24), $nowInUserTimezone);
-            $clickData24h = $campaign->clickHours($nowInUserTimezone->subHours(24), $nowInUserTimezone);
+            $openData24h = $campaign->openUniqHours($nowInUserTimezone->copy()->subHours(24), $nowInUserTimezone);
+            $clickData24h = $campaign->clickHours($nowInUserTimezone->copy()->subHours(24), $nowInUserTimezone);
 
             // data
             foreach ($hours as $hour) {
@@ -827,13 +827,13 @@ class CampaignController extends Controller
 
             // columns
             for ($i = 2; $i >= 0; --$i) {
-                $time = $nowInUserTimezone->subDays($i);
+                $time = $nowInUserTimezone->copy()->subDays($i);
                 $result['columns'][] = $time->format('m-d');
                 $days[] = $time->format('Y-m-d');
             }
 
-            $openData = $campaign->openUniqDays($nowInUserTimezone->subDays(3), $nowInUserTimezone->endOfDay());
-            $clickData = $campaign->clickDays($nowInUserTimezone->subDays(3), $nowInUserTimezone->endOfDay());
+            $openData = $campaign->openUniqDays($nowInUserTimezone->copy()->subDays(3), $nowInUserTimezone->endOfDay());
+            $clickData = $campaign->clickDays($nowInUserTimezone->copy()->subDays(3), $nowInUserTimezone->endOfDay());
 
             // data
             foreach ($days as $day) {
@@ -848,13 +848,13 @@ class CampaignController extends Controller
 
             // columns
             for ($i = 6; $i >= 0; --$i) {
-                $time = $nowInUserTimezone->subDays($i);
+                $time = $nowInUserTimezone->copy()->subDays($i);
                 $result['columns'][] = $time->format('m-d');
                 $days[] = $time->format('Y-m-d');
             }
 
-            $openData = $campaign->openUniqDays($nowInUserTimezone->subDays(7), $nowInUserTimezone->endOfDay());
-            $clickData = $campaign->clickDays($nowInUserTimezone->subDays(7), $nowInUserTimezone->endOfDay());
+            $openData = $campaign->openUniqDays($nowInUserTimezone->copy()->subDays(7), $nowInUserTimezone->endOfDay());
+            $clickData = $campaign->clickDays($nowInUserTimezone->copy()->subDays(7), $nowInUserTimezone->endOfDay());
 
             // data
             foreach ($days as $day) {
@@ -868,14 +868,14 @@ class CampaignController extends Controller
             $days = [];
 
             // columns
-            for ($i = $nowInUserTimezone->subMonths(1)->diff(Carbon::now())->days - 1; $i >= 0; --$i) {
-                $time = $nowInUserTimezone->subDays($i);
+            for ($i = $nowInUserTimezone->copy()->subMonths(1)->diff(Carbon::now())->days - 1; $i >= 0; --$i) {
+                $time = $nowInUserTimezone->copy()->subDays($i);
                 $result['columns'][] = $time->format('m-d');
                 $days[] = $time->format('Y-m-d');
             }
 
-            $openData = $campaign->openUniqDays($nowInUserTimezone->subMonths(1), $nowInUserTimezone->endOfDay());
-            $clickData = $campaign->clickDays($nowInUserTimezone->subMonths(1), $nowInUserTimezone->endOfDay());
+            $openData = $campaign->openUniqDays($nowInUserTimezone->copy()->subMonths(1), $nowInUserTimezone->endOfDay());
+            $clickData = $campaign->clickDays($nowInUserTimezone->copy()->subMonths(1), $nowInUserTimezone->endOfDay());
 
             // data
             foreach ($days as $day) {

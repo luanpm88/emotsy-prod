@@ -97,6 +97,15 @@ class Language extends Model
             return ['value' => $item->id, 'text' => $item->name];
         });
 
+        // japan only en and ja
+        if (config('custom.japan')) {
+            $options = self::active()->get()->filter(function ($item) {
+                return in_array($item->code, ['en','ja']);
+            })->map(function ($item) {
+                return ['value' => $item->id, 'text' => $item->name];
+            });
+        }
+
         return $options;
     }
 
@@ -225,6 +234,13 @@ class Language extends Model
     public static function languageCodes()
     {
         $arr = config('languages');
+
+        if (config('custom.japan')) {
+            $arr = [
+                'en' => 'English',
+                'ja' => 'Japanese (ja)',
+            ];
+        }
 
         $result = [];
         foreach ($arr as $key => $name) {

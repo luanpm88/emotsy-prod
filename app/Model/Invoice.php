@@ -441,7 +441,10 @@ class Invoice extends Model
         $transaction->allow_manual_review = $gateway->allowManualReviewingOfTransaction();
 
         // This information is needed for verifying a transaction status later on
-        $transaction->method = $gateway->getType();
+        // Sometimes method is not needed. For example, when upgrading to a ZERO priced plan, the checkout
+        if (!is_null($gateway)) {
+            $transaction->method = $gateway->getType();
+        }
 
         $transaction->save();
 
@@ -465,7 +468,7 @@ class Invoice extends Model
      *
      * @return array
      */
-    public function checkout(PaymentGatewayInterface $gateway, Closure $executePayment)
+    public function checkout(PaymentGatewayInterface $gateway = null, Closure $executePayment)
     {
         \DB::transaction(function () use ($gateway, $executePayment) {
             // Create pending transaction, do not include it in a DB::transaction

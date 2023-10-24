@@ -9,7 +9,7 @@
 
 <div class="subscribe-embedded-form">
     @if (!empty($list->getEmbeddedFormOption('form_title')))
-        <h2>{{ $list->getEmbeddedFormOption('form_title') }}</h2>
+        <h2 class="mt-0">{{ $list->getEmbeddedFormOption('form_title') }}</h2>
     @endif
 
     <p class="text-sm text-end"><span class="text-danger">*</span> {{ trans('messages.indicates_required') }}</p>
@@ -47,6 +47,17 @@
                 <input type="hidden" name="redirect_url" value="{{ $list->getEmbeddedFormOption('redirect_url') }}" />
             @endif
 
+            @if ($list->getEmbeddedFormOption('enable_term') == 'yes')
+                <div class="d-flex align-items-top mb-4 mt-4 pt-2" style="position: relative">
+                    <div class="mr-2">
+                        <input type="checkbox" name="acm_term" required />
+                    </div>
+                    <div>
+                        {!! $list->getEmbeddedFormOption('term') !!}
+                    </div>
+                </div>
+            @endif
+
             <div class="form-button">
               <button class="btn btn-primary">{{ trans('messages.subscribe') }}</button>
             </div>
@@ -65,12 +76,12 @@
             <script type="text/javascript" src="{{ URL::asset('core/js/jquery-3.6.4.min.js') }}"></script>
             <script type="text/javascript" src="{{ URL::asset('core/js/jquery-migrate-3.4.1.min.js') }}"></script>
             <script type="text/javascript" src="{{ URL::asset('core/validate/jquery.validate.min.js') }}"></script>
+            <script type="text/javascript" src="{{ action('Controller@jquery_validate_locale') }}"></script>
             <script type="text/javascript" src="{{ URL::asset('core/datetime/anytime.min.js') }}"></script>
             <script type="text/javascript" src="{{ URL::asset('core/datetime/moment.min.js') }}"></script>
             <script type="text/javascript" src="{{ URL::asset('core/datetime/pickadate/picker.js') }}"></script>
             <script type="text/javascript" src="{{ URL::asset('core/datetime/pickadate/picker.date.js') }}"></script>
         @endif
-
 
         @if ($list->getEmbeddedFormOption('javascript') == 'yes')
             <script type="text/javascript" src="{{ URL::asset('core/js/functions.js') }}"></script>
@@ -81,11 +92,11 @@
                         @if ($list->getEmbeddedFormOption('javascript') == 'yes')
                             $(".subscribe-embedded-form form").validate({
                                 rules: {
-                                EMAIL: {
-                                    required: true,
-                                    email: true,
-                                    remote: "{{ action('MailListController@checkEmail', $list->uid) }}"
-                                }
+                                    EMAIL: {
+                                        required: true,
+                                        email: true,
+                                        remote: "{{ action('MailListController@checkEmail', $list->uid) }}"
+                                    },
                                 }
                             });
                         @endif

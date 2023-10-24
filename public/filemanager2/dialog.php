@@ -319,7 +319,7 @@ $get_params = http_build_query($get_params);
         <noscript><link rel="stylesheet" href="css/jquery.fileupload-ui-noscript.css"></noscript>
         <link rel="stylesheet" href="js/jPlayer-2.9.2/skin/blue.monday/css/jplayer.blue.monday.min.css" />
         <link rel="stylesheet" href="js/tui.image-editor-3.9.0/tui-image-editor.css">
-        <link href="css/style.css?v=<?php echo $version; ?>" rel="stylesheet" type="text/css" />
+        <link href="css/style.css?v=<?php echo $version; ?>3" rel="stylesheet" type="text/css" />
         <!--[if lt IE 8]>
         <style>
             .img-container span, .img-container-mini span {

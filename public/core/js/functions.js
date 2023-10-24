@@ -22,7 +22,10 @@ function initJs(container)
     if (container.find(".pickadate-control").length) {
         pickadateMask2(container.find('.pickadate-control'));
         container.find('.pickadate-control').pickadate({
-            format: 'yyyy-mm-dd'
+            format: 'yyyy-mm-dd',
+            selectMonths: true,
+            selectYears: 60,
+            max: true
         });
     }
 
@@ -127,8 +130,8 @@ function initJs(container)
     showAjaxDetailBox(container.find('.ajax-detail-box'));
 
     // image popup
-    container[0].querySelectorAll('[image-popup="link"]').forEach(link => {
-        new ImagePopup(link, link.getAttribute('image-url'));
+    container.find('[image-popup="link"]').each(function(link) {
+        new ImagePopup($(this)[0], $(this).attr('image-url'));
     });
 
     // license required helper

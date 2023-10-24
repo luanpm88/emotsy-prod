@@ -2110,6 +2110,8 @@ class MailList extends Model
             'stylesheet' => 'yes',
             'javascript' => 'yes',
             'show_invisible' => 'no',
+            'enable_term' => 'yes',
+            'term' => trans('messages.embedded_form.enable_term.example'),
             'custom_css' => '.subscribe-embedded-form {
     color: #333
 }

@@ -15,7 +15,6 @@ use Acelle\Helpers\LicenseHelper;
 use App;
 use Acelle\Library\Downloader;
 use Acelle\Library\Notification\SystemUrl;
-use Illuminate\Support\Facades\Http;
 
 class SettingController extends Controller
 {
@@ -453,16 +452,6 @@ class SettingController extends Controller
             return $this->notAuthorized();
         }
 
-        // Setting::updateAll();
-        $settings = Setting::getAll();
-        if (null !== $request->old()) {
-            foreach ($request->old() as $name => $value) {
-                if (isset($settings[$name])) {
-                    $settings[$name]['value'] = $value;
-                }
-            }
-        }
-
         // validate and save posted data
         if ($request->isMethod('post')) {
             // Prenvent save from demo mod
@@ -471,44 +460,21 @@ class SettingController extends Controller
             }
 
             try {
-                if (config('custom.japan')) {
-                    $endpoint = join_url(config('custom.license_validation_endpoint'), '/wp-json/automailjp/v1/license/check?license=' . $request->license);
-                    $result = Http::get($endpoint)->json();
-
-                    // failed
-                    if ($result['status'] !== 'success') {
-                        throw new \Exception('License is not valid. Error: ' . $result['message']);
-                    }
-
-                    // success: save setting
-                    Setting::set('license', $result['license']);
-                    Setting::set('license_type', $result['type']);
-                } else {
-                    // Update license type
-                    Setting::updateLicense($request->license);
-                }
-
-                // Save settings
-                foreach ($request->all() as $name => $value) {
-                    if ($name != '_token' && isset($settings[$name])) {
-                        Setting::set($name, $value);
-                    }
-                }
+                LicenseHelper::updateLicense($request->license);
 
                 // Redirect to my lists page
                 $request->session()->flash('alert-success', trans('messages.license.updated'));
 
                 return redirect()->action('Admin\SettingController@license');
-            } catch (\Exception $ex) {
-                $license_error = trans('messages.something_wrong_with_license_check', ['error' => $ex->getMessage()]);
+            } catch (\Throwable $ex) {
+                $license_error = $ex->getMessage();
             }
         }
 
         return view('admin.settings.license', [
-            'settings' => $settings,
-            'current_license' => Setting::get('license'),
+            'license' => LicenseHelper::getCurrentLicense(),
             'license_error' => isset($license_error) ? $license_error : '',
-            'action' => 'license'
+            'action' => 'license' // highlight "License" tab
         ]);
     }
 
@@ -528,6 +494,7 @@ class SettingController extends Controller
         $manager = new UpgradeManager();
 
         return view('admin.settings.upgrade', [
+            'license' => LicenseHelper::getCurrentLicense(),
             'any' => 'any',
             'manager' => $manager,
             'phpversion' => version_compare(PHP_VERSION, config('custom.php_recommended'), '>='),
@@ -618,31 +585,8 @@ class SettingController extends Controller
      */
     public function uploadApplicationPatch(Request $request)
     {
-        if (empty(Setting::get('license'))) {
+        if (is_null(\Acelle\Helpers\LicenseHelper::getCurrentLicense())) {
             $request->session()->flash('alert-error', 'Please <a style="text-decoration:underline;font-style: normal;" href="'.url('admin/settings/license').'">register</a> your installation with a valid purchase code first before upgrading.');
-
-            return redirect()->action('Admin\SettingController@upgrade');
-        }
-
-        try {
-            if (config('custom.japan')) {
-                $endpoint = join_url(config('custom.license_validation_endpoint'), '/wp-json/automailjp/v1/license/check?license=' . Setting::get('license'));
-                $result = Http::get($endpoint)->json();
-
-                // failed
-                if ($result['status'] !== 'success') {
-                    throw new \Exception('License is not valid. Error: ' . $result['message']);
-                }
-            } else {
-                list($supported, $supportedUntil) = LicenseHelper::isSupported();
-                if (!$supported) {
-                    $request->session()->flash('alert-error', sprintf('Your Acelle Mail SUPPORT was already expired on <strong>%s</strong>. Please <a style="text-decoration:underline;font-style: normal;" target="_blank" href="%s">renew</a> it first before proceeding with our LIVE upgrade service.', $supportedUntil->toFormattedDateString(), 'https://codecanyon.net/item/acelle-email-marketing-web-application/17796082'));
-
-                    return redirect()->action('Admin\SettingController@upgrade');
-                }
-            }
-        } catch (\Exception $ex) {
-            $request->session()->flash('alert-error', $ex->getMessage());
 
             return redirect()->action('Admin\SettingController@upgrade');
         }
@@ -843,7 +787,7 @@ class SettingController extends Controller
     public function licenseRemove()
     {
         try {
-            Setting::updateLicense(null);
+            LicenseHelper::removeLicense();
 
             return redirect()->action('Admin\SettingController@license')
                 ->with('alert-success', trans('messages.license.removed'));

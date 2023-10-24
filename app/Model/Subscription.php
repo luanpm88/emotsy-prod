@@ -421,7 +421,7 @@ class Subscription extends Model
 
     public function getAutoBillingDate()
     {
-        return $this->current_period_ends_at->subDays(\Acelle\Model\Setting::get('subscription.auto_billing_period'));
+        return $this->current_period_ends_at->copy()->subDays(\Acelle\Model\Setting::get('subscription.auto_billing_period'));
     }
 
     /**
@@ -859,7 +859,7 @@ class Subscription extends Model
         }
 
         // check if recurring accur
-        if (Carbon::now()->greaterThanOrEqualTo($this->current_period_ends_at->subDays(Setting::get('subscription.expiring_period')))) {
+        if (Carbon::now()->greaterThanOrEqualTo($this->current_period_ends_at->copy()->subDays(Setting::get('subscription.expiring_period')))) {
             return true;
         }
 

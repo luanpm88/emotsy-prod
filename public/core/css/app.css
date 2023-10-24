@@ -1258,11 +1258,16 @@ redbold {
 .embedded_form {
     border: solid 1px #ccc;
     width: 100%;
-    height: 400px;
+    height: 550px;
     overflow: auto;
 }
 textarea.height-100 {
-    height: 100px
+    height: 100px!important;
+    width: 100%;
+}
+textarea.height-200 {
+    height: 200px!important;
+    width: 100%;
 }
 .text-small {
     font-size: 90%;
@@ -4422,6 +4427,7 @@ pagination {
     border-top-width: 1px;
     border-bottom-width: 1px;
     display: block;
+    min-width: 230px;
   }
   /* ------------------------------------------------------------------------------
   *
@@ -4467,9 +4473,11 @@ pagination {
   }
   .picker__select--month {
     width: 35%;
+    min-width: 86px;
   }
   .picker__select--year {
     width: 22.5%;
+    min-width: 62px;
   }
   .picker__nav--prev,
   .picker__nav--next {

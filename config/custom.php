@@ -25,7 +25,7 @@ return [
     'woo' => false,
 
     // Special settings
-    'japan' => env('APP_JAPAN', true),
+    'japan' => env('APP_JAPAN', false),
 
     // License validation endpoint
     'license_validation_endpoint' => env('LICENSE_VALIDATION_ENDPOINT'),
@@ -35,4 +35,7 @@ return [
 
     // Dry run mode, do not actually send anything
     'dryrun' => env('APP_DRYRUN', false),
+
+    // License verification endpoint
+    'license_verification_endpoint' => env('LICENSE_VALIDATION_ENDPOINT', 'http://verify.acellemail.com')
 ];

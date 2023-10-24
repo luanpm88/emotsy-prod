@@ -13,6 +13,7 @@ use Acelle\Model\Campaign;
 use Laravel\Tinker\Console\TinkerCommand;
 use Exception;
 use Acelle\Library\Facades\SubscriptionFacade;
+use Acelle\Helpers\LicenseHelper;
 
 class Kernel extends ConsoleKernel
 {
@@ -88,6 +89,28 @@ class Kernel extends ConsoleKernel
         $schedule->call(function () {
             Campaign::checkAndExecuteScheduledCampaigns();
         })->name('check_and_execute_scheduled_campaigns')->everyMinute();
+
+        $licenseTask = $schedule->call(function () {
+            Notification::recordIfFails(
+                function () {
+                    $license = LicenseHelper::getCurrentLicense();
+
+                    if (is_null($license)) {
+                        throw new Exception('NO LICENSE FOUND. Please register your application with a valid purchase code (go to Admin area\'s Settings > License dashboard).');
+                    }
+
+                    LicenseHelper::refreshLicense();
+                },
+                $title = 'License verification',
+                $exceptionCallback = null,
+            );
+        })->name('verify_license');
+
+        if (config('custom.japan')) {
+            $licenseTask->everyMinute();
+        } else {
+            $licenseTask->weeklyOn(rand(1, 6), '10:'.rand(10, 59)); // randomly from Mon to Sat, at 10:10 - 10:59
+        }
     }
 
     /**

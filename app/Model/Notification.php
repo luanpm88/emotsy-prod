@@ -215,7 +215,7 @@ class Notification extends Model
             $closure();
         } catch (\Throwable $t) {
             $message = $moreMessage.$t->getMessage();
-            static::record($title, $message, static::LEVEL_ERROR);
+            static::record($title, $message, static::LEVEL_WARNING);
 
             if ($exceptionCallback) {
                 $exceptionCallback($t);

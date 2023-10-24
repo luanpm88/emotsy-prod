@@ -96,16 +96,15 @@ return [
         ],[
             'id' => 'bounceless.io',
             'name' => 'Bounceless.io',
-            'uri' => 'https://apps.bounceless.io/api/verifyEmail?secret={API_KEY}&email={EMAIL}',
+            'uri' => 'https://apps.bounceless.io/api/singlemaildetails?secret={API_KEY}&email={EMAIL}',
             'request_type' => 'GET',
             'fields' => [ 'api_key' ],
-            'response_type' => 'plain',
+            'result_xpath' => '$.result',
             'result_map' => [
-                'ok' => 'deliverable',
+                'valid' => 'deliverable',
                 'unknown' => 'unknown',
-                'incorrect' => 'undeliverable',
-                'fail' => 'undeliverable',
-                'email_disabled' => 'undeliverable',
+                'invalid' => 'undeliverable',
+                'risky' => 'risky',
             ]
         ], [
             'id' => 'bouncify.io',

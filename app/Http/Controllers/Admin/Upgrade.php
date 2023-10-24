@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Schema;
 use Exception;
 use Acelle\Library\UpgradeManager;
 use Acelle\Model\Notification;
+use Acelle\Helpers\LicenseHelper;
 
 class Upgrade extends Controller
 {
@@ -71,6 +72,9 @@ class Upgrade extends Controller
 
         // Clean up all notifications
         Notification::truncate();
+
+        // Refresh license
+        LicenseHelper::refreshLicense();
 
         // Upgrade post-processing
         if ($request->session()->has('upgraded')) {
