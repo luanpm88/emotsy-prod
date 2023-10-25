@@ -1812,4 +1812,9 @@ class Customer extends Model
 
         return false;
     }
+
+    public function getGoogleAccessToken()
+    {
+        return $this->google_auth;
+    }
 }
