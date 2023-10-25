@@ -25,7 +25,6 @@ function initJs(container)
             format: 'yyyy-mm-dd',
             selectMonths: true,
             selectYears: 60,
-            max: true
         });
     }
 
