@@ -3222,4 +3222,6 @@
   'google.connected_to_google_analytics' => 'You are connected to Google Analytics',
   'google-analytics.more_options' => 'Click here to edit UTM parameters', 
   'google-analytics.utm_parameters' => 'UTM parameters',
+  'campaign.status' => 'Status',
+  'campaign.status.all' => 'All statuses',
 ) ?>
