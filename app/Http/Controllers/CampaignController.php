@@ -2576,4 +2576,13 @@ class CampaignController extends Controller
             'message' => trans('messages.preheader.removed'),
         ]);
     }
+
+    public function googleAnalytics(Request $request)
+    {
+        $campaign = Campaign::findByUid($request->uid);
+
+        return view('campaigns.googleAnalytics', [
+            'campaign' => $campaign,
+        ]);
+    }
 }
