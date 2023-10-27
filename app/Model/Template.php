@@ -1412,7 +1412,6 @@ class Template extends Model
         $pipeline->add(new MakeInlineCss($this->findCssFiles()));
         $pipeline->add(new TransformWidgets());
         $pipeline->add(new DecodeHtmlSpecialChars());
-        // @important: GenerateSpintax must go after MakeInlineCss. Otherwise, it might crash <STYLE> content
         $pipeline->add(new GenerateSpintax());
 
         // Actually push HTML to pipeline for processing
