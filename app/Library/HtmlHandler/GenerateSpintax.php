@@ -25,7 +25,7 @@ class GenerateSpintax implements StageInterface
         // Also, remember to exclude the <STYLE> tag for Spintax
         $html = StringHelper::updateHtml($html, function($dom) {
             // Do nothing
-            // Just to make sure the content of $cleanedHtml and $html are exactly the same
+            // Just to make sure the content of $cleanedHtml and $html are exactly the same (standardized by DOMDocument)
             // The only difference is that <STYLE> tags are removed from $cleanedHtml
         });
 
