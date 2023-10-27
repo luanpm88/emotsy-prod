@@ -40,6 +40,9 @@ use League\Pipeline\PipelineBuilder;
 use Acelle\Library\HtmlHandler\TransformWidgets;
 use Acelle\Library\HtmlHandler\DecodeHtmlSpecialChars;
 use Acelle\Library\HtmlHandler\GenerateSpintax;
+use Acelle\Library\HtmlHandler\AddDoctype;
+use Acelle\Library\HtmlHandler\ParseRss;
+use Acelle\Library\HtmlHandler\MakeInlineCss;
 
 use function Acelle\Helpers\is_non_web_link;
 use function Acelle\Helpers\getAppHost;
@@ -1404,8 +1407,12 @@ class Template extends Model
     {
         // Bind subscriber/message/server information to email content
         $pipeline = new PipelineBuilder();
+        $pipeline->add(new AddDoctype());
+        $pipeline->add(new ParseRss());
+        $pipeline->add(new MakeInlineCss($this->findCssFiles()));
         $pipeline->add(new TransformWidgets());
         $pipeline->add(new DecodeHtmlSpecialChars());
+        // @important: GenerateSpintax must go after MakeInlineCss. Otherwise, it might crash <STYLE> content
         $pipeline->add(new GenerateSpintax());
 
         // Actually push HTML to pipeline for processing

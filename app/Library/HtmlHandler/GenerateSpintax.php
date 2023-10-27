@@ -5,6 +5,11 @@ namespace Acelle\Library\HtmlHandler;
 use League\Pipeline\StageInterface;
 use bjoernffm\Spintax\Parser;
 
+/*
+ * @important: "GenerateSpintax" must go after "MakeInlineCss"
+ *             Otherwise, it may crash the content of <STYLE> tags
+ */
+
 class GenerateSpintax implements StageInterface
 {
     public function __invoke($html)
