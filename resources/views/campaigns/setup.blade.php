@@ -213,6 +213,8 @@
 								</div>
 							@endif
 
+							{{ $campaign->generateUtmLink('https://acellemail.com') }}
+
 							<div ga-control="more-options" class="mt-3">
 								<a  href="javascript:;" ga-control="show-options" href="">{{ trans('messages.google-analytics.more_options') }}</a>
 								<div ga-control="options-box" style="display:none">
@@ -288,7 +290,7 @@
 												</td>
 												<td valign="middle">
 													<div ga-control="option-input">
-														<input type="text" value="laptop" name="utm_campaign" class="form-control">
+														<input type="text" value="laptop" name="utm_term" class="form-control">
 													</div>
 												</td>
 											</tr>

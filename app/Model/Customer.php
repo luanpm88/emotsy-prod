@@ -1815,6 +1815,6 @@ class Customer extends Model
 
     public function getGoogleAccessToken()
     {
-        return $this->google_auth;
+        return json_decode($this->google_auth, true)['access_token'];
     }
 }

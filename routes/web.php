@@ -477,8 +477,6 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('templates/rss/parse', 'TemplateController@parseRss');
 
     // Campaign
-    Route::get('campaigns/{uid}/google-analytics', 'CampaignController@googleAnalytics');
-
     Route::post('campaigns/{uid}/preheader/remove', 'CampaignController@preheaderRemove');
     Route::match(['get', 'post'], 'campaigns/{uid}/preheader/add', 'CampaignController@preheaderAdd');
     Route::get('campaigns/{uid}/preheader', 'CampaignController@preheader');
@@ -892,6 +890,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::resource('store/media', 'Store\MediaController');
 
     // Google Analytics
+    Route::get('campaigns/{uid}/google-analytics', 'GoogleAnalyticsController@googleAnalytics');
     Route::get('account/google-analytics', 'GoogleAnalyticsController@index');
     Route::get('account/google-analytics/auth/google', 'GoogleAnalyticsController@redirectToGoogle');
     Route::get('account/google-analytics/auth/google/callback', 'GoogleAnalyticsController@handleGoogleCallback');

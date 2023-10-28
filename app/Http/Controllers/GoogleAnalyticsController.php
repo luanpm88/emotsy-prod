@@ -7,6 +7,12 @@ use Illuminate\Support\Facades\Log as LaravelLog;
 use Acelle\Library\Facades\Billing;
 use Laravel\Socialite\Facades\Socialite;
 use Google\Client;
+use Google_Service_AnalyticsReporting;
+use Google_Service_AnalyticsReporting_ReportRequest;
+use Google_Service_AnalyticsReporting_DateRange;
+use Google_Service_AnalyticsReporting_Metric;
+use Google_Service_AnalyticsReporting_Dimension;
+use Google_Service_AnalyticsReporting_GetReportsRequest;
 
 class GoogleAnalyticsController extends Controller
 {
@@ -27,10 +33,19 @@ class GoogleAnalyticsController extends Controller
             session()->forget('google-redirect');
         }
 
-        return Socialite::driver('google')
-            ->stateless()
-            ->with(['redirect_uri' => action('GoogleAnalyticsController@redirect')])
-            ->redirect();
+        $client = new Client();
+        $client->setClientId(config('services.google.client_id'));
+        $client->setClientSecret(config('services.google.client_secret'));
+        $client->setRedirectUri(action('GoogleAnalyticsController@redirect'));
+        $client->addScope('https://www.googleapis.com/auth/analytics.readonly');
+
+        return redirect($client->createAuthUrl());
+
+        // return Socialite::driver('google')
+        //     ->scopes(['profile', 'email'])
+        //     ->stateless()
+        //     ->with(['redirect_uri' => action('GoogleAnalyticsController@redirect')])
+        //     ->redirect();
     }
 
     public function handleGoogleCallback(Request $request)
@@ -73,5 +88,49 @@ class GoogleAnalyticsController extends Controller
         } else {
             return redirect()->action('GoogleAnalyticsController@index');
         }
+    }
+
+    // campaign google analytics report
+    public function googleAnalytics(Request $request)
+    {
+        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+
+        // Get Google Client
+        $client = new Client();
+        $client->setClientId(config('services.google.client_id'));
+        $client->setClientSecret(config('services.google.client_secret'));
+        $client->setAccessToken($request->user()->customer->getGoogleAccessToken());
+
+        // 
+        $analytics = new Google_Service_AnalyticsReporting($client);
+
+        // Create the DateRange object.
+        $dateRange = new Google_Service_AnalyticsReporting_DateRange();
+        $dateRange->setStartDate("2015-06-15");
+        $dateRange->setEndDate("2015-06-30");
+
+        // Create the Metrics object.
+        $sessions = new Google_Service_AnalyticsReporting_Metric();
+        $sessions->setExpression("ga:sessions");
+        $sessions->setAlias("sessions");
+
+        //Create the Dimensions object.
+        $browser = new Google_Service_AnalyticsReporting_Dimension();
+        $browser->setName("ga:browser");
+
+        // Create the ReportRequest object.
+        $request = new Google_Service_AnalyticsReporting_ReportRequest();
+        $request->setViewId("XXXX");
+        $request->setDateRanges($dateRange);
+        $request->setDimensions(array($browser));
+        $request->setMetrics(array($sessions));
+
+        $body = new Google_Service_AnalyticsReporting_GetReportsRequest();
+        $body->setReportRequests( array( $request) );
+        return $analytics->reports->batchGet( $body );
+
+        return view('campaigns.googleAnalytics', [
+            'campaign' => $campaign,
+        ]);
     }
 }
