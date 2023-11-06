@@ -33,7 +33,7 @@ class GenerateSpintax implements StageInterface
         // Look after a ">" and before a "<", with any char that is not ">" and "<"
         $htmlTextRegexp = '/(?<=>)[^<>]+(?=<)/';
 
-        // Extract text values from HTML
+        // Extract text values from HTML, do not count <STYLE> tags
         preg_match_all($htmlTextRegexp, $cleanedHtml, $matches);
 
         // Check every value

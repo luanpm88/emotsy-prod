@@ -289,6 +289,7 @@ class Plugin extends Model
         }
         */
 
+        /* APP VERSION CHECK IS NO LONGER NEEDED, FOR COMPATIBILITY WITH OTHER VERSION NAMING
         // Check app version
         $currentVersion = app_version();
         $requiredVersion = $config['app_version'];
@@ -299,6 +300,7 @@ class Plugin extends Model
                 'required' => $requiredVersion
             ]));
         }
+        */
 
         // // Check license type
         // if (empty(Setting::get('license_type'))) {
