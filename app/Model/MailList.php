@@ -1182,7 +1182,7 @@ class MailList extends Model
             $progressCallback($processed, $total, $failed, $message = trans('messages.list.import.starting'));
         }
 
-        // Read CSV files
+        // Read CSV files, keep original headers' case (do not lowercase or uppercase)
         list($headers, $total, $results) = $this->readCsv($file);
 
         /*
@@ -1216,12 +1216,19 @@ class MailList extends Model
                 // Insert subscriber fields from the batch to the temporary table
                 // extract only fields whose name matches TAG NAME of MailList
                 $data = collect($batch)->map(function ($r) use ($emailFieldName, $map) {
+                    // Transform a record like:   [ 'First Name' => 'Joe', 'Email' => 'joe@america.us', 'tags' => 'SOME TAGS', 'others' => 'Others' ]
+                    // to something like
+                    //
+                    //     [ 'field_1' => 'Joe', 'field_2' => 'joe@america.us',  'tags' => 'SOME TAGS']
+                    //
+                    // i.e. Change header based on mapped field, remove other fields (not in map)
                     $record = $map->updateRecordHeaders($r);
 
                     // replace the non-break space (not a normal space) as well as all other spaces
                     $record[$emailFieldName] = strtolower(preg_replace('/[ \s*]*/', '', trim($record[$emailFieldName])));
 
                     // Process tag values
+                    // @important: tags field must be lower-case
                     if (array_key_exists('tags', $record) && !empty($record['tags'])) {
                         $record['tags'] = json_encode(array_filter(preg_split('/\s*,\s*/', $record['tags'])));
                     }
