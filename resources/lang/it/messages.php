@@ -771,6 +771,8 @@
     instead of stopping the whole campaign.',
   'campaign.spam_score' => 'Punteggio Spam',
   'campaign.started_ago' => 'Avviato :time fa',
+  'campaign.status' => 'Status',
+  'campaign.status.all' => 'All statuses',
   'campaign.subject.help' => 'Quando si tratta di email marketing, le migliori righe di oggetto raccontano cosa c\'&egrave; dentro invece di vendere cosa c\'&egrave; dentro.',
   'campaign.successfully_delivered' => 'Email unica inviata',
   'campaign.template.builder.select' => 'Comporre l\'e-mail',

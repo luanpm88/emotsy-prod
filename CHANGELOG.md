@@ -1,4 +1,4 @@
-4.0.26 / 2023-11-04
+4.0.26 / 2023-11-07
 ==================
 
  * Added: Spintax support for plain text email

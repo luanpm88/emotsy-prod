@@ -770,6 +770,8 @@
     instead of stopping the whole campaign.',
   'campaign.spam_score' => 'Spam Score',
   'campaign.started_ago' => 'Startet :time',
+  'campaign.status' => 'Status',
+  'campaign.status.all' => 'All statuses',
   'campaign.subject.help' => 'When it comes to email marketing, the best subject lines tell what\'s inside instead of sell what\'s inside.',
   'campaign.successfully_delivered' => 'Erfolgreich zugestellt',
   'campaign.template.builder.select' => 'Wählen Sie den Builder',

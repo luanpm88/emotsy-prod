@@ -771,6 +771,8 @@
     instead of stopping the whole campaign.',
   'campaign.spam_score' => 'Spam Score',
   'campaign.started_ago' => 'Started :time ago',
+  'campaign.status' => 'Status',
+  'campaign.status.all' => 'All statuses',
   'campaign.subject.help' => 'When it comes to email marketing, the best subject lines tell what\'s inside instead of sell what\'s inside.',
   'campaign.successfully_delivered' => 'Unique email sent',
   'campaign.template.builder.select' => 'Compose your email',
@@ -3211,6 +3213,4 @@
   'your_api_token' => 'Your API token',
   'your_current_license' => 'The current application is registered with the key below, also known as Purchase Code. License type is: ',
   'zip_postal_code' => 'Zip / Postal code',
-  'campaign.status' => 'Status',
-  'campaign.status.all' => 'All statuses',
 ) ?>

@@ -771,6 +771,8 @@
     instead of stopping the whole campaign.',
   'campaign.spam_score' => 'Puntaje Spam',
   'campaign.started_ago' => 'Started :time ago',
+  'campaign.status' => 'Status',
+  'campaign.status.all' => 'All statuses',
   'campaign.subject.help' => 'When it comes to email marketing, the best subject lines tell what\'s inside instead of sell what\'s inside.',
   'campaign.successfully_delivered' => 'Enviados exitosamente',
   'campaign.template.builder.select' => 'Cambiar constructor',
