@@ -326,38 +326,20 @@ class InstallController extends Controller
             $user->save();
         }
 
-        // Insert system urls
-        $mysqli->query('DELETE FROM `'.$database['tables_prefix']."settings` WHERE name='url_delivery_handler'");
-        $mysqli->query('INSERT INTO `'.$database['tables_prefix']."settings` (`name`, `value`, `created_at`, `updated_at`) VALUES
-                        ('url_delivery_handler', '".action('DeliveryController@notify', ['stype' => ''])."', '".$date."', '".$date."');");
-        $mysqli->query('DELETE FROM `'.$database['tables_prefix']."settings` WHERE name='url_unsubscribe'");
-        $mysqli->query('INSERT INTO `'.$database['tables_prefix']."settings` (`name`, `value`, `created_at`, `updated_at`) VALUES
-                        ('url_unsubscribe', '".action('CampaignController@unsubscribe', ['message_id' => 'MESSAGE_ID', 'subscriber' => 'SUBSCRIBER'])."', '".$date."', '".$date."');");
-        $mysqli->query('DELETE FROM `'.$database['tables_prefix']."settings` WHERE name='url_open_track'");
-        $mysqli->query('INSERT INTO `'.$database['tables_prefix']."settings` (`name`, `value`, `created_at`, `updated_at`) VALUES
-                        ('url_open_track', '".action('CampaignController@open', ['message_id' => 'MESSAGE_ID'])."', '".$date."', '".$date."');");
-        $mysqli->query('DELETE FROM `'.$database['tables_prefix']."settings` WHERE name='url_web_view'");
-        $mysqli->query('INSERT INTO `'.$database['tables_prefix']."settings` (`name`, `value`, `created_at`, `updated_at`) VALUES
-                        ('url_web_view', '".action('CampaignController@webView', ['message_id' => 'MESSAGE_ID'])."', '".$date."', '".$date."');");
-        $mysqli->query('DELETE FROM `'.$database['tables_prefix']."settings` WHERE name='url_click_track'");
-        $mysqli->query('INSERT INTO `'.$database['tables_prefix']."settings` (`name`, `value`, `created_at`, `updated_at`) VALUES
-                        ('url_click_track', '".action('CampaignController@click', ['message_id' => 'MESSAGE_ID', 'url' => 'URL'])."', '".$date."', '".$date."');");
-        $mysqli->query('DELETE FROM `'.$database['tables_prefix']."settings` WHERE name='url_update_profile'");
-        $mysqli->query('INSERT INTO `'.$database['tables_prefix']."settings` (`name`, `value`, `created_at`, `updated_at`) VALUES
-                        ('url_update_profile', '".action('PageController@profileUpdateForm', ['list_uid' => 'LIST_UID', 'uid' => 'SUBSCRIBER_UID', 'code' => 'SECURE_CODE'])."', '".$date."', '".$date."');");
-        $mysqli->query('DELETE FROM `'.$database['tables_prefix']."settings` WHERE name='site_name'");
-        $mysqli->query('INSERT INTO `'.$database['tables_prefix']."settings` (`name`, `value`, `created_at`, `updated_at`) VALUES
-                        ('site_name', '".$site_info['site_name']."', '".$date."', '".$date."');");
-        $mysqli->query('DELETE FROM `'.$database['tables_prefix']."settings` WHERE name='site_keyword'");
-        $mysqli->query('INSERT INTO `'.$database['tables_prefix']."settings` (`name`, `value`, `created_at`, `updated_at`) VALUES
-                        ('site_keyword', '".$site_info['site_keyword']."', '".$date."', '".$date."');");
-        $mysqli->query('DELETE FROM `'.$database['tables_prefix']."settings` WHERE name='site_description'");
-        $mysqli->query('INSERT INTO `'.$database['tables_prefix']."settings` (`name`, `value`, `created_at`, `updated_at`) VALUES
-                        ('site_description', '".$site_info['site_description']."', '".$date."', '".$date."');");
-        $mysqli->query('INSERT INTO `'.$database['tables_prefix']."settings` (`name`, `value`, `created_at`, `updated_at`) VALUES
-                        ('license', '".$site_info['license']."', '".$date."', '".$date."');");
-        $mysqli->query('INSERT INTO `'.$database['tables_prefix']."settings` (`name`, `value`, `created_at`, `updated_at`) VALUES
-                        ('license_type', '".$site_info['license_type']."', '".$date."', '".$date."');");
+        // Insert system urls settings
+        \Acelle\Model\Setting::set('url_delivery_handler', action('DeliveryController@notify', ['stype' => '']));
+        \Acelle\Model\Setting::set('url_unsubscribe', action('CampaignController@unsubscribe', ['message_id' => 'MESSAGE_ID', 'subscriber' => 'SUBSCRIBER']));
+        \Acelle\Model\Setting::set('url_open_track', action('CampaignController@open', ['message_id' => 'MESSAGE_ID']));
+        \Acelle\Model\Setting::set('url_web_view', action('CampaignController@webView', ['message_id' => 'MESSAGE_ID']));
+        \Acelle\Model\Setting::set('url_click_track', action('CampaignController@click', ['message_id' => 'MESSAGE_ID', 'url' => 'URL']));
+        \Acelle\Model\Setting::set('url_update_profile', action('PageController@profileUpdateForm', ['list_uid' => 'LIST_UID', 'uid' => 'SUBSCRIBER_UID', 'code' => 'SECURE_CODE']));
+
+        // Site info settings
+        \Acelle\Model\Setting::set('site_name', $site_info['site_name']);
+        \Acelle\Model\Setting::set('site_keyword', $site_info['site_keyword']);
+        \Acelle\Model\Setting::set('site_description', $site_info['site_description']);
+        \Acelle\Model\Setting::set('license', $site_info['license']);
+        \Acelle\Model\Setting::set('license_type', $site_info['license_type']);
 
         // mail setting
         \Acelle\Model\Setting::set('mailer.mailer', $site_info['mail_mailer']);
