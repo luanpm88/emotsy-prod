@@ -105,6 +105,9 @@ class AutomationElement
             case 'ElementWait':
                 return trans('messages.automation.wait.delay.'.$this->getOption('time'));
                 break;
+            case 'ElementOperation':
+                return __('messages.automation.stats.operation_executed');
+                break;
             case 'ElementCondition':
                 if ($this->getOption('type') == 'open') {
                     return trans('messages.automation.action.condition.read_email.title');
