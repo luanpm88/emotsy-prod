@@ -14,16 +14,16 @@ class GenerateSpintax implements StageInterface
         // As a result, we need to handle it by extracting text from the HTML
 
         // Also, remember to exclude the <STYLE> tag for Spintax
-        $cleanedHtml = StringHelper::updateHtml($html, function($dom) {
+        $cleanedHtml = StringHelper::updateHtml($html, function ($dom) {
             $styles = $dom->getElementsByTagName('style');
-            for ($i = $styles->length; --$i >= 0; ) {
-              $node = $styles->item($i);
-              $node->parentNode->removeChild($node);
+            for ($i = $styles->length; --$i >= 0;) {
+                $node = $styles->item($i);
+                $node->parentNode->removeChild($node);
             }
         });
 
         // Also, remember to exclude the <STYLE> tag for Spintax
-        $html = StringHelper::updateHtml($html, function($dom) {
+        $html = StringHelper::updateHtml($html, function ($dom) {
             // Do nothing
             // Just to make sure the content of $cleanedHtml and $html are exactly the same (standardized by DOMDocument)
             // The only difference is that <STYLE> tags are removed from $cleanedHtml
