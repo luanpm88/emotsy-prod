@@ -724,33 +724,39 @@ class Plugin extends Model
     //
     public static function updatePluginMasterFile($name, $params)
     {
-        // File storing plugin index (meta data)
-        $index = self::getPluginMasterFile();
+        try {
+            // File storing plugin index (meta data)
+            $index = self::getPluginMasterFile();
 
-        // Get json data from file
-        if (!file_exists($index)) {
-            $data = [];
-        } else {
-            $data = json_decode(file_get_contents($index), true);
-        }
-
-        if (is_null($params)) {
-            // null means: delete plugin from index
-            unset($data[$name]);
-        } else {
-            $plugininfo = array_key_exists($name, $data) ? $data[$name] : [];
-            $plugininfo = array_merge($plugininfo, $params);
-            $plugininfo = array_filter($plugininfo); // filter out null keys
-            $data[$name] = $plugininfo;
-
-            // Currently, only 'status' is required in this master file
-            if (!array_key_exists('status', $data[$name])) {
-                throw new \Exception('Plugin\'s "status" attribute is required in plugin master file');
+            // Get json data from file
+            if (!file_exists($index)) {
+                $data = [];
+            } else {
+                // @note: repeatedly refresh the admin dashboard and sometimes $data becomes null!
+                $data = json_decode(file_get_contents($index), true);
             }
+
+            if (is_null($params)) {
+                // null means: delete plugin from index
+                unset($data[$name]);
+            } else {
+                $plugininfo = array_key_exists($name, $data) ? $data[$name] : [];
+                $plugininfo = array_merge($plugininfo, $params);
+                $plugininfo = array_filter($plugininfo); // filter out null keys
+                $data[$name] = $plugininfo;
+
+                // Currently, only 'status' is required in this master file
+                if (!array_key_exists('status', $data[$name])) {
+                    throw new \Exception('Plugin\'s "status" attribute is required in plugin master file');
+                }
+            }
+
+            // Write back to file
+            file_put_contents($index, json_encode($data));
+        } catch (\Throwable $t) {
+            throw new Exception(trans('messages.plugin.error.cannot_load', ['p' => $name])." | ".$t->getMessage());
         }
 
-        // Write back to file
-        file_put_contents($index, json_encode($data));
     }
 
     public static function resetPluginMasterFile()

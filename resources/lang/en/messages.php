@@ -1475,6 +1475,7 @@
   'less_than' => 'less than',
   'license' => 'License (Purchased code)',
   'license.error.invalid' => 'Invalid license',
+  'plugin.error.cannot_load' => 'Something went wrong loading plugin :p',
   'license.error.no_license' => 'NO LICENSE FOUND. Please register your application with a valid purchase code (go to Admin area, Settings > License dashboard).',
   'license.license_types' => 'License types',
   'license.no_license' => 'You do not enter a valid license yet. Please purchase a license and enter it in the form below to continue using the product',
