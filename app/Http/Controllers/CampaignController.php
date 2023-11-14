@@ -1318,11 +1318,6 @@ class CampaignController extends Controller
 
         if ($log && $log->trackingLog && $log->trackingLog->campaign) {
             $log->trackingLog->campaign->queueClickCallbacks($log);
-
-            // hack
-            if ($log->trackingLog->campaign->google_analytic_link_tracking) {
-                $url = \Acelle\Helpers\generateUtmLink($url, $log->trackingLog->campaign->getUtmParameters());
-            }
         }
 
         return redirect()->away($url);
