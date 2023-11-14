@@ -57,7 +57,7 @@
                 <div class="d-flex align-items-center">
                     <h5 class="text-semibold mb-1 me-auto">{{ trans('messages.subscriber') }}</h5>
                     <div class="pull-right text-primary text-semibold">
-                        <span class="text-muted">{{ number_with_delimiter($subscribersCount) }}/{{ ($maxSubscribers == -1) ? '∞' : number_with_delimiter($subscribersCount) }}</span>
+                        <span class="text-muted">{{ number_with_delimiter($subscribersCount) }}/{{ ($maxSubscribers == -1) ? '∞' : number_with_delimiter($maxSubscribers) }}</span>
                         &nbsp;&nbsp;&nbsp;{{ number_to_percentage($subscribersUsed) }}
                     </div>
                 </div>
