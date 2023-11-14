@@ -79,40 +79,6 @@
 						<span class="material-symbols-rounded">auto_awesome_mosaic</span> {{ trans('messages.email_review') }}
 					</a>
 				</li>
-			</ul>
-		</div>
-					<li class="{{ $menu == 'bounce_log' ? 'active' : '' }}">
-						<a class="dropdown-item" href="{{ action('CampaignController@bounceLog', $campaign->uid) }}">
-							<span class="material-symbols-rounded">article</span> {{ trans('messages.bounce_log') }}
-						</a>
-					</li>
-					<li class="{{ $menu == 'feedback_log' ? 'active' : '' }}">
-						<a class="dropdown-item" href="{{ action('CampaignController@feedbackLog', $campaign->uid) }}">
-							<span class="material-symbols-rounded">article</span> {{ trans('messages.feedback_log') }}
-						</a>
-					</li>
-					<li class="{{ $menu == 'open_log' ? 'active' : '' }}">
-						<a class="dropdown-item" href="{{ action('CampaignController@openLog', $campaign->uid) }}">
-							<span class="material-symbols-rounded">article</span> {{ trans('messages.open_log') }}
-						</a>
-					</li>
-					<li class="{{ $menu == 'click_log' ? 'active' : '' }}">
-						<a class="dropdown-item" href="{{ action('CampaignController@clickLog', $campaign->uid) }}">
-							<span class="material-symbols-rounded">article</span> {{ trans('messages.click_log') }}
-						</a>
-					</li>
-					<li class="{{ $menu == 'unsubscribe_log' ? 'active' : '' }}">
-						<a class="dropdown-item" href="{{ action('CampaignController@unsubscribeLog', $campaign->uid) }}">
-							<span class="material-symbols-rounded">article</span> {{ trans('messages.unsubscribe_log') }}
-						</a>
-					</li>
-				</ul>
-			</li>
-			<li class="nav-item {{ $menu == 'template' ? 'active' : '' }}">
-				<a href="javascript:;" onclick="popupwindow('{{ action('CampaignController@preview', $campaign->uid) }}', `{{ $campaign->name }}`, 800)" class="nav-link">
-					<span class="material-symbols-rounded">auto_awesome_mosaic</span> {{ trans('messages.email_review') }}
-				</a>
-			</li>
 			@if ($campaign->google_analytic_link_tracking)
 				{{-- <li class="nav-item {{ $menu == 'google_analytics' ? 'active' : '' }}">
 					<li class="nav-item {{ $menu == 'google_analytics' ? 'active' : '' }}">
