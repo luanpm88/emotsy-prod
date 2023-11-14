@@ -114,14 +114,14 @@
 				</a>
 			</li>
 			@if ($campaign->google_analytic_link_tracking)
-				<li class="nav-item {{ $menu == 'google_analytics' ? 'active' : '' }}">
+				{{-- <li class="nav-item {{ $menu == 'google_analytics' ? 'active' : '' }}">
 					<li class="nav-item {{ $menu == 'google_analytics' ? 'active' : '' }}">
 						<a href="{{ action("GoogleAnalyticsController@googleAnalytics", $campaign->uid) }}" class="nav-link">
 						<span class="material-symbols-rounded">query_stats</span>
 							{{ trans('messages.google_analytics') }}
 						</a>
 					</li>
-				</li>
+				</li> --}}
 			@endif
 		</ul>
 	</div>
