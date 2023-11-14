@@ -413,6 +413,10 @@ trait HasTemplate
 
         $pipeline->add(new InjectMessageIdToBody($msgId));
 
+        if ($this->google_analytic_link_tracking) {
+            $pipeline->add(new AddUtmParameters($this->getUtmParameters()));
+        }
+
         if (!$this->isStageExcluded(TransformUrl::class)) {
             $pipeline->add(new TransformUrl($this->template, $msgId, $this->trackingDomain));
         }
@@ -420,10 +424,6 @@ trait HasTemplate
         $pipeline->add(new DecodeHtmlSpecialChars());
         $pipeline->add(new GenerateSpintax());
         $pipeline->add(new ReplaceBareLineFeed());
-
-        if ($this->google_analytic_link_tracking) {
-            $pipeline->add(new AddUtmParameters($this->getUtmParameters()));
-        }
 
         // ReplaceBareLineFeed should go into the base HTML content instead
         // However, we need it here, as the last step, to make sure there is no bare LF produced
