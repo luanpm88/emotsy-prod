@@ -17,7 +17,7 @@
         </div>
     </div>
     <div ga-control="connection-box">
-        @if(Auth::user()->customer->getGoogleAccessToken())
+        {{-- @if(Auth::user()->customer->getGoogleAccessToken())
             <div class="alert alert-success">{{ trans('messages.google.connected_to_google_analytics') }}</div>
             <div>
                 <a href="{{ action('GoogleAnalyticsController@redirectToGoogle', [
@@ -30,9 +30,9 @@
                     'redirect' => action('CampaignController@setup', $campaign->uid)
                 ]) }}" class="btn btn-primary">{{ trans('messages.google-analytics.connect') }}</a>
             </div>
-        @endif
+        @endif --}}
 
-        {{ $campaign->generateUtmLink('https://acellemail.com') }}
+        {{-- {{ $campaign->generateUtmLink('https://acellemail.com') }} --}}
 
         <div ga-control="more-options" class="mt-3">
             <a  href="javascript:;" ga-control="show-options" href="">{{ trans('messages.google-analytics.more_options') }}</a>

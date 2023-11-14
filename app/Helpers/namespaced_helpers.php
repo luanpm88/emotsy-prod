@@ -445,3 +445,22 @@ function execute_with_limits(array $rateTrackers, array $creditTrackers, Closure
         throw $exception;
     }
 }
+
+function generateUtmLink($currentURL, $parameters)
+{
+    $parameters = $parameters;
+
+    // Merge parameters with the current URL
+    $mergedURL = $currentURL;
+    if (strpos($currentURL, '?') !== false) {
+        // The URL already contains a query string
+        $mergedURL .= '&';
+    } else {
+        // The URL does not have a query string
+        $mergedURL .= '?';
+    }
+
+    $mergedURL .= http_build_query($parameters);
+
+    return $mergedURL;
+}
