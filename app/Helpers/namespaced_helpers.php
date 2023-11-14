@@ -448,6 +448,27 @@ function execute_with_limits(array $rateTrackers, array $creditTrackers, Closure
 
 function generateUtmLink($currentURL, $parameters)
 {
+    // If the given URL is a non-web link, like tel:, mailto:, ftp:...
+    // then just skip
+    if (\Acelle\Helpers\is_non_web_link($currentURL)) {
+        return $currentURL;
+    }
+
+    if (parse_url($currentURL, PHP_URL_HOST) === false) {
+        // false ==> if url is invalid
+        // null ==> if url does not have host information
+        return $currentURL;
+    }
+
+    if (StringHelper::isTag($currentURL)) {
+        return $currentURL;
+    }
+
+    if (strpos($currentURL, 'data:') === 0) {
+        // base64 image. Like: "data:image/png;base64,iVBOR"
+        return $currentURL;
+    }
+
     $parameters = $parameters;
 
     // Merge parameters with the current URL

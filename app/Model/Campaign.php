@@ -2832,7 +2832,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
         return [
             'utm_campaign' => $this->uid,
             'utm_medium' => 'email',
-            'utm_source' => 'acellemail',
+            'utm_source' => 'emotsy.com',
             'utm_term' => $this->subject,
             'utm_content' => 'link',
         ];
