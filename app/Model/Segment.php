@@ -226,6 +226,12 @@ class Segment extends Model
      */
     public function getSubscribersConditions()
     {
+        // Return null is needed, or it will return an empty structure, resulting in the following error
+        // Illuminate\Database\QueryException with message 'SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ')))' at line 1 (SQL: select count(*) as aggregate from `subscribers` where ((subscribers.mail_list_id = 33 AND ())))'
+        if (!$this->segmentConditions()->exists()) {
+            return null;
+        }
+
         $conditions = [];
         $joins = [];
         $joined_tables = [];
