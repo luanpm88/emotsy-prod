@@ -909,6 +909,13 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
 
     // Account ChatGPT
     Route::match(['get', 'post'], 'chat-gpt', 'ChatgptController@settings');
+    // Google Analytics
+    Route::get('campaigns/{uid}/google-analytics', 'GoogleAnalyticsController@googleAnalytics');
+    Route::get('account/google-analytics', 'GoogleAnalyticsController@index');
+    Route::get('account/google-analytics/auth/google', 'GoogleAnalyticsController@redirectToGoogle');
+    Route::get('account/google-analytics/auth/google/callback', 'GoogleAnalyticsController@handleGoogleCallback');
+    Route::get('account/google-analytics/auth/google/redirect', 'GoogleAnalyticsController@redirect');
+
 });
 
 // ADMIN AREA

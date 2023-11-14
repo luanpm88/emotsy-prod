@@ -51,8 +51,13 @@ class CampaignController extends Controller
 
         $campaigns = $customer->campaigns()
             ->search($request->keyword)
-            ->filter($request)
-            ->orderBy($request->sort_order, $request->sort_direction)
+            ->filter($request);
+
+        if ($request->status) {
+            $campaigns = $campaigns->byStatus($request->status);
+        }
+
+        $campaigns = $campaigns->orderBy($request->sort_order, $request->sort_direction)
             ->paginate($request->per_page);
 
         return view('campaigns._list', [

@@ -23,6 +23,7 @@ use Acelle\Library\HtmlHandler\GenerateSpintax;
 use Acelle\Library\HtmlHandler\GenerateSpintaxForPlainText;
 use Acelle\Library\HtmlHandler\DecodeHtmlSpecialChars;
 use Acelle\Library\HtmlHandler\InjectMessageIdToBody;
+use Acelle\Library\HtmlHandler\AddUtmParameters;
 use Acelle\Library\Lockable;
 use File;
 use Cache;
@@ -419,6 +420,8 @@ trait HasTemplate
         $pipeline->add(new DecodeHtmlSpecialChars());
         $pipeline->add(new GenerateSpintax());
         $pipeline->add(new ReplaceBareLineFeed());
+
+        $pipeline->add(new AddUtmParameters());
 
         // ReplaceBareLineFeed should go into the base HTML content instead
         // However, we need it here, as the last step, to make sure there is no bare LF produced

@@ -196,6 +196,8 @@
                         'help_class' => 'campaign',
                         'rules' => $rules
                     ])
+
+					@include('campaigns.google._tracking_options')
 												
 					@if ($campaign->type == 'plain-text')
 						<div class="alert alert-warning">

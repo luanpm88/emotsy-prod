@@ -338,7 +338,8 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
         'html', 'plain', 'template_source',
         'tracking_domain_id', 'use_default_sending_server_from_email',
         'skip_failed_message',
-        'subject_b', 'ab_split_subject', 'ab_split_content'
+        'subject_b', 'ab_split_subject', 'ab_split_content',
+        'skip_failed_message', 'google_analytic_link_tracking'
     ];
 
     /**
@@ -2820,5 +2821,40 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
     public function abGetApproxRecipientsWinningVersion()
     {
         return $this->subscribersCount()*($this->ab_winning_percent/100);
+    }
+    
+    public function getDefaultUtmParameters()
+    {
+        return [
+            'utm_campaign' => $this->uid,
+            'utm_medium' => 'email',
+            'utm_source' => 'acellemail',
+            'utm_term' => $this->subject,
+            'utm_content' => 'link',
+        ];
+    }
+
+    public function getUtmParameters()
+    {
+        return $this->getDefaultUtmParameters();
+    }
+
+    public function generateUtmLink($currentURL)
+    {
+        $parameters = $this->getUtmParameters();
+
+        // Merge parameters with the current URL
+        $mergedURL = $currentURL;
+        if (strpos($currentURL, '?') !== false) {
+            // The URL already contains a query string
+            $mergedURL .= '&';
+        } else {
+            // The URL does not have a query string
+            $mergedURL .= '?';
+        }
+
+        $mergedURL .= http_build_query($parameters);
+
+        return $mergedURL;
     }
 }
