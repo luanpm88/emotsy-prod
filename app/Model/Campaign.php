@@ -339,7 +339,11 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
         'tracking_domain_id', 'use_default_sending_server_from_email',
         'skip_failed_message',
         'subject_b', 'ab_split_subject', 'ab_split_content',
-        'skip_failed_message', 'google_analytic_link_tracking'
+        'skip_failed_message', 'google_analytic_link_tracking',
+        'utm_campaign',
+        'utm_medium',
+        'utm_source',
+        'utm_term',
     ];
 
     /**
@@ -2836,25 +2840,13 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
 
     public function getUtmParameters()
     {
-        return $this->getDefaultUtmParameters();
-    }
-
-    public function generateUtmLink($currentURL)
-    {
-        $parameters = $this->getUtmParameters();
-
-        // Merge parameters with the current URL
-        $mergedURL = $currentURL;
-        if (strpos($currentURL, '?') !== false) {
-            // The URL already contains a query string
-            $mergedURL .= '&';
-        } else {
-            // The URL does not have a query string
-            $mergedURL .= '?';
-        }
-
-        $mergedURL .= http_build_query($parameters);
-
-        return $mergedURL;
+        $default = $this->getDefaultUtmParameters();
+        return [
+            'utm_campaign' => $this->utm_campaign ?? $default['utm_campaign'],
+            'utm_medium' => $this->utm_medium ?? $default['utm_medium'],
+            'utm_source' => $this->utm_source ?? $default['utm_source'],
+            'utm_term' => $this->utm_term ?? $default['utm_term'],
+            'utm_content' => $this->utm_content ?? $default['utm_content'],
+        ];
     }
 }
