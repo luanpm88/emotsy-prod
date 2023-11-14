@@ -14,7 +14,7 @@ class AddGoogleAnalyticLinkTrackingToCampaigns extends Migration
     public function up()
     {
         Schema::table('campaigns', function (Blueprint $table) {
-            $table->boolean('google_analytic_link_tracking')->defaultValue(false);
+            $table->boolean('google_analytic_link_tracking')->defaultValue(false)->nullable();
         });
     }
 
