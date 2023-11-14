@@ -1,3 +1,19 @@
+4.0.26 / 2023-11-07
+==================
+
+ * Added: Spintax support for plain text email
+ * Added: YouTube widget for PRO builder, with thumbnail option
+ * Added: webhooks support for campaign's events
+ * Added: ZeroBounce integration for email verification
+ * Added: Postal integration
+ * Added: audio widget support for PRO builder
+ * Added: easier license management & upgrade
+ * Fixed: payment flow leading to pending status
+ * Fixed: encoding issue for Japanese characters
+ * Fixed: scheduling issue for Automation
+ * Fixed: issues related to single/simple mode for development
+ * Fixed: RFC 2822 compliance
+
 4.0.25-p550 / 2023-07-22
 ==================
 

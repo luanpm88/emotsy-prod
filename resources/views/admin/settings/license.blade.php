@@ -69,6 +69,9 @@
                                         'expr' =>  $admin->formatDateTime($spportedUntil, 'datetime_full_with_timezone'),
                                         'diffs' => $spportedUntil->diffForHumans()]
                                     );
+                                } elseif ($license->isInactive()) {
+                                    $style = 'alert-danger';
+                                    $title = '#';
                                 } else {
                                     // Legacy case, backward compatibility
                                     $style = 'alert-danger';
@@ -81,7 +84,7 @@
                                 <p>{{ trans('messages.your_current_license') }} <strong>{{ $license->getType() }}</strong></p>
                                 <div class="alert {{ $style }}" style="display: flex; flex-direction: row; align-items: center;">
                                     <div  title='{{$title}}' class="xtooltip" style="display: flex; flex-direction: row; align-items: center;">
-                                        <p style="padding-left: 5px;padding-right: 40px">{{ $license->getLicenseNumber() }}{!! $license->isExpired() ? ' | <a href="'.$entitlementLink.'"><strong style="text-decoration: underline;">'.trans('messages.support.expired.note').'</strong></a>' : '' !!}</p>
+                                        <p style="padding-left: 5px;padding-right: 40px">{{ $license->getLicenseNumber() }}{!! !$license->isActive() ? ' | <a href="'.$entitlementLink.'"><strong style="text-decoration: underline;">'.trans('messages.support.expired.note').'</strong></a>' : '' !!}</p>
                                     </div>
 
                                     <a style="margin-left: auto" class="btn btn-secondary" href="{{ action('Admin\SettingController@licenseRemove') }}" link-confirm="{{ trans('messages.license.remove.confirm') }}" link-method="POST">

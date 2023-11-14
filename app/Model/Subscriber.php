@@ -1204,6 +1204,13 @@ class Subscriber extends Model
             if ($listOrSegment instanceof Segment) {
                 // Segment
                 $conds = $listOrSegment->getSubscribersConditions();
+
+                // Break, otherwise it causes an error like:
+                // Illuminate\Database\QueryException with message 'SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ')))' at line 1 (SQL: select count(*) as aggregate from `subscribers` where ((subscribers.mail_list_id = 33 AND ())))'
+                if (is_null($conds)) {
+                    continue;
+                }
+
                 if (!empty($conds['joins'])) {
                     foreach ($conds['joins'] as $joining) {
                         $query = $query->leftJoin($joining['table'], function ($join) use ($joining) {

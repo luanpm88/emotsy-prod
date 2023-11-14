@@ -848,7 +848,7 @@ class Automation2 extends Model
 
             $insight = [
                 'count' => $count,
-                'subtitle' => '#Operation TBD',
+                'subtitle' => __('messages.automation.stats.operation_executed_count', ['count' => $count]),
                 'percentage' => ($total != 0) ? ($count / $total) : 0,
                 'latest_activity' => $this->autoTriggers()->max('created_at'),
             ];

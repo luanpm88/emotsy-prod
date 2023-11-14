@@ -438,11 +438,12 @@ class Invoice extends Model
         $transaction = new Transaction();
         $transaction->invoice_id = $this->id;
         $transaction->status = Transaction::STATUS_PENDING;
-        $transaction->allow_manual_review = $gateway->allowManualReviewingOfTransaction();
+        $transaction->allow_manual_review = false;
 
         // This information is needed for verifying a transaction status later on
         // Sometimes method is not needed. For example, when upgrading to a ZERO priced plan, the checkout
         if (!is_null($gateway)) {
+            $transaction->allow_manual_review = $gateway->allowManualReviewingOfTransaction();
             $transaction->method = $gateway->getType();
         }
 

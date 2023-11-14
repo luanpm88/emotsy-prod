@@ -96,12 +96,12 @@ class Kernel extends ConsoleKernel
                     $license = LicenseHelper::getCurrentLicense();
 
                     if (is_null($license)) {
-                        throw new Exception('NO LICENSE FOUND. Please register your application with a valid purchase code (go to Admin area\'s Settings > License dashboard).');
+                        throw new Exception(trans('messages.license.error.no_license'));
                     }
 
                     LicenseHelper::refreshLicense();
                 },
-                $title = 'License verification',
+                $title = trans('messages.license.error.invalid'),
                 $exceptionCallback = null,
             );
         })->name('verify_license');
