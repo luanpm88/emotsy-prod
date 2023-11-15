@@ -43,7 +43,7 @@
                             data-url="{{ action('CampaignController@chartCountry', [
                                 'uid' => $campaign->uid,
                                 'version_b' => request()->version_b,
-                            ]d) }}">
+                            ]) }}">
                         </div>
                     </div>
                 </div>

@@ -1,3 +1,6 @@
+@php
+	$menu = $menu ?? null;
+@endphp
 <div class="topfix-header bg-light">
     <div class="topfix-container border-bottom d-flex align-items-center shadow-sm py-3 mb-4">
         <div class="topfix-search text-center" style="width: 100%">

@@ -9,6 +9,18 @@
     @include("campaigns._header", [
         'menu' => 'unsubscribe_log',
     ])
+    
+    @if ($campaign->isABTest())
+        @include('campaigns.ab._insights_version_tabs', [
+            'link_a' => action('CampaignController@unsubscribeLog', [
+                'uid' => $campaign->uid,
+            ]),
+            'link_b' => action('CampaignController@unsubscribeLog', [
+                'uid' => $campaign->uid,
+                'version_b' => true,
+            ]),
+        ])
+    @endif
 
 @endsection
 

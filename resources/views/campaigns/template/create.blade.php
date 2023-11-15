@@ -37,7 +37,7 @@
 @section('content')
     <div class="row">
         <div class="col-md-6">
-            @if ($campaign->isABTest())
+            @if ($campaign->isABTest() && $campaign->ab_split_content)
                 @include('campaigns.ab._template_variations')
             @endif
 

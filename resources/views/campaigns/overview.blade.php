@@ -21,6 +21,20 @@
 
     @include("campaigns._info")
 
+    <br>
+
+	@if ($campaign->isABTest())
+        @include('campaigns.ab._insights_version_tabs', [
+            'link_a' => action('CampaignController@overview', [
+                'uid' => $campaign->uid,
+            ]),
+            'link_b' => action('CampaignController@overview', [
+                'uid' => $campaign->uid,
+                'version_b' => true,
+            ]),
+        ])
+    @endif
+
     <br />
 
     @include("campaigns._chart")

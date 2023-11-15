@@ -14,6 +14,19 @@
 		'menu' => 'open_map',
 	])
 
+	@if ($campaign->isABTest())
+		@include('campaigns.ab._insights_version_tabs', [
+			'link_a' => action('CampaignController@openMap', [
+				'uid' => $campaign->uid,
+			]),
+			'link_b' => action('CampaignController@openMap', [
+				'uid' => $campaign->uid,
+				'version_b' => true,
+			]),
+		])
+	@endif
+	<br>
+
 @endsection
 
 @section('content')

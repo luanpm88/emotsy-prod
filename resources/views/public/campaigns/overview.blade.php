@@ -13,6 +13,18 @@
 
     @include("public.campaigns._header")
 
+    @if ($campaign->isABTest())
+        @include('campaigns.ab._insights_version_tabs', [
+            'link_a' => action('Pub\CampaignController@overview', [
+                'uid' => $campaign->uid,
+            ]),
+            'link_b' => action('Pub\CampaignController@overview', [
+                'uid' => $campaign->uid,
+                'version_b' => true,
+            ]),
+        ])
+    @endif
+
 @endsection
 
 @section('content')

@@ -17,7 +17,7 @@
             ]),
             'link_b' => action('CampaignController@links', [
                 'uid' => $campaign->uid,
-                'version_b' => request()->version_b,
+                'version_b' => true,
             ]),
         ])
     @endif

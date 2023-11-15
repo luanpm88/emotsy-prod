@@ -18,9 +18,9 @@
 				</td>
 				<td>
 					<a class="kq_search fw-600 d-block list-title" href="{{ action('CampaignController@show', [
-                'uid' => $campaign->uid,
-                'version_b' => request()->version_b,
-            ]) }}">
+						'campaign' => $campaign,
+						'version_b' => request()->version_b,
+					]) }}">
 						{{ $campaign->name }}
 					</a>
 					<span class="text-muted">{{ trans('messages.campaign.type.' . $campaign->type) }}</span>

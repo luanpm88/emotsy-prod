@@ -34,7 +34,7 @@
     <div class="d-flex align-items-center">
         <div class="bg-light mode-group rounded p-1 border">
             <div class="btn-group">
-                <a href="{{ $link_a }}" preview-action="mode" data-mode="mode-a" href="#" class="btn btn-default btn-mode me-2 border">
+                <a href="{{ $link_a }}" preview-action="mode" data-mode="mode-a" class="btn btn-default btn-mode me-2 border">
                     <span class="d-flex align-items-center">
                         <span class="material-symbols-rounded text-success me-2 a-only" style="transform:scale(1.5)">
                             task_alt
@@ -45,7 +45,7 @@
                         <span>{{ trans('messages.campaign.ab.version_a') }}</span>
                     </span>
                 </a>
-                <a href="{{ $link_b }}" preview-action="mode" data-mode="mode-b" href="#" class="btn btn-default btn-mode">
+                <a href="{{ $link_b }}" preview-action="mode" data-mode="mode-b" class="btn btn-default btn-mode">
                     <span class="d-flex align-items-center">
                         <span class="material-symbols-rounded text-success me-2 b-only" style="transform:scale(1.5)">
                             task_alt

@@ -9,6 +9,18 @@
     @include("campaigns._header", [
         'menu' => 'tracking_log',
     ])
+    
+    @if ($campaign->isABTest())
+        @include('campaigns.ab._insights_version_tabs', [
+            'link_a' => action('CampaignController@trackingLog', [
+                'uid' => $campaign->uid,
+            ]),
+            'link_b' => action('CampaignController@trackingLog', [
+                'uid' => $campaign->uid,
+                'version_b' => true,
+            ]),
+        ])
+    @endif
 
 @endsection
 

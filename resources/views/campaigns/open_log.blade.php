@@ -10,6 +10,18 @@
         'menu' => 'open_log',
     ])
 
+    @if ($campaign->isABTest())
+        @include('campaigns.ab._insights_version_tabs', [
+            'link_a' => action('CampaignController@openLog', [
+                'uid' => $campaign->uid,
+            ]),
+            'link_b' => action('CampaignController@openLog', [
+                'uid' => $campaign->uid,
+                'version_b' => true,
+            ]),
+        ])
+    @endif
+
 @endsection
 
 @section('content')

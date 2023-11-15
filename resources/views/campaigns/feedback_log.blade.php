@@ -10,6 +10,18 @@
         'menu' => 'feedback_log',
     ])
 
+    @if ($campaign->isABTest())
+        @include('campaigns.ab._insights_version_tabs', [
+            'link_a' => action('CampaignController@feedbackLog', [
+                'uid' => $campaign->uid,
+            ]),
+            'link_b' => action('CampaignController@feedbackLog', [
+                'uid' => $campaign->uid,
+                'version_b' => true,
+            ]),
+        ])
+    @endif
+
 @endsection
 
 @section('content')

@@ -6,9 +6,21 @@
 
 @section('page_header')
 
-			@include("campaigns._header", [
-                'menu' => 'click_log',
-            ])
+    @include("campaigns._header", [
+        'menu' => 'click_log',
+    ])
+
+    @if ($campaign->isABTest())
+        @include('campaigns.ab._insights_version_tabs', [
+            'link_a' => action('CampaignController@clickLog', [
+                'uid' => $campaign->uid,
+            ]),
+            'link_b' => action('CampaignController@clickLog', [
+                'uid' => $campaign->uid,
+                'version_b' => true,
+            ]),
+        ])
+    @endif
 
 @endsection
 

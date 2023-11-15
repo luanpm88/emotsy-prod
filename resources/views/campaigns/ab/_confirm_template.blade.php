@@ -1,7 +1,7 @@
 @if ($campaign->ab_split_content)
     <li class="d-flex">
         <span class="fs-4 me-4">
-            @if ($campaign->template && $campaign->template_b)
+            @if ($campaign->template && $campaign->campaignB->template)
                 <i class="material-symbols-rounded text-success">task_alt</i>
             @else
                 <span class="material-symbols-rounded text-warning">error_outline</span>
@@ -63,15 +63,15 @@
                             </div>
                             <div>
                                 <div class="border thumb-container">
-                                    @if ($campaign->template_b)
-                                        <img style="width:100%;" class="template-variation-thumb" src="{{ $campaign->getThumbUrl() }}?v={{ Carbon\Carbon::now() }}" />
+                                    @if ($campaign->campaignB->template)
+                                        <img style="width:100%;" class="template-variation-thumb" src="{{ $campaign->campaignB->getThumbUrl() }}?v={{ Carbon\Carbon::now() }}" />
                                     @else
                                         <img style="width:100%;" class="template-variation-thumb" src="{{ url('images/icons/template-none.svg') }}" />
                                     @endif
                                 </div>
                             </div>
                         </a>
-                        @if (!$campaign->template_b)
+                        @if (!$campaign->campaignB->template)
                             <span class="text-danger mt-2 d-block text-center">
                                 <span class="material-symbols-rounded text-warning me-1">error_outline</span>
                                 {{ trans('messages.campaign.ab.template.not_setup_yet') }}
