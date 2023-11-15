@@ -72,7 +72,7 @@
                             'message' => 'You are running on PHP version '.PHP_VERSION.' which is too old. Please upgrade to PHP '.config('custom.php_recommended').' or higher in order to proceed with application upgrade'
                         ])
                     @else
-                        @if ($license && $license->isExpired())
+                        @if ($license && ($license->isExpired() || $license->isInactive()))
                             @php
                                 $admin = Auth::user()->admin;
                                 $spportedUntil = $license->getSupportedUntil($admin->getTimezone());
@@ -84,10 +84,15 @@
                                 }
 
                                 $style = 'alert-danger';
-                                $title = trans('messages.support.expired.explanation', [
-                                    'expr' =>  $admin->formatDateTime($spportedUntil, 'datetime_full_with_timezone'),
-                                    'diffs' => $spportedUntil->diffForHumans()]
-                                );
+
+                                if ($license->isExpired()) {
+                                    $title = trans('messages.support.expired.explanation', [
+                                        'expr' =>  $admin->formatDateTime($spportedUntil, 'datetime_full_with_timezone'),
+                                        'diffs' => $spportedUntil->diffForHumans()]
+                                    );
+                                } elseif ($license->isInactive()) {
+                                    $title = trans('messages.license.error.invalid');
+                                }
                             @endphp
 
                             <div class="sub-section">

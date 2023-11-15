@@ -11,6 +11,7 @@ class MailListFieldMapping
     public $mapping = [];
     public $list;
 
+    // Use lower-case here
     public $preservedFields = ['tags'];
 
     private function __construct($mapping, $list)
@@ -65,6 +66,7 @@ class MailListFieldMapping
     // i.e. Change header based on mapped field, remove other fields (not in map)
     public function updateRecordHeaders($r)
     {
+        // IMPORTANT: 'tags' must be lower-case
         // Extract the relevant fields, including preserved fields
         $selectedFields = array_merge($this->getHeaders(), $this->preservedFields);
         $record = array_only($r, $selectedFields);

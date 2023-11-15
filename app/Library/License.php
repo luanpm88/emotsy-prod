@@ -13,6 +13,7 @@ class License
     protected $buyer;
 
     public const STATUS_ACTIVE = 'active';
+    public const STATUS_INACTIVE = 'inactive';
     public const STATUS_EXPIRED = 'expired';
 
     public function __construct($license, $type, $status, $supportedUntil, $buyer = null)
@@ -27,6 +28,11 @@ class License
     public function isActive()
     {
         return $this->status == self::STATUS_ACTIVE;
+    }
+
+    public function isInactive()
+    {
+        return $this->status == self::STATUS_INACTIVE;
     }
 
     public function isExpired()

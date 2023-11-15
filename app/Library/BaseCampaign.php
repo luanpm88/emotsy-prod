@@ -329,4 +329,23 @@ class BaseCampaign extends Model
     {
         return $this->status == self::STATUS_PAUSED;
     }
+
+    public function scopeByStatus($query, $status)
+    {
+        return $query->where('status', $status);
+    }
+
+    public static function statusSelectOptions()
+    {
+        return [
+            ['text' => trans('messages.campaign_status_' . self::STATUS_NEW), 'value' => self::STATUS_NEW],
+            ['text' => trans('messages.campaign_status_' . self::STATUS_QUEUING), 'value' => self::STATUS_QUEUING],
+            ['text' => trans('messages.campaign_status_' . self::STATUS_QUEUED), 'value' => self::STATUS_QUEUED],
+            ['text' => trans('messages.campaign_status_' . self::STATUS_SENDING), 'value' => self::STATUS_SENDING],
+            ['text' => trans('messages.campaign_status_' . self::STATUS_ERROR), 'value' => self::STATUS_ERROR],
+            ['text' => trans('messages.campaign_status_' . self::STATUS_DONE), 'value' => self::STATUS_DONE],
+            ['text' => trans('messages.campaign_status_' . self::STATUS_PAUSED), 'value' => self::STATUS_PAUSED],
+            ['text' => trans('messages.campaign_status_' . self::STATUS_SCHEDULED), 'value' => self::STATUS_SCHEDULED],
+        ];
+    }
 }

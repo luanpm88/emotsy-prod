@@ -21,11 +21,28 @@ return [
         ], [
             'id' => 'zerobounce.net',
             'name' => 'Zero Bounce',
-            'uri' => 'https://api.zerobounce.net/v1/validate?apikey={API_KEY}&email={EMAIL}',
+            'uri' => 'https://api.zerobounce.net/v2/validate?api_key={API_KEY}&email={EMAIL}&ip_address=',
             'request_type' => 'GET',
             'fields' => [ 'api_key' ],
             'result_xpath' => '$.status',
-            'result_map' => [ 'Valid' => 'deliverable', 'Invalid' => 'undeliverable', 'Unknown' => 'unknown', 'Abuse' => 'undeliverable', 'spamtrap' => 'undeliverable', 'Spamtrap' => 'undeliverable', 'catch-all' => 'deliverable', 'Catch-all' => 'deliverable', 'Catch-All' => 'deliverable', 'do_not_mail' => 'undeliverable', 'Do_not_mail' => 'undeliverable', 'Do_Not_Mail' => 'undeliverable']
+            'result_map' => [
+                'valid' => 'deliverable',
+                'Valid' => 'deliverable',
+                'invalid' => 'undeliverable',
+                'Invalid' => 'undeliverable',
+                'unknown' => 'unknown',
+                'Unknown' => 'unknown',
+                'abuse' => 'undeliverable',
+                'Abuse' => 'undeliverable',
+                'spamtrap' => 'undeliverable',
+                'Spamtrap' => 'undeliverable',
+                'catch-all' => 'deliverable',
+                'Catch-all' => 'deliverable',
+                'Catch-All' => 'deliverable',
+                'do_not_mail' => 'undeliverable',
+                'Do_not_mail' => 'undeliverable',
+                'Do_Not_Mail' => 'undeliverable',
+            ]
         ],
         [
             'id' => 'verify-email.org',
@@ -96,16 +113,15 @@ return [
         ],[
             'id' => 'bounceless.io',
             'name' => 'Bounceless.io',
-            'uri' => 'https://apps.bounceless.io/api/verifyEmail?secret={API_KEY}&email={EMAIL}',
+            'uri' => 'https://apps.bounceless.io/api/singlemaildetails?secret={API_KEY}&email={EMAIL}',
             'request_type' => 'GET',
             'fields' => [ 'api_key' ],
-            'response_type' => 'plain',
+            'result_xpath' => '$.result',
             'result_map' => [
-                'ok' => 'deliverable',
+                'valid' => 'deliverable',
                 'unknown' => 'unknown',
-                'incorrect' => 'undeliverable',
-                'fail' => 'undeliverable',
-                'email_disabled' => 'undeliverable',
+                'invalid' => 'undeliverable',
+                'risky' => 'risky',
             ]
         ], [
             'id' => 'bouncify.io',

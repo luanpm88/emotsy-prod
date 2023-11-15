@@ -16,6 +16,7 @@
                 @include('helpers.form_control', [
                     'type' => 'text',
                     'class' => '',
+                    'label' => trans('messages.sending_server.aws.access_key_id'),
                     'name' => 'aws_access_key_id',
                     'value' => $server->aws_access_key_id,
                     'help_class' => 'sending_server',
@@ -26,6 +27,7 @@
                 @include('helpers.form_control', [
                     'type' => 'password',
                     'class' => '',
+                    'label' => trans('messages.sending_server.aws.secret_key'),
                     'name' => 'aws_secret_access_key',
                     'value' => $server->aws_secret_access_key,
                     'help_class' => 'sending_server',

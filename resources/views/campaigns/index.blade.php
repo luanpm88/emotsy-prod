@@ -66,6 +66,15 @@
                                 <span class="material-symbols-rounded desc">sort</span>
                             </button>
                         </span>
+                        <span class="filter-group">
+                            <span class="title text-semibold text-muted">{{ trans('messages.campaign.status') }}</span>
+                            <select class="select" name="status">
+                                <option value="">{{ trans('messages.campaign.status.all') }}</option>
+                                @foreach (Acelle\Model\Campaign::statusSelectOptions() as $option)
+                                    <option {{ request()->status == $option['value'] ? 'selected' : '' }} value="{{ $option['value'] }}">{{ $option['text'] }}</option>
+                                @endforeach
+                            </select>
+                        </span>
                         <span class="text-nowrap search-container">
                             <input type="text" name="keyword" class="form-control search" value="{{ request()->keyword }}" value="{{ request()->keyword }}" placeholder="{{ trans('messages.type_to_search') }}" />
                             <span class="material-symbols-rounded">search</span>

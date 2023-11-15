@@ -25,10 +25,7 @@ return [
     'woo' => false,
 
     // Special settings
-    'japan' => env('APP_JAPAN', true),
-
-    // License validation endpoint
-    'license_validation_endpoint' => env('LICENSE_VALIDATION_ENDPOINT'),
+    'japan' => env('APP_JAPAN', false),
 
     // If "APP_PROFILE=" (empty), then make it return null too
     'app_profile' => env('APP_PROFILE', null) ?: null,
