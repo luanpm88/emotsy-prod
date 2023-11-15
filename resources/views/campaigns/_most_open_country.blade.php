@@ -25,7 +25,10 @@
                 @endforeach 
             </div>
             <div class="text-end">
-                <a href="{{ action('CampaignController@openMap', $campaign->uid) }}" class="btn btn-info bg-teal-600">{{ trans('messages.open_map') }} <span class="material-symbols-rounded">arrow_forward</span></a>
+                <a href="{{ action('CampaignController@openMap', [
+                    'uid' => $campaign->uid,
+                    'version_b' => request()->version_b,
+                ]) }}" class="btn btn-info bg-teal-600">{{ trans('messages.open_map') }} <span class="material-symbols-rounded">arrow_forward</span></a>
             </div>
         @endif
     </div>
@@ -37,7 +40,10 @@
                         <div class="chart has-fixed-height"
                             id="OpenPieChart" 
                             style="width:100%; height:350px;"
-                            data-url="{{ action('CampaignController@chartCountry', $campaign->uid) }}">
+                            data-url="{{ action('CampaignController@chartCountry', [
+                                'uid' => $campaign->uid,
+                                'version_b' => request()->version_b,
+                            ]d) }}">
                         </div>
                     </div>
                 </div>
@@ -48,7 +54,10 @@
                     OpenPieChart.showChart();
                 });
                 var OpenPieChart = {
-                    url: '{{ action('CampaignController@chartCountry', $campaign->uid) }}',
+                    url: '{{ action('CampaignController@chartCountry', [
+                        'uid' => $campaign->uid,
+                        'version_b' => request()->version_b,
+                    ]) }}',
                     getChart: function() {
                         return $('#OpenPieChart');
                     },

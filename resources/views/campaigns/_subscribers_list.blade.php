@@ -62,7 +62,11 @@
                     <br>
                     <span class="text-muted2">{{ trans('messages.last_open') }}</span>
                     @if (null !== $subscriber->lastOpenLog($campaign))
-                        <a href="{{ action('CampaignController@openLog', ["uid" => $campaign->uid, "search_keyword" => $subscriber->email]) }}">
+                        <a href="{{ action('CampaignController@openLog', [
+                            "uid" => $campaign->uid,
+                            "search_keyword" => $subscriber->email,
+                            'version_b' => request()->version_b,
+                        ]) }}">
                             {{ $subscriber->openLogs($campaign)->count() . " " . Tool::getPluralPrase(trans("messages.time"), $subscriber->openLogs($campaign)->count()) }}</a>
                     @endif
                 </td>
@@ -72,7 +76,11 @@
                     <br>
                     <span class="text-muted2">{{ trans('messages.last_click') }}</span>
                     @if (null !== $subscriber->lastClickLog($campaign))
-                        <a href="{{ action('CampaignController@clickLog', ["uid" => $campaign->uid, "search_keyword" => $subscriber->email]) }}">
+                        <a href="{{ action('CampaignController@clickLog', [
+                            "uid" => $campaign->uid,
+                            "search_keyword" => $subscriber->email,
+                            'version_b' => request()->version_b,
+                        ]) }}">
                             {{ $subscriber->clickLogs($campaign)->count() . " " . Tool::getPluralPrase("time", $subscriber->clickLogs($campaign)->count()) }}
                         </a>
                     @endif

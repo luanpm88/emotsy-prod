@@ -17,7 +17,10 @@
 <h2 class="text-semibold text-primary">{{ trans('messages.tracking_log') }}</h2>
 
 <form class="listing-form"
-        data-url="{{ action('CampaignController@trackingLogListing', $campaign->uid) }}"
+        data-url="{{ action('CampaignController@trackingLogListing', [
+            'uid' => $campaign->uid,
+            'version_b' => request()->version_b,
+        ]) }}"
         per-page="{{ Acelle\Model\TrackingLog::$itemsPerPage }}"
     >
         <div class="d-flex top-list-controls top-sticky-content">
@@ -56,7 +59,10 @@
         var CampaignLogIndex = {
             getList: function() {
                 return makeList({
-                    url: '{{ action('CampaignController@trackingLogListing', $campaign->uid) }}',
+                    url: '{{ action('CampaignController@trackingLogListing', [
+            'uid' => $campaign->uid,
+            'version_b' => request()->version_b,
+        ]) }}',
                     container: $('.listing-form'),
                     content: $('.pml-table-container')
                 });

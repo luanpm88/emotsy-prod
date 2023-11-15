@@ -35,7 +35,10 @@
 @endsection
 
 @section('content')
-    <form action="{{ action('CampaignController@template', $campaign->uid) }}" method="POST" class="form-validate-jqueryz">
+    <form action="{{ action('CampaignController@template', [
+                'uid' => $campaign->uid,
+                'version_b' => request()->version_b,
+            ]) }}" method="POST" class="form-validate-jqueryz">
         {{ csrf_field() }}
 
         <h1 class="mt-0">{{ trans('messages.email_content') }}</h1>

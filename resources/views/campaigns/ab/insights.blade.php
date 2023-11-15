@@ -40,7 +40,7 @@
                         </div>
                         <div>
                             <p class="mb-2">
-                                {{ $campaign->subject_b }}
+                                {{ $campaign->campaignB->subject }}
                             </p>
                         </div>
                     </div>
@@ -131,7 +131,10 @@
                     </div>
                 </div>
                 <div class="text-end">
-                    <a href="{{ action('CampaignController@openLog', $campaign->uid) }}" class="btn btn-light bg-teal-600">{{ trans('messages.open_log') }} <span class="material-symbols-rounded">arrow_forward</span></a>
+                    <a href="{{ action('CampaignController@openLog', [
+                'uid' => $campaign->uid,
+                'version_b' => request()->version_b,
+            ]) }}" class="btn btn-light bg-teal-600">{{ trans('messages.open_log') }} <span class="material-symbols-rounded">arrow_forward</span></a>
                 </div>
             </div>
 
@@ -158,7 +161,10 @@
                     </div>
                 </div>
                 <div class="text-end">
-                    <a href="{{ action('CampaignController@clickLog', $campaign->uid) }}" class="btn btn-light bg-teal-600">{{ trans('messages.click_log') }} <span class="material-symbols-rounded">arrow_forward</span></a>
+                    <a href="{{ action('CampaignController@clickLog', [
+                'uid' => $campaign->uid,
+                'version_b' => request()->version_b,
+            ]) }}" class="btn btn-light bg-teal-600">{{ trans('messages.click_log') }} <span class="material-symbols-rounded">arrow_forward</span></a>
                 </div>
             </div>
 
@@ -185,7 +191,10 @@
                     </div>
                 </div>
                 <div class="text-end">
-                    <a href="{{ action('CampaignController@unsubscribeLog', $campaign->uid) }}" class="btn btn-light bg-teal-600">{{ trans('messages.unsubscribe_log') }} <span class="material-symbols-rounded">arrow_forward</span></a>
+                    <a href="{{ action('CampaignController@unsubscribeLog', [
+                'uid' => $campaign->uid,
+                'version_b' => request()->version_b,
+            ]) }}" class="btn btn-light bg-teal-600">{{ trans('messages.unsubscribe_log') }} <span class="material-symbols-rounded">arrow_forward</span></a>
                 </div>
             </div>
         </div>
@@ -218,7 +227,10 @@
                     </div>
                 </div>
                 <div class="text-end">
-                    <a href="{{ action('CampaignController@bounceLog', $campaign->uid) }}" class="btn btn-light bg-teal-600">{{ trans('messages.bounce_log') }} <span class="material-symbols-rounded">arrow_forward</span></a>
+                    <a href="{{ action('CampaignController@bounceLog', [
+                'uid' => $campaign->uid,
+                'version_b' => request()->version_b,
+            ]) }}" class="btn btn-light bg-teal-600">{{ trans('messages.bounce_log') }} <span class="material-symbols-rounded">arrow_forward</span></a>
                 </div>
             </div>
             
@@ -245,7 +257,10 @@
                     </div>
                 </div>
                 <div class="text-end">
-                    <a href="{{ action('CampaignController@bounceLog', $campaign->uid) }}" class="btn btn-light bg-teal-600">{{ trans('messages.bounce_log') }} <span class="material-symbols-rounded">arrow_forward</span></a>
+                    <a href="{{ action('CampaignController@bounceLog', [
+                'uid' => $campaign->uid,
+                'version_b' => request()->version_b,
+            ]) }}" class="btn btn-light bg-teal-600">{{ trans('messages.bounce_log') }} <span class="material-symbols-rounded">arrow_forward</span></a>
                 </div>
             </div>
 
@@ -272,7 +287,10 @@
                     </div>
                 </div>
                 <div class="text-end">
-                    <a href="{{ action('CampaignController@feedbackLog', $campaign->uid) }}" class="btn btn-light bg-teal-600">{{ trans('messages.feedback_log') }} <span class="material-symbols-rounded">arrow_forward</span></a>
+                    <a href="{{ action('CampaignController@feedbackLog', [
+                'uid' => $campaign->uid,
+                'version_b' => request()->version_b,
+            ]) }}" class="btn btn-light bg-teal-600">{{ trans('messages.feedback_log') }} <span class="material-symbols-rounded">arrow_forward</span></a>
                 </div>
             </div>
         </div>

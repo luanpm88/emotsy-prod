@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>{{ $campaign->getSubject() }}</title>
+    <title>{{ ($campaign->isABTest() && request()->version_b) ? $campaign->campaignB->getSubject() : $campaign->getSubject() }}</title>
 
     <style>
         @if ($campaign->type != 'plain-text')
@@ -69,14 +69,17 @@
         </div>
 
         <div id="html" class="tabcontent" style="display: block">
-            <iframe class="email_preview_frame" src="{{ action('CampaignController@previewContent', $campaign->uid) }}"></iframe>
+            <iframe class="email_preview_frame" src="{{ action('CampaignController@previewContent', [
+                'uid' => $campaign->uid,
+                'version_b' => request()->version_b,
+            ]) }}"></iframe>
         </div>
     @endif
 
     @if ($campaign->type != 'plain-text')
         <div id="plain" class="tabcontent"  style="padding: 10px">
     @endif
-        {!! $campaign->getPlainContent() !!}
+        {!! ($campaign->isABTest() && request()->version_b) ? $campaign->campaignB->getPlainContent() : $campaign->getPlainContent() !!}
     @if ($campaign->type != 'plain-text')
         </div>
     @endif

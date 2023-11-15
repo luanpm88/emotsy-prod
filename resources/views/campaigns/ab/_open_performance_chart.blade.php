@@ -33,7 +33,10 @@
 
 <script>
     var OpenCampaigns24hChart = {
-        url: '{{ action('CampaignController@abOpenChart24h', $campaign->uid) }}',
+        url: '{{ action('CampaignController@abOpenChart24h', [
+                'uid' => $campaign->uid,
+                'version_b' => request()->version_b,
+            ]) }}',
 
         getChart: function() {
             return $('#OpenCampaigns24hChart');

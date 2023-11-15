@@ -41,7 +41,10 @@
             <h3>{{ trans('messages.campaign.email_content_plain') }}</h3>                
             <p>{{ trans('messages.campaign.email_content_plain.intro') }}</p>
                 
-            <form action="{{ action('Pub\CampaignController@plain', $campaign->uid) }}" method="POST">
+            <form action="{{ action('Pub\CampaignController@plain', [
+                'uid' => $campaign->uid,
+                'version_b' => request()->version_b,
+            ]) }}" method="POST">
                 {{ csrf_field() }}
 
                 @include('helpers.form_control', [

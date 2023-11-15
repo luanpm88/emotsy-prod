@@ -5,7 +5,10 @@
 @endsection
 
 @section('content')
-    <form id="PreheaderForm" action="{{ action('CampaignController@preheaderAdd', $campaign->uid) }}" method="POST">
+    <form id="PreheaderForm" action="{{ action('CampaignController@preheaderAdd', [
+                'uid' => $campaign->uid,
+                'version_b' => request()->version_b,
+            ]) }}" method="POST">
         {{ csrf_field() }}
         
         <p>{{ trans('messages.preheader.intro') }}</p>

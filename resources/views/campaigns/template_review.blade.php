@@ -25,7 +25,10 @@
         </div>
             
     @else
-        <iframe class="preview_page_frame" src="{{ action('CampaignController@templateReviewIframe', $campaign->uid) }}" />
+        <iframe class="preview_page_frame" src="{{ action('CampaignController@templateReviewIframe', [
+                'uid' => $campaign->uid,
+                'version_b' => request()->version_b,
+            ]) }}" />
     @endif
 
 @endsection

@@ -29,7 +29,8 @@
     </li>
     <li class="nav-item d-flex align-items-center">
         <a href="{{ action('Pub\CampaignController@builderPlainEdit', [
-            'uid' => $campaign->uid
+            'uid' => $campaign->uid,
+            'version_b' => request()->version_b,
         ]) }}"
             class="nav-link py-3 lvl-1">
             <span>{{ trans('messages.campaign.plain_text_editor') }}</span>
@@ -48,7 +49,10 @@
 @endsection
 
 @section('content')
-    <form id="classic-builder-form" action="{{ action('Pub\CampaignController@builderClassic', $campaign->uid) }}" method="POST" class="form-validate-jqueryz">
+    <form id="classic-builder-form" action="{{ action('Pub\CampaignController@builderClassic', [
+        'uid' => $campaign->uid,
+        'version_b' => request()->version_b,
+    ]) }}" method="POST" class="form-validate-jqueryz">
         {{ csrf_field() }}
 
         <div class="row mr-0 ml-0 form-groups-bottom-0">

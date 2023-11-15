@@ -17,7 +17,10 @@
 					</div>
 				</td>
 				<td>
-					<a class="kq_search fw-600 d-block list-title" href="{{ action('CampaignController@show', $campaign->uid) }}">
+					<a class="kq_search fw-600 d-block list-title" href="{{ action('CampaignController@show', [
+                'uid' => $campaign->uid,
+                'version_b' => request()->version_b,
+            ]) }}">
 						{{ $campaign->name }}
 					</a>
 					<span class="text-muted">{{ trans('messages.campaign.type.' . $campaign->type) }}</span>
@@ -84,11 +87,17 @@
 				<td class="text-end text-nowrap pe-0">
 					<div class="d-flex align-items-center text-nowrap justify-content-end">
 						@if (\Gate::allows('update', $campaign))
-							<a href="{{ action('CampaignController@edit', $campaign->uid) }}" role="button"
+							<a href="{{ action('CampaignController@edit', [
+                'uid' => $campaign->uid,
+                'version_b' => request()->version_b,
+            ]) }}" role="button"
 								class="btn btn-secondary btn-icon ms-1"> <span class="material-symbols-rounded">edit</span> {{ trans('messages.edit') }}</a>
 						@endif
 						@if (\Gate::allows('overview', $campaign))
-							<a href="{{ action('CampaignController@overview', $campaign->uid) }}" data-popup="tooltip"
+							<a href="{{ action('CampaignController@overview', [
+                'uid' => $campaign->uid,
+                'version_b' => request()->version_b,
+            ]) }}" data-popup="tooltip"
 								title="{{ trans('messages.overview') }}" role="button"
 								class="btn btn-primary btn-icon ms-1"
 							>

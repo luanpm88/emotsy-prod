@@ -5,13 +5,19 @@
 @section('content')
 
     <div class="right">
-        <form action="{{ action('CampaignController@template', $campaign->uid) }}" method="POST" class="form-validate-jqueryz">
+        <form action="{{ action('CampaignController@template', [
+                'uid' => $campaign->uid,
+                'version_b' => request()->version_b,
+            ]) }}" method="POST" class="form-validate-jqueryz">
             {{ csrf_field() }}
             <input type="hidden" name="template_source" value="builder" class="required" />
             <textarea class="hide template_content" name="html"></textarea>
             <div class="">
                 <button class="btn btn-primary me-1">{{ trans('messages.save') }}</button>
-                <a href="{{ action('CampaignController@template', $campaign->uid) }}" class="btn bg-slate">{{ trans('messages.cancel') }}</a>
+                <a href="{{ action('CampaignController@template', [
+                'uid' => $campaign->uid,
+                'version_b' => request()->version_b,
+            ]) }}" class="btn bg-slate">{{ trans('messages.cancel') }}</a>
             </div>
         </form>
     </div>

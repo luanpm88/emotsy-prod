@@ -3,7 +3,11 @@
         @foreach ($templates as $key => $template)
             <div class="col-xl-2 col-md-3 col-sm-4 col-xm-6 mb-3">
                 <a 
-                    href="{{ action('CampaignController@templateLayout', ['uid' => $campaign->uid, 'template' => $template->uid]) }}"
+                    href="{{ action('CampaignController@templateLayout', [
+                        'uid' => $campaign->uid,
+                        'template' => $template->uid,
+                        'version_b' => request()->version_b,
+                    ]) }}"
                     class="choose-theme select-template-layout"
                 >
                     <div class="">

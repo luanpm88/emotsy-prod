@@ -19,7 +19,10 @@
 <h2 class="text-semibold text-primary">{{ trans('messages.unsubscribe_log') }}</h2>
 
 <form class="listing-form"
-        data-url="{{ action('Pub\CampaignController@unsubscribeLogListing', $campaign->uid) }}"
+        data-url="{{ action('Pub\CampaignController@unsubscribeLogListing', [
+            'uid' => $campaign->uid,
+            'version_b' => request()->version_b,
+        ]) }}"
         per-page="{{ Acelle\Model\UnsubscribeLog::$itemsPerPage }}"
     >
         <div class="d-flex top-list-controls top-sticky-content">
@@ -57,7 +60,10 @@
         var CampaignLogIndex = {
             getList: function() {
                 return makeList({
-                    url: '{{ action('Pub\CampaignController@unsubscribeLogListing', $campaign->uid) }}',
+                    url: '{{ action('Pub\CampaignController@unsubscribeLogListing', [
+                        'uid' => $campaign->uid,
+                        'version_b' => request()->version_b,
+                    ]) }}',
                     container: $('.listing-form'),
                     content: $('.pml-table-container')
                 });

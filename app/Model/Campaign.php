@@ -333,7 +333,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
         'html', 'plain', 'template_source',
         'tracking_domain_id', 'use_default_sending_server_from_email',
         'skip_failed_message',
-        'subject_b', 'ab_split_subject', 'ab_split_content'
+        'ab_split_subject', 'ab_split_content'
     ];
 
     /**
@@ -2809,5 +2809,30 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
     public function abGetApproxRecipientsWinningVersion()
     {
         return $this->subscribersCount()*($this->ab_winning_percent/100);
+    }
+
+    public function campaignB()
+    {
+        return $this->belongsTo(Campaign::class, 'campaign_b_id');
+    }
+
+    public function campaignA()
+    {
+        return $this->hasOne(Campaign::class, 'campaign_b_id');
+    }
+
+    public function isAVersion()
+    {
+        return $this->campaignB;
+    }
+
+    public function isBVersion()
+    {
+        return $this->campaignA;
+    }
+
+    public static function scopeNotInlcludeBVersion($query)
+    {
+        $query = $query->doesntHave('campaignA');
     }
 }

@@ -3,7 +3,10 @@
 @section('content')
     <h3 class="mb-0 text-center">{{ trans('messages.campaign.preview_as.enter_search') }}</h3>
     <div class="listing-form"
-        data-url="{{ action('CampaignController@subscribersListing', $campaign->uid) }}"
+        data-url="{{ action('CampaignController@subscribersListing', [
+            'uid' => $campaign->uid,
+            'version_b' => request()->version_b,
+        ]) }}"
         per-page="{{ Acelle\Model\Subscriber::$itemsPerPage }}"
     >
         <div class="d-flex top-list-controls top-sticky-content mt-0">
@@ -28,7 +31,10 @@
         var SubscribersIndex = {
             getList: function() {
                 return makeList({
-                    url: '{{ action('CampaignController@previewAsList', $campaign->uid) }}',
+                    url: '{{ action('CampaignController@previewAsList', [
+                'uid' => $campaign->uid,
+                'version_b' => request()->version_b,
+            ]) }}',
                     container: $('.listing-form'),
                     content: $('.pml-table-container')
                 });

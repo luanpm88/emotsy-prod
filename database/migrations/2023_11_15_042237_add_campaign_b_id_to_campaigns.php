@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddSubjectBToCampaigns extends Migration
+class AddCampaignBIdToCampaigns extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,8 @@ class AddSubjectBToCampaigns extends Migration
     public function up()
     {
         Schema::table('campaigns', function (Blueprint $table) {
-            $table->text('subject_b')->nullable();
+            $table->integer('campaign_b_id')->unsigned()->nullable();
+            $table->foreign('campaign_b_id')->references('id')->on('campaigns')->onDelete('set null');
         });
     }
 
@@ -26,7 +27,8 @@ class AddSubjectBToCampaigns extends Migration
     public function down()
     {
         Schema::table('campaigns', function (Blueprint $table) {
-            $table->dropColumn('subject_b');
+            $table->dropForeign(['campaign_b_id']);
+            $table->dropColumn('campaign_b_id');
         });
     }
 }

@@ -46,7 +46,10 @@
                 showInlineToolbar: false,
                 emailMode: true,
                 lang: {!! json_encode($campaign->customer->language->getBuilderLang()) !!},
-                url: '{{ action('CampaignController@templateContent', $campaign->uid) }}',
+                url: '{{ action('CampaignController@templateContent', [
+                    'uid' => $campaign->uid,
+                    'version_b' => request()->version_b,
+                ]) }}',
                 backCallback: function() {
                   parent.$('.full-iframe-popup').fadeOut();
                   parent.$('body').removeClass('overflow-hidden');
@@ -57,7 +60,10 @@
                 },
                 uploadAssetUrl: '{{ action('TemplateController@uploadTemplateAssets', $campaign->template->uid) }}',
                 uploadAssetMethod: 'POST',
-                saveUrl: '{{ action('CampaignController@templateEdit', $campaign->uid) }}',
+                saveUrl: '{{ action('CampaignController@templateEdit', [
+                    'uid' => $campaign->uid,
+                    'version_b' => request()->version_b,
+                ]) }}',
                 saveMethod: 'POST',
                 tags: {!! json_encode(Acelle\Model\Template::builderTags((isset($list) ? $list : null))) !!},
                 root: '{{ URL::asset('builder') }}/',

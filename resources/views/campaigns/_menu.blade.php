@@ -75,7 +75,10 @@
 					</ul>
 				</li>
 				<li class="nav-item {{ $menu == 'template' ? 'active' : '' }}">
-					<a href="javascript:;" onclick="popupwindow('{{ action('CampaignController@preview', $campaign->uid) }}', `{{ $campaign->name }}`, 800)" class="nav-link">
+					<a href="javascript:;" onclick="popupwindow('{{ action('CampaignController@preview', [
+						'uid' => $campaign->uid,
+						'version_b' => request()->version_b,
+					]) }}', `{{ $campaign->name }}`, 800)" class="nav-link">
 						<span class="material-symbols-rounded">auto_awesome_mosaic</span> {{ trans('messages.email_review') }}
 					</a>
 				</li>

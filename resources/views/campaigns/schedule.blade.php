@@ -39,7 +39,10 @@
 @section('content')
     <h1 class="mb-4">{{ trans('messages.schedule') }}</h1>
 
-    <form id="CampaignScheduleForm" action="{{ action('CampaignController@schedule', $campaign->uid) }}" method="POST" class="form-validate-jqueryz">
+    <form id="CampaignScheduleForm" action="{{ action('CampaignController@schedule', [
+                'uid' => $campaign->uid,
+                'version_b' => request()->version_b,
+            ]) }}" method="POST" class="form-validate-jqueryz">
         {{ csrf_field() }}
 
         <input type="hidden" name="send_now" value="no" />

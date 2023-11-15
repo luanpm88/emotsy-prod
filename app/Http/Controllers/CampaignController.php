@@ -32,12 +32,7 @@ class CampaignController extends Controller
      */
     public function index(Request $request)
     {
-        $customer = $request->user()->customer;
-        $campaigns = $customer->campaigns();
-
-        return view('campaigns.index', [
-            'campaigns' => $campaigns,
-        ]);
+        return view('campaigns.index');
     }
 
     /**
@@ -50,6 +45,7 @@ class CampaignController extends Controller
         $customer = $request->user()->customer;
 
         $campaigns = $customer->campaigns()
+            ->notInlcludeBVersion()
             ->search($request->keyword)
             ->filter($request);
 
@@ -73,7 +69,7 @@ class CampaignController extends Controller
     public function create(Request $request)
     {
         $campaign = $request->user()->customer->newDefaultCampaign();
-
+        
         // authorize
         if (\Gate::denies('create', $campaign)) {
             return $this->noMoreItem();
@@ -82,6 +78,19 @@ class CampaignController extends Controller
         $campaign->saveFromArray([
             'type' => $request->type,
         ]);
+
+        // save campaign b
+        if ($campaign->isABTest()) {
+            $campaignB = $request->user()->customer->newDefaultCampaign();
+
+            $campaignB->saveFromArray([
+                'type' => $request->type,
+            ]);
+
+            // assign campaign b to campaign a
+            $campaign->campaign_b_id = $campaignB->id;
+            $campaign->save();
+        }
 
         return redirect()->action('CampaignController@recipients', ['uid' => $campaign->uid]);
     }
@@ -177,9 +186,17 @@ class CampaignController extends Controller
         $rules = $campaign->recipientsRules($request->all());
         $campaign->fillRecipients($request->all());
 
+        if ($campaign->isABTest()) {
+            $campaign->campaignB->fillRecipients($request->all());
+        }
+
         if (!empty($request->old())) {
             $rules = $campaign->recipientsRules($request->old());
             $campaign->fillRecipients($request->old());
+
+            if ($campaign->isABTest()) {
+                $campaign->campaignB->fillRecipients($request->old());
+            }
         }
 
         if ($request->isMethod('post')) {
@@ -188,9 +205,17 @@ class CampaignController extends Controller
 
             $campaign->saveRecipients($request->all());
 
+            if ($campaign->isABTest()) {
+                $campaign->campaignB->saveRecipients($request->all());
+            }
+
             // Trigger the CampaignUpdate event to update the campaign cache information
             // The second parameter of the constructor function is false, meanining immediate update
             event(new \Acelle\Events\CampaignUpdated($campaign));
+
+            if ($campaign->isABTest()) {
+                event(new \Acelle\Events\CampaignUpdated($campaign->campaignB));
+            }
 
             // redirect to the next step
             return redirect()->action('CampaignController@setup', ['uid' => $campaign->uid]);
@@ -220,12 +245,22 @@ class CampaignController extends Controller
             return $this->notAuthorized();
         }
 
+        // From name/email
         $campaign->from_name = !empty($campaign->from_name) ? $campaign->from_name : $campaign->defaultMailList->from_name;
         $campaign->from_email = !empty($campaign->from_email) ? $campaign->from_email : $campaign->defaultMailList->from_email;
+
+        if ($campaign->isABTest()) {
+            $campaign->campaignB->from_name = $campaign->from_name;
+            $campaign->campaignB->from_email = $campaign->from_email;
+        }
 
         // Get old post values
         if ($request->old()) {
             $campaign->fillAttributes($request->old());
+
+            if ($campaign->isABTest()) {
+                $campaign->campaignB->fillAttributes($request->old());
+            }
         }
 
         // validate and save posted data
@@ -233,14 +268,29 @@ class CampaignController extends Controller
             // Fill values
             $campaign->fillAttributes($request->all());
 
+            if ($campaign->isABTest()) {
+                $campaign->campaignB->fillAttributes($request->all());
+            }
+
             // Check validation
             $this->validate($request, $campaign->rules($request));
 
             // success
             $campaign->save();
 
+            if ($campaign->isABTest()) {
+                if ($request->ab_split_subject) {
+                    $campaign->campaignB->subject = $request->subject_b;
+                }
+                $campaign->campaignB->save();
+            }
+
             // Log
             $campaign->log('created', $customer);
+
+            if ($campaign->isABTest()) {
+                $campaign->campaignB->log('created', $customer);
+            }
 
             return redirect()->action('CampaignController@template', ['uid' => $campaign->uid]);
         }
@@ -274,9 +324,23 @@ class CampaignController extends Controller
             return redirect()->action('CampaignController@plain', ['uid' => $campaign->uid]);
         }
 
-        // check if campagin does not have template
-        if (!$campaign->template) {
-            return redirect()->action('CampaignController@templateCreate', ['uid' => $campaign->uid, 'version_b' => $request->version_b]);
+        if ($campaign->isABTest()) {
+            if ($request->version_b) {
+                // check if campagin does not have template
+                if (!$campaign->campaignB->template) {
+                    return redirect()->action('CampaignController@templateCreate', ['uid' => $campaign->uid, 'version_b' => true]);
+                }
+            } else {
+                // check if campagin does not have template
+                if (!$campaign->template) {
+                    return redirect()->action('CampaignController@templateCreate', ['uid' => $campaign->uid]);
+                }
+            }
+        } else {
+            // check if campagin does not have template
+            if (!$campaign->template) {
+                return redirect()->action('CampaignController@templateCreate', ['uid' => $campaign->uid]);
+            }
         }
 
         return view('campaigns.template.index', [
@@ -324,13 +388,21 @@ class CampaignController extends Controller
 
         if ($request->isMethod('post')) {
             $template = \Acelle\Model\Template::findByUid($request->template);
-            $campaign->setTemplate($template);
+
+            if ($campaign->isABTest() && $request->version_b) {
+                $campaign->campaignB->setTemplate($template);
+            } else {
+                $campaign->setTemplate($template);
+            }
 
             // return redirect()->action('CampaignController@templateEdit', $campaign->uid);
             return response()->json([
                 'status' => 'success',
                 'message' => trans('messages.campaign.theme.selected'),
-                'url' => action('CampaignController@templateBuilderSelect', $campaign->uid),
+                'url' => action('CampaignController@templateBuilderSelect', [
+                    'uid' => $campaign->uid,
+                    'version_b' => $request->version_b,
+                ]),
             ]);
         }
 
@@ -431,11 +503,19 @@ class CampaignController extends Controller
                 }
             }
 
-            $campaign->setTemplateContent($request->content);
-            $campaign->save();
+            if ($campaign->isABTest() && $request->version_b) {
+                $campaign->campaignB->setTemplateContent($request->content);
+                $campaign->campaignB->save();
 
-            // update plain
-            $campaign->updatePlainFromHtml();
+                // update plain
+                $campaign->campaignB->updatePlainFromHtml();
+            } else {
+                $campaign->setTemplateContent($request->content);
+                $campaign->save();
+
+                // update plain
+                $campaign->updatePlainFromHtml();
+            }
 
             return response()->json([
                 'status' => 'success',
@@ -465,9 +545,16 @@ class CampaignController extends Controller
             return $this->notAuthorized();
         }
 
-        return view('campaigns.template.content', [
-            'content' => $campaign->template->content,
-        ]);
+        if ($campaign->isABTest() && $request->version_b) {
+            return view('campaigns.template.content', [
+                'content' => $campaign->campaignB->template->content,
+            ]);
+        } else {
+            return view('campaigns.template.content', [
+                'content' => $campaign->template->content,
+            ]);
+        }
+            
     }
 
     /**
@@ -488,13 +575,21 @@ class CampaignController extends Controller
 
         // validate and save posted data
         if ($request->isMethod('post')) {
-            $campaign->uploadTemplate($request);
+
+            if ($campaign->isABTest() && $request->version_b) {
+                $campaign->campaignB->uploadTemplate($request);
+            } else {
+                $campaign->uploadTemplate($request);
+            }
 
             // return redirect()->action('CampaignController@template', $campaign->uid);
             return response()->json([
                 'status' => 'success',
                 'message' => trans('messages.campaign.template.uploaded'),
-                'url' => action('CampaignController@templateBuilderSelect', $campaign->uid),
+                'url' => action('CampaignController@templateBuilderSelect', [
+                    'uid' => $campaign->uid,
+                    'version_b' => $request->version_b,
+                ]),
             ]);
         }
 
@@ -716,6 +811,11 @@ class CampaignController extends Controller
         foreach ($campaigns->get() as $campaign) {
             // authorize
             if (\Gate::allows('delete', $campaign)) {
+                // 
+                if ($campaign->isABTest()) {
+                    $campaign->campaignB->deleteAndCleanup();
+                }
+
                 $campaign->deleteAndCleanup();
             }
         }
@@ -2010,7 +2110,11 @@ class CampaignController extends Controller
             return $this->notAuthorized();
         }
 
-        echo $campaign->getHtmlContent($subscriber);
+        if ($campaign->isABTest() && request()->version_b) {
+            echo $campaign->campaignB->getHtmlContent($subscriber);
+        } else {
+            echo $campaign->getHtmlContent($subscriber);
+        }
     }
 
     /**
@@ -2268,13 +2372,24 @@ class CampaignController extends Controller
                 }
             }
 
-            // Save template
-            $campaign->setTemplateContent($request->html);
-            $campaign->preheader = $request->preheader;
-            $campaign->save();
+            if ($campaign->isABTest() && $request->version_b) {
+                // Save template
+                $campaign->campaignB->setTemplateContent($request->html);
+                $campaign->campaignB->preheader = $request->preheader;
+                $campaign->campaignB->save();
 
-            // update plain
-            $campaign->updatePlainFromHtml();
+                // update plain
+                $campaign->campaignB->updatePlainFromHtml();
+            } else {
+                // Save template
+                $campaign->setTemplateContent($request->html);
+                $campaign->preheader = $request->preheader;
+                $campaign->save();
+
+                // update plain
+                $campaign->updatePlainFromHtml();
+            }
+            
 
             // success
             return response()->json([
@@ -2317,9 +2432,15 @@ class CampaignController extends Controller
                 return response()->json($validator->errors(), 400);
             }
 
-            // Save template
-            $campaign->plain = $request->plain;
-            $campaign->save();
+            if ($campaign->isABTest() && $request->version_b) {
+                // Save template
+                $campaign->campaignB->plain = $request->plain;
+                $campaign->campaignB->save();
+            } else {
+                // Save template
+                $campaign->plain = $request->plain;
+                $campaign->save();
+            }
 
             // success
             return response()->json([
@@ -2348,7 +2469,11 @@ class CampaignController extends Controller
         }
 
         foreach ($request->file as $file) {
-            $campaign->uploadAttachment($file);
+            if ($campaign->isABTest() && $request->version_b) {
+                $campaign->campaignB->uploadAttachment($file);
+            } else {
+                $campaign->uploadAttachment($file);
+            }
         }
     }
 

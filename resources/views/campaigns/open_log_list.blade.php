@@ -42,6 +42,7 @@
                         <a href="{{ action('CampaignController@openLogExecute', [
                             'uid' => $item->trackingLog->campaign->uid,
                             'message_id' => $item->message_id,
+                            'version_b' => request()->version_b,
                         ]) }}" class="btn btn-light open_log_detail">
                             {{ trans('messages.webhook.execute_open_callback') }}
                         </a>                   
