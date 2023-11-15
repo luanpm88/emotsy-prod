@@ -1618,7 +1618,11 @@ class CampaignController extends Controller
             return $this->notAuthorized();
         }
 
-        $items = $campaign->trackingLogs();
+        if ($campaign->isABTest() && request()->version_b) {
+            $items = $campaign->campaignB->trackingLogs();
+        } else {
+            $items = $campaign->trackingLogs();
+        }
 
         return view('campaigns.tracking_log', [
             'items' => $items,
@@ -1638,7 +1642,12 @@ class CampaignController extends Controller
             return $this->notAuthorized();
         }
 
-        $items = TrackingLog::search($request, $campaign)->paginate($request->per_page);
+        if ($campaign->isABTest() && request()->version_b) {
+            $items = TrackingLog::search($request, $campaign->campaignB)->paginate($request->per_page);
+        } else {
+            $items = TrackingLog::search($request, $campaign)->paginate($request->per_page);
+        }
+            
 
         return view('campaigns.tracking_logs_list', [
             'items' => $items,
@@ -1660,8 +1669,14 @@ class CampaignController extends Controller
 
         $logtype = $request->input('logtype');
 
-        $job = new ExportCampaignLog($campaign, $logtype);
-        $monitor = $campaign->dispatchWithMonitor($job);
+        if ($campaign->isABTest() && request()->version_b) {
+            $job = new ExportCampaignLog($campaign->campaignB, $logtype);
+            $monitor = $campaign->campaignB->dispatchWithMonitor($job);
+        } else {
+            $job = new ExportCampaignLog($campaign, $logtype);
+            $monitor = $campaign->dispatchWithMonitor($job);
+        }
+       
 
         return view('campaigns.download_tracking_log', [
             'campaign' => $campaign,
@@ -1706,7 +1721,11 @@ class CampaignController extends Controller
             return $this->notAuthorized();
         }
 
-        $items = $campaign->bounceLogs();
+        if ($campaign->isABTest() && request()->version_b) {
+            $items = $campaign->campaignB->bounceLogs();
+        } else {
+            $items = $campaign->bounceLogs();
+        }
 
         return view('campaigns.bounce_log', [
             'items' => $items,
@@ -1726,7 +1745,11 @@ class CampaignController extends Controller
             return $this->notAuthorized();
         }
 
-        $items = \Acelle\Model\BounceLog::search($request, $campaign)->paginate($request->per_page);
+        if ($campaign->isABTest() && request()->version_b) {
+            $items = \Acelle\Model\BounceLog::search($request, $campaign->campaignB)->paginate($request->per_page);
+        } else {
+            $items = \Acelle\Model\BounceLog::search($request, $campaign)->paginate($request->per_page);
+        }
 
         return view('campaigns.bounce_logs_list', [
             'items' => $items,
@@ -1746,7 +1769,12 @@ class CampaignController extends Controller
             return $this->notAuthorized();
         }
 
-        $items = $campaign->openLogs();
+        if ($campaign->isABTest() && request()->version_b) {
+            $items = $campaign->campaignB->openLogs();
+        } else {
+            $items = $campaign->openLogs();
+        }
+        
 
         return view('campaigns.feedback_log', [
             'items' => $items,
@@ -1766,7 +1794,11 @@ class CampaignController extends Controller
             return $this->notAuthorized();
         }
 
-        $items = \Acelle\Model\FeedbackLog::search($request, $campaign)->paginate($request->per_page);
+        if ($campaign->isABTest() && request()->version_b) {
+            $items = \Acelle\Model\FeedbackLog::search($request, $campaign->campaignB)->paginate($request->per_page);
+        } else {
+            $items = \Acelle\Model\FeedbackLog::search($request, $campaign)->paginate($request->per_page);
+        }
 
         return view('campaigns.feedback_logs_list', [
             'items' => $items,
@@ -1786,7 +1818,11 @@ class CampaignController extends Controller
             return $this->notAuthorized();
         }
 
-        $items = $campaign->openLogs();
+        if ($campaign->isABTest() && request()->version_b) {
+            $items = $campaign->campaignB->openLogs();
+        } else {
+            $items = $campaign->openLogs();
+        }
 
         return view('campaigns.open_log', [
             'items' => $items,
@@ -1806,7 +1842,11 @@ class CampaignController extends Controller
             return $this->notAuthorized();
         }
 
-        $items = \Acelle\Model\OpenLog::search($request, $campaign)->paginate($request->per_page);
+        if ($campaign->isABTest() && request()->version_b) {
+            $items = \Acelle\Model\OpenLog::search($request, $campaign->campaignB)->paginate($request->per_page);
+        } else {
+            $items = \Acelle\Model\OpenLog::search($request, $campaign)->paginate($request->per_page);
+        }
 
         return view('campaigns.open_log_list', [
             'items' => $items,
@@ -1826,7 +1866,11 @@ class CampaignController extends Controller
             return $this->notAuthorized();
         }
 
-        $items = $campaign->clickLogs();
+        if ($campaign->isABTest() && request()->version_b) {
+            $items = $campaign->campaignB->clickLogs();
+        } else {
+            $items = $campaign->clickLogs();
+        }
 
         return view('campaigns.click_log', [
             'items' => $items,
@@ -1846,7 +1890,11 @@ class CampaignController extends Controller
             return $this->notAuthorized();
         }
 
-        $items = \Acelle\Model\ClickLog::search($request, $campaign)->paginate($request->per_page);
+        if ($campaign->isABTest() && request()->version_b) {
+            $items = \Acelle\Model\ClickLog::search($request, $campaign->campaignB)->paginate($request->per_page);
+        } else {
+            $items = \Acelle\Model\ClickLog::search($request, $campaign)->paginate($request->per_page);
+        }
 
         return view('campaigns.click_log_list', [
             'items' => $items,
@@ -1866,7 +1914,11 @@ class CampaignController extends Controller
             return $this->notAuthorized();
         }
 
-        $items = $campaign->unsubscribeLogs();
+        if ($campaign->isABTest() && request()->version_b) {
+            $items = $campaign->campaignB->unsubscribeLogs();
+        } else {
+            $items = $campaign->unsubscribeLogs();
+        }
 
         return view('campaigns.unsubscribe_log', [
             'items' => $items,
@@ -1886,7 +1938,11 @@ class CampaignController extends Controller
             return $this->notAuthorized();
         }
 
-        $items = \Acelle\Model\UnsubscribeLog::search($request, $campaign)->paginate($request->per_page);
+        if ($campaign->isABTest() && request()->version_b) {
+            $items = \Acelle\Model\UnsubscribeLog::search($request, $campaign->campaignB)->paginate($request->per_page);
+        } else {
+            $items = \Acelle\Model\UnsubscribeLog::search($request, $campaign)->paginate($request->per_page);
+        }
 
         return view('campaigns.unsubscribe_logs_list', [
             'items' => $items,
@@ -1900,8 +1956,6 @@ class CampaignController extends Controller
     public function openMap(Request $request)
     {
         $campaign = Campaign::findByUid($request->uid);
-
-        
 
         // authorize
         if (\Gate::denies('read', $campaign)) {
@@ -2034,11 +2088,20 @@ class CampaignController extends Controller
         }
 
         // Subscribers
-        $subscribers = $campaign->getDeliveryReport()
-                                ->addSelect('subscribers.*')
-                                ->addSelect('bounce_logs.raw AS bounced_message')
-                                ->addSelect('feedback_logs.feedback_type AS feedback_message')
-                                ->addSelect('tracking_logs.error AS failed_message');
+        if ($campaign->isABTest() && request()->version_b) {
+            $subscribers = $campaign->campaignB->getDeliveryReport()
+                ->addSelect('subscribers.*')
+                ->addSelect('bounce_logs.raw AS bounced_message')
+                ->addSelect('feedback_logs.feedback_type AS feedback_message')
+                ->addSelect('tracking_logs.error AS failed_message');
+        } else {
+            $subscribers = $campaign->getDeliveryReport()
+                ->addSelect('subscribers.*')
+                ->addSelect('bounce_logs.raw AS bounced_message')
+                ->addSelect('feedback_logs.feedback_type AS feedback_message')
+                ->addSelect('tracking_logs.error AS failed_message');
+        }
+            
 
         // Check open conditions
         if ($request->open) {
