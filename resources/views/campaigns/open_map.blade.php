@@ -33,7 +33,15 @@
 
 	<div id="openMap" class="map-container map-marker-simple" style="height:600px"></div>
 
+	@if ($campaign->isABTest() && request()->version_b)
+		@php
+			$campaign = $campaign->campaignB;
+		@endphp
+	@endif
+
 <script>
+
+
 
 /* ------------------------------------------------------------------------------
 *

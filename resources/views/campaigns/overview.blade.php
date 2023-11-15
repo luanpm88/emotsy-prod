@@ -15,15 +15,7 @@
         'menu' => 'overview',
     ])
 
-@endsection
-
-@section('content')
-
-    @include("campaigns._info")
-
-    <br>
-
-	@if ($campaign->isABTest())
+    @if ($campaign->isABTest())
         @include('campaigns.ab._insights_version_tabs', [
             'link_a' => action('CampaignController@overview', [
                 'uid' => $campaign->uid,
@@ -35,34 +27,54 @@
         ])
     @endif
 
+@endsection
+
+@section('content')
+
+    @include("campaigns._info")
+
     <br />
 
     @include("campaigns._chart")
 
-    @include("campaigns._open_click_rate")
+    @include("campaigns._open_click_rate", [
+        'campaign' => ($campaign->isABTest() && request()->version_b) ? $campaign->campaignB : $campaign,
+    ])
 
-    @include("campaigns._count_boxes")
-
-    <br />
-
-    @include("campaigns._24h_chart")
-
-
-    <br />
-
-    @include("campaigns._top_link")
+    @include("campaigns._count_boxes", [
+        'campaign' => ($campaign->isABTest() && request()->version_b) ? $campaign->campaignB : $campaign,
+    ])
 
     <br />
 
-    @include("campaigns._most_click_country")
+    @include("campaigns._24h_chart", [
+        'campaign' => ($campaign->isABTest() && request()->version_b) ? $campaign->campaignB : $campaign,
+    ])
+
 
     <br />
 
-    @include("campaigns._most_open_country")
+    @include("campaigns._top_link", [
+        'campaign' => ($campaign->isABTest() && request()->version_b) ? $campaign->campaignB : $campaign,
+    ])
 
     <br />
 
-    @include("campaigns._most_open_location")
+    @include("campaigns._most_click_country", [
+        'campaign' => ($campaign->isABTest() && request()->version_b) ? $campaign->campaignB : $campaign,
+    ])
+
+    <br />
+
+    @include("campaigns._most_open_country", [
+        'campaign' => ($campaign->isABTest() && request()->version_b) ? $campaign->campaignB : $campaign,
+    ])
+
+    <br />
+
+    @include("campaigns._most_open_location", [
+        'campaign' => ($campaign->isABTest() && request()->version_b) ? $campaign->campaignB : $campaign,
+    ])
 
     <br />
 @endsection

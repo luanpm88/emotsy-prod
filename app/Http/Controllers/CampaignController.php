@@ -859,12 +859,23 @@ class CampaignController extends Controller
     public function links(Request $request)
     {
         $campaign = Campaign::findByUid($request->uid);
-        $links = $campaign->clickLogs()
-                          ->select(
-                              'click_logs.url',
-                              DB::raw('count(*) AS clickCount'),
-                              DB::raw(sprintf('max(%s) AS lastClick', table('click_logs.created_at')))
-                          )->groupBy('click_logs.url')->get();
+
+        if ($campaign->isABTest() && request()->version_b) {
+            $links = $campaign->campaignB->clickLogs()
+                ->select(
+                    'click_logs.url',
+                    DB::raw('count(*) AS clickCount'),
+                    DB::raw(sprintf('max(%s) AS lastClick', table('click_logs.created_at')))
+                )->groupBy('click_logs.url')->get();
+        } else {
+            $links = $campaign->clickLogs()
+                ->select(
+                    'click_logs.url',
+                    DB::raw('count(*) AS clickCount'),
+                    DB::raw(sprintf('max(%s) AS lastClick', table('click_logs.created_at')))
+                )->groupBy('click_logs.url')->get();
+        }
+            
 
         // authorize
         if (\Gate::denies('read', $campaign)) {
@@ -1004,8 +1015,10 @@ class CampaignController extends Controller
 
         $result = [
             'columns' => [],
-            'opened' => [],
-            'clicked' => [],
+            // 'opened' => [],
+            // 'clicked' => [],
+            'version_a' => [],
+            'version_b' => [],
         ];
 
         // 24h collection
@@ -1020,15 +1033,31 @@ class CampaignController extends Controller
             }
 
             $openData24h = $campaign->openUniqHours($nowInUserTimezone->copy()->subHours(24), $nowInUserTimezone);
-            $clickData24h = $campaign->clickHours($nowInUserTimezone->copy()->subHours(24), $nowInUserTimezone);
+            // $clickData24h = $campaign->clickHours($nowInUserTimezone->copy()->subHours(24), $nowInUserTimezone);
 
             // data
             foreach ($hours as $hour) {
                 $num = isset($openData24h[$hour]) ? count($openData24h[$hour]) : 0;
-                $result['opened'][] = $num;
+                // $result['opened'][] = $num;
+                $result['version_a'][] = $num;
 
-                $num = isset($clickData24h[$hour]) ? count($clickData24h[$hour]) : 0;
-                $result['clicked'][] = $num;
+                // $num = isset($clickData24h[$hour]) ? count($clickData24h[$hour]) : 0;
+                // $result['clicked'][] = $num;
+            }
+
+
+            // VERSION B
+            $openData24h = $campaign->campaignB->openUniqHours($nowInUserTimezone->copy()->subHours(24), $nowInUserTimezone);
+            // $clickData24h = $campaign->campaignB->clickHours($nowInUserTimezone->copy()->subHours(24), $nowInUserTimezone);
+
+            // data
+            foreach ($hours as $hour) {
+                $num = isset($openData24h[$hour]) ? count($openData24h[$hour]) : 0;
+                // $result['opened'][] = $num;
+                $result['version_b'][] = $num;
+
+                // $num = isset($clickData24h[$hour]) ? count($clickData24h[$hour]) : 0;
+                // $result['clicked'][] = $num;
             }
         } elseif ($request->period == '3_days') {
             $days = [];
@@ -1041,15 +1070,30 @@ class CampaignController extends Controller
             }
 
             $openData = $campaign->openUniqDays($nowInUserTimezone->copy()->subDays(3), $nowInUserTimezone->endOfDay());
-            $clickData = $campaign->clickDays($nowInUserTimezone->copy()->subDays(3), $nowInUserTimezone->endOfDay());
+            // $clickData = $campaign->clickDays($nowInUserTimezone->copy()->subDays(3), $nowInUserTimezone->endOfDay());
 
             // data
             foreach ($days as $day) {
                 $num = isset($openData[$day]) ? count($openData[$day]) : 0;
-                $result['opened'][] = $num;
+                // $result['opened'][] = $num;
+                $result['version_a'][] = $num;
 
-                $num = isset($clickData[$day]) ? count($clickData[$day]) : 0;
-                $result['clicked'][] = $num;
+                // $num = isset($clickData[$day]) ? count($clickData[$day]) : 0;
+                // $result['clicked'][] = $num;
+            }
+
+            // VERSION B
+            $openData = $campaign->campaignB->openUniqDays($nowInUserTimezone->copy()->subDays(3), $nowInUserTimezone->endOfDay());
+            // $clickData = $campaign->campaignB->clickDays($nowInUserTimezone->copy()->subDays(3), $nowInUserTimezone->endOfDay());
+
+            // data
+            foreach ($days as $day) {
+                $num = isset($openData[$day]) ? count($openData[$day]) : 0;
+                // $result['opened'][] = $num;
+                $result['version_b'][] = $num;
+
+                // $num = isset($clickData[$day]) ? count($clickData[$day]) : 0;
+                // $result['clicked'][] = $num;
             }
         } elseif ($request->period == '7_days') {
             $days = [];
@@ -1062,15 +1106,30 @@ class CampaignController extends Controller
             }
 
             $openData = $campaign->openUniqDays($nowInUserTimezone->copy()->subDays(7), $nowInUserTimezone->endOfDay());
-            $clickData = $campaign->clickDays($nowInUserTimezone->copy()->subDays(7), $nowInUserTimezone->endOfDay());
+            // $clickData = $campaign->clickDays($nowInUserTimezone->copy()->subDays(7), $nowInUserTimezone->endOfDay());
 
             // data
             foreach ($days as $day) {
                 $num = isset($openData[$day]) ? count($openData[$day]) : 0;
-                $result['opened'][] = $num;
+                // $result['opened'][] = $num;
+                $result['version_a'][] = $num;
 
-                $num = isset($clickData[$day]) ? count($clickData[$day]) : 0;
-                $result['clicked'][] = $num;
+                // $num = isset($clickData[$day]) ? count($clickData[$day]) : 0;
+                // $result['clicked'][] = $num;
+            }
+
+            // VERSION B
+            $openData = $campaign->campaignB->openUniqDays($nowInUserTimezone->copy()->subDays(7), $nowInUserTimezone->endOfDay());
+            // $clickData = $campaign->campaignB->clickDays($nowInUserTimezone->copy()->subDays(7), $nowInUserTimezone->endOfDay());
+
+            // data
+            foreach ($days as $day) {
+                $num = isset($openData[$day]) ? count($openData[$day]) : 0;
+                // $result['opened'][] = $num;
+                $result['version_b'][] = $num;
+
+                // $num = isset($clickData[$day]) ? count($clickData[$day]) : 0;
+                // $result['clicked'][] = $num;
             }
         } elseif ($request->period == 'last_month') {
             $days = [];
@@ -1083,15 +1142,31 @@ class CampaignController extends Controller
             }
 
             $openData = $campaign->openUniqDays($nowInUserTimezone->copy()->subMonths(1), $nowInUserTimezone->endOfDay());
-            $clickData = $campaign->clickDays($nowInUserTimezone->copy()->subMonths(1), $nowInUserTimezone->endOfDay());
+            // $clickData = $campaign->clickDays($nowInUserTimezone->copy()->subMonths(1), $nowInUserTimezone->endOfDay());
 
             // data
             foreach ($days as $day) {
                 $num = isset($openData[$day]) ? count($openData[$day]) : 0;
-                $result['opened'][] = $num;
+                // $result['opened'][] = $num;
+                $result['version_a'][] = $num;
 
-                $num = isset($clickData[$day]) ? count($clickData[$day]) : 0;
-                $result['clicked'][] = $num;
+                // $num = isset($clickData[$day]) ? count($clickData[$day]) : 0;
+                // $result['clicked'][] = $num;
+            }
+
+
+            // VERSION B
+            $openData = $campaign->campaignB->openUniqDays($nowInUserTimezone->copy()->subMonths(1), $nowInUserTimezone->endOfDay());
+            // $clickData = $campaign->campaignB->clickDays($nowInUserTimezone->copy()->subMonths(1), $nowInUserTimezone->endOfDay());
+
+            // data
+            foreach ($days as $day) {
+                $num = isset($openData[$day]) ? count($openData[$day]) : 0;
+                // $result['opened'][] = $num;
+                $result['version_b'][] = $num;
+
+                // $num = isset($clickData[$day]) ? count($clickData[$day]) : 0;
+                // $result['clicked'][] = $num;
             }
         }
 
@@ -1111,8 +1186,10 @@ class CampaignController extends Controller
 
         $result = [
             'columns' => [],
-            'opened' => [],
-            'clicked' => [],
+            // 'opened' => [],
+            // 'clicked' => [],
+            'version_a' => [],
+            'version_b' => [],
         ];
 
         // 24h collection
@@ -1126,16 +1203,32 @@ class CampaignController extends Controller
                 $hours[] = $time->format('H');
             }
 
-            $openData24h = $campaign->openUniqHours($nowInUserTimezone->copy()->subHours(24), $nowInUserTimezone);
+            // $openData24h = $campaign->openUniqHours($nowInUserTimezone->copy()->subHours(24), $nowInUserTimezone);
             $clickData24h = $campaign->clickHours($nowInUserTimezone->copy()->subHours(24), $nowInUserTimezone);
 
             // data
             foreach ($hours as $hour) {
-                $num = isset($openData24h[$hour]) ? count($openData24h[$hour]) : 0;
-                $result['opened'][] = $num;
+                // $num = isset($openData24h[$hour]) ? count($openData24h[$hour]) : 0;
+                // $result['opened'][] = $num;
 
                 $num = isset($clickData24h[$hour]) ? count($clickData24h[$hour]) : 0;
-                $result['clicked'][] = $num;
+                // $result['clicked'][] = $num;
+                $result['version_a'][] = $num;
+            }
+
+
+            // VERSION B
+            // $openData24h = $campaign->campaignB->openUniqHours($nowInUserTimezone->copy()->subHours(24), $nowInUserTimezone);
+            $clickData24h = $campaign->campaignB->clickHours($nowInUserTimezone->copy()->subHours(24), $nowInUserTimezone);
+
+            // data
+            foreach ($hours as $hour) {
+                // $num = isset($openData24h[$hour]) ? count($openData24h[$hour]) : 0;
+                // $result['opened'][] = $num;
+
+                $num = isset($clickData24h[$hour]) ? count($clickData24h[$hour]) : 0;
+                // $result['clicked'][] = $num;
+                $result['version_b'][] = $num;
             }
         } elseif ($request->period == '3_days') {
             $days = [];
@@ -1147,16 +1240,31 @@ class CampaignController extends Controller
                 $days[] = $time->format('Y-m-d');
             }
 
-            $openData = $campaign->openUniqDays($nowInUserTimezone->copy()->subDays(3), $nowInUserTimezone->endOfDay());
+            // $openData = $campaign->openUniqDays($nowInUserTimezone->copy()->subDays(3), $nowInUserTimezone->endOfDay());
             $clickData = $campaign->clickDays($nowInUserTimezone->copy()->subDays(3), $nowInUserTimezone->endOfDay());
 
             // data
             foreach ($days as $day) {
-                $num = isset($openData[$day]) ? count($openData[$day]) : 0;
-                $result['opened'][] = $num;
+                // $num = isset($openData[$day]) ? count($openData[$day]) : 0;
+                // $result['opened'][] = $num;
 
                 $num = isset($clickData[$day]) ? count($clickData[$day]) : 0;
-                $result['clicked'][] = $num;
+                // $result['clicked'][] = $num;
+                $result['version_a'][] = $num;
+            }
+
+            // VERSION B
+            // $openData = $campaign->campaignB->openUniqDays($nowInUserTimezone->copy()->subDays(3), $nowInUserTimezone->endOfDay());
+            $clickData = $campaign->campaignB->clickDays($nowInUserTimezone->copy()->subDays(3), $nowInUserTimezone->endOfDay());
+
+            // data
+            foreach ($days as $day) {
+                // $num = isset($openData[$day]) ? count($openData[$day]) : 0;
+                // $result['opened'][] = $num;
+
+                // $num = isset($clickData[$day]) ? count($clickData[$day]) : 0;
+                // $result['clicked'][] = $num;
+                $result['version_b'][] = $num;
             }
         } elseif ($request->period == '7_days') {
             $days = [];
@@ -1168,16 +1276,31 @@ class CampaignController extends Controller
                 $days[] = $time->format('Y-m-d');
             }
 
-            $openData = $campaign->openUniqDays($nowInUserTimezone->copy()->subDays(7), $nowInUserTimezone->endOfDay());
+            // $openData = $campaign->openUniqDays($nowInUserTimezone->copy()->subDays(7), $nowInUserTimezone->endOfDay());
             $clickData = $campaign->clickDays($nowInUserTimezone->copy()->subDays(7), $nowInUserTimezone->endOfDay());
 
             // data
             foreach ($days as $day) {
-                $num = isset($openData[$day]) ? count($openData[$day]) : 0;
-                $result['opened'][] = $num;
+                // $num = isset($openData[$day]) ? count($openData[$day]) : 0;
+                // $result['opened'][] = $num;
 
                 $num = isset($clickData[$day]) ? count($clickData[$day]) : 0;
-                $result['clicked'][] = $num;
+                // $result['clicked'][] = $num;
+                $result['version_a'][] = $num;
+            }
+
+            // VERSION B
+            // $openData = $campaign->campaignB->openUniqDays($nowInUserTimezone->copy()->subDays(7), $nowInUserTimezone->endOfDay());
+            $clickData = $campaign->campaignB->clickDays($nowInUserTimezone->copy()->subDays(7), $nowInUserTimezone->endOfDay());
+
+            // data
+            foreach ($days as $day) {
+                // $num = isset($openData[$day]) ? count($openData[$day]) : 0;
+                // $result['opened'][] = $num;
+
+                $num = isset($clickData[$day]) ? count($clickData[$day]) : 0;
+                // $result['clicked'][] = $num;
+                $result['version_b'][] = $num;
             }
         } elseif ($request->period == 'last_month') {
             $days = [];
@@ -1189,16 +1312,32 @@ class CampaignController extends Controller
                 $days[] = $time->format('Y-m-d');
             }
 
-            $openData = $campaign->openUniqDays($nowInUserTimezone->copy()->subMonths(1), $nowInUserTimezone->endOfDay());
+            // $openData = $campaign->openUniqDays($nowInUserTimezone->copy()->subMonths(1), $nowInUserTimezone->endOfDay());
             $clickData = $campaign->clickDays($nowInUserTimezone->copy()->subMonths(1), $nowInUserTimezone->endOfDay());
 
             // data
             foreach ($days as $day) {
-                $num = isset($openData[$day]) ? count($openData[$day]) : 0;
-                $result['opened'][] = $num;
+                // $num = isset($openData[$day]) ? count($openData[$day]) : 0;
+                // $result['opened'][] = $num;
 
                 $num = isset($clickData[$day]) ? count($clickData[$day]) : 0;
-                $result['clicked'][] = $num;
+                // $result['clicked'][] = $num;
+                $result['version_a'][] = $num;
+            }
+
+
+            // VERSION B
+            // $openData = $campaign->campaignB->openUniqDays($nowInUserTimezone->copy()->subMonths(1), $nowInUserTimezone->endOfDay());
+            $clickData = $campaign->campaignB->clickDays($nowInUserTimezone->copy()->subMonths(1), $nowInUserTimezone->endOfDay());
+
+            // data
+            foreach ($days as $day) {
+                // $num = isset($openData[$day]) ? count($openData[$day]) : 0;
+                // $result['opened'][] = $num;
+
+                $num = isset($clickData[$day]) ? count($clickData[$day]) : 0;
+                // $result['clicked'][] = $num;
+                $result['version_b'][] = $num;
             }
         }
 
@@ -1353,6 +1492,10 @@ class CampaignController extends Controller
     public function quickView(Request $request)
     {
         $campaign = Campaign::findByUid($request->uid);
+
+        if ($campaign->isABTest() && request()->version_b) {
+            $campaign = $campaign->campaignB;
+        }
 
         // authorize
         if (\Gate::denies('read', $campaign)) {
@@ -1757,6 +1900,8 @@ class CampaignController extends Controller
     public function openMap(Request $request)
     {
         $campaign = Campaign::findByUid($request->uid);
+
+        
 
         // authorize
         if (\Gate::denies('read', $campaign)) {

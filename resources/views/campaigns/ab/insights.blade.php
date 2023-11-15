@@ -122,11 +122,11 @@
                     <div class="d-flex">
                         <span class="text-semibold mt-0 mb-0 me-auto">{{ trans('messages.campaign.ab.version_b') }}</span>
                         <span class="pull-right text-primary fw-semibold">
-                            {{ number_to_percentage($campaign->readCache('UniqOpenRate')) }}
+                            {{ number_to_percentage($campaign->campaignB->readCache('UniqOpenRate')) }}
                         </span>
                     </div>
                     <div class="progress progress-sm" style="height:5px;">
-                        <div class="progress-bar bg-color3" style="width: {{ number_to_percentage($campaign->readCache('UniqOpenRate')) }}">
+                        <div class="progress-bar bg-color3" style="width: {{ number_to_percentage($campaign->campaignB->readCache('UniqOpenRate')) }}">
                         </div>
                     </div>
                 </div>
@@ -153,10 +153,10 @@
                 <div class="content-group-sm mb-3">
                     <div class="d-flex">
                         <span class="text-semibold mt-0 mb-0 me-auto">{{ trans('messages.campaign.ab.version_b') }}</span>
-                        <span class="pull-right text-primary fw-semibold">{{ number_to_percentage($campaign->readCache('ClickedRate')) }}</span>
+                        <span class="pull-right text-primary fw-semibold">{{ number_to_percentage($campaign->campaignB->readCache('ClickedRate')) }}</span>
                     </div>
                     <div class="progress progress-sm" style="height:5px;">
-                        <div class="progress-bar bg-color7" style="width: {{ number_to_percentage($campaign->readCache('ClickedRate')) }}">
+                        <div class="progress-bar bg-color7" style="width: {{ number_to_percentage($campaign->campaignB->readCache('ClickedRate')) }}">
                         </div>
                     </div>
                 </div>
@@ -169,37 +169,37 @@
             </div>
 
             <div class="col-md-4">
-                <h5>{{ trans('messages.unsubscribed') }}</h5>
+                <h5>{{ trans('messages.ab.failed_rate') }}</h5>
                 <div class="content-group-sm mb-3">
                     <div class="d-flex">
                         <span class="text-semibold mt-0 mb-0 me-auto">{{ trans('messages.campaign.ab.version_a') }}</span>
-                        <span class="pull-right text-primary fw-semibold">{{ number_to_percentage($campaign->readCache('ClickedRate')) }}</span>
+                        <span class="pull-right text-primary fw-semibold">{{ number_to_percentage($campaign->readCache('FailedDeliveredRate')) }}</span>
                     </div>
                     <div class="progress progress-sm" style="height:5px;">
-                        <div class="progress-bar bg-color7" style="width: {{ number_to_percentage($campaign->readCache('ClickedRate')) }}">
+                        <div class="progress-bar bg-color7" style="width: {{ number_to_percentage($campaign->readCache('FailedDeliveredRate')) }}">
                         </div>
                     </div>
                 </div>
                 <div class="content-group-sm mb-3">
                     <div class="d-flex">
                         <span class="text-semibold mt-0 mb-0 me-auto">{{ trans('messages.campaign.ab.version_b') }}</span>
-                        <span class="pull-right text-primary fw-semibold">{{ number_to_percentage($campaign->readCache('ClickedRate')) }}</span>
+                        <span class="pull-right text-primary fw-semibold">{{ number_to_percentage($campaign->campaignB->readCache('FailedDeliveredRate')) }}</span>
                     </div>
                     <div class="progress progress-sm" style="height:5px;">
-                        <div class="progress-bar bg-color7" style="width: {{ number_to_percentage($campaign->readCache('ClickedRate')) }}">
+                        <div class="progress-bar bg-color7" style="width: {{ number_to_percentage($campaign->campaignB->readCache('FailedDeliveredRate')) }}">
                         </div>
                     </div>
                 </div>
                 <div class="text-end">
-                    <a href="{{ action('CampaignController@unsubscribeLog', [
+                    <a href="{{ action('CampaignController@openLog', [
                 'uid' => $campaign->uid,
                 'version_b' => request()->version_b,
-            ]) }}" class="btn btn-light bg-teal-600">{{ trans('messages.unsubscribe_log') }} <span class="material-symbols-rounded">arrow_forward</span></a>
+            ]) }}" class="btn btn-light bg-teal-600">{{ trans('messages.tracking_log') }} <span class="material-symbols-rounded">arrow_forward</span></a>
                 </div>
             </div>
         </div>
         
-        <div class="row mt-5">
+        {{-- <div class="row mt-5">
             <div class="col-md-4">
                 <h5>{{ trans('messages.campaign.soft_bounced') }}</h5>
                 <div class="content-group-sm mb-3">
@@ -293,7 +293,7 @@
             ]) }}" class="btn btn-light bg-teal-600">{{ trans('messages.feedback_log') }} <span class="material-symbols-rounded">arrow_forward</span></a>
                 </div>
             </div>
-        </div>
+        </div> --}}
 
 
         <div class="row mt-5">

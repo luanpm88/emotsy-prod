@@ -3273,4 +3273,5 @@
   'campaign.ab.template.copy_from_a' => 'Copy from version B',
   'campaign.ab.slit_templates.intro' => 'To conduct a more effective A/B test, split the email content into two versions and meticulously set them up with distinct design styles, allowing us to gather valuable insights. Select one of the template versions below to set it up.',
   'campaign.ab.winning_send_at' => 'The winning version will be sent on <strong>:date</strong> at <strong>:time</strong>',
+  'ab.failed_rate' => 'Failed Rate',
 ) ?>
