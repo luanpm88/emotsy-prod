@@ -33,7 +33,10 @@
 
 <script>
     var ClickCampaigns24hChart = {
-        url: '{{ action('CampaignController@abClickChart24h', $campaign->uid) }}',
+        url: '{{ action('CampaignController@abClickChart24h', [
+                'uid' => $campaign->uid,
+                'version_b' => request()->version_b,
+            ]) }}',
 
         getChart: function() {
             return $('#ClickCampaigns24hChart');
@@ -91,7 +94,7 @@
                             itemStyle: {
                                 color: '#5cb2b2'
                             },
-                            data: data.clicked
+                            data: data.version_a
                         },
                         {
                             name: '{{ trans('messages.campaign.ab.version_b') }}',
@@ -99,7 +102,7 @@
                             itemStyle: {
                                 color: '#b26e59'
                             },
-                            data: data.clicked
+                            data: data.version_b
                         }
                     ]
                 };

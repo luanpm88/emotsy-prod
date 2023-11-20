@@ -6,7 +6,19 @@
 
 @section('page_header')
 
-			@include("public.campaigns._header")
+    @include("public.campaigns._header")
+
+    @if ($campaign->isABTest())
+        @include('campaigns.ab._insights_version_tabs', [
+            'link_a' => action('Pub\CampaignController@clickLog', [
+                'uid' => $campaign->uid,
+            ]),
+            'link_b' => action('Pub\CampaignController@clickLog', [
+                'uid' => $campaign->uid,
+                'version_b' => true,
+            ]),
+        ])
+    @endif
 
 @endsection
 
@@ -19,7 +31,10 @@
 <h2 class="text-semibold text-primary">{{ trans('messages.click_log') }}</h2>
 
 <form class="listing-form"
-        data-url="{{ action('Pub\CampaignController@clickLogListing', $campaign->uid) }}"
+        data-url="{{ action('Pub\CampaignController@clickLogListing', [
+            'uid' => $campaign->uid,
+            'version_b' => request()->version_b,
+        ]) }}"
         per-page="{{ Acelle\Model\ClickLog::$itemsPerPage }}"
     >
         <div class="d-flex top-list-controls top-sticky-content">
@@ -56,7 +71,10 @@
         var CampaignLogIndex = {
             getList: function() {
                 return makeList({
-                    url: '{{ action('Pub\CampaignController@clickLogListing', $campaign->uid) }}',
+                    url: '{{ action('Pub\CampaignController@clickLogListing', [
+            'uid' => $campaign->uid,
+            'version_b' => request()->version_b,
+        ]) }}',
                     container: $('.listing-form'),
                     content: $('.pml-table-container')
                 });

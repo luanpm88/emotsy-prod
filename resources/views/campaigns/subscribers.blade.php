@@ -10,49 +10,102 @@
         'menu' => 'subscribers',
     ])
 
+    @if ($campaign->isABTest())
+        @include('campaigns.ab._insights_version_tabs', [
+            'link_a' => action('CampaignController@subscribers', [
+                'uid' => $campaign->uid,
+            ]),
+            'link_b' => action('CampaignController@subscribers', [
+                'uid' => $campaign->uid,
+                'version_b' => true,
+            ]),
+        ])
+    @endif
+    
+
 @endsection
 
 @section('content')
 
 <h2 class="text-semibold text-primary">{{ trans('messages.subscribers') }}</h2>
 
-<div class="row mb-5">
-    <div class="col-md-3">
-        <div class="bg-teal-400">
-            <div class="bg-secondary p-3 shadow rounded-3 text-white text-center mb-2">
-                <h2 class="text-semibold mb-1 mt-0">{{ number_with_delimiter($campaign->readCache('ActiveSubscriberCount')) }} / {{ number_with_delimiter($campaign->readCache('SubscriberCount')) }}</h2>
-                <div class="text-muted">{{ trans('messages.campaign.active_subscribers') }}</div>
+@if ($campaign->isABTest() && request()->version_b)
+    <div class="row mb-5">
+        <div class="col-md-3">
+            <div class="bg-teal-400">
+                <div class="bg-secondary p-3 shadow rounded-3 text-white text-center mb-2">
+                    <h2 class="text-semibold mb-1 mt-0">{{ number_with_delimiter($campaign->campaignB->readCache('ActiveSubscriberCount')) }} / {{ number_with_delimiter($campaign->campaignB->readCache('SubscriberCount')) }}</h2>
+                    <div class="text-muted">{{ trans('messages.campaign.active_subscribers') }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="bg-teal-400">
+                <div class="bg-secondary p-3 shadow rounded-3 text-white text-center mb-2">
+                    <h2 class="text-semibold mb-1 mt-0">{{ number_to_percentage($campaign->campaignB->readCache('DeliveredRate')) }}</h2>
+                    <div class="text-muted">{{ number_with_delimiter($campaign->campaignB->readCache('DeliveredCount')) }} {{ trans('messages.campaign.successfully_delivered') }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="bg-teal-400">
+                <div class="bg-secondary p-3 shadow rounded-3 text-white text-center mb-2">
+                    <h2 class="text-semibold mb-1 mt-0">{{ number_to_percentage($campaign->campaignB->readCache('FailedDeliveredRate')) }}</h2>
+                    <div class="text-muted">{{ number_with_delimiter($campaign->campaignB->readCache('FailedDeliveredCount')) }} {{ trans('messages.campaign.failed_delivery_attempt') }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="bg-teal-400">
+                <div class="bg-secondary p-3 shadow rounded-3 text-white text-center mb-2">
+                    <h2 class="text-semibold mb-1 mt-0">{{ number_to_percentage($campaign->campaignB->readCache('NotDeliveredRate')) }}</h2>
+                    <div class="text-muted">{{ number_with_delimiter($campaign->campaignB->readCache('NotDeliveredCount')) }} {{ trans('messages.campaign.pending_delivery') }}</div>
+                </div>
             </div>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="bg-teal-400">
-            <div class="bg-secondary p-3 shadow rounded-3 text-white text-center mb-2">
-                <h2 class="text-semibold mb-1 mt-0">{{ number_to_percentage($campaign->readCache('DeliveredRate')) }}</h2>
-                <div class="text-muted">{{ number_with_delimiter($campaign->readCache('DeliveredCount')) }} {{ trans('messages.campaign.successfully_delivered') }}</div>
+@else
+    <div class="row mb-5">
+        <div class="col-md-3">
+            <div class="bg-teal-400">
+                <div class="bg-secondary p-3 shadow rounded-3 text-white text-center mb-2">
+                    <h2 class="text-semibold mb-1 mt-0">{{ number_with_delimiter($campaign->readCache('ActiveSubscriberCount')) }} / {{ number_with_delimiter($campaign->readCache('SubscriberCount')) }}</h2>
+                    <div class="text-muted">{{ trans('messages.campaign.active_subscribers') }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="bg-teal-400">
+                <div class="bg-secondary p-3 shadow rounded-3 text-white text-center mb-2">
+                    <h2 class="text-semibold mb-1 mt-0">{{ number_to_percentage($campaign->readCache('DeliveredRate')) }}</h2>
+                    <div class="text-muted">{{ number_with_delimiter($campaign->readCache('DeliveredCount')) }} {{ trans('messages.campaign.successfully_delivered') }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="bg-teal-400">
+                <div class="bg-secondary p-3 shadow rounded-3 text-white text-center mb-2">
+                    <h2 class="text-semibold mb-1 mt-0">{{ number_to_percentage($campaign->readCache('FailedDeliveredRate')) }}</h2>
+                    <div class="text-muted">{{ number_with_delimiter($campaign->readCache('FailedDeliveredCount')) }} {{ trans('messages.campaign.failed_delivery_attempt') }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="bg-teal-400">
+                <div class="bg-secondary p-3 shadow rounded-3 text-white text-center mb-2">
+                    <h2 class="text-semibold mb-1 mt-0">{{ number_to_percentage($campaign->readCache('NotDeliveredRate')) }}</h2>
+                    <div class="text-muted">{{ number_with_delimiter($campaign->readCache('NotDeliveredCount')) }} {{ trans('messages.campaign.pending_delivery') }}</div>
+                </div>
             </div>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="bg-teal-400">
-            <div class="bg-secondary p-3 shadow rounded-3 text-white text-center mb-2">
-                <h2 class="text-semibold mb-1 mt-0">{{ number_to_percentage($campaign->readCache('FailedDeliveredRate')) }}</h2>
-                <div class="text-muted">{{ number_with_delimiter($campaign->readCache('FailedDeliveredCount')) }} {{ trans('messages.campaign.failed_delivery_attempt') }}</div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="bg-teal-400">
-            <div class="bg-secondary p-3 shadow rounded-3 text-white text-center mb-2">
-                <h2 class="text-semibold mb-1 mt-0">{{ number_to_percentage($campaign->readCache('NotDeliveredRate')) }}</h2>
-                <div class="text-muted">{{ number_with_delimiter($campaign->readCache('NotDeliveredCount')) }} {{ trans('messages.campaign.pending_delivery') }}</div>
-            </div>
-        </div>
-    </div>
-</div>
+@endif
 
 <div class="listing-form"
-        data-url="{{ action('CampaignController@subscribersListing', $campaign->uid) }}"
+        data-url="{{ action('CampaignController@subscribersListing', [
+            'uid' => $campaign->uid,
+            'version_b' => request()->version_b,
+        ]) }}"
         per-page="{{ Acelle\Model\Subscriber::$itemsPerPage }}"
     >
     <div class="d-flex top-list-controls top-sticky-content">
@@ -214,7 +267,10 @@
     var SubscribersIndex = {
         getList: function() {
             return makeList({
-                url: '{{ action('CampaignController@subscribersListing', $campaign->uid) }}',
+                url: '{{ action('CampaignController@subscribersListing', [
+            'uid' => $campaign->uid,
+            'version_b' => request()->version_b,
+        ]) }}',
                 container: $('.listing-form'),
                 content: $('.pml-table-container')
             });

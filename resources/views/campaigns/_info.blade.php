@@ -43,7 +43,7 @@
                             </div>
                             <div>
                                 <p class="mb-0">
-                                    {{ $campaign->subject_b }}
+                                    {{ $campaign->campaignB->subject }}
                                 </p>
                             </div>
                         </div>

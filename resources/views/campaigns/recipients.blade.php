@@ -34,7 +34,10 @@
 @endsection
 
 @section('content')
-    <form action="{{ action('CampaignController@recipients', $campaign->uid) }}" method="POST" class="form-validate-jqueryz recipients-form">
+    <form action="{{ action('CampaignController@recipients', [
+                'uid' => $campaign->uid,
+                'version_b' => request()->version_b,
+            ]) }}" method="POST" class="form-validate-jqueryz recipients-form">
         {{ csrf_field() }}
 
         <h1 class="mb-4">{{ trans('messages.recipients') }}</h1>
@@ -74,7 +77,10 @@
                 @endforeach
             </div>
             <a
-                sample-url="{{ action('CampaignController@listSegmentForm', $campaign->uid) }}"
+                sample-url="{{ action('CampaignController@listSegmentForm', [
+                'uid' => $campaign->uid,
+                'version_b' => request()->version_b,
+            ]) }}"
                 href="#add_condition" class="btn btn-default add-form">
                 <span class="material-symbols-rounded">add</span> {{ trans('messages.add_list_segment') }}
             </a>

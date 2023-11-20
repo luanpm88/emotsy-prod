@@ -28,7 +28,7 @@
                 <input id="subject_b"
                     type="text"
                     name="subject_b"
-                    value="{{ $campaign->subject_b }}"
+                    value="{{ $campaign->campaignB->subject }}"
                     class="form-control required" data-emojiable="true"
                 >
             </span>

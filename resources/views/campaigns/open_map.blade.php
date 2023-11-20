@@ -14,13 +14,34 @@
 		'menu' => 'open_map',
 	])
 
+	@if ($campaign->isABTest())
+		@include('campaigns.ab._insights_version_tabs', [
+			'link_a' => action('CampaignController@openMap', [
+				'uid' => $campaign->uid,
+			]),
+			'link_b' => action('CampaignController@openMap', [
+				'uid' => $campaign->uid,
+				'version_b' => true,
+			]),
+		])
+	@endif
+	<br>
+
 @endsection
 
 @section('content')
 
 	<div id="openMap" class="map-container map-marker-simple" style="height:600px"></div>
 
+	@if ($campaign->isABTest() && request()->version_b)
+		@php
+			$campaign = $campaign->campaignB;
+		@endphp
+	@endif
+
 <script>
+
+
 
 /* ------------------------------------------------------------------------------
 *

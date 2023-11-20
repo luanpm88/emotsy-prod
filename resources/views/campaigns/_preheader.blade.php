@@ -5,7 +5,10 @@
 <script>
     var Campaign_Preheader = class {
         constructor() {
-            this.box = new Box($('#PreheaderBox'), '{{ action('CampaignController@preheader', $campaign->uid) }}');
+            this.box = new Box($('#PreheaderBox'), '{{ action('CampaignController@preheader', [
+                'uid' => $campaign->uid,
+                'version_b' => request()->version_b,
+            ]) }}');
             this.box.load();
         }
     }

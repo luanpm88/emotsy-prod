@@ -50,7 +50,10 @@
 @endsection
 
 @section('content')
-    <form style="" id="classic-builder-form" action="{{ action('Pub\CampaignController@builderPlainEdit', $campaign->uid) }}" method="POST" class="form-validate-jqueryz">
+    <form style="" id="classic-builder-form" action="{{ action('Pub\CampaignController@builderPlainEdit', [
+        'uid' => $campaign->uid,
+        'version_b' => request()->version_b,
+    ]) }}" method="POST" class="form-validate-jqueryz">
         {{ csrf_field() }}
 
         <div class="row mr-0 ml-0 form-groups-bottom-0">

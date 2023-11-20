@@ -32,12 +32,7 @@ class CampaignController extends Controller
      */
     public function index(Request $request)
     {
-        $customer = $request->user()->customer;
-        $campaigns = $customer->campaigns();
-
-        return view('campaigns.index', [
-            'campaigns' => $campaigns,
-        ]);
+        return view('campaigns.index');
     }
 
     /**
@@ -50,6 +45,7 @@ class CampaignController extends Controller
         $customer = $request->user()->customer;
 
         $campaigns = $customer->campaigns()
+            ->notInlcludeBVersion()
             ->search($request->keyword)
             ->filter($request);
 
@@ -73,7 +69,7 @@ class CampaignController extends Controller
     public function create(Request $request)
     {
         $campaign = $request->user()->customer->newDefaultCampaign();
-
+        
         // authorize
         if (\Gate::denies('create', $campaign)) {
             return $this->noMoreItem();
@@ -82,6 +78,19 @@ class CampaignController extends Controller
         $campaign->saveFromArray([
             'type' => $request->type,
         ]);
+
+        // save campaign b
+        if ($campaign->isABTest()) {
+            $campaignB = $request->user()->customer->newDefaultCampaign();
+
+            $campaignB->saveFromArray([
+                'type' => $request->type,
+            ]);
+
+            // assign campaign b to campaign a
+            $campaign->campaign_b_id = $campaignB->id;
+            $campaign->save();
+        }
 
         return redirect()->action('CampaignController@recipients', ['uid' => $campaign->uid]);
     }
@@ -177,9 +186,17 @@ class CampaignController extends Controller
         $rules = $campaign->recipientsRules($request->all());
         $campaign->fillRecipients($request->all());
 
+        if ($campaign->isABTest()) {
+            $campaign->campaignB->fillRecipients($request->all());
+        }
+
         if (!empty($request->old())) {
             $rules = $campaign->recipientsRules($request->old());
             $campaign->fillRecipients($request->old());
+
+            if ($campaign->isABTest()) {
+                $campaign->campaignB->fillRecipients($request->old());
+            }
         }
 
         if ($request->isMethod('post')) {
@@ -188,9 +205,17 @@ class CampaignController extends Controller
 
             $campaign->saveRecipients($request->all());
 
+            if ($campaign->isABTest()) {
+                $campaign->campaignB->saveRecipients($request->all());
+            }
+
             // Trigger the CampaignUpdate event to update the campaign cache information
             // The second parameter of the constructor function is false, meanining immediate update
             event(new \Acelle\Events\CampaignUpdated($campaign));
+
+            if ($campaign->isABTest()) {
+                event(new \Acelle\Events\CampaignUpdated($campaign->campaignB));
+            }
 
             // redirect to the next step
             return redirect()->action('CampaignController@setup', ['uid' => $campaign->uid]);
@@ -220,12 +245,22 @@ class CampaignController extends Controller
             return $this->notAuthorized();
         }
 
+        // From name/email
         $campaign->from_name = !empty($campaign->from_name) ? $campaign->from_name : $campaign->defaultMailList->from_name;
         $campaign->from_email = !empty($campaign->from_email) ? $campaign->from_email : $campaign->defaultMailList->from_email;
+
+        if ($campaign->isABTest()) {
+            $campaign->campaignB->from_name = $campaign->from_name;
+            $campaign->campaignB->from_email = $campaign->from_email;
+        }
 
         // Get old post values
         if ($request->old()) {
             $campaign->fillAttributes($request->old());
+
+            if ($campaign->isABTest()) {
+                $campaign->campaignB->fillAttributes($request->old());
+            }
         }
 
         // validate and save posted data
@@ -233,14 +268,29 @@ class CampaignController extends Controller
             // Fill values
             $campaign->fillAttributes($request->all());
 
+            if ($campaign->isABTest()) {
+                $campaign->campaignB->fillAttributes($request->all());
+            }
+
             // Check validation
             $this->validate($request, $campaign->rules($request));
 
             // success
             $campaign->save();
 
+            if ($campaign->isABTest()) {
+                if ($request->ab_split_subject) {
+                    $campaign->campaignB->subject = $request->subject_b;
+                }
+                $campaign->campaignB->save();
+            }
+
             // Log
             $campaign->log('created', $customer);
+
+            if ($campaign->isABTest()) {
+                $campaign->campaignB->log('created', $customer);
+            }
 
             return redirect()->action('CampaignController@template', ['uid' => $campaign->uid]);
         }
@@ -274,9 +324,23 @@ class CampaignController extends Controller
             return redirect()->action('CampaignController@plain', ['uid' => $campaign->uid]);
         }
 
-        // check if campagin does not have template
-        if (!$campaign->template) {
-            return redirect()->action('CampaignController@templateCreate', ['uid' => $campaign->uid, 'version_b' => $request->version_b]);
+        if ($campaign->isABTest()) {
+            if ($request->version_b) {
+                // check if campagin does not have template
+                if (!$campaign->campaignB->template) {
+                    return redirect()->action('CampaignController@templateCreate', ['uid' => $campaign->uid, 'version_b' => true]);
+                }
+            } else {
+                // check if campagin does not have template
+                if (!$campaign->template) {
+                    return redirect()->action('CampaignController@templateCreate', ['uid' => $campaign->uid]);
+                }
+            }
+        } else {
+            // check if campagin does not have template
+            if (!$campaign->template) {
+                return redirect()->action('CampaignController@templateCreate', ['uid' => $campaign->uid]);
+            }
         }
 
         return view('campaigns.template.index', [
@@ -324,13 +388,21 @@ class CampaignController extends Controller
 
         if ($request->isMethod('post')) {
             $template = \Acelle\Model\Template::findByUid($request->template);
-            $campaign->setTemplate($template);
+
+            if ($campaign->isABTest() && $request->version_b) {
+                $campaign->campaignB->setTemplate($template);
+            } else {
+                $campaign->setTemplate($template);
+            }
 
             // return redirect()->action('CampaignController@templateEdit', $campaign->uid);
             return response()->json([
                 'status' => 'success',
                 'message' => trans('messages.campaign.theme.selected'),
-                'url' => action('CampaignController@templateBuilderSelect', $campaign->uid),
+                'url' => action('CampaignController@templateBuilderSelect', [
+                    'uid' => $campaign->uid,
+                    'version_b' => $request->version_b,
+                ]),
             ]);
         }
 
@@ -431,11 +503,19 @@ class CampaignController extends Controller
                 }
             }
 
-            $campaign->setTemplateContent($request->content);
-            $campaign->save();
+            if ($campaign->isABTest() && $request->version_b) {
+                $campaign->campaignB->setTemplateContent($request->content);
+                $campaign->campaignB->save();
 
-            // update plain
-            $campaign->updatePlainFromHtml();
+                // update plain
+                $campaign->campaignB->updatePlainFromHtml();
+            } else {
+                $campaign->setTemplateContent($request->content);
+                $campaign->save();
+
+                // update plain
+                $campaign->updatePlainFromHtml();
+            }
 
             return response()->json([
                 'status' => 'success',
@@ -465,9 +545,16 @@ class CampaignController extends Controller
             return $this->notAuthorized();
         }
 
-        return view('campaigns.template.content', [
-            'content' => $campaign->template->content,
-        ]);
+        if ($campaign->isABTest() && $request->version_b) {
+            return view('campaigns.template.content', [
+                'content' => $campaign->campaignB->template->content,
+            ]);
+        } else {
+            return view('campaigns.template.content', [
+                'content' => $campaign->template->content,
+            ]);
+        }
+            
     }
 
     /**
@@ -488,13 +575,21 @@ class CampaignController extends Controller
 
         // validate and save posted data
         if ($request->isMethod('post')) {
-            $campaign->uploadTemplate($request);
+
+            if ($campaign->isABTest() && $request->version_b) {
+                $campaign->campaignB->uploadTemplate($request);
+            } else {
+                $campaign->uploadTemplate($request);
+            }
 
             // return redirect()->action('CampaignController@template', $campaign->uid);
             return response()->json([
                 'status' => 'success',
                 'message' => trans('messages.campaign.template.uploaded'),
-                'url' => action('CampaignController@templateBuilderSelect', $campaign->uid),
+                'url' => action('CampaignController@templateBuilderSelect', [
+                    'uid' => $campaign->uid,
+                    'version_b' => $request->version_b,
+                ]),
             ]);
         }
 
@@ -722,6 +817,11 @@ class CampaignController extends Controller
         foreach ($campaigns->get() as $campaign) {
             // authorize
             if (\Gate::allows('delete', $campaign)) {
+                // 
+                if ($campaign->isABTest()) {
+                    $campaign->campaignB->deleteAndCleanup();
+                }
+
                 $campaign->deleteAndCleanup();
             }
         }
@@ -765,12 +865,23 @@ class CampaignController extends Controller
     public function links(Request $request)
     {
         $campaign = Campaign::findByUid($request->uid);
-        $links = $campaign->clickLogs()
-                          ->select(
-                              'click_logs.url',
-                              DB::raw('count(*) AS clickCount'),
-                              DB::raw(sprintf('max(%s) AS lastClick', table('click_logs.created_at')))
-                          )->groupBy('click_logs.url')->get();
+
+        if ($campaign->isABTest() && request()->version_b) {
+            $links = $campaign->campaignB->clickLogs()
+                ->select(
+                    'click_logs.url',
+                    DB::raw('count(*) AS clickCount'),
+                    DB::raw(sprintf('max(%s) AS lastClick', table('click_logs.created_at')))
+                )->groupBy('click_logs.url')->get();
+        } else {
+            $links = $campaign->clickLogs()
+                ->select(
+                    'click_logs.url',
+                    DB::raw('count(*) AS clickCount'),
+                    DB::raw(sprintf('max(%s) AS lastClick', table('click_logs.created_at')))
+                )->groupBy('click_logs.url')->get();
+        }
+            
 
         // authorize
         if (\Gate::denies('read', $campaign)) {
@@ -910,8 +1021,10 @@ class CampaignController extends Controller
 
         $result = [
             'columns' => [],
-            'opened' => [],
-            'clicked' => [],
+            // 'opened' => [],
+            // 'clicked' => [],
+            'version_a' => [],
+            'version_b' => [],
         ];
 
         // 24h collection
@@ -926,15 +1039,31 @@ class CampaignController extends Controller
             }
 
             $openData24h = $campaign->openUniqHours($nowInUserTimezone->copy()->subHours(24), $nowInUserTimezone);
-            $clickData24h = $campaign->clickHours($nowInUserTimezone->copy()->subHours(24), $nowInUserTimezone);
+            // $clickData24h = $campaign->clickHours($nowInUserTimezone->copy()->subHours(24), $nowInUserTimezone);
 
             // data
             foreach ($hours as $hour) {
                 $num = isset($openData24h[$hour]) ? count($openData24h[$hour]) : 0;
-                $result['opened'][] = $num;
+                // $result['opened'][] = $num;
+                $result['version_a'][] = $num;
 
-                $num = isset($clickData24h[$hour]) ? count($clickData24h[$hour]) : 0;
-                $result['clicked'][] = $num;
+                // $num = isset($clickData24h[$hour]) ? count($clickData24h[$hour]) : 0;
+                // $result['clicked'][] = $num;
+            }
+
+
+            // VERSION B
+            $openData24h = $campaign->campaignB->openUniqHours($nowInUserTimezone->copy()->subHours(24), $nowInUserTimezone);
+            // $clickData24h = $campaign->campaignB->clickHours($nowInUserTimezone->copy()->subHours(24), $nowInUserTimezone);
+
+            // data
+            foreach ($hours as $hour) {
+                $num = isset($openData24h[$hour]) ? count($openData24h[$hour]) : 0;
+                // $result['opened'][] = $num;
+                $result['version_b'][] = $num;
+
+                // $num = isset($clickData24h[$hour]) ? count($clickData24h[$hour]) : 0;
+                // $result['clicked'][] = $num;
             }
         } elseif ($request->period == '3_days') {
             $days = [];
@@ -947,15 +1076,30 @@ class CampaignController extends Controller
             }
 
             $openData = $campaign->openUniqDays($nowInUserTimezone->copy()->subDays(3), $nowInUserTimezone->endOfDay());
-            $clickData = $campaign->clickDays($nowInUserTimezone->copy()->subDays(3), $nowInUserTimezone->endOfDay());
+            // $clickData = $campaign->clickDays($nowInUserTimezone->copy()->subDays(3), $nowInUserTimezone->endOfDay());
 
             // data
             foreach ($days as $day) {
                 $num = isset($openData[$day]) ? count($openData[$day]) : 0;
-                $result['opened'][] = $num;
+                // $result['opened'][] = $num;
+                $result['version_a'][] = $num;
 
-                $num = isset($clickData[$day]) ? count($clickData[$day]) : 0;
-                $result['clicked'][] = $num;
+                // $num = isset($clickData[$day]) ? count($clickData[$day]) : 0;
+                // $result['clicked'][] = $num;
+            }
+
+            // VERSION B
+            $openData = $campaign->campaignB->openUniqDays($nowInUserTimezone->copy()->subDays(3), $nowInUserTimezone->endOfDay());
+            // $clickData = $campaign->campaignB->clickDays($nowInUserTimezone->copy()->subDays(3), $nowInUserTimezone->endOfDay());
+
+            // data
+            foreach ($days as $day) {
+                $num = isset($openData[$day]) ? count($openData[$day]) : 0;
+                // $result['opened'][] = $num;
+                $result['version_b'][] = $num;
+
+                // $num = isset($clickData[$day]) ? count($clickData[$day]) : 0;
+                // $result['clicked'][] = $num;
             }
         } elseif ($request->period == '7_days') {
             $days = [];
@@ -968,15 +1112,30 @@ class CampaignController extends Controller
             }
 
             $openData = $campaign->openUniqDays($nowInUserTimezone->copy()->subDays(7), $nowInUserTimezone->endOfDay());
-            $clickData = $campaign->clickDays($nowInUserTimezone->copy()->subDays(7), $nowInUserTimezone->endOfDay());
+            // $clickData = $campaign->clickDays($nowInUserTimezone->copy()->subDays(7), $nowInUserTimezone->endOfDay());
 
             // data
             foreach ($days as $day) {
                 $num = isset($openData[$day]) ? count($openData[$day]) : 0;
-                $result['opened'][] = $num;
+                // $result['opened'][] = $num;
+                $result['version_a'][] = $num;
 
-                $num = isset($clickData[$day]) ? count($clickData[$day]) : 0;
-                $result['clicked'][] = $num;
+                // $num = isset($clickData[$day]) ? count($clickData[$day]) : 0;
+                // $result['clicked'][] = $num;
+            }
+
+            // VERSION B
+            $openData = $campaign->campaignB->openUniqDays($nowInUserTimezone->copy()->subDays(7), $nowInUserTimezone->endOfDay());
+            // $clickData = $campaign->campaignB->clickDays($nowInUserTimezone->copy()->subDays(7), $nowInUserTimezone->endOfDay());
+
+            // data
+            foreach ($days as $day) {
+                $num = isset($openData[$day]) ? count($openData[$day]) : 0;
+                // $result['opened'][] = $num;
+                $result['version_b'][] = $num;
+
+                // $num = isset($clickData[$day]) ? count($clickData[$day]) : 0;
+                // $result['clicked'][] = $num;
             }
         } elseif ($request->period == 'last_month') {
             $days = [];
@@ -989,15 +1148,31 @@ class CampaignController extends Controller
             }
 
             $openData = $campaign->openUniqDays($nowInUserTimezone->copy()->subMonths(1), $nowInUserTimezone->endOfDay());
-            $clickData = $campaign->clickDays($nowInUserTimezone->copy()->subMonths(1), $nowInUserTimezone->endOfDay());
+            // $clickData = $campaign->clickDays($nowInUserTimezone->copy()->subMonths(1), $nowInUserTimezone->endOfDay());
 
             // data
             foreach ($days as $day) {
                 $num = isset($openData[$day]) ? count($openData[$day]) : 0;
-                $result['opened'][] = $num;
+                // $result['opened'][] = $num;
+                $result['version_a'][] = $num;
 
-                $num = isset($clickData[$day]) ? count($clickData[$day]) : 0;
-                $result['clicked'][] = $num;
+                // $num = isset($clickData[$day]) ? count($clickData[$day]) : 0;
+                // $result['clicked'][] = $num;
+            }
+
+
+            // VERSION B
+            $openData = $campaign->campaignB->openUniqDays($nowInUserTimezone->copy()->subMonths(1), $nowInUserTimezone->endOfDay());
+            // $clickData = $campaign->campaignB->clickDays($nowInUserTimezone->copy()->subMonths(1), $nowInUserTimezone->endOfDay());
+
+            // data
+            foreach ($days as $day) {
+                $num = isset($openData[$day]) ? count($openData[$day]) : 0;
+                // $result['opened'][] = $num;
+                $result['version_b'][] = $num;
+
+                // $num = isset($clickData[$day]) ? count($clickData[$day]) : 0;
+                // $result['clicked'][] = $num;
             }
         }
 
@@ -1017,8 +1192,10 @@ class CampaignController extends Controller
 
         $result = [
             'columns' => [],
-            'opened' => [],
-            'clicked' => [],
+            // 'opened' => [],
+            // 'clicked' => [],
+            'version_a' => [],
+            'version_b' => [],
         ];
 
         // 24h collection
@@ -1032,16 +1209,32 @@ class CampaignController extends Controller
                 $hours[] = $time->format('H');
             }
 
-            $openData24h = $campaign->openUniqHours($nowInUserTimezone->copy()->subHours(24), $nowInUserTimezone);
+            // $openData24h = $campaign->openUniqHours($nowInUserTimezone->copy()->subHours(24), $nowInUserTimezone);
             $clickData24h = $campaign->clickHours($nowInUserTimezone->copy()->subHours(24), $nowInUserTimezone);
 
             // data
             foreach ($hours as $hour) {
-                $num = isset($openData24h[$hour]) ? count($openData24h[$hour]) : 0;
-                $result['opened'][] = $num;
+                // $num = isset($openData24h[$hour]) ? count($openData24h[$hour]) : 0;
+                // $result['opened'][] = $num;
 
                 $num = isset($clickData24h[$hour]) ? count($clickData24h[$hour]) : 0;
-                $result['clicked'][] = $num;
+                // $result['clicked'][] = $num;
+                $result['version_a'][] = $num;
+            }
+
+
+            // VERSION B
+            // $openData24h = $campaign->campaignB->openUniqHours($nowInUserTimezone->copy()->subHours(24), $nowInUserTimezone);
+            $clickData24h = $campaign->campaignB->clickHours($nowInUserTimezone->copy()->subHours(24), $nowInUserTimezone);
+
+            // data
+            foreach ($hours as $hour) {
+                // $num = isset($openData24h[$hour]) ? count($openData24h[$hour]) : 0;
+                // $result['opened'][] = $num;
+
+                $num = isset($clickData24h[$hour]) ? count($clickData24h[$hour]) : 0;
+                // $result['clicked'][] = $num;
+                $result['version_b'][] = $num;
             }
         } elseif ($request->period == '3_days') {
             $days = [];
@@ -1053,16 +1246,31 @@ class CampaignController extends Controller
                 $days[] = $time->format('Y-m-d');
             }
 
-            $openData = $campaign->openUniqDays($nowInUserTimezone->copy()->subDays(3), $nowInUserTimezone->endOfDay());
+            // $openData = $campaign->openUniqDays($nowInUserTimezone->copy()->subDays(3), $nowInUserTimezone->endOfDay());
             $clickData = $campaign->clickDays($nowInUserTimezone->copy()->subDays(3), $nowInUserTimezone->endOfDay());
 
             // data
             foreach ($days as $day) {
-                $num = isset($openData[$day]) ? count($openData[$day]) : 0;
-                $result['opened'][] = $num;
+                // $num = isset($openData[$day]) ? count($openData[$day]) : 0;
+                // $result['opened'][] = $num;
 
                 $num = isset($clickData[$day]) ? count($clickData[$day]) : 0;
-                $result['clicked'][] = $num;
+                // $result['clicked'][] = $num;
+                $result['version_a'][] = $num;
+            }
+
+            // VERSION B
+            // $openData = $campaign->campaignB->openUniqDays($nowInUserTimezone->copy()->subDays(3), $nowInUserTimezone->endOfDay());
+            $clickData = $campaign->campaignB->clickDays($nowInUserTimezone->copy()->subDays(3), $nowInUserTimezone->endOfDay());
+
+            // data
+            foreach ($days as $day) {
+                // $num = isset($openData[$day]) ? count($openData[$day]) : 0;
+                // $result['opened'][] = $num;
+
+                // $num = isset($clickData[$day]) ? count($clickData[$day]) : 0;
+                // $result['clicked'][] = $num;
+                $result['version_b'][] = $num;
             }
         } elseif ($request->period == '7_days') {
             $days = [];
@@ -1074,16 +1282,31 @@ class CampaignController extends Controller
                 $days[] = $time->format('Y-m-d');
             }
 
-            $openData = $campaign->openUniqDays($nowInUserTimezone->copy()->subDays(7), $nowInUserTimezone->endOfDay());
+            // $openData = $campaign->openUniqDays($nowInUserTimezone->copy()->subDays(7), $nowInUserTimezone->endOfDay());
             $clickData = $campaign->clickDays($nowInUserTimezone->copy()->subDays(7), $nowInUserTimezone->endOfDay());
 
             // data
             foreach ($days as $day) {
-                $num = isset($openData[$day]) ? count($openData[$day]) : 0;
-                $result['opened'][] = $num;
+                // $num = isset($openData[$day]) ? count($openData[$day]) : 0;
+                // $result['opened'][] = $num;
 
                 $num = isset($clickData[$day]) ? count($clickData[$day]) : 0;
-                $result['clicked'][] = $num;
+                // $result['clicked'][] = $num;
+                $result['version_a'][] = $num;
+            }
+
+            // VERSION B
+            // $openData = $campaign->campaignB->openUniqDays($nowInUserTimezone->copy()->subDays(7), $nowInUserTimezone->endOfDay());
+            $clickData = $campaign->campaignB->clickDays($nowInUserTimezone->copy()->subDays(7), $nowInUserTimezone->endOfDay());
+
+            // data
+            foreach ($days as $day) {
+                // $num = isset($openData[$day]) ? count($openData[$day]) : 0;
+                // $result['opened'][] = $num;
+
+                $num = isset($clickData[$day]) ? count($clickData[$day]) : 0;
+                // $result['clicked'][] = $num;
+                $result['version_b'][] = $num;
             }
         } elseif ($request->period == 'last_month') {
             $days = [];
@@ -1095,16 +1318,32 @@ class CampaignController extends Controller
                 $days[] = $time->format('Y-m-d');
             }
 
-            $openData = $campaign->openUniqDays($nowInUserTimezone->copy()->subMonths(1), $nowInUserTimezone->endOfDay());
+            // $openData = $campaign->openUniqDays($nowInUserTimezone->copy()->subMonths(1), $nowInUserTimezone->endOfDay());
             $clickData = $campaign->clickDays($nowInUserTimezone->copy()->subMonths(1), $nowInUserTimezone->endOfDay());
 
             // data
             foreach ($days as $day) {
-                $num = isset($openData[$day]) ? count($openData[$day]) : 0;
-                $result['opened'][] = $num;
+                // $num = isset($openData[$day]) ? count($openData[$day]) : 0;
+                // $result['opened'][] = $num;
 
                 $num = isset($clickData[$day]) ? count($clickData[$day]) : 0;
-                $result['clicked'][] = $num;
+                // $result['clicked'][] = $num;
+                $result['version_a'][] = $num;
+            }
+
+
+            // VERSION B
+            // $openData = $campaign->campaignB->openUniqDays($nowInUserTimezone->copy()->subMonths(1), $nowInUserTimezone->endOfDay());
+            $clickData = $campaign->campaignB->clickDays($nowInUserTimezone->copy()->subMonths(1), $nowInUserTimezone->endOfDay());
+
+            // data
+            foreach ($days as $day) {
+                // $num = isset($openData[$day]) ? count($openData[$day]) : 0;
+                // $result['opened'][] = $num;
+
+                $num = isset($clickData[$day]) ? count($clickData[$day]) : 0;
+                // $result['clicked'][] = $num;
+                $result['version_b'][] = $num;
             }
         }
 
@@ -1260,6 +1499,10 @@ class CampaignController extends Controller
     {
         $campaign = Campaign::findByUid($request->uid);
 
+        if ($campaign->isABTest() && request()->version_b) {
+            $campaign = $campaign->campaignB;
+        }
+
         // authorize
         if (\Gate::denies('read', $campaign)) {
             return $this->notAuthorized();
@@ -1381,7 +1624,11 @@ class CampaignController extends Controller
             return $this->notAuthorized();
         }
 
-        $items = $campaign->trackingLogs();
+        if ($campaign->isABTest() && request()->version_b) {
+            $items = $campaign->campaignB->trackingLogs();
+        } else {
+            $items = $campaign->trackingLogs();
+        }
 
         return view('campaigns.tracking_log', [
             'items' => $items,
@@ -1401,7 +1648,12 @@ class CampaignController extends Controller
             return $this->notAuthorized();
         }
 
-        $items = TrackingLog::search($request, $campaign)->paginate($request->per_page);
+        if ($campaign->isABTest() && request()->version_b) {
+            $items = TrackingLog::search($request, $campaign->campaignB)->paginate($request->per_page);
+        } else {
+            $items = TrackingLog::search($request, $campaign)->paginate($request->per_page);
+        }
+            
 
         return view('campaigns.tracking_logs_list', [
             'items' => $items,
@@ -1423,8 +1675,14 @@ class CampaignController extends Controller
 
         $logtype = $request->input('logtype');
 
-        $job = new ExportCampaignLog($campaign, $logtype);
-        $monitor = $campaign->dispatchWithMonitor($job);
+        if ($campaign->isABTest() && request()->version_b) {
+            $job = new ExportCampaignLog($campaign->campaignB, $logtype);
+            $monitor = $campaign->campaignB->dispatchWithMonitor($job);
+        } else {
+            $job = new ExportCampaignLog($campaign, $logtype);
+            $monitor = $campaign->dispatchWithMonitor($job);
+        }
+       
 
         return view('campaigns.download_tracking_log', [
             'campaign' => $campaign,
@@ -1469,7 +1727,11 @@ class CampaignController extends Controller
             return $this->notAuthorized();
         }
 
-        $items = $campaign->bounceLogs();
+        if ($campaign->isABTest() && request()->version_b) {
+            $items = $campaign->campaignB->bounceLogs();
+        } else {
+            $items = $campaign->bounceLogs();
+        }
 
         return view('campaigns.bounce_log', [
             'items' => $items,
@@ -1489,7 +1751,11 @@ class CampaignController extends Controller
             return $this->notAuthorized();
         }
 
-        $items = \Acelle\Model\BounceLog::search($request, $campaign)->paginate($request->per_page);
+        if ($campaign->isABTest() && request()->version_b) {
+            $items = \Acelle\Model\BounceLog::search($request, $campaign->campaignB)->paginate($request->per_page);
+        } else {
+            $items = \Acelle\Model\BounceLog::search($request, $campaign)->paginate($request->per_page);
+        }
 
         return view('campaigns.bounce_logs_list', [
             'items' => $items,
@@ -1509,7 +1775,12 @@ class CampaignController extends Controller
             return $this->notAuthorized();
         }
 
-        $items = $campaign->openLogs();
+        if ($campaign->isABTest() && request()->version_b) {
+            $items = $campaign->campaignB->openLogs();
+        } else {
+            $items = $campaign->openLogs();
+        }
+        
 
         return view('campaigns.feedback_log', [
             'items' => $items,
@@ -1529,7 +1800,11 @@ class CampaignController extends Controller
             return $this->notAuthorized();
         }
 
-        $items = \Acelle\Model\FeedbackLog::search($request, $campaign)->paginate($request->per_page);
+        if ($campaign->isABTest() && request()->version_b) {
+            $items = \Acelle\Model\FeedbackLog::search($request, $campaign->campaignB)->paginate($request->per_page);
+        } else {
+            $items = \Acelle\Model\FeedbackLog::search($request, $campaign)->paginate($request->per_page);
+        }
 
         return view('campaigns.feedback_logs_list', [
             'items' => $items,
@@ -1549,7 +1824,11 @@ class CampaignController extends Controller
             return $this->notAuthorized();
         }
 
-        $items = $campaign->openLogs();
+        if ($campaign->isABTest() && request()->version_b) {
+            $items = $campaign->campaignB->openLogs();
+        } else {
+            $items = $campaign->openLogs();
+        }
 
         return view('campaigns.open_log', [
             'items' => $items,
@@ -1569,7 +1848,11 @@ class CampaignController extends Controller
             return $this->notAuthorized();
         }
 
-        $items = \Acelle\Model\OpenLog::search($request, $campaign)->paginate($request->per_page);
+        if ($campaign->isABTest() && request()->version_b) {
+            $items = \Acelle\Model\OpenLog::search($request, $campaign->campaignB)->paginate($request->per_page);
+        } else {
+            $items = \Acelle\Model\OpenLog::search($request, $campaign)->paginate($request->per_page);
+        }
 
         return view('campaigns.open_log_list', [
             'items' => $items,
@@ -1589,7 +1872,11 @@ class CampaignController extends Controller
             return $this->notAuthorized();
         }
 
-        $items = $campaign->clickLogs();
+        if ($campaign->isABTest() && request()->version_b) {
+            $items = $campaign->campaignB->clickLogs();
+        } else {
+            $items = $campaign->clickLogs();
+        }
 
         return view('campaigns.click_log', [
             'items' => $items,
@@ -1609,7 +1896,11 @@ class CampaignController extends Controller
             return $this->notAuthorized();
         }
 
-        $items = \Acelle\Model\ClickLog::search($request, $campaign)->paginate($request->per_page);
+        if ($campaign->isABTest() && request()->version_b) {
+            $items = \Acelle\Model\ClickLog::search($request, $campaign->campaignB)->paginate($request->per_page);
+        } else {
+            $items = \Acelle\Model\ClickLog::search($request, $campaign)->paginate($request->per_page);
+        }
 
         return view('campaigns.click_log_list', [
             'items' => $items,
@@ -1629,7 +1920,11 @@ class CampaignController extends Controller
             return $this->notAuthorized();
         }
 
-        $items = $campaign->unsubscribeLogs();
+        if ($campaign->isABTest() && request()->version_b) {
+            $items = $campaign->campaignB->unsubscribeLogs();
+        } else {
+            $items = $campaign->unsubscribeLogs();
+        }
 
         return view('campaigns.unsubscribe_log', [
             'items' => $items,
@@ -1649,7 +1944,11 @@ class CampaignController extends Controller
             return $this->notAuthorized();
         }
 
-        $items = \Acelle\Model\UnsubscribeLog::search($request, $campaign)->paginate($request->per_page);
+        if ($campaign->isABTest() && request()->version_b) {
+            $items = \Acelle\Model\UnsubscribeLog::search($request, $campaign->campaignB)->paginate($request->per_page);
+        } else {
+            $items = \Acelle\Model\UnsubscribeLog::search($request, $campaign)->paginate($request->per_page);
+        }
 
         return view('campaigns.unsubscribe_logs_list', [
             'items' => $items,
@@ -1795,11 +2094,20 @@ class CampaignController extends Controller
         }
 
         // Subscribers
-        $subscribers = $campaign->getDeliveryReport()
-                                ->addSelect('subscribers.*')
-                                ->addSelect('bounce_logs.raw AS bounced_message')
-                                ->addSelect('feedback_logs.feedback_type AS feedback_message')
-                                ->addSelect('tracking_logs.error AS failed_message');
+        if ($campaign->isABTest() && request()->version_b) {
+            $subscribers = $campaign->campaignB->getDeliveryReport()
+                ->addSelect('subscribers.*')
+                ->addSelect('bounce_logs.raw AS bounced_message')
+                ->addSelect('feedback_logs.feedback_type AS feedback_message')
+                ->addSelect('tracking_logs.error AS failed_message');
+        } else {
+            $subscribers = $campaign->getDeliveryReport()
+                ->addSelect('subscribers.*')
+                ->addSelect('bounce_logs.raw AS bounced_message')
+                ->addSelect('feedback_logs.feedback_type AS feedback_message')
+                ->addSelect('tracking_logs.error AS failed_message');
+        }
+            
 
         // Check open conditions
         if ($request->open) {
@@ -2016,7 +2324,11 @@ class CampaignController extends Controller
             return $this->notAuthorized();
         }
 
-        echo $campaign->getHtmlContent($subscriber);
+        if ($campaign->isABTest() && request()->version_b) {
+            echo $campaign->campaignB->getHtmlContent($subscriber);
+        } else {
+            echo $campaign->getHtmlContent($subscriber);
+        }
     }
 
     /**
@@ -2274,13 +2586,24 @@ class CampaignController extends Controller
                 }
             }
 
-            // Save template
-            $campaign->setTemplateContent($request->html);
-            $campaign->preheader = $request->preheader;
-            $campaign->save();
+            if ($campaign->isABTest() && $request->version_b) {
+                // Save template
+                $campaign->campaignB->setTemplateContent($request->html);
+                $campaign->campaignB->preheader = $request->preheader;
+                $campaign->campaignB->save();
 
-            // update plain
-            $campaign->updatePlainFromHtml();
+                // update plain
+                $campaign->campaignB->updatePlainFromHtml();
+            } else {
+                // Save template
+                $campaign->setTemplateContent($request->html);
+                $campaign->preheader = $request->preheader;
+                $campaign->save();
+
+                // update plain
+                $campaign->updatePlainFromHtml();
+            }
+            
 
             // success
             return response()->json([
@@ -2323,9 +2646,15 @@ class CampaignController extends Controller
                 return response()->json($validator->errors(), 400);
             }
 
-            // Save template
-            $campaign->plain = $request->plain;
-            $campaign->save();
+            if ($campaign->isABTest() && $request->version_b) {
+                // Save template
+                $campaign->campaignB->plain = $request->plain;
+                $campaign->campaignB->save();
+            } else {
+                // Save template
+                $campaign->plain = $request->plain;
+                $campaign->save();
+            }
 
             // success
             return response()->json([
@@ -2354,7 +2683,11 @@ class CampaignController extends Controller
         }
 
         foreach ($request->file as $file) {
-            $campaign->uploadAttachment($file);
+            if ($campaign->isABTest() && $request->version_b) {
+                $campaign->campaignB->uploadAttachment($file);
+            } else {
+                $campaign->uploadAttachment($file);
+            }
         }
     }
 

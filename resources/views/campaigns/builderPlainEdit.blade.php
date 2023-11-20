@@ -29,7 +29,8 @@
     </li>
     <li class="nav-item d-flex align-items-center">
         <a href="{{ action('CampaignController@builderClassic', [
-            'uid' => $campaign->uid
+            'uid' => $campaign->uid,
+            'version_b' => request()->version_b,
         ]) }}"
             class="nav-link py-3 lvl-1">
             <span>{{ trans('messages.campaign.html_editor') }}</span>
@@ -50,7 +51,10 @@
 @endsection
 
 @section('content')
-    <form style="" id="classic-builder-form" action="{{ action('CampaignController@builderPlainEdit', $campaign->uid) }}" method="POST" class="form-validate-jqueryz">
+    <form style="" id="classic-builder-form" action="{{ action('CampaignController@builderPlainEdit', [
+        'uid' => $campaign->uid,
+        'version_b' => request()->version_b,
+    ]) }}" method="POST" class="form-validate-jqueryz">
         {{ csrf_field() }}
 
         <div class="row mr-0 ml-0 form-groups-bottom-0">
@@ -75,6 +79,7 @@
                         <div class="mb-4">
                             <a href="{{ action('CampaignController@customPlainOn', [
                                 'uid' => $campaign->uid,
+                                'version_b' => request()->version_b,
                             ]) }}" link-method="POST" class="btn btn-primary">
                                 <span class="material-symbols-rounded me-1">dashboard_customize</span>
                                     {{ trans('messages.campaign.plain.use_custom_plain_content') }}
@@ -88,6 +93,7 @@
                         <div class="mb-4">
                             <a href="{{ action('CampaignController@customPlainOff', [
                                 'uid' => $campaign->uid,
+                                'version_b' => request()->version_b,
                             ]) }}" link-method="POST" class="btn btn-primary">
                                 <span class="material-symbols-rounded me-1">post_add</span>
                                     {{ trans('messages.campaign.plain.extract_from_html') }}

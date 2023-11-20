@@ -32,7 +32,10 @@
 @section('content')
 
     <div class="confirm-campaign-box">
-        <form action="{{ action('CampaignController@confirm', $campaign->uid) }}" method="POST" class="form-validate-jqueryz">
+        <form action="{{ action('CampaignController@confirm', [
+                'uid' => $campaign->uid,
+                'version_b' => request()->version_b,
+            ]) }}" method="POST" class="form-validate-jqueryz">
             {{ csrf_field() }}
 
             <div class="head">
@@ -70,7 +73,10 @@
                         </div>
 
                         <div>
-                            <a href="{{ action('CampaignController@recipients', $campaign->uid) }}" class="btn btn-default">{{ trans('messages.campaign.back_to_step') }}</a>
+                            <a href="{{ action('CampaignController@recipients', [
+                'uid' => $campaign->uid,
+                'version_b' => request()->version_b,
+            ]) }}" class="btn btn-default">{{ trans('messages.campaign.back_to_step') }}</a>
                         </div>
                     </li>
                 @endif
@@ -93,7 +99,10 @@
                     </div>
 
                     <div>
-                        <a href="{{ action('CampaignController@recipients', $campaign->uid) }}" class="btn btn-default">{{ trans('messages.campaign.back_to_step') }}</a>
+                        <a href="{{ action('CampaignController@recipients', [
+                'uid' => $campaign->uid,
+                'version_b' => request()->version_b,
+            ]) }}" class="btn btn-default">{{ trans('messages.campaign.back_to_step') }}</a>
                     </div>
                 </li>
 
@@ -113,7 +122,10 @@
                         </div>
 
                         <div>
-                            <a href="{{ action('CampaignController@recipients', $campaign->uid) }}" class="btn btn-default">{{ trans('messages.campaign.back_to_step') }}</a>
+                            <a href="{{ action('CampaignController@recipients', [
+                'uid' => $campaign->uid,
+                'version_b' => request()->version_b,
+            ]) }}" class="btn btn-default">{{ trans('messages.campaign.back_to_step') }}</a>
                         </div>
                     </li>
                 @endif
@@ -130,7 +142,10 @@
                     </div>
 
                     <div>
-                        <a href="{{ action('CampaignController@setup', $campaign->uid) }}" class="btn btn-default">{{ trans('messages.campaign.back_to_step') }}</a>
+                        <a href="{{ action('CampaignController@setup', [
+                'uid' => $campaign->uid,
+                'version_b' => request()->version_b,
+            ]) }}" class="btn btn-default">{{ trans('messages.campaign.back_to_step') }}</a>
                     </div>
                 </li>
 
@@ -156,7 +171,10 @@
                     </div>
 
                     <div>
-                        <a href="{{ action('CampaignController@setup', $campaign->uid) }}" class="btn btn-default">{{ trans('messages.campaign.back_to_step') }}</a>
+                        <a href="{{ action('CampaignController@setup', [
+                'uid' => $campaign->uid,
+                'version_b' => request()->version_b,
+            ]) }}" class="btn btn-default">{{ trans('messages.campaign.back_to_step') }}</a>
                     </div>
                 </li>
 
@@ -203,7 +221,10 @@
                         </div>
 
                         <div>
-                            <a href="{{ action('CampaignController@setup', $campaign->uid) }}" class="btn btn-default">{{ trans('messages.campaign.back_to_step') }}</a>
+                            <a href="{{ action('CampaignController@setup', [
+                'uid' => $campaign->uid,
+                'version_b' => request()->version_b,
+            ]) }}" class="btn btn-default">{{ trans('messages.campaign.back_to_step') }}</a>
                         </div>
                     </li>
                 @else
@@ -219,7 +240,10 @@
                         </div>
 
                         <div>
-                            <a href="{{ action('CampaignController@setup', $campaign->uid) }}" class="btn btn-default">{{ trans('messages.campaign.back_to_step') }}</a>
+                            <a href="{{ action('CampaignController@setup', [
+                'uid' => $campaign->uid,
+                'version_b' => request()->version_b,
+            ]) }}" class="btn btn-default">{{ trans('messages.campaign.back_to_step') }}</a>
                         </div>
                     </li>
                 @endif
@@ -234,7 +258,10 @@
                         <br />
                         <div class="text-end">
                             <span
-                                onclick="popupwindow('{{ action('CampaignController@preview', $campaign->uid) }}', `{{ $campaign->name }}`, 800)"
+                                onclick="popupwindow('{{ action('CampaignController@preview', [
+                'uid' => $campaign->uid,
+                'version_b' => request()->version_b,
+            ]) }}', `{{ $campaign->name }}`, 800)"
                                 href="#preview" class="btn btn-secondary me-1" data-uid="{{ $campaign->uid }}">
                                 {{ trans('messages.preview') }} <span class="material-symbols-rounded">visibility</span>
                             </span>
@@ -285,7 +312,10 @@
                             {{ trans('messages.campaign.preview_as') }} <span class="material-symbols-rounded ms-1">contact_mail</span>
                         </button>
                         <span
-                            onclick="popupwindow('{{ action('CampaignController@preview', $campaign->uid) }}', `{{ $campaign->name }}`, 800)"
+                            onclick="popupwindow('{{ action('CampaignController@preview', [
+                'uid' => $campaign->uid,
+                'version_b' => request()->version_b,
+            ]) }}', `{{ $campaign->name }}`, 800)"
                             href="#preview" class="btn btn-secondary me-1" data-uid="{{ $campaign->uid }}">
                             {{ trans('messages.preview') }} <span class="material-symbols-rounded">visibility</span>
                         </span>

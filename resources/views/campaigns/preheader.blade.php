@@ -34,7 +34,10 @@
 
         constructor() {
             this.addPopup = new Popup({
-                url: '{{ action('CampaignController@preheaderAdd', $campaign->uid) }}'
+                url: '{{ action('CampaignController@preheaderAdd', [
+                'uid' => $campaign->uid,
+                'version_b' => request()->version_b,
+            ]) }}'
             });
         }
 
@@ -45,7 +48,10 @@
                     addMaskLoading();
                     $.ajax({
                         method: "POST",
-                        url: '{{ action('CampaignController@preheaderRemove', $campaign->uid) }}',
+                        url: '{{ action('CampaignController@preheaderRemove', [
+                'uid' => $campaign->uid,
+                'version_b' => request()->version_b,
+            ]) }}',
                         data: {
                             _token: CSRF_TOKEN
                         }

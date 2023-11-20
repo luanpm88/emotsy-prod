@@ -3345,4 +3345,5 @@
   'google-analytics.utm_parameters' => 'UTM parameters',
   'campaign.status' => 'Status',
   'campaign.status.all' => 'All statuses',
+  'ab.failed_rate' => 'Failed Rate',
 ) ?>

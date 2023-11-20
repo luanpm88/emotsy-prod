@@ -7,7 +7,10 @@
             <div class="d-flex align-items-center">
                 <h4 class="me-auto">{{ trans('messages.campaign.ab.split_options') }}</h4>
                 <div>
-                    <a href="{{ action('CampaignController@abSplitOptions', $campaign->uid) }}" class="btn btn-default">{{ trans('messages.campaign.back_to_step') }}</a>
+                    <a href="{{ action('CampaignController@abSplitOptions', [
+                'uid' => $campaign->uid,
+                'version_b' => request()->version_b,
+            ]) }}" class="btn btn-default">{{ trans('messages.campaign.back_to_step') }}</a>
                 </div>
             </div>
         </div>

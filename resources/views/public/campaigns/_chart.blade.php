@@ -8,7 +8,10 @@
                 <div class="chart-container">
                     <div id="campaignChart"
                         class="border shadow-sm rounded"
-                        data-url="{{ action('Pub\CampaignController@chart', $campaign->uid) }}"
+                        data-url="{{ action('Pub\CampaignController@chart', [
+                'uid' => $campaign->uid,
+                'version_b' => request()->version_b,
+            ]) }}"
                         style="width:100%; height:350px;"
                     ></div>
                 </div>
@@ -26,7 +29,10 @@
                     'delivered' => $campaign->deliveredCount(),
                 ]) }}
             </span><span class="px-2"> · </span>
-            <a class="text-warning" href="{{ action('Pub\CampaignController@openLog', $campaign->uid) }}"><span class="material-symbols-rounded">arrow_forward</span> {{ trans('messages.view_log') }}</a>
+            <a class="text-warning" href="{{ action('Pub\CampaignController@openLog', [
+                'uid' => $campaign->uid,
+                'version_b' => request()->version_b,
+            ]) }}"><span class="material-symbols-rounded">arrow_forward</span> {{ trans('messages.view_log') }}</a>
         </div>
 
         <div class="badge-row">
@@ -50,7 +56,10 @@
                     'total' => $campaign->openUniqCount()
                 ]) }}
             </span><span class="px-2"> · </span>
-            <a class="text-warning" href="{{ action('Pub\CampaignController@clickLog', $campaign->uid) }}"><span class="material-symbols-rounded">arrow_forward</span> {{ trans('messages.view_log') }}</a>
+            <a class="text-warning" href="{{ action('Pub\CampaignController@clickLog', [
+                'uid' => $campaign->uid,
+                'version_b' => request()->version_b,
+            ]) }}"><span class="material-symbols-rounded">arrow_forward</span> {{ trans('messages.view_log') }}</a>
         </div>
 
         <div class="badge-row">
@@ -61,7 +70,10 @@
                     'count' => $campaign->unsubscribeCount()
                 ]) }}
             </span><span class="px-2"> · </span>
-            <a class="text-warning" href="{{ action('Pub\CampaignController@unsubscribeLog', $campaign->uid) }}"><span class="material-symbols-rounded">arrow_forward</span> {{ trans('messages.view_log') }}</a>
+            <a class="text-warning" href="{{ action('Pub\CampaignController@unsubscribeLog', [
+                'uid' => $campaign->uid,
+                'version_b' => request()->version_b,
+            ]) }}"><span class="material-symbols-rounded">arrow_forward</span> {{ trans('messages.view_log') }}</a>
         </div>
 
         <div class="badge-row">
@@ -72,7 +84,10 @@
                     'count' => $campaign->bounceCount()
                 ]) }}
             </span><span class="px-2"> · </span>
-            <a class="text-warning" href="{{ action('Pub\CampaignController@bounceLog', $campaign->uid) }}"><span class="material-symbols-rounded">arrow_forward</span> {{ trans('messages.view_log') }}</a>
+            <a class="text-warning" href="{{ action('Pub\CampaignController@bounceLog', [
+                'uid' => $campaign->uid,
+                'version_b' => request()->version_b,
+            ]) }}"><span class="material-symbols-rounded">arrow_forward</span> {{ trans('messages.view_log') }}</a>
         </div>
 
         <div class="badge-row">
@@ -83,7 +98,10 @@
                     'count' => $campaign->feedbackCount()
                 ]) }}
             </span><span class="px-2"> · </span>
-            <a class="text-warning" href="{{ action('Pub\CampaignController@feedbackLog', $campaign->uid) }}"><span class="material-symbols-rounded">arrow_forward</span> {{ trans('messages.view_log') }}</a>
+            <a class="text-warning" href="{{ action('Pub\CampaignController@feedbackLog', [
+                'uid' => $campaign->uid,
+                'version_b' => request()->version_b,
+            ]) }}"><span class="material-symbols-rounded">arrow_forward</span> {{ trans('messages.view_log') }}</a>
         </div>
 
     </div>

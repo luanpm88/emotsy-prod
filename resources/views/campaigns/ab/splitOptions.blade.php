@@ -40,7 +40,10 @@
 @section('content')
     <h1 class="mb-4">{{ trans('messages.campaign.ab.split_options') }}</h1>
 
-    <form action="{{ action('CampaignController@abSplitOptions', $campaign->uid) }}" method="POST" class="form-validate-jqueryz recipients-form">
+    <form action="{{ action('CampaignController@abSplitOptions', [
+                'uid' => $campaign->uid,
+                'version_b' => request()->version_b,
+            ]) }}" method="POST" class="form-validate-jqueryz recipients-form">
         {{ csrf_field() }}
 
         <input type="hidden" name="ab_winning_percent" value="{{ $campaign->ab_winning_percent }}">
@@ -259,7 +262,10 @@
             // winning send at box
             winningSendAt = new WinningSendAt({
                 box: document.querySelector('[data-control="winning-send-at-box"]'),
-                url: '{{ action('CampaignController@abWinningSendAt', $campaign->uid) }}',
+                url: '{{ action('CampaignController@abWinningSendAt', [
+                'uid' => $campaign->uid,
+                'version_b' => request()->version_b,
+            ]) }}',
             });
         });
 

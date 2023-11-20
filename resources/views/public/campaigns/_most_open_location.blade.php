@@ -16,7 +16,10 @@
                 @endforeach
             </div>
             <div class="text-end">
-                <a href="{{ action('Pub\CampaignController@openLog', $campaign->uid) }}" class="btn btn-info bg-teal-600">{{ trans('messages.open_log') }} <span class="material-symbols-rounded">arrow_forward</span></a>
+                <a href="{{ action('Pub\CampaignController@openLog', [
+                'uid' => $campaign->uid,
+                'version_b' => request()->version_b,
+            ]) }}" class="btn btn-info bg-teal-600">{{ trans('messages.open_log') }} <span class="material-symbols-rounded">arrow_forward</span></a>
             </div>
         @else
             <div class="empty-chart-pie">
@@ -47,7 +50,10 @@
                 @endforeach 
             </div>
             <div class="text-end">
-                <a href="{{ action('Pub\CampaignController@openMap', $campaign->uid) }}" class="btn btn-info bg-teal-600">{{ trans('messages.open_map') }} <span class="material-symbols-rounded">arrow_forward</span></a>
+                <a href="{{ action('Pub\CampaignController@openMap', [
+                'uid' => $campaign->uid,
+                'version_b' => request()->version_b,
+            ]) }}" class="btn btn-info bg-teal-600">{{ trans('messages.open_map') }} <span class="material-symbols-rounded">arrow_forward</span></a>
             </div>
         @else
             <div class="empty-chart-pie">

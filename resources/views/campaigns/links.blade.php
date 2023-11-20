@@ -26,7 +26,7 @@
 
 @section('content')
 
-    <h3 class="mt-10"><span class="text-teal text-semibold">{{ count($campaign->getLinks()) }}</span> {{ trans('messages.links') }}</h3>
+    <h3 class="mt-10"><span class="text-teal text-semibold">{{ count($links) }}</span> {{ trans('messages.links') }}</h3>
     
     <table class="table table-box pml-table table-head">
         <tr>
@@ -52,6 +52,9 @@
     </table>
     <br />
     <div class="text-end">
-        <a href="{{ action('CampaignController@clickLog', $campaign->uid) }}" class="btn btn-info bg-teal-600">{{ trans('messages.click_log') }} <span class="material-symbols-rounded">arrow_forward</span></a>
+        <a href="{{ action('CampaignController@clickLog', [
+            'uid' => $campaign->uid,
+            'version_b' => request()->version_b,
+        ]) }}" class="btn btn-info bg-teal-600">{{ trans('messages.click_log') }} <span class="material-symbols-rounded">arrow_forward</span></a>
     </div>
 @endsection

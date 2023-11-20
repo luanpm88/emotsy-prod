@@ -18,7 +18,10 @@
                 {{ trans('messages.template.upload.warning') }}
             </div>
             
-            <form enctype="multipart/form-data" action="{{ action('CampaignController@templateUpload', $campaign->uid) }}" method="POST" class="ajax_upload_form form-validate-jquery">
+            <form enctype="multipart/form-data" action="{{ action('CampaignController@templateUpload', [
+                'uid' => $campaign->uid,
+                'version_b' => request()->version_b,
+            ]) }}" method="POST" class="ajax_upload_form form-validate-jquery">
                 {{ csrf_field() }}
 
                 <input type="hidden" name="name" value="{{ $campaign->name }}" />
@@ -44,7 +47,10 @@
         });
 
         var builderSelectPopup = new Popup({onclose: function() {
-            window.location = '{{ action('CampaignController@template', $campaign->uid) }}';
+            window.location = '{{ action('CampaignController@template', [
+                'uid' => $campaign->uid,
+                'version_b' => request()->version_b,
+            ]) }}';
         }});
 
         $('.ajax_upload_form').submit(function(e) {

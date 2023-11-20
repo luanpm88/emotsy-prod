@@ -27,11 +27,11 @@
                 </div>
             </div>
         </a>
-        @if ($campaign->template_b)
+        {{-- @if ($campaign->template_b)
             <div class="my-2 text-center version-action">
                 <a href="" class="btn btn-default">{{ trans('messages.campaign.ab.template.copy_from_b') }}</a>
             </div>
-        @endif
+        @endif --}}
     </div>
     <div class="template-variation {{ request()->version_b ? 'current' : '' }}">
         <a href="{{ action('CampaignController@template', [
@@ -50,19 +50,19 @@
             </div>
             <div>
                 <div class="border thumb-container">
-                    @if ($campaign->template_b)
-                        <img style="width:100%;" class="template-variation-thumb" src="{{ $campaign->getThumbUrl() }}?v={{ Carbon\Carbon::now() }}" />
+                    @if ($campaign->campaignB->template)
+                        <img style="width:100%;" class="template-variation-thumb" src="{{ $campaign->campaignB->getThumbUrl() }}?v={{ Carbon\Carbon::now() }}" />
                     @else
                         <img style="width:100%;" class="template-variation-thumb" src="{{ url('images/icons/template-none.svg') }}" />
                     @endif
                 </div>
             </div>
         </a>
-        @if ($campaign->template)
+        {{-- @if ($campaign->template)
             <div class="my-2 text-center version-action">
                 <a href="" class="btn btn-default">{{ trans('messages.campaign.ab.template.copy_from_a') }}</a>
             </div>
-        @endif
+        @endif --}}
     </div>
 </div>
 

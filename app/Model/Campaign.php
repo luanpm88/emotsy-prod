@@ -344,6 +344,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
         'utm_medium',
         'utm_source',
         'utm_term',
+        'ab_split_subject', 'ab_split_content'
     ];
 
     /**
@@ -2848,5 +2849,30 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
             'utm_term' => $this->utm_term ?? $default['utm_term'],
             'utm_content' => $this->utm_content ?? $default['utm_content'],
         ];
+    }
+
+    public function campaignB()
+    {
+        return $this->belongsTo(Campaign::class, 'campaign_b_id');
+    }
+
+    public function campaignA()
+    {
+        return $this->hasOne(Campaign::class, 'campaign_b_id');
+    }
+
+    public function isAVersion()
+    {
+        return $this->campaignB;
+    }
+
+    public function isBVersion()
+    {
+        return $this->campaignA;
+    }
+
+    public static function scopeNotInlcludeBVersion($query)
+    {
+        $query = $query->doesntHave('campaignA');
     }
 }

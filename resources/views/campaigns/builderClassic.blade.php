@@ -29,7 +29,8 @@
     </li>
     <li class="nav-item d-flex align-items-center">
         <a href="{{ action('CampaignController@builderPlainEdit', [
-            'uid' => $campaign->uid
+            'uid' => $campaign->uid,
+            'version_b' => request()->version_b,
         ]) }}"
             class="nav-link py-3 lvl-1">
             <span>{{ trans('messages.campaign.plain_text_editor') }}</span>
@@ -48,7 +49,10 @@
 @endsection
 
 @section('content')
-    <form id="classic-builder-form" action="{{ action('CampaignController@builderClassic', $campaign->uid) }}" method="POST" class="form-validate-jqueryz">
+    <form id="classic-builder-form" action="{{ action('CampaignController@builderClassic', [
+        'uid' => $campaign->uid,
+        'version_b' => request()->version_b,
+    ]) }}" method="POST" class="form-validate-jqueryz">
         {{ csrf_field() }}
 
         <div class="row mr-0 ml-0 form-groups-bottom-0">
@@ -58,7 +62,7 @@
                     'class' => 'template-editor',
                     'name' => 'html',
                     'label' => '',
-                    'value' => $campaign->template->content,
+                    'value' => ($campaign->isABTest() && request()->version_b) ? $campaign->campaignB->template->content : $campaign->template->content,
                     'rules' => [],
                     'help_class' => 'campaign'
                 ])             
@@ -70,7 +74,7 @@
                     'type' => 'textarea',
                     'label' => '',
                     'name' => 'preheader',
-                    'value' => $campaign->preheader,
+                    'value' => ($campaign->isABTest() && request()->version_b) ? $campaign->campaignB->preheader : $campaign->preheader,
                     // 'rules' => ['preheader' => 'required'],
                 ])
                 <hr>

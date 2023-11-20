@@ -1,5 +1,8 @@
 <div class="image_upload_div">
-  <form action="{{ action('CampaignController@uploadAttachment', $campaign->uid) }}" class="dropzone">
+  <form action="{{ action('CampaignController@uploadAttachment', [
+      'uid' => $campaign->uid,
+      'version_b' => request()->version_b,
+  ]) }}" class="dropzone">
      {{ csrf_field() }}
   </form>
 </div>

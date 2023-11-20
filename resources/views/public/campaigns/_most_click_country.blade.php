@@ -22,7 +22,10 @@
                 @endforeach 
             </div>
             <div class="text-end">
-                <a href="{{ action('Pub\CampaignController@clickLog', $campaign->uid) }}" class="btn btn-info bg-teal-600">{{ trans('messages.click_log') }} <span class="material-symbols-rounded">arrow_forward</span></a>
+                <a href="{{ action('Pub\CampaignController@clickLog', [
+                'uid' => $campaign->uid,
+                'version_b' => request()->version_b,
+            ]) }}" class="btn btn-info bg-teal-600">{{ trans('messages.click_log') }} <span class="material-symbols-rounded">arrow_forward</span></a>
             </div>
         @endif
     </div>
@@ -34,7 +37,10 @@
                         <div class="chart has-fixed-height"
                             id="ClickPieChart" 
                             style="width:100%; height:350px;"
-                            data-url="{{ action('Pub\CampaignController@chartClickCountry', $campaign->uid) }}">
+                            data-url="{{ action('Pub\CampaignController@chartClickCountry', [
+                'uid' => $campaign->uid,
+                'version_b' => request()->version_b,
+            ]) }}">
                         </div>
                     </div>
                 </div>
@@ -45,7 +51,10 @@
                     ClickPieChart.showChart();
                 });
                 var ClickPieChart = {
-                    url: '{{ action('Pub\CampaignController@chartClickCountry', $campaign->uid) }}',
+                    url: '{{ action('Pub\CampaignController@chartClickCountry', [
+                'uid' => $campaign->uid,
+                'version_b' => request()->version_b,
+            ]) }}',
                     getChart: function() {
                         return $('#ClickPieChart');
                     },

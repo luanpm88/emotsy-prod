@@ -10,6 +10,18 @@
         'menu' => 'bounce_log',
     ])
 
+    @if ($campaign->isABTest())
+        @include('campaigns.ab._insights_version_tabs', [
+            'link_a' => action('CampaignController@bounceLog', [
+                'uid' => $campaign->uid,
+            ]),
+            'link_b' => action('CampaignController@bounceLog', [
+                'uid' => $campaign->uid,
+                'version_b' => true,
+            ]),
+        ])
+    @endif
+
 @endsection
 
 @section('content')
@@ -17,7 +29,10 @@
     <h2 class="text-semibold text-primary">{{ trans('messages.bounce_log') }}</h2>
 
     <form class="listing-form"
-        data-url="{{ action('CampaignController@bounceLogListing', $campaign->uid) }}"
+        data-url="{{ action('CampaignController@bounceLogListing', [
+            "uid" => $campaign->uid,
+            'version_b' => request()->version_b,
+        ]) }}"
         per-page="{{ Acelle\Model\BounceLog::$itemsPerPage }}"
     >
         <div class="d-flex top-list-controls top-sticky-content">
@@ -54,7 +69,10 @@
         var CampaignLogIndex = {
             getList: function() {
                 return makeList({
-                    url: '{{ action('CampaignController@bounceLogListing', $campaign->uid) }}',
+                    url: '{{ action('CampaignController@bounceLogListing', [
+                        "uid" => $campaign->uid,
+                        'version_b' => request()->version_b,
+                    ]) }}',
                     container: $('.listing-form'),
                     content: $('.pml-table-container')
                 });

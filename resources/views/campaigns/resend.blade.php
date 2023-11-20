@@ -6,7 +6,10 @@
             <h2 class="mt-0">{{ trans('messages.campaign.resend.title') }}</h2>
             <p>{{ trans('messages.campaign.resend.intro') }}</p>   
 
-            <form enctype="multipart/form-data" action="{{ action('CampaignController@resend', $campaign->uid) }}" method="POST" class="resend-form form-validate-jqueryx">
+            <form enctype="multipart/form-data" action="{{ action('CampaignController@resend', [
+                'uid' => $campaign->uid,
+                'version_b' => request()->version_b,
+            ]) }}" method="POST" class="resend-form form-validate-jqueryx">
                 {{ csrf_field() }}
 
                 @include('helpers.form_control', ['type' => 'radio',

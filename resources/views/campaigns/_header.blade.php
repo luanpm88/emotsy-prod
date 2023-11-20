@@ -1,3 +1,6 @@
+@php
+	$menu = $menu ?? null;
+@endphp
 <div class="topfix-header bg-light">
     <div class="topfix-container border-bottom d-flex align-items-center shadow-sm py-3 mb-4">
         <div class="topfix-search text-center" style="width: 100%">
@@ -47,7 +50,10 @@
             </h1>
         </div>
         <div class="ms-auto">
-            <a target="_blank" href="{{ action('Pub\CampaignController@overview', $campaign->uid) }}" class="btn btn-default">
+            <a target="_blank" href="{{ action('Pub\CampaignController@overview', [
+                'uid' => $campaign->uid,
+                'version_b' => request()->version_b,
+            ]) }}" class="btn btn-default">
                 <span class="material-symbols-rounded me-1">public</span>
                 {{ trans('messages.campaign.public_report') }}
             </a>

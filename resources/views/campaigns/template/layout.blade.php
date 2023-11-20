@@ -53,6 +53,7 @@
 		var CampaignsTemplateLayout = {
 			listUrl: '{{ action('CampaignController@templateLayoutList', [
 				'uid' => $campaign->uid,
+				'version_b' => request()->version_b,
 			]) }}',
 
 			getList: function() {
@@ -80,7 +81,10 @@
 		// legacy
         var builderSelectPopup = new Popup({
 			onclose: function() {
-				window.location = '{{ action('CampaignController@template', $campaign->uid) }}';
+				window.location = '{{ action('CampaignController@template', [
+                'uid' => $campaign->uid,
+                'version_b' => request()->version_b,
+            ]) }}';
 			}
 		});
     </script>

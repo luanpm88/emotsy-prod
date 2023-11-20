@@ -42,7 +42,7 @@
 @section('content')
     <div class="row">
         <div class="col-md-10 mb-0">
-            @if ($campaign->isABTest())
+            @if ($campaign->isABTest() && $campaign->ab_split_content)
                 @include('campaigns.ab._template_variations')
             @endif
             
@@ -61,16 +61,25 @@
 
                             <p class="mt-20">
                                 @if (in_array(Acelle\Model\Setting::get('builder'), ['both','pro']) && $campaign->template->builder)
-                                    <a href="{{ action('CampaignController@templateEdit', $campaign->uid) }}" class="btn btn-primary me-1 template-compose">
+                                    <a href="{{ action('CampaignController@templateEdit', [
+                                        'uid' => $campaign->uid,
+                                        'version_b' => request()->version_b,
+                                    ]) }}" class="btn btn-primary me-1 template-compose">
                                         {{ trans('messages.campaign.email_builder_pro') }}
                                     </a>
                                 @endif
                                 @if (in_array(Acelle\Model\Setting::get('builder'), ['both','classic']))
-                                    <a href="{{ action('CampaignController@builderClassic', $campaign->uid) }}" class="btn btn-default template-compose-classic">
+                                    <a href="{{ action('CampaignController@builderClassic', [
+                                        'uid' => $campaign->uid,
+                                        'version_b' => request()->version_b,
+                                    ]) }}" class="btn btn-default template-compose-classic">
                                         {{ trans('messages.campaign.email_builder_classic') }}
                                     </a>
                                 @endif
-                                <a href="{{ action('CampaignController@templateCreate', $campaign->uid) }}" class="btn btn-link bg-grey-600 me-1">
+                                <a href="{{ action('CampaignController@templateCreate', [
+                                    'uid' => $campaign->uid,
+                                    'version_b' => request()->version_b,
+                                ]) }}" class="btn btn-link bg-grey-600 me-1">
                                     {{ trans('messages.campaign.change_template') }}
                                 </a>
                             </p>
@@ -79,9 +88,16 @@
                 </div>
                 <div>
                     <div class="template-thumb-container ml-4">
-                        <img class="automation-template-thumb" src="{{ $campaign->getThumbUrl() }}?v={{ Carbon\Carbon::now() }}" />
+                        @if ($campaign->isABTest() && request()->version_b)
+                            <img class="automation-template-thumb" src="{{ $campaign->campaignB->getThumbUrl() }}?v={{ Carbon\Carbon::now() }}" />
+                        @else
+                            <img class="automation-template-thumb" src="{{ $campaign->getThumbUrl() }}?v={{ Carbon\Carbon::now() }}" />
+                        @endif
                         <a
-                            onclick="popupwindow('{{ action('CampaignController@preview', $campaign->uid) }}', `{{ $campaign->name }}`, 800)"
+                            onclick="popupwindow('{{ action('CampaignController@preview', [
+                                'uid' => $campaign->uid,
+                                'version_b' => request()->version_b,
+                            ]) }}', `{{ $campaign->name }}`, 800)"
                             href="javascript:;"
                             class="btn btn-primary" style="display:none"
                         >

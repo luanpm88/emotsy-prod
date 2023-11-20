@@ -37,7 +37,7 @@
 @section('content')
     <div class="row">
         <div class="col-md-6">
-            @if ($campaign->isABTest())
+            @if ($campaign->isABTest() && $campaign->ab_split_content)
                 @include('campaigns.ab._template_variations')
             @endif
 
@@ -45,7 +45,10 @@
             <p>{{ trans('messages.campaign.email_content.intro') }}</p>
                 
             <ul class="hover-list">
-                <li class="template-start" data-url="{{ action('CampaignController@templateLayout', $campaign->uid) }}">
+                <li class="template-start" data-url="{{ action('CampaignController@templateLayout', [
+                    'uid' => $campaign->uid,
+                    'version_b' => request()->version_b,
+                ]) }}">
                     <img width="35px" class="icon-img d-inline-block me-4" src="{{ url('images/icons/plus.svg') }}" />
                     <div class="list-body">
                         <h4>{{ trans('messages.campaign.template.from_layout') }}</h4>
@@ -59,7 +62,10 @@
                         </button>
                     </div>
                 </li>
-                <li class="template-start" data-url="{{ action('CampaignController@templateUpload', $campaign->uid) }}">
+                <li class="template-start" data-url="{{ action('CampaignController@templateUpload', [
+                    'uid' => $campaign->uid,
+                    'version_b' => request()->version_b,
+                ]) }}">
                     <img width="35px" class="icon-img d-inline-block me-4" src="{{ url('images/icons/upload.svg') }}" />
                     <div class="list-body">
                         <h4>{{ trans('messages.campaign.template.upload') }}</h4>

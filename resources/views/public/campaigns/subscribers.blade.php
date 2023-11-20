@@ -8,6 +8,18 @@
 
     @include("public.campaigns._header")
 
+    @if ($campaign->isABTest())
+        @include('campaigns.ab._insights_version_tabs', [
+            'link_a' => action('Pub\CampaignController@subscribers', [
+                'uid' => $campaign->uid,
+            ]),
+            'link_b' => action('Pub\CampaignController@subscribers', [
+                'uid' => $campaign->uid,
+                'version_b' => true,
+            ]),
+        ])
+    @endif
+
 @endsection
 
 @section('content')
@@ -54,7 +66,10 @@
 </div>
 
 <div class="listing-form"
-        data-url="{{ action('Pub\CampaignController@subscribersListing', $campaign->uid) }}"
+        data-url="{{ action('Pub\CampaignController@subscribersListing', [
+            'uid' => $campaign->uid,
+            'version_b' => request()->version_b,
+        ]) }}"
         per-page="{{ Acelle\Model\Subscriber::$itemsPerPage }}"
     >
     <div class="d-flex top-list-controls top-sticky-content">
@@ -216,7 +231,10 @@
     var SubscribersIndex = {
         getList: function() {
             return makeList({
-                url: '{{ action('Pub\CampaignController@subscribersListing', $campaign->uid) }}',
+                url: '{{ action('Pub\CampaignController@subscribersListing', [
+                    'uid' => $campaign->uid,
+                    'version_b' => request()->version_b,
+                ]) }}',
                 container: $('.listing-form'),
                 content: $('.pml-table-container')
             });

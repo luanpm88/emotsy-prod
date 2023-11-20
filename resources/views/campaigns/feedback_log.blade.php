@@ -10,6 +10,18 @@
         'menu' => 'feedback_log',
     ])
 
+    @if ($campaign->isABTest())
+        @include('campaigns.ab._insights_version_tabs', [
+            'link_a' => action('CampaignController@feedbackLog', [
+                'uid' => $campaign->uid,
+            ]),
+            'link_b' => action('CampaignController@feedbackLog', [
+                'uid' => $campaign->uid,
+                'version_b' => true,
+            ]),
+        ])
+    @endif
+
 @endsection
 
 @section('content')
@@ -17,7 +29,10 @@
 <h2 class="text-semibold text-primary">{{ trans('messages.feedback_log') }}</h2>
 
 <form class="listing-form"
-        data-url="{{ action('CampaignController@feedbackLogListing', $campaign->uid) }}"
+        data-url="{{ action('CampaignController@feedbackLogListing', [
+            'uid' => $campaign->uid,
+            'version_b' => request()->version_b,
+        ]) }}"
         per-page="{{ Acelle\Model\FeedbackLog::$itemsPerPage }}"
     >
         <div class="d-flex top-list-controls top-sticky-content">
@@ -55,7 +70,10 @@
         var CampaignLogIndex = {
             getList: function() {
                 return makeList({
-                    url: '{{ action('CampaignController@feedbackLogListing', $campaign->uid) }}',
+                    url: '{{ action('CampaignController@feedbackLogListing', [
+                        'uid' => $campaign->uid,
+                        'version_b' => request()->version_b,
+                    ]) }}',
                     container: $('.listing-form'),
                     content: $('.pml-table-container')
                 });
