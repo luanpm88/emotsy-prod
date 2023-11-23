@@ -159,6 +159,29 @@ class PageController extends Controller
                 return back()->withErrors($validator)->withInput();
             }
 
+            // Captcha check
+            if (\Acelle\Model\Setting::isListSignupCaptchaEnabled()) {
+                // @hCaptcha
+                if (\Acelle\Model\Setting::getCaptchaProvider() == 'hcaptcha') {
+                    $hcaptcha = \Acelle\Hcaptcha\Client::initialize();
+                    $success = $hcaptcha->check($request);
+                    if (!$success) {
+                        return view('somethingWentWrong', [
+                            'message' => trans('messages.list.sign_up.invalid_captcha'),
+                            'redirect_url' => action('PageController@signUpForm', $list->uid, false),
+                        ]);
+                    }
+                } else {
+                    $success = \Acelle\Library\Tool::checkReCaptcha($request);
+                    if (!$success) {
+                        return view('somethingWentWrong', [
+                            'message' => trans('messages.list.sign_up.invalid_captcha'),
+                            'redirect_url' => action('PageController@signUpForm', $list->uid, false),
+                        ]);
+                    }
+                }
+            }
+
             if ($request->redirect_url) {
                 return redirect()->away($request->redirect_url);
             } elseif ($list->subscribe_confirmation && !$subscriber->isSubscribed()) {
