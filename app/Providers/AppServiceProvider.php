@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Schema;
-use URL;
+use AppUrl;
 use Acelle\Model\Setting;
 use Acelle\Library\HookManager;
 use Acelle\Model\Plugin;
@@ -187,14 +187,14 @@ class AppServiceProvider extends ServiceProvider
             // To deal with Ajax pagination link issue (always use HTTP)
             $this->app['request']->server->set('HTTPS', 'on');
 
-            URL::forceScheme('https');
+            AppUrl::forceScheme('https');
         }
 
         // HTTP or HTTPS
         // parse_url will return either 'http' or 'https'
         //$scheme = parse_url(config('app.url'), PHP_URL_SCHEME);
         //if (!empty($scheme)) {
-        //    URL::forceScheme($scheme);
+        //    AppUrl::forceScheme($scheme);
         //}
 
         // Fix Laravel 5.4 error

@@ -5,17 +5,17 @@
 @section('title', $list->name)
 
 @section('head')
-    <link rel="stylesheet" type="text/css" href="{{ URL::asset('core/prismjs/prism.css') }}">
-    <script type="text/javascript" src="{{ URL::asset('core/prismjs/prism.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ AppUrl::asset('core/prismjs/prism.css') }}">
+    <script type="text/javascript" src="{{ AppUrl::asset('core/prismjs/prism.js') }}"></script>
 
 
-    <script type="text/javascript" src="{{ URL::asset('core/datetime/anytime.min.js') }}"></script>
-    <script type="text/javascript" src="{{ URL::asset('core/datetime/moment.min.js') }}"></script>
-    <script type="text/javascript" src="{{ URL::asset('core/datetime/pickadate/picker.js') }}"></script>
-    <script type="text/javascript" src="{{ URL::asset('core/datetime/pickadate/picker.date.js') }}"></script>
+    <script type="text/javascript" src="{{ AppUrl::asset('core/datetime/anytime.min.js') }}"></script>
+    <script type="text/javascript" src="{{ AppUrl::asset('core/datetime/moment.min.js') }}"></script>
+    <script type="text/javascript" src="{{ AppUrl::asset('core/datetime/pickadate/picker.js') }}"></script>
+    <script type="text/javascript" src="{{ AppUrl::asset('core/datetime/pickadate/picker.date.js') }}"></script>
 
-    <script type="text/javascript" src="{{ URL::asset('core/tinymce/tinymce.min.js') }}"></script>
-    <script type="text/javascript" src="{{ URL::asset('core/js/editor.js') }}"></script>
+    <script type="text/javascript" src="{{ AppUrl::asset('core/tinymce/tinymce.min.js') }}"></script>
+    <script type="text/javascript" src="{{ AppUrl::asset('core/js/editor.js') }}"></script>
 
 @endsection
 

@@ -5,8 +5,8 @@
 @section('title', trans('messages.campaigns') . " - " . trans('messages.template'))
 	
 @section('head')      
-    <script type="text/javascript" src="{{ URL::asset('core/tinymce/tinymce.min.js') }}"></script>
-    <script type="text/javascript" src="{{ URL::asset('core/js/editor.js') }}"></script>
+    <script type="text/javascript" src="{{ AppUrl::asset('core/tinymce/tinymce.min.js') }}"></script>
+    <script type="text/javascript" src="{{ AppUrl::asset('core/js/editor.js') }}"></script>
 @endsection
 
 @section('page_header')

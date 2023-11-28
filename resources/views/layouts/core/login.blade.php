@@ -6,7 +6,7 @@
         @include('layouts.core._script_vars')
 
         <!-- Theme -->
-    <link rel="stylesheet" type="text/css" href="{{ URL::asset('core/css/theme/'.Acelle\Model\Setting::get('frontend_scheme').'.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ AppUrl::asset('core/css/theme/'.Acelle\Model\Setting::get('frontend_scheme').'.css') }}">
     </head>
     <body class="bg-slate-800 theme-{{ Acelle\Model\Setting::get('frontend_scheme') }} login-page">
         <!-- Page container -->

@@ -3,10 +3,10 @@
 @section('title', trans('messages.edit_template'))
 
 @section('head')
-	<script type="text/javascript" src="{{ URL::asset('core/tinymce/tinymce.min.js') }}"></script>        
-    <script type="text/javascript" src="{{ URL::asset('core/js/editor.js') }}"></script>
+	<script type="text/javascript" src="{{ AppUrl::asset('core/tinymce/tinymce.min.js') }}"></script>        
+    <script type="text/javascript" src="{{ AppUrl::asset('core/js/editor.js') }}"></script>
 
-    <script src="{{ URL::asset('core/js/UrlAutoFill.js') }}"></script>
+    <script src="{{ AppUrl::asset('core/js/UrlAutoFill.js') }}"></script>
 @endsection
 
 @section('menu_title')

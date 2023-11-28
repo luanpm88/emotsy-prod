@@ -8,24 +8,24 @@
     @include('layouts.core._favicon')
     
     <!-- BuilderJS CORE -->
-    <link href="{{ URL::asset('builder/builder.css') }}" rel="stylesheet" type="text/css">
-    <script type="text/javascript" src="{{ URL::asset('builder/builder.js') }}"></script>
+    <link href="{{ AppUrl::asset('builder/builder.css') }}" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="{{ AppUrl::asset('builder/builder.js') }}"></script>
 
     <!-- BuilderJS CUSTOM -->
-    <link href="{{ URL::asset('core/css/builder-custom.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ AppUrl::asset('core/css/builder-custom.css') }}" rel="stylesheet" type="text/css">
     @include('builder.js.widgets')
 
     <!-- Select2 -->
-    <link rel="stylesheet" type="text/css" href="{{ URL::asset('core/select2/css/select2.min.css') }}">
-    <script type="text/javascript" src="{{ URL::asset('core/select2/js/select2.min.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ AppUrl::asset('core/select2/css/select2.min.css') }}">
+    <script type="text/javascript" src="{{ AppUrl::asset('core/select2/js/select2.min.js') }}"></script>
 
     <!-- Autofill -->
-    <link href="{{ URL::asset('core/css/UrlAutoFill.css') }}" rel="stylesheet" type="text/css">
-    <script src="{{ URL::asset('core/js/UrlAutoFill.js') }}"></script>
+    <link href="{{ AppUrl::asset('core/css/UrlAutoFill.css') }}" rel="stylesheet" type="text/css">
+    <script src="{{ AppUrl::asset('core/js/UrlAutoFill.js') }}"></script>
 
     @if (Acelle\Model\Plugin::isInstalled('acelle/chatgpt') && Acelle\Model\Plugin::getByName('acelle/chatgpt')->isActive())
         <!-- ChatGPT -->
-        <link href="{{ URL::asset('core/css/builder-chat.css') }}" rel="stylesheet" type="text/css">
+        <link href="{{ AppUrl::asset('core/css/builder-chat.css') }}" rel="stylesheet" type="text/css">
         @include('chat._builder_script')
     @endif
 
@@ -132,9 +132,9 @@
                 saveUrl: '{{ action('TemplateController@builderEdit', $template->uid) }}',
                 saveMethod: 'POST',
                 tags: {!! json_encode(Acelle\Model\Template::builderTags((isset($list) ? $list : null))) !!},
-                root: '{{ URL::asset('builder') }}/',
+                root: '{{ AppUrl::asset('builder') }}/',
                 templates: templates,
-                filemanager: '{{ URL::asset('filemanager2/dialog.php') }}',
+                filemanager: '{{ AppUrl::asset('filemanager2/dialog.php') }}',
                 logo: '{{ getSiteLogoUrl('light') }}',
                 backgrounds: [
                     '{{ url('/images/backgrounds/images1.jpg') }}',

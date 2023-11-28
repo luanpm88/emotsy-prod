@@ -1166,7 +1166,7 @@ function getDefaultLogoUrl($type)
         $logo = config('custom.default_logo_dark');
     }
 
-    return URL::asset($logo);
+    return AppUrl::asset($logo);
 }
 
 function getSiteLogoUrl($type)

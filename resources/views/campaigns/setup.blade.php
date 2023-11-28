@@ -5,10 +5,10 @@
 @section('title', trans('messages.campaigns') . " - " . trans('messages.setup'))
 
 @section('head')
-	<script type="text/javascript" src="{{ URL::asset('core/js/group-manager.js') }}"></script>
+	<script type="text/javascript" src="{{ AppUrl::asset('core/js/group-manager.js') }}"></script>
 
-    <link href="{{ URL::asset('core/emojionearea/emojionearea.min.css') }}" rel="stylesheet">
-    <script type="text/javascript" src="{{ URL::asset('core/emojionearea/emojionearea.min.js') }}"></script>
+    <link href="{{ AppUrl::asset('core/emojionearea/emojionearea.min.css') }}" rel="stylesheet">
+    <script type="text/javascript" src="{{ AppUrl::asset('core/emojionearea/emojionearea.min.js') }}"></script>
 @endsection
 	
 @section('page_header')

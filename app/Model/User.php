@@ -29,7 +29,7 @@ use Acelle\Library\ExtendedSwiftMessage;
 use Acelle\Model\Setting;
 use Illuminate\Http\UploadedFile;
 use App;
-use URL;
+use AppUrl;
 use File;
 use Acelle\Library\Tool;
 use Acelle\Library\Traits\HasUid;
@@ -500,7 +500,7 @@ class User extends Authenticatable
         if (file_exists($path)) {
             return \Acelle\Helpers\generatePublicPath($path) . '?v=' . md5_file($this->getProfileImagePath());
         } else {
-            return URL::asset('images/user-placeholder.svg');
+            return AppUrl::asset('images/user-placeholder.svg');
         }
     }
 
@@ -510,7 +510,7 @@ class User extends Authenticatable
         if (file_exists($path)) {
             return \Acelle\Helpers\generatePublicPath($path);
         } else {
-            return URL::asset('images/user-placeholder.svg');
+            return AppUrl::asset('images/user-placeholder.svg');
         }
     }
 

@@ -5,13 +5,13 @@
 @section('title', trans('messages.campaigns') . " - " . trans('messages.template'))
     
 @section('head')      
-    <script type="text/javascript" src="{{ URL::asset('core/tinymce/tinymce.min.js') }}"></script>
-    <script type="text/javascript" src="{{ URL::asset('core/js/editor.js') }}"></script>
+    <script type="text/javascript" src="{{ AppUrl::asset('core/tinymce/tinymce.min.js') }}"></script>
+    <script type="text/javascript" src="{{ AppUrl::asset('core/js/editor.js') }}"></script>
 
     <!-- Dropzone -->    
-	<script type="text/javascript" src="{{ URL::asset('core/dropzone/dropzone.js') }}"></script>
+	<script type="text/javascript" src="{{ AppUrl::asset('core/dropzone/dropzone.js') }}"></script>
     @include('helpers._dropzone_lang')
-	<link href="{{ URL::asset('core/dropzone/dropzone.css') }}" rel="stylesheet" type="text/css">
+	<link href="{{ AppUrl::asset('core/dropzone/dropzone.css') }}" rel="stylesheet" type="text/css">
 @endsection
 
 @section('page_header')
