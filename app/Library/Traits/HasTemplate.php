@@ -24,7 +24,6 @@ use Acelle\Library\HtmlHandler\GenerateSpintaxForPlainText;
 use Acelle\Library\HtmlHandler\DecodeHtmlSpecialChars;
 use Acelle\Library\HtmlHandler\InjectMessageIdToBody;
 use Acelle\Library\Lockable;
-use File;
 use Cache;
 use Soundasleep\Html2Text;
 
@@ -275,7 +274,7 @@ trait HasTemplate
             //@todo attach function used for any attachment of Campaign
             $path_campaign = $this->getAttachmentPath();
             if (is_dir($path_campaign)) {
-                $files = File::allFiles($path_campaign);
+                $files = \Illuminate\Support\Facades\File::allFiles($path_campaign);
                 foreach ($files as $file) {
                     $attachment = \Swift_Attachment::fromPath((string) $file);
                     $message->attach($attachment);

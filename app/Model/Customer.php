@@ -231,8 +231,8 @@ class Customer extends Model
     {
         $base = storage_path(join_paths(self::BASE_DIR, $this->uid)); // storage/app/customers/000000/
 
-        if (!\File::exists($base)) {
-            \File::makeDirectory($base, 0777, true, true);
+        if (!\Illuminate\Support\Facades\File::exists($base)) {
+            \Illuminate\Support\Facades\File::makeDirectory($base, 0777, true, true);
         }
 
         return join_paths($base, $path);
@@ -242,8 +242,8 @@ class Customer extends Model
     {
         $base = $this->getBasePath(self::TEMPLATES_DIR);
 
-        if (!\File::exists($base)) {
-            \File::makeDirectory($base, 0777, true, true);
+        if (!\Illuminate\Support\Facades\File::exists($base)) {
+            \Illuminate\Support\Facades\File::makeDirectory($base, 0777, true, true);
         }
 
         return join_paths($base, $path);
@@ -253,8 +253,8 @@ class Customer extends Model
     {
         $base = $this->getBasePath(self::PRODUCT_DIR);
 
-        if (!\File::exists($base)) {
-            \File::makeDirectory($base, 0777, true, true);
+        if (!\Illuminate\Support\Facades\File::exists($base)) {
+            \Illuminate\Support\Facades\File::makeDirectory($base, 0777, true, true);
         }
 
         return join_paths($base, $path);
@@ -264,8 +264,8 @@ class Customer extends Model
     {
         $base = $this->getBasePath(self::ATTACHMENTS_DIR);
 
-        if (!\File::exists($base)) {
-            \File::makeDirectory($base, 0777, true, true);
+        if (!\Illuminate\Support\Facades\File::exists($base)) {
+            \Illuminate\Support\Facades\File::makeDirectory($base, 0777, true, true);
         }
 
         return join_paths($base, $path);
@@ -275,8 +275,8 @@ class Customer extends Model
     {
         $base = $this->getBasePath(self::LOGS_DIR);
 
-        if (!\File::exists($base)) {
-            \File::makeDirectory($base, 0777, true, true);
+        if (!\Illuminate\Support\Facades\File::exists($base)) {
+            \Illuminate\Support\Facades\File::makeDirectory($base, 0777, true, true);
         }
 
         return join_paths($base, $path);

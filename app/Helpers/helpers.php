@@ -1193,7 +1193,7 @@ function app_profile($key)
     }
 
     $configFile = config_path("{$profile}.php");
-    if (!\File::exists($configFile)) {
+    if (!\Illuminate\Support\Facades\File::exists($configFile)) {
         throw new \Exception("Profile file does not exists: {$configFile}");
     }
 

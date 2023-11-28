@@ -30,7 +30,6 @@ use Acelle\Events\MailListUnsubscription;
 use Acelle\Library\StringHelper;
 use DB;
 use Exception;
-use File;
 use Acelle\Library\Traits\HasUid;
 use Closure;
 use Carbon\Carbon;

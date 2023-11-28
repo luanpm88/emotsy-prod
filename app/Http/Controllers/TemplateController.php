@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use Acelle\Model\Template;
 use Acelle\Model\Setting;
 use App;
-use File;
 use Acelle\Library\Tool;
 
 use function Acelle\Helpers\xml_to_array;

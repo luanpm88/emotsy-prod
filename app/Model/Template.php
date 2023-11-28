@@ -33,7 +33,6 @@ use KubAT\PhpSimple\HtmlDomParser;
 use Acelle\Library\Tool;
 use Acelle\Library\StringHelper;
 use DOMDocument;
-use File;
 use Exception;
 use Closure;
 use League\Pipeline\PipelineBuilder;
@@ -509,8 +508,8 @@ class Template extends Model
             $base = $this->getSystemStoragePath($this->uid);
         }
 
-        if (!\File::exists($base)) {
-            \File::makeDirectory($base, 0777, true, true);
+        if (!\Illuminate\Support\Facades\File::exists($base)) {
+            \Illuminate\Support\Facades\File::makeDirectory($base, 0777, true, true);
         }
 
         return join_paths($base, $path);
@@ -520,8 +519,8 @@ class Template extends Model
     {
         $base = storage_path('app/templates/');
 
-        if (!\File::exists($base)) {
-            \File::makeDirectory($base, 0777, true, true);
+        if (!\Illuminate\Support\Facades\File::exists($base)) {
+            \Illuminate\Support\Facades\File::makeDirectory($base, 0777, true, true);
         }
 
         return join_paths($base, $path);
@@ -1241,7 +1240,7 @@ class Template extends Model
 
         // Delete existing template and create again with new updates
         foreach ($templates as $meta) {
-            if (!File::exists($meta['dir'])) {
+            if (!\Illuminate\Support\Facades\File::exists($meta['dir'])) {
                 // Some featured templates shall be dropped in official releases
                 // So, instead of throwing an error:
                 //
@@ -1295,7 +1294,7 @@ class Template extends Model
         Tool::zip($tmpDir, $tmpZipFile);
 
         // Clean up tmp directory
-        File::deleteDirectory($tmpDir);
+        \Illuminate\Support\Facades\File::deleteDirectory($tmpDir);
 
         // Return zip file for download
         return $tmpZipFile;

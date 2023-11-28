@@ -24,7 +24,6 @@ namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use Acelle\Library\Tool;
-use File;
 
 class Blacklist extends Model
 {
@@ -152,7 +151,7 @@ class Blacklist extends Model
             $progressCallback($processed = 0, $total = 0, $failed = 0, $message = trans('messages.blacklist.import_process_new'));
         }
 
-        $content = \File::get($file);
+        $content = \Illuminate\Support\Facades\File::get($file);
         $lines = preg_split('/\r\n|\r|\n/', $content);
         $total = count($lines);
         $failed = 0;
