@@ -38,7 +38,6 @@ use Acelle\Events\MailListImported;
 use Acelle\Library\Traits\TrackJobs;
 use DB;
 use App;
-use File;
 use Exception;
 use Acelle\Jobs\ImportSubscribersJob;
 use Acelle\Jobs\ImportSubscribers2;
@@ -245,8 +244,8 @@ class MailList extends Model
     public function getImportTempDir($file = null)
     {
         $base = storage_path(self::IMPORT_TEMP_DIR);
-        if (!File::exists($base)) {
-            File::makeDirectory($base, 0777, true, true);
+        if (!\Illuminate\Support\Facades\File::exists($base)) {
+            \Illuminate\Support\Facades\File::makeDirectory($base, 0777, true, true);
         }
 
         return join_paths($base, $file);
@@ -255,8 +254,8 @@ class MailList extends Model
     public function getExportTempDir($file = null)
     {
         $base = storage_path(self::EXPORT_TEMP_DIR);
-        if (!File::exists($base)) {
-            File::makeDirectory($base, 0777, true, true);
+        if (!\Illuminate\Support\Facades\File::exists($base)) {
+            \Illuminate\Support\Facades\File::makeDirectory($base, 0777, true, true);
         }
 
         return join_paths($base, $file);
@@ -729,7 +728,7 @@ class MailList extends Model
 
         $file = $this->getExportFilePath();
         if (file_exists($file)) {
-            File::delete($file);
+            \Illuminate\Support\Facades\File::delete($file);
         }
 
         // CSV writer

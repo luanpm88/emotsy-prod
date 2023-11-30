@@ -8,5 +8,9 @@
             {!! $message !!}
         </span>
     </div>
-    <a href='#back' onclick='history.back();return false;' class='btn btn-secondary'>{{ trans('messages.go_back') }}</a>
+    @if (isset($redirect_url))
+        <a href='{{ $redirect_url }}' onclick='history.back();return false;' class='btn btn-secondary'>{{ trans('messages.go_back') }}</a>
+    @else
+        <a href='#back' onclick='history.back();return false;' class='btn btn-secondary'>{{ trans('messages.go_back') }}</a>
+    @endif
 @endsection

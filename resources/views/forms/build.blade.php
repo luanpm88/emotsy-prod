@@ -9,12 +9,12 @@
 	@include('layouts.core._head')
 	@include('layouts.core._script_vars')
 
-    <link rel="stylesheet" href="{{ URL::asset('core/slider/bootstrap-slider.min.css') }}" />
-    <script type="text/javascript" src="{{ URL::asset('core/slider/bootstrap-slider.min.js') }}"></script>
+    <link rel="stylesheet" href="{{ AppUrl::asset('core/slider/bootstrap-slider.min.css') }}" />
+    <script type="text/javascript" src="{{ AppUrl::asset('core/slider/bootstrap-slider.min.js') }}"></script>
 
-    <script type="text/javascript" src="{{ URL::asset('core/js/group-manager.js') }}"></script>
+    <script type="text/javascript" src="{{ AppUrl::asset('core/js/group-manager.js') }}"></script>
 
-    <link type="text/css" rel="stylesheet" href="{{ URL::asset('core/css/form-builder.css') }}" />
+    <link type="text/css" rel="stylesheet" href="{{ AppUrl::asset('core/css/form-builder.css') }}" />
 </head>
 
 <body class="" style="overflow: hidden">

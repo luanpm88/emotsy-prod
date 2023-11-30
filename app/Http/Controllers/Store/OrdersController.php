@@ -8,7 +8,6 @@ use Acelle\Http\Controllers\Controller;
 
 use Acelle\Model\Product;
 use Acelle\Model\Category;
-use Illuminate\Http\File;
 use Illuminate\Support\Facades\Storage;
 
 class OrdersController extends Controller

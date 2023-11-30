@@ -26,3 +26,16 @@
 	@endif
 @endforeach
 
+@if (\Acelle\Model\Setting::isListSignupCaptchaEnabled())
+	<div>
+		<!-- hCaptcha -->
+		@if (\Acelle\Model\Setting::getCaptchaProvider() == 'hcaptcha')
+			@php
+				$hcaptcha = \Acelle\Hcaptcha\Client::initialize();
+			@endphp
+			{!! $hcaptcha->renderFormHtml($errors) !!}
+		@else
+			{!! \Acelle\Library\Tool::showReCaptcha($errors) !!}
+		@endif
+	</div>
+@endif

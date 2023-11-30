@@ -5,7 +5,7 @@
 @section('title', trans('sms.orders'))
 
 @section('head')
-    <link rel="stylesheet" type="text/css" href="{{ URL::asset('core/css/laza.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ AppUrl::asset('core/css/laza.css') }}">
 @endsection
  
 @section('page_header')

@@ -24,7 +24,6 @@ namespace Acelle\Library;
 
 use ZipArchive;
 use Illuminate\Support\Facades\Log as LaravelLog; // something wrong, cannot use the default name Log
-use Illuminate\Support\Facades\File;
 use Acelle\Library\Facades\Hook;
 use Acelle\Model\Language;
 
@@ -222,7 +221,7 @@ class UpgradeManager
                 $target = join_paths($this->target, $file);
 
                 // File is deleted in build.sh script
-                if (!File::exists($source)) {
+                if (!\Illuminate\Support\Facades\File::exists($source)) {
                     continue;
                 }
 
@@ -459,27 +458,27 @@ class UpgradeManager
      */
     public function copy($src, $dst)
     {
-        if (File::exists($dst)) {
+        if (\Illuminate\Support\Facades\File::exists($dst)) {
             // Delete the file or link or directory
             if (is_link($dst) || is_file($dst)) {
                 // To preserve $dst's permission
-                // File::delete($dst);
+                // \Illuminate\Support\Facades\File::delete($dst);
             } else {
-                File::deleteDirectory($dst);
+                \Illuminate\Support\Facades\File::deleteDirectory($dst);
             }
         } else {
             // Make sure the PARENT directory exists
             $dirname = pathinfo($dst)['dirname'];
-            if (!File::exists($dirname)) {
-                File::makeDirectory($dirname, 0777, true, true);
+            if (!\Illuminate\Support\Facades\File::exists($dirname)) {
+                \Illuminate\Support\Facades\File::makeDirectory($dirname, 0777, true, true);
             }
         }
 
         // if source is a file, just copy it
-        if (File::isFile($src)) {
-            File::copy($src, $dst);
+        if (\Illuminate\Support\Facades\File::isFile($src)) {
+            \Illuminate\Support\Facades\File::copy($src, $dst);
         } else {
-            File::copyDirectory($src, $dst);
+            \Illuminate\Support\Facades\File::copyDirectory($src, $dst);
         }
     }
 

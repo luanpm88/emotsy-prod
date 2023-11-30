@@ -981,7 +981,10 @@ class SubscriberController extends Controller
             return $this->notAuthorized();
         }
 
-        // make validator
+        /***
+         * Smetimes the mines type of uploaded file is application/octet, making it fail!!!
+         * As a result, temporarily disable this validation
+         *
         $validator = \Validator::make($request->all(), [
             'file' => 'required|mimes:csv,txt',
         ]);
@@ -993,6 +996,7 @@ class SubscriberController extends Controller
                 'message' => $validator->errors()->first(),
             ], 400);
         }
+        */
 
         $filepath = $list->uploadCsv($request->file('file'));
 

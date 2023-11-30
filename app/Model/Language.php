@@ -25,7 +25,6 @@ namespace Acelle\Model;
 use Illuminate\Database\Eloquent\Model;
 use Acelle\Library\Facades\Hook;
 use Acelle\Library\Traits\HasUid;
-use File;
 use Exception;
 use DB;
 
@@ -189,7 +188,7 @@ class Language extends Model
      */
     public function readLocaleFile($filename)
     {
-        $text = \File::get(join_paths($this->languageDir(), $filename.'.php'));
+        $text = \Illuminate\Support\Facades\File::get(join_paths($this->languageDir(), $filename.'.php'));
 
         return $text;
     }
@@ -277,7 +276,7 @@ class Language extends Model
 
     public static function fileToArray($pathToFile)
     {
-        return \File::getRequire($pathToFile);
+        return \Illuminate\Support\Facades\File::getRequire($pathToFile);
     }
 
     public static function arrayToYaml($array)
@@ -293,7 +292,7 @@ class Language extends Model
     public static function yamlToFile($pathToFile, $yaml)
     {
         $content = '<?php return '.var_export(\Yaml::parse($yaml), true).' ?>';
-        $bytes_written = \File::put($pathToFile, $content);
+        $bytes_written = \Illuminate\Support\Facades\File::put($pathToFile, $content);
     }
 
     public function getAllLanguageFiles()

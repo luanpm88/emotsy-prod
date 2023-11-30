@@ -16,7 +16,7 @@
 		var LANG_CODE = 'en-US';
 	</script>
 	@if (Auth::user()->customer->getLanguageCodeFull())
-		<script type="text/javascript" src="{{ URL::asset('assets/datepicker/i18n/datepicker.' . Auth::user()->customer->getLanguageCodeFull() . '.js') }}"></script>
+		<script type="text/javascript" src="{{ AppUrl::asset('assets/datepicker/i18n/datepicker.' . Auth::user()->customer->getLanguageCodeFull() . '.js') }}"></script>
 		<script>
 			LANG_CODE = '{{ Auth::user()->customer->getLanguageCodeFull() }}';
 		</script>

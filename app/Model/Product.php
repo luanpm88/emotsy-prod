@@ -56,8 +56,8 @@ class Product extends Model
     {
         $path = join_paths($this->customer->getBasePath(), self::PATH_BASE, $this->uid); // storage/app/products/000000/
 
-        if (!\File::exists($path)) {
-            \File::makeDirectory($path, 0777, true, true);
+        if (!\Illuminate\Support\Facades\File::exists($path)) {
+            \Illuminate\Support\Facades\File::makeDirectory($path, 0777, true, true);
         }
 
         return $path;
@@ -67,8 +67,8 @@ class Product extends Model
     {
         $path = join_paths($this->getBasePath(), self::PATH_IMAGES, $this->uid); // storage/app/products/000000/
 
-        if (!\File::exists($path)) {
-            \File::makeDirectory($path, 0777, true, true);
+        if (!\Illuminate\Support\Facades\File::exists($path)) {
+            \Illuminate\Support\Facades\File::makeDirectory($path, 0777, true, true);
         }
 
         return $path;
@@ -93,7 +93,7 @@ class Product extends Model
 
         foreach ($paths as $path) {
             if (\Acelle\Helpers\generatePublicPath($path) == $url) {
-                \File::delete($path);
+                \Illuminate\Support\Facades\File::delete($path);
             }
         }
     }

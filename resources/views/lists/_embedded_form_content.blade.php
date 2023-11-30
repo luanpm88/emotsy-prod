@@ -1,5 +1,5 @@
 @if ($list->getEmbeddedFormOption('stylesheet') == 'yes')
-    <link href="{{ URL::asset('core/css/embedded.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ AppUrl::asset('core/css/embedded.css') }}" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
 @endif
 
@@ -69,22 +69,22 @@
         </div>
 
         @if ($list->getEmbeddedFormOption('stylesheet') == 'yes')
-            <link href="{{ URL::asset('core/css/app.css') }}?v={{ app_version() }}" rel="stylesheet" type="text/css">
+            <link href="{{ AppUrl::asset('core/css/app.css') }}?v={{ app_version() }}" rel="stylesheet" type="text/css">
         @endif
 
         @if ($list->getEmbeddedFormOption('javascript') == 'yes')
-            <script type="text/javascript" src="{{ URL::asset('core/js/jquery-3.6.4.min.js') }}"></script>
-            <script type="text/javascript" src="{{ URL::asset('core/js/jquery-migrate-3.4.1.min.js') }}"></script>
-            <script type="text/javascript" src="{{ URL::asset('core/validate/jquery.validate.min.js') }}"></script>
+            <script type="text/javascript" src="{{ AppUrl::asset('core/js/jquery-3.6.4.min.js') }}"></script>
+            <script type="text/javascript" src="{{ AppUrl::asset('core/js/jquery-migrate-3.4.1.min.js') }}"></script>
+            <script type="text/javascript" src="{{ AppUrl::asset('core/validate/jquery.validate.min.js') }}"></script>
             <script type="text/javascript" src="{{ action('Controller@jquery_validate_locale') }}"></script>
-            <script type="text/javascript" src="{{ URL::asset('core/datetime/anytime.min.js') }}"></script>
-            <script type="text/javascript" src="{{ URL::asset('core/datetime/moment.min.js') }}"></script>
-            <script type="text/javascript" src="{{ URL::asset('core/datetime/pickadate/picker.js') }}"></script>
-            <script type="text/javascript" src="{{ URL::asset('core/datetime/pickadate/picker.date.js') }}"></script>
+            <script type="text/javascript" src="{{ AppUrl::asset('core/datetime/anytime.min.js') }}"></script>
+            <script type="text/javascript" src="{{ AppUrl::asset('core/datetime/moment.min.js') }}"></script>
+            <script type="text/javascript" src="{{ AppUrl::asset('core/datetime/pickadate/picker.js') }}"></script>
+            <script type="text/javascript" src="{{ AppUrl::asset('core/datetime/pickadate/picker.date.js') }}"></script>
         @endif
 
         @if ($list->getEmbeddedFormOption('javascript') == 'yes')
-            <script type="text/javascript" src="{{ URL::asset('core/js/functions.js') }}"></script>
+            <script type="text/javascript" src="{{ AppUrl::asset('core/js/functions.js') }}"></script>
             @include('layouts.core._script_vars')
             <script>
                 jQuery( document ).ready(function( $ ) {

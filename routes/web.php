@@ -40,7 +40,7 @@ Route::get('/files/{uid}/{name?}', [ function ($uid, $name) {
     // Do not use $user->getAssetsPath($name), avoid one SQL query!
     $path = storage_path('app/users/' . $uid . '/home/files/' . $name);
     $mime_type = \Acelle\Library\File::getFileType($path);
-    if (\File::exists($path)) {
+    if (\Illuminate\Support\Facades\File::exists($path)) {
         return response()->file($path, array('Content-Type' => $mime_type));
     } else {
         abort(404);
@@ -51,7 +51,7 @@ Route::get('/files/{uid}/{name?}', [ function ($uid, $name) {
 Route::get('/thumbs/{uid}/{name?}', [ function ($uid, $name) {
     // Do not use $user->getThumbsPath($name), avoid one SQL query!
     $path = storage_path('app/users/' . $uid . '/home/thumbs/' . $name);
-    if (\File::exists($path)) {
+    if (\Illuminate\Support\Facades\File::exists($path)) {
         $mime_type = \Acelle\Library\File::getFileType($path);
         return response()->file($path, array('Content-Type' => $mime_type));
     } else {
@@ -67,7 +67,7 @@ Route::get('/p/assets/{path}', [ function ($token) {
     $decodedPath = \Acelle\Library\StringHelper::base64UrlDecode($token);
     $absPath = storage_path($decodedPath);
 
-    if (\File::exists($absPath)) {
+    if (\Illuminate\Support\Facades\File::exists($absPath)) {
         $mime_type = \Acelle\Library\File::getFileType($absPath);
         return response()->file($absPath, array(
             'Content-Type' => $mime_type,
@@ -83,7 +83,7 @@ Route::get('assets/{dirname}/{basename}', [ function ($dirname, $basename) {
     $dirname = \Acelle\Library\StringHelper::base64UrlDecode($dirname);
     $absPath = storage_path(join_paths($dirname, $basename));
 
-    if (\File::exists($absPath)) {
+    if (\Illuminate\Support\Facades\File::exists($absPath)) {
         $mimetype = \Acelle\Library\File::getFileType($absPath);
         return response()->file($absPath, array(
             'Content-Type' => $mimetype,
@@ -241,7 +241,7 @@ Route::group(['middleware' => ['not_installed', 'auth']], function () {
     // get files from download
     Route::get('/download/{name?}', [ function ($name) {
         $path = storage_path('app/download/' . $name);
-        if (\File::exists($path)) {
+        if (\Illuminate\Support\Facades\File::exists($path)) {
             return response()->download($path);
         } else {
             abort(404);

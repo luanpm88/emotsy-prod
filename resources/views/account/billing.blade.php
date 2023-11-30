@@ -5,7 +5,7 @@
 @section('title', trans('messages.contact_information'))
 
 @section('head')
-    <script type="text/javascript" src="{{ URL::asset('core/js/group-manager.js') }}"></script>
+    <script type="text/javascript" src="{{ AppUrl::asset('core/js/group-manager.js') }}"></script>
 @endsection
 
 @section('page_header')

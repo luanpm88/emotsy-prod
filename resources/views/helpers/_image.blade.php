@@ -4,7 +4,7 @@
     </div>
     <div class="col-md-3">
         @if (isset($value) && !empty($value))
-            <img style="background-color: #ccc " width="100%" src="{{ isset($value) ? \URL::asset($value) : "" }}" />
+            <img style="background-color: #ccc " width="100%" src="{{ isset($value) ? \AppUrl::asset($value) : "" }}" />
         @endif
     </div>
 </div>
