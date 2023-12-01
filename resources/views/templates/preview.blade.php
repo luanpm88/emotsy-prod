@@ -1,4 +1,4 @@
-<script type="text/javascript" src="{{ URL::asset('assets/js/core/libraries/jquery.min.js') }}"></script>
+<script type="text/javascript" src="{{ AppUrl::asset('assets/js/core/libraries/jquery.min.js') }}"></script>
 
 <div class="saving" style="display:none; position: fixed;
     height: 100%;

@@ -2423,7 +2423,7 @@
   'setting.allowed_due_subscription' => 'Allowed due subscription',
   'setting.allowed_due_subscription.help' => 'Do not automatically suspend the subscription if the payment is already due. Users can still access all the functionality.',
   'setting.embedded_form_recaptcha.help' => 'Enable captcha for embedded form to block spammers and bots from accessing the webapp.',
-  'setting.enable_user_registration.help' => 'Visitor can create new customer account and register for a plan.',
+  'setting.enable_user_registration.help' => 'Enable this option to allow visitors to create a new customer account and register for a plan.',
   'setting.facebook_oauth' => 'Facebook OAuth',
   'setting.google_oauth' => 'Google OAuth',
   'setting.login_recaptcha.help' => 'Enable captcha to block spammers and bots from accessing the webapp.',
@@ -3346,4 +3346,7 @@
   'campaign.status' => 'Status',
   'campaign.status.all' => 'All statuses',
   'ab.failed_rate' => 'Failed Rate',
+  'list_sign_up_captcha' => 'Captcha for List Sign-Up Form',
+  'setting.list_sign_up_captcha.help' => 'Enabling the captcha will ensure that the list sign-up page cannot be spammed.',
+  'list.sign_up.invalid_captcha' => 'Invalid captcha, please try again.',
 ) ?>

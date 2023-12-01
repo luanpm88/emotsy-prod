@@ -4,7 +4,6 @@ namespace Acelle\Helpers;
 
 use Acelle\Library\StringHelper;
 use Exception;
-use File;
 use Closure;
 use Carbon\Carbon;
 use SimpleXMLElement;
@@ -122,7 +121,7 @@ function updateTranslationFile($targetFile, $sourceFile, $overwriteTargetPhrases
     }
 
     $out = '<?php return '.var_export(\Yaml::parse(\Yaml::dump($merged)), true).' ?>';
-    \File::put($targetFile, $out);
+    \Illuminate\Support\Facades\File::put($targetFile, $out);
 }
 
 // Copy and:
@@ -130,38 +129,38 @@ function updateTranslationFile($targetFile, $sourceFile, $overwriteTargetPhrases
 // + Create parent folders if not exist
 function pcopy($src, $dst)
 {
-    if (!File::exists($src)) {
+    if (!\Illuminate\Support\Facades\File::exists($src)) {
         throw new Exception("File `{$src}` does not exist");
     }
 
-    if (File::exists($dst)) {
+    if (\Illuminate\Support\Facades\File::exists($dst)) {
         // Delete the file or link or directory
         if (is_link($dst) || is_file($dst)) {
-            File::delete($dst);
+            \Illuminate\Support\Facades\File::delete($dst);
         } else {
-            File::deleteDirectory($dst);
+            \Illuminate\Support\Facades\File::deleteDirectory($dst);
         }
     } else {
         // Make sure the PARENT directory exists
         $dirname = pathinfo($dst)['dirname'];
-        if (!File::exists($dirname)) {
-            File::makeDirectory($dirname, 0777, true, true);
+        if (!\Illuminate\Support\Facades\File::exists($dirname)) {
+            \Illuminate\Support\Facades\File::makeDirectory($dirname, 0777, true, true);
         }
     }
 
     // if source is a file, just copy it
-    if (File::isFile($src)) {
-        File::copy($src, $dst);
+    if (\Illuminate\Support\Facades\File::isFile($src)) {
+        \Illuminate\Support\Facades\File::copy($src, $dst);
     } else {
-        File::copyDirectory($src, $dst);
+        \Illuminate\Support\Facades\File::copyDirectory($src, $dst);
     }
 }
 
 function ptouch($filepath)
 {
     $dirname = dirname($filepath);
-    if (!File::exists($dirname)) {
-        File::makeDirectory($dirname, 0777, true, true);
+    if (!\Illuminate\Support\Facades\File::exists($dirname)) {
+        \Illuminate\Support\Facades\File::makeDirectory($dirname, 0777, true, true);
     }
 
     touch($filepath);

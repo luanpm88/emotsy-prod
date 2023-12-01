@@ -7,8 +7,8 @@
 @section('content')
     
     <!-- Dropzone -->
-    <script type="text/javascript" src="{{ URL::asset('core/dropzone/dropzone.js') }}"></script>
-    <link href="{{ URL::asset('core/dropzone/dropzone.css') }}" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="{{ AppUrl::asset('core/dropzone/dropzone.js') }}"></script>
+    <link href="{{ AppUrl::asset('core/dropzone/dropzone.css') }}" rel="stylesheet" type="text/css">
 
     @include('helpers._dropzone_lang')
 
@@ -21,7 +21,7 @@
                 'link' => url('files/csv_import_example.csv')
             ]) !!}</p>   
 
-            <link rel="stylesheet" type="text/css" href="{{ URL::asset('core/dropzone/dropzone.css') }}" />
+            <link rel="stylesheet" type="text/css" href="{{ AppUrl::asset('core/dropzone/dropzone.css') }}" />
             @php
                 $formId = uniqid();
             @endphp

@@ -81,8 +81,8 @@ class FileController extends Controller
 
             // Download file
             try {
-                if (! \File::isDirectory($path)) {
-                    \File::makeDirectory($path, 0777, true);
+                if (!\Illuminate\Support\Facades\File::isDirectory($path)) {
+                    \Illuminate\Support\Facades\File::makeDirectory($path, 0777, true);
                 }
 
                 file_put_contents($destinationPath, file_get_contents($fileUrl));

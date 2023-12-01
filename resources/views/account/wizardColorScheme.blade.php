@@ -51,7 +51,7 @@
                 });
                 $('body').addClass('theme-' + value);
 
-            includeCss('{{ URL::asset('core/css/theme') }}/' + value + '.css');
+            includeCss('{{ AppUrl::asset('core/css/theme') }}/' + value + '.css');
 
                 detectLogo();
             });

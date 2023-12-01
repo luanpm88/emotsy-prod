@@ -3,8 +3,8 @@
 @section('title', trans('messages.automation.create'))
 
 @section('head')
-    <link rel="stylesheet" type="text/css" href="{{ URL::asset('core/css/automation.css') }}">
-    <script type="text/javascript" src="{{ URL::asset('core/js/automation.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ AppUrl::asset('core/css/automation.css') }}">
+    <script type="text/javascript" src="{{ AppUrl::asset('core/js/automation.js') }}"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"></link>
 @endsection
 

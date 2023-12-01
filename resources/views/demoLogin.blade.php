@@ -34,8 +34,8 @@
 					
 						<div class="text-center login-header mt-0">
 							<a class="main-logo-big mb-2 d-block" href="{{ action('HomeController@index') }}">
-								<img width="200px" src="{{ URL::asset('images/logo_dark.svg') }}" alt=""><br>
-                                <img width="150px" src="{{ URL::asset('images/wave.svg') }}" alt="" style="transform: translateX(30px) translateY(-10px)">
+								<img width="200px" src="{{ AppUrl::asset('images/logo_dark.svg') }}" alt=""><br>
+                                <img width="150px" src="{{ AppUrl::asset('images/wave.svg') }}" alt="" style="transform: translateX(30px) translateY(-10px)">
 							</a>
 						</div>
                         
@@ -52,7 +52,7 @@
                                 </a>
 
                                 <div class="text-center mt-5">
-                                    <img width="200px" style="opacity:0.9" src="{{ URL::asset('images/demo.svg') }}" alt=""><br>
+                                    <img width="200px" style="opacity:0.9" src="{{ AppUrl::asset('images/demo.svg') }}" alt=""><br>
                                 </div>
                             </div>
 						</div>

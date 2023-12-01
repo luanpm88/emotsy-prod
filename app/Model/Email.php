@@ -3,7 +3,6 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
-use File;
 use Validator;
 use ZipArchive;
 use KubAT\PhpSimple\HtmlDomParser;

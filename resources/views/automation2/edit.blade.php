@@ -3,27 +3,27 @@
 @section('title', trans('messages.automation.create'))
 
 @section('head')
-    <script type="text/javascript" src="{{ URL::asset('core/datetime/anytime.min.js') }}"></script>
-    <script type="text/javascript" src="{{ URL::asset('core/datetime/moment.min.js') }}"></script>
-    <script type="text/javascript" src="{{ URL::asset('core/datetime/pickadate/picker.js') }}"></script>
-    <script type="text/javascript" src="{{ URL::asset('core/datetime/pickadate/picker.date.js') }}"></script>
+    <script type="text/javascript" src="{{ AppUrl::asset('core/datetime/anytime.min.js') }}"></script>
+    <script type="text/javascript" src="{{ AppUrl::asset('core/datetime/moment.min.js') }}"></script>
+    <script type="text/javascript" src="{{ AppUrl::asset('core/datetime/pickadate/picker.js') }}"></script>
+    <script type="text/javascript" src="{{ AppUrl::asset('core/datetime/pickadate/picker.date.js') }}"></script>
 
     <!-- Dropzone -->
-	<script type="text/javascript" src="{{ URL::asset('core/dropzone/dropzone.js') }}"></script>
+	<script type="text/javascript" src="{{ AppUrl::asset('core/dropzone/dropzone.js') }}"></script>
     @include('helpers._dropzone_lang')
-	<link href="{{ URL::asset('core/dropzone/dropzone.css') }}" rel="stylesheet" type="text/css">
+	<link href="{{ AppUrl::asset('core/dropzone/dropzone.css') }}" rel="stylesheet" type="text/css">
 
-    <link rel="stylesheet" type="text/css" href="{{ URL::asset('core/css/automation.css') }}">
-    <script type="text/javascript" src="{{ URL::asset('core/js/automation.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ AppUrl::asset('core/css/automation.css') }}">
+    <script type="text/javascript" src="{{ AppUrl::asset('core/js/automation.js') }}"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"></link>
 
-    <script type="text/javascript" src="{{ URL::asset('core/echarts/echarts.min.js') }}"></script>
-    <script type="text/javascript" src="{{ URL::asset('core/echarts/dark.js') }}"></script> 
+    <script type="text/javascript" src="{{ AppUrl::asset('core/echarts/echarts.min.js') }}"></script>
+    <script type="text/javascript" src="{{ AppUrl::asset('core/echarts/dark.js') }}"></script> 
 
-    <script type="text/javascript" src="{{ URL::asset('core/js/group-manager.js') }}"></script>
+    <script type="text/javascript" src="{{ AppUrl::asset('core/js/group-manager.js') }}"></script>
 
-    <link href="{{ URL::asset('core/emojionearea/emojionearea.min.css') }}" rel="stylesheet">
-    <script type="text/javascript" src="{{ URL::asset('core/emojionearea/emojionearea.min.js') }}"></script>
+    <link href="{{ AppUrl::asset('core/emojionearea/emojionearea.min.css') }}" rel="stylesheet">
+    <script type="text/javascript" src="{{ AppUrl::asset('core/emojionearea/emojionearea.min.js') }}"></script>
 @endsection
 
 @section('menu_title')

@@ -244,6 +244,12 @@ class Setting extends Model
                 'type' => 'checkbox',
                 'options' => ['no', 'yes'],
             ],
+            'list_sign_up_captcha' => [
+                'cat' => 'general',
+                'value' => 'no',
+                'type' => 'checkbox',
+                'options' => ['no', 'yes'],
+            ],
             'enable_user_registration' => [
                 'cat' => 'general',
                 'value' => 'yes',
@@ -824,5 +830,10 @@ class Setting extends Model
         }
 
         return 'recaptcha';
+    }
+
+    public static function isListSignupCaptchaEnabled()
+    {
+        return self::get('list_sign_up_captcha') == 'yes';
     }
 }

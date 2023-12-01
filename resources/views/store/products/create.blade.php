@@ -5,7 +5,7 @@
 @section('title', trans('store.product'))
 
 @section('head')
-    <link rel="stylesheet" type="text/css" href="{{ URL::asset('core/css/laza.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ AppUrl::asset('core/css/laza.css') }}">
     <script src="https://cdn.ckeditor.com/ckeditor5/23.0.0/classic/ckeditor.js"></script>
 @endsection
  

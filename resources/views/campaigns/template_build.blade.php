@@ -40,7 +40,7 @@
 @section('template_content')
 
     <content>
-        <link rel="stylesheet" type="text/css" href="{{ URL::asset('css/res_email.css') }}" />
+        <link rel="stylesheet" type="text/css" href="{{ AppUrl::asset('css/res_email.css') }}" />
         <center class="wrapper">
             <div class="webkit">
                 <!--[if (gte mso 9)|(IE)]>

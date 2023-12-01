@@ -2,7 +2,6 @@
 
 namespace Acelle\Library;
 
-use File;
 use Carbon\Carbon;
 use Exception;
 use Acelle\Library\Exception\RateLimitExceeded;

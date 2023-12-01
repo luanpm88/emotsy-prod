@@ -29,8 +29,7 @@ use Acelle\Library\ExtendedSwiftMessage;
 use Acelle\Model\Setting;
 use Illuminate\Http\UploadedFile;
 use App;
-use URL;
-use File;
+use AppUrl;
 use Acelle\Library\Tool;
 use Acelle\Library\Traits\HasUid;
 use Acelle\Library\Facades\Hook;
@@ -123,8 +122,8 @@ class User extends Authenticatable
         ];
 
         foreach ($paths as $path) {
-            if (!File::exists($path)) {
-                File::makeDirectory($path, 0777, true, true);
+            if (!\Illuminate\Support\Facades\File::exists($path)) {
+                \Illuminate\Support\Facades\File::makeDirectory($path, 0777, true, true);
             }
         }
     }
@@ -143,7 +142,7 @@ class User extends Authenticatable
         }
 
         if (file_exists($path)) {
-            $content = \File::get($path);
+            $content = \Illuminate\Support\Facades\File::get($path);
             $lines = explode("\n", $content);
             if (count($lines) > 1) {
                 $demo = session()->get('demo');
@@ -391,8 +390,8 @@ class User extends Authenticatable
     {
         $base = $this->getBasePath('locks');
 
-        if (!\File::exists($base)) {
-            \File::makeDirectory($base, 0777, true, true);
+        if (!\Illuminate\Support\Facades\File::exists($base)) {
+            \Illuminate\Support\Facades\File::makeDirectory($base, 0777, true, true);
         }
 
         return join_paths($base, $path);
@@ -402,8 +401,8 @@ class User extends Authenticatable
     {
         $base = $this->getBasePath(self::ASSETS_DIR);
 
-        if (!\File::exists($base)) {
-            \File::makeDirectory($base, 0777, true, true);
+        if (!\Illuminate\Support\Facades\File::exists($base)) {
+            \Illuminate\Support\Facades\File::makeDirectory($base, 0777, true, true);
         }
 
         return join_paths($base, $path);
@@ -413,8 +412,8 @@ class User extends Authenticatable
     {
         $base = $this->getBasePath(self::ASSETS_THUMB_DIR);
 
-        if (!\File::exists($base)) {
-            \File::makeDirectory($base, 0777, true, true);
+        if (!\Illuminate\Support\Facades\File::exists($base)) {
+            \Illuminate\Support\Facades\File::makeDirectory($base, 0777, true, true);
         }
 
         return join_paths($base, $path);
@@ -424,8 +423,8 @@ class User extends Authenticatable
     {
         $base = storage_path(join_paths(self::BASE_DIR, $this->uid));
 
-        if (!\File::exists($base)) {
-            \File::makeDirectory($base, 0777, true, true);
+        if (!\Illuminate\Support\Facades\File::exists($base)) {
+            \Illuminate\Support\Facades\File::makeDirectory($base, 0777, true, true);
         }
 
         return join_paths($base, $path);
@@ -522,7 +521,7 @@ class User extends Authenticatable
         if (file_exists($path)) {
             return \Acelle\Helpers\generatePublicPath($path) . '?v=' . md5_file($this->getProfileImagePath());
         } else {
-            return URL::asset('images/user-placeholder.svg');
+            return AppUrl::asset('images/user-placeholder.svg');
         }
     }
 
@@ -532,7 +531,7 @@ class User extends Authenticatable
         if (file_exists($path)) {
             return \Acelle\Helpers\generatePublicPath($path);
         } else {
-            return URL::asset('images/user-placeholder.svg');
+            return AppUrl::asset('images/user-placeholder.svg');
         }
     }
 
@@ -576,12 +575,12 @@ class User extends Authenticatable
     {
         $path = $this->getProfileImagePath();
         if (file_exists($path)) {
-            File::delete($path);
+            \Illuminate\Support\Facades\File::delete($path);
         }
 
         $thumb = $this->getProfileThumbPath();
         if (file_exists($thumb)) {
-            File::delete($thumb);
+            \Illuminate\Support\Facades\File::delete($thumb);
         }
     }
 

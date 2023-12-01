@@ -4,7 +4,6 @@ namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\ValidationException;
-use Illuminate\Support\Facades\File;
 use Acelle\Library\Traits\HasUid;
 use Acelle\Library\Tool;
 use Acelle\Library\Facades\Hook;
@@ -486,9 +485,9 @@ class Plugin extends Model
         }
 
         if (is_link($file) || is_file($file)) {
-            File::delete($file);
+            \Illuminate\Support\Facades\File::delete($file);
         } else {
-            File::deleteDirectory($file);
+            \Illuminate\Support\Facades\File::deleteDirectory($file);
         }
     }
 
@@ -764,7 +763,7 @@ class Plugin extends Model
         $index = self::getPluginMasterFile();
 
         if (file_exists($index)) {
-            File::delete($index);
+            \Illuminate\Support\Facades\File::delete($index);
         }
 
         foreach (self::all() as $plugin) {

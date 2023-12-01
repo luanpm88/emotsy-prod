@@ -25,7 +25,6 @@ namespace Acelle\Library;
 use ZipArchive;
 use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
-use Illuminate\Support\Facades\File;
 use Exception;
 
 class Tool
@@ -90,9 +89,9 @@ class Tool
         }
 
         if (is_link($file) || is_file($file)) {
-            File::delete($file);
+            \Illuminate\Support\Facades\File::delete($file);
         } else {
-            File::deleteDirectory($file);
+            \Illuminate\Support\Facades\File::deleteDirectory($file);
         }
 
         return true;

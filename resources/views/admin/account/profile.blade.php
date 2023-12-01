@@ -34,7 +34,7 @@
                     <div class="media profile-image">
                         <div class="media-left">
                             <a href="#" class="upload-media-container" onclick="$('input[name=image]').trigger('click')">
-                                <img preview-for="image" empty-src="{{ URL::asset('images/placeholder.jpg') }}" src="{{ $user->getProfileImageUrl() }}" class="rounded-circle" alt="">
+                                <img preview-for="image" empty-src="{{ AppUrl::asset('images/placeholder.jpg') }}" src="{{ $user->getProfileImageUrl() }}" class="rounded-circle" alt="">
                             </a>
                             <input type="file" name="image" class="file-styled previewable hide" accept="image/*">
                             <input type="hidden" name="_remove_image" value='' />
@@ -232,7 +232,7 @@
                 });
                 $('body').addClass('theme-' + value);
 
-            includeCss('{{ URL::asset('core/css/theme') }}/' + value + '.css');
+            includeCss('{{ AppUrl::asset('core/css/theme') }}/' + value + '.css');
 
                 detectLogo();
             });

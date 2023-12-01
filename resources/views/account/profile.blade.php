@@ -5,8 +5,8 @@
 @section('title', trans('messages.my_profile'))
 
 @section('page_script')
-    <script type="text/javascript" src="{{ URL::asset('assets/js/plugins/forms/styling/uniform.min.js') }}"></script>
-    <script type="text/javascript" src="{{ URL::asset('js/validate.js') }}"></script>
+    <script type="text/javascript" src="{{ AppUrl::asset('assets/js/plugins/forms/styling/uniform.min.js') }}"></script>
+    <script type="text/javascript" src="{{ AppUrl::asset('js/validate.js') }}"></script>
 @endsection
 
 @section('page_header')
@@ -39,7 +39,7 @@
                     <div class="media profile-image">
                         <div class="media-left">
                             <a href="#" class="upload-media-container" onclick="$('input[name=image]').trigger('click')">
-                                <img preview-for="image" empty-src="{{ URL::asset('images/placeholder.jpg') }}" src="{{ $user->getProfileImageUrl() }}" class="img-circle" alt="">
+                                <img preview-for="image" empty-src="{{ AppUrl::asset('images/placeholder.jpg') }}" src="{{ $user->getProfileImageUrl() }}" class="img-circle" alt="">
                             </a>
                             <input type="file" name="image" class="file-styled previewable hide" accept="image/*">
                             <input type="hidden" name="_remove_image" value='' />
@@ -246,7 +246,7 @@
             });
             $('body').addClass('theme-' + value);
 
-            includeCss('{{ URL::asset('core/css/theme') }}/' + value + '.css');
+            includeCss('{{ AppUrl::asset('core/css/theme') }}/' + value + '.css');
 
             detectLogo();
         });

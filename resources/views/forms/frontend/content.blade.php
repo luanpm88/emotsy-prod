@@ -10,14 +10,14 @@
 
         // load js
         FormPopupContent.loadJs([
-            '{{ URL::asset('core/js/jquery-3.6.4.min.js') }}',
-            '{{ URL::asset('core/validate/jquery.validate.min.js') }}',
+            '{{ AppUrl::asset('core/js/jquery-3.6.4.min.js') }}',
+            '{{ AppUrl::asset('core/validate/jquery.validate.min.js') }}',
             '{{ action('Controller@jquery_validate_locale') }}',
-            '{{ URL::asset('core/datetime/anytime.min.js') }}',
-            '{{ URL::asset('core/datetime/moment.min.js') }}',
-            '{{ URL::asset('core/datetime/pickadate/picker.js') }}',
-            '{{ URL::asset('core/datetime/pickadate/picker.date.js') }}',
-            '{{ URL::asset('core/js/functions.js') }}',
+            '{{ AppUrl::asset('core/datetime/anytime.min.js') }}',
+            '{{ AppUrl::asset('core/datetime/moment.min.js') }}',
+            '{{ AppUrl::asset('core/datetime/pickadate/picker.js') }}',
+            '{{ AppUrl::asset('core/datetime/pickadate/picker.date.js') }}',
+            '{{ AppUrl::asset('core/js/functions.js') }}',
         ], function() {
             FormPopupContent.init();
 

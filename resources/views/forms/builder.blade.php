@@ -7,26 +7,26 @@
         
         @include('layouts.core._favicon')
         
-        <link href="{{ URL::asset('builder/builder.css') }}" rel="stylesheet" type="text/css">
-        <script type="text/javascript" src="{{ URL::asset('builder/builder.js') }}"></script>
+        <link href="{{ AppUrl::asset('builder/builder.css') }}" rel="stylesheet" type="text/css">
+        <script type="text/javascript" src="{{ AppUrl::asset('builder/builder.js') }}"></script>
 
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet"> 
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"> 
 
         <!-- Google icon -->
-        <link href="{{ URL::asset('core/css/google-font-icon.css') }}" rel="stylesheet">
+        <link href="{{ AppUrl::asset('core/css/google-font-icon.css') }}" rel="stylesheet">
 
-        <script type="text/javascript" src="{{ URL::asset('core/validate/jquery.validate.min.js') }}"></script>
-        <script type="text/javascript" src="{{ URL::asset('core/js/validate.js') }}"></script>
+        <script type="text/javascript" src="{{ AppUrl::asset('core/validate/jquery.validate.min.js') }}"></script>
+        <script type="text/javascript" src="{{ AppUrl::asset('core/js/validate.js') }}"></script>
 
-        <link type="text/css" rel="stylesheet" href="{{ URL::asset('core/css/form-builder.css') }}" />
+        <link type="text/css" rel="stylesheet" href="{{ AppUrl::asset('core/css/form-builder.css') }}" />
 
-        <script type="text/javascript" src="{{ URL::asset('core/js/group-manager.js') }}"></script>
+        <script type="text/javascript" src="{{ AppUrl::asset('core/js/group-manager.js') }}"></script>
 
         @if (Auth::user()->customer->getChatgptApiKey())
             <!-- ChatGPT -->
-            <link href="{{ URL::asset('core/css/builder-chat.css') }}" rel="stylesheet" type="text/css">
+            <link href="{{ AppUrl::asset('core/css/builder-chat.css') }}" rel="stylesheet" type="text/css">
         @include('chat._builder_script')
         @endif
 
@@ -45,7 +45,7 @@
 
                     formFields: formFields,
                     
-                    root: '{{ URL::asset('builder') }}/',                
+                    root: '{{ AppUrl::asset('builder') }}/',                
                     lang: {!! json_encode($customer->language->getBuilderLang()) !!},
                     url: '{{ action('FormController@builderContent', [
                         'uid' => $form->uid,
@@ -63,7 +63,7 @@
                     canvas: '#formCanvas',
                     sidePanel: '#formWidgetPanel',
 
-                    filemanager: '{{ URL::asset('filemanager2/dialog.php') }}',
+                    filemanager: '{{ AppUrl::asset('filemanager2/dialog.php') }}',
                     logo: '{{ getSiteLogoUrl('light') }}',
                     backgrounds: [
                         '{{ url('/images/backgrounds/images1.jpg') }}',
@@ -98,7 +98,7 @@
                         });
 
                         //
-                        editor.addCustomCss('{{ URL::asset('core/css/form-builder-frame.css') }}');
+                        editor.addCustomCss('{{ AppUrl::asset('core/css/form-builder-frame.css') }}');
 
                         // change banner
                         $("#builder_iframe").contents().find("body").on('click', '.banner-container:not(.bg-changed)', function(e) {
