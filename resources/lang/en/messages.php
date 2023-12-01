@@ -3277,4 +3277,5 @@
   'list_sign_up_captcha' => 'Captcha for List Sign-Up Form',
   'setting.list_sign_up_captcha.help' => 'Enabling the captcha will ensure that the list sign-up page cannot be spammed.',
   'list.sign_up.invalid_captcha' => 'Invalid captcha, please try again.',
+  'campaign.ab_test.select_version_to_test' => 'Select version to test',
 ) ?>

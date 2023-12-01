@@ -2270,7 +2270,12 @@ class CampaignController extends Controller
                 ], 400);
             }
 
-            $sending = $campaign->sendTestEmail($request->email);
+            // $request->version_b is 0 for A; 1 for B
+            if ($request->version_b) {
+                $sending = $campaign->campaignB->sendTestEmail($request->email);
+            } else {
+                $sending = $campaign->sendTestEmail($request->email);
+            }
 
             return response()->json($sending);
         }
