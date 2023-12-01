@@ -130,7 +130,20 @@
         
     <hr>
     <div class="text-center">
-        <a href="{{ action('CampaignController@schedule', ['uid' => $campaign->uid]) }}" class="btn btn-primary px-4 py-2" style="border-radius:100px;">{{ trans('messages.next') }} <span class="material-symbols-rounded">arrow_forward</span> </a>
+        @if ($campaign->isABTest())
+            <a href="{{ action('CampaignController@abSplitOptions', ['uid' => $campaign->uid]) }}"
+                class="btn btn-primary px-4 py-2" style="border-radius:100px;"
+            >
+                {{ trans('messages.next') }} <span class="material-symbols-rounded">arrow_forward</span>
+            </a>
+        @else
+            <a href="{{ action('CampaignController@schedule', ['uid' => $campaign->uid]) }}"
+                class="btn btn-primary px-4 py-2" style="border-radius:100px;"
+            >
+                {{ trans('messages.next') }} <span class="material-symbols-rounded">arrow_forward</span>
+            </a>
+        @endif
+            
     </div>
         
     <script>

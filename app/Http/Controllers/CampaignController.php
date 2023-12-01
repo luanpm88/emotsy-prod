@@ -146,7 +146,11 @@ class CampaignController extends Controller
         } elseif ($campaign->step() == 2) {
             return redirect()->action('CampaignController@template', ['uid' => $campaign->uid]);
         } elseif ($campaign->step() == 3) {
-            return redirect()->action('CampaignController@schedule', ['uid' => $campaign->uid]);
+            if ($campaign->isABTest()) {
+                return redirect()->action('CampaignController@abSplitOptions', ['uid' => $campaign->uid]);
+            } else {
+                return redirect()->action('CampaignController@schedule', ['uid' => $campaign->uid]);
+            }
         } elseif ($campaign->step() >= 4) {
             return redirect()->action('CampaignController@confirm', ['uid' => $campaign->uid]);
         }
@@ -624,7 +628,11 @@ class CampaignController extends Controller
             $campaign->plain = $request->plain;
             $campaign->save();
 
-            return redirect()->action('CampaignController@schedule', ['uid' => $campaign->uid]);
+            if ($campaign->isABTest()) {
+                return redirect()->action('CampaignController@abSplitOptions', ['uid' => $campaign->uid]);
+            } else {
+                return redirect()->action('CampaignController@schedule', ['uid' => $campaign->uid]);
+            }
         }
 
         return view('campaigns.plain', [
@@ -730,7 +738,11 @@ class CampaignController extends Controller
 
         // check step
         if ($campaign->step() < 4) {
-            return redirect()->action('CampaignController@schedule', ['uid' => $campaign->uid]);
+            if ($campaign->isABTest()) {
+                return redirect()->action('CampaignController@abSplitOptions', ['uid' => $campaign->uid]);
+            } else {
+                return redirect()->action('CampaignController@schedule', ['uid' => $campaign->uid]);
+            }
         }
 
         // authorize
@@ -2276,7 +2288,12 @@ class CampaignController extends Controller
                 ], 400);
             }
 
-            $sending = $campaign->sendTestEmail($request->email);
+            // $request->version_b is 0 for A; 1 for B
+            if ($request->version_b) {
+                $sending = $campaign->campaignB->sendTestEmail($request->email);
+            } else {
+                $sending = $campaign->sendTestEmail($request->email);
+            }
 
             return response()->json($sending);
         }

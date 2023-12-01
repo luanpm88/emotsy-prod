@@ -16,6 +16,16 @@
 
         <div class="">
 
+            @if ($campaign->isABTest())
+                <div class="form-group">
+                    <label for="">{{ trans('messages.campaign.ab_test.select_version_to_test') }}</label>
+                    <select class="select" name="version_b">
+                        <option value="0">{{ trans('messages.campaign.ab.version_a') }}</option>
+                        <option value="1">{{ trans('messages.campaign.ab.version_b') }}</option>
+                    </select>
+                </div>
+            @endif
+
             @include('helpers.form_control', [
                 'type' => 'text',
                 'name' => 'email',
