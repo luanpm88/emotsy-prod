@@ -4,6 +4,10 @@
 .theme-emotsy .btn {
     border-radius: 2rem!important;
 }
+.theme-emotsy .btn:not(.btn-icon,.dropdown-toggle){
+    padding-left: 17px;
+    padding-right: 17px;
+}
 .theme-emotsy .btn-primary {
     background-color: #24c6de;
     border-color: #24c6de;
