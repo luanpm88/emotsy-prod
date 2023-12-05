@@ -143,17 +143,19 @@
                             ])
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-12 color-box">
-                            <label class="mb-3">{{ trans('messages.color_scheme') }}</label>
-                            <div class="text-left mb-4 profile-scheme-select mt-2">
-                                @include('layouts.core._theme_color_control', [
-                                    'theme_color' => $customer->getColorScheme(),
-                                ])  
-                                
+                    @if (!config('app.emotsy'))
+                        <div class="row">
+                            <div class="col-md-12 color-box">
+                                <label class="mb-3">{{ trans('messages.color_scheme') }}</label>
+                                <div class="text-left mb-4 profile-scheme-select mt-2">
+                                    @include('layouts.core._theme_color_control', [
+                                        'theme_color' => $customer->getColorScheme(),
+                                    ])  
+                                    
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    @endif
                     <div class="row">
                         <div class="col-md-10 color-box">
                             @include('helpers.form_control', [
