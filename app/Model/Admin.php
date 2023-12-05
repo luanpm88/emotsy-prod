@@ -197,6 +197,10 @@ class Admin extends Model
             return 'store';
         }
 
+        if (config('app.emotsy')) {
+            return 'emotsy';
+        }
+
         if (!empty($this->color_scheme)) {
             return $this->color_scheme;
         } else {

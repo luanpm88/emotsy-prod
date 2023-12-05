@@ -59,6 +59,10 @@ class Setting extends Model
             return 'sms';
         }
 
+        if (config('app.emotsy') && in_array($name, ['frontend_scheme','backend_scheme'])) {
+            return 'emotsy';
+        }
+
         $setting = self::where('name', $name)->first();
 
         if ($setting) {
