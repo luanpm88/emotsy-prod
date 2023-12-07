@@ -30,7 +30,7 @@
 
                             <div class="text-center login-header">
                                 <a class="main-logo-big" href="{{ action('HomeController@index') }}">
-                                    <img src="{{ in_array(Acelle\Model\Setting::get('frontend_scheme'), ['supermail','white','emotsy']) ? getSiteLogoUrl('dark') : getSiteLogoUrl('light') }}" alt="">
+                                    <img src="{{ in_array(Acelle\Model\Setting::get('frontend_scheme'), ['supermail','white']) ? getSiteLogoUrl('dark') : getSiteLogoUrl('light') }}" alt="">
                                 </a>
                             </div>
 
