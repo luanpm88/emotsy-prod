@@ -60,7 +60,8 @@
                             show: true
                         },
                         itemStyle: {
-                            color: '#81ac8d'
+                            color: '#08c6e1',
+                            borderRadius: [50, 50, 0, 0],
                         },
                         data: data.data,
                         type: 'bar'

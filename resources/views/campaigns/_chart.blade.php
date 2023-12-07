@@ -157,7 +157,8 @@
                         name: item.name,
                         value: item.value,
                         itemStyle: {
-                            color: colors[index]
+                            color: colors[index],
+                            borderRadius: [0, 50, 50, 0],
                         }
                     };
                 }).reverse();

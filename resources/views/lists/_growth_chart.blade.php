@@ -53,7 +53,8 @@
                                     show: true
                                 },
                                 itemStyle: {
-                                    color: '#08c6e1'
+                                    color: '#08c6e1',
+                                    borderRadius: [50, 50, 0, 0],
                                 },
                                 data: data.data,
                                 type: 'bar'
