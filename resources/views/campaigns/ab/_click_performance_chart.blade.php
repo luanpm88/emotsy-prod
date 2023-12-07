@@ -92,7 +92,7 @@
                             name: '{{ trans('messages.campaign.ab.version_a') }}',
                             type: 'line',
                             itemStyle: {
-                                color: '#5cb2b2'
+                                color: '#08c6e1'
                             },
                             data: data.version_a
                         },
@@ -100,7 +100,7 @@
                             name: '{{ trans('messages.campaign.ab.version_b') }}',
                             type: 'line',
                             itemStyle: {
-                                color: '#b26e59'
+                                color: '#ffaa6f'
                             },
                             data: data.version_b
                         }

@@ -74,15 +74,15 @@
                         var growthChart2 = echarts.init(ClickPieChart.getChart()[0], ECHARTS_THEME);
 
                         var colors = [
-                            '#5cb2b2',
-                            '#b25977',
-                            '#aab25a',
-                            '#5b7bb2',
-                            '#555555',
-                            '#626eb2',
-                            '#81ac8d',
-                            '#7d5fb2',
-                            '#b26e59'
+                            '#76ddc2',
+                            '#08c6e1',
+                            '#10a6bc',
+                            '#ffaa6f',
+                            '#ffd773',
+                            '#ff4640',
+                            '#ff8068',
+                            '#00bffd',
+                            '#aa2bf3',
                         ];
             
                         var cData = data.map(function(item, index) {

@@ -127,7 +127,7 @@
                                 name: '{{ trans('messages.total') }}',
                                 type: 'line',
                                 itemStyle: {
-                                    color: '#5cb2b2'
+                                    color: '#08c6e1'
                                 },
                                 data: data.total
                             },
@@ -135,7 +135,7 @@
                                 name: '{{ trans('messages.unsubscribed') }}',
                                 type: 'line',
                                 itemStyle: {
-                                    color: '#b26e59'
+                                    color: '#ffaa6f'
                                 },
                                 data: data.unsubscribed
                             }

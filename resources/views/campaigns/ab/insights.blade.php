@@ -114,7 +114,7 @@
                         </span>
                     </div>
                     <div class="progress progress-sm" style="height:5px;">
-                        <div class="progress-bar bg-color3" style="width: {{ number_to_percentage($campaign->readCache('UniqOpenRate')) }}">
+                        <div class="progress-bar bg-color1" style="width: {{ number_to_percentage($campaign->readCache('UniqOpenRate')) }}">
                         </div>
                     </div>
                 </div>
@@ -126,7 +126,7 @@
                         </span>
                     </div>
                     <div class="progress progress-sm" style="height:5px;">
-                        <div class="progress-bar bg-color3" style="width: {{ number_to_percentage($campaign->campaignB->readCache('UniqOpenRate')) }}">
+                        <div class="progress-bar bg-color1" style="width: {{ number_to_percentage($campaign->campaignB->readCache('UniqOpenRate')) }}">
                         </div>
                     </div>
                 </div>
@@ -146,7 +146,7 @@
                         <span class="pull-right text-primary fw-semibold">{{ number_to_percentage($campaign->readCache('ClickedRate')) }}</span>
                     </div>
                     <div class="progress progress-sm" style="height:5px;">
-                        <div class="progress-bar bg-color7" style="width: {{ number_to_percentage($campaign->readCache('ClickedRate')) }}">
+                        <div class="progress-bar bg-color1" style="width: {{ number_to_percentage($campaign->readCache('ClickedRate')) }}">
                         </div>
                     </div>
                 </div>
@@ -156,7 +156,7 @@
                         <span class="pull-right text-primary fw-semibold">{{ number_to_percentage($campaign->campaignB->readCache('ClickedRate')) }}</span>
                     </div>
                     <div class="progress progress-sm" style="height:5px;">
-                        <div class="progress-bar bg-color7" style="width: {{ number_to_percentage($campaign->campaignB->readCache('ClickedRate')) }}">
+                        <div class="progress-bar bg-color1" style="width: {{ number_to_percentage($campaign->campaignB->readCache('ClickedRate')) }}">
                         </div>
                     </div>
                 </div>
@@ -176,7 +176,7 @@
                         <span class="pull-right text-primary fw-semibold">{{ number_to_percentage($campaign->readCache('FailedDeliveredRate')) }}</span>
                     </div>
                     <div class="progress progress-sm" style="height:5px;">
-                        <div class="progress-bar bg-color7" style="width: {{ number_to_percentage($campaign->readCache('FailedDeliveredRate')) }}">
+                        <div class="progress-bar bg-color1" style="width: {{ number_to_percentage($campaign->readCache('FailedDeliveredRate')) }}">
                         </div>
                     </div>
                 </div>
@@ -186,7 +186,7 @@
                         <span class="pull-right text-primary fw-semibold">{{ number_to_percentage($campaign->campaignB->readCache('FailedDeliveredRate')) }}</span>
                     </div>
                     <div class="progress progress-sm" style="height:5px;">
-                        <div class="progress-bar bg-color7" style="width: {{ number_to_percentage($campaign->campaignB->readCache('FailedDeliveredRate')) }}">
+                        <div class="progress-bar bg-color1" style="width: {{ number_to_percentage($campaign->campaignB->readCache('FailedDeliveredRate')) }}">
                         </div>
                     </div>
                 </div>
@@ -210,7 +210,7 @@
                         </span>
                     </div>
                     <div class="progress progress-sm" style="height:5px;">
-                        <div class="progress-bar bg-color3" style="width: {{ number_to_percentage($campaign->readCache('UniqOpenRate')) }}">
+                        <div class="progress-bar bg-color1" style="width: {{ number_to_percentage($campaign->readCache('UniqOpenRate')) }}">
                         </div>
                     </div>
                 </div>
@@ -222,7 +222,7 @@
                         </span>
                     </div>
                     <div class="progress progress-sm" style="height:5px;">
-                        <div class="progress-bar bg-color3" style="width: {{ number_to_percentage($campaign->readCache('UniqOpenRate')) }}">
+                        <div class="progress-bar bg-color1" style="width: {{ number_to_percentage($campaign->readCache('UniqOpenRate')) }}">
                         </div>
                     </div>
                 </div>
@@ -242,7 +242,7 @@
                         <span class="pull-right text-primary fw-semibold">{{ number_to_percentage($campaign->readCache('ClickedRate')) }}</span>
                     </div>
                     <div class="progress progress-sm" style="height:5px;">
-                        <div class="progress-bar bg-color7" style="width: {{ number_to_percentage($campaign->readCache('ClickedRate')) }}">
+                        <div class="progress-bar bg-color1" style="width: {{ number_to_percentage($campaign->readCache('ClickedRate')) }}">
                         </div>
                     </div>
                 </div>
@@ -252,7 +252,7 @@
                         <span class="pull-right text-primary fw-semibold">{{ number_to_percentage($campaign->readCache('ClickedRate')) }}</span>
                     </div>
                     <div class="progress progress-sm" style="height:5px;">
-                        <div class="progress-bar bg-color7" style="width: {{ number_to_percentage($campaign->readCache('ClickedRate')) }}">
+                        <div class="progress-bar bg-color1" style="width: {{ number_to_percentage($campaign->readCache('ClickedRate')) }}">
                         </div>
                     </div>
                 </div>
@@ -272,7 +272,7 @@
                         <span class="pull-right text-primary fw-semibold">{{ number_to_percentage($campaign->readCache('ClickedRate')) }}</span>
                     </div>
                     <div class="progress progress-sm" style="height:5px;">
-                        <div class="progress-bar bg-color7" style="width: {{ number_to_percentage($campaign->readCache('ClickedRate')) }}">
+                        <div class="progress-bar bg-color1" style="width: {{ number_to_percentage($campaign->readCache('ClickedRate')) }}">
                         </div>
                     </div>
                 </div>
@@ -282,7 +282,7 @@
                         <span class="pull-right text-primary fw-semibold">{{ number_to_percentage($campaign->readCache('ClickedRate')) }}</span>
                     </div>
                     <div class="progress progress-sm" style="height:5px;">
-                        <div class="progress-bar bg-color7" style="width: {{ number_to_percentage($campaign->readCache('ClickedRate')) }}">
+                        <div class="progress-bar bg-color1" style="width: {{ number_to_percentage($campaign->readCache('ClickedRate')) }}">
                         </div>
                     </div>
                 </div>

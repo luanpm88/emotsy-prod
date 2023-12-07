@@ -92,7 +92,7 @@
                             name: '{{ trans('messages.opened') }}',
                             type: 'line',
                             itemStyle: {
-                                color: '#5cb2b2'
+                                color: '#08c6e1'
                             },
                             data: data.opened
                         },
@@ -100,7 +100,7 @@
                             name: '{{ trans('messages.clicked') }}',
                             type: 'line',
                             itemStyle: {
-                                color: '#b26e59'
+                                color: '#ffaa6f'
                             },
                             data: data.clicked
                         }
