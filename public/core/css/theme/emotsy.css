@@ -66,6 +66,14 @@
 .progress-bar.progress-bar-striped.bg-primary {
     background-color: #08c6e1!important;
 }
+.btn-info {
+    background-color: #76ddc2;
+    border-color: #76ddc2;
+}
+.btn-info:hover {
+    background-color: #7af2d2;
+    border-color: #7af2d2;
+}
 .bg-color0 {
     background-color: #76ddc2;
     border-color: #76ddc2;
