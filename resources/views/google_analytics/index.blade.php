@@ -12,7 +12,7 @@
             <li class="breadcrumb-item active">{{ trans('messages.profile') }}</li>
         </ul>
         <h1>
-            <span class="text-semibold"><span class="material-symbols-rounded">person_outline</span> {{ $customer->displayName() }}</span>
+            <span class="text-semibold"><span class="material-symbols-rounded">person_outline</span> {{ $customer->user->displayName(get_localization_config('show_last_name_first', Auth::user()->customer->getLanguageCode())) }}</span>
         </h1>
     </div>
 
