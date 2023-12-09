@@ -158,7 +158,7 @@ class CustomerController extends Controller
         if (!empty($request->old())) {
             $customer->fill($request->old());
             // User info
-            $customer->user->fill($request->old());
+            // $customer->user->fill($request->old());
         }
 
         return view('admin.customers.edit', [
@@ -279,45 +279,6 @@ class CustomerController extends Controller
 
         // Redirect to my lists page
         echo trans('messages.customers.deleted');
-    }
-
-    /**
-     * Switch user.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function loginAs(Request $request)
-    {
-        $customer = \Acelle\Model\Customer::findByUid($request->uid);
-
-        // authorize
-        if (\Gate::denies('loginAs', $customer)) {
-            return $this->notAuthorized();
-        }
-
-        $orig_id = $request->user()->uid;
-        \Auth::login($customer->user);
-        \Session::put('orig_user_uid', $orig_id);
-        return redirect()->action('HomeController@index');
-    }
-
-    /**
-     * Log in back user.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function loginBack(Request $request)
-    {
-        $id = \Session::pull('orig_user_uid');
-        $orig_user = \Acelle\Model\Customer::findByUid($id);
-
-        \Auth::login($orig_user);
-
-        return redirect()->action('Admin\CustomerController@index');
     }
 
     /**
