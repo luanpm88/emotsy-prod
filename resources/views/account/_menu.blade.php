@@ -44,7 +44,7 @@
                         <span class="material-symbols-rounded">vpn_key</span> {{ trans('messages.api_token') }}
                     </a>
                 </li>
-                <li class="nav-item {{ $menu == 'google_analytics' ? 'active' : '' }}">
+                <li class="nav-item {{ $menu == 'google_analytics' ? 'active' : '' }} d-none">
                     <a style="line-height:24px;" href="{{ action("GoogleAnalyticsController@index") }}" class="nav-link">
                         <svg style="height: 16px;
                         display: inline-block;
