@@ -53,6 +53,7 @@
                   parent.$('.full-iframe-popup').remove();
                   popup.load();
                 },
+                disableFeatures: [ 'change_template' ], 
                 uploadAssetUrl: '{{ action('TemplateController@uploadTemplateAssets', $email->template->uid) }}',
                 uploadAssetMethod: 'POST',
                 saveUrl: '{{ action('Automation2Controller@templateEdit', [
