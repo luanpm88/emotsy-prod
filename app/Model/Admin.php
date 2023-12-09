@@ -371,7 +371,10 @@ class Admin extends Model
         $customer = \Acelle\Model\Customer::newCustomer();
         $customer->admin_id = $this->id;
         $customer->language_id = $this->language_id;
-        // [moved] $customer->first_name = $this->first_name;
+
+        // default name
+        $customer->name = $this->displayName();
+
         // [moved] $customer->last_name = $this->last_name;
         $customer->timezone = $this->timezone;
         $customer->status = $this->status;
@@ -381,6 +384,9 @@ class Admin extends Model
         $user = $this->user;
         $user->customer_id = $customer->id;
         $user->save();
+
+        // set default role
+        $user->setRole(Role::default()->first());
 
         return $customer;
     }
