@@ -64,6 +64,11 @@
                         <div class="btn-group">
                             <button role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"></button>
                             <ul class="dropdown-menu dropdown-menu-end">
+                                <li>
+                                    <a list-action="one-click-login" class="dropdown-item" href="{{ action('Admin\UserController@oneClickLogin', $user->uid) }}">
+                                        <span class="material-symbols-rounded">link</span> {{ trans('messages.admin.generate_one_click_login') }}
+                                    </a>
+                                </li>
                                 @if(Auth::user()->admin->can('enable', $user))
                                     <li>
                                         <a class="dropdown-item list-action-single" link-confirm="{{ trans('messages.user.enable.confirm') }}" href="{{ action('Admin\UserController@enable', [
@@ -102,6 +107,27 @@
         @endforeach
     </table>
     @include('elements/_per_page_select', ["items" => $users])
+
+    <script>
+        var AdminUsersList = {
+            oneClickPopup: null,
+
+            init: function() {
+                this.oneClickPopup = new Popup();
+            }
+        }
+
+        $(function() {
+            AdminUsersList.init();
+
+            $('[list-action="one-click-login"]').on('click', function(e) {
+                e.preventDefault();
+                var url = $(this).attr('href');
+
+                AdminUsersList.oneClickPopup.load(url);
+            })
+        })
+    </script>
 
 @elseif (!empty(request()->keyword))
     <div class="empty-list">

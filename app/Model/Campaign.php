@@ -1157,9 +1157,9 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
             'plain-text' => [
                 'icon' => 'wysiwyg',
             ],
-            'ab-test' => [
-                'icon' => '',
-            ],
+            // 'ab-test' => [
+            //     'icon' => '',
+            // ],
         ];
     }
 

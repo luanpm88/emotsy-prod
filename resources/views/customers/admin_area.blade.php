@@ -80,7 +80,7 @@
         </div>
     @endif
     <div class="text-left mt-5">
-        <a href="{{ action("CustomerController@loginBack") }}" class="btn btn-secondary">{{ trans('messages.customer.back_to_admin') }}</a>
+        <a href="{{ action("UserController@loginBack") }}" class="btn btn-secondary">{{ trans('messages.customer.back_to_admin') }}</a>
         <button role="button" class="btn btn-link" data-dismiss="modal">{{ trans('messages.close') }}</button>
     </div>
 @endsection

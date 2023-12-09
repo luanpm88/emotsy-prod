@@ -119,12 +119,7 @@
                                     </li>
                                 @endcan
                                 <li>
-                                    <a list-action="one-click-login" class="dropdown-item" href="{{ action('Admin\CustomerController@oneClickLogin', $customer->uid) }}">
-                                        <span class="material-symbols-rounded">link</span> {{ trans('messages.admin.generate_one_click_login') }}
-                                    </a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item list-action-single" link-confirm="{{ trans('messages.delete_users_confirm') }}" href="{{ action('Admin\CustomerController@delete', ['uids' => $customer->uid]) }}">
+                                    <a class="dropdown-item list-action-single" link-confirm="{{ trans('messages.customer.delete.confirm') }}" href="{{ action('Admin\CustomerController@delete', ['uids' => $customer->uid]) }}">
                                         <span class="material-symbols-rounded">delete_outline</span> {{ trans('messages.delete') }}
                                     </a>
                                 </li>

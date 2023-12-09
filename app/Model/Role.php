@@ -96,6 +96,11 @@ class Role extends Model
         $this->save();
     }
 
+    public static function scopeDefault($query)
+    {
+        $query = $query->where('roles.default', true);
+    }
+
     public static function scopeActive($query)
     {
         $query = $query->where('roles.status', '=', self::STATUS_ACTIVE);

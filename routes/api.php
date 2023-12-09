@@ -57,7 +57,6 @@ Route::group(['namespace' => 'Api', 'prefix' => 'v1', 'middleware' => 'auth:api'
 
     // Customer
     Route::post('customers/{uid}/change-plan/{plan_uid}', 'CustomerController@changePlan');
-    Route::match(['get','post'], 'login-token', 'CustomerController@loginToken');
     Route::post('customers/{uid}/assign-plan/{plan_uid}', 'CustomerController@assignPlan');
     Route::patch('customers/{uid}/disable', 'CustomerController@disable');
     Route::patch('customers/{uid}/enable', 'CustomerController@enable');
@@ -74,4 +73,7 @@ Route::group(['namespace' => 'Api', 'prefix' => 'v1', 'middleware' => 'auth:api'
 
     // Subscription
     Route::resource('notification', 'NotificationController');
+
+    // User
+    Route::match(['get','post'], 'login-token', 'UserController@loginToken');
 });

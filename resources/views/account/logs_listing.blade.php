@@ -4,9 +4,6 @@
     >
         @foreach ($logs as $key => $item)
             <tr class="position-relative">
-                <td width="1%" class="list-check-col">
-                    <img width="50" class="rounded-circle me-2" src="{{ $item->customer->user->getProfileImageUrl() }}" alt="">
-                </td>
                 <td style="width:50%">
                     <p class="mb-0">                                                
                         {!! $item->message() !!}<br />

@@ -1498,9 +1498,9 @@ class Customer extends Model
         DB::transaction(function () {
             $user = $this->user;
             $this->delete();
-            if (!$user->admin()->exists()) {
-                $user->deleteAndCleanup();
-            }
+            // if (!$user->admin()->exists()) {
+            //     $user->deleteAndCleanup();
+            // }
         });
     }
 

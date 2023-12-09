@@ -233,4 +233,13 @@ class UserController extends Controller
         
         return redirect()->action('HomeController@index');
     }
+
+    public function oneClickLogin(Request $request)
+    {
+        $user = \Acelle\Model\User::findByUid($request->uid);
+
+        return view('admin.users.oneClickLogin', [
+            'url' => $user->generateOneClickLoginUrl(),
+        ]);
+    }
 }

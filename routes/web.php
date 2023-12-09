@@ -304,7 +304,6 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
 
 
     // Customer login back
-    Route::get('customers/login-back', 'CustomerController@loginBack');
     Route::get('customers/admin-area', 'CustomerController@adminArea');
 
     // Customer profile/information
@@ -937,7 +936,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::get('admin/notifications', 'NotificationController@index');
 
     // User
-
+    Route::get('admin/users/{uid}/one-click-login', 'UserController@oneClickLogin');
     Route::get('admin/customers/{customer_uid}/users/login-as/{uid}', 'UserController@loginAs');
     Route::get('admin/customers/{customer_uid}/users/listing/{page?}', 'UserController@listing');
     Route::get('admin/customers/{customer_uid}/users/delete', 'UserController@delete');
@@ -1109,7 +1108,6 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::get('admin/blacklists/{id}/reason', 'BlacklistController@reason');
 
     // Customer
-    Route::get('admin/customers/{uid}/one-click-login', 'CustomerController@oneClickLogin');
     Route::match(['get', 'post'], 'admin/customers/{uid}/assign-plan', 'CustomerController@assignPlan');
     Route::get('admin/customers/{uid}/su-account', 'CustomerController@subAccount');
     Route::post('admin/customers/{uid}/contact', 'CustomerController@contact');

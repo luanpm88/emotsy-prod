@@ -152,10 +152,6 @@
                     @foreach (\Auth::user()->admin->getLogs()->take(20)->get() as $log)
                         <!-- Sales stats -->
                         <div class="d-flex mb-3">
-                            <div class="me-3">
-                                <a href="#"><img width="50px" class="rounded-circle shadow-sm" src="{{ $log->customer->user->getProfileImageUrl() }}" alt=""></a>
-                            </div>
-
                             <div class="card px-0 shadow-sm container-fluid">
                                 <div class="card-body pt-2">
                                     <div class="d-flex align-items-center pt-1">

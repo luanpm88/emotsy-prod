@@ -58,6 +58,7 @@
                     parent.builderSelectPopup.hide();
                   }
                 },
+                disableFeatures: [ 'change_template' ], 
                 uploadAssetUrl: '{{ action('TemplateController@uploadTemplateAssets', $campaign->template->uid) }}',
                 uploadAssetMethod: 'POST',
                 saveUrl: '{{ action('CampaignController@templateEdit', [

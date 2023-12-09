@@ -89,7 +89,6 @@ class CustomerController extends Controller
                     'status' => 1,
                     'message' => trans('messages.customer.created'),
                     'customer_uid' => $customer->uid,
-                    'api_token' => $customer->user->api_token
                 ), 200);
             }
         }
@@ -122,44 +121,14 @@ class CustomerController extends Controller
 
         // save posted data
         if ($request->isMethod('patch')) {
-            // Prenvent save from demo mod
-            $user = $customer->user;
-            $user->fill($request->all());
-
             if (config('app.demo')) {
                 return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
             }
 
-            $rules = $user->apiUpdateRules($request);
-
-            $validator = \Validator::make($request->all(), $rules);
-
-            if ($validator->fails()) {
-                return response()->json($validator->messages(), 403);
-            }
-
-            // Update password
-            if (!empty($request->password)) {
-                $user->password = bcrypt($request->password);
-            }
-            $user->save();
-
             // Save current user info
             $customer->fill($request->all());
             $customer->save();
-
-            // Upload and save image
-            if ($request->hasFile('image')) {
-                if ($request->file('image')->isValid()) {
-                    $user->uploadProfileImage($request->file('image'));
-                }
-            }
-
-            // Remove image
-            if ($request->_remove_image == 'true') {
-                $user->removeProfileImage();
-            }
-
+            
             return \Response::json(array(
                 'status' => 1,
                 'message' => trans('messages.customer.updated'),
@@ -371,39 +340,6 @@ class CustomerController extends Controller
             'customer_uid' => $customer->uid,
             'plan_uid' => $plan->uid
         ), 200);
-    }
-
-    /**
-     * Generate one time token.
-     *
-     * PATCH /api/v1/customers/{uid}/login-token
-     *
-     * @param int $id customer's uid
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function loginToken(Request $request)
-    {
-        $user = \Auth::guard('api')->user();
-
-        // if for another customer
-        if ($request->customer_uid) {
-            $customer = Customer::findByUid($request->customer_uid);
-
-            // authorize
-            if (!$user->can('loginAs', $customer)) {
-                return \Response::json(array('status' => 0, 'message' => 'Unauthorized'), 401);
-            }
-
-            $user = $customer->user;
-        }
-
-        $user->generateOneTimeToken();
-
-        echo json_encode(array(
-            'token' => $user->one_time_api_token,
-            'url' => action('Controller@tokenLogin', ['token' => $user->one_time_api_token]),
-        ), JSON_UNESCAPED_SLASHES);
     }
 
     public function destroy($uid)

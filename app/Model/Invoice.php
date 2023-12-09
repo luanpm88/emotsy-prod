@@ -866,4 +866,9 @@ class Invoice extends Model
             $this->payFailed("Payment done, but something went wrong after that: ".$e->getMessage());
         }
     }
+
+    public function formattedTotal()
+    {
+        return format_price($this->total(), $this->currency->format);
+    }
 }

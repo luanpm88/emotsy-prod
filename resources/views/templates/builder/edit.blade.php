@@ -127,6 +127,7 @@
                         window.location = '{{ action('TemplateController@index') }}';
                     }    
                 },
+                disableFeatures: [ 'change_template' ], 
                 uploadAssetUrl: '{{ action('TemplateController@uploadTemplateAssets', $template->uid) }}',
                 uploadAssetMethod: 'POST',
                 saveUrl: '{{ action('TemplateController@builderEdit', $template->uid) }}',
