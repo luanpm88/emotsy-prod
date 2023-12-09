@@ -1,7 +1,3 @@
-:root {
-    --bs-info-rgb: #00acb8;
-}
-
 @media (max-width: 890px) {
     .table-box td, .table-box th {
         display: block;
