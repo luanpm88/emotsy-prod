@@ -32,26 +32,6 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="sub_section">
-                                <div class="media profile-image">
-                                    <div class="media-left">
-                                        <a href="#" class="upload-media-container">
-                                            <img preview-for="image" empty-src="{{ URL::asset('images/placeholder.jpg') }}" src="{{ $user->getProfileImageUrl() }}" class="rounded-circle" alt="">
-                                        </a>
-                                        <input type="file" name="image" class="file-styled previewable hide">
-                                        <input type="hidden" name="_remove_image" value='' />
-                                    </div>
-                                    <div class="media-body text-center">
-                                        <h5 class="media-heading text-semibold">{{ trans('messages.upload_photo') }}</h5>
-                                        {{ trans('messages.photo_at_least', ["size" => "300px x 300px"]) }}
-                                        <br /><br />
-                                        <a href="#upload" onclick="$('input[name=image]').trigger('click')" class="btn btn-primary me-1"><span class="material-symbols-rounded">file_download</span> {{ trans('messages.upload') }}</a>
-                                        <a href="#remove" class="btn btn-secondary remove-profile-image"><span class="material-symbols-rounded">delete_outline</span> {{ trans('messages.remove') }}</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-12">
-                            <div class="sub_section">
                                 @if (get_localization_config('show_last_name_first', Auth::user()->admin->getLanguageCode()))
                                     <div class="row">
                                         <div class="col-md-6">

@@ -31,7 +31,6 @@ class SendListNotificationToOwner
     {
         $subscriber = $event->subscriber;
         $list = $subscriber->mailList;
-        $user = $list->customer->user;
 
         if (Setting::isYes('send_notification_email_for_list_subscription')) {
             // Send notification

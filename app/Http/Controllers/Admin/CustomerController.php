@@ -157,8 +157,6 @@ class CustomerController extends Controller
 
         if (!empty($request->old())) {
             $customer->fill($request->old());
-            // User info
-            // $customer->user->fill($request->old());
         }
 
         return view('admin.customers.edit', [
@@ -461,15 +459,6 @@ class CustomerController extends Controller
         return view('admin.customers.assign_plan', [
             'customer' => $customer,
             'plans' => $plans,
-        ]);
-    }
-
-    public function oneClickLogin(Request $request)
-    {
-        $customer = \Acelle\Model\Customer::findByUid($request->uid);
-
-        return view('admin.customers.oneClickLogin', [
-            'url' => $customer->user->generateOneClickLoginUrl(),
         ]);
     }
 }
