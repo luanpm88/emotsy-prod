@@ -1,4 +1,4 @@
-<ul class="nav nav-tabs nav-underline mb-0 campaign-steps border-bottom-0 justify-content-center" role="tablist">
+<ul class="nav nav-tabs nav-underline mb-0 campaign-steps border-bottom-0" role="tablist">
     <li class="nav-item">
         <a class="nav-link pb-1 fs-7 bg-transparent {{ $current == 1 ? "active" : "" }} me-0" href="{{ action('CampaignController@recipients', [
                 'uid' => $campaign->uid,

@@ -3292,7 +3292,7 @@
   'campaign.ab.split_email_content.wording' => 'Optimize your click rates by testing out two different email templates.',
   'campaign.ab.split_email_content' => 'Split email templates',
   'campaign.tracking_settings' => 'Tracking settings',
-  'campaign.select_type.wording' => 'When setting up an email campaign, you\'ll need to choose from three main types: general, plain text, and A/B test campaigns. Each type serves different purposes, so let\'s take a closer look at what they entail and when to use them.',
+  'campaign.select_type.wording' => 'When setting up an email campaign, you\'ll need to choose from three main types: general, plain text. Each type serves different purposes, so let\'s take a closer look at what they entail and when to use them.',
   'campaign.ab.template_variations' => 'Template variations',
   'campaign.ab.version_a' => 'Version A',
   'campaign.ab.version_b' => 'Version B',
