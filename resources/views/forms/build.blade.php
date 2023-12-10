@@ -653,7 +653,14 @@
                 FormsEdit.hideSidebar();
             });
 
-            new OnscreenIntro();
+            // onscreen intro
+            @if (!Auth::user()->isOnscreenIntroShowed('form.builder'))
+                new OnscreenIntro();
+
+                @php
+                    Auth::user()->setOnscreenIntroShowed('form.builder');
+                @endphp
+            @endif
         })
 
         var OnscreenIntro = class {
