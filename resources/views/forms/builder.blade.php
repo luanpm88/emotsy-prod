@@ -142,7 +142,7 @@
             });
         </script>
     </head>
-    <body>        
+    <body> 
         <div class="">
             <div>
                 <div class="browser-backdrop">
