@@ -601,11 +601,9 @@ class Template extends Model
         }
 
         // preg_match('/\/assets\/(?<dirname>[^\/]+)\/(?<basename>[^\/]+)/', '/assets/dir/file.jpg', $match);
-        if (strpos($url, '/assets/') === 0) {
-            list($prefix, $dirname, $basename) = array_values(array_filter(explode('/', $url)));
-            $dirname = StringHelper::base64UrlDecode($dirname);
-            $absPath = storage_path(join_paths($dirname, $basename));
-
+        if (preg_match('/\/assets\/(?<dirname>[^\/]+)\/(?<basename>[^\/]+)/', $url, $match)) {
+            $dirname = StringHelper::base64UrlDecode($match['dirname']);
+            $absPath = storage_path(join_paths($dirname, $match['basename']));
             return $absPath;
         } else {
             return null;
