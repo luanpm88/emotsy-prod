@@ -44,6 +44,11 @@
                         <span class="material-symbols-rounded">vpn_key</span> {{ trans('messages.api_token') }}
                     </a>
                 </li>
+                <li class="nav-item {{ $menu == 'chatgpt' ? 'active' : '' }}">
+                    <a href="{{ action("ChatgptController@settings") }}" class="nav-link">
+                        <span class="material-symbols-rounded">psychology</span> {{ trans('messages.account.chatgpt') }}
+                    </a>
+                </li>
                 {{-- <li class="nav-item {{ $menu == 'google_analytics' ? 'active' : '' }}">
                     <a style="line-height:24px;" href="{{ action("GoogleAnalyticsController@index") }}" class="nav-link">
                         <svg style="height: 16px;
