@@ -35,7 +35,7 @@
                     
             </span>
             <div class="ms-auto">
-                <button class="me-2 builder-save-button btn btn-secondary" href="{{ action('FormController@index') }}">
+                <button onscreen-control="save-button" class="me-2 builder-save-button btn btn-secondary" href="{{ action('FormController@index') }}">
                     <div class="d-flex align-items-center">
                         <span class="material-symbols-rounded me-2">task_alt</span>
                             <span>{{ trans('messages.form.builder.save') }}</span>
@@ -45,7 +45,7 @@
             <span class="pe-2 text-muted2"> | </span>
             <div class="me-4">
                 @if (Auth::user()->customer->can('publish', $form))
-                    <a href="{{ action('FormController@publish', [
+                    <a onscreen-control="publish-unpublish-button" href="{{ action('FormController@publish', [
                         'uids' => [$form->uid],
                     ]) }}" class="me-1 builder-publish-button btn btn-default" href="{{ action('FormController@index') }}">
                         <div class="d-flex align-items-center">
@@ -56,7 +56,7 @@
                     </a>                    
                 @endif
                 @if (Auth::user()->customer->can('unpublish', $form))
-                    <a href="{{ action('FormController@unpublish', [
+                    <a onscreen-control="publish-unpublish-button" href="{{ action('FormController@unpublish', [
                         'uids' => [$form->uid],
                     ]) }}" class="me-1 builder-unpublish-button btn btn-default" href="{{ action('FormController@index') }}">
                         <div class="d-flex align-items-center">
@@ -125,7 +125,7 @@
 
     <div class="styles-settings shadow-sm">
         <div class="styles-sections">
-            <div class="styles-section form-layouts">
+            <div onscreen-control="layouts-button" class="styles-section form-layouts">
                 <a href="javascript:;" class="styles-menu-button styles-toggle px-2 py-1">
                     <span class="material-symbols-rounded" style="line-height:30px">dashboard</span>
                 </a>
@@ -149,7 +149,7 @@
                     </div>
                 </div>  
             </div>
-            <div class="styles-section form-theme">
+            <div onscreen-control="themes-button" class="styles-section form-theme">
                 <a href="javascript:;" class="styles-menu-button styles-toggle px-2 py-1">
                     <span class="material-symbols-rounded" style="line-height:30px">web</span>
                 </a>
@@ -174,7 +174,7 @@
                     </div>
                 </div>  
             </div>
-            <div class="styles-section form-theme">
+            <div onscreen-control="settings-button" class="styles-section form-theme">
                 <a href="javascript:;" class="styles-menu-button styles-toggle px-2 py-1">
                     <span class="material-symbols-rounded" style="line-height:30px">tune</span>
                 </a>
@@ -308,7 +308,7 @@
                     </div>
                 </div>  
             </div>
-            <div class="styles-section form-theme">
+            <div onscreen-control="preview-button" class="styles-section form-theme">
                 <a href="javascript:;" class="styles-menu-button preview-popup px-2 py-1">
                     <span class="material-symbols-rounded xtooltip" title="{{ trans('messages.preview') }}" style="line-height:30px">visibility</span>
                 </a> 
@@ -652,7 +652,245 @@
             $('.navbar').on('click', function() {
                 FormsEdit.hideSidebar();
             });
+
+            // onscreen intro
+            @if (!Auth::user()->isOnscreenIntroShowed('form.builder'))
+                new OnscreenIntro();
+
+                @php
+                    Auth::user()->setOnscreenIntroShowed('form.builder');
+                @endphp
+            @endif
         })
+
+        var OnscreenIntro = class {
+            constructor() {
+                var _this = this;
+
+                this.hightlightBox = null;
+                this.arrow = null;
+                this.textbox = null;
+                this.currentStepNumber = 0;
+
+                this.steps = [
+                    // Layouts
+                    {
+                        getControl: function() {
+                            return $('[onscreen-control="layouts-button"]');
+                        },
+                        message: "{{ trans('messages.form.onscreen.layouts.intro') }}",
+                    },
+
+                    // Theme
+                    {
+                        getControl: function() {
+                            return $('[onscreen-control="themes-button"]');
+                        },
+                        message: "{{ trans('messages.form.onscreen.themes.intro') }}",
+                    },
+
+                    // Settings
+                    {
+                        getControl: function() {
+                            return $('[onscreen-control="settings-button"]');
+                        },
+                        message: "{{ trans('messages.form.onscreen.settings.intro') }}",
+                    },
+
+                    // Preview
+                    {
+                        getControl: function() {
+                            return $('[onscreen-control="preview-button"]');
+                        },
+                        message: "{{ trans('messages.form.onscreen.preview.intro') }}",
+                    },
+
+                    // Save
+                    {
+                        getControl: function() {
+                            return $('[onscreen-control="save-button"]');
+                        },
+                        message: "{{ trans('messages.form.onscreen.save.intro') }}",
+                        position: 'left',
+                    },
+
+                    // Publbish/Ubpublish
+                    {
+                        getControl: function() {
+                            return $('[onscreen-control="publish-unpublish-button"]');
+                        },
+                        message: "{{ trans('messages.form.onscreen.publish_unpublish.intro') }}",
+                        position: 'left',
+                    },
+                ]
+
+                // init box
+                this.initHightlightBox();
+
+                // init arrow
+                this.initArrow();
+
+                // init textbox
+                this.initTextbox();
+
+                // 
+                this.loadStep(this.currentStepNumber);
+
+                // events
+                this.hightlightBox.on('click', function() {
+                    _this.nextStep();
+                });
+            }
+
+            stepCount() {
+                return this.steps.length;
+            }
+
+            getStepByNumber(number) {
+                return this.steps[number];
+            }
+
+            loadStep(stepNumber) {
+                var currentStep = this.getStepByNumber(stepNumber);
+
+                //
+                this.hightlight(currentStep.getControl(), currentStep.message, currentStep.position ?? 'right');
+            }
+
+            nextStep() {
+                this.currentStepNumber += 1;
+
+                if (this.stepCount() <= this.currentStepNumber) {
+                    this.exit();
+
+                    return;
+                }
+                
+                this.loadStep(this.currentStepNumber);
+            }
+
+            exit() {
+                this.hideHightlightBox();
+                this.hideArrow();
+                this.hideTextbox();
+
+                this.currentStepNumber = 0;
+            }
+
+            hightlight(control, text, position) {
+                // load box
+                this.showHightlightBox();
+                this.hightlightBox.find('[onscreen-control="hightlight-box"]').css('top', control.offset().top);
+                this.hightlightBox.find('[onscreen-control="hightlight-box"]').css('left', control.offset().left);
+                this.hightlightBox.find('[onscreen-control="hightlight-box"]').css('width', control.outerWidth());
+                this.hightlightBox.find('[onscreen-control="hightlight-box"]').css('height', control.outerHeight());
+
+                // load arrow
+                this.showArrow();
+                this.arrow.css('top', control.offset().top + control.height()/2 - 20);
+                this.arrow.css('left', control.offset().left + control.outerWidth() + 20);
+
+                // textbox
+                this.showTextbox();
+                this.textbox.css('top', control.offset().top + this.arrow.height() + 20);
+                this.textbox.css('left', control.offset().left + this.arrow.outerWidth() + 20);
+                this.textbox.find('[onscreen-control="text"]').html(text);
+
+                // position
+                if (position == 'left') {
+                    this.arrow.css('transform', 'scaleX(-1)');
+                    this.arrow.css('top', control.offset().top + control.height()/2 - 20);
+                    this.arrow.css('left', control.offset().left - this.arrow.outerWidth() - 20);
+
+                    this.textbox.css('top', control.offset().top + control.height() + this.arrow.outerHeight());
+                    this.textbox.css('left', control.offset().left - this.arrow.outerWidth() - 20 - this.textbox.width()/2);
+                }
+            }
+
+            initHightlightBox() {
+                this.hightlightBox = $(`<div style="display:none;">
+                    <div style="
+                        opacity: 0;
+                        position: fixed;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 100%;
+                        z-index: 10000;
+                        transition: all 0.2s ease-in-out;
+                    ">
+
+                    </div>
+                    <div onscreen-control="hightlight-box" class="transparent-box" style="
+                        opacity: 0.9;
+                        position: fixed;
+                        top: 0;
+                        left: 0;
+                        width: 100px;
+                        height: 80px;
+                        box-shadow: 0 0 0 1000pc rgba(0, 0, 0, .9);
+                        z-index: 10001;
+                        border-radius:5px;
+                        transition: all 0.2s ease-in-out;
+                    ">
+                    </div>
+                </div>`);
+
+                $('body').append(this.hightlightBox);
+            }
+
+            hideHightlightBox() {
+                this.hightlightBox.hide();
+            }
+
+            showHightlightBox() {
+                this.hightlightBox.show();
+            }
+            
+            initArrow() {
+                this.arrow = $(`<div class="onscreen-arrow" style="
+                    position: fixed;
+                    display:none;
+                    z-index: 10002;
+                    transition: all 0.2s ease-in-out;
+                ">
+                    <svg style="width: 200px" xmlns="http://www.w3.org/2000/svg" id="Layer_2" viewBox="0 0 252.9 162.53"><g id="Layer_1-2"><path d="m225.45,162.45c-.14.02-.27.08-.41.08-.08,0-.15-.04-.24-.05-.11,0-.21.03-.31.02-.18-.03-.33-.12-.49-.18-.02,0-.04-.01-.05-.02-.59-.22-1.08-.59-1.4-1.1l-24.54-24.54c-1.1-1.1-1.1-2.87,0-3.97s2.87-1.1,3.97,0l20.82,20.82c4.61-43.41-11.75-79.92-45.5-100.73-1.32-.81-1.73-2.55-.92-3.87s2.55-1.73,3.87-.92c31.76,19.57,49.01,52.15,49.01,91.26,0,4.23-.22,8.54-.63,12.91l19.48-19.48c1.1-1.1,2.87-1.1,3.97,0,.55.55.82,1.27.82,1.99s-.28,1.44-.82,1.99l-25.05,25.05c-.37.37-.84.57-1.33.69-.08.03-.16.03-.25.05Z" style="fill:#fff; stroke-width:0px;"/><path d="m90.37,2.34c29.55,6,55.81,23.61,66.91,44.87,2.61,5.04,3.89,11,3.89,17.38,0,10.01-3.15,21.06-9.23,31.15-6.56,10.9-15.69,19.41-25.7,23.96-10.37,4.71-20.47,4.66-28.45-.15-16.11-9.7-18.04-36.17-4.3-58.99,0-.02.03-.03.04-.04,5.89-9.76,14.02-17.77,22.91-22.54,1.37-.73,3.07-.22,3.8,1.15.23.42.33.88.33,1.33,0,1-.54,1.97-1.48,2.48-8.02,4.31-15.4,11.6-20.78,20.54,0,.01-.02.02-.03.03-12.12,20.17-11.05,43.14,2.4,51.25,6.34,3.82,14.59,3.76,23.22-.16,8.98-4.08,17.23-11.8,23.21-21.74,8.97-14.89,11-31.79,5.17-43.04-10.34-19.81-35.08-36.28-63.04-41.96C58.23,1.54,28.17,8.77,4.6,28.18c-1.2.99-2.97.81-3.96-.38-.99-1.2-.82-2.97.38-3.96C25.92,3.33,57.65-4.31,90.37,2.34Z" style="fill:#fff; stroke-width:0px;"/></g></svg>
+                </div>`);
+
+                $('body').append(this.arrow);
+            }
+
+            hideArrow() {
+                this.arrow.hide();
+            }
+
+            showArrow() {
+                this.arrow.show();
+            }
+
+            initTextbox() {
+                this.textbox = $(`<div class="onscreen-textbox" style="
+                    position: fixed;
+                    display:none;
+                    z-index: 10002;
+                    max-width: 550px;
+                    line-height: 30px;
+                    transition: all 0.2s ease-in-out;
+                ">
+                    <i><span onscreen-control="text" class="text-white display-4"></span></ i>
+                </div>`);
+
+                $('body').append(this.textbox);
+            }
+
+            hideTextbox() {
+                this.textbox.hide();
+            }
+
+            showTextbox() {
+                this.textbox.show();
+            }
+        }
     </script>
 </body>
 </html>

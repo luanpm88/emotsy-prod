@@ -51,7 +51,7 @@
                     'required' => true,
                     'type' => 'textarea',
                     'name' => 'content',
-                    'value' => Acelle\Model\Invoice::getTemplateContent(),
+                    'value' => Acelle\Model\Invoice::getTemplateContent(Auth()->user()->admin->getLanguageCode()),
                     'rules' => ['content' => 'required']
                 ])                
             </div>

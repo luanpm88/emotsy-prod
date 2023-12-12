@@ -52,6 +52,7 @@
                     ]) }}',
                     saveUrl: '{{ action('TemplateController@builderEdit', $form->template->uid) }}',
                     saveMethod: 'POST',
+                    disableFeatures: [ 'change_template' ], 
                     uploadAssetUrl: '{{ action('TemplateController@uploadTemplateAssets', $form->template->uid) }}',
                     uploadAssetMethod: 'POST',
                     backCallback: function() {
@@ -141,7 +142,7 @@
             });
         </script>
     </head>
-    <body>        
+    <body> 
         <div class="">
             <div>
                 <div class="browser-backdrop">
