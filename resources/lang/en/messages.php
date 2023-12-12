@@ -3346,4 +3346,10 @@
   'customer.name' => 'Customer name',
   'customer.delete.confirm' => 'Are you sure you want to delete this customer? This action cannot be undone.',
   'customer.general' => 'Information',
+  'form.onscreen.layouts.intro' => 'Click here to select the initial layouts with a basic style for your form. You can quickly start adding a form with pre-built layouts.',
+  'form.onscreen.themes.intro' => 'Click here if you want to select a pre-designed layout with a beautiful theme for your form. You can easily add your own customizations afterward, depending on the current theme.',
+  'form.onscreen.settings.intro' => 'Settings for customizing the form\'s popup, specifying when and how it should be displayed on the webpage. You can make changes here.',
+  'form.onscreen.preview.intro' => 'Click here to preview the final form popup at any time while designing your form',
+  'form.onscreen.save.intro' => 'After finishing the design of your form, click here to save your current work.',
+  'form.onscreen.publish_unpublish.intro' => 'You can also quickly save and publish or unpublish the form by clicking the action here',
 ) ?>

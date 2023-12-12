@@ -803,5 +803,58 @@ class User extends Authenticatable
         }
         
         return $this->getRole()->hasPermission($permission);
+    public function getOnscreenIntros()
+    {
+        if (!$this->onscreen_intros) {
+            return [];
+        }
+
+        return json_decode($this->onscreen_intros, true);
+    }
+
+    public function getOnscreenIntro($screenName)
+    {
+        $screenIntros = $this->getOnscreenIntros();
+
+        if (!isset($screenIntros[$screenName])) {
+            return null;
+        }
+
+        return $screenIntros[$screenName];
+    }
+
+    public function setOnscreenIntro($screenName, $data)
+    {
+        $screenIntros = $this->getOnscreenIntros();
+        $screenIntros[$screenName] = $data;
+
+        $this->onscreen_intros = json_encode($screenIntros);
+        $this->save();
+    }
+
+    public function isOnscreenIntroShowed($screenName)
+    {
+        $screenIntro = $this->getOnscreenIntro($screenName);
+
+        if (!$screenIntro) {
+            return false;
+        }
+
+        return $screenIntro['showed'];
+    }
+
+    public function setOnscreenIntroShowed($screenName)
+    {
+        $screenIntro = $this->getOnscreenIntro($screenName);
+
+        if (!$screenIntro) {
+            $screenIntro = [
+                'showed' => true,
+            ];
+        } else {
+            $screenIntro['showed'] = true;
+        }
+
+        $this->setOnscreenIntro($screenName, $screenIntro);
     }
 }
