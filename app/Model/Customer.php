@@ -610,7 +610,6 @@ class Customer extends Model
             $user = new User();
             $user->fill($request->all());
             $user->password = bcrypt($request->password);
-            $user->customer()->associate($this);
             $user->save();
 
             // Customer
@@ -618,6 +617,13 @@ class Customer extends Model
             $this->status = self::STATUS_ACTIVE;
             $this->name = $user->displayName(get_localization_config('show_last_name_first', $this->getLanguageCode()));
             $this->save();
+
+            // add user
+            $user->customer_id = $this->id;
+            $user->save();
+            
+            // default role
+            $user->setRole(Role::default()->first());
         });
 
         // Important: return the newly created USER
