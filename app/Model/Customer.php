@@ -610,17 +610,18 @@ class Customer extends Model
         $user = new User();
 
         DB::transaction(function () use ($request, &$user) {
-            // Customer
-            $this->fill($request->all());
-            $this->status = self::STATUS_ACTIVE;
-            $this->save();
-
             // User
             $user = new User();
             $user->fill($request->all());
             $user->password = bcrypt($request->password);
             $user->customer()->associate($this);
             $user->save();
+
+            // Customer
+            $this->fill($request->all());
+            $this->status = self::STATUS_ACTIVE;
+            $this->name = $user->displayName(get_localization_config('show_last_name_first', $this->getLanguageCode()));
+            $this->save();
         });
 
         // Important: return the newly created USER
