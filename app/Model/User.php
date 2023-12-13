@@ -803,6 +803,8 @@ class User extends Authenticatable
         }
         
         return $this->getRole()->hasPermission($permission);
+    }
+    
     public function getOnscreenIntros()
     {
         if (!$this->onscreen_intros) {
