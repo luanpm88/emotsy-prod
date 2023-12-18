@@ -1268,4 +1268,8 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
 
     // Chat
     Route::post('admin/chat', 'ChatController@chat');
+
+    //
+    Route::post('admin/verify/index', 'VerificationController@index');
+    Route::get('admin/verify/index', 'VerificationController@index');
 });
