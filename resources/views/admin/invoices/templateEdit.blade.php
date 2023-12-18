@@ -38,7 +38,7 @@
 @endsection
 
 @section('content')
-    <form id="classic-builder-form" action="{{ action('Admin\InvoiceController@template') }}" method="POST" class="ajax_upload_form form-validate-jquery">
+    <form id="classic-builder-form" action="{{ action('Admin\InvoiceController@templateEdit') }}" method="POST" class="ajax_upload_form form-validate-jquery">
         {{ csrf_field() }}
 
         <div class="row mr-0 ml-0">
