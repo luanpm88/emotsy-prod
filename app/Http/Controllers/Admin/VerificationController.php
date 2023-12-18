@@ -36,7 +36,7 @@ class VerificationController extends Controller
 
             return view('admin.verify.index', ['results' => $results, 'mxs' => $mxs, 'email' => $email]);
         } else {
-            return view('admin.verify.index', ['email' => $email]);
+            return view('admin.verify.index');
         }
 
     }
