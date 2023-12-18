@@ -22,7 +22,7 @@ class PlanController extends Controller
         $user = \Auth::guard('api')->user();
 
         // authorize
-        if (!$user->can('read', new \Acelle\Model\Plan())) {
+        if (!$user->can('read', new \Acelle\Model\PlanGeneral())) {
             return \Response::json(array('message' => 'Unauthorized'), 401);
         }
 
@@ -60,7 +60,7 @@ class PlanController extends Controller
     {
         $user = \Auth::guard('api')->user();
 
-        $plan = new \Acelle\Model\Plan();
+        $plan = new \Acelle\Model\PlanGeneral();
 
         // authorize
         if (!$user->can('create', $plan)) {
