@@ -1,4 +1,4 @@
-@extends('layouts.core.frontend', [
+@extends('emotsy.layouts.frontend', [
     'menu' => 'dashboard',
 ])
 

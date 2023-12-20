@@ -1,4 +1,4 @@
-@extends('layouts.core.login')
+@extends('emotsy.layouts.login')
 
 @section('title', trans('messages.login'))
 
