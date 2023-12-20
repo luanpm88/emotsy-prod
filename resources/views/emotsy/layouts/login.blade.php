@@ -63,7 +63,7 @@ body{
     font-weight: 700;
     line-height: 23.1px; /* 165% */ 
 }
-.login-email-input::before{
+.login-password-input::before, .login-email-input::before{
     content:'';
 }
 .login-brand-bg{

@@ -20,7 +20,7 @@
         <div class="form-group login-email-input has-feedback has-feedback-left{{ $errors->has('email') ? ' has-error' : '' }}">
             <label class="emailoraccount">
                 {{ trans("messages.login.emailoraccount") }}
-                <span>
+                <span class="text-end float-end">
                     <a href="#">Need Help?</a>
                 </span>
             </label>
@@ -36,8 +36,8 @@
         <div class="form-group login-password-input has-feedback has-feedback-left{{ $errors->has('password') ? ' has-error' : '' }}">
             <label class="passcode">
                 {{ trans("messages.login.passcode") }}
-                <span>
-                    <a href="#">Forgot Code?</a>
+                <span class="text-end float-end">
+                    <a href="{{ url('/password/reset') }}">Forgot Code?</a>
                 </span>
             </label>
             <input id="password" type="password" class="form-control" name="password" value="{{ demo_auth()['password'] }}" >
