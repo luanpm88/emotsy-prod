@@ -1,3 +1,7 @@
+@if (config('app.emotsy'))
+    @include('emotsy.dashboard')
+@else
+
 @extends('layouts.core.frontend', [
     'menu' => 'dashboard',
 ])
@@ -309,3 +313,6 @@
     <br>
     <br>
 @endsection
+
+
+@endif
