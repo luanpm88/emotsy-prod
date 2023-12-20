@@ -6,41 +6,48 @@
 <style>
     .small {
         font-size: 0.86rem;
-    }
+    } 
 </style>
 <!-- Advanced login -->
 <form class="" role="form" method="POST" action="{{ url('/login') }}">
     {{ csrf_field() }}
 
-    <div class="panel panel-body p-4 rounded-3 bg-white shadow">
+    <div class="panel panel-body p-4 rounded-3 bg-white">
 
         <h4 class="text-semibold mt-0 mb-4 fw-600 fs-5">{{ trans('messages.login') }}</h4>
+        <div class="login-description mb-4">{{ trans('messages.login.description') }}</div>
 
         <div class="form-group login-email-input has-feedback has-feedback-left{{ $errors->has('email') ? ' has-error' : '' }}">
-            <input id="email" type="email" class="form-control" name="email" placeholder="{{ trans("messages.email") }}"
-	 value="{{ old('email') ? old('email') : demo_auth()['email'] }}"
-            >
-            <div class="form-control-feedback">
-	<i class="icon-envelop5 text-muted"></i>
-            </div>
+            <label class="emailoraccount">
+                {{ trans("messages.login.emailoraccount") }}
+                <span>
+                    <a href="#">Need Help?</a>
+                </span>
+            </label>
+            <input id="email" type="email" class="form-control" name="email" value="{{ old('email') ? old('email') : demo_auth()['email'] }}" >
+            <div class="form-control-feedback">	<i class="icon-envelop5 text-muted"></i> </div>
             @if ($errors->has('email'))
-	<span class="help-block">
-	    <strong>{{ $errors->first('email') }}</strong>
-	</span>
+                <span class="help-block">
+                    <strong>{{ $errors->first('email') }}</strong>
+                </span>
             @endif
         </div>
 
         <div class="form-group login-password-input has-feedback has-feedback-left{{ $errors->has('password') ? ' has-error' : '' }}">
-            <input id="password" type="password" class="form-control" name="password" placeholder="{{ trans("messages.password") }}"
-	value="{{ demo_auth()['password'] }}"
-            >
+            <label class="passcode">
+                {{ trans("messages.login.passcode") }}
+                <span>
+                    <a href="#">Forgot Code?</a>
+                </span>
+            </label>
+            <input id="password" type="password" class="form-control" name="password" value="{{ demo_auth()['password'] }}" >
             <div class="form-control-feedback">
-	<i class="icon-lock2 text-muted"></i>
+	            <i class="icon-lock2 text-muted"></i>
             </div>
             @if ($errors->has('password'))
-	<span class="help-block">
-	    <strong>{{ $errors->first('password') }}</strong>
-	</span>
+                <span class="help-block">
+                    <strong>{{ $errors->first('password') }}</strong>
+                </span>
             @endif
         </div>
 
@@ -107,7 +114,7 @@
 
     <!-- only allow registration in SAAS mode -->
     @if (config('app.saas') && \Acelle\Model\Setting::get('enable_user_registration') == 'yes')
-        <div class="text-center mt-4 text-white small">
+        <div class="mt-4 has-account">
             {!! trans('messages.need_a_account_create_an_one', [ 'link' => action('UserController@register') ]) !!}
         </div>
     @endif
