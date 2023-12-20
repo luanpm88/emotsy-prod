@@ -45,6 +45,23 @@ class HomeController extends Controller
 
         if (config('app.cartpaye')) {
             return view('dashboard.cartpaye');
+
+        } elseif (config('app.emotsy')) {
+            return view('emotsy.dashboard', [
+                'sendingCreditsUsed' => $sendingCreditsUsed,
+                'sendingCreditsUsedPercentage' => $sendingCreditsUsedPercentage,
+                'sendingCreditsLimit' => $sendingCreditsLimit,
+                'currentTimezone' => $currentTimezone,
+                'maxLists' => $maxLists,
+                'listsCount' => $listsCount,
+                'listsUsed' => $listsUsed,
+                'maxCampaigns' => $maxCampaigns,
+                'campaignsCount' => $campaignsCount,
+                'campaignsUsed' => $campaignsUsed,
+                'maxSubscribers' => $maxSubscribers,
+                'subscribersCount' => $subscribersCount,
+                'subscribersUsed' => $subscribersUsed,
+            ]);
         } else {
             return view('dashboard', [
                 'sendingCreditsUsed' => $sendingCreditsUsed,
