@@ -29,7 +29,7 @@
 		<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
 			<a class="navbar-brand left-logo" href="#">
 				@if (getThemeMode(Auth::user()->customer->theme_mode, request()->session()->get('customer-auto-theme-mode')) == 'light' &&
-					in_array(Auth::user()->customer->getColorScheme(), ['white'])
+					in_array(Auth::user()->customer->getColorScheme(), ['white', 'emotsy'])
 				)
 					<img class="logo" src="{{ getSiteLogoUrl('dark') }}" alt="">
 				@else
