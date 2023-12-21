@@ -103,7 +103,7 @@
                             <img src="{{ asset('images/emotsy-mkt.png') }}">
                         </div>
                         <div class="login-brand">
-                            <h2>emotsy</h2>
+                            <h2>Emotsy</h2>
                             <div class="mt-3">Integrating AI real-time personalization to elevate email marketing campaigns to new levels of effectiveness and engagement.</div>
                         </div>
                     </div> 

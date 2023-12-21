@@ -266,6 +266,7 @@ body{
     font-weight: 700;
     line-height: 30.8px; /* 96.25% */
     letter-spacing: -0.84px; 
+    
 }
 .login-panel{
     /*border-radius: 18px;*/
@@ -319,4 +320,7 @@ body{
     font-style: normal;
     font-weight: 400;
     line-height: 23.1px; /* 165% */
+}
+.login-button, .login-password-input input, .login-email-input input{
+    height: 44px;
 }
