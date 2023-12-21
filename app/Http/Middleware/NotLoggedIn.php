@@ -19,6 +19,8 @@ class NotLoggedIn
         $default_language = \Acelle\Model\Language::find(\Acelle\Model\Setting::get('default_language'));
         if (isset($_COOKIE['last_language_code'])) {
             $language_code = $_COOKIE['last_language_code'];
+        } elseif (session()->get('guest_language_code', false)) {
+            $language_code = session()->get('guest_language_code', false);
         } elseif ($default_language) {
             $language_code = $default_language->code;
         } else {

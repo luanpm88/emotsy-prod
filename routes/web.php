@@ -104,6 +104,9 @@ Route::get('/jquery_validate_locale', 'Controller@jquery_validate_locale');
 // Term of service
 Route::get('/terms-of-service', 'Controller@termsOfService');
 
+// set guest language
+Route::get('/guest-language/{code}', 'Controller@setGuestLanguage');
+
 // For visitor with Web UI, loading the right app language
 Route::group(['middleware' => ['not_installed', 'not_logged_in']], function () {
     // Helper method to generate other routes for authentication

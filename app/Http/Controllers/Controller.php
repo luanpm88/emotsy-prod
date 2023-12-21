@@ -232,4 +232,11 @@ class Controller extends BaseController
     {
         return view('termsOfService');
     }
+
+    public function setGuestLanguage($code)
+    {
+        session()->put('guest_language_code', $code);
+
+        return redirect()->back();
+    }
 }

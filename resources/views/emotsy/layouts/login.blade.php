@@ -71,12 +71,17 @@
                                                 <a class="toolbar-item" href="#">Privacy Polic</a>
                                                 <div class="dropdown">
                                                     <a class=" toolbar-item dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                        English
+                                                        {{ Acelle\Model\Language::where('code', language_code())->first()->name }}
                                                     </a>
-                                                    
+
                                                     <ul class="dropdown-menu">
-                                                        <li><a class="dropdown-item" href="#">English</a></li>
-                                                        <li><a class="dropdown-item" href="#">Việt Nam</a></li> 
+                                                        @foreach (Acelle\Model\Language::active()->get() as $language)
+                                                            @if ($language->code != language_code()) 
+                                                                <li><a class="dropdown-item" href="{{ action('Controller@setGuestLanguage', [
+                                                                    'code' => $language->code,
+                                                                ]) }}">{{ $language->name }}</a></li>
+                                                            @endif
+                                                        @endforeach
                                                     </ul>
                                                 </div> 
                                             </div>
