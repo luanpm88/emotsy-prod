@@ -4,7 +4,7 @@
     <div class="container-fluid ms-0">
         <a class="navbar-brand d-flex align-items-center me-2" href="{{ action('HomeController@index') }}">
             @if (getThemeMode(Auth::user()->customer->theme_mode, request()->session()->get('customer-auto-theme-mode')) == 'light' &&
-                in_array(Auth::user()->customer->getColorScheme(), ['white'])
+                in_array(Auth::user()->customer->getColorScheme(), ['white', 'emotsy'])
             )
                 <img class="logo" src="{{ getSiteLogoUrl('dark') }}" alt="">
             @else

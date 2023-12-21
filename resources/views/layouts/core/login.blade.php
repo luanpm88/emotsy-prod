@@ -23,14 +23,14 @@
                 <!-- Main content -->
                 <div class="content-wrapper" style="padding-left:20px;padding-right:20px;">
                     <div class="row">
-                        <div class="col-sm-2 col-md-3 col-lg-4">
+                        <div class="col-sm-2 col-md-3 col-lg-3">
 
                         </div>
-                        <div class="col-sm-8 col-md-6 col-lg-4">
+                        <div class="col-sm-8 col-md-6 col-lg-6">
 
                             <div class="text-center login-header">
                                 <a class="main-logo-big" href="{{ action('HomeController@index') }}">
-                                    <img src="{{ in_array(Acelle\Model\Setting::get('frontend_scheme'), ['supermail','white']) ? getSiteLogoUrl('dark') : getSiteLogoUrl('light') }}" alt="">
+                                    <img src="{{ in_array(Acelle\Model\Setting::get('frontend_scheme'), ['supermail','white', 'emotsy']) ? getSiteLogoUrl('dark') : getSiteLogoUrl('light') }}" alt="">
                                 </a>
                             </div>
 

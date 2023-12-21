@@ -803,11 +803,11 @@ function getThemeMode($mode, $auto = 'light')
 
 function getLogoMode($mode, $scheme, $daylight = 'light')
 {
-    if ($scheme !== 'white') {
+    if ($scheme !== 'white' && $scheme !== 'emotsy') {
         return 'light';
     }
 
-    if ($mode == 'auto' && ($daylight == 'light' || $daylight == null)) {
+    if ($mode == 'auto' && ($daylight == 'light' || $daylight == 'emotsy' || $daylight == null)) {
         return 'dark';
     }
 
