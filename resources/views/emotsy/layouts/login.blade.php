@@ -40,12 +40,12 @@ body{
     line-height: 23.1px;
 }
 .no-account{
-    color: #9DA0B7;
+    color: var(--Main-Black-Clear, #222751);
     font-family: DM Sans;
     font-size: 14px;
     font-style: normal;
     font-weight: 400;
-    line-height: 23.1px; /* 165% */
+    line-height: 23.1px; /* 165% */ 
 }
 .has-account{
     color: #9DA0B7;
@@ -96,9 +96,17 @@ body{
 }
 .or{
     position: relative;
-    background-color: #ffffff;
+    
     text-align: center;
     z-index: 2;
+
+    color: #526484;
+    font-family: DM Sans;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 18px; /* 150% */
+
 }
 .or::after{
     position: absolute;
@@ -116,7 +124,7 @@ body{
 .or::before{
     position: absolute;
     background-color: #9DA0B7;
-    height: 2px; 
+    height: 1px; 
     width: 150px;
     content: '';
     top: 0;
@@ -149,9 +157,27 @@ body{
 .login-panel{
     border-radius: 18px;
     background: #FFF;
-
+    min-height: 100vh;
     /* Color-Shadow */
     box-shadow: 4px 4px 17px 0px rgba(0, 199, 227, 0.16);
+}
+.page-container{
+    padding-bottom: 0 !important;
+}
+.login-footer{
+    position: relative;
+}
+.login-footer-toolbar{
+
+}
+.login-footer-toolbar .toolbar-item{
+    display: block;
+} 
+.dropdown-toggle::after {
+    vertical-align: 0;
+}
+.socialite{
+
 }
 </style>
 </head>
@@ -159,7 +185,7 @@ body{
 
         <div class="container-fluid">
             <div class="row justify-content-center">
-                <div class=" col-md-6 col-lg-6 bg-white vh-100 login-panel">  
+                <div class=" col-md-6 col-lg-6 bg-white login-panel">  
                     <!-- Page container -->
                     <div class="page-container login-container">
                         @if (\Auth::check())
@@ -174,40 +200,55 @@ body{
                             <!-- Main content -->
                             <div class="content-wrapper" style="padding-left:20px;padding-right:20px;">
                                 <div class="row justify-content-end"> 
-                                    <div class="col-sm-8 col-md-8 col-lg-8">
+                                    <div class="col-sm-8 col-md-8 col-lg-8 d-flex flex-column  align-content-between" style="height: 100%"> 
+                                        <div class="lhead-area">
+                                            <div class="p-4 login-header">
+                                                <a class="main-logo-big" href="{{ action('HomeController@index') }}">
+                                                    <img src="{{ asset('images/logo-dark.png') }}" alt="">
+                                                </a>
+                                            </div>
 
-                                        <div class="text-center login-header">
-                                            <a class="main-logo-big" href="{{ action('HomeController@index') }}">
-                                                <img src="{{ asset('images/logo-dark.png') }}" alt="">
-                                            </a>
+                                            <!-- display flash message -->
+                                            @foreach (['danger', 'warning', 'info', 'error'] as $msg)
+                                                @php
+                                                    $class = $msg;
+                                                    if ($msg == 'error') {
+                                                        $class = 'danger';
+                                                    }
+                                                @endphp
+                                                @if(Session::has('alert-' . $msg))
+                                                    <!-- Form Error List -->
+                                                    <div class="alert alert-{{ $class }} alert-noborder alert-dismissible">
+                                                        <strong>{{ trans('messages.' . $msg) }}</strong>
+
+                                                        <br>
+
+                                                        <p>{!! preg_replace('/[\r\n]+/', ' ', Session::get('alert-' . $msg)) !!}</p>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                                    </div>
+                                                @endif    
+                                            @endforeach
+                                            
+                                            @yield('content') 
                                         </div>
-
-                                        <!-- display flash message -->
-                                        @foreach (['danger', 'warning', 'info', 'error'] as $msg)
-                                            @php
-                                                $class = $msg;
-                                                if ($msg == 'error') {
-                                                    $class = 'danger';
-                                                }
-                                            @endphp
-                                            @if(Session::has('alert-' . $msg))
-                                                <!-- Form Error List -->
-                                                <div class="alert alert-{{ $class }} alert-noborder alert-dismissible">
-                                                    <strong>{{ trans('messages.' . $msg) }}</strong>
-
-                                                    <br>
-
-                                                    <p>{!! preg_replace('/[\r\n]+/', ' ', Session::get('alert-' . $msg)) !!}</p>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                                </div>
-                                            @endif    
-                                        @endforeach
-                                        
-                                        @yield('content')
                                         
                                         <!-- Footer -->
                                         <div class="small">
-                                            <div class="footer text-white py-3" style="width: 100%">
+                                            <div class="login-footer-toolbar py-3 d-flex justify-content-between">
+                                                <a class="toolbar-item" href="#">Terms & Condition</a>
+                                                <a class="toolbar-item" href="#">Privacy Polic</a>
+                                                <div class="dropdown">
+                                                    <a class=" toolbar-item dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        English
+                                                    </a>
+                                                    
+                                                    <ul class="dropdown-menu">
+                                                        <li><a class="dropdown-item" href="#">English</a></li>
+                                                        <li><a class="dropdown-item" href="#">Việt Nam</a></li> 
+                                                    </ul>
+                                                </div> 
+                                            </div>
+                                            <div class="login-footer py-3">
                                                 {!! trans('messages.brand.copyright', ['app_name' => get_app_name()] ) !!}
                                             </div>
                                         </div>
