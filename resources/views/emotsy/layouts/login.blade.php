@@ -10,176 +10,8 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,100;9..40,700&display=swap" rel="stylesheet"> 
-<style>
-body{
-    padding: 0;
-    background-color: #F2FEFF;
-}
-.theme-emotsy.login-page{
-    background-color: #F2FEFF;
-}
-.theme-emotsy.bg-white{
-    background-color: #ffffff;
-}
-.theme-emotsy.login-page .panel-body{
-    box-shadow: none !important;
-}
-.theme-emotsy.login-page .panel-body h4{
-    color: #222751;
-    font-size: 20px !important;
-    font-family: DM Sans;
-    font-weight: 700;
-}
-.login-description{
-    color: #9DA0B7;
-    font-family: DM Sans;
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 23.1px;
-}
-.no-account{
-    color: var(--Main-Black-Clear, #222751);
-    font-family: DM Sans;
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 23.1px; /* 165% */ 
-}
-.has-account{
-    color: #9DA0B7;
-    font-family: DM Sans;
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 23.1px; /* 165% */
-}
-.no-account a, .has-account a{
-    color: #00A3B9 !important;
-    font-family: DM Sans;
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 23.1px;
-   
-}
-.has-account a{
-    text-decoration-line: underline; 
-}
-.cretenew{
-    color: #00A3B9 !important;
-    font-family: DM Sans;
-    font-size: 14px; 
-    font-weight: 600;
-    line-height: 23.1px; 
-    text-decoration-line: underline; 
-}
-.passcode, .emailoraccount{
-    color: #344357;
-    font-family: DM Sans;
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 700;
-    line-height: 23.1px; /* 165% */ 
-}
-.login-password-input::before, .login-email-input::before{
-    content:'';
-}
-.login-brand-bg{
-    margin-left: 20%;
-    margin-right: 20%;
-}
-.login-brand-bg img{
-    width: 100%;
-    height: auto;
-}
-.or{
-    position: relative;
-    
-    text-align: center;
-    z-index: 2;
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,100;0,300;0,400;0,500;0,600;0,700;1,100;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
 
-    color: #526484;
-    font-family: DM Sans;
-    font-size: 12px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 18px; /* 150% */
-
-}
-.or::after{
-    position: absolute;
-    background-color: #ffffff;
-    width: 50px;
-    height: 50px;
-    top: 0;
-    margin: auto; 
-    right: 0;
-    bottom: 0;
-    left: 0; 
-    z-index: -1;
-    content: '';
-}
-.or::before{
-    position: absolute;
-    background-color: #9DA0B7;
-    height: 1px; 
-    width: 150px;
-    content: '';
-    top: 0;
-    margin: auto; 
-    right: 0;
-    bottom: 0;
-    left: 0; 
-    z-index: -1;
-}
-.login-brand{ 
-    color: #8094AE;
-    text-align: center;
-    font-family: DM Sans;
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 23.1px; /* 165% */ 
-}
-.login-brand h2
-{
-    color: var(--Main-Black-Clear, #222751);
-    text-align: center;
-    font-family: DM Sans;
-    font-size: 32px;
-    font-style: normal;
-    font-weight: 700;
-    line-height: 30.8px; /* 96.25% */
-    letter-spacing: -0.84px; 
-}
-.login-panel{
-    border-radius: 18px;
-    background: #FFF;
-    min-height: 100vh;
-    /* Color-Shadow */
-    box-shadow: 4px 4px 17px 0px rgba(0, 199, 227, 0.16);
-}
-.page-container{
-    padding-bottom: 0 !important;
-}
-.login-footer{
-    position: relative;
-}
-.login-footer-toolbar{
-
-}
-.login-footer-toolbar .toolbar-item{
-    display: block;
-} 
-.dropdown-toggle::after {
-    vertical-align: 0;
-}
-.socialite{
-
-}
-</style>
 </head>
     <body class="bg-slate-800 theme-{{ Acelle\Model\Setting::get('frontend_scheme') }} login-page">
 
@@ -202,9 +34,9 @@ body{
                                 <div class="row justify-content-end"> 
                                     <div class="col-sm-8 col-md-8 col-lg-8 d-flex flex-column  align-content-between" style="height: 100%"> 
                                         <div class="lhead-area">
-                                            <div class="p-4 login-header">
+                                            <div class="pt-4 pt-4 pe-4 ps-4 login-header pb-0">
                                                 <a class="main-logo-big" href="{{ action('HomeController@index') }}">
-                                                    <img src="{{ asset('images/logo-dark.png') }}" alt="">
+                                                    <img src="{{ asset('images/logo-emotsy.svg') }}" alt="">
                                                 </a>
                                             </div>
 

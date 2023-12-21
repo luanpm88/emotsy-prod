@@ -20,11 +20,14 @@
         <div class="form-group login-email-input has-feedback has-feedback-left{{ $errors->has('email') ? ' has-error' : '' }}">
             <label class="emailoraccount">
                 {{ trans("messages.login.emailoraccount") }}
-                <span class="text-end float-end">
+                <span class="text-end float-end fs-13px">
                     <a href="#">Need Help?</a>
                 </span>
             </label>
-            <input id="email" type="email" class="form-control" name="email" value="{{ old('email') ? old('email') : demo_auth()['email'] }}" >
+            <input id="email" type="email"
+                class="form-control ps-3" name="email"
+                value="{{ old('email') ? old('email') : demo_auth()['email'] }}"
+            />
             <div class="form-control-feedback">	<i class="icon-envelop5 text-muted"></i> </div>
             @if ($errors->has('email'))
                 <span class="help-block">
@@ -36,11 +39,11 @@
         <div class="form-group login-password-input has-feedback has-feedback-left{{ $errors->has('password') ? ' has-error' : '' }}">
             <label class="passcode">
                 {{ trans("messages.login.passcode") }}
-                <span class="text-end float-end">
+                <span class="text-end float-end fs-13px">
                     <a href="{{ url('/password/reset') }}">Forgot Code?</a>
                 </span>
             </label>
-            <input id="password" type="password" class="form-control" name="password" value="{{ demo_auth()['password'] }}" >
+            <input id="password" type="password" class="form-control ps-3" name="password" value="{{ demo_auth()['password'] }}" >
             <div class="form-control-feedback">
 	            <i class="icon-lock2 text-muted"></i>
             </div>
@@ -79,7 +82,7 @@
             @endif
         @endif
 
-        <button type="submit" class="btn rounded-2 btn-primary d-block login-button py-2 fw-600"  style="width:100%;text-transform:uppercase" >
+        <button type="submit" class="btn rounded-2 btn-primary d-block login-button py-2 fw-600 fs-15px"  style="width:100%;" >
             <span class="me-2">{{ trans("messages.signin") }}</span>  
         </button>
         
