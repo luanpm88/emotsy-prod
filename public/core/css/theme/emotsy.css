@@ -1,3 +1,6 @@
+.theme-emotsy {
+    font-family: DM Sans;
+}
 .theme-emotsy.login-page {
     background-color: #F8F8F8;
 }
@@ -249,7 +252,7 @@ body{
     letter-spacing: -0.84px; 
 }
 .login-panel{
-    border-radius: 18px;
+    /*border-radius: 18px;*/
     background: #FFF;
     min-height: 100vh;
     /* Color-Shadow */
@@ -343,4 +346,10 @@ body.mode-dark.theme-emotsy.leftbar .leftbar-hide-menu {
 .theme-emotsy.leftbar:not(.leftbar-closed, .mode-dark) .navbar-main:not(.navbar-right)  .main-menu ul.dropdown-menu:not(.top-user-menus) .nav-item:hover a.dropdown-item .navbar-icon
 {
     color: rgba(0,0,0,1)!important;
+}
+.content-wrapper, .page-content, .page-container{
+    height: 100%;
+}
+.h-100{
+    height:100%;
 }
