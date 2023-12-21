@@ -66,7 +66,7 @@
                                         
                                         <!-- Footer -->
                                         <div class="small">
-                                            <div class="login-footer-toolbar py-1 d-flex justify-content-between">
+                                            <div class="login-footer-toolbar pb-1 mt-5 d-flex justify-content-between">
                                                 <a class="toolbar-item" href="#">Terms & Condition</a>
                                                 <a class="toolbar-item" href="#">Privacy Polic</a>
                                                 <div class="dropdown">
