@@ -15,7 +15,7 @@
 </head>
     <body class="bg-slate-800 theme-{{ Acelle\Model\Setting::get('frontend_scheme') }} login-page">
 
-        <div class="container-fluid">
+        <div class="container-fluid" style="padding-left:20px;padding-right:20px;">
             <div class="row justify-content-center">
                 <div class=" col-md-6 col-lg-6 bg-white login-panel">  
                     <!-- Page container -->
@@ -66,7 +66,7 @@
                                         
                                         <!-- Footer -->
                                         <div class="small">
-                                            <div class="login-footer-toolbar py-3 d-flex justify-content-between">
+                                            <div class="login-footer-toolbar pb-1 mt-5 d-flex justify-content-between">
                                                 <a class="toolbar-item" href="#">Terms & Condition</a>
                                                 <a class="toolbar-item" href="#">Privacy Polic</a>
                                                 <div class="dropdown">
