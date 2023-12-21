@@ -105,14 +105,14 @@
                 <a href="{{ action('AuthController@googleRedirect', [
                     'language_code' => language_code(),
                 ]) }}" class="py-2" > 
-                    <span class="ms-3 display-6 text-center" style="font-size:15px;width:80%">{{ trans('messages.continue_with_google') }}</span>
+                    <span class="ms-3 display-6 text-center google-connect">{{ trans('messages.continue_with_google') }}</span>
                 </a>
             </div>
             <div class="text-center px-3">
                 <a href="{{ action('AuthController@googleRedirect', [
                     'language_code' => language_code(),
                 ]) }}" class="py-2" > 
-                    <span class="ms-3 display-6 text-center" style="font-size:15px;width:80%">{{ trans('messages.continue_with_facebook') }}</span>
+                    <span class="ms-3 display-6 text-center facebook-connect">{{ trans('messages.continue_with_facebook') }}</span>
                 </a>
             </div>
         </div>
