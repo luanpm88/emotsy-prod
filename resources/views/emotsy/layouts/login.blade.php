@@ -32,7 +32,7 @@
                             <!-- Main content -->
                             <div class="content-wrapper" style="padding-left:20px;padding-right:20px;">
                                 <div class="row justify-content-end h-100"> 
-                                    <div class="col-sm-8 col-md-8 col-lg-8 d-flex flex-column justify-content-between"> 
+                                    <div class="col-sm-12 col-md-11 col-lg-9 d-flex flex-column justify-content-between"> 
                                         <div class="lhead-area">
                                             <div class="pt-4 pt-4 pe-4 ps-4 login-header pb-0">
                                                 <a class="main-logo-big" href="{{ action('HomeController@index') }}">
