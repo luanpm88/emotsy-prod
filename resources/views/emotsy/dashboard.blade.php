@@ -206,10 +206,10 @@
                                           </svg>
                                     </div>
                                 </div>
-                                <div class="progress-new-title p-4">
-                                    <h2>Credits used</h2>
+                                <div class="progress-new-title p-3">
+                                    <h2 class="pl-3">Credits used</h2>
                                     <p class="pt-2">
-                                        <a href="#" class="btn btn-emotsy text-white">
+                                        <a href="#" class="btn btn-emotsys text-white">
                                             <span class="material-symbols-rounded me-2">
                                                 add
                                             </span>
@@ -225,7 +225,7 @@
                                      
 
                                     <div class="col-12 col-md-12">
-                                        <div class="content-group-sm mb-3">
+                                        <div class="content-group-sm mb-2">
                                             <div class="something">
                                                 <div class="d-flex">
                                                      <div class="progress-items">{{ trans('messages.sending_quota') }}</div>
@@ -246,7 +246,7 @@
                                     </div>
 
                                     <div class="col-12 col-md-12">
-                                        <div class="content-group-sm mb-3">
+                                        <div class="content-group-sm mb-2">
                                             <div class="something">
                                                 <div class="d-flex">
                                                      <div class="progress-items">{{ trans('messages.list') }}</div>
@@ -267,7 +267,7 @@
                                     </div>
 
                                     <div class="col-12 col-md-12">
-                                        <div class="content-group-sm mb-3">
+                                        <div class="content-group-sm mb-2">
                                             <div class="something">
                                                 <div class="d-flex">
                                                      <div class="progress-items">{{ trans('messages.campaign') }}</div>
@@ -288,7 +288,7 @@
                                     </div>
 
                                     <div class="col-12 col-md-12">
-                                        <div class="content-group-sm mb-3">
+                                        <div class="content-group-sm mb-2">
                                             <div class="something">
                                                 <div class="d-flex">
                                                      <div class="progress-items">{{ trans('messages.subscriber') }}</div>
