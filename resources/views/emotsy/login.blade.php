@@ -101,27 +101,29 @@
 
 
         <div class="socialite d-flex justify-content-center">
-            <div class="text-center px-3">
-                <a href="{{ action('AuthController@googleRedirect', [
-                    'language_code' => language_code(),
-                ]) }}" class="py-2" > 
-                    <span class="ms-3 display-6 text-center google-connect">{{ trans('messages.continue_with_google') }}</span>
-                </a>
-            </div>
-            <div class="text-center px-3">
-                <a href="{{ action('AuthController@googleRedirect', [
-                    'language_code' => language_code(),
-                ]) }}" class="py-2" > 
-                    <span class="ms-3 display-6 text-center facebook-connect">{{ trans('messages.continue_with_facebook') }}</span>
-                </a>
-            </div>
+            @if (\Acelle\Model\Setting::get('oauth.google_enabled') == 'yes')
+                <div class="text-center px-3">
+                    <a href="{{ action('AuthController@googleRedirect', [
+                        'language_code' => language_code(),
+                    ]) }}" class="py-2" > 
+                        <span class="ms-3 display-6 text-center google-connect">{{ trans('messages.continue_with_google') }}</span>
+                    </a>
+                </div>
+            @endif
+            @if (\Acelle\Model\Setting::get('oauth.facebook_enabled') == 'yes')
+                <div class="text-center px-3">
+                    <a href="{{ action('AuthController@facebookRedirect') }}" class="py-2" > 
+                        <span class="ms-3 display-6 text-center facebook-connect">{{ trans('messages.continue_with_facebook') }}</span>
+                    </a>
+                </div>
+            @endif
         </div>
 
         @if (
             \Acelle\Model\Setting::get('oauth.google_enabled') == 'yes' ||
             \Acelle\Model\Setting::get('oauth.facebook_enabled') == 'yes'
         )
-            <div class="socialite_buttons">
+            <div class="socialite_buttons d-none">
                 @if (\Acelle\Model\Setting::get('oauth.google_enabled') == 'yes')
                     <div class="text-center mt-2">
                         <a href="{{ action('AuthController@googleRedirect', [
