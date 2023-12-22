@@ -457,3 +457,36 @@ body.mode-dark.theme-emotsy.leftbar .leftbar-hide-menu {
     }
      
 }
+
+/*
+    dashboard page
+*/
+.wellcome-bee{
+
+}
+.wellcome-mes{
+    color: var(--Main-Black-Lighter, #9DA0B7);
+    font-family: DM Sans;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 23.1px; /* 165% */ 
+}
+.wellcome-mes h2{
+    color: var(--Main-Black-Clear, #222751);
+    font-family: DM Sans;
+    font-size: 28px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 30.8px; /* 110% */
+    letter-spacing: -0.84px; 
+}
+.campaign-head{
+
+}
+.campaign-tools{
+    
+}
+@media (min-width: 1200px) {
+
+}
