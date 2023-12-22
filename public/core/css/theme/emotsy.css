@@ -376,14 +376,15 @@ body.mode-dark.theme-emotsy.leftbar .leftbar-hide-menu {
 /*
     dashboard
 */
+
+
 .theme-emotsy .navbar-main {
     border-radius: 18px;
     background: #FFF;
-    width: 306px;
+    
     /* Color-Shadow */
     box-shadow: 4px 4px 17px 0px rgba(0, 199, 227, 0.16);
-}
-
+} 
 
 .emotsy-navbar{
     margin: 15px !important;
@@ -414,13 +415,27 @@ body.mode-dark.theme-emotsy.leftbar .leftbar-hide-menu {
     height: 20px; 
     color:#8094AE;
 }
+.leftbar .middle-bar{
+    width: auto;
+}
 
 @media (min-width: 1200px) {
     .leftbar .navbar-main {
         height: calc(100vh - 30px) !important;
     }
     .leftbar .page-container{
-        padding-left: 368px !important;
+        padding-left: 368px !important; 
     }
+    .leftbar-closed .page-container {
+        padding-left: 105px !important;
+    }
+
+    .leftbar .navbar-main {
+        width: 306px;
+    }
+    .leftbar-closed .navbar-main {
+        width: 60px;
+    }
+    
      
 }
