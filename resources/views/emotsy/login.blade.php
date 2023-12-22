@@ -135,7 +135,7 @@
                     </div>
                 @endif
 
-                @if (\Acelle\Model\Setting::get('oauth.facebook_enabled') == 'yes')
+                @if (\Acelle\Model\Setting::get('oauth.google_enabled') == 'yes')
                     <div class="text-center mt-2">
                         <a href="{{ action('AuthController@facebookRedirect') }}" class="btn btn-light d-flex align-items-center rounded-3 py-2" style="width:100%">
                             <img width="25px" src="{{ url('images/icons/facebook-logo.svg') }}" />
