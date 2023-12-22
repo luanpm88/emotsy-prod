@@ -289,7 +289,7 @@ body{
     color: #333;
 }
 .theme-emotsy .navbar-main {
-    background-color: rgba(240, 240, 240, 0.6)!important;
+    background-color: #FFFFFF !important;
 }
 .theme-emotsy .navbar-main .nav-item > .nav-link.active {
     background: rgba(0,0,0,0.05);
@@ -372,4 +372,88 @@ body.mode-dark.theme-emotsy.leftbar .leftbar-hide-menu {
 }
 .login-button, .login-password-input input, .login-email-input input{
     height: 44px;
+}
+/*
+    dashboard
+*/
+
+
+.theme-emotsy .navbar-main {
+    border-radius: 18px;
+    background: #FFF;
+    
+    /* Color-Shadow */
+    box-shadow: 4px 4px 17px 0px rgba(0, 199, 227, 0.16);
+} 
+
+.emotsy-navbar{
+    margin: 15px !important;
+}
+.leftbar:not(.leftbar-closed) .collapse.navbar-collapse > ul{
+    /*
+    height: calc(100vh - 215px) !important;
+    */
+    height: 100vh !important;
+}
+/*
+.navbar-icon svg {
+    width: 67px;
+    height: 67px;
+  }
+*/
+.theme-emotsy:not(.mode-dark) .navbar-main .navbar-nav a.nav-link {
+    color: #526484 !important;
+    font-family: DM Sans;
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 20px; /* 133.333% */
+    letter-spacing: 0.15px; 
+}
+.theme-emotsy:not(.mode-dark) .navbar-main .navbar-nav .nav-item:hover a.nav-link, .theme-emotsy:not(.mode-dark) .navbar-main .navbar-nav .nav-item.active a.nav-link {
+    color: #222751 !important;
+}
+.dropdown-toggle::after{
+    width: 16.16px;
+    height: 20px; 
+    color:#8094AE;
+}
+.leftbar .middle-bar{
+    width: auto;
+}
+
+@media (min-width: 1200px) {
+    ul.navbar-nav{
+        padding: 0 20px;
+    }
+    ul.navbar-nav li.nav-item{
+        padding: 10px 0 10px 10px;
+        align-items: center; 
+        margin-bottom: 7px;
+    }
+    ul.navbar-nav li.nav-item.active{
+        border-radius: 8px;
+        background: #FFF8E7; 
+    }
+    .leftbar .navbar-main {
+        height: calc(100vh - 30px) !important;
+    }
+    .leftbar .page-container{
+        padding-left: 368px !important; 
+    }
+    .leftbar-closed .page-container {
+        padding-left: 105px !important;
+    }
+
+    .leftbar .navbar-main {
+        width: 306px;
+    }
+    .leftbar-closed .navbar-main {
+        width: 60px;
+    }
+    .leftbar .navbar-main .navbar-nav .lvl-1{
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+     
 }
