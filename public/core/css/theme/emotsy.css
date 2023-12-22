@@ -508,10 +508,12 @@ body.mode-dark.theme-emotsy.leftbar .leftbar-hide-menu {
 
 }
 .campaign-tools{
-    top: 0;
     right: 0;
     width: 45px;
     height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 .campaign-tools span{
     font-weight: 700;
@@ -595,7 +597,9 @@ body.mode-dark.theme-emotsy.leftbar .leftbar-hide-menu {
     padding-left: 9px;
     
 }
-
+.efonts{
+    font-family: DM Sans; 
+}
 
 
 .icons-center{

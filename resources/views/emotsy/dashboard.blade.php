@@ -107,9 +107,15 @@
                     </div>
                     <div class="campaign-tools position-absolute">
                         <a href="{{ action('CampaignController@selectType') }}">
-                            <span class="material-symbols-rounded me-2">
-                                add
-                            </span>
+                            <svg width="17" height="16" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M0.702148 9.58146V6.15746H6.71815V0.62146H10.2061V6.15746H16.1901V9.58146H10.2061V15.1175H6.71815V9.58146H0.702148Z" fill="url(#paint0_linear_682_690)"/>
+                                <defs>
+                                  <linearGradient id="paint0_linear_682_690" x1="-6.80739" y1="7.86946" x2="16.1901" y2="15.1175" gradientUnits="userSpaceOnUse">
+                                    <stop stop-color="#00A3B9"/>
+                                    <stop offset="1" stop-color="#00E8E8"/>
+                                  </linearGradient>
+                                </defs>
+                            </svg>
                         </a>
                     </div>
                 </div>
@@ -157,9 +163,15 @@
                     </div>
                     <div class="campaign-tools position-absolute">
                         <a href="{{ action('MailListController@create') }}">
-                            <span class="material-symbols-rounded me-2">
-                                add
-                            </span>
+                            <svg width="17" height="16" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M0.702148 9.58146V6.15746H6.71815V0.62146H10.2061V6.15746H16.1901V9.58146H10.2061V15.1175H6.71815V9.58146H0.702148Z" fill="url(#paint0_linear_682_690)"/>
+                                <defs>
+                                  <linearGradient id="paint0_linear_682_690" x1="-6.80739" y1="7.86946" x2="16.1901" y2="15.1175" gradientUnits="userSpaceOnUse">
+                                    <stop stop-color="#00A3B9"/>
+                                    <stop offset="1" stop-color="#00E8E8"/>
+                                  </linearGradient>
+                                </defs>
+                            </svg>
                         </a>
                     </div>
                 </div>
