@@ -522,7 +522,7 @@ body.mode-dark.theme-emotsy.leftbar .leftbar-hide-menu {
 }
 
 .progress-new .progress-left .progress-new-title{
-    text-align: center;
+    text-align: left;
 }
 .progress-new .progress-left .progress-new-title h2{
     color: #364A63;
@@ -545,7 +545,8 @@ body.mode-dark.theme-emotsy.leftbar .leftbar-hide-menu {
     color: #00A3B9 ;
 }
 .btn-emotsy{
-    background-color: #00A3B9;
+    border-radius: 18px;
+    background: linear-gradient(91deg, #00DAE8 -75.1%, #0FF 460.01%);
 }
 .rd-50{
     border-radius: 50px;
@@ -574,8 +575,9 @@ body.mode-dark.theme-emotsy.leftbar .leftbar-hide-menu {
 .progress.progress-sm{
     height: 12px;
     width: 85%;
+    --bs-progress-border-radius: none !important;
 }
-.progress-item{
+.progress-items{
     color: var(--Main-Black-Clear, #222751);
     font-family: DM Sans;
     font-size: 14px;
