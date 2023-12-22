@@ -596,37 +596,69 @@ body.mode-dark.theme-emotsy.leftbar .leftbar-hide-menu {
     
 }
 
+
+
 .icons-center{
-    top: 21%;
-    left: 26%;
-    right: 25%;
+    top: 19%;
+    left: 0;
+    right: 0;
+    margin: 0 auto; 
+    width: 70%;
 }
 .icons-center2{
     top: 21%;
-    left: 26%;
-    right: 25%;
+    left: 0;
+    right: 0;
+    margin: 0 auto; 
+    width: 70%;
 }
 .icons-center3{
-    top: 21%;
-    left: 26%;
-    right: 25%;
+    top: 19%;
+    left: 0;
+    right: 0;
+    margin: 0 auto; 
+    width: 70%;
 }
-
+@media (min-width: 1400px) {
+    .icons-center{
+        top: 19%;
+        left: 0;
+        right: 0;
+        margin: 0 auto; 
+        width: 70%;
+    }
+    .icons-center2{
+        top: 19%;
+        left: 0;
+        right: 0;
+        margin: 0 auto; 
+        width: 70%;
+    }
+    .icons-center3{
+        top: 19%;
+        left: 0;
+        right: 0;
+        margin: 0 auto; 
+        width: 70%;
+    }
+}
 @media (min-width: 1500px) {
     .icons-center{
         top: 23%;
-        left: 25%;
-        right: 22%;
+        left: 5%;
+        float: left; 
+        width: 70%;
     }
     .icons-center2{
         top: 23%;
-        left: 26%;
-        right: 22%;
+        left: 5%;
+        float: left; 
     }
     .icons-center3{
-        top: 12%;
-        left: 19%;
-        right: 19%;
+        left: 0;
+        right: 0;
+        margin: 0 auto; 
+        width: 70%;
     }
 }
 
