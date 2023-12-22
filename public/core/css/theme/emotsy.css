@@ -160,7 +160,7 @@ body{
     font-weight: 400;
     line-height: 23.1px;
    
-}
+} 
 .has-account a{
     text-decoration-line: underline; 
 }
@@ -352,7 +352,7 @@ body.mode-dark.theme-emotsy.leftbar .leftbar-hide-menu {
     height: 100%;
 }
 .h-100{
-    height:100%;
+    height:100% !important;
 }
 .google-connect{
     color: var(--Main-Blue-Sea, #00A3B9);
@@ -488,7 +488,127 @@ body.mode-dark.theme-emotsy.leftbar .leftbar-hide-menu {
 
 }
 .campaign-tools{
+    top: 0;
+    right: 0;
+    width: 45px;
+    height: 45px;
+}
+.campaign-tools span{
+    font-weight: 700;
+    font-size: 23px;
+    color: #00A3B9 ;
+}
+.ampaign-new{}
+.campaign-list{}
+
+.campaign-new .campain-new-img, .campaign-new .campain-new-title,
+.campaign-list .campain-list-img, .campaign-list .campain-list-title
+{
+    width: 50%;
+}
+.progress-new .progress-left .progress-new-img{
+    width: 55%;
+}
+.progress-new .progress-left .progress-new-title{
+    width: 45%;
+}
+.progress-new .progress-left
+{
+    width: 40%;
+}
+.progress-new .progress-right 
+{
+    width: 60%;
+}
+
+.progress-new .progress-left .progress-new-title{
+    text-align: center;
+}
+.progress-new .progress-left .progress-new-title h2{
+    color: #364A63;
+    font-family: DM Sans;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 25.98px; /* 129.9% */
+    letter-spacing: -0.168px; 
+    padding: 0;
+    margin: 0;
+}
+
+.campaign-list .campain-list-img, .campaign-new .campain-new-img{
+    text-align: center;
+    padding: 7px;
+}
+.campaign-list .campain-list-img p a, .campaign-new .campain-new-img p a{ 
+    text-decoration: none;
+    color: #00A3B9 ;
+}
+.btn-emotsy{
+    background-color: #00A3B9;
+}
+.rd-50{
+    border-radius: 50px;
+}
+
+.campaign-list .campain-list-title, .campaign-new .campain-new-title{
+    color: #364A63;
+    font-family: DM Sans;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 25.98px; /* 129.9% */
+    letter-spacing: -0.168px; 
+    padding-left: 9px;
     
+} 
+.icons-center{
+    top: 21%;
+    left: 21%;
+    right: 21%;
+    bottom: 21%;
+}
+.progress-bar.progress-bar-striped.bg-primary {
+    background-color: #3EE0EA!important;
+}
+.progress.progress-sm{
+    height: 12px;
+    width: 85%;
+}
+.progress-item{
+    color: var(--Main-Black-Clear, #222751);
+    font-family: DM Sans;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 23.1px; /* 165% */ 
+}
+.progress-rated{
+    color: var(--Main-Black-Lighter, #9DA0B7);
+    font-family: DM Sans;
+    font-size: 13px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 23.1px; /* 177.692% */ 
+}
+.progress-percen{
+    padding-left: 12px;
+    color: var(--Main-Black-Clear, #222751);
+    font-family: DM Sans;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 23.1px; /* 192.5% */ 
+
+}
+.support-request{
+    color: #364A63;
+    font-family: DM Sans;
+    font-size: 16.8px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 18.48px; /* 110% */
+    letter-spacing: -0.168px; 
 }
 @media (min-width: 1200px) {
 
