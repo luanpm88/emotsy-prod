@@ -206,7 +206,7 @@
                                           </svg>
                                     </div>
                                 </div>
-                                <div class="progress-new-title p-3">
+                                <div class="progress-new-title pt-5 px-3">
                                     <h2 class="">Credits used</h2>
                                     <p class="pt-2"> 
                                         <a href="{{ action('SubscriptionController@index') }}" class="btn btn-emotsys text-white">
