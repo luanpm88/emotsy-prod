@@ -422,6 +422,14 @@ body.mode-dark.theme-emotsy.leftbar .leftbar-hide-menu {
     width: auto;
 }
 
+.box-card{
+    border:none !important;
+    border-radius: 18px;
+    box-shadow: 4px 4px 17px 0px rgba(0, 199, 227, 0.16);
+}
+.box-card .card-body { 
+
+}
 @media (min-width: 1200px) {
     ul.navbar-nav{
         padding: 0 20px;
@@ -431,9 +439,21 @@ body.mode-dark.theme-emotsy.leftbar .leftbar-hide-menu {
         align-items: center; 
         margin-bottom: 7px;
     }
-    ul.navbar-nav li.nav-item.active{
+    /*
+    .leftbar-closed .page-container {
+        
+    }
+    */
+    .leftbar ul.navbar-nav li.nav-item.active{
         border-radius: 8px;
         background: #FFF8E7; 
+    }
+    .leftbar-closed ul.navbar-nav li.nav-item{
+        padding: 10px 0 10px 0;
+    }
+    .leftbar-closed ul.navbar-nav li.nav-item.active{
+        border-radius: none !important;
+        background: none !important; 
     }
     .leftbar .navbar-main {
         height: calc(100vh - 30px) !important;
@@ -508,6 +528,7 @@ body.mode-dark.theme-emotsy.leftbar .leftbar-hide-menu {
 }
 .progress-new .progress-left .progress-new-img{
     width: 50%;
+    text-align: center;
 }
 .progress-new .progress-left .progress-new-title{
     width: 50%;
@@ -540,6 +561,9 @@ body.mode-dark.theme-emotsy.leftbar .leftbar-hide-menu {
     text-align: center;
     padding: 7px;
 }
+.progress-new .progress-left .progress-new-img svg, .campaign-list .campain-list-img svg, .campaign-new .campain-new-img svg{
+    max-width: 100% !important;
+}
 .campaign-list .campain-list-img p a, .campaign-new .campain-new-img p a{ 
     text-decoration: none;
     color: #00A3B9 ;
@@ -564,13 +588,43 @@ body.mode-dark.theme-emotsy.leftbar .leftbar-hide-menu {
     letter-spacing: -0.168px; 
     padding-left: 9px;
     
-} 
+}
+
 .icons-center{
     top: 21%;
-    left: 21%;
-    right: 21%;
-    bottom: 21%;
+    left: 26%;
+    right: 25%;
 }
+.icons-center2{
+    top: 21%;
+    left: 26%;
+    right: 25%;
+}
+.icons-center3{
+    top: 21%;
+    left: 26%;
+    right: 25%;
+}
+
+@media (min-width: 1500px) {
+    .icons-center{
+        top: 23%;
+        left: 30%;
+        right: 30%;
+    }
+    .icons-center2{
+        top: 23%;
+        left: 30%;
+        right: 30%;
+    }
+    .icons-center3{
+        top: 15%;
+        left: 17%;
+        right: 17%;
+    }
+}
+
+
 .progress-bar.progress-bar-striped.bg-primary {
     background-image: none !important;
     background-color: #3EE0EA!important;
