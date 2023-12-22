@@ -97,19 +97,19 @@
                                 </div>
                                  
                                 <p class="pt-2">
-                                    <a href="#">241 campaingns</a>
+                                    <a href="{{ action('CampaignController@index') }}">{{ Auth::user()->customer->campaignsCount() }} {{ trans('messages.campaigns') }}</a>
                                 </p>
                             </div>
                             <div class="campain-new-title">
-                                Build a new email campaign
+                                {{ trans('messages.campaign.build_a_new_email_campaign') }}
                             </div>
                         </div>
                     </div>
                     <div class="campaign-tools position-absolute">
-                        <a href="#">
-                        <span class="material-symbols-rounded me-2">
-                            add
-                        </span>
+                        <a href="{{ action('CampaignController@selectType') }}">
+                            <span class="material-symbols-rounded me-2">
+                                add
+                            </span>
                         </a>
                     </div>
                 </div>
@@ -147,16 +147,16 @@
                                     </svg>
                                 </div>
                                 <p class="pt-2">
-                                    <a href="#">38 lists</a>
+                                    <a href="{{ action('MailListController@index') }}">{{ Auth::user()->customer->listsCount() }} {{ trans('messages.lists') }}</a>
                                 </p>
                             </div>
                             <div class="campain-list-title">
-                                Import or update your lists
+                                {{ trans('messages.list.import_or_update_your_list') }}
                             </div>
                         </div>
                     </div>
                     <div class="campaign-tools position-absolute">
-                        <a href="#">
+                        <a href="{{ action('MailListController@create') }}">
                             <span class="material-symbols-rounded me-2">
                                 add
                             </span>
@@ -209,7 +209,7 @@
                                 <div class="progress-new-title">
                                     <h2>Credits used</h2>
                                     <p class="pt-2">
-                                        <a href="#" class="btn btn-emotsy rd-50 text-white">
+                                        <a href="{{ action('SubscriptionController@index') }}" class="btn btn-emotsy rd-50 text-white">
                                             <span class="material-symbols-rounded me-2">
                                                 add
                                             </span>
@@ -318,7 +318,7 @@
 
                     </div>
                     <div class="campaign-tools position-absolute">
-                        <a href="#">  
+                        <a href="javascript:;" class="top-quota-button" data-url="{{ action("AccountController@quotaLog") }}">
                         <span class="material-symbols-rounded me-2">
                             more_horiz
                         </span>
