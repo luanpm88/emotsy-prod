@@ -566,7 +566,13 @@ body.mode-dark.theme-emotsy.leftbar .leftbar-hide-menu {
 }
 .campaign-list .campain-list-img p a, .campaign-new .campain-new-img p a{ 
     text-decoration: none;
-    color: #00A3B9 ;
+    color: var(--Main-Blue-Dark, #00C7E3);
+    text-align: right;
+    font-family: DM Sans;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 14px; /* 100% */ 
 }
 .btn-emotsys{
     border-radius: 18px;
@@ -609,18 +615,18 @@ body.mode-dark.theme-emotsy.leftbar .leftbar-hide-menu {
 @media (min-width: 1500px) {
     .icons-center{
         top: 23%;
-        left: 30%;
-        right: 30%;
+        left: 25%;
+        right: 22%;
     }
     .icons-center2{
         top: 23%;
-        left: 30%;
-        right: 30%;
+        left: 26%;
+        right: 22%;
     }
     .icons-center3{
-        top: 15%;
-        left: 17%;
-        right: 17%;
+        top: 12%;
+        left: 19%;
+        right: 19%;
     }
 }
 
