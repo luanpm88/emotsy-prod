@@ -52,7 +52,8 @@
 	@include('layouts.core._middle_bar')
 
 	<main class="container page-container px-3">
-		@include('layouts.core._headbar_frontend')
+		
+		@include('emotsy.layouts._headbar_frontend')
 
         @if (config('app.store'))
             @include('layouts.core._topbar_frontend')

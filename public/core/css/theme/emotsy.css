@@ -504,6 +504,9 @@ body.mode-dark.theme-emotsy.leftbar .leftbar-hide-menu {
     line-height: 30.8px; /* 110% */
     letter-spacing: -0.84px; 
 }
+.wellcome-mes p{
+    margin: 0 0 25px;
+}
 .campaign-head{
 
 }
@@ -623,6 +626,27 @@ body.mode-dark.theme-emotsy.leftbar .leftbar-hide-menu {
     margin: 0 auto; 
     width: 70%;
 }
+.card .card-header h2{
+    color: #364A63;
+    font-family: DM Sans;
+    font-size: 16.8px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 18.48px; /* 110% */
+    letter-spacing: -0.168px; 
+    margin: 0;
+    padding: 0;
+}
+.no-after a::after{
+    display: none;
+}
+.top-notification-icon-dot{
+    /*
+    border-radius: 5px;
+    border: 2px solid #FFF;
+    */
+    background: var(--Main-Blue-Intense, #00E8E8);
+}
 
 @media (min-width: 1200px) {
     .progress-new-title{
@@ -632,11 +656,15 @@ body.mode-dark.theme-emotsy.leftbar .leftbar-hide-menu {
 } 
 @media (min-width: 1400px) {
     .progress-new-title{
+        padding-left: 0.7rem !important;
+        padding-right: 0.7rem !important;
+    }
+    .leftbar-closed .progress-new-title{
         padding-left: 1rem !important;
         padding-right: 1rem !important;
     }
     .icons-center{
-        top: 19%;
+        top: 18%;
         left: 0;
         right: 0;
         margin: 0 auto; 
@@ -658,8 +686,16 @@ body.mode-dark.theme-emotsy.leftbar .leftbar-hide-menu {
     }
 }
 @media (min-width: 1500px) {
+    .progress-new-title{
+        padding-left: 0.8rem !important;
+        padding-right: 0.8rem !important;
+    } 
+    .leftbar-closed .progress-new-title{
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+    } 
     .icons-center{
-        top: 23%;
+        top: 18%;
         left: 5%;
         float: left; 
         width: 70%;
