@@ -623,7 +623,18 @@ body.mode-dark.theme-emotsy.leftbar .leftbar-hide-menu {
     margin: 0 auto; 
     width: 70%;
 }
+
+@media (min-width: 1200px) {
+    .progress-new-title{
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+} 
 @media (min-width: 1400px) {
+    .progress-new-title{
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+    }
     .icons-center{
         top: 19%;
         left: 0;

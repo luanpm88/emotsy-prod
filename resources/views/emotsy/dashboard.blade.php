@@ -219,8 +219,8 @@
                                     </div>
                                 </div>
                                 <div class="progress-new-title pt-5 px-3">
-                                    <h2 class="">Credits used</h2>
-                                    <p class="pt-2"> 
+                                    <h2 class="pl-2">Credits used</h2>
+                                    <p class="pt-3"> 
                                         <a href="{{ action('SubscriptionController@index') }}" class="btn btn-emotsys text-white">
                                             <span class="material-symbols-rounded me-2">
                                                 add
@@ -230,7 +230,7 @@
                                     </p>
                                 </div>
                             </div>
-                            <div class="progress-right">  
+                            <div class="progress-right">
 
                                 <div class="row quota_box">
 
