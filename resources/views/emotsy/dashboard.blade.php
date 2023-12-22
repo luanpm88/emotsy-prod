@@ -206,10 +206,10 @@
                                           </svg>
                                     </div>
                                 </div>
-                                <div class="progress-new-title">
+                                <div class="progress-new-title p-4">
                                     <h2>Credits used</h2>
                                     <p class="pt-2">
-                                        <a href="#" class="btn btn-emotsy rd-50 text-white">
+                                        <a href="#" class="btn btn-emotsy text-white">
                                             <span class="material-symbols-rounded me-2">
                                                 add
                                             </span>
