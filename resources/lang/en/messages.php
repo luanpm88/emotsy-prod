@@ -1382,7 +1382,7 @@
   'from_name' => 'From name',
   'frontend' => 'Campaign View',
   'frontend_dashboard_hello' => 'Hello, :name!',
-  'frontend_dashboard_welcome' => 'Welcome back to your account dashboard.<br>Check out your email campaigns\' performance statistics and personalized tips from our insight reports.',
+  'frontend_dashboard_welcome' => 'Welcome back to your account dashboard. Check out your email campaigns\' performance statistics and personalized tips from our insight reports.',
   'frontend_scheme' => 'Campaign view scheme',
   'gallery' => 'Gallery',
   'general' => 'General',
@@ -3358,4 +3358,6 @@
   'form.onscreen.preview.intro' => 'Click here to preview the final form popup at any time while designing your form',
   'form.onscreen.save.intro' => 'After finishing the design of your form, click here to save your current work.',
   'form.onscreen.publish_unpublish.intro' => 'You can also quickly save and publish or unpublish the form by clicking the action here',
+  'campaign.build_a_new_email_campaign' => 'Build a new email campaign',
+  'list.import_or_update_your_list' => 'Import or update your lists',
 ) ?>
