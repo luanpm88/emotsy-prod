@@ -234,7 +234,7 @@
                                             </div>
                                             <div class="d-flex align-items-center">
                                                 <div class="progress progress-sm">
-                                                    <div class="progress-bar progress-bar-striped bg-primary" style="width: {{ $sendingCreditsUsedPercentage*100  }}%">
+                                                    <div class="progress-bar bg-primary" style="width: {{ $sendingCreditsUsedPercentage*100  }}%">
                                                     </div>
                                                 </div>
                                                 <div class="progress-percen">
@@ -255,7 +255,7 @@
                                             </div>
                                             <div class="d-flex align-items-center">
                                                 <div class="progress progress-sm">
-                                                    <div class="progress-bar progress-bar-striped bg-primary" style="width: {{ 100*$listsUsed }}%">
+                                                    <div class="progress-bar  bg-primary" style="width: {{ 100*$listsUsed }}%">
                                                     </div>
                                                 </div>
                                                 <div class="progress-percen">
@@ -276,7 +276,7 @@
                                             </div>
                                             <div class="d-flex align-items-center">
                                                 <div class="progress progress-sm">
-                                                    <div class="progress-bar progress-bar-striped bg-primary" style="width: 20%">
+                                                    <div class="progress-bar  bg-primary" style="width: 20%">
                                                     </div>
                                                 </div>
                                                 <div class="progress-percen">
@@ -297,7 +297,7 @@
                                             </div>
                                             <div class="d-flex align-items-center">
                                                 <div class="progress progress-sm">
-                                                    <div class="progress-bar progress-bar-striped bg-primary" style="width: {{ $subscribersUsed*100 }}%">
+                                                    <div class="progress-bar  bg-primary" style="width: {{ $subscribersUsed*100 }}%">
                                                     </div>
                                                 </div>
                                                 <div class="progress-percen">

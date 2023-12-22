@@ -47,7 +47,7 @@
 .theme-emotsy.leftbar.mode-dark .navbar-main {
     background-color: #0a1319!important;
 }
-.progress-bar.progress-bar-striped.bg-primary {
+.progress-bar.bg-primary {
     background-color: #08c6e1!important;
 }
 .btn-info {
@@ -662,13 +662,12 @@ body.mode-dark.theme-emotsy.leftbar .leftbar-hide-menu {
     }
 }
 
-
-.progress-bar.progress-bar-striped.bg-primary {
+.progress-bar.bg-primary {
     background-image: none !important;
     background-color: #3EE0EA!important;
     position: relative;
 }
-.progress-bar.progress-bar-striped.bg-primary::after{
+.progress-bar.bg-primary::after{
     content: '';
     position: absolute;
     background-color: #ffffff;
