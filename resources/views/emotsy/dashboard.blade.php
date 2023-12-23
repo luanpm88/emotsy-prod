@@ -360,7 +360,7 @@
                         </div>
                         <div class="col-sm-4"> 
                             
-                            <div class="content-group-sm mb-2 w-100 light-blue">
+                            <div class="content-group-sm mb-4 w-100 light-blue">
                                 <div class="something">
                                     <div class="d-flex">
                                          <div class="progress-items">Campaign</div> 
@@ -373,7 +373,7 @@
                                     </div> 
                                 </div> 
                             </div>
-                            <div class="content-group-sm mb-2 w-100 blue">
+                            <div class="content-group-sm mb-4 w-100 blue">
                                 <div class="something">
                                     <div class="d-flex">
                                          <div class="progress-items">Campaign</div> 
@@ -387,7 +387,7 @@
                                 </div>
 
                             </div>
-                            <div class="content-group-sm mb-2 w-100 orange">
+                            <div class="content-group-sm mb-4 w-100 orange">
                                 <div class="something">
                                     <div class="d-flex">
                                          <div class="progress-items">Campaign</div> 
@@ -401,7 +401,7 @@
                                 </div>
 
                             </div>
-                            <div class="content-group-sm mb-2 w-100 green">
+                            <div class="content-group-sm mb-4 w-100 green">
                                 <div class="something">
                                     <div class="d-flex">
                                          <div class="progress-items">Campaign</div> 
