@@ -882,7 +882,7 @@ body.mode-dark.theme-emotsy.leftbar .leftbar-hide-menu {
     background: #76DDC2 !important;
 }
 .silver .progress-bar.bg-primary{
-    background: var(--Main-Black-Lightest, #FAFAFA);
+    background:  #FAFAFA !important
 }
 
 @media (min-width: 1200px) {
