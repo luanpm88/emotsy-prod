@@ -380,10 +380,10 @@
                                         </div>
                                     </div>
                                     <div class="d-flex ">
-                                        <h2 class="text-semibold">2,639</h2>
-                                        <div class="text-muteds pl-2">
-                                            <div>Successful deliveries</div>
-                                            <div>2/50</div>
+                                        <h2 class="text-semibold rate-value main-color">2,639</h2>
+                                        <div class="text-muteds pl-2 rate-alias">
+                                            <div class="alias-items">Successful deliveries</div>
+                                            <div class="alias-value">2/50</div>
                                         </div>
                                     </div>
                                 </div>

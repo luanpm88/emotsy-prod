@@ -758,6 +758,39 @@ body.mode-dark.theme-emotsy.leftbar .leftbar-hide-menu {
     /*line-height: 23.1px;  192.5% */ 
 
 }
+.main-color{
+    color: var(--Main-Blue-Sea, #00A3B9);
+}
+.main-bg-color{
+    background-color: var(--Main-Blue-Sea, #00A3B9);
+}
+.rate-value{
+    font-family: DM Sans;
+    font-size: 48px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 52.8px; /* 110% */
+}
+.rate-alias{
+    
+}
+.rate-alias .alias-items{
+    color: #526484;
+    font-family: DM Sans;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 23.1px; /* 165% */ 
+}
+.rate-alias .alias-value{
+    color: var(--Main-Blue-Sea, #00A3B9);
+    text-align: right;
+    font-family: DM Sans;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 14px; /* 100% */ 
+}
 .support-request{
     color: #364A63;
     font-family: DM Sans;
