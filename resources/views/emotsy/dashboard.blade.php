@@ -361,7 +361,7 @@
 
     <div class="row mb-4">
         <div class="col-md-6">
-            <div class="card position-relative h-100 box-card">
+            <div class="card position-relative h-100 box-card rate-blue">
                 <div class="card-header bg-white">
                     <div class="d-flex justify-content-between p-4 w-100">
                         <h2>Open rate</h2>
@@ -370,7 +370,7 @@
                 </div>
                 <div class="card-body py-4 px-3 d-flex align-items-start">
                     <div class="d-flex justify-content-between w-100"> 
-                        <div class="frog w-50"> 
+                        <div class="frog w-60"> 
                             <div class="col-md-12">
                                 <div class="content-group-sm"> 
                                     <div class="d-flex align-items-center mb-4">
@@ -380,25 +380,31 @@
                                         </div> 
                                     </div>
                                     <div class="d-flex ">
-                                        <h2 class="text-semibold rate-value main-color">2,639</h2>
+                                        <h2 class="text-semibold rate-value rate-color">2,639</h2>
                                         <div class="text-muteds pl-2 rate-alias pt-1">
                                             <div class="alias-items">Successful deliveries</div>
                                             <div class="alias-value pt-1">2/50</div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>  
+                            </div> 
                         </div>
 
-                        <div class="frog w-25 d-flex flex-column">
-                            <div class="title" style="line-height:14px">Last opened</div>
-                            <div class="resulte fs-36">64</div>
-                            <div class="alias">Total Opens</div>
-                        </div>
-
-                        <div class="frog w-25">
-                            <div class="title">2023-12-18</div>
-                            <div class="resulte fs-36">22:08</div> 
+                        <div class="frog w-40 d-flex flex-column">
+                            <div class="rate-last-title mb-4" style="line-height:14px">
+                                Last opened
+                                <span class="rate-last-subtitle pl-2">2023-12-18</span>
+                            </div>
+                            <div class="d-flex">
+                                <div class="rate-open w-50">
+                                    <div class="rate-open-result fs-36">64</div>
+                                    <p>Total Opens</p>
+                                </div>
+                                <div class="rate-open w-50">
+                                    <div class="rate-open-result fs-36">64</div>
+                                    <p>Total Opens</p>
+                                </div>
+                            </div> 
                         </div>
 
 
@@ -407,7 +413,7 @@
             </div>
         </div>
         <div class="col-md-6">
-            <div class="card position-relative h-100 box-card">
+            <div class="card position-relative h-100 box-card rate-orange">
                 <div class="card-header bg-white">
                     <div class="d-flex justify-content-between p-4 w-100">
                         <h2>Open rate</h2>
@@ -415,36 +421,42 @@
                     </div> 
                 </div>
                 <div class="card-body py-4 px-3 d-flex align-items-start">
-                    <div class="d-flex justify-content-between w-100">
-
-
-                        <div class="frog w-50"> 
+                    <div class="d-flex justify-content-between w-100"> 
+                        <div class="frog w-60"> 
                             <div class="col-md-12">
                                 <div class="content-group-sm"> 
-                                    <div class="progress progress-xxs mb-4" style="height: 10px">
-                                        <div class="progress-bar bg-warning" style="width: 4%">
-                                        </div>
+                                    <div class="d-flex align-items-center mb-4">
+                                        <div class="progress progress-sm h-10 w-100">
+                                            <div class="progress-bar bg-primary" style="width: 20%">
+                                            </div>
+                                        </div> 
                                     </div>
                                     <div class="d-flex ">
-                                        <h2 class="text-semibold">2,639</h2>
-                                        <div class="text-muteds pl-2">
-                                            <div>Successful deliveries</div>
-                                            <div>2/50</div>
+                                        <h2 class="text-semibold rate-value rate-color">2,639</h2>
+                                        <div class="text-muteds pl-2 rate-alias pt-1">
+                                            <div class="alias-items">Successful deliveries</div>
+                                            <div class="alias-value pt-1">2/50</div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>  
+                            </div> 
                         </div>
 
-                        <div class="frog w-25 d-flex flex-column">
-                            <div class="title" style="line-height:14px">Last opened</div>
-                            <div class="resulte fs-36">64</div>
-                            <div class="alias">Total Opens</div>
-                        </div>
-
-                        <div class="frog w-25">
-                            <div class="title">2023-12-18</div>
-                            <div class="resulte fs-36">22:08</div> 
+                        <div class="frog w-40 d-flex flex-column">
+                            <div class="rate-last-title mb-4" style="line-height:14px">
+                                Last opened
+                                <span class="rate-last-subtitle pl-2">2023-12-18</span>
+                            </div>
+                            <div class="d-flex">
+                                <div class="rate-open w-50">
+                                    <div class="rate-open-result fs-36">64</div>
+                                    <p>Total Opens</p>
+                                </div>
+                                <div class="rate-open w-50">
+                                    <div class="rate-open-result fs-36">64</div>
+                                    <p>Total Opens</p>
+                                </div>
+                            </div> 
                         </div>
 
 
