@@ -774,6 +774,9 @@ body.mode-dark.theme-emotsy.leftbar .leftbar-hide-menu {
 .rate-alias{
     
 }
+.h-10{
+    height: 10px !important;
+}
 .rate-alias .alias-items{
     color: #526484;
     font-family: DM Sans;
@@ -783,8 +786,7 @@ body.mode-dark.theme-emotsy.leftbar .leftbar-hide-menu {
     line-height: 23.1px; /* 165% */ 
 }
 .rate-alias .alias-value{
-    color: var(--Main-Blue-Sea, #00A3B9);
-    text-align: right;
+    color: var(--Main-Blue-Sea, #00A3B9); 
     font-family: DM Sans;
     font-size: 14px;
     font-style: normal;

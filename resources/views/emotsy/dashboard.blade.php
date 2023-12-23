@@ -369,21 +369,21 @@
                     </div> 
                 </div>
                 <div class="card-body py-4 px-3 d-flex align-items-start">
-                    <div class="d-flex justify-content-between w-100">
-
-
+                    <div class="d-flex justify-content-between w-100"> 
                         <div class="frog w-50"> 
                             <div class="col-md-12">
                                 <div class="content-group-sm"> 
-                                    <div class="progress progress-xxs mb-4" style="height: 10px">
-                                        <div class="progress-bar bg-warning" style="width: 4%">
-                                        </div>
+                                    <div class="d-flex align-items-center mb-4">
+                                        <div class="progress progress-sm h-10 w-100">
+                                            <div class="progress-bar bg-primary" style="width: 20%">
+                                            </div>
+                                        </div> 
                                     </div>
                                     <div class="d-flex ">
                                         <h2 class="text-semibold rate-value main-color">2,639</h2>
-                                        <div class="text-muteds pl-2 rate-alias">
+                                        <div class="text-muteds pl-2 rate-alias pt-1">
                                             <div class="alias-items">Successful deliveries</div>
-                                            <div class="alias-value">2/50</div>
+                                            <div class="alias-value pt-1">2/50</div>
                                         </div>
                                     </div>
                                 </div>
