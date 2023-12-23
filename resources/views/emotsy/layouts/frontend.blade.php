@@ -29,6 +29,10 @@
 
     <!-- Theme -->
     <link rel="stylesheet" type="text/css" href="{{ AppUrl::asset('core/css/theme/'.Auth::user()->customer->getColorScheme().'.css') }}?v=1">
+
+	<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+
 </head>
 <body class="theme-{{ Auth::user()->customer->getColorScheme() }} {{ Auth::user()->customer->getMenuLayout() }}bar
 	{{ Auth::user()->customer->getMenuLayout() }}bar-{{ request()->session()->get('customer-leftbar-state') }} state-{{ request()->session()->get('customer-leftbar-state') }}
@@ -121,7 +125,8 @@
 		})
 			
 	</script>
-
+	<script src="{{ asset('core/js/dchart.js') }}" ></script>
 	{!! \Acelle\Model\Setting::get('custom_script') !!}
+
 </body>
 </html>
