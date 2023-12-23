@@ -860,11 +860,29 @@ body.mode-dark.theme-emotsy.leftbar .leftbar-hide-menu {
 .rate-blue .rate-alias .alias-value{
     color: var(--Main-Blue-Sea, #00A3B9); 
 }
+
+
 .rate-blue{}
 .rate-blue .progress-bar.bg-primary{
     background-image: none !important;
     background-color: #3EE0EA !important;
     position: relative;
+}
+
+.light-blue .progress-bar.bg-primary{
+    background-color: #3EE0EA !important;
+}
+.blue .progress-bar.bg-primary{
+    background: #00C7E3 !important;
+}
+.orange .progress-bar.bg-primary{
+    background: #FFAB6F !important;
+}
+.green .progress-bar.bg-primary{
+    background: #76DDC2 !important;
+}
+.silver .progress-bar.bg-primary{
+    background: var(--Main-Black-Lightest, #FAFAFA);
 }
 
 @media (min-width: 1200px) {
