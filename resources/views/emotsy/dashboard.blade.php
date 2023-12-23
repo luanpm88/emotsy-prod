@@ -350,9 +350,65 @@
     <div class="row mb-4">
         <div class="col-md-12">
             <div class="card position-relative h-100 box-card">
-                <div class="card-body py-4 px-3 ">
+                <div class="card-body p-4">
                     <div class="row">
                         <div class="col-sm-4">
+                            <div class="inquery d-flex flex-column  justify-content-between ">
+                                <!-- Example single danger button -->
+                                <div class="btn-group e-type mb-4">  
+                                    <button type="button" class="btn revert btn-outline-emotsy dropdown-toggle" data-bs-toggle="dropdown"  aria-expanded="false">
+                                        Action
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="#">Action</a></li>
+                                        <li><a class="dropdown-item" href="#">Another action</a></li>
+                                        <li><a class="dropdown-item" href="#">Something else here</a></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><a class="dropdown-item" href="#">Separated link</a></li>
+                                    </ul>
+                                </div>
+
+                                <div class="mb-4 efrom">
+                                    <label class="form-label e-label">From</label>
+                                    <div class="e-value">Patricia@emotsy.com</div>
+                                </div>
+
+                                <div class="mb-4 esubject">
+                                    <label class="form-label e-label">Subject</label>
+                                    <div class="e-value">HR Mastery: Empowering Your Workforce for a New Era</div>
+                                </div>
+
+                                <div class="e-date mb-4">
+                                    <div class="e-col">
+                                        <div class="mb-4 efrom">
+                                            <label class="form-label e-label">Scheduled at:</label>
+                                            <div class="e-value">2023-12-14 12:04</div>
+                                        </div>
+                                    </div>
+                                    <div class="e-col">
+                                        <div class="mb-4 efrom">
+                                            <label class="form-label e-label">Delivery at:</label>
+                                            <div class="e-value">2023-12-14 12:04</div>
+                                        </div>
+                                    </div>
+                                 </div>
+
+                                <div class="d-flex e-listing">
+                                    <h2 class="text-semibold rate-value rate-color">2,639</h2>
+                                    <div class="text-muteds pl-2 rate-alias pt-1">
+                                        <div class="alias-items">Successful deliveries</div>
+                                        <div class="alias-value pt-1">2/50</div>
+                                    </div>
+                                </div>
+  
+
+
+
+                            </div>
+
+                           
+
+
 
                         </div>
                         <div class="col-sm-4">
