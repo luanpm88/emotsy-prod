@@ -5,9 +5,11 @@
 @section('title', trans('messages.dashboard'))
 
 @section('head')
+    <link rel="stylesheet" href="{{ AppUrl::asset('core/css/circle.css') }}">    
     <script type="text/javascript" src="{{ AppUrl::asset('core/echarts/echarts.min.js') }}"></script>
     <script type="text/javascript" src="{{ AppUrl::asset('core/echarts/dark.js') }}"></script> 
 @endsection
+
 
 @section('content')
     @if (config('custom.japan') && !empty(trans('messages.dashboard.notice')))
@@ -404,23 +406,100 @@
                         </div>
                         <div class="col-sm-4">
                             <div class="row">
-                                <div class="col col-sm-4">
+                                <div class="col col-sm-4 mb-4">
                                     <div class="chart-title">Opened</div>
-                                    <div id="chart1"></div>
+                                    <div id="chart1" class="chart">
+                                        <div class="c100 p72">
+                                            <span>72.39%</span>
+                                            <div class="slice">
+                                                <div class="bar"></div>
+                                                <div class="fill"></div>
+                                            </div>
+                                        </div>
+                                    </div>
                                     <div class="chart-alias">
                                         63 unique / 63 opens 
                                         2639 message(s)
                                     </div>
                                 </div>
-                                <div class="col col-sm-4">
-                                    <div class="chart-title"></div>
-                                    <div id="chart2"></div>
-                                    <div class="chart-alias"></div>
+                                <div class="col col-sm-4 mb-4">
+                                    <div class="chart-title">Not opened</div>
+                                    <div id="chart2" class="chart">
+                                        <div class="c100 p32">
+                                            <span>32.61%</span>
+                                            <div class="slice">
+                                                <div class="bar"></div>
+                                                <div class="fill"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="chart-alias">
+                                        63 unique / 63 opens 
+                                        2639 message(s)
+                                    </div>
                                 </div>
-                                <div class="col col-sm-4">
-                                    <div class="chart-title"></div>
-                                    <div id="chart3"></div>
-                                    <div class="chart-alias"></div>
+
+                                <div class="col col-sm-4 mb-4">
+                                    <div class="chart-title">Unique click</div>
+                                    <div id="chart3" class="chart">
+                                        <div class="c100 p10">
+                                            <span>7.04%</span>
+                                            <div class="slice">
+                                                <div class="bar"></div>
+                                                <div class="fill"></div>
+                                            </div>
+                                        </div> 
+                                    </div>
+                                    <div class="chart-alias">
+                                        63 unique / 63 opens 
+                                        2639 message(s)
+                                    </div>
+                                </div>
+                                <div class="col col-sm-4 mb-4">
+                                    <div class="chart-title">Unsubscribed</div>
+                                    <div id="chart4" class="chart">
+                                        <div class="c100 p7">
+                                            <span>7.04%</span>
+                                            <div class="slice">
+                                                <div class="bar"></div>
+                                                <div class="fill"></div>
+                                            </div>
+                                        </div> 
+                                    </div>
+                                    <div class="chart-alias">
+                                        unsubscribed
+                                    </div>
+                                </div>
+
+                                <div class="col col-sm-4 mb-4">
+                                    <div class="chart-title">Bounced</div>
+                                    <div id="chart5" class="chart">
+                                        <div class="c100 p2">
+                                            <span>2.08%</span>
+                                            <div class="slice">
+                                                <div class="bar"></div>
+                                                <div class="fill"></div>
+                                            </div>
+                                        </div> 
+                                    </div>
+                                    <div class="chart-alias">
+                                        3 bounced
+                                    </div>
+                                </div>
+                                <div class="col col-sm-4 mb-4">
+                                    <div class="chart-title">Reported</div>
+                                    <div id="chart6" class="chart">
+                                        <div class="c100 p0s">
+                                            <span>0.00%</span>
+                                            <div class="slice">
+                                                <div class="bar"></div>
+                                                <div class="fill"></div>
+                                            </div>
+                                        </div> 
+                                    </div>
+                                    <div class="chart-alias">
+                                        0 reported
+                                    </div>
                                 </div>
                             </div>
                             <div class="l" id="chart"></div>
