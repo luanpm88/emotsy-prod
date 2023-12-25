@@ -106,7 +106,7 @@
                     <a href="{{ action('AuthController@googleRedirect', [
                         'language_code' => language_code(),
                     ]) }}" class="py-2" > 
-                        <span class="ms-3 display-6 text-center google-connect">{{ trans('messages.continue_with_google') }}</span>
+                        <span class="display-6 text-center google-connect">{{ trans('messages.continue_with_google') }}</span>
                     </a>
                 </div>
             @endif

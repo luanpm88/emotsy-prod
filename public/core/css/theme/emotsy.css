@@ -1130,3 +1130,21 @@ body.mode-dark.theme-emotsy.leftbar .leftbar-hide-menu {
 .empty-list {
     background: transparent;
 }
+.form-group label {
+    font-weight: 600;
+}
+.register-form input {
+    height: 44px;
+}
+.select2-selection--single:not([class*=bg-]):not([class*=border-]) {
+    background-color: #fff;
+    height: 44px;
+    border-width: 1px;
+    border-color: #ccc;
+}
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 42px;
+}
+.btn-view-password {
+    margin-top: -35px;
+}

@@ -148,10 +148,17 @@ class UserController extends Controller
             }
         }
 
-        return view('users.register', [
-            'customer' => $customer,
-            'user' => $user,
-        ]);
+        if (config('app.emotsy')) {
+            return view('emotsy.register', [
+                'customer' => $customer,
+                'user' => $user,
+            ]);
+        } else {
+            return view('users.register', [
+                'customer' => $customer,
+                'user' => $user,
+            ]);
+        }
     }
 
     /**
