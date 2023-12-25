@@ -3360,4 +3360,7 @@
   'form.onscreen.publish_unpublish.intro' => 'You can also quickly save and publish or unpublish the form by clicking the action here',
   'campaign.build_a_new_email_campaign' => 'Build a new email campaign',
   'list.import_or_update_your_list' => 'Import or update your lists',
+  'dashboard.campaign_overview' => 'Campaign Overview',
+  'dashboard.messages' => 'message(s)',
+  'dashboard.unique' => 'unique',
 ) ?>

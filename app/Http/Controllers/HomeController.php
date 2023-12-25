@@ -47,6 +47,8 @@ class HomeController extends Controller
             return view('dashboard.cartpaye');
 
         } elseif (config('app.emotsy')) {
+            $campaign = $request->campaign_uid ? \Acelle\Model\Campaign::findByUid($request->campaign_uid) : \Acelle\Model\Campaign::done()->first();
+
             return view('emotsy.dashboard', [
                 'sendingCreditsUsed' => $sendingCreditsUsed,
                 'sendingCreditsUsedPercentage' => $sendingCreditsUsedPercentage,
@@ -61,6 +63,7 @@ class HomeController extends Controller
                 'maxSubscribers' => $maxSubscribers,
                 'subscribersCount' => $subscribersCount,
                 'subscribersUsed' => $subscribersUsed,
+                'campaign' => $campaign,
             ]);
         } else {
             return view('dashboard', [

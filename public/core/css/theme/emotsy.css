@@ -1127,3 +1127,6 @@ body.mode-dark.theme-emotsy.leftbar .leftbar-hide-menu {
         display: none;
     }
 }
+.empty-list {
+    background: transparent;
+}
