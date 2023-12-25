@@ -14,8 +14,8 @@
             <div class="col-md-12">
                 <div class="card position-relative h-100 box-card">
                     <div class="card-body p-4">
-                        <div class="row">
-                            <div class="col-sm-4">
+                        <div class="d-flex">
+                            <div class="pe-4" style="width:30%">
                                 <div class="inquery d-flex flex-column  justify-content-between ">
                                     <!-- Example single danger button -->
                                     <div class="btn-group e-type mb-4">  
@@ -94,7 +94,7 @@
                                     </div> 
                                 </div>
                             </div>
-                            <div class="col-sm-4">
+                            <div class="px-2" style="width:40%">
                                 <div class="row">
                                     <div class="col col-sm-4 mb-4">
                                         <div class="chart-title">{{ trans('messages.opened') }}</div>
@@ -107,7 +107,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="chart-alias">
+                                        <div class="chart-alias" style="text-transform:lowercase;white-space:nowrap;">
                                             {{ $campaign->readCache('UniqOpenCount') }} {{ trans('messages.dashboard.unique') }} / {{ $campaign->uniqueOpenCount() }} {{ trans('messages.opens') }} 
                                             <br>
                                             {{ ($campaign->deliveredCount()) }} {{ trans('messages.dashboard.messages') }}
@@ -124,7 +124,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="chart-alias">
+                                        <div class="chart-alias" style="text-transform:lowercase;white-space:nowrap;">
                                             {{ $campaign->readCache('NotOpenCount') }} {{ trans('messages.clicks') }} /<br>
                                             {{ ($campaign->deliveredCount()) }} {{ trans('messages.dashboard.messages') }}
                                         </div>
@@ -141,7 +141,7 @@
                                                 </div>
                                             </div> 
                                         </div>
-                                        <div class="chart-alias">
+                                        <div class="chart-alias" style="text-transform:lowercase;white-space:nowrap;">
                                             {{ $campaign->uniqueClickCount() }} {{ trans('messages.dashboard.unique') }} / {{ $campaign->openUniqCount() }} {{ trans('messages.opens') }} 
                                             <br>
                                             {{ ($campaign->deliveredCount()) }} {{ trans('messages.dashboard.messages') }}
@@ -158,7 +158,7 @@
                                                 </div>
                                             </div> 
                                         </div>
-                                        <div class="chart-alias">
+                                        <div class="chart-alias" style="text-transform:lowercase;white-space:nowrap;">
                                             {{ trans('messages.count_unsubscribed', [
                                                 'count' => $campaign->unsubscribeCount()
                                             ]) }}
@@ -176,7 +176,7 @@
                                                 </div>
                                             </div> 
                                         </div>
-                                        <div class="chart-alias">
+                                        <div class="chart-alias" style="text-transform:lowercase;white-space:nowrap;">
                                             {{ trans('messages.count_bounced', [
                                                 'count' => $campaign->bounceCount()
                                             ]) }}
@@ -193,7 +193,7 @@
                                                 </div>
                                             </div> 
                                         </div>
-                                        <div class="chart-alias">
+                                        <div class="chart-alias" style="text-transform:lowercase;white-space:nowrap;">
                                             {{ trans('messages.count_reported', [
                                                 'count' => $campaign->feedbackCount()
                                             ]) }}
@@ -203,7 +203,7 @@
                                 </div>
                                 <div class="l" id="chart"></div>
                             </div>
-                            <div class="col-sm-4"> 
+                            <div class="ms-auto ps-4" style="width:30%"> 
                                 
                                 <div class="content-group-sm mb-4 w-100 light-blue">
                                     <div class="something">

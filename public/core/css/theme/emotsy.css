@@ -729,7 +729,7 @@ body.mode-dark.theme-emotsy.leftbar .leftbar-hide-menu {
 }
 .progress.progress-sm{
     height: 8px;
-    width: 85%;
+    width: 100%;
     --bs-progress-border-radius: none !important;
 }
 .progress-items{
@@ -1016,7 +1016,7 @@ body.mode-dark.theme-emotsy.leftbar .leftbar-hide-menu {
     font-size: 13px;
     font-style: normal;
     font-weight: 400;
-    line-height: 13px; /* 100% */ 
+    line-height: 17px; /* 100% */ 
 }
 .chart{
     display: flex;
