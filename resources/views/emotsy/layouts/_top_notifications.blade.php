@@ -1,4 +1,4 @@
-<div class="nav-item dropdown no-after">
+{{-- <div class="nav-item dropdown no-after top-right-menu-group">
 	<a middle-bar-control="element" href="javascript:;"
 		class="nav-link d-flex align-items-center py-3 lvl-1 dropdown-toggle notifications-menu-item middle-bar-element"
 		id="content-menu"
@@ -29,4 +29,4 @@
 			}			
 		});
 	});
-</script>
+</script> --}}

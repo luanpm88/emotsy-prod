@@ -1,4 +1,4 @@
-<div class="nav-item dropdown no-after ">
+<div class="nav-item dropdown no-after top-right-menu-group">
 	<a middle-bar-control="element" href="javascript:;"
 		class="nav-link d-flex align-items-center py-3 lvl-1 dropdown-toggle activities-menu-item middle-bar-element"
 		id="content-menu"
@@ -14,7 +14,7 @@
 
 	$(function() {
 		$('.activities-menu-item').on('click', function() {
-			var sidebar = new Sidebar();
+			sidebar = new Sidebar();
 			if(!sidebar.showed()) {
 				sidebar.load({
 					url: '{{ action('AccountController@activity') }}'

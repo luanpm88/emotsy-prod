@@ -1005,5 +1005,34 @@ body.mode-dark.theme-emotsy.leftbar .leftbar-hide-menu {
     line-height: 13px; /* 100% */ 
 }
 @media (min-width: 1200px) {
-
+    .leftbar.middle-bar-open .middle-bar {
+        right: 0;
+        left: unset;
+    }
+    .leftbar.middle-bar-open .page-container {
+        transform: translateX(-420px);
+    }
+    .leftbar .middle-bar-head {
+        text-align: left;
+    }
+    .leftbar .middle-bar-head .middle-bar-close-button {
+        transform: scaleX(-1);
+        width: 50px;
+        height: 50px;
+        display: flex;
+        text-decoration: none;
+        align-items: center;
+        justify-content: center;
+    }
+    .leftbar .middle-bar {
+        background: #d0f3f6;
+    }
+}
+@media (max-width: 1199px) {
+    body {
+        padding-top: 90px;
+    }
+    .top-right-menu-group {
+        display: none;
+    }
 }

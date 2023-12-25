@@ -10,7 +10,7 @@
     @endif
         
         @include('emotsy.layouts._top_activity_log') 
-        @include('emotsy.layouts._top_notifications') 
+        {{-- @include('emotsy.layouts._top_notifications')  --}}
         @include('emotsy.layouts._menu_frontend_user') 
 
 </div>
