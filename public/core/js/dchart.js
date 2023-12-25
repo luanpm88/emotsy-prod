@@ -48,6 +48,8 @@ var chart = new ApexCharts(document.querySelector("#contries"), options);
 
 chart.render();
 
+ 
+
 var breakup = {
     color: "#adb5bd",
     series: [9, 18],
@@ -59,12 +61,21 @@ var breakup = {
       foreColor: "#adb0bb",
     },
     plotOptions: {
+      size: '90%',
       pie: {
         startAngle: 0,
-        endAngle: 360,
+        endAngle: 360, 
         donut: {
-          size: '75%',
+          labels: {
+            show: true, 
+            total: {
+              show: true,
+              label: '',
+              formatter: () => 'ok',
+            },   
+          },   
         },
+        
       },
     },
     stroke: {
