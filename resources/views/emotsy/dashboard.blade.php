@@ -509,7 +509,7 @@
                             <div class="content-group-sm mb-4 w-100 light-blue">
                                 <div class="something">
                                     <div class="d-flex">
-                                         <div class="progress-items">Campaign</div> 
+                                         <div class="progress-items">Recipients</div> 
                                     </div>                                               
                                 </div>
                                 <div class="d-flex align-items-center">
@@ -522,7 +522,7 @@
                             <div class="content-group-sm mb-4 w-100 blue">
                                 <div class="something">
                                     <div class="d-flex">
-                                         <div class="progress-items">Campaign</div> 
+                                         <div class="progress-items">Delivered</div> 
                                     </div>                                               
                                 </div>
                                 <div class="d-flex align-items-center">
@@ -536,12 +536,12 @@
                             <div class="content-group-sm mb-4 w-100 orange">
                                 <div class="something">
                                     <div class="d-flex">
-                                         <div class="progress-items">Campaign</div> 
+                                         <div class="progress-items">Failed</div> 
                                     </div>                                               
                                 </div>
                                 <div class="d-flex align-items-center">
                                     <div class="progress progress-sm">
-                                        <div class="progress-bar  bg-primary" style="width: 60%">
+                                        <div class="progress-bar  bg-primary" style="width: 15%">
                                         </div>
                                     </div> 
                                 </div>
@@ -550,30 +550,57 @@
                             <div class="content-group-sm mb-4 w-100 green">
                                 <div class="something">
                                     <div class="d-flex">
-                                         <div class="progress-items">Campaign</div> 
+                                         <div class="progress-items">Open</div> 
                                     </div>                                               
                                 </div>
                                 <div class="d-flex align-items-center">
                                     <div class="progress progress-sm">
-                                        <div class="progress-bar  bg-primary" style="width: 60%">
+                                        <div class="progress-bar  bg-primary" style="width: 12%">
                                         </div>
                                     </div> 
                                 </div>
                             </div>
-                            <div class="content-group-sm mb-2 w-100 silver">
+                            <div class="content-group-sm mb-4 w-100 yellow">
                                 <div class="something">
                                     <div class="d-flex">
-                                         <div class="progress-items">Campaign</div> 
+                                         <div class="progress-items">Clicked</div> 
                                     </div>                                               
                                 </div>
                                 <div class="d-flex align-items-center">
                                     <div class="progress progress-sm">
-                                        <div class="progress-bar  bg-primary" style="width: 60%">
+                                        <div class="progress-bar bg-primary" style="width: 10%">
                                         </div>
                                     </div> 
                                 </div>
                             </div>
+                            
 
+                            <div class="content-group-sm mb-4 w-100 silver">
+                                <div class="something">
+                                    <div class="d-flex">
+                                         <div class="progress-items">Bounce</div> 
+                                    </div>                                               
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <div class="progress progress-sm">
+                                        <div class="progress-bar bg-primary" style="width: 0%">
+                                        </div>
+                                    </div> 
+                                </div>
+                            </div>
+                            <div class="content-group-sm mb-4 w-100 silver">
+                                <div class="something">
+                                    <div class="d-flex">
+                                         <div class="progress-items">Report</div> 
+                                    </div>                                               
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <div class="progress progress-sm">
+                                        <div class="progress-bar  bg-primary" style="width: 0%">
+                                        </div>
+                                    </div> 
+                                </div>
+                            </div>
 
 
                         </div>

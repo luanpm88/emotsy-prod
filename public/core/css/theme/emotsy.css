@@ -904,6 +904,9 @@ body.mode-dark.theme-emotsy.leftbar .leftbar-hide-menu {
 .silver .progress-bar.bg-primary{
     background:  #FAFAFA !important
 }
+.yellow .progress-bar.bg-primary{
+    background: var(--Main-Orange-Vivid, #FFD569) !important
+}
 .e-type{
 
 }
