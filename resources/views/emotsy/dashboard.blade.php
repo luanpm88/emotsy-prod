@@ -6,7 +6,7 @@
 
 @section('head')
     <link rel="stylesheet" href="{{ AppUrl::asset('core/css/circle.css') }}">    
-    <script type="text/javascript" src="{{ AppUrl::asset('core/echarts/echarts.min.js') }}"></script>
+    <script type="text/javascript" src="{{ AppUrl::asset('core/echarts/echarts.min.js') }}"></script> 
     <script type="text/javascript" src="{{ AppUrl::asset('core/echarts/dark.js') }}"></script> 
 @endsection
 
@@ -414,7 +414,7 @@
                 </div>
                 <div class="card-body py-4 px-3 d-flex align-items-center">
                     <div class="d-flex justify-content-center p-4 w-100">
-                        <div class="" id="listgrowth"></div>                         
+                        <div class="" id="listgrowth"></div> 
                     </div>
                 </div>
             </div>
@@ -422,11 +422,7 @@
     </div>
 
 
-    
-
-
 <div class="d-none">
-
     
     <h3 class="mt-5 mb-3">
         <span class="material-symbols-rounded me-2">donut_large</span>

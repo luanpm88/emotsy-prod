@@ -30,7 +30,10 @@
     <!-- Theme -->
     <link rel="stylesheet" type="text/css" href="{{ AppUrl::asset('core/css/theme/'.Auth::user()->customer->getColorScheme().'.css') }}?v=1">
 
-	<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+	<!--script src="https://cdn.jsdelivr.net/npm/apexcharts"></script-->
+	
+	<!--script src="https://fastly.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script-->
+
 
 
 </head>

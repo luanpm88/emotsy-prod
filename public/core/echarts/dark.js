@@ -144,4 +144,28 @@
     };
     theme.categoryAxis.splitLine.show = false;
     echarts.registerTheme('dark', theme);
-}));
+})); 
+
+/**
+ * test 
+ */
+var dom = document.getElementById('listgrowth');
+var chart = echarts.init( dom );
+
+var option = {
+    xAxis: {
+        type: 'category',
+        boundaryGap: false,
+        data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+    },
+    yAxis: {
+        type: 'value'
+    },
+    series: [{
+        data: [820, 932, 901, 934, 1290, 1330, 1320],
+        type: 'line',
+        areaStyle: {}
+    }]
+};
+ 
+chart.setOption(option);
