@@ -47,6 +47,9 @@ class HomeController extends Controller
             return view('dashboard.cartpaye');
 
         } elseif (config('app.emotsy')) {
+            $list = new \Acelle\Model\MailList();
+            $list->customer_id = $request->user()->customer->id;
+            $list->uid = 'all';
             $campaign = $request->campaign_uid ? \Acelle\Model\Campaign::findByUid($request->campaign_uid) : \Acelle\Model\Campaign::done()->first();
 
             return view('emotsy.dashboard', [
@@ -64,6 +67,7 @@ class HomeController extends Controller
                 'subscribersCount' => $subscribersCount,
                 'subscribersUsed' => $subscribersUsed,
                 'campaign' => $campaign,
+                'list' => $list,
             ]);
         } else {
             return view('dashboard', [

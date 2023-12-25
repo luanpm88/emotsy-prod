@@ -380,19 +380,7 @@
             </div>
         </div>
         <div class="col-md-4">
-            <div class="card position-relative h-100 box-card">
-                <div class="d-flex justify-content-between">
-                    <h2>List growth</h2>
-                    <span>
-                         <a href="#">Details</a>
-                    </span>
-                </div>
-                <div class="card-body py-4 px-3 d-flex align-items-center">
-                    <div class="d-flex justify-content-center p-4 w-100">
-                        <div class="" id="listgrowth"></div> 
-                    </div>
-                </div>
-            </div>
+            @include('emotsy.dashboard._growth_chart')
         </div>
     </div>
 
