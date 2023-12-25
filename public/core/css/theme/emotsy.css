@@ -814,13 +814,15 @@ body.mode-dark.theme-emotsy.leftbar .leftbar-hide-menu {
 .w-40{
     width: 40% !important;
 }
+.c100 .slice{
+    rotate: 180deg;
+}
 .rate-open .rate-open-result{
     color: #364A63;
     font-family: DM Sans;
     font-size: 32px;
     font-style: normal;
-    font-weight: 400; 
-    line-height: 26px;
+    font-weight: 400;
     margin: 0;
     padding: 0;
 }
@@ -875,6 +877,9 @@ body.mode-dark.theme-emotsy.leftbar .leftbar-hide-menu {
 }
 .rate-blue .rate-alias .alias-value{
     color: var(--Main-Blue-Sea, #00A3B9); 
+}
+.rate-orange .card-header, .rate-blue .card-header{
+    border-bottom-color:#E5E9F2 !important
 }
 
 

@@ -500,7 +500,8 @@
                                     <div class="chart-alias">
                                         0 reported
                                     </div>
-                                </div>
+                                </div> 
+
                             </div>
                             <div class="l" id="chart"></div>
                         </div>
@@ -616,12 +617,12 @@
             <div class="card position-relative h-100 box-card rate-blue">
                 <div class="card-header bg-white">
                     <div class="d-flex justify-content-between p-4 w-100">
-                        <h2>Open rate</h2>
+                        <h2>Open rate s</h2>
                         <a href="#">Open log</a>
                     </div> 
                 </div>
-                <div class="card-body py-4 px-3 d-flex align-items-start">
-                    <div class="d-flex justify-content-between w-100"> 
+                <div class="card-body p-4 d-flex align-items-start">
+                    <div class="d-flex justify-content-between w-100 pt-3"> 
                         <div class="frog w-60"> 
                             <div class="col-md-12">
                                 <div class="content-group-sm"> 
@@ -673,7 +674,7 @@
                     </div> 
                 </div>
                 <div class="card-body py-4 px-3 d-flex align-items-start">
-                    <div class="d-flex justify-content-between w-100"> 
+                    <div class="d-flex justify-content-between w-100 pt-3"> 
                         <div class="frog w-60"> 
                             <div class="col-md-12">
                                 <div class="content-group-sm"> 
@@ -684,9 +685,9 @@
                                         </div> 
                                     </div>
                                     <div class="d-flex ">
-                                        <h2 class="text-semibold rate-value rate-color">2,639</h2>
+                                        <h2 class="text-semibold rate-value rate-color">85</h2>
                                         <div class="text-muteds pl-2 rate-alias pt-1">
-                                            <div class="alias-items">Successful deliveries</div>
+                                            <div class="alias-items">Total clicks</div>
                                             <div class="alias-value pt-1">2/50</div>
                                         </div>
                                     </div>
@@ -724,7 +725,7 @@
                      
                     <div class="d-flex justify-content-between align-items-center">
                         <div class="headtitle">
-                            <h2>Performance sss</h2>
+                            <h2>Performance</h2>
                             <span>
                                 Below are the details of subscriber activity (opens and clicks) measured for this campaign recently
                             </span>
