@@ -2877,6 +2877,6 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
 
     public static function scopeDone($query)
     {
-        $query = $query->where('status', 'done');
+        // $query = $query->where('status', 'done');
     }
 }
