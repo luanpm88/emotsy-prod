@@ -5,9 +5,11 @@
 @section('title', trans('messages.dashboard'))
 
 @section('head')
+    <link rel="stylesheet" href="{{ AppUrl::asset('core/css/circle.css') }}">    
     <script type="text/javascript" src="{{ AppUrl::asset('core/echarts/echarts.min.js') }}"></script>
     <script type="text/javascript" src="{{ AppUrl::asset('core/echarts/dark.js') }}"></script> 
 @endsection
+
 
 @section('content')
     @if (config('custom.japan') && !empty(trans('messages.dashboard.notice')))
@@ -404,24 +406,102 @@
                         </div>
                         <div class="col-sm-4">
                             <div class="row">
-                                <div class="col col-sm-4">
+                                <div class="col col-sm-4 mb-4">
                                     <div class="chart-title">Opened</div>
-                                    <div id="chart1"></div>
+                                    <div id="chart1" class="chart">
+                                        <div class="c100 p72">
+                                            <span>72.39%</span>
+                                            <div class="slice">
+                                                <div class="bar"></div>
+                                                <div class="fill"></div>
+                                            </div>
+                                        </div>
+                                    </div>
                                     <div class="chart-alias">
                                         63 unique / 63 opens 
                                         2639 message(s)
                                     </div>
                                 </div>
-                                <div class="col col-sm-4">
-                                    <div class="chart-title"></div>
-                                    <div id="chart2"></div>
-                                    <div class="chart-alias"></div>
+                                <div class="col col-sm-4 mb-4">
+                                    <div class="chart-title">Not opened</div>
+                                    <div id="chart2" class="chart">
+                                        <div class="c100 p32">
+                                            <span>32.61%</span>
+                                            <div class="slice">
+                                                <div class="bar"></div>
+                                                <div class="fill"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="chart-alias">
+                                        63 unique / 63 opens 
+                                        2639 message(s)
+                                    </div>
                                 </div>
-                                <div class="col col-sm-4">
-                                    <div class="chart-title"></div>
-                                    <div id="chart3"></div>
-                                    <div class="chart-alias"></div>
+
+                                <div class="col col-sm-4 mb-4">
+                                    <div class="chart-title">Unique click</div>
+                                    <div id="chart3" class="chart">
+                                        <div class="c100 p10">
+                                            <span>7.04%</span>
+                                            <div class="slice">
+                                                <div class="bar"></div>
+                                                <div class="fill"></div>
+                                            </div>
+                                        </div> 
+                                    </div>
+                                    <div class="chart-alias">
+                                        63 unique / 63 opens 
+                                        2639 message(s)
+                                    </div>
                                 </div>
+                                <div class="col col-sm-4 mb-4">
+                                    <div class="chart-title">Unsubscribed</div>
+                                    <div id="chart4" class="chart">
+                                        <div class="c100 p7">
+                                            <span>7.04%</span>
+                                            <div class="slice">
+                                                <div class="bar"></div>
+                                                <div class="fill"></div>
+                                            </div>
+                                        </div> 
+                                    </div>
+                                    <div class="chart-alias">
+                                        unsubscribed
+                                    </div>
+                                </div>
+
+                                <div class="col col-sm-4 mb-4">
+                                    <div class="chart-title">Bounced</div>
+                                    <div id="chart5" class="chart">
+                                        <div class="c100 p2">
+                                            <span>2.08%</span>
+                                            <div class="slice">
+                                                <div class="bar"></div>
+                                                <div class="fill"></div>
+                                            </div>
+                                        </div> 
+                                    </div>
+                                    <div class="chart-alias">
+                                        3 bounced
+                                    </div>
+                                </div>
+                                <div class="col col-sm-4 mb-4">
+                                    <div class="chart-title">Reported</div>
+                                    <div id="chart6" class="chart">
+                                        <div class="c100 p0s">
+                                            <span>0.00%</span>
+                                            <div class="slice">
+                                                <div class="bar"></div>
+                                                <div class="fill"></div>
+                                            </div>
+                                        </div> 
+                                    </div>
+                                    <div class="chart-alias">
+                                        0 reported
+                                    </div>
+                                </div> 
+
                             </div>
                             <div class="l" id="chart"></div>
                         </div>
@@ -430,7 +510,7 @@
                             <div class="content-group-sm mb-4 w-100 light-blue">
                                 <div class="something">
                                     <div class="d-flex">
-                                         <div class="progress-items">Campaign</div> 
+                                         <div class="progress-items">Recipients</div> 
                                     </div>                                               
                                 </div>
                                 <div class="d-flex align-items-center">
@@ -443,7 +523,7 @@
                             <div class="content-group-sm mb-4 w-100 blue">
                                 <div class="something">
                                     <div class="d-flex">
-                                         <div class="progress-items">Campaign</div> 
+                                         <div class="progress-items">Delivered</div> 
                                     </div>                                               
                                 </div>
                                 <div class="d-flex align-items-center">
@@ -457,12 +537,12 @@
                             <div class="content-group-sm mb-4 w-100 orange">
                                 <div class="something">
                                     <div class="d-flex">
-                                         <div class="progress-items">Campaign</div> 
+                                         <div class="progress-items">Failed</div> 
                                     </div>                                               
                                 </div>
                                 <div class="d-flex align-items-center">
                                     <div class="progress progress-sm">
-                                        <div class="progress-bar  bg-primary" style="width: 60%">
+                                        <div class="progress-bar  bg-primary" style="width: 15%">
                                         </div>
                                     </div> 
                                 </div>
@@ -471,30 +551,57 @@
                             <div class="content-group-sm mb-4 w-100 green">
                                 <div class="something">
                                     <div class="d-flex">
-                                         <div class="progress-items">Campaign</div> 
+                                         <div class="progress-items">Open</div> 
                                     </div>                                               
                                 </div>
                                 <div class="d-flex align-items-center">
                                     <div class="progress progress-sm">
-                                        <div class="progress-bar  bg-primary" style="width: 60%">
+                                        <div class="progress-bar  bg-primary" style="width: 12%">
                                         </div>
                                     </div> 
                                 </div>
                             </div>
-                            <div class="content-group-sm mb-2 w-100 silver">
+                            <div class="content-group-sm mb-4 w-100 yellow">
                                 <div class="something">
                                     <div class="d-flex">
-                                         <div class="progress-items">Campaign</div> 
+                                         <div class="progress-items">Clicked</div> 
                                     </div>                                               
                                 </div>
                                 <div class="d-flex align-items-center">
                                     <div class="progress progress-sm">
-                                        <div class="progress-bar  bg-primary" style="width: 60%">
+                                        <div class="progress-bar bg-primary" style="width: 10%">
                                         </div>
                                     </div> 
                                 </div>
                             </div>
+                            
 
+                            <div class="content-group-sm mb-4 w-100 silver">
+                                <div class="something">
+                                    <div class="d-flex">
+                                         <div class="progress-items">Bounce</div> 
+                                    </div>                                               
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <div class="progress progress-sm">
+                                        <div class="progress-bar bg-primary" style="width: 0%">
+                                        </div>
+                                    </div> 
+                                </div>
+                            </div>
+                            <div class="content-group-sm mb-4 w-100 silver">
+                                <div class="something">
+                                    <div class="d-flex">
+                                         <div class="progress-items">Report</div> 
+                                    </div>                                               
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <div class="progress progress-sm">
+                                        <div class="progress-bar  bg-primary" style="width: 0%">
+                                        </div>
+                                    </div> 
+                                </div>
+                            </div>
 
 
                         </div>
@@ -510,12 +617,12 @@
             <div class="card position-relative h-100 box-card rate-blue">
                 <div class="card-header bg-white">
                     <div class="d-flex justify-content-between p-4 w-100">
-                        <h2>Open rate</h2>
+                        <h2>Open rate s</h2>
                         <a href="#">Open log</a>
                     </div> 
                 </div>
-                <div class="card-body py-4 px-3 d-flex align-items-start">
-                    <div class="d-flex justify-content-between w-100"> 
+                <div class="card-body p-4 d-flex align-items-start">
+                    <div class="d-flex justify-content-between w-100 pt-3"> 
                         <div class="frog w-60"> 
                             <div class="col-md-12">
                                 <div class="content-group-sm"> 
@@ -567,7 +674,7 @@
                     </div> 
                 </div>
                 <div class="card-body py-4 px-3 d-flex align-items-start">
-                    <div class="d-flex justify-content-between w-100"> 
+                    <div class="d-flex justify-content-between w-100 pt-3"> 
                         <div class="frog w-60"> 
                             <div class="col-md-12">
                                 <div class="content-group-sm"> 
@@ -578,9 +685,9 @@
                                         </div> 
                                     </div>
                                     <div class="d-flex ">
-                                        <h2 class="text-semibold rate-value rate-color">2,639</h2>
+                                        <h2 class="text-semibold rate-value rate-color">85</h2>
                                         <div class="text-muteds pl-2 rate-alias pt-1">
-                                            <div class="alias-items">Successful deliveries</div>
+                                            <div class="alias-items">Total clicks</div>
                                             <div class="alias-value pt-1">2/50</div>
                                         </div>
                                     </div>
@@ -618,7 +725,7 @@
                      
                     <div class="d-flex justify-content-between align-items-center">
                         <div class="headtitle">
-                            <h2>Performance sss</h2>
+                            <h2>Performance</h2>
                             <span>
                                 Below are the details of subscriber activity (opens and clicks) measured for this campaign recently
                             </span>
