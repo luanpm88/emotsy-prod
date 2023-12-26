@@ -33,7 +33,9 @@
                     })
                     .done(function( response ) {
                         ListsGrowthChart1.renderChart( response );
+                        //console.log(response);
                     });
+                   
                 },
         
                 renderChart: function(data) {
@@ -60,7 +62,7 @@
                                 },
                                 itemStyle: {
                                     color: '#08c6e1',
-                                    borderRadius: [50, 50, 0, 0],
+                                    borderRadius: [0, 0, 0, 0],
                                 },
                                 data: data.data,
                                 type: 'bar'
@@ -109,9 +111,9 @@
                             url: this.url,
                         })
                         .done(function( response ) {
-                            console.log(response);
                             ListsGrowthChart2.renderChart( response );
                         });
+                        console.log('pppppp');
                     },
             
                     renderChart: function(data) {
@@ -183,7 +185,7 @@
                     }
                 }
             
-                ListsGrowthChart2.showChart();
+                //ListsGrowthChart2.showChart();
             </script>
         @else
             <div class="empty-chart-pie">
