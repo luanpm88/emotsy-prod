@@ -464,6 +464,10 @@ body.mode-dark.theme-emotsy.leftbar .leftbar-hide-menu {
     .dropdown-menu.show .nav-item:hover{
         background: #d69806; 
     }
+    .leftbar:not(.leftbar-closed) .navbar-nav > .nav-item .dropdown-menu:not(.top-user-menus) a.dropdown-item{
+        padding-top: 0;
+        padding-bottom: 0;
+    }
     /*
     .leftbar-closed .page-container {
         
