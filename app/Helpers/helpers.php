@@ -790,6 +790,10 @@ function getThemeColor($theme = false)
 
 function getThemeMode($mode, $auto = 'light')
 {
+    if (config('app.emotsy')) {
+        return 'light';
+    }
+    
     $themeMode = $mode;
 
     if ($mode == 'auto') {

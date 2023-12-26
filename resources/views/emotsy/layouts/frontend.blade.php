@@ -19,16 +19,16 @@
 			var ECHARTS_THEME = isDarkMode() ? 'dark' : null
 
 			// auto detect dark-mode
-			$(function() {
-				autoDetechDarkMode('{{ action('AccountController@saveAutoThemeMode') }}');
-			});
+			// $(function() {
+			// 	autoDetechDarkMode('{{ action('AccountController@saveAutoThemeMode') }}');
+			// });
 		@else
 			var ECHARTS_THEME = '{{ Auth::user()->customer->theme_mode == 'dark' ? 'dark' : null }}';
 		@endif
 	</script>
 
     <!-- Theme -->
-    <link rel="stylesheet" type="text/css" href="{{ AppUrl::asset('core/css/theme/'.Auth::user()->customer->getColorScheme().'.css') }}?v=1">
+    <link rel="stylesheet" type="text/css" href="{{ AppUrl::asset('core/css/theme/'.Auth::user()->customer->getColorScheme().'.css') }}?v=2">
 
 	<!--script src="https://cdn.jsdelivr.net/npm/apexcharts"></script-->
 	
