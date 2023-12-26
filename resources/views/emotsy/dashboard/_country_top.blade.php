@@ -37,20 +37,17 @@
                             // based on prepared DOM, initialize echarts instance
                             var topcountries = echarts.init(Listtopcountries.getChart()[0], ECHARTS_THEME); 
 
-                            var colorPalette = ['#00C1FF','#76DDC2', '#FFD569', '#FFAB6F','#FF7F64','#3EE0EA']
+                            var colorPalette = ['#76DDC2','#00C1FF', '#FFD569', '#FFAB6F','#FF7F64','#3EE0EA']
                             var option = {
                                     tooltip: {
                                         trigger: 'item',
-                                        formatter: '<strong>{b}</strong><br />{c} ({d}%)'
-                                    },
-                                    
-
-                                        legend: {
-                                            //orient: 'vertical',
-                                            position: 'bottom',
-                                            //left: 10,
-                                            data: ['so 1', 'so 2', 'so 3', 'so 4', 'so 5'], 
-                                       
+                                        formatter: '<strong>{b}</strong><br />{c} ({d}%)',  
+                                    }, 
+                                    legend: {
+                                        //orient: 'vertical',
+                                        bottom: 0,
+                                        //left: 10,
+                                        data: ['United States', 'United Kingdom', 'Lithuania', 'Singapore', 'Others', 'Latvia'],  
                                     }, 
                                     series: [
                                         {
@@ -69,12 +66,12 @@
                                                 show: false
                                             },
                                             data: [
-                                                {value: 135, name: 'so 1'},
-                                                {value: 235, name: 'so 2'},
-                                                {value: 110, name: 'so 3'},
-                                                {value: 134, name: 'so 4'},
-                                                {value: 335, name: 'so 5'},
-                                                {value: 948, name: 'so 6'}
+                                                {value: 135, name: 'United States'},
+                                                {value: 235, name: 'United Kingdom'},
+                                                {value: 110, name: 'Lithuania'},
+                                                {value: 134, name: 'Singapore'},
+                                                {value: 335, name: 'Others'},
+                                                {value: 948, name: 'Latvia'}
                                             ]
                                         }
                                     ]
