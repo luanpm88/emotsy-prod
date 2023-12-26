@@ -109,6 +109,7 @@
                             url: this.url,
                         })
                         .done(function( response ) {
+                            console.log(response);
                             ListsGrowthChart2.renderChart( response );
                         });
                     },

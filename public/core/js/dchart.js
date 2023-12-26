@@ -1,4 +1,4 @@
-
+/*
 var options = {
     series: [ 9, 7, 5, 8, 20, 50 ],
     chart: {
@@ -47,4 +47,4 @@ var options = {
 var chart = new ApexCharts(document.querySelector("#contries"), options);
 
 chart.render();
- 
+ */
