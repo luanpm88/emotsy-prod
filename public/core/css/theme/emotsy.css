@@ -451,13 +451,19 @@ body.mode-dark.theme-emotsy.leftbar .leftbar-hide-menu {
     }
     .leftbar ul.navbar-nav li.nav-item:hover{
         background: #FFF8E7; 
+        border-radius: 8px;
     }
     .leftbar ul.navbar-nav li.nav-item.dropdown:has(a.nav-link.show) {
         background: #FFF8E7; 
+        border-radius: 8px;
     } 
     .leftbar ul.navbar-nav li.nav-item.dropdown a.nav-link.show{
         background: #FFF8E7; 
+        border-radius: 8px;
     } 
+    .dropdown-menu.show .nav-item:hover{
+        background: #d69806; 
+    }
     /*
     .leftbar-closed .page-container {
         
