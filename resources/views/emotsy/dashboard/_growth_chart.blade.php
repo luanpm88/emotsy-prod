@@ -91,14 +91,42 @@
         
             ListsGrowthChart1.showChart();
         </script>
-    </div>
+    </div> 
+
+    <div class="mt-4">
+        <div class="d-flex align-items-center">
+            <div id="chartsub" class="chart w-50">
+                <div class="c100 big p94"> 
+                    <div class="slice">
+                        <div class="bar"></div>
+                        <div class="fill"></div>
+                    </div>
+                </div> 
+            </div>
+            <div class="chart-info w-50">
+                <div class="chart-subscrib pb-4">
+                    Subscribers
+                </div>
+                <div class="chart-iters">
+                    <ul>
+                        <li class="subscrib">
+                            <svg width="12" height="13" viewBox="0 0 12 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="6.22217" cy="6.42929" r="5.63916" fill="#3EE0EA"/>
+                            </svg>  
+                            Subscribed 94.11 % (2638)</li>
+                        <li class="unubscrib">
+                            <svg width="12" height="13" viewBox="0 0 12 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="6.22217" cy="6.42929" r="5.63916" fill="#FFC67C"/>
+                                </svg> 
+                            Unsubscribed 5.98 % (165)
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
 
 
-
-
-
-
-    <div class="">
         @if ($list->readCache('SubscriberCount') || (!isset($list->id) && Auth::user()->customer->readCache('SubscriberCount')))
             <!-- Basic column chart -->
             <div class="">
@@ -162,7 +190,7 @@
                                 title: {
                                     text: '{{ trans('messages.subscribers') }}',
                                     // subtext: '{{ trans('messages.statistics_chart') }}',
-                                    left: 'center'
+                                    left: 'right',
                                 },
                                 tooltip: {
                                     trigger: 'item',
@@ -177,7 +205,11 @@
                                         selectedMode: 'single',
                                         type: 'pie',
                                         radius: '70%',
-                                        data: cData,
+                                        //data: cData,
+                                        data: [
+                                            { value: 1048, name: 'Search Engine' },
+                                            { value: 735, name: 'Direct' }, 
+                                        ]
                                         emphasis: {
                                             itemStyle: {
                                                 shadowBlur: 10,
@@ -200,7 +232,7 @@
                     }
                 }
             
-                //ListsGrowthChart2.showChart();
+               // ListsGrowthChart2.showChart();
             </script>
         @else
             <div class="empty-chart-pie">

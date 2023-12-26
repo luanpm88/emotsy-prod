@@ -814,9 +814,8 @@ body.mode-dark.theme-emotsy.leftbar .leftbar-hide-menu {
 .w-40{
     width: 40% !important;
 }
-.c100 .slice{
-    rotate: 180deg;
-}
+
+
 .rate-open .rate-open-result{
     color: #364A63;
     font-family: DM Sans;
@@ -1090,9 +1089,20 @@ body.mode-dark.theme-emotsy.leftbar .leftbar-hide-menu {
     border-color: #9DA0B7 !important;
 }
 
- 
- 
+#chart1 .c100 .slice, #chart2 .c100 .slice, #chart3 .c100 .slice, #chart4 .c100 .slice, #chart5 .c100 .slice, #chart6 .c100 .slice{
+    rotate: 180deg;
+}
 
+#chartsub .c100 .bar {
+    border-color: #3EE0EA !important; 
+}
+#chartsub .c100 .fill{
+    border-color: #3EE0EA !important;
+}
+#chartsub .c100.big{
+    font-size: 130px;
+}
+  
 
 
 @media (min-width: 1200px) {
@@ -1178,4 +1188,28 @@ body.mode-dark.theme-emotsy.leftbar .leftbar-hide-menu {
 }
 #ListsGrowthChart1 div canvas{
     width: 100% !important;
+}
+.chart-subscrib{
+    color: #364A63;
+    font-family: DM Sans;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 18.48px; /* 132% */
+    letter-spacing: -0.168px; 
+}
+.chart-iters{}
+.chart-iters ul{
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+.chart-iters ul.li{
+    color: #8094AE;
+    font-family: DM Sans;
+    font-size: 13px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 19.8px; /* 152.308% */ 
+    list-style-type: none;
 }
