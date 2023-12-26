@@ -4,7 +4,7 @@
     </div> 
     <div class="card-body p-4"> 
         <div class="p-4 w-100">
-            <div class="card-body py-4 px-3 d-flex align-items-center">
+            <div class="card-body">
                <!-- Basic column chart -->
             <div class="">
                 <div class="">
