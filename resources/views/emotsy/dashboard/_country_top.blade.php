@@ -36,16 +36,22 @@
                     renderChart: function(data) {
                             // based on prepared DOM, initialize echarts instance
                             var topcountries = echarts.init(Listtopcountries.getChart()[0], ECHARTS_THEME); 
+
+                            var colorPalette = ['#00C1FF','#76DDC2', '#FFD569', '#FFAB6F','#FF7F64','#3EE0EA']
                             var option = {
                                     tooltip: {
                                         trigger: 'item',
-                                        formatter: '{a} <br/>{b}: {c} ({d}%)'
+                                        formatter: '<strong>{b}</strong><br />{c} ({d}%)'
                                     },
-                                    legend: {
-                                        orient: 'vertical',
-                                        left: 10,
-                                        data: ['so 1', 'so 2', 'so 3', 'so 4', 'so 5'], 
-                                    },
+                                    
+
+                                        legend: {
+                                            //orient: 'vertical',
+                                            position: 'bottom',
+                                            //left: 10,
+                                            data: ['so 1', 'so 2', 'so 3', 'so 4', 'so 5'], 
+                                       
+                                    }, 
                                     series: [
                                         {
                                             name:  {
@@ -54,26 +60,21 @@
                                             type: 'pie',
                                             radius: ['50%', '70%'],
                                             avoidLabelOverlap: false,
+                                            color: colorPalette,
                                             label: {
                                                 show: false,
                                                 //position: 'center'
-                                            },
-                                            emphasis: {
-                                                label: {
-                                                    show: false,
-                                                    fontSize: '30',
-                                                    fontWeight: 'bold'
-                                                }
-                                            },
+                                            }, 
                                             labelLine: {
                                                 show: false
                                             },
                                             data: [
-                                                {value: 335, name: 'so 1'},
-                                                {value: 310, name: 'so 2'},
-                                                {value: 234, name: 'so 3'},
-                                                {value: 135, name: 'so 4'},
-                                                {value: 1548, name: 'so 5'}
+                                                {value: 135, name: 'so 1'},
+                                                {value: 235, name: 'so 2'},
+                                                {value: 110, name: 'so 3'},
+                                                {value: 134, name: 'so 4'},
+                                                {value: 335, name: 'so 5'},
+                                                {value: 948, name: 'so 6'}
                                             ]
                                         }
                                     ]
