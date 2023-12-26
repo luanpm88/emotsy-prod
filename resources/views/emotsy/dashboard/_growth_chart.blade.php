@@ -1,5 +1,5 @@
 <div class="card position-relative h-100 box-card">
-    <div class="d-flex justify-content-between">
+    <div class="d-flex justify-content-between p-4">
         <h2>List growth</h2>
         <span>
              <a href="#">Details</a>
