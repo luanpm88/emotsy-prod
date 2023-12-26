@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="{{ AppUrl::asset('core/css/circle.css') }}">    
     <script type="text/javascript" src="{{ AppUrl::asset('core/echarts/echarts.min.js') }}"></script> 
     <script type="text/javascript" src="{{ AppUrl::asset('core/echarts/dark.js') }}"></script> 
+    <script type="text/javascript" src="{{ AppUrl::asset('core/echarts/world.js') }}"></script>  
+
 @endsection
 
 
