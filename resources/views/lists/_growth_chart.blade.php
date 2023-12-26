@@ -14,6 +14,10 @@
         <!-- /basic column chart -->
 
         <script>
+
+
+/*
+
             var ListsGrowthChart1 = {
                 url: '{{ action('MailListController@listGrowthChart', $list->uid) }}',
                 getChart: function() {
@@ -65,8 +69,8 @@
                         growthChart1.setOption(option);
                 }
             }
-        
-            ListsGrowthChart1.showChart();
+        */
+            //ListsGrowthChart1.showChart();
         </script>
     </div>
     <div class="col-md-6">
@@ -85,6 +89,7 @@
             <!-- /basic column chart -->
 
             <script>
+                /*
                 var ListsGrowthChart2 = {
                     url: '{{ action('MailListController@statisticsChart', $list->uid) }}',
                     getChart: function() {
@@ -169,8 +174,8 @@
                             growthChart2.setOption(option);
                     }
                 }
-            
-                ListsGrowthChart2.showChart();
+            */
+               // ListsGrowthChart2.showChart();
             </script>
         @else
             <div class="empty-chart-pie">

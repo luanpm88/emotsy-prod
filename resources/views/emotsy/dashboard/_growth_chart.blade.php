@@ -1,18 +1,18 @@
 <div class="card position-relative h-100 box-card">
-    <div class="d-flex justify-content-between p-4">
-        <h2>List growth</h2>
+    <div class="d-flex justify-content-between px-36 pt-36 ">
+        <div class="e-title">List growth</div>
         <span>
              <a href="#">Details</a>
         </span>
     </div>
-    <div class="card-body py-4 px-3">
+    <div class="card-body px-36 pt-0">
         <!-- Basic column chart -->
         <div class="">
             <div class="">
                 <div class="chart-container">
                     <div id="ListsGrowthChart1"
                         class="chart has-fixed-height"
-                        style="width: 100%;height:450px;"
+                        style="width: 100%; height:300px;"
                     ></div>
                 </div>
             </div>
@@ -34,38 +34,53 @@
                     .done(function( response ) {
                         ListsGrowthChart1.renderChart( response );
                         //console.log(response);
-                    });
-                   
-                },
-        
+                    }); 
+                }, 
                 renderChart: function(data) {
                         // based on prepared DOM, initialize echarts instance
-                        var growthChart1 = echarts.init(ListsGrowthChart1.getChart()[0], ECHARTS_THEME);
-        
-                        var option = {
-                            title: {
-                                text: '{{ trans('messages.subscribers') }}',
-                                subtext: '{{ trans('messages.growth_chart') }}',
-                                left: 'center'
+                        var growthChart1 = echarts.init(ListsGrowthChart1.getChart()[0], ECHARTS_THEME); 
+                        var option = { 
+                            grid: {
+                                left: '0%',
+                                right: '2%',
+                                bottom: '3%',
+                                containLabel: true
                             },
                             xAxis: {
+                                boundaryGap:false, 
                                 type: 'category',
-                                data: data.columns
-                            },
-                            yAxis: {
-                                type: 'value',
-                                name: '{{ trans('messages.subscribers') }}',
-                            },
-                            series: [{
-                                label: {
-                                    show: true
+                                data: data.columns,  
+                                axisLine: {
+                                    onZero: false , 
+                                    show:true
                                 },
+                                splitLine:{
+                                    show:false
+                                },
+                                axisLabel: { 
+                                    align: 'right' 
+                                }
+                            },
+                            yAxis: {  
+                                boundaryGap:true, 
+                                type: 'value', 
+                                axisLine: {
+                                    onZero: false , 
+                                },
+                                splitLine:{  
+                                    show:true 
+                                } 
+                            },
+                            
+                            series: [{ 
+                                /* label: {   show: true },  */
                                 itemStyle: {
                                     color: '#08c6e1',
-                                    borderRadius: [0, 0, 0, 0],
+                                    borderRadius: [0, 0, 0, 0], 
                                 },
                                 data: data.data,
-                                type: 'bar'
+                                type: 'bar',
+                                barWidth: '8px',
                             }]
                         };
         

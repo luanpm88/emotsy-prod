@@ -1148,3 +1148,34 @@ body.mode-dark.theme-emotsy.leftbar .leftbar-hide-menu {
 .btn-view-password {
     margin-top: -35px;
 }
+.e-title{
+    color: #364A63;
+    font-family: DM Sans;
+    font-size: 16.8px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 18.48px; /* 110% */
+    letter-spacing: -0.168px; 
+}
+.p-36{
+    padding: 36px !important;
+}
+.px-36{
+    padding-left: 36px !important;
+    padding-right: 36px !important;
+}
+.py-36{
+    padding-top: 36px !important;
+    padding-bottom: 36px !important;
+}
+.pt-36{
+    padding-top: 36px !important;
+}
+
+
+#ListsGrowthChart1 div{
+    width: 100% !important;
+}
+#ListsGrowthChart1 div canvas{
+    width: 100% !important;
+}
