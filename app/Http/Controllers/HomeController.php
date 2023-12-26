@@ -50,7 +50,7 @@ class HomeController extends Controller
             $list = new \Acelle\Model\MailList();
             $list->customer_id = $request->user()->customer->id;
             $list->uid = 'all';
-            $campaign = $request->campaign_uid ? \Acelle\Model\Campaign::findByUid($request->campaign_uid) : \Acelle\Model\Campaign::done()->first();
+            $campaign = $request->campaign_uid ? \Acelle\Model\Campaign::findByUid($request->campaign_uid) : $customer->campaigns()->done()->first();
 
             return view('emotsy.dashboard', [
                 'sendingCreditsUsed' => $sendingCreditsUsed,
