@@ -2,8 +2,7 @@
     <div class="d-flex justify-content-between px-36 pt-36 ">
         <div class="e-title">Countries</div> 
     </div> 
-    <div class="card-body py-4 px-3">
-        <div class="card-body py-4 px-3 d-flex align-items-center">
+    <div class="card-body"> 
            <!-- Basic column chart -->
             <div class="">
                 <div class="">
@@ -37,50 +36,48 @@
                     renderChart: function(data) {
                             // based on prepared DOM, initialize echarts instance
                             var topcountries = echarts.init(Listtopcountries.getChart()[0], ECHARTS_THEME); 
-                            var option = { 
-                                grid: {
-                                    left: '0%',
-                                    right: '2%',
-                                    bottom: '3%',
-                                    containLabel: true
-                                },
-                                xAxis: {
-                                    boundaryGap:false, 
-                                    type: 'category',
-                                    data: data.columns,  
-                                    axisLine: {
-                                        onZero: false , 
-                                        show:true
+                            var option = {
+                                    tooltip: {
+                                        trigger: 'item',
+                                        formatter: '{a} <br/>{b}: {c} ({d}%)'
                                     },
-                                    splitLine:{
-                                        show:false
+                                    legend: {
+                                        orient: 'vertical',
+                                        left: 10,
+                                        data: ['so 1', 'so 2', 'so 3', 'so 4', 'so 5'], 
                                     },
-                                    axisLabel: { 
-                                        align: 'right' 
-                                    }
-                                },
-                                yAxis: {  
-                                    boundaryGap:true, 
-                                    type: 'value', 
-                                    axisLine: {
-                                        onZero: false , 
-                                    },
-                                    splitLine:{  
-                                        show:true 
-                                    } 
-                                },
-                                
-                                series: [{ 
-                                    /* label: {   show: true },  */
-                                    itemStyle: {
-                                        color: '#08c6e1',
-                                        borderRadius: [0, 0, 0, 0], 
-                                    },
-                                    data: data.data,
-                                    type: 'bar',
-                                    barWidth: '8px',
-                                }]
-                            };
+                                    series: [
+                                        {
+                                            name:  {
+                                                trigger: 'item',
+                                            },  
+                                            type: 'pie',
+                                            radius: ['50%', '70%'],
+                                            avoidLabelOverlap: false,
+                                            label: {
+                                                show: false,
+                                                //position: 'center'
+                                            },
+                                            emphasis: {
+                                                label: {
+                                                    show: false,
+                                                    fontSize: '30',
+                                                    fontWeight: 'bold'
+                                                }
+                                            },
+                                            labelLine: {
+                                                show: false
+                                            },
+                                            data: [
+                                                {value: 335, name: 'so 1'},
+                                                {value: 310, name: 'so 2'},
+                                                {value: 234, name: 'so 3'},
+                                                {value: 135, name: 'so 4'},
+                                                {value: 1548, name: 'so 5'}
+                                            ]
+                                        }
+                                    ]
+                                };
             
                             // use configuration item and data specified to show chart
                             topcountries.setOption(option);
@@ -89,6 +86,6 @@
             
                 Listtopcountries.showChart();
             </script>
-        </div>
+        
     </div>
 </div>
