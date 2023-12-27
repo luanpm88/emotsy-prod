@@ -42,21 +42,56 @@
                                     tooltip: {
                                         trigger: 'item',
                                         formatter: '<strong>{b}</strong><br />{c} ({d}%)',  
-                                    }, 
+                                    },  
+                                     
                                     legend: {
                                         //orient: 'vertical',
-                                        bottom: 0,
+                                        //type: 'grid', 
+                                        bottom: 0, 
+                                        textStyle: {
+                                            color: '#333',
+                                            fontSize: 14,
+                                            fontWeight: 'bold',
+                                            fontStyle: 'italic',
+                                            // define rich styles
+                                            rich: {
+                                                a: {
+                                                    width: 108,
+                                                    height: 30,
+                                                    backgroundColor: '#ffffff',
+                                                    border: 1,
+                                                    //borderRadius: 4,
+                                                    //color: '#fff',
+                                                    //align: 'center',
+                                                    lineHeight: 30,
+                                                    fontSize: 14,
+                                                }
+                                            },
+                                        },
+                                    
+                                        formatter: function(name) {  return '{a|' + name + '}';    }, 
+                                        //formatter: function(name) {  return '<span class="w-30">' + name + "</span>";   },
+                                        
                                         //left: 10,
-                                        color: colorPalette,
-                                        data: ['United States', 'United Kingdom', 'Lithuania', 'Singapore', 'Others', 'Latvia'],  
-                                         
+                                        padding:  [5, 0, 15, 0],  
+                                        color: colorPalette, 
+                                        data: [
+                                                { name: 'United States', icon: 'circle'  },                                                
+                                                { name: 'Lithuania', icon: 'circle'   }, 
+                                                { name: 'Singapore', icon: 'circle'  }, 
+                                                { name: 'Others', icon: 'circle'   },
+                                                { name: 'United Kingdom', icon: 'circle'  },  
+                                                { name: 'Latvia', icon: 'circle' }, 
+                                            ], 
                                     }, 
                                     series: [
                                         {
                                             name:  {
                                                 trigger: 'item',
                                             },  
-                                            top:0,
+                                            top:0,  
+                                            left:0,
+                                            right:0,
                                             type: 'pie',
                                             radius: ['50%', '70%'],
                                             avoidLabelOverlap: false,

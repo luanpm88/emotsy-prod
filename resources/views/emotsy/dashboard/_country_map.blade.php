@@ -63,7 +63,8 @@
                                 color: ['orangered','yellow','lightskyblue'],
                                 show:false,
                             },
-                            /*
+                            /* 
+                            
                             legend: { 
                                 bottom: 0, 
                                 left: 'left',
