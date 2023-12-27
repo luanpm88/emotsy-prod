@@ -12,7 +12,7 @@
                 <div class="chart-container">
                     <div id="ListsGrowthChart1"
                         class="chart has-fixed-height"
-                        style="width: 100%; height:300px;"
+                        style="width: 100%; height:250px;"
                     ></div>
                 </div>
             </div>
@@ -41,9 +41,10 @@
                         var growthChart1 = echarts.init(ListsGrowthChart1.getChart()[0], ECHARTS_THEME); 
                         var option = { 
                             grid: {
+                                top: '8%',
                                 left: '0%',
-                                right: '2%',
-                                bottom: '3%',
+                                right: '0%',
+                                bottom: '0%',
                                 containLabel: true
                             },
                             xAxis: {

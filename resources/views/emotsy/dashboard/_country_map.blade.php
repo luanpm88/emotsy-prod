@@ -45,6 +45,9 @@
                             tooltip: {
                                 trigger: 'item',
                                 formatter: function (params) {
+                                    if (!params.data) {
+                                        return '<span style="color:#ffffff">'+ params.name + ' 0% (0) </span>';
+                                    }
                                     return '<span style="color:#ffffff">'+ params.name + ' - ' + (params.data ? params.data.percent : '') + ' (' + params.value  + ') </span>';
                                 },
                                 backgroundColor: "#000000", 
@@ -56,19 +59,22 @@
                                 max: {{ $campaign->topOpenCountries(20)->count() ? $campaign->topOpenCountries(20)->first()->aggregate : 0 }},
                                 inRange: {
                                     color: [
-                                    '#313695',
-                                    '#4575b4',
-                                    '#74add1',
-                                    '#abd9e9',
-                                    '#e0f3f8',
-                                    '#ffffbf',
-                                    '#fee090',
-                                    '#fdae61',
-                                    '#f46d43',
-                                    '#d73027',
-                                    '#a50026'
+                                    '#0098D5',
+                                    '#008CC4',
+                                    '#0087BC',
+                                    '#0080B3',
+                                    '#0075A4',
+                                    '#006D9A',
+                                    '#00658E',
+                                    '#005C83',
+                                    '#004F72',
+                                    '#004667',
+                                    '#003D5B'
                                     ]
                                 },
+                                inactiveColor: "#ABEDF6",
+                                contentColor: "#5793f3",
+                                borderColor: "#000000",
                                 text: ['High', 'Low'],
                                 calculable: false,
                                 show:false,
@@ -106,11 +112,13 @@
                                     mapType: 'world',
                                     roam: true,  
                                     itemStyle:{
-                                        show:true,
-                                        emphasis:{label:{show:false}},
-                                        normal: {
-                                            color: '#E0022B',
-                                        }
+                                        // show:true,
+                                        // emphasis:{label:{show:false}},
+                                        // normal: {
+                                        //     color: '#E0022B',
+                                        // },
+                                        // areaColor: "#ABEDF6",
+                                        // borderColor: '#000',
                                     },
                                     data:[
                                         @foreach ($campaign->topOpenCountries(20)->get() as $location)
