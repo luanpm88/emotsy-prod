@@ -56,10 +56,11 @@
                                             // define rich styles
                                             rich: {
                                                 a: {
-                                                    width: 98,
+                                                    width: 111,
+                                                    maxwith:120,
                                                     height: 30,
                                                     backgroundColor: '#ffffff',
-                                                    border: 1,
+                                                   // border: 1,
                                                     fontfamily:'DM Sans',
                                                     //borderRadius: 4,
                                                     //color: '#fff',
@@ -73,7 +74,8 @@
                                         formatter: function(name) {  return '{a|' + name + '}';    }, 
                                         //formatter: function(name) {  return '<span class="w-30">' + name + "</span>";   },
                                         
-                                        //left: 10,
+                                        left:0,
+                                        right:0,
                                         padding:  [5, 0, 15, 0],  
                                         color: colorPalette, 
                                         data: [
