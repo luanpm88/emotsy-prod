@@ -56,7 +56,7 @@
                                             // define rich styles
                                             rich: {
                                                 a: {
-                                                    width: 108,
+                                                    width: 98,
                                                     height: 30,
                                                     backgroundColor: '#ffffff',
                                                     border: 1,
