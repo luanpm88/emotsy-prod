@@ -482,23 +482,43 @@ class MailListController extends Controller
             }
         } else {
             if ($customer->readCache('SubscribedCount', 0)) {
-                $result['data'][] = ['value' => $customer->readCache('SubscribedCount', 0), 'name' => trans('messages.subscribed')];
+                $result['data'][] = [
+                    'value' => $customer->readCache('SubscribedCount', 0),
+                    'name' => trans('messages.subscribed'),
+                    'percent' => $customer->readCache('SubscriberCount', 0) ? number_to_percentage($customer->readCache('SubscribedCount', 0)/$customer->readCache('SubscriberCount', 0)) : 0,
+                ];
             }
 
             if ($customer->readCache('UnsubscribedCount', 0)) {
-                $result['data'][] = ['value' => $customer->readCache('UnsubscribedCount', 0), 'name' => trans('messages.unsubscribed')];
+                $result['data'][] = [
+                    'value' => $customer->readCache('UnsubscribedCount', 0), 
+                    'name' => trans('messages.unsubscribed'),
+                    'percent' => $customer->readCache('SubscriberCount', 0) ? number_to_percentage($customer->readCache('UnsubscribedCount', 0)/$customer->readCache('SubscriberCount', 0)) : 0,
+                ];
             }
 
             if ($customer->readCache('UnconfirmedCount', 0)) {
-                $result['data'][] = ['value' => $customer->readCache('UnconfirmedCount', 0), 'name' => trans('messages.unconfirmed')];
+                $result['data'][] = [
+                    'value' => $customer->readCache('UnconfirmedCount', 0),
+                    'name' => trans('messages.unconfirmed'),
+                    'percent' => $customer->readCache('SubscriberCount', 0) ? number_to_percentage($customer->readCache('UnconfirmedCount', 0)/$customer->readCache('SubscriberCount', 0)) : 0,
+                ];
             }
 
             if ($customer->readCache('BlacklistedCount', 0)) {
-                $result['data'][] = ['value' => $customer->readCache('BlacklistedCount', 0), 'name' => trans('messages.blacklisted')];
+                $result['data'][] = [
+                    'value' => $customer->readCache('BlacklistedCount', 0),
+                    'name' => trans('messages.blacklisted'),
+                    'percent' => $customer->readCache('SubscriberCount', 0) ? number_to_percentage($customer->readCache('BlacklistedCount', 0)/$customer->readCache('SubscriberCount', 0)) : 0,
+                ];
             }
 
             if ($customer->readCache('SpamReportedCount', 0)) {
-                $result['data'][] = ['value' => $customer->readCache('SpamReportedCount', 0), 'name' => trans('messages.spam_reported')];
+                $result['data'][] = [
+                    'value' => $customer->readCache('SpamReportedCount', 0),
+                    'name' => trans('messages.spam_reported'),
+                    'percent' => $customer->readCache('SubscriberCount', 0) ? number_to_percentage($customer->readCache('SpamReportedCount', 0)/$customer->readCache('SubscriberCount', 0)) : 0,
+                ];
             }
         }
 

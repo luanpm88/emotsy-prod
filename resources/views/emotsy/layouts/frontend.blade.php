@@ -75,7 +75,7 @@
 
 		<!-- main inner content -->
 		@yield('content')
-
+		<br><br><br><br>
 		<!-- Footer -->
 		@include('layouts.core._footer')
 	</main>

@@ -3366,4 +3366,6 @@
   'register.already_have_account' => 'Already have an account? <a href=":login">Sign in instead</a>',
   'agree_term_policy' => 'I agree to Emotsy <a href=":policy_link">Privacy Policy</a> & <a href=":term_link">Terms</a>.',
   'agree_term.required' => 'Please review and accept the terms of service before completing the registration process.',
+  'dashboard.top_5_countries' => 'Top 5 Countries',
+  'dashboard.details' => 'Details',
 ) ?>

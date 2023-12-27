@@ -1294,11 +1294,11 @@ body.mode-dark.theme-emotsy.leftbar .leftbar-hide-menu {
     border-radius: 0 !important;
 }
 .perfometag .pagination .page-item .page-link, .perfometag .page-item.disabled .page-link{
-    /*
-    border-color: #EDEDF3 !important;
-    border-radius: 0 !important;
-    */
+    color: #888;
 } 
+.perfometag .pagination .page-item .page-link, .perfometag .page-item {
+    margin-right: -2px;
+}
 .perfometag .active > .page-link{
     border-color:  #00C7E3;
     background:  #EAFCFE;
@@ -1306,7 +1306,7 @@ body.mode-dark.theme-emotsy.leftbar .leftbar-hide-menu {
     text-align: center;
     font-family: DM Sans; 
     font-style: normal;
-    font-weight: 700; 
+    font-weight: 600; 
     letter-spacing: 0.26px; 
 }
  
@@ -1327,13 +1327,17 @@ body.mode-dark.theme-emotsy.leftbar .leftbar-hide-menu {
     border-bottom-right-radius: 0.5rem !important;
 }
 
-.perfometag .page-item.active:first-child .page-link{
-    border: 1px solid  #00C7E3; 
-    background:   #EAFCFE;  
+.perfometag .page-item:first-child .page-link{
     border-top-right-radius: 0 !important;
     border-bottom-right-radius: 0 !important; 
     border-top-left-radius: 0.5rem !important;
     border-bottom-left-radius: 0.5rem !important;
 }
  
+.perfometag .page-item:last-child .page-link{
+    border-top-right-radius: 0.5rem !important;
+    border-bottom-right-radius: 0.5rem !important; 
+    border-top-left-radius: 0 !important;
+    border-bottom-left-radius: 0 !important;
+}
    
