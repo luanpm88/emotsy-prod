@@ -1290,3 +1290,50 @@ body.mode-dark.theme-emotsy.leftbar .leftbar-hide-menu {
 .htest{
     background-color: #00A3B9 !important;
 }
+.theme-emotsy .btn.rd-0{
+    border-radius: 0 !important;
+}
+.perfometag .pagination .page-item .page-link, .perfometag .page-item.disabled .page-link{
+    /*
+    border-color: #EDEDF3 !important;
+    border-radius: 0 !important;
+    */
+} 
+.perfometag .active > .page-link{
+    border-color:  #00C7E3;
+    background:  #EAFCFE;
+    color: var(--Main-Blue-Sea, #00A3B9) !important; 
+    text-align: center;
+    font-family: DM Sans; 
+    font-style: normal;
+    font-weight: 700; 
+    letter-spacing: 0.26px; 
+}
+ 
+.perfometag .page-item .page-link, .perfometag .page-item.disabled .page-link{
+    /*border-color:;*/
+    border: var(--bs-pagination-border-width) solid var(--bs-pagination-border-color);
+}
+.perfometag .page-item.active .page-link{
+    border: 1px solid  #00C7E3; 
+    background:   #EAFCFE; 
+}
+.perfometag .page-item.active:last-child .page-link{
+    border: 1px solid  #00C7E3; 
+    background:   #EAFCFE; 
+    border-top-left-radius: 0 !important;
+    border-bottom-left-radius: 0 !important; 
+    border-top-right-radius: 0.5rem !important;
+    border-bottom-right-radius: 0.5rem !important;
+}
+
+.perfometag .page-item.active:first-child .page-link{
+    border: 1px solid  #00C7E3; 
+    background:   #EAFCFE;  
+    border-top-right-radius: 0 !important;
+    border-bottom-right-radius: 0 !important; 
+    border-top-left-radius: 0.5rem !important;
+    border-bottom-left-radius: 0.5rem !important;
+}
+ 
+   

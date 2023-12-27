@@ -10,7 +10,7 @@
                             {{ trans('messages.campaign.performance_chart.info') }}
                         </span>
                     </div>
-                    <div>
+                    <div class="d-flex">
                         <div class="">
                             <select id="PerformancePeriod" class="select select-control" name="last_performance_time">
                                 <option value="24h">{{ trans('messages.campaign.24_hour') }}</option>
@@ -20,8 +20,13 @@
                             </select>
                             
                         </div>
-
-                        
+                        <div class="perfometag">
+                            <ul class="pagination"> 
+                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                <li class="page-item "><a class="page-link" href="#">2</a></li>
+                                <li class="page-item "><a class="page-link" href="#">3</a></li> 
+                            </ul>
+                        </div>
                     </div>
                    
                 </div>
