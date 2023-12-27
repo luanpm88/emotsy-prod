@@ -9,7 +9,7 @@
                     <div class="chart-container">
                         <div id="topcountries"
                             class="chart has-fixed-height"
-                            style="width: 100%; height:300px;"
+                            style="width: 100%; height:450px;"
                         ></div>
                     </div>
                 </div>
@@ -47,13 +47,16 @@
                                         //orient: 'vertical',
                                         bottom: 0,
                                         //left: 10,
+                                        color: colorPalette,
                                         data: ['United States', 'United Kingdom', 'Lithuania', 'Singapore', 'Others', 'Latvia'],  
+                                         
                                     }, 
                                     series: [
                                         {
                                             name:  {
                                                 trigger: 'item',
                                             },  
+                                            top:0,
                                             type: 'pie',
                                             radius: ['50%', '70%'],
                                             avoidLabelOverlap: false,

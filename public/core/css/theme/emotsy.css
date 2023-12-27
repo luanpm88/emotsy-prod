@@ -1242,3 +1242,51 @@ body.mode-dark.theme-emotsy.leftbar .leftbar-hide-menu {
     line-height: 19.8px; /* 152.308% */ 
     list-style-type: none;
 }
+.list-top{
+
+}
+.list-top ol{
+    
+}
+.list-top ol li{
+   width: 100%;  
+   padding-bottom: 5px;
+}
+.list-top ol li::marker{
+    color: #8094AE;
+    font-family: DM Sans;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 19.8px; /* 165% */ 
+}
+.list-top ol li div.clcontent{ 
+    width: 100%;
+    display: flex;
+    justify-content: space-between; 
+    padding-left: 5%;
+}
+.list-top ol li div.clcontent span{
+    width: 25%; 
+    color: #8094AE;
+    font-family: DM Sans;
+    font-size: 13px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 19.8px; /* 152.308% */ 
+
+}
+.list-top ol li div.clcontent span:nth-child(1){
+    width: 50%;
+}
+.list-top ol li div.clcontent span:nth-child(2){
+    color: var(--Main-Black-Clear, #222751);
+    font-family: DM Sans;
+    font-size: 13px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 19.8px; /* 152.308% */ 
+}
+.htest{
+    background-color: #00A3B9 !important;
+}
