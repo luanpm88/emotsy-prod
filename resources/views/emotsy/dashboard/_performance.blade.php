@@ -27,8 +27,7 @@
                                 <li class="page-item "><a class="page-link" href="#">3</a></li> 
                             </ul>
                         </div>
-                    </div>
-                   
+                    </div> 
                 </div>
 
             </div>

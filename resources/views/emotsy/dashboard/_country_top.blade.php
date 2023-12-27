@@ -49,10 +49,10 @@
                                         //type: 'grid', 
                                         bottom: 0, 
                                         textStyle: {
-                                            color: '#333',
-                                            fontSize: 14,
-                                            fontWeight: 'bold',
-                                            fontStyle: 'italic',
+                                            color: '#8094AE',
+                                            fontSize: 13,
+                                            fontWeight: 'normal',
+                                            //fontStyle: 'italic',
                                             // define rich styles
                                             rich: {
                                                 a: {
@@ -60,6 +60,7 @@
                                                     height: 30,
                                                     backgroundColor: '#ffffff',
                                                     border: 1,
+                                                    fontfamily:'DM Sans',
                                                     //borderRadius: 4,
                                                     //color: '#fff',
                                                     //align: 'center',
@@ -93,6 +94,7 @@
                                             left:0,
                                             right:0,
                                             type: 'pie',
+                                            center: ['50%', '35%'],
                                             radius: ['50%', '70%'],
                                             avoidLabelOverlap: false,
                                             color: colorPalette,
