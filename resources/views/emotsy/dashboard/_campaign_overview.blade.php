@@ -389,7 +389,7 @@
                                             </div> 
                                         </div>
                                         <div class="d-flex ">
-                                            <h2 class="text-semibold rate-value rate-color">{{ number_with_delimiter($campaign->clickCount()) }}</h2>
+                                            <h2 class="text-semibold rate-value rate-color">{{ number_with_delimiter($campaign->uniqueClickCount()) }}</h2>
                                             <div class="text-muteds pl-2 rate-alias pt-1">
                                                 <div class="alias-items">{{ trans('messages.total_clicks') }}</div>
                                                 <div class="alias-value pt-1">{{ number_to_percentage($campaign->readCache('ClickedRate')) }}</div>
@@ -406,7 +406,7 @@
                                 </div>
                                 <div class="d-flex">
                                     <div class="rate-open w-50">
-                                        <div class="rate-open-result fs-36">{{ number_with_delimiter($campaign->clickCount()) }}</div>
+                                        <div class="rate-open-result fs-36">{{ number_with_delimiter($campaign->uniqueClickCount()) }}</div>
                                         <p>{{ trans('messages.total_clicks') }}</p>
                                     </div>
                                     <div class="rate-open w-50">
