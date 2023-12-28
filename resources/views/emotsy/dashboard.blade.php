@@ -58,7 +58,7 @@
      
     <div class="campaign-head">
         <div class="row">
-            <div class="col-md-3 mb-4">
+            <div class="col-md-3 mb-4 pe-md-0">
                 <div class="card box-card position-relative h-100">
                     <div class="card-body py-4 px-3 d-flex align-items-center">
                         <div class="campaign-new d-flex align-items-center w-100">
@@ -124,7 +124,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-3 mb-4">
+            <div class="col-md-3 mb-4 pe-md-0">
                 <div class="card box-card position-relative h-100">
                     <div class="card-body py-4 px-3 d-flex align-items-center">
                         <div class="campaign-list d-flex align-items-center w-100">
@@ -354,13 +354,13 @@
     ])
 
     <div class="row">
-        <div class="col-md-4 mb-4">
+        <div class="col-md-4 mb-4 pe-md-0">
             @include('emotsy.dashboard._country_map')
         </div>
         <div class="col-md-4 mb-4">
             @include('emotsy.dashboard._country_top')
         </div>
-        <div class="col-md-4 mb-4">
+        <div class="col-md-4 mb-4 ps-md-0">
             @include('emotsy.dashboard._growth_chart')
         </div>
     </div>
