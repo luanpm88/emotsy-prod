@@ -429,7 +429,7 @@ body.mode-dark.theme-emotsy.leftbar .leftbar-hide-menu {
     color:#8094AE;
 }
 .leftbar .middle-bar{
-    width: auto;
+    /* width: auto; */
 }
 
 .box-card{

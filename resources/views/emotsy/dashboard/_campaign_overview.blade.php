@@ -14,8 +14,8 @@
             <div class="col-md-12">
                 <div class="card position-relative h-100 box-card">
                     <div class="card-body p-4">
-                        <div class="d-flex">
-                            <div class="pe-4" style="width:30%">
+                        <div class="row">
+                            <div class="col-md-4 pe-4 mb-4">
                                 <div class="inquery d-flex flex-column  justify-content-between ">
                                     <!-- Example single danger button -->
                                     <div class="btn-group e-type mb-4">  
@@ -94,7 +94,7 @@
                                     </div> 
                                 </div>
                             </div>
-                            <div class="px-2" style="width:40%">
+                            <div class="col-md-5 px-2 mb-4">
                                 <div class="row">
                                     <div class="col col-sm-4 mb-4">
                                         <div class="chart-title">{{ trans('messages.opened') }}</div>
@@ -203,7 +203,7 @@
                                 </div>
                                 <div class="l" id="chart"></div>
                             </div>
-                            <div class="ms-auto ps-4" style="width:30%"> 
+                            <div class="col-md-3 ps-4"> 
                                 
                                 <div class="content-group-sm mb-4 w-100 light-blue">
                                     <div class="something">
@@ -311,7 +311,7 @@
         </div>
 
         <div class="row mb-4">
-            <div class="col-md-6">
+            <div class="col-md-6 pb-4">
                 <div class="card position-relative h-100 box-card rate-blue">
                     <div class="card-header bg-white">
                         <div class="d-flex justify-content-between p-4 w-100">
@@ -366,7 +366,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-6 pb-4">
                 <div class="card position-relative h-100 box-card rate-orange">
                     <div class="card-header bg-white">
                         <div class="d-flex justify-content-between p-4 w-100">

@@ -102,9 +102,9 @@
                     </div>
                     <!-- /page container --> 
                 </div>
-                <div class=" d-sm-none col-md-6 col-lg-6 d-flex align-content-center flex-wrap"> 
+                <div class=" d-sm-none col-md-6 col-lg-6 d-flex flex-wrap"> 
                     <div class="login-brand-bg">
-                        <div class="brand-img mb-4">
+                        <div class="brand-img mb-4" style="padding-top: 200px;">
                             <img src="{{ asset('images/emotsy-mkt.svg') }}">
                         </div>
                         <div class="login-brand">
