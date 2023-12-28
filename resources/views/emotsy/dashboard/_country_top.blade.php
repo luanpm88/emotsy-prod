@@ -71,8 +71,7 @@
                                 tooltip: {
                                     trigger: 'item',
                                     formatter: '<strong>{b}</strong><br />{c} ({d}%)',  
-                                },  
-                                    
+                                }, 
                                 legend: {
                                     //orient: 'vertical',
                                     //type: 'grid', 
