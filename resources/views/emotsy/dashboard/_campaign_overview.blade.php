@@ -7,7 +7,7 @@
             </span>
         </div>
     @else
-        <h6 class="mt-5 mb-3 support-request">
+        <h6 class="mt-3 mb-3 support-request">
             {{ trans('messages.dashboard.campaign_overview') }}
         </h6>
         <div class="row mb-4">
