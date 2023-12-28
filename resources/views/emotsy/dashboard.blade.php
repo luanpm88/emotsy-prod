@@ -353,14 +353,14 @@
         'campaign' => ($campaign->isABTest() && request()->version_b) ? $campaign->campaignB : $campaign,
     ])
 
-    <div class="row mb-4">
-        <div class="col-md-4">
+    <div class="row">
+        <div class="col-md-4 mb-4">
             @include('emotsy.dashboard._country_map')
         </div>
-        <div class="col-md-4">
+        <div class="col-md-4 mb-4">
             @include('emotsy.dashboard._country_top')
         </div>
-        <div class="col-md-4">
+        <div class="col-md-4 mb-4">
             @include('emotsy.dashboard._growth_chart')
         </div>
     </div>

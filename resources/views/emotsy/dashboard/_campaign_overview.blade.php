@@ -310,7 +310,7 @@
             </div>
         </div>
 
-        <div class="row mb-4">
+        <div class="row">
             <div class="col-md-6 pb-4">
                 <div class="card position-relative h-100 box-card rate-blue">
                     <div class="card-header bg-white">
