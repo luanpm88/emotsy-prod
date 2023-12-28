@@ -485,9 +485,6 @@ trait HasTemplate
         $pipeline = new PipelineBuilder();
 
         if (!is_null($subscriber)) {
-            if (is_null($msgId)) {
-                throw new Exception('MessageID must not be null');
-            }
             $pipeline->add(new TransformTag($this, $subscriber, $msgId, $server));
         }
 
