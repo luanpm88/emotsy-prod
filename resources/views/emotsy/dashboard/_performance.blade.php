@@ -3,14 +3,14 @@
         <div class="card position-relative h-100 box-card">
             <div class="card-header bg-white border-bottom-0">
                  
-                <div class="d-flex justify-content-between align-items-center px-4 pt-4">
-                    <div class="headtitle">
+                <div class="row px-4 pt-4">
+                    <div class="col-md-6 headtitle">
                         <h2 class="mb-2">Performance</h2>
                         <span class="text-muted2">
                             {{ trans('messages.campaign.performance_chart.info') }}
                         </span>
                     </div>
-                    <div class="d-flex">
+                    <div class="col-md-6">
                         <div class="d-none">
                             <select id="PerformancePeriod" class="select select-control" name="last_performance_time">
                                 <option value="24h">{{ trans('messages.campaign.24_hour') }}</option>
