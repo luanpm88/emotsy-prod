@@ -33,6 +33,10 @@
 
     <!-- Theme -->
     <link rel="stylesheet" type="text/css" href="{{ AppUrl::asset('core/css/theme/'.Auth::user()->admin->getColorScheme().'.css') }}">
+
+	@if (config('app.emotsy'))
+		<link rel="stylesheet" type="text/css" href="{{ AppUrl::asset('core/css/theme/emotsy-dark.css') }}?v=5">
+	@endif
 </head>
 <body class="{{ isset($body_class) ? $body_class : '' }} theme-{{ Auth::user()->admin->getColorScheme() }} {{ Auth::user()->admin->getMenuLayout() }}bar
 	{{ Auth::user()->admin->getMenuLayout() }}bar-{{ request()->session()->get('admin-leftbar-state') }} state-{{ request()->session()->get('admin-leftbar-state') }}
@@ -58,7 +62,7 @@
 
 		<!-- main inner content -->
 		@yield('content')
-
+<br><br><br><br><br>
 		<!-- Footer -->
 		@include('layouts.core._footer')
 	</main>
