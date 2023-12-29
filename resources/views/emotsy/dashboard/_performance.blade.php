@@ -1,17 +1,17 @@
 <div class="row mb-4">
     <div class="col-md-12">
         <div class="card position-relative h-100 box-card">
-            <div class="card-header bg-white">
+            <div class="card-header bg-white border-bottom-0">
                  
-                <div class="d-flex justify-content-between align-items-center">
-                    <div class="headtitle">
-                        <h2>Performance</h2>
-                        <span>
+                <div class="row px-4 pt-4">
+                    <div class="col-md-6 headtitle">
+                        <h2 class="mb-2">Performance</h2>
+                        <span class="text-muted2">
                             {{ trans('messages.campaign.performance_chart.info') }}
                         </span>
                     </div>
-                    <div class="d-flex">
-                        <div class="">
+                    <div class="col-md-6">
+                        <div class="d-none">
                             <select id="PerformancePeriod" class="select select-control" name="last_performance_time">
                                 <option value="24h">{{ trans('messages.campaign.24_hour') }}</option>
                                 <option value="3_days">{{ trans('messages.campaign.last_3_days') }}</option>
@@ -20,11 +20,12 @@
                             </select>
                             
                         </div>
-                        <div class="perfometag">
+                        <div id="PerformancePeriodTabs" class="perfometag">
                             <ul class="pagination"> 
-                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                                <li class="page-item "><a class="page-link" href="#">2</a></li>
-                                <li class="page-item "><a class="page-link" href="#">3</a></li> 
+                                <li class="page-item active"><a data-value="24h" class="page-link fs-13px" href="javascript:;">{{ trans('messages.campaign.24_hour') }}</a></li>
+                                <li class="page-item "><a data-value="3_days" class="page-link fs-13px" href="javascript:;">{{ trans('messages.campaign.last_3_days') }}</a></li>
+                                <li class="page-item "><a data-value="7_days" class="page-link fs-13px" href="javascript:;">{{ trans('messages.campaign.last_7_days') }}</a></li> 
+                                <li class="page-item "><a data-value="last_month" class="page-link fs-13px" href="javascript:;">{{ trans('messages.campaign.last_month') }}</a></li>
                             </ul>
                         </div>
                     </div> 
@@ -80,12 +81,15 @@
                         trigger: 'axis'
                     },
                     legend: {
+                        top: 'bottom',
+                        left: '30',
                         data: ['{{ trans('messages.opened') }}', '{{ trans('messages.clicked') }}']
                     },
                     grid: {
-                        left: '3%',
-                        right: '4%',
-                        bottom: '3%',
+                        top: '2%',
+                        left: '2%',
+                        right: '2%',
+                        bottom: '15%',
                         containLabel: true
                     },
                     toolbox: {
@@ -104,9 +108,21 @@
                             name: '{{ trans('messages.opened') }}',
                             type: 'line',
                             itemStyle: {
-                                color: '#08c6e1'
+                                color: '#5CC7D2'
                             },
-                            data: data.opened
+                            data: data.opened,
+                            areaStyle: {
+                                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                                {
+                                    offset: 0,
+                                    color: 'rgba(92,199,210,0.5)'
+                                },
+                                {
+                                    offset: 1,
+                                    color: 'rgba(92,199,210,0.0)'
+                                }
+                                ])
+                            },
                         },
                         {
                             name: '{{ trans('messages.clicked') }}',
@@ -114,7 +130,19 @@
                             itemStyle: {
                                 color: '#ffaa6f'
                             },
-                            data: data.clicked
+                            areaStyle: {
+                                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                                {
+                                    offset: 0,
+                                    color: 'rgba(254,198,125,0.5)'
+                                },
+                                {
+                                    offset: 1,
+                                    color: 'rgba(254,198,125,0.0)'
+                                }
+                                ])
+                            },
+                            data: data.clicked,
                         }
                     ]
                 };
@@ -135,5 +163,34 @@
         $('[name="last_performance_time"]').on('change', function() {
             Campaigns24hChart.showChart();
         });
+
+        //
+        new ChartPeriod();
     })
+
+    var ChartPeriod = class {
+        constructor() {
+            this.events();
+        }
+
+        getPeriodSelect() {
+            return $('#PerformancePeriod');
+        }
+
+        getPeriodTabLinks() {
+            return $('#PerformancePeriodTabs .page-link');
+        }
+
+        events() {
+            var _this = this;
+            this.getPeriodTabLinks().on('click', function() {
+                var value = $(this).attr('data-value');
+
+                _this.getPeriodSelect().val(value).change();
+
+                _this.getPeriodTabLinks().closest('.page-item').removeClass('active');
+                $(this).closest('.page-item').addClass('active');
+            });
+        }
+    }
 </script>

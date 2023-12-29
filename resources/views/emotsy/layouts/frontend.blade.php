@@ -30,7 +30,7 @@
 	</script>
 
     <!-- Theme -->
-    <link rel="stylesheet" type="text/css" href="{{ AppUrl::asset('core/css/theme/'.Auth::user()->customer->getColorScheme().'.css') }}?v=2">
+    <link rel="stylesheet" type="text/css" href="{{ AppUrl::asset('core/css/theme/'.Auth::user()->customer->getColorScheme().'.css') }}?v=4">
 
 	<!--script src="https://cdn.jsdelivr.net/npm/apexcharts"></script-->
 	
@@ -75,7 +75,7 @@
 
 		<!-- main inner content -->
 		@yield('content')
-
+		<br><br><br><br>
 		<!-- Footer -->
 		@include('layouts.core._footer')
 	</main>

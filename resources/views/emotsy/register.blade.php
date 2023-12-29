@@ -14,7 +14,7 @@
 
     <div class="panel panel-body p-4 rounded-3 bg-white">
 
-        <h4 class="text-semibold mt-0 mb-3 fw-600 fs-5">{{ trans('messages.login') }}</h4>
+        <h4 class="text-semibold mt-0 mb-3 fw-600 fs-5">{{ trans('messages.register') }}</h4>
         <div class="login-description mb-4">{{ trans('messages.login.description') }}</div>
 
         

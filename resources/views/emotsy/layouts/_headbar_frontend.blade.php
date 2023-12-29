@@ -8,7 +8,10 @@
             </a>
         </div>
     @endif
-        
+        @include('layouts.core._quick_change_theme_mode', [
+            'mode' => Auth::user()->customer->theme_mode ? Auth::user()->customer->theme_mode : 'light',
+            'url' => action('AccountController@changeThemeMode'),
+        ])
         @include('emotsy.layouts._top_activity_log') 
         {{-- @include('emotsy.layouts._top_notifications')  --}}
         @include('emotsy.layouts._menu_frontend_user') 
