@@ -43,40 +43,6 @@
                         // based on prepared DOM, initialize echarts instance
                         var growthChart2 = echarts.init(OpenPieChart.getChart()[0], ECHARTS_THEME);
 
-<<<<<<< HEAD
-                            var colorPalette = ['#76DDC2','#00C1FF', '#FFD569', '#FFAB6F','#FF7F64','#3EE0EA']
-                            var option = {
-                                    tooltip: {
-                                        trigger: 'item',
-                                        formatter: '<strong>{b}</strong><br />{c} ({d}%)',  
-                                    },  
-                                     
-                                    legend: {
-                                        //orient: 'vertical',
-                                        //type: 'grid', 
-                                        bottom: 0, 
-                                        textStyle: {
-                                            color: '#8094AE',
-                                            fontSize: 13,
-                                            fontWeight: 'normal',
-                                            //fontStyle: 'italic',
-                                            // define rich styles
-                                            rich: {
-                                                a: {
-                                                    width: 111,
-                                                    maxwith:120,
-                                                    height: 30,
-                                                    backgroundColor: '#ffffff',
-                                                   // border: 1,
-                                                    fontfamily:'DM Sans',
-                                                    //borderRadius: 4,
-                                                    //color: '#fff',
-                                                    //align: 'center',
-                                                    lineHeight: 30,
-                                                    fontSize: 14,
-                                                }
-                                            },
-=======
                         var colors = [
                             '#76ddc2',
                             '#08c6e1',
@@ -129,62 +95,12 @@
                                                 lineHeight: 30,
                                                 fontSize: 14,
                                             }
->>>>>>> 1cae555fb68e7f6f86cea4bc5a684294b538df47
                                         },
                                     },
                                 
                                     formatter: function(name) {  return '{a|' + name + '}';    }, 
                                     //formatter: function(name) {  return '<span class="w-30">' + name + "</span>";   },
                                     
-<<<<<<< HEAD
-                                        formatter: function(name) {  return '{a|' + name + '}';    }, 
-                                        //formatter: function(name) {  return '<span class="w-30">' + name + "</span>";   },
-                                        
-                                        left:0,
-                                        right:0,
-                                        padding:  [5, 0, 15, 0],  
-                                        color: colorPalette, 
-                                        data: [
-                                                { name: 'United States', icon: 'circle'  },                                                
-                                                { name: 'Lithuania', icon: 'circle'   }, 
-                                                { name: 'Singapore', icon: 'circle'  }, 
-                                                { name: 'Others', icon: 'circle'   },
-                                                { name: 'United Kingdom', icon: 'circle'  },  
-                                                { name: 'Latvia', icon: 'circle' }, 
-                                            ], 
-                                    }, 
-                                    series: [
-                                        {
-                                            name:  {
-                                                trigger: 'item',
-                                            },  
-                                            top:0,  
-                                            left:0,
-                                            right:0,
-                                            type: 'pie',
-                                            center: ['50%', '35%'],
-                                            radius: ['50%', '70%'],
-                                            avoidLabelOverlap: false,
-                                            color: colorPalette,
-                                            label: {
-                                                show: false,
-                                                //position: 'center'
-                                            }, 
-                                            labelLine: {
-                                                show: false
-                                            },
-                                            data: [
-                                                {value: 135, name: 'United States'},
-                                                {value: 235, name: 'United Kingdom'},
-                                                {value: 110, name: 'Lithuania'},
-                                                {value: 134, name: 'Singapore'},
-                                                {value: 335, name: 'Others'},
-                                                {value: 948, name: 'Latvia'}
-                                            ]
-                                        }
-                                    ]
-                                };
-=======
                                     //left: 10,
                                     padding:  [5, 0, 15, 0],  
                                     color: colorPalette, 
@@ -258,7 +174,6 @@
                         //         }
                         //     ]
                         // };
->>>>>>> 1cae555fb68e7f6f86cea4bc5a684294b538df47
             
                         // use configuration item and data specified to show chart
                         growthChart2.setOption(option);

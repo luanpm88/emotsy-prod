@@ -1352,7 +1352,7 @@ body.mode-dark.theme-emotsy.leftbar .leftbar-hide-menu {
     button circle 
 */
 .pt-mode{
-    padding-top: 15px;
+    padding-top: 13px;
 }
 .changemode{
     --bs-dropdown-min-width: 6rem;
@@ -1398,4 +1398,7 @@ body.mode-dark.theme-emotsy.leftbar .leftbar-hide-menu {
     height: 70px;
     line-height: 70px;
     font-size: 1.3rem;
+  }
+  .changemode {
+    min-width: initial!important;
   }
