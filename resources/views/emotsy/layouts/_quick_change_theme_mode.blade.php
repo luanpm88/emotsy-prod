@@ -1,5 +1,5 @@
 <div class="nav-item dropdown top-right-menu-group top-controls-container pt-mode">
-    <a href="#" class="btn btn-success btn-circle btn-circle-sm m-1 dropdown-toggle"
+    <a href="#" class="btn btn-primary btn-circle btn-circle-sm m-1 dropdown-toggle"
         id="content-menu" data-bs-toggle="dropdown" aria-expanded="false"> 
         <i class="fa fa-check"></i>
     </a>
