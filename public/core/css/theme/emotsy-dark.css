@@ -1,5 +1,5 @@
 body.mode-dark.leftbar ul.navbar-nav li.nav-item.active{
-    background-color: rgba(255,248,231,0.1);
+    background-color: transparent;
 }
 body.mode-dark.leftbar ul.navbar-nav li.nav-item.active path {
     fill: #fff;
@@ -235,13 +235,13 @@ body.mode-dark.theme-emotsy .template-create-sticky {
     color:#8094AE;
 }
 @media (min-width: 1200px) {
-    .leftbar ul.navbar-nav li.nav-item:hover{
+    body.mode-dark.leftbar ul.navbar-nav li.nav-item:hover{
         background: rgba(255,248,231,0.1); 
     }
-    .leftbar ul.navbar-nav li.nav-item.dropdown:has(a.nav-link.show) {
+    body.mode-dark.leftbar ul.navbar-nav li.nav-item.dropdown:has(a.nav-link.show) {
         background: rgba(255,248,231,0.1); 
     } 
-    .leftbar ul.navbar-nav li.nav-item.dropdown a.nav-link.show{
+    body.mode-dark.leftbar ul.navbar-nav li.nav-item.dropdown a.nav-link.show{
         background: rgba(255,248,231,0.1); 
     } 
     .dropdown-menu.show .nav-item:hover{
