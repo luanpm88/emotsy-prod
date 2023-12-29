@@ -86,7 +86,7 @@
                                             a: {
                                                 width: 108,
                                                 height: 30,
-                                                backgroundColor: '#ffffff',
+                                                // backgroundColor: '#ffffff',
                                                 border: 1,
                                                 fontfamily:'DM Sans',
                                                 //borderRadius: 4,

@@ -16,17 +16,17 @@
 
 	<script>
 		@if (Auth::user()->customer->theme_mode == 'auto')
-			// var ECHARTS_THEME = isDarkMode() ? 'dark' : null
+			var ECHARTS_THEME = isDarkMode() ? 'dark' : null
 
-			// auto detect dark-mode
-			// $(function() {
-			// 	autoDetechDarkMode('{{ action('AccountController@saveAutoThemeMode') }}');
-			// });
+			auto detect dark-mode
+			$(function() {
+				autoDetechDarkMode('{{ action('AccountController@saveAutoThemeMode') }}');
+			});
 		@else
-			// var ECHARTS_THEME = '{{ Auth::user()->customer->theme_mode == 'dark' ? 'dark' : null }}';
+			var ECHARTS_THEME = '{{ Auth::user()->customer->theme_mode == 'dark' ? 'dark' : null }}';
 		@endif
 
-		var ECHARTS_THEME = 'light';
+		// var ECHARTS_THEME = 'light';
 	</script>
 
     <!-- Theme -->
