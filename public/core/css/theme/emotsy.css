@@ -1351,13 +1351,16 @@ body.mode-dark.theme-emotsy.leftbar .leftbar-hide-menu {
 /*
     button circle 
 */
+.changemode .btn{
+    border-radius: 50% !important;
+}
 .btn-circle {
     width: 45px;
     height: 45px;
     line-height: 45px;
     text-align: center;
     padding: 0;
-    border-radius: 50%;
+    border-radius: 50% !important;
   }
   
   .btn-circle i {
