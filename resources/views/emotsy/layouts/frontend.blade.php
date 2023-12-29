@@ -36,7 +36,9 @@
 	
 	<!--script src="https://fastly.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script-->
 
-
+	@if (config('app.emotsy'))
+		<link rel="stylesheet" type="text/css" href="{{ AppUrl::asset('core/css/theme/emotsy-dark.css') }}?v=4">
+	@endif
 
 </head>
 <body class="theme-{{ Auth::user()->customer->getColorScheme() }} {{ Auth::user()->customer->getMenuLayout() }}bar
