@@ -1,4 +1,4 @@
-<div class="nav-item dropdown top-right-menu-group">
+<div class="nav-item dropdown top-right-menu-group top-controls-container pt-mode">
     <a href="#" class="btn btn-success btn-circle btn-circle-sm m-1 dropdown-toggle"
         id="content-menu" data-bs-toggle="dropdown" aria-expanded="false"> 
         <i class="fa fa-check"></i>
@@ -6,35 +6,35 @@
   
     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-bottom changemode"  aria-labelledby="content-menu"> 
         <li class="p-3">
-            <a href="#">
+            <a href="javascript: alert('The color theme selector feature is currently under construction.');">
                 <button class="btn btn-success btn-circle btn-circle-sm m-1">
                     <i class="fa fa-check"></i>
                 </button>
             </a>  
         </li>
         <li class="p-3">
-            <a href="#">
+            <a href="javascript: alert('The color theme selector feature is currently under construction.');">
                 <button class="btn btn-primary btn-circle btn-circle-sm m-1">
                     <i class="fa fa-cog"></i>
                 </button>
             </a>  
         </li>
         <li class="p-3">
-            <a href="#">
+            <a href="javascript: alert('The color theme selector feature is currently under construction.');">
                 <button class="btn btn-info btn-circle btn-circle-sm m-1">
                     <i class="fa fa-paper-plane"></i>
                 </button>
             </a>  
         </li>
         <li class="p-3">
-            <a href="#">
+            <a href="javascript: alert('The color theme selector feature is currently under construction.');">
                 <button class="btn btn-warning btn-circle btn-circle-sm m-1">
                     <i class="fa fa-tags"></i>
                 </button>
             </a>  
         </li>
         <li class="p-3">
-            <a href="#">
+            <a href="javascript: alert('The color theme selector feature is currently under construction.');">
                 <button class="btn btn-danger btn-circle btn-circle-sm m-1">
                     <i class="fa fa-sliders"></i>
                 </button>
