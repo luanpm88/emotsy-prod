@@ -234,6 +234,9 @@ body.mode-dark.theme-emotsy .template-create-sticky {
 .dropdown-toggle::after{
     color:#8094AE;
 }
+body.mode-dark.leftbar:not(.leftbar-closed) .main-menu .dropdown-menu.show {
+    background: transparent;
+}
 @media (min-width: 1200px) {
     body.mode-dark.leftbar ul.navbar-nav li.nav-item:hover{
         background: rgba(255,248,231,0.1); 
