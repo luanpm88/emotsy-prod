@@ -8,7 +8,7 @@
             </a>
         </div>
     @endif
-        @include('layouts.core._quick_change_theme_mode', [
+        @include('emotsy.layouts._quick_change_theme_mode', [
             'mode' => Auth::user()->customer->theme_mode ? Auth::user()->customer->theme_mode : 'light',
             'url' => action('AccountController@changeThemeMode'),
         ])
