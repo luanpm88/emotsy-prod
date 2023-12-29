@@ -1,37 +1,43 @@
 <div class="nav-item dropdown top-right-menu-group">
-    <a href="#" class="nav-link d-flex align-items-center ps-3 pe-1 py-3 lvl-1 dropdown-toggle"
+    <a href="#" class="btn btn-success btn-circle btn-circle-sm m-1 dropdown-toggle"
         id="content-menu" data-bs-toggle="dropdown" aria-expanded="false"> 
-        <span style="
-            max-width: 100%;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        ">
-         Change style</span> 
+        <i class="fa fa-check"></i>
     </a>
+  
     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-bottom "   aria-labelledby="content-menu"> 
         <li class="p-3" style="width:80px">
             <a href="#">
-                xanh 
+                <button class="btn btn-success btn-circle btn-circle-sm m-1">
+                    <i class="fa fa-check"></i>
+                </button>
             </a>  
         </li>
         <li class="p-3" style="width:80px">
             <a href="#">
-                do 
+                <button class="btn btn-primary btn-circle btn-circle-sm m-1">
+                    <i class="fa fa-cog"></i>
+                </button>
             </a>  
         </li>
         <li class="p-3" style="width:80px">
             <a href="#">
-                tim 
+                <button class="btn btn-info btn-circle btn-circle-sm m-1">
+                    <i class="fa fa-paper-plane"></i>
+                </button>
             </a>  
         </li>
         <li class="p-3" style="width:80px">
             <a href="#">
-                vang 
+                <button class="btn btn-warning btn-circle btn-circle-sm m-1">
+                    <i class="fa fa-tags"></i>
+                </button>
             </a>  
         </li>
         <li class="p-3" style="width:80px">
             <a href="#">
-                den 
+                <button class="btn btn-danger btn-circle btn-circle-sm m-1">
+                    <i class="fa fa-sliders"></i>
+                </button>
             </a>  
         </li>
 
