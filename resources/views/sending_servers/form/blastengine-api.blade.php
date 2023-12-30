@@ -1,9 +1,9 @@
 @if (!$server->id)
-<form id="editServerForm" action="{{ action('Admin\SendingServerController@store', ["type" => request()->type]) }}" method="POST" class="form-validate-jqueryz">
+<form id="editServerForm" action="{{ action('SendingServerController@store', ["type" => request()->type]) }}" method="POST" class="form-validate-jqueryz">
     {{ csrf_field() }}
     <input type="hidden" name="type" value="{{ $server->type }}" />
 @else
-<form id="editServerForm" enctype="multipart/form-data" action="{{ action('Admin\SendingServerController@update', [$server->uid, $server->type]) }}" method="POST" class="form-validate-jqueryz">
+<form id="editServerForm" enctype="multipart/form-data" action="{{ action('SendingServerController@update', [$server->uid, $server->type]) }}" method="POST" class="form-validate-jqueryz">
     <input type="hidden" name="_method" value="PATCH">
     {{ csrf_field() }}
 @endif
@@ -50,7 +50,7 @@
             @if ($server->id && Auth::user()->customer->can('test', $server) && $errors->isEmpty())
                 <span class="edit-group">
                     <a
-                        href="{{ action('Admin\SendingServerController@testConnection', $server->uid) }}"
+                        href="{{ action('SendingServerController@testConnection', $server->uid) }}"
                         role="button"
                         class="btn btn-secondary me-2 test-connection-button"
                         mask-title="{{ trans('messages.sending_server.testing') }}"
@@ -58,7 +58,7 @@
                         {{ trans('messages.sending_server.test_connection') }}
                     </a>
                         <a id="SendTestEmailButton"
-                        href="{{ action('Admin\SendingServerController@test', $server->uid) }}"
+                        href="{{ action('SendingServerController@test', $server->uid) }}"
                         role="button"
                         class="btn btn-secondary me-2 modal_link"
                         data-in-form="true"
@@ -78,7 +78,7 @@
                 </span>
             @else
                 <button class="btn btn-secondary me-2">{{ trans('messages.save') }}</button>
-                <a href="{{ action('Admin\SendingServerController@index') }}" role="button" class="btn btn-link">
+                <a href="{{ action('SendingServerController@index') }}" role="button" class="btn btn-link">
                     {{ trans('messages.cancel') }}
                 </a>
             @endif
@@ -87,7 +87,7 @@
     </div>
 </form>
 @if ($server->id)
-<form action="{{ action('Admin\SendingServerController@config', $server->uid) }}" method="POST" class="form-validate-jqueryz">
+<form action="{{ action('SendingServerController@config', $server->uid) }}" method="POST" class="form-validate-jqueryz">
     {{ csrf_field() }}
     <div class="mc_section">
         <div class="row">
@@ -117,7 +117,7 @@
 
                 <p>{!! trans('messages.sending_servers.sending_limit.mailgun.intro') !!}</p>
 
-                <div class="sendind-limit-select-custom" data-url="{{ action('Admin\SendingServerController@sendingLimit', ['uid' => ($server->uid ? $server->uid : 0)]) }}">
+                <div class="sendind-limit-select-custom" data-url="{{ action('SendingServerController@sendingLimit', ['uid' => ($server->uid ? $server->uid : 0)]) }}">
                     @include ('sending_servers.form._sending_limit', [
                         'quotaValue' => $server->quota_value,
                         'quotaBase' => $server->quota_base,
