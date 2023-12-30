@@ -29,6 +29,10 @@
 
     <!-- Theme -->
     <link rel="stylesheet" type="text/css" href="{{ AppUrl::asset('core/css/theme/'.Auth::user()->customer->getColorScheme().'.css') }}">
+
+	@if (config('app.emotsy'))
+		<link rel="stylesheet" type="text/css" href="{{ AppUrl::asset('core/css/theme/emotsy-dark.css') }}?v=5">
+	@endif
 </head>
 <body class="theme-{{ Auth::user()->customer->getColorScheme() }} {{ Auth::user()->customer->getMenuLayout() }}bar
 	{{ Auth::user()->customer->getMenuLayout() }}bar-{{ request()->session()->get('customer-leftbar-state') }} state-{{ request()->session()->get('customer-leftbar-state') }}
