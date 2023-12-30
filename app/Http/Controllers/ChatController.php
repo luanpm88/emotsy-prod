@@ -17,7 +17,7 @@ class ChatController extends Controller
 
         // slice long messages
         $messages = array_map(function ($message) {
-            $message['content'] = substr($message['content'], 0, 180);
+            // $message['content'] = substr($message['content'], 0, 180);
             return $message;
         }, $messages);
 
