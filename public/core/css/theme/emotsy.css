@@ -1402,3 +1402,14 @@ body.mode-dark.theme-emotsy.leftbar .leftbar-hide-menu {
   .changemode {
     min-width: initial!important;
   }
+  .app_search_input + [class^="material-"] {
+    background-color: transparent;
+    font-size: 20px;
+  }
+  .leftbar .top-sticky-content {
+    margin-left: -10px;
+    padding-left: 10px;
+    margin-right: -10px;
+    padding-right: 10px;
+    border-radius: 10px;
+  }

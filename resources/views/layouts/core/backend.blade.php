@@ -1,3 +1,8 @@
+@if (config('app.emotsy'))
+	@include('emotsy.layouts.backend')
+@else
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -80,3 +85,5 @@
 	{!! \Acelle\Model\Setting::get('custom_script') !!}
 </body>
 </html>
+
+@endif
