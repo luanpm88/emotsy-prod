@@ -5,35 +5,35 @@
     </a>
   
     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-bottom changemode"  aria-labelledby="content-menu"> 
-        <li class="p-3">
+        <li class="px-3 py-2">
             <a class="p-0" href="javascript: alert('The color theme selector feature is coming soon.');">
                 <button class="btn btn-success btn-circle btn-circle-sm m-1">
                     <i class="fa fa-check"></i>
                 </button>
             </a>  
         </li>
-        <li class="p-3">
+        <li class="px-3 py-2">
             <a class="p-0" href="javascript: alert('The color theme selector feature is coming soon.');">
                 <button class="btn btn-primary btn-circle btn-circle-sm m-1">
                     <i class="fa fa-cog"></i>
                 </button>
             </a>  
         </li>
-        <li class="p-3">
+        <li class="px-3 py-2">
             <a class="p-0" href="javascript: alert('The color theme selector feature is coming soon.');">
                 <button class="btn btn-info btn-circle btn-circle-sm m-1">
                     <i class="fa fa-paper-plane"></i>
                 </button>
             </a>  
         </li>
-        <li class="p-3">
+        <li class="px-3 py-2">
             <a class="p-0" href="javascript: alert('The color theme selector feature is coming soon.');">
                 <button class="btn btn-warning btn-circle btn-circle-sm m-1">
                     <i class="fa fa-tags"></i>
                 </button>
             </a>  
         </li>
-        <li class="p-3">
+        <li class="px-3 py-2">
             <a class="p-0" href="javascript: alert('The color theme selector feature is coming soon.');">
                 <button class="btn btn-danger btn-circle btn-circle-sm m-1">
                     <i class="fa fa-sliders"></i>
