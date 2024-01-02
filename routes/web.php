@@ -344,6 +344,8 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('/', 'HomeController@index');
     Route::get('frontend/docs/api/v1', 'Controller@docsApiV1');
 
+    // Account
+    Route::get('account/set-language/{code}', 'AccountController@setLanguage');
     Route::get('account/api/renew', 'AccountController@renewToken');
     Route::get('account/api', 'AccountController@api');
 

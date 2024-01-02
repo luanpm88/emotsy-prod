@@ -521,7 +521,7 @@ class User extends Authenticatable
         if (file_exists($path)) {
             return \Acelle\Helpers\generatePublicPath($path) . '?v=' . md5_file($this->getProfileImagePath());
         } else {
-            return AppUrl::asset('images/user-placeholder.svg');
+            return AppUrl::asset('images/user-placeholder2.svg');
         }
     }
 

@@ -446,4 +446,11 @@ class AccountController extends Controller
             $customer->save();
         }
     }
+
+    public function setLanguage(Request $request, $code)
+    {
+        $request->user()->customer->setLanguageByCode($code);
+
+        return redirect()->back();
+    }
 }

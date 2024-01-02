@@ -1893,4 +1893,10 @@ class Customer extends Model
         }
         return json_decode($this->google_auth, true)['access_token'];
     }
+
+    public function setLanguageByCode($code)
+    {
+        $this->language_id = language::findByCode($code)->id;
+        $this->save();
+    }
 }

@@ -32,10 +32,10 @@
 	</script>
 
     <!-- Theme -->
-    <link rel="stylesheet" type="text/css" href="{{ AppUrl::asset('core/css/theme/'.Auth::user()->admin->getColorScheme().'.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ AppUrl::asset('core/css/theme/'.Auth::user()->admin->getColorScheme().'.css') }}?v=6">
 
 	@if (config('app.emotsy'))
-		<link rel="stylesheet" type="text/css" href="{{ AppUrl::asset('core/css/theme/emotsy-dark.css') }}?v=5">
+		<link rel="stylesheet" type="text/css" href="{{ AppUrl::asset('core/css/theme/emotsy-dark.css') }}?v=6">
 	@endif
 </head>
 <body class="{{ isset($body_class) ? $body_class : '' }} theme-{{ Auth::user()->admin->getColorScheme() }} {{ Auth::user()->admin->getMenuLayout() }}bar

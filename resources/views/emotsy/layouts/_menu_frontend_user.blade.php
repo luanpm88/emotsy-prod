@@ -1,23 +1,29 @@
 @php $menu = $menu ?? false @endphp
 
 <div class="nav-item dropdown top-right-menu-group">
-    <a href="{{ action('TemplateController@index') }}" class="nav-link d-flex align-items-center ps-3 pe-1 py-3 lvl-1 dropdown-toggle"
+    <a href="{{ action('TemplateController@index') }}" class="nav-link d-flex align-items-center ps-3 pe-1 py-2 lvl-1 dropdown-toggle"
         id="content-menu" data-bs-toggle="dropdown" aria-expanded="false">
-        <i class="navbar-icon">
+        <i class="navbar-icon me-4">
             <img src="{{ Auth::user()->getProfileImageUrl() }}" style="border-radius:100%;" class="menu-user-avatar" alt="">
         </i>
-        <span style="
-            max-width: 100%;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        ">{{ Auth::user()->displayName(get_localization_config('show_last_name_first', Auth::user()->customer->getLanguageCode())) }}</span>
-        @if (Auth::user()->customer->hasSubscriptionNotice())
-            <i class="material-symbols-rounded customer-warning-icon text-danger" style="right: 3px!important;
-            color: rgb(236, 124, 124)!important;
-            top: 2px!important;
-            position: absolute;
-            text-indent: 0;transform:scale(1.2)">info</i>
-        @endif
+        <div>
+            <div class="text-emotsy small">{{ Auth::user()->getRole()->name }}</div>
+            <div>
+                <span class="fw-semibold text-dark" style="
+                    max-width: 100%;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    line-height:10px;
+                ">{{ Auth::user()->displayName(get_localization_config('show_last_name_first', Auth::user()->customer->getLanguageCode())) }}</span>
+                @if (Auth::user()->customer->hasSubscriptionNotice())
+                    <i class="material-symbols-rounded customer-warning-icon text-danger" style="right: 3px!important;
+                    color: rgb(236, 124, 124)!important;
+                    top: 2px!important;
+                    position: absolute;
+                    text-indent: 0;transform:scale(1.2)">info</i>
+                @endif
+            </div>
+        </div>
     </a>
     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-bottom top-user-menus" aria-labelledby="content-menu">
         <li class="backdrop  backdrop-frontend p-4 d-flex align-items-center justify-content-center">

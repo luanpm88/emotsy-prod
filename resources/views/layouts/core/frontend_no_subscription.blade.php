@@ -28,10 +28,10 @@
 	</script>
 
     <!-- Theme -->
-    <link rel="stylesheet" type="text/css" href="{{ AppUrl::asset('core/css/theme/'.Auth::user()->customer->getColorScheme().'.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ AppUrl::asset('core/css/theme/'.Auth::user()->customer->getColorScheme().'.css') }}?v=6">
 
 	@if (config('app.emotsy'))
-		<link rel="stylesheet" type="text/css" href="{{ AppUrl::asset('core/css/theme/emotsy-dark.css') }}?v=5">
+		<link rel="stylesheet" type="text/css" href="{{ AppUrl::asset('core/css/theme/emotsy-dark.css') }}?v=6">
 	@endif
 </head>
 <body class="theme-{{ Auth::user()->customer->getColorScheme() }} {{ Auth::user()->customer->getMenuLayout() }}bar

@@ -30,10 +30,10 @@
 	</script>
 
     <!-- Theme -->
-    <link rel="stylesheet" type="text/css" href="{{ AppUrl::asset('core/css/theme/'.Auth::user()->customer->getColorScheme().'.css') }}?v=4">
+    <link rel="stylesheet" type="text/css" href="{{ AppUrl::asset('core/css/theme/'.Auth::user()->customer->getColorScheme().'.css') }}?v=6">
 
 	@if (config('app.emotsy'))
-		<link rel="stylesheet" type="text/css" href="{{ AppUrl::asset('core/css/theme/emotsy-dark.css') }}?v=5">
+		<link rel="stylesheet" type="text/css" href="{{ AppUrl::asset('core/css/theme/emotsy-dark.css') }}?v=6">
 	@endif
 
 </head>
@@ -73,9 +73,9 @@
 
 		<!-- main inner content -->
 		@yield('content')
-		<br><br><br><br>
+
 		<!-- Footer -->
-		@include('layouts.core._footer')
+		@include('emotsy.layouts._footer')
 	</main>
 
 	<!-- Admin area -->

@@ -51,7 +51,7 @@
             </svg> 
         </div>
         <div class="wellcome-mes pl-4">
-            <h2 class="mt-4 pt-2">{!! trans('messages.frontend_dashboard_hello', ['name' => Auth::user()->customer->getName()]) !!}</h2>
+            <h2 class="mt-5 pt-2">{!! trans('messages.frontend_dashboard_hello', ['name' => Auth::user()->customer->getName()]) !!}</h2>
             <p>{!! trans('messages.frontend_dashboard_welcome') !!}</p>
         </div>
     </div>

@@ -599,6 +599,11 @@ class Language extends Model
         return self::where('code', '=', $code)->first();
     }
 
+    public static function findByCode($code)
+    {
+        return self::where('code', $code)->first();
+    }
+
     public static function getDefaultLanguage()
     {
         return self::getByCode(config('app.locale'));
