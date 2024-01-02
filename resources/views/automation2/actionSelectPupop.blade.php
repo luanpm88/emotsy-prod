@@ -44,7 +44,7 @@
             e.stopImmediatePropagation();
 
             var url = '{!! action('Automation2Controller@operationSelect', $automation->uid) !!}';
-            popup.load(url);
+            automationPopup.load(url);
         });
     </script>
 

@@ -263,7 +263,7 @@
             var url = form.attr('action');
             
             // loading effect
-            popup.loading();
+            automationPopup.loading();
             
             $.ajax({
                 url: url,
@@ -273,11 +273,11 @@
                 statusCode: {
                     // validate error
                     400: function (res) {
-                       popup.loadHtml(res.responseText);
+                       automationPopup.loadHtml(res.responseText);
                     }
                  },
                  success: function (response) {
-                    popup.load(response.url);
+                    automationPopup.load(response.url);
                     
                     // set node title
                     tree.getSelected().setTitle(response.title);

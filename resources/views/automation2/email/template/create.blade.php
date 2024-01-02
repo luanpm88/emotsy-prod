@@ -60,7 +60,7 @@
             $('.template-start').click(function() {
                 var url = $(this).attr('data-url');
                 
-                popup.load(url);
+                automationPopup.load(url);
             });
         
         });

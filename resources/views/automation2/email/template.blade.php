@@ -72,7 +72,7 @@
             @include('automation2.email._preheader')
                 
             <div class="text-end mt-5">
-                <a href="javascript:;" onclick="sidebar.load(); popup.hide()" class="btn btn-inline-secondary mr-1">
+                <a href="javascript:;" onclick="sidebar.load(); automationPopup.hide()" class="btn btn-inline-secondary mr-1">
                     {{ trans('messages.close') }}
                 </a>
                 <a href="javascript:;" onclick="popup.load('{{ action('Automation2Controller@emailConfirm', [
@@ -140,7 +140,7 @@
                             // after remove
                             saveData(function() {
                                 // reload
-                                popup.load();
+                                automationPopup.load();
 
                                 // reload sidebar
                                 sidebar.load();

@@ -51,7 +51,7 @@
                 
                 // save tree
                 saveData(function() {
-                    popup.hide();
+                    automationPopup.hide();
                     
                     // reload sidebar
                     sidebar.load();

@@ -4,7 +4,7 @@
         <p>{{ trans('messages.automation.automation_email.intro') }}</p>
     </div>    
     <div class="header-action">
-        <button class="btn btn-secondary d-flex align-items-center back_to_workflow" onclick="sidebar.load(); popup.hide()">
+        <button class="btn btn-secondary d-flex align-items-center back_to_workflow" onclick="sidebar.load(); automationPopup.hide()">
             <i class="material-symbols-rounded me-2">multiline_chart</i>
             {{ trans('messages.automation.back_to_workflow') }}
         </button>

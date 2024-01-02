@@ -44,9 +44,9 @@
     </div>
     <script>
         // set back
-        popup.back = function() {
-            var backUrl = popup.url;
-            popup.load(backUrl);
+        automationPopup.back = function() {
+            var backUrl = automationPopup.url;
+            automationPopup.load(backUrl);
         };
         
         $('.operation-select-but').on('click', function(e) {
@@ -56,7 +56,7 @@
 
             var url = $(this).attr('data-url');
 
-            popup.load(url);
+            automationPopup.load(url);
         });
     </script>
 

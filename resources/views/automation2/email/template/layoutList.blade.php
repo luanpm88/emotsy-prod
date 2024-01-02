@@ -37,7 +37,7 @@
         var template_uid = $(this).attr('data-template');
         
         // loading popup
-        popup.loading();
+        automationPopup.loading();
         
         $.ajax({
             url: url,
@@ -47,7 +47,7 @@
                 template_uid: template_uid
             }
         }).always(function(response) {
-            popup.load('{{ action('Automation2Controller@emailTemplate', [
+            automationPopup.load('{{ action('Automation2Controller@emailTemplate', [
                 'uid' => $automation->uid,
                 'email_uid' => $email->uid,
             ]) }}');

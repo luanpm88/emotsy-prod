@@ -59,7 +59,7 @@
             
             var url = '{{ action('Automation2Controller@emailTemplate', ['uid' => $automation->uid, 'email_uid' => $email->uid]) }}';
             
-            popup.load(url);
+            automationPopup.load(url);
         });
         
         $('.email-action-delete').click(function(e) {
@@ -141,7 +141,7 @@
                 e.preventDefault();
 
                 var url = '{{ action('Automation2Controller@emailSetup', $automation->uid) }}' + '?action_id=' + tree.getSelected().id;
-                popup.load(url);
+                automationPopup.load(url);
             });
 
             $('.email-action-delete').on('click', function(e) {
