@@ -13,7 +13,7 @@
 
 <ul class="nav nav-tabs mb-4 email_tabs nav-underline">
     <li class="nav-item">
-        <a class="nav-link setup" href="javascript:;" onclick="popup.load('{{ action('Automation2Controller@emailSetup', [
+        <a class="nav-link setup" href="javascript:;" onclick="automationPopup.load('{{ action('Automation2Controller@emailSetup', [
             'uid' => $automation->uid,
             'email_uid' => $email->uid,
         ]) }}')">
@@ -24,7 +24,7 @@
     <li class="nav-item">
         <a class="nav-link template {{ (!isset($email->id)) ? 'disabled' : '' }}" href="javascript:;"
             @if (isset($email->id))                    
-                onclick="popup.load('{{ action('Automation2Controller@emailTemplate', [
+                onclick="automationPopup.load('{{ action('Automation2Controller@emailTemplate', [
                     'uid' => $automation->uid,
                     'email_uid' => $email->uid,
                 ]) }}')"
@@ -37,7 +37,7 @@
     <li class="nav-item">
         <a class="nav-link confirm {{ (!isset($email->id)) ? 'disabled' : '' }}" href="javascript:;"
             @if (isset($email->id))                    
-                onclick="popup.load('{{ action('Automation2Controller@emailConfirm', [
+                onclick="automationPopup.load('{{ action('Automation2Controller@emailConfirm', [
                     'uid' => $automation->uid,
                     'email_uid' => $email->uid,
                 ]) }}')"

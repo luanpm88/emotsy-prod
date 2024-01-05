@@ -75,7 +75,7 @@
                 <a href="javascript:;" onclick="sidebar.load(); automationPopup.hide()" class="btn btn-inline-secondary mr-1">
                     {{ trans('messages.close') }}
                 </a>
-                <a href="javascript:;" onclick="popup.load('{{ action('Automation2Controller@emailConfirm', [
+                <a href="javascript:;" onclick="automationPopup.load('{{ action('Automation2Controller@emailConfirm', [
                     'uid' => $automation->uid,
                     'email_uid' => $email->uid
                 ]) }}')" class="btn btn-secondary">

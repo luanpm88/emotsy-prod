@@ -963,7 +963,7 @@ class MailList extends Model
     {
         $options = [];
         foreach ($this->getFields()->get() as $field) {
-            $options[] = ['text' => $field->label, 'value' => $field->uid];
+            $options[] = ['text' => $field->label, 'value' => $field->uid, 'tag' => $field->tag];
         }
 
         return $options;

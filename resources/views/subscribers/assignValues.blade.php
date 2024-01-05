@@ -25,12 +25,14 @@
                     'label' => '',
                     'name' => 'field_uid',
                     'value' => [],
-                    'options' => $list->getFieldSelectOptions(),
+                    'options' => array_filter($list->getFieldSelectOptions(), function($option) {
+                        return $option['tag'] !== 'EMAIL';
+                    }),
                     'rules' => ['field_uid' => 'required'],
                     'placeholder' => trans('messages.subscriber.choose_a_field'),
                 ])
 
-                <div>
+                <div class="d-none">
                     <label class="d-flex mt-4 pt-2">
                         <div class="checkmark-container">
                             <input type="radio" name="assign_type" value="single"
@@ -64,6 +66,7 @@
                         'options' => $list->getFieldSelectOptions(),
                         'rules' => ['value' => 'required'],
                         'placeholder' => trans('messages.subscriber.enter_field_value'),
+                        'required' => true,
                     ])
                 </div>
 
@@ -118,6 +121,9 @@
 
                     // remove masking
                     removeMaskLoading();
+
+                    // reload list
+                    SubscribersIndex.getList().load();
                 }
             });    
         });

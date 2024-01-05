@@ -12,7 +12,7 @@
             </div>
         </div>
         <div class="list-action">
-            <a href="javascript:;" onclick="popup.load('{{ action('Automation2Controller@emailSetup', [
+            <a href="javascript:;" onclick="automationPopup.load('{{ action('Automation2Controller@emailSetup', [
                 'uid' => $automation->uid,
                 'email_uid' => $email->uid,
             ]) }}')" class="btn btn-secondary btn-sm">
@@ -33,7 +33,7 @@
             </div>
         </div>
         <div class="list-action">
-            <a href="javascript:;" onclick="popup.load('{{ action('Automation2Controller@emailSetup', [
+            <a href="javascript:;" onclick="automationPopup.load('{{ action('Automation2Controller@emailSetup', [
                 'uid' => $automation->uid,
                 'email_uid' => $email->uid,
             ]) }}')" class="btn btn-secondary btn-sm">
@@ -54,7 +54,7 @@
             </div>
         </div>
         <div class="list-action">
-            <a href="javascript:;" onclick="popup.load('{{ action('Automation2Controller@emailSetup', [
+            <a href="javascript:;" onclick="automationPopup.load('{{ action('Automation2Controller@emailSetup', [
                 'uid' => $automation->uid,
                 'email_uid' => $email->uid,
             ]) }}')" class="btn btn-secondary btn-sm">
@@ -82,7 +82,7 @@
             </div>
         </div>
         <div class="list-action">
-            <a href="javascript:;" onclick="popup.load('{{ action('Automation2Controller@emailSetup', [
+            <a href="javascript:;" onclick="automationPopup.load('{{ action('Automation2Controller@emailSetup', [
                 'uid' => $automation->uid,
                 'email_uid' => $email->uid,
             ]) }}')" class="btn btn-secondary btn-sm">
@@ -116,7 +116,7 @@
             </div>
         </div>
         <div class="list-action">
-            <a href="javascript:;" onclick="popup.load('{{ action('Automation2Controller@emailTemplate', [
+            <a href="javascript:;" onclick="automationPopup.load('{{ action('Automation2Controller@emailTemplate', [
                 'uid' => $automation->uid,
                 'email_uid' => $email->uid,
             ]) }}')" class="btn btn-secondary btn-sm">
@@ -180,7 +180,7 @@
             </div>
         </div>
         <div class="list-action">
-            <a href="javascript:;" onclick="popup.load('{{ action('Automation2Controller@emailSetup', [
+            <a href="javascript:;" onclick="automationPopup.load('{{ action('Automation2Controller@emailSetup', [
                 'uid' => $automation->uid,
                 'email_uid' => $email->uid,
             ]) }}')" class="btn btn-secondary btn-sm">
