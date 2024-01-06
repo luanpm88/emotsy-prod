@@ -2394,6 +2394,12 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
 
     public function saveFromArray($params)
     {
+        // custom campaign content
+        $content = null;
+        if (isset($params['html'])) {
+            $content = $params['html'];
+            unset($params['html']);
+        }
         // filter var
         if (isset($params['track_open'])) {
             $params['track_open'] = filter_var($params['track_open'], FILTER_VALIDATE_BOOLEAN);
@@ -2419,7 +2425,39 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
             $this->default_mail_list_id = \Acelle\Model\MailList::findByUid($params['mail_list_uid'])->id;
         }
 
+        //
         $this->save();
+
+        // if there are custom campaign content
+        if ($content) {
+            $this->setContentAsTemplate($content);
+        }
+    }
+
+    public function setContentAsTemplate($content)
+    {
+        $attributes['is_default'] = false; // default templates that are originally created
+        $attributes['builder'] = true;
+        $attributes['type'] = Template::TYPE_EMAIL;
+
+        $template = new Template();
+        $template->uid = uniqid();
+        $template->fill($attributes); // Including 'uid', 'name', 'content', 'builder'
+        $template->content = $content;
+        $template->customer_id = $this->customer_id;
+        $template->name = trans('messages.campaign.template_name', ['name' => $this->name]);
+
+        $template->save();
+
+        // remove exist template
+        if ($this->template) {
+            $this->template->deleteAndCleanup();
+        }
+
+        $this->template_id = $template->id;
+        $this->save();
+        $this->refresh();
+        $this->updateLinks();
     }
 
     public function makeSampleData($params = [])

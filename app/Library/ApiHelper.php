@@ -193,6 +193,7 @@ class ApiHelper
                         ['name' => '$track_click', 'description' => 'Track click (true|false)', 'optional' => true, 'default' => 'true'],
                         ['name' => '$sign_dkim', 'description' => 'Sign dkim (true|false)', 'optional' => true, 'default' => 'true'],
                         ['name' => '$skip_failed_messages', 'description' => 'Track open (true|false)', 'optional' => true, 'default' => 'false'],
+                        ['name' => '$html', 'description' => 'Campaign HTML content', 'optional' => true, 'default' => 'false'],
                     ],
                     'returns' => 'New campaign\'s information in json',
                     'example' => 'curl -X POST -H "accept:application/json" -G \
@@ -207,7 +208,8 @@ class ApiHelper
 -d track_open=true \
 -d track_click=true \
 -d sign_dkim=false \
--d skip_failed_messages=false',
+-d skip_failed_messages=false \
+-d html=\'' . htmlentities('<p>Hello!</p>') . '\'',
                 ],
 
                 [
