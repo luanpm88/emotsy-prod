@@ -2437,7 +2437,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
     public function setContentAsTemplate($content)
     {
         $attributes['is_default'] = false; // default templates that are originally created
-        $attributes['builder'] = true;
+        $attributes['builder'] = false;
         $attributes['type'] = Template::TYPE_EMAIL;
 
         $template = new Template();
