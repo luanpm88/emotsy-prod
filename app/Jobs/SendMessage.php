@@ -18,6 +18,7 @@ use Acelle\Library\Exception\RateLimitExceeded;
 use Acelle\Library\Exception\OutOfCredits;
 use Exception;
 use Throwable;
+use Carbon\Carbon;
 
 use function Acelle\Helpers\execute_with_limits;
 
@@ -94,10 +95,13 @@ class SendMessage implements ShouldQueue
     // Use a dedicated method with no dependency for easy testing
     public function send($exceptionCallback = null)
     {
-        $logger = $this->campaign->logger();
-        $email = $this->subscriber->getEmail();
-
         try {
+            // debug
+            $startAt = Carbon::now()->getTimestampMs();
+
+            $logger = $this->campaign->logger();
+            $email = $this->subscriber->getEmail();
+
             // Prepare the email message to send
             // In case of an invalid email, an exception will arise at: Swift_Mime_SimpleMessage->setTo(...)
             list($message, $msgId) = $this->campaign->prepareEmail($this->subscriber, $this->server, $fromCache = true);
@@ -134,6 +138,38 @@ class SendMessage implements ShouldQueue
                 // Log successful shot
                 $this->campaign->trackMessage($sent, $this->subscriber, $this->server, $msgId, $this->triggerId);
                 $logger->info(sprintf('Sent to %s [Server "%s"]', $email, $this->server->name));
+            });
+
+            // Debug
+            $this->campaign->debug(function($info) use ($startAt) {
+                $now = Carbon::now();
+                $finishAt = $now->getTimestampMs();
+                $diff = ($finishAt - $startAt)/1000;
+
+                $avg = $info['send_message_avg_time'];
+                if (is_null($avg)) {
+                    $info['send_message_avg_time'] = $diff;
+                } else {
+                    $info['send_message_avg_time'] = round(($avg*$info['send_message_count'] + $diff) / ($info['send_message_count'] + 1), 2);
+                }
+
+                $info['send_message_count'] = $info['send_message_count'] + 1;
+
+                if (is_null($info['send_message_min_time']) || $diff < $info['send_message_min_time']) {
+                    $info['send_message_min_time'] = $diff;
+                }
+
+                if (is_null($info['send_message_max_time']) || $diff > $info['send_message_max_time']) {
+                    $info['send_message_max_time'] = $diff;
+                }
+
+                $info['last_message_sent_at'] = $now->toString();
+                $campaignStartAt = $info['start_at'];
+                $timeSinceCampaignStart = $now->diffInSeconds(Carbon::parse($campaignStartAt));
+                $info['total_time'] = $timeSinceCampaignStart;
+                $info['messages_sent_per_second'] = round($info['send_message_count'] / $info['total_time'], 2);
+
+                return $info;
             });
         } catch (RateLimitExceeded $ex) {
             if (!is_null($exceptionCallback)) {

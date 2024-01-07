@@ -17,6 +17,8 @@ use Illuminate\Bus\Batch;
 use Acelle\Events\CampaignUpdated;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Throwable;
+use Closure;
+use Illuminate\Support\Facades\Redis;
 
 class BaseCampaign extends Model
 {
@@ -211,11 +213,19 @@ class BaseCampaign extends Model
                         // Run over and over again until there is no subscribers left to send
                         // Because each LoadCampaign jobs only load a fixed number of subscribers
                         $this->updateCache();
-                        $this->logger()->warning('Load another batch of '.$count);
+                        $this->logger()->warning('Load another batch of the remaining '.$count);
                         $this->run();
                     } else {
                         $this->logger()->warning('No contact left, campaign finishes successfully!');
                         $this->setDone();
+
+                        $this->debug(function($info) {
+                            $startAt = $info['start_at'];
+                            $finishAt = Carbon::now();
+                            $info['finish_at'] = $finishAt->toString();
+                            $info['total_time'] = $finishAt->diffInSeconds(Carbon::parse($startAt));
+                            return $info;
+                        });
                     }
                 } else {
                     // do nothing, as campaign is already PAUSED by user (not by an exception)
@@ -347,5 +357,52 @@ class BaseCampaign extends Model
             ['text' => trans('messages.campaign_status_' . self::STATUS_PAUSED), 'value' => self::STATUS_PAUSED],
             ['text' => trans('messages.campaign_status_' . self::STATUS_SCHEDULED), 'value' => self::STATUS_SCHEDULED],
         ];
+    }
+
+    public function cleanupDebug()
+    {
+        if (!config('custom.dryrun')) {
+            return;
+        }
+
+        $key = 'debug-campaign-'.$this->uid;
+        Redis::del($key);
+    }
+
+    public function debug(Closure $callback = null)
+    {
+        if (!config('custom.dryrun')) {
+            return;
+        }
+
+        $key = 'debug-campaign-'.$this->uid;
+
+        $info = Redis::get($key);
+
+        if (is_null($info)) {
+            $info = [
+                'start_at' => null,
+                'finish_at' => null,
+                'total_time' => null,
+                'last_message_sent_at' => null,
+                'messages_sent_per_second' => null,
+                'send_message_count' => 0,
+                'send_message_avg_time' => null,
+                'send_message_min_time' => null,
+                'send_message_max_time' => null,
+            ];
+        } else {
+            $info = json_decode($info, true);
+        }
+
+        if (is_null($callback)) {
+            // get the debug info only
+            return $info;
+        } else {
+            // update and return debug info
+            $updatedInfo = $callback($info);
+            Redis::set($key, json_encode($updatedInfo));
+            return $updatedInfo;
+        }
     }
 }
