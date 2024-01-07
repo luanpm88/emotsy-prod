@@ -1659,9 +1659,12 @@ class MailList extends Model
                     });
                 }
             } elseif ($this->activeMailListsSendingServers()->count()) {
+
                 $result = $this->activeMailListsSendingServers()->get()->map(function ($server) {
                     return [$server->sending_server_id, $server->fitness];
                 });
+            } else {
+                throw new Exception('No sending server selected for default mail list. Go to the mail list setting page to check.');
             }
             // If customer dont have permission creating sending servers
         } else {
