@@ -3225,4 +3225,5 @@
   'form.onscreen.preview.intro' => 'Click here to preview the final form popup at any time while designing your form',
   'form.onscreen.save.intro' => 'After finishing the design of your form, click here to save your current work.',
   'form.onscreen.publish_unpublish.intro' => 'You can also quickly save and publish or unpublish the form by clicking the action here',
+  'automation.email.statistics' => 'Statistics',
 ) ?>

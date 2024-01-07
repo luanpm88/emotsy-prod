@@ -2835,4 +2835,13 @@ class Automation2Controller extends Controller
             ], 500);
         }
     }
+
+    public function emailOverview(Request $request, $email_uid)
+    {
+        $email = Email::findByUid($email_uid);
+
+        return view('automation2.email.overview.main', [
+            'email' => $email,
+        ]);
+    }
 }

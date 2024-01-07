@@ -14,21 +14,43 @@
         @include('automation2.email._summary')
         
         <div class="trigger-action mt-4">    
-            <span class="btn btn-secondary email-settings-change mr-1"
-            >
-                {{ trans('messages.automation.email.settings') }}
-            </span>
-            @if ($email->hasTemplate())
-                <a onclick="popupwindow('{{ action('Automation2Controller@templatePreview', [
-                                    'uid' => $automation->uid,
-                                    'email_uid' => $email->uid,
-                                ]) }}', `{{ $automation->name }}`, 800)"
-                                href="javascript:;"
-                                class="btn btn-default"
-                            >
-                                {{ trans('messages.automation.template.preview') }}
-                            </a>
-            @endif
+            <div class="d-flex">
+                <div>
+                    <span class="btn btn-secondary email-settings-change mr-1"
+                    >
+                        {{ trans('messages.automation.email.settings') }}
+                    </span>
+                    @if ($email->hasTemplate())
+                        <a onclick="popupwindow('{{ action('Automation2Controller@templatePreview', [
+                                'uid' => $automation->uid,
+                                'email_uid' => $email->uid,
+                            ]) }}', `{{ $automation->name }}`, 800)"
+                            href="javascript:;"
+                            class="btn btn-default"
+                        >
+                            {{ trans('messages.automation.template.preview') }}
+                        </a>
+                    @endif
+                </div>
+                <div class="ms-auto">
+                    @if ($email->hasTemplate())
+                        <a onclick="automationPopup.load('{{ action('Automation2Controller@emailOverview', [
+                                'email_uid' => $email->uid,
+                            ]) }}')"
+                            href="javascript:;"
+                            class="btn btn-info d-none"
+                        >
+                            <span class="d-flex align-items-center">
+                                <span class="material-symbols-rounded me-1">
+                                    monitoring
+                                </span>
+                                <span>{{ trans('messages.automation.email.statistics') }}</span>
+                            </span>
+                            
+                        </a>
+                    @endif
+                </div>
+            </div>
         </div>
         
     <form>
