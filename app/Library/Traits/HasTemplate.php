@@ -241,12 +241,7 @@ trait HasTemplate
         if (is_null($this->type) || $this->type == self::TYPE_REGULAR) {
             $html = $this->getHtmlContent($subscriber, $msgId, $server, $fromCache, $expiresInSeconds);
 
-            $options = array(
-              'ignore_errors' => true,
-              // other options go here
-            );
-
-            $plain = Html2Text::convert($html, $options);
+            $plain = Html2Text::convert($html, [ 'ignore_errors' => true ]);
 
             // IMPORTANT: add plain part first, then html part
             $message->addPart($plain, 'text/plain');
