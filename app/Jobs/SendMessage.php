@@ -145,7 +145,10 @@ class SendMessage implements ShouldQueue
             // Release the job, have it try again after 60 seconds
             // and (hopefully) the quota limits will be lifted then as time goes by
             $this->release(60);
-        } catch (OutOfCredits | Throwable $ex) {
+
+        //} catch (OutOfCredits $ex) {
+
+        } catch (Throwable $ex) {
             // Also catch the OutOfCredits error
             if (!is_null($exceptionCallback)) {
                 return $exceptionCallback($ex);
@@ -160,7 +163,7 @@ class SendMessage implements ShouldQueue
             // Option 2: just skip the error, log it and proceed with the next subscriber
 
             if ($this->stopOnError) {
-                throw $ex;
+                throw new Exception($message);
             } else {
                 if (!isset($msgId)) {
                     // Just in case there is an exception before the execution of "list($message, $msgId) = $this->campaign->prepareEmail..."
@@ -168,7 +171,7 @@ class SendMessage implements ShouldQueue
                     $msgId = null;
                 }
 
-                $this->campaign->trackMessage(['status' => 'failed', 'error' => $ex->getMessage()], $this->subscriber, $this->server, $msgId, $this->triggerId);
+                $this->campaign->trackMessage(['status' => 'failed', 'error' => $message], $this->subscriber, $this->server, $msgId, $this->triggerId);
             }
         }
     }
