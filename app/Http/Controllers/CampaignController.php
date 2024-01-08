@@ -684,13 +684,6 @@ class CampaignController extends Controller
         ]);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function delete(Request $request)
     {
         if (isSiteDemo()) {
@@ -2574,6 +2567,16 @@ class CampaignController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => trans('messages.preheader.removed'),
+        ]);
+    }
+
+    public function debug(Request $request)
+    {
+        $campaign = Campaign::findByUid($request->uid);
+
+        return view('campaigns.debug', [
+            'campaign' => $campaign,
+            'debug' => $campaign->debug(),
         ]);
     }
 }
