@@ -150,7 +150,7 @@ class SendMessage implements ShouldQueue
                 if (is_null($avg)) {
                     $info['send_message_avg_time'] = $diff;
                 } else {
-                    $info['send_message_avg_time'] = round(($avg*$info['send_message_count'] + $diff) / ($info['send_message_count'] + 1), 2);
+                    $info['send_message_avg_time'] = ($avg*$info['send_message_count'] + $diff) / ($info['send_message_count'] + 1);
                 }
 
                 $info['send_message_count'] = $info['send_message_count'] + 1;
@@ -167,7 +167,7 @@ class SendMessage implements ShouldQueue
                 $campaignStartAt = $info['start_at'];
                 $timeSinceCampaignStart = $now->diffInSeconds(Carbon::parse($campaignStartAt));
                 $info['total_time'] = $timeSinceCampaignStart;
-                $info['messages_sent_per_second'] = round($info['send_message_count'] / $info['total_time'], 2);
+                $info['messages_sent_per_second'] = $info['send_message_count'] / $info['total_time'];
 
                 return $info;
             });
