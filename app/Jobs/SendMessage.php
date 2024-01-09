@@ -127,7 +127,12 @@ class SendMessage implements ShouldQueue
                 // $creditTrackers[] = $this->subscription->getSendEmailCreditTracker();
             }
 
-            execute_with_limits($rateTrackers, $creditTrackers, function () use ($message, $logger, $msgId, $email) {
+            // DEBUG
+            $finishPreparingAt = Carbon::now()->getTimestampMs();
+            $finishDeliveryAt = null;
+            // END DEBUG
+
+            execute_with_limits($rateTrackers, $creditTrackers, function () use ($message, $logger, $msgId, $email, &$finishDeliveryAt) {
                 // Actually send (or throw an exception)
                 if (config('custom.dryrun')) {
                     $sent = $this->server->dryrun($message);
@@ -135,17 +140,21 @@ class SendMessage implements ShouldQueue
                     $sent = $this->server->send($message);
                 }
 
+                // DEBUG
+                $finishDeliveryAt = Carbon::now()->getTimestampMs();
+                // END DEBUG
+
                 // Log successful shot
                 $this->campaign->trackMessage($sent, $this->subscriber, $this->server, $msgId, $this->triggerId);
                 $logger->info(sprintf('Sent to %s [Server "%s"]', $email, $this->server->name));
             });
 
             // Debug
-            $this->campaign->debug(function($info) use ($startAt) {
+            $this->campaign->debug(function($info) use ($startAt, $finishPreparingAt, $finishDeliveryAt) {
                 $now = Carbon::now();
+
                 $finishAt = $now->getTimestampMs();
                 $diff = ($finishAt - $startAt)/1000;
-
                 $avg = $info['send_message_avg_time'];
                 if (is_null($avg)) {
                     $info['send_message_avg_time'] = $diff;
@@ -153,6 +162,23 @@ class SendMessage implements ShouldQueue
                     $info['send_message_avg_time'] = ($avg*$info['send_message_count'] + $diff) / ($info['send_message_count'] + 1);
                 }
 
+                $prepareDiff = ($finishPreparingAt - $startAt)/1000;
+                $prepareAvg = $info['send_message_prepare_avg_time'];
+                if (is_null($prepareAvg)) {
+                    $info['send_message_prepare_avg_time'] = $prepareDiff;
+                } else {
+                    $info['send_message_prepare_avg_time'] = ($prepareAvg*$info['send_message_count'] + $prepareDiff) / ($info['send_message_count'] + 1);
+                }
+
+                $deliveryDiff = ($finishDeliveryAt - $startAt)/1000;
+                $deliveryAvg = $info['send_message_delivery_avg_time'];
+                if (is_null($deliveryAvg)) {
+                    $info['send_message_delivery_avg_time'] = $deliveryDiff;
+                } else {
+                    $info['send_message_delivery_avg_time'] = ($deliveryAvg*$info['send_message_count'] + $deliveryDiff) / ($info['send_message_count'] + 1);
+                }
+
+                // COUNT MESSAGE. IMPORTANT: it must go after the other calculation
                 $info['send_message_count'] = $info['send_message_count'] + 1;
 
                 if (is_null($info['send_message_min_time']) || $diff < $info['send_message_min_time']) {

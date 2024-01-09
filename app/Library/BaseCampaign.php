@@ -387,9 +387,13 @@ class BaseCampaign extends Model
                 'last_message_sent_at' => null,
                 'messages_sent_per_second' => null,
                 'send_message_count' => 0,
+                'send_message_total_time' => 0,
                 'send_message_avg_time' => null,
+                'send_message_prepare_avg_time' => null,
+                'send_message_delivery_avg_time' => null,
                 'send_message_min_time' => null,
                 'send_message_max_time' => null,
+                'send_message_avg_time_incl_bootstrap' => 0,
             ];
         } else {
             $info = json_decode($info, true);
@@ -401,6 +405,7 @@ class BaseCampaign extends Model
         } else {
             // update and return debug info
             $updatedInfo = $callback($info);
+
             Redis::set($key, json_encode($updatedInfo));
             return $updatedInfo;
         }

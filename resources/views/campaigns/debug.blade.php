@@ -101,9 +101,13 @@
                     <i class="material-symbols-rounded text-success">task_alt</i>
                 </span>
                 <div class="me-auto">
-                    <h4><strong>{{ number_with_delimiter($debug['send_message_avg_time']) }}</strong> seconds per message avg.</h4>
+                    <h4><strong>{{ $debug['send_message_avg_time'] ? number_with_delimiter($debug['send_message_avg_time']) : 0 }}</strong> seconds per message avg.</h4>
                     <p>
-                        Best time {{ $debug['send_message_min_time'] ? number_with_delimiter($debug['send_message_min_time']) : 0 }} seconds | Worst time {{ $debug['send_message_max_time'] ? number_with_delimiter($debug['send_message_max_time']) : 0 }} seconds
+                        Best time {{ $debug['send_message_min_time'] ? number_with_delimiter($debug['send_message_min_time']) : 0 }} seconds • Worst time {{ $debug['send_message_max_time'] ? number_with_delimiter($debug['send_message_max_time']) : 0 }} seconds
+                    </p>
+                    <p>
+                        Prepare AVG: {{ $debug['send_message_prepare_avg_time'] ? number_with_delimiter($debug['send_message_prepare_avg_time']) : 0 }} •
+                        Delivery AVG: {{ $debug['send_message_delivery_avg_time'] ? number_with_delimiter($debug['send_message_delivery_avg_time']) : 0 }}
                     </p>
                 </div>
 
