@@ -488,7 +488,6 @@
                         callback();
                     }
                     _this.getEditor().adjustIframeSize();
-                    console.log('aaa');
                 });
             },
 
