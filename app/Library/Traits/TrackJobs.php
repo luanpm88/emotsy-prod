@@ -15,7 +15,7 @@ trait TrackJobs
     // Currently, only one monitor per campaign (soft business)
     public function jobMonitors()
     {
-        return $this->hasMany(JobMonitor::class, 'subject_id')->where('subject_name', self::class);
+        return $this->hasMany(JobMonitor::class, 'subject_id')->where('subject_name', static::class);
     }
 
     // DO NOT USE DB TRANSACTION
