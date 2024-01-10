@@ -373,7 +373,7 @@ class BaseCampaign extends Model
 
     public function cleanupDebug()
     {
-        if (!config('custom.dryrun')) {
+        if (!redis_enabled()) {
             return;
         }
 
@@ -383,7 +383,7 @@ class BaseCampaign extends Model
 
     public function debug(Closure $callback = null)
     {
-        if (!config('custom.dryrun')) {
+        if (!redis_enabled()) {
             return;
         }
 
