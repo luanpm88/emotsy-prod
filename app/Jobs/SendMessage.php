@@ -30,6 +30,9 @@ class SendMessage implements ShouldQueue
     use Queueable;
     use SerializesModels;
 
+    // @important: set the "retry_after" setting in config/queue.php to a value that is greater than $timeout;
+    // Otherse, the job shall be released and attempted again, resulting in error like:
+    // "[Job] has been attempted too many times or run too long. The job may have previously timed out."
     public $timeout = 600;
     public $maxExceptions = 1; // This is required if retryUntil is used, otherwise, the default value is 255
     public $failOnTimeout = true;
