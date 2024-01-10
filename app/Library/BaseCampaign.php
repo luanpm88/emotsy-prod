@@ -195,22 +195,20 @@ class BaseCampaign extends Model
             $job->cancelWithoutDeleteBatch();
         }
 
-        // Campaign loader job
-        if (config('custom.dryrun')) {
-            $perPage = 500;
-            $maxPageToLoad = 5;
-            $count = $this->subscribersToSend()->count();
-            $pages = (int)ceil($count/$perPage);
+        // Option 1: load multiple Campaign loader jobs
+        // Load max 5 LoadCampaign jobs, each will produce 500 SendMessage jobs
+        $perPage = 500;
+        $maxPageToLoad = 5;
+        $count = $this->subscribersToSend()->count();
+        $pages = (int)ceil($count/$perPage);
 
-            $campaignLoaders = [];
-
-            for ($page = 1; $page <= $pages && $page <= $maxPageToLoad; $page += 1) {
-                $campaignLoaders[] = new LoadCampaign($this, $page, $perPage);
-            }
-        } else {
-            $campaignLoaders[] = new LoadCampaign($this);
+        $campaignLoaders = [];
+        for ($page = 1; $page <= $pages && $page <= $maxPageToLoad; $page += 1) {
+            $campaignLoaders[] = new LoadCampaign($this, $page, $perPage);
         }
 
+        // Option 2:
+        //    $campaignLoaders[] = new LoadCampaign($this);
 
         // Dispatch it with a batch monitor
         $this->dispatchWithBatchMonitor(
