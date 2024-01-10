@@ -194,13 +194,14 @@ class BaseCampaign extends Model
 
         // Campaign loader job
         if (config('custom.dryrun')) {
-            $perPage = 4;
+            $perPage = 500;
+            $maxPageToLoad = 5;
             $count = $this->subscribersToSend()->count();
             $pages = (int)ceil($count/$perPage);
 
             $campaignLoaders = [];
 
-            for ($page = 1; $page <= $pages; $page += 1) {
+            for ($page = 1; $page <= $pages && $page <= $maxPageToLoad; $page += 1) {
                 $campaignLoaders[] = new LoadCampaign($this, $page, $perPage);
             }
         } else {
