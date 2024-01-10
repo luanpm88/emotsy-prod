@@ -2211,7 +2211,15 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
             }
 
             $this->logger()->info('Setting up before send for server '.$server->uid);
-            $server->setupBeforeSend($fromEmailAddress);
+
+            // @important: in case of multiple LoadCampaign jobs running
+            // the following task might conflict:
+            // For example: "Campaign stopped. Timeout getting lock #Lockable for: /home/app/public_html/storage/locks/sending-server-sns-6512d..."
+            //
+            // As a result, execute it with first page only @hack @trick @important
+            if ($page == 1) {
+                $server->setupBeforeSend($fromEmailAddress);
+            }
         }
 
         // Reset max_execution_time so that command can run for a long time without being terminated
