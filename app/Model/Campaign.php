@@ -2174,6 +2174,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
             return;
         }
 
+        /*
         // Iterate through batches of subscribers, 100 each
         cursorIterate(
             $this->subscribersToSend(),
@@ -2188,6 +2189,73 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
                 }
             }
         );
+        */
+    }
+
+    /**
+     * Start the campaign. called by daemon job
+     */
+    public function loadDeliveryJobsByPage(Closure $callback, int $page, int $perPage)
+    {
+        // Available sending servers
+        $sendingServersPool = $this->defaultMailList->getSendingServers();
+
+        // Set up sending servers' webhooks before launching
+        foreach ($sendingServersPool as $serverId => $fitness) {
+            $server = SendingServer::find($serverId)->mapType();
+
+            if ($this->useSendingServerFromEmailAddress()) {
+                $fromEmailAddress = $server->default_from_email;
+            } else {
+                $fromEmailAddress = $this->from_email;
+            }
+
+            $this->logger()->info('Setting up before send for server '.$server->uid);
+            $server->setupBeforeSend($fromEmailAddress);
+        }
+
+        // Reset max_execution_time so that command can run for a long time without being terminated
+        self::resetMaxExecutionTime();
+
+        // Clear any HTML cache
+        $this->clearTemplateCache();
+
+        // Last chance for campaign to setup
+        // @todo Find a better place for the following method, afterSave for example
+        $this->updateLinks();
+
+        // Query subscribers
+        // IMPORTANT: this method is called by LoadCampaign job which create a SendMessage job for each subscribers
+        // then add to the batch
+        // However, iterating through a big list may cause memory leak
+        // So, LoadCampaign only a fixed number of $loadLimit subscribers each time, then just finish the queue
+        // (it will automatically load the other $loadLimit after that)
+
+        $offset = ($page - 1) * $perPage;
+
+        $subscribers = $this->subscribersToSend()->orderBy('id')->limit($perPage)->offset($offset)->get();
+        $this->logger()->info("From guy {$subscribers[0]->id} to {$subscribers[sizeof($subscribers) - 1]->id}");
+        foreach ($subscribers as $subscriber) {
+            $serverId = RouletteWheel::take($sendingServersPool);
+            $server = SendingServer::find($serverId)->mapType();
+
+            // Dispatch delivery job and return it to the LoadCampaign to monitor
+
+            if (config('app.saas')) {
+                $subscription = $this->customer->getCurrentActiveGeneralSubscription();
+            } else {
+                $subscription = null;
+            }
+
+            $job = new SendMessage($this, $subscriber, $server, $subscription);
+            $stopOnError = $this->stopOnError();
+            // $stopOnError = Setting::isYes('campaign.stop_on_error'); // true or false
+            $job->setStopOnError($stopOnError);
+            $callback($job);
+        }
+
+        // Important
+        return;
     }
 
     // @important

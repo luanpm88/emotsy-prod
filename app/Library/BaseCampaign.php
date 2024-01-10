@@ -193,11 +193,24 @@ class BaseCampaign extends Model
         }
 
         // Campaign loader job
-        $campaignLoader = new LoadCampaign($this);
+        if (config('custom.dryrun')) {
+            $perPage = 4;
+            $count = $this->subscribersToSend()->count();
+            $pages = (int)ceil($count/$perPage);
+
+            $campaignLoaders = [];
+
+            for ($page = 1; $page <= $pages; $page += 1) {
+                $campaignLoaders[] = new LoadCampaign($this, $page, $perPage);
+            }
+        } else {
+            $campaignLoaders[] = new LoadCampaign($this);
+        }
+
 
         // Dispatch it with a batch monitor
         $this->dispatchWithBatchMonitor(
-            $campaignLoader,
+            $campaignLoaders,
             function ($batch) {
                 // THEN callback of a batch
                 //

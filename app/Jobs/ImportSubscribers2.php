@@ -37,15 +37,6 @@ class ImportSubscribers2 extends Base
                 'message' => trans('messages.list.import.progress.queued'),
             ]);
         });
-
-        // After the batch has finished
-        // This is the place for the job itself to log
-        $this->afterFinished(function ($thisJob, $monitor) {
-            // For example
-            // $monitor->updateJsonData([
-            //     'message' => 'Import complete!',
-            // ]);
-        });
     }
 
     /**

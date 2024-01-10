@@ -224,7 +224,7 @@ class MailList extends Model
 
         $job = new VerifyMailListJob($this, $server, $subscription);
         $monitor = $this->dispatchWithBatchMonitor(
-            $job,
+            [$job],
             $then = null,
             $catch = null,
             $finally = null
