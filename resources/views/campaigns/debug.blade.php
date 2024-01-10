@@ -121,7 +121,7 @@
                 <div class="me-auto">
                     <h4><strong style="color:#19c714">{{ $debug['messages_sent_per_second'] ? number_with_delimiter($debug['messages_sent_per_second']) : 0 }}</strong> messages per second </h4>
                     <p>
-                        Sending rate by second
+                        Boost rate {{ $debug['send_message_avg_time'] ? number_with_delimiter($debug['messages_sent_per_second'] / ( 1 / $debug['send_message_avg_time'])) : 0  }}x
                     </p>
                 </div>
 

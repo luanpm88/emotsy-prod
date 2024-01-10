@@ -150,10 +150,10 @@ class SendMessage implements ShouldQueue
             });
 
             // Debug
-            $this->campaign->debug(function($info) use ($startAt, $finishPreparingAt, $finishDeliveryAt) {
-                $now = Carbon::now();
+            $now = Carbon::now(); // OK DONE ALL
+            $finishAt = $now->getTimestampMs();
 
-                $finishAt = $now->getTimestampMs();
+            $this->campaign->debug(function($info) use ($startAt, $now, $finishAt, $finishPreparingAt, $finishDeliveryAt) {
                 $diff = ($finishAt - $startAt)/1000;
                 $avg = $info['send_message_avg_time'];
                 if (is_null($avg)) {

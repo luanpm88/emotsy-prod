@@ -376,38 +376,42 @@ class BaseCampaign extends Model
         }
 
         $key = 'debug-campaign-'.$this->uid;
+        $lockFile = storage_path("app/tmp/{$key}");
 
-        $info = Redis::get($key);
-
-        if (is_null($info)) {
-            $info = [
-                'start_at' => null,
-                'finish_at' => null,
-                'total_time' => null,
-                'last_message_sent_at' => null,
-                'messages_sent_per_second' => null,
-                'send_message_count' => 0,
-                'send_message_total_time' => 0,
-                'send_message_avg_time' => null,
-                'send_message_prepare_avg_time' => null,
-                'send_message_delivery_avg_time' => null,
-                'send_message_min_time' => null,
-                'send_message_max_time' => null,
-                'send_message_avg_time_incl_bootstrap' => 0,
-            ];
-        } else {
-            $info = json_decode($info, true);
+        // Read only
+        if (is_null($callback)) {
+            return json_decode(Redis::get($key), true);
         }
 
-        if (is_null($callback)) {
-            // get the debug info only
-            return $info;
-        } else {
+        $result = null;
+        Lockable::withExclusiveLock($lockFile, function() use (&$result, $callback, $key) {
+            $info = Redis::get($key);
+            if (is_null($info)) {
+                $info = [
+                    'start_at' => null,
+                    'finish_at' => null,
+                    'total_time' => null,
+                    'last_message_sent_at' => null,
+                    'messages_sent_per_second' => null,
+                    'send_message_count' => 0,
+                    'send_message_total_time' => 0,
+                    'send_message_avg_time' => null,
+                    'send_message_prepare_avg_time' => null,
+                    'send_message_delivery_avg_time' => null,
+                    'send_message_min_time' => null,
+                    'send_message_max_time' => null,
+                ];
+            } else {
+                $info = json_decode($info, true);
+            }
+
             // update and return debug info
             $updatedInfo = $callback($info);
 
-            Redis::set($key, json_encode($updatedInfo));
-            return $updatedInfo;
-        }
+            // Update Redis
+            $result = Redis::multi()->set($key, json_encode($updatedInfo))->get($key)->exec();
+        }, $timeout = 2);
+
+        return json_decode($result[1], true); // return the get value (second element in result)
     }
 }
