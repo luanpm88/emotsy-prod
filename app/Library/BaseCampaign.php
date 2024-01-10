@@ -185,6 +185,9 @@ class BaseCampaign extends Model
     // Should be called by RunCampaign
     public function run()
     {
+        // Update status
+        $this->setSending();
+
         // Pause any previous batch no matter what status it is
         // Notice that batches without a job_monitor will not be retrieved
         $jobs = $this->jobMonitors()->byJobType(LoadCampaign::class)->get();
@@ -258,9 +261,6 @@ class BaseCampaign extends Model
                 $this->updateCache();
             }
         );
-
-        // SET QUEUED
-        $this->setQueued();
 
         /**** MORE NOTES ****/
         //

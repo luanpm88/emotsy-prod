@@ -54,9 +54,6 @@ class LoadCampaign implements ShouldQueue
             return;
         }
 
-        // Update status
-        $this->campaign->setSending();
-
         if (is_null($this->page)) {
             /* Load a random load limit */
 
