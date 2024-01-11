@@ -203,7 +203,7 @@ class BaseCampaign extends Model
         $perPage = 500;
         $maxPageToLoad = 5;
         $count = $this->subscribersToSend()->count();
-        $pages = (int)ceil($count/$perPage);
+        $pages = (int)ceil($count / $perPage);
 
         $campaignLoaders = [];
         for ($page = 1; $page <= $pages && $page <= $maxPageToLoad; $page += 1) {
@@ -238,7 +238,7 @@ class BaseCampaign extends Model
                         $this->logger()->warning('No contact left, campaign finishes successfully!');
                         $this->setDone();
 
-                        $this->debug(function($info) {
+                        $this->debug(function ($info) {
                             $startAt = $info['start_at'];
                             $finishAt = Carbon::now();
                             $info['finish_at'] = $finishAt->toString();
@@ -400,7 +400,7 @@ class BaseCampaign extends Model
         }
 
         $result = null;
-        Lockable::withExclusiveLock($lockFile, function() use (&$result, $callback, $key) {
+        Lockable::withExclusiveLock($lockFile, function () use (&$result, $callback, $key) {
             $info = Redis::get($key);
             if (is_null($info)) {
                 $info = [

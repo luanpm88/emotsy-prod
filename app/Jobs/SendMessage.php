@@ -156,29 +156,29 @@ class SendMessage implements ShouldQueue
             $now = Carbon::now(); // OK DONE ALL
             $finishAt = $now->getTimestampMs();
 
-            $this->campaign->debug(function($info) use ($startAt, $now, $finishAt, $finishPreparingAt, $finishDeliveryAt) {
-                $diff = ($finishAt - $startAt)/1000;
+            $this->campaign->debug(function ($info) use ($startAt, $now, $finishAt, $finishPreparingAt, $finishDeliveryAt) {
+                $diff = ($finishAt - $startAt) / 1000;
                 $avg = $info['send_message_avg_time'];
                 if (is_null($avg)) {
                     $info['send_message_avg_time'] = $diff;
                 } else {
-                    $info['send_message_avg_time'] = ($avg*$info['send_message_count'] + $diff) / ($info['send_message_count'] + 1);
+                    $info['send_message_avg_time'] = ($avg * $info['send_message_count'] + $diff) / ($info['send_message_count'] + 1);
                 }
 
-                $prepareDiff = ($finishPreparingAt - $startAt)/1000;
+                $prepareDiff = ($finishPreparingAt - $startAt) / 1000;
                 $prepareAvg = $info['send_message_prepare_avg_time'];
                 if (is_null($prepareAvg)) {
                     $info['send_message_prepare_avg_time'] = $prepareDiff;
                 } else {
-                    $info['send_message_prepare_avg_time'] = ($prepareAvg*$info['send_message_count'] + $prepareDiff) / ($info['send_message_count'] + 1);
+                    $info['send_message_prepare_avg_time'] = ($prepareAvg * $info['send_message_count'] + $prepareDiff) / ($info['send_message_count'] + 1);
                 }
 
-                $deliveryDiff = ($finishDeliveryAt - $startAt)/1000;
+                $deliveryDiff = ($finishDeliveryAt - $startAt) / 1000;
                 $deliveryAvg = $info['send_message_delivery_avg_time'];
                 if (is_null($deliveryAvg)) {
                     $info['send_message_delivery_avg_time'] = $deliveryDiff;
                 } else {
-                    $info['send_message_delivery_avg_time'] = ($deliveryAvg*$info['send_message_count'] + $deliveryDiff) / ($info['send_message_count'] + 1);
+                    $info['send_message_delivery_avg_time'] = ($deliveryAvg * $info['send_message_count'] + $deliveryDiff) / ($info['send_message_count'] + 1);
                 }
 
                 // COUNT MESSAGE. IMPORTANT: it must go after the other calculation
@@ -211,7 +211,7 @@ class SendMessage implements ShouldQueue
             // and (hopefully) the quota limits will be lifted then as time goes by
             $this->release(60);
 
-        //} catch (OutOfCredits $ex) {
+            //} catch (OutOfCredits $ex) {
 
         } catch (Throwable $ex) {
             // Also catch the OutOfCredits error
