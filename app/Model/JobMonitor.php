@@ -26,6 +26,9 @@ class JobMonitor extends Model
         $monitor->status = self::STATUS_QUEUED;
         $monitor->subject_name = get_class($subject);
         $monitor->subject_id = $subject->id;
+
+        // A job TYPE is helpful when we need to retrieve a list of jobs of a given type.
+        // For example, get all verification jobs of a list
         $monitor->job_type = $jobType;
 
         // Return

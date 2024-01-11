@@ -39,6 +39,9 @@ class BaseCampaign extends Model
     public const STATUS_PAUSED = 'paused';
     public const STATUS_SCHEDULED = 'scheduled';
 
+    // A meaningful name for registering a campaign charge
+    public const JOB_TYPE_RUN_CAMPAIGN = 'run-campaign';
+
     /**
      * Associations
      */
@@ -190,7 +193,7 @@ class BaseCampaign extends Model
 
         // Pause any previous batch no matter what status it is
         // Notice that batches without a job_monitor will not be retrieved
-        $jobs = $this->jobMonitors()->byJobType(LoadCampaign::class)->get();
+        $jobs = $this->jobMonitors()->byJobType(static::JOB_TYPE_RUN_CAMPAIGN)->get();
         foreach ($jobs as $job) {
             $job->cancelWithoutDeleteBatch();
         }
@@ -212,6 +215,7 @@ class BaseCampaign extends Model
 
         // Dispatch it with a batch monitor
         $this->dispatchWithBatchMonitor(
+            $jobTypeName = static::JOB_TYPE_RUN_CAMPAIGN, // a helpful name for future filtering/querying
             $campaignLoaders,
             function ($batch) {
                 // THEN callback of a batch

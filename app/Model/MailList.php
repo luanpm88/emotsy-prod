@@ -61,6 +61,8 @@ class MailList extends Model
     public const IMPORT_TEMP_DIR = 'app/tmp/import/';
     public const EXPORT_TEMP_DIR = 'app/tmp/export/';
 
+    public const JOB_TYPE_VERIFY_LIST = 'verify-list';
+
 
     /**
      * The attributes that are mass assignable.
@@ -223,7 +225,9 @@ class MailList extends Model
         }
 
         $job = new VerifyMailListJob($this, $server, $subscription);
+        $jobTypeName = static::JOB_TYPE_VERIFY_LIST;
         $monitor = $this->dispatchWithBatchMonitor(
+            $jobTypeName, // a helpful name for future filtering/querying
             [$job],
             $then = null,
             $catch = null,
@@ -1941,7 +1945,7 @@ class MailList extends Model
 
     public function verificationJobs()
     {
-        return $this->jobMonitors()->orderBy('job_monitors.id', 'DESC')->where('job_type', VerifyMailListJob::class);
+        return $this->jobMonitors()->orderBy('job_monitors.id', 'DESC')->where('job_type', static::JOB_TYPE_VERIFY_LIST);
     }
 
     public function importJobs()
