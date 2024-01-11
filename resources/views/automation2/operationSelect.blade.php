@@ -27,7 +27,7 @@
                                             $icon = "check";
                                             break;
                                         case "copy_contact":
-                                            $icon = "copy";
+                                            $icon = "content_copy";
                                             break;
                                         default:
                                             $icon = "check";
