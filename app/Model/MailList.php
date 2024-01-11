@@ -1668,7 +1668,9 @@ class MailList extends Model
                     return [$server->sending_server_id, $server->fitness];
                 });
             } else {
-                throw new Exception('No sending server selected for default mail list. Go to the mail list setting page to check.');
+                // Do not throw exception here, return empty is reasonable
+                // Throw exception from the calling end when it expects a not-empty list (send a campaign for example)
+                // throw new Exception('No sending server selected for default mail list. Go to the mail list setting page to check.');
             }
             // If customer dont have permission creating sending servers
         } else {
