@@ -39,6 +39,9 @@ class BaseCampaign extends Model
     public const STATUS_PAUSED = 'paused';
     public const STATUS_SCHEDULED = 'scheduled';
 
+    // A meaningful name for registering a campaign charge
+    public const JOB_TYPE_RUN_CAMPAIGN = 'run-campaign';
+
     /**
      * Associations
      */
@@ -185,31 +188,34 @@ class BaseCampaign extends Model
     // Should be called by RunCampaign
     public function run()
     {
+        // Update status
+        $this->setSending();
+
         // Pause any previous batch no matter what status it is
         // Notice that batches without a job_monitor will not be retrieved
-        $jobs = $this->jobMonitors()->byJobType(LoadCampaign::class)->get();
+        $jobs = $this->jobMonitors()->byJobType(static::JOB_TYPE_RUN_CAMPAIGN)->get();
         foreach ($jobs as $job) {
             $job->cancelWithoutDeleteBatch();
         }
 
-        // Campaign loader job
-        if (config('custom.dryrun')) {
-            $perPage = 4;
-            $count = $this->subscribersToSend()->count();
-            $pages = (int)ceil($count/$perPage);
+        // Option 1: load multiple Campaign loader jobs
+        // Load max 5 LoadCampaign jobs, each will produce 500 SendMessage jobs
+        $perPage = 500;
+        $maxPageToLoad = 5;
+        $count = $this->subscribersToSend()->count();
+        $pages = (int)ceil($count / $perPage);
 
-            $campaignLoaders = [];
-
-            for ($page = 1; $page <= $pages; $page += 1) {
-                $campaignLoaders[] = new LoadCampaign($this, $page, $perPage);
-            }
-        } else {
-            $campaignLoaders[] = new LoadCampaign($this);
+        $campaignLoaders = [];
+        for ($page = 1; $page <= $pages && $page <= $maxPageToLoad; $page += 1) {
+            $campaignLoaders[] = new LoadCampaign($this, $page, $perPage);
         }
 
+        // Option 2:
+        //    $campaignLoaders[] = new LoadCampaign($this);
 
         // Dispatch it with a batch monitor
         $this->dispatchWithBatchMonitor(
+            $jobTypeName = static::JOB_TYPE_RUN_CAMPAIGN, // a helpful name for future filtering/querying
             $campaignLoaders,
             function ($batch) {
                 // THEN callback of a batch
@@ -232,7 +238,7 @@ class BaseCampaign extends Model
                         $this->logger()->warning('No contact left, campaign finishes successfully!');
                         $this->setDone();
 
-                        $this->debug(function($info) {
+                        $this->debug(function ($info) {
                             $startAt = $info['start_at'];
                             $finishAt = Carbon::now();
                             $info['finish_at'] = $finishAt->toString();
@@ -257,9 +263,6 @@ class BaseCampaign extends Model
                 $this->updateCache();
             }
         );
-
-        // SET QUEUED
-        $this->setQueued();
 
         /**** MORE NOTES ****/
         //
@@ -374,7 +377,7 @@ class BaseCampaign extends Model
 
     public function cleanupDebug()
     {
-        if (!config('custom.dryrun')) {
+        if (!redis_enabled()) {
             return;
         }
 
@@ -384,7 +387,7 @@ class BaseCampaign extends Model
 
     public function debug(Closure $callback = null)
     {
-        if (!config('custom.dryrun')) {
+        if (!redis_enabled()) {
             return;
         }
 
@@ -397,7 +400,7 @@ class BaseCampaign extends Model
         }
 
         $result = null;
-        Lockable::withExclusiveLock($lockFile, function() use (&$result, $callback, $key) {
+        Lockable::withExclusiveLock($lockFile, function () use (&$result, $callback, $key) {
             $info = Redis::get($key);
             if (is_null($info)) {
                 $info = [

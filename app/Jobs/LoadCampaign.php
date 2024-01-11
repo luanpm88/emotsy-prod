@@ -22,6 +22,7 @@ class LoadCampaign implements ShouldQueue
     use Queueable;
     use SerializesModels;
 
+    // @important: set the "retry_after" setting in config/queue.php to a value that is greater than $timeout;
     public $timeout = 7200;
     public $failOnTimeout = true;
     public $tries = 1;
@@ -53,9 +54,6 @@ class LoadCampaign implements ShouldQueue
         if ($this->batch()->cancelled()) {
             return;
         }
-
-        // Update status
-        $this->campaign->setSending();
 
         if (is_null($this->page)) {
             /* Load a random load limit */

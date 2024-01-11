@@ -58,7 +58,7 @@
                     <div class="laza-message">
                         <div class="laza-message-content xtooltip" title="gfggggfgfgfgf">
                             Chào mừng bạn đến với trang quản lý sản phẩm.  <a href="#" target="_blank"> Tìm hiểu thêm  </a> 
-                            <br>Vui lòng lưu ý rằng mục điền Thumbnail Image sẽ bị tắt kể từ ngày 1 tháng 7 năm 2023, bạn vẫn có thể sửa đổi mục Thumbnail Image từ hiện tại cho đến hết ngày 17 tháng 7 năm 2023. Sau đó, tất cả các Thumbnail Image được sử dụng trong các sản phẩm của bạn sẽ được tự động chuyển sang hình ảnh đầu tiên của mã biến thể tương ứng (nếu hình ảnh chính và Thumbnail Image bị trùng lặp thì sẽ được hợp nhất với hình ảnh đầu tiên của mã biến thể sản phẩm tương ứng). 
+                            <br>Vui lòng lưu ý rằng mục điền Thumbnail Image sẽ bị tắt kể từ ngày 1 tháng 7 năm 2024, bạn vẫn có thể sửa đổi mục Thumbnail Image từ hiện tại cho đến hết ngày 17 tháng 7 năm 2023. Sau đó, tất cả các Thumbnail Image được sử dụng trong các sản phẩm của bạn sẽ được tự động chuyển sang hình ảnh đầu tiên của mã biến thể tương ứng (nếu hình ảnh chính và Thumbnail Image bị trùng lặp thì sẽ được hợp nhất với hình ảnh đầu tiên của mã biến thể sản phẩm tương ứng). 
                             <a href="#"" target="_blank">  Tìm hiểu thêm </a>
                         </div>
                     </div>

@@ -22,6 +22,8 @@ trait TrackJobs
     // OTHERWISE BATCH_ID OR JOB_ID MAY NOT BE AVAILABLE
     public function dispatchWithMonitor($job)
     {
+        // A job TYPE is helpful when we need to retrieve a list of jobs of a given type.
+        // For example, get all verification jobs of a list
         $jobType = get_class($job);
         $monitor = JobMonitor::makeInstance($this, $jobType); // QUEUED status
 
@@ -58,7 +60,7 @@ trait TrackJobs
     }
 
     // IMPORTANT: this is normally for jobs that create other jobs
-    public function dispatchWithBatchMonitor(array $jobs, $thenCallback, $catchCallback, $finallyCallback)
+    public function dispatchWithBatchMonitor(string $jobType, array $jobs, $thenCallback, $catchCallback, $finallyCallback)
     {
         // IMPORTANT:
         // UPdate QUEUE events in order NOT to set AFTER / FAILING... for job used in a batch (only BEFORE event is OK);
@@ -69,7 +71,9 @@ trait TrackJobs
         }
 
         // Create job monitor record
-        $monitor = JobMonitor::makeInstance($this, $jobType = null);
+        // A job TYPE is helpful when we need to retrieve a list of jobs of a given type.
+        // For example, get all verification jobs of a list
+        $monitor = JobMonitor::makeInstance($this, $jobType);
         $monitor->save();
 
         foreach ($jobs as $job) {

@@ -1058,7 +1058,7 @@ class Subscriber extends Model
                 'list_value' => 'required',
             ];
         }
-        
+
         // make validator
         $validator = \Validator::make($request->all(), $rules);
 
