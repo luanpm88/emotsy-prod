@@ -975,4 +975,22 @@ class MailListController extends Controller
 
         return response()->json($result);
     }
+
+    public function webhookJson(Request $request, $uid)
+    {
+        $list = MailList::findByUid($uid);
+
+        return view('lists.webhookJson', [
+            'list' => $list,
+        ]);
+    }
+
+    public function webhookForm(Request $request, $uid)
+    {
+        $list = MailList::findByUid($uid);
+
+        return view('lists.webhookForm', [
+            'list' => $list,
+        ]);
+    }
 }
