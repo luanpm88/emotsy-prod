@@ -34,7 +34,15 @@ class Upgrade extends Controller
         Artisan::call('route:clear');
         // Artisan::call('cache:clear'); // ==> it will clean up all statistics
         Artisan::call('view:clear');
+
+        // Write settings
         Setting::writeDefaultSettings();
+
+        // Clean up job related
+        Artisan::call('queue:clear');
+        Artisan::call('queue:flush');
+        Artisan::call('queue:clear redis');
+        Artisan::call('queue:prune-failed');
         JobMonitor::query()->delete();
         Job::query()->delete();
         FailedJob::query()->delete();
@@ -46,7 +54,7 @@ class Upgrade extends Controller
             // Index already dropped
         }
 
-        // Do not clear cache, it will clean up all statistics
+        // @important: do not clear cache, it will clean up all statistics
         // Cache::flush();
 
         Language::dump();
