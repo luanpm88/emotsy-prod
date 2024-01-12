@@ -199,7 +199,7 @@ class BaseCampaign extends Model
         }
 
         // Option 1: load multiple Campaign loader jobs
-        // Load max 5 LoadCampaign jobs, each will produce 500 SendMessage jobs
+        // Load max 5 LoadCampaign jobs, each will produce 200 SendMessage jobs
         $perPage = 200;
         $maxPageToLoad = 5;
         $subscribersQuery = $this->subscribersToSend();
