@@ -41,7 +41,9 @@ class Upgrade extends Controller
         // Clean up job related
         Artisan::call('queue:clear');
         Artisan::call('queue:flush');
-        Artisan::call('queue:clear redis');
+        if (redis_enabled()) {
+            Artisan::call('queue:clear redis');
+        }
         Artisan::call('queue:prune-failed');
         JobMonitor::query()->delete();
         Job::query()->delete();
