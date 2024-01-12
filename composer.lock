@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4bb40673b47fffdee92f02eacdb98b8b",
+    "content-hash": "28908d737977f39db42bb53ca15d5a3c",
     "packages": [
         {
             "name": "acelle/cashier",
@@ -9762,6 +9762,57 @@
                 "source": "https://github.com/webmozarts/assert/tree/1.11.0"
             },
             "time": "2022-06-03T18:03:27+00:00"
+        },
+        {
+            "name": "zero-bounce/sdk",
+            "version": "v1.1.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/zerobounce/zero-bounce-php-sdk-setup.git",
+                "reference": "aa5442a5ccc7856cfaa0cfe6a4edd8bed2ede77e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/zerobounce/zero-bounce-php-sdk-setup/zipball/aa5442a5ccc7856cfaa0cfe6a4edd8bed2ede77e",
+                "reference": "aa5442a5ccc7856cfaa0cfe6a4edd8bed2ede77e",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "ext-json": "*",
+                "php": ">=7.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^10.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "ZeroBounce\\SDK\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Zero Bounce",
+                    "email": "integrations@zerobounce.net",
+                    "homepage": "https://www.zerobounce.net/"
+                }
+            ],
+            "description": "The ZeroBounce SDK for PHP programming language",
+            "keywords": [
+                "bounce",
+                "sdk",
+                "zero"
+            ],
+            "support": {
+                "issues": "https://github.com/zerobounce/zero-bounce-php-sdk-setup/issues",
+                "source": "https://github.com/zerobounce/zero-bounce-php-sdk-setup/tree/v1.1.3"
+            },
+            "time": "2023-09-05T15:38:11+00:00"
         },
         {
             "name": "zytzagoo/smtp-validate-email",

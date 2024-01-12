@@ -60,6 +60,7 @@
         "symfony/yaml": "^4.4",
         "twig/twig": "^3.0",
         "twilio/sdk": "^7.4",
+        "zero-bounce/sdk": "^1.1",
         "zytzagoo/smtp-validate-email": "^1.1"
     },
     "require-dev": {
