@@ -30,18 +30,18 @@ class LoadCampaign implements ShouldQueue
 
     protected CampaignInterface $campaign;
     protected $page;
-    protected $perPage;
+    protected $listOfIds;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(CampaignInterface $campaign, $page = null, $perPage = null)
+    public function __construct(CampaignInterface $campaign, int $page, array $listOfIds)
     {
         $this->campaign = $campaign;
         $this->page = $page;
-        $this->perPage = $perPage;
+        $this->listOfIds = $listOfIds;
     }
 
     /**
@@ -55,25 +55,10 @@ class LoadCampaign implements ShouldQueue
             return;
         }
 
-        if (is_null($this->page)) {
-            /* Load a random load limit */
+        $this->campaign->logger()->info(sprintf('Loading contacts for page %s (#%s)', $this->page, sizeof($this->listOfIds)));
 
-            // Iterating through a big list ans create job objects may cause memory leak
-            // So, LoadCampaign only loads a certain numbers subscribers each time,
-            // then just finish job to release the queue listener (remember to configure the queue correctly to release after a short time)
-            // When a campaign is done, it will automaticall launch a new LoadCampaign job if there are more subscribers to send
-            $loadLimit = 100 + rand(1, 9);
-            $this->campaign->logger()->info(sprintf('Loading contacts to shoot (up to %s)', $loadLimit));
-
-            // Iterate through contacts and launch sending process
-            $this->campaign->loadDeliveryJobs(function (ShouldQueue $deliveryJob) {
-                $this->batch()->add($deliveryJob);
-            }, $loadLimit);
-        } else {
-            $this->campaign->logger()->info(sprintf('Loading contacts for page %s (%s)', $this->page, $this->perPage));
-            $this->campaign->loadDeliveryJobsByPage(function (ShouldQueue $deliveryJob) {
-                $this->batch()->add($deliveryJob);
-            }, $this->page, $this->perPage);
-        }
+        $this->campaign->loadDeliveryJobsByIds(function (ShouldQueue $deliveryJob) {
+            $this->batch()->add($deliveryJob);
+        }, $this->page, $this->listOfIds);
     }
 }

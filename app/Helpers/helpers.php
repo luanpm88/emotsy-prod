@@ -329,6 +329,18 @@ function optimized_paginate($builder, $perPage = 15, $columns = null, $pageName 
     ]);
 }
 
+function paginate_query($query, $perPage, $orderBy, $maxPageToLoad = null, Closure $callback)
+{
+    $count = $query->count();
+    $pages = (int)ceil($count / $perPage);
+
+    for ($page = 1; $page <= $pages && (is_null($maxPageToLoad) || $page <= $maxPageToLoad); $page += 1) {
+        $offset = ($page - 1) * $perPage;
+
+        $callback($page, $query->orderBy($orderBy)->limit($perPage)->offset($offset));
+    }
+}
+
 /**
  * Distinct count helper for performance.
  *

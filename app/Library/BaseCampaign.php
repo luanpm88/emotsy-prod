@@ -200,18 +200,15 @@ class BaseCampaign extends Model
 
         // Option 1: load multiple Campaign loader jobs
         // Load max 5 LoadCampaign jobs, each will produce 500 SendMessage jobs
-        $perPage = 500;
+        $perPage = 200;
         $maxPageToLoad = 5;
-        $count = $this->subscribersToSend()->count();
-        $pages = (int)ceil($count / $perPage);
+        $subscribersQuery = $this->subscribersToSend();
 
         $campaignLoaders = [];
-        for ($page = 1; $page <= $pages && $page <= $maxPageToLoad; $page += 1) {
-            $campaignLoaders[] = new LoadCampaign($this, $page, $perPage);
-        }
-
-        // Option 2:
-        //    $campaignLoaders[] = new LoadCampaign($this);
+        paginate_query($subscribersQuery, $perPage, $orderBy = 'subscribers.id', $maxPageToLoad, function($pageNumber, $subscribers) use (&$campaignLoaders) {
+            $listOfIds = $subscribers->pluck('subscribers.id')->toArray();
+            $campaignLoaders[] = new LoadCampaign($this, $pageNumber, $listOfIds);
+        });
 
         // Dispatch it with a batch monitor
         $this->dispatchWithBatchMonitor(
@@ -226,30 +223,33 @@ class BaseCampaign extends Model
                 // @Update: the above statement is longer true! Cancelling a batch DOES NOT trigger "THEN" callback
                 //
                 // IMPORTANT: refresh() is required!
-                if (!$this->refresh()->isPaused()) {
-                    $count = $this->subscribersToSend()->count();
-                    if ($count > 0) {
-                        // Run over and over again until there is no subscribers left to send
-                        // Because each LoadCampaign jobs only load a fixed number of subscribers
-                        $this->updateCache();
-                        $this->logger()->warning('Load another batch of the remaining '.$count);
-                        $this->run();
-                    } else {
-                        $this->logger()->warning('No contact left, campaign finishes successfully!');
-                        $this->setDone();
-
-                        $this->debug(function ($info) {
-                            $startAt = $info['start_at'];
-                            $finishAt = Carbon::now();
-                            $info['finish_at'] = $finishAt->toString();
-                            $info['total_time'] = $finishAt->diffInSeconds(Carbon::parse($startAt));
-                            return $info;
-                        });
-                    }
-                } else {
+                if ($this->refresh()->isPaused()) {
                     // do nothing, as campaign is already PAUSED by user (not by an exception)
-                    $this->logger()->warning('Campaign is paused by user');
+                    $this->logger()->warning('Campaign is paused');
+                    return;
                 }
+
+                $count = $this->subscribersToSend()->count();
+                if ($count > 0) {
+                    // Run over and over again until there is no subscribers left to send
+                    // Because each LoadCampaign jobs only load a fixed number of subscribers
+                    $this->updateCache();
+                    $this->logger()->warning('Load another batch of the remaining '.$count);
+                    $this->run();
+                } else {
+                    $this->logger()->warning('No contact left, campaign finishes successfully!');
+                    $this->setDone();
+
+                    $this->debug(function ($info) {
+                        $startAt = $info['start_at'];
+                        $finishAt = Carbon::now();
+                        $info['finish_at'] = $finishAt->toString();
+                        $info['total_time'] = $finishAt->diffInSeconds(Carbon::parse($startAt));
+                        return $info;
+                    });
+                }
+
+                return;
             },
             function (Batch $batch, Throwable $e) {
                 // CATCH callback
@@ -259,7 +259,7 @@ class BaseCampaign extends Model
             },
             function () {
                 // FINALLY callback
-                $this->logger()->info('Finally!');
+                $this->logger()->info('Finally callback of batch! Updating cache');
                 $this->updateCache();
             }
         );
@@ -338,6 +338,7 @@ class BaseCampaign extends Model
     {
         $this->cancelAndDeleteJobs();
         $this->setPaused();
+        $this->logger()->warning('Campaign paused by user');
 
         // Update status
         event(new CampaignUpdated($this));
