@@ -1264,7 +1264,7 @@ function get_tmp_quota($customer, $name)
 function redis_enabled()
 {
     try {
-        return \Illuminate\Support\Facades\Redis::connection()->ping();
+        return class_exists('\Redis') && \Illuminate\Support\Facades\Redis::connection()->ping();
     } catch (\Exception $ex) {
         return false;
     }
