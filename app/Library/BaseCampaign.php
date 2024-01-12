@@ -225,6 +225,7 @@ class BaseCampaign extends Model
                 // IMPORTANT: refresh() is required!
                 if ($this->refresh()->isPaused()) {
                     // do nothing, as campaign is already PAUSED by user (not by an exception)
+                    // It seems that if a batch is cancelled, it shall not trigger any callback!
                     $this->logger()->warning('Campaign is paused');
                     return;
                 }
@@ -233,7 +234,6 @@ class BaseCampaign extends Model
                 if ($count > 0) {
                     // Run over and over again until there is no subscribers left to send
                     // Because each LoadCampaign jobs only load a fixed number of subscribers
-                    $this->updateCache();
                     $this->logger()->warning('Load another batch of the remaining '.$count);
                     $this->run();
                 } else {
