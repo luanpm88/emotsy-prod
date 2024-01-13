@@ -205,10 +205,10 @@ class BaseCampaign extends Model
         $subscribersQuery = $this->subscribersToSend();
 
         $campaignLoaders = [];
-        paginate_query($subscribersQuery, $perPage, $orderBy = 'subscribers.id', $maxPageToLoad, function($pageNumber, $subscribers) use (&$campaignLoaders) {
+        paginate_query($subscribersQuery, $perPage, $orderBy = 'subscribers.id', function($pageNumber, $subscribers) use (&$campaignLoaders) {
             $listOfIds = $subscribers->pluck('subscribers.id')->toArray();
             $campaignLoaders[] = new LoadCampaign($this, $pageNumber, $listOfIds);
-        });
+        }, $maxPageToLoad);
 
         // Dispatch it with a batch monitor
         $this->dispatchWithBatchMonitor(

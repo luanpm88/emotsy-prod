@@ -329,7 +329,7 @@ function optimized_paginate($builder, $perPage = 15, $columns = null, $pageName 
     ]);
 }
 
-function paginate_query($query, $perPage, $orderBy, $maxPageToLoad = null, Closure $callback)
+function paginate_query($query, $perPage, $orderBy, Closure $callback, $maxPageToLoad = null)
 {
     $count = $query->count();
     $pages = (int)ceil($count / $perPage);
