@@ -16,7 +16,7 @@ class ZeroBounce
         $this->logger = $logger;
     }
 
-	public function verify($email)
+    public function verify($email)
     {
         // See list of test email addresses at:
         // https://www.zerobounce.net/docs/email-validation-api-quickstart/#sandbox_mode__v2__
@@ -33,7 +33,7 @@ class ZeroBounce
         $statusMap = [
             'valid' => 'deliverable',
             'invalid' => 'undeliverable',
-            'catch-all'=> 'deliverable',
+            'catch-all' => 'deliverable',
             'unknown'    => 'unknown',
             'spamtrap' => 'risky',
             'abuse' => 'risky', // really?
