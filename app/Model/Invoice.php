@@ -636,7 +636,7 @@ class Invoice extends Model
         return true;
     }
 
-    public static function getTemplateContent($languageCode='en')
+    public static function getTemplateContent($languageCode = 'en')
     {
         if (Setting::get('invoice.custom_template')) {
             return Setting::get('invoice.custom_template');

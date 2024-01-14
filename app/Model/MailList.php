@@ -61,6 +61,8 @@ class MailList extends Model
     public const IMPORT_TEMP_DIR = 'app/tmp/import/';
     public const EXPORT_TEMP_DIR = 'app/tmp/export/';
 
+    public const JOB_TYPE_VERIFY_LIST = 'verify-list';
+
 
     /**
      * The attributes that are mass assignable.
@@ -223,7 +225,9 @@ class MailList extends Model
         }
 
         $job = new VerifyMailListJob($this, $server, $subscription);
+        $jobTypeName = static::JOB_TYPE_VERIFY_LIST;
         $monitor = $this->dispatchWithBatchMonitor(
+            $jobTypeName, // a helpful name for future filtering/querying
             [$job],
             $then = null,
             $catch = null,
@@ -1196,7 +1200,7 @@ class MailList extends Model
 
         try {
             // process by batches
-            each_batch($results, config('app.import_batch_size'), false, function ($batch) use ($map, &$processed, &$failed, $total, &$overQuotaAttempt, &$message, $progressCallback, $invalidRecordCallback) {
+            each_batch($results, config('custom.import_batch_size'), false, function ($batch) use ($map, &$processed, &$failed, $total, &$overQuotaAttempt, &$message, $progressCallback, $invalidRecordCallback) {
                 if ($this->customer->user->can('addMoreSubscribers', [$this, sizeof($batch)])) {
                     $insertLimit = sizeof($batch);
                 } else {
@@ -1664,7 +1668,9 @@ class MailList extends Model
                     return [$server->sending_server_id, $server->fitness];
                 });
             } else {
-                throw new Exception('No sending server selected for default mail list. Go to the mail list setting page to check.');
+                // Do not throw exception here, return empty is reasonable
+                // Throw exception from the calling end when it expects a not-empty list (send a campaign for example)
+                // throw new Exception('No sending server selected for default mail list. Go to the mail list setting page to check.');
             }
             // If customer dont have permission creating sending servers
         } else {
@@ -1941,7 +1947,7 @@ class MailList extends Model
 
     public function verificationJobs()
     {
-        return $this->jobMonitors()->orderBy('job_monitors.id', 'DESC')->where('job_type', VerifyMailListJob::class);
+        return $this->jobMonitors()->orderBy('job_monitors.id', 'DESC')->where('job_type', static::JOB_TYPE_VERIFY_LIST);
     }
 
     public function importJobs()

@@ -22,13 +22,15 @@ class JobServiceProvider extends ServiceProvider
         // Initialize the MailLog which writes logs to mail.log
         $this->initMailLog();
 
-        // 'before' event is triggered for both standalone jobs and batch jobs
+        // 'before' event is triggered for standalone jobs only, NOT batch jobs
         Queue::before(function (JobProcessing $event) {
             $job = $this->getJobObject($event);
             if (property_exists($job, 'monitor')) {
-                // 'before' events should be applied to both JOB and BATCH monitor
                 $monitor = $job->monitor;
-                $monitor->setRunning();
+                if (is_null($monitor->batch_id)) {
+                    // With batch, status is already set in the campaign.run() method (executed by RunCampaign job)
+                    $monitor->setRunning();
+                }
             }
         });
 

@@ -39,6 +39,9 @@ class BaseCampaign extends Model
     public const STATUS_PAUSED = 'paused';
     public const STATUS_SCHEDULED = 'scheduled';
 
+    // A meaningful name for registering a campaign charge
+    public const JOB_TYPE_RUN_CAMPAIGN = 'run-campaign';
+
     /**
      * Associations
      */
@@ -185,31 +188,31 @@ class BaseCampaign extends Model
     // Should be called by RunCampaign
     public function run()
     {
+        // Update status
+        $this->setSending();
+
         // Pause any previous batch no matter what status it is
         // Notice that batches without a job_monitor will not be retrieved
-        $jobs = $this->jobMonitors()->byJobType(LoadCampaign::class)->get();
+        $jobs = $this->jobMonitors()->byJobType(static::JOB_TYPE_RUN_CAMPAIGN)->get();
         foreach ($jobs as $job) {
             $job->cancelWithoutDeleteBatch();
         }
 
-        // Campaign loader job
-        if (config('custom.dryrun')) {
-            $perPage = 4;
-            $count = $this->subscribersToSend()->count();
-            $pages = (int)ceil($count/$perPage);
+        // Option 1: load multiple Campaign loader jobs
+        // Load max 5 LoadCampaign jobs, each will produce 200 SendMessage jobs
+        $perPage = 200;
+        $maxPageToLoad = 5;
+        $subscribersQuery = $this->subscribersToSend();
 
-            $campaignLoaders = [];
-
-            for ($page = 1; $page <= $pages; $page += 1) {
-                $campaignLoaders[] = new LoadCampaign($this, $page, $perPage);
-            }
-        } else {
-            $campaignLoaders[] = new LoadCampaign($this);
-        }
-
+        $campaignLoaders = [];
+        paginate_query($subscribersQuery, $perPage, $orderBy = 'subscribers.id', function ($pageNumber, $subscribers) use (&$campaignLoaders) {
+            $listOfIds = $subscribers->pluck('subscribers.id')->toArray();
+            $campaignLoaders[] = new LoadCampaign($this, $pageNumber, $listOfIds);
+        }, $maxPageToLoad);
 
         // Dispatch it with a batch monitor
         $this->dispatchWithBatchMonitor(
+            $jobTypeName = static::JOB_TYPE_RUN_CAMPAIGN, // a helpful name for future filtering/querying
             $campaignLoaders,
             function ($batch) {
                 // THEN callback of a batch
@@ -220,30 +223,33 @@ class BaseCampaign extends Model
                 // @Update: the above statement is longer true! Cancelling a batch DOES NOT trigger "THEN" callback
                 //
                 // IMPORTANT: refresh() is required!
-                if (!$this->refresh()->isPaused()) {
-                    $count = $this->subscribersToSend()->count();
-                    if ($count > 0) {
-                        // Run over and over again until there is no subscribers left to send
-                        // Because each LoadCampaign jobs only load a fixed number of subscribers
-                        $this->updateCache();
-                        $this->logger()->warning('Load another batch of the remaining '.$count);
-                        $this->run();
-                    } else {
-                        $this->logger()->warning('No contact left, campaign finishes successfully!');
-                        $this->setDone();
-
-                        $this->debug(function($info) {
-                            $startAt = $info['start_at'];
-                            $finishAt = Carbon::now();
-                            $info['finish_at'] = $finishAt->toString();
-                            $info['total_time'] = $finishAt->diffInSeconds(Carbon::parse($startAt));
-                            return $info;
-                        });
-                    }
-                } else {
+                if ($this->refresh()->isPaused()) {
                     // do nothing, as campaign is already PAUSED by user (not by an exception)
-                    $this->logger()->warning('Campaign is paused by user');
+                    // It seems that if a batch is cancelled, it shall not trigger any callback!
+                    $this->logger()->warning('Campaign is paused');
+                    return;
                 }
+
+                $count = $this->subscribersToSend()->count();
+                if ($count > 0) {
+                    // Run over and over again until there is no subscribers left to send
+                    // Because each LoadCampaign jobs only load a fixed number of subscribers
+                    $this->logger()->warning('Load another batch of the remaining '.$count);
+                    $this->run();
+                } else {
+                    $this->logger()->warning('No contact left, campaign finishes successfully!');
+                    $this->setDone();
+
+                    $this->debug(function ($info) {
+                        $startAt = $info['start_at'];
+                        $finishAt = Carbon::now();
+                        $info['finish_at'] = $finishAt->toString();
+                        $info['total_time'] = $finishAt->diffInSeconds(Carbon::parse($startAt));
+                        return $info;
+                    });
+                }
+
+                return;
             },
             function (Batch $batch, Throwable $e) {
                 // CATCH callback
@@ -253,13 +259,10 @@ class BaseCampaign extends Model
             },
             function () {
                 // FINALLY callback
-                $this->logger()->info('Finally!');
+                $this->logger()->info('Finally callback of batch! Updating cache');
                 $this->updateCache();
             }
         );
-
-        // SET QUEUED
-        $this->setQueued();
 
         /**** MORE NOTES ****/
         //
@@ -335,6 +338,7 @@ class BaseCampaign extends Model
     {
         $this->cancelAndDeleteJobs();
         $this->setPaused();
+        $this->logger()->warning('Campaign paused by user');
 
         // Update status
         event(new CampaignUpdated($this));
@@ -374,7 +378,7 @@ class BaseCampaign extends Model
 
     public function cleanupDebug()
     {
-        if (!config('custom.dryrun')) {
+        if (!redis_enabled()) {
             return;
         }
 
@@ -384,7 +388,7 @@ class BaseCampaign extends Model
 
     public function debug(Closure $callback = null)
     {
-        if (!config('custom.dryrun')) {
+        if (!redis_enabled()) {
             return;
         }
 
@@ -397,7 +401,7 @@ class BaseCampaign extends Model
         }
 
         $result = null;
-        Lockable::withExclusiveLock($lockFile, function() use (&$result, $callback, $key) {
+        Lockable::withExclusiveLock($lockFile, function () use (&$result, $callback, $key) {
             $info = Redis::get($key);
             if (is_null($info)) {
                 $info = [

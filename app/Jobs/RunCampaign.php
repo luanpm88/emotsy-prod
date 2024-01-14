@@ -54,7 +54,7 @@ class RunCampaign implements ShouldQueue
             // Debug to REDIS
             $startAt = Carbon::now();
             $this->campaign->cleanupDebug();
-            $this->campaign->debug(function($info) use ($startAt) {
+            $this->campaign->debug(function ($info) use ($startAt) {
                 $info['start_at'] = $startAt->toString();
                 return $info;
             });

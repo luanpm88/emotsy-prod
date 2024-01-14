@@ -664,7 +664,7 @@
   'bounced' => 'Rimbalzato',
   'brand.account_privacy' => 'Account & Privacy',
   'brand.categories' => 'Categorie',
-  'brand.copyright' => 'Copyright © 2023. :app_name Email Marketing. Tutti i Diritti Riservati.',
+  'brand.copyright' => 'Copyright © 2024. :app_name Email Marketing. Tutti i Diritti Riservati.',
   'brand.emails' => 'Email',
   'brand.home_page' => 'Home page',
   'brand.orders' => 'Ordini',

@@ -664,7 +664,7 @@
   'bounced' => '配信エラー',
   'brand.account_privacy' => 'アカウントとプライバシー',
   'brand.categories' => 'カテゴリ',
-  'brand.copyright' => 'Copyright © 2023. :app_name Email Marketing. All Rights Reserved.',
+  'brand.copyright' => 'Copyright © 2024. :app_name Email Marketing. All Rights Reserved.',
   'brand.emails' => 'メール',
   'brand.home_page' => 'ホームページ',
   'brand.orders' => '注文',
