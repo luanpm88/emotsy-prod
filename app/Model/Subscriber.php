@@ -640,11 +640,11 @@ class Subscriber extends Model
      */
     public function verify($verifier)
     {
-        list($status, $response) = $verifier->verify($this->email);
+        list($status, $rawResponse) = $verifier->verify($this->email);
         $this->verification_status = $status;
         $this->last_verification_at = Carbon::now();
         $this->last_verification_by = $verifier->name;
-        $this->last_verification_result = (string)$response->getBody();
+        $this->last_verification_result = $rawResponse;
         $this->save();
         return $this;
     }

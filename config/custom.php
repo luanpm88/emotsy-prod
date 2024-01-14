@@ -34,5 +34,9 @@ return [
     'dryrun' => env('APP_DRYRUN', false),
 
     // License verification endpoint
-    'license_verification_endpoint' => env('LICENSE_VALIDATION_ENDPOINT', 'http://verify.acellemail.com')
+    'license_verification_endpoint' => env('LICENSE_VALIDATION_ENDPOINT', 'http://verify.acellemail.com'),
+
+    // chunk size per import
+    // Set this value to a too high value will result in MySQL error: "General error: 1390 Prepared statement contains too many placeholders..."
+    'import_batch_size' => env('IMPORT_BATCH_SIZE', 1000),
 ];
