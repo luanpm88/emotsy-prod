@@ -22,6 +22,7 @@ use Acelle\Model\JobMonitor;
 use DB;
 use Exception;
 use Carbon\Carbon;
+use Illuminate\Support\MessageBag;
 
 class CampaignController extends Controller
 {
@@ -1741,7 +1742,16 @@ class CampaignController extends Controller
 
             $sending = $campaign->sendTestEmail($request->email);
 
-            $statusCode = ($sending['status'] == 'error') ? 400 : 200;
+            if ($sending['status'] == 'error') {
+                $validator->getMessageBag()->add('send_error', json_encode($sending));
+
+                return response()->view('campaigns.sendTestEmail', [
+                    'campaign' => $campaign,
+                    'errors' => $validator->errors(),
+                ], 400);
+            } else {
+                return response()->json($sending, 200);
+            }
 
             return response()->json($sending, $statusCode);
         }

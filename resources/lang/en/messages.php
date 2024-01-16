@@ -854,7 +854,7 @@
   'change_plan.desc' => 'You’re changing from <strong>:plan</strong> plan to <strong>:newPlan</strong> plan. Next end period date is <strong>:date</strong>',
   'change_sort_direction' => 'Change sort direction',
   'check_and_save_crontab' => 'Check & Save',
-  'check_entry_try_again' => 'Something went wrong! Please check your entry and try again.',
+  'check_entry_try_again' => 'Something went wrong! Please check and try again.',
   'checkbox' => 'Checkbox',
   'checkbox_field' => 'Checkbox',
   'choose' => 'Choose',
