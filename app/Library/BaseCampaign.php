@@ -205,10 +205,17 @@ class BaseCampaign extends Model
         $subscribersQuery = $this->subscribersToSend();
 
         $campaignLoaders = [];
-        paginate_query($subscribersQuery, $perPage, $orderBy = 'subscribers.id', function ($pageNumber, $subscribers) use (&$campaignLoaders) {
+        $pageCount = 0;
+        paginate_query($subscribersQuery, $perPage, $orderBy = 'subscribers.id', function ($pageNumber, $subscribers) use (&$campaignLoaders, &$pageCount) {
+            $pageCount += 1;
             $listOfIds = $subscribers->pluck('subscribers.id')->toArray();
             $campaignLoaders[] = new LoadCampaign($this, $pageNumber, $listOfIds);
         }, $maxPageToLoad);
+
+        if ($pageCount == 0) {
+            // There is no contact, then simply trigger an empty campaign to have the campaign go through starting, sending... and "done" process
+            $campaignLoaders[] = new LoadCampaign($this, 0, []);
+        }
 
         // Dispatch it with a batch monitor
         $this->dispatchWithBatchMonitor(
