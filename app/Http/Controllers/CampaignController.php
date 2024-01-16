@@ -1741,7 +1741,9 @@ class CampaignController extends Controller
 
             $sending = $campaign->sendTestEmail($request->email);
 
-            return response()->json($sending);
+            $statusCode = ($sending['status'] == 'error') ? 400 : 200;
+
+            return response()->json($sending, $statusCode);
         }
 
         return view('campaigns.sendTestEmail', [
