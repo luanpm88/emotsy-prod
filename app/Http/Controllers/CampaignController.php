@@ -1742,6 +1742,7 @@ class CampaignController extends Controller
 
             $sending = $campaign->sendTestEmail($request->email);
 
+            // check result
             if ($sending['status'] == 'error') {
                 $validator->getMessageBag()->add('send_error', json_encode($sending));
 
