@@ -3228,14 +3228,14 @@
   'automation.email.statistics' => 'Statistics',
   'list.webhook' => 'Webhook',
   'list.webhook_integration' => 'Webhook / Integration',
-  'list.webhook.intro' => 'Get users data from 3rd application with our simple Webhook API',
+  'list.webhook.json.intro' => 'Allow third-party applications to submit their subscription (opt-in) form data to Acelle, with application/x-www-form-urlencoded content type header.',
+  'list.webhook.simple_intro' => 'Get users data from 3rd application with our simple Webhook API',
   'list.webhook.json_post' => 'JSON POST',
   'list.webhook.form_post' => 'Form POST',
-  'list.webhook.form.intro' => 'The webapp allows you to submit contact information from 3rd application\'s
-    FORM, using application/x-www-form-urlencoded content type for your data. You
-    can set it up as follows',
+  'list.webhook.form.intro' => 'Allow third-party applications to submit their subscription
+    (opt-in) form data to Acelle, with application/json content type header.',
   'list.webhook.curl_example' => 'Example of a POST request using CURL',
   'list.webhook.action.copied' => 'Form action was copied to clipboard!',
-  'list.webhook.fields_available_sample' => 'Available fields for this list, select to update the sample JSON',
+  'list.webhook.fields_available_sample' => 'Available fields for this list, select to update the sample CURL',
   'list.webhook.posting_json_with_curl' => 'Posting JSON with CURL',
 ) ?>
