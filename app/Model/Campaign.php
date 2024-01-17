@@ -2157,7 +2157,12 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
         // Query subscribers
         $subscribers = $this->subscribersToSend()->whereIn('subscribers.id', $listOfIds)->get();
 
-        $this->logger()->info("Page {$page}, from guy {$subscribers[0]->id} to {$subscribers[sizeof($subscribers) - 1]->id}");
+        if (sizeof($subscribers) == 0) {
+            $this->logger()->info("Page {$page}, no contacts in this page");
+        } else {
+            $this->logger()->info("Page {$page}, from guy {$subscribers[0]->id} to {$subscribers[sizeof($subscribers) - 1]->id}");
+        }
+
         foreach ($subscribers as $subscriber) {
             $serverId = RouletteWheel::take($sendingServersPool);
             $server = SendingServer::find($serverId)->mapType();
