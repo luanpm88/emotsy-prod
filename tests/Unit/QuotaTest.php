@@ -20,6 +20,7 @@ use Acelle\Library\RateTracker;
 use Acelle\Library\RateLimit;
 use Acelle\Library\CreditTracker;
 use Carbon\Carbon;
+use Acelle\Library\ExtendedSwiftMessage;
 
 use function Acelle\Helpers\withQuota;
 
@@ -71,7 +72,7 @@ class QuotaTest extends TestCase
         // Campaign
         $campaign = Mockery::mock(new Campaign());
         $campaign->shouldReceive('logger')->andReturn($logger);
-        $campaign->shouldReceive('prepareEmail')->andReturn(null);
+        $campaign->shouldReceive('prepareEmail')->andReturn([$message = new ExtendedSwiftMessage(), 'random-message-id']);
         $campaign->shouldReceive('trackMessage')->andReturn(null);
 
         return [$campaign, $subscriber, $server, $subscription];
@@ -114,11 +115,12 @@ class QuotaTest extends TestCase
             $outcome = $exception;
         });
 
+        $this->assertNull($outcome);
         $this->assertEquals($server->getRateLimitTracker()->getCreditsUsed(Carbon::parse('5 minutes ago')), 1);
         $this->assertEquals($subscription->getSendEmailRateTracker()->getCreditsUsed(Carbon::parse('5 minutes ago')), 1);
         // FAILED, as credits tracking is commented out in SendMessage
         // $this->assertEquals($subscription->getSendEmailCreditTracker()->getRemainingCredits(), 99);
-        $this->assertNull($outcome);
+
 
         // 2st execution
         $sendMsgJob = new SendMessage($campaign, $subscriber, $server, $subscription);
