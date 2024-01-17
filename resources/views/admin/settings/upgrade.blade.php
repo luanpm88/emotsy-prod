@@ -68,8 +68,8 @@
                         
                         @include('elements._notification', [
                             'level' => 'warning',
-                            'title' => 'PHP version not supported',
-                            'message' => 'You are running on PHP version '.PHP_VERSION.' which is too old. Please upgrade to PHP '.config('custom.php_recommended').' or higher in order to proceed with application upgrade'
+                            'title' => trans('messages.requirement.php_version.not_supuported.title'),
+                            'message' => trans('messages.requirement.php_version.not_supuported.description', ['current' => '<strong>'.PHP_VERSION.'</strong>', 'required' => '<strong>'.config('custom.php_recommended').'</strong>']),
                         ])
                     @else
                         @if ($license && ($license->isExpired() || $license->isInactive()))

@@ -48,6 +48,15 @@ class Kernel extends ConsoleKernel
             }
         }, 'CronJob issue');
 
+        // Make sure CLI process is NOT executed as root
+        Notification::recordIfFails(function () {
+            $minPHPRecommended = config('custom.php_recommended');
+
+            if (!version_compare(PHP_VERSION, $minPHPRecommended, '>=')) {
+                throw new Exception( trans('messages.requirement.php_version.not_supuported.description', ['current' => PHP_VERSION, 'required' => $minPHPRecommended]) );
+            }
+        }, $phpMsgTitle = trans('messages.requirement.php_version.not_supuported.title'));
+
         $schedule->call(function () {
             event(new \Acelle\Events\CronJobExecuted());
         })->name('cronjob_event:log')->everyMinute();

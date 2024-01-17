@@ -3219,4 +3219,7 @@
   'your_api_token' => 'Your API token',
   'your_current_license' => 'The current application is registered with the key below, also known as Purchase Code. License type is: ',
   'zip_postal_code' => 'Zip / Postal code',
+  'requirement.php_version.not_supuported.title' => 'PHP version is out-of-date',
+  'requirement.php_version.not_supuported.description' => 'You are running on and old version of PHP (:current) which is no longer supported. Please upgrade to PHP :required or higher in order to upgrade your application to a future version.',
+
 ) ?>
