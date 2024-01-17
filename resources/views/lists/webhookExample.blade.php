@@ -39,9 +39,9 @@
                 <a data-control="field" data-name="tag"  data-example="foo,bar,tag+with+space" href="javascript:;" class="btn btn-light rounded-pill px-3 me-1 mb-2">
                     {{ trans('messages.tag') }}
                 </a>
-                <a data-control="field" data-name="status"  data-example="subscribed" href="javascript:;" class="btn btn-light rounded-pill px-3 me-1 mb-2">
+                {{-- <a data-control="field" data-name="status"  data-example="subscribed" href="javascript:;" class="btn btn-light rounded-pill px-3 me-1 mb-2">
                     {{ trans('messages.status') }}
-                </a>
+                </a> --}}
             </div>
         </div>
     </div>
@@ -94,9 +94,9 @@
             this.fieldButtons = options.fieldButtons;
 
             this.fields = [
-                {name: 'api_token', value: '{{ \Auth::user()->api_token }}'},
+                // {name: 'api_token', value: '{{ \Auth::user()->api_token }}'},
                 {name: 'list_uid', value: '{{ $list->uid }}'},
-                {name: 'status', value: 'subscribed'},
+                // {name: 'status', value: 'subscribed'},
                 {name: 'EMAIL', value: 'test@gmail.com'},
                 {name: 'FIRST_NAME', value: 'Marine'},
                 {name: 'LAST_NAME', value: 'Joze'},
@@ -117,7 +117,7 @@
                 });
                 var json = JSON.stringify(data);
 
-                this.codeContainer.html(`curl -X POST {{ action("Api\SubscriberController@store") }} \\
+                this.codeContainer.html(`curl -X POST {{ action("Api\Public\SubscriberController@store") }} \\
     -H 'Content-Type: application/json' \\
     -d '`+json+`'`);
             }
@@ -135,7 +135,7 @@
                     }
                 };
 
-                this.codeContainer.html(`curl -X POST {{ action("Api\SubscriberController@store") }} \\
+                this.codeContainer.html(`curl -X POST {{ action("Api\Public\SubscriberController@store") }} \\
     -H 'accept:application/json' \\
 ` + data);
             }
