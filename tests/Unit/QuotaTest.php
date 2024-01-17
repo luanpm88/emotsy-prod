@@ -20,7 +20,6 @@ use Acelle\Library\RateTracker;
 use Acelle\Library\RateLimit;
 use Acelle\Library\CreditTracker;
 use Carbon\Carbon;
-use Acelle\Library\ExtendedSwiftMessage;
 
 use function Acelle\Helpers\withQuota;
 
@@ -55,6 +54,7 @@ class QuotaTest extends TestCase
         $server = $this->initServer();
         $server = Mockery::mock($server);
         $server->shouldReceive('send')->andReturn(null);
+        $server->shouldReceive('dryrun')->andReturn(null);
 
         // Subscription
         $subscription = Mockery::mock($this->initSubscription());
@@ -72,7 +72,7 @@ class QuotaTest extends TestCase
         // Campaign
         $campaign = Mockery::mock(new Campaign());
         $campaign->shouldReceive('logger')->andReturn($logger);
-        $campaign->shouldReceive('prepareEmail')->andReturn([$message = new ExtendedSwiftMessage(), 'random-message-id']);
+        $campaign->shouldReceive('prepareEmail')->andReturn(null);
         $campaign->shouldReceive('trackMessage')->andReturn(null);
 
         return [$campaign, $subscriber, $server, $subscription];
