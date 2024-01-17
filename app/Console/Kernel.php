@@ -89,9 +89,11 @@ class Kernel extends ConsoleKernel
 
         // Subscription: check expiration
         $schedule->call(function () {
-            SubscriptionFacade::endExpiredSubscriptions();
-            SubscriptionFacade::createRenewInvoices();
-            SubscriptionFacade::autoChargeRenewInvoices();
+            Notification::recordIfFails(function () {
+                SubscriptionFacade::endExpiredSubscriptions();
+                SubscriptionFacade::createRenewInvoices();
+                SubscriptionFacade::autoChargeRenewInvoices();
+            }, 'Error checking subscriptions');
         })->name('subscription:monitor')->everyFiveMinutes();
 
         // Check for scheduled campaign to execute
