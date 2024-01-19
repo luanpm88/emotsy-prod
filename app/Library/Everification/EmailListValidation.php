@@ -1,0 +1,70 @@
+<?php
+
+namespace Acelle\Library\Everification;
+
+use Exception;
+
+class EmailListValidation
+{
+    protected $options;
+    protected $logger;
+
+    public function __construct($options, $logger = null)
+    {
+        $this->options = $options;
+        $this->logger = $logger;
+    }
+
+    public function verify($email)
+    {
+        $key = $this->options['api_key'];
+
+        $url = "https://app.emaillistvalidation.com/api/verifEmailv2?secret=".$key."&email=".$email;
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true );
+
+        $rawResponse = curl_exec($ch);
+
+        $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+        curl_close($ch);
+
+        if ($httpcode != 200) {
+        	throw new Exception('Error working with emailvaliation.com server: '.$rawResponse);
+        }
+
+        echo $rawResponse;
+
+        $response = json_decode($rawResponse, true);
+
+        if (array_key_exists('error', $response)) {
+        	throw new Exception('Failed connecting with emailvaliation.com server: '.$rawResponse);
+        }
+
+        $statusMap = [
+        	'valid' => 'deliverable',
+        	'invalid' => 'undeliverable',
+            'ok' => 'deliverable',
+            'ok_for_all' => 'deliverable',
+            'ok_for_all | ok_for_all' => 'deliverable',
+            'ok_for_all|ok_for_all' => 'deliverable',
+            'email_disabled' => 'undeliverable',
+            'risky' => 'risky',
+            'unknown' => 'unknown'
+        ];
+
+        $result = strtolower($response['Result']);
+
+        if (!array_key_exists($result, $statusMap)) {
+            throw new Exception('Unknown status code returned from ZeroBounce: '.$result);
+        }
+
+        $verificationStatus = $statusMap[$result];
+
+        return [$verificationStatus, $rawResponse];
+    }
+}

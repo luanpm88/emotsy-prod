@@ -17,6 +17,7 @@ use Acelle\Library\RateLimit;
 // Services
 use Acelle\Library\Everification\Emailable;
 use Acelle\Library\Everification\ZeroBounce;
+use Acelle\Library\Everification\EmailListValidation;
 
 class EmailVerificationServer extends Model
 {
@@ -60,6 +61,10 @@ class EmailVerificationServer extends Model
 
             case 'zerobounce.net':
                 $service = new ZeroBounce($this->getOptions(), $this->logger());
+                return $service;
+
+            case 'emaillistvalidation.com':
+                $service = new EmailListValidation($this->getOptions(), $this->logger());
                 return $service;
 
             default:

@@ -71,19 +71,7 @@ return [
         ],[
             'id' => 'emaillistvalidation.com',
             'name' => 'Emaillist Validation',
-            'uri' => 'https://app.emaillistvalidation.com/api/verifEmail?secret={API_KEY}&email={EMAIL}',
-            'request_type' => 'GET',
-            'response_type' => 'plain',
             'fields' => [ 'api_key' ],
-            'result_map' => [
-                'ok' => 'deliverable',
-                'ok_for_all' => 'deliverable',
-                'ok_for_all | ok_for_all' => 'deliverable',
-                'ok_for_all|ok_for_all' => 'deliverable',
-                'email_disabled' => 'undeliverable',
-                'risky' => 'risky',
-                'unknown' => 'unknown'
-            ]
         ],[
             'id' => 'bounceless.io',
             'name' => 'Bounceless.io',
