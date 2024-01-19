@@ -45,6 +45,8 @@ class EmailListValidation
             throw new Exception('Failed connecting with emailvaliation.com server: '.$rawResponse);
         }
 
+        // See: https://help.emaillistvalidation.com/article/7-result-codes-and-terminology
+
         $statusMap = [
             'valid' => 'deliverable',
             'invalid' => 'undeliverable',
@@ -65,6 +67,15 @@ class EmailListValidation
             'Accept all' => 'deliverable',
             'Ok for all' => 'deliverable',
             'syntax_error' => 'undeliverable',
+            'Invalid vendor response' => 'unknown',
+            'dead_server' => 'unknown',
+            'antispam_system' => 'unknown',
+            'relay_error' => 'unknown',
+            'attempt_rejected' => 'unknown',
+            'smtp_protocol' => 'unknown',
+            'smtp_error' => 'unknown',
+            'error' => 'unknown',
+            'ok or valid' => 'deliverable',
         ];
 
         $result = strtolower($response['Result']);
