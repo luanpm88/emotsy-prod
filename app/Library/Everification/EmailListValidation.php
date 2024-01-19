@@ -34,7 +34,7 @@ class EmailListValidation
         curl_close($ch);
 
         if ($httpcode != 200) {
-        	throw new Exception('Error working with emailvaliation.com server: '.$rawResponse);
+            throw new Exception('Error working with emailvaliation.com server: '.$rawResponse);
         }
 
         echo $rawResponse;
@@ -42,19 +42,29 @@ class EmailListValidation
         $response = json_decode($rawResponse, true);
 
         if (array_key_exists('error', $response)) {
-        	throw new Exception('Failed connecting with emailvaliation.com server: '.$rawResponse);
+            throw new Exception('Failed connecting with emailvaliation.com server: '.$rawResponse);
         }
 
         $statusMap = [
-        	'valid' => 'deliverable',
-        	'invalid' => 'undeliverable',
+            'valid' => 'deliverable',
+            'invalid' => 'undeliverable',
             'ok' => 'deliverable',
             'ok_for_all' => 'deliverable',
             'ok_for_all | ok_for_all' => 'deliverable',
             'ok_for_all|ok_for_all' => 'deliverable',
             'email_disabled' => 'undeliverable',
             'risky' => 'risky',
-            'unknown' => 'unknown'
+            'unknown' => 'unknown',
+            'ok' => 'deliverable',
+            'unknown_email' => 'undeliverable',
+            'email_disabled' => 'undeliverable',
+            'domain_error' => 'undeliverable',
+            'Spam Traps' => 'deliverable',
+            'Disposable' => 'deliverable',
+            'Accept all or Ok for all' => 'deliverable',
+            'Accept all' => 'deliverable',
+            'Ok for all' => 'deliverable',
+            'syntax_error' => 'undeliverable',
         ];
 
         $result = strtolower($response['Result']);
