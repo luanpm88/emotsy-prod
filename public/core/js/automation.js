@@ -38,6 +38,10 @@ class AutomationElement {
                 trigger.onclick(events.onclick);
                 trigger.onhover(events.onhover);
                 trigger.onadd(events.onadd);
+
+                // A little hack here: set the validate() function for trigger
+                // And later on copy this function() to all other elements
+                // Applied to both elements initialized during construction and newly added ones
                 trigger.setCustomFunction('validate', events.validate);
 
                 // add to events bucket
