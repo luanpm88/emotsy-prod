@@ -33,6 +33,12 @@ class SendMessage implements ShouldQueue
     // @important: set the "retry_after" setting in config/queue.php to a value that is greater than $timeout;
     // Otherse, the job shall be released and attempted again, resulting in error like:
     // "[Job] has been attempted too many times or run too long. The job may have previously timed out."
+
+    // @important: https://laravel.com/docs/8.x/queues#failing-on-timeout
+    // Sometimes, IO blocking processes such as sockets or outgoing HTTP connections
+    // may not ***RESPECT*** your specified timeout. Therefore, when using these features,
+    // you should always attempt to specify a timeout using their APIs as well.
+    // For example, when using Guzzle, you should always specify a connection and request timeout value.
     public $timeout = 600;
     public $maxExceptions = 1; // This is required if retryUntil is used, otherwise, the default value is 255
     public $failOnTimeout = true;
