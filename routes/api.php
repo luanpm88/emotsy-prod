@@ -75,3 +75,7 @@ Route::group(['namespace' => 'Api', 'prefix' => 'v1', 'middleware' => 'auth:api'
     // Subscription
     Route::resource('notification', 'NotificationController');
 });
+
+Route::group(['namespace' => 'Api\Public', 'prefix' => 'v1'], function () {
+    Route::post('public/subscribers', 'SubscriberController@store');
+});

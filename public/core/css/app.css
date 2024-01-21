@@ -5,6 +5,11 @@
         clear: both;
     }
 }
+.btn-light {
+    --bs-btn-active-bg: #716b67;
+    --bs-btn-active-border-color: #716b67;
+    --bs-btn-active-color: #fff;
+}
 .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
     margin-bottom: .7rem;
 }
@@ -6306,8 +6311,7 @@ h1, h1 {
     border-color: #efeeea;
 }
 .btn-light:hover {
-    background-color: #d8d7d4;
-    border-color: #d8d7d4;
+    opacity: 0.9;
 }
 @media (min-width: 1400px) {
     .container, .container-lg, .container-md, .container-sm, .container-xl, .container-xxl {
