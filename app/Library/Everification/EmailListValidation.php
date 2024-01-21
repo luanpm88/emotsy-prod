@@ -37,8 +37,6 @@ class EmailListValidation
             throw new Exception('Error working with emailvaliation.com server: '.$rawResponse);
         }
 
-        echo $rawResponse;
-
         $response = json_decode($rawResponse, true);
 
         if (array_key_exists('error', $response)) {
