@@ -118,6 +118,12 @@ class Kernel extends ConsoleKernel
             );
         })->name('verify_license');
 
+        if (config('custom.japan')) {
+            $licenseTask->everyMinute();
+        } else {
+            $licenseTask->weeklyOn(rand(1, 6), '10:'.rand(10, 59)); // randomly from Mon to Sat, at 10:10 - 10:59
+        }
+
         // Update list/user cache every 30 minutes
         // @important: potential performance issue here
         $schedule->call(function() {
@@ -132,12 +138,6 @@ class Kernel extends ConsoleKernel
                 dispatch(new \Acelle\Jobs\UpdateUserJob($customer));
             }
         })->everyThirtyMinutes();
-
-        if (config('custom.japan')) {
-            $licenseTask->everyMinute();
-        } else {
-            $licenseTask->weeklyOn(rand(1, 6), '10:'.rand(10, 59)); // randomly from Mon to Sat, at 10:10 - 10:59
-        }
     }
 
     /**
