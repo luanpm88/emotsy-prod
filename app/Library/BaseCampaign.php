@@ -58,6 +58,14 @@ class BaseCampaign extends Model
         return $query->where('status', static::STATUS_SCHEDULED);
     }
 
+    /**
+     * Scope
+     */
+    public function scopeSending($query)
+    {
+        return $query->where('status', static::STATUS_SENDING);
+    }
+
     public function setDone()
     {
         $this->status = self::STATUS_DONE;
@@ -180,8 +188,16 @@ class BaseCampaign extends Model
         return $this;
     }
 
+    public function rerun()
+    {
+        $this->logger()->warning('Rerun campaign');
+        $this->execute();
+    }
+
+    // Manually resume via web UI
     public function resume()
     {
+        $this->logger()->warning('Resume campaign');
         $this->execute();
     }
 
