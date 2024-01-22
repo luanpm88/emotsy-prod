@@ -12,6 +12,7 @@ use Illuminate\Queue\SerializesModels;
 use Acelle\Library\Contracts\CampaignInterface;
 use Acelle\Library\Traits\Trackable;
 use Closure;
+use Carbon\Carbon;
 
 class LoadCampaign implements ShouldQueue
 {
@@ -60,5 +61,15 @@ class LoadCampaign implements ShouldQueue
         $this->campaign->loadDeliveryJobsByIds(function (ShouldQueue $deliveryJob) {
             $this->batch()->add($deliveryJob);
         }, $this->page, $this->listOfIds);
+
+        $this->campaign->debug(function ($info) {
+            // Record last activity, no matter it is a successful delivery or exception
+            // This information is useful when we want to audit delivery processes
+            // i.e. when we can to automatically restart dead jobs for example
+            $info['last_activity_at'] = Carbon::now()->toString();
+
+            // Must return;
+            return $info;
+        });
     }
 }

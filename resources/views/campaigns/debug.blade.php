@@ -56,6 +56,7 @@
                     <h4><strong>{{ $debug['start_at'] ? \Carbon\Carbon::parse($debug['start_at'])->diffForHumans() : 'not started' }}</strong></h4>
                     <p>
                         Last session started at {{ $debug['start_at'] ? $campaign->customer->formatDateTime(\Carbon\Carbon::parse($debug['start_at']), 'datetime_full_with_timezone') : 'N/A' }}
+                        • Last activity at: {{ $debug['last_activity_at'] ? $campaign->customer->formatDateTime(\Carbon\Carbon::parse($debug['last_activity_at']), 'datetime_full_with_timezone') : 'N/A' }} ({{ $debug['last_activity_at'] ? \Carbon\Carbon::parse($debug['last_activity_at'])->diffForHumans() : 'N/A' }})
                     </p>
                 </div>
 

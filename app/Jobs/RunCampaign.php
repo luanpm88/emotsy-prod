@@ -11,6 +11,7 @@ use Illuminate\Queue\SerializesModels;
 use Acelle\Library\Traits\Trackable;
 use Acelle\Library\Contracts\CampaignInterface;
 use Carbon\Carbon;
+use DB;
 
 class RunCampaign implements ShouldQueue
 {
@@ -60,7 +61,10 @@ class RunCampaign implements ShouldQueue
             });
 
             $this->campaign->logger()->info("Launch campaign: session {$sessionId}");
-            $this->campaign->run();
+
+            DB::transaction(function() {
+                $this->campaign->run();
+            });
 
             // after executing campaign.run(), this job just finishes
         } catch (\Throwable $e) {

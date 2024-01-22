@@ -217,7 +217,7 @@ class SendMessage implements ShouldQueue
             // and (hopefully) the quota limits will be lifted then as time goes by
             $this->release(60);
 
-            //} catch (OutOfCredits $ex) {
+        //} catch (OutOfCredits $ex) {
 
         } catch (Throwable $ex) {
             // Also catch the OutOfCredits error
@@ -244,6 +244,16 @@ class SendMessage implements ShouldQueue
 
                 $this->campaign->trackMessage(['status' => 'failed', 'error' => $message], $this->subscriber, $this->server, $msgId, $this->triggerId);
             }
+        } finally {
+            $this->campaign->debug(function ($info) {
+                // Record last activity, no matter it is a successful delivery or exception
+                // This information is useful when we want to audit delivery processes
+                // i.e. when we can to automatically restart dead jobs for example
+                $info['last_activity_at'] = Carbon::now()->toString();
+
+                // Must return;
+                return $info;
+            });
         }
     }
 }

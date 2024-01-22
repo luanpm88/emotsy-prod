@@ -413,6 +413,7 @@ class BaseCampaign extends Model
             if (is_null($info)) {
                 $info = [
                     'start_at' => null,
+                    'last_activity_at' => null,
                     'finish_at' => null,
                     'total_time' => null,
                     'last_message_sent_at' => null,

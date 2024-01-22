@@ -24,6 +24,7 @@ class JobServiceProvider extends ServiceProvider
 
         // 'before' event is triggered for standalone jobs only, NOT batch jobs
         Queue::before(function (JobProcessing $event) {
+            // @performance issue here, do not unserialize all the time
             $job = $this->getJobObject($event);
             if (property_exists($job, 'monitor')) {
                 $monitor = $job->monitor;
