@@ -137,7 +137,7 @@ class Kernel extends ConsoleKernel
                 }
                 dispatch(new \Acelle\Jobs\UpdateUserJob($customer));
             }
-        })->everyThirtyMinutes();
+        })->name('update_list_stats')->everyThirtyMinutes();
     }
 
     /**
