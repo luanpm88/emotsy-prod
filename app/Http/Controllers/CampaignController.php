@@ -2585,6 +2585,10 @@ class CampaignController extends Controller
 
     public function debug(Request $request)
     {
+        if (!redis_enabled()) {
+            throw new Exception('Redis service not available');
+        }
+
         $campaign = Campaign::findByUid($request->uid);
 
         return view('campaigns.debug', [

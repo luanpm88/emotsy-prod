@@ -12,7 +12,6 @@
             <li class="breadcrumb-item"><a href="{{ action("CampaignController@index") }}">{{ trans('messages.campaigns') }}</a></li>
             <li class="breadcrumb-item" style="font-weight: bold">{{ $campaign->name }}</li>
         </ul>
-
     </div>
 
 @endsection
@@ -128,8 +127,6 @@
 
                 <a href="#" class="btn btn-secondary">{{ trans('messages.edit') }}</a>
             </li>
-
-
         </ul>
     </div>
 @endsection
