@@ -56,12 +56,10 @@ class LoadCampaign implements ShouldQueue
             return;
         }
 
-        $this->campaign->logger()->info(sprintf('Loading contacts for page %s (#%s)', $this->page, sizeof($this->listOfIds)));
-
-        $this->campaign->loadDeliveryJobsByIds(function (ShouldQueue $deliveryJob) {
-            $this->batch()->add($deliveryJob);
-        }, $this->page, $this->listOfIds);
-
+        // Last update recording should go here
+        // before any other tasks (to prevent IO blocking tasks)
+        // In case we need to clean up pending jobs, at least we know that last job start time
+        // Reduce the posibility of killing a newly started (and still running) job
         $this->campaign->debug(function ($info) {
             // Record last activity, no matter it is a successful delivery or exception
             // This information is useful when we want to audit delivery processes
@@ -71,5 +69,11 @@ class LoadCampaign implements ShouldQueue
             // Must return;
             return $info;
         });
+
+        $this->campaign->logger()->info(sprintf('Loading contacts for page %s (#%s)', $this->page, sizeof($this->listOfIds)));
+
+        $this->campaign->loadDeliveryJobsByIds(function (ShouldQueue $deliveryJob) {
+            $this->batch()->add($deliveryJob);
+        }, $this->page, $this->listOfIds);
     }
 }

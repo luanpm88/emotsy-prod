@@ -98,6 +98,20 @@ class SendMessage implements ShouldQueue
             return;
         }
 
+        // Last update recording should go here
+        // before any other tasks (to prevent IO blocking tasks)
+        // In case we need to clean up pending jobs, at least we know that last job start time
+        // Reduce the posibility of killing a newly started (and still running) job
+        $this->campaign->debug(function ($info) {
+            // Record last activity, no matter it is a successful delivery or exception
+            // This information is useful when we want to audit delivery processes
+            // i.e. when we can to automatically restart dead jobs for example
+            $info['last_activity_at'] = Carbon::now()->toString();
+
+            // Must return;
+            return $info;
+        });
+
         $this->send();
     }
 
@@ -201,7 +215,9 @@ class SendMessage implements ShouldQueue
                 $info['last_message_sent_at'] = $now->toString();
                 $campaignStartAt = $info['start_at'];
                 $timeSinceCampaignStart = $now->diffInSeconds(Carbon::parse($campaignStartAt));
-                $info['total_time'] = $timeSinceCampaignStart;
+
+                // In case it is too fast, avoid DivisionByZero
+                $info['total_time'] = ($timeSinceCampaignStart == 0) ? 1 : $timeSinceCampaignStart;
                 $info['messages_sent_per_second'] = $info['send_message_count'] / $info['total_time'];
 
                 return $info;
@@ -245,15 +261,7 @@ class SendMessage implements ShouldQueue
                 $this->campaign->trackMessage(['status' => 'failed', 'error' => $message], $this->subscriber, $this->server, $msgId, $this->triggerId);
             }
         } finally {
-            $this->campaign->debug(function ($info) {
-                // Record last activity, no matter it is a successful delivery or exception
-                // This information is useful when we want to audit delivery processes
-                // i.e. when we can to automatically restart dead jobs for example
-                $info['last_activity_at'] = Carbon::now()->toString();
-
-                // Must return;
-                return $info;
-            });
+            //
         }
     }
 }
