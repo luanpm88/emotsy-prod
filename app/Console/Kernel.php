@@ -115,12 +115,17 @@ class Kernel extends ConsoleKernel
             $licenseTask->weeklyOn(rand(1, 6), '10:'.rand(10, 59)); // randomly from Mon to Sat, at 10:10 - 10:59
         }
 
+        /*
         // Update list/user cache every 30 minutes
         // @important: potential performance issue here
         $schedule->call(function() {
             $customers = Customer::all();
 
             foreach($customers as $customer) {
+                if (is_null($customer->getCurrentActiveGeneralSubscription())) {
+                    continue;
+                }
+
                 $lists = $customer->lists;
 
                 foreach ($lists as $list) {
@@ -128,7 +133,8 @@ class Kernel extends ConsoleKernel
                 }
                 dispatch(new \Acelle\Jobs\UpdateUserJob($customer));
             }
-        })->name('update_list_stats')->everyThirtyMinutes();
+        })->name('update_list_stats')->daily();
+        */
 
         // Queued import/export/campaign
         // Allow overlapping: max 10 proccess as a given time (if cronjob interval is every minute)
