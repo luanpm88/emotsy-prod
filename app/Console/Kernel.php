@@ -70,15 +70,6 @@ class Kernel extends ConsoleKernel
         // Bounce/feedback handler
         $schedule->command('handler:run')->everyThirtyMinutes();
 
-        // Queued import/export/campaign
-        // Allow overlapping: max 10 proccess as a given time (if cronjob interval is every minute)
-        // Job is killed after timeout
-        $schedule->command('queue:work --queue=default,batch --tries=1 --max-time=180')->everyMinute();
-
-        // Make it more likely to have a running queue at any given time
-        // Make sure it is stopped before another queue listener is created
-        // $schedule->command('queue:work --queue=default,batch --timeout=120 --tries=1 --max-time=290')->everyFiveMinutes();
-
         // Sender verifying
         $schedule->command('sender:verify')->everyFiveMinutes();
 
@@ -138,6 +129,11 @@ class Kernel extends ConsoleKernel
                 dispatch(new \Acelle\Jobs\UpdateUserJob($customer));
             }
         })->name('update_list_stats')->everyThirtyMinutes();
+
+        // Queued import/export/campaign
+        // Allow overlapping: max 10 proccess as a given time (if cronjob interval is every minute)
+        // Job is killed after timeout
+        $schedule->command('queue:work --queue=default,batch --tries=1 --max-time=180')->everyMinute();
     }
 
     /**
