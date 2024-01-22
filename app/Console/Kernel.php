@@ -10,6 +10,7 @@ use Acelle\Cashier\Cashier;
 use Acelle\Model\Subscription;
 use Acelle\Model\Setting;
 use Acelle\Model\Campaign;
+use Acelle\Model\Customer;
 use Laravel\Tinker\Console\TinkerCommand;
 use Exception;
 use Acelle\Library\Facades\SubscriptionFacade;
@@ -116,6 +117,20 @@ class Kernel extends ConsoleKernel
                 $exceptionCallback = null,
             );
         })->name('verify_license');
+
+        $schedule->call(function() {
+            // Update list/user cache every 30 minutes
+            $customers = Customer::all();
+
+            foreach($customers as $customer) {
+                $lists = $customer->lists;
+
+                foreach ($lists as $list) {
+                    dispatch(new \Acelle\Jobs\UpdateMailListJob($list));
+                }
+                dispatch(new \Acelle\Jobs\UpdateUserJob($customer));
+            }
+        })->everyThirtyMinutes();
 
         if (config('custom.japan')) {
             $licenseTask->everyMinute();
