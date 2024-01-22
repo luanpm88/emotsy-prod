@@ -118,8 +118,9 @@ class Kernel extends ConsoleKernel
             );
         })->name('verify_license');
 
+        // Update list/user cache every 30 minutes
+        // @important: potential performance issue here
         $schedule->call(function() {
-            // Update list/user cache every 30 minutes
             $customers = Customer::all();
 
             foreach($customers as $customer) {
