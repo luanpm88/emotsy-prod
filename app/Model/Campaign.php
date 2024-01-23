@@ -2762,7 +2762,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
         $this->save();
     }
 
-    public static function checkAndRerunCampaigns()
+    public static function checkAndForceRerunCampaigns()
     {
         if (!redis_enabled()) {
             throw new Exception('Redis not running');
