@@ -8210,3 +8210,6 @@ label.checker input:disabled ~ .checker-symbol {
         width: calc(50% - 20px);
     }
 }
+.gm-style-iw {
+    color: #333;
+}
