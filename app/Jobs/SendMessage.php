@@ -157,7 +157,16 @@ class SendMessage implements ShouldQueue
 
             execute_with_limits($rateTrackers, $creditTrackers, function () use ($message, $logger, $msgId, $email, &$finishDeliveryAt) {
                 // Actually send (or throw an exception)
-                if (config('custom.dryrun')) {
+
+                if (!$this->subscriber->isSubscribed()) {
+                    // @important: do not throw an exception here
+                    // For this particular case (contact becomes inactive right before delivery), just silently
+                    // record a failed delivery in delivery log, do not interrupt the whole campaign
+                    $sent = [
+                        'error' => trans('messages.delivery.error.subscriber_not_active', [ 'status' => $this->subscriber->status ]),
+                        'status' => 'failed',
+                    ];
+                } elseif (config('custom.dryrun')) {
                     $sent = $this->server->dryrun($message);
                 } else {
                     $sent = $this->server->send($message);
@@ -169,7 +178,7 @@ class SendMessage implements ShouldQueue
 
                 // Log successful shot
                 $this->campaign->trackMessage($sent, $this->subscriber, $this->server, $msgId, $this->triggerId);
-                $logger->info(sprintf('Sent to %s [Server "%s"]', $email, $this->server->name));
+                $logger->info(sprintf('Done with %s [Server "%s"]', $email, $this->server->name));
             });
 
             // Debug
