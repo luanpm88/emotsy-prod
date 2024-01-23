@@ -809,7 +809,6 @@
   'campaign_status_new' => 'New',
   'campaign_status_paused' => 'Paused',
   'campaign_status_queued' => 'Queued',
-  'campaign_status_queuing' => 'Queuing',
   'campaign_status_ready' => 'Ready',
   'campaign_status_scheduled' => 'Scheduled',
   'campaign_status_sending' => 'Sending',
@@ -3240,4 +3239,5 @@
   'list.webhook.action.copied' => 'Form action was copied to clipboard!',
   'list.webhook.fields_available_sample' => 'Available fields for this list, select to update the sample CURL',
   'list.webhook.posting_json_with_curl' => 'Posting JSON with CURL',
+  'delivery.error.subscriber_not_active' => 'Subscriber is not active at the time of sending (Status :status)',
 ) ?>

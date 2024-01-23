@@ -138,7 +138,7 @@ class JobMonitor extends Model
         $this->cancelJob(); // if any
         $this->cancelBatch(); // if any
 
-        // For now, do not store cancelled job
+        // For now, do not store cancelled job monitor
         // So, just delete the record
         $this->delete();
     }

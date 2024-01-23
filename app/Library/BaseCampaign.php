@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Throwable;
 use Closure;
 use Illuminate\Support\Facades\Redis;
+use Exception;
 
 class BaseCampaign extends Model
 {
@@ -31,7 +32,6 @@ class BaseCampaign extends Model
 
     // Campaign status
     public const STATUS_NEW = 'new';
-    public const STATUS_QUEUING = 'queuing'; // equiv. to 'queue'
     public const STATUS_QUEUED = 'queued'; // equiv. to 'queue'
     public const STATUS_SENDING = 'sending';
     public const STATUS_ERROR = 'error';
@@ -103,13 +103,6 @@ class BaseCampaign extends Model
         return $this;
     }
 
-    public function setQueuing()
-    {
-        $this->status = self::STATUS_QUEUING;
-        $this->save();
-        return $this;
-    }
-
     public function setError($error = null)
     {
         $this->status = self::STATUS_ERROR;
@@ -154,7 +147,7 @@ class BaseCampaign extends Model
 
     // This method called when user clicks CONFIRM button on the web UI
     // This method is also called by a cronjob which periodically check for campaigns to run
-    public function execute()
+    public function execute($force = false)
     {
         $now = Carbon::now();
 
@@ -164,7 +157,15 @@ class BaseCampaign extends Model
             return;
         }
 
-        // Delete previous RunCampaign jobs
+        if ($this->isSending() || $this->isQueued()) {
+            if ($force) {
+                $this->logger()->warning('Force running campaign');
+            } else {
+                throw new Exception('Cannot execute: campaign is already in "sending" or "queued" status');
+            }
+        }
+
+        // Delete previous RunCampaign job monitors (keep job batches, just cancel them)
         $this->cancelAndDeleteJobs(RunCampaign::class);
 
         // Schedule Job initialize
@@ -174,11 +175,8 @@ class BaseCampaign extends Model
         // to also generate job-monitor record
         $this->dispatchWithMonitor($job);
 
-        // After this job is dispatched successfully, set status to "queuing"
-        // Notice the different between the two statuses
-        // + Queuing: waiting until campaign is ready to run
-        // + Queued: ready to run
-        $this->setQueuing();
+        // After this job is dispatched successfully, set status to "queued"
+        $this->setQueued();
     }
 
     public function setScheduled()
@@ -190,7 +188,7 @@ class BaseCampaign extends Model
 
     public function rerun()
     {
-        $this->logger()->warning('Rerun campaign');
+        $this->logger()->warning('Rerun campaign!');
         $this->execute();
     }
 
@@ -389,7 +387,6 @@ class BaseCampaign extends Model
     {
         return [
             ['text' => trans('messages.campaign_status_' . self::STATUS_NEW), 'value' => self::STATUS_NEW],
-            ['text' => trans('messages.campaign_status_' . self::STATUS_QUEUING), 'value' => self::STATUS_QUEUING],
             ['text' => trans('messages.campaign_status_' . self::STATUS_QUEUED), 'value' => self::STATUS_QUEUED],
             ['text' => trans('messages.campaign_status_' . self::STATUS_SENDING), 'value' => self::STATUS_SENDING],
             ['text' => trans('messages.campaign_status_' . self::STATUS_ERROR), 'value' => self::STATUS_ERROR],

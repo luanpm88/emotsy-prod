@@ -16,7 +16,6 @@ interface CampaignInterface
 
     // Set status
     public function setDone();
-    public function setQueuing();
     public function setQueued();
     public function setSending();
     public function setScheduled();
