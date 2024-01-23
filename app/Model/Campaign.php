@@ -2773,12 +2773,12 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
             $info = $campaign->debug();
 
             if (is_null($info)) {
-                echo "Campaign {$campaign->name} does not have debug info\n";
+                // echo "Campaign {$campaign->name} does not have debug info\n";
                 continue;
             }
 
             if (!array_key_exists('last_activity_at', $info)) {
-                echo "Campaign {$campaign->name} does not have 'last_activity_at' information\n";
+                // echo "Campaign {$campaign->name} does not have 'last_activity_at' information\n";
                 continue;
             }
 
