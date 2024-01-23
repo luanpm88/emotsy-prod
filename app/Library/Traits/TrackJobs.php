@@ -20,11 +20,14 @@ trait TrackJobs
 
     // DO NOT USE DB TRANSACTION
     // OTHERWISE BATCH_ID OR JOB_ID MAY NOT BE AVAILABLE
-    public function dispatchWithMonitor($job)
+    public function dispatchWithMonitor($job, string $jobType = null)
     {
         // A job TYPE is helpful when we need to retrieve a list of jobs of a given type.
         // For example, get all verification jobs of a list
-        $jobType = get_class($job);
+        if (is_null($jobType)) {
+            $jobType = get_class($job);
+        }
+
         $monitor = JobMonitor::makeInstance($this, $jobType); // QUEUED status
 
         // actually save

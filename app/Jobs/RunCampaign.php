@@ -60,11 +60,9 @@ class RunCampaign implements ShouldQueue
                 return $info;
             });
 
-            $this->campaign->logger()->info("Launch campaign: session {$sessionId}");
+            $this->campaign->logger()->info("Launch campaign from job: session {$sessionId}");
 
-            DB::transaction(function() {
-                $this->campaign->run();
-            });
+            $this->campaign->run();
 
             // after executing campaign.run(), this job just finishes
         } catch (\Throwable $e) {

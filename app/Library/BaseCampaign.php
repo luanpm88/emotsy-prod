@@ -20,6 +20,7 @@ use Throwable;
 use Closure;
 use Illuminate\Support\Facades\Redis;
 use Exception;
+use DB;
 
 class BaseCampaign extends Model
 {
@@ -41,6 +42,7 @@ class BaseCampaign extends Model
 
     // A meaningful name for registering a campaign charge
     public const JOB_TYPE_RUN_CAMPAIGN = 'run-campaign';
+    public const JOB_TYPE_DISPATCH_AND_SEND_MESSAGES = 'dispatch-and-send-messages';
 
     /**
      * Associations
@@ -149,34 +151,37 @@ class BaseCampaign extends Model
     // This method is also called by a cronjob which periodically check for campaigns to run
     public function execute($force = false)
     {
-        $now = Carbon::now();
+        DB::transaction(function() use ($force) {
+            $now = Carbon::now();
 
-        if (!is_null($this->run_at) && $this->run_at->gte($now)) {
-            $scheduledAt = $this->run_at->timezone($this->customer->timezone);
-            $this->logger()->warning(sprintf('Campaign is scheduled at %s (%s)', $scheduledAt->format('Y-m-d H:m'), $scheduledAt->diffForHumans()));
-            return;
-        }
-
-        if ($this->isSending() || $this->isQueued()) {
-            if ($force) {
-                $this->logger()->warning('Force running campaign');
-            } else {
-                throw new Exception('Cannot execute: campaign is already in "sending" or "queued" status');
+            if (!is_null($this->run_at) && $this->run_at->gte($now)) {
+                $scheduledAt = $this->run_at->timezone($this->customer->timezone);
+                $this->logger()->warning(sprintf('Campaign is scheduled at %s (%s)', $scheduledAt->format('Y-m-d H:m'), $scheduledAt->diffForHumans()));
+                return;
             }
-        }
 
-        // Delete previous RunCampaign job monitors (keep job batches, just cancel them)
-        $this->cancelAndDeleteJobs(RunCampaign::class);
+            if ($this->isSending() || $this->isQueued()) {
+                if (!$force) {
+                    throw new Exception('Cannot execute: campaign is already in "sending" or "queued" status');
+                } else {
+                    $this->logger()->warning('Force running campaign');
+                }
+            }
 
-        // Schedule Job initialize
-        $job = (new RunCampaign($this));
+            // Delete previous RunCampaign job monitors (keep job batches, just cancel them so that the child jobs will perish)
+            $this->cancelAndDeleteJobs($jobType = static::JOB_TYPE_RUN_CAMPAIGN);
+            $this->cancelAndDeleteJobs($jobType = static::JOB_TYPE_DISPATCH_AND_SEND_MESSAGES);
 
-        // Dispatch using the method provided by TrackJobs
-        // to also generate job-monitor record
-        $this->dispatchWithMonitor($job);
+            // Schedule Job initialize
+            $job = (new RunCampaign($this));
 
-        // After this job is dispatched successfully, set status to "queued"
-        $this->setQueued();
+            // Dispatch using the method provided by TrackJobs
+            // to also generate job-monitor record
+            $this->dispatchWithMonitor($job, $jobType = static::JOB_TYPE_RUN_CAMPAIGN);
+
+            // After this job is dispatched successfully, set status to "queued"
+            $this->setQueued();
+        });
     }
 
     public function setScheduled()
@@ -207,8 +212,10 @@ class BaseCampaign extends Model
 
         // Pause any previous batch no matter what status it is
         // Notice that batches without a job_monitor will not be retrieved
-        $jobs = $this->jobMonitors()->byJobType(static::JOB_TYPE_RUN_CAMPAIGN)->get();
+        $jobs = $this->jobMonitors()->byJobType(static::JOB_TYPE_DISPATCH_AND_SEND_MESSAGES)->get();
         foreach ($jobs as $job) {
+            // Cancel batch but do not delete job_monitor for the batch
+            // (for reference only, for example: count how many job_monitors (iterations) required to send this campaign...)
             $job->cancelWithoutDeleteBatch();
         }
 
@@ -233,7 +240,7 @@ class BaseCampaign extends Model
 
         // Dispatch it with a batch monitor
         $this->dispatchWithBatchMonitor(
-            $jobTypeName = static::JOB_TYPE_RUN_CAMPAIGN, // a helpful name for future filtering/querying
+            $jobTypeName = static::JOB_TYPE_DISPATCH_AND_SEND_MESSAGES, // a helpful name for future filtering/querying
             $campaignLoaders,
             function ($batch) {
                 // THEN callback of a batch

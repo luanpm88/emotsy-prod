@@ -2761,4 +2761,40 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
         $this->preheader = null;
         $this->save();
     }
+
+    public static function checkAndRerunCampaigns()
+    {
+        if (!redis_enabled()) {
+            throw new Exception('Redis not running');
+        }
+
+        $campaigns = static::sending()->get();
+        foreach ($campaigns as $campaign) {
+            $info = $campaign->debug();
+
+            if (is_null($info)) {
+                echo "Campaign {$campaign->name} does not have debug info\n";
+                continue;
+            }
+
+            if (!array_key_exists('last_activity_at', $info)) {
+                echo "Campaign {$campaign->name} does not have 'last_activity_at' information\n";
+                continue;
+            }
+
+            $lastActivityAt = Carbon::parse($info['last_activity_at']);
+            $now = Carbon::now();
+            $triggerIfExceeds = 300; // Auto rerun a campaign if it has been 'sending' idle for the last 300 seconds (5 minutes)
+            $diffInSeconds = $now->diffInSeconds($lastActivityAt);
+
+            if ($diffInSeconds > $triggerIfExceeds) {
+                $notice = sprintf("Campaign '%s' is pending (last updated '%s'), force resuming...", $campaign->name, $lastActivityAt->diffForHumans());
+                $campaign->logger()->warning($notice);
+                $campaign->execute($force = true);
+            } else {
+                // Just fine
+                // echo sprintf("Campaign '%s' was last updated '%s', it is just fine", $campaign->name, $lastActivityAt->diffForHumans());
+            }
+        }
+    }
 }
