@@ -370,4 +370,9 @@ class Email extends Model implements HasTemplateInterface
         $this->preheader = null;
         $this->save();
     }
+
+    public function debug(Closure $callback = null)
+    {
+        // @important: temporary function to avoid Automation bug
+    }
 }
