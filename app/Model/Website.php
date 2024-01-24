@@ -97,6 +97,9 @@ class Website extends Model
     public function check()
     {
         $content = url_get_contents_ssl_safe($this->url);
+        if (empty($content)) {
+            throw new \Exception(trans('messages.website.empty_site_content'));
+        }
 
         $document = new \DOMDocument();
         $document->encoding = 'utf-8';

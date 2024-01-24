@@ -3134,6 +3134,7 @@
   'website.add' => 'Add website',
   'website.add_site' => 'Add your website',
   'website.can_not_find_connect_script' => 'The connect script could not be found!',
+  'website.empty_site_content' => 'Site content is empty or cannot get it',
   'website.check_connection' => 'Check connection',
   'website.code_copied' => 'Site connection code was copied',
   'website.connect' => 'Connect',
