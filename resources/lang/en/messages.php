@@ -3240,4 +3240,9 @@
   'list.webhook.fields_available_sample' => 'Available fields for this list, select to update the sample CURL',
   'list.webhook.posting_json_with_curl' => 'Posting JSON with CURL',
   'delivery.error.subscriber_not_active' => 'Subscriber is not active at the time of sending (Status :status)',
+  '2fa.email_verification' => 'Email Verification',
+  '2fa.email_verification.verify' => 'Verify',
+  '2fa.email_verification.email_sent' => 'We have sent you an email with a verification code.
+    Please enter the code from the email here to verify your email.',
+  '2fa.email_verification.enter_code_here' => 'Enter code here',
 ) ?>

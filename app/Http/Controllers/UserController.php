@@ -153,4 +153,9 @@ class UserController extends Controller
             'user' => $user,
         ]);
     }
+
+    public function emailVerify()
+    {
+        return view('auth.verify.email');
+    }
 }

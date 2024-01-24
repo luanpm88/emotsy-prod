@@ -247,9 +247,12 @@ Route::group(['middleware' => ['not_installed', 'auth']], function () {
             abort(404);
         }
     }])->where('name', '.+')->name('download');
+
+    // Veridy Email
+    Route::match(['get', 'post'], 'auth/email-verify', 'UserController@emailVerify');
 });
 
-Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function () {
+Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'email_verify']], function () {
     // Audience
     Route::get('audience/growth-chart', 'AudienceController@growthChart');
     Route::get('audience/overview', 'AudienceController@overview');
@@ -327,7 +330,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
     Route::match(['get', 'post'], 'account/billing/edit', 'AccountController@editBillingAddress');
 });
 
-Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscription']], function () {
+Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscription', 'email_verify']], function () {
     // Search
     Route::get('/search/websites', 'SearchController@websites');
     Route::get('/search/forms', 'SearchController@forms');
