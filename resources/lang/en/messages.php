@@ -789,7 +789,7 @@
   'campaign.template.uploaded' => 'Template was successfully uploaded.',
   'campaign.template_name' => '[Campaign: ":name"]',
   'campaign.test_sent' => 'Test email was successfully sent. Please check the inbox.',
-  'automation.trigger.error.link_gone' => 'Trying to evaluate CLICK condition. However, the link is gone. It is likely that the related email was updated and the link is no longer available',
+  'automation.trigger.error.link_gone' => 'Trying to evaluate CLICK condition. However, the link is gone. It is likely that the related email was updated and the link is no longer available. The related Condition element was marked as "not set up". Please set it up again.',
   'campaign.theme.selected' => 'The theme was successfully applied.',
   'campaign.track_click.help' => 'Discover which campaign links were clicked, how many times they were clicked, and who did the clicking.',
   'campaign.track_fbl.help' => 'Sign your email with your sending domain (if any), telling receiving email servers that your email is actually coming from you. This is to help establish the authenticity of your email, improving delivery rate.',
