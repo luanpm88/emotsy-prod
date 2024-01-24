@@ -18,6 +18,7 @@ use Exception;
 use Acelle\Library\Contracts\HasTemplateInterface;
 use Acelle\Library\HtmlHandler\InjectTrackingPixel;
 use Acelle\Library\HtmlHandler\TransformUrl;
+use Closure;
 
 class Email extends Model implements HasTemplateInterface
 {
