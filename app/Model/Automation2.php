@@ -539,7 +539,7 @@ class Automation2 extends Model
     {
         $thisId = $this->id;
         // TODAY + CURRENT TIME
-        $currentTime = new DateTime(null, new DateTimeZone($this->customer->timezone));
+        $currentTime = new DateTime('now', new DateTimeZone($this->customer->timezone));
         // TODAY + GIVEN TIME
         $triggerTime = new DateTime($this->getTriggerAction()->getOptions()['at'], new DateTimeZone($this->customer->timezone));
 
@@ -579,7 +579,7 @@ class Automation2 extends Model
     {
         $thisId = $this->id;
         // TODAY + CURRENT TIME
-        $currentTime = new DateTime(null, new DateTimeZone($this->customer->timezone));
+        $currentTime = new DateTime('now', new DateTimeZone($this->customer->timezone));
         // TODAY + GIVEN TIME
         $triggerTime = new DateTime($this->getTriggerAction()->getOptions()['at'], new DateTimeZone($this->customer->timezone));
 
@@ -667,7 +667,7 @@ class Automation2 extends Model
     public function checkForDateOfBirth()
     {
         // TODAY + CURRENT TIME
-        $currentTime = new DateTime(null, new DateTimeZone($this->customer->timezone));
+        $currentTime = new DateTime('now', new DateTimeZone($this->customer->timezone));
         // TODAY + GIVEN TIME
         $triggerTime = new DateTime($this->getTriggerAction()->getOptions()['at'], new DateTimeZone($this->customer->timezone));
 
