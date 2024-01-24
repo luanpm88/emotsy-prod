@@ -123,7 +123,18 @@ class Evaluate extends Action
     public function evaluateEmailClickCondition()
     {
         $linkUid = $this->getOption('email_link');
-        $email = EmailLink::findByUid($linkUid)->email;
+        $linkObj = EmailLink::findByUid($linkUid);
+
+        if (is_null($linkObj)) {
+            // @important mark the whole Automation as failed
+            // Also, update automation
+            $this->setOption('email_link', null);
+            $this->autoTrigger->automation2->updateAction($this);
+
+            throw new Exception(trans('messages.automation.trigger.error.link_gone'));
+        }
+
+        $email = $linkObj->email;
 
         return $email->isClicked($this->autoTrigger->subscriber);
     }
