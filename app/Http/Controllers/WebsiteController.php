@@ -119,13 +119,13 @@ class WebsiteController extends Controller
             return response('not avaialble', 404);
         }
 
+        if (!$website->isActive()) {
+            return response('disabled', 403);
+        }
+
         $content = view('websites.connectJs', [
             'website' => $website,
         ]);
-
-        if (!$website->isActive()) {
-            $content = '';
-        }
 
         return response($content)
             ->header('Access-Control-Allow-Origin', '*')
