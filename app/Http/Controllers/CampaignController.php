@@ -1115,7 +1115,7 @@ class CampaignController extends Controller
         // User Tracking Information
         $trackingInfo = [
             'message_id' => $message_id,
-            'user_agent' => $_SERVER['HTTP_USER_AGENT'],
+            'user_agent' => array_key_exists('HTTP_USER_AGENT', $_SERVER) ? $_SERVER['HTTP_USER_AGENT'] : null,
         ];
 
         // GeoIP information
