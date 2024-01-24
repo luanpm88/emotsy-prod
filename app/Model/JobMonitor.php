@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Bus;
 use Acelle\Library\Traits\HasUid;
 use Acelle\Library\Lockable;
 use Exception;
+use Illuminate\Support\Facades\Log;
 
 class JobMonitor extends Model
 {
@@ -84,6 +85,7 @@ class JobMonitor extends Model
         $errorMsg = "Error executing job. ".$exception->getMessage();
         $this->error = $errorMsg;
         $this->save();
+        Log::error(sprintf("LOGGED BY JOB MONITOR. %s\n%s", $errorMsg, $exception->getTraceAsString()));
     }
 
     public function setRunning()
