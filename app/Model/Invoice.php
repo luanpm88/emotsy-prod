@@ -636,18 +636,20 @@ class Invoice extends Model
         return true;
     }
 
-    public static function getTemplateContent()
+    public static function getTemplateContent($languageCode = 'en')
     {
         if (Setting::get('invoice.custom_template')) {
             return Setting::get('invoice.custom_template');
         } else {
-            return view('invoices.template');
+            return view('invoices.template', [
+                'languageCode' => $languageCode,
+            ]);
         }
     }
 
     public function getInvoiceHtml()
     {
-        $content = self::getTemplateContent();
+        $content = self::getTemplateContent($this->customer->getLanguageCode());
         $bill = $this->getBillingInfo();
 
         // transalte tags

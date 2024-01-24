@@ -10,6 +10,8 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Acelle\Library\Traits\Trackable;
 use Acelle\Library\Contracts\CampaignInterface;
+use Carbon\Carbon;
+use DB;
 
 class RunCampaign implements ShouldQueue
 {
@@ -48,8 +50,21 @@ class RunCampaign implements ShouldQueue
         }
 
         try {
-            $this->campaign->logger()->info("Launch campaign ---------------------->");
+            $sessionId = date('Y-m-d_H:i:s');
+
+            // Debug to REDIS
+            $startAt = Carbon::now();
+            $this->campaign->cleanupDebug();
+            $this->campaign->debug(function ($info) use ($startAt) {
+                $info['start_at'] = $startAt->toString();
+                return $info;
+            });
+
+            $this->campaign->logger()->info("Launch campaign from job: session {$sessionId}");
+
             $this->campaign->run();
+
+            // after executing campaign.run(), this job just finishes
         } catch (\Throwable $e) {
             $errorMsg = "Error scheduling campaign: ".$e->getMessage()."\n".$e->getTraceAsString();
             $this->campaign->setError($errorMsg);

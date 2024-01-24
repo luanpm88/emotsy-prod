@@ -55,7 +55,7 @@
                         // save tree
                         saveData(function() {
                             // hide popup
-                            popup.hide();
+                            automationPopup.hide();
 
                             setTimeout(function() {
                                 doSelect(newE);
@@ -73,7 +73,7 @@
                         
                         // save tree
                         saveData(function() {
-                            popup.hide();
+                            automationPopup.hide();
                             
                             // reload sidebar
                             sidebar.load();

@@ -22,6 +22,11 @@ class MailListController extends Controller
     {
         $customer = $request->user()->customer;
 
+        // Update cache at the first time user sees the list
+        foreach ($customer->lists as $list) {
+            dispatch(new \Acelle\Jobs\UpdateMailListJob($list));
+        }
+
         return view('lists.index');
     }
 
@@ -972,5 +977,23 @@ class MailListController extends Controller
         // $result['data'] = array_reverse($result['data']);
 
         return response()->json($result);
+    }
+
+    public function webhookJson(Request $request, $uid)
+    {
+        $list = MailList::findByUid($uid);
+
+        return view('lists.webhookJson', [
+            'list' => $list,
+        ]);
+    }
+
+    public function webhookForm(Request $request, $uid)
+    {
+        $list = MailList::findByUid($uid);
+
+        return view('lists.webhookForm', [
+            'list' => $list,
+        ]);
     }
 }

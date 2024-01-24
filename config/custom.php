@@ -10,12 +10,11 @@ return [
     // Timeformat for storing
     'time_format' => 'H:i',
 
-    // Minimum recommended PHP version
-    // which is required by Laravel 8
-    'php_recommended' => '7.3.0',
+    // Minimum recommended PHP version to upgrade (if PHP version does not satisfy, upgrade is disabled
+    'php_recommended' => '8.1.0',
 
     // Minimum supported PHP version
-    'php' => '7.3.0',
+    'php' => '8.0.2',
 
     // Branding
     'default_logo_light' => env('APP_DEFAULT_LOGO_LIGHT', 'images/logo_light.svg'),
@@ -34,5 +33,9 @@ return [
     'dryrun' => env('APP_DRYRUN', false),
 
     // License verification endpoint
-    'license_verification_endpoint' => env('LICENSE_VALIDATION_ENDPOINT', 'http://verify.acellemail.com')
+    'license_verification_endpoint' => env('LICENSE_VALIDATION_ENDPOINT', 'http://verify.acellemail.com'),
+
+    // chunk size per import
+    // Set this value to a too high value will result in MySQL error: "General error: 1390 Prepared statement contains too many placeholders..."
+    'import_batch_size' => env('IMPORT_BATCH_SIZE', 1000),
 ];

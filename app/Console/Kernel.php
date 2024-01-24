@@ -10,6 +10,7 @@ use Acelle\Cashier\Cashier;
 use Acelle\Model\Subscription;
 use Acelle\Model\Setting;
 use Acelle\Model\Campaign;
+use Acelle\Model\Customer;
 use Laravel\Tinker\Console\TinkerCommand;
 use Exception;
 use Acelle\Library\Facades\SubscriptionFacade;
@@ -48,6 +49,15 @@ class Kernel extends ConsoleKernel
             }
         }, 'CronJob issue');
 
+        // Make sure CLI process is NOT executed as root
+        Notification::recordIfFails(function () {
+            $minPHPRecommended = config('custom.php_recommended');
+
+            if (!version_compare(PHP_VERSION, $minPHPRecommended, '>=')) {
+                throw new Exception( trans('messages.requirement.php_version.not_supuported.description', ['current' => PHP_VERSION, 'required' => $minPHPRecommended]) );
+            }
+        }, $phpMsgTitle = trans('messages.requirement.php_version.not_supuported.title'));
+
         $schedule->call(function () {
             event(new \Acelle\Events\CronJobExecuted());
         })->name('cronjob_event:log')->everyMinute();
@@ -60,15 +70,6 @@ class Kernel extends ConsoleKernel
         // Bounce/feedback handler
         $schedule->command('handler:run')->everyThirtyMinutes();
 
-        // Queued import/export/campaign
-        // Allow overlapping: max 10 proccess as a given time (if cronjob interval is every minute)
-        // Job is killed after timeout
-        $schedule->command('queue:work --queue=default,batch --timeout=120 --tries=1 --max-time=180')->everyMinute();
-
-        // Make it more likely to have a running queue at any given time
-        // Make sure it is stopped before another queue listener is created
-        // $schedule->command('queue:work --queue=default,batch --timeout=120 --tries=1 --max-time=290')->everyFiveMinutes();
-
         // Sender verifying
         $schedule->command('sender:verify')->everyFiveMinutes();
 
@@ -80,9 +81,11 @@ class Kernel extends ConsoleKernel
 
         // Subscription: check expiration
         $schedule->call(function () {
-            SubscriptionFacade::endExpiredSubscriptions();
-            SubscriptionFacade::createRenewInvoices();
-            SubscriptionFacade::autoChargeRenewInvoices();
+            Notification::recordIfFails(function () {
+                SubscriptionFacade::endExpiredSubscriptions();
+                SubscriptionFacade::createRenewInvoices();
+                SubscriptionFacade::autoChargeRenewInvoices();
+            }, 'Error checking subscriptions');
         })->name('subscription:monitor')->everyFiveMinutes();
 
         // Check for scheduled campaign to execute
@@ -111,6 +114,39 @@ class Kernel extends ConsoleKernel
         } else {
             $licenseTask->weeklyOn(rand(1, 6), '10:'.rand(10, 59)); // randomly from Mon to Sat, at 10:10 - 10:59
         }
+
+        // Auto (force) resume pending campaigns (those are in "sending" status but not actually running)
+        $schedule->call(function () {
+            if (redis_enabled()) {
+                Campaign::checkAndForceRerunCampaigns();
+            }
+        })->name('campaign:force-rerun-pending-campaigns')->everyTenMinutes();
+
+        /*
+        // Update list/user cache every 30 minutes
+        // @important: potential performance issue here
+        $schedule->call(function() {
+            $customers = Customer::all();
+
+            foreach($customers as $customer) {
+                if (is_null($customer->getCurrentActiveGeneralSubscription())) {
+                    continue;
+                }
+
+                $lists = $customer->lists;
+
+                foreach ($lists as $list) {
+                    dispatch(new \Acelle\Jobs\UpdateMailListJob($list));
+                }
+                dispatch(new \Acelle\Jobs\UpdateUserJob($customer));
+            }
+        })->name('update_list_stats')->daily();
+        */
+
+        // Queued import/export/campaign
+        // Allow overlapping: max 10 proccess as a given time (if cronjob interval is every minute)
+        // Job is killed after timeout
+        $schedule->command('queue:work --queue=default,batch --tries=1 --max-time=180')->everyMinute();
     }
 
     /**

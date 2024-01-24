@@ -12,6 +12,7 @@ use Illuminate\Queue\SerializesModels;
 use Acelle\Library\Contracts\CampaignInterface;
 use Acelle\Library\Traits\Trackable;
 use Closure;
+use Carbon\Carbon;
 
 class LoadCampaign implements ShouldQueue
 {
@@ -22,21 +23,26 @@ class LoadCampaign implements ShouldQueue
     use Queueable;
     use SerializesModels;
 
+    // @important: set the "retry_after" setting in config/queue.php to a value that is greater than $timeout;
     public $timeout = 7200;
     public $failOnTimeout = true;
     public $tries = 1;
     public $maxExceptions = 1;
 
     protected CampaignInterface $campaign;
+    protected $page;
+    protected $listOfIds;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(CampaignInterface $campaign)
+    public function __construct(CampaignInterface $campaign, int $page, array $listOfIds)
     {
         $this->campaign = $campaign;
+        $this->page = $page;
+        $this->listOfIds = $listOfIds;
     }
 
     /**
@@ -50,18 +56,24 @@ class LoadCampaign implements ShouldQueue
             return;
         }
 
-        // Update status
-        $this->campaign->setSending();
+        // Last update recording should go here
+        // before any other tasks (to prevent IO blocking tasks)
+        // In case we need to clean up pending jobs, at least we know that last job start time
+        // Reduce the posibility of killing a newly started (and still running) job
+        $this->campaign->debug(function ($info) {
+            // Record last activity, no matter it is a successful delivery or exception
+            // This information is useful when we want to audit delivery processes
+            // i.e. when we can to automatically restart dead jobs for example
+            $info['last_activity_at'] = Carbon::now()->toString();
 
-        // Iterating through a big list ans create job objects may cause memory leak
-        // So, LoadCampaign only loads a certain numbers subscribers each time, then just finish job to release the queue listener (remember to configure the queue correctly to release after a short time)
-        // When a campaign is done, it will automaticall launch a new LoadCampaign job if there are more subscribers to send
-        $loadLimit = 100 + rand(1, 9);
-        $this->campaign->logger()->info(sprintf('Loading contacts to shoot (up to %s)', $loadLimit));
+            // Must return;
+            return $info;
+        });
 
-        // Iterate through contacts and launch sending process
-        $this->campaign->loadDeliveryJobs(function (ShouldQueue $deliveryJob) {
+        $this->campaign->logger()->info(sprintf('Loading contacts for page %s (#%s)', $this->page, sizeof($this->listOfIds)));
+
+        $this->campaign->loadDeliveryJobsByIds(function (ShouldQueue $deliveryJob) {
             $this->batch()->add($deliveryJob);
-        }, $loadLimit);
+        }, $this->page, $this->listOfIds);
     }
 }

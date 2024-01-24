@@ -31,7 +31,7 @@
         @foreach ($timelines as $key => $timeline)
             <div class="mc-row d-flex align-items-center">
                 <div class="media trigger">
-                    <a href="javascript:;" onclick="popup.load('{{ action('Automation2Controller@profile', [
+                    <a href="javascript:;" onclick="automationPopup.load('{{ action('Automation2Controller@profile', [
                         'uid' => $automation->uid,
                         'contact_uid' => $timeline->subscriber->uid,
                     ]) }}')" class="font-weight-semibold d-block">
@@ -45,7 +45,7 @@
                     </a>
                 </div>
                 <div class="flex-fill flex-grow-1" style="width: 50%">
-                    <a href="javascript:;" onclick="popup.load('{{ action('Automation2Controller@profile', [
+                    <a href="javascript:;" onclick="automationPopup.load('{{ action('Automation2Controller@profile', [
                         'uid' => $automation->uid,
                         'contact_uid' => $timeline->subscriber->uid,
                     ]) }}')" class="font-weight-semibold d-block">

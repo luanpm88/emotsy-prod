@@ -8,7 +8,7 @@
         <link rel="preconnect" href="https://fonts.googleapis.com"> 
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> 
 		
-		@if (Auth()->user()->customer->getLanguageCode() == 'ja') 
+		@if ($languageCode == 'ja') 
 			<link href="https://fonts.googleapis.com/css2?family=M PLUS 1" rel="stylesheet">
 			<style>
 				@import url('https://fonts.googleapis.com/css2?family=M PLUS 1');

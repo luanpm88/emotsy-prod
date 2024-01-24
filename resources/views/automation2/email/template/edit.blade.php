@@ -51,7 +51,7 @@
                 ]) }}',
                 backCallback: function() {
                   parent.$('.full-iframe-popup').remove();
-                  popup.load();
+                  automationPopup.load();
                 },
                 disableFeatures: [ 'change_template' ], 
                 uploadAssetUrl: '{{ action('TemplateController@uploadTemplateAssets', $email->template->uid) }}',

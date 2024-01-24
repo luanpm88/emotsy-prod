@@ -345,6 +345,8 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('account/api', 'AccountController@api');
 
     // Mail list
+    Route::get('lists/{uid}/webhook/form', 'MailListController@webhookForm');
+    Route::get('lists/{uid}/webhook/json', 'MailListController@webhookJson');
     Route::match(['get', 'post'], 'lists/select', 'MailListController@selectList');
     Route::get('lists/{uid}/email-verification/chart', 'MailListController@emailVerificationChart');
     Route::get('lists/{uid}/clone-to-customers/choose', 'MailListController@cloneForCustomersChoose');
@@ -591,6 +593,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::patch('campaigns/{uid}/update', 'CampaignController@update');
     Route::get('campaigns/{uid}/run', 'CampaignController@run');
     Route::get('campaigns/{uid}/update-stats', 'CampaignController@updateStats');
+    Route::get('campaigns/{uid}/debug', 'CampaignController@debug');
 
     //
     Route::get('users/login-back', 'UserController@loginBack');
@@ -677,6 +680,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::post('notifications/{id}/hide', 'NotificationController@hide');
 
     // Automation2
+    Route::get('automation/{email_uid}/overview', 'Automation2Controller@emailOverview');
     Route::post('automation/{uid}/trigger-all', 'Automation2Controller@triggerAll');
 
     Route::match(['get', 'post'], 'automation/{uid}/copy', 'Automation2Controller@copy');
@@ -1284,7 +1288,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::match(['get','post'], 'tax/settings', 'TaxController@settings');
 
     // Invoice
-    Route::match(['get','post'], 'admin/invoices/template', 'InvoiceController@template');
+    Route::match(['get','post'], 'admin/invoices/template/edit', 'InvoiceController@templateEdit');
     Route::get('admin/invoices/{uid}/download', 'InvoiceController@download');
 
     // OAuth
@@ -1413,4 +1417,8 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::get('admin/campaigns/{uid}/approve', 'CampaignController@approvePreview');
     Route::get('admin/campaigns/listing/{page?}', 'CampaignController@listing');
     Route::resource('admin/campaigns', 'CampaignController');
+    
+    //
+    Route::post('admin/verify/index', 'VerificationController@index');
+    Route::get('admin/verify/index', 'VerificationController@index');
 });

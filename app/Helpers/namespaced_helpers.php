@@ -421,6 +421,7 @@ function execute_with_limits(array $rateTrackers, array $creditTrackers, Closure
             $creditTracker->rollback();
         }
 
+        // This exception is safely handled in SendMessage ( i.e. catch (RateLimitExceeded $ex) )
         throw $exception;
     }
 

@@ -323,5 +323,4 @@ return [
      * Custom application settings of Acelle Mail go here
      */
     'redis_enabled' => env('REDIS_ENABLED', false),
-    'import_batch_size' => env('IMPORT_BATCH_SIZE', 9993),
 ];

@@ -22,6 +22,7 @@ use Acelle\Model\JobMonitor;
 use DB;
 use Exception;
 use Carbon\Carbon;
+use Illuminate\Support\MessageBag;
 
 class CampaignController extends Controller
 {
@@ -799,13 +800,6 @@ class CampaignController extends Controller
         ]);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function delete(Request $request)
     {
         if (isSiteDemo()) {
@@ -2295,7 +2289,19 @@ class CampaignController extends Controller
                 $sending = $campaign->sendTestEmail($request->email);
             }
 
-            return response()->json($sending);
+            // check result
+            if ($sending['status'] == 'error') {
+                $validator->getMessageBag()->add('send_error', json_encode($sending));
+
+                return response()->view('campaigns.sendTestEmail', [
+                    'campaign' => $campaign,
+                    'errors' => $validator->errors(),
+                ], 400);
+            } else {
+                return response()->json($sending, 200);
+            }
+
+            return response()->json($sending, $statusCode);
         }
 
         return view('campaigns.sendTestEmail', [
@@ -3321,6 +3327,20 @@ class CampaignController extends Controller
         return trans('messages.campaign.ab.winning_send_at', [
             'date' => Auth()->user()->customer->formatDateTime($sendAt, 'date_short'),
             'time' => Auth()->user()->customer->formatDateTime($sendAt, 'time_only'),
+        ]);
+    }
+    
+    public function debug(Request $request)
+    {
+        if (!redis_enabled()) {
+            throw new Exception('Redis service not available');
+        }
+
+        $campaign = Campaign::findByUid($request->uid);
+
+        return view('campaigns.debug', [
+            'campaign' => $campaign,
+            'debug' => $campaign->debug(),
         ]);
     }
 }

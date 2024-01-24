@@ -2153,82 +2153,78 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
     }
 
     /**
-     * Start the campaign. called by daemon job
+     * Load delivery jobs from a list of IDs
      */
-    public function loadDeliveryJobs(Closure $callback, int $loadLimit = null)
+    public function loadDeliveryJobsByIds(Closure $callback, int $page, array $listOfIds)
     {
         // Available sending servers
         $sendingServersPool = $this->defaultMailList->getSendingServers();
 
-        // Set up sending servers' webhooks before launching
-        foreach ($sendingServersPool as $serverId => $fitness) {
-            $server = SendingServer::find($serverId)->mapType();
-
-            if ($this->useSendingServerFromEmailAddress()) {
-                $fromEmailAddress = $server->default_from_email;
-            } else {
-                $fromEmailAddress = $this->from_email;
-            }
-
-            $this->logger()->info('Setting up before send for server '.$server->uid);
-            $server->setupBeforeSend($fromEmailAddress);
+        // No sending server ready for delivery
+        if (empty($sendingServersPool)) {
+            throw new Exception('No sending server avaialble');
         }
 
-        // Reset max_execution_time so that command can run for a long time without being terminated
-        self::resetMaxExecutionTime();
-
-        // Clear any HTML cache
-        $this->clearTemplateCache();
-
-        // Last chance for campaign to setup
-        // @todo Find a better place for the following method, afterSave for example
-        $this->updateLinks();
-
-        // Query subscribers
-        // IMPORTANT: this method is called by LoadCampaign job which create a SendMessage job for each subscribers
-        // then add to the batch
-        // However, iterating through a big list may cause memory leak
-        // So, LoadCampaign only a fixed number of $loadLimit subscribers each time, then just finish the queue
-        // (it will automatically load the other $loadLimit after that)
-        if (!is_null($loadLimit)) {
-            $subscribers = $this->subscribersToSend()->limit($loadLimit)->get();
-            foreach ($subscribers as $subscriber) {
-                $serverId = RouletteWheel::take($sendingServersPool);
+        // @important: in case of multiple LoadCampaign jobs running
+        // the following task might conflict:
+        // For example: "Campaign stopped. Timeout getting lock #Lockable for: /home/app/public_html/storage/locks/sending-server-sns-6512d..."
+        // As a result, execute it with first page only @hack @trick @important
+        if ($page == 1) {
+            // Set up sending servers' webhooks before launching
+            foreach ($sendingServersPool as $serverId => $fitness) {
                 $server = SendingServer::find($serverId)->mapType();
 
-                // Dispatch delivery job and return it to the LoadCampaign to monitor
-
-                if (config('app.saas')) {
-                    $subscription = $this->customer->getCurrentActiveGeneralSubscription();
+                if ($this->useSendingServerFromEmailAddress()) {
+                    $fromEmailAddress = $server->default_from_email;
                 } else {
-                    $subscription = null;
+                    $fromEmailAddress = $this->from_email;
                 }
 
-                $job = new SendMessage($this, $subscriber, $server, $subscription);
-                $stopOnError = $this->stopOnError();
-                // $stopOnError = Setting::isYes('campaign.stop_on_error'); // true or false
-                $job->setStopOnError($stopOnError);
-                $callback($job);
+                $this->logger()->info('Setting up before send (page 1 only) for server '.$server->uid);
+                $server->setupBeforeSend($fromEmailAddress);
             }
 
-            // Important
-            return;
+            // Reset max_execution_time so that command can run for a long time without being terminated
+            self::resetMaxExecutionTime();
+
+            // Clear any HTML cache
+            $this->clearTemplateCache();
+
+            // Last chance for campaign to setup
+            // @todo Find a better place for the following method, afterSave for example
+            $this->updateLinks();
         }
 
-        // Iterate through batches of subscribers, 100 each
-        cursorIterate(
-            $this->subscribersToSend(),
-            $orderBy = 'subscribers.id',
-            $perPage = 100,
-            function ($subscribers) use (&$i, &$sendingServersPool, $callback) {
-                foreach ($subscribers as $subscriber) {
-                    $serverId = RouletteWheel::take($sendingServersPool);
-                    $server = SendingServer::find($serverId)->mapType();
+        // Query subscribers
+        $subscribers = $this->subscribersToSend()->whereIn('subscribers.id', $listOfIds)->get();
 
-                    $callback($this, $subscriber, $server);
-                }
+        if (sizeof($subscribers) == 0) {
+            $this->logger()->info("Page {$page}, no contacts in this page");
+        } else {
+            $this->logger()->info("Page {$page}, from guy {$subscribers[0]->id} to {$subscribers[sizeof($subscribers) - 1]->id}");
+        }
+
+        foreach ($subscribers as $subscriber) {
+            $serverId = RouletteWheel::take($sendingServersPool);
+            $server = SendingServer::find($serverId)->mapType();
+
+            // Dispatch delivery job and return it to the LoadCampaign to monitor
+
+            if (config('app.saas')) {
+                $subscription = $this->customer->getCurrentActiveGeneralSubscription();
+            } else {
+                $subscription = null;
             }
-        );
+
+            $job = new SendMessage($this, $subscriber, $server, $subscription);
+            $stopOnError = $this->stopOnError();
+            // $stopOnError = Setting::isYes('campaign.stop_on_error'); // true or false
+            $job->setStopOnError($stopOnError);
+            $callback($job);
+        }
+
+        // Important
+        return;
     }
 
     // @important
@@ -2435,6 +2431,12 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
 
     public function saveFromArray($params)
     {
+        // custom campaign content
+        $content = null;
+        if (isset($params['html'])) {
+            $content = $params['html'];
+            unset($params['html']);
+        }
         // filter var
         if (isset($params['track_open'])) {
             $params['track_open'] = filter_var($params['track_open'], FILTER_VALIDATE_BOOLEAN);
@@ -2460,7 +2462,39 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
             $this->default_mail_list_id = \Acelle\Model\MailList::findByUid($params['mail_list_uid'])->id;
         }
 
+        //
         $this->save();
+
+        // if there are custom campaign content
+        if ($content) {
+            $this->setContentAsTemplate($content);
+        }
+    }
+
+    public function setContentAsTemplate($content)
+    {
+        $attributes['is_default'] = false; // default templates that are originally created
+        $attributes['builder'] = false;
+        $attributes['type'] = Template::TYPE_EMAIL;
+
+        $template = new Template();
+        $template->uid = uniqid();
+        $template->fill($attributes); // Including 'uid', 'name', 'content', 'builder'
+        $template->content = $content;
+        $template->customer_id = $this->customer_id;
+        $template->name = trans('messages.campaign.template_name', ['name' => $this->name]);
+
+        $template->save();
+
+        // remove exist template
+        if ($this->template) {
+            $this->template->deleteAndCleanup();
+        }
+
+        $this->template_id = $template->id;
+        $this->save();
+        $this->refresh();
+        $this->updateLinks();
     }
 
     public function makeSampleData($params = [])
@@ -2873,5 +2907,41 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
     public static function scopeNotInlcludeBVersion($query)
     {
         $query = $query->doesntHave('campaignA');
+    }
+    
+    public static function checkAndForceRerunCampaigns()
+    {
+        if (!redis_enabled()) {
+            throw new Exception('Redis not running');
+        }
+
+        $campaigns = static::sending()->get();
+        foreach ($campaigns as $campaign) {
+            $info = $campaign->debug();
+
+            if (is_null($info)) {
+                // echo "Campaign {$campaign->name} does not have debug info\n";
+                continue;
+            }
+
+            if (!array_key_exists('last_activity_at', $info)) {
+                // echo "Campaign {$campaign->name} does not have 'last_activity_at' information\n";
+                continue;
+            }
+
+            $lastActivityAt = Carbon::parse($info['last_activity_at']);
+            $now = Carbon::now();
+            $triggerIfExceeds = 300; // Auto rerun a campaign if it has been 'sending' idle for the last 300 seconds (5 minutes)
+            $diffInSeconds = $now->diffInSeconds($lastActivityAt);
+
+            if ($diffInSeconds > $triggerIfExceeds) {
+                $notice = sprintf("Campaign '%s' is pending (last updated '%s'), force resuming...", $campaign->name, $lastActivityAt->diffForHumans());
+                $campaign->logger()->warning($notice);
+                $campaign->execute($force = true);
+            } else {
+                // Just fine
+                // echo sprintf("Campaign '%s' was last updated '%s', it is just fine", $campaign->name, $lastActivityAt->diffForHumans());
+            }
+        }
     }
 }

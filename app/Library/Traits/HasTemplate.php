@@ -242,12 +242,7 @@ trait HasTemplate
         if (is_null($this->type) || $this->type == self::TYPE_REGULAR) {
             $html = $this->getHtmlContent($subscriber, $msgId, $server, $fromCache, $expiresInSeconds);
 
-            $options = array(
-              'ignore_errors' => true,
-              // other options go here
-            );
-
-            $plain = Html2Text::convert($html, $options);
+            $plain = Html2Text::convert($html, [ 'ignore_errors' => true ]);
 
             // IMPORTANT: add plain part first, then html part
             $message->addPart($plain, 'text/plain');
@@ -490,9 +485,6 @@ trait HasTemplate
         $pipeline = new PipelineBuilder();
 
         if (!is_null($subscriber)) {
-            if (is_null($msgId)) {
-                throw new Exception('MessageID must not be null');
-            }
             $pipeline->add(new TransformTag($this, $subscriber, $msgId, $server));
         }
 

@@ -4,12 +4,12 @@ return [
     'services' => [
         [
             'id' => 'emailable.com',
-            'name' => 'Emailable (recommended)',
-            'uri' => 'https://api.emailable.com/v1/verify?email={EMAIL}&api_key={API_KEY}',
-            'request_type' => 'GET',
+            'name' => 'Emailable',
             'fields' => [ 'api_key' ],
-            'result_xpath' => '$.state',
-            'result_map' => [ 'deliverable' => 'deliverable', 'undeliverable' => 'undeliverable', 'risky' => 'risky', 'unknown' => 'unknown' ]
+        ], [
+            'id' => 'zerobounce.net',
+            'name' => 'ZeroBounce',
+            'fields' => [ 'api_key' ],
         ],[
             'id' => 'kickbox.io',
             'name' => 'Kickbox IO',
@@ -19,32 +19,6 @@ return [
             'result_xpath' => '$.result',
             'result_map' => [ 'deliverable' => 'deliverable', 'undeliverable' => 'undeliverable', 'risky' => 'risky', 'unknown' => 'unknown' ]
         ], [
-            'id' => 'zerobounce.net',
-            'name' => 'Zero Bounce',
-            'uri' => 'https://api.zerobounce.net/v2/validate?api_key={API_KEY}&email={EMAIL}&ip_address=',
-            'request_type' => 'GET',
-            'fields' => [ 'api_key' ],
-            'result_xpath' => '$.status',
-            'result_map' => [
-                'valid' => 'deliverable',
-                'Valid' => 'deliverable',
-                'invalid' => 'undeliverable',
-                'Invalid' => 'undeliverable',
-                'unknown' => 'unknown',
-                'Unknown' => 'unknown',
-                'abuse' => 'undeliverable',
-                'Abuse' => 'undeliverable',
-                'spamtrap' => 'undeliverable',
-                'Spamtrap' => 'undeliverable',
-                'catch-all' => 'deliverable',
-                'Catch-all' => 'deliverable',
-                'Catch-All' => 'deliverable',
-                'do_not_mail' => 'undeliverable',
-                'Do_not_mail' => 'undeliverable',
-                'Do_Not_Mail' => 'undeliverable',
-            ]
-        ],
-        [
             'id' => 'verify-email.org',
             'name' => 'VerifyEmail ORG',
             'uri' => 'https://app.verify-email.org/api/v1/{API_KEY}/verify/{EMAIL}',
@@ -97,19 +71,7 @@ return [
         ],[
             'id' => 'emaillistvalidation.com',
             'name' => 'Emaillist Validation',
-            'uri' => 'https://app.emaillistvalidation.com/api/verifEmail?secret={API_KEY}&email={EMAIL}',
-            'request_type' => 'GET',
-            'response_type' => 'plain',
             'fields' => [ 'api_key' ],
-            'result_map' => [
-                'ok' => 'deliverable',
-                'ok_for_all' => 'deliverable',
-                'ok_for_all | ok_for_all' => 'deliverable',
-                'ok_for_all|ok_for_all' => 'deliverable',
-                'email_disabled' => 'undeliverable',
-                'risky' => 'risky',
-                'unknown' => 'unknown'
-            ]
         ],[
             'id' => 'bounceless.io',
             'name' => 'Bounceless.io',

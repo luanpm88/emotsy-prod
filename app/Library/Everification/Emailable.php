@@ -33,7 +33,7 @@ class Emailable
 
         $result = $this->parseResult($response);
 
-        return [$result, $response];
+        return [$result, (string)$response->getBody()];
     }
 
     public function parseResult($response)

@@ -35,7 +35,7 @@
 			var data = $('.select-trigger-confirm').closest('form').serialize();
 
 			// show loading effect
-			popup.loading();
+			automationPopup.loading();
 
 			$.ajax({
 				url: url,
@@ -45,7 +45,7 @@
 				statusCode: {
 					// validate error
 					400: function (res) {
-						popup.loadHtml(res.responseText);
+						automationPopup.loadHtml(res.responseText);
 					}
 				},
 				success: function (response) {					
@@ -70,7 +70,7 @@
 						doSelect(tree);
 
 						// hide popup
-						popup.hide();
+						automationPopup.hide();
 						
 						// notify success message
 						notify({

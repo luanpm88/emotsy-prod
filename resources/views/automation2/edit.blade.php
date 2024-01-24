@@ -186,7 +186,7 @@
         });
 
         // popup
-        var popup = new Popup(undefined, undefined, {
+        var automationPopup = new Popup(undefined, undefined, {
             onclose: function() {
                 sidebar.load();
             }
@@ -274,16 +274,16 @@
         function SelectActionConfirm(key) {
             var url = '{{ action('Automation2Controller@actionSelectConfirm', $automation->uid) }}' + '?key=' + key;
             
-            popup.load(url, function() {                
+            automationPopup.load(url, function() {                
                 // when click confirm select trigger type
-                popup.popup.find('#action-select').submit(function(e) {
+                automationPopup.popup.find('#action-select').submit(function(e) {
                     e.preventDefault();
                 
                     var url = $(this).attr('action');
                     var data = $(this).serialize();
                     
                     // show loading effect
-                    popup.loading();
+                    automationPopup.loading();
                     $.ajax({
                         url: url,
                         type: 'POST',
@@ -302,7 +302,7 @@
                         // save tree
                         saveData(function() {
                             // hide popup
-                            popup.hide();
+                            automationPopup.hide();
 
                             doSelect(newE);
                             
@@ -320,7 +320,7 @@
         function EmailSetup(id) {
             var url = '{{ action('Automation2Controller@emailSetup', $automation->uid) }}' + '?action_id=' + id;
             
-            popup.load(url, function() {
+            automationPopup.load(url, function() {
             });
         }
 
@@ -334,11 +334,11 @@
                 hasChildren = tree.getSelected().hasChildNo();
             }
 
-            popup.load('{{ action('Automation2Controller@actionSelectPupop', $automation->uid) }}?hasChildren=' + hasChildren, function() {
+            automationPopup.load('{{ action('Automation2Controller@actionSelectPupop', $automation->uid) }}?hasChildren=' + hasChildren, function() {
                 console.log('Select action popup loaded!');
                 
                 // when click on action type
-                popup.popup.find('.action-select-but').click(function() {
+                automationPopup.popup.find('.action-select-but').click(function() {
                     var key = $(this).attr('data-key');
                     // EMAIL
                     if (key == 'send-an-email') {
@@ -367,11 +367,11 @@
         }
         
         function OpenTriggerSelectPopup() {
-            popup.load('{{ action('Automation2Controller@triggerSelectPupop', $automation->uid) }}', function() {
+            automationPopup.load('{{ action('Automation2Controller@triggerSelectPupop', $automation->uid) }}', function() {
                 console.log('Select trigger popup loaded!');
                 
                 // when click on trigger type
-                popup.popup.find('.trigger-select-but').click(function() {
+                automationPopup.popup.find('.trigger-select-but').click(function() {
                     var key = $(this).attr('data-key');
                     
                     // show select trigger confirm box
@@ -383,7 +383,7 @@
         function SelectTriggerConfirm(key) {
             var url = '{{ action('Automation2Controller@triggerSelectConfirm', $automation->uid) }}' + '?key=' + key;
             
-            popup.load(url, function() {
+            automationPopup.load(url, function() {
                 console.log('Confirm trigger type popup loaded!');
             });
         }
@@ -453,7 +453,7 @@
 
                 var url = $(this).attr('href');
 
-                popup.load(url, function() {
+                automationPopup.load(url, function() {
                     console.log('quota popup loaded!');
                 });
             });
@@ -669,13 +669,13 @@
             @if (request()->auto_popup)
                 doSelect(tree.child);
                 setTimeout(function() {
-                    popup.load(getEmailSetupUrl(tree.child.getOptions().email_uid),
+                    automationPopup.load(getEmailSetupUrl(tree.child.getOptions().email_uid),
                     function() {
                         $('.email_title').html('{{ trans('messages.source.abandoned_cart_email') }}');
                     });
                 }, 100);
 
-                popup.onHide = function() {
+                automationPopup.onHide = function() {
                     if (parent && parent.$('.trans_frame')) {
                         parent.$('.trans_frame').fadeOut();
                     }
@@ -686,7 +686,7 @@
 
                     doSelect(tree.child);
                     setTimeout(function() {
-                        popup.load(getEmailSetupUrl(tree.child.getOptions().email_uid),
+                        automationPopup.load(getEmailSetupUrl(tree.child.getOptions().email_uid),
                         function() {
                             $('.email_title').html('{{ trans('messages.source.abandoned_cart_email') }}');
                         });

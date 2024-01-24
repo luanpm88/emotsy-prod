@@ -10,7 +10,6 @@ trait Trackable
 {
     public $monitor;
     public $eventAfterDispatched;
-    public $eventAfterFinished;
 
     public function setMonitor(JobMonitor $monitor)
     {
@@ -20,10 +19,5 @@ trait Trackable
     public function afterDispatched($callback)
     {
         $this->eventAfterDispatched = $callback;
-    }
-
-    public function afterFinished($callback)
-    {
-        $this->eventAfterFinished = $callback;
     }
 }
