@@ -18,7 +18,7 @@
 		@if (Auth::user()->customer->theme_mode == 'auto')
 			var ECHARTS_THEME = isDarkMode() ? 'dark' : null
 
-			auto detect dark-mode
+			// auto detect dark-mode
 			$(function() {
 				autoDetechDarkMode('{{ action('AccountController@saveAutoThemeMode') }}');
 			});
