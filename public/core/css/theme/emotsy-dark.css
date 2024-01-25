@@ -468,10 +468,6 @@ body.mode-dark #chartsub .c100 .fill{
         background: #d0f3f6;
     }
 }
-body.mode-dark .select2-selection--single:not([class*=bg-]):not([class*=border-]) {
-    background-color: #fff;
-    border-color: #ccc;
-}
 body.mode-dark .e-title{
     color: rgba(255,255,255,0.85);
 }
