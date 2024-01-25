@@ -100,6 +100,11 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
         return $this->hasMany('Acelle\Model\CampaignWebhook');
     }
 
+    public function campaignHeaders()
+    {
+        return $this->hasMany('Acelle\Model\CampaignHeader');
+    }
+
     /**
      * Get campaign's associated tracking domain.
      */
@@ -2796,5 +2801,13 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
                 // echo sprintf("Campaign '%s' was last updated '%s', it is just fine", $campaign->name, $lastActivityAt->diffForHumans());
             }
         }
+    }
+
+    public function newCampaignHeader()
+    {
+        $campaignHeader = campaignHeader::newDefault();
+        $campaignHeader->campaign_id = $this->id;
+
+        return $campaignHeader;
     }
 }

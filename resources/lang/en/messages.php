@@ -3243,4 +3243,17 @@
   'list.webhook.fields_available_sample' => 'Available fields for this list, select to update the sample CURL',
   'list.webhook.posting_json_with_curl' => 'Posting JSON with CURL',
   'delivery.error.subscriber_not_active' => 'Subscriber is not active at the time of sending (Status :status)',
+
+  'campaign_headers' => 'Custom Headers',
+  'campaign_header.add' => 'Add Custom Header',
+  'campaign_header.close' => 'Close',
+  'campaign_header.edit' => 'Edit',
+  'campaign_header.intro' => 'Add your own custom headers to outgoing emails. You can also use {TAG} in your header value',
+  'campaign_header.remove' => 'Remove',
+  'campaign_header.remove.confirm' => 'You are about to remove the custom header. This is can not be undone.',
+  'campaign_header.removed' => 'Custom header was removed',
+  'campaign_header.save' => 'save',
+  'campaign_header.updated' => 'Custom header was updated',
+  'campaign_header.name' => 'Header name',
+  'campaign_header.value' => 'Value',
 ) ?>

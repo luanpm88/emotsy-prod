@@ -10,16 +10,17 @@
         
         <p>{{ trans('messages.preheader.intro') }}</p>
         
-            <div class="form-group control-textarea {{ $errors->has('preheader') ? ' has-error' : '' }}">
-                @if (Acelle\Model\Plugin::isInstalled('acelle/chatgpt') && Acelle\Model\Plugin::getByName('acelle/chatgpt')->isActive())
-                    @include('chat._preheader', [
-                        'name' => 'preheader',
-                        'value' => $campaign->preheader,
-                    ])
-                @else
-                    <textarea type="text" name="preheader" rows="5" class="form-control required">{{ $campaign->preheader }}</textarea>
-                @endif
-            </div>
+        <div class="mb-4"> 
+            <label class="form-label required" for="message">{{ trans('store.sms_funnel.message') }}</label>
+            <textarea  id="message" class="form-control {{ $errors->has('message') ? 'is-invalid' : '' }}"
+                name="message"
+            >{{ $funnel->message }}</textarea>
+    
+            @if ($errors->has('message'))
+                <div class="invalid-feedback"> {{ $errors->first('message') }} </div>
+            @endif
+            <div id="messagelHelp" class="form-text">   {{  trans('store.sms_funnel.remaining') }}  </div> 
+        </div>
 
         <div class="mt-4 text-center">
             <button type="submit" class="btn btn-secondary me-1">{{ trans('messages.preheader.save') }}</button>
