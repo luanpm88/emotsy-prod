@@ -354,19 +354,20 @@
         @include("emotsy.dashboard._performance", [
             'campaign' => ($campaign->isABTest() && request()->version_b) ? $campaign->campaignB : $campaign,
         ])
-    @endif
+    
 
-    <div class="row">
-        <div class="col-md-4 mb-4 pe-md-0">
-            @include('emotsy.dashboard._country_map')
+        <div class="row">
+            <div class="col-md-4 mb-4 pe-md-0">
+                @include('emotsy.dashboard._country_map')
+            </div>
+            <div class="col-md-4 mb-4">
+                @include('emotsy.dashboard._country_top')
+            </div>
+            <div class="col-md-4 mb-4 ps-md-0">
+                @include('emotsy.dashboard._growth_chart')
+            </div>
         </div>
-        <div class="col-md-4 mb-4">
-            @include('emotsy.dashboard._country_top')
-        </div>
-        <div class="col-md-4 mb-4 ps-md-0">
-            @include('emotsy.dashboard._growth_chart')
-        </div>
-    </div>
+    @endif
 
 
  
