@@ -347,11 +347,14 @@
         </div>
     </div>
 
-    @include('emotsy.dashboard._campaign_overview')
+    @if ($campaign) 
+        @include('emotsy.dashboard._campaign_overview')
     
-    @include("emotsy.dashboard._performance", [
-        'campaign' => ($campaign->isABTest() && request()->version_b) ? $campaign->campaignB : $campaign,
-    ])
+
+        @include("emotsy.dashboard._performance", [
+            'campaign' => ($campaign->isABTest() && request()->version_b) ? $campaign->campaignB : $campaign,
+        ])
+    @endif
 
     <div class="row">
         <div class="col-md-4 mb-4 pe-md-0">
