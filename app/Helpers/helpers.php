@@ -1255,7 +1255,9 @@ function get_tmp_quota($customer, $name)
     // + allow unverified email address, allowed email verificaiton, allow remote email verification, etc.
 
     if (config('app.saas')) {
-        return $customer->getNewOrActiveGeneralSubscription()->planGeneral->getOption($name);
+        if ($customer->getNewOrActiveGeneralSubscription()) {
+            return $customer->getNewOrActiveGeneralSubscription()->planGeneral->getOption($name);
+        }
     } else {
         if (!array_key_exists($name, $settings)) {
             throw new \Exception("Key '{$name}' not listed");
