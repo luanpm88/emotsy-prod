@@ -2588,6 +2588,12 @@ class CampaignController extends Controller
     {
         $campaign = Campaign::findByUid($request->uid);
 
+        $debug = $campaign->debug();
+
+        if (is_null($debug)) {
+            return response('Campaign does not have debug info: '.config('cache.default'));
+        }
+
         return view('campaigns.debug', [
             'campaign' => $campaign,
             'debug' => $campaign->debug(),
