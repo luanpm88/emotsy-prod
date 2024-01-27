@@ -299,7 +299,7 @@ class UpgradeManager
             \Artisan::call('config:clear');
             \Artisan::call('route:clear');
             \Artisan::call('view:clear');
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             // something wrong here, just ignore
         }
 

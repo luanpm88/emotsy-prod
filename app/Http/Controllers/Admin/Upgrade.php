@@ -39,7 +39,8 @@ class Upgrade extends Controller
         Setting::writeDefaultSettings();
 
         // Clean up job related
-        Artisan::call('queue:clear');
+        // Adding --force to avoid the 'Undefined constant "STDIN"' error
+        Artisan::call('queue:clear', [ '--force' => true ]);
         Artisan::call('queue:flush');
         if (redis_enabled()) {
             Artisan::call('queue:clear redis');
