@@ -964,7 +964,7 @@ class Subscription extends Model
     public function getCreditsLimit($name)
     {
         if ($name != 'send') {
-            throw new Exception("`{$name}` credis limit is not available");
+            throw new Exception("`{$name}` credit limit is not available");
         }
 
         return $this->planGeneral->getOption('email_max');
