@@ -965,7 +965,6 @@
   'create_feedback_loop_handler' => 'New feedback loop handler',
   'create_language' => 'New language',
   'create_list' => 'Create list',
-  'create_plan' => 'Create plan',
   'create_segment' => 'Create segment',
   'create_sending_domain' => 'New sending domain',
   'create_sending_server' => 'New server',
@@ -1866,6 +1865,7 @@
   'plain-text' => 'Plain text',
   'plain_text_version' => 'Plain text',
   'plan' => 'Plan',
+  'plan.add_plan' => 'Add tier',
   'plan.automation_template.added' => 'Template was added',
   'plan.automation_template.checked' => 'Checked',
   'plan.automation_template.removed' => 'Template was removed',
@@ -3258,6 +3258,7 @@
   'zip_postal_code' => 'Zip / Postal code',
 
   'plan_groups' => 'Plans',
+  'plan_group.add_group' => 'Add plan',
   'plan_group.automation_template.added' => 'Template was added',
   'plan_group.automation_template.checked' => 'Checked',
   'plan_group.automation_template.removed' => 'Template was removed',
@@ -3428,4 +3429,5 @@
   'plan_group.send_via.wording' => 'Use :server for email delivery',
   'plan_group.sending_limit.wording' => 'The configuration setting below allows you to set a limit on email sending speed. For example, to limit sending speed to <strong>2,000 emails every 5 minutes</strong>, you can set <strong>Sending limit = 2000</strong>, <strong>Time value = 5</strong>, and <strong>Time unit = minute</strong> accordingly',
   'plan_group.subscriber_count' => ':count subscriber(s)',
+  'plan_tier' => 'Plan & Tier',
 ) ?>

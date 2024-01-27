@@ -57,7 +57,7 @@
             @can('create', new Acelle\Model\PlanGroup())
                 <div class="text-end">
                     <a href="{{ action("Admin\PlanGroupController@wizard") }}" role="button" class="btn btn-secondary modal-action">
-                        <span class="material-symbols-rounded">add</span> {{ trans('messages.create_plan') }}
+                        <span class="material-symbols-rounded">add</span> {{ trans('messages.plan_group.add_group') }}
                     </a>
                 </div>
             @endcan
