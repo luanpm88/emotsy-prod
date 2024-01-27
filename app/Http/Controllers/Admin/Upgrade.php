@@ -40,15 +40,22 @@ class Upgrade extends Controller
 
         // Clean up job related
         // Adding --force to avoid the 'Undefined constant "STDIN"' error
-        Artisan::call('queue:clear', [ '--force' => true ]);
+        // Artisan::call('queue:clear', [ '--force' => true ]);
+
         Artisan::call('queue:flush');
+
+        /*
         if (redis_enabled()) {
             Artisan::call('queue:clear redis');
         }
+        */
+
         Artisan::call('queue:prune-failed');
-        JobMonitor::query()->delete();
-        Job::query()->delete();
+
+        // JobMonitor::query()->delete();
+        // Job::query()->delete();
         FailedJob::query()->delete();
+
         try {
             Schema::table('jobs', function (Blueprint $table) {
                 $table->dropIndex(['queue']);

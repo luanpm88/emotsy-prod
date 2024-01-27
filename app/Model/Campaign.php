@@ -2764,10 +2764,6 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
 
     public static function checkAndForceRerunCampaigns()
     {
-        if (!redis_enabled()) {
-            throw new Exception('Redis not running');
-        }
-
         $campaigns = static::sending()->get();
         foreach ($campaigns as $campaign) {
             $info = $campaign->debug();

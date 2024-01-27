@@ -117,9 +117,7 @@ class Kernel extends ConsoleKernel
 
         // Auto (force) resume pending campaigns (those are in "sending" status but not actually running)
         $schedule->call(function () {
-            if (redis_enabled()) {
-                Campaign::checkAndForceRerunCampaigns();
-            }
+            Campaign::checkAndForceRerunCampaigns();
         })->name('campaign:force-rerun-pending-campaigns')->everyTenMinutes();
 
         /*
