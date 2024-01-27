@@ -2769,7 +2769,10 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
 
     public static function checkAndForceRerunCampaigns()
     {
+        // Audit all "sending" campaigns
         $campaigns = static::sending()->get();
+
+        // Check if they are actually running!
         foreach ($campaigns as $campaign) {
             $info = $campaign->debug();
 
