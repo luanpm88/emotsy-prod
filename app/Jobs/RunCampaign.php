@@ -60,6 +60,8 @@ class RunCampaign implements ShouldQueue
 
             $this->campaign->logger()->info("Launch campaign from job: session {$sessionId}");
 
+            $this->campaign->prepare();
+
             $this->campaign->run();
 
             // after executing campaign.run(), this job just finishes
