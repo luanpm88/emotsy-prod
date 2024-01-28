@@ -151,7 +151,7 @@ class BaseCampaign extends Model
     // This method is also called by a cronjob which periodically check for campaigns to run
     public function execute($force = false)
     {
-        DB::transaction(function() use ($force) {
+        DB::transaction(function () use ($force) {
             $now = Carbon::now();
 
             if (!is_null($this->run_at) && $this->run_at->gte($now)) {
