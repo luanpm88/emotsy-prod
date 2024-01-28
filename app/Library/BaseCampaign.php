@@ -424,6 +424,9 @@ class BaseCampaign extends Model
             return Cache::get($key);
         }
 
+        // Do not use Cache::lock()->block($wait) here which is not suitable for multi process with very high traffic
+        // As it do not retry fast enough if a lock cannot be get. i.e. it waits for another second to try for example
+        // Use Lockable instead which retries almost immediately with "while (true)"
         $result = null;
         Lockable::withExclusiveLock($lockFile, function () use (&$result, $callback, $key) {
             $info = Cache::get($key, $default = [
