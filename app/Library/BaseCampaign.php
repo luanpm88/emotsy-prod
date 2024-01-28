@@ -451,7 +451,7 @@ class BaseCampaign extends Model
             // Update cache, in case of Redis
             // Redis::multi()->set($key, json_encode($result))->get($key)->exec();
             Cache::put($key, $result);
-        }, $timeout = 2);
+        }, $timeout = 10);
 
         return $result; // return the get value (second element in result)
     }
