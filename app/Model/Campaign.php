@@ -2157,6 +2157,14 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
      */
     public function loadDeliveryJobsByIds(Closure $callback, int $page, array $listOfIds)
     {
+        // Available sending servers
+        $sendingServersPool = $this->defaultMailList->getSendingServers();
+
+        // No sending server ready for delivery
+        if (empty($sendingServersPool)) {
+            throw new Exception('No sending server avaialble');
+        }
+
         // Query subscribers
         $subscribers = $this->subscribersToSend()->whereIn('subscribers.id', $listOfIds)->get();
 
