@@ -2769,21 +2769,20 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
 
     public static function checkAndForceRerunCampaigns()
     {
-        if (!redis_enabled()) {
-            throw new Exception('Redis not running');
-        }
-
+        // Audit all "sending" campaigns
         $campaigns = static::sending()->get();
+
+        // Check if they are actually running!
         foreach ($campaigns as $campaign) {
             $info = $campaign->debug();
 
             if (is_null($info)) {
-                // echo "Campaign {$campaign->name} does not have debug info\n";
+                $campaign->logger()->warning("Audit: Campaign {$campaign->name} does not have debug info");
                 continue;
             }
 
             if (!array_key_exists('last_activity_at', $info)) {
-                // echo "Campaign {$campaign->name} does not have 'last_activity_at' information\n";
+                $campaign->logger()->warning("Audit: Campaign {$campaign->name} does not have 'last_activity_at' information");
                 continue;
             }
 
@@ -2793,12 +2792,12 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
             $diffInSeconds = $now->diffInSeconds($lastActivityAt);
 
             if ($diffInSeconds > $triggerIfExceeds) {
-                $notice = sprintf("Campaign '%s' is pending (last updated '%s'), force resuming...", $campaign->name, $lastActivityAt->diffForHumans());
+                $notice = sprintf("Audit: Campaign '%s' is pending (last updated '%s'), force resuming...", $campaign->name, $lastActivityAt->diffForHumans());
                 $campaign->logger()->warning($notice);
                 $campaign->execute($force = true);
             } else {
                 // Just fine
-                // echo sprintf("Campaign '%s' was last updated '%s', it is just fine", $campaign->name, $lastActivityAt->diffForHumans());
+                $campaign->logger()->warning(sprintf("Audit: campaign '%s' was last updated '%s', it is just fine", $campaign->name, $lastActivityAt->diffForHumans()));
             }
         }
     }

@@ -18,9 +18,9 @@ use Acelle\Events\CampaignUpdated;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Throwable;
 use Closure;
-use Illuminate\Support\Facades\Redis;
 use Exception;
 use DB;
+use Illuminate\Support\Facades\Cache;
 
 class BaseCampaign extends Model
 {
@@ -403,60 +403,56 @@ class BaseCampaign extends Model
         ];
     }
 
+    private function getDebugCacheKey()
+    {
+        return $key = 'debug-campaign-'.$this->uid;
+    }
+
     public function cleanupDebug()
     {
-        if (!redis_enabled()) {
-            return;
-        }
-
-        $key = 'debug-campaign-'.$this->uid;
-        Redis::del($key);
+        $key = $this->getDebugCacheKey();
+        Cache::forget($key);
     }
 
     public function debug(Closure $callback = null)
     {
-        if (!redis_enabled()) {
-            return;
-        }
-
-        $key = 'debug-campaign-'.$this->uid;
+        $key = $this->getDebugCacheKey();
         $lockFile = storage_path("app/tmp/{$key}");
 
         // Read only
         if (is_null($callback)) {
-            return json_decode(Redis::get($key), true);
+            return Cache::get($key);
         }
 
+        // Do not use Cache::lock()->block($wait) here which is not suitable for multi process with very high traffic
+        // As it do not retry fast enough if a lock cannot be get. i.e. it waits for another second to try for example
+        // Use Lockable instead which retries almost immediately with "while (true)"
         $result = null;
         Lockable::withExclusiveLock($lockFile, function () use (&$result, $callback, $key) {
-            $info = Redis::get($key);
-            if (is_null($info)) {
-                $info = [
-                    'start_at' => null,
-                    'last_activity_at' => null,
-                    'finish_at' => null,
-                    'total_time' => null,
-                    'last_message_sent_at' => null,
-                    'messages_sent_per_second' => null,
-                    'send_message_count' => 0,
-                    'send_message_total_time' => 0,
-                    'send_message_avg_time' => null,
-                    'send_message_prepare_avg_time' => null,
-                    'send_message_delivery_avg_time' => null,
-                    'send_message_min_time' => null,
-                    'send_message_max_time' => null,
-                ];
-            } else {
-                $info = json_decode($info, true);
-            }
+            $info = Cache::get($key, $default = [
+                'start_at' => null,
+                'last_activity_at' => null,
+                'finish_at' => null,
+                'total_time' => null,
+                'last_message_sent_at' => null,
+                'messages_sent_per_second' => null,
+                'send_message_count' => 0,
+                'send_message_total_time' => 0,
+                'send_message_avg_time' => null,
+                'send_message_prepare_avg_time' => null,
+                'send_message_delivery_avg_time' => null,
+                'send_message_min_time' => null,
+                'send_message_max_time' => null,
+            ]);
 
             // update and return debug info
-            $updatedInfo = $callback($info);
+            $result = $callback($info);
 
-            // Update Redis
-            $result = Redis::multi()->set($key, json_encode($updatedInfo))->get($key)->exec();
+            // Update cache, in case of Redis
+            // Redis::multi()->set($key, json_encode($result))->get($key)->exec();
+            Cache::put($key, $result);
         }, $timeout = 2);
 
-        return json_decode($result[1], true); // return the get value (second element in result)
+        return $result; // return the get value (second element in result)
     }
 }
