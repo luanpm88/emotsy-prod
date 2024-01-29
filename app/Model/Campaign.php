@@ -2116,6 +2116,42 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
         ]);
     }
 
+    public function prepare()
+    {
+        // Available sending servers
+        $sendingServersPool = $this->defaultMailList->getSendingServers();
+
+        // No sending server ready for delivery
+        if (empty($sendingServersPool)) {
+            throw new Exception('No sending server avaialble');
+        }
+
+        // @important: make sure this function is called twice at the same time.
+        // Otherwise, concurrency issue might happen: "Campaign stopped. Timeout getting lock #Lockable for: /home/app/public_html/storage/locks/sending-server-sns-6512d..."
+        foreach ($sendingServersPool as $serverId => $fitness) {
+            $server = SendingServer::find($serverId)->mapType();
+
+            if ($this->useSendingServerFromEmailAddress()) {
+                $fromEmailAddress = $server->default_from_email;
+            } else {
+                $fromEmailAddress = $this->from_email;
+            }
+
+            $this->logger()->info('Setting up before send (page 1 only) for server '.$server->uid);
+            $server->setupBeforeSend($fromEmailAddress);
+        }
+
+        // Reset max_execution_time so that command can run for a long time without being terminated
+        self::resetMaxExecutionTime();
+
+        // Clear any HTML cache
+        $this->clearTemplateCache();
+
+        // Last chance for campaign to setup
+        // @todo Find a better place for the following method, afterSave for example
+        $this->updateLinks();
+    }
+
     /**
      * Load delivery jobs from a list of IDs
      */
@@ -2127,36 +2163,6 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
         // No sending server ready for delivery
         if (empty($sendingServersPool)) {
             throw new Exception('No sending server avaialble');
-        }
-
-        // @important: in case of multiple LoadCampaign jobs running
-        // the following task might conflict:
-        // For example: "Campaign stopped. Timeout getting lock #Lockable for: /home/app/public_html/storage/locks/sending-server-sns-6512d..."
-        // As a result, execute it with first page only @hack @trick @important
-        if ($page == 1) {
-            // Set up sending servers' webhooks before launching
-            foreach ($sendingServersPool as $serverId => $fitness) {
-                $server = SendingServer::find($serverId)->mapType();
-
-                if ($this->useSendingServerFromEmailAddress()) {
-                    $fromEmailAddress = $server->default_from_email;
-                } else {
-                    $fromEmailAddress = $this->from_email;
-                }
-
-                $this->logger()->info('Setting up before send (page 1 only) for server '.$server->uid);
-                $server->setupBeforeSend($fromEmailAddress);
-            }
-
-            // Reset max_execution_time so that command can run for a long time without being terminated
-            self::resetMaxExecutionTime();
-
-            // Clear any HTML cache
-            $this->clearTemplateCache();
-
-            // Last chance for campaign to setup
-            // @todo Find a better place for the following method, afterSave for example
-            $this->updateLinks();
         }
 
         // Query subscribers

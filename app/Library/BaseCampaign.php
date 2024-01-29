@@ -151,7 +151,7 @@ class BaseCampaign extends Model
     // This method is also called by a cronjob which periodically check for campaigns to run
     public function execute($force = false)
     {
-        DB::transaction(function() use ($force) {
+        DB::transaction(function () use ($force) {
             $now = Carbon::now();
 
             if (!is_null($this->run_at) && $this->run_at->gte($now)) {
@@ -451,7 +451,7 @@ class BaseCampaign extends Model
             // Update cache, in case of Redis
             // Redis::multi()->set($key, json_encode($result))->get($key)->exec();
             Cache::put($key, $result);
-        }, $timeout = 2);
+        }, $timeout = 10);
 
         return $result; // return the get value (second element in result)
     }
