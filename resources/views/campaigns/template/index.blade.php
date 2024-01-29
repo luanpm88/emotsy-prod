@@ -125,6 +125,8 @@
             </div>
             
             @include('campaigns._preheader')
+
+            {{-- @include('campaigns._campaign_header') --}}
         </div>
     </div>
         

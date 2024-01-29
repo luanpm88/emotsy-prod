@@ -83,7 +83,10 @@ class SendMessage implements ShouldQueue
      */
     public function retryUntil()
     {
-        return now()->addHours(12);
+        // @important: remember that messages might be released over and over
+        // if there is any limit setting in place
+        // As a result, it is just save to have it retry virtually forever
+        return now()->addDays(30);
     }
 
     /**
@@ -242,7 +245,7 @@ class SendMessage implements ShouldQueue
             // and (hopefully) the quota limits will be lifted then as time goes by
             $this->release(60);
 
-        //} catch (OutOfCredits $ex) {
+            //} catch (OutOfCredits $ex) {
 
         } catch (Throwable $ex) {
             // Also catch the OutOfCredits error

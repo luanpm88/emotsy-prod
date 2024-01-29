@@ -266,7 +266,7 @@
     </div>
     @endif
 
-    <h3 class="mt-5 mb-3"><span class="material-symbols-rounded me-2">web_stories</span>
+    <h3 class="mt-5 mb-3"><span class="material-symbols-rounded me-2">history_toggle_off</span>
          {{ trans('messages.activity_log') }}</h3>
 
     @if (Auth::user()->customer->logs()->count() == 0)

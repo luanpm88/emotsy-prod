@@ -8306,3 +8306,25 @@ body.mode-dark [split-control="b-box"].border-end {
 .gm-style-iw {
     color: #333;
 }
+.key-value-list {
+    padding: 0;
+}
+.key-value-list li {
+    list-style: none;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: solid 1px #ddd;
+}
+.key-value-list li label {
+  font-weight: 600;
+  margin: 0;
+}
+.key-value-list li .value {
+  opacity: 0.8;
+}
+.key-value-list.list-small li label {
+  font-size: 100%;
+}
+.key-value-list.list-small li .value {
+  font-size: 95%;
+}

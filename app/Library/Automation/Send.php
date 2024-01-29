@@ -57,6 +57,10 @@ class Send extends Action
     {
         $email = Email::findByUid($this->options['email_uid']);
         if (is_null($email)) {
+
+            $this->setOption('email_uid', null);
+            $this->autoTrigger->automation2->updateAction($this);
+
             throw new \Exception(sprintf("Cannot find email with UID %s for Action ID %s, title: '%s', AutoTrigger: #%s", $this->options['email_uid'], $this->getId(), $this->getTitle(), $this->autoTrigger->id));
         }
         return $email;
