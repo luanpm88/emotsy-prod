@@ -239,6 +239,24 @@ class Automation2 extends Model
         $this->save();
     }
 
+    public function updateAction($newAction)
+    {
+        $json = json_decode($this->data, true);
+        $newJson = [];
+
+        foreach ($json as $actionJson) {
+            $action = $this->getAction($actionJson);
+
+            if ($action->getId() == $newAction->getId()) {
+                $newJson[] = $newAction->toJson();
+            } else {
+                $newJson[] = $action->toJson();
+            }
+        }
+
+        $this->saveData(json_encode($newJson));
+    }
+
     public function validateData($data)
     {
         // Check Element Action => if email UID is no longer valid => remove Action
@@ -262,7 +280,7 @@ class Automation2 extends Model
     }
 
     /**
-     * disable automation.
+     * Transform automation JSON to Javascript syntax
      */
     public function getData()
     {
@@ -521,7 +539,7 @@ class Automation2 extends Model
     {
         $thisId = $this->id;
         // TODAY + CURRENT TIME
-        $currentTime = new DateTime(null, new DateTimeZone($this->customer->timezone));
+        $currentTime = new DateTime('now', new DateTimeZone($this->customer->timezone));
         // TODAY + GIVEN TIME
         $triggerTime = new DateTime($this->getTriggerAction()->getOptions()['at'], new DateTimeZone($this->customer->timezone));
 
@@ -561,7 +579,7 @@ class Automation2 extends Model
     {
         $thisId = $this->id;
         // TODAY + CURRENT TIME
-        $currentTime = new DateTime(null, new DateTimeZone($this->customer->timezone));
+        $currentTime = new DateTime('now', new DateTimeZone($this->customer->timezone));
         // TODAY + GIVEN TIME
         $triggerTime = new DateTime($this->getTriggerAction()->getOptions()['at'], new DateTimeZone($this->customer->timezone));
 
@@ -649,7 +667,7 @@ class Automation2 extends Model
     public function checkForDateOfBirth()
     {
         // TODAY + CURRENT TIME
-        $currentTime = new DateTime(null, new DateTimeZone($this->customer->timezone));
+        $currentTime = new DateTime('now', new DateTimeZone($this->customer->timezone));
         // TODAY + GIVEN TIME
         $triggerTime = new DateTime($this->getTriggerAction()->getOptions()['at'], new DateTimeZone($this->customer->timezone));
 
@@ -929,6 +947,22 @@ class Automation2 extends Model
             $instance = $this->getAction($action);
             $callback($instance);
         }
+    }
+
+    // For debugging only (at least for now)
+    public function getActionById($id)
+    {
+        $actions = $this->getElements(true);
+
+        foreach ($actions as $action) {
+            $instance = $this->getAction($action);
+            if ($instance->getId() == $id) {
+                return $instance;
+            }
+        }
+
+        // Not found
+        return;
     }
 
     public function getLeafActions()

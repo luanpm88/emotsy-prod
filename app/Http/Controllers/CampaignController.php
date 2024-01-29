@@ -14,6 +14,7 @@ use Acelle\Model\TrackingLog;
 use Acelle\Model\Setting;
 use Acelle\Model\Subscriber;
 use Acelle\Model\Campaign;
+use Acelle\Model\CampaignHeader;
 use Acelle\Model\IpLocation;
 use Acelle\Model\ClickLog;
 use Acelle\Model\OpenLog;
@@ -1115,7 +1116,7 @@ class CampaignController extends Controller
         // User Tracking Information
         $trackingInfo = [
             'message_id' => $message_id,
-            'user_agent' => $_SERVER['HTTP_USER_AGENT'],
+            'user_agent' => array_key_exists('HTTP_USER_AGENT', $_SERVER) ? $_SERVER['HTTP_USER_AGENT'] : null,
         ];
 
         // GeoIP information
@@ -2585,15 +2586,83 @@ class CampaignController extends Controller
 
     public function debug(Request $request)
     {
-        if (!redis_enabled()) {
-            throw new Exception('Redis service not available');
-        }
-
         $campaign = Campaign::findByUid($request->uid);
+
+        $debug = $campaign->debug();
+
+        if (is_null($debug)) {
+            return response('Campaign does not have debug info: '.config('cache.default'));
+        }
 
         return view('campaigns.debug', [
             'campaign' => $campaign,
             'debug' => $campaign->debug(),
+        ]);
+    }
+
+    public function campaignHeader(Request $request)
+    {
+        $campaign = Campaign::findByUid($request->uid);
+
+        // authorize
+        if (\Gate::denies('update', $campaign)) {
+            return $this->notAuthorized();
+        }
+
+        return view('campaigns.campaignHeader', [
+            'campaign' => $campaign,
+        ]);
+    }
+
+    public function campaignHeaderAdd(Request $request)
+    {
+        $campaign = Campaign::findByUid($request->uid);
+        $campaignHeader = $campaign->newCampaignHeader();
+
+        // authorize
+        if (\Gate::denies('update', $campaign)) {
+            return $this->notAuthorized();
+        }
+
+        // Save posted data
+        if ($request->isMethod('post')) {
+            $validator = $campaignHeader->saveFromRequest($request);
+
+            // redirect if fails
+            if ($validator->fails()) {
+                return response()->view('campaigns.campaignHeaderAdd', [
+                    'campaign' => $campaign,
+                    'campaignHeader' => $campaignHeader,
+                    'errors' => $validator->errors(),
+                ], 400);
+            }
+
+            return response()->json([
+                'status' => 'success',
+                'message' => trans('messages.campaign_header.updated'),
+            ]);
+        }
+
+        return view('campaigns.campaignHeaderAdd', [
+            'campaign' => $campaign,
+            'campaignHeader' => $campaignHeader,
+        ]);
+    }
+
+    public function campaignHeaderRemove(Request $request)
+    {
+        $campaignHeader = CampaignHeader::findByUid($request->campaign_header_uid);
+
+        // authorize
+        if (\Gate::denies('update', $campaignHeader->campaign)) {
+            return $this->notAuthorized();
+        }
+
+        $campaignHeader->delete();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => trans('messages.campaign_header.removed'),
         ]);
     }
 }

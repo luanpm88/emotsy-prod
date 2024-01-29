@@ -482,6 +482,10 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('templates/rss/parse', 'TemplateController@parseRss');
 
     // Campaign
+    Route::post('campaigns/campaign-header/{campaign_header_uid}/remove', 'CampaignController@campaignHeaderRemove');
+    Route::match(['get', 'post'], 'campaigns/{uid}/campaign-header/add', 'CampaignController@campaignHeaderAdd');
+    Route::get('campaigns/{uid}/campaign-header', 'CampaignController@campaignHeader');
+
     Route::post('campaigns/{uid}/preheader/remove', 'CampaignController@preheaderRemove');
     Route::match(['get', 'post'], 'campaigns/{uid}/preheader/add', 'CampaignController@preheaderAdd');
     Route::get('campaigns/{uid}/preheader', 'CampaignController@preheader');
