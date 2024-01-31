@@ -88,9 +88,6 @@ class Plan extends Model
     {
         $rules = array(
             'name' => 'required',
-            'currency_id' => 'required',
-            'frequency_amount' => 'required|min:1',
-            'frequency_unit' => 'required',
             'price' => 'required|min:0',
         );
 

@@ -6,33 +6,15 @@
                     {{ trans('messages.plan.general') }}
                 </a>
             </li>
-            <li  class="nav-item dropdown {{ in_array($menu, ['quota','security','email_footer','tos']) ? 'active' : '' }}" >
-                <a class="nav-link dropdown-toggle" href="" class="level-1" data-bs-toggle="dropdown">
-                    {{ trans('messages.plan.settings') }}
-                    <span class="caret"></span>
+            <li class="nav-item {{ $menu == 'quota' ? 'active' : '' }}">
+                <a href="{{ action('Admin\PlanController@quota', $plan->uid) }}" class="nav-link">
+                    {{ trans('messages.plan.quota') }}
                 </a>
-                <ul class="dropdown-menu dropdown-menu-end">
-                    <li class="{{ $menu == 'quota' ? 'active' : '' }}">
-                        <a class="dropdown-item" href="{{ action('Admin\PlanController@quota', $plan->uid) }}">
-                            {{ trans('messages.plan.quota') }}
-                        </a>
-                    </li>
-                    <li class="{{ $menu == 'security' ? 'active' : '' }}">
-                        <a class="dropdown-item" href="{{ action('Admin\PlanController@security', $plan->uid) }}">
-                            {{ trans('messages.plan.security') }}
-                        </a>
-                    </li>
-                    <li class="{{ $menu == 'email_footer' ? 'active' : '' }}">
-                        <a class="dropdown-item" href="{{ action('Admin\PlanController@emailFooter', $plan->uid) }}">
-                            {{ trans('messages.plan.email_footer') }}
-                        </a>
-                    </li>
-                    <li class="{{ $menu == 'tos' ? 'active' : '' }}">
-                        <a class="dropdown-item" href="{{ action('Admin\PlanController@tos', $plan->uid) }}">
-                            {{ trans('messages.plan.tos') }}
-                        </a>
-                    </li>
-                </ul>
+            </li>
+            <li class="nav-item {{ $menu == 'security' ? 'active' : '' }}">
+                <a href="{{ action('Admin\PlanController@security', $plan->uid) }}" class="nav-link">
+                    {{ trans('messages.plan.speed_limit') }}
+                </a>
             </li>
             <li class="nav-item {{ $menu == 'sending_server' ? 'active' : '' }}">                
                 @if ($plan->useSystemSendingServer() && !$plan->hasPrimarySendingServer())

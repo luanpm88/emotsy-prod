@@ -23,11 +23,15 @@
 namespace Acelle\Model;
 
 use Validator;
+use Illuminate\Database\Eloquent\Model;
 use Acelle\Model\SendingServer;
 use Acelle\Library\QuotaManager;
 use Acelle\Library\Contracts\PlanInterface;
+use Acelle\Library\Traits\HasUid;
 
-class PlanGroup extends Plan {
+class PlanGroup extends Model {
+    use HasUid;
+
     // General type
     public const TYPE_GENERAL = 'general';
 
@@ -38,6 +42,12 @@ class PlanGroup extends Plan {
 
     //
     public const UNLIMITED_PLAN_ID = '9999';
+
+    // Plan status
+    public const STATUS_INACTIVE = 'inactive';
+    public const STATUS_ACTIVE = 'active';
+
+    public const UNLIMITED_TIME = 'unlimited';
 
     // General plans
     public static function scopeGeneral($query)
@@ -62,7 +72,6 @@ class PlanGroup extends Plan {
         'description',
         'frequency_amount',
         'frequency_unit',
-        'price',
         'currency_id',
         'paddle_plan_id',
         'admin_id',
@@ -78,7 +87,13 @@ class PlanGroup extends Plan {
      */
     public function rules()
     {
-        $rules = parent::rules();
+        $rules = array(
+            'name' => 'required',
+            'currency_id' => 'required',
+            'frequency_amount' => 'required|min:1',
+            'frequency_unit' => 'required',
+            'price' => 'required|min:0',
+        );
 
         $options = self::defaultOptions();
         foreach ($options as $type => $option) {
@@ -107,7 +122,6 @@ class PlanGroup extends Plan {
                 'plan.general.currency_id' => 'required',
                 'plan.general.frequency_amount' => 'sometimes|required|min:1',
                 'plan.general.frequency_unit' => 'sometimes|required',
-                'plan.general.price' => 'required|min:0',
             ],
             'options' => [],
         ];
@@ -138,7 +152,6 @@ class PlanGroup extends Plan {
             'currency_id' => 'required',
             'frequency_amount' => 'required|min:1',
             'frequency_unit' => 'required',
-            'price' => 'required|min:0',
             'trial_amount' => 'required|min:0',
             'trial_unit' => 'required',
         );
@@ -198,7 +211,6 @@ class PlanGroup extends Plan {
             'currency_id' => 'required',
             'frequency_amount' => 'required|min:1',
             'frequency_unit' => 'required',
-            'price' => 'required|min:0',
         );
 
         if ($this->getOption('sending_server_option') == self::SENDING_SERVER_OPTION_SUBACCOUNT) {
@@ -218,6 +230,11 @@ class PlanGroup extends Plan {
         return $this->hasMany('Acelle\Model\PlansEmailVerificationServer', 'plan_id');
     }
 
+    public function plans()
+    {
+        return $this->hasMany('Acelle\Model\PlanGeneral');
+    }
+
     /**
      * Items per page.
      *
@@ -232,13 +249,13 @@ class PlanGroup extends Plan {
      */
     public static function scopeFilter($query, $request)
     {
-        $query = $query->select('plans.*');
+        $query = $query->select('plan_groups.*');
 
         // filters
         $filters = $request->all();
 
         if (!empty($request->admin_id)) {
-            $query = $query->where('plans.admin_id', '=', $request->admin_id);
+            $query = $query->where('plan_groups.admin_id', '=', $request->admin_id);
         }
     }
 
@@ -255,7 +272,7 @@ class PlanGroup extends Plan {
         if (!empty(trim($keyword))) {
             foreach (explode(' ', trim($keyword)) as $keyword) {
                 $query = $query->where(function ($q) use ($keyword) {
-                    $q->orwhere('plans.name', 'like', '%'.$keyword.'%');
+                    $q->orwhere('plan_groups.name', 'like', '%'.$keyword.'%');
                 });
             }
         }
@@ -500,16 +517,6 @@ class PlanGroup extends Plan {
         } else {
             return strtolower(number_with_delimiter($this->getOption('sending_quota')).' '.trans('messages.'.\Acelle\Library\Tool::getPluralPrase('email', $this->getOption('sending_quota'))).' / '.$this->getOption('sending_quota_time').' '.trans('messages.'.\Acelle\Library\Tool::getPluralPrase($this->getOption('sending_quota_time_unit'), $this->getOption('sending_quota'))));
         }
-    }
-
-    /**
-     * Display plan price.
-     *
-     * @return array
-     */
-    public function displayPrice()
-    {
-        return format_price($this->price, $this->currency->format);
     }
 
     /**
@@ -1005,13 +1012,24 @@ class PlanGroup extends Plan {
      */
     public function checkStatus()
     {
-        // disable sending server if it is not valid
-        if (!$this->isValid()) {
-            $this->disable();
+        // // disable sending server if it is not valid
+        // if (!$this->isValid()) {
+        //     $this->disable();
 
-            $this->visibleOff();
-        } else {
-            $this->enable();
+        //     $this->visibleOff();
+        // } else {
+        //     $this->enable();
+        // }
+
+        // update plans information
+        $this->syncPlans();
+    }
+
+    public function syncPlans()
+    {
+        foreach ($this->plans as $plan) {
+            $plan->fillFromPlanGroup($this);
+            $plan->save();
         }
     }
 
@@ -1043,7 +1061,6 @@ class PlanGroup extends Plan {
     public static function newDefaultPlan()
     {
         $plan = new self([
-            'price' => 0,
             'frequency_amount' => 1,
             'frequency_unit' => 'month',
             'trial_amount' => '0',
@@ -1151,5 +1168,170 @@ class PlanGroup extends Plan {
     {
         // depend on option from active susbcription plan
         return $this->getOption('create_email_verification_servers') == 'yes';
+    }
+
+    public function displayFrequencyTime()
+    {
+        return trans('messages.plan.period', [
+            'amount' => number_with_delimiter($this->getFrequencyAmount()),
+            'unit' => trans('messages.' . \Acelle\Library\Tool::getPluralPrase($this->getFrequencyUnit(), $this->getFrequencyAmount())),
+        ]);
+    }
+
+    public function getFrequencyAmount()
+    {
+        return $this->frequency_amount;
+    }
+
+    public function getFrequencyUnit()
+    {
+        return $this->frequency_unit;
+    }
+
+    public function getTrialAmount()
+    {
+        return $this->trial_amount;
+    }
+
+    public function getTrialUnit()
+    {
+        return $this->trial_unit;
+    }
+
+    public function isUnlimited()
+    {
+        return $this->frequency_unit == self::UNLIMITED_TIME;
+    }
+
+    /**
+     * Frequency time unit options.
+     *
+     * @return array
+     */
+    public static function timeUnitOptions()
+    {
+        return [
+            ['value' => 'day', 'text' => trans('messages.day')],
+            ['value' => 'week', 'text' => trans('messages.week')],
+            ['value' => 'month', 'text' => trans('messages.month')],
+            ['value' => 'year', 'text' => trans('messages.year')],
+        ];
+    }
+
+    /**
+     * Get billing recurs available values.
+     *
+     * @return array
+     */
+    public static function billingCycleValues()
+    {
+        return [
+            'daily' => [
+                'frequency_amount' => 1,
+                'frequency_unit' => 'day',
+            ],
+            'monthly' => [
+                'frequency_amount' => 1,
+                'frequency_unit' => 'month',
+            ],
+            'yearly' => [
+                'frequency_amount' => 1,
+                'frequency_unit' => 'year',
+            ],
+        ];
+    }
+
+    public function getBillingCycleSelectOptions()
+    {
+        $options = [];
+
+        foreach (self::billingCycleValues() as $key => $data) {
+            $wording = trans('messages.plan.billing_cycle.'.$key);
+            $options[] = ['text' => $wording, 'value' => $key];
+        }
+
+        // exist
+        if ($this->getOption('billing_cycle') == 'other') {
+            $wording = trans('messages.plan.billing_cycle.phrase', [
+                'frequency_amount' => number_with_delimiter($this->getFrequencyAmount()),
+                'frequency_unit' => $this->getFrequencyUnit(),
+            ]);
+
+            $options[] = ['text' => $wording, 'value' => 'other'];
+        }
+
+        // Custom
+        $options[] = ['text' => trans('messages.plan.billing_cycle.custom'), 'value' => 'custom'];
+
+        return $options;
+    }
+
+    public function hasTrial()
+    {
+        return $this->trial_amount > 0;
+    }
+
+    public function getTrialPeriodTimePhrase()
+    {
+        return trans_choice('messages.' . $this->getTrialUnit() . '.choice', $this->getTrialAmount(), [
+            'amount' => $this->trial_amount,
+        ]);
+    }
+
+    /**
+     * Check if plan is active.
+     *
+     * @var bool
+     */
+    public function isActive()
+    {
+        return $this->status == self::STATUS_ACTIVE;
+    }
+
+    /**
+     * Show plan.
+     *
+     * @return bool
+     */
+    public function visibleOff()
+    {
+        $this['visible'] = 0;
+        $this->save();
+    }
+
+    /**
+     * Hide plan.
+     *
+     * @return bool
+     */
+    public function visibleOn()
+    {
+        $this['visible'] = true;
+        $this->save();
+    }
+
+    public function scopeActive($query)
+    {
+        $query = $query->where('plans.status', '=', self::STATUS_ACTIVE);
+    }
+
+    public function scopeAvailable($query)
+    {
+        $query = $query->where('plans.visible', '=', true);
+    }
+
+    public function getPrice()
+    {
+        return $this->price;
+    }
+
+    public static function scopeVisible($query)
+    {
+        $query->where('visible', true);
+    }
+
+    public static function scopeHasPlans($query)
+    {
+        $query->whereHas('plans');
     }
 }

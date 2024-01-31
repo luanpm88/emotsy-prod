@@ -39,8 +39,8 @@
                         <span class="filter-group">
                             <span class="title text-semibold text-muted">{{ trans('messages.sort_by') }}</span>
                             <select class="select" name="sort_order">
-                                <option value="plans.created_at">{{ trans('messages.created_at') }}</option>
-                                <option value="plans.name">{{ trans('messages.name') }}</option>
+                                <option value="plan_groups.created_at">{{ trans('messages.created_at') }}</option>
+                                <option value="plan_groups.name">{{ trans('messages.name') }}</option>
                             </select>
                             <input type="hidden" name="sort_direction" value="asc" />
                                                 <button class="btn btn-xs sort-direction" rel="asc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">

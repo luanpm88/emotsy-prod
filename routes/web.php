@@ -282,6 +282,8 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
     Route::get('websites', 'WebsiteController@index');
 
     // New subscription
+    Route::get('account/subscription/select-tier/change', 'SubscriptionController@selectTierChange');
+    Route::get('account/subscription/select-tier', 'SubscriptionController@selectTier');
     // =================== REVIEWED
     Route::post('account/subscription/verify-transaction/{invoice_uid}', 'SubscriptionController@verifyPendingTransaction');
     Route::get('account/subscription/select-plan', 'SubscriptionController@selectPlan');

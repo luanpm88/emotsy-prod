@@ -8198,7 +8198,7 @@ label.checker input:disabled ~ .checker-symbol {
     background: #f5f5f5;
 }
 .select-plan-item {
-    width: calc(25% - 20px);
+    width: calc(33.33% - 20px);
 }
 @media (max-width: 1200px) {
     .select-plan-item {

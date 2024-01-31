@@ -866,7 +866,9 @@ class PlanGroupController extends Controller
             // check plan status
             $planGroup->checkStatus();
 
-            return redirect()->action('Admin\PlanGroupController@wizardSendingServer', $planGroup->uid);
+            return response()->json([
+                'redirect' => action('Admin\PlanGroupController@index'),
+            ]);
         }
 
         return view('admin.plan_groups.wizard', [

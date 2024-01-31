@@ -45,16 +45,6 @@
                         ])
                     @endif
                     
-                    @include('helpers.form_control', [
-                        'class' => 'numeric',
-                        'type' => 'text',
-                        'name' => 'plan[general][price]',
-                        'label' => trans('messages.plan_group.price'),
-                        'value' => $planGroup->price,
-                        'help_class' => 'plan',
-                        'rules' => $planGroup->generalRules()
-                    ])
-                    
                     <div id="billingCycleSelectContainer">
                         @include ('admin.plan_groups._billing_cycle', [
                             'plan' => $planGroup,
@@ -181,7 +171,11 @@
                 data: form.serialize(),
                 dataType: 'html',
             }).done(function(response) {
-                PlansIndex.getWizardPopup().loadHtml(response);
+                if (response.redirect) {
+                    window.location = response.redirect;
+                } else {
+                    PlansIndex.getWizardPopup().loadHtml(response);
+                }
             });
             
             return false;

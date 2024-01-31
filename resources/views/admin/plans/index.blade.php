@@ -39,6 +39,8 @@
                         <span class="filter-group">
                             <span class="title text-semibold text-muted">{{ trans('messages.sort_by') }}</span>
                             <select class="select" name="sort_order">
+                                <option value="plans.plan_group_id">{{ trans('messages.plan_group') }}</option>
+                                <option value="plans.price">{{ trans('messages.price') }}</option>
                                 <option value="plans.created_at">{{ trans('messages.created_at') }}</option>
                                 <option value="plans.name">{{ trans('messages.name') }}</option>
                             </select>
@@ -50,6 +52,16 @@
                         <span class="text-nowrap">
                             <input type="text" name="keyword" class="form-control search" value="{{ request()->keyword }}" placeholder="{{ trans('messages.type_to_search') }}" />
                             <span class="material-symbols-rounded">search</span>
+                        </span>
+                        <span class="filter-group ps-4" style="min-width:200px">
+                            <span class="title text-semibold text-muted">{{ trans('messages.plan_group') }}</span>
+                            <select class="select" name="plan_group_uid">
+                                <option value="">{{ trans('messages.plan.all_plans') }}</option>
+                                @foreach (Acelle\Model\PlanGroup::all() as $planGroup)
+                                    <option {{ request()->plan_group_uid == $planGroup->uid ? 'selected' : '' }} value="{{ $planGroup->uid }}">{{ $planGroup->name }}</option>
+                                @endforeach
+                            </select>
+                            </button>
                         </span>
                     </div>
                 @endif

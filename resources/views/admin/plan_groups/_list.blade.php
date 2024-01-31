@@ -28,41 +28,29 @@
                         @endif                        
                     </div>
                 </td>
-                <td>
+                <td width="60%">
                     <h5 class="m-0 text-bold">
                         <span class="kq_search d-block" href="{{ action('Admin\PlanGroupController@general', $planGroup->uid) }}">
                             {{ $planGroup->name }}
                         </span>
                     </h5>
                     <p class="mb-0">{{ $planGroup->description }}</p>
-                    @if (!$planGroup->useSystemSendingServer())
-                        <span class="text-muted small" class="">{{ trans('messages.plan_group.sending_server.' . $planGroup->getOption('sending_server_option')) }}  &bull; {{ trans('messages.plan_group.subscriber_count', ['count' => $planGroup->customersCount()]) }}</span>
-                    @elseif ($planGroup->hasPrimarySendingServer())
-                        <span class="text-muted small">{{ trans('messages.plan_group.send_via.wording', ['server' => $planGroup->primarySendingServer()->getTypeName() ]) }} &bull; {{ trans('messages.plan_group.subscriber_count', ['count' => $planGroup->customersCount()]) }}</span>
-                    @endif
-
-                    @if ($planGroup->useSystemSendingServer() && !$planGroup->hasPrimarySendingServer())
-                        <div class="text-muted"><span class="text-danger"><i class="fa fa-minus-circle"></i>
-                            {{ trans('messages.plan_group.sending_server_empty') }}
-                        </span></div>
-                    @endif
                 </td>
                 <td>
                     <h5 class="no-margin text-bold kq_search">
-                        {{ \Acelle\Library\Tool::format_price($planGroup->price, $planGroup->currency->format) }}
+                        {{ $planGroup->displayFrequencyTime() }}
                     </h5>
-                    <span class="text-muted">{{ $planGroup->displayFrequencyTime() }}</span>
+                    <span class="text-muted">{{ trans('messages.plan.billing_cycle') }}</span>
                 </td>
                 <td>
                     <h5 class="no-margin text-bold kq_search">
-                        {{ $planGroup->displayTotalQuota() }}
+                        <a href="{{ action('Admin\PlanController@index', [
+                            'plan_group_uid' => $planGroup->uid,
+                        ]) }}" class="">
+                            {{ $planGroup->plans()->count() }}
+                        </a>
                     </h5>
-                    <span class="text-muted">{{ trans('messages.sending_total_quota_label') }}</span>
-                </td>
-                <td>
-                    <span class="text-muted2 list-status pull-left">
-                        <span class="label label-flat bg-{{ $planGroup->status }}">{{ trans('messages.plan_status_' . $planGroup->status) }}</span>
-                    </span>
+                    <span class="text-muted">{{ trans('messages.plan_group.plans') }}</span>
                 </td>
                 <td class="text-end text-nowrap pe-0" width="5%">
                     @can('update', $planGroup)

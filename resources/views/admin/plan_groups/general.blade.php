@@ -33,75 +33,6 @@
         <div class="">
             <div class="row">
                 <div class="col-md-7">
-                    <h2>{{ trans('messages.plan_group.general.overview') }}</h2>
-                    <!--
-                    @include('elements._notification', [
-                        'level' => 'info',
-                        'message' => trans('messages.plan_group.info.subscriber_count', [
-                            'count' => $planGroup->customersCount(),
-                            'link' => action('Admin\SubscriptionController@index', ['plan_uid' => $planGroup->uid]),
-                        ])
-                    ])
-                    -->
-                    <p>{{ trans('messages.plan_group.general.details.intro') }}</p>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-7">
-                    
-                    <div class="stats-boxes">
-                        <div class="width1of4 stats-box">
-                            <h3>
-                                
-                                {{ $planGroup->name }}
-                                
-                            </h3>
-                            <p>{{ trans('messages.plan_group') }}</p>
-                        </div>
-                        <div class="width1of4 stats-box">
-                            <h3>
-                                {{ $planGroup->displayPrice() }}
-                            </h3>
-                            <p>{{ trans('messages.plan_group.quota_time.wording', [
-                                'amount' => number_with_delimiter($planGroup->frequency_amount, $precision = 0),
-                                'unit' => trans('messages.' . $planGroup->frequency_unit),
-                            ]) }}</p>
-                        </div>
-                        <div class="width1of4 stats-box">
-                            <h3>
-                                <a href="{{ action('Admin\PlanGroupController@quota', $planGroup->uid) }}">{{ $planGroup->displayTotalQuota() }}</a>
-                            </h3>
-                            <p>{{ trans('messages.plan_group.sending_credits') }}</p>
-                        </div>
-                        <div class="width1of4 stats-box">
-                            <h3>
-                                @if ($planGroup->getOption('sending_server_option') == \Acelle\Model\PlanGroup::SENDING_SERVER_OPTION_SYSTEM)
-                                    @if ($planGroup->primarySendingServer())
-                                        <a href="{{ action('Admin\PlanGroupController@sendingServers', $planGroup->uid) }}">
-                                            @php
-                                                $server = $planGroup->primarySendingServer()->mapType();
-                                            @endphp
-                                            @if ($server->isExtended())
-                                                {{ $server->getTypeName() }}
-                                            @else
-                                                {{ trans('messages.sending_server.type.' . $planGroup->primarySendingServer()->type) }}
-                                            @endif
-                                        </a>
-                                    @else
-                                        <a class="text-warning" href="{{ action('Admin\PlanGroupController@sendingServers', $planGroup->uid) }}">
-                                            {{ trans('messages.plan_group.sending_server.not_set') }}
-                                        </a>
-                                    @endif
-                                @else
-                                    <a href="{{ action('Admin\PlanGroupController@sendingServer', $planGroup->uid) }}">
-                                        {{ trans('messages.plan_group.sending_server.custom') }}
-                                    </a>
-                                @endif
-                            </h3>
-                            <p>{{ trans('messages.plan_group.delivery') }}</p>
-                        </div>
-                    </div>
                         
                     <h2>{{ trans('messages.plan_group.general.details') }}</h2>
 
@@ -134,16 +65,6 @@
                             'rules' => $planGroup->generalRules(),
                         ])
                     @endif
-                    
-                    @include('helpers.form_control', [
-                        'class' => 'numeric',
-                        'type' => 'text',
-                        'name' => 'plan[general][price]',
-                        'label' => trans('messages.plan_group.price'),
-                        'value' => $planGroup->price,
-                        'help_class' => 'plan',
-                        'rules' => $planGroup->generalRules()
-                    ])
                     
                     @include('helpers.form_control', [
                         'type' => 'select_ajax',

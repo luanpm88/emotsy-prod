@@ -6,8 +6,10 @@
             <div>
                 <h5 class="text-danger mb-1">{{ $planGroup->name }}</h5>
                 <p class="text-muted">
-                    @if ($planGroup->subscriptionsCount())
-                        <span class="text-bold text-danger">{{ $planGroup->subscriptionsCount() }}</span> {{ trans('messages.subscription') }}<pp>,</pp>
+                    @if ($planGroup->plans()->count())
+                        <span class="text-bold text-danger">{{ $planGroup->plans()->count() }}</span> {{ trans('messages.plan_group.plans') }}<pp>,</pp>
+                    @else
+                    <span class="text-bold text-muted">{{ $planGroup->plans()->count() }}</span> {{ trans('messages.plan_group.plans') }}<pp>,</pp>
                     @endif
                 </p>  
             </div>                      

@@ -20,4 +20,4 @@
     </div>
 </div>
 
-@include('plans.publicView.' . $style)
+@include('plan_groups.publicView.' . $style)
