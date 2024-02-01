@@ -2033,7 +2033,7 @@
   'plan_status_active' => 'Active',
   'plan_status_inactive' => 'Inactive',
   'plan_time_unlimited' => 'Unlimited',
-  'plans' => 'Manage Tiers',
+  'plans' => 'Tiers',
   'plans.billing_cycle.close' => 'Close',
   'plans.billing_cycle.save' => 'Save',
   'plans.billing_cycle.wording' => 'Setting up tier billing cycle',

@@ -3,9 +3,9 @@
         text-align: right;
     }
 </style>
-<ul class="dotted-list topborder section">
+<ul class="dotted-list topborder section d-none">
     <li>
-        <div class="unit size1of2">
+        <div class="unit size1of2 d-none">
             <strong>{{ trans('messages.plan_name') }}</strong>
         </div>
         <div class="lastUnit size1of2 ms-auto">
@@ -13,7 +13,7 @@
         </div>
     </li>
     <li class="selfclear">
-        <div class="unit size1of2">
+        <div class="unit size1of2 d-none">
             <strong>{{ trans('messages.price') }}</strong>
         </div>
         <div class="lastUnit size1of2 ms-auto">
