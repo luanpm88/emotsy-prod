@@ -54,6 +54,7 @@ class QuotaTest extends TestCase
         $server = $this->initServer();
         $server = Mockery::mock($server);
         $server->shouldReceive('send')->andReturn(null);
+        $server->shouldReceive('dryrun')->andReturn(null);
 
         // Subscription
         $subscription = Mockery::mock($this->initSubscription());
@@ -114,11 +115,12 @@ class QuotaTest extends TestCase
             $outcome = $exception;
         });
 
+        $this->assertNull($outcome);
         $this->assertEquals($server->getRateLimitTracker()->getCreditsUsed(Carbon::parse('5 minutes ago')), 1);
         $this->assertEquals($subscription->getSendEmailRateTracker()->getCreditsUsed(Carbon::parse('5 minutes ago')), 1);
         // FAILED, as credits tracking is commented out in SendMessage
         // $this->assertEquals($subscription->getSendEmailCreditTracker()->getRemainingCredits(), 99);
-        $this->assertNull($outcome);
+
 
         // 2st execution
         $sendMsgJob = new SendMessage($campaign, $subscriber, $server, $subscription);

@@ -640,11 +640,11 @@ class Subscriber extends Model
      */
     public function verify($verifier)
     {
-        list($status, $response) = $verifier->verify($this->email);
+        list($status, $rawResponse) = $verifier->verify($this->email);
         $this->verification_status = $status;
         $this->last_verification_at = Carbon::now();
         $this->last_verification_by = $verifier->name;
-        $this->last_verification_result = (string)$response->getBody();
+        $this->last_verification_result = $rawResponse;
         $this->save();
         return $this;
     }
@@ -1047,6 +1047,8 @@ class Subscriber extends Model
      */
     public static function assginValues($subscribers, $request)
     {
+        $field = Field::findByUid($request->field_uid);
+
         if ($request->assign_type == 'single') {
             $rules = [
                 'single_value' => 'required',
@@ -1056,6 +1058,7 @@ class Subscriber extends Model
                 'list_value' => 'required',
             ];
         }
+
         // make validator
         $validator = \Validator::make($request->all(), $rules);
 
@@ -1067,6 +1070,9 @@ class Subscriber extends Model
         // do assign
         if ($request->assign_type == 'single') {
             // do assign a value: $request->single_value
+            foreach ($subscribers->get() as $subscriber) {
+                $subscriber->setField($field, $request->single_value);
+            }
         } else {
             // do assign a list: $request->list_value
         }

@@ -34,7 +34,6 @@
                             {{ $plan->name }}
                         </span>
                     </h5>
-                    <p class="mb-0">{{ $plan->description }}</p>
                     @if (!$plan->useSystemSendingServer())
                         <span class="text-muted small" class="">{{ trans('messages.plan.sending_server.' . $plan->getOption('sending_server_option')) }}  &bull; {{ trans('messages.plans.subscriber_count', ['count' => $plan->customersCount()]) }}</span>
                     @elseif ($plan->hasPrimarySendingServer())
@@ -46,6 +45,12 @@
                             {{ trans('messages.plan.sending_server_empty') }}
                         </span></div>
                     @endif
+                </td>
+                <td>
+                    <h5 class="no-margin text-bold kq_search">
+                        {{ $plan->getPlanGroupName() }}
+                    </h5>
+                    <span class="text-muted">{{ trans('messages.plan_group') }}</span>
                 </td>
                 <td>
                     <h5 class="no-margin text-bold kq_search">

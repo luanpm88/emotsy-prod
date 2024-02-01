@@ -46,8 +46,13 @@ class PlanController extends Controller
     {
         $plans = \Acelle\Model\PlanGeneral::search($request->keyword)
             ->filter($request)
-            ->orderBy($request->sort_order, $request->sort_direction ? $request->sort_direction : 'asc')
-            ->paginate($request->per_page);
+            ->orderBy($request->sort_order, $request->sort_direction ? $request->sort_direction : 'asc');
+
+        if ($request->plan_group_uid) {
+            $plans = $plans->where('plan_group_id', \Acelle\Model\PlanGroup::findByUid($request->plan_group_uid)->id);
+        }
+
+        $plans = $plans->paginate($request->per_page);
 
         return view('admin.plans._list', [
             'plans' => $plans,
@@ -866,7 +871,9 @@ class PlanController extends Controller
             // check plan status
             $plan->checkStatus();
 
-            return redirect()->action('Admin\PlanController@wizardSendingServer', $plan->uid);
+            return response()->json([
+                'redirect' => action('Admin\PlanController@quota', $plan->uid),
+            ]);
         }
 
         return view('admin.plans.wizard', [

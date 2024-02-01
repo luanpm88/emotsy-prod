@@ -232,7 +232,7 @@ full-height
                     // remove effects
                     removeMaskLoading();
 
-                    popup.hide();
+                    automationPopup.hide();
                 }
             });
         });

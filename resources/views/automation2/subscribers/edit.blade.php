@@ -161,7 +161,7 @@
         });
 
         // popup
-        var popup = new Popup(undefined, undefined, {
+        var automationPopup = new Popup(undefined, undefined, {
             onclose: function() {
                 sidebar.load();
             }
@@ -253,16 +253,16 @@
 
             var url = '{{ action('Automation2Controller@actionSelectConfirm', $automation->uid) }}' + '?key=' + key;
             
-            popup.load(url, function() {                
+            automationPopup.load(url, function() {                
                 // when click confirm select trigger type
-                popup.popup.find('#action-select').submit(function(e) {
+                automationPopup.popup.find('#action-select').submit(function(e) {
                     e.preventDefault();
                 
                     var url = $(this).attr('action');
                     var data = $(this).serialize();
                     
                     // show loading effect
-                    popup.loading();
+                    automationPopup.loading();
                     $.ajax({
                         url: url,
                         type: 'POST',
@@ -281,7 +281,7 @@
                         // save tree
                         saveData(function() {
                             // hide popup
-                            popup.hide();
+                            automationPopup.hide();
                             
                             notify({
     type: 'success',
@@ -297,9 +297,9 @@
         function EmailSetup(id) {
             var url = '{{ action('Automation2Controller@emailSetup', $automation->uid) }}' + '?action_id=' + id;
             
-            popup.load(url, function() {
+            automationPopup.load(url, function() {
                 // // set back event
-                // popup.back = function() {
+                // automationPopup.back = function() {
                 //     Popup.hide();
                 // };
             });
@@ -360,7 +360,7 @@
 
                 var url = $(this).attr('href');
 
-                popup.load(url, function() {
+                automationPopup.load(url, function() {
                     console.log('quota popup loaded!');
                 });
             });
@@ -376,11 +376,11 @@
                 hasChildren = tree.getSelected().hasChildNo();
             }
 
-            popup.load('{{ action('Automation2Controller@actionSelectPupop', $automation->uid) }}?hasChildren=' + hasChildren, function() {
+            automationPopup.load('{{ action('Automation2Controller@actionSelectPupop', $automation->uid) }}?hasChildren=' + hasChildren, function() {
                 console.log('Select action popup loaded!');
                 
                 // when click on action type
-                popup.popup.find('.action-select-but').click(function() {
+                automationPopup.popup.find('.action-select-but').click(function() {
                     var key = $(this).attr('data-key');
 
                     if (key == 'send-an-email') {
@@ -409,16 +409,16 @@
         }
         
         function OpenTriggerSelectPopup() {
-            popup.load('{{ action('Automation2Controller@triggerSelectPupop', $automation->uid) }}', function() {
+            automationPopup.load('{{ action('Automation2Controller@triggerSelectPupop', $automation->uid) }}', function() {
                 console.log('Select trigger popup loaded!');
                 
                 // // set back event
-                // popup.back = function() {
+                // automationPopup.back = function() {
                 //     Popup.hide();
                 // };
                 
                 // when click on trigger type
-                popup.popup.find('.trigger-select-but').click(function() {
+                automationPopup.popup.find('.trigger-select-but').click(function() {
                     var key = $(this).attr('data-key');
                     
                     // show select trigger confirm box
@@ -430,11 +430,11 @@
         function SelectTriggerConfirm(key) {
             var url = '{{ action('Automation2Controller@triggerSelectConfirm', $automation->uid) }}' + '?key=' + key;
             
-            popup.load(url, function() {
+            automationPopup.load(url, function() {
                 console.log('Confirm trigger type popup loaded!');
                 
                 // set back event
-                popup.back = function() {
+                automationPopup.back = function() {
                     OpenTriggerSelectPopup();
                 };
             });
@@ -503,7 +503,7 @@
 
                 var url = $(this).attr('href');
 
-                popup.load(url, function() {
+                automationPopup.load(url, function() {
                     console.log('quota popup loaded!');
                 });
             });

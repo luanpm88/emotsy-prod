@@ -17,6 +17,10 @@ use Illuminate\Bus\Batch;
 use Acelle\Events\CampaignUpdated;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Throwable;
+use Closure;
+use Illuminate\Support\Facades\Redis;
+use Exception;
+use DB;
 
 class BaseCampaign extends Model
 {
@@ -29,7 +33,6 @@ class BaseCampaign extends Model
 
     // Campaign status
     public const STATUS_NEW = 'new';
-    public const STATUS_QUEUING = 'queuing'; // equiv. to 'queue'
     public const STATUS_QUEUED = 'queued'; // equiv. to 'queue'
     public const STATUS_SENDING = 'sending';
     public const STATUS_ERROR = 'error';
@@ -40,6 +43,9 @@ class BaseCampaign extends Model
     //
     public const STATUS_WAIT_FOR_APPROVAL = 'wait_for_approval';
     public const STATUS_REJECTED = 'rejected';
+    // A meaningful name for registering a campaign charge
+    public const JOB_TYPE_RUN_CAMPAIGN = 'run-campaign';
+    public const JOB_TYPE_DISPATCH_AND_SEND_MESSAGES = 'dispatch-and-send-messages';
 
     /**
      * Associations
@@ -55,6 +61,14 @@ class BaseCampaign extends Model
     public function scopeScheduled($query)
     {
         return $query->where('status', static::STATUS_SCHEDULED);
+    }
+
+    /**
+     * Scope
+     */
+    public function scopeSending($query)
+    {
+        return $query->where('status', static::STATUS_SENDING);
     }
 
     public function setDone()
@@ -151,31 +165,39 @@ class BaseCampaign extends Model
 
     // This method called when user clicks CONFIRM button on the web UI
     // This method is also called by a cronjob which periodically check for campaigns to run
-    public function execute()
+    public function execute($force = false)
     {
-        $now = Carbon::now();
+        DB::transaction(function() use ($force) {
+            $now = Carbon::now();
 
-        if (!is_null($this->run_at) && $this->run_at->gte($now)) {
-            $scheduledAt = $this->run_at->timezone($this->customer->timezone);
-            $this->logger()->warning(sprintf('Campaign is scheduled at %s (%s)', $scheduledAt->format('Y-m-d H:m'), $scheduledAt->diffForHumans()));
-            return;
-        }
+            if (!is_null($this->run_at) && $this->run_at->gte($now)) {
+                $scheduledAt = $this->run_at->timezone($this->customer->timezone);
+                $this->logger()->warning(sprintf('Campaign is scheduled at %s (%s)', $scheduledAt->format('Y-m-d H:m'), $scheduledAt->diffForHumans()));
+                return;
+            }
 
-        // Delete previous RunCampaign jobs
-        $this->cancelAndDeleteJobs(RunCampaign::class);
+            if ($this->isSending() || $this->isQueued()) {
+                if (!$force) {
+                    throw new Exception('Cannot execute: campaign is already in "sending" or "queued" status');
+                } else {
+                    $this->logger()->warning('Force running campaign');
+                }
+            }
 
-        // Schedule Job initialize
-        $job = (new RunCampaign($this));
+            // Delete previous RunCampaign job monitors (keep job batches, just cancel them so that the child jobs will perish)
+            $this->cancelAndDeleteJobs($jobType = static::JOB_TYPE_RUN_CAMPAIGN);
+            $this->cancelAndDeleteJobs($jobType = static::JOB_TYPE_DISPATCH_AND_SEND_MESSAGES);
 
-        // Dispatch using the method provided by TrackJobs
-        // to also generate job-monitor record
-        $this->dispatchWithMonitor($job);
+            // Schedule Job initialize
+            $job = (new RunCampaign($this));
 
-        // After this job is dispatched successfully, set status to "queuing"
-        // Notice the different between the two statuses
-        // + Queuing: waiting until campaign is ready to run
-        // + Queued: ready to run
-        $this->setQueuing();
+            // Dispatch using the method provided by TrackJobs
+            // to also generate job-monitor record
+            $this->dispatchWithMonitor($job, $jobType = static::JOB_TYPE_RUN_CAMPAIGN);
+
+            // After this job is dispatched successfully, set status to "queued"
+            $this->setQueued();
+        });
     }
 
     public function setScheduled()
@@ -185,27 +207,57 @@ class BaseCampaign extends Model
         return $this;
     }
 
+    public function rerun()
+    {
+        $this->logger()->warning('Rerun campaign!');
+        $this->execute();
+    }
+
+    // Manually resume via web UI
     public function resume()
     {
+        $this->logger()->warning('Resume campaign');
         $this->execute();
     }
 
     // Should be called by RunCampaign
     public function run()
     {
+        // Update status
+        $this->setSending();
+
         // Pause any previous batch no matter what status it is
         // Notice that batches without a job_monitor will not be retrieved
-        $jobs = $this->jobMonitors()->byJobType(LoadCampaign::class)->get();
+        $jobs = $this->jobMonitors()->byJobType(static::JOB_TYPE_DISPATCH_AND_SEND_MESSAGES)->get();
         foreach ($jobs as $job) {
+            // Cancel batch but do not delete job_monitor for the batch
+            // (for reference only, for example: count how many job_monitors (iterations) required to send this campaign...)
             $job->cancelWithoutDeleteBatch();
         }
 
-        // Campaign loader job
-        $campaignLoader = new LoadCampaign($this);
+        // Option 1: load multiple Campaign loader jobs
+        // Load max 5 LoadCampaign jobs, each will produce 200 SendMessage jobs
+        $perPage = 200;
+        $maxPageToLoad = 5;
+        $subscribersQuery = $this->subscribersToSend();
+
+        $campaignLoaders = [];
+        $pageCount = 0;
+        paginate_query($subscribersQuery, $perPage, $orderBy = 'subscribers.id', function ($pageNumber, $subscribers) use (&$campaignLoaders, &$pageCount) {
+            $pageCount += 1;
+            $listOfIds = $subscribers->pluck('subscribers.id')->toArray();
+            $campaignLoaders[] = new LoadCampaign($this, $pageNumber, $listOfIds);
+        }, $maxPageToLoad);
+
+        if ($pageCount == 0) {
+            // There is no contact, then simply trigger an empty campaign to have the campaign go through starting, sending... and "done" process
+            $campaignLoaders[] = new LoadCampaign($this, 0, []);
+        }
 
         // Dispatch it with a batch monitor
         $this->dispatchWithBatchMonitor(
-            $campaignLoader,
+            $jobTypeName = static::JOB_TYPE_DISPATCH_AND_SEND_MESSAGES, // a helpful name for future filtering/querying
+            $campaignLoaders,
             function ($batch) {
                 // THEN callback of a batch
                 //
@@ -215,22 +267,33 @@ class BaseCampaign extends Model
                 // @Update: the above statement is longer true! Cancelling a batch DOES NOT trigger "THEN" callback
                 //
                 // IMPORTANT: refresh() is required!
-                if (!$this->refresh()->isPaused()) {
-                    $count = $this->subscribersToSend()->count();
-                    if ($count > 0) {
-                        // Run over and over again until there is no subscribers left to send
-                        // Because each LoadCampaign jobs only load a fixed number of subscribers
-                        $this->updateCache();
-                        $this->logger()->warning('Load another batch of '.$count);
-                        $this->run();
-                    } else {
-                        $this->logger()->warning('No contact left, campaign finishes successfully!');
-                        $this->setDone();
-                    }
-                } else {
+                if ($this->refresh()->isPaused()) {
                     // do nothing, as campaign is already PAUSED by user (not by an exception)
-                    $this->logger()->warning('Campaign is paused by user');
+                    // It seems that if a batch is cancelled, it shall not trigger any callback!
+                    $this->logger()->warning('Campaign is paused');
+                    return;
                 }
+
+                $count = $this->subscribersToSend()->count();
+                if ($count > 0) {
+                    // Run over and over again until there is no subscribers left to send
+                    // Because each LoadCampaign jobs only load a fixed number of subscribers
+                    $this->logger()->warning('Load another batch of the remaining '.$count);
+                    $this->run();
+                } else {
+                    $this->logger()->warning('No contact left, campaign finishes successfully!');
+                    $this->setDone();
+
+                    $this->debug(function ($info) {
+                        $startAt = $info['start_at'];
+                        $finishAt = Carbon::now();
+                        $info['finish_at'] = $finishAt->toString();
+                        $info['total_time'] = $finishAt->diffInSeconds(Carbon::parse($startAt));
+                        return $info;
+                    });
+                }
+
+                return;
             },
             function (Batch $batch, Throwable $e) {
                 // CATCH callback
@@ -240,13 +303,10 @@ class BaseCampaign extends Model
             },
             function () {
                 // FINALLY callback
-                $this->logger()->info('Finally!');
+                $this->logger()->info('Finally callback of batch! Updating cache');
                 $this->updateCache();
             }
         );
-
-        // SET QUEUED
-        $this->setQueued();
 
         /**** MORE NOTES ****/
         //
@@ -322,6 +382,7 @@ class BaseCampaign extends Model
     {
         $this->cancelAndDeleteJobs();
         $this->setPaused();
+        $this->logger()->warning('Campaign paused by user');
 
         // Update status
         event(new CampaignUpdated($this));
@@ -371,7 +432,6 @@ class BaseCampaign extends Model
     {
         return [
             ['text' => trans('messages.campaign_status_' . self::STATUS_NEW), 'value' => self::STATUS_NEW],
-            ['text' => trans('messages.campaign_status_' . self::STATUS_QUEUING), 'value' => self::STATUS_QUEUING],
             ['text' => trans('messages.campaign_status_' . self::STATUS_QUEUED), 'value' => self::STATUS_QUEUED],
             ['text' => trans('messages.campaign_status_' . self::STATUS_SENDING), 'value' => self::STATUS_SENDING],
             ['text' => trans('messages.campaign_status_' . self::STATUS_ERROR), 'value' => self::STATUS_ERROR],
@@ -379,5 +439,62 @@ class BaseCampaign extends Model
             ['text' => trans('messages.campaign_status_' . self::STATUS_PAUSED), 'value' => self::STATUS_PAUSED],
             ['text' => trans('messages.campaign_status_' . self::STATUS_SCHEDULED), 'value' => self::STATUS_SCHEDULED],
         ];
+    }
+
+    public function cleanupDebug()
+    {
+        if (!redis_enabled()) {
+            return;
+        }
+
+        $key = 'debug-campaign-'.$this->uid;
+        Redis::del($key);
+    }
+
+    public function debug(Closure $callback = null)
+    {
+        if (!redis_enabled()) {
+            return;
+        }
+
+        $key = 'debug-campaign-'.$this->uid;
+        $lockFile = storage_path("app/tmp/{$key}");
+
+        // Read only
+        if (is_null($callback)) {
+            return json_decode(Redis::get($key), true);
+        }
+
+        $result = null;
+        Lockable::withExclusiveLock($lockFile, function () use (&$result, $callback, $key) {
+            $info = Redis::get($key);
+            if (is_null($info)) {
+                $info = [
+                    'start_at' => null,
+                    'last_activity_at' => null,
+                    'finish_at' => null,
+                    'total_time' => null,
+                    'last_message_sent_at' => null,
+                    'messages_sent_per_second' => null,
+                    'send_message_count' => 0,
+                    'send_message_total_time' => 0,
+                    'send_message_avg_time' => null,
+                    'send_message_prepare_avg_time' => null,
+                    'send_message_delivery_avg_time' => null,
+                    'send_message_min_time' => null,
+                    'send_message_max_time' => null,
+                ];
+            } else {
+                $info = json_decode($info, true);
+            }
+
+            // update and return debug info
+            $updatedInfo = $callback($info);
+
+            // Update Redis
+            $result = Redis::multi()->set($key, json_encode($updatedInfo))->get($key)->exec();
+        }, $timeout = 2);
+
+        return json_decode($result[1], true); // return the get value (second element in result)
     }
 }

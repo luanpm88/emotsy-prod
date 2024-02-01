@@ -18,6 +18,7 @@ use Exception;
 use Acelle\Library\Contracts\HasTemplateInterface;
 use Acelle\Library\HtmlHandler\InjectTrackingPixel;
 use Acelle\Library\HtmlHandler\TransformUrl;
+use Closure;
 
 class Email extends Model implements HasTemplateInterface
 {
@@ -369,5 +370,10 @@ class Email extends Model implements HasTemplateInterface
     {
         $this->preheader = null;
         $this->save();
+    }
+
+    public function debug(Closure $callback = null)
+    {
+        // @important: temporary function to avoid Automation bug
     }
 }

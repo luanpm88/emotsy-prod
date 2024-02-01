@@ -9,7 +9,6 @@ use Illuminate\Contracts\Queue\ShouldBeUnique;
 class UpdateMailListJob extends Base implements ShouldBeUnique
 {
     public $list;
-    public $uniqueFor = 3600;
 
     /**
      * Create a new job instance.
@@ -28,6 +27,10 @@ class UpdateMailListJob extends Base implements ShouldBeUnique
      */
     public function handle()
     {
+        if (config('app.saas') && is_null($this->list->customer->getCurrentActiveGeneralSubscription())) {
+            return;
+        }
+
         $this->list->updateCachedInfo();
         // blacklist new emails (if any)
         Blacklist::doBlacklist($this->list->customer);

@@ -10,7 +10,7 @@
             @endphp
             <div class="mc-row d-flex align-items-center">
                 <div class="media trigger">
-                    <a href="javascript:;" onclick="popup.load('{{ action('Automation2Controller@profile', [
+                    <a href="javascript:;" onclick="automationPopup.load('{{ action('Automation2Controller@profile', [
                         'uid' => $automation->uid,
                         'contact_uid' => $contact->uid,
                     ]) }}')" class="font-weight-semibold d-block">
@@ -22,7 +22,7 @@
                     </a>
                 </div>
                 <div class="flex-fill" style="width: 20%">
-                    <a href="javascript:;" onclick="popup.load('{{ action('Automation2Controller@profile', [
+                    <a href="javascript:;" onclick="automationPopup.load('{{ action('Automation2Controller@profile', [
                         'uid' => $automation->uid,
                         'contact_uid' => $contact->uid,
                     ]) }}')" class="font-weight-semibold d-block">

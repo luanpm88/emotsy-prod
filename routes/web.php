@@ -286,6 +286,8 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
     Route::get('websites', 'WebsiteController@index');
 
     // New subscription
+    Route::get('account/subscription/select-tier/change', 'SubscriptionController@selectTierChange');
+    Route::get('account/subscription/select-tier', 'SubscriptionController@selectTier');
     // =================== REVIEWED
     Route::post('account/subscription/verify-transaction/{invoice_uid}', 'SubscriptionController@verifyPendingTransaction');
     Route::get('account/subscription/select-plan', 'SubscriptionController@selectPlan');
@@ -350,6 +352,8 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('account/api', 'AccountController@api');
 
     // Mail list
+    Route::get('lists/{uid}/webhook/form', 'MailListController@webhookForm');
+    Route::get('lists/{uid}/webhook/json', 'MailListController@webhookJson');
     Route::match(['get', 'post'], 'lists/select', 'MailListController@selectList');
     Route::get('lists/{uid}/email-verification/chart', 'MailListController@emailVerificationChart');
     Route::get('lists/{uid}/clone-to-customers/choose', 'MailListController@cloneForCustomersChoose');
@@ -491,6 +495,10 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('campaigns/{uid}/ab/insights', 'CampaignController@abTestInsights');
     Route::get('campaigns/{uid}/ab/send-at', 'CampaignController@abWinningSendAt');
     Route::match(['get','post'], 'campaigns/{uid}/ab/split-options', 'CampaignController@abSplitOptions');
+    Route::post('campaigns/campaign-header/{campaign_header_uid}/remove', 'CampaignController@campaignHeaderRemove');
+    Route::match(['get', 'post'], 'campaigns/{uid}/campaign-header/add', 'CampaignController@campaignHeaderAdd');
+    Route::get('campaigns/{uid}/campaign-header', 'CampaignController@campaignHeader');
+
     Route::post('campaigns/{uid}/preheader/remove', 'CampaignController@preheaderRemove');
     Route::match(['get', 'post'], 'campaigns/{uid}/preheader/add', 'CampaignController@preheaderAdd');
     Route::get('campaigns/{uid}/preheader', 'CampaignController@preheader');
@@ -596,6 +604,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::patch('campaigns/{uid}/update', 'CampaignController@update');
     Route::get('campaigns/{uid}/run', 'CampaignController@run');
     Route::get('campaigns/{uid}/update-stats', 'CampaignController@updateStats');
+    Route::get('campaigns/{uid}/debug', 'CampaignController@debug');
 
     //
     Route::get('users/login-back', 'UserController@loginBack');
@@ -682,6 +691,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::post('notifications/{id}/hide', 'NotificationController@hide');
 
     // Automation2
+    Route::get('automation/{email_uid}/overview', 'Automation2Controller@emailOverview');
     Route::post('automation/{uid}/trigger-all', 'Automation2Controller@triggerAll');
 
     Route::match(['get', 'post'], 'automation/{uid}/copy', 'Automation2Controller@copy');
@@ -1289,7 +1299,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::match(['get','post'], 'tax/settings', 'TaxController@settings');
 
     // Invoice
-    Route::match(['get','post'], 'admin/invoices/template', 'InvoiceController@template');
+    Route::match(['get','post'], 'admin/invoices/template/edit', 'InvoiceController@templateEdit');
     Route::get('admin/invoices/{uid}/download', 'InvoiceController@download');
 
     // OAuth
@@ -1418,4 +1428,46 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::get('admin/campaigns/{uid}/approve', 'CampaignController@approvePreview');
     Route::get('admin/campaigns/listing/{page?}', 'CampaignController@listing');
     Route::resource('admin/campaigns', 'CampaignController');
+    //
+    Route::post('admin/verify/index', 'VerificationController@index');
+    Route::get('admin/verify/index', 'VerificationController@index');
+
+    // Plan
+    Route::match(['get', 'post'], 'admin/plan_groups/public-view/{style?}', 'PlanGroupController@publicView');
+    Route::match(['get', 'post'], 'admin/plan_groups/{uid}/tos', 'PlanGroupController@tos');
+    Route::post('admin/plan_groups/{uid}/visible/on', 'PlanGroupController@visibleOn');
+    Route::post('admin/plan_groups/{uid}/visible/off', 'PlanGroupController@visibleOff');
+    Route::match(['get', 'post'], 'admin/plan_groups/{uid}/sending-server/subaccount', 'PlanGroupController@sendingServerSubaccount');
+    Route::match(['get', 'post'], 'admin/plan_groups/{uid}/sending-server/own', 'PlanGroupController@sendingServerOwn');
+    Route::match(['get', 'post'], 'admin/plan_groups/{uid}/sending-server/option', 'PlanGroupController@sendingServerOption');
+    Route::match(['get', 'post'], 'admin/plan_groups/{uid}/wizard/sending-server', 'PlanGroupController@wizardSendingServer');
+    Route::match(['get', 'post'], 'admin/plan_groups/wizard', 'PlanGroupController@wizard');
+    Route::get('admin/plan_groups/{uid}/sending-server', 'PlanGroupController@sendingServer');
+    Route::match(['get', 'post'], 'admin/plan_groups/{uid}/billing-cycle', 'PlanGroupController@billingCycle');
+    Route::match(['get', 'post'], 'admin/plan_groups/{uid}/sending-limit', 'PlanGroupController@sendingLimit');
+    Route::get('admin/plan_groups/{uid}/email-verification', 'PlanGroupController@emailVerification');
+    Route::get('admin/plan_groups/{uid}/general', 'PlanGroupController@general');
+    Route::get('admin/plan_groups/{uid}/quota', 'PlanGroupController@quota');
+    Route::get('admin/plan_groups/{uid}/security', 'PlanGroupController@security');
+    Route::get('admin/plan_groups/{uid}/email-footer', 'PlanGroupController@emailFooter');
+    Route::get('admin/plan_groups/{uid}/payment', 'PlanGroupController@payment');
+    Route::get('admin/plan_groups/{uid}/billing-history', 'PlanGroupController@billingHistory');
+    Route::get('admin/plan_groups/{uid}/general', 'PlanGroupController@general');
+    Route::post('admin/plan_groups/{uid}/save', 'PlanGroupController@save');
+    Route::post('admin/plan_groups/{id}/sending_servers/{sending_server_uid}/set-primary', 'PlanGroupController@setPrimarySendingServer');
+    Route::match(['get', 'post'], 'admin/plan_groups/{id}/sending_servers/fitness', 'PlanGroupController@fitness');
+    Route::post('admin/plan_groups/{id}/sending_servers/{sending_server_uid}/remove', 'PlanGroupController@removeSendingServer');
+    Route::post('admin/plan_groups/{id}/sending_servers/add', 'PlanGroupController@addSendingServer');
+    Route::get('admin/plan_groups/{id}/sending_servers/add', 'PlanGroupController@addSendingServer');
+    Route::get('admin/plan_groups/{id}/sending_servers', 'PlanGroupController@sendingServers');
+    Route::get('admin/plan_groups/pieChart', 'PlanGroupController@pieChart');
+    Route::get('admin/plan_groups/delete/confirm', 'PlanGroupController@deleteConfirm');
+    Route::get('admin/plan_groups/select2', 'PlanGroupController@select2');
+    Route::get('admin/plan_groups/listing/{page?}', 'PlanGroupController@listing');
+    Route::get('admin/plan_groups/sort', 'PlanGroupController@sort');
+    Route::get('admin/plan_groups/delete', 'PlanGroupController@delete');
+    Route::get('admin/plan_groups/disable', 'PlanGroupController@disable');
+    Route::post('admin/plan_groups/enable', 'PlanGroupController@enable');
+    Route::match(['get', 'post'], 'admin/plan_groups/copy', 'PlanGroupController@copy');
+    Route::resource('admin/plan_groups', 'PlanGroupController');
 });

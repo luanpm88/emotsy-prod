@@ -14,6 +14,7 @@ use Acelle\Model\TrackingLog;
 use Acelle\Model\Setting;
 use Acelle\Model\Subscriber;
 use Acelle\Model\Campaign;
+use Acelle\Model\CampaignHeader;
 use Acelle\Model\IpLocation;
 use Acelle\Model\ClickLog;
 use Acelle\Model\OpenLog;
@@ -22,6 +23,7 @@ use Acelle\Model\JobMonitor;
 use DB;
 use Exception;
 use Carbon\Carbon;
+use Illuminate\Support\MessageBag;
 
 class CampaignController extends Controller
 {
@@ -799,13 +801,6 @@ class CampaignController extends Controller
         ]);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function delete(Request $request)
     {
         if (isSiteDemo()) {
@@ -1598,7 +1593,7 @@ class CampaignController extends Controller
         // User Tracking Information
         $trackingInfo = [
             'message_id' => $message_id,
-            'user_agent' => $_SERVER['HTTP_USER_AGENT'],
+            'user_agent' => array_key_exists('HTTP_USER_AGENT', $_SERVER) ? $_SERVER['HTTP_USER_AGENT'] : null,
         ];
 
         // GeoIP information
@@ -2295,7 +2290,19 @@ class CampaignController extends Controller
                 $sending = $campaign->sendTestEmail($request->email);
             }
 
-            return response()->json($sending);
+            // check result
+            if ($sending['status'] == 'error') {
+                $validator->getMessageBag()->add('send_error', json_encode($sending));
+
+                return response()->view('campaigns.sendTestEmail', [
+                    'campaign' => $campaign,
+                    'errors' => $validator->errors(),
+                ], 400);
+            } else {
+                return response()->json($sending, 200);
+            }
+
+            return response()->json($sending, $statusCode);
         }
 
         return view('campaigns.sendTestEmail', [
@@ -3217,6 +3224,7 @@ class CampaignController extends Controller
     {
         $campaign = Campaign::findByUid($request->uid);
         $currentTimezone = $campaign->customer->getTimezone();
+    
 
         // authorize
         if (\Gate::denies('update', $campaign)) {
@@ -3321,6 +3329,80 @@ class CampaignController extends Controller
         return trans('messages.campaign.ab.winning_send_at', [
             'date' => Auth()->user()->customer->formatDateTime($sendAt, 'date_short'),
             'time' => Auth()->user()->customer->formatDateTime($sendAt, 'time_only'),
+        ]);
+    }
+    
+    public function debug(Request $request)
+    {
+        if (!redis_enabled()) {
+            throw new Exception('Redis service not available');
+        }
+
+        $campaign = Campaign::findByUid($request->uid);
+
+        return view('campaigns.debug', [
+            'campaign' => $campaign,
+            'debug' => $campaign->debug(),
+        ]);
+    }
+
+    public function campaignHeader(Request $request)
+    {
+        $campaign = Campaign::findByUid($request->uid);
+        return view('campaigns.campaignHeader', [
+            'campaign' => $campaign,
+        ]);
+    }
+
+    public function campaignHeaderAdd(Request $request)
+    {
+        $campaign = Campaign::findByUid($request->uid);
+        $campaignHeader = $campaign->newCampaignHeader();
+
+        // authorize
+        if (\Gate::denies('update', $campaign)) {
+            return $this->notAuthorized();
+        }
+
+        // Save posted data
+        if ($request->isMethod('post')) {
+            $validator = $campaignHeader->saveFromRequest($request);
+
+            // redirect if fails
+            if ($validator->fails()) {
+                return response()->view('campaigns.campaignHeaderAdd', [
+                    'campaign' => $campaign,
+                    'campaignHeader' => $campaignHeader,
+                    'errors' => $validator->errors(),
+                ], 400);
+            }
+
+            return response()->json([
+                'status' => 'success',
+                'message' => trans('messages.campaign_header.updated'),
+            ]);
+        }
+
+        return view('campaigns.campaignHeaderAdd', [
+            'campaign' => $campaign,
+            'campaignHeader' => $campaignHeader,
+        ]);
+    }
+
+    public function campaignHeaderRemove(Request $request)
+    {
+        $campaignHeader = CampaignHeader::findByUid($request->campaign_header_uid);
+
+        // authorize
+        if (\Gate::denies('update', $campaignHeader->campaign)) {
+            return $this->notAuthorized();
+        }
+
+        $campaignHeader->delete();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => trans('messages.campaign_header.removed'),
         ]);
     }
 }

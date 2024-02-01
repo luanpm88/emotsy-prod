@@ -2,6 +2,8 @@ body {
     font-size: 17px;
     line-height: 1.8;
     font-family: Roboto, Arial, Helvetica, Verdana;
+    margin: 0px;
+    padding: 0px;
 }
 table p {
     line-height: 1.8;

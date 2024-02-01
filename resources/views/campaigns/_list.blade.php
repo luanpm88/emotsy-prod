@@ -120,6 +120,12 @@
 							<div class="btn-group ms-1" role="group">
 								<button id="btnGroupDrop1" role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"></button>
 								<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="btnGroupDrop1">
+									@if (config('custom.dryrun'))
+										<li><a class="dropdown-item"
+											href="{{ action('CampaignController@debug', ["uid" => $campaign->uid]) }}">
+											<span class="material-symbols-rounded me-2">monitoring</span>Performance Report</a></li>
+									@endif
+
 									@if (\Gate::allows('resend', $campaign))
                                         @if(config('custom.japan') && !Acelle\Model\Setting::get('license'))
                                             <li><a license-required class="dropdown-item" href="">
@@ -142,6 +148,7 @@
                                                 <span class="material-symbols-rounded me-2">forward_to_inbox</span> {{ trans("messages.send_a_test_email") }}</a></li>
                                         @endif
 									@endif
+
 									@if (\Gate::allows('pause', $campaign))
 										<li><a class="dropdown-item list-action-single"
 											link-method="POST"

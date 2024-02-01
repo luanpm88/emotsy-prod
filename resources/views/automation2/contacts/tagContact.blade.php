@@ -54,7 +54,7 @@
                 statusCode: {
                     // validate error
                     400: function (res) {
-                        popup.loadHtml(res.responseText);
+                        automationPopup.loadHtml(res.responseText);
 
                         // remove masking
                         removeMaskLoading();
@@ -65,7 +65,7 @@
                     tagContact.hide();
 
                     // load popup
-                    popup.load();
+                    automationPopup.load();
 
                     // notify
                     notify('success', '{{ trans('messages.notify.success') }}', res.message);

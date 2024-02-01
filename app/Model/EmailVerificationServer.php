@@ -11,9 +11,13 @@ use Exception;
 use Monolog\Logger;
 use Monolog\Handler\RotatingFileHandler;
 use Monolog\Formatter\LineFormatter;
-use Acelle\Library\Everification\Emailable;
 use Acelle\Library\RateTracker;
 use Acelle\Library\RateLimit;
+
+// Services
+use Acelle\Library\Everification\Emailable;
+use Acelle\Library\Everification\ZeroBounce;
+use Acelle\Library\Everification\EmailListValidation;
 
 class EmailVerificationServer extends Model
 {
@@ -54,6 +58,15 @@ class EmailVerificationServer extends Model
             case 'emailable.com':
                 $service = new Emailable($this->getOptions(), $this->logger());
                 return $service;
+
+            case 'zerobounce.net':
+                $service = new ZeroBounce($this->getOptions(), $this->logger());
+                return $service;
+
+            case 'emaillistvalidation.com':
+                $service = new EmailListValidation($this->getOptions(), $this->logger());
+                return $service;
+
             default:
                 return null;
         }
@@ -167,7 +180,7 @@ class EmailVerificationServer extends Model
         }
         $mapped = $config['result_map'][$result];
 
-        return [$mapped, $response];
+        return [$mapped, $raw];
     }
 
     /**

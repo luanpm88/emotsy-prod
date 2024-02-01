@@ -69,7 +69,7 @@
                 <h2 class="my-4">
                     {{ trans('messages.subscribers.import_csv') }}
                 </h2>
-                <p class="">{!! trans('messages.subscribers.import_csv.intro', [
+                <p class="mb-3">{!! trans('messages.subscribers.import_csv.intro', [
                     'csv_link' => url('files/csv_import_example.csv')
                 ]) !!}</p>
 

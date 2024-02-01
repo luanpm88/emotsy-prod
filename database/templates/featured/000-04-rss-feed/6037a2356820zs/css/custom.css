@@ -4,6 +4,8 @@ body {
     font-family: system-ui, "Segoe UI", sans-serif,
         system-ui,Segoe UI,sans-serif	
         Roboto,RobotoDraft,Helvetica,Arial,sans-serif;
+    margin: 0px;
+    padding: 0px;
 }
 .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
     line-height:1.4

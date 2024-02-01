@@ -54,7 +54,7 @@
             var url = $(this).attr('action');
             var fd = new FormData($(this)[0]);
             
-            popup.loading();
+            automationPopup.loading();
             
             $.ajax({
                 url: url,  
@@ -65,7 +65,7 @@
                 processData: false,
                 globalError: false,
                 success: function(data) {
-                    popup.load('{{ action('Automation2Controller@emailTemplate', [
+                    automationPopup.load('{{ action('Automation2Controller@emailTemplate', [
                         'uid' => $automation->uid,
                         'email_uid' => $email->uid,
                     ]) }}');
@@ -84,7 +84,7 @@
                         title: '{{ trans('messages.notify.error') }}',
                         message: res.responseText,
                         ok: function() {
-                            popup.load();
+                            automationPopup.load();
                         }   
                     });
                 }                

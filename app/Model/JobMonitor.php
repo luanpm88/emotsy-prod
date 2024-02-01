@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Bus;
 use Acelle\Library\Traits\HasUid;
 use Acelle\Library\Lockable;
 use Exception;
+use Illuminate\Support\Facades\Log;
 
 class JobMonitor extends Model
 {
@@ -26,6 +27,9 @@ class JobMonitor extends Model
         $monitor->status = self::STATUS_QUEUED;
         $monitor->subject_name = get_class($subject);
         $monitor->subject_id = $subject->id;
+
+        // A job TYPE is helpful when we need to retrieve a list of jobs of a given type.
+        // For example, get all verification jobs of a list
         $monitor->job_type = $jobType;
 
         // Return
@@ -81,6 +85,7 @@ class JobMonitor extends Model
         $errorMsg = "Error executing job. ".$exception->getMessage();
         $this->error = $errorMsg;
         $this->save();
+        Log::error(sprintf("LOGGED BY JOB MONITOR. %s\n%s", $errorMsg, $exception->getTraceAsString()));
     }
 
     public function setRunning()
@@ -135,7 +140,7 @@ class JobMonitor extends Model
         $this->cancelJob(); // if any
         $this->cancelBatch(); // if any
 
-        // For now, do not store cancelled job
+        // For now, do not store cancelled job monitor
         // So, just delete the record
         $this->delete();
     }

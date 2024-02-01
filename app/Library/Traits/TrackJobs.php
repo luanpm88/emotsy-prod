@@ -15,14 +15,19 @@ trait TrackJobs
     // Currently, only one monitor per campaign (soft business)
     public function jobMonitors()
     {
-        return $this->hasMany(JobMonitor::class, 'subject_id')->where('subject_name', self::class);
+        return $this->hasMany(JobMonitor::class, 'subject_id')->where('subject_name', static::class);
     }
 
     // DO NOT USE DB TRANSACTION
     // OTHERWISE BATCH_ID OR JOB_ID MAY NOT BE AVAILABLE
-    public function dispatchWithMonitor($job)
+    public function dispatchWithMonitor($job, string $jobType = null)
     {
-        $jobType = get_class($job);
+        // A job TYPE is helpful when we need to retrieve a list of jobs of a given type.
+        // For example, get all verification jobs of a list
+        if (is_null($jobType)) {
+            $jobType = get_class($job);
+        }
+
         $monitor = JobMonitor::makeInstance($this, $jobType); // QUEUED status
 
         // actually save
@@ -58,34 +63,47 @@ trait TrackJobs
     }
 
     // IMPORTANT: this is normally for jobs that create other jobs
-    public function dispatchWithBatchMonitor($job, $thenCallback, $catchCallback, $finallyCallback)
+    public function dispatchWithBatchMonitor(string $jobType, array $jobs, $thenCallback, $catchCallback, $finallyCallback)
     {
         // IMPORTANT:
         // UPdate QUEUE events in order NOT to set AFTER / FAILING... for job used in a batch (only BEFORE event is OK);
-        if (!property_exists($job, 'monitor')) {
-            throw new Exception(sprintf('Job class `%s` should use `Trackable` trait in order to use $eventAfterDispatched callback', get_class($job)));
+        foreach ($jobs as $job) {
+            if (!property_exists($job, 'monitor')) {
+                throw new Exception(sprintf('Job class `%s` must use `Trackable` trait in order to use $eventAfterDispatched callback', get_class($job)));
+            }
         }
 
         // Create job monitor record
-        $monitor = JobMonitor::makeInstance($this, get_class($job));
+        // A job TYPE is helpful when we need to retrieve a list of jobs of a given type.
+        // For example, get all verification jobs of a list
+        $monitor = JobMonitor::makeInstance($this, $jobType);
         $monitor->save();
 
+        foreach ($jobs as $job) {
+            $job->setMonitor($monitor);
+        }
+
         // Set job monitor
-        $job->setMonitor($monitor);
+        // @Important: for batches that has only ONE job in batch (import/export subscribers)
+        //             for those that have more than one job in batch, no callback supported
+        if (sizeof($jobs) == 1) {
+            $job = $jobs[0];
+            $job->setMonitor($monitor);
 
-        // Store the closures (for executing after dispatched) to a temporary place
-        // It is because Jobs are not allowed to store closures (not serializable)
-        $events = [
-            'afterDispatched' => $job->eventAfterDispatched,
-            'afterFinished' => $job->eventAfterFinished,
-        ];
+            // Store the closures (for executing after dispatched) to a temporary place
+            // It is because Jobs are not allowed to store closures (not serializable)
+            $events = [
+                'afterDispatched' => $job->eventAfterDispatched,
+            ];
 
-        // Destroy closure attributes which cannot be serialized
-        // Otherwise Laravel will throw an exception when dispatching
-        $job->eventAfterDispatched = null; // Destroy the closure
-        $job->eventAfterFinished = null;
+            // Destroy closure attributes which cannot be serialized
+            // Otherwise Laravel will throw an exception when dispatching
+            $job->eventAfterDispatched = null; // Destroy the closure
+        } else {
+            $events = [];
+        }
 
-        $batch = Bus::batch($job)->then(function (Batch $batch) use ($monitor, $thenCallback) {
+        $batch = Bus::batch($jobs)->then(function (Batch $batch) use ($monitor, $thenCallback) {
             // Finish successfully
             $monitor->setDone();
 
@@ -99,17 +117,9 @@ trait TrackJobs
             if (!is_null($catchCallback)) {
                 $catchCallback($batch, $e);
             }
-        })->finally(function (Batch $batch) use ($monitor, $finallyCallback, $events, $job) {
+        })->finally(function (Batch $batch) use ($monitor, $finallyCallback, $events) {
             if (!is_null($finallyCallback)) {
                 $finallyCallback($batch);
-            }
-
-            // Execute job's callback
-            if (array_key_exists('afterFinished', $events)) {
-                $closure = $events['afterFinished'];
-                if (!is_null($closure)) {
-                    $closure($job, $monitor);
-                }
             }
         })->onQueue('batch')->dispatch();
 
@@ -117,10 +127,13 @@ trait TrackJobs
         $monitor->save();
 
         // Execute job's callback
-        if (array_key_exists('afterDispatched', $events)) {
-            $closure = $events['afterDispatched'];
-            if (!is_null($closure)) {
-                $closure($job, $monitor);
+        if (sizeof($jobs) == 1) {
+            $job = $jobs[0];
+            if (array_key_exists('afterDispatched', $events)) {
+                $closure = $events['afterDispatched'];
+                if (!is_null($closure)) {
+                    $closure($job, $monitor);
+                }
             }
         }
 

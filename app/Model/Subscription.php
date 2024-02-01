@@ -13,6 +13,7 @@ use Acelle\Library\CreditTracker;
 use Acelle\Library\RateTracker;
 use Acelle\Library\RateLimit;
 use Illuminate\Database\Eloquent\Builder;
+use DB;
 
 class Subscription extends Model
 {
@@ -291,30 +292,34 @@ class Subscription extends Model
         }
 
         // create init invoice
-        $invoice = \Acelle\Model\InvoiceRenewSubscription::createInvoice(
-            $type = \Acelle\Model\InvoiceRenewSubscription::TYPE_RENEW_SUBSCRIPTION,
-            $title = trans('messages.invoice.renew_subscription'),
-            $description = trans('messages.renew_subscription.desc', [
-                'plan' => $this->plan->name,
-                'date' => $this->customer->formatDateTime($this->nextPeriod(), 'datetime_full'),
-            ]),
-            $customer_id = $this->customer->id,
-            $currency_id = $this->plan->currency_id,
-            $billing_address = $this->customer->getDefaultBillingAddress(),
-            $invoiceItems = [
-                new InvoiceItem([
-                    'item_id' => $this->id,
-                    'item_type' => get_class($this),
-                    'amount' => $this->plan->getPrice(),
-                    'title' => $this->plan->name,
-                    'description' => view('plans._bill_desc', ['plan' => $this->plan]),
+        $invoice = DB::transaction(function() {
+            $invoice = \Acelle\Model\InvoiceRenewSubscription::createInvoice(
+                $type = \Acelle\Model\InvoiceRenewSubscription::TYPE_RENEW_SUBSCRIPTION,
+                $title = trans('messages.invoice.renew_subscription'),
+                $description = trans('messages.renew_subscription.desc', [
+                    'plan' => $this->plan->name,
+                    'date' => $this->customer->formatDateTime($this->nextPeriod(), 'datetime_full'),
                 ]),
-            ],
-        );
+                $customer_id = $this->customer->id,
+                $currency_id = $this->plan->currency_id,
+                $billing_address = $this->customer->getDefaultBillingAddress(),
+                $invoiceItems = [
+                    new InvoiceItem([
+                        'item_id' => $this->id,
+                        'item_type' => get_class($this),
+                        'amount' => $this->plan->getPrice(),
+                        'title' => $this->plan->name,
+                        'description' => view('plans._bill_desc', ['plan' => $this->plan]),
+                    ]),
+                ],
+            );
 
-        // save subscription to invoice
-        $invoice->subscription_id = $this->id;
-        $invoice->save();
+            // save subscription to invoice
+            $invoice->subscription_id = $this->id;
+            $invoice->save();
+
+            return $invoice;
+        });
 
         // return
         return $invoice;
@@ -959,7 +964,7 @@ class Subscription extends Model
     public function getCreditsLimit($name)
     {
         if ($name != 'send') {
-            throw new Exception("`{$name}` credis limit is not available");
+            throw new Exception("`{$name}` credit limit is not available");
         }
 
         return $this->planGeneral->getOption('email_max');

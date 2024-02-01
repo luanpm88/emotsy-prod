@@ -170,7 +170,7 @@
     message: response.message
 });
 
-                            popup.hide();
+                            automationPopup.hide();
                         }
                     });
                 },
@@ -197,7 +197,7 @@
 
             var url = $(this).attr('href');
 
-            popup.loading();
+            automationPopup.loading();
 
             $.ajax({
                 url: url,
@@ -220,7 +220,7 @@
 });
 
                     // reload popup
-                    popup.load();
+                    automationPopup.load();
                 }
             });
         });

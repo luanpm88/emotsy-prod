@@ -18,6 +18,7 @@ use Acelle\Library\Exception\RateLimitExceeded;
 use Acelle\Library\Exception\OutOfCredits;
 use Exception;
 use Throwable;
+use Carbon\Carbon;
 
 use function Acelle\Helpers\execute_with_limits;
 
@@ -29,6 +30,15 @@ class SendMessage implements ShouldQueue
     use Queueable;
     use SerializesModels;
 
+    // @important: set the "retry_after" setting in config/queue.php to a value that is greater than $timeout;
+    // Otherse, the job shall be released and attempted again, resulting in error like:
+    // "[Job] has been attempted too many times or run too long. The job may have previously timed out."
+
+    // @important: https://laravel.com/docs/8.x/queues#failing-on-timeout
+    // Sometimes, IO blocking processes such as sockets or outgoing HTTP connections
+    // may not ***RESPECT*** your specified timeout. Therefore, when using these features,
+    // you should always attempt to specify a timeout using their APIs as well.
+    // For example, when using Guzzle, you should always specify a connection and request timeout value.
     public $timeout = 600;
     public $maxExceptions = 1; // This is required if retryUntil is used, otherwise, the default value is 255
     public $failOnTimeout = true;
@@ -73,7 +83,10 @@ class SendMessage implements ShouldQueue
      */
     public function retryUntil()
     {
-        return now()->addHours(12);
+        // @important: remember that messages might be released over and over
+        // if there is any limit setting in place
+        // As a result, it is just save to have it retry virtually forever
+        return now()->addDays(30);
     }
 
     /**
@@ -88,16 +101,33 @@ class SendMessage implements ShouldQueue
             return;
         }
 
+        // Last update recording should go here
+        // before any other tasks (to prevent IO blocking tasks)
+        // In case we need to clean up pending jobs, at least we know that last job start time
+        // Reduce the posibility of killing a newly started (and still running) job
+        $this->campaign->debug(function ($info) {
+            // Record last activity, no matter it is a successful delivery or exception
+            // This information is useful when we want to audit delivery processes
+            // i.e. when we can to automatically restart dead jobs for example
+            $info['last_activity_at'] = Carbon::now()->toString();
+
+            // Must return;
+            return $info;
+        });
+
         $this->send();
     }
 
     // Use a dedicated method with no dependency for easy testing
     public function send($exceptionCallback = null)
     {
-        $logger = $this->campaign->logger();
-        $email = $this->subscriber->getEmail();
-
         try {
+            // debug
+            $startAt = Carbon::now()->getTimestampMs();
+
+            $logger = $this->campaign->logger();
+            $email = $this->subscriber->getEmail();
+
             // Prepare the email message to send
             // In case of an invalid email, an exception will arise at: Swift_Mime_SimpleMessage->setTo(...)
             list($message, $msgId) = $this->campaign->prepareEmail($this->subscriber, $this->server, $fromCache = true);
@@ -123,17 +153,86 @@ class SendMessage implements ShouldQueue
                 // $creditTrackers[] = $this->subscription->getSendEmailCreditTracker();
             }
 
-            execute_with_limits($rateTrackers, $creditTrackers, function () use ($message, $logger, $msgId, $email) {
+            // DEBUG
+            $finishPreparingAt = Carbon::now()->getTimestampMs();
+            $finishDeliveryAt = null;
+            // END DEBUG
+
+            execute_with_limits($rateTrackers, $creditTrackers, function () use ($message, $logger, $msgId, $email, &$finishDeliveryAt) {
                 // Actually send (or throw an exception)
-                if (config('custom.dryrun')) {
+
+                if (!$this->subscriber->isSubscribed()) {
+                    // @important: do not throw an exception here
+                    // For this particular case (contact becomes inactive right before delivery), just silently
+                    // record a failed delivery in delivery log, do not interrupt the whole campaign
+                    $sent = [
+                        'error' => trans('messages.delivery.error.subscriber_not_active', [ 'status' => $this->subscriber->status ]),
+                        'status' => 'failed',
+                    ];
+                } elseif (config('custom.dryrun')) {
                     $sent = $this->server->dryrun($message);
                 } else {
                     $sent = $this->server->send($message);
                 }
 
+                // DEBUG
+                $finishDeliveryAt = Carbon::now()->getTimestampMs();
+                // END DEBUG
+
                 // Log successful shot
                 $this->campaign->trackMessage($sent, $this->subscriber, $this->server, $msgId, $this->triggerId);
-                $logger->info(sprintf('Sent to %s [Server "%s"]', $email, $this->server->name));
+                $logger->info(sprintf('Done with %s [Server "%s"]', $email, $this->server->name));
+            });
+
+            // Debug
+            $now = Carbon::now(); // OK DONE ALL
+            $finishAt = $now->getTimestampMs();
+
+            $this->campaign->debug(function ($info) use ($startAt, $now, $finishAt, $finishPreparingAt, $finishDeliveryAt) {
+                $diff = ($finishAt - $startAt) / 1000;
+                $avg = $info['send_message_avg_time'];
+                if (is_null($avg)) {
+                    $info['send_message_avg_time'] = $diff;
+                } else {
+                    $info['send_message_avg_time'] = ($avg * $info['send_message_count'] + $diff) / ($info['send_message_count'] + 1);
+                }
+
+                $prepareDiff = ($finishPreparingAt - $startAt) / 1000;
+                $prepareAvg = $info['send_message_prepare_avg_time'];
+                if (is_null($prepareAvg)) {
+                    $info['send_message_prepare_avg_time'] = $prepareDiff;
+                } else {
+                    $info['send_message_prepare_avg_time'] = ($prepareAvg * $info['send_message_count'] + $prepareDiff) / ($info['send_message_count'] + 1);
+                }
+
+                $deliveryDiff = ($finishDeliveryAt - $startAt) / 1000;
+                $deliveryAvg = $info['send_message_delivery_avg_time'];
+                if (is_null($deliveryAvg)) {
+                    $info['send_message_delivery_avg_time'] = $deliveryDiff;
+                } else {
+                    $info['send_message_delivery_avg_time'] = ($deliveryAvg * $info['send_message_count'] + $deliveryDiff) / ($info['send_message_count'] + 1);
+                }
+
+                // COUNT MESSAGE. IMPORTANT: it must go after the other calculation
+                $info['send_message_count'] = $info['send_message_count'] + 1;
+
+                if (is_null($info['send_message_min_time']) || $diff < $info['send_message_min_time']) {
+                    $info['send_message_min_time'] = $diff;
+                }
+
+                if (is_null($info['send_message_max_time']) || $diff > $info['send_message_max_time']) {
+                    $info['send_message_max_time'] = $diff;
+                }
+
+                $info['last_message_sent_at'] = $now->toString();
+                $campaignStartAt = $info['start_at'];
+                $timeSinceCampaignStart = $now->diffInSeconds(Carbon::parse($campaignStartAt));
+
+                // In case it is too fast, avoid DivisionByZero
+                $info['total_time'] = ($timeSinceCampaignStart == 0) ? 1 : $timeSinceCampaignStart;
+                $info['messages_sent_per_second'] = $info['send_message_count'] / $info['total_time'];
+
+                return $info;
             });
         } catch (RateLimitExceeded $ex) {
             if (!is_null($exceptionCallback)) {
@@ -145,7 +244,10 @@ class SendMessage implements ShouldQueue
             // Release the job, have it try again after 60 seconds
             // and (hopefully) the quota limits will be lifted then as time goes by
             $this->release(60);
-        } catch (OutOfCredits | Throwable $ex) {
+
+        //} catch (OutOfCredits $ex) {
+
+        } catch (Throwable $ex) {
             // Also catch the OutOfCredits error
             if (!is_null($exceptionCallback)) {
                 return $exceptionCallback($ex);
@@ -160,7 +262,7 @@ class SendMessage implements ShouldQueue
             // Option 2: just skip the error, log it and proceed with the next subscriber
 
             if ($this->stopOnError) {
-                throw $ex;
+                throw new Exception($message);
             } else {
                 if (!isset($msgId)) {
                     // Just in case there is an exception before the execution of "list($message, $msgId) = $this->campaign->prepareEmail..."
@@ -168,8 +270,10 @@ class SendMessage implements ShouldQueue
                     $msgId = null;
                 }
 
-                $this->campaign->trackMessage(['status' => 'failed', 'error' => $ex->getMessage()], $this->subscriber, $this->server, $msgId, $this->triggerId);
+                $this->campaign->trackMessage(['status' => 'failed', 'error' => $message], $this->subscriber, $this->server, $msgId, $this->triggerId);
             }
+        } finally {
+            //
         }
     }
 }

@@ -2,7 +2,9 @@
 
 namespace Acelle\Jobs;
 
-class UpdateUserJob extends Base
+use Illuminate\Contracts\Queue\ShouldBeUnique;
+
+class UpdateUserJob extends Base implements ShouldBeUnique
 {
     protected $customer;
 
@@ -23,5 +25,10 @@ class UpdateUserJob extends Base
         if (config('app.saas') && !is_null($this->customer->getCurrentActiveGeneralSubscription())) {
             $this->customer->updateCache();
         }
+    }
+
+    public function uniqueId()
+    {
+        return $this->customer->id;
     }
 }

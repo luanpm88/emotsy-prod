@@ -66,7 +66,7 @@
     $(".dropzone").dropzone({
         uploadMultiple: true,
         success: function() {
-            popup.load();
+            automationPopup.load();
         }
     });
     
@@ -83,7 +83,7 @@
                 "_token": CSRF_TOKEN
             },
             success: function (response) {
-                popup.load();
+                automationPopup.load();
                 
                 notify({
     type: 'success',

@@ -74,6 +74,11 @@ class PlanGeneral extends Plan implements PlanInterface
         'own_tracking_domain_required',
     ];
 
+    public function planGroup()
+    {
+        return $this->belongsTo('Acelle\Model\PlanGroup');
+    }
+
     /**
      * The rules for validation.
      *
@@ -107,9 +112,6 @@ class PlanGeneral extends Plan implements PlanInterface
         $rules = [
             'general' => [
                 'plan.general.name' => 'required',
-                'plan.general.currency_id' => 'required',
-                'plan.general.frequency_amount' => 'sometimes|required|min:1',
-                'plan.general.frequency_unit' => 'sometimes|required',
                 'plan.general.price' => 'required|min:0',
             ],
             'options' => [],
@@ -703,6 +705,21 @@ class PlanGeneral extends Plan implements PlanInterface
         }
     }
 
+    public function fillFromPlanGroup($planGroup)
+    {
+        $this->description = $planGroup->description;
+        $this->frequency_amount = $planGroup->frequency_amount;
+        $this->frequency_unit = $planGroup->frequency_unit;
+        $this->currency_id = $planGroup->currency_id;
+        $this->trial_amount = $planGroup->trial_amount;
+        $this->trial_unit = $planGroup->trial_unit;
+
+        $this->asignOption('email_footer_enabled', $planGroup->getOption('email_footer_enabled'));
+        $this->asignOption('email_footer_trial_period_only', $planGroup->getOption('email_footer_trial_period_only'));
+        $this->asignOption('html_footer', $planGroup->getOption('html_footer'));
+        $this->asignOption('plain_text_footer', $planGroup->getOption('plain_text_footer'));
+    }
+
     /**
      * Fill from request.
      */
@@ -711,10 +728,18 @@ class PlanGeneral extends Plan implements PlanInterface
         // if has general params
         if (isset($request->plan['general'])) {
             $params = $request->plan['general'];
-            if ($params['frequency_amount'] == '') {
-                $params['frequency_amount'] = 1;
-            }
+
+            // fill
             $this->fill($params);
+
+            // plan group
+            if (isset($params['plan_group_uid'])) {
+                $planGroup = PlanGroup::findByUid($params['plan_group_uid']);
+                $this->plan_group_id = $planGroup->id;
+
+                // fill from plan group
+                $this->fillFromPlanGroup($planGroup);
+            }
         }
 
         // if has options params
@@ -1154,5 +1179,10 @@ class PlanGeneral extends Plan implements PlanInterface
     {
         // depend on option from active susbcription plan
         return $this->getOption('create_email_verification_servers') == 'yes';
+    }
+
+    public function getPlanGroupName()
+    {
+        return $this->planGroup ? $this->planGroup->name : '--';
     }
 }

@@ -31,6 +31,6 @@
         e.preventDefault();
         var url = $(this).attr('data-href');
         
-        popup.load(url);
+        automationPopup.load(url);
     });
 </script>

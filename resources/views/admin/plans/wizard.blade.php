@@ -14,36 +14,24 @@
                     <h2 class="mt-0">{{ trans('messages.plan.general.details') }}</h2>
             
                     <p>{{ trans('messages.plan.general.details.intro') }}</p>
+
+                    <div class="form-group"> 
+                        <label class="form-label required" for="price">{{ trans('messages.plan.select_group') }}</label> 
+                        <select class="form-select select w-auto" name="plan[general][plan_group_uid]">
+                            @foreach (Acelle\Model\PlanGroup::all() as $planGroup)
+                                <option value="{{ $planGroup->uid }}">{{ $planGroup->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
                         
-                    @if (Acelle\Model\Plugin::isInstalled('acelle/chatgpt') && Acelle\Model\Plugin::getByName('acelle/chatgpt')->isActive())
-                        @include('admin.chat._plan_name', [
-                            'name' => 'plan[general][name]',
-                            'value' => $plan->name,
-                        ])
-
-                        @include('admin.chat._plan_description', [
-                            'name' => 'plan[general][description]',
-                            'value' => $plan->description,
-                        ])
-                    @else             
-                        @include('helpers.form_control', [
-                            'type' => 'text',
-                            'name' => 'plan[general][name]',
-                            'label' => trans('messages.plan.name'),
-                            'value' => $plan->name,
-                            'help_class' => 'plan',
-                            'rules' => $plan->generalRules()
-                        ])
-
-                        @include('helpers.form_control', [
-                            'type' => 'text',
-                            'name' => 'plan[general][description]',
-                            'label' => trans('messages.plan.description'),
-                            'value' => $plan->description,
-                            'help_class' => 'plan',
-                            'rules' => $plan->generalRules(),
-                        ])
-                    @endif
+                    @include('helpers.form_control', [
+                        'type' => 'text',
+                        'name' => 'plan[general][name]',
+                        'label' => trans('messages.plan.name'),
+                        'value' => $plan->name,
+                        'help_class' => 'plan',
+                        'rules' => $plan->generalRules()
+                    ])
                     
                     @include('helpers.form_control', [
                         'class' => 'numeric',
@@ -54,63 +42,6 @@
                         'help_class' => 'plan',
                         'rules' => $plan->generalRules()
                     ])
-                    
-                    <div id="billingCycleSelectContainer">
-                        @include ('admin.plans._billing_cycle', [
-                            'plan' => $plan,
-                        ])
-                    </div>
-                    
-                    @include('helpers.form_control', [
-                        'type' => 'select_ajax',
-                        'name' => 'plan[general][currency_id]',
-                        'label' => trans('messages.plan.currency'),
-                        'selected' => [
-                            'value' => $plan->currency_id,
-                            'text' => $plan->currency ? $plan->currency->displayName() : ''
-                        ],
-                        'help_class' => 'plan',
-                        'rules' => $plan->generalRules(),
-                        'url' => action('Admin\CurrencyController@select2'),
-                        'placeholder' => trans('messages.select_currency')
-                    ])
-
-                    <div class="mb-2">
-                        @include('helpers.form_control.checkbox', [
-                            'name' => 'has_trial',
-                            'value' => 'yes',
-                            'label' => trans('messages.plan.has_trial_period'),
-                            'attributes' => [
-                                'class' => 'numeric'
-                            ],
-                        ])
-                    </div>
-                        
-
-                    <div class="trial_settings">
-                        <label class="mb-2">{{ trans('messages.plan.trial_setting') }}</label>
-                        <div class="d-flex mb-4">
-                            <div class="me-3">
-                                @include('helpers.form_control.number', [
-                                    'name' => 'plan[general][trial_amount]',
-                                    'value' => $plan->trial_amount,
-                                    'attributes' => [
-                                        'class' => 'numeric',
-                                        'min' => '0',
-                                    ],
-                                ])
-                            </div>
-                            <div class="" style="width:100px">
-                                @include('helpers.form_control', [
-                                    'type' => 'select',
-                                    'name' => 'plan[general][trial_unit]',
-                                    'value' => $plan->trial_unit,
-                                    'options' => $plan->timeUnitOptions(),
-                                    'help_class' => 'plan',
-                                ])
-                            </div>
-                        </div>
-                    </div>
                  </div>
             </div>
             <div class="mt-4 text-center">
@@ -179,9 +110,12 @@
                 url: form.attr('action'),
                 method: form.attr('method'),
                 data: form.serialize(),
-                dataType: 'html',
             }).done(function(response) {
-                PlansIndex.getWizardPopup().loadHtml(response);
+                if (response.redirect) {
+                    window.location = response.redirect;
+                } else {
+                    PlansIndex.getWizardPopup().loadHtml(response);
+                }
             });
             
             return false;

@@ -9,6 +9,7 @@ use Acelle\Library\Facades\Billing;
 use Acelle\Library\Facades\SubscriptionFacade;
 use Acelle\Model\InvoiceNewSubscription;
 use Acelle\Model\Transaction;
+use Acelle\Model\PlanGroup;
 
 class SubscriptionController extends Controller
 {
@@ -58,6 +59,7 @@ class SubscriptionController extends Controller
 
         return view('subscription.selectPlan', [
             'plans' => PlanGeneral::getAvailableGeneralPlans(),
+            'planGroups' => PlanGroup::visible()->hasPlans()->get(),
             'subscription' => $subscription,
             'getLastCancelledOrEndedGeneralSubscription' => $customer->getLastCancelledOrEndedGeneralSubscription(),
         ]);
@@ -270,6 +272,7 @@ class SubscriptionController extends Controller
         $subscription = $customer->getCurrentActiveGeneralSubscription();
         $gateway = $customer->getPreferredPaymentGateway();
         $plans = PlanGeneral::getAvailableGeneralPlans();
+        $planGroups = PlanGroup::visible()->hasPlans()->get();
 
         // Authorization
         if (!$request->user()->customer->can('changePlan', $subscription)) {
@@ -309,6 +312,7 @@ class SubscriptionController extends Controller
             'subscription' => $subscription,
             'gateway' => $gateway,
             'plans' => $plans,
+            'planGroups' => $planGroups,
         ]);
     }
 
@@ -448,5 +452,28 @@ class SubscriptionController extends Controller
                 'invoice_uid' => $invoice->uid,
             ]);
         }
+    }
+
+    public function selectTier(Request $request)
+    {
+        // init
+        $plan = \Acelle\Model\Plan::findByUid($request->plan_uid);
+
+        return view('subscription.selectTier', [
+            'plan' => $plan,
+        ]);
+    }
+
+    public function selectTierChange(Request $request)
+    {
+        // init
+        $customer = $request->user()->customer;
+        $subscription = $customer->getCurrentActiveGeneralSubscription();
+        $plan = \Acelle\Model\Plan::findByUid($request->plan_uid);
+
+        return view('subscription.selectTierChange', [
+            'plan' => $plan,
+            'subscription' => $subscription,
+        ]);
     }
 }

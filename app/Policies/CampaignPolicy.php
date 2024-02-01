@@ -150,8 +150,7 @@ class CampaignPolicy
     public function pause(User $user, Campaign $item)
     {
         $customer = $user->customer;
-        $can = $item->customer_id == $customer->id && in_array($item->status, [
-            Campaign::STATUS_QUEUING,
+        return $item->customer_id == $customer->id && in_array($item->status, [
             Campaign::STATUS_QUEUED,
             Campaign::STATUS_SENDING,
             Campaign::STATUS_SCHEDULED,
@@ -277,8 +276,7 @@ class CampaignPolicy
     public function send_test_email(User $user, Campaign $item)
     {
         $customer = $user->customer;
-        $can = $item->customer_id == $customer->id && in_array($item->status, [
-            Campaign::STATUS_QUEUING,
+        return $item->customer_id == $customer->id && in_array($item->status, [
             Campaign::STATUS_QUEUED,
             Campaign::STATUS_SENDING,
             Campaign::STATUS_ERROR,

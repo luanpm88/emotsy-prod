@@ -19,12 +19,12 @@ class InvoiceController extends Controller
         ]);
     }
 
-    public function template(Request $request)
+    public function templateEdit(Request $request)
     {
         if ($request->isMethod('post')) {
             \Acelle\Model\Setting::set('invoice.custom_template', $request->content);
         }
 
-        return view('admin.invoices.template');
+        return view('admin.invoices.templateEdit');
     }
 }

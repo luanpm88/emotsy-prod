@@ -77,3 +77,7 @@ Route::group(['namespace' => 'Api', 'prefix' => 'v1', 'middleware' => 'auth:api'
     // User
     Route::match(['get','post'], 'login-token', 'UserController@loginToken');
 });
+
+Route::group(['namespace' => 'Api\Public', 'prefix' => 'v1'], function () {
+    Route::post('public/subscribers', 'SubscriberController@store');
+});

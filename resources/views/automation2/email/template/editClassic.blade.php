@@ -97,7 +97,7 @@
 
         $('.close-button').click(function() {
             parent.$('.full-iframe-popup').remove();
-            popup.load();
+            automationPopup.load();
         });
 
         $('.builder-classic-form').submit(function(e) {

@@ -199,16 +199,12 @@ abstract class Action
 
             return $result;
         } catch (Throwable $t) {
-            $msg = sprintf(
-                '[%s (Customer UID: %s)] Error executing trigger #%s for %s, at action [#%s %s]: %s',
-                $this->autoTrigger->automation2->name,
-                $this->autoTrigger->automation2->customer->uid,
-                $this->autoTrigger->id,
-                $this->autoTrigger->subscriber->email,
-                $this->getId(),
-                $this->getTitle(),
-                $t->getMessage()
-            );
+            $msg = trans('messages.automation.trigger.error.action_failed', [
+                'email' => $this->autoTrigger->subscriber->email,
+                'id' => $this->getId(),
+                'title' => $this->getTitle(),
+                'err' => $t->getMessage(),
+            ]);
 
             $this->logger->error($msg);
 

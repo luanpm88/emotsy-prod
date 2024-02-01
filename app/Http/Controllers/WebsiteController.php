@@ -114,13 +114,18 @@ class WebsiteController extends Controller
     {
         $website = Website::findByUid($request->uid);
 
+        // Prevent the webapp from being spammed by website JS script
+        if (is_null($website)) {
+            return response('not avaialble', 404);
+        }
+
+        if (!$website->isActive()) {
+            return response('disabled', 403);
+        }
+
         $content = view('websites.connectJs', [
             'website' => $website,
         ]);
-
-        if (!$website->isActive()) {
-            $content = '';
-        }
 
         return response($content)
             ->header('Access-Control-Allow-Origin', '*')

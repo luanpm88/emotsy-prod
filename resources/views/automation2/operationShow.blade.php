@@ -32,13 +32,13 @@
     }
 @endphp
 
-<a href="javascript:;" onclick="popup.load('{{ action('Automation2Controller@operationEdit', [
+<a href="javascript:;" onclick="automationPopup.load('{{ action('Automation2Controller@operationEdit', [
     'uid' => $automation->uid,
     'operation' =>  $operation . '_contact',
     'id' => request()->id,
 ]) }}')" class="btn btn-secondary me-1">{{ trans('messages.automation.edit_operation') }}</a>
 
-<a href="javascript:;" onclick="popup.load('{{ action('Automation2Controller@operationSelect', [
+<a href="javascript:;" onclick="automationPopup.load('{{ action('Automation2Controller@operationSelect', [
     'uid' => $automation->uid,
     'id' => request()->id,
 ]) }}')" class="btn btn-light">{{ trans('messages.automation.operation.change') }}</a>

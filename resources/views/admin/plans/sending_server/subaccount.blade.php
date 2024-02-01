@@ -16,7 +16,7 @@
             </li>
         </ul>
         <h1 class="mc-h1">
-            <span class="text-semibold">{{ $plan->name }}</span>
+            <span class="text-semibold">{{ $plan->getPlanGroupName() }} - {{ $plan->name }}</span>
         </h1>
     </div>
 
