@@ -52,7 +52,7 @@
         @endif
     </div>
 </div>
-<hr>
+{{-- <hr> --}}
 @include('plans._details', [
     'plan' => $plan,
 ])

@@ -50,7 +50,7 @@
                             {{ $planGroup->plans()->count() }}
                         </a>
                     </h5>
-                    <span class="text-muted">{{ trans('messages.plan_group.plans') }}</span>
+                    <span class="text-muted">{{ trans('messages.plans') }}</span>
                 </td>
                 <td class="text-end text-nowrap pe-0" width="5%">
                     @can('update', $planGroup)
