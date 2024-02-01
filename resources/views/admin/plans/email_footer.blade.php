@@ -17,7 +17,7 @@
             <li class="breadcrumb-item"><a href="{{ action("Admin\PlanController@index") }}">{{ trans('messages.plans') }}</a></li>
         </ul>
         <h1 class="mc-h1">
-            <span class="text-semibold">{{ $plan->planGroup->name }} - {{ $plan->name }}</span>
+            <span class="text-semibold">{{ $plan->getPlanGroupName() }} - {{ $plan->name }}</span>
         </h1>
     </div>
 

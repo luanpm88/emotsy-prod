@@ -48,7 +48,7 @@
                 </td>
                 <td>
                     <h5 class="no-margin text-bold kq_search">
-                        {{ $plan->planGroup->name }}
+                        {{ $plan->getPlanGroupName() }}
                     </h5>
                     <span class="text-muted">{{ trans('messages.plan_group') }}</span>
                 </td>

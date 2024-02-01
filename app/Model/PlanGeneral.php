@@ -1180,4 +1180,9 @@ class PlanGeneral extends Plan implements PlanInterface
         // depend on option from active susbcription plan
         return $this->getOption('create_email_verification_servers') == 'yes';
     }
+
+    public function getPlanGroupName()
+    {
+        return $this->planGroup ? $this->planGroup->name : '--';
+    }
 }
