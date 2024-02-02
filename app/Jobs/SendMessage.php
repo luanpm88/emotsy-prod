@@ -245,7 +245,7 @@ class SendMessage implements ShouldQueue
             // and (hopefully) the quota limits will be lifted then as time goes by
             $this->release(60);
 
-        //} catch (OutOfCredits $ex) {
+            //} catch (OutOfCredits $ex) {
 
         } catch (Throwable $ex) {
             // Also catch the OutOfCredits error

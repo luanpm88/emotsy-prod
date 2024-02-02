@@ -3334,11 +3334,13 @@ class CampaignController extends Controller
     
     public function debug(Request $request)
     {
-        if (!redis_enabled()) {
-            throw new Exception('Redis service not available');
-        }
-
         $campaign = Campaign::findByUid($request->uid);
+
+        $debug = $campaign->debug();
+
+        if (is_null($debug)) {
+            return response('Campaign does not have debug info: '.config('cache.default'));
+        }
 
         return view('campaigns.debug', [
             'campaign' => $campaign,

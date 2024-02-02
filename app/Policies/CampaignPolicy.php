@@ -104,9 +104,6 @@ class CampaignPolicy
         $can = $item->customer_id == $customer->id
             && (in_array($item->status, [
                 Campaign::STATUS_NEW,
-                Campaign::STATUS_REJECTED,
-                Campaign::STATUS_QUEUING,
-                Campaign::STATUS_QUEUED,
                 Campaign::STATUS_ERROR,
                 Campaign::STATUS_PAUSED,
                 Campaign::STATUS_SCHEDULED,
@@ -127,8 +124,6 @@ class CampaignPolicy
         $customer = $user->customer;
         $can = $item->customer_id == $customer->id && in_array($item->status, [
             Campaign::STATUS_NEW,
-            Campaign::STATUS_REJECTED,
-            Campaign::STATUS_QUEUING,
             Campaign::STATUS_QUEUED,
             Campaign::STATUS_ERROR,
             Campaign::STATUS_PAUSED,

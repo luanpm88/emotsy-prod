@@ -54,7 +54,7 @@ class Kernel extends ConsoleKernel
             $minPHPRecommended = config('custom.php_recommended');
 
             if (!version_compare(PHP_VERSION, $minPHPRecommended, '>=')) {
-                throw new Exception( trans('messages.requirement.php_version.not_supuported.description', ['current' => PHP_VERSION, 'required' => $minPHPRecommended]) );
+                throw new Exception(trans('messages.requirement.php_version.not_supuported.description', ['current' => PHP_VERSION, 'required' => $minPHPRecommended]));
             }
         }, $phpMsgTitle = trans('messages.requirement.php_version.not_supuported.title'));
 
@@ -117,9 +117,7 @@ class Kernel extends ConsoleKernel
 
         // Auto (force) resume pending campaigns (those are in "sending" status but not actually running)
         $schedule->call(function () {
-            if (redis_enabled()) {
-                Campaign::checkAndForceRerunCampaigns();
-            }
+            Campaign::checkAndForceRerunCampaigns();
         })->name('campaign:force-rerun-pending-campaigns')->everyTenMinutes();
 
         /*
