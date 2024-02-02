@@ -30,6 +30,7 @@ class AddTwoFactorFieldsToUsers extends Migration
         Schema::table('users', function (Blueprint $table) {
             $table->dropColumn('two_factor_verified');
             $table->dropColumn('two_factor_verify_code');
+            $table->dropColumn('two_factor_last_send');
         });
     }
 }

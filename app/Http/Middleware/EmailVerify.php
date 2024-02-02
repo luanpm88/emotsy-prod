@@ -20,10 +20,17 @@ class EmailVerify
         // save previous url
         session(['2fa.redirect' => url()->full()]);
 
-        if (Auth::user()->two_factor_verified == false) {
+        // if (Auth::user()->two_factor_verified == false) {
+        if ($this->shouldProvideTwoFactorChallenge($request)) {
             return redirect(action('UserController@verifySelectMethod'));
         }
 
         return $next($request);
+    }
+
+    protected function shouldProvideTwoFactorChallenge(Request $request): bool
+    {
+        return $request->user() &&
+            !$request->session()->has('two_factor_authenticated');
     }
 }

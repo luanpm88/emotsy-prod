@@ -3280,7 +3280,7 @@
   'delivery.error.subscriber_not_active' => 'Subscriber is not active at the time of sending (Status :status)',
   '2fa.email_verification' => 'Email Verification',
   '2fa.email_verification.verify' => 'Verify',
-  '2fa.email_verification.email_sent' => 'We have sent you an email with a verification code.
+  '2fa.email_verification.email_sent' => 'We have sent you an email with a verification code to <span class="fw-semibold">:email</span>.
     Please enter the code from the email here to verify your email.',
   '2fa.email_verification.enter_code_here' => 'Enter code here',
   '2fa.select.wording' => 'You need to verify your login via email. We will send you an email with a verification code so that you can confirm that you are the real account holder.',

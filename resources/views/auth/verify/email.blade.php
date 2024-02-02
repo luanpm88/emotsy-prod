@@ -17,7 +17,9 @@
             @endif
             
             <h4 class="text-semibold mt-0">{{ trans('messages.2fa.email_verification') }}</h4>
-            <p>{{ trans('messages.2fa.email_verification.email_sent') }}</p>
+            <p>{!! trans('messages.2fa.email_verification.email_sent', [
+                'email' => Acelle\Helpers\maskEmail(Auth::user()->email),
+            ]) !!}</p>
             
             <div class="form-group has-feedback has-feedback-left{{ $errors->has('code') ? ' has-error' : '' }}">
                 <input type="text" class="form-control" name="code"
@@ -37,9 +39,50 @@
             <button type="submit" class="btn btn-primary">
                 {{ trans('messages.2fa.email_verification.verify') }}
             </button>
-            <input type="submit" class="btn btn-light" name="resend"
-                value="{{ trans('messages.2fa.email.resend_email') }}"
+            <input type="submit" verify-control="resend" type="submit" type="submit" class="btn btn-light" name="resend"
+                value="{{ trans('messages.2fa.email.resend_email') }}""
             />
+            <script>
+                $(function() {
+                    new CountDownManager({
+                        from: {{ Auth::user()->getRemainVerifyCountdown() }},
+                        text: '{{ trans('messages.2fa.email.resend_email') }}',
+                        button: $('[verify-control="resend"]')
+                    });
+                });
+
+                var CountDownManager = class {
+                    constructor(options) {
+                        this.from = options.from;
+                        this.text = options.text;
+                        this.button = options.button;
+
+                        this.start();
+                    }
+
+                    start() {
+                        this.check();
+                    }
+
+                    check() {
+                        if (this.from > 0) {
+                            this.button.prop('disabled', true);
+                            this.button.val('('+this.from+') ' + this.text);
+
+                            // minus 1
+                            this.from -= 1;
+
+                            // coutdown
+                            setTimeout(() => {
+                                this.check();
+                            }, 1000);
+                        } else {
+                            this.button.prop('disabled', false);
+                            this.button.val(this.text);
+                        }
+                    }
+                }
+            </script>
         </div>
     </form>
     <!-- /send reset password email -->                

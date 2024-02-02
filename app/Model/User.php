@@ -706,10 +706,51 @@ class User extends Authenticatable
         return $this->two_factor_verify_code;
     }
 
+    public function getLastSendUntilNowInSeconds()
+    {
+        return \Carbon\Carbon::now()->diffInSeconds($this->two_factor_last_send);
+    }
+
+    public function getRemainVerifyCountdown()
+    {
+        return (60 > $this->getLastSendUntilNowInSeconds()) ? (60 - $this->getLastSendUntilNowInSeconds()) : 0;
+    }
+
     public function sendVerifyCodeEMail()
     {
+        // resend in 60 seconds
+        if ($this->getLastSendUntilNowInSeconds() < 60) {
+            throw new \Exception('Last message sent less than 60 seconds ago. Cannot send messages too quickly.');
+        }
+
+        // code
         $code = $this->generateEmailVerifyCode();
-        \Illuminate\Support\Facades\Mail::to($this)->send(new \Acelle\Mail\VerifyEmailSendCode($code));
+        
+        // build the message
+        $message = new ExtendedSwiftMessage();
+        $message->setEncoder(new \Swift_Mime_ContentEncoder_PlainContentEncoder('8bit'));
+        $message->setContentType('text/html; charset=utf-8');
+
+        $message->setSubject('Email Verification Code');
+        $message->setTo($this->email);
+        $message->setReplyTo(Setting::get('mail.reply_to'));
+        $message->addPart(view('auth.verify.email.content', [
+            'code' => $code,
+        ])->render(), 'text/html');
+
+        $mailer = App::make('xmailer');
+        $result = $mailer->sendWithDefaultFromAddress($message);
+
+        if (array_key_exists('error', $result)) {
+            throw new \Exception($result['error']);
+        }
+
+        
+        // \Illuminate\Support\Facades\Mail::to($this)->send(new \Acelle\Mail\VerifyEmailSendCode($code));
+
+        //
+        $this->two_factor_last_send = \Carbon\Carbon::now()->timezone('UTC');
+        $this->save();
     }
 
     public function verifyCode($inputCode)
@@ -719,6 +760,9 @@ class User extends Authenticatable
         if ($sucess) {
             $this->two_factor_verified = true;
             $this->save();
+
+            // session update
+            request()->session()->put('two_factor_authenticated', true);
         }
 
         return $sucess;
