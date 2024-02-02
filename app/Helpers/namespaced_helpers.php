@@ -445,3 +445,22 @@ function execute_with_limits(array $rateTrackers, array $creditTrackers, Closure
         throw $exception;
     }
 }
+
+function maskEmail($email) {
+    // Split the email address into parts
+    list($username, $domain) = explode('@', $email);
+
+    // Get the length of the username
+    $usernameLength = strlen($username);
+
+    // Keep the first and last character of the username
+    $maskedUsername = substr($username, 0, 1) . str_repeat('*', $usernameLength - 2) . substr($username, -1);
+
+    // Mask the domain
+    $maskedDomain = substr($domain, 0, 1) . str_repeat('*', strlen($domain) - 2) . substr($domain, -1);
+
+    // Concatenate the masked username and domain
+    $maskedEmail = $maskedUsername . '@' . $maskedDomain;
+
+    return $maskedEmail;
+}

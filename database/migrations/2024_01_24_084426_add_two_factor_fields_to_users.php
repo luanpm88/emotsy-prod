@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddEmailVerifiedToUsers extends Migration
+class AddTwoFactorFieldsToUsers extends Migration
 {
     /**
      * Run the migrations.
@@ -14,8 +14,9 @@ class AddEmailVerifiedToUsers extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->boolean('email_verified')->default(false);
-            $table->boolean('email_verify_code')->default(false);
+            $table->boolean('two_factor_verified')->default(false);
+            $table->string('two_factor_verify_code')->default(false);
+            $table->timestamp('two_factor_last_send')->nullable();
         });
     }
 
@@ -27,8 +28,8 @@ class AddEmailVerifiedToUsers extends Migration
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('email_verified');
-            $table->dropColumn('email_verify_code');
+            $table->dropColumn('two_factor_verified');
+            $table->dropColumn('two_factor_verify_code');
         });
     }
 }

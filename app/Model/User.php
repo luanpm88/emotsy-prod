@@ -695,4 +695,32 @@ class User extends Authenticatable
 
         $this->setOnscreenIntro($screenName, $screenIntro);
     }
+
+    public function generateEmailVerifyCode()
+    {
+        $numbers = str_shuffle('0123456789');
+        $randomString = substr($numbers, 0, 6);
+        $this->two_factor_verify_code = $randomString;
+        $this->save();
+
+        return $this->two_factor_verify_code;
+    }
+
+    public function sendVerifyCodeEMail()
+    {
+        $code = $this->generateEmailVerifyCode();
+        \Illuminate\Support\Facades\Mail::to($this)->send(new \Acelle\Mail\VerifyEmailSendCode($code));
+    }
+
+    public function verifyCode($inputCode)
+    {
+        $sucess = $this->two_factor_verify_code == trim($inputCode);
+
+        if ($sucess) {
+            $this->two_factor_verified = true;
+            $this->save();
+        }
+
+        return $sucess;
+    }
 }

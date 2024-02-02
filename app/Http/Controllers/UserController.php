@@ -154,8 +154,59 @@ class UserController extends Controller
         ]);
     }
 
-    public function emailVerify()
+    public function verifySelectMethod(Request $request)
     {
+        // send verifucation email
+        if ($request->isMethod('post')) {
+            $request->user()->sendVerifyCodeEMail();
+
+            // redirect
+            return redirect(action('UserController@emailVerify'));
+        }
+
+        return view('auth.verify.select');
+    }
+
+    public function emailVerify(Request $request)
+    {
+        $user = $request->user();
+
+        // save posted data
+        if ($request->isMethod('post')) {
+            //
+            $inputCode = $request->code;
+
+            // resend
+            if ($request->resend) {
+                $user->sendVerifyCodeEMail();
+
+                return redirect(action('UserController@emailVerify'));
+            }
+
+            // make validator
+            $validator = \Validator::make($request->all(), [
+                'code' => 'required',
+            ]);
+
+            // verify code
+            $validator->after(function ($validator) use ($user, $inputCode) {
+                if (!$user->verifyCode($inputCode)) {
+                    $validator->errors()->add('code', trans('messages.2fa.email.code_not_match'));
+                }
+            });
+
+            // redirect if fails
+            if ($validator->fails()) {
+                return response()->view('auth.verify.email', [
+                    'errors' => $validator->errors(),
+                ], 400);
+            }
+
+            // success
+            $url = session()->get('2fa.redirect', action('HomeController@index'));
+            return redirect()->away($url);
+        }
+
         return view('auth.verify.email');
     }
 }

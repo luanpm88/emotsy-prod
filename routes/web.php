@@ -249,7 +249,8 @@ Route::group(['middleware' => ['not_installed', 'auth']], function () {
     }])->where('name', '.+')->name('download');
 
     // Veridy Email
-    Route::match(['get', 'post'], 'auth/email-verify', 'UserController@emailVerify');
+    Route::match(['get', 'post'], 'auth/verify/select', 'UserController@verifySelectMethod');
+    Route::match(['get', 'post'], 'auth/verify/email', 'UserController@emailVerify');
 });
 
 Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'email_verify']], function () {

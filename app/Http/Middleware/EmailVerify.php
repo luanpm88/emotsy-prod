@@ -17,8 +17,11 @@ class EmailVerify
      */
     public function handle(Request $request, Closure $next)
     {
-        if (Auth::user()->email_verified == false) {
-            return redirect(action('UserController@emailVerify'));
+        // save previous url
+        session(['2fa.redirect' => url()->full()]);
+
+        if (Auth::user()->two_factor_verified == false) {
+            return redirect(action('UserController@verifySelectMethod'));
         }
 
         return $next($request);

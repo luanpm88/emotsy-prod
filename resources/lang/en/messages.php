@@ -3283,4 +3283,8 @@
   '2fa.email_verification.email_sent' => 'We have sent you an email with a verification code.
     Please enter the code from the email here to verify your email.',
   '2fa.email_verification.enter_code_here' => 'Enter code here',
+  '2fa.select.wording' => 'You need to verify your login via email. We will send you an email with a verification code so that you can confirm that you are the real account holder.',
+  '2fa.email.send_email' => 'Send a verification code to your email',
+  '2fa.email.resend_email' => 'Resend the verification code',
+  '2fa.email.code_not_match' => 'The verification code does not match',
 ) ?>
