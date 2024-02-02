@@ -3287,4 +3287,8 @@
   '2fa.email.send_email' => 'Send a verification code to your email',
   '2fa.email.resend_email' => 'Resend the verification code',
   '2fa.email.code_not_match' => 'The verification code does not match',
+  '2fa_enable' => 'Enable 2FA',
+  '2fa_enable' => 'Enable 2FA',
+  'setting.2fa_enable.help' => 'Two-Factor Authentication (2FA) with email adds an extra layer of
+    security by requiring users to verify their identity through a unique code sent to their email, enhancing the protection of online accounts from unauthorized access.',
 ) ?>

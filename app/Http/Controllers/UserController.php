@@ -156,6 +156,11 @@ class UserController extends Controller
 
     public function verifySelectMethod(Request $request)
     {
+        if (\Acelle\Model\Setting::get('2fa_enable') == 'no') {
+            $url = session()->get('2fa.redirect', action('HomeController@index'));
+            return redirect()->away($url);
+        }
+
         // send verifucation email
         if ($request->isMethod('post')) {
             $request->user()->sendVerifyCodeEMail();
@@ -169,6 +174,11 @@ class UserController extends Controller
 
     public function emailVerify(Request $request)
     {
+        if (\Acelle\Model\Setting::get('2fa_enable') == 'no') {
+            $url = session()->get('2fa.redirect', action('HomeController@index'));
+            return redirect()->away($url);
+        }
+
         $user = $request->user();
 
         // save posted data
