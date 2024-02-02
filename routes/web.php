@@ -904,7 +904,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
 });
 
 // ADMIN AREA
-Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 'backend']], function () {
+Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 'backend', 'email_verify']], function () {
     Route::get('admin', 'HomeController@index');
     Route::get('admin/docs/api/v1', 'ApiController@doc');
 
