@@ -499,8 +499,8 @@ class Tool
 
             if ($check != 'ok') {
                 $rules = ['php_bin_path_invalid' => 'required'];
-                    $controller->validate($request, $rules, [
-                    'php_bin_path_invalid.required' => $check
+                $controller->validate($request, $rules, [
+                'php_bin_path_invalid.required' => $check
                 ]);
             }
 
