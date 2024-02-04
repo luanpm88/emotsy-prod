@@ -44,11 +44,9 @@ class Upgrade extends Controller
 
         Artisan::call('queue:flush');
 
-        /*
-        if (redis_enabled()) {
-            Artisan::call('queue:clear redis');
-        }
-        */
+        // if (redis_enabled()) {
+        //     Artisan::call('queue:clear redis');
+        // }
 
         Artisan::call('queue:prune-failed');
 

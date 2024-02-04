@@ -2041,6 +2041,7 @@ class MailList extends Model
             if (!$field) {
                 $field = new \Acelle\Model\Field();
                 $field->mail_list_id = $this->id;
+                $field->custom_field_name = $this->getAvailableField();
             }
 
             // If email field
@@ -2215,5 +2216,33 @@ class MailList extends Model
         }
 
         return $automap;
+    }
+
+    public function getAvailableField()
+    {
+        $currentFields = $this->fields()->pluck('custom_field_name')->all();
+
+        foreach ($this->listCustomFields() as $field) {
+            if (!in_array($field, $currentFields)) {
+                return $field;
+            }
+        }
+
+        throw new Exception('No custom field left');
+    }
+
+    public static function listCustomFields()
+    {
+        $basename = 'custom_';
+        $start = 100;
+        $end = 999;
+
+        $list = [];
+        for ($i = $start; $i <= $end; $i += 1) {
+            $list[] = "{$basename}{$i}";
+        }
+
+        // return [ 'field_100', 'field_101', ..., 'field_999'];
+        return $list;
     }
 }
