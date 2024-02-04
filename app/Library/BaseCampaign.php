@@ -221,8 +221,11 @@ class BaseCampaign extends Model
 
         // Option 1: load multiple Campaign loader jobs
         // Load max 5 LoadCampaign jobs, each will produce 200 SendMessage jobs
+        // So there will be 200 x 2 = 400 jobs in queue (in case of sending speed limit)
+        // Be careful before increase this value, otherwise, jobs release/retry may prevents
+        //     other campaigns from sending
         $perPage = 200;
-        $maxPageToLoad = 5;
+        $maxPageToLoad = 2;
         $subscribersQuery = $this->subscribersToSend();
 
         $campaignLoaders = [];
