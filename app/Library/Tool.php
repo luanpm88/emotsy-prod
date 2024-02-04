@@ -408,36 +408,6 @@ class Tool
     }
 
     /**
-     * Get available System Background Methods Select Options.
-     *
-     * @param timestamp
-     *
-     * @return string
-     */
-    public static function availableSystemBackgroundMethodSelectOptions()
-    {
-        $options = [
-            [
-                'text' => trans('messages.database_job_type'),
-                'value' => 'database',
-                'description' => trans('messages.database_job_type_desc'),
-            ],
-        ];
-
-        if (true) {
-            $options[] = [
-                'text' => trans('messages.async_job_type'),
-                'description' => trans('messages.async_job_type_desc'),
-                'value' => 'async',
-                'disabled' => true, //exec_enabled(),
-                'tooltip' => (!exec_enabled() ? 'Your server does not support async' : ''),
-            ];
-        }
-
-        return $options;
-    }
-
-    /**
      * Control cronjob update request.
      *
      * @param timestamp

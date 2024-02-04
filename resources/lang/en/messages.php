@@ -154,8 +154,6 @@
   'app.notice.title' => 'Notice',
   'are_you_sure' => 'Are you sure?',
   'area' => 'Area',
-  'async_job_type' => 'Async',
-  'async_job_type_desc' => 'Send emails by forking PHP child processes. It is required that PHP `exec` function is enabled on your server. Note that Async does not work with Automation & Autoresponder features.',
   'audience' => 'Audience',
   'audience.audience_growth.desc' => 'How your audience growth over time',
   'audience.audience_growth.title' => 'Your audience growth',
