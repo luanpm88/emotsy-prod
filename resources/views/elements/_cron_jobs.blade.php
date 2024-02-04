@@ -1,17 +1,5 @@
 <h3 class="text-primary"><i class="icon-puzzle2"></i> {{ trans('messages.setting_up_background_job') }}</h3>
 
-@if(!$valid || isset($show_all))
-    @include('helpers.form_control', [
-        'type' => 'radio',
-        'name' => 'queue_driver',
-        'class' => '',
-        'label' => trans('messages.choose_background_job_method'),
-        'value' => $queue_driver,
-        'options' => \Acelle\Library\Tool::availableSystemBackgroundMethodSelectOptions(),
-        'rules' => [['queue_driver' => 'required']]
-    ])
-@endif
-
 <div class="database-config-box">
     @if(!$valid || isset($show_all))
         @include('helpers.form_control', [
@@ -100,22 +88,6 @@
         $('input[name="php_bin_path_value"]').trigger('change');
 
         // pickadate mask
-        $(document).on('change', 'input[name="queue_driver"]', function() {
-            var value = $(this).val();
-
-            if(value === 'database') {
-                $('.database-config-box').show();
-                $('.remote_job_box').hide();
-            } else if (value === 'async') {
-                $('.database-config-box').hide();
-                $('.remote_job_box').hide();
-            } else if (value === 'remote') {
-                $('.database-config-box').hide();
-                $('.remote_job_box').show();
-            }
-        });
-        $('input[name="queue_driver"]:checked').trigger('change');
-
         @if(isset($show_all))
             $(document).on('change', 'input', function() {
                 $('#result_box').hide();

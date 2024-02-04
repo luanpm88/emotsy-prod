@@ -494,7 +494,6 @@ class Tool
         $rules = [];
 
         // Current path
-        $queue_driver = config('queue.default');
         $php_bin_path = empty($paths) ? 'manual' : $paths[0];
         $php_bin_path_value = empty($paths) ? '' : $paths[0];
 
@@ -511,7 +510,6 @@ class Tool
         if (!empty($request->old())) {
             $php_bin_path = $request->old()['php_bin_path'];
             $php_bin_path_value = $request->old()['php_bin_path_value'];
-            $queue_driver = $request->old()['queue_driver'];
         }
 
         // create remote token if empty
@@ -525,7 +523,6 @@ class Tool
         if ($request->isMethod('post')) {
             $php_bin_path = $request->php_bin_path;
             $php_bin_path_value = $request->php_bin_path_value;
-            $queue_driver = $request->queue_driver;
 
             // Check valid path
             $check = \Acelle\Library\Tool::checkPHPBinPath($php_bin_path_value);
@@ -553,7 +550,6 @@ class Tool
             'php_bin_path_value' => $php_bin_path_value,
             'rules' => $rules,
             'error' => $error,
-            'queue_driver' => $queue_driver,
             'valid' => $valid,
         ];
     }
