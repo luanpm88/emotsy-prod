@@ -35,16 +35,6 @@
                 'rules' => [['php_bin_path_value' => 'required']]
             ])
         </div>
-        @if ($errors->has('php_bin_path_invalid'))
-            <div class="alert alert-danger">
-                <?php $check = \Acelle\Library\Tool::checkPHPBinPath($php_bin_path_value); ?>
-                @if ($check == '')
-                    {{ trans('messages.this_is_not_executable_php_bin_path') }}
-                @else
-                    {!! $check !!}
-                @endif
-            </div>
-        @endif
     @endif
 
     @if(!exec_enabled())
