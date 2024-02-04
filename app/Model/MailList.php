@@ -2163,6 +2163,14 @@ class MailList extends Model
         $this->save();
     }
 
+    public function setEmbeddedFormOption($key, $value)
+    {
+        $options = $this->getEmbeddedFormOptions();
+        $options[$key] = $value;
+
+        $this->setEmbeddedFormOptions($options);
+    }
+
     public function generateAutoMapping($headers)
     {
         $exactMatching = function ($text1, $text2) {

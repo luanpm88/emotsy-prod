@@ -3256,4 +3256,9 @@
   'your_api_token' => 'Your API token',
   'your_current_license' => 'The current application is registered with the key below, also known as Purchase Code. License type is: ',
   'zip_postal_code' => 'Zip / Postal code',
+  'page.term_of_service.intro' => 'Term of service content',
+  'page.term_of_service.intro' => 'Content for the Terms of Service agreement checkbox.
+    Use the {TERM_OF_SERVICE} tag if you want to add the terms checkbox to the signup page.
+  ',
+  'page.term_of_service' => 'Term of service content',
 ) ?>
