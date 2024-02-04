@@ -9,8 +9,8 @@ try {
 
 $valid = true;
 
-if (!version_compare(PHP_VERSION, '7.3.0', '>=')) {
-    echo "ERROR: PHP CLI 7.3.0 or higher is required.<br />";
+if (!version_compare(PHP_VERSION, '8.1.0', '>=')) {
+    echo "ERROR: PHP CLI 8.1.0 or higher is required.<br />";
     $valid = false;
 }
 

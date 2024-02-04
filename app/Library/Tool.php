@@ -398,7 +398,7 @@ class Tool
         }
 
         if (exec_enabled()) {
-            $exec_script = $path.' '.base_path().'/php_bin_test.php 2>&1';
+            $exec_script = $path.' '.base_path().'/php_bin_test.php 2>/dev/null';
             $result = exec($exec_script, $output);
         } else {
             $result = 'ok';
