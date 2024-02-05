@@ -59,7 +59,7 @@ class MailListFieldMapping
     // To something like:         [ 'field_100'  => 'Joe', 'field_102' => 'joe@america.us', 'tags' => 'SOME TAGS']
     //
     // i.e. Change header based on mapped field, remove other fields (not in map)
-    public function updateRecordHeaders($r)
+    public function processRecord($r, $closure = null)
     {
         // IMPORTANT: 'tags' must be lower-case
         // Extract the relevant fields, including preserved fields
@@ -70,7 +70,14 @@ class MailListFieldMapping
         foreach ($this->mapping as $header => $fieldId) {
             $field = Field::find($fieldId);
             $fieldName = $field->custom_field_name;
-            $record[$fieldName] = $record[$header];
+            $value = $record[$header];
+
+            // Allow the calling party to do any further processing if needed
+            if ($closure) {
+                $value = $closure($field, $value);
+            }
+
+            $record[$fieldName] = $value;
             unset($record[$header]);
         }
 

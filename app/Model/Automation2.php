@@ -620,7 +620,7 @@ class Automation2 extends Model
         $formatSql = config('custom.date_format_sql');
         $formatCarbon  = 'Y-m-d'; // DO NOT READ FROM config(), as it is used here only
         // TODAY + CURRENT TIME
-        $currentTime = new DateTime(null, new DateTimeZone($this->customer->timezone));
+        $currentTime = new DateTime('now', new DateTimeZone($this->customer->timezone));
         // TODAY + GIVEN TIME
         $triggerTime = new DateTime($this->getTriggerAction()->getOptions()['at'], new DateTimeZone($this->customer->timezone));
 
@@ -631,36 +631,25 @@ class Automation2 extends Model
         $today = Carbon::now($this->customer->timezone)->modify($interval);
         $todayStr = $today->format($formatCarbon);
         $dobFieldUid = $this->getTriggerAction()->getOptions()['field'];
-        $dobFieldId = Field::findByUid($dobFieldUid)->id;
+        $dobField = Field::findByUid($dobFieldUid)->custom_field_name;
         $query = $this->subscribers()
-            ->leftJoin('subscriber_fields', function ($join) use ($dobFieldId) {
-                $join->on('subscribers.id', '=', 'subscriber_fields.subscriber_id');
-                $join->on('subscriber_fields.field_id', DB::raw($dobFieldId));
-            })
-            /*
-            ->whereIn(DB::raw(sprintf('SUBSTRING(%s, 1, 10)', table('subscriber_fields.value'))), [
-                $today->format('Y-m-d'),
-                $today->format('Y:m:d'),
-                $today->format('m/d/Y'),
-                $today->format('m-d-Y'),
-            ])
-            */
-
             ->addSelect('auto_triggers.created_at AS trigger_at')
             ->addSelect('auto_triggers.id AS auto_trigger_id')
-            ->addSelect('subscriber_fields.value as dob')
             ->addSelect(
-                // IMPORTANT HARD CODED "-" as y/m/d separator
+                // Format date-of-birth to somethine like "April-9" (%b-%e)
+                DB::raw( sprintf("DATE_FORMAT(STR_TO_DATE(%s, '%s'), '%s') as dob", "subscribers.{$dobField}", config('custom.date_format_sql') ,'%b-%e'))
+            )
+            ->addSelect(
                 DB::raw(
-                    "DATEDIFF(STR_TO_DATE(CONCAT('".$today->format('Y')."-', DATE_FORMAT(STR_TO_DATE(".table('subscriber_fields.value').", '{$formatSql}'), '%m-%d')), '".$formatSql."'), STR_TO_DATE('".$todayStr."', '".$formatSql."')) AS datediff"
+                    // Make it the same year 2024 to count date diff
+                    "DATEDIFF( DATE_FORMAT(STR_TO_DATE(subscribers.{$dobField}, '".config('custom.date_format_sql')."'), '2024-%m-%d') , DATE_FORMAT(NOW(), '2024-%m-%d')) AS datediff"
                 )
             )
             ->leftJoin('auto_triggers', function ($join) use ($thisId) {
                 $join->on('auto_triggers.subscriber_id', 'subscribers.id');
                 $join->where('auto_triggers.automation2_id', $thisId);
             });
-        //->whereNull('auto_triggers.subscriber_id'); // chưa trigger
-        //
+
         return $query;
     }
 
@@ -682,14 +671,12 @@ class Automation2 extends Model
 
         $today = Carbon::now($this->customer->timezone)->modify($interval);
         $dobFieldUid = $this->getTriggerAction()->getOptions()['field'];
-        $dobFieldId = Field::findByUid($dobFieldUid)->id;
+        $dobField = Field::findByUid($dobFieldUid)->custom_field_name;
 
         // TODO: convert to user's timezone first!!!
         $subscribers = $this->subscribersNotTriggeredThisYear()
-            ->join('subscriber_fields', 'subscribers.id', 'subscriber_fields.subscriber_id')
-            ->where('subscriber_fields.field_id', $dobFieldId)
             ->whereIn(
-                DB::raw("DATE_FORMAT(STR_TO_DATE(".table('subscriber_fields.value').", '".config('custom.date_format_sql')."'), '%m-%d')"),
+                DB::raw("DATE_FORMAT(STR_TO_DATE(subscribers.{$dobField}, '".config('custom.date_format_sql')."'), '%m-%d')"),
                 [$today->format('m-d')]
             )->get();
 

@@ -31,7 +31,6 @@ use Acelle\Library\ExtendedSwiftMessage;
 use Acelle\Events\MailListSubscription;
 use Acelle\Events\MailListUpdated;
 use Acelle\Model\Setting;
-use Acelle\Model\SubscriberFields;
 use Acelle\Library\Traits\QueryHelper;
 use Acelle\Library\Traits\HasCache;
 use Acelle\Events\MailListImported;
@@ -153,11 +152,6 @@ class MailList extends Model
     public function campaigns()
     {
         return $this->belongsToMany('Acelle\Model\Campaign', 'campaigns_lists_segments', 'mail_list_id', 'campaign_id');
-    }
-
-    public function subscriberFields()
-    {
-        return $this->hasManyThrough(SubscriberField::class, Field::class);
     }
 
     /**
@@ -745,10 +739,15 @@ class MailList extends Model
 
         // Get an associative array of [ 'tag' => null ]
         // Trick: pass '' as 1st parameter to have it result in null value
-        $listFields = $this->fields->pluck('', 'tag')->toArray();
+        // Result looks like:
+        //    [
+        //        "EMAIL" => null,
+        //        "FIRST_NAME" => null,
+        //        "LAST_NAME" => null,
+        //        "CITY" => null,
+        //    ]
 
-        // write the header
-        $headers = array_keys($listFields);
+        $headers = $this->fields()->pluck('label')->toArray();
 
         // Additional attributes
         $headers[] = 'status';
@@ -759,19 +758,12 @@ class MailList extends Model
         $writer->insertOne($headers);
 
         // Iterate through the list and write to file, 1000 records each time
-        cursorIterate($query, $orderBy = 'subscribers.id', $pageSize, function ($subscribers, $page) use ($writer, $listFields, &$processed, &$total, &$failed, &$message, $pageSize, $progressCallback) {
-            $records = collect($subscribers)->map(function ($subscriber) use ($listFields) {
-                $attributes = $subscriber->subscriberFields()
-                                         ->orderBy('fields.id', 'ASC')
-                                         ->join('fields', 'fields.id', 'subscriber_fields.field_id')
-                                         ->pluck('subscriber_fields.value', 'fields.tag')->toArray();
-
-                // Only take pairs that match the listFields' keys
-                $attributes = array_intersect_key($attributes, $listFields);
-
-                // merge the valid attributes to the base list of all keys
-                // results in something like [ 'EMAIL' => 'example@example.io', 'OTHER' => null ]
-                $attributes = array_merge($listFields, $attributes);
+        cursorIterate($query, $orderBy = 'subscribers.id', $pageSize, function ($subscribers, $page) use ($writer, &$processed, &$total, &$failed, &$message, $pageSize, $progressCallback) {
+            $records = collect($subscribers)->map(function ($subscriber) {
+                $attributes = [];
+                foreach($this->fields as $field) {
+                    $attributes[$field->label] = $subscriber->getValueByField($field);
+                }
 
                 $attributes['status'] = $subscriber->status;
                 $attributes['uid'] = $subscriber->uid;
@@ -940,7 +932,7 @@ class MailList extends Model
      */
     public function getDateFields()
     {
-        return $this->getFields()->whereIn('type', ['date', 'datetime'])->get();
+        return $this->fields()->datetime()->get();
     }
 
     /**
@@ -1178,7 +1170,6 @@ class MailList extends Model
 
         $processed = 0;
         $failed = 0;
-        $total = 0;
         $message = null;
 
         $overQuotaAttempt = false;
@@ -1214,7 +1205,14 @@ class MailList extends Model
                     //     [ 'field_1' => 'Joe', 'field_2' => 'joe@america.us',  'tags' => 'SOME TAGS']
                     //
                     // i.e. Change header based on mapped field, remove other fields (not in map)
-                    $record = $map->updateRecordHeaders($r);
+                    $record = $map->processRecord($r, function($field, $value) {
+                        if ($field->isDate()) {
+                            // Do not count hours, this field is DATE only
+                            return $this->customer->parseDateTime($value, true)->format(config('custom.date_format'));
+                        } else {
+                            return $value;
+                        }
+                    });
 
                     // replace the non-break space (not a normal space) as well as all other spaces
                     $record[$emailFieldName] = strtolower(preg_replace('/[ \s*]*/', '', trim($record[$emailFieldName])));
@@ -1382,7 +1380,6 @@ class MailList extends Model
             throw new Exception(substr($e->getMessage(), 0, 512));
         } finally {
             // @IMPORTANT: if process fails here, something weird occurs
-            $this->reformatDateFields();
             $this->updateCachedInfo();
 
             if (!is_null($progressCallback)) {
@@ -1873,63 +1870,6 @@ class MailList extends Model
         }
 
         return [$validator, $subscriber];
-    }
-
-    public function reformatDateFields($subscriber_id = null)
-    {
-        $type = 'date';
-
-        $query = $this->subscriberFields()
-                      ->where('fields.type', $type)
-                      ->select('subscriber_fields.id', 'subscriber_fields.value');
-
-        if (!is_null($subscriber_id)) {
-            $query = $query->where('subscriber_id', $subscriber_id);
-        }
-
-        $query->perPage($pageSize = 1000, function ($batch) {
-            $fixedValues = $batch->get()->map(function ($r) {
-                return [
-                    'id' => $r->id,
-                    'value' => $this->customer->parseDateTime($r->value, true)->format(config('custom.date_format')),
-                ];
-            })->toArray();
-
-            $this->createTemporaryTableFromArray(
-                "_tmp_{$this->customer->uid}_date_values",
-                $fixedValues,
-                [
-                    'id BIGINT',
-                    'value VARCHAR(191) CHARACTER SET utf8 COLLATE utf8_unicode_ci'
-                ],
-                function ($table) {
-                    DB::statement(sprintf("UPDATE %s sf INNER JOIN %s t ON sf.id = t.id SET sf.value = t.value", table('subscriber_fields'), table($table)));
-                }
-            );
-        });
-
-        /****** The following method is not working
-
-        $sql = "DROP TABLE IF EXISTS __tmp__;
-            CREATE TABLE __tmp__ AS
-            SELECT sf.id, DATE_FORMAT(COALESCE(
-                STR_TO_DATE(sf.value,'{$normalizedDateFormat}'),
-                STR_TO_DATE(sf.value,'%Y:%m:%d'),
-                STR_TO_DATE(sf.value,'%Y.%m.%d'),
-                STR_TO_DATE(sf.value,'%Y/%m/%d')
-            ), '{$normalizedDateFormat}') as pretty_date
-            FROM ".table('subscriber_fields')." sf
-            INNER JOIN ".table('fields')." f ON sf.field_id = f.id
-            WHERE f.`type` = 'date'
-            AND DATE_FORMAT(STR_TO_DATE(sf.value,'{$normalizedDateFormat}'), '{$normalizedDateFormat}') != sf.value
-            AND f.mail_list_id = {$this->id};
-
-            UPDATE ".table('subscriber_fields')." sf
-            INNER JOIN __tmp__ tmp ON sf.id = tmp.id
-            SET value = tmp.pretty_date
-            WHERE value <> tmp.pretty_date";
-        DB::statement($sql);
-        **********/
     }
 
     public function verificationJobs()

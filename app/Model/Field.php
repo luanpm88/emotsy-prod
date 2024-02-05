@@ -97,4 +97,14 @@ class Field extends Model
 
         return 'text';
     }
+
+    public function isDate()
+    {
+        return $this->type == static::TYPE_DATE;
+    }
+
+    public function scopeDatetime($query)
+    {
+        return $query->whereIn('type', ['date', 'datetime']);
+    }
 }
