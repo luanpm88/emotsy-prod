@@ -4,6 +4,7 @@ namespace Acelle\Library;
 
 use Exception;
 use Acelle\Model\MailList;
+use Acelle\Model\Field;
 use DB;
 
 class MailListFieldMapping
@@ -18,11 +19,6 @@ class MailListFieldMapping
     {
         $this->mapping = $mapping;
         $this->list = $list;
-    }
-
-    public function generateFieldNameFromId(int $id)
-    {
-        return "field_{$id}";
     }
 
     public static function parse(array $mapping, MailList $list)
@@ -58,10 +54,9 @@ class MailListFieldMapping
     }
 
 
-    // Transform a record like:   [ 'First Name' => 'Joe', 'Email' => 'joe@america.us', 'tags' => 'SOME TAGS', 'others' => 'Others' ]
-    // to something like
-    //
-    //     [ 'field_1' => 'Joe', 'field_2' => 'joe@america.us',  'tags' => 'SOME TAGS']
+    // Wath a mapping like this:  [ 'First Name' => 1,     'Email'     => 2               , 'tags' => 'SOME TAGS', 'others' => 'Others' ]
+    // Transform a record like:   [ 'First Name' => 'Joe', 'Email'     => 'joe@america.us', 'tags' => 'SOME TAGS', 'others' => 'Others' ]
+    // To something like:         [ 'field_100'  => 'Joe', 'field_102' => 'joe@america.us', 'tags' => 'SOME TAGS']
     //
     // i.e. Change header based on mapped field, remove other fields (not in map)
     public function updateRecordHeaders($r)
@@ -73,7 +68,8 @@ class MailListFieldMapping
 
         // Change original header to mapped field name
         foreach ($this->mapping as $header => $fieldId) {
-            $fieldName = $this->generateFieldNameFromId($fieldId);
+            $field = Field::find($fieldId);
+            $fieldName = $field->custom_field_name;
             $record[$fieldName] = $record[$header];
             unset($record[$header]);
         }
@@ -81,21 +77,30 @@ class MailListFieldMapping
         return $record;
     }
 
+    public function getCustomFields()
+    {
+        $customFields = array_map(function ($fieldId) {
+            $field = Field::find($fieldId);
+            $fieldName = $field->custom_field_name;
+            return $fieldName;
+        }, $this->mapping);
+
+        return $customFields;
+    }
+
     public function createTmpTableFromMapping()
     {
         // create a temporary table containing the input subscribers
         $tmpTable = table('__tmp_subscribers');
-        $emailFieldId = $this->list->getEmailField()->id;
-        $emailFieldName = $this->generateFieldNameFromId($emailFieldId);
 
         // @todo: hard-coded charset and COLLATE
-        $tmpFields = array_map(function ($fieldId) {
-            $fieldName = $this->generateFieldNameFromId($fieldId);
+        $tmpFields = array_map(function ($fieldName) {
             return "`{$fieldName}` VARCHAR(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci";
-        }, $this->mapping);
+        }, $this->getCustomFields());
 
-        foreach ($this->preservedFields as $field) {
-            $tmpFields[] = "`{$field}` VARCHAR(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci";
+        // Also create columsn for preserved fields like 'tags'
+        foreach($this->preservedFields as $fieldName) {
+            $tmpFields[] = "`{$fieldName}` VARCHAR(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci";
         }
 
         $tmpFields = implode(',', $tmpFields);
@@ -103,8 +108,10 @@ class MailListFieldMapping
         // Drop table, create table and create index
         DB::statement("DROP TABLE IF EXISTS {$tmpTable};");
         DB::statement("CREATE TABLE {$tmpTable}({$tmpFields}) ENGINE=InnoDB;");
-        DB::statement("CREATE INDEX _index_email_{$tmpTable} ON {$tmpTable}(`{$emailFieldName}`);");
 
-        return [$tmpTable, $emailFieldName];
+        $emailField = $this->list->getEmailField();
+        DB::statement("CREATE INDEX _index_email_{$tmpTable} ON {$tmpTable}(`{$emailField->custom_field_name}`);");
+
+        return [$tmpTable, $emailField->custom_field_name];
     }
 }

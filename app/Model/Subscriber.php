@@ -33,6 +33,8 @@ use Exception;
 use Acelle\Library\Traits\HasUid;
 use Closure;
 use Carbon\Carbon;
+use Illuminate\Database\Schema\Blueprint;
+use Schema;
 
 class Subscriber extends Model
 {
@@ -412,14 +414,7 @@ class Subscriber extends Model
      */
     public function getValueByField($field)
     {
-        $fv = $this->subscriberFields->filter(function ($r, $key) use ($field) {
-            return $r->field_id == $field->id;
-        })->first();
-        if ($fv) {
-            return $fv->value;
-        } else {
-            return '';
-        }
+        return $this[$field->custom_field_name];
     }
 
     /**
@@ -1249,5 +1244,17 @@ class Subscriber extends Model
     public static function scopeByEmail($query, $email)
     {
         $query = $query->where('email', $email);
+    }
+
+    public static function addCustomFieldIfNotExist($fieldName)
+    {
+        $tableName = static::query()->from;
+        if (!Schema::hasColumn($tableName, $fieldName)) {
+
+            Schema::table($tableName, function(Blueprint $table) use ($fieldName) {
+                $table->text($fieldName)->nullable();
+            });
+
+        }
     }
 }
