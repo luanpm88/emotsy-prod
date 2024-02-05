@@ -35,8 +35,6 @@ class MigrateDataFromSubscriberFieldsToSubscribersTable extends Migration
      */
     public function down()
     {
-        Schema::table('subscriber_fields_to_subscribers', function (Blueprint $table) {
-            //
-        });
+        //
     }
 }
