@@ -708,7 +708,7 @@ class User extends Authenticatable
 
     public function getLastSendUntilNowInSeconds()
     {
-        return \Carbon\Carbon::now()->diffInSeconds($this->two_factor_last_send);
+        return $this->two_factor_last_send ? \Carbon\Carbon::now()->diffInSeconds($this->two_factor_last_send) : 600;
     }
 
     public function getRemainVerifyCountdown()
