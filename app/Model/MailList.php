@@ -1320,7 +1320,7 @@ class MailList extends Model
                     FROM %s main
                     JOIN %s tmp ON main.email = tmp.%s
                     JOIN %s f ON main.id = f.subscriber_id
-                    WHERE mail_list_id = %s;',
+                    WHERE main.mail_list_id = %s;',
                     table('subscribers'),
                     $tmpTable,
                     $emailFieldName,
