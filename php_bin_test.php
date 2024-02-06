@@ -9,8 +9,8 @@ try {
 
 $valid = true;
 
-if (!version_compare(PHP_VERSION, '7.3.0', '>=')) {
-    echo "ERROR: PHP CLI 7.3.0 or higher is required.<br />";
+if (!version_compare(PHP_VERSION, '8.0.2', '>=')) {
+    echo "ERROR: PHP CLI 8.0.2 or higher is required - ";
     $valid = false;
 }
 
@@ -20,58 +20,58 @@ if (!version_compare(PHP_VERSION, '7.3.0', '>=')) {
 //}
 
 if (!function_exists('mysqli_connect')) {
-    echo "ERROR: Mysqli Extension is required.<br />";
+    echo "ERROR: Mysqli Extension is required - ";
     $valid = false;
 }
 if (!extension_loaded('openssl')) {
-    echo "ERROR: OpenSSL PHP Extension is required.<br />";
+    echo "ERROR: OpenSSL PHP Extension is required - ";
     $valid = false;
 }
 if (!extension_loaded('mbstring')) {
-    echo "ERROR: Mbstring PHP Extension is required.<br />";
+    echo "ERROR: Mbstring PHP Extension is required - ";
     $valid = false;
 }
 if (!extension_loaded('pdo')) {
-    echo "ERROR: PDO PHP extension is required.<br />";
+    echo "ERROR: PDO PHP extension is required - ";
     $valid = false;
 }
 if (!extension_loaded('tokenizer')) {
-    echo "ERROR: Tokenizer PHP Extension is required.<br />";
+    echo "ERROR: Tokenizer PHP Extension is required - ";
     $valid = false;
 }
 if (!class_exists('ZipArchive', false)) {
-    echo "ERROR: PHP Zip Archive is required.<br />";
+    echo "ERROR: PHP Zip Archive is required - ";
     $valid = false;
 }
 if (!extension_loaded('imap')) {
-    echo "ERROR: PHP IMAP Extension is required.<br />";
+    echo "ERROR: PHP IMAP Extension is required - ";
     $valid = false;
 }
 
 /*** not required for PHP CLI
 if (!(extension_loaded('gd') && function_exists('gd_info'))) {
-    echo "ERROR: PHP GD Library is required.<br />";
+    echo "ERROR: PHP GD Library is required - ";
     $valid = false;
 }
 ***/
 
 /*** not required for PHP CLI
 if (!extension_loaded('fileinfo')) {
-    echo "ERROR: PHP Fileinfo extension is required.<br />";
+    echo "ERROR: PHP Fileinfo extension is required - ";
     $valid = false;
 }
 ***/
 
 if (!extension_loaded('curl')) {
-    echo "ERROR: PHP CURL extension is required.<br />";
+    echo "ERROR: PHP CURL extension is required - ";
     $valid = false;
 }
 if (!extension_loaded('xml')) {
-    echo "ERROR: PHP XML extension is required.<br />";
+    echo "ERROR: PHP XML extension is required - ";
     $valid = false;
 }
 if (!class_exists('SQLite3')) {
-    echo "ERROR: PHP SQLite3 extension is required.<br />";
+    echo "ERROR: PHP SQLite3 extension is required - ";
     $valid = false;
 }
 

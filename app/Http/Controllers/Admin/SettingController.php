@@ -212,6 +212,7 @@ class SettingController extends Controller
         }
 
         $respone = \Acelle\Library\Tool::cronjobUpdateController($request, $this);
+
         if ($respone == 'done' || $respone['valid'] == true) {
             $next = action('Admin\SettingController@cronjob').'#result_box';
             return redirect()->away($next);
