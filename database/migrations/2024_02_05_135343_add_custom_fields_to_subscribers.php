@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class MakeSubscriberFieldsValueNullable extends Migration
+class AddCustomFieldsToSubscribers extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,10 @@ class MakeSubscriberFieldsValueNullable extends Migration
      */
     public function up()
     {
-        Schema::table('subscriber_fields', function (Blueprint $table) {
-            $table->text('value')->nullable()->change();
-        });
+        $fields = \Acelle\Model\Field::all();
+        foreach($fields as $field) {
+            \Acelle\Model\Subscriber::addCustomFieldIfNotExist($field->custom_field_name);
+        }
     }
 
     /**
@@ -25,8 +26,6 @@ class MakeSubscriberFieldsValueNullable extends Migration
      */
     public function down()
     {
-        Schema::table('subscriber_fields', function (Blueprint $table) {
-            //
-        });
+	//
     }
 }

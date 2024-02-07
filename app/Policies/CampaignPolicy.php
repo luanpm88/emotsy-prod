@@ -47,7 +47,6 @@ class CampaignPolicy
         return $item->customer_id == $customer->id
             && (in_array($item->status, [
                 Campaign::STATUS_NEW,
-                Campaign::STATUS_QUEUED,
                 Campaign::STATUS_ERROR,
                 Campaign::STATUS_PAUSED,
                 Campaign::STATUS_SCHEDULED,

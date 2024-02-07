@@ -239,13 +239,14 @@ class SendMessage implements ShouldQueue
                 return $exceptionCallback($ex);
             }
             // Releease the job, have it tried again later on, after 1 minutes
-            $logger->warning(sprintf("Delay [%s] for 60 seconds: %s", $email, $ex->getMessage()));
+            $logger->warning(sprintf("Delay [%s] for 120 seconds: %s", $email, $ex->getMessage()));
 
             // Release the job, have it try again after 60 seconds
             // and (hopefully) the quota limits will be lifted then as time goes by
-            $this->release(60);
+            // @note: normally, 60 seconds is enough, but change to 120 to prevent overhead
+            $this->release(120);
 
-        //} catch (OutOfCredits $ex) {
+            //} catch (OutOfCredits $ex) {
 
         } catch (Throwable $ex) {
             // Also catch the OutOfCredits error

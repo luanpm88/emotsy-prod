@@ -292,7 +292,7 @@ class Subscription extends Model
         }
 
         // create init invoice
-        $invoice = DB::transaction(function() {
+        $invoice = DB::transaction(function () {
             $invoice = \Acelle\Model\InvoiceRenewSubscription::createInvoice(
                 $type = \Acelle\Model\InvoiceRenewSubscription::TYPE_RENEW_SUBSCRIPTION,
                 $title = trans('messages.invoice.renew_subscription'),
