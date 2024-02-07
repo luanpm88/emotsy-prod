@@ -150,7 +150,17 @@ Email support
             <span>{{ trans('messages.plan.feature.subscriber_management') }}</span>
         </div>
         <div class="lastUnit size1of2 ms-auto">
-            <mc:flag>{{ $plan->getFeature('subscriber_management') }}</mc:flag>
+            <mc:flag>
+                @if ($plan->getFeature('subscriber_management'))
+                    <span class="material-icons-outlined text-success" style="transform:scale(1.4)">
+                        task_alt
+                    </span>
+                @else
+                    <span class="material-icons-outlined text-danger" style="transform:scale(1.4)">
+                        do_not_disturb_on
+                    </span>
+                @endif
+            </mc:flag>
         </div>
     </li>
 

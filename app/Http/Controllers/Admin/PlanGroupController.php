@@ -1027,4 +1027,31 @@ class PlanGroupController extends Controller
             'style' => $style,
         ]);
     }
+
+    public function features(Request $request, $uid)
+    {
+        $planGroup = PlanGroup::findByUid($uid);
+
+        // authorize
+        if (\Gate::denies('update', $planGroup)) {
+            return $this->notAuthorized();
+        }
+
+        if ($request->isMethod('post')) {
+            $planGroup->setFeatures($request->features);
+
+            // check status
+            $planGroup->checkStatus();
+
+            // save
+            return redirect()->action('Admin\PlanGroupController@features', [
+                'uid' => $planGroup->uid,
+            ])->with('alert-success', trans('messages.plan_group.updated'));
+        }
+
+        return view('admin.plan_groups.features', [
+            'planGroup' => $planGroup,
+            'features' => $planGroup->getFeatures(),
+        ]);
+    }
 }

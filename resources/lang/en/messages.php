@@ -3477,4 +3477,5 @@
   'plan.feature.24_7_chat' => '24/7 Live chat support',
   'plan.features' => 'Features',
   'plan.feature.general' => 'General',
+  'plan_group.features' => 'Features',
 ) ?>

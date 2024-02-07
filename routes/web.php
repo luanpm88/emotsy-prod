@@ -1283,7 +1283,8 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::post('admin/verify/index', 'VerificationController@index');
     Route::get('admin/verify/index', 'VerificationController@index');
 
-    // Plan
+    // Plan Group
+    Route::match(['get', 'post'], 'admin/plan_groups/{uid}/features', 'PlanGroupController@features');
     Route::match(['get', 'post'], 'admin/plan_groups/public-view/{style?}', 'PlanGroupController@publicView');
     Route::match(['get', 'post'], 'admin/plan_groups/{uid}/tos', 'PlanGroupController@tos');
     Route::post('admin/plan_groups/{uid}/visible/on', 'PlanGroupController@visibleOn');

@@ -753,6 +753,7 @@ class PlanGeneral extends Plan implements PlanInterface
         $this->asignOption('email_footer_trial_period_only', $planGroup->getOption('email_footer_trial_period_only'));
         $this->asignOption('html_footer', $planGroup->getOption('html_footer'));
         $this->asignOption('plain_text_footer', $planGroup->getOption('plain_text_footer'));
+        $this->asignOption('features', $planGroup->getOption('features'));
     }
 
     /**
