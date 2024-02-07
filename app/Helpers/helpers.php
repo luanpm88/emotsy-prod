@@ -1281,3 +1281,34 @@ function redis_enabled()
         return false;
     }
 }
+
+function with_cache_lock(string $resourceKey, Closure $task, int $timeout = 15, $lockTime = null, Closure $waitTimeoutCallback = null)
+{
+    $defaultLockTime = 60;
+    $lock = \Illuminate\Support\Facades\Cache::lock($resourceKey, $lockTime ?: $defaultLockTime);
+    $start = time();
+
+    $checkTimeoutFunc = function ($startTime, $timeoutDuration) {
+        return (time() - $startTime > $timeoutDuration);
+    };
+
+    $gotLock = false;
+    while (true) {
+        if ($checkTimeoutFunc($start, $timeout)) {
+            if (is_null($waitTimeoutCallback)) {
+                throw new \Exception('Timeout getting cache lock for: '.$resourceKey);
+            } else {
+                $waitTimeoutCallback();
+                break;
+            }
+        }
+
+        if ($lock->get()) {
+            $gotLock = true;
+            $task();
+
+            $lock->release();
+            break;
+        }
+    }
+}
