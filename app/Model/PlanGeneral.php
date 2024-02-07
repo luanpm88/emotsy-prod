@@ -370,6 +370,41 @@ class PlanGeneral extends Plan implements PlanInterface
             'payment_gateway' => '',
             'bounce_rate_theshold' => '',
             'billing_cycle' => 'monthly',
+            'features' => [
+                'seats' => 1,
+                'custom_user_permissions' => 0,
+                'content_approval' => 0,
+                'embedded_form' => 1,
+                'popup' => 10,
+                'segmentation' => 3,
+                'subscriber_management' => 1,
+                'drag_drop_builder' => 1,
+                'rich_text_editor' => 1,
+                'image_library' => 1,
+                'mobile_friendly_newsletter' => 1,
+                'newsletter_templates' => 1,
+                'create_own_template' => 0,
+                'remove_logo' => 0,
+                'custom_html_builder' => 0,
+                'ai_writing' => 0,
+                'automation_builder' => 1,
+                'multiple_automation_trigger' => 0,
+                'automation_step' => 10,
+                'rss_campaigns' => 0,
+                'api_documentation' => 1,
+                'template_integration' => 0,
+                'custom_variables' => 1,
+                'ab_testing' => 1,
+                'preview_test_email' => 1,
+                'dynamic_email_content' => 0,
+                'unsubscribe_page_builder' => 0,
+                'list_growth_reporting' => 1,
+                'individual_subscriber_profile' => 1,
+                'automation_real_time_report' => 1,
+                'knowledge_base' => 1,
+                'email_support' => 30,
+                '24_7_chat' => 30,
+            ],
         ]);
 
         // Sending server types
@@ -1185,4 +1220,45 @@ class PlanGeneral extends Plan implements PlanInterface
     {
         return $this->planGroup ? $this->planGroup->name : '--';
     }
+
+    public function getDefaultFeatures()
+    {
+        return self::defaultOptions()['features'];
+    }
+
+    public function getFeatures()
+    {
+        $options = $this->getOptions();
+
+        if (!isset($options['features'])) {
+            $options['features'] = [];
+        }
+
+        return array_merge($this->getDefaultFeatures(), $options['features']);
+    }
+
+    public function setFeatures($features)
+    {
+        $this->setOption('features', $features);
+    }
+
+    public function getFeature($name)
+    {
+        $features = $this->getFeatures();
+
+        if (!isset($features[$name])) {
+            return null;
+        }
+
+        return $features[$name];
+    }
+
+    public function setFeature($name, $value)
+    {
+        $features = $this->getFeatures();
+        $features[$name] = $value;
+
+        $this->setFeatures($features);
+    }
+    
 }

@@ -6902,7 +6902,6 @@ h3, h4 [class^="material-"] {
     color: #333;
     border: solid 1px transparent;
     transition: all 0.2s ease-in-out;
-    filter: grayscale(0.9);
     cursor: pointer;
 }
 .new-price-item.showed {
