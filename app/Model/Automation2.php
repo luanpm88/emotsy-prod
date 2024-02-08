@@ -637,7 +637,7 @@ class Automation2 extends Model
             ->addSelect('auto_triggers.id AS auto_trigger_id')
             ->addSelect(
                 // Format date-of-birth to somethine like "April-9" (%b-%e)
-                DB::raw( sprintf("DATE_FORMAT(STR_TO_DATE(%s, '%s'), '%s') as dob", "subscribers.{$dobField}", config('custom.date_format_sql') ,'%b-%e'))
+                DB::raw(sprintf("DATE_FORMAT(STR_TO_DATE(%s, '%s'), '%s') as dob", "subscribers.{$dobField}", config('custom.date_format_sql'), '%b-%e'))
             )
             ->addSelect(
                 DB::raw(

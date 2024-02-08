@@ -104,18 +104,18 @@ class InMemoryRateTracker
 
     public function updateRecord($block, $count)
     {
-    	$store = Cache::get($this->resourceKey);
-    	$store[$block] = $count;
+        $store = Cache::get($this->resourceKey);
+        $store[$block] = $count;
 
-    	Cache::put($this->resourceKey, $store);
+        Cache::put($this->resourceKey, $store);
     }
 
     public function removeRecord($block)
     {
-    	$store = Cache::get($this->resourceKey);
-    	unset($store[$block]);
+        $store = Cache::get($this->resourceKey);
+        unset($store[$block]);
 
-    	Cache::put($this->resourceKey, $store);
+        Cache::put($this->resourceKey, $store);
     }
 
     public function getRecords(Carbon $fromDatetime = null, Carbon $toDatetime = null)
@@ -128,17 +128,16 @@ class InMemoryRateTracker
 
         $records = [];
 
- 		$store = Cache::get($this->resourceKey);
+        $store = Cache::get($this->resourceKey);
 
         if (is_null($store)) {
             return $records;
         }
 
- 		foreach ($store as $block => $count)
-        {
-        	if ($block >= $fromDatetimeStr && $block <= $toDatetimeStr) {
-	            $records[] = [$block, $count];
-	        }
+        foreach ($store as $block => $count) {
+            if ($block >= $fromDatetimeStr && $block <= $toDatetimeStr) {
+                $records[] = [$block, $count];
+            }
         }
 
         // Return
@@ -175,10 +174,10 @@ class InMemoryRateTracker
         if (is_null($store)) {
             return [ null, null ];
         }
-    	$lastKey = array_key_last($store);
-    	$lastValue = $store[$lastKey];
+        $lastKey = array_key_last($store);
+        $lastValue = $store[$lastKey];
 
-    	return [ $lastKey, $lastValue ];
+        return [ $lastKey, $lastValue ];
     }
 
     public function cleanup()
