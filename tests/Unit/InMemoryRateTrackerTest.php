@@ -8,7 +8,7 @@ use Acelle\Library\InMemoryRateTracker;
 
 class InMemoryRateTrackerTest extends TestCase
 {
-    function test_in_memory_rate_tracker_just_works()
+    public function test_in_memory_rate_tracker_just_works()
     {
         $this->assertEquals(1, 1);
 

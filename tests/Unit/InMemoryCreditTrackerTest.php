@@ -11,7 +11,7 @@ use function Acelle\Helpers\execute_with_limits;
 
 class InMemoryCreditTrackerTest extends TestCase
 {
-    function test_credit_tracker_just_works()
+    public function test_credit_tracker_just_works()
     {
         $key1 = 'credit-tracker-test-1';
         $creditTracker1 = InMemoryCreditTracker::load($key1);
@@ -35,7 +35,7 @@ class InMemoryCreditTrackerTest extends TestCase
         $this->assertEquals($creditTracker2->getRemainingCredits(), 0);
     }
 
-    function test_credit_tracker_with_credit_exceeding()
+    public function test_credit_tracker_with_credit_exceeding()
     {
         $key1 = 'credit-tracker-test-1';
         $creditTracker1 = InMemoryCreditTracker::load($key1);
@@ -63,7 +63,7 @@ class InMemoryCreditTrackerTest extends TestCase
         $this->assertEquals($creditTracker2->getRemainingCredits(), 0);
     }
 
-    function test_credit_tracker_and_task_exception()
+    public function test_credit_tracker_and_task_exception()
     {
         $key1 = 'credit-tracker-test-1';
         $creditTracker1 = InMemoryCreditTracker::load($key1);
