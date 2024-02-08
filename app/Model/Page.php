@@ -98,7 +98,7 @@ class Page extends Model
         $this->content = str_replace('{CONTACT_URL}', $this->mailList->contact->url, $this->content);
 
         // FIELDS
-        $fields = view('subscribers._form', array(
+        $fields = view('pages._subscribe_form', array(
             'list' => $this->mailList,
             'is_page' => true,
             'col' => '12',

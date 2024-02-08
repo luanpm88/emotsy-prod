@@ -25,28 +25,3 @@
 		@endif
 	@endif
 @endforeach
-
-@if ($list->getEmbeddedFormOption('enable_term') == 'yes')
-	<div class="d-flex align-items-top mb-4 mt-4 pt-2" style="position: relative">
-		<div class="mr-2">
-			<input type="checkbox" name="acm_term" required />
-		</div>
-		<div>
-			{!! $list->getEmbeddedFormOption('term') !!}
-		</div>
-	</div>
-@endif
-
-@if (\Acelle\Model\Setting::isListSignupCaptchaEnabled())
-	<div>
-		<!-- hCaptcha -->
-		@if (\Acelle\Model\Setting::getCaptchaProvider() == 'hcaptcha')
-			@php
-				$hcaptcha = \Acelle\Hcaptcha\Client::initialize();
-			@endphp
-			{!! $hcaptcha->renderFormHtml($errors) !!}
-		@else
-			{!! \Acelle\Library\Tool::showReCaptcha($errors) !!}
-		@endif
-	</div>
-@endif

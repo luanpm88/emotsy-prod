@@ -11,6 +11,7 @@ use Carbon\Carbon;
 use Acelle\Library\Facades\SubscriptionFacade;
 use Acelle\Library\CreditTracker;
 use Acelle\Library\RateTracker;
+use Acelle\Library\InMemoryRateTracker;
 use Acelle\Library\RateLimit;
 use Illuminate\Database\Eloquent\Builder;
 use DB;
@@ -1017,9 +1018,15 @@ class Subscription extends Model
 
     public function getSendEmailRateTracker()
     {
-        // Get the limits from plan
-        $file = storage_path('app/quota/subscription-send-email-rate-tracking-log-'.$this->uid);
-        $tracker = new RateTracker($file, $this->planGeneral->getSendEmailRateLimits());
+        if (config('custom.distributed_worker')) {
+            $key = 'subscription-send-email-rate-tracking-log-'.$this->uid;
+            $tracker = new InMemoryRateTracker($key, $this->planGeneral->getSendEmailRateLimits());
+        } else {
+            // Get the limits from plan
+            $file = storage_path('app/quota/subscription-send-email-rate-tracking-log-'.$this->uid);
+            $tracker = new RateTracker($file, $this->planGeneral->getSendEmailRateLimits());
+        }
+
         return $tracker;
     }
 

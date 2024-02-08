@@ -401,11 +401,12 @@ class HtmlHandlersTest extends TestCase
 
         // Campaign
         $campaign = Mockery::mock(new Campaign(['name' => 'Campaign']));
+        $campaign->uid = 'mocked-uid';
         $campaign->defaultMailList = $list;
         $campaign->template = $template;
 
         // Flush any cache
-        $campaign->clearCache();
+        $campaign->clearTemplateCache();
 
         // Get
         $html = $campaign->getHtmlContent();
@@ -422,6 +423,7 @@ class HtmlHandlersTest extends TestCase
         // Notice that message should end with an "\r\n" character as suggested by RFC2822
         $this->assertEquals($html, '<!DOCTYPE html><html><body><p>Updated</p><img src="'.asset('/images/transparent.gif').'" data="X-Client-Message-Id: [ null ]" alt="X-Client-Message-Id: [ null ]" width="0" height="0" style="visibility:hidden"></body></html>'."\r\n");
         $this->assertEquals($cachedHtml, '<!DOCTYPE html><html><body><p>Original</p><img src="'.asset('/images/transparent.gif').'" data="X-Client-Message-Id: [ null ]" alt="X-Client-Message-Id: [ null ]" width="0" height="0" style="visibility:hidden"></body></html>'."\r\n");
+
 
         // wait 2 seconds for cache to expire
         sleep(2);

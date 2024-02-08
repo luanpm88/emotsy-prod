@@ -1287,3 +1287,55 @@ function redis_enabled()
         return false;
     }
 }
+
+function with_cache_lock(string $resourceKey, Closure $task, int $timeout = 15, $lockTime = null, Closure $waitTimeoutCallback = null)
+{
+    $defaultLockTime = 10;
+    $lock = \Illuminate\Support\Facades\Cache::lock($resourceKey, $lockTime ?: $defaultLockTime);
+    $start = time();
+    // $startmili = floor(microtime(true)*1000)/1000;
+
+    $checkTimeoutFunc = function ($startTime, $timeoutDuration) {
+        return (time() - $startTime > $timeoutDuration);
+    };
+
+    while (true) {
+        if ($checkTimeoutFunc($start, $timeout)) {
+            if (is_null($waitTimeoutCallback)) {
+                throw new \Exception('Timeout getting cache lock for: '.$resourceKey);
+            } else {
+                $waitTimeoutCallback();
+                break;
+            }
+        }
+
+        if ($lock->get()) {
+            // $waitTime = floor(microtime(true)*1000)/1000 - $startmili;
+            // echo "Got lock after {$waitTime}\n";
+
+            try {
+                $task();
+            } finally {
+                // In case of Exception, lock is automatically release with cache driver "array"
+                // However, with "redis" driver, need explicitly release it
+                $lock->release();
+            }
+
+            break;
+        }
+    }
+}
+
+function distributed_mode_check()
+{
+    if (config('custom.distributed_worker')) {
+        if (config('cache.default') != 'redis') {
+            throw new \Exception('Application is in DISTRIBUTED_WORKER mode, cache driver must be set to "redis" (currently "'.config('cache.default').'")');
+        }
+
+        if (!redis_enabled()) {
+            throw new \Exception('Application is in DISTRIBUTED_WORKER mode but redis is not enable');
+        }
+    }
+
+}
