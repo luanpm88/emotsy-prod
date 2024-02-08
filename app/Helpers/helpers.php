@@ -1319,3 +1319,17 @@ function with_cache_lock(string $resourceKey, Closure $task, int $timeout = 15, 
         }
     }
 }
+
+function distributed_mode_check()
+{
+    if (config('custom.distributed_worker')) {
+        if (config('cache.default') != 'redis') {
+            throw new \Exception('Application is in DISTRIBUTED_WORKER mode, cache driver must be set to "redis" (currently "'.config('cache.default').'")');
+        }
+
+        if (!redis_enabled()) {
+            throw new \Exception('Application is in DISTRIBUTED_WORKER mode but redis is not enable');
+        }
+    }
+
+}

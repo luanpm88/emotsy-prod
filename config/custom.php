@@ -38,4 +38,8 @@ return [
     // chunk size per import
     // Set this value to a too high value will result in MySQL error: "General error: 1390 Prepared statement contains too many placeholders..."
     'import_batch_size' => env('IMPORT_BATCH_SIZE', 1000),
+
+    // Check if the application is in distributed-worker mode
+    'distributed_worker' => env('DISTRIBUTED_WORKER', false),
+
 ];
