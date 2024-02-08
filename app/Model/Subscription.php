@@ -11,6 +11,7 @@ use Carbon\Carbon;
 use Acelle\Library\Facades\SubscriptionFacade;
 use Acelle\Library\CreditTracker;
 use Acelle\Library\RateTracker;
+use Acelle\Library\InMemoryRateTracker;
 use Acelle\Library\RateLimit;
 use Illuminate\Database\Eloquent\Builder;
 use DB;
