@@ -1284,15 +1284,15 @@ function redis_enabled()
 
 function with_cache_lock(string $resourceKey, Closure $task, int $timeout = 15, $lockTime = null, Closure $waitTimeoutCallback = null)
 {
-    $defaultLockTime = 60;
+    $defaultLockTime = 10;
     $lock = \Illuminate\Support\Facades\Cache::lock($resourceKey, $lockTime ?: $defaultLockTime);
     $start = time();
+    // $startmili = floor(microtime(true)*1000)/1000;
 
     $checkTimeoutFunc = function ($startTime, $timeoutDuration) {
         return (time() - $startTime > $timeoutDuration);
     };
 
-    $gotLock = false;
     while (true) {
         if ($checkTimeoutFunc($start, $timeout)) {
             if (is_null($waitTimeoutCallback)) {
@@ -1304,10 +1304,17 @@ function with_cache_lock(string $resourceKey, Closure $task, int $timeout = 15, 
         }
 
         if ($lock->get()) {
-            $gotLock = true;
-            $task();
+            // $waitTime = floor(microtime(true)*1000)/1000 - $startmili;
+            // echo "Got lock after {$waitTime}\n";
 
-            $lock->release();
+            try {
+                $task();
+            } finally {
+                // In case of Exception, lock is automatically release with cache driver "array"
+                // However, with "redis" driver, need explicitly release it
+                $lock->release();
+            }
+
             break;
         }
     }
