@@ -7,9 +7,18 @@ document.addEventListener("DOMContentLoaded", function(event) {
     });
     
     @if ($form->getMetadata('display') == 'click')
-        document.getElementById('{{ $form->getMetadata('element_id') }}').addEventListener("click", function(event) {
-            popup.load();
-        });
+        if (document.getElementById('{{ $form->getMetadata('element_id') }}')) {
+            document.getElementById('{{ $form->getMetadata('element_id') }}').addEventListener("click", function(event) {
+                popup.load();
+            });
+        }
+        if (document.querySelectorAll('{!! $form->getMetadata('element_id') !!}').length) {
+            document.querySelectorAll('{!! $form->getMetadata('element_id') !!}').forEach(ele => {
+                ele.addEventListener("click", function(event) {
+                    popup.load();
+                });
+            });
+        }
     @elseif ($form->getMetadata('display') == 'wait')
         setTimeout(function() {
             popup.load();
