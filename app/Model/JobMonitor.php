@@ -50,15 +50,6 @@ class JobMonitor extends Model
         return Bus::findBatch($this->batch_id);
     }
 
-    public function withExclusiveLock($closure)
-    {
-        $lockFile = storage_path('app/lock-job-monitor-'.$this->uid);
-        $lock = new Lockable($lockFile);
-        $lock->getExclusiveLock(function ($lockReader) use ($closure) {
-            $closure($this->refresh());
-        }, $timeout = 60);
-    }
-
     public function job()
     {
         return $this->belongsTo(Job::class);

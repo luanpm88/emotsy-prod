@@ -1955,7 +1955,7 @@ class Automation2Controller extends Controller
 
         // $total = distinctCount($subscribers);
         $total = $subscribers->count();
-        $subscribers->with(['mailList', 'subscriberFields']);
+        $subscribers->with(['mailList']);
         $subscribers = $subscribers->paginate($request->per_page);
 
         $fields = $list->getFields->whereIn('uid', explode(',', $request->columns));

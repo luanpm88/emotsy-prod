@@ -31,7 +31,6 @@ use Acelle\Library\ExtendedSwiftMessage;
 use Acelle\Events\MailListSubscription;
 use Acelle\Events\MailListUpdated;
 use Acelle\Model\Setting;
-use Acelle\Model\SubscriberFields;
 use Acelle\Library\Traits\QueryHelper;
 use Acelle\Library\Traits\HasCache;
 use Acelle\Events\MailListImported;
@@ -40,7 +39,6 @@ use DB;
 use App;
 use Exception;
 use Acelle\Jobs\ImportSubscribersJob;
-use Acelle\Jobs\ImportSubscribers2;
 use Acelle\Jobs\ExportSubscribersJob;
 use Acelle\Jobs\VerifyMailListJob;
 use League\Csv\Writer;
@@ -153,11 +151,6 @@ class MailList extends Model
     public function campaigns()
     {
         return $this->belongsToMany('Acelle\Model\Campaign', 'campaigns_lists_segments', 'mail_list_id', 'campaign_id');
-    }
-
-    public function subscriberFields()
-    {
-        return $this->hasManyThrough(SubscriberField::class, Field::class);
     }
 
     /**
@@ -298,33 +291,34 @@ class MailList extends Model
      */
     public function createDefaultFieds()
     {
-        $this->fields()->create([
-                            'mail_list_id' => $this->id,
-                            'type' => 'text',
-                            'label' => trans('messages.email'),
-                            'tag' => 'EMAIL',
-                            'is_email' => true,
-                            'required' => true,
-                            'visible' => true,
-                        ]);
+        $defaultFields = [
+            [
+                'type' => 'text',
+                'label' => trans('messages.email'),
+                'tag' => 'EMAIL',
+                'is_email' => true,
+                'required' => true,
+                'visible' => true,
+            ], [
+                'type' => 'text',
+                'label' => trans('messages.first_name'),
+                'tag' => 'FIRST_NAME',
+                'required' => false,
+                'visible' => true,
+            ], [
+                'type' => 'text',
+                'label' => trans('messages.last_name'),
+                'tag' => 'LAST_NAME',
+                'required' => false,
+                'visible' => true,
+            ]
+        ];
 
-        $this->fields()->create([
-                            'mail_list_id' => $this->id,
-                            'type' => 'text',
-                            'label' => trans('messages.first_name'),
-                            'tag' => 'FIRST_NAME',
-                            'required' => false,
-                            'visible' => true,
-                        ]);
-
-        $this->fields()->create([
-                            'mail_list_id' => $this->id,
-                            'type' => 'text',
-                            'label' => trans('messages.last_name'),
-                            'tag' => 'LAST_NAME',
-                            'required' => false,
-                            'visible' => true,
-                        ]);
+        foreach($defaultFields as $attributes) {
+            $attributes['custom_field_name'] = $this->getAvailableField();
+            $field = $this->fields()->create($attributes);
+            Subscriber::addCustomFieldIfNotExist($field->custom_field_name);
+        }
     }
 
     /**
@@ -744,10 +738,15 @@ class MailList extends Model
 
         // Get an associative array of [ 'tag' => null ]
         // Trick: pass '' as 1st parameter to have it result in null value
-        $listFields = $this->fields->pluck('', 'tag')->toArray();
+        // Result looks like:
+        //    [
+        //        "EMAIL" => null,
+        //        "FIRST_NAME" => null,
+        //        "LAST_NAME" => null,
+        //        "CITY" => null,
+        //    ]
 
-        // write the header
-        $headers = array_keys($listFields);
+        $headers = $this->fields()->pluck('label')->toArray();
 
         // Additional attributes
         $headers[] = 'status';
@@ -758,19 +757,12 @@ class MailList extends Model
         $writer->insertOne($headers);
 
         // Iterate through the list and write to file, 1000 records each time
-        cursorIterate($query, $orderBy = 'subscribers.id', $pageSize, function ($subscribers, $page) use ($writer, $listFields, &$processed, &$total, &$failed, &$message, $pageSize, $progressCallback) {
-            $records = collect($subscribers)->map(function ($subscriber) use ($listFields) {
-                $attributes = $subscriber->subscriberFields()
-                                         ->orderBy('fields.id', 'ASC')
-                                         ->join('fields', 'fields.id', 'subscriber_fields.field_id')
-                                         ->pluck('subscriber_fields.value', 'fields.tag')->toArray();
-
-                // Only take pairs that match the listFields' keys
-                $attributes = array_intersect_key($attributes, $listFields);
-
-                // merge the valid attributes to the base list of all keys
-                // results in something like [ 'EMAIL' => 'example@example.io', 'OTHER' => null ]
-                $attributes = array_merge($listFields, $attributes);
+        cursorIterate($query, $orderBy = 'subscribers.id', $pageSize, function ($subscribers, $page) use ($writer, &$processed, &$total, &$failed, &$message, $pageSize, $progressCallback) {
+            $records = collect($subscribers)->map(function ($subscriber) {
+                $attributes = [];
+                foreach($this->fields as $field) {
+                    $attributes[$field->label] = $subscriber->getValueByField($field);
+                }
 
                 $attributes['status'] = $subscriber->status;
                 $attributes['uid'] = $subscriber->uid;
@@ -939,7 +931,7 @@ class MailList extends Model
      */
     public function getDateFields()
     {
-        return $this->getFields()->whereIn('type', ['date', 'datetime'])->get();
+        return $this->fields()->datetime()->get();
     }
 
     /**
@@ -1156,10 +1148,11 @@ class MailList extends Model
      */
     public function import($file, $mapArray = null, $progressCallback = null, $invalidRecordCallback = null)
     {
-        /* START trick: auto generate map if there is no map passed to the function */
+        // Read CSV files, keep original headers' case (do not lowercase or uppercase)
+        list($headers, $total, $results) = $this->readCsv($file);
 
+        /* START trick: auto generate map if there is no map passed to the function */
         if (is_null($mapArray)) {
-            list($headers, $total, $results) = $this->readCsv($file);
             $mapArray = [];
             foreach ($this->fields as $field) {
                 foreach ($headers as $header) {
@@ -1169,14 +1162,13 @@ class MailList extends Model
                 }
             }
         }
-
         /* END trick */
 
+        // Map
         $map = MailListFieldMapping::parse($mapArray, $this);
 
         $processed = 0;
         $failed = 0;
-        $total = 0;
         $message = null;
 
         $overQuotaAttempt = false;
@@ -1184,19 +1176,6 @@ class MailList extends Model
         if (!is_null($progressCallback)) {
             $progressCallback($processed, $total, $failed, $message = trans('messages.list.import.starting'));
         }
-
-        // Read CSV files, keep original headers' case (do not lowercase or uppercase)
-        list($headers, $total, $results) = $this->readCsv($file);
-
-        /*
-        if (!is_null($progressCallback)) {
-            $progressCallback($processed, $total, $failed, $message = 'Validating file headers...');
-        }
-
-        if (!is_null($progressCallback)) {
-            $progressCallback($processed, $total, $failed, $message = 'Loading records from file...');
-        }
-        */
 
         try {
             // process by batches
@@ -1225,7 +1204,14 @@ class MailList extends Model
                     //     [ 'field_1' => 'Joe', 'field_2' => 'joe@america.us',  'tags' => 'SOME TAGS']
                     //
                     // i.e. Change header based on mapped field, remove other fields (not in map)
-                    $record = $map->updateRecordHeaders($r);
+                    $record = $map->processRecord($r, function ($field, $value) {
+                        if ($field->isDate()) {
+                            // Do not count hours, this field is DATE only
+                            return $this->customer->parseDateTime($value, true)->format(config('custom.date_format'));
+                        } else {
+                            return $value;
+                        }
+                    });
 
                     // replace the non-break space (not a normal space) as well as all other spaces
                     $record[$emailFieldName] = strtolower(preg_replace('/[ \s*]*/', '', trim($record[$emailFieldName])));
@@ -1262,7 +1248,10 @@ class MailList extends Model
                     return $valid;
                 });
 
-                // INSERT TO tmp TABLE
+                /*
+                 * STEP 1: INSERT FROM FILE to TMP table
+                 *
+                 */
                 DB::table('__tmp_subscribers')->insert($data);
                 $newRecordCount = DB::select("SELECT COUNT(*) AS count FROM {$tmpTable} tmp LEFT JOIN ".table('subscribers')." main ON (tmp.{$emailFieldName} = main.email AND main.mail_list_id = {$this->id}) WHERE main.email IS NULL")[0]->count;
 
@@ -1274,27 +1263,79 @@ class MailList extends Model
                     $overQuotaAttempt = true;
                 }
 
-                // processing for every batch,
-                // using transaction to only commit at the end of the batch execution
-                DB::beginTransaction();
+                /*
+                 * STEP 2: UPDATE EXISTING RECORDS
+                 *
+                 */
+                $setFieldValuesSql = array_map(function ($name) {
+                    return "main.{$name} = tmp.{$name}";
+                }, $map->getCustomFields());
+                $setFieldValuesSql = implode(', ', $setFieldValuesSql);
+                $updateSubscribersSql = strtr(
+                    '
+                    UPDATE %subscribers main
+                    INNER JOIN %tmp tmp ON (tmp.%email_field = main.email)
+                    SET main.tags = tmp.tags,
+                    %set_fields_values
+                    WHERE main.mail_list_id = %list_id',
+                    [
+                        '%subscribers' => table('subscribers'),
+                        '%list_id' => $this->id,
+                        '%set_fields_values' => $setFieldValuesSql,
+                        '%tmp' => $tmpTable,
+                        '%email_field' => $emailFieldName
+                    ]
+                );
 
-                // Generate a batch id
+                // Actually UPDATE
+                DB::statement($updateSubscribersSql);
+
+                /*
+                 * STEP 3: INSERT NEW RECORDS
+                 *
+                 */
                 $importBatchId = uniqid();
 
                 // Insert new subscribers from temp table to the main table
                 // Use SUBSTRING(MD5(UUID()), 1, 13) to produce a UNIQUE ID which is similar to the output of PHP uniqid()
                 // @TODO LIMITATION: tags are not updated if subscribers already exist
+                $customFields = implode(',', $map->getCustomFields());
+                $customFieldsWithPrefix = array_map(function ($name) {
+                    return "tmp.{$name}";
+                }, $map->getCustomFields());
+                $customFieldsWithPrefix = implode(',', $customFieldsWithPrefix);
                 $insertToSubscribersSql = strtr(
                     '
-                    INSERT INTO %subscribers (uid, mail_list_id, email, status, subscription_type, tags, import_batch_id, created_at, updated_at)
-                    SELECT SUBSTRING(MD5(UUID()), 1, 13), %list_id, uniq.email, %status, %type, uniq.tags, \'%import_batch_id\', NOW(), NOW()
-                    FROM (
-                        SELECT tmp.%email_field AS email, tmp.tags
-                        FROM %tmp tmp
-                        LEFT JOIN %subscribers main ON (tmp.%email_field = main.email AND main.mail_list_id = %list_id)
-                        WHERE main.email IS NULL LIMIT %insert_limit) uniq',
+                    INSERT INTO %subscribers (
+                        uid,
+                        mail_list_id,
+                        email,
+                        status,
+                        subscription_type,
+                        tags,
+                        import_batch_id,
+                        created_at,
+                        updated_at,
+                        %custom_fields
+                    )
+                    SELECT
+                        SUBSTRING(MD5(UUID()), 1, 13),
+                        %list_id,
+                        tmp.%email_field,
+                        %status,
+                        %type,
+                        tmp.tags,
+                        \'%import_batch_id\',
+                        NOW(),
+                        NOW(),
+                        %custom_fields_with_prefix
+                    FROM %tmp tmp
+                    LEFT JOIN %subscribers main ON (tmp.%email_field = main.email AND main.mail_list_id = %list_id)
+                    WHERE main.email IS NULL LIMIT %insert_limit',
                     [
                         '%subscribers' => table('subscribers'),
+                        '%custom_fields' => $customFields,
+                        '%custom_fields_with_prefix' => $customFieldsWithPrefix,
                         '%list_id' => $this->id,
                         '%status' => db_quote(Subscriber::STATUS_SUBSCRIBED),
                         '%type' => db_quote(Subscriber::SUBSCRIPTION_TYPE_IMPORTED),
@@ -1305,70 +1346,18 @@ class MailList extends Model
                     ]
                 );
 
+                // Actually INSERT
                 DB::statement($insertToSubscribersSql);
 
-                // Insert subscribers' custom fields to the fields table
-                // Before inserting, delete records from `subscriber_fields` whose email matches that of the $tmpTable
-                // As a result, any existing attributes of subscribers shall be overwritten
-
-                // OPTION 1: DELETE WHERE IN
-                // DB::statement('DELETE FROM '.table('subscriber_fields').' WHERE subscriber_id IN (SELECT main.id FROM '.table('subscribers')." main JOIN {$tmpTable} tmp ON main.email = tmp.email WHERE mail_list_id = ".$this->id.')');
-
-                // OPTION 2: DELETE JOIN
-                DB::statement(sprintf(
-                    'DELETE f
-                    FROM %s main
-                    JOIN %s tmp ON main.email = tmp.%s
-                    JOIN %s f ON main.id = f.subscriber_id
-                    WHERE main.mail_list_id = %s;',
-                    table('subscribers'),
-                    $tmpTable,
-                    $emailFieldName,
-                    table('subscriber_fields'),
-                    $this->id
-                ));
-
-                foreach ($map->mapping as $header => $fieldId) {
-                    $fieldName = $map->generateFieldNameFromId($fieldId);
-                    $insertToSubscriberFieldsSql = strtr('
-                        INSERT INTO %subscriber_fields (subscriber_id, field_id, value, created_at, updated_at)
-                        SELECT t.subscriber_id, %fid, t.value, NOW(), NOW()
-                        FROM (
-                            SELECT main.id AS subscriber_id, tmp.`%field_name` AS value
-                            FROM %subscribers main JOIN %tmp tmp ON tmp.`%email_field` = main.email
-                        ) t
-                    ', [
-                        '%subscribers' => table('subscribers'),
-                        '%subscriber_fields' => table('subscriber_fields'),
-                        '%fid' => $fieldId,
-                        '%field_name' => $fieldName,
-                        '%tmp' => $tmpTable,
-                        '%email_field' => $emailFieldName
-                    ]);
-
-                    DB::statement($insertToSubscriberFieldsSql);
-                }
-
-                // Sample:
-                //     INSERT INTO subscribers_fields (subscriber_id, field_id, value, created_at, updated_at)
-                //     SELECT t.subscriber_id, f.id, t."First Name", NOW(), NOW()
-                //     FROM (
-                //              SELECT main.id AS subscriber_id, tmp."First Name"
-                //              FROM subscribers main JOIN __tmp_subscribers tmp ON tmp.email = main.email
-                //              WHERE main.mail_list_id = 1089
-                //     ) t
-
+                // **** STEP 4: FINALIZE
                 // update status, finish one batch
                 $processed += sizeof($batch);
                 if (!is_null($progressCallback)) {
                     $progressCallback($processed, $total, $failed, $message = 'Inserting contacts to database...');
                 }
 
-                // Actually write to the database
-                DB::commit();
-
                 // Cleanup
-                DB::statement("DROP TABLE IF EXISTS {$tmpTable};");
+                //DB::statement("DROP TABLE IF EXISTS {$tmpTable};");
 
                 // Trigger updating related campaigns cache
                 $this->updateCachedInfo();
@@ -1384,9 +1373,6 @@ class MailList extends Model
                 $progressCallback($processed, $total, $failed, $message = "Processed: {$processed}/{$total} records, skipped: {$failed} records.");
             }
         } catch (\Throwable $e) {
-            // IMPORTANT: rollback first before throwing, otherwise it will be a deadlock
-            DB::rollBack();
-
             if (!is_null($progressCallback)) {
                 $progressCallback($processed, $total, $failed, $message = $e->getMessage());
             }
@@ -1395,7 +1381,6 @@ class MailList extends Model
             throw new Exception(substr($e->getMessage(), 0, 512));
         } finally {
             // @IMPORTANT: if process fails here, something weird occurs
-            $this->reformatDateFields();
             $this->updateCachedInfo();
 
             if (!is_null($progressCallback)) {
@@ -1888,63 +1873,6 @@ class MailList extends Model
         return [$validator, $subscriber];
     }
 
-    public function reformatDateFields($subscriber_id = null)
-    {
-        $type = 'date';
-
-        $query = $this->subscriberFields()
-                      ->where('fields.type', $type)
-                      ->select('subscriber_fields.id', 'subscriber_fields.value');
-
-        if (!is_null($subscriber_id)) {
-            $query = $query->where('subscriber_id', $subscriber_id);
-        }
-
-        $query->perPage($pageSize = 1000, function ($batch) {
-            $fixedValues = $batch->get()->map(function ($r) {
-                return [
-                    'id' => $r->id,
-                    'value' => $this->customer->parseDateTime($r->value, true)->format(config('custom.date_format')),
-                ];
-            })->toArray();
-
-            $this->createTemporaryTableFromArray(
-                "_tmp_{$this->customer->uid}_date_values",
-                $fixedValues,
-                [
-                    'id BIGINT',
-                    'value VARCHAR(191) CHARACTER SET utf8 COLLATE utf8_unicode_ci'
-                ],
-                function ($table) {
-                    DB::statement(sprintf("UPDATE %s sf INNER JOIN %s t ON sf.id = t.id SET sf.value = t.value", table('subscriber_fields'), table($table)));
-                }
-            );
-        });
-
-        /****** The following method is not working
-
-        $sql = "DROP TABLE IF EXISTS __tmp__;
-            CREATE TABLE __tmp__ AS
-            SELECT sf.id, DATE_FORMAT(COALESCE(
-                STR_TO_DATE(sf.value,'{$normalizedDateFormat}'),
-                STR_TO_DATE(sf.value,'%Y:%m:%d'),
-                STR_TO_DATE(sf.value,'%Y.%m.%d'),
-                STR_TO_DATE(sf.value,'%Y/%m/%d')
-            ), '{$normalizedDateFormat}') as pretty_date
-            FROM ".table('subscriber_fields')." sf
-            INNER JOIN ".table('fields')." f ON sf.field_id = f.id
-            WHERE f.`type` = 'date'
-            AND DATE_FORMAT(STR_TO_DATE(sf.value,'{$normalizedDateFormat}'), '{$normalizedDateFormat}') != sf.value
-            AND f.mail_list_id = {$this->id};
-
-            UPDATE ".table('subscriber_fields')." sf
-            INNER JOIN __tmp__ tmp ON sf.id = tmp.id
-            SET value = tmp.pretty_date
-            WHERE value <> tmp.pretty_date";
-        DB::statement($sql);
-        **********/
-    }
-
     public function verificationJobs()
     {
         return $this->jobMonitors()->orderBy('job_monitors.id', 'DESC')->where('job_type', static::JOB_TYPE_VERIFY_LIST);
@@ -1953,7 +1881,7 @@ class MailList extends Model
     public function importJobs()
     {
         return $this->jobMonitors()->orderBy('job_monitors.id', 'DESC')
-                                   ->whereIn('job_type', [ ImportSubscribersJob::class, ImportSubscribers2::class ]);
+                                   ->whereIn('job_type', [ ImportSubscribersJob::class ]);
     }
 
     public function exportJobs()
@@ -2041,6 +1969,8 @@ class MailList extends Model
             if (!$field) {
                 $field = new \Acelle\Model\Field();
                 $field->mail_list_id = $this->id;
+
+                // assign avaialble field slot
                 $field->custom_field_name = $this->getAvailableField();
             }
 
@@ -2065,6 +1995,9 @@ class MailList extends Model
                 $field->default_value = $item['default_value'];
                 $field->save();
             }
+
+            // Actually add the custom field to subscribers table
+            Subscriber::addCustomFieldIfNotExist($field->custom_field_name);
 
             // store save ids
             $saved_ids[] = $field->uid;

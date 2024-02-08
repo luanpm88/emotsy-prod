@@ -21,6 +21,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        // Check if the app is in distributed mode and its conditions are met
+        distributed_mode_check();
+
         // Teak default settings (PHP, Laravel, etc.)
         $this->changeDefaultSettings();
 

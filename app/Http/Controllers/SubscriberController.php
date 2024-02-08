@@ -64,7 +64,7 @@ class SubscriberController extends Controller
         $subscribers = $this->search($list, $request);
         // $total = distinctCount($subscribers);
         $total = $subscribers->count();
-        $subscribers->with(['mailList', 'subscriberFields']);
+        $subscribers->with(['mailList']);
         $subscribers = $subscribers->paginate($request->per_page ? $request->per_page : 50);
 
         $fields = $list->getFields->whereIn('uid', $request->columns);
