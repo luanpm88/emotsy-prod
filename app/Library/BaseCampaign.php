@@ -419,8 +419,8 @@ class BaseCampaign extends Model
 
     public function debug(Closure $callback = null)
     {
-        $key = "lock-for-debug-campaign-{$this->uid}";
-
+        $lockKey = "lock-for-debug-campaign-{$this->uid}";
+        $key = $this->getDebugCacheKey();
         // Read only
         if (is_null($callback)) {
             return Cache::get($key);
@@ -430,7 +430,7 @@ class BaseCampaign extends Model
         // As it do not retry fast enough if a lock cannot be get. i.e. it waits for another second to try for example
         // Use Lockable instead which retries almost immediately with "while (true)"
         $result = null;
-        with_cache_lock($key, function () use (&$result, $callback, $key) {
+        with_cache_lock($lockKey, function () use (&$result, $callback, $key) {
             $info = Cache::get($key, $default = [
                 'start_at' => null,
                 'last_activity_at' => null,
