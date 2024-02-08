@@ -39,7 +39,6 @@ use DB;
 use App;
 use Exception;
 use Acelle\Jobs\ImportSubscribersJob;
-use Acelle\Jobs\ImportSubscribers2;
 use Acelle\Jobs\ExportSubscribersJob;
 use Acelle\Jobs\VerifyMailListJob;
 use League\Csv\Writer;
@@ -1880,7 +1879,7 @@ class MailList extends Model
     public function importJobs()
     {
         return $this->jobMonitors()->orderBy('job_monitors.id', 'DESC')
-                                   ->whereIn('job_type', [ ImportSubscribersJob::class, ImportSubscribers2::class ]);
+                                   ->whereIn('job_type', [ ImportSubscribersJob::class ]);
     }
 
     public function exportJobs()
