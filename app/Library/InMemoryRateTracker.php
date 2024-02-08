@@ -130,6 +130,10 @@ class InMemoryRateTracker
 
  		$store = Cache::get($this->resourceKey);
 
+        if (is_null($store)) {
+            return $records;
+        }
+
  		foreach ($store as $block => $count)
         {
         	if ($block >= $fromDatetimeStr && $block <= $toDatetimeStr) {
@@ -175,5 +179,10 @@ class InMemoryRateTracker
     	$lastValue = $store[$lastKey];
 
     	return [ $lastKey, $lastValue ];
+    }
+
+    public function cleanup()
+    {
+        Cache::forget($this->resourceKey);
     }
 }

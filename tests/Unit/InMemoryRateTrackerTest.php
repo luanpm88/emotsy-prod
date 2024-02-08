@@ -14,6 +14,7 @@ class InMemoryRateTrackerTest extends TestCase
 
         $key = 'test-in-memory-rate-tracker';
         $tracker = new InMemoryRateTracker($key);
+        $tracker->cleanup();
 
         $now = Carbon::now();
         $oneMinuteAgo = $now->clone()->add('1 minute ago');
