@@ -441,7 +441,7 @@ class Segment extends Model
      */
     public function updateCacheDelayed()
     {
-        dispatch(new \Acelle\Jobs\UpdateSegmentJob($this));
+        safe_dispatch(new \Acelle\Jobs\UpdateSegmentJob($this));
     }
 
     /**
