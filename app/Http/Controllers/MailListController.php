@@ -10,6 +10,7 @@ use Acelle\Events\MailListSubscription;
 use Acelle\Model\Setting;
 use Acelle\Model\Customer;
 use Exception;
+use Illuminate\Contracts\Bus\Dispatcher;
 
 class MailListController extends Controller
 {
@@ -24,7 +25,7 @@ class MailListController extends Controller
 
         // Update cache at the first time user sees the list
         foreach ($customer->lists as $list) {
-            dispatch(new \Acelle\Jobs\UpdateMailListJob($list));
+            app(Dispatcher::class)->dispatch(new \Acelle\Jobs\UpdateMailListJob($list));
         }
 
         return view('lists.index');
