@@ -39,7 +39,6 @@ use DB;
 use App;
 use Exception;
 use Acelle\Jobs\ImportSubscribersJob;
-use Acelle\Jobs\ImportSubscribers2;
 use Acelle\Jobs\ExportSubscribersJob;
 use Acelle\Jobs\VerifyMailListJob;
 use League\Csv\Writer;
@@ -1205,7 +1204,7 @@ class MailList extends Model
                     //     [ 'field_1' => 'Joe', 'field_2' => 'joe@america.us',  'tags' => 'SOME TAGS']
                     //
                     // i.e. Change header based on mapped field, remove other fields (not in map)
-                    $record = $map->processRecord($r, function($field, $value) {
+                    $record = $map->processRecord($r, function ($field, $value) {
                         if ($field->isDate()) {
                             // Do not count hours, this field is DATE only
                             return $this->customer->parseDateTime($value, true)->format(config('custom.date_format'));
@@ -1268,11 +1267,12 @@ class MailList extends Model
                  * STEP 2: UPDATE EXISTING RECORDS
                  *
                  */
-                $setFieldValuesSql = array_map(function($name) {
+                $setFieldValuesSql = array_map(function ($name) {
                     return "main.{$name} = tmp.{$name}";
                 }, $map->getCustomFields());
                 $setFieldValuesSql = implode(', ', $setFieldValuesSql);
-                $updateSubscribersSql = strtr('
+                $updateSubscribersSql = strtr(
+                    '
                     UPDATE %subscribers main
                     INNER JOIN %tmp tmp ON (tmp.%email_field = main.email)
                     SET main.tags = tmp.tags,
@@ -1300,11 +1300,12 @@ class MailList extends Model
                 // Use SUBSTRING(MD5(UUID()), 1, 13) to produce a UNIQUE ID which is similar to the output of PHP uniqid()
                 // @TODO LIMITATION: tags are not updated if subscribers already exist
                 $customFields = implode(',', $map->getCustomFields());
-                $customFieldsWithPrefix = array_map(function($name) {
+                $customFieldsWithPrefix = array_map(function ($name) {
                     return "tmp.{$name}";
                 }, $map->getCustomFields());
                 $customFieldsWithPrefix = implode(',', $customFieldsWithPrefix);
-                $insertToSubscribersSql = strtr('
+                $insertToSubscribersSql = strtr(
+                    '
                     INSERT INTO %subscribers (
                         uid,
                         mail_list_id,
@@ -1880,7 +1881,7 @@ class MailList extends Model
     public function importJobs()
     {
         return $this->jobMonitors()->orderBy('job_monitors.id', 'DESC')
-                                   ->whereIn('job_type', [ ImportSubscribersJob::class, ImportSubscribers2::class ]);
+                                   ->whereIn('job_type', [ ImportSubscribersJob::class ]);
     }
 
     public function exportJobs()

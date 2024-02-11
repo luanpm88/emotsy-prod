@@ -24,7 +24,7 @@ class MailListController extends Controller
 
         // Update cache at the first time user sees the list
         foreach ($customer->lists as $list) {
-            dispatch(new \Acelle\Jobs\UpdateMailListJob($list));
+            safe_dispatch(new \Acelle\Jobs\UpdateMailListJob($list));
         }
 
         return view('lists.index');

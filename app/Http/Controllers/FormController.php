@@ -381,6 +381,9 @@ class FormController extends Controller
         try {
             // Create subscriber
             list($validator, $subscriber) = $list->subscribe($request, MailList::SOURCE_EMBEDDED_FORM);
+
+            // Trigger updating related campaigns cache
+            event(new \Acelle\Events\MailListUpdated($list));
         } catch (\Exception $ex) {
             return response()->json([
                 'message' => $ex->getMessage()
