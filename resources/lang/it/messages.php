@@ -163,8 +163,6 @@
   'app.notice.title' => 'Avviso',
   'are_you_sure' => 'Sei sicuro?',
   'area' => 'Area',
-  'async_job_type' => 'Async',
-  'async_job_type_desc' => 'Inviare le e-mail biforcando i processi figli di PHP. &Egrave; necessario che la funzione \'exec\' di PHP sia abilitata sul server. Si noti che Async non funziona con le funzioni di automazione e autorisponditore.',
   'audience' => 'Pubblico',
   'audience.audience_growth.desc' => 'Come cresce il vostro pubblico nel tempo',
   'audience.audience_growth.title' => 'La crescita del vostro pubblico',
@@ -1924,6 +1922,10 @@
   'page.reset.success' => 'Ripristino effettuato con successo',
   'page.reset_default' => 'Ripristino delle impostazioni predefinite',
   'page.restore.confirm' => 'Si sta per ripristinare il modello predefinito di questa pagina. Non &egrave; possibile annullare questa operazione.',
+  'page.term_of_service' => 'Term of service content',
+  'page.term_of_service.intro' => 'Content for the Terms of Service agreement checkbox.
+    Use the {TERM_OF_SERVICE} tag if you want to add the terms checkbox to the signup page.
+  ',
   'page.updated' => 'La pagina personalizzata &egrave; stata aggiornata con successo',
   'page_form_layout' => 'Email & Pagine personalizzate',
   'pagination' => 'Paginazione',

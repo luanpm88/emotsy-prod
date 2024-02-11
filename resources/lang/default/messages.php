@@ -161,8 +161,6 @@
   'app.notice.title' => 'Notice',
   'are_you_sure' => 'Are you sure?',
   'area' => 'Area',
-  'async_job_type' => 'Async',
-  'async_job_type_desc' => 'Send emails by forking PHP child processes. It is required that PHP `exec` function is enabled on your server. Note that Async does not work with Automation & Autoresponder features.',
   'audience' => 'Audience',
   'audience.audience_growth.desc' => 'How your audience growth over time',
   'audience.audience_growth.title' => 'Your audience growth',
@@ -2252,6 +2250,8 @@
   'requirement' => 'Requirement',
   'requirement.php_version.not_supuported.description' => 'You are running on and old version of PHP (:current) which is no longer supported. Please upgrade to PHP :required or higher in order to upgrade your application to a future version.',
   'requirement.php_version.not_supuported.title' => 'PHP version is out-of-date',
+  'requirement.php_version.not_supuported.description' => 'You are running on and old version of PHP CLI (:current) which is no longer supported. Please upgrade to PHP :required or higher in order to upgrade your application to a future version.',
+  'requirement.php_version.not_supuported.title' => 'PHP CLI version is out-of-date',
   'requirements' => 'Requirements',
   'resend_activation_email' => 'Resend activation email',
   'reset_list_verification_confirm' => 'You\'re about to reset email verification state of all list\'s subscribers.',
@@ -3585,4 +3585,9 @@
   'plan_group.plans' => 'plans',
   'plan.all_plans' => 'All plans',
   'plan_group.select_tier' => 'Current tier',
+  'page.term_of_service.intro' => 'Term of service content',
+  'page.term_of_service.intro' => 'Content for the Terms of Service agreement checkbox.
+    Use the {TERM_OF_SERVICE} tag if you want to add the terms checkbox to the signup page.
+  ',
+  'page.term_of_service' => 'Term of service content',
 ) ?>

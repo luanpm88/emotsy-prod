@@ -163,8 +163,6 @@
   'app.notice.title' => 'Notícia',
   'are_you_sure' => 'Tem certeza?',
   'area' => 'Àrea',
-  'async_job_type' => 'Async',
-  'async_job_type_desc' => 'Envie Emails através de processos child PHP. É necessário que a função `exec` do PHP esteja ativada no seu servidor. Note que o Async não funciona com os recursos do Automation & Autoresponder.',
   'audience' => 'Audience',
   'audience.audience_growth.desc' => 'How your audience growth over time',
   'audience.audience_growth.title' => 'Your audience growth',
@@ -1924,6 +1922,10 @@
   'page.reset.success' => 'Reset successfully',
   'page.reset_default' => 'Reset Default',
   'page.restore.confirm' => 'You\'re about to restore this page to default template. This can not be undone.',
+  'page.term_of_service' => 'Term of service content',
+  'page.term_of_service.intro' => 'Content for the Terms of Service agreement checkbox.
+    Use the {TERM_OF_SERVICE} tag if you want to add the terms checkbox to the signup page.
+  ',
   'page.updated' => 'A página personalizada foi atualizada com sucesso',
   'page_form_layout' => 'Layout de página / formulário',
   'pagination' => 'Paginação',

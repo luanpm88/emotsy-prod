@@ -6,6 +6,11 @@
                     {{ trans('messages.plan_group.general') }}
                 </a>
             </li>
+            <li class="nav-item {{ $menu == 'features' ? 'active' : '' }}">
+                <a href="{{ action('Admin\PlanGroupController@features', $planGroup->uid) }}" class="nav-link">
+                    {{ trans('messages.plan_group.features') }}
+                </a>
+            </li>
             <li class="nav-item {{ $menu == 'email_footer' ? 'active' : '' }}">
                 <a class="nav-link" href="{{ action('Admin\PlanGroupController@emailFooter', $planGroup->uid) }}">
                     {{ trans('messages.plan_group.email_footer') }}

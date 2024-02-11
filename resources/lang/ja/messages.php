@@ -163,8 +163,6 @@
   'app.notice.title' => '通知',
   'are_you_sure' => 'よろしいですか？',
   'area' => '範囲',
-  'async_job_type' => '非同期',
-  'async_job_type_desc' => 'PHPの子プロセスをフォークしてメールを送信します。 サーバーでPHPの 「exec」機能が有効になっている必要があります。 非同期は自動化およびオートレスポンダー機能では機能しないことに注意してください。',
   'audience' => '顧客リスト',
   'audience.audience_growth.desc' => '時間の経過とともに視聴者がどのように成長するか',
   'audience.audience_growth.title' => '視聴者の増加',
@@ -1921,6 +1919,10 @@
   'page.reset.success' => '正常にリセット',
   'page.reset_default' => 'デフォルトにリセット',
   'page.restore.confirm' => 'このページをデフォルトのテンプレートに復元しようとしています。 これは、元に戻すことはできません。',
+  'page.term_of_service' => 'Term of service content',
+  'page.term_of_service.intro' => 'Content for the Terms of Service agreement checkbox.
+    Use the {TERM_OF_SERVICE} tag if you want to add the terms checkbox to the signup page.
+  ',
   'page.updated' => 'カスタムページが正常に更新されました',
   'page_form_layout' => 'カスタムメールと ページ',
   'pagination' => 'ページネーション',

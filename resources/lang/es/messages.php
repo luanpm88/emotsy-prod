@@ -163,8 +163,6 @@
   'app.notice.title' => 'Noticia',
   'are_you_sure' => '¿Estás seguro?',
   'area' => 'Área',
-  'async_job_type' => 'Async',
-  'async_job_type_desc' => 'Envíe correos electrónicos bifurcando procesos secundarios PHP. Es necesario que la función `exec` de PHP esté habilitada en su servidor. Tenga en cuenta que Async no funciona con las funciones de eventos y Autoresponder.',
   'audience' => 'Audience',
   'audience.audience_growth.desc' => 'How your audience growth over time',
   'audience.audience_growth.title' => 'Your audience growth',
@@ -1924,6 +1922,10 @@
   'page.reset.success' => 'Reset successfully',
   'page.reset_default' => 'Reset Default',
   'page.restore.confirm' => 'You\'re about to restore this page to default template. This can not be undone.',
+  'page.term_of_service' => 'Term of service content',
+  'page.term_of_service.intro' => 'Content for the Terms of Service agreement checkbox.
+    Use the {TERM_OF_SERVICE} tag if you want to add the terms checkbox to the signup page.
+  ',
   'page.updated' => 'Página actualizada',
   'page_form_layout' => 'Diseño de la pagina/formulario',
   'pagination' => 'Paginación',

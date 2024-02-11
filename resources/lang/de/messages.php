@@ -163,8 +163,6 @@
   'app.notice.title' => 'Beachten',
   'are_you_sure' => 'Sind Sie sicher?',
   'area' => 'Gebiet',
-  'async_job_type' => 'Async',
-  'async_job_type_desc' => 'Senden Sie E-Mails, indem Sie die PHP-untergeordneten Prozesse forcieren. Es ist erforderlich, dass die PHP `exec` Funktion auf Ihrem Server aktiviert ist. Beachten Sie, dass Async nicht mit den Funktionen Automation & Autoresponder arbeitet.',
   'audience' => 'Publikum',
   'audience.audience_growth.desc' => 'Wie Ihr Publikum im Laufe der Zeit wächst',
   'audience.audience_growth.title' => 'Wachstum Ihres Publikums',
@@ -1923,6 +1921,10 @@
   'page.reset.success' => 'Zurücksetzen erfolgreich',
   'page.reset_default' => 'Standard zurücksetzen',
   'page.restore.confirm' => 'Sie sind dabei, diese Seite auf die Standardvorlage zurückzusetzen. Das kann nicht rückgängig gemacht werden.',
+  'page.term_of_service' => 'Term of service content',
+  'page.term_of_service.intro' => 'Content for the Terms of Service agreement checkbox.
+    Use the {TERM_OF_SERVICE} tag if you want to add the terms checkbox to the signup page.
+  ',
   'page.updated' => 'Individuelle Seite wurde erfolgreich aktualisiert',
   'page_form_layout' => 'Seite/Formular Layout',
   'pagination' => 'Seitennummerierung',
