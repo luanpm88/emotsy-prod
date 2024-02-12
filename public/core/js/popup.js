@@ -20,6 +20,7 @@ class Popup {
                             <h5 class="modal-title placeholder-glow">
                                 <span class="placeholder col-6"></span>
                             </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body ">
                             <p class="card-text placeholder-glow">
