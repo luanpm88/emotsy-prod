@@ -19,11 +19,11 @@ class MigrateDataFromSubscriberFieldsToSubscribersTable extends Migration
 
         $fields = \Acelle\Model\Field::all();
         foreach ($fields as $field) {
-	    $raw = [ sprintf('UPDATE %s s INNER JOIN %s sf ON s.id = sf.subscriber_id AND sf.field_id = %s', table('subscribers'), table('subscriber_fields'), $field->id)];
-	    $raw[] = "SET s.{$field->custom_field_name} = sf.value";
-	    $rawSql = implode(' ', $raw);
+            $raw = [ sprintf('UPDATE %s s INNER JOIN %s sf ON s.id = sf.subscriber_id AND sf.field_id = %s', table('subscribers'), table('subscriber_fields'), $field->id)];
+            $raw[] = "SET s.{$field->custom_field_name} = sf.value";
+            $rawSql = implode(' ', $raw);
 
-	    DB::statement($rawSql);
+            DB::statement($rawSql);
         } 
 
     }
