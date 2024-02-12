@@ -133,7 +133,9 @@
         });
 
         $('#calculate-score').click(function() {
-            spamPopup = new Popup("{{ action('CampaignController@spamScore', ['uid' => $campaign->uid]) }}");
+            spamPopup = new Popup({
+                url: "{{ action('CampaignController@spamScore', ['uid' => $campaign->uid]) }}",
+            });
             spamPopup.load();
             return false;
         });

@@ -14,7 +14,28 @@ class Popup {
         this.backs = [];
         this.initHtml = `
             <div class="modal" id="`+this.id+`" tabindex="-1">
-            <div class="modal-dialog shadow modal-default"> <div class="modal-content"> <div class="modal-header"> <a href="javascript:;" class="material-icons-round back" style="display: none;">keyboard_backspace</a> <span class="modal-title text-center"> asdas dasd asd asd asd asd as </span> </div> <div class="modal-body "> <h4 class="fw-600 mb-3 pb-1"> campaign asda </h4> <p class="mb-2">What would yoasd asd asd asd asd asd asd asd as</p> <p class="mb-2">What would you like to dasd asasd asd asda asd asd asd as</p> <div class="form-group control-text"> <div class="help alert alert-info"> Give your campaign a name </div> </div> <div class="mt-4 text-center"> <button type="submit" class="btn btn-secondary px-3 me-2">Copy</button> <button type="button" class="btn btn-default fw-600" data-bs-dismiss="modal">Cancel</button> </div> </div> </div> </div>
+                <div class="modal-dialog shadow modal-default">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title placeholder-glow">
+                                <span class="placeholder col-6"></span>
+                            </h5>
+                        </div>
+                        <div class="modal-body ">
+                            <p class="card-text placeholder-glow">
+                                <span class="placeholder col-7"></span>
+                                <span class="placeholder col-4"></span>
+                                <span class="placeholder col-4"></span>
+                                <span class="placeholder col-6"></span>
+                                <span class="placeholder col-8"></span>
+                            </p>
+                            <div class="mt-4 text-center placeholder-glow">
+                                <a class="btn btn-default disabled placeholder col-2" aria-disabled="true"></a>
+                                <a class="btn btn-default disabled placeholder col-2" aria-disabled="true"></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         `;
 
