@@ -205,6 +205,7 @@ class Popup {
             method: 'GET',
             dataType: 'html',
             data: _this.options.data,
+            globalError: !_this.options.fail,
         }).done(function(response) {
             _this.popup.html(response);
             
@@ -222,9 +223,12 @@ class Popup {
                 _this.options.callback();
             }
         }).fail(function(jqXHR, textStatus, errorThrown){
-            // for debugging
-            alert(errorThrown);
-            // _this.unmask();
+            // fail callback
+            if (_this.options.fail) {
+                _this.options.fail(jqXHR);
+            } else {
+                console.log(errorThrown);
+            }
         }).always(function() {
             // effect
             _this.unmask();

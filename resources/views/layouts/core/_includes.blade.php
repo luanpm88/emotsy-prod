@@ -45,7 +45,7 @@
 
 <script type="text/javascript" src="{{ AppUrl::asset('core/js/link.js') }}"></script>
 <script type="text/javascript" src="{{ AppUrl::asset('core/js/box.js') }}"></script>
-<script type="text/javascript" src="{{ AppUrl::asset('core/js/popup.js') }}"></script>
+<script type="text/javascript" src="{{ AppUrl::asset('core/js/popup.js') }}?v=1"></script>
 <script type="text/javascript" src="{{ AppUrl::asset('core/js/sidebar.js') }}"></script>
 <script type="text/javascript" src="{{ AppUrl::asset('core/js/list.js') }}"></script>
 <script type="text/javascript" src="{{ AppUrl::asset('core/js/anotify.js') }}"></script>
