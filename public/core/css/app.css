@@ -8234,3 +8234,6 @@ label.checker input:disabled ~ .checker-symbol {
 .key-value-list.list-small li .value {
   font-size: 95%;
 }
+body:not(.mode-dark) .placeholder {
+    background-color: #eee;
+}

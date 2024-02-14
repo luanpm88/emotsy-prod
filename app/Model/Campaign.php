@@ -1661,9 +1661,6 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
      */
     private function execSpamc()
     {
-        // @todo: temporarily disable SPAMC
-        return;
-
         $message = $this->getSampleMessage()->toString();
 
         // Execute SPAMC

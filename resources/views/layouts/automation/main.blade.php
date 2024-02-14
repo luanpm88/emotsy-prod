@@ -102,7 +102,7 @@
 	<script type="text/javascript" src="{{ AppUrl::asset('js/mc_modal.js') }}"></script>
     <script type="text/javascript" src="{{ AppUrl::asset('js/iframe_modal.js') }}"></script>
 	<script type="text/javascript" src="{{ AppUrl::asset('js/mc.js') }}"></script>
-	<script type="text/javascript" src="{{ AppUrl::asset('js/popup.js') }}"></script>
+	<script type="text/javascript" src="{{ AppUrl::asset('js/popup.js') }}?v=1"></script>
 	<script type="text/javascript" src="{{ AppUrl::asset('assets2/js/dialog.js') }}"></script>
 	<script type="text/javascript" src="{{ AppUrl::asset('assets2/js/list.js') }}"></script>
 	<!-- /theme JS files -->
