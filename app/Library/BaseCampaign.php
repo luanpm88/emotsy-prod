@@ -33,6 +33,7 @@ class BaseCampaign extends Model
 
     // Campaign status
     public const STATUS_NEW = 'new';
+    public const STATUS_QUEUING = 'queuing'; // equiv. to 'queue'
     public const STATUS_QUEUED = 'queued'; // equiv. to 'queue'
     public const STATUS_SENDING = 'sending';
     public const STATUS_ERROR = 'error';

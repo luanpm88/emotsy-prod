@@ -672,7 +672,7 @@
   'bounced' => 'Bounced',
   'brand.account_privacy' => 'Account & Privacy',
   'brand.categories' => 'Categories',
-  'brand.copyright' => '© 2023. :app_name. All Rights Reserved.',
+  'brand.copyright' => 'Copyright © 2024. :app_name Email Marketing. All Rights Reserved.',
   'brand.emails' => 'Emails',
   'brand.home_page' => 'Home page',
   'brand.orders' => 'Orders',
@@ -3390,6 +3390,8 @@
   'customer.name' => 'Customer name',
   'customer.delete.confirm' => 'Are you sure you want to delete this customer? This action cannot be undone.',
   'customer.general' => 'Information',
+  'requirement.php_version.not_supuported.title' => 'PHP version is out-of-date',
+  'requirement.php_version.not_supuported.description' => 'You are running on and old version of PHP (:current) which is no longer supported. Please upgrade to PHP :required or higher in order to upgrade your application to a future version.',
   'form.onscreen.layouts.intro' => 'Click here to select the initial layouts with a basic style for your form. You can quickly start adding a form with pre-built layouts.',
   'form.onscreen.themes.intro' => 'Click here if you want to select a pre-designed layout with a beautiful theme for your form. You can easily add your own customizations afterward, depending on the current theme.',
   'form.onscreen.settings.intro' => 'Settings for customizing the form\'s popup, specifying when and how it should be displayed on the webpage. You can make changes here.',
@@ -3590,4 +3592,19 @@
     Use the {TERM_OF_SERVICE} tag if you want to add the terms checkbox to the signup page.
   ',
   'page.term_of_service' => 'Term of service content',
+) ?>
+  'automation.email.statistics' => 'Statistics',
+  'list.webhook' => 'Webhook',
+  'list.webhook_integration' => 'Webhook / Integration',
+  'list.webhook.json.intro' => 'Allow third-party applications to submit their subscription (opt-in) form data to Acelle, with application/x-www-form-urlencoded content type header.',
+  'list.webhook.simple_intro' => 'Get users data from 3rd application with our simple Webhook API',
+  'list.webhook.json_post' => 'JSON POST',
+  'list.webhook.form_post' => 'Form POST',
+  'list.webhook.form.intro' => 'Allow third-party applications to submit their subscription
+    (opt-in) form data to Acelle, with application/json content type header.',
+  'list.webhook.curl_example' => 'Example of a POST request using CURL',
+  'list.webhook.action.copied' => 'Form action was copied to clipboard!',
+  'list.webhook.fields_available_sample' => 'Available fields for this list, select to update the sample CURL',
+  'list.webhook.posting_json_with_curl' => 'Posting JSON with CURL',
+  'delivery.error.subscriber_not_active' => 'Subscriber is not active at the time of sending (Status :status)',
 ) ?>

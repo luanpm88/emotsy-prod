@@ -165,8 +165,7 @@ class CustomerController extends Controller
         // Customer info
         $result = [
             'uid' => $customer->uid,
-            'first_name' => $customer->user->first_name,
-            'last_name' => $customer->user->last_name,
+            'name' => $customer->name,
             'timezone' => $customer->timezone,
             'status' => $customer->status,
         ];

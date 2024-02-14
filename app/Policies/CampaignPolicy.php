@@ -107,6 +107,8 @@ class CampaignPolicy
                 Campaign::STATUS_ERROR,
                 Campaign::STATUS_PAUSED,
                 Campaign::STATUS_SCHEDULED,
+                Campaign::STATUS_REJECTED,
+                Campaign::STATUS_QUEUED,
             ]));
 
         // RBAC check

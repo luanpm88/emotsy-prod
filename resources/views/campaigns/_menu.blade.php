@@ -1,6 +1,6 @@
 <div class="row">
 	<div class="col-md-12">
-		<div class="d-flex align-items-center justify-content-center">
+		<div class="d-flex align-items-center">
 			<ul class="nav nav-tabs nav-tabs-top nav-underline border-bottom-0 mb-0">
 				<li class="nav-item {{ $menu == 'overview' ? 'active' : '' }}">
 					<a href="{{ action('CampaignController@overview', [

@@ -3226,7 +3226,6 @@ class CampaignController extends Controller
     {
         $campaign = Campaign::findByUid($request->uid);
         $currentTimezone = $campaign->customer->getTimezone();
-    
 
         // authorize
         if (\Gate::denies('update', $campaign)) {
@@ -3353,6 +3352,12 @@ class CampaignController extends Controller
     public function campaignHeader(Request $request)
     {
         $campaign = Campaign::findByUid($request->uid);
+
+        // authorize
+        if (\Gate::denies('update', $campaign)) {
+            return $this->notAuthorized();
+        }
+
         return view('campaigns.campaignHeader', [
             'campaign' => $campaign,
         ]);
