@@ -197,7 +197,7 @@ class Email extends Model implements HasTemplateInterface
             $subscription = null;
         }
 
-        dispatch(new SendMessage(
+        safe_dispatch(new SendMessage(
             $this,
             $subscriber,
             $server,

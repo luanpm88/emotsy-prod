@@ -64,6 +64,12 @@ class PageController extends Controller
             // Validation
             $this->validate($request, $rules);
 
+            // option
+            if ($request->term) {
+                $list->setEmbeddedFormOption('term', $request->term);
+                $list->setEmbeddedFormOption('enable_term', $request->enable_term);
+            }
+
             // save
             $page->save();
 

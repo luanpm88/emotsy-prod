@@ -176,7 +176,17 @@
         });
 
         $('#calculate-score').click(function() {
-            spamPopup = new Popup("{{ action('CampaignController@spamScore', ['uid' => $campaign->uid]) }}");
+            spamPopup = new Popup({
+                url: "{{ action('CampaignController@spamScore', ['uid' => $campaign->uid]) }}",
+                fail: function(jqXHR) {
+                    new Dialog('alert', {
+                        message: JSON.parse(jqXHR.responseText).error,
+                        ok: function() {
+                            spamPopup.hide();
+                        }
+                    })
+                }
+            });
             spamPopup.load();
             return false;
         });

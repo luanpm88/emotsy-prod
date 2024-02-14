@@ -23,7 +23,7 @@ class AutomationController extends Controller
         try {
             $automation = Automation2::findByUid($uid);
             $automation->logger()->info(sprintf('Queuing automation "%s" in response to API call', $automation->name));
-            dispatch(new RunAutomation($automation));
+            safe_dispatch(new RunAutomation($automation));
 
             return \Response::json(['success' => true], 200);
         } catch (\Exception $ex) {

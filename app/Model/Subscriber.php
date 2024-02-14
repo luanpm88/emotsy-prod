@@ -33,6 +33,8 @@ use Exception;
 use Acelle\Library\Traits\HasUid;
 use Closure;
 use Carbon\Carbon;
+use Illuminate\Database\Schema\Blueprint;
+use Schema;
 
 class Subscriber extends Model
 {
@@ -80,11 +82,6 @@ class Subscriber extends Model
     public function mailList()
     {
         return $this->belongsTo('Acelle\Model\MailList');
-    }
-
-    public function subscriberFields()
-    {
-        return $this->hasMany('Acelle\Model\SubscriberField');
     }
 
     public function trackingLogs()
@@ -147,10 +144,6 @@ class Subscriber extends Model
         // Create uid when creating list.
         static::creating(function ($item) {
             $item->uid = uniqid();
-        });
-
-        static::updated(function ($item) {
-            $item->reformatDateFields();
         });
     }
 
@@ -235,51 +228,33 @@ class Subscriber extends Model
         foreach ($params as $tag => $value) {
             $field = $this->mailList->getFieldByTag(str_replace('[]', '', $tag));
             if ($field) {
-                $fv = SubscriberField::where('subscriber_id', '=', $this->id)->where('field_id', '=', $field->id)->first();
-                if (!$fv) {
-                    $fv = new SubscriberField();
-                    $fv->subscriber_id = $this->id;
-                    $fv->field_id = $field->id;
-                }
                 if (is_array($value)) {
-                    $fv->value = implode(',', $value);
-                } else {
-                    $fv->value = $value;
+                    $value = implode(',', $value);
                 }
-                $fv->save();
+
+                $this->setFieldValue($field, $value);
 
                 // update email attribute of subscriber
                 if ($field->tag == 'EMAIL') {
-                    $this->email = $fv->value;
-                    $this->save();
+                    $this->email = $value;
                 }
             }
         }
+
+        $this->save();
     }
 
     public function updateFields2($attributes)
     {
         foreach ($attributes as $tag => $value) {
             $field = $this->mailList->getFieldByTag($tag);
+
             if (!is_null($field)) {
-                $fv = $this->subscriberFields()->where('field_id', '=', $field->id)->first();
-
-                if (is_null($fv)) {
-                    $fv = $this->subscriberFields()->make();
-                    $fv->field()->associate($field);
-                }
-
-                $fv->value = $value;
-                $fv->save();
-
-                // @IMPORTANT: avoid updating 'subscribers' table, especially for jobs!
-                // update email attribute of subscriber
-                // if (strcasecmp($field->tag, 'EMAIL') == 0) {
-                //     $this->email = $fv->value;
-                //     $this->save();
-                // }
+                $this->setFieldValue($field, $value);
             }
         }
+
+        $this->save();
     }
 
     /**
@@ -289,10 +264,6 @@ class Subscriber extends Model
      */
     public static function filter($query, $request)
     {
-        /* does not support searching on subscriber fields, for the sake of performance
-        $query = $query->leftJoin('subscriber_fields', 'subscribers.id', '=', 'subscriber_fields.subscriber_id')
-            ->leftJoin('mail_lists', 'subscribers.mail_list_id', '=', 'mail_lists.id');
-        */
         $query = $query->leftJoin('mail_lists', 'subscribers.mail_list_id', '=', 'mail_lists.id');
 
         if (isset($request)) {
@@ -301,9 +272,6 @@ class Subscriber extends Model
                 foreach (explode(' ', trim($request->keyword)) as $keyword) {
                     $query = $query->where(function ($q) use ($keyword) {
                         $q->orwhere('subscribers.email', 'like', '%'.$keyword.'%');
-                        /* does not support searching on subscriber fields, for the sake of performance
-                        ->orWhere('subscriber_fields.value', 'like', '%'.$keyword.'%');
-                        */
                     });
                 }
             }
@@ -412,13 +380,11 @@ class Subscriber extends Model
      */
     public function getValueByField($field)
     {
-        $fv = $this->subscriberFields->filter(function ($r, $key) use ($field) {
-            return $r->field_id == $field->id;
-        })->first();
-        if ($fv) {
-            return $fv->value;
+        $value = $this[$field->custom_field_name];
+        if ($field->isDate()) {
+            return $value;
         } else {
-            return '';
+            return $value;
         }
     }
 
@@ -429,12 +395,12 @@ class Subscriber extends Model
      */
     public function getValueByTag($tag)
     {
-        $fv = SubscriberField::leftJoin('fields', 'fields.id', '=', 'subscriber_fields.field_id')
-            ->where('subscriber_id', '=', $this->id)->where('fields.tag', '=', $tag)->first();
-        if ($fv) {
-            return $fv->value;
-        } else {
+        $field = $this->mailList->fields()->where('tag', $tag)->first();
+
+        if (is_null($field)) {
             return '';
+        } else {
+            return $this->getValueByField($field);
         }
     }
 
@@ -443,17 +409,12 @@ class Subscriber extends Model
      *
      * @return value
      */
-    public function setField($field, $value)
+    public function setFieldValue($field, $value)
     {
-        $fv = SubscriberField::where('subscriber_id', '=', $this->id)->where('field_id', '=', $field->id)->first();
-        if (!$fv) {
-            $fv = new SubscriberField();
-            $fv->field_id = $field->id;
-            $fv->subscriber_id = $this->id;
+        if ($field->isDate()) {
+            $value = $this->mailList->customer->parseDateTime($value, true)->format(config('custom.date_format'));
         }
-
-        $fv->value = $value;
-        $fv->save();
+        $this[$field->custom_field_name] = $value;
     }
 
     /**
@@ -525,13 +486,9 @@ class Subscriber extends Model
         $copy->mail_list_id = $list->id;
         $copy->save();
 
-        // update fields
-        foreach ($this->subscriberFields as $item) {
-            foreach ($copy->mailList->fields as $field) {
-                if ($item->field->tag == $field->tag) {
-                    $copy->setField($field, $item->value);
-                }
-            }
+
+        foreach($this->mailList->fields as $field) {
+            $copy->setFieldValue($field, $this->getValueByField($field));
         }
 
         return $copy;
@@ -950,18 +907,11 @@ class Subscriber extends Model
      */
     public function scopeSearch($query, $keyword)
     {
-        /* does not support searching on subscriber fields, for the sake of performance
-        $query = $query->leftJoin('subscriber_fields', 'subscribers.id', '=', 'subscriber_fields.subscriber_id')
-            ->leftJoin('mail_lists', 'subscribers.mail_list_id', '=', 'mail_lists.id');
-        */
         // Keyword
         if (!empty(trim($keyword))) {
             foreach (explode(' ', trim($keyword)) as $keyword) {
                 $query = $query->where(function ($q) use ($keyword) {
                     $q->orwhere('subscribers.email', 'like', '%'.$keyword.'%');
-                    /* does not support searching on subscriber fields, for the sake of performance
-                    ->orWhere('subscriber_fields.value', 'like', '%'.$keyword.'%');
-                    */
                 });
             }
         }
@@ -1037,11 +987,6 @@ class Subscriber extends Model
         return $query->where('subscribers.email', $email);
     }
 
-    public function reformatDateFields()
-    {
-        $this->mailList->reformatDateFields($this->id);
-    }
-
     /**
      * assgin values.
      */
@@ -1071,7 +1016,8 @@ class Subscriber extends Model
         if ($request->assign_type == 'single') {
             // do assign a value: $request->single_value
             foreach ($subscribers->get() as $subscriber) {
-                $subscriber->setField($field, $request->single_value);
+                $subscriber->setFieldValue($field, $request->single_value);
+                $subscriber->save();
             }
         } else {
             // do assign a list: $request->list_value
@@ -1216,17 +1162,6 @@ class Subscriber extends Model
                     continue;
                 }
 
-                if (!empty($conds['joins'])) {
-                    foreach ($conds['joins'] as $joining) {
-                        $query = $query->leftJoin($joining['table'], function ($join) use ($joining) {
-                            $join->on($joining['ons'][0][0], '=', $joining['ons'][0][1]);
-                            if (isset($joining['ons'][1])) {
-                                $join->on($joining['ons'][1][0], '=', $joining['ons'][1][1]);
-                            }
-                        });
-                    }
-                }
-
                 // IMPORTANT: segment condition does not include list_id constraints, so we have to add it to make sure only the segment's list is considered
                 $conds['conditions'] = '('.table('subscribers.mail_list_id').' = '.$listOrSegment->mail_list_id.' AND ('.$conds['conditions'].'))';
                 $conditions[] = $conds['conditions'];
@@ -1249,5 +1184,17 @@ class Subscriber extends Model
     public static function scopeByEmail($query, $email)
     {
         $query = $query->where('email', $email);
+    }
+
+    public static function addCustomFieldIfNotExist($fieldName)
+    {
+        $tableName = static::query()->from;
+        if (!Schema::hasColumn($tableName, $fieldName)) {
+
+            Schema::table($tableName, function (Blueprint $table) use ($fieldName) {
+                $table->text($fieldName)->nullable();
+            });
+
+        }
     }
 }

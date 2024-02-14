@@ -242,7 +242,7 @@ trait HasTemplate
         if (is_null($this->type) || $this->type == self::TYPE_REGULAR) {
             $html = $this->getHtmlContent($subscriber, $msgId, $server, $fromCache, $expiresInSeconds);
 
-            $plain = Html2Text::convert($html, [ 'ignore_errors' => true ]);
+            $plain = $this->getPlainContentFromHtml($html);
 
             // IMPORTANT: add plain part first, then html part
             $message->addPart($plain, 'text/plain');
@@ -490,6 +490,17 @@ trait HasTemplate
 
         $pipeline->add(new DecodeHtmlSpecialChars());
         $pipeline->add(new GenerateSpintaxForPlainText());
+        $pipeline->add(new ReplaceBareLineFeed());
+        $plain = $pipeline->build()->process($plain);
+
+        return $plain;
+    }
+
+    public function getPlainContentFromHtml($html)
+    {
+        $plain = Html2Text::convert($html, [ 'ignore_errors' => true ]);
+
+        $pipeline = new PipelineBuilder();
         $pipeline->add(new ReplaceBareLineFeed());
         $plain = $pipeline->build()->process($plain);
 

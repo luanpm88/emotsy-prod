@@ -14,7 +14,7 @@
         <li>
             <span class="import-tab {{ $step == 'mapping' ? 'current' : '' }}">
                 <span class="material-symbols-rounded">
-                    key_visualizer
+                    rule
                     </span>
                     
                 <span>
@@ -26,7 +26,7 @@
         <li>
             <span class="import-tab {{ $step == 'review' ? 'current' : '' }}">
                 <span class="material-symbols-rounded">
-                    checklist
+                    sync
                     </span>
                 <span>
                     <label>{{ trans('messages.subscriber.import.review_go') }}</label>

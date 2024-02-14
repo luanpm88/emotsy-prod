@@ -38,7 +38,7 @@ class Field extends Model
      * @var array
      */
     protected $fillable = [
-        'mail_list_id', 'type', 'label', 'tag', 'default_value', 'visible', 'required', 'is_email',
+        'mail_list_id', 'type', 'label', 'tag', 'default_value', 'visible', 'required', 'is_email', 'custom_field_name',
     ];
 
     /**
@@ -96,5 +96,15 @@ class Field extends Model
         }
 
         return 'text';
+    }
+
+    public function isDate()
+    {
+        return $this->type == static::TYPE_DATE;
+    }
+
+    public function scopeDatetime($query)
+    {
+        return $query->whereIn('type', ['date', 'datetime']);
     }
 }

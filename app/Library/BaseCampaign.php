@@ -239,8 +239,11 @@ class BaseCampaign extends Model
 
         // Option 1: load multiple Campaign loader jobs
         // Load max 5 LoadCampaign jobs, each will produce 200 SendMessage jobs
+        // So there will be 200 x 2 = 400 jobs in queue (in case of sending speed limit)
+        // Be careful before increase this value, otherwise, jobs release/retry may prevents
+        //     other campaigns from sending
         $perPage = 200;
-        $maxPageToLoad = 5;
+        $maxPageToLoad = 2;
         $subscribersQuery = $this->subscribersToSend();
 
         $campaignLoaders = [];
@@ -456,9 +459,8 @@ class BaseCampaign extends Model
 
     public function debug(Closure $callback = null)
     {
+        $lockKey = "lock-for-debug-campaign-{$this->uid}";
         $key = $this->getDebugCacheKey();
-        $lockFile = storage_path("app/tmp/{$key}");
-
         // Read only
         if (is_null($callback)) {
             return Cache::get($key);
@@ -468,7 +470,7 @@ class BaseCampaign extends Model
         // As it do not retry fast enough if a lock cannot be get. i.e. it waits for another second to try for example
         // Use Lockable instead which retries almost immediately with "while (true)"
         $result = null;
-        Lockable::withExclusiveLock($lockFile, function () use (&$result, $callback, $key) {
+        with_cache_lock($lockKey, function () use (&$result, $callback, $key) {
             $info = Cache::get($key, $default = [
                 'start_at' => null,
                 'last_activity_at' => null,

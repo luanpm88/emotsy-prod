@@ -233,11 +233,7 @@ class Segment extends Model
         }
 
         $conditions = [];
-        $joins = [];
-        $joined_tables = [];
         foreach ($this->segmentConditions as $index => $condition) {
-            $number = uniqid();
-
             $keyword = $condition->value;
             $keyword = str_replace('[EMPTY]', '', $keyword);
             $keyword = str_replace('[DATETIME]', date('Y-m-d H:i:s'), $keyword);
@@ -247,73 +243,65 @@ class Segment extends Model
 
             // If conditions with fields
             if (isset($condition->field_id)) {
+                $field = "`subscribers`.`{$condition->field->custom_field_name}`";
                 $type = $condition->field->type;
                 switch ($condition->operator) {
                     case 'equal':
                         if ($type == 'number') {
-                            $cond = sprintf('CAST(sf%s.value AS SIGNED) = CAST(%s AS SIGNED)', $number, db_quote($keyword));
+                            $cond = sprintf('CAST(%s AS SIGNED) = CAST(%s AS SIGNED)', $field, db_quote($keyword));
                         } else {
-                            $cond = 'LOWER(sf'.$number.'.value) = '.db_quote($keyword);
+                            $cond = sprintf('LOWER(%s) = %s', $field, db_quote($keyword));
                         }
                         break;
                     case 'not_equal':
                         if ($type == 'number') {
-                            $cond = sprintf('CAST(sf%s.value AS SIGNED) != CAST(%s AS SIGNED)', $number, db_quote($keyword));
+                            $cond = sprintf('CAST(%s AS SIGNED) != CAST(%s AS SIGNED)', $field, db_quote($keyword));
                         } else {
-                            $cond = 'LOWER(sf'.$number.'.value) != '.db_quote($keyword);
+                            $cond = sprintf('LOWER(%s) != %s', $field, db_quote($keyword));
                         }
                         break;
                     case 'contains':
-                        $cond = 'LOWER(sf'.$number.'.value) LIKE '.db_quote('%'.$keyword.'%');
+                        $cond = "LOWER({$field}) LIKE ".db_quote('%'.$keyword.'%');
                         break;
                     case 'not_contains':
-                        $cond = '(LOWER(sf'.$number.'.value) NOT LIKE '.db_quote('%'.$keyword.'%').' OR sf'.$number.'.value IS NULL)';
+                        $cond = "(LOWER({$field}) NOT LIKE ".db_quote('%'.$keyword.'%')." OR {$field} IS NULL)";
                         break;
                     case 'starts':
-                        $cond = 'LOWER(sf'.$number.'.value) LIKE '.db_quote($keyword.'%');
+                        $cond = "LOWER({$field}) LIKE ".db_quote($keyword.'%');
                         break;
                     case 'ends':
-                        $cond = 'LOWER(sf'.$number.'.value) LIKE '.db_quote('%'.$keyword);
+                        $cond = "LOWER({$field}) LIKE ".db_quote('%'.$keyword);
                         break;
                     case 'greater':
                         if ($type == 'number') {
-                            $cond = sprintf('CAST(sf%s.value AS SIGNED) > CAST(%s AS SIGNED)', $number, db_quote($keyword));
+                            $cond = sprintf('CAST(%s AS SIGNED) > CAST(%s AS SIGNED)', $field, db_quote($keyword));
                         } else {
-                            $cond = 'sf'.$number.'.value > '.db_quote($keyword);
+                            $cond = "{$field} > ".db_quote($keyword);
                         }
                         break;
                     case 'less':
                         if ($type == 'number') {
                             $cond = sprintf('CAST(sf%s.value AS SIGNED) < CAST(%s AS SIGNED)', $number, db_quote($keyword));
                         } else {
-                            $cond = 'sf'.$number.'.value < '.db_quote($keyword);
+                            $cond = "{$field} < ".db_quote($keyword);
                         }
 
                         break;
                     case 'not_starts':
-                        $cond = 'sf'.$number.'.value NOT LIKE '.db_quote($keyword.'%');
+                        $cond = "{$field} NOT LIKE ".db_quote($keyword.'%');
                         break;
                     case 'not_ends':
-                        $cond = 'LOWER(sf'.$number.'.value) NOT LIKE '.db_quote('%'.$keyword);
+                        $cond = "LOWER({$field}) NOT LIKE ".db_quote('%'.$keyword);
                         break;
                     case 'not_blank':
-                        $cond = '(LOWER(sf'.$number.".value) != '' AND LOWER(sf".$number.'.value) IS NOT NULL)';
+                        $cond = "(LOWER({$field}) != '' AND LOWER({$field}) IS NOT NULL)";
                         break;
                     case 'blank':
-                        $cond = '(LOWER(sf'.$number.".value) = '' OR LOWER(sf".$number.'.value) IS NULL)';
+                        $cond = "(LOWER({$field}) = '' OR LOWER({$field}) IS NULL)";
                         break;
                     default:
                         throw new \Exception("Unknown segment condition type (operator): ".$condition->operator);
                 }
-
-                // add to joins array
-                $joins[] = [
-                    'table' => \DB::raw(\DB::getTablePrefix().'subscriber_fields as sf'.$number),
-                    'ons' => [
-                        [\DB::raw('sf'.$number.'.subscriber_id'), \DB::raw(\DB::getTablePrefix().'subscribers.id')],
-                        [\DB::raw('sf'.$number.'.field_id'), \DB::raw($condition->field_id)],
-                    ],
-                ];
 
                 // add condition
                 $conditions[] = $cond;
@@ -377,7 +365,6 @@ class Segment extends Model
         }
 
         return [
-            'joins' => $joins,
             'conditions' => $conditions,
         ];
     }
@@ -394,20 +381,6 @@ class Segment extends Model
 
         // Get segment filter criteria
         $conditions = $this->getSubscribersConditions();
-
-        // Apply the filter
-        if (!empty($conditions['joins'])) {
-            foreach ($conditions['joins'] as $joining) {
-                $query = $query->leftJoin($joining['table'], function ($join) use ($joining) {
-                    // Example: sf5da53d2f9c856.subscriber_id => m_subscribers.id
-                    $join->on($joining['ons'][0][0], '=', $joining['ons'][0][1]);
-                    if (isset($joining['ons'][1])) {
-                        // Example: sf5da53d2f9c856.field_id = 6
-                        $join->on($joining['ons'][1][0], '=', $joining['ons'][1][1]);
-                    }
-                });
-            }
-        }
 
         // var_dump($conditions['conditions']);die();
         if (!empty($conditions['conditions'])) {
@@ -468,7 +441,7 @@ class Segment extends Model
      */
     public function updateCacheDelayed()
     {
-        dispatch(new \Acelle\Jobs\UpdateSegmentJob($this));
+        safe_dispatch(new \Acelle\Jobs\UpdateSegmentJob($this));
     }
 
     /**

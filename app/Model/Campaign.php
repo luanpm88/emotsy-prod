@@ -1702,9 +1702,6 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
      */
     private function execSpamc()
     {
-        // @todo: temporarily disable SPAMC
-        return;
-
         $message = $this->getSampleMessage()->toString();
 
         // Execute SPAMC
@@ -2305,10 +2302,8 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
         // keyword
         if (isset($params['keyword']) && !empty(trim($params['keyword']))) {
             foreach (explode(' ', trim($params['keyword'])) as $keyword) {
-                $query = $query->leftJoin('subscriber_fields', 'subscribers.id', '=', 'subscriber_fields.subscriber_id');
                 $query = $query->where(function ($q) use ($keyword) {
-                    $q->orwhere('subscribers.email', 'like', '%'.$keyword.'%')
-                        ->orWhere('subscriber_fields.value', 'like', '%'.$keyword.'%');
+                    $q->orwhere('subscribers.email', 'like', '%'.$keyword.'%');
                 });
             }
         }

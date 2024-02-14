@@ -17,7 +17,7 @@
             <a webhook-control="tab-link" class="nav-link active" href="{{ action('MailListController@webhookForm', [
                 'uid' => $list->uid,
             ]) }}">
-                <span class="material-symbols-rounded">select_window</span>  {{ trans('messages.list.webhook.form_post') }}
+                <span class="material-symbols-rounded">dynamic_form</span>  {{ trans('messages.list.webhook.form_post') }}
             </a>
         </li>
     </ul>
