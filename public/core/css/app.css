@@ -6828,7 +6828,7 @@ h3, h4 [class^="material-"] {
 }
 
 .animated-background, .styled.animated-background:before,
-.popup-animated-background, .styled.popup-animated-background:before {
+.popup-animated-background:not(.placeholder-glow), .styled.popup-animated-background:before {
     -webkit-animation-duration: 1.5s;
     -webkit-animation-fill-mode: forwards;
     -webkit-animation-iteration-count: infinite;
@@ -6850,7 +6850,7 @@ h3, h4 [class^="material-"] {
     display: inline-block!important;
     transition: none;
 }
-.animated-background *, .popup-animated-background * {
+.animated-background *:not(.placeholder), .popup-animated-background *:not(.placeholder) {
     visibility: hidden;
     color: transparent!important;
 }
