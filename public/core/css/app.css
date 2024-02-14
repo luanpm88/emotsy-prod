@@ -8328,3 +8328,6 @@ body.mode-dark [split-control="b-box"].border-end {
 .key-value-list.list-small li .value {
   font-size: 95%;
 }
+body:not(.mode-dark) .placeholder {
+    background-color: #eee;
+}
