@@ -2567,7 +2567,9 @@ class CampaignController extends Controller
         try {
             $score = $campaign->score();
         } catch (\Exception $e) {
-            return response()->json("Cannot get score. Make sure you setup for SpamAssassin correctly.\r\n".$e->getMessage(), 500); // Status code here
+            return response()->json([
+                'error' => "Cannot get score. Make sure you setup for SpamAssassin correctly. [" . $e->getMessage() ."]",
+            ], 500);
         }
 
         return view('campaigns.spam_score', [
