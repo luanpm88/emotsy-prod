@@ -15,11 +15,11 @@ class AdminController extends Controller
      */
     public function loginBack(Request $request)
     {
-        $id = \Session::pull('orig_user_id');
+        $id = \Session::pull('orig_user_uid');
         $orig_user = \Acelle\Model\User::findByUid($id);
 
         \Auth::login($orig_user);
 
-        return redirect()->action('Admin\UserController@index');
+        return redirect()->action('Admin\CustomerController@index');
     }
 }

@@ -299,10 +299,6 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
     Route::post('account/subscription/select-plan', 'SubscriptionController@selectPlan');
     Route::get('account/subscription', 'SubscriptionController@index');
 
-
-
-
-
     // Customer login back
     Route::get('customers/admin-area', 'CustomerController@adminArea');
 
@@ -325,6 +321,9 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
     Route::get('account/quota_log', 'AccountController@quotaLog');
     Route::get('account/billing', 'AccountController@billing');
     Route::match(['get', 'post'], 'account/billing/edit', 'AccountController@editBillingAddress');
+
+    //
+    Route::get('users/login-back', 'UserController@loginBack');
 });
 
 Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscription', 'authorize']], function () {
@@ -598,9 +597,6 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('campaigns/{uid}/run', 'CampaignController@run');
     Route::get('campaigns/{uid}/update-stats', 'CampaignController@updateStats');
     Route::get('campaigns/{uid}/debug', 'CampaignController@debug');
-
-    //
-    Route::get('users/login-back', 'UserController@loginBack');
 
     // User
     Route::get('account/users/listing/{page?}', 'UserController@listing');
