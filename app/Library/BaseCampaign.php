@@ -334,7 +334,7 @@ class BaseCampaign extends Model
         $formatter = new LineFormatter("[%datetime%] %channel%.%level_name%: %message%\n");
 
         $logfile = $this->getLogFile();
-        $stream = new RotatingFileHandler($logfile, 0, Logger::DEBUG);
+        $stream = new RotatingFileHandler($logfile, 0, config('custom.log_level'));
         $stream->setFormatter($formatter);
 
         $pid = getmypid();

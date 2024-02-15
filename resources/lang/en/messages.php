@@ -2315,6 +2315,7 @@
   'sending_logs' => 'Sending logs',
   'sending_please_wait' => 'Sending... Please wait for the result!',
   'sending_quota' => 'Sending credits',
+  'sending_quota.available' => 'Sending credits (:num avaialble)',
   'sending_quota_intro' => 'Sending credits: <span class="text-semibold">:value</span>',
   'sending_quota_label' => 'Sending credits',
   'sending_serbers.add_domain' => 'Add domain',
