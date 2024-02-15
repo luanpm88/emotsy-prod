@@ -537,4 +537,28 @@ class SubscriberController extends Controller
             'tags' => $subscriber->getTags(),
         ), 200);
     }
+
+    public function removeTag(Request $request, $uid)
+    {
+        $user = \Auth::guard('api')->user();
+        $subscriber = \Acelle\Model\Subscriber::findByUid($uid);
+
+        // authorize
+        if (!$user->can('update', $subscriber)) {
+            return \Response::json(array('message' => 'Unauthorized'), 401);
+        }
+
+        // update tags
+        if ($request->tag) {
+            $subscriber->removeTags(explode(',', $request->tag));
+        }
+
+        // add tag
+        return \Response::json(array(
+            'status' => 1,
+            'message' => trans('messages.subscriber.tag_removed'),
+            'subscriber_uid' => $subscriber->uid,
+            'tags' => $subscriber->getTags(),
+        ), 200);
+    }
 }

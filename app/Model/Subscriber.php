@@ -779,6 +779,16 @@ class Subscriber extends Model
         $this->save();
     }
 
+    public function removeTags($arr)
+    {
+        $tags = $this->getTags();
+
+        $nTags = array_values(array_unique(array_diff($tags, $arr)));
+
+        $this->tags = json_encode($nTags);
+        $this->save();
+    }
+
     /**
      * Add tags.
      */

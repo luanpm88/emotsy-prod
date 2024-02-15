@@ -3625,4 +3625,5 @@
   'plan.features' => 'Features',
   'plan.feature.general' => 'General',
   'plan_group.features' => 'Features',
+  'subscriber.tag_removed' => 'Tag was removed successfully',
 ) ?>
