@@ -50,7 +50,7 @@ class UpdateSendingCredits extends Migration
         // echo "*** {$timeAmount} {$timeUnit}: {$used} / {$remaining} / {$credits}";
 
         if ($credits == -1) {
-            $creditTracker->setDefaultEmailCredits(); // unlimited credit, just fine
+            $creditTracker->setCredits($credits); // unlimited credit, just fine
         } elseif ($remaining > 0) {
             $creditTracker->setCredits($remaining);
         } else {
