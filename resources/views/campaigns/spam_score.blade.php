@@ -1,8 +1,8 @@
 @extends('layouts.popup.medium')
 
 @section('content')
-<div class="modal-header">    
-    <h5 class="modal-title"><strong>{{ trans('messages.campaign.spam_score') }}</strong>
+<div class="">    
+    <h5 class=""><strong>{{ trans('messages.campaign.spam_score') }}</strong>
     
     @if ($score['result'] == true)
         <span class="label label-flat bg-active">{{ trans('messages.campaign.score.passed') }} {{ $score['score'] }}</span>
@@ -11,11 +11,8 @@
     @endif
     
     </h5>
-    <button role="button" class="close" data-dismiss="modal" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-    </button>
 </div>
-<div class="modal-body">
+<div class="">
     <div class="mc_section mb-0">
         @if ($score['result'] == true)
             <p>{{ trans('messages.campaign.score.passed.intro') }}</p>
