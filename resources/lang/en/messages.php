@@ -3261,4 +3261,5 @@
   ',
   'page.term_of_service' => 'Term of service content',
   'subscriber.tag_removed' => 'Tag was removed successfully',
+  'subscription.replenish.send_email_credits' => 'Send email credits',
 ) ?>
