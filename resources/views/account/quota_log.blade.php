@@ -27,7 +27,7 @@
                 <div class="d-flex align-items-center">
                     <h5 class="text-semibold mb-1 me-auto">{{ trans('messages.list') }}</h5>
                     <div class="pull-right text-primary text-semibold">
-                        <span class="text-muted">{{ number_with_delimiter($listsCount) }}/{{ number_with_delimiter($maxLists) }}</span>
+                        <span class="text-muted">{{ number_with_delimiter($listsCount) }}/{{ ($maxLists == -1) ? '∞' : number_with_delimiter($maxLists) }}</span>
                         &nbsp;&nbsp;&nbsp;{{ number_to_percentage($listsUsed) }}
                     </div>
                 </div>
@@ -42,7 +42,7 @@
                 <div class="d-flex align-items-center">
                     <h5 class="text-semibold mb-1 me-auto">{{ trans('messages.campaign') }}</h5>
                     <div class="pull-right text-primary text-semibold">
-                        <span class="text-muted progress-xxs">{{ number_with_delimiter($campaignsCount) }}/{{ number_with_delimiter($maxCampaigns) }}</span>
+                        <span class="text-muted progress-xxs">{{ number_with_delimiter($campaignsCount) }}/{{ ($maxCampaigns == -1) ? '∞' : number_with_delimiter($maxCampaigns) }}</span>
                         &nbsp;&nbsp;&nbsp;{{ number_to_percentage($campaignsUsed) }}
                     </div>
                 </div>
