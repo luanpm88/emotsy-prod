@@ -119,7 +119,7 @@ class QuotaTest extends TestCase
         $this->assertEquals($server->getRateLimitTracker()->getCreditsUsed(Carbon::parse('5 minutes ago')), 1);
         $this->assertEquals($subscription->getSendEmailRateTracker()->getCreditsUsed(Carbon::parse('5 minutes ago')), 1);
         // FAILED, as credits tracking is commented out in SendMessage
-        // $this->assertEquals($subscription->getSendEmailCreditTracker()->getRemainingCredits(), 99);
+        $this->assertEquals($subscription->getSendEmailCreditTracker()->getRemainingCredits(), 99);
 
 
         // 2st execution
@@ -132,7 +132,7 @@ class QuotaTest extends TestCase
         $this->assertEquals($subscription->getSendEmailRateTracker()->getCreditsUsed(Carbon::parse('5 minutes ago')), 1); // sub fails to count, so still 1 (max 1/minute)
         $this->assertEquals(RateLimitExceeded::class, get_class($outcome));
         // FAILED, as credits tracking is commented out in SendMessage
-        // $this->assertEquals($subscription->getSendEmailCreditTracker()->getRemainingCredits(), 99);
+        $this->assertEquals($subscription->getSendEmailCreditTracker()->getRemainingCredits(), 99);
     }
 
     public function test_send_message_job_with_credits_exceeded()
@@ -183,13 +183,10 @@ class QuotaTest extends TestCase
             $outcome = $exception;
         });
 
-        // FAILED, as credits tracking is commented out in SendMessage
-        // Uncomment the credit counting code in the SendMessage class to test the following assertions
-        //
-        // $this->assertEquals(OutOfCredits::class, get_class($outcome));
-        // $this->assertEquals($server->getRateLimitTracker()->getCreditsUsed(Carbon::parse('10 minute ago')), 1);
-        // $this->assertEquals($subscription->getSendEmailRateTracker()->getCreditsUsed(Carbon::parse('10 minute ago')), 1);
-        // $this->assertEquals($subscription->getSendEmailCreditTracker()->getRemainingCredits(), 0);
+        $this->assertEquals(OutOfCredits::class, get_class($outcome));
+        $this->assertEquals($server->getRateLimitTracker()->getCreditsUsed(Carbon::parse('10 minute ago')), 1);
+        $this->assertEquals($subscription->getSendEmailRateTracker()->getCreditsUsed(Carbon::parse('10 minute ago')), 1);
+        $this->assertEquals($subscription->getSendEmailCreditTracker()->getRemainingCredits(), 0);
     }
 
     public function test_email_verification_server_job_server_rate_limit_exceeded()

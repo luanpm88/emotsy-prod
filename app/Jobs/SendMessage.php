@@ -147,8 +147,7 @@ class SendMessage implements ShouldQueue
             $creditTrackers = [];
 
             if (!is_null($this->subscription)) {
-                $rateTrackers[] = $this->subscription->getSendEmailRateTracker(); // there are two LIMITS
-
+                $rateTrackers[] = $this->subscription->getSendEmailRateTracker();
                 $creditTrackers[] = $this->subscription->getSendEmailCreditTracker();
             }
 

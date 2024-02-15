@@ -7,7 +7,7 @@ test('Credit tracker just works', function () {
     $file = '/tmp/test-rate-'.uniqid();
     $tracker = CreditTracker::load($file, $createFile = true);
 
-    expect($tracker->getRemainingCredits())->toBe(CreditTracker::UNLIMITED);
+    expect($tracker->getRemainingCredits())->toBe(CreditTracker::ZERO);
 
     $tracker->setCredits(2);
     expect($tracker->getRemainingCredits())->toBe(2);

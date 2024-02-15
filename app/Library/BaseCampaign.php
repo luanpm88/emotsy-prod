@@ -224,8 +224,8 @@ class BaseCampaign extends Model
         // So there will be 200 x 2 = 400 jobs in queue (in case of sending speed limit)
         // Be careful before increase this value, otherwise, jobs release/retry may prevents
         //     other campaigns from sending
-        $perPage = 200;
-        $maxPageToLoad = 2;
+        $perPage = 300;
+        $maxPageToLoad = 3;
         $subscribersQuery = $this->subscribersToSend();
 
         $campaignLoaders = [];
