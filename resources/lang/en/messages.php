@@ -3259,4 +3259,5 @@
     Use the {TERM_OF_SERVICE} tag if you want to add the terms checkbox to the signup page.
   ',
   'page.term_of_service' => 'Term of service content',
+  'subscriber.tag_removed' => 'Tag was removed successfully',
 ) ?>
