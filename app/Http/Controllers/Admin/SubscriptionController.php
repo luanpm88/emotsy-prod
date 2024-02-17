@@ -297,19 +297,17 @@ class SubscriptionController extends Controller
         }
 
         if ($request->isMethod('post')) {
-            // action here
-            if (false) {
-                // success
+            try {
+                $subscription->getSendEmailCreditTracker()->setCredits((int)$request->credits);
                 return response()->json([
                     'status' => 'success',
                     'message' => trans('messages.subscription.replenish_sending_credits.success'),
                 ]);
-            } else {
-                // error
+            } catch (Exception $ex) {
                 return response()->json([
                     'status' => 'error',
-                    'message' => 'Error from the server...',
-                ], 500);
+                    'message' => $ex->getMessage(),
+                ], 400);
             }
         }
 

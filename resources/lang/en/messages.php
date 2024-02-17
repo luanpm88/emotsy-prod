@@ -1440,6 +1440,7 @@
   'invoice.status.rejected' => 'Rejected',
   'invoice.title' => 'Content',
   'invoice_template' => 'Invoice template',
+  'sending_credits.last_month_used' => 'Credits used during the last 30 days',
   'invoices' => 'Invoices',
   'invoices_logs' => 'Invoices / Logs',
   'ip' => 'IP',
