@@ -313,6 +313,7 @@ class SubscriptionController extends Controller
 
         return view('admin.subscriptions.replenishSendingCredits', [
             'subscription' => $subscription,
+            'remaining' => $subscription->getRemainingEmailCredits(),
         ]);
     }
 }

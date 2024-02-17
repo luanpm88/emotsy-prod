@@ -3262,5 +3262,5 @@
   ',
   'page.term_of_service' => 'Term of service content',
   'subscriber.tag_removed' => 'Tag was removed successfully',
-  'subscription.replenish.send_email_credits' => 'Send email credits',
+  'subscription.replenish.send_email_credits' => 'Reset SEND EMAILS CREDITS for this user subscription. (Available sending credits: :int)',
 ) ?>
