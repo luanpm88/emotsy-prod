@@ -4,7 +4,6 @@ namespace Acelle\Jobs;
 
 use Illuminate\Bus\Batchable;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -236,15 +235,33 @@ class SendMessage implements ShouldQueue
             if (!is_null($exceptionCallback)) {
                 return $exceptionCallback($ex);
             }
-            // Releease the job, have it tried again later on, after 1 minutes
-            $logger->warning(sprintf("Delay [%s] for 120 seconds: %s", $email, $ex->getMessage()));
 
-            // Release the job, have it try again after 60 seconds
-            // and (hopefully) the quota limits will be lifted then as time goes by
-            // @note: normally, 60 seconds is enough, but change to 120 to prevent overhead
-            $this->release(120);
+            $lockKey = "campaign-delay-flag-lock-{$this->campaign->uid}";
+            with_cache_lock($lockKey, function() use ($rateTrackers, $logger, $email, $ex) {
+                $delayFlag = $this->campaign->checkDelayFlag();
 
-            //} catch (OutOfCredits $ex) {
+                if ($delayFlag == true) {
+                    // just finish the task
+                    $logger->info(sprintf("Delay [%s], rate limit hit: %s", $email, $ex->getMessage()));
+                    return;
+                } else {
+                    // Releease the job, have it tried again later on, after 1 minutes
+
+                    $delayInSeconds = 20;
+
+                    $logger->warning(sprintf("Delay [%s], dispatch WAITING job (%s seconds): %s", $email, $delayInSeconds, $ex->getMessage()));
+
+                    // set delay flag to true
+                    $this->campaign->setDelayFlag(true);
+                    $delay = new Delay($delayInSeconds, $this->campaign, $rateTrackers);
+                    $this->batch()->add($delay);
+                }
+            });
+
+
+        //} catch (OutOfCredits $ex) {
+
+            // something special here
 
         } catch (Throwable $ex) {
             // Also catch the OutOfCredits error

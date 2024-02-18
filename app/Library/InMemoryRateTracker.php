@@ -75,8 +75,12 @@ class InMemoryRateTracker
         }, $timeout = 15);
     }
 
-    private function test(Carbon $now)
+    public function test(Carbon $now = null)
     {
+        if (is_null($now)) {
+            $now = Carbon::now();
+        }
+
         foreach ($this->limits as $limit) {
             $period = sprintf("%s %s", $limit->getPeriodValue(), $limit->getPeriodUnit());
             $fromDatetime = $now->copy()->subtract($period);
