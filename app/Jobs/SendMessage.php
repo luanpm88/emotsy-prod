@@ -237,7 +237,7 @@ class SendMessage implements ShouldQueue
             }
 
             $lockKey = "campaign-delay-flag-lock-{$this->campaign->uid}";
-            with_cache_lock($lockKey, function() use ($rateTrackers, $logger, $email, $ex) {
+            with_cache_lock($lockKey, function () use ($rateTrackers, $logger, $email, $ex) {
                 $delayFlag = $this->campaign->checkDelayFlag();
 
                 if ($delayFlag == true) {
@@ -259,7 +259,7 @@ class SendMessage implements ShouldQueue
             });
 
 
-        //} catch (OutOfCredits $ex) {
+            //} catch (OutOfCredits $ex) {
 
             // something special here
 
