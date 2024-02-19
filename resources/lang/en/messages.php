@@ -1440,6 +1440,7 @@
   'invoice.status.rejected' => 'Rejected',
   'invoice.title' => 'Content',
   'invoice_template' => 'Invoice template',
+  'sending_credits.last_month_used' => 'Credits used during the last 30 days',
   'invoices' => 'Invoices',
   'invoices_logs' => 'Invoices / Logs',
   'ip' => 'IP',
@@ -2315,6 +2316,7 @@
   'sending_logs' => 'Sending logs',
   'sending_please_wait' => 'Sending... Please wait for the result!',
   'sending_quota' => 'Sending credits',
+  'sending_quota.available' => 'Sending credits used (:num avaialble)',
   'sending_quota_intro' => 'Sending credits: <span class="text-semibold">:value</span>',
   'sending_quota_label' => 'Sending credits',
   'sending_serbers.add_domain' => 'Add domain',
@@ -3260,5 +3262,5 @@
   ',
   'page.term_of_service' => 'Term of service content',
   'subscriber.tag_removed' => 'Tag was removed successfully',
-  'subscription.replenish.send_email_credits' => 'Send email credits',
+  'subscription.replenish.send_email_credits' => 'Reset SEND EMAILS CREDITS for this user subscription. (Available sending credits: :int)',
 ) ?>

@@ -219,13 +219,16 @@ class BaseCampaign extends Model
             $job->cancelWithoutDeleteBatch();
         }
 
+        // Clean up DELAY flag
+        $this->setDelayFlag(null);
+
         // Option 1: load multiple Campaign loader jobs
         // Load max 5 LoadCampaign jobs, each will produce 200 SendMessage jobs
         // So there will be 200 x 2 = 400 jobs in queue (in case of sending speed limit)
         // Be careful before increase this value, otherwise, jobs release/retry may prevents
         //     other campaigns from sending
         $perPage = 200;
-        $maxPageToLoad = 2;
+        $maxPageToLoad = 3;
         $subscribersQuery = $this->subscribersToSend();
 
         $campaignLoaders = [];
@@ -334,7 +337,7 @@ class BaseCampaign extends Model
         $formatter = new LineFormatter("[%datetime%] %channel%.%level_name%: %message%\n");
 
         $logfile = $this->getLogFile();
-        $stream = new RotatingFileHandler($logfile, 0, Logger::DEBUG);
+        $stream = new RotatingFileHandler($logfile, 0, config('custom.log_level'));
         $stream->setFormatter($formatter);
 
         $pid = getmypid();
@@ -456,5 +459,26 @@ class BaseCampaign extends Model
         }, $timeout = 10);
 
         return $result; // return the get value (second element in result)
+    }
+
+    public function getDelayFlagKey()
+    {
+        $flagKey = "campaign-delay-flag-{$this->uid}";
+        return $flagKey;
+    }
+
+    public function checkDelayFlag()
+    {
+        return Cache::get($this->getDelayFlagKey()) ?? false;
+    }
+
+    public function setDelayFlag($value)
+    {
+        if (is_null($value)) {
+            Cache::forget($this->getDelayFlagKey());
+        } else {
+            Cache::put($this->getDelayFlagKey(), $value);
+        }
+
     }
 }

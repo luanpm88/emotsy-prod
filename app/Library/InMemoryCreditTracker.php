@@ -70,9 +70,10 @@ class InMemoryCreditTracker
 
     public function rollback()
     {
-        $remainingCredits = $this->getRemainingCredits();
-        $remainingCredits += 1;
-
-        Cache::put($this->resourceKey, $remainingCredits);
+        with_cache_lock($this->resourceKey, function () {
+            $remainingCredits = $this->getRemainingCredits();
+            $remainingCredits += 1;
+            Cache::put($this->resourceKey, $remainingCredits);
+        });
     }
 }

@@ -7,10 +7,10 @@
                 {{ csrf_field() }}
 
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-8">
                         <div class="form-group {{ $errors->has('credits') ? 'has-error' : '' }}">
                             <label>
-                                {{ trans('messages.subscription.replenish.send_email_credits') }}
+                                {{ trans('messages.subscription.replenish.send_email_credits', [ 'int' => ($remaining == -1) ? '∞' : number_with_delimiter($remaining)   ]) }}
                             </label>
                             <div>
                                 <input value=""
