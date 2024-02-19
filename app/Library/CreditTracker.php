@@ -9,6 +9,7 @@ use Exception;
 class CreditTracker
 {
     protected $filepath;
+    protected $lock;
 
     public const ZERO = 0;
     public const UNLIMITED = -1;
