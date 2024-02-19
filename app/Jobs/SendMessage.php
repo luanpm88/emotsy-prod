@@ -236,28 +236,33 @@ class SendMessage implements ShouldQueue
                 return $exceptionCallback($ex);
             }
 
-            $lockKey = "campaign-delay-flag-lock-{$this->campaign->uid}";
-            with_cache_lock($lockKey, function () use ($rateTrackers, $logger, $email, $ex) {
-                $delayFlag = $this->campaign->checkDelayFlag();
+            if ($this->batch()) {
+                $lockKey = "campaign-delay-flag-lock-{$this->campaign->uid}";
+                with_cache_lock($lockKey, function () use ($rateTrackers, $logger, $email, $ex) {
+                    $delayFlag = $this->campaign->checkDelayFlag();
 
-                if ($delayFlag == true) {
-                    // just finish the task
-                    $logger->info(sprintf("Delay [%s], rate limit hit: %s", $email, $ex->getMessage()));
-                    return;
-                } else {
-                    // Releease the job, have it tried again later on, after 1 minutes
+                    if ($delayFlag == true) {
+                        // just finish the task
+                        $logger->info(sprintf("Delay [%s], rate limit hit: %s", $email, $ex->getMessage()));
+                        return;
+                    } else {
+                        // Releease the job, have it tried again later on, after 1 minutes
 
-                    $delayInSeconds = 25;
+                        $delayInSeconds = 25;
 
-                    $logger->warning(sprintf("Delay [%s], dispatch WAITING job (%s seconds): %s", $email, $delayInSeconds, $ex->getMessage()));
+                        $logger->warning(sprintf("Delay [%s], dispatch WAITING job (%s seconds): %s", $email, $delayInSeconds, $ex->getMessage()));
 
-                    // set delay flag to true
-                    $this->campaign->setDelayFlag(true);
-                    $delay = new Delay($delayInSeconds, $this->campaign, $rateTrackers);
-                    $this->batch()->add($delay);
-                }
-            });
+                        // set delay flag to true
+                        $this->campaign->setDelayFlag(true);
+                        $delay = new Delay($delayInSeconds, $this->campaign, $rateTrackers);
+                        $this->batch()->add($delay);
+                    }
+                });
 
+            } else {
+                $logger->warning(sprintf("Delay [%s] for 60 seconds (no batch): %s", $email, $ex->getMessage()));
+                $this->release(60);
+            }
 
             //} catch (OutOfCredits $ex) {
 

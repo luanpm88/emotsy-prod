@@ -479,6 +479,5 @@ class BaseCampaign extends Model
         } else {
             Cache::put($this->getDelayFlagKey(), $value);
         }
-
     }
 }
