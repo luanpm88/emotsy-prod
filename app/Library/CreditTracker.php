@@ -60,10 +60,12 @@ class CreditTracker
             $this->test();
 
             $remainingCredits = $this->getRemainingCredits();
-            $remainingCredits -= 1;
-            $remainingCredits = "{$remainingCredits}"; // cast to string
 
-            file_put_contents($this->filepath, $remainingCredits);
+            if ($remainingCredits != self::UNLIMITED) {
+                $remainingCredits -= 1;
+                $remainingCredits = "{$remainingCredits}"; // cast to string
+                file_put_contents($this->filepath, $remainingCredits);
+            }
         });
     }
 
@@ -85,10 +87,12 @@ class CreditTracker
     {
         Lockable::withExclusiveLock($this->lock, function () {
             $remainingCredits = $this->getRemainingCredits();
-            $remainingCredits += 1;
-            $remainingCredits = "{$remainingCredits}"; // cast to string
 
-            file_put_contents($this->filepath, $remainingCredits);
+            if ($remainingCredits != self::UNLIMITED) {
+                $remainingCredits += 1;
+                $remainingCredits = "{$remainingCredits}"; // cast to string
+                file_put_contents($this->filepath, $remainingCredits);
+            }
         });
     }
 }
