@@ -51,6 +51,8 @@ test('Credit tracker should throw OutOfCredits', function () {
     $tracker->setCredits(1);   // credits = 1
     $tracker->count();         // credits = 0
 
+    expect($tracker->getRemainingCredits())->toBe(CreditTracker::ZERO);
+
     // Since credit is already ZERO, another count() shall throw an exception
     $tracker->count();
 })->throws(OutOfCredits::class);
