@@ -392,8 +392,8 @@ class PlanGeneral extends Plan implements PlanInterface
                 'automation_step' => 10, // none
                 'rss_campaigns' => 0, // none
                 'api_documentation' => 1,
-                'template_integration' => 0,
-                'custom_variables' => 1,
+                'template_integration' => 0, // none
+                'custom_variables' => 3,
                 'ab_testing' => 1,
                 'preview_test_email' => 1,
                 'dynamic_email_content' => 0,

@@ -21,28 +21,30 @@
     <div class="col-md-8">
         <ul class="modern-listing big-icon no-top-border-list mt-0">
             @foreach (Acelle\Model\Campaign::types() as $key => $type)
-
-                <li>
-                    <a href="{{ action("CampaignController@create", ["type" => $key]) }}" class="btn btn-secondary">{{ trans('messages.choose') }}</a>
-                    <div class="d-flex pe-4">
-                        <a href="{{ action("CampaignController@create", ["type" => $key]) }}">
-                            <span class="pt-1 d-block">
-                                @if ($key == 'regular')
-                                    <img width="40px" class="icon-img d-inline-block me-4" src="{{ url('images/icons/regular.svg') }}" />
-                                @elseif ($key == 'plain-text')
-                                    <img width="40px" class="icon-img d-inline-block me-4" src="{{ url('images/icons/plain.svg') }}" />
-                                @endif
-                            </span>
-                        </a>
-                        <div>
-                            <h4 class="mb-1"><a href="{{ action("CampaignController@create", ["type" => $key]) }}">{{ trans('messages.' . $key) }}</a></h4>
-                            <p>
-                                {{ trans('messages.campaign_intro_' . $key) }}
-                            </p>
+                @if ($type == 'ab-test' && !Auth::user()->customer->getNewOrActiveGeneralSubscription()->planGeneral->getFeature('ab_testing'))
+                @else
+                    <li>
+                        <a href="{{ action("CampaignController@create", ["type" => $key]) }}" class="btn btn-secondary">{{ trans('messages.choose') }}</a>
+                        <div class="d-flex pe-4">
+                            <a href="{{ action("CampaignController@create", ["type" => $key]) }}">
+                                <span class="pt-1 d-block">
+                                    @if ($key == 'regular')
+                                        <img width="40px" class="icon-img d-inline-block me-4" src="{{ url('images/icons/regular.svg') }}" />
+                                    @elseif ($key == 'plain-text')
+                                        <img width="40px" class="icon-img d-inline-block me-4" src="{{ url('images/icons/plain.svg') }}" />
+                                    @endif
+                                </span>
+                            </a>
+                            <div>
+                                <h4 class="mb-1"><a href="{{ action("CampaignController@create", ["type" => $key]) }}">{{ trans('messages.' . $key) }}</a></h4>
+                                <p>
+                                    {{ trans('messages.campaign_intro_' . $key) }}
+                                </p>
+                            </div>
                         </div>
-                    </div>
-                        
-                </li>
+                            
+                    </li>
+                @endif
 
             @endforeach
 

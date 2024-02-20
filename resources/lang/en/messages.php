@@ -3462,7 +3462,7 @@
   'plan.feature.api_documentation' => 'API documentation',
   'plan.feature.template_integration' => 'Template integrations',
   'plan.feature.optimize_for_audiences' => 'Optimize for audiences',
-  'plan.feature.custom_variables' => 'Custom variables',
+  'plan.feature.custom_variables' => 'Custom list fields',
   'plan.feature.ab_testing' => 'Email A/B split testing',
   'plan.feature.preview_test_email' => 'Preview and send test emails',
   'plan.feature.dynamic_email_content' => 'Dynamic email content',
