@@ -372,8 +372,8 @@ class PlanGeneral extends Plan implements PlanInterface
             'billing_cycle' => 'monthly',
             'features' => [
                 'seats' => 1,
-                'custom_user_permissions' => 0,
-                'content_approval' => 0,
+                'custom_user_permissions' => 1,
+                'content_approval' => 1,
                 'embedded_form' => 1,
                 'popup' => 10,
                 'segmentation' => 3,
