@@ -1168,6 +1168,10 @@ function getFullCodeByLanguageCode($languageCode)
 
 function getDefaultLogoUrl($type)
 {
+    if (\Auth::user() && \Auth::user()->customer && \Auth::user()->customer->getNewOrActiveGeneralSubscription()->planGeneral->getFeature('drag_drop_builder')) {
+        return "";
+    }
+
     if (!in_array($type, ['light', 'dark'])) {
         throw new \Exception('Logo type must be either "light" or "dark"');
     }
@@ -1183,6 +1187,10 @@ function getDefaultLogoUrl($type)
 
 function getSiteLogoUrl($type)
 {
+    if (\Auth::user() && \Auth::user()->customer && \Auth::user()->customer->getNewOrActiveGeneralSubscription()->planGeneral->getFeature('drag_drop_builder')) {
+        return "";
+    }
+
     if (!in_array($type, ['light', 'dark'])) {
         throw new \Exception('Logo type must be either "light" or "dark"');
     }

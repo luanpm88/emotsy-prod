@@ -123,15 +123,17 @@
                     </div>
                 </div>
 
-                <div>
-                    <a href="{{ action('TemplateController@uploadTemplate') }}" class="btn btn-light ml-auto">
-                        <span class="material-symbols-rounded">file_upload</span> {{ trans('messages.upload') }}
-                    </a>  
-                    <a href="{{ action('TemplateController@builderCreate') }}" class="btn btn-secondary">
-                        <span class="material-symbols-rounded">add</span> {{ trans('messages.create') }}
-                    </a>
-                                      
-                </div>
+                @if (Auth::user()->customer->can('create', Acelle\Model\Template::class))
+                    <div>
+                        <a href="{{ action('TemplateController@uploadTemplate') }}" class="btn btn-light ml-auto">
+                            <span class="material-symbols-rounded">file_upload</span> {{ trans('messages.upload') }}
+                        </a>  
+                        <a href="{{ action('TemplateController@builderCreate') }}" class="btn btn-secondary">
+                            <span class="material-symbols-rounded">add</span> {{ trans('messages.create') }}
+                        </a>
+                                        
+                    </div>
+                @endif
             </div>
         </div>
         

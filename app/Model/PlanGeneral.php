@@ -380,9 +380,9 @@ class PlanGeneral extends Plan implements PlanInterface
                 'subscriber_management' => 1,
                 'drag_drop_builder' => 1,
                 'rich_text_editor' => 1,
-                'image_library' => 1,
-                'mobile_friendly_newsletter' => 1,
-                'newsletter_templates' => 1,
+                'image_library' => 1, // none
+                'mobile_friendly_newsletter' => 1, // none
+                'newsletter_templates' => 1, // none
                 'create_own_template' => 0,
                 'remove_logo' => 0,
                 'custom_html_builder' => 0,
