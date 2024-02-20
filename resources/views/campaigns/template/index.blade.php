@@ -46,12 +46,12 @@
                             ]) }}</p>
 
                             <p class="mt-20">
-                                @if (in_array(Acelle\Model\Setting::get('builder'), ['both','pro']) && $campaign->template->builder)
+                                @if (in_array(Acelle\Model\Setting::getBuilderConfig(), ['both','pro']) && $campaign->template->builder)
                                     <a href="{{ action('CampaignController@templateEdit', $campaign->uid) }}" class="btn btn-primary me-1 template-compose">
                                         {{ trans('messages.campaign.email_builder_pro') }}
                                     </a>
                                 @endif
-                                @if (in_array(Acelle\Model\Setting::get('builder'), ['both','classic']))
+                                @if (in_array(Acelle\Model\Setting::getBuilderConfig(), ['both','classic']))
                                     <a href="{{ action('CampaignController@builderClassic', $campaign->uid) }}" class="btn btn-default template-compose-classic">
                                         {{ trans('messages.campaign.email_builder_classic') }}
                                     </a>

@@ -18,7 +18,7 @@
                                 'date' => Auth::user()->customer->formatDateTime($email->updated_at, 'datetime_full'),
                             ]) }}</p>
                             
-                            @if (in_array(Acelle\Model\Setting::get('builder'), ['both','pro']) && $email->template->builder)
+                            @if (in_array(Acelle\Model\Setting::getBuilderConfig(), ['both','pro']) && $email->template->builder)
                                 <a href="{{ action('Automation2Controller@templateEdit', [
                                         'uid' => $automation->uid,
                                         'email_uid' => $email->uid,
@@ -27,7 +27,7 @@
                                     {{ trans('messages.campaign.compose_email') }}
                                 </a>
                             @endif
-                            @if (in_array(Acelle\Model\Setting::get('builder'), ['both','classic']))
+                            @if (in_array(Acelle\Model\Setting::getBuilderConfig(), ['both','classic']))
                                 <a href="{{ action('Automation2Controller@templateEditClassic', [
                                         'uid' => $automation->uid,
                                         'email_uid' => $email->uid,

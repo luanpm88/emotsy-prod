@@ -6,7 +6,7 @@
             <h2>{{ trans('messages.automation.template.builder.select') }}</h2>
             <p>{{ trans('messages.automation.template.builder.select.intro') }}</p>
             
-            @if (in_array(Acelle\Model\Setting::get('builder'), ['both','pro']) && $email->template->builder)
+            @if (in_array(Acelle\Model\Setting::getBuilderConfig(), ['both','pro']) && $email->template->builder)
                 <a href="{{ action('Automation2Controller@templateEdit', [
                         'uid' => $automation->uid,
                         'email_uid' => $email->uid,
@@ -15,7 +15,7 @@
                     {{ trans('messages.campaign.email_builder_pro') }}
                 </a>
             @endif
-            @if (in_array(Acelle\Model\Setting::get('builder'), ['both','classic']))
+            @if (in_array(Acelle\Model\Setting::getBuilderConfig(), ['both','classic']))
                 <a href="{{ action('Automation2Controller@templateEditClassic', [
                         'uid' => $automation->uid,
                         'email_uid' => $email->uid,

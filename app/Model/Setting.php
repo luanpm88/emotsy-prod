@@ -836,4 +836,12 @@ class Setting extends Model
     {
         return self::get('list_sign_up_captcha') == 'yes';
     }
+
+    public static function getBuilderConfig()
+    {
+        if (\Auth::user() && !\Auth::user()->customer->getNewOrActiveGeneralSubscription()->planGeneral->getFeature('drag_drop_builder')) {
+            return 'classic';
+        }
+        return self::get('builder');
+    }
 }
