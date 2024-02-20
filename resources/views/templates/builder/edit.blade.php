@@ -243,10 +243,12 @@
                 group: '{{ trans('builder.widget.e_commerce') }}',
             });
 
-            // Rss widget
-            editor.addWidget(new RssWidget(), {
-                index: 3
-            });
+            @if (Auth::user()->customer->getNewOrActiveGeneralSubscription()->planGeneral->getFeature('rss_campaigns'))
+                // Rss widget
+                editor.addWidget(new RssWidget(), {
+                    index: 3
+                });
+            @endif
           
             editor.init();
 

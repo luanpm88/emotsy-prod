@@ -388,9 +388,9 @@ class PlanGeneral extends Plan implements PlanInterface
                 'custom_html_builder' => 0,
                 'ai_writing' => 0,
                 'automation_builder' => 1,
-                'multiple_automation_trigger' => 0,
-                'automation_step' => 10,
-                'rss_campaigns' => 0,
+                'multiple_automation_trigger' => 0, // none
+                'automation_step' => 10, // none
+                'rss_campaigns' => 0, // none
                 'api_documentation' => 1,
                 'template_integration' => 0,
                 'custom_variables' => 1,
