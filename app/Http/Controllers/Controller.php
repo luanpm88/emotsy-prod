@@ -227,4 +227,13 @@ class Controller extends BaseController
     {
         return view('termsOfService');
     }
+
+    public function planFeatureLimitted()
+    {
+        if (request()->ajax()) {
+            return response()->json(['message' => trans('messages.plan.feature_limit')], 403);
+        }
+
+        return response()->view('planFeatureLimitted')->setStatusCode(403);
+    }
 }

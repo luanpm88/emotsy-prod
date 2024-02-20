@@ -28,9 +28,17 @@ class SegmentPolicy
         $customer = $user->customer;
         $max_per_list = get_tmp_quota($customer, 'segment_per_list_max');
 
-        return $customer->id == $item->mailList->customer_id
-                && ($max_per_list > $item->mailList->segments()->count()
-                || $max_per_list == -1);
+        //
+        $can = $customer->id == $item->mailList->customer_id;
+
+        //
+        $can = $can && ($max_per_list > $item->mailList->segments()->count()
+            || $max_per_list == -1);
+
+        //
+        $can = $can && $item->mailList->segments()->count() < $user->customer->getNewOrActiveGeneralSubscription()->planGeneral->getFeature('segmentation');
+
+        return $can;
     }
 
     public function update(User $user, Segment $item)

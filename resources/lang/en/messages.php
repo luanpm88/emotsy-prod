@@ -3442,7 +3442,7 @@
   'plan.feature.grow_audience' => 'Grow your audience',
   'plan.feature.embedded_form' => 'Embedded forms',
   'plan.feature.popup' => 'Pop-ups',
-  'plan.feature.segmentation' => 'Segmentation',
+  'plan.feature.segmentation' => 'Segments per list',
   'plan.feature.subscriber_management' => 'Subscriber management',
   'plan.feature.amazing_email_campaign' => 'Send amazing email campaigns',
   'plan.feature.drag_drop_builder' => 'Drag & Drop Newsletter editor',
@@ -3478,4 +3478,5 @@
   'plan.features' => 'Features',
   'plan.feature.general' => 'General',
   'plan_group.features' => 'Features',
+  'plan.feature_limit' => 'Feature limit exceeded in this plan; please upgrade to a higher plan/tier.',
 ) ?>
