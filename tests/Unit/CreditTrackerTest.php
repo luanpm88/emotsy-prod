@@ -2,6 +2,7 @@
 
 use Acelle\Library\CreditTracker;
 use Acelle\Library\Exception\OutOfCredits;
+use function Acelle\Helpers\execute_with_limits;
 
 test('Credit tracker just works', function () {
     $file = '/tmp/test-rate-'.uniqid();
@@ -19,6 +20,29 @@ test('Credit tracker just works', function () {
     // Count to deduct credit
     $tracker->count();
     expect($tracker->getRemainingCredits())->toBe(0);
+});
+
+test('Credit tracker with unlimited credits', function () {
+    $file = '/tmp/test-rate-'.uniqid();
+    $tracker = CreditTracker::load($file, $createFile = true);
+
+    expect($tracker->getRemainingCredits())->toBe(CreditTracker::ZERO);
+
+    $tracker->setCredits(-1);
+    expect($tracker->getRemainingCredits())->toBe(CreditTracker::UNLIMITED);
+
+    // Count to deduct credit
+    $tracker->count();
+    expect($tracker->getRemainingCredits())->toBe(CreditTracker::UNLIMITED);
+
+    // Test with execute_with_limits() helper
+    $task = fn () => execute_with_limits([  ], [ $tracker ]);
+
+    $task();
+    expect($tracker->getRemainingCredits())->toBe(CreditTracker::UNLIMITED);
+
+    $task();
+    expect($tracker->getRemainingCredits())->toBe(CreditTracker::UNLIMITED);
 });
 
 test('Credit tracker should throw OutOfCredits', function () {
