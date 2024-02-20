@@ -603,6 +603,9 @@ class MailListController extends Controller
         if (\Gate::denies('read', $list)) {
             return $this->notAuthorized();
         }
+        if (\Gate::denies('embedded_form', $list)) {
+            return $this->notAuthorized();
+        }
 
         if ($request->isMethod('post')) {
             $list->setEmbeddedFormOptions($request->options);
@@ -626,6 +629,9 @@ class MailListController extends Controller
 
         // authorize
         if (\Gate::denies('read', $list)) {
+            return $this->notAuthorized();
+        }
+        if (\Gate::denies('embedded_form', $list)) {
             return $this->notAuthorized();
         }
 

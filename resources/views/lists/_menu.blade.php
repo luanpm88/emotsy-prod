@@ -74,11 +74,13 @@
                 <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end has-head">
-                <li>
-                    <a class="dropdown-item {{ in_array($menu, ['embedded']) ? 'active' : '' }}" href="{{ action('MailListController@embeddedForm', $list->uid) }}">
-                    <span class="material-symbols-rounded">dashboard</span> {{ trans('messages.Embedded_form') }}
-                    </a>
-                </li>
+                    @if (Auth::user()->customer->can('embedded_form', $list))
+                        <li>
+                            <a class="dropdown-item {{ in_array($menu, ['embedded']) ? 'active' : '' }}" href="{{ action('MailListController@embeddedForm', $list->uid) }}">
+                            <span class="material-symbols-rounded">dashboard</span> {{ trans('messages.Embedded_form') }}
+                            </a>
+                        </li>
+                    @endif
                 <li class="head">
                     <span class="material-symbols-rounded me-1">add_task</span> {{ trans('messages.subscribe') }}
                 </li>

@@ -75,4 +75,11 @@ class MailListPolicy
 
         return ($can == 'yes' && $item->customer_id == $customer->id);
     }
+    
+    public function embedded_form(User $user, MailList $item)
+    {
+        return $user->customer &&
+            $user->customer->getNewOrActiveGeneralSubscription() && 
+            $user->customer->getNewOrActiveGeneralSubscription()->planGeneral->getFeature('embedded_form');
+    }
 }
