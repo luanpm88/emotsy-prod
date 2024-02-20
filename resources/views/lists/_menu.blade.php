@@ -109,25 +109,28 @@
                     {{ trans('messages.sign_up_welcome_email') }}
                     </a>
                 </li>
-                <li class="head">
-                    <span class="material-symbols-rounded me-1">logout</span> {{ trans('messages.unsubscribe') }}
-                    </li>
-                <li>
-                    <a class="dropdown-item {{ in_array(request()->alias, ['unsubscribe_form']) ? 'active' : '' }}" href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'unsubscribe_form']) }}">
-                    {{ trans('messages.unsubscribe_form') }}
-                    </a>
-                </li>
-                <li>
-                    <a class="dropdown-item {{ in_array(request()->alias, ['unsubscribe_success_page']) ? 'active' : '' }}" href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'unsubscribe_success_page']) }}">
-                    {{ trans('messages.unsubscribe_success_page') }}
-                    </a>
-                </li>
-                <li>
-                    <a class="dropdown-item {{ in_array(request()->alias, ['unsubscribe_goodbye_email']) ? 'active' : '' }}" href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'unsubscribe_goodbye_email']) }}">
-                    {{ trans('messages.unsubscribe_goodbye_email') }}
-                    </a>
-                </li>
+                @if (Auth::user()->customer->getNewOrActiveGeneralSubscription()->planGeneral->getFeature('unsubscribe_page_builder'))
                     <li class="head">
+                        <span class="material-symbols-rounded me-1">logout</span> {{ trans('messages.unsubscribe') }}
+                        </li>
+                    <li>
+                        <a class="dropdown-item {{ in_array(request()->alias, ['unsubscribe_form']) ? 'active' : '' }}" href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'unsubscribe_form']) }}">
+                        {{ trans('messages.unsubscribe_form') }}
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item {{ in_array(request()->alias, ['unsubscribe_success_page']) ? 'active' : '' }}" href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'unsubscribe_success_page']) }}">
+                        {{ trans('messages.unsubscribe_success_page') }}
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item {{ in_array(request()->alias, ['unsubscribe_goodbye_email']) ? 'active' : '' }}" href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'unsubscribe_goodbye_email']) }}">
+                        {{ trans('messages.unsubscribe_goodbye_email') }}
+                        </a>
+                    </li>
+                @endif
+
+                <li class="head">
                         <span class="material-symbols-rounded me-1">person_outline</span> {{ trans('messages.update_profile') }}
                 </li>
                 <li>

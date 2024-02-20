@@ -15,140 +15,143 @@
     </h2>
     <p>{!! trans('messages.audience.intro') !!}</p>
 
-    <div class="row mt-4 mb-4">
-        <div class="col-md-3">
-            <div class="bg-secondary p-3 shadow rounded-3 text-white">
-                <div class="text-center">
-                    <h2 class="text-semibold mb-1 mt-0">{{ number_with_delimiter($subscriberCount) }}</h2>
-                    <div class="text-muted2 text-white">
-                        {!! trans('messages.list.mail_list_count.desc', [
-                            'count' => number_with_delimiter($subscribedCount)
-                        ]) !!}
+    @if (Auth::user()->customer->getNewOrActiveGeneralSubscription()->planGeneral->getFeature('list_growth_reporting'))
+        <div class="row mt-4 mb-4">
+            <div class="col-md-3">
+                <div class="bg-secondary p-3 shadow rounded-3 text-white">
+                    <div class="text-center">
+                        <h2 class="text-semibold mb-1 mt-0">{{ number_with_delimiter($subscriberCount) }}</h2>
+                        <div class="text-muted2 text-white">
+                            {!! trans('messages.list.mail_list_count.desc', [
+                                'count' => number_with_delimiter($subscribedCount)
+                            ]) !!}
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="col-md-3">
-            <div class="bg-secondary p-3 shadow rounded-3 text-white">
-                <div class="text-center">
-                    <h2 class="text-semibold mb-1 mt-0">{{ number_to_percentage($activeContactPercent) }}</h2>
-                    <div class="text-muted2 text-white">
-                        {{ trans('messages.list.active_contact.desc') }}
+            <div class="col-md-3">
+                <div class="bg-secondary p-3 shadow rounded-3 text-white">
+                    <div class="text-center">
+                        <h2 class="text-semibold mb-1 mt-0">{{ number_to_percentage($activeContactPercent) }}</h2>
+                        <div class="text-muted2 text-white">
+                            {{ trans('messages.list.active_contact.desc') }}
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="col-md-3">
-            <div class="bg-secondary p-3 shadow rounded-3 text-white">
-                <div class="text-center">
-                    <h2 class="text-semibold mb-1 mt-0">{{ number_with_delimiter($formCount) }}</h2>
-                    <div class="text-muted2 text-white">
-                        @if (Auth::user()->customer->forms()->count())
-                            <p class="mb-0">{{ trans('messages.list.form.desc') }}</p>
-                        @else
-                            <p class="mb-0">{{ trans('messages.forms_not_yet') }}</p>
-                        @endif
+            <div class="col-md-3">
+                <div class="bg-secondary p-3 shadow rounded-3 text-white">
+                    <div class="text-center">
+                        <h2 class="text-semibold mb-1 mt-0">{{ number_with_delimiter($formCount) }}</h2>
+                        <div class="text-muted2 text-white">
+                            @if (Auth::user()->customer->forms()->count())
+                                <p class="mb-0">{{ trans('messages.list.form.desc') }}</p>
+                            @else
+                                <p class="mb-0">{{ trans('messages.forms_not_yet') }}</p>
+                            @endif
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="col-md-3">
-            <a href="{{ action('BlacklistController@index') }}" class="bg-secondary p-3 shadow rounded-3 text-white d-block">
-                <div class="text-center">
-                    <h2 class="text-semibold mb-1 mt-0">
-                        {{ number_with_delimiter($blacklistedCount) }}
-                    </h2>
-                    <div class="text-muted2 text-white">
-                        <p class="mb-0">{!! trans('messages.list.blacklist.desc') !!}</p>                        
+            <div class="col-md-3">
+                <a href="{{ action('BlacklistController@index') }}" class="bg-secondary p-3 shadow rounded-3 text-white d-block">
+                    <div class="text-center">
+                        <h2 class="text-semibold mb-1 mt-0">
+                            {{ number_with_delimiter($blacklistedCount) }}
+                        </h2>
+                        <div class="text-muted2 text-white">
+                            <p class="mb-0">{!! trans('messages.list.blacklist.desc') !!}</p>                        
+                        </div>
                     </div>
-                </div>
-            </a>
+                </a>
+            </div>
         </div>
-    </div>
 
-    <h3 class="mt-5 mb-20"><span class="material-symbols-rounded me-2">insights</span> {{ trans('messages.audience.audience_growth.title') }}</h3>
-    <p class="mb-4">{{ trans('messages.audience.audience_growth.desc') }}</p>
-    <div class="border shadow-sm rounded">
-        <div class="p-3">
-            <div id="AudienceGrowthChart"
-                class=""
-                style="width:100%; height:350px;"
-            ></div>
+        <h3 class="mt-5 mb-20"><span class="material-symbols-rounded me-2">insights</span> {{ trans('messages.audience.audience_growth.title') }}</h3>
+        <p class="mb-4">{{ trans('messages.audience.audience_growth.desc') }}</p>
+        <div class="border shadow-sm rounded">
+            <div class="p-3">
+                <div id="AudienceGrowthChart"
+                    class=""
+                    style="width:100%; height:350px;"
+                ></div>
+            </div>
         </div>
-    </div>
-    
-    <script>
-        var AudienceGrowthChart = {
-            url: '{{ action('AudienceController@growthChart') }}',
-            getChart: function() {
-                return $('#AudienceGrowthChart');
-            },
-    
-            showChart: function() {
-                $.ajax({
-                    method: "GET",
-                    url: this.url,
-                })
-                .done(function( response ) {
-                    AudienceGrowthChart.renderChart( response );
-                });
-            },
-    
-            renderChart: function(data) {
-                    // based on prepared DOM, initialize echarts instance
-                    var my2Chart = echarts.init(AudienceGrowthChart.getChart()[0], ECHARTS_THEME);
-    
-                    var option = {
-                        tooltip: {
-                            trigger: 'axis'
-                        },
-                        legend: {
-                            data: ['{{ trans('messages.total') }}', '{{ trans('messages.unsubscribed') }}']
-                        },
-                        grid: {
-                            left: '3%',
-                            right: '4%',
-                            bottom: '3%',
-                            containLabel: true
-                        },
-                        toolbox: {
-                            show: false
-                        },
-                        xAxis: {
-                            type: 'category',
-                            boundaryGap: false,
-                            data: data.columns
-                        },
-                        yAxis: {
-                            type: 'value'
-                        },
-                        series: [
-                            {
-                                name: '{{ trans('messages.total') }}',
-                                type: 'line',
-                                itemStyle: {
-                                    color: '#5cb2b2'
-                                },
-                                data: data.total
+        
+        <script>
+            var AudienceGrowthChart = {
+                url: '{{ action('AudienceController@growthChart') }}',
+                getChart: function() {
+                    return $('#AudienceGrowthChart');
+                },
+        
+                showChart: function() {
+                    $.ajax({
+                        method: "GET",
+                        url: this.url,
+                    })
+                    .done(function( response ) {
+                        AudienceGrowthChart.renderChart( response );
+                    });
+                },
+        
+                renderChart: function(data) {
+                        // based on prepared DOM, initialize echarts instance
+                        var my2Chart = echarts.init(AudienceGrowthChart.getChart()[0], ECHARTS_THEME);
+        
+                        var option = {
+                            tooltip: {
+                                trigger: 'axis'
                             },
-                            {
-                                name: '{{ trans('messages.unsubscribed') }}',
-                                type: 'line',
-                                itemStyle: {
-                                    color: '#b26e59'
+                            legend: {
+                                data: ['{{ trans('messages.total') }}', '{{ trans('messages.unsubscribed') }}']
+                            },
+                            grid: {
+                                left: '3%',
+                                right: '4%',
+                                bottom: '3%',
+                                containLabel: true
+                            },
+                            toolbox: {
+                                show: false
+                            },
+                            xAxis: {
+                                type: 'category',
+                                boundaryGap: false,
+                                data: data.columns
+                            },
+                            yAxis: {
+                                type: 'value'
+                            },
+                            series: [
+                                {
+                                    name: '{{ trans('messages.total') }}',
+                                    type: 'line',
+                                    itemStyle: {
+                                        color: '#5cb2b2'
+                                    },
+                                    data: data.total
                                 },
-                                data: data.unsubscribed
-                            }
-                        ]
-                    };
-    
-                    // use configuration item and data specified to show chart
-                    my2Chart.setOption(option);
+                                {
+                                    name: '{{ trans('messages.unsubscribed') }}',
+                                    type: 'line',
+                                    itemStyle: {
+                                        color: '#b26e59'
+                                    },
+                                    data: data.unsubscribed
+                                }
+                            ]
+                        };
+        
+                        // use configuration item and data specified to show chart
+                        my2Chart.setOption(option);
+                }
             }
-        }
-    
-        AudienceGrowthChart.showChart();
-    </script>
+        
+            AudienceGrowthChart.showChart();
+        </script>
+
+    @endif
 
     <h3 class="mt-5 mb-20"><span class="material-symbols-rounded me-2">open_in_new</span> {{ trans('messages.audience.quick_action') }}</h3>
     <p class="mb-4">{{ trans('messages.audience.quick_action.desc') }}</p>

@@ -87,8 +87,9 @@
 
     @include('_dashboard_campaigns')
 
-    @include('_dashboard_list_growth')    
-
+    @if (Auth::user()->customer->getNewOrActiveGeneralSubscription()->planGeneral->getFeature('list_growth_reporting'))
+        @include('_dashboard_list_growth')    
+    @endif
 
     @if (isSiteDemo())
     <h3 class="mt-5 mb-3"><span class="material-symbols-rounded me-2">star_half</span> {{ trans('messages.top_5') }}

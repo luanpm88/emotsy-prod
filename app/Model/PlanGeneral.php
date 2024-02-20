@@ -395,9 +395,9 @@ class PlanGeneral extends Plan implements PlanInterface
                 'template_integration' => 0, // none
                 'custom_variables' => 3,
                 'ab_testing' => 1,
-
                 'preview_test_email' => 1,
-                'dynamic_email_content' => 0,
+                'dynamic_email_content' => 0, // none
+                
                 'unsubscribe_page_builder' => 0,
                 'list_growth_reporting' => 1,
                 'individual_subscriber_profile' => 1,
