@@ -106,9 +106,11 @@
                 </div>
             </div>
             <div class="text-end">
-                <a href="{{ action('FormController@create') }}" role="button" class="btn btn-secondary">
-                    <span class="material-symbols-rounded">add</span> {{ trans('messages.form.create') }}
-                </a>
+                @if (Auth::user()->customer->can('create', Acelle\Model\Form::class))
+                    <a href="{{ action('FormController@create') }}" role="button" class="btn btn-secondary">
+                        <span class="material-symbols-rounded">add</span> {{ trans('messages.form.create') }}
+                    </a>
+                @endif
             </div>
         </div>
 
