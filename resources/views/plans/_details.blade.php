@@ -111,6 +111,60 @@ Email support
     <li class="py-1 fw-semibold bg-light ps-3">
         {{ trans('messages.plan.feature.grow_audience') }}
     </li>
+    {{-- <li class="selfclear ps-3">
+        <div class="unit size1of2 text-nowrap">
+            <span>{{ trans('messages.plan.feature.seats') }}</span>
+        </div>
+        <div class="lastUnit size1of2 ms-auto">
+            <mc:flag>
+                @if ($plan->getFeature('seats'))
+                    <span class="material-icons-outlined text-success" style="transform:scale(1.4)">
+                        task_alt
+                    </span>
+                @else
+                    <span class="material-icons-outlined text-danger" style="transform:scale(1.4)">
+                        do_not_disturb_on
+                    </span>
+                @endif
+            </mc:flag>
+        </div>
+    </li> --}}
+    {{-- <li class="selfclear ps-3">
+        <div class="unit size1of2 text-nowrap">
+            <span>{{ trans('messages.plan.feature.custom_user_permissions') }}</span>
+        </div>
+        <div class="lastUnit size1of2 ms-auto">
+            <mc:flag>
+                @if ($plan->getFeature('custom_user_permissions'))
+                    <span class="material-icons-outlined text-success" style="transform:scale(1.4)">
+                        task_alt
+                    </span>
+                @else
+                    <span class="material-icons-outlined text-danger" style="transform:scale(1.4)">
+                        do_not_disturb_on
+                    </span>
+                @endif
+            </mc:flag>
+        </div>
+    </li> --}}
+    <li class="selfclear ps-3">
+        <div class="unit size1of2 text-nowrap">
+            <span>{{ trans('messages.plan.feature.content_approval') }}</span>
+        </div>
+        <div class="lastUnit size1of2 ms-auto">
+            <mc:flag>
+                @if ($plan->getFeature('content_approval'))
+                    <span class="material-icons-outlined text-success" style="transform:scale(1.4)">
+                        task_alt
+                    </span>
+                @else
+                    <span class="material-icons-outlined text-danger" style="transform:scale(1.4)">
+                        do_not_disturb_on
+                    </span>
+                @endif
+            </mc:flag>
+        </div>
+    </li>
     <li class="selfclear ps-3">
         <div class="unit size1of2 text-nowrap">
             <span>{{ trans('messages.plan.feature.embedded_form') }}</span>

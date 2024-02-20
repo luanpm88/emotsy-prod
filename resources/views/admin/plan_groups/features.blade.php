@@ -36,6 +36,21 @@
                     <h2>{{ trans('messages.plan_group.features') }}</h2>
 
                     <table class="table" style="width:auto">
+                        {{-- @include('admin.plan_groups.featuresControl', [
+                            'type' => 'boolean',
+                            'name' => 'seats',
+                        ]) --}}
+
+                        {{-- @include('admin.plan_groups.featuresControl', [
+                            'type' => 'boolean',
+                            'name' => 'custom_user_permissions',
+                        ]) --}}
+                        
+                        @include('admin.plan_groups.featuresControl', [
+                            'type' => 'boolean',
+                            'name' => 'content_approval',
+                        ])
+
                         @include('admin.plan_groups.featuresControl', [
                             'type' => 'boolean',
                             'name' => 'embedded_form',
