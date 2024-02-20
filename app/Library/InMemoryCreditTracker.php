@@ -27,7 +27,7 @@ class InMemoryCreditTracker
     public function getRemainingCredits()
     {
         $credits = Cache::get($this->resourceKey);
-        if (empty(trim($credits))) {
+        if (empty($credits)) {
             return self::ZERO;
         }
 
