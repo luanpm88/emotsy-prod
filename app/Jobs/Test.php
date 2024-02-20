@@ -35,6 +35,10 @@ class Test implements ShouldQueue
      */
     public function handle()
     {
-        sleep(10);
+        echo "Hey, I'm a hello job";
+
+        sleep(1);
+
+        return;
     }
 }
