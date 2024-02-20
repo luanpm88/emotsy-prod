@@ -261,7 +261,7 @@ class SendMessage implements ShouldQueue
 
             } else {
                 $logger->warning(sprintf("Delay [%s] for 60 seconds (no batch): %s", $email, $ex->getMessage()));
-                $this->release(60);
+                $this->release(600); // should be only 60 seconds
             }
 
             //} catch (OutOfCredits $ex) {
