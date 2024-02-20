@@ -105,13 +105,13 @@
                     </span>
                 </div>
             </div>
-            @if (\Gate::allows('create', new Acelle\Model\Form()))
-                <div class="text-end">
+            <div class="text-end">
+                @if (Auth::user()->customer->can('create', Acelle\Model\Form::class))
                     <a href="{{ action('FormController@create') }}" role="button" class="btn btn-secondary">
                         <span class="material-symbols-rounded">add</span> {{ trans('messages.form.create') }}
                     </a>
-                </div>
-            @endif
+                @endif
+            </div>
         </div>
 
         <div id="FormsIndexContent" class="pml-table-container">

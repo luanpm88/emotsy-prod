@@ -92,7 +92,7 @@
 				</td>
 				<td class="text-end text-nowrap pe-0">
 					<div class="d-flex align-items-center text-nowrap justify-content-end">
-                        @if (Auth::user()->customer->can('approve', $campaign))
+                        @if ($campaign->isWaitForApproval() && Auth::user()->customer->can('approve', $campaign))
 							<a list-action="approve" href="{{ action('CampaignController@approvePreview', $campaign->uid) }}" role="button"
 								class="btn btn-primary btn-icon ms-1">
                                 <span class="material-symbols-rounded">task_alt</span>

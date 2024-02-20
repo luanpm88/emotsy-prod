@@ -129,4 +129,11 @@ class MailListPolicy
 
         return $can && $permission;
     }
+    
+    public function embedded_form(User $user, MailList $item)
+    {
+        return $user->customer &&
+            $user->customer->getNewOrActiveGeneralSubscription() && 
+            $user->customer->getNewOrActiveGeneralSubscription()->planGeneral->getFeature('embedded_form');
+    }
 }

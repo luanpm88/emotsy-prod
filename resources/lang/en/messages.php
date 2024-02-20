@@ -3589,7 +3589,7 @@
   'plan.feature.grow_audience' => 'Grow your audience',
   'plan.feature.embedded_form' => 'Embedded forms',
   'plan.feature.popup' => 'Pop-ups',
-  'plan.feature.segmentation' => 'Segmentation',
+  'plan.feature.segmentation' => 'Segments per list',
   'plan.feature.subscriber_management' => 'Subscriber management',
   'plan.feature.amazing_email_campaign' => 'Send amazing email campaigns',
   'plan.feature.drag_drop_builder' => 'Drag & Drop Newsletter editor',
@@ -3609,7 +3609,7 @@
   'plan.feature.api_documentation' => 'API documentation',
   'plan.feature.template_integration' => 'Template integrations',
   'plan.feature.optimize_for_audiences' => 'Optimize for audiences',
-  'plan.feature.custom_variables' => 'Custom variables',
+  'plan.feature.custom_variables' => 'Custom list fields',
   'plan.feature.ab_testing' => 'Email A/B split testing',
   'plan.feature.preview_test_email' => 'Preview and send test emails',
   'plan.feature.dynamic_email_content' => 'Dynamic email content',
@@ -3626,4 +3626,5 @@
   'plan.feature.general' => 'General',
   'plan_group.features' => 'Features',
   'subscriber.tag_removed' => 'Tag was removed successfully',
+  'plan.feature_limit' => 'Feature limit exceeded in this plan; please upgrade to a higher plan/tier.',
 ) ?>

@@ -226,7 +226,7 @@
                     // add custom css
                     this.addCustomCss('{{ url('/core/css/builder-edit.css') }}');
 
-                    @if (Auth::user()->customer->getChatgptApiKey())
+                    @if (Auth::user()->customer->getNewOrActiveGeneralSubscription()->planGeneral->getFeature('ai_writing') && Auth::user()->customer->getChatgptApiKey())
                         // chatGPT plugin
                         TemplateBuilderEdit.chatUI.init();
                     @endif
@@ -243,10 +243,12 @@
                 group: '{{ trans('builder.widget.e_commerce') }}',
             });
 
-            // Rss widget
-            editor.addWidget(new RssWidget(), {
-                index: 3
-            });
+            @if (Auth::user()->customer->getNewOrActiveGeneralSubscription()->planGeneral->getFeature('rss_campaigns'))
+                // Rss widget
+                editor.addWidget(new RssWidget(), {
+                    index: 3
+                });
+            @endif
           
             editor.init();
 

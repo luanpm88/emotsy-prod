@@ -24,10 +24,12 @@
 		'menu' => 'api',
 	])
 
-	<h4 class="text-semibold">{{ trans('messages.api_docs') }}</h4>
+	@if (Auth::user()->customer->getNewOrActiveGeneralSubscription()->planGeneral->getFeature('api_documentation'))
+		<h4 class="text-semibold">{{ trans('messages.api_docs') }}</h4>
 
-	<p style="margin-bottom: 30px"><code style="font-size: 18px">
-    <a target="_blank" href="{{ action("Controller@docsApiV1") }}">{{ action("Controller@docsApiV1") }} <span class="material-symbols-rounded">link</span></a></code></p>
+		<p style="margin-bottom: 30px"><code style="font-size: 18px">
+		<a target="_blank" href="{{ action("Controller@docsApiV1") }}">{{ action("Controller@docsApiV1") }} <span class="material-symbols-rounded">link</span></a></code></p>
+	@endif
 
 	<h4 class="text-semibold">{{ trans('messages.api_endpoint') }}</h4>
 

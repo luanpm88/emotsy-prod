@@ -38,6 +38,11 @@ class SubscriberController extends Controller
     {
         $list = MailList::findByUid($request->list_uid);
 
+        // authorize
+        if (\Gate::denies('list', \Acelle\Model\Subscriber::class)) {
+            return $this->planFeatureLimitted();
+        }
+
         if (!$list) {
             return redirect()->action('SubscriberController@noList');
         }

@@ -14,7 +14,7 @@
         <p>{{ trans('messages.preheader.intro') }}</p>
         
             <div class="form-group control-textarea {{ $errors->has('preheader') ? ' has-error' : '' }}">
-                @if (Auth::user()->customer->getChatgptApiKey())
+                @if (Auth::user()->customer->getNewOrActiveGeneralSubscription()->planGeneral->getFeature('ai_writing') && Auth::user()->customer->getChatgptApiKey())
                     @include('chat._preheader', [
                         'name' => 'preheader',
                         'value' => $campaign->preheader,

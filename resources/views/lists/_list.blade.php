@@ -79,11 +79,13 @@
                                         </a>
                                     </li>
                                 @endif
-                                <li>
-                                    <a class="dropdown-item" href="{{ action('MailListController@embeddedForm', $list->uid) }}">
-                                        <span class="material-symbols-rounded me-2">dns</span> {{ trans('messages.Embedded_form') }}
-                                    </a>
-                                </li>
+                                @if (Auth::user()->customer->can('embedded_form', $list))
+                                    <li>
+                                        <a class="dropdown-item" href="{{ action('MailListController@embeddedForm', $list->uid) }}">
+                                            <span class="material-symbols-rounded me-2">dns</span> {{ trans('messages.Embedded_form') }}
+                                        </a>
+                                    </li>
+                                @endif
                                 <li>
                                     <a class="dropdown-item" href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'sign_up_form']) }}">
                                         <span class="material-symbols-rounded me-2">web</span> {{ trans('messages.custom_forms_and_emails') }}

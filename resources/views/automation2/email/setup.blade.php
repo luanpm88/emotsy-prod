@@ -16,7 +16,7 @@
         <div class="row">
             <div class="col-md-6">          
                      
-                @if (Auth::user()->customer->getChatgptApiKey())
+                @if (Auth::user()->customer->getNewOrActiveGeneralSubscription()->planGeneral->getFeature('ai_writing') && Auth::user()->customer->getChatgptApiKey())
                     @include('chat._email_subject', [
                         'name' => 'subject',
                         'value' => $email->subject,

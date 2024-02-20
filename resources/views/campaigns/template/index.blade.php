@@ -60,7 +60,7 @@
                             ]) }}</p>
 
                             <p class="mt-20">
-                                @if (in_array(Acelle\Model\Setting::get('builder'), ['both','pro']) && $campaign->template->builder)
+                                @if (in_array(Acelle\Model\Setting::getBuilderConfig(), ['both','pro']) && $campaign->template->builder)
                                     <a href="{{ action('CampaignController@templateEdit', [
                                         'uid' => $campaign->uid,
                                         'version_b' => request()->version_b,
@@ -68,7 +68,7 @@
                                         {{ trans('messages.campaign.email_builder_pro') }}
                                     </a>
                                 @endif
-                                @if (in_array(Acelle\Model\Setting::get('builder'), ['both','classic']))
+                                @if (in_array(Acelle\Model\Setting::getBuilderConfig(), ['both','classic']))
                                     <a href="{{ action('CampaignController@builderClassic', [
                                         'uid' => $campaign->uid,
                                         'version_b' => request()->version_b,

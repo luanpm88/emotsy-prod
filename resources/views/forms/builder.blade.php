@@ -131,7 +131,7 @@
                             $('#nav-profile-tab').remove();
                         }
 
-                        @if (Auth::user()->customer->getChatgptApiKey())
+                        @if (Auth::user()->customer->getNewOrActiveGeneralSubscription()->planGeneral->getFeature('ai_writing') && Auth::user()->customer->getChatgptApiKey())
                             // chatGPT plugin
                             TemplateBuilderEdit.chatUI.init();
                         @endif

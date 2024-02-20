@@ -351,7 +351,7 @@ Email support
             </mc:flag>
         </div>
     </li>
-    <li class="selfclear ps-3">
+    {{-- <li class="selfclear ps-3">
         <div class="unit size1of2 text-nowrap">
             <span>{{ trans('messages.plan.feature.custom_html_builder') }}</span>
         </div>
@@ -368,7 +368,7 @@ Email support
                 @endif
             </mc:flag>
         </div>
-    </li>
+    </li> --}}
     <li class="selfclear ps-3">
         <div class="unit size1of2 text-nowrap">
             <span>{{ trans('messages.plan.feature.ai_writing') }}</span>

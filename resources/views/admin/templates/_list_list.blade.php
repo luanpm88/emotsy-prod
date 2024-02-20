@@ -63,12 +63,12 @@
 
                 <td class="text-end pe-0">
                     @if (Auth::user()->admin->can('update', $template))
-                        @if (in_array(Acelle\Model\Setting::get('builder'), ['both','pro']) && $template->builder)
+                        @if (in_array(Acelle\Model\Setting::getBuilderConfig(), ['both','pro']) && $template->builder)
                             <a href="{{ action('Admin\TemplateController@builderEdit', $template->uid) }}" role="button" class="btn btn-primary btn-icon template-compose">
                                 {{ trans('messages.template.pro_builder') }}
                             </a>
                         @endif
-                        @if (in_array(Acelle\Model\Setting::get('builder'), ['both','classic']))
+                        @if (in_array(Acelle\Model\Setting::getBuilderConfig(), ['both','classic']))
                             <a href="{{ action('Admin\TemplateController@edit', $template->uid) }}" role="button" class="btn btn-secondary btn-icon template-compose-classic">
                                 {{ trans('messages.template.classic_builder') }}
                             </a>

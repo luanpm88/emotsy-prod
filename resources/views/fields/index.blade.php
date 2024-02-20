@@ -159,6 +159,9 @@
 	</form>
 
 	<script>
+		var current_fields = {{ $list->fields()->count() }};
+		var max_fields = {{ Auth::user()->customer->getNewOrActiveGeneralSubscription()->planGeneral->getFeature('custom_variables') }} + 1;
+
 		$(function() {
 			// List fields
 			// ------------------------------
@@ -167,6 +170,13 @@
 				var type_name = $(this).attr("type_name");
 				var sample = $("."+type_name+"_sample ");
 				var sample_url = $(this).attr("sample-url");
+
+				if (current_fields >= max_fields) {
+					new Dialog('alert', {
+						message: '{{ trans('messages.plan.feature_limit') }}'
+					});
+					return;
+				}
 
 				// ajax update custom sort
 				$.ajax({
@@ -185,6 +195,8 @@
 					$('.field-list').append($('<div>').html(msg).find("table tbody").html());
 
 					initJs($('.field-list tr').last());
+
+					current_fields += 1;
 				});
 			});
 			$(document).on("click", ".remove-not-saved-field", function(e) {

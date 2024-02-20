@@ -60,7 +60,7 @@
 					@include('campaigns.ab._variables')
 					@include('campaigns.ab._email_subject')
 				@else
-					@if (Acelle\Model\Plugin::isInstalled('acelle/chatgpt') && Acelle\Model\Plugin::getByName('acelle/chatgpt')->isActive())
+					@if (Auth::user()->customer->getNewOrActiveGeneralSubscription()->planGeneral->getFeature('ai_writing') && Auth::user()->customer->getChatgptApiKey())
 						@include('chat._email_subject', [
 							'name' => 'subject',
 							'label' => trans('messages._email_subject'),

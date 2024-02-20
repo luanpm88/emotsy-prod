@@ -10,6 +10,11 @@ class SubscriberPolicy
 {
     use HandlesAuthorization;
 
+    public function list(User $user)
+    {
+        return $user->customer->getNewOrActiveGeneralSubscription()->planGeneral->getFeature('subscriber_management');
+    }
+
     public function read(User $user, Subscriber $item)
     {
         $customer = $user->customer;

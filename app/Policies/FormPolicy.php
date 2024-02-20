@@ -25,6 +25,11 @@ class FormPolicy
             return false;
         }
 
+        // max features
+        if ($user->customer->forms()->count() > $user->customer->getNewOrActiveGeneralSubscription()->planGeneral->getFeature('popup')) {
+            return false;
+        }
+
         return true && !$user->isReadOnly();
     }
 

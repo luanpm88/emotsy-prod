@@ -32,6 +32,11 @@ class TemplatePolicy
                 break;
             case 'customer':
                 $can = true && !$user->isReadOnly();
+
+                if (!$user->customer->getNewOrActiveGeneralSubscription()->planGeneral->getFeature('create_own_template')) {
+                    $can = $can && false;
+                }
+                
                 break;
         }
 
