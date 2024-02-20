@@ -382,7 +382,7 @@ class PlanGeneral extends Plan implements PlanInterface
                 'rich_text_editor' => 1,
                 'image_library' => 1, // none
                 'mobile_friendly_newsletter' => 1, // none
-                'newsletter_templates' => 1, // none
+                'newsletter_templates' => 1, // changed
                 'create_own_template' => 0,
                 'remove_logo' => 0,
                 'custom_html_builder' => 0,
@@ -395,15 +395,17 @@ class PlanGeneral extends Plan implements PlanInterface
                 'template_integration' => 0, // none
                 'custom_variables' => 3,
                 'ab_testing' => 1,
+
                 'preview_test_email' => 1,
                 'dynamic_email_content' => 0,
                 'unsubscribe_page_builder' => 0,
                 'list_growth_reporting' => 1,
                 'individual_subscriber_profile' => 1,
-                'automation_real_time_report' => 1,
-                'knowledge_base' => 1,
-                'email_support' => 30,
-                '24_7_chat' => 30,
+                'automation_real_time_report' => 1, // none
+                'knowledge_base' => 1, // none
+
+                'email_support' => 30, // manually
+                '24_7_chat' => 30, // manually
             ],
         ]);
 

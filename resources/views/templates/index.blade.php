@@ -18,6 +18,7 @@
                 </h1> 
             </div>
             <div class="ms-auto pt-5">                
+                
                 <a href="{{ action('TemplateController@index', [
                     'from' => 'mine',
                     'view' => 'list',
@@ -27,16 +28,18 @@
                     <span class="material-symbols-rounded me-1">portrait</span>
                     {{ trans('messages.my_templates') }}
                 </a>
-            
-                <a href="{{ action('TemplateController@index', [
-                    'from' => 'gallery',
-                    'view' => 'grid',
-                ]) }}"
-                    class="btn btn-light px-3 py-2 fw-600 {{ request()->from == 'gallery' ? 'focus' : '' }}"
-                >
-                    <span class="material-symbols-rounded me-1">collections</span>
-                    {{ trans('messages.base_template_gallery') }}
-                </a>
+                
+                @if (Auth::user()->customer->getNewOrActiveGeneralSubscription()->planGeneral->getFeature('newsletter_templates'))
+                    <a href="{{ action('TemplateController@index', [
+                        'from' => 'gallery',
+                        'view' => 'grid',
+                    ]) }}"
+                        class="btn btn-light px-3 py-2 fw-600 {{ request()->from == 'gallery' ? 'focus' : '' }}"
+                    >
+                        <span class="material-symbols-rounded me-1">collections</span>
+                        {{ trans('messages.base_template_gallery') }}
+                    </a>
+                @endif
             </div>
         </div>
                            

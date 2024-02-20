@@ -239,18 +239,20 @@
                 @else
                     <br />
                     <div class="text-end">
-                        <button
-                            type="button"
-                            href="#preview" class="btn btn-default me-1 preview-as-button"
-                        >
-                            {{ trans('messages.campaign.preview_as') }} <span class="material-symbols-rounded ms-1">contact_mail</span>
-                        </button>
-                        <span
-                            onclick="popupwindow('{{ action('CampaignController@preview', $campaign->uid) }}', `{{ $campaign->name }}`, 800)"
-                            href="#preview" class="btn btn-secondary me-1" data-uid="{{ $campaign->uid }}">
-                            {{ trans('messages.preview') }} <span class="material-symbols-rounded">visibility</span>
-                        </span>
-                        <button @if(config('custom.japan') && !Acelle\Model\Setting::get('license')) license-required @endif class="btn btn-secondary me-1 send-a-test-email-link" data-uid="{{ $campaign->uid }}">{{ trans('messages.send_a_test_email') }} <i class="icon-envelop3 ml-5"></i> </button>
+                        @if (Auth::user()->customer->getNewOrActiveGeneralSubscription()->planGeneral->getFeature('preview_test_email'))
+                            <button
+                                type="button"
+                                href="#preview" class="btn btn-default me-1 preview-as-button"
+                            >
+                                {{ trans('messages.campaign.preview_as') }} <span class="material-symbols-rounded ms-1">contact_mail</span>
+                            </button>
+                            <span
+                                onclick="popupwindow('{{ action('CampaignController@preview', $campaign->uid) }}', `{{ $campaign->name }}`, 800)"
+                                href="#preview" class="btn btn-secondary me-1" data-uid="{{ $campaign->uid }}">
+                                {{ trans('messages.preview') }} <span class="material-symbols-rounded">visibility</span>
+                            </span>
+                            <button @if(config('custom.japan') && !Acelle\Model\Setting::get('license')) license-required @endif class="btn btn-secondary me-1 send-a-test-email-link" data-uid="{{ $campaign->uid }}">{{ trans('messages.send_a_test_email') }} <i class="icon-envelop3 ml-5"></i> </button>
+                        @endif
                         <button @if(config('custom.japan') && !Acelle\Model\Setting::get('license')) license-required @endif class="btn btn-primary">{{ trans('messages.campaign.all_done') }} <i class="icon-paperplane ml-5"></i> </button>
                     </div>
                 @endif
