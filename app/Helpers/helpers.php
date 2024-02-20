@@ -1168,7 +1168,7 @@ function getFullCodeByLanguageCode($languageCode)
 
 function getDefaultLogoUrl($type)
 {
-    if (\Auth::user() && \Auth::user()->customer && \Auth::user()->customer->getNewOrActiveGeneralSubscription()->planGeneral->getFeature('drag_drop_builder')) {
+    if (\Auth::user() && \Auth::user()->customer && \Auth::user()->customer->getNewOrActiveGeneralSubscription()->planGeneral->getFeature('remove_logo')) {
         return "";
     }
 
@@ -1187,7 +1187,7 @@ function getDefaultLogoUrl($type)
 
 function getSiteLogoUrl($type)
 {
-    if (\Auth::user() && \Auth::user()->customer && \Auth::user()->customer->getNewOrActiveGeneralSubscription()->planGeneral->getFeature('drag_drop_builder')) {
+    if (\Auth::user() && \Auth::user()->customer && \Auth::user()->customer->getNewOrActiveGeneralSubscription()->planGeneral->getFeature('remove_logo')) {
         return "";
     }
 
