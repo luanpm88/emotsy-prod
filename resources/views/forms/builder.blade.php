@@ -131,7 +131,7 @@
                             $('#nav-profile-tab').remove();
                         }
 
-                        @if (Acelle\Model\Plugin::isInstalled('acelle/chatgpt') && Acelle\Model\Plugin::getByName('acelle/chatgpt')->isActive())
+                        @if (Auth::user()->customer->getNewOrActiveGeneralSubscription()->planGeneral->getFeature('ai_writing') && Acelle\Model\Plugin::isInstalled('acelle/chatgpt') && Acelle\Model\Plugin::getByName('acelle/chatgpt')->isActive())
                             // chatGPT plugin
                             TemplateBuilderEdit.chatUI.init();
                         @endif

@@ -14,7 +14,7 @@
         <p>{{ trans('messages.preheader.intro') }}</p>
 
         <div class="form-group control-textarea {{ $errors->has('preheader') ? ' has-error' : '' }}">
-            @if (Acelle\Model\Plugin::isInstalled('acelle/chatgpt') && Acelle\Model\Plugin::getByName('acelle/chatgpt')->isActive())
+            @if (Auth::user()->customer->getNewOrActiveGeneralSubscription()->planGeneral->getFeature('ai_writing') && Acelle\Model\Plugin::isInstalled('acelle/chatgpt') && Acelle\Model\Plugin::getByName('acelle/chatgpt')->isActive())
                 @include('chat._preheader', [
                     'name' => 'preheader',
                     'value' => $email->preheader,

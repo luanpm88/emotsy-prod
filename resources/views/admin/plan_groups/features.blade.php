@@ -106,10 +106,10 @@
                             'name' => 'remove_logo',
                         ])
 
-                        @include('admin.plan_groups.featuresControl', [
+                        {{-- @include('admin.plan_groups.featuresControl', [
                             'type' => 'boolean',
                             'name' => 'custom_html_builder',
-                        ])
+                        ]) --}}
 
 
                         @include('admin.plan_groups.featuresControl', [
