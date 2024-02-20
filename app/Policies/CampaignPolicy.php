@@ -279,6 +279,11 @@ class CampaignPolicy
     public function send_test_email(User $user, Campaign $item)
     {
         $customer = $user->customer;
+
+        if ($user->customer->getNewOrActiveGeneralSubscription()->planGeneral->getFeature('preview_test_email')) {
+            return false;
+        }
+
         return $item->customer_id == $customer->id && in_array($item->status, [
             Campaign::STATUS_QUEUED,
             Campaign::STATUS_SENDING,

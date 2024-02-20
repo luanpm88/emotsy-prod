@@ -3596,7 +3596,7 @@
   'plan.feature.rich_text_editor' => 'Rich-text newsletter editor',
   'plan.feature.image_library' => 'Image library',
   'plan.feature.mobile_friendly_newsletter' => 'Mobile-friendly newsletters',
-  'plan.feature.newsletter_templates' => 'Newsletter templates',
+  'plan.feature.newsletter_templates' => 'Template gallery',
   'plan.feature.create_own_template' => 'Create your own newsletter template',
   'plan.feature.remove_logo' => 'Remove Emotsy Logo',
   'plan.feature.custom_html_builder' => 'Custom HTML newsletter editor',

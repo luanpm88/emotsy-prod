@@ -23,9 +23,11 @@
 
     <h2 class="text-primary my-4">{{ trans('messages.list_performance') }}</h2>
 
-    @include("lists._stat")
+    @if (Auth::user()->customer->getNewOrActiveGeneralSubscription()->planGeneral->getFeature('list_growth_reporting'))
+        @include("lists._stat")
 
-    <h3 class="text-semibold text-primary">{{ trans('messages.list_growth') }}</h3>
+        <h3 class="text-semibold text-primary">{{ trans('messages.list_growth') }}</h3>
 
-    @include("lists._growth_chart")
+        @include("lists._growth_chart")
+    @endif
 @endsection

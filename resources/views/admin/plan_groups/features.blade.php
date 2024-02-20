@@ -192,11 +192,6 @@
                         ])
 
                         @include('admin.plan_groups.featuresControl', [
-                            'type' => 'number',
-                            'name' => 'knowledge_base',
-                        ])
-
-                        @include('admin.plan_groups.featuresControl', [
                             'type' => 'boolean',
                             'name' => 'automation_real_time_report',
                         ])
