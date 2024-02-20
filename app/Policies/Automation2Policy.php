@@ -16,11 +16,19 @@ class Automation2Policy
             return false;
         }
 
+        if (!$user->customer->getNewOrActiveGeneralSubscription()->planGeneral->getFeature('automation_builder')) {
+            return false;
+        }
+
         return true;
     }
 
     public function create(User $user, Automation2 $automation)
     {
+        if (!$user->customer->getNewOrActiveGeneralSubscription()->planGeneral->getFeature('automation_builder')) {
+            return false;
+        }
+
         $customer = $user->customer;
         $max = get_tmp_quota($customer, 'automation_max');
 
