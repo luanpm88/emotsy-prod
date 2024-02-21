@@ -84,11 +84,13 @@
                         @include('admin.plan_groups.featuresControl', [
                             'type' => 'boolean',
                             'name' => 'image_library',
+                            'beta' => true,
                         ])
 
                         @include('admin.plan_groups.featuresControl', [
                             'type' => 'boolean',
                             'name' => 'mobile_friendly_newsletter',
+                            'beta' => true,
                         ])
 
                         @include('admin.plan_groups.featuresControl', [
@@ -146,6 +148,7 @@
                         @include('admin.plan_groups.featuresControl', [
                             'type' => 'boolean',
                             'name' => 'template_integration',
+                            'beta' => true,
                         ])
 
                         @include('admin.plan_groups.featuresControl', [
@@ -167,6 +170,7 @@
                         @include('admin.plan_groups.featuresControl', [
                             'type' => 'boolean',
                             'name' => 'dynamic_email_content',
+                            'beta' => true,
                         ])
 
                         @include('admin.plan_groups.featuresControl', [
@@ -189,6 +193,7 @@
                         @include('admin.plan_groups.featuresControl', [
                             'type' => 'boolean',
                             'name' => 'automation_real_time_report',
+                            'beta' => true,
                         ])
 
                         @include('admin.plan_groups.featuresControl', [
@@ -199,6 +204,7 @@
                         @include('admin.plan_groups.featuresControl', [
                             'type' => 'boolean',
                             'name' => 'knowledge_base',
+                            'beta' => true,
                         ])
 
                         @include('admin.plan_groups.featuresControl', [
