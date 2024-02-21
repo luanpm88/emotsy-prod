@@ -3621,7 +3621,7 @@
   'plan.feature.get_support' => 'Get support',
   'plan.feature.knowledge_base' => 'Knowledge base',
   'plan.feature.email_support' => 'Email support',
-  'plan.feature.24_7_chat' => '24/7 Live chat support',
+  'plan.feature.24_7_chat' => 'Live chat support',
   'plan.features' => 'Features',
   'plan.feature.general' => 'General',
   'plan_group.features' => 'Features',

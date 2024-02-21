@@ -202,7 +202,7 @@
                         ])
 
                         @include('admin.plan_groups.featuresControl', [
-                            'type' => 'number',
+                            'type' => 'boolean',
                             'name' => 'email_support',
                         ])
 

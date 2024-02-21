@@ -388,15 +388,15 @@ class PlanGeneral extends Plan implements PlanInterface
                 'custom_html_builder' => 0,
                 'ai_writing' => 0,
                 'automation_builder' => 1,
-                'multiple_automation_trigger' => 0, // none
-                'automation_step' => 10, // none
-                'rss_campaigns' => 0, // none
+                'multiple_automation_trigger' => 0, // .. API Automation Trigger
+                'automation_step' => 10, // ..
+                'rss_campaigns' => 0,
                 'api_documentation' => 1,
-                'template_integration' => 0, // none
+                'template_integration' => 1, // none
                 'custom_variables' => 3,
                 'ab_testing' => 1,
                 'preview_test_email' => 1,
-                'dynamic_email_content' => 0, // none
+                'dynamic_email_content' => 1, // none
 
                 'unsubscribe_page_builder' => 0,
                 'list_growth_reporting' => 1,
@@ -404,8 +404,8 @@ class PlanGeneral extends Plan implements PlanInterface
                 'automation_real_time_report' => 1, // none
                 'knowledge_base' => 1, // none
 
-                'email_support' => 30, // manually
-                '24_7_chat' => 30, // manually
+                'email_support' => 1, // manually on/off
+                '24_7_chat' => 1, // manually on/off
             ],
         ]);
 
