@@ -445,3 +445,69 @@ function execute_with_limits(array $rateTrackers, array $creditTrackers, Closure
         throw $exception;
     }
 }
+
+function read_csv($file, $headerLine = false)
+{
+    if (!file_exists($file)) {
+        throw new \Exception("File {$file} not found");
+    }
+
+    try {
+        // Fix the problem with MAC OS's line endings
+        if (!ini_get('auto_detect_line_endings')) {
+            ini_set('auto_detect_line_endings', '1');
+        }
+
+        // return false or an encoding name
+        $encoding = StringHelper::detectEncoding($file);
+
+        if ($encoding == false) {
+            // Cannot detect file's encoding
+        } elseif ($encoding != 'UTF-8') {
+            // Convert from {$encoding} to UTF-8";
+            StringHelper::toUTF8($file, $encoding);
+        } else {
+            // File encoding is UTF-8
+            StringHelper::checkAndRemoveUTF8BOM($file);
+        }
+
+        // Run this method anyway
+        // to make sure mb_convert_encoding($content, 'UTF-8', 'UTF-8') is always called
+        // which helps resolve the issue of
+        //     "Error executing job. SQLSTATE[HY000]: General error: 1366 Incorrect string value: '\x83??s k...' for column 'company' at row 2562 (SQL: insert into `dlk__tmp_subscribers..."
+        StringHelper::toUTF8($file, 'UTF-8');
+
+        // Read CSV files
+        $reader = \League\Csv\Reader::createFromPath($file);
+        if ($headerLine) {
+            $reader->setHeaderOffset(0);
+            $headers = $reader->getHeader();
+
+            // Make sure the headers are present
+            // In case of duplicate column headers, an exception shall be thrown by League
+            foreach ($headers as $index => $header) {
+                if (is_null($header) || empty(trim($header))) {
+                    throw new \Exception(trans('messages.list.import.error.header_empty', ['index' => $index]));
+                }
+            }
+
+            // Remove leading/trailing spaces in headers, keep letter case
+            // get the headers, using array_filter to strip empty/null header
+            // to avoid the error of "InvalidArgumentException: Use a flat array with unique string values in /home/nghi/mailixa/vendor/league/csv/src/Reader.php:305"
+            $headers = array_map(function ($r) {
+                return trim($r);
+            }, $headers);
+
+            $results = $reader->getRecords($headers);
+        } else {
+            $headers = null;
+            $results = $reader->getRecords();
+        }
+
+        return [$headers, iterator_count($results), $results];
+    } catch (\Exception $ex) {
+        // @todo: translation here
+        // Common errors that will be catched: duplicate column, empty column
+        throw new \Exception('Invalid headers. Original error message is: '.$ex->getMessage());
+    }
+}

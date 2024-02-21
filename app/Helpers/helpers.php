@@ -78,7 +78,7 @@ function each_batch($array, $batchSize, $skipHeader, $callback)
             continue;
         }
 
-        if ($i % $batchSize == 0) {
+        if ($i % $batchSize == 0 && !empty($batch)) { // the very first time in loop: batch is empty
             $callback($batch);
             $batch = [];
         }
