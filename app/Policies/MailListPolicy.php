@@ -134,6 +134,6 @@ class MailListPolicy
     {
         return $user->customer &&
             $user->customer->getNewOrActiveGeneralSubscription() && 
-            $user->customer->getNewOrActiveGeneralSubscription()->planGeneral->getFeature('preview_test_email');
+            $user->customer->getNewOrActiveGeneralSubscription()->planGeneral->getFeature('embedded_form');
     }
 }

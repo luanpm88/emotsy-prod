@@ -382,7 +382,7 @@ class PlanGeneral extends Plan implements PlanInterface
                 'rich_text_editor' => 1,
                 'image_library' => 1, // none
                 'mobile_friendly_newsletter' => 1, // none
-                'newsletter_templates' => 1, // changed
+                'newsletter_templates' => 1,
                 'create_own_template' => 0,
                 'remove_logo' => 0,
                 'custom_html_builder' => 0,
@@ -397,7 +397,7 @@ class PlanGeneral extends Plan implements PlanInterface
                 'ab_testing' => 1,
                 'preview_test_email' => 1,
                 'dynamic_email_content' => 0, // none
-                
+
                 'unsubscribe_page_builder' => 0,
                 'list_growth_reporting' => 1,
                 'individual_subscriber_profile' => 1,
