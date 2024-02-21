@@ -11,6 +11,7 @@ use Illuminate\Queue\SerializesModels;
 use Acelle\Model\Campaign;
 use Acelle\Library\Exception\RateLimitExceeded;
 use Exception;
+use Carbon\Carbon;
 
 class Delay implements ShouldQueue
 {
@@ -91,7 +92,15 @@ class Delay implements ShouldQueue
 
         } catch (RateLimitExceeded $ex) {
 
-            $this->campaign->logger()->warning(sprintf("Delay for [ANOTHER] %s seconds: %s", $this->wait, $ex->getMessage()));
+            // Record last activity. Otherwise, this job shall be erase when running Campaign::checkAndForceRerunCampaigns()
+            $this->campaign->debug(function ($info) {
+                $info['last_activity_at'] = Carbon::now()->toString();
+
+                // Must return;
+                return $info;
+            });
+
+            $this->campaign->logger()->warning(sprintf("Delay for [ANOTHER] %s seconds! %s", $this->wait, $ex->getMessage()));
 
             $this->release($this->wait);
 
