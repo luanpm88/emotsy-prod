@@ -128,12 +128,20 @@ class JobMonitor extends Model
 
     public function cancel()
     {
-        $this->cancelJob(); // if any
-        $this->cancelBatch(); // if any
+        try {
+            $this->cancelJob(); // if any
+            $this->cancelBatch(); // if any
+        } catch (\Exception $ex) {
+            // In case of any issue like:
+            // "Your serialized closure might have been modified or it's unsafe to be unserialized"
+            // occuring when executing Bus::findBatch($id)
+            // Laravel\\SerializableClosure\\SerializableClosure->__unserialize()
+        } finally {
+            // For now, do not store cancelled job monitor
+            // So, just delete the record
+            $this->delete();
+        }
 
-        // For now, do not store cancelled job monitor
-        // So, just delete the record
-        $this->delete();
     }
 
     private function cancelJob()
