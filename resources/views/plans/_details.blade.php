@@ -720,7 +720,17 @@ Email support
             <span>{{ trans('messages.plan.feature.email_support') }}</span>
         </div>
         <div class="lastUnit size1of2 ms-auto">
-            <mc:flag>{{ $plan->getFeature('email_support') }}</mc:flag>
+            <mc:flag>
+                @if ($plan->getFeature('email_support'))
+                    <span class="material-icons-outlined text-success" style="transform:scale(1.4)">
+                        task_alt
+                    </span>
+                @else
+                    <span class="material-icons-outlined text-danger" style="transform:scale(1.4)">
+                        do_not_disturb_on
+                    </span>
+                @endif
+            </mc:flag>
         </div>
     </li>
 
@@ -729,7 +739,17 @@ Email support
             <span>{{ trans('messages.plan.feature.24_7_chat') }}</span>
         </div>
         <div class="lastUnit size1of2 ms-auto">
-            <mc:flag>{{ $plan->getFeature('24_7_chat') }}</mc:flag>
+            <mc:flag>
+                @if ($plan->getFeature('24_7_chat'))
+                    <span class="material-icons-outlined text-success" style="transform:scale(1.4)">
+                        task_alt
+                    </span>
+                @else
+                    <span class="material-icons-outlined text-danger" style="transform:scale(1.4)">
+                        do_not_disturb_on
+                    </span>
+                @endif
+            </mc:flag>
         </div>
     </li>
 </ul>
