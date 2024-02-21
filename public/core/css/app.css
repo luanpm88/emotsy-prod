@@ -8102,6 +8102,7 @@ label.checker .checker-symbol::before {
     box-shadow: 1px 1px 1px rgba(0,0,0,0.1);
     transition: all 0.2s ease-in-out;
     cursor: pointer;
+    color: transparent;
 }
 label.checker .checker-symbol::after {
     content: '.';
@@ -8118,6 +8119,7 @@ label.checker .checker-symbol::after {
     transition: all 0.2s ease-in-out;
     box-shadow: 1px 1px 1px rgba(0,0,0,0.1);
     cursor: pointer;
+    color: transparent;
 }
 label.checker input:checked ~ .checker-symbol::before {
     background-color: #2fd9a1;
