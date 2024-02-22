@@ -79,7 +79,7 @@ class CampaignPolicy
                 $can = $can && $permission;
 
                 // plan feature
-                if ($user->customer->getNewOrActiveGeneralSubscription()->planGeneral->getFeature('content_approval')) {
+                if (!$user->customer->getNewOrActiveGeneralSubscription()->planGeneral->getFeature('content_approval')) {
                     $can = true;
                 }
 
