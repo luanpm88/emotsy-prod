@@ -198,7 +198,7 @@ class SendMessage implements ShouldQueue
                 }
 
                 $prepareDiff = ($finishPreparingAt - $startAt) / 1000;
-                $prepareAvg = $info['send_message_prepare_avg_time'];
+                $prepareAvg = $info['send_message_prepare_avg_time'] ?? null;
                 if (is_null($prepareAvg)) {
                     $info['send_message_prepare_avg_time'] = $prepareDiff;
                 } else {
