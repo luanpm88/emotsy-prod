@@ -436,7 +436,7 @@ class BaseCampaign extends Model
         with_cache_lock($lockKey, function () use (&$result, $callback, $key) {
             $info = Cache::get($key, $default = [
                 'start_at' => null,
-                'last_activity_at' => null,
+                'last_activity_at' => Carbon::now()->toString(),
                 'finish_at' => null,
                 'total_time' => null,
                 'last_message_sent_at' => null,
@@ -445,6 +445,7 @@ class BaseCampaign extends Model
                 'send_message_total_time' => 0,
                 'send_message_avg_time' => null,
                 'send_message_prepare_avg_time' => null,
+                'send_message_lock_avg_time' => null,
                 'send_message_delivery_avg_time' => null,
                 'send_message_min_time' => null,
                 'send_message_max_time' => null,

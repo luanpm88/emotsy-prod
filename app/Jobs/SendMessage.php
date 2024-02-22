@@ -153,10 +153,13 @@ class SendMessage implements ShouldQueue
             // DEBUG
             $finishPreparingAt = Carbon::now()->getTimestampMs();
             $finishDeliveryAt = null;
+            $getLockAt = null;
             // END DEBUG
 
-            execute_with_limits($rateTrackers, $creditTrackers, function () use ($message, $logger, $msgId, $email, &$finishDeliveryAt) {
+            execute_with_limits($rateTrackers, $creditTrackers, function () use ($message, $logger, $msgId, $email, &$finishDeliveryAt, &$getLockAt) {
                 // Actually send (or throw an exception)
+
+                $getLockAt = Carbon::now()->getTimestampMs();
 
                 if (!$this->subscriber->isSubscribed()) {
                     // @important: do not throw an exception here
@@ -185,7 +188,7 @@ class SendMessage implements ShouldQueue
             $now = Carbon::now(); // OK DONE ALL
             $finishAt = $now->getTimestampMs();
 
-            $this->campaign->debug(function ($info) use ($startAt, $now, $finishAt, $finishPreparingAt, $finishDeliveryAt) {
+            $this->campaign->debug(function ($info) use ($startAt, $now, $finishAt, $finishPreparingAt, $finishDeliveryAt, $getLockAt) {
                 $diff = ($finishAt - $startAt) / 1000;
                 $avg = $info['send_message_avg_time'];
                 if (is_null($avg)) {
@@ -200,6 +203,14 @@ class SendMessage implements ShouldQueue
                     $info['send_message_prepare_avg_time'] = $prepareDiff;
                 } else {
                     $info['send_message_prepare_avg_time'] = ($prepareAvg * $info['send_message_count'] + $prepareDiff) / ($info['send_message_count'] + 1);
+                }
+
+                $getLockDiff = ($getLockAt - $startAt) / 1000;
+                $getLockAvg = $info['send_message_lock_avg_time'];
+                if (is_null($getLockAvg)) {
+                    $info['send_message_lock_avg_time'] = $getLockDiff;
+                } else {
+                    $info['send_message_lock_avg_time'] = ($getLockAvg * $info['send_message_count'] + $getLockDiff) / ($info['send_message_count'] + 1);
                 }
 
                 $deliveryDiff = ($finishDeliveryAt - $startAt) / 1000;
