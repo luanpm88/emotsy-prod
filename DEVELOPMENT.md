@@ -22,6 +22,9 @@ Make sure both Worker and Master instances use the same value for:
 
 #5. Same APP_KEY
 
+#6. Same APP_URL
+Otherwise, generated link may become http://woker.localhost/...
+
 #6. Make sure the Worker instance does not execute jobs of 'default' queue
 Also, make sure there is at least 1 queue monitor for 'default' jobs on the Master instance.
 
