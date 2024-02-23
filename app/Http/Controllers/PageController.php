@@ -389,6 +389,10 @@ class PageController extends Controller
         $page = \Acelle\Model\Page::findPage($list, $layout);
         $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
 
+        if (is_null($subscriber) || is_null($list)) {
+            abort(404);
+        }
+
         // Language
         if ($list->customer && $list->customer->language) {
             \App::setLocale($list->customer->language->code);
