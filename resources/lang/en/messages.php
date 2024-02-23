@@ -1440,7 +1440,6 @@
   'invoice.status.rejected' => 'Rejected',
   'invoice.title' => 'Content',
   'invoice_template' => 'Invoice template',
-  'sending_credits.last_month_used' => 'Credits used during the last 30 days',
   'invoices' => 'Invoices',
   'invoices_logs' => 'Invoices / Logs',
   'ip' => 'IP',
@@ -1818,6 +1817,10 @@
   'page.reset.success' => 'Reset successfully',
   'page.reset_default' => 'Reset Default',
   'page.restore.confirm' => 'You\'re about to restore this page to default template. This can not be undone.',
+  'page.term_of_service' => 'Term of service content',
+  'page.term_of_service.intro' => 'Content for the Terms of Service agreement checkbox.
+    Use the {TERM_OF_SERVICE} tag if you want to add the terms checkbox to the signup page.
+  ',
   'page.updated' => 'Custom page was successfully updated',
   'page_form_layout' => 'Custom Emails & Pages',
   'pagination' => 'Pagination',
@@ -2280,6 +2283,7 @@
   'senders.deleted' => 'Sender was successfully deleted',
   'senders.empty.message' => 'You have no sender yet',
   'sending' => 'Sending',
+  'sending_credits.last_month_used' => 'Credits used during the last 30 days',
   'sending_credits_used' => 'Sending credits',
   'sending_domain' => 'Sending domain',
   'sending_domain.created' => 'Sending domain was successfully created',
@@ -2648,6 +2652,7 @@
   'subscriber.import.upload_csv_file.intro' => 'A CSV (comma-separated values) file is a text file in which information is separated by commas.',
   'subscriber.invalid' => 'Contact does not exist',
   'subscriber.tag_added' => 'Tag was added successfully',
+  'subscriber.tag_removed' => 'Tag was removed successfully',
   'subscriber.unique_values_for_all_the_list' => 'Unique values from a list',
   'subscriber.updated' => 'Subscriber was successfully updated',
   'subscriber_empty_line_1' => 'You have no subscribers',
@@ -2780,6 +2785,7 @@
   'subscription.reject_pending.success' => 'The pending invoice was rejected.',
   'subscription.reject_pending_payment' => 'Reject payment',
   'subscription.reject_pending_payment.leave_note' => 'Leave a note to your customer regarding the reason the payment is rejected',
+  'subscription.replenish.send_email_credits' => 'Reset SEND EMAILS CREDITS for this user subscription. (Available sending credits: :int)',
   'subscription.replenish_sending_credits' => 'Replenish sending credits',
   'subscription.replenish_sending_credits.success' => 'Subscription is successfully updated',
   'subscription.resume' => 'Resume',
@@ -3256,11 +3262,4 @@
   'your_api_token' => 'Your API token',
   'your_current_license' => 'The current application is registered with the key below, also known as Purchase Code. License type is: ',
   'zip_postal_code' => 'Zip / Postal code',
-  'page.term_of_service.intro' => 'Term of service content',
-  'page.term_of_service.intro' => 'Content for the Terms of Service agreement checkbox.
-    Use the {TERM_OF_SERVICE} tag if you want to add the terms checkbox to the signup page.
-  ',
-  'page.term_of_service' => 'Term of service content',
-  'subscriber.tag_removed' => 'Tag was removed successfully',
-  'subscription.replenish.send_email_credits' => 'Reset SEND EMAILS CREDITS for this user subscription. (Available sending credits: :int)',
 ) ?>
