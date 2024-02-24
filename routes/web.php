@@ -901,6 +901,8 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
 
 // ADMIN AREA
 Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 'backend']], function () {
+    Route::get('admin/monitor/campaign', 'CampaignMonitorController@index');
+
     Route::get('admin', 'HomeController@index');
     Route::get('admin/docs/api/v1', 'ApiController@doc');
 
