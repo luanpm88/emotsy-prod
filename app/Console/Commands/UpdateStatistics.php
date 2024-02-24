@@ -46,27 +46,15 @@ class UpdateStatistics extends Command
                 continue;
             }
 
-            $lists = $customer->lists;
-            foreach ($lists as $list) {
-
-                foreach($list->segments as $segment) {
-                    safe_dispatch(new \Acelle\Jobs\UpdateSegmentJob($segment));
-                }
-
-                safe_dispatch(new \Acelle\Jobs\UpdateMailListJob($list));
-            }
-
             $campaigns = $customer->campaigns;
             foreach ($campaigns as $campaign) {
                 safe_dispatch(new \Acelle\Jobs\UpdateCampaignJob($list));
             }
 
-            $segments = $customer->campaigns;
-            foreach ($campaigns as $campaign) {
-                safe_dispatch(new \Acelle\Jobs\UpdateCampaignJob($list));
+            $lists = $customer->lists;
+            foreach ($lists as $list) {
+                safe_dispatch(new \Acelle\Jobs\UpdateMailListJob($list));
             }
-
-            safe_dispatch(new \Acelle\Jobs\UpdateUserJob($customer));
         }
 
         return 0;
