@@ -41,7 +41,7 @@
                             </button>
                         </span>
                         <span class="me-2 input-medium">
-                            <select placeholder="{{ trans('messages.customer') }}"
+                            <select placeholder="{{ trans('messages.customer.all_customers') }}"
                                 class="select2-ajax"
                                 name="customer_uid"
                                 data-url="{{ action('Admin\CustomerController@select2') }}">

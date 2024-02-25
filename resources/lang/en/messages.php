@@ -3262,4 +3262,6 @@
   'your_api_token' => 'Your API token',
   'your_current_license' => 'The current application is registered with the key below, also known as Purchase Code. License type is: ',
   'zip_postal_code' => 'Zip / Postal code',
+  'monitor.campagins' => 'Monitor campaigns',
+  'customer.all_customers' => 'All customers',
 ) ?>

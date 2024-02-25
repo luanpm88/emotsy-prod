@@ -481,4 +481,9 @@ class BaseCampaign extends Model
             Cache::put($this->getDelayFlagKey(), $value);
         }
     }
+
+    public static function scopeByCustomer($query, $customer)
+    {
+        $query->where('customer_id', $customer->id);
+    }
 }
