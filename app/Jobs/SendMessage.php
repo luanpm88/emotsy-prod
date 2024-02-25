@@ -206,7 +206,7 @@ class SendMessage implements ShouldQueue
                 }
 
                 $getLockDiff = ($getLockAt - $startAt) / 1000;
-                $getLockAvg = $info['send_message_lock_avg_time'];
+                $getLockAvg = $info['send_message_lock_avg_time'] ?? null;
                 if (is_null($getLockAvg)) {
                     $info['send_message_lock_avg_time'] = $getLockDiff;
                 } else {
@@ -214,7 +214,7 @@ class SendMessage implements ShouldQueue
                 }
 
                 $deliveryDiff = ($finishDeliveryAt - $startAt) / 1000;
-                $deliveryAvg = $info['send_message_delivery_avg_time'];
+                $deliveryAvg = $info['send_message_delivery_avg_time'] ?? null;
                 if (is_null($deliveryAvg)) {
                     $info['send_message_delivery_avg_time'] = $deliveryDiff;
                 } else {
@@ -274,11 +274,6 @@ class SendMessage implements ShouldQueue
                 $logger->warning(sprintf("Delay [%s] for 60 seconds (no batch): %s", $email, $ex->getMessage()));
                 $this->release(600); // should be only 60 seconds
             }
-
-            //} catch (OutOfCredits $ex) {
-
-            // something special here
-
         } catch (Throwable $ex) {
             if (!is_null($exceptionCallback)) {
                 return $exceptionCallback($ex);
