@@ -280,7 +280,6 @@ class SendMessage implements ShouldQueue
             // something special here
 
         } catch (Throwable $ex) {
-            // Also catch the OutOfCredits error
             if (!is_null($exceptionCallback)) {
                 return $exceptionCallback($ex);
             }
@@ -288,12 +287,19 @@ class SendMessage implements ShouldQueue
             $message = sprintf("Error sending to [%s]. Error: %s", $email, $ex->getMessage());
             $logger->error($message);
 
+            // In case of these exceptions, stop campaign immediately even if stopOnError is currently false
+            // This is helpful in certain cases: for example, when credits runs out, then it does not make sense to keep sending (and failing)
+            $forceEndCampaignExceptions = [
+                OutOfCredits::class,
+            ];
+
+            $forceEndCampaign = in_array(get_class($ex), $forceEndCampaignExceptions);
+
             // There are 2 options here
             // Option 1: throw an exception and show it to users as the campaign status
             //     throw new Exception($message);
             // Option 2: just skip the error, log it and proceed with the next subscriber
-
-            if ($this->stopOnError) {
+            if ($this->stopOnError || $forceEndCampaign) {
                 throw new Exception($message);
             } else {
                 if (!isset($msgId)) {
