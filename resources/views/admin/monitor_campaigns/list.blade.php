@@ -32,9 +32,9 @@
 
 					@if ($campaign->status != 'new' && isset($campaign->run_at))
 						<span class="text-muted2 d-block xtooltip" title="{{ $campaign->scheduleDiffForHumans() }}">{{ trans('messages.run_at') }}: <span class="material-symbols-rounded">alarm</span>
-							 {{ isset($campaign->run_at) ? Auth::user()->customer->formatDateTime($campaign->run_at, 'datetime_full') : "" }}</span>
+							 {{ isset($campaign->run_at) ? Auth::user()->admin->formatDateTime($campaign->run_at, 'datetime_full') : "" }}</span>
 					@else
-						<span class="text-muted2 d-block">{{ trans('messages.updated_at') }}: {{ Auth::user()->customer->formatDateTime($campaign->created_at, 'datetime_full') }}</span>
+						<span class="text-muted2 d-block">{{ trans('messages.updated_at') }}: {{ Auth::user()->admin->formatDateTime($campaign->created_at, 'datetime_full') }}</span>
 					@endif
 				</td>
 				<td>
