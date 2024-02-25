@@ -291,6 +291,7 @@ class SendMessage implements ShouldQueue
             // This is helpful in certain cases: for example, when credits runs out, then it does not make sense to keep sending (and failing)
             $forceEndCampaignExceptions = [
                 OutOfCredits::class,
+                // Other "end-game" exception like "SendingServer out of credits, etc."
             ];
 
             $forceEndCampaign = in_array(get_class($ex), $forceEndCampaignExceptions);
