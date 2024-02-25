@@ -4,18 +4,6 @@
 	>
 		@foreach ($campaigns as $key => $campaign)
 			<tr class="position-relative">
-				<td width="1%" class="list-check-col">
-					<div class="text-nowrap">
-						<div class="checkbox inline me-1">
-							<label>
-								<input type="checkbox" class="node styled"
-									name="uids[]"
-									value="{{ $campaign->uid }}"
-								/>
-							</label>
-						</div>
-					</div>
-				</td>
 				<td>
 					<span class="kq_search fw-600 d-block list-title">
 						{{ $campaign->name }}
