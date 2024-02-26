@@ -1336,5 +1336,5 @@ function distributed_mode_check()
 
 function safe_dispatch($job)
 {
-    app(\Illuminate\Contracts\Bus\Dispatcher::class)->dispatch($job);
+    return app(\Illuminate\Contracts\Bus\Dispatcher::class)->dispatch($job);
 }
