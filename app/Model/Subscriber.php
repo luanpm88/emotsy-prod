@@ -1198,7 +1198,7 @@ class Subscriber extends Model
 
     public static function addCustomFieldIfNotExist($fieldName)
     {
-        $tableName = static::query()->from;
+        $tableName = 'subscribers';
         if (!Schema::hasColumn($tableName, $fieldName)) {
 
             Schema::table($tableName, function (Blueprint $table) use ($fieldName) {
