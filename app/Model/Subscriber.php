@@ -1202,7 +1202,7 @@ class Subscriber extends Model
         if (!Schema::hasColumn($tableName, $fieldName)) {
 
             Schema::table($tableName, function (Blueprint $table) use ($fieldName) {
-                $table->text($fieldName)->nullable();
+                $table->mediumText($fieldName)->nullable();
             });
 
         }
