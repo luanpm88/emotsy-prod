@@ -28,7 +28,8 @@
                             @foreach ($plans as $plan)
                                 <div class="price-line {{ $customer->getNewOrActiveGeneralSubscription() && !$customer->getNewOrActiveGeneralSubscription()->isEnded() && $customer->getNewOrActiveGeneralSubscription()->planGeneral->uid == $plan->uid ? 'current' : '' }}">
                                     <div class="price-header">
-                                        <lable class="plan-title">{{ $plan->name }}</lable>
+                                        
+                                        <lable class="plan-title">{{ $plan->getPlanGroupName() }}/{{ $plan->name }}</lable>
                                         <p>{{ $plan->description }}</p>
                                     </div>
                                     
