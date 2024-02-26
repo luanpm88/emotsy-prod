@@ -170,7 +170,7 @@ class MailList extends Model
         // Create uid when list created.
         static::created(function ($item) {
             //  Create list default fields
-            $item->createDefaultFieds();
+            $item->createDefaultFields();
         });
 
         // detele
@@ -289,7 +289,7 @@ class MailList extends Model
     /**
      * Create default fields for list.
      */
-    public function createDefaultFieds()
+    public function createDefaultFields()
     {
         $defaultFields = [
             [
