@@ -21,7 +21,7 @@ class HomeController extends Controller
         $customer = $request->user()->customer;
 
         if (config('app.saas')) {
-            $sendingCreditsUsed = $customer->getCurrentActiveGeneralSubscription()->getSendEmailRateTracker()->getCreditsUsed(); // all time sending credits used
+            $sendingCreditsUsed = $customer->getCurrentActiveGeneralSubscription()->getSendEmailRateTracker()->getCreditsUsed(now()->subtract('30 days'));
             $sendingCreditsLimit = $customer->getCurrentActiveGeneralSubscription()->getCreditsLimit('send');
             $sendingCreditsUsedPercentage = $customer->getCurrentActiveGeneralSubscription()->getRemainingEmailCreditsPercentage();
         } else {

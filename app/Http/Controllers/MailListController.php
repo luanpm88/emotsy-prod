@@ -21,12 +21,6 @@ class MailListController extends Controller
     public function index(Request $request)
     {
         $customer = $request->user()->customer;
-
-        // Update cache at the first time user sees the list
-        foreach ($customer->lists as $list) {
-            dispatch(new \Acelle\Jobs\UpdateMailListJob($list));
-        }
-
         return view('lists.index');
     }
 

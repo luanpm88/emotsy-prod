@@ -36,12 +36,12 @@
                                 <option value="subscriptions.ends_at">{{ trans('messages.ends_at') }}</option>
                             </select>
                             <input type="hidden" name="sort_direction" value="desc" />
-<button type="button" class="btn btn-light sort-direction" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
+                            <button type="button" class="btn btn-light sort-direction" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
                                 <span class="material-symbols-rounded desc">sort</span>
                             </button>
                         </span>
                         <span class="me-2 input-medium">
-                            <select placeholder="{{ trans('messages.customer') }}"
+                            <select placeholder="{{ trans('messages.customer.all_customers') }}"
                                 class="select2-ajax"
                                 name="customer_uid"
                                 data-url="{{ action('Admin\CustomerController@select2') }}">

@@ -26,6 +26,6 @@ class UserUpdatedListener
      */
     public function handle(UserUpdated $event)
     {
-        dispatch(new \Acelle\Jobs\UpdateUserJob($event->customer));
+        safe_dispatch(new \Acelle\Jobs\UpdateUserJob($event->customer));
     }
 }

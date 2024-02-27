@@ -50,7 +50,7 @@ class RateTracker
             $now = $now ?: Carbon::now();
 
             // Throw an exception if test fails (quota exceeded)
-            $this->test($now, $fopen);
+            $this->_test($now, $fopen);
 
             // Record credits use
             $this->record($now, $fopen);
@@ -84,7 +84,19 @@ class RateTracker
         }
     }
 
-    private function test(Carbon $now, $fopen)
+    public function test(Carbon $now)
+    {
+        $lock = new Lockable($this->filepath);
+        $lock->getExclusiveLock(function ($fopen) use ($now) {
+            $now = $now ?: Carbon::now();
+
+            // Throw an exception if test fails (quota exceeded)
+            $this->_test($now, $fopen);
+
+        }, $timeout = 15);
+    }
+
+    private function _test(Carbon $now, $fopen)
     {
         foreach ($this->limits as $limit) {
             $period = sprintf("%s %s", $limit->getPeriodValue(), $limit->getPeriodUnit());

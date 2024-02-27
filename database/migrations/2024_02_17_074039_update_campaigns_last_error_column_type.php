@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class MakeSubscriberFieldsValueNullable extends Migration
+class UpdateCampaignsLastErrorColumnType extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class MakeSubscriberFieldsValueNullable extends Migration
      */
     public function up()
     {
-        Schema::table('subscriber_fields', function (Blueprint $table) {
-            $table->text('value')->nullable()->change();
+        Schema::table('campaigns', function (Blueprint $table) {
+            $table->longText('last_error')->nullable()->change();
         });
     }
 
@@ -25,7 +25,7 @@ class MakeSubscriberFieldsValueNullable extends Migration
      */
     public function down()
     {
-        Schema::table('subscriber_fields', function (Blueprint $table) {
+        Schema::table('campaigns', function (Blueprint $table) {
             //
         });
     }

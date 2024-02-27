@@ -31,6 +31,7 @@ use Acelle\Library\Notification\BackendError as BackendErrorNotification;
 use Acelle\Library\Facades\Hook;
 use Acelle\Library\RateLimit;
 use Acelle\Library\RateTracker;
+use Acelle\Library\InMemoryRateTracker;
 use Exception;
 use Acelle\Library\Traits\HasUid;
 
@@ -1622,8 +1623,14 @@ class SendingServer extends Model
 
     public function getRateLimitTracker()
     {
-        $file = storage_path('app/quota/server-send-email-rate-tracking-log-'.$this->uid);
-        $tracker = new RateTracker($file, $this->getRateLimits());
+        if (config('custom.distributed_worker')) {
+            $key = "server-send-email-rate-tracking-log-{$this->uid}";
+            $tracker = new InMemoryRateTracker($key, $this->getRateLimits());
+        } else {
+            $file = storage_path('app/quota/server-send-email-rate-tracking-log-'.$this->uid);
+            $tracker = new RateTracker($file, $this->getRateLimits());
+        }
+
         return $tracker;
     }
 
@@ -1634,9 +1641,9 @@ class SendingServer extends Model
 
     public function dryrun($message)
     {
-        $output = '/tmp/dryrun';
-        $lineSeparator = PHP_EOL.'*********************************************'.PHP_EOL;
-        file_put_contents($output, $message->toString().$lineSeparator, FILE_APPEND | LOCK_EX);
+        // $output = '/tmp/dryrun';
+        // $lineSeparator = PHP_EOL.'*********************************************'.PHP_EOL;
+        // file_put_contents($output, $message->toString().$lineSeparator, FILE_APPEND | LOCK_EX);
         return [ 'status' => self::DELIVERY_STATUS_SENT ];
     }
 }

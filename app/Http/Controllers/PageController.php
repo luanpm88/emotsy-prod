@@ -64,6 +64,12 @@ class PageController extends Controller
             // Validation
             $this->validate($request, $rules);
 
+            // option
+            if ($request->term) {
+                $list->setEmbeddedFormOption('term', $request->term);
+                $list->setEmbeddedFormOption('enable_term', $request->enable_term);
+            }
+
             // save
             $page->save();
 
@@ -382,6 +388,10 @@ class PageController extends Controller
         $layout = \Acelle\Model\Layout::where('alias', 'profile_update_form')->first();
         $page = \Acelle\Model\Page::findPage($list, $layout);
         $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
+
+        if (is_null($subscriber) || is_null($list)) {
+            abort(404);
+        }
 
         // Language
         if ($list->customer && $list->customer->language) {

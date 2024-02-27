@@ -64,7 +64,7 @@ class SubscriberController extends Controller
         $subscribers = $this->search($list, $request);
         // $total = distinctCount($subscribers);
         $total = $subscribers->count();
-        $subscribers->with(['mailList', 'subscriberFields']);
+        $subscribers->with(['mailList']);
         $subscribers = $subscribers->paginate($request->per_page ? $request->per_page : 50);
 
         $fields = $list->getFields->whereIn('uid', $request->columns);
@@ -751,14 +751,9 @@ class SubscriberController extends Controller
      */
     public function avatar(Request $request)
     {
-        // Get current customer
-        if ($request->uid != '0') {
-            $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
-        } else {
-            $subscriber = new \Acelle\Model\Subscriber();
-        }
+        $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
 
-        if (is_file($subscriber->getImagePath())) {
+        if ($subscriber && is_file($subscriber->getImagePath())) {
             $img = \Image::make($subscriber->getImagePath());
         } else {
             $img = \Image::make(public_path('images/subscriber-icon.jpg'));

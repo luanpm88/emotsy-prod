@@ -219,10 +219,16 @@ class BaseCampaign extends Model
             $job->cancelWithoutDeleteBatch();
         }
 
+        // Clean up DELAY flag
+        $this->setDelayFlag(null);
+
         // Option 1: load multiple Campaign loader jobs
         // Load max 5 LoadCampaign jobs, each will produce 200 SendMessage jobs
+        // So there will be 200 x 2 = 400 jobs in queue (in case of sending speed limit)
+        // Be careful before increase this value, otherwise, jobs release/retry may prevents
+        //     other campaigns from sending
         $perPage = 200;
-        $maxPageToLoad = 5;
+        $maxPageToLoad = 3;
         $subscribersQuery = $this->subscribersToSend();
 
         $campaignLoaders = [];
@@ -331,7 +337,7 @@ class BaseCampaign extends Model
         $formatter = new LineFormatter("[%datetime%] %channel%.%level_name%: %message%\n");
 
         $logfile = $this->getLogFile();
-        $stream = new RotatingFileHandler($logfile, 0, Logger::DEBUG);
+        $stream = new RotatingFileHandler($logfile, 0, config('custom.log_level'));
         $stream->setFormatter($formatter);
 
         $pid = getmypid();
@@ -416,9 +422,8 @@ class BaseCampaign extends Model
 
     public function debug(Closure $callback = null)
     {
+        $lockKey = "lock-for-debug-campaign-{$this->uid}";
         $key = $this->getDebugCacheKey();
-        $lockFile = storage_path("app/tmp/{$key}");
-
         // Read only
         if (is_null($callback)) {
             return Cache::get($key);
@@ -428,10 +433,10 @@ class BaseCampaign extends Model
         // As it do not retry fast enough if a lock cannot be get. i.e. it waits for another second to try for example
         // Use Lockable instead which retries almost immediately with "while (true)"
         $result = null;
-        Lockable::withExclusiveLock($lockFile, function () use (&$result, $callback, $key) {
+        with_cache_lock($lockKey, function () use (&$result, $callback, $key) {
             $info = Cache::get($key, $default = [
                 'start_at' => null,
-                'last_activity_at' => null,
+                'last_activity_at' => Carbon::now()->toString(),
                 'finish_at' => null,
                 'total_time' => null,
                 'last_message_sent_at' => null,
@@ -440,6 +445,7 @@ class BaseCampaign extends Model
                 'send_message_total_time' => 0,
                 'send_message_avg_time' => null,
                 'send_message_prepare_avg_time' => null,
+                'send_message_lock_avg_time' => null,
                 'send_message_delivery_avg_time' => null,
                 'send_message_min_time' => null,
                 'send_message_max_time' => null,
@@ -454,5 +460,30 @@ class BaseCampaign extends Model
         }, $timeout = 10);
 
         return $result; // return the get value (second element in result)
+    }
+
+    public function getDelayFlagKey()
+    {
+        $flagKey = "campaign-delay-flag-{$this->uid}";
+        return $flagKey;
+    }
+
+    public function checkDelayFlag()
+    {
+        return Cache::get($this->getDelayFlagKey()) ?? false;
+    }
+
+    public function setDelayFlag($value)
+    {
+        if (is_null($value)) {
+            Cache::forget($this->getDelayFlagKey());
+        } else {
+            Cache::put($this->getDelayFlagKey(), $value);
+        }
+    }
+
+    public static function scopeByCustomer($query, $customer)
+    {
+        $query->where('customer_id', $customer->id);
     }
 }

@@ -60,13 +60,18 @@ class RunCampaign implements ShouldQueue
 
             $this->campaign->logger()->info("Launch campaign from job: session {$sessionId}");
 
+            $this->campaign->logger()->warning('Pre: set up before send');
             $this->campaign->prepare();
-
+            $this->campaign->logger()->warning('After: set up before send');
             $this->campaign->run();
 
             // after executing campaign.run(), this job just finishes
         } catch (\Throwable $e) {
             $errorMsg = "Error scheduling campaign: ".$e->getMessage()."\n".$e->getTraceAsString();
+
+            // In case the error message size is too large
+            $errorMsg = substr($errorMsg ?? '', 0, 1000);
+
             $this->campaign->setError($errorMsg);
 
             // To set the job to failed

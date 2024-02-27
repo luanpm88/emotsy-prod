@@ -905,6 +905,9 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
 
 // ADMIN AREA
 Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 'backend']], function () {
+    Route::get('admin/monitor/campaign', 'MonitorCampaignController@index');
+    Route::get('admin/monitor/campaign/list', 'MonitorCampaignController@list');
+
     Route::get('admin', 'HomeController@index');
     Route::get('admin/docs/api/v1', 'ApiController@doc');
 
@@ -1205,7 +1208,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::resource('admin/currencies', 'CurrencyController');
 
     // Subscription
-    Route::post('admin/subscriptions/{id}/replenish-sending-credits', 'SubscriptionController@replenishSendingCredits');
+    Route::match(['get','post'], 'admin/subscriptions/{id}/replenish-sending-credits', 'SubscriptionController@replenishSendingCredits');
     Route::post('admin/subscriptions/{id}/approve', 'SubscriptionController@approve');
     Route::match(['get','post'], 'admin/subscriptions/{id}/reject-pending', 'SubscriptionController@rejectPending');
     Route::get('admin/subscriptions/{id}/invoices', 'SubscriptionController@invoices');

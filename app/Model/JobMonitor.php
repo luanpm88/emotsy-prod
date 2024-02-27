@@ -50,15 +50,6 @@ class JobMonitor extends Model
         return Bus::findBatch($this->batch_id);
     }
 
-    public function withExclusiveLock($closure)
-    {
-        $lockFile = storage_path('app/lock-job-monitor-'.$this->uid);
-        $lock = new Lockable($lockFile);
-        $lock->getExclusiveLock(function ($lockReader) use ($closure) {
-            $closure($this->refresh());
-        }, $timeout = 60);
-    }
-
     public function job()
     {
         return $this->belongsTo(Job::class);
@@ -137,12 +128,20 @@ class JobMonitor extends Model
 
     public function cancel()
     {
-        $this->cancelJob(); // if any
-        $this->cancelBatch(); // if any
+        try {
+            $this->cancelJob(); // if any
+            $this->cancelBatch(); // if any
+        } catch (\Exception $ex) {
+            // In case of any issue like:
+            // "Your serialized closure might have been modified or it's unsafe to be unserialized"
+            // occuring when executing Bus::findBatch($id)
+            // Laravel\\SerializableClosure\\SerializableClosure->__unserialize()
+        } finally {
+            // For now, do not store cancelled job monitor
+            // So, just delete the record
+            $this->delete();
+        }
 
-        // For now, do not store cancelled job monitor
-        // So, just delete the record
-        $this->delete();
     }
 
     private function cancelJob()

@@ -296,18 +296,24 @@ class SubscriptionController extends Controller
             return $this->notAuthorized();
         }
 
-        if (false) {
-            // success
-            return response()->json([
-                'status' => 'success',
-                'message' => trans('messages.subscription.replenish_sending_credits.success'),
-            ]);
-        } else {
-            // error
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Error from the server...',
-            ], 500);
+        if ($request->isMethod('post')) {
+            try {
+                $subscription->getSendEmailCreditTracker()->setCredits((int)$request->credits);
+                return response()->json([
+                    'status' => 'success',
+                    'message' => trans('messages.subscription.replenish_sending_credits.success'),
+                ]);
+            } catch (Exception $ex) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => $ex->getMessage(),
+                ], 400);
+            }
         }
+
+        return view('admin.subscriptions.replenishSendingCredits', [
+            'subscription' => $subscription,
+            'remaining' => $subscription->getRemainingEmailCredits(),
+        ]);
     }
 }

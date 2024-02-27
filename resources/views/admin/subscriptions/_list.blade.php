@@ -74,7 +74,7 @@
 				<td width="15%">
 					@if ($subscription->isActive())
 						<h5 class="no-margin stat-num">
-							<span class="kq_search">{{ number_with_delimiter($subscription->getRemainingEmailCredits()) }}</span>
+							<span class="kq_search">{{ ($subscription->getRemainingEmailCredits() == -1) ? '∞' : number_with_delimiter($subscription->getRemainingEmailCredits()) }}</span>
 						</h5>
 						<span class="text-muted2">{{ trans('messages.subscription.send_credits_remaining') }}</span>
 					@endif
@@ -220,9 +220,45 @@
 	@include('elements/_per_page_select', ["items" => $subscriptions])
 	
 
-	<script>        
-		var SubscriptionsList = {
-			replenishSendingCredits: function(url) {
+	<script>
+		var replenishCredit;
+
+        $(function() {
+			// ReplenishCredit
+			replenishCredit = new ReplenishCredit({
+				links: $('.replenish-sending-credits'),
+			});
+
+            $('.rejectPending').click(function(e) {
+                e.preventDefault();
+
+                var src = $(this).attr('href');
+				
+				rejectPendingSub = new Popup();
+                rejectPendingSub.load(src);
+            });
+        });
+
+		var invoices = new Popup();
+		$('.view_invoices').click(function(e) {
+			e.preventDefault();
+			invoices.load($(this).attr('href'));
+		});
+
+		var ReplenishCredit = class {
+			constructor(options) {
+				this.links = options.links;
+				this.popup = new Popup();
+
+				// 
+				this.events();
+			}
+
+			showForm(url) {
+				this.popup.load(url);
+			}
+
+			submit() {
 				addMaskLoading();
 
 				// copy
@@ -248,31 +284,19 @@
 					removeMaskLoading();
                 });
 			}
+
+			events() {
+				var _this = this;
+
+				_this.links.on('click', function(e) {
+					e.preventDefault();
+					var url = $(this).attr('href');
+
+					// SubscriptionsList.replenishSendingCredits(url);
+					_this.showForm(url);
+				});
+			}
 		}
-
-        $(function() {
-			$('.replenish-sending-credits').on('click', function(e) {
-				e.preventDefault();
-				var url = $(this).attr('href');
-
-				SubscriptionsList.replenishSendingCredits(url);
-			});
-
-            $('.rejectPending').click(function(e) {
-                e.preventDefault();
-
-                var src = $(this).attr('href');
-				
-				rejectPendingSub = new Popup();
-                rejectPendingSub.load(src);
-            });
-        });
-
-		var invoices = new Popup();
-		$('.view_invoices').click(function(e) {
-			e.preventDefault();
-			invoices.load($(this).attr('href'));
-		});
     </script>
 
 @elseif (!empty(request()->keyword) || !empty(request()->filters))

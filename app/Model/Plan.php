@@ -356,16 +356,16 @@ class Plan extends Model
         $limits = [];
         $options = $this->getOptions();
 
-        $timeValue = $options['sending_quota_time'];
-        if ($timeValue != RateLimit::UNLIMITED) {
+        // Sending speed limit (Settings > Security)
+        if ($options['sending_quota'] != RateLimit::UNLIMITED) {
             $timeUnit = $options['sending_quota_time_unit'];
             $limit = $options['sending_quota'];
 
             $limits[] = new RateLimit(
                 $limit,
-                $timeValue,
+                $options['sending_quota_time'],
                 $timeUnit,
-                $description = "Sending limit of {$limit} per {$timeValue} {$timeUnit}"
+                $description = "Plan ({$this->name}) sending speed limit of {$limit} per {$options['sending_quota_time']} {$timeUnit}"
             );
         }
 

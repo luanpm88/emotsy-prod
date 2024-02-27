@@ -10,7 +10,9 @@ use Acelle\Library\Traits\HasUid;
 use Carbon\Carbon;
 use Acelle\Library\Facades\SubscriptionFacade;
 use Acelle\Library\CreditTracker;
+use Acelle\Library\InMemoryCreditTracker;
 use Acelle\Library\RateTracker;
+use Acelle\Library\InMemoryRateTracker;
 use Acelle\Library\RateLimit;
 use Illuminate\Database\Eloquent\Builder;
 use DB;
@@ -972,19 +974,11 @@ class Subscription extends Model
 
     public function getRemainingEmailCreditsPercentage()
     {
-        // Temporarily use the RateTracker to get credits used as CreditTracker is not yet supported
-        // Future: $creditsUsed = $this->getRemainingEmailCredits();
-        $creditsUsed = $this->getSendEmailRateTracker()->getCreditsUsed();
-        $creditsLimit = $this->planGeneral->getOption('email_max');
+        $sendCreditTracker = $this->getSendEmailCreditTracker();
+        $sendingCreditsLimit = (int)$this->getCreditsLimit('send');
+        $sendingCreditsUsed = $sendingCreditsLimit - $sendCreditTracker->getRemainingCredits();
 
-        // if = -1 (default:unlimited) return 0
-        // if = 0 return 0
-        if (!$creditsLimit || $creditsLimit == -1) {
-            return 0;
-        }
-
-        $percentage = ($creditsLimit == RateLimit::UNLIMITED) ? 0 : $creditsUsed / $creditsLimit;
-
+        $percentage = ($sendingCreditsLimit == -1) ? 0 : (($sendingCreditsLimit == 0) ? 1 : $sendingCreditsUsed / $sendingCreditsLimit);
         return $percentage;
     }
 
@@ -1017,16 +1011,27 @@ class Subscription extends Model
 
     public function getSendEmailRateTracker()
     {
-        // Get the limits from plan
-        $file = storage_path('app/quota/subscription-send-email-rate-tracking-log-'.$this->uid);
-        $tracker = new RateTracker($file, $this->planGeneral->getSendEmailRateLimits());
+        if (config('custom.distributed_worker')) {
+            $key = 'subscription-send-email-rate-tracking-log-'.$this->uid;
+            $tracker = new InMemoryRateTracker($key, $this->planGeneral->getSendEmailRateLimits());
+        } else {
+            // Get the limits from plan
+            $file = storage_path('app/quota/subscription-send-email-rate-tracking-log-'.$this->uid);
+            $tracker = new RateTracker($file, $this->planGeneral->getSendEmailRateLimits());
+        }
+
         return $tracker;
     }
 
     public function getSendEmailCreditTracker($createFileIfNotExist = true)
     {
-        $file = storage_path('app/quota/subscription-send-email-credits-'.$this->uid);
-        return CreditTracker::load($file, $createFileIfNotExist);
+        if (config('custom.distributed_worker')) {
+            $key = 'app-quota-subscription-send-email-credits-'.$this->uid;
+            return InMemoryCreditTracker::load($key);
+        } else {
+            $file = storage_path('app/quota/subscription-send-email-credits-'.$this->uid);
+            return CreditTracker::load($file, $createFileIfNotExist);
+        }
     }
 
     public function getVerifyEmailCreditTracker($createFileIfNotExist = false)
@@ -1037,9 +1042,10 @@ class Subscription extends Model
 
     public function setDefaultEmailCredits()
     {
-        // @important: temporarily set default credits to UNLIMITED
-        // $defaultCredits = (int)$this->planGeneral->getOption('email_max');
-        $defaultCredits = CreditTracker::UNLIMITED;
+        // Or, set it to just unlimited
+        // $defaultCredits = CreditTracker::UNLIMITED;
+
+        $defaultCredits = (int)$this->planGeneral->getOption('email_max');
         $this->getSendEmailCreditTracker()->setCredits($defaultCredits);
     }
 }

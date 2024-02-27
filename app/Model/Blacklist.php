@@ -24,6 +24,10 @@ namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use Acelle\Library\Tool;
+use Acelle\Library\StringHelper;
+use DB;
+
+use function Acelle\Helpers\read_csv;
 
 class Blacklist extends Model
 {
@@ -147,41 +151,81 @@ class Blacklist extends Model
      */
     public static function import($file, $customer = null, $progressCallback = null)
     {
-        if (!is_null($progressCallback)) {
-            $progressCallback($processed = 0, $total = 0, $failed = 0, $message = trans('messages.blacklist.import_process_new'));
-        }
-
-        $content = \Illuminate\Support\Facades\File::get($file);
-        $lines = preg_split('/\r\n|\r|\n/', $content);
-        $total = count($lines);
         $failed = 0;
         $processed = 0;
+
+        list($headers, $total, $results) = read_csv($file);
 
         if (!is_null($progressCallback)) {
             $progressCallback($processed, $total, $failed, $message = 'Loading file content...');
         }
 
-        foreach ($lines as $number => $line) {
-            $email = trim(strtolower($line));
+        $customerId = (is_null($customer)) ? null : $customer->id;
 
-            // Add to blacklist
-            if (Tool::isValidEmail($email)) {
-                // Add to blacklist
-                if (!is_null($customer)) {
-                    $customer->addEmaillToBlacklist($email);
-                } else {
-                    self::addEmaill($email);
+        each_batch($results, $batchSize = config('custom.import_batch_size'), $skipHeader = false, function ($batch) use ($customerId, &$processed, &$failed, $total, $progressCallback) {
+            // Insert subscriber fields from the batch to the temporary table
+            // extract only fields whose name matches TAG NAME of MailList
+
+            $data = collect($batch)->map(function ($r) use ($customerId) {
+                $record = [
+                    'email' => $r[0],
+                    'customer_id' => $customerId,
+                ];
+
+                // replace the non-break space (not a normal space) as well as all other spaces
+                $record['email'] = strtolower(preg_replace('/[ \s*]*/', '', trim($record['email'])));
+
+                // In certain cases, a UTF-8 BOM is added to email
+                // For example: "﻿madxperts@gmail.com" (open with Sublime to see the char)
+                // So we need to remove it, at least for email field
+                $record['email'] = StringHelper::removeUTF8BOM($record['email']);
+
+                return $record;
+            })->toArray();
+
+
+            // make the import data table unique by email
+            $data = array_unique_by($data, function ($r) {
+                return $r['email'];
+            });
+
+            // validate and filter out invalid records
+            $data = array_where($data, function ($record) use (&$failed) {
+                $valid = Tool::isValidEmail($record['email']);
+                if (!$valid) {
+                    $failed += 1;
                 }
-            } else {
-                $failed += 1;
-            }
 
-            $processed += 1;
+                return $valid;
+            });
+
+            $tmpTableName = static::createTmpTableForImporting();
+
+            DB::table($tmpTableName)->insert($data);
+
+            $insertSql = strtr('
+
+                INSERT INTO %blacklists (email, customer_id, created_at, updated_at)
+                SELECT tmp.email, %customer_id, NOW(), NOW()
+                FROM %tmp tmp
+                LEFT JOIN %blacklists main ON (tmp.email = main.email)
+                WHERE main.email IS NULL',
+                [
+                    '%blacklists' => table('blacklists'),
+                    '%customer_id' => $customerId ?? 'NULL',
+                    '%tmp' => table($tmpTableName),
+                ]
+            );
+
+            // Actually INSERT
+            DB::statement($insertSql);
+
+            $processed += sizeof($batch);
 
             if (!is_null($progressCallback)) {
                 $progressCallback($processed, $total, $failed, trans('messages.blacklist.import_process_running', ['processed' => $processed]));
             }
-        }
+        });
 
         self::doBlacklist($customer);
 
@@ -220,5 +264,18 @@ class Blacklist extends Model
                 $blacklist->save();
             }
         }
+    }
+
+    public static function createTmpTableForImporting()
+    {
+        $tmpTableName = '__tmp_blacklist';
+        $tmpTable = table($tmpTableName);
+
+        // @todo: hard-coded charset and COLLATE
+        $sql = "CREATE TABLE {$tmpTable}(`email` VARCHAR(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci, `customer_id` INTEGER) ENGINE=InnoDB;";
+        DB::statement("DROP TABLE IF EXISTS {$tmpTable};"); // Seperate queries
+        DB::statement($sql);
+
+        return $tmpTableName;
     }
 }
