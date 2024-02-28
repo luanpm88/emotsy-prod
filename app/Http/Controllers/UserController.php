@@ -156,7 +156,7 @@ class UserController extends Controller
 
     public function verifySelectMethod(Request $request)
     {
-        if (\Acelle\Model\Setting::get('2fa_enable') == 'no') {
+        if (!$request->user()->is2FAEnabled()) {
             $url = session()->get('2fa.redirect', action('HomeController@index'));
             return redirect()->away($url);
         }
@@ -166,57 +166,9 @@ class UserController extends Controller
             $request->user()->sendVerifyCodeEMail();
 
             // redirect
-            return redirect(action('UserController@emailVerify'));
+            return redirect(action('Email2FAController@emailVerify'));
         }
 
         return view('auth.verify.select');
-    }
-
-    public function emailVerify(Request $request)
-    {
-        if (\Acelle\Model\Setting::get('2fa_enable') == 'no') {
-            $url = session()->get('2fa.redirect', action('HomeController@index'));
-            return redirect()->away($url);
-        }
-
-        $user = $request->user();
-
-        // save posted data
-        if ($request->isMethod('post')) {
-            //
-            $inputCode = $request->code;
-
-            // resend
-            if ($request->resend) {
-                $user->sendVerifyCodeEMail();
-
-                return redirect(action('UserController@emailVerify'));
-            }
-
-            // make validator
-            $validator = \Validator::make($request->all(), [
-                'code' => 'required',
-            ]);
-
-            // verify code
-            $validator->after(function ($validator) use ($user, $inputCode) {
-                if (!$user->verifyCode($inputCode)) {
-                    $validator->errors()->add('code', trans('messages.2fa.email.code_not_match'));
-                }
-            });
-
-            // redirect if fails
-            if ($validator->fails()) {
-                return response()->view('auth.verify.email', [
-                    'errors' => $validator->errors(),
-                ], 400);
-            }
-
-            // success
-            $url = session()->get('2fa.redirect', action('HomeController@index'));
-            return redirect()->away($url);
-        }
-
-        return view('auth.verify.email');
     }
 }

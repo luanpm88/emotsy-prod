@@ -5,7 +5,7 @@
 @section('content')
     
     <!-- send reset password email -->
-    <form class="" role="form" method="POST" action="{{ action('UserController@emailVerify') }}">
+    <form class="" role="form" method="POST" action="{{ action('Email2FAController@emailVerify') }}">
         {{ csrf_field() }}
         
         <div class="panel panel-body p-4 rounded-3 bg-white shadow">                        

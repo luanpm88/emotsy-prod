@@ -19,8 +19,14 @@
             <h4 class="text-semibold mt-0">{{ trans('messages.2fa.google_authenticator') }}</h4>
             <p>{{ trans('messages.2fa.google_authenticator.please_enter_code') }}</p>
             
+            @if ($errors->has('code_invalid'))
+                <div class="alert alert-danger">
+                    {{ trans('messages.2fa.google_authenticator.code_invalid') }}
+                </div>
+            @endif
+
             <div class="mb-3">
-                <input name="one_time_password" type="text" class="form-control">
+                <input name="one_time_password" type="text" class="form-control" required>
             </div>
 
             <button type="submit" class="btn btn-primary">

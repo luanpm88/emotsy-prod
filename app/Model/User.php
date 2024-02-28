@@ -758,13 +758,45 @@ class User extends Authenticatable
         $sucess = $this->two_factor_verify_code == trim($inputCode);
 
         if ($sucess) {
-            $this->two_factor_verified = true;
-            $this->save();
-
             // session update
             request()->session()->put('two_factor_authenticated', true);
         }
 
         return $sucess;
+    }
+
+    public function is2FAAuthenticated()
+    {
+        return request()->session()->has('two_factor_authenticated');
+    }
+
+    public function set2FAAuthenticated()
+    {
+        // session update
+        request()->session()->put('two_factor_authenticated', true);
+    }
+
+    public function getInlineGAImage()
+    {
+        return \Google2FA::getQRCodeInline(
+            \Acelle\Model\Setting::get('site_name'),
+            $this->email,
+            $this->google_2fa_secret_key,
+        );
+    }
+
+    public function is2FAEnabled()
+    {
+        return $this->enable_2fa  && ($this->is2FAEmailEnabled() || $this->is2FAGoogleAuthentictorEnabled());
+    }
+
+    public function is2FAEmailEnabled()
+    {
+        return $this->enable_2fa_email;
+    }
+
+    public function is2FAGoogleAuthentictorEnabled()
+    {
+        return $this->enable_2fa_google_authenticator && $this->google_2fa_secret_key;
     }
 }

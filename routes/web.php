@@ -251,8 +251,8 @@ Route::group(['middleware' => ['not_installed', 'auth']], function () {
     // 2fa
     Route::match(['get', 'post'], 'auth/verify/select', 'UserController@verifySelectMethod');
 
-    //2fa Veridy Email
-    Route::match(['get', 'post'], 'auth/verify/email', 'UserController@emailVerify');
+    // 2fa Veridy Email
+    Route::match(['get', 'post'], 'auth/verify/email', 'Email2FAController@emailVerify');
 
     // 2fa Google Authenticator
     Route::get('2fa/google-authenticator/enter-code', 'Google2FAController@enterCode');
@@ -265,7 +265,7 @@ Route::group(['middleware' => ['not_installed', 'auth', '2fa']], function () {
     Route::get('2fa/google-authenticator/secret-key/generate', 'Google2FAController@generateSecretKey');
 });
 
-Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function () {
+Route::group(['middleware' => ['not_installed', 'auth', 'frontend', '2fa']], function () {
     // Audience
     Route::get('audience/growth-chart', 'AudienceController@growthChart');
     Route::get('audience/overview', 'AudienceController@overview');

@@ -9,15 +9,16 @@
         {{ csrf_field() }}
 
         <input type="hidden" name="key" value="{{ $key }}" />
+        <input type="hidden" name="redirect" value="{{ request()->redirect }}" />
         
         <div class="panel panel-body p-4 rounded-3 bg-white shadow">                        
             
             <p>{{ trans('messages.2fa.google_authenticator.scan_code.wording') }}</p>
 
             <div class="text-center my-3">
-                {!! $inlineImageUrl !!}
+                {!! Auth::user()->getInlineGAImage() !!}
                 <p class="mb-0">
-                    {{ $key }}
+                    {{ Auth::user()->google_2fa_secret_key }}
                 </p>
                 <p class="mb-0">
                     {{ Auth::user()->email }}

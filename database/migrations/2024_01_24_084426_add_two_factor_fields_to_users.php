@@ -14,7 +14,6 @@ class AddTwoFactorFieldsToUsers extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->boolean('two_factor_verified')->default(false);
             $table->string('two_factor_verify_code')->default(false);
             $table->timestamp('two_factor_last_send')->nullable();
         });
@@ -28,7 +27,6 @@ class AddTwoFactorFieldsToUsers extends Migration
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('two_factor_verified');
             $table->dropColumn('two_factor_verify_code');
             $table->dropColumn('two_factor_last_send');
         });

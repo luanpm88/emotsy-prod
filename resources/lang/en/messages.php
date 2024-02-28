@@ -3289,11 +3289,10 @@
   '2fa.email_verification.email_sent' => 'We have sent you an email with a verification code to <span class="fw-semibold">:email</span>.
     Please enter the code from the email here to verify your email.',
   '2fa.email_verification.enter_code_here' => 'Enter code here',
-  '2fa.select.wording' => 'You need to verify your login via email. We will send you an email with a verification code so that you can confirm that you are the real account holder.',
+  '2fa.select.wording' => 'You need to verify your login. Please select one of the methods below to proceed.',
   '2fa.email.send_email' => 'Send a verification code to your email',
   '2fa.email.resend_email' => 'Resend the verification code',
   '2fa.email.code_not_match' => 'The verification code does not match',
-  '2fa_enable' => 'Enable 2FA',
   '2fa_enable' => 'Enable 2FA',
   'setting.2fa_enable.help' => 'Two-Factor Authentication (2FA) with email adds an extra layer of
     security by requiring users to verify their identity through a unique code sent to their email, enhancing the protection of online accounts from unauthorized access.',
@@ -3314,9 +3313,17 @@
   '2fa.method.google_authenticator' => 'Google Authenticator',
   '2fa.method.google_authenticator.wording' => 'Use Google Authenticator from mobile to authenticate.',
   '2fa.google_authenticator.key_exist' => 'You have already generated a key.
-    Use the QR code below to re-add to the Google Authenticator app.
+    Use the QR code below to re-add the key to the Google Authenticator app.
   ',
   '2fa.google_authenticator.key_not_exist' => 'You do not have a Google Authenticator key yet. Click the button below to start using Google Authenticator.',
   '2fa.google_authenticator.setup' => 'Setup',
   '2fa.google_authenticator.re-create' => 'Recreate the Google Authenticator key',
+  '2fa.select_metthod' => 'Choose 2FA Method',
+  '2fa.use_google_authenticator_app' => 'Use Google Authenticator app',
+  '2fa.google_authenticator.save_success' => 'Google Authenticator key was successfully generated.',
+  '2fa.google_authenticator.code_invalid' => 'The entered code is invalid',
+  '2fa.email.content' => '<h1>Verification Code</h1>
+    <p>Your verification code is:</p>
+    <p><span style="font-size: 24pt;"><strong>:code</strong></span></p>
+    <p>The verification code will be valid for 30 minutes. Please do not share this code with anyone. Don&rsquo;t recognize this activity? Please reset your password and contact customer support immediately.<br /><br /><em>This is an automated message, please do not reply.</em></p>',
 ) ?>

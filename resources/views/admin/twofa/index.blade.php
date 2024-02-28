@@ -86,21 +86,12 @@
                                 <p class="mb-0">{{ trans('messages.2fa.method.google_authenticator.wording') }}</p>
                                 <hr>
                                 <div data-control="2fa-ga-settings" class="mt-3" style="display:none">
-                                    @if (Auth::user()->google_2fa_secret_key) 
-
-                                        @php
-                                            $key = Auth::user()->google_2fa_secret_key;
-                                            $inlineImageUrl = Google2FA::getQRCodeInline(
-                                                Auth::user()->name,
-                                                Auth::user()->email,
-                                                $key
-                                            );
-                                        @endphp         
+                                    @if (Auth::user()->google_2fa_secret_key)         
                                         <p>{{ trans('messages.2fa.google_authenticator.key_exist') }}</p>
                                         <div class="my-2 text-center">
-                                            {!! $inlineImageUrl !!}
+                                            {!! Auth::user()->getInlineGAImage() !!}
                                             <p class="mb-0">
-                                                {{ $key }}
+                                                {{ Auth::user()->google_2fa_secret_key }}
                                             </p>
                                             <p class="mb-0">
                                                 {{ Auth::user()->email }}
@@ -108,12 +99,16 @@
                                         </div>
                                         <hr>
                                         <div class="mt-2">
-                                            <a href="{{ action('Google2FAController@generateSecretKey') }}" class="btn btn-primary">{{ trans('messages.2fa.google_authenticator.re-create') }}</a>
+                                            <a href="{{ action('Google2FAController@generateSecretKey', [
+                                                'redirect' => action('Admin\TwoFAController@index'),
+                                            ]) }}" class="btn btn-primary">{{ trans('messages.2fa.google_authenticator.re-create') }}</a>
                                         </div>
                                     @else
                                         <p class="alert alert-warning">{{ trans('messages.2fa.google_authenticator.key_not_exist') }}</p>
 
-                                        <a href="{{ action('Google2FAController@generateSecretKey') }}" class="btn btn-primary">{{ trans('messages.2fa.google_authenticator.setup') }}</a>
+                                        <a href="{{ action('Google2FAController@generateSecretKey', [
+                                            'redirect' => action('Admin\TwoFAController@index'),
+                                        ]) }}" class="btn btn-primary">{{ trans('messages.2fa.google_authenticator.setup') }}</a>
                                     @endif
                                 </div>
                             </td>

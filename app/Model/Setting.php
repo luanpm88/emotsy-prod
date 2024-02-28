@@ -622,12 +622,6 @@ class Setting extends Model
                 'type' => 'checkbox',
                 'options' => ['no', 'yes'],
             ],
-            '2fa_enable' => [
-                'cat' => 'general',
-                'value' => 'no',
-                'type' => 'checkbox',
-                'options' => ['no', 'yes'],
-            ],
         ];
     }
 
