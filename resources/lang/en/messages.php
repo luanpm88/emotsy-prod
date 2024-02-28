@@ -3299,4 +3299,24 @@
     security by requiring users to verify their identity through a unique code sent to their email, enhancing the protection of online accounts from unauthorized access.',
   'monitor.campagins' => 'Monitor campaigns',
   'customer.all_customers' => 'All customers',
+  '2fa.google_authenticator' => 'Two-Factor Authentication using Google Authenticator',
+  '2fa.google_authenticator.please_enter_code' => 'Please open Google Authenticator and type a password below',
+  '2fa.google_authenticator.authenticate' => 'Authenticate',
+  '2fa.google_authenticator.next' => 'Next',
+  '2fa.google_authenticator.scan_code.wording' => 'Use the Google Authenticator app on your mobile device to scan
+    the code below and click Next',
+  '2fa.two_factor_authentication' => 'Two-Factor Authentication',
+  '2fa.intro' => 'Enabling Two-Factor Authentication (2FA) adds an extra layer of security to your account. With email-based 2FA, a one-time code is sent to your email, while Google Authenticator generates dynamic codes on your mobile app. This dual authentication enhances protection, making it more resilient against unauthorized access.',
+  '2fa.enable_2fa' => 'Enable Two-Factor Authentication',
+  '2fa.enable_2fa.intro' => 'Enabling this will immediately protect your account using the 2FA methods below.',
+  '2fa.method.email' => 'Email',
+  '2fa.method.email.wording' => 'Send an email with a verification code to <span class="fw-semibold">:email</span> and use the code to authenticate.',
+  '2fa.method.google_authenticator' => 'Google Authenticator',
+  '2fa.method.google_authenticator.wording' => 'Use Google Authenticator from mobile to authenticate.',
+  '2fa.google_authenticator.key_exist' => 'You have already generated a key.
+    Use the QR code below to re-add to the Google Authenticator app.
+  ',
+  '2fa.google_authenticator.key_not_exist' => 'You do not have a Google Authenticator key yet. Click the button below to start using Google Authenticator.',
+  '2fa.google_authenticator.setup' => 'Setup',
+  '2fa.google_authenticator.re-create' => 'Recreate the Google Authenticator key',
 ) ?>

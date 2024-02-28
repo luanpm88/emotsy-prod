@@ -17,7 +17,7 @@ class EmailVerify
      */
     public function handle(Request $request, Closure $next)
     {
-        if (\Acelle\Model\Setting::get('2fa_enable') == 'yes') {
+        if ($request->user()->enable_2fa == 'yes') {
             // save previous url
             session(['2fa.redirect' => url()->full()]);
 
