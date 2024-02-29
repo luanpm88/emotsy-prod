@@ -39,6 +39,11 @@
                         <span class="material-symbols-rounded">vpn_key</span> {{ trans('messages.api_token') }}
                     </a>
                 </li>
+                <li class="nav-item {{ $menu == '2fa' ? 'active' : '' }}">
+                    <a href="{{ action("TwoFAController@index") }}" class="nav-link">
+                        <span class="material-symbols-rounded">security</span> {{ trans('messages.2fa.two_factor_authentication') }}
+                    </a>
+                </li>
             </ul>
         </div>
     </div>

@@ -3299,7 +3299,7 @@
   'monitor.campagins' => 'Monitor campaigns',
   'customer.all_customers' => 'All customers',
   '2fa.google_authenticator' => 'Two-Factor Authentication using Google Authenticator',
-  '2fa.google_authenticator.please_enter_code' => 'Please open Google Authenticator and type a password below',
+  '2fa.google_authenticator.please_enter_code' => 'Please open Google Authenticator and type a code below',
   '2fa.google_authenticator.authenticate' => 'Authenticate',
   '2fa.google_authenticator.next' => 'Next',
   '2fa.google_authenticator.scan_code.wording' => 'Use the Google Authenticator app on your mobile device to scan
@@ -3326,4 +3326,5 @@
     <p>Your verification code is:</p>
     <p><span style="font-size: 24pt;"><strong>:code</strong></span></p>
     <p>The verification code will be valid for 30 minutes. Please do not share this code with anyone. Don&rsquo;t recognize this activity? Please reset your password and contact customer support immediately.<br /><br /><em>This is an automated message, please do not reply.</em></p>',
+  '2fa.select_defferent_method' => 'Select different method',
 ) ?>

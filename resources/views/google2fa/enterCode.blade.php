@@ -26,12 +26,16 @@
             @endif
 
             <div class="mb-3">
-                <input name="one_time_password" type="text" class="form-control" required>
+                <input name="one_time_password" type="text" class="form-control" required autofocus>
             </div>
 
             <button type="submit" class="btn btn-primary">
                 {{ trans('messages.2fa.google_authenticator.authenticate') }}
             </button>
+
+            <p class="mb-0 mt-4">
+                <a href="{{ action('UserController@verifySelectMethod') }}" >{{ trans('messages.2fa.select_defferent_method') }}</a>
+            </p>
         </div>
     </form>
     <!-- /send reset password email -->

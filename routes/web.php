@@ -344,6 +344,10 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', '2fa']], fun
 });
 
 Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscription', '2fa']], function () {
+    // 2FA settings
+    Route::get('account/2fa', 'TwoFAController@index');
+    Route::post('account/2fa/save', 'TwoFAController@save');
+
     // Search
     Route::get('/search/websites', 'SearchController@websites');
     Route::get('/search/forms', 'SearchController@forms');
