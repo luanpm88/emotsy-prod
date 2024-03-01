@@ -10,8 +10,8 @@
 				<div class="box-list mt-5">
 					@foreach ($types as $type)
 						@if (!Auth::user()->customer->getNewOrActiveGeneralSubscription()->planGeneral->getFeature('multiple_automation_trigger') && $type == 'api-3-0')
-
-                 		@else
++
++                       @else
 							<a class="box-item trigger-select-but trigger-{{ $type }} shadow-sm
 									{{ $trigger->getOption('key') == $type ? 'current' : '' }}
 								"
