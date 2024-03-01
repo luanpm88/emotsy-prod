@@ -1,3 +1,7 @@
+@if (config('app.emotsy'))
+	@include('emotsy.layouts.frontend_no_subscription')
+@else
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -169,3 +173,5 @@
 	{!! \Acelle\Model\Setting::get('custom_script') !!}
 </body>
 </html>
+
+@endif
