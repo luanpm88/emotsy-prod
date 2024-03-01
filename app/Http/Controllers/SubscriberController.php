@@ -756,14 +756,9 @@ class SubscriberController extends Controller
      */
     public function avatar(Request $request)
     {
-        // Get current customer
-        if ($request->uid != '0') {
-            $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
-        } else {
-            $subscriber = new \Acelle\Model\Subscriber();
-        }
+        $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
 
-        if (is_file($subscriber->getImagePath())) {
+        if ($subscriber && is_file($subscriber->getImagePath())) {
             $img = \Image::make($subscriber->getImagePath());
         } else {
             $img = \Image::make(public_path('images/subscriber-icon.jpg'));

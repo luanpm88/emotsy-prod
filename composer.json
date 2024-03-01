@@ -5,10 +5,11 @@
     "license": "MIT",
     "type": "project",
     "require": {
-        "php": "^7.3|^8.0",
+        "php": "^8.0",
         "acelle/cashier": "dev-master",
         "aws/aws-php-sns-message-validator": "^1.1",
         "aws/aws-sdk-php": "^3.19",
+        "bacon/bacon-qr-code": "^2.0",
         "bjoernffm/spintax": "^1.0",
         "braintree/braintree_php": "^3.22",
         "coinpaymentsnet/coinpayments-php": "^1.0",
@@ -49,6 +50,7 @@
         "php-http/httplug": "~2.2",
         "php-http/message": "^1.3",
         "php-mime-mail-parser/php-mime-mail-parser": "^8.0",
+        "pragmarx/google2fa-laravel": "^2.1",
         "psr/log": "^1.1.4",
         "rdok/elasticemail-php": "^2.2",
         "rmccue/requests": "^1.8",
@@ -109,7 +111,8 @@
         "optimize-autoloader": true,
         "platform-check": false,
         "allow-plugins": {
-            "pestphp/pest-plugin": true
+            "pestphp/pest-plugin": true,
+            "php-http/discovery": true
         }
     },
     "repositories": [

@@ -353,4 +353,22 @@ class UserController extends Controller
         // Redirect to my lists page
         echo trans('messages.user.deleted');
     }
+    
+    public function verifySelectMethod(Request $request)
+    {
+        if (!$request->user()->is2FAEnabled()) {
+            $url = session()->get('2fa.redirect', action('HomeController@index'));
+            return redirect()->away($url);
+        }
+
+        // send verifucation email
+        if ($request->isMethod('post')) {
+            $request->user()->sendVerifyCodeEMail();
+
+            // redirect
+            return redirect(action('Email2FAController@emailVerify'));
+        }
+
+        return view('auth.2fa.select');
+    }
 }

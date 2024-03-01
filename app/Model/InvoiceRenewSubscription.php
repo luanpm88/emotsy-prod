@@ -31,7 +31,9 @@ class InvoiceRenewSubscription extends Invoice
         /// renew
         $this->subscription->renew();
 
-        // Handle business for different types of plan
+        // Tạm thời chỗ này phải if/else vì
+        // chưa sử dụng class kế thừa cho subscription (VD: SubscriptionSender, SubscriptionGeneral, SubscriptionNumber...)
+        // mà tất cả các loại plan trên đều dùng 1 class Subscription như nhau
         switch (get_class($this->subscription->plan->mapType())) {
             case PlanGeneral::class:
 

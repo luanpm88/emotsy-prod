@@ -15,11 +15,16 @@ class GenerateSpintax implements StageInterface
 
         // Also, remember to exclude the <STYLE> tag for Spintax
         $cleanedHtml = StringHelper::updateHtml($html, function ($dom) {
-            $styles = $dom->getElementsByTagName('style');
-            for ($i = $styles->length; --$i >= 0;) {
-                $node = $styles->item($i);
-                $node->parentNode->removeChild($node);
+            $tagsToDelete = ['style', 'script'];
+
+            foreach ($tagsToDelete as $tag) {
+                $elements = $dom->getElementsByTagName($tag);
+                for ($i = $elements->length; --$i >= 0;) {
+                    $node = $elements->item($i);
+                    $node->parentNode->removeChild($node);
+                }
             }
+
         });
 
         // Also, remember to exclude the <STYLE> tag for Spintax
@@ -39,10 +44,16 @@ class GenerateSpintax implements StageInterface
         // Check every value
         foreach ($matches[0] as $text) {
             if ($this->containsSpintaxPattern($text)) {
-                $transformed = Parser::replicate($text, []);
+                try {
+                    $transformed = Parser::replicate($text, []);
 
-                // Actually replace in the HTML content
-                $html = str_replace(">{$text}<", ">{$transformed}<", $html); // Notice: use $html here, not $cleanedHtml
+                    // Actually replace in the HTML content
+                    $html = str_replace(">{$text}<", ">{$transformed}<", $html); // Notice: use $html here, not $cleanedHtml
+                } catch (\Exception $ex) {
+                    // In case of Parser error: call next() on null....
+                    // Hopefully it will be fixed in a future version
+                }
+
             }
         }
 

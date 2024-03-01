@@ -517,6 +517,11 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
         return $step;
     }
 
+    public function scopeError($query)
+    {
+        return $query->where('status', static::STATUS_ERROR);
+    }
+
     /**
      * Filter items.
      *

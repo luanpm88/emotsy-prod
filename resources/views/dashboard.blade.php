@@ -27,7 +27,7 @@
                 <div class="d-flex mb-2">
                     <label class="fw-600 me-auto">{{ trans('messages.sending_quota') }}</label>
                     <div class="pull-right text-semibold">
-                        <span class="text-muted">{{ number_with_delimiter($sendingCreditsUsed) }}/{{ ($sendingCreditsLimit == -1) ? '∞' : number_with_delimiter($sendingCreditsLimit) }}</span>
+                        <span class="text-muted" title="{{ trans('messages.sending_credits.last_month_used') }}">{{ number_with_delimiter($sendingCreditsUsed) }}/{{ ($sendingCreditsLimit == -1) ? '∞' : number_with_delimiter($sendingCreditsLimit) }}</span>
                         &nbsp;&nbsp;&nbsp;<span>{{ number_to_percentage($sendingCreditsUsedPercentage) }}</span>
                     </div>
                 </div>

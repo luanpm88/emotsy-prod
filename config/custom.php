@@ -42,4 +42,6 @@ return [
     // Check if the application is in distributed-worker mode
     'distributed_worker' => env('DISTRIBUTED_WORKER', false),
 
+    // Log level
+    'log_level' => env('LOG_LEVEL', 'debug'),
 ];

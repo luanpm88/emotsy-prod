@@ -80,5 +80,7 @@ class Kernel extends HttpKernel
         'not_logged_in' => \Acelle\Http\Middleware\NotLoggedIn::class,
         'subscription' => \Acelle\Http\Middleware\Subscription::class,
         'authorize' => \Acelle\Http\Middleware\Authorize::class,
+        'email_verify' => \Acelle\Http\Middleware\EmailVerify::class,
+        '2fa' => \Acelle\Http\Middleware\TwoFA::class,
     ];
 }

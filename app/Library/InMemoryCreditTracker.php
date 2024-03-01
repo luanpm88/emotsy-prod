@@ -13,22 +13,21 @@ class InMemoryCreditTracker
 
     protected $resourceKey;
 
-    public static function load(string $resourceKey, int $default = self::UNLIMITED)
+    public static function load(string $resourceKey)
     {
-        $tracker = new self($resourceKey, $default);
+        $tracker = new self($resourceKey);
         return $tracker;
     }
 
-    private function __construct($resourceKey, int $default)
+    private function __construct($resourceKey)
     {
         $this->resourceKey = $resourceKey;
-        $this->setCredits($default);
     }
 
     public function getRemainingCredits()
     {
         $credits = Cache::get($this->resourceKey);
-        if (empty(trim($credits))) {
+        if (empty($credits)) {
             return self::ZERO;
         }
 
@@ -48,9 +47,10 @@ class InMemoryCreditTracker
             $this->test();
 
             $remainingCredits = $this->getRemainingCredits();
-            $remainingCredits -= 1;
-
-            Cache::put($this->resourceKey, $remainingCredits);
+            if ($remainingCredits != self::UNLIMITED) {
+                $remainingCredits -= 1;
+                Cache::put($this->resourceKey, $remainingCredits);
+            }
         });
     }
 
@@ -71,9 +71,13 @@ class InMemoryCreditTracker
 
     public function rollback()
     {
-        $remainingCredits = $this->getRemainingCredits();
-        $remainingCredits += 1;
+        with_cache_lock($this->resourceKey, function () {
+            $remainingCredits = $this->getRemainingCredits();
 
-        Cache::put($this->resourceKey, $remainingCredits);
+            if ($remainingCredits != self::UNLIMITED) {
+                $remainingCredits += 1;
+                Cache::put($this->resourceKey, $remainingCredits);
+            }
+        });
     }
 }

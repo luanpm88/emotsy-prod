@@ -92,4 +92,22 @@ class InMemoryCreditTrackerTest extends TestCase
         // Rollback tracker 2
         expect($creditTracker2->getRemainingCredits())->toBe(100);
     }
+
+    public function test_with_unlimited_credits()
+    {
+        $key1 = 'credit-tracker-test-1';
+        $creditTracker1 = InMemoryCreditTracker::load($key1);
+        $creditTracker1->setCredits(-1);
+
+        $task = fn () => execute_with_limits([  ], [ $creditTracker1 ]);
+
+        $task();
+        expect($creditTracker1->getRemainingCredits())->toBe(InMemoryCreditTracker::UNLIMITED);
+
+        $task();
+        expect($creditTracker1->getRemainingCredits())->toBe(InMemoryCreditTracker::UNLIMITED);
+
+        $task();
+        expect($creditTracker1->getRemainingCredits())->toBe(InMemoryCreditTracker::UNLIMITED);
+    }
 }

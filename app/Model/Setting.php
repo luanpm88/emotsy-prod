@@ -403,12 +403,6 @@ class Setting extends Model
                 'type' => 'text',
                 'not_required' => true,
             ],
-            'allow_send_from_unverified_domain' => [
-                'cat' => 'others',
-                'value' => 'yes',
-                'type' => 'text',
-                'not_required' => true,
-            ],
             'allow_turning_off_dkim_signing' => [
                 'cat' => 'others',
                 'value' => 'yes',

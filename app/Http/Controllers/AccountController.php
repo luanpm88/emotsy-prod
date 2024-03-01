@@ -148,8 +148,12 @@ class AccountController extends Controller
         $customer = $request->user()->customer;
         if (config('app.saas')) {
             $subscription = $customer->getCurrentActiveGeneralSubscription(); // saas safe
-            $sendingCreditsUsed = $subscription->getSendEmailRateTracker()->getCreditsUsed(); // all time sending credits used
+            $sendCreditTracker = $subscription->getSendEmailCreditTracker();
+
+            $sendCreditRemaining = $sendCreditTracker->getRemainingCredits();
             $sendingCreditsLimit = $subscription->getCreditsLimit('send');
+            $sendingCreditsUsed = $subscription->getSendEmailRateTracker()->getCreditsUsed(now()->subtract('30 days'));
+
             $sendingCreditsUsedPercentage = $subscription->getRemainingEmailCreditsPercentage();
         } else {
             $remainingEmailCredits = -1;
@@ -183,6 +187,7 @@ class AccountController extends Controller
         $domainsUsed = ($maxDomains == -1) ? 0 : (($maxDomains == 0) ? 1 : $domainsCount / $maxDomains);
 
         return view('account.quota_log', [
+            'sendCreditRemaining' => $sendCreditRemaining,
             'sendingCreditsUsed' => $sendingCreditsUsed,
             'sendingCreditsLimit' => $sendingCreditsLimit,
             'sendingCreditsUsedPercentage' => $sendingCreditsUsedPercentage,
@@ -215,8 +220,9 @@ class AccountController extends Controller
         $customer = $request->user()->customer;
         if (config('app.saas')) {
             $subscription = $customer->getCurrentActiveGeneralSubscription(); // saas safe
-            $sendingCreditsUsed = $subscription->getSendEmailRateTracker()->getCreditsUsed(); // all time sending credits used
+            $sendCreditTracker = $subscription->getSendEmailCreditTracker();
             $sendingCreditsLimit = $subscription->getCreditsLimit('send');
+            $sendingCreditsUsed = $subscription->getSendEmailRateTracker()->getCreditsUsed(now()->subtract('30 days'));
             $sendingCreditsUsedPercentage = $subscription->getRemainingEmailCreditsPercentage();
         } else {
             $remainingEmailCredits = -1;

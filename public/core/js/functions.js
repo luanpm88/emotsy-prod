@@ -180,6 +180,7 @@ function initSelect2Ajax(select) {
         placeholder = "";
     }
     select.select2({
+        dropdownAutoWidth: true,
         placeholder: placeholder,
         allowClear: true,
         dropdownParent: select.parent(),
@@ -290,7 +291,7 @@ function formatSelect2TextOption(d) {
     if (parts.length == 1) {
         return parts[0];
     } else {
-        return '<div class="select2_title">' + parts[0] + '</div>' + '<div class="select2_sub_line">' + parts[1] + '</div>';
+        return '<div class="select2_title fw-600">' + parts[0] + '</div>' + '<div class="select2_sub_line">' + parts[1] + '</div>';
     }
 }
 

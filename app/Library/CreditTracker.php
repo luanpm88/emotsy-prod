@@ -9,24 +9,25 @@ use Exception;
 class CreditTracker
 {
     protected $filepath;
+    protected $lock;
 
     public const ZERO = 0;
     public const UNLIMITED = -1;
 
     // Using CreditTracker::load('file') makes more sense than
-    public static function load($filepath, bool $createFileIfNotExists = false, int $default = self::UNLIMITED)
+    public static function load($filepath, bool $createFileIfNotExists = false)
     {
-        $tracker = new self($filepath, $createFileIfNotExists, $default);
+        $tracker = new self($filepath, $createFileIfNotExists);
         return $tracker;
     }
 
-    private function __construct($filepath, bool $createFileIfNotExists, int $default)
+    private function __construct($filepath, bool $createFileIfNotExists)
     {
         $this->filepath = $filepath;
+        $this->lock = $filepath.'-lock';
 
         if ($createFileIfNotExists && !file_exists($this->filepath)) {
             $this->createFile();
-            $this->setCredits($default);
         }
     }
 
@@ -49,20 +50,22 @@ class CreditTracker
     private function test()
     {
         if ($this->getRemainingCredits() == self::ZERO) {
-            throw new OutOfCredits('Credits exceeded');
+            throw new OutOfCredits('Credits exceeded'.$this->filepath);
         }
     }
 
     public function count()
     {
-        Lockable::withExclusiveLock($this->filepath, function () {
+        Lockable::withExclusiveLock($this->lock, function () {
             $this->test();
 
             $remainingCredits = $this->getRemainingCredits();
-            $remainingCredits -= 1;
-            $remainingCredits = "{$remainingCredits}"; // cast to string
 
-            file_put_contents($this->filepath, $remainingCredits);
+            if ($remainingCredits != self::UNLIMITED) {
+                $remainingCredits -= 1;
+                $remainingCredits = "{$remainingCredits}"; // cast to string
+                file_put_contents($this->filepath, $remainingCredits);
+            }
         });
     }
 
@@ -82,10 +85,14 @@ class CreditTracker
 
     public function rollback()
     {
-        $remainingCredits = $this->getRemainingCredits();
-        $remainingCredits += 1;
-        $remainingCredits = "{$remainingCredits}"; // cast to string
+        Lockable::withExclusiveLock($this->lock, function () {
+            $remainingCredits = $this->getRemainingCredits();
 
-        file_put_contents($this->filepath, $remainingCredits);
+            if ($remainingCredits != self::UNLIMITED) {
+                $remainingCredits += 1;
+                $remainingCredits = "{$remainingCredits}"; // cast to string
+                file_put_contents($this->filepath, $remainingCredits);
+            }
+        });
     }
 }

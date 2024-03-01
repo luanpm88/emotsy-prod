@@ -251,9 +251,25 @@ Route::group(['middleware' => ['not_installed', 'auth']], function () {
             abort(404);
         }
     }])->where('name', '.+')->name('download');
+
+    // 2fa
+    Route::match(['get', 'post'], 'auth/verify/select', 'UserController@verifySelectMethod');
+
+    // 2fa Veridy Email
+    Route::match(['get', 'post'], 'auth/verify/email', 'Email2FAController@emailVerify');
+
+    // 2fa Google Authenticator
+    Route::get('2fa/google-authenticator/enter-code', 'Google2FAController@enterCode');
+    Route::post('2fa/google-authenticator/check', 'Google2FAController@check');
 });
 
-Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function () {
+Route::group(['middleware' => ['not_installed', 'auth', '2fa']], function () {
+    // 2fa
+    Route::post('2fa/google-authenticator/secret-key/save', 'Google2FAController@saveKey');
+    Route::get('2fa/google-authenticator/secret-key/generate', 'Google2FAController@generateSecretKey');
+});
+
+Route::group(['middleware' => ['not_installed', 'auth', 'frontend', '2fa']], function () {
     // Audience
     Route::get('audience/growth-chart', 'AudienceController@growthChart');
     Route::get('audience/overview', 'AudienceController@overview');
@@ -331,7 +347,11 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
     Route::get('users/login-back', 'UserController@loginBack');
 });
 
-Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscription', 'authorize']], function () {
+Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscription', 'authorize', '2fa']], function () {
+    // 2FA settings
+    Route::get('account/2fa', 'TwoFAController@index');
+    Route::post('account/2fa/save', 'TwoFAController@save');
+
     // Search
     Route::get('/search/websites', 'SearchController@websites');
     Route::get('/search/forms', 'SearchController@forms');
@@ -929,7 +949,14 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
 });
 
 // ADMIN AREA
-Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 'backend']], function () {
+Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 'backend', '2fa']], function () {
+    // 2FA settings
+    Route::get('admin/2fa', 'TwoFAController@index');
+    Route::post('admin/2fa/save', 'TwoFAController@save');
+
+    Route::get('admin/monitor/campaign', 'MonitorCampaignController@index');
+    Route::get('admin/monitor/campaign/list', 'MonitorCampaignController@list');
+
     Route::get('admin', 'HomeController@index');
     Route::get('admin/docs/api/v1', 'ApiController@doc');
 
@@ -1230,7 +1257,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::resource('admin/currencies', 'CurrencyController');
 
     // Subscription
-    Route::post('admin/subscriptions/{id}/replenish-sending-credits', 'SubscriptionController@replenishSendingCredits');
+    Route::match(['get','post'], 'admin/subscriptions/{id}/replenish-sending-credits', 'SubscriptionController@replenishSendingCredits');
     Route::post('admin/subscriptions/{id}/approve', 'SubscriptionController@approve');
     Route::match(['get','post'], 'admin/subscriptions/{id}/reject-pending', 'SubscriptionController@rejectPending');
     Route::get('admin/subscriptions/{id}/invoices', 'SubscriptionController@invoices');

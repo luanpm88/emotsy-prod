@@ -1004,7 +1004,7 @@ class Customer extends Model
      */
     public function displayNameEmailOption()
     {
-        return $this->displayName().'|||'.$this->user->email;
+        return '<span class="fe-semibold">'.$this->displayName().'</span>|||'.$this->user->email;
     }
 
     /**

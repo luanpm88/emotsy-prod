@@ -16,7 +16,7 @@ class BlacklistController extends Controller
      */
     public function search($request)
     {
-        $request->merge(array("admin_id" => $request->user()->admin->id));
+        // $request->merge(array("admin_id" => $request->user()->admin->id));
         $blacklists = \Acelle\Model\Blacklist::search($request);
 
         return $blacklists;

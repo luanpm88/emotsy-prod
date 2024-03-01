@@ -4,7 +4,6 @@ namespace Acelle\Jobs;
 
 use Illuminate\Bus\Batchable;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -148,18 +147,19 @@ class SendMessage implements ShouldQueue
 
             if (!is_null($this->subscription)) {
                 $rateTrackers[] = $this->subscription->getSendEmailRateTracker();
-
-                // @important: right now, do not care about CREDIT
-                // $creditTrackers[] = $this->subscription->getSendEmailCreditTracker();
+                $creditTrackers[] = $this->subscription->getSendEmailCreditTracker();
             }
 
             // DEBUG
             $finishPreparingAt = Carbon::now()->getTimestampMs();
             $finishDeliveryAt = null;
+            $getLockAt = null;
             // END DEBUG
 
-            execute_with_limits($rateTrackers, $creditTrackers, function () use ($message, $logger, $msgId, $email, &$finishDeliveryAt) {
+            execute_with_limits($rateTrackers, $creditTrackers, function () use ($message, $logger, $msgId, $email, &$finishDeliveryAt, &$getLockAt) {
                 // Actually send (or throw an exception)
+
+                $getLockAt = Carbon::now()->getTimestampMs();
 
                 if (!$this->subscriber->isSubscribed()) {
                     // @important: do not throw an exception here
@@ -188,7 +188,7 @@ class SendMessage implements ShouldQueue
             $now = Carbon::now(); // OK DONE ALL
             $finishAt = $now->getTimestampMs();
 
-            $this->campaign->debug(function ($info) use ($startAt, $now, $finishAt, $finishPreparingAt, $finishDeliveryAt) {
+            $this->campaign->debug(function ($info) use ($startAt, $now, $finishAt, $finishPreparingAt, $finishDeliveryAt, $getLockAt) {
                 $diff = ($finishAt - $startAt) / 1000;
                 $avg = $info['send_message_avg_time'];
                 if (is_null($avg)) {
@@ -198,15 +198,23 @@ class SendMessage implements ShouldQueue
                 }
 
                 $prepareDiff = ($finishPreparingAt - $startAt) / 1000;
-                $prepareAvg = $info['send_message_prepare_avg_time'];
+                $prepareAvg = $info['send_message_prepare_avg_time'] ?? null;
                 if (is_null($prepareAvg)) {
                     $info['send_message_prepare_avg_time'] = $prepareDiff;
                 } else {
                     $info['send_message_prepare_avg_time'] = ($prepareAvg * $info['send_message_count'] + $prepareDiff) / ($info['send_message_count'] + 1);
                 }
 
+                $getLockDiff = ($getLockAt - $startAt) / 1000;
+                $getLockAvg = $info['send_message_lock_avg_time'] ?? null;
+                if (is_null($getLockAvg)) {
+                    $info['send_message_lock_avg_time'] = $getLockDiff;
+                } else {
+                    $info['send_message_lock_avg_time'] = ($getLockAvg * $info['send_message_count'] + $getLockDiff) / ($info['send_message_count'] + 1);
+                }
+
                 $deliveryDiff = ($finishDeliveryAt - $startAt) / 1000;
-                $deliveryAvg = $info['send_message_delivery_avg_time'];
+                $deliveryAvg = $info['send_message_delivery_avg_time'] ?? null;
                 if (is_null($deliveryAvg)) {
                     $info['send_message_delivery_avg_time'] = $deliveryDiff;
                 } else {
@@ -238,18 +246,35 @@ class SendMessage implements ShouldQueue
             if (!is_null($exceptionCallback)) {
                 return $exceptionCallback($ex);
             }
-            // Releease the job, have it tried again later on, after 1 minutes
-            $logger->warning(sprintf("Delay [%s] for 120 seconds: %s", $email, $ex->getMessage()));
 
-            // Release the job, have it try again after 60 seconds
-            // and (hopefully) the quota limits will be lifted then as time goes by
-            // @note: normally, 60 seconds is enough, but change to 120 to prevent overhead
-            $this->release(120);
+            if ($this->batch()) {
+                $lockKey = "campaign-delay-flag-lock-{$this->campaign->uid}";
+                with_cache_lock($lockKey, function () use ($rateTrackers, $logger, $email, $ex) {
+                    $delayFlag = $this->campaign->checkDelayFlag();
 
-            //} catch (OutOfCredits $ex) {
+                    if ($delayFlag == true) {
+                        // just finish the task
+                        $logger->info(sprintf("Delay [%s], rate limit hit: %s", $email, $ex->getMessage()));
+                        return;
+                    } else {
+                        // Releease the job, have it tried again later on, after 1 minutes
 
+                        $delayInSeconds = 25;
+
+                        $logger->warning(sprintf("Delay [%s], dispatch WAITING job (%s seconds): %s", $email, $delayInSeconds, $ex->getMessage()));
+
+                        // set delay flag to true
+                        $this->campaign->setDelayFlag(true);
+                        $delay = new Delay($delayInSeconds, $this->campaign, $rateTrackers);
+                        $this->batch()->add($delay);
+                    }
+                });
+
+            } else {
+                $logger->warning(sprintf("Delay [%s] for 60 seconds (no batch): %s", $email, $ex->getMessage()));
+                $this->release(600); // should be only 60 seconds
+            }
         } catch (Throwable $ex) {
-            // Also catch the OutOfCredits error
             if (!is_null($exceptionCallback)) {
                 return $exceptionCallback($ex);
             }
@@ -257,12 +282,20 @@ class SendMessage implements ShouldQueue
             $message = sprintf("Error sending to [%s]. Error: %s", $email, $ex->getMessage());
             $logger->error($message);
 
+            // In case of these exceptions, stop campaign immediately even if stopOnError is currently false
+            // This is helpful in certain cases: for example, when credits runs out, then it does not make sense to keep sending (and failing)
+            $forceEndCampaignExceptions = [
+                OutOfCredits::class,
+                // Other "end-game" exception like "SendingServer out of credits, etc."
+            ];
+
+            $forceEndCampaign = in_array(get_class($ex), $forceEndCampaignExceptions);
+
             // There are 2 options here
             // Option 1: throw an exception and show it to users as the campaign status
             //     throw new Exception($message);
             // Option 2: just skip the error, log it and proceed with the next subscriber
-
-            if ($this->stopOnError) {
+            if ($this->stopOnError || $forceEndCampaign) {
                 throw new Exception($message);
             } else {
                 if (!isset($msgId)) {
