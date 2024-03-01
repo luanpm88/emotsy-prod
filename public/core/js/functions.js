@@ -681,7 +681,9 @@ function makeList(options) {
     // keyword input change
     options.container.find('.filter-box input[type=text]').on('keyup', function() {
         resetPage();
-        _list.load();
+        if ($(this).val().length > 2 || $(this).val().length == 0) {
+            _list.load();
+        }
     });
 
     // sort direction click

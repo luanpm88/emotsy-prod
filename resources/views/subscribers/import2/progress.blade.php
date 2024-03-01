@@ -50,6 +50,7 @@
 
     <script>
         var SubscribersImportProgress = {
+            checkProgressTimer: null,
 
             checkUrl: '{{ action('SubscriberController@import2ProgressContent', [
                 'list_uid' => $list->uid,
@@ -74,6 +75,7 @@
             },
 
             cancelImport: function() {
+                clearTimeout(this.checkProgressTimer);
                 $.ajax({
                     url: SubscribersImportProgress.cancelUrl,
                     type: 'POST',
