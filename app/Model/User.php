@@ -731,7 +731,7 @@ class User extends Authenticatable
         $message->setEncoder(new \Swift_Mime_ContentEncoder_PlainContentEncoder('8bit'));
         $message->setContentType('text/html; charset=utf-8');
 
-        $message->setSubject('Email Verification Code');
+        $message->setSubject(trans('messages.2fa.verification_code'));
         $message->setTo($this->email);
         $message->setReplyTo(Setting::get('mail.reply_to'));
         $message->addPart(view('auth.verify.email.content', [
