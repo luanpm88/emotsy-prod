@@ -42,7 +42,7 @@ class Email2FAController extends Controller
 
             // redirect if fails
             if ($validator->fails()) {
-                return response()->view('auth.verify.email', [
+                return response()->view('auth.2fa.email.enterCode', [
                     'errors' => $validator->errors(),
                 ], 400);
             }
@@ -52,6 +52,6 @@ class Email2FAController extends Controller
             return redirect()->away($url);
         }
 
-        return view('auth.verify.email');
+        return view('auth.2fa.email.enterCode');
     }
 }

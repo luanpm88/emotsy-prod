@@ -30,7 +30,7 @@ class VerifyEmailSendCode extends Mailable
      */
     public function build()
     {
-        return $this->view('auth.verify.email.content', [
+        return $this->view('auth.2fa.email.content', [
             'code' => $this->code,
         ]);
     }

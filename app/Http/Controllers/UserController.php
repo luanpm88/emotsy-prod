@@ -169,6 +169,6 @@ class UserController extends Controller
             return redirect(action('Email2FAController@emailVerify'));
         }
 
-        return view('auth.verify.select');
+        return view('auth.2fa.select');
     }
 }

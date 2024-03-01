@@ -734,7 +734,7 @@ class User extends Authenticatable
         $message->setSubject(trans('messages.2fa.verification_code'));
         $message->setTo($this->email);
         $message->setReplyTo(Setting::get('mail.reply_to'));
-        $message->addPart(view('auth.verify.email.content', [
+        $message->addPart(view('auth.2fa.email.content', [
             'code' => $code,
         ])->render(), 'text/html');
 

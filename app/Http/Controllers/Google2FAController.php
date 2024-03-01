@@ -22,7 +22,7 @@ class Google2FAController extends Controller
 
         // redirect if fails
         if ($validator->fails()) {
-            return response()->view('google2fa.enterCode', [
+            return response()->view('auth.2fa.google.enterCode', [
                 'errors' => $validator->errors(),
             ], 400);
         }
@@ -42,7 +42,7 @@ class Google2FAController extends Controller
             return redirect()->away($url);
         }
 
-        return view('google2fa.enterCode');
+        return view('auth.2fa.google.enterCode');
     }
 
     public function generateSecretKey(Request $request)
@@ -53,7 +53,7 @@ class Google2FAController extends Controller
             $request->user()->email,
             $key
         );
-        return view('google2fa.generateSecretKey', [
+        return view('auth.2fa.google.generateSecretKey', [
             'key' => $key,
             'inlineImageUrl' => $inlineImageUrl,
         ]);
