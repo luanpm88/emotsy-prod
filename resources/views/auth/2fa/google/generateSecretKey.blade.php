@@ -16,9 +16,9 @@
             <p>{{ trans('messages.2fa.google_authenticator.scan_code.wording') }}</p>
 
             <div class="text-center my-3">
-                {!! Auth::user()->getInlineGAImage() !!}
+                {!! $inlineImageUrl !!}
                 <p class="mb-0">
-                    {{ Auth::user()->google_2fa_secret_key }}
+                    {{ $key }}
                 </p>
                 <p class="mb-0">
                     {{ Auth::user()->email }}
