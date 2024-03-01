@@ -42,6 +42,11 @@
             <input type="submit" verify-control="resend" type="submit" type="submit" class="btn btn-light" name="resend"
                 value="{{ trans('messages.2fa.email.resend_email') }}""
             />
+
+            <p class="mb-0 mt-4">
+                <a href="{{ action('UserController@verifySelectMethod') }}" >{{ trans('messages.2fa.select_defferent_method') }}</a>
+            </p>
+            
             <script>
                 $(function() {
                     new CountDownManager({
