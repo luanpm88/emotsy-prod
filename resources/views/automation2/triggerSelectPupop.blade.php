@@ -9,13 +9,17 @@
             <div class="box-list mt-3">
 				<div class="box-list mt-5">
 					@foreach ($types as $type)
-						<a class="box-item trigger-select-but trigger-{{ $type }} shadow-sm
-								{{ $trigger->getOption('key') == $type ? 'current' : '' }}
-							"
-							data-key="{{ $type }}"						
-						>							
-							@include('automation2.trigger.icons.' . $type)
-						</a>
+						@if (!Auth::user()->customer->getNewOrActiveGeneralSubscription()->planGeneral->getFeature('multiple_automation_trigger') && $type == 'api-3-0')
+
+                 		@else
+							<a class="box-item trigger-select-but trigger-{{ $type }} shadow-sm
+									{{ $trigger->getOption('key') == $type ? 'current' : '' }}
+								"
+								data-key="{{ $type }}"						
+							>							
+								@include('automation2.trigger.icons.' . $type)
+							</a>
+						@endif
 					@endforeach                
             </div>
         </div>
