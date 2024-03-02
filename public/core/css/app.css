@@ -416,7 +416,7 @@ h3 {
     padding-right: 0;
 }
 .table-box tr:last-child td {
-    border-bottom: solid 1px #ddd;
+    border-bottom: solid 1px #dedddc;
 }
 
 .table-box tbody tr td, .table-box tbody tr th {
@@ -2364,10 +2364,10 @@ a.loading, button.loading {
     font-size: 14px;
 }
 .table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td {
-    border-color: #eee;
+    border-color: #dedddc;
 }
 .table-box tr:last-child td {
-    border-color: #eee;
+    border-color: #dedddc;
 }
 .alert {
     border: none;

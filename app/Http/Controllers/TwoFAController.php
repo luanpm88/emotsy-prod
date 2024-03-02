@@ -22,6 +22,9 @@ class TwoFAController extends Controller
         $user->enable_2fa_google_authenticator = $request->enable_2fa_google_authenticator;
         $user->save();
 
-        return redirect()->action('TwoFAController@index');
+        return response()->json([
+            'status' => 'success',
+            'message' => trans('messages.2fa.saved'),
+        ]);
     }
 }

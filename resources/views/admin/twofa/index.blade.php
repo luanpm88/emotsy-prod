@@ -1,4 +1,4 @@
-@extends('layouts.core.backend', [
+@extends('layouts.core.frontend_no_subscription', [
     'menu' => 'profile',
 ])
 
@@ -20,11 +20,11 @@
 
 @section('content')
 
-    @include("admin.account._menu", [
+    @include("account._menu", [
         'menu' => '2fa',
     ])
 
-    <form enctype="multipart/form-data" action="{{ action('Admin\TwoFAController@save') }}" method="POST" class="form-validaate-jquery">
+    <form id="TwoFAForm" enctype="multipart/form-data" action="{{ action('Admin\TwoFAController@save') }}" method="POST" class="form-validaate-jquery">
         {{ csrf_field() }}
 
         
@@ -73,7 +73,7 @@
                                 </label>
                             </td>
                         </tr>
-                        <tr>
+                        <tr class="border-bottom-0">
                             <td class="pe-2" width="1%">
                                 <span class="material-symbols-rounded fs-2">
                                     phonelink_lock
@@ -84,8 +84,9 @@
                                     <h4 class="mb-0 me-3">{{ trans('messages.2fa.method.google_authenticator') }}</h4>
                                 </div>
                                 <p class="mb-0">{{ trans('messages.2fa.method.google_authenticator.wording') }}</p>
-                                <hr>
+                                
                                 <div data-control="2fa-ga-settings" class="mt-3" style="display:none">
+                                    <hr>
                                     @if (Auth::user()->google_2fa_secret_key)         
                                         <p>{{ trans('messages.2fa.google_authenticator.key_exist') }}</p>
                                         <div class="my-2 text-center">
@@ -123,14 +124,11 @@
                     </tbody></table>
                 </div>
                 
-                <div class="text-left mt-4">
+                {{-- <div class="text-left mt-4">
                     <button class="btn btn-secondary"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
-                </div>
+                </div> --}}
             </div>
         </div>
-
-        
-
     <form>
 
     <script>
@@ -141,7 +139,45 @@
                 gaChecker: $('[data-control="2fa-ga-checker"]'),
                 gaSettingsBox: $('[data-control="2fa-ga-settings"]'),
             });
+
+            new SettingsManager({
+                form: $('#TwoFAForm'),
+            });
         });
+
+        var SettingsManager = class {
+            constructor(options) {
+                this.form = options.form;
+
+                // 
+                this.events();
+            }
+
+            save() {
+                $.ajax({
+                    method: "POST",
+                    url: this.form.attr('action'),
+                    data: this.form.serialize(),
+                })
+                .done(function( res ) {
+                    notify('success', res.status, res.message);
+                });
+            }
+
+            events() {
+                var _this = this;
+
+                this.form.on('submit', function(e) {
+                    e.preventDefault();
+
+                    _this.save();
+                });
+
+                this.form.find(':input').on('change', function() {
+                    _this.save();
+                });
+            }
+        }
 
         var TwoFaSetting = class {
             constructor(options) {
