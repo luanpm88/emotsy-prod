@@ -38,7 +38,13 @@ class SendingDomain extends Model
 
     public const STATUS_ACTIVE = 'active';
     public const STATUS_INACTIVE = 'inactive';
-    public const VALIDATION_REGEXP = '/^([a-z0-9A-Z]+(-[a-z0-9A-Z]+)*\.)+[a-zA-Z]{2,}$/';
+
+    // The regex below also supports Cyrillic
+    public const VALIDATION_REGEXP = '/^([\p{Cyrillic}\p{Latin}\d\.-]{1,64})?\.(?:\x{0440}\x{0444}|ru|su|arpa|info|aero|name|[a-z]{3})$/iu';
+
+    // The regex below does not supports Cyrillic
+    // public const VALIDATION_REGEXP = '/^([a-z0-9A-Z]+(-[a-z0-9A-Z]+)*\.)+[a-zA-Z]{2,}$/';
+
 
     // The following global app settings are used by domain
     // + spf_host
@@ -118,7 +124,7 @@ class SendingDomain extends Model
     public static function rules()
     {
         return [
-            'name' => 'required|regex:'.self::VALIDATION_REGEXP,
+            'name' => ['required', 'regex:'.self::VALIDATION_REGEXP],
         ];
     }
 
