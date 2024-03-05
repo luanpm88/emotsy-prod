@@ -445,3 +445,24 @@ function execute_with_limits(array $rateTrackers, array $creditTrackers, Closure
         throw $exception;
     }
 }
+
+// Load the list of connection settings from config/sharding.php and set default Laravel database connection
+function set_userdb_connection($selected)
+{
+    $connections  = config('sharding');
+    foreach ($connections as $name => $settings) {
+
+        if ($selected == $name) {
+            \Config::set("database.connections.{$name}", $settings);
+            \Config::set('database.default', $name);
+            \DB::purge($name);
+            \DB::reconnect($name);
+
+            // Break here
+            return;
+        }
+    }
+
+    // if selected connection name is not found
+    throw new \Exception("Cannot find database connection '{$selected}'");
+}
