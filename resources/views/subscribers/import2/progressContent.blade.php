@@ -50,7 +50,7 @@
             $('#ImportCloseButton').hide();
             $('#ImportRetryButton').show();
         @else
-            setTimeout(function() {
+            SubscribersImportProgress.checkProgressTimer = setTimeout(function() {
                 SubscribersImportProgress.checkProgress();
             }, 1000);
 

@@ -170,7 +170,7 @@ class MailList extends Model
         // Create uid when list created.
         static::created(function ($item) {
             //  Create list default fields
-            $item->createDefaultFieds();
+            $item->createDefaultFields();
         });
 
         // detele
@@ -289,7 +289,7 @@ class MailList extends Model
     /**
      * Create default fields for list.
      */
-    public function createDefaultFieds()
+    public function createDefaultFields()
     {
         $defaultFields = [
             [
@@ -1180,6 +1180,13 @@ class MailList extends Model
         try {
             // process by batches
             each_batch($results, config('custom.import_batch_size'), false, function ($batch) use ($map, &$processed, &$failed, $total, &$overQuotaAttempt, &$message, $progressCallback, $invalidRecordCallback) {
+
+                // Throw exception if no room left
+                if (!$this->customer->user->can('addMoreSubscribers', [ $this, $more = 1 ])) {
+                    throw new Exception('MAX CONTACTS quota exceeded');
+                }
+
+                // The last time, only import the allowed room
                 if ($this->customer->user->can('addMoreSubscribers', [$this, sizeof($batch)])) {
                     $insertLimit = sizeof($batch);
                 } else {

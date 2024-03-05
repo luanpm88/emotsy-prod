@@ -27,7 +27,7 @@ class InMemoryCreditTracker
     public function getRemainingCredits()
     {
         $credits = Cache::get($this->resourceKey);
-        if (empty(trim($credits))) {
+        if (empty($credits)) {
             return self::ZERO;
         }
 
@@ -47,9 +47,10 @@ class InMemoryCreditTracker
             $this->test();
 
             $remainingCredits = $this->getRemainingCredits();
-            $remainingCredits -= 1;
-
-            Cache::put($this->resourceKey, $remainingCredits);
+            if ($remainingCredits != self::UNLIMITED) {
+                $remainingCredits -= 1;
+                Cache::put($this->resourceKey, $remainingCredits);
+            }
         });
     }
 
@@ -70,9 +71,13 @@ class InMemoryCreditTracker
 
     public function rollback()
     {
-        $remainingCredits = $this->getRemainingCredits();
-        $remainingCredits += 1;
+        with_cache_lock($this->resourceKey, function () {
+            $remainingCredits = $this->getRemainingCredits();
 
-        Cache::put($this->resourceKey, $remainingCredits);
+            if ($remainingCredits != self::UNLIMITED) {
+                $remainingCredits += 1;
+                Cache::put($this->resourceKey, $remainingCredits);
+            }
+        });
     }
 }

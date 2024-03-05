@@ -197,13 +197,17 @@ class Email extends Model implements HasTemplateInterface
             $subscription = null;
         }
 
-        safe_dispatch(new SendMessage(
+        $job = new SendMessage(
             $this,
             $subscriber,
             $server,
             $subscription,
             $triggerId
-        ));
+        );
+
+        $job->onQueue('batch');
+
+        safe_dispatch($job);
     }
 
     public function sendTestEmail($emailAddress)

@@ -12,7 +12,7 @@
                 <div class="d-flex align-items-center">
                     <h5 class="text-semibold mb-1 me-auto">{{ trans('messages.sending_quota.available', [ 'num' => ($sendCreditRemaining == -1) ? '∞' : number_with_delimiter($sendCreditRemaining) ]) }}</h5>
                     <div class="pull-right text-primary text-semibold">
-                        <span class="text-muted">{{ number_with_delimiter($sendingCreditsUsed) }}/{{ ($sendingCreditsLimit == -1) ? '∞' : number_with_delimiter($sendingCreditsLimit) }}</span>
+                        <span class="text-muted" title="{{ trans('messages.sending_credits.last_month_used') }}">{{ number_with_delimiter($sendingCreditsUsed) }}/{{ ($sendingCreditsLimit == -1) ? '∞' : number_with_delimiter($sendingCreditsLimit) }}</span>
                         &nbsp;&nbsp;&nbsp;{{ number_to_percentage($sendingCreditsUsedPercentage) }}
                     </div>
                 </div>

@@ -154,7 +154,7 @@ class AccountController extends Controller
 
             $sendCreditRemaining = $sendCreditTracker->getRemainingCredits();
             $sendingCreditsLimit = $subscription->getCreditsLimit('send');
-            $sendingCreditsUsed = $sendingCreditsLimit - $sendCreditTracker->getRemainingCredits(); // all time sending credits used
+            $sendingCreditsUsed = $subscription->getSendEmailRateTracker()->getCreditsUsed(now()->subtract('30 days'));
 
             $sendingCreditsUsedPercentage = $subscription->getRemainingEmailCreditsPercentage();
         } else {
@@ -224,7 +224,7 @@ class AccountController extends Controller
             $subscription = $customer->getCurrentActiveGeneralSubscription(); // saas safe
             $sendCreditTracker = $subscription->getSendEmailCreditTracker();
             $sendingCreditsLimit = $subscription->getCreditsLimit('send');
-            $sendingCreditsUsed = $sendingCreditsLimit - $sendCreditTracker->getRemainingCredits(); // all time sending credits used
+            $sendingCreditsUsed = $subscription->getSendEmailRateTracker()->getCreditsUsed(now()->subtract('30 days'));
             $sendingCreditsUsedPercentage = $subscription->getRemainingEmailCreditsPercentage();
         } else {
             $remainingEmailCredits = -1;

@@ -9,6 +9,7 @@ use Exception;
 class CreditTracker
 {
     protected $filepath;
+    protected $lock;
 
     public const ZERO = 0;
     public const UNLIMITED = -1;
@@ -23,6 +24,7 @@ class CreditTracker
     private function __construct($filepath, bool $createFileIfNotExists)
     {
         $this->filepath = $filepath;
+        $this->lock = $filepath.'-lock';
 
         if ($createFileIfNotExists && !file_exists($this->filepath)) {
             $this->createFile();
@@ -48,20 +50,22 @@ class CreditTracker
     private function test()
     {
         if ($this->getRemainingCredits() == self::ZERO) {
-            throw new OutOfCredits('Credits exceeded');
+            throw new OutOfCredits('Credits exceeded'.$this->filepath);
         }
     }
 
     public function count()
     {
-        Lockable::withExclusiveLock($this->filepath, function () {
+        Lockable::withExclusiveLock($this->lock, function () {
             $this->test();
 
             $remainingCredits = $this->getRemainingCredits();
-            $remainingCredits -= 1;
-            $remainingCredits = "{$remainingCredits}"; // cast to string
 
-            file_put_contents($this->filepath, $remainingCredits);
+            if ($remainingCredits != self::UNLIMITED) {
+                $remainingCredits -= 1;
+                $remainingCredits = "{$remainingCredits}"; // cast to string
+                file_put_contents($this->filepath, $remainingCredits);
+            }
         });
     }
 
@@ -81,10 +85,14 @@ class CreditTracker
 
     public function rollback()
     {
-        $remainingCredits = $this->getRemainingCredits();
-        $remainingCredits += 1;
-        $remainingCredits = "{$remainingCredits}"; // cast to string
+        Lockable::withExclusiveLock($this->lock, function () {
+            $remainingCredits = $this->getRemainingCredits();
 
-        file_put_contents($this->filepath, $remainingCredits);
+            if ($remainingCredits != self::UNLIMITED) {
+                $remainingCredits += 1;
+                $remainingCredits = "{$remainingCredits}"; // cast to string
+                file_put_contents($this->filepath, $remainingCredits);
+            }
+        });
     }
 }

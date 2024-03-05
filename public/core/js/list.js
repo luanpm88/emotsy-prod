@@ -3,6 +3,7 @@ class List {
         var _this = this;
         _this.id = '_' + Math.random().toString(36).substr(2, 9);
         _this.options = {};
+        _this.lastRun = 0;
 
         // options
         if (typeof(options) !== 'undefined') {
@@ -83,6 +84,10 @@ class List {
     load() {
         var _this = this;
 
+        if (_this.lastRun > Date.now() - 200) {
+            return;
+        }
+
         if(_this.xhr && _this.xhr.readyState != 4){
             _this.xhr.abort();
         }
@@ -103,6 +108,8 @@ class List {
             }
 
             _this.unmasking();
+
+            _this.lastRun = Date.now();
         }).fail(function(response) {
             // alert(response.responseText);
 

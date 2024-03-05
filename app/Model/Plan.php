@@ -367,7 +367,7 @@ class Plan extends Model
                 $limit,
                 $options['sending_quota_time'],
                 $timeUnit,
-                $description = "Sending speed limit of {$limit} per {$options['sending_quota_time']} {$timeUnit}"
+                $description = "Plan ({$this->name}) sending speed limit of {$limit} per {$options['sending_quota_time']} {$timeUnit}"
             );
         }
 

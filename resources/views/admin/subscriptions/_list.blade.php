@@ -74,7 +74,7 @@
 				<td width="15%">
 					@if ($subscription->isActive())
 						<h5 class="no-margin stat-num">
-							<span class="kq_search">{{ number_with_delimiter($subscription->getRemainingEmailCredits()) }}</span>
+							<span class="kq_search">{{ ($subscription->getRemainingEmailCredits() == -1) ? '∞' : number_with_delimiter($subscription->getRemainingEmailCredits()) }}</span>
 						</h5>
 						<span class="text-muted2">{{ trans('messages.subscription.send_credits_remaining') }}</span>
 					@endif
