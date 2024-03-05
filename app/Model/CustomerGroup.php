@@ -92,11 +92,6 @@ class CustomerGroup extends Model
         return $this->hasMany('Acelle\Model\Customer');
     }
 
-    public function sending_servers()
-    {
-        return $this->belongsToMany('Acelle\Model\SendingServer', 'customer_group_sending_servers');
-    }
-
     /**
      * Filter items.
      *
