@@ -28,6 +28,8 @@ use Acelle\Library\RateLimit;
 
 class Plan extends Model
 {
+    protected $connection = 'mysql';
+
     use HasUid;
 
     // Plan status

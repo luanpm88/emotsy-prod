@@ -22,6 +22,8 @@ use Acelle\Library\Everification\EmailListValidation;
 
 class EmailVerificationServer extends Model
 {
+    protected $connection = 'mysql';
+
     use HasUid;
 
     // set the table name

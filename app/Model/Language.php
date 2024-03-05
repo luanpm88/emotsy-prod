@@ -30,6 +30,8 @@ use DB;
 
 class Language extends Model
 {
+    protected $connection = 'mysql';
+
     use HasUid;
 
     public const STATUS_ACTIVE = 'active';

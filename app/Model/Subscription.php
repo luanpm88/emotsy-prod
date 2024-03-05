@@ -19,6 +19,8 @@ use DB;
 
 class Subscription extends Model
 {
+    protected $connection = 'mysql';
+
     use HasUid;
 
     public const STATUS_NEW = 'new';

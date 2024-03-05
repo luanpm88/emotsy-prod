@@ -26,6 +26,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class UserActivation extends Model
 {
+    protected $connection = 'mysql';
+
     /**
      * Get user activation token.
      *

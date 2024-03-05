@@ -36,6 +36,8 @@ use Acelle\Library\Facades\Hook;
 
 class User extends Authenticatable
 {
+    protected $connection = 'mysql';
+
     use Notifiable;
     use HasUid;
 

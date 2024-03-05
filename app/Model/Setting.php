@@ -29,6 +29,8 @@ use Acelle\Library\Facades\Billing;
 
 class Setting extends Model
 {
+    protected $connection = 'mysql';
+
     public const UPLOAD_PATH = 'app/setting/';
 
     /**

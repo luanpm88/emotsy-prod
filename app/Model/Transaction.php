@@ -7,6 +7,8 @@ use Acelle\Library\Traits\HasUid;
 
 class Transaction extends Model
 {
+    protected $connection = 'mysql';
+
     use HasUid;
 
     // wait status

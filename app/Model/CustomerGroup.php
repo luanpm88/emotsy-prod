@@ -26,6 +26,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class CustomerGroup extends Model
 {
+    protected $connection = 'mysql';
+
     /**
      * The attributes that are mass assignable.
      *
@@ -88,11 +90,6 @@ class CustomerGroup extends Model
     public function customers()
     {
         return $this->hasMany('Acelle\Model\Customer');
-    }
-
-    public function customer_group_sending_servers()
-    {
-        return $this->hasMany('Acelle\Model\CustomerGroupSendingServer');
     }
 
     public function sending_servers()
@@ -247,26 +244,6 @@ class CustomerGroup extends Model
         }
 
         return $arr;
-    }
-
-    /**
-     * Update sending servers.
-     *
-     * @return array
-     */
-    public function updateSendingServers($servers)
-    {
-        $this->customer_group_sending_servers()->delete();
-        foreach ($servers as $key => $param) {
-            if ($param['check']) {
-                $server = SendingServer::findByUid($key);
-                $row = new CustomerGroupSendingServer();
-                $row->customer_group_id = $this->id;
-                $row->sending_server_id = $server->id;
-                $row->fitness = $param['fitness'];
-                $row->save();
-            }
-        }
     }
 
     /**

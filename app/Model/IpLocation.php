@@ -29,6 +29,8 @@ use Acelle\Library\Notification\BackendError;
 
 class IpLocation extends Model
 {
+    protected $connection = 'mysql';
+
     /**
      * The attributes that are mass assignable.
      *

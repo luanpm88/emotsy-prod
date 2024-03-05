@@ -26,6 +26,8 @@ use Acelle\Library\Traits\HasUid;
 
 class FeedbackLoopHandler extends DeliveryHandler
 {
+    protected $connection = 'mysql';
+
     use HasUid;
 
     protected $logfile = 'feedback-loop-handler';

@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Log;
 
 class JobMonitor extends Model
 {
+    protected $connection = 'mysql';
+
     use HasFactory;
     use HasUid;
 
