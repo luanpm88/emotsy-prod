@@ -3,7 +3,7 @@
     <div class="alert alert-danger alert-noborder alert-dismissible">
         <ul class="mb-0 {{ $errors->count() == 1 ? ' ps-0' : '' }}">
             @foreach ($errors->all() as $error)
-                <li {!! $errors->count() == 1 ? 'style="list-style:none"' : '' !!}>{{ $error }}</li>
+                <li {!! $errors->count() == 1 ? 'style="list-style:none"' : '' !!}>{!! $error !!}</li>
             @endforeach
         </ul>
 
