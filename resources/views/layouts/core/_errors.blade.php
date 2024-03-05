@@ -1,13 +1,9 @@
 @if (count($errors) > 0)
     <!-- Form Error List -->
     <div class="alert alert-danger alert-noborder alert-dismissible">
-        <strong>{{ trans('messages.check_entry_try_again') }}</strong>
-
-        <br><br>
-
-        <ul>
+        <ul class="mb-0 {{ $errors->count() == 1 ? ' ps-0' : '' }}">
             @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
+                <li {!! $errors->count() == 1 ? 'style="list-style:none"' : '' !!}>{{ $error }}</li>
             @endforeach
         </ul>
 
