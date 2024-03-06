@@ -11,7 +11,7 @@
                 @foreach ($bill['bill'] as $item)
                     <div class="bill_item d-flex">
                         <div class="mr-auto">
-                            <p class="mb-0 font-weight-semibold">{{ trans('messages.invoice.price') }}</p>
+                            <p class="mb-0 font-weight-semibold">{{ trans('messages.bill.subtotal') }}</p>
                             <p class="mb-0">({{ $item['title'] }})</p>
                             <p class="mb-0">{!! $item['description'] !!}</p>
                         </div>

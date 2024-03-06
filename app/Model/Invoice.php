@@ -402,6 +402,7 @@ class Invoice extends Model
             'total' => format_price($this->total(), $this->currency->format),
             'sub_total' => format_price($this->subTotal(), $this->currency->format),
             'tax' => format_price($this->getTax(), $this->currency->format),
+            'tax_p' => number_with_delimiter($this->getTaxPercent()),
             'pending' => $this->getPendingTransaction(),
             'invoice_uid' => $this->uid,
             'due_date' => $this->created_at,
