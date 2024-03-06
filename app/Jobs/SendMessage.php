@@ -240,6 +240,9 @@ class SendMessage implements ShouldQueue
                 $info['total_time'] = ($timeSinceCampaignStart == 0) ? 1 : $timeSinceCampaignStart;
                 $info['messages_sent_per_second'] = $info['send_message_count'] / $info['total_time'];
 
+                // Info
+                $info['delay_note'] = null;
+
                 return $info;
             });
         } catch (RateLimitExceeded $ex) {
@@ -254,7 +257,7 @@ class SendMessage implements ShouldQueue
 
                     if ($delayFlag == true) {
                         // just finish the task
-                        $logger->info(sprintf("Delay [%s], rate limit hit: %s", $email, $ex->getMessage()));
+                        // $logger->info(sprintf("Delay [%s], rate limit hit: %s", $email, $ex->getMessage()));
                         return;
                     } else {
                         // Releease the job, have it tried again later on, after 1 minutes
@@ -267,6 +270,14 @@ class SendMessage implements ShouldQueue
                         $this->campaign->setDelayFlag(true);
                         $delay = new Delay($delayInSeconds, $this->campaign, $rateTrackers);
                         $this->batch()->add($delay);
+
+                        $this->campaign->debug(function ($info) use ($ex) {
+                            // @todo: consider making it an interface, rather than access the .delay_note attribute directly like this
+                            $info['delay_note'] = sprintf("Speed limit hit: %s", $ex->getMessage());
+
+                            // Must return;
+                            return $info;
+                        });
                     }
                 });
 

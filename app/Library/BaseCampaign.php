@@ -449,6 +449,7 @@ class BaseCampaign extends Model
                 'send_message_delivery_avg_time' => null,
                 'send_message_min_time' => null,
                 'send_message_max_time' => null,
+                'delay_note' => null,
             ]);
 
             // update and return debug info
