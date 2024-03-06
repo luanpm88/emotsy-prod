@@ -93,8 +93,12 @@ class Delay implements ShouldQueue
         } catch (RateLimitExceeded $ex) {
 
             // Record last activity. Otherwise, this job shall be erase when running Campaign::checkAndForceRerunCampaigns()
-            $this->campaign->debug(function ($info) {
+            $this->campaign->debug(function ($info) use ($ex) {
                 $info['last_activity_at'] = Carbon::now()->toString();
+
+                // Save delay note
+                // @todo: consider making it an interface, rather than access the .delay_note attribute directly like this
+                $info['delay_note'] = sprintf($info['last_activity_at'].": delay for %s seconds! %s", $this->wait, $ex->getMessage());
 
                 // Must return;
                 return $info;
