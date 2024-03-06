@@ -45,7 +45,7 @@
                 <input type="hidden" name="timezone" value="Asia/Tokyo" />
             @else
                 <div class="mb-3 {{ $errors->has('timezone') ? 'has-error' : '' }}">
-                    <label class="form-label">{{ trans('messages.automation.choose_list') }}</label>
+                    <label class="form-label">{{ trans('messages.automation.choose_timezone') }}</label>
                     <select disabled class="form-select select disabled" name="timezone">
                         <option>{{ trans('messages.choose') }}</option>
                         @foreach(Tool::getTimezoneSelectOptions() as $option)

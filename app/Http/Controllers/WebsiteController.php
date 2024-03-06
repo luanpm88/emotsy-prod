@@ -120,7 +120,10 @@ class WebsiteController extends Controller
         }
 
         if (!$website->isActive()) {
-            return response('disabled', 403);
+            // return response('disabled', 403);
+            return view('websites.checkJs', [
+                'website' => $website,
+            ]);
         }
 
         $content = view('websites.connectJs', [
@@ -130,6 +133,12 @@ class WebsiteController extends Controller
         return response($content)
             ->header('Access-Control-Allow-Origin', '*')
             ->header('Content-Type', 'application/javascript');
+    }
+
+    public function checkJs(Request $request)
+    {
+        $website = Website::findByUid($request->uid);
+        $website->setConnected();
     }
 
     public function check(Request $request)

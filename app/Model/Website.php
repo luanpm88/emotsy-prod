@@ -108,13 +108,20 @@ class Website extends Model
         $tag = $document->getElementById('ACXConnectScript');
 
         if (!$tag) {
-            throw new \Exception(trans('messages.website.can_not_find_connect_script'));
+            throw new \Exception(trans('messages.website.can_not_find_connect_script', [
+                'url' => $this->url,
+            ]));
         }
     }
 
     public function connect()
     {
         $this->check();
+        $this->setConnected();
+    }
+
+    public function setConnected()
+    {
         $this->status = self::STATUS_CONNECTED;
         $this->save();
     }
