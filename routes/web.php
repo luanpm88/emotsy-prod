@@ -235,6 +235,9 @@ Route::group(['middleware' => ['not_installed']], function () {
     // products
     Route::get('/products/widget/products/list', 'ProductController@widgetProductList');
     Route::post('/products/widget/product', 'ProductController@widgetProduct');
+
+    //
+    Route::get('frontend/websites/{uid}/check-js', 'WebsiteController@checkJs');
 });
 
 Route::group(['middleware' => ['not_installed', 'auth']], function () {
