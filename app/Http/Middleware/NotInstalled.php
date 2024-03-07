@@ -20,9 +20,6 @@ class NotInstalled
             return redirect()->action('InstallController@starting');
         }
 
-        $response = $next($request)
-            ->header('Access-Control-Allow-Origin', '*');
-
-        return $response;
+        return $next($request);
     }
 }
