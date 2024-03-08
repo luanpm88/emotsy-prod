@@ -1834,7 +1834,7 @@
   'pay_invoice' => '請求書の支払い #:id (:title)',
   'pay_with' => 'Pay with :method',
   'payment.active' => '有効',
-  'payment.agree_service_intro' => '<strong> <i>支払いを続行</i> </strong>ボタンをクリックすると :plan プランの料金を支払い、<i>利用規約</i>と<i>プライバシーに同意します。</i>',
+  'payment.agree_service_intro' => '<strong> <i>支払いを続行</i> </strong>ボタンをクリックすると プランの料金を支払い、<i>利用規約</i>と<i>プライバシーに同意します。</i>',
   'payment.agree_service_intro.term_link' => '<strong><i>支払いを続行</i></strong>のボタンをクリックして <a href=":link" class="fw-600"><i>利用規約</i> そして <i>プライバシーポリシー</i></a>に同意するものとします。',
   'payment.all_available_gateways' => '利用可能なすべての支払い方法',
   'payment.all_available_gateways.wording' => '以下は、インストールされたすべての支払い方法です',
