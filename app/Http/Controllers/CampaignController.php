@@ -247,9 +247,12 @@ class CampaignController extends Controller
 
         $rules = $campaign->rules();
 
+        $trackingDomain = Setting::isYes('campaign.tracking_domain');
+
         return view('campaigns.setup', [
             'campaign' => $campaign,
             'rules' => $campaign->rules(),
+            'trackingDomain' => $trackingDomain,
         ]);
     }
 

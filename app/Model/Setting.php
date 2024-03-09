@@ -570,6 +570,12 @@ class Setting extends Model
                 'type' => 'text',
                 'not_required' => true,
             ],
+            'campaign.tracking_domain' => [
+                'cat' => 'others',
+                'value' => 'no',
+                'type' => 'text',
+                'not_required' => true,
+            ],
             'list.allow_single_optin' => [
                 'cat' => 'others',
                 'value' => 'yes',

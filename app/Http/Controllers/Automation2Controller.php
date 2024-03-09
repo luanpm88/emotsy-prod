@@ -832,9 +832,12 @@ class Automation2Controller extends Controller
             ], 201);
         }
 
+        $trackingDomain = Setting::isYes('campaign.tracking_domain');
+
         return view('automation2.email.setup', [
             'automation' => $automation,
             'email' => $email,
+            'trackingDomain' => $trackingDomain,
         ]);
     }
 
