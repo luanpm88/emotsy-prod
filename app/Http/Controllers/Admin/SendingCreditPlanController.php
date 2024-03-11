@@ -4,7 +4,7 @@ namespace Acelle\Http\Controllers\Admin;
 
 use Acelle\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Acelle\Model\SendingCreditPlan;
+use Acelle\SendingCredit\Model\SendingCreditPlan;
 
 class SendingCreditPlanController extends Controller
 {
@@ -15,7 +15,7 @@ class SendingCreditPlanController extends Controller
      */
     public function index(Request $request)
     {
-        return view('admin.sending_credit_plans.index');
+        return view('sending-credit::admin.sending_credit_plans.index');
     }
 
     /**
@@ -29,7 +29,7 @@ class SendingCreditPlanController extends Controller
             ->orderBy($request->sort_order, $request->sort_direction ? $request->sort_direction : 'asc')
             ->paginate($request->per_page);
 
-        return view('admin.sending_credit_plans._list', [
+        return view('sending-credit::admin.sending_credit_plans._list', [
             'plans' => $plans,
         ]);
     }
@@ -40,7 +40,7 @@ class SendingCreditPlanController extends Controller
         $plans = SendingCreditPlan::newDefault();
 
         //
-        return view('admin.sending_credit_plans.create', [
+        return view('sending-credit::admin.sending_credit_plans.create', [
             'plan' => $plans,
         ]);
     }
@@ -55,7 +55,7 @@ class SendingCreditPlanController extends Controller
 
         // if error
         if ($validator->fails()) {
-            return response()->view('admin.sending_credit_plans.create', [
+            return response()->view('sending-credit::admin.sending_credit_plans.create', [
                 'plan' => $plans,
                 'errors' => $validator->errors(),
             ], 400);
@@ -74,7 +74,7 @@ class SendingCreditPlanController extends Controller
         $plans = SendingCreditPlan::findByUid($uid);
 
         //
-        return view('admin.sending_credit_plans.edit', [
+        return view('sending-credit::admin.sending_credit_plans.edit', [
             'plan' => $plans,
         ]);
     }
@@ -89,7 +89,7 @@ class SendingCreditPlanController extends Controller
 
         // if error
         if ($validator->fails()) {
-            return response()->view('admin.sending_credit_plans.edit', [
+            return response()->view('sending-credit::admin.sending_credit_plans.edit', [
                 'plan' => $plans,
                 'errors' => $validator->errors(),
             ], 400);
@@ -166,7 +166,7 @@ class SendingCreditPlanController extends Controller
             is_array($request->uids) ? $request->uids : explode(',', $request->uids)
         );
 
-        return view('admin.sending_credit_plans.delete_confirm', [
+        return view('sending-credit::admin.sending_credit_plans.delete_confirm', [
             'plans' => $plans,
         ]);
     }

@@ -3,20 +3,20 @@
 namespace Acelle\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Acelle\Model\EmailVerificationPlan;
+use Acelle\SendingCredit\Model\EmailVerificationPlan;
 
 class EmailVerificationPlanController extends Controller
 {
     public function index()
     {
-        return view('email_verification_plans.index');
+        return view('sending-credit::email_verification_plans.index');
     }
 
     public function select(Request $request)
     {
         $plans = EmailVerificationPlan::visible()->orderBy('credits', 'asc')->get();
 
-        return view('email_verification_plans.select', [
+        return view('sending-credit::email_verification_plans.select', [
             'plans' => $plans,
         ]);
     }
@@ -65,7 +65,7 @@ class EmailVerificationPlanController extends Controller
         $invoices = $invoices->paginate($request->per_page);
 
         // view
-        return view('email_verification_plans.invoiceList', [
+        return view('sending-credit::email_verification_plans.invoiceList', [
             'invoices' => $invoices,
         ]);
     }
@@ -88,7 +88,7 @@ class EmailVerificationPlanController extends Controller
         $transactions = $transactions->paginate($request->per_page);
 
         // view
-        return view('email_verification_plans.transactionList', [
+        return view('sending-credit::email_verification_plans.transactionList', [
             'transactions' => $transactions,
         ]);
     }

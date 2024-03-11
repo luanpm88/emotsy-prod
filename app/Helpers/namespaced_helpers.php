@@ -511,3 +511,9 @@ function read_csv($file, $headerLine = false)
         throw new \Exception('Invalid headers. Original error message is: '.$ex->getMessage());
     }
 }
+
+function isSendingCreditPluginActive()
+{
+    return \Acelle\Model\Plugin::isInstalled('acelle/sending-credit') &&
+        \Acelle\Model\Plugin::getByName('acelle/sending-credit')->isActive();
+}
