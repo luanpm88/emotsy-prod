@@ -82,38 +82,38 @@ class LoginController extends Controller
         return redirect()->intended('/');
     }
 
-    // /**
-    //  * Log the user out of the application.
-    //  *
-    //  * @param  \Illuminate\Http\Request  $request
-    //  * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
-    //  */
-    // public function logout(Request $request)
-    // {
-    //     // keep sessions when logout
-    //     $keepSessions = [];
-    //     if ($request->session()->has('two_factor_authenticated')) {
-    //         $keepSessions['two_factor_authenticated'] = true;
-    //     }
+    /**
+     * Log the user out of the application.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
+     */
+    public function logout(Request $request)
+    {
+        // keep sessions when logout
+        $keepSessions = [];
+        if ($request->session()->has('two_factor_authenticated')) {
+            $keepSessions['two_factor_authenticated'] = true;
+        }
 
-    //     // Original logout code
-    //     $this->guard()->logout();
+        // Original logout code
+        $this->guard()->logout();
 
-    //     $request->session()->invalidate();
+        $request->session()->invalidate();
 
-    //     $request->session()->regenerateToken();
+        $request->session()->regenerateToken();
 
-    //     if ($response = $this->loggedOut($request)) {
-    //         return $response;
-    //     }
+        if ($response = $this->loggedOut($request)) {
+            return $response;
+        }
 
-    //     // keep sessions when logout
-    //     foreach ($keepSessions as $key => $value) {
-    //         $request->session()->put($key, $value);
-    //     }
+        // keep sessions when logout
+        foreach ($keepSessions as $key => $value) {
+            $request->session()->put($key, $value);
+        }
 
-    //     return $request->wantsJson()
-    //         ? new JsonResponse([], 204)
-    //         : redirect('/');
-    // }
+        return $request->wantsJson()
+            ? new JsonResponse([], 204)
+            : redirect('/');
+    }
 }
