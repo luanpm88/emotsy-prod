@@ -120,7 +120,7 @@ class TransformTag implements StageInterface
 
         // Actually transform the message
         foreach ($tags as $tag => $value) {
-            $html = str_replace('{'.$tag.'}', $value, $html);
+            $html = str_replace('{'.$tag.'}', $value ?? '#', $html);
         }
 
         return $html;
