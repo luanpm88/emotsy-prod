@@ -348,6 +348,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('account/api', 'AccountController@api');
 
     // Mail list
+    Route::get('lists/{uid}/field-options', 'MailListController@listFieldOptions');
     Route::get('lists/{uid}/webhook/form', 'MailListController@webhookForm');
     Route::get('lists/{uid}/webhook/json', 'MailListController@webhookJson');
     Route::match(['get', 'post'], 'lists/select', 'MailListController@selectList');

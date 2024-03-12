@@ -8239,3 +8239,6 @@ label.checker input:disabled ~ .checker-symbol {
 body:not(.mode-dark) .placeholder {
     background-color: #eee;
 }
+.select2-container {
+    min-width: 150px;
+}
