@@ -109,29 +109,33 @@
                         'help_class' => 'email',
                         'rules' => $email->rules(),
                     ])
-                    @include('helpers.form_control', [
-                        'type' => 'checkbox3',
-                        'name' => 'custom_tracking_domain',
-                        'label' => trans('messages.custom_tracking_domain'),
-                        'value' => Auth::user()->customer->isCustomTrackingDomainRequired() ? true : ($email->tracking_domain_id || request()->custom_tracking_domain),
-                        'options' => [false,true],
-                        'help_class' => 'email',
-                        'readonly' => Auth::user()->customer->isCustomTrackingDomainRequired(),
-                        'rules' => $email->rules()
-                    ])
 
-                    <div class="select-tracking-domain mb-4">
+                    @if ($trackingDomain)
+
                         @include('helpers.form_control', [
-                            'type' => 'select',
-                            'name' => 'tracking_domain_uid',
-                            'label' => '',
-                            'value' => $email->trackingDomain? $email->trackingDomain->uid : null,
-                            'options' => Auth::user()->customer->getVerifiedTrackingDomainOptions(),
-                            'include_blank' => trans('messages.automation.email.select_tracking_domain'),
+                            'type' => 'checkbox3',
+                            'name' => 'custom_tracking_domain',
+                            'label' => trans('messages.custom_tracking_domain'),
+                            'value' => Auth::user()->customer->isCustomTrackingDomainRequired() ? true : ($email->tracking_domain_id || request()->custom_tracking_domain),
+                            'options' => [false,true],
                             'help_class' => 'email',
+                            'readonly' => Auth::user()->customer->isCustomTrackingDomainRequired(),
                             'rules' => $email->rules()
                         ])
-                    </div>
+
+                        <div class="select-tracking-domain mb-4">
+                            @include('helpers.form_control', [
+                                'type' => 'select',
+                                'name' => 'tracking_domain_uid',
+                                'label' => '',
+                                'value' => $email->trackingDomain? $email->trackingDomain->uid : null,
+                                'options' => Auth::user()->customer->getVerifiedTrackingDomainOptions(),
+                                'include_blank' => trans('messages.automation.email.select_tracking_domain'),
+                                'help_class' => 'email',
+                                'rules' => $email->rules()
+                            ])
+                        </div>
+                    @endif
 
                     @include('helpers.form_control', [
                         'type' => 'checkbox3',

@@ -312,6 +312,7 @@
   'automation.choose_birthday_field' => 'If your mail list has `Date of Birth` field, please choose it from the list below',
   'automation.choose_list' => 'Choose a mail list',
   'automation.choose_list_field' => 'Choose a list field',
+  'automation.choose_timezone' => 'Choose a time zone',
   'automation.choose_your_template_layout' => 'Choose layout for campaign template',
   'automation.choose_your_template_layout.intro' => 'You can quickly create template for email by choosing exist layout/theme, or upload from template source file.',
   'automation.complete_percent' => '% Complete',

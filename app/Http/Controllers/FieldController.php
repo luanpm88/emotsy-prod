@@ -51,6 +51,7 @@ class FieldController extends Controller
     public function store(Request $request)
     {
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+        $fields = $list->getFields;
 
         // authorize
         if (\Gate::denies('update', $list)) {
@@ -61,10 +62,21 @@ class FieldController extends Controller
         if ($request->isMethod('post')) {
             $validator = $list->updateOrCreateFieldsFromRequest($request);
 
+            $fields = $list->getFieldsFromParams($request->all());
+
             if ($validator->fails()) {
-                return redirect()->action('FieldController@index', $list->uid)
-                ->withErrors($validator)
-                ->withInput();
+                if ($request->ajax()) {
+                    return response()->view('fields.index', [
+                        'list' => $list,
+                        'fields' => $fields,
+                        'errors' => $validator->errors(),
+                    ], 401);
+                } else {
+                    return redirect()->action('FieldController@index', $list->uid)
+                        ->withErrors($validator)
+                        ->withInput();
+                }
+                    
             }
 
             // Redirect to my lists page

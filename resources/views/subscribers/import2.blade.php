@@ -4,6 +4,13 @@
 
 @section('title', $list->name . ": " . trans('messages.import'))
 
+@section('head')
+    <script type="text/javascript" src="{{ AppUrl::asset('core/datetime/anytime.min.js') }}"></script>
+    <script type="text/javascript" src="{{ AppUrl::asset('core/datetime/moment.min.js') }}"></script>
+    <script type="text/javascript" src="{{ AppUrl::asset('core/datetime/pickadate/picker.js') }}"></script>
+    <script type="text/javascript" src="{{ AppUrl::asset('core/datetime/pickadate/picker.date.js') }}"></script>
+@endsection
+
 @section('page_header')
 
     @include("lists._header")

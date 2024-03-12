@@ -312,6 +312,7 @@
   'automation.choose_birthday_field' => 'Se la vostra lista di posta elettronica ha il campo "Data di nascita", sceglietelo dall\'elenco seguente',
   'automation.choose_list' => 'Scegliere una lista di posta',
   'automation.choose_list_field' => 'Scegliere un campo lista',
+  'automation.choose_timezone' => 'Choose a time zone',
   'automation.choose_your_template_layout' => 'Scegliete un modello per la vostra e-mail',
   'automation.choose_your_template_layout.intro' => 'Potete creare rapidamente la vostra splendida e-mail scegliendo uno dei modelli esistenti o caricando il vostro modello personale.',
   'automation.complete_percent' => '% Completo',

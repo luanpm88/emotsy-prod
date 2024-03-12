@@ -239,6 +239,9 @@ Route::group(['middleware' => ['not_installed']], function () {
     // products
     Route::get('/products/widget/products/list', 'ProductController@widgetProductList');
     Route::post('/products/widget/product', 'ProductController@widgetProduct');
+
+    //
+    Route::get('frontend/websites/{uid}/check-js', 'WebsiteController@checkJs');
 });
 
 Route::group(['middleware' => ['not_installed', 'auth']], function () {
@@ -371,6 +374,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('account/api', 'AccountController@api');
 
     // Mail list
+    Route::get('lists/{uid}/field-options', 'MailListController@listFieldOptions');
     Route::get('lists/{uid}/webhook/form', 'MailListController@webhookForm');
     Route::get('lists/{uid}/webhook/json', 'MailListController@webhookJson');
     Route::match(['get', 'post'], 'lists/select', 'MailListController@selectList');

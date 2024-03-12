@@ -574,6 +574,12 @@ class Setting extends Model
                 'type' => 'text',
                 'not_required' => true,
             ],
+            'campaign.tracking_domain' => [
+                'cat' => 'others',
+                'value' => 'no',
+                'type' => 'text',
+                'not_required' => true,
+            ],
             'list.allow_single_optin' => [
                 'cat' => 'others',
                 'value' => 'yes',
@@ -622,6 +628,12 @@ class Setting extends Model
             ],
             'not_require_card_for_trial' => [
                 'cat' => 'others',
+                'value' => 'no',
+                'type' => 'checkbox',
+                'options' => ['no', 'yes'],
+            ],
+            '2fa_enable' => [
+                'cat' => 'general',
                 'value' => 'no',
                 'type' => 'checkbox',
                 'options' => ['no', 'yes'],

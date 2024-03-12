@@ -312,6 +312,7 @@
   'automation.choose_birthday_field' => 'Wenn Ihre Mailingliste das Feld "Geburtsdatum" enthält, wählen Sie es bitte aus der folgenden Liste aus',
   'automation.choose_list' => 'Wählen Sie eine Mailingliste',
   'automation.choose_list_field' => 'Wählen Sie ein Listenfeld',
+  'automation.choose_timezone' => 'Choose a time zone',
   'automation.choose_your_template_layout' => 'Wählen Sie das Layout für die Kampagnenvorlage',
   'automation.choose_your_template_layout.intro' => 'Sie können schnell eine Vorlage für E-Mails erstellen, indem Sie exist auswählen Layout / Design oder Upload aus der Vorlagen-Quelldatei.',
   'automation.complete_percent' => '% Complete',

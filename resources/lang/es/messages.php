@@ -312,6 +312,7 @@
   'automation.choose_birthday_field' => 'Si su lista de correo tiene el campo `Fecha de nacimiento`, elíjalo de la lista a continuación',
   'automation.choose_list' => 'Elige una lista de correo',
   'automation.choose_list_field' => 'Elige un campo de lista',
+  'automation.choose_timezone' => 'Choose a time zone',
   'automation.choose_your_template_layout' => 'Elegir diseño para plantilla de campaña',
   'automation.choose_your_template_layout.intro' => 'Puede crear rápidamente una plantilla para el correo electrónico eligiendo uno existe diseño / tema, o subir desde el archivo fuente de la plantilla.',
   'automation.complete_percent' => '% Complete',

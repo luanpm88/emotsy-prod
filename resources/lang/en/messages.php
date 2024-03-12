@@ -312,6 +312,7 @@
   'automation.choose_birthday_field' => 'If your mail list has `Date of Birth` field, please choose it from the list below',
   'automation.choose_list' => 'Choose a mail list',
   'automation.choose_list_field' => 'Choose a list field',
+  'automation.choose_timezone' => 'Choose a time zone',
   'automation.choose_your_template_layout' => 'Choose a template for your email',
   'automation.choose_your_template_layout.intro' => 'You can quickly create your beautiful email by choosing an existing templates we have, or you can upload your own template',
   'automation.complete_percent' => '% Complete',
@@ -3538,7 +3539,7 @@
   'website' => 'Website',
   'website.add' => 'Add website',
   'website.add_site' => 'Add your website',
-  'website.can_not_find_connect_script' => 'The connect script could not be found!',
+  'website.can_not_find_connect_script' => 'The connect script could not be found! You can try opening the website <a href=":url">:url</a> to trigger the connection status.',
   'website.check_connection' => 'Check connection',
   'website.code_copied' => 'Site connection code was copied',
   'website.connect' => 'Connect',
@@ -3738,4 +3739,6 @@
     <p>The verification code will be valid for 30 minutes. Please do not share this code with anyone. Don&rsquo;t recognize this activity? Please reset your password and contact customer support immediately.<br /><br /><em>This is an automated message, please do not reply.</em></p>',
   '2fa.select_defferent_method' => 'Select different method',
   '2fa.verification_code' => 'Verfication Code',
+) ?>
+  'subscriber.import.mange_list_fields' => 'Manage list fields',
 ) ?>
