@@ -4,8 +4,12 @@
     $var_name = str_replace('][', '.', $var_name);
     $var_name = str_replace('[', '.', $var_name);
     $var_name = str_replace(']', '', $var_name);
-    $classes = (isset($rules) && isset($rules[$var_name])) ? ' '.str_replace('|', ' ', $rules[$var_name]) : '';
-    $required = (isset($rules) && isset($rules[$var_name]) && in_array('required', explode('|', $rules[$var_name]))) ? true : '';
+    $classes = (isset($rules) && isset($rules[$var_name])) ? 
+        ( is_array($rules[$var_name]) ? ' '.implode(' ', $rules[$var_name]) : ' '.str_replace('|', ' ', $rules[$var_name])   )
+    : '';
+    $required = (isset($rules) && isset($rules[$var_name]) && in_array('required', 
+    ( is_array($rules[$var_name]) ? $rules[$var_name] : explode('|', $rules[$var_name])  )
+    )   ) ? true : '';
     ?>
 
 @if ($type == 'checkbox' || $type == 'checkbox3' || $type == 'radio3')
