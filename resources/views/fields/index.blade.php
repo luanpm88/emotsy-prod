@@ -117,7 +117,7 @@
 												<div class="col-md-6 text-nowrap label-value-group" rel="{{ $option->uid }}">
 													<div class="pull-left me-2">@include('helpers.form_control', ['type' => 'text', 'placeholder' => trans('messages.label'), 'name' => 'fields[' . $item->uid . '][options][' . $option->uid . '][label]', 'label' => '', 'value' => $option->label, 'help_class' => 'field'])</div>
 													<div class="pull-left me-2">@include('helpers.form_control', ['type' => 'text', 'placeholder' => trans('messages.value'), 'name' => 'fields[' . $item->uid . '][options][' . $option->uid . '][value]', 'label' => '', 'value' => $option->value, 'help_class' => 'field'])</div>
-													<div class="pull-left"><a href="#remove" onclick="$(this).parents('.label-value-group').remove()" class="btn btn-xs bg-grey-600"><i class="icon-cross"></i></a></div>
+													<div class="pull-left"><a href="#remove" onclick="$(this).parents('.label-value-group').remove()" class="btn btn-xs bg-grey-600"><span class="material-symbols-rounded">close</span></a></div>
 												</div>
 											@endforeach
 										</div>

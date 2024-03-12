@@ -52,7 +52,7 @@
 								<div class="col-md-6 text-nowrap label-value-group" rel="0">
 									<div class="pull-left me-2">@include('helpers.form_control', ['type' => 'text', 'placeholder' => trans('messages.label'), 'name' => 'fields[__index__][options][0][label]', 'label' => '', 'value' => '', 'help_class' => 'field'])</div>
 									<div class="pull-left me-2">@include('helpers.form_control', ['type' => 'text', 'placeholder' => trans('messages.value'), 'name' => 'fields[__index__][options][0][value]', 'label' => '', 'value' => '', 'help_class' => 'field'])</div>
-									<div class="pull-left"><a href="#remove" onclick="$(this).parents('.label-value-group').remove()" class="btn btn-xs bg-grey-600"><i class="icon-cross"></i></a></div>
+									<div class="pull-left"><a href="#remove" onclick="$(this).parents('.label-value-group').remove()" class="btn btn-xs bg-grey-600"><span class="material-symbols-rounded">close</span></a></div>
 								</div>
 							</div>
 						</div>
