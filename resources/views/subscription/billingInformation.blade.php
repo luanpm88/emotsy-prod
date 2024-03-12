@@ -149,7 +149,14 @@
                             </div>
 
                             <div class="mt-2">
-                                <button type="submit" class="btn btn-secondary">{{ trans('messages.save') }}</button>
+                                @if (config('app.emotsy') && $invoice->totalWithoutFee() == 0)
+                                    <input type="submit" name="new_payment"
+                                        class="btn btn-primary py-2 fs-6 px-4 text-center rounded-3 shadow" style="width:100%"
+                                        value="{{ trans('messages.subscription.get_started') }}"
+                                    >
+                                @else
+                                    <button type="submit" class="btn btn-secondary">{{ trans('messages.save') }}</button>
+                                @endif
                             </div>
                         </form>
                     </div>

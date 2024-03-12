@@ -223,7 +223,7 @@ class Invoice extends Model
         return $total;
     }
 
-    public function total()
+    public function totalWithoutFee()
     {
         $total = 0;
 
@@ -231,7 +231,12 @@ class Invoice extends Model
             $total += $item->total();
         }
 
-        return $total + $this->fee;
+        return $total;
+    }
+
+    public function total()
+    {
+        return $this->totalWithoutFee() + $this->fee;
     }
 
     /**

@@ -1,4 +1,4 @@
-<div class="card mt-2 subscription-step">
+<div class="card mt-2 subscription-step {{ config('app.emotsy') && $invoice->totalWithoutFee() == 0 ? 'd-none' : '' }}">
     @if (($invoice ?? false) && $invoice->hasBillingInformation())
         <a href="{{ action('SubscriptionController@payment', [
             'invoice_uid' => $invoice->uid,

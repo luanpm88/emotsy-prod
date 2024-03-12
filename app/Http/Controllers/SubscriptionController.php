@@ -39,7 +39,7 @@ class SubscriptionController extends Controller
         if ($subscription->isNew()) {
             $invoice = $subscription->getItsOnlyUnpaidInitInvoice();
 
-            return redirect()->action('SubscriptionController@payment', [
+            return redirect()->action('SubscriptionController@billingInformation', [
                 'invoice_uid' => $invoice->uid,
             ]);
         }
@@ -130,6 +130,21 @@ class SubscriptionController extends Controller
             $customer->updateBillingInformationFromInvoice($invoice);
 
             $request->session()->flash('alert-success', trans('messages.billing_address.updated'));
+
+            if (config('app.emotsy')) {
+                if ($invoice->totalWithoutFee() == 0) {
+                    $service = new \Acelle\Cashier\Services\OfflinePaymentGateway(\Acelle\Model\Setting::get('cashier.offline.payment_instruction'));
+                    $invoice = $invoice->mapType();
+                    $invoice->checkout($service, function($invoice) {
+                        return new \Acelle\Library\TransactionResult(\Acelle\Library\TransactionResult::RESULT_DONE);
+                    });
+                    
+                    // return to subscription
+                    return redirect()->action('SubscriptionController@index', [
+                        'invoice_uid' => $invoice->uid,
+                    ]);
+                }
+            }
 
             // return to subscription
             return redirect()->action('SubscriptionController@payment', [
