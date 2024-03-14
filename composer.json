@@ -19,7 +19,7 @@
         "facade/ignition": "^2.11",
         "facebook/php-ads-sdk": "^11.0",
         "filp/whoops": "^2.14",
-        "fruitcake/laravel-cors": "^2.0",
+        "fruitcake/laravel-cors": "^3.0",
         "galbar/jsonpath": "^1.2",
         "geoip2/geoip2": "~2.0",
         "getbrevo/brevo-php": "1.x.x",
@@ -111,8 +111,7 @@
         "optimize-autoloader": true,
         "platform-check": false,
         "allow-plugins": {
-            "pestphp/pest-plugin": true,
-            "php-http/discovery": false
+            "pestphp/pest-plugin": true
         }
     },
     "repositories": [
