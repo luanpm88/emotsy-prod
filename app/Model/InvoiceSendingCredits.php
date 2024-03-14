@@ -18,7 +18,16 @@ class InvoiceSendingCredits extends Invoice
      */
     public function process()
     {
-        // add credits to customer......
+        // @important BIG dependencies and assumption here
+        // - Need explicit subscription_id
+        $tracker = $this->customer->getCurrentActiveGeneralSubscription()->getSendEmailCreditTracker();
+
+        if ($tracker->isUnlimited()) {
+            // Right now, just do nothing
+            // throw new \Exception('Cannot add more sending credits, already UNLIMITED');
+        } else {
+            $tracker->topup($this->sending_credits);
+        }
     }
 
     /**
