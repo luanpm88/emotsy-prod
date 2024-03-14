@@ -99,15 +99,21 @@ class MailListFieldMapping
     {
         // create a temporary table containing the input subscribers
         $tmpTable = table('__tmp_subscribers');
+        $emailField = $this->list->getEmailField();
 
         // @todo: hard-coded charset and COLLATE
-        $tmpFields = array_map(function ($fieldName) {
-            return "`{$fieldName}` VARCHAR(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci";
+        $tmpFields = array_map(function ($fieldName) use ($emailField) {
+            if ($emailField->custom_field_name == $fieldName) {
+                $dataType = 'VARCHAR(255)'; // VARCHAR type is required if we add an index on this field
+            } else {
+                $dataType = 'MEDIUMTEXT';
+            }
+            return "`{$fieldName}` {$dataType} CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci";
         }, $this->getCustomFields());
 
         // Also create columsn for preserved fields like 'tags'
         foreach($this->preservedFields as $fieldName) {
-            $tmpFields[] = "`{$fieldName}` VARCHAR(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci";
+            $tmpFields[] = "`{$fieldName}` MEDIUMTEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci";
         }
 
         $tmpFields = implode(',', $tmpFields);
@@ -115,8 +121,6 @@ class MailListFieldMapping
         // Drop table, create table and create index
         DB::statement("DROP TABLE IF EXISTS {$tmpTable};");
         DB::statement("CREATE TABLE {$tmpTable}({$tmpFields}) ENGINE=InnoDB;");
-
-        $emailField = $this->list->getEmailField();
         DB::statement("CREATE INDEX _index_email_{$tmpTable} ON {$tmpTable}(`{$emailField->custom_field_name}`);");
 
         return [$tmpTable, $emailField->custom_field_name];
