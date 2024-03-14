@@ -203,6 +203,11 @@ class Customer extends Model
         return $this->hasMany('Acelle\Model\Invoice');
     }
 
+    public function transactions()
+    {
+        return $this->hasManyThrough('Acelle\Model\Transaction', 'Acelle\Model\Invoice');
+    }
+
     public function forms()
     {
         return $this->hasMany('Acelle\Model\Form');
@@ -1811,5 +1816,183 @@ class Customer extends Model
         }
 
         return false;
+    }
+
+    public function createEmailVerificarionCreditsInvoice($amount, $currency, $credits)
+    {
+        // create init invoice
+        $invoice = \Acelle\Model\Invoice::createInvoice(
+            $type = \Acelle\Model\InvoiceEmailVerificationCredits::TYPE_EMAIL_VERIFICATION_CREDITS,
+            $title = trans('messages.invoice.email_verification_credits', [
+                'amount' => number_with_delimiter($credits),
+            ]),
+            $description = trans('messages.invoice.email_verification_credits.desc', [
+                'amount' => number_with_delimiter($credits),
+            ]),
+            $customer_id = $this->id,
+            $currency_id = $currency->id,
+            $billing_address = $this->getDefaultBillingAddress(),
+            $invoiceItems = [
+                new InvoiceItem([
+                    'item_id' => $this->id,
+                    'item_type' => get_class($this),
+                    'amount' => $amount,
+                    'title' => trans('messages.invoice.email_verification_credits', [
+                        'amount' => number_with_delimiter($credits),
+                    ]),
+                    'description' => trans('messages.invoice.email_verification_credits.desc', [
+                        'amount' => number_with_delimiter($credits),
+                    ]),
+                ]),
+            ],
+        );
+
+        // save top up info to invoice
+        $invoice->email_verification_credits = $credits;
+        $invoice->save();
+
+        // return
+        return $invoice;
+    }
+
+    public function emailVerificationCreditsInvoices()
+    {
+        $id = $this->id;
+        $type = self::class;
+        return $this->invoices()
+            ->emailVerificationCredits()
+            ->whereIn('id', function ($query) use ($id, $type) {
+                $query->select('invoice_id')
+                    ->from(with(new InvoiceItem())->getTable())
+                        ->where('item_type', $type)
+                        ->where('item_id', $id);
+            });
+    }
+
+    public function emailVerificationCreditsTransactions()
+    {
+        return $this->transactions()->whereIn('invoice_id', $this->emailVerificationCreditsInvoices()->select('id'));
+    }
+
+    public function getEmailVerificationCredits()
+    {
+        return $this->emailVerificationCreditsInvoices()->paid()->sum('email_verification_credits');
+    }
+
+    public function getUsedEmailVerificationCredits()
+    {
+        return $this->getEmailVerificationCredits() == 0 ? 0 : 8500;
+    }
+
+    public function getLastPaidEmailVerificationCreditsInvoice()
+    {
+        return $this->emailVerificationCreditsInvoices()
+            ->paid()
+            ->orderBy('created_at', 'DESC')
+            ->first();
+    }
+
+    public function getEmailVerificationCreditsUsage()
+    {
+        $max = $this->getEmailVerificationCredits();
+        $count = $this->getUsedEmailVerificationCredits();
+
+        if ($max == 0) {
+            return 0;
+        }
+        if ($count > $max) {
+            return 100;
+        }
+
+        return round((($count / $max) * 100), 2);
+    }
+
+    public function createSendingCreditsInvoice($amount, $currency, $credits)
+    {
+        // create init invoice
+        $invoice = \Acelle\Model\Invoice::createInvoice(
+            $type = \Acelle\Model\InvoiceSendingCredits::TYPE_SENDING_CREDITS,
+            $title = trans('messages.invoice.sending_credit', [
+                'amount' => number_with_delimiter($credits),
+            ]),
+            $description = trans('messages.invoice.sending_credit.desc', [
+                'amount' => number_with_delimiter($credits),
+            ]),
+            $customer_id = $this->id,
+            $currency_id = $currency->id,
+            $billing_address = $this->getDefaultBillingAddress(),
+            $invoiceItems = [
+                new InvoiceItem([
+                    'item_id' => $this->id,
+                    'item_type' => get_class($this),
+                    'amount' => $amount,
+                    'title' => trans('messages.invoice.sending_credit', [
+                        'amount' => number_with_delimiter($credits),
+                    ]),
+                    'description' => trans('messages.invoice.sending_credit.desc', [
+                        'amount' => number_with_delimiter($credits),
+                    ]),
+                ]),
+            ],
+        );
+
+        // save top up info to invoice
+        $invoice->sending_credits = $credits;
+        $invoice->save();
+
+        // return
+        return $invoice;
+    }
+
+    public function sendingCreditsInvoices()
+    {
+        $id = $this->id;
+        $type = self::class;
+        return $this->invoices()
+            ->sendingCredits()
+            ->whereIn('id', function ($query) use ($id, $type) {
+                $query->select('invoice_id')
+                    ->from(with(new InvoiceItem())->getTable())
+                        ->where('item_type', $type)
+                        ->where('item_id', $id);
+            });
+    }
+
+    public function sendingCreditsTransactions()
+    {
+        return $this->transactions()->whereIn('invoice_id', $this->sendingCreditsInvoices()->select('id'));
+    }
+
+    public function getSendingCredits()
+    {
+        return $this->sendingCreditsInvoices()->paid()->sum('sending_credits');
+    }
+
+    public function getUsedSendingCredits()
+    {
+        return $this->getSendingCredits() == 0 ? 0 : 8500;
+    }
+
+    public function getLastPaidSendingCreditsInvoice()
+    {
+        return $this->sendingCreditsInvoices()
+            ->paid()
+            ->orderBy('created_at', 'DESC')
+            ->first();
+    }
+
+    public function getSendingCreditsUsage()
+    {
+        $max = $this->getSendingCredits();
+        $count = $this->getUsedSendingCredits();
+
+        if ($max == 0) {
+            return 0;
+        }
+        if ($count > $max) {
+            return 100;
+        }
+
+        return round((($count / $max) * 100), 2);
     }
 }

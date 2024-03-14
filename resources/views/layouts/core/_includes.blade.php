@@ -35,6 +35,7 @@
 <!-- Theme -->
 <link rel="stylesheet" type="text/css" href="{{ AppUrl::asset('core/css/dark.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ AppUrl::asset('core/css/menu.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ AppUrl::asset('core/css/circle.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ AppUrl::asset('core/css/app.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ AppUrl::asset('core/css/responsive.css') }}">
 

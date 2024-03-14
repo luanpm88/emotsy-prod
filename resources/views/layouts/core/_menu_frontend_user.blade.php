@@ -76,9 +76,9 @@
             <li class="nav-item {{ $menu == 'subscription' ? 'active' : '' }}">
                 <a href="{{ action('SubscriptionController@index') }}" class="dropdown-item d-flex align-items-center">
                     <i class="navbar-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1" x="0px" y="0px" viewBox="0 0 92 94.2" style="enable-background:new 0 0 92 94.2;" xml:space="preserve"><style type="text/css">.st0{fill:#333333;}</style><g id="Layer_2_1_"><g id="Layer_1-2"><path class="st0" d="M46.1,94.2c-12.3,0-24.6-4.8-33.8-14.3c-1.3-1.4-1.3-3.6,0.1-4.9c1.4-1.3,3.6-1.3,4.9,0.1 C32.7,90.9,58,91.3,73.9,76c5.6-5.4,9.5-12.3,11.2-20c0.4-1.9,2.3-3.1,4.2-2.6c1.9,0.4,3.1,2.3,2.6,4.2c-2,9-6.6,17.1-13.2,23.5 C69.6,89.8,57.8,94.2,46.1,94.2z"/><polygon class="st0" points="4.1,89.6 3.5,56.8 32.2,72.6 "/><path class="st0" d="M3.5,40.9c-0.3,0-0.5,0-0.8-0.1c-1.9-0.4-3.1-2.3-2.6-4.2C5,15.1,23.9,0,46,0c0.1,0,0.1,0,0.2,0 C58.8,0,71,5.2,79.7,14.3c1.3,1.4,1.3,3.6-0.1,4.9c-1.4,1.3-3.6,1.3-4.9-0.1C67.3,11.4,56.9,7,46.2,7c-0.1,0-0.1,0-0.2,0 C27.2,7,11.1,19.8,6.9,38.2C6.5,39.8,5.1,40.9,3.5,40.9z"/><polygon class="st0" points="59.8,21.6 88.5,37.4 87.9,4.6 "/><path class="st0" d="M43.3,69.9V64c-3.4,0-6.8-0.9-9.8-2.6l1.7-5.6c2.8,1.6,6,2.5,9.3,2.6c3.8,0,6.4-1.9,6.4-4.7s-2.1-4.5-6.6-6.1 C38,45.3,34,42.4,34,36.9s3.6-9.1,9.6-10.2v-5.9h4.9v5.6c2.9,0,5.7,0.7,8.3,2l-1.6,5.5c-2.5-1.4-5.3-2.1-8.2-2.1 c-4.2,0-5.7,2.2-5.7,4.2s2.2,3.9,7.3,5.9c6.7,2.5,9.7,5.8,9.7,11.1s-3.5,9.6-10.1,10.7v6.2H43.3z"/></g></g></svg>
+                        <span class="material-symbols-rounded">auto_mode</span>
                     </i>
-                    <span class="">{{ trans('messages.subscriptions') }}</span>
+                    <span class="">{{ trans('messages.subscription_and_credits') }}</span>
                     <span class="position-relative ms-auto">
                         <span class="position-absolute" style="width:100%">
                             @if (Auth::user()->customer->hasSubscriptionNotice())
@@ -91,6 +91,14 @@
                     </span>
                 </a>
             </li>
+            {{-- <li class="nav-item {{ $menu == 'balance' ? 'active' : '' }}">
+                <a href="{{ action('BalanceController@index') }}" class="dropdown-item d-flex align-items-center">
+                    <i class="navbar-icon">
+                        <span class="material-symbols-rounded" style="margin-right:0">account_balance</span>
+                    </i>
+                    <span class="">{{ trans('messages.balance.account_balance') }}</span>
+                </a>
+            </li> --}}
             <li class="nav-item {{ $menu == 'billing' ? 'active' : '' }}"><a href="{{ action("AccountController@billing") }}" class="dropdown-item d-flex align-items-center">
                 <i class="navbar-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1" x="0px" y="0px" viewBox="0 0 838.9 665.3" style="enable-background:new 0 0 838.9 665.3;" xml:space="preserve"><style type="text/css">.st0{fill:#333333;}</style><g id="Layer_2_1_"><g id="Layer_1-2"><path class="st0" d="M735.8,665.3H103.1C46.3,665.3,0,619.1,0,562.2V103.1C0,46.3,46.3,0,103.1,0h632.7 c56.8,0,103.1,46.3,103.1,103.1v459.1C838.9,619.1,792.6,665.3,735.8,665.3z M103.1,55C76.6,55,55,76.6,55,103.1v459.1 c0,26.5,21.6,48.1,48.1,48.1h632.7c26.5,0,48.1-21.6,48.1-48.1V103.1c0-26.5-21.6-48.1-48.1-48.1H103.1z"/><path class="st0" d="M330.1,364.4H161.9c-15.2,0-27.5-12.3-27.5-27.5V168.7c0-15.2,12.3-27.5,27.5-27.5h168.2 c15.2,0,27.5,12.3,27.5,27.5v168.2C357.6,352.1,345.3,364.4,330.1,364.4z M189.4,309.4h113.2V196.2H189.4V309.4z"/><path class="st0" d="M626.1,215.8H449.6c-15.2,0-27.5-12.3-27.5-27.5s12.3-27.5,27.5-27.5h176.5c15.2,0,27.5,12.3,27.5,27.5 S641.3,215.8,626.1,215.8z"/><path class="st0" d="M626.1,360.4H449.6c-15.2,0-27.5-12.3-27.5-27.5s12.3-27.5,27.5-27.5h176.5c15.2,0,27.5,12.3,27.5,27.5 S641.3,360.4,626.1,360.4z"/><path class="st0" d="M636.7,521.4H161.9c-15.2,0-27.5-12.3-27.5-27.5s12.3-27.5,27.5-27.5h474.8c15.2,0,27.5,12.3,27.5,27.5 S651.9,521.4,636.7,521.4z"/></g></g></svg>
