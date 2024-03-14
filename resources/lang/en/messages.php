@@ -3739,6 +3739,5 @@
     <p>The verification code will be valid for 30 minutes. Please do not share this code with anyone. Don&rsquo;t recognize this activity? Please reset your password and contact customer support immediately.<br /><br /><em>This is an automated message, please do not reply.</em></p>',
   '2fa.select_defferent_method' => 'Select different method',
   '2fa.verification_code' => 'Verfication Code',
-) ?>
   'subscriber.import.mange_list_fields' => 'Manage list fields',
 ) ?>
