@@ -2574,7 +2574,7 @@
   'smtp_port' => 'SMTP Port',
   'smtp_protocol' => 'SMTP Encryption Method',
   'smtp_username' => 'SMTP Username',
-  'something_went_wrong' => 'Something went wrong',
+  'something_went_wrong' => 'Oops! Something went wrong',
   'something_went_wrong_with_email_service' => 'Cannot send notification email. If you are the administrator, log in to admin area, then go to Setting > All Settings > System Email to check if system email is correctly set up',
   'sort_by' => 'Sort by',
   'source' => 'Source',
@@ -3308,4 +3308,7 @@
   'your_api_token' => 'Your API token',
   'your_current_license' => 'The current application is registered with the key below, also known as Purchase Code. License type is: ',
   'zip_postal_code' => 'Zip / Postal code',
+  'error.404.title' => 'Oops! You\'re lost.',
+  'error.404.desc' => 'The page you are looking for was not found.',
+  'error.back_to_home' => 'Back to Home',
 ) ?>
