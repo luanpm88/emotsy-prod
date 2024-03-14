@@ -8,6 +8,7 @@ use Acelle\Model\Notification;
 use Acelle\Model\Subscriber;
 use Acelle\Model\Automation2;
 use Acelle\Model\SendingDomain;
+use Google2FA;
 
 class HomeController extends Controller
 {
@@ -29,6 +30,8 @@ class HomeController extends Controller
      */
     public function index(Request $request)
     {
+        Google2FA::logout();
+        
         if (!config('app.saas')) {
             return redirect()->action('HomeController@index');
         }

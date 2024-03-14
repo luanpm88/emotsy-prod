@@ -695,4 +695,108 @@ class User extends Authenticatable
 
         $this->setOnscreenIntro($screenName, $screenIntro);
     }
+
+    public function generateEmailVerifyCode()
+    {
+        $numbers = str_shuffle('0123456789');
+        $randomString = substr($numbers, 0, 6);
+        $this->two_factor_verify_code = $randomString;
+        $this->save();
+
+        return $this->two_factor_verify_code;
+    }
+
+    public function getLastSendUntilNowInSeconds()
+    {
+        return $this->two_factor_last_send ? \Carbon\Carbon::now()->diffInSeconds($this->two_factor_last_send) : 600;
+    }
+
+    public function getRemainVerifyCountdown()
+    {
+        return (60 > $this->getLastSendUntilNowInSeconds()) ? (60 - $this->getLastSendUntilNowInSeconds()) : 0;
+    }
+
+    public function sendVerifyCodeEMail()
+    {
+        // resend in 60 seconds
+        if ($this->getLastSendUntilNowInSeconds() < 60) {
+            throw new \Exception('Last message sent less than 60 seconds ago. Cannot send messages too quickly.');
+        }
+
+        // code
+        $code = $this->generateEmailVerifyCode();
+        
+        // build the message
+        $message = new ExtendedSwiftMessage();
+        $message->setEncoder(new \Swift_Mime_ContentEncoder_PlainContentEncoder('8bit'));
+        $message->setContentType('text/html; charset=utf-8');
+
+        $message->setSubject(trans('messages.2fa.verification_code'));
+        $message->setTo($this->email);
+        $message->setReplyTo(Setting::get('mail.reply_to'));
+        $message->addPart(view('auth.2fa.email.content', [
+            'code' => $code,
+        ])->render(), 'text/html');
+
+        $mailer = App::make('xmailer');
+        $result = $mailer->sendWithDefaultFromAddress($message);
+
+        if (array_key_exists('error', $result)) {
+            throw new \Exception($result['error']);
+        }
+
+        
+        // \Illuminate\Support\Facades\Mail::to($this)->send(new \Acelle\Mail\VerifyEmailSendCode($code));
+
+        //
+        $this->two_factor_last_send = \Carbon\Carbon::now()->timezone('UTC');
+        $this->save();
+    }
+
+    public function verifyCode($inputCode)
+    {
+        $sucess = $this->two_factor_verify_code == trim($inputCode);
+
+        if ($sucess) {
+            // session update
+            request()->session()->put('two_factor_authenticated', true);
+        }
+
+        return $sucess;
+    }
+
+    public function is2FAAuthenticated()
+    {
+        return request()->session()->has('two_factor_authenticated');
+    }
+
+    public function set2FAAuthenticated()
+    {
+        // session update
+        request()->session()->put('two_factor_authenticated', true);
+    }
+
+    public function getInlineGAImage()
+    {
+        return \Google2FA::getQRCodeInline(
+            \Acelle\Model\Setting::get('site_name'),
+            $this->email,
+            $this->google_2fa_secret_key,
+        );
+    }
+
+    public function is2FAEnabled()
+    {
+        return $this->enable_2fa  && ($this->is2FAEmailEnabled() || $this->is2FAGoogleAuthentictorEnabled());
+    }
+
+    public function is2FAEmailEnabled()
+    {
+        return $this->enable_2fa_email;
+    }
+
+    public function is2FAGoogleAuthentictorEnabled()
+    {
+        return $this->enable_2fa_google_authenticator && $this->google_2fa_secret_key;
+    }
 }
