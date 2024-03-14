@@ -187,6 +187,12 @@ class SubscriptionController extends Controller
             return redirect()->action('SubscriptionController@index');
         }
 
+        if (config('app.emotsy') && $invoice->totalWithoutFee() == 0) {
+            return redirect()->action('SubscriptionController@billingInformation', [
+                'invoice_uid' => $invoice->uid,
+            ]);
+        }
+
         // always update invoice price from plan
         $invoice->mapType()->refreshPrice();
 
