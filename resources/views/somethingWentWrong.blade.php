@@ -18,7 +18,7 @@
                 </h2>
                 <h3 class="h2 mb-2">{{ trans('messages.something_went_wrong') }}</h3>
                 <p class="mb-5 text-danger">{!! $message !!}</p>
-                <a  href="{{ url()->previous() }}" class="btn bsb-btn-5xl btn-dark rounded-pill px-5 fs-6 m-0" role="button">
+                <a href="javascript:;" onclick="history.back()" class="btn bsb-btn-5xl btn-dark rounded-pill px-5 fs-6 m-0" role="button">
                     {{ trans('messages.go_back') }}
                 </a>
             </div>
