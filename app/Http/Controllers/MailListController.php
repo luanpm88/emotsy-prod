@@ -997,7 +997,7 @@ class MailListController extends Controller
     {
         $list = MailList::findByUid($uid);
 
-        return response()->json($list->fields->map(function($field) {
+        return response()->json($list->fields->map(function ($field) {
             return [
                 'text' => $field->tag,
                 'id' => $field->id,

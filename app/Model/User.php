@@ -725,7 +725,7 @@ class User extends Authenticatable
 
         // code
         $code = $this->generateEmailVerifyCode();
-        
+
         // build the message
         $message = new ExtendedSwiftMessage();
         $message->setEncoder(new \Swift_Mime_ContentEncoder_PlainContentEncoder('8bit'));
@@ -745,7 +745,7 @@ class User extends Authenticatable
             throw new \Exception($result['error']);
         }
 
-        
+
         // \Illuminate\Support\Facades\Mail::to($this)->send(new \Acelle\Mail\VerifyEmailSendCode($code));
 
         //

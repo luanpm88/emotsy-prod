@@ -76,7 +76,7 @@ class FieldController extends Controller
                         ->withErrors($validator)
                         ->withInput();
                 }
-                    
+
             }
 
             // Redirect to my lists page
