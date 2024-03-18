@@ -101,7 +101,7 @@
 									@if (config('custom.dryrun'))
 										<li><a class="dropdown-item"
 											href="{{ action('CampaignController@debug', ["uid" => $campaign->uid]) }}">
-											<span class="material-symbols-rounded me-2">monitoring</span>Performance Report</a></li>
+											<span class="material-symbols-rounded me-2">assessment</span>Performance Report</a></li>
 									@endif
 
 									@if (\Gate::allows('resend', $campaign))
