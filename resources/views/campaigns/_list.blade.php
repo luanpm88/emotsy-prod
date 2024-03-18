@@ -17,12 +17,9 @@
 					</div>
 				</td>
 				<td>
-					<a class="kq_search fw-600 d-block list-title" href="{{ action('CampaignController@show', [
-						'campaign' => $campaign,
-						'version_b' => request()->version_b,
-					]) }}">
+					<span class="kq_search fw-600 d-block list-title">
 						{{ $campaign->name }}
-					</a>
+					</span>
 					<span class="text-muted">{{ trans('messages.campaign.type.' . $campaign->type) }}</span>
 
 					@if ($campaign->readCache('SubscriberCount'))
