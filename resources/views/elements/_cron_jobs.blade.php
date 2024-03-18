@@ -37,8 +37,8 @@
 
             <label class="mb-4" onclick="copy">{!! trans('messages.cron_jobs_guide') !!} </label>
             <div class="d-flex">
-                <pre id="cronString" class="py-2 px-2 mb-0 pr-4 bg-light" style="font-size: 16px;">* * * * * <span class="current_path_value">{!! $php_bin_path_value !!}</span> -q {{ base_path() }}/artisan schedule:run 2&gt;&amp;1</pre>
-                <button type="button" class="btn btn-info copy-button rounded-0 rounded-end"><span class="material-symbols-rounded">content_copy</span> {{ trans('messages.copy') }}</button>
+                <pre id="cronString" class="py-2 px-2 mb-0 pr-4 bg-light" style="font-size: 16px;height:50px;">* * * * * <span class="current_path_value">{!! $php_bin_path_value !!}</span> -q {{ base_path() }}/artisan schedule:run 2&gt;&amp;1</pre>
+                <button type="button" class="btn btn-info copy-button rounded-0 rounded-end text-nowrap"><span class="material-symbols-rounded">content_copy</span> {{ trans('messages.copy') }}</button>
             </div>
         </div>
     @endif

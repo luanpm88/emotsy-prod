@@ -8,16 +8,19 @@ use Acelle\Model\Setting;
 class BillingManager
 {
     protected $gateways = [];
-    protected $returnUrl;
 
-    public function __construct($returnUrl)
+    public function __construct()
     {
-        $this->returnUrl = $returnUrl;
+    }
+
+    public function setReturnUrl($url)
+    {
+        session()->put('billingReturnUrl', $url);
     }
 
     public function getReturnUrl()
     {
-        return $this->returnUrl;
+        return session()->get('billingReturnUrl', url('/'));
     }
 
     public function register($type, $constructor)
@@ -66,7 +69,7 @@ class BillingManager
             return [];
         }
 
-        $enabledTypes = json_decode(Setting::get('gateways'));
+        $enabledTypes = array_sort(json_decode(Setting::get('gateways')));
         $list = [];
 
         foreach ($enabledTypes as $t) {

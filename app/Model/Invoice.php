@@ -97,9 +97,14 @@ class Invoice extends Model
         $query->where('type', InvoiceRenewSubscription::TYPE_RENEW_SUBSCRIPTION);
     }
 
-    public function scopeTopUp($query)
+    public function scopeEmailVerificationCredits($query)
     {
-        $query->where('type', InvoiceTopUp::TYPE_TOP_UP);
+        $query->where('type', InvoiceEmailVerificationCredits::TYPE_EMAIL_VERIFICATION_CREDITS);
+    }
+
+    public function scopeSendingCredits($query)
+    {
+        $query->where('type', InvoiceSendingCredits::TYPE_SENDING_CREDITS);
     }
 
     /**
@@ -145,7 +150,7 @@ class Invoice extends Model
     public function getPendingTransaction()
     {
         $query = $this->transactions()
-            ->where('status', Transaction::STATUS_PENDING)
+            ->pending()
             ->orderBy('created_at', 'desc');
 
         // invoice only has one pending transaction
@@ -258,6 +263,11 @@ class Invoice extends Model
     {
         $this->status = self::STATUS_NEW;
         $this->save();
+    }
+
+    public function approveAfter()
+    {
+        throw new \Exception('Need sub classes implement this function! Not call directly from this parent class!');
     }
 
     /**
@@ -586,11 +596,18 @@ class Invoice extends Model
         return $tax;
     }
 
+    public static function newDefault()
+    {
+        $invoice = new self();
+        $invoice->status = self::STATUS_NEW;
+
+        return $invoice;
+    }
+
     public static function createInvoice($type, $title, $description, $customer_id, $currency_id, $billing_address, $invoiceItems)
     {
         // create invoice
-        $invoice = new self();
-        $invoice->status = self::STATUS_NEW;
+        $invoice = self::newDefault();
         $invoice->type = $type;
 
         $invoice->title = $title;
@@ -818,10 +835,11 @@ class Invoice extends Model
     public static function getInvoiceTypeSelectOptions()
     {
         return [
-            ['text' => trans('messages.invoice.type.' . InvoiceTopUp::TYPE_TOP_UP), 'value' => InvoiceTopUp::TYPE_TOP_UP],
             ['text' => trans('messages.invoice.type.' . InvoiceNewSubscription::TYPE_NEW_SUBSCRIPTION), 'value' => InvoiceNewSubscription::TYPE_NEW_SUBSCRIPTION],
             ['text' => trans('messages.invoice.type.' . InvoiceRenewSubscription::TYPE_RENEW_SUBSCRIPTION), 'value' => InvoiceRenewSubscription::TYPE_RENEW_SUBSCRIPTION],
             ['text' => trans('messages.invoice.type.' . InvoiceChangePlan::TYPE_CHANGE_PLAN), 'value' => InvoiceChangePlan::TYPE_CHANGE_PLAN],
+            ['text' => trans('messages.invoice.type.' . InvoiceEmailVerificationCredits::TYPE_EMAIL_VERIFICATION_CREDITS), 'value' => InvoiceEmailVerificationCredits::TYPE_EMAIL_VERIFICATION_CREDITS],
+            ['text' => trans('messages.invoice.type.' . InvoiceSendingCredits::TYPE_SENDING_CREDITS), 'value' => InvoiceSendingCredits::TYPE_SENDING_CREDITS],
         ];
     }
 
@@ -843,8 +861,11 @@ class Invoice extends Model
             case InvoiceChangePlan::TYPE_CHANGE_PLAN:
                 return InvoiceChangePlan::find($this->id);
                 break;
-            case InvoiceTopUp::TYPE_TOP_UP:
-                return InvoiceTopUp::find($this->id);
+            case InvoiceEmailVerificationCredits::TYPE_EMAIL_VERIFICATION_CREDITS:
+                return InvoiceEmailVerificationCredits::find($this->id);
+                break;
+            case InvoiceSendingCredits::TYPE_SENDING_CREDITS:
+                return InvoiceSendingCredits::find($this->id);
                 break;
             default:
                 throw new \Exception("Invoice type #{$this->type} not found!");

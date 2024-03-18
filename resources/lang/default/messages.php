@@ -1491,6 +1491,28 @@
   'interval.year' => ':count year|:count years',
   'invalid_captcha' => 'Invalid captcha',
   'invoice' => 'Invoice',
+
+  'invoice.wording' => 'Invoices are created when customers make payment for services, including when they subscribe to a plan, renew their subscription, change plans, buy a number, buy a sender ID, or purchase other related services.',
+  'invoice.dowload_invoice' => 'Download invoice',
+  'invoice.invoice_code' => 'Invoice:',
+  'invoice.delete' => 'Delete',
+  'invoice.delete.confirm' => 'You\'re about to delete invoice completely. This can not be un-done.',
+  'invoice.deleted' => 'Invoice was successfully deleted',
+  'invoice.approve.confirm' => 'You are about to approve the pending invoice. This will increase the customer\'s account balance. This action cannot be undone.',
+  'invoice.approve.success' => 'Invoice was successfully approved',
+  'invoice.reject' => 'Reject',
+  'invoice.approve' => 'Approve',
+  'invoice.reject.confirm' => 'Do you want to reject the pending invoice. This can not be un-done.',
+  'invoice.reject.success' => 'The pending invoice was rejected.',
+  'invoice.reject.leave_note' => 'Leave a note to your customer regarding the reason the invoice is rejected',
+  'invoice.logs' => 'Logs',
+  'invoice.transactions' => 'Transactions',
+  'invoice.all_types' => 'All types',
+  'invoice.all_statuses' => 'All statuses',
+  'invoice.type.change_plan' => 'Change plan',
+  'invoice.type.new_subscription' => 'New subscription',
+  'invoice.type.renew_subscription' => 'Renew subscription',
+  
   'invoice.action' => 'Action',
   'invoice.amount' => 'Amount',
   'invoice.auto_pay_before' => 'Your invoice will be charged by <br> :date',
@@ -3678,4 +3700,95 @@
   '2fa.select_defferent_method' => 'Select different method',
   '2fa.verification_code' => 'Verfication Code',
   '2fa.saved' => 'Two-factor authentication was saved successfully',
+  'subscription_and_credits' => 'Subscription & Credits',
+  'your_subscription' => 'Your subscription',
+  'invoice.empty' => 'No records found',
+  'transaction.empty' => 'No records found',
+  'invoice.last_purchase' => 'Last purchase',
+  'invoice.all_statuses' => 'All statuses',
+
+  'email_verification_plan.details' => 'Plan details',
+  'email_verification_plan.add_new_plan' => 'Add new Plan',
+  'email_verification_plan.plans' => 'Email verification plans',
+  'email_verification_plan.intro' => 'Email verification plans allow clients to subscribe and acquire
+    additional credits by utilizing the email verification server.
+    Each plan comes with a specified price, billing cycle, and a allocation of credits for utilizing 
+    the email verification service on emails.',
+  'email_verification_plan.create.success' =>'Plan was successfully created',
+  'email_verification_plan.update.success' =>'Plan was successfully updated',
+  'email_verification_plan.delete.success' =>'Plan was successfully deleted',
+  'email_verification_plan.delete.confirm' => 'You\'re about to delete all information below:',
+  'email_verification_plan.plan_name' => 'Plan name',
+  'email_verification_plan.description' => 'Description',
+  'email_verification_plan.plan' => 'Plan',
+  'email_verification_plan.credits' => 'Credits',
+  'email_verification_plan.delete' => 'Delete',
+  'email_verification_plan.credits.menu' => 'Verification Credits',
+  'email_verification_plan.wording' => 'You can subscribe to an additional email verification
+    credits plan to increase the capacity of verifying your emails. Depending on the size of your lists,
+    you can choose one or more credit plans.',
+  'email_verification_plan.buy_more' => 'Buy more credit',
+  'email_verification_plan.select_plan' => 'Select email verification credits plan',
+  'email_verification_plan.select_plan.wording' => 'By subscribing to the Email Verification Credits Plan, you can extend the current
+    credit verification limit inherent to each plan. Purchasing additional email verification credits
+    separately can help reduce costs tailored to your specific needs.',
+  'email_verification_plan.checkout' => 'Checkout',
+  'email_verification_credit.overview' => 'Overview',
+  'invoice.email_verification_credits' => ':amount Email Verification Credits',
+  'invoice.email_verification_credits.desc' => 'Buy :amount email verification credits',
+  'email_verification_credits.count' => ':number credits',
+
+  'sending_credit_plan.details' => 'Plan details',
+  'sending_credit_plan.add_new_plan' => 'Add new Plan',
+  'sending_credit_plan.plans' => 'Sending Credit plans',
+  'sending_credit_plan.intro' => 'With Sending Credit Plans, customers can now subscribe and purchase
+    additional sending credits without the need to upgrade their subscription.
+    This allows for increased flexibility, enabling users to pay for and
+    access extra sending credits as needed.',
+  'sending_credit_plan.create.success' =>'Plan was successfully created',
+  'sending_credit_plan.update.success' =>'Plan was successfully updated',
+  'sending_credit_plan.delete.success' =>'Plan was successfully deleted',
+  'sending_credit_plan.delete.confirm' => 'You\'re about to delete all information below:',
+  'sending_credit_plan.plan_name' => 'Plan name',
+  'sending_credit_plan.description' => 'Description',
+  'sending_credit_plan.plan' => 'Plan',
+  'sending_credit_plan.credits' => 'Credits',
+  'sending_credit_plan.delete' => 'Delete',
+  'sending_credit_plan.credits.menu' => 'Sending Credits',
+  'sending_credit_plan.wording' => 'Welcome to our enhanced SaaS experience! Introducing the all-new Credit Plan feature.
+    Seamlessly subscribe to access additional credits, empowering you to maximize
+    your email sending capabilities. Upgrade your efficiency today and explore the benefits
+    within our system!',
+  'sending_credit_plan.buy_more' => 'Buy more credit',
+  'sending_credit_plan.select_plan' => 'Select sending credit plan',
+  'sending_credit_plan.select_plan.wording' => 'By subscribing to the Sending Credit Plan, you can extend the current
+    email sending limit inherent to each plan. Purchasing additional sending credit
+    separately can help reduce costs tailored to your specific needs.',
+  'sending_credit_plan.checkout' => 'Checkout',
+
+  'sending_credit.overview' => 'Overview',
+  'invoice.sending_credit' => ':amount Sending Credits',
+  'invoice.sending_credit.desc' => 'Buy :amount sending credits',
+  'sending_credit.count' => ':number credits',
+
+  'checkout.cart' => 'Cart',
+  'checkout.back_to_cart' => 'Back to Cart',
+  'checkout.go_back' => 'Go back',
+  'checkout.for_sending_bills' => 'For sending bills',
+  'checkout.select_method' => 'Select payment method',
+  'checkout.payment' => 'Payment',
+  'checkout.select_payment' => 'Select payment method',
+  'checkout.pay' => 'Pay',
+
+  'invoice.logs' => 'Logs',
+  'invoice.download' => 'Download',
+
+  'transaction.all_statuses' => 'All statuses',
+  'transaction.status.pending' => 'Pending',
+  'transaction.status.success' => 'Success',
+  'transaction.status.failed' => 'Failed',
+
+  'invoice.type.email_verification_credits' => 'Email Verification Credits',
+  'invoice.type.sending_credits' => 'Sending Credits',
+  'invoice.checkout' => 'Checkout',
 ) ?>

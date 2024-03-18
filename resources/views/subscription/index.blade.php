@@ -28,6 +28,10 @@
 		'menu' => 'subscription',
 	])
 
+    @include("subscription._menu", [
+        'menu' => 'general',
+    ])
+
     <div class="row">
         <div class="col-sm-12 col-md-8 col-lg-8">
             <div class="notification_group">
@@ -66,7 +70,7 @@
                 @endif
             </div>
 
-            <h2 class="text-semibold">{{ trans('messages.subscription') }}</h2>
+            <h2 class="text-semibold">{{ trans('messages.your_subscription') }}</h2>
 
             <div class="sub-section">
                 @if ($subscription->isActive())
@@ -74,7 +78,7 @@
                         <p>
                             {!! trans('messages.subscription.current_subscription.wording', [
                                 'plan' => $plan->name,
-                                'money' => Acelle\Library\Tool::format_price($plan->price, $plan->currency->format),
+                                'money' => Acelle\Library\Tool::format_price($plan->getPrice(), $plan->currency->format),
                                 'remain' => $subscription->current_period_ends_at->diffForHumans(),
                                 'next_on' => Auth::user()->customer->formatDateTime($subscription->current_period_ends_at, 'datetime_full')
                             ]) !!}
@@ -83,7 +87,7 @@
                         <p>
                             {!! trans('messages.subscription.current_subscription.cancel_at_end_of_period.wording', [
                                 'plan' => $plan->name,
-                                'money' => Acelle\Library\Tool::format_price($plan->price, $plan->currency->format),
+                                'money' => Acelle\Library\Tool::format_price($plan->getPrice(), $plan->currency->format),
                                 'remain' => $subscription->current_period_ends_at->diffForHumans(),
                                 'end_at' => Auth::user()->customer->formatDateTime($subscription->current_period_ends_at, 'datetime_full')
                             ]) !!}
@@ -130,16 +134,18 @@
             </div>
             @include('subscription._invoices')
 
-            <div class="sub-section">
-                <div class="">
+            @if (!config('app.brand'))
+                <div class="sub-section">
                     <div class="">
-                        <h2 class="text-semibold">{{ trans('messages.plan_details') }} </h2>
-                        <p>{{ trans('messages.plan_details.intro') }}</p>
+                        <div class="">
+                            <h2 class="text-semibold">{{ trans('messages.plan_details') }} </h2>
+                            <p>{{ trans('messages.plan_details.intro') }}</p>
 
-                        @include('plans._details', ['plan' => $plan])
+                            @include('plans._details', ['plan' => $plan])
+                        </div>
                     </div>
                 </div>
-            </div>
+            @endif
         </div>
         <div class="col-sm-12 col-md-4 col-lg-4">
             @if ($subscription->getItsOnlyUnpaidChangePlanInvoice())

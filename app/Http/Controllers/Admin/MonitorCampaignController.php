@@ -19,7 +19,7 @@ class MonitorCampaignController extends Controller
 
     //     return response(empty($html) ? 'no campaign' : implode('', $html ));
     // }
-    
+
     /**
      * Display a listing of the resource.
      *

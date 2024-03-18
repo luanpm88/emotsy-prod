@@ -95,4 +95,29 @@ class CreditTracker
             }
         });
     }
+
+    public function isUnlimited()
+    {
+        return $this->getRemainingCredits() == self::UNLIMITED;
+    }
+
+    public function isZero()
+    {
+        return $this->getRemainingCredits() == self::ZERO;
+    }
+
+    public function topup($amount)
+    {
+        Lockable::withExclusiveLock($this->lock, function () use ($amount) {
+            $remainingCredits = $this->getRemainingCredits();
+
+            if ($remainingCredits != self::UNLIMITED) {
+                $remainingCredits += $amount;
+                $remainingCredits = "{$remainingCredits}"; // cast to string
+                file_put_contents($this->filepath, $remainingCredits);
+            } else {
+                throw new Exception('Cannot topup credits, already UNLIMITED');
+            }
+        });
+    }
 }

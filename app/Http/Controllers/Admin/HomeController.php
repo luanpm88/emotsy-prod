@@ -31,7 +31,7 @@ class HomeController extends Controller
     public function index(Request $request)
     {
         Google2FA::logout();
-        
+
         if (!config('app.saas')) {
             return redirect()->action('HomeController@index');
         }

@@ -273,6 +273,17 @@ Route::group(['middleware' => ['not_installed', 'auth', '2fa']], function () {
 });
 
 Route::group(['middleware' => ['not_installed', 'auth', 'frontend', '2fa']], function () {
+    // Checkout
+    Route::get('checkout/{invoice_uid}/transactions/list', 'CheckoutController@transactionList');
+    Route::get('checkout/{invoice_uid}/invoices/list', 'CheckoutController@invoiceList');
+    Route::post('checkout/{invoice_uid}/cancel', 'CheckoutController@cancel');
+    Route::post('checkout/{invoice_uid}/checkout', 'CheckoutController@checkout');
+    Route::get('checkout/{invoice_uid}/order-box', 'CheckoutController@orderBox');
+    Route::match(['get', 'post'], 'checkout/{invoice_uid}/payment', 'CheckoutController@payment');
+    Route::match(['get', 'post'], 'checkout/{invoice_uid}/address', 'CheckoutController@billingAddress');
+    Route::get('checkout/{invoice_uid}/cart', 'CheckoutController@cart');
+    Route::match(['get', 'post'], 'checkout/{invoice_uid}/billing-address', 'CheckoutController@billingAddress');
+
     // Audience
     Route::get('audience/growth-chart', 'AudienceController@growthChart');
     Route::get('audience/overview', 'AudienceController@overview');
@@ -882,6 +893,8 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
 
     // Invoice
     Route::get('invoices/{uid}/download', 'InvoiceController@download');
+    Route::get('invoices/{invoice_uid}/logs', 'InvoiceController@logs');
+    Route::delete('invoices/{invoice_uid}/delete', 'InvoiceController@delete');
 
     // Chat
     Route::post('chat', 'ChatController@chat');
@@ -943,12 +956,29 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
 
     // Account ChatGPT
     Route::match(['get', 'post'], 'chat-gpt', 'ChatgptController@settings');
+
     // Google Analytics
     Route::get('campaigns/{uid}/google-analytics', 'GoogleAnalyticsController@googleAnalytics');
     Route::get('account/google-analytics', 'GoogleAnalyticsController@index');
     Route::get('account/google-analytics/auth/google', 'GoogleAnalyticsController@redirectToGoogle');
     Route::get('account/google-analytics/auth/google/callback', 'GoogleAnalyticsController@handleGoogleCallback');
     Route::get('account/google-analytics/auth/google/redirect', 'GoogleAnalyticsController@redirect');
+    
+    // Email Verification Plan Controller
+    Route::post('account/email-verification-plans/invoices/{uid}/abort', 'EmailVerificationPlanController@invoiceAbort');
+    Route::post('account/email-verification-plans/{plan_uid}/buy', 'EmailVerificationPlanController@buy');
+    Route::get('account/email-verification-plans/select', 'EmailVerificationPlanController@select');
+    Route::get('account/email-verification-plans/transactions/list', 'EmailVerificationPlanController@transactionList');
+    Route::get('account/email-verification-plans/invoices/list', 'EmailVerificationPlanController@invoiceList');
+    Route::get('account/email-verification-plans', 'EmailVerificationPlanController@index');
+
+    // Sending Credit Controller
+    Route::post('account/sending-credit/invoices/{uid}/abort', 'SendingCreditPlanController@invoiceAbort');
+    Route::post('account/sending-credit/{plan_uid}/buy', 'SendingCreditPlanController@buy');
+    Route::get('account/sending-credit/select', 'SendingCreditPlanController@select');
+    Route::get('account/sending-credit/transactions/list', 'SendingCreditPlanController@transactionList');
+    Route::get('account/sending-credit/invoices/list', 'SendingCreditPlanController@invoiceList');
+    Route::get('account/sending-credit', 'SendingCreditPlanController@index');
 
 });
 
@@ -1328,6 +1358,15 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     // Invoice
     Route::match(['get','post'], 'admin/invoices/template/edit', 'InvoiceController@templateEdit');
     Route::get('admin/invoices/{uid}/download', 'InvoiceController@download');
+    Route::post('admin/invoices/custom/store', 'InvoiceController@customStore');
+    Route::get('admin/invoices/custom/create', 'InvoiceController@customCreate');
+    Route::get('admin/invoices/{invoice_uid}/logs', 'InvoiceController@logs');
+    Route::match(['get','post'], 'admin/invoices/{invoice_uid}/reject', 'InvoiceController@reject');
+    Route::post('admin/invoices/{invoice_uid}/approve', 'InvoiceController@approve');
+    Route::delete('admin/invoices/{invoice_uid}/delete', 'InvoiceController@delete');
+    Route::get('admin/invoices/transaction/list', 'InvoiceController@transactionList');
+    Route::get('admin/invoices/invoice/list', 'InvoiceController@list');
+    Route::get('admin/invoices', 'InvoiceController@index');
 
     // OAuth
     Route::match(['get', 'post'], 'admin/auth/facebook-oauth', 'AuthController@facebookOAuth');
@@ -1502,4 +1541,22 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     //
     Route::post('admin/verify/index', 'VerificationController@index');
     Route::get('admin/verify/index', 'VerificationController@index');
+
+    // Plan for Verification Credits
+    Route::get('admin/email-verification-plans/delete/confirm', 'EmailVerificationPlanController@deleteConfirm');
+    Route::post('admin/email-verification-plans/{uid}/visibility/on', 'EmailVerificationPlanController@visibilityOn');
+    Route::post('admin/email-verification-plans/{uid}/visibility/off', 'EmailVerificationPlanController@visibilityOff');
+    Route::post('admin/email-verification-plans/{uid}/delete', 'EmailVerificationPlanController@delete');
+    Route::match(['get', 'post'], 'admin/sms/email-verification-plans/billing-cycle/custom', 'EmailVerificationPlanController@billingCycleCustom');
+    Route::get('admin/sms/email-verification-plans/list', 'EmailVerificationPlanController@list');
+    Route::resource('admin/sms/email-verification-plans', 'EmailVerificationPlanController');
+
+    // Plan for Sending Credit Plan
+    Route::get('admin/sending-credit-plans/delete/confirm', 'SendingCreditPlanController@deleteConfirm');
+    Route::post('admin/sending-credit-plans/{uid}/visibility/on', 'SendingCreditPlanController@visibilityOn');
+    Route::post('admin/sending-credit-plans/{uid}/visibility/off', 'SendingCreditPlanController@visibilityOff');
+    Route::post('admin/sending-credit-plans/{uid}/delete', 'SendingCreditPlanController@delete');
+    Route::match(['get', 'post'], 'admin/sms/sending-credit-plans/billing-cycle/custom', 'SendingCreditPlanController@billingCycleCustom');
+    Route::get('admin/sms/sending-credit-plans/list', 'SendingCreditPlanController@list');
+    Route::resource('admin/sms/sending-credit-plans', 'SendingCreditPlanController');
 });
