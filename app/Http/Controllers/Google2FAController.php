@@ -16,7 +16,7 @@ class Google2FAController extends Controller
         if (!$isValid) {
             $rules['code_invalid'] = 'required';
         }
-        
+
         // Validator
         $validator = \Validator::make($request->all(), $rules);
 

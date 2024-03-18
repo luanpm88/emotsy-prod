@@ -446,7 +446,8 @@ function execute_with_limits(array $rateTrackers, array $creditTrackers, Closure
     }
 }
 
-function maskEmail($email) {
+function maskEmail($email)
+{
     // Split the email address into parts
     list($username, $domain) = explode('@', $email);
 

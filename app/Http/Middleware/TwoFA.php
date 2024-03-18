@@ -21,15 +21,12 @@ class TwoFA
                 if ($this->shouldProvideTwoFactorChallenge($request)) {
                     return redirect(action('UserController@verifySelectMethod'));
                 }
-            }
-
-
-            else {
+            } else {
                 // not enable mean should set 2fa session = true, in case user want to change 2fa setting while logged in
                 $request->user()->set2FAAuthenticated();
             }
         }
-        
+
         return $next($request);
     }
 

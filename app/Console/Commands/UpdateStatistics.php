@@ -38,7 +38,7 @@ class UpdateStatistics extends Command
      */
     public function handle()
     {
-        
+
         $customers = Customer::all();
 
         foreach($customers as $customer) {
