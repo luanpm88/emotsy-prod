@@ -28,7 +28,7 @@
 
 
 <script>
-    class FieldUpdate {
+    var FieldUpdate = class {
         constructor() {
             this.items = [
                 @if (isset($element))
