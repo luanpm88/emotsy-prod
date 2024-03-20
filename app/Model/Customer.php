@@ -1968,31 +1968,11 @@ class Customer extends Model
         return $this->sendingCreditsInvoices()->paid()->sum('sending_credits');
     }
 
-    public function getUsedSendingCredits()
-    {
-        return $this->getSendingCredits() == 0 ? 0 : 8500;
-    }
-
     public function getLastPaidSendingCreditsInvoice()
     {
         return $this->sendingCreditsInvoices()
             ->paid()
             ->orderBy('created_at', 'DESC')
             ->first();
-    }
-
-    public function getSendingCreditsUsage()
-    {
-        $max = $this->getSendingCredits();
-        $count = $this->getUsedSendingCredits();
-
-        if ($max == 0) {
-            return 0;
-        }
-        if ($count > $max) {
-            return 100;
-        }
-
-        return round((($count / $max) * 100), 2);
     }
 }
