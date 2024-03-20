@@ -4,8 +4,14 @@
     $var_name = str_replace('][', '.', $var_name);
     $var_name = str_replace('[', '.', $var_name);
     $var_name = str_replace(']', '', $var_name);
-    $classes = (isset($rules) && isset($rules[$var_name])) ? ' '.str_replace('|', ' ', $rules[$var_name]) : '';
-    $required = (isset($rules) && isset($rules[$var_name]) && in_array('required', explode('|', $rules[$var_name]))) ? true : '';
+    $classes = '';
+    $required = false;
+
+    if ((isset($rules) && isset($rules[$var_name]))) {
+        $res = is_array($rules[$var_name]) ? $rules[$var_name] : explode('|', $rules[$var_name]);
+        $classes = ' '.implode(' ', $res);
+        $required = in_array('required', $res);
+    }
     ?>
 
 @if ($type == 'checkbox' || $type == 'checkbox3' || $type == 'radio3')

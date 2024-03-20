@@ -23,7 +23,7 @@
 		</div>
 		<div class="text-left">
 			<button class="btn btn-secondary me-1"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
-			<a href="{{ action("SenderController@index") }}" class="btn btn-secondary"><i class="icon-cross"></i> {{ trans('messages.cancel') }}</a>
+			<a href="{{ action("SenderController@index") }}" class="btn btn-secondary"><span class="material-symbols-rounded">close</span> {{ trans('messages.cancel') }}</a>
 		</div>
 	</div>
 </div>

@@ -68,8 +68,11 @@
                                                 @endforeach
                                             </select>
                                         </div>
-                                        <a href="javascript:;" class="text-nowrap" mapping-control="save" style="text-decoration: underline">
+                                        <a href="javascript:;" class="text-nowrap me-4" mapping-control="save" style="text-decoration: underline">
                                             {{ trans('messages.subscriber.import.ok_i_done') }}
+                                        </a>
+                                        <a data-action="manage-list-fields" href="{{ action('FieldController@index', $list->uid) }}" class="text-nowrap" style="text-decoration: underline">
+                                            {{ trans('messages.subscriber.import.mange_list_fields') }}
                                         </a>
                                     </div>
                                 </div>
@@ -149,6 +152,57 @@
     </div>
 
     <script>
+        var manageListFields;
+
+        $(function() {
+            manageListFields = new ManageListFields({
+                actions: $('[ data-action="manage-list-fields"]'),
+                url: '{{ action('FieldController@index', $list->uid) }}',
+                refreshUrl: '{{ action('MailListController@listFieldOptions', [
+                    'uid' => $list->uid,
+                ]) }}',
+            });
+        });
+
+        var ManageListFields = class {
+            constructor(options) {
+                this.actions = options.actions;
+                this.url = options.url;
+                this.refreshUrl = options.refreshUrl;
+                this.popup = new Popup({
+                    url: this.url,
+                });
+
+                this.events();
+            }
+
+            refresh() {
+                $.ajax({
+                    method: "GET",
+                    url: this.refreshUrl
+                })
+                .done(function( response ) {
+                    $('[mapping-control="field-select"]').empty().select2({
+                        data: response
+                    });
+                });  
+            }
+
+            load() {
+                this.popup.load();
+            }
+
+            events() {
+                var _this = this;
+
+                this.actions.on('click', function(e) {
+                    e.preventDefault();
+                    
+                    _this.load();
+                });
+            }
+        }
+
         var MappingItem = class {
             constructor(manager, header) {
                 this.manager = manager;

@@ -109,6 +109,8 @@ class Controller extends BaseController
 
         \Auth::login($user);
 
+        $user->set2FAAuthenticated();
+
         return redirect()->action('HomeController@index');
     }
 

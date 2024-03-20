@@ -80,4 +80,28 @@ class InMemoryCreditTracker
             }
         });
     }
+
+    public function isUnlimited()
+    {
+        return $this->getRemainingCredits() == self::UNLIMITED;
+    }
+
+    public function isZero()
+    {
+        return $this->getRemainingCredits() == self::ZERO;
+    }
+
+    public function topup($amount)
+    {
+        with_cache_lock($this->resourceKey, function () use ($amount) {
+            $remainingCredits = $this->getRemainingCredits();
+
+            if ($remainingCredits != self::UNLIMITED) {
+                $remainingCredits += $amount;
+                Cache::put($this->resourceKey, $remainingCredits);
+            } else {
+                throw new Exception('Cannot topup credits, already UNLIMITED');
+            }
+        });
+    }
 }

@@ -15,17 +15,17 @@
                     </a>
                 </li>
                 @if (config('app.saas'))
-                    <li class="nav-item {{ $menu == 'billing' ? 'active' : '' }}">
-                        <a href="{{ action("AccountController@billing") }}" class="nav-link">
-                            <span class="material-symbols-rounded">credit_card</span> {{ trans('messages.billing') }}
-                        </a>
-                    </li>
                     <li class="nav-item {{ $menu == 'subscription' ? 'active' : '' }}">
                         <a href="{{ action("SubscriptionController@index") }}" class="nav-link position-relative {{ isset($tab) && $tab == 'subscription' ? 'active' : '' }}">
-                            <span class="material-symbols-rounded">assignment</span> {{ trans('messages.subscription') }}
+                            <span class="material-symbols-rounded">auto_mode</span> {{ trans('messages.subscription_and_credits') }}
                             @if (Auth::user()->customer->hasSubscriptionNotice())
                                 <i class="material-symbols-rounded tabs-warning-icon text-danger">info</i>
                             @endif
+                        </a>
+                    </li>
+                    <li class="nav-item {{ $menu == 'billing' ? 'active' : '' }}">
+                        <a href="{{ action("AccountController@billing") }}" class="nav-link">
+                            <span class="material-symbols-rounded">credit_card</span> {{ trans('messages.billing') }}
                         </a>
                     </li>
                 @endif
@@ -39,6 +39,13 @@
                         <span class="material-symbols-rounded">vpn_key</span> {{ trans('messages.api_token') }}
                     </a>
                 </li>
+                @if (\Acelle\Model\Setting::get('2fa_enable') == 'yes')
+                    <li class="nav-item {{ $menu == '2fa' ? 'active' : '' }}">
+                        <a href="{{ action("TwoFAController@index") }}" class="nav-link">
+                            <span class="material-symbols-rounded">security</span> {{ trans('messages.2fa.two_factor_authentication') }}
+                        </a>
+                    </li>
+                @endif
             </ul>
         </div>
     </div>

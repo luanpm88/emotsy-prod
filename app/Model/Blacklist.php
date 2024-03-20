@@ -205,7 +205,8 @@ class Blacklist extends Model
 
             DB::table($tmpTableName)->insert($data);
 
-            $insertSql = strtr('
+            $insertSql = strtr(
+                '
 
                 INSERT INTO %blacklists (email, customer_id, created_at, updated_at)
                 SELECT tmp.email, %customer_id, NOW(), NOW()

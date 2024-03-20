@@ -207,4 +207,20 @@ class Currency extends Model
     {
         return htmlspecialchars($this->name.' ('.$this->code.')');
     }
+
+    public static function getSelectOptions()
+    {
+        $options = self::all();
+
+        $options = $options->map(function ($item) {
+            return ['value' => $item->id, 'text' => $item->name];
+        });
+
+        return $options;
+    }
+
+    public static function scopeActive($query)
+    {
+        $query = $query->where('status', 'active');
+    }
 }

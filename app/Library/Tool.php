@@ -391,7 +391,7 @@ class Tool
         $result = '';
         try {
             if (!file_exists($path) || !is_executable($path)) {
-                return $result;
+                return "The [$path] path does not exist or is not executable";
             }
         } catch (\Exception $ex) {
             // open_basedir in effect
@@ -500,7 +500,7 @@ class Tool
             if ($check != 'ok') {
                 $rules = ['php_bin_path_invalid' => 'required'];
                 $controller->validate($request, $rules, [
-                'php_bin_path_invalid.required' => $check
+                    'php_bin_path_invalid.required' => $check
                 ]);
             }
 
