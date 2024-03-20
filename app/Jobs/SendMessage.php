@@ -38,7 +38,7 @@ class SendMessage implements ShouldQueue
     // may not ***RESPECT*** your specified timeout. Therefore, when using these features,
     // you should always attempt to specify a timeout using their APIs as well.
     // For example, when using Guzzle, you should always specify a connection and request timeout value.
-    public $timeout = 600;
+    public $timeout = 60;
     public $maxExceptions = 1; // This is required if retryUntil is used, otherwise, the default value is 255
     public $failOnTimeout = true;
 

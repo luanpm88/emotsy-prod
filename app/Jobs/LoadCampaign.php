@@ -24,7 +24,7 @@ class LoadCampaign implements ShouldQueue
     use SerializesModels;
 
     // @important: set the "retry_after" setting in config/queue.php to a value that is greater than $timeout;
-    public $timeout = 7200;
+    public $timeout = 90;
     public $failOnTimeout = true;
     public $tries = 1;
     public $maxExceptions = 1;
