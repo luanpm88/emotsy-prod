@@ -8,7 +8,7 @@
     @include('layouts.core._favicon')
     
     <!-- BuilderJS CORE -->
-    <link href="{{ AppUrl::asset('builder/builder.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ AppUrl::asset('builder/builder.css') }}?v=1" rel="stylesheet" type="text/css">
     <script type="text/javascript" src="{{ AppUrl::asset('builder/builder.js') }}"></script>
 
     <!-- BuilderJS CUSTOM -->

@@ -7,7 +7,7 @@
         
         @include('layouts.core._favicon')
         
-        <link href="{{ AppUrl::asset('builder/builder.css') }}" rel="stylesheet" type="text/css">
+        <link href="{{ AppUrl::asset('builder/builder.css') }}?v=1" rel="stylesheet" type="text/css">
         <script type="text/javascript" src="{{ AppUrl::asset('builder/builder.js') }}"></script>
 
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
