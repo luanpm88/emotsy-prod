@@ -156,10 +156,12 @@ class SendMessage implements ShouldQueue
             $getLockAt = null;
             // END DEBUG
 
-            execute_with_limits($rateTrackers, $creditTrackers, function () use ($message, $logger, $msgId, $email, &$finishDeliveryAt, &$getLockAt) {
-                // Actually send (or throw an exception)
+            execute_with_limits($rateTrackers, $creditTrackers, function () use ($startAt, $message, $logger, $msgId, $email, &$finishDeliveryAt, &$getLockAt) {
 
                 $getLockAt = Carbon::now()->getTimestampMs();
+                $getLockDiff = ($getLockAt - $startAt) / 1000;
+
+                $logger->info(sprintf('Got lock for %s after "%s" seconds', $email, $getLockDiff));
 
                 if (!$this->subscriber->isSubscribed()) {
                     // @important: do not throw an exception here
@@ -175,12 +177,14 @@ class SendMessage implements ShouldQueue
                     $sent = $this->server->send($message);
                 }
 
-                // DEBUG
                 $finishDeliveryAt = Carbon::now()->getTimestampMs();
-                // END DEBUG
+
+                $logger->info(sprintf('Sent to %s', $email));
 
                 // Log successful shot
                 $this->campaign->trackMessage($sent, $this->subscriber, $this->server, $msgId, $this->triggerId);
+
+                // Done, written to tracking_logs table
                 $logger->info(sprintf('Done with %s [Server "%s"]', $email, $this->server->name));
             });
 
