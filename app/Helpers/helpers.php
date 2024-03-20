@@ -219,9 +219,15 @@ function exec_enabled()
  *
  * @return bool
  */
-function artisan_migrate()
+function artisan_migrate($connection = null)
 {
-    \Artisan::call('migrate', ['--force' => true]);
+    if (is_null($connection)) {
+        \Artisan::call('migrate', ['--force' => true]);
+    } else {
+        \Acelle\Helpers\set_userdb_connection($connection);
+        \Artisan::call("migrate", ['--database' => $connection, '--force' => true]);
+    }
+
 }
 
 /**

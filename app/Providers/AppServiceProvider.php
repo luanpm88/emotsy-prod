@@ -31,6 +31,9 @@ class AppServiceProvider extends ServiceProvider
         // @deprecated
         $this->addCustomValidationRules();
 
+        // Load custom DB connections from config/sharding.php
+        $this->loadShardingDbConnections();
+
         // Just finish if the application is not set up
         if (!isInitiated()) {
             return;
@@ -204,5 +207,13 @@ class AppServiceProvider extends ServiceProvider
         // [Illuminate\Database\QueryException]
         // SQLSTATE[42000]: Syntax error or access violation: 1071 Specified key was too long; max key length is 767 bytes
         Schema::defaultStringLength(191);
+    }
+
+    private function loadShardingDbConnections()
+    {
+        $connections  = config('sharding');
+        foreach ($connections as $name => $settings) {
+            \Config::set("database.connections.{$name}", $settings);
+        }
     }
 }
