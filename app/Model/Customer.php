@@ -1874,37 +1874,12 @@ class Customer extends Model
         return $this->transactions()->whereIn('invoice_id', $this->emailVerificationCreditsInvoices()->select('id'));
     }
 
-    public function getEmailVerificationCredits()
-    {
-        return $this->emailVerificationCreditsInvoices()->paid()->sum('email_verification_credits');
-    }
-
-    public function getUsedEmailVerificationCredits()
-    {
-        return $this->getEmailVerificationCredits() == 0 ? 0 : 8500;
-    }
-
     public function getLastPaidEmailVerificationCreditsInvoice()
     {
         return $this->emailVerificationCreditsInvoices()
             ->paid()
             ->orderBy('created_at', 'DESC')
             ->first();
-    }
-
-    public function getEmailVerificationCreditsUsage()
-    {
-        $max = $this->getEmailVerificationCredits();
-        $count = $this->getUsedEmailVerificationCredits();
-
-        if ($max == 0) {
-            return 0;
-        }
-        if ($count > $max) {
-            return 100;
-        }
-
-        return round((($count / $max) * 100), 2);
     }
 
     public function createSendingCreditsInvoice($amount, $currency, $credits)
