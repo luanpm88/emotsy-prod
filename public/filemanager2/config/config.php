@@ -23,7 +23,7 @@ $response = $kernel->handle(
     $request = Acelle\Framework\LaravelRequest::capture('/blank')
 );
 
-$mainAppConfig = Auth::user()->getFilemanagerConfig();
+$mainAppConfig = Auth::user()->getFilemanagerConfig(isset($_GET['admin']) ? true : false);
 
 /*
 |--------------------------------------------------------------------------
