@@ -1034,7 +1034,7 @@ class Subscription extends Model
         }
     }
 
-    public function getVerifyEmailCreditTracker($createFileIfNotExist = false)
+    public function getVerifyEmailCreditTracker($createFileIfNotExist = true)
     {
         if (config('custom.distributed_worker')) {
             $key = 'app-quota-subscription-verify-email-credits-'.$this->uid;
