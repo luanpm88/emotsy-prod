@@ -1036,8 +1036,13 @@ class Subscription extends Model
 
     public function getVerifyEmailCreditTracker($createFileIfNotExist = false)
     {
-        // Temporarily not supported
-        return null;
+        if (config('custom.distributed_worker')) {
+            $key = 'app-quota-subscription-verify-email-credits-'.$this->uid;
+            return InMemoryCreditTracker::load($key);
+        } else {
+            $file = storage_path('app/quota/subscription-verify-email-credits-'.$this->uid);
+            return CreditTracker::load($file, $createFileIfNotExist);
+        }
     }
 
     public function setDefaultEmailCredits()
