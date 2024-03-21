@@ -40,7 +40,7 @@
                     </a>
                 </li>
 
-                @if (\Acelle\Helpers\isSendingCreditPluginActive())
+                @if (\Acelle\Helpers\isSendingCreditPluginActive() && Auth::user()->customer->getCurrentActiveSubscription())
                     <li class="nav-item {{ $menu == 'sending_credit_plan' ? 'active' : '' }}">
                         <a href="{{ action("SendingCreditPlanController@index") }}" class="nav-link px-0 boxrder me-5 mb-4 py-2
                             {{ $menu == 'sending_credit_plan' ? '' : 'bg-lightx text-mutedx' }}"
@@ -50,20 +50,12 @@
                                 <span>
                                     <span class="d-block">
                                         <span class="">
-                                            {{ number_with_delimiter(Auth::user()->customer->getUsedSendingCredits()) }}
-                                            /
-                                            {{ number_with_delimiter(Auth::user()->customer->getSendingCredits()) }}
+                                            {{ number_with_delimiter(Auth::user()->customer->getCurrentActiveSubscription()->getSendEmailCreditTracker()->getRemainingCredits()) }}
                                         </span>
                                     </span>
                                     <span class="d-block fw-normal small text-muted">
                                         <span>{{ trans('messages.sending_credit_plan.credits.menu') }}</span>
                                     </span>
-                                </span>
-                                <span class="ms-4">
-                                    <div class="c100 p{{ round(Auth::user()->customer->getSendingCreditsUsage()) }} center" style="font-size:58px;">
-                                        <span>{{ round(Auth::user()->customer->getSendingCreditsUsage()) }}%</span>
-                                        <div class="slice"><div class="bar"></div><div class="fill"></div></div>
-                                    </div>
                                 </span>
                             </span>
                         </a>
@@ -85,12 +77,6 @@
                                     <span class="d-block fw-normal small text-muted">
                                         <span>{{ trans('messages.email_verification_plan.credits.menu') }}</span>
                                     </span>
-                                </span>
-                                <span class="ms-4">
-                                    <div class="c100 p{{ round(Auth::user()->customer->getEmailVerificationCreditsUsage()) }} center" style="font-size:58px;">
-                                        <span>{{ round(Auth::user()->customer->getEmailVerificationCreditsUsage()) }}%</span>
-                                        <div class="slice"><div class="bar"></div><div class="fill"></div></div>
-                                    </div>
                                 </span>
                             </span>
                         </a>
