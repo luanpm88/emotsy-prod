@@ -40,7 +40,7 @@ class SendingDomain extends Model
     public const STATUS_INACTIVE = 'inactive';
 
     // The regex below also supports Cyrillic
-    public const VALIDATION_REGEXP = '/^([\p{Cyrillic}\p{Latin}\d\.-]{1,64})?\.(?:\x{0440}\x{0444}|ru|su|arpa|info|aero|name|[a-z]{2})$/iu';
+    public const VALIDATION_REGEXP = '/^(?!\-)(?:(?:[a-zA-Z\d][a-zA-Z\d\-]{0,61})?[a-zA-Z\d]\.){1,126}(?!\d+)[a-zA-Z\d]{1,63}$/i';
 
     // The regex below does not supports Cyrillic
     // public const VALIDATION_REGEXP = '/^([a-z0-9A-Z]+(-[a-z0-9A-Z]+)*\.)+[a-zA-Z]{2,}$/';
