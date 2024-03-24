@@ -990,9 +990,6 @@ class Subscription extends Model
         $subscription->plan_id = $plan->id;
         $subscription->save();
 
-        // $emailCredits = (int)$plan->getOption('email_max');
-        // $subscription->getSendEmailCreditTracker()->setCredits($emailCredits);
-
         return $subscription;
     }
 
@@ -1047,10 +1044,13 @@ class Subscription extends Model
 
     public function setDefaultEmailCredits()
     {
-        // Or, set it to just unlimited
-        // $defaultCredits = CreditTracker::UNLIMITED;
-
         $defaultCredits = (int)$this->planGeneral->getOption('email_max');
         $this->getSendEmailCreditTracker()->setCredits($defaultCredits);
+    }
+
+    public function setDefaultVerificationCredits()
+    {
+        $defaultCredits = (int)$this->planGeneral->getOption('verification_credits_limit');
+        $this->getVerifyEmailCreditTracker()->setCredits($defaultCredits);
     }
 }

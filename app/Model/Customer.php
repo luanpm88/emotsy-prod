@@ -1781,6 +1781,7 @@ class Customer extends Model
             // Assign sending credits
             // Notice that the following method is available for a SubscriptionGeneralPlan only
             $subscription->setDefaultEmailCredits();
+            $subscription->setDefaultVerificationCredits();
 
             // log
             SubscriptionFacade::log($subscription, SubscriptionLog::TYPE_SELECT_PLAN, $invoice->uid, [
