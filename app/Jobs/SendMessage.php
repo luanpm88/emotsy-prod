@@ -125,6 +125,7 @@ class SendMessage implements ShouldQueue
             $startAt = Carbon::now()->getTimestampMs();
 
             $logger = $this->campaign->logger();
+            $plogger = \Acelle\Helpers\plogger($this->campaign->uid);
             $email = $this->subscriber->getEmail();
 
             // Prepare the email message to send
@@ -133,7 +134,7 @@ class SendMessage implements ShouldQueue
 
             // Start sending
             $logger->info(sprintf('Sending to %s [Server "%s"]', $email, $this->server->name));
-
+            $plogger->info(sprintf('Sending to %s [Server "%s"]', $email, $this->server->name));
 
             // Rate limit trackers
             // Here we have 2 rate trackers
@@ -156,12 +157,13 @@ class SendMessage implements ShouldQueue
             $getLockAt = null;
             // END DEBUG
 
-            execute_with_limits($rateTrackers, $creditTrackers, function () use ($startAt, $message, $logger, $msgId, $email, &$finishDeliveryAt, &$getLockAt) {
+            execute_with_limits($rateTrackers, $creditTrackers, function () use ($startAt, $message, $logger, $plogger, $msgId, $email, &$finishDeliveryAt, &$getLockAt) {
 
                 $getLockAt = Carbon::now()->getTimestampMs();
                 $getLockDiff = ($getLockAt - $startAt) / 1000;
 
                 $logger->info(sprintf('Got lock for %s after "%s" seconds', $email, $getLockDiff));
+                $plogger->info(sprintf('Got lock for %s after "%s" seconds', $email, $getLockDiff));
 
                 if (!$this->subscriber->isSubscribed()) {
                     // @important: do not throw an exception here
@@ -180,12 +182,14 @@ class SendMessage implements ShouldQueue
                 $finishDeliveryAt = Carbon::now()->getTimestampMs();
 
                 $logger->info(sprintf('Sent to %s', $email));
+                $plogger->info(sprintf('Sent to %s', $email));
 
                 // Log successful shot
                 $this->campaign->trackMessage($sent, $this->subscriber, $this->server, $msgId, $this->triggerId);
 
                 // Done, written to tracking_logs table
                 $logger->info(sprintf('Done with %s [Server "%s"]', $email, $this->server->name));
+                $plogger->info(sprintf('Done with %s [Server "%s"]', $email, $this->server->name));
             });
 
             // Debug
@@ -256,7 +260,7 @@ class SendMessage implements ShouldQueue
 
             if ($this->batch()) {
                 $lockKey = "campaign-delay-flag-lock-{$this->campaign->uid}";
-                with_cache_lock($lockKey, function () use ($rateTrackers, $logger, $email, $ex) {
+                with_cache_lock($lockKey, function () use ($rateTrackers, $logger, $plogger, $email, $ex) {
                     $delayFlag = $this->campaign->checkDelayFlag();
 
                     if ($delayFlag == true) {
@@ -269,6 +273,7 @@ class SendMessage implements ShouldQueue
                         $delayInSeconds = 25;
 
                         $logger->warning(sprintf("Delay [%s], dispatch WAITING job (%s seconds): %s", $email, $delayInSeconds, $ex->getMessage()));
+                        $plogger->warning(sprintf("Delay [%s], dispatch WAITING job (%s seconds): %s", $email, $delayInSeconds, $ex->getMessage()));
 
                         // set delay flag to true
                         $this->campaign->setDelayFlag(true);
@@ -287,6 +292,7 @@ class SendMessage implements ShouldQueue
 
             } else {
                 $logger->warning(sprintf("Delay [%s] for 60 seconds (no batch): %s", $email, $ex->getMessage()));
+                $plogger->warning(sprintf("Delay [%s] for 60 seconds (no batch): %s", $email, $ex->getMessage()));
                 $this->release(600); // should be only 60 seconds
             }
         } catch (Throwable $ex) {
@@ -296,6 +302,7 @@ class SendMessage implements ShouldQueue
 
             $message = sprintf("Error sending to [%s]. Error: %s", $email, $ex->getMessage());
             $logger->error($message);
+            $plogger->error($message);
 
             // In case of these exceptions, stop campaign immediately even if stopOnError is currently false
             // This is helpful in certain cases: for example, when credits runs out, then it does not make sense to keep sending (and failing)

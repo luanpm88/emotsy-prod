@@ -537,3 +537,16 @@ function isSendingCreditPluginActive()
     return \Acelle\Model\Plugin::isInstalled('acelle/sending-credit') &&
         \Acelle\Model\Plugin::getByName('acelle/sending-credit')->isActive();
 }
+
+function plogger($name = null)
+{
+    $formatter = new \Monolog\Formatter\LineFormatter("[%datetime%] %channel%.%level_name%: %message%\n");
+    $pid = getmypid();
+    $logfile = storage_path(join_paths('logs', php_sapi_name(), '/process-'.$pid.'.log'));
+    $stream = new \Monolog\Handler\RotatingFileHandler($logfile, 0, config('custom.log_level'));
+    $stream->setFormatter($formatter);
+
+    $logger = new \Monolog\Logger($name ?: 'process');
+    $logger->pushHandler($stream);
+    return $logger;
+}
