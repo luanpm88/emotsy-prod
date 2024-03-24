@@ -331,5 +331,7 @@ class SendMessage implements ShouldQueue
         } finally {
             //
         }
+
+        $plogger->info('SendMessage: ALL done');
     }
 }
