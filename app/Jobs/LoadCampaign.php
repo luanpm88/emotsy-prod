@@ -82,7 +82,7 @@ class LoadCampaign implements ShouldQueue
         $this->campaign->logger()->info(sprintf('LoadCampaign: loading contacts for page %s (#%s)', $this->page, $total));
         $plogger->info(sprintf('LoadCampaign: loading contacts for page %s (#%s)', $this->page, $total));
 
-        $this->campaign->loadDeliveryJobsByIds(function (ShouldQueue $deliveryJob)  use (&$count, $total, $plogger) {
+        $this->campaign->loadDeliveryJobsByIds(function (ShouldQueue $deliveryJob) use (&$count, $total, $plogger) {
             $this->batch()->add($deliveryJob);
 
             $count += 1;
