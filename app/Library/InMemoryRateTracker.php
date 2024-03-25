@@ -176,9 +176,10 @@ class InMemoryRateTracker
     private function getLastRecord()
     {
         $store = Cache::get($this->resourceKey);
-        if (is_null($store)) {
+        if (empty($store)) { // in case of an empty array
             return [ null, null ];
         }
+
         $lastKey = array_key_last($store);
         $lastValue = $store[$lastKey];
 

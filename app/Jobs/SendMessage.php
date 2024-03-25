@@ -18,6 +18,7 @@ use Acelle\Library\Exception\OutOfCredits;
 use Exception;
 use Throwable;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log as LaravelLog;
 
 use function Acelle\Helpers\execute_with_limits;
 
@@ -301,6 +302,7 @@ class SendMessage implements ShouldQueue
             }
 
             $message = sprintf("Error sending to [%s]. Error: %s", $email, $ex->getMessage());
+            LaravelLog::error('ERROR SENDING EMAIL (debug): '.$ex->getTraceAsString());
             $logger->error($message);
             $plogger->error($message);
 

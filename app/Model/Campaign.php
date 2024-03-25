@@ -2141,6 +2141,7 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
 
             $this->logger()->info('Setting up before send (page 1 only) for server '.$server->uid);
             $server->setupBeforeSend($fromEmailAddress);
+            $server->getRateLimitTracker()->cleanup('24 hours');
         }
 
         // Reset max_execution_time so that command can run for a long time without being terminated
@@ -2152,6 +2153,13 @@ class Campaign extends BaseCampaign implements HasTemplateInterface, CampaignInt
         // Last chance for campaign to setup
         // @todo Find a better place for the following method, afterSave for example
         $this->updateLinks();
+
+        if (config('app.saas')) {
+            $subscription = $this->customer->getCurrentActiveGeneralSubscription();
+            $subscription->getSendEmailRateTracker()->cleanup('24 hours');
+        } else {
+            $subscription = null;
+        }
     }
 
     /**
