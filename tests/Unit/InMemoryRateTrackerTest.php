@@ -63,7 +63,7 @@ class InMemoryRateTrackerTest extends TestCase
         $used = $tracker->getCreditsUsed($oneMinuteAgo, $now);
         $this->assertEquals($used, 2);
 
-        sleep(5);
+        sleep(1);
 
         $used = $tracker->getCreditsUsed(now()->add('1 minute ago'), $now);
         $this->assertEquals($used, 2);

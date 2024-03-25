@@ -197,6 +197,8 @@ class QuotaTest extends TestCase
         $subscriber = Mockery::mock(new Subscriber());
         $subscriber->shouldReceive('verify')->andReturn(null);
 
+        $subscription->getVerifyEmailCreditTracker()->setCredits(100);
+
         $server->setLimit($limit = 2, $unitValue = 1, $unit = 'minute');
 
         // SendMessage job
@@ -210,6 +212,7 @@ class QuotaTest extends TestCase
         // Just fine
         $this->assertNull($outcome);
         $this->assertEquals($server->getRateTracker()->getCreditsUsed(), 1);
+        $this->assertEquals($subscription->getVerifyEmailCreditTracker()->getRemainingCredits(), 99);
 
         // Second shot
         $verifyJob->doVerify(function ($exception) use (&$outcome) {
@@ -219,11 +222,15 @@ class QuotaTest extends TestCase
         // Just fine
         $this->assertNull($outcome);
         $this->assertEquals($server->getRateTracker()->getCreditsUsed(), 2);
+        $this->assertEquals($subscription->getVerifyEmailCreditTracker()->getRemainingCredits(), 98);
 
         // Third short
         $verifyJob->doVerify(function ($exception) use (&$outcome) {
             $outcome = $exception;
         });
+
+        // Credit does not count in case of any exception
+        $this->assertEquals($subscription->getVerifyEmailCreditTracker()->getRemainingCredits(), 98);
 
         // Second, quota exceeded
         $this->assertEquals(RateLimitExceeded::class, get_class($outcome));
