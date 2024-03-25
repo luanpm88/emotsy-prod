@@ -53,6 +53,7 @@ class InMemoryRateTracker
 
             // Record credits use
             $this->record($now);
+
         }, $timeout = 15);
     }
 
@@ -184,8 +185,32 @@ class InMemoryRateTracker
         return [ $lastKey, $lastValue ];
     }
 
-    public function cleanup()
+    // Example of $period: "24 hours", "1 week"
+    // i.e. Clean up credit tracking logs that are older than "24 hours", "1 week"
+    public function cleanup(string $period = null)
     {
-        Cache::forget($this->resourceKey);
+        with_cache_lock($this->resourceKey, function () use ($period) {
+            if (is_null($period)) {
+                Cache::forget($this->resourceKey);
+                return;
+            }
+
+            $fromDatetime = now()->subtract($period); // Current date
+            $fromDatetimeStr = $this->makeBlock($fromDatetime);
+            $store = Cache::get($this->resourceKey);
+
+            if (is_null($store)) {
+                return;
+            }
+
+            $newStore = [];
+            foreach ($store as $block => $count) {
+                if ($block >= $fromDatetimeStr) {
+                    $newStore[$block] = $count;
+                }
+            }
+
+            Cache::put($this->resourceKey, $newStore);
+        });
     }
 }

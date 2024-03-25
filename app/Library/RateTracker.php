@@ -359,4 +359,9 @@ class RateTracker
     {
         return $this->limits;
     }
+
+    public function cleanup(string $period = null)
+    {
+        // temporarily not working
+    }
 }
