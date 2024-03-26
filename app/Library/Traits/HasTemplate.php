@@ -169,6 +169,7 @@ trait HasTemplate
 
         if ($unsubscribeUrl) {
             $headers['List-Unsubscribe'] = "<{$unsubscribeUrl}>";
+            $headers['List-Unsubscribe-Post'] = 'List-Unsubscribe=One-Click';
         } else {
             $sampleUnsubscribeUrl = route('campaign_message', ['message' => StringHelper::base64UrlEncode(trans('messages.email.test_link_note')) ]);
             $headers['List-Unsubscribe'] = "<{$sampleUnsubscribeUrl}>";
