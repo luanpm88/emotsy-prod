@@ -167,6 +167,8 @@ trait HasTemplate
             'Precedence' => 'bulk',
         );
 
+        // One-click unsubscribe header
+        // Reference: https://aws.amazon.com/fr/blogs/messaging-and-targeting/using-one-click-unsubscribe-with-amazon-ses
         if ($unsubscribeUrl) {
             $headers['List-Unsubscribe'] = "<{$unsubscribeUrl}>";
             $headers['List-Unsubscribe-Post'] = 'List-Unsubscribe=One-Click';
