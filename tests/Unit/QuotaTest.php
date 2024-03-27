@@ -199,7 +199,17 @@ class QuotaTest extends TestCase
 
         $subscription->getVerifyEmailCreditTracker()->setCredits(100);
 
-        $server->setLimit($limit = 2, $unitValue = 1, $unit = 'minute');
+        // $server->setLimit($limit = 2, $unitValue = 1, $unit = 'minute');
+        $file = storage_path('app/quota/verification-server-verify-email-rate-tracking-log-'.$server->uid);
+        $server->shouldReceive('getRateTracker')->andReturn(
+            new RateTracker($file, [
+                new RateLimit(
+                    $amount = 2,
+                    $periodValue = 1,
+                    $periodUnit = 'minute',
+                )
+            ])
+        );
 
         // SendMessage job
         $verifyJob = new VerifySubscriber($subscriber, $server, $subscription);
