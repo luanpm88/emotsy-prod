@@ -5,6 +5,8 @@ namespace Tests\Unit;
 use Tests\TestCase;
 use Carbon\Carbon;
 use Acelle\Library\InMemoryRateTracker;
+use Acelle\Library\RateLimit;
+use Acelle\Library\Exception\RateLimitExceeded;
 
 class InMemoryRateTrackerTest extends TestCase
 {
@@ -111,5 +113,25 @@ class InMemoryRateTrackerTest extends TestCase
 
         $tracker->cleanup('1 minute'); // keep records during the last 1 minute, including 'one' and 'now'
         $this->assertEquals($tracker->getCreditsUsed(), 4);
+    }
+
+    public function test_with_limits()
+    {
+        $key = 'test-in-memory-rate-tracker';
+        $limits = [
+            new RateLimit(2, 1, 'minute', '2 per minute'),
+            new RateLimit(5, 24, 'hour', '5 per 24 hours (per day)'),
+        ];
+
+        $tracker = new InMemoryRateTracker($key, $limits);
+        $tracker->cleanup();
+
+        // 2 time
+        $tracker->count();
+        $tracker->count();
+
+        $this->assertEquals($tracker->getCreditsUsed(), 2);
+        $this->expectException(RateLimitExceeded::class);
+        $tracker->count();
     }
 }

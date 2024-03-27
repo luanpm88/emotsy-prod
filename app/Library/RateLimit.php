@@ -10,6 +10,7 @@ class RateLimit
     protected $description;
 
     public const UNLIMITED = -1;
+    public const ZERO = 0;
 
     public function __construct(int $amount, int $periodValue, string $periodUnit, $description = null)
     {
@@ -37,5 +38,10 @@ class RateLimit
     public function getDescription()
     {
         return $this->description;
+    }
+
+    public function getPeriod()
+    {
+        return sprintf("%s %s", $this->getPeriodValue(), $this->getPeriodUnit());
     }
 }
