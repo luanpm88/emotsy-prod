@@ -25,7 +25,6 @@ use Illuminate\Support\Facades\Cache;
 class DynamicRateTracker
 {
     protected $resourceKey;
-    protected $reservedUntilKey;
     protected $reservedPath;
     protected $limits;
 
@@ -34,7 +33,6 @@ class DynamicRateTracker
     public function __construct(string $resourceKey, $limits = []) // RateLimit class
     {
         $this->resourceKey = $resourceKey;
-        $this->reservedUntilKey = $resourceKey."-reserved-until";
         $this->reservedPath = "/tmp/dynamic-rate-tracker-pid-".getmypid();
 
         $this->limits = $limits;
@@ -73,7 +71,7 @@ class DynamicRateTracker
         file_put_contents($this->reservedPath, "{$until->timestamp}{$this->seperator}{$credits}");
     }
 
-    private function testAndCount(Carbon $now, $fopen)
+    private function countReservedCredits(Carbon $now, $fopen)
     {
         list($until, $credits) = $this->parseReservedCredits($fopen);
 
@@ -89,25 +87,10 @@ class DynamicRateTracker
     // Used by DelayedJob
     public function test(Carbon $now = null)
     {
-        if (empty($this->limits)) {
-            return;
-        }
-
-        $now = $now ?: Carbon::now();
-        list($until, $credits) = $this->parseReservedCredits();
-
-        if ($until && $until->gte($now) && $credits > RateLimit::ZERO) {
-            return true;
-        } else {
-            if ($this->isReservedByOthers($now)) {
-                // no local reserved
-                // and there is a reserved-until key (by other)
-                throw new RateLimitExceeded("Rate limit exceeded ({$this->getMinCredits()}/{$this->getShortestLimitPeriod()})");
-            }
-        }
+        $this->count($now, $count = false);
     }
 
-    public function count(Carbon $now = null)
+    public function count(Carbon $now = null, $count = true)
     {
         if (empty($this->limits)) {
             return;
@@ -119,7 +102,7 @@ class DynamicRateTracker
         // Step 1: check if there is a local reservation
         $lock = new Lockable($this->reservedPath);
         $lock->getExclusiveLock(function ($fopen) use ($now, &$available) {
-            if ($this->testAndCount($now, $fopen)) {
+            if ($this->countReservedCredits($now, $fopen)) {
                 $available = true;
             }
         });
@@ -131,11 +114,17 @@ class DynamicRateTracker
         }
 
         // If not available locally, check the remote
-        with_cache_lock($this->resourceKey, function () use ($now) {
+        with_cache_lock($this->resourceKey, function () use ($now, $count) {
             if ($this->isReservedByOthers($now)) {
                 // no local reserved
                 // and there is a reserved-until key (by other)
                 throw new RateLimitExceeded("Rate limit exceeded ({$this->getMinCredits()}/{$this->getShortestLimitPeriod()})");
+            }
+
+            if (!$count) {
+                // this is for Delay job only
+                // test if it shoudl resume a campaign, do not count ONE use credits
+                return;
             }
 
             // Okie, so ready
@@ -151,7 +140,7 @@ class DynamicRateTracker
 
     public function isReservedByOthers(Carbon $now)
     {
-        $reservedUntil = (int)Cache::get($this->reservedUntilKey);
+        $reservedUntil = (int)Cache::get($this->resourceKey);
 
         if (!is_null($reservedUntil) && (new Carbon($reservedUntil))->gte($now)) {
             return true;
@@ -166,7 +155,7 @@ class DynamicRateTracker
         $this->updateReservedCredits($until, $credits);
 
         // Set remote reservef flag
-        Cache::put($this->reservedUntilKey, $until->timestamp);
+        Cache::put($this->resourceKey, $until->timestamp);
     }
 
     public function parseReservedCredits($fopen = null)
@@ -215,6 +204,6 @@ class DynamicRateTracker
     public function clearReservation()
     {
         file_put_contents($this->getReservedPath(), '');
-        Cache::forget($this->reservedUntilKey);
+        Cache::forget($this->resourceKey);
     }
 }
